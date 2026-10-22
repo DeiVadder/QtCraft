@@ -392,12 +392,23 @@ private slots:
             mobs.tick(*world, players, 6000.0, 0.05, [&next] { return next++; });
         }
         // Only cod live in plain water; at most the cap of them, none persistent, none as animals.
-        QVERIFY(!mobs.mobs().isEmpty());
-        QVERIFY2(mobs.mobs().size() <= 3, qPrintable(QString::number(mobs.mobs().size())));
-        for (const QcCreature &fish : mobs.mobs()) {
-            QCOMPARE(fish.type, type("cod"));
-            QVERIFY(!fish.persistent);
-            QVERIFY(QcFishSwimming::inWater(*world, fish.motion.position + QcVec3{0.0, 0.15, 0.0}));
+        // Drowned come from deep water too, as monsters with their own cap (decision E-838).
+        const auto fishOf = [this](const QcMobManager &manager) {
+            QList<QcCreature> fish;
+            for (const QcCreature &mob : manager.mobs()) {
+                if (!m_content->mobs()[mob.type].isMonster()) {
+                    fish.append(mob);
+                }
+            }
+            return fish;
+        };
+        const QList<QcCreature> fish = fishOf(mobs);
+        QVERIFY(!fish.isEmpty());
+        QVERIFY2(fish.size() <= 3, qPrintable(QString::number(fish.size())));
+        for (const QcCreature &one : fish) {
+            QCOMPARE(one.type, type("cod"));
+            QVERIFY(!one.persistent);
+            QVERIFY(QcFishSwimming::inWater(*world, one.motion.position + QcVec3{0.0, 0.15, 0.0}));
         }
 
         // Without a cap none come.
@@ -406,7 +417,7 @@ private slots:
         for (int i = 0; i < 20 * 30; ++i) {
             none.tick(*world, players, 6000.0, 0.05, [&next] { return next++; });
         }
-        QVERIFY(none.mobs().isEmpty());
+        QVERIFY(fishOf(none).isEmpty());
     }
 };
 

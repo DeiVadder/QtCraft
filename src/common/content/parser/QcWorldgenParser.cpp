@@ -189,6 +189,30 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     return shares;
 }
 
+// The `monsters` of a biome (decision E-838): {"zombie": 20, "husk": 80}, weights 0-100 in place of
+// those of the kinds' spawn rules.
+[[nodiscard]] QList<QcSpawnWeight> parseMonsterWeights(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    QList<QcSpawnWeight> weights;
+    const QJsonValue monsters = json.value(u"monsters"_s);
+    if (!monsters.isUndefined() && (!monsters.isObject() || monsters.toObject().size() > 64)) {
+        reader.fail(u"'monsters' must be an object of at most 64 creature names with weights"_s);
+        return weights;
+    }
+
+    const QJsonObject entries = monsters.toObject();
+    for (auto entry = entries.begin(); entry != entries.end(); ++entry) {
+        const QString mob = QcContentNames::qualify(entry.key(), packNamespace);
+        const double weight = entry.value().toDouble(-1.0);
+        if (mob.isEmpty() || !entry.value().isDouble() || weight < 0.0 || weight > 100.0) {
+            reader.fail(u"'monsters' entries need a creature name and a weight from 0 to 100"_s);
+            break;
+        }
+        weights.append({mob, weight});
+    }
+    return weights;
+}
+
 } // namespace
 
 namespace QcWorldgenParser {
@@ -232,6 +256,7 @@ namespace QcWorldgenParser {
     biome.river = reader.boolean(u"river"_s, false);
     biome.riverBiome = reader.name(u"riverBiome"_s, packNamespace);
     biome.underwaterPatches = parseBlockShares(json, reader, packNamespace);
+    biome.monsterWeights = parseMonsterWeights(json, reader, packNamespace);
     reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
     });

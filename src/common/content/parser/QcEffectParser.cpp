@@ -44,6 +44,8 @@ QcResult<QcEffectDefinition> parseEffect(const QJsonObject &json, const QString 
     effect.damage = reader.number(u"damage"_s, effect.damage, 0.0, 1000.0);
     effect.periodTicks = reader.integer(u"periodTicks"_s, effect.periodTicks, 1, 72000);
     effect.minHealth = reader.number(u"minHealth"_s, effect.minHealth, 0.0, 1000.0);
+    effect.speed = reader.number(u"speed"_s, effect.speed, -1.0, 1.0);
+    effect.exhaustion = reader.number(u"exhaustion"_s, effect.exhaustion, 0.0, 100.0);
     if (!reader.ok()) {
         return qcError(reader.error);
     }

@@ -1,5 +1,6 @@
 #include "common/handbook/builder/QcHandbookCreaturePages.h"
 
+#include "common/content/registry/QcSpawnWeights.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookText.h"
@@ -130,6 +131,12 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     if (mob.spawnsInCaves) {
         facts.append({text.label(u"fact.caves"_s), text.label(u"value.caves"_s), {}});
     }
+    if (mob.spawnUnderSky) {
+        facts.append({text.label(u"fact.sky"_s), text.label(u"value.sky"_s), {}});
+    }
+    if (mob.spawnInWater) {
+        facts.append({text.label(u"fact.inWater"_s), text.label(u"value.inWater"_s), {}});
+    }
     if (mob.maxSpawnLight < QcBlockDefinition::maxLightLevel) {
         facts.append({text.label(u"fact.spawnLight"_s), text.label(u"value.maxLight"_s).arg(mob.maxSpawnLight), {}});
     }
@@ -258,6 +265,24 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     return facts;
 }
 
+// The biomes that weight a monster differently than its spawn rules (decision E-838), each with its
+// weight there; std::nullopt when none does.
+[[nodiscard]] std::optional<Section> biomeWeightSection(const QcHandbookContext &context, const QcMobDefinition &mob)
+{
+    Section section{context.text.label(u"section.biomeWeights"_s), {}, {}, {}};
+    for (const QcBiomeDefinition &biome : context.content.worldgen().biomes()) {
+        const auto own = std::ranges::find(biome.monsterWeights, mob.name, &QcSpawnWeight::mob);
+        if (mob.isMonster() && own != biome.monsterWeights.end() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
+            section.links.append(context.links.biomeLink(biome, context.text.number(own->weight)));
+        }
+    }
+    if (section.links.isEmpty()) {
+        return std::nullopt;
+    }
+    section.links = QcHandbookLinks::sortedLinks(std::move(section.links));
+    return section;
+}
+
 // The blocks and biomes it spawns on.
 [[nodiscard]] QList<Section> spawnSections(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
@@ -288,6 +313,9 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
         biomes.text = text.label(u"value.allBiomes"_s);
     }
     sections.append(std::move(biomes));
+    if (std::optional<Section> weights = biomeWeightSection(context, mob)) {
+        sections.append(std::move(*weights));
+    }
     return sections;
 }
 

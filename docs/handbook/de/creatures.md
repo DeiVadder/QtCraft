@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Enderman](#mob-qtcraft-enderman) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -36,6 +36,36 @@ Ein großer, langsamer Beschützer aus Eisen. Dorfbewohner rufen ihn, wenn sie i
 | Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Beute | [Eisenbarren](items.md#item-qtcraft-iron_ingot) (3×), [Eisenbarren](items.md#item-qtcraft-iron_ingot) (50 %), [Eisenbarren](items.md#item-qtcraft-iron_ingot) (50 %), [Mohn](blocks.md#block-qtcraft-poppy) (50 %), [Mohn](blocks.md#block-qtcraft-poppy) (50 %) |
 
+### <a id="mob-qtcraft-stray"></a>Eiswanderer
+
+Das Skelett der verschneiten Ebenen (Tundra): Es kommt nachts unter offenem Himmel heraus und nimmt dort den Skeletten den größten Teil ihres Platzes. Es schießt wie ein Skelett, aber seine Pfeile machen dich eine halbe Minute lang langsamer. Brennt im direkten Sonnenlicht.
+
+| | |
+|---|---|
+| ID | `qtcraft:stray` |
+| Verhalten | feindlich: hält Abstand, umkreist Spieler und schießt auf sie |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,4 m/s beim Gehen, 2,6 m/s beim Verfolgen |
+| Angriff | 2 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Offener Himmel | nur wo seine Füße den offenen Himmel sehen (volles Himmelslicht) |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 2 |
+| Erscheinungsgewicht | 80 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Knochen](items.md#item-qtcraft-bone), [Knochen](items.md#item-qtcraft-bone) (50 %), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil](items.md#item-qtcraft-arrow) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Tundra](biomes.md#biome-qtcraft-tundra)
+
 ### <a id="mob-qtcraft-enderman"></a>Enderman
 
 Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Enderperle fallen.
@@ -53,7 +83,7 @@ Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm dire
 | Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
 | Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 1 |
-| Erscheinungsgewicht | 0,4 |
+| Erscheinungsgewicht | 10 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Enderperle](items.md#item-qtcraft-ender_pearl) (50 %) |
 
@@ -64,6 +94,48 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 Alle Biome.
+
+### <a id="mob-qtcraft-drowned"></a>Ertrunkener
+
+Ein Zombie, der unter Wasser lebt. Er erscheint im dunklen Wasser von Flüssen und seltener in tiefen Meeren und Seen, läuft über den Grund und schwimmt zu dir hoch, wenn du über ihm bist; ans Ufer klettert er dir nach. Brennt im direkten Sonnenlicht, sobald er das Wasser verlässt.
+
+| | |
+|---|---|
+| ID | `qtcraft:drowned` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3 m/s beim Verfolgen |
+| Angriff | 3 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 20 m |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Im Wasser | im Wasser über festem Grund, nie an Land |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Spawnhöhe | bis y 56 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 5 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Kupferbarren](items.md#item-qtcraft-copper_ingot) (11 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+**Gewicht in diesen Biomen**
+
+[Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river) (1)
+
+**Erscheint auch**
+
+Tag und Nacht; nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen); auch in Höhlen zu jeder Zeit; Blocklicht bis 0
+
+[Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river), [Fluss](biomes.md#biome-qtcraft-river)
 
 ### <a id="mob-qtcraft-mannequin"></a>Gliederpuppe
 
@@ -123,7 +195,7 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 
 ### <a id="mob-qtcraft-witch"></a>Hexe
 
-Lebt in einer Hütte auf Stelzen im Sumpf und kommt dorthin zurück, solange kein Spieler nahe ist. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Gegen Gift ist sie immun.
+Lebt in einer Hütte auf Stelzen im Sumpf und kehrt dorthin zurück, solange kein Spieler in der Nähe ist; ab und zu kommt auch eine im Dunkeln heraus wie andere Monster. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Sie ist immun gegen Gift.
 
 | | |
 |---|---|
@@ -149,23 +221,8 @@ Eine kleine, blaue Spinne der Höhlen und Minenschächte, wo Spawner sie hervorb
 | Geschwindigkeit | 1,6 m/s beim Gehen, 3,8 m/s beim Verfolgen |
 | Angriff | 2 Schaden bis 1,2 m, alle 1 s |
 | Sieht Spieler bis | 16 m |
-| Erscheint | Tag und Nacht |
-| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
-| Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 0 |
-| Spawnhöhe | bis y 40 |
-| Gruppengröße | bis 1 |
-| Erscheinungsgewicht | 0,4 |
-| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
 | Beute | [Faden](items.md#item-qtcraft-string), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
-
-**Erscheint auf**
-
-Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
-
-**Erscheint in Biomen**
-
-Alle Biome.
 
 ### <a id="mob-qtcraft-chicken"></a>Huhn
 
@@ -282,7 +339,7 @@ Ein dicker grüner Block aus leuchtendem Funkengel in der Form des Qt-Logos, mit
 | Höhlen | auch in Höhlen zu jeder Zeit |
 | Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 1 |
-| Erscheinungsgewicht | 2 |
+| Erscheinungsgewicht | 100 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Leuchtet | 10 von 15 |
 | Beute | [Funkengel](items.md#item-qtcraft-spark_gel), [Funkengel](items.md#item-qtcraft-spark_gel) (50 %) |
@@ -460,7 +517,7 @@ Ein hüpfender Klumpen, schwach, aber hartnäckig. Unter der Erde lebt er tief u
 | Spawnhöhe | bis y 40 |
 | Spawn-Chunks | nur in 10 % der Chunks, festgelegt durch den Seed der Welt |
 | Gruppengröße | bis 2 |
-| Erscheinungsgewicht | 4 |
+| Erscheinungsgewicht | 100 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Schleimball](items.md#item-qtcraft-slimeball) |
 
@@ -546,7 +603,7 @@ Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schie�
 | Höhlen | auch in Höhlen zu jeder Zeit |
 | Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 2 |
-| Erscheinungsgewicht | 2 |
+| Erscheinungsgewicht | 100 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Knochen](items.md#item-qtcraft-bone), [Knochen](items.md#item-qtcraft-bone) (50 %), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil](items.md#item-qtcraft-arrow) (50 %) |
 
@@ -557,6 +614,10 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 Alle Biome.
+
+**Gewicht in diesen Biomen**
+
+[Tundra](biomes.md#biome-qtcraft-tundra) (20)
 
 ### <a id="mob-qtcraft-spider"></a>Spinne
 
@@ -576,7 +637,7 @@ Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an.
 | Höhlen | auch in Höhlen zu jeder Zeit |
 | Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 1 |
-| Erscheinungsgewicht | 2 |
+| Erscheinungsgewicht | 100 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Faden](items.md#item-qtcraft-string), [Faden](items.md#item-qtcraft-string) (50 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
 
@@ -619,6 +680,36 @@ Ein grauer Jäger der Wälder, der Taiga und der Tundra, der im Rudel lebt. Er l
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Wald](biomes.md#biome-qtcraft-forest)
 
+### <a id="mob-qtcraft-husk"></a>Wüstenzombie
+
+Der Zombie der Wüste: Er kommt nachts unter offenem Himmel in Wüsten heraus und nimmt dort den Zombies den größten Teil ihres Platzes. Er brennt nicht im Sonnenlicht und jagt deshalb auch tagsüber weiter. Seine Schläge machen hungrig: Dein Essen sinkt einige Sekunden lang schneller.
+
+| | |
+|---|---|
+| ID | `qtcraft:husk` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 20 Lebenspunkte |
+| Größe | 0,6 m breit, 1,95 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3,2 m/s beim Verfolgen |
+| Angriff | 3 Schaden bis 1,6 m, alle 1 s |
+| Sieht Spieler bis | 20 m |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Offener Himmel | nur wo seine Füße den offenen Himmel sehen (volles Himmelslicht) |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 3 |
+| Erscheinungsgewicht | 80 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+[Wüste](biomes.md#biome-qtcraft-desert)
+
 ### <a id="mob-qtcraft-zombie"></a>Zombie
 
 Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und schlägt hart zu. Brennt im direkten Sonnenlicht.
@@ -637,7 +728,7 @@ Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und sch
 | Höhlen | auch in Höhlen zu jeder Zeit |
 | Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 3 |
-| Erscheinungsgewicht | 3 |
+| Erscheinungsgewicht | 100 |
 | Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %) |
 
@@ -648,3 +739,7 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 Alle Biome.
+
+**Gewicht in diesen Biomen**
+
+[Wüste](biomes.md#biome-qtcraft-desert) (20)

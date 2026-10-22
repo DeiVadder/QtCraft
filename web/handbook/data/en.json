@@ -645,8 +645,10 @@
                 "mob:qtcraft:cod",
                 "mob:qtcraft:cow",
                 "mob:qtcraft:dog",
+                "mob:qtcraft:drowned",
                 "mob:qtcraft:enderman",
                 "mob:qtcraft:firefly",
+                "mob:qtcraft:husk",
                 "mob:qtcraft:iron_golem",
                 "mob:qtcraft:kjut",
                 "mob:qtcraft:kjut_child",
@@ -660,6 +662,7 @@
                 "mob:qtcraft:skeleton",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:spider",
+                "mob:qtcraft:stray",
                 "mob:qtcraft:villager",
                 "mob:qtcraft:witch",
                 "mob:qtcraft:wolf",
@@ -906,10 +909,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -931,18 +978,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -955,32 +990,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -1112,10 +1123,60 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "15.53 %",
+                            "target": "mob:qtcraft:husk",
+                            "text": "Husk"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "3.88 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -1137,18 +1198,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1157,30 +1206,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -1382,10 +1407,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -1407,18 +1476,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1427,30 +1484,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -1628,10 +1661,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -1653,18 +1730,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1677,32 +1742,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -1868,10 +1909,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -1893,18 +1978,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1913,30 +1986,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -2066,10 +2115,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.2 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.96 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -2091,18 +2184,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -2117,30 +2198,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -2306,10 +2363,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -2331,18 +2432,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:ocelot",
                             "text": "Ocelot"
                         },
@@ -2357,30 +2446,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -2552,10 +2617,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -2577,18 +2686,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:ocelot",
                             "text": "Ocelot"
                         },
@@ -2603,30 +2700,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -2792,10 +2865,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -2817,18 +2934,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -2843,30 +2948,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -3032,10 +3113,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -3057,18 +3182,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -3077,30 +3190,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -3260,10 +3349,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.64 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -3285,18 +3418,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -3311,30 +3432,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -3472,10 +3569,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -3493,18 +3634,6 @@
                             "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Cow"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3527,32 +3656,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -3718,10 +3823,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -3743,20 +3892,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:firefly",
                             "text": "Firefly"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3775,30 +3912,6 @@
                             "note": "",
                             "target": "mob:qtcraft:sheep",
                             "text": "Sheep"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -3974,10 +4087,54 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -3995,18 +4152,6 @@
                             "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Cow"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -4029,32 +4174,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -4174,10 +4295,60 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
+                            "note": "0.97 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
+                        {
+                            "icon": "",
+                            "note": "1.94 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "3.88 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "15.53 %",
+                            "target": "mob:qtcraft:stray",
+                            "text": "Stray"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.42 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
                         {
                             "icon": "",
                             "note": "",
@@ -4195,18 +4366,6 @@
                             "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Cow"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:kjut",
-                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -4229,32 +4388,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -92033,7 +92168,15 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Zombies and skeletons catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves.",
+                    "text": "Every biome has its list of monsters, each with a weight: zombies, skeletons, spiders, slimes and Kjuts 100 each, endermen 10. Witches are in no list: they live only at their huts in the swamp. Each try to spawn a monster picks one of the whole list by weight and then checks whether that kind may appear at the spot; if not, nothing comes. So slimes take their share only in their chunks and caves, and a kind that needs water or the open sky leaves the others' share as it is. In the desert husks take 80 of the zombies' 100 and appear only under the open sky; they do not burn in the sun, and their blows make you hungry. In the snowy plains (tundra) strays take 80 of the skeletons' 100, also only under the open sky; their arrows slow you down. Drowned rise from dark water: in rivers with weight 100, in frozen rivers 1, elsewhere 5 and only in water at least six blocks below the sea level. Cave spiders come only from the spawners of mine shafts. Each biome's page shows the shares of its monsters.",
+                    "title": "Monsters of the biomes"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Zombies, skeletons, strays and drowned catch fire in direct sunlight and burn for 8 s after they leave it. Shade, a roof or leaves above their heads, water and rain protect them, and so do caves. Husks never burn.",
                     "title": "Burning in daylight"
                 },
                 {
@@ -92119,6 +92262,24 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:husk",
+                            "text": "Husk"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:stray",
+                            "text": "Stray"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
                         },
                         {
                             "icon": "",
@@ -96697,6 +96858,12 @@
                             "note": "50 %",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:stray",
+                            "text": "Stray"
                         }
                     ],
                     "recipes": [
@@ -97117,6 +97284,12 @@
                             "note": "50 %",
                             "target": "mob:qtcraft:skeleton",
                             "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:stray",
+                            "text": "Stray"
                         }
                     ],
                     "recipes": [
@@ -98001,6 +98174,12 @@
                             "note": "2×, 50 %",
                             "target": "block:qtcraft:carrot_crop",
                             "text": "Carrot crop"
+                        },
+                        {
+                            "icon": "",
+                            "note": "2.5 %",
+                            "target": "mob:qtcraft:husk",
+                            "text": "Husk"
                         },
                         {
                             "icon": "qtcraft:wild_carrots",
@@ -100075,6 +100254,20 @@
                     ],
                     "text": "",
                     "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "11 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
                 }
             ],
             "text": "Smelted copper for doors, bars, chains and lanterns.",
@@ -111291,6 +111484,12 @@
                 {
                     "links": [
                         {
+                            "icon": "",
+                            "note": "2.5 %",
+                            "target": "mob:qtcraft:husk",
+                            "text": "Husk"
+                        },
+                        {
                             "icon": "qtcraft:potato_crop",
                             "note": "2×, 50 %",
                             "target": "block:qtcraft:potato_crop",
@@ -112892,6 +113091,18 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:husk",
+                            "text": "Husk"
+                        },
                         {
                             "icon": "",
                             "note": "",
@@ -117990,49 +118201,7 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "day and night"
-                },
-                {
-                    "label": "Darkness",
-                    "links": [
-                    ],
-                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
-                },
-                {
-                    "label": "Caves",
-                    "links": [
-                    ],
-                    "value": "also in caves at any time"
-                },
-                {
-                    "label": "Spawn light",
-                    "links": [
-                    ],
-                    "value": "block light up to 0"
-                },
-                {
-                    "label": "Spawn height",
-                    "links": [
-                    ],
-                    "value": "up to y 40"
-                },
-                {
-                    "label": "Group size",
-                    "links": [
-                    ],
-                    "value": "up to 1"
-                },
-                {
-                    "label": "Spawn weight",
-                    "links": [
-                    ],
-                    "value": "0.4"
-                },
-                {
-                    "label": "Limit",
-                    "links": [
-                    ],
-                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
+                    "value": "never by itself (/summon, showcase world)"
                 },
                 {
                     "label": "Drops",
@@ -118059,22 +118228,6 @@
             "pack": "qtcraft",
             "packName": "QtCraft",
             "sections": [
-                {
-                    "links": [
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
-                    "title": "Appears on"
-                },
-                {
-                    "links": [
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "All biomes.",
-                    "title": "Appears in biomes"
-                }
             ],
             "text": "A small, blue spider of caves and mine shafts, where spawners bring it forth. It climbs walls like a spider, fits through gaps one block high and poisons you with its bite. Always hostile.",
             "title": "Cave spider"
@@ -118653,6 +118806,186 @@
             "text": "A tamed wolf with a red collar. It belongs to you, also when you are offline: it follows you, teleports to you when you are far away (only to a safe place in loaded chunks) and fights what hurts you and what you hit, never you or your other pets. Use it to make it sit or stand up; meat heals it, a dye colours its collar.",
             "title": "Dog"
         },
+        "mob:qtcraft:drowned": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Drowned",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:drowned"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: chases and attacks players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 1.95 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.2 m/s walking, 3 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "3 damage within 1.6 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "20 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
+                },
+                {
+                    "label": "Caves",
+                    "links": [
+                    ],
+                    "value": "also in caves at any time"
+                },
+                {
+                    "label": "In water",
+                    "links": [
+                    ],
+                    "value": "in water above a solid floor, never on dry land"
+                },
+                {
+                    "label": "Spawn light",
+                    "links": [
+                    ],
+                    "value": "block light up to 0"
+                },
+                {
+                    "label": "Spawn height",
+                    "links": [
+                    ],
+                    "value": "up to y 56"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 1"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:rotten_flesh",
+                            "note": "",
+                            "target": "item:qtcraft:rotten_flesh",
+                            "text": "Rotten flesh"
+                        },
+                        {
+                            "icon": "qtcraft:copper_ingot",
+                            "note": "11 %",
+                            "target": "item:qtcraft:copper_ingot",
+                            "text": "Copper ingot"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:rotten_flesh",
+            "id": "mob:qtcraft:drowned",
+            "name": "qtcraft:drowned",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "All biomes.",
+                    "title": "Appears in biomes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "1",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Frozen River"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Weight in these biomes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_river",
+                            "text": "Frozen River"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:river",
+                            "text": "River"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "day and night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); also in caves at any time; block light up to 0",
+                    "title": "Also appears"
+                }
+            ],
+            "text": "A zombie that lives under water. It appears in the dark water of rivers and, more rarely, in deep seas and lakes, walks along the bottom and swims up to you when you are above it; it climbs out onto the shore after you. Burns in direct sunlight once it leaves the water.",
+            "title": "Drowned"
+        },
         "mob:qtcraft:enderman": {
             "category": "creatures",
             "categoryTitle": "Creatures",
@@ -118728,7 +119061,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "0.4"
+                    "value": "10"
                 },
                 {
                     "label": "Limit",
@@ -118902,6 +119235,152 @@
             ],
             "text": "Glows over swamps at night. Catch it with an empty glass bottle.",
             "title": "Firefly"
+        },
+        "mob:qtcraft:husk": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Husk",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:husk"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: chases and attacks players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 1.95 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.2 m/s walking, 3.2 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "3 damage within 1.6 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "20 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
+                },
+                {
+                    "label": "Open sky",
+                    "links": [
+                    ],
+                    "value": "only where its feet see the open sky (full sky light)"
+                },
+                {
+                    "label": "Spawn light",
+                    "links": [
+                    ],
+                    "value": "block light up to 0"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 3"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "80"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:rotten_flesh",
+                            "note": "",
+                            "target": "item:qtcraft:rotten_flesh",
+                            "text": "Rotten flesh"
+                        },
+                        {
+                            "icon": "qtcraft:carrot",
+                            "note": "2.5 %",
+                            "target": "item:qtcraft:carrot",
+                            "text": "Carrot"
+                        },
+                        {
+                            "icon": "qtcraft:potato",
+                            "note": "2.5 %",
+                            "target": "item:qtcraft:potato",
+                            "text": "Potato"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:rotten_flesh",
+            "id": "mob:qtcraft:husk",
+            "name": "qtcraft:husk",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "The zombie of the desert: it comes out at night under the open sky of deserts and takes most of the zombies' place there. It does not burn in sunlight, so it hunts on by day. Its blows make you hungry: your food runs down for a few seconds.",
+            "title": "Husk"
         },
         "mob:qtcraft:iron_golem": {
             "category": "creatures",
@@ -119084,7 +119563,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "2"
+                    "value": "100"
                 },
                 {
                     "label": "Limit",
@@ -120192,7 +120671,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "2"
+                    "value": "100"
                 },
                 {
                     "label": "Limit",
@@ -120252,6 +120731,20 @@
                     ],
                     "text": "All biomes.",
                     "title": "Appears in biomes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "20",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Weight in these biomes"
                 }
             ],
             "text": "Comes out at night and lives in caves. Keeps its distance, circles you and shoots arrows with its bow once it has drawn it; it backs away when you come close. Its arrows cannot be picked up. Burns in direct sunlight.",
@@ -120338,7 +120831,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "4"
+                    "value": "100"
                 },
                 {
                     "label": "Limit",
@@ -120480,7 +120973,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "2"
+                    "value": "100"
                 },
                 {
                     "label": "Limit",
@@ -120538,6 +121031,158 @@
             ],
             "text": "Climbs straight up walls and down again and leaps at its prey. By day in the open it leaves you alone unless you hit it; at night and in caves it hunts you. Wide: it does not fit through narrow gaps. Poison does nothing to it.",
             "title": "Spider"
+        },
+        "mob:qtcraft:stray": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Stray",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:stray"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: keeps its distance, circles and shoots at players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "20 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.6 m wide, 1.95 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.4 m/s walking, 2.6 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "2 damage within 1.6 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
+                },
+                {
+                    "label": "Open sky",
+                    "links": [
+                    ],
+                    "value": "only where its feet see the open sky (full sky light)"
+                },
+                {
+                    "label": "Spawn light",
+                    "links": [
+                    ],
+                    "value": "block light up to 0"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 2"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "80"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        },
+                        {
+                            "icon": "qtcraft:bone",
+                            "note": "50 %",
+                            "target": "item:qtcraft:bone",
+                            "text": "Bone"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        },
+                        {
+                            "icon": "qtcraft:arrow",
+                            "note": "50 %",
+                            "target": "item:qtcraft:arrow",
+                            "text": "Arrow"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:bone",
+            "id": "mob:qtcraft:stray",
+            "name": "qtcraft:stray",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "The skeleton of the snowy plains (tundra): it comes out at night under the open sky and takes most of the skeletons' place there. It shoots like a skeleton, but its arrows slow you down for half a minute. Burns in direct sunlight.",
+            "title": "Stray"
         },
         "mob:qtcraft:villager": {
             "category": "creatures",
@@ -120688,7 +121333,7 @@
             "packName": "QtCraft",
             "sections": [
             ],
-            "text": "Lives in a hut on stilts in the swamp and comes back there while no player is near. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.",
+            "text": "Lives in a hut on stilts in the swamp and comes back there while no player is near; now and then one also comes out in the dark like other monsters. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.",
             "title": "Witch"
         },
         "mob:qtcraft:wolf": {
@@ -120960,7 +121605,7 @@
                     "label": "Spawn weight",
                     "links": [
                     ],
-                    "value": "3"
+                    "value": "100"
                 },
                 {
                     "label": "Limit",
@@ -121014,6 +121659,20 @@
                     ],
                     "text": "All biomes.",
                     "title": "Appears in biomes"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "20",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Weight in these biomes"
                 }
             ],
             "text": "Comes out at night and lives in caves. Chases players it sees and hits hard. Burns in direct sunlight.",

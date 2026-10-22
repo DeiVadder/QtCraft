@@ -260,7 +260,7 @@ bool isWaterAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
     const QcContentRegistry &content = world.content();
-    return block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).fire.setsAlightSeconds == 0;
+    return block && content.isValidBlock(*block) && content.block(*block).isWater();
 }
 
 double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos)
@@ -515,6 +515,7 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
     } else if (input.sprint && input.forward > 0.0f) {
         speed = sprintSpeed;
     }
+    speed *= std::clamp(double(input.speedFactor), 0.0, 4.0);
 
     step({wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
 }

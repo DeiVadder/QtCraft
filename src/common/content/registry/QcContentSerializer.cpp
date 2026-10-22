@@ -503,7 +503,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
 void writeEffect(QDataStream &stream, const QcEffectDefinition &effect)
 {
     stream << effect.name << effect.translationKey << effect.icon << effect.colour << effect.tintsHearts << effect.damage
-           << qint32(effect.periodTicks) << effect.minHealth;
+           << qint32(effect.periodTicks) << effect.minHealth << effect.speed;
 }
 
 [[nodiscard]] QcStatus readEffects(QDataStream &stream, QcContentRegistry &registry)
@@ -512,9 +512,10 @@ void writeEffect(QDataStream &stream, const QcEffectDefinition &effect)
         QcEffectDefinition effect;
         qint32 period = 0;
         stream >> effect.name >> effect.translationKey >> effect.icon >> effect.colour >> effect.tintsHearts >> effect.damage >> period
-            >> effect.minHealth;
+            >> effect.minHealth >> effect.speed;
         effect.periodTicks = period;
-        if (stream.status() != QDataStream::Ok || period < 1 || !std::isfinite(effect.damage) || !std::isfinite(effect.minHealth)) {
+        if (stream.status() != QDataStream::Ok || period < 1 || !std::isfinite(effect.damage) || !std::isfinite(effect.minHealth)
+            || !(effect.speed >= -1.0 && effect.speed <= 1.0)) {
             return false;
         }
         registry.registerEffect(std::move(effect));

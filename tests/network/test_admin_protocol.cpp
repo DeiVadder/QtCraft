@@ -59,8 +59,8 @@ class TestAdminProtocol : public QObject
 private slots:
     void versionIsBumped()
     {
-        // 66 is package 73.3 (decision E-839), 67 the admin channel (decision E-848).
-        QCOMPARE(QcProtocol::version, 67u);
+        // 66 is package 73.3 (decision E-839), 67 the admin channel (decision E-848), 68 package 73.2 (E-838).
+        QCOMPARE(QcProtocol::version, 68u);
     }
 
     void eachSideSendsOnlyItsOwnMessages()

@@ -73,7 +73,7 @@ A snack and the seed of carrot plants. Pigs follow their love for it.
 
 **Dropped by**
 
-[Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
+[Carrot crop](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Husk](creatures.md#mob-qtcraft-husk) (2.5 %), [Wild carrots](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
 
 ### <a id="item-qtcraft-cooked_chicken"></a>Cooked chicken
 
@@ -248,7 +248,7 @@ Barely filling raw; plant it on farmland or bake it in a furnace.
 
 **Dropped by**
 
-[Potato crop](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
+[Husk](creatures.md#mob-qtcraft-husk) (2.5 %), [Potato crop](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wild potatoes](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2.5 %)
 
 ### <a id="item-qtcraft-pumpkin_pie"></a>Pumpkin pie
 
@@ -449,7 +449,7 @@ Dropped by zombies. Barely food.
 
 **Dropped by**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Drowned](creatures.md#mob-qtcraft-drowned), [Husk](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="item-qtcraft-cooked_beef"></a>Steak
 

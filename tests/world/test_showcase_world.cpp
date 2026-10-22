@@ -345,10 +345,10 @@ private slots:
         for (auto it = client.chunkLabels.constBegin(); it != client.chunkLabels.constEnd(); ++it) {
             QCOMPARE(it.value(), generator->labelsIn(it.key()));
         }
-        const bool zombieLabel = std::ranges::any_of(client.chunkLabels, [](const QList<QcWorldLabel> &labels) {
-            return std::ranges::any_of(labels, [](const QcWorldLabel &label) { return label.text == u"mob.qtcraft.zombie"_s; });
+        const bool creatureLabel = std::ranges::any_of(client.chunkLabels, [](const QList<QcWorldLabel> &labels) {
+            return std::ranges::any_of(labels, [](const QcWorldLabel &label) { return label.text.startsWith(u"mob.qtcraft."_s); });
         });
-        QVERIFY(zombieLabel);
+        QVERIFY(creatureLabel);
         QCOMPARE(client.worldTime, 150.0);
         QVERIFY(!client.timeRunning);
 

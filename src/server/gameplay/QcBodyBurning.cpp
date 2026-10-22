@@ -34,7 +34,7 @@ bool QcBodyBurning::inWater(const QcVec3 &feet, double height) const
     const QcContentRegistry &content = m_state.content();
     for (const double up : {0.1, height * 0.5}) {
         const std::optional<QcBlockId> block = m_state.world().blockAt(QcPhysics::blockContaining(feet + QcVec3{0.0, up, 0.0}));
-        if (block && content.isValidBlock(*block) && content.block(*block).liquid && content.block(*block).fire.setsAlightSeconds == 0) {
+        if (block && content.isValidBlock(*block) && content.block(*block).isWater()) {
             return true;
         }
     }

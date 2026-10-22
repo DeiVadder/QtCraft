@@ -15,7 +15,8 @@ struct QcServerClient;
 // counts down and does what its kind (QcEffectDefinition) says at its level; poison hurts every
 // QcEffectDefinition::periodAt ticks without taking the health below its minHealth, players through
 // QcPlayerHealth::damage (unblockable), creatures through QcServerCombat::hurtCreature (no push,
-// QcMobManager::damage). Dead players lose their effects. A player hears of his own with his health
+// QcMobManager::damage); hunger exhausts players' food (decision E-838; slowness acts where bodies
+// move, QcStatusEffects::speedFactor). Dead players lose their effects. A player hears of his own with his health
 // (QcMsg::PlayerHealth::effects) whenever they change and every second while he has any, so the HUD
 // shows the time left.
 class QcServerEffects

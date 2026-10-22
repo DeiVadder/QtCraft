@@ -161,7 +161,7 @@ Ein Happen und die Saat von Karottenpflanzen. Schweine lieben sie.
 
 **Droppt aus**
 
-[Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
+[Karottenpflanze](blocks.md#block-qtcraft-carrot_crop) (2×, 50 %), [Wilde Karotten](blocks.md#block-qtcraft-wild_carrots) (50 %), [Wüstenzombie](creatures.md#mob-qtcraft-husk) (2,5 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
 
 ### <a id="item-qtcraft-potato"></a>Kartoffel
 
@@ -188,7 +188,7 @@ Roh kaum sättigend; auf Ackerboden pflanzen oder im Ofen backen.
 
 **Droppt aus**
 
-[Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
+[Kartoffelpflanze](blocks.md#block-qtcraft-potato_crop) (2×, 50 %), [Wilde Kartoffeln](blocks.md#block-qtcraft-wild_potatoes) (50 %), [Wüstenzombie](creatures.md#mob-qtcraft-husk) (2,5 %), [Zombie](creatures.md#mob-qtcraft-zombie) (2,5 %)
 
 ### <a id="item-qtcraft-pumpkin_pie"></a>Kürbiskuchen
 
@@ -471,4 +471,4 @@ Fällt von Zombies. Kaum Nahrung.
 
 **Droppt aus**
 
-[Zombie](creatures.md#mob-qtcraft-zombie)
+[Ertrunkener](creatures.md#mob-qtcraft-drowned), [Wüstenzombie](creatures.md#mob-qtcraft-husk), [Zombie](creatures.md#mob-qtcraft-zombie)

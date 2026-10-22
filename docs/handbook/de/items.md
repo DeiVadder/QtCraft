@@ -809,7 +809,7 @@ Lassen Skelette fallen. Daraus wird Knochenmehl.
 
 **Droppt aus**
 
-[Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
+[Eiswanderer](creatures.md#mob-qtcraft-stray) (50 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
 
 ### <a id="item-qtcraft-bone_meal"></a>Knochenmehl
 
@@ -962,6 +962,10 @@ Geschmolzenes Kupfer für Türen, Gitter, Ketten und Laternen.
 **Wird verwendet für**
 
 [Kupferblock](blocks.md#block-qtcraft-copper_block), [Kupferfalltür](blocks.md#block-qtcraft-copper_trapdoor), [Kupfergitter](blocks.md#block-qtcraft-copper_bars), [Kupferkette](blocks.md#block-qtcraft-copper_chain), [Kupfernugget](#item-qtcraft-copper_nugget), [Kupfertür](blocks.md#block-qtcraft-copper_door)
+
+**Droppt aus**
+
+[Ertrunkener](creatures.md#mob-qtcraft-drowned) (11 %)
 
 ### <a id="item-qtcraft-copper_nugget"></a>Kupfernugget
 
@@ -1280,7 +1284,7 @@ Wird mit dem Bogen geschossen. Sein Schaden wächst mit seiner Geschwindigkeit; 
 
 **Droppt aus**
 
-[Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
+[Eiswanderer](creatures.md#mob-qtcraft-stray) (50 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (50 %)
 
 ### <a id="item-qtcraft-item_frame"></a>Rahmen
 

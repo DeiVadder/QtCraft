@@ -27,5 +27,8 @@
                 }
             ]
         }
+    },
+    "monsters": {
+        "skeleton": 20
     }
 }

@@ -52,7 +52,8 @@ void buildPen(QcStructure &structure, Pen pen, QcBlockPos corner, std::pair<QcBl
     }
 }
 
-// Fills the inside of a pen with water up to its roof, for water creatures (decision E-502).
+// Fills the inside of a pen with water up to its roof, for water creatures (decision E-502) and
+// divers.
 void floodPen(QcStructure &structure, Pen pen, QcBlockPos corner, QcBlockId water)
 {
     for (int x = pen.wall; x < pen.wall + pen.inner; ++x) {
@@ -90,7 +91,8 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         // The showcase stands at noon: creatures that burn in daylight get a roof of the podium's
         // opaque block for shade (decision E-426).
         buildPen(*structure, pen, {x, 0, z}, {context.enclosure, mob.burnsInDaylight ? context.podium : context.enclosure});
-        if (mob.aquatic) {
+        // Water creatures and divers (the drowned, decision E-838) live in water.
+        if (mob.aquatic || mob.abilities.dives) {
             floodPen(*structure, pen, {x, 0, z}, context.content.blockId(u"qtcraft:water"_s).value_or(qcAirBlockId));
         }
 

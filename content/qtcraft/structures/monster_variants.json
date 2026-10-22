@@ -1,0 +1,130 @@
+{
+    "name": "monster_variants",
+    "showcase": {
+        "order": 94,
+        "front": true
+    },
+    "palette": {
+        "S": "stone",
+        "G": "glass",
+        "A": "sand",
+        "N": "snow_block",
+        "R": "gravel",
+        "W": "water",
+        ".": "air",
+        "L": "mine_lamp"
+    },
+    "layers": [
+        [
+            "SSSSSSSSSSSSSSSS",
+            "SAAAASNNNNSRRRRS",
+            "SAAAASNNNNSRRRRS",
+            "SAAAASNNNNSRRRRS",
+            "SAAAASNNNNSRRRRS",
+            "SAAAASNNNNSRRRRS",
+            "SSSSSSSSSSSSSSSS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "SGGGGSGGGGSGGGGS",
+            "SGGGGSGGGGSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "SGGGGSGGGGSGGGGS",
+            "SGGGGSGGGGSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "S....S....SWWWWS",
+            "SGGGGSGGGGSGGGGS",
+            "SGGGGSGGGGSGGGGS"
+        ],
+        [
+            "SSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSS",
+            "SSSLSSSSLSSSSLSS",
+            "SSSSSSSSSSSSSSSS",
+            "SSSLSSSSLSSSSLSS",
+            "SSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSS"
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "husk",
+            "at": [
+                3.0,
+                1.0,
+                3.5
+            ],
+            "confined": true,
+            "noAi": true
+        },
+        {
+            "mob": "stray",
+            "at": [
+                8.0,
+                1.0,
+                3.5
+            ],
+            "confined": true,
+            "noAi": true
+        },
+        {
+            "mob": "drowned",
+            "at": [
+                13.0,
+                1.0,
+                3.5
+            ],
+            "confined": true,
+            "noAi": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                3.0,
+                5.4,
+                7.3
+            ],
+            "text": "mob.qtcraft.husk"
+        },
+        {
+            "at": [
+                8.0,
+                5.4,
+                7.3
+            ],
+            "text": "mob.qtcraft.stray"
+        },
+        {
+            "at": [
+                13.0,
+                5.4,
+                7.3
+            ],
+            "text": "mob.qtcraft.drowned"
+        },
+        {
+            "at": [
+                8.0,
+                6.2,
+                7.3
+            ],
+            "text": "structure.qtcraft.monster_variants"
+        }
+    ]
+}

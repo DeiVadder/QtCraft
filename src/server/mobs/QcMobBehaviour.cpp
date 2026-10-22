@@ -178,11 +178,27 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
         steering = withoutThinking(mob, definition, context, false);
         break;
     }
+    steering = adjusted(mob, definition, context, steering);
     if (definition.hover) {
         hover(mob, definition, context, apart(index, mob, steering), yawBefore);
         return;
     }
     walk(mob, definition, context.world, withCrowd(index, mob, context.world, steering));
+}
+
+QcPhysics::Steering QcMobBehaviour::adjusted(const QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
+                                             QcPhysics::Steering steering) const
+{
+    if (mob.effects) {
+        steering.speed *= mob.effects->speedFactor(*m_content);
+    }
+
+    // A diver swims up only towards the player it chases when he is above it (decision E-838).
+    if (definition.abilities.dives && mob.motion.inWater && mob.chasing != 0 && context.players) {
+        const auto target = std::ranges::find(*context.players, mob.chasing, &QcMobExchange::PlayerView::entityId);
+        steering.jump = steering.jump || (target != context.players->end() && target->position.y > mob.motion.position.y + 0.5);
+    }
+    return steering;
 }
 
 void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world)
@@ -254,7 +270,9 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
         steering.wish = {};
     }
     // One without a mind (decision E-510) neither jumps nor swims up.
-    const bool jump = !mob.noAi && (mob.motion.inWater || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0));
+    // A diver (drowned, decision E-838) stays down unless its steering says otherwise.
+    const bool swimsUp = mob.motion.inWater && !definition.abilities.dives;
+    const bool jump = !mob.noAi && (swimsUp || steering.jump || (mob.blockedLastTick && steering.wish.length() > 0.0));
     const bool wasOnGround = mob.motion.onGround;
     // Feet in water (also while floating with the body above the surface).
     const bool wading = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0}));

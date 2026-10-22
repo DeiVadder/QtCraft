@@ -260,7 +260,9 @@ private slots:
             QVERIFY2(mobs.contains(mob.name), qPrintable(mob.name));
         }
         QCOMPARE(free, 2);
-        QCOMPARE(withoutMind, 2);
+        // Without a mind: the figure of the character stand, the Kjut of its station and the husk,
+        // stray and drowned of the station monster_variants (decision E-838).
+        QCOMPARE(withoutMind, 5);
 
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {

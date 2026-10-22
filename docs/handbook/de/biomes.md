@@ -32,9 +32,13 @@ Heller Wald aus Birken.
 
 [Löwenzahn](blocks.md#block-qtcraft-dandelion) (35,29 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (41,18 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (23,53 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-flower_valley"></a>Blumental
 
@@ -63,9 +67,13 @@ Ein seltenes, geschütztes Tal im gemäßigten Land: ein breiter Grasboden zwisc
 
 [Margerite](blocks.md#block-qtcraft-oxeye_daisy) (17,07 %), [Rosa Tulpe](blocks.md#block-qtcraft-pink_tulip) (14,63 %), [Orange Tulpe](blocks.md#block-qtcraft-orange_tulip) (14,63 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (12,2 %), [Mohn](blocks.md#block-qtcraft-poppy) (12,2 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (12,2 %), [Zierlauch](blocks.md#block-qtcraft-allium) (9,76 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (7,32 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-jungle"></a>Dschungel
 
@@ -93,9 +101,13 @@ Heißes, nasses Land unter hohen Bäumen mit Farnen, Melonen und Zuckerrohr. Dar
 
 [Mohn](blocks.md#block-qtcraft-poppy) (100 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-jungle_edge"></a>Dschungelrand
 
@@ -123,9 +135,13 @@ Der lichte Rand des Dschungels zu gemäßigten Wäldern: einzelne Dschungelbäum
 
 [Mohn](blocks.md#block-qtcraft-poppy) (66,67 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (33,33 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-plains"></a>Ebene
 
@@ -153,9 +169,13 @@ Offenes Grasland mit Blumen und wenigen Bäumen; hier grasen Schweine und Schafe
 
 [Löwenzahn](blocks.md#block-qtcraft-dandelion) (35,48 %), [Mohn](blocks.md#block-qtcraft-poppy) (35,48 %), [Kornblume](blocks.md#block-qtcraft-cornflower) (19,35 %), [Zierlauch](blocks.md#block-qtcraft-allium) (9,68 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-river"></a>Fluss
 
@@ -170,9 +190,13 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 | Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Kies](blocks.md#block-qtcraft-gravel) (35 %), [Ton](blocks.md#block-qtcraft-clay) (10 %) |
 | Strände | [Sand](blocks.md#block-qtcraft-sand) |
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,64 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-mountains"></a>Gebirge
 
@@ -202,9 +226,13 @@ Hohe Felsgipfel mit Schnee darauf.
 
 [Kornblume](blocks.md#block-qtcraft-cornflower) (50 %), [Zierlauch](blocks.md#block-qtcraft-allium) (50 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-swamp"></a>Sumpf
 
@@ -232,9 +260,13 @@ Tiefes nasses Land mit Ton, Zuckerrohr und nachts Glühwürmchen. Seine Dörfer 
 
 [Blaue Orchidee](blocks.md#block-qtcraft-blue_orchid) (100 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -260,9 +292,13 @@ Kühler Fichtenwald mit Schnee am Boden.
 
 [Hohes Gras](blocks.md#block-qtcraft-tall_grass) (47,06 %), [Farn](blocks.md#block-qtcraft-fern) (52,94 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -283,9 +319,13 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 
 [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (0,15 % der Säulen)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Eiswanderer](creatures.md#mob-qtcraft-stray) (15,53 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (3,88 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Verschneite Taiga
 
@@ -307,9 +347,13 @@ Kalter Fichtenwald auf Schnee zwischen Tundra und Taiga: weniger und kleinere B�
 
 [Fichte](worldgen.md#feature-qtcraft-spruce_tree) (1,4 % der Säulen), [Riesenfichte](worldgen.md#feature-qtcraft-giant_spruce_tree) (0,05 % der Säulen)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest"></a>Wald
 
@@ -337,9 +381,13 @@ Dichte Eichen und Birken mit Pilzen im Schatten.
 
 [Mohn](blocks.md#block-qtcraft-poppy) (38,1 %), [Löwenzahn](blocks.md#block-qtcraft-dandelion) (23,81 %), [Maiglöckchen](blocks.md#block-qtcraft-lily_of_the_valley) (38,1 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest_steppe"></a>Waldsteppe
 
@@ -367,9 +415,13 @@ Warmes, trockenes Grasland zwischen Ebene und Wüste: hohes Gras mit vereinzelte
 
 [Löwenzahn](blocks.md#block-qtcraft-dandelion) (75 %), [Mohn](blocks.md#block-qtcraft-poppy) (25 %)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-desert"></a>Wüste
 
@@ -390,9 +442,13 @@ Sand und Sandstein mit Kakteen und wenig sonst.
 
 [Kaktus](worldgen.md#feature-qtcraft-cactus) (0,6 % der Säulen), [Tote Büsche](worldgen.md#feature-qtcraft-dead_bush) (2 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (20 % der Säulen)
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Wüstenzombie](creatures.md#mob-qtcraft-husk) (15,53 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3,88 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-frozen_river"></a>Zugefrorener Fluss
 
@@ -408,6 +464,10 @@ Ein Fluss durch kaltes Land (Tundra, verschneite Taiga, Taiga): Eis bedeckt ihn,
 | Strände | [Kies](blocks.md#block-qtcraft-gravel) |
 | Gefrorenes Wasser | [Eis](blocks.md#block-qtcraft-ice) |
 
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,96 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,57 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,57 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,57 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,57 %)
+
 **Wesen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kjut](creatures.md#mob-qtcraft-kjut), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)

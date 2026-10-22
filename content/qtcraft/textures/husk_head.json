@@ -1,0 +1,8 @@
+{
+    "name": "husk_head",
+    "pattern": "speckle",
+    "primary": "#b39a6c",
+    "secondary": "#8a744c",
+    "variation": 0.15,
+    "seed": 7101
+}

@@ -1,0 +1,8 @@
+{
+    "name": "drowned_pants",
+    "pattern": "noise",
+    "primary": "#3a5f8a",
+    "secondary": "#2f4f75",
+    "variation": 0.1,
+    "seed": 7305
+}

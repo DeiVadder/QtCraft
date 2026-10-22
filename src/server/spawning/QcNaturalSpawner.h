@@ -1,10 +1,12 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcSpawnWeights.h"
 #include "common/core/QcChunkPos.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerLimits.h"
 #include "server/mobs/QcMobManager.h"
+#include "server/spawning/QcChunkSpawns.h"
 #include "server/spawning/QcMonsterCap.h"
 #include "server/spawning/QcSpawnLight.h"
 
@@ -41,7 +43,7 @@ public:
     // QcMonsterCap::areaChunks chunks.
     static constexpr int monsterAttemptsPerTick = 2;
     // Share of newly generated chunks that get a group of animals.
-    static constexpr double chunkAnimalChance = 0.1;
+    static constexpr double chunkAnimalChance = QcChunkSpawns::chunkAnimalChance;
     // Animals spawn naturally around a player only while none is awake within this distance.
     static constexpr double animalSearchDistance = 128.0;
     // Creatures spawning by themselves by default (QcServerLimits monstersPer289Chunks: monsters per
@@ -55,7 +57,7 @@ public:
 
     // Whether creatures of the kind spawn as monsters (QcMonsterCap): hostile ones that walk or fly
     // on land, not water or ambient creatures.
-    static bool isMonster(const QcMobDefinition &definition) { return definition.hostile && !definition.aquatic && !definition.ambient; }
+    static bool isMonster(const QcMobDefinition &definition) { return definition.isMonster(); }
 
     // The time of day and how dark the sky is (QcSpawnLight::skyDarkening).
     struct Sky
@@ -80,16 +82,17 @@ public:
     void tick(QcServerWorld &world, const QList<PlayerView> &players, Sky sky, double dt, const NextId &nextEntityId);
     // The monster cap of this moment: the areas of the living players and the monsters in them.
     QcMonsterCap monsterCap(const QcServerWorld &world, const QList<PlayerView> &players) const;
-    // The persistent creatures of the village plan whose spot lies in the chunk.
-    void spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId);
-    // The chunk's group of animals (chunkAnimalChance, decided by the seed) on the highest fitting
-    // ground of a random column.
-    void spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, const NextId &nextEntityId);
-    // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks);
-    // the second form takes the share and index of any spawn rule (0: main rule), each rule has its
-    // own set of chunks.
+    // The creatures of a chunk seen for the first time (QcChunkSpawns).
+    void spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId)
+    {
+        m_chunks.spawnVillageMobs(world, pos, nextEntityId);
+    }
+    void spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, const NextId &nextEntityId)
+    {
+        m_chunks.spawnChunkAnimals(world, pos, chunk, nextEntityId);
+    }
+    // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks).
     bool spawnsInChunk(int type, QcChunkPos pos) const;
-    bool spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const;
 
 private:
     int capOf(const QcMobDefinition &definition) const;
@@ -137,6 +140,8 @@ private:
         std::optional<int> light;
         std::optional<int> skyLight;
         std::optional<QcSpawnLight::Draws> draws;
+        // The feet are in water above the floor (only monster places, for drowned; decision E-838).
+        bool water = false;
 
         // The biome and the block and sky light above the floor, looked up once.
         const QString &biomeIn(const QcServerWorld &world);
@@ -188,24 +193,27 @@ private:
     bool ruleAllows(const QcServerWorld &world, SpawnPlace &place, SpawnCandidate candidate, Sky sky) const;
     // Weighted random choice by the rules' weights.
     SpawnCandidate pick(const QList<SpawnCandidate> &candidates);
+    // One kind of the monster list of `biome` by weight (QcSpawnWeights); std::nullopt when the draw
+    // falls on a kind that is not among the candidates.
+    std::optional<SpawnCandidate> pickOfBiome(const QList<SpawnCandidate> &candidates, const QString &biome);
     // A group of the chosen kind, at most `room` members; returns how many spawned.
     int spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, int room, const NextId &nextEntityId);
     // One member of a group; false when there is no room for it.
     bool spawnFlyer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
     bool spawnWalker(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
+    // A walker spawning in water (drowned, decision E-838): its feet in the water above the floor.
+    bool spawnWader(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
     // A water creature in the water below the surface `place` (decision E-502).
     bool spawnSwimmer(const QcServerWorld &world, const SpawnPlace &place, int member, SpawnCandidate chosen, const NextId &nextEntityId);
-    // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
-    QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
-    // Weighted choice by spawn weight for a `random` value in [0, 1).
-    int pickAnimal(const QList<int> &candidates, double random) const;
 
     QcMobManager &m_mobs;
     std::shared_ptr<const QcContentRegistry> m_content;
-    quint64 m_seed = 0;
     QRandomGenerator &m_random;
     // The monsters' own sequence (spawnMonsters), from the seed.
     QRandomGenerator m_monsterRandom;
+    QcChunkSpawns m_chunks;
+    // The monster lists of the biomes (decision E-838).
+    QcSpawnWeights m_weights;
     // The areas of the last monster cap and their loaded chunks (currentMonsterCap).
     QList<QcChunkPos> m_areaCentres;
     qsizetype m_areaChunks = 0;

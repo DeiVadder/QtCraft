@@ -47,7 +47,7 @@ Shot from a bow. Its damage grows with its speed; armour takes part of it. Arrow
 
 **Dropped by**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %)
+[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
 
 ### <a id="item-qtcraft-black_dye"></a>Black dye
 
@@ -114,7 +114,7 @@ Dropped by skeletons. Crafted into bone meal.
 
 **Dropped by**
 
-[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %)
+[Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
 
 ### <a id="item-qtcraft-bone_meal"></a>Bone meal
 
@@ -599,6 +599,10 @@ Smelted copper for doors, bars, chains and lanterns.
 **Used in**
 
 [Block of copper](blocks.md#block-qtcraft-copper_block), [Copper bars](blocks.md#block-qtcraft-copper_bars), [Copper chain](blocks.md#block-qtcraft-copper_chain), [Copper door](blocks.md#block-qtcraft-copper_door), [Copper nugget](#item-qtcraft-copper_nugget), [Copper trapdoor](blocks.md#block-qtcraft-copper_trapdoor)
+
+**Dropped by**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (11 %)
 
 ### <a id="item-qtcraft-copper_nugget"></a>Copper nugget
 

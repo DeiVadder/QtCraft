@@ -52,7 +52,7 @@
     "waterDamage": 1.0,
     "spawn": {
         "maxGroup": 1,
-        "weight": 0.4,
+        "weight": 10,
         "caves": false
     },
     "skeleton": "enderman",

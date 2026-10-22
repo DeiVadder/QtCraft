@@ -1,0 +1,35 @@
+{
+    "name": "drowned",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "drowned_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "drowned_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "drowned_shirt",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "drowned_skin",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "drowned_skin",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "drowned_pants",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "drowned_skin",
+            "tint": "none"
+        }
+    }
+}

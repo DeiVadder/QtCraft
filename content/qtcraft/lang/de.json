@@ -779,5 +779,14 @@
     "item.qtcraft.spark_gel": "Funkengel",
     "mob.qtcraft.kjut": "Kjut",
     "mob.qtcraft.kjut_child": "Kleiner Kjut",
-    "structure.qtcraft.kjut_family": "Kjut-Familie"
+    "structure.qtcraft.kjut_family": "Kjut-Familie",
+    "mob.qtcraft.husk": "Wüstenzombie",
+    "mob.qtcraft.stray": "Eiswanderer",
+    "mob.qtcraft.drowned": "Ertrunkener",
+    "appearance.qtcraft.husk": "Wüstenzombie",
+    "appearance.qtcraft.stray": "Eiswanderer",
+    "appearance.qtcraft.drowned": "Ertrunkener",
+    "effect.qtcraft.slowness": "Langsamkeit",
+    "effect.qtcraft.hunger": "Hunger",
+    "structure.qtcraft.monster_variants": "Monster der Biome: Wüstenzombie, Eiswanderer und Ertrunkener"
 }

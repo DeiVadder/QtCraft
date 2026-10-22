@@ -32,9 +32,13 @@ Light forest of birches.
 
 [Dandelion](blocks.md#block-qtcraft-dandelion) (35.29 %), [Cornflower](blocks.md#block-qtcraft-cornflower) (41.18 %), [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) (23.53 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -55,9 +59,13 @@ Sand and sandstone with cacti and little else.
 
 [Cactus](worldgen.md#feature-qtcraft-cactus) (0.6 % of columns), [Dead bushes](worldgen.md#feature-qtcraft-dead_bush) (2 % of columns), [Sugar cane](worldgen.md#feature-qtcraft-sugar_cane) (20 % of columns)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Husk](creatures.md#mob-qtcraft-husk) (15.53 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (3.88 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-flower_valley"></a>Flower Valley
 
@@ -86,9 +94,13 @@ A rare, sheltered valley in temperate land: a broad grassy floor between low hil
 
 [Oxeye daisy](blocks.md#block-qtcraft-oxeye_daisy) (17.07 %), [Pink tulip](blocks.md#block-qtcraft-pink_tulip) (14.63 %), [Orange tulip](blocks.md#block-qtcraft-orange_tulip) (14.63 %), [Dandelion](blocks.md#block-qtcraft-dandelion) (12.2 %), [Poppy](blocks.md#block-qtcraft-poppy) (12.2 %), [Cornflower](blocks.md#block-qtcraft-cornflower) (12.2 %), [Allium](blocks.md#block-qtcraft-allium) (9.76 %), [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) (7.32 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-forest"></a>Forest
 
@@ -116,9 +128,13 @@ Dense oaks and birches with mushrooms in the shade.
 
 [Poppy](blocks.md#block-qtcraft-poppy) (38.1 %), [Dandelion](blocks.md#block-qtcraft-dandelion) (23.81 %), [Lily of the valley](blocks.md#block-qtcraft-lily_of_the_valley) (38.1 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-forest_steppe"></a>Forest Steppe
 
@@ -146,9 +162,13 @@ Warm, dry grassland between the plains and the desert: tall grass with scattered
 
 [Dandelion](blocks.md#block-qtcraft-dandelion) (75 %), [Poppy](blocks.md#block-qtcraft-poppy) (25 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-frozen_river"></a>Frozen River
 
@@ -164,9 +184,13 @@ A river through cold land (tundra, snowy taiga, taiga): ice covers it, its bed a
 | Beaches | [Gravel](blocks.md#block-qtcraft-gravel) |
 | Frozen water | [Ice](blocks.md#block-qtcraft-ice) |
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.2 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.96 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.57 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.57 %), [Slime](creatures.md#mob-qtcraft-slime) (19.57 %), [Spider](creatures.md#mob-qtcraft-spider) (19.57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.57 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-jungle"></a>Jungle
 
@@ -194,9 +218,13 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 
 [Poppy](blocks.md#block-qtcraft-poppy) (100 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-jungle_edge"></a>Jungle Edge
 
@@ -224,9 +252,13 @@ The thin edge of the jungle towards temperate forests: single jungle trees, many
 
 [Poppy](blocks.md#block-qtcraft-poppy) (66.67 %), [Dandelion](blocks.md#block-qtcraft-dandelion) (33.33 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-mountains"></a>Mountains
 
@@ -256,9 +288,13 @@ High rocky peaks with snow on top.
 
 [Cornflower](blocks.md#block-qtcraft-cornflower) (50 %), [Allium](blocks.md#block-qtcraft-allium) (50 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-plains"></a>Plains
 
@@ -286,9 +322,13 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 [Dandelion](blocks.md#block-qtcraft-dandelion) (35.48 %), [Poppy](blocks.md#block-qtcraft-poppy) (35.48 %), [Cornflower](blocks.md#block-qtcraft-cornflower) (19.35 %), [Allium](blocks.md#block-qtcraft-allium) (9.68 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-river"></a>River
 
@@ -303,9 +343,13 @@ The water of the winding rivers that run through the land down to the sea or int
 | Under water | [Sand](blocks.md#block-qtcraft-sand), [Gravel](blocks.md#block-qtcraft-gravel) (35 %), [Clay](blocks.md#block-qtcraft-clay) (10 %) |
 | Beaches | [Sand](blocks.md#block-qtcraft-sand) |
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (16.39 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.64 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16.39 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (16.39 %), [Slime](creatures.md#mob-qtcraft-slime) (16.39 %), [Spider](creatures.md#mob-qtcraft-spider) (16.39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16.39 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Snowy Taiga
 
@@ -327,9 +371,13 @@ Cold spruce forest on snow between the tundra and the taiga: fewer and smaller t
 
 [Giant spruce](worldgen.md#feature-qtcraft-giant_spruce_tree) (0.05 % of columns), [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (1.4 % of columns)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
@@ -357,9 +405,13 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 [Blue orchid](blocks.md#block-qtcraft-blue_orchid) (100 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Firefly](creatures.md#mob-qtcraft-firefly), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Firefly](creatures.md#mob-qtcraft-firefly), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -385,9 +437,13 @@ Cool spruce forest with snow on the ground.
 
 [Tall grass](blocks.md#block-qtcraft-tall_grass) (47.06 %), [Fern](blocks.md#block-qtcraft-fern) (52.94 %)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (19.42 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -408,6 +464,10 @@ Cold flat land under snow; its water freezes.
 
 [Spruce tree](worldgen.md#feature-qtcraft-spruce_tree) (0.15 % of columns)
 
+**Monsters (share of the monster list)**
+
+[Drowned](creatures.md#mob-qtcraft-drowned) (0.97 %), [Enderman](creatures.md#mob-qtcraft-enderman) (1.94 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19.42 %), [Skeleton](creatures.md#mob-qtcraft-skeleton) (3.88 %), [Slime](creatures.md#mob-qtcraft-slime) (19.42 %), [Spider](creatures.md#mob-qtcraft-spider) (19.42 %), [Stray](creatures.md#mob-qtcraft-stray) (15.53 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19.42 %)
+
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)

@@ -57,6 +57,10 @@ void QcServerEffects::tickPlayer(QcServerClient &client)
         if (damage > 0.0) {
             m_health.damage(client, damage, {}, QcPlayerHealth::DamageKind::Effect);
         }
+        // Hunger (decision E-838): food exhaustion every tick, times the level.
+        if (definition && definition->exhaustion > 0.0 && !client.dead) {
+            client.hunger.exhaust(definition->exhaustion * effect.level * QcPhysics::tickDuration);
+        }
     }
     const bool ended = client.effects.tick();
     client.sentEffects.tick();

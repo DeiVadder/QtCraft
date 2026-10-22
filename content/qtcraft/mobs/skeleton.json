@@ -33,7 +33,7 @@
     "sightRange": 16,
     "spawn": {
         "maxGroup": 2,
-        "weight": 2,
+        "weight": 100,
         "caves": true
     },
     "skeleton": "skeleton",

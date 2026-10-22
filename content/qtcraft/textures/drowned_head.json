@@ -1,0 +1,8 @@
+{
+    "name": "drowned_head",
+    "pattern": "speckle",
+    "primary": "#4f9a8c",
+    "secondary": "#2f6a60",
+    "variation": 0.15,
+    "seed": 7301
+}

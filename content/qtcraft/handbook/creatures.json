@@ -4,6 +4,7 @@
     "icon": "rotten_flesh",
     "sections": [
         "spawning",
+        "biomes",
         "daylight",
         "spiders",
         "silverfish",
@@ -18,6 +19,9 @@
         "zombie",
         "skeleton",
         "enderman",
+        "husk",
+        "stray",
+        "drowned",
         "slime",
         "pig",
         "sheep",

@@ -1,0 +1,35 @@
+{
+    "name": "stray",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "stray_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "stray_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "stray_rags",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "stray_rags",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "stray_bone",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "stray_bone",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "stray_bone",
+            "tint": "none"
+        }
+    }
+}

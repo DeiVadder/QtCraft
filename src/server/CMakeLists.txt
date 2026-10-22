@@ -273,6 +273,7 @@ target_sources(qc_server PRIVATE
     spawners/QcSpawners.h spawners/QcSpawners.cpp
 )
 target_sources(qc_server PRIVATE
+    spawning/QcChunkSpawns.h spawning/QcChunkSpawns.cpp
     spawning/QcMonsterCap.h spawning/QcMonsterCap.cpp
     spawning/QcNaturalSpawner.h spawning/QcNaturalSpawner.cpp
     spawning/QcSpawnLight.h spawning/QcSpawnLight.cpp

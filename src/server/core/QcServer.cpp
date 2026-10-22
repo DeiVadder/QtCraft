@@ -493,6 +493,8 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.strafe = std::clamp(input.strafe, -1.0f, 1.0f);
     input.pitch = std::clamp(input.pitch, -90.0f, 90.0f);
     input.yaw = std::fmod(input.yaw, 360.0f);
+    // The speed follows the player's effects as the server knows them, never the client's word.
+    input.speedFactor = float(client.effects.speedFactor(m_state.content()));
 
     // A rider does not move: the cart carries the player (decision E-382).
     if (m_minecarts.steer(client, input)) {

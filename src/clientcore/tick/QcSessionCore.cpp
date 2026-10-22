@@ -1,6 +1,7 @@
 #include "clientcore/tick/QcSessionCore.h"
 
 #include "clientcore/session/QcClientWorld.h"
+#include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcProtocol.h"
@@ -100,6 +101,7 @@ bool QcSessionCore::tick()
 
     QcSessionEvent::Ticked ticked;
     if (!m_vitals.isDead()) {
+        m_prediction.setSpeedFactor(m_content ? float(QcStatusEffects::speedFactor(*m_content, m_vitals.effects())) : 1.0f);
         const QcPlayerInput input = m_prediction.predict(*m_world, m_gameMode.flightWanted(), m_gameMode.rules().movement());
         if (!m_prediction.riding().isRiding()) {
             // A landing or a mode without flight ended the flight: the wish follows the state.

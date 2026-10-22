@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -56,23 +56,8 @@ A small, blue spider of caves and mine shafts, where spawners bring it forth. It
 | Speed | 1.6 m/s walking, 3.8 m/s chasing |
 | Attack | 2 damage within 1.2 m, every 1 s |
 | Sees players within | 16 m |
-| Appears | day and night |
-| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
-| Caves | also in caves at any time |
-| Spawn light | block light up to 0 |
-| Spawn height | up to y 40 |
-| Group size | up to 1 |
-| Spawn weight | 0.4 |
-| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Appears | never by itself (/summon, showcase world) |
 | Drops | [String](items.md#item-qtcraft-string), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
-
-**Appears on**
-
-Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
-
-**Appears in biomes**
-
-All biomes.
 
 ### <a id="mob-qtcraft-chicken"></a>Chicken
 
@@ -176,6 +161,48 @@ A tamed wolf with a red collar. It belongs to you, also when you are offline: it
 | Healed by | [Raw porkchop](food.md#item-qtcraft-raw_porkchop), [Cooked porkchop](food.md#item-qtcraft-cooked_porkchop), [Raw mutton](food.md#item-qtcraft-raw_mutton), [Cooked mutton](food.md#item-qtcraft-cooked_mutton), [Rotten flesh](food.md#item-qtcraft-rotten_flesh) |
 | Collar | the colour of this dye at first; a dye used on it by its owner colours it: [Red dye](items.md#item-qtcraft-red_dye) |
 
+### <a id="mob-qtcraft-drowned"></a>Drowned
+
+A zombie that lives under water. It appears in the dark water of rivers and, more rarely, in deep seas and lakes, walks along the bottom and swims up to you when you are above it; it climbs out onto the shore after you. Burns in direct sunlight once it leaves the water.
+
+| | |
+|---|---|
+| ID | `qtcraft:drowned` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.2 m/s walking, 3 m/s chasing |
+| Attack | 3 damage within 1.6 m, every 1 s |
+| Sees players within | 20 m |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Caves | also in caves at any time |
+| In water | in water above a solid floor, never on dry land |
+| Spawn light | block light up to 0 |
+| Spawn height | up to y 56 |
+| Group size | up to 1 |
+| Spawn weight | 5 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Copper ingot](items.md#item-qtcraft-copper_ingot) (11 %) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+All biomes.
+
+**Weight in these biomes**
+
+[Frozen River](biomes.md#biome-qtcraft-frozen_river) (1)
+
+**Also appears**
+
+day and night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); also in caves at any time; block light up to 0
+
+[Frozen River](biomes.md#biome-qtcraft-frozen_river), [River](biomes.md#biome-qtcraft-river)
+
 ### <a id="mob-qtcraft-enderman"></a>Enderman
 
 A tall, dark wanderer of the night. It leaves you alone until you look straight at its head or hurt it; then it chases you and hits hard. It teleports away when an arrow or a snowball hits it (they do not hurt it), and water and rain hurt it, so it keeps out of water and jumps away from it. Now and then it picks up a block such as grass, dirt or sand, carries it around in its hand and puts it down somewhere else; it drops it when it dies. Sometimes drops an ender pearl.
@@ -193,7 +220,7 @@ A tall, dark wanderer of the night. It leaves you alone until you look straight 
 | Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
 | Spawn light | block light up to 0 |
 | Group size | up to 1 |
-| Spawn weight | 0.4 |
+| Spawn weight | 10 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Ender Pearl](items.md#item-qtcraft-ender_pearl) (50 %) |
 
@@ -233,6 +260,36 @@ Any solid block, glass and leaves too, or the surface of a liquid.
 
 [Swamp](biomes.md#biome-qtcraft-swamp)
 
+### <a id="mob-qtcraft-husk"></a>Husk
+
+The zombie of the desert: it comes out at night under the open sky of deserts and takes most of the zombies' place there. It does not burn in sunlight, so it hunts on by day. Its blows make you hungry: your food runs down for a few seconds.
+
+| | |
+|---|---|
+| ID | `qtcraft:husk` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.2 m/s walking, 3.2 m/s chasing |
+| Attack | 3 damage within 1.6 m, every 1 s |
+| Sees players within | 20 m |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Open sky | only where its feet see the open sky (full sky light) |
+| Spawn light | block light up to 0 |
+| Group size | up to 3 |
+| Spawn weight | 80 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot) (2.5 %), [Potato](food.md#item-qtcraft-potato) (2.5 %) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+[Desert](biomes.md#biome-qtcraft-desert)
+
 ### <a id="mob-qtcraft-iron_golem"></a>Iron golem
 
 A big, slow guardian of iron. Villagers summon it when they panic or gossip, or you build it from four iron blocks and a carved pumpkin. It hunts monsters and throws them upwards; it is not pushed back by blows. Use an iron ingot on it to repair it.
@@ -267,7 +324,7 @@ A chunky green badge of glowing spark gel, shaped like the Qt logo with two cut 
 | Caves | also in caves at any time |
 | Spawn light | block light up to 0 |
 | Group size | up to 1 |
-| Spawn weight | 2 |
+| Spawn weight | 100 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Glows | 10 of 15 |
 | Drops | [Spark gel](items.md#item-qtcraft-spark_gel), [Spark gel](items.md#item-qtcraft-spark_gel) (50 %) |
@@ -481,7 +538,7 @@ Comes out at night and lives in caves. Keeps its distance, circles you and shoot
 | Caves | also in caves at any time |
 | Spawn light | block light up to 0 |
 | Group size | up to 2 |
-| Spawn weight | 2 |
+| Spawn weight | 100 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Bone](items.md#item-qtcraft-bone), [Bone](items.md#item-qtcraft-bone) (50 %), [Arrow](items.md#item-qtcraft-arrow), [Arrow](items.md#item-qtcraft-arrow) (50 %) |
 
@@ -492,6 +549,10 @@ Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 **Appears in biomes**
 
 All biomes.
+
+**Weight in these biomes**
+
+[Tundra](biomes.md#biome-qtcraft-tundra) (20)
 
 ### <a id="mob-qtcraft-slime"></a>Slime
 
@@ -511,7 +572,7 @@ A bouncing blob, weak but persistent. Underground it lives deep down and only in
 | Spawn height | up to y 40 |
 | Spawn chunks | only in 10 % of the chunks, fixed by the world's seed |
 | Group size | up to 2 |
-| Spawn weight | 4 |
+| Spawn weight | 100 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Slimeball](items.md#item-qtcraft-slimeball) |
 
@@ -547,7 +608,7 @@ Climbs straight up walls and down again and leaps at its prey. By day in the ope
 | Caves | also in caves at any time |
 | Spawn light | block light up to 0 |
 | Group size | up to 1 |
-| Spawn weight | 2 |
+| Spawn weight | 100 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [String](items.md#item-qtcraft-string), [String](items.md#item-qtcraft-string) (50 %), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
 
@@ -558,6 +619,36 @@ Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 **Appears in biomes**
 
 All biomes.
+
+### <a id="mob-qtcraft-stray"></a>Stray
+
+The skeleton of the snowy plains (tundra): it comes out at night under the open sky and takes most of the skeletons' place there. It shoots like a skeleton, but its arrows slow you down for half a minute. Burns in direct sunlight.
+
+| | |
+|---|---|
+| ID | `qtcraft:stray` |
+| Behaviour | hostile: keeps its distance, circles and shoots at players |
+| Health | 20 health points |
+| Size | 0.6 m wide, 1.95 m tall |
+| Speed | 1.4 m/s walking, 2.6 m/s chasing |
+| Attack | 2 damage within 1.6 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Open sky | only where its feet see the open sky (full sky light) |
+| Spawn light | block light up to 0 |
+| Group size | up to 2 |
+| Spawn weight | 80 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Bone](items.md#item-qtcraft-bone), [Bone](items.md#item-qtcraft-bone) (50 %), [Arrow](items.md#item-qtcraft-arrow), [Arrow](items.md#item-qtcraft-arrow) (50 %) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+[Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-villager"></a>Villager
 
@@ -575,7 +666,7 @@ Lives in a village with a bed of its own and, with luck, a workstation that give
 
 ### <a id="mob-qtcraft-witch"></a>Witch
 
-Lives in a hut on stilts in the swamp and comes back there while no player is near. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
+Lives in a hut on stilts in the swamp and comes back there while no player is near; now and then one also comes out in the dark like other monsters. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
 
 | | |
 |---|---|
@@ -637,7 +728,7 @@ Comes out at night and lives in caves. Chases players it sees and hits hard. Bur
 | Caves | also in caves at any time |
 | Spawn light | block light up to 0 |
 | Group size | up to 3 |
-| Spawn weight | 3 |
+| Spawn weight | 100 |
 | Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot) (2.5 %), [Potato](food.md#item-qtcraft-potato) (2.5 %) |
 
@@ -648,3 +739,7 @@ Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 **Appears in biomes**
 
 All biomes.
+
+**Weight in these biomes**
+
+[Desert](biomes.md#biome-qtcraft-desert) (20)

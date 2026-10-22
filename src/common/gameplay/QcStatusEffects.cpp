@@ -1,6 +1,7 @@
 #include "common/gameplay/QcStatusEffects.h"
 
 #include "common/content/definitions/QcEffectDefinition.h"
+#include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
 #include <array>
@@ -108,4 +109,15 @@ std::optional<QList<QcStatusEffect>> QcStatusEffects::read(QDataStream &stream)
         effects.append(effect);
     }
     return effects;
+}
+
+double QcStatusEffects::speedFactor(const QcContentRegistry &content, const QList<QcStatusEffect> &effects)
+{
+    double factor = 1.0;
+    for (const QcStatusEffect &effect : effects) {
+        if (const QcEffectDefinition *kind = content.effect(effect.name)) {
+            factor *= kind->speedFactorAt(effect.level);
+        }
+    }
+    return factor;
 }

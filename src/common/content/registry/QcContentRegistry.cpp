@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcMobTraitsContent.h"
 #include "common/content/registry/QcSpawnerContent.h"
+#include "common/content/registry/QcSpawnWeights.h"
 #include "common/content/registry/QcVillageContent.h"
 #include "common/content/registry/QcVillagerOutfits.h"
 
@@ -438,6 +439,7 @@ QStringList QcContentRegistry::finish()
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(checkStructureAdventure(*this));
     warnings.append(QcSpawnerContent::resolve(*this));
+    warnings.append(QcSpawnWeights::problems(*this));
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));

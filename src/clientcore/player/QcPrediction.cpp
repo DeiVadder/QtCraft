@@ -8,7 +8,9 @@
 void QcPrediction::setIntent(const QcPlayerInput &intent)
 {
     const auto finiteOr = [](float value, float fallback) { return std::isfinite(value) ? value : fallback; };
+    const float speedFactor = m_intent.speedFactor;
     m_intent = intent;
+    m_intent.speedFactor = speedFactor;
     m_intent.forward = std::clamp(finiteOr(intent.forward, 0.0f), -1.0f, 1.0f);
     m_intent.strafe = std::clamp(finiteOr(intent.strafe, 0.0f), -1.0f, 1.0f);
     m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
@@ -83,7 +85,9 @@ void QcPrediction::mirror(const QcPrediction &core, bool current)
     const double largest = m_largestCorrection;
     const bool wasRiding = m_riding.isRiding();
     *this = core;
+    const float speedFactor = m_intent.speedFactor;
     m_intent = intent;
+    m_intent.speedFactor = speedFactor;
     if (m_riding.isRiding()) {
         m_motion = motion;
         m_previousMotion = previous;

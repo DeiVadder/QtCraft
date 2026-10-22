@@ -117,6 +117,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
     content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
     content/registry/QcSpawnerContent.h content/registry/QcSpawnerContent.cpp
+    content/registry/QcSpawnWeights.h content/registry/QcSpawnWeights.cpp
     content/registry/QcStonecutting.h content/registry/QcStonecutting.cpp
     content/registry/QcTranslations.h content/registry/QcTranslations.cpp
     content/registry/QcVillageCatalog.h content/registry/QcVillageCatalog.cpp

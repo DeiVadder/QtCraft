@@ -47,6 +47,9 @@ struct QcMobAbilities
     bool swims = false;
     // Drops deeper than the usual limit into deep water (QcPathRules::waterDrop).
     bool divesIntoWater = true;
+    // Stays under water (drowned, decision E-838): it sinks and walks on the bottom and swims up
+    // only towards a target above it or at a wall, instead of keeping its head above the surface.
+    bool dives = false;
 
     bool operator==(const QcMobAbilities &) const = default;
 };
@@ -224,6 +227,11 @@ struct QcMobDefinition
     int maxCount = 0;
     // Biomes it spawns in; empty for all.
     QStringList spawnBiomes;
+    // Only where its feet see the open sky (sky light 15: husks, strays; decision E-838).
+    bool spawnUnderSky = false;
+    // In water instead of on dry ground: its feet in water above a solid block (drowned; decision
+    // E-838). Server side only.
+    bool spawnInWater = false;
 
     // One place and time where the creature spawns: the main rule (the fields above) or an extra
     // one (`spawn.also`, e.g. slimes also on swamp surfaces at night). Server side only.
@@ -238,13 +246,15 @@ struct QcMobDefinition
         int maxY = QcWorld::worldHeight;
         QStringList biomes;
         bool darkness = false;
+        bool sky = false;
+        bool water = false;
     };
     QList<SpawnRule> extraSpawns;
     // The main rule followed by the extra ones.
     QList<SpawnRule> spawnRules() const
     {
         QList<SpawnRule> rules{{spawnTime, spawnBlocks, spawnWeight, spawnsInCaves, maxSpawnLight, spawnChunkChance, spawnMaxY, spawnBiomes,
-                                 spawnInDarkness}};
+                                 spawnInDarkness, spawnUnderSky, spawnInWater}};
         rules.append(extraSpawns);
         return rules;
     }
@@ -255,6 +265,9 @@ struct QcMobDefinition
     {
         return spawnWeight > 0.0 || std::ranges::any_of(extraSpawns, [](const SpawnRule &rule) { return rule.weight > 0.0; });
     }
+    // Whether creatures of the kind spawn as monsters (decision E-836): hostile ones that walk, hover
+    // or fly, not water or ambient creatures.
+    bool isMonster() const { return hostile && !aquatic && !ambient; }
     // Using `catchWith` on the creature turns one of those items into `catchItem` and removes it,
     // with `catchSound` (server side only).
     QString catchWith;

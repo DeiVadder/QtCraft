@@ -1,0 +1,35 @@
+{
+    "name": "husk",
+    "kind": "outfit",
+    "playable": false,
+    "layers": {
+        "head": {
+            "texture": "husk_head",
+            "tint": "none"
+        },
+        "face": {
+            "texture": "husk_face",
+            "tint": "none"
+        },
+        "torso": {
+            "texture": "husk_shirt",
+            "tint": "none"
+        },
+        "sleeve": {
+            "texture": "husk_shirt",
+            "tint": "none"
+        },
+        "hand": {
+            "texture": "husk_skin",
+            "tint": "none"
+        },
+        "legs": {
+            "texture": "husk_pants",
+            "tint": "none"
+        },
+        "shoes": {
+            "texture": "husk_pants",
+            "tint": "none"
+        }
+    }
+}

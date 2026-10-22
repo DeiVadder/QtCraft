@@ -2685,3 +2685,22 @@ Unter der 10-%-Schwelle. Die Phase Pflanzen wächst um 0,0025 ms: an den Ufern d
 | µs je Spalte (`column`) | 0,359 / 0,365 | 0,446 / 0,451 (+23,7 %) |
 
 Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suche ohne Schranke und ohne Merken 0,741 ms (+17 %), mit der Schranke `reach` 0,712 ms (+12,3 %). Unter der 10-%-Schwelle erst mit dem Merken je Startzelle.
+
+## Paket 73.2 (Monster-Listen der Biome), headless, Release (2026-10-22)
+
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `cb47ae7` (eigener Worktree), `new` = Branch `feature/73-2-biomes` (E-838); Median je Szenario.
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
+|---|---:|---|---|---|---|---|
+| crowd | 3 | 0,201 → 0,198 (−1,5 %) | 0,298 → 0,287 | 0,178 → 0,175 | 136 → 131 | 53,0 → 53,3 |
+| explore | 6 | 0,228 → 0,228 | 0,980 → 0,980 | 0,063 → 0,064 | 67,5 → 66,5 | 57,9 → 58,3 |
+| gravel-collapse | 6 | 0,506 → 0,502 | 1,438 → 1,429 | | | 94,1 → 95,1 |
+| farm | 3 | 0,008 → 0,008 | 0,013 → 0,013 | | | 48,7 → 47,4 |
+| farm-seeds | 3 | 0,019 → 0,019 | 0,063 → 0,060 | | | 47,5 → 47,5 |
+| showcase-signal_components | 3 | 0,086 → 0,090 (+4,7 %) | 0,163 → 0,167 | 0,058 → 0,062 | 58 → 65 | 54,1 → 54,4 |
+| showcase-signal_machines | 6 | 0,100 → 0,105 (+6,0 %) | 0,174 → 0,181 | 0,071 → 0,077 | 72 → 78 | 53,9 → 54,0 |
+| showcase-signal_farm | 6 | 0,087 → 0,093 (+6,9 %) | 0,167 → 0,175 | 0,058 → 0,063 | 58 → 65 | 54,4 → 54,9 |
+
+Das Spawnen selbst kostet nichts Messbares (crowd, explore gleich; die Wahl aus der Liste braucht je Ort mit Kandidaten eine Biomabfrage, und bei voller Obergrenze gibt es keine Versuche). Die Showcase-Szenarien haben 6–7 Wesen mehr in Reichweite (drei neue Gehege der Wesenreihe, die damit länger wird, und drei Wesen der Station `monster_variants`), daher die Phase Wesen +7–8 %; das sind die Kosten der zusätzlichen Wesen (rund 0,7 µs je Wesen), kein Durchgang wird teurer.
+
+**Meeresgrund als Spawn-Ort** (Nachtrag nach dem Review): Über dem Meer bietet jetzt jede Spalte ihren Grund als Ort (vorher scheiterte der Versuch, weil Wasser nicht begehbar ist), jeder Versuch zieht dort also eine Art und prüft ihre Regeln wie an Land. Kein Benchmark-Szenario startet über dem Meer; gemessen in `test_biome_spawning` (`oceanBedsAsSpawnSpots`, Debug, Seed 42, Spieler über Wasser mit Grund mehr als 12 Blöcke unter dem Meeresspiegel gegen einen Spieler in der Ebene, 400 Ticks von Hand, nur die Wesen-Phase `QcMobManager::tick`, Wesen sofort entfernt): Meer 0,0169 ms je Tick, Land 0,0166 ms je Tick (+2 %, im Rauschen); über dem Meer kamen 34 Monster (davon 4 Ertrunkene), an Land 57. Ein Versuch über dem Meer kostet also so viel wie einer an Land, der Server über dem Meer nicht mehr als an Land.

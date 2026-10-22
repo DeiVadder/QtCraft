@@ -30,10 +30,7 @@
     "attackCooldown": 1.0,
     "sightRange": 16,
     "spawn": {
-        "maxGroup": 1,
-        "weight": 0.4,
-        "caves": true,
-        "maxY": 40
+        "weight": 0
     },
     "model": [
         {

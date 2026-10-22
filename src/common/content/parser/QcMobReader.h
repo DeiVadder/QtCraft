@@ -33,6 +33,7 @@ private:
     void parseMobSounds();
     // "family" and "hover" (decision E-839).
     void parseFamily();
+    void checkWaterSpawns();
 
     // QcMobReaderTraits.cpp: "gaze", "teleport", "carries", "waterDamage", companions, water
     // creatures, milking, crumbling, guarding and drinking.

@@ -27,6 +27,15 @@ struct QcBlockShare
     double share = 0.0;
 };
 
+// The weight a biome gives a monster kind instead of the kind's own (decision E-838): the husk's
+// desert takes most of the zombies' share.
+struct QcSpawnWeight
+{
+    QString mob;
+    // 0 takes the kind out of the biome's list.
+    double weight = 0.0;
+};
+
 struct QcBiomeDefinition
 {
     QString name;
@@ -89,6 +98,9 @@ struct QcBiomeDefinition
     // The river biome of the rivers through this land biome (decision E-840; frozen rivers in cold
     // biomes); empty: the terrain's `riverBiome`.
     QString riverBiome;
+    // Monster kinds weighted differently here than by their spawn rules (`monsters`, decision
+    // E-838; QcSpawnWeights). Server side only.
+    QList<QcSpawnWeight> monsterWeights;
     QList<QcFeaturePlacement> features;
     // Grass and flowers (decision E-814): placed after the listed features, used by bone meal.
     QcVegetationDefinition vegetation;

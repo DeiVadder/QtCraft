@@ -1,8 +1,11 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientEntities.h"
+#include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
 
 #include <QTest>
+
+#include <algorithm>
 
 // QcPrediction on its own: the reconciliation results, the cap of pending inputs and riding a cart.
 class TestPrediction : public QObject
@@ -23,6 +26,43 @@ private:
     void layFloor(QcTestWorld &world) const
     {
         world.fillBox({-8, 0, -8}, {8, 0, 8}, *m_content.blockId(QStringLiteral("test:stone")));
+    }
+
+    // The server's side of one player: it applies the inputs two ticks late with its own speed
+    // factor from the status effects (as QcServer does) and answers each tick with its state.
+    struct LaggingServer
+    {
+        QcEntityMotion motion;
+        float speedFactor = 1.0f;
+        QList<QcPlayerInput> queue;
+        quint32 acknowledged = 0;
+
+        QcMsg::PlayerState receive(const QcPlayerInput &input, const QcBlockAccess &world)
+        {
+            queue.append(input);
+            if (queue.size() > 2) {
+                QcPlayerInput applied = queue.takeFirst();
+                applied.speedFactor = speedFactor;
+                motion.stepPlayer(applied, world, QcPhysics::tickDuration, QcMovement::Walk);
+                acknowledged = applied.sequence;
+            }
+            QcMsg::PlayerState state;
+            state.lastInputSequence = acknowledged;
+            state.motion = motion;
+            return state;
+        }
+    };
+
+    // Walks `ticks` ticks forward against the server; returns the largest correction.
+    static double walk(QcPrediction &prediction, LaggingServer &server, const QcBlockAccess &world, int ticks)
+    {
+        double largest = 0.0;
+        for (int tick = 0; tick < ticks; ++tick) {
+            const QcMsg::PlayerState state = server.receive(prediction.predict(world, false, QcMovement::Walk), world);
+            prediction.reconcile(state, &world, QcMovement::Walk);
+            largest = std::max(largest, prediction.lastCorrection());
+        }
+        return largest;
     }
 
     QcContentRegistry m_content = qcMakeTestContent();
@@ -135,6 +175,40 @@ private slots:
         QVERIFY(!prediction.riding().isRiding());
         QCOMPARE(prediction.lastCorrection(), 0.0);
         QCOMPARE(prediction.motion().position, (QcVec3{6.5, 1.0, 6.5}));
+    }
+
+    // Slowness II (speed factor 0.7, decision E-838): the server moves each input with its own
+    // factor. While the client knows the same factor its inputs carry it, so replaying them on the
+    // server's states corrects nothing; when the slowness ends the client learns it a few ticks
+    // late, which may correct once, and then the corrections are zero again.
+    void slownessKeepsTheCorrectionAtZero()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcPlayerInput intent;
+        intent.forward = 1.0f;
+        prediction.setIntent(intent);
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+
+        server.speedFactor = 0.7f;
+        prediction.setSpeedFactor(0.7f);
+        QCOMPARE(walk(prediction, server, world, 12), 0.0);
+        const double slowStretch = (server.motion.position - QcVec3{0.5, 1.0, 0.5}).length();
+        QVERIFY(slowStretch > 0.5);
+
+        // The slowness ends on the server; the client hears of it two ticks later.
+        server.speedFactor = 1.0f;
+        walk(prediction, server, world, 2);
+        prediction.setSpeedFactor(1.0f);
+        walk(prediction, server, world, 3);
+        const QcVec3 settled = server.motion.position;
+        QCOMPARE(walk(prediction, server, world, 8), 0.0);
+
+        // Without slowness the same walk covers more ground: the factor was applied at all.
+        QVERIFY((server.motion.position - settled).length() > slowStretch * 8.0 / 12.0 * 1.2);
     }
 };
 

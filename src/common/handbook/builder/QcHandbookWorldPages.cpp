@@ -1,5 +1,6 @@
 #include "common/handbook/builder/QcHandbookWorldPages.h"
 
+#include "common/content/registry/QcSpawnWeights.h"
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbookLinks.h"
@@ -92,6 +93,34 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     return sections;
 }
 
+// The creatures spawning in a biome: the monsters with their share of the biome's monster list
+// (decision E-838), the others by name.
+[[nodiscard]] QList<Section> creatureSections(const QcHandbookContext &context, const QcBiomeDefinition &biome)
+{
+    const QcContentRegistry &content = context.content;
+    const QcSpawnWeights weights(content);
+    Section monsters{context.text.label(u"section.monsters"_s), {}, {}, {}};
+    Section creatures{context.text.label(u"section.creatures"_s), {}, {}, {}};
+    for (qsizetype type = 0; type < content.mobs().size(); ++type) {
+        const QcMobDefinition &mob = content.mobs()[type];
+        const double weight = weights.weight(int(type), biome.name);
+        if (mob.isMonster() && weight > 0.0) {
+            monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
+        } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
+            creatures.links.append(context.links.mobLink(mob));
+        }
+    }
+
+    QList<Section> sections;
+    for (Section *section : {&monsters, &creatures}) {
+        section->links = QcHandbookLinks::sortedLinks(std::move(section->links));
+        if (!section->links.isEmpty()) {
+            sections.append(std::move(*section));
+        }
+    }
+    return sections;
+}
+
 // The features placed in a biome, its vegetation and the creatures spawning there.
 [[nodiscard]] QList<Section> biomeSections(const QcHandbookContext &context, const QcBiomeDefinition &biome)
 {
@@ -114,19 +143,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     }
     sections += vegetationSections(context, biome);
 
-    Section creatures{text.label(u"section.creatures"_s), {}, {}, {}};
-    for (const QcMobDefinition &mob : content.mobs()) {
-        const bool extra = std::ranges::any_of(mob.extraSpawns, [&](const QcMobDefinition::SpawnRule &rule) {
-            return rule.biomes.isEmpty() || rule.biomes.contains(biome.name);
-        });
-        if (mob.spawnsNaturally() && (mob.spawnBiomes.isEmpty() || mob.spawnBiomes.contains(biome.name) || extra)) {
-            creatures.links.append(context.links.mobLink(mob));
-        }
-    }
-    creatures.links = QcHandbookLinks::sortedLinks(std::move(creatures.links));
-    if (!creatures.links.isEmpty()) {
-        sections.append(std::move(creatures));
-    }
+    sections += creatureSections(context, biome);
     return sections;
 }
 

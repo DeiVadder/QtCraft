@@ -143,6 +143,7 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
     abilities.opensDoors = reader.boolean(u"opensDoors"_s, abilities.opensDoors);
     abilities.swims = reader.boolean(u"swims"_s, abilities.swims);
     abilities.divesIntoWater = reader.boolean(u"divesIntoWater"_s, abilities.divesIntoWater);
+    abilities.dives = reader.boolean(u"dives"_s, abilities.dives);
 
     using Climbing = QcMobAbilities::Climbing;
     static const QHash<QString, Climbing> climbing = {{u"none"_s, Climbing::None}, {u"ladders"_s, Climbing::Ladders}, {u"walls"_s, Climbing::Walls}};
@@ -204,6 +205,8 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
     rule.darkness = reader.boolean(u"darkness"_s, hostile);
     rule.chunkChance = reader.number(u"chunkChance"_s, 1.0, 0.0, 1.0);
     rule.maxY = reader.integer(u"maxY"_s, QcWorld::worldHeight, 1, QcWorld::worldHeight);
+    rule.sky = reader.boolean(u"sky"_s, false);
+    rule.water = reader.boolean(u"water"_s, false);
 
     const QJsonArray blocks = spawn.value(u"blocks"_s).toArray();
     for (const auto &entry : blocks) {
@@ -357,6 +360,7 @@ QcResult<QcMobDefinition> QcMobReader::read()
     m_mob.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     parseMobSounds();
     parseFamily();
+    checkWaterSpawns();
 
     if (!m_reader.ok()) {
         return qcError(m_reader.error);
@@ -436,6 +440,8 @@ void QcMobReader::parseSpawnConditions(const QJsonObject &spawn, QcJsonFieldRead
     m_mob.spawnChunkChance = main.chunkChance;
     m_mob.spawnMaxY = main.maxY;
     m_mob.spawnBiomes = main.biomes;
+    m_mob.spawnUnderSky = main.sky;
+    m_mob.spawnInWater = main.water;
     m_mob.maxGroup = spawnReader.integer(u"maxGroup"_s, 2, 1, 4);
 }
 
@@ -590,5 +596,16 @@ void QcMobReader::parseFamily()
     });
     if (m_reader.ok() && (m_mob.family || m_mob.hover) && (m_mob.flying || m_mob.aquatic)) {
         m_reader.fail(u"'family' and 'hover' go with creatures that live on land"_s);
+    }
+}
+
+// Spawning in water (drowned, decision E-838) is for creatures that walk or swim on paths, not for
+// flying ones, hoverers or water creatures (those spawn by `blocks` and `aquatic`).
+void QcMobReader::checkWaterSpawns()
+{
+    const QList<QcMobDefinition::SpawnRule> rules = m_mob.spawnRules();
+    const bool water = std::ranges::any_of(rules, &QcMobDefinition::SpawnRule::water);
+    if (m_reader.ok() && water && (m_mob.flying || m_mob.aquatic || m_mob.hover)) {
+        m_reader.fail(u"'water' spawn rules are for creatures that walk; water creatures use 'aquatic'"_s);
     }
 }

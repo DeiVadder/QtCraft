@@ -24,6 +24,10 @@ struct QcPlayerInput
     // Degrees, see QcCamera for the convention.
     float yaw = 0.0f;
     float pitch = 0.0f;
+    // The factor of the status effects on the player's speed (slowness, decision E-838), set by the
+    // side that steps the input: the server from the player's effects, the client from those the
+    // server told it. Never sent.
+    float speedFactor = 1.0f;
 
     bool operator==(const QcPlayerInput &) const = default;
 };

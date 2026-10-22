@@ -1,0 +1,8 @@
+{
+    "name": "stray_rags",
+    "pattern": "noise",
+    "primary": "#5f7076",
+    "secondary": "#4c5b60",
+    "variation": 0.12,
+    "seed": 7204
+}

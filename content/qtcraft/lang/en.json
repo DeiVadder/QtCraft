@@ -779,5 +779,14 @@
     "item.qtcraft.spark_gel": "Spark gel",
     "mob.qtcraft.kjut": "Kjut",
     "mob.qtcraft.kjut_child": "Little Kjut",
-    "structure.qtcraft.kjut_family": "Kjut family"
+    "structure.qtcraft.kjut_family": "Kjut family",
+    "mob.qtcraft.husk": "Husk",
+    "mob.qtcraft.stray": "Stray",
+    "mob.qtcraft.drowned": "Drowned",
+    "appearance.qtcraft.husk": "Husk",
+    "appearance.qtcraft.stray": "Stray",
+    "appearance.qtcraft.drowned": "Drowned",
+    "effect.qtcraft.slowness": "Slowness",
+    "effect.qtcraft.hunger": "Hunger",
+    "structure.qtcraft.monster_variants": "Monsters of the biomes: husk, stray and drowned"
 }

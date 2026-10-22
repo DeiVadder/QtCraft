@@ -13,8 +13,9 @@ namespace QcProtocol {
 // version still reads who knocked (decision E-834).
 inline constexpr quint32 firstVersionWithClientText = 65;
 // Bumped whenever a message layout changes (history: decision E-368): 66 sends the threads of
-// families with the content (decision E-839), 67 brings the admin channel (decision E-848).
-inline constexpr quint32 version = 67;
+// families with the content (decision E-839), 67 brings the admin channel (decision E-848), 68
+// sends the speed of status effects with the content (decision E-838).
+inline constexpr quint32 version = 68;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

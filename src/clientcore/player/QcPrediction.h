@@ -53,6 +53,9 @@ public:
     // moves it). Returns the input to send; it carries the next sequence number and is kept until
     // acknowledged.
     QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement);
+    // The factor of the player's status effects on his speed (slowness, decision E-838), as the
+    // server told them; the next inputs carry it, so replaying them moves as predicted.
+    void setSpeedFactor(float factor) { m_intent.speedFactor = factor; }
     // While riding, after predict(): the player moves onto the seat of the cart as the entity
     // mirror shows it this tick.
     void followCart(const QcClientEntities &entities);

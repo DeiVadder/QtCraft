@@ -1,0 +1,8 @@
+{
+    "name": "stray_head",
+    "pattern": "speckle",
+    "primary": "#c9d3d6",
+    "secondary": "#a3b2b8",
+    "variation": 0.08,
+    "seed": 7201
+}

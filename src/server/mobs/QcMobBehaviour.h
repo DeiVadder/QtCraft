@@ -89,6 +89,10 @@ private:
     // `steering` with the push of the crowd added.
     [[nodiscard]] QcPhysics::Steering withCrowd(qsizetype index, const QcCreature &mob, const QcServerWorld &world,
                                                 QcPhysics::Steering steering) const;
+    // The steering with the factor of the creature's status effects on its speed (slowness,
+    // decision E-838) and, for a diver in water, swimming up towards a chased player above it.
+    [[nodiscard]] QcPhysics::Steering adjusted(const QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
+                                               QcPhysics::Steering steering) const;
     // One tick of the physics with the steering (none while knocked back).
     static void walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering);
     // The steering of the hoverer `index` with the push away from the hoverers it overlaps.

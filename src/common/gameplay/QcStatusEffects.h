@@ -6,6 +6,8 @@
 
 #include <optional>
 
+class QcContentRegistry;
+
 // One status effect a body has (decision E-450): its kind (QcEffectDefinition::name), its level
 // (1 = level I) and the ticks it still lasts.
 struct QcStatusEffect
@@ -40,6 +42,10 @@ public:
     const QcStatusEffect *find(const QString &name) const;
     const QList<QcStatusEffect> &all() const { return m_effects; }
     bool isEmpty() const { return m_effects.isEmpty(); }
+    // The factor on the speed of the body that has them (slowness, decision E-838): the product of
+    // their kinds' QcEffectDefinition::speedFactorAt; 1 without any, kinds no pack has do nothing.
+    double speedFactor(const QcContentRegistry &content) const { return speedFactor(content, m_effects); }
+    static double speedFactor(const QcContentRegistry &content, const QList<QcStatusEffect> &effects);
     // Replaces the list as read back (saved effects): out-of-range entries and duplicates are left out.
     void restore(const QList<QcStatusEffect> &effects);
     // Whether a read effect is within the bounds.

@@ -21,7 +21,7 @@
     "sightRange": 20,
     "spawn": {
         "maxGroup": 3,
-        "weight": 3,
+        "weight": 100,
         "caves": true
     },
     "skeleton": "humanoid",
