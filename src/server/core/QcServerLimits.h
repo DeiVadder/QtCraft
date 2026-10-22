@@ -89,8 +89,9 @@ struct QcServerLimits
     qint64 explosionsPerTick = 8;
     qint64 explosionBlocks = 1024;
     qint64 explosionBlocksPerTick = 2048;
-    // Creatures that spawn by themselves per player, by kind.
-    qint64 hostileCreaturesPerPlayer = 8;
+    // Creatures that spawn by themselves, by kind: monsters for every 289 loaded chunks around the
+    // players (QcMonsterCap, decision E-836), the others around each player.
+    qint64 monstersPer289Chunks = 70;
     qint64 passiveCreaturesPerPlayer = 6;
     qint64 ambientCreaturesPerPlayer = 10;
     // Path finding of creatures (E-400): nodes all searches expand per tick (0 switches path finding

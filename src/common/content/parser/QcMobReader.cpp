@@ -198,8 +198,10 @@ QcMobDefinition::SpawnRule parseSpawnRule(const QJsonObject &spawn, QcJsonFieldR
 
     rule.weight = reader.number(u"weight"_s, 1.0, 0.0, 100.0);
     rule.caves = reader.boolean(u"caves"_s, false);
-    // Hostile creatures keep away from lit places unless their data says otherwise.
-    rule.maxLight = reader.integer(u"maxLight"_s, hostile ? 7 : 15, 0, 15);
+    // Hostile creatures need darkness unless their data says otherwise (decision E-836): no block
+    // light and the original's test of the sky light.
+    rule.maxLight = reader.integer(u"maxLight"_s, hostile ? 0 : 15, 0, 15);
+    rule.darkness = reader.boolean(u"darkness"_s, hostile);
     rule.chunkChance = reader.number(u"chunkChance"_s, 1.0, 0.0, 1.0);
     rule.maxY = reader.integer(u"maxY"_s, QcWorld::worldHeight, 1, QcWorld::worldHeight);
 
@@ -429,6 +431,7 @@ void QcMobReader::parseSpawnConditions(const QJsonObject &spawn, QcJsonFieldRead
     m_mob.spawnWeight = main.weight;
     m_mob.spawnsInCaves = main.caves;
     m_mob.maxSpawnLight = main.maxLight;
+    m_mob.spawnInDarkness = main.darkness;
     m_mob.spawnChunkChance = main.chunkChance;
     m_mob.spawnMaxY = main.maxY;
     m_mob.spawnBiomes = main.biomes;

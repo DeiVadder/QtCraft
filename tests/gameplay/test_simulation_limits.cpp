@@ -75,7 +75,8 @@ private slots:
     void creatureAndPlantDefaultsAreUnchanged()
     {
         const QcServerLimits limits;
-        QCOMPARE(limits.hostileCreaturesPerPlayer, 8);
+        // The original game's 70 monsters per 289 chunks (decision E-836).
+        QCOMPARE(limits.monstersPer289Chunks, 70);
         QCOMPARE(limits.passiveCreaturesPerPlayer, 6);
         QCOMPARE(limits.ambientCreaturesPerPlayer, 10);
         QCOMPARE(limits.breedingCrowd, 24);
@@ -136,6 +137,20 @@ private slots:
         QCOMPARE(limits.signalMinimumStep, 64);
         QCOMPARE(warnings.size(), 5);
         QVERIFY(warnings.join(u'\n').contains(u"noSuchLimit"_s));
+    }
+
+    void oldMonsterKeyIsWarnedAbout()
+    {
+        // Files of earlier servers name monsters per player (8): the value means something else now
+        // (decision E-836), so the default per 289 chunks applies and the operator reads why.
+        const QcServerLimits::Read read = QcServerLimits::fromJson({{u"hostileCreaturesPerPlayer"_s, 8}}, u"server.json"_s);
+        QCOMPARE(read.limits.monstersPer289Chunks, 70);
+        QCOMPARE(read.warnings.size(), 1);
+        QVERIFY(read.warnings.constFirst().contains(u"hostileCreaturesPerPlayer"_s));
+        QVERIFY(read.warnings.constFirst().contains(u"monstersPer289Chunks"_s));
+        const QcServerLimits::Read renamed = QcServerLimits::fromJson({{u"monstersPer289Chunks"_s, 20}}, u"server.json"_s);
+        QCOMPARE(renamed.limits.monstersPer289Chunks, 20);
+        QVERIFY(renamed.warnings.isEmpty());
     }
 
     void serverJsonLimitTakesEffect()

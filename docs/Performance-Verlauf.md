@@ -2537,3 +2537,38 @@ Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-S
 **Ergebnis:** Keine Regression der Pakete über 10 % in Bildzeit, p99 oder GPU (alle ±4 %). Render-CPU −30 … −47 % und Spitzenspeicher −5 … −23 % (58, 47.1c). Tick und GUI-CPU der BENCH-Zeile steigen, sind aber headless unverändert (Server) bzw. größtenteils derselbe Takteffekt; echte Kosten von 47.3/74.1 auf dem GUI-Thread ≤ 0,04 ms.
 
 **Zielprüfung** (`docs/Performance.md`, „Ziele“): Sichtweite 8: 120 FPS (Frame Ø 8,33–8,37 ms), p99 10,2–10,4 ms (≤ 12,5), Frame-Kosten höchstens 2,32 ms GPU in crowd (≤ 4), Spitzenspeicher höchstens 473 MB (sprint 10 s; ≤ 600) erfüllt. Sichtweite 16: p99 9,3–9,4 ms (≤ 16,7) und Frame-Kosten höchstens 3,23 ms GPU (≤ 8,3) erfüllt; **Spitzenspeicher verfehlt, aber deutlich näher:** stand 803 MB (vorher 993), sprint (10 s) 859 MB (vorher 1 109) bei Ziel ≤ 800 MB; der physische Gesamtbedarf (`peak_footprint_mb`, nur `dev`) liegt bei 1 303 bzw. 1 362 MB. Befund „Spitzenspeicher ≤ 800 MB bei 16 Chunks“ bleibt offen (Rest: Blockindizes in Client und Server, siehe E-813, „Verworfen bzw. offen“). Kein Tick über 50 ms (höchstens 5,8 ms), keine übersprungenen Ticks.
+
+## Paket 73.1 (Monster-Spawn nach dem Vorbild), headless, Release (2026-10-22)
+
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `f15f17d` (eigener Worktree), `new` = Branch `feature/73-1-spawn` (E-836); Median je Szenario. Die erste Reihe zeigte crowd +19 % und explore +7 % im Tick; der Monster-Durchgang zählte dort jeden Tick die geladenen Chunks der 17 × 17-Gebiete (289 Abfragen `QcServerWorld::chunk`). Seitdem zählt `QcNaturalSpawner::currentMonsterCap` sie nur einmal je Sekunde oder wenn ein Spieler den Chunk wechselt; crowd und explore danach neu gemessen (6 Runden):
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
+|---|---:|---|---|---|---|---|
+| crowd | 6 | 0,163 → 0,189 (+16 %) | 0,245 → 0,281 (+15 %) | 0,143 → 0,169 | 116 → 123 | 66,4 → 66,9 |
+| explore | 6 | 0,236 → 0,242 (+2,5 %) | 1,057 → 1,054 | 0,064 → 0,070 | 70 → 68 | 72,8 → 73,1 |
+| gravel-collapse | 3 | 0,514 → 0,521 (+1 %) | 1,464 → 1,498 (+2 %) | | | 96,8 → 97,7 |
+| farm | 3 | 0,008 → 0,008 | 0,015 → 0,015 | | | 57,5 → 56,9 |
+| farm-seeds | 3 | 0,018 → 0,019 | 0,057 → 0,059 | | | 56,7 → 56,6 |
+| showcase-signal_components | 3 | 0,089 → 0,090 | 0,165 → 0,166 | | | 64,6 → 64,5 |
+| showcase-signal_machines | 3 | 0,092 → 0,092 | 0,168 → 0,170 | | | 64,1 → 64,0 |
+| showcase-signal_farm | 3 | 0,090 → 0,091 | 0,171 → 0,168 | | | 64,5 → 64,7 |
+
+(gravel-collapse bis showcase aus der ersten Reihe, ohne Wesen-Änderung.) **Über +10 %: crowd.** Die Ursache sind die zusätzlichen Monster, nicht der Spawn-Code: crowd hält 7 Wesen mehr (die Obergrenze ist jetzt 70 statt 8 je Spieler), die Phase Wesen wächst um 0,026 ms, rund 3,7 µs je zusätzlichem Monster mit Jagd und Wegsuche; in explore (gleiche Zahl Wesen) kostet der Monster-Durchgang selbst rund 6 µs je Tick. Gewollt (Parität mit dem Vorbild).
+
+**Monster in einer Testwelt** (`test_spawn_measure`, `QTCRAFT_SPAWN_MEASURE=1`, Release, Gelände Seed 42, ein Spieler, 289 geladene Chunks, 180 s Spielzeit ohne Echtzeit, Stand nach 30 s / 180 s):
+
+| | Monster Mitternacht | davon unter offenem Himmel | Monster Mittag | Phase Wesen Ø (ms) |
+|---|---|---|---|---|
+| `dev` | 8 / 9 | 5 / 6 | 11 / 11 (Höhlen) | 0,010–0,015 |
+| 73.1 | 70 / 70 | 26 / 20 | 70 / 70 (Höhlen, 0 unter offenem Himmel) | 0,08–0,10 |
+
+Die Obergrenze ist nach weniger als 10 s voll, tags wie nachts (Höhlen bleiben dunkel); 0,1 ms je Tick für 70 Monster bleiben weit unter dem Budget.
+
+**Nach den Review-Fixes** (2026-10-22, `pre` = `dev` `9b67546` aus `build/release` des Haupt-Checkouts, `new` = `feature/73-1-spawn` mit `dev` gemergt; `SCENARIOS="crowd explore"`, 6 Runden, verschränkt, Median). Eine erste Reihe mit sofortigem Neuzählen der Gebiete bei jeder Änderung von `QcServerWorld::loadedEpoch` ergab explore +4,3 % (Phase Wesen +0,011 ms): ein laufender Spieler lädt in den meisten Ticks Chunks. Seitdem zählt `currentMonsterCap` bei Chunkwechsel eines Spielers sofort, bei geladenen oder entladenen Chunks höchstens einmal je Sekunde und nur, wenn sich etwas geändert hat; `QcMonsterCap::loadedChunksOf` zählt ohne Mengen (ein Chunk zählt beim ersten Spieler, dessen Gebiet ihn enthält). Endstand:
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
+|---|---:|---|---|---|---|---|
+| crowd | 6 | 0,171 → 0,211 (+24 %) | 0,252 → 0,304 (+21 %) | 0,150 → 0,190 | 114,5 → 138 | 66,5 → 66,2 |
+| explore | 6 | 0,243 → 0,249 (+2,5 %) | 1,085 → 1,092 (+0,6 %) | 0,067 → 0,073 | 66,5 → 65,5 | 73,7 → 72,7 |
+
+**explore** wieder auf dem Stand vor den Fixes (+2,5 %, rund 6 µs je Tick für den Durchgang). **crowd über +10 %**, wieder durch die Zahl der Wesen: 23,5 mehr als `dev` (in der ersten 73.1-Reihe 7 mehr), die Phase Wesen wächst um 0,040 ms, rund 1,7 µs je zusätzlichem Wesen. Die Zahl ist je Build fest (alle 6 Runden 138 bzw. 139), sie hängt an den Zufallsfolgen (Blickrichtungen jetzt aus der Monster-Folge, Despawn-Chance aus einer eigenen) und am Zeitpunkt des Neuzählens; mehr als 70 Monster je 289 Chunks lässt die Obergrenze nicht zu. Gewollt (Parität mit dem Vorbild), wie in der ersten Reihe.

@@ -30,10 +30,12 @@
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
-#include "server/mobs/QcNaturalSpawner.h"
+#include "server/mobs/QcMobUpkeep.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "server/plants/QcServerPlants.h"
 #include "server/signal/QcCircuitComponents.h"
+#include "server/spawning/QcMonsterCap.h"
+#include "server/spawning/QcNaturalSpawner.h"
 #include "server/villages/QcServerTrading.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerRelocation.h"
@@ -273,12 +275,19 @@ QMap<QString, double> values(const QcContentRegistry &content)
         {u"experience.deathPerLevel"_s, double(QcExperience::deathPointsPerLevel)},
         {u"experience.deathMax"_s, double(QcExperience::maxDeathPoints)},
         {u"experience.orbLimit"_s, double(QcServerLimits{}.experienceOrbs)},
-        {u"mobs.hostileCap"_s, QcNaturalSpawner::hostileCapPerPlayer},
+        {u"mobs.hostileCap"_s, QcNaturalSpawner::monsterCapPer289Chunks},
         {u"mobs.passiveCap"_s, QcNaturalSpawner::passiveCapPerPlayer},
         {u"mobs.ambientCap"_s, QcNaturalSpawner::ambientCapPerPlayer},
         {u"mobs.spawnRadiusMin"_s, QcNaturalSpawner::spawnRadiusMin},
         {u"mobs.spawnRadiusMax"_s, QcNaturalSpawner::spawnRadiusMax},
         {u"mobs.despawnDistance"_s, QcMobManager::despawnDistance},
+        {u"mobs.monsterRadiusMin"_s, QcNaturalSpawner::monsterRadiusMin},
+        {u"mobs.monsterRadiusMax"_s, QcNaturalSpawner::monsterRadiusMax},
+        {u"mobs.capChunks"_s, double(QcMonsterCap::areaChunks)},
+        {u"mobs.capReach"_s, double(QcMonsterCap::reach)},
+        {u"mobs.idleDistance"_s, QcMobUpkeep::idleDistance},
+        {u"mobs.idleSeconds"_s, QcMobUpkeep::idleTicks * QcPhysics::tickDuration},
+        {u"mobs.idleMeanSeconds"_s, QcMobUpkeep::idleChance * QcPhysics::tickDuration},
         {u"mobs.caveDepth"_s, QcNaturalSpawner::caveDepth},
     };
     rules.insert(hungerValues());

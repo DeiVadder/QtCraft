@@ -197,7 +197,6 @@ target_sources(qc_server PRIVATE
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
     mobs/QcMobTeleport.h mobs/QcMobTeleport.cpp
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
-    mobs/QcNaturalSpawner.h mobs/QcNaturalSpawner.cpp
     mobs/QcNeutralBrain.h mobs/QcNeutralBrain.cpp
     mobs/QcPetCare.h mobs/QcPetCare.cpp
     mobs/QcPetOwners.h mobs/QcPetOwners.cpp
@@ -262,6 +261,11 @@ target_sources(qc_server PRIVATE
     spawners/QcFurnishing.h spawners/QcFurnishing.cpp
     spawners/QcSpawnerRules.h spawners/QcSpawnerRules.cpp
     spawners/QcSpawners.h spawners/QcSpawners.cpp
+)
+target_sources(qc_server PRIVATE
+    spawning/QcMonsterCap.h spawning/QcMonsterCap.cpp
+    spawning/QcNaturalSpawner.h spawning/QcNaturalSpawner.cpp
+    spawning/QcSpawnLight.h spawning/QcSpawnLight.cpp
 )
 target_sources(qc_server PRIVATE
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp

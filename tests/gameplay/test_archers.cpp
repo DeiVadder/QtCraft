@@ -369,7 +369,9 @@ private slots:
         QVERIFY(spawned("skeleton", QcDayCycle::dayLength * 0.75, true) > 0);
         QCOMPARE(spawned("skeleton", QcDayCycle::dayLength * 0.25, true), 0);
         const QcMobDefinition &skeleton = skeletonKind();
-        QVERIFY(skeleton.spawnsInCaves && skeleton.spawnTime == QcMobDefinition::SpawnTime::Night);
+        // Not bound to the night (decision E-836): the monsters' light test keeps them off the
+        // open ground by day.
+        QVERIFY(skeleton.spawnsInCaves && skeleton.spawnInDarkness && skeleton.maxSpawnLight == 0);
     }
 
     void drawEndsWithoutSightAndDoesNotResume()

@@ -16,12 +16,6 @@
     "attackCooldown": 1.2,
     "sightRange": 12,
     "spawn": {
-        "time": "any",
-        "blocks": [
-            "stone",
-            "gravel",
-            "dirt"
-        ],
         "maxGroup": 2,
         "weight": 4,
         "caves": true,
@@ -33,14 +27,12 @@
                 "biomes": [
                     "swamp"
                 ],
-                "blocks": [
-                    "grass_block",
-                    "dirt"
-                ],
                 "maxY": 70,
                 "weight": 2
             }
-        ]
+        ],
+        "darkness": false,
+        "maxLight": 15
     },
     "model": [
         {

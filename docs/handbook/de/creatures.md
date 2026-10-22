@@ -49,16 +49,17 @@ Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm dire
 | Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s beim Verfolgen |
 | Angriff | 7 Schaden bis 2 m, alle 1 s |
 | Sieht Spieler bis | 32 m |
-| Erscheint | nachts |
-| Licht beim Erscheinen | Blocklicht bis 7 |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 1 |
 | Erscheinungsgewicht | 0,4 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Enderperle](items.md#item-qtcraft-ender_pearl) (50 %) |
 
 **Erscheint auf**
 
-[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 
@@ -114,7 +115,7 @@ Leuchtet nachts über Sümpfen. Mit einer leeren Glasflasche fangbar.
 
 **Erscheint auf**
 
-Jeder feste Block oder eine Flüssigkeitsoberfläche.
+Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 
 **Erscheint in Biomen**
 
@@ -148,18 +149,19 @@ Eine kleine, blaue Spinne der Höhlen und Minenschächte, wo Spawner sie hervorb
 | Geschwindigkeit | 1,6 m/s beim Gehen, 3,8 m/s beim Verfolgen |
 | Angriff | 2 Schaden bis 1,2 m, alle 1 s |
 | Sieht Spieler bis | 16 m |
-| Erscheint | nachts |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
 | Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 7 |
+| Licht beim Erscheinen | Blocklicht bis 0 |
 | Spawnhöhe | bis y 40 |
 | Gruppengröße | bis 1 |
 | Erscheinungsgewicht | 0,4 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Faden](items.md#item-qtcraft-string), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
 
 **Erscheint auf**
 
-[Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 
@@ -405,17 +407,16 @@ Ein hüpfender Klumpen, schwach, aber hartnäckig. Unter der Erde lebt er tief u
 | Sieht Spieler bis | 12 m |
 | Erscheint | Tag und Nacht |
 | Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 7 |
 | Spawnhöhe | bis y 40 |
 | Spawn-Chunks | nur in 10 % der Chunks, festgelegt durch den Seed der Welt |
 | Gruppengröße | bis 2 |
 | Erscheinungsgewicht | 4 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Schleimball](items.md#item-qtcraft-slimeball) |
 
 **Erscheint auf**
 
-[Erde](blocks.md#block-qtcraft-dirt), [Kies](blocks.md#block-qtcraft-gravel), [Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 
@@ -423,9 +424,9 @@ Alle Biome.
 
 **Erscheint auch**
 
-nachts; bis y 70; Blocklicht bis 7
+nachts; nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen); bis y 70; Blocklicht bis 0
 
-[Sumpf](biomes.md#biome-qtcraft-swamp), [Grasblock](blocks.md#block-qtcraft-grass_block), [Erde](blocks.md#block-qtcraft-dirt)
+[Sumpf](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-pig"></a>Schwein
 
@@ -490,17 +491,18 @@ Kommt nachts heraus und lebt in Höhlen. Hält Abstand, umkreist dich und schie�
 | Geschwindigkeit | 1,4 m/s beim Gehen, 2,6 m/s beim Verfolgen |
 | Angriff | 2 Schaden bis 1,6 m, alle 1 s |
 | Sieht Spieler bis | 16 m |
-| Erscheint | nachts |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
 | Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 7 |
+| Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 2 |
 | Erscheinungsgewicht | 2 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Knochen](items.md#item-qtcraft-bone), [Knochen](items.md#item-qtcraft-bone) (50 %), [Pfeil](items.md#item-qtcraft-arrow), [Pfeil](items.md#item-qtcraft-arrow) (50 %) |
 
 **Erscheint auf**
 
-[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 
@@ -519,17 +521,18 @@ Klettert senkrecht Wände hinauf und wieder hinunter und springt seine Beute an.
 | Geschwindigkeit | 1,5 m/s beim Gehen, 3,6 m/s beim Verfolgen |
 | Angriff | 2 Schaden bis 1,7 m, alle 1 s |
 | Sieht Spieler bis | 16 m |
-| Erscheint | nachts |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
 | Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 7 |
+| Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 1 |
 | Erscheinungsgewicht | 2 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Faden](items.md#item-qtcraft-string), [Faden](items.md#item-qtcraft-string) (50 %), [Spinnenauge](items.md#item-qtcraft-spider_eye) (33 %) |
 
 **Erscheint auf**
 
-[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 
@@ -579,17 +582,18 @@ Kommt nachts heraus und lebt in Höhlen. Verfolgt Spieler, die er sieht, und sch
 | Geschwindigkeit | 1,2 m/s beim Gehen, 3,2 m/s beim Verfolgen |
 | Angriff | 3 Schaden bis 1,6 m, alle 1 s |
 | Sieht Spieler bis | 20 m |
-| Erscheint | nachts |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
 | Höhlen | auch in Höhlen zu jeder Zeit |
-| Licht beim Erscheinen | Blocklicht bis 7 |
+| Licht beim Erscheinen | Blocklicht bis 0 |
 | Gruppengröße | bis 3 |
 | Erscheinungsgewicht | 3 |
-| Obergrenze | alle feindlichen Wesen zusammen: 8 pro Spieler |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
 | Beute | [Verrottetes Fleisch](food.md#item-qtcraft-rotten_flesh), [Karotte](food.md#item-qtcraft-carrot) (2,5 %), [Kartoffel](food.md#item-qtcraft-potato) (2,5 %) |
 
 **Erscheint auf**
 
-[Erde](blocks.md#block-qtcraft-dirt), [Grasblock](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Schneeblock](blocks.md#block-qtcraft-snow_block), [Stein](blocks.md#block-qtcraft-stone)
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 

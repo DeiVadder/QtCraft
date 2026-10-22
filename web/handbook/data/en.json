@@ -26816,44 +26816,6 @@
                     ],
                     "text": "",
                     "title": "Found in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Creatures appearing on it"
                 }
             ],
             "text": "Plain earth below the grass.",
@@ -30916,12 +30878,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:ocelot",
                             "text": "Ocelot"
                         },
@@ -30940,32 +30896,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -31240,20 +31172,6 @@
                     ],
                     "text": "",
                     "title": "Found in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Creatures appearing on it"
                 }
             ],
             "text": "Loose stones that fall when nothing holds them. Now and then it drops a flint as well.",
@@ -67788,38 +67706,6 @@
                     ],
                     "text": "",
                     "title": "Found in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Creatures appearing on it"
                 }
             ],
             "text": "Falls when nothing holds it. Smelts into glass.",
@@ -75755,32 +75641,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -80317,50 +80179,6 @@
                     ],
                     "text": "",
                     "title": "Found in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Cave spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skeleton"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Slime"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spider"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Creatures appearing on it"
                 }
             ],
             "text": "The rock of the world. Drops cobblestone; needs a pickaxe.",
@@ -91668,7 +91486,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Creatures appear 20–48 m away from players: peaceful animals on grass by day, hostile ones in the dark at night and in caves at least 8 blocks below the surface. Torches and lamps keep hostile creatures away. Each page lists the blocks, biomes, time and light a creature needs.",
+                    "text": "Monsters appear 24–128 m away from players wherever it is dark enough: no torch or lamp may light the spot at all, and the sky above must be dark. At night most open ground passes, the more often the darker it is; by day only caves and the deep shade under roofs and very dense canopies are dark enough, and a thunderstorm darkens the day as much. Like every walking creature they stand on solid, opaque blocks with a full top: never on glass, leaves, ice, a lower slab, a path or farmland, and never in rails. Peaceful animals appear 20–48 m away on grass by day. Creatures that spawn in caves need at least 8 blocks of rock above. Each page lists the blocks, biomes, time and light a creature needs.",
                     "title": "Where creatures appear"
                 },
                 {
@@ -91732,7 +91550,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.",
+                    "text": "Monsters share one cap: the world holds at most 70 of them for every 289 loaded chunks within 8 chunks of a player, so players far apart each bring their own share and players close together share one, and a monster only appears where a player nearby has fewer than 70 around. Near each player there are at most 6 peaceful and 10 ambient creatures. Monsters and ambient creatures vanish as soon as every player is farther than 128 m away; once no player has come within 32 m of one for 30 s, it vanishes by chance, after 40 s more on average. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.",
                     "title": "Limits"
                 },
                 {
@@ -117506,7 +117324,13 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "at night"
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
                 },
                 {
                     "label": "Caves",
@@ -117518,7 +117342,7 @@
                     "label": "Spawn light",
                     "links": [
                     ],
-                    "value": "block light up to 7"
+                    "value": "block light up to 0"
                 },
                 {
                     "label": "Spawn height",
@@ -117542,7 +117366,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -117571,16 +117395,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -118220,13 +118038,19 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "at night"
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
                 },
                 {
                     "label": "Spawn light",
                     "links": [
                     ],
-                    "value": "block light up to 7"
+                    "value": "block light up to 0"
                 },
                 {
                     "label": "Group size",
@@ -118244,7 +118068,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -118267,40 +118091,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Snow block"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -118422,7 +118216,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Any solid block or the surface of a liquid.",
+                    "text": "Any solid block, glass and leaves too, or the surface of a liquid.",
                     "title": "Appears on"
                 },
                 {
@@ -119444,7 +119238,13 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "at night"
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
                 },
                 {
                     "label": "Caves",
@@ -119456,7 +119256,7 @@
                     "label": "Spawn light",
                     "links": [
                     ],
-                    "value": "block light up to 7"
+                    "value": "block light up to 0"
                 },
                 {
                     "label": "Group size",
@@ -119474,7 +119274,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -119515,40 +119315,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Snow block"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -119623,12 +119393,6 @@
                     "value": "also in caves at any time"
                 },
                 {
-                    "label": "Spawn light",
-                    "links": [
-                    ],
-                    "value": "block light up to 7"
-                },
-                {
                     "label": "Spawn height",
                     "links": [
                     ],
@@ -119656,7 +119420,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -119679,28 +119443,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:gravel",
-                            "note": "",
-                            "target": "block:qtcraft:gravel",
-                            "text": "Gravel"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -119718,23 +119464,11 @@
                             "note": "",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
                         }
                     ],
                     "recipes": [
                     ],
-                    "text": "at night; up to y 70; block light up to 7",
+                    "text": "at night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); up to y 70; block light up to 0",
                     "title": "Also appears"
                 }
             ],
@@ -119792,7 +119526,13 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "at night"
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
                 },
                 {
                     "label": "Caves",
@@ -119804,7 +119544,7 @@
                     "label": "Spawn light",
                     "links": [
                     ],
-                    "value": "block light up to 7"
+                    "value": "block light up to 0"
                 },
                 {
                     "label": "Group size",
@@ -119822,7 +119562,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -119857,40 +119597,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Snow block"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -120296,7 +120006,13 @@
                     "label": "Appears",
                     "links": [
                     ],
-                    "value": "at night"
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
                 },
                 {
                     "label": "Caves",
@@ -120308,7 +120024,7 @@
                     "label": "Spawn light",
                     "links": [
                     ],
-                    "value": "block light up to 7"
+                    "value": "block light up to 0"
                 },
                 {
                     "label": "Group size",
@@ -120326,7 +120042,7 @@
                     "label": "Limit",
                     "links": [
                     ],
-                    "value": "all hostile creatures together: 8 per player"
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
                 },
                 {
                     "label": "Drops",
@@ -120361,40 +120077,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Dirt"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grass block"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Snow block"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stone"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
                     "title": "Appears on"
                 },
                 {
@@ -127015,97 +126701,97 @@
                     "links": [
                         {
                             "icon": "qtcraft:bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:bed",
                             "text": "Bed"
                         },
                         {
                             "icon": "qtcraft:bell",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:bell",
                             "text": "Bell"
                         },
                         {
                             "icon": "qtcraft:birch_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:birch_door",
                             "text": "Birch door"
                         },
                         {
                             "icon": "qtcraft:birch_leaves",
-                            "note": "dims light by 1, creatures spawn on it",
+                            "note": "dims light by 1, no creatures spawn on it",
                             "target": "block:qtcraft:birch_leaves",
                             "text": "Birch leaves"
                         },
                         {
                             "icon": "qtcraft:birch_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:birch_trapdoor",
                             "text": "Birch trapdoor"
                         },
                         {
                             "icon": "qtcraft:black_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:black_bed",
                             "text": "Black bed"
                         },
                         {
                             "icon": "qtcraft:black_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:black_stained_glass",
                             "text": "Black stained glass"
                         },
                         {
                             "icon": "qtcraft:black_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:black_stained_glass_pane",
                             "text": "Black stained glass pane"
                         },
                         {
                             "icon": "qtcraft:blue_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:blue_bed",
                             "text": "Blue bed"
                         },
                         {
                             "icon": "qtcraft:blue_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:blue_stained_glass",
                             "text": "Blue stained glass"
                         },
                         {
                             "icon": "qtcraft:blue_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:blue_stained_glass_pane",
                             "text": "Blue stained glass pane"
                         },
                         {
                             "icon": "qtcraft:brown_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:brown_bed",
                             "text": "Brown bed"
                         },
                         {
                             "icon": "qtcraft:brown_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:brown_stained_glass",
                             "text": "Brown stained glass"
                         },
                         {
                             "icon": "qtcraft:brown_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:brown_stained_glass_pane",
                             "text": "Brown stained glass pane"
                         },
                         {
                             "icon": "qtcraft:cactus",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cactus",
                             "text": "Cactus"
                         },
                         {
                             "icon": "qtcraft:cake",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cake",
                             "text": "Cake"
                         },
@@ -127117,439 +126803,439 @@
                         },
                         {
                             "icon": "qtcraft:cauldron",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cauldron",
                             "text": "Cauldron"
                         },
                         {
                             "icon": "qtcraft:chain",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:chain",
                             "text": "Chain"
                         },
                         {
                             "icon": "qtcraft:copper_bars",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:copper_bars",
                             "text": "Copper bars"
                         },
                         {
                             "icon": "qtcraft:copper_chain",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:copper_chain",
                             "text": "Copper chain"
                         },
                         {
                             "icon": "qtcraft:copper_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:copper_door",
                             "text": "Copper door"
                         },
                         {
                             "icon": "qtcraft:copper_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:copper_trapdoor",
                             "text": "Copper trapdoor"
                         },
                         {
                             "icon": "qtcraft:cyan_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cyan_bed",
                             "text": "Cyan bed"
                         },
                         {
                             "icon": "qtcraft:cyan_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cyan_stained_glass",
                             "text": "Cyan stained glass"
                         },
                         {
                             "icon": "qtcraft:cyan_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cyan_stained_glass_pane",
                             "text": "Cyan stained glass pane"
                         },
                         {
                             "icon": "qtcraft:dirt_path",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:dirt_path",
                             "text": "Dirt path"
                         },
                         {
                             "icon": "qtcraft:farmland",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:farmland",
                             "text": "Farmland"
                         },
                         {
                             "icon": "qtcraft:firefly_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:firefly_glass",
                             "text": "Firefly glass"
                         },
                         {
                             "icon": "qtcraft:glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:glass",
                             "text": "Glass"
                         },
                         {
                             "icon": "qtcraft:glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:glass_pane",
                             "text": "Glass pane"
                         },
                         {
                             "icon": "qtcraft:gray_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:gray_bed",
                             "text": "Gray bed"
                         },
                         {
                             "icon": "qtcraft:gray_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:gray_stained_glass",
                             "text": "Gray stained glass"
                         },
                         {
                             "icon": "qtcraft:gray_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:gray_stained_glass_pane",
                             "text": "Gray stained glass pane"
                         },
                         {
                             "icon": "qtcraft:green_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:green_bed",
                             "text": "Green bed"
                         },
                         {
                             "icon": "qtcraft:green_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:green_stained_glass",
                             "text": "Green stained glass"
                         },
                         {
                             "icon": "qtcraft:green_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:green_stained_glass_pane",
                             "text": "Green stained glass pane"
                         },
                         {
                             "icon": "qtcraft:ice",
-                            "note": "dims light by 2, creatures spawn on it",
+                            "note": "dims light by 2, no creatures spawn on it",
                             "target": "block:qtcraft:ice",
                             "text": "Ice"
                         },
                         {
                             "icon": "qtcraft:iron_bars",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:iron_bars",
                             "text": "Iron bars"
                         },
                         {
                             "icon": "qtcraft:iron_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:iron_door",
                             "text": "Iron door"
                         },
                         {
                             "icon": "qtcraft:iron_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:iron_trapdoor",
                             "text": "Iron trapdoor"
                         },
                         {
                             "icon": "qtcraft:jungle_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:jungle_door",
                             "text": "Jungle door"
                         },
                         {
                             "icon": "qtcraft:jungle_leaves",
-                            "note": "dims light by 1, creatures spawn on it",
+                            "note": "dims light by 1, no creatures spawn on it",
                             "target": "block:qtcraft:jungle_leaves",
                             "text": "Jungle leaves"
                         },
                         {
                             "icon": "qtcraft:jungle_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:jungle_trapdoor",
                             "text": "Jungle trapdoor"
                         },
                         {
                             "icon": "qtcraft:ladder",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:ladder",
                             "text": "Ladder"
                         },
                         {
                             "icon": "qtcraft:light_blue_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_blue_bed",
                             "text": "Light blue bed"
                         },
                         {
                             "icon": "qtcraft:light_blue_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_blue_stained_glass",
                             "text": "Light blue stained glass"
                         },
                         {
                             "icon": "qtcraft:light_blue_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_blue_stained_glass_pane",
                             "text": "Light blue stained glass pane"
                         },
                         {
                             "icon": "qtcraft:light_gray_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_gray_bed",
                             "text": "Light gray bed"
                         },
                         {
                             "icon": "qtcraft:light_gray_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_gray_stained_glass",
                             "text": "Light gray stained glass"
                         },
                         {
                             "icon": "qtcraft:light_gray_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:light_gray_stained_glass_pane",
                             "text": "Light gray stained glass pane"
                         },
                         {
                             "icon": "qtcraft:lily_pad",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:lily_pad",
                             "text": "Lily pad"
                         },
                         {
                             "icon": "qtcraft:lime_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:lime_bed",
                             "text": "Lime bed"
                         },
                         {
                             "icon": "qtcraft:lime_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:lime_stained_glass",
                             "text": "Lime stained glass"
                         },
                         {
                             "icon": "qtcraft:lime_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:lime_stained_glass_pane",
                             "text": "Lime stained glass pane"
                         },
                         {
                             "icon": "qtcraft:magenta_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:magenta_bed",
                             "text": "Magenta bed"
                         },
                         {
                             "icon": "qtcraft:magenta_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:magenta_stained_glass",
                             "text": "Magenta stained glass"
                         },
                         {
                             "icon": "qtcraft:magenta_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:magenta_stained_glass_pane",
                             "text": "Magenta stained glass pane"
                         },
                         {
                             "icon": "qtcraft:spawner",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:spawner",
                             "text": "Monster spawner"
                         },
                         {
                             "icon": "qtcraft:oak_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:oak_door",
                             "text": "Oak door"
                         },
                         {
                             "icon": "qtcraft:oak_leaves",
-                            "note": "dims light by 1, creatures spawn on it",
+                            "note": "dims light by 1, no creatures spawn on it",
                             "target": "block:qtcraft:oak_leaves",
                             "text": "Oak leaves"
                         },
                         {
                             "icon": "qtcraft:oak_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:oak_trapdoor",
                             "text": "Oak trapdoor"
                         },
                         {
                             "icon": "qtcraft:orange_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:orange_bed",
                             "text": "Orange bed"
                         },
                         {
                             "icon": "qtcraft:orange_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:orange_stained_glass",
                             "text": "Orange stained glass"
                         },
                         {
                             "icon": "qtcraft:orange_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:orange_stained_glass_pane",
                             "text": "Orange stained glass pane"
                         },
                         {
                             "icon": "qtcraft:pink_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:pink_bed",
                             "text": "Pink bed"
                         },
                         {
                             "icon": "qtcraft:pink_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:pink_stained_glass",
                             "text": "Pink stained glass"
                         },
                         {
                             "icon": "qtcraft:pink_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:pink_stained_glass_pane",
                             "text": "Pink stained glass pane"
                         },
                         {
                             "icon": "qtcraft:purple_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:purple_bed",
                             "text": "Purple bed"
                         },
                         {
                             "icon": "qtcraft:purple_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:purple_stained_glass",
                             "text": "Purple stained glass"
                         },
                         {
                             "icon": "qtcraft:purple_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:purple_stained_glass_pane",
                             "text": "Purple stained glass pane"
                         },
                         {
                             "icon": "qtcraft:red_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:red_stained_glass",
                             "text": "Red stained glass"
                         },
                         {
                             "icon": "qtcraft:red_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:red_stained_glass_pane",
                             "text": "Red stained glass pane"
                         },
                         {
                             "icon": "qtcraft:signal_comparator",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:signal_comparator",
                             "text": "Signal Comparator"
                         },
                         {
                             "icon": "qtcraft:signal_hopper",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:signal_hopper",
                             "text": "Signal Hopper"
                         },
                         {
                             "icon": "qtcraft:signal_piston",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:signal_piston",
                             "text": "Signal Piston"
                         },
                         {
                             "icon": "qtcraft:signal_repeater",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:signal_repeater",
                             "text": "Signal Repeater"
                         },
                         {
                             "icon": "qtcraft:slime_block",
-                            "note": "dims light by 1, creatures spawn on it",
+                            "note": "dims light by 1, no creatures spawn on it",
                             "target": "block:qtcraft:slime_block",
                             "text": "Slime block"
                         },
                         {
                             "icon": "qtcraft:snow_layer",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:snow_layer",
                             "text": "Snow layer"
                         },
                         {
                             "icon": "qtcraft:spruce_door",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:spruce_door",
                             "text": "Spruce door"
                         },
                         {
                             "icon": "qtcraft:spruce_leaves",
-                            "note": "dims light by 1, creatures spawn on it",
+                            "note": "dims light by 1, no creatures spawn on it",
                             "target": "block:qtcraft:spruce_leaves",
                             "text": "Spruce leaves"
                         },
                         {
                             "icon": "qtcraft:spruce_trapdoor",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:spruce_trapdoor",
                             "text": "Spruce trapdoor"
                         },
                         {
                             "icon": "qtcraft:sticky_signal_piston",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:sticky_signal_piston",
                             "text": "Sticky Signal Piston"
                         },
                         {
                             "icon": "qtcraft:stonecutter",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:stonecutter",
                             "text": "Stonecutter"
                         },
                         {
                             "icon": "qtcraft:white_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:white_bed",
                             "text": "White bed"
                         },
                         {
                             "icon": "qtcraft:white_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:white_stained_glass",
                             "text": "White stained glass"
                         },
                         {
                             "icon": "qtcraft:white_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:white_stained_glass_pane",
                             "text": "White stained glass pane"
                         },
                         {
                             "icon": "qtcraft:yellow_bed",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:yellow_bed",
                             "text": "Yellow bed"
                         },
                         {
                             "icon": "qtcraft:yellow_stained_glass",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:yellow_stained_glass",
                             "text": "Yellow stained glass"
                         },
                         {
                             "icon": "qtcraft:yellow_stained_glass_pane",
-                            "note": "light passes, creatures spawn on it",
+                            "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:yellow_stained_glass_pane",
                             "text": "Yellow stained glass pane"
                         }
@@ -127563,7 +127249,7 @@
                     "links": [
                         {
                             "icon": "qtcraft:activator_rail",
-                            "note": "light passes, creatures spawn inside it",
+                            "note": "light passes, no creatures spawn on or in it",
                             "target": "block:qtcraft:activator_rail",
                             "text": "Activator Rail"
                         },
@@ -127635,7 +127321,7 @@
                         },
                         {
                             "icon": "qtcraft:detector_rail",
-                            "note": "light passes, creatures spawn inside it",
+                            "note": "light passes, no creatures spawn on or in it",
                             "target": "block:qtcraft:detector_rail",
                             "text": "Detector Rail"
                         },
@@ -127749,7 +127435,7 @@
                         },
                         {
                             "icon": "qtcraft:powered_rail",
-                            "note": "light passes, creatures spawn inside it",
+                            "note": "light passes, no creatures spawn on or in it",
                             "target": "block:qtcraft:powered_rail",
                             "text": "Powered Rail"
                         },
@@ -127761,7 +127447,7 @@
                         },
                         {
                             "icon": "qtcraft:rail",
-                            "note": "light passes, creatures spawn inside it",
+                            "note": "light passes, no creatures spawn on or in it",
                             "target": "block:qtcraft:rail",
                             "text": "Rail"
                         },
@@ -127900,7 +127586,7 @@
                     "title": "Liquids"
                 }
             ],
-            "text": "Blocks that are no opaque full cubes: you see through or past them, and light gets through them, dimmed by the levels given. Solid ones stop creatures, the others let them pass. Creatures spawn on solid blocks and inside the others, but never on or in a block that hurts or slows them; water creatures spawn in water. Building parts such as slabs and stairs are on their own pages.",
+            "text": "Blocks that are no opaque full cubes: you see through or past them, and light gets through them, dimmed by the levels given. Solid ones stop creatures, the others let them pass. Walking creatures appear only on solid blocks that are drawn opaque and have a full top, so hardly any appear on the solid ones here; they appear inside the others, but never in a block that hurts or slows them or in rails. Water creatures appear in water. Building parts such as slabs and stairs are on their own pages.",
             "title": "Transparent blocks"
         },
         "tag:qtcraft:arrows": {

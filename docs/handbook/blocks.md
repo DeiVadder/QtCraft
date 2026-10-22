@@ -3192,10 +3192,6 @@ Plain earth below the grass.
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Below the surface, Under water), [Dirt veins](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Below the surface), [Forest](biomes.md#biome-qtcraft-forest) (Below the surface, Under water), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Below the surface), [Jungle](biomes.md#biome-qtcraft-jungle) (Below the surface, Under water), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Below the surface, Under water), [Mountains](biomes.md#biome-qtcraft-mountains) (Below the surface), [Plains](biomes.md#biome-qtcraft-plains) (Below the surface), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Below the surface), [Swamp](biomes.md#biome-qtcraft-swamp) (Below the surface), [Taiga](biomes.md#biome-qtcraft-taiga) (Below the surface), [Tundra](biomes.md#biome-qtcraft-tundra) (Below the surface)
 
-**Creatures appearing on it**
-
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
-
 ### <a id="block-qtcraft-dirt_path"></a>Dirt path
 
 A trodden path, a little lower than the ground beside it. Villages lay their side roads with it; a shovel used on the top of grass or dirt makes one (each path wears the shovel a little, not in creative mode). It drops dirt, a hoe turns it into farmland, and a solid block placed on it presses it back into dirt.
@@ -3918,7 +3914,7 @@ Earth covered with grass, the surface of most land.
 
 **Creatures appearing on it**
 
-[Chicken](creatures.md#mob-qtcraft-chicken), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Chicken](creatures.md#mob-qtcraft-chicken), [Cow](creatures.md#mob-qtcraft-cow), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="block-qtcraft-gravel"></a>Gravel
 
@@ -3946,10 +3942,6 @@ Loose stones that fall when nothing holds them. Now and then it drops a flint as
 **Found in**
 
 [Gravel veins](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Mountains](biomes.md#biome-qtcraft-mountains) (Under water, Beaches), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Under water, Beaches), [Taiga](biomes.md#biome-qtcraft-taiga) (Under water, Beaches), [Tundra](biomes.md#biome-qtcraft-tundra) (Under water)
-
-**Creatures appearing on it**
-
-[Slime](creatures.md#mob-qtcraft-slime)
 
 ### <a id="block-qtcraft-gray_bed"></a>Gray bed
 
@@ -8307,10 +8299,6 @@ Falls when nothing holds it. Smelts into glass.
 
 [Birch Forest](biomes.md#biome-qtcraft-birch_forest) (Beaches), [Desert](biomes.md#biome-qtcraft-desert) (Surface, Below the surface, Under water, Beaches), [Flower Valley](biomes.md#biome-qtcraft-flower_valley) (Beaches), [Forest](biomes.md#biome-qtcraft-forest) (Beaches), [Forest Steppe](biomes.md#biome-qtcraft-forest_steppe) (Under water, Beaches), [Jungle](biomes.md#biome-qtcraft-jungle) (Beaches), [Jungle Edge](biomes.md#biome-qtcraft-jungle_edge) (Beaches), [Plains](biomes.md#biome-qtcraft-plains) (Under water, Beaches)
 
-**Creatures appearing on it**
-
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
-
 ### <a id="block-qtcraft-sandstone"></a>Sandstone
 
 Pressed sand, found under deserts.
@@ -9239,7 +9227,7 @@ Packed snow of cold mountains and tundra.
 
 **Creatures appearing on it**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="block-qtcraft-snow_layer"></a>Snow layer
 
@@ -9699,10 +9687,6 @@ The rock of the world. Drops cobblestone; needs a pickaxe.
 **Found in**
 
 [Mountains](biomes.md#biome-qtcraft-mountains) (Steep slopes), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Steep slopes), [Taiga](biomes.md#biome-qtcraft-taiga) (Steep slopes)
-
-**Creatures appearing on it**
-
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Enderman](creatures.md#mob-qtcraft-enderman), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_bricks"></a>Stone bricks
 

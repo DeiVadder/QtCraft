@@ -6,7 +6,7 @@
 #include "server/entities/QcEntities.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/mobs/QcMobUpkeep.h"
-#include "server/mobs/QcNaturalSpawner.h"
+#include "server/spawning/QcNaturalSpawner.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
 #include <QElapsedTimer>
@@ -67,17 +67,18 @@ private:
         return *index;
     }
 
-    // Puts `block` on (dy 0) or above (dy 1) the top block of every column in reach of the spawning
-    // around the origin.
+    // Puts `block` on (dy 0) or above (dy 1) the top block of every loaded column within the
+    // reach of the spawning around the origin (monsters: QcNaturalSpawner::monsterRadiusMax).
     void coverSurface(QcServerWorld &world, const QcContentRegistry &content, const char *block, int dy) const
     {
         const QcBlockId id = *content.blockId(u"qtcraft:"_s + QString::fromLatin1(block));
-        const int reach = int(QcNaturalSpawner::spawnRadiusMax) + 2;
+        const int reach = int(QcNaturalSpawner::monsterRadiusMax) + 2;
         for (int x = -reach; x <= reach; ++x) {
             for (int z = -reach; z <= reach; ++z) {
                 const QcBlockPos column{x, 0, z};
-                const int top = world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
-                world.setBlock({x, top + dy, z}, id);
+                if (const std::shared_ptr<const QcChunk> chunk = world.chunk(column.chunk())) {
+                    world.setBlock({x, chunk->highestNonAir(column.localX(), column.localZ()) + dy, z}, id);
+                }
             }
         }
     }
@@ -255,7 +256,8 @@ private slots:
         auto world = makeWorld(8);
         QcMobManager mobs(m_content, 22);
         const QcVec3 farAway = surface(*world, 120, 0);
-        const QcVec3 player = surface(*world, 0, 0);
+        // More than 128 m from both pigs (QcMobManager::despawnDistance).
+        const QcVec3 player = surface(*world, -30, 0);
         mobs.spawn(type("pig"), farAway, 1, false, true);
         mobs.spawn(type("pig"), surface(*world, 110, 0), 2);
         settle(mobs, *world);
@@ -424,9 +426,9 @@ private slots:
 
     void mobsFarFromPlayersDespawn()
     {
-        auto world = makeWorld(8);
+        auto world = makeWorld(9);
         QcMobManager mobs(m_content, 4);
-        mobs.spawn(type("pig"), surface(*world, 100, 0), 1);
+        mobs.spawn(type("pig"), surface(*world, 135, 0), 1);
         mobs.spawn(type("pig"), surface(*world, 10, 0), 2);
         mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(!mobs.find(1));
@@ -571,46 +573,38 @@ private slots:
 
     void spawningDependsOnTimeOfDay()
     {
+        // The test world has open ground and no caves: by day the sky is too bright for monsters
+        // (decision E-836), at night they come, between 24 and 128 m from the player and within the
+        // cap of the loaded chunks around it.
         auto world = makeWorld(5);
         const QcVec3 player = surface(*world, 0, 0);
-        const auto runFor = [&](QcMobManager &mobs, double time) {
+        const auto monstersSeen = [&](QcMobManager &mobs, double time) {
+            QSet<quint32> seen;
             for (int tick = 0; tick < 20 * 30; ++tick) {
                 mobs.tick(*world, {{7, player, true}}, time, dt, [this] { return m_nextId++; });
+                for (const QcCreature &mob : mobs.mobs()) {
+                    if (!QcNaturalSpawner::isMonster(m_content->mobs()[mob.type]) || seen.contains(mob.id)) {
+                        continue;
+                    }
+                    // Seen in the tick it spawned in, where it spawned.
+                    seen.insert(mob.id);
+                    const double distance = (mob.motion.position - player).length();
+                    if (distance < QcNaturalSpawner::monsterRadiusMin || distance > QcNaturalSpawner::monsterRadiusMax) {
+                        QcTestUtil::failCase(u"monster spawned %1 m away"_s.arg(distance));
+                    }
+                }
             }
+            return seen.size();
         };
 
         QcMobManager day(m_content, 5);
-        runFor(day, noon);
+        QCOMPARE(monstersSeen(day, noon), qsizetype(0));
         QVERIFY(!day.mobs().isEmpty());
-        for (const QcCreature &mob : day.mobs()) {
-            const QcMobDefinition &definition = m_content->mobs()[mob.type];
-            if (definition.spawnTime != QcMobDefinition::SpawnTime::Night) {
-                continue;
-            }
-            // By day night creatures only live in caves, well below the surface of their column.
-            const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
-            const std::shared_ptr<const QcChunk> chunk = world->chunk(feet.chunk());
-            QVERIFY(chunk);
-            QVERIFY2(mob.underground && chunk->highestNonAir(feet.localX(), feet.localZ()) > feet.y + QcNaturalSpawner::caveDepth,
-                     qPrintable(definition.name));
-        }
 
         QcMobManager night(m_content, 5);
-        runFor(night, midnight);
-        // Night creatures come to the surface; which kinds depends on the random draws among them.
-        bool nightCreature = false;
-        for (const QcCreature &mob : night.mobs()) {
-            nightCreature = nightCreature || (m_content->mobs()[mob.type].spawnTime == QcMobDefinition::SpawnTime::Night && !mob.underground);
-            const double distance = (mob.motion.position - player).length();
-            QVERIFY2(distance < QcMobManager::despawnDistance, qPrintable(QString::number(distance)));
-        }
-
-        QVERIFY(nightCreature);
-        int hostile = 0;
-        for (const QcCreature &mob : night.mobs()) {
-            hostile += m_content->mobs()[mob.type].hostile;
-        }
-        QVERIFY(hostile <= QcNaturalSpawner::hostileCapPerPlayer + 3);
+        QVERIFY(monstersSeen(night, midnight) > 0);
+        const QcMonsterCap cap = night.spawner().monsterCap(*world, {{7, player, true}});
+        QVERIFY2(cap.count() <= cap.worldCap(), qPrintable(u"%1 of %2"_s.arg(cap.count()).arg(cap.worldCap())));
     }
 
     void torchLightKeepsHostileMobsAway()
@@ -643,9 +637,11 @@ private slots:
             for (int tick = 0; tick < 20 * 40; ++tick) {
                 mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
                 for (const QcCreature &mob : mobs.mobs()) {
+                    // Monsters also spawn beyond the torches, up to 128 m away; only the lit square counts.
+                    const bool lit = std::abs(mob.motion.position.x) < 58.0 && std::abs(mob.motion.position.z) < 58.0;
                     if (!seen.contains(mob.id)) {
                         seen.insert(mob.id);
-                        count += m_content->mobs()[mob.type].hostile && !mob.underground;
+                        count += m_content->mobs()[mob.type].hostile && !mob.underground && lit;
                     }
                 }
             }
@@ -659,14 +655,27 @@ private slots:
 
     void daylightOnlyDespawnsSurfaceNightCreatures()
     {
+        // Creatures of a night rule leave the surface with the daylight. Monsters have none
+        // (decision E-836): zombies stay by day, and burn in the sun instead.
+        auto nightZombies = std::make_shared<QcContentRegistry>(*m_content);
+        QcMobDefinition zombie = nightZombies->mobs()[type("zombie")];
+        QCOMPARE(zombie.spawnTime, QcMobDefinition::SpawnTime::Any);
+        zombie.spawnTime = QcMobDefinition::SpawnTime::Night;
+        nightZombies->registerMob(zombie);
+
         auto world = makeWorld(5);
         const QcVec3 player = surface(*world, 0, 0);
-        QcMobManager mobs(m_content, 5);
+        QcMobManager mobs(nightZombies, 5);
         const quint32 surfaceZombie = mobs.spawn(type("zombie"), player + QcVec3{30.0, 0.0, 0.0}, m_nextId++);
         const quint32 caveZombie = mobs.spawn(type("zombie"), player + QcVec3{-30.0, 0.0, 0.0}, m_nextId++, true);
         mobs.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(!mobs.find(surfaceZombie));
         QVERIFY(mobs.find(caveZombie));
+
+        QcMobManager monsters(m_content, 5);
+        const quint32 monster = monsters.spawn(type("zombie"), player + QcVec3{30.0, 0.0, 0.0}, m_nextId++);
+        monsters.tick(*world, {{7, player, true}}, noon, dt, [this] { return m_nextId++; });
+        QVERIFY(monsters.find(monster));
     }
 
     void noSpawnsOnHurtingOrInHoldingBlocks()
@@ -677,9 +686,9 @@ private slots:
         QcMobDefinition zombie = anywhere->mobs()[type("zombie")];
         zombie.spawnBlocks.clear();
         anywhere->registerMob(zombie);
-        // Only zombies come at night here: the other night kinds would share the places by chance.
+        // Only zombies come at night here: the other monsters would share the places by chance.
         for (const QcMobDefinition &other : m_content->mobs()) {
-            if (other.name != zombie.name && other.spawnTime == QcMobDefinition::SpawnTime::Night && other.spawnWeight > 0.0) {
+            if (other.name != zombie.name && QcNaturalSpawner::isMonster(other) && other.spawnWeight > 0.0) {
                 QcMobDefinition without = other;
                 without.spawnWeight = 0.0;
                 anywhere->registerMob(without);

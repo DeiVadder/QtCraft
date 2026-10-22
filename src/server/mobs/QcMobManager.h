@@ -39,7 +39,8 @@ class QcVillagerBehaviour;
 class QcMobManager
 {
 public:
-    static constexpr double despawnDistance = 96.0;
+    // Creatures that are not kept vanish at once beyond this distance from every player (decision E-836).
+    static constexpr double despawnDistance = 128.0;
     // Flying creatures keep between these heights above the ground below them.
     static constexpr double flyMinHeight = 1.2;
     static constexpr double flyMaxHeight = 3.0;
@@ -111,8 +112,18 @@ public:
     QList<CreatureHit> takeCreatureHits();
     // The blocks the creatures took or put down since the last call (decision E-460).
     QList<BlockAction> takeBlockActions();
+    // The sequence the yaws of new creatures come from while it is set (the monster spawning's own,
+    // decision E-836); null returns to the creatures' sequence. It must outlive its use.
+    void setYawRandom(QRandomGenerator *random) { m_yawRandom = random ? random : &m_random; }
     // Game rule mobGriefing (decision E-460): without it creatures take and place no blocks.
     void setGriefing(bool on);
+    // The strengths 0..1 of rain and thunder (QcWeatherState), which darken the sky for the monsters'
+    // light test (QcSpawnLight::skyDarkening).
+    void setWeather(float rain, float thunder)
+    {
+        m_rain = rain;
+        m_thunder = thunder;
+    }
     // Teleports the creature to a safe place near it (QcMobTeleport) when its kind teleports and it
     // may now; true when it did.
     bool teleport(quint32 mobId, const QcBlockAccess &world);
@@ -201,12 +212,18 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content;
     quint64 m_seed = 0;
     QRandomGenerator m_random;
+    // The chance of idle creatures to vanish (QcMobUpkeep::idleChance), from the seed.
+    QRandomGenerator m_despawnRandom;
+    // The sequence a new creature's yaw comes from: m_random unless setYawRandom says otherwise.
+    QRandomGenerator *m_yawRandom = nullptr;
     // Uses m_random, so it comes after it.
     std::unique_ptr<QcMobBehaviour> m_behaviour;
     QList<QcCreature> m_mobs;
     QSet<QcChunkPos> m_populated;
     quint64 m_nextUid = 1;
     bool m_naturalSpawning = true;
+    float m_rain = 0.0f;
+    float m_thunder = 0.0f;
     int m_hurtTicks = QcHurtWindow::defaultTicks;
     QList<std::pair<DepartureToken, DepartureListener>> m_departureListeners;
     quint64 m_nextDepartureToken = 1;

@@ -137,8 +137,9 @@ private slots:
         const Section *liquids = section(*table, u"Liquids"_s);
         QVERIFY(solid && passable && liquids);
 
-        QCOMPARE(blockLink(*solid, u"qtcraft:glass"_s)->note, u"light passes, creatures spawn on it"_s);
-        QCOMPARE(blockLink(*solid, u"qtcraft:ice"_s)->note, u"dims light by %1, creatures spawn on it"_s.arg(block(*m_base, u"qtcraft:ice"_s).lightOpacity));
+        // Glass and ice are drawn see-through: no ground for spawns (QcSpawnGround, decision E-836).
+        QCOMPARE(blockLink(*solid, u"qtcraft:glass"_s)->note, u"light passes, no creatures spawn on it"_s);
+        QCOMPARE(blockLink(*solid, u"qtcraft:ice"_s)->note, u"dims light by %1, no creatures spawn on it"_s.arg(block(*m_base, u"qtcraft:ice"_s).lightOpacity));
         QCOMPARE(blockLink(*passable, u"qtcraft:tall_grass"_s)->note, u"light passes, creatures spawn inside it"_s);
         // A cobweb slows bodies, so nothing spawns in it (QcNaturalSpawner).
         QCOMPARE(blockLink(*passable, u"qtcraft:cobweb"_s)->note, u"light passes, no creatures spawn on or in it"_s);

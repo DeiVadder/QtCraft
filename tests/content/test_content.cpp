@@ -562,7 +562,7 @@ private slots:
         QCOMPARE(swamp.blocks, (QList<QString>{u"b:grass"_s}));
         QCOMPARE(swamp.maxY, 70);
         QCOMPARE(swamp.weight, 2.0);
-        QCOMPARE(swamp.maxLight, 7);
+        QCOMPARE(swamp.maxLight, 0);
         QCOMPARE(swamp.chunkChance, 1.0);
         QVERIFY(!swamp.caves);
         QCOMPARE(slime->spawnRules().size(), 2);
@@ -585,6 +585,30 @@ private slots:
         QVERIFY(!bad(R"({"also":[{},{},{},{},{},{},{},{}]})"));
     }
 
+    void hostileCreaturesSpawnInTheDark()
+    {
+        // Hostile creatures need darkness by default (decision E-836): no block light and the
+        // monsters' sky light test, in the main rule and the extra ones; peaceful creatures keep the
+        // old defaults, and a hostile rule may give up the darkness.
+        const auto parse = [&](const char *text) { return QcContentParser::parseMob(json(text), u"b"_s); };
+        const auto slime = parse(R"({"name":"slime","hostile":true,"spawn":{"also":[{"time":"night"}]},
+                                     "model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})");
+        QVERIFY2(slime.has_value(), qcErrorText(slime).constData());
+        QVERIFY(slime->spawnInDarkness && slime->extraSpawns.first().darkness);
+        QCOMPARE(slime->maxSpawnLight, 0);
+        QVERIFY(slime->spawnRules().first().darkness);
+
+        const auto calm = parse(R"({"name":"calm","spawn":{},"model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})");
+        QVERIFY2(calm.has_value(), qcErrorText(calm).constData());
+        QVERIFY(!calm->spawnInDarkness);
+        QCOMPARE(calm->maxSpawnLight, 15);
+
+        const auto lit = parse(R"({"name":"lit","hostile":true,"spawn":{"darkness":false,"maxLight":15},
+                                   "model":[{"from":[0,0,0],"to":[1,1,1],"texture":"t"}]})");
+        QVERIFY2(lit.has_value(), qcErrorText(lit).constData());
+        QVERIFY(!lit->spawnInDarkness);
+        QCOMPARE(lit->maxSpawnLight, 15);
+    }
     void parsesItems()
     {
         const auto pick = QcContentParser::parseItem(

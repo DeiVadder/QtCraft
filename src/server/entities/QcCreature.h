@@ -52,6 +52,9 @@ struct QcCreature : QcEntity
     quint64 uid = 0;
     // Spawned by a rule for the night only: leaves by day like night creatures.
     bool nightRule = false;
+    // Ticks since a player was last within QcMobUpkeep::idleDistance or a blow struck it (decision
+    // E-836); beyond QcMobUpkeep::idleTicks a creature that is not kept may vanish by chance.
+    int idleTicks = 0;
     // Entity id of the player it chases; 0 for none. It chases a player it sees and keeps chasing for
     // `targetMemory` seconds after it lost sight of them (decision E-401).
     quint32 chasing = 0;

@@ -587,7 +587,7 @@ Operators change experience with /xp add <player> <amount> [points|levels] (a ne
 
 **Where creatures appear**
 
-Creatures appear 20–48 m away from players: peaceful animals on grass by day, hostile ones in the dark at night and in caves at least 8 blocks below the surface. Torches and lamps keep hostile creatures away. Each page lists the blocks, biomes, time and light a creature needs.
+Monsters appear 24–128 m away from players wherever it is dark enough: no torch or lamp may light the spot at all, and the sky above must be dark. At night most open ground passes, the more often the darker it is; by day only caves and the deep shade under roofs and very dense canopies are dark enough, and a thunderstorm darkens the day as much. Like every walking creature they stand on solid, opaque blocks with a full top: never on glass, leaves, ice, a lower slab, a path or farmland, and never in rails. Peaceful animals appear 20–48 m away on grass by day. Creatures that spawn in caves need at least 8 blocks of rock above. Each page lists the blocks, biomes, time and light a creature needs.
 
 **Burning in daylight**
 
@@ -619,7 +619,7 @@ Wolves roam forests, taiga and tundra in packs: strike one, and every wolf of th
 
 **Limits**
 
-Near each player there are at most 8 hostile, 6 peaceful and 10 ambient creatures. Hostile and ambient creatures farther than 96 m from every player vanish. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.
+Monsters share one cap: the world holds at most 70 of them for every 289 loaded chunks within 8 chunks of a player, so players far apart each bring their own share and players close together share one, and a monster only appears where a player nearby has fewer than 70 around. Near each player there are at most 6 peaceful and 10 ambient creatures. Monsters and ambient creatures vanish as soon as every player is farther than 128 m away; once no player has come within 32 m of one for 30 s, it vanishes by chance, after 40 s more on average. Peaceful animals stay: about one in ten new chunks brings a group of them, they wait while their area is not loaded and are saved with the world. New ones only appear near you while no animal is around. Hostile creatures only go after players they see, and follow one they lost sight of for a few seconds. Many creatures in one block cell think less to save work: from 8 on only now and then and without looking for a way, from 24 on not at all; they still fall, are pushed apart and strike a player right next to them.
 
 **See also**
 

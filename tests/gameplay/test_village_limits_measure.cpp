@@ -1,8 +1,8 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "server/mobs/QcNaturalSpawner.h"
 #include "server/pathing/QcPathPlanner.h"
+#include "server/spawning/QcNaturalSpawner.h"
 #include "server/villages/QcVillages.h"
 #include "world/QcVillageFixture.h"
 

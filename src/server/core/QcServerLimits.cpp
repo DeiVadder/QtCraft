@@ -48,7 +48,7 @@ constexpr std::array<QcServerLimits::Field, 71> table{{
     {"explosionsPerTick", "explosions per tick (the rest wait)", 1, 4096, &QcServerLimits::explosionsPerTick},
     {"explosionBlocks", "blocks one explosion breaks at most", 0, 65536, &QcServerLimits::explosionBlocks},
     {"explosionBlocksPerTick", "block changes of explosions per tick (the rest wait)", 16, 1 << 20, &QcServerLimits::explosionBlocksPerTick},
-    {"hostileCreaturesPerPlayer", "hostile creatures spawning per player", 0, 256, &QcServerLimits::hostileCreaturesPerPlayer},
+    {"monstersPer289Chunks", "monsters spawning per 289 loaded chunks around players", 0, 256, &QcServerLimits::monstersPer289Chunks},
     {"passiveCreaturesPerPlayer", "passive creatures spawning per player", 0, 256, &QcServerLimits::passiveCreaturesPerPlayer},
     {"ambientCreaturesPerPlayer", "ambient creatures spawning per player", 0, 256, &QcServerLimits::ambientCreaturesPerPlayer},
     {"pathNodesPerTick", "path search nodes of all creatures per tick (0: creatures walk straight at their goals)", 0, 1 << 20,
@@ -105,6 +105,13 @@ QcServerLimits::Read QcServerLimits::fromJson(const QJsonObject &json, const QSt
 
     for (auto it = json.constBegin(); it != json.constEnd(); ++it) {
         const auto field = std::ranges::find_if(table, [&it](const Field &candidate) { return it.key() == QLatin1StringView(candidate.key); });
+        // Monsters per player became monsters per 289 chunks of all players (decision E-836): an old
+        // value (8 in files the server wrote) would mean far too few, so the default applies.
+        if (it.key() == u"hostileCreaturesPerPlayer"_s) {
+            warn(u"\"hostileCreaturesPerPlayer\" is no longer read; monsters are capped by \"monstersPer289Chunks\" (default %1) now"_s
+                     .arg(limits.monstersPer289Chunks));
+            continue;
+        }
         if (field == table.end()) {
             warn(u"unknown key \"%1\" ignored"_s.arg(it.key()));
             continue;

@@ -124,6 +124,9 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
                                                                               : u"any"_s;
     facts.append({text.label(u"fact.spawnTime"_s), text.label(u"value.time."_s + time), {}});
 
+    if (mob.spawnInDarkness) {
+        facts.append({text.label(u"fact.darkness"_s), text.label(u"value.darkness"_s), {}});
+    }
     if (mob.spawnsInCaves) {
         facts.append({text.label(u"fact.caves"_s), text.label(u"value.caves"_s), {}});
     }
@@ -302,6 +305,9 @@ Section extraSpawnSection(const QcHandbookContext &context, const QcMobDefinitio
                                                                               : u"any"_s;
     QStringList conditions{text.label(u"value.time."_s + ruleTime)};
 
+    if (rule.darkness) {
+        conditions.append(text.label(u"value.darkness"_s));
+    }
     if (rule.caves) {
         conditions.append(text.label(u"value.caves"_s));
     }

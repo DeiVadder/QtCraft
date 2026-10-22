@@ -8,7 +8,8 @@
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcMobTeleport.h"
 #include "server/mobs/QcMobUpkeep.h"
-#include "server/mobs/QcNaturalSpawner.h"
+#include "server/spawning/QcNaturalSpawner.h"
+#include "server/spawning/QcSpawnLight.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "worldgen/terrain/QcNoise.h"
 
@@ -34,6 +35,8 @@ QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, qui
     : m_content(std::move(content))
     , m_seed(seed)
     , m_random(quint32(seed ^ (seed >> 32)))
+    , m_despawnRandom(quint32(qcMixSeed(seed, 6001)))
+    , m_yawRandom(&m_random)
     , m_behaviour(std::make_unique<QcMobBehaviour>(m_content, m_random))
     , m_spawner(std::make_unique<QcNaturalSpawner>(*this, m_content, seed, m_random))
     , m_population(std::make_unique<QcVillagePopulation>(*this, m_content, seed))
@@ -83,7 +86,7 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     mob.type = type;
     mob.motion.position = position;
     mob.health = m_content->mobs()[type].maxHealth;
-    mob.yaw = float(m_random.bounded(360.0));
+    mob.yaw = float(m_yawRandom->bounded(360.0));
     // A villager always has a profession, the unemployed one at first (decision E-411); it lives
     // on with the world. Its look comes from its id, not from the random sequence of the creatures
     // (one moving in beside a bed gets the bed's look, spawnVillagers).
@@ -125,6 +128,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     QcCreature &mob = *it;
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
     mob.health -= mob.hurt.take(amount, m_hurtTicks);
+    mob.idleTicks = 0;
     const QcVec3 away = QcVec3{mob.motion.position.x - blow.from.x, 0.0, mob.motion.position.z - blow.from.z}.normalized();
     const double resisted = 1.0 - definition.golem.knockbackResistance;
     if (blow.attacker != 0) {
@@ -366,16 +370,29 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
     }
     const QList<PlayerHit> hits = m_behaviour->tick(m_mobs, world, players, {worldTime, dt});
 
-    // Despawn mobs far from everyone, and night creatures in daylight once nobody is close.
+    // Despawn mobs far from everyone, now and then those nobody came near for a while, and night
+    // creatures in daylight once nobody is close.
     const bool night = QcDayCycle::isNight(worldTime);
+    QList<QcMobUpkeep::Fate> fates;
+    fates.reserve(m_mobs.size());
+    for (QcCreature &mob : m_mobs) {
+        const QcMobUpkeep::Upkeep upkeep = QcMobUpkeep::upkeepOf(mob, m_content->mobs()[mob.type], players, night);
+        mob.idleTicks = upkeep.idleTicks;
+        fates.append(upkeep.fate);
+    }
+    // departWhere asks for every creature once, in store order. The chance draws from a sequence of
+    // its own, so idle creatures leave the creatures' sequence as it was.
+    qsizetype next = 0;
     departWhere([&](const QcCreature &mob) -> std::optional<Departure> {
-        if (!QcMobUpkeep::despawns(mob, m_content->mobs()[mob.type], players, night)) {
+        const QcMobUpkeep::Fate fate = fates.at(next++);
+        if (fate == QcMobUpkeep::Fate::Stays
+            || (fate == QcMobUpkeep::Fate::MayDespawn && m_despawnRandom.bounded(QcMobUpkeep::idleChance) != 0)) {
             return std::nullopt;
         }
         return QcWorld::isInVoid(mob.motion.position.y) ? Departure::Void : Departure::Despawned;
     });
 
-    m_spawner->tick(world, players, night, dt, nextEntityId);
+    m_spawner->tick(world, players, {night, QcSpawnLight::skyDarkening(worldTime, m_rain, m_thunder)}, dt, nextEntityId);
     m_population->tick(world, worldTime, nextEntityId);
     return hits;
 }

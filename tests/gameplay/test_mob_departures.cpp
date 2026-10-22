@@ -61,7 +61,7 @@ private slots:
         // Each way out of the store raises one notification naming the creature and the reason,
         // before the creature is gone (decision E-422).
         using Departure = QcMobManager::Departure;
-        auto world = makeWorld(8);
+        auto world = makeWorld(9);
         QcMobManager mobs(m_content, 6);
         QList<std::pair<quint32, Departure>> departures;
         mobs.onDeparture([&](const QcCreature &mob, Departure why) {
@@ -69,14 +69,14 @@ private slots:
             departures.append({mob.id, why});
         });
         mobs.spawn(type("pig"), surface(*world, 2, 2), 1);
-        mobs.spawn(type("zombie"), surface(*world, 100, 0), 2);
+        mobs.spawn(type("zombie"), surface(*world, 140, 0), 2);
         mobs.spawn(type("zombie"), {0.5, QcWorld::voidLimitY - 10.0, 0.5}, 3);
         mobs.spawn(type("pig"), surface(*world, 4, 4), 4);
         mobs.spawn(type("pig"), surface(*world, 6, 6), 5);
         mobs.spawn(type("pig"), surface(*world, 8, 8), 6);
 
-        // The player at the origin: the zombie 100 m away despawns, the one below the world falls
-        // into the void.
+        // The player at the origin: the zombie 140 m away despawns (beyond 128 m), the one below the
+        // world falls into the void.
         mobs.tick(*world, {{7, surface(*world, 0, 0), true}}, noon, dt, [this] { return m_nextId++; });
         QVERIFY(mobs.wound(1, 100.0).has_value());
         QVERIFY(mobs.remove(4));
@@ -99,7 +99,7 @@ private slots:
         // Creatures that leave in one step (despawn in a tick, unloading a chunk) are all still in
         // the store, unchanged, while each departure is announced; the others too.
         using Departure = QcMobManager::Departure;
-        auto world = makeWorld(8);
+        auto world = makeWorld(9);
         QcMobManager mobs(m_content, 6);
         const auto ids = [&mobs] {
             QList<quint32> list;
@@ -108,11 +108,11 @@ private slots:
             }
             return list;
         };
-        mobs.spawn(type("zombie"), surface(*world, 100, 0), 1);
+        mobs.spawn(type("zombie"), surface(*world, 140, 0), 1);
         mobs.spawn(type("pig"), surface(*world, 2, 2), 2);
-        mobs.spawn(type("zombie"), surface(*world, 0, 100), 3);
+        mobs.spawn(type("zombie"), surface(*world, 0, 140), 3);
         mobs.spawn(type("pig"), surface(*world, 4, 4), 4);
-        mobs.spawn(type("zombie"), surface(*world, -100, 0), 5);
+        mobs.spawn(type("zombie"), surface(*world, -140, 0), 5);
         mobs.spawn(type("pig"), surface(*world, 6, 6), 6);
 
         QList<quint32> before = ids();

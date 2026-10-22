@@ -56,18 +56,19 @@ A small, blue spider of caves and mine shafts, where spawners bring it forth. It
 | Speed | 1.6 m/s walking, 3.8 m/s chasing |
 | Attack | 2 damage within 1.2 m, every 1 s |
 | Sees players within | 16 m |
-| Appears | at night |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
 | Caves | also in caves at any time |
-| Spawn light | block light up to 7 |
+| Spawn light | block light up to 0 |
 | Spawn height | up to y 40 |
 | Group size | up to 1 |
 | Spawn weight | 0.4 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [String](items.md#item-qtcraft-string), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
 
 **Appears on**
 
-[Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 
@@ -188,16 +189,17 @@ A tall, dark wanderer of the night. It leaves you alone until you look straight 
 | Speed | 1.5 m/s walking, 4 m/s chasing |
 | Attack | 7 damage within 2 m, every 1 s |
 | Sees players within | 32 m |
-| Appears | at night |
-| Spawn light | block light up to 7 |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Spawn light | block light up to 0 |
 | Group size | up to 1 |
 | Spawn weight | 0.4 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Ender Pearl](items.md#item-qtcraft-ender_pearl) (50 %) |
 
 **Appears on**
 
-[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 
@@ -225,7 +227,7 @@ Glows over swamps at night. Catch it with an empty glass bottle.
 
 **Appears on**
 
-Any solid block or the surface of a liquid.
+Any solid block, glass and leaves too, or the surface of a liquid.
 
 **Appears in biomes**
 
@@ -424,17 +426,18 @@ Comes out at night and lives in caves. Keeps its distance, circles you and shoot
 | Speed | 1.4 m/s walking, 2.6 m/s chasing |
 | Attack | 2 damage within 1.6 m, every 1 s |
 | Sees players within | 16 m |
-| Appears | at night |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
 | Caves | also in caves at any time |
-| Spawn light | block light up to 7 |
+| Spawn light | block light up to 0 |
 | Group size | up to 2 |
 | Spawn weight | 2 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Bone](items.md#item-qtcraft-bone), [Bone](items.md#item-qtcraft-bone) (50 %), [Arrow](items.md#item-qtcraft-arrow), [Arrow](items.md#item-qtcraft-arrow) (50 %) |
 
 **Appears on**
 
-[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 
@@ -455,17 +458,16 @@ A bouncing blob, weak but persistent. Underground it lives deep down and only in
 | Sees players within | 12 m |
 | Appears | day and night |
 | Caves | also in caves at any time |
-| Spawn light | block light up to 7 |
 | Spawn height | up to y 40 |
 | Spawn chunks | only in 10 % of the chunks, fixed by the world's seed |
 | Group size | up to 2 |
 | Spawn weight | 4 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Slimeball](items.md#item-qtcraft-slimeball) |
 
 **Appears on**
 
-[Dirt](blocks.md#block-qtcraft-dirt), [Gravel](blocks.md#block-qtcraft-gravel), [Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 
@@ -473,9 +475,9 @@ All biomes.
 
 **Also appears**
 
-at night; up to y 70; block light up to 7
+at night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); up to y 70; block light up to 0
 
-[Swamp](biomes.md#biome-qtcraft-swamp), [Grass block](blocks.md#block-qtcraft-grass_block), [Dirt](blocks.md#block-qtcraft-dirt)
+[Swamp](biomes.md#biome-qtcraft-swamp)
 
 ### <a id="mob-qtcraft-spider"></a>Spider
 
@@ -490,17 +492,18 @@ Climbs straight up walls and down again and leaps at its prey. By day in the ope
 | Speed | 1.5 m/s walking, 3.6 m/s chasing |
 | Attack | 2 damage within 1.7 m, every 1 s |
 | Sees players within | 16 m |
-| Appears | at night |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
 | Caves | also in caves at any time |
-| Spawn light | block light up to 7 |
+| Spawn light | block light up to 0 |
 | Group size | up to 1 |
 | Spawn weight | 2 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [String](items.md#item-qtcraft-string), [String](items.md#item-qtcraft-string) (50 %), [Spider eye](items.md#item-qtcraft-spider_eye) (33 %) |
 
 **Appears on**
 
-[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 
@@ -579,17 +582,18 @@ Comes out at night and lives in caves. Chases players it sees and hits hard. Bur
 | Speed | 1.2 m/s walking, 3.2 m/s chasing |
 | Attack | 3 damage within 1.6 m, every 1 s |
 | Sees players within | 20 m |
-| Appears | at night |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
 | Caves | also in caves at any time |
-| Spawn light | block light up to 7 |
+| Spawn light | block light up to 0 |
 | Group size | up to 3 |
 | Spawn weight | 3 |
-| Limit | all hostile creatures together: 8 per player |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
 | Drops | [Rotten flesh](food.md#item-qtcraft-rotten_flesh), [Carrot](food.md#item-qtcraft-carrot) (2.5 %), [Potato](food.md#item-qtcraft-potato) (2.5 %) |
 
 **Appears on**
 
-[Dirt](blocks.md#block-qtcraft-dirt), [Grass block](blocks.md#block-qtcraft-grass_block), [Sand](blocks.md#block-qtcraft-sand), [Snow block](blocks.md#block-qtcraft-snow_block), [Stone](blocks.md#block-qtcraft-stone)
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
 
 **Appears in biomes**
 

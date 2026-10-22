@@ -222,6 +222,7 @@ target_sources(qc_common PRIVATE
     physics/QcPlayerInput.h
     physics/QcPose.h physics/QcPose.cpp
     physics/QcRaycast.h physics/QcRaycast.cpp
+    physics/QcSpawnGround.h physics/QcSpawnGround.cpp
 )
 target_sources(qc_common PRIVATE
     protocol/QcChatText.h protocol/QcChatText.cpp

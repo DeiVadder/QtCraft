@@ -2539,10 +2539,6 @@ Einfache Erde unter dem Gras.
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Unter der Oberfläche, Unter Wasser), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Unter der Oberfläche), [Dschungel](biomes.md#biome-qtcraft-jungle) (Unter der Oberfläche, Unter Wasser), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Unter der Oberfläche, Unter Wasser), [Ebene](biomes.md#biome-qtcraft-plains) (Unter der Oberfläche), [Erde-Vorkommen](worldgen.md#ore-qtcraft-dirt_pocket) (y 20–100), [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter der Oberfläche), [Sumpf](biomes.md#biome-qtcraft-swamp) (Unter der Oberfläche), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter der Oberfläche), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter der Oberfläche), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter der Oberfläche), [Wald](biomes.md#biome-qtcraft-forest) (Unter der Oberfläche, Unter Wasser), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter der Oberfläche)
 
-**Wesen, die darauf erscheinen**
-
-[Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
-
 ### <a id="block-qtcraft-unlit_campfire"></a>Erloschenes Lagerfeuer
 
 Ein gelöschtes Lagerfeuer: kein Licht, keine Hitze. Feuerzeug zündet es wieder an.
@@ -3807,7 +3803,7 @@ Mit Gras bewachsene Erde, die Oberfläche des meisten Landes.
 
 **Wesen, die darauf erscheinen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Huhn](creatures.md#mob-qtcraft-chicken), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kuh](creatures.md#mob-qtcraft-cow), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="block-qtcraft-gray_glazed_terracotta"></a>Graue glasierte Terrakotta
 
@@ -5286,10 +5282,6 @@ Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein 
 **Kommt vor in**
 
 [Gebirge](biomes.md#biome-qtcraft-mountains) (Unter Wasser, Strände), [Kies-Vorkommen](worldgen.md#ore-qtcraft-gravel_pocket) (y 5–100), [Taiga](biomes.md#biome-qtcraft-taiga) (Unter Wasser, Strände), [Tundra](biomes.md#biome-qtcraft-tundra) (Unter Wasser), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Unter Wasser, Strände)
-
-**Wesen, die darauf erscheinen**
-
-[Schleim](creatures.md#mob-qtcraft-slime)
 
 ### <a id="block-qtcraft-sticky_signal_piston"></a>Klebriger Signalkolben
 
@@ -8260,10 +8252,6 @@ Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.
 
 [Birkenwald](biomes.md#biome-qtcraft-birch_forest) (Strände), [Blumental](biomes.md#biome-qtcraft-flower_valley) (Strände), [Dschungel](biomes.md#biome-qtcraft-jungle) (Strände), [Dschungelrand](biomes.md#biome-qtcraft-jungle_edge) (Strände), [Ebene](biomes.md#biome-qtcraft-plains) (Unter Wasser, Strände), [Wald](biomes.md#biome-qtcraft-forest) (Strände), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe) (Unter Wasser, Strände), [Wüste](biomes.md#biome-qtcraft-desert) (Oberfläche, Unter der Oberfläche, Unter Wasser, Strände)
 
-**Wesen, die darauf erscheinen**
-
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
-
 ### <a id="block-qtcraft-sandstone"></a>Sandstein
 
 Gepresster Sand, liegt unter Wüsten.
@@ -8582,7 +8570,7 @@ Fester Schnee kalter Berge und der Tundra.
 
 **Wesen, die darauf erscheinen**
 
-[Enderman](creatures.md#mob-qtcraft-enderman), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Wolf](creatures.md#mob-qtcraft-wolf)
 
 ### <a id="block-qtcraft-snow_layer"></a>Schneeschicht
 
@@ -9593,10 +9581,6 @@ Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.
 **Kommt vor in**
 
 [Gebirge](biomes.md#biome-qtcraft-mountains) (Steile Hänge), [Taiga](biomes.md#biome-qtcraft-taiga) (Steile Hänge), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga) (Steile Hänge)
-
-**Wesen, die darauf erscheinen**
-
-[Enderman](creatures.md#mob-qtcraft-enderman), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Schleim](creatures.md#mob-qtcraft-slime), [Skelett](creatures.md#mob-qtcraft-skeleton), [Spinne](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="block-qtcraft-stone_pressure_plate"></a>Steindruckplatte
 

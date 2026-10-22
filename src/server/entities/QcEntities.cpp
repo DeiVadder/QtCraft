@@ -2,7 +2,7 @@
 
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPose.h"
-#include "server/mobs/QcNaturalSpawner.h"
+#include "server/spawning/QcNaturalSpawner.h"
 #include "server/villages/QcVillagePopulation.h"
 
 #include <algorithm>
@@ -23,7 +23,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
 {
     m_falling.setMaxFalling(qsizetype(limits.fallingBlocks));
     m_items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
-    m_creatures.spawner().setCaps(int(limits.hostileCreaturesPerPlayer), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
+    m_creatures.spawner().setCaps(int(limits.monstersPer289Chunks), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
     m_creatures.spawner().setWaterCap(int(limits.waterCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);

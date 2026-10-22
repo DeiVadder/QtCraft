@@ -30,15 +30,10 @@
     "attackCooldown": 1.0,
     "sightRange": 16,
     "spawn": {
-        "time": "night",
-        "blocks": [
-            "stone"
-        ],
         "maxGroup": 1,
         "weight": 0.4,
         "caves": true,
-        "maxY": 40,
-        "maxLight": 7
+        "maxY": 40
     },
     "model": [
         {

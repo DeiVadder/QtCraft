@@ -60,6 +60,7 @@ void QcServerCreatures::tick()
     const double dt = QcPhysics::tickDuration;
     const QList<QcMobManager::PlayerView> players = playerViews();
     m_state.entities().creatures().setGriefing(m_state.info().mobGriefing);
+    m_state.entities().creatures().setWeather(m_state.info().weather.rain, m_state.info().weather.thunder);
     // Before the creatures move, which forgets who was hurt.
     m_infestation.tick();
     const QList<QcMobManager::PlayerHit> hits =

@@ -587,7 +587,7 @@ Operatoren ändern Erfahrung mit /xp add <Spieler> <Menge> [points|levels] (eine
 
 **Wo Wesen erscheinen**
 
-Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf Gras, feindliche im Dunkeln bei Nacht und in Höhlen mindestens 8 Blöcke unter der Oberfläche. Fackeln und Lampen halten feindliche Wesen fern. Jede Seite nennt Blöcke, Biome, Zeit und Licht, die ein Wesen braucht.
+Monster erscheinen 24–128 m von Spielern entfernt, überall, wo es dunkel genug ist: Keine Fackel und keine Lampe darf die Stelle beleuchten, und der Himmel darüber muss dunkel sein. Nachts reicht das meiste offene Gelände, umso öfter, je dunkler es ist; tagsüber sind nur Höhlen und der tiefe Schatten unter Dächern und sehr dichtem Blätterdach dunkel genug, und ein Gewitter verdunkelt den Tag ebenso. Wie alle laufenden Wesen stehen sie auf festen, undurchsichtigen Blöcken mit voller Oberseite: nie auf Glas, Laub, Eis, einer unteren Stufe, einem Trampelpfad oder Ackerboden und nie in Schienen. Friedliche Tiere erscheinen tagsüber 20–48 m entfernt auf Gras. Wesen, die in Höhlen erscheinen, brauchen mindestens 8 Blöcke Gestein über sich. Jede Seite nennt Blöcke, Biome, Zeit und Licht, die ein Wesen braucht.
 
 **Brennen im Tageslicht**
 
@@ -619,7 +619,7 @@ Wölfe streifen im Rudel durch Wälder, Taiga und Tundra: Schlägst du einen, ja
 
 **Obergrenzen**
 
-Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.
+Monster teilen sich eine Obergrenze: Die Welt hält höchstens 70 von ihnen je 289 geladene Chunks im Umkreis von 8 Chunks um einen Spieler. Weit voneinander entfernte Spieler bringen also je einen eigenen Anteil mit, nah beieinander stehende teilen sich einen, und ein Monster erscheint nur dort, wo ein Spieler in der Nähe weniger als 70 um sich hat. Bei jedem Spieler gibt es höchstens 6 friedliche und 10 Umgebungswesen. Monster und Umgebungswesen verschwinden, sobald alle Spieler weiter als 128 m entfernt sind; ist 30 s lang kein Spieler näher als 32 m an eines herangekommen, verschwindet es zufällig, im Mittel nach weiteren 40 s. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.
 
 **Siehe auch**
 

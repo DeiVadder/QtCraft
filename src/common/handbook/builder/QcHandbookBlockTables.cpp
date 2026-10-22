@@ -5,8 +5,10 @@
 #include "common/handbook/builder/QcHandbookOverviewPages.h"
 #include "common/handbook/builder/QcHandbookText.h"
 #include "common/handbook/QcHandbookLinks.h"
+#include "common/physics/QcSpawnGround.h"
 
 #include <array>
+#include <optional>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -142,18 +144,33 @@ QcHandbookEntry signalTable(const QcHandbookContext &context)
     return table;
 }
 
-// Bodies stand on solid blocks and spawn on them, walk through the others and spawn inside them,
-// unless the block hurts or slows them (QcNaturalSpawner); water creatures spawn in liquids that do
+// Walkers spawn on solid, opaque blocks with a full top face and inside free cells (QcSpawnGround);
+// a slab carries them only in its upper and double states. Water creatures spawn in liquids that do
 // not burn.
 QString spawnNote(const QcHandbookContext &context, const QcBlockDefinition &block)
 {
     if (block.liquid) {
         return context.text.label(block.fire.setsAlightSeconds == 0 ? u"value.spawnInWater"_s : u"value.spawnNever"_s);
     }
-    if (block.keepsSpawnsAway()) {
+    if (block.keepsSpawnsAway() || block.rail) {
         return context.text.label(u"value.spawnNever"_s);
     }
-    return context.text.label(block.solid ? u"value.spawnOn"_s : u"value.spawnIn"_s);
+    if (!block.solid) {
+        return context.text.label(u"value.spawnIn"_s);
+    }
+
+    const std::optional<QcBlockId> state = context.content.blockId(block.name);
+    const QcSpawnGround::Carrying carrying =
+        state ? QcSpawnGround::carryingOf(context.content, context.content.state(*state).type) : QcSpawnGround::Carrying::None;
+    switch (carrying) {
+    case QcSpawnGround::Carrying::All:
+        return context.text.label(u"value.spawnOn"_s);
+    case QcSpawnGround::Carrying::Some:
+        return context.text.label(u"value.spawnOnUpper"_s);
+    case QcSpawnGround::Carrying::None:
+        break;
+    }
+    return context.text.label(u"value.spawnNotOn"_s);
 }
 
 QString lightNote(const QcHandbookContext &context, const QcBlockDefinition &block)

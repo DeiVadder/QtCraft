@@ -51,18 +51,9 @@
     },
     "waterDamage": 1.0,
     "spawn": {
-        "time": "night",
-        "blocks": [
-            "grass_block",
-            "dirt",
-            "sand",
-            "snow_block",
-            "stone"
-        ],
         "maxGroup": 1,
         "weight": 0.4,
-        "caves": false,
-        "maxLight": 7
+        "caves": false
     },
     "skeleton": "enderman",
     "outfit": "enderman",

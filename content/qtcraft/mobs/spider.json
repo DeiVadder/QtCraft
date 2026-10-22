@@ -24,14 +24,6 @@
     "attackCooldown": 1.0,
     "sightRange": 16,
     "spawn": {
-        "time": "night",
-        "blocks": [
-            "grass_block",
-            "dirt",
-            "sand",
-            "snow_block",
-            "stone"
-        ],
         "maxGroup": 1,
         "weight": 2,
         "caves": true

@@ -463,7 +463,7 @@ private slots:
         QVERIFY(!fact(*firefly, u"Spawn light"_s));
         const QcHandbookEntry::Section *fireflyGround = section(*firefly, u"Appears on"_s);
         QVERIFY(fireflyGround);
-        QCOMPARE(fireflyGround->text, u"Any solid block or the surface of a liquid."_s);
+        QCOMPARE(fireflyGround->text, u"Any solid block, glass and leaves too, or the surface of a liquid."_s);
 
         const QcHandbookEntry::Fact *pigSpeed = factIn(m_english, u"mob:qtcraft:pig"_s, u"Speed"_s);
         QVERIFY(pigSpeed);
@@ -582,14 +582,18 @@ private slots:
     {
         const QcHandbookEntry *zombie = m_english.entry(u"mob:qtcraft:zombie"_s);
         QVERIFY(zombie);
-        QCOMPARE(fact(*zombie, u"Appears"_s)->value, u"at night"_s);
-        QCOMPARE(fact(*zombie, u"Spawn light"_s)->value, u"block light up to 7"_s);
-        QCOMPARE(fact(*zombie, u"Limit"_s)->value, u"all hostile creatures together: 8 per player"_s);
+        // Monsters by the original game's rules (decision E-836): darkness instead of the night, no
+        // block light, the cap per 289 chunks, the general ground rule instead of a block list.
+        QCOMPARE(fact(*zombie, u"Appears"_s)->value, u"day and night"_s);
+        QVERIFY(fact(*zombie, u"Darkness"_s)->value.startsWith(u"only in the dark"_s));
+        QCOMPARE(fact(*zombie, u"Spawn light"_s)->value, u"block light up to 0"_s);
+        QCOMPARE(fact(*zombie, u"Limit"_s)->value, u"all monsters together: 70 per 289 loaded chunks around the players"_s);
         QCOMPARE(fact(*zombie, u"Attack"_s)->value, u"3 damage within 1.6 m, every 1 s"_s);
         // Rarely a carrot or a potato as well (decision E-294).
         QCOMPARE(targets(fact(*zombie, u"Drops"_s)->links),
                  (QStringList{u"item:qtcraft:rotten_flesh"_s, u"item:qtcraft:carrot"_s, u"item:qtcraft:potato"_s}));
-        QVERIFY(targets(section(*zombie, u"Appears on"_s)->links).contains(u"block:qtcraft:stone"_s));
+        QVERIFY(section(*zombie, u"Appears on"_s)->links.isEmpty());
+        QCOMPARE(section(*zombie, u"Appears on"_s)->text, u"Any solid, opaque block with a full top (no glass, leaves, ice or lower slab)."_s);
 
         const QcHandbookEntry *firefly = m_english.entry(u"mob:qtcraft:firefly"_s);
         QCOMPARE(fact(*firefly, u"Limit"_s)->value, u"8 near each player; all ambient creatures together: 10 per player"_s);

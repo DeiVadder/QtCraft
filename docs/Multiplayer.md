@@ -65,7 +65,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `itemsAwake` | 512 | 16 – 65536 | Dropped items awake in loaded chunks; new drops wait, surplus ones sleep |
 | `itemsQueued` | 1024 | 16 – 1048576 | Drops waiting to appear; the oldest goes when full |
 | `itemsTotal` | 4096 | 64 – 1048576 | Dropped items in the loaded world; the oldest goes when full (items of unloaded chunks are stored with them) |
-| `hostileCreaturesPerPlayer` | 8 | 0 – 256 | Hostile creatures spawning by themselves around one player |
+| `monstersPer289Chunks` | 70 | 0 – 256 | Monsters spawning by themselves for every 289 loaded chunks within 8 chunks of the players, shared by players close together (decision E-836). It replaces `hostileCreaturesPerPlayer` (8 per player): files with the old key get a warning at the start and the default applies; rename the key to keep an own value |
 | `passiveCreaturesPerPlayer` | 6 | 0 – 256 | Passive creatures spawning by themselves around one player |
 | `ambientCreaturesPerPlayer` | 10 | 0 – 256 | Ambient creatures (fireflies) spawning around one player |
 | `pathNodesPerTick` | 4096 | 0 – 1048576 | Nodes all path searches of creatures expand per tick; searches beyond wait for the next tick, first come first served; 0 switches path finding off and creatures walk straight at their goals (E-400) |

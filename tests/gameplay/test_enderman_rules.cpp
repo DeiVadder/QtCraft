@@ -359,9 +359,14 @@ private slots:
 
     void noSpawningUnderALowRoof()
     {
-        // Only endermen spawn, also in caves, and the surface is planks they do not spawn on: they
-        // could only appear in the cave of the world below.
+        // Only endermen spawn, also in caves, and only on stone (planks carry spawns since the general
+        // ground rule, decision E-836): they could only appear in the cave of the world below.
         onlyEndermenAlsoInCaves();
+        auto onStone = std::make_shared<QcContentRegistry>(*m_content);
+        QcMobDefinition enderman = endermanKind();
+        enderman.spawnBlocks = {u"qtcraft:stone"_s};
+        onStone->registerMob(enderman);
+        m_content = onStone;
         const auto caveOf = [this](int height) { return [this, height](QcServerWorld &world) { buildCave(world, height); }; };
         // Two cells high: none; three: some.
         QVERIFY(spawned("enderman", midnight, 120, caveOf(2)).isEmpty());

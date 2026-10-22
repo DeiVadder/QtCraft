@@ -1,7 +1,7 @@
 #include "QcServerTestFixture.h"
 #include "server/mobs/QcFishSwimming.h"
 #include "server/mobs/QcMobCrowd.h"
-#include "server/mobs/QcNaturalSpawner.h"
+#include "server/spawning/QcNaturalSpawner.h"
 
 #include <QElapsedTimer>
 #include "worldgen/generators/QcFlatGenerator.h"

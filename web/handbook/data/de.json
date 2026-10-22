@@ -26816,44 +26816,6 @@
                     ],
                     "text": "",
                     "title": "Kommt vor in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Schleim"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skelett"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Wesen, die darauf erscheinen"
                 }
             ],
             "text": "Einfache Erde unter dem Gras.",
@@ -30904,12 +30866,6 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:chicken",
                             "text": "Huhn"
                         },
@@ -30934,38 +30890,14 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Schleim"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Schwein"
                         },
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skelett"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -31240,20 +31172,6 @@
                     ],
                     "text": "",
                     "title": "Kommt vor in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Schleim"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Wesen, die darauf erscheinen"
                 }
             ],
             "text": "Lose Steine, die fallen, wenn nichts sie hält. Ab und zu fällt dabei auch ein Feuerstein heraus.",
@@ -67788,38 +67706,6 @@
                     ],
                     "text": "",
                     "title": "Kommt vor in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skelett"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Wesen, die darauf erscheinen"
                 }
             ],
             "text": "Fällt, wenn nichts sie hält. Wird im Ofen zu Glas.",
@@ -75755,32 +75641,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skelett"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
                             "target": "mob:qtcraft:wolf",
                             "text": "Wolf"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
                         }
                     ],
                     "recipes": [
@@ -80317,50 +80179,6 @@
                     ],
                     "text": "",
                     "title": "Kommt vor in"
-                },
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:cave_spider",
-                            "text": "Höhlenspinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:slime",
-                            "text": "Schleim"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:skeleton",
-                            "text": "Skelett"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:spider",
-                            "text": "Spinne"
-                        },
-                        {
-                            "icon": "",
-                            "note": "",
-                            "target": "mob:qtcraft:zombie",
-                            "text": "Zombie"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Wesen, die darauf erscheinen"
                 }
             ],
             "text": "Das Gestein der Welt. Ergibt Bruchstein; braucht eine Spitzhacke.",
@@ -91668,7 +91486,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Wesen erscheinen 20–48 m von Spielern entfernt: friedliche Tiere tagsüber auf Gras, feindliche im Dunkeln bei Nacht und in Höhlen mindestens 8 Blöcke unter der Oberfläche. Fackeln und Lampen halten feindliche Wesen fern. Jede Seite nennt Blöcke, Biome, Zeit und Licht, die ein Wesen braucht.",
+                    "text": "Monster erscheinen 24–128 m von Spielern entfernt, überall, wo es dunkel genug ist: Keine Fackel und keine Lampe darf die Stelle beleuchten, und der Himmel darüber muss dunkel sein. Nachts reicht das meiste offene Gelände, umso öfter, je dunkler es ist; tagsüber sind nur Höhlen und der tiefe Schatten unter Dächern und sehr dichtem Blätterdach dunkel genug, und ein Gewitter verdunkelt den Tag ebenso. Wie alle laufenden Wesen stehen sie auf festen, undurchsichtigen Blöcken mit voller Oberseite: nie auf Glas, Laub, Eis, einer unteren Stufe, einem Trampelpfad oder Ackerboden und nie in Schienen. Friedliche Tiere erscheinen tagsüber 20–48 m entfernt auf Gras. Wesen, die in Höhlen erscheinen, brauchen mindestens 8 Blöcke Gestein über sich. Jede Seite nennt Blöcke, Biome, Zeit und Licht, die ein Wesen braucht.",
                     "title": "Wo Wesen erscheinen"
                 },
                 {
@@ -91732,7 +91550,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Bei jedem Spieler gibt es höchstens 8 feindliche, 6 friedliche und 10 Umgebungswesen. Feindliche und Umgebungswesen, die weiter als 96 m von allen Spielern entfernt sind, verschwinden. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.",
+                    "text": "Monster teilen sich eine Obergrenze: Die Welt hält höchstens 70 von ihnen je 289 geladene Chunks im Umkreis von 8 Chunks um einen Spieler. Weit voneinander entfernte Spieler bringen also je einen eigenen Anteil mit, nah beieinander stehende teilen sich einen, und ein Monster erscheint nur dort, wo ein Spieler in der Nähe weniger als 70 um sich hat. Bei jedem Spieler gibt es höchstens 6 friedliche und 10 Umgebungswesen. Monster und Umgebungswesen verschwinden, sobald alle Spieler weiter als 128 m entfernt sind; ist 30 s lang kein Spieler näher als 32 m an eines herangekommen, verschwindet es zufällig, im Mittel nach weiteren 40 s. Friedliche Tiere bleiben: Etwa jeder zehnte neue Chunk bringt eine Gruppe mit, sie warten, solange ihre Gegend nicht geladen ist, und werden mit der Welt gespeichert. Neue erscheinen bei dir nur, solange kein Tier in der Nähe ist. Feindliche Wesen verfolgen nur Spieler, die sie sehen, und einen, den sie aus den Augen verloren haben, noch einige Sekunden. Viele Wesen in einer Blockzelle denken weniger, um Arbeit zu sparen: ab 8 nur ab und zu und ohne Wegsuche, ab 24 gar nicht mehr; sie fallen trotzdem, werden auseinandergeschoben und schlagen einen Spieler direkt neben sich.",
                     "title": "Obergrenzen"
                 },
                 {
@@ -117506,7 +117324,13 @@
                     "label": "Erscheint",
                     "links": [
                     ],
-                    "value": "nachts"
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
                 },
                 {
                     "label": "Höhlen",
@@ -117518,7 +117342,7 @@
                     "label": "Licht beim Erscheinen",
                     "links": [
                     ],
-                    "value": "Blocklicht bis 7"
+                    "value": "Blocklicht bis 0"
                 },
                 {
                     "label": "Spawnhöhe",
@@ -117542,7 +117366,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -117571,16 +117395,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -118220,13 +118038,19 @@
                     "label": "Erscheint",
                     "links": [
                     ],
-                    "value": "nachts"
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
                 },
                 {
                     "label": "Licht beim Erscheinen",
                     "links": [
                     ],
-                    "value": "Blocklicht bis 7"
+                    "value": "Blocklicht bis 0"
                 },
                 {
                     "label": "Gruppengröße",
@@ -118244,7 +118068,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -118267,40 +118091,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Schneeblock"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -118422,7 +118216,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Jeder feste Block oder eine Flüssigkeitsoberfläche.",
+                    "text": "Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.",
                     "title": "Erscheint auf"
                 },
                 {
@@ -119444,7 +119238,13 @@
                     "label": "Erscheint",
                     "links": [
                     ],
-                    "value": "nachts"
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
                 },
                 {
                     "label": "Höhlen",
@@ -119456,7 +119256,7 @@
                     "label": "Licht beim Erscheinen",
                     "links": [
                     ],
-                    "value": "Blocklicht bis 7"
+                    "value": "Blocklicht bis 0"
                 },
                 {
                     "label": "Gruppengröße",
@@ -119474,7 +119274,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -119515,40 +119315,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Schneeblock"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -119623,12 +119393,6 @@
                     "value": "auch in Höhlen zu jeder Zeit"
                 },
                 {
-                    "label": "Licht beim Erscheinen",
-                    "links": [
-                    ],
-                    "value": "Blocklicht bis 7"
-                },
-                {
                     "label": "Spawnhöhe",
                     "links": [
                     ],
@@ -119656,7 +119420,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -119679,28 +119443,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:gravel",
-                            "note": "",
-                            "target": "block:qtcraft:gravel",
-                            "text": "Kies"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -119718,23 +119464,11 @@
                             "note": "",
                             "target": "biome:qtcraft:swamp",
                             "text": "Sumpf"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
                         }
                     ],
                     "recipes": [
                     ],
-                    "text": "nachts; bis y 70; Blocklicht bis 7",
+                    "text": "nachts; nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen); bis y 70; Blocklicht bis 0",
                     "title": "Erscheint auch"
                 }
             ],
@@ -119792,7 +119526,13 @@
                     "label": "Erscheint",
                     "links": [
                     ],
-                    "value": "nachts"
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
                 },
                 {
                     "label": "Höhlen",
@@ -119804,7 +119544,7 @@
                     "label": "Licht beim Erscheinen",
                     "links": [
                     ],
-                    "value": "Blocklicht bis 7"
+                    "value": "Blocklicht bis 0"
                 },
                 {
                     "label": "Gruppengröße",
@@ -119822,7 +119562,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -119857,40 +119597,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Schneeblock"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -120296,7 +120006,13 @@
                     "label": "Erscheint",
                     "links": [
                     ],
-                    "value": "nachts"
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
                 },
                 {
                     "label": "Höhlen",
@@ -120308,7 +120024,7 @@
                     "label": "Licht beim Erscheinen",
                     "links": [
                     ],
-                    "value": "Blocklicht bis 7"
+                    "value": "Blocklicht bis 0"
                 },
                 {
                     "label": "Gruppengröße",
@@ -120326,7 +120042,7 @@
                     "label": "Obergrenze",
                     "links": [
                     ],
-                    "value": "alle feindlichen Wesen zusammen: 8 pro Spieler"
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
                 },
                 {
                     "label": "Beute",
@@ -120361,40 +120077,10 @@
             "sections": [
                 {
                     "links": [
-                        {
-                            "icon": "qtcraft:dirt",
-                            "note": "",
-                            "target": "block:qtcraft:dirt",
-                            "text": "Erde"
-                        },
-                        {
-                            "icon": "qtcraft:grass_block",
-                            "note": "",
-                            "target": "block:qtcraft:grass_block",
-                            "text": "Grasblock"
-                        },
-                        {
-                            "icon": "qtcraft:sand",
-                            "note": "",
-                            "target": "block:qtcraft:sand",
-                            "text": "Sand"
-                        },
-                        {
-                            "icon": "qtcraft:snow_block",
-                            "note": "",
-                            "target": "block:qtcraft:snow_block",
-                            "text": "Schneeblock"
-                        },
-                        {
-                            "icon": "qtcraft:stone",
-                            "note": "",
-                            "target": "block:qtcraft:stone",
-                            "text": "Stein"
-                        }
                     ],
                     "recipes": [
                     ],
-                    "text": "",
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
                     "title": "Erscheint auf"
                 },
                 {
@@ -127015,331 +126701,331 @@
                     "links": [
                         {
                             "icon": "qtcraft:farmland",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:farmland",
                             "text": "Ackerboden"
                         },
                         {
                             "icon": "qtcraft:bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:bed",
                             "text": "Bett"
                         },
                         {
                             "icon": "qtcraft:birch_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:birch_trapdoor",
                             "text": "Birkenfalltür"
                         },
                         {
                             "icon": "qtcraft:birch_leaves",
-                            "note": "dämpft Licht um 1, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:birch_leaves",
                             "text": "Birkenlaub"
                         },
                         {
                             "icon": "qtcraft:birch_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:birch_door",
                             "text": "Birkentür"
                         },
                         {
                             "icon": "qtcraft:blue_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:blue_stained_glass_pane",
                             "text": "Blaue Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:blue_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:blue_bed",
                             "text": "Blaues Bett"
                         },
                         {
                             "icon": "qtcraft:blue_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:blue_stained_glass",
                             "text": "Blaues Glas"
                         },
                         {
                             "icon": "qtcraft:brown_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:brown_stained_glass_pane",
                             "text": "Braune Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:brown_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:brown_bed",
                             "text": "Braunes Bett"
                         },
                         {
                             "icon": "qtcraft:brown_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:brown_stained_glass",
                             "text": "Braunes Glas"
                         },
                         {
                             "icon": "qtcraft:jungle_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:jungle_trapdoor",
                             "text": "Dschungelfalltür"
                         },
                         {
                             "icon": "qtcraft:jungle_leaves",
-                            "note": "dämpft Licht um 1, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:jungle_leaves",
                             "text": "Dschungellaub"
                         },
                         {
                             "icon": "qtcraft:jungle_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:jungle_door",
                             "text": "Dschungeltür"
                         },
                         {
                             "icon": "qtcraft:oak_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:oak_trapdoor",
                             "text": "Eichenfalltür"
                         },
                         {
                             "icon": "qtcraft:oak_leaves",
-                            "note": "dämpft Licht um 1, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:oak_leaves",
                             "text": "Eichenlaub"
                         },
                         {
                             "icon": "qtcraft:oak_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:oak_door",
                             "text": "Eichentür"
                         },
                         {
                             "icon": "qtcraft:ice",
-                            "note": "dämpft Licht um 2, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 2, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:ice",
                             "text": "Eis"
                         },
                         {
                             "icon": "qtcraft:iron_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:iron_trapdoor",
                             "text": "Eisenfalltür"
                         },
                         {
                             "icon": "qtcraft:iron_bars",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:iron_bars",
                             "text": "Eisengitter"
                         },
                         {
                             "icon": "qtcraft:iron_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:iron_door",
                             "text": "Eisentür"
                         },
                         {
                             "icon": "qtcraft:spruce_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:spruce_trapdoor",
                             "text": "Fichtenfalltür"
                         },
                         {
                             "icon": "qtcraft:spruce_leaves",
-                            "note": "dämpft Licht um 1, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:spruce_leaves",
                             "text": "Fichtennadeln"
                         },
                         {
                             "icon": "qtcraft:spruce_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:spruce_door",
                             "text": "Fichtentür"
                         },
                         {
                             "icon": "qtcraft:yellow_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:yellow_stained_glass_pane",
                             "text": "Gelbe Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:yellow_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:yellow_bed",
                             "text": "Gelbes Bett"
                         },
                         {
                             "icon": "qtcraft:yellow_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:yellow_stained_glass",
                             "text": "Gelbes Glas"
                         },
                         {
                             "icon": "qtcraft:glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:glass",
                             "text": "Glas"
                         },
                         {
                             "icon": "qtcraft:glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:glass_pane",
                             "text": "Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:bell",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:bell",
                             "text": "Glocke"
                         },
                         {
                             "icon": "qtcraft:firefly_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:firefly_glass",
                             "text": "Glühwürmchenglas"
                         },
                         {
                             "icon": "qtcraft:gray_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:gray_stained_glass_pane",
                             "text": "Graue Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:gray_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:gray_bed",
                             "text": "Graues Bett"
                         },
                         {
                             "icon": "qtcraft:gray_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:gray_stained_glass",
                             "text": "Graues Glas"
                         },
                         {
                             "icon": "qtcraft:green_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:green_stained_glass_pane",
                             "text": "Grüne Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:green_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:green_bed",
                             "text": "Grünes Bett"
                         },
                         {
                             "icon": "qtcraft:green_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:green_stained_glass",
                             "text": "Grünes Glas"
                         },
                         {
                             "icon": "qtcraft:light_blue_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_blue_stained_glass_pane",
                             "text": "Hellblaue Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:light_blue_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_blue_bed",
                             "text": "Hellblaues Bett"
                         },
                         {
                             "icon": "qtcraft:light_blue_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_blue_stained_glass",
                             "text": "Hellblaues Glas"
                         },
                         {
                             "icon": "qtcraft:light_gray_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_gray_stained_glass_pane",
                             "text": "Hellgraue Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:light_gray_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_gray_bed",
                             "text": "Hellgraues Bett"
                         },
                         {
                             "icon": "qtcraft:light_gray_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:light_gray_stained_glass",
                             "text": "Hellgraues Glas"
                         },
                         {
                             "icon": "qtcraft:lime_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:lime_stained_glass_pane",
                             "text": "Hellgrüne Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:lime_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:lime_bed",
                             "text": "Hellgrünes Bett"
                         },
                         {
                             "icon": "qtcraft:lime_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:lime_stained_glass",
                             "text": "Hellgrünes Glas"
                         },
                         {
                             "icon": "qtcraft:cactus",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cactus",
                             "text": "Kaktus"
                         },
                         {
                             "icon": "qtcraft:cauldron",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cauldron",
                             "text": "Kessel"
                         },
                         {
                             "icon": "qtcraft:chain",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:chain",
                             "text": "Kette"
                         },
                         {
                             "icon": "qtcraft:sticky_signal_piston",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:sticky_signal_piston",
                             "text": "Klebriger Signalkolben"
                         },
                         {
                             "icon": "qtcraft:cake",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cake",
                             "text": "Kuchen"
                         },
                         {
                             "icon": "qtcraft:copper_trapdoor",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:copper_trapdoor",
                             "text": "Kupferfalltür"
                         },
                         {
                             "icon": "qtcraft:copper_bars",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:copper_bars",
                             "text": "Kupfergitter"
                         },
                         {
                             "icon": "qtcraft:copper_chain",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:copper_chain",
                             "text": "Kupferkette"
                         },
                         {
                             "icon": "qtcraft:copper_door",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:copper_door",
                             "text": "Kupfertür"
                         },
@@ -127351,205 +127037,205 @@
                         },
                         {
                             "icon": "qtcraft:ladder",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:ladder",
                             "text": "Leiter"
                         },
                         {
                             "icon": "qtcraft:magenta_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:magenta_stained_glass_pane",
                             "text": "Magentafarbene Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:magenta_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:magenta_bed",
                             "text": "Magentafarbenes Bett"
                         },
                         {
                             "icon": "qtcraft:magenta_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:magenta_stained_glass",
                             "text": "Magentafarbenes Glas"
                         },
                         {
                             "icon": "qtcraft:spawner",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:spawner",
                             "text": "Monster-Spawner"
                         },
                         {
                             "icon": "qtcraft:orange_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:orange_stained_glass_pane",
                             "text": "Orangefarbene Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:orange_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:orange_bed",
                             "text": "Orangefarbenes Bett"
                         },
                         {
                             "icon": "qtcraft:orange_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:orange_stained_glass",
                             "text": "Orangefarbenes Glas"
                         },
                         {
                             "icon": "qtcraft:pink_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:pink_stained_glass_pane",
                             "text": "Rosafarbene Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:pink_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:pink_bed",
                             "text": "Rosafarbenes Bett"
                         },
                         {
                             "icon": "qtcraft:pink_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:pink_stained_glass",
                             "text": "Rosafarbenes Glas"
                         },
                         {
                             "icon": "qtcraft:red_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:red_stained_glass_pane",
                             "text": "Rote Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:red_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:red_stained_glass",
                             "text": "Rotes Glas"
                         },
                         {
                             "icon": "qtcraft:slime_block",
-                            "note": "dämpft Licht um 1, Wesen erscheinen darauf",
+                            "note": "dämpft Licht um 1, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:slime_block",
                             "text": "Schleimblock"
                         },
                         {
                             "icon": "qtcraft:snow_layer",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:snow_layer",
                             "text": "Schneeschicht"
                         },
                         {
                             "icon": "qtcraft:black_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:black_stained_glass_pane",
                             "text": "Schwarze Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:black_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:black_bed",
                             "text": "Schwarzes Bett"
                         },
                         {
                             "icon": "qtcraft:black_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:black_stained_glass",
                             "text": "Schwarzes Glas"
                         },
                         {
                             "icon": "qtcraft:lily_pad",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:lily_pad",
                             "text": "Seerose"
                         },
                         {
                             "icon": "qtcraft:signal_repeater",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:signal_repeater",
                             "text": "Signal-Repeater"
                         },
                         {
                             "icon": "qtcraft:signal_piston",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:signal_piston",
                             "text": "Signalkolben"
                         },
                         {
                             "icon": "qtcraft:signal_comparator",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:signal_comparator",
                             "text": "Signalkomparator"
                         },
                         {
                             "icon": "qtcraft:signal_hopper",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:signal_hopper",
                             "text": "Signaltrichter"
                         },
                         {
                             "icon": "qtcraft:stonecutter",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:stonecutter",
                             "text": "Steinschneider"
                         },
                         {
                             "icon": "qtcraft:dirt_path",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:dirt_path",
                             "text": "Trampelpfad"
                         },
                         {
                             "icon": "qtcraft:cyan_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cyan_stained_glass_pane",
                             "text": "Türkise Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:cyan_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cyan_bed",
                             "text": "Türkises Bett"
                         },
                         {
                             "icon": "qtcraft:cyan_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:cyan_stained_glass",
                             "text": "Türkises Glas"
                         },
                         {
                             "icon": "qtcraft:purple_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:purple_stained_glass_pane",
                             "text": "Violette Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:purple_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:purple_bed",
                             "text": "Violettes Bett"
                         },
                         {
                             "icon": "qtcraft:purple_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:purple_stained_glass",
                             "text": "Violettes Glas"
                         },
                         {
                             "icon": "qtcraft:white_stained_glass_pane",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:white_stained_glass_pane",
                             "text": "Weiße Glasscheibe"
                         },
                         {
                             "icon": "qtcraft:white_bed",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:white_bed",
                             "text": "Weißes Bett"
                         },
                         {
                             "icon": "qtcraft:white_stained_glass",
-                            "note": "Licht geht durch, Wesen erscheinen darauf",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:white_stained_glass",
                             "text": "Weißes Glas"
                         }
@@ -127563,13 +127249,13 @@
                     "links": [
                         {
                             "icon": "qtcraft:activator_rail",
-                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf oder darin",
                             "target": "block:qtcraft:activator_rail",
                             "text": "Aktivierungsschiene"
                         },
                         {
                             "icon": "qtcraft:powered_rail",
-                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf oder darin",
                             "target": "block:qtcraft:powered_rail",
                             "text": "Antriebsschiene"
                         },
@@ -127785,13 +127471,13 @@
                         },
                         {
                             "icon": "qtcraft:rail",
-                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf oder darin",
                             "target": "block:qtcraft:rail",
                             "text": "Schiene"
                         },
                         {
                             "icon": "qtcraft:detector_rail",
-                            "note": "Licht geht durch, Wesen erscheinen darin",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf oder darin",
                             "target": "block:qtcraft:detector_rail",
                             "text": "Sensorschiene"
                         },
@@ -127900,7 +127586,7 @@
                     "title": "Flüssigkeiten"
                 }
             ],
-            "text": "Blöcke, die keine undurchsichtigen vollen Würfel sind: Man sieht durch sie hindurch oder an ihnen vorbei, und Licht kommt durch, um die angegebenen Stufen gedämpft. Feste halten Wesen auf, die anderen lassen sie durch. Wesen erscheinen auf festen Blöcken und in den anderen, aber nie auf oder in einem Block, der sie verletzt oder bremst; Wasserwesen erscheinen im Wasser. Bauteile wie Stufen und Treppen haben eigene Seiten.",
+            "text": "Blöcke, die keine undurchsichtigen vollen Würfel sind: Man sieht durch sie hindurch oder an ihnen vorbei, und Licht kommt durch, um die angegebenen Stufen gedämpft. Feste halten Wesen auf, die anderen lassen sie durch. Laufende Wesen erscheinen nur auf festen Blöcken, die undurchsichtig gezeichnet sind und eine volle Oberseite haben, auf den festen hier also kaum; in den anderen erscheinen sie, aber nie in einem Block, der sie verletzt oder bremst, und nie in Schienen. Wasserwesen erscheinen im Wasser. Bauteile wie Stufen und Treppen haben eigene Seiten.",
             "title": "Durchsichtige Blöcke"
         },
         "tag:qtcraft:arrows": {

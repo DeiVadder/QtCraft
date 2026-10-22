@@ -173,8 +173,12 @@ struct QcMobDefinition
     double spawnWeight = 1.0;
     // Hostile mobs that need darkness also spawn underground at any time of day.
     bool spawnsInCaves = false;
-    // Brightest block light (torches) at the feet that still allows spawning, 0..15.
+    // Brightest block light (torches) at the feet that still allows spawning, 0..15 (hostile
+    // creatures: 0 unless the data says otherwise).
     int maxSpawnLight = 15;
+    // The monsters' light test of the original game (QcSpawnLight, decision E-836): a random draw
+    // against the sky light and the darkened sky; on by default for hostile creatures.
+    bool spawnInDarkness = false;
     // Share of chunks (chosen by the world seed, separately for each kind) where it spawns at all,
     // like slime chunks; 1 for every chunk. Server side only.
     double spawnChunkChance = 1.0;
@@ -229,12 +233,14 @@ struct QcMobDefinition
         double chunkChance = 1.0;
         int maxY = QcWorld::worldHeight;
         QStringList biomes;
+        bool darkness = false;
     };
     QList<SpawnRule> extraSpawns;
     // The main rule followed by the extra ones.
     QList<SpawnRule> spawnRules() const
     {
-        QList<SpawnRule> rules{{spawnTime, spawnBlocks, spawnWeight, spawnsInCaves, maxSpawnLight, spawnChunkChance, spawnMaxY, spawnBiomes}};
+        QList<SpawnRule> rules{{spawnTime, spawnBlocks, spawnWeight, spawnsInCaves, maxSpawnLight, spawnChunkChance, spawnMaxY, spawnBiomes,
+                                 spawnInDarkness}};
         rules.append(extraSpawns);
         return rules;
     }
