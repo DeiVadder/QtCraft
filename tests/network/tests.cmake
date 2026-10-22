@@ -38,3 +38,10 @@ add_dependencies(test_minecart_bots qtcraft-headless)
 qc_add_test(test_machine_bots SOURCES network/test_machine_bots.cpp QcBotProcess.h LIBRARIES qc_common TIMEOUT 300)
 target_compile_definitions(test_machine_bots PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_machine_bots qtcraft-headless)
+# The admin channel (stage 77.1, decision E-848).
+qc_add_test(test_admin_protocol SOURCES network/test_admin_protocol.cpp LIBRARIES qc_common)
+qc_add_test(test_admin_channel SOURCES network/test_admin_channel.cpp network/QcAdminTestFixture.h QcServerTestFixture.h QcRawClient.h
+            LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_admin_settings SOURCES network/test_admin_settings.cpp network/QcAdminTestFixture.h QcServerTestFixture.h QcRawClient.h
+            LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_client_admin SOURCES network/test_client_admin.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)

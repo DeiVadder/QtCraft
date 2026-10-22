@@ -10,12 +10,11 @@
 namespace QcProtocol {
 
 // From this version on Hello starts with version, player name and client text, so a server of another
-// version still reads who knocked (decision E-834). It is the number of the version that brought the
-// client text: renumbering that change (a merge after another bump) changes this line, not `version`.
+// version still reads who knocked (decision E-834).
 inline constexpr quint32 firstVersionWithClientText = 65;
-// Bumped whenever a message layout changes: 66 sends the threads of families with the content
-// (decision E-839).
-inline constexpr quint32 version = 66;
+// Bumped whenever a message layout changes (history: decision E-368): 66 sends the threads of
+// families with the content (decision E-839), 67 brings the admin channel (decision E-848).
+inline constexpr quint32 version = 67;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

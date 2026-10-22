@@ -83,7 +83,9 @@ void QcServer::tick()
     m_phases.endTick(m_ticks.currentLateNs());
     m_ticks.stats().addPhases(m_phases.lastTick());
     const QcTickPhaseTimer::Durations &phases = m_phases.lastTick();
-    m_healthTicks.add(double(std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64(0))) / 1e6);
+    const double tickMs = double(std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64(0))) / 1e6;
+    m_healthTicks.add(tickMs);
+    m_admin.noteTick(tickMs);
     if (const std::optional<QString> lag = m_lag.check(phases, m_phases.now())) {
         qCInfo(lcLag).noquote() << *lag;
     }
@@ -199,6 +201,9 @@ void QcServer::addClientSystems()
         m_state.entities().forgetDeaths();
     });
 
+    // The admin channel's status, chat and log for the operators who follow them (decision E-848).
+    m_tickSystems.add(ClientSync, When::Always, [this] { m_admin.update(); });
+
     // Chunks no one needs any more leave the world, whole groups at a time (decision E-374).
     m_tickSystems.add(Streaming, When::Always, [this] {
         m_chunkLoading.updateTickets();
@@ -285,23 +290,12 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
 
 QcHealthSample QcServer::health()
 {
-    // Bytes of the clients that left count on, so the rates never go back.
-    QcTraffic traffic = m_departedTraffic;
-    qint64 players = 0;
-    for (const auto &client : m_state.clients()) {
-        players += client->joined ? 1 : 0;
-        if (client->connection && !client->local) {
-            const QcTraffic own = client->connection->traffic();
-            traffic.sent += own.sent;
-            traffic.received += own.received;
-        }
-    }
-
     QcHealthSample sample;
-    sample.players = players;
+    sample.players = std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; });
     sample.loadedChunks = m_state.world().loadedChunkCount();
     sample.entities = m_state.entities().creatures().mobs().size() + m_state.entities().items().items().size();
-    sample.traffic = traffic;
+    // Bytes of the clients that left count on, so the rates never go back.
+    sample.traffic = m_admin.traffic();
     sample.ticks = m_healthTicks.take();
     return sample;
 }
@@ -312,9 +306,9 @@ void QcServer::removeClosedClients()
     for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Closed && !client->local) {
             logLeaving(*client);
-            const QcTraffic own = client->connection ? client->connection->traffic() : QcTraffic{};
-            m_departedTraffic.sent += own.sent;
-            m_departedTraffic.received += own.received;
+        }
+        if (client->state == Client::State::Closed) {
+            m_admin.noteLeft(*client);
         }
         if (client->state == Client::State::Closed && client->joined) {
             // Only a player who was on the list changes it; refused logins do not.

@@ -2,7 +2,7 @@
 
 // Payload encoders and decoders of the protocol messages, one overload pair per message, grouped by
 // topic in QcSessionCodec.cpp, QcWorldCodec.cpp, QcPlayerCodec.cpp, QcEntityCodec.cpp,
-// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp, QcLoginCodec.cpp, QcSignCodec.cpp and QcMapCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
+// QcMachineCodec.cpp, QcTradeCodec.cpp, QcDebugCodec.cpp, QcLoginCodec.cpp, QcSignCodec.cpp, QcMapCodec.cpp and QcAdminCodec.cpp; QcProtocol.cpp dispatches on the type tag. Internal to the protocol.
 
 #include "common/core/QcResult.h"
 #include "common/protocol/QcMessages.h"
@@ -59,6 +59,10 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChatInput>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChatMessage>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::WorldTime>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::Ping m);
+void encode(QDataStream &stream, QcMsg::Pong m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Ping>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Pong>, QDataStream &stream);
 
 // World (QcWorldCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::ChunkData &m);
@@ -199,5 +203,29 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m);
 // Maps (QcMapCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::MapUpdate &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::MapUpdate>, QDataStream &stream);
+
+// Admin channel (QcAdminCodec.cpp)
+void encode(QDataStream &stream, QcMsg::AdminSubscribe m);
+void encode(QDataStream &stream, const QcMsg::AdminRequest &m);
+void encode(QDataStream &stream, const QcMsg::AdminResult &m);
+void encode(QDataStream &stream, const QcMsg::AdminStatus &m);
+void encode(QDataStream &stream, const QcMsg::AdminHistory &m);
+void encode(QDataStream &stream, const QcMsg::AdminPlayers &m);
+void encode(QDataStream &stream, const QcMsg::AdminChat &m);
+void encode(QDataStream &stream, const QcMsg::AdminCatalogue &m);
+void encode(QDataStream &stream, const QcMsg::AdminLists &m);
+void encode(QDataStream &stream, const QcMsg::AdminSettings &m);
+void encode(QDataStream &stream, const QcMsg::AdminLog &m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminSubscribe>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminRequest>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminResult>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminStatus>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminHistory>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminPlayers>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminChat>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminCatalogue>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminLists>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminSettings>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AdminLog>, QDataStream &stream);
 
 } // namespace QcProtocolCodec

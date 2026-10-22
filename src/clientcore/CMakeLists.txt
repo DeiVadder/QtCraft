@@ -2,6 +2,10 @@ qt_add_library(qc_clientcore STATIC)
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_clientcore PRIVATE
+    admin/QcAdminCompletion.h admin/QcAdminCompletion.cpp
+    admin/QcClientAdmin.h admin/QcClientAdmin.cpp
+)
+target_sources(qc_clientcore PRIVATE
     camera/QcCamera.h camera/QcCamera.cpp
     camera/QcFovEffect.h camera/QcFovEffect.cpp
     camera/QcFrustum.h camera/QcFrustum.cpp
@@ -12,6 +16,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     control/QcControlActiveCommand.h
+    control/QcControlAdminCommands.h control/QcControlAdminCommands.cpp
     control/QcControlAim.h control/QcControlAim.cpp
     control/QcControlArguments.h control/QcControlArguments.cpp
     control/QcControlCommandTable.h control/QcControlCommandTable.cpp

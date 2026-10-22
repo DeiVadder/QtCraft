@@ -9,6 +9,7 @@ QcControlCommandTable::QcControlCommandTable(QcControlContext &context)
     , m_machines(context)
     , m_trades(context)
     , m_gamepads(context)
+    , m_admin(context)
 {
     m_session.registerCommands(*this);
     m_movement.registerCommands(*this);
@@ -18,6 +19,7 @@ QcControlCommandTable::QcControlCommandTable(QcControlContext &context)
     m_machines.registerCommands(*this);
     m_trades.registerCommands(*this);
     m_gamepads.registerCommands(*this);
+    m_admin.registerCommands(*this);
 }
 
 void QcControlCommandTable::add(const QString &name, const Handler &handler)

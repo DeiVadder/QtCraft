@@ -15,11 +15,14 @@ struct QcServerLimits
     struct Field
     {
         const char *key;
-        // What it bounds, for /limits and the documentation.
+        // What it bounds, for /limits, the admin channel and the documentation; marked with
+        // QT_TRANSLATE_NOOP("QcServerLimits", ...).
         const char *description;
         qint64 low;
         qint64 high;
         qint64 QcServerLimits::*value;
+        // The group the admin channel's settings show it in (decision E-848), marked the same way.
+        const char *group;
     };
 
     // Signal Dust: work per tick (dust looked at, components, pushed blocks; E-335).
@@ -156,6 +159,8 @@ struct QcServerLimits
     qint64 waterCreaturesPerPlayer = 5;
 
     static std::span<const Field> fields();
+    // By key; nullptr when there is none.
+    static const Field *field(QStringView key);
     // Limits read from a file, and what was clamped or unknown in it.
     struct Read;
     // The defaults with the values of `json` (clamped); the warnings are prefixed with `source`

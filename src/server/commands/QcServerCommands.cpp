@@ -55,6 +55,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_experience(state)
     , m_effects(state)
     , m_mobs(state)
+    , m_limits(state)
 {
     addBuiltIns();
     m_cheats.addTo(m_registry);
@@ -69,6 +70,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_effects.addTo(m_registry);
     m_mobs.addTo(m_registry);
     m_adventure.addTo(m_registry);
+    m_limits.addTo(m_registry);
 }
 
 void QcServerCommands::addBuiltIns()
@@ -85,6 +87,10 @@ void QcServerCommands::addBuiltIns()
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /cancel"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops the command waiting for /confirm."),
                            .run = [this](const QcCommandContext &context) { m_pending.cancel(context.source); }});
+    m_registry.addBuiltIn({.name = u"say"_s, .minArguments = 1,
+                           .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /say <message>"),
+                           .description = QT_TRANSLATE_NOOP("QcServerMessages", "Sends a chat line to everyone as the server."),
+                           .run = [this](const QcCommandContext &context) { say(context); }});
 }
 
 void QcServerCommands::chat(QcServerClient &client, const QString &text)
@@ -108,11 +114,35 @@ void QcServerCommands::console(const QString &line, const QcCommandSource::Outpu
     execute(QcCommandSource(output), trimmed.startsWith(u'/') ? trimmed : u'/' + trimmed, 0);
 }
 
-void QcServerCommands::broadcast(const QcServerClient &client, const QString &text) const
+void QcServerCommands::admin(QcServerClient &client, const QString &line, const QcCommandSource::Output &output)
 {
+    // Not cut: the admin channel's requests are bounded (words of at most 256 characters each), and
+    // a line it builds ("/say " and 256 characters) must arrive whole.
+    const QString trimmed = line.trimmed();
+    if (trimmed.isEmpty()) {
+        return;
+    }
+    execute(QcCommandSource(client, m_state.permissionOf(client), output), trimmed.startsWith(u'/') ? trimmed : u'/' + trimmed, 0);
+}
+
+void QcServerCommands::broadcast(const QcServerClient &client, const QString &text)
+{
+    sendToAll(client.name, QcChatText::plain(u"<%1> %2"_s.arg(client.name, text)));
+}
+
+void QcServerCommands::say(const QcCommandContext &context)
+{
+    const QString text = context.args.join(u' ');
+    qCInfo(lcCommands).noquote() << u"%1 says: %2"_s.arg(context.source.name(), text);
+    sendToAll({}, QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "[Server] %1"), {text}));
+}
+
+void QcServerCommands::sendToAll(const QString &sender, const QcMsg::ChatMessage &line)
+{
+    m_chatLog.add(sender, line);
     for (const auto &other : m_state.clients()) {
         if (other->state == QcServerClient::State::Playing) {
-            other->connection->send(QcChatText::plain(u"<%1> %2"_s.arg(client.name, text)));
+            other->connection->send(line);
         }
     }
 }

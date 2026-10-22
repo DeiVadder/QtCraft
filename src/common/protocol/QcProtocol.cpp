@@ -64,7 +64,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::CreativeItem>() || is.template operator()<QcMsg::PickBlock>()
                                || is.template operator()<QcMsg::Trade>() || is.template operator()<QcMsg::DrawLauncher>()
                                || is.template operator()<QcMsg::ThrowItem>() || is.template operator()<QcMsg::EditSign>()
-                               || is.template operator()<QcMsg::SelectStonecutterRecipe>();
+                               || is.template operator()<QcMsg::SelectStonecutterRecipe>() || is.template operator()<QcMsg::Pong>()
+                               || is.template operator()<QcMsg::AdminSubscribe>() || is.template operator()<QcMsg::AdminRequest>();
     return clientMessage == (sender == Peer::Client);
 }
 

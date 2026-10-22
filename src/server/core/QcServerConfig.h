@@ -50,6 +50,13 @@ struct QcServerConfig
     // them, then the world's own limits (world.json) are ignored.
     QcServerLimits limits;
     bool limitsFromServer = false;
+    // The dedicated server's settings file (server.json): /limits writes changed limits into it
+    // (decision E-848); empty elsewhere.
+    QString settingsFile;
+    // The admin channel shows operators the whole log of the process (a dedicated server); off, only
+    // the server's categories, since a world hosted by the game shares its log with the host's game
+    // (decision E-848).
+    bool fullAdminLog = false;
 
     // Login of remote clients (decision E-252). Shown in the login challenge.
     QString serverName = QStringLiteral("QtCraft server");

@@ -4,6 +4,8 @@
 #include "common/diagnostics/QcLogWriter.h"
 
 #include <QDateTime>
+#include <QList>
+#include <QSet>
 #include <QString>
 #include <QStringList>
 #include <QtLogging>
@@ -45,6 +47,36 @@ struct LineTime
     QDateTime now;
     qint64 sinceStartMs = 0;
 };
+
+// The latest lines that passed the logging rules, kept in memory while the handler is installed
+// (with or without a file) for the admin channel's log view (decision E-848): at most recentLimit
+// lines of at most recentTextLimit characters, numbered from 1 in the order they came.
+inline constexpr qsizetype recentLimit = 2000;
+inline constexpr qsizetype recentTextLimit = 1024;
+struct RecentLine
+{
+    quint64 sequence = 0;
+    // Milliseconds since the epoch (UTC).
+    qint64 timeMs = 0;
+    // 0 debug, 1 info, 2 warning, 3 critical, 4 fatal (severity()).
+    int severity = 1;
+    QString category;
+    QString text;
+};
+// The order of the message types: debug < info < warning < critical < fatal.
+int severity(QtMsgType type);
+// What recent() found: the lines, and the sequence of the newest line kept when it looked (read
+// under the same lock, so a caller that asks again after it gets every later line exactly once).
+struct Recent
+{
+    QList<RecentLine> lines;
+    quint64 latest = 0;
+};
+// The newest lines of at least `minimumSeverity` with a sequence above `after`, oldest first, at
+// most `count`; with `categories` only lines of those categories.
+[[nodiscard]] Recent recent(int minimumSeverity, qsizetype count, quint64 after = 0, const QSet<QString> &categories = {});
+// The sequence of the newest line kept; 0 before the first.
+quint64 latestSequence();
 
 // One line of the file: "<date time> +<seconds> <D|I|W|C|F> <category> [<thread>] <message>".
 QByteArray formatLine(QtMsgType type, const char *category, const QString &message, const LineTime &time, const QString &thread);

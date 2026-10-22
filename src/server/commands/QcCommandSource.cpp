@@ -10,6 +10,13 @@ QcCommandSource::QcCommandSource(QcServerClient &client, QcPermission permission
 {
 }
 
+QcCommandSource::QcCommandSource(QcServerClient &client, QcPermission permission, Output output)
+    : m_client(&client)
+    , m_output(std::move(output))
+    , m_permission(permission)
+{
+}
+
 QcCommandSource::QcCommandSource(Output output)
     : m_output(std::move(output))
     , m_permission(QcPermission::Console)
@@ -46,9 +53,9 @@ void QcCommandSource::replyPlain(const QString &line) const
 
 void QcCommandSource::send(const QcMsg::ChatMessage &line) const
 {
-    if (m_client) {
-        m_client->connection->send(line);
-    } else if (m_output) {
+    if (m_output) {
         m_output(line);
+    } else if (m_client) {
+        m_client->connection->send(line);
     }
 }

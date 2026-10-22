@@ -1,5 +1,6 @@
 #include "server/core/QcServerLogging.h"
 
+Q_LOGGING_CATEGORY(lcAdmin, "qtcraft.admin")
 Q_LOGGING_CATEGORY(lcCommands, "qtcraft.commands")
 Q_LOGGING_CATEGORY(lcContent, "qtcraft.content")
 Q_LOGGING_CATEGORY(lcGameModes, "qtcraft.gamemodes")

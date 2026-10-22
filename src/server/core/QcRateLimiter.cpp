@@ -35,6 +35,9 @@ std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &messag
     if (std::holds_alternative<QcMsg::EditSign>(message)) {
         return Kind::Sign;
     }
+    if (std::holds_alternative<QcMsg::AdminSubscribe>(message) || std::holds_alternative<QcMsg::AdminRequest>(message)) {
+        return Kind::Admin;
+    }
 
     const bool inventory = std::holds_alternative<QcMsg::SelectHotbarSlot>(message)
                            || std::holds_alternative<QcMsg::MoveInventoryItem>(message)
@@ -57,13 +60,14 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
     return std::holds_alternative<QcMsg::Hello>(message) || std::holds_alternative<QcMsg::PlayerInput>(message)
            || std::holds_alternative<QcMsg::Respawn>(message) || std::holds_alternative<QcMsg::Disconnect>(message)
            || std::holds_alternative<QcMsg::DebugSubscribe>(message) || std::holds_alternative<QcMsg::LoginResponse>(message)
+           || std::holds_alternative<QcMsg::Pong>(message)
            || (std::holds_alternative<QcMsg::DrawLauncher>(message)
                && std::get<QcMsg::DrawLauncher>(message).action != QcMsg::DrawLauncher::Action::Draw);
 }
 
 const char *QcRateLimiter::name(Kind kind)
 {
-    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch", "sign"};
+    static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch", "sign", "admin"};
     return names[size_t(kind)];
 }
 

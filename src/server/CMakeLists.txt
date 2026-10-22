@@ -2,6 +2,11 @@ qt_add_library(qc_server STATIC)
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_server PRIVATE
+    admin/QcAdminReports.h admin/QcAdminReports.cpp
+    admin/QcAdminStatusRecorder.h admin/QcAdminStatusRecorder.cpp
+    admin/QcServerAdmin.h admin/QcServerAdmin.cpp
+)
+target_sources(qc_server PRIVATE
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     blockentities/QcBlockEntityExtras.h blockentities/QcBlockEntityExtras.cpp
@@ -43,6 +48,7 @@ target_sources(qc_server PRIVATE
     commands/QcAdventureCommands.h commands/QcAdventureCommands.cpp
     commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
+    commands/QcChatLog.h commands/QcChatLog.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
     commands/QcChunkCommands.h commands/QcChunkCommands.cpp
     commands/QcChunkRegeneration.h commands/QcChunkRegeneration.cpp
@@ -51,6 +57,8 @@ target_sources(qc_server PRIVATE
     commands/QcCommandSource.h commands/QcCommandSource.cpp
     commands/QcEffectCommands.h commands/QcEffectCommands.cpp
     commands/QcExperienceCommands.h commands/QcExperienceCommands.cpp
+    commands/QcGameRules.h commands/QcGameRules.cpp
+    commands/QcLimitCommands.h commands/QcLimitCommands.cpp
     commands/QcMobCommands.h commands/QcMobCommands.cpp
     commands/QcPendingCommands.h commands/QcPendingCommands.cpp
     commands/QcPermission.h

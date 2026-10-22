@@ -24,6 +24,8 @@ public:
     static constexpr QStringView consoleName = u"Server";
 
     QcCommandSource(QcServerClient &client, QcPermission permission);
+    // A player whose replies go to `output` instead of his chat (the admin channel, decision E-848).
+    QcCommandSource(QcServerClient &client, QcPermission permission, Output output);
     explicit QcCommandSource(Output output);
 
     QString name() const;

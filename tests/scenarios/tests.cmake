@@ -36,3 +36,12 @@ add_test(NAME scenario_headless_gamepad_unknown_button
 foreach(test scenario_headless_gamepad_virtual scenario_headless_gamepad_unknown_button)
     set_tests_properties(${test} PROPERTIES TIMEOUT 90 ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/${test}")
 endforeach()
+# The admin channel through the control interface (decision E-848).
+add_test(NAME scenario_headless_admin_channel
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft-headless>;--script;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/admin-channel.jsonl;--time-limit;60"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_OUTPUT=\"text\":\"\\[Server\\] hello from the admin\"[^\n]*\"id\":\"status\""
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(scenario_headless_admin_channel PROPERTIES TIMEOUT 90
+    ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/scenario_headless_admin_channel")

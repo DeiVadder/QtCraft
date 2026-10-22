@@ -161,4 +161,28 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
     return m;
 }
 
+void encode(QDataStream &stream, QcMsg::Ping m)
+{
+    stream << m.nonce;
+}
+
+void encode(QDataStream &stream, QcMsg::Pong m)
+{
+    stream << m.nonce;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Ping>, QDataStream &stream)
+{
+    QcMsg::Ping m;
+    stream >> m.nonce;
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Pong>, QDataStream &stream)
+{
+    QcMsg::Pong m;
+    stream >> m.nonce;
+    return m;
+}
+
 } // namespace QcProtocolCodec

@@ -795,6 +795,7 @@ Die meisten Befehle sind für **Operatoren**. Im Einzelspieler bist du immer Ope
 - `/whitelist on|off|list|add <Spieler>|remove <Spieler>`: mit eingeschalteter Whitelist kommen nur gelistete Spieler und Operatoren herein; eine Sperre gilt auch für Operatoren
 - `/op [Spieler]`, `/deop <Spieler>`: Operator-Rechte; `/op` allein listet die Operatoren
 - `/tp <x> <y> <z>`, `/tp <Spieler>`, `/tp <Spieler> <x> <y> <z>`, `/tp <Spieler> <Zielspieler>`: teleportieren
+- `/say <Nachricht>`: eine Chatzeile an alle als Server
 Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastgeber einer Welt kann nicht getrennt oder gesperrt werden und behält seine Rechte.
 
 **Reparieren und aufräumen**
@@ -805,6 +806,7 @@ Operatoren, Sperren und die Whitelist werden mit der Welt gespeichert. Der Gastg
 - `/setblock <x> <y> <z> <Block>`
 - `/save`: sofort speichern; `/backup [Bezeichnung]`: speichern und den Weltordner in den Ordner backups neben den Welten kopieren, benannt mit Datum und Uhrzeit
 - `/worldinfo`: geladene Chunks, Entities, Tick-Zeiten und Speicher
+- `/limits`: die Grenzen des Servers mit ihren Bereichen; `/limits set <Schlüssel> <Wert>` ändert eine sofort, `/limits reset <Schlüssel>` setzt sie auf ihren Standard zurück (ein dedizierter Server schreibt die Änderung in server.json, eine Einzelspielerwelt hält sie beim nächsten Speichern in world.json fest)
 
 **Zeit und Ticks**
 

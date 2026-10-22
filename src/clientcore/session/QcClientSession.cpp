@@ -27,6 +27,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     m_trading.setSender(send);
     m_signEditor.setSender(send);
     m_stonecutter.setSender(send);
+    m_admin.setSender(send);
 }
 
 QcClientSession::~QcClientSession()
@@ -103,6 +104,7 @@ void QcClientSession::onEvent(QcSessionEvent &&event)
 void QcClientSession::onClosed(const QString &error)
 {
     m_debug.closed();
+    m_admin.closed();
     if (m_disconnectReason.isEmpty()) {
         m_disconnectReason = error.isEmpty() ? u"Connection closed"_s : error;
     }
@@ -119,7 +121,7 @@ void QcClientSession::handleMessage(QcMessage &&message)
 
     if (!handleConnectionMessage(message) && !handleWorldMessage(message) && !handlePlayerMessage(message)
         && !handleEntityMessage(message) && !handleMachineMessage(message) && !m_trading.handle(message)
-        && !m_signEditor.handle(message) && !m_stonecutter.handle(message)) {
+        && !m_signEditor.handle(message) && !m_stonecutter.handle(message) && !m_admin.receive(message)) {
         qCWarning(lcSession) << "Ignoring unexpected message type" << message.index();
     }
 }
@@ -267,6 +269,7 @@ void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
         sendToServer(QcMsg::SetAppearance{m_appearance});
     }
     m_debug.welcomed();
+    m_admin.welcomed();
 }
 
 void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)

@@ -8,6 +8,7 @@
 #include <QScopedValueRollback>
 #include <QThread>
 
+#include <algorithm>
 #include <atomic>
 #include <memory>
 
@@ -24,6 +25,39 @@ struct State
     bool installed = false;
     QElapsedTimer started;
 };
+
+// The recent lines (QcMessageLog::recent), under a mutex of their own: the file's mutex is held
+// while a line is written, and the ring must not wait for a slow disk.
+struct RecentRing
+{
+    QMutex mutex;
+    QList<QcMessageLog::RecentLine> lines;
+    // Where the next line goes once the ring is full.
+    qsizetype next = 0;
+    quint64 sequence = 0;
+};
+
+RecentRing &recentLines()
+{
+    // Never destroyed, like the state.
+    static auto *instance = new RecentRing;
+    return *instance;
+}
+
+void keepRecent(QtMsgType type, const char *category, const QString &message)
+{
+    QcMessageLog::RecentLine line{0, QDateTime::currentMSecsSinceEpoch(), QcMessageLog::severity(type),
+                                  QString::fromLatin1(category ? category : "default"), message.left(QcMessageLog::recentTextLimit)};
+    RecentRing &recent = recentLines();
+    const QMutexLocker lock(&recent.mutex);
+    line.sequence = ++recent.sequence;
+    if (recent.lines.size() < QcMessageLog::recentLimit) {
+        recent.lines.append(std::move(line));
+        return;
+    }
+    recent.lines[recent.next] = std::move(line);
+    recent.next = (recent.next + 1) % QcMessageLog::recentLimit;
+}
 
 State &state()
 {
@@ -88,6 +122,7 @@ void handle(QtMsgType type, const QMessageLogContext &context, const QString &me
 {
     if (!t_writing) {
         writeToFile(type, context, message);
+        keepRecent(type, context.category, message);
     }
     if (type == QtFatalMsg) {
         QcCrashHandler::setReason(message.toUtf8());
@@ -174,6 +209,51 @@ QByteArray formatLine(QtMsgType type, const char *category, const QString &messa
     const QString level(QLatin1Char(levelLetter(type)));
     const QString name = QString::fromLatin1(category ? category : "default");
     return u"%1 +%2 %3 %4 [%5] %6\n"_s.arg(now, since, level, name, thread, message).toUtf8();
+}
+
+int severity(QtMsgType type)
+{
+    switch (type) {
+    case QtDebugMsg:
+        return 0;
+    case QtInfoMsg:
+        return 1;
+    case QtWarningMsg:
+        return 2;
+    case QtCriticalMsg:
+        return 3;
+    case QtFatalMsg:
+        return 4;
+    }
+    return 1;
+}
+
+Recent recent(int minimumSeverity, qsizetype count, quint64 after, const QSet<QString> &categories)
+{
+    RecentRing &kept = recentLines();
+    const QMutexLocker lock(&kept.mutex);
+    Recent found{{}, kept.sequence};
+    QList<RecentLine> &result = found.lines;
+    // Newest first from the slot before `next`, so the count keeps the newest lines.
+    const qsizetype size = kept.lines.size();
+    for (qsizetype i = 0; i < size && result.size() < count; ++i) {
+        const RecentLine &line = kept.lines[(kept.next - 1 - i + size) % size];
+        if (line.sequence <= after) {
+            break;
+        }
+        if (line.severity >= minimumSeverity && (categories.isEmpty() || categories.contains(line.category))) {
+            result.append(line);
+        }
+    }
+    std::ranges::reverse(result);
+    return found;
+}
+
+quint64 latestSequence()
+{
+    RecentRing &kept = recentLines();
+    const QMutexLocker lock(&kept.mutex);
+    return kept.sequence;
 }
 
 } // namespace QcMessageLog

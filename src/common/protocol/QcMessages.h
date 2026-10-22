@@ -3,6 +3,7 @@
 // Protocol messages. Plain data structs in thematic headers; together they form the QcMessage
 // variant whose alternative index is the wire type tag. New messages are appended at the end.
 
+#include "common/protocol/QcAdminMessages.h"
 #include "common/protocol/QcDebugMessages.h"
 #include "common/protocol/QcEntityMessages.h"
 #include "common/protocol/QcLoginMessages.h"
@@ -33,4 +34,7 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::DrawLauncher, QcMsg::ThrowItem, QcMsg::SpawnerDisplay, QcMsg::BlockBatch,
                                QcMsg::Explosion, QcMsg::CampfireDisplay, QcMsg::SignText, QcMsg::OpenSignEditor, QcMsg::EditSign,
                                QcMsg::OpenStonecutter, QcMsg::StonecutterState, QcMsg::SelectStonecutterRecipe,
-                               QcMsg::CloseStonecutter, QcMsg::MapUpdate>;
+                               QcMsg::CloseStonecutter, QcMsg::MapUpdate, QcMsg::Ping, QcMsg::Pong,
+                               QcMsg::AdminSubscribe, QcMsg::AdminRequest, QcMsg::AdminResult, QcMsg::AdminStatus,
+                               QcMsg::AdminHistory, QcMsg::AdminPlayers, QcMsg::AdminChat, QcMsg::AdminCatalogue,
+                               QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog>;

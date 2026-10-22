@@ -108,8 +108,9 @@ private slots:
             {Mobs, simulating},       {Projectiles, simulating}, {Items, simulating},  {Plants, simulating},
             {FallingBlocks, simulating}, {Explosions, simulating}, {Minecarts, simulating}, {Machines, simulating},
             // Chunk loading notes the tick, held maps are revealed, the time goes out in a step of a
-            // frozen world, the clients.
+            // frozen world, the clients, the admin channel (decision E-848).
             {ClientSync, always},     {ClientSync, simulating}, {ClientSync, simulating}, {ClientSync, always},
+            {ClientSync, always},
             {Streaming, always},
         };
 

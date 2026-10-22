@@ -126,6 +126,11 @@ void QcSessionCore::onMessage(QcMessage &&message)
         reconcile(*state);
         return;
     }
+    // Answered here on the tick thread, so the round trip does not wait for a frame (decision E-848).
+    if (const auto *ping = std::get_if<QcMsg::Ping>(&message)) {
+        m_connection->send(QcMsg::Pong{ping->nonce});
+        return;
+    }
 
     applyWorld(message);
     if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message);

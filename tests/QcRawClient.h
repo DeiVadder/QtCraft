@@ -41,7 +41,7 @@ public:
     void received(QcMessage &&message)
     {
         ++messageCount;
-        if (!receivedPlayer(message) && !receivedScreen(message) && !receivedBlocks(message)) {
+        if (!receivedPlayer(message) && !receivedScreen(message) && !receivedBlocks(message) && !receivedAdmin(message)) {
             receivedWorld(message);
         }
     }
@@ -135,6 +135,21 @@ public:
         return true;
     }
 
+    // The admin channel's messages (decision E-848), kept in order; pings are answered at once.
+    bool receivedAdmin(const QcMessage &message)
+    {
+        if (const auto *ping = std::get_if<QcMsg::Ping>(&message)) {
+            ++pings;
+            connection.send(QcMsg::Pong{ping->nonce});
+            return true;
+        }
+        if (message.index() < QcMessage(QcMsg::AdminSubscribe{}).index()) {
+            return false;
+        }
+        admin.append(message);
+        return true;
+    }
+
     // Changed blocks, explosions and signs; false for another message.
     bool receivedBlocks(const QcMessage &message)
     {
@@ -160,6 +175,9 @@ public:
     }
 
     QcConnection connection;
+    // Admin messages the server sent, oldest first, and pings answered.
+    QList<QcMessage> admin;
+    int pings = 0;
     // The login: the installation key (set by hello() when empty), the server password, the packs
     // to report (none: the server's), the wanted view distance, and whether to answer at all.
     QByteArray key;

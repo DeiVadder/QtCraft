@@ -98,4 +98,17 @@ struct WorldTime
     double speed = 1.0;
 };
 
+// Server -> client: measures the round trip for the admin channel's player list (decision E-848);
+// the client's tick thread answers at once with a Pong of the same nonce.
+struct Ping
+{
+    quint32 nonce = 0;
+};
+
+// Client -> server: the answer to Ping.
+struct Pong
+{
+    quint32 nonce = 0;
+};
+
 } // namespace QcMsg

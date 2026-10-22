@@ -2,6 +2,7 @@
 
 #include "common/diagnostics/QcHealthSample.h"
 #include "common/protocol/QcMessages.h"
+#include "server/admin/QcServerAdmin.h"
 #include "server/blocks/QcBlockSimulation.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcFireIgnition.h"
@@ -246,8 +247,6 @@ private:
     QcTickScheduler m_ticks;
     QcTickPhaseTimer m_phases;
     QcLagReport m_lag;
-    // Network bytes of the clients that left (health()).
-    QcTraffic m_departedTraffic;
     // Tick durations since the previous health() (the shared tick statistics stay untouched).
     QcIntervalStats m_healthTicks;
     QcTickControl m_tickControl;
@@ -297,6 +296,8 @@ private:
     QcServerCommands m_commands;
     QcPlayerJoin m_join;
     QcServerLogin m_login;
+    // The admin channel (decision E-848), also the network bytes of the clients that left (health()).
+    QcServerAdmin m_admin;
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;

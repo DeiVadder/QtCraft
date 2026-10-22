@@ -795,6 +795,7 @@ Most commands are for **operators**. In single player you are always an operator
 - `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too
 - `/op [player]`, `/deop <player>`: operator rights; `/op` alone lists the operators
 - `/tp <x> <y> <z>`, `/tp <player>`, `/tp <player> <x> <y> <z>`, `/tp <player> <target player>`: teleport
+- `/say <message>`: a chat line to everyone as the server
 Operators, bans and the whitelist are saved with the world. The host of a world cannot be kicked, banned or lose his rights.
 
 **Repairing and cleaning up**
@@ -805,6 +806,7 @@ Operators, bans and the whitelist are saved with the world. The host of a world 
 - `/setblock <x> <y> <z> <block>`
 - `/save`: save now; `/backup [label]`: save and copy the world folder into the folder backups next to the worlds, named with date and time
 - `/worldinfo`: loaded chunks, entities, tick times and memory
+- `/limits`: the server's limits with their ranges; `/limits set <key> <value>` changes one at once, `/limits reset <key>` sets it back to its default (a dedicated server writes the change into server.json, a single-player world keeps it in world.json with the next save)
 
 **Time and ticks**
 

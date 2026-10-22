@@ -47,6 +47,9 @@ struct QcServerSettings
     // clamped or unknown is in `limitWarnings` for the log.
     QcServerLimits limits;
     QStringList limitWarnings;
+    // The file read() read (or would have read); not written into it. /limits writes changed limits
+    // there (QcServerConfig::settingsFile, decision E-848).
+    QString path;
 
     // Reads a settings file; a missing file gives the defaults.
     [[nodiscard]] static QcResult<QcServerSettings> read(const QString &path);

@@ -129,6 +129,7 @@ target_sources(qc_common PRIVATE
     core/QcBlockFace.h
     core/QcBlockPos.h core/QcBlockPos.cpp
     core/QcChunkPos.h core/QcChunkPos.cpp
+    core/QcCommandSyntax.h core/QcCommandSyntax.cpp
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp
     core/QcIntMath.h
@@ -226,6 +227,8 @@ target_sources(qc_common PRIVATE
     physics/QcSpawnGround.h physics/QcSpawnGround.cpp
 )
 target_sources(qc_common PRIVATE
+    protocol/QcAdminCodec.cpp
+    protocol/QcAdminMessages.h
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcChunkCodec.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp

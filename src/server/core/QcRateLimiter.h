@@ -37,8 +37,11 @@ public:
         // Lines written on a sign (decision E-766); each change goes to every player who has the
         // sign's chunk.
         Sign,
+        // Admin requests and subscriptions of operators (decision E-848): each may run a command or
+        // build a report of the whole server.
+        Admin,
     };
-    static constexpr int kindCount = 9;
+    static constexpr int kindCount = 10;
 
     struct Limit
     {
@@ -55,6 +58,7 @@ public:
         {2.0, 10.0},
         {5.0, 10.0},
         {1.0, 4.0},
+        {5.0, 20.0},
     }};
     // Drops are logged at most this often per player and kind (the first one at once).
     static constexpr qint64 reportIntervalNs = 1'000'000'000;
@@ -65,7 +69,7 @@ public:
     // The client messages that are deliberately not limited here: PlayerInput has its own budget,
     // Hello, Respawn, Disconnect and the release or cancel of DrawLauncher are harmless,
     // LoginResponse is accepted once before the client plays (the connection limits of
-    // QcNetworkServer bound logins), DebugSubscribe is state (the latest one counts and must never be
+    // QcNetworkServer bound logins), Pong only answers the server's own Ping, DebugSubscribe is state (the latest one counts and must never be
     // dropped; the debug data itself comes at a fixed pace, decision E-225). Every other client
     // message needs a bucket.
     static bool isUnlimited(const QcMessage &message);

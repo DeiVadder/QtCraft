@@ -2,11 +2,13 @@
 
 #include "server/commands/QcAdventureCommands.h"
 #include "server/commands/QcBlockCommands.h"
+#include "server/commands/QcChatLog.h"
 #include "server/commands/QcCheatCommands.h"
 #include "server/commands/QcChunkCommands.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcEffectCommands.h"
 #include "server/commands/QcExperienceCommands.h"
+#include "server/commands/QcLimitCommands.h"
 #include "server/commands/QcMobCommands.h"
 #include "server/commands/QcPendingCommands.h"
 #include "server/commands/QcPlayerCommands.h"
@@ -48,6 +50,12 @@ public:
     void chat(QcServerClient &client, const QString &text);
     // A line of the console; the leading '/' is optional. Replies go to `output`.
     void console(const QString &line, const QcCommandSource::Output &output);
+    // A command line of a player through the admin channel (decision E-848): checked and run like
+    // his chat command (the leading '/' is optional), the replies go to `output` instead of his chat.
+    // The line is not cut to the chat's 256 characters.
+    void admin(QcServerClient &client, const QString &line, const QcCommandSource::Output &output);
+    // The chat lines everyone saw (players' chat and /say).
+    const QcChatLog &chatLog() const { return m_chatLog; }
     // After the server's due ticks: reports a sprint that ended.
     void afterTicks() { m_ticks.reportSprintEnd(); }
     // Every tick: reports a backup copied in the background (decision E-256).
@@ -71,11 +79,16 @@ private:
     // /help lists and explains only what the source may run.
     void help(const QcCommandContext &context) const;
     static bool mayRun(const QcCommandSource &source, const QcCommandMacroDefinition &macro);
-    void broadcast(const QcServerClient &client, const QString &text) const;
+    void broadcast(const QcServerClient &client, const QString &text);
+    // /say: a line to everyone as the server.
+    void say(const QcCommandContext &context);
+    // Sends `line` to every playing client and keeps it in the chat log.
+    void sendToAll(const QString &sender, const QcMsg::ChatMessage &line);
 
     QcServerState &m_state;
     QcCommandRegistry m_registry;
     QcPendingCommands m_pending;
+    QcChatLog m_chatLog;
     // Before the cheats, which take the parts it reads.
     QcAdventureCommands m_adventure;
     QcCheatCommands m_cheats;
@@ -89,4 +102,5 @@ private:
     QcExperienceCommands m_experience;
     QcEffectCommands m_effects;
     QcMobCommands m_mobs;
+    QcLimitCommands m_limits;
 };

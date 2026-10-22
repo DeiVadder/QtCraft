@@ -262,10 +262,73 @@ against a determined attacker.
 - **Trust on first use:** a name nobody has used on a server yet belongs to whoever uses it first.
   Operators named in advance (`/op Name`, `operators` in `server.json`) are bound at that first
   login.
+- **Operators can change the server from afar** (decision E-848): over the admin channel they set
+  server limits (a dedicated server writes them into its `server.json`), game rules and the lists,
+  and stop the server. Make only people operators whom you would hand the server's console.
 - Limits on messages, frame sizes, connections per address and the login time protect the server
   from floods and broken clients, not from many machines at once. The limits per address count an
   IPv6 client by its /64 network (a host picks the rest of its address freely), an IPv4 client by
   its address (a whole household behind one NAT shares the limits).
+
+## Server administration (admin channel)
+
+Operators manage a running server over their normal game connection (decision E-848); there is
+no second port and no separate login. The in-game screen "Manage server" follows in stage 77.2;
+until then the channel is used by the control interface (`admin`, `adminFollow`, `adminStatus`,
+see `docs/Steuerschnittstelle.md`) and the tests.
+
+- **Who:** operators only, the same rule as the commands (`access.json`, `operators` in
+  `server.json`, the local player of a single-player world). The server checks the rights on
+  **every** admin message and on every tick for the topics followed: a player who is no operator
+  gets a refusal and a warning in the log (`qtcraft.admin`), and `/deop` ends an operator's
+  subscription at once.
+- **Status:** following the status sends the history first (the last 10 minutes at one point a
+  second, the last 24 hours at one point a minute; recorded all the time), then once a second the
+  tick mean, 99th percentile and maximum, ticks per second, the mean per tick phase, players,
+  loaded chunks, entities by kind, memory (resident and peak), network rates, uptime, world,
+  seed, generator, version and protocol, together with the player list. While an operator
+  follows the status the server pings every player every 5 s, so the list shows round trips.
+- **Players:** name, ping, position, game mode, operator flag, local or network, connection time,
+  address; kick (with reason), ban (with reason), unban, op, deop, whitelist add/remove/on/off.
+- **Chat:** the last 200 chat lines (players and `/say`) on subscribing, then each new line;
+  sending a line as the server runs `/say`.
+- **Commands:** a catalogue of all commands and macros (name, aliases, permission, usage and
+  description as translation keys); the client reads the parameters from the usage
+  (`QcCommandSyntax`: literals, required and optional words, choices, types such as player,
+  coordinate, block, item) for a picker with completion. A command line runs as the operator; its
+  replies come back in the answer instead of the chat.
+- **Lists:** operators, whitelist (and whether it is on), bans with reason, who banned and since
+  when.
+- **Settings:** the game rules (`/gamerule`) and the server limits (`/limits`), each with group,
+  range, default, current value and a translated description. Changes run the commands: rules are
+  kept in `world.json` with the next save, limits of a single-player world too (only the keys an
+  operator set), limits of a dedicated server are written into the `limits` of its `server.json`
+  at once (its other keys stay as they are). `/limits set <key> <value>` and `/limits reset <key>`
+  do the same from the chat or the console.
+- **Log:** the tail of the server's log (the last 2 000 lines kept in memory, from the chosen
+  level on, at most 2 000 per message, one tail a second per operator) and, while followed, the
+  new lines once a second, each line once. A dedicated server shows its whole log. A world hosted
+  by the game (opened to the LAN) shares its log with the host's own game, so remote operators see
+  only the server's categories there (`qtcraft.admin`, `commands`, `gamemodes`, `items`, `lag`,
+  `network`, `plants`, `server`, `trades`, `worldgen`); the host's client, settings, folders
+  (`qtcraft.worlds`, `qtcraft.content`) and the servers he joined stay hidden.
+- **Save, backup, stop:** run `/save` and `/backup [label]`; stopping runs the console's `/stop` and
+  needs the argument `confirm`. An operator may stop the server this way although `/stop` itself
+  is the console's command, because remote management (the server on one machine, the operator at
+  another) is the point of the channel; the log names who stopped it.
+
+A refusal says why (`AdminResult::Refusal`): missing rights (every subscription has ended then),
+wrong arguments, a stop without confirmation, or a request repeated too soon; texts are never cut
+silently: request texts beyond their bounds are refused by the decoder, replies carry arguments of
+up to 1 024 characters.
+
+Every action is the command an operator could type, so the channel has no rules of its own. The
+admin messages share a rate limit (5 per second, bursts of 20; the local player is exempt like his
+chat) and bounds on every count and text (`QcMsg::AdminLimits`); a frame beyond them closes the
+connection. Clients of protocol versions before 67 are refused at the login as for every version
+difference; older clients have no admin channel. The channel adds no protection of its own: what
+"Limits of this security" says about plain text applies to it too, so manage a server on the
+internet only over a network you trust.
 
 ## Network behaviour
 

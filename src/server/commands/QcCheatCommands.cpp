@@ -5,6 +5,7 @@
 #include "common/protocol/QcChatText.h"
 #include "common/world/QcDayCycle.h"
 #include "server/commands/QcCommandArguments.h"
+#include "server/commands/QcGameRules.h"
 #include "server/commands/QcMobCommands.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -69,25 +70,6 @@ constexpr ModeKeys newPlayersStart{QT_TRANSLATE_NOOP("QcServerMessages", "New pl
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
     "QcServerMessages",
     "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
-
-// A game rule that is a number from 0 to `highest`.
-struct NumberRule
-{
-    QStringView name;
-    int QcWorldInfo::*value;
-    int highest;
-};
-
-// spawnChunkRadius: the chunks around the spawn that stay loaded (decision E-377): 0 none, 1 the
-// spawn chunk, 2 the 3 x 3 around it and so on. maxEntityCramming: creatures in one block cell
-// beyond which they take damage (decision E-401), 0 off. playerInvulnerabilityTicks and
-// mobInvulnerabilityTicks: the game ticks of invulnerability after a hurt (decision E-429), 0 none.
-constexpr std::array<NumberRule, 4> numberRules{{
-    {u"spawnChunkRadius", &QcWorldInfo::spawnChunkRadius, QcWorldInfo::maxSpawnChunkRadius},
-    {u"maxEntityCramming", &QcWorldInfo::maxEntityCramming, QcWorldInfo::maxEntityCrammingLimit},
-    {u"playerInvulnerabilityTicks", &QcWorldInfo::playerInvulnerabilityTicks, QcHurtWindow::maxTicks},
-    {u"mobInvulnerabilityTicks", &QcWorldInfo::mobInvulnerabilityTicks, QcHurtWindow::maxTicks},
-}};
 
 // The words as QcStandCommands reads them: the command first.
 QStringList withName(const QString &name, const QStringList &args)
@@ -390,35 +372,21 @@ void QcCheatCommands::time(const QcCommandContext &context) const
 
 void QcCheatCommands::gamerule(const QcCommandContext &context)
 {
-    // The rules of the world (keepInventory; daylightCycle and mobSpawning, decision E-221;
-    // randomTicks, decision E-295; quasiConnectivity, decision E-338; fireSpread, decision E-392;
-    // weatherCycle, decision E-395; mobGriefing, decision E-460; explosionBlockDamage, decision E-603;
-    // the numbers in numberRules).
-    using Rule = std::pair<QStringView, bool QcWorldInfo::*>;
-    const std::array<Rule, 9> rules{{{u"keepInventory", &QcWorldInfo::keepInventory},
-                                     {u"daylightCycle", &QcWorldInfo::daylightCycle},
-                                     {u"mobSpawning", &QcWorldInfo::mobSpawning},
-                                     {u"randomTicks", &QcWorldInfo::randomTicks},
-                                     {u"fireSpread", &QcWorldInfo::fireSpread},
-                                     {u"quasiConnectivity", &QcWorldInfo::quasiConnectivity},
-                                     {u"weatherCycle", &QcWorldInfo::weatherCycle},
-                                     {u"mobGriefing", &QcWorldInfo::mobGriefing},
-                                     {u"explosionBlockDamage", &QcWorldInfo::explosionBlockDamage}}};
+    // The rules of the world (QcGameRules): switches here, numbers in numberRule().
     const QStringList &args = context.args;
-    const auto number = std::ranges::find(numberRules, QStringView(args[0]), &NumberRule::name);
-    if (number != numberRules.end()) {
-        numberRule(context, number->highest, number->value);
+    const QcGameRules::Rule *rule = QcGameRules::find(args[0]);
+    if (rule && rule->number) {
+        numberRule(context, rule->highest, rule->number);
         return;
     }
-    const auto rule = std::ranges::find(rules, QStringView(args[0]), &Rule::first);
     const std::optional<bool> wanted = args.size() >= 2 ? QcCommandArguments::toggle(args[1]) : std::nullopt;
-    if (rule == rules.end() || (args.size() >= 2 && !wanted)) {
+    if (!rule || (args.size() >= 2 && !wanted)) {
         context.reply(gameruleUsage);
         return;
     }
 
     // The values are part of the keys, so they are translated with the line.
-    bool &value = m_state.info().*(rule->second);
+    bool &value = m_state.info().*(rule->flag);
     if (!wanted) {
         context.reply(value ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is true") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is false"),
                       {args[0]});
@@ -432,14 +400,14 @@ void QcCheatCommands::gamerule(const QcCommandContext &context)
     value = *wanted;
     context.reply(value ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now true") : QT_TRANSLATE_NOOP("QcServerMessages", "%1 is now false"),
                   {args[0]});
-    if (rule->second == &QcWorldInfo::daylightCycle) {
+    if (rule->flag == &QcWorldInfo::daylightCycle) {
         m_parts.setWorldTime(m_state.info().worldTime);
     }
 }
 
 void QcCheatCommands::numberRule(const QcCommandContext &context, int highest, int QcWorldInfo::*rule)
 {
-    // The rules of numberRules.
+    // The rules of QcGameRules that are numbers.
     const QStringList &args = context.args;
     int &value = m_state.info().*rule;
     if (args.size() == 1) {

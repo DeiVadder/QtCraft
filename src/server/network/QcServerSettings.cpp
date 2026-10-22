@@ -142,7 +142,9 @@ QcResult<QcServerSettings> QcServerSettings::read(const QString &path)
 {
     QFile file(path);
     if (!file.exists()) {
-        return QcServerSettings{};
+        QcServerSettings defaults;
+        defaults.path = path;
+        return defaults;
     }
     if (!file.open(QIODevice::ReadOnly) || file.size() > maxFileBytes) {
         return qcError(u"Cannot read %1"_s.arg(path));
@@ -153,7 +155,11 @@ QcResult<QcServerSettings> QcServerSettings::read(const QString &path)
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
         return qcError(u"%1 is no valid JSON object: %2"_s.arg(path, error.errorString()));
     }
-    return fromJson(document.object());
+    QcResult<QcServerSettings> settings = fromJson(document.object());
+    if (settings) {
+        settings->path = path;
+    }
+    return settings;
 }
 
 QcResult<QcServerSettings> QcServerSettings::fromJson(const QJsonObject &json)
@@ -246,6 +252,9 @@ QcServerConfig QcServerSettings::serverConfig() const
     config.defaultGameMode = defaultGameMode;
     config.limits = limits;
     config.limitsFromServer = true;
+    config.settingsFile = path;
+    // The process is the server alone.
+    config.fullAdminLog = true;
     return config;
 }
 

@@ -69,7 +69,6 @@ private:
     // Tells the player who asked (when still there) and the log how the copy ended.
     void reportBackup(quint32 requester, const QcResult<QcWorldBackup::Summary> &result, qint64 startedMs) const;
     void worldInfo(const QcCommandContext &context) const;
-    void limits(const QcCommandContext &context) const;
     void remove(const QcCommandContext &context);
     // Counts (or with `apply` removes) what the removal matches.
     // The entities `removal` finds; with `apply` they are removed.

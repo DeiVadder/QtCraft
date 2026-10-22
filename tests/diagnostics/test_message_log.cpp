@@ -149,6 +149,52 @@ private slots:
         QCOMPARE(g_forwarded.load(), threadCount * perThread);
     }
 
+    void recentLinesComeOnceWhileThreadsWrite()
+    {
+        // The admin channel asks again after the newest line recent() looked at (decision E-848):
+        // with threads writing meanwhile, no line may come twice and none out of order.
+        QcMessageLog::installWithoutFile();
+        constexpr int threadCount = 4;
+        constexpr int perThread = 3000;
+        std::atomic<int> running{threadCount};
+        std::vector<std::thread> threads;
+        threads.reserve(threadCount);
+        for (int t = 0; t < threadCount; ++t) {
+            threads.emplace_back([t, &running] {
+                for (int i = 0; i < perThread; ++i) {
+                    qCInfo(lcLogTest, "recent %d %d", t, i);
+                }
+                --running;
+            });
+        }
+
+        QSet<QString> seen;
+        quint64 after = QcMessageLog::latestSequence();
+        quint64 previous = after;
+        bool duplicate = false;
+        bool unordered = false;
+        const QSet<QString> categories{u"qtcraft.logtest"_s};
+        for (bool last = false; !last;) {
+            last = running.load() == 0;
+            const QcMessageLog::Recent found = QcMessageLog::recent(0, QcMessageLog::recentLimit, after, categories);
+            for (const QcMessageLog::RecentLine &line : found.lines) {
+                unordered = unordered || line.sequence <= previous;
+                previous = line.sequence;
+                duplicate = duplicate || seen.contains(line.text);
+                seen.insert(line.text);
+            }
+            unordered = unordered || found.latest < after;
+            after = found.latest;
+        }
+        for (std::thread &thread : threads) {
+            thread.join();
+        }
+        QVERIFY(!duplicate);
+        QVERIFY(!unordered);
+        QVERIFY(!seen.isEmpty());
+        QCOMPARE(after, QcMessageLog::latestSequence());
+    }
+
     void aFileThatCannotBeWrittenInstallsNothing()
     {
         QFile blocker(m_dir.filePath(u"blocker"_s));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clientcore/control/QcControlAdminCommands.h"
 #include "clientcore/control/QcControlEntityCommands.h"
 #include "clientcore/control/QcControlGamepadCommands.h"
 #include "clientcore/control/QcControlInventoryCommands.h"
@@ -43,4 +44,5 @@ private:
     QcControlMachineCommands m_machines;
     QcControlTradeCommands m_trades;
     QcControlGamepadCommands m_gamepads;
+    QcControlAdminCommands m_admin;
 };

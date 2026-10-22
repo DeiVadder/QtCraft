@@ -5,6 +5,9 @@
 // The logging categories of qc_server, each defined once in QcServerLogging.cpp (decision E-680).
 // Users filter them by name, e.g. QT_LOGGING_RULES="qtcraft.server.debug=true".
 
+// "qtcraft.admin": the admin channel (decision E-848): requests, refusals, lost rights.
+Q_DECLARE_LOGGING_CATEGORY(lcAdmin)
+
 // "qtcraft.commands": chat commands and their effects.
 Q_DECLARE_LOGGING_CATEGORY(lcCommands)
 

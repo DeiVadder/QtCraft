@@ -1,0 +1,12 @@
+# The admin channel through the control interface (decision E-848): the bot is the local player
+# and so an operator. Every request must succeed; the status at the end carries the server's line.
+{"id":"ready","cmd":"waitUntilReady"}
+{"id":"follow","cmd":"adminFollow","topics":["status","chat"]}
+{"id":"rule","cmd":"admin","request":"gamerule","args":["keepInventory","false"]}
+{"id":"limit","cmd":"admin","request":"limit","args":["summonLimit","8"]}
+{"id":"settings","cmd":"admin","request":"settings"}
+{"id":"catalogue","cmd":"admin","request":"catalogue"}
+{"id":"say","cmd":"admin","request":"chat","args":["hello from the admin"]}
+{"id":"later","cmd":"wait","ticks":25}
+{"id":"status","cmd":"adminStatus"}
+{"id":"quit","cmd":"quit"}

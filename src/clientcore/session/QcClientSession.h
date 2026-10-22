@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/meshing/QcEntityPose.h"
 #include "clientcore/player/QcClientGameMode.h"
@@ -162,6 +163,10 @@ public:
     QcClientDebugSubscription &debug() { return m_debug; }
     const QcClientDebugSubscription &debug() const { return m_debug; }
 
+    // The admin channel (decision E-848): what an operator follows and asks the server for.
+    QcClientAdmin &admin() { return m_admin; }
+    const QcClientAdmin &admin() const { return m_admin; }
+
     // Recent sounds (server and own) and the ambience levels around the player, faded towards the
     // surroundings every tick.
     const QcClientSounds &sounds() const { return m_sounds; }
@@ -265,6 +270,7 @@ private:
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcClientVitals m_vitals;
     QcClientDebugSubscription m_debug;
+    QcClientAdmin m_admin;
     QcClientSounds m_sounds;
     // Calls back into the members above; the destructor stops it first.
     std::unique_ptr<QcSessionLink> m_link;

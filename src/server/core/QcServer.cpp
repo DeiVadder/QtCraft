@@ -76,6 +76,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
                            m_weather.sendTo(client);
                        }})
     , m_login(m_state, [this](Client &client) { m_join.join(client); })
+    , m_admin(m_state, m_commands, m_phases, m_ticks)
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
     , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits,
@@ -259,9 +260,10 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
 bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
 {
     const std::optional<QcRateLimiter::Kind> kind = QcRateLimiter::kindOf(message);
-    // The local player (in-process host, the operator) is not limited in chat: command bursts of
-    // scripts and benchmark scenarios must arrive complete. All other kinds stay limited for him.
-    const bool exempt = kind && client.local && *kind == QcRateLimiter::Kind::Chat;
+    // The local player (in-process host, the operator) is not limited in chat and in the admin
+    // channel: command bursts of scripts and benchmark scenarios must arrive complete. All other
+    // kinds stay limited for him.
+    const bool exempt = kind && client.local && (*kind == QcRateLimiter::Kind::Chat || *kind == QcRateLimiter::Kind::Admin);
     if (!kind || exempt || client.input.rateLimiter.allow(*kind, m_state.clock().playerTimeNs())) {
         return true;
     }
@@ -340,7 +342,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
         QcServerSigns(m_state).edit(client, *sign);
     } else if (const auto *debug = std::get_if<QcMsg::DebugSubscribe>(&message)) {
         m_debug.subscribe(client, debug->flags);
-    } else {
+    } else if (!m_admin.handle(client, message)) {
         return false;
     }
 
