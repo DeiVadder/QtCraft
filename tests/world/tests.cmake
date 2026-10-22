@@ -4,6 +4,8 @@
 
 qc_add_test(test_coordinates SOURCES world/test_coordinates.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
+qc_add_test(test_section_snapshots SOURCES world/test_section_snapshots.cpp LIBRARIES qc_common)
+qc_add_test(test_section_access SOURCES world/test_section_access.cpp LIBRARIES qc_common)
 qc_add_test(test_physics SOURCES world/test_physics.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_flight SOURCES world/test_flight.cpp QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_worldgen)

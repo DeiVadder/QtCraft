@@ -17,7 +17,13 @@ public:
     QcChunkPos pos() const { return m_pos; }
 
     // Local x/z in [0, chunkSize), y in [0, worldHeight). Outside the height range reads air.
-    QcBlockId block(int x, int y, int z) const;
+    QcBlockId block(int x, int y, int z) const
+    {
+        if (y < 0 || y >= QcWorld::worldHeight) {
+            return qcAirBlockId;
+        }
+        return m_sections[std::size_t(y / QcWorld::sectionHeight)].block(x, y % QcWorld::sectionHeight, z);
+    }
     void setBlock(int x, int y, int z, QcBlockId block);
 
     const QcChunkSection &section(int index) const { return m_sections[std::size_t(index)]; }

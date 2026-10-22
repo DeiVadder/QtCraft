@@ -2538,6 +2538,61 @@ Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-S
 
 **Zielprüfung** (`docs/Performance.md`, „Ziele“): Sichtweite 8: 120 FPS (Frame Ø 8,33–8,37 ms), p99 10,2–10,4 ms (≤ 12,5), Frame-Kosten höchstens 2,32 ms GPU in crowd (≤ 4), Spitzenspeicher höchstens 473 MB (sprint 10 s; ≤ 600) erfüllt. Sichtweite 16: p99 9,3–9,4 ms (≤ 16,7) und Frame-Kosten höchstens 3,23 ms GPU (≤ 8,3) erfüllt; **Spitzenspeicher verfehlt, aber deutlich näher:** stand 803 MB (vorher 993), sprint (10 s) 859 MB (vorher 1 109) bei Ziel ≤ 800 MB; der physische Gesamtbedarf (`peak_footprint_mb`, nur `dev`) liegt bei 1 303 bzw. 1 362 MB. Befund „Spitzenspeicher ≤ 800 MB bei 16 Chunks“ bleibt offen (Rest: Blockindizes in Client und Server, siehe E-813, „Verworfen bzw. offen“). Kein Tick über 50 ms (höchstens 5,8 ms), keine übersprungenen Ticks.
 
+## Paket Block-Indizes (E-844), Release, headless und offscreen (2026-10-22)
+
+Basis `base` = `dev` `9b67546`, `new` = `feature/block-indices` `45bdb99` (+ Aufräumen ohne Wirkung auf die Laufzeit); beide Release in eigenen Worktrees, alle Läufe über den Slot-Broker (Benchmarks exklusiv), verschränkt mit wechselnder Reihenfolge. Fensterläufe waren nicht erlaubt; der Fenster-Benchmark (`bench-ab.sh`, `stand sprint` bei `VIEW=16`) wird zentral nachgeholt.
+
+**Client-Speicher bei Sichtweite 16** (offscreen: `QTCRAFT_OFFSCREEN=1`, Screenshot nach vollständigem Laden und Vernetzen, `--play --seed 42 --view-distance 16`, `QTCRAFT_STATS=1000`, `/usr/bin/time -l`; je 2 Läufe, Mittel; der Prozess enthält den lokalen Server):
+
+| | base | new |
+|---|---:|---:|
+| Blöcke des Clients `blocksMb` (MiB) | 54,5 | 14,4 (**−74 %**) |
+| maximale RSS (MB) | 822 | 711 (**−111 MB, −13,5 %**) |
+| Spitze physischer Gesamtbedarf (`peak memory footprint`, MB) | 1 343 | 1 229 (−114 MB, −8,5 %) |
+
+Die RSS-Spitze offscreen liegt damit rund 110 MB tiefer; im Fenster (803 bzw. 859 MB am 2026-10-21) ist eine ähnliche Senkung zu erwarten, also unter dem Ziel von 800 MB (zentral nachzumessen).
+
+**Server headless** (`bench-headless.sh`, `@server` bei Sichtweite 8 adaptiv 3–6 Runden; `stand crowd explore` bei Sichtweite 16 je 3 Runden; 60 Spielsekunden; Mediane; `peak_rss_mb` ist der Messprozess aus Server und rohem Client ohne Blockkopie):
+
+| Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB |
+|---|---|---|---|
+| crowd | 0,167 → 0,169 (+1,2 %) | 0,250 → 0,247 (−1,2 %) | 66,4 → 52,1 (−22 %) |
+| gravel-collapse | 0,530 → 0,520 (−1,9 %) | 1,516 → 1,471 (−3,0 %) | 98,4 → 93,7 (−5 %) |
+| farm | 0,008 → 0,008 | 0,016 → 0,015 | 57,5 → 47,1 (−18 %) |
+| farm-seeds | 0,019 → 0,019 | 0,061 → 0,061 | 56,4 → 47,1 (−17 %) |
+| explore | 0,239 → 0,234 (−2,1 %) | 1,078 → 1,048 (−2,8 %) | 71,9 → 58,1 (−19 %) |
+| showcase-signal_components | 0,092 → 0,093 (+1,1 %) | 0,168 → 0,173 (+3,0 %) | 64,6 → 53,0 (−18 %) |
+| showcase-signal_machines | 0,094 → 0,095 (+1,1 %) | 0,174 → 0,183 (+5,2 %) | 64,2 → 53,0 (−17 %) |
+| showcase-signal_farm | 0,094 → 0,094 | 0,172 → 0,177 (+2,9 %) | 64,5 → 53,0 (−18 %) |
+| Sichtweite 16: stand | 0,246 → 0,252 (+2,4 %) | 0,343 → 0,346 (+0,9 %) | 121,6 → 72,7 (**−40 %**) |
+| Sichtweite 16: crowd | 0,304 → 0,304 | 0,428 → 0,420 (−1,9 %) | 121,9 → 73,0 (**−40 %**) |
+| Sichtweite 16: explore | 0,676 → 0,656 (−3,0 %) | 2,092 → 2,107 (+0,7 %) | 133,3 → 81,0 (**−39 %**) |
+
+Phasen: Streaming in explore −3 % (Sichtweite 8 und 16); Chunk-Laden in explore −2 bis −3 %, in den übrigen Szenarien an der Auflösung der BENCH-Zeile (0,0001 ms). Ein erster Stand, dessen Chunk-Encoder jede Zelle einzeln über `paletteIndex` las, hatte Streaming in explore +10 % (Tick +4 %); seit `forEachRun` (ganze Wörter je Lauf) ist das weg.
+
+**Meshing je Abschnitt** (`test_mesh_measure`, `QTCRAFT_MESH_MEASURE=full QTCRAFT_SECTION_LIGHT=1`, 15 × 15 Chunks je Region, 3 Runden, Median; Puffergrößen in beiden Ständen gleich, 97,22 bzw. 60,35 MB):
+
+| Region | mesh_avg_ms | mesh_max_ms |
+|---|---|---|
+| Land (1 112 Abschnitte mit Flächen) | 0,749 → 0,714 (−4,7 %) | 2,107 → 2,159 |
+| Küste (936) | 0,697 → 0,655 (−6,0 %) | 2,189 → 2,193 |
+
+**Mikro-Benchmarks** (`test_section_access`, Release, `-minimumtotal 200`, je Abschnitt mit 4096 Zellen, bestes von 3 Runden; Paletten mit 8/40/300 Einträgen = 4/8/16 Bit in `new`, 16 Bit in `base`):
+
+| Fall | 8 | 40 | 300 |
+|---|---|---|---|
+| Lesen in Zellenreihenfolge (µs) | 2,10 → 1,70 (−19 %) | 2,10 → 1,70 (−19 %) | 2,10 → 1,70 (−19 %) |
+| Lesen gemischt | 3,08 → 2,30 (−25 %) | 3,05 → 2,40 (−21 %) | 3,05 → 2,40 (−21 %) |
+| Lesen über `QcChunk::block` | 4,00 → 2,30 (−43 %) | 4,00 → 2,30 (−43 %) | 3,60 → 2,30 (−36 %) |
+| `forEachCell` | 3,05 → 1,70 (−44 %) | 3,05 → 1,70 (−44 %) | 3,05 → 1,60 (−48 %) |
+| Schreiben gemischt (Palette bleibt) | 21 → 22 (+5 %) | 37 → 37 | 180 → 180 |
+| Kopie plus ein Schreiben | 0,14 → 0,08 (−46 %) | 0,15 → 0,10 (−33 %) | 0,20 → 0,19 (−5 %) |
+| frischer Abschnitt Zelle für Zelle plus `compact` | 26 → 32 (+23 %) | 56 → 65 (+16 %) | 240 → 260 (+8 %) |
+
+Das Lesen wird vor allem schneller, weil `block()` jetzt inline ist (vorher ein Aufruf in eine andere Übersetzungseinheit je Zelle); das Entpacken (Verschiebung, Maske) kostet weniger, als der Aufruf kostete. Schreiben kostet das Lesen-Ändern-Schreiben des Worts; der frische Abschnitt dazu das Umpacken beim Wachsen und in `compact` (1–6 µs je Abschnitt; im Server unter der Auflösung des Chunk-Ladens). Debug: nur als Rauchtest unter ctest (kein Debug-Build von `base`, Plattenplatz).
+
+**Ergebnis:** Blöcke im Client −74 %, Server-Prozess bei Sichtweite 16 −49 MB, Gesamtprozess offscreen −111 MB RSS; keine Regression über 5 % bei Tick (Mittel) und Meshing (Tick p99 höchstens +5,2 % in showcase-signal_machines bei 0,009 ms Unterschied, Streuung).
+
 ## Paket 73.1 (Monster-Spawn nach dem Vorbild), headless, Release (2026-10-22)
 
 `scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `f15f17d` (eigener Worktree), `new` = Branch `feature/73-1-spawn` (E-836); Median je Szenario. Die erste Reihe zeigte crowd +19 % und explore +7 % im Tick; der Monster-Durchgang zählte dort jeden Tick die geladenen Chunks der 17 × 17-Gebiete (289 Abfragen `QcServerWorld::chunk`). Seitdem zählt `QcNaturalSpawner::currentMonsterCap` sie nur einmal je Sekunde oder wenn ein Spieler den Chunk wechselt; crowd und explore danach neu gemessen (6 Runden):

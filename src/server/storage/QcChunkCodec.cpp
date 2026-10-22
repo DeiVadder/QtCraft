@@ -27,7 +27,11 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
     QHash<QcBlockId, QcBlockId> localIds;
     QcChunk copy(chunk.pos());
     for (int s = 0; s < QcWorld::sectionCount; ++s) {
-        const QcChunkSection &section = chunk.section(s);
+        // The copy is compacted, so a section that grew during play is saved without unused entries
+        // (and the chunk's names list only blocks that are present).
+        QcChunkSection &section = copy.section(s);
+        section = chunk.section(s);
+        section.compact();
         QList<QcBlockId> palette;
         for (const QcBlockId id : section.palette()) {
             if (!localIds.contains(id)) {
@@ -36,7 +40,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
             }
             palette.append(localIds.value(id));
         }
-        [[maybe_unused]] const bool assigned = copy.section(s).assign(palette, section.indices());
+        [[maybe_unused]] const bool assigned = section.replacePalette(std::move(palette));
         Q_ASSERT(assigned);
     }
 
@@ -104,7 +108,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
             }
             palette.append(runtimeIds[qsizetype(local)]);
         }
-        if (!section.assign(palette, section.indices())) {
+        if (!section.replacePalette(std::move(palette))) {
             return qcError(u"damaged chunk data (section)"_s);
         }
         section.compact();

@@ -31,7 +31,8 @@ QByteArray runLengthBytes(const QcChunk &chunk, QDataStream::ByteOrder order)
             continue;
         }
         QList<std::pair<quint16, quint16>> runs;
-        for (const quint16 value : section.indices()) {
+        const QList<quint16> indices = section.unpackedIndices();
+        for (const quint16 value : indices) {
             if (!runs.isEmpty() && runs.last().second == value) {
                 ++runs.last().first;
             } else {
@@ -130,7 +131,7 @@ private slots:
             QVERIFY(in.atEnd());
             for (int index = 0; index < QcWorld::sectionCount; ++index) {
                 QCOMPARE((*copy)->section(index).palette(), chunk->section(index).palette());
-                QCOMPARE((*copy)->section(index).indices(), chunk->section(index).indices());
+                QCOMPARE((*copy)->section(index).unpackedIndices(), chunk->section(index).unpackedIndices());
             }
 
             // Cut off in the middle (inside the runs of a section): rejected.

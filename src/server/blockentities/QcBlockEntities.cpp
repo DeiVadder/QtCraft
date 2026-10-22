@@ -258,16 +258,14 @@ void QcBlockEntities::ensureSection(const QcChunk &chunk, int sectionIndex)
     }
 
     const QcBlockPos corner{chunk.pos().x * QcWorld::chunkSize, sectionIndex * QcWorld::sectionHeight, chunk.pos().z * QcWorld::chunkSize};
-    constexpr qsizetype cells = qsizetype(QcWorld::chunkSize) * QcWorld::chunkSize * QcWorld::sectionHeight;
-    const QList<quint16> &indices = section.indices();
-    for (qsizetype cell = 0; cell < cells; ++cell) {
-        const quint16 entry = section.isUniform() ? quint16(0) : indices[cell];
+    for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
+        const quint16 entry = section.paletteIndex(cell);
         if (!holds[entry]) {
             continue;
         }
-        const int x = int(cell % QcWorld::chunkSize);
-        const int z = int(cell / QcWorld::chunkSize % QcWorld::chunkSize);
-        const int y = int(cell / (qsizetype(QcWorld::chunkSize) * QcWorld::chunkSize));
+        const int x = cell % QcWorld::chunkSize;
+        const int z = cell / QcWorld::chunkSize % QcWorld::chunkSize;
+        const int y = cell / (QcWorld::chunkSize * QcWorld::chunkSize);
         ensure(corner.offset(x, y, z), palette[entry]);
     }
 }

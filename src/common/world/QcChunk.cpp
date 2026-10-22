@@ -1,13 +1,5 @@
 #include "common/world/QcChunk.h"
 
-QcBlockId QcChunk::block(int x, int y, int z) const
-{
-    if (y < 0 || y >= QcWorld::worldHeight) {
-        return qcAirBlockId;
-    }
-    return m_sections[std::size_t(y / QcWorld::sectionHeight)].block(x, y % QcWorld::sectionHeight, z);
-}
-
 void QcChunk::setBlock(int x, int y, int z, QcBlockId block)
 {
     Q_ASSERT(y >= 0 && y < QcWorld::worldHeight);

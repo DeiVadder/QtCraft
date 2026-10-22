@@ -30,19 +30,14 @@ void writeSection(QDataStream &stream, const QcChunkSection &section)
     // Run-length encoded palette indices: terrain sections consist mostly of long runs. Decoding
     // is bounded by the section size, unlike a general-purpose decompressor. The runs (length and
     // index, two 16-bit values each in the stream's byte order) go out as one block of raw data.
-    const QList<quint16> &indices = section.indices();
+    // A run is at most a section long (4096 cells), so its length always fits the 16-bit field.
     const bool bigEndian = stream.byteOrder() == QDataStream::BigEndian;
     QVarLengthArray<quint16, 2 * runBufferRuns> runs;
-    for (qsizetype i = 0; i < indices.size();) {
-        qsizetype end = i + 1;
-        while (end < indices.size() && indices[end] == indices[i] && end - i < 0xFFFF) {
-            ++end;
-        }
-        for (const quint16 value : {quint16(end - i), indices[i]}) {
+    section.forEachRun([&runs, bigEndian](int length, quint16 index) {
+        for (const quint16 value : {quint16(length), index}) {
             runs.append(bigEndian ? qToBigEndian(value) : qToLittleEndian(value));
         }
-        i = end;
-    }
+    });
 
     stream << quint32(runs.size() / 2);
     stream.writeRawData(reinterpret_cast<const char *>(runs.constData()), int(runs.size() * qsizetype(sizeof(quint16))));
@@ -87,7 +82,7 @@ bool readSection(QDataStream &stream, QcChunkSection &section)
         }
     }
 
-    return stream.status() == QDataStream::Ok && section.assign(std::move(palette), std::move(indices));
+    return stream.status() == QDataStream::Ok && section.assign(std::move(palette), indices);
 }
 
 } // namespace
