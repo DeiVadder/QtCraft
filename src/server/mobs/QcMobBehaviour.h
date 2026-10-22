@@ -21,7 +21,8 @@
 
 // What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
 // of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the villagers'
-// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain, QcGuardianBrain); flyers drift above the ground.
+// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain, QcGuardianBrain); flyers drift above the ground,
+// hoverers (QcMobHover) float after their brain's wish.
 // Walkers follow their paths (QcMobNavigator) with the shared physics and are pushed apart by their
 // crowd (QcMobCrowd), whose density also decides how much they think (QcMobCrowd::Tier); the path
 // searches of all of them share a budget per tick (QcPathPlanner).
@@ -90,6 +91,13 @@ private:
                                                 QcPhysics::Steering steering) const;
     // One tick of the physics with the steering (none while knocked back).
     static void walk(QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world, QcPhysics::Steering steering);
+    // The steering of the hoverer `index` with the push away from the hoverers it overlaps.
+    [[nodiscard]] QcPhysics::Steering apart(qsizetype index, const QcCreature &mob, QcPhysics::Steering steering) const;
+    // One tick of a hovering creature (QcMobHover, decision E-839) from its brain's steering: a child
+    // with a mind that chases nobody orbits its parent; it turns from `yawBefore` towards where it
+    // faces now at its turn speed.
+    void hover(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context, const QcPhysics::Steering &steering,
+               float yawBefore) const;
     // Drifting flight without gravity at a few metres above the ground.
     void fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt);
 
@@ -111,6 +119,8 @@ private:
     std::vector<QcMobBrain *> m_brains;
     std::vector<QcPathRules> m_rules;
     QcMobCrowd m_crowd;
+    // Hoverers push apart among themselves (decision E-839).
+    QcMobCrowd m_hoverers{QcMobCrowd::Members::Hoverers};
     // Water creatures (decision E-502).
     QcFishSwimming m_fish;
     TierCounts m_tiers;

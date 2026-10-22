@@ -20,6 +20,11 @@
 // densely they stand. Creatures have no collision with each other; this push is all that keeps
 // them apart.
 //
+// Hoverers that chase someone (decision E-839) form a crowd of their own (Members::Hoverers): only
+// the push keeps them apart (the same cells, by the block their feet are in), the tiers and cramming
+// are the walkers'. Children orbiting their parent chase nobody and take no part, so the parent in
+// the middle of their circle is not pushed.
+//
 // The number in a creature's cell also decides its AI tier (Tier, thresholds QcServerLimits
 // crowdThrottled and crowdIdle) and whether the cell is crammed (game rule maxEntityCramming).
 class QcMobCrowd
@@ -37,9 +42,18 @@ public:
     static constexpr int fewestThinkTicks = 4;
     static constexpr int mostThinkTicks = 10;
 
+    // Who takes part: the awake walkers, or the awake hoverers (QcMobDefinition::hover) that chase
+    // someone.
+    enum class Members : quint8 { Walkers, Hoverers };
+
+    explicit QcMobCrowd(Members members = Members::Walkers)
+        : m_kind(members)
+    {
+    }
+
     void setThresholds(qint64 throttled, qint64 idle);
 
-    // Counts the awake walkers of `mobs` where they stand at the start of the tick; the other calls
+    // Counts the awake members of `mobs` where they stand at the start of the tick; the other calls
     // take the index of a creature in this list.
     void build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions);
 
@@ -86,12 +100,15 @@ private:
         double halfWidth = 0.0;
     };
 
+    // Whether the awake creature `mob` of `definition` belongs to this crowd.
+    bool takesPart(const QcCreature &mob, const QcMobDefinition &definition) const;
     // The push from the creatures of one cell, `others` of them with these sums.
     static QcVec3 pushFrom(const QcCreature &self, double halfWidth, int others, const Cell &sums, const Member *exclude);
 
     std::vector<Cell> m_cells;
     QHash<QcBlockPos, int> m_cellIndex;
     std::vector<Member> m_members;
+    Members m_kind = Members::Walkers;
     int m_throttled = int(QcServerLimits{}.crowdThrottled);
     int m_idle = int(QcServerLimits{}.crowdIdle);
 };

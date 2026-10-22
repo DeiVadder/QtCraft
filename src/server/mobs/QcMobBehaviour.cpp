@@ -1,6 +1,7 @@
 #include "server/mobs/QcMobBehaviour.h"
 
 #include "server/core/QcServerWorld.h"
+#include "server/mobs/QcMobHover.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/mobs/QcMobUpkeep.h"
 #include "server/pathing/QcMobNavigator.h"
@@ -81,6 +82,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
     QList<QcMobManager::PlayerHit> hits;
     m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[std::size_t(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
+    m_hoverers.build(mobs, m_content->mobs());
     m_fish.startTick(mobs, *m_content);
     m_villagers.startTick();
     m_tiers = {};
@@ -147,9 +149,11 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     }
 
     QcMobUpkeep::leaveBlocks(mob, definition, context.world);
-    mob.motion.inWater = QcPhysics::isLiquidAt(context.world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
+    mob.motion.inWater = !definition.hover
+                         && QcPhysics::isLiquidAt(context.world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
 
     // Throttled creatures think in turns, staggered by their ids.
+    const float yawBefore = mob.yaw;
     QcPhysics::Steering steering;
     switch (m_crowd.tierAt(index)) {
     case QcMobCrowd::Tier::Full:
@@ -174,6 +178,10 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
         steering = withoutThinking(mob, definition, context, false);
         break;
     }
+    if (definition.hover) {
+        hover(mob, definition, context, apart(index, mob, steering), yawBefore);
+        return;
+    }
     walk(mob, definition, context.world, withCrowd(index, mob, context.world, steering));
 }
 
@@ -186,8 +194,13 @@ void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDe
     }
 
     // Out of blocks it was pushed into, then only the crowd's push and the physics move it: it
-    // falls, sinks and is knocked back, but never steers, jumps or swims (walk).
+    // falls, sinks and is knocked back, but never steers, jumps or swims (walk). A hoverer floats
+    // where it is.
     QcMobUpkeep::leaveBlocks(mob, definition, world);
+    if (definition.hover) {
+        QcMobHover::fly(mob, definition, world, {}, double(m_tick) * QcPhysics::tickDuration);
+        return;
+    }
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
     walk(mob, definition, world, withCrowd(index, mob, world, QcPhysics::Steering{{}, 0.0}));
 }
@@ -261,6 +274,46 @@ void QcMobBehaviour::walk(QcCreature &mob, const QcMobDefinition &definition, co
     // Only a wall met while walking on the ground or swimming (the shore) is jumped at: one met in
     // the air or on landing (a head under a door's lintel) would keep it jumping.
     mob.blockedLastTick = (move.blockedX || move.blockedZ) && ((wasOnGround && mob.motion.onGround) || wading);
+}
+
+QcPhysics::Steering QcMobBehaviour::apart(qsizetype index, const QcCreature &mob, QcPhysics::Steering steering) const
+{
+    // Flying, they need no safe step: the push turns the wish as the walkers' crowd does.
+    const QcVec3 push = m_hoverers.push(index, mob, m_content->mobs()[mob.type].width * 0.5);
+    if (push.length() <= 0.0) {
+        return steering;
+    }
+    steering.wish += push * QcMobCrowd::strength;
+    if (steering.wish.length() > 1.0) {
+        steering.wish = steering.wish.normalized();
+    }
+    steering.speed = std::max(steering.speed, m_content->mobs()[mob.type].walkSpeed);
+    return steering;
+}
+
+void QcMobBehaviour::hover(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
+                           const QcPhysics::Steering &steering, float yawBefore) const
+{
+    if (!definition.hover) {
+        return;
+    }
+    const double seconds = double(m_tick) * QcPhysics::tickDuration;
+    QcMobHover::Course course{steering, std::nullopt};
+    // Only a child that chases nobody looks for its parent among the creatures.
+    if (mob.parent != 0 && mob.chasing == 0) {
+        const auto parent = std::ranges::find(context.mobs, mob.parent, &QcCreature::id);
+        const QcMobDefinition *kind = parent != context.mobs.end() ? &m_content->mobs()[parent->type] : nullptr;
+        if (kind && kind->family) {
+            const QcVec3 point = QcMobHover::orbitPoint(mob.id, parent->motion.position, kind->height, *kind->family, seconds);
+            course = QcMobHover::towards(mob, point, definition.chaseSpeed);
+        }
+    }
+    QcMobHover::fly(mob, definition, context.world, course, seconds);
+
+    // It faces where its brain turned it (its target), else where it flies, and turns there slowly.
+    const QcVec3 flat{mob.motion.velocity.x, 0.0, mob.motion.velocity.z};
+    const float goal = mob.yaw == yawBefore && flat.length() > 0.3 ? QcMobSteering::yawTowards(flat) : mob.yaw;
+    mob.yaw = QcMobHover::turned(yawBefore, goal, definition.hover->turnSpeed * QcPhysics::tickDuration);
 }
 
 void QcMobBehaviour::fly(QcCreature &mob, const QcMobDefinition &definition, QcServerWorld &world, double dt)

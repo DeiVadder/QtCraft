@@ -1,5 +1,6 @@
 #include "common/content/parser/QcStructureParser.h"
 
+#include "common/content/definitions/QcMobTraits.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/parser/QcStructureSiteParser.h"
@@ -216,11 +217,12 @@ void StructureReader::parseMobs()
         const QString owner = entryReader.string(u"owner"_s);
         const bool sitting = entryReader.boolean(u"sitting"_s, true);
         const bool noAi = entryReader.boolean(u"noAi"_s, false);
+        const int children = entryReader.integer(u"children"_s, 0, 0, QcFamilyDefinition::maxChildrenLimit);
         m_reader.adopt(entryReader);
         if (!m_reader.ok()) {
             return;
         }
-        m_structure.mobs.append({mob, *at, confined, owner, sitting, noAi});
+        m_structure.mobs.append({mob, *at, confined, owner, sitting, noAi, children});
     }
 }
 
@@ -501,6 +503,7 @@ QcResult<QcStructureDefinition> StructureReader::read()
     m_reader.nestedObject(u"showcase"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_structure.showcase = true;
         m_structure.showcaseOrder = nested.integer(u"order"_s, 0, -10000, 10000);
+        m_structure.showcaseFromFront = nested.boolean(u"front"_s, false);
     });
     m_reader.nestedObject(u"mineshaft"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_structure.mineshaftWeight = nested.integer(u"weight"_s, 1, 1, 1000);

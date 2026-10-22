@@ -432,6 +432,7 @@ QStringList QcContentRegistry::finish()
         mob.crumbles = std::move(traits.crumbles);
         mob.drinks = std::move(traits.drinks);
         mob.carries = std::move(traits.carries);
+        mob.family = std::move(traits.family);
         warnings.append(traits.warnings);
     });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));

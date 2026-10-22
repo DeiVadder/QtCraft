@@ -6,6 +6,7 @@
 #include "clientcore/meshing/QcEntityMesher.h"
 #include "clientcore/meshing/QcSignTextCache.h"
 #include "clientcore/meshing/QcSpriteShapes.h"
+#include "clientcore/meshing/QcTethers.h"
 #include "clientcore/session/QcCampfireSmoke.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
@@ -123,6 +124,8 @@ private:
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
     QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;
+    // Which parent each child of a family is tied to, kept from frame to frame (decision E-839).
+    QcTethers m_tethers;
     // The pictures of the framed maps, kept from frame to frame, and the mesh of their quads.
     QcFramedMapAtlas m_framedMaps;
     std::shared_ptr<QcEntityMesh> m_framedMapMesh;

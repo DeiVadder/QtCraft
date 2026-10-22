@@ -159,7 +159,7 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `LoginResponse` | C→S | password proof, identity proof, the identity itself only to register it, wanted view distance, the client's content packs; accepted once before playing |
 | `Welcome` | S→C | protocol version, entity id, world name, seed, saved view direction, the view distance streamed to this player |
 | `PlayerList` | S→C | everyone on the server (entity id, name, operator), to all players when someone joins or leaves or operator rights change |
-| `ContentSync` | S→C | complete content registry (incl. the list of loaded packs, block properties and resolved shapes; the blocks' `slipperiness` for the prediction since protocol 43, E-430; creatures' tameable flag and model parts with tint and sitting offset since protocol 47, E-480); runtime block ids = block state ids |
+| `ContentSync` | S→C | complete content registry (incl. the list of loaded packs, block properties and resolved shapes; the blocks' `slipperiness` for the prediction since protocol 43, E-430; creatures' tameable flag and model parts with tint and sitting offset since protocol 47, E-480; a family's child kind, thread texture and thread reach since protocol 66, E-839); runtime block ids = block state ids |
 | `ChunkData` | S→C | one chunk column (compressed palette sections) |
 | `ChunkUnload` | S→C | chunk position (the client drops the chunk's labels too) |
 | `ChunkLabels` | S→C | the labels floating in a chunk, right after its `ChunkData` when it has any: position, text (translation key), detail line, heading; at most 4096 per chunk, texts at most 256 characters (decision E-222) |

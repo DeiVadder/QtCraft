@@ -1,0 +1,8 @@
+{
+    "name": "kjut_highlight",
+    "pattern": "speckle",
+    "primary": "#ffffff",
+    "secondary": "#fffef0",
+    "variation": 0.02,
+    "seed": 8397
+}

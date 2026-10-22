@@ -13,6 +13,8 @@
 #include "server/villages/QcVillagePopulation.h"
 #include "worldgen/terrain/QcNoise.h"
 
+#include <QHash>
+
 #include <algorithm>
 
 namespace {
@@ -127,7 +129,9 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     // A stronger hit during the invulnerability deals the difference, without push or flash.
     QcCreature &mob = *it;
     const QcMobDefinition &definition = m_content->mobs()[mob.type];
-    mob.health -= mob.hurt.take(amount, m_hurtTicks);
+    const double taken = mob.hurt.take(amount, m_hurtTicks);
+    mob.health -= taken;
+    mob.woundedThisTick = mob.woundedThisTick || (take == QcHurtWindow::Take::Fresh && taken > 0.0);
     mob.idleTicks = 0;
     const QcVec3 away = QcVec3{mob.motion.position.x - blow.from.x, 0.0, mob.motion.position.z - blow.from.z}.normalized();
     const double resisted = 1.0 - definition.golem.knockbackResistance;
@@ -208,8 +212,10 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
     if (take == QcHurtWindow::Take::Ignored) {
         return std::nullopt;
     }
-    it->health -= it->hurt.take(amount, m_hurtTicks);
+    const double taken = it->hurt.take(amount, m_hurtTicks);
+    it->health -= taken;
     it->hurtThisTick = it->hurtThisTick || take == QcHurtWindow::Take::Fresh;
+    it->woundedThisTick = it->woundedThisTick || (take == QcHurtWindow::Take::Fresh && taken > 0.0);
     if (it->health > 0.0) {
         return std::nullopt;
     }
@@ -340,6 +346,64 @@ void QcMobManager::keep(QcCreature &mob, bool kept)
         mob.persistent = false;
         mob.uid = 0;
     }
+
+    // A family is kept together (decision E-839): its children with the parent, under its id.
+    if (!m_content->mobs()[mob.type].family) {
+        return;
+    }
+    for (QcCreature &child : m_mobs) {
+        if (child.parent == mob.id && child.id != mob.id) {
+            keep(child, mob.persistent);
+            child.parentUid = mob.persistent ? mob.uid : 0;
+        }
+    }
+}
+
+void QcMobManager::relinkFamilies()
+{
+    // Most loads bring no waiting child.
+    if (std::ranges::none_of(m_mobs, [](const QcCreature &mob) { return mob.parentUid != 0 && mob.parent == 0; })) {
+        return;
+    }
+
+    // The kept parents by their persistent id: entity id and most children.
+    QHash<quint64, std::pair<quint32, int>> parents;
+    QHash<quint32, int> linked;
+    for (const QcCreature &mob : std::as_const(m_mobs)) {
+        const std::optional<QcFamilyDefinition> &family = m_content->mobs()[mob.type].family;
+        if (mob.persistent && family) {
+            parents.insert(mob.uid, {mob.id, family->maxChildren});
+        }
+        if (mob.parent != 0) {
+            ++linked[mob.parent];
+        }
+    }
+    for (QcCreature &mob : m_mobs) {
+        if (mob.parentUid == 0 || mob.parent != 0) {
+            continue;
+        }
+        const auto [parent, most] = parents.value(mob.parentUid, {0, 0});
+        if (parent == 0) {
+            continue;
+        }
+
+        // A family never grows beyond its children at once (a world copied by hand, a changed mod):
+        // the extra ones go on alone.
+        if (linked.value(parent) >= most) {
+            release(mob);
+            continue;
+        }
+        mob.parent = parent;
+        ++linked[parent];
+    }
+}
+
+void QcMobManager::release(QcCreature &child)
+{
+    keep(child, false);
+    child.parent = 0;
+    child.parentUid = 0;
+    child.parentChunk.reset();
 }
 
 quint64 QcMobManager::uniqueUid(quint64 saved, const QSet<quint64> &taken)
@@ -366,6 +430,7 @@ QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QL
 {
     for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
+        mob.woundedThisTick = false;
         mob.attackedThisTick = false;
     }
     const QList<PlayerHit> hits = m_behaviour->tick(m_mobs, world, players, {worldTime, dt});
@@ -450,6 +515,8 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     if (mob.isTame()) {
         stored.tame = QcTameState{.owner = mob.tame->owner, .sitting = mob.tame->sitting, .collar = mob.tame->collar};
     }
+    stored.parentUid = mob.parentUid;
+    stored.parentChunk = mob.parentChunk;
     return stored;
 }
 
@@ -489,6 +556,8 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
             mob.effects.emplace().restore(stored.effects);
         }
         mob.layTimer = stored.layTimer;
+        mob.parentUid = stored.parentUid;
+        mob.parentChunk = stored.parentChunk;
         mob.confined = stored.confined;
         mob.noAi = stored.noAi;
         if (stored.tame && !stored.tame->owner.isEmpty()) {
@@ -518,6 +587,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         }
         m_mobs.append(std::move(mob));
     }
+    relinkFamilies();
 }
 
 qsizetype QcMobManager::awakeCount() const

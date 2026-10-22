@@ -1,0 +1,12 @@
+{
+    "name": "gunpowder_from_spark_gel",
+    "type": "shapeless",
+    "ingredients": [
+        "spark_gel",
+        "coal"
+    ],
+    "result": {
+        "item": "gunpowder",
+        "count": 4
+    }
+}

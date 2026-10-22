@@ -21,6 +21,15 @@ QcVec3 partingDirection(quint32 self, QcBlockPos cell)
 
 } // namespace
 
+bool QcMobCrowd::takesPart(const QcCreature &mob, const QcMobDefinition &definition) const
+{
+    // Flyers and swimmers keep out of both crowds.
+    if (m_kind == Members::Hoverers) {
+        return definition.hover.has_value() && mob.chasing != 0;
+    }
+    return !definition.flying && !definition.hover && !definition.aquatic;
+}
+
 void QcMobCrowd::setThresholds(qint64 throttled, qint64 idle)
 {
     m_throttled = int(throttled);
@@ -37,7 +46,7 @@ void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefini
 
     for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         const QcCreature &mob = mobs[i];
-        if (mob.dormant || definitions[mob.type].flying || definitions[mob.type].aquatic) {
+        if (mob.dormant || !takesPart(mob, definitions[mob.type])) {
             continue;
         }
 

@@ -26,6 +26,7 @@ struct Resolved
     std::optional<QcCrumbleDefinition> crumbles;
     std::optional<QcDrinkHealDefinition> drinks;
     std::optional<QcCarryDefinition> carries;
+    std::optional<QcFamilyDefinition> family;
     QStringList warnings;
 };
 
@@ -35,7 +36,8 @@ struct Resolved
 // a creature left without any carries nothing.
 // Also resolves the kind a tamed one becomes (QcTameDefinition::becomesType; a name that is no
 // tameable creature is ignored with a warning) and warns of unknown taming, healing and dye items,
-// and leaves out crumbling and drinking that name unknown blocks or items.
+// and leaves out crumbling and drinking that name unknown blocks or items, and a family whose child
+// is no creature or has a family of its own (decision E-839).
 [[nodiscard]] Resolved resolve(const QcContentRegistry &content, const QcMobDefinition &mob);
 // The taming part of resolve (decision E-480).
 [[nodiscard]] Part<QcTameDefinition> resolveTame(const QcContentRegistry &content, const QcMobDefinition &mob);

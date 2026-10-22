@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcChunkPos.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "server/entities/QcEntityComponent.h"
@@ -51,6 +52,10 @@ struct Stored
     bool noAi = false;
     // Owner, sitting and collar of a tame one (decision E-480; its target is not saved).
     std::optional<QcTameState> tame = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // The persistent id of its parent when it is a child of a kept family (decision E-839); 0 otherwise.
+    quint64 parentUid = 0;
+    // The chunk that parent was in when the child last saw it (QcCreature::parentChunk).
+    std::optional<QcChunkPos> parentChunk = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const Stored &) const = default;
 };

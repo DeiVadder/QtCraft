@@ -39,6 +39,8 @@ struct QcShowcaseArea
     // Beds (heads) and workstations outside its villages that count as placed (decision E-490,
     // QcWorldGenerator::pointsOfInterestIn), in world coordinates.
     QList<QcBlockPos> pointsOfInterest;
+    // Its tour stop looks from in front of its south side (QcStructureDefinition::showcaseFromFront).
+    bool fromFront = false;
 };
 
 // Builds an area whose south west corner on the ground is `anchor` (x: west edge, y: ground top,

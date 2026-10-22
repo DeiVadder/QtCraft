@@ -105,7 +105,16 @@ private:
         return {creatures, items.size()};
     }
 
-    int expectedMobs() const { return int(QcShowcaseGenerator(m_content).setup().mobs.size()); }
+    // The creatures of the setup and the children their families split off at once (decision E-839).
+    int expectedMobs() const
+    {
+        const QList<QcWorldSetup::Mob> mobs = QcShowcaseGenerator(m_content).setup().mobs;
+        int children = 0;
+        for (const QcWorldSetup::Mob &mob : mobs) {
+            children += mob.children;
+        }
+        return int(mobs.size()) + children;
+    }
 
     // Distinct items in the server's chests.
     static qsizetype storedItems(QcServer &server)

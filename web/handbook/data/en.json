@@ -544,6 +544,7 @@
                 "item:qtcraft:signal_dust_chunk",
                 "item:qtcraft:slimeball",
                 "item:qtcraft:snowball",
+                "item:qtcraft:spark_gel",
                 "item:qtcraft:spider_eye",
                 "item:qtcraft:harming_splash_potion",
                 "item:qtcraft:poison_splash_potion",
@@ -647,6 +648,8 @@
                 "mob:qtcraft:enderman",
                 "mob:qtcraft:firefly",
                 "mob:qtcraft:iron_golem",
+                "mob:qtcraft:kjut",
+                "mob:qtcraft:kjut_child",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:ocelot",
                 "mob:qtcraft:pig",
@@ -934,6 +937,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1130,6 +1139,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -1398,6 +1413,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1638,6 +1659,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -1872,6 +1899,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -2060,6 +2093,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -2294,6 +2333,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -2538,6 +2583,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:ocelot",
                             "text": "Ocelot"
                         },
@@ -2768,6 +2819,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3006,6 +3063,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -3228,6 +3291,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -3430,6 +3499,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3680,6 +3755,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:ocelot",
                             "text": "Ocelot"
                         },
@@ -3924,6 +4005,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:pig",
                             "text": "Pig"
                         },
@@ -4114,6 +4201,12 @@
                             "note": "",
                             "target": "mob:qtcraft:enderman",
                             "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -91964,6 +92057,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Kjuts float out of dark places like other monsters. Each hit a big Kjut survives splits off a little one, up to four at once and eight in all; a snowball or an egg splits nothing. The little ones circle it on glowing threads until they see you. The little ones belong to it like the children of a Qt object to their parent: when the parent dies, they all pop at once and leave gunpowder; killed one by one, they leave only spark gel. So for gunpowder, hit the big one a few times and then finish it; for gel, fight the little ones first. A Kjut that leaves the world without dying takes its little ones along quietly.",
+                    "title": "Kjuts and their children"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Chickens flutter down slowly instead of falling and lay an egg every five to ten minutes. Thrown eggs burst where they land; one in eight hatches a chick, and one hatching in 32 brings four. Chickens fall in love with seeds of any kind. They drop feathers for arrows and raw chicken, which you cook in a furnace.",
                     "title": "Chickens and eggs"
                 },
@@ -92132,6 +92233,30 @@
                             "note": "",
                             "target": "item:qtcraft:cod_bucket",
                             "text": "Bucket of cod"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Little Kjut"
+                        },
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Spark gel"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
                         }
                     ],
                     "recipes": [
@@ -105776,6 +105901,39 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 2
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:spark_gel",
+                                    "note": "",
+                                    "target": "item:qtcraft:spark_gel",
+                                    "text": "Spark gel"
+                                },
+                                {
+                                    "icon": "qtcraft:coal",
+                                    "note": "",
+                                    "target": "item:qtcraft:coal",
+                                    "text": "Coal"
+                                }
+                            ],
+                            "count": 4,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:gunpowder_from_spark_gel",
+                            "needsTable": false,
+                            "note": "Crafting grid, any arrangement",
+                            "result": {
+                                "icon": "qtcraft:gunpowder",
+                                "note": "",
+                                "target": "item:qtcraft:gunpowder",
+                                "text": "Gunpowder"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
                         }
                     ],
                     "text": "",
@@ -105796,7 +105954,7 @@
                     "title": "Used in"
                 }
             ],
-            "text": "Made from coal and flint. Five of it and four sand make an explosive.",
+            "text": "Made from coal and flint, or richer from spark gel and coal. Popping little Kjuts leave some too. Five of it and four sand make an explosive.",
             "title": "Gunpowder"
         },
         "item:qtcraft:harming_splash_potion": {
@@ -113177,6 +113335,68 @@
             "text": "Thrown with the use button, one at a time and at once. It does no harm but pushes back what it hits, and bursts on anything it meets. Breaking snow with a shovel gives snowballs; four make a snow block.",
             "title": "Snowball"
         },
+        "item:qtcraft:spark_gel": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Spark gel",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spark_gel"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "item:qtcraft:spark_gel",
+            "name": "qtcraft:spark_gel",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Used in"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Little Kjut"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Dropped by"
+                }
+            ],
+            "text": "The glowing gel of Kjuts. With a piece of coal it makes four gunpowder.",
+            "title": "Spark gel"
+        },
         "item:qtcraft:spider_eye": {
             "category": "items",
             "categoryTitle": "Items",
@@ -118782,6 +119002,252 @@
             ],
             "text": "A big, slow guardian of iron. Villagers summon it when they panic or gossip, or you build it from four iron blocks and a carved pumpkin. It hunts monsters and throws them upwards; it is not pushed back by blows. Use an iron ingot on it to repair it.",
             "title": "Iron golem"
+        },
+        "mob:qtcraft:kjut": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Kjut",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:kjut"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: chases and attacks players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "16 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.8 m wide, 0.8 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.2 m/s walking, 3 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "3 damage within 1.4 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "day and night"
+                },
+                {
+                    "label": "Darkness",
+                    "links": [
+                    ],
+                    "value": "only in the dark: no block light, and a dark sky (at night, under roofs, in caves)"
+                },
+                {
+                    "label": "Caves",
+                    "links": [
+                    ],
+                    "value": "also in caves at any time"
+                },
+                {
+                    "label": "Spawn light",
+                    "links": [
+                    ],
+                    "value": "block light up to 0"
+                },
+                {
+                    "label": "Group size",
+                    "links": [
+                    ],
+                    "value": "up to 1"
+                },
+                {
+                    "label": "Spawn weight",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Limit",
+                    "links": [
+                    ],
+                    "value": "all monsters together: 70 per 289 loaded chunks around the players"
+                },
+                {
+                    "label": "Glows",
+                    "links": [
+                    ],
+                    "value": "10 of 15"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Spark gel"
+                        },
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "50 %",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Spark gel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Splits into",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Little Kjut"
+                        }
+                    ],
+                    "value": "1 per hit it survives that takes health, at most 4 at once and 8 in its life"
+                },
+                {
+                    "label": "When it dies",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Gunpowder"
+                        }
+                    ],
+                    "value": "its children pop and each leaves"
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "mob:qtcraft:kjut",
+            "name": "qtcraft:kjut",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).",
+                    "title": "Appears on"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "All biomes.",
+                    "title": "Appears in biomes"
+                }
+            ],
+            "text": "A chunky green badge of glowing spark gel, shaped like the Qt logo with two cut corners and one glowing eye. It floats a little above the ground after you in the dark, at night and in caves, over water and under low ceilings, and strikes when it touches you. Every hit it survives splits off a little Kjut, at most four at once and eight in its life. When the big one dies, all its little ones pop with a spark, each leaving some gunpowder; there is no explosion and no block breaks.",
+            "title": "Kjut"
+        },
+        "mob:qtcraft:kjut_child": {
+            "category": "creatures",
+            "categoryTitle": "Creatures",
+            "englishTitle": "Little Kjut",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:kjut_child"
+                },
+                {
+                    "label": "Behaviour",
+                    "links": [
+                    ],
+                    "value": "hostile: chases and attacks players"
+                },
+                {
+                    "label": "Health",
+                    "links": [
+                    ],
+                    "value": "4 health points"
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "0.3 m wide, 0.3 m tall"
+                },
+                {
+                    "label": "Speed",
+                    "links": [
+                    ],
+                    "value": "1.6 m/s walking, 3.6 m/s chasing"
+                },
+                {
+                    "label": "Attack",
+                    "links": [
+                    ],
+                    "value": "1 damage within 1 m, every 1 s"
+                },
+                {
+                    "label": "Sees players within",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Appears",
+                    "links": [
+                    ],
+                    "value": "never by itself (/summon, showcase world)"
+                },
+                {
+                    "label": "Glows",
+                    "links": [
+                    ],
+                    "value": "15 of 15"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "50 %",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Spark gel"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "mob:qtcraft:kjut_child",
+            "name": "qtcraft:kjut_child",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "A child of a Kjut: a small glowing spark that circles its parent on a shining thread, like a signal tied to its slot, until it sees you. Killed on its own it may leave spark gel; it pops with its parent and then leaves gunpowder.",
+            "title": "Little Kjut"
         },
         "mob:qtcraft:mannequin": {
             "category": "creatures",

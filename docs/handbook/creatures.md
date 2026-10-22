@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -248,6 +248,56 @@ A big, slow guardian of iron. Villagers summon it when they panic or gossip, or 
 | Sees players within | 16 m |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | [Iron ingot](items.md#item-qtcraft-iron_ingot) (3×), [Iron ingot](items.md#item-qtcraft-iron_ingot) (50 %), [Iron ingot](items.md#item-qtcraft-iron_ingot) (50 %), [Poppy](blocks.md#block-qtcraft-poppy) (50 %), [Poppy](blocks.md#block-qtcraft-poppy) (50 %) |
+
+### <a id="mob-qtcraft-kjut"></a>Kjut
+
+A chunky green badge of glowing spark gel, shaped like the Qt logo with two cut corners and one glowing eye. It floats a little above the ground after you in the dark, at night and in caves, over water and under low ceilings, and strikes when it touches you. Every hit it survives splits off a little Kjut, at most four at once and eight in its life. When the big one dies, all its little ones pop with a spark, each leaving some gunpowder; there is no explosion and no block breaks.
+
+| | |
+|---|---|
+| ID | `qtcraft:kjut` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 16 health points |
+| Size | 0.8 m wide, 0.8 m tall |
+| Speed | 1.2 m/s walking, 3 m/s chasing |
+| Attack | 3 damage within 1.4 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Caves | also in caves at any time |
+| Spawn light | block light up to 0 |
+| Group size | up to 1 |
+| Spawn weight | 2 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Glows | 10 of 15 |
+| Drops | [Spark gel](items.md#item-qtcraft-spark_gel), [Spark gel](items.md#item-qtcraft-spark_gel) (50 %) |
+| Splits into | 1 per hit it survives that takes health, at most 4 at once and 8 in its life: [Little Kjut](#mob-qtcraft-kjut_child) |
+| When it dies | its children pop and each leaves: [Gunpowder](items.md#item-qtcraft-gunpowder) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+All biomes.
+
+### <a id="mob-qtcraft-kjut_child"></a>Little Kjut
+
+A child of a Kjut: a small glowing spark that circles its parent on a shining thread, like a signal tied to its slot, until it sees you. Killed on its own it may leave spark gel; it pops with its parent and then leaves gunpowder.
+
+| | |
+|---|---|
+| ID | `qtcraft:kjut_child` |
+| Behaviour | hostile: chases and attacks players |
+| Health | 4 health points |
+| Size | 0.3 m wide, 0.3 m tall |
+| Speed | 1.6 m/s walking, 3.6 m/s chasing |
+| Attack | 1 damage within 1 m, every 1 s |
+| Sees players within | 16 m |
+| Appears | never by itself (/summon, showcase world) |
+| Glows | 15 of 15 |
+| Drops | [Spark gel](items.md#item-qtcraft-spark_gel) (50 %) |
 
 ### <a id="mob-qtcraft-mannequin"></a>Mannequin
 

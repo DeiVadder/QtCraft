@@ -718,7 +718,7 @@
     "item.qtcraft.fired_lamp_shell.description": "Mit einem Glühwürmchen in der Flasche wird daraus eine Minenlampe.",
     "item.qtcraft.firefly_bottle.description": "Ein gefangenes Glühwürmchen. Es bringt die Minenlampe zum Leuchten.",
     "item.qtcraft.flint.description": "Ein scharfer Stein, der manchmal aus Kies fällt. Mit einem Eisenbarren wird daraus ein Feuerzeug.",
-    "item.qtcraft.gunpowder.description": "Aus Kohle und Feuerstein. Fünf davon und vier Sand ergeben Sprengstoff.",
+    "item.qtcraft.gunpowder.description": "Aus Kohle und Feuerstein, ergiebiger aus Funkengel und Kohle. Auch verpuffende kleine Kjuts lassen etwas zurück. Fünf davon und vier Sand ergeben Sprengstoff.",
     "item.qtcraft.flint_and_steel.description": "Schlägt Funken: auf einen Block angewendet, entzündet es Feuer vor der angeklickten Seite, wo Feuer stehen kann. Jedes Feuer nutzt es ein wenig ab. Ein Signalspender benutzt es genauso.",
     "item.qtcraft.glass_bottle.description": "Nachts im Sumpf auf ein Glühwürmchen angewandt fängt sie es.",
     "item.qtcraft.gold_ingot.description": "Geschmolzenes Gold.",
@@ -1333,5 +1333,14 @@
     "feature.qtcraft.oak_bush": "Eichenbusch",
     "feature.qtcraft.dry_shrub": "Trockenes Gestrüpp",
     "feature.qtcraft.giant_spruce_tree": "Riesenfichte",
-    "feature.qtcraft.giant_jungle_tree": "Riesiger Dschungelbaum"
+    "feature.qtcraft.giant_jungle_tree": "Riesiger Dschungelbaum",
+    "item.qtcraft.spark_gel.description": "Das leuchtende Gel der Kjuts. Mit einem Stück Kohle ergibt es vier Schwarzpulver.",
+    "mob.qtcraft.kjut.description": "Ein dicker grüner Block aus leuchtendem Funkengel in der Form des Qt-Logos, mit zwei abgeschrägten Ecken und einem leuchtenden Auge. Er schwebt dir im Dunkeln knapp über dem Boden nach, nachts und in Höhlen, über Wasser und unter niedrigen Decken, und schlägt zu, wenn er dich berührt. Jeder Treffer, den er übersteht, spaltet einen kleinen Kjut ab, höchstens vier zugleich und acht in seinem Leben. Stirbt der große, verpuffen alle seine kleinen mit einem Funken und lassen je etwas Schwarzpulver zurück; es gibt keine Explosion, und kein Block geht kaputt.",
+    "mob.qtcraft.kjut_child.description": "Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Faden um sein Elternteil kreist, wie ein Signal an seinem Slot, bis er dich sieht. Einzeln erschlagen lässt es manchmal Funkengel fallen; mit seinem Elternteil verpufft es und lässt dann Schwarzpulver zurück.",
+    "chapter.qtcraft.creatures.kjuts.title": "Kjuts und ihre Kinder",
+    "chapter.qtcraft.creatures.kjuts.text": "Kjuts schweben wie andere Monster aus dunklen Orten. Jeder Treffer, den ein großer Kjut übersteht, spaltet einen kleinen ab, bis zu vier zugleich und acht insgesamt; ein Schneeball oder ein Ei spaltet nichts. Die kleinen kreisen an leuchtenden Fäden um ihn, bis sie dich sehen. Die kleinen gehören zu ihm wie die Kinder eines Qt-Objekts zu ihrem Elternteil: Stirbt das Elternteil, verpuffen alle auf einmal und lassen Schwarzpulver zurück; einzeln erschlagen lassen sie nur Funkengel fallen. Für Schwarzpulver also den großen ein paarmal treffen und dann erledigen; für Gel zuerst die kleinen bekämpfen. Ein Kjut, der die Welt verlässt, ohne zu sterben, nimmt seine kleinen still mit.",
+    "handbook.fact.splitsInto": "Spaltet ab",
+    "handbook.value.splitsInto": "%2 je überstandenem Treffer, der Leben kostet, höchstens %1 zugleich und %3 in seinem Leben",
+    "handbook.fact.childrenPop": "Wenn er stirbt",
+    "handbook.value.childrenPop": "verpuffen seine Kinder und lassen je zurück"
 }

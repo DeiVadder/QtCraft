@@ -10,7 +10,8 @@
 
 // The components of a creature entry in the entities of a chunk (QcEntityCodec, decision E-420):
 // health and breeding (Creature), the villager record, status effects, the carried block, the
-// enclosure, the golem's builder, the laying timer, the tame state and a creature without a mind.
+// enclosure, the golem's builder, the laying timer, the tame state, a creature without a mind and the
+// parent of a child of a kept family (decision E-839).
 namespace QcCreatureComponents {
 
 // A creature read from its components, the carried block still by name (the caller resolves it

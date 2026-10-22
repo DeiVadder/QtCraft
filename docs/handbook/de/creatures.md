@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Enderman](#mob-qtcraft-enderman) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -263,6 +263,56 @@ Eine Katze der Dörfer, einige in jedem Dorf. Füttere sie mit rohem Kabeljau: J
 Und in Dörfern von Biomen ohne eigenen Dorfstil.
 
 [Ebene](biomes.md#biome-qtcraft-plains), [Sumpf](biomes.md#biome-qtcraft-swamp), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert)
+
+### <a id="mob-qtcraft-kjut"></a>Kjut
+
+Ein dicker grüner Block aus leuchtendem Funkengel in der Form des Qt-Logos, mit zwei abgeschrägten Ecken und einem leuchtenden Auge. Er schwebt dir im Dunkeln knapp über dem Boden nach, nachts und in Höhlen, über Wasser und unter niedrigen Decken, und schlägt zu, wenn er dich berührt. Jeder Treffer, den er übersteht, spaltet einen kleinen Kjut ab, höchstens vier zugleich und acht in seinem Leben. Stirbt der große, verpuffen alle seine kleinen mit einem Funken und lassen je etwas Schwarzpulver zurück; es gibt keine Explosion, und kein Block geht kaputt.
+
+| | |
+|---|---|
+| ID | `qtcraft:kjut` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 16 Lebenspunkte |
+| Größe | 0,8 m breit, 0,8 m hoch |
+| Geschwindigkeit | 1,2 m/s beim Gehen, 3 m/s beim Verfolgen |
+| Angriff | 3 Schaden bis 1,4 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Höhlen | auch in Höhlen zu jeder Zeit |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 2 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Leuchtet | 10 von 15 |
+| Beute | [Funkengel](items.md#item-qtcraft-spark_gel), [Funkengel](items.md#item-qtcraft-spark_gel) (50 %) |
+| Spaltet ab | 1 je überstandenem Treffer, der Leben kostet, höchstens 4 zugleich und 8 in seinem Leben: [Kleiner Kjut](#mob-qtcraft-kjut_child) |
+| Wenn er stirbt | verpuffen seine Kinder und lassen je zurück: [Schwarzpulver](items.md#item-qtcraft-gunpowder) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-kjut_child"></a>Kleiner Kjut
+
+Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Faden um sein Elternteil kreist, wie ein Signal an seinem Slot, bis er dich sieht. Einzeln erschlagen lässt es manchmal Funkengel fallen; mit seinem Elternteil verpufft es und lässt dann Schwarzpulver zurück.
+
+| | |
+|---|---|
+| ID | `qtcraft:kjut_child` |
+| Verhalten | feindlich: verfolgt und greift Spieler an |
+| Gesundheit | 4 Lebenspunkte |
+| Größe | 0,3 m breit, 0,3 m hoch |
+| Geschwindigkeit | 1,6 m/s beim Gehen, 3,6 m/s beim Verfolgen |
+| Angriff | 1 Schaden bis 1 m, alle 1 s |
+| Sieht Spieler bis | 16 m |
+| Erscheint | nie von selbst (/summon, Showcase-Welt) |
+| Leuchtet | 15 von 15 |
+| Beute | [Funkengel](items.md#item-qtcraft-spark_gel) (50 %) |
 
 ### <a id="mob-qtcraft-cow"></a>Kuh
 

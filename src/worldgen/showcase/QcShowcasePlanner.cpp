@@ -122,8 +122,9 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::demoBuilders()
         auto shared = std::make_shared<const QcStructure>(std::move(*structure));
         const QString name = u"demo-"_s + definition->name.mid(definition->name.indexOf(u':') + 1);
         const QString title = definition->translationKey;
-        builders.append([shared, name, title](QcBlockPos anchor) {
-            return QcShowcaseArea{name, title, shared, {anchor.x, anchor.y, anchor.z - shared->sizeZ() + 1}, {}, {}};
+        const bool fromFront = definition->showcaseFromFront;
+        builders.append([shared, name, title, fromFront](QcBlockPos anchor) {
+            return QcShowcaseArea{name, title, shared, {anchor.x, anchor.y, anchor.z - shared->sizeZ() + 1}, {}, {}, fromFront};
         });
     }
     return builders;
@@ -238,7 +239,14 @@ void QcShowcasePlanner::addLookout(const QcShowcaseArea &area, int front)
     const QcBlockPos origin{area.origin.x - m_lookout->sizeX() - 1, area.origin.y, front + 2};
     addPlacement(QcStructurePlacement(m_lookout, origin, 0, m_content));
     const QcBlockPos column{origin.x + m_lookout->sizeX() - 1, 0, origin.z};
-    m_plan.tour.append(stopLookingAt(area.name, column, area.origin.y + m_lookout->sizeY() + eyeHeight, centre));
+    if (!area.fromFront) {
+        m_plan.tour.append(stopLookingAt(area.name, column, area.origin.y + m_lookout->sizeY() + eyeHeight, centre));
+        return;
+    }
+
+    // A station behind glass: from the walkway in front of its middle, at eye height, into it.
+    const QcBlockPos ahead{int(std::floor(centre.x)), 0, front + 5};
+    m_plan.tour.append(stopLookingAt(area.name, ahead, area.origin.y + 1 + eyeHeight, centre + QcVec3{0.0, 0.8, 0.0}));
 }
 
 void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
@@ -249,7 +257,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         addLabel({placement.toWorld(label.at), label.text, label.detail, label.heading});
     }
     for (const QcStructure::Mob &mob : structure.mobs) {
-        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting, mob.noAi});
+        m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting, mob.noAi, mob.children});
     }
     for (const QcStructure::Stand &stand : structure.stands) {
         m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * float(placement.turns()), stand.properties});

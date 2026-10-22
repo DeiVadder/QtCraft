@@ -223,6 +223,8 @@ private slots:
         chat(u"/gamerule weatherCycle false"_s);
         chat(u"/weather rain"_s);
         const quint32 sheltered = spawn("enderman", -12, 12, true);
+        // It stays under the roof: wandering out from under it would get it wet.
+        mob(sheltered)->noAi = true;
         for (int dx = -9; dx <= 9; ++dx) {
             for (int dz = -9; dz <= 9; ++dz) {
                 m_server->world().setBlock(m_feet.offset(-12 + dx, 4, 12 + dz), id("qtcraft:stone"));

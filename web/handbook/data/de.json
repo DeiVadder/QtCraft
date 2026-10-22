@@ -486,6 +486,7 @@
                 "item:qtcraft:feather",
                 "item:qtcraft:flint",
                 "item:qtcraft:flint_and_steel",
+                "item:qtcraft:spark_gel",
                 "item:qtcraft:fired_lamp_shell",
                 "item:qtcraft:yellow_dye",
                 "item:qtcraft:painting",
@@ -649,6 +650,8 @@
                 "mob:qtcraft:dog",
                 "mob:qtcraft:cod",
                 "mob:qtcraft:cat",
+                "mob:qtcraft:kjut",
+                "mob:qtcraft:kjut_child",
                 "mob:qtcraft:cow",
                 "mob:qtcraft:salmon",
                 "mob:qtcraft:ocelot",
@@ -928,6 +931,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -1124,6 +1133,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -1392,6 +1407,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -1632,6 +1653,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -1866,6 +1893,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -2054,6 +2087,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -2288,6 +2327,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -2532,6 +2577,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -2762,6 +2813,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3000,6 +3057,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -3222,6 +3285,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -3424,6 +3493,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -3674,6 +3749,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -3918,6 +3999,12 @@
                         {
                             "icon": "",
                             "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
                             "target": "mob:qtcraft:cow",
                             "text": "Kuh"
                         },
@@ -4108,6 +4195,12 @@
                             "note": "",
                             "target": "mob:qtcraft:cod",
                             "text": "Kabeljau"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
                         },
                         {
                             "icon": "",
@@ -91964,6 +92057,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Kjuts schweben wie andere Monster aus dunklen Orten. Jeder Treffer, den ein großer Kjut übersteht, spaltet einen kleinen ab, bis zu vier zugleich und acht insgesamt; ein Schneeball oder ein Ei spaltet nichts. Die kleinen kreisen an leuchtenden Fäden um ihn, bis sie dich sehen. Die kleinen gehören zu ihm wie die Kinder eines Qt-Objekts zu ihrem Elternteil: Stirbt das Elternteil, verpuffen alle auf einmal und lassen Schwarzpulver zurück; einzeln erschlagen lassen sie nur Funkengel fallen. Für Schwarzpulver also den großen ein paarmal treffen und dann erledigen; für Gel zuerst die kleinen bekämpfen. Ein Kjut, der die Welt verlässt, ohne zu sterben, nimmt seine kleinen still mit.",
+                    "title": "Kjuts und ihre Kinder"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Hühner flattern langsam hinab, statt zu fallen, und legen alle fünf bis zehn Minuten ein Ei. Geworfene Eier zerplatzen, wo sie landen; aus jedem achten schlüpft ein Küken, und bei einem von 32 Schlüpfen sind es vier. Hühner verlieben sich in Samen jeder Art. Sie lassen Federn für Pfeile und rohes Hühnchen fallen, das du im Ofen brätst.",
                     "title": "Hühner und Eier"
                 },
@@ -92132,6 +92233,30 @@
                             "note": "",
                             "target": "item:qtcraft:cod_bucket",
                             "text": "Kabeljaueimer"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Kleiner Kjut"
+                        },
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Funkengel"
+                        },
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
                         }
                     ],
                     "recipes": [
@@ -105776,6 +105901,39 @@
                             "seconds": 0,
                             "shapeless": true,
                             "width": 2
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:spark_gel",
+                                    "note": "",
+                                    "target": "item:qtcraft:spark_gel",
+                                    "text": "Funkengel"
+                                },
+                                {
+                                    "icon": "qtcraft:coal",
+                                    "note": "",
+                                    "target": "item:qtcraft:coal",
+                                    "text": "Kohle"
+                                }
+                            ],
+                            "count": 4,
+                            "height": 1,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:gunpowder_from_spark_gel",
+                            "needsTable": false,
+                            "note": "Handwerksraster, beliebige Anordnung",
+                            "result": {
+                                "icon": "qtcraft:gunpowder",
+                                "note": "",
+                                "target": "item:qtcraft:gunpowder",
+                                "text": "Schwarzpulver"
+                            },
+                            "seconds": 0,
+                            "shapeless": true,
+                            "width": 2
                         }
                     ],
                     "text": "",
@@ -105796,7 +105954,7 @@
                     "title": "Wird verwendet für"
                 }
             ],
-            "text": "Aus Kohle und Feuerstein. Fünf davon und vier Sand ergeben Sprengstoff.",
+            "text": "Aus Kohle und Feuerstein, ergiebiger aus Funkengel und Kohle. Auch verpuffende kleine Kjuts lassen etwas zurück. Fünf davon und vier Sand ergeben Sprengstoff.",
             "title": "Schwarzpulver"
         },
         "item:qtcraft:harming_splash_potion": {
@@ -113177,6 +113335,68 @@
             "text": "Wird mit der Benutzen-Taste geworfen, einer nach dem anderen und sofort. Er tut nicht weh, stößt aber zurück, was er trifft, und zerplatzt an allem, worauf er trifft. Schnee mit einer Schaufel abgebaut gibt Schneebälle; vier ergeben einen Schneeblock.",
             "title": "Schneeball"
         },
+        "item:qtcraft:spark_gel": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Spark gel",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spark_gel"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "item:qtcraft:spark_gel",
+            "name": "qtcraft:spark_gel",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Wird verwendet für"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Kleiner Kjut"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Das leuchtende Gel der Kjuts. Mit einem Stück Kohle ergibt es vier Schwarzpulver.",
+            "title": "Funkengel"
+        },
         "item:qtcraft:spider_eye": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -118782,6 +119002,252 @@
             ],
             "text": "Ein großer, langsamer Beschützer aus Eisen. Dorfbewohner rufen ihn, wenn sie in Panik geraten oder tratschen, oder man baut ihn aus vier Eisenblöcken und einem geschnitzten Kürbis. Er jagt Monster und schleudert sie nach oben; Schläge stoßen ihn nicht zurück. Ein Eisenbarren repariert ihn.",
             "title": "Eisengolem"
+        },
+        "mob:qtcraft:kjut": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Kjut",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:kjut"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: verfolgt und greift Spieler an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "16 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,8 m breit, 0,8 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,2 m/s beim Gehen, 3 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "3 Schaden bis 1,4 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
+                },
+                {
+                    "label": "Höhlen",
+                    "links": [
+                    ],
+                    "value": "auch in Höhlen zu jeder Zeit"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 0"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 1"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "2"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
+                },
+                {
+                    "label": "Leuchtet",
+                    "links": [
+                    ],
+                    "value": "10 von 15"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Funkengel"
+                        },
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "50 %",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Funkengel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Spaltet ab",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:kjut_child",
+                            "text": "Kleiner Kjut"
+                        }
+                    ],
+                    "value": "1 je überstandenem Treffer, der Leben kostet, höchstens 4 zugleich und 8 in seinem Leben"
+                },
+                {
+                    "label": "Wenn er stirbt",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gunpowder",
+                            "note": "",
+                            "target": "item:qtcraft:gunpowder",
+                            "text": "Schwarzpulver"
+                        }
+                    ],
+                    "value": "verpuffen seine Kinder und lassen je zurück"
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "mob:qtcraft:kjut",
+            "name": "qtcraft:kjut",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein dicker grüner Block aus leuchtendem Funkengel in der Form des Qt-Logos, mit zwei abgeschrägten Ecken und einem leuchtenden Auge. Er schwebt dir im Dunkeln knapp über dem Boden nach, nachts und in Höhlen, über Wasser und unter niedrigen Decken, und schlägt zu, wenn er dich berührt. Jeder Treffer, den er übersteht, spaltet einen kleinen Kjut ab, höchstens vier zugleich und acht in seinem Leben. Stirbt der große, verpuffen alle seine kleinen mit einem Funken und lassen je etwas Schwarzpulver zurück; es gibt keine Explosion, und kein Block geht kaputt.",
+            "title": "Kjut"
+        },
+        "mob:qtcraft:kjut_child": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Little Kjut",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:kjut_child"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "feindlich: verfolgt und greift Spieler an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "4 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,3 m breit, 0,3 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,6 m/s beim Gehen, 3,6 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "1 Schaden bis 1 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "16 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "nie von selbst (/summon, Showcase-Welt)"
+                },
+                {
+                    "label": "Leuchtet",
+                    "links": [
+                    ],
+                    "value": "15 von 15"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:spark_gel",
+                            "note": "50 %",
+                            "target": "item:qtcraft:spark_gel",
+                            "text": "Funkengel"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:spark_gel",
+            "id": "mob:qtcraft:kjut_child",
+            "name": "qtcraft:kjut_child",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Ein Kind eines Kjut: ein kleiner leuchtender Funke, der an einem schimmernden Faden um sein Elternteil kreist, wie ein Signal an seinem Slot, bis er dich sieht. Einzeln erschlagen lässt es manchmal Funkengel fallen; mit seinem Elternteil verpufft es und lässt dann Schwarzpulver zurück.",
+            "title": "Kleiner Kjut"
         },
         "mob:qtcraft:mannequin": {
             "category": "creatures",

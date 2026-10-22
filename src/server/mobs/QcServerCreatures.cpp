@@ -23,6 +23,7 @@ QcServerCreatures::QcServerCreatures(QcServerState &state, QcServerSounds &sound
     , m_guardians(state, m_spawners)
     , m_crumbling(state, sounds, blocks)
     , m_drinking(state, sounds)
+    , m_families(state, sounds)
 {
 }
 
@@ -63,6 +64,7 @@ void QcServerCreatures::tick()
     m_state.entities().creatures().setWeather(m_state.info().weather.rain, m_state.info().weather.thunder);
     // Before the creatures move, which forgets who was hurt.
     m_infestation.tick();
+    m_families.tick();
     const QList<QcMobManager::PlayerHit> hits =
         m_state.entities().creatures().tick(m_state.world(), players, m_state.info().worldTime, dt, [this] { return m_state.entities().newId(); });
     m_villagers.apply();

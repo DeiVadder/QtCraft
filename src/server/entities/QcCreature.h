@@ -144,6 +144,25 @@ struct QcCreature : QcEntity
     // suffocates after QcAquaticDefinition::airSeconds (QcBodyBurning). Not saved: a loaded fish on
     // land has its full air again.
     int dryTicks = 0;
+    // The parent of a child of a family (QcMobDefinition::family, decision E-839): its entity id while
+    // both are in the world (0: none, or a kept parent whose chunk is not loaded), and its persistent
+    // id when the family is kept with the world (QcCreature::uid; 0 otherwise), saved with the child
+    // (QcEntityCodec::Component::Family). QcMobFamilies keeps the two in step.
+    quint32 parent = 0;
+    quint64 parentUid = 0;
+    // The chunk the parent of a kept family was in when the child last saw it (QcMobFamilies keeps it
+    // in step; saved with the child): a child waiting for its parent is released once that chunk is
+    // loaded without the parent (it died while the child was unloaded). Unset when unknown.
+    std::optional<QcChunkPos> parentChunk;
+    // Children a parent of a family split off in its life (QcFamilyDefinition::maxSplits); not saved.
+    int splits = 0;
+    // Hurt this tick by a fresh hit that took health (a fresh hit without damage only sets
+    // hurtThisTick, a stronger hit during the invulnerability neither); families split on it
+    // (decision E-839).
+    bool woundedThisTick = false;
+    // Game ticks a hovering creature (QcMobDefinition::hover) still rises after a wall stopped it
+    // (QcMobHover); not saved.
+    int climbTicks = 0;
 
     bool isYoung() const { return growUp > 0.0; }
     // Whether it is a villager: it has the villager component (QcMobManager::spawn and restore give

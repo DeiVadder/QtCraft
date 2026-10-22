@@ -601,6 +601,10 @@ Spiders climb straight up walls and hang on to overhangs, so a wall alone does n
 
 In the mountains some stone is infested: it looks like stone but breaks much faster, even by hand, and drops nothing; a silverfish crawls out. Hit a silverfish and it calls its kin out of the infested blocks up to ten blocks around. Left alone, a silverfish slips into a stone, cobblestone or stone brick block next to it and waits there. Breaking blocks in creative mode lets nothing out.
 
+**Kjuts and their children**
+
+Kjuts float out of dark places like other monsters. Each hit a big Kjut survives splits off a little one, up to four at once and eight in all; a snowball or an egg splits nothing. The little ones circle it on glowing threads until they see you. The little ones belong to it like the children of a Qt object to their parent: when the parent dies, they all pop at once and leave gunpowder; killed one by one, they leave only spark gel. So for gunpowder, hit the big one a few times and then finish it; for gel, fight the little ones first. A Kjut that leaves the world without dying takes its little ones along quietly.
+
 **Chickens and eggs**
 
 Chickens flutter down slowly instead of falling and lay an egg every five to ten minutes. Thrown eggs burst where they land; one in eight hatches a chick, and one hatching in 32 brings four. Chickens fall in love with seeds of any kind. They drop feathers for arrows and raw chicken, which you cook in a furnace.
@@ -623,7 +627,7 @@ Monsters share one cap: the world holds at most 70 of them for every 289 loaded 
 
 **See also**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg), [Cow](creatures.md#mob-qtcraft-cow), [Milk bucket](items.md#item-qtcraft-milk_bucket), [Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Bucket of cod](items.md#item-qtcraft-cod_bucket)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Slime](creatures.md#mob-qtcraft-slime), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Firefly](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Dog](creatures.md#mob-qtcraft-dog), [Cat](creatures.md#mob-qtcraft-cat), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Spider](creatures.md#mob-qtcraft-spider), [Cave spider](creatures.md#mob-qtcraft-cave_spider), [Silverfish](creatures.md#mob-qtcraft-silverfish), [Infested stone](blocks.md#block-qtcraft-infested_stone), [Chicken](creatures.md#mob-qtcraft-chicken), [Egg](items.md#item-qtcraft-egg), [Cow](creatures.md#mob-qtcraft-cow), [Milk bucket](items.md#item-qtcraft-milk_bucket), [Cod](creatures.md#mob-qtcraft-cod), [Salmon](creatures.md#mob-qtcraft-salmon), [Bucket of cod](items.md#item-qtcraft-cod_bucket), [Kjut](creatures.md#mob-qtcraft-kjut), [Little Kjut](creatures.md#mob-qtcraft-kjut_child), [Spark gel](items.md#item-qtcraft-spark_gel), [Gunpowder](items.md#item-qtcraft-gunpowder)
 
 ### <a id="chapter-qtcraft-world"></a>The world
 

@@ -2628,6 +2628,31 @@ Die Obergrenze ist nach weniger als 10 s voll, tags wie nachts (Höhlen bleiben 
 
 **explore** wieder auf dem Stand vor den Fixes (+2,5 %, rund 6 µs je Tick für den Durchgang). **crowd über +10 %**, wieder durch die Zahl der Wesen: 23,5 mehr als `dev` (in der ersten 73.1-Reihe 7 mehr), die Phase Wesen wächst um 0,040 ms, rund 1,7 µs je zusätzlichem Wesen. Die Zahl ist je Build fest (alle 6 Runden 138 bzw. 139), sie hängt an den Zufallsfolgen (Blickrichtungen jetzt aus der Monster-Folge, Despawn-Chance aus einer eigenen) und am Zeitpunkt des Neuzählens; mehr als 70 Monster je 289 Chunks lässt die Obergrenze nicht zu. Gewollt (Parität mit dem Vorbild), wie in der ersten Reihe.
 
+## Paket 73.3 (Kjut, Eltern-Kind-Monster), headless, Release (2026-10-22)
+
+`SCENARIOS="crowd explore" scripts/bench-headless.sh` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt und rotiert), `dev` = Haupt-Checkout `build/release` auf `5463c1a` (73.1), `kjut` = Branch `feature/73-3-kjut` (E-839); Median je Szenario. Kein Unterschied über der Streuung: der Familien-Durchgang (`QcMobFamilies::tick`) läuft einmal je Tick über die Wesen (nur Eltern mit `hurtThisTick`), das Hüpfen ersetzt nur die Steuerung. In explore spawnen mit dem Kjut im Monster-Pool etwas mehr Monster (65 → 72; andere Folge der Würfe), die Phase Wesen bleibt gleich.
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
+|---|---:|---|---|---|---|---|
+| crowd | 6 | 0,216 → 0,208 (−3,5 %) | 0,319 → 0,291 (−8,6 %) | 0,195 → 0,187 | 140 → 138 | 66,8 → 66,6 |
+| explore | 3 | 0,242 → 0,239 (−1,2 %) | 1,067 → 1,069 | 0,071 → 0,068 | 65 → 72 | 72,8 → 73,3 |
+
+**Zweite Reihe nach Umgestaltung und Prüfungsbefunden** (2026-10-22, Kjut schwebt statt zu hüpfen, Kinder im Orbit, Fäden nur auf dem Client; `d70a797`): gleicher Aufruf, `dev` = Haupt-Checkout `build/release` (Stand vor 73.3, gebaut 06:21), `kjut` = `build/release` des Branches; adaptiv, beide Szenarien nach 3 Runden entschieden. Kein Unterschied über der Streuung: Schweber stehen außerhalb des Gedränges und rechnen ihre Höhe aus wenigen Zellen unter und über der Körpermitte; der Familien-Durchgang geht zusätzlich nur über gehaltene Kinder.
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
+|---|---:|---|---|---|---|---|
+| crowd | 3 | 0,209 → 0,208 (−0,5 %) | 0,305 → 0,301 | 0,188 → 0,187 | 138 → 138 | 66,7 → 66,3 |
+| explore | 3 | 0,250 → 0,248 (−0,8 %) | 1,123 → 1,098 | 0,073 → 0,072 | 66 → 63 | 73,2 → 73,4 |
+
+**Dritte Reihe: Kjuts gegen Zombies** (2026-10-22, nach den letzten Prüfungsbefunden, `af0b501`; `QTCRAFT_KJUT_MEASURE=1 build/release/tests/test_kjut_measure`, neu): 16 Kjut-Familien (je Elternteil vier durch Wunden abgespaltene Kinder, also 80 Schweber) gegen 16 Zombies, beide nachts auf einer Grasfläche von 41 × 41 Blöcken im Ring von 12 m um einen Überlebens-Spieler, der jeden Tick geheilt wird (die Jagd endet nie); Ticks von Hand, nur der Server-Tick gemessen, 40 Ticks Anlauf und 600 gemessene Ticks je Runde, 5 Runden abwechselnd (Reihenfolge je Runde getauscht). Maschine unter Last anderer Pakete (Lastmittel rund 16 bei 14 Kernen).
+
+| Art | Wesen | Server-Tick Ø (ms), Runden 0–4 | Median | je Wesen (µs) |
+|---|---:|---|---|---|
+| Kjut (16 Familien) | 80 | 0,135 / 0,138 / 0,140 / 0,139 / 0,139 | 0,139 | 1,74 |
+| Zombie | 16 | 0,064 / 0,069 / 0,065 / 0,065 / 0,065 | 0,065 | 4,06 |
+
+Ein Schweber kostet weniger als die Hälfte eines Zombies (keine Schritt-Physik mit Sprung und Schwimmen, kein Gedränge der Läufer; Pfade nur für die Jagenden), 16 Familien zusammen rund 0,07 ms je Tick mehr als 16 Zombies, weil sie fünfmal so viele Wesen sind. Das eigene Gedränge der jagenden Schweber, `roomAt` und die Elternsuche (nur für Kinder, die nicht jagen) fallen darin nicht auf.
+
 ## Etappe 69 (Flüsse), headless, Release (2026-10-22)
 
 **Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, neu in Etappe 69: `QcTerrainGenerator::generate` für 4 Seeds 1/7/42/1234 × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, dazu `column()` auf 192 × 192 Spalten je Feld; dieselbe Testdatei in einem Worktree auf `dev` `f15f17d`; zwei Reihen abwechselnd, unter dem Slot-Broker exklusiv):

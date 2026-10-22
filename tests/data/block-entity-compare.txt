@@ -19,7 +19,7 @@ scheduled 1 80 -2: +3 1
 item qtcraft:stickx6/0 at 1.500 80.000 0.042
 == station client
 client entities of kind -2: 1
-client entities of kind 12: 4
+client entities of kind 14: 4
 client updates at -1 80 -2: 119, last qtcraft:signal_observer[facing=east,powered=true]
 client updates at -2 80 -2: 1, last qtcraft:signal_lamp_lit
 client updates at -4 80 1: 32, last qtcraft:signal_dust[east=none,north=none,power=0,south=side,west=up]
@@ -131,7 +131,7 @@ scheduled 1 80 -2: +4 1
 item qtcraft:stickx6/0 at 1.500 80.000 0.042
 == station client after reopening
 client entities of kind -2: 1
-client entities of kind 12: 4
+client entities of kind 14: 4
 client updates at -1 80 -2: 31, last qtcraft:signal_observer[facing=east,powered=true]
 client updates at 0 80 -2: 31, last qtcraft:signal_observer[facing=west,powered=true]
 client updates at 1 80 -2: 31, last qtcraft:signal_dropper[facing=south,triggered=true]

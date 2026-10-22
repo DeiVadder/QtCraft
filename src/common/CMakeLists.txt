@@ -111,6 +111,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcHoldSerializer.h content/registry/QcHoldSerializer.cpp
     content/registry/QcItemSerializer.h content/registry/QcItemSerializer.cpp
     content/registry/QcLootTables.h content/registry/QcLootTables.cpp
+    content/registry/QcMobSerializer.h content/registry/QcMobSerializer.cpp
     content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
     content/registry/QcNamedList.h
     content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp

@@ -601,6 +601,10 @@ Spinnen klettern senkrecht Wände hinauf und halten sich an Überhängen fest; e
 
 In den Bergen ist mancher Stein befallen: Er sieht aus wie Stein, bricht aber viel schneller, auch mit der Hand, und lässt nichts fallen; ein Silberfischchen kriecht heraus. Schlägst du ein Silberfischchen, ruft es seinesgleichen aus den befallenen Blöcken bis zehn Blöcke ringsum. In Ruhe gelassen, schlüpft es in einen Stein-, Bruchstein- oder Steinziegelblock neben sich und wartet dort. Im Kreativmodus abgebaute Blöcke lassen nichts heraus.
 
+**Kjuts und ihre Kinder**
+
+Kjuts schweben wie andere Monster aus dunklen Orten. Jeder Treffer, den ein großer Kjut übersteht, spaltet einen kleinen ab, bis zu vier zugleich und acht insgesamt; ein Schneeball oder ein Ei spaltet nichts. Die kleinen kreisen an leuchtenden Fäden um ihn, bis sie dich sehen. Die kleinen gehören zu ihm wie die Kinder eines Qt-Objekts zu ihrem Elternteil: Stirbt das Elternteil, verpuffen alle auf einmal und lassen Schwarzpulver zurück; einzeln erschlagen lassen sie nur Funkengel fallen. Für Schwarzpulver also den großen ein paarmal treffen und dann erledigen; für Gel zuerst die kleinen bekämpfen. Ein Kjut, der die Welt verlässt, ohne zu sterben, nimmt seine kleinen still mit.
+
 **Hühner und Eier**
 
 Hühner flattern langsam hinab, statt zu fallen, und legen alle fünf bis zehn Minuten ein Ei. Geworfene Eier zerplatzen, wo sie landen; aus jedem achten schlüpft ein Küken, und bei einem von 32 Schlüpfen sind es vier. Hühner verlieben sich in Samen jeder Art. Sie lassen Federn für Pfeile und rohes Hühnchen fallen, das du im Ofen brätst.
@@ -623,7 +627,7 @@ Monster teilen sich eine Obergrenze: Die Welt hält höchstens 70 von ihnen je 2
 
 **Siehe auch**
 
-[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg), [Kuh](creatures.md#mob-qtcraft-cow), [Milcheimer](items.md#item-qtcraft-milk_bucket), [Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket)
+[Zombie](creatures.md#mob-qtcraft-zombie), [Skelett](creatures.md#mob-qtcraft-skeleton), [Enderman](creatures.md#mob-qtcraft-enderman), [Schleim](creatures.md#mob-qtcraft-slime), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep), [Glühwürmchen](creatures.md#mob-qtcraft-firefly), [Wolf](creatures.md#mob-qtcraft-wolf), [Hund](creatures.md#mob-qtcraft-dog), [Katze](creatures.md#mob-qtcraft-cat), [Ozelot](creatures.md#mob-qtcraft-ocelot), [Spinne](creatures.md#mob-qtcraft-spider), [Höhlenspinne](creatures.md#mob-qtcraft-cave_spider), [Silberfischchen](creatures.md#mob-qtcraft-silverfish), [Befallener Stein](blocks.md#block-qtcraft-infested_stone), [Huhn](creatures.md#mob-qtcraft-chicken), [Ei](items.md#item-qtcraft-egg), [Kuh](creatures.md#mob-qtcraft-cow), [Milcheimer](items.md#item-qtcraft-milk_bucket), [Kabeljau](creatures.md#mob-qtcraft-cod), [Lachs](creatures.md#mob-qtcraft-salmon), [Kabeljaueimer](items.md#item-qtcraft-cod_bucket), [Kjut](creatures.md#mob-qtcraft-kjut), [Kleiner Kjut](creatures.md#mob-qtcraft-kjut_child), [Funkengel](items.md#item-qtcraft-spark_gel), [Schwarzpulver](items.md#item-qtcraft-gunpowder)
 
 ### <a id="chapter-qtcraft-world"></a>Die Welt
 

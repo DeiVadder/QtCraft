@@ -356,6 +356,7 @@ QcResult<QcMobDefinition> QcMobReader::read()
     m_mob.drops = parseDrops(m_json.value(u"drops"_s), m_namespace, m_reader);
     m_mob.experience = QcContentFields::parseExperience(u"experience"_s, m_reader);
     parseMobSounds();
+    parseFamily();
 
     if (!m_reader.ok()) {
         return qcError(m_reader.error);
@@ -553,4 +554,41 @@ void QcMobReader::parseMobSounds()
     m_mob.hurtSound = soundReader.name(u"hurt"_s, m_namespace, QString::fromLatin1(QcSoundKeys::mobHurt));
     m_mob.deathSound = soundReader.name(u"death"_s, m_namespace, QString::fromLatin1(QcSoundKeys::mobDeath));
     m_reader.adopt(soundReader);
+}
+
+// A parent that splits off children (decision E-839): "family": {"child", "maxChildren",
+// "childrenPerHit", "maxSplits", "popDrops", "popSound", "orbitRadius", "orbitSeconds",
+// "tetherTexture", "tetherRange"}, and hovering: "hover": {"height", "bob", "bobSeconds",
+// "maxHeight", "turnSpeed"}.
+void QcMobReader::parseFamily()
+{
+    m_reader.nestedObject(u"hover"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcHoverDefinition &hover = m_mob.hover.emplace();
+        hover.height = nested.number(u"height"_s, hover.height, 0.0, 2.0);
+        hover.bob = nested.number(u"bob"_s, hover.bob, 0.0, 0.5);
+        hover.bobSeconds = nested.number(u"bobSeconds"_s, hover.bobSeconds, 0.1, 30.0);
+        hover.maxHeight = nested.number(u"maxHeight"_s, hover.maxHeight, hover.height, 16.0);
+        hover.turnSpeed = nested.number(u"turnSpeed"_s, hover.turnSpeed, 1.0, 3600.0);
+    });
+    m_reader.nestedObject(u"family"_s, [this](const QJsonObject &json, QcJsonFieldReader &nested) {
+        QcFamilyDefinition &family = m_mob.family.emplace();
+        family.child = nested.name(u"child"_s, m_namespace);
+        family.maxChildren = nested.integer(u"maxChildren"_s, family.maxChildren, 1, QcFamilyDefinition::maxChildrenLimit);
+        family.childrenPerHit = nested.integer(u"childrenPerHit"_s, family.childrenPerHit, 1, QcFamilyDefinition::maxChildrenLimit);
+        // 0 (the default): twice as many as live at once.
+        const int splits = nested.integer(u"maxSplits"_s, 0, 0, 16 * QcFamilyDefinition::maxChildrenLimit);
+        family.maxSplits = splits > 0 ? splits : 2 * family.maxChildren;
+        family.popDrops = parseDrops(json.value(u"popDrops"_s), m_namespace, nested);
+        family.popSound = nested.name(u"popSound"_s, m_namespace);
+        family.orbitRadius = nested.number(u"orbitRadius"_s, family.orbitRadius, 0.3, 8.0);
+        family.orbitSeconds = nested.number(u"orbitSeconds"_s, family.orbitSeconds, 0.5, 60.0);
+        family.tetherTexture = QcContentNames::qualify(json.value(u"tetherTexture"_s).toString(), m_namespace);
+        family.tetherRange = nested.number(u"tetherRange"_s, family.tetherRange, 1.0, 64.0);
+        if (nested.ok() && (family.child.isEmpty() || family.child == m_mob.name)) {
+            nested.fail(u"needs a 'child' of another kind"_s);
+        }
+    });
+    if (m_reader.ok() && (m_mob.family || m_mob.hover) && (m_mob.flying || m_mob.aquatic)) {
+        m_reader.fail(u"'family' and 'hover' go with creatures that live on land"_s);
+    }
 }

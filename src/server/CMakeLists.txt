@@ -191,7 +191,9 @@ target_sources(qc_server PRIVATE
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
     mobs/QcMobDrinking.h mobs/QcMobDrinking.cpp
     mobs/QcMobExchange.h
+    mobs/QcMobFamilies.h mobs/QcMobFamilies.cpp
     mobs/QcMobFear.h mobs/QcMobFear.cpp
+    mobs/QcMobHover.h mobs/QcMobHover.cpp
     mobs/QcMobLaying.h mobs/QcMobLaying.cpp
     mobs/QcMobManager.h mobs/QcMobManager.cpp
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp

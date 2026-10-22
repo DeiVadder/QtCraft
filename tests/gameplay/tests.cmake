@@ -125,6 +125,8 @@ qc_add_test(test_cows SOURCES gameplay/test_cows.cpp QcServerTestFixture.h LIBRA
 qc_add_test(test_fish SOURCES gameplay/test_fish.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fishing SOURCES gameplay/test_fishing.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_silverfish SOURCES gameplay/test_silverfish.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_kjut SOURCES gameplay/test_kjut.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_kjut_measure SOURCES gameplay/test_kjut_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_endermen SOURCES gameplay/test_endermen.cpp gameplay/QcEndermanFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_pet_rules SOURCES gameplay/test_pet_rules.cpp gameplay/QcPetFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_taming SOURCES gameplay/test_taming.cpp gameplay/QcPetFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

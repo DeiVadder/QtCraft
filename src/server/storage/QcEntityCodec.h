@@ -70,6 +70,9 @@ enum class Component : quint16 {
     // The data of a dropped stack: the components of its QcItemData (QcItemDataCodec; version 1,
     // decision E-823); only for stacks with data.
     ItemData = 19,
+    // The persistent id of the parent of a child of a kept family and the chunk it was last in
+    // (version 1, decision E-839).
+    Family = 20,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

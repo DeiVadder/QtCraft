@@ -1,0 +1,29 @@
+{
+    "name": "kjut_eye_ring",
+    "pattern": "icon",
+    "primary": "#0b1f0f",
+    "variation": 0.0,
+    "seed": 8399,
+    "palette": {
+        "o": "#1f5a29",
+        "d": "#0a1a0d"
+    },
+    "bitmap": [
+        "......oooo......",
+        "....oooooooo....",
+        "..oooddddddooo..",
+        "..ooddddddddoo..",
+        ".ooddddddddddoo.",
+        ".oddddddddddddo.",
+        "ooddddddddddddoo",
+        "ooddddddddddddoo",
+        "ooddddddddddddoo",
+        "ooddddddddddddoo",
+        ".oddddddddddddo.",
+        ".ooddddddddddoo.",
+        "..ooddddddddoo..",
+        "..oooddddddooo..",
+        "....oooooooo....",
+        "......oooo......"
+    ]
+}

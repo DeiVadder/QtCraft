@@ -123,6 +123,29 @@ namespace {
     return result;
 }
 
+// A parent whose child is no creature, or one with a family of its own, has no family (decision
+// E-839): children of children would multiply without end.
+[[nodiscard]] QcMobTraitsContent::Part<QcFamilyDefinition> resolveFamily(const QcContentRegistry &content, const QcMobDefinition &mob)
+{
+    QcMobTraitsContent::Part<QcFamilyDefinition> result{mob.family, {}};
+    if (!result.value) {
+        return result;
+    }
+    const std::optional<int> child = content.mobIndex(result.value->child);
+    if (!child || content.mobs()[*child].family || content.mobs()[*child].flying || content.mobs()[*child].aquatic) {
+        result.warnings.append(u"mob '%1': no creature on land '%2' without a family of its own to split into; it does not split"_s.arg(mob.name, result.value->child));
+        result.value.reset();
+        return result;
+    }
+    result.value->childType = *child;
+    for (const QcItemDrop &drop : std::as_const(result.value->popDrops)) {
+        if (!content.itemId(drop.item)) {
+            result.warnings.append(u"mob '%1': unknown item '%2' among the drops of popped children"_s.arg(mob.name, drop.item));
+        }
+    }
+    return result;
+}
+
 } // namespace
 
 namespace QcMobTraitsContent {
@@ -133,8 +156,9 @@ Resolved resolve(const QcContentRegistry &content, const QcMobDefinition &mob)
     Part<QcCrumbleDefinition> crumbles = resolveCrumbles(content, mob);
     Part<QcDrinkHealDefinition> drinks = resolveDrinks(content, mob);
     Part<QcCarryDefinition> carries = resolveCarries(content, mob);
-    return {std::move(tame.value), std::move(crumbles.value), std::move(drinks.value), std::move(carries.value),
-            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings};
+    Part<QcFamilyDefinition> family = resolveFamily(content, mob);
+    return {std::move(tame.value), std::move(crumbles.value), std::move(drinks.value), std::move(carries.value), std::move(family.value),
+            tame.warnings + crumbles.warnings + drinks.warnings + carries.warnings + family.warnings};
 }
 
 } // namespace QcMobTraitsContent

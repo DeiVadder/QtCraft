@@ -775,5 +775,9 @@
     "block.qtcraft.jungle_door": "Jungle door",
     "block.qtcraft.jungle_trapdoor": "Jungle trapdoor",
     "block.qtcraft.jungle_sign": "Jungle sign",
-    "material.qtcraft.jungle": "Jungle"
+    "material.qtcraft.jungle": "Jungle",
+    "item.qtcraft.spark_gel": "Spark gel",
+    "mob.qtcraft.kjut": "Kjut",
+    "mob.qtcraft.kjut_child": "Little Kjut",
+    "structure.qtcraft.kjut_family": "Kjut family"
 }

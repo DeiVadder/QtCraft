@@ -31,6 +31,8 @@ private:
     void parseFighting();
     void parseHostileTraits();
     void parseMobSounds();
+    // "family" and "hover" (decision E-839).
+    void parseFamily();
 
     // QcMobReaderTraits.cpp: "gaze", "teleport", "carries", "waterDamage", companions, water
     // creatures, milking, crumbling, guarding and drinking.

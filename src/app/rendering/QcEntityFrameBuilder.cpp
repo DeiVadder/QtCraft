@@ -7,6 +7,7 @@
 #include "clientcore/meshing/QcHangingMesher.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/meshing/QcProjectileMesher.h"
+#include "clientcore/meshing/QcTetherMesher.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
 #include "clientcore/textures/QcTextureAtlas.h"
@@ -459,6 +460,12 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     }
     for (const QcClientEntity &entity : session.entityMirror().dying()) {
         appendCreature(*mesh, entity, frame);
+    }
+    // The threads of families glow like their creatures (decision E-839).
+    const QList<QcTetherMesher::Thread> threads = m_tethers.threads(session.entities(), session.content(), alpha);
+    for (const QcTetherMesher::Thread &thread : threads) {
+        const QcEntityLight around = entityLight(frame.world, thread.to);
+        QcTetherMesher::append(*mesh, thread, uv(thread.texture), QcEntityLight(around.sky, 1.0f));
     }
     appendSpawners(*mesh, frame);
     appendSigns(*mesh, frame);

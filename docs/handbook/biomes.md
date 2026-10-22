@@ -34,7 +34,7 @@ Light forest of birches.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-desert"></a>Desert
 
@@ -57,7 +57,7 @@ Sand and sandstone with cacti and little else.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-flower_valley"></a>Flower Valley
 
@@ -88,7 +88,7 @@ A rare, sheltered valley in temperate land: a broad grassy floor between low hil
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-forest"></a>Forest
 
@@ -118,7 +118,7 @@ Dense oaks and birches with mushrooms in the shade.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-forest_steppe"></a>Forest Steppe
 
@@ -148,7 +148,7 @@ Warm, dry grassland between the plains and the desert: tall grass with scattered
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-frozen_river"></a>Frozen River
 
@@ -166,7 +166,7 @@ A river through cold land (tundra, snowy taiga, taiga): ice covers it, its bed a
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-jungle"></a>Jungle
 
@@ -196,7 +196,7 @@ Hot, wet land under tall trees, with ferns, melons and sugar cane. Jungle temple
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-jungle_edge"></a>Jungle Edge
 
@@ -226,7 +226,7 @@ The thin edge of the jungle towards temperate forests: single jungle trees, many
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-mountains"></a>Mountains
 
@@ -258,7 +258,7 @@ High rocky peaks with snow on top.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-plains"></a>Plains
 
@@ -288,7 +288,7 @@ Open grassland with flowers and few trees; pigs and sheep graze here.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-river"></a>River
 
@@ -305,7 +305,7 @@ The water of the winding rivers that run through the land down to the sea or int
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Snowy Taiga
 
@@ -329,7 +329,7 @@ Cold spruce forest on snow between the tundra and the taiga: fewer and smaller t
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-swamp"></a>Swamp
 
@@ -359,7 +359,7 @@ Low wet land with clay, sugar cane and, at night, fireflies. Its villages stand 
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Firefly](creatures.md#mob-qtcraft-firefly), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Firefly](creatures.md#mob-qtcraft-firefly), [Kjut](creatures.md#mob-qtcraft-kjut), [Ocelot](creatures.md#mob-qtcraft-ocelot), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-taiga"></a>Taiga
 
@@ -387,7 +387,7 @@ Cool spruce forest with snow on the ground.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
 
 ### <a id="biome-qtcraft-tundra"></a>Tundra
 
@@ -410,4 +410,4 @@ Cold flat land under snow; its water freezes.
 
 **Creatures**
 
-[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)
+[Cave spider](creatures.md#mob-qtcraft-cave_spider), [Chicken](creatures.md#mob-qtcraft-chicken), [Cod](creatures.md#mob-qtcraft-cod), [Cow](creatures.md#mob-qtcraft-cow), [Enderman](creatures.md#mob-qtcraft-enderman), [Kjut](creatures.md#mob-qtcraft-kjut), [Pig](creatures.md#mob-qtcraft-pig), [Salmon](creatures.md#mob-qtcraft-salmon), [Sheep](creatures.md#mob-qtcraft-sheep), [Skeleton](creatures.md#mob-qtcraft-skeleton), [Slime](creatures.md#mob-qtcraft-slime), [Spider](creatures.md#mob-qtcraft-spider), [Wolf](creatures.md#mob-qtcraft-wolf), [Zombie](creatures.md#mob-qtcraft-zombie)

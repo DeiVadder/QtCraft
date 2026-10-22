@@ -238,7 +238,8 @@ private slots:
         // The settlement's farmers harvest and pick up bread; every other creature on show is
         // confined, so it changes nothing and its pen holds it, also one that teleports (decisions
         // E-460, E-510). Only the settlement's two villagers and the pets, which belong to someone,
-        // are free; one mannequin stands without a mind.
+        // are free; one mannequin and the Kjut parent (its children orbit it, decision E-839) stand
+        // without a mind.
         QVERIFY(setup.mobGriefing);
 
         QSet<QString> mobs;
@@ -259,7 +260,7 @@ private slots:
             QVERIFY2(mobs.contains(mob.name), qPrintable(mob.name));
         }
         QCOMPARE(free, 2);
-        QCOMPARE(withoutMind, 1);
+        QCOMPARE(withoutMind, 2);
 
         QSet<QString> items;
         for (const QcWorldSetup::Contents &contents : setup.contents) {
@@ -399,13 +400,21 @@ private slots:
             }
         }
 
-        // Two stops per area: from its lookout (standing on the platform) and close by.
+        // Two stops per area: from its lookout (standing on the platform) and close by; a station
+        // seen from the front (decision E-839) has both on the ground.
+        QSet<QString> fromFront;
+        for (const QcStructureDefinition &structure : m_content->worldgen().structures()) {
+            if (structure.showcaseFromFront) {
+                fromFront.insert(u"demo-"_s + structure.name.mid(structure.name.indexOf(u':') + 1));
+            }
+        }
+        QVERIFY(fromFront.contains(u"demo-kjut_family"_s));
         QCOMPARE(plan.tour.size(), 2 * plan.areas.size());
         for (const QcShowcaseTourStop &stop : plan.tour) {
             const QcChunkPos chunk = QcBlockPos{stop.x, 0, stop.z}.chunk();
             const std::shared_ptr<QcChunk> generated = m_generator->generate(chunk);
             const int top = generated->highestNonAir(QcBlockPos{stop.x, 0, stop.z}.localX(), QcBlockPos{stop.x, 0, stop.z}.localZ());
-            QVERIFY2(stop.name.endsWith(u"-near"_s) ? top == 63 : top > 63, qPrintable(stop.name));
+            QVERIFY2(stop.name.endsWith(u"-near"_s) || fromFront.contains(stop.name) ? top == 63 : top > 63, qPrintable(stop.name));
             QVERIFY(stop.pitch < 0.0f && stop.pitch > -60.0f);
             QVERIFY(stop.yaw >= 0.0f && stop.yaw < 360.0f);
         }

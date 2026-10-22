@@ -94,6 +94,8 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcSignTextMesher.h meshing/QcSignTextMesher.cpp
     meshing/QcSpriteShape.h meshing/QcSpriteShape.cpp
     meshing/QcSpriteShapes.h meshing/QcSpriteShapes.cpp
+    meshing/QcTetherMesher.h meshing/QcTetherMesher.cpp
+    meshing/QcTethers.h meshing/QcTethers.cpp
 )
 target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp

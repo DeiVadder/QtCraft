@@ -35,6 +35,12 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     if (mob.layTimer >= 0.0) {
         components.add(quint16(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
     }
+    if (mob.parentUid != 0) {
+        components.add(quint16(Component::Family), kindVersion, [&mob](QDataStream &out) {
+            const QcChunkPos chunk = mob.parentChunk.value_or(QcChunkPos{});
+            out << mob.parentUid << mob.parentChunk.has_value() << qint32(chunk.x) << qint32(chunk.z);
+        });
+    }
     return components;
 }
 
@@ -80,6 +86,14 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
         in >> mob.playerBuilt;
         return true;
     };
+    const auto family = [&mob](QDataStream &in, quint16) {
+        bool known = false;
+        qint32 x = 0;
+        qint32 z = 0;
+        in >> mob.parentUid >> known >> x >> z;
+        mob.parentChunk = known ? std::optional<QcChunkPos>(QcChunkPos{x, z}) : std::nullopt;
+        return mob.parentUid != 0;
+    };
     const auto tame = [&mob](QDataStream &in, quint16) {
         QcTameState &state = mob.tame.emplace();
         state.owner = QcComponentFrames::readText(in, maxTypeName).value_or(QString());
@@ -93,7 +107,7 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
                                          known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
                                          known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
                                          known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                                         known(Component::NoAi, kindVersion, noAi)});
+                                         known(Component::NoAi, kindVersion, noAi), known(Component::Family, kindVersion, family)});
     if (!components) {
         return std::nullopt;
     }

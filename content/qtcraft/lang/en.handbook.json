@@ -718,7 +718,7 @@
     "item.qtcraft.fired_lamp_shell.description": "Put a firefly in a bottle into it to make a mine lamp.",
     "item.qtcraft.firefly_bottle.description": "A caught firefly. It lights the mine lamp.",
     "item.qtcraft.flint.description": "A sharp stone that sometimes comes out of gravel. With an iron ingot it makes flint and steel.",
-    "item.qtcraft.gunpowder.description": "Made from coal and flint. Five of it and four sand make an explosive.",
+    "item.qtcraft.gunpowder.description": "Made from coal and flint, or richer from spark gel and coal. Popping little Kjuts leave some too. Five of it and four sand make an explosive.",
     "item.qtcraft.flint_and_steel.description": "Strikes sparks: used on a block, it lights fire in front of the face you click, where fire can stand. Each fire wears it a little. A Signal Dispenser uses it the same way.",
     "item.qtcraft.glass_bottle.description": "Use it on a firefly at night in a swamp to catch it.",
     "item.qtcraft.gold_ingot.description": "Smelted gold.",
@@ -1333,5 +1333,14 @@
     "feature.qtcraft.oak_bush": "Oak bush",
     "feature.qtcraft.dry_shrub": "Dry shrub",
     "feature.qtcraft.giant_spruce_tree": "Giant spruce",
-    "feature.qtcraft.giant_jungle_tree": "Giant jungle tree"
+    "feature.qtcraft.giant_jungle_tree": "Giant jungle tree",
+    "item.qtcraft.spark_gel.description": "The glowing gel of Kjuts. With a piece of coal it makes four gunpowder.",
+    "mob.qtcraft.kjut.description": "A chunky green badge of glowing spark gel, shaped like the Qt logo with two cut corners and one glowing eye. It floats a little above the ground after you in the dark, at night and in caves, over water and under low ceilings, and strikes when it touches you. Every hit it survives splits off a little Kjut, at most four at once and eight in its life. When the big one dies, all its little ones pop with a spark, each leaving some gunpowder; there is no explosion and no block breaks.",
+    "mob.qtcraft.kjut_child.description": "A child of a Kjut: a small glowing spark that circles its parent on a shining thread, like a signal tied to its slot, until it sees you. Killed on its own it may leave spark gel; it pops with its parent and then leaves gunpowder.",
+    "chapter.qtcraft.creatures.kjuts.title": "Kjuts and their children",
+    "chapter.qtcraft.creatures.kjuts.text": "Kjuts float out of dark places like other monsters. Each hit a big Kjut survives splits off a little one, up to four at once and eight in all; a snowball or an egg splits nothing. The little ones circle it on glowing threads until they see you. The little ones belong to it like the children of a Qt object to their parent: when the parent dies, they all pop at once and leave gunpowder; killed one by one, they leave only spark gel. So for gunpowder, hit the big one a few times and then finish it; for gel, fight the little ones first. A Kjut that leaves the world without dying takes its little ones along quietly.",
+    "handbook.fact.splitsInto": "Splits into",
+    "handbook.value.splitsInto": "%2 per hit it survives that takes health, at most %1 at once and %3 in its life",
+    "handbook.fact.childrenPop": "When it dies",
+    "handbook.value.childrenPop": "its children pop and each leaves"
 }

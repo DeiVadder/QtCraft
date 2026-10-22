@@ -1,0 +1,94 @@
+{
+    "name": "kjut_child",
+    "sounds": {
+        "ambient": "mob.kjut.ambient",
+        "hurt": "mob.kjut.hurt",
+        "death": "mob.kjut.death"
+    },
+    "health": 4,
+    "width": 0.3,
+    "height": 0.3,
+    "walkSpeed": 1.6,
+    "chaseSpeed": 3.6,
+    "hostile": true,
+    "attackDamage": 1,
+    "attackRange": 1.0,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "hover": {
+        "height": 0.8,
+        "bob": 0.1,
+        "bobSeconds": 1.6,
+        "maxHeight": 3.0,
+        "turnSpeed": 360
+    },
+    "glow": 15,
+    "spawn": {
+        "weight": 0
+    },
+    "model": [
+        {
+            "from": [
+                -0.15,
+                0.06,
+                -0.09
+            ],
+            "to": [
+                0.15,
+                0.24,
+                0.09
+            ],
+            "texture": "kjut_spark"
+        },
+        {
+            "from": [
+                -0.09,
+                0.0,
+                -0.09
+            ],
+            "to": [
+                0.09,
+                0.3,
+                0.09
+            ],
+            "texture": "kjut_spark"
+        },
+        {
+            "from": [
+                -0.09,
+                0.06,
+                -0.15
+            ],
+            "to": [
+                0.09,
+                0.24,
+                0.15
+            ],
+            "texture": "kjut_spark"
+        },
+        {
+            "from": [
+                -0.07,
+                0.19,
+                -0.16
+            ],
+            "to": [
+                -0.02,
+                0.24,
+                -0.15
+            ],
+            "texture": "kjut_highlight"
+        }
+    ],
+    "drops": [
+        {
+            "item": "spark_gel",
+            "count": 1,
+            "chance": 0.5
+        }
+    ],
+    "experience": [
+        1,
+        2
+    ]
+}

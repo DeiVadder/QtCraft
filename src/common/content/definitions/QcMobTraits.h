@@ -219,3 +219,52 @@ struct QcDrinkHealDefinition
 
     bool operator==(const QcDrinkHealDefinition &) const = default;
 };
+
+// A parent that splits off children and takes them with it (the Kjut, decision E-839), from its data
+// (`family`): every fresh hurt it survives that takes health splits off `childrenPerHit` creatures of
+// kind `child` while fewer than `maxChildren` of its children live and it has split fewer than
+// `maxSplits` children in its life; when it dies, every child of it vanishes with `popSound` and
+// leaves `popDrops` (like the children of a QObject on deleteLater), without an explosion. A child
+// killed on its own leaves only its kind's drops. Children without a target of their own orbit the
+// parent (`orbitRadius`, `orbitSeconds`). The client draws a thread of `tetherTexture` from each
+// child to the nearest parent of the kind within `tetherRange` metres; the rest of the family is
+// server side only.
+struct QcFamilyDefinition
+{
+    QString child;
+    // The index of `child` among the creatures, resolved when the content is finished
+    // (QcMobTraitsContent::resolve); -1 before.
+    int childType = -1;
+    int maxChildren = 4;
+    int childrenPerHit = 1;
+    // Children a parent splits off in its whole life (not saved); the data's 0 or a missing field
+    // means twice `maxChildren` (QcMobReader).
+    int maxSplits = 8;
+    QList<QcItemDrop> popDrops;
+    QString popSound;
+    // The middle radius of the orbits in metres (each child keeps its own, within ±30 %) and the
+    // seconds of one round.
+    double orbitRadius = 1.2;
+    double orbitSeconds = 4.0;
+    // The thread the client draws between parent and child; empty texture for none.
+    QString tetherTexture;
+    double tetherRange = 12.0;
+
+    static constexpr int maxChildrenLimit = 16;
+};
+
+// A creature that hovers (the Kjut, decision E-839), from its data (`hover`): it floats `height`
+// metres above the ground or the liquid below it, bobbing by `bob` metres every `bobSeconds`, never
+// higher than `maxHeight` above the ground and lower under a low ceiling; it flies without gravity
+// towards where its brain wants to go, rises over a wall in its way and turns to face where it goes
+// at no more than `turnSpeed` degrees a second. Server side only.
+struct QcHoverDefinition
+{
+    double height = 0.6;
+    double bob = 0.08;
+    double bobSeconds = 2.5;
+    double maxHeight = 3.0;
+    double turnSpeed = 120.0;
+
+    bool operator==(const QcHoverDefinition &) const = default;
+};

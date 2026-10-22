@@ -1,0 +1,35 @@
+{
+    "name": "mob.kjut.pop",
+    "volume": 0.8,
+    "variants": 3,
+    "pitchVariation": 0.2,
+    "range": 24,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.06,
+            "frequency": 1400,
+            "endFrequency": 600,
+            "attack": 0.001,
+            "curve": 2,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.001,
+            "curve": 3,
+            "highpass": 1800,
+            "gain": 0.6
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.35,
+            "attack": 0.002,
+            "curve": 1.5,
+            "density": 160,
+            "highpass": 3500,
+            "gain": 0.45
+        }
+    ]
+}

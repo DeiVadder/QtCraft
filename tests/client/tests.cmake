@@ -7,6 +7,8 @@ qc_add_test(test_dials SOURCES client/test_dials.cpp LIBRARIES qc_clientcore)
 # Maps on the client (decisions E-801, E-802): the cache, the colours from the atlas, the image.
 qc_add_test(test_client_maps SOURCES client/test_client_maps.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_framed_maps SOURCES client/test_framed_maps.cpp LIBRARIES qc_base_content qc_clientcore)
+# The threads between Kjuts and their children (decision E-839).
+qc_add_test(test_kjut_threads SOURCES client/test_kjut_threads.cpp LIBRARIES qc_base_content qc_clientcore)
 # The held map's markers, its image provider and the filled map's tooltip (decision E-805).
 qc_add_test(test_map_hud SOURCES client/test_map_hud.cpp LIBRARIES qc_app_core)
 qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_app_core)

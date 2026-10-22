@@ -128,7 +128,8 @@ public:
     // may now; true when it did.
     bool teleport(quint32 mobId, const QcBlockAccess &world);
     // Keeps a creature with the world (persistent, with a persistent id) from now on, or no longer;
-    // never a guardian (QcCreature::guards, decision E-591).
+    // never a guardian (QcCreature::guards, decision E-591). A parent of a family takes its children
+    // along (decision E-839).
     void keep(QcCreature &mob, bool kept);
     // Lets the creature carry the block state (qcAirBlockId: none) with its item in the hand.
     void carryBlock(QcCreature &mob, QcBlockId block) const;
@@ -179,6 +180,12 @@ public:
     QList<Stored> persistentMobs() const;
     static Stored storedOf(const QcCreature &mob);
     void restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &populated, const std::function<quint32()> &nextEntityId);
+    // Links the children of kept families that wait for their parent (QcCreature::parentUid) to the
+    // parent when it is in the world (decision E-839), no more than its family's `maxChildren`
+    // (the others are released); restore does so after every load.
+    void relinkFamilies();
+    // Releases a child from its family: no longer kept, no parent; it goes on as an ordinary monster.
+    void release(QcCreature &child);
     // The persistent id the next saved creature gets (QcCreature::uid); world.json keeps it. Setting
     // never lowers it below an id already given.
     quint64 nextUid() const { return m_nextUid; }

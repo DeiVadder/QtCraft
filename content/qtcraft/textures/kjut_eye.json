@@ -1,0 +1,8 @@
+{
+    "name": "kjut_eye",
+    "pattern": "speckle",
+    "primary": "#fffbe0",
+    "secondary": "#ffe970",
+    "variation": 0.06,
+    "seed": 8392
+}

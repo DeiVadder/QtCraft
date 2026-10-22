@@ -240,6 +240,24 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     return facts;
 }
 
+// The children a parent splits off and what they leave when it dies (decision E-839).
+[[nodiscard]] QList<Fact> familyFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
+{
+    if (!mob.family || mob.family->childType < 0) {
+        return {};
+    }
+    const QcFamilyDefinition &family = *mob.family;
+    const QcHandbookText &text = context.text;
+    QList<Fact> facts{{text.label(u"fact.splitsInto"_s), text.label(u"value.splitsInto"_s).arg(family.maxChildren).arg(family.childrenPerHit).arg(family.maxSplits),
+                       {context.links.mobLink(context.content.mobs()[family.childType])}}};
+    Fact pop{text.label(u"fact.childrenPop"_s), text.label(u"value.childrenPop"_s), {}};
+    for (const QcItemDrop &drop : family.popDrops) {
+        pop.links.append(context.links.itemLink(drop.item));
+    }
+    facts.append(std::move(pop));
+    return facts;
+}
+
 // The blocks and biomes it spawns on.
 [[nodiscard]] QList<Section> spawnSections(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
@@ -355,6 +373,7 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.facts += spawnFacts(context, mob);
     entry.facts += traitFacts(context, mob);
     entry.facts += companionFacts(context, mob);
+    entry.facts += familyFacts(context, mob);
 
     entry.sections += spawnSections(context, mob);
     if (std::optional<Section> villages = villageSection(context, mob)) {

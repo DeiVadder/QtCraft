@@ -775,5 +775,9 @@
     "block.qtcraft.jungle_door": "Dschungeltür",
     "block.qtcraft.jungle_trapdoor": "Dschungelfalltür",
     "block.qtcraft.jungle_sign": "Dschungelschild",
-    "material.qtcraft.jungle": "Dschungel"
+    "material.qtcraft.jungle": "Dschungel",
+    "item.qtcraft.spark_gel": "Funkengel",
+    "mob.qtcraft.kjut": "Kjut",
+    "mob.qtcraft.kjut_child": "Kleiner Kjut",
+    "structure.qtcraft.kjut_family": "Kjut-Familie"
 }

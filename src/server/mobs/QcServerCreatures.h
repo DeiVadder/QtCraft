@@ -5,6 +5,7 @@
 #include "server/mobs/QcCreatureTraits.h"
 #include "server/mobs/QcInfestation.h"
 #include "server/mobs/QcMobDrinking.h"
+#include "server/mobs/QcMobFamilies.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "server/villages/QcServerVillagers.h"
@@ -21,7 +22,8 @@ class QcServerState;
 // decision E-460: blocks taken and placed, teleports), creatures hiding in blocks (QcInfestation,
 // decision E-453), monster spawners (QcSpawnerRules, decision E-520), the guardians of structure
 // zones (QcGuardians, decision E-591), creatures that crumble at water (QcCrumbling, decision
-// E-593) and creatures that drink to heal (QcMobDrinking, decision E-623).
+// E-593), creatures that drink to heal (QcMobDrinking, decision E-623) and families of parents and
+// children (QcMobFamilies, decision E-839).
 class QcServerCreatures
 {
 public:
@@ -42,6 +44,7 @@ public:
     const QcGuardians &guardians() const { return m_guardians; }
     const QcCrumbling &crumbling() const { return m_crumbling; }
     const QcMobDrinking &drinking() const { return m_drinking; }
+    const QcMobFamilies &families() const { return m_families; }
 
 private:
     // What the creatures know about the players this tick.
@@ -70,4 +73,5 @@ private:
     QcGuardians m_guardians;
     QcCrumbling m_crumbling;
     QcMobDrinking m_drinking;
+    QcMobFamilies m_families;
 };

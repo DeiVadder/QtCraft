@@ -1,0 +1,260 @@
+{
+    "name": "kjut",
+    "sounds": {
+        "ambient": "mob.kjut.ambient",
+        "hurt": "mob.kjut.hurt",
+        "death": "mob.kjut.death"
+    },
+    "health": 16,
+    "width": 0.8,
+    "height": 0.8,
+    "walkSpeed": 1.2,
+    "chaseSpeed": 3.0,
+    "hostile": true,
+    "attackDamage": 3,
+    "attackRange": 1.4,
+    "attackCooldown": 1.0,
+    "sightRange": 16,
+    "hover": {
+        "height": 0.6,
+        "bob": 0.08,
+        "bobSeconds": 2.5,
+        "maxHeight": 3.0,
+        "turnSpeed": 90
+    },
+    "glow": 10,
+    "spawn": {
+        "maxGroup": 1,
+        "weight": 2,
+        "caves": true
+    },
+    "family": {
+        "child": "kjut_child",
+        "maxChildren": 4,
+        "childrenPerHit": 1,
+        "popDrops": [
+            {
+                "item": "gunpowder",
+                "count": 1
+            }
+        ],
+        "popSound": "mob.kjut.pop",
+        "orbitRadius": 1.1,
+        "orbitSeconds": 4.0,
+        "maxSplits": 8,
+        "tetherTexture": "kjut_thread",
+        "tetherRange": 12
+    },
+    "model": [
+        {
+            "from": [
+                -0.36,
+                0.0,
+                -0.24
+            ],
+            "to": [
+                0.16,
+                0.08,
+                0.24
+            ],
+            "texture": "kjut_under"
+        },
+        {
+            "from": [
+                -0.4,
+                0.08,
+                -0.28
+            ],
+            "to": [
+                0.24,
+                0.16,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.4,
+                0.16,
+                -0.28
+            ],
+            "to": [
+                0.32,
+                0.24,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.32,
+                0.56,
+                -0.28
+            ],
+            "to": [
+                0.4,
+                0.64,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.24,
+                0.64,
+                -0.28
+            ],
+            "to": [
+                0.4,
+                0.72,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.16,
+                0.72,
+                -0.24
+            ],
+            "to": [
+                0.36,
+                0.8,
+                0.24
+            ],
+            "texture": "kjut_top"
+        },
+        {
+            "from": [
+                0.16,
+                0.24,
+                -0.28
+            ],
+            "to": [
+                0.4,
+                0.56,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.4,
+                0.24,
+                -0.28
+            ],
+            "to": [
+                -0.16,
+                0.56,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.16,
+                0.24,
+                -0.22
+            ],
+            "to": [
+                0.16,
+                0.56,
+                0.28
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.16,
+                0.24,
+                -0.28
+            ],
+            "to": [
+                0.16,
+                0.27,
+                -0.22
+            ],
+            "texture": "kjut"
+        },
+        {
+            "from": [
+                -0.16,
+                0.53,
+                -0.28
+            ],
+            "to": [
+                0.16,
+                0.56,
+                -0.22
+            ],
+            "texture": "kjut_top"
+        },
+        {
+            "from": [
+                -0.15,
+                0.255,
+                -0.23
+            ],
+            "to": [
+                0.15,
+                0.545,
+                -0.222
+            ],
+            "texture": "kjut_eye_ring"
+        },
+        {
+            "from": [
+                -0.08,
+                0.32,
+                -0.31
+            ],
+            "to": [
+                0.08,
+                0.48,
+                -0.22
+            ],
+            "texture": "kjut_eye"
+        },
+        {
+            "from": [
+                0.02,
+                0.43,
+                -0.318
+            ],
+            "to": [
+                0.06,
+                0.465,
+                -0.31
+            ],
+            "texture": "kjut_highlight"
+        },
+        {
+            "from": [
+                -0.12,
+                0.3,
+                0.28
+            ],
+            "to": [
+                0.12,
+                0.5,
+                0.29
+            ],
+            "texture": "kjut_spark"
+        }
+    ],
+    "drops": [
+        {
+            "item": "spark_gel",
+            "count": 1
+        },
+        {
+            "item": "spark_gel",
+            "count": 1,
+            "chance": 0.5
+        }
+    ],
+    "experience": [
+        3,
+        6
+    ]
+}

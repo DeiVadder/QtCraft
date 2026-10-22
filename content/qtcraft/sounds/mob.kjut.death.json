@@ -1,0 +1,23 @@
+{
+    "name": "mob.kjut.death",
+    "volume": 0.75,
+    "layers": [
+        {
+            "wave": "sine",
+            "duration": 0.35,
+            "frequency": 520,
+            "endFrequency": 120,
+            "attack": 0.005,
+            "curve": 1.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.4,
+            "attack": 0.005,
+            "curve": 1.5,
+            "density": 120,
+            "highpass": 2000,
+            "gain": 0.5
+        }
+    ]
+}

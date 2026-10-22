@@ -10,6 +10,7 @@
 #include "server/hanging/QcServerHanging.h"
 #include "server/maps/QcMapSurvey.h"
 #include "server/minecarts/QcMinecartMotion.h"
+#include "server/mobs/QcMobFamilies.h"
 #include "server/mobs/QcPetCare.h"
 
 
@@ -247,6 +248,38 @@ bool fillCart(QcServerState &state, const QcWorldSetup::Contents &contents)
     return false;
 }
 
+// A creature of the setup with its marks: confined, without a mind, rested, a pet, a family.
+void placeMob(QcServerState &state, const QcWorldSetup::Mob &mob)
+{
+    if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
+        const quint32 id = state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
+        // Villagers of a station come rested, as if they had just slept: a golem farm of the
+        // showcase summons at once although its fixed time of day never brings a night
+        // (decision E-470).
+        QcCreature &creature = *state.entities().creatures().find(id);
+        creature.confined = mob.confined;
+        creature.noAi = mob.noAi;
+        if (creature.isVillager()) {
+            creature.villager->sleptAt = state.info().worldTime;
+        }
+        // A pet of a made-up owner (the showcase's pet corner, decision E-480).
+        if (!mob.owner.isEmpty() && state.content().mobs()[*type].tameable) {
+            QcPetCare::tame(state.entities(), state.content(), creature, mob.owner);
+            creature.tame->sitting = mob.sitting;
+            creature.pose = mob.sitting ? QcPose::Sitting : QcPose::Standing;
+        }
+        // A family of the showcase (decision E-839): its children are split off at once (the
+        // creatures move in the store, so `creature` is not used after this). They keep a mind of
+        // their own, so they orbit a parent without one.
+        if (mob.children > 0 && !state.content().mobs()[*type].family) {
+            qCWarning(lcServer) << "World setup: creature" << mob.mob << "has no family to give" << mob.children << "children";
+        }
+        QcMobFamilies::split(state, id, mob.children);
+    } else {
+        qCWarning(lcServer) << "World setup: unknown creature" << mob.mob;
+    }
+}
+
 } // namespace
 
 namespace QcServerSetup {
@@ -266,26 +299,7 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
     state.info().adventure.merge(setup.adventure);
 
     for (const QcWorldSetup::Mob &mob : setup.mobs) {
-        if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
-            const quint32 id = state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
-            // Villagers of a station come rested, as if they had just slept: a golem farm of the
-            // showcase summons at once although its fixed time of day never brings a night
-            // (decision E-470).
-            QcCreature &creature = *state.entities().creatures().find(id);
-            creature.confined = mob.confined;
-            creature.noAi = mob.noAi;
-            if (creature.isVillager()) {
-                creature.villager->sleptAt = state.info().worldTime;
-            }
-            // A pet of a made-up owner (the showcase's pet corner, decision E-480).
-            if (!mob.owner.isEmpty() && state.content().mobs()[*type].tameable) {
-                QcPetCare::tame(state.entities(), state.content(), creature, mob.owner);
-                creature.tame->sitting = mob.sitting;
-                creature.pose = mob.sitting ? QcPose::Sitting : QcPose::Standing;
-            }
-        } else {
-            qCWarning(lcServer) << "World setup: unknown creature" << mob.mob;
-        }
+        placeMob(state, mob);
     }
 
     for (const QcWorldSetup::Stand &stand : setup.stands) {

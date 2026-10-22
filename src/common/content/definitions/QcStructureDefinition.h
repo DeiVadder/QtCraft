@@ -48,6 +48,10 @@ struct QcStructureDefinition
         // Without a mind, like the reference's NoAI (decision E-510; `"noAi": true`): it stands
         // where it is put.
         bool noAi = false;
+        // Children split off it at once, linked to it (a parent of a family, QcMobDefinition::family,
+        // decision E-839; `"children": 3`; at most the family's `maxChildren`). They have a mind
+        // even when the parent has none (`noAi`), so they orbit it.
+        int children = 0;
     };
 
     // An armour stand (decision E-238): where it stands, turned by `yaw` degrees (0 faces north),
@@ -230,6 +234,9 @@ struct QcStructureDefinition
     // Shown as a demo in the showcase world, in the order of `showcaseOrder` (then name).
     bool showcase = false;
     int showcaseOrder = 0;
+    // The showcase tour looks at it from in front of its south side at eye height (a station behind
+    // glass, decision E-839; `"showcase": {"front": true}`) instead of from the lookout.
+    bool showcaseFromFront = false;
     // A room of the mine shafts with this weight (decision E-570; `"mineshaft": {"weight": 2}`), 0
     // for none: placed at dead ends, its door (the middle of its north side, one block above its
     // bottom layer) towards the corridor.

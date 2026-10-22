@@ -79,7 +79,7 @@ while read -r name x z yaw pitch; do
     echo "$name" | grep -Eq "$FILTER" || continue
     shoot "$name" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch"
     case "$name" in
-    demo-light_row-near)
+    demo-light_row-near | demo-kjut_family-near)
         shoot "$name-night" "$x" "$z" "$yaw" "$pitch" --spawn "$x,$z" --look "$yaw,$pitch" --chat "/time set night"
         ;;
     blocks-parts)

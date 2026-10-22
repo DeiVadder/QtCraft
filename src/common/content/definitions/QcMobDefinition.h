@@ -116,6 +116,10 @@ struct QcMobDefinition
     std::optional<QcCrumbleDefinition> crumbles;
     // Drinks to heal itself (the witch, decision E-623).
     std::optional<QcDrinkHealDefinition> drinks;
+    // Splits off children when hurt and takes them with it when it dies (the Kjut, decision E-839).
+    std::optional<QcFamilyDefinition> family;
+    // Hovers above the ground instead of walking (the Kjut, decision E-839).
+    std::optional<QcHoverDefinition> hover;
     // A guardian (Ai::Guardian) chases players up to this many blocks outside the zone it guards
     // (`"guardian": {"leash": 6}`, decision E-594). Server side only.
     double guardLeash = 6.0;
