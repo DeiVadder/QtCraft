@@ -339,6 +339,153 @@ class SlotBrokerTest(unittest.TestCase):
         self.granted(later)
         self.assertFalse(os.path.exists(lock), "bench.lock left after the benchmark")
 
+    def write_history(self, *slots):
+        """Release lines of earlier slots in the broker log: (kind, who, seconds)."""
+        with open(os.path.join(self.dir, "qc-slot.log"), "a", encoding="utf-8") as handle:
+            for number, (kind, who, seconds) in enumerate(slots, 1):
+                handle.write(f"2026-10-22 07:00:00 release #{number} {kind} who={who!r} after {seconds}s: released\n")
+
+    def bench_behind_verify(self, **extra):
+        """A broker with a held verify 'a' (usually 600 s) and a benchmark waiting for it."""
+        self.write_history(("verify", "a", 600), ("build", "t1 short", 5), ("build", "t1 short", 3),
+                           ("build", "t1 long", 3000), ("build", "t1 long", 20), ("build", "t1 once", 1),
+                           ("verify", "v2", 5), ("verify", "v2", 5), ("bench", "bench", 120))
+        self.start_server(**extra)
+        heavy = self.hold("verify", "a")
+        bench = self.acquire("bench", "bench")
+        wait_until(lambda: self.queued() == ["bench"])
+        return heavy, bench
+
+    def test_backfill_short_build_while_bench_waits(self):
+        heavy, bench = self.bench_behind_verify()
+        short = self.hold("build", "t1 short")
+        self.assertIn("backfill", self.holders()["t1 short"].get("note", ""))
+        self.assertIn("backfill_end", self.holders()["t1 short"])
+        self.assertIn("1 of them backfill", self.status()["queue"][0]["reason"])
+        self.assertIn("eta", self.status()["queue"][0], "no ETA for the bench although every holder has history")
+        for who, why in (("t1 long", "takes up to"), ("t2 unknown", "fewer than 2 past durations"),
+                         ("t1 once", "fewer than 2 past durations"), ("v2", "no new verify")):
+            kind = "verify" if who == "v2" else "build"
+            out = self.slot("acquire", "--kind", kind, "--who", who, "--timeout", "0.4")
+            self.assertEqual(out.returncode, 1, f"{who} granted while a benchmark waits")
+            self.assertIn(why, out.stderr)
+        text = self.slot("status").stdout
+        self.assertIn("backfill: ends ~", text)
+        self.assertIn("ETA ~", text)
+        self.release(heavy["QC_SLOT_ID"])
+        time.sleep(0.3)
+        self.assertIsNone(bench.poll(), "benchmark granted beside a backfilled build")
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 short", "--timeout", "0.4")
+        self.assertIn("nothing backfills", out.stderr, "backfill went on after the slots the bench waited for")
+        self.release(short["QC_SLOT_ID"])
+        exports = self.granted(bench)
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 short", "--timeout", "0.4")
+        self.assertEqual(out.returncode, 1, "a build granted during a benchmark")
+        self.assertIn("a benchmark holds the machine", out.stderr)
+        self.release(exports["QC_SLOT_ID"])
+
+    def test_backfill_stops_after_max_wait(self):
+        self.bench_behind_verify(QC_SLOT_BACKFILL_MAX_WAIT="0.3")
+        time.sleep(0.5)
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 short", "--timeout", "0.4")
+        self.assertEqual(out.returncode, 1, "backfill after the bench waited QC_SLOT_BACKFILL_MAX_WAIT")
+        self.assertIn("QC_SLOT_BACKFILL_MAX_WAIT", out.stderr)
+
+    def test_backfill_off(self):
+        self.bench_behind_verify(QC_SLOT_BACKFILL="0")
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 short", "--timeout", "0.4")
+        self.assertEqual(out.returncode, 1)
+        self.assertIn("QC_SLOT_BACKFILL=0", out.stderr)
+
+    def test_backfill_grace_for_overdue_slots(self):
+        """A verify past its usual duration ends 'now': only work within the grace backfills."""
+        self.write_history(("verify", "a", 0), ("build", "t1 short", 5), ("build", "t1 short", 5),
+                           ("build", "t1 mid", 20), ("build", "t1 mid", 20))
+        self.start_server(QC_SLOT_BACKFILL_GRACE="10")
+        self.hold("verify", "a")
+        self.acquire("bench", "bench")
+        wait_until(lambda: self.queued() == ["bench"])
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 mid", "--timeout", "0.4")
+        self.assertEqual(out.returncode, 1, "work longer than the grace backfilled beside an overdue verify")
+        self.assertIn("QC_SLOT_BACKFILL_GRACE", out.stderr)
+        self.hold("build", "t1 short")
+
+    def test_short_build_overtakes_long_one_while_bench_waits(self):
+        self.bench_behind_verify()
+        long = self.acquire("build", "t1 long")
+        wait_until(lambda: self.queued() == ["bench", "t1 long"])
+        self.hold("build", "t1 short")
+        self.assertIsNone(long.poll())
+        self.assertEqual(self.queued(), ["bench", "t1 long"])
+
+    def test_overdue_backfill_is_shown_and_blocks_its_label(self):
+        self.write_history(("verify", "a", 600), ("build", "t1 quick", 0), ("build", "t1 quick", 0))
+        self.start_server(QC_SLOT_BACKFILL_GRACE="0.2")
+        self.hold("verify", "a")
+        self.acquire("bench", "bench")
+        wait_until(lambda: self.queued() == ["bench"])
+        self.hold("build", "t1 quick")
+        self.assertTrue(wait_until(lambda: "backfill_overdue" in self.holders()["t1 quick"]))
+        self.assertIn("overdue backfill delays bench #2", self.slot("status").stdout)
+        out = self.slot("acquire", "--kind", "build", "--who", "t1 quick", "--timeout", "0.4")
+        self.assertEqual(out.returncode, 1, "a label whose backfill ran over time backfilled again")
+        self.assertIn("ran over time", out.stderr)
+        with open(os.path.join(self.dir, "qc-slot.log"), encoding="utf-8") as handle:
+            self.assertEqual(handle.read().count("backfill over time"), 1, "overdue backfill not logged exactly once")
+
+    def test_backfill_marker_cleared_without_waiting_bench(self):
+        heavy, bench = self.bench_behind_verify()
+        self.hold("build", "t1 short")
+        self.slot("release", "--who", "bench")
+        bench.kill()
+        self.assertTrue(wait_until(lambda: "backfill_end" not in self.holders()["t1 short"]))
+
+    def test_run_reports_exit_code_and_failed_runs_are_not_timed(self):
+        self.start_server()
+        self.assertEqual(self.slot("run", "--kind", "build", "--who", "t1 fail", "--", "false").returncode, 1)
+        self.assertEqual(self.slot("run", "--kind", "build", "--who", "t1 ok", "--", "true").returncode, 0)
+        with open(os.path.join(self.dir, "qc-slot.log"), encoding="utf-8") as handle:
+            log = handle.read()
+        self.assertIn("who='t1 fail' after 0s: released (exit 1)", log)
+        self.assertIn("who='t1 ok' after 0s: released (exit 0)", log)
+        module = slot_module()
+        self.assertFalse(module.timed_release("released (exit 1)"))
+        self.assertTrue(module.timed_release("released (exit 0)"))
+        self.assertTrue(module.timed_release("released"), "a release of an older client without exit code")
+        self.assertFalse(module.timed_release("client connection closed"))
+        self.assertFalse(module.timed_release("client pid 5 ended"))
+
+    def test_version_warning_for_a_newer_broker(self):
+        module = slot_module()
+        self.assertIn("newer than this client", module.version_warning(module.VERSION + 1, True))
+        self.assertIn("old policy", module.version_warning(module.VERSION - 1, False))
+
+    def test_duration_history(self):
+        module = slot_module()
+        history = module.DurationHistory()
+        log = os.path.join(self.base, "log")
+        with open(log, "w", encoding="utf-8") as handle:
+            handle.write("x release #1 build who='p1 build' after 10s: released\n"
+                         "x release #2 build who=\"it's build\" after 30s: holder pid 5 ended\n"
+                         "x release #3 build who='p2 build' after 900s: broker stopped\n"
+                         "x release #4 test who='p1 test' after 7s: hold time over\n"
+                         "x release #6 test who='p2 test' after 9s: released (exit 2)\n"
+                         "x grant #5 build jobs=4 who='p1 build' after 3s\n")
+        self.assertEqual(history.load_log([log + ".1", log]), 2)
+        self.assertEqual(history.estimate("build", "p1 build"), 10)
+        self.assertIsNone(history.estimate("build", "p3 build"), "a task needs 3 samples")
+        self.assertIsNone(history.estimate("test", "p1 test"), "a hold time over says nothing about the duration")
+        self.assertIsNone(history.estimate("test", "p2 test"), "a failed run says nothing about the duration")
+        self.assertIsNone(history.pessimistic("build", "p1 build"), "one sample is not enough for a request")
+        for seconds in (40, 20, 30):
+            history.record("build", "p1 build", seconds)
+        self.assertEqual(history.pessimistic("build", "p1 build"), 40, "longest of the last 3")
+        history.record("build", "p4 build", 50)
+        self.assertEqual(history.estimate("build", "p3 build"), 30, "median of the task 'build'")
+        for seconds in (1, 2):
+            history.record("build", f"other{seconds}", seconds)
+        self.assertEqual(history.estimate("build", "fresh"), 25, "median of the kind (1 2 10 20 30 30 40 50)")
+
     def test_bench_waits_for_low_load(self):
         self.set_load(9)
         self.start_server()

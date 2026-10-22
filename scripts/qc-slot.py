@@ -27,12 +27,18 @@ Usage:
       Returns once no benchmark holds or awaits the machine and no timing phase (quiet.lock) runs;
       takes no slot (scripts/wait-quiet.sh). Inside a slot (QC_SLOT_ID set) a waiting benchmark
       does not count: it waits for that slot.
-  scripts/qc-slot.py status [--json]      load, holders, queue with waiting times and reasons
+  scripts/qc-slot.py status [--json]      load, holders (backfill end), queue with waiting times, reasons, ETA
   scripts/qc-slot.py serve                runs the daemon in the foreground
   scripts/qc-slot.py stop [--force]       ends the daemon (refused while slots are held or awaited)
 
 Kinds: bench (exclusive: no build/test/verify slot held, 1-min load below QC_SLOT_BENCH_LOAD,
-default 4; while a bench waits no new slot except light is granted, running ones finish),
+default 4; while a bench waits only light and backfill slots are granted, running ones finish;
+backfill (E-847): a build or test slot whose longest of the last 3 successful runs of the same
+label (at least 2, from the log) ends before the slots granted before the bench are expected to
+end (median of their label, task or kind), plus QC_SLOT_BACKFILL_GRACE (default 60 s); none
+without that history, once those slots ended, after the bench waited QC_SLOT_BACKFILL_MAX_WAIT
+seconds (default 1800), or for a label whose last backfill ran over time (never killed; shown in
+status) until it has a fresh duration; QC_SLOT_BACKFILL=0 turns it off),
 tsan/asan/verify (heavy; job wish max(3, cores/2)), build (wish 4), test (wish 3), light (1 job,
 outside the budget; only waits for a benchmark). Heavy, build and test share a budget of
 QC_SLOT_BUDGET jobs (default the number of cores): a grant gets min(wish, free jobs, cores - load)
@@ -69,6 +75,7 @@ import re
 import select
 import signal
 import socket
+import statistics
 import subprocess
 import sys
 import threading
@@ -90,7 +97,17 @@ BENCH_HOLD_MAX = 1800
 LOADAVG_PERIOD = 5.0
 # Seconds between two load samples; must stay well below LOADAVG_PERIOD.
 LOAD_SAMPLE_SECONDS = 1.0
-VERSION = 2
+VERSION = 3
+# Kinds that may backfill while a benchmark waits (E-847); light never waits for a waiting bench.
+BACKFILL_KINDS = ("build", "test")
+# A release line of the log: kind, label (repr, either quote), seconds held, reason.
+RELEASE_LINE = re.compile(r"release #\d+ (\w+) who=(['\"])(.*)\2 after (\d+)s: (.*)$")
+# Releases that say nothing about how long the work takes (cut short, or the client vanished).
+UNTIMED_RELEASES = ("broker stopped", "hold time over", "client gone", "client connection closed", "client pid")
+# Exit code of the command in a release reason ("released (exit 2)"); runs that failed are not timed.
+EXIT_IN_REASON = re.compile(r"\(exit (-?\d+)\)")
+# Bytes read from the end of each log at start (the log rotates at about 1 MB).
+HISTORY_LOG_TAIL = 2_000_000
 
 
 def slot_dir():
@@ -220,6 +237,87 @@ class LoadMonitor:
                 return 1.0 if self.clock() - granted < self.window else 0.0
             return 1.0 - len(after) / len(self.samples)
 
+
+def timed_release(why):
+    """Whether a release reason gives a usable duration: not cut short, and no failed exit code."""
+    if why.startswith(UNTIMED_RELEASES):
+        return False
+    code = EXIT_IN_REASON.search(why)
+    return code is None or code.group(1) == "0"
+
+
+def tail_lines(path, size):
+    """The complete lines of the last `size` bytes of a file ([] when it cannot be read)."""
+    try:
+        with open(path, "rb") as handle:
+            handle.seek(0, os.SEEK_END)
+            start = max(0, handle.tell() - size)
+            handle.seek(start)
+            data = handle.read()
+    except OSError:
+        return []
+    lines = data.decode("utf-8", errors="replace").splitlines()
+    return lines[1:] if start > 0 else lines
+
+
+def clock_text(when):
+    return time.strftime("%H:%M", time.localtime(when))
+
+
+class DurationHistory:
+    """How long slots of a kind and label took, learned from the release lines of the broker log.
+
+    estimate() (for running slots) gives the median of the recent durations of the same label (one
+    sample is enough), else of the same task (the label from its second word on, i.e. without the
+    leading package word: "76.0b build" and "t1 build" share "build"; at least 3), else of the kind
+    (at least 5); None when nothing is known. pessimistic() (for a request that wants to backfill)
+    gives the longest of the label's last 3 durations and needs at least 2 of them.
+    """
+
+    KEEP = 15
+    KEEP_KIND = 50
+    NEEDED = {"who": 1, "task": 3, "kind": 5}
+
+    def __init__(self):
+        self.samples = {}
+
+    @staticmethod
+    def keys(kind, who):
+        words = who.split(" ", 1)
+        task = words[1] if len(words) > 1 else who
+        return [("who", kind, who), ("task", kind, task), ("kind", kind, "")]
+
+    def record(self, kind, who, seconds):
+        for key in self.keys(kind, who):
+            keep = self.KEEP_KIND if key[0] == "kind" else self.KEEP
+            self.samples.setdefault(key, deque(maxlen=keep)).append(float(seconds))
+
+    def estimate(self, kind, who):
+        for key in self.keys(kind, who):
+            values = self.samples.get(key)
+            if values and len(values) >= self.NEEDED[key[0]]:
+                return statistics.median(values)
+        return None
+
+    def pessimistic(self, kind, who):
+        values = self.samples.get(("who", kind, who))
+        if not values or len(values) < 2:
+            return None
+        return max(list(values)[-3:])
+
+    def load_log(self, paths):
+        """Reads the release lines of the last HISTORY_LOG_TAIL bytes of the given logs, oldest first;
+        returns the number of samples."""
+        count = 0
+        for path in paths:
+            for line in tail_lines(path, HISTORY_LOG_TAIL):
+                match = RELEASE_LINE.search(line)
+                if match and timed_release(match.group(5)):
+                    self.record(match.group(1), match.group(3), int(match.group(4)))
+                    count += 1
+        return count
+
+
 def lock_holder(path, ignore):
     """Owner line of a live lock directory of another process, or None when free or stale.
 
@@ -345,6 +443,13 @@ class Entry:
         self.reason = "queued"
         self.result = None
         self.lock_owner = None
+        # Expected end (wall time) of a slot granted as backfill while a benchmark waited (E-847).
+        self.backfill_end = None
+        # The benchmark a backfilled slot was granted beside, and whether it ran over time (E-847).
+        self.backfill_bench = None
+        self.overdue = False
+        # Expected grant time (wall) of a waiting request, when the broker can tell.
+        self.eta = None
         self.done = threading.Event()
 
     def min_jobs(self):
@@ -364,12 +469,18 @@ class Entry:
         data = {"id": self.id, "kind": self.kind, "who": self.who, "pid": self.holder_pid(), "lease": self.lease}
         if self.granted_at is None:
             data.update(waited=round(now - self.since, 1), reason=self.reason, wish=self.wish)
+            if self.eta:
+                data["eta"] = round(self.eta)
         else:
             data.update(since=self.granted_at, held=round(now - self.granted_at, 1), jobs=self.jobs)
             if self.expires:
                 data["expires_in"] = round(self.expires - now)
             if self.note:
                 data["note"] = self.note
+            if self.backfill_end:
+                data["backfill_end"] = round(self.backfill_end)
+                if self.overdue:
+                    data["backfill_overdue"] = self.backfill_bench
         return data
 
 
@@ -395,6 +506,15 @@ class Broker:
         # or the last grant that escaped the load gate, so at most one request escapes per period.
         self.load_wait_since = time.monotonic()
         self.tick_seconds = number("QC_SLOT_TICK", 2)
+        # Backfill while a benchmark waits (E-847).
+        self.backfill = os.environ.get("QC_SLOT_BACKFILL", "1") != "0"
+        self.backfill_grace = number("QC_SLOT_BACKFILL_GRACE", 60)
+        self.backfill_max_wait = number("QC_SLOT_BACKFILL_MAX_WAIT", 1800)
+        self.history = DurationHistory()
+        # Labels (kind, who) whose last backfill ran over time: no backfill until a fresh duration.
+        self.backfill_blocked = set()
+        log_path = os.path.join(directory, "qc-slot.log")
+        self.history_loaded = self.history.load_log([log_path + ".1", log_path])
         self.idle_seconds = number("QC_SLOT_IDLE", 900)
         self.cond = threading.Condition()
         self.queue = []
@@ -464,7 +584,11 @@ class Broker:
                 self.release(entry.id, why)
             self.schedule()
 
-    def release(self, ident, why, ended=False):
+    def release(self, ident, why, ended=False, exit_code=None):
+        """Releases a slot; with the command's exit code (op release of a newer client) only a run that
+        succeeded adds its duration to the history."""
+        if exit_code is not None:
+            why = f"{why} (exit {exit_code})"
         with self.cond:
             entry = self.holders.pop(ident, None)
             if entry is None:
@@ -472,7 +596,13 @@ class Broker:
             self.drop_bench_lock(entry, ended)
             if entry.kind in COUNTED and not any(h.kind in COUNTED for h in self.holders.values()):
                 self.load_wait_since = time.monotonic()
-            held = time.time() - (entry.granted_at or entry.since)
+            if entry.granted_mono is not None:
+                held = time.monotonic() - entry.granted_mono
+            else:
+                held = time.time() - (entry.granted_at or entry.since)
+            if timed_release(why):
+                self.history.record(entry.kind, entry.who, round(held))
+                self.backfill_blocked.discard((entry.kind, entry.who))
             self.log(f"release #{entry.id} {entry.kind} who={entry.who!r} after {held:.0f}s: {why}")
             self.last_activity = time.time()
             self.schedule()
@@ -502,10 +632,18 @@ class Broker:
             if self.stopping:
                 return
             load = machine_load()
-            bench_waiting = any(e.kind == "bench" for e in self.queue)
+            ordered = sorted(self.queue, key=lambda e: (PRIORITY[e.kind], e.id))
+            bench_waiting = next((e for e in ordered if e.kind == "bench"), None)
+            if bench_waiting is None:
+                # Backfill markers only matter while a benchmark waits for the slot.
+                for holder in self.holders.values():
+                    holder.backfill_end = None
+                    holder.overdue = False
+            else:
+                self.check_overdue_backfill()
             behind_jobs = None
             bench_before = False
-            for entry in sorted(self.queue, key=lambda e: (PRIORITY[e.kind], e.id)):
+            for entry in ordered:
                 reason, jobs = self.decide(entry, load, bench_waiting, behind_jobs, bench_before)
                 if reason is None and self.grant(entry, jobs):
                     continue
@@ -516,8 +654,13 @@ class Broker:
             self.cond.notify_all()
 
     def decide(self, entry, load, bench_waiting, behind_jobs, bench_before):
-        """(reason the entry waits, None) or (None, granted jobs)."""
-        if any(h.kind == "bench" and not self.own_slot(entry, h) for h in self.holders.values()):
+        """(reason the entry waits, None) or (None, granted jobs). bench_waiting is the first waiting
+        benchmark or None; entry.eta and entry.backfill_end are set on the way where known."""
+        entry.eta = None
+        entry.backfill_end = None
+        bench_holder = next((h for h in self.holders.values() if h.kind == "bench" and not self.own_slot(entry, h)), None)
+        if bench_holder is not None:
+            entry.eta = self.expected_end(bench_holder)
             return "a benchmark holds the machine", 0
         # bench.lock of a current holder is the broker's own; the holder check above covers it.
         own = {h.holder_pid() for h in self.holders.values() if h.lock_owner}
@@ -528,8 +671,11 @@ class Broker:
             return None, 1
         if entry.kind == "bench":
             return self.decide_bench(entry, load, bench_before)
-        if bench_waiting and not entry.inside_slot:
-            return "a benchmark waits; no new slots until it ran", 0
+        if bench_waiting is not None and not entry.inside_slot:
+            reason = self.backfill_refusal(entry, bench_waiting)
+            if reason:
+                entry.eta = self.after_bench(bench_waiting)
+                return reason, 0
         if entry.kind == "gate":
             return None, 0
         if behind_jobs is not None:
@@ -540,8 +686,93 @@ class Broker:
             return reason, 0
         free = self.budget - self.used_jobs()
         if free < min(entry.min_jobs(), self.budget):
+            entry.eta = self.first_end()
             return f"jobs: {self.budget - free} of {self.budget} in use", 0
         return None, self.scaled_jobs(entry, free, gate)
+
+    def expected_end(self, holder):
+        """Expected end (wall time) of a held slot from the duration history, None when unknown;
+        a slot that already ran longer than expected ends 'now'."""
+        expected = self.history.estimate(holder.kind, holder.who)
+        if expected is None:
+            return None
+        return max(time.time(), (holder.granted_at or holder.since) + expected)
+
+    def counted_ends(self):
+        return [self.expected_end(h) for h in self.holders.values() if h.kind in COUNTED]
+
+    def first_end(self):
+        """When the first build/test/heavy slot is expected to end (jobs free up), or None."""
+        ends = [e for e in self.counted_ends() if e is not None]
+        return min(ends) if ends else None
+
+    def last_end(self):
+        """When the last build/test/heavy slot is expected to end, None when one is unknown."""
+        ends = self.counted_ends()
+        if not ends:
+            return time.time()
+        return None if None in ends else max(ends)
+
+    def after_bench(self, bench):
+        """Expected end of the waiting benchmark (its start plus its usual duration), or None."""
+        expected = self.history.estimate(bench.kind, bench.who)
+        start = bench.eta or self.last_end()
+        return start + expected if start is not None and expected is not None else None
+
+    def backfill_window(self, bench):
+        """Seconds until the slots granted before the benchmark arrived are expected to end (the
+        benchmark waits for them anyway), 0 for ones already over time or unknown; None when none of
+        them runs any more."""
+        before = [h for h in self.holders.values()
+                  if h.kind in COUNTED and h.granted_mono is not None and h.granted_mono <= bench.since_mono]
+        if not before:
+            return None
+        ends = [self.expected_end(h) or time.time() for h in before]
+        return max(ends) - time.time()
+
+    def backfill_refusal(self, entry, bench):
+        """Why a request does not backfill while the benchmark waits, or None (entry.backfill_end set).
+
+        A build or test slot backfills when its longest recent duration (DurationHistory.pessimistic)
+        ends before the slots
+        that were running when the benchmark arrived are expected to end, plus QC_SLOT_BACKFILL_GRACE;
+        never once those slots ended or the benchmark waited QC_SLOT_BACKFILL_MAX_WAIT seconds.
+        """
+        base = f"benchmark #{bench.id} waits"
+        if entry.kind == "gate":
+            return f"{base}; waiting until it ran"
+        if entry.kind not in BACKFILL_KINDS:
+            return f"{base}; no new {entry.kind} slots until it ran (only short build/test slots backfill)"
+        if not self.backfill:
+            return f"{base}; no new slots until it ran (QC_SLOT_BACKFILL=0)"
+        waited = time.monotonic() - bench.since_mono
+        if waited >= self.backfill_max_wait:
+            return f"{base} for {duration(waited)}; backfill stopped after {self.backfill_max_wait:g}s (QC_SLOT_BACKFILL_MAX_WAIT)"
+        window = self.backfill_window(bench)
+        if window is None:
+            return f"{base}; the slots it waited for ended, nothing backfills"
+        if (entry.kind, entry.who) in self.backfill_blocked:
+            return f"{base}; the last backfill of {entry.kind} '{entry.who}' ran over time, no backfill until it has a fresh duration"
+        expected = self.history.pessimistic(entry.kind, entry.who)
+        if expected is None:
+            return f"{base}; fewer than 2 past durations of {entry.kind} '{entry.who}', so it does not backfill"
+        if expected > window + self.backfill_grace:
+            return (f"{base}; takes up to {duration(expected)}, longer than the running slots "
+                    f"(end ~{clock_text(time.time() + window)}) + {self.backfill_grace:g}s (QC_SLOT_BACKFILL_GRACE)")
+        entry.backfill_end = time.time() + expected
+        entry.backfill_bench = bench.id
+        return None
+
+    def check_overdue_backfill(self):
+        """Marks backfilled slots past their expected end plus the grace (logged once; they keep
+        running) and stops backfilling their label until it has a fresh duration."""
+        now = time.time()
+        for holder in self.holders.values():
+            if holder.backfill_end and not holder.overdue and now > holder.backfill_end + self.backfill_grace:
+                holder.overdue = True
+                self.backfill_blocked.add((holder.kind, holder.who))
+                self.log(f"#{holder.id} {holder.kind} who={holder.who!r}: backfill over time (expected end "
+                         f"{clock_text(holder.backfill_end)}), delays benchmark #{holder.backfill_bench}")
 
     def load_gate(self, entry, gate):
         """Why a build/test/heavy request waits for the load to drop, or None.
@@ -592,7 +823,10 @@ class Broker:
             return "behind an earlier benchmark", 0
         running = [h for h in self.holders.values() if h.kind in COUNTED]
         if running:
-            return f"{len(running)} build/test/verify slot(s) still running", 0
+            entry.eta = self.last_end()
+            backfilled = [h for h in running if h.backfill_end]
+            extra = f", {len(backfilled)} of them backfill" if backfilled else ""
+            return f"{len(running)} build/test/verify slot(s) still running{extra}", 0
         waited = time.monotonic() - entry.since_mono
         if load >= self.bench_load:
             if waited < self.load_wait:
@@ -617,6 +851,9 @@ class Broker:
             if entry.lease == "hold":
                 entry.expires = now + entry.hold
         self.last_activity = now
+        if entry.backfill_end:
+            backfill = f"backfill while a benchmark waits, expected end ~{clock_text(entry.backfill_end)}"
+            entry.note = f"{entry.note}; {backfill}" if entry.note else backfill
         self.log(f"grant #{entry.id} {entry.kind} jobs={jobs} who={entry.who!r} after {now - entry.since:.0f}s"
                  + (f"; {entry.note}" if entry.note else ""))
         entry.done.set()
@@ -709,6 +946,8 @@ class Broker:
                 "cores": self.cores, "budget": self.budget, "used": self.used_jobs(), "bench_load": self.bench_load,
                 "load_short": round(short, 2), "load_short_window": from_window, "pending": self.pending_jobs(),
                 "load_limit": self.load_limit, "load_window": self.load_window,
+                "backfill": {"enabled": self.backfill, "grace": self.backfill_grace, "max_wait": self.backfill_max_wait,
+                             "history": self.history_loaded},
                 "locks": locks,
                 "holders": [h.view(now) for h in sorted(self.holders.values(), key=lambda e: e.id)],
                 "queue": [e.view(now) for e in sorted(self.queue, key=lambda e: (PRIORITY[e.kind], e.id))],
@@ -935,7 +1174,9 @@ class Server:
                 continue
             if message.get("op") == "release":
                 # The command ended: its bench.lock goes too, although the client still lives.
-                self.broker.release(entry.id, "released", ended=True)
+                code = message.get("exit")
+                exit_code = code if isinstance(code, int) and not isinstance(code, bool) else None
+                self.broker.release(entry.id, "released", ended=True, exit_code=exit_code)
                 return
 
 
@@ -1212,12 +1453,13 @@ class RunLease:
             sock.close()
         return False
 
-    def release(self):
+    def release(self, code):
+        """Ends the lease; the exit code tells the broker whether the run's duration counts."""
         with self.lock:
             self.done = True
             sock = self.sock
         try:
-            send_json(sock, {"op": "release"})
+            send_json(sock, {"op": "release", "exit": code})
         except OSError:
             pass
         sock.close()
@@ -1276,7 +1518,7 @@ def command_run(args):
 
     lease = RunLease(sock, args, grant)
     code = run_child(command, {**os.environ, **job_env(grant)}, lease.started)
-    lease.release()
+    lease.release(code)
     return code
 
 
@@ -1379,6 +1621,9 @@ def version_warning(version, idle):
     """Warning text when the daemon runs another version than this client, else None."""
     if version == VERSION:
         return None
+    if (version or 1) > VERSION:
+        return (f"qc-slot: WARNING: the running broker has version {version}, newer than this client ({VERSION}); "
+                "its policy applies, but this checkout's scripts/qc-slot.py is old (merge dev for matching options and status)")
     text = (f"qc-slot: WARNING: the running broker has version {version or 1}, this client {VERSION}; "
             "it keeps its old policy until it ends on idle")
     if idle:
@@ -1403,6 +1648,11 @@ def print_status(state):
           f"jobs {state.get('used')} of {state.get('budget')} in use ({state.get('cores')} cores)")
     limit = f"build/test/verify need load < {state['load_limit']:g}; " if "load_limit" in state else ""
     print(f"{limit}bench needs load < {state.get('bench_load', 0):g}")
+    backfill = state.get("backfill")
+    if backfill:
+        rule = (f"short build/test slots while a bench waits, ending at most {backfill['grace']:g}s after the slots it "
+                f"waits for, for up to {duration(backfill['max_wait'])}" if backfill.get("enabled") else "off (QC_SLOT_BACKFILL=0)")
+        print(f"backfill: {rule}; {backfill.get('history', 0)} durations read from the log at start")
     for name, owner in state.get("locks", {}).items():
         print(f"{name}: {owner or 'free'}")
     holders = state.get("holders", [])
@@ -1411,13 +1661,18 @@ def print_status(state):
         clock = time.strftime("%H:%M:%S", time.localtime(h.get("since", 0)))
         print(f"  #{h.get('id', '?'):<4} {h.get('kind', '?'):<6} jobs {h.get('jobs', '?'):<3} pid {h.get('pid', '?'):<7} "
               f"since {clock} ({duration(h.get('held', 0))})  {h.get('who', '?')}")
+        if h.get("backfill_overdue"):
+            print(f"         overdue backfill delays bench #{h['backfill_overdue']} (expected end ~{clock_text(h['backfill_end'])})")
+        elif h.get("backfill_end"):
+            print(f"         backfill: ends ~{clock_text(h['backfill_end'])} (expected; a waiting bench waits for it)")
         if h.get("note"):
             print(f"         note: {h['note']}")
     queue = state.get("queue", [])
     print(f"queue ({len(queue)}):")
     for e in queue:
+        eta = f" (ETA ~{clock_text(e['eta'])})" if e.get("eta") else ""
         print(f"  #{e.get('id', '?'):<4} {e.get('kind', '?'):<6} waits {duration(e.get('waited', 0)):<8} "
-              f"pid {e.get('pid', '?'):<7} {e.get('who', '?')}: {e.get('reason', '?')}")
+              f"pid {e.get('pid', '?'):<7} {e.get('who', '?')}: {e.get('reason', '?')}{eta}")
 
 
 def command_status(args):
