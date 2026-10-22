@@ -1,7 +1,7 @@
 #include "server/explosions/QcBlastBlocks.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "server/blockentities/QcBlockEntities.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFireRules.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/blocks/QcServerFire.h"

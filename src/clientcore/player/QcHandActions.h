@@ -2,10 +2,13 @@
 
 #include "clientcore/session/QcClientLauncher.h"
 #include "clientcore/sound/QcSoundCue.h"
+#include "common/core/QcAabb.h"
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/physics/QcRaycast.h"
 #include "common/protocol/QcMessages.h"
+
+#include <QList>
 
 #include <functional>
 #include <optional>
@@ -20,13 +23,18 @@ class QcPrediction;
 // What the local player's hand does: the block and the entity under the crosshair, mining the
 // targeted block (survival progress and hit sounds, instant breaking in creative mode), using the
 // held item on a block, an entity or itself, drawing and releasing a launcher (QcClientLauncher)
-// and attacking. Sends its requests through the sender; the server decides and answers. What an
-// action means for the arm and the screens it returns as a HandEffect, which the session applies.
+// and attacking. Sends its requests through the sender; the server decides and answers. The blocks
+// a break or a placement is expected to set (QcBlockForecast) go to the predictor first, which shows
+// them at once and numbers the request (decision E-853). What an action means for the arm and the
+// screens it returns as a HandEffect, which the session applies.
 class QcHandActions
 {
 public:
     using Sender = std::function<void(const QcMessage &message)>;
     using Cue = std::function<void(const QcSoundCue &cue)>;
+    // Shows the blocks an action is expected to set and returns the number the request carries
+    // (QcMsg::FinishMining::sequence, QcMsg::UseItem::sequence); 0 when nothing is predicted.
+    using Predictor = std::function<quint32(const QList<QcMsg::BlockUpdate> &blocks)>;
 
     // Mining strikes make a sound every this many ticks.
     static constexpr int miningHitTicks = 4;
@@ -63,8 +71,9 @@ public:
     };
 
     // `gameMode`: the rules and the instant breaking of creative mode; `send`: how requests reach
-    // the server; `cue`: where the mining sounds go (both the session's, never empty).
-    QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue);
+    // the server; `cue`: where the mining sounds go; `predict`: where predicted blocks go (all the
+    // session's, never empty).
+    QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue, Predictor predict);
 
     // Block the player looks at (within reach) and the entity under the crosshair when it is closer.
     const std::optional<QcRaycastHit> &target() const { return m_target; }
@@ -73,8 +82,9 @@ public:
     void refreshTarget(const QcClientWorld &world, const QcContentRegistry &content);
     void clearTarget() { m_target.reset(); }
 
-    // While requested, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
-    void setMining(bool mining) { m_miningRequested = mining; }
+    // While requested, the targeted block is mined; progress runs from 0 to 1 and resets on target
+    // change. Releasing ends the pace of held instant breaking, so the next press breaks at once.
+    void setMining(bool mining);
     bool miningRequested() const { return m_miningRequested; }
     double miningProgress() const { return m_miningProgress; }
     // Whether a block is being mined (survival) right now.
@@ -83,6 +93,9 @@ public:
     // a block broke at once (creative mode), Refused while the mode forbids mining the aimed block
     // (adventure mode: no mining at all, no cracks or sounds).
     HandEffect updateMining(const QcClientWorld &world, const QcContentRegistry &content);
+    // The mining button was just pressed: in creative mode the aimed block breaks now instead of at
+    // the next tick, at the pace of updateMining (decision E-853); Swing when it broke.
+    HandEffect strike(const QcClientWorld &world, const QcContentRegistry &content);
 
     // Once per tick: the launcher's draw and the cooldowns of throwing (`serverTicks` per tick).
     void tickLauncher(const QcContentRegistry &content, double serverTicks);
@@ -99,6 +112,24 @@ public:
     HandEffect attack();
 
 private:
+    // The block mining is aimed at, none when the mode forbids mining it (`refused` then).
+    struct Aimed
+    {
+        std::optional<QcBlockPos> block;
+        bool refused = false;
+    };
+
+    [[nodiscard]] Aimed aimedForMining(const QcClientWorld &world, const QcContentRegistry &content) const;
+    // Creative mode: breaks the aimed block when the pace allows (QcClientGameMode::nextInstantBreak).
+    HandEffect breakInstantly(const QcClientWorld &world, std::optional<QcBlockPos> aimed);
+    // Sends the end of a mining with the predicted break.
+    void finishMining(const QcClientWorld &world, QcBlockPos pos);
+    // The number of the predicted placement of the held item on `target`, aimed at `hit` inside it (0
+    // when none is predicted).
+    quint32 predictPlacement(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target, const QcVec3 &hit);
+    // The living bodies a placed block must not enclose: the player's own and those of the players and
+    // creatures the entity mirror shows.
+    QList<QcAabb> livingBodies(const QcContentRegistry &content) const;
     // Whether the mode lets the held item do `action` to the block at `pos` (the same rule as the
     // server's, QcAdventureRules::permits); false where no block is loaded.
     bool permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const;
@@ -109,6 +140,7 @@ private:
     QcClientGameMode &m_gameMode;
     Sender m_send;
     Cue m_cue;
+    Predictor m_predict;
     std::optional<QcRaycastHit> m_target;
     std::optional<quint32> m_targetEntity;
     bool m_miningRequested = false;

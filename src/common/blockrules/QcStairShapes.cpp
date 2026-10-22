@@ -1,7 +1,7 @@
-#include "server/blocks/QcStairShapes.h"
+#include "common/blockrules/QcStairShapes.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "server/blocks/QcBlockRules.h"
 
 using namespace Qt::StringLiterals;
 

@@ -338,8 +338,11 @@ internet only over a network you trust.
   cut off beyond 64 MiB: the server logs "The connection is too slow", the player only sees the
   connection lost (a reason could not get past the 64 MiB waiting before it).
 - The own player is predicted by the client and corrected by the server; with round trips of 50 to
-  300 ms walking, jumping and turning needed no correction in the tests (E-257). Mining shows the
-  break once the server confirms it (one round trip), placing likewise.
+  300 ms walking, jumping and turning needed no correction in the tests (E-257). Breaking and
+  placing show at once too (E-853): the client predicts the blocks, numbers the action, and the
+  server's acknowledgement (`BlockAck`, after the blocks it set) confirms them or rolls them back to
+  the server's blocks (out of reach, mode, item gone, another player first); only a rollback is
+  meshed again (`test_block_prediction`).
 - Game modes are per player and kept in the player file (E-282). Everyone can ask for their own
   with `/gamemode`; operators change them with `/gamemode <survival|creative|adventure|spectator> [player]`; the server checks every creative action itself: it
   accepts flight only for players in creative mode (the shared physics runs with the mode's rules,

@@ -1,7 +1,7 @@
 #include "server/blocks/QcBlockSimulation.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/definitions/QcSoundKeys.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcFireIgnition.h"
 #include "server/blocks/QcServerBlocks.h"

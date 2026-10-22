@@ -50,6 +50,8 @@ public:
     // (none while the button is up). The first strike breaks at once, holding repeats every
     // instantBreakTicks.
     std::optional<QcBlockPos> nextInstantBreak(std::optional<QcBlockPos> mined);
+    // The button went up: the next press is a first strike again, even before the next tick.
+    void releaseInstantBreak() { m_breakCooldown = 0; }
 
     // A spectator's flight speed (QcPlayerInput::flySpeed) after `steps` notches of the mouse wheel
     // (up is faster), within its range (decision E-730).

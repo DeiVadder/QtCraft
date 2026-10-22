@@ -1,3 +1,4 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/gameplay/QcCrafting.h"
@@ -8,7 +9,6 @@
 #include "QcTestMachines.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFallingBlockManager.h"
 #include "server/blocks/QcLiquidFlow.h"
 #include "server/core/QcServer.h"

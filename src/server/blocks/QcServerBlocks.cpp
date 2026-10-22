@@ -1,8 +1,8 @@
 #include "server/blocks/QcServerBlocks.h"
 
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
+#include "common/blockrules/QcRails.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
-#include "server/blocks/QcRails.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/items/QcServerExperience.h"

@@ -1,7 +1,7 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/parser/QcVillagerParser.h"
 #include "common/world/QcDayCycle.h"
 #include "QcTestUtil.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathPlanner.h"

@@ -2686,23 +2686,20 @@ Unter der 10-%-Schwelle. Die Phase Pflanzen wächst um 0,0025 ms: an den Ufern d
 
 Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suche ohne Schranke und ohne Merken 0,741 ms (+17 %), mit der Schranke `reach` 0,712 ms (+12,3 %). Unter der 10-%-Schwelle erst mit dem Merken je Startzelle.
 
-## Etappe 79 (Weltgen-Dichte), headless, Release (2026-10-22)
+## Etappe 78 (Block-Vorhersage, E-853), headless (2026-10-22)
 
-**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; `dev` `6496e2e` in einem eigenen Worktree gegen `feature/79-worldgen-density` (mit `dev` `92213c0` zusammengeführt, Inhalt ohne Weltgen-Änderung); drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 2,8):
+`test_block_prediction_measure` mit `QTCRAFT_PREDICTION_MEASURE=full`: lokaler Server, Sitzung mit eigenem Tick-Thread, Meshes alle 16 ms gepumpt wie Bilder; Zeit vom Druck der Abbau-Taste (Kreativmodus) bzw. vom Setzen bis zum fertigen Mesh des geänderten Abschnitts, verschränkt mit Vorhersage an und aus, je ohne (idle) und mit Rückstau aller Abschnitte (backlog); 20 Aktionen je Fall, exklusiver Slot, ruhiger Rechner, je Build zwei Läufe. Median / p90 in ms:
 
-| Wert | dev | 79 |
-|---|---:|---:|
-| ms je Chunk | 0,889 / 0,890 / 0,891 | 1,082 / 1,091 / 1,080 (+21,8 %) |
-| µs je Spalte (`column`) | 0,470 / 0,470 / 0,472 | 0,681 / 0,681 / 0,684 (+44,9 %) |
+| Fall | Release an | Release aus | Debug an | Debug aus |
+|------|-----------:|------------:|---------:|----------:|
+| idle, Abbauen | 2,59 / 2,61 · 2,60 / 2,69 | 51,2 / 66,0 · 42,9 / 64,9 | 15,3 / 15,4 · 15,3 / 17,7 | 50,8 / 77,6 · 47,7 / 65,6 |
+| idle, Setzen | 5,30 / 5,34 · 2,88 / 5,38 | 18,0 / 25,3 · 20,7 / 25,2 | 15,2 / 15,4 · 15,2 / 15,4 | 35,3 / 37,6 · 30,3 / 33,1 |
+| backlog, Abbauen | 2,60 / 2,74 · 2,59 / 2,67 | 38,8 / 59,0 · 30,7 / 46,5 | 15,8 / 18,1 · 15,8 / 15,8 | 67,7 / 93,6 · 77,9 / 82,3 |
+| backlog, Setzen | 5,21 / 5,63 · 3,02 / 5,69 | 21,0 / 23,7 · 23,6 / 28,5 | 15,8 / 18,3 · 15,8 / 15,8 | 64,9 / 67,6 · 54,0 / 59,3 |
 
-Über der 10-%-Schwelle; danach optimiert (unten). Grund laut Abtastung (`sample` auf dem Messprogramm): `groundBiomeOf` nahm rund 35 % von `column()` (zweite Klima-Auswertung nahe Grenzen, die 5-%-Schranke lässt bei der vierten Potenz viele Spalten durch), und die Abstandsregel der Küstentürme plante für jede Region alle acht Nachbarregionen (Messfelder mit neuem Generator zahlen das voll).
+Mit Vorhersage bleibt die Zeit bis zum nächsten gepumpten Bild plus das Meshen selbst (Release etwa 2,5–5 ms, Debug etwa 15 ms); ohne kommen der nächste Tick der Sitzung, der Weg über den Server und im Rückstau die wartenden Jobs dazu.
 
-**Nach der Optimierung** (Boden-Biom aus dem Spalten-Raster des Chunks statt einer Klima-Auswertung in `column()`; Abstandsregel plant nur Nachbarn mit höherer Priorität, deren Region dem Turm näher als der Abstand kommt; gleiche Welt: Prüfsumme `TERRAIN checksum` vor und nach gleich). `dev` `c8f5d54` in einem neuen Worktree gegen den Branch, drei Runden abwechselnd, einmal exklusiv (`--kind bench`), Lastmittel am Ende 2,2:
-
-| Wert | dev | 79 |
-|---|---:|---:|
-| ms je Chunk | 0,862 / 0,869 / 0,869 | 0,909 / 0,903 / 0,901 (+4,3 %) |
-| µs je Spalte (`column`) | 0,456 / 0,458 / 0,458 | 0,467 / 0,463 / 0,463 (+1,5 %) |
+**Befund vor der Endmessung:** Im Release lag ein großer Teil der vorhergesagten Abbrüche bei 150–175 ms (Median eines Laufs 155,6 ms, p90 172–175). Ursache: das Tempo des Haltens im Kreativmodus (`QcClientGameMode::nextInstantBreak`, alle 5 Ticks) wurde nur im nächsten Tick nach dem Loslassen zurückgesetzt; ein neuer Druck innerhalb desselben Ticks wartete den Rest des Tempos ab (bis 4 Ticks). Im Debug-Build lag zwischen zwei Messungen fast immer ein Tick, deshalb dort nicht. Jetzt setzt das Loslassen das Tempo sofort zurück (`QcHandActions::setMining`, `releaseInstantBreak`); das galt auch ohne Vorhersage für schnelle Klicks. Die Messung setzt höchstens alle 110 ms (Server: 10 Benutzungen je Sekunde, `QcRateLimiter::Kind::Use`), sonst nimmt der Server Setzungen zurück; im voll optimierten Lauf prüft sie p90 < 25 ms für jeden Fall mit Vorhersage.
 
 ## Paket 73.2 (Monster-Listen der Biome), headless, Release (2026-10-22)
 

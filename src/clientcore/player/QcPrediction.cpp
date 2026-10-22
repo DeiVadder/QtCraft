@@ -15,8 +15,7 @@ void QcPrediction::setIntent(const QcPlayerInput &intent)
     m_intent.strafe = std::clamp(finiteOr(intent.strafe, 0.0f), -1.0f, 1.0f);
     m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
     m_intent.flySpeed = std::clamp(intent.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed);
-    const float yaw = std::fmod(finiteOr(intent.yaw, 0.0f), 360.0f);
-    m_intent.yaw = yaw < 0.0f ? yaw + 360.0f : yaw;
+    m_intent.yaw = qcWrappedYaw(intent.yaw);
 }
 
 QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcMovement movement)

@@ -1,9 +1,9 @@
 #include "server/signal/QcPistonMover.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/physics/QcBodyFit.h"
 #include "common/physics/QcPhysics.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerSounds.h"

@@ -1,9 +1,9 @@
 #pragma once
 
+#include "common/blockrules/QcBlockRules.h"
+#include "common/blockrules/QcRails.h"
 #include "QcCircuitFixture.h"
 #include "QcTestUtil.h"
-#include "server/blocks/QcBlockRules.h"
-#include "server/blocks/QcRails.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/minecarts/QcMinecartMotion.h"
 

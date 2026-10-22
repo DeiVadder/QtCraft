@@ -1,7 +1,7 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcMining.h"
 #include "QcCircuitFixture.h"
-#include "server/blocks/QcBlockRules.h"
 
 #include <QTest>
 
@@ -186,6 +186,20 @@ private slots:
         mine(placed);
         ticks(2);
         QCOMPARE(propertyAt(corner, u"shape"_s), u"straight"_s);
+    }
+
+    void aUseItemViewOf360IsAcceptedAndWrapped()
+    {
+        join();
+        const QcBlockPos ground = m_feet.offset(2, -1, 1);
+        m_server->world().setBlock(ground, id("qtcraft:stone"));
+
+        // The player's own view faces east; the view sent with UseItem (yaw 360 = north, pitch beyond
+        // the range) is wrapped and clamped instead of closing the connection (decision E-853).
+        face(90.0f);
+        hold(u"oak_stairs"_s, 2);
+        send(QcMsg::UseItem{ground, QcBlockFace::Up, {0.5, 1.0, 0.5}, 0, QcMsg::UseItem::View{360.0f, -120.0f}});
+        QCOMPARE(propertyAt(ground.offset(0, 1, 0), u"facing"_s), u"north"_s);
     }
 
     void verticalSlabsCraftFromSlabs()

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
 
 // Two slabs in one cell make a full block. A slab (state `type`: bottom, top, double) doubles up when
 // it is clicked on its open half or placed into a slab of the other half. A vertical slab (decision

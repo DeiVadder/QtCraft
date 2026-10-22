@@ -40,6 +40,17 @@ QByteArray encode(const QcMessage &message)
     return frame;
 }
 
+quint32 predictionSequence(const QcMessage &message)
+{
+    if (const auto *finish = std::get_if<QcMsg::FinishMining>(&message)) {
+        return finish->sequence;
+    }
+    if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
+        return use->sequence;
+    }
+    return 0;
+}
+
 bool isSentBy(std::size_t messageIndex, Peer sender)
 {
     const auto is = [messageIndex]<typename T>() {

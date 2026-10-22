@@ -2,7 +2,7 @@
 """Keeps the project includes and source paths in step with where the files are (decision E-418).
 
 Every project include names its header by its path below an include root: `src/` for the code
-(`#include "server/blocks/QcRails.h"`) and `tests/` for the shared test fixtures
+(`#include "common/blockrules/QcRails.h"`) and `tests/` for the shared test fixtures
 (`#include "QcServerTestFixture.h"`, `#include "world/QcVillageTestUtil.h"`). File names are
 unique in the project (`Qc` prefix, one class per file), so a header is found by its name alone.
 After moving files with `git mv`, running this script

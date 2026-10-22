@@ -1,8 +1,8 @@
 #include "server/core/QcServerSetup.h"
 
+#include "common/blockrules/QcRails.h"
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
-#include "server/blocks/QcRails.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcStandProperties.h"

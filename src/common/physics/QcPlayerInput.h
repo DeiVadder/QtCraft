@@ -2,6 +2,8 @@
 
 #include <QtGlobal>
 
+#include <cmath>
+
 // Movement intent for one simulation tick, sent from client to server.
 struct QcPlayerInput
 {
@@ -31,3 +33,16 @@ struct QcPlayerInput
 
     bool operator==(const QcPlayerInput &) const = default;
 };
+
+// `degrees` wrapped into [0, 360), non-finite values give 0. Adding 360 to a tiny negative remainder
+// of fmod rounds to exactly 360 in float; that case maps to 0, so the result is always below 360.
+[[nodiscard]] inline float qcWrappedYaw(float degrees)
+{
+    if (!std::isfinite(degrees)) {
+        return 0.0f;
+    }
+
+    const float remainder = std::fmod(degrees, 360.0f);
+    const float positive = remainder < 0.0f ? remainder + 360.0f : remainder;
+    return positive >= 360.0f ? 0.0f : positive;
+}

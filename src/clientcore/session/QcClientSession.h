@@ -110,7 +110,17 @@ public:
     // The hand: the block or entity the player looks at (updated every tick), mining progress.
     const QcHandActions &hand() const { return m_hand; }
     // While true, the targeted block is mined; progress runs from 0 to 1 and resets on target change.
-    void setMining(bool mining) { m_hand.setMining(mining); }
+    // In creative mode a press breaks the aimed block at once (with the block prediction, E-853).
+    void setMining(bool mining);
+    // Whether the session shows the blocks of the player's breaks and placements before the server
+    // confirms them (decision E-853); on unless QTCRAFT_BLOCK_PREDICTION=0. Applies from the next
+    // action on.
+    static bool blockPredictionWanted();
+    void setBlockPrediction(bool on) { m_blockPrediction = on; }
+    bool blockPrediction() const { return m_blockPrediction; }
+    // The number of the latest predicted action, 0 before the first; numbers start anew with every
+    // session (a reconnect too).
+    quint32 blockSequence() const { return m_blockSequence; }
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();
     // The use button released: a drawn launcher shoots (decision E-425); cancelUse lets it go without one.
@@ -179,6 +189,9 @@ signals:
     void chunkLoaded(QcChunkPos pos);
     void chunkUnloaded(QcChunkPos pos);
     void blockChanged(QcBlockPos pos, QcBlockId previous);
+    // A block the local player's prediction set, or the rollback of a refused one (decision E-853);
+    // meshed before the others.
+    void playerBlockChanged(QcBlockPos pos, QcBlockId previous);
     void ticked();
     void disconnected(const QString &reason);
     void inventoryChanged();
@@ -233,6 +246,9 @@ private:
     void cue(QcSoundCue cue);
     // Sends a request of a part (inventory, hand) over the connection.
     void sendToServer(const QcMessage &message);
+    // Shows the blocks a hand action is expected to set, here and in the tick core, and returns the
+    // action's number; 0 when nothing is predicted (QcHandActions::Predictor).
+    quint32 predictBlocks(const QList<QcMsg::BlockUpdate> &blocks);
     void updateSounds();
 
     QString m_playerName;
@@ -262,7 +278,10 @@ private:
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },
-                         [this](const QcSoundCue &sound) { cue(sound); }};
+                         [this](const QcSoundCue &sound) { cue(sound); },
+                         [this](const QList<QcMsg::BlockUpdate> &blocks) { return predictBlocks(blocks); }};
+    bool m_blockPrediction = blockPredictionWanted();
+    quint32 m_blockSequence = 0;
 
     QcAppearance m_appearance;
     bool m_helloSent = false;

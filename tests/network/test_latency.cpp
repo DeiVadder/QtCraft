@@ -182,18 +182,24 @@ private slots:
     {
         QTest::addColumn<int>("delayMs");
         QTest::addColumn<int>("jitterMs");
-        QTest::newRow("rtt 100-150 ms") << 50 << 25;
-        QTest::newRow("rtt 200-300 ms") << 100 << 50;
+        QTest::addColumn<bool>("prediction");
+        QTest::newRow("rtt 100-150 ms") << 50 << 25 << true;
+        QTest::newRow("rtt 200-300 ms") << 100 << 50 << true;
+        QTest::newRow("rtt 200-300 ms, no block prediction") << 100 << 50 << false;
     }
 
     void miningAndPlacingWithLatency()
     {
         QFETCH(int, delayMs);
         QFETCH(int, jitterMs);
+        QFETCH(bool, prediction);
         start(delayMs, jitterMs);
+        m_session->setBlockPrediction(prediction);
         const int roundTripMs = 2 * (delayMs + jitterMs);
+        const auto settled = [this] { return m_session->worldMirror().blocks().predictedCount() == 0; };
 
-        // Placing: the block shows once the server's answer is back.
+        // Placing: with block prediction the block shows at once and the server confirms it after a
+        // round trip (decision E-853); without, it shows once the server's answer is back.
         m_session->sendChat(u"/give dirt 4"_s);
         QTRY_VERIFY_WITH_TIMEOUT(!m_session->inventory().selectedStack().isEmpty(), timeoutMs);
         // On the ground a little ahead.
@@ -206,22 +212,31 @@ private slots:
         timer.start();
         QVERIFY(m_session->useItem());
         const QcBlockId dirt = *m_content->blockId(u"qtcraft:dirt"_s);
+        if (prediction) {
+            QCOMPARE(m_session->world()->blockAt(target), std::optional<QcBlockId>(dirt));
+            QVERIFY(!settled());
+        }
         QTRY_COMPARE_WITH_TIMEOUT(m_session->world()->blockAt(target), std::optional<QcBlockId>(dirt), timeoutMs);
-        qInfo("placed after %lld ms", qlonglong(timer.elapsed()));
+        QTRY_VERIFY_WITH_TIMEOUT(settled(), timeoutMs);
+        qInfo("placed and confirmed after %lld ms", qlonglong(timer.elapsed()));
         QVERIFY(timer.elapsed() >= qint64(2) * delayMs);
         QVERIFY(timer.elapsed() <= roundTripMs + 250);
+        QCOMPARE(m_session->world()->blockAt(target), std::optional<QcBlockId>(dirt));
 
         m_session->setIntent({});
         QTest::qWait(roundTripMs);
 
-        // Grass and dirt below: each confirmed within its break time plus a round trip and two ticks,
-        // never refused and mined again.
+        // Grass and dirt below (with prediction shown at the end of mining, decision E-853): each
+        // shown within its break time plus a round trip and two ticks, then confirmed as air, never
+        // refused and mined again.
         for (int i = 0; i < 4; ++i) {
             const QcBlockPos below = blockOf(m_session->playerMotion().position).offset(0, -1, 0);
             const double expected = QcMining::breakSeconds(m_content->block(*m_session->world()->blockAt(below)), nullptr);
             const double took = mineDown();
             QVERIFY(took >= 0.0);
             QVERIFY2(took <= expected + (roundTripMs + 250) / 1000.0, qPrintable(u"%1 s for a %2 s block"_s.arg(took).arg(expected)));
+            QTRY_VERIFY_WITH_TIMEOUT(settled(), timeoutMs);
+            QCOMPARE(m_session->world()->blockAt(below), std::optional<QcBlockId>(qcAirBlockId));
             QTRY_VERIFY_WITH_TIMEOUT(m_session->playerMotion().onGround, timeoutMs);
             QTest::qWait(roundTripMs);
         }

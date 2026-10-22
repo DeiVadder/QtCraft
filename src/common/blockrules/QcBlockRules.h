@@ -6,10 +6,11 @@
 
 #include <optional>
 
-// Server rules that derive block states from the surroundings: the state a placed block takes from
-// the player's view and the clicked face, connections of fences, walls and panes, and whether a
-// block still has the support it needs. Behaviour follows from data: the block's properties
-// (facing, half, type, attach, hinge, open, north/east/south/west, up) and its definition flags.
+// Rules that derive block states from the surroundings, shared by the server and the client's block
+// prediction (decision E-853): the state a placed block takes from the player's view and the clicked
+// face, connections of fences, walls and panes, and whether a block still has the support it needs.
+// Behaviour follows from data: the block's properties (facing, half, type, attach, hinge, open,
+// north/east/south/west, up) and its definition flags.
 namespace QcBlockRules {
 
 struct Placement
@@ -43,10 +44,10 @@ QcBlockFace opposite(QcBlockFace face);
 // The direction to the right of someone looking towards `face` (clockwise seen from above).
 [[nodiscard]] QcBlockFace rightOf(QcBlockFace face);
 
-// Where and in which state `block` (any state of it) is placed when the player clicks with `aim`. A slab
-// clicked on its open half becomes a double slab in place; a clicked replaceable block (tall grass)
-// is replaced as if the new block were placed on the ground below it. std::nullopt when the block cannot go
-// there (a torch on a ceiling, a door without room).
+// Where and in which state `block` (any state of it) is placed when the player clicks with `aim`. A
+// slab clicked on its open half becomes a double slab in place; a clicked replaceable block (tall
+// grass) is replaced as if the new block were placed on the ground below it. std::nullopt when the
+// block cannot go there (a torch on a ceiling, a door without room).
 [[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
 
 // `id` with its connection properties recomputed from the neighbours (unchanged for blocks that do

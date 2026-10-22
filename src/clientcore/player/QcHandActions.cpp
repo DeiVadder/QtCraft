@@ -1,5 +1,6 @@
 #include "clientcore/player/QcHandActions.h"
 
+#include "clientcore/player/QcBlockForecast.h"
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientInventory.h"
 #include "clientcore/player/QcPrediction.h"
@@ -87,11 +88,12 @@ bool aimsAtLiquids(const QcContentRegistry &content, const QcItemDefinition *hel
 
 } // namespace
 
-QcHandActions::QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue)
+QcHandActions::QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue, Predictor predict)
     : m_view(view)
     , m_gameMode(gameMode)
     , m_send(std::move(send))
     , m_cue(std::move(cue))
+    , m_predict(std::move(predict))
 {
 }
 
@@ -133,25 +135,64 @@ void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentReg
     }
 }
 
+QcHandActions::Aimed QcHandActions::aimedForMining(const QcClientWorld &world, const QcContentRegistry &content) const
+{
+    const std::optional<QcBlockPos> wished = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
+    // Adventure mode (decision E-735): a block the allow-lists do not name is not mined at all.
+    const bool refused = wished && !permitted(world, content, QcAdventureRules::Action::Break, *wished);
+    return {refused ? std::nullopt : wished, refused};
+}
+
+QcHandActions::HandEffect QcHandActions::breakInstantly(const QcClientWorld &world, std::optional<QcBlockPos> aimed)
+{
+    const std::optional<QcBlockPos> broken = m_gameMode.nextInstantBreak(aimed);
+    if (!broken) {
+        return HandEffect::None;
+    }
+
+    m_send(QcMsg::StartMining{*broken});
+    finishMining(world, *broken);
+    return HandEffect::Swing;
+}
+
+void QcHandActions::finishMining(const QcClientWorld &world, QcBlockPos pos)
+{
+    // The block goes at once (decision E-853); the server confirms or puts it back.
+    const quint32 sequence = m_predict(QcBlockForecast::breaking(world, pos));
+    m_send(QcMsg::FinishMining{pos, sequence});
+}
+
+void QcHandActions::setMining(bool mining)
+{
+    m_miningRequested = mining;
+    if (!mining) {
+        // Without this, a press within a tick of the release waited for the rest of the pace.
+        m_gameMode.releaseInstantBreak();
+    }
+}
+
+QcHandActions::HandEffect QcHandActions::strike(const QcClientWorld &world, const QcContentRegistry &content)
+{
+    if (!m_gameMode.rules().instantBreak) {
+        return HandEffect::None;
+    }
+
+    refreshTarget(world, content);
+    const Aimed aimed = aimedForMining(world, content);
+    return aimed.block ? breakInstantly(world, aimed.block) : HandEffect::None;
+}
+
 QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world, const QcContentRegistry &content)
 {
     refreshTarget(world, content);
 
-    const std::optional<QcBlockPos> wished = m_miningRequested && m_target ? std::optional<QcBlockPos>(m_target->block) : std::nullopt;
-    // Adventure mode (decision E-735): a block the allow-lists do not name is not mined at all.
-    const bool refused = wished && !permitted(world, content, QcAdventureRules::Action::Break, *wished);
-    const std::optional<QcBlockPos> aimed = refused ? std::nullopt : wished;
+    const Aimed aimed = aimedForMining(world, content);
     // Creative mode: strikes break at once, a held button again every few ticks (decision E-282);
     // a survival mining that still runs is cancelled below.
     const bool instant = m_gameMode.rules().instantBreak;
-    HandEffect effect = HandEffect::None;
-    if (const std::optional<QcBlockPos> broken = instant ? m_gameMode.nextInstantBreak(aimed) : std::nullopt) {
-        m_send(QcMsg::StartMining{*broken});
-        m_send(QcMsg::FinishMining{*broken});
-        effect = HandEffect::Swing;
-    }
+    const HandEffect effect = instant ? breakInstantly(world, aimed.block) : HandEffect::None;
 
-    const std::optional<QcBlockPos> wanted = instant ? std::nullopt : aimed;
+    const std::optional<QcBlockPos> wanted = instant ? std::nullopt : aimed.block;
     if (wanted != m_miningPos) {
         if (m_miningPos) {
             m_send(QcMsg::CancelMining{});
@@ -165,7 +206,7 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
     }
 
     if (!m_miningPos) {
-        return refused ? HandEffect::Refused : effect;
+        return aimed.refused ? HandEffect::Refused : effect;
     }
 
     const QcBlockPos mining = *m_miningPos;
@@ -187,8 +228,8 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
 
     m_miningProgress += QcPhysics::tickDuration / seconds;
     if (m_miningProgress >= 1.0) {
-        // The server decides; its BlockUpdate removes the block (or restores it on rejection).
-        m_send(QcMsg::FinishMining{mining});
+        // Survival mode predicts the break only now, at the end of the mining (decision E-853).
+        finishMining(world, mining);
         m_miningPos.reset();
         m_miningProgress = 0.0;
     }
@@ -288,11 +329,12 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
         }
         return HandEffect::None;
     }
+    const QcRaycastHit target = *m_target;
 
     // Adventure mode (decision E-735): the held item acts on the block only where the allow-lists
     // permit it; food is eaten instead (the server decides the same). An empty hand would do
     // nothing anyway: no request and no notice.
-    if (!opensScreen && !permitted(world, content, QcAdventureRules::Action::PlaceOn, m_target->block)) {
+    if (!opensScreen && !permitted(world, content, QcAdventureRules::Action::PlaceOn, target.block)) {
         if (item && item->food > 0) {
             m_send(QcMsg::ConsumeItem{});
             return HandEffect::Use;
@@ -300,10 +342,41 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
         return item ? HandEffect::Refused : HandEffect::None;
     }
 
-    const QcVec3 hit = m_target->point - QcVec3{double(m_target->block.x), double(m_target->block.y), double(m_target->block.z)};
+    const QcVec3 point = target.point - QcVec3{double(target.block.x), double(target.block.y), double(target.block.z)};
     const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
-    m_send(QcMsg::UseItem{m_target->block, m_target->face, {clamp01(hit.x), clamp01(hit.y), clamp01(hit.z)}});
+    const QcVec3 hit{clamp01(point.x), clamp01(point.y), clamp01(point.z)};
+    const QcPlayerInput &intent = m_view.prediction.intent();
+    const quint32 sequence = predictPlacement(world, content, target, hit);
+    m_send(QcMsg::UseItem{target.block, target.face, hit, sequence, QcMsg::UseItem::View{intent.yaw, intent.pitch}});
     return HandEffect::UsedBlock;
+}
+
+quint32 QcHandActions::predictPlacement(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target, const QcVec3 &hit)
+{
+    // A block that reacts to the use (a screen, a door, a lever, cake, a campfire) takes it on the
+    // server, also out of reach, where the client would not open it: nothing is placed then.
+    const QcItemDefinition *item = m_view.inventory.heldDefinition(content);
+    const std::optional<QcBlockId> clicked = world.blockAt(target.block);
+    const QcPlayerInput &intent = m_view.prediction.intent();
+    const QcBlockDefinition *clickedDefinition = clicked && content.isValidBlock(*clicked) ? &content.block(*clicked) : nullptr;
+    if (!item || !clickedDefinition || reactsToUse(clickedDefinition, intent.sneak) || takesFood(clickedDefinition, intent.sneak)) {
+        return 0;
+    }
+
+    const QcBlockRules::Aim aim{target.block, target.face, hit, intent.yaw, intent.pitch};
+    const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    return m_predict(QcBlockForecast::placing(world, *item, aim, eye, livingBodies(content)));
+}
+
+QList<QcAabb> QcHandActions::livingBodies(const QcContentRegistry &content) const
+{
+    QList<QcAabb> bodies{QcPhysics::boxAt(m_view.prediction.motion().position, QcPhysics::playerWidth, QcPhysics::playerHeight)};
+    for (const QcClientEntity &entity : m_view.entities.all()) {
+        if (entity.isPlayer() || entity.creature(content)) {
+            bodies.append(targetBoxOf(content, entity));
+        }
+    }
+    return bodies;
 }
 
 void QcHandActions::endUse(QcMsg::DrawLauncher::Action action, bool send)

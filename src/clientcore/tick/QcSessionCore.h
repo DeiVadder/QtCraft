@@ -3,6 +3,7 @@
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientVitals.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/session/QcBlockMirror.h"
 #include "clientcore/tick/QcLinkStats.h"
 #include "clientcore/tick/QcSessionCommand.h"
 #include "clientcore/tick/QcSessionEvent.h"
@@ -14,16 +15,15 @@
 #include <functional>
 #include <memory>
 
-class QcClientWorld;
 class QcConnection;
-class QcContentRegistry;
 class QcTransport;
 class QThread;
 class QTimer;
 
 // The part of a client session that keeps time (decision E-560): the connection to the server, the
 // ticks on the 50 ms grid (QcTickPacer) and the local player's prediction with what it needs, its
-// own mirror of the blocks (sharing the immutable chunks), the game mode's wish to fly and whether
+// own mirror of the blocks (sharing the immutable chunks, with the player's predicted blocks,
+// decision E-853), the game mode's wish to fly and whether
 // the player is dead. Every tick it predicts and sends the input; every message it receives it
 // applies to that state and passes on, with the ticks and reconciliations, as one ordered stream of
 // QcSessionEvent to its sink. Lives in the session's tick thread (QcSessionLink) or, without one,
@@ -68,8 +68,6 @@ private:
     void start(const QcSessionCommand::Start &start);
     void onTimer();
     void onMessage(QcMessage &&message);
-    // Applies a world message to the block mirror.
-    void applyWorld(const QcMessage &message);
     void reconcile(const QcMsg::PlayerState &state);
     void onClosed();
     QcSessionEvent::Prediction prediction() const;
@@ -81,8 +79,7 @@ private:
     Clock m_now;
     QcTickPacer m_pacer;
     QcLinkStats m_linkStats;
-    std::shared_ptr<const QcContentRegistry> m_content;
-    std::unique_ptr<QcClientWorld> m_world;
+    QcBlockMirror m_blocks;
     QcPrediction m_prediction;
     QcClientGameMode m_gameMode;
     QcClientVitals m_vitals;

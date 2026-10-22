@@ -27,11 +27,24 @@ class QcClientWorld;
 // owning thread as signals. A section is only meshed once its four side neighbours are loaded and
 // the block light of its chunk is known. Block light is updated incrementally by a
 // QcBlockLightEngine on a thread of its own; only sections whose light changed are meshed again.
+// The local player's own block changes go first (decision E-853).
 class QcMeshScheduler : public QObject
 {
     Q_OBJECT
 
 public:
+    // Who changed a block, and so how soon it is meshed.
+    enum class Priority
+    {
+        // The server's changes and the streaming: in the order of pump(), nearest first.
+        Normal,
+        // The local player's predicted change or its rollback: the sections holding its faces are
+        // meshed when the event loop comes back (each section once for all changes of that pass,
+        // e.g. both halves of a door), before every waiting job and beyond maxJobsInFlight, with the
+        // block light known so far; a change of the block light follows with the light job.
+        Player,
+    };
+
     // How quickly block changes reach the screen (benchmark): time from a change until every
     // section it made dirty has a new mesh, the largest number of sections and light jobs waiting,
     // and the time the light thread spent.
@@ -67,7 +80,7 @@ public:
     // block changes of one pass of the event loop go to the light engine together, as one job
     // (an explosion's hundreds of blocks, decision E-604). A change between two states drawn alike
     // (equal render table entries) meshes nothing.
-    void blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous);
+    void blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous, Priority priority = Priority::Normal);
     void clear();
     // Marks every section of the loaded chunks dirty, so each is meshed and delivered again (the
     // renderer lost its GPU copies, QcWorldView::meshesLost).
@@ -140,7 +153,17 @@ private:
     QList<quint64> nearestDirtyFirst() const;
     // Nullopt while a side neighbour of the chunk is missing.
     [[nodiscard]] std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
-    void submitMesh(quint64 key, QcMeshInput input);
+    void submitMesh(quint64 key, QcMeshInput input, Priority priority);
+    // Starts the job of the dirty section `key`, or drops the mark while it cannot be meshed yet
+    // (a later mark brings it back) or emits the removal of an empty section.
+    void startJob(const QcClientWorld &world, quint64 key, Priority priority);
+    // Marks the sections dirty and gathers them for submitPlayerSections() (Priority::Player).
+    void gatherPlayerSections(const QcClientWorld &world, const QList<SectionAddress> &sections, qint64 changedAtNs);
+    // Starts the jobs of the gathered player sections that are still dirty, each once.
+    void submitPlayerSections();
+    // Counts a job of `key` in or out of m_inFlight.
+    void jobStarted(quint64 key);
+    void jobFinished(quint64 key);
     // Records the time since the section's earliest unshown change, if any.
     void noteLatency(quint64 key);
     // The chunk and its loaded neighbours, all sections.
@@ -159,7 +182,8 @@ private:
     // Version of the latest dirty mark per section; results of older jobs are discarded.
     QHash<quint64, quint64> m_versions;
     quint64 m_lastVersion = 0;
-    QSet<quint64> m_inFlight;
+    // Jobs per section being meshed: a player change may start a newer job while an older one runs.
+    QHash<quint64, int> m_inFlight;
     QSet<QcChunkPos> m_loadedChunks;
     QcVec3 m_focus;
     int m_maxJobsInFlight = 1;
@@ -176,6 +200,10 @@ private:
     QList<std::pair<QcBlockPos, std::shared_ptr<const QcChunk>>> m_gathered;
     QList<SectionAddress> m_gatheredDirty;
     qint64 m_gatheredSinceNs = -1;
+    // Sections of the player's own changes not yet submitted, and the world they are meshed from;
+    // cleared by clear().
+    QList<quint64> m_playerSections;
+    const QcClientWorld *m_playerWorld = nullptr;
     QcMailbox<LightResult> m_lightResults;
     // Earliest unshown block change per dirty section (latency statistics).
     QHash<quint64, qint64> m_changedAt;

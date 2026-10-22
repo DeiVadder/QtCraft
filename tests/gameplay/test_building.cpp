@@ -1,3 +1,4 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcPartGenerator.h"
 #include "common/gameplay/QcCrafting.h"
@@ -7,7 +8,6 @@
 #include "common/protocol/QcInProcessTransport.h"
 #include "QcRawClient.h"
 #include "QcTestUtil.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 

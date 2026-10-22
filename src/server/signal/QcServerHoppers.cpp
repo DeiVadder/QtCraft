@@ -1,7 +1,7 @@
 #include "server/signal/QcServerHoppers.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/physics/QcPhysics.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/core/QcServerState.h"
 #include "server/signal/QcSignalTable.h"
 

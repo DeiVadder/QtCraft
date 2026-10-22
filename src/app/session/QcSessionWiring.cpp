@@ -34,6 +34,10 @@ void QcSessionWiring::connectWorld()
     connect(session, &QcClientSession::blockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
         m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous);
     });
+    // The player's own blocks are meshed first (decision E-853).
+    connect(session, &QcClientSession::playerBlockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
+        m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous, QcMeshScheduler::Priority::Player);
+    });
     connect(session, &QcClientSession::ticked, this, [this] {
         emit ticked();
         m_targets.audio.setAmbience(m_parts.session->sounds().ambience());

@@ -11,7 +11,7 @@ target_sources(qc_network PRIVATE
     QcTcpTransport.h QcTcpTransport.cpp
 )
 qc_configure_target(qc_network)
-# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_network PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_network PUBLIC qc_common Qt::Core Qt::Network)

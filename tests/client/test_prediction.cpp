@@ -1,13 +1,16 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "common/physics/QcPhysics.h"
+#include "common/protocol/QcProtocol.h"
 #include "QcTestWorld.h"
 
 #include <QTest>
 
 #include <algorithm>
+#include <limits>
 
-// QcPrediction on its own: the reconciliation results, the cap of pending inputs and riding a cart.
+// QcPrediction on its own: the reconciliation results, the cap of pending inputs, riding a cart and
+// the wrapped yaw the client sends with UseItem.
 class TestPrediction : public QObject
 {
     Q_OBJECT
@@ -68,6 +71,28 @@ private:
     QcContentRegistry m_content = qcMakeTestContent();
 
 private slots:
+    // A tiny negative yaw rounds to exactly 360 when wrapped naively; the intent stays below 360 and a
+    // UseItem carrying it decodes (decision E-853).
+    void aTinyNegativeYawWrapsBelow360AndDecodes()
+    {
+        QcPrediction prediction;
+        QcPlayerInput intent;
+        intent.yaw = -1e-6f;
+        prediction.setIntent(intent);
+        QVERIFY(prediction.intent().yaw >= 0.0f);
+        QVERIFY(prediction.intent().yaw < 360.0f);
+        QCOMPARE(qcWrappedYaw(360.0f), 0.0f);
+        QCOMPARE(qcWrappedYaw(-90.0f), 270.0f);
+        QCOMPARE(qcWrappedYaw(std::numeric_limits<float>::quiet_NaN()), 0.0f);
+
+        const QcMsg::UseItem sent{{1, 2, 3}, QcBlockFace::Up, {0.5, 1.0, 0.5}, 7, QcMsg::UseItem::View{prediction.intent().yaw, 0.0f}};
+        const QcResult<QcMessage> result = QcProtocol::decode(QcProtocol::encode(QcMessage(sent)), QcProtocol::Peer::Client);
+        QVERIFY2(result.has_value(), qPrintable(result ? QString() : result.error()));
+        const auto &decoded = std::get<QcMsg::UseItem>(*result);
+        QVERIFY(decoded.view.has_value());
+        QCOMPARE(decoded.view->yaw, prediction.intent().yaw);
+    }
+
     void theFirstStatePlacesAndLaterOnesApply()
     {
         QcTestWorld world(m_content);

@@ -181,6 +181,9 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     for (const auto &[pos, previous] : change->blocks) {
         emit blockChanged(pos, previous);
     }
+    for (const auto &[pos, previous] : change->rolledBack) {
+        emit playerBlockChanged(pos, previous);
+    }
     return true;
 }
 
@@ -386,6 +389,36 @@ bool QcClientSession::attack()
 void QcClientSession::sendToServer(const QcMessage &message)
 {
     m_link->command({QcSessionCommand::Send{message}});
+}
+
+bool QcClientSession::blockPredictionWanted()
+{
+    return qEnvironmentVariable("QTCRAFT_BLOCK_PREDICTION") != u"0"_s;
+}
+
+void QcClientSession::setMining(bool mining)
+{
+    const bool pressed = mining && !m_hand.miningRequested();
+    m_hand.setMining(mining);
+    if (pressed && m_blockPrediction && m_state == State::Playing && !m_vitals.isDead()) {
+        apply(m_hand.strike(*m_worldMirror.world(), *m_worldMirror.content()));
+    }
+}
+
+quint32 QcClientSession::predictBlocks(const QList<QcMsg::BlockUpdate> &blocks)
+{
+    if (!m_blockPrediction || blocks.isEmpty()) {
+        return 0;
+    }
+
+    // The core shows them too (its player walks against a placed block) before the request leaves.
+    const quint32 sequence = ++m_blockSequence;
+    m_link->command({QcSessionCommand::PredictBlocks{sequence, blocks}});
+    const QList<QcBlockMirror::Changed> changed = m_worldMirror.predict(sequence, blocks);
+    for (const auto &[pos, previous] : changed) {
+        emit playerBlockChanged(pos, previous);
+    }
+    return sequence;
 }
 
 bool QcClientSession::apply(QcHandActions::HandEffect effect)

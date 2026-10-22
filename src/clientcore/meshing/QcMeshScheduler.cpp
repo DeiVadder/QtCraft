@@ -208,7 +208,7 @@ std::pair<int, int> QcMeshScheduler::skyLightRange(const QcClientWorld &world, Q
     return {low, high};
 }
 
-void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous)
+void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, QcBlockId previous, Priority priority)
 {
     const qint64 now = m_clock.nsecsElapsed();
     const QcBlockId current = world.blockAt(pos).value_or(qcAirBlockId);
@@ -216,7 +216,8 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         // Drawn and lit alike (QcBlockRenderTable::Entry): no section looks different.
         return;
     }
-    QList<SectionAddress> dirty = faceSections(pos);
+    const QList<SectionAddress> faces = faceSections(pos);
+    QList<SectionAddress> dirty = faces;
 
     bool lightChanges = true;
     if (m_renderTable) {
@@ -227,6 +228,15 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
             forSkyLightSections(pos.chunk(), low, high, [&dirty](QcChunkPos chunk, int section) { dirty.append({chunk, section}); });
         }
         lightChanges = before.lightDiffers(after) || before.lightLevel != after.lightLevel;
+    }
+
+    if (priority == Priority::Player) {
+        // The faces show as soon as the event loop comes back; marking them again below would
+        // outdate their jobs.
+        gatherPlayerSections(world, faces, now);
+        dirty.removeIf([&faces](SectionAddress address) {
+            return std::ranges::any_of(faces, [address](SectionAddress face) { return face.chunk == address.chunk && face.section == address.section; });
+        });
     }
 
     if (m_lightEngine && lightChanges) {
@@ -264,6 +274,8 @@ void QcMeshScheduler::submitGathered()
 
 void QcMeshScheduler::clear()
 {
+    m_playerSections.clear();
+    m_playerWorld = nullptr;
     m_gathered.clear();
     m_gatheredDirty.clear();
     m_versions.clear();
@@ -412,19 +424,98 @@ qint64 QcMeshScheduler::lightBytes() const
     return qint64(sections.size()) * qint64(sizeof(QcChunkLight::Section));
 }
 
-void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input)
+void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input, Priority priority)
 {
     m_dirty.remove(key);
-    m_inFlight.insert(key);
+    jobStarted(key);
     const quint64 version = m_versions.value(key);
-    m_pool.submit([this, key, version, input = std::move(input)] {
+    auto job = [this, key, version, input = std::move(input)] {
         QElapsedTimer work;
         work.start();
         auto mesh = std::make_shared<const QcChunkMesh>(QcChunkMesher::mesh(input));
         if (m_results.push({key, version, std::move(mesh), double(work.nsecsElapsed()) / 1e6})) {
             QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverResults, Qt::QueuedConnection);
         }
-    });
+    };
+    if (priority == Priority::Player) {
+        m_pool.submitFirst(std::move(job));
+    } else {
+        m_pool.submit(std::move(job));
+    }
+}
+
+void QcMeshScheduler::startJob(const QcClientWorld &world, quint64 key, Priority priority)
+{
+    const SectionAddress address = m_dirty.value(key);
+    const std::shared_ptr<const QcChunk> centre = world.chunk(address.chunk);
+    if (!centre || (m_lightEngine && !m_light.contains(address.chunk))) {
+        // Without its light yet: the light result marks it again.
+        m_dirty.remove(key);
+        m_changedAt.remove(key);
+        return;
+    }
+    if (centre->section(address.section).isEmpty()) {
+        m_dirty.remove(key);
+        noteLatency(key);
+        emit meshRemoved(key);
+        return;
+    }
+    std::optional<QcMeshInput> input = meshInput(world, address);
+    if (!input) {
+        // Dropped for now: loading the missing neighbour marks this section dirty again.
+        m_dirty.remove(key);
+        m_changedAt.remove(key);
+        return;
+    }
+    submitMesh(key, std::move(*input), priority);
+}
+
+void QcMeshScheduler::gatherPlayerSections(const QcClientWorld &world, const QList<SectionAddress> &sections, qint64 changedAtNs)
+{
+    if (!m_renderTable) {
+        return;
+    }
+    if (m_playerSections.isEmpty()) {
+        QMetaObject::invokeMethod(this, &QcMeshScheduler::submitPlayerSections, Qt::QueuedConnection);
+    }
+    m_playerWorld = &world;
+
+    for (const SectionAddress &address : sections) {
+        markDirty(address.chunk, address.section, changedAtNs);
+        const quint64 key = qcSectionKey(address.chunk, address.section);
+        if (!m_playerSections.contains(key)) {
+            m_playerSections.append(key);
+        }
+    }
+}
+
+void QcMeshScheduler::submitPlayerSections()
+{
+    const QList<quint64> keys = std::exchange(m_playerSections, {});
+    const QcClientWorld *world = std::exchange(m_playerWorld, nullptr);
+    if (!world) {
+        return;
+    }
+
+    // A section pump() started in the meantime is no longer dirty and is not meshed twice.
+    for (const quint64 key : keys) {
+        if (m_dirty.contains(key)) {
+            startJob(*world, key, Priority::Player);
+        }
+    }
+}
+
+void QcMeshScheduler::jobStarted(quint64 key)
+{
+    ++m_inFlight[key];
+}
+
+void QcMeshScheduler::jobFinished(quint64 key)
+{
+    const auto it = m_inFlight.find(key);
+    if (it != m_inFlight.end() && --*it <= 0) {
+        m_inFlight.erase(it);
+    }
 }
 
 void QcMeshScheduler::noteLatency(quint64 key)
@@ -450,35 +541,14 @@ void QcMeshScheduler::pump(const QcClientWorld &world)
         if (m_inFlight.size() >= m_maxJobsInFlight) {
             break;
         }
-        const SectionAddress address = m_dirty.value(key);
-        const std::shared_ptr<const QcChunk> centre = world.chunk(address.chunk);
-        if (!centre || (m_lightEngine && !m_light.contains(address.chunk))) {
-            // Without its light yet: the light result marks it again.
-            m_dirty.remove(key);
-            m_changedAt.remove(key);
-            continue;
-        }
-        if (centre->section(address.section).isEmpty()) {
-            m_dirty.remove(key);
-            noteLatency(key);
-            emit meshRemoved(key);
-            continue;
-        }
-        std::optional<QcMeshInput> input = meshInput(world, address);
-        if (!input) {
-            // Dropped for now: loading the missing neighbour marks this section dirty again.
-            m_dirty.remove(key);
-            m_changedAt.remove(key);
-            continue;
-        }
-        submitMesh(key, std::move(*input));
+        startJob(world, key, Priority::Normal);
     }
 }
 
 void QcMeshScheduler::deliverResults()
 {
     for (Result &result : m_results.takeAll()) {
-        m_inFlight.remove(result.key);
+        jobFinished(result.key);
         ++m_stats.meshJobs;
         m_stats.meshTotalMs += result.workMs;
         m_stats.meshWorstMs = std::max(m_stats.meshWorstMs, result.workMs);
@@ -497,6 +567,7 @@ void QcMeshScheduler::deliverResults()
 
 void QcMeshScheduler::waitForJobs()
 {
+    submitPlayerSections();
     submitGathered();
     m_lightPool.waitForIdle();
     m_pool.waitForIdle();

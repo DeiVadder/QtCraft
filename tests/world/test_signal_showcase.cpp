@@ -1,7 +1,7 @@
+#include "common/blockrules/QcRails.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "server/blocks/QcRails.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 

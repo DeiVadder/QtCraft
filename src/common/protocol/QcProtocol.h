@@ -14,14 +14,18 @@ namespace QcProtocol {
 inline constexpr quint32 firstVersionWithClientText = 65;
 // Bumped whenever a message layout changes (history: decision E-368): 66 sends the threads of
 // families with the content (decision E-839), 67 brings the admin channel (decision E-848), 68
-// sends the speed of status effects with the content (decision E-838).
-inline constexpr quint32 version = 68;
+// sends the speed of status effects with the content (decision E-838), 69 numbers the predicted
+// block actions and acknowledges them (decision E-853).
+inline constexpr quint32 version = 69;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };
 
 // Whether `sender` may send the message with this variant index; decode() rejects the rest.
 bool isSentBy(std::size_t messageIndex, Peer sender);
+// The number of the client's block prediction a FinishMining or UseItem carries (decision E-853);
+// 0 for other messages and for actions the client predicted nothing for.
+quint32 predictionSequence(const QcMessage &message);
 
 QByteArray encode(const QcMessage &message);
 // Decodes a frame received from `sender`; message types that peer must not send are rejected

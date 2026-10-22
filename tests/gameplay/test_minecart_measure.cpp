@@ -1,5 +1,5 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "QcServerTestFixture.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/minecarts/QcMinecartMotion.h"
 

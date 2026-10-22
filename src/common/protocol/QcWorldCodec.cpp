@@ -39,12 +39,28 @@ void encode(QDataStream &, QcMsg::CancelMining) {}
 void encode(QDataStream &stream, QcMsg::FinishMining m)
 {
     writePos(stream, m.pos);
+    stream << m.sequence;
 }
 
 void encode(QDataStream &stream, const QcMsg::UseItem &m)
 {
     writePos(stream, m.target);
-    stream << quint8(m.face) << m.hit;
+    stream << quint8(m.face) << m.hit << m.sequence << bool(m.view);
+    if (m.view) {
+        stream << m.view->yaw << m.view->pitch;
+    }
+}
+
+void encode(QDataStream &stream, QcMsg::BlockAck m)
+{
+    stream << m.sequence;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockAck>, QDataStream &stream)
+{
+    QcMsg::BlockAck m;
+    stream >> m.sequence;
+    return m;
 }
 
 void encode(QDataStream &stream, const QcMsg::SoundEvent &m)
@@ -114,7 +130,10 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::FinishMining>, QDataStream &stream)
 {
-    return QcMsg::FinishMining{readPos(stream)};
+    QcMsg::FinishMining m;
+    m.pos = readPos(stream);
+    stream >> m.sequence;
+    return m;
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::UseItem>, QDataStream &stream)
@@ -122,9 +141,19 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
     QcMsg::UseItem m;
     m.target = readPos(stream);
     quint8 face = 0;
-    stream >> face >> m.hit;
+    bool hasView = false;
+    stream >> face >> m.hit >> m.sequence >> hasView;
     if (face >= qcBlockFaceCount) {
         return qcError(u"Invalid block face"_s);
+    }
+    if (hasView) {
+        QcMsg::UseItem::View view;
+        stream >> view.yaw >> view.pitch;
+        // Ranges are enforced by the server (yaw wrapped, pitch clamped), like those of PlayerInput.
+        if (!std::isfinite(view.yaw) || !std::isfinite(view.pitch)) {
+            return qcError(u"Invalid view"_s);
+        }
+        m.view = view;
     }
 
     const auto inCell = [](double value) { return std::isfinite(value) && value >= 0.0 && value <= 1.0; };

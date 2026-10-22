@@ -1,6 +1,5 @@
 #include "clientcore/tick/QcSessionCore.h"
 
-#include "clientcore/session/QcClientWorld.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
@@ -8,6 +7,8 @@
 #include "common/protocol/QcTransport.h"
 
 #include <QTimer>
+
+#include <tuple>
 
 QcSessionCore::QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink)
     : m_sink(std::move(sink))
@@ -54,6 +55,8 @@ void QcSessionCore::apply(QcSessionCommand &&command)
         if (m_connection) {
             m_connection->send(send->message);
         }
+    } else if (const auto *predicted = std::get_if<QcSessionCommand::PredictBlocks>(&command.what)) {
+        m_blocks.predict(predicted->sequence, predicted->blocks);
     } else if (std::holds_alternative<QcSessionCommand::Close>(command.what) && m_connection) {
         m_connection->close();
     }
@@ -101,8 +104,9 @@ bool QcSessionCore::tick()
 
     QcSessionEvent::Ticked ticked;
     if (!m_vitals.isDead()) {
-        m_prediction.setSpeedFactor(m_content ? float(QcStatusEffects::speedFactor(*m_content, m_vitals.effects())) : 1.0f);
-        const QcPlayerInput input = m_prediction.predict(*m_world, m_gameMode.flightWanted(), m_gameMode.rules().movement());
+        const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
+        m_prediction.setSpeedFactor(content ? float(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
+        const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), m_gameMode.rules().movement());
         if (!m_prediction.riding().isRiding()) {
             // A landing or a mode without flight ended the flight: the wish follows the state.
             m_gameMode.stepped(m_prediction.motion().flying);
@@ -134,7 +138,9 @@ void QcSessionCore::onMessage(QcMessage &&message)
         return;
     }
 
-    applyWorld(message);
+    // The core needs the blocks only: an invalid message closes the session (QcClientSession), and
+    // what changed the session takes from its own mirror.
+    std::ignore = m_blocks.handle(message);
     if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message);
         welcome && welcome->restoredView && welcome->protocolVersion == QcProtocol::version) {
         // The session sets the same view; the core must not tick with the old one meanwhile.
@@ -151,41 +157,14 @@ void QcSessionCore::onMessage(QcMessage &&message)
     m_sink({QcSessionEvent::Received{std::move(message)}});
 }
 
-void QcSessionCore::applyWorld(const QcMessage &message)
-{
-    if (const auto *sync = std::get_if<QcMsg::ContentSync>(&message)) {
-        if (!m_content) {
-            m_content = sync->content;
-            m_world = std::make_unique<QcClientWorld>(m_content);
-        }
-    } else if (const auto *chunkData = std::get_if<QcMsg::ChunkData>(&message)) {
-        // An invalid chunk closes the session (QcClientSession); it never reaches the prediction.
-        if (m_world && QcClientWorld::knowsBlocksOf(*chunkData->chunk, *m_content)) {
-            m_world->setChunk(chunkData->chunk);
-        }
-    } else if (const auto *unload = std::get_if<QcMsg::ChunkUnload>(&message)) {
-        if (m_world) {
-            m_world->removeChunk(unload->pos);
-        }
-    } else if (const auto *update = std::get_if<QcMsg::BlockUpdate>(&message)) {
-        if (m_world && m_content->isValidBlock(update->block)) {
-            m_world->setBlock(update->pos, update->block);
-        }
-    } else if (const auto *batch = std::get_if<QcMsg::BlockBatch>(&message)) {
-        if (m_world) {
-            m_world->setBlocks(batch->updates);
-        }
-    }
-}
-
 void QcSessionCore::reconcile(const QcMsg::PlayerState &state)
 {
     m_linkStats.acknowledged(state.lastInputSequence, m_now());
     // A player saved while flying flies on after joining (decision E-284).
-    if (m_prediction.reconcile(state, m_world.get(), m_gameMode.rules().movement()) == QcPrediction::Reconciled::Placed) {
+    if (m_prediction.reconcile(state, m_blocks.world(), m_gameMode.rules().movement()) == QcPrediction::Reconciled::Placed) {
         m_gameMode.setFlightWanted(state.motion.flying);
     }
-    if (m_world) {
+    if (m_blocks.world()) {
         m_playing = true;
     }
     m_sink({QcSessionEvent::Reconciled{state, prediction()}});

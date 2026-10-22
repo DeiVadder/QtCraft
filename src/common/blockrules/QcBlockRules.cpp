@@ -1,9 +1,9 @@
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
 
+#include "common/blockrules/QcRails.h"
+#include "common/blockrules/QcSlabRules.h"
+#include "common/blockrules/QcStairShapes.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "server/blocks/QcRails.h"
-#include "server/blocks/QcSlabRules.h"
-#include "server/blocks/QcStairShapes.h"
 
 #include <algorithm>
 #include <cmath>

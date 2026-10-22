@@ -1,7 +1,7 @@
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/signal/QcDustNetwork.h"
 #include "worldgen/structures/QcStateRotation.h"
 

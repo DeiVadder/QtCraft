@@ -1,7 +1,7 @@
 #include "server/commands/QcBlockCommands.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcSpawnerContent.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/commands/QcCommandArguments.h"

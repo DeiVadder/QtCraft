@@ -1,6 +1,6 @@
 #pragma once
 
-#include "server/blocks/QcRails.h"
+#include "common/blockrules/QcRails.h"
 #include "server/signal/QcCircuitComponents.h"
 #include "server/signal/QcCircuitPlan.h"
 #include "server/signal/QcCircuitState.h"

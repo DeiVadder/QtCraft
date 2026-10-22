@@ -13,6 +13,7 @@
 #include <QString>
 
 #include <memory>
+#include <optional>
 
 namespace QcMsg {
 
@@ -72,19 +73,35 @@ struct CancelMining
 };
 
 // Client -> server: the client's timer says the block is broken; the server checks the time itself.
+// `sequence` numbers the client's prediction of the break (decision E-853), 0 when it predicted
+// nothing; the server answers it with a BlockAck.
 struct FinishMining
 {
     QcBlockPos pos;
+    quint32 sequence = 0;
 };
 
 // Client -> server: use the held item on a block face (places blocks, opens doors). `hit` is the
 // point the player aimed at inside the target block (0..1 per axis); it picks slab halves and the
 // like.
+// `sequence` numbers the client's prediction of the placed block (decision E-853), 0 when it
+// predicted nothing; the server answers it with a BlockAck. `view` is the view direction the client
+// predicted the placement with; the server places with it (facing, stairs), without it with the view
+// of the player's latest input.
 struct UseItem
 {
+    // Degrees; the server wraps yaw into [0, 360) and clamps pitch to [-90, 90] (positive is up).
+    struct View
+    {
+        float yaw = 0.0F;
+        float pitch = 0.0F;
+    };
+
     QcBlockPos target;
     QcBlockFace face = QcBlockFace::Up;
     QcVec3 hit{0.5, 0.5, 0.5};
+    quint32 sequence = 0;
+    std::optional<View> view = std::nullopt;
 };
 
 // Server -> client: a sound at a world position (block broken, creature hurt, furnace crackling).
@@ -131,6 +148,14 @@ struct BlockBatch
     QList<BlockUpdate> updates;
 
     static constexpr quint32 maxUpdates = 1u << 16;
+};
+
+// Server -> client: the player's action numbered `sequence` (FinishMining, UseItem) is handled,
+// together with every earlier one (decision E-853). The blocks the server sent before it are its
+// answer: the client drops its predictions up to the number and shows the server's blocks there.
+struct BlockAck
+{
+    quint32 sequence = 0;
 };
 
 // Server -> client: an explosion of `power` (QcBlastDefinition) at `centre` (decision E-604); the

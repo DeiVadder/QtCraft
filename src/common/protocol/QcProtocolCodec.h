@@ -80,6 +80,7 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m);
 void encode(QDataStream &stream, const QcMsg::BlockBatch &m);
 void encode(QDataStream &stream, const QcMsg::Explosion &m);
 void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m);
+void encode(QDataStream &stream, QcMsg::BlockAck m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkData>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChunkUnload>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockUpdate>, QDataStream &stream);
@@ -95,6 +96,7 @@ void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockBatch>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Explosion>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CampfireDisplay>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::BlockAck>, QDataStream &stream);
 
 // Signs (QcSignCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::SignText &m);

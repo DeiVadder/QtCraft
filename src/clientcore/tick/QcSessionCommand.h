@@ -39,12 +39,20 @@ struct QcSessionCommand
         QcMessage message;
     };
 
+    // The blocks the local player's action numbered `sequence` is expected to set, shown in the
+    // core's block mirror too (QcBlockMirror::predict, decision E-853); sent before the action.
+    struct PredictBlocks
+    {
+        quint32 sequence = 0;
+        QList<QcMsg::BlockUpdate> blocks;
+    };
+
     // Close the connection (after the messages sent before).
     struct Close
     {
     };
 
-    std::variant<Start, SetIntent, SetFlight, ResetCorrections, Send, Close> what;
+    std::variant<Start, SetIntent, SetFlight, ResetCorrections, Send, PredictBlocks, Close> what;
 
     // Whether the session takes the command's effect back from the core's prediction (the wish to
     // fly, the reset of the corrections) and so must wait until the core applied it

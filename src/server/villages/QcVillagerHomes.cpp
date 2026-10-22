@@ -1,7 +1,7 @@
 #include "server/villages/QcVillagerHomes.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/mobs/QcMobSteering.h"
 #include "server/villages/QcVillages.h"
 

@@ -150,6 +150,11 @@ private slots:
         // Letting go and clicking again breaks at once.
         QVERIFY(!mode.nextInstantBreak(std::nullopt));
         QCOMPARE(mode.nextInstantBreak(pos), pos);
+
+        // Letting go between two ticks counts too: a press right after the release breaks at once.
+        QVERIFY(!mode.nextInstantBreak(pos));
+        mode.releaseInstantBreak();
+        QCOMPARE(mode.nextInstantBreak(pos), pos);
     }
 
     void flyingNeedsNoCorrection_data()

@@ -115,7 +115,7 @@ if(MSVC)
 else()
     set_source_files_properties(${qc_worldgen_fp_sources} PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
 endif()
-# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_worldgen PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_worldgen PUBLIC qc_common Qt::Core)

@@ -7,6 +7,12 @@ target_sources(qc_common PRIVATE
     auth/QcProfileValidation.h auth/QcProfileValidation.cpp
 )
 target_sources(qc_common PRIVATE
+    blockrules/QcBlockRules.h blockrules/QcBlockRules.cpp
+    blockrules/QcRails.h blockrules/QcRails.cpp
+    blockrules/QcSlabRules.h blockrules/QcSlabRules.cpp
+    blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
+)
+target_sources(qc_common PRIVATE
     content/definitions/QcAppearance.h
     content/definitions/QcAppearanceDefinition.h
     content/definitions/QcArmourDefinition.h
@@ -282,7 +288,7 @@ target_sources(qc_common PRIVATE
     world/QcWorldLabel.h world/QcWorldLabel.cpp
 )
 qc_configure_target(qc_common)
-# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_common PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_common PUBLIC Qt::Core)

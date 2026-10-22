@@ -1,12 +1,13 @@
 #include "server/gameplay/QcServerInteraction.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
+#include "common/physics/QcPlayerInput.h"
 #include "common/protocol/QcChatText.h"
 #include "server/blockentities/QcServerSigns.h"
 #include "server/blocks/QcBlockDyeing.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcFireIgnition.h"
 #include "server/blocks/QcOpeners.h"
 #include "server/blocks/QcServerBlocks.h"
@@ -228,9 +229,13 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     const bool floating = placed && clickedLiquid && surface && content.block(*placed).floats;
     const QcBlockFace face = floating ? QcBlockFace::Up : message.face;
     const bool clickedSolid = clicked && content.isValidBlock(*clicked) && !clickedLiquid;
+    // The view the client predicted the placement with, else that of its latest input (decision E-853).
+    // The decoder rejects non-finite values; the ranges are enforced here.
+    const QcMsg::UseItem::View sent = message.view.value_or(QcMsg::UseItem::View{client.yaw, client.pitch});
+    const QcMsg::UseItem::View view{qcWrappedYaw(sent.yaw), std::clamp(sent.pitch, -90.0F, 90.0F)};
     const std::optional<QcBlockRules::Placement> placement =
         placed && (clickedSolid || floating) && *clicked != qcAirBlockId
-            ? QcBlockRules::placement(m_state.world(), *placed, {message.target, face, message.hit, client.yaw, client.pitch})
+            ? QcBlockRules::placement(m_state.world(), *placed, {message.target, face, message.hit, view.yaw, view.pitch})
             : std::nullopt;
 
     const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, face);

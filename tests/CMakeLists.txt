@@ -32,7 +32,8 @@ set(qc_concurrency_tests
     test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
-    test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots)
+    test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
+    test_block_prediction test_block_prediction_measure)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are

@@ -1,4 +1,4 @@
-#include "server/blocks/QcSlabRules.h"
+#include "common/blockrules/QcSlabRules.h"
 
 #include "common/content/registry/QcContentRegistry.h"
 

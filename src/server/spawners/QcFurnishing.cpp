@@ -1,6 +1,6 @@
 #include "server/spawners/QcFurnishing.h"
 
-#include "server/blocks/QcRails.h"
+#include "common/blockrules/QcRails.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/minecarts/QcMinecartMotion.h"

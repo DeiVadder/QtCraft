@@ -1,7 +1,7 @@
 #pragma once
 
+#include "common/blockrules/QcRails.h"
 #include "common/world/QcBlockAccess.h"
-#include "server/blocks/QcRails.h"
 #include "server/entities/QcMinecart.h"
 
 #include <optional>

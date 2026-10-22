@@ -1,7 +1,7 @@
 #include "server/signal/QcCircuitComponents.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/signal/QcMovingBlocks.h"
 #include "server/signal/QcTripwires.h"
 

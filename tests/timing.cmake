@@ -37,6 +37,9 @@
 #   test_gamepad_scenarios   the creative double tap is timed on the wall clock (E-541)
 #   test_session_tick, test_session_thread
 #                            the session core ticks on its own thread against real time (E-560)
+#   test_block_prediction, test_block_prediction_measure
+#                            survival mining paced by the wall clock (the server times it in its
+#                            players' time); the time from an action to its mesh (E-853)
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
     test_tcp_transport test_network_game test_latency
@@ -44,5 +47,6 @@ set(qc_timing_tests
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
     test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
-    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu test_gamepad_scenarios test_session_tick test_session_thread)
+    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu test_gamepad_scenarios test_session_tick test_session_thread
+    test_block_prediction test_block_prediction_measure)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

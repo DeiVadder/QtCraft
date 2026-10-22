@@ -136,11 +136,14 @@ void QcControlWorldCommands::mine(const QJsonObject &request)
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(maxTicks), [this, pos] {
                          const std::optional<QcBlockId> block = session().world()->blockAt(*pos);
                          if (block && *block != qcAirBlockId) {
+                             // Again after a refused prediction rolled the block back.
+                             session().setMining(true);
                              return false;
                          }
 
+                         // A predicted break (decision E-853) is done once the server confirmed it.
                          session().setMining(false);
-                         return true;
+                         return !session().worldMirror().blocks().isPredicted(*pos);
                      }});
 }
 

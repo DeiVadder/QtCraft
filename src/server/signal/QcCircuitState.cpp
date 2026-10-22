@@ -1,6 +1,6 @@
 #include "server/signal/QcCircuitState.h"
 
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerWorld.h"
 

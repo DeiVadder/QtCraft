@@ -1,6 +1,6 @@
 #include "server/plants/QcPlantGrowth.h"
 
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
 #include "server/core/QcServerWorld.h"
 
 #include <QList>

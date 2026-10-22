@@ -199,6 +199,32 @@ private slots:
         QCOMPARE(meshes.value(qcSectionKey({0, 0}, 0))->opaqueIndices.size(), before + qsizetype(4) * 6);
     }
 
+    void playerChangesOfOnePassMeshEachSectionOnce()
+    {
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        loadSquare(world, scheduler, 16);
+        pumpUntilIdle(scheduler, world);
+        scheduler.resetStats();
+
+        // Four cells deep inside section 0 (like a rollback of several predicted cells, or both
+        // halves of a door): one job for the section, not one per cell (decision E-853).
+        for (int x = 5; x < 9; ++x) {
+            QVERIFY(world.setBlock({x, 5, 5}, qcAirBlockId));
+            scheduler.blockChanged(world, {x, 5, 5}, 1, QcMeshScheduler::Priority::Player);
+        }
+        QCOMPARE(scheduler.jobsInFlight(), 0);
+        QCoreApplication::sendPostedEvents(&scheduler, QEvent::MetaCall);
+        QVERIFY(scheduler.jobsInFlight() <= 1);
+        pumpUntilIdle(scheduler, world);
+        QCOMPARE(scheduler.stats().meshJobs, quint64(1));
+        verifyCentreMeshes(world, meshes);
+    }
+
     void blockChangeAlsoRemeshesSectionsReachedByLight()
     {
         QcClientWorld world(m_content);

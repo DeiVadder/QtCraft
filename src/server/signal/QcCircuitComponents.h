@@ -1,7 +1,7 @@
 #pragma once
 
+#include "common/blockrules/QcRails.h"
 #include "server/blockentities/QcBlockEntities.h"
-#include "server/blocks/QcRails.h"
 #include "server/signal/QcCircuitPlan.h"
 #include "server/signal/QcCircuitState.h"
 #include "server/signal/QcComparatorReadings.h"

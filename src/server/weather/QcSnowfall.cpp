@@ -1,6 +1,6 @@
 #include "server/weather/QcSnowfall.h"
 
-#include "server/blocks/QcBlockRules.h"
+#include "common/blockrules/QcBlockRules.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerState.h"
 #include "server/weather/QcServerWeather.h"

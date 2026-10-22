@@ -1,7 +1,7 @@
 #include "server/plants/QcServerPlants.h"
 
+#include "common/blockrules/QcBlockRules.h"
 #include "common/physics/QcPhysics.h"
-#include "server/blocks/QcBlockRules.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"

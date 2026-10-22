@@ -106,6 +106,7 @@ target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    player/QcBlockForecast.h player/QcBlockForecast.cpp
     player/QcClientGameMode.h player/QcClientGameMode.cpp
     player/QcClientInventory.h player/QcClientInventory.cpp
     player/QcClientRiding.h player/QcClientRiding.cpp
@@ -128,6 +129,7 @@ target_sources(qc_clientcore PRIVATE
     preview/QcPreviewScene.h preview/QcPreviewScene.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    session/QcBlockMirror.h session/QcBlockMirror.cpp
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
@@ -219,7 +221,7 @@ target_sources(qc_clientcore PRIVATE
     weather/QcPrecipitationField.h weather/QcPrecipitationField.cpp
 )
 qc_configure_target(qc_clientcore)
-# Includes name the header by its path below src/ ("server/blocks/QcRails.h", decision E-418):
+# Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_clientcore PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs Qt::Core Qt::Concurrent Qt::Gui)
