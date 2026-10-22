@@ -23,6 +23,61 @@ int turnDistance(int a, int b)
     return std::min(d, 8 - d);
 }
 
+// The turns of an arm as it is walked: its bends and its winding turns. A bridge runs straight from
+// bank to bank along the line QcRoadLayer::bridgeHeight() checked (decision E-841): a bend or a
+// winding turn due on it (or on the step off it) waits until the road has left it straight on, and
+// later bends move with it. A closed arm (a plaza's ring) cannot wait without missing its start: it
+// ends there and is left out.
+class ArmTurns
+{
+public:
+    enum class Due
+    {
+        None,
+        Bend,
+        Wind,
+        End,
+    };
+
+    ArmTurns(const QcRoadLayer::Arm &arm, int nextWind)
+        : m_arm(arm)
+        , m_nextWind(nextWind)
+    {
+    }
+
+    // What is due at the arm's cell `d`, coming from a bridge or not.
+    Due due(int d, bool onBridge)
+    {
+        const bool bendDue = m_bend < m_arm.bends.size() && m_arm.bends[m_bend].first + m_bendDelay == d;
+        if (onBridge && bendDue && m_arm.closed) {
+            return Due::End;
+        }
+        if (onBridge) {
+            m_bendDelay += bendDue ? 1 : 0;
+            m_nextWind += d == m_nextWind ? 1 : 0;
+            return Due::None;
+        }
+        if (bendDue) {
+            // A winding turn due on the same cell comes a cell later.
+            m_nextWind += d == m_nextWind ? 1 : 0;
+            return Due::Bend;
+        }
+        return d == m_nextWind ? Due::Wind : Due::None;
+    }
+
+    // The turn of the bend that is due (eighths of a turn); the next bend becomes due.
+    int takeBend() { return m_arm.bends[m_bend++].second; }
+
+    // A winding turn was taken: the next comes `gap` cells on.
+    void windAfter(int gap) { m_nextWind += gap; }
+
+private:
+    const QcRoadLayer::Arm &m_arm;
+    qsizetype m_bend = 0;
+    int m_bendDelay = 0;
+    int m_nextWind;
+};
+
 } // namespace
 
 QcRoadLayer::QcRoadLayer(const QcTerrainGenerator &terrain, const QcContentRegistry &content)
@@ -54,19 +109,22 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
     int heading = arm.direction;
     std::pair<int, int> cell{arm.x, arm.z};
     From from{m_terrain.column(arm.x, arm.z).height, 0, arm.direction};
-    qsizetype bend = 0;
-    int nextWind = arm.winding ? arm.firstSlot + windGapMinimum + int(draft.random() * windGapRange) : -1;
+    ArmTurns turns(arm, arm.winding ? arm.firstSlot + windGapMinimum + int(draft.random() * windGapRange) : -1);
     Road run{arm.x, arm.z, directions[direction].first, directions[direction].second, 0, arm.firstSlot, arm.branch, 0, false, arm.sides};
     int laid = 0;
     // A road on a bridge at the end of its length goes on to the far bank (decision E-841).
     for (int d = 0; d < arm.length || (from.bridgeCells > 0 && d < arm.length + maxBridge); ++d) {
         int next = direction;
-        if (bend < arm.bends.size() && arm.bends[bend].first == d) {
-            next = (direction + arm.bends[bend++].second + 8) % 8;
+        const ArmTurns::Due due = turns.due(d, from.bridgeCells > 0);
+        if (due == ArmTurns::Due::End) {
+            break;
+        }
+        if (due == ArmTurns::Due::Bend) {
+            next = (direction + turns.takeBend() + 8) % 8;
             heading = next;
-        } else if (d == nextWind) {
+        } else if (due == ArmTurns::Due::Wind) {
             next = (direction + windTurn(draft, cell, direction, heading) + 8) % 8;
-            nextWind += windGapMinimum + int(draft.random() * windGapRange);
+            turns.windAfter(windGapMinimum + int(draft.random() * windGapRange));
         }
 
         const auto [dx, dz] = directions[next];

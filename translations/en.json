@@ -3,8 +3,16 @@
         "%n chunk",
         "%n chunks"
     ],
+    "%n file(s) skipped or changed:": [
+        "%n file skipped or changed:",
+        "%n files skipped or changed:"
+    ],
     "%n player(s) online": [
         "%n player online",
         "%n players online"
+    ],
+    "and %n more": [
+        "and %n more",
+        "and %n more"
     ]
 }

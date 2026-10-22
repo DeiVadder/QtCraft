@@ -2,6 +2,17 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en" sourcelanguage="en">
 <context>
+    <name>GraphicsPage</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="128"/>
+        <source>%n chunk(s)</source>
+        <translation>
+            <numerusform>%n chunk</numerusform>
+            <numerusform>%n chunks</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
         <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="59"/>
@@ -26,22 +37,31 @@
 <context>
     <name>SettingsScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="127"/>
         <source>%n chunk(s)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n chunk</numerusform>
             <numerusform>%n chunks</numerusform>
         </translation>
     </message>
 </context>
 <context>
+    <name>TexturePackRow</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/settings/TexturePackRow.qml" line="95"/>
+        <source>%n file(s) skipped or changed:</source>
+        <translation>
+            <numerusform>%n file skipped or changed:</numerusform>
+            <numerusform>%n files skipped or changed:</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>TexturePacksPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/TexturePacksPage.qml" line="148"/>
         <source>%n file(s) skipped or changed:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation type="vanished">
+            <numerusform>%n file skipped or changed:</numerusform>
+            <numerusform>%n files skipped or changed:</numerusform>
         </translation>
     </message>
 </context>

@@ -26,3 +26,5 @@ target_compile_definitions(test_handbook PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJ
                                                 QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_server_messages SOURCES content/test_server_messages.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+qc_add_test(test_english_plurals SOURCES content/test_english_plurals.cpp LIBRARIES Qt::Core)
+target_compile_definitions(test_english_plurals PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")

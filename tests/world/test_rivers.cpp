@@ -7,6 +7,7 @@
 #include <QHash>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMap>
 #include <QRandomGenerator>
 #include <QSet>
 #include <QTest>
@@ -38,6 +39,8 @@ struct Window
     qint64 dryRiver = 0;
     qint64 humidLand = 0;
     qint64 humidRiver = 0;
+    // River columns where the climate leaves rivers no strength (QcRiverField: humidity under 0.05).
+    qint64 desertRiver = 0;
 };
 
 // What a column holds; land and river columns are counted in the window's shares.
@@ -54,6 +57,7 @@ Cell sampleColumn(const QcTerrainGenerator &generator, Window &window, int x, in
         window.dryRiver += humidity < 0.15 && river ? 1 : 0;
         window.humidLand += humidity > 0.4 ? 1 : 0;
         window.humidRiver += humidity > 0.4 && river ? 1 : 0;
+        window.desertRiver += humidity < 0.05 && river ? 1 : 0;
     }
     return river ? Cell::River : (water ? Cell::OtherWater : Cell::Land);
 }
@@ -222,37 +226,56 @@ private:
         return open;
     }
 
-    // A bridge of the plan over a river: a deck from which bridge cells run straight along x or z
-    // (`along`) to dry land at both ends.
+    // The bridges of the plan: each stretch of decks on the middle line of a road run, from its
+    // first deck on in the run's direction (`along`, along x, z or a diagonal). Across a diagonal
+    // road a straight line along x or z leaves the deck at its side, beside the road, so the walk
+    // follows the road.
     struct Bridge
     {
         QcBlockPos at;
         std::pair<int, int> along;
     };
-    static std::optional<Bridge> bridgeOf(const QcTerrainGenerator &generator, const QcVillagePlan &plan)
+    static QList<Bridge> bridgesOf(const QcTerrainGenerator &generator, const QcVillagePlan &plan)
     {
         QSet<std::pair<int, int>> decks;
         for (const QcVillagePlan::Deck &deck : plan.bridges) {
             decks.insert({deck.at.x, deck.at.z});
         }
-        const auto dryEnd = [&](int x, int z, std::pair<int, int> step) {
-            while (decks.contains({x, z})) {
-                x += step.first;
-                z += step.second;
-            }
-            return generator.column(x, z).height >= generator.seaLevel();
-        };
-        for (const auto &[x, z] : decks) {
-            if (!generator.isRiverBiome(generator.column(x, z).biome)) {
-                continue;
-            }
-            for (const std::pair<int, int> along : {std::pair{1, 0}, std::pair{0, 1}}) {
-                if (dryEnd(x, z, along) && dryEnd(x, z, {-along.first, -along.second})) {
-                    return Bridge{{x, generator.seaLevel(), z}, along};
+        QList<Bridge> bridges;
+        for (const QcVillagePlan::Run &run : plan.runs) {
+            for (int d = 0; d < run.length; ++d) {
+                const int x = run.x + run.dx * d;
+                const int z = run.z + run.dz * d;
+                if (decks.contains({x, z}) && !decks.contains({x - run.dx, z - run.dz})) {
+                    bridges.append(Bridge{{x, generator.seaLevel(), z}, {run.dx, run.dz}});
                 }
             }
         }
-        return std::nullopt;
+        return bridges;
+    }
+
+    // A bridge crosses a river from dry land to dry land (decision E-841): some of the water under
+    // its decks is a river's (the rest may be other water beside it, not a lake or the sea alone),
+    // and the first cell past its decks each way is no water and no low bank under the sea level.
+    static void checkCrossing(const QcTerrainGenerator &generator, const QcVillagePlan &plan, const Bridge &bridge)
+    {
+        QSet<std::pair<int, int>> decks;
+        for (const QcVillagePlan::Deck &deck : plan.bridges) {
+            decks.insert({deck.at.x, deck.at.z});
+        }
+        bool river = false;
+        for (const int sign : {1, -1}) {
+            int x = bridge.at.x;
+            int z = bridge.at.z;
+            while (decks.contains({x, z})) {
+                river = river || generator.isRiverBiome(generator.column(x, z).biome);
+                x += sign * bridge.along.first;
+                z += sign * bridge.along.second;
+            }
+            QVERIFY2(generator.column(x, z).height >= generator.seaLevel(),
+                     qPrintable(u"bridge at %1 %2 ends in water at %3 %4"_s.arg(bridge.at.x).arg(bridge.at.z).arg(x).arg(z)));
+        }
+        QVERIFY2(river, qPrintable(u"bridge at %1 %2 over no river"_s.arg(bridge.at.x).arg(bridge.at.z)));
     }
 
     // Both banks of a bridge join its deck as villagers walk (QcVillagerRoads, decision E-411): the
@@ -281,14 +304,42 @@ private:
         }
     }
 
-    // Every deck of the plan's bridges lies over a river, and every post under one reaches down to a
-    // solid bed (not ice).
+    // A plaza's ring closes (a ring arm is laid only in full): an arm of four runs that each turn a
+    // quarter clockwise, whose last run ends on the line of its first, ends at its start. A corner
+    // of the ring on a bridge leaves the plaza out instead of moving the corner.
+    static void checkRingsClose(const QcVillagePlan &plan)
+    {
+        QMap<int, QList<QcVillagePlan::Run>> arms;
+        for (const QcVillagePlan::Run &run : plan.runs) {
+            arms[run.arm].append(run);
+        }
+        for (const QList<QcVillagePlan::Run> &runs : std::as_const(arms)) {
+            const bool square = runs.size() == 4 && std::ranges::all_of(runs, [](const QcVillagePlan::Run &run) {
+                return (run.dx == 0) != (run.dz == 0);
+            });
+            bool clockwise = square;
+            for (qsizetype i = 1; clockwise && i < runs.size(); ++i) {
+                clockwise = runs[i].dx == -runs[i - 1].dz && runs[i].dz == runs[i - 1].dx;
+            }
+            if (!clockwise) {
+                continue;
+            }
+            const QcVillagePlan::Run &first = runs.front();
+            const QcVillagePlan::Run &last = runs.back();
+            const int endX = last.x + last.dx * last.length;
+            const int endZ = last.z + last.dz * last.length;
+            const bool onFirstLine = first.dx != 0 ? endZ == first.z : endX == first.x;
+            if (onFirstLine && std::abs(endX - first.x) + std::abs(endZ - first.z) <= 24) {
+                QVERIFY2(endX == first.x && endZ == first.z,
+                         qPrintable(u"ring from %1 %2 ends at %3 %4"_s.arg(first.x).arg(first.z).arg(endX).arg(endZ)));
+            }
+        }
+    }
+
+    // Every post under a deck of the plan's bridges reaches down to a solid bed (not ice).
     void checkPosts(const QcTerrainGenerator &generator, const QcVillagePlan &plan) const
     {
         for (const QcVillagePlan::Deck &deck : plan.bridges) {
-            const QcTerrainColumn column = generator.column(deck.at.x, deck.at.z);
-            QVERIFY2(generator.isRiverBiome(column.biome),
-                     qPrintable(u"deck over %1 at %2 %3"_s.arg(generator.biomeName(column.biome)).arg(deck.at.x).arg(deck.at.z)));
             if (deck.post == qcAirBlockId) {
                 continue;
             }
@@ -397,7 +448,11 @@ private slots:
     void villageRoadsCrossRiversOnBridges()
     {
         int bridges = 0;
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), m_randomSeed}) {
+        // 1059853484: a diagonal bridge with low dry bank beside its deck; 555555 and 888888888: roads
+        // that turned on a bridge (no longer: bridges run straight); 298323796: failed on the old check;
+        // 20261017: a bridge over a river and the low water beside it in another biome.
+        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1059853484), qint64(555555), qint64(888888888),
+                                  qint64(298323796), qint64(20261017), m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             QSet<qint64> seen;
             // Villages lie a region (384 blocks, 24 chunks) apart: every sixth chunk finds each.
@@ -409,14 +464,21 @@ private slots:
                     }
                     seen.insert(plan->id);
                     checkPosts(generator, *plan);
-                    const std::optional<Bridge> bridge = bridgeOf(generator, *plan);
-                    if (!bridge) {
-                        continue;
+                    checkRingsClose(*plan);
+                    if (QTest::currentTestFailed()) {
+                        return;
                     }
-                    qInfo("seed %lld: village at %d %d (%s) crosses a river at %d %d", seed, plan->centre.x, plan->centre.z,
-                          qPrintable(plan->style), bridge->at.x, bridge->at.z);
-                    ++bridges;
-                    checkBanksJoined(*plan, *bridge);
+                    const QList<Bridge> crossings = bridgesOf(generator, *plan);
+                    for (const Bridge &bridge : std::as_const(crossings)) {
+                        qInfo("seed %lld: village at %d %d (%s) crosses a river at %d %d", seed, plan->centre.x, plan->centre.z,
+                              qPrintable(plan->style), bridge.at.x, bridge.at.z);
+                        ++bridges;
+                        checkCrossing(generator, *plan, bridge);
+                        checkBanksJoined(*plan, bridge);
+                        if (QTest::currentTestFailed()) {
+                            return;
+                        }
+                    }
                 }
             }
         }
@@ -451,17 +513,25 @@ private slots:
     // and are rarer in dry land.
     void shareAndOutlets()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1034578912), m_randomSeed}) {
+        // The dry and humid land and river columns of all seeds together.
+        Window climates;
+        // 1448947576: its window's dry land lies almost all at a humidity of 0.12 to 0.15, where rivers
+        // are narrower but not rarer; its own dry share equalled the humid one.
+        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1034578912), qint64(1448947576), m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const Window window = survey(generator, 1536, 2);
+            climates.dryLand += window.dryLand;
+            climates.dryRiver += window.dryRiver;
+            climates.humidLand += window.humidLand;
+            climates.humidRiver += window.humidRiver;
             const Outlets outlets = outletsOf(window);
             const double share = double(window.river) / double(window.land);
             const double closed = double(outlets.closed) / double(outlets.joined + outlets.leaving + outlets.closed);
             const double dry = double(window.dryRiver) / double(std::max<qint64>(1, window.dryLand));
             const double humid = double(window.humidRiver) / double(std::max<qint64>(1, window.humidLand));
-            qInfo("seed %lld: rivers %.4f of the land (dry %.4f, humid %.4f); river columns into other water %lld, out of the window "
-                  "%lld, closed %lld (%.3f)",
-                  seed, share, dry, humid, outlets.joined, outlets.leaving, outlets.closed, closed);
+            qInfo("seed %lld: rivers %.4f of the land (dry %.4f of %lld, humid %.4f of %lld); river columns into other water %lld, "
+                  "out of the window %lld, closed %lld (%.3f)",
+                  seed, share, dry, window.dryLand, humid, window.humidLand, outlets.joined, outlets.leaving, outlets.closed, closed);
             QVERIFY2(share > 0.012 && share < 0.04, qPrintable(QString::number(share)));
             // Closed: pieces ending in deserts at both ends and what is left of the fading rings of the
             // noise's zero line round a small hill (0.5 %, 0.3 %, 2.8 %, 4.4 %; 0.5–6.7 % on five more
@@ -469,8 +539,18 @@ private slots:
             // 1034578912 (random, decision E-846) showed 14 % while the flood joined only the four
             // sides: narrow rivers in gorges broke into pieces diagonally.
             QVERIFY2(closed < 0.08, qPrintable(QString::number(closed)));
-            QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
+            // Deserts have no rivers (decision E-840): under a humidity of 0.05 the river field has
+            // no strength.
+            QVERIFY2(window.desertRiver == 0, qPrintable(QString::number(window.desertRiver)));
         }
+        // Fewer rivers in dry climates (humidity under 0.15) than in humid ones (over 0.4). Rivers
+        // fade out from a humidity of 0.22 down to 0.05, so the share of one window depends on how
+        // its dry land spreads over that range (1 to 21 % of the humid share on 9 seeds, but 99 %
+        // for 1448947576), so the seeds count together.
+        const double dry = double(climates.dryRiver) / double(std::max<qint64>(1, climates.dryLand));
+        const double humid = double(climates.humidRiver) / double(std::max<qint64>(1, climates.humidLand));
+        qInfo("all seeds: dry %.4f of %lld, humid %.4f of %lld", dry, climates.dryLand, humid, climates.humidLand);
+        QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
     }
 };
 
