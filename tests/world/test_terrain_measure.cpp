@@ -20,6 +20,19 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
 
+    static quint64 chunkSum(const QcChunk &chunk)
+    {
+        quint64 sum = 14695981039346656037ULL;
+        for (int y = 0; y < QcWorld::worldHeight; ++y) {
+            for (int z = 0; z < QcWorld::chunkSize; ++z) {
+                for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                    sum = (sum ^ chunk.block(x, y, z)) * 1099511628211ULL;
+                }
+            }
+        }
+        return sum;
+    }
+
     // Milliseconds per chunk over a square of `edge` chunks from `corner`, the fastest of `runs`,
     // each with a new generator (nothing remembered from the run before).
     double perChunk(qint64 seed, QcChunkPos corner, int edge, int runs) const
@@ -67,6 +80,25 @@ private:
     }
 
 private slots:
+    // A checksum of the blocks of a few fields of chunks: variants of the generator that should make
+    // the same world (an optimisation) print the same value.
+    void checksum()
+    {
+        const int edge = full() ? 12 : 2;
+        quint64 sum = 0;
+        for (const qint64 seed : {qint64(1), qint64(7), qint64(42), qint64(1234)}) {
+            const QcTerrainGenerator generator(m_content, seed);
+            for (int dz = 0; dz < edge; ++dz) {
+                for (int dx = 0; dx < edge; ++dx) {
+                    const std::shared_ptr<QcChunk> chunk = generator.generate({dx - edge / 2, dz - edge / 2});
+                    sum = sum * 1099511628211ULL + chunkSum(*chunk);
+                }
+            }
+        }
+        qInfo("TERRAIN checksum %016llx", sum);
+        QVERIFY(sum != 0);
+    }
+
     void chunksAndColumns()
     {
         const int edge = full() ? 24 : 2;

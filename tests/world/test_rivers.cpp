@@ -416,7 +416,8 @@ private slots:
         }
     }
 
-    // Rivers in cold land are frozen: the frozen river biome with ice on top.
+    // Rivers in cold land freeze: in the frozen river biome the top water layer is the block the
+    // temperature asks for (ice in the cold part, decision E-858), and some of it is ice.
     void coldRiversFreeze()
     {
         int frozen = 0;
@@ -432,8 +433,14 @@ private slots:
                 if (generator.villageFor(pos.chunk())) {
                     continue;
                 }
+                // Rivers freeze by the temperature of the column (decision E-858), in the cold part of the
+                // cold biomes.
                 const QcBlockId top = generator.generate(pos.chunk())->block(pos.localX(), pos.y, pos.localZ());
-                QVERIFY2(top == id(u"qtcraft:ice"_s), qPrintable(u"%1 at %2 %3, seed %4"_s.arg(m_content->block(top).name).arg(x).arg(z).arg(seed)));
+                const QcBlockId expected = generator.frozenWaterAt(x, z, generator.column(x, z));
+                QVERIFY2(top == expected, qPrintable(u"%1 at %2 %3, seed %4"_s.arg(m_content->block(top).name).arg(x).arg(z).arg(seed)));
+                if (top != id(u"qtcraft:ice"_s)) {
+                    continue;
+                }
                 if (frozen++ == 0) {
                     qInfo("seed %lld: frozen river at %d %d", seed, x, z);
                 }
@@ -451,8 +458,9 @@ private slots:
         // 1059853484: a diagonal bridge with low dry bank beside its deck; 555555 and 888888888: roads
         // that turned on a bridge (no longer: bridges run straight); 298323796: failed on the old check;
         // 20261017: a bridge over a river and the low water beside it in another biome.
+        // 782953143 and 614800303: failed on earlier bridge placements.
         for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1059853484), qint64(555555), qint64(888888888),
-                                  qint64(298323796), qint64(20261017), m_randomSeed}) {
+                                  qint64(298323796), qint64(20261017), qint64(782953143), qint64(614800303), m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             QSet<qint64> seen;
             // Villages lie a region (384 blocks, 24 chunks) apart: every sixth chunk finds each.

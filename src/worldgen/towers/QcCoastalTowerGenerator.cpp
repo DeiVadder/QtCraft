@@ -2,12 +2,11 @@
 
 #include "worldgen/terrain/QcNoise.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace {
 
-// Regions whose plans are kept at most; beyond, the cache starts over.
-constexpr qsizetype cacheCapacity = 1024;
 // Blocks cleared above the structure's top layer (tree tops over the roof).
 constexpr int clearAbove = 4;
 // Cells above the floor kept open in front of the door.
@@ -31,21 +30,75 @@ QcCoastalTowerGenerator::QcCoastalTowerGenerator(const QcTerrainGenerator &terra
     }
 }
 
+namespace {
+
+qint64 squared(int value)
+{
+    return qint64(value) * value;
+}
+
+qint64 regionKey(int regionX, int regionZ)
+{
+    return (qint64(regionX) << 32) ^ qint64(quint32(regionZ));
+}
+
+} // namespace
+
+std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerGenerator::plannedOf(int regionX, int regionZ) const
+{
+    return m_planned.get(regionKey(regionX, regionZ), [&] { return m_planner.plan(regionX, regionZ); });
+}
+
 std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerGenerator::planOf(int regionX, int regionZ) const
 {
-    const qint64 key = (qint64(regionX) << 32) ^ qint64(quint32(regionZ));
-    {
-        const QMutexLocker lock(&m_mutex);
-        if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
-            return *it;
+    return m_plans.get(regionKey(regionX, regionZ), [&]() -> std::shared_ptr<const QcCoastalTowerPlan> {
+        const std::shared_ptr<const QcCoastalTowerPlan> plan = plannedOf(regionX, regionZ);
+        return plan && crowded(*plan) ? nullptr : plan;
+    });
+}
+
+bool QcCoastalTowerGenerator::crowded(const QcCoastalTowerPlan &plan) const
+{
+    // Towers lie inside their regions, and a region is at least as wide as the distance: only the
+    // eight neighbours can come closer. Their plans before the spacing decide, so no region waits
+    // on another's spacing and the rule is the same from every side.
+    const int minDistance = m_planner.settings().minDistance;
+    if (minDistance <= 0) {
+        return false;
+    }
+    const auto centre = [](const QcCoastalTowerPlan &tower) {
+        const QcCoastalTowerPlan::Footprint footprint = tower.footprint();
+        return std::pair{footprint.minX + footprint.maxX, footprint.minZ + footprint.maxZ};
+    };
+    const auto [x, z] = centre(plan);
+    const double own = m_planner.priority(plan.regionX, plan.regionZ);
+    for (int dz = -1; dz <= 1; ++dz) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            const int regionX = plan.regionX + dx;
+            const int regionZ = plan.regionZ + dz;
+            // Only a neighbour of higher priority whose region comes near the tower can crowd it:
+            // the others are never planned for this.
+            // Squared distances in doubled coordinates, compared with the doubled distance squared.
+            const qint64 limit = 4 * qint64(minDistance) * minDistance;
+            if ((dx == 0 && dz == 0) || m_planner.priority(regionX, regionZ) <= own || regionDistanceSquared(regionX, regionZ, x, z) >= limit) {
+                continue;
+            }
+            const std::shared_ptr<const QcCoastalTowerPlan> other = plannedOf(regionX, regionZ);
+            if (other && squared(centre(*other).first - x) + squared(centre(*other).second - z) < limit) {
+                return true;
+            }
         }
     }
-    const std::shared_ptr<const QcCoastalTowerPlan> plan = m_planner.plan(regionX, regionZ);
-    const QMutexLocker lock(&m_mutex);
-    if (m_plans.size() >= cacheCapacity) {
-        m_plans.clear();
-    }
-    return *m_plans.insert(key, plan);
+    return false;
+}
+
+qint64 QcCoastalTowerGenerator::regionDistanceSquared(int regionX, int regionZ, int doubledX, int doubledZ) const
+{
+    // The region's columns in doubled coordinates.
+    const int size = m_planner.settings().regionSize;
+    const int nearestX = std::clamp(doubledX, 2 * regionX * size, 2 * (regionX * size + size - 1));
+    const int nearestZ = std::clamp(doubledZ, 2 * regionZ * size, 2 * (regionZ * size + size - 1));
+    return squared(nearestX - doubledX) + squared(nearestZ - doubledZ);
 }
 
 QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::plansTouching(QcChunkPos pos) const

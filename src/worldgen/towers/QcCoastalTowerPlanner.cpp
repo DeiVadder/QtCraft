@@ -22,6 +22,7 @@ enum Purpose : int {
     KindPick,
     Order,
     Turn,
+    Priority,
 };
 
 // Layers of ground under a footprint's columns that must not be cave.
@@ -68,6 +69,11 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
 double QcCoastalTowerPlanner::random(int regionX, int regionZ, int purpose, int index) const
 {
     return qcPositionRandom(qcMixSeed(m_seed, quint64(purpose)), regionX, index, regionZ);
+}
+
+double QcCoastalTowerPlanner::priority(int regionX, int regionZ) const
+{
+    return random(regionX, regionZ, Priority);
 }
 
 const QcCoastalTowerPlanner::Kind &QcCoastalTowerPlanner::pick(double random) const

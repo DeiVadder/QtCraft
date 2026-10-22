@@ -7,6 +7,7 @@
 #include <QTest>
 
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 
@@ -375,19 +376,24 @@ private slots:
 
     // Towers and surface structures (desert temples, ruins, wells, oases, jungle temples, witch huts)
     // never stand within the towers' clearance of each other (decision E-605), over a wide area of
-    // several seeds: every tower against every copy of every kind planned around it.
+    // several seeds: every tower against every copy of every kind planned around it. Towers keep
+    // `minDistance` (300 blocks) from each other and come at about one per 10 km² of the world
+    // (decision E-857); fixed seeds plus one random seed per run (decision E-846).
     void towersKeepClearOfSurfaceStructures()
     {
-        constexpr int towerRegions = 12;
-        const int size = m_content->worldgen().terrainSettings().coastalTowers.regionSize;
-        const int clearance = m_content->worldgen().terrainSettings().coastalTowers.clearance;
+        constexpr int towerRegions = 5;
+        const QcCoastalTowerSettings &settings = m_content->worldgen().terrainSettings().coastalTowers;
+        const int size = settings.regionSize;
+        const int clearance = settings.clearance;
         const int reach = (towerRegions + 1) * size;
         qsizetype towers = 0;
         qsizetype near = 0;
+        double nearest = 1.0e9;
         QHash<QString, qsizetype> copies;
-        for (const qint64 each : {seed, qint64(51), qint64(7)}) {
+        for (const qint64 each : {seed, qint64(51), qint64(7), QcTestUtil::randomSeed()}) {
             const QcTerrainGenerator terrain(m_content, each);
             const QList<QcCoastalTowerPlan::Footprint> structures = surfaceFootprints(terrain, reach, copies);
+            QList<std::pair<int, int>> centres;
             for (int rz = -towerRegions; rz <= towerRegions; ++rz) {
                 for (int rx = -towerRegions; rx <= towerRegions; ++rx) {
                     const std::shared_ptr<const QcCoastalTowerPlan> tower = terrain.coastalTowers().planOf(rx, rz);
@@ -395,6 +401,12 @@ private slots:
                         continue;
                     }
                     ++towers;
+                    const QcCoastalTowerPlan::Footprint footprint = tower->footprint();
+                    const std::pair centre{footprint.minX + footprint.maxX, footprint.minZ + footprint.maxZ};
+                    for (const auto &[x, z] : std::as_const(centres)) {
+                        nearest = std::min(nearest, std::hypot(x - centre.first, z - centre.second) / 2.0);
+                    }
+                    centres.append(centre);
                     const QcCoastalTowerPlan::Footprint around = tower->footprint().grown(clearance);
                     for (const QcCoastalTowerPlan::Footprint &structure : std::as_const(structures)) {
                         QVERIFY2(!around.touches(structure), qPrintable(u"seed %1 tower at %2 %3"_s.arg(each).arg(around.minX).arg(around.minZ)));
@@ -403,8 +415,14 @@ private slots:
                 }
             }
         }
-        qInfo().noquote() << u"%1 towers, %2 within 64 blocks of a surface structure"_s.arg(towers).arg(near) << copies;
-        QVERIFY(towers >= 100);
+        const double area = 4.0 * std::pow((2 * towerRegions + 1) * size / 1000.0, 2.0);
+        qInfo().noquote() << u"%1 towers (%2 per km²), nearest two %3 blocks apart, %4 within 64 blocks of a surface structure"_s.arg(towers)
+                                 .arg(double(towers) / area, 0, 'f', 3)
+                                 .arg(nearest, 0, 'f', 0)
+                                 .arg(near)
+                          << copies;
+        QVERIFY2(nearest >= settings.minDistance, qPrintable(QString::number(nearest)));
+        QVERIFY(towers >= 40);
         // Some towers stand close to a surface structure, so the clearance is put to the test.
         QVERIFY(near > 0);
         for (const QString &kind : {u"qtcraft:desert_temple"_s, u"qtcraft:jungle_temple"_s, u"qtcraft:witch_hut"_s, u"qtcraft:oasis"_s,

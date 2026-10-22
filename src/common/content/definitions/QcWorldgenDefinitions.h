@@ -143,8 +143,15 @@ struct QcFeatureDefinition
     double chance = 0.0;
     int radius = 3;
     int depth = 2;
-    // Pools on the surface of dry land instead of cave floors (lava lakes); minY/maxY do not apply.
+    // Pools on the surface of dry land instead of cave floors (lava lakes, decision E-856); minY/maxY
+    // do not apply. A surface pool is a lake: one per square of `region` chunks at most, `attempts`
+    // chunks of the square tried in turn and the first fitting site taken, with `chance` per square;
+    // the tried chunks keep `spacing` chunks from the next square's. `radius` is the basin's reach
+    // from its centre, `depth` the liquid's; liquid next to air or soil turns the soil to `rim`.
     bool surface = false;
+    int region = 1;
+    int spacing = 0;
+    QString rimBlock;
     // Biomes a pool may lie in; empty for all.
     QList<QString> biomes;
 };
@@ -161,6 +168,25 @@ struct QcOreDefinition
     // Biomes a vein may lie in (the biome of the column where it starts); empty for all (decision
     // E-453: infested stone only in the mountains).
     QList<QString> biomes;
+};
+
+// Soft edges of cold biomes (decision E-858): the top water layer freezes by the temperature of its
+// column with a noise instead of by biome, rivers only further into the cold, and the ground blocks
+// of a column come from the biome a few blocks away in a jittered direction, so they mix over the
+// border. Without `freezing` in terrain.json the biomes' `frozenWater` freezes all their water.
+struct QcColdEdgeSettings
+{
+    // The block still water freezes to where its biome names none; empty: freezing by biome.
+    QString iceBlock;
+    // Still water (lakes, sea) freezes below this temperature, river water below `riverTemperature`.
+    double temperature = 0.0;
+    double riverTemperature = 0.0;
+    // Amplitude of the noise added to the temperature: the ice's edge frays by about this much.
+    double ragged = 0.0;
+    // Columns take their ground blocks from the biome up to this many blocks away; 0: their own.
+    int groundBlend = 0;
+
+    static constexpr int maxGroundBlend = 8;
 };
 
 struct QcTerrainSettings
@@ -198,4 +224,6 @@ struct QcTerrainSettings
     QcMineshaftSettings mineshafts;
     // Towers on the coasts with a trapped chest at the top (decision E-605).
     QcCoastalTowerSettings coastalTowers;
+    // Freezing by temperature and mixed ground at biome borders (decision E-858).
+    QcColdEdgeSettings coldEdges;
 };

@@ -19,6 +19,10 @@ struct QcCoastalTowerSettings
     bool enabled = false;
     int regionSize = 160;
     double chance = 0.6;
+    // Towers of neighbouring regions stand at least this many blocks apart (centre to centre); of
+    // two that would come closer, the one of the region with the lower priority is left out
+    // (decision E-857). 0: no limit.
+    int minDistance = 0;
     // Sites checked fully per region (land near the sea found on a grid of `gridStep` blocks).
     int attempts = 16;
     int gridStep = 6;

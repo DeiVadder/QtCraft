@@ -2686,6 +2686,24 @@ Unter der 10-%-Schwelle. Die Phase Pflanzen wächst um 0,0025 ms: an den Ufern d
 
 Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suche ohne Schranke und ohne Merken 0,741 ms (+17 %), mit der Schranke `reach` 0,712 ms (+12,3 %). Unter der 10-%-Schwelle erst mit dem Merken je Startzelle.
 
+## Etappe 79 (Weltgen-Dichte), headless, Release (2026-10-22)
+
+**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; `dev` `6496e2e` in einem eigenen Worktree gegen `feature/79-worldgen-density` (mit `dev` `92213c0` zusammengeführt, Inhalt ohne Weltgen-Änderung); drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 2,8):
+
+| Wert | dev | 79 |
+|---|---:|---:|
+| ms je Chunk | 0,889 / 0,890 / 0,891 | 1,082 / 1,091 / 1,080 (+21,8 %) |
+| µs je Spalte (`column`) | 0,470 / 0,470 / 0,472 | 0,681 / 0,681 / 0,684 (+44,9 %) |
+
+Über der 10-%-Schwelle; danach optimiert (unten). Grund laut Abtastung (`sample` auf dem Messprogramm): `groundBiomeOf` nahm rund 35 % von `column()` (zweite Klima-Auswertung nahe Grenzen, die 5-%-Schranke lässt bei der vierten Potenz viele Spalten durch), und die Abstandsregel der Küstentürme plante für jede Region alle acht Nachbarregionen (Messfelder mit neuem Generator zahlen das voll).
+
+**Nach der Optimierung** (Boden-Biom aus dem Spalten-Raster des Chunks statt einer Klima-Auswertung in `column()`; Abstandsregel plant nur Nachbarn mit höherer Priorität, deren Region dem Turm näher als der Abstand kommt; gleiche Welt: Prüfsumme `TERRAIN checksum` vor und nach gleich). `dev` `c8f5d54` in einem neuen Worktree gegen den Branch, drei Runden abwechselnd, einmal exklusiv (`--kind bench`), Lastmittel am Ende 2,2:
+
+| Wert | dev | 79 |
+|---|---:|---:|
+| ms je Chunk | 0,862 / 0,869 / 0,869 | 0,909 / 0,903 / 0,901 (+4,3 %) |
+| µs je Spalte (`column`) | 0,456 / 0,458 / 0,458 | 0,467 / 0,463 / 0,463 (+1,5 %) |
+
 ## Paket 73.2 (Monster-Listen der Biome), headless, Release (2026-10-22)
 
 `scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `cb47ae7` (eigener Worktree), `new` = Branch `feature/73-2-biomes` (E-838); Median je Szenario.

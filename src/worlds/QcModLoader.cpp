@@ -268,7 +268,9 @@ QString worldgenProblem(const QcContentRegistry &content)
 
     qint64 poolAttempts = 0;
     for (const QcFeatureDefinition &feature : content.worldgen().features()) {
-        poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? feature.attempts : 0;
+        // A surface lake tries its sites once per square of region × region chunks (decision E-856).
+        const qint64 chunks = feature.surface ? qint64(feature.region) * feature.region : 1;
+        poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? (feature.attempts + chunks - 1) / chunks : 0;
     }
     if (poolAttempts > maxPoolAttemptsPerChunk) {
         return u"too many pools (at most %1 pool attempts per chunk)"_s.arg(maxPoolAttemptsPerChunk);

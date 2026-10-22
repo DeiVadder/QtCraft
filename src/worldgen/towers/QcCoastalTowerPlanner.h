@@ -34,8 +34,12 @@ public:
     bool enabled() const { return m_enabled; }
     const QcCoastalTowerSettings &settings() const { return m_settings; }
     QcBlockId foundation() const { return m_foundation; }
-    // The region's tower; null without one.
+    // The region's tower before the spacing to the neighbouring regions' (QcCoastalTowerGenerator
+    // applies `minDistance`); null without one.
     [[nodiscard]] std::shared_ptr<const QcCoastalTowerPlan> plan(int regionX, int regionZ) const;
+    // The region's rank when two towers come closer than `minDistance` (decision E-857): the one of
+    // the region with the higher priority stays.
+    [[nodiscard]] double priority(int regionX, int regionZ) const;
     // Whether the column belongs to the open sea: land factor below one half, the ground at least
     // `oceanDepth` blocks below the water's surface.
     bool isOcean(int x, int z) const;

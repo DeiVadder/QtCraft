@@ -16,6 +16,8 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int maxPoolAttempts = 8;
+// Largest square of chunks a surface lake is planned in (decision E-856).
+constexpr int maxLakeRegion = 64;
 
 // Reads one feature: owns the definition being built and the reader of its JSON object.
 class FeatureReader
@@ -49,6 +51,11 @@ void FeatureReader::readPool()
     m_feature.radius = m_reader.integer(u"radius"_s, m_feature.radius, 1, 6);
     m_feature.depth = m_reader.integer(u"depth"_s, m_feature.depth, 1, 4);
     m_feature.surface = m_reader.boolean(u"surface"_s, false);
+    if (m_feature.surface) {
+        m_feature.region = m_reader.integer(u"region"_s, m_feature.region, 1, maxLakeRegion);
+        m_feature.spacing = m_reader.integer(u"spacing"_s, m_feature.spacing, 0, m_feature.region - 1);
+        m_feature.rimBlock = m_reader.name(u"rim"_s, m_namespace);
+    }
 
     const QJsonValue biomes = m_json.value(u"biomes"_s);
     if (!biomes.isUndefined() && (!biomes.isArray() || biomes.toArray().size() > 64)) {
@@ -479,6 +486,17 @@ QcMineshaftSettings MineshaftReader::read()
     reader.nestedObject(u"mineshafts"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.mineshafts = MineshaftReader(object, nested, packNamespace).read();
     });
+    reader.nestedObject(u"freezing"_s, [&settings, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
+        QcColdEdgeSettings &edges = settings.coldEdges;
+        edges.iceBlock = nested.name(u"block"_s, packNamespace);
+        edges.temperature = nested.number(u"temperature"_s, edges.temperature, 0.0, 1.0);
+        edges.riverTemperature = nested.number(u"riverTemperature"_s, edges.riverTemperature, 0.0, 1.0);
+        edges.ragged = nested.number(u"ragged"_s, edges.ragged, 0.0, 0.5);
+        if (nested.ok() && edges.iceBlock.isEmpty()) {
+            nested.fail(u"'block' is required"_s);
+        }
+    });
+    settings.coldEdges.groundBlend = reader.integer(u"groundBlend"_s, 0, 0, QcColdEdgeSettings::maxGroundBlend);
     reader.nestedObject(u"coastalTowers"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.coastalTowers = QcCoastalTowerParser::parseCoastalTowers(object, nested, packNamespace);
     });

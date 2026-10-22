@@ -4,6 +4,7 @@
 
 #include <QByteArray>
 #include <QCoreApplication>
+#include <QRandomGenerator>
 #include <QTest>
 #include <QtLogging>
 
@@ -49,6 +50,17 @@ inline std::shared_ptr<QcContentRegistry> loadContent()
         qFatal("The base content has warnings: %s", qPrintable(content->warnings.join(u'\n')));
     }
     return std::move(content->registry);
+}
+
+// The random seed of a world generation test's run besides its fixed ones (decision E-846): the
+// value of QC_TEST_SEED if set, else drawn; written to the log either way, so a red run repeats.
+inline qint64 randomSeed()
+{
+    bool ok = false;
+    const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
+    const qint64 seed = ok ? fixed : qint64(QRandomGenerator::global()->generate() & 0x7fffffff);
+    qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
+    return seed;
 }
 
 // Fails the running test case from a helper that has to hand back a value at once, such as a

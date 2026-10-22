@@ -95478,6 +95478,12 @@
                             "note": "",
                             "target": "block:qtcraft:lava",
                             "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stein"
                         }
                     ],
                     "value": ""
@@ -95486,7 +95492,7 @@
                     "label": "Häufigkeit",
                     "links": [
                     ],
-                    "value": "1 Versuche pro Chunk, je 3 %"
+                    "value": "höchstens einer je 6 × 6 Chunks, Chance 100 %; 8 Stellen versucht"
                 },
                 {
                     "label": "Größe",
@@ -95536,7 +95542,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "In jedem Chunk dieser Biome versucht.",
+                    "text": "Je Quadrat aus Chunks geplant, wo die Mittelspalte in einem dieser Biome liegt.",
                     "title": "In Biomen"
                 }
             ],

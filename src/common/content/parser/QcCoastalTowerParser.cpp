@@ -39,6 +39,7 @@ QcCoastalTowerSettings parseCoastalTowers(const QJsonObject &json, QcJsonFieldRe
     towers.enabled = reader.boolean(u"enabled"_s, true);
     towers.regionSize = reader.integer(u"regionSize"_s, towers.regionSize, 48, Settings::maxRegionSize);
     towers.chance = reader.number(u"chance"_s, towers.chance, 0.0, 1.0);
+    towers.minDistance = reader.integer(u"minDistance"_s, towers.minDistance, 0, towers.regionSize);
     towers.attempts = reader.integer(u"attempts"_s, towers.attempts, 1, 64);
     towers.gridStep = reader.integer(u"gridStep"_s, towers.gridStep, 2, 32);
     towers.maxRise = reader.integer(u"maxRise"_s, towers.maxRise, 0, 32);

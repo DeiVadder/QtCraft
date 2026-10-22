@@ -257,13 +257,13 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 |---|---|
 | ID | `qtcraft:lava_lake` |
 | Art | See an der Oberfläche von trockenem Land |
-| Blöcke | [Lava](liquids.md#block-qtcraft-lava) |
-| Häufigkeit | 1 Versuche pro Chunk, je 3 % |
+| Blöcke | [Lava](liquids.md#block-qtcraft-lava), [Stein](blocks.md#block-qtcraft-stone) |
+| Häufigkeit | höchstens einer je 6 × 6 Chunks, Chance 100 %; 8 Stellen versucht |
 | Größe | Radius bis 5, 3 tief |
 
 **In Biomen**
 
-In jedem Chunk dieser Biome versucht.
+Je Quadrat aus Chunks geplant, wo die Mittelspalte in einem dieser Biome liegt.
 
 [Ebene](biomes.md#biome-qtcraft-plains), [Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Waldsteppe](biomes.md#biome-qtcraft-forest_steppe), [Wüste](biomes.md#biome-qtcraft-desert)
 

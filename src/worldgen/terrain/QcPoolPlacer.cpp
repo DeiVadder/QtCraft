@@ -1,7 +1,6 @@
 #include "worldgen/terrain/QcPoolPlacer.h"
 
-#include "worldgen/terrain/QcTerrainColumnGrid.h"
-#include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/terrain/QcNoise.h"
 
 #include <algorithm>
 #include <cmath>
@@ -23,7 +22,6 @@ QcBlockPos cellPos(int cell)
 QcPoolPlacer::QcPoolPlacer(std::shared_ptr<const QcContentRegistry> content, const QcTerrainDefinitions &definitions)
     : m_content(std::move(content))
     , m_pools(definitions.pools)
-    , m_seaLevel(definitions.seaLevel)
     , m_bedrock(definitions.bedrock)
 {
 }
@@ -69,34 +67,10 @@ void QcPoolPlacer::placeInCaves(QcChunk &chunk) const
     }
 }
 
-void QcPoolPlacer::placeOnSurface(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QcTerrainGenerator &terrain) const
-{
-    const QcChunkPos pos = chunk.pos();
-    for (const Pool &pool : m_pools) {
-        for (int attempt = 0; attempt < pool.attempts && pool.surface; ++attempt) {
-            const auto random = [&](int salt) { return qcPositionRandom(pool.seed, pos.x, attempt * 8 + salt, pos.z); };
-            if (random(0) >= pool.chance) {
-                continue;
-            }
-
-            // Away from the chunk's edge, on dry ground of an allowed biome under open sky.
-            const int x = 2 + int(random(1) * (QcWorld::chunkSize - 4));
-            const int z = 2 + int(random(2) * (QcWorld::chunkSize - 4));
-            const QcTerrainColumn &column = columns.at(pos.x * QcWorld::chunkSize + x, pos.z * QcWorld::chunkSize + z);
-            const int top = terrain.groundTop(pos.x * QcWorld::chunkSize + x, pos.z * QcWorld::chunkSize + z, column);
-            if (top < m_seaLevel || top + 1 >= QcWorld::worldHeight || (!pool.biomes.isEmpty() && !pool.biomes.contains(column.biome))
-                || !holdsLiquid(chunk.block(x, top, z)) || m_content->block(chunk.block(x, top + 1, z)).solid) {
-                continue;
-            }
-            sink(chunk, pool, {x, top + 1, z}, attempt);
-        }
-    }
-}
-
 void QcPoolPlacer::sink(QcChunk &chunk, const Pool &pool, QcBlockPos floor, int attempt) const
 {
     const QSet<int> cells = contained(chunk, bowl(chunk, pool, floor, attempt));
-    if (!opensUpwards(chunk, pool, cells)) {
+    if (!opensUpwards(chunk, cells)) {
         return;
     }
     fill(chunk, pool, cells, floor.y);
@@ -137,9 +111,7 @@ bool QcPoolPlacer::inBowl(const QcChunk &chunk, const Pool &pool, const BowlLaye
     const auto [centreX, y, centreZ] = layer.centre;
     const double distance = std::hypot(x - centreX, z - centreZ) + 0.8 * qcPositionRandom(pool.seed, baseX + x, y, baseZ + z);
     const QcBlockId block = chunk.block(x, y, z);
-    // On the surface only ground is dug out, and the top layer only under open sky.
-    const bool fits = pool.surface ? holdsLiquid(block) && (layer.layer > 0 || !m_content->block(chunk.block(x, y + 1, z)).solid)
-                                   : block == qcAirBlockId || holdsLiquid(block);
+    const bool fits = block == qcAirBlockId || holdsLiquid(block);
     return distance <= layer.radius + 0.4 && block != m_bedrock && fits;
 }
 
@@ -164,13 +136,11 @@ QSet<int> QcPoolPlacer::contained(const QcChunk &chunk, QSet<int> cells) const
     return cells;
 }
 
-bool QcPoolPlacer::opensUpwards(const QcChunk &chunk, const Pool &pool, const QSet<int> &cells) const
+bool QcPoolPlacer::opensUpwards(const QcChunk &chunk, const QSet<int> &cells) const
 {
     return std::ranges::any_of(cells, [&](int cell) {
         const auto [x, y, z] = cellPos(cell);
-        const QcBlockId above = chunk.block(x, y + 1, z);
-        return (above == qcAirBlockId || (pool.surface && !m_content->block(above).solid && !isLiquid(above)))
-               && !cells.contains(cellKey(x, y + 1, z));
+        return chunk.block(x, y + 1, z) == qcAirBlockId && !cells.contains(cellKey(x, y + 1, z));
     });
 }
 
@@ -179,15 +149,6 @@ void QcPoolPlacer::fill(QcChunk &chunk, const Pool &pool, const QSet<int> &cells
     for (const int cell : cells) {
         const auto [x, y, z] = cellPos(cell);
         chunk.setBlock(x, y, z, pool.liquid);
-        if (pool.surface) {
-            // Plants on the dug-out ground go; nothing else stands there.
-            const QcBlockId above = chunk.block(x, y + 1, z);
-            if (!cells.contains(cellKey(x, y + 1, z)) && above != qcAirBlockId && !m_content->block(above).solid && !isLiquid(above)) {
-                chunk.setBlock(x, y + 1, z, qcAirBlockId);
-            }
-            continue;
-        }
-
         if (y == floorY - 1) {
             hollowAbove(chunk, {x, y, z}, floorY);
         }

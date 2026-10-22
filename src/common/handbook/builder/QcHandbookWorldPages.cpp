@@ -279,7 +279,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     facts.append({text.label(u"fact.featureType"_s), text.label(u"value.feature."_s + kind), {}});
 
     Fact blocks{text.label(u"fact.blocks"_s), {}, {}};
-    for (const QString &block : {feature.trunkBlock, feature.leavesBlock}) {
+    for (const QString &block : {feature.trunkBlock, feature.leavesBlock, feature.rimBlock}) {
         if (!block.isEmpty()) {
             blocks.links.append(context.links.blockLink(block));
         }
@@ -290,8 +290,11 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
         if (!feature.surface) {
             facts.append({text.label(u"fact.heights"_s), text.heightRange(feature.minY, feature.maxY), {}});
         }
-        facts.append({text.label(u"fact.poolChance"_s),
-                      text.label(u"value.pool"_s).arg(feature.attempts).arg(text.percent(feature.chance)), {}});
+        // Lakes on the surface are planned per square of chunks (decision E-856).
+        const QString chance = feature.surface
+                                   ? text.label(u"value.lake"_s).arg(feature.region).arg(feature.attempts).arg(text.percent(feature.chance))
+                                   : text.label(u"value.pool"_s).arg(feature.attempts).arg(text.percent(feature.chance));
+        facts.append({text.label(u"fact.poolChance"_s), chance, {}});
         facts.append({text.label(u"fact.poolSize"_s), text.label(u"value.poolSize"_s).arg(feature.radius).arg(feature.depth), {}});
     } else {
         facts.append({text.label(u"fact.featureHeight"_s),
@@ -334,7 +337,8 @@ Section featureBiomes(const QcHandbookContext &context, const QcFeatureDefinitio
                 placing.addUnique(context.links.biomeLink(biome));
             }
         }
-        biomes.text = feature.biomes.isEmpty() ? text.label(u"value.everyChunk"_s) : text.label(u"value.poolBiomes"_s);
+        const QString inBiomes = feature.surface ? u"value.lakeBiomes"_s : u"value.poolBiomes"_s;
+        biomes.text = feature.biomes.isEmpty() ? text.label(u"value.everyChunk"_s) : text.label(inBiomes);
     }
     biomes.links = placing.sorted();
     return biomes;

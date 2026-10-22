@@ -14,6 +14,13 @@
     "vegetationBiome": "plains",
     "rivers": true,
     "riverBiome": "river",
+    "freezing": {
+        "block": "ice",
+        "temperature": 0.28,
+        "riverTemperature": 0.2,
+        "ragged": 0.03
+    },
+    "groundBlend": 4,
     "dungeons": {
         "regionSize": 48,
         "chance": 0.6,
@@ -99,8 +106,9 @@
         "maxRooms": 2
     },
     "coastalTowers": {
-        "regionSize": 160,
-        "chance": 0.6,
+        "regionSize": 384,
+        "chance": 0.4,
+        "minDistance": 300,
         "attempts": 16,
         "gridStep": 6,
         "maxRise": 5,

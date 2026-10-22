@@ -18,12 +18,17 @@ int regionOf(int block, int spacing)
     return qcFloorDiv(block, spacing);
 }
 
-// The blocks the biomes freeze their water to at the sea level (ice).
+// The blocks the biomes freeze their water to at the sea level (ice), and the terrain's ice where
+// water freezes by temperature (decision E-858).
 QList<QcBlockId> frozenWaterOf(const QcContentRegistry &content)
 {
     QList<QcBlockId> blocks;
+    QStringList names{content.worldgen().terrainSettings().coldEdges.iceBlock};
     for (const QcBiomeDefinition &biome : content.worldgen().biomes()) {
-        const QcBlockId block = content.blockId(biome.frozenWaterBlock).value_or(qcAirBlockId);
+        names.append(biome.frozenWaterBlock);
+    }
+    for (const QString &name : names) {
+        const QcBlockId block = content.blockId(name).value_or(qcAirBlockId);
         if (block != qcAirBlockId && !blocks.contains(block)) {
             blocks.append(block);
         }

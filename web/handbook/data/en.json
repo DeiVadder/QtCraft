@@ -95478,6 +95478,12 @@
                             "note": "",
                             "target": "block:qtcraft:lava",
                             "text": "Lava"
+                        },
+                        {
+                            "icon": "qtcraft:stone",
+                            "note": "",
+                            "target": "block:qtcraft:stone",
+                            "text": "Stone"
                         }
                     ],
                     "value": ""
@@ -95486,7 +95492,7 @@
                     "label": "Chance",
                     "links": [
                     ],
-                    "value": "1 tries per chunk, each 3 %"
+                    "value": "at most one per 6 × 6 chunks, with 100 % chance; 8 sites tried"
                 },
                 {
                     "label": "Size",
@@ -95536,7 +95542,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Tried in every chunk of these biomes.",
+                    "text": "Planned per square of chunks where the middle column lies in one of these biomes.",
                     "title": "In biomes"
                 }
             ],

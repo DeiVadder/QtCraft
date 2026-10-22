@@ -89,8 +89,26 @@ struct QcTerrainDefinitions
         int depth = 2;
         quint64 seed = 0;
         bool surface = false;
+        // Surface lakes (decision E-856): the square of chunks planned together, the chunks kept
+        // free towards the next square, and the block that walls the liquid in.
+        int region = 1;
+        int spacing = 0;
+        QcBlockId rim = qcAirBlockId;
         // Biome indices it may lie in; empty for all.
         QSet<int> biomes;
+    };
+
+    // Freezing by temperature and mixed ground at biome borders (decision E-858).
+    struct ColdEdges
+    {
+        // Without, the biomes' frozenWater freezes all their water.
+        bool byTemperature = false;
+        // The block water freezes to where its biome names none.
+        QcBlockId ice = qcAirBlockId;
+        double temperature = 0.0;
+        double riverTemperature = 0.0;
+        double ragged = 0.0;
+        int groundBlend = 0;
     };
 
     struct Ore
@@ -121,6 +139,7 @@ struct QcTerrainDefinitions
     QList<Feature> features;
     QList<Ore> ores;
     QList<Pool> pools;
+    ColdEdges coldEdges;
     // Highest patch chance of any biome per vegetation layer (cells above it are skipped at once).
     std::array<double, VegetationLayers> maxPatchChance{};
     // Highest chance of any biome that a giant cell holds a giant tree (cells above it are skipped at once).

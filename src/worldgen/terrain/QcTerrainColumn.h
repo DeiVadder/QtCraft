@@ -1,11 +1,24 @@
 #pragma once
 
+#include <QtGlobal>
+
 // Shape and biome of one terrain column, before caves and features.
 struct QcTerrainColumn
 {
     // Height of the terrain surface: the top solid block is at height - 1.
     int height = 0;
     int biome = 0;
+    // Marks a column near a biome border whose ground biome is not looked up yet
+    // (QcTerrainGenerator::withGround() does).
+    static constexpr int unresolvedGround = -2;
+    // The biome whose ground blocks the column takes (decision E-858): near a biome border the one a
+    // few jittered blocks away, so the ground mixes; -1 for `biome` itself, `unresolvedGround` while
+    // not looked up.
+    int groundBiome = -1;
+    // The biome of the climate alone, before a river channel takes its river biome.
+    int landBiome = 0;
+    // The climate's temperature at the column in [0, 1]: the top water layer freezes by it.
+    double temperature = 0.5;
     // 0 = ocean, 1 = land; values in between are coasts.
     double landFactor = 1.0;
     // Largest height difference to the four neighbouring columns; set where it is needed
@@ -21,4 +34,11 @@ struct QcTerrainColumn
     // water there (0 where none runs), as QcTerrainGenerator::riverAt() gives them.
     double riverDistance = 1.0e9;
     double riverHalfWidth = 0.0;
+
+    // Only for a looked-up column (never `unresolvedGround`).
+    int ground() const
+    {
+        Q_ASSERT(groundBiome != unresolvedGround);
+        return groundBiome >= 0 ? groundBiome : biome;
+    }
 };

@@ -98,6 +98,9 @@ std::optional<Pool> Loader::pool(const QcFeatureDefinition &definition, quint64 
     pool.depth = definition.depth;
     pool.seed = seed;
     pool.surface = definition.surface;
+    pool.region = definition.region;
+    pool.spacing = definition.spacing;
+    pool.rim = definition.rimBlock.isEmpty() ? qcAirBlockId : resolve(definition.rimBlock, qcAirBlockId);
 
     for (const QString &biome : definition.biomes) {
         const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
@@ -352,6 +355,35 @@ double giantChanceOf(const QcTerrainDefinitions::Biome &biome)
     return sum;
 }
 
+// The cold edges of the terrain settings with the ice resolved (decision E-858).
+QcTerrainDefinitions::ColdEdges coldEdgesOf(Loader &loader, const QcColdEdgeSettings &settings, QcBlockId water)
+{
+    QcTerrainDefinitions::ColdEdges result;
+    result.groundBlend = settings.groundBlend;
+    if (settings.iceBlock.isEmpty()) {
+        return result;
+    }
+
+    result.ice = loader.resolve(settings.iceBlock, water);
+    result.byTemperature = true;
+    result.temperature = settings.temperature;
+    result.riverTemperature = settings.riverTemperature;
+    result.ragged = settings.ragged;
+    return result;
+}
+
+// The ores of the content resolved; seeds from their names (decision E-214).
+QList<QcTerrainDefinitions::Ore> oresOf(Loader &loader, const QcContentRegistry &content, QcBlockId stone, quint64 seed)
+{
+    QList<QcTerrainDefinitions::Ore> ores;
+    for (const QcOreDefinition &definition : content.worldgen().ores()) {
+        if (const std::optional<QcTerrainDefinitions::Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {
+            ores.append(*ore);
+        }
+    }
+    return ores;
+}
+
 } // namespace
 
 QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, quint64 seed)
@@ -380,8 +412,12 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         features.append(feature);
     }
 
+    coldEdges = coldEdgesOf(loader, terrain.coldEdges, water);
     for (const QcBiomeDefinition &definition : content.worldgen().biomes()) {
         Biome biome = loader.biome(definition, stone, water);
+        // With freezing by temperature the water of every biome may freeze where its column is cold
+        // enough (decision E-858); a biome's own frozenWater names the block, the others take the ice.
+        biome.frozenWater = coldEdges.byTemperature && biome.frozenWater == water ? coldEdges.ice : biome.frozenWater;
         BiomeVegetation vegetation = loader.vegetation(definition, seed);
         for (auto &[feature, density] : vegetation.scattered) {
             biome.features.append({int(features.size()), density});
@@ -418,10 +454,6 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
     naturalGround = naturalGroundOf(biomes, stone, water);
     loader.warnUnknownBiome(biomes, terrain.vegetationBiome);
 
-    for (const QcOreDefinition &definition : content.worldgen().ores()) {
-        if (const std::optional<Ore> ore = loader.ore(definition, stone, qcMixSeed(seed, qcNameSalt(definition.name) + 4))) {
-            ores.append(*ore);
-        }
-    }
+    ores = oresOf(loader, content, stone, seed);
     warnings = loader.takeWarnings();
 }

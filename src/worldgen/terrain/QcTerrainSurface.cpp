@@ -18,7 +18,7 @@ QcTerrainSurface::QcTerrainSurface(const QcTerrainDefinitions &definitions, cons
 
 QcBlockId QcTerrainSurface::surface(const QcTerrainColumn &column, int x, int z) const
 {
-    const Biome &biome = m_definitions.biomes[column.biome];
+    const Biome &biome = m_definitions.biomes[column.ground()];
     const int top = column.height - 1;
     const int seaLevel = m_definitions.seaLevel;
     if (top < seaLevel - 1) {
@@ -62,7 +62,7 @@ QcBlockId QcTerrainSurface::underwater(const Biome &biome, int x, int z) const
 
 QcBlockId QcTerrainSurface::subsurface(const QcTerrainColumn &column, QcBlockId surface) const
 {
-    const Biome &biome = m_definitions.biomes[column.biome];
+    const Biome &biome = m_definitions.biomes[column.ground()];
     // Under water the ground's block goes down as deep as the soil (the bed of a river in patches).
     if (column.height - 1 < m_definitions.seaLevel - 1) {
         return surface;

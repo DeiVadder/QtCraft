@@ -4,10 +4,12 @@
 #include "worldgen/generators/QcWorldGenerator.h"
 #include "worldgen/surface/QcSurfacePlanner.h"
 #include "worldgen/terrain/QcCaveCarver.h"
+#include "worldgen/terrain/QcColdEdges.h"
 #include "worldgen/terrain/QcGiantTreePlacer.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
 #include "worldgen/terrain/QcRiverField.h"
+#include "worldgen/terrain/QcSurfaceLakes.h"
 #include "worldgen/terrain/QcTerrainClimate.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/terrain/QcTerrainDefinitions.h"
@@ -63,14 +65,32 @@ public:
     // Patches of one kind of grass or flower (decision E-814), for tests.
     const QcVegetationPatchPlacer &vegetationPatches() const { return *m_vegetationPatches; }
     const QcGiantTreePlacer &giantTrees() const { return *m_giantTrees; }
-    // The footprints of surface structures and coastal towers within `margin` columns of the chunk
-    // at `pos`: no trees grow there.
+    // The footprints of surface structures, coastal towers and surface lakes within `margin` columns
+    // of the chunk at `pos`: no trees grow there.
     [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin) const;
+    // Surface lakes (decision E-856): the lake of a chunk, none in or near a village or near a
+    // surface structure or coastal tower.
+    const QcSurfaceLakes &lakes() const { return *m_lakes; }
+    [[nodiscard]] std::optional<QcSurfaceLakes::Site> lakeIn(QcChunkPos pos) const;
+    // Whether a mine shaft's entrance lies within `featureMargin` of a footprint (world) near the chunk.
+    [[nodiscard]] bool mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const;
     QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
 
+    // Shape and biome of a column. Near a biome border its ground biome is left `unresolvedGround`
+    // (a second climate evaluation): withGround() or QcTerrainColumnGrid look it up.
     Column column(int x, int z) const;
+    // The column with its ground biome looked up (decision E-858).
+    [[nodiscard]] Column withGround(int x, int z, Column column) const;
+    // The column whose land biome decides the ground of an unresolved column: the jittered one of
+    // QcColdEdges::groundOffset(); none for a looked-up column.
+    [[nodiscard]] std::optional<std::pair<int, int>> groundSource(int x, int z, const Column &column) const;
+    // The ground biome of a column when the land biome at its ground source is `land` (for a river
+    // channel the river biome of that land); -1 for its own.
+    [[nodiscard]] int groundBiomeFor(const Column &column, int land) const;
+    // The land biome of the climate at a column.
+    [[nodiscard]] int landBiomeAt(int x, int z) const;
     // The world's rarity at a column in [0, 1] (decision E-821): 0 outside the spots where rare
     // biomes may appear, and everywhere when no biome is rare.
     [[nodiscard]] double rarityAt(int x, int z) const { return climateAt(x, z).rarity; }
@@ -86,6 +106,9 @@ public:
     [[nodiscard]] QcRiverField::Sample riverAt(int x, int z) const;
     // Whether a biome is a river biome (the water of river channels, decision E-840).
     [[nodiscard]] bool isRiverBiome(int biome) const;
+    // The block of the top water layer of a column under the sea level (decision E-858): with
+    // freezing by temperature ice where the column is cold enough, else the biome's frozenWater.
+    [[nodiscard]] QcBlockId frozenWaterAt(int x, int z, const Column &column) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
     QString biomeName(int index) const;
@@ -113,6 +136,9 @@ private:
         int biome = 0;
         double landHeight = 0.0;
         double overhang = 0.0;
+        // The heaviest biome's weight and the next one's: near 0 deep inside a biome.
+        double bestWeight = 0.0;
+        double runnerUpWeight = 0.0;
     };
     [[nodiscard]] Blend blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const;
     // A column of land height `height` and biome `biome` carved by the river near it (decision
@@ -170,6 +196,7 @@ private:
     QcPoolPlacer m_pools;
     QcTerrainClimate m_climate;
     QcRiverField m_rivers;
+    QcColdEdges m_coldEdges;
     // The ground blocks of the columns; after the definitions and rivers it reads.
     QcTerrainSurface m_ground;
     // Created in the constructor's body: it reads the terrain columns.
@@ -186,6 +213,8 @@ private:
     std::unique_ptr<QcVegetationPatchPlacer> m_vegetationPatches;
     // Giant trees on a 2×2 trunk (decision E-822); reads the terrain columns.
     std::unique_ptr<QcGiantTreePlacer> m_giantTrees;
+    // Lakes on the surface (decision E-856); reads the terrain columns.
+    std::unique_ptr<QcSurfaceLakes> m_lakes;
 
     QcNoise m_continentNoise;
     QcNoise m_detailNoise;

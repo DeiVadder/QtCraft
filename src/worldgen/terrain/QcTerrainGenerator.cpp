@@ -31,7 +31,9 @@ constexpr double terraceScale = 380.0;
 // Ocean floor lies this far below sea level (before detail noise).
 constexpr double oceanDepth = 12.0;
 constexpr int featureMargin = QcTerrainColumnGrid::featureMargin;
-constexpr int spawnSearchRadius = 512;
+// The runner-up biome's share of the heaviest's weight from which a column may lie close enough to
+// a border for its ground to come from the other biome (decision E-858).
+constexpr double nearBorderWeight = 0.05;
 
 // Terraces: flat steps of `step` blocks with a cliff at the end of each.
 double terraced(double height, int step)
@@ -68,6 +70,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_pools(m_content, m_definitions)
     , m_climate(quint64(seed), m_definitions.anyRare)
     , m_rivers(quint64(seed))
+    , m_coldEdges(m_definitions.coldEdges, quint64(seed))
     , m_ground(m_definitions, m_rivers, quint64(seed))
     , m_continentNoise(qcMixSeed(quint64(seed), 1))
     , m_detailNoise(qcMixSeed(quint64(seed), 2))
@@ -85,6 +88,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     m_coastalTowers = std::make_unique<QcCoastalTowerGenerator>(*this, *m_content, m_seed);
     m_vegetationPatches = std::make_unique<QcVegetationPatchPlacer>(*this, m_definitions, m_seed);
     m_giantTrees = std::make_unique<QcGiantTreePlacer>(*this, m_definitions, m_seed);
+    m_lakes = std::make_unique<QcSurfaceLakes>(*this, m_definitions, m_content);
     m_warnings = m_definitions.warnings + m_villages->styles().warnings() + m_dungeons->planner().warnings()
                  + m_mineshafts->planner().warnings() + m_surface->planner().warnings() + m_coastalTowers->planner().warnings();
 }
@@ -220,10 +224,14 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
         landHeight += weight * biomeHeight(biome, rolling, ridge, terraces);
         overhang += weight * biome.overhang;
         if (weight > bestWeight) {
+            result.runnerUpWeight = bestWeight;
             bestWeight = weight;
             result.biome = int(i);
+        } else {
+            result.runnerUpWeight = std::max(result.runnerUpWeight, weight);
         }
     }
+    result.bestWeight = bestWeight;
 
     if (weightSum <= 0.0) {
         // Every biome is rare and the column lies outside the spots (only with mods, warned at load,
@@ -276,22 +284,18 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
         result.riverDistance = cut.river.distance;
         result.riverHalfWidth = cut.river.halfWidth;
     }
+    result.temperature = climate.temperature;
+    result.landBiome = blended.biome;
+    // Only near a border can the jittered column lie in another biome: there the next biome's
+    // weight comes close to the heaviest's (weights fall with the fourth power of the distance).
+    const bool nearBorder = m_coldEdges.groundBlend() > 0 && blended.runnerUpWeight >= nearBorderWeight * blended.bestWeight;
+    result.groundBiome = nearBorder ? Column::unresolvedGround : -1;
     result.height = std::clamp(int(std::lround(height)), 4, QcWorld::worldHeight - 8);
     // Overhangs fade out towards the coast and never reach down to the sea level, so no hollow
     // lies next to or under water.
     const double overhangAmplitude = std::min(blended.overhang * result.landFactor, double(result.height - seaLevel() - 3));
     result.overhang = overhangAmplitude < 1.0 ? 0.0 : overhangAmplitude;
     return result;
-}
-
-QcBlockId QcTerrainGenerator::surfaceBlockAt(int x, int z) const
-{
-    Column info = column(x, z);
-    if (m_definitions.biomes[info.biome].steep != qcAirBlockId) {
-        info.slope = std::max({std::abs(column(x - 1, z).height - info.height), std::abs(column(x + 1, z).height - info.height),
-                               std::abs(column(x, z - 1).height - info.height), std::abs(column(x, z + 1).height - info.height)});
-    }
-    return m_ground.surface(info, x, z);
 }
 
 bool QcTerrainGenerator::isCave(int x, int y, int z) const
@@ -354,7 +358,7 @@ int QcTerrainGenerator::groundTop(int x, int z, const Column &column) const
 
 void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, const Column &column) const
 {
-    const Biome &biome = m_definitions.biomes[column.biome];
+    const Biome &biome = m_definitions.biomes[column.ground()];
     const QcBlockId stone = m_definitions.stone;
     const QcBlockId bedrock = m_definitions.bedrock;
     const int bedrockLayers = m_definitions.bedrockLayers;
@@ -396,8 +400,9 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
         chunk.setBlock(localX, y, localZ, block);
     }
 
+    const QcBlockId top = frozenWaterAt(worldX, worldZ, column);
     for (int y = column.height; y < seaLevel(); ++y) {
-        chunk.setBlock(localX, y, localZ, y == seaLevel() - 1 ? biome.frozenWater : m_definitions.water);
+        chunk.setBlock(localX, y, localZ, y == seaLevel() - 1 ? top : m_definitions.water);
     }
 }
 
@@ -531,7 +536,7 @@ void QcTerrainGenerator::placeFeatureInColumn(QcChunk &chunk, const QcTerrainCol
     const QcVegetationTable::Plant *plant =
         feature.plants.isEmpty() ? nullptr : &feature.plants.pick(kindRandom(feature, x, z));
     const QSet<QcBlockId> &allowedGround = plant ? plant->ground : feature.ground;
-    if (!allowedGround.isEmpty() && !allowedGround.contains(m_ground.surface(info, x, z))) {
+    if (!allowedGround.isEmpty() && !allowedGround.contains(m_ground.surface(withGround(x, z, info), x, z))) {
         return;
     }
 
@@ -609,7 +614,44 @@ QList<QcSurfacePlanner::Rect> QcTerrainGenerator::structureFootprintsNear(QcChun
     for (const QcCoastalTowerPlan::Footprint &tower : towers) {
         structures.append({tower.minX, tower.minZ, tower.maxX, tower.maxZ});
     }
+    // A lake lies inside its chunk: the chunks within the margin.
+    const int reach = (margin + QcWorld::chunkSize - 1) / QcWorld::chunkSize;
+    const QcSurfacePlanner::Rect area{pos.x * QcWorld::chunkSize, pos.z * QcWorld::chunkSize, pos.x * QcWorld::chunkSize + QcWorld::chunkSize - 1,
+                                      pos.z * QcWorld::chunkSize + QcWorld::chunkSize - 1};
+    for (int dz = -reach; dz <= reach; ++dz) {
+        for (int dx = -reach; dx <= reach; ++dx) {
+            if (const std::optional<QcSurfaceLakes::Site> lake = lakeIn({pos.x + dx, pos.z + dz}); lake && lake->footprint.intersects(area, margin)) {
+                structures.append(lake->footprint);
+            }
+        }
+    }
     return structures;
+}
+
+std::optional<QcSurfaceLakes::Site> QcTerrainGenerator::lakeIn(QcChunkPos pos) const
+{
+    std::optional<QcSurfaceLakes::Site> site = m_lakes->siteIn(pos);
+    if (!site) {
+        return site;
+    }
+    // Like the trees: none in or near a village, a surface structure or a coastal tower.
+    const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
+    const QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, featureMargin);
+    const QList<QcCoastalTowerPlan::Footprint> towers = m_coastalTowers->footprintsNear(pos, featureMargin);
+    if ((village && village->overlaps(pos, featureMargin)) || !structures.isEmpty() || !towers.isEmpty()
+        || mineshaftEntranceNear(pos, site->footprint)) {
+        return std::nullopt;
+    }
+    return site;
+}
+
+bool QcTerrainGenerator::mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const
+{
+    // A shaft's ladder runs from the ground's top down: through a lake it would let the liquid out.
+    const QList<std::shared_ptr<const QcMineshaftPlan>> plans = m_mineshafts->plansTouching(pos);
+    return std::ranges::any_of(plans, [&](const std::shared_ptr<const QcMineshaftPlan> &plan) {
+        return plan->entrance && footprint.intersects({plan->entrance->top.x, plan->entrance->top.z, plan->entrance->top.x, plan->entrance->top.z}, featureMargin);
+    });
 }
 
 std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
@@ -638,12 +680,8 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     placeFeatures(*chunk, columns, carved, village.get(), structures);
     // Giant trees after the small ones (decision E-822).
     m_giantTrees->build(*chunk, village.get());
-    const int x0 = pos.x * QcWorld::chunkSize;
-    const int z0 = pos.z * QcWorld::chunkSize;
-    const QcSurfacePlanner::Rect area{x0, z0, x0 + QcWorld::chunkSize - 1, z0 + QcWorld::chunkSize - 1};
-    const bool nearStructure = std::ranges::any_of(structures, [&](QcSurfacePlanner::Rect footprint) { return area.intersects(footprint, featureMargin); });
-    if ((!village || !village->overlaps(pos, featureMargin)) && !nearStructure) {
-        m_pools.placeOnSurface(*chunk, columns, *this);
+    if (const std::optional<QcSurfaceLakes::Site> lake = lakeIn(pos)) {
+        m_lakes->carve(*chunk, *lake, columns);
     }
     // Mine shaft entrances over the trees, cacti and pools (none lies near a village).
     m_mineshafts->buildEntrances(*chunk);
@@ -660,65 +698,4 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
         chunk->section(i).compact();
     }
     return chunk;
-}
-
-class QcTerrainGenerator::SpawnSearch
-{
-public:
-    explicit SpawnSearch(const QcTerrainGenerator &terrain)
-        : m_terrain(terrain)
-    {
-    }
-
-    // Spawn candidate on the square ring of `radius` around the origin, if any.
-    [[nodiscard]] std::optional<QcBlockPos> onRing(int radius)
-    {
-        for (int dx = -radius; dx <= radius; dx += 8) {
-            for (int dz = -radius; dz <= radius; dz += 8) {
-                if (std::max(std::abs(dx), std::abs(dz)) != radius) {
-                    continue;
-                }
-                const Column info = m_terrain.column(dx, dz);
-                if (fits(dx, dz, info)) {
-                    return QcBlockPos{dx, info.height, dz};
-                }
-            }
-        }
-        return std::nullopt;
-    }
-
-private:
-    // Open, dry and not too high ground at a column.
-    [[nodiscard]] bool fits(int x, int z, const Column &column)
-    {
-        const int sea = m_terrain.seaLevel();
-        const bool candidate = column.landFactor > 0.99 && column.height > sea + 2 && column.height < sea + 30 && column.overhang < 1.0;
-        if (!candidate || m_terrain.isCave(x, column.height - 1, z)) {
-            return false;
-        }
-
-        const QcBlockPos pos{x, column.height - 1, z};
-        if (!m_chunk || m_chunk->pos() != pos.chunk()) {
-            m_chunk = m_terrain.generate(pos.chunk());
-        }
-        return m_chunk->highestNonAir(pos.localX(), pos.localZ()) == pos.y
-               && m_terrain.isNaturalGround(m_chunk->block(pos.localX(), pos.y, pos.localZ()));
-    }
-
-    const QcTerrainGenerator &m_terrain;
-    // The last chunk generated for the search.
-    std::shared_ptr<QcChunk> m_chunk;
-};
-
-QcBlockPos QcTerrainGenerator::spawnPoint() const
-{
-    // Nearest dry, not too high open ground on a spiral of growing squares around the origin: no
-    // tree crown, cave or plant above the surface block, and no overhanging mountain land.
-    SpawnSearch search(*this);
-    for (int radius = 0; radius <= spawnSearchRadius; radius += 8) {
-        if (const std::optional<QcBlockPos> spawn = search.onRing(radius)) {
-            return *spawn;
-        }
-    }
-    return {0, std::max(column(0, 0).height, seaLevel()), 0};
 }

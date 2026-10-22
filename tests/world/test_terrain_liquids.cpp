@@ -11,8 +11,8 @@
 
 using namespace Qt::StringLiterals;
 
-// The liquids of the generated terrain: lava lakes on dry land, lava and water pools held in place
-// underground, liquids that take no flow step after generation, and the pool features of content.
+// The liquids of the generated terrain (lava lakes: test_lava_lakes): lava and water pools held in
+// place underground, liquids that take no flow step after generation, and the pool features of content.
 namespace {
 
 using QcTerrainTestUtil::flatContent;
@@ -112,68 +112,6 @@ class TestTerrainLiquids : public QObject
 private:
     std::shared_ptr<const QcContentRegistry> m_base = QcTestUtil::loadContent();
 
-    // Why the lava at local (x, y, z) of `chunk` is not part of a contained lake of `lake`'s biomes;
-    // empty when it is.
-    QString lavaLakeCellProblem(const QcTerrainGenerator &generator, const QcChunk &chunk, QcBlockPos local, const QcFeatureDefinition &lake) const
-    {
-        const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
-        const int x = local.x;
-        const int y = local.y;
-        const int z = local.z;
-        const QString at = u" at %1 %2 %3"_s.arg(chunk.pos().x * 16 + x).arg(y).arg(chunk.pos().z * 16 + z);
-        if (!(x > 0 && x < 15 && z > 0 && z < 15)) {
-            return u"lava lake on the chunk edge"_s + at;
-        }
-        // The lake's centre lies in an allowed biome; with frayed borders (E-101) its rim may reach
-        // into a neighbouring one, at most its radius away.
-        bool nearAllowedBiome = false;
-        for (int dz = -lake.radius; dz <= lake.radius && !nearAllowedBiome; ++dz) {
-            for (int dx = -lake.radius; dx <= lake.radius && !nearAllowedBiome; ++dx) {
-                const int biome = generator.column(chunk.pos().x * 16 + x + dx, chunk.pos().z * 16 + z + dz).biome;
-                nearAllowedBiome = lake.biomes.contains(generator.biomeName(biome));
-            }
-        }
-        if (!nearAllowedBiome) {
-            return u"lava lake outside its biomes"_s + at;
-        }
-
-        // Nothing for it to flow into, and only liquid or open air above.
-        for (const auto &[dx, dy, dz] : {std::array{1, 0, 0}, std::array{-1, 0, 0}, std::array{0, 0, 1},
-                                         std::array{0, 0, -1}, std::array{0, -1, 0}}) {
-            const QcBlockId next = chunk.block(x + dx, y + dy, z + dz);
-            if (!(next == lava || (m_base->block(next).solid && !m_base->block(next).replaceable))) {
-                return u"lava lake can flow"_s + at;
-            }
-        }
-        const QcBlockId above = chunk.block(x, y + 1, z);
-        if (!(above == lava || above == qcAirBlockId || m_base->block(above).solid)) {
-            return u"lava lake covered"_s + at;
-        }
-        return {};
-    }
-
-    // Checks every lava cell of `chunk` from the sea level up and sets `found` when there is one;
-    // returns the first problem.
-    QString lavaLakeProblem(const QcTerrainGenerator &generator, const QcChunk &chunk, const QcFeatureDefinition &lake, bool &found) const
-    {
-        const QcBlockId lava = *m_base->blockId(u"qtcraft:lava"_s);
-        for (int z = 0; z < 16; ++z) {
-            for (int x = 0; x < 16; ++x) {
-                for (int y = generator.seaLevel(); y < QcWorld::worldHeight - 1; ++y) {
-                    if (chunk.block(x, y, z) != lava) {
-                        continue;
-                    }
-                    found = true;
-                    const QString problem = lavaLakeCellProblem(generator, chunk, {x, y, z}, lake);
-                    if (!problem.isEmpty()) {
-                        return problem;
-                    }
-                }
-            }
-        }
-        return {};
-    }
-
     // Whether the lava at local (x, y, z) of `chunk` is held in place: never on the chunk's edge, so a
     // chunk's pools need no neighbour, and every side and the cell below is lava or a block that holds
     // it, so the generated lava has nowhere to flow.
@@ -250,29 +188,6 @@ private:
     }
 
 private slots:
-    void lavaLakesLieOpenOnDryLandOfTheirBiomes()
-    {
-        const auto lake = std::ranges::find(m_base->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
-        QVERIFY(lake != m_base->worldgen().features().end() && lake->surface);
-
-        int lakes = 0;
-        for (const qint64 seed : {42, 777}) {
-            const QcTerrainGenerator generator(m_base, seed);
-            for (int cz = -8; cz < 8; ++cz) {
-                for (int cx = -8; cx < 8; ++cx) {
-                    const auto chunk = generator.generate({cx, cz});
-                    bool found = false;
-                    const QString problem = lavaLakeProblem(generator, *chunk, *lake, found);
-                    QVERIFY2(problem.isEmpty(), qPrintable(problem));
-                    lakes += found;
-                }
-            }
-        }
-
-        qInfo("chunks with a lava lake: %d of %d", lakes, 2 * 256);
-        QVERIFY(lakes >= 2 && lakes < 2 * 256 / 10);
-    }
-
     void lavaPoolsAreDeterministicAndContained()
     {
         const QList<QcBlockPos> first = lavaPoolCells(12345);
