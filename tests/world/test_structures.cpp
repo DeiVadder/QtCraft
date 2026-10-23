@@ -3,6 +3,7 @@
 #include "worldgen/structures/QcStateRotation.h"
 #include "worldgen/structures/QcStructure.h"
 #include "worldgen/structures/QcStructurePlacement.h"
+#include "worldgen/villages/QcPieceVariation.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -44,6 +45,64 @@ QcStructure lShape(const QcContentRegistry &content)
     structure.set(0, 0, 1, id(content, u"qtcraft:dirt"_s));
     structure.set(0, 1, 0, qcAirBlockId);
     return structure;
+}
+
+// A one-layer structure from rows of palette keys (north row first), keys mapped to `palette` by
+// their position in `keys`; '.' keeps what is there.
+QcStructureDefinition layer(const QStringList &rows, const QString &keys, const QStringList &palette)
+{
+    QcStructureDefinition definition;
+    definition.name = u"test:layer"_s;
+    definition.sizeX = static_cast<int>(rows.value(0).size());
+    definition.sizeY = 1;
+    definition.sizeZ = static_cast<int>(rows.size());
+    definition.palette = palette;
+    for (const QString &row : rows) {
+        for (const QChar key : row) {
+            definition.cells.append(static_cast<qint16>(keys.indexOf(key)));
+        }
+    }
+    return definition;
+}
+
+// The sides ("<state> x,y,z east") of the connecting block at `pos` that face a block of a group it
+// connects to inside the structure but are not connected.
+QStringList unconnectedSidesOf(const QcContentRegistry &content, const QcStructure &structure, QcBlockPos pos)
+{
+    static constexpr std::array<std::array<int, 2>, 4> steps{{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}};
+    static const std::array<QString, 4> sides{u"north"_s, u"east"_s, u"south"_s, u"west"_s};
+    const QcBlockId state = *structure.block(pos.x, pos.y, pos.z);
+    const QcBlockDefinition &block = content.block(state);
+    QStringList missing;
+    for (std::size_t side = 0; side < sides.size(); ++side) {
+        const std::optional<QcBlockId> neighbour = structure.block(pos.x + steps[side][0], pos.y, pos.z + steps[side][1]);
+        const bool joins = neighbour && *neighbour != qcAirBlockId && block.connectsTo.contains(content.block(*neighbour).connectGroup);
+        if (joins && content.property(state, sides[side]) != u"true"_s) {
+            missing.append(u"%1 %2,%3,%4 %5"_s.arg(content.stateName(state)).arg(pos.x).arg(pos.y).arg(pos.z).arg(sides[side]));
+        }
+    }
+    return missing;
+}
+
+// The unconnected sides (unconnectedSidesOf) of all connecting blocks in the structure; cells whose
+// palette entry sets a side itself are skipped.
+QStringList unconnectedSides(const QcContentRegistry &content, const QcStructure &structure, const QcStructureDefinition &definition)
+{
+    static const QRegularExpression explicitSide(u"[\\[,](north|east|south|west|up)="_s);
+    QStringList missing;
+    for (int y = 0; y < structure.sizeY(); ++y) {
+        for (int z = 0; z < structure.sizeZ(); ++z) {
+            for (int x = 0; x < structure.sizeX(); ++x) {
+                const qint16 entry = definition.cells.value(definition.cellIndex(x, y, z), QcStructureDefinition::keep);
+                const std::optional<QcBlockId> state = structure.block(x, y, z);
+                const bool loose = entry >= 0 && state && !definition.palette[entry].contains(explicitSide);
+                if (loose && !content.block(*state).connectsTo.isEmpty()) {
+                    missing.append(unconnectedSidesOf(content, structure, QcBlockPos{x, y, z}));
+                }
+            }
+        }
+    }
+    return missing;
 }
 
 } // namespace
@@ -434,6 +493,81 @@ private slots:
             // The stairs turn with the structure.
             QVERIFY(placement.worldBlock({3, 0, 0}) == QcStateRotation::turned(content, blocks[3], turns));
         }
+    }
+
+    void connectsFencesWallsAndPanes()
+    {
+        // Decision E-867: connecting blocks without connection properties in their palette entry take
+        // them from their neighbours inside the structure; explicit entries stay as written.
+        const QcContentRegistry &content = *m_content;
+        const QcStructureDefinition definition = layer({u"FFFE"_s, u"W.SP"_s, u"WWWP"_s}, u"FEWSP"_s,
+                                                       {u"qtcraft:oak_fence"_s, u"qtcraft:oak_fence[north=true]"_s, u"qtcraft:sandstone_wall"_s,
+                                                        u"qtcraft:stone"_s, u"qtcraft:glass_pane"_s});
+        const QcStructure::Loaded structure = QcStructure::fromDefinition(definition, content);
+        QVERIFY(structure);
+        const auto name = [&](int x, int z) { return content.stateName(structure->block(x, 0, z).value_or(qcAirBlockId)); };
+        const auto named = [&](const char *state) { return content.stateName(id(content, QString::fromLatin1(state))); };
+
+        // The west end of the fence row does not reach out of the structure; the explicit fence at
+        // the east end keeps its own state although a fence lies west of it.
+        QCOMPARE(name(0, 0), named("qtcraft:oak_fence[north=false,east=true,south=false,west=false]"));
+        QCOMPARE(name(1, 0), named("qtcraft:oak_fence[north=false,east=true,south=false,west=true]"));
+        // The stone south of it is solid: the fence joins it too.
+        QCOMPARE(name(2, 0), named("qtcraft:oak_fence[north=false,east=true,south=true,west=true]"));
+        QCOMPARE(name(3, 0), named("qtcraft:oak_fence[north=true,east=false,south=false,west=false]"));
+        // A wall corner keeps its post, a straight run hides it, the stone joins the wall (solid);
+        // the cell that keeps what is there counts as air.
+        QCOMPARE(content.property(*structure->block(0, 0, 2), u"north"_s), u"true"_s);
+        QCOMPARE(content.property(*structure->block(0, 0, 2), u"up"_s), u"true"_s);
+        QCOMPARE(content.property(*structure->block(1, 0, 2), u"up"_s), u"false"_s);
+        QCOMPARE(content.property(*structure->block(2, 0, 2), u"north"_s), u"true"_s);
+        QCOMPARE(content.property(*structure->block(0, 0, 1), u"east"_s), u"false"_s);
+        // The panes join each other and the stone, not the wall.
+        QCOMPARE(name(3, 1), named("qtcraft:glass_pane[north=false,east=false,south=true,west=true]"));
+        QCOMPARE(name(3, 2), named("qtcraft:glass_pane[north=true,east=false,south=false,west=false]"));
+        QVERIFY2(unconnectedSides(content, *structure, definition).isEmpty(), qPrintable(unconnectedSides(content, *structure, definition).join(u'\n')));
+
+        // Turned a quarter clockwise, the east-west fence row runs north-south.
+        const auto shared = std::make_shared<const QcStructure>(*structure);
+        const QcStructurePlacement placement(shared, {0, 64, 0}, 1, content);
+        QCOMPARE(content.stateName(*placement.worldBlock({1, 0, 0})), named("qtcraft:oak_fence[north=true,east=false,south=true,west=false]"));
+        QCOMPARE(content.stateName(*placement.worldBlock({0, 0, 0})), named("qtcraft:oak_fence[north=false,east=false,south=true,west=false]"));
+    }
+
+    void connectsTheBuiltCopyOfAVariation()
+    {
+        // A part fills the gap of a fence row and a choice swaps the wood: the built copy connects
+        // across the filled gap with the swapped fences.
+        const QcContentRegistry &content = *m_content;
+        QcStructureDefinition definition = layer({u"F.F"_s}, u"F"_s, {u"qtcraft:oak_fence"_s});
+        definition.choices.append({u"wood"_s, {{{u"qtcraft:oak_fence"_s, u"qtcraft:spruce_fence"_s}}}});
+        definition.parts.append({u"gap"_s, 0.5, {QcStructureDefinition::keep, 0, QcStructureDefinition::keep}});
+        const QcPieceVariation::Resolved variation = QcPieceVariation::resolve(definition, content);
+        QVERIFY(variation);
+
+        const std::shared_ptr<const QcStructure> built = variation->build(variation->everything());
+        QCOMPARE(content.stateName(*built->block(1, 0, 0)), content.stateName(id(content, u"qtcraft:spruce_fence[north=false,east=true,south=false,west=true]"_s)));
+        QCOMPARE(content.property(*built->block(0, 0, 0), u"east"_s), u"true"_s);
+        // Without the part the two ends stand alone.
+        const std::shared_ptr<const QcStructure> open = variation->build({{0}, {false}});
+        QCOMPARE(content.property(*open->block(0, 0, 0), u"east"_s), u"false"_s);
+    }
+
+    void baseStructuresConnectTheirFences()
+    {
+        // Every structure of the base game: no fence, wall, pane, bar or tripwire facing a block it
+        // connects to inside the structure is left unconnected (decision E-867).
+        int connecting = 0;
+        for (const QcStructureDefinition &definition : m_content->worldgen().structures()) {
+            const QcStructure::Loaded structure = QcStructure::fromDefinition(definition, *m_content);
+            QVERIFY2(structure, qPrintable(definition.name));
+            const QStringList missing = unconnectedSides(*m_content, *structure, definition);
+            QVERIFY2(missing.isEmpty(), qPrintable(definition.name + u": "_s + missing.join(u", "_s)));
+            for (const QString &entry : definition.palette) {
+                connecting += m_content->stateId(entry) && !m_content->block(*m_content->stateId(entry)).connectsTo.isEmpty() ? 1 : 0;
+            }
+        }
+        QVERIFY2(connecting >= 20, qPrintable(QString::number(connecting)));
     }
 
     void baseStructuresLoad()

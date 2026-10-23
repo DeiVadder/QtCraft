@@ -57,6 +57,16 @@ public:
     // What fromDefinition() kept at a default (unknown state properties or values).
     const QStringList &warnings() const { return m_warnings; }
 
+    // Per cell of `cells` (indices into `palette`, cell order of QcStructureDefinition::cellIndex):
+    // whether the cell takes its connection properties from its neighbours, that is its palette
+    // entry names none of north, east, south, west and up (decision E-867).
+    [[nodiscard]] static QList<bool> looseCells(const QStringList &palette, const QList<qint16> &cells);
+    // Sets the connection properties of the connecting blocks (fences, walls, panes, bars) in the
+    // cells marked in `loose` from their neighbours inside the structure, with the rules of
+    // QcBlockRules::connectedState (decision E-867). Cells outside the structure and cells that keep
+    // what is there count as air: a fence at the edge does not reach out into the terrain.
+    void connectBlocks(const QcContentRegistry &content, const QList<bool> &loose);
+
     // The extras of a structure assembled in code (the showcase's areas).
     void addMob(Mob mob) { mobs.append(std::move(mob)); }
     void addContents(Contents placed) { contents.append(std::move(placed)); }
@@ -84,6 +94,12 @@ public:
 
 private:
     qsizetype cellIndex(int x, int y, int z) const { return x + static_cast<qsizetype>(m_sizeX) * (z + static_cast<qsizetype>(m_sizeZ) * y); }
+    // The position of a cell index: x runs fastest, then z, then y.
+    QcBlockPos cellPos(qsizetype cell) const
+    {
+        const qsizetype layer = static_cast<qsizetype>(m_sizeX) * m_sizeZ;
+        return QcBlockPos{static_cast<int>(cell % m_sizeX), static_cast<int>(cell / layer), static_cast<int>(cell / m_sizeX % m_sizeZ)};
+    }
 
     QString m_name;
     int m_sizeX = 0;

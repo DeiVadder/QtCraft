@@ -37,6 +37,8 @@ QcPieceVariation::Resolved QcPieceVariation::resolve(const QcStructureDefinition
         variation.m_states.append(content.stateId(state).value_or(qcAirBlockId));
     }
     variation.m_cells = definition.cells;
+    variation.m_paletteEntries = definition.palette;
+    variation.m_content = &content;
     for (const QcStructureDefinition::Choice &choice : definition.choices) {
         QList<Option> options;
         for (const QHash<QString, QString> &swaps : choice.options) {
@@ -143,6 +145,8 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
             structure->set(x, y, z, states[cells[cell]]);
         }
     }
+    // Swapped options and parts change the neighbours, so the connections follow the built copy.
+    structure->connectBlocks(*m_content, QcStructure::looseCells(m_paletteEntries, cells));
 
     structure->mobs = base.mobs;
     for (QcStructure::Mob &mob : structure->mobs) {

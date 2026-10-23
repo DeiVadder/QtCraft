@@ -69,6 +69,11 @@ private:
     // The definition's palette resolved, and its cells (QcStructureDefinition::cellIndex).
     QList<QcBlockId> m_states;
     QList<qint16> m_cells;
+    // The definition's palette as written (which entries set their connections themselves) and the
+    // registry the connections of a built copy come from; the registry outlives the variations
+    // resolved against it (the world generator's content).
+    QStringList m_paletteEntries;
+    const QcContentRegistry *m_content = nullptr;
     QStringList m_warnings;
     QList<QList<Option>> m_choices;
     QList<QcStructureDefinition::Part> m_parts;
