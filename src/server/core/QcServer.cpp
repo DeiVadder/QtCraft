@@ -22,34 +22,6 @@
 
 using namespace Qt::StringLiterals;
 
-namespace {
-
-// Acknowledges the blocks a client predicted for its action (decision E-853) when the handling of
-// the message ends: every block the action set or resent went out before, so the acknowledgement
-// follows them, also when the action was refused, dropped or did nothing.
-class BlockAckOnExit
-{
-public:
-    BlockAckOnExit(QcConnection &connection, const QcMessage &message)
-        : m_connection(connection)
-        , m_sequence(QcProtocol::predictionSequence(message))
-    {
-    }
-    ~BlockAckOnExit()
-    {
-        if (m_sequence != 0) {
-            m_connection.send(QcMsg::BlockAck{m_sequence});
-        }
-    }
-    Q_DISABLE_COPY_MOVE(BlockAckOnExit)
-
-private:
-    QcConnection &m_connection;
-    quint32 m_sequence = 0;
-};
-
-} // namespace
-
 QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                    std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
     : QObject(parent)
@@ -253,7 +225,9 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         return;
     }
 
-    const BlockAckOnExit acknowledge(*client.connection, message);
+    // The blocks a client predicted for this action (decision E-853) are acknowledged with the next
+    // world sync (QcServer::updateClient), also when the action is refused, dropped or does nothing.
+    client.pendingBlockAck = std::max(client.pendingBlockAck, QcProtocol::predictionSequence(message));
 
     // Login messages are exempt from the rate limit: once is all a player may send them (E-254).
     if (std::holds_alternative<QcMsg::Hello>(message) || std::holds_alternative<QcMsg::LoginResponse>(message)) {

@@ -151,8 +151,9 @@ struct BlockBatch
 };
 
 // Server -> client: the player's action numbered `sequence` (FinishMining, UseItem) is handled,
-// together with every earlier one (decision E-853). The blocks the server sent before it are its
-// answer: the client drops its predictions up to the number and shows the server's blocks there.
+// together with every earlier one (decision E-853). It follows the world sync of the next tick, so
+// the blocks and the entities (drops) the server sent before it are its answer: the client drops
+// its predictions up to the number and shows the server's blocks there.
 struct BlockAck
 {
     quint32 sequence = 0;

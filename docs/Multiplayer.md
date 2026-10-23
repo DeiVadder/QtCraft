@@ -346,7 +346,7 @@ internet only over a network you trust.
 - The own player is predicted by the client and corrected by the server; with round trips of 50 to
   300 ms walking, jumping and turning needed no correction in the tests (E-257). Breaking and
   placing show at once too (E-853): the client predicts the blocks, numbers the action, and the
-  server's acknowledgement (`BlockAck`, after the blocks it set) confirms them or rolls them back to
+  server's acknowledgement (`BlockAck`, after the blocks it set and the next world sync with the drops) confirms them or rolls them back to
   the server's blocks (out of reach, mode, item gone, another player first); only a rollback is
   meshed again (`test_block_prediction`).
 - Game modes are per player and kept in the player file (E-282). Everyone can ask for their own

@@ -212,6 +212,30 @@ private slots:
         QVERIFY(m_server->blockEntities().saplingsInOrder().isEmpty());
     }
 
+    // A confirmed break (decision E-853) comes after its drops: a client that sees the BlockAck knows
+    // the dropped items already (the control interface's `mine` then `collect`).
+    void theAcknowledgedBreakFollowsItsDrops()
+    {
+        join();
+        const QcBlockPos dirt = m_feet.offset(2, -1, 0);
+        m_server->world().setBlock(dirt, id("qtcraft:dirt"));
+        const double seconds = QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr);
+        send(QcMsg::StartMining{dirt});
+        ticks(int(std::ceil(seconds * QcPhysics::tickRate)));
+        const qsizetype itemsBefore = m_client->items.size();
+
+        // Handled at once, acknowledged only with the next world sync.
+        m_client->connection.send(QcMsg::FinishMining{dirt, 7});
+        QcTestUtil::pump();
+        QCOMPARE(m_server->world().blockAt(dirt), std::optional<QcBlockId>(qcAirBlockId));
+        QVERIFY(m_client->blockAcks.isEmpty());
+        ticks(1);
+        QCOMPARE(m_client->blockAcks.size(), 1);
+        QCOMPARE(m_client->blockAcks.first().sequence, 7u);
+        QCOMPARE(m_client->blockAcks.first().itemsKnown, itemsBefore + 1);
+        QCOMPARE(droppedCount(item("qtcraft:dirt")), 1);
+    }
+
     void despawningSaplingsPlantThemselves()
     {
         join();

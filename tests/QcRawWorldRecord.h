@@ -46,6 +46,8 @@ struct QcRawWorldRecord
         } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
             ++weatherMessages;
             this->weather = *weather;
+        } else if (const auto *ack = std::get_if<QcMsg::BlockAck>(&message)) {
+            blockAcks.append({ack->sequence, items.size()});
         } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
             lightning.append(strike->position);
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
@@ -71,6 +73,13 @@ struct QcRawWorldRecord
     QHash<quint32, QcEntityKind> entities;
     // Item entities the client was told about, with their latest stack.
     QHash<quint32, QcItemStack> items;
+    // Each BlockAck with the number of item entities known when it arrived (decision E-853).
+    struct Ack
+    {
+        quint32 sequence = 0;
+        qsizetype itemsKnown = 0;
+    };
+    QList<Ack> blockAcks;
     // Latest spawn message per entity, entities reported dead, and all move flags seen per entity.
     QHash<quint32, QcMsg::EntitySpawn> spawns;
     QSet<quint32> died;

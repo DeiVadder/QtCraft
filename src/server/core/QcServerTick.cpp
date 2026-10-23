@@ -32,6 +32,17 @@ void logLeaving(const QcServerClient &client)
     }
 }
 
+// Sends the BlockAck of the actions handled since the last world sync (decision E-853). After the
+// sync: the blocks the actions set or resent went out when they were handled, the entities they
+// spawned (drops) with the sync, so a confirmed action shows all of it.
+void acknowledgeBlocks(QcServerClient &client)
+{
+    if (client.pendingBlockAck != 0) {
+        client.connection->send(QcMsg::BlockAck{client.pendingBlockAck});
+        client.pendingBlockAck = 0;
+    }
+}
+
 } // namespace
 
 void QcServer::runDueTicks()
@@ -272,6 +283,7 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
         m_phases.lap(QcTickPhase::Streaming);
         m_entitySync.sync(client);
         m_debug.update(client);
+        acknowledgeBlocks(client);
     }
 
     if (sync.time) {

@@ -184,6 +184,10 @@ struct QcServerClient : QcEntity
     std::optional<QcVec3> previousPosition;
     // The client must get its position again (PlayerState): a correction or an acknowledged input.
     bool stateDirty = false;
+    // The highest prediction sequence (decision E-853) of the actions handled since the last world
+    // sync; acknowledged after it (BlockAck), so the client knows the drops and other entities of
+    // the actions by then. 0: nothing to acknowledge.
+    quint32 pendingBlockAck = 0;
     bool sneaking = false;
     bool sprinting = false;
     // Set by actions that swing the arm; reported to other clients in this tick's sync.
