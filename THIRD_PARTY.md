@@ -23,7 +23,7 @@ software is freely granted, provided that this notice
 is preserved.
 ```
 
-`scripts/build-sdl.sh` copies the three texts into every SDL3 cache entry (`LICENSE.txt`, `HIDAPI-LICENSE.txt`, `LIBM-NOTICE.txt`; an entry without them is not finished), and `scripts/release.sh` puts them into the bundle and checks that they are there; it does the same for the licence of Pixelify Sans.
+`scripts/build-sdl.sh` copies the three texts into every SDL3 cache entry (`LICENSE.txt`, `HIDAPI-LICENSE.txt`, `LIBM-NOTICE.txt`; an entry without them is not finished), and `scripts/release.sh` puts them into the bundle and checks that they are there; it does the same for the licence of Pixelify Sans. The Windows package (`scripts/windows/package-windows.ps1`, stage 74.4) carries the same texts in its `licenses` folder (`SDL3-LICENSE.txt`, `HIDAPI-LICENSE.txt`, `SDL3-LIBM-NOTICE.txt`, `PixelifySans-OFL.txt`), plus the Qt DLLs' licence (`Qt-LGPL-3.0.txt`, `Qt-GPL-3.0.txt`) and `Qt-NOTICE.txt` (Qt version and where its source is), and checks that they are there.
 
 ## Fonts
 

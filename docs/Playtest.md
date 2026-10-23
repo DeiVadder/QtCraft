@@ -74,7 +74,50 @@ Das deckt bis zur TLS-Verschlüsselung (Etappe 48) auch ab, dass Name und Passwo
 QtCraft hat keine automatische Server-Suche im LAN, die Adresse wird immer eingetippt; ein
 Ebene-2-Netz (ZeroTier, OpenVPN mit TAP) bringt daher keinen Vorteil.
 
-## 3. Für die Spieler (Windows)
+## 3. Windows-Paket bauen (Spielleitung)
+
+Das Spiel für die Windows-PCs ist eine eigenständige ZIP-Datei (Paket 74.4): entpacken,
+`qtcraft.exe` starten; kein Installer, keine Administratorrechte. Gebaut wird es in der
+Parallels-VM (Windows 11 ARM64) als x64-Cross-Build (`vcvarsall arm64_amd64`, Qt 6.8
+`msvc2022_64`, SDL3 statisch für Gamepads):
+
+```sh
+scripts/vm-package-windows.sh            # Stand von dev
+scripts/vm-package-windows.sh feature/x  # anderer Branch oder Tag (kein Commit-Hash)
+git tag playtest-4b8c985 4b8c985 && scripts/vm-package-windows.sh playtest-4b8c985   # älterer Commit
+scripts/vm-package-windows.sh dev -- -GuiCheck   # zusätzlich Spielstart mit Screenshot in der VM
+QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere LAN-Adresse im README
+```
+
+- Die VM muss laufen (das Skript startet sie nicht und bricht sonst mit Exit-Code 2 ab). Es kopiert
+  `scripts/windows/package-windows.ps1` und `scripts/windows/README-Windows.txt` in die VM, holt dort
+  den Ref über die Freigabe `\\Mac\Home` als flachen Git-Checkout nach
+  `C:\Qt-Projekte\Claude\QtCraft\src` (der Build stempelt so den echten Commit; der Build-Ordner
+  `src\build\release` und `CMakeUserPresets.json` bleiben, der Build ist inkrementell), baut
+  `qtcraft` und `qtcraft-headless` mit den Jobs, die der Slot-Broker zuteilt (höchstens 4), und legt
+  beide ZIPs nach `deploy/` im Haupt-Checkout: `QtCraft-<version>-<commit>-Windows-x64.zip` (Spiel)
+  und `…-pdb.zip` (PDB-Dateien für die Speicherabbilder, nicht an die Spieler). In der VM bleibt in
+  `dist` nur das neueste Paket; `package.lock` verhindert zwei Läufe zugleich.
+- Inhalt: beide Programme, `windeployqt --release --no-compiler-runtime --no-opengl-sw --qmldir
+  src/app/qml`, die VC++-Laufzeit app-lokal (alle DLLs aus `Microsoft.VC143.CRT`, kein
+  `vc_redist.x64.exe`), Beispiel-Mod `mods\rubies`, `LICENSE`, `THIRD_PARTY.md`, `CREDITS.md`,
+  `licenses\` (Qt: `Qt-LGPL-3.0.txt`, `Qt-GPL-3.0.txt` und `Qt-NOTICE.txt` mit Version und
+  Quellort; SDL3, HIDAPI, SDL-libm, Pixelify Sans) und eine deutsche `README-Windows.txt` (Zulassen,
+  Start, SmartScreen und Intelligente App-Steuerung, LAN-Adresse, Protokolle). Das x64-Kit hat nur
+  das Windows-Media-Backend: weder FFmpeg noch `opengl32sw.dll` (Mesa) sind im Paket; die Prüfung
+  schlägt an, falls sie auftauchen (dann gehören ihre Lizenztexte dazu).
+- Prüfungen: Build mit dem Kit `-QtDir` (`Qt6_DIR`) und mit Gamepads (`QC_GAMEPAD=ON`, SDL3 aus
+  `SDL3_DIR`; ohne nur mit `-NoGamepad`); jede exe/dll importiert nur DLLs aus dem Paket,
+  Windows-Komponenten aus `System32` (Produktname mit „Windows“; VC++-Laufzeit nie von dort) oder
+  API-Sets (`dumpbin /dependents`); eine aus der ZIP entpackte Kopie startet mit einem `PATH` ohne
+  Qt `qtcraft-headless --help` und einen Server (`--server --port 0`), dessen geladene Module alle
+  aus der Kopie oder Windows kommen, und stoppt ihn mit `/stop`.
+- Spiel und Server müssen aus demselben Commit gebaut sein (Inhalts-Hash, Protokollversion): den
+  Server auf dem Mac aus demselben Stand von `dev` bauen.
+- **TODO (48 TLS):** sobald das mitgelieferte OpenSSL in `dev` ist, gehören `libssl-3-x64.dll` und
+  `libcrypto-3-x64.dll` ins Paket (`package-windows.ps1`).
+
+## 4. Für die Spieler (Windows)
 
 - **Anzeige** (E-835): Einstellungen → Anzeige wählt Fenster, randloses Vollbild oder Vollbild samt
   Monitor, VSync (gilt nach einem Neustart) und ein Bildraten-Limit (30–144 oder unbegrenzt) mit
@@ -110,7 +153,7 @@ Ebene-2-Netz (ZeroTier, OpenVPN mit TAP) bringt daher keinen Vorteil.
 - Bitte dazu kurz notieren, **wann** (Uhrzeit) etwas passierte und was ihr gerade getan habt: die
   Protokollzeilen tragen absolute Zeiten.
 
-## 4. Optionen für Fortgeschrittene (Spiel und Server)
+## 5. Optionen für Fortgeschrittene (Spiel und Server)
 
 | Option | Wirkung |
 |---|---|
@@ -124,7 +167,7 @@ Ebene-2-Netz (ZeroTier, OpenVPN mit TAP) bringt daher keinen Vorteil.
 Unter Windows startet man das Spiel mit Optionen über eine Verknüpfung (Eigenschaften → Ziel:
 `…\qtcraft.exe --health-log 30`).
 
-## 5. Auswerten (Spielleitung)
+## 6. Auswerten (Spielleitung)
 
 - Absturzbericht (`*.crash.txt`, nach dem Hinweis `*.crash-seen.txt`): Ursache, Adresse, Thread,
   Stack. macOS/Linux mit Funktionsnamen; Windows mit `Modul+Offset`.

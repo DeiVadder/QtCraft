@@ -75,7 +75,7 @@ cmake --preset release
 cmake --build --preset release --target qtcraft qtcraft-headless
 ```
 
-`qc-release` is RelWithDebInfo, so `build\release` holds `qtcraft.exe` and `qtcraft-headless.exe` with their `.pdb` files for the minidumps. Prefer the CMake and Ninja of `C:\Qt\Tools` over others on `PATH` (Strawberry Perl brings a MinGW toolchain). For an x64 build use the x64 kit (`C:/Qt/6.8.x/msvc2022_64`) and `vcvarsall.bat x64` (on an x64 PC) or `arm64_amd64` (cross build in an ARM64 VM). To start the programs from the build folder, put the kit's `bin` on `PATH` (`set PATH=C:\Qt\6.8.3\msvc2022_arm64\bin;%PATH%`); a standalone folder with `windeployqt` is still to come. The preset limits the build to 4 jobs, the cores of the VM (`qc-build` asks for 16).
+`qc-release` is RelWithDebInfo, so `build\release` holds `qtcraft.exe` and `qtcraft-headless.exe` with their `.pdb` files for the minidumps. Prefer the CMake and Ninja of `C:\Qt\Tools` over others on `PATH` (Strawberry Perl brings a MinGW toolchain). For an x64 build use the x64 kit (`C:/Qt/6.8.x/msvc2022_64`) and `vcvarsall.bat x64` (on an x64 PC) or `arm64_amd64` (cross build in an ARM64 VM). To start the programs from the build folder, put the kit's `bin` on `PATH` (`set PATH=C:\Qt\6.8.3\msvc2022_arm64\bin;%PATH%`); a standalone x64 zip (windeployqt, app-local VC++ runtime) comes from `scripts/vm-package-windows.sh` (docs/Playtest.md, section 3). The preset limits the build to 4 jobs, the cores of the VM (`qc-build` asks for 16).
 
 ## Release: a standalone app
 
