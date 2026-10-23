@@ -49,6 +49,31 @@ qtcraft-headless --server --console --log-rules "qtcraft.network.debug=true;qtcr
   öffnet** (das Spiel lauscht dann selbst); weder der Einzelspieler (der Server läuft im selben
   Prozess ohne Netz) noch das Beitreten zu einem Server brauchen eine Freigabe.
 
+### Über das Internet ohne Router-Einstellung: Tailscale (Playtest)
+
+QtCraft kann (noch) keine Verbindung durch NAT herstellen; ein eingebauter Weg ist offen
+(`docs/FORTSCHRITT.md`, Paket 74.6). Für den Playtest verbindet Tailscale die Rechner in einem
+privaten, mit WireGuard verschlüsselten Netz, ohne Portweiterleitung und auch hinter CGNAT/DS-Lite.
+Das deckt bis zur TLS-Verschlüsselung (Etappe 48) auch ab, dass Name und Passwort sonst im Klartext
+übers Netz gingen.
+
+1. **Mac (Spielleitung):** Tailscale installieren und mit einem Konto (Google, Microsoft, GitHub …)
+   anmelden. In der Admin-Konsole beim Mac **„Share…“** wählen und je Spieler einen Einladungslink
+   erzeugen. Geteilt wird nur dieser eine Rechner; die Spieler sehen nichts sonst aus dem eigenen
+   Netz. Der kostenlose Tarif reicht.
+2. **Spieler (Windows):** Tailscale installieren, mit einem eigenen Konto anmelden, den
+   Einladungslink öffnen und annehmen. Der Mac erscheint dann in ihrer Tailscale-Liste.
+3. **Server** wie in Abschnitt 1 starten (Port 25600); die macOS-Firewall-Frage wie oben mit
+   **Erlauben** beantworten.
+4. **Verbinden:** im Spiel Mehrspieler → Adresse `<Name des Macs>:25600` (MagicDNS-Name aus der
+   Tailscale-Liste) oder die Tailscale-Adresse `100.x.y.z:25600`.
+5. **Vorher selbst prüfen**, z. B. von einem zweiten Rechner oder aus der Windows-VM mit eigenem
+   Tailscale-Konto. In der Tailscale-Liste zeigt `tailscale status` (bzw. die App), ob die Verbindung
+   direkt läuft oder über ein Relay (dann etwas mehr Latenz, funktioniert aber).
+
+QtCraft hat keine automatische Server-Suche im LAN, die Adresse wird immer eingetippt; ein
+Ebene-2-Netz (ZeroTier, OpenVPN mit TAP) bringt daher keinen Vorteil.
+
 ## 3. Für die Spieler (Windows)
 
 - **Anzeige** (E-835): Einstellungen → Anzeige wählt Fenster, randloses Vollbild oder Vollbild samt
