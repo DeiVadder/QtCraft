@@ -1,0 +1,83 @@
+{
+    "name": "lush_delta",
+    "delta": true,
+    "temperature": 0.9,
+    "humidity": 0.85,
+    "surface": "grass_block",
+    "surfacePatches": [
+        {
+            "block": "mud",
+            "share": 0.3
+        }
+    ],
+    "subsurface": "mud",
+    "subsurfaceDepth": 2,
+    "underwater": "mud",
+    "underwaterPatches": [
+        {
+            "block": "sand",
+            "share": 0.35
+        },
+        {
+            "block": "clay",
+            "share": 0.12
+        }
+    ],
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "reeds",
+            "density": 0.5
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.3
+        },
+        {
+            "feature": "jungle_bush",
+            "density": 0.012
+        },
+        {
+            "feature": "oak_bush",
+            "density": 0.004
+        },
+        {
+            "feature": "melon_patch",
+            "density": 0.002
+        },
+        {
+            "feature": "lily_pad",
+            "density": 0.08
+        },
+        {
+            "feature": "jungle_tree",
+            "density": 0.005
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.5,
+            "patchSize": 18,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 3
+                },
+                {
+                    "block": "fern",
+                    "weight": 1
+                }
+            ]
+        },
+        "flowers": {
+            "density": 0.01,
+            "patchSize": 12,
+            "plants": [
+                {
+                    "block": "blue_orchid",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

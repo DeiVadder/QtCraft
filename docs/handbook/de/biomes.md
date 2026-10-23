@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Gebirge](#biome-qtcraft-mountains) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
+**QtCraft:** [Birkenwald](#biome-qtcraft-birch_forest) · [Blumental](#biome-qtcraft-flower_valley) · [Dschungel](#biome-qtcraft-jungle) · [Dschungelrand](#biome-qtcraft-jungle_edge) · [Ebene](#biome-qtcraft-plains) · [Fluss](#biome-qtcraft-river) · [Flussdelta](#biome-qtcraft-delta) · [Gebirge](#biome-qtcraft-mountains) · [Gefrorenes Flussdelta](#biome-qtcraft-frozen_delta) · [Sumpf](#biome-qtcraft-swamp) · [Taiga](#biome-qtcraft-taiga) · [Tundra](#biome-qtcraft-tundra) · [Üppiges Flussdelta](#biome-qtcraft-lush_delta) · [Verschneite Taiga](#biome-qtcraft-snowy_taiga) · [Wald](#biome-qtcraft-forest) · [Waldsteppe](#biome-qtcraft-forest_steppe) · [Wüste](#biome-qtcraft-desert) · [Zugefrorener Fluss](#biome-qtcraft-frozen_river)
 
 ## QtCraft
 
@@ -198,6 +198,35 @@ Das Wasser der gewundenen Flüsse, die durch das Land bis ins Meer oder in Seen 
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
+### <a id="biome-qtcraft-delta"></a>Flussdelta
+
+Wo ein breiter Fluss durch flaches Land ins Meer läuft, fächert er sich in flache Arme zwischen niedrigen Inseln auf: Sandbänke bündig mit dem Wasser, Schlamminseln mit Gras, Schilf und Zuckerrohr, kleine Tümpel und Sandbänke, die unter dem Meer weit hinaus reichen. In den Armen schwimmen Lachse und Kabeljau. Deltas sind selten und entstehen nie in Schluchten oder unter Klippen.
+
+| | |
+|---|---|
+| ID | `qtcraft:delta` |
+| Deltas in | [Birkenwald](#biome-qtcraft-birch_forest), [Blumental](#biome-qtcraft-flower_valley), [Ebene](#biome-qtcraft-plains), [Gebirge](#biome-qtcraft-mountains), [Wald](#biome-qtcraft-forest), [Waldsteppe](#biome-qtcraft-forest_steppe), [Wüste](#biome-qtcraft-desert) |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Erde](blocks.md#block-qtcraft-dirt) (2 Blöcke) |
+| Unter Wasser | [Sand](blocks.md#block-qtcraft-sand), [Schlamm](blocks.md#block-qtcraft-mud) (30 %), [Ton](blocks.md#block-qtcraft-clay) (10 %), [Kies](blocks.md#block-qtcraft-gravel) (10 %) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Birke](worldgen.md#feature-qtcraft-birch_tree) (0,15 % der Säulen), [Eiche](worldgen.md#feature-qtcraft-oak_tree) (0,4 % der Säulen), [Eichenbusch](worldgen.md#feature-qtcraft-oak_bush) (0,3 % der Säulen), [Reeds](worldgen.md#feature-qtcraft-reeds) (35 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (12 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (100 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,64 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+
 ### <a id="biome-qtcraft-mountains"></a>Gebirge
 
 Hohe Felsgipfel mit Schnee darauf.
@@ -229,6 +258,32 @@ Hohe Felsgipfel mit Schnee darauf.
 **Monster (Anteil an der Monsterliste)**
 
 [Enderman](creatures.md#mob-qtcraft-enderman) (1,94 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,97 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,42 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,42 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,42 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,42 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,42 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
+
+### <a id="biome-qtcraft-frozen_delta"></a>Gefrorenes Flussdelta
+
+Ein Flussdelta in kaltem Land (Tundra, verschneite Taiga, Taiga): kahle Inseln aus Kies mit etwas Schlamm und Sand, wenig Schilf, Eis an den flachen Ufern, während die Arme offen bleiben.
+
+| | |
+|---|---|
+| ID | `qtcraft:frozen_delta` |
+| Deltas in | [Taiga](#biome-qtcraft-taiga), [Tundra](#biome-qtcraft-tundra), [Verschneite Taiga](#biome-qtcraft-snowy_taiga) |
+| Oberfläche | [Kies](blocks.md#block-qtcraft-gravel) |
+| Unter der Oberfläche | [Kies](blocks.md#block-qtcraft-gravel) (2 Blöcke) |
+| Unter Wasser | [Kies](blocks.md#block-qtcraft-gravel), [Sand](blocks.md#block-qtcraft-sand) (25 %), [Ton](blocks.md#block-qtcraft-clay) (8 %) |
+| Strände | [Kies](blocks.md#block-qtcraft-gravel) |
+| Gefrorenes Wasser | [Eis](blocks.md#block-qtcraft-ice) |
+
+**Pflanzen und Bäume**
+
+[Reeds](worldgen.md#feature-qtcraft-reeds) (5 % der Säulen)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,96 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (0,2 %), [Kjut](creatures.md#mob-qtcraft-kjut) (19,57 %), [Schleim](creatures.md#mob-qtcraft-slime) (19,57 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (19,57 %), [Spinne](creatures.md#mob-qtcraft-spider) (19,57 %), [Zombie](creatures.md#mob-qtcraft-zombie) (19,57 %)
 
 **Wesen**
 
@@ -326,6 +381,39 @@ Kaltes flaches Land unter Schnee; sein Wasser gefriert.
 **Wesen**
 
 [Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig), [Wolf](creatures.md#mob-qtcraft-wolf)
+
+### <a id="biome-qtcraft-lush_delta"></a>Üppiges Flussdelta
+
+Ein Flussdelta in warmem, feuchtem Land (Dschungel, Dschungelrand, Sumpf): grüne Inseln aus Gras und Schlamm, dichtes Schilf und Zuckerrohr, Dschungelbüsche, Seerosen auf den Armen.
+
+| | |
+|---|---|
+| ID | `qtcraft:lush_delta` |
+| Deltas in | [Dschungel](#biome-qtcraft-jungle), [Dschungelrand](#biome-qtcraft-jungle_edge), [Sumpf](#biome-qtcraft-swamp) |
+| Oberfläche | [Grasblock](blocks.md#block-qtcraft-grass_block) |
+| Unter der Oberfläche | [Schlamm](blocks.md#block-qtcraft-mud) (2 Blöcke) |
+| Unter Wasser | [Schlamm](blocks.md#block-qtcraft-mud), [Sand](blocks.md#block-qtcraft-sand) (35 %), [Ton](blocks.md#block-qtcraft-clay) (12 %) |
+| Strände | [Sand](blocks.md#block-qtcraft-sand) |
+
+**Pflanzen und Bäume**
+
+[Dschungelbaum](worldgen.md#feature-qtcraft-jungle_tree) (0,5 % der Säulen), [Dschungelbusch](worldgen.md#feature-qtcraft-jungle_bush) (1,2 % der Säulen), [Eichenbusch](worldgen.md#feature-qtcraft-oak_bush) (0,4 % der Säulen), [Melonen](worldgen.md#feature-qtcraft-melon_patch) (0,2 % der Säulen), [Reeds](worldgen.md#feature-qtcraft-reeds) (50 % der Säulen), [Seerosen](worldgen.md#feature-qtcraft-lily_pad) (8 % der Säulen), [Zuckerrohr](worldgen.md#feature-qtcraft-sugar_cane) (30 % der Säulen)
+
+**Gräser**
+
+[Hohes Gras](blocks.md#block-qtcraft-tall_grass) (75 %), [Farn](blocks.md#block-qtcraft-fern) (25 %)
+
+**Blumen**
+
+[Blaue Orchidee](blocks.md#block-qtcraft-blue_orchid) (100 %)
+
+**Monster (Anteil an der Monsterliste)**
+
+[Enderman](creatures.md#mob-qtcraft-enderman) (1,64 %), [Ertrunkener](creatures.md#mob-qtcraft-drowned) (16,39 %), [Kjut](creatures.md#mob-qtcraft-kjut) (16,39 %), [Schleim](creatures.md#mob-qtcraft-slime) (16,39 %), [Skelett](creatures.md#mob-qtcraft-skeleton) (16,39 %), [Spinne](creatures.md#mob-qtcraft-spider) (16,39 %), [Zombie](creatures.md#mob-qtcraft-zombie) (16,39 %)
+
+**Wesen**
+
+[Huhn](creatures.md#mob-qtcraft-chicken), [Kabeljau](creatures.md#mob-qtcraft-cod), [Kuh](creatures.md#mob-qtcraft-cow), [Lachs](creatures.md#mob-qtcraft-salmon), [Schaf](creatures.md#mob-qtcraft-sheep), [Schwein](creatures.md#mob-qtcraft-pig)
 
 ### <a id="biome-qtcraft-snowy_taiga"></a>Verschneite Taiga
 

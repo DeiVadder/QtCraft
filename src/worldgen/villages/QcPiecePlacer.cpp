@@ -53,7 +53,8 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
     const double reach = 0.5 * std::hypot(rect.x1 - rect.x0 + 1, rect.z1 - rect.z0 + 1) + 1.0;
     for (const auto &sample : samples) {
         const QcTerrainColumn column = m_terrain.column(sample.first, sample.second);
-        if (column.height - 1 < m_terrain.seaLevel() || column.overhang >= 1.0) {
+        // No house on the low islands of a delta (decision E-850).
+        if (column.height - 1 < m_terrain.seaLevel() || column.overhang >= 1.0 || m_terrain.isDeltaBiome(column.biome)) {
             return std::nullopt;
         }
         if (&sample == &samples.back() && column.riverDistance < column.riverHalfWidth + reach) {

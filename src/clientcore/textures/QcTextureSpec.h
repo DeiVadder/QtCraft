@@ -267,6 +267,9 @@ struct QcTextureSpec
         // one-pixel rim in the secondary colour (its alpha kept too); the slime block draws it on its
         // outer cube and, darker and more opaque, on its inner core cube.
         Slime,
+        // Reeds (decision E-850): thin stalks with long leaves (primary), a few with a brown head
+        // (secondary).
+        Reeds,
     };
 
     // Emblem and Icon only: up to 16 rows of up to 16 characters, top row first.

@@ -112,9 +112,10 @@ std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageS
     for (int dz = -reach; dz <= reach; dz += step) {
         for (int dx = -reach; dx <= reach; dx += step) {
             ++samples;
-            // Boardwalks do not cross rivers (decision E-841): no village over water beside one.
+            // Boardwalks do not cross rivers (decision E-841): no village over water beside one, nor
+            // over the arms of a delta (decision E-850).
             const QcTerrainColumn column = terrain.column(x + dx, z + dz);
-            if (column.riverDistance < column.riverHalfWidth + step) {
+            if (column.riverDistance < column.riverHalfWidth + step || terrain.isDeltaBiome(column.biome)) {
                 return std::nullopt;
             }
             carried += QcBoardwalkPlanner::carries(terrain, style.stilts, column) ? 1 : 0;

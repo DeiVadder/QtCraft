@@ -82,9 +82,15 @@ struct QcBiomeDefinition
     // Patches of other blocks among `underwaterBlock` (gravel and clay in river beds, decision
     // E-840); their shares add up to at most 1.
     QList<QcBlockShare> underwaterPatches;
+    // Patches of other blocks among `surfaceBlock` on the land of a delta biome (mud and grass on
+    // the islands, decision E-850); shares as above. Other biomes ignore them.
+    QList<QcBlockShare> surfacePatches;
     QString beachBlock;
     // Water surface block in cold biomes (e.g. ice); empty keeps water.
     QString frozenWaterBlock;
+    // Only water at most this many blocks deep freezes (ice along the banks of a cold delta, decision
+    // E-850); 0: all water of the biome.
+    int frozenDepth = 0;
     // Surface above this height uses `snowBlock` (0 disables).
     int snowLine = 0;
     QString snowBlock;
@@ -98,6 +104,12 @@ struct QcBiomeDefinition
     // The river biome of the rivers through this land biome (decision E-840; frozen rivers in cold
     // biomes); empty: the terrain's `riverBiome`.
     QString riverBiome;
+    // A delta biome (decision E-850): the climate never chooses it; the arms and islands of a river
+    // delta take the delta biome of the land biome around them.
+    bool delta = false;
+    // The delta biome of the deltas in this land biome (decision E-850); empty: the terrain's
+    // `deltaBiome`.
+    QString deltaBiome;
     // Monster kinds weighted differently here than by their spawn rules (`monsters`, decision
     // E-838; QcSpawnWeights). Server side only.
     QList<QcSpawnWeight> monsterWeights;
@@ -215,6 +227,13 @@ struct QcTerrainSettings
     bool rivers = false;
     // The river biome of land biomes that name none (decision E-840); empty: the first river biome.
     QString riverBiome;
+    // River deltas (decision E-850): where wide rivers run through flat land into the sea; need
+    // `rivers`.
+    bool deltas = false;
+    // The share of the wide river mouths that get a delta (0..1; decision E-850): deltas are rare.
+    double deltaShare = 1.0;
+    // The delta biome of land biomes that name none (decision E-850); empty: the first delta biome.
+    QString deltaBiome;
     // Biome whose vegetation bone meal grows where the world generator names no biome (flat,
     // showcase and void worlds; decision E-814); empty: none there.
     QString vegetationBiome;

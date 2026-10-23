@@ -289,6 +289,7 @@
                 "block:qtcraft:red_stained_glass_pane",
                 "block:qtcraft:red_terracotta",
                 "block:qtcraft:red_wool",
+                "block:qtcraft:reeds",
                 "block:qtcraft:sand",
                 "block:qtcraft:sandstone",
                 "block:qtcraft:signal_comparator",
@@ -679,11 +680,14 @@
                 "biome:qtcraft:forest",
                 "biome:qtcraft:forest_steppe",
                 "biome:qtcraft:frozen_river",
+                "biome:qtcraft:frozen_delta",
                 "biome:qtcraft:jungle",
                 "biome:qtcraft:jungle_edge",
+                "biome:qtcraft:lush_delta",
                 "biome:qtcraft:mountains",
                 "biome:qtcraft:plains",
                 "biome:qtcraft:river",
+                "biome:qtcraft:delta",
                 "biome:qtcraft:snowy_taiga",
                 "biome:qtcraft:swamp",
                 "biome:qtcraft:taiga",
@@ -724,6 +728,7 @@
                 "feature:qtcraft:oak_tree",
                 "feature:qtcraft:pumpkin_patch",
                 "feature:qtcraft:red_mushroom",
+                "feature:qtcraft:reeds",
                 "ore:qtcraft:signal",
                 "feature:qtcraft:snow_layer",
                 "feature:qtcraft:spruce_tree",
@@ -1002,6 +1007,288 @@
             ],
             "text": "Light forest of birches.",
             "title": "Birch Forest"
+        },
+        "biome:qtcraft:delta": {
+            "category": "biomes",
+            "categoryTitle": "Biomes",
+            "englishTitle": "River Delta",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:delta"
+                },
+                {
+                    "label": "Deltas of",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:birch_forest",
+                            "text": "Birch Forest"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "biome:qtcraft:desert",
+                            "text": "Desert"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:flower_valley",
+                            "text": "Flower Valley"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest",
+                            "text": "Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:forest_steppe",
+                            "text": "Forest Steppe"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:mountains",
+                            "text": "Mountains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:plains",
+                            "text": "Plains"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Below the surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "2 blocks",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Under water",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "30 %",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "10 %",
+                            "target": "block:qtcraft:clay",
+                            "text": "Clay"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "10 %",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beaches",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:delta",
+            "name": "qtcraft:delta",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:birch_log",
+                            "note": "0.15 % of columns",
+                            "target": "feature:qtcraft:birch_tree",
+                            "text": "Birch tree"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0.3 % of columns",
+                            "target": "feature:qtcraft:oak_bush",
+                            "text": "Oak bush"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0.4 % of columns",
+                            "target": "feature:qtcraft:oak_tree",
+                            "text": "Oak tree"
+                        },
+                        {
+                            "icon": "qtcraft:reeds",
+                            "note": "35 % of columns",
+                            "target": "feature:qtcraft:reeds",
+                            "text": "Reeds"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "12 % of columns",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Sugar cane"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "100 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1.64 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Chicken"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Cod"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Cow"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Pig"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Salmon"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Sheep"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Creatures"
+                }
+            ],
+            "text": "Where a wide river runs through flat land into the sea, it spreads into a fan of shallow arms between low islands: sand banks flush with the water, mud islands with grass, reeds and sugar cane, small ponds, and sand banks reaching out under the sea. Salmon and cod swim in the arms. Deltas are rare and never form in gorges or below cliffs.",
+            "title": "River Delta"
         },
         "biome:qtcraft:desert": {
             "category": "biomes",
@@ -1997,6 +2284,232 @@
             "text": "Warm, dry grassland between the plains and the desert: tall grass with scattered oaks and oak bushes, dry shrubs here and there. Plains villages stand here too.",
             "title": "Forest Steppe"
         },
+        "biome:qtcraft:frozen_delta": {
+            "category": "biomes",
+            "categoryTitle": "Biomes",
+            "englishTitle": "Frozen River Delta",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:frozen_delta"
+                },
+                {
+                    "label": "Deltas of",
+                    "links": [
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:snowy_taiga",
+                            "text": "Snowy Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:taiga",
+                            "text": "Taiga"
+                        },
+                        {
+                            "icon": "qtcraft:snow_block",
+                            "note": "",
+                            "target": "biome:qtcraft:tundra",
+                            "text": "Tundra"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Below the surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "2 blocks",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Under water",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "25 %",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "8 %",
+                            "target": "block:qtcraft:clay",
+                            "text": "Clay"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beaches",
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Frozen water",
+                    "links": [
+                        {
+                            "icon": "qtcraft:ice",
+                            "note": "",
+                            "target": "block:qtcraft:ice",
+                            "text": "Ice"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:gravel",
+            "id": "biome:qtcraft:frozen_delta",
+            "name": "qtcraft:frozen_delta",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:reeds",
+                            "note": "5 % of columns",
+                            "target": "feature:qtcraft:reeds",
+                            "text": "Reeds"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "0.2 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1.96 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "19.57 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Chicken"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Cod"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Cow"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Pig"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Salmon"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Sheep"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Creatures"
+                }
+            ],
+            "text": "A river delta in cold land (tundra, snowy taiga, taiga): bare islands of gravel with a little mud and sand, a few reeds, ice along the shallow banks while the arms stay open.",
+            "title": "Frozen River Delta"
+        },
         "biome:qtcraft:frozen_river": {
             "category": "biomes",
             "categoryTitle": "Biomes",
@@ -2710,6 +3223,290 @@
             ],
             "text": "The thin edge of the jungle towards temperate forests: single jungle trees, many jungle bushes, ferns and melons, but no giant jungle trees.",
             "title": "Jungle Edge"
+        },
+        "biome:qtcraft:lush_delta": {
+            "category": "biomes",
+            "categoryTitle": "Biomes",
+            "englishTitle": "Lush River Delta",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:lush_delta"
+                },
+                {
+                    "label": "Deltas of",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:jungle",
+                            "text": "Jungle"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:jungle_edge",
+                            "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:swamp",
+                            "text": "Swamp"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Below the surface",
+                    "links": [
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "2 blocks",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Under water",
+                    "links": [
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "35 %",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:clay",
+                            "note": "12 %",
+                            "target": "block:qtcraft:clay",
+                            "text": "Clay"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beaches",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:grass_block",
+            "id": "biome:qtcraft:lush_delta",
+            "name": "qtcraft:lush_delta",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:jungle_log",
+                            "note": "1.2 % of columns",
+                            "target": "feature:qtcraft:jungle_bush",
+                            "text": "Jungle bush"
+                        },
+                        {
+                            "icon": "qtcraft:jungle_log",
+                            "note": "0.5 % of columns",
+                            "target": "feature:qtcraft:jungle_tree",
+                            "text": "Jungle tree"
+                        },
+                        {
+                            "icon": "qtcraft:lily_pad",
+                            "note": "8 % of columns",
+                            "target": "feature:qtcraft:lily_pad",
+                            "text": "Lily pads"
+                        },
+                        {
+                            "icon": "qtcraft:melon",
+                            "note": "0.2 % of columns",
+                            "target": "feature:qtcraft:melon_patch",
+                            "text": "Melons"
+                        },
+                        {
+                            "icon": "qtcraft:oak_log",
+                            "note": "0.4 % of columns",
+                            "target": "feature:qtcraft:oak_bush",
+                            "text": "Oak bush"
+                        },
+                        {
+                            "icon": "qtcraft:reeds",
+                            "note": "50 % of columns",
+                            "target": "feature:qtcraft:reeds",
+                            "text": "Reeds"
+                        },
+                        {
+                            "icon": "qtcraft:sugar_cane",
+                            "note": "30 % of columns",
+                            "target": "feature:qtcraft:sugar_cane",
+                            "text": "Sugar cane"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Plants and trees"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:tall_grass",
+                            "note": "75 %",
+                            "target": "block:qtcraft:tall_grass",
+                            "text": "Tall grass"
+                        },
+                        {
+                            "icon": "qtcraft:fern",
+                            "note": "25 %",
+                            "target": "block:qtcraft:fern",
+                            "text": "Fern"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Grasses"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:blue_orchid",
+                            "note": "100 %",
+                            "target": "block:qtcraft:blue_orchid",
+                            "text": "Blue orchid"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Flowers"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:drowned",
+                            "text": "Drowned"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1.64 %",
+                            "target": "mob:qtcraft:enderman",
+                            "text": "Enderman"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:kjut",
+                            "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:skeleton",
+                            "text": "Skeleton"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:slime",
+                            "text": "Slime"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:spider",
+                            "text": "Spider"
+                        },
+                        {
+                            "icon": "",
+                            "note": "16.39 %",
+                            "target": "mob:qtcraft:zombie",
+                            "text": "Zombie"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Monsters (share of the monster list)"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:chicken",
+                            "text": "Chicken"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cod",
+                            "text": "Cod"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:cow",
+                            "text": "Cow"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:pig",
+                            "text": "Pig"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:salmon",
+                            "text": "Salmon"
+                        },
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "mob:qtcraft:sheep",
+                            "text": "Sheep"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Creatures"
+                }
+            ],
+            "text": "A river delta in warm, wet land (jungle, jungle edge, swamp): green islands of grass and mud, dense reeds and sugar cane, jungle bushes, lily pads on the arms.",
+            "title": "Lush River Delta"
         },
         "biome:qtcraft:mountains": {
             "category": "biomes",
@@ -6642,6 +7439,12 @@
                             "note": "Birch tree",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Birch tree",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         }
                     ],
                     "recipes": [
@@ -6903,6 +7706,12 @@
                             "note": "Birch tree",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Birch tree",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         }
                     ],
                     "recipes": [
@@ -12399,6 +13208,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Flowers",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Flowers",
@@ -27444,6 +28259,12 @@
                             "text": "Plains"
                         },
                         {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Below the surface",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
+                        },
+                        {
                             "icon": "qtcraft:snow_block",
                             "note": "Below the surface",
                             "target": "biome:qtcraft:snowy_taiga",
@@ -28306,6 +29127,12 @@
                             "note": "Grasses",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Grasses",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -31490,6 +32317,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Surface",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Surface",
                             "target": "biome:qtcraft:mountains",
                             "text": "Mountains"
                         },
@@ -31498,6 +32331,12 @@
                             "note": "Surface",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Surface",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -31798,6 +32637,12 @@
                             "note": "Surface, Below the surface, Under water, Beaches",
                             "target": "biome:qtcraft:frozen_river",
                             "text": "Frozen River"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "Surface, Below the surface, Under water, Beaches",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
                         },
                         {
                             "icon": "qtcraft:gravel",
@@ -35729,6 +36574,12 @@
                             "text": "Frozen River"
                         },
                         {
+                            "icon": "qtcraft:gravel",
+                            "note": "Frozen water",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
                             "icon": "qtcraft:snow_block",
                             "note": "Frozen water",
                             "target": "biome:qtcraft:snowy_taiga",
@@ -38106,6 +38957,12 @@
                             "note": "Jungle tree, Jungle bush",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Jungle bush, Jungle tree",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         }
                     ],
                     "recipes": [
@@ -38361,6 +39218,12 @@
                             "note": "Jungle tree, Jungle bush",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Jungle bush, Jungle tree",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         }
                     ],
                     "recipes": [
@@ -45375,6 +46238,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Lily pads",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Lily pads",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
                         }
@@ -49308,6 +50177,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Melons",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Melons",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
                         }
@@ -52556,6 +53431,12 @@
                     "links": [
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Below the surface, Under water",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Beaches",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
@@ -55108,9 +55989,21 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Oak bush",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Oak tree",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oak bush, Oak tree",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -55387,9 +56280,21 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Oak bush",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Oak tree",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Oak bush, Oak tree",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -68032,6 +68937,156 @@
             "text": "A thin layer of wool that needs a block below.",
             "title": "Red carpet"
         },
+        "block:qtcraft:reeds": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Reeds",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:reeds"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "0"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "0.05 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:reeds",
+                            "note": "",
+                            "target": "block:qtcraft:reeds",
+                            "text": "Reeds"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Solid",
+                    "links": [
+                    ],
+                    "value": "no"
+                },
+                {
+                    "label": "Needs support",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": "stands only on"
+                },
+                {
+                    "label": "Needs next to its ground",
+                    "links": [
+                        {
+                            "icon": "qtcraft:water_bucket",
+                            "note": "",
+                            "target": "block:qtcraft:water",
+                            "text": "Water"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Washed away by liquids",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Flammable",
+                    "links": [
+                    ],
+                    "value": "catches fire 60, burns away 100 (0 to 100)"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "grass and plants"
+                }
+            ],
+            "icon": "qtcraft:reeds",
+            "id": "block:qtcraft:reeds",
+            "name": "qtcraft:reeds",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "Reeds",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Reeds",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Reeds",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Found in"
+                }
+            ],
+            "text": "Tall stalks with brown heads on the banks of river deltas, on sand, mud, grass or gravel right beside water.",
+            "title": "Reeds"
+        },
         "block:qtcraft:sand": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -68365,6 +69420,12 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "Beaches",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "Under water, Beaches",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
@@ -68374,6 +69435,12 @@
                             "note": "Surface, Below the surface, Under water, Beaches",
                             "target": "biome:qtcraft:river",
                             "text": "River"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Under water, Beaches",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         }
                     ],
                     "recipes": [
@@ -85994,8 +87061,20 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Sugar cane",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Sugar cane",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Sugar cane",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -86156,6 +87235,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "Grasses",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Grasses",
                             "target": "biome:qtcraft:mountains",
                             "text": "Mountains"
                         },
@@ -86164,6 +87249,12 @@
                             "note": "Grasses",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "Grasses",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -94758,6 +95849,12 @@
                             "note": "0.8 % of columns",
                             "target": "biome:qtcraft:forest",
                             "text": "Forest"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.15 % of columns",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         }
                     ],
                     "recipes": [
@@ -95340,6 +96437,12 @@
                             "note": "2.5 % of columns",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "1.2 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         }
                     ],
                     "recipes": [
@@ -95442,6 +96545,12 @@
                             "note": "1 % of columns",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.5 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         }
                     ],
                     "recipes": [
@@ -95686,6 +96795,12 @@
                         {
                             "icon": "qtcraft:grass_block",
                             "note": "8 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "8 % of columns",
                             "target": "biome:qtcraft:swamp",
                             "text": "Swamp"
                         }
@@ -95772,6 +96887,12 @@
                             "note": "0.3 % of columns",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.2 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -95862,6 +96983,18 @@
                             "note": "0.8 % of columns",
                             "target": "biome:qtcraft:forest_steppe",
                             "text": "Forest Steppe"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.4 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.3 % of columns",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         }
                     ],
                     "recipes": [
@@ -95982,6 +97115,12 @@
                             "note": "0.2 % of columns",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "0.4 % of columns",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -96166,6 +97305,120 @@
             ],
             "text": "",
             "title": "Red mushrooms"
+        },
+        "feature:qtcraft:reeds": {
+            "category": "worldgen",
+            "categoryTitle": "World generation",
+            "englishTitle": "Reeds",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:reeds"
+                },
+                {
+                    "label": "Kind",
+                    "links": [
+                    ],
+                    "value": "plant"
+                },
+                {
+                    "label": "Blocks",
+                    "links": [
+                        {
+                            "icon": "qtcraft:reeds",
+                            "note": "",
+                            "target": "block:qtcraft:reeds",
+                            "text": "Reeds"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Size",
+                    "links": [
+                    ],
+                    "value": "4–4 blocks"
+                },
+                {
+                    "label": "Grows on",
+                    "links": [
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "block:qtcraft:grass_block",
+                            "text": "Grass block"
+                        },
+                        {
+                            "icon": "qtcraft:dirt",
+                            "note": "",
+                            "target": "block:qtcraft:dirt",
+                            "text": "Dirt"
+                        },
+                        {
+                            "icon": "qtcraft:sand",
+                            "note": "",
+                            "target": "block:qtcraft:sand",
+                            "text": "Sand"
+                        },
+                        {
+                            "icon": "qtcraft:mud",
+                            "note": "",
+                            "target": "block:qtcraft:mud",
+                            "text": "Mud"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "block:qtcraft:gravel",
+                            "text": "Gravel"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Only next to water",
+                    "links": [
+                    ],
+                    "value": "yes"
+                }
+            ],
+            "icon": "qtcraft:reeds",
+            "id": "feature:qtcraft:reeds",
+            "name": "qtcraft:reeds",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "5 % of columns",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "50 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "35 % of columns",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "In biomes"
+                }
+            ],
+            "text": "",
+            "title": "Reeds"
         },
         "feature:qtcraft:snow_layer": {
             "category": "worldgen",
@@ -96489,9 +97742,21 @@
                         },
                         {
                             "icon": "qtcraft:grass_block",
+                            "note": "30 % of columns",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
                             "note": "15 % of columns",
                             "target": "biome:qtcraft:plains",
                             "text": "Plains"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "12 % of columns",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -118961,6 +120226,12 @@
                             "note": "1",
                             "target": "biome:qtcraft:frozen_river",
                             "text": "Frozen River"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "1",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
                         }
                     ],
                     "recipes": [
@@ -118971,10 +120242,28 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
                             "icon": "qtcraft:gravel",
                             "note": "",
                             "target": "biome:qtcraft:frozen_river",
                             "text": "Frozen River"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         },
                         {
                             "icon": "qtcraft:sand",
@@ -120253,6 +121542,18 @@
                             "text": "Frozen River"
                         },
                         {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "biome:qtcraft:mountains",
@@ -120263,6 +121564,12 @@
                             "note": "",
                             "target": "biome:qtcraft:river",
                             "text": "River"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:snow_block",
@@ -125003,6 +126310,12 @@
                             "text": "Red mushroom"
                         },
                         {
+                            "icon": "qtcraft:reeds",
+                            "note": "0, from hardness",
+                            "target": "block:qtcraft:reeds",
+                            "text": "Reeds"
+                        },
+                        {
                             "icon": "qtcraft:signal_comparator",
                             "note": "0, from hardness",
                             "target": "block:qtcraft:signal_comparator",
@@ -129047,6 +130360,12 @@
                             "text": "Red mushroom"
                         },
                         {
+                            "icon": "qtcraft:reeds",
+                            "note": "light passes, creatures spawn inside it",
+                            "target": "block:qtcraft:reeds",
+                            "text": "Reeds"
+                        },
+                        {
                             "icon": "qtcraft:signal_dust",
                             "note": "light passes, creatures spawn inside it",
                             "target": "block:qtcraft:signal_dust",
@@ -130747,6 +132066,12 @@
                             "text": "Frozen River"
                         },
                         {
+                            "icon": "qtcraft:gravel",
+                            "note": "",
+                            "target": "biome:qtcraft:frozen_delta",
+                            "text": "Frozen River Delta"
+                        },
+                        {
                             "icon": "qtcraft:grass_block",
                             "note": "",
                             "target": "biome:qtcraft:jungle",
@@ -130757,6 +132082,12 @@
                             "note": "",
                             "target": "biome:qtcraft:jungle_edge",
                             "text": "Jungle Edge"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:lush_delta",
+                            "text": "Lush River Delta"
                         },
                         {
                             "icon": "qtcraft:grass_block",
@@ -130775,6 +132106,12 @@
                             "note": "",
                             "target": "biome:qtcraft:river",
                             "text": "River"
+                        },
+                        {
+                            "icon": "qtcraft:grass_block",
+                            "note": "",
+                            "target": "biome:qtcraft:delta",
+                            "text": "River Delta"
                         },
                         {
                             "icon": "qtcraft:snow_block",

@@ -66,7 +66,11 @@ set_tests_properties(test_mobs test_weather_effects test_block_light_engine test
 set_tests_properties(test_world_details test_spawners test_desert_temples test_showcase_stations test_showcase_world test_surface_ruins PROPERTIES COST 70)
 set_tests_properties(test_coastal_towers test_monster_spawning PROPERTIES COST 90)
 set_tests_properties(test_biome_spawning PROPERTIES COST 80)
-set_tests_properties(test_rivers PROPERTIES COST 100)
+set_tests_properties(test_rivers PROPERTIES COST 460)
+set_tests_properties(test_river_deltas PROPERTIES COST 560)
+set_tests_properties(test_climate_order PROPERTIES COST 110)
+set_tests_properties(test_flower_valley PROPERTIES COST 120)
+set_tests_properties(test_cold_edges PROPERTIES COST 80)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
 set_tests_properties(test_signal_showcase test_golem_measure PROPERTIES COST 60)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency

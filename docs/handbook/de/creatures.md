@@ -129,13 +129,13 @@ Alle Biome.
 
 **Gewicht in diesen Biomen**
 
-[Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river) (1)
+[Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta) (1), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river) (1)
 
 **Erscheint auch**
 
 Tag und Nacht; nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen); auch in Höhlen zu jeder Zeit; Blocklicht bis 0
 
-[Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river), [Fluss](biomes.md#biome-qtcraft-river)
+[Flussdelta](biomes.md#biome-qtcraft-delta), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Fluss](biomes.md#biome-qtcraft-river)
 
 ### <a id="mob-qtcraft-mannequin"></a>Gliederpuppe
 
@@ -424,7 +424,7 @@ Ein Fisch der kalten Gewässer in Taiga, Tundra und Bergen. Er schwimmt im Schwa
 
 **Erscheint in Biomen**
 
-[Fluss](biomes.md#biome-qtcraft-river), [Gebirge](biomes.md#biome-qtcraft-mountains), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
+[Fluss](biomes.md#biome-qtcraft-river), [Flussdelta](biomes.md#biome-qtcraft-delta), [Gebirge](biomes.md#biome-qtcraft-mountains), [Gefrorenes Flussdelta](biomes.md#biome-qtcraft-frozen_delta), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra), [Üppiges Flussdelta](biomes.md#biome-qtcraft-lush_delta), [Verschneite Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Zugefrorener Fluss](biomes.md#biome-qtcraft-frozen_river)
 
 ### <a id="mob-qtcraft-ocelot"></a>Ozelot
 

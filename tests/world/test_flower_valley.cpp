@@ -173,6 +173,7 @@ private slots:
             int outside = 0;
             int inside = 0;
             int different = 0;
+            int rivers = 0;
             for (int i = 0; i < gridCells; ++i) {
                 for (int j = 0; j < gridCells; ++j) {
                     const int x = -gridReach + j * gridStep;
@@ -184,18 +185,27 @@ private slots:
                     ++outside;
                     const QcTerrainGenerator::Column column = generator.column(x, z);
                     const QcTerrainGenerator::Column reference = plain.column(x, z);
+                    // Whether a river is built is decided along all of it (decision E-851): a river
+                    // that runs through a spot may end there in a pond of the valley or run on, and
+                    // is then left out on one side only.
+                    if ((column.riverDistance < QcRiverField::reach) != (reference.riverDistance < QcRiverField::reach)) {
+                        ++rivers;
+                        continue;
+                    }
                     const bool same = column.height == reference.height && column.landFactor == reference.landFactor
                                       && column.overhang == reference.overhang
                                       && generator.biomeName(column.biome) == plain.biomeName(reference.biome);
                     different += same ? 0 : 1;
                 }
             }
-            qInfo("seed %lld: %.3f of the samples in the spots", qlonglong(seed), double(inside) / (inside + outside));
+            qInfo("seed %lld: %.3f of the samples in the spots, %d outside where only one builds a river", qlonglong(seed), double(inside) / (inside + outside), rivers);
             QVERIFY2(inside > 0, qPrintable(QString::number(seed)));
             // The spots cover about a third of the samples (0.35 on both seeds, decision E-824), most
             // of it where the valley loses to the climate's own biome.
             QVERIFY2(outside > inside, qPrintable(u"%1 %2"_s.arg(outside).arg(inside)));
             QCOMPARE(different, 0);
+            // Rivers that one side builds and the other not stay rare (seed 42: 21 samples).
+            QVERIFY2(rivers <= outside / 500, qPrintable(u"seed %1: %2 of %3"_s.arg(seed).arg(rivers).arg(outside)));
         }
     }
 

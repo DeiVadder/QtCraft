@@ -253,7 +253,7 @@ void QcBlockUpdateQueue::queueSectionBorder(BorderScan &scan, int sectionIndex)
 
             const QcBlockPos pos{scan.chunkPos.x * QcWorld::chunkSize + x, sectionIndex * QcWorld::sectionHeight + y,
                                  scan.chunkPos.z * QcWorld::chunkSize + z};
-            if (stillSourceStays(scan, block, pos)) {
+            if (stillSourceStays(scan, block, pos) || loneBorderRail(scan, block, pos)) {
                 continue;
             }
 
@@ -292,6 +292,21 @@ void QcBlockUpdateQueue::queueInnerRails(const BorderScan &scan, int sectionInde
             }
         }
     }
+}
+
+bool QcBlockUpdateQueue::loneBorderRail(const BorderScan &scan, QcBlockId block, QcBlockPos pos) const
+{
+    // A rail's shape only depends on the rails around it: one with no rail across the border (at
+    // its height, one higher or one lower) keeps its shape. Without this, a ramp a structure leaves
+    // open on purpose (the showcase's ice station) would flatten when it lies at a chunk border.
+    const QcContentRegistry &content = m_state.content();
+    if (!QcRails::isRail(content, block)) {
+        return false;
+    }
+
+    const QcBlockPos across = qcNeighbour(pos, scan.towards);
+    const auto railAt = [&](QcBlockPos at) { return QcRails::isRail(content, m_state.world().blockAt(at).value_or(qcAirBlockId)); };
+    return !railAt(across) && !railAt(across.offset(0, 1, 0)) && !railAt(across.offset(0, -1, 0));
 }
 
 bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcBlockPos pos) const

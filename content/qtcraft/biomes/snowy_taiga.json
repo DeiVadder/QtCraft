@@ -1,5 +1,6 @@
 {
     "name": "snowy_taiga",
+    "deltaBiome": "frozen_delta",
     "temperature": 0.08,
     "humidity": 0.7,
     "baseHeight": 71,

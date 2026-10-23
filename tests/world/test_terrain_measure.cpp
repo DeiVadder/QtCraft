@@ -10,7 +10,8 @@
 
 // A measurement, not a check: set QTCRAFT_TERRAIN_MEASURE=1 and use a Release build. It times the
 // terrain generator (stage 69: rivers) over fixed fields of chunks and columns of a few seeds, the
-// fastest of a few runs; without the variable it only runs a small field once, as a smoke test.
+// fastest of a few runs, and fields around two river deltas (stage 70); without the variable it
+// only runs a small field once, as a smoke test.
 class TestTerrainMeasure : public QObject
 {
     Q_OBJECT
@@ -121,6 +122,22 @@ private slots:
             }
         }
         qInfo("TERRAIN %.3f ms per chunk, %.3f us per column (mean of %d fields)", chunkSum / samples, columnSum / samples, samples);
+    }
+
+    // Fields of 16 × 16 chunks around a river delta (decision E-850) of seed 7 and seed 42, the
+    // worst case of the deltas' cost.
+    void deltaFields()
+    {
+        if (!full()) {
+            QSKIP("only with QTCRAFT_TERRAIN_MEASURE");
+        }
+        double chunkSum = 0.0;
+        for (const auto &[seed, corner] : {std::pair{qint64(7), QcChunkPos{17, -68}}, std::pair{qint64(42), QcChunkPos{42, -8}}}) {
+            const double chunk = perChunk(seed, corner, 16, 3);
+            qInfo("seed %lld, delta chunks from %d %d: %.3f ms per chunk", seed, corner.x, corner.z, chunk);
+            chunkSum += chunk;
+        }
+        qInfo("DELTA %.3f ms per chunk (mean of 2 fields)", chunkSum / 2.0);
     }
 };
 

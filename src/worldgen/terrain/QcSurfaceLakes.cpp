@@ -2,10 +2,12 @@
 
 #include "common/core/QcIntMath.h"
 #include "worldgen/terrain/QcNoise.h"
+#include "worldgen/terrain/QcRiverDelta.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 namespace {
@@ -175,7 +177,34 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteAt(int pool, QcChunkPos 
     }
     site.level = *level;
     site.footprint = {bounds.x0 - clearRing, bounds.z0 - clearRing, bounds.x1 + clearRing, bounds.z1 + clearRing};
+    if (touchesDelta(site.footprint)) {
+        return std::nullopt;
+    }
     return site;
+}
+
+bool QcSurfaceLakes::touchesDelta(Rect footprint) const
+{
+    // Like every structure, a lake keeps its whole footprint off the deltas (the basin and its ring
+    // are dry land already, but the corners of the footprint reach further). Deltas lie only in a
+    // band along the coasts, and the continent hardly changes over a footprint: its corners and
+    // middle tell whether to look at its columns.
+    const std::array<std::pair<int, int>, 5> probes{{{footprint.x0, footprint.z0},
+                                                     {footprint.x1, footprint.z0},
+                                                     {footprint.x0, footprint.z1},
+                                                     {footprint.x1, footprint.z1},
+                                                     {(footprint.x0 + footprint.x1) / 2, (footprint.z0 + footprint.z1) / 2}}};
+    if (std::ranges::none_of(probes, [this](std::pair<int, int> at) { return QcRiverDelta::mayReach(m_terrain.continentAt(at.first, at.second)); })) {
+        return false;
+    }
+    for (int z = footprint.z0; z <= footprint.z1; ++z) {
+        for (int x = footprint.x0; x <= footprint.x1; ++x) {
+            if (m_terrain.isDeltaBiome(m_terrain.column(x, z).biome)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 std::optional<int> QcSurfaceLakes::levelOver(const Pool &pool, const QList<std::pair<int, int>> &basin, double random) const

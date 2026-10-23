@@ -171,7 +171,9 @@ std::optional<int> QcCoastalTowerPlanner::coastTop(int x, int z) const
     const QcTerrainGenerator::Column column = m_terrain.column(x, z);
     const int top = column.height - 1;
     const int sea = m_terrain.seaLevel();
-    if (column.overhang >= 1.0 || top < sea || top > sea + m_settings.maxRise || m_terrain.isCave(x, top, z, column)) {
+    // No tower on the low islands of a river delta (decision E-850).
+    if (column.overhang >= 1.0 || top < sea || top > sea + m_settings.maxRise || m_terrain.isDeltaBiome(column.biome)
+        || m_terrain.isCave(x, top, z, column)) {
         return std::nullopt;
     }
     return top;

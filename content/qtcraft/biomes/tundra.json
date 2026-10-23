@@ -1,5 +1,6 @@
 {
     "name": "tundra",
+    "deltaBiome": "frozen_delta",
     "temperature": 0.05,
     "humidity": 0.3,
     "baseHeight": 68,

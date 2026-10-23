@@ -120,6 +120,29 @@ double QcRiverField::value(double bentX, double bentZ) const
     return m_riverNoise.fractal2(bentX / riverScale, bentZ / riverScale, 2);
 }
 
+QcRiverField::Point QcRiverField::bendAt(double x, double z) const
+{
+    return {meanderAmplitude * m_meanderNoiseX.fractal2(x / meanderScale, z / meanderScale, 2),
+            meanderAmplitude * m_meanderNoiseZ.fractal2(x / meanderScale, z / meanderScale, 2)};
+}
+
+QcRiverField::Point QcRiverField::unbent(double bentX, double bentZ) const
+{
+    // The column whose bent coordinates these are: a fixed point of x = bent - bend(x) (the bend
+    // changes by less than a block per block), iterated until it moves less than a quarter block.
+    Point column{bentX, bentZ};
+    for (int step = 0; step < 8; ++step) {
+        const Point bend = bendAt(column.x, column.z);
+        const Point next{bentX - bend.x, bentZ - bend.z};
+        const bool settled = std::hypot(next.x - column.x, next.z - column.z) < 0.25;
+        column = next;
+        if (settled) {
+            break;
+        }
+    }
+    return column;
+}
+
 double QcRiverField::strengthAt(const QcTerrainClimate::Point &climate)
 {
     return smoothstep(dryTo, dryFrom, climate.humidity);
@@ -132,31 +155,76 @@ QcRiverField::Sample QcRiverField::at(int x, int z, const QcTerrainClimate::Poin
     if (sample.strength <= 0.0) {
         return {};
     }
-    const double bentX = x + meanderAmplitude * m_meanderNoiseX.fractal2(x / meanderScale, z / meanderScale, 2);
-    const double bentZ = z + meanderAmplitude * m_meanderNoiseZ.fractal2(x / meanderScale, z / meanderScale, 2);
+    const Point bend = bendAt(x, z);
+    const double bentX = x + bend.x;
+    const double bentZ = z + bend.z;
     const double here = value(bentX, bentZ);
+    sample.value = here;
     if (std::abs(here) >= cutoff) {
-        return {};
+        return {.value = here};
     }
 
-    // The distance to the zero line: the value over its slope, at most `reach` at the cutoff so the
-    // field stays continuous where the slope is skipped. The slope is taken at the bent coordinates
-    // (the meander stretches or squeezes the width by up to about a quarter, which looks natural).
+    // The distance to the zero line: the value over its slope, at least `reach` at the cutoff so
+    // the field stays continuous where the slope is skipped. The floor rises with the fourth power
+    // of the value: near the middle line it stays far below the distance, so a river where the
+    // noise is steep keeps its width (with a linear floor it narrowed by the steepness over 1.5
+    // times the typical slope, down to water a block wide joined only at its corners).
+    // The slope is taken at the bent coordinates (the meander stretches or squeezes the width,
+    // which looks natural).
     const Shape shape = shapeAt(bentX, bentZ, here);
-    const double capped = reach * std::abs(here) / cutoff;
+    const double nearCutoff = std::abs(here) / cutoff;
+    const double capped = reach * nearCutoff * nearCutoff * nearCutoff * nearCutoff;
     sample.distance = shape.slope > 0.0 ? std::max(std::abs(here) / shape.slope, capped) : capped;
     // Only where the river changes anything (within `reach`) the top is searched.
-    const double nearTop = smoothstep(nearTopFrom, nearTopTo, shape.top);
-    if (nearTop < 1.0 && sample.distance < reach) {
-        sample.strength *= std::max(nearTop, ringFade(shape.topX, shape.topZ, shape.side));
+    if (sample.distance < reach) {
+        sample.strength *= ringsLeave(shape);
+        const double toLine = shape.slope > 0.0 ? here / (shape.slope * shape.slope) : 0.0;
+        sample.lineX = bentX - toLine * shape.gradX;
+        sample.lineZ = bentZ - toLine * shape.gradZ;
     }
 
-    const double width = smoothstep(-0.4, 0.4, m_widthNoise.fractal2(x / widthScale, z / widthScale, 2));
+    const double width = widthAt(x, z);
     const double rugged = smoothstep(ruggedFrom, ruggedTo, climate.ruggedness);
     sample.steepness = 1.0 + (gorge - 1.0) * rugged;
     sample.halfWidth = sample.strength * (1.0 - gorgeNarrowing * rugged) * (narrowest + (widest - narrowest) * width);
     sample.depth = baseDepth + depthPerWidth * sample.halfWidth;
     return sample;
+}
+
+double QcRiverField::widthAt(int x, int z) const
+{
+    return smoothstep(-0.4, 0.4, m_widthNoise.fractal2(x / widthScale, z / widthScale, 2));
+}
+
+double QcRiverField::valueAt(int x, int z) const
+{
+    const Point bend = bendAt(x, z);
+    return value(x + bend.x, z + bend.z);
+}
+
+double QcRiverField::strengthOnLine(double bentX, double bentZ, const QcTerrainClimate::Point &climate) const
+{
+    const double strength = strengthAt(climate);
+    return strength > 0.0 ? strength * ringsLeave(shapeAt(bentX, bentZ, value(bentX, bentZ))) : 0.0;
+}
+
+double QcRiverField::ringsLeave(const Shape &shape) const
+{
+    const double nearTop = smoothstep(nearTopFrom, nearTopTo, shape.top);
+    return nearTop < 1.0 ? std::max(nearTop, ringFade(shape.topX, shape.topZ, shape.side)) : 1.0;
+}
+
+QcRiverField::Course QcRiverField::courseAt(int x, int z, double here) const
+{
+    // Forward differences over one block in real coordinates: the direction across the river with
+    // the meander's bend in it, which the slope at the bent coordinates (at()) leaves out.
+    const double gradX = valueAt(x + 1, z) - here;
+    const double gradZ = valueAt(x, z + 1) - here;
+    const double slope = std::hypot(gradX, gradZ);
+    if (slope <= 0.0) {
+        return {};
+    }
+    return {here / slope, gradX / slope, gradZ / slope, widthAt(x, z)};
 }
 
 QcRiverField::Local QcRiverField::localAt(double bentX, double bentZ, double here, double step) const
@@ -179,6 +247,8 @@ QcRiverField::Shape QcRiverField::shapeAt(double bentX, double bentZ, double her
 {
     const Local local = localAt(bentX, bentZ, here, 1.0);
     Shape shape;
+    shape.gradX = local.gradX;
+    shape.gradZ = local.gradZ;
     shape.slope = std::hypot(local.gradX, local.gradZ);
     if (shape.slope <= 0.0) {
         return shape;

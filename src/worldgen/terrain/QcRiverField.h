@@ -21,6 +21,20 @@ public:
     // Beyond this many blocks from its middle line a river changes nothing.
     static constexpr double reach = 44.0;
 
+    // The terrain's maps that the river pieces (QcRiverPieces) and deltas (QcDeltaSites) read
+    // (QcTerrainGenerator).
+    class Land
+    {
+    public:
+        virtual ~Land() = default;
+        // The continent value at a column (below about -0.15 the sea).
+        [[nodiscard]] virtual double continentAt(int x, int z) const = 0;
+        [[nodiscard]] virtual QcTerrainClimate::Point climateAt(int x, int z) const = 0;
+        // The climate at a column whose ground (before rivers cut it) lies above the sea level;
+        // std::nullopt in the sea, lakes and other ground under the sea level.
+        [[nodiscard]] virtual std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const = 0;
+    };
+
     // The river near one column.
     struct Sample
     {
@@ -37,6 +51,14 @@ public:
         // How much steeper than usual the banks rise: 1 in low land, more in rugged land, where the
         // river runs through a gorge.
         double steepness = 1.0;
+        // The river noise at the column (its zero line is the middle line of the rivers), wherever
+        // the river field was asked and the land is not dry; `far` elsewhere. The river deltas
+        // (decision E-850) read it to skip columns far from every river at once.
+        double value = far;
+        // The point of the middle line nearest the column in coordinates bent by the meander (one
+        // step along the noise's slope), where `distance` is below `reach`.
+        double lineX = 0.0;
+        double lineZ = 0.0;
 
         // Whether the column lies in the water of the channel (before the terrain's rounding).
         [[nodiscard]] bool inChannel() const { return distance < halfWidth; }
@@ -66,10 +88,41 @@ public:
     // or bank lies in a column.
     [[nodiscard]] double patchAt(int x, int z) const;
 
-private:
-    // The river noise at coordinates bent by the meander: its zero line is the middle line of the
-    // rivers.
+    // The river noise at a column (bent by the meander, as at() reads it).
+    [[nodiscard]] double valueAt(int x, int z) const;
+    // Where a column lies across the river near it (decision E-850), from the river noise `here`
+    // at the column: its signed distance from the middle line in blocks (the noise over its slope;
+    // the side the noise is positive on counts positive), the unit direction across the river (the
+    // noise's gradient in real coordinates, the meander included) and how wide the river runs
+    // there (0..1, its share between the narrowest and the widest river, before gorges or dry land
+    // narrow it). Costs two more readings of the noise.
+    struct Course
+    {
+        double offset = far;
+        double acrossX = 1.0;
+        double acrossZ = 0.0;
+        double width = 0.0;
+    };
+    [[nodiscard]] Course courseAt(int x, int z, double here) const;
+    // How strongly rivers run at a climate point (0..1): none in the driest deserts.
+    [[nodiscard]] static double strengthAt(const QcTerrainClimate::Point &climate);
+
+    // The middle lines in coordinates bent by the meander, for following a river along them
+    // (QcRiverPieces): the river noise there (its zero line is the middle line), the column a
+    // bent point lies at (within about a quarter block) and how strongly the river runs on its middle
+    // line there (0..1: the climate's strengthAt() and the fading of small rings, as at()).
     [[nodiscard]] double value(double bentX, double bentZ) const;
+    struct Point
+    {
+        double x = 0.0;
+        double z = 0.0;
+    };
+    [[nodiscard]] Point unbent(double bentX, double bentZ) const;
+    [[nodiscard]] double strengthOnLine(double bentX, double bentZ, const QcTerrainClimate::Point &climate) const;
+
+private:
+    // The meander's bend at a column: how many blocks its coordinates move.
+    [[nodiscard]] Point bendAt(double x, double z) const;
     // The river noise at a point: its value, gradient and Hessian (differences over `step` blocks).
     struct Local
     {
@@ -81,12 +134,14 @@ private:
         double xz = 0.0;
     };
     [[nodiscard]] Local localAt(double bentX, double bentZ, double here, double step) const;
-    // The river noise around a column at bent coordinates where it has the value `here`: its slope
-    // per block, the radius `top` in blocks round which its zero line bends near the column (`far`
+    // The river noise around a column at bent coordinates where it has the value `here`: its
+    // gradient and slope per block, the radius `top` in blocks round which its zero line bends near the column (`far`
     // where it runs straight), where to search for the top a ring would have (towards the centre
     // of the bend) and whether that top is a hill (side 1) or a hollow (side -1).
     struct Shape
     {
+        double gradX = 0.0;
+        double gradZ = 0.0;
         double slope = 0.0;
         double top = far;
         double topX = 0.0;
@@ -94,6 +149,9 @@ private:
         double side = 1.0;
     };
     [[nodiscard]] Shape shapeAt(double bentX, double bentZ, double here) const;
+    // How much of a river is left (0..1) by the rings of the zero line near a point at bent
+    // coordinates of the shape `shape` (1 where it bends round no small hill or hollow).
+    [[nodiscard]] double ringsLeave(const Shape &shape) const;
     // How much of a river is left (0..1) by the ring its zero line forms round the top of the hill
     // (side 1) or hollow (side -1) of the noise searched from (startX, startZ): 0 for a small ring,
     // 1 for a large one or none (no top found within a few steps).
@@ -132,8 +190,8 @@ private:
     // How surely (0..1) the noise round `top` at (topX, topZ) is a long hill (or hollow) that goes
     // on past the ellipse, not a ring.
     [[nodiscard]] double longHill(double topX, double topZ, const Top &top) const;
-    // How strongly rivers run at a climate point (0..1): none in the driest deserts.
-    [[nodiscard]] static double strengthAt(const QcTerrainClimate::Point &climate);
+    // The share of the width noise at a column (0..1).
+    [[nodiscard]] double widthAt(int x, int z) const;
 
     // A number of its own for each field, so a new field with the same seed (a test, a measurement)
     // searches anew.

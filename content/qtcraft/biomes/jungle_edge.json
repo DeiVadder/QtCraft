@@ -1,5 +1,6 @@
 {
     "name": "jungle_edge",
+    "deltaBiome": "lush_delta",
     "temperature": 0.77,
     "humidity": 0.49,
     "baseHeight": 69,

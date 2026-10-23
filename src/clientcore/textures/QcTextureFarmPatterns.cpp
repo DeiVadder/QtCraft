@@ -241,7 +241,28 @@ QColor paintShears(const QcTextureSpec &spec, int x, int y, QColor color)
     return clear();
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
+// Reeds (decision E-850): thin stalks of different heights, leaning a little, with a long leaf here
+// and there; some carry a brown head (secondary) below their tip.
+QColor paintReeds(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    for (int stalk = 0; stalk < 5; ++stalk) {
+        const int base = 1 + stalk * 3 + int(hashPixel(spec.seed, stalk, 0) % 2);
+        const int top = 1 + int(hashPixel(spec.seed + 3, stalk, 1) % 5);
+        const int lean = y < 8 ? int(hashPixel(spec.seed + 7, stalk, 2) % 3) - 1 : 0;
+        if (x == base + lean && y >= top) {
+            const bool head = hashPixel(spec.seed + 11, stalk, 3) % 2 == 0 && y >= top + 1 && y <= top + 4;
+            return head ? varied(spec, spec.secondary, x, y, 4) : varied(spec, color, x, y, 3);
+        }
+        const int leafRow = 8 + int(hashPixel(spec.seed + 13, stalk, 4) % 5);
+        const int side = hashPixel(spec.seed + 17, stalk, 5) % 2 == 0 ? 1 : -1;
+        if (y == leafRow - std::abs(x - base) / 2 && (x - base) * side > 0 && std::abs(x - base) <= 3) {
+            return varied(spec, color, x, y, 5);
+        }
+    }
+    return clear();
+}
+
+constexpr std::array<std::pair<Pattern, Painter>, 18> painters = {{
     {Pattern::Crop, paintCrop},
     {Pattern::RootCrop, paintRootCrop},
     {Pattern::Stem, paintStem},
@@ -259,6 +280,7 @@ constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
     {Pattern::FlintAndSteel, paintFlintAndSteel},
     {Pattern::CarvedPumpkin, paintCarvedPumpkin},
     {Pattern::Shears, paintShears},
+    {Pattern::Reeds, paintReeds},
 }};
 
 } // namespace

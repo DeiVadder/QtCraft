@@ -75,6 +75,7 @@ private:
     void queueInnerRails(const BorderScan &scan, int sectionIndex);
     // Whether a still liquid source on the border can neither flow across nor react there.
     bool stillSourceStays(BorderScan &scan, QcBlockId block, QcBlockPos pos) const;
+    bool loneBorderRail(const BorderScan &scan, QcBlockId block, QcBlockPos pos) const;
 
     QcServerState &m_state;
     std::deque<QcBlockPos> m_playerUpdates;

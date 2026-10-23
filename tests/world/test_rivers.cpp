@@ -1,6 +1,7 @@
 #include "common/content/parser/QcContentParser.h"
 #include "common/world/QcChunk.h"
 #include "QcTestUtil.h"
+#include "world/QcWaterTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
@@ -94,8 +95,10 @@ struct Body
 // Floods the river cells connected to `start` (marking them in `seen`, a scratch list of the caller).
 Body flood(const Window &window, QList<bool> &seen, qsizetype start)
 {
-    // Diagonal neighbours too: a narrow river in a gorge runs diagonally through the grid's cells.
-    static constexpr std::array<std::pair<int, int>, 8> sides{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}}};
+    // River cells up to two cells apart belong together: a narrow river in a gorge (three blocks
+    // of water) running at a slant of two blocks along to one across is joined block by block but
+    // leaves gaps of one cell on the grid of two blocks. Other water joins as one of the eight
+    // neighbours.
     Body body;
     QList<qsizetype> stack{start};
     seen[start] = true;
@@ -105,17 +108,19 @@ Body flood(const Window &window, QList<bool> &seen, qsizetype start)
         const int i = int(cell % window.cells);
         const int j = int(cell / window.cells);
         body.leaves = body.leaves || i == 0 || j == 0 || i == window.cells - 1 || j == window.cells - 1;
-        for (const auto [di, dj] : sides) {
-            const int ni = i + di;
-            const int nj = j + dj;
-            if (ni < 0 || nj < 0 || ni >= window.cells || nj >= window.cells) {
-                continue;
-            }
-            const qsizetype next = qsizetype(nj) * window.cells + ni;
-            body.joins = body.joins || window.grid[next] == Cell::OtherWater;
-            if (window.grid[next] == Cell::River && !seen[next]) {
-                seen[next] = true;
-                stack.append(next);
+        for (int dj = -2; dj <= 2; ++dj) {
+            for (int di = -2; di <= 2; ++di) {
+                const int ni = i + di;
+                const int nj = j + dj;
+                if (ni < 0 || nj < 0 || ni >= window.cells || nj >= window.cells) {
+                    continue;
+                }
+                const qsizetype next = qsizetype(nj) * window.cells + ni;
+                body.joins = body.joins || (std::abs(di) <= 1 && std::abs(dj) <= 1 && window.grid[next] == Cell::OtherWater);
+                if (window.grid[next] == Cell::River && !seen[next]) {
+                    seen[next] = true;
+                    stack.append(next);
+                }
             }
         }
     }
@@ -151,32 +156,6 @@ QList<std::pair<int, int>> riverColumns(const QcTerrainGenerator &generator, int
     return found;
 }
 
-// The generated chunks of a square of 3 × 3 chunks, looked up by world coordinates.
-class ChunkArea
-{
-public:
-    ChunkArea(const QcTerrainGenerator &generator, QcChunkPos centre)
-        : m_centre(centre)
-    {
-        for (int dz = -1; dz <= 1; ++dz) {
-            for (int dx = -1; dx <= 1; ++dx) {
-                m_chunks.append(generator.generate({centre.x + dx, centre.z + dz}));
-            }
-        }
-    }
-
-    [[nodiscard]] QcBlockId block(int x, int y, int z) const
-    {
-        const QcBlockPos pos{x, y, z};
-        const QcChunkPos chunk = pos.chunk();
-        return m_chunks[(chunk.z - m_centre.z + 1) * 3 + (chunk.x - m_centre.x + 1)]->block(pos.localX(), y, pos.localZ());
-    }
-
-private:
-    QcChunkPos m_centre;
-    QList<std::shared_ptr<QcChunk>> m_chunks;
-};
-
 } // namespace
 
 // Rivers (decision E-840): winding channels at the sea level through the land, down to the sea.
@@ -199,32 +178,6 @@ private:
     }
 
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
-
-    // Every water block of the area's middle chunk beside or above air that no cave carved (a wall
-    // or a sheet of water that would flow when the chunk loads), also across the chunk's borders.
-    [[nodiscard]] static QStringList openWater(const QcTerrainGenerator &generator, const ChunkArea &area, QcChunkPos centre)
-    {
-        static constexpr std::array<std::array<int, 3>, 5> sides{{{1, 0, 0}, {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}, {0, -1, 0}}};
-        QStringList open;
-        for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
-            for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-                const int x = centre.x * QcWorld::chunkSize + lx;
-                const int z = centre.z * QcWorld::chunkSize + lz;
-                for (int y = 1; y < generator.seaLevel(); ++y) {
-                    if (area.block(x, y, z) != generator.waterBlock()) {
-                        continue;
-                    }
-                    for (const auto &side : sides) {
-                        const QcBlockPos next{x + side[0], y + side[1], z + side[2]};
-                        if (area.block(next.x, next.y, next.z) == qcAirBlockId && !generator.isCave(next.x, next.y, next.z)) {
-                            open.append(u"%1 %2 %3"_s.arg(x).arg(y).arg(z));
-                        }
-                    }
-                }
-            }
-        }
-        return open;
-    }
 
     // The bridges of the plan: each stretch of decks on the middle line of a road run, from its
     // first deck on in the run's direction (`along`, along x, z or a diagonal). Across a diagonal
@@ -410,7 +363,7 @@ private slots:
             QVERIFY2(rivers.size() >= 6, qPrintable(u"seed %1"_s.arg(seed)));
             for (const auto [x, z] : rivers) {
                 const QcChunkPos centre = QcBlockPos{x, 0, z}.chunk();
-                const QStringList open = openWater(generator, ChunkArea(generator, centre), centre);
+                const QStringList open = QcWaterTestUtil::openWater(generator, QcWaterTestUtil::ChunkArea(generator, centre), centre);
                 QVERIFY2(open.isEmpty(), qPrintable(u"water beside air at "_s + open.mid(0, 5).join(u", "_s)));
             }
         }
@@ -524,8 +477,13 @@ private slots:
         // The dry and humid land and river columns of all seeds together.
         Window climates;
         // 1448947576: its window's dry land lies almost all at a humidity of 0.12 to 0.15, where rivers
-        // are narrower but not rarer; its own dry share equalled the humid one.
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1034578912), qint64(1448947576), m_randomSeed}) {
+        // are narrower but not rarer; its own dry share equalled the humid one. 345777499, 476165307
+        // 807288324 and 2025406668 (random, decision E-846) had 8–14 % closed river columns before
+        // closed pieces were left out (decision E-851): large rings and arcs ending on land at both
+        // ends. 1360590162 (random) had 14 %: a long river whose gorge stretch was water a block
+        // wide, joined only at corners, and three blocks wide still broke on the survey grid.
+        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1034578912), qint64(1448947576), qint64(345777499),
+                                  qint64(476165307), qint64(807288324), qint64(2025406668), qint64(1360590162), m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const Window window = survey(generator, 1536, 2);
             climates.dryLand += window.dryLand;
@@ -541,11 +499,9 @@ private slots:
                   "out of the window %lld, closed %lld (%.3f)",
                   seed, share, dry, window.dryLand, humid, window.humidLand, outlets.joined, outlets.leaving, outlets.closed, closed);
             QVERIFY2(share > 0.012 && share < 0.04, qPrintable(QString::number(share)));
-            // Closed: pieces ending in deserts at both ends and what is left of the fading rings of the
-            // noise's zero line round a small hill (0.5 %, 0.3 %, 2.8 %, 4.4 %; 0.5–6.7 % on five more
-            // seeds; without the fading seed 1234 had 9.7 %, most of it one ring of 1400 cells). Seed
-            // 1034578912 (random, decision E-846) showed 14 % while the flood joined only the four
-            // sides: narrow rivers in gorges broke into pieces diagonally.
+            // Closed: river bodies that neither reach other water nor leave the window. Pieces that end
+            // on land at both ends are not built (decision E-851): 0.0–0.7 % on eleven seeds. Before
+            // E-851: 0.3–14 %, rings and arcs ending on land.
             QVERIFY2(closed < 0.08, qPrintable(QString::number(closed)));
             // Deserts have no rivers (decision E-840): under a humidity of 0.05 the river field has
             // no strength.

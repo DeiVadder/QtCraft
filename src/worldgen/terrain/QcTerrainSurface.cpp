@@ -22,7 +22,12 @@ QcBlockId QcTerrainSurface::surface(const QcTerrainColumn &column, int x, int z)
     const int top = column.height - 1;
     const int seaLevel = m_definitions.seaLevel;
     if (top < seaLevel - 1) {
-        return underwater(biome, x, z);
+        return patched(biome.underwater, biome.underwaterPatches, x, z);
+    }
+    // The land of a delta (decision E-850): sand banks flush with the water, the islands above it
+    // of the surface block with its patches.
+    if (biome.delta) {
+        return top <= seaLevel - 1 ? biome.beach : patched(biome.surface, biome.surfacePatches, x, z);
     }
     // River banks (decision E-840): the river's beach in patches, the land's surface between them.
     if (column.riverBank && biome.riverBiome >= 0 && m_rivers.patchAt(x, z) < riverBeachShare) {
@@ -42,22 +47,22 @@ QcBlockId QcTerrainSurface::surface(const QcTerrainColumn &column, int x, int z)
     return biome.surface;
 }
 
-QcBlockId QcTerrainSurface::underwater(const Biome &biome, int x, int z) const
+QcBlockId QcTerrainSurface::patched(QcBlockId own, const QList<std::pair<QcBlockId, double>> &patches, int x, int z) const
 {
-    if (biome.underwaterPatches.isEmpty()) {
-        return biome.underwater;
+    if (patches.isEmpty()) {
+        return own;
     }
 
     // The patches take their shares of [0, 1) in turn; the rest stays the biome's own block.
     const double patch = m_rivers.patchAt(x, z);
     double below = 0.0;
-    for (const auto &[block, share] : biome.underwaterPatches) {
+    for (const auto &[block, share] : patches) {
         below += share;
         if (patch < below) {
             return block;
         }
     }
-    return biome.underwater;
+    return own;
 }
 
 QcBlockId QcTerrainSurface::subsurface(const QcTerrainColumn &column, QcBlockId surface) const

@@ -1,5 +1,6 @@
 {
     "name": "jungle",
+    "deltaBiome": "lush_delta",
     "temperature": 1.0,
     "humidity": 0.58,
     "spread": 0.04,

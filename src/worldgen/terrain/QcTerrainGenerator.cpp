@@ -70,6 +70,8 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_pools(m_content, m_definitions)
     , m_climate(quint64(seed), m_definitions.anyRare)
     , m_rivers(quint64(seed))
+    , m_riverPieces(m_rivers)
+    , m_deltas(quint64(seed), m_rivers, m_definitions.seaLevel, m_definitions.deltaShare)
     , m_coldEdges(m_definitions.coldEdges, quint64(seed))
     , m_ground(m_definitions, m_rivers, quint64(seed))
     , m_continentNoise(qcMixSeed(quint64(seed), 1))
@@ -172,27 +174,16 @@ int QcTerrainGenerator::biomeForClimate(const QcTerrainClimate::Point &climate) 
     return QcClimateBiomes::choose(m_definitions.biomes, climate);
 }
 
-QcRiverField::Sample QcTerrainGenerator::riverAt(int x, int z) const
+double QcTerrainGenerator::continentOf(double warpedX, double warpedZ) const
 {
-    // Where column() asks no river (no rivers, ground too deep under water) there is none.
-    if (!m_definitions.rivers || column(x, z).riverDistance >= QcRiverField::far) {
-        return {};
-    }
-    return m_rivers.at(x, z, climateAt(x, z));
+    return 1.4 * m_continentNoise.fractal2(warpedX / continentScale, warpedZ / continentScale, 4);
 }
 
-bool QcTerrainGenerator::isRiverBiome(int biome) const
+double QcTerrainGenerator::continentAt(int x, int z) const
 {
-    return biome >= 0 && biome < m_definitions.biomes.size() && m_definitions.biomes[biome].river;
-}
-
-QcTerrainGenerator::RiverCut QcTerrainGenerator::riverCut(int x, int z, const QcTerrainClimate::Point &climate, double height,
-                                                          int biome) const
-{
-    const QcRiverField::Cut cut = m_rivers.cut(x, z, climate, height, seaLevel());
-    // Lands without a river biome keep their own biome along their rivers.
-    const int riverBiome = m_definitions.biomes[biome].riverBiome;
-    return {cut.height, cut.water && riverBiome >= 0 ? riverBiome : biome, cut.bank && riverBiome >= 0, cut.river};
+    const double warpedX = x + warpAmplitude * m_warpNoiseX.fractal2(x / warpScale, z / warpScale, 3);
+    const double warpedZ = z + warpAmplitude * m_warpNoiseZ.fractal2(x / warpScale, z / warpScale, 3);
+    return continentOf(warpedX, warpedZ);
 }
 
 QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const
@@ -210,8 +201,9 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
     Blend result;
     for (qsizetype i = 0; i < m_definitions.biomes.size(); ++i) {
         const Biome &biome = m_definitions.biomes[i];
-        // River biomes take the channels of rivers, never a climate (decision E-840).
-        if (biome.river) {
+        // River and delta biomes take the channels of rivers and their deltas, never a climate
+        // (decisions E-840, E-850).
+        if (!biome.byClimate()) {
             continue;
         }
         double weight = QcClimateBiomes::weight(biome, climate);
@@ -247,7 +239,7 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
     return result;
 }
 
-QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
+QcTerrainGenerator::Ground QcTerrainGenerator::groundAt(int x, int z) const
 {
     // Bent coordinates for the large-scale maps, so biome borders and coasts meander (climateAt bends
     // the same way).
@@ -268,14 +260,26 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     const double terraces =
         m_definitions.anyTerraces ? smoothstep(-0.1, 0.15, m_terraceNoise.fractal2(x / terraceScale, z / terraceScale, 2)) : 0.0;
 
-    const Blend blended = blend(climate, rolling, ridge, terraces);
+    Ground ground;
+    ground.climate = climate;
+    ground.blended = blend(climate, rolling, ridge, terraces);
+    ground.continent = continentOf(warpedX, warpedZ);
+    ground.landFactor = smoothstep(-0.30, -0.05, ground.continent);
+    const double oceanFloor = seaLevel() - oceanDepth + 5.0 * detail;
+    ground.height = oceanFloor + (ground.blended.landHeight - oceanFloor) * ground.landFactor;
+    return ground;
+}
+
+QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
+{
+    const Ground ground = groundAt(x, z);
+    const QcTerrainClimate::Point &climate = ground.climate;
+    const Blend &blended = ground.blended;
+    const double continent = ground.continent;
     Column result;
     result.biome = blended.biome;
-
-    const double continent = 1.4 * m_continentNoise.fractal2(warpedX / continentScale, warpedZ / continentScale, 4);
-    result.landFactor = smoothstep(-0.30, -0.05, continent);
-    const double oceanFloor = seaLevel() - oceanDepth + 5.0 * detail;
-    double height = oceanFloor + (blended.landHeight - oceanFloor) * result.landFactor;
+    result.landFactor = ground.landFactor;
+    double height = ground.height;
     if (m_definitions.rivers) {
         const RiverCut cut = riverCut(x, z, climate, height, blended.biome);
         height = cut.height;
@@ -283,6 +287,14 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
         result.riverBank = cut.bank;
         result.riverDistance = cut.river.distance;
         result.riverHalfWidth = cut.river.halfWidth;
+        // River deltas (decision E-850) only in a band along the coasts.
+        if (m_definitions.deltas && QcRiverDelta::mayReach(continent)) {
+            if (const std::optional<DeltaCut> delta = deltaCut(x, z, continent, cut)) {
+                height = delta->height;
+                result.biome = delta->biome;
+                result.riverBank = result.riverBank && delta->biome == cut.biome;
+            }
+        }
     }
     result.temperature = climate.temperature;
     result.landBiome = blended.biome;

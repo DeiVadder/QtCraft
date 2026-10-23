@@ -59,10 +59,14 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcCaveCarver.h terrain/QcCaveCarver.cpp
     terrain/QcClimateBiomes.h terrain/QcClimateBiomes.cpp
     terrain/QcColdEdges.h terrain/QcColdEdges.cpp
+    terrain/QcDeltaArms.h terrain/QcDeltaArms.cpp
+    terrain/QcDeltaSites.h terrain/QcDeltaSites.cpp
     terrain/QcGiantTreePlacer.h terrain/QcGiantTreePlacer.cpp
     terrain/QcNoise.h terrain/QcNoise.cpp
     terrain/QcPoolPlacer.h terrain/QcPoolPlacer.cpp
+    terrain/QcRiverDelta.h terrain/QcRiverDelta.cpp
     terrain/QcRiverField.h terrain/QcRiverField.cpp
+    terrain/QcRiverPieces.h terrain/QcRiverPieces.cpp
     terrain/QcSurfaceLakes.h terrain/QcSurfaceLakes.cpp
     terrain/QcTerrainClimate.h terrain/QcTerrainClimate.cpp
     terrain/QcTerrainColumn.h
@@ -71,6 +75,7 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcTerrainGenerator.h terrain/QcTerrainGenerator.cpp
     terrain/QcTerrainGround.cpp
     terrain/QcTerrainMath.h
+    terrain/QcTerrainRivers.cpp
     terrain/QcTerrainSpawn.cpp
     terrain/QcTerrainSurface.h terrain/QcTerrainSurface.cpp
     terrain/QcTreeLayout.h terrain/QcTreeLayout.cpp
@@ -105,8 +110,9 @@ target_sources(qc_worldgen PRIVATE
 qc_configure_target(qc_worldgen)
 # Identical terrain on every compiler and CPU: no fused multiply-add contraction in noise maths.
 set(qc_worldgen_fp_sources
-    terrain/QcCaveCarver.cpp terrain/QcClimateBiomes.cpp terrain/QcColdEdges.cpp terrain/QcGiantTreePlacer.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp terrain/QcRiverField.cpp terrain/QcSurfaceLakes.cpp terrain/QcTerrainClimate.cpp
-    terrain/QcTerrainColumnGrid.cpp terrain/QcTerrainDefinitions.cpp terrain/QcTerrainGenerator.cpp terrain/QcTerrainGround.cpp terrain/QcTerrainSurface.cpp terrain/QcTreeLayout.cpp terrain/QcTreeShape.cpp
+    terrain/QcCaveCarver.cpp terrain/QcClimateBiomes.cpp terrain/QcColdEdges.cpp terrain/QcDeltaArms.cpp terrain/QcDeltaSites.cpp terrain/QcGiantTreePlacer.cpp terrain/QcNoise.cpp terrain/QcPoolPlacer.cpp
+    terrain/QcRiverDelta.cpp terrain/QcRiverField.cpp terrain/QcRiverPieces.cpp terrain/QcSurfaceLakes.cpp terrain/QcTerrainClimate.cpp terrain/QcTerrainColumnGrid.cpp terrain/QcTerrainDefinitions.cpp
+    terrain/QcTerrainGenerator.cpp terrain/QcTerrainGround.cpp terrain/QcTerrainRivers.cpp terrain/QcTerrainSurface.cpp terrain/QcTreeLayout.cpp terrain/QcTreeShape.cpp
     terrain/QcVegetationPatchPlacer.cpp villages/QcBoardwalkPlanner.cpp villages/QcJettyPlanner.cpp villages/QcPiecePlacer.cpp villages/QcRoadLayer.cpp
     villages/QcRoadNetworkPlanner.cpp villages/QcVillageDraft.cpp villages/QcVillageForecourt.cpp villages/QcVillagePlanner.cpp
     villages/QcWetlandPattern.cpp villages/QcWetlandShaper.cpp)

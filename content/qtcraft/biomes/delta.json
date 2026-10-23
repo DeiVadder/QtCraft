@@ -1,0 +1,65 @@
+{
+    "name": "delta",
+    "delta": true,
+    "temperature": 0.5,
+    "humidity": 0.7,
+    "surface": "grass_block",
+    "surfacePatches": [
+        {
+            "block": "mud",
+            "share": 0.35
+        }
+    ],
+    "subsurface": "dirt",
+    "subsurfaceDepth": 2,
+    "underwater": "sand",
+    "underwaterPatches": [
+        {
+            "block": "mud",
+            "share": 0.3
+        },
+        {
+            "block": "clay",
+            "share": 0.1
+        },
+        {
+            "block": "gravel",
+            "share": 0.1
+        }
+    ],
+    "beach": "sand",
+    "features": [
+        {
+            "feature": "reeds",
+            "density": 0.35
+        },
+        {
+            "feature": "sugar_cane",
+            "density": 0.12
+        },
+        {
+            "feature": "oak_bush",
+            "density": 0.003
+        },
+        {
+            "feature": "oak_tree",
+            "density": 0.004
+        },
+        {
+            "feature": "birch_tree",
+            "density": 0.0015
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.3,
+            "patchSize": 16,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    }
+}

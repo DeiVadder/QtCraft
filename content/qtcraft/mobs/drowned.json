@@ -35,7 +35,10 @@
                 "caves": true,
                 "biomes": [
                     "river",
-                    "frozen_river"
+                    "frozen_river",
+                    "delta",
+                    "lush_delta",
+                    "frozen_delta"
                 ],
                 "weight": 100
             }

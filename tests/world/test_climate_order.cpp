@@ -296,8 +296,9 @@ private slots:
     void everyBiomeHasASaneShare()
     {
         for (const QcBiomeDefinition &biome : m_content->worldgen().biomes()) {
-            // River biomes lie under the water of rivers, not on land (test_rivers, decision E-840).
-            if (biome.river) {
+            // River biomes lie under the water of rivers, not on land (test_rivers, decision E-840);
+            // delta biomes are rare and only at river mouths (test_river_deltas, decision E-850).
+            if (biome.river || biome.delta) {
                 continue;
             }
             const QString name = biome.name.mid(qsizetype(8));

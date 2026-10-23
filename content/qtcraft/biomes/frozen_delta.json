@@ -1,0 +1,53 @@
+{
+    "name": "frozen_delta",
+    "delta": true,
+    "temperature": 0.05,
+    "humidity": 0.6,
+    "surface": "gravel",
+    "surfacePatches": [
+        {
+            "block": "mud",
+            "share": 0.2
+        },
+        {
+            "block": "sand",
+            "share": 0.1
+        }
+    ],
+    "subsurface": "gravel",
+    "subsurfaceDepth": 2,
+    "underwater": "gravel",
+    "underwaterPatches": [
+        {
+            "block": "sand",
+            "share": 0.25
+        },
+        {
+            "block": "clay",
+            "share": 0.08
+        }
+    ],
+    "beach": "gravel",
+    "frozenWater": "ice",
+    "frozenDepth": 1,
+    "features": [
+        {
+            "feature": "reeds",
+            "density": 0.05
+        }
+    ],
+    "vegetation": {
+        "grass": {
+            "density": 0.0,
+            "plants": [
+                {
+                    "block": "tall_grass",
+                    "weight": 1
+                }
+            ]
+        }
+    },
+    "monsters": {
+        "drowned": 1
+    }
+}

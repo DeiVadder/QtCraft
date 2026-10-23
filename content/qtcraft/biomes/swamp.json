@@ -1,5 +1,6 @@
 {
     "name": "swamp",
+    "deltaBiome": "lush_delta",
     "temperature": 0.94,
     "humidity": 0.88,
     "spread": 0.035,

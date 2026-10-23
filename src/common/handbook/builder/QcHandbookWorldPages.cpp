@@ -147,21 +147,25 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     return sections;
 }
 
-// The land biomes whose rivers take a river biome (decision E-840): those naming it, and those
-// naming none when it is the terrain's river biome (or, without one, the content's first).
-[[nodiscard]] Fact riverFact(const QcHandbookContext &context, const QcBiomeDefinition &river)
+// The land biomes whose rivers take a river biome (decision E-840) or whose deltas a delta biome
+// (decision E-850): those naming it, and those naming none when it is the terrain's (or, without
+// one, the content's first).
+[[nodiscard]] Fact kindFact(const QcHandbookContext &context, const QcBiomeDefinition &special)
 {
     const QList<QcBiomeDefinition> &biomes = context.content.worldgen().biomes();
-    const QString &terrainRiver = context.content.worldgen().terrainSettings().riverBiome;
-    const auto first = std::ranges::find_if(biomes, &QcBiomeDefinition::river);
-    const bool isFirst = terrainRiver.isEmpty() ? first != biomes.end() && first->name == river.name : terrainRiver == river.name;
+    const QcTerrainSettings &terrain = context.content.worldgen().terrainSettings();
+    const bool river = special.river;
+    const QString &terrainKind = river ? terrain.riverBiome : terrain.deltaBiome;
+    const auto first = std::ranges::find_if(biomes, river ? &QcBiomeDefinition::river : &QcBiomeDefinition::delta);
+    const bool isFirst = terrainKind.isEmpty() ? first != biomes.end() && first->name == special.name : terrainKind == special.name;
     QcLinkList land;
     for (const QcBiomeDefinition &biome : biomes) {
-        if (!biome.river && (biome.riverBiome == river.name || (biome.riverBiome.isEmpty() && isFirst))) {
+        const QString &named = river ? biome.riverBiome : biome.deltaBiome;
+        if (!biome.river && !biome.delta && (named == special.name || (named.isEmpty() && isFirst))) {
             land.addUnique(context.links.biomeLink(biome));
         }
     }
-    return {context.text.label(u"fact.riverOf"_s), {}, land.sorted()};
+    return {context.text.label(river ? u"fact.riverOf"_s : u"fact.deltaOf"_s), {}, land.sorted()};
 }
 
 QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinition &biome)
@@ -177,9 +181,10 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.text = text.description(biome.descriptionKey, biome.name);
 
     entry.facts.append({text.label(u"fact.id"_s), biome.name, {}});
-    if (biome.river) {
-        // A river biome has no climate cell or height of its own: it lies in the rivers of others.
-        entry.facts.append(riverFact(context, biome));
+    if (biome.river || biome.delta) {
+        // A river or delta biome has no climate cell or height of its own: it lies in the rivers
+        // and deltas of others.
+        entry.facts.append(kindFact(context, biome));
         entry.facts += layerFacts(context, biome);
         entry.sections += biomeSections(context, biome);
         entry.englishTitle = context.content.translations().translate(biome.translationKey, QcHandbookText::english());

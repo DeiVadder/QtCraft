@@ -54,7 +54,8 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     const qint64 m_randomSeed = QcTestUtil::randomSeed();
 
-    std::array<qint64, 4> seeds() const { return {7, 42, 1234, m_randomSeed}; }
+    // Seed 544594159: frozen rivers on average as warm as frozen still water (the means are close).
+    std::array<qint64, 5> seeds() const { return {7, 42, 1234, 544594159, m_randomSeed}; }
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
     Window windowAt(const QcTerrainGenerator &generator, Spot spot) const
@@ -292,6 +293,9 @@ private:
         double stillSum = 0.0;
         int rivers = 0;
         int still = 0;
+        // The warmest frozen column of each.
+        double riverMax = 0.0;
+        double stillMax = 0.0;
     };
 
     static FrozenTemperatures frozenTemperatures(const QcTerrainGenerator &generator, QcBlockId ice, qint64 seed)
@@ -307,6 +311,8 @@ private:
                 const bool river = generator.isRiverBiome(column.biome);
                 (river ? sums.riverSum : sums.stillSum) += column.temperature;
                 (river ? sums.rivers : sums.still) += 1;
+                double &warmest = river ? sums.riverMax : sums.stillMax;
+                warmest = std::max(warmest, column.temperature);
             }
         }
         return sums;
@@ -423,6 +429,8 @@ private slots:
             sums.stillSum += found.stillSum;
             sums.rivers += found.rivers;
             sums.still += found.still;
+            sums.riverMax = std::max(sums.riverMax, found.riverMax);
+            sums.stillMax = std::max(sums.stillMax, found.stillMax);
             for (const Spot &spot : spots(seed, iceMeetsWater)) {
                 const Window window = windowAt(generator, spot);
                 windows += 1;
@@ -438,14 +446,18 @@ private slots:
         }
         const int rivers = sums.rivers;
         const int still = sums.still;
-        qInfo("%d windows, %d single floes; frozen rivers %d (mean temperature %.3f), frozen lakes and sea %d (%.3f)", windows, floes,
-              rivers, rivers > 0 ? sums.riverSum / rivers : 0.0, still, still > 0 ? sums.stillSum / still : 0.0);
+        qInfo("%d windows, %d single floes; frozen rivers %d (mean temperature %.3f, warmest %.3f), frozen lakes and sea %d (%.3f, %.3f)",
+              windows, floes, rivers, rivers > 0 ? sums.riverSum / rivers : 0.0, sums.riverMax, still, still > 0 ? sums.stillSum / still : 0.0,
+              sums.stillMax);
         QVERIFY(windows >= 4);
         checkShares(edges, "ice");
         QVERIFY(floes > 0);
         QVERIFY2(longRuns * 8 <= windows, qPrintable(u"%1 of %2 windows with a long straight edge"_s.arg(longRuns).arg(windows)));
         QVERIFY(rivers > 0 && still > 0);
-        QVERIFY(sums.riverSum / rivers < sums.stillSum / still);
+        // Rivers freeze only in colder land than still water (riverTemperature below temperature):
+        // the warmest frozen river is colder than the warmest frozen lake or sea. (Their means lie
+        // close together: most ice of both lies far inside the cold land.)
+        QVERIFY2(sums.riverMax < sums.stillMax, qPrintable(u"%1 %2"_s.arg(sums.riverMax).arg(sums.stillMax)));
     }
 };
 

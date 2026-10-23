@@ -91,6 +91,10 @@ bool QcVillagePlanner::isFlatAround(const QcVillageStyle &style, int x, int z) c
             // A river and the low ground of its valley are crossed by bridges (decision E-841): the
             // land around them must be flat.
             const QcTerrainColumn column = m_terrain.column(x + dx, z + dz);
+            // Villages keep off deltas (decision E-850): the islands are too low and cut up.
+            if (m_terrain.isDeltaBiome(column.biome)) {
+                return false;
+            }
             if (column.riverDistance < column.riverHalfWidth + riverValley) {
                 continue;
             }

@@ -1,0 +1,22 @@
+{
+    "name": "reeds",
+    "sound": "grass",
+    "shape": "cross",
+    "render": "cutout",
+    "hardness": 0.0,
+    "ground": [
+        "grass_block",
+        "dirt",
+        "sand",
+        "mud",
+        "gravel"
+    ],
+    "groundLiquid": "water",
+    "flammable": {
+        "ignite": 60,
+        "burn": 100
+    },
+    "textures": {
+        "all": "reeds"
+    }
+}

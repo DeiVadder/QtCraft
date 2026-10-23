@@ -45,6 +45,11 @@ QcTerrainGenerator::Column QcTerrainGenerator::withGround(int x, int z, Column c
 QcBlockId QcTerrainGenerator::frozenWaterAt(int x, int z, const Column &column) const
 {
     const Biome &biome = m_definitions.biomes[column.biome];
+    // With a `frozenDepth` only where the water is that shallow (ice along the banks of a cold
+    // delta, decision E-850).
+    if (biome.frozenDepth > 0 && seaLevel() - column.height > biome.frozenDepth) {
+        return m_definitions.water;
+    }
     if (!m_coldEdges.byTemperature()) {
         return biome.frozenWater;
     }

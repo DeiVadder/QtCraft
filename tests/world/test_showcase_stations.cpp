@@ -33,6 +33,19 @@ private:
         QcAabb box;
     };
 
+    // The stations that keep creatures in a pen, with the kinds and how many of them.
+    static QList<ShowcasePen> pensWithCreatures()
+    {
+        return {{u"qtcraft:spider_cave"_s, {u"qtcraft:spider"_s, u"qtcraft:cave_spider"_s}, 3, {}},
+                {u"qtcraft:silverfish_wall"_s, {u"qtcraft:silverfish"_s}, 3, {}},
+                {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
+                {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
+                {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
+                {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}},
+                {u"qtcraft:river_station"_s, {u"qtcraft:salmon"_s}, 2, {}},
+                {u"qtcraft:delta_station"_s, {u"qtcraft:salmon"_s}, 1, {}}};
+    }
+
     // `pens` with the box of each one's placement in the showcase plan; loads the chunks around them.
     QList<ShowcasePen> placePens(QcServer &server, const QcShowcaseGenerator &generator, QList<ShowcasePen> pens) const
     {
@@ -264,6 +277,7 @@ private slots:
     // The pens of stages 52.2 and 52.4 (decisions E-451 to E-453, E-500 to E-503): the spider cave,
     // the silverfish wall, the chicken coop, the cow pasture, the aquarium and the fishing pier hold
     // their creatures for a minute of game time; none escapes or hides (fish stay in their water).
+    // The river and delta stations (decisions E-840, E-850) hold their salmon the same way.
     void creaturePensOfStage52HoldTheirCreatures()
     {
         QTemporaryDir directory;
@@ -273,13 +287,7 @@ private slots:
         QVERIFY(server->openWorld());
         const QcShowcaseGenerator generator(m_content);
         using Pen = ShowcasePen;
-        const QList<Pen> pens = placePens(*server, generator, {{u"qtcraft:spider_cave"_s, {u"qtcraft:spider"_s, u"qtcraft:cave_spider"_s}, 3, {}},
-                        {u"qtcraft:silverfish_wall"_s, {u"qtcraft:silverfish"_s}, 3, {}},
-                        {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
-                        {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
-                        {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
-                        {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}},
-                        {u"qtcraft:river_station"_s, {u"qtcraft:salmon"_s}, 2, {}}});
+        const QList<Pen> pens = placePens(*server, generator, pensWithCreatures());
         if (QTest::currentTestFailed()) {
             return;
         }

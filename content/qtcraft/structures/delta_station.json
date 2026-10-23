@@ -1,0 +1,134 @@
+{
+    "name": "delta_station",
+    "showcase": {
+        "order": 62
+    },
+    "palette": {
+        ".": "air",
+        "g": "grass_block",
+        "d": "dirt",
+        "M": "mud",
+        "S": "sand",
+        "V": "gravel",
+        "C": "clay",
+        "W": "water",
+        "I": "ice",
+        "r": "reeds",
+        "c": "sugar_cane",
+        "t": "tall_grass"
+    },
+    "layers": [
+        [
+            "SSSSSSSSSCCSSVVVSVV",
+            "MSMMSMSSMSSMVVSVSVV",
+            "SSSSMCSSMSSMSVVVSSV",
+            "CSSMSCSMSSSCVSVSSVV",
+            "SSMMMSSSMMMSVVVVVVV",
+            "MCMSSSMSSMCMVVVSVSV",
+            "SSSSSSSCMSSSVSVVVVV",
+            "SSCSSSSSSMMSVVVVVVV",
+            "SSSMCMCSSSSSVSSVSSV",
+            "SSMSSSMSSSSCSVVVVSV",
+            "MMSSSSSMSSMMVSVSSVV",
+            "MSMSSSSSSSMSVVVVVVV",
+            "SCMSSMSMSMSMSSVVVVV"
+        ],
+        [
+            "SSSSSSSSSSSSVVVVVVV",
+            "SMMMMMMMWWWMVVVVVVV",
+            "SMMMMMMWWWWWVVVVVVV",
+            "SMMMMMMWWWWWWVVVVVV",
+            "SMMMMMWWWWWWWWVVVVV",
+            "SMMMMMWWWWMWWWVVVVV",
+            "SMMMMWWMWWMMWWWVVVV",
+            "SMMMWWMMWWMMWWWWVVV",
+            "SMMWWWMMWWMMVWWWWVV",
+            "SMMWWMMMWWMMVVWWWVV",
+            "SWWWWWWWWWWWWWWWWWV",
+            "SWWWWWWWWWWWWWWWWWV",
+            "SSSSSSSSSSSSVVVVVVV"
+        ],
+        [
+            "SSSSSSSSSSSSVVVVVVV",
+            "SddddddMWWWMVVVVVVV",
+            "SdddddSWWWWWVVVVVVV",
+            "SdddddSWWWWWIVVVVVV",
+            "SddddMWWWWWWWIVVVVV",
+            "SddddMWWWWSWWIVVVVV",
+            "SdddSWWSWWMMIWIVVVV",
+            "SddMWWMMWWSMIWWIVVV",
+            "SdMWWWSMWWMdVIWWIVV",
+            "SSMWWMMMWWSMVVIWIVV",
+            "SWWWWWWWWWWWWWWWWWV",
+            "SWWWWWWWWWWWWWWWWWV",
+            "SSSSSSSSSSSSVVVVVVV"
+        ],
+        [
+            "                   ",
+            " ggMMMMr   rVVVMMV ",
+            " ggMMgc      VVVVV ",
+            " gggggc       MVVV ",
+            " ggggr         VVM ",
+            " MgMgr    c   rVMV ",
+            " gMg   r        VV ",
+            " gg   c   c      V ",
+            " gc       cM     r ",
+            " rr  r r  rr     r ",
+            "                   ",
+            "                   ",
+            "                   "
+        ],
+        [
+            "                   ",
+            " tt                ",
+            " t    c            ",
+            "  ttt              ",
+            "  tt               ",
+            "  t       c        ",
+            " t                 ",
+            "  t                ",
+            " tc       c        ",
+            "                   ",
+            "                   ",
+            "                   ",
+            "                   "
+        ]
+    ],
+    "mobs": [
+        {
+            "mob": "salmon",
+            "at": [
+                9.5,
+                1.0,
+                11.0
+            ],
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                4.5,
+                6.5
+            ],
+            "text": "biome.qtcraft.delta"
+        },
+        {
+            "at": [
+                15.5,
+                4.5,
+                6.5
+            ],
+            "text": "biome.qtcraft.frozen_delta"
+        },
+        {
+            "at": [
+                9.5,
+                5.6,
+                1.5
+            ],
+            "text": "block.qtcraft.reeds"
+        }
+    ]
+}

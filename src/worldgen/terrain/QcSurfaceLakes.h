@@ -83,6 +83,8 @@ private:
     [[nodiscard]] static QSet<std::pair<int, int>> withRing(const QList<std::pair<int, int>> &basin);
     // The ground top of a column on dry, plain land: no water, river, coast or overhang.
     [[nodiscard]] std::optional<int> plainGroundAt(int x, int z) const;
+    // Whether a column of the footprint lies in a river delta (decision E-850): no lake there.
+    [[nodiscard]] bool touchesDelta(Rect footprint) const;
     void wallIn(QcChunk &chunk, const Site &site, QcBlockId rim) const;
     // Turns the sides and the bottom of a liquid block (chunk-local) that are neither liquid nor rock into the rim.
     void sealAround(QcChunk &chunk, std::array<int, 3> at, QcBlockId liquid, QcBlockId rim) const;

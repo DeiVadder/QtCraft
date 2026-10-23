@@ -8,7 +8,9 @@
 #include "worldgen/terrain/QcGiantTreePlacer.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcPoolPlacer.h"
+#include "worldgen/terrain/QcRiverDelta.h"
 #include "worldgen/terrain/QcRiverField.h"
+#include "worldgen/terrain/QcRiverPieces.h"
 #include "worldgen/terrain/QcSurfaceLakes.h"
 #include "worldgen/terrain/QcTerrainClimate.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
@@ -96,6 +98,12 @@ public:
     [[nodiscard]] double rarityAt(int x, int z) const { return climateAt(x, z).rarity; }
     // The climate point of a column (decisions E-014, E-821, E-824), for tests and tools.
     [[nodiscard]] QcTerrainClimate::Point climateAt(int x, int z) const;
+    // The continent value of a column (below about -0.15 the sea; river deltas read it, decision
+    // E-850).
+    [[nodiscard]] double continentAt(int x, int z) const;
+    // The climate at a column whose ground lies above the sea level before rivers cut it (the
+    // river pieces, decision E-851); std::nullopt in the sea and lakes.
+    [[nodiscard]] std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const;
     // The biome a climate point belongs to (the heaviest after the rarity gate), as the terrain picks
     // it; tests check the layout of the biomes in climate space with it (decision E-824).
     [[nodiscard]] int biomeForClimate(const QcTerrainClimate::Point &climate) const;
@@ -106,8 +114,11 @@ public:
     [[nodiscard]] QcRiverField::Sample riverAt(int x, int z) const;
     // Whether a biome is a river biome (the water of river channels, decision E-840).
     [[nodiscard]] bool isRiverBiome(int biome) const;
+    // Whether a biome is a delta biome (the arms and islands of a river delta, decision E-850).
+    [[nodiscard]] bool isDeltaBiome(int biome) const;
     // The block of the top water layer of a column under the sea level (decision E-858): with
-    // freezing by temperature ice where the column is cold enough, else the biome's frozenWater.
+    // freezing by temperature ice where the column is cold enough, else the biome's frozenWater;
+    // with a `frozenDepth` only where the water is that shallow (decision E-850).
     [[nodiscard]] QcBlockId frozenWaterAt(int x, int z, const Column &column) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
@@ -141,17 +152,41 @@ private:
         double runnerUpWeight = 0.0;
     };
     [[nodiscard]] Blend blend(const QcTerrainClimate::Point &climate, double rolling, double ridge, double terraces) const;
+    // A column before rivers and deltas cut it: its climate, the blend of the biomes, the
+    // continent value, how much of the land's height it has (0 at sea, 1 inland) and its height.
+    struct Ground
+    {
+        QcTerrainClimate::Point climate;
+        Blend blended;
+        double continent = 0.0;
+        double landFactor = 0.0;
+        double height = 0.0;
+    };
+    [[nodiscard]] Ground groundAt(int x, int z) const;
     // A column of land height `height` and biome `biome` carved by the river near it (decision
     // E-840): the new height, the river biome where the river put water, and whether it is a bank.
     struct RiverCut
     {
         double height = 0.0;
         int biome = 0;
+        // The land biome the river runs through.
+        int land = 0;
         bool bank = false;
         // The river the column asked (none where its ground lies too deep).
         QcRiverField::Sample river;
     };
     [[nodiscard]] RiverCut riverCut(int x, int z, const QcTerrainClimate::Point &climate, double height, int biome) const;
+    // The continent value at warped coordinates (below about -0.15 the sea).
+    [[nodiscard]] double continentOf(double warpedX, double warpedZ) const;
+    // A column cut by `river` and in the band along the coasts (continent value `continent`)
+    // reshaped by a river delta (decision E-850): its new height and biome (the delta biome where
+    // the delta outweighs the land); std::nullopt outside every delta.
+    struct DeltaCut
+    {
+        double height = 0.0;
+        int biome = 0;
+    };
+    [[nodiscard]] std::optional<DeltaCut> deltaCut(int x, int z, double continent, const RiverCut &river) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;
@@ -196,6 +231,8 @@ private:
     QcPoolPlacer m_pools;
     QcTerrainClimate m_climate;
     QcRiverField m_rivers;
+    QcRiverPieces m_riverPieces;
+    QcRiverDelta m_deltas;
     QcColdEdges m_coldEdges;
     // The ground blocks of the columns; after the definitions and rivers it reads.
     QcTerrainSurface m_ground;

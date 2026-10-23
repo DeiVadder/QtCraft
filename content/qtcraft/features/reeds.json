@@ -1,0 +1,14 @@
+{
+    "name": "reeds",
+    "type": "plant",
+    "block": "reeds",
+    "nearWater": true,
+    "patchSize": 10,
+    "ground": [
+        "grass_block",
+        "dirt",
+        "sand",
+        "mud",
+        "gravel"
+    ]
+}

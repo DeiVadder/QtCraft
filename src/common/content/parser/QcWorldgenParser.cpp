@@ -166,14 +166,15 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
     return placements;
 }
 
-// The `underwaterPatches` of a biome (decision E-840): up to 8 blocks with shares adding up to at
-// most 1.
-[[nodiscard]] QList<QcBlockShare> parseBlockShares(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+// Patches of a biome's ground, the field `key` (`underwaterPatches`, decision E-840;
+// `surfacePatches`, decision E-850): up to 8 blocks with shares adding up to at most 1.
+[[nodiscard]] QList<QcBlockShare> parseBlockShares(const QJsonObject &json, const QString &key, QcJsonFieldReader &reader,
+                                                   const QString &packNamespace)
 {
     QList<QcBlockShare> shares;
-    const QJsonValue patches = json.value(u"underwaterPatches"_s);
+    const QJsonValue patches = json.value(key);
     if (!patches.isUndefined() && (!patches.isArray() || patches.toArray().size() > 8)) {
-        reader.fail(u"'underwaterPatches' must be an array of at most 8 entries"_s);
+        reader.fail(u"'%1' must be an array of at most 8 entries"_s.arg(key));
         return shares;
     }
 
@@ -184,14 +185,14 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         QcJsonFieldReader shareReader{shareJson, reader.context, {}};
         const QcBlockShare share{shareReader.name(u"block"_s, packNamespace), shareReader.number(u"share"_s, 0.0, 0.0, 1.0)};
         if (!entry.isObject() || share.block.isEmpty() || !shareJson.contains(u"share"_s) || !shareReader.ok()) {
-            reader.fail(shareReader.ok() ? u"'underwaterPatches' entries need 'block' and 'share'"_s : shareReader.error);
+            reader.fail(shareReader.ok() ? u"'%1' entries need 'block' and 'share'"_s.arg(key) : shareReader.error);
             break;
         }
         total += share.share;
         shares.append(share);
     }
     if (total > 1.0 + 1e-9) {
-        reader.fail(u"the shares of 'underwaterPatches' add up to more than 1"_s);
+        reader.fail(u"the shares of '%1' add up to more than 1"_s.arg(key));
     }
     return shares;
 }
@@ -262,8 +263,15 @@ namespace QcWorldgenParser {
     biome.villages = reader.boolean(u"villages"_s, false);
     biome.river = reader.boolean(u"river"_s, false);
     biome.riverBiome = reader.name(u"riverBiome"_s, packNamespace);
-    biome.underwaterPatches = parseBlockShares(json, reader, packNamespace);
+    biome.underwaterPatches = parseBlockShares(json, u"underwaterPatches"_s, reader, packNamespace);
     biome.monsterWeights = parseMonsterWeights(json, reader, packNamespace);
+    biome.surfacePatches = parseBlockShares(json, u"surfacePatches"_s, reader, packNamespace);
+    biome.frozenDepth = reader.integer(u"frozenDepth"_s, 0, 0, 16);
+    biome.delta = reader.boolean(u"delta"_s, false);
+    biome.deltaBiome = reader.name(u"deltaBiome"_s, packNamespace);
+    if (biome.river && biome.delta) {
+        reader.fail(u"a biome is either a river or a delta biome"_s);
+    }
     reader.nestedObject(u"vegetation"_s, [&biome, &packNamespace](const QJsonObject &, QcJsonFieldReader &nested) {
         biome.vegetation = QcVegetationParser::parse(nested, packNamespace);
     });
@@ -480,6 +488,9 @@ QcMineshaftSettings MineshaftReader::read()
     settings.vegetationBiome = reader.name(u"vegetationBiome"_s, packNamespace);
     settings.rivers = reader.boolean(u"rivers"_s, false);
     settings.riverBiome = reader.name(u"riverBiome"_s, packNamespace);
+    settings.deltas = reader.boolean(u"deltas"_s, false);
+    settings.deltaShare = reader.number(u"deltaShare"_s, settings.deltaShare, 0.0, 1.0);
+    settings.deltaBiome = reader.name(u"deltaBiome"_s, packNamespace);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.dungeons = parseDungeons(object, nested, packNamespace);
     });

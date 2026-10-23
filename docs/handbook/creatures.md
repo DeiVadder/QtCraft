@@ -195,13 +195,13 @@ All biomes.
 
 **Weight in these biomes**
 
-[Frozen River](biomes.md#biome-qtcraft-frozen_river) (1)
+[Frozen River](biomes.md#biome-qtcraft-frozen_river) (1), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta) (1)
 
 **Also appears**
 
 day and night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); also in caves at any time; block light up to 0
 
-[Frozen River](biomes.md#biome-qtcraft-frozen_river), [River](biomes.md#biome-qtcraft-river)
+[River Delta](biomes.md#biome-qtcraft-delta), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [River](biomes.md#biome-qtcraft-river)
 
 ### <a id="mob-qtcraft-enderman"></a>Enderman
 
@@ -458,7 +458,7 @@ A fish of the cold waters of taiga, tundra and mountains. It swims in schools, f
 
 **Appears in biomes**
 
-[Frozen River](biomes.md#biome-qtcraft-frozen_river), [Mountains](biomes.md#biome-qtcraft-mountains), [River](biomes.md#biome-qtcraft-river), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
+[Frozen River](biomes.md#biome-qtcraft-frozen_river), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [Mountains](biomes.md#biome-qtcraft-mountains), [River](biomes.md#biome-qtcraft-river), [River Delta](biomes.md#biome-qtcraft-delta), [Snowy Taiga](biomes.md#biome-qtcraft-snowy_taiga), [Taiga](biomes.md#biome-qtcraft-taiga), [Tundra](biomes.md#biome-qtcraft-tundra)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sand golem
 

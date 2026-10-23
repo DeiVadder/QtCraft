@@ -22,7 +22,10 @@
             "mountains",
             "snowy_taiga",
             "river",
-            "frozen_river"
+            "frozen_river",
+            "delta",
+            "lush_delta",
+            "frozen_delta"
         ],
         "maxGroup": 4,
         "weight": 3

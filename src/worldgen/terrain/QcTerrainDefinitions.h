@@ -62,20 +62,31 @@ struct QcTerrainDefinitions
         QcBlockId underwater = qcAirBlockId;
         // Patches of other blocks among `underwater` (decision E-840): block and share.
         QList<std::pair<QcBlockId, double>> underwaterPatches;
+        // Delta biomes: patches of other blocks among `surface` on their land (decision E-850).
+        QList<std::pair<QcBlockId, double>> surfacePatches;
         QcBlockId beach = qcAirBlockId;
         QcBlockId frozenWater = qcAirBlockId;
+        // Only water at most this many blocks deep takes `frozenWater` (decision E-850); 0: all.
+        int frozenDepth = 0;
         int snowLine = 0;
         QcBlockId snow = qcAirBlockId;
         // A river biome, which the climate never chooses (decision E-840).
         bool river = false;
         // Land biomes: the index of the river biome of their rivers, -1 without one.
         int riverBiome = -1;
+        // A delta biome, which the climate never chooses either (decision E-850).
+        bool delta = false;
+        // Land biomes: the index of the delta biome of their river deltas, -1 without one.
+        int deltaBiome = -1;
         // Index into features and density per column; the vegetation layers come last.
         QList<std::pair<int, double>> features;
         // Giant trees (decision E-822): index into features and chance per cell of
         // QcTerrainDefinitions::giantCell blocks, from their density per column; not in `features`.
         QList<std::pair<int, double>> giants;
         std::array<VegetationPatches, VegetationLayers> patches;
+
+        // Whether the climate chooses this biome (not a river or delta biome).
+        [[nodiscard]] bool byClimate() const { return !river && !delta; }
     };
 
     struct Pool
@@ -155,6 +166,10 @@ struct QcTerrainDefinitions
     bool anyOverhangs = false;
     // Rivers run through the land (terrain setting `rivers`, decision E-840).
     bool rivers = false;
+    // Wide rivers end in deltas (terrain setting `deltas` with `rivers`, decision E-850).
+    bool deltas = false;
+    // The share of the wide river mouths that get a delta (terrain setting `deltaShare`).
+    double deltaShare = 1.0;
     // What could not be resolved and was replaced by a fallback.
     QStringList warnings;
 };
