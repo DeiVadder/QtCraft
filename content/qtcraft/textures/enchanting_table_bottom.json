@@ -1,0 +1,7 @@
+{
+    "name": "enchanting_table_bottom",
+    "pattern": "noise",
+    "primary": "#1a1422",
+    "variation": 0.06,
+    "seed": 4115
+}

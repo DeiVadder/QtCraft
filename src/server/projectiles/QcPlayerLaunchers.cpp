@@ -5,6 +5,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/gameplay/QcToolWear.h"
 #include "server/projectiles/QcServerProjectiles.h"
 
 #include <algorithm>
@@ -135,8 +136,8 @@ bool QcPlayerLaunchers::shoot(QcServerClient &client, double power)
     }
     const int slot = client.inventory.selectedHotbarSlot();
     QcItemStack launcher = client.inventory.slot(slot);
-    if (held->durability > 0 && ++launcher.damage >= held->durability) {
-        launcher = {};
+    launcher = QcToolWear::worn(m_state, launcher);
+    if (launcher.isEmpty()) {
         m_sounds.play(QString::fromLatin1(QcSoundKeys::itemBreak), client.motion.position);
     }
     client.inventory.setSlot(slot, launcher);

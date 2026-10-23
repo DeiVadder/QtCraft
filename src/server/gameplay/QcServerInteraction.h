@@ -19,7 +19,7 @@ class QcServerMinecarts;
 class QcServerPlants;
 class QcServerSounds;
 class QcServerStands;
-class QcServerStonecutter;
+struct QcServerWorkstations;
 struct QcServerClient;
 class QcServerState;
 
@@ -52,7 +52,7 @@ public:
         QcFireIgnition &ignition;
         QcServerGolems &golems;
         QcServerKitchen &kitchen;
-        QcServerStonecutter &stonecutter;
+        QcServerWorkstations &workstations;
     };
 
     QcServerInteraction(QcServerState &state, const Parts &parts);

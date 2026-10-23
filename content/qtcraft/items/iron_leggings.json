@@ -3,6 +3,7 @@
     "texture": "iron_leggings",
     "maxStack": 1,
     "durability": 225,
+    "enchantability": 9,
     "armour": {
         "slot": "legs",
         "points": 5,

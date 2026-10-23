@@ -148,7 +148,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 lightOpacity = 0;
     qint32 toolLevel = 0;
     stream >> block.name >> block.translationKey >> renderLayer >> block.solid >> block.opaque >> block.liquid
-        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> block.opensStonecutter
+        >> block.replaceable >> lightOpacity >> block.hardness >> block.tool >> toolLevel >> block.opensCrafting >> block.opensStonecutter >> block.opensEnchanting
         >> block.machine.category >> block.machine.speed >> block.fuelSeconds >> block.machine.sound >> block.machine.kinds
         >> block.soundMaterial;
     for (QString &key : block.soundKeys) {
@@ -344,7 +344,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
 {
     stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
            << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.machine.category
+           << qint32(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.opensEnchanting << block.machine.category
            << block.machine.speed << block.fuelSeconds << block.machine.sound << block.machine.kinds << block.soundMaterial;
     for (const QString &key : block.soundKeys) {
         stream << key;

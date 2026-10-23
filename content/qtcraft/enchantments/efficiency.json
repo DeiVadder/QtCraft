@@ -1,0 +1,13 @@
+{
+    "name": "efficiency",
+    "effect": "efficiency",
+    "maxLevel": 5,
+    "weight": 10,
+    "items": [
+        "digger",
+        "shears"
+    ],
+    "minPower": 1,
+    "powerPerLevel": 10,
+    "powerSpread": 50
+}

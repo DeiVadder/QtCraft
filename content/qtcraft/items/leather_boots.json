@@ -3,6 +3,7 @@
     "texture": "leather_boots",
     "maxStack": 1,
     "durability": 65,
+    "enchantability": 15,
     "armour": {
         "slot": "feet",
         "points": 1,

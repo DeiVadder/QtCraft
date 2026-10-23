@@ -1,0 +1,31 @@
+{
+    "name": "enchanting_table_top",
+    "pattern": "emblem",
+    "primary": "#2b2236",
+    "variation": 0.05,
+    "seed": 4113,
+    "palette": {
+        "r": "#8f1d1d",
+        "w": "#e8dcc0",
+        "g": "#3fd6c6",
+        "e": "#191320"
+    },
+    "bitmap": [
+        "eeeeeeeeeeeeeeee",
+        "e..............e",
+        "e..rrrrrrrrrr..e",
+        "e..rwwwwrwwwwr.e",
+        "e..rwwwwrwwwwr.e",
+        "e..rwggwrwggwr.e",
+        "e..rwwwwrwwwwr.e",
+        "e..rwggwrwggwr.e",
+        "e..rwwwwrwwwwr.e",
+        "e..rwwwwrwwwwr.e",
+        "e..rrrrrrrrrrr.e",
+        "e..............e",
+        "e..............e",
+        "e..............e",
+        "e..............e",
+        "eeeeeeeeeeeeeeee"
+    ]
+}

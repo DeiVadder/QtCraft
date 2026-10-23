@@ -3,6 +3,7 @@
     "texture": "iron_chestplate",
     "maxStack": 1,
     "durability": 240,
+    "enchantability": 9,
     "armour": {
         "slot": "chest",
         "points": 6,

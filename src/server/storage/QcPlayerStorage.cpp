@@ -21,9 +21,9 @@ namespace {
 
 // Version 6: position and motion, view, health, inventory, food, armour, game mode, flight, the
 // kept inventory of the other mode, the experience (level and points, decision E-398) and the status
-// effects (decision E-450). Version 5 is read without effects; files of older development versions
-// are refused (decision E-356).
-constexpr quint16 playerVersion = 6;
+// effects (decision E-450); version 7 adds the enchantment seed (decision E-864). Version 5 is read
+// without effects, 5 and 6 without seed; files of older development versions are refused (decision E-356).
+constexpr quint16 playerVersion = 7;
 constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -91,6 +91,9 @@ public:
                 return qcError(u"%1 is damaged (effects)"_s.arg(m_path));
             }
             player.effects = std::move(*effects);
+        }
+        if (version >= 7) {
+            m_stream >> player.enchantSeed;
         }
         return player;
     }
@@ -246,6 +249,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     writeEquipment(stream, player.keptEquipment);
     stream << qint32(player.experience.level()) << qint32(player.experience.points());
     QcStatusEffects::write(stream, player.effects);
+    stream << player.enchantSeed;
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 

@@ -1,0 +1,12 @@
+{
+    "name": "feather_falling",
+    "effect": "feather_falling",
+    "maxLevel": 4,
+    "weight": 5,
+    "items": [
+        "armour_feet"
+    ],
+    "minPower": 5,
+    "powerPerLevel": 6,
+    "powerSpread": 10
+}

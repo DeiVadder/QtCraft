@@ -219,9 +219,15 @@ void QcBlockScreens::setStonecutterCloser(std::function<void(QcServerClient &)> 
     m_closeStonecutter = std::move(closer);
 }
 
+void QcBlockScreens::setEnchantingCloser(std::function<void(QcServerClient &)> closer)
+{
+    m_closeEnchanting = std::move(closer);
+}
+
 void QcBlockScreens::closeOtherScreens(QcServerClient &client)
 {
     closeStonecutter(client);
+    closeEnchanting(client);
     endTrade(client);
 }
 
@@ -230,6 +236,14 @@ void QcBlockScreens::closeStonecutter(QcServerClient &client)
     // The stonecutter's input goes back to the player (QcServerStonecutter::close).
     if (client.screen.stonecutter && m_closeStonecutter) {
         m_closeStonecutter(client);
+    }
+}
+
+void QcBlockScreens::closeEnchanting(QcServerClient &client)
+{
+    // The table's item and lapis go back to the player (QcServerEnchanting::close).
+    if (client.screen.enchanting && m_closeEnchanting) {
+        m_closeEnchanting(client);
     }
 }
 

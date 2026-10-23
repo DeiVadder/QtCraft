@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/parser/QcBlastParser.h"
+#include "common/content/parser/QcBlockTextureParser.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcCookingParser.h"
 #include "common/content/parser/QcFarmingParser.h"
@@ -53,33 +54,6 @@ bool hasValues(const QcBlockDefinition &block, const QString &name, const QStrin
     return property != block.properties.cend() && std::ranges::all_of(values, [&](const QString &value) { return property->values.contains(value); });
 }
 
-// The texture slots a shape part may use: its slot, or for "$<property>" the slot of every value
-// of that property (decision E-765).
-QStringList partSlots(const QcBlockDefinition &block, const QcShapePart &part)
-{
-    if (!part.texture.startsWith(u'$')) {
-        return {part.texture};
-    }
-    const QcBlockProperty *property = block.property(part.texture.mid(1));
-    return property ? property->values : QStringList{part.texture};
-}
-
-void checkPartTextures(const QcBlockDefinition &block, QcJsonFieldReader &reader)
-{
-    if (block.renderLayer == QcRenderLayer::Invisible) {
-        return;
-    }
-    for (const QcShapePart &part : std::as_const(block.shape.parts)) {
-        const QStringList named = partSlots(block, part);
-        for (const QString &slot : named) {
-            if (!slot.isEmpty() && block.slotTexture(slot).isEmpty()) {
-                reader.fail(u"shape part uses the unknown texture slot '%1'"_s.arg(slot));
-                return;
-            }
-        }
-    }
-}
-
 // Reads one block definition: owns the definition being built and the reader of the block's JSON
 // object. The parts run in a fixed order, later parts check fields that earlier parts read.
 class BlockReader
@@ -116,7 +90,6 @@ private:
     void readGrowth(QcJsonFieldReader &growthReader);
     void readFarming();
     void readSounds(QcJsonFieldReader &soundReader);
-    void readTextureSlots(const QJsonObject &faces, QcJsonFieldReader &textureReader);
     void readTextures();
 
     const QJsonObject &m_json;
@@ -280,6 +253,7 @@ void BlockReader::readMiningFields()
     m_block.toolLevel = m_reader.integer(u"toolLevel"_s, 0, 0, 100);
     m_block.opensCrafting = m_reader.boolean(u"crafting"_s, false);
     m_block.opensStonecutter = m_reader.boolean(u"stonecutter"_s, false);
+    m_block.opensEnchanting = m_reader.boolean(u"enchanting"_s, false);
     m_block.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }
 
@@ -560,55 +534,15 @@ void BlockReader::readSounds(QcJsonFieldReader &soundReader)
     }
 }
 
-void BlockReader::readTextureSlots(const QJsonObject &faces, QcJsonFieldReader &textureReader)
-{
-    const QJsonObject slotJson = faces.value(u"slots"_s).toObject();
-    if (slotJson.size() > 16 || (faces.contains(u"slots"_s) && !faces.value(u"slots"_s).isObject())) {
-        textureReader.fail(u"'slots' must be an object of at most 16 named textures"_s);
-    }
-
-    for (auto it = slotJson.constBegin(); it != slotJson.constEnd(); ++it) {
-        const QString texture = it.value().isString() ? QcContentNames::qualify(it.value().toString(), m_namespace) : QString();
-        if (texture.isEmpty() || it.key().isEmpty() || it.key().size() > 32) {
-            textureReader.fail(u"invalid texture slot '%1'"_s.arg(it.key()));
-            break;
-        }
-        m_block.textureSlots.append({it.key(), texture});
-    }
-}
-
 void BlockReader::readTextures()
 {
     if (m_block.renderLayer == QcRenderLayer::Invisible) {
         return;
     }
 
-    const QJsonValue textures = m_json.value(u"textures"_s);
-    if (!textures.isObject()) {
-        m_reader.fail(u"'textures' object is required for visible blocks"_s);
-        return;
-    }
-
-    const QJsonObject faces = textures.toObject();
-    QcJsonFieldReader textureReader{faces, m_reader.context + u" textures"_s, {}};
-    const QString all = textureReader.name(u"all"_s, m_namespace);
-    const QString side = textureReader.name(u"side"_s, m_namespace, all);
-    const QString top = textureReader.name(u"top"_s, m_namespace, all);
-    const QString bottom = textureReader.name(u"bottom"_s, m_namespace, all);
-    const auto face = [&](const QString &key, const QString &fallback) {
-        return textureReader.name(key, m_namespace, fallback);
-    };
-    m_block.faceTextures = {face(u"east"_s, side), face(u"west"_s, side), top,
-                            bottom, face(u"south"_s, side), face(u"north"_s, side)};
-    readTextureSlots(faces, textureReader);
-    m_reader.adopt(textureReader);
-
-    for (const QString &texture : m_block.faceTextures) {
-        if (texture.isEmpty()) {
-            m_reader.fail(u"every face needs a texture (use 'all', 'side', 'top', 'bottom' or a face name)"_s);
-            break;
-        }
-    }
+    const QcBlockTextures textures = QcBlockTextureParser::parseTextures(m_json, m_reader, m_namespace);
+    m_block.faceTextures = textures.faces;
+    m_block.textureSlots = textures.namedSlots;
 }
 
 // The optional nested objects read between the mining fields and the liquid flow.
@@ -670,7 +604,7 @@ QcResult<QcBlockDefinition> BlockReader::read()
     m_block.hold = QcHoldParser::holdOf(m_reader);
     m_block.hasItem = m_reader.boolean(u"item"_s, true);
     m_block.itemTags = QcContentFields::parseTags(m_json.value(u"tags"_s), m_namespace, m_reader);
-    checkPartTextures(m_block, m_reader);
+    QcBlockTextureParser::checkPartTextures(m_block, m_reader);
 
     if (!m_reader.ok()) {
         return qcError(m_reader.error);

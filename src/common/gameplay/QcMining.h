@@ -16,7 +16,8 @@ inline constexpr double minimumSeconds = 0.05;
 bool isBreakable(const QcBlockDefinition &block);
 // True when the held item (nullptr = hand) gets the block's drops.
 bool canHarvest(const QcBlockDefinition &block, const QcItemDefinition *held);
-// Seconds needed to break the block; negative for unbreakable blocks.
-double breakSeconds(const QcBlockDefinition &block, const QcItemDefinition *held);
+// Seconds needed to break the block; negative for unbreakable blocks. `speedBonus` adds to a
+// matching tool's speed (efficiency, QcEnchanting::speedBonus).
+double breakSeconds(const QcBlockDefinition &block, const QcItemDefinition *held, double speedBonus = 0.0);
 
 } // namespace QcMining

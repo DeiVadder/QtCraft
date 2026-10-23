@@ -2,6 +2,7 @@
     "name": "bow",
     "maxStack": 1,
     "durability": 384,
+    "enchantability": 1,
     "launcher": {
         "drawSeconds": 1.0,
         "speed": 60.0,

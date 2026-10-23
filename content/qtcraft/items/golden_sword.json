@@ -3,5 +3,6 @@
     "texture": "golden_sword",
     "maxStack": 1,
     "durability": 32,
+    "enchantability": 22,
     "attackDamage": 4.0
 }

@@ -145,6 +145,8 @@ struct QcBlockDefinition
     bool opensCrafting = false;
     // Using the block opens the stonecutter's screen (decision E-785).
     bool opensStonecutter = false;
+    // Using the block opens the enchanting table's screen (decision E-864).
+    bool opensEnchanting = false;
     // Using the block opens its machine screen (furnace).
     QcMachineDefinition machine;
     // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.

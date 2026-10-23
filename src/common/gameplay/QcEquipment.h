@@ -6,6 +6,7 @@
 
 #include <array>
 #include <cstddef>
+#include <functional>
 
 class QcContentRegistry;
 
@@ -35,7 +36,9 @@ struct QcEquipment
     QcEquipment knownTo(const QcContentRegistry &content) const;
     // Wears every worn piece with durability by a hit of `damage` (QcArmour::wearOf); broken pieces
     // are removed. Returns their slots.
-    [[nodiscard]] QList<QcEquipmentSlot> wear(const QcContentRegistry &content, double damage);
+    // `keeps` tells for a piece whether it does not wear this time (unbreaking, decision E-864).
+    [[nodiscard]] QList<QcEquipmentSlot> wear(const QcContentRegistry &content, double damage,
+                                              const std::function<bool(const QcItemStack &)> &keeps = {});
 
     bool operator==(const QcEquipment &) const = default;
 };

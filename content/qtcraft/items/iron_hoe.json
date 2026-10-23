@@ -3,6 +3,7 @@
     "texture": "iron_hoe",
     "maxStack": 1,
     "durability": 250,
+    "enchantability": 14,
     "attackDamage": 1.0,
     "tool": "hoe",
     "toolLevel": 3,

@@ -14,6 +14,15 @@
 class QcItemData;
 struct QcSharedItemData;
 
+// An enchantment an item carries (decision E-864): the enchantment's content name and its level.
+struct QcEnchantment
+{
+    QString name;
+    int level = 1;
+
+    bool operator==(const QcEnchantment &) const = default;
+};
+
 // A number of identical items, e.g. one inventory slot. `damage` counts tool uses. What only some
 // stacks carry (a map id, contents, a custom name) is in `data` (decision E-823): null for plain
 // stacks, so they pay one null pointer (a stack is 24 bytes); shared and never changed in place, so
@@ -42,6 +51,7 @@ struct QcItemStack
     [[nodiscard]] QcItemStack withMapId(quint32 id) const;
     [[nodiscard]] QcItemStack withContents(QList<QcItemStack> stacks) const;
     [[nodiscard]] QcItemStack withName(QString text) const;
+    [[nodiscard]] QcItemStack withEnchantments(QList<QcEnchantment> list) const;
     // The same stack with `next` as its data, or nothing (with the warning of withData) when the
     // data is beyond the limits. Callers that take items out of slots to put them into the data
     // (filling a backpack) ask first, so a refusal loses and doubles nothing (stage 68.2).
@@ -69,6 +79,8 @@ struct QcItemStack
     bool hasContents() const;
     // A custom name (stage 41.2a); empty for none.
     QString name() const;
+    // The enchantments it carries (decision E-864); empty for none.
+    const QList<QcEnchantment> &enchantments() const;
     // The data, or an empty one.
     const QcItemData &itemData() const;
 
@@ -85,6 +97,7 @@ public:
         MapId = 1,
         Contents = 2,
         Name = 3,
+        Enchantments = 4,
     };
     static constexpr quint16 firstModId = 0x8000;
     // The longest custom name (characters).
@@ -97,16 +110,21 @@ public:
     // largest stack is about 8 KB on the wire, so even QcProtocolCodec::readStacks' 1024 such
     // stacks stay far below a frame (QcProtocol::maxFrameBytes), and a player's inventory below 1 MiB.
     static constexpr int maxStacksInside = 64;
+    // The most enchantments on one stack, the longest enchantment name and the highest level.
+    static constexpr qsizetype maxEnchantments = 16;
+    static constexpr qsizetype maxEnchantmentName = 64;
+    static constexpr int maxEnchantmentLevel = 255;
 
     // The map id of a filled map; 0: none.
     quint32 mapId = 0;
     // The stacks held inside, by slot; trailing empty slots are left out, so all empty is none.
     QList<QcItemStack> contents;
     QString name;
+    QList<QcEnchantment> enchantments;
     // Components read from a save this version does not know, written back as read.
     QcKeptComponents kept;
 
-    bool isEmpty() const { return mapId == 0 && contents.isEmpty() && name.isEmpty() && kept.isEmpty(); }
+    bool isEmpty() const { return mapId == 0 && contents.isEmpty() && name.isEmpty() && enchantments.isEmpty() && kept.isEmpty(); }
     // The same data with trailing empty slots of the contents left out.
     [[nodiscard]] QcItemData normalized() const;
     // How deep its contents nest: 0 without contents, 1 for contents without contents, ….
@@ -157,6 +175,11 @@ inline bool QcItemStack::hasContents() const
 inline QString QcItemStack::name() const
 {
     return data ? data->value.name : QString();
+}
+
+inline const QList<QcEnchantment> &QcItemStack::enchantments() const
+{
+    return itemData().enchantments;
 }
 
 inline bool QcItemStack::stacksWith(const QcItemStack &other) const

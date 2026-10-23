@@ -2,6 +2,7 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
@@ -19,11 +20,12 @@
 #include "server/gameplay/QcServerCrafting.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcServerStands.h"
+#include "server/gameplay/QcToolWear.h"
 #include "server/golems/QcServerGolems.h"
 #include "server/hanging/QcServerHanging.h"
 #include "server/machines/QcBlockScreens.h"
 #include "server/machines/QcServerKitchen.h"
-#include "server/machines/QcServerStonecutter.h"
+#include "server/machines/QcServerWorkstations.h"
 #include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
 #include "server/plants/QcServerPlants.h"
@@ -72,7 +74,9 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         return;
     }
 
-    const double seconds = QcMining::breakSeconds(definition, held);
+    const QcItemStack heldStack = client.inventory.selectedStack();
+    const int efficiency = QcEnchanting::levelOf(m_state.content(), heldStack, QcEnchantmentEffect::Efficiency);
+    const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency));
     // In the players' time, so the mining takes as long at every tick rate.
     constexpr qint64 tickNs = qint64(QcPhysics::tickDuration * 1e9);
     const qint64 requiredNs = qint64(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
@@ -89,11 +93,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
 
     if (held && held->durability > 0) {
         const int slot = client.inventory.selectedHotbarSlot();
-        QcItemStack tool = client.inventory.slot(slot);
-        if (++tool.damage >= held->durability) {
-            tool = {};
-        }
-        client.inventory.setSlot(slot, tool);
+        client.inventory.setSlot(slot, QcToolWear::worn(m_state, client.inventory.slot(slot)));
     }
 
     m_parts.inventory.send(client);
@@ -184,7 +184,11 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
     }
 
     // The stonecutter (decision E-785).
-    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.stonecutter.open(client, target)) {
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.stonecutter.open(client, target)) {
+        return true;
+    }
+    // The enchanting table (decision E-864).
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.enchanting.open(client, target)) {
         return true;
     }
 

@@ -35,6 +35,8 @@ struct QcPlayerData
     QcEquipment keptEquipment;
     // Level and points (decision E-398).
     QcExperience experience;
+    // The enchantment seed (decision E-864); 0 in files of version 6.
+    quint32 enchantSeed = 0;
     // Status effects (decision E-450).
     QList<QcStatusEffect> effects;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcAppearance.h"
+#include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcGameMode.h"
@@ -124,6 +125,19 @@ struct QcServerClient : QcEntity
         }
     };
 
+    // The open enchanting table (QcServerEnchanting, decision E-864): where it stands and the stacks in
+    // its item and lapis slots. Its offers follow from the item, the bookshelves and the player's
+    // enchantment seed. `shown` and `shownShelves` are what the client was last told (stateOf):
+    // the player takes only an offer he saw, and a changed shelf count sends the offers again.
+    struct Enchanting
+    {
+        QcBlockPos pos;
+        QcItemStack item;
+        QcItemStack lapis;
+        QcEnchantingTable::Offers shown{};
+        int shownShelves = -1;
+    };
+
     // The machine, container or villager whose screen the player has open, and what the client was
     // last told about it.
     // A portable container opened from the hand (a backpack, decision E-833): the hotbar slot that
@@ -152,6 +166,8 @@ struct QcServerClient : QcEntity
         // trade (`trading`) are never open at once: opening one closes the others
         // (QcServerStonecutter::open, QcBlockScreens::open/openCart, QcServerTrading::open).
         std::optional<Stonecutter> stonecutter;
+        // The enchanting table whose screen is open; never together with any of the above.
+        std::optional<Enchanting> enchanting;
         // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
         std::optional<QcBlockPos> sign;
     };
@@ -233,6 +249,9 @@ struct QcServerClient : QcEntity
     // Experience (QcServerExperience, decision E-398) and what the client last got of it; none before
     // the first message.
     QcExperience experience;
+    // Fixes the enchanting table's offers until the player enchants (decision E-864); saved with the
+    // player, 0 until the server draws one.
+    quint32 enchantSeed = 0;
     std::optional<QcExperience> sentExperience;
     // The creatures this player fought lately (decision E-480): the last that hurt them and the last
     // they struck (entity ids, 0: none) with the tick it happened; their pets defend them

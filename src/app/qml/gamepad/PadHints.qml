@@ -13,7 +13,7 @@ Rectangle {
     property bool covered
     readonly property bool slotScreen: [GameController.Overlay.Inventory, GameController.Overlay.Creative, GameController.Overlay.Furnace,
                                         GameController.Overlay.Chest, GameController.Overlay.Trade,
-                                        GameController.Overlay.Stonecutter].includes(game.overlay)
+                                        GameController.Overlay.Stonecutter, GameController.Overlay.Enchanting].includes(game.overlay)
                                        && game.phase === GameController.Phase.Playing && !game.handbook.isOpen
     // The focus is in an open popup (a prompt, a list): the shoulders switch no tabs there.
     readonly property bool inPopup: game.gamepad.focusLayer !== null

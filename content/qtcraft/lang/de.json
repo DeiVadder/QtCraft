@@ -104,6 +104,7 @@
     "block.qtcraft.tripwire_hook": "Stolperdrahthaken",
     "block.qtcraft.tripwire": "Stolperdraht",
     "block.qtcraft.stonecutter": "Steinschneider",
+    "block.qtcraft.enchanting_table": "Zaubertisch",
     "material.qtcraft.oak": "Eichen",
     "material.qtcraft.birch": "Birken",
     "material.qtcraft.spruce": "Fichten",
@@ -384,6 +385,7 @@
     "structure.qtcraft.workshop": "Werkstatt",
     "structure.qtcraft.kitchen": "Küche: Räucherofen, Schmelzofen, Lagerfeuer, Kuchen, Seerosen",
     "structure.qtcraft.traps_and_cutting": "Fallen und Steinschnitt: Stolperdrahthaken und Stolperdraht, Fallentruhe, Steinschneider",
+    "structure.qtcraft.enchanting": "Verzaubern: ein Zaubertisch mit 15 Bücherregalen rundherum, eine Truhe mit Lapislazuli, Werkzeug, Schwert, Rüstung und Bogen",
     "structure.qtcraft.metalwork": "Ketten und Laternen",
     "structure.qtcraft.metalwork.standing": "Eine Laterne steht auf dem oberen Ende einer Kette",
     "structure.qtcraft.metalwork.lying": "Eine Kette liegt entlang der Fläche, auf die sie gesetzt wurde",
@@ -792,6 +794,11 @@
     "appearance.qtcraft.stray": "Eiswanderer",
     "appearance.qtcraft.drowned": "Ertrunkener",
     "effect.qtcraft.slowness": "Langsamkeit",
+    "enchantment.qtcraft.efficiency": "Effizienz",
+    "enchantment.qtcraft.unbreaking": "Haltbarkeit",
+    "enchantment.qtcraft.sharpness": "Schärfe",
+    "enchantment.qtcraft.protection": "Schutz",
+    "enchantment.qtcraft.feather_falling": "Federfall",
     "effect.qtcraft.hunger": "Hunger",
     "structure.qtcraft.monster_variants": "Monster der Biome: Wüstenzombie, Eiswanderer und Ertrunkener"
 }

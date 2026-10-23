@@ -3,11 +3,13 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcArmour.h"
+#include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/gameplay/QcToolWear.h"
 #include "server/items/QcServerExperience.h"
 
 #include <algorithm>
@@ -184,10 +186,13 @@ double QcPlayerHealth::throughArmour(QcServerClient &client, double amount)
         return amount;
     }
 
+    // Protection enchantments take their share off what the armour lets through (decision E-864);
+    // counted before the hit wears the armour, so a piece that breaks on this hit still protects.
+    const int protection = QcEnchanting::protectionPoints(content, client.equipment, false);
     QcEquipment worn = client.equipment;
-    const bool broke = !worn.wear(content, amount).isEmpty();
+    const bool broke = !worn.wear(content, amount, [this](const QcItemStack &piece) { return QcToolWear::armourKeeps(m_state, piece); }).isEmpty();
     m_inventory.equipmentWorn(client, worn, broke);
-    return QcArmour::reducedDamage(amount, points);
+    return QcEnchanting::reducedDamage(QcArmour::reducedDamage(amount, points), protection);
 }
 
 void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
@@ -202,7 +207,12 @@ void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wa
     } else if (!wasOnGround) {
         const double height = client.fallPeak - client.motion.position.y;
         if (height > fallDamageThreshold) {
-            damage(client, std::floor(height - fallDamageThreshold), {});
+            // Protection and feather falling soften a fall (decision E-864).
+            const int protection = QcEnchanting::protectionPoints(m_state.content(), client.equipment, true);
+            const double fall = QcEnchanting::reducedDamage(std::floor(height - fallDamageThreshold), protection);
+            if (fall > 0.0) {
+                damage(client, fall, {});
+            }
         }
         client.fallPeak = client.motion.position.y;
     }

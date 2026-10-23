@@ -2,6 +2,7 @@
 
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcTransport.h"
+#include "QcRawWorkstations.h"
 #include "QcRawWorldRecord.h"
 #include "QcTestLogin.h"
 
@@ -12,7 +13,7 @@
 #include <optional>
 
 // A raw protocol client: sends exactly what a test wants and records everything the server says
-// (what it says about the world in QcRawWorldRecord).
+// (what it says about the world in QcRawWorldRecord, about workstations in `workstations`).
 // It answers a login challenge like the real client (decision E-252) with `key`, `password` and
 // `packs` (by default a key made from the name, no password and the server's own packs).
 class QcRawClient : public QcRawWorldRecord
@@ -41,7 +42,7 @@ public:
     void received(QcMessage &&message)
     {
         ++messageCount;
-        if (!receivedPlayer(message) && !receivedScreen(message) && !receivedBlocks(message) && !receivedAdmin(message)) {
+        if (!receivedPlayer(message) && !receivedScreen(message) && !workstations.receivedWorkstation(message) && !receivedBlocks(message) && !receivedAdmin(message)) {
             receivedWorld(message);
         }
     }
@@ -121,14 +122,6 @@ public:
         } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
             trade.reset();
             tradeClosed = true;
-        } else if (const auto *cutter = std::get_if<QcMsg::OpenStonecutter>(&message)) {
-            stonecutter = cutter->pos;
-        } else if (const auto *cutter = std::get_if<QcMsg::StonecutterState>(&message)) {
-            stonecutterState = *cutter;
-        } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
-            stonecutter.reset();
-            stonecutterState = {};
-            stonecutterClosed = true;
         } else {
             return false;
         }
@@ -253,8 +246,6 @@ public:
     float machineBurn = 0.0f;
     // The server closed the machine screen.
     bool machineClosed = false;
-    // The open stonecutter (decision E-785), its slots as last sent and whether the server closed one.
-    std::optional<QcBlockPos> stonecutter;
-    QcMsg::StonecutterState stonecutterState;
-    bool stonecutterClosed = false;
+    // The open stonecutter and enchanting table.
+    QcRawWorkstations workstations;
 };

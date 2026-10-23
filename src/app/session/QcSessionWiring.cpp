@@ -1,5 +1,6 @@
 #include "app/session/QcSessionWiring.h"
 
+#include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcPlayerController.h"
 #include "app/controllers/QcScreenState.h"
@@ -85,6 +86,7 @@ void QcSessionWiring::connectPlayer()
     connect(session, &QcClientSession::inventoryChanged, trade, &QcTradeController::update);
     connect(&session->signEditor(), &QcClientSignEditor::opened, &m_targets.screens, &QcScreenState::signOpened);
     connectStonecutter();
+    connectEnchanting();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
@@ -104,6 +106,26 @@ void QcSessionWiring::connectStonecutter()
     connect(&session->stonecutter(), &QcClientStonecutter::opened, player, &QcPlayerController::updateInventory);
     connect(&session->stonecutter(), &QcClientStonecutter::changed, player, &QcPlayerController::updateInventory);
     connect(&session->stonecutter(), &QcClientStonecutter::closed, player, &QcPlayerController::updateInventory);
+}
+
+void QcSessionWiring::connectEnchanting()
+{
+    const QcClientSession *session = m_parts.session.get();
+    const QcClientEnchanting *table = &session->enchanting();
+    const QcEnchantingController *enchanting = &m_targets.enchanting;
+    connect(table, &QcClientEnchanting::opened, &m_targets.screens, &QcScreenState::enchantingOpened);
+    connect(table, &QcClientEnchanting::closed, &m_targets.screens, &QcScreenState::enchantingClosed);
+    connect(table, &QcClientEnchanting::opened, enchanting, &QcEnchantingController::update);
+    connect(table, &QcClientEnchanting::closed, enchanting, &QcEnchantingController::update);
+    connect(table, &QcClientEnchanting::changed, enchanting, &QcEnchantingController::update);
+    connect(session, &QcClientSession::experienceChanged, enchanting, &QcEnchantingController::update);
+    // The item and lapis slots live in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(table, &QcClientEnchanting::opened, player, &QcPlayerController::updateInventory);
+    connect(table, &QcClientEnchanting::changed, player, &QcPlayerController::updateInventory);
+    connect(table, &QcClientEnchanting::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay enchanting` fills the item and lapis slots from the hotbar like a furnace.
+    connect(table, &QcClientEnchanting::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
 }
 
 void QcSessionWiring::onSessionState(QcClientSession::State state)

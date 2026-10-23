@@ -3,6 +3,7 @@
     "texture": "stone_axe",
     "maxStack": 1,
     "durability": 131,
+    "enchantability": 5,
     "attackDamage": 4.0,
     "tool": "axe",
     "toolLevel": 2,

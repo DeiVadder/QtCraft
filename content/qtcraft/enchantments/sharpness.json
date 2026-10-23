@@ -1,0 +1,13 @@
+{
+    "name": "sharpness",
+    "effect": "sharpness",
+    "maxLevel": 5,
+    "weight": 10,
+    "items": [
+        "weapon",
+        "axe"
+    ],
+    "minPower": 1,
+    "powerPerLevel": 11,
+    "powerSpread": 20
+}

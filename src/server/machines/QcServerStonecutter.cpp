@@ -30,8 +30,9 @@ bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
     // same stonecutter again keeps its slots; another one starts empty.
     m_screens.close(client, true);
     m_screens.endTrade(client);
+    m_screens.closeEnchanting(client);
     if (client.screen.stonecutter && client.screen.stonecutter->pos != pos) {
-        m_inventory.returnStonecutterInput(client);
+        m_inventory.returnScreenInputs(client);
     }
     if (!client.screen.stonecutter || client.screen.stonecutter->pos != pos) {
         client.screen.stonecutter = QcServerClient::Stonecutter{pos, {}, {}};
@@ -46,7 +47,7 @@ void QcServerStonecutter::close(QcServerClient &client, bool notify)
     if (!client.screen.stonecutter) {
         return;
     }
-    m_inventory.returnStonecutterInput(client);
+    m_inventory.returnScreenInputs(client);
     client.screen.stonecutter.reset();
     if (client.state == QcServerClient::State::Closed) {
         return;

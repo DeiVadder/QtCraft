@@ -390,6 +390,9 @@ void BlockPage::addUseFacts()
     if (block.opensStonecutter) {
         addFact(u"stonecutter"_s, label(u"value.stonecutterScreen"_s));
     }
+    if (block.opensEnchanting) {
+        addFact(u"enchanting"_s, label(u"value.enchantingScreen"_s));
+    }
     if (block.containerSlots > 0) {
         addFact(u"storage"_s, label(u"unit.slots"_s).arg(block.containerSlots));
     }

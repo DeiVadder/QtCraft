@@ -126,4 +126,66 @@ void encode(QDataStream &, QcMsg::CloseStonecutter) {}
     return QcMsg::CloseStonecutter{};
 }
 
+void encode(QDataStream &stream, QcMsg::OpenEnchanting m)
+{
+    writePos(stream, m.pos);
+}
+
+void encode(QDataStream &stream, const QcMsg::EnchantingState &m)
+{
+    writeStack(stream, m.item);
+    writeStack(stream, m.lapis);
+    stream << m.shelves;
+    for (const QcMsg::EnchantingOffer &offer : m.offers) {
+        stream << offer.levelCost << offer.clue << offer.clueLevel;
+    }
+}
+
+void encode(QDataStream &stream, QcMsg::ChooseEnchantment m)
+{
+    stream << m.slot;
+}
+
+void encode(QDataStream &, QcMsg::CloseEnchanting) {}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenEnchanting>, QDataStream &stream)
+{
+    QcMsg::OpenEnchanting m;
+    m.pos = readPos(stream);
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EnchantingState>, QDataStream &stream)
+{
+    QcMsg::EnchantingState m;
+    m.item = readStack(stream);
+    m.lapis = readStack(stream);
+    stream >> m.shelves;
+    for (QcMsg::EnchantingOffer &offer : m.offers) {
+        stream >> offer.levelCost >> offer.clue >> offer.clueLevel;
+        if (offer.levelCost < 0 || offer.clue.size() > QcMsg::EnchantingState::maxClue || offer.clueLevel < 0 || offer.clueLevel > 255) {
+            return qcError(u"Invalid enchanting offer"_s);
+        }
+    }
+    if (m.shelves < 0 || m.shelves > 15) {
+        return qcError(u"Invalid bookshelf count"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChooseEnchantment>, QDataStream &stream)
+{
+    QcMsg::ChooseEnchantment m;
+    stream >> m.slot;
+    if (m.slot < 0 || m.slot > 2) {
+        return qcError(u"Invalid enchanting offer"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseEnchanting>, QDataStream &)
+{
+    return QcMsg::CloseEnchanting{};
+}
+
 } // namespace QcProtocolCodec

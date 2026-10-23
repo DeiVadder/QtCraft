@@ -464,6 +464,8 @@ void PackReader::loadLaterDefinitions()
                     [this](QcProjectileDefinition projectile) { m_registry.registerProjectile(std::move(projectile)); });
     loadDefinitions(u"effects"_s, QcContentParser::parseEffect,
                     [this](QcEffectDefinition effect) { m_registry.registerEffect(std::move(effect)); });
+    loadDefinitions(u"enchantments"_s, QcContentParser::parseEnchantment,
+                    [this](QcEnchantmentDefinition enchantment) { m_registry.registerEnchantment(std::move(enchantment)); });
     loadDefinitions(u"loot"_s, QcContentParser::parseLootTable,
                     [this](QcLootTableDefinition table) { m_registry.lootTables().add(std::move(table)); });
     loadDefinitions(u"commands"_s, QcContentParser::parseCommandMacro,

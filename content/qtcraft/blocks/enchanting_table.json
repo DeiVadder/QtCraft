@@ -1,0 +1,19 @@
+{
+    "name": "enchanting_table",
+    "sound": "stone",
+    "shape": "enchanting_table",
+    "render": "cutout",
+    "solid": true,
+    "opaque": false,
+    "lightOpacity": 0,
+    "light": 7,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "enchanting": true,
+    "textures": {
+        "all": "enchanting_table_side",
+        "top": "enchanting_table_top",
+        "bottom": "enchanting_table_bottom"
+    }
+}

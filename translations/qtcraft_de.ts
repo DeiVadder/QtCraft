@@ -1701,6 +1701,46 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>EnchantingScreen</name>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="24"/>
+        <source>No offer</source>
+        <translation>Kein Angebot</translation>
+    </message>
+    <message>
+        <source>Level %1: %2 … (%3 levels, %3 lapis)</source>
+        <translation type="vanished">Stufe %1: %2 … (%3 Stufen, %3 Lapis)</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="25"/>
+        <source>Level %1: %2 … (%n level(s), %n lapis)</source>
+        <translation>
+            <numerusform>Stufe %1: %2 … (%n Stufe, %n Lapis)</numerusform>
+            <numerusform>Stufe %1: %2 … (%n Stufen, %n Lapis)</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="34"/>
+        <source>Enchanting Table</source>
+        <translation>Zaubertisch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="68"/>
+        <source>Bookshelves: %1 / 15</source>
+        <translation>Bücherregale: %1 / 15</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="102"/>
+        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="104"/>
+        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
+        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+    </message>
+</context>
+<context>
     <name>FurnaceScreen</name>
     <message>
         <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="27"/>
@@ -2675,17 +2715,17 @@ Als Nächstes: %3</translation>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="230"/>
+        <location filename="../src/app/qml/Main.qml" line="241"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="230"/>
+        <location filename="../src/app/qml/Main.qml" line="241"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="330"/>
+        <location filename="../src/app/qml/Main.qml" line="341"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -2694,12 +2734,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="348"/>
+        <location filename="../src/app/qml/Main.qml" line="359"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="353"/>
+        <location filename="../src/app/qml/Main.qml" line="364"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -3658,37 +3698,37 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcAdminController</name>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="446"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="447"/>
         <source>You are no operator on this server (any more). Managing it has ended.</source>
         <translation>Du bist (nicht mehr) Operator auf diesem Server. Die Verwaltung ist beendet.</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="448"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="449"/>
         <source>The server needs a confirmation for this.</source>
         <translation>Der Server braucht dafür eine Bestätigung.</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="450"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="451"/>
         <source>Too many requests at once. Try again in a moment.</source>
         <translation>Zu viele Anfragen auf einmal. Versuche es gleich noch einmal.</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="455"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="456"/>
         <source>The server did not accept this.</source>
         <translation>Der Server hat das nicht angenommen.</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="455"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="456"/>
         <source>The server did not accept this: %1</source>
         <translation>Der Server hat das nicht angenommen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminController.cpp" line="501"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="500"/>
         <source>%1: %2</source>
         <translation>%1: %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="510"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="509"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>%n Wert gespeichert.</numerusform>
@@ -3696,7 +3736,7 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="512"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="511"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n Wert nicht gespeichert; er bleibt hier geändert:</numerusform>
@@ -4557,14 +4597,14 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="250"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="275"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="251"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="276"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="270"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="279"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="271"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -4573,22 +4613,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="298"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="299"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="298"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="299"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="324"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="325"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="350"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -4633,12 +4673,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="334"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="335"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="454"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="455"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -4893,12 +4933,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcInventoryModel</name>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="139"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="146"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="149"/>
         <source>and %n more</source>
         <translation>
             <numerusform>und %n weiterer</numerusform>
@@ -4906,22 +4946,22 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="156"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="163"/>
         <source>Armour: +%1</source>
         <translation>Rüstung: +%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="160"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="167"/>
         <source>Map #%1</source>
         <translation>Karte Nr. %1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="162"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="169"/>
         <source>Scale 1:%1</source>
         <translation>Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="166"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="173"/>
         <source>Durability: %1 / %2</source>
         <translation>Haltbarkeit: %1 / %2</translation>
     </message>
@@ -6609,22 +6649,22 @@ Als Nächstes: %3</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="223"/>
+        <location filename="../src/server/core/QcServer.cpp" line="195"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="464"/>
+        <location filename="../src/server/core/QcServer.cpp" line="437"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="494"/>
+        <location filename="../src/server/core/QcServer.cpp" line="467"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="223"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="234"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -6649,38 +6689,38 @@ Als Nächstes: %3</translation>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="238"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="249"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="23"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="25"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="25"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="27"/>
         <source>%1 died of a status effect</source>
         <translation>%1 ist an einem Statuseffekt gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="31"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="33"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="268"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="272"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="184"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="276"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="280"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="282"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="286"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="204"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -7123,7 +7163,7 @@ Als Nächstes: %3</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="260"/>
+        <location filename="../src/server/core/QcServer.cpp" line="234"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="96"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>

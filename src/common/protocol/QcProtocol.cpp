@@ -57,7 +57,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
         return messageIndex == QcMessage(T{}).index();
     };
     if (is.template operator()<QcMsg::Disconnect>() || is.template operator()<QcMsg::CloseMachine>()
-        || is.template operator()<QcMsg::CloseTrade>() || is.template operator()<QcMsg::CloseStonecutter>()) {
+        || is.template operator()<QcMsg::CloseTrade>() || is.template operator()<QcMsg::CloseStonecutter>()
+        || is.template operator()<QcMsg::CloseEnchanting>()) {
         return true;
     }
 
@@ -76,7 +77,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::Trade>() || is.template operator()<QcMsg::DrawLauncher>()
                                || is.template operator()<QcMsg::ThrowItem>() || is.template operator()<QcMsg::EditSign>()
                                || is.template operator()<QcMsg::SelectStonecutterRecipe>() || is.template operator()<QcMsg::Pong>()
-                               || is.template operator()<QcMsg::AdminSubscribe>() || is.template operator()<QcMsg::AdminRequest>();
+                               || is.template operator()<QcMsg::AdminSubscribe>() || is.template operator()<QcMsg::AdminRequest>()
+                               || is.template operator()<QcMsg::ChooseEnchantment>();
     return clientMessage == (sender == Peer::Client);
 }
 

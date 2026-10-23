@@ -3,6 +3,7 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "common/content/definitions/QcCommandMacroDefinition.h"
 #include "common/content/definitions/QcEffectDefinition.h"
+#include "common/content/definitions/QcEnchantmentDefinition.h"
 #include "common/content/definitions/QcHoldDisplay.h"
 #include "common/content/definitions/QcItemDefinition.h"
 #include "common/content/definitions/QcMaterialDefinition.h"
@@ -166,6 +167,10 @@ public:
     void registerEffect(QcEffectDefinition effect);
     const QList<QcEffectDefinition> &effects() const { return m_effects.items(); }
     const QcEffectDefinition *effect(const QString &name) const;
+    // Enchantments (decision E-864), replaced by name; they reach the client.
+    void registerEnchantment(QcEnchantmentDefinition enchantment) { m_enchantments.set(std::move(enchantment)); }
+    const QList<QcEnchantmentDefinition> &enchantments() const { return m_enchantments.items(); }
+    const QcEnchantmentDefinition *enchantment(const QString &name) const { return m_enchantments.find(name); }
     // Loot tables of generated chests (decision E-521, server side only), replaced by name.
     QcLootTables &lootTables() { return m_lootTables; }
     const QcLootTables &lootTables() const { return m_lootTables; }
@@ -214,6 +219,7 @@ private:
     QcVillageCatalog m_villages;
     QcNamedList<QcProjectileDefinition> m_projectiles;
     QcNamedList<QcEffectDefinition> m_effects;
+    QcNamedList<QcEnchantmentDefinition> m_enchantments;
     QcLootTables m_lootTables;
     QcNamedList<QcHandbookChapter> m_handbookChapters;
     QList<QcPackReference> m_packs;

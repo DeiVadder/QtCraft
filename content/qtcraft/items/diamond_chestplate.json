@@ -3,6 +3,7 @@
     "texture": "diamond_chestplate",
     "maxStack": 1,
     "durability": 528,
+    "enchantability": 10,
     "armour": {
         "slot": "chest",
         "points": 8,

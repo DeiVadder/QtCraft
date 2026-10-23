@@ -1261,6 +1261,21 @@
     "You are no operator afterwards and cannot manage this server until another operator makes you one again.": "Danach bist du kein Operator mehr und kannst diesen Server nicht verwalten, bis dich ein anderer Operator wieder dazu macht.",
     "unsaved": "ungespeichert",
     "Key: %1": "Schlüssel: %1",
-    "Saved %n value(s).": ["%n Wert gespeichert.", "%n Werte gespeichert."],
-    "%n value(s) not saved; they stay changed here:": ["%n Wert nicht gespeichert; er bleibt hier geändert:", "%n Werte nicht gespeichert; sie bleiben hier geändert:"]
+    "Saved %n value(s).": [
+        "%n Wert gespeichert.",
+        "%n Werte gespeichert."
+    ],
+    "%n value(s) not saved; they stay changed here:": [
+        "%n Wert nicht gespeichert; er bleibt hier geändert:",
+        "%n Werte nicht gespeichert; sie bleiben hier geändert:"
+    ],
+    "No offer": "Kein Angebot",
+    "Enchanting Table": "Zaubertisch",
+    "Bookshelves: %1 / 15": "Bücherregale: %1 / 15",
+    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.",
+    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.",
+    "Level %1: %2 … (%n level(s), %n lapis)": [
+        "Stufe %1: %2 … (%n Stufe, %n Lapis)",
+        "Stufe %1: %2 … (%n Stufen, %n Lapis)"
+    ]
 }

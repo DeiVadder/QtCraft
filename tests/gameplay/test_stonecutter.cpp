@@ -77,7 +77,7 @@ private:
     // Stone in the input slot as the client was last told.
     int stoneInInput() const
     {
-        const QcItemStack input = m_client->stonecutterState.input;
+        const QcItemStack input = m_client->workstations.stonecutterState.input;
         return input.item == baseItem(u"stone"_s) ? input.count : 0;
     }
 
@@ -213,7 +213,7 @@ private slots:
         join();
         hold(u"stone"_s, 5);
         const QcBlockPos cutter = openStonecutter();
-        QCOMPARE(m_client->stonecutter, std::optional(cutter));
+        QCOMPARE(m_client->workstations.stonecutter, std::optional(cutter));
         putStoneIn(3);
         QCOMPARE(stoneInInput(), 3);
         QCOMPARE(countOf(baseItem(u"stone"_s)), 2);
@@ -225,7 +225,7 @@ private slots:
         QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 0);
 
         select(slab());
-        QCOMPARE(m_client->stonecutterState.recipe, slab());
+        QCOMPARE(m_client->workstations.stonecutterState.recipe, slab());
         m_client->sounds.clear();
         send(QcMsg::MoveInventoryItem{outputSlot, target, 1});
         QCOMPARE(m_client->stacks[target], (QcItemStack{baseItem(u"stone_slab"_s), 2, 0}));
@@ -248,7 +248,7 @@ private slots:
         send(QcMsg::MoveInventoryItem{outputSlot, target, 0});
         QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 6);
         QCOMPARE(stoneInInput(), 0);
-        QVERIFY(m_client->stonecutterState.recipe.isEmpty());
+        QVERIFY(m_client->workstations.stonecutterState.recipe.isEmpty());
     }
 
     void theChoiceFollowsTheInput()
@@ -259,21 +259,21 @@ private slots:
         openStonecutter();
         // No input: no choice; an unknown recipe or one for another input is refused.
         select(slab());
-        QVERIFY(m_client->stonecutterState.recipe.isEmpty());
+        QVERIFY(m_client->workstations.stonecutterState.recipe.isEmpty());
         putStoneIn(2);
         select(u"qtcraft:nothing"_s);
         select(u"qtcraft:cobblestone_wall_from_cobblestone"_s);
-        QVERIFY(m_client->stonecutterState.recipe.isEmpty());
+        QVERIFY(m_client->workstations.stonecutterState.recipe.isEmpty());
 
         select(slab());
         // More of the same stone keeps the choice (shift-click puts stone into the input).
         send(QcMsg::QuickMoveItem{slotOf(baseItem(u"stone"_s))});
         QCOMPARE(stoneInInput(), 4);
-        QCOMPARE(m_client->stonecutterState.recipe, slab());
+        QCOMPARE(m_client->workstations.stonecutterState.recipe, slab());
         // Another stone swapped in drops it.
         send(QcMsg::MoveInventoryItem{slotOf(baseItem(u"cobblestone"_s)), inputSlot, 0});
-        QCOMPARE(m_client->stonecutterState.input.item, baseItem(u"cobblestone"_s));
-        QVERIFY(m_client->stonecutterState.recipe.isEmpty());
+        QCOMPARE(m_client->workstations.stonecutterState.input.item, baseItem(u"cobblestone"_s));
+        QVERIFY(m_client->workstations.stonecutterState.recipe.isEmpty());
         QCOMPARE(countOf(baseItem(u"stone"_s)), 4);
         // What the stonecutter cannot cut does not go in by shift-click.
         chat(u"/give oak_planks 3"_s);
@@ -281,7 +281,7 @@ private slots:
         QCOMPARE(countOf(baseItem(u"oak_planks"_s)), 3);
         // Taken out again by shift-click.
         send(QcMsg::QuickMoveItem{inputSlot});
-        QVERIFY(m_client->stonecutterState.input.isEmpty());
+        QVERIFY(m_client->workstations.stonecutterState.input.isEmpty());
         QCOMPARE(countOf(baseItem(u"cobblestone"_s)), 2);
     }
 
@@ -299,14 +299,14 @@ private slots:
         send(QcMsg::QuickMoveItem{outputSlot});
         QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 63 + 2 * 32);
         QCOMPARE(stoneInInput(), 40 - 32);
-        QCOMPARE(m_client->stonecutterState.recipe, slab());
+        QCOMPARE(m_client->workstations.stonecutterState.recipe, slab());
 
         // With room for all: the input runs out and the choice goes.
         player().inventory = {};
         send(QcMsg::QuickMoveItem{outputSlot});
         QCOMPARE(countOf(baseItem(u"stone_slab"_s)), 16);
         QCOMPARE(stoneInInput(), 0);
-        QVERIFY(m_client->stonecutterState.recipe.isEmpty());
+        QVERIFY(m_client->workstations.stonecutterState.recipe.isEmpty());
     }
 
     void aFullInventoryTakesNothing()
@@ -359,8 +359,8 @@ private slots:
         select(slab());
         m_server->world().setBlock(cutter, qcAirBlockId);
         ticks(1);
-        QVERIFY(m_client->stonecutterClosed);
-        QVERIFY(!m_client->stonecutter.has_value());
+        QVERIFY(m_client->workstations.stonecutterClosed);
+        QVERIFY(!m_client->workstations.stonecutter.has_value());
         QCOMPARE(countOf(baseItem(u"stone"_s)), 5);
         QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
         send(QcMsg::QuickMoveItem{outputSlot});
@@ -375,7 +375,7 @@ private slots:
         putStoneIn(4);
         player().motion.position = player().motion.position + QcVec3{0.0, 0.0, 20.0};
         ticks(2);
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         QCOMPARE(countOf(baseItem(u"stone"_s)), 4);
     }
 
@@ -389,7 +389,7 @@ private slots:
         putStoneIn(3);
         chat(u"/kill"_s);
         ticks(2);
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         QCOMPARE(countOf(baseItem(u"stone"_s)), 0);
         QCOMPARE(droppedCount(baseItem(u"stone"_s)), 5);
     }
@@ -403,7 +403,7 @@ private slots:
         putStoneIn(3);
         chat(u"/kill"_s);
         ticks(2);
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         QCOMPARE(countOf(baseItem(u"stone"_s)), 5);
         QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
     }
@@ -449,7 +449,7 @@ private slots:
         chat(u"/gamemode spectator"_s);
         ticks(1);
         // The screen closed and its input went back before the inventories changed.
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         send(QcMsg::SelectStonecutterRecipe{slab()});
         send(QcMsg::QuickMoveItem{outputSlot});
         send(QcMsg::MoveInventoryItem{outputSlot, 0, 0});
@@ -517,7 +517,7 @@ private slots:
         const QcBlockPos furnace = openBlockScreen("qtcraft:furnace");
         const bool cutterOpen = player().screen.stonecutter.has_value();
         QVERIFY(!cutterOpen);
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         QCOMPARE(m_client->openMachine, std::optional(furnace));
         QCOMPARE(countOf(baseItem(u"stone"_s)), 5);
         send(QcMsg::MoveInventoryItem{slotOf(baseItem(u"stone"_s)), inputSlot, 2});
@@ -557,7 +557,7 @@ private slots:
 
         // The chest again: the input held comes back.
         openBlockScreen("qtcraft:chest");
-        QVERIFY(m_client->stonecutterClosed);
+        QVERIFY(m_client->workstations.stonecutterClosed);
         QCOMPARE(countOf(baseItem(u"stone"_s)), 4);
         QCOMPARE(droppedCount(baseItem(u"stone"_s)), 0);
     }
@@ -571,7 +571,7 @@ private slots:
         select(slab());
         openStonecutter();
         QCOMPARE(stoneInInput(), 3);
-        QCOMPARE(m_client->stonecutterState.recipe, slab());
+        QCOMPARE(m_client->workstations.stonecutterState.recipe, slab());
         QCOMPARE(countOf(baseItem(u"stone"_s)), 2);
     }
 

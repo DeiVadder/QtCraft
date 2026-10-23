@@ -41,7 +41,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
-    , m_stonecutter(m_state, m_sounds, m_inventory, m_screens)
+    , m_workstations(m_state, m_sounds, m_inventory, m_screens)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)
@@ -50,7 +50,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
     , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits,
-                              m_ignition, m_golems, m_kitchen, m_stonecutter})
+                              m_ignition, m_golems, m_kitchen, m_workstations})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
     , m_combat(m_state, m_sounds, m_inventory)
@@ -180,7 +180,7 @@ QcStatus QcServer::stop()
         // Also clients that already disconnected: removeClosedClients() will not run any more.
         if (client->joined) {
             m_crafting.returnCraftingGrid(*client);
-            m_inventory.returnStonecutterInput(*client);
+            m_inventory.returnScreenInputs(*client);
         }
     }
 
@@ -372,20 +372,23 @@ void QcServer::consumeHeld(Client &client)
 
 bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
 {
+    if (m_workstations.handleMessage(client, message)) {
+        return true;
+    }
     if (const auto *select = std::get_if<QcMsg::SelectHotbarSlot>(&message)) {
         client.inventory.setSelectedHotbarSlot(select->slot);
         client.mining.pos.reset();
         m_inventory.send(client);
     } else if (const auto *move = std::get_if<QcMsg::MoveInventoryItem>(&message)) {
         client.mining.pos.reset();
-        if (!m_stonecutter.takeOutput(client, *move)) {
+        if (!m_workstations.stonecutter.takeOutput(client, *move)) {
             m_inventory.moveItem(client, *move);
         }
     } else if (const auto *quick = std::get_if<QcMsg::QuickMoveItem>(&message)) {
         client.mining.pos.reset();
         if (quick->slot == QcMsg::QuickMoveItem::craftingResultSlot) {
             m_crafting.craftAll(client);
-        } else if (!m_stonecutter.takeAllOutput(client, quick->slot)) {
+        } else if (!m_workstations.stonecutter.takeAllOutput(client, quick->slot)) {
             m_inventory.quickMove(client, *quick);
         }
     } else if (std::holds_alternative<QcMsg::TakeCraftingResult>(message)) {
@@ -402,10 +405,6 @@ bool QcServer::handleInventoryMessage(Client &client, const QcMessage &message)
         m_trading.trade(client, *trade);
     } else if (std::holds_alternative<QcMsg::CloseTrade>(message)) {
         m_trading.close(client, false);
-    } else if (const auto *recipe = std::get_if<QcMsg::SelectStonecutterRecipe>(&message)) {
-        m_stonecutter.select(client, *recipe);
-    } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
-        m_stonecutter.close(client, false);
     } else if (const auto *drop = std::get_if<QcMsg::DropItem>(&message)) {
         m_inventory.dropItem(client, *drop);
     } else if (const auto *look = std::get_if<QcMsg::SetAppearance>(&message)) {

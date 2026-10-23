@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/admin/QcAdminController.h"
+#include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcMultiplayerController.h"
@@ -76,6 +77,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcSignController *sign READ sign CONSTANT FINAL)
     // The stonecutter's screen (decision E-785).
     Q_PROPERTY(QcStonecutterController *stonecutter READ stonecutter CONSTANT FINAL)
+    // The enchanting table's screen (decision E-864).
+    Q_PROPERTY(QcEnchantingController *enchanting READ enchanting CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
@@ -120,6 +123,7 @@ public:
     QcTradeController *trade() const { return m_trade.get(); }
     QcSignController *sign() const { return m_sign.get(); }
     QcStonecutterController *stonecutter() const { return m_stonecutter.get(); }
+    QcEnchantingController *enchanting() const { return m_enchanting.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
@@ -215,6 +219,7 @@ private:
     std::unique_ptr<QcTradeController> m_trade;
     std::unique_ptr<QcSignController> m_sign;
     std::unique_ptr<QcStonecutterController> m_stonecutter;
+    std::unique_ptr<QcEnchantingController> m_enchanting;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;
     std::unique_ptr<QcHandbookController> m_handbook;

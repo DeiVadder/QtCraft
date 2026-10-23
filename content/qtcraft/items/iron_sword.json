@@ -3,5 +3,6 @@
     "texture": "iron_sword",
     "maxStack": 1,
     "durability": 250,
+    "enchantability": 14,
     "attackDamage": 6.0
 }

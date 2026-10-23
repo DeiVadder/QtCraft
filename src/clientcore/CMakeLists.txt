@@ -134,6 +134,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
+    session/QcClientEnchanting.h session/QcClientEnchanting.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
     session/QcClientEntity.h
     session/QcClientLauncher.h session/QcClientLauncher.cpp

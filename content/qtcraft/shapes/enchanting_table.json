@@ -1,0 +1,6 @@
+{
+    "name": "enchanting_table",
+    "parts": [
+        { "boxes": [[0, 0, 0, 1, 0.75, 1]] }
+    ]
+}

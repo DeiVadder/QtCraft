@@ -24,6 +24,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcCookingDefinitions.h
     content/definitions/QcDungeonDefinition.h
     content/definitions/QcEffectDefinition.h
+    content/definitions/QcEnchantmentDefinition.h
     content/definitions/QcExperienceDrop.h
     content/definitions/QcFarmingDefinitions.h
     content/definitions/QcFireDefinition.h
@@ -70,12 +71,14 @@ target_sources(qc_common PRIVATE
     content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
     content/parser/QcBlastParser.h content/parser/QcBlastParser.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
+    content/parser/QcBlockTextureParser.h content/parser/QcBlockTextureParser.cpp
     content/parser/QcCoastalTowerParser.h content/parser/QcCoastalTowerParser.cpp
     content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
     content/parser/QcContentFields.h content/parser/QcContentFields.cpp
     content/parser/QcContentParser.h content/parser/QcContentParser.cpp
     content/parser/QcCookingParser.h content/parser/QcCookingParser.cpp
     content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
+    content/parser/QcEnchantmentParser.h content/parser/QcEnchantmentParser.cpp
     content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
     content/parser/QcHangingParser.h content/parser/QcHangingParser.cpp
     content/parser/QcHoldParser.h content/parser/QcHoldParser.cpp
@@ -114,6 +117,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
+    content/registry/QcEnchantmentSerializer.h content/registry/QcEnchantmentSerializer.cpp
     content/registry/QcHoldSerializer.h content/registry/QcHoldSerializer.cpp
     content/registry/QcItemSerializer.h content/registry/QcItemSerializer.cpp
     content/registry/QcLootTables.h content/registry/QcLootTables.cpp
@@ -172,6 +176,8 @@ target_sources(qc_common PRIVATE
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp
+    gameplay/QcEnchanting.h gameplay/QcEnchanting.cpp
+    gameplay/QcEnchantingTable.h gameplay/QcEnchantingTable.cpp
     gameplay/QcEquipment.h gameplay/QcEquipment.cpp
     gameplay/QcExperience.h gameplay/QcExperience.cpp
     gameplay/QcGameMode.h gameplay/QcGameMode.cpp

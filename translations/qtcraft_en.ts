@@ -13,6 +13,17 @@
     </message>
 </context>
 <context>
+    <name>EnchantingScreen</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="25"/>
+        <source>Level %1: %2 … (%n level(s), %n lapis)</source>
+        <translation>
+            <numerusform>Level %1: %2 … (%n level, %n lapis)</numerusform>
+            <numerusform>Level %1: %2 … (%n levels, %n lapis)</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>GraphicsPage</name>
     <message numerus="yes">
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="128"/>
@@ -37,7 +48,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="510"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="509"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -45,7 +56,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="512"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="511"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>
@@ -56,7 +67,7 @@
 <context>
     <name>QcInventoryModel</name>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="142"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="149"/>
         <source>and %n more</source>
         <translation>
             <numerusform>and %n more</numerusform>

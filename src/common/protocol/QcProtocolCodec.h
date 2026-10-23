@@ -187,6 +187,14 @@ void encode(QDataStream &stream, QcMsg::CloseStonecutter m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::StonecutterState>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::SelectStonecutterRecipe>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseStonecutter>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::OpenEnchanting m);
+void encode(QDataStream &stream, const QcMsg::EnchantingState &m);
+void encode(QDataStream &stream, QcMsg::ChooseEnchantment m);
+void encode(QDataStream &stream, QcMsg::CloseEnchanting m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenEnchanting>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EnchantingState>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChooseEnchantment>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseEnchanting>, QDataStream &stream);
 
 // Debug display and statistics (QcDebugCodec.cpp)
 void encode(QDataStream &stream, QcMsg::DebugSubscribe m);

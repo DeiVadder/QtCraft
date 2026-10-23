@@ -1,0 +1,17 @@
+{
+    "name": "enchanting_table",
+    "type": "shaped",
+    "pattern": [
+        " B ",
+        "D#D",
+        "###"
+    ],
+    "key": {
+        "B": "book",
+        "D": "diamond",
+        "#": "obsidian"
+    },
+    "result": {
+        "item": "enchanting_table"
+    }
+}

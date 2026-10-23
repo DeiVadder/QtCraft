@@ -3,6 +3,7 @@
     "texture": "diamond_shovel",
     "maxStack": 1,
     "durability": 1561,
+    "enchantability": 10,
     "attackDamage": 3.5,
     "tool": "shovel",
     "toolLevel": 4,

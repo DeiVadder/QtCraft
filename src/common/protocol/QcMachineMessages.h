@@ -9,6 +9,8 @@
 #include <QList>
 #include <QString>
 
+#include <array>
+
 namespace QcMsg {
 
 // Server -> client: the player opened the machine at `pos`, or with an empty category the storage
@@ -73,6 +75,49 @@ struct SelectStonecutterRecipe
 // Client -> server: the stonecutter screen closed. Server -> client: the stonecutter closed (broken,
 // out of reach).
 struct CloseStonecutter
+{
+};
+
+// Server -> client: the player opened the enchanting table at `pos` (decision E-864); EnchantingState
+// follows. Its item and lapis slots are machineInputSlot and machineFuelSlot of MoveInventoryItem
+// and QuickMoveItem while no machine or chest is open.
+struct OpenEnchanting
+{
+    QcBlockPos pos;
+};
+
+// One of the three offers as the player sees it: the levels it needs (0: no offer) and, as a clue,
+// the first enchantment it gives (its content name and level).
+struct EnchantingOffer
+{
+    qint32 levelCost = 0;
+    QString clue;
+    qint32 clueLevel = 0;
+
+    bool operator==(const EnchantingOffer &) const = default;
+};
+
+// Server -> client: the open enchanting table's slots, the bookshelves that count and the offers.
+struct EnchantingState
+{
+    // The longest enchantment name a clue may carry.
+    static constexpr qsizetype maxClue = 64;
+
+    QcItemStack item;
+    QcItemStack lapis;
+    qint32 shelves = 0;
+    std::array<EnchantingOffer, 3> offers;
+};
+
+// Client -> server: take offer `slot` (0–2) of the open enchanting table.
+struct ChooseEnchantment
+{
+    qint32 slot = 0;
+};
+
+// Client -> server: the enchanting screen closed. Server -> client: the table closed (broken, out
+// of reach).
+struct CloseEnchanting
 {
 };
 

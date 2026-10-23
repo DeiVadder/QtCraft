@@ -95,6 +95,8 @@ qc_add_test(test_note_block SOURCES gameplay/test_note_block.cpp QcPlayerUseFixt
 qc_add_test(test_target_block SOURCES gameplay/test_target_block.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 # Function blocks of package 62.3 (decisions E-782 to E-785).
 qc_add_test(test_tripwire SOURCES gameplay/test_tripwire.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
+qc_add_test(test_enchanting SOURCES gameplay/test_enchanting.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+qc_add_test(test_enchanting_table SOURCES gameplay/test_enchanting_table.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_stonecutter SOURCES gameplay/test_stonecutter.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

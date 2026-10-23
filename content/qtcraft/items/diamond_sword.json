@@ -3,5 +3,6 @@
     "texture": "diamond_sword",
     "maxStack": 1,
     "durability": 1561,
+    "enchantability": 10,
     "attackDamage": 7.0
 }

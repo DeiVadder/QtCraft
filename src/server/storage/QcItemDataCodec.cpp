@@ -22,6 +22,14 @@ void write(QDataStream &stream, const QcItemData &data, const QcContentRegistry 
     if (!data.name.isEmpty()) {
         components.add(quint16(QcItemData::Component::Name), version, [&data](QDataStream &out) { out << data.name; });
     }
+    if (!data.enchantments.isEmpty()) {
+        components.add(quint16(QcItemData::Component::Enchantments), version, [&data](QDataStream &out) {
+            out << quint16(data.enchantments.size());
+            for (const QcEnchantment &enchantment : data.enchantments) {
+                out << enchantment.name << quint16(enchantment.level);
+            }
+        });
+    }
     components.finish();
 }
 

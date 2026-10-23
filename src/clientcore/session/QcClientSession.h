@@ -11,6 +11,7 @@
 #include "clientcore/player/QcLocalAnimation.h"
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
+#include "clientcore/session/QcClientEnchanting.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/session/QcClientMachineScreen.h"
@@ -145,6 +146,9 @@ public:
     // The stonecutter screen the server opened (decision E-785).
     QcClientStonecutter &stonecutter() { return m_stonecutter; }
     const QcClientStonecutter &stonecutter() const { return m_stonecutter; }
+    // The enchanting table's screen the server opened (decision E-864).
+    QcClientEnchanting &enchanting() { return m_enchanting; }
+    const QcClientEnchanting &enchanting() const { return m_enchanting; }
     void sendChat(const QString &text);
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
@@ -277,6 +281,7 @@ private:
     QcClientTrading m_trading;
     QcClientSignEditor m_signEditor;
     QcClientStonecutter m_stonecutter;
+    QcClientEnchanting m_enchanting;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

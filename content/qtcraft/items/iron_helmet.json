@@ -3,6 +3,7 @@
     "texture": "iron_helmet",
     "maxStack": 1,
     "durability": 165,
+    "enchantability": 9,
     "armour": {
         "slot": "head",
         "points": 2,

@@ -85,6 +85,9 @@ struct QcItemDefinition
     double toolSpeed = 1.0;
     // Uses until a tool breaks; 0 for items without durability.
     int durability = 0;
+    // How well the enchanting table enchants it (the reference's enchantability, decision E-864):
+    // 0 for items the table does not take. Server side only.
+    int enchantability = 0;
     // Damage dealt when hitting with this item, in health points.
     double attackDamage = 1.0;
     // Food points restored when eaten (a full player has 20); 0 for items that are not food.

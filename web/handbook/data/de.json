@@ -364,6 +364,7 @@
                 "block:qtcraft:crafting_table",
                 "block:qtcraft:wild_carrots",
                 "block:qtcraft:wild_potatoes",
+                "block:qtcraft:enchanting_table",
                 "block:qtcraft:bricks",
                 "block:qtcraft:target",
                 "block:qtcraft:allium",
@@ -28738,6 +28739,211 @@
             ],
             "text": "Grüne Sprenkel in tiefem Stein, selten und in Adern zu ein oder zwei. Braucht eine Spitzhacke der Stufe 3 oder besser und gibt einen Smaragd und etwas Erfahrung.",
             "title": "Smaragderz"
+        },
+        "block:qtcraft:enchanting_table": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Enchanting Table",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:enchanting_table"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,63 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Licht",
+                    "links": [
+                    ],
+                    "value": "7 von 15"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Verzaubern",
+                    "links": [
+                    ],
+                    "value": "öffnet den Zaubertisch: drei Angebote für ein Werkzeug, eine Waffe oder Rüstung, bezahlt mit Stufen und Lapislazuli; bis zu 15 Bücherregale im Abstand von zwei Blöcken heben die Angebote"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:enchanting_table",
+            "id": "block:qtcraft:enchanting_table",
+            "name": "qtcraft:enchanting_table",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:book",
+                                    "note": "",
+                                    "target": "item:qtcraft:book",
+                                    "text": "Buch"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamant"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamant"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:enchanting_table",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:enchanting_table",
+                                "note": "",
+                                "target": "block:qtcraft:enchanting_table",
+                                "text": "Zaubertisch"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Bietet Verzauberungen für Werkzeuge, Waffen und Rüstung an: benutze ihn, lege den Gegenstand in den linken Platz und Lapislazuli daneben und wähle eines von drei Angeboten, bezahlt mit Erfahrungsstufen und Lapis. Bis zu 15 Bücherregale mit einem Block Abstand rund um den Tisch heben die Angebote.",
+            "title": "Zaubertisch"
         },
         "block:qtcraft:explosive": {
             "category": "blocks",
@@ -58555,6 +58761,12 @@
                             "note": "",
                             "target": "block:qtcraft:chunk_loader",
                             "text": "Chunk-Lader"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         }
                     ],
                     "recipes": [
@@ -98780,6 +98992,12 @@
                             "note": "",
                             "target": "block:qtcraft:bookshelf",
                             "text": "Bücherregal"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         }
                     ],
                     "recipes": [
@@ -101878,6 +102096,12 @@
                             "note": "",
                             "target": "item:qtcraft:diamond_boots",
                             "text": "Diamantstiefel"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         }
                     ],
                     "recipes": [
@@ -103662,6 +103886,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:white_concrete",
                             "text": "Weißer Beton"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         },
                         {
                             "icon": "qtcraft:bricks",
@@ -106768,6 +106998,12 @@
                             "text": "Weißer Beton"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
+                        },
+                        {
                             "icon": "qtcraft:bricks",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:bricks",
@@ -109799,6 +110035,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:white_concrete",
                             "text": "Weißer Beton"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         },
                         {
                             "icon": "qtcraft:bricks",
@@ -116581,6 +116823,12 @@
                             "text": "Weißer Beton"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
+                        },
+                        {
                             "icon": "qtcraft:bricks",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:bricks",
@@ -118793,6 +119041,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:white_concrete",
                             "text": "Weißer Beton"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         },
                         {
                             "icon": "qtcraft:bricks",
@@ -124336,6 +124590,12 @@
                             "text": "Monster-Spawner"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "5, aus der Härte",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
+                        },
+                        {
                             "icon": "qtcraft:blue_terracotta",
                             "note": "4,2",
                             "target": "block:qtcraft:blue_terracotta",
@@ -127254,6 +127514,12 @@
                             "text": "Signalfackel"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "7 von 15",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
+                        },
+                        {
                             "icon": "qtcraft:firefly_glass",
                             "note": "4 von 15",
                             "target": "block:qtcraft:firefly_glass",
@@ -129542,7 +129808,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Bemooste Steinziegel, Bemooster Bruchstein, Blaue glasierte Terrakotta, Blaue Terrakotta, Blauer Beton, Braune glasierte Terrakotta, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe glasierte Terrakotta, Gelbe Terrakotta, Gelber Beton, Gemeißelte Steinziegel, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glatter Stein, Glattstein, Graue glasierte Terrakotta, Graue Terrakotta, Grauer Beton, Grüne glasierte Terrakotta, Grüne Terrakotta, Grüner Beton, Hellblaue glasierte Terrakotta, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue glasierte Terrakotta, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne glasierte Terrakotta, Hellgrüne Terrakotta, Hellgrüner Beton, Kette, Knochenblock, Kohleblock, Kupferfalltür, Kupfergitter, Kupferkette, Kupfertür, Lehmziegel, Magentafarbene glasierte Terrakotta, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene glasierte Terrakotta, Orangefarbene Terrakotta, Orangefarbener Beton, Räucherofen, Rissige Steinziegel, Rosafarbene glasierte Terrakotta, Rosafarbene Terrakotta, Rosafarbener Beton, Rote glasierte Terrakotta, Rote Terrakotta, Roter Beton, Sandstein, Schmelzofen, Schwarze glasierte Terrakotta, Schwarze Terrakotta, Schwarzer Beton, Signalstaubblock, Stein, Steinkohle, Steinschneider, Steinziegel, Terrakotta, Türkise glasierte Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette glasierte Terrakotta, Violette Terrakotta, Violetter Beton, Weiße glasierte Terrakotta, Weiße Terrakotta, Weißer Beton, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Kupferblock, Kupfererz, Lapislazuliblock, Lapislazulierz, Roheisenblock, Rohkupferblock, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Rohgoldblock, Smaragdblock, Smaragderz, Weinender Obsidian",
+                    "text": "- Stufe 1 nötig für: Bemooste Steinziegel, Bemooster Bruchstein, Blaue glasierte Terrakotta, Blaue Terrakotta, Blauer Beton, Braune glasierte Terrakotta, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe glasierte Terrakotta, Gelbe Terrakotta, Gelber Beton, Gemeißelte Steinziegel, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glatter Stein, Glattstein, Graue glasierte Terrakotta, Graue Terrakotta, Grauer Beton, Grüne glasierte Terrakotta, Grüne Terrakotta, Grüner Beton, Hellblaue glasierte Terrakotta, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue glasierte Terrakotta, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne glasierte Terrakotta, Hellgrüne Terrakotta, Hellgrüner Beton, Kette, Knochenblock, Kohleblock, Kupferfalltür, Kupfergitter, Kupferkette, Kupfertür, Lehmziegel, Magentafarbene glasierte Terrakotta, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene glasierte Terrakotta, Orangefarbene Terrakotta, Orangefarbener Beton, Räucherofen, Rissige Steinziegel, Rosafarbene glasierte Terrakotta, Rosafarbene Terrakotta, Rosafarbener Beton, Rote glasierte Terrakotta, Rote Terrakotta, Roter Beton, Sandstein, Schmelzofen, Schwarze glasierte Terrakotta, Schwarze Terrakotta, Schwarzer Beton, Signalstaubblock, Stein, Steinkohle, Steinschneider, Steinziegel, Terrakotta, Türkise glasierte Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette glasierte Terrakotta, Violette Terrakotta, Violetter Beton, Weiße glasierte Terrakotta, Weiße Terrakotta, Weißer Beton, Zaubertisch, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Kupferblock, Kupfererz, Lapislazuliblock, Lapislazulierz, Roheisenblock, Rohkupferblock, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Rohgoldblock, Smaragdblock, Smaragderz, Weinender Obsidian",
                     "title": "Spitzhacke"
                 },
                 {
@@ -130140,6 +130406,12 @@
                             "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:white_stained_glass",
                             "text": "Weißes Glas"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Zaubertisch"
                         }
                     ],
                     "recipes": [

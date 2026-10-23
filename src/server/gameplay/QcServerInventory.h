@@ -40,12 +40,13 @@ public:
     void quickMove(QcServerClient &client, QcMsg::QuickMoveItem move);
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
     // Drops everything the player carries (death without keepInventory), the open stonecutter's
-    // input included.
+    // input and the open enchanting table's slots included.
     void dropAll(QcServerClient &client);
-    // Gives the open stonecutter's input back to the player like the crafting grid's items (what
+    // Gives the open stonecutter's input and the open enchanting table's item and lapis (decision
+    // E-864) back to the player like the crafting grid's items (what
     // does not fit is thrown; catalogue items that do not fit are gone); the screen stays open and
     // nothing is sent.
-    void returnStonecutterInput(QcServerClient &client);
+    void returnScreenInputs(QcServerClient &client);
     // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
     void giveOrThrow(QcServerClient &client, const QcItemStack &stack);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
@@ -72,6 +73,7 @@ private:
         QcBlockEntities::Machine *machine = nullptr;
         std::optional<QcBlockScreens::OpenContainer> container;
         QcServerClient::Stonecutter *stonecutter = nullptr;
+        QcServerClient::Enchanting *enchanting = nullptr;
         int blockSlots = 0;
         QcSlotList combined;
     };
@@ -88,6 +90,8 @@ private:
     // Whether the open container takes its new slots: a backpack nothing with contents, a held one
     // its slots as the data of its item (decisions E-832, E-833).
     bool containerAccepts(const OpenSlots &open) const;
+    // The enchanting table takes one item in its item slot and only lapis lazuli in its lapis slot.
+    bool enchantingAccepts(const OpenSlots &open) const;
     // Whether the moved machine slots hold only fuel in the fuel slot and nothing new in the output.
     bool machineAccepts(const QcBlockEntities::Machine &machine, const QList<QcItemStack> &combined) const;
 

@@ -1,10 +1,12 @@
 #include "server/gameplay/QcServerCombat.h"
 
+#include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerInventory.h"
+#include "server/gameplay/QcToolWear.h"
 #include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcServerExperience.h"
 #include "server/mobs/QcPetOwners.h"
@@ -46,17 +48,15 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     client.hunger.exhaust(QcHunger::attack);
 
     const QcItemDefinition *held = m_state.heldItem(client);
-    hurtCreature(m_state, m_sounds,
-                 {.creature = entityId, .damage = held ? held->attackDamage : 1.0, .from = client.motion.position, .attacker = client.id});
+    // Sharpness adds to the weapon's damage (decision E-864).
+    const int sharpness = QcEnchanting::levelOf(m_state.content(), client.inventory.selectedStack(), QcEnchantmentEffect::Sharpness);
+    const double damage = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
+    hurtCreature(m_state, m_sounds, {.creature = entityId, .damage = damage, .from = client.motion.position, .attacker = client.id});
 
     // Weapons wear like tools, except in creative mode (decision E-282).
     if (held && held->durability > 0 && !client.rules().infiniteItems) {
         const int slot = client.inventory.selectedHotbarSlot();
-        QcItemStack tool = client.inventory.slot(slot);
-        if (++tool.damage >= held->durability) {
-            tool = {};
-        }
-        client.inventory.setSlot(slot, tool);
+        client.inventory.setSlot(slot, QcToolWear::worn(m_state, client.inventory.slot(slot)));
         m_inventory.send(client);
     }
 }

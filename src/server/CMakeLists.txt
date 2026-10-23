@@ -129,6 +129,7 @@ target_sources(qc_server PRIVATE
     gameplay/QcServerStands.h gameplay/QcServerStands.cpp
     gameplay/QcSpectatorRules.h gameplay/QcSpectatorRules.cpp
     gameplay/QcStandProperties.h gameplay/QcStandProperties.cpp
+    gameplay/QcToolWear.h gameplay/QcToolWear.cpp
 )
 target_sources(qc_server PRIVATE
     golems/QcGolemBrain.h golems/QcGolemBrain.cpp
@@ -163,9 +164,11 @@ target_sources(qc_server PRIVATE
     machines/QcCampfires.h machines/QcCampfires.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
+    machines/QcServerEnchanting.h machines/QcServerEnchanting.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
     machines/QcServerStonecutter.h machines/QcServerStonecutter.cpp
+    machines/QcServerWorkstations.h
 )
 target_sources(qc_server PRIVATE
     maps/QcMapPending.h maps/QcMapPending.cpp

@@ -3,6 +3,7 @@
     "texture": "golden_helmet",
     "maxStack": 1,
     "durability": 77,
+    "enchantability": 25,
     "armour": {
         "slot": "head",
         "points": 2,

@@ -60,13 +60,15 @@ enum StackBits : quint8 {
     MapIdBit = 1,
     ContentsBit = 2,
     NameBit = 4,
-    KnownBits = MapIdBit | ContentsBit | NameBit,
+    EnchantmentsBit = 8,
+    KnownBits = MapIdBit | ContentsBit | NameBit | EnchantmentsBit,
 };
 
 // The component bits of `data` on the wire; 0 for none.
 quint8 bitsOf(const QcItemData &data)
 {
-    return quint8((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit));
+    return quint8((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit)
+                  | (data.enchantments.isEmpty() ? 0 : EnchantmentsBit));
 }
 
 // Writes the components of `data` after their bits, which are not 0.
@@ -90,6 +92,34 @@ void writeData(QDataStream &stream, const QcItemData &data)
     if (!data.name.isEmpty()) {
         stream << data.name;
     }
+    if (!data.enchantments.isEmpty()) {
+        stream << quint8(data.enchantments.size());
+        for (const QcEnchantment &enchantment : data.enchantments) {
+            stream << enchantment.name << quint8(enchantment.level);
+        }
+    }
+}
+
+// Reads the enchantments of a stack (decision E-864); none when they break the limits of QcItemData.
+std::optional<QList<QcEnchantment>> readEnchantments(QDataStream &stream)
+{
+    quint8 count = 0;
+    stream >> count;
+    if (count == 0 || count > QcItemData::maxEnchantments) {
+        return std::nullopt;
+    }
+    QList<QcEnchantment> enchantments;
+    for (quint8 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
+        QcEnchantment enchantment;
+        quint8 level = 0;
+        stream >> enchantment.name >> level;
+        enchantment.level = level;
+        if (enchantment.name.isEmpty() || enchantment.name.size() > QcItemData::maxEnchantmentName || level == 0) {
+            return std::nullopt;
+        }
+        enchantments.append(enchantment);
+    }
+    return enchantments;
 }
 
 // Reads the data after a stack's damage: contents of at most maxContents stacks nesting at most
@@ -125,6 +155,13 @@ std::optional<QcItemData> readData(QDataStream &stream, int depth)
         if (data.name.size() > QcItemData::maxNameLength) {
             return std::nullopt;
         }
+    }
+    if ((bits & EnchantmentsBit) != 0) {
+        std::optional<QList<QcEnchantment>> enchantments = readEnchantments(stream);
+        if (!enchantments) {
+            return std::nullopt;
+        }
+        data.enchantments = std::move(*enchantments);
     }
     return data;
 }

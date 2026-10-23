@@ -22,6 +22,10 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     if (client.screen.stonecutter) {
         held.append(client.screen.stonecutter->input);
     }
+    if (client.screen.enchanting) {
+        held.append(client.screen.enchanting->item);
+        held.append(client.screen.enchanting->lapis);
+    }
     for (const QcItemStack &cell : std::as_const(held)) {
         if (!cell.isEmpty()) {
             record.lost += player.inventory.add(cell, content);
@@ -36,6 +40,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.keptInventory = client.keptInventory;
     player.keptEquipment = client.keptEquipment;
     player.experience = client.experience;
+    player.enchantSeed = client.enchantSeed;
     player.effects = client.effects.all();
     return record;
 }
@@ -54,6 +59,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.keptInventory = player.keptInventory;
     client.keptEquipment = player.keptEquipment;
     client.experience = player.experience;
+    client.enchantSeed = player.enchantSeed;
     client.effects.restore(player.effects);
     QcServerGameModes::applyRules(client);
 }

@@ -1,5 +1,6 @@
 #include "app/models/QcInventoryModel.h"
 
+#include "app/models/QcEnchantmentTexts.h"
 #include "app/models/QcItemIconUrls.h"
 
 #include "common/content/registry/QcContentRegistry.h"
@@ -65,9 +66,15 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
     case TooltipRole: {
-        const QString tooltip = tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack));
-        const QStringList contents = contentsLines(*m_content, stack, m_language);
-        return contents.isEmpty() ? tooltip : tooltip + u'\n' + contents.join(u'\n');
+        QStringList lines = tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack))
+                                .split(u'\n');
+        // Enchantments right below the name, as in the reference (decision E-864).
+        const QStringList enchantments = QcEnchantmentTexts::linesOf(*m_content, stack, m_language);
+        for (qsizetype i = 0; i < enchantments.size(); ++i) {
+            lines.insert(1 + i, enchantments[i]);
+        }
+        lines.append(contentsLines(*m_content, stack, m_language));
+        return lines.join(u'\n');
     }
     default:
         return {};

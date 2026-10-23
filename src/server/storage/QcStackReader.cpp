@@ -82,11 +82,30 @@ std::optional<QcItemData> QcStackReader::readData(QDataStream &stream, int depth
         data.name = text.value_or(QString());
         return text.has_value();
     };
+    // Enchantments (decision E-864): names the content does not know stay on the item; they do nothing.
+    const auto enchantments = [&data](QDataStream &in, quint16) {
+        quint16 count = 0;
+        in >> count;
+        if (count > QcItemData::maxEnchantments) {
+            return false;
+        }
+        for (quint16 i = 0; i < count && in.status() == QDataStream::Ok; ++i) {
+            const std::optional<QString> name = QcComponentFrames::readText(in, QcItemData::maxEnchantmentName);
+            quint16 level = 0;
+            in >> level;
+            if (!name || name->isEmpty() || level == 0) {
+                return false;
+            }
+            data.enchantments.append({*name, std::min(int(level), QcItemData::maxEnchantmentLevel)});
+        }
+        return true;
+    };
     const quint16 version = QcItemDataCodec::version;
     std::optional<QcComponentFrames::ReadComponents> components =
         QcComponentFrames::read(stream, {{quint16(QcItemData::Component::MapId), version, mapId},
                                          {quint16(QcItemData::Component::Contents), version, contents},
-                                         {quint16(QcItemData::Component::Name), version, name}});
+                                         {quint16(QcItemData::Component::Name), version, name},
+                                         {quint16(QcItemData::Component::Enchantments), version, enchantments}});
     if (!components) {
         return std::nullopt;
     }

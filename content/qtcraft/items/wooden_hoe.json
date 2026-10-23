@@ -3,6 +3,7 @@
     "texture": "wooden_hoe",
     "maxStack": 1,
     "durability": 59,
+    "enchantability": 15,
     "attackDamage": 1.0,
     "tool": "hoe",
     "toolLevel": 1,

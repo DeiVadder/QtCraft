@@ -26,14 +26,14 @@ bool canHarvest(const QcBlockDefinition &block, const QcItemDefinition *held)
     return usesMatchingTool(block, held) && held->toolLevel >= block.toolLevel;
 }
 
-double breakSeconds(const QcBlockDefinition &block, const QcItemDefinition *held)
+double breakSeconds(const QcBlockDefinition &block, const QcItemDefinition *held, double speedBonus)
 {
     if (!isBreakable(block)) {
         return -1.0;
     }
     double seconds = block.hardness * (canHarvest(block, held) ? secondsPerHardness : secondsPerHardnessWithoutTool);
     if (usesMatchingTool(block, held)) {
-        seconds /= std::max(0.1, held->toolSpeed);
+        seconds /= std::max(0.1, held->toolSpeed + speedBonus);
     }
     return std::max(minimumSeconds, seconds);
 }

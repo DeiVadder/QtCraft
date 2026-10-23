@@ -3,6 +3,7 @@
     "texture": "golden_shovel",
     "maxStack": 1,
     "durability": 32,
+    "enchantability": 22,
     "attackDamage": 2.0,
     "tool": "shovel",
     "toolLevel": 1,

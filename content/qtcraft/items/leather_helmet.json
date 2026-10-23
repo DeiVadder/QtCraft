@@ -3,6 +3,7 @@
     "texture": "leather_helmet",
     "maxStack": 1,
     "durability": 55,
+    "enchantability": 15,
     "armour": {
         "slot": "head",
         "points": 1,

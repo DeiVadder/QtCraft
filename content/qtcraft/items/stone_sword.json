@@ -3,5 +3,6 @@
     "texture": "stone_sword",
     "maxStack": 1,
     "durability": 131,
+    "enchantability": 5,
     "attackDamage": 5.0
 }

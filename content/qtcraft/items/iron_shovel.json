@@ -3,6 +3,7 @@
     "texture": "iron_shovel",
     "maxStack": 1,
     "durability": 250,
+    "enchantability": 14,
     "attackDamage": 3.0,
     "tool": "shovel",
     "toolLevel": 3,

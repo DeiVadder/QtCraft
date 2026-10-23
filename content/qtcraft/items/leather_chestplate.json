@@ -3,6 +3,7 @@
     "texture": "leather_chestplate",
     "maxStack": 1,
     "durability": 80,
+    "enchantability": 15,
     "armour": {
         "slot": "chest",
         "points": 3,

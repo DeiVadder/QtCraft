@@ -3,6 +3,7 @@
     "texture": "golden_axe",
     "maxStack": 1,
     "durability": 32,
+    "enchantability": 22,
     "attackDamage": 3.5,
     "tool": "axe",
     "toolLevel": 1,

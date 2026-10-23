@@ -104,6 +104,7 @@
     "block.qtcraft.tripwire_hook": "Tripwire hook",
     "block.qtcraft.tripwire": "Tripwire",
     "block.qtcraft.stonecutter": "Stonecutter",
+    "block.qtcraft.enchanting_table": "Enchanting Table",
     "material.qtcraft.oak": "Oak",
     "material.qtcraft.birch": "Birch",
     "material.qtcraft.spruce": "Spruce",
@@ -384,6 +385,7 @@
     "structure.qtcraft.workshop": "Workshop",
     "structure.qtcraft.kitchen": "Kitchen: smoker, blast furnace, campfire, cake, lily pads",
     "structure.qtcraft.traps_and_cutting": "Traps and cutting: tripwire hooks and tripwire, trapped chest, stonecutter",
+    "structure.qtcraft.enchanting": "Enchanting: an enchanting table with 15 bookshelves around it, a chest with lapis lazuli, tools, a sword, armour and a bow",
     "structure.qtcraft.metalwork": "Chains and lanterns",
     "structure.qtcraft.metalwork.standing": "A lantern stands on the upper end of a chain",
     "structure.qtcraft.metalwork.lying": "A chain lies along the face it was placed on",
@@ -792,6 +794,11 @@
     "appearance.qtcraft.stray": "Stray",
     "appearance.qtcraft.drowned": "Drowned",
     "effect.qtcraft.slowness": "Slowness",
+    "enchantment.qtcraft.efficiency": "Efficiency",
+    "enchantment.qtcraft.unbreaking": "Unbreaking",
+    "enchantment.qtcraft.sharpness": "Sharpness",
+    "enchantment.qtcraft.protection": "Protection",
+    "enchantment.qtcraft.feather_falling": "Feather Falling",
     "effect.qtcraft.hunger": "Hunger",
     "structure.qtcraft.monster_variants": "Monsters of the biomes: husk, stray and drowned"
 }

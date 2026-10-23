@@ -37,4 +37,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::CloseStonecutter, QcMsg::MapUpdate, QcMsg::Ping, QcMsg::Pong,
                                QcMsg::AdminSubscribe, QcMsg::AdminRequest, QcMsg::AdminResult, QcMsg::AdminStatus,
                                QcMsg::AdminHistory, QcMsg::AdminPlayers, QcMsg::AdminChat, QcMsg::AdminCatalogue,
-                               QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog, QcMsg::BlockAck>;
+                               QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog, QcMsg::BlockAck,
+                               QcMsg::OpenEnchanting, QcMsg::EnchantingState, QcMsg::ChooseEnchantment, QcMsg::CloseEnchanting>;

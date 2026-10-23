@@ -3,6 +3,7 @@
     "texture": "iron_boots",
     "maxStack": 1,
     "durability": 195,
+    "enchantability": 9,
     "armour": {
         "slot": "feet",
         "points": 2,

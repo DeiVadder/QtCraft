@@ -60,6 +60,8 @@ public:
     void sendToViewers(QcBlockPos pos);
     // Closes the player's open stonecutter (with notice; its input goes back), if any.
     void closeStonecutter(QcServerClient &client);
+    // Closes the player's open enchanting table (with notice; its slots go back), if any.
+    void closeEnchanting(QcServerClient &client);
     // Ends the player's trading screen (with notice), if any; QcServerTrading::update releases the
     // villager.
     void endTrade(QcServerClient &client);
@@ -67,6 +69,8 @@ public:
     // How an open stonecutter is closed (QcServerStonecutter::close with notice, which gives its
     // input back) when a block's, cart's or villager's screen opens; set by QcServerStonecutter.
     void setStonecutterCloser(std::function<void(QcServerClient &)> closer);
+    // The same for an open enchanting table; set by QcServerEnchanting (decision E-864).
+    void setEnchantingCloser(std::function<void(QcServerClient &)> closer);
 
     // Once per tick: sends what changed, closes screens whose block is gone, whose chunk unloaded or
     // whose player died or walked away; containers that count their viewers take the new count.
@@ -94,4 +98,5 @@ private:
     // The containers counting their viewers that had any at the latest update.
     QHash<QcBlockPos, int> m_viewers;
     std::function<void(QcServerClient &)> m_closeStonecutter;
+    std::function<void(QcServerClient &)> m_closeEnchanting;
 };

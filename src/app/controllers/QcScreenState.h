@@ -59,6 +59,7 @@ public:
         Audio,
         Interface,
         Admin,
+        Enchanting,
     };
     Q_ENUM(Overlay)
 
@@ -67,7 +68,7 @@ public:
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
     // "texturepacks", "character", "lan", "chat", "sign", "stonecutter", "display", "audio",
-    // "interface" or "admin".
+    // "interface", "admin" or "enchanting".
     static QString overlayName(Overlay overlay);
     // The pause menu and the screens it opens (settings, character, LAN, manage server): the world waits behind
     // them, and the window draws at the background frame rate (decision E-835).
@@ -109,6 +110,9 @@ public:
     // The server opened or closed the stonecutter.
     void stonecutterOpened();
     void stonecutterClosed();
+    // The server opened or closed the enchanting table (decision E-864).
+    void enchantingOpened();
+    void enchantingClosed();
     // The player died (screens close, held keys and buttons are forgotten, the mouse is freed for
     // the death screen) or respawned (the world takes the mouse back).
     void healthChanged(bool dead);

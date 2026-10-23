@@ -79,6 +79,13 @@ QcItemStack QcItemStack::withName(QString text) const
     return withData(next);
 }
 
+QcItemStack QcItemStack::withEnchantments(QList<QcEnchantment> list) const
+{
+    QcItemData next = itemData();
+    next.enchantments = std::move(list);
+    return withData(next);
+}
+
 QcItemStack QcItemStack::withoutKept() const
 {
     if (itemData().kept.isEmpty()) {
@@ -97,6 +104,7 @@ QcItemStack QcItemStack::forDisplay() const
     QcItemData shown;
     shown.mapId = mapId();
     shown.name = name();
+    shown.enchantments = enchantments();
     return withData(shown);
 }
 
@@ -174,7 +182,12 @@ int QcItemData::stacksInside() const
 bool QcItemData::fitsLimits() const
 {
     // The stacks inside got their data through QcItemStack::withData, which checked it.
-    return name.size() <= maxNameLength && contents.size() <= maxContents && depth() <= maxDepth && stacksInside() <= maxStacksInside;
+    const auto validEnchantment = [](const QcEnchantment &enchantment) {
+        return !enchantment.name.isEmpty() && enchantment.name.size() <= maxEnchantmentName && enchantment.level >= 1
+               && enchantment.level <= maxEnchantmentLevel;
+    };
+    return name.size() <= maxNameLength && contents.size() <= maxContents && depth() <= maxDepth && stacksInside() <= maxStacksInside
+           && enchantments.size() <= maxEnchantments && std::ranges::all_of(enchantments, validEnchantment);
 }
 
 int QcItemData::compare(const QcItemData &a, const QcItemData &b)
@@ -184,6 +197,15 @@ int QcItemData::compare(const QcItemData &a, const QcItemData &b)
     }
     if (const int names = a.name.compare(b.name); names != 0) {
         return names;
+    }
+    if (a.enchantments.size() != b.enchantments.size()) {
+        return a.enchantments.size() < b.enchantments.size() ? -1 : 1;
+    }
+    for (qsizetype i = 0; i < a.enchantments.size(); ++i) {
+        const auto key = [](const QcEnchantment &enchantment) { return std::tuple{enchantment.name, enchantment.level}; };
+        if (key(a.enchantments[i]) != key(b.enchantments[i])) {
+            return key(a.enchantments[i]) < key(b.enchantments[i]) ? -1 : 1;
+        }
     }
     if (a.contents.size() != b.contents.size()) {
         return a.contents.size() < b.contents.size() ? -1 : 1;
@@ -198,5 +220,5 @@ int QcItemData::compare(const QcItemData &a, const QcItemData &b)
 
 bool QcItemData::operator==(const QcItemData &other) const
 {
-    return mapId == other.mapId && name == other.name && contents == other.contents && kept == other.kept;
+    return mapId == other.mapId && name == other.name && enchantments == other.enchantments && contents == other.contents && kept == other.kept;
 }

@@ -15,8 +15,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // Bumped whenever a message layout changes (history: decision E-368): 66 sends the threads of
 // families with the content (decision E-839), 67 brings the admin channel (decision E-848), 68
 // sends the speed of status effects with the content (decision E-838), 69 numbers the predicted
-// block actions and acknowledges them (decision E-853).
-inline constexpr quint32 version = 69;
+// block actions and acknowledges them (decision E-853), 70 brings the enchanting table and
+// enchantments on stacks (decision E-864).
+inline constexpr quint32 version = 70;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

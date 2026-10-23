@@ -3,6 +3,7 @@
     "texture": "diamond_pickaxe",
     "maxStack": 1,
     "durability": 1561,
+    "enchantability": 10,
     "attackDamage": 4.0,
     "tool": "pickaxe",
     "toolLevel": 4,

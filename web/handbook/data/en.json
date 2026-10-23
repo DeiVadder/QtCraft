@@ -139,6 +139,7 @@
                 "block:qtcraft:dirt",
                 "block:qtcraft:dirt_path",
                 "block:qtcraft:emerald_ore",
+                "block:qtcraft:enchanting_table",
                 "block:qtcraft:explosive",
                 "block:qtcraft:farmland",
                 "block:qtcraft:fern",
@@ -28738,6 +28739,211 @@
             ],
             "text": "Green specks in deep stone, rare and in veins of one or two. Needs a pickaxe of level 3 or better and gives an emerald and some experience.",
             "title": "Emerald ore"
+        },
+        "block:qtcraft:enchanting_table": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Enchanting Table",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:enchanting_table"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light",
+                    "links": [
+                    ],
+                    "value": "7 of 15"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Enchanting",
+                    "links": [
+                    ],
+                    "value": "opens the enchanting table: three offers for a tool, weapon or armour, paid with levels and lapis lazuli; up to 15 bookshelves two blocks away raise the offers"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:enchanting_table",
+            "id": "block:qtcraft:enchanting_table",
+            "name": "qtcraft:enchanting_table",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                null,
+                                {
+                                    "icon": "qtcraft:book",
+                                    "note": "",
+                                    "target": "item:qtcraft:book",
+                                    "text": "Book"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamond"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:diamond",
+                                    "note": "",
+                                    "target": "item:qtcraft:diamond",
+                                    "text": "Diamond"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                },
+                                {
+                                    "icon": "qtcraft:obsidian",
+                                    "note": "",
+                                    "target": "block:qtcraft:obsidian",
+                                    "text": "Obsidian"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:enchanting_table",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:enchanting_table",
+                                "note": "",
+                                "target": "block:qtcraft:enchanting_table",
+                                "text": "Enchanting Table"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Offers enchantments for tools, weapons and armour: use it, put the item into the left slot and lapis lazuli beside it, then choose one of three offers, paid with experience levels and lapis. Up to 15 bookshelves one block away around the table raise the offers.",
+            "title": "Enchanting Table"
         },
         "block:qtcraft:explosive": {
             "category": "blocks",
@@ -58555,6 +58761,12 @@
                             "note": "",
                             "target": "block:qtcraft:chunk_loader",
                             "text": "Chunk Loader"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         }
                     ],
                     "recipes": [
@@ -98780,6 +98992,12 @@
                             "note": "",
                             "target": "block:qtcraft:bookshelf",
                             "text": "Bookshelf"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         }
                     ],
                     "recipes": [
@@ -101878,6 +102096,12 @@
                             "note": "",
                             "target": "item:qtcraft:diamond_sword",
                             "text": "Diamond sword"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         }
                     ],
                     "recipes": [
@@ -103146,6 +103370,12 @@
                             "note": "level 3",
                             "target": "block:qtcraft:emerald_ore",
                             "text": "Emerald ore"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "level 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -106282,6 +106512,12 @@
                             "text": "Cyan terracotta"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "level 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
+                        },
+                        {
                             "icon": "qtcraft:furnace",
                             "note": "level 1",
                             "target": "block:qtcraft:furnace",
@@ -109283,6 +109519,12 @@
                             "note": "level 3",
                             "target": "block:qtcraft:emerald_ore",
                             "text": "Emerald ore"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "level 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -116077,6 +116319,12 @@
                             "text": "Cyan terracotta"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "level 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
+                        },
+                        {
                             "icon": "qtcraft:furnace",
                             "note": "level 1",
                             "target": "block:qtcraft:furnace",
@@ -118307,6 +118555,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "level 1",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         },
                         {
                             "icon": "qtcraft:furnace",
@@ -124318,6 +124572,12 @@
                             "text": "Bell"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
+                        },
+                        {
                             "icon": "qtcraft:iron_door",
                             "note": "5, from hardness",
                             "target": "block:qtcraft:iron_door",
@@ -127248,6 +127508,12 @@
                             "text": "Chunk Loader"
                         },
                         {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "7 of 15",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
+                        },
+                        {
                             "icon": "qtcraft:signal_torch",
                             "note": "7 of 15",
                             "target": "block:qtcraft:signal_torch",
@@ -129542,7 +129808,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black glazed terracotta, Black terracotta, Blast furnace, Block of coal, Block of Signal Dust, Blue concrete, Blue glazed terracotta, Blue terracotta, Bone block, Bricks, Brown concrete, Brown glazed terracotta, Brown terracotta, Carved sandstone, Chain, Chiseled stone bricks, Coal ore, Cobblestone, Copper bars, Copper chain, Copper door, Copper trapdoor, Cracked stone bricks, Cut sandstone, Cyan concrete, Cyan glazed terracotta, Cyan terracotta, Furnace, Gray concrete, Gray glazed terracotta, Gray terracotta, Green concrete, Green glazed terracotta, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue glazed terracotta, Light blue terracotta, Light gray concrete, Light gray glazed terracotta, Light gray terracotta, Lime concrete, Lime glazed terracotta, Lime terracotta, Magenta concrete, Magenta glazed terracotta, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mossy stone bricks, Mud bricks, Orange concrete, Orange glazed terracotta, Orange terracotta, Pink concrete, Pink glazed terracotta, Pink terracotta, Polished stone, Purple concrete, Purple glazed terracotta, Purple terracotta, Red concrete, Red glazed terracotta, Red terracotta, Sandstone, Smoker, Smooth sandstone, Smooth stone, Stone, Stone bricks, Stonecutter, Terracotta, White concrete, White glazed terracotta, White terracotta, Yellow concrete, Yellow glazed terracotta, Yellow terracotta\n- Level 2 needed for: Block of copper, Block of iron, Block of lapis lazuli, Block of raw copper, Block of raw iron, Chunk Loader, Copper ore, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Block of raw gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Black concrete, Black glazed terracotta, Black terracotta, Blast furnace, Block of coal, Block of Signal Dust, Blue concrete, Blue glazed terracotta, Blue terracotta, Bone block, Bricks, Brown concrete, Brown glazed terracotta, Brown terracotta, Carved sandstone, Chain, Chiseled stone bricks, Coal ore, Cobblestone, Copper bars, Copper chain, Copper door, Copper trapdoor, Cracked stone bricks, Cut sandstone, Cyan concrete, Cyan glazed terracotta, Cyan terracotta, Enchanting Table, Furnace, Gray concrete, Gray glazed terracotta, Gray terracotta, Green concrete, Green glazed terracotta, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue glazed terracotta, Light blue terracotta, Light gray concrete, Light gray glazed terracotta, Light gray terracotta, Lime concrete, Lime glazed terracotta, Lime terracotta, Magenta concrete, Magenta glazed terracotta, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mossy stone bricks, Mud bricks, Orange concrete, Orange glazed terracotta, Orange terracotta, Pink concrete, Pink glazed terracotta, Pink terracotta, Polished stone, Purple concrete, Purple glazed terracotta, Purple terracotta, Red concrete, Red glazed terracotta, Red terracotta, Sandstone, Smoker, Smooth sandstone, Smooth stone, Stone, Stone bricks, Stonecutter, Terracotta, White concrete, White glazed terracotta, White terracotta, Yellow concrete, Yellow glazed terracotta, Yellow terracotta\n- Level 2 needed for: Block of copper, Block of iron, Block of lapis lazuli, Block of raw copper, Block of raw iron, Chunk Loader, Copper ore, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Block of raw gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {
@@ -129762,6 +130028,12 @@
                             "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:dirt_path",
                             "text": "Dirt path"
+                        },
+                        {
+                            "icon": "qtcraft:enchanting_table",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:enchanting_table",
+                            "text": "Enchanting Table"
                         },
                         {
                             "icon": "qtcraft:farmland",

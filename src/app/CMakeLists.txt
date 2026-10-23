@@ -15,6 +15,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
+    controllers/QcEnchantingController.h controllers/QcEnchantingController.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
@@ -69,6 +70,7 @@ target_sources(qc_app_core PRIVATE
 target_sources(qc_app_core PRIVATE
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
+    models/QcEnchantmentTexts.h models/QcEnchantmentTexts.cpp
     models/QcHandbookModel.h models/QcHandbookModel.cpp
     models/QcInventoryModel.h models/QcInventoryModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
@@ -238,6 +240,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/WorldLabels.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
+        qml/inventory/EnchantingScreen.qml
         qml/inventory/FurnaceScreen.qml
         qml/inventory/InventoryScreen.qml
         qml/inventory/InventorySlot.qml

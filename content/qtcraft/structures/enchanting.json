@@ -1,0 +1,104 @@
+{
+    "name": "enchanting",
+    "showcase": {
+        "order": 109
+    },
+    "palette": {
+        "P": "polished_stone",
+        "B": "bookshelf",
+        "E": "enchanting_table",
+        "c": "chest[facing=north]"
+    },
+    "layers": [
+        [
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP"
+        ],
+        [
+            "         ",
+            "         ",
+            "  BBBBB  ",
+            "  B   B  ",
+            "  B E B  ",
+            "  B   B  ",
+            "  B   B  ",
+            "         ",
+            "    c    "
+        ],
+        [
+            "         ",
+            "         ",
+            "  B   B  ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                4,
+                1,
+                8
+            ],
+            "items": [
+                {
+                    "item": "lapis_lazuli",
+                    "count": 64
+                },
+                {
+                    "item": "iron_pickaxe",
+                    "count": 1
+                },
+                {
+                    "item": "diamond_sword",
+                    "count": 1
+                },
+                {
+                    "item": "iron_chestplate",
+                    "count": 1
+                },
+                {
+                    "item": "iron_boots",
+                    "count": 1
+                },
+                {
+                    "item": "bow",
+                    "count": 1
+                },
+                {
+                    "item": "bookshelf",
+                    "count": 16
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                4.5,
+                2.4,
+                4.5
+            ],
+            "text": "block.qtcraft.enchanting_table"
+        },
+        {
+            "at": [
+                2.5,
+                3.4,
+                2.5
+            ],
+            "text": "block.qtcraft.bookshelf"
+        }
+    ]
+}

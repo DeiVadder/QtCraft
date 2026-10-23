@@ -3,6 +3,7 @@
     "texture": "diamond_helmet",
     "maxStack": 1,
     "durability": 363,
+    "enchantability": 10,
     "armour": {
         "slot": "head",
         "points": 3,

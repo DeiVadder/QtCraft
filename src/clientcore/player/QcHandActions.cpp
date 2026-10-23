@@ -7,6 +7,7 @@
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientWorld.h"
 #include "common/content/definitions/QcSoundKeys.h"
+#include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcMinecartBody.h"
@@ -64,7 +65,7 @@ bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entit
 bool reactsToUse(const QcBlockDefinition *block, bool sneaking)
 {
     return block && !sneaking
-           && (block->opensCrafting || block->opensStonecutter || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
+           && (block->opensCrafting || block->opensStonecutter || block->opensEnchanting || block->machine.isMachine() || block->containerSlots > 0 || block->toggles
                || block->signal.isUsable() || block->sign.isSign());
 }
 
@@ -216,7 +217,9 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
     }
 
     const QcBlockDefinition &definition = content.block(*block);
-    const double seconds = QcMining::breakSeconds(definition, m_view.inventory.heldDefinition(content));
+    // Efficiency speeds a matching tool up (decision E-864), as the server counts it.
+    const int efficiency = QcEnchanting::levelOf(content, m_view.inventory.inventory().selectedStack(), QcEnchantmentEffect::Efficiency);
+    const double seconds = QcMining::breakSeconds(definition, m_view.inventory.heldDefinition(content), QcEnchanting::speedBonus(efficiency));
     if (seconds <= 0.0) {
         return effect;
     }

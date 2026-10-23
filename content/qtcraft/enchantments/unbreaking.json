@@ -1,0 +1,12 @@
+{
+    "name": "unbreaking",
+    "effect": "unbreaking",
+    "maxLevel": 3,
+    "weight": 5,
+    "items": [
+        "durable"
+    ],
+    "minPower": 5,
+    "powerPerLevel": 8,
+    "powerSpread": 50
+}
