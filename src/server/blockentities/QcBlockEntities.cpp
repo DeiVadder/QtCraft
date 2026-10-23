@@ -13,7 +13,17 @@ bool QcBlockEntities::Machine::isCold() const
 
 bool QcBlockEntities::Machine::isIdle() const
 {
-    return isCold() && experience <= 0.0;
+    return isCold() && experience <= 0.0 && name.isEmpty();
+}
+
+bool QcBlockEntities::Container::isFilled() const
+{
+    return std::ranges::any_of(stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); });
+}
+
+bool QcBlockEntities::Container::isPlain() const
+{
+    return readyAt == 0 && name.isEmpty() && !isFilled();
 }
 
 QcBlockEntities::QcBlockEntities(std::shared_ptr<const QcContentRegistry> content)
@@ -139,7 +149,7 @@ void QcBlockEntities::placedContainer(QcBlockPos pos, QcBlockId before, QcBlockI
     // A portable container that leaves takes its contents along as one item (decision E-832);
     // another state of the same block (its facing) keeps them.
     if (isPortable(before) && !(m_content->isValidBlock(after) && m_content->isSameBlock(before, after))) {
-        spillPortable(pos, before, existing->stacks);
+        spillPortable(before, *existing);
         removeContainer(pos);
         if (slotCount > 0) {
             ensure(pos, after);
@@ -211,21 +221,46 @@ QList<QcItemStack> QcBlockEntities::fillPortable(QcBlockPos pos, const QcItemSta
 bool QcBlockEntities::carriesContents(QcBlockPos pos, QcBlockId block) const
 {
     const Container *held = isPortable(block) ? container(pos) : nullptr;
-    return held && std::ranges::any_of(held->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); });
+    return held && held->isFilled();
 }
 
-void QcBlockEntities::spillPortable(QcBlockPos pos, QcBlockId block, const QList<QcItemStack> &stacks)
+void QcBlockEntities::spillPortable(QcBlockId block, const Container &held)
 {
-    // Empty, it drops as the block's usual drop (QcServerBlocks::breakBlock).
-    if (std::ranges::all_of(stacks, [](const QcItemStack &stack) { return stack.isEmpty(); })) {
+    // Empty, it drops as the block's usual drop (QcServerBlocks::breakBlock, with its name).
+    if (!held.isFilled()) {
         return;
     }
 
-    // Its item with the contents; should the item be missing or the data refused, the contents
-    // spill one by one, so nothing is lost.
+    // Its item with the contents and its name (decision E-873); should the item be missing or the
+    // data refused, the contents spill one by one, so nothing is lost.
     const std::optional<QcItemId> item = m_content->itemId(m_content->block(block).name);
-    const std::optional<QcItemStack> filled = item ? QcItemStack{*item, 1, 0}.tryWithContents(stacks) : std::nullopt;
-    spill(pos, filled ? QList<QcItemStack>{*filled} : stacks);
+    QcItemData data;
+    data.contents = held.stacks;
+    data.name = held.name;
+    const std::optional<QcItemStack> filled = item ? QcItemStack{*item, 1, 0}.tryWithData(data.normalized()) : std::nullopt;
+    spill(held.pos, filled ? QList<QcItemStack>{*filled} : held.stacks);
+}
+
+QString QcBlockEntities::nameAt(QcBlockPos pos) const
+{
+    if (const Container *held = container(pos)) {
+        return held->name;
+    }
+    const Machine *working = machine(pos);
+    return working ? working->name : QString();
+}
+
+bool QcBlockEntities::setName(QcBlockPos pos, const QString &name)
+{
+    if (Container *held = container(pos)) {
+        held->name = name;
+        return true;
+    }
+    if (Machine *working = machine(pos)) {
+        working->name = name;
+        return true;
+    }
+    return false;
 }
 
 void QcBlockEntities::spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience)
@@ -557,8 +592,7 @@ void QcBlockEntities::chunkLeft(QcChunkPos pos)
 
     const ChunkIndex positions = *index;
     for (const QcBlockPos &entry : positions.containers) {
-        const Container &container = m_containers[entry];
-        if (container.readyAt == 0 && std::ranges::all_of(container.stacks, [](const QcItemStack &stack) { return stack.isEmpty(); })) {
+        if (m_containers[entry].isPlain()) {
             removeContainer(entry);
         }
     }

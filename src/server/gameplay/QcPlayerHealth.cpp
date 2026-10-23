@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <cmath>
 
+using namespace Qt::StringLiterals;
+
 namespace {
 
 // The key of the chat line that tells of a death by `kind` (QcServerMessages).
@@ -28,6 +30,8 @@ const char *deathMessage(QcPlayerHealth::DamageKind kind)
     case QcPlayerHealth::DamageKind::Unblockable:
     case QcPlayerHealth::DamageKind::Armoured:
     case QcPlayerHealth::DamageKind::Command:
+    case QcPlayerHealth::DamageKind::Blow:
+    case QcPlayerHealth::DamageKind::Shot:
         break;
     }
     return QT_TRANSLATE_NOOP("QcServerMessages", "%1 died");
@@ -89,7 +93,7 @@ void QcPlayerHealth::applyVoidDamage(QcServerClient &client)
     ++client.voidTicks;
 }
 
-QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind)
+QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind, quint32 creature)
 {
     const bool fromVoid = kind == DamageKind::Void;
     const QcHurtWindow::Take take = fromVoid ? QcHurtWindow::Take::Fresh : client.hurt.wouldTake(amount);
@@ -109,7 +113,7 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
     // window (before armour, as in the reference), without push, hurt sound or flash (decision E-429).
     const int ticks = m_state.info().playerInvulnerabilityTicks;
     amount = fromVoid ? client.hurt.force(amount, ticks) : client.hurt.take(amount, ticks);
-    if (kind == DamageKind::Armoured) {
+    if (kind == DamageKind::Armoured || kind == DamageKind::Blow || kind == DamageKind::Shot) {
         amount = throughArmour(client, amount);
     }
     client.health = std::max(0.0, client.health - amount);
@@ -128,7 +132,7 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
     }
 
     if (client.health <= 0.0) {
-        die(client, kind);
+        die(client, kind, creature);
     }
 
     sendHealth(client);
@@ -144,7 +148,7 @@ void QcPlayerHealth::knock(QcServerClient &client, const QcVec3 &direction, doub
     client.stateDirty = true;
 }
 
-void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
+void QcPlayerHealth::die(QcServerClient &client, DamageKind kind, quint32 creature)
 {
     client.dead = true;
     // A respawned player starts without a window from the last life (decision E-429).
@@ -155,7 +159,7 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
     m_state.entities().noteDeath(client.id);
     forgetTeleports(client);
 
-    client.connection->send(QcChatText::message(deathMessage(kind), {client.name}));
+    client.connection->send(deathLine(client, kind, creature));
 
     // Catalogue items never fall into the world by themselves (decision E-283). Drops in the void
     // are removed at once by the item manager (decision E-288).
@@ -166,6 +170,26 @@ void QcPlayerHealth::die(QcServerClient &client, DamageKind kind)
         QcServerExperience::drop(m_state, client.experience.deathDrop(), client.motion.position + QcVec3{0.0, 0.5, 0.0});
         client.experience = {};
     }
+}
+
+QcMsg::ChatMessage QcPlayerHealth::deathLine(const QcServerClient &client, DamageKind kind, quint32 creature) const
+{
+    // Only the creature of the killing hit itself: not the last that hurt the player
+    // (QcServerClient::foes, which may lie before a dispenser's arrow in the same tick).
+    const bool byCreature = (kind == DamageKind::Blow || kind == DamageKind::Shot) && creature != 0;
+    const QcCreature *killer = byCreature ? m_state.entities().creatures().find(creature) : nullptr;
+    if (!killer) {
+        return QcChatText::message(deathMessage(kind), {client.name});
+    }
+
+    const char *key = kind == DamageKind::Shot ? QT_TRANSLATE_NOOP("QcServerMessages", "%1 was shot by %2")
+                                               : QT_TRANSLATE_NOOP("QcServerMessages", "%1 was slain by %2");
+    // A named creature by its name, as typed; another by its kind in the player's language.
+    if (!killer->name.isEmpty()) {
+        return QcChatText::message(key, {client.name, killer->name});
+    }
+    const QString kindKey = m_state.content().mobs()[killer->type].translationKey;
+    return QcChatText::message(key, {client.name, m_state.content().translations().translate(kindKey, u"en"_s)}, {QString(), kindKey});
 }
 
 void QcPlayerHealth::forgetTeleports(const QcServerClient &client)

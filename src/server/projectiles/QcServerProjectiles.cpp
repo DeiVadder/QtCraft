@@ -169,8 +169,8 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
         for (const auto &client : m_state.clients()) {
             if (client->id == hit.body && isPresent(*client) && client->hurt.wouldTake(impact.damage) != QcHurtWindow::Take::Ignored
                 && !client->rules().invulnerable) {
-                hitPlayer(*client, impact, along);
-                noteShot(projectile.shooter, *client);
+                // A killing shot names the shooter when it is a creature (decision E-873).
+                hitPlayer(*client, impact, along, noteShot(projectile.shooter, *client));
                 took = true;
             }
         }
@@ -193,15 +193,17 @@ bool QcServerProjectiles::noteShot(quint32 shooter, quint32 creature)
     return true;
 }
 
-void QcServerProjectiles::noteShot(quint32 shooter, QcServerClient &player)
+quint32 QcServerProjectiles::noteShot(quint32 shooter, QcServerClient &player)
 {
-    if (m_state.entities().creatures().find(shooter)) {
-        player.foes.hurtBy = shooter;
-        player.foes.hurtTick = m_state.clock().tick();
+    if (!m_state.entities().creatures().find(shooter)) {
+        return 0;
     }
+    player.foes.hurtBy = shooter;
+    player.foes.hurtTick = m_state.clock().tick();
+    return shooter;
 }
 
-void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along)
+void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::Impact &impact, const QcVec3 &along, quint32 creature)
 {
     // Alight first, so the health sent with the damage says it burns.
     const bool alight = impact.burnTicks > client.burnTicks && client.burnTicks <= 0;
@@ -210,7 +212,7 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     // The damage without its push, then the push of the knockback effects (also without damage).
     // A stronger hit during the invulnerability does not push (decision E-429).
     const QcHurtWindow::Take take = client.hurt.wouldTake(impact.damage);
-    const QcHurtWindow::Take dealt = m_health.damage(client, impact.damage, {}, QcPlayerHealth::DamageKind::Armoured);
+    const QcHurtWindow::Take dealt = m_health.damage(client, impact.damage, {}, QcPlayerHealth::DamageKind::Shot, creature);
     if (client.dead) {
         client.burnTicks = 0;
         return;

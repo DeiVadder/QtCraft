@@ -30,6 +30,9 @@ bool use(QcServerState &state, QcServerClient &client, quint32 id)
     // A named creature stays (QcCreature::persistent): never despawns, saved with its chunk. It is
     // no longer kept only for its block, so putting the block down keeps it (QcCreatureTraits::letGo).
     mob->keptForBlock = false;
+    // A named guardian leaves its zone (decision E-873): an ordinary creature, kept like any named
+    // one; the zone no longer counts it and may bring a successor after its cooldown.
+    mob->guards.reset();
     state.entities().creatures().keep(*mob, true);
     state.entities().markStale(mob->id);
     if (!client.rules().itemCatalogue) {

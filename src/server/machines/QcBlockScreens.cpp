@@ -190,7 +190,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
         client.screen.held.reset();
         client.screen.open = pos;
         client.screen.sent.reset();
-        client.connection->send(QcMsg::OpenMachine{pos, {}});
+        client.connection->send(QcMsg::OpenMachine{.pos = pos, .category = {}, .name = entities.nameAt(pos)});
         send(client, true);
         return;
     }
@@ -210,7 +210,7 @@ void QcBlockScreens::open(QcServerClient &client, QcBlockPos pos)
     client.screen.held.reset();
     client.screen.open = pos;
     client.screen.sent.reset();
-    client.connection->send(QcMsg::OpenMachine{pos, definition->category});
+    client.connection->send(QcMsg::OpenMachine{.pos = pos, .category = definition->category, .name = entities.nameAt(pos)});
     send(client, true);
 }
 

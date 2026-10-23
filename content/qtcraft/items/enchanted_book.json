@@ -1,0 +1,6 @@
+{
+    "name": "enchanted_book",
+    "texture": "enchanted_book",
+    "maxStack": 1,
+    "storesEnchantments": true
+}

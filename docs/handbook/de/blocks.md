@@ -63,7 +63,7 @@ Schiene, die auf Loren wirkt, solange sie Strom bekommt: Der Fahrer steigt aus, 
 
 ### <a id="block-qtcraft-anvil"></a>Amboss
 
-Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den linken Platz und sein Material, einen zweiten Gegenstand derselben Art oder nichts in den rechten, gib bei Bedarf einen Namen ein und nimm das Ergebnis, bezahlt mit Erfahrungsstufen. Jede Benutzung nutzt ihn etwas ab (angeschlagen, beschädigt, dann zerbricht er), und jedes Mal, wenn ein Gegenstand über einen Amboss geht, kostet die nächste Benutzung mehr. Er fällt wie Sand und verletzt, auf wen er fällt.
+Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den linken Platz und sein Material, einen zweiten Gegenstand derselben Art, ein verzaubertes Buch oder nichts in den rechten, gib bei Bedarf einen Namen ein und nimm das Ergebnis, bezahlt mit Erfahrungsstufen. Jede Benutzung nutzt ihn etwas ab (angeschlagen, beschädigt, dann zerbricht er), und jedes Mal, wenn ein Gegenstand über einen Amboss geht, kostet die nächste Benutzung mehr. Eine Truhe, ein Fass, ein Ofen oder ein Trichter aus einem umbenannten Gegenstand zeigt den Namen als Titel und behält ihn beim Abbauen. Er fällt wie Sand und verletzt, auf wen er fällt.
 
 | | |
 |---|---|
@@ -11084,7 +11084,7 @@ Wilde Kartoffeln wachsen in der Welt des Grundspiels nicht: Kartoffeln kommen vo
 
 ### <a id="block-qtcraft-enchanting_table"></a>Zaubertisch
 
-Bietet Verzauberungen für Werkzeuge, Waffen und Rüstung an: benutze ihn, lege den Gegenstand in den linken Platz und Lapislazuli daneben und wähle eines von drei Angeboten, bezahlt mit Erfahrungsstufen und Lapis. Bis zu 15 Bücherregale mit einem Block Abstand rund um den Tisch heben die Angebote.
+Bietet Verzauberungen für Werkzeuge, Waffen, Rüstung und einzelne Bücher an (sie werden zu verzauberten Büchern): benutze ihn, lege den Gegenstand in den linken Platz und Lapislazuli daneben und wähle eines von drei Angeboten, bezahlt mit Erfahrungsstufen und Lapis. Bis zu 15 Bücherregale mit einem Block Abstand rund um den Tisch heben die Angebote.
 
 | | |
 |---|---|

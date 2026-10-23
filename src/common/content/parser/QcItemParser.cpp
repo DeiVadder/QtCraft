@@ -252,6 +252,8 @@ void ItemReader::parseBaseFields()
     m_item.toolSpeed = m_reader.number(u"toolSpeed"_s, 1.0, 0.1, 100.0);
     m_item.durability = m_reader.integer(u"durability"_s, 0, 0, 100000);
     m_item.enchantability = m_reader.integer(u"enchantability"_s, 0, 0, 100);
+    m_item.enchantsInto = m_reader.name(u"enchantsInto"_s, m_namespace);
+    m_item.storesEnchantments = m_reader.boolean(u"storesEnchantments"_s, false);
     m_item.repairWith = m_reader.string(u"repairWith"_s);
     m_item.namesCreatures = m_reader.boolean(u"nameTag"_s, false);
     m_item.attackDamage = m_reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);

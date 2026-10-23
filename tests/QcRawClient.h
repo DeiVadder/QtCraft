@@ -110,6 +110,7 @@ public:
             openMachineEntity = machine->entity;
             openMachineHeldSlot = machine->heldSlot;
             machineCategory = machine->category;
+            machineName = machine->name;
             machineClosed = false;
         } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
             machineStacks = machine->stacks;
@@ -242,6 +243,8 @@ public:
     // The hotbar slot of a backpack opened from the hand (decision E-833), -1 for a block or cart.
     int openMachineHeldSlot = -1;
     QString machineCategory;
+    // The custom name of the open chest or machine (decision E-873).
+    QString machineName;
     QList<QcItemStack> machineStacks;
     float machineBurn = 0.0f;
     // The server closed the machine screen.

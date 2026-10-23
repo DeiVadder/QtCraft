@@ -32,6 +32,8 @@ public:
     // The container minecart (entity id) of the open screen, 0 for a block.
     quint32 entity() const { return m_entity; }
     const QString &category() const { return m_category; }
+    // The custom name of the open chest or machine (decision E-873); empty for none.
+    const QString &name() const { return m_name; }
     // The open screen belongs to a storage block (chest) rather than a machine.
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }
     // The hotbar slot of a backpack opened from the hand (decision E-833), locked while open; -1
@@ -51,6 +53,7 @@ private:
     // The player closed a screen and has not used a block since.
     bool m_closedLocally = false;
     QString m_category;
+    QString m_name;
     QList<QcItemStack> m_slots = QList<QcItemStack>(QcMsg::MachineState::slotCount);
     double m_burn = 0.0;
     double m_progress = 0.0;

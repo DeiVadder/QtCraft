@@ -263,7 +263,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * static_cast<float>(placement.turns()), stand.properties});
     }
     for (const QcStructure::Contents &contents : structure.contents) {
-        m_plan.setup.contents.append({placement.toWorld(contents.at), contents.items});
+        m_plan.setup.contents.append({placement.toWorld(contents.at), contents.items, contents.name});
     }
     for (const QcBlockPos &pos : structure.updates) {
         m_plan.setup.updates.append(placement.toWorld(pos));

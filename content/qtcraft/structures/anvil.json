@@ -9,7 +9,9 @@
         "C": "chipped_anvil",
         "D": "damaged_anvil",
         "c": "chest[facing=north]",
-        "F": "oak_fence"
+        "F": "oak_fence",
+        "k": "chest[facing=north]",
+        "b": "barrel[facing=north]"
     },
     "layers": [
         [
@@ -28,7 +30,7 @@
             "  F   F  ",
             "  FFFFF  ",
             "         ",
-            "    c    ",
+            "  k c b  ",
             "         ",
             "         ",
             " A  C  D ",
@@ -95,6 +97,102 @@
                     "count": 1
                 }
             ]
+        },
+        {
+            "at": [
+                2,
+                1,
+                4
+            ],
+            "name": "Enchanted Books",
+            "items": [
+                {
+                    "item": "enchanted_book",
+                    "enchantments": [
+                        {
+                            "name": "sharpness",
+                            "level": 1
+                        }
+                    ]
+                },
+                {
+                    "item": "enchanted_book",
+                    "enchantments": [
+                        {
+                            "name": "sharpness",
+                            "level": 1
+                        }
+                    ]
+                },
+                {
+                    "item": "enchanted_book",
+                    "enchantments": [
+                        {
+                            "name": "efficiency",
+                            "level": 2
+                        }
+                    ]
+                },
+                {
+                    "item": "enchanted_book",
+                    "enchantments": [
+                        {
+                            "name": "unbreaking",
+                            "level": 3
+                        }
+                    ]
+                },
+                {
+                    "item": "enchanted_book",
+                    "enchantments": [
+                        {
+                            "name": "protection",
+                            "level": 2
+                        },
+                        {
+                            "name": "feather_falling",
+                            "level": 1
+                        }
+                    ]
+                },
+                {
+                    "item": "book",
+                    "count": 16
+                },
+                {
+                    "item": "diamond_sword",
+                    "count": 1
+                },
+                {
+                    "item": "diamond_pickaxe",
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "at": [
+                6,
+                1,
+                4
+            ],
+            "name": "Named Barrel",
+            "items": [
+                {
+                    "item": "barrel",
+                    "count": 1,
+                    "name": "Seeds"
+                },
+                {
+                    "item": "chest",
+                    "count": 1,
+                    "name": "Ores"
+                },
+                {
+                    "item": "furnace",
+                    "count": 1,
+                    "name": "Kitchen"
+                }
+            ]
         }
     ],
     "mobs": [
@@ -140,6 +238,22 @@
                 4.5
             ],
             "text": "item.qtcraft.name_tag"
+        },
+        {
+            "at": [
+                2.5,
+                2.4,
+                4.5
+            ],
+            "text": "item.qtcraft.enchanted_book"
+        },
+        {
+            "at": [
+                6.5,
+                2.4,
+                4.5
+            ],
+            "text": "showcase.named_container"
         }
     ]
 }

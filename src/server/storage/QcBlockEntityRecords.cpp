@@ -46,8 +46,8 @@ struct Entries
     record.containers.reserve(index.containers.size());
     for (const QcBlockPos &pos : index.containers) {
         const QcBlockEntities::Container &container = *entities.container(pos);
-        const bool filled = std::ranges::any_of(container.stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); });
-        if (filled || container.readyAt > now || hasTail(parts, Table::Containers, pos)) {
+        // Unlike isPlain(), a cooldown that ran out is not saved.
+        if (container.isFilled() || container.readyAt > now || !container.name.isEmpty() || hasTail(parts, Table::Containers, pos)) {
             record.containers.append(container);
             record.containers.last().readyAt = ticksLeft(container.readyAt, now);
         }

@@ -361,6 +361,7 @@
     "showcase.category.light": "Lichtquellen",
     "showcase.category.plants": "Pflanzen",
     "showcase.category.functional": "Benutzbare Blöcke",
+    "showcase.named_container": "Benannte Truhen und Maschinen",
     "showcase.category.wood": "Holz und Laub",
     "showcase.category.ores": "Erze und Mineralien",
     "showcase.category.colours": "Farben",
@@ -815,5 +816,6 @@
     "block.qtcraft.chipped_anvil": "Angeschlagener Amboss",
     "block.qtcraft.damaged_anvil": "Beschädigter Amboss",
     "item.qtcraft.name_tag": "Namensschild",
+    "item.qtcraft.enchanted_book": "Verzaubertes Buch",
     "structure.qtcraft.anvil": "Amboss: drei Ambosse (neu, angeschlagen, beschädigt), eine Truhe mit abgenutzten und verzauberten Werkzeugen, Eisenbarren, Brettern und Namensschildern und ein Gehege mit einem Schaf zum Benennen"
 }

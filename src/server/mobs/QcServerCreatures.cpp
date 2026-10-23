@@ -87,12 +87,12 @@ void QcServerCreatures::applyPlayerHits(const QList<QcMobManager::PlayerHit> &hi
             if (client->id != hit.playerEntityId) {
                 continue;
             }
-            strike(*client, hit);
             // The player's pets turn on the creature (decision E-480).
             if (hit.mob != 0) {
                 client->foes.hurtBy = hit.mob;
                 client->foes.hurtTick = m_state.clock().tick();
             }
+            strike(*client, hit);
         }
     }
 }
@@ -116,7 +116,7 @@ void QcServerCreatures::applyCreatureHits()
 
 void QcServerCreatures::strike(QcServerClient &client, const QcMobManager::PlayerHit &hit)
 {
-    const QcHurtWindow::Take take = m_health.damage(client, hit.damage, hit.knockback, QcPlayerHealth::DamageKind::Armoured);
+    const QcHurtWindow::Take take = m_health.damage(client, hit.damage, hit.knockback, QcPlayerHealth::DamageKind::Blow, hit.mob);
     // A golem's blow throws higher than the usual push lifts.
     if (take == QcHurtWindow::Take::Fresh && hit.lift != 1.0 && hit.knockback.length() > 0.0) {
         client.motion.velocity.y = QcMobManager::knockbackLift * hit.lift;

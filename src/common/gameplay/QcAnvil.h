@@ -17,7 +17,8 @@ struct QcEnchantmentDefinition;
 // refuses, except a rename alone, which costs at most tooExpensive − 1. An anvil swap (decision E-870,
 // QcItemDefinition::anvilSwap) turns a whole stack into its other item, paid with one `with` in the
 // right slot and one level per started swapLevelItems items; it adds the prior-work penalty but keeps
-// the stack's prior work.
+// the stack's prior work. An enchanted book in the right slot (decision E-873) gives its enchantments
+// to the left item, a book included, at half the cost per level (at least 1) and without repairing.
 namespace QcAnvil {
 
 // From this cost on the anvil refuses (outside creative mode), as in the reference.

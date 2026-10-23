@@ -1,6 +1,7 @@
 #include "server/core/QcServerSetup.h"
 
 #include "common/blockrules/QcRails.h"
+#include "common/gameplay/QcAnvil.h"
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/core/QcServerLogging.h"
@@ -35,7 +36,14 @@ QList<QcItemStack> stacksOf(const QcServerState &state, const QList<QcStructureD
             qCWarning(lcServer) << "World setup: unknown item" << item.item;
             continue;
         }
-        stacks.append({*id, std::min(item.count, state.content().item(*id).maxStack), 0});
+        QcItemStack stack{*id, std::min(item.count, state.content().item(*id).maxStack), 0};
+        // A name and enchantments the content knows (decision E-873).
+        QList<QcEnchantment> enchantments = item.enchantments;
+        enchantments.removeIf([&state](const QcEnchantment &enchantment) { return !state.content().enchantment(enchantment.name); });
+        if (!item.name.isEmpty() || !enchantments.isEmpty()) {
+            stack = stack.withName(item.name).withEnchantments(enchantments);
+        }
+        stacks.append(stack);
     }
     return stacks;
 }
@@ -70,6 +78,9 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
         for (qsizetype i = 0; i < stacks.size() && i < QcBlockEntities::Machine::slotCount; ++i) {
             machine->stacks[static_cast<std::size_t>(i)] = stacks[i];
         }
+    }
+    if (!contents.name.isEmpty()) {
+        entities.setName(contents.at, QcAnvil::nameFrom(contents.name));
     }
     state.noteContents(contents.at);
 }

@@ -116,6 +116,51 @@ QByteArray futureBlob(QcBlockPos sapling, Damage damage)
     });
 }
 
+void writePos(QDataStream &out, QcBlockPos pos)
+{
+    out << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z);
+}
+
+// A chest at `chest` and a furnace at `furnace`, empty, as entries of `version` hold them: before
+// version 2 without a name (decision E-873), from version 2 on with the names "Ores" and "Kitchen",
+// then `extra` as what a later version appends.
+QByteArray namedEntriesBlob(const QcContentRegistry &content, QcBlockPos chest, QcBlockPos furnace, quint16 version, const QByteArray &extra)
+{
+    const QByteArray chestFields = bytes([&](QDataStream &out) {
+        writePos(out, chest);
+        out << quint32{27};
+        for (int i = 0; i < 27; ++i) {
+            QcSaveFile::writeStack(out, {}, content);
+        }
+        out << quint32{0};
+        if (version >= 2) {
+            out << u"Ores"_s;
+        }
+    });
+    const QByteArray furnaceFields = bytes([&](QDataStream &out) {
+        writePos(out, furnace);
+        for (std::size_t i = 0; i < QcBlockEntities::Machine::slotCount; ++i) {
+            QcSaveFile::writeStack(out, {}, content);
+        }
+        out << 0.0 << 0.0 << 0.0 << 0.0;
+        if (version >= 2) {
+            out << u"Kitchen"_s;
+        }
+    });
+
+    const auto table = [version, &extra](const QByteArray &fields) {
+        return bytes([&](QDataStream &out) {
+            out << quint32{1};
+            frame(out, 0, version, fields + extra);
+        });
+    };
+    return bytes([&](QDataStream &out) {
+        out << quint16{2};
+        frame(out, static_cast<quint16>(Table::Containers), 1, table(chestFields));
+        frame(out, static_cast<quint16>(Table::Machines), 1, table(furnaceFields));
+    });
+}
+
 } // namespace
 
 // Block entities saved as versioned tables of framed entries (package 37.R2b, decision E-440):
@@ -192,6 +237,36 @@ private slots:
         QVERIFY(again.has_value());
         QCOMPARE(again->saplings[0].remaining, 3.0);
         QCOMPARE(again->kept, read->kept);
+    }
+
+    void containersAndMachinesOfOtherVersionsAreRead()
+    {
+        // Version 1 (before names, decision E-873): read without a name, nothing kept.
+        const QcBlockPos chest{3, 64, 5};
+        const QcBlockPos furnace{4, 64, 5};
+        QcLoadWarnings warnings;
+        const QcResult<QcBlockEntityRecord> old = decode(namedEntriesBlob(*m_content, chest, furnace, 1, {}), {0, 0}, warnings);
+        QVERIFY2(old.has_value(), qPrintable(old ? QString() : old.error()));
+        QCOMPARE(old->containers.size(), 1);
+        QCOMPARE(old->containers[0].pos, chest);
+        QVERIFY(old->containers[0].name.isEmpty());
+        QCOMPARE(old->machines.size(), 1);
+        QCOMPARE(old->machines[0].pos, furnace);
+        QVERIFY(old->machines[0].name.isEmpty());
+        QVERIFY(old->kept.isEmpty());
+
+        // Version 3: the name is read, what follows it is kept as the entry's tail and written back.
+        const QByteArray future = namedEntriesBlob(*m_content, chest, furnace, 3, "more");
+        const QcResult<QcBlockEntityRecord> read = decode(future, {0, 0}, warnings);
+        QVERIFY2(read.has_value(), qPrintable(read ? QString() : read.error()));
+        QCOMPARE(read->containers.value(0).name, u"Ores"_s);
+        QCOMPARE(read->machines.value(0).name, u"Kitchen"_s);
+        QVERIFY(read->kept.tables.isEmpty());
+        QCOMPARE(read->kept.entries.size(), 2);
+        QCOMPARE(read->kept.entries.value(chest), QcEntityComponents{tail(Table::Containers, 3, "more")});
+        QCOMPARE(read->kept.entries.value(furnace), QcEntityComponents{tail(Table::Machines, 3, "more")});
+        QCOMPARE(QcBlockEntityCodec::encode(*read, *m_content), future);
+        QVERIFY(warnings.texts().isEmpty());
     }
 
     void damagedFramesAreRefused_data()
@@ -391,9 +466,9 @@ private slots:
 
         QcBlockEntityRecord record;
         record.chunk = {0, 0};
-        record.kept.entries = {{withTail, {tail(Table::Containers, 2, "lock")}},
+        record.kept.entries = {{withTail, {tail(Table::Containers, 3, "lock")}},
                                {memory, {tail(Table::Memories, 3, "m")}},
-                               {gone, {tail(Table::Machines, 2, "furnace")}}};
+                               {gone, {tail(Table::Machines, 3, "furnace")}}};
         const QHash<QcChunkPos, QcBlockEntityKept> parts{{record.chunk, record.kept}};
 
         // Saving collects the same entries.
@@ -437,9 +512,10 @@ private slots:
         QcBlockEntityRecord record = storedRecord(config.worldDirectory, filled.chunk());
         record.containers.append({empty, QList<QcItemStack>(27), 0});
         record.kept.tables = {tail(Table::Containers, 4, "sorted"), {4711, 2, false, "beehive"}};
-        record.kept.entries = {{filled, {tail(Table::Containers, 3, "lock:Raw")}},
-                               {empty, {tail(Table::Containers, 2, "name:Pantry")}},
-                               {broken, {tail(Table::Containers, 2, "name:Junk")}}};
+        // Containers write version 2 (their name, decision E-873): the tails are of later versions.
+        record.kept.entries = {{filled, {tail(Table::Containers, 4, "lock:Raw")}},
+                               {empty, {tail(Table::Containers, 3, "label:Pantry")}},
+                               {broken, {tail(Table::Containers, 3, "label:Junk")}}};
         if (!store(config.worldDirectory, record)) {
             return {};
         }

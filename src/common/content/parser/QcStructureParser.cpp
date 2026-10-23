@@ -254,10 +254,26 @@ void StructureReader::parseStands()
     const QString item = QcContentNames::qualify(object.value(u"item"_s).toString(), packNamespace);
     const QJsonValue count = object.value(u"count"_s);
     const int amount = count.isUndefined() ? 1 : count.toInt(0);
-    if (!value.isObject() || item.isEmpty() || amount < 1 || amount > 64) {
+    const QString name = object.value(u"name"_s).toString();
+    if (!value.isObject() || item.isEmpty() || amount < 1 || amount > 64 || name.size() > QcItemData::maxNameLength) {
         return std::nullopt;
     }
-    return Structure::Stack{item, amount};
+    // "enchantments": [{"name": "sharpness", "level": 3}] (decision E-873); the server leaves out
+    // what the content does not know.
+    QList<QcEnchantment> enchantments;
+    const QJsonArray list = object.value(u"enchantments"_s).toArray();
+    if (list.size() > QcItemData::maxEnchantments) {
+        return std::nullopt;
+    }
+    for (const auto &entry : list) {
+        const QString enchantment = QcContentNames::qualify(entry.toObject().value(u"name"_s).toString(), packNamespace);
+        const int level = entry.toObject().value(u"level"_s).toInt(1);
+        if (enchantment.isEmpty() || level < 1 || level > QcItemData::maxEnchantmentLevel) {
+            return std::nullopt;
+        }
+        enchantments.append({enchantment, level});
+    }
+    return Structure::Stack{item, amount, name, enchantments};
 }
 
 void StructureReader::parseContents()
@@ -272,11 +288,16 @@ void StructureReader::parseContents()
             return;
         }
 
-        Structure::Contents placed{*at, {}};
+        const QString name = object.value(u"name"_s).toString();
+        if (name.size() > QcItemData::maxNameLength) {
+            m_reader.fail(u"a 'contents' name has at most %1 characters"_s.arg(QcItemData::maxNameLength));
+            return;
+        }
+        Structure::Contents placed{*at, {}, name};
         for (const auto &item : items) {
             const std::optional<Structure::Stack> stack = readStack(item, m_namespace);
             if (!stack) {
-                m_reader.fail(u"'items' entries need 'item' and a 'count' of 1 to 64"_s);
+                m_reader.fail(u"'items' entries need 'item', a 'count' of 1 to 64, a short 'name' and valid 'enchantments'"_s);
                 return;
             }
             placed.items.append(*stack);

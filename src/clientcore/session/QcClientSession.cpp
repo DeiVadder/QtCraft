@@ -223,7 +223,11 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
     } else if (const auto *open = std::get_if<QcMsg::OpenCrafting>(&message)) {
         emit craftingOpened(open->size);
     } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
-        emit chatReceived(QcChatText::display(*chat));
+        emit chatReceived(QcChatText::display(*chat, [this](const QString &key) {
+            const std::shared_ptr<const QcContentRegistry> content = m_worldMirror.content();
+            const QString text = content ? content->translations().translate(key, m_contentLanguage) : QString();
+            return text == key ? QString() : text;
+        }));
     } else if (const QcClientVitals::Change change = m_vitals.apply(message); change != QcClientVitals::Change::None) {
         onVitalsChanged(change);
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {

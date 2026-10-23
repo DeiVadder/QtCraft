@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/core/QcVec3.h"
+#include "common/protocol/QcSessionMessages.h"
 #include "server/entities/QcHurtWindow.h"
 
 #include <QtGlobal>
@@ -28,8 +29,9 @@ public:
     // reaches invulnerable players (creative mode, decision E-282); so does the void, which in
     // addition ignores the short invulnerability after a hit and has its own death message
     // (decision E-288). Damage of a status effect is unblockable with a death message of its own
-    // (decision E-450).
-    enum class DamageKind : quint8 { Unblockable, Armoured, Command, Void, Effect };
+    // (decision E-450). A creature's blow and a creature's shot are armoured; a player they kill
+    // hears who it was (decision E-873, the creature passed with the damage).
+    enum class DamageKind : quint8 { Unblockable, Armoured, Command, Void, Effect, Blow, Shot };
 
     QcPlayerHealth(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
@@ -37,8 +39,11 @@ public:
     void tick();
     // Hurts the player and returns how the hit took: during the invulnerability after a hurt (game
     // rule playerInvulnerabilityTicks) only a stronger hit takes, with the difference, silent and
-    // without the push (QcHurtWindow, decision E-429).
-    QcHurtWindow::Take damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable);
+    // without the push (QcHurtWindow, decision E-429). `creature` is the entity id of the creature
+    // that deals a Blow or a Shot (0: none, a dispenser's or a player's arrow); a death by this very
+    // hit names it (decision E-873).
+    QcHurtWindow::Take damage(QcServerClient &client, double amount, const QcVec3 &knockback, DamageKind kind = DamageKind::Unblockable,
+                              quint32 creature = 0);
     // Pushes the player along `direction` with `strength` times a blow's push (a projectile's
     // knockback, decision E-427, also without damage).
     static void knock(QcServerClient &client, const QcVec3 &direction, double strength = 1.0);
@@ -55,7 +60,10 @@ public:
 private:
     void tickPlayer(QcServerClient &client, double dt);
     void applyVoidDamage(QcServerClient &client);
-    void die(QcServerClient &client, DamageKind kind);
+    void die(QcServerClient &client, DamageKind kind, quint32 creature);
+    // The chat line that tells the player of the death: with the creature that dealt the killing
+    // blow or shot (its custom name, else its kind as a content text, decision E-873).
+    QcMsg::ChatMessage deathLine(const QcServerClient &client, DamageKind kind, quint32 creature) const;
     // Projectiles in flight that would teleport the player (ender pearls, decision E-460) forget
     // their thrower: they bring a dead player nowhere, also not after the respawn.
     void forgetTeleports(const QcServerClient &client);

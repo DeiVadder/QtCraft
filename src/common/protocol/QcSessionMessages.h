@@ -76,10 +76,16 @@ struct ChatInput
 struct ChatMessage
 {
     static constexpr quint32 maxArguments = 16;
+    static constexpr qsizetype maxContentKey = 256;
 
     QString text;
     QString key;
     QStringList arguments;
+    // Per argument the content translation key it stands for (decision E-873; the kind of the
+    // creature that killed a player): the client shows the key's text in its content language and
+    // the argument (English) where it knows none. Empty, or as long as `arguments` (empty entries
+    // for plain arguments).
+    QStringList contentKeys = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 // Server -> client: seconds since the world began and the length of a full day; `running` is false

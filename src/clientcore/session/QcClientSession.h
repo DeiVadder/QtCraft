@@ -165,6 +165,8 @@ public:
     // View mode of the graphical client (also switchable through the control interface).
     QcCameraMode cameraMode() const { return m_cameraMode; }
     void setCameraMode(QcCameraMode mode) { m_cameraMode = mode; }
+    // The language chat lines show content names in (a creature's kind, decision E-873).
+    void setContentLanguage(const QString &language) { m_contentLanguage = language; }
     // The look sent to the server; set before start() or at any time later.
     void setAppearance(const QcAppearance &appearance);
     const QcAppearance &appearance() const { return m_appearance; }
@@ -264,6 +266,7 @@ private:
     QString m_playerName;
     State m_state = State::Connecting;
     QString m_disconnectReason;
+    QString m_contentLanguage = QStringLiteral("en");
     QcMsg::Disconnect m_disconnectMessage;
     QcClientLogin m_login;
     QList<QcMsg::PlayerList::Entry> m_players;

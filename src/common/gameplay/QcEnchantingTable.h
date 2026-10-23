@@ -37,12 +37,15 @@ using Offers = std::array<Offer, offerCount>;
 [[nodiscard]] int shelvesAround(QcBlockPos table, const std::function<bool(QcBlockPos)> &isShelf, const std::function<bool(QcBlockPos)> &isFree);
 // The levels of the three offers for an item with `enchantability` (0: none) and `shelves`.
 [[nodiscard]] std::array<int, offerCount> levelCosts(quint32 seed, int shelves, int enchantability);
-// The three offers for `stack` (nothing for an empty stack, one already enchanted or an item without
-// enchantability or applicable enchantments).
+// The three offers for `stack` (nothing for an empty stack, more than one item, one already enchanted
+// or an item without enchantability or applicable enchantments). An item with `enchantsInto` (a
+// book) gets the enchantments of the item it becomes (an enchanted book takes all, decision E-873).
 [[nodiscard]] Offers offers(const QcContentRegistry &content, const QcItemStack &stack, int shelves, quint32 seed);
 // The enchantments for `stack` at enchanting `levelCost`, drawn with `seed` (offer `slot` uses
 // seed + slot).
 [[nodiscard]] QList<QcEnchantment> enchantmentsFor(const QcContentRegistry &content, const QcItemStack &stack, int levelCost, quint32 seed);
+// The item `item` becomes when it is enchanted: its `enchantsInto` (decision E-873), else itself.
+[[nodiscard]] QcItemId enchantedItem(const QcContentRegistry &content, QcItemId item);
 // Lapis lazuli and levels taken for offer `slot`.
 [[nodiscard]] inline int priceOf(int slot)
 {

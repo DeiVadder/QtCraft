@@ -89,6 +89,8 @@ void QcBlastBlocks::breakCell(const Work &work, QcBlockId block)
     // A portable container with contents leaves as its item carrying them (QcBlockEntities spills
     // it when the cell clears, decision E-832) instead of its usual drop.
     const bool carriesContents = m_state.blockEntities().carriesContents(work.pos, block);
+    // A named chest or furnace drops its item with the name (decision E-873).
+    const QString name = m_state.blockEntities().nameAt(work.pos);
     if (!clear(work.pos)) {
         return;
     }
@@ -96,7 +98,7 @@ void QcBlastBlocks::breakCell(const Work &work, QcBlockId block)
     ++m_broken;
     m_state.plants().blockRemoved(work.pos, block, m_state.world());
     if (drops && !carriesContents) {
-        m_blocks.dropItemsWithoutExperience(block, work.pos);
+        m_blocks.dropItemsWithoutExperience(block, work.pos, name);
     }
     // An infested block lets its creature out (decision E-453).
     QcInfestation::release(m_state, definition, work.pos);

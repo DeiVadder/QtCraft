@@ -1,6 +1,7 @@
 #include "server/storage/QcBlockEntityCodec.h"
 
 #include "common/core/QcNameText.h"
+#include "common/gameplay/QcAnvil.h"
 #include "common/protocol/QcStreamLimits.h"
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcRegionFile.h"
@@ -26,11 +27,22 @@ constexpr quint16 entryVersion = 1;
 // Signs write version 2: the colour of the text after the lines (decision E-830). Older readers keep
 // it as the tail of a newer version.
 constexpr quint16 signEntryVersion = 2;
+// Containers and machines write version 2: their custom name after the fields (decision E-873).
+// Older readers keep it as the tail of a newer version; version 1 entries have no name.
+constexpr quint16 namedEntryVersion = 2;
 
 // The version the entries of `table` are written in.
 constexpr quint16 entryVersionOf(quint16 table)
 {
-    return table == static_cast<quint16>(QcBlockEntityRecord::Table::Signs) ? signEntryVersion : entryVersion;
+    switch (static_cast<QcBlockEntityRecord::Table>(table)) {
+    case QcBlockEntityRecord::Table::Signs:
+        return signEntryVersion;
+    case QcBlockEntityRecord::Table::Containers:
+    case QcBlockEntityRecord::Table::Machines:
+        return namedEntryVersion;
+    default:
+        return entryVersion;
+    }
 }
 // Bytes of one table at most: far more than one component of an entity (a chunk full of chests, a
 // circuit's long list of waiting positions), but never more than the blob of the whole chunk may
@@ -264,8 +276,30 @@ private:
         quint32 cooldownLeft = 0;
         m_stream >> cooldownLeft;
         container.readyAt = std::min(cooldownLeft, maxTicks);
+        const std::optional<QString> name = readName();
+        if (!name) {
+            return false;
+        }
+        container.name = *name;
         m_record.containers.append(std::move(container));
         return m_stream.status() == QDataStream::Ok && m_containers.add(m_record.containers.constLast().pos);
+    }
+
+    // The custom name of a container or machine (decision E-873) from version 2 on, cleaned like
+    // a name written at the anvil (empty before version 2); std::nullopt when it is damaged.
+    std::optional<QString> readName()
+    {
+        if (m_version < namedEntryVersion) {
+            return QString();
+        }
+        // QDataStream reads a string in steps, so a damaged length fails at the end of the entry's
+        // frame without allocating it; the bound is checked before cleaning.
+        QString text;
+        m_stream >> text;
+        if (m_stream.status() != QDataStream::Ok || text.size() > maxLineUnits) {
+            return std::nullopt;
+        }
+        return QcAnvil::nameFrom(text);
     }
 
     bool machine()
@@ -289,6 +323,11 @@ private:
         machine.progress = std::clamp(machine.progress, 0.0, maxSeconds);
         machine.experience = std::clamp(machine.experience, 0.0, QcBlockEntities::Machine::maxExperience);
         machine.progressItem = machine.stacks[QcBlockEntities::Machine::inputSlot].item;
+        const std::optional<QString> name = readName();
+        if (!name) {
+            return false;
+        }
+        machine.name = *name;
         m_record.machines.append(machine);
         return m_machines.add(machine.pos);
     }
@@ -510,14 +549,14 @@ public:
             for (const QcItemStack &stack : container.stacks) {
                 QcSaveFile::writeStack(m_stream, stack, m_content);
             }
-            m_stream << static_cast<quint32>(container.readyAt);
+            m_stream << static_cast<quint32>(container.readyAt) << container.name;
         });
         entries(Table::Machines, m_record.machines, [this](const QcBlockEntities::Machine &machine) {
             writePos(m_stream, machine.pos);
             for (const QcItemStack &stack : machine.stacks) {
                 QcSaveFile::writeStack(m_stream, stack, m_content);
             }
-            m_stream << machine.burnRemaining << machine.burnSeconds << machine.progress << machine.experience;
+            m_stream << machine.burnRemaining << machine.burnSeconds << machine.progress << machine.experience << machine.name;
         });
         entries(Table::Saplings, m_record.saplings, [this](const QcBlockEntities::Sapling &sapling) {
             writePos(m_stream, sapling.pos);

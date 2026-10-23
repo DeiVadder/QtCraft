@@ -558,6 +558,7 @@
                 "item:qtcraft:cyan_dye",
                 "item:qtcraft:clock",
                 "item:qtcraft:unfired_lamp_shell",
+                "item:qtcraft:enchanted_book",
                 "item:qtcraft:purple_dye",
                 "item:qtcraft:water_bucket",
                 "item:qtcraft:water_bottle",
@@ -5764,7 +5765,7 @@
                     "title": "Abbaubar mit"
                 }
             ],
-            "text": "Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den linken Platz und sein Material, einen zweiten Gegenstand derselben Art oder nichts in den rechten, gib bei Bedarf einen Namen ein und nimm das Ergebnis, bezahlt mit Erfahrungsstufen. Jede Benutzung nutzt ihn etwas ab (angeschlagen, beschädigt, dann zerbricht er), und jedes Mal, wenn ein Gegenstand über einen Amboss geht, kostet die nächste Benutzung mehr. Er fällt wie Sand und verletzt, auf wen er fällt.",
+            "text": "Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den linken Platz und sein Material, einen zweiten Gegenstand derselben Art, ein verzaubertes Buch oder nichts in den rechten, gib bei Bedarf einen Namen ein und nimm das Ergebnis, bezahlt mit Erfahrungsstufen. Jede Benutzung nutzt ihn etwas ab (angeschlagen, beschädigt, dann zerbricht er), und jedes Mal, wenn ein Gegenstand über einen Amboss geht, kostet die nächste Benutzung mehr. Eine Truhe, ein Fass, ein Ofen oder ein Trichter aus einem umbenannten Gegenstand zeigt den Namen als Titel und behält ihn beim Abbauen. Er fällt wie Sand und verletzt, auf wen er fällt.",
             "title": "Amboss"
         },
         "block:qtcraft:backpack": {
@@ -29971,7 +29972,7 @@
                     "title": "Abbaubar mit"
                 }
             ],
-            "text": "Bietet Verzauberungen für Werkzeuge, Waffen und Rüstung an: benutze ihn, lege den Gegenstand in den linken Platz und Lapislazuli daneben und wähle eines von drei Angeboten, bezahlt mit Erfahrungsstufen und Lapis. Bis zu 15 Bücherregale mit einem Block Abstand rund um den Tisch heben die Angebote.",
+            "text": "Bietet Verzauberungen für Werkzeuge, Waffen, Rüstung und einzelne Bücher an (sie werden zu verzauberten Büchern): benutze ihn, lege den Gegenstand in den linken Platz und Lapislazuli daneben und wähle eines von drei Angeboten, bezahlt mit Erfahrungsstufen und Lapis. Bis zu 15 Bücherregale mit einem Block Abstand rund um den Tisch heben die Angebote.",
             "title": "Zaubertisch"
         },
         "block:qtcraft:explosive": {
@@ -105451,6 +105452,34 @@
             "text": "Ein grüner Edelstein und das Geld der Dorfbewohner: Sie zahlen in Smaragden für das, was sie kaufen, und verlangen sie für das, was sie verkaufen.",
             "title": "Smaragd"
         },
+        "item:qtcraft:enchanted_book": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Enchanted Book",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:enchanted_book"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:enchanted_book",
+            "id": "item:qtcraft:enchanted_book",
+            "name": "qtcraft:enchanted_book",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Entsteht, wenn man ein Buch am Zaubertisch verzaubert; ein Buch nimmt jede Verzauberung an. In der Hand wirken seine Verzauberungen nicht: Der zu verzaubernde Gegenstand kommt in den linken Platz eines Ambosses, das Buch in den rechten, und die Verzauberungen des Buchs gehen zum halben Preis des Kombinierens zweier Gegenstände auf ihn über. Zwei Bücher mit derselben Verzauberung auf derselben Stufe ergeben ein Buch der nächsten Stufe.",
+            "title": "Verzaubertes Buch"
+        },
         "item:qtcraft:ender_pearl": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -113583,7 +113612,7 @@
             "packName": "QtCraft",
             "sections": [
             ],
-            "text": "Nicht herstellbar; zu finden in Truhen von Verliesen, Minen und Tempeln oder bei Dorfbewohnern zu kaufen. Am Amboss beschriften und dann auf ein Wesen anwenden: der Name steht über ihm, und ein benanntes Wesen verschwindet nie.",
+            "text": "Nicht herstellbar; zu finden in Truhen von Verliesen, Minen und Tempeln oder bei Dorfbewohnern zu kaufen. Am Amboss beschriften und dann auf ein Wesen anwenden: der Name steht über ihm, und ein benanntes Wesen verschwindet nie. Ein benannter Sandgolem bewacht seinen Keller nicht mehr: er bleibt für immer in der Welt, und der Keller bekommt einen neuen Wächter.",
             "title": "Namensschild"
         },
         "item:qtcraft:orange_dye": {

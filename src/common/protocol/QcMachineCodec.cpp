@@ -16,7 +16,7 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::OpenMachine &m)
 {
     writePos(stream, m.pos);
-    stream << m.category << m.entity << m.heldSlot;
+    stream << m.category << m.entity << m.heldSlot << m.name;
 }
 
 void encode(QDataStream &stream, const QcMsg::MachineState &m)
@@ -33,9 +33,12 @@ void encode(QDataStream &, QcMsg::CloseMachine) {}
 {
     QcMsg::OpenMachine m;
     m.pos = readPos(stream);
-    stream >> m.category >> m.entity >> m.heldSlot;
+    stream >> m.category >> m.entity >> m.heldSlot >> m.name;
     if (m.category.size() > 64) {
         return qcError(u"Invalid machine category"_s);
+    }
+    if (m.name.size() > QcItemData::maxNameLength) {
+        return qcError(u"Invalid machine name"_s);
     }
     // A held backpack is in the hotbar and opens as a storage screen of its own (no cart).
     if (m.heldSlot != QcMsg::OpenMachine::noHeldSlot

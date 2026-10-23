@@ -339,7 +339,8 @@ void QcMobManager::keep(QcCreature &mob, bool kept)
     const bool keeps = kept || !mob.name.isEmpty();
 
     // A guardian belongs to its zone, not to the world: its post is not saved, and a kept one would
-    // come back without it beside the one the zone brings (decision E-591). A named guardian too.
+    // come back without it beside the one the zone brings (decision E-591). A name tag first takes
+    // it out of its zone (QcNameTags::use, decision E-873); a name set otherwise keeps it a guardian.
     if (keeps && mob.guards) {
         return;
     }

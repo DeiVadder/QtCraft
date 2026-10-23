@@ -48,6 +48,10 @@ void encode(QDataStream &stream, const QcMsg::ChatMessage &m)
     for (const QString &argument : m.arguments) {
         stream << argument;
     }
+    stream << static_cast<quint32>(m.contentKeys.size());
+    for (const QString &key : m.contentKeys) {
+        stream << key;
+    }
 }
 
 void encode(QDataStream &stream, const QcMsg::WorldTime &m)
@@ -146,6 +150,19 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
         QString argument;
         stream >> argument;
         m.arguments.append(argument);
+    }
+
+    const std::optional<quint32> keysRead = QcStreamLimits::readCount(stream, QcMsg::ChatMessage::maxArguments);
+    if (!keysRead || (*keysRead != 0 && *keysRead != count)) {
+        return qcError(u"Invalid chat content keys"_s);
+    }
+    for (quint32 i = 0; i < *keysRead; ++i) {
+        QString key;
+        stream >> key;
+        if (key.size() > QcMsg::ChatMessage::maxContentKey) {
+            return qcError(u"Invalid chat content keys"_s);
+        }
+        m.contentKeys.append(key);
     }
     return m;
 }

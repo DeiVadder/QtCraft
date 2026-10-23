@@ -165,7 +165,9 @@ void QcServerEnchanting::choose(QcServerClient &client, QcMsg::ChooseEnchantment
         [[maybe_unused]] const bool paid = client.experience.spendLevels(price);
         table.lapis = table.lapis.count > price ? table.lapis.withCount(table.lapis.count - price) : QcItemStack();
     }
+    // A book becomes an enchanted book (decision E-873).
     table.item = *enchanted;
+    table.item.item = QcEnchantingTable::enchantedItem(m_state.content(), enchanted->item);
     client.enchantSeed = 0;
     m_sounds.play(QString::fromLatin1(QcSoundKeys::levelUp), QcVec3{table.pos.x + 0.5, table.pos.y + 0.5, table.pos.z + 0.5});
     m_inventory.send(client);

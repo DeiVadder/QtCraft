@@ -364,6 +364,19 @@ QStringList unknownAdventureNames(const QcContentRegistry &content, const QcStru
     return warnings;
 }
 
+// Items whose enchanted form (`enchantsInto`, decision E-873) no pack has: the enchanting table
+// offers them only what fits the item itself (for a book nothing), a typo would go unnoticed.
+QStringList checkEnchantedForms(const QcContentRegistry &content)
+{
+    QStringList warnings;
+    for (const QcItemDefinition &item : content.items()) {
+        if (!item.enchantsInto.isEmpty() && !content.itemId(item.enchantsInto)) {
+            warnings.append(u"item '%1': 'enchantsInto' names no item '%2'; it enchants as itself"_s.arg(item.name, item.enchantsInto));
+        }
+    }
+    return warnings;
+}
+
 QStringList checkStructureAdventure(const QcContentRegistry &content)
 {
     QStringList warnings;
@@ -451,6 +464,7 @@ QStringList QcContentRegistry::finish()
     });
     warnings.append(QcMobTraitsContent::checkStructurePets(*this));
     warnings.append(checkStructureAdventure(*this));
+    warnings.append(checkEnchantedForms(*this));
     warnings.append(QcSpawnerContent::resolve(*this));
     warnings.append(QcSpawnWeights::problems(*this));
     warnings.append(resolveProjectiles());

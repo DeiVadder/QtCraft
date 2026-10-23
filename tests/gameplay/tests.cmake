@@ -103,6 +103,10 @@ qc_add_test(test_anvil SOURCES gameplay/test_anvil.cpp gameplay/QcEnchantingFixt
 qc_add_test(test_anvil_screen SOURCES gameplay/test_anvil_screen.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # The decoupled Signal blocks and the anvil swap (decision E-870).
 qc_add_test(test_anvil_variants SOURCES gameplay/test_anvil_variants.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+# Named chests and machines, enchanted books, death messages with the killer (decision E-873).
+qc_add_test(test_named_containers SOURCES gameplay/test_named_containers.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+qc_add_test(test_enchanted_books SOURCES gameplay/test_enchanted_books.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+qc_add_test(test_death_messages SOURCES gameplay/test_death_messages.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_stonecutter SOURCES gameplay/test_stonecutter.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

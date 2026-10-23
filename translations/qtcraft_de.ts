@@ -4659,14 +4659,14 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="252"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="277"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="255"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="272"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="281"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="275"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="284"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -4675,22 +4675,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="300"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="300"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="326"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="329"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="351"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="354"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -4735,12 +4735,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="336"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="339"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="456"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="460"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -6763,20 +6763,30 @@ Als Nächstes: %3</translation>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="25"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="27"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="27"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="29"/>
         <source>%1 died of a status effect</source>
         <translation>%1 ist an einem Statuseffekt gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="33"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="37"/>
         <location filename="../src/server/gameplay/QcServerCombat.cpp" line="114"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
+    </message>
+    <message>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="183"/>
+        <source>%1 was shot by %2</source>
+        <translation>%1 wurde von %2 erschossen</translation>
+    </message>
+    <message>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="184"/>
+        <source>%1 was slain by %2</source>
+        <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="276"/>

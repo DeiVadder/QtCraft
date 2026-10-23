@@ -171,6 +171,8 @@
     "Autosave failed: %1": "Automatisches Speichern fehlgeschlagen: %1",
     "The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.": "Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.",
     "%1 died": "%1 ist gestorben",
+    "%1 was slain by %2": "%1 wurde von %2 erschlagen",
+    "%1 was shot by %2": "%1 wurde von %2 erschossen",
     "%1 died of a status effect": "%1 ist an einem Statuseffekt gestorben",
     "%1 fell out of the world": "%1 fiel aus der Welt",
     "Too many chests in the world (at most %1)": "Zu viele Truhen in der Welt (höchstens %1)",

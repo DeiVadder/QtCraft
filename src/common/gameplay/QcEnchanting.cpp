@@ -45,6 +45,10 @@ QStringList kindsOf(const QcItemDefinition &item)
 
 bool appliesTo(const QcEnchantmentDefinition &enchantment, const QcItemDefinition &item)
 {
+    // An enchanted book takes every enchantment (decision E-873).
+    if (item.storesEnchantments) {
+        return true;
+    }
     const QStringList kinds = kindsOf(item);
     return std::ranges::any_of(enchantment.items, [&kinds](const QString &kind) { return kinds.contains(kind); });
 }
@@ -56,6 +60,10 @@ bool conflict(const QcEnchantmentDefinition &a, const QcEnchantmentDefinition &b
 
 int levelOf(const QcContentRegistry &content, const QcItemStack &stack, QcEnchantmentEffect effect)
 {
+    // A book's enchantments are stored, not used (decision E-873).
+    if (stack.enchantments().isEmpty() || !content.isValidItem(stack.item) || content.item(stack.item).storesEnchantments) {
+        return 0;
+    }
     int level = 0;
     for (const QcEnchantment &enchantment : stack.enchantments()) {
         const QcEnchantmentDefinition *definition = content.enchantment(enchantment.name);

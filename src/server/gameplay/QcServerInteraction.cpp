@@ -323,6 +323,10 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     if (placedStack.hasContents()) {
         m_parts.blocks.dropStacks(m_state.blockEntities().fillPortable(target, placedStack), target);
     }
+    // A chest or furnace placed from a named item keeps the name (decision E-873).
+    if (!placedStack.name().isEmpty()) {
+        m_state.blockEntities().setName(target, placedStack.name());
+    }
     if (placedDefinition.door) {
         m_parts.blocks.setAndBroadcast(target.offset(0, 1, 0), content.withProperty(state, u"half"_s, u"top"_s));
     }

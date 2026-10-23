@@ -36,6 +36,7 @@ QcClientMachineScreen::Change QcClientMachineScreen::open(const QcMsg::OpenMachi
     m_entity = open.entity;
     m_heldSlot = open.heldSlot;
     m_category = open.category;
+    m_name = open.name;
     m_slots = QList<QcItemStack>(open.category.isEmpty() ? 0 : QcMsg::MachineState::slotCount);
     m_burn = 0.0;
     m_progress = 0.0;

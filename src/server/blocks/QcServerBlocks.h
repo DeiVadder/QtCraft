@@ -31,13 +31,18 @@ public:
     // Drops the contents that block entities spilled (QcBlockEntities::takeSpills) as items.
     void dropSpills();
     // Drops the items of block state `block` as if it broke at `pos` (each drop by its chance, only
-    // from the states its `when` allows); ores add their experience (decision E-398).
-    void dropBlockItems(QcBlockId block, QcBlockPos pos);
+    // from the states its `when` allows); ores add their experience (decision E-398). A container or
+    // machine with a custom name `name` (decision E-873) drops its item with that name.
+    void dropBlockItems(QcBlockId block, QcBlockPos pos, const QString &name = {});
     // The same without experience: blocks an explosion breaks give none (decision E-602).
-    void dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos);
+    void dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos, const QString &name = {});
     void dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos);
 
 private:
+    // Whether `item` places a block that holds a container or machine, so its drop takes the
+    // block's custom name (decision E-873).
+    bool holdsName(QcItemId item) const;
+
     QcServerState &m_state;
     QcServerSounds &m_sounds;
     QcBlockUpdateQueue &m_updates;

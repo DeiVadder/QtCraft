@@ -70,7 +70,7 @@ set_tests_properties(test_rivers PROPERTIES COST 460)
 set_tests_properties(test_river_deltas PROPERTIES COST 560)
 set_tests_properties(test_climate_order PROPERTIES COST 110)
 set_tests_properties(test_flower_valley PROPERTIES COST 120)
-set_tests_properties(test_cold_edges PROPERTIES COST 80)
+set_tests_properties(test_cold_edges test_sand_golems PROPERTIES COST 80)
 set_tests_properties(test_minecarts test_building PROPERTIES COST 50)
 set_tests_properties(test_signal_showcase test_golem_measure test_village_plan_hash PROPERTIES COST 60)
 set_tests_properties(test_survival_scenario test_void_client test_machine_bots test_latency

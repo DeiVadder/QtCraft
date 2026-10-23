@@ -361,6 +361,7 @@
     "showcase.category.light": "Light sources",
     "showcase.category.plants": "Plants",
     "showcase.category.functional": "Blocks to use",
+    "showcase.named_container": "Named chests and machines",
     "showcase.category.wood": "Wood and leaves",
     "showcase.category.ores": "Ores and minerals",
     "showcase.category.colours": "Colours",
@@ -815,5 +816,6 @@
     "block.qtcraft.chipped_anvil": "Chipped Anvil",
     "block.qtcraft.damaged_anvil": "Damaged Anvil",
     "item.qtcraft.name_tag": "Name Tag",
+    "item.qtcraft.enchanted_book": "Enchanted Book",
     "structure.qtcraft.anvil": "Anvil: three anvils (new, chipped, damaged), a chest with worn and enchanted tools, iron ingots, planks and name tags, and a pen with a sheep to name"
 }

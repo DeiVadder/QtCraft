@@ -25,6 +25,9 @@ struct OpenMachine
     // the screen is open, which shows only the backpack's slots and the hotbar; -1 for a block or cart.
     qint32 heldSlot = noHeldSlot;
     static constexpr qint32 noHeldSlot = -1;
+    // The custom name of the chest or machine (decision E-873), the screen's title; empty: the
+    // block's own name.
+    QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 // Server -> client: contents and progress of the open machine. `stacks` are input, fuel and output;

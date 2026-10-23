@@ -89,6 +89,13 @@ struct QcItemDefinition
     // How well the enchanting table enchants it (the reference's enchantability, decision E-864):
     // 0 for items the table does not take. Server side only.
     int enchantability = 0;
+    // The item the enchanting table makes of it (decision E-873; a book becomes an enchanted book);
+    // empty: it stays itself. Server side only.
+    QString enchantsInto;
+    // It stores its enchantments instead of using them (an enchanted book, decision E-873): every
+    // enchantment fits it, none works while it is held or worn, and the anvil passes them on to
+    // the item in its left slot. Sent to the client with the content (its mining prediction).
+    bool storesEnchantments = false;
     // What repairs it at the anvil (decision E-866): an item name or "#tag"; empty for none. Each
     // item restores a quarter of the durability. Server side only.
     QString repairWith;

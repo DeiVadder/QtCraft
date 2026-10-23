@@ -330,6 +330,10 @@ void QcPlayerController::nameOpenMachine()
     }
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
     m_machineLabel = block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
+    // A chest or furnace placed from a named item shows the name (decision E-873).
+    if (!session.machine().name().isEmpty()) {
+        m_machineLabel = session.machine().name();
+    }
     m_containerColumns = block ? content->block(*block).containerColumns : 9;
 }
 

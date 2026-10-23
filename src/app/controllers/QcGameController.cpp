@@ -235,6 +235,9 @@ void QcGameController::useScriptedGamepad(QcGamepadSource *source)
 void QcGameController::setLanguage(const QString &language)
 {
     m_settings->setContentLanguage(language);
+    if (m_parts.session) {
+        m_parts.session->setContentLanguage(language);
+    }
     // Item and recipe names come from the content's translations.
     if (m_parts.session && m_parts.session->content()) {
         m_player->useContent();
@@ -355,6 +358,7 @@ void QcGameController::startRemoteSession(std::unique_ptr<QcClientSession> sessi
 void QcGameController::beginSession()
 {
     m_parts.session->setCameraMode(m_settings->cameraModeValue());
+    m_parts.session->setContentLanguage(m_settings->contentLanguage());
     m_parts.meshes = std::make_unique<QcMeshScheduler>();
     // The meshes carry the light of their cells only for a frame plan that reads it.
     m_parts.meshes->setSectionLight(QcFramePlan::selected().sectionLight);

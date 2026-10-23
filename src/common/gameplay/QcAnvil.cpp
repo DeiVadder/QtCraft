@@ -71,8 +71,10 @@ struct Merge
     int cost = 0;
 };
 
-// The enchantments of `right` merged into `left`'s for `item`.
-Merge mergeEnchantments(const QcContentRegistry &content, const QcItemDefinition &item, QList<QcEnchantment> merged, const QList<QcEnchantment> &right)
+// The enchantments of `right` merged into `left`'s for `item`. From an enchanted book each level
+// costs half (at least 1), as in the reference (decision E-873).
+Merge mergeEnchantments(const QcContentRegistry &content, const QcItemDefinition &item, QList<QcEnchantment> merged, const QList<QcEnchantment> &right,
+                        bool fromBook)
 {
     int cost = 0;
     for (const QcEnchantment &incoming : right) {
@@ -97,7 +99,8 @@ Merge mergeEnchantments(const QcContentRegistry &content, const QcItemDefinition
         } else {
             merged.append({incoming.name, std::min(level, definition->maxLevel)});
         }
-        cost += level * costPerLevel(*definition);
+        const int perLevel = fromBook ? std::max(1, costPerLevel(*definition) / 2) : costPerLevel(*definition);
+        cost += level * perLevel;
     }
     return {merged, cost};
 }
@@ -115,7 +118,7 @@ Work combine(const QcContentRegistry &content, const QcItemDefinition &item, con
         work.cost += 2;
     }
 
-    const Merge merge = mergeEnchantments(content, item, left.enchantments(), right.enchantments());
+    const Merge merge = mergeEnchantments(content, item, left.enchantments(), right.enchantments(), false);
     const bool merged = merge.enchantments != left.enchantments();
     if (!repaired && !merged) {
         return {};
@@ -125,6 +128,17 @@ Work combine(const QcContentRegistry &content, const QcItemDefinition &item, con
         work.enchantments = merge.enchantments;
     }
     return work;
+}
+
+// An enchanted book in the right slot (decision E-873): its enchantments merge into the left item
+// (any item, a book too) at the book's price, without repairing; nothing fits when none merges.
+Work withBook(const QcContentRegistry &content, const QcItemDefinition &item, const QcItemStack &left, const QcItemStack &right)
+{
+    const Merge merge = mergeEnchantments(content, item, left.enchantments(), right.enchantments(), true);
+    if (merge.enchantments == left.enchantments()) {
+        return {};
+    }
+    return {left, merge.cost, 1, merge.enchantments};
 }
 
 // What `right` does to `left`; an empty output when it does not fit.
@@ -140,6 +154,9 @@ Work workOn(const QcContentRegistry &content, const QcItemStack &left, const QcI
         return {};
     }
     const QcItemDefinition &item = content.item(left.item);
+    if (content.item(right.item).storesEnchantments && right.count == 1 && !right.enchantments().isEmpty()) {
+        return withBook(content, item, left, right);
+    }
     if (item.durability > 0 && left.damage > 0 && repairs(item, content.item(right.item))) {
         return repairWithMaterial(item, left, right);
     }

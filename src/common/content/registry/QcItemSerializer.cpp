@@ -37,6 +37,9 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     // A portable container (a backpack, decision E-832): the client sends its use in the air as
     // ConsumeItem and lists its contents in the tooltip.
     stream << item.portableContainer;
+    // An enchanted book (decision E-873): its enchantments do not work while it is held, also in
+    // the client's mining prediction (QcEnchanting::levelOf).
+    stream << item.storesEnchantments;
 }
 
 // What the item hangs on a block face (decision E-790): the client targets and draws frames and
@@ -164,7 +167,7 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
         return std::nullopt;
     }
     item.map = static_cast<QcMapItem>(map);
-    stream >> item.portableContainer;
+    stream >> item.portableContainer >> item.storesEnchantments;
     return item;
 }
 

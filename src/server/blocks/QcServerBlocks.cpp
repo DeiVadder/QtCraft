@@ -95,6 +95,8 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     // A portable container with contents drops as its item carrying them (QcBlockEntities spills
     // it, decision E-832), in creative mode too; empty, it drops as usual.
     const bool carriesContents = m_state.blockEntities().carriesContents(pos, *previous);
+    // A named chest or furnace drops its item with the name (decision E-873).
+    const QString name = m_state.blockEntities().nameAt(pos);
 
     setAndBroadcast(pos, qcAirBlockId);
     if (m_state.world().blockAt(pos) != qcAirBlockId) {
@@ -111,7 +113,7 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     const bool secondHalf = (definition.door && content.property(*previous, u"half"_s) == u"top"_s)
                             || (definition.bed && content.property(*previous, u"part"_s) == u"head"_s);
     if (drops && !secondHalf && !carriesContents) {
-        dropBlockItems(*previous, pos);
+        dropBlockItems(*previous, pos, name);
         if (doubleSlab) {
             dropBlockItems(*previous, pos);
         }
@@ -122,16 +124,16 @@ void QcServerBlocks::breakBlock(QcBlockPos pos, bool drops)
     m_state.plants().blockRemoved(pos, *previous, m_state.world());
 }
 
-void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos)
+void QcServerBlocks::dropBlockItems(QcBlockId block, QcBlockPos pos, const QString &name)
 {
-    dropItemsWithoutExperience(block, pos);
+    dropItemsWithoutExperience(block, pos, name);
 
     // Ores give experience with their drops (decision E-398).
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
     QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, m_state.content().block(block).experience), centre);
 }
 
-void QcServerBlocks::dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos)
+void QcServerBlocks::dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos, const QString &name)
 {
     const QcContentRegistry &content = m_state.content();
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
@@ -146,9 +148,18 @@ void QcServerBlocks::dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos)
         if (const std::optional<QcItemId> item = m_state.content().itemId(drop.item)) {
             const int extra = drop.mostCount() > drop.count
                 ? static_cast<int>(m_state.random().bounded(static_cast<quint32>(drop.mostCount() - drop.count + 1))) : 0;
-            m_state.entities().items().spawnScattered({*item, drop.count + extra, 0}, centre, m_state.entities().newId());
+            const QcItemStack stack{*item, drop.count + extra, 0};
+            m_state.entities().items().spawnScattered(holdsName(*item) && !name.isEmpty() ? stack.withName(name) : stack, centre,
+                                                      m_state.entities().newId());
         }
     }
+}
+
+bool QcServerBlocks::holdsName(QcItemId item) const
+{
+    const QcContentRegistry &content = m_state.content();
+    const std::optional<QcBlockId> block = content.isValidItem(item) ? content.blockId(content.item(item).placesBlock) : std::nullopt;
+    return block && (m_state.blockEntities().containerSlots(*block) > 0 || m_state.blockEntities().machineOf(*block));
 }
 
 void QcServerBlocks::dropStacks(const QList<QcItemStack> &stacks, QcBlockPos pos)

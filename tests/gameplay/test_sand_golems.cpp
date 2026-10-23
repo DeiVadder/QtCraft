@@ -7,6 +7,7 @@
 
 #include <QDeadlineTimer>
 #include <QMutex>
+#include <QTemporaryDir>
 #include <QThread>
 
 #include <atomic>
@@ -123,7 +124,8 @@ double threadSeconds()
 // (fewer than `max`, cooldown, half of it for a zone seen first, no player close, one within reach,
 // dark, loaded; zones planned off the tick thread), the golem keeps to
 // its zone and chases only players near it, and it crumbles into its build where it touches a water
-// source, not flowing water; a farm yields at most one golem per cooldown. Ticks are stepped by hand.
+// source, not flowing water; a farm yields at most one golem per cooldown; a name tag frees a golem
+// from its zone. Ticks are stepped by hand.
 class TestSandGolems : public QcServerTestFixture
 {
     Q_OBJECT
@@ -173,12 +175,12 @@ private:
     }
 
     // A flat stone ground around the player, open air above, no creatures, in creative at night.
-    void joinWorld()
+    void joinWorld(QcServerConfig config = {})
     {
         m_sites->clear();
         auto terrain = std::make_unique<GuardedTerrain>(m_content, m_sites);
         m_terrain = terrain.get();
-        join({}, std::move(terrain));
+        join(std::move(config), std::move(terrain));
         chat(u"/gamemode creative"_s);
         chat(u"/gamerule mobSpawning false"_s);
         chat(u"/gamerule daylightCycle false"_s);
@@ -563,6 +565,54 @@ private slots:
         teleport({zone.x - 14.5, static_cast<double>(m_feet.y), zone.z + 0.5});
         ticks(30);
         QCOMPARE(m_server->mobs().find(id)->chasing, 0U);
+    }
+
+    // A name tag frees a golem from its zone (decision E-873): it is an ordinary kept creature, saved
+    // with the world, and the zone brings a successor after its cooldown.
+    void aNameTagFreesTheGolemFromItsZone()
+    {
+        QTemporaryDir dir;
+        QcServerConfig config;
+        config.worldDirectory = dir.path();
+        config.autosaveSeconds = 0;
+        joinWorld(config);
+        buildCellar();
+        QVERIFY(ticksUntilGolem(firstWait()) > 0);
+        const quint32 first = golems().constFirst()->id;
+        m_server->mobs().find(first)->noAi = true;
+        const QcVec3 at = m_server->mobs().find(first)->motion.position;
+        teleport({at.x - 1.5, at.y, at.z});
+        player().inventory.setSlot(player().inventory.selectedHotbarSlot(), QcItemStack{item("qtcraft:name_tag"), 1, 0}.withName(u"Sandy"_s));
+        send(QcMsg::UseEntity{first});
+        const QcCreature &named = *m_server->mobs().find(first);
+        QCOMPARE(named.name, u"Sandy"_s);
+        QVERIFY(!named.guards);
+        QVERIFY(named.persistent);
+        QCOMPARE(guardians().guardianCount(m_sites->front().id), 0);
+
+        // Back out of the cellar, the zone gets a successor.
+        teleport({m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 0.5});
+        bool successor = false;
+        for (int tick = 0; tick < 40 * QcGuardians::checkTicks && !successor; ++tick) {
+            ticks(1);
+            successor = golems().size() == 2;
+        }
+        QVERIFY(successor);
+        QCOMPARE(guardians().guardianCount(m_sites->front().id), 1);
+
+        // Saved and loaded: the named one comes back without a post, the guardian does not (its zone
+        // brings it again).
+        QVERIFY(m_server->stop().has_value());
+        m_client.reset();
+        auto terrain = std::make_unique<GuardedTerrain>(m_content, m_sites);
+        m_terrain = terrain.get();
+        m_server = std::make_unique<QcServer>(config, m_content, std::move(terrain));
+        QVERIFY(m_server->openWorld().has_value());
+        loadAround(m_cellar);
+        QCOMPARE(golems().size(), 1);
+        QCOMPARE(golems().constFirst()->name, u"Sandy"_s);
+        QVERIFY(!golems().constFirst()->guards);
+        QVERIFY(golems().constFirst()->persistent);
     }
 
     // A sand farm: every golem appears beside water and crumbles; the build is cleared at once (a

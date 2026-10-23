@@ -1,3 +1,5 @@
 {
-    "name": "book"
+    "name": "book",
+    "enchantability": 1,
+    "enchantsInto": "enchanted_book"
 }

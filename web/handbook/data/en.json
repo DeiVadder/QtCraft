@@ -507,6 +507,7 @@
                 "item:qtcraft:egg",
                 "item:qtcraft:emerald",
                 "item:qtcraft:map",
+                "item:qtcraft:enchanted_book",
                 "item:qtcraft:ender_pearl",
                 "item:qtcraft:feather",
                 "item:qtcraft:fired_lamp_shell",
@@ -5764,7 +5765,7 @@
                     "title": "Mined with"
                 }
             ],
-            "text": "Repairs, combines and renames: use it, put an item into the left slot and its material, a second item of the same kind or nothing into the right one, type a name if you like and take the result, paid with experience levels. Each use wears it a little (chipped, damaged, then it breaks), and every time an item goes through an anvil the next use costs more. It falls like sand and hurts whoever it lands on.",
+            "text": "Repairs, combines and renames: use it, put an item into the left slot and its material, a second item of the same kind, an enchanted book or nothing into the right one, type a name if you like and take the result, paid with experience levels. Each use wears it a little (chipped, damaged, then it breaks), and every time an item goes through an anvil the next use costs more. A chest, barrel, furnace or hopper placed from a renamed item shows the name as its title and keeps it when broken. It falls like sand and hurts whoever it lands on.",
             "title": "Anvil"
         },
         "block:qtcraft:backpack": {
@@ -29971,7 +29972,7 @@
                     "title": "Mined with"
                 }
             ],
-            "text": "Offers enchantments for tools, weapons and armour: use it, put the item into the left slot and lapis lazuli beside it, then choose one of three offers, paid with experience levels and lapis. Up to 15 bookshelves one block away around the table raise the offers.",
+            "text": "Offers enchantments for tools, weapons, armour and single books (which become enchanted books): use it, put the item into the left slot and lapis lazuli beside it, then choose one of three offers, paid with experience levels and lapis. Up to 15 bookshelves one block away around the table raise the offers.",
             "title": "Enchanting Table"
         },
         "block:qtcraft:explosive": {
@@ -105451,6 +105452,34 @@
             "text": "A green gem and the money of the villagers: they pay in emeralds for what they buy and ask for them for what they sell.",
             "title": "Emerald"
         },
+        "item:qtcraft:enchanted_book": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Enchanted Book",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:enchanted_book"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                }
+            ],
+            "icon": "qtcraft:enchanted_book",
+            "id": "item:qtcraft:enchanted_book",
+            "name": "qtcraft:enchanted_book",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Made by enchanting a book at an enchanting table; a book takes every enchantment. Its enchantments do nothing while you hold it: put the item to enchant into the left slot of an anvil and the book into the right one, and the book's enchantments go onto the item at half the price of combining two items. Two books with the same enchantment at the same level make one book of the next level.",
+            "title": "Enchanted Book"
+        },
         "item:qtcraft:ender_pearl": {
             "category": "items",
             "categoryTitle": "Items",
@@ -113583,7 +113612,7 @@
             "packName": "QtCraft",
             "sections": [
             ],
-            "text": "Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns.",
+            "text": "Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns. A named sand golem no longer guards its cellar: it stays in the world for good, and the cellar gets a new guardian.",
             "title": "Name Tag"
         },
         "item:qtcraft:orange_dye": {

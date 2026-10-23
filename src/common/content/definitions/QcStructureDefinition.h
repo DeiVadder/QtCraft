@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/gameplay/QcAdventureRules.h"
+#include "common/gameplay/QcItemStack.h"
 
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"
@@ -64,17 +65,23 @@ struct QcStructureDefinition
         QStringList properties;
     };
 
+    // A stack of `item`; `name` and `enchantments` give it a custom name and enchantments (an
+    // enchanted book in a showcase chest, decision E-873).
     struct Stack
     {
         QString item;
         int count = 1;
+        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+        QList<QcEnchantment> enchantments = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     };
 
-    // Contents of the chest or machine at `at` (machines: input, fuel, output).
+    // Contents of the chest or machine at `at` (machines: input, fuel, output); `name` gives the
+    // chest or machine a custom name (decision E-873), its screen's title.
     struct Contents
     {
         QcBlockPos at;
         QList<Stack> items;
+        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
     };
 
     // A minecart on the rail at `at`, placed from `item` (a chest or hopper cart takes the `contents`

@@ -1,0 +1,8 @@
+{
+    "name": "enchanted_book",
+    "pattern": "book",
+    "primary": "#6a3a9a",
+    "secondary": "#f0d870",
+    "variation": 0.08,
+    "seed": 9716
+}

@@ -2,6 +2,8 @@
 
 #include <QCoreApplication>
 
+#include <algorithm>
+
 namespace QcChatText {
 
 QString format(QStringView pattern, const QStringList &arguments)
@@ -41,6 +43,13 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments)
     return {format(keyText, arguments), keyText, arguments};
 }
 
+QcMsg::ChatMessage message(const char *key, const QStringList &arguments, const QStringList &contentKeys)
+{
+    QcMsg::ChatMessage line = message(key, arguments);
+    line.contentKeys = contentKeys;
+    return line;
+}
+
 QcMsg::Disconnect disconnect(const char *key, const QStringList &arguments)
 {
     const QcMsg::ChatMessage line = message(key, arguments);
@@ -59,13 +68,26 @@ QcMsg::ChatMessage plain(const QString &text)
 
 QString display(const QcMsg::ChatMessage &message)
 {
+    return display(message, {});
+}
+
+QString display(const QcMsg::ChatMessage &message, const std::function<QString(const QString &)> &contentText)
+{
     if (message.key.isEmpty()) {
         return message.text;
     }
 
+    QStringList arguments = message.arguments;
+    const qsizetype keyed = contentText ? std::min(arguments.size(), message.contentKeys.size()) : 0;
+    for (qsizetype i = 0; i < keyed; ++i) {
+        const QString text = message.contentKeys[i].isEmpty() ? QString() : contentText(message.contentKeys[i]);
+        if (!text.isEmpty()) {
+            arguments[i] = text;
+        }
+    }
     // Without a translation (or for a key this version does not know) the key is the English text.
     const QString translated = QCoreApplication::translate(context, message.key.toUtf8().constData());
-    return format(translated, message.arguments);
+    return format(translated, arguments);
 }
 
 } // namespace QcChatText

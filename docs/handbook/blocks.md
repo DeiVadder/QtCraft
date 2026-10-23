@@ -66,7 +66,7 @@ A purple ball of blossoms on meadows and mountains; gives magenta dye.
 
 ### <a id="block-qtcraft-anvil"></a>Anvil
 
-Repairs, combines and renames: use it, put an item into the left slot and its material, a second item of the same kind or nothing into the right one, type a name if you like and take the result, paid with experience levels. Each use wears it a little (chipped, damaged, then it breaks), and every time an item goes through an anvil the next use costs more. It falls like sand and hurts whoever it lands on.
+Repairs, combines and renames: use it, put an item into the left slot and its material, a second item of the same kind, an enchanted book or nothing into the right one, type a name if you like and take the result, paid with experience levels. Each use wears it a little (chipped, damaged, then it breaks), and every time an item goes through an anvil the next use costs more. A chest, barrel, furnace or hopper placed from a renamed item shows the name as its title and keeps it when broken. It falls like sand and hurts whoever it lands on.
 
 | | |
 |---|---|
@@ -3398,7 +3398,7 @@ Green specks in deep stone, rare and in veins of one or two. Needs a pickaxe of 
 
 ### <a id="block-qtcraft-enchanting_table"></a>Enchanting Table
 
-Offers enchantments for tools, weapons and armour: use it, put the item into the left slot and lapis lazuli beside it, then choose one of three offers, paid with experience levels and lapis. Up to 15 bookshelves one block away around the table raise the offers.
+Offers enchantments for tools, weapons, armour and single books (which become enchanted books): use it, put the item into the left slot and lapis lazuli beside it, then choose one of three offers, paid with experience levels and lapis. Up to 15 bookshelves one block away around the table raise the offers.
 
 | | |
 |---|---|

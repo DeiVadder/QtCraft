@@ -106,9 +106,9 @@ QList<QcEnchantment> enchantmentsFor(const QcContentRegistry &content, const QcI
     if (stack.isEmpty() || !content.isValidItem(stack.item)) {
         return {};
     }
-    const QcItemDefinition &item = content.item(stack.item);
+    const QcItemDefinition &item = content.item(enchantedItem(content, stack.item));
     QRandomGenerator random(seed);
-    int power = powerOf(levelCost, item.enchantability, random);
+    int power = powerOf(levelCost, content.item(stack.item).enchantability, random);
     QList<Candidate> candidates = candidatesFor(content, item, power);
     QList<QcEnchantment> chosen;
     while (!candidates.isEmpty()) {
@@ -127,7 +127,8 @@ QList<QcEnchantment> enchantmentsFor(const QcContentRegistry &content, const QcI
 Offers offers(const QcContentRegistry &content, const QcItemStack &stack, int shelves, quint32 seed)
 {
     Offers result;
-    if (stack.isEmpty() || !content.isValidItem(stack.item) || !stack.enchantments().isEmpty()) {
+    // One item at a time, as in the reference: a stack of books gets no offers.
+    if (stack.isEmpty() || stack.count != 1 || !content.isValidItem(stack.item) || !stack.enchantments().isEmpty()) {
         return result;
     }
     const std::array<int, offerCount> costs = levelCosts(seed, shelves, content.item(stack.item).enchantability);
@@ -139,6 +140,14 @@ Offers offers(const QcContentRegistry &content, const QcItemStack &stack, int sh
         }
     }
     return result;
+}
+
+QcItemId enchantedItem(const QcContentRegistry &content, QcItemId item)
+{
+    if (!content.isValidItem(item) || content.item(item).enchantsInto.isEmpty()) {
+        return item;
+    }
+    return content.itemId(content.item(item).enchantsInto).value_or(item);
 }
 
 } // namespace QcEnchantingTable

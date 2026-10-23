@@ -36,6 +36,15 @@ public:
         QList<QcItemStack> stacks;
         // A Signal Hopper rests until this tick after moving an item (decision E-344); 0: never moved.
         quint64 readyAt = 0;
+        // The custom name of the item it was placed from (decision E-873), the title of its screen
+        // and the name of the item it drops; empty for none.
+        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+
+        // Something in one of its slots.
+        bool isFilled() const;
+        // Nothing in it, no cooldown and no name: the same as a new one (not saved, forgotten with
+        // its chunk).
+        bool isPlain() const;
     };
 
     struct Machine
@@ -58,11 +67,14 @@ public:
         // most maxExperience; it comes out as orbs when a player takes from the output slot.
         double experience = 0.0;
         static constexpr double maxExperience = 100000.0;
+        // The custom name of the item it was placed from (decision E-873); empty for none.
+        QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
         // Nothing in it and nothing burning or in progress: nothing to simulate (gathered
         // experience waits without a step).
         bool isCold() const;
-        // Cold and without gathered experience: the same as a new one (removed, not saved).
+        // Cold, without gathered experience and without a name: the same as a new one (removed, not
+        // saved).
         bool isIdle() const;
     };
 
@@ -167,6 +179,11 @@ public:
     // The portable container just placed at `pos` takes the contents its item `stack` carries
     // (decision E-832); returns what does not fit its slots or must not lie in it, to be dropped.
     [[nodiscard]] QList<QcItemStack> fillPortable(QcBlockPos pos, const QcItemStack &stack);
+    // The custom name of the container or machine at `pos` (decision E-873); empty for none or
+    // without one. setName() gives one to the container or machine there (a block placed from a
+    // named item); false when there is none.
+    QString nameAt(QcBlockPos pos) const;
+    bool setName(QcBlockPos pos, const QString &name);
     // Creates the container or machine of `block` at `pos` unless there is one; false when the
     // block holds none or the limit of its kind is reached.
     bool ensure(QcBlockPos pos, QcBlockId block);
@@ -282,7 +299,7 @@ private:
     void placedContainer(QcBlockPos pos, QcBlockId before, QcBlockId after);
     // Spills the contents of the portable container `block` that left `pos` as its item carrying
     // them; nothing when it held nothing.
-    void spillPortable(QcBlockPos pos, QcBlockId block, const QList<QcItemStack> &stacks);
+    void spillPortable(QcBlockId block, const Container &held);
     void placedMachine(QcBlockPos pos, QcBlockId after);
     void placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after);
     QcSignalKind kindOf(QcBlockId block) const;
