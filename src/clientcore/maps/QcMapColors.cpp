@@ -22,7 +22,7 @@ QString topTexture(const QcBlockDefinition &block)
 
 QRgb shaded(QRgb colour, QcMapPixel::Shade shade)
 {
-    const int brightness = QcMapPixel::brightness[int(shade)];
+    const int brightness = QcMapPixel::brightness[static_cast<int>(shade)];
     return qRgb(qRed(colour) * brightness / 255, qGreen(colour) * brightness / 255, qBlue(colour) * brightness / 255);
 }
 
@@ -36,12 +36,13 @@ QRgb QcMapColors::average(const QImage &texture)
     qint64 blue = 0;
     qint64 weight = 0;
     for (int y = 0; y < image.height(); ++y) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): a Format_RGB32/ARGB32 scan line is an array of QRgb (Qt idiom)
         const auto *line = reinterpret_cast<const QRgb *>(image.constScanLine(y));
         for (int x = 0; x < image.width(); ++x) {
             const int alpha = qAlpha(line[x]);
-            red += qint64(qRed(line[x])) * alpha;
-            green += qint64(qGreen(line[x])) * alpha;
-            blue += qint64(qBlue(line[x])) * alpha;
+            red += static_cast<qint64>(qRed(line[x])) * alpha;
+            green += static_cast<qint64>(qGreen(line[x])) * alpha;
+            blue += static_cast<qint64>(qBlue(line[x])) * alpha;
             weight += alpha;
         }
     }
@@ -49,7 +50,7 @@ QRgb QcMapColors::average(const QImage &texture)
     if (weight == 0) {
         return unknown;
     }
-    return qRgb(int(red / weight), int(green / weight), int(blue / weight));
+    return qRgb(static_cast<int>(red / weight), static_cast<int>(green / weight), static_cast<int>(blue / weight));
 }
 
 QList<QRgb> QcMapColors::ofAtlas(const QcContentRegistry &content, const QcTextureAtlas &atlas)
@@ -75,6 +76,7 @@ QImage QcMapColors::render(const QcMapData &map, const QList<QRgb> &colours)
 {
     QImage image(QcMapData::size, QcMapData::size, QImage::Format_ARGB32);
     for (int y = 0; y < QcMapData::size; ++y) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): a Format_RGB32/ARGB32 scan line is an array of QRgb (Qt idiom)
         auto *line = reinterpret_cast<QRgb *>(image.scanLine(y));
         for (int x = 0; x < QcMapData::size; ++x) {
             const quint16 pixel = map.at(QPoint(x, y));
@@ -83,7 +85,7 @@ QImage QcMapColors::render(const QcMapData &map, const QList<QRgb> &colours)
                 line[x] = qRgba(0, 0, 0, 0);
                 continue;
             }
-            const QRgb colour = std::cmp_less(*block, colours.size()) ? colours[qsizetype(*block)] : unknown;
+            const QRgb colour = std::cmp_less(*block, colours.size()) ? colours[static_cast<qsizetype>(*block)] : unknown;
             line[x] = shaded(colour, QcMapPixel::shadeOf(pixel));
         }
     }

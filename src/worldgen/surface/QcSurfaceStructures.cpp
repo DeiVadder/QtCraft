@@ -8,7 +8,7 @@ namespace {
 
 int floorDiv(int value, int divisor)
 {
-    return int(std::floor(double(value) / divisor));
+    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
 // The regions of size `spacing` that the columns x0..x1, z0..z1 reach into.
@@ -31,7 +31,8 @@ QcSurfacePlanner::Rect grown(QcSurfacePlanner::Rect rect, int margin)
 // The cache key of a kind's region: 24 bits per region coordinate (regions are at least 64 blocks).
 quint64 planKey(int kind, int regionX, int regionZ)
 {
-    return (quint64(kind) << 48) | ((quint64(quint32(regionX)) & 0xffffffU) << 24) | (quint64(quint32(regionZ)) & 0xffffffU);
+    return (static_cast<quint64>(kind) << 48) | ((static_cast<quint64>(static_cast<quint32>(regionX)) & 0xffffffU) << 24)
+        | (static_cast<quint64>(static_cast<quint32>(regionZ)) & 0xffffffU);
 }
 
 } // namespace
@@ -41,9 +42,9 @@ QcSurfaceStructures::QcSurfaceStructures(const QcTerrainGenerator &terrain, cons
     : m_villages(villages)
     , m_planner(terrain, content, seed)
 {
-    m_ground.resize(std::size_t(content.stateCount()));
+    m_ground.resize(static_cast<std::size_t>(content.stateCount()));
     for (std::size_t id = 0; id < m_ground.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         m_ground[id] = block.solid && !block.liquid;
     }
 }
@@ -109,7 +110,7 @@ QList<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::plansTou
     const int z = pos.z * QcWorld::chunkSize;
     for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
         const int spacing = m_planner.kinds()[kind].rule.spacing;
-        std::shared_ptr<const QcStructurePlacement> plan = planOf(int(kind), floorDiv(x, spacing), floorDiv(z, spacing));
+        std::shared_ptr<const QcStructurePlacement> plan = planOf(static_cast<int>(kind), floorDiv(x, spacing), floorDiv(z, spacing));
         if (plan && plan->overlaps(pos)) {
             plans.append(std::move(plan));
         }
@@ -126,7 +127,7 @@ QList<QcSurfacePlanner::Rect> QcSurfaceStructures::footprintsNear(QcChunkPos pos
     for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
         const QList<std::pair<int, int>> regions = regionsOver(grown(chunk, margin), m_planner.kinds()[kind].rule.spacing);
         for (const auto &[rx, rz] : regions) {
-            const std::shared_ptr<const QcStructurePlacement> plan = planOf(int(kind), rx, rz);
+            const std::shared_ptr<const QcStructurePlacement> plan = planOf(static_cast<int>(kind), rx, rz);
             if (plan && chunk.intersects(QcSurfacePlanner::footprintOf(*plan), margin)) {
                 footprints.append(QcSurfacePlanner::footprintOf(*plan));
             }
@@ -187,7 +188,7 @@ QcChunkFurnishing QcSurfaceStructures::furnishingIn(QcChunkPos pos) const
         for (const QcStructureDefinition::Loot &loot : plan->structure().loot) {
             const QcBlockPos at = plan->toWorld(loot.at);
             if (at.chunk() == pos) {
-                furnishing.chests.append({at, loot.table, quint64(qHashMulti(0x590u, at.x, at.y, at.z))});
+                furnishing.chests.append({at, loot.table, static_cast<quint64>(qHashMulti(0x590u, at.x, at.y, at.z))});
             }
         }
     }
@@ -214,7 +215,8 @@ std::optional<QList<QcGuardSite>> QcSurfaceStructures::collectSites(QcBlockPos f
         }
         const QList<std::pair<int, int>> regions = regionsOver(area, m_planner.kinds()[kind].rule.spacing);
         for (const auto &[rx, rz] : regions) {
-            const std::optional<std::shared_ptr<const QcStructurePlacement>> plan = mayPlan ? planOf(int(kind), rx, rz) : plannedOf(int(kind), rx, rz);
+            const std::optional<std::shared_ptr<const QcStructurePlacement>> plan = mayPlan ? planOf(static_cast<int>(kind), rx, rz)
+                : plannedOf(static_cast<int>(kind), rx, rz);
             if (!plan) {
                 return std::nullopt;
             }
@@ -233,7 +235,7 @@ std::optional<QcStructurePlacement> QcSurfaceStructures::nearest(const QString &
         return std::nullopt;
     }
     std::shared_ptr<const QcStructurePlacement> best;
-    double bestDistance = double(reach);
+    double bestDistance = static_cast<double>(reach);
     const QList<std::pair<int, int>> regions = regionsOver({from.x - reach, from.z - reach, from.x + reach, from.z + reach}, m_planner.kinds()[*kind].rule.spacing);
     for (const auto &[rx, rz] : regions) {
         std::shared_ptr<const QcStructurePlacement> plan = planOf(*kind, rx, rz);

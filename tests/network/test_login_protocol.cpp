@@ -132,7 +132,7 @@ private slots:
         QCOMPARE(reason.key, u"Kicked by %1: %2"_s);
         QCOMPARE(QcChatText::display(reason), u"Kicked by Ann: %1 spam"_s);
         QcMsg::Disconnect tooMany = reason;
-        tooMany.arguments = QStringList(int(QcMsg::Disconnect::maxArguments) + 1, u"x"_s);
+        tooMany.arguments = QStringList(static_cast<int>(QcMsg::Disconnect::maxArguments) + 1, u"x"_s);
         QVERIFY(!decoded(tooMany).has_value());
         // Without a key the English text is shown.
         QCOMPARE(QcChatText::display(QcMsg::Disconnect{u"Connection lost"_s, {}, {}}), u"Connection lost"_s);
@@ -147,7 +147,7 @@ private slots:
         }
 
         // Byte by byte, in odd pieces and in one go: the same frames in the same order.
-        for (const qsizetype piece : {qsizetype(1), qsizetype(3), qsizetype(4097), stream.size()}) {
+        for (const qsizetype piece : {qsizetype{1}, qsizetype{3}, qsizetype{4097}, stream.size()}) {
             QcFrameReader reader(QcProtocol::maxFrameBytes);
             QList<QByteArray> got;
             for (qsizetype offset = 0; offset < stream.size(); offset += piece) {

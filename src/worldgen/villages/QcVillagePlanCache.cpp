@@ -11,7 +11,7 @@ namespace {
 
 qint64 regionKey(int regionX, int regionZ)
 {
-    return (qint64(regionX) << 32) | quint32(regionZ);
+    return (static_cast<qint64>(regionX) << 32) | static_cast<quint32>(regionZ);
 }
 
 } // namespace

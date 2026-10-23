@@ -1,4 +1,5 @@
 #include "app/debug/QcGraphItem.h"
+#include "common/core/QcDowncast.h"
 
 #include <QSGGeometryNode>
 #include <QTest>
@@ -18,7 +19,7 @@ public:
 
 const QSGGeometry *limitGeometry(const QSGNode &root)
 {
-    return static_cast<const QSGGeometryNode *>(root.lastChild())->geometry();
+    return qcDowncast<const QSGGeometryNode>(root.lastChild())->geometry();
 }
 
 } // namespace
@@ -58,7 +59,7 @@ private slots:
         const std::unique_ptr<QSGNode> root = graph.nodes();
         QCOMPARE(limitGeometry(*root)->vertexCount(), 0);
         // The values are drawn as before.
-        QCOMPARE(static_cast<const QSGGeometryNode *>(root->firstChild())->geometry()->vertexCount(), 3);
+        QCOMPARE(qcDowncast<const QSGGeometryNode>(root->firstChild())->geometry()->vertexCount(), 3);
 
         graph.setLimit(0.0);
         QVERIFY(!graph.limitShown());

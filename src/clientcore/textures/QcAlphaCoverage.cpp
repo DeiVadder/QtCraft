@@ -13,7 +13,7 @@ bool hasTexelBelowCutoff(const QImage &tile)
     for (int y = 0; y < image.height(); ++y) {
         const uchar *line = image.constScanLine(y);
         for (int x = 0; x < image.width(); ++x) {
-            if (line[std::ptrdiff_t(x) * 4 + 3] < cutoff) {
+            if (line[static_cast<std::ptrdiff_t>(x) * 4 + 3] < cutoff) {
                 return true;
             }
         }
@@ -26,7 +26,7 @@ namespace {
 // Alpha of texel (x, y) of the tile whose top left corner is `origin`.
 int alphaAt(const QImage &level, QPoint origin, int x, int y)
 {
-    return level.constScanLine(origin.y() + y)[std::ptrdiff_t(origin.x() + x) * 4 + 3];
+    return level.constScanLine(origin.y() + y)[static_cast<std::ptrdiff_t>(origin.x() + x) * 4 + 3];
 }
 
 // Share of the tile's texels drawn when alpha is multiplied by `scale`.
@@ -38,7 +38,7 @@ double coverageAt(const QImage &level, QPoint origin, int tileSize, double scale
             drawn += alphaAt(level, origin, x, y) * scale >= cutoff;
         }
     }
-    return double(drawn) / (tileSize * tileSize);
+    return static_cast<double>(drawn) / (tileSize * tileSize);
 }
 
 // The tile is cut out: only fully transparent and fully opaque texels, at least one of each kind.
@@ -54,7 +54,7 @@ double cutOutCoverage(const QImage &level, QPoint origin, int tileSize)
             opaque += alpha == 255;
         }
     }
-    return opaque == 0 || opaque == tileSize * tileSize ? -1.0 : double(opaque) / (tileSize * tileSize);
+    return opaque == 0 || opaque == tileSize * tileSize ? -1.0 : static_cast<double>(opaque) / (tileSize * tileSize);
 }
 
 // Multiplies the alpha of the whole cell around the tile by `scale`.
@@ -64,8 +64,8 @@ void scaleCell(QImage &level, QPoint origin, int tileSize, double scale)
     for (int y = -gutter; y < tileSize + gutter; ++y) {
         uchar *line = level.scanLine(origin.y() + y);
         for (int x = -gutter; x < tileSize + gutter; ++x) {
-            uchar &alpha = line[std::ptrdiff_t(origin.x() + x) * 4 + 3];
-            alpha = uchar(std::clamp(int(std::lround(alpha * scale)), 0, 255));
+            uchar &alpha = line[static_cast<std::ptrdiff_t>(origin.x() + x) * 4 + 3];
+            alpha = static_cast<uchar>(std::clamp(static_cast<int>(std::lround(alpha * scale)), 0, 255));
         }
     }
 }
@@ -76,7 +76,7 @@ bool hasTransparentTexel(const QImage &tile)
     for (int y = 0; y < tile.height(); ++y) {
         const uchar *line = tile.constScanLine(y);
         for (int x = 0; x < tile.width(); ++x) {
-            if (line[std::ptrdiff_t(x) * 4 + 3] == 0) {
+            if (line[static_cast<std::ptrdiff_t>(x) * 4 + 3] == 0) {
                 return true;
             }
         }
@@ -92,7 +92,7 @@ public:
     // `tile` must not be shared.
     explicit ColourSpread(QImage &tile)
         : m_tile(tile)
-        , m_filled(std::size_t(tile.width()) * std::size_t(tile.height()), false)
+        , m_filled(static_cast<std::size_t>(tile.width()) * static_cast<std::size_t>(tile.height()), false)
     {
     }
 
@@ -103,9 +103,9 @@ public:
         for (int y = 0; y < m_tile.height(); ++y) {
             const uchar *line = m_tile.constScanLine(y);
             for (int x = 0; x < m_tile.width(); ++x) {
-                if (line[std::ptrdiff_t(x) * 4 + 3] != 0) {
+                if (line[static_cast<std::ptrdiff_t>(x) * 4 + 3] != 0) {
                     drawn.emplace_back(x, y);
-                    m_filled[std::size_t(y) * std::size_t(m_tile.width()) + std::size_t(x)] = true;
+                    m_filled[static_cast<std::size_t>(y) * static_cast<std::size_t>(m_tile.width()) + static_cast<std::size_t>(x)] = true;
                 }
             }
         }
@@ -121,19 +121,19 @@ public:
         const int height = m_tile.height();
         std::vector<QPoint> next;
         for (const QPoint &point : front) {
-            const uchar *source = m_tile.constScanLine(point.y()) + std::ptrdiff_t(point.x()) * 4;
+            const uchar *source = m_tile.constScanLine(point.y()) + static_cast<std::ptrdiff_t>(point.x()) * 4;
             for (const std::array<int, 2> &step : steps) {
                 const int x = point.x() + step[0];
                 const int y = point.y() + step[1];
                 if (x < 0 || y < 0 || x >= width || y >= height) {
                     continue;
                 }
-                const std::size_t index = std::size_t(y) * std::size_t(width) + std::size_t(x);
+                const std::size_t index = static_cast<std::size_t>(y) * static_cast<std::size_t>(width) + static_cast<std::size_t>(x);
                 if (m_filled[index]) {
                     continue;
                 }
                 m_filled[index] = true;
-                std::copy_n(source, 3, m_tile.scanLine(y) + std::ptrdiff_t(x) * 4);
+                std::copy_n(source, 3, m_tile.scanLine(y) + static_cast<std::ptrdiff_t>(x) * 4);
                 next.emplace_back(x, y);
             }
         }

@@ -128,8 +128,8 @@ private:
         scene.layers = env("QTCRAFT_SCENARIO_LAYERS");
         scene.spawn = pair(env("QTCRAFT_SCENARIO_SPAWN"));
         const std::optional<std::array<int, 2>> look = pair(env("QTCRAFT_SCENARIO_LOOK", u"45,-10"_s));
-        scene.yaw = look ? float((*look)[0]) : scene.yaw;
-        scene.pitch = look ? float((*look)[1]) : scene.pitch;
+        scene.yaw = look ? static_cast<float>((*look)[0]) : scene.yaw;
+        scene.pitch = look ? static_cast<float>((*look)[1]) : scene.pitch;
         scene.view = env("QTCRAFT_SCENARIO_VIEW", u"8"_s).toInt();
         scene.seed = env("QTCRAFT_SCENARIO_SEED", u"42"_s).toLongLong();
         scene.sampleSeconds = env("QTCRAFT_SCENARIO_SAMPLE", u"0"_s).toInt();
@@ -252,18 +252,19 @@ private:
 
     void sample() const
     {
-        qInfo("SAMPLE seconds=%.1f rss_mb=%.1f loaded_chunks=%lld mobs=%lld items=%lld falling=%lld", double(m_tick) / 20.0,
-              QcProcessMemory::currentMb(), qlonglong(m_server->world().loadedChunkCount()), qlonglong(m_server->mobs().mobs().size()),
-              qlonglong(m_server->items().items().size()), qlonglong(m_server->fallingBlocks().all().size()));
+        qInfo("SAMPLE seconds=%.1f rss_mb=%.1f loaded_chunks=%lld mobs=%lld items=%lld falling=%lld", static_cast<double>(m_tick) / 20.0,
+              QcProcessMemory::currentMb(), static_cast<qlonglong>(m_server->world().loadedChunkCount()),
+              static_cast<qlonglong>(m_server->mobs().mobs().size()),
+              static_cast<qlonglong>(m_server->items().items().size()), static_cast<qlonglong>(m_server->fallingBlocks().all().size()));
     }
 
     static QString phasePairs(const QcTickStats::Summary &ticks)
     {
         QStringList pairs;
         for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-            const QLatin1StringView id(QcTickPhases::ids[std::size_t(phase)]);
-            pairs.append(u"tick_%1_avg_ms=%2"_s.arg(id).arg(ticks.phaseAverageMs[std::size_t(phase)], 0, 'f', 4));
-            pairs.append(u"tick_%1_max_ms=%2"_s.arg(id).arg(ticks.phaseWorstMs[std::size_t(phase)], 0, 'f', 3));
+            const QLatin1StringView id(QcTickPhases::ids[static_cast<std::size_t>(phase)]);
+            pairs.append(u"tick_%1_avg_ms=%2"_s.arg(id).arg(ticks.phaseAverageMs[static_cast<std::size_t>(phase)], 0, 'f', 4));
+            pairs.append(u"tick_%1_max_ms=%2"_s.arg(id).arg(ticks.phaseWorstMs[static_cast<std::size_t>(phase)], 0, 'f', 3));
         }
         return pairs.join(u' ');
     }
@@ -273,7 +274,7 @@ private:
         const QcTickStats::Summary ticks = m_stats.summary();
         std::vector<qint64> sorted = m_durations;
         std::ranges::sort(sorted, std::greater{});
-        const double p99 = sorted.empty() ? 0.0 : double(sorted.at(sorted.size() / 100)) / 1e6;
+        const double p99 = sorted.empty() ? 0.0 : static_cast<double>(sorted.at(sorted.size() / 100)) / 1e6;
         const QcBlockEntities &blockEntities = m_server->blockEntities();
         const qsizetype blockEntityCount = blockEntities.containerCount() + blockEntities.machineCount() + blockEntities.saplingCount();
         return u"BENCH tick_avg_ms=%1 tick_p99_ms=%2 tick_worst_ms=%3 ticks=%4 wall_s=%5 rss_mb=%6 peak_rss_mb=%7 "
@@ -317,7 +318,7 @@ private:
             timedTick(scene);
         }
         m_server->waitForStorage();
-        const QString line = report(double(wall.elapsed()) / 1e3);
+        const QString line = report(static_cast<double>(wall.elapsed()) / 1e3);
         m_client.reset();
         m_server.reset();
         return line;

@@ -54,11 +54,11 @@ public:
     void reset();
 
     std::optional<Slot> slot(quint64 key) const;
-    QRhiTexture *page(int index) const { return m_pages[std::size_t(index)].get(); }
-    int pageCount() const { return int(m_pages.size()); }
+    QRhiTexture *page(int index) const { return m_pages[static_cast<std::size_t>(index)].get(); }
+    int pageCount() const { return static_cast<int>(m_pages.size()); }
     int slotsPerPage() const { return m_slotsPerPage; }
     int usedSlots() const { return m_usedSlots; }
-    qsizetype sections() const { return qsizetype(m_slots.size()); }
+    qsizetype sections() const { return static_cast<qsizetype>(m_slots.size()); }
     // GPU bytes of all pages.
     quint64 bytes() const;
 

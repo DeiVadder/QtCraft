@@ -117,7 +117,7 @@ private:
     void placeCarts(int count, bool containers = false)
     {
         for (int i = 0; i < count; ++i) {
-            const QcBlockPos cell = m_loop[qsizetype(i) * m_loop.size() / count];
+            const QcBlockPos cell = m_loop[static_cast<qsizetype>(i) * m_loop.size() / count];
             const QString item = !containers ? u"qtcraft:minecart"_s : i % 2 == 0 ? u"qtcraft:chest_minecart"_s : u"qtcraft:hopper_minecart"_s;
             QcMinecart cart = m_server->carts().fromItem(item);
             cart.motion.position = *m_server->systems().minecarts.restingPlace(cell);
@@ -160,8 +160,8 @@ private:
             QElapsedTimer timer;
             timer.start();
             m_server->tick();
-            const double tickMs = double(timer.nsecsElapsed()) / 1e6;
-            const double phaseMs = double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Minecarts)]) / 1e6;
+            const double tickMs = static_cast<double>(timer.nsecsElapsed()) / 1e6;
+            const double phaseMs = static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Minecarts)]) / 1e6;
             times.phaseMeanMs += phaseMs / ticks;
             times.phaseMaxMs = std::max(times.phaseMaxMs, phaseMs);
             times.tickMeanMs += tickMs / ticks;
@@ -227,7 +227,7 @@ private slots:
             moved += m_server->systems().minecarts.hoppers().lastTick().moved;
         }
         report("containers-powered", times, measured.carts);
-        qInfo("MEASURE minecarts containers-powered items_moved=%lld", qlonglong(moved));
+        qInfo("MEASURE minecarts containers-powered items_moved=%lld", static_cast<qlonglong>(moved));
         QVERIFY(moved > 0);
         // Still rolling and on the loop.
         const qsizetype rolling = std::ranges::count_if(m_server->carts().all(), [](const QcMinecart &cart) { return cart.motion.velocity.length() > 1.0; });

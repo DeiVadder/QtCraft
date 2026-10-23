@@ -112,7 +112,7 @@ void QcControlWorldCommands::blocks(const QJsonObject &request)
 
     const int radius = std::clamp(QcControlArguments::intField(request, u"radius"_s, 3), 0, maxBlockQueryRadius);
     const QcVec3 p = session().playerMotion().position;
-    const QcBlockPos centre{int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+    const QcBlockPos centre{static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
     m_context.finish(request, {{u"centre"_s, QJsonArray{centre.x, centre.y, centre.z}}, {u"blocks"_s, blocksAround(*world, centre, radius)}});
 }
 
@@ -177,8 +177,8 @@ void QcControlWorldCommands::shoot(const QJsonObject &request)
 
     session().selectHotbarSlot(bow);
     QcPlayerInput intent = session().intent();
-    intent.yaw = float(std::fmod(request.value(u"yaw"_s).toDouble(intent.yaw), 360.0));
-    intent.pitch = float(std::clamp(request.value(u"pitch"_s).toDouble(intent.pitch), -90.0, 90.0));
+    intent.yaw = static_cast<float>(std::fmod(request.value(u"yaw"_s).toDouble(intent.yaw), 360.0));
+    intent.pitch = static_cast<float>(std::clamp(request.value(u"pitch"_s).toDouble(intent.pitch), -90.0, 90.0));
     session().setIntent(intent);
 
     // One tick for the view to reach the server, the draw, then the release.
@@ -193,7 +193,7 @@ void QcControlWorldCommands::shoot(const QJsonObject &request)
                              }
                              return false;
                          }
-                         if (session().tickCount() < *drawnAt + quint64(ticks)) {
+                         if (session().tickCount() < *drawnAt + static_cast<quint64>(ticks)) {
                              return false;
                          }
                          session().releaseUse();

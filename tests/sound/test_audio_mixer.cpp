@@ -26,7 +26,7 @@ std::vector<float> mixFrames(QcAudioMixer &mixer, int frames)
     return {mixed.begin(), mixed.end()};
 }
 
-const auto centre = float(1.0 / std::numbers::sqrt2);
+const auto centre = static_cast<float>(1.0 / std::numbers::sqrt2);
 
 } // namespace
 
@@ -278,7 +278,7 @@ private slots:
         // Yaw 180 looks south: east is on the left now.
         QTest::newRow("south, east") << 180.0 << 5.0 << 0.0 << -QcSoundSpatial::panWidth;
         // 45 degrees to the right front: sin(45°) of the width.
-        QTest::newRow("north, front right") << 0.0 << 3.0 << -3.0 << float(QcSoundSpatial::panWidth * std::sqrt(0.5));
+        QTest::newRow("north, front right") << 0.0 << 3.0 << -3.0 << static_cast<float>(QcSoundSpatial::panWidth * std::sqrt(0.5));
         QTest::newRow("straight above") << 0.0 << 0.0 << 0.0 << 0.0f;
     }
 

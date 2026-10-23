@@ -74,14 +74,14 @@ QcDebugSnapshot fullSnapshot()
 
     QcDebugSnapshot::Frame frame;
     frame.fps = 119.6;
-    frame.phases[std::size_t(QcFramePhase::Interval)] = {8.34, 12.5};
-    frame.phases[std::size_t(QcFramePhase::GuiCpu)] = {0.41, 1.2};
-    frame.phases[std::size_t(QcFramePhase::Gpu)] = {0.9, 1.1};
+    frame.phases[static_cast<std::size_t>(QcFramePhase::Interval)] = {8.34, 12.5};
+    frame.phases[static_cast<std::size_t>(QcFramePhase::GuiCpu)] = {0.41, 1.2};
+    frame.phases[static_cast<std::size_t>(QcFramePhase::Gpu)] = {0.9, 1.1};
     snapshot.frame = frame;
 
     QcMsg::ServerDebug server;
-    server.phaseMeanMs[std::size_t(QcTickPhase::Mobs)] = 0.25f;
-    server.phaseMaxMs[std::size_t(QcTickPhase::Mobs)] = 1.5f;
+    server.phaseMeanMs[static_cast<std::size_t>(QcTickPhase::Mobs)] = 0.25f;
+    server.phaseMaxMs[static_cast<std::size_t>(QcTickPhase::Mobs)] = 1.5f;
     server.tickMeanMs = 0.5f;
     server.tickMaxMs = 2.0f;
     server.biome = u"qtcraft:plains"_s;

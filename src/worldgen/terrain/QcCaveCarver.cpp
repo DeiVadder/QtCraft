@@ -47,7 +47,7 @@ double entranceThreshold(const QcNoise &noise, double share)
 {
     QList<double> samples;
     constexpr int grid = 64;
-    samples.reserve(qsizetype(grid) * grid);
+    samples.reserve(static_cast<qsizetype>(grid) * grid);
     for (int i = 0; i < grid; ++i) {
         for (int j = 0; j < grid; ++j) {
             samples.append(noise.noise2(i * 1.37, j * 1.37));
@@ -55,7 +55,7 @@ double entranceThreshold(const QcNoise &noise, double share)
     }
 
     std::ranges::sort(samples);
-    const auto index = qsizetype((1.0 - share) * double(samples.size() - 1));
+    const auto index = static_cast<qsizetype>((1.0 - share) * static_cast<double>(samples.size() - 1));
     return share >= 1.0 ? -2.0 : samples[std::clamp<qsizetype>(index, 0, samples.size() - 1)];
 }
 
@@ -81,7 +81,7 @@ struct QcCaveCarver::Lattice
 
     qsizetype index(int field, int ix, int iy, int iz) const
     {
-        return ((qsizetype(field) * latticeColumns + iz) * latticeColumns + ix) * rows + iy;
+        return ((static_cast<qsizetype>(field) * latticeColumns + iz) * latticeColumns + ix) * rows + iy;
     }
 
     // The fields at a block of the chunk; the same corners and interpolation as isCave(), so both
@@ -91,16 +91,16 @@ struct QcCaveCarver::Lattice
         const int ix = lx / caveLattice;
         const int iy = y / caveLattice;
         const int iz = lz / caveLattice;
-        const double fx = double(lx % caveLattice) / caveLattice;
-        const double fy = double(y % caveLattice) / caveLattice;
-        const double fz = double(lz % caveLattice) / caveLattice;
+        const double fx = static_cast<double>(lx % caveLattice) / caveLattice;
+        const double fy = static_cast<double>(y % caveLattice) / caveLattice;
+        const double fz = static_cast<double>(lz % caveLattice) / caveLattice;
         std::array<double, CaveFieldCount> fields{};
         for (int field = 0; field < CaveFieldCount; ++field) {
             std::array<double, 8> corners{};
             for (int corner = 0; corner < 8; ++corner) {
-                corners[std::size_t(corner)] = values[index(field, ix + (corner & 1), iy + ((corner >> 1) & 1), iz + ((corner >> 2) & 1))];
+                corners[static_cast<std::size_t>(corner)] = values[index(field, ix + (corner & 1), iy + ((corner >> 1) & 1), iz + ((corner >> 2) & 1))];
             }
-            fields[std::size_t(field)] = trilinear(corners, fx, fy, fz);
+            fields[static_cast<std::size_t>(field)] = trilinear(corners, fx, fy, fz);
         }
         return fields;
     }
@@ -149,7 +149,7 @@ bool QcCaveCarver::carves(const std::array<double, 4> &values, int y) const
 
     // Caverns with pillars, fading out above the bedrock and towards their upper limit.
     const double threshold = m_cavernThreshold + 0.35 * (1.0 - smoothstep(3.0, 12.0, y))
-                             + 0.35 * smoothstep(cavernMaxY - 16.0, double(cavernMaxY), y);
+                             + 0.35 * smoothstep(cavernMaxY - 16.0, static_cast<double>(cavernMaxY), y);
     const bool cavern = y < cavernMaxY && values[Cavern] > threshold;
     return tunnel || cavern;
 }
@@ -174,17 +174,17 @@ bool QcCaveCarver::isCave(int x, int y, int z, const QcTerrainColumn &column) co
     const int lx = qcFloorDiv(x, caveLattice) * caveLattice;
     const int ly = qcFloorDiv(y, caveLattice) * caveLattice;
     const int lz = qcFloorDiv(z, caveLattice) * caveLattice;
-    const double fx = double(x - lx) / caveLattice;
-    const double fy = double(y - ly) / caveLattice;
-    const double fz = double(z - lz) / caveLattice;
+    const double fx = static_cast<double>(x - lx) / caveLattice;
+    const double fy = static_cast<double>(y - ly) / caveLattice;
+    const double fz = static_cast<double>(z - lz) / caveLattice;
     std::array<double, CaveFieldCount> values{};
     for (int field = 0; field < CaveFieldCount; ++field) {
         std::array<double, 8> corners{};
         for (int corner = 0; corner < 8; ++corner) {
-            corners[std::size_t(corner)] = density(field, lx + (corner & 1) * caveLattice, ly + ((corner >> 1) & 1) * caveLattice,
+            corners[static_cast<std::size_t>(corner)] = density(field, lx + (corner & 1) * caveLattice, ly + ((corner >> 1) & 1) * caveLattice,
                                                    lz + ((corner >> 2) & 1) * caveLattice);
         }
-        values[std::size_t(field)] = trilinear(corners, fx, fy, fz);
+        values[static_cast<std::size_t>(field)] = trilinear(corners, fx, fy, fz);
     }
     return carves(values, y);
 }
@@ -195,12 +195,12 @@ QcCaveCarver::Lattice QcCaveCarver::lattice(QcChunkPos pos, int rows) const
     const int baseZ = pos.z * QcWorld::chunkSize;
     Lattice lattice;
     lattice.rows = rows;
-    lattice.values.resize(qsizetype(CaveFieldCount) * latticeColumns * latticeColumns * rows);
+    lattice.values.resize(static_cast<qsizetype>(CaveFieldCount) * latticeColumns * latticeColumns * rows);
     for (qsizetype i = 0; i < lattice.values.size(); ++i) {
-        const int iy = int(i % rows);
-        const int ix = int(i / rows % latticeColumns);
-        const int iz = int(i / rows / latticeColumns % latticeColumns);
-        const int field = int(i / rows / latticeColumns / latticeColumns);
+        const int iy = static_cast<int>(i % rows);
+        const int ix = static_cast<int>(i / rows % latticeColumns);
+        const int iz = static_cast<int>(i / rows / latticeColumns % latticeColumns);
+        const int field = static_cast<int>(i / rows / latticeColumns / latticeColumns);
         lattice.values[i] = density(field, baseX + ix * caveLattice, iy * caveLattice, baseZ + iz * caveLattice);
     }
     return lattice;

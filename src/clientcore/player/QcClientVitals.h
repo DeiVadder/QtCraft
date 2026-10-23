@@ -29,7 +29,7 @@ public:
     int experienceLevel() const { return m_experience.level; }
     int experiencePoints() const { return m_experience.points; }
     int experienceForNext() const { return m_experience.pointsForNext; }
-    double experienceProgress() const { return double(m_experience.points) / double(m_experience.pointsForNext); }
+    double experienceProgress() const { return static_cast<double>(m_experience.points) / static_cast<double>(m_experience.pointsForNext); }
 
 private:
     QcMsg::PlayerHealth m_health{20.0, 20.0, false};

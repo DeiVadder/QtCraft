@@ -18,7 +18,7 @@ constexpr qint64 msNs = 1'000'000;
 int framesInASecond(QcFramePacer &pacer, double hz)
 {
     int drawn = 0;
-    const auto vsyncNs = qint64(1e9 / hz);
+    const auto vsyncNs = static_cast<qint64>(1e9 / hz);
     for (qint64 now = 0; now < 1'000'000'000; now += vsyncNs) {
         drawn += pacer.frameDue(now) ? 1 : 0;
     }

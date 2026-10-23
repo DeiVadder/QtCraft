@@ -16,14 +16,14 @@ namespace {
 
 constexpr quint8 faceBit(QcBlockFace face)
 {
-    return quint8(1U << unsigned(face));
+    return static_cast<quint8>(1U << static_cast<unsigned>(face));
 }
 
 // The side to the left of something pointing at `face`, seen from above.
 QcBlockFace leftOf(QcBlockFace face)
 {
     const int index = QcSignalTable::horizontalIndex(face);
-    return index < 0 ? face : QcSignalTable::horizontal[std::size_t((index + 3) % 4)];
+    return index < 0 ? face : QcSignalTable::horizontal[static_cast<std::size_t>((index + 3) % 4)];
 }
 
 } // namespace

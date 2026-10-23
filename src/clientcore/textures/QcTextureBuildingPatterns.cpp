@@ -111,7 +111,7 @@ bool onIceStreak(quint32 seed, int x, int y)
     static constexpr std::array<std::array<int, 3>, 4> streaks = {{{2, 0, 12}, {3, 3, 6}, {10, 8, 9}, {11, 12, 3}}};
     const int diagonal = wrapped(x + y);
     const int along = wrapped(x - y);
-    const int shift = int(seed % size);
+    const int shift = static_cast<int>(seed % size);
     for (const auto &[streakDiagonal, start, length] : streaks) {
         if (diagonal == wrapped(streakDiagonal + shift) && wrapped(along - start - 3 * shift) < length) {
             return true;
@@ -122,7 +122,7 @@ bool onIceStreak(quint32 seed, int x, int y)
 
 QColor mixed(const QColor &first, const QColor &second, double share, int alpha)
 {
-    const auto channel = [share](int a, int b) { return int(std::lround(a + (b - a) * share)); };
+    const auto channel = [share](int a, int b) { return static_cast<int>(std::lround(a + (b - a) * share)); };
     return QColor(channel(first.red(), second.red()), channel(first.green(), second.green()), channel(first.blue(), second.blue()), alpha);
 }
 
@@ -154,8 +154,8 @@ bool onIceCrack(quint32 seed, int x, int y)
     constexpr int cracks = 3;
     constexpr int steps = 8;
     for (int crack = 0; crack < cracks; ++crack) {
-        int cx = int(hashPixel(seed + 31, crack, 0) % size);
-        int cy = int(hashPixel(seed + 37, crack, 0) % size);
+        int cx = static_cast<int>(hashPixel(seed + 31, crack, 0) % size);
+        int cy = static_cast<int>(hashPixel(seed + 37, crack, 0) % size);
         int sideways = crack % 2 == 0 ? 1 : -1;
         for (int step = 0; step < steps; ++step) {
             if (wrapped(cx) == x && wrapped(cy) == y) {

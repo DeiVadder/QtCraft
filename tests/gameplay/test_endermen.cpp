@@ -143,7 +143,7 @@ private slots:
             }
         }
 
-        const QcVec3 from{15.5, double(floor), 8.5};
+        const QcVec3 from{15.5, static_cast<double>(floor), 8.5};
         const int cells = QcSafeSpot::cellsOf(endermanKind().height);
         QCOMPARE(cells, 3);
         int found = 0;
@@ -330,7 +330,7 @@ private slots:
         // On a creature it teleports too.
         player().health = QcServerClient::maxHealth;
         const QcBlockPos here = QcPhysics::blockContaining(player().motion.position);
-        const quint32 pig = m_server->entities().creatures().spawn(type("pig"), {here.x + 0.5, double(here.y), here.z + 4.5},
+        const quint32 pig = m_server->entities().creatures().spawn(type("pig"), {here.x + 0.5, static_cast<double>(here.y), here.z + 4.5},
                                                                    m_server->entities().newId());
         const QcVec3 pigAt = mob(pig)->motion.position;
         const QcVec3 eyes = player().motion.position + QcVec3{0.0, 1.0, 0.0};
@@ -372,7 +372,8 @@ private slots:
         for (int i = 0; i < 30; ++i) {
             const double angle = 2.0 * std::numbers::pi * i / 30.0;
             const double radius = 6.0 + 2.0 * (i % 4);
-            endermen.append(spawn("enderman", int(std::lround(radius * std::cos(angle))), int(std::lround(radius * std::sin(angle)))));
+            endermen.append(spawn("enderman", static_cast<int>(std::lround(radius * std::cos(angle))),
+                static_cast<int>(std::lround(radius * std::sin(angle)))));
         }
 
         double tickMs = 0.0;
@@ -386,10 +387,10 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             m_server->tick();
-            const double ms = double(timer.nsecsElapsed()) / 1e6;
+            const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
             tickMs += ms / count;
             maxTickMs = std::max(maxTickMs, ms);
-            mobsMs += double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Mobs)]) / 1e6 / count;
+            mobsMs += static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Mobs)]) / 1e6 / count;
             QcTestUtil::pump();
         }
         int carrying = 0;

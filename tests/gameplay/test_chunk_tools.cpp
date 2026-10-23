@@ -129,7 +129,7 @@ private slots:
         }
         QVERIFY2(openedAt >= 0, "the door did not open");
         QVERIFY(mostTickets > 0);
-        qInfo("door opened after %d ticks, at most %lld tickets", openedAt, qlonglong(mostTickets));
+        qInfo("door opened after %d ticks, at most %lld tickets", openedAt, static_cast<qlonglong>(mostTickets));
 
         // The tickets run out and their chunks leave; the door keeps its state. A ticket lasts while a
         // signal still waits or passes in its chunk (E-378), which under load may take longer.

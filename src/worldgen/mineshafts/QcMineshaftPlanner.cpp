@@ -58,7 +58,7 @@ QcMineshaftPlanner::~QcMineshaftPlanner() = default;
 
 double QcMineshaftPlanner::random(const QcMineshaftPlan &plan, int purpose, int index) const
 {
-    return qcPositionRandom(qcMixSeed(m_seed, quint64(purpose)), plan.regionX, index, plan.regionZ);
+    return qcPositionRandom(qcMixSeed(m_seed, static_cast<quint64>(purpose)), plan.regionX, index, plan.regionZ);
 }
 
 std::shared_ptr<const QcMineshaftPlan> QcMineshaftPlanner::plan(int regionX, int regionZ) const
@@ -74,7 +74,7 @@ std::shared_ptr<const QcMineshaftPlan> QcMineshaftPlanner::plan(int regionX, int
     }
 
     const int span = m_settings.maxLevels - m_settings.minLevels + 1;
-    const int levels = m_settings.minLevels + std::min(span - 1, int(random(*plan, Levels, 0) * span));
+    const int levels = m_settings.minLevels + std::min(span - 1, static_cast<int>(random(*plan, Levels, 0) * span));
     QcMineshaftSite site(m_terrain, m_settings, regionX, regionZ);
     const std::optional<QcBlockPos> centre = findCentre(site, *plan, levels);
     if (!centre) {
@@ -112,9 +112,9 @@ std::optional<QcBlockPos> QcMineshaftPlanner::findCentre(QcMineshaftSite &site, 
     const int lowest = m_settings.minY + (levels - 1) * m_settings.levelSpacing;
     const int heights = std::max(1, m_settings.maxY - lowest + 1);
     for (int attempt = 0; attempt < m_settings.attempts; ++attempt) {
-        const int x = plan.regionX * region + extent + int(random(plan, CentreX, attempt) * (region - 2 * extent));
-        const int z = plan.regionZ * region + extent + int(random(plan, CentreZ, attempt) * (region - 2 * extent));
-        const int y = lowest + std::min(heights - 1, int(random(plan, CentreY, attempt) * heights));
+        const int x = plan.regionX * region + extent + static_cast<int>(random(plan, CentreX, attempt) * (region - 2 * extent));
+        const int z = plan.regionZ * region + extent + static_cast<int>(random(plan, CentreZ, attempt) * (region - 2 * extent));
+        const int y = lowest + std::min(heights - 1, static_cast<int>(random(plan, CentreY, attempt) * heights));
         const QcMineshaftFrame frame(QcBlockPos{x, y, z}, m_settings);
         if (site.roomFits(frame.node({}), m_settings.roomHalf, m_settings.roomHeight)) {
             return QcBlockPos{x, y, z};

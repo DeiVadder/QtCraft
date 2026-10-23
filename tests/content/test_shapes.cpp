@@ -561,8 +561,8 @@ private slots:
         QCOMPARE(copy->stateCount(), content.stateCount());
 
         for (qsizetype id = 0; id < content.stateCount(); ++id) {
-            const QcBlockState &original = content.state(QcBlockId(id));
-            const QcBlockState &received = copy->state(QcBlockId(id));
+            const QcBlockState &original = content.state(static_cast<QcBlockId>(id));
+            const QcBlockState &received = copy->state(static_cast<QcBlockId>(id));
             QCOMPARE(received.boxes, original.boxes);
             QCOMPARE(received.collision, original.collision);
             QCOMPARE(received.faceSource, original.faceSource);

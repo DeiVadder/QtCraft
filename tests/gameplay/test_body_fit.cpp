@@ -62,7 +62,7 @@ private:
             for (int i = 0; i < 64; ++i) {
                 const double angle = i * (2.0 * M_PI / 64.0);
                 QcEntityMotion motion;
-                motion.position = {target.x + 0.5 + std::sin(angle) * 1.6, double(sky), target.z + 0.5 - std::cos(angle) * 1.6};
+                motion.position = {target.x + 0.5 + std::sin(angle) * 1.6, static_cast<double>(sky), target.z + 0.5 - std::cos(angle) * 1.6};
                 const QcVec3 towards = QcVec3{target.x + 0.5 - motion.position.x, 0.0, target.z + 0.5 - motion.position.z}.normalized();
                 for (int tick = 0; tick < 40; ++tick) {
                     motion.step({towards, 1.0, false}, body, world, QcPhysics::tickDuration);
@@ -97,7 +97,7 @@ private slots:
     {
         // Under a ceiling: the first free side wins, in a fixed order, then one metre down.
         auto world = makeWorld();
-        const QcVec3 feet{0.5, double(sky), 0.5};
+        const QcVec3 feet{0.5, static_cast<double>(sky), 0.5};
         stone(*world, {0, sky, 0});
         stone(*world, {0, sky + 1, 0});
         const QList<QcVec3> expected{feet + QcVec3{0.0, 0.0, -1.0}, feet + QcVec3{1.0, 0.0, 0.0}, feet + QcVec3{0.0, 0.0, 1.0},
@@ -199,7 +199,7 @@ private slots:
         stone(*world, {0, top, 0});
         const std::optional<QcVec3> clear = QcBodyFit::clearFeet(*world, {0.5, top + 0.25, 0.5}, pig);
         QVERIFY(clear.has_value());
-        const QcVec3 onTop{0.5, double(QcWorld::worldHeight), 0.5};
+        const QcVec3 onTop{0.5, static_cast<double>(QcWorld::worldHeight), 0.5};
         QCOMPARE(*clear, onTop);
     }
 };

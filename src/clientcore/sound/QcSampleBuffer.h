@@ -10,5 +10,5 @@ struct QcSampleBuffer
     // Looping buffers end where they begin, so playing them back to back has no seam.
     bool loop = false;
 
-    double seconds() const { return sampleRate > 0 ? double(samples.size()) / sampleRate : 0.0; }
+    double seconds() const { return sampleRate > 0 ? static_cast<double>(samples.size()) / sampleRate : 0.0; }
 };

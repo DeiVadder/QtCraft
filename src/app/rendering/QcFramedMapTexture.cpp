@@ -41,11 +41,11 @@ quint32 QcFramedMapTexture::upload(QRhi *rhi, QRhiResourceUpdateBatch *updates, 
             continue;
         }
         QRhiTextureSubresourceUploadDescription description(tile.image);
-        const int column = int(index) % QcFramedMapAtlas::columns;
-        const int row = int(index) / QcFramedMapAtlas::columns;
+        const int column = static_cast<int>(index) % QcFramedMapAtlas::columns;
+        const int row = static_cast<int>(index) / QcFramedMapAtlas::columns;
         description.setDestinationTopLeft(QPoint(column * QcMapData::size, row * QcMapData::size));
         entries.append(QRhiTextureUploadEntry(0, 0, description));
-        bytes += quint32(tile.image.sizeInBytes());
+        bytes += static_cast<quint32>(tile.image.sizeInBytes());
         m_uploaded[index] = tile.version;
     }
     if (!entries.isEmpty()) {

@@ -87,15 +87,15 @@ void QcSkyRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpd
     copy(sky.horizon, 1.0f, uniforms.horizon);
     copy(sky.glow, 1.0f, uniforms.glow);
     copy(sky.sunDirection, 0.0f, uniforms.sunDirection);
-    copy(sky.moonDirection, float(sky.moonPhase), uniforms.moonDirection);
-    copy(sky.cloudColor, float(sky.overcast), uniforms.cloudColor);
+    copy(sky.moonDirection, static_cast<float>(sky.moonPhase), uniforms.moonDirection);
+    copy(sky.cloudColor, static_cast<float>(sky.overcast), uniforms.cloudColor);
     const float starAngle = std::atan2(sky.sunDirection.y(), sky.sunDirection.x());
     // Offsets wrap after 100 km so the floats keep their precision in long sessions.
-    uniforms.params[0] = float(sky.stars);
+    uniforms.params[0] = static_cast<float>(sky.stars);
     uniforms.params[1] = starAngle;
-    uniforms.params[2] = float(std::fmod(sky.cloudOffsetX, 100000.0));
-    uniforms.params[3] = float(std::fmod(sky.cloudOffsetZ, 100000.0));
-    copy(frame.camera, float(QcSky::cloudHeight), uniforms.camera);
+    uniforms.params[2] = static_cast<float>(std::fmod(sky.cloudOffsetX, 100000.0));
+    uniforms.params[3] = static_cast<float>(std::fmod(sky.cloudOffsetZ, 100000.0));
+    copy(frame.camera, static_cast<float>(QcSky::cloudHeight), uniforms.camera);
     updates->updateDynamicBuffer(m_uniforms.get(), 0, sizeof(SkyUniforms), &uniforms);
 }
 

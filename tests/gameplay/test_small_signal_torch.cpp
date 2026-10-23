@@ -26,7 +26,7 @@ private:
     // when no recipe matches).
     Crafted crafted(const QList<std::pair<int, const char *>> &cells, int size) const
     {
-        QList<QcItemStack> grid(qsizetype(size) * size);
+        QList<QcItemStack> grid(static_cast<qsizetype>(size) * size);
         for (const auto &[cell, name] : cells) {
             grid[cell] = {*m_content->itemId(u"qtcraft:"_s + QLatin1StringView(name)), 1, 0};
         }

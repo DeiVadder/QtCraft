@@ -74,7 +74,7 @@ private:
     {
         const int cod = *m_content->mobIndex(u"qtcraft:cod"_s);
         const QcBlockPos front = at(5, 0, 5);
-        const QcVec3 centre{front.x + 0.5, double(front.y), front.z + 0.5};
+        const QcVec3 centre{front.x + 0.5, static_cast<double>(front.y), front.z + 0.5};
         QList<const QcCreature *> found;
         for (const QcCreature &mob : m_server->entities().creatures().mobs()) {
             if (mob.type == cod && (mob.motion.position - centre).length() < 3.0) {
@@ -179,7 +179,7 @@ private slots:
         put(4, 0, 5, u"signal_dispenser[facing=east]"_s);
         put(4, 0, 6, u"lever[attach=floor]"_s);
         const QcBlockPos front = at(5, 0, 5);
-        m_server->entities().creatures().spawn(*m_content->mobIndex(u"qtcraft:cod"_s), {front.x + 0.5, double(front.y), front.z + 0.5},
+        m_server->entities().creatures().spawn(*m_content->mobIndex(u"qtcraft:cod"_s), {front.x + 0.5, static_cast<double>(front.y), front.z + 0.5},
                                                m_server->entities().newId(), false, true);
         fill(4, 0, 5, {stack("qtcraft:cod_bucket", 1)});
         ticks(2);
@@ -318,7 +318,7 @@ private slots:
         QcArmourStand stand;
         stand.id = 800002;
         const QcBlockPos cell = at(5, 0, 5);
-        stand.motion.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        stand.motion.position = {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
         QVERIFY(m_server->stands().add(stand));
         fill(4, 0, 5, {stack("qtcraft:iron_helmet", 1), stack("qtcraft:iron_helmet", 1)});
         ticks(2);

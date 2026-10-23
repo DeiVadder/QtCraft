@@ -16,8 +16,8 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
         return {eye, yaw, pitch};
     }
 
-    const double y = qDegreesToRadians(double(yaw));
-    const double p = qDegreesToRadians(double(pitch));
+    const double y = qDegreesToRadians(static_cast<double>(yaw));
+    const double p = qDegreesToRadians(static_cast<double>(pitch));
     const QcVec3 forward{std::sin(y) * std::cos(p), std::sin(p), -std::cos(y) * std::cos(p)};
     // Behind: back along the view direction; front: ahead of the player, looking back at them;
     // side: level to the right, looking at the player's right side (the player faces right on screen).
@@ -37,9 +37,9 @@ Placement place(const QcVec3 &eye, float yaw, float pitch, QcCameraMode mode, co
         return {position, yaw, pitch};
     }
     if (mode == QcCameraMode::Side) {
-        return {position, float(std::fmod(double(yaw) + 270.0, 360.0)), pitch};
+        return {position, static_cast<float>(std::fmod(static_cast<double>(yaw) + 270.0, 360.0)), pitch};
     }
-    return {position, float(std::fmod(double(yaw) + 180.0, 360.0)), -pitch};
+    return {position, static_cast<float>(std::fmod(static_cast<double>(yaw) + 180.0, 360.0)), -pitch};
 }
 
 QcCameraMode next(QcCameraMode mode)

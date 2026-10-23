@@ -46,9 +46,9 @@ private:
         QByteArray steps;
         QDataStream stream(&steps, QIODevice::WriteOnly);
         stream.setVersion(QcSaveFile::streamVersion);
-        stream << quint32(contents.size());
+        stream << static_cast<quint32>(contents.size());
         for (const auto &[name, content] : contents) {
-            stream << name << false << qint64(content.size()) << qcCrc32(content.left(qsizetype(64) * 1024));
+            stream << name << false << static_cast<qint64>(content.size()) << qcCrc32(content.left(qsizetype{64} * 1024));
         }
         QVERIFY(QcSaveFile::write(dir.filePath(u"save.journal"_s), "QCSJ", steps, 2).has_value());
     }
@@ -75,14 +75,14 @@ private slots:
 
         // A damaged blob fails alone; a damaged index fails the file; another version is refused.
         QByteArray data = readFile(path);
-        data[qsizetype(index->value({3, 4}).offset)] = 'X';
+        data[static_cast<qsizetype>(index->value({3, 4}).offset)] = 'X';
         QFile file(path);
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write(data);
         file.close();
         QVERIFY(!QcRegionFile::readBlob(path, index->value({3, 4})).has_value());
         QVERIFY(QcRegionFile::readBlob(path, index->value({0, 0})).has_value());
-        data[16] = char(data[16] ^ 0x40);
+        data[16] = static_cast<char>(data[16] ^ 0x40);
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write(data);
         file.close();
@@ -299,7 +299,7 @@ private slots:
         const QString path = dir.filePath(u"regions/r.0.0.qcr"_s);
         const QcResult<QcRegionFile::Index> index = QcRegionFile::readIndex(path, {0, 0}, "QCRG", 3);
         QByteArray data = readFile(path);
-        data[qsizetype(index->value({0, 0}).offset) + 5] ^= 0x10;
+        data[static_cast<qsizetype>(index->value({0, 0}).offset) + 5] ^= 0x10;
         QFile file(path);
         QVERIFY(file.open(QIODevice::WriteOnly));
         file.write(data);
@@ -336,7 +336,7 @@ private slots:
             departure.blocks = chunk;
             departure.entities.populated = true;
             io.keep(std::move(departure));
-            io.read({i, 0}, quint64(i) + 1);
+            io.read({i, 0}, static_cast<quint64>(i) + 1);
         }
         io.waitForIdle();
         const std::vector<QcChunkIo::Arrival> arrivals = io.takeArrivals();

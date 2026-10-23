@@ -20,10 +20,10 @@ QByteArray runLengthBytes(const QcChunk &chunk, QDataStream::ByteOrder order)
     QDataStream stream(&expected, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_6_8);
     stream.setByteOrder(order);
-    stream << qint32(chunk.pos().x) << qint32(chunk.pos().z);
+    stream << static_cast<qint32>(chunk.pos().x) << static_cast<qint32>(chunk.pos().z);
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
         const QcChunkSection &section = chunk.section(index);
-        stream << quint32(section.palette().size());
+        stream << static_cast<quint32>(section.palette().size());
         for (const QcBlockId id : section.palette()) {
             stream << id;
         }
@@ -36,10 +36,10 @@ QByteArray runLengthBytes(const QcChunk &chunk, QDataStream::ByteOrder order)
             if (!runs.isEmpty() && runs.last().second == value) {
                 ++runs.last().first;
             } else {
-                runs.append({quint16(1), value});
+                runs.append({quint16{1}, value});
             }
         }
-        stream << quint32(runs.size());
+        stream << static_cast<quint32>(runs.size());
         for (const auto &[length, value] : std::as_const(runs)) {
             stream << length << value;
         }
@@ -61,9 +61,9 @@ private slots:
         {
             QDataStream stream(&raw, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << qint32(0) << qint32(0);
-            stream << quint32(2) << QcBlockId(0) << QcBlockId(1);
-            stream << quint32(2) << quint16(4000) << quint16(0) << quint16(4000) << quint16(1);
+            stream << qint32{0} << qint32{0};
+            stream << quint32{2} << static_cast<QcBlockId>(0) << static_cast<QcBlockId>(1);
+            stream << quint32{2} << quint16{4000} << quint16{0} << quint16{4000} << quint16{1};
         }
         QDataStream in(raw);
         in.setVersion(QDataStream::Qt_6_8);
@@ -76,9 +76,9 @@ private slots:
         {
             QDataStream stream(&raw, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << qint32(0) << qint32(0);
-            stream << quint32(2) << QcBlockId(0) << QcBlockId(1);
-            stream << quint32(1) << quint16(100) << quint16(1);
+            stream << qint32{0} << qint32{0};
+            stream << quint32{2} << static_cast<QcBlockId>(0) << static_cast<QcBlockId>(1);
+            stream << quint32{1} << quint16{100} << quint16{1};
         }
         QDataStream in(raw);
         in.setVersion(QDataStream::Qt_6_8);
@@ -92,7 +92,7 @@ private slots:
         for (int y = 0; y < 64; ++y) {
             for (int x = 0; x < 16; ++x) {
                 for (int z = 0; z < 16; ++z) {
-                    chunk->setBlock(x, y, z, QcBlockId(1 + y % 2));
+                    chunk->setBlock(x, y, z, static_cast<QcBlockId>(1 + y % 2));
                 }
             }
         }
@@ -108,7 +108,7 @@ private slots:
         auto chunk = std::make_shared<QcChunk>(QcChunkPos{3, -4});
         QRandomGenerator random(14);
         for (int i = 0; i < 3000; ++i) {
-            chunk->setBlock(random.bounded(16), random.bounded(70), random.bounded(16), QcBlockId(1 + random.bounded(5)));
+            chunk->setBlock(random.bounded(16), random.bounded(70), random.bounded(16), static_cast<QcBlockId>(1 + random.bounded(5)));
         }
 
         for (const QDataStream::ByteOrder order : {QDataStream::BigEndian, QDataStream::LittleEndian}) {
@@ -148,11 +148,11 @@ private slots:
         {
             QDataStream stream(&raw, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << qint32(0) << qint32(0);
+            stream << qint32{0} << qint32{0};
             // Section 0: palette of two entries but an index pointing at entry 5.
-            stream << quint32(2) << QcBlockId(0) << QcBlockId(1);
+            stream << quint32{2} << static_cast<QcBlockId>(0) << static_cast<QcBlockId>(1);
             for (int i = 0; i < QcWorld::blocksPerSection; ++i) {
-                stream << quint16(i == 100 ? 5 : 0);
+                stream << static_cast<quint16>(i == 100 ? 5 : 0);
             }
         }
         QDataStream in(raw);
@@ -166,7 +166,7 @@ private slots:
         {
             QDataStream stream(&raw, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << qint32(0) << qint32(0) << quint32(0x7FFFFFFF);
+            stream << qint32{0} << qint32{0} << quint32{0x7FFFFFFF};
         }
         QDataStream in(raw);
         in.setVersion(QDataStream::Qt_6_8);

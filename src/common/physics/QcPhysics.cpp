@@ -13,14 +13,14 @@ namespace QcPhysics {
 
 QcBlockPos blockContaining(const QcVec3 &point)
 {
-    return {int(std::floor(point.x)), int(std::floor(point.y)), int(std::floor(point.z))};
+    return {static_cast<int>(std::floor(point.x)), static_cast<int>(std::floor(point.y)), static_cast<int>(std::floor(point.z))};
 }
 
 namespace {
 
 QcAabb cellBox(QcBlockPos pos)
 {
-    return {{double(pos.x), double(pos.y), double(pos.z)}, {pos.x + 1.0, pos.y + 1.0, pos.z + 1.0}};
+    return {{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)}, {pos.x + 1.0, pos.y + 1.0, pos.z + 1.0}};
 }
 
 template<typename Boxes>
@@ -39,7 +39,7 @@ void appendCollisionBoxes(const QcBlockAccess &world, QcBlockPos pos, Boxes &box
         return;
     }
 
-    const QcVec3 origin{double(pos.x), double(pos.y), double(pos.z)};
+    const QcVec3 origin{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)};
     for (const QcAabb &box : content.state(*block).collision) {
         boxes.append(box.moved(origin));
     }
@@ -53,12 +53,12 @@ ObstacleList solidBoxesIn(const QcAabb &region, const QcBlockAccess &world)
     ObstacleList boxes;
     // A small epsilon keeps a box resting exactly on a face from picking up the next block layer.
     constexpr double epsilon = 1e-7;
-    const int x0 = int(std::floor(region.min.x + epsilon));
-    const int y0 = int(std::floor(region.min.y + epsilon));
-    const int z0 = int(std::floor(region.min.z + epsilon));
-    const int x1 = int(std::floor(region.max.x - epsilon));
-    const int y1 = int(std::floor(region.max.y - epsilon));
-    const int z1 = int(std::floor(region.max.z - epsilon));
+    const int x0 = static_cast<int>(std::floor(region.min.x + epsilon));
+    const int y0 = static_cast<int>(std::floor(region.min.y + epsilon));
+    const int z0 = static_cast<int>(std::floor(region.min.z + epsilon));
+    const int x1 = static_cast<int>(std::floor(region.max.x - epsilon));
+    const int y1 = static_cast<int>(std::floor(region.max.y - epsilon));
+    const int z1 = static_cast<int>(std::floor(region.max.z - epsilon));
 
     // One block of margin: collision boxes reach up to 1.5 m into the cell above (fences).
     for (int x = x0 - 1; x <= x1 + 1; ++x) {
@@ -82,7 +82,7 @@ QcAabb boxAt(const QcVec3 &feet, double width, double height)
 QcAabb lyingBoxAt(const QcVec3 &feet, float yaw, double width, double height)
 {
     // Yaw 0 faces north (-Z), 90 east (+X).
-    const double radians = qDegreesToRadians(double(yaw));
+    const double radians = qDegreesToRadians(static_cast<double>(yaw));
     const QcVec3 forward{std::round(std::sin(radians)), 0.0, std::round(-std::cos(radians))};
     const QcVec3 footEnd = feet + forward * lyingPivot;
     const QcVec3 headEnd = feet - forward * (height - lyingPivot);
@@ -140,11 +140,11 @@ bool touchesClimbable(const QcBlockAccess &world, const QcAabb &box)
 {
     constexpr double inset = 1e-3;
     const QcContentRegistry &content = world.content();
-    const int firstZ = int(std::floor(box.min.z + inset));
-    const int lastZ = int(std::floor(box.max.z - inset));
+    const int firstZ = static_cast<int>(std::floor(box.min.z + inset));
+    const int lastZ = static_cast<int>(std::floor(box.max.z - inset));
 
-    for (int x = int(std::floor(box.min.x + inset)); x <= int(std::floor(box.max.x - inset)); ++x) {
-        for (int y = int(std::floor(box.min.y + inset)); y <= int(std::floor(box.max.y - inset)); ++y) {
+    for (int x = static_cast<int>(std::floor(box.min.x + inset)); x <= static_cast<int>(std::floor(box.max.x - inset)); ++x) {
+        for (int y = static_cast<int>(std::floor(box.min.y + inset)); y <= static_cast<int>(std::floor(box.max.y - inset)); ++y) {
             if (climbableInRow(world, content, {x, y, firstZ}, lastZ)) {
                 return true;
             }
@@ -184,10 +184,10 @@ bool clingsToWall(const QcBlockAccess &world, const QcAabb &box)
     // Not the floor it stands on: from a hair above its feet.
     const QcAabb feel{{box.min.x - clingReach, box.min.y + 0.01, box.min.z - clingReach},
                       {box.max.x + clingReach, top, box.max.z + clingReach}};
-    const int firstZ = int(std::floor(feel.min.z));
-    const int lastZ = int(std::floor(feel.max.z));
-    for (int x = int(std::floor(feel.min.x)); x <= int(std::floor(feel.max.x)); ++x) {
-        for (int y = int(std::floor(feel.min.y)); y <= int(std::floor(feel.max.y)); ++y) {
+    const int firstZ = static_cast<int>(std::floor(feel.min.z));
+    const int lastZ = static_cast<int>(std::floor(feel.max.z));
+    for (int x = static_cast<int>(std::floor(feel.min.x)); x <= static_cast<int>(std::floor(feel.max.x)); ++x) {
+        for (int y = static_cast<int>(std::floor(feel.min.y)); y <= static_cast<int>(std::floor(feel.max.y)); ++y) {
             if (solidInRow(world, feel, {x, y, firstZ}, lastZ)) {
                 return true;
             }
@@ -217,12 +217,12 @@ double slowdownInside(const QcBlockAccess &world, const QcAabb &box)
 {
     constexpr double inset = 1e-3;
     const QcContentRegistry &content = world.content();
-    const int firstZ = int(std::floor(box.min.z + inset));
-    const int lastZ = int(std::floor(box.max.z - inset));
+    const int firstZ = static_cast<int>(std::floor(box.min.z + inset));
+    const int lastZ = static_cast<int>(std::floor(box.max.z - inset));
 
     double factor = 1.0;
-    for (int x = int(std::floor(box.min.x + inset)); x <= int(std::floor(box.max.x - inset)); ++x) {
-        for (int y = int(std::floor(box.min.y + inset)); y <= int(std::floor(box.max.y - inset)); ++y) {
+    for (int x = static_cast<int>(std::floor(box.min.x + inset)); x <= static_cast<int>(std::floor(box.max.x - inset)); ++x) {
+        for (int y = static_cast<int>(std::floor(box.min.y + inset)); y <= static_cast<int>(std::floor(box.max.y - inset)); ++y) {
             factor = std::min(factor, slowdownInRow(world, content, {x, y, firstZ}, lastZ));
         }
     }
@@ -446,7 +446,7 @@ void QcEntityMotion::stepFlying(const QcPlayerInput &input, const QcVec3 &wish, 
     const double liquid = inWater ? liquidFactorAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
     const double factor = liquid * inside;
     const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
-    const double vertical = double(int(input.jump) - int(input.sneak)) * flyVerticalSpeed * factor;
+    const double vertical = static_cast<double>(static_cast<int>(input.jump) - static_cast<int>(input.sneak)) * flyVerticalSpeed * factor;
     const double blend = std::min(1.0, flyAcceleration * dt);
     velocity.x += (wish.x * speed - velocity.x) * blend;
     velocity.z += (wish.z * speed - velocity.z) * blend;
@@ -469,10 +469,10 @@ void QcEntityMotion::stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, 
     climbing = false;
     slowed = false;
 
-    const double factor = double(std::clamp(input.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed))
-                          / double(QcPlayerInput::normalFlySpeed);
+    const double factor = static_cast<double>(std::clamp(input.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed))
+                          / static_cast<double>(QcPlayerInput::normalFlySpeed);
     const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
-    const double vertical = double(int(input.jump) - int(input.sneak)) * flyVerticalSpeed * factor;
+    const double vertical = static_cast<double>(static_cast<int>(input.jump) - static_cast<int>(input.sneak)) * flyVerticalSpeed * factor;
     const double blend = std::min(1.0, flyAcceleration * dt);
     velocity.x += (wish.x * speed - velocity.x) * blend;
     velocity.z += (wish.z * speed - velocity.z) * blend;
@@ -487,10 +487,10 @@ void QcEntityMotion::stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, 
 
 void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, QcMovement movement)
 {
-    const double yaw = qDegreesToRadians(double(input.yaw));
+    const double yaw = qDegreesToRadians(static_cast<double>(input.yaw));
     const QcVec3 forward{std::sin(yaw), 0.0, -std::cos(yaw)};
     const QcVec3 right{std::cos(yaw), 0.0, std::sin(yaw)};
-    QcVec3 wish = forward * std::clamp(double(input.forward), -1.0, 1.0) + right * std::clamp(double(input.strafe), -1.0, 1.0);
+    QcVec3 wish = forward * std::clamp(static_cast<double>(input.forward), -1.0, 1.0) + right * std::clamp(static_cast<double>(input.strafe), -1.0, 1.0);
     if (wish.length() > 1.0) {
         wish = wish.normalized();
     }
@@ -515,7 +515,7 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
     } else if (input.sprint && input.forward > 0.0f) {
         speed = sprintSpeed;
     }
-    speed *= std::clamp(double(input.speedFactor), 0.0, 4.0);
+    speed *= std::clamp(static_cast<double>(input.speedFactor), 0.0, 4.0);
 
     step({wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
 }

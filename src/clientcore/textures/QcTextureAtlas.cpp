@@ -56,12 +56,12 @@ qsizetype drawThreads(int requested, qsizetype tiles)
 // so ThreadSanitizer sees the hand-over (it does not see Qt's own waiting on macOS, nor QtConcurrent's).
 std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const QcTexturePackStack &packs, int tileSize, int threads)
 {
-    std::vector<Tile> tiles(std::size_t(definitions.size()));
+    std::vector<Tile> tiles(static_cast<std::size_t>(definitions.size()));
     const qsizetype jobs = drawThreads(threads, definitions.size());
     std::vector<std::atomic<bool>> done(static_cast<std::size_t>(jobs));
     const auto draw = [&definitions, &packs, &tiles, &done, tileSize, jobs](qsizetype first) {
         for (qsizetype i = first; i < definitions.size(); i += jobs) {
-            Tile &tile = tiles[std::size_t(i)];
+            Tile &tile = tiles[static_cast<std::size_t>(i)];
             QcResult<QcTextureSources::Resolved> resolved = QcTextureSources::resolve(definitions[i], packs, tileSize);
             if (!resolved) {
                 tile.problem = resolved.error();
@@ -70,7 +70,7 @@ std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const
             QcAlphaCoverage::fillTransparentColour(resolved->image);
             tile.resolved = std::move(*resolved);
         }
-        done[std::size_t(first)].store(true, std::memory_order_release);
+        done[static_cast<std::size_t>(first)].store(true, std::memory_order_release);
     };
 
     std::vector<std::unique_ptr<QThread>> helpers;
@@ -139,9 +139,9 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
     qsizetype index = 1;
     for (qsizetype i = 0; i < definitions.size(); ++i) {
         const QcTextureDefinition &definition = definitions[i];
-        const std::optional<QcTextureSources::Resolved> &resolved = tiles[std::size_t(i)].resolved;
+        const std::optional<QcTextureSources::Resolved> &resolved = tiles[static_cast<std::size_t>(i)].resolved;
         if (!resolved) {
-            atlas.m_problems.append(tiles[std::size_t(i)].problem);
+            atlas.m_problems.append(tiles[static_cast<std::size_t>(i)].problem);
             continue;
         }
         layout.place(level, index, resolved->image);
@@ -234,7 +234,7 @@ QImage QcTextureAtlas::tile(const QString &textureName, int maxSide) const
     const QImage &level = levelForTile(maxSide);
     const int size = m_tileSize * level.width() / std::max(1, image().width());
     const QRectF rect = uv(textureName);
-    const int x = int(std::lround(rect.x() * level.width()));
-    const int y = int(std::lround(rect.y() * level.height()));
+    const int x = static_cast<int>(std::lround(rect.x() * level.width()));
+    const int y = static_cast<int>(std::lround(rect.y() * level.height()));
     return level.copy(x, y, size, size);
 }

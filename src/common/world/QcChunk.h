@@ -22,12 +22,12 @@ public:
         if (y < 0 || y >= QcWorld::worldHeight) {
             return qcAirBlockId;
         }
-        return m_sections[std::size_t(y / QcWorld::sectionHeight)].block(x, y % QcWorld::sectionHeight, z);
+        return m_sections[static_cast<std::size_t>(y / QcWorld::sectionHeight)].block(x, y % QcWorld::sectionHeight, z);
     }
     void setBlock(int x, int y, int z, QcBlockId block);
 
-    const QcChunkSection &section(int index) const { return m_sections[std::size_t(index)]; }
-    QcChunkSection &section(int index) { return m_sections[std::size_t(index)]; }
+    const QcChunkSection &section(int index) const { return m_sections[static_cast<std::size_t>(index)]; }
+    QcChunkSection &section(int index) { return m_sections[static_cast<std::size_t>(index)]; }
 
     // Highest y whose block is not air, or -1 for an empty column at (x, z).
     int highestNonAir(int x, int z) const;

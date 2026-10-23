@@ -117,7 +117,7 @@ const QcVillage *QcVillages::nearest(QcBlockPos pos, double reach) const
     const QcVillage *best = nullptr;
     double bestDistance = reach;
     for (const QcVillage &village : m_villages) {
-        const double distance = std::hypot(double(village.centre.x - pos.x), double(village.centre.z - pos.z));
+        const double distance = std::hypot(static_cast<double>(village.centre.x - pos.x), static_cast<double>(village.centre.z - pos.z));
         if (distance <= bestDistance) {
             bestDistance = distance;
             best = &village;

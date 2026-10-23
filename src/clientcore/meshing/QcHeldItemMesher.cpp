@@ -56,7 +56,7 @@ public:
         , m_sprite(sprite)
         , m_place(place)
         , m_texels(sprite.shape.size())
-        , m_scale(sprite.size / double(m_texels))
+        , m_scale(sprite.size / static_cast<double>(m_texels))
     {
     }
 
@@ -105,10 +105,10 @@ private:
 
     void addSide(QPoint texel, Edge edge, const QcVec3 &outward, float shade) const
     {
-        const std::array<QcVec3, 4> corners = {{{double(edge.x0), double(edge.y0), -0.5},
-                                                {double(edge.x1), double(edge.y1), -0.5},
-                                                {double(edge.x1), double(edge.y1), 0.5},
-                                                {double(edge.x0), double(edge.y0), 0.5}}};
+        const std::array<QcVec3, 4> corners = {{{static_cast<double>(edge.x0), static_cast<double>(edge.y0), -0.5},
+                                                {static_cast<double>(edge.x1), static_cast<double>(edge.y1), -0.5},
+                                                {static_cast<double>(edge.x1), static_cast<double>(edge.y1), 0.5},
+                                                {static_cast<double>(edge.x0), static_cast<double>(edge.y0), 0.5}}};
         addFace(corners, outward, shade, texel);
     }
 
@@ -134,11 +134,11 @@ private:
             const QcVec3 world = m_place(local(corners[i]));
             const QPointF at = texel ? QPointF(texel->x() + 0.5, texel->y() + 0.5) : QPointF(corners[i].x, corners[i].y);
             QcEntityVertex &vertex = quad[i];
-            vertex.x = float(world.x);
-            vertex.y = float(world.y);
-            vertex.z = float(world.z);
-            vertex.u = float(rect.left() + rect.width() * at.x() / m_texels);
-            vertex.v = float(rect.top() + rect.height() * at.y() / m_texels);
+            vertex.x = static_cast<float>(world.x);
+            vertex.y = static_cast<float>(world.y);
+            vertex.z = static_cast<float>(world.z);
+            vertex.u = static_cast<float>(rect.left() + rect.width() * at.x() / m_texels);
+            vertex.v = static_cast<float>(rect.top() + rect.height() * at.y() / m_texels);
             vertex.shade = shade;
             vertex.skyLight = m_sprite.light.sky;
             vertex.blockLight = m_sprite.light.block;

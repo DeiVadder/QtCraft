@@ -26,7 +26,7 @@ Tops tops(const QcChunk &blocks, const QcLightTable &table)
     Tops result{};
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            result[std::size_t(QcLightCells::columnIndex(lx, lz))] = qint16(columnTop(blocks, table, lx, lz));
+            result[static_cast<std::size_t>(QcLightCells::columnIndex(lx, lz))] = static_cast<qint16>(columnTop(blocks, table, lx, lz));
         }
     }
     return result;
@@ -37,7 +37,7 @@ std::unique_ptr<QcLightNibbles> sectionCells(const Tops &tops, int low, int high
     auto cells = std::make_unique<QcLightNibbles>(0);
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = tops[std::size_t(QcLightCells::columnIndex(lx, lz))];
+            const int top = tops[static_cast<std::size_t>(QcLightCells::columnIndex(lx, lz))];
             for (int y = std::max(low, top + 1); y <= high; ++y) {
                 cells->setLevel(QcChunkSection::index(lx, y - low, lz), QcLightTable::maxLevel);
             }

@@ -11,9 +11,9 @@ QcMsg::AdminSample folded(const QList<QcMsg::AdminSample> &minute)
     const auto mean = [&minute](float QcMsg::AdminSample::*field) {
         double sum = 0.0;
         for (const QcMsg::AdminSample &sample : minute) {
-            sum += double(sample.*field);
+            sum += static_cast<double>(sample.*field);
         }
-        return float(sum / double(minute.size()));
+        return static_cast<float>(sum / static_cast<double>(minute.size()));
     };
     const auto highest = [&minute](float QcMsg::AdminSample::*field) {
         return std::ranges::max(minute, {}, field).*field;

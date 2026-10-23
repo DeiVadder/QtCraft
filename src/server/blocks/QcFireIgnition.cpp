@@ -71,8 +71,8 @@ void QcFireIgnition::blockUpdated(QcBlockPos pos, QcBlockId block)
 
     // Drawn from the seed, the position and the tick: the same world lights the same.
     const quint64 tick = m_state.clock().tick();
-    const QcFireRules::Dice dice{quint64(m_state.config().seed), pos, int(tick % 0x7FFFFFFFu)};
-    if (dice.roll(pos, SparkSalt, QcFireDefinition::maxChance) >= quint32(sparks)) {
+    const QcFireRules::Dice dice{static_cast<quint64>(m_state.config().seed), pos, static_cast<int>(tick % 0x7FFFFFFFu)};
+    if (dice.roll(pos, SparkSalt, QcFireDefinition::maxChance) >= static_cast<quint32>(sparks)) {
         return;
     }
 
@@ -99,9 +99,9 @@ int QcFireIgnition::lightning(QcBlockPos pos, int sparks)
     int lit = m_fire.ignite(pos) ? 1 : 0;
     // Drawn from the seed, the position and the tick: the same world lights the same.
     const quint64 tick = m_state.clock().tick();
-    const QcFireRules::Dice dice{quint64(m_state.config().seed), pos, int(tick % 0x7FFFFFFFu)};
+    const QcFireRules::Dice dice{static_cast<quint64>(m_state.config().seed), pos, static_cast<int>(tick % 0x7FFFFFFFu)};
     for (int spark = 1; spark < sparks; ++spark) {
-        const int cell = int(dice.roll(pos, LightningSalt + quint32(spark), 27));
+        const int cell = static_cast<int>(dice.roll(pos, LightningSalt + static_cast<quint32>(spark), 27));
         const QcBlockPos near = pos.offset(cell % 3 - 1, cell / 3 % 3 - 1, cell / 9 - 1);
         lit += m_fire.ignite(near) ? 1 : 0;
     }

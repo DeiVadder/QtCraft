@@ -17,7 +17,7 @@ namespace {
 // The direction a yaw faces along the nearer axis: 0 north, 1 east, 2 south, 3 west.
 int quarterOf(double yaw)
 {
-    return int(std::lround(yaw / 90.0)) & 3;
+    return static_cast<int>(std::lround(yaw / 90.0)) & 3;
 }
 
 // Whether a crumbled block may take the cell: air, a replaceable block or flowing liquid, never a
@@ -154,5 +154,5 @@ QcBlockId QcCrumbling::headFacing(QcBlockId head, double yaw) const
     if (content.property(head, u"facing"_s).isEmpty()) {
         return head;
     }
-    return content.withProperty(head, u"facing"_s, facings[std::size_t(quarterOf(yaw))]);
+    return content.withProperty(head, u"facing"_s, facings[static_cast<std::size_t>(quarterOf(yaw))]);
 }

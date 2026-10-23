@@ -82,7 +82,7 @@ void QcChunkLoading::loadGroupNow(QcChunkPos pos)
 
 int QcChunkLoading::groupLimit() const
 {
-    return int(std::max<qint64>(1, m_state.config().limits.chunkGroupLimit));
+    return static_cast<int>(std::max<qint64>(1, m_state.config().limits.chunkGroupLimit));
 }
 
 std::optional<quint16> QcChunkLoading::marksForLoading(QcChunkPos pos) const
@@ -276,7 +276,7 @@ void QcChunkLoading::forKeptChunks(Visit visit) const
     for (const QcChunkPos &chunk : std::as_const(m_state.info().forcedChunks)) {
         visit(chunk);
     }
-    const QList<QcChunkPos> loaders = m_state.world().loaders().chunks(qsizetype(m_state.config().limits.chunkLoaders));
+    const QList<QcChunkPos> loaders = m_state.world().loaders().chunks(static_cast<qsizetype>(m_state.config().limits.chunkLoaders));
     for (const QcChunkPos &chunk : loaders) {
         visit(chunk);
     }
@@ -286,9 +286,9 @@ void QcChunkLoading::updateTickets()
 {
     const quint64 now = m_state.clock().tick();
     QcChunkTickets::Limits limits;
-    limits.perTick = qsizetype(m_state.config().limits.chunkTicketsPerTick);
-    limits.total = qsizetype(m_state.config().limits.chunkTickets);
-    limits.ticks = quint64(m_state.config().limits.chunkTicketTicks);
+    limits.perTick = static_cast<qsizetype>(m_state.config().limits.chunkTicketsPerTick);
+    limits.total = static_cast<qsizetype>(m_state.config().limits.chunkTickets);
+    limits.ticks = static_cast<quint64>(m_state.config().limits.chunkTicketTicks);
     m_tickets.setLimits(limits);
     const QSet<QcChunkPos> holding = m_signals.waitingChunks();
     const QSet<QcChunkPos> passing = m_signals.chunksWithSignals();
@@ -414,7 +414,7 @@ QSet<QcChunkPos> QcChunkLoading::leavingGroups(const QSet<QcChunkPos> &candidate
 {
     // A group leaves only as a whole, when none of its chunks is needed (decision E-375).
     const auto loadedMarks = [this](QcChunkPos chunk) { return this->loadedMarks(chunk); };
-    const qsizetype budget = qsizetype(m_state.config().limits.chunkUnloadsPerTick);
+    const qsizetype budget = static_cast<qsizetype>(m_state.config().limits.chunkUnloadsPerTick);
     QSet<QcChunkPos> decided;
     QSet<QcChunkPos> leaving;
     const QList<QcChunkPos> ordered = sorted(candidates);

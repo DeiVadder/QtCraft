@@ -117,7 +117,7 @@ private:
     {
         // Standard error is read along, so a chatty bot never blocks on a full pipe.
         m_errors += QString::fromUtf8(m_process.readAllStandardError());
-        m_errors = m_errors.right(qsizetype(64) * 1024);
+        m_errors = m_errors.right(qsizetype{64} * 1024);
         m_buffer += m_process.readAllStandardOutput();
         for (qsizetype end = m_buffer.indexOf('\n'); end >= 0; end = m_buffer.indexOf('\n')) {
             const QJsonObject line = QJsonDocument::fromJson(m_buffer.left(end)).object();

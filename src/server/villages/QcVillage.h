@@ -97,11 +97,11 @@ struct QcVillage
     // bit 61) never look so, and no id is 0 (no village).
     static qint64 settlementId(QcBlockPos first)
     {
-        constexpr qint64 horizontal = qint64(1) << 25;
-        const auto x = quint64(first.x + horizontal) & ((quint64(1) << 26) - 1);
-        const auto z = quint64(first.z + horizontal) & ((quint64(1) << 26) - 1);
-        const auto y = quint64(first.y) & ((quint64(1) << 10) - 1);
-        return qint64((quint64(1) << 62) | (x << 36) | (z << 10) | y);
+        constexpr qint64 horizontal = qint64{1} << 25;
+        const auto x = static_cast<quint64>(first.x + horizontal) & ((quint64{1} << 26) - 1);
+        const auto z = static_cast<quint64>(first.z + horizontal) & ((quint64{1} << 26) - 1);
+        const auto y = static_cast<quint64>(first.y) & ((quint64{1} << 10) - 1);
+        return static_cast<qint64>((quint64{1} << 62) | (x << 36) | (z << 10) | y);
     }
     static bool isSettlement(qint64 id) { return id > 0 && (id >> 62) == 1; }
     bool settlement() const { return isSettlement(id); }

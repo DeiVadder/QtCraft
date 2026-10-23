@@ -55,7 +55,7 @@ int liveTextures()
 {
     const QMutexLocker locker(&mutex);
     dropExpired();
-    return int(entries.size());
+    return static_cast<int>(entries.size());
 }
 
 } // namespace QcPreviewAtlasCache

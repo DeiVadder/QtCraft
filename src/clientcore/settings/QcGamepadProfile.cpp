@@ -26,7 +26,7 @@ QcGamepadMapping::Bindings loadBindings(const QSettings &file, const QString &pr
     using QcGamepadMapping::Action;
     QcGamepadMapping::Bindings bindings;
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
-        const auto action = Action(index);
+        const auto action = static_cast<Action>(index);
         if (!QcGamepadMapping::rebindable(action)) {
             continue;
         }
@@ -94,7 +94,7 @@ void QcGamepadProfile::save(QSettings &file, const QString &prefix) const
     file.setValue(prefix + u"/triggerThreshold"_s, triggerThreshold);
     file.setValue(prefix + u"/vibration"_s, vibration);
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
-        const auto action = QcGamepadMapping::Action(index);
+        const auto action = static_cast<QcGamepadMapping::Action>(index);
         if (!QcGamepadMapping::rebindable(action)) {
             continue;
         }

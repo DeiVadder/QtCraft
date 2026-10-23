@@ -60,7 +60,7 @@ const Rule *find(QStringView name)
 
 qint64 value(const Rule &rule, const QcWorldInfo &info)
 {
-    return rule.flag ? qint64(info.*(rule.flag)) : qint64(info.*(rule.number));
+    return rule.flag ? static_cast<qint64>(info.*(rule.flag)) : static_cast<qint64>(info.*(rule.number));
 }
 
 } // namespace QcGameRules

@@ -70,7 +70,7 @@ private:
         client.hello(u"Tester"_s);
         QcTestUtil::pump();
         for (int i = 0; i < 40; ++i) {
-            client.connection.send(QcMsg::PlayerInput{QcPlayerInput{.sequence = quint32(i + 1)}});
+            client.connection.send(QcMsg::PlayerInput{QcPlayerInput{.sequence = static_cast<quint32>(i + 1)}});
             server.tick();
             QcTestUtil::pump();
         }

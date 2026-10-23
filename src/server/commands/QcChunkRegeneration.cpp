@@ -40,7 +40,7 @@ int QcChunkRegeneration::regenerate(const QList<QcChunkPos> &chunks)
 
     liftPlayers(done);
     removeBuriedCreatures(done);
-    return int(done.size());
+    return static_cast<int>(done.size());
 }
 
 void QcChunkRegeneration::dropPendingChanges(QcChunkPos chunk)

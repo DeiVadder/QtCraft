@@ -21,9 +21,9 @@ QcPathPlanner::QcPathPlanner(const QcContentRegistry &content)
 
 void QcPathPlanner::setLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength)
 {
-    m_nodesPerTick = int(nodesPerTick);
-    m_nodesPerSearch = int(nodesPerSearch);
-    m_pathLength = int(pathLength);
+    m_nodesPerTick = static_cast<int>(nodesPerTick);
+    m_nodesPerSearch = static_cast<int>(nodesPerSearch);
+    m_pathLength = static_cast<int>(pathLength);
 }
 
 void QcPathPlanner::request(QcCreature &mob)
@@ -44,7 +44,7 @@ int QcPathPlanner::nodesFor(const QcCreature &mob) const
     // villager on the ground under its stilt house has to go round the whole underside to the
     // stairs, while the closest cell to its bed lies straight below it.
     const int widened = search << std::min(mob.path.failures, maxWidening);
-    return int(std::min<qint64>(widened, m_nodesPerTick));
+    return static_cast<int>(std::min<qint64>(widened, m_nodesPerTick));
 }
 
 void QcPathPlanner::serve(const QcBlockAccess &world, std::span<QcCreature> mobs, const std::function<QcPathRules(const QcCreature &)> &rulesOf)

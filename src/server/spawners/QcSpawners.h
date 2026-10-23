@@ -40,7 +40,7 @@ public:
 
     explicit QcSpawners(const QcContentRegistry &content);
 
-    bool isSpawner(QcBlockId block) const { return std::size_t(block) < m_spawner.size() && m_spawner[std::size_t(block)]; }
+    bool isSpawner(QcBlockId block) const { return static_cast<std::size_t>(block) < m_spawner.size() && m_spawner[static_cast<std::size_t>(block)]; }
 
     // The block at `pos` changed from `before` to `after` (QcServerWorld::setBlock).
     void noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after);

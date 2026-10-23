@@ -47,7 +47,7 @@ private:
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
         m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
-        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 31 + jitterMs));
+        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 31 + jitterMs));
         m_link = link.get();
         m_session = std::make_unique<QcClientSession>(std::move(link), u"Player"_s);
         m_session->start();
@@ -77,7 +77,7 @@ private:
         [[maybe_unused]] const bool finished = QTest::qWaitFor([&] { return tick >= ticks; }, timeoutMs);
         disconnect(connection);
         m_session->setIntent({});
-        m_lastMsPerTick = tick > 0 ? double(elapsed.elapsed()) / tick : 0.0;
+        m_lastMsPerTick = tick > 0 ? static_cast<double>(elapsed.elapsed()) / tick : 0.0;
         return mostPending;
     }
 
@@ -104,8 +104,8 @@ private:
             return -1.0;
         }
         m_session->setMining(false);
-        qInfo("mined %s in %lld ms", qPrintable(m_content->block(block).name), qlonglong(timer.elapsed()));
-        return double(timer.elapsed()) / 1000.0;
+        qInfo("mined %s in %lld ms", qPrintable(m_content->block(block).name), static_cast<qlonglong>(timer.elapsed()));
+        return static_cast<double>(timer.elapsed()) / 1000.0;
     }
 
 private slots:
@@ -138,14 +138,14 @@ private slots:
             input.strafe = tick % 40 < 20 ? 0.0f : 0.5f;
             input.sprint = tick >= 30;
             input.jump = tick % 15 == 0;
-            input.yaw = float(tick * 3 % 360);
+            input.yaw = static_cast<float>(tick * 3 % 360);
             return input;
         });
         QTest::qWait(2 * (delayMs + jitterMs) + 200);
 
         // Every server state matched the prediction it answered: no correction, so no jump on screen.
         qInfo("largest correction %.6f m, most pending inputs %lld, largest one-way delay %lld ms", m_session->prediction().largestCorrection(),
-              qlonglong(mostPending), qlonglong(m_link->largestDelayMs()));
+              static_cast<qlonglong>(mostPending), static_cast<qlonglong>(m_link->largestDelayMs()));
         QVERIFY2(m_session->prediction().largestCorrection() < 1e-6, qPrintable(QString::number(m_session->prediction().largestCorrection())));
         // The client sends an input every tick, also standing still: a round trip of them waits.
         QVERIFY(m_session->prediction().pendingInputCount() <= (2 * (delayMs + jitterMs)) / 50 + 3);
@@ -218,7 +218,7 @@ private slots:
         }
         QTRY_COMPARE_WITH_TIMEOUT(m_session->world()->blockAt(target), std::optional<QcBlockId>(dirt), timeoutMs);
         QTRY_VERIFY_WITH_TIMEOUT(settled(), timeoutMs);
-        qInfo("placed and confirmed after %lld ms", qlonglong(timer.elapsed()));
+        qInfo("placed and confirmed after %lld ms", static_cast<qlonglong>(timer.elapsed()));
         QVERIFY(timer.elapsed() >= qint64(2) * delayMs);
         QVERIFY(timer.elapsed() <= roundTripMs + 250);
         QCOMPARE(m_session->world()->blockAt(target), std::optional<QcBlockId>(dirt));

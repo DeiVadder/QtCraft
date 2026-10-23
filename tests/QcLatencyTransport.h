@@ -57,8 +57,8 @@ private:
     void schedule(std::deque<Pending> &queue, const QByteArray &frame)
     {
         const qint64 now = m_clock.elapsed();
-        const qint64 jitter = m_jitterMs > 0 ? qint64(m_random.bounded(m_jitterMs + 1)) : 0;
-        const qint64 due = std::max(now + m_delayMs + jitter, queue.empty() ? qint64(0) : queue.back().dueMs);
+        const qint64 jitter = m_jitterMs > 0 ? static_cast<qint64>(m_random.bounded(m_jitterMs + 1)) : 0;
+        const qint64 due = std::max(now + m_delayMs + jitter, queue.empty() ? qint64{0} : queue.back().dueMs);
         queue.push_back({due, now, frame});
     }
 

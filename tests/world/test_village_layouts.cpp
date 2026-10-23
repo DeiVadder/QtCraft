@@ -29,7 +29,7 @@ private:
 
     using Plans = QList<std::shared_ptr<const QcVillagePlan>>;
 
-    static qint64 key(int x, int z) { return (qint64(x) << 32) | quint32(z); }
+    static qint64 key(int x, int z) { return (static_cast<qint64>(x) << 32) | static_cast<quint32>(z); }
 
     // The runs of each road (QcVillagePlan::Run::arm), in order.
     static QList<QList<QcVillagePlan::Run>> armsOf(const QcVillagePlan &plan)
@@ -169,8 +169,8 @@ private slots:
             QStringList shares;
             for (const QcVillageLayout &layout : style->layouts) {
                 const QString kind = QcVillageLayoutParser::kindName(layout.kind);
-                const double share = double(counts[it.key()].value(kind)) / double(it.value());
-                const double expected = double(layout.weight) / double(weights);
+                const double share = static_cast<double>(counts[it.key()].value(kind)) / static_cast<double>(it.value());
+                const double expected = static_cast<double>(layout.weight) / static_cast<double>(weights);
                 shares.append(u"%1 %2/%3"_s.arg(kind).arg(share, 0, 'f', 2).arg(expected, 0, 'f', 2));
                 seen.insert(kind);
                 // Only styles with at least 60 villages in the sample. The tolerance of 0.1 is about
@@ -198,7 +198,7 @@ private slots:
         QHash<QString, int> roads;
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
             if (plan->style != u"qtcraft:swamp"_s) {
-                pieces[plan->layout].append(int(plan->pieces.size()));
+                pieces[plan->layout].append(static_cast<int>(plan->pieces.size()));
                 roads[plan->layout] += plan->roadLength;
             }
         }
@@ -209,7 +209,7 @@ private slots:
             for (const int count : it.value()) {
                 sum += count;
             }
-            means.insert(it.key(), double(sum) / double(it.value().size()));
+            means.insert(it.key(), static_cast<double>(sum) / static_cast<double>(it.value().size()));
             lines.append(u"%1 %2 (%3 per 100 blocks)"_s.arg(it.key()).arg(means.value(it.key()), 0, 'f', 1).arg(100.0 * sum / roads.value(it.key()), 0, 'f', 1));
         }
         lines.sort();
@@ -373,7 +373,7 @@ private slots:
         std::ranges::sort(lengths);
         const auto large = std::ranges::count_if(lengths, [](int length) { return length >= 200; });
         qInfo("road length: median %d, 90 %% %d, largest %d; %d of %d at least 200", lengths[lengths.size() / 2],
-              lengths[lengths.size() * 9 / 10], lengths.back(), int(large), int(lengths.size()));
+              lengths[lengths.size() * 9 / 10], lengths.back(), static_cast<int>(large), static_cast<int>(lengths.size()));
         QVERIFY(large >= 1 && large * 4 <= lengths.size());
     }
 

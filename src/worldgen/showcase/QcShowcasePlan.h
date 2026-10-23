@@ -59,6 +59,6 @@ struct QcShowcasePlan
     // The areas' points of interest (QcShowcaseArea::pointsOfInterest) by chunk, in their order.
     QHash<QcChunkPos, QList<QcBlockPos>> pointsOfInterestByChunk;
 
-    int groundTop() const { return int(groundColumn.size()) - 1; }
+    int groundTop() const { return static_cast<int>(groundColumn.size()) - 1; }
     qsizetype labelCount() const;
 };

@@ -66,7 +66,7 @@ bool QcServerExplosions::lightBlock(QcBlockPos pos, QcBlockId block, int fuse)
     }
 
     // The hop to the side by dice, so the same world lights the same.
-    const QcFireRules::Dice dice{quint64(m_state.config().seed), pos, 0};
+    const QcFireRules::Dice dice{static_cast<quint64>(m_state.config().seed), pos, 0};
     const double sideways = 2.0 * std::numbers::pi * dice.roll(pos, HopSalt, hopSteps) / hopSteps;
     explosives.prime(pos, block, std::max(1, fuse), m_state.entities().newId(), sideways);
     ++m_numbers.lit;
@@ -77,34 +77,34 @@ bool QcServerExplosions::lightBlock(QcBlockPos pos, QcBlockId block, int fuse)
 int QcServerExplosions::chainFuse(QcBlockPos pos, QcBlockId block) const
 {
     const QcBlastDefinition &blast = m_table.blast(block);
-    const QcFireRules::Dice dice{quint64(m_state.config().seed), pos, 1};
-    const auto spread = quint32(blast.chainFuseMax - blast.chainFuseMin + 1);
-    return blast.chainFuseMin + int(dice.roll(pos, ChainSalt, spread));
+    const QcFireRules::Dice dice{static_cast<quint64>(m_state.config().seed), pos, 1};
+    const auto spread = static_cast<quint32>(blast.chainFuseMax - blast.chainFuseMin + 1);
+    return blast.chainFuseMin + static_cast<int>(dice.roll(pos, ChainSalt, spread));
 }
 
 void QcServerExplosions::explode(const Blast &blast)
 {
     ++m_numbers.explosions;
     const QcBlockPos centre = QcPhysics::blockContaining(blast.centre);
-    const int radius = std::max(QcExplosionRays::reach(blast.power), int(std::ceil(QcExplosionRays::reachFactor * blast.power)) + 1);
+    const int radius = std::max(QcExplosionRays::reach(blast.power), static_cast<int>(std::ceil(QcExplosionRays::reachFactor * blast.power)) + 1);
     QcBlastField field(m_state.world(), m_table, centre, radius);
 
     if (blast.breaksBlocks) {
-        const QcExplosionRays::Blast rays{blast.centre, blast.power, quint64(m_state.config().seed)};
-        const qsizetype limit = qsizetype(m_state.config().limits.explosionBlocks);
+        const QcExplosionRays::Blast rays{blast.centre, blast.power, static_cast<quint64>(m_state.config().seed)};
+        const qsizetype limit = static_cast<qsizetype>(m_state.config().limits.explosionBlocks);
         m_blocks.add(QcExplosionRays::broken(field, rays, limit), {centre, 1.0 / blast.power, blast.fire});
     }
 
     const QcBlastBodies::Hits hits = m_bodies.hurt(field, blast.centre, blast.power);
-    m_numbers.playersHit += quint64(hits.players);
-    m_numbers.creaturesHit += quint64(hits.creatures);
+    m_numbers.playersHit += static_cast<quint64>(hits.players);
+    m_numbers.creaturesHit += static_cast<quint64>(hits.creatures);
     announce(blast);
 }
 
 void QcServerExplosions::announce(const Blast &blast)
 {
     m_sounds.play(QString::fromLatin1(QcSoundKeys::explosion), blast.centre);
-    const QcMsg::Explosion message{blast.centre, float(blast.power)};
+    const QcMsg::Explosion message{blast.centre, static_cast<float>(blast.power)};
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && (client->motion.position - blast.centre).length() <= viewDistance) {
             client->connection->send(message);
@@ -120,8 +120,9 @@ void QcServerExplosions::tick()
         return;
     }
 
-    const QList<QcPrimedExplosive> due = explosives.tick(m_state.world(), QcPhysics::tickDuration, qsizetype(limits.explosionsPerTick));
-    m_numbers.waited += quint64(std::ranges::count_if(explosives.all(), [](const QcPrimedExplosive &primed) { return primed.fuse == 0 && !primed.dormant; }));
+    const QList<QcPrimedExplosive> due = explosives.tick(m_state.world(), QcPhysics::tickDuration, static_cast<qsizetype>(limits.explosionsPerTick));
+    m_numbers.waited += static_cast<quint64>(std::ranges::count_if(explosives.all(),
+        [](const QcPrimedExplosive &primed) { return primed.fuse == 0 && !primed.dormant; }));
     for (const QcPrimedExplosive &primed : due) {
         const QcBlastDefinition &definition = m_table.blast(primed.block);
         const QcVec3 centre = primed.motion.position + QcVec3{0.0, QcPrimedExplosives::size * 0.5, 0.0};

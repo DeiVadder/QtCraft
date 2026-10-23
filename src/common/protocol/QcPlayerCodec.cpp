@@ -99,7 +99,7 @@ void encode(QDataStream &stream, QcMsg::PlayerExperience m)
 
 void encode(QDataStream &stream, const QcMsg::GameMode &m)
 {
-    stream << quint8(m.mode);
+    stream << static_cast<quint8>(m.mode);
     m.adventure.write(stream);
 }
 
@@ -116,7 +116,7 @@ void encode(QDataStream &stream, QcMsg::PickBlock m)
 
 void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 {
-    stream << quint8(m.action);
+    stream << static_cast<quint8>(m.action);
 }
 
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
@@ -320,10 +320,10 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 {
     quint8 action = 0;
     stream >> action;
-    if (action > quint8(QcMsg::DrawLauncher::Action::Cancel)) {
+    if (action > static_cast<quint8>(QcMsg::DrawLauncher::Action::Cancel)) {
         return qcError(u"Unknown launcher action %1"_s.arg(action));
     }
-    return QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action(action)};
+    return QcMsg::DrawLauncher{static_cast<QcMsg::DrawLauncher::Action>(action)};
 }
 
 } // namespace QcProtocolCodec

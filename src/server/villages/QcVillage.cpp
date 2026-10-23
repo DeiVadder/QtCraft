@@ -26,8 +26,8 @@ QJsonArray position(QcBlockPos pos)
         return std::nullopt;
     }
     const QcBlockPos pos{array[0].toInt(), array[1].toInt(), array[2].toInt()};
-    if (!pos.isInsideWorldHeight() || std::abs(qint64(pos.x)) > QcWorld::maxHorizontalBlock
-        || std::abs(qint64(pos.z)) > QcWorld::maxHorizontalBlock) {
+    if (!pos.isInsideWorldHeight() || std::abs(static_cast<qint64>(pos.x)) > QcWorld::maxHorizontalBlock
+        || std::abs(static_cast<qint64>(pos.z)) > QcWorld::maxHorizontalBlock) {
         return std::nullopt;
     }
     return pos;

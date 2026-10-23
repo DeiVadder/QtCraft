@@ -49,7 +49,7 @@ QcChunkIo::Arrival QcChunkIo::decodeChunk(QcChunkPos pos)
     }
     arrival.marks = blobs->marks;
     const auto &data = blobs->data;
-    if (const auto &blocks = data[std::size_t(Kind::Blocks)]) {
+    if (const auto &blocks = data[static_cast<std::size_t>(Kind::Blocks)]) {
         QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*blocks, pos, *m_content, m_warnings);
         if (!chunk) {
             arrival.error = u"blocks of chunk %1, %2: %3"_s.arg(pos.x).arg(pos.z).arg(chunk.error());
@@ -57,7 +57,7 @@ QcChunkIo::Arrival QcChunkIo::decodeChunk(QcChunkPos pos)
         }
         arrival.blocks = std::move(*chunk);
     }
-    if (const auto &entries = data[std::size_t(Kind::BlockEntities)]) {
+    if (const auto &entries = data[static_cast<std::size_t>(Kind::BlockEntities)]) {
         QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*entries, pos, *m_content, m_warnings);
         if (!record) {
             arrival.error = record.error();
@@ -66,7 +66,7 @@ QcChunkIo::Arrival QcChunkIo::decodeChunk(QcChunkPos pos)
         arrival.blockEntities = std::move(*record);
     }
     arrival.blockEntities.chunk = pos;
-    if (const auto &entities = data[std::size_t(Kind::Entities)]) {
+    if (const auto &entities = data[static_cast<std::size_t>(Kind::Entities)]) {
         QcResult<QcEntityRecord> record = QcEntityCodec::decode(*entities, pos, *m_content, m_warnings);
         if (!record) {
             arrival.error = record.error();
@@ -191,7 +191,7 @@ QcResult<std::optional<QByteArray>> QcChunkIo::readFileNow(const QString &name)
     if (!file.open(QIODevice::ReadOnly)) {
         return qcError(u"Cannot open %1: %2"_s.arg(file.fileName(), file.errorString()));
     }
-    return std::optional<QByteArray>(file.read(qint64(64) * 1024 * 1024));
+    return std::optional<QByteArray>(file.read(qint64{64} * 1024 * 1024));
 }
 
 void QcChunkIo::keep(Departure departure)

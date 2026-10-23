@@ -33,7 +33,7 @@ bool QcOpeners::toggle(QcBlockPos pos, QcBlockId block)
     // Swinging shut (or open) must not trap anyone inside the new shape.
     QList<QcAabb> boxes;
     for (const auto &[at, state] : std::as_const(changes)) {
-        const QcVec3 corner{double(at.x), double(at.y), double(at.z)};
+        const QcVec3 corner{static_cast<double>(at.x), static_cast<double>(at.y), static_cast<double>(at.z)};
         for (const QcAabb &box : content.state(state).collision) {
             boxes.append(box.moved(corner));
         }

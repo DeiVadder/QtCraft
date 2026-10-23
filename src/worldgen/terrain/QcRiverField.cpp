@@ -101,8 +101,8 @@ quint64 QcRiverField::nextInstance()
 
 std::size_t QcRiverField::TopKeyHash::operator()(const TopKey &key) const
 {
-    const quint64 cell = (quint64(quint32(key.cellX)) << 32) | quint32(key.cellZ);
-    return std::size_t(qcMixSeed(key.field ^ cell, key.hill ? 1 : 2));
+    const quint64 cell = (static_cast<quint64>(static_cast<quint32>(key.cellX)) << 32) | static_cast<quint32>(key.cellZ);
+    return static_cast<std::size_t>(qcMixSeed(key.field ^ cell, key.hill ? 1 : 2));
 }
 
 QcRiverField::QcRiverField(quint64 seed)
@@ -280,7 +280,7 @@ double QcRiverField::ringFade(double startX, double startZ, double side) const
     // The search starts in the middle of a cell of topCell blocks: every column whose start lies
     // in the cell finds the same top, so the result is remembered per thread and field (a pure
     // function of the field, cell and side, so the order of generation does not matter).
-    const TopKey key{m_instance, int(std::floor(startX / topCell)), int(std::floor(startZ / topCell)), side > 0.0};
+    const TopKey key{m_instance, static_cast<int>(std::floor(startX / topCell)), static_cast<int>(std::floor(startZ / topCell)), side > 0.0};
     thread_local std::unordered_map<TopKey, double, TopKeyHash> remembered;
     if (const auto found = remembered.find(key); found != remembered.end()) {
         return found->second;

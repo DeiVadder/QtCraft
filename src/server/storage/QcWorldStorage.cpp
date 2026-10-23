@@ -32,8 +32,8 @@ constexpr qsizetype maxForcedChunks = 65536;
     for (const auto &entry : loaders) {
         const QJsonObject loader = entry.toObject();
         const QcBlockPos pos{loader.value(u"x"_s).toInt(), loader.value(u"y"_s).toInt(), loader.value(u"z"_s).toInt()};
-        if (result.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(qint64(pos.x)) <= QcWorld::maxHorizontalBlock
-            && std::abs(qint64(pos.z)) <= QcWorld::maxHorizontalBlock) {
+        if (result.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(pos.x)) <= QcWorld::maxHorizontalBlock
+            && std::abs(static_cast<qint64>(pos.z)) <= QcWorld::maxHorizontalBlock) {
             result.append({pos, loader.value(u"owner"_s).toString().left(64)});
         }
     }
@@ -48,8 +48,8 @@ constexpr qsizetype maxForcedChunks = 65536;
     for (const auto &entry : forced) {
         const QJsonArray pair = entry.toArray();
         const QcChunkPos chunk{pair.at(0).toInt(), pair.at(1).toInt()};
-        if (result.size() < maxForcedChunks && pair.size() == 2 && std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk
-            && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk && !result.contains(chunk)) {
+        if (result.size() < maxForcedChunks && pair.size() == 2 && std::abs(static_cast<qint64>(chunk.x)) <= QcWorld::maxHorizontalChunk
+            && std::abs(static_cast<qint64>(chunk.z)) <= QcWorld::maxHorizontalChunk && !result.contains(chunk)) {
             result.append(chunk);
         }
     }
@@ -71,7 +71,7 @@ int QcWorldStorage::storedFormatVersion() const
     if (!file.open(QIODevice::ReadOnly)) {
         return 0;
     }
-    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64(1024) * 1024));
+    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64{1024} * 1024));
     return document.isObject() ? document.object().value(u"formatVersion"_s).toInt() : 0;
 }
 
@@ -104,7 +104,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     }
 
     QJsonParseError error{};
-    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64(1024) * 1024), &error);
+    const QJsonDocument document = QJsonDocument::fromJson(file.read(qint64{1024} * 1024), &error);
     if (error.error != QJsonParseError::NoError || !document.isObject()) {
         const QString reason = error.error != QJsonParseError::NoError ? error.errorString() : u"not a JSON object"_s;
         return qcError(u"%1 is damaged: %2"_s.arg(path, reason));
@@ -139,7 +139,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     bool idOk = false;
     info.nextCreatureId = json.value(u"nextCreatureId"_s).toString().toULongLong(&idOk);
     // Worlds without the field start at 1 (the map files raise it, QcServerPersistence::openMaps).
-    info.nextMapId = quint32(std::clamp<qint64>(json.value(u"nextMapId"_s).toInteger(1), 1, qint64(1) << 31));
+    info.nextMapId = static_cast<quint32>(std::clamp<qint64>(json.value(u"nextMapId"_s).toInteger(1), 1, qint64{1} << 31));
     info.chunkLoaders = chunkLoadersOf(json);
     info.forcedChunks = forcedChunksOf(json);
 
@@ -174,7 +174,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                            {u"worldTime"_s, info.worldTime},
                            // As a string like the seed.
                            {u"nextCreatureId"_s, QString::number(info.nextCreatureId)},
-                           {u"nextMapId"_s, qint64(info.nextMapId)},
+                           {u"nextMapId"_s, static_cast<qint64>(info.nextMapId)},
                            {u"defaultGameMode"_s, info.unknownGameMode.isEmpty() ? QString(QcGameModes::name(info.defaultGameMode)) : info.unknownGameMode},
                            {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
                            {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},
@@ -230,7 +230,7 @@ QcStatus QcWorldStorage::writeInfo(const QcWorldInfo &info) const
 
 QcResult<std::optional<QByteArray>> QcWorldStorage::blockUpdatesBytes(const QList<QcBlockPos> &positions)
 {
-    if (positions.size() > qsizetype(maxStoredBlockUpdates)) {
+    if (positions.size() > static_cast<qsizetype>(maxStoredBlockUpdates)) {
         return qcError(u"Too many pending block updates to save (%1, at most %2)"_s.arg(positions.size()).arg(maxStoredBlockUpdates));
     }
     if (positions.isEmpty()) {
@@ -241,9 +241,9 @@ QcResult<std::optional<QByteArray>> QcWorldStorage::blockUpdatesBytes(const QLis
     QByteArray payload;
     QDataStream stream(&payload, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    stream << quint32(positions.size());
+    stream << static_cast<quint32>(positions.size());
     for (const QcBlockPos &pos : positions) {
-        stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z);
+        stream << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z);
     }
     return std::optional<QByteArray>(QcSaveFile::bytes(blockUpdatesMagic, payload));
 }

@@ -5,6 +5,7 @@
 #include "app/preview/QcPreviewAtlasCache.h"
 #include "app/rendering/QcAtlasTexture.h"
 #include "app/rendering/QcRenderPipelines.h"
+#include "common/core/QcDowncast.h"
 
 
 #include <algorithm>
@@ -71,7 +72,7 @@ void QcCharacterPreviewRenderer::initialize(QRhiCommandBuffer *commandBuffer)
 
 void QcCharacterPreviewRenderer::synchronize(QQuickRhiItem *item)
 {
-    const auto *preview = static_cast<QcCharacterPreview *>(item);
+    const auto *preview = qcDowncast<QcCharacterPreview>(item);
     m_mesh = preview->m_mesh;
     m_camera = preview->m_viewCamera;
     if (preview->m_atlasVersion != m_atlasVersion) {
@@ -130,8 +131,8 @@ void QcCharacterPreviewRenderer::uploadMesh(QRhiResourceUpdateBatch *updates)
         return;
     }
 
-    const auto vertexBytes = quint32(m_mesh->vertices.size() * qsizetype(sizeof(QcEntityVertex)));
-    const auto indexBytes = quint32(m_mesh->indices.size() * qsizetype(sizeof(quint32)));
+    const auto vertexBytes = static_cast<quint32>(m_mesh->vertices.size() * static_cast<qsizetype>(sizeof(QcEntityVertex)));
+    const auto indexBytes = static_cast<quint32>(m_mesh->indices.size() * static_cast<qsizetype>(sizeof(quint32)));
     // Buffers grow on demand and are reused for every frame.
     if (!m_vertices || m_vertices->size() < vertexBytes) {
         m_vertices.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes));
@@ -143,13 +144,13 @@ void QcCharacterPreviewRenderer::uploadMesh(QRhiResourceUpdateBatch *updates)
     }
     updates->updateDynamicBuffer(m_vertices.get(), 0, vertexBytes, m_mesh->vertices.constData());
     updates->updateDynamicBuffer(m_indices.get(), 0, indexBytes, m_mesh->indices.constData());
-    m_indexCount = quint32(m_mesh->indices.size());
+    m_indexCount = static_cast<quint32>(m_mesh->indices.size());
 }
 
 void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates)
 {
     const QSize size = renderTarget()->pixelSize();
-    const float aspect = size.height() > 0 ? float(size.width()) / float(size.height()) : 1.0f;
+    const float aspect = size.height() > 0 ? static_cast<float>(size.width()) / static_cast<float>(size.height()) : 1.0f;
     const QMatrix4x4 viewProjection = m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewMatrix();
 
     QcRenderPipelines::FrameUniforms uniforms{};
@@ -163,8 +164,8 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
     uniforms.params[2] = 1.0f;
     uniforms.params[3] = QcRenderPipelines::minimumLight;
     uniforms.extra[0] = m_rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
-    uniforms.extra[1] = float(size.width());
-    uniforms.extra[2] = float(size.height());
+    uniforms.extra[1] = static_cast<float>(size.width());
+    uniforms.extra[2] = static_cast<float>(size.height());
     uniforms.extra[3] = QcRenderPipelines::skyLightFloor;
     updates->updateDynamicBuffer(m_uniforms.get(), 0, sizeof(uniforms), &uniforms);
 }
@@ -182,7 +183,7 @@ void QcCharacterPreviewRenderer::render(QRhiCommandBuffer *commandBuffer)
     if (m_pipeline && m_indexCount > 0) {
         const QSize size = renderTarget()->pixelSize();
         commandBuffer->setGraphicsPipeline(m_pipeline.get());
-        commandBuffer->setViewport(QRhiViewport(0, 0, float(size.width()), float(size.height())));
+        commandBuffer->setViewport(QRhiViewport(0, 0, static_cast<float>(size.width()), static_cast<float>(size.height())));
         commandBuffer->setShaderResources();
         const QRhiCommandBuffer::VertexInput input(m_vertices.get(), 0);
         commandBuffer->setVertexInput(0, 1, &input, m_indices.get(), 0, QRhiCommandBuffer::IndexUInt32);

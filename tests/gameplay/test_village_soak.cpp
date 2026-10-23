@@ -95,9 +95,9 @@ private:
             .arg(mob.motion.position.z, 0, 'f', 1)
             .arg(cell(mob.villager->home), cell(mob.villager->target))
             .arg(mob.motion.inWater)
-            + u" path: purpose %1 goal %2 %3 %4 planned %5 reaches %6 cells %7 next %8 failures %9"_s.arg(int(mob.path.purpose))
+            + u" path: purpose %1 goal %2 %3 %4 planned %5 reaches %6 cells %7 next %8 failures %9"_s.arg(static_cast<int>(mob.path.purpose))
                   .arg(mob.path.goal.x).arg(mob.path.goal.y).arg(mob.path.goal.z).arg(mob.path.planned).arg(mob.path.reachesGoal)
-                  .arg(qint64(mob.path.cells.size())).arg(qint64(mob.path.next)).arg(mob.path.failures)
+                  .arg(static_cast<qint64>(mob.path.cells.size())).arg(static_cast<qint64>(mob.path.next)).arg(mob.path.failures)
             + u" door %1 leg %2"_s.arg(cell(mob.villager->openedDoor), cell(mob.villager->legs.leg));
     }
 
@@ -118,7 +118,7 @@ private:
         ticks(2);
         m_departures = m_server->mobs().onDeparture([this](const QcCreature &mob, QcMobManager::Departure why) {
             if (mob.isVillager() && !m_removed.contains(mob.uid) && why != QcMobManager::Departure::Unloaded) {
-                m_problems.append(u"departed (%1): %2"_s.arg(int(why)).arg(describe(mob)));
+                m_problems.append(u"departed (%1): %2"_s.arg(static_cast<int>(why)).arg(describe(mob)));
             }
         });
         m_samples.clear();
@@ -239,8 +239,8 @@ private:
                 awake.append(describe(*mob));
             }
         }
-        const double share = double(all.size() - awake.size()) / double(std::max<qsizetype>(1, all.size()));
-        qInfo("day %d: %lld of %lld villagers asleep at midnight", day, qint64(all.size() - awake.size()), qint64(all.size()));
+        const double share = static_cast<double>(all.size() - awake.size()) / static_cast<double>(std::max<qsizetype>(1, all.size()));
+        qInfo("day %d: %lld of %lld villagers asleep at midnight", day, static_cast<qint64>(all.size() - awake.size()), static_cast<qint64>(all.size()));
         if (share < asleepAtMidnight) {
             m_problems.append(u"day %1: only %2 % asleep: %3"_s.arg(day).arg(share * 100.0, 0, 'f', 1).arg(awake.join(u"; "_s)));
         }
@@ -358,8 +358,9 @@ void TestVillageSoak::villagesLiveForDays()
     }
     const qsizetype children = std::ranges::count_if(villagers(), [](const QcCreature *mob) { return mob->isYoung(); });
     qInfo("SOAK days=%d villages=%lld villagers=%lld (settled %lld) born=%lld young=%lld ticks=%lld wall=%.1f s mean tick %.3f ms", count,
-          qint64(m_plans.size()), qint64(villagers().size()), qint64(settled), qint64(m_born), qint64(children), m_ticks,
-          double(timer.elapsed()) / 1000.0, double(timer.nsecsElapsed()) / 1e6 / double(std::max<qint64>(1, m_ticks)));
+          static_cast<qint64>(m_plans.size()), static_cast<qint64>(villagers().size()), static_cast<qint64>(settled),
+          static_cast<qint64>(m_born), static_cast<qint64>(children), m_ticks,
+          static_cast<double>(timer.elapsed()) / 1000.0, static_cast<double>(timer.nsecsElapsed()) / 1e6 / static_cast<double>(std::max<qint64>(1, m_ticks)));
     QVERIFY(villagers().size() >= settled - m_plans.size());
     // Children were born into the freed beds.
     QVERIFY(m_born > 0);

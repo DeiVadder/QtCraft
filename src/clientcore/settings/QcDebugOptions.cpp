@@ -16,29 +16,29 @@ constexpr std::array<const char *, QcDebugOptions::visualCount> visualIds{"chunk
 
 QString QcDebugOptions::levelName(Level level)
 {
-    return QString::fromLatin1(levelNames[std::size_t(level)]);
+    return QString::fromLatin1(levelNames[static_cast<std::size_t>(level)]);
 }
 
 std::optional<QcDebugOptions::Level> QcDebugOptions::levelFromName(const QString &name)
 {
     const auto found = std::ranges::find_if(levelNames, [&name](const char *candidate) { return name == QLatin1StringView(candidate); });
-    return found == levelNames.end() ? std::nullopt : std::optional(Level(found - levelNames.begin()));
+    return found == levelNames.end() ? std::nullopt : std::optional(static_cast<Level>(found - levelNames.begin()));
 }
 
 QcDebugOptions::Level QcDebugOptions::nextLevel(Level level)
 {
-    return Level((int(level) + 1) % int(levelNames.size()));
+    return static_cast<Level>((static_cast<int>(level) + 1) % static_cast<int>(levelNames.size()));
 }
 
 QString QcDebugOptions::visualId(Visual visual)
 {
-    return QString::fromLatin1(visualIds[std::size_t(visual)]);
+    return QString::fromLatin1(visualIds[static_cast<std::size_t>(visual)]);
 }
 
 std::optional<QcDebugOptions::Visual> QcDebugOptions::visualFromId(const QString &id)
 {
     const auto found = std::ranges::find_if(visualIds, [&id](const char *candidate) { return id == QLatin1StringView(candidate); });
-    return found == visualIds.end() ? std::nullopt : std::optional(Visual(found - visualIds.begin()));
+    return found == visualIds.end() ? std::nullopt : std::optional(static_cast<Visual>(found - visualIds.begin()));
 }
 
 bool QcDebugOptions::anyVisual() const
@@ -57,7 +57,7 @@ QcDebugOptions QcDebugOptions::load(const QSettings &file)
 
     for (int visual = 0; visual < visualCount; ++visual) {
         // Only "true" switches one on; anything else in the file leaves it off.
-        options.visuals[std::size_t(visual)] = file.value(u"debug/"_s + visualId(Visual(visual))).toString() == u"true"_s;
+        options.visuals[static_cast<std::size_t>(visual)] = file.value(u"debug/"_s + visualId(static_cast<Visual>(visual))).toString() == u"true"_s;
     }
     return options;
 }
@@ -66,7 +66,7 @@ void QcDebugOptions::save(QSettings &file) const
 {
     file.setValue(u"debug/level"_s, levelName(level));
     for (int visual = 0; visual < visualCount; ++visual) {
-        file.setValue(u"debug/"_s + visualId(Visual(visual)), visuals[std::size_t(visual)]);
+        file.setValue(u"debug/"_s + visualId(static_cast<Visual>(visual)), visuals[static_cast<std::size_t>(visual)]);
     }
     // Replaced by debug/level.
     file.remove(u"showDebug"_s);

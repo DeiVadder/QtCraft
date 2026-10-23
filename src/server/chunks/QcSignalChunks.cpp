@@ -76,7 +76,7 @@ QSet<QcChunkPos> QcSignalChunks::passing(const QSet<QcChunkPos> &candidates, con
     }
 
     const quint64 now = m_state.clock().tick();
-    const quint64 limit = quint64(m_state.config().limits.chunkTicketTicks);
+    const quint64 limit = static_cast<quint64>(m_state.config().limits.chunkTicketTicks);
     const QcSignalSchedule &schedule = m_state.blockEntities().schedule();
     QHash<QcChunkPos, quint64> since;
     QSet<QcChunkPos> held;

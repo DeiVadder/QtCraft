@@ -60,7 +60,7 @@ class TestMapFrames : public QcServerTestFixture
         hanging.item = u"qtcraft:item_frame"_s;
         hanging.hanging.face = QcBlockFace::South;
         hanging.hanging.cell = cell;
-        hanging.hanging.rotation = quint8(rotation);
+        hanging.hanging.rotation = static_cast<quint8>(rotation);
         hanging.held = QcItemStack{item("qtcraft:filled_map"), 1, 0}.withMapId(map);
         hanging.motion.position = hanging.hanging.centre();
         hanging.id = m_server->entities().newId();
@@ -239,8 +239,8 @@ private slots:
         emptyHand();
         const std::optional<quint32> map = m_server->maps().create(QcMapData::around(m_feet.x, m_feet.z, 0));
         QVERIFY(map);
-        const int range = int(QcServerMaps::frameWatchRange);
-        const int slack = int(QcServerMaps::watchSlack);
+        const int range = static_cast<int>(QcServerMaps::frameWatchRange);
+        const int slack = static_cast<int>(QcServerMaps::watchSlack);
         const auto hangAt = [&](int east) {
             m_server->entities().hangings().removeIf([](const QcEntity &) { return true; });
             QVERIFY(frameWithMap(m_feet.offset(east, 1, 0), *map));
@@ -327,7 +327,7 @@ private slots:
         // Far from the player: only the frame keeps the map in use.
         QVERIFY(frameWithMap(m_feet.offset(int(QcServerMaps::frameWatchRange) + 10, 1, 0), framed));
         QVERIFY(m_server->save().has_value());
-        ticks(int(QcMapStore::idleTicks + QcMapStore::evictionInterval));
+        ticks(static_cast<int>(QcMapStore::idleTicks + QcMapStore::evictionInterval));
         QVERIFY(m_server->maps().loaded(framed));
         QVERIFY(!m_server->maps().loaded(loose));
     }

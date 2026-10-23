@@ -14,7 +14,7 @@ void writeSpot(QDataStream &stream, std::optional<QcBlockPos> spot)
 {
     stream << spot.has_value();
     if (spot) {
-        stream << qint32(spot->x) << qint32(spot->y) << qint32(spot->z);
+        stream << static_cast<qint32>(spot->x) << static_cast<qint32>(spot->y) << static_cast<qint32>(spot->z);
     }
 }
 
@@ -37,18 +37,18 @@ struct Spot
     qint32 z = 0;
     stream >> x >> y >> z;
     const QcBlockPos pos{x, y, z};
-    const bool inside = pos.isInsideWorldHeight() && std::abs(qint64(x)) <= QcWorld::maxHorizontalBlock
-                        && std::abs(qint64(z)) <= QcWorld::maxHorizontalBlock;
+    const bool inside = pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(x)) <= QcWorld::maxHorizontalBlock
+                        && std::abs(static_cast<qint64>(z)) <= QcWorld::maxHorizontalBlock;
     return {pos, inside};
 }
 
 void writeOffers(QDataStream &stream, const QcVillagerRecord &villager)
 {
-    stream << quint32(villager.offers.size());
+    stream << static_cast<quint32>(villager.offers.size());
     for (const QcVillagerOffer &offer : villager.offers) {
-        stream << offer.id << qint32(offer.uses) << qint32(offer.demand);
+        stream << offer.id << static_cast<qint32>(offer.uses) << static_cast<qint32>(offer.demand);
     }
-    stream << villager.lastRestock << qint32(villager.restocks);
+    stream << villager.lastRestock << static_cast<qint32>(villager.restocks);
 }
 
 // The saved state of a villager's offers (QcVillagerRecord::offers, lastRestock, restocks).
@@ -64,7 +64,7 @@ struct Offers
 {
     quint32 count = 0;
     stream >> count;
-    if (stream.status() != QDataStream::Ok || count > quint32(QcVillagerRecord::maxOffers)) {
+    if (stream.status() != QDataStream::Ok || count > static_cast<quint32>(QcVillagerRecord::maxOffers)) {
         return std::nullopt;
     }
     Offers read;
@@ -103,8 +103,8 @@ void write(QDataStream &stream, const QcVillagerRecord &villager)
     stream << villager.village;
     writeSpot(stream, villager.home);
     writeSpot(stream, villager.work);
-    stream << villager.profession << qint32(villager.level) << qint32(villager.experience) << villager.look << villager.style
-           << qint32(villager.produce);
+    stream << villager.profession << static_cast<qint32>(villager.level) << static_cast<qint32>(villager.experience) << villager.look << villager.style
+           << static_cast<qint32>(villager.produce);
     writeOffers(stream, villager);
     stream << villager.sleptAt;
 }

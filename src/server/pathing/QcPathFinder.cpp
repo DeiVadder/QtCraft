@@ -55,7 +55,7 @@ float estimate(QcBlockPos from, QcBlockPos to)
     const int dx = std::abs(from.x - to.x);
     const int dz = std::abs(from.z - to.z);
     const int dy = std::abs(from.y - to.y);
-    return float(std::max(dx, dz)) + (diagonalCost - 1.0f) * float(std::min(dx, dz)) + 0.5f * float(dy);
+    return static_cast<float>(std::max(dx, dz)) + (diagonalCost - 1.0f) * static_cast<float>(std::min(dx, dz)) + 0.5f * static_cast<float>(dy);
 }
 
 bool sameLevelAs(QcPathStand a, QcPathStand b)
@@ -116,14 +116,14 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
     if (!QcPathTerrain::passable(m_window, side, rules, true) || !QcPathTerrain::clearAbove(m_window, side, here.lift(), rules)) {
         return std::nullopt;
     }
-    for (int drop = 1; drop <= std::max(int(rules.maxDrop), QcPathRules::waterDrop); ++drop) {
+    for (int drop = 1; drop <= std::max(static_cast<int>(rules.maxDrop), QcPathRules::waterDrop); ++drop) {
         const QcBlockPos landing = side.offset(0, -drop, 0);
         const QcPathStand stand = QcPathTerrain::standAt(m_window, landing, rules);
         if (stand.ok) {
             if (!QcPathTerrain::safeLanding(m_window, landing, drop, rules)) {
                 return std::nullopt;
             }
-            return Move{landing, 1.0f + dropCostPerBlock * float(drop) + standCost(stand, rules)};
+            return Move{landing, 1.0f + dropCostPerBlock * static_cast<float>(drop) + standCost(stand, rules)};
         }
         if (!QcPathTerrain::passable(m_window, landing, rules, false)) {
             return std::nullopt;
@@ -264,7 +264,7 @@ QcPathResult QcPathFinder::pathTo(int end, int startIndex, const QcPathRequest &
 
     const bool truncated = std::cmp_greater(result.cells.size(), request.maxLength);
     if (truncated) {
-        result.cells.resize(std::size_t(std::max(0, request.maxLength)));
+        result.cells.resize(static_cast<std::size_t>(std::max(0, request.maxLength)));
     }
     result.reachesGoal = !truncated && isThere(m_window.positionOf(end), request);
     return result;

@@ -24,14 +24,14 @@ constexpr const char *chunksGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Chunks"
 constexpr const char *villagesGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Villages");
 
 constexpr std::array<QcServerLimits::Field, 71> table{{
-    {"signalBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Dust work per tick"), 256, qint64(1) << 22, &QcServerLimits::signalBudget, signalGroup},
+    {"signalBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Dust work per tick"), 256, qint64{1} << 22, &QcServerLimits::signalBudget, signalGroup},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcServerLimits", "share of the signal budget kept for due scheduled ticks"), 0, 90,
      &QcServerLimits::signalScheduleReservePercent, signalGroup},
     {"signalWorkPerChange", QT_TRANSLATE_NOOP("QcServerLimits", "work one block change of a circuit step counts for"), 1, 64, &QcServerLimits::signalWorkPerChange, signalGroup},
     {"signalMinimumStep", QT_TRANSLATE_NOOP("QcServerLimits", "changes a circuit step takes at least"), 1, 65536, &QcServerLimits::signalMinimumStep, signalGroup},
-    {"signalMaxPendingChanges", QT_TRANSLATE_NOOP("QcServerLimits", "block changes near circuits waiting at most"), 1024, qint64(1) << 24,
+    {"signalMaxPendingChanges", QT_TRANSLATE_NOOP("QcServerLimits", "block changes near circuits waiting at most"), 1024, qint64{1} << 24,
      &QcServerLimits::signalMaxPendingChanges, signalGroup},
-    {"hopperBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Hoppers acting per tick"), 1, qint64(1) << 20, &QcServerLimits::hopperBudget, signalGroup},
+    {"hopperBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Hoppers acting per tick"), 1, qint64{1} << 20, &QcServerLimits::hopperBudget, signalGroup},
     {"hopperCooldownTicks", QT_TRANSLATE_NOOP("QcServerLimits", "ticks a hopper rests after moving an item"), 1, 1200, &QcServerLimits::hopperCooldownTicks, signalGroup},
     {"summonLimit", QT_TRANSLATE_NOOP("QcServerLimits", "awake creatures summoned by /summon (0: none)"), 0, 4096, &QcServerLimits::summonLimit, creaturesGroup},
     {"spawnerCreatures", QT_TRANSLATE_NOOP("QcServerLimits", "awake creatures from monster spawners (0: spawners spawn nothing)"), 0, 4096, &QcServerLimits::spawnerCreatures, creaturesGroup},
@@ -42,7 +42,8 @@ constexpr std::array<QcServerLimits::Field, 71> table{{
     {"blockUpdatesPerTick", QT_TRANSLATE_NOOP("QcServerLimits", "neighbour updates per tick"), 64, 1 << 20, &QcServerLimits::blockUpdatesPerTick, blocksGroup},
     {"waitingBlockUpdates", QT_TRANSLATE_NOOP("QcServerLimits", "neighbour updates waiting for unloaded chunks"), 1024, 1 << 24, &QcServerLimits::waitingBlockUpdates, blocksGroup},
     {"commandBlockUpdates", QT_TRANSLATE_NOOP("QcServerLimits", "neighbour updates queued by commands"), 1024, 1 << 24, &QcServerLimits::commandBlockUpdates, blocksGroup},
-    {"savedBlockUpdates", QT_TRANSLATE_NOOP("QcServerLimits", "pending neighbour updates written to a save"), 1024, qint64(4) << 20, &QcServerLimits::savedBlockUpdates, blocksGroup},
+    {"savedBlockUpdates", QT_TRANSLATE_NOOP("QcServerLimits", "pending neighbour updates written to a save"), 1024, qint64{4} << 20,
+        &QcServerLimits::savedBlockUpdates, blocksGroup},
     {"liquidStepsPerTick", QT_TRANSLATE_NOOP("QcServerLimits", "flow steps of liquids per tick"), 16, 1 << 20, &QcServerLimits::liquidStepsPerTick, blocksGroup},
     {"liquidPlannedSteps", QT_TRANSLATE_NOOP("QcServerLimits", "flow steps of liquids planned"), 1024, 1 << 24, &QcServerLimits::liquidPlannedSteps, blocksGroup},
     {"fireStepsPerTick", QT_TRANSLATE_NOOP("QcServerLimits", "steps of burning fires per tick (the rest waits)"), 16, 1 << 20, &QcServerLimits::fireStepsPerTick, fireGroup},
@@ -140,7 +141,7 @@ QcServerLimits::Read QcServerLimits::fromJson(const QJsonObject &json, const QSt
             warn(u"\"%1\" is no number, the default %2 stays"_s.arg(it.key()).arg(limits.*(field->value)));
             continue;
         }
-        const qint64 wanted = qint64(std::llround(std::clamp(number, -9.0e15, 9.0e15)));
+        const qint64 wanted = static_cast<qint64>(std::llround(std::clamp(number, -9.0e15, 9.0e15)));
         const qint64 clamped = std::clamp(wanted, field->low, field->high);
         if (clamped != wanted || number != std::floor(number)) {
             warn(u"\"%1\" = %2 is outside %3..%4 (whole numbers), using %5"_s.arg(it.key()).arg(number).arg(field->low).arg(field->high).arg(clamped));
@@ -154,7 +155,7 @@ QJsonObject QcServerLimits::toJson() const
 {
     QJsonObject json;
     for (const Field &field : table) {
-        json.insert(QLatin1StringView(field.key), double(this->*(field.value)));
+        json.insert(QLatin1StringView(field.key), static_cast<double>(this->*(field.value)));
     }
     return json;
 }

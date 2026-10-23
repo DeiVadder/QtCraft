@@ -542,8 +542,8 @@ private slots:
 
         // Taking the ground from under it wakes it: it falls.
         const QcVec3 now = local(cart(id).motion.position);
-        for (int x = int(std::floor(now.x)) - 1; x <= int(std::floor(now.x)) + 1; ++x) {
-            for (int z = int(std::floor(now.z)) - 1; z <= int(std::floor(now.z)) + 1; ++z) {
+        for (int x = static_cast<int>(std::floor(now.x)) - 1; x <= static_cast<int>(std::floor(now.x)) + 1; ++x) {
+            for (int z = static_cast<int>(std::floor(now.z)) - 1; z <= static_cast<int>(std::floor(now.z)) + 1; ++z) {
                 put(x, -1, z, u"air"_s);
                 put(x, -2, z, u"air"_s);
             }
@@ -577,7 +577,8 @@ private slots:
             }
         }
         const qint64 stepping50 = timer.nsecsElapsed();
-        qInfo("144 carts off the rails, 50 ticks: at rest %.2f ms, stepped %.2f ms", double(resting50) / 1e6, double(stepping50) / 1e6);
+        qInfo("144 carts off the rails, 50 ticks: at rest %.2f ms, stepped %.2f ms", static_cast<double>(resting50) / 1e6,
+            static_cast<double>(stepping50) / 1e6);
     }
 
     void aCartWaitsWithItsSpeedBeforeAChunkThatIsNotLoaded()

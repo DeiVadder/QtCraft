@@ -11,7 +11,7 @@ namespace {
 
 quint64 columnKey(int x, int z)
 {
-    return (quint64(quint32(x)) << 32) | quint32(z);
+    return (static_cast<quint64>(static_cast<quint32>(x)) << 32) | static_cast<quint32>(z);
 }
 
 // Columns tried for one new particle before giving up (a field under a roof stays empty quickly).
@@ -60,20 +60,20 @@ std::optional<QcPrecipitationField::Particle> QcPrecipitationField::spawn(const 
 {
     const double ceiling = eye.y + reachUp;
     for (int attempt = 0; attempt < spawnAttempts; ++attempt) {
-        const int x = int(std::floor(eye.x)) + m_random.bounded(-radius, radius + 1);
-        const int z = int(std::floor(eye.z)) + m_random.bounded(-radius, radius + 1);
-        const double floor = std::max(double(columnTop(world, x, z) + 1), eye.y - reachDown);
+        const int x = static_cast<int>(std::floor(eye.x)) + m_random.bounded(-radius, radius + 1);
+        const int z = static_cast<int>(std::floor(eye.z)) + m_random.bounded(-radius, radius + 1);
+        const double floor = std::max(static_cast<double>(columnTop(world, x, z) + 1), eye.y - reachDown);
         if (floor >= ceiling) {
             continue;
         }
 
         const double y = anywhere ? floor + m_random.generateDouble() * (ceiling - floor) : ceiling - m_random.generateDouble();
-        const QcPrecipitation falling = weather.precipitationAt(int(std::floor(y)));
+        const QcPrecipitation falling = weather.precipitationAt(static_cast<int>(std::floor(y)));
         if (falling == QcPrecipitation::None) {
             return std::nullopt;
         }
         const QcVec3 position{x + m_random.generateDouble(), std::max(y, floor), z + m_random.generateDouble()};
-        return Particle{position, falling == QcPrecipitation::Snow, float(m_random.generateDouble() * 2.0 * std::numbers::pi)};
+        return Particle{position, falling == QcPrecipitation::Snow, static_cast<float>(m_random.generateDouble() * 2.0 * std::numbers::pi)};
     }
     return std::nullopt;
 }
@@ -84,7 +84,7 @@ bool QcPrecipitationField::ended(const QcClientWorld &world, const Particle &par
     if (std::abs(p.x - eye.x) > radius + 1 || std::abs(p.z - eye.z) > radius + 1 || p.y < eye.y - reachDown) {
         return true;
     }
-    return p.y < columnTop(world, int(std::floor(p.x)), int(std::floor(p.z))) + 1;
+    return p.y < columnTop(world, static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.z))) + 1;
 }
 
 void QcPrecipitationField::update(const QcClientWorld &world, const QcClientWeather &weather, const QcVec3 &eye, double seconds)
@@ -99,7 +99,7 @@ void QcPrecipitationField::update(const QcClientWorld &world, const QcClientWeat
 
     // Particles that landed or left the box start again at the top; new ones (a shower beginning,
     // the strength growing) anywhere in the box, so slow snow does not begin as one falling layer.
-    const auto wanted = qsizetype(std::lround(double(m_budget) * std::clamp(double(weather.rain()), 0.0, 1.0)));
+    const auto wanted = static_cast<qsizetype>(std::lround(static_cast<double>(m_budget) * std::clamp(static_cast<double>(weather.rain()), 0.0, 1.0)));
     for (qsizetype i = 0; i < m_particles.size();) {
         Particle &particle = m_particles[i];
         if (particle.snow) {
@@ -136,6 +136,6 @@ QcPrecipitationDrop QcPrecipitationField::dropOf(const Particle &particle, float
 {
     const float shown = std::clamp(strength, 0.0f, 1.0f);
     const QcVec3 &p = particle.position;
-    const auto alpha = quint8(particle.snow ? shown * 190.0f + 40.0f : shown * 150.0f + 40.0f);
-    return {float(p.x), float(p.y), float(p.z), quint8(particle.snow ? 1 : 0), alpha, {0, 0}};
+    const auto alpha = static_cast<quint8>(particle.snow ? shown * 190.0f + 40.0f : shown * 150.0f + 40.0f);
+    return {static_cast<float>(p.x), static_cast<float>(p.y), static_cast<float>(p.z), static_cast<quint8>(particle.snow ? 1 : 0), alpha, {0, 0}};
 }

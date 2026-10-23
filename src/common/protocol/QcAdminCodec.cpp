@@ -32,7 +32,7 @@ QString readText(QDataStream &stream, qsizetype limit = Limits::maxText)
 
 void writeTexts(QDataStream &stream, const QStringList &texts)
 {
-    stream << quint32(texts.size());
+    stream << static_cast<quint32>(texts.size());
     for (const QString &text : texts) {
         writeText(stream, text);
     }
@@ -75,7 +75,7 @@ QcMsg::AdminSample readSample(QDataStream &stream)
 
 void writeSamples(QDataStream &stream, const QList<QcMsg::AdminSample> &samples)
 {
-    stream << quint32(samples.size());
+    stream << static_cast<quint32>(samples.size());
     for (const QcMsg::AdminSample &sample : samples) {
         writeSample(stream, sample);
     }
@@ -96,7 +96,7 @@ void writeChat(QDataStream &stream, const QcMsg::ChatMessage &line)
     writeText(stream, line.text, Limits::maxLongText);
     writeText(stream, line.key, Limits::maxLongText);
     const QStringList arguments = line.arguments.mid(0, QcMsg::ChatMessage::maxArguments);
-    stream << quint32(arguments.size());
+    stream << static_cast<quint32>(arguments.size());
     for (const QString &argument : arguments) {
         writeText(stream, argument, Limits::maxLongText);
     }
@@ -127,7 +127,7 @@ void writeSetting(QDataStream &stream, const QcMsg::AdminSettings::Setting &s)
     writeText(stream, s.key);
     writeText(stream, s.group);
     writeText(stream, s.description, Limits::maxLongText);
-    stream << quint8(s.type) << s.low << s.high << s.defaultValue << s.value;
+    stream << static_cast<quint8>(s.type) << s.low << s.high << s.defaultValue << s.value;
 }
 
 QList<QcMsg::AdminSettings::Setting> readSettings(QDataStream &stream)
@@ -141,10 +141,10 @@ QList<QcMsg::AdminSettings::Setting> readSettings(QDataStream &stream)
         s.description = readText(stream, Limits::maxLongText);
         quint8 type = 0;
         stream >> type >> s.low >> s.high >> s.defaultValue >> s.value;
-        if (type > quint8(QcMsg::AdminSettings::Type::Integer) || s.low > s.high) {
+        if (type > static_cast<quint8>(QcMsg::AdminSettings::Type::Integer) || s.low > s.high) {
             stream.setStatus(QDataStream::ReadCorruptData);
         }
-        s.type = QcMsg::AdminSettings::Type(type);
+        s.type = static_cast<QcMsg::AdminSettings::Type>(type);
         settings.append(s);
     }
     return settings;
@@ -155,7 +155,7 @@ void writePlayer(QDataStream &stream, const QcMsg::AdminPlayers::Entry &p)
     using QcProtocolCodec::operator<<;
     stream << p.entityId;
     writeText(stream, p.name);
-    stream << p.pingMs << p.position << quint8(p.gameMode) << p.operatorRights << p.local << p.connectedMs;
+    stream << p.pingMs << p.position << static_cast<quint8>(p.gameMode) << p.operatorRights << p.local << p.connectedMs;
     writeText(stream, p.address);
 }
 
@@ -187,13 +187,13 @@ void encode(QDataStream &stream, QcMsg::AdminSubscribe m)
 
 void encode(QDataStream &stream, const QcMsg::AdminRequest &m)
 {
-    stream << m.id << quint8(m.kind);
+    stream << m.id << static_cast<quint8>(m.kind);
     writeTexts(stream, m.arguments);
 }
 
 void encode(QDataStream &stream, const QcMsg::AdminResult &m)
 {
-    stream << m.id << m.ok << quint8(m.refusal) << quint32(m.lines.size());
+    stream << m.id << m.ok << static_cast<quint8>(m.refusal) << static_cast<quint32>(m.lines.size());
     for (const QcMsg::ChatMessage &line : m.lines) {
         writeChat(stream, line);
     }
@@ -224,7 +224,7 @@ void encode(QDataStream &stream, const QcMsg::AdminHistory &m)
 
 void encode(QDataStream &stream, const QcMsg::AdminPlayers &m)
 {
-    stream << quint32(m.players.size());
+    stream << static_cast<quint32>(m.players.size());
     for (const QcMsg::AdminPlayers::Entry &player : m.players) {
         writePlayer(stream, player);
     }
@@ -232,7 +232,7 @@ void encode(QDataStream &stream, const QcMsg::AdminPlayers &m)
 
 void encode(QDataStream &stream, const QcMsg::AdminChat &m)
 {
-    stream << m.history << quint32(m.lines.size());
+    stream << m.history << static_cast<quint32>(m.lines.size());
     for (const QcMsg::AdminChatLine &line : m.lines) {
         stream << line.timeMs;
         writeText(stream, line.sender);
@@ -242,7 +242,7 @@ void encode(QDataStream &stream, const QcMsg::AdminChat &m)
 
 void encode(QDataStream &stream, const QcMsg::AdminCatalogue &m)
 {
-    stream << quint32(m.commands.size());
+    stream << static_cast<quint32>(m.commands.size());
     for (const QcMsg::AdminCatalogue::Command &command : m.commands) {
         writeText(stream, command.name);
         writeTexts(stream, command.aliases);
@@ -257,7 +257,7 @@ void encode(QDataStream &stream, const QcMsg::AdminLists &m)
     stream << m.whitelistEnabled;
     writeTexts(stream, m.operators);
     writeTexts(stream, m.whitelist);
-    stream << quint32(m.bans.size());
+    stream << static_cast<quint32>(m.bans.size());
     for (const QcMsg::AdminLists::Ban &ban : m.bans) {
         writeText(stream, ban.name);
         writeText(stream, ban.reason);
@@ -269,7 +269,7 @@ void encode(QDataStream &stream, const QcMsg::AdminLists &m)
 void encode(QDataStream &stream, const QcMsg::AdminSettings &m)
 {
     for (const QList<QcMsg::AdminSettings::Setting> *list : {&m.rules, &m.limits}) {
-        stream << quint32(list->size());
+        stream << static_cast<quint32>(list->size());
         for (const QcMsg::AdminSettings::Setting &setting : *list) {
             writeSetting(stream, setting);
         }
@@ -279,9 +279,9 @@ void encode(QDataStream &stream, const QcMsg::AdminSettings &m)
 
 void encode(QDataStream &stream, const QcMsg::AdminLog &m)
 {
-    stream << m.tail << quint32(m.lines.size());
+    stream << m.tail << static_cast<quint32>(m.lines.size());
     for (const QcMsg::AdminLogLine &line : m.lines) {
-        stream << line.timeMs << quint8(line.level);
+        stream << line.timeMs << static_cast<quint8>(line.level);
         writeText(stream, line.category);
         writeText(stream, line.text, Limits::maxLongText);
     }
@@ -305,7 +305,7 @@ void encode(QDataStream &stream, const QcMsg::AdminLog &m)
     if (kind >= QcMsg::AdminRequest::kindCount) {
         return qcError(u"Unknown admin request"_s);
     }
-    m.kind = QcMsg::AdminRequest::Kind(kind);
+    m.kind = static_cast<QcMsg::AdminRequest::Kind>(kind);
     m.arguments = readTexts(stream, Limits::maxArguments);
     return checked(stream, m, "admin request");
 }
@@ -318,7 +318,7 @@ void encode(QDataStream &stream, const QcMsg::AdminLog &m)
     if (refusal >= QcMsg::AdminResult::refusalCount) {
         return qcError(u"Unknown admin refusal"_s);
     }
-    m.refusal = QcMsg::AdminResult::Refusal(refusal);
+    m.refusal = static_cast<QcMsg::AdminResult::Refusal>(refusal);
     const std::optional<quint32> count = QcStreamLimits::readCount(stream, Limits::maxLines);
     for (quint32 i = 0; count && i < *count && stream.status() == QDataStream::Ok; ++i) {
         m.lines.append(readChat(stream));
@@ -444,7 +444,7 @@ void encode(QDataStream &stream, const QcMsg::AdminLog &m)
         if (level >= QcMsg::AdminLogLine::levelCount) {
             stream.setStatus(QDataStream::ReadCorruptData);
         }
-        line.level = QcMsg::AdminLogLine::Level(level);
+        line.level = static_cast<QcMsg::AdminLogLine::Level>(level);
         m.lines.append(line);
     }
     return checked(stream, m, "admin log");

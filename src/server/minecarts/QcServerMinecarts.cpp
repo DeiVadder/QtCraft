@@ -225,7 +225,7 @@ bool QcServerMinecarts::steer(QcServerClient &client, const QcPlayerInput &input
     }
 
     if (input.forward > 0.0f) {
-        push(*cart, double(input.yaw), double(input.forward));
+        push(*cart, static_cast<double>(input.yaw), static_cast<double>(input.forward));
     }
     return true;
 }
@@ -278,7 +278,7 @@ QcVec3 QcServerMinecarts::exitSpot(const QcBlockAccess &world, const QcMinecart 
     const QcBlockPos candidates[] = {cell, cell.offset(1, 0, 0), cell.offset(-1, 0, 0), cell.offset(0, 0, 1), cell.offset(0, 0, -1)};
     for (const QcBlockPos candidate : candidates) {
         if (fitsPlayer(world, candidate)) {
-            return {candidate.x + 0.5, double(candidate.y), candidate.z + 0.5};
+            return {candidate.x + 0.5, static_cast<double>(candidate.y), candidate.z + 0.5};
         }
     }
     return cart.motion.position;

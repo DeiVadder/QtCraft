@@ -1,5 +1,7 @@
 #include "app/debug/QcGraphItem.h"
 
+#include "common/core/QcDowncast.h"
+
 #include <QSGFlatColorMaterial>
 #include <QSGGeometryNode>
 
@@ -24,7 +26,7 @@ QSGGeometryNode *lineNode(const QColor &color)
 
 void recolor(QSGGeometryNode *node, const QColor &color)
 {
-    auto *material = static_cast<QSGFlatColorMaterial *>(node->material());
+    auto *material = qcDowncast<QSGFlatColorMaterial>(node->material());
     if (material->color() != color) {
         material->setColor(color);
         node->markDirty(QSGNode::DirtyMaterial);
@@ -99,22 +101,22 @@ QSGNode *QcGraphItem::updatePaintNode(QSGNode *old, UpdatePaintNodeData *data)
         root->appendChildNode(lineNode(m_color));
         root->appendChildNode(lineNode(m_limitColor));
     }
-    auto *line = static_cast<QSGGeometryNode *>(root->firstChild());
-    auto *limitLine = static_cast<QSGGeometryNode *>(root->lastChild());
+    auto *line = qcDowncast<QSGGeometryNode>(root->firstChild());
+    auto *limitLine = qcDowncast<QSGGeometryNode>(root->lastChild());
     recolor(line, m_color);
     recolor(limitLine, m_limitColor);
 
     // The newest values, right-aligned.
     const qsizetype shown = std::min<qsizetype>(m_values.size(), m_capacity);
-    const qreal step = width() / qreal(m_capacity - 1);
-    const qreal left = width() - step * qreal(shown - 1);
-    const auto yOf = [this](qreal value) { return float(height() - std::clamp(value / m_maxValue, 0.0, 1.0) * height()); };
+    const qreal step = width() / static_cast<qreal>(m_capacity - 1);
+    const qreal left = width() - step * static_cast<qreal>(shown - 1);
+    const auto yOf = [this](qreal value) { return static_cast<float>(height() - std::clamp(value / m_maxValue, 0.0, 1.0) * height()); };
 
     QSGGeometry *geometry = line->geometry();
-    geometry->allocate(int(shown));
+    geometry->allocate(static_cast<int>(shown));
     QSGGeometry::Point2D *points = geometry->vertexDataAsPoint2D();
     for (qsizetype i = 0; i < shown; ++i) {
-        points[i].set(float(left + step * qreal(i)), yOf(m_values[m_values.size() - shown + i]));
+        points[i].set(static_cast<float>(left + step * static_cast<qreal>(i)), yOf(m_values[m_values.size() - shown + i]));
     }
     line->markDirty(QSGNode::DirtyGeometry);
 
@@ -123,7 +125,7 @@ QSGNode *QcGraphItem::updatePaintNode(QSGNode *old, UpdatePaintNodeData *data)
     limitGeometry->allocate(limitShown() ? 2 : 0);
     if (limitShown()) {
         limitGeometry->vertexDataAsPoint2D()[0].set(0.0f, yOf(m_limit));
-        limitGeometry->vertexDataAsPoint2D()[1].set(float(width()), yOf(m_limit));
+        limitGeometry->vertexDataAsPoint2D()[1].set(static_cast<float>(width()), yOf(m_limit));
     }
     limitLine->markDirty(QSGNode::DirtyGeometry);
     return root;

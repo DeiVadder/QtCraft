@@ -14,7 +14,7 @@ constexpr qsizetype maxNames = 64;
 bool plausible(const QcEnchantmentDefinition &enchantment, quint8 effect)
 {
     const auto allKinds = [](const QStringList &kinds) { return std::ranges::all_of(kinds, QcEnchantmentParser::isItemKind); };
-    return !enchantment.name.isEmpty() && effect <= quint8(QcEnchantmentEffect::FeatherFalling) && enchantment.maxLevel >= 1
+    return !enchantment.name.isEmpty() && effect <= static_cast<quint8>(QcEnchantmentEffect::FeatherFalling) && enchantment.maxLevel >= 1
            && enchantment.maxLevel <= QcEnchantmentDefinition::maxLevelLimit && enchantment.weight >= 1 && enchantment.weight <= 1000
            && enchantment.items.size() <= maxNames && enchantment.conflicts.size() <= maxNames && allKinds(enchantment.items)
            && enchantment.minPower >= 1 && enchantment.minPower <= 100 && enchantment.powerPerLevel >= 0 && enchantment.powerPerLevel <= 100
@@ -27,11 +27,11 @@ namespace QcEnchantmentSerializer {
 
 void write(QDataStream &stream, const QList<QcEnchantmentDefinition> &enchantments)
 {
-    stream << quint32(enchantments.size());
+    stream << static_cast<quint32>(enchantments.size());
     for (const QcEnchantmentDefinition &enchantment : enchantments) {
-        stream << enchantment.name << enchantment.translationKey << quint8(enchantment.effect) << qint32(enchantment.maxLevel)
-               << qint32(enchantment.weight) << enchantment.items << enchantment.conflicts << qint32(enchantment.minPower)
-               << qint32(enchantment.powerPerLevel) << qint32(enchantment.powerSpread);
+        stream << enchantment.name << enchantment.translationKey << static_cast<quint8>(enchantment.effect) << static_cast<qint32>(enchantment.maxLevel)
+               << static_cast<qint32>(enchantment.weight) << enchantment.items << enchantment.conflicts << static_cast<qint32>(enchantment.minPower)
+               << static_cast<qint32>(enchantment.powerPerLevel) << static_cast<qint32>(enchantment.powerSpread);
     }
 }
 
@@ -51,7 +51,7 @@ QcStatus read(QDataStream &stream, QcContentRegistry &registry)
         qint32 powerSpread = 0;
         stream >> enchantment.name >> enchantment.translationKey >> effect >> maxLevel >> weight >> enchantment.items
             >> enchantment.conflicts >> minPower >> powerPerLevel >> powerSpread;
-        enchantment.effect = QcEnchantmentEffect(effect);
+        enchantment.effect = static_cast<QcEnchantmentEffect>(effect);
         enchantment.maxLevel = maxLevel;
         enchantment.weight = weight;
         enchantment.minPower = minPower;

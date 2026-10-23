@@ -20,7 +20,7 @@ QcPhysics::Steering QcPassiveBrain::think(QcCreature &mob, const QcMobDefinition
     // Every creature looks once in sightCheckTicks, staggered by its id: one thinking every
     // `thinkTicks` (at most sightCheckTicks) looks at its thought in the first `thinkTicks` of them.
     const bool mayPlan = thinkTicks <= 1;
-    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
+    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < static_cast<quint64>(std::max(1, thinkTicks));
     // A shy creature or one scared of cats runs from what frightens it (decision E-480).
     if (definition.shy || definition.scaredOfCats) {
         if (const std::optional<QcVec3> away = QcMobFear::away(mob, definition, context)) {

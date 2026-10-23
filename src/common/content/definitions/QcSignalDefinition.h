@@ -69,7 +69,7 @@ enum class QcSignalKind : quint8 {
     Viewers,
 };
 
-inline constexpr int qcSignalKindCount = int(QcSignalKind::Viewers) + 1;
+inline constexpr int qcSignalKindCount = static_cast<int>(QcSignalKind::Viewers) + 1;
 
 // The instruments of a note block (decision E-767): the sound it plays for the block below it, by
 // that block's name, else by its sound material, else `fallback`. Names and sounds are qualified.

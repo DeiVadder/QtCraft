@@ -34,7 +34,7 @@ class TestBackpackWorld : public QcCircuitFixture
         return found;
     }
 
-    int itemsOnTheGround() const { return int(m_server->items().items().size()); }
+    int itemsOnTheGround() const { return static_cast<int>(m_server->items().items().size()); }
 
     // A backpack at local (x, y, z) holding `inside`.
     void backpackWith(int x, int y, int z, const QList<QcItemStack> &inside)
@@ -139,7 +139,7 @@ private slots:
         buildArea();
         const QcItemStack full = packed({stackOf("qtcraft:dirt", 5), stackOf("qtcraft:stick", 2)});
         const QcBlockPos cell = at(6, 0, 6);
-        QcItemEntityManager::Drop drop{full, {cell.x + 0.5, double(cell.y) + 0.1, cell.z + 0.5}, {}, 1000.0};
+        QcItemEntityManager::Drop drop{full, {cell.x + 0.5, static_cast<double>(cell.y) + 0.1, cell.z + 0.5}, {}, 1000.0};
         if (way == u"void"_s) {
             drop.position.y = QcWorld::voidLimitY + 2.0;
         } else if (way == u"despawn"_s) {

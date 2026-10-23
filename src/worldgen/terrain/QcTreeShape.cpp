@@ -78,7 +78,7 @@ int reach(const Params &params)
 
 int height(const Params &params, double random)
 {
-    return params.minHeight + int(random * (params.maxHeight - params.minHeight + 1));
+    return params.minHeight + static_cast<int>(random * (params.maxHeight - params.minHeight + 1));
 }
 
 namespace {

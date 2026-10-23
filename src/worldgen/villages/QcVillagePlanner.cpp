@@ -122,8 +122,8 @@ std::optional<QcVillageDraft::Centre> QcVillagePlanner::chooseCentre(int regionX
     std::optional<QcVillageDraft::Centre> chosen;
     int wettest = -1;
     for (int attempt = 0; attempt < m_settings.attempts && (!chosen || chosen->style->overWater); ++attempt) {
-        const int x = regionX * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -1 - 2 * attempt, regionZ) * room);
-        const int z = regionZ * m_spacing + margin + int(qcPositionRandom(m_seeds.layout, regionX, -2 - 2 * attempt, regionZ) * room);
+        const int x = regionX * m_spacing + margin + static_cast<int>(qcPositionRandom(m_seeds.layout, regionX, -1 - 2 * attempt, regionZ) * room);
+        const int z = regionZ * m_spacing + margin + static_cast<int>(qcPositionRandom(m_seeds.layout, regionX, -2 - 2 * attempt, regionZ) * room);
         const QcVillageStyle *style = styleAt(x, z);
         if (!style || (chosen && !style->overWater) || !villageBiomeAround(x, z)) {
             continue;

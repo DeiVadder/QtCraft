@@ -9,7 +9,7 @@ QcTerrainColumnGrid::QcTerrainColumnGrid(const QcTerrainGenerator &generator, Qc
     : m_baseX(pos.x * QcWorld::chunkSize - margin)
     , m_baseZ(pos.z * QcWorld::chunkSize - margin)
 {
-    m_columns.reserve(qsizetype(size) * size);
+    m_columns.reserve(static_cast<qsizetype>(size) * size);
     for (int z = 0; z < size; ++z) {
         for (int x = 0; x < size; ++x) {
             m_columns.append(generator.column(m_baseX + x, m_baseZ + z));

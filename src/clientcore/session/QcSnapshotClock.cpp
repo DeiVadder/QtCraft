@@ -25,9 +25,9 @@ void QcSnapshotClock::updateEstimates()
     double fastest = std::numeric_limits<double>::max();
     double interval = std::numeric_limits<double>::max();
     for (std::size_t i = 0; i < m_arrivals.size(); ++i) {
-        fastest = std::min(fastest, double(m_arrivals[i].localMs - m_arrivals[i].serverMs));
+        fastest = std::min(fastest, static_cast<double>(m_arrivals[i].localMs - m_arrivals[i].serverMs));
         if (i > 0 && m_arrivals[i].serverMs > m_arrivals[i - 1].serverMs) {
-            interval = std::min(interval, double(m_arrivals[i].serverMs - m_arrivals[i - 1].serverMs));
+            interval = std::min(interval, static_cast<double>(m_arrivals[i].serverMs - m_arrivals[i - 1].serverMs));
         }
     }
 
@@ -59,10 +59,10 @@ std::optional<double> QcSnapshotClock::advance(qint64 localMs)
         m_shownLagMs = wanted;
     } else {
         // The shown time runs between 0.9 and 1.1 times as fast as the local clock: no jumps.
-        const double step = maxSlew * double(std::max<qint64>(0, localMs - m_lastAdvanceMs));
+        const double step = maxSlew * static_cast<double>(std::max<qint64>(0, localMs - m_lastAdvanceMs));
         *m_shownLagMs += std::clamp(wanted - *m_shownLagMs, -step, step);
     }
 
     m_lastAdvanceMs = localMs;
-    return double(localMs) - *m_shownLagMs;
+    return static_cast<double>(localMs) - *m_shownLagMs;
 }

@@ -58,7 +58,7 @@ inline qint64 randomSeed()
 {
     bool ok = false;
     const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
-    const qint64 seed = ok ? fixed : qint64(QRandomGenerator::global()->generate() & 0x7fffffff);
+    const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
     qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
     return seed;
 }
@@ -68,7 +68,7 @@ inline qint64 randomSeed()
 // neutral value the helper returns (its later checks may fail as well), and the other cases still run.
 inline void failCase(const QString &message, std::source_location where = std::source_location::current())
 {
-    QTest::qFail(qPrintable(message), where.file_name(), int(where.line()));
+    QTest::qFail(qPrintable(message), where.file_name(), static_cast<int>(where.line()));
 }
 
 // Delivers the messages queued between a server and an in-process client.

@@ -8,14 +8,14 @@ namespace {
 
 int cellOf(double coordinate)
 {
-    return int(std::floor(coordinate));
+    return static_cast<int>(std::floor(coordinate));
 }
 
 // Direction to part a creature standing exactly on the centre of a crowd, fixed by its id and the cell.
 QcVec3 partingDirection(quint32 self, QcBlockPos cell)
 {
-    const quint32 hash = (self * 2654435761u) ^ quint32(qHash(cell));
-    const double angle = double(hash) * (2.0 * std::numbers::pi / 4294967296.0);
+    const quint32 hash = (self * 2654435761u) ^ static_cast<quint32>(qHash(cell));
+    const double angle = static_cast<double>(hash) * (2.0 * std::numbers::pi / 4294967296.0);
     return {std::cos(angle), 0.0, std::sin(angle)};
 }
 
@@ -32,8 +32,8 @@ bool QcMobCrowd::takesPart(const QcCreature &mob, const QcMobDefinition &definit
 
 void QcMobCrowd::setThresholds(qint64 throttled, qint64 idle)
 {
-    m_throttled = int(throttled);
-    m_idle = int(idle);
+    m_throttled = static_cast<int>(throttled);
+    m_idle = static_cast<int>(idle);
 }
 
 void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions)
@@ -42,7 +42,7 @@ void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefini
     m_cells.clear();
     m_cellIndex.removeIf([](const auto &) { return true; });
     m_cellIndex.reserve(std::ssize(mobs));
-    m_members.assign(std::size_t(mobs.size()), Member{});
+    m_members.assign(static_cast<std::size_t>(mobs.size()), Member{});
 
     for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
         const QcCreature &mob = mobs[i];
@@ -54,25 +54,25 @@ void QcMobCrowd::build(std::span<const QcCreature> mobs, const QList<QcMobDefini
         const QcBlockPos pos{cellOf(at.x), cellOf(at.y + 0.01), cellOf(at.z)};
         int index = m_cellIndex.value(pos, -1);
         if (index < 0) {
-            index = int(m_cells.size());
+            index = static_cast<int>(m_cells.size());
             m_cellIndex.insert(pos, index);
             m_cells.push_back({pos});
         }
 
-        Cell &cell = m_cells[std::size_t(index)];
+        Cell &cell = m_cells[static_cast<std::size_t>(index)];
         const double halfWidth = definitions[mob.type].width * 0.5;
         cell.count += 1;
         cell.sumX += at.x;
         cell.sumZ += at.z;
         cell.sumHalfWidth += halfWidth;
-        m_members[std::size_t(i)] = {index, mob.id, at.x, at.z, halfWidth};
+        m_members[static_cast<std::size_t>(i)] = {index, mob.id, at.x, at.z, halfWidth};
     }
 }
 
 int QcMobCrowd::countAt(qsizetype index) const
 {
-    const Member &member = m_members[std::size_t(index)];
-    return member.cell < 0 ? 0 : m_cells[std::size_t(member.cell)].count;
+    const Member &member = m_members[static_cast<std::size_t>(index)];
+    return member.cell < 0 ? 0 : m_cells[static_cast<std::size_t>(member.cell)].count;
 }
 
 QcMobCrowd::Tier QcMobCrowd::tierAt(qsizetype index) const
@@ -94,13 +94,13 @@ int QcMobCrowd::thinkInterval(qsizetype index) const
 
 QcVec3 QcMobCrowd::push(qsizetype index, const QcCreature &self, double halfWidth) const
 {
-    const Member &member = m_members[std::size_t(index)];
+    const Member &member = m_members[static_cast<std::size_t>(index)];
     if (member.cell < 0) {
         return {};
     }
 
     // Its own cell without itself, then the eight cells around it on the same level.
-    const Cell &own = m_cells[std::size_t(member.cell)];
+    const Cell &own = m_cells[static_cast<std::size_t>(member.cell)];
     QcVec3 total = pushFrom(self, halfWidth, own.count - 1, own, &member);
     for (int dx = -1; dx <= 1; ++dx) {
         for (int dz = -1; dz <= 1; ++dz) {
@@ -109,7 +109,7 @@ QcVec3 QcMobCrowd::push(qsizetype index, const QcCreature &self, double halfWidt
             }
             const auto found = m_cellIndex.constFind(own.pos.offset(dx, 0, dz));
             if (found != m_cellIndex.constEnd()) {
-                const Cell &cell = m_cells[std::size_t(*found)];
+                const Cell &cell = m_cells[static_cast<std::size_t>(*found)];
                 total += pushFrom(self, halfWidth, cell.count, cell, nullptr);
             }
         }
@@ -147,8 +147,8 @@ QList<QcMobCrowd::Crammed> QcMobCrowd::crammed(int limit) const
     }
     for (std::size_t i = 0; i < m_members.size(); ++i) {
         const Member &member = m_members[i];
-        if (member.cell >= 0 && m_cells[std::size_t(member.cell)].count > limit) {
-            crammed.append({member.id, qsizetype(i), member.cell, m_cells[std::size_t(member.cell)].count});
+        if (member.cell >= 0 && m_cells[static_cast<std::size_t>(member.cell)].count > limit) {
+            crammed.append({member.id, static_cast<qsizetype>(i), member.cell, m_cells[static_cast<std::size_t>(member.cell)].count});
         }
     }
     return crammed;

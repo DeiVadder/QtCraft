@@ -128,7 +128,7 @@ private slots:
         QCOMPARE(QcArmour::points(*m_content, m_client->equipment), 20);
         const double armoured = burnOnMagma(40);
         QVERIFY2(std::abs(armoured - bare * 0.2) < 0.01, qPrintable(u"%1 vs %2"_s.arg(armoured).arg(bare)));
-        const int hits = int(std::lround(bare));
+        const int hits = static_cast<int>(std::lround(bare));
         for (const QcItemStack &stack : m_client->equipment.stacks) {
             QCOMPARE(stack.damage, hits);
         }
@@ -294,15 +294,15 @@ private slots:
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
-        stream << 0.5 << 70.0 << 0.5 << 0.0 << 0.0 << 0.0 << true << 90.0f << 0.0f << 12.0 << qint32(0) << quint32(QcInventory::slotCount);
+        stream << 0.5 << 70.0 << 0.5 << 0.0 << 0.0 << 0.0 << true << 90.0f << 0.0f << 12.0 << qint32{0} << static_cast<quint32>(QcInventory::slotCount);
         for (int i = 0; i < QcInventory::slotCount; ++i) {
-            stream << (i == 0 ? u"qtcraft:stick"_s : QString()) << qint32(i == 0 ? 5 : 0) << qint32(0);
+            stream << (i == 0 ? u"qtcraft:stick"_s : QString()) << static_cast<qint32>(i == 0 ? 5 : 0) << qint32{0};
         }
-        stream << qint32(15) << 1.5;
+        stream << qint32{15} << 1.5;
         QByteArray file("QCPL");
         QDataStream header(&file, QIODevice::Append);
         header.setVersion(QDataStream::Qt_6_8);
-        header << quint16(2) << quint32(payload.size()) << qcCrc32(payload);
+        header << quint16{2} << static_cast<quint32>(payload.size()) << qcCrc32(payload);
         file.append(payload);
         QVERIFY(QDir().mkpath(dir.filePath(u"players"_s)));
         QFile old(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Old"_s)));

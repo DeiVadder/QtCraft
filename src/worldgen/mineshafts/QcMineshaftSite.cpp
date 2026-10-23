@@ -9,7 +9,7 @@ namespace {
 
 int floorDiv(int value, int divisor)
 {
-    return int(std::floor(double(value) / divisor));
+    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
 } // namespace
@@ -41,7 +41,7 @@ QcMineshaftSite::QcMineshaftSite(const QcTerrainGenerator &terrain, const QcMine
 
 const QcTerrainColumn &QcMineshaftSite::column(int x, int z)
 {
-    const qint64 key = (qint64(x) << 32) ^ qint64(quint32(z));
+    const qint64 key = (static_cast<qint64>(x) << 32) ^ static_cast<qint64>(static_cast<quint32>(z));
     auto it = m_columns.find(key);
     if (it == m_columns.end()) {
         it = m_columns.insert(key, m_terrain.column(x, z));

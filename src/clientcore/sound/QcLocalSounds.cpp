@@ -9,7 +9,7 @@
 std::optional<QcBlockId> QcLocalSounds::groundBelow(const QcVec3 &feet, const QcBlockAccess &world)
 {
     // A little below the feet: standing entities rest exactly on the block's top face.
-    const QcBlockPos pos{int(std::floor(feet.x)), int(std::floor(feet.y - 0.05)), int(std::floor(feet.z))};
+    const QcBlockPos pos{static_cast<int>(std::floor(feet.x)), static_cast<int>(std::floor(feet.y - 0.05)), static_cast<int>(std::floor(feet.z))};
     return world.blockAt(pos);
 }
 
@@ -42,7 +42,7 @@ QList<QcSoundCue> QcLocalSounds::update(const QcEntityMotion &before, const QcEn
     if (after.inWater) {
         const double entrySpeed = -before.velocity.y;
         if (!before.inWater && entrySpeed > splashSpeed) {
-            cue(QString::fromLatin1(QcSoundKeys::waterSplash), feet, float(std::clamp(entrySpeed / 12.0, 0.3, 1.0)), 1.0f);
+            cue(QString::fromLatin1(QcSoundKeys::waterSplash), feet, static_cast<float>(std::clamp(entrySpeed / 12.0, 0.3, 1.0)), 1.0f);
         }
         m_sinceStroke += (after.position - before.position).length();
         if (m_sinceStroke >= strokeMetres) {
@@ -58,7 +58,7 @@ QList<QcSoundCue> QcLocalSounds::update(const QcEntityMotion &before, const QcEn
     if (after.onGround && !before.onGround) {
         const double fallSpeed = -before.velocity.y;
         const bool hard = fallSpeed > landingSpeed;
-        cue(stepSound(feet, world), feet, hard ? float(std::clamp(fallSpeed / 15.0, 0.5, 1.0)) : stepVolume, hard ? 0.85f : 1.0f);
+        cue(stepSound(feet, world), feet, hard ? static_cast<float>(std::clamp(fallSpeed / 15.0, 0.5, 1.0)) : stepVolume, hard ? 0.85f : 1.0f);
         m_sinceStep = 0.0;
     } else if (before.onGround && !after.onGround && after.velocity.y > 0.0) {
         cue(stepSound(before.position, world), before.position, jumpVolume, 1.1f);

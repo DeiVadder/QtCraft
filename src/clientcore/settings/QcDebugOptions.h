@@ -15,7 +15,7 @@ struct QcDebugOptions
     enum class Level { Off, Compact, Full };
     // The visualisations drawn into the world.
     enum class Visual { ChunkBorders, Hitboxes, LightValues, MobGoals, RemeshFlash };
-    static constexpr int visualCount = int(Visual::RemeshFlash) + 1;
+    static constexpr int visualCount = static_cast<int>(Visual::RemeshFlash) + 1;
 
     Level level = Level::Compact;
     std::array<bool, visualCount> visuals{};
@@ -29,8 +29,8 @@ struct QcDebugOptions
     static QString visualId(Visual visual);
     [[nodiscard]] static std::optional<Visual> visualFromId(const QString &id);
 
-    bool shows(Visual visual) const { return visuals[std::size_t(visual)]; }
-    void set(Visual visual, bool on) { visuals[std::size_t(visual)] = on; }
+    bool shows(Visual visual) const { return visuals[static_cast<std::size_t>(visual)]; }
+    void set(Visual visual, bool on) { visuals[static_cast<std::size_t>(visual)] = on; }
     bool anyVisual() const;
 
     // Missing or unknown values give the defaults; a file of an older version that has only

@@ -339,7 +339,7 @@ private slots:
         QRandomGenerator random(5);
         // Far beyond the loaded chunks there is no place, and the dog stays.
         const QcVec3 before = creature.motion.position;
-        const QcVec3 unloaded{m_feet.x + 4000.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 unloaded{m_feet.x + 4000.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QVERIFY(!m_server->world().chunk(QcPhysics::blockContaining(unloaded).chunk()));
         QVERIFY(!QcTameBrain::teleportNear(creature, dogKind, m_server->world(), random, unloaded));
         QCOMPARE(creature.motion.position, before);

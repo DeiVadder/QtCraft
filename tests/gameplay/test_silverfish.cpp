@@ -45,14 +45,14 @@ private:
 
     quint32 spawn(int dx, int dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->mobs().spawn(silverfishType(), at, m_server->entities().newId());
     }
 
     void mine(QcBlockPos pos)
     {
         send(QcMsg::StartMining{pos});
-        ticks(int(std::ceil(QcMining::breakSeconds(m_content->block(at(pos)), nullptr) * QcPhysics::tickRate)));
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(m_content->block(at(pos)), nullptr) * QcPhysics::tickRate)));
         send(QcMsg::FinishMining{pos});
         ticks(1);
     }
@@ -183,7 +183,7 @@ private slots:
         const std::shared_ptr<QcChunk> taken = m_server->world().takeChunk(away);
         QVERIFY(taken);
 
-        const QcVec3 feet{border - 2.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 feet{border - 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         const quint32 bitten = m_server->mobs().spawn(silverfishType(), feet, m_server->entities().newId());
         QVERIFY(m_server->mobs().damage({.creature = bitten, .damage = 1.0, .from = feet}) == std::nullopt);
         ticks(1);

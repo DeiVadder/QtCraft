@@ -13,5 +13,5 @@ enum class QcPermission : quint8 {
 
 inline bool qcAllows(QcPermission granted, QcPermission needed)
 {
-    return quint8(granted) >= quint8(needed);
+    return static_cast<quint8>(granted) >= static_cast<quint8>(needed);
 }

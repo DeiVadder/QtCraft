@@ -23,7 +23,7 @@ QcCreativeCatalog::QcCreativeCatalog(const QcContentRegistry &content, const QSt
         // "qtcraft:oak_planks" is also found as "oak planks".
         const QString id = item.name.section(u':', -1).replace(u'_', u' ');
         const QString search = QcHandbook::searchKey(label + u'\n' + english + u'\n' + item.name + u'\n' + id);
-        m_entries.append({QcItemId(i + 1), categoryOf(content, item), label, search});
+        m_entries.append({static_cast<QcItemId>(i + 1), categoryOf(content, item), label, search});
     }
     // "All" lists the tabs one after the other.
     std::ranges::stable_sort(m_entries, {}, &Entry::category);

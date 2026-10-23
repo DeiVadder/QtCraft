@@ -35,8 +35,8 @@ struct QcStandPose
     // The stand's name floats above it (only when it has one).
     bool showName = false;
 
-    const Rotation &at(Part part) const { return parts[std::size_t(part)]; }
-    Rotation &at(Part part) { return parts[std::size_t(part)]; }
+    const Rotation &at(Part part) const { return parts[static_cast<std::size_t>(part)]; }
+    Rotation &at(Part part) { return parts[static_cast<std::size_t>(part)]; }
     bool operator==(const QcStandPose &) const = default;
 
     // Arms hanging slightly apart, legs a little spread.

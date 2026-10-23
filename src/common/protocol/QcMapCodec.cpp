@@ -34,7 +34,7 @@ QByteArray pixelBytes(const QList<quint16> &pixels)
     stream >> packed >> bytes;
     if (packed) {
         // qUncompress allocates what the first four bytes claim: checked before.
-        if (bytes.size() < 4 || qFromBigEndian<quint32>(bytes.constData()) != quint32(count * 2)) {
+        if (bytes.size() < 4 || qFromBigEndian<quint32>(bytes.constData()) != static_cast<quint32>(count * 2)) {
             return std::nullopt;
         }
         bytes = qUncompress(bytes);
@@ -74,17 +74,18 @@ QByteArray pixelBytes(const QList<quint16> &pixels)
 
 void encode(QDataStream &stream, const QcMsg::MapUpdate &m)
 {
-    stream << m.id << m.scale << qint32(m.centre.x()) << qint32(m.centre.y()) << quint8(m.area.x()) << quint8(m.area.y())
-           << quint8(m.area.width()) << quint8(m.area.height());
+    stream << m.id << m.scale << static_cast<qint32>(m.centre.x()) << static_cast<qint32>(m.centre.y()) << static_cast<quint8>(m.area.x())
+        << static_cast<quint8>(m.area.y())
+           << static_cast<quint8>(m.area.width()) << static_cast<quint8>(m.area.height());
     if (!m.area.isEmpty()) {
         const QByteArray raw = pixelBytes(m.pixels);
         const QByteArray packed = raw.size() >= compressFrom ? qCompress(raw) : QByteArray();
         const bool usePacked = !packed.isEmpty() && packed.size() < raw.size();
         stream << usePacked << (usePacked ? packed : raw);
     }
-    stream << quint8(m.markers.size());
+    stream << static_cast<quint8>(m.markers.size());
     for (const QcMapMarker &marker : m.markers) {
-        stream << marker.x << marker.z << marker.rotation << quint8((marker.onMap ? 1 : 0) | (marker.own ? 2 : 0) | (marker.frame ? 4 : 0));
+        stream << marker.x << marker.z << marker.rotation << static_cast<quint8>((marker.onMap ? 1 : 0) | (marker.own ? 2 : 0) | (marker.frame ? 4 : 0));
     }
 }
 
@@ -105,7 +106,7 @@ void encode(QDataStream &stream, const QcMsg::MapUpdate &m)
         return qcError(u"Invalid map update"_s);
     }
     if (!m.area.isEmpty()) {
-        std::optional<QList<quint16>> pixels = readPixels(stream, qsizetype(width) * height);
+        std::optional<QList<quint16>> pixels = readPixels(stream, static_cast<qsizetype>(width) * height);
         if (!pixels) {
             return qcError(u"Invalid map pixels"_s);
         }

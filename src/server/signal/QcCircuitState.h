@@ -16,7 +16,7 @@ struct QcCircuitState
 {
     // Pending changes beyond this many are dropped; the circuits around them are looked at again with
     // the next change nearby (QcServerLimits::signalMaxPendingChanges, set by QcServerState).
-    qsizetype maxPendingChanges = qsizetype(1) << 20;
+    qsizetype maxPendingChanges = qsizetype{1} << 20;
     // Dropped changes are logged with the first one and then every this many.
     static constexpr quint64 droppedReportInterval = 1 << 12;
 

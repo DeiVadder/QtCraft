@@ -94,8 +94,8 @@ QcCreature *QcMobCommands::target(const QcServerClient &client, const QString &w
 
 QcCreature *QcMobCommands::inView(const QcServerClient &client) const
 {
-    const double yaw = qDegreesToRadians(double(client.yaw));
-    const double pitch = qDegreesToRadians(double(client.pitch));
+    const double yaw = qDegreesToRadians(static_cast<double>(client.yaw));
+    const double pitch = qDegreesToRadians(static_cast<double>(client.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 

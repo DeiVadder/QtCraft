@@ -33,13 +33,13 @@ public:
 
     // The catalogue of new content or of another language.
     void setContent(std::shared_ptr<const QcContentRegistry> content, const QString &language);
-    int category() const { return int(m_category); }
+    int category() const { return static_cast<int>(m_category); }
     void setCategory(int category);
     QString query() const { return m_query; }
     void setQuery(const QString &query);
     // The tab names in the UI language.
     static QStringList categoryNames();
-    int count() const { return int(m_shown.size()); }
+    int count() const { return static_cast<int>(m_shown.size()); }
 
 signals:
     void categoryChanged();

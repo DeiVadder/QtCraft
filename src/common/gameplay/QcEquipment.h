@@ -19,8 +19,8 @@ struct QcEquipment
 
     std::array<QcItemStack, slotCount> stacks{};
 
-    const QcItemStack &at(QcEquipmentSlot slot) const { return stacks[std::size_t(slot)]; }
-    QcItemStack &at(QcEquipmentSlot slot) { return stacks[std::size_t(slot)]; }
+    const QcItemStack &at(QcEquipmentSlot slot) const { return stacks[static_cast<std::size_t>(slot)]; }
+    QcItemStack &at(QcEquipmentSlot slot) { return stacks[static_cast<std::size_t>(slot)]; }
     bool isEmpty() const
     {
         for (const QcItemStack &stack : stacks) {

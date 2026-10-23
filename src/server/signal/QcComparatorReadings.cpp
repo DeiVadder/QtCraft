@@ -28,12 +28,12 @@ int QcComparatorReadings::fullness(const QcContentRegistry &content, const QList
             continue;
         }
         any = true;
-        sum += double(stack.count) / double(content.item(stack.item).maxStack);
+        sum += static_cast<double>(stack.count) / static_cast<double>(content.item(stack.item).maxStack);
     }
     if (!any) {
         return 0;
     }
-    return std::min(15, int(std::floor(1.0 + sum / double(stacks.size()) * 14.0)));
+    return std::min(15, static_cast<int>(std::floor(1.0 + sum / static_cast<double>(stacks.size()) * 14.0)));
 }
 
 std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
@@ -54,7 +54,7 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
             return 0;
         }
         const auto index = property->values.indexOf(content.property(*block, signal.readProperty));
-        return int(std::max<qsizetype>(0, index) * 15 / (property->values.size() - 1));
+        return static_cast<int>(std::max<qsizetype>(0, index) * 15 / (property->values.size() - 1));
     }
     case QcComparatorReading::Bites: {
         const QcBlockProperty *bites = content.block(*block).property(QStringLiteral("bites"));
@@ -62,7 +62,7 @@ std::optional<int> QcComparatorReadings::at(QcBlockPos pos) const
             return 0;
         }
         const qsizetype taken = std::max<qsizetype>(0, bites->values.indexOf(content.property(*block, QStringLiteral("bites"))));
-        return int(std::min<qsizetype>(15, 2 * (bites->values.size() - taken)));
+        return static_cast<int>(std::min<qsizetype>(15, 2 * (bites->values.size() - taken)));
     }
     case QcComparatorReading::Carts: {
         // The container cart with the lowest id: the same cart whatever the order of the table.

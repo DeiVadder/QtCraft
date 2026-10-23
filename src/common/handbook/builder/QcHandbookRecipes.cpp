@@ -55,14 +55,14 @@ Recipe QcHandbookRecipes::shapedGrid(const QcRecipeDefinition &recipe) const
 Recipe QcHandbookRecipes::shapelessGrid(const QcRecipeDefinition &recipe) const
 {
     Recipe result;
-    const int count = int(recipe.ingredients.size());
+    const int count = static_cast<int>(recipe.ingredients.size());
     result.width = count <= 1 ? 1 : (count <= 4 ? 2 : 3);
     result.height = (count + result.width - 1) / result.width;
 
     for (const QString &ingredient : recipe.ingredients) {
         result.cells.append(m_links.ingredientLink(ingredient));
     }
-    while (result.cells.size() < qsizetype(result.width) * result.height) {
+    while (result.cells.size() < static_cast<qsizetype>(result.width) * result.height) {
         result.cells.append(Link{});
     }
     result.needsTable = count > 4;

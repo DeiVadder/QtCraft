@@ -37,7 +37,7 @@ std::optional<QcAppearance> readAppearance(QDataStream &stream)
 
 void writePos(QDataStream &stream, QcBlockPos pos)
 {
-    stream << qint32(pos.x) << qint32(pos.y) << qint32(pos.z);
+    stream << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z);
 }
 
 QcBlockPos readPos(QDataStream &stream)
@@ -67,7 +67,7 @@ enum StackBits : quint8 {
 // The component bits of `data` on the wire; 0 for none.
 quint8 bitsOf(const QcItemData &data)
 {
-    return quint8((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit)
+    return static_cast<quint8>((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit)
                   | (data.enchantments.isEmpty() ? 0 : EnchantmentsBit));
 }
 
@@ -84,7 +84,7 @@ void writeData(QDataStream &stream, const QcItemData &data)
         stream << data.mapId;
     }
     if (!data.contents.isEmpty()) {
-        stream << quint8(data.contents.size());
+        stream << static_cast<quint8>(data.contents.size());
         for (const QcItemStack &slot : data.contents) {
             writeStack(stream, slot);
         }
@@ -93,9 +93,9 @@ void writeData(QDataStream &stream, const QcItemData &data)
         stream << data.name;
     }
     if (!data.enchantments.isEmpty()) {
-        stream << quint8(data.enchantments.size());
+        stream << static_cast<quint8>(data.enchantments.size());
         for (const QcEnchantment &enchantment : data.enchantments) {
-            stream << enchantment.name << quint8(enchantment.level);
+            stream << enchantment.name << static_cast<quint8>(enchantment.level);
         }
     }
 }
@@ -190,7 +190,7 @@ QcItemStack readStackAt(QDataStream &stream, int depth)
 void writeStack(QDataStream &stream, const QcItemStack &stack)
 {
     const quint8 bits = bitsOf(stack.itemData());
-    stream << stack.item << qint32(bits != 0 ? stack.count | stackDataFlag : stack.count) << qint32(stack.damage);
+    stream << stack.item << static_cast<qint32>(bits != 0 ? stack.count | stackDataFlag : stack.count) << static_cast<qint32>(stack.damage);
     if (bits != 0) {
         writeData(stream, stack.itemData());
     }
@@ -208,7 +208,7 @@ QcItemStack readFlatStack(QDataStream &stream)
 
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks)
 {
-    stream << quint32(stacks.size());
+    stream << static_cast<quint32>(stacks.size());
     for (const QcItemStack &slot : stacks) {
         writeStack(stream, slot);
     }

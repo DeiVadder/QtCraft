@@ -60,7 +60,7 @@ private:
     class Moves
     {
     public:
-        void add(Move move) { m_moves[std::size_t(m_count++)] = move; }
+        void add(Move move) { m_moves[static_cast<std::size_t>(m_count++)] = move; }
         // Adds `cost` to every move.
         void raise(float cost)
         {

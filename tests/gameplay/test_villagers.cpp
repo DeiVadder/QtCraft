@@ -141,7 +141,7 @@ private:
         return false;
     }
 
-    static QcVec3 centreOf(QcBlockPos cell) { return {cell.x + 0.5, double(cell.y), cell.z + 0.5}; }
+    static QcVec3 centreOf(QcBlockPos cell) { return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5}; }
 
     static double horizontalDistance(const QcVec3 &a, const QcVec3 &b) { return std::hypot(a.x - b.x, a.z - b.z); }
 
@@ -166,7 +166,7 @@ private:
 
     int ripeCrops(const QList<QcBlockPos> &crops) const
     {
-        return int(std::ranges::count_if(crops, [this](QcBlockPos pos) {
+        return static_cast<int>(std::ranges::count_if(crops, [this](QcBlockPos pos) {
             return m_content->property(*m_server->world().blockAt(pos), u"age"_s) == u"7"_s;
         }));
     }

@@ -34,7 +34,7 @@ struct QcServerLimits
     // ... but at least this many changes, so a tick always gets on.
     qint64 signalMinimumStep = 64;
     // Block changes near circuits waiting at most; further ones are dropped with a warning.
-    qint64 signalMaxPendingChanges = qint64(1) << 20;
+    qint64 signalMaxPendingChanges = qint64{1} << 20;
     // Signal Hoppers acting per tick at most (E-344).
     qint64 hopperBudget = 4096;
     // Ticks a hopper rests after moving an item (the reference's 8).
@@ -60,8 +60,8 @@ struct QcServerLimits
     // at most.
     qint64 blockUpdatesPerTick = 1024;
     qint64 waitingBlockUpdates = 65536;
-    qint64 commandBlockUpdates = qint64(1) << 20;
-    qint64 savedBlockUpdates = qint64(4) << 20;
+    qint64 commandBlockUpdates = qint64{1} << 20;
+    qint64 savedBlockUpdates = qint64{4} << 20;
     // Flow steps of liquids per tick and planned at most (E-054).
     qint64 liquidStepsPerTick = 512;
     qint64 liquidPlannedSteps = 262144;

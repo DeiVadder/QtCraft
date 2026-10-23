@@ -41,7 +41,7 @@ private:
     quint32 pigUnderFire(const QString &kind, double speed)
     {
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const quint32 mob = m_server->entities().creatures().spawn(pig, {m_feet.x + 3.5, double(m_feet.y), m_feet.z - 2.5},
+        const quint32 mob = m_server->entities().creatures().spawn(pig, {m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5},
                                                                    m_server->entities().newId());
         m_server->systems().projectiles.launch({0, kind, {m_feet.x - 1.5, m_feet.y + 0.5, m_feet.z - 2.5}, {speed, 0.0, 0.0}});
         return mob;
@@ -144,7 +144,7 @@ private slots:
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         QcMobManager &creatures = m_server->entities().creatures();
         for (const double strength : {0.5, 4.0}) {
-            const QcVec3 at{m_feet.x + 3.5, double(m_feet.y), m_feet.z - 2.5};
+            const QcVec3 at{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};
             const quint32 mob = creatures.spawn(pig, at, m_server->entities().newId());
             QVERIFY(!creatures.damage({.creature = mob, .damage = 0.0, .from = at - QcVec3{1.0, 0.0, 0.0}, .knockback = strength}));
             const QcVec3 pushed = creatures.find(mob)->motion.velocity;
@@ -307,7 +307,7 @@ private slots:
         select("qtcraft:snowball");
         player().pitch = 45.0f;
         const QcThrowableDefinition throwable = *m_content->item(item("qtcraft:snowball")).throwable;
-        const int cooldown = int(std::lround(throwable.cooldownSeconds / QcPhysics::tickDuration));
+        const int cooldown = static_cast<int>(std::lround(throwable.cooldownSeconds / QcPhysics::tickDuration));
         QVERIFY(cooldown >= 2);
 
         send(QcMsg::ThrowItem{});

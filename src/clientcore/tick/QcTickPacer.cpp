@@ -21,11 +21,11 @@ int QcTickPacer::take(qint64 nowNs)
     const qint64 due = (nowNs - m_nextDueNs) / m_intervalNs + 1;
     if (due > maxCatchUp) {
         // The oldest ones are dropped; the rest run as if they were the latest due ticks.
-        m_timing.addMissed(quint64(due - maxCatchUp));
+        m_timing.addMissed(static_cast<quint64>(due - maxCatchUp));
         m_nextDueNs += (due - maxCatchUp) * m_intervalNs;
     }
 
-    const int run = int(std::min<qint64>(due, maxCatchUp));
+    const int run = static_cast<int>(std::min<qint64>(due, maxCatchUp));
     for (int i = 0; i < run; ++i) {
         m_timing.record(nowNs - m_nextDueNs);
         m_nextDueNs += m_intervalNs;

@@ -34,7 +34,7 @@ struct QcShapeDefinition
         for (const QcShapePart &part : parts) {
             count += part.boxes.size() + part.crosses.size() + part.collision.size() + part.target.size();
         }
-        return int(count);
+        return static_cast<int>(count);
     }
     bool operator==(const QcShapeDefinition &) const = default;
 };

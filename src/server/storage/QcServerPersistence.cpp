@@ -376,7 +376,7 @@ void QcServerPersistence::noteResult(quint64 save, const QcStatus &status)
 {
     m_running = std::max(0, m_running - 1);
     // The maps of a failed save are written again with the next one; written ones may leave memory.
-    m_state.maps().finishSave(m_mapsBySave.take(save), bool(status));
+    m_state.maps().finishSave(m_mapsBySave.take(save), static_cast<bool>(status));
     if (status) {
         m_failing = false;
         return;
@@ -444,7 +444,7 @@ void QcServerPersistence::waitForStorage()
 
 bool QcServerPersistence::manyUnsavedChunks() const
 {
-    return m_io && m_io->pendingChunks() > qsizetype(m_state.config().limits.unsavedChunks);
+    return m_io && m_io->pendingChunks() > static_cast<qsizetype>(m_state.config().limits.unsavedChunks);
 }
 
 QcResult<std::optional<QByteArray>> QcServerPersistence::blockUpdateBytes() const
@@ -457,7 +457,8 @@ QcResult<std::optional<QByteArray>> QcServerPersistence::blockUpdateBytes() cons
     updates.append(m_updates.commandUpdates());
     updates.append(m_updates.waitingUpdates());
 
-    const qsizetype storable = std::min(qsizetype(m_state.config().limits.savedBlockUpdates), qsizetype(QcWorldStorage::maxStoredBlockUpdates));
+    const qsizetype storable = std::min(static_cast<qsizetype>(m_state.config().limits.savedBlockUpdates),
+        static_cast<qsizetype>(QcWorldStorage::maxStoredBlockUpdates));
     if (updates.size() > storable) {
         qCWarning(lcServer) << "Saving only" << storable << "of" << updates.size() << "pending block updates";
         updates.resize(storable);

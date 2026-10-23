@@ -93,7 +93,7 @@ QVariantList QcPlayerController::effects() const
         list.append(QVariantMap{{u"name"_s, effect.name},
                                 {u"label"_s, content->translations().translate(definition->translationKey, m_settings.contentLanguage())},
                                 {u"icon"_s, definition->icon},
-                                {u"colour"_s, QColor(QRgb(definition->colour)).name()},
+                                {u"colour"_s, QColor(static_cast<QRgb>(definition->colour)).name()},
                                 {u"seconds"_s, (effect.ticksLeft + 19) / 20},
                                 {u"level"_s, effect.level},
                                 {u"levelName"_s, QcStatusEffects::levelName(effect.level)}});
@@ -110,7 +110,7 @@ QString QcPlayerController::heartColour() const
     for (const QcStatusEffect &effect : m_parts.session->vitals().effects()) {
         const QcEffectDefinition *definition = content->effect(effect.name);
         if (definition && definition->tintsHearts) {
-            return QColor(QRgb(definition->colour)).name();
+            return QColor(static_cast<QRgb>(definition->colour)).name();
         }
     }
     return {};
@@ -143,7 +143,7 @@ double QcPlayerController::machineBurn() const
 
 int QcPlayerController::containerSlots() const
 {
-    return m_parts.session && m_parts.session->machine().isContainer() ? int(m_parts.session->machine().stacks().size()) : 0;
+    return m_parts.session && m_parts.session->machine().isContainer() ? static_cast<int>(m_parts.session->machine().stacks().size()) : 0;
 }
 
 int QcPlayerController::containerHeldSlot() const

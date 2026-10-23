@@ -17,7 +17,7 @@ namespace {
 // Bounded so that turning around re-prioritises quickly instead of finishing a long old queue.
 constexpr qsizetype maxPendingGeneration = 48;
 // Bytes a network client may have waiting before it gets further chunks.
-constexpr qint64 maxPendingChunkBytes = qint64(4) * 1024 * 1024;
+constexpr qint64 maxPendingChunkBytes = qint64{4} * 1024 * 1024;
 
 } // namespace
 
@@ -29,7 +29,7 @@ QcChunkStreaming::QcChunkStreaming(QcServerState &state, QcChunkLoading &loading
 
 QcChunkPos QcChunkStreaming::chunkOf(const QcVec3 &position)
 {
-    return QcBlockPos{int(std::floor(position.x)), 0, int(std::floor(position.z))}.chunk();
+    return QcBlockPos{static_cast<int>(std::floor(position.x)), 0, static_cast<int>(std::floor(position.z))}.chunk();
 }
 
 void QcChunkStreaming::stream(QcServerClient &client)

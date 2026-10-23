@@ -16,7 +16,7 @@ class QcHangingManager
 {
 public:
     // Frames and paintings in the world by default (QcServerLimits::maxHangings).
-    static constexpr int maxHangings = int(QcServerLimits{}.maxHangings);
+    static constexpr int maxHangings = static_cast<int>(QcServerLimits{}.maxHangings);
     // Every frame and painting checks its wall and room again within this many ticks, also without
     // a block change next to it (decision E-790; changes outside the server's block changes).
     static constexpr int supportCheckTicks = 100;

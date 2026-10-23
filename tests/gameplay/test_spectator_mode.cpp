@@ -62,7 +62,7 @@ private:
     QcBlockPos feet() const
     {
         const QcVec3 p = m_client->motion.position;
-        return {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        return {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
     }
 
 private slots:

@@ -205,7 +205,7 @@ void note(const char *category, const QString &text)
 QByteArray formatLine(QtMsgType type, const char *category, const QString &message, const LineTime &time, const QString &thread)
 {
     const QString now = time.now.toString(u"yyyy-MM-dd HH:mm:ss.zzz"_s);
-    const QString since = QString::number(double(time.sinceStartMs) / 1000.0, 'f', 3);
+    const QString since = QString::number(static_cast<double>(time.sinceStartMs) / 1000.0, 'f', 3);
     const QString level(QLatin1Char(levelLetter(type)));
     const QString name = QString::fromLatin1(category ? category : "default");
     return u"%1 +%2 %3 %4 [%5] %6\n"_s.arg(now, since, level, name, thread, message).toUtf8();

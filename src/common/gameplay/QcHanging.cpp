@@ -6,7 +6,7 @@ namespace {
 
 QcVec3 vectorOf(QcFaceOffset offset)
 {
-    return {double(offset.dx), double(offset.dy), double(offset.dz)};
+    return {static_cast<double>(offset.dx), static_cast<double>(offset.dy), static_cast<double>(offset.dz)};
 }
 
 } // namespace
@@ -35,7 +35,7 @@ QList<QcBlockPos> QcHanging::cells() const
 {
     const QcFaceOffset right = rightOf(face);
     QList<QcBlockPos> covered;
-    covered.reserve(qsizetype(width) * height);
+    covered.reserve(static_cast<qsizetype>(width) * height);
     for (int row = 0; row < height; ++row) {
         for (int column = 0; column < width; ++column) {
             covered.append(cell.offset(right.dx * column, row, right.dz * column));
@@ -54,10 +54,10 @@ QcAabb QcHanging::box() const
 {
     // The cells' bounds, cut down to a thin slab against the wall; a frame also shrinks to its side.
     const QList<QcBlockPos> covered = cells();
-    QcVec3 low{double(covered.front().x), double(covered.front().y), double(covered.front().z)};
+    QcVec3 low{static_cast<double>(covered.front().x), static_cast<double>(covered.front().y), static_cast<double>(covered.front().z)};
     QcVec3 high = low + QcVec3{1.0, 1.0, 1.0};
     for (const QcBlockPos pos : covered) {
-        low = {std::min(low.x, double(pos.x)), std::min(low.y, double(pos.y)), std::min(low.z, double(pos.z))};
+        low = {std::min(low.x, static_cast<double>(pos.x)), std::min(low.y, static_cast<double>(pos.y)), std::min(low.z, static_cast<double>(pos.z))};
         high = {std::max(high.x, pos.x + 1.0), std::max(high.y, pos.y + 1.0), std::max(high.z, pos.z + 1.0)};
     }
 

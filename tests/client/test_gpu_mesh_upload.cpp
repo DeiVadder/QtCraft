@@ -22,9 +22,9 @@ std::shared_ptr<const QcChunkMesh> sectionMesh()
     auto mesh = std::make_shared<QcChunkMesh>();
     for (int i = 0; i < 8; ++i) {
         QcBlockVertex vertex;
-        vertex.x = float(i);
-        vertex.y = float(i * 2);
-        vertex.z = float(i * 3);
+        vertex.x = static_cast<float>(i);
+        vertex.y = static_cast<float>(i * 2);
+        vertex.z = static_cast<float>(i * 3);
         mesh->opaqueVertices.append(vertex);
         if (i < 3) {
             mesh->waterVertices.append(vertex);
@@ -59,16 +59,16 @@ std::shared_ptr<const QcChunkMesh> wideMesh()
     auto mesh = std::make_shared<QcChunkMesh>();
     for (int i = 0; i <= 65536; ++i) {
         QcBlockVertex vertex;
-        vertex.x = float(i);
+        vertex.x = static_cast<float>(i);
         mesh->opaqueVertices.append(vertex);
     }
     mesh->opaqueIndices = {65536, 1, 0, 65535, 2, 65534};
     for (int i = 0; i < 6; ++i) {
         QcBlockVertex vertex;
-        vertex.y = float(10 + i);
+        vertex.y = static_cast<float>(10 + i);
         mesh->waterVertices.append(vertex);
         if (i < 3) {
-            vertex.z = float(20 + i);
+            vertex.z = static_cast<float>(20 + i);
             mesh->translucentVertices.append(vertex);
         }
     }
@@ -86,7 +86,7 @@ QList<QcBlockVertex> fetched(const QByteArray &vertices, const QByteArray &indic
     QList<QcBlockVertex> result;
     const bool shortIndices = list.indexFormat == QRhiCommandBuffer::IndexUInt16;
     for (quint32 i = 0; i < count; ++i) {
-        const qsizetype at = qsizetype(list.firstIndex) + firstIndex + i;
+        const qsizetype at = static_cast<qsizetype>(list.firstIndex) + firstIndex + i;
         quint32 index = 0;
         if (shortIndices) {
             quint16 value = 0;
@@ -96,7 +96,7 @@ QList<QcBlockVertex> fetched(const QByteArray &vertices, const QByteArray &indic
             std::memcpy(&index, indices.constData() + at * 4, 4);
         }
         QcBlockVertex vertex;
-        const auto vertexAt = qsizetype(quint32(list.baseVertex) + index) * qsizetype(sizeof(QcBlockVertex));
+        const auto vertexAt = static_cast<qsizetype>(static_cast<quint32>(list.baseVertex) + index) * static_cast<qsizetype>(sizeof(QcBlockVertex));
         std::memcpy(&vertex, vertices.constData() + vertexAt, sizeof(QcBlockVertex));
         result.append(vertex);
     }
@@ -107,9 +107,9 @@ QList<QcBlockVertex> fetched(const QByteArray &vertices, const QByteArray &indic
 QList<QcBlockVertex> meant(const QList<QcBlockVertex> &vertices, const QList<quint32> &indices, quint32 firstIndex, quint32 count)
 {
     QList<QcBlockVertex> result;
-    const auto last = qsizetype(count);
+    const auto last = static_cast<qsizetype>(count);
     for (qsizetype i = 0; i < last; ++i) {
-        result.append(vertices[qsizetype(indices[qsizetype(firstIndex) + i])]);
+        result.append(vertices[static_cast<qsizetype>(indices[static_cast<qsizetype>(firstIndex) + i])]);
     }
     return result;
 }

@@ -27,5 +27,5 @@ struct QcNetworkConfig
     quint16 port = 25600;
     QcConnectionLimits connections;
     // Clients send only small messages; a frame beyond this ends their connection.
-    QcTcpTransport::Limits transport{.maxIncomingFrameBytes = qint64(256) * 1024};
+    QcTcpTransport::Limits transport{.maxIncomingFrameBytes = qint64{256} * 1024};
 };

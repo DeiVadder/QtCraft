@@ -28,7 +28,7 @@ enum class Level : quint8 { None, Level, Higher, Lower };
 
 std::size_t indexOf(QcBlockFace side)
 {
-    return std::size_t(std::ranges::find(sides, side) - sides.begin());
+    return static_cast<std::size_t>(std::ranges::find(sides, side) - sides.begin());
 }
 
 // The side clockwise of `side` seen from above.
@@ -226,7 +226,7 @@ std::optional<Track> trackOf(const QcContentRegistry &content, QcBlockId block)
 QcVec3 endPoint(QcBlockPos cell, End end)
 {
     const QcFaceOffset offset = qcFaceOffset(end.side);
-    return {cell.x + 0.5 + 0.5 * offset.dx, double(cell.y) + (end.raised ? 1.0 : 0.0), cell.z + 0.5 + 0.5 * offset.dz};
+    return {cell.x + 0.5 + 0.5 * offset.dx, static_cast<double>(cell.y) + (end.raised ? 1.0 : 0.0), cell.z + 0.5 + 0.5 * offset.dz};
 }
 
 QcBlockId stateOf(const QcContentRegistry &content, QcBlockId block, Kind kind, QcBlockFace facing)
@@ -284,8 +284,8 @@ std::array<QcBlockPos, shapeNeighbourCount> shapeNeighbours(QcBlockPos pos)
 
 std::optional<Joint> joined(const QcBlockAccess &world, const Table &rails, QcBlockPos cell, Track track, int end)
 {
-    const QcVec3 point = endPoint(cell, track.ends[std::size_t(end)]);
-    const QcBlockPos beside = qcNeighbour(cell, track.ends[std::size_t(end)].side);
+    const QcVec3 point = endPoint(cell, track.ends[static_cast<std::size_t>(end)]);
+    const QcBlockPos beside = qcNeighbour(cell, track.ends[static_cast<std::size_t>(end)].side);
     for (const QcBlockPos next : {beside, beside.offset(0, 1, 0), beside.offset(0, -1, 0)}) {
         const std::optional<QcBlockId> block = world.blockAt(next);
         const std::optional<Track> &other = block ? rails.trackOf(*block) : std::nullopt;
@@ -293,7 +293,7 @@ std::optional<Joint> joined(const QcBlockAccess &world, const Table &rails, QcBl
             continue;
         }
         for (int entry = 0; entry < 2; ++entry) {
-            if (endPoint(next, other->ends[std::size_t(entry)]) == point) {
+            if (endPoint(next, other->ends[static_cast<std::size_t>(entry)]) == point) {
                 return Joint{next, *other, entry};
             }
         }
@@ -324,7 +324,7 @@ Line lineOf(const QcBlockAccess &world, const Table &rails, QcBlockPos cell, int
                 || content.state(world.blockAt(next->cell).value_or(qcAirBlockId)).type != type) {
                 break;
             }
-            halves[std::size_t(end)].append(next->cell);
+            halves[static_cast<std::size_t>(end)].append(next->cell);
             at = next->cell;
             current = next->track;
             out = 1 - next->entry;
@@ -340,14 +340,14 @@ Line lineOf(const QcBlockAccess &world, const Table &rails, QcBlockPos cell, int
 }
 
 Table::Table(const QcContentRegistry &content)
-    : m_tracks(std::size_t(content.stateCount()))
-    , m_behaviours(std::size_t(content.stateCount()))
+    : m_tracks(static_cast<std::size_t>(content.stateCount()))
+    , m_behaviours(static_cast<std::size_t>(content.stateCount()))
 {
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         if (block.rail) {
-            m_tracks[std::size_t(id)] = QcRails::trackOf(content, QcBlockId(id));
-            m_behaviours[std::size_t(id)] = {block.railAction, content.property(QcBlockId(id), u"powered"_s) == u"true"_s};
+            m_tracks[static_cast<std::size_t>(id)] = QcRails::trackOf(content, static_cast<QcBlockId>(id));
+            m_behaviours[static_cast<std::size_t>(id)] = {block.railAction, content.property(static_cast<QcBlockId>(id), u"powered"_s) == u"true"_s};
         }
     }
 }

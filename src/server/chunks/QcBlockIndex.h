@@ -19,7 +19,7 @@ public:
     // `marked` is indexed by block state id.
     explicit QcBlockIndex(std::vector<bool> marked);
 
-    bool isMarked(QcBlockId block) const { return std::size_t(block) < m_marked.size() && m_marked[std::size_t(block)]; }
+    bool isMarked(QcBlockId block) const { return static_cast<std::size_t>(block) < m_marked.size() && m_marked[static_cast<std::size_t>(block)]; }
 
     // Replaces the positions of a chunk that entered the world; only sections whose palette holds a
     // marked state are scanned. The new positions count as touched.

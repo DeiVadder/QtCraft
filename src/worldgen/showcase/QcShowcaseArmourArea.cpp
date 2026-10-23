@@ -53,10 +53,10 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
 
     // A stand on a podium every two metres, facing south where people come from.
     constexpr int depth = 4;
-    const int count = std::max(1, int(armourSets.size()));
+    const int count = std::max(1, static_cast<int>(armourSets.size()));
     auto structure = std::make_shared<QcStructure>(u"showcase/armour"_s, 2 * count + 1, 5, depth);
     for (qsizetype i = 0; i < armourSets.size(); ++i) {
-        const int x = 1 + 2 * int(i);
+        const int x = 1 + 2 * static_cast<int>(i);
         constexpr int z = 1;
         structure->set(x, 1, z, context.podium);
 

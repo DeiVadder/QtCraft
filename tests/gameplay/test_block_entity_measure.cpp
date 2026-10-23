@@ -97,22 +97,23 @@ private slots:
             m_server->tick();
             tickNs += timer.nsecsElapsed();
             for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-                phaseNs[std::size_t(phase)] += m_server->tickPhases().lastTick()[std::size_t(phase)];
+                phaseNs[static_cast<std::size_t>(phase)] += m_server->tickPhases().lastTick()[static_cast<std::size_t>(phase)];
             }
             QcTestUtil::pump();
         }
-        report("tick", double(tickNs) / measure.ticks / 1e6);
+        report("tick", static_cast<double>(tickNs) / measure.ticks / 1e6);
         for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-            qInfo("MEASURE phase-%s %.3f ms", QcTickPhases::ids[std::size_t(phase)], double(phaseNs[std::size_t(phase)]) / measure.ticks / 1e6);
+            qInfo("MEASURE phase-%s %.3f ms", QcTickPhases::ids[static_cast<std::size_t>(phase)],
+                static_cast<double>(phaseNs[static_cast<std::size_t>(phase)]) / measure.ticks / 1e6);
         }
 
         timer.start();
         QVERIFY(m_server->save().has_value());
-        report("first-save", double(timer.nsecsElapsed()) / 1e6);
+        report("first-save", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         ticks(1);
         timer.start();
         QVERIFY(m_server->save().has_value());
-        report("second-save", double(timer.nsecsElapsed()) / 1e6);
+        report("second-save", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         const QStringList lines = QcBlockEntityDump::lines(*m_server, *m_content);
 
         m_client.reset();
@@ -120,11 +121,11 @@ private slots:
         timer.start();
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
-        report("open", double(timer.nsecsElapsed()) / 1e6);
+        report("open", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         // Chunks are read when needed (stage 31.3): reading all of them is measured on its own.
         timer.start();
         loadStored();
-        report("load-all", double(timer.nsecsElapsed()) / 1e6);
+        report("load-all", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         // The same block entities come back (ticks counted from now on both sides).
         QCOMPARE(QcBlockEntityDump::lines(*m_server, *m_content), lines);
     }

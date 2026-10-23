@@ -30,7 +30,7 @@ QcVec3 lerp(const QcVec3 &a, const QcVec3 &b, double t)
 double lerpYaw(float from, float to, double t)
 {
     const float delta = std::fmod(to - from + 540.0f, 360.0f) - 180.0f;
-    return double(from + delta * float(t));
+    return static_cast<double>(from + delta * static_cast<float>(t));
 }
 
 // Glowing creatures pulse slowly, each in its own rhythm (`phase`); at full glow they are drawn
@@ -39,7 +39,7 @@ QcEntityLight glowingLight(QcEntityLight light, const QcMobDefinition &mob, doub
 {
     constexpr double emission = 1.8;
     const double pulse = 0.75 + 0.25 * std::sin(seconds * 2.2 + phase);
-    const float glow = float(emission * pulse * mob.glow / double(QcMobDefinition::maxGlow));
+    const float glow = static_cast<float>(emission * pulse * mob.glow / static_cast<double>(QcMobDefinition::maxGlow));
     return QcEntityLight(light.sky, std::max(light.block, glow));
 }
 
@@ -53,7 +53,7 @@ QcEntityFrameBuilder::QcEntityFrameBuilder(const QcSessionParts &parts, const Qc
 
 float QcEntityFrameBuilder::blockLightAt(QcBlockPos pos) const
 {
-    return float(m_parts.meshes->blockLight(pos)) / float(QcLightVolume::maxLevel);
+    return static_cast<float>(m_parts.meshes->blockLight(pos)) / static_cast<float>(QcLightVolume::maxLevel);
 }
 
 std::optional<QcEntityMesher::ItemLook> QcEntityFrameBuilder::heldLook(QcItemId item) const
@@ -125,19 +125,19 @@ float QcEntityFrameBuilder::skyExposure(const QcClientWorld &world, QcBlockPos p
             open += !chunk || chunk->highestNonAir(column.localX(), column.localZ()) < pos.y ? 1 : 0;
         }
     }
-    return covered + (1.0f - covered) * float(open) / 9.0f;
+    return covered + (1.0f - covered) * static_cast<float>(open) / 9.0f;
 }
 
 QcEntityLight QcEntityFrameBuilder::entityLight(const QcClientWorld &world, const QcVec3 &position) const
 {
-    const QcBlockPos feet{int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
+    const QcBlockPos feet{static_cast<int>(std::floor(position.x)), static_cast<int>(std::floor(position.y)), static_cast<int>(std::floor(position.z))};
     return QcEntityLight(skyExposure(world, feet.offset(0, 1, 0)), blockLightAt(feet.offset(0, 1, 0)));
 }
 
 QcCapeDrive QcEntityFrameBuilder::localCapeDrive(const QcEntityPose &pose) const
 {
     const QcClientSession &session = *m_parts.session;
-    const double yaw = double(session.intent().yaw);
+    const double yaw = static_cast<double>(session.intent().yaw);
     if (m_forcedPose.isEmpty()) {
         return QcCapeDrive::from(session.playerMotion().velocity, yaw, pose);
     }
@@ -155,7 +155,7 @@ QcCapeDrive QcEntityFrameBuilder::localCapeDrive(const QcEntityPose &pose) const
 
 double QcEntityFrameBuilder::capeFrameSeconds()
 {
-    const double seconds = m_capeClock.isValid() ? double(m_capeClock.restart()) / 1000.0 : 0.0;
+    const double seconds = m_capeClock.isValid() ? static_cast<double>(m_capeClock.restart()) / 1000.0 : 0.0;
     if (!m_capeClock.isValid()) {
         m_capeClock.start();
     }
@@ -173,7 +173,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         placement.scale *= QcMsg::youngScale;
     }
     if (creature && creature->glow > 0) {
-        placement.light = glowingLight(placement.light, *creature, double(entity.id % 97), frame.seconds);
+        placement.light = glowingLight(placement.light, *creature, static_cast<double>(entity.id % 97), frame.seconds);
     }
     if ((entity.flags & QcMsg::Burning) != 0) {
         const QcPhysics::BodySize body = creature ? QcPhysics::BodySize{creature->width, creature->height}
@@ -233,12 +233,12 @@ void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientE
     QcEntityLight light = entityLight(frame.world, position);
     // A lit explosive flashes white every few ticks and swells in its last ticks (decision E-604).
     if (entity.isPrimedExplosive()) {
-        const int fuse = int(entity.health);
+        const int fuse = static_cast<int>(entity.health);
         if ((fuse / primedFlashTicks) % 2 == 0) {
             light = QcEntityLight(1.0f, 1.0f);
         }
         if (fuse < primedSwellTicks) {
-            placement.size *= 1.0 + 0.2 * (1.0 - double(fuse) / primedSwellTicks);
+            placement.size *= 1.0 + 0.2 * (1.0 - static_cast<double>(fuse) / primedSwellTicks);
         }
     }
     QcEntityMesher::appendBlock(mesh, look, placement, light, frame.uv);
@@ -281,12 +281,12 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
         const QcMobDefinition &kind = frame.content.mobs()[it.value()];
         QcClientEntity shown;
         // An id no entity of the server has (the capes follow entities by id).
-        shown.id = 0xff000000u | (quint32(qHash(pos)) & 0x00ffffffu);
+        shown.id = 0xff000000u | (static_cast<quint32>(qHash(pos)) & 0x00ffffffu);
         shown.kind = QcEntityKind::Creature;
         shown.creatureType = it.value();
         shown.position = feet;
         shown.previousPosition = feet;
-        shown.yaw = float(std::fmod(frame.seconds * turnSpeed + (pos.x * 37 + pos.z * 11) % 360, 360.0));
+        shown.yaw = static_cast<float>(std::fmod(frame.seconds * turnSpeed + (pos.x * 37 + pos.z * 11) % 360, 360.0));
         shown.previousYaw = shown.yaw;
         appendCreature(mesh, shown, frame, std::min(1.0, fit / std::max({kind.height, kind.width, 0.1})));
     }
@@ -330,13 +330,14 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
         if ((centre - viewer).length() > drawDistance) {
             continue;
         }
-        for (qsizetype slot = 0; slot < std::min<qsizetype>(it->size(), qsizetype(places.size())); ++slot) {
+        for (qsizetype slot = 0; slot < std::min<qsizetype>(it->size(), static_cast<qsizetype>(places.size())); ++slot) {
             const QcItemId item = it->at(slot);
             if (!frame.content.isValidItem(item)) {
                 continue;
             }
-            const auto [dx, dz] = places[std::size_t(slot)];
-            const QcEntityMesher::LyingPlacement placement{centre + QcVec3{dx, 0.0, dz}, 45.0 + 90.0 * double(slot), entityLight(frame.world, centre)};
+            const auto [dx, dz] = places[static_cast<std::size_t>(slot)];
+            const QcEntityMesher::LyingPlacement placement{centre + QcVec3{dx, 0.0, dz}, 45.0 + 90.0 * static_cast<double>(slot),
+                entityLight(frame.world, centre)};
             QcEntityMesher::appendLyingItem(mesh, QcFigureLook::item(frame.content, item), placement, frame.uv);
         }
     }
@@ -402,7 +403,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeSway = cape.sway;
     }
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
-                                {feet, double(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
+                                {feet, static_cast<double>(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
     }
@@ -485,7 +486,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendSpawners(*mesh, frame);
     appendSigns(*mesh, frame);
     appendCampfires(*mesh, frame);
-    appendExplosions(*mesh, frame, double(session.tickCount()) + alpha);
+    appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).
     if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {
         appendLocalPlayer(*mesh, frame);
@@ -511,7 +512,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildFramedMaps(const Entity
     for (const QcClientEntity &entity : session.entities()) {
         if (const std::optional<quint32> id = QcHangingMesher::framedMap(entity, frame.content)) {
             const QcVec3 centre = entity.hanging.centre();
-            const QVector3D offset = QVector3D(float(centre.x), float(centre.y), float(centre.z)) - eye;
+            const QVector3D offset = QVector3D(static_cast<float>(centre.x), static_cast<float>(centre.y), static_cast<float>(centre.z)) - eye;
             framed.append({offset.lengthSquared(), *id, &entity});
         }
     }
@@ -554,7 +555,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     const double seconds = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
-    const QcBlockPos head{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    const QcBlockPos head{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     const QcEntityLight light(skyExposure(*session.world(), head), blockLightAt(head));
     QcEntityMesher::appendHand(*mesh, {playerLook(m_settings.character()->appearance()), held ? &*held : nullptr}, hand,
                                {eye, session.intent().yaw, session.intent().pitch, light}, uv);

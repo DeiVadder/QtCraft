@@ -36,8 +36,8 @@ QSet<quint64> loadedUids(const QList<QcCreature> &mobs)
 QcMobManager::QcMobManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
     , m_seed(seed)
-    , m_random(quint32(seed ^ (seed >> 32)))
-    , m_despawnRandom(quint32(qcMixSeed(seed, 6001)))
+    , m_random(static_cast<quint32>(seed ^ (seed >> 32)))
+    , m_despawnRandom(static_cast<quint32>(qcMixSeed(seed, 6001)))
     , m_yawRandom(&m_random)
     , m_behaviour(std::make_unique<QcMobBehaviour>(m_content, m_random))
     , m_spawner(std::make_unique<QcNaturalSpawner>(*this, m_content, seed, m_random))
@@ -88,14 +88,14 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
     mob.type = type;
     mob.motion.position = position;
     mob.health = m_content->mobs()[type].maxHealth;
-    mob.yaw = float(m_yawRandom->bounded(360.0));
+    mob.yaw = static_cast<float>(m_yawRandom->bounded(360.0));
     // A villager always has a profession, the unemployed one at first (decision E-411); it lives
     // on with the world. Its look comes from its id, not from the random sequence of the creatures
     // (one moving in beside a bed gets the bed's look, spawnVillagers).
     if (m_content->mobs()[type].villager) {
         mob.villager.emplace();
         mob.villager->profession = m_content->villagerSettingsOf(type).unemployed;
-        mob.villager->look = quint32(qcMixSeed(m_seed, 4101 + quint64(id)));
+        mob.villager->look = static_cast<quint32>(qcMixSeed(m_seed, 4101 + static_cast<quint64>(id)));
         mob.persistent = true;
     }
     if (m_content->mobs()[type].ai == QcMobDefinition::Ai::Archer) {

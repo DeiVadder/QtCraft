@@ -27,7 +27,7 @@ public:
     static constexpr int maxY = 128;
 
     explicit CaveArea(const QcTerrainGenerator &generator)
-        : m_heights(qsizetype(size) * size)
+        : m_heights(static_cast<qsizetype>(size) * size)
     {
         for (int cz = 0; cz < chunks; ++cz) {
             for (int cx = 0; cx < chunks; ++cx) {
@@ -61,7 +61,7 @@ private:
 
 qint64 caveKey(int x, int y, int z)
 {
-    return (qint64(x) * 4096 + y) * 4096 + z;
+    return (static_cast<qint64>(x) * 4096 + y) * 4096 + z;
 }
 
 // One 6-connected cave component: its cells, the cells a player fits in, and whether it reaches the
@@ -205,7 +205,7 @@ private:
                 }
 
                 for (int y = 0; y < 6; ++y) {
-                    counts.bedrockPerLayer[std::size_t(y)] += chunk->block(x, y, z) == bedrock;
+                    counts.bedrockPerLayer[static_cast<std::size_t>(y)] += chunk->block(x, y, z) == bedrock;
                 }
 
                 // Below the liquid level, caves hold lava and never air.
@@ -249,7 +249,7 @@ private:
         }
 
         // Overhang hollows are not caves: stop below the band they reshape.
-        const int checkTop = column.overhang >= 1.0 ? std::min(top, column.height - int(std::ceil(column.overhang)) - 1) : top;
+        const int checkTop = column.overhang >= 1.0 ? std::min(top, column.height - static_cast<int>(std::ceil(column.overhang)) - 1) : top;
         for (int y = 3; y < std::min(checkTop, 60); ++y) {
             const QcBlockId block = chunk.block(x, y, z);
             // Bedrock is never carved.
@@ -258,7 +258,7 @@ private:
             }
             const bool carved = y <= liquidLevel ? block == lava : block == qcAirBlockId || block == cobweb;
             if (carved != generator.isCave(wx, y, wz)) {
-                return u"carved %1, isCave %2 at %3 %4 %5"_s.arg(int(carved)).arg(int(!carved)).arg(wx).arg(y).arg(wz);
+                return u"carved %1, isCave %2 at %3 %4 %5"_s.arg(static_cast<int>(carved)).arg(static_cast<int>(!carved)).arg(wx).arg(y).arg(wz);
             }
             ++checked;
         }
@@ -408,7 +408,7 @@ private slots:
             }
         }
 
-        qInfo("cave air %lld, largest component %d, walkable %d", qint64(visited.size()), largest, walkable);
+        qInfo("cave air %lld, largest component %d, walkable %d", static_cast<qint64>(visited.size()), largest, walkable);
         QVERIFY2(largest > 2000, qPrintable(QString::number(largest)));
         QVERIFY(walkable > 500);
         QVERIFY(openToSurface);
@@ -521,7 +521,7 @@ private slots:
         }
 
         // A small share of the ground opens into caves (about caveEntrances of the land at most).
-        const double share = double(counts.open) / counts.dry;
+        const double share = static_cast<double>(counts.open) / counts.dry;
         qInfo("open ground %.4f, deep lava %d", share, counts.deepLava);
         QVERIFY2(share > 0.0005 && share < terrain.caveEntrances / 4.0, qPrintable(QString::number(share)));
         QVERIFY(counts.deepLava > 1000 && counts.deepLava <= counts.deepCave);
@@ -530,7 +530,7 @@ private slots:
         const int columns = 4 * half * half * 256;
         QCOMPARE(counts.bedrockPerLayer[0], columns);
         for (int y = 1; y < terrain.bedrockLayers; ++y) {
-            const double expected = double(terrain.bedrockLayers - y) / terrain.bedrockLayers;
+            const double expected = static_cast<double>(terrain.bedrockLayers - y) / terrain.bedrockLayers;
             QVERIFY(std::abs(double(counts.bedrockPerLayer[std::size_t(y)]) / columns - expected) < 0.03);
         }
         for (int y = terrain.bedrockLayers; y < 6; ++y) {
@@ -563,7 +563,7 @@ private slots:
                         const int top = generator.groundTop(wx, wz, column);
                         QVERIFY(chunk->block(x, top, z) != qcAirBlockId || generator.isCave(wx, top, wz));
                         bool airBelow = false;
-                        for (int y = top - 1; y > top - 2 * int(column.overhang) && y > 0; --y) {
+                        for (int y = top - 1; y > top - 2 * static_cast<int>(column.overhang) && y > 0; --y) {
                             airBelow = airBelow || (chunk->block(x, y, z) == qcAirBlockId && !generator.isCave(wx, y, wz));
                         }
                         overhanging += airBelow;

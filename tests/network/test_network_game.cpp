@@ -131,7 +131,7 @@ private slots:
 
         // A block set by the operator reaches everyone.
         const QcVec3 at = players[0]->motion.position;
-        const QcBlockPos pos{int(std::floor(at.x)) + 2, int(std::floor(at.y)), int(std::floor(at.z))};
+        const QcBlockPos pos{static_cast<int>(std::floor(at.x)) + 2, static_cast<int>(std::floor(at.y)), static_cast<int>(std::floor(at.z))};
         players[0]->connection.send(QcMsg::ChatInput{u"/setblock %1 %2 %3 glass"_s.arg(pos.x).arg(pos.y).arg(pos.z)});
         const QcBlockId glass = *m_content->blockId(u"qtcraft:glass"_s);
         QVERIFY(tickUntil([&] {

@@ -24,7 +24,7 @@ void logLeaving(const QcServerClient &client)
 {
     const QString error = client.connection ? client.connection->lastError() : QString();
     const QString why = error.isEmpty() ? u"disconnected"_s : error;
-    const QString seconds = QString::number(double(client.login.connected.elapsed()) / 1000.0, 'f', 0);
+    const QString seconds = QString::number(static_cast<double>(client.login.connected.elapsed()) / 1000.0, 'f', 0);
     if (client.joined) {
         qCInfo(lcServer).noquote() << u"Player %1 (%2) left after %3 s: %4"_s.arg(client.name, client.login.address, seconds, why);
     } else {
@@ -94,7 +94,7 @@ void QcServer::tick()
     m_phases.endTick(m_ticks.currentLateNs());
     m_ticks.stats().addPhases(m_phases.lastTick());
     const QcTickPhaseTimer::Durations &phases = m_phases.lastTick();
-    const double tickMs = double(std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64(0))) / 1e6;
+    const double tickMs = static_cast<double>(std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64{0})) / 1e6;
     m_healthTicks.add(tickMs);
     m_admin.noteTick(tickMs);
     if (const std::optional<QString> lag = m_lag.check(phases, m_phases.now())) {
@@ -253,7 +253,7 @@ void QcServer::autosave()
     // In the players' time: neither a high tick rate nor a sprint saves more often (decision E-249).
     // Unloaded chunks waiting in memory beyond their limit are written early (decision E-374), unless
     // saving fails: then only the normal interval tries again. One save runs at a time.
-    const qint64 intervalNs = qint64(m_state.config().autosaveSeconds) * 1'000'000'000;
+    const qint64 intervalNs = static_cast<qint64>(m_state.config().autosaveSeconds) * 1'000'000'000;
     const bool due = intervalNs > 0 && m_state.clock().playerTimeNs() - m_lastAutosaveNs >= intervalNs;
     const bool early = m_persistence.manyUnsavedChunks() && !m_persistence.savesFailing();
     if (!m_persistence.hasStorage() || m_persistence.saveRunning() || (!due && !early)) {
@@ -269,8 +269,8 @@ void QcServer::refillInputBudget(Client &client) const
 {
     // One input per 50 ms of the real time the tick stands for, whatever the tick rate; the cap
     // holds a whole tick's share, so slow rates keep the player's pace (decision E-249).
-    const double share = double(m_state.clock().lastTickNs()) / double(QcTickScheduler::intervalNs);
-    const double cap = std::max(double(Client::maxInputBudget), share + Client::inputMargin);
+    const double share = static_cast<double>(m_state.clock().lastTickNs()) / static_cast<double>(QcTickScheduler::intervalNs);
+    const double cap = std::max(static_cast<double>(Client::maxInputBudget), share + Client::inputMargin);
     client.input.budget = std::min(client.input.budget + share, cap);
 }
 

@@ -75,7 +75,7 @@ int QcAdventureRules::nameCount() const
             count += 1 + it.value().size();
         }
     }
-    return int(count);
+    return static_cast<int>(count);
 }
 
 bool QcAdventureRules::isEmpty() const
@@ -206,9 +206,9 @@ QcAdventureRules::Read QcAdventureRules::fromJson(const QJsonObject &json)
 void QcAdventureRules::write(QDataStream &stream) const
 {
     for (const Lists &listed : m_lists) {
-        stream << quint32(listed.size());
+        stream << static_cast<quint32>(listed.size());
         for (auto it = listed.cbegin(); it != listed.cend(); ++it) {
-            stream << it.key() << quint32(it.value().size());
+            stream << it.key() << static_cast<quint32>(it.value().size());
             for (const QString &block : it.value()) {
                 stream << block;
             }

@@ -198,7 +198,7 @@ public:
     QList<Sapling> saplingsInOrder() const;
     QList<quint64> saplingOrders() const;
     Sapling *saplingByOrder(quint64 order);
-    qsizetype saplingCount() const { return qsizetype(m_saplings.size()); }
+    qsizetype saplingCount() const { return static_cast<qsizetype>(m_saplings.size()); }
     // Takes a sapling from a save with its order (also beyond the limit); false when its position
     // or order is taken.
     bool putSapling(Sapling sapling);
@@ -287,7 +287,7 @@ private:
     void placedMemory(QcBlockPos pos, QcBlockId before, QcBlockId after);
     QcSignalKind kindOf(QcBlockId block) const;
     // A block state that holds no entry of any kind (no container, machine or sapling).
-    bool isPlain(QcBlockId block) const { return std::size_t(block) < m_plain.size() && m_plain[std::size_t(block)]; }
+    bool isPlain(QcBlockId block) const { return static_cast<std::size_t>(block) < m_plain.size() && m_plain[static_cast<std::size_t>(block)]; }
     void spill(QcBlockPos pos, QList<QcItemStack> stacks, double experience = 0.0);
 
     std::shared_ptr<const QcContentRegistry> m_content;

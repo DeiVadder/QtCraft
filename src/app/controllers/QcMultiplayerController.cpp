@@ -174,7 +174,7 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     }
 
     QcNetworkConfig network;
-    network.port = quint16(std::clamp(port, 0, 65535));
+    network.port = static_cast<quint16>(std::clamp(port, 0, 65535));
     // Test hook: QTCRAFT_LAN_BIND=127.0.0.1 keeps scripted runs on this computer.
     if (const QHostAddress bind(qEnvironmentVariable("QTCRAFT_LAN_BIND")); !bind.isNull()) {
         network.bindAddress = bind;
@@ -212,5 +212,5 @@ QStringList QcMultiplayerController::lanAddresses() const
     }
     // A listener on one address is reached only there.
     const bool anyAddress = m_lanBind == QHostAddress::Any || m_lanBind == QHostAddress::AnyIPv4 || m_lanBind == QHostAddress::AnyIPv6;
-    return anyAddress ? QcLanAddresses::current(quint16(m_lanPort)) : QcLanAddresses::describe({m_lanBind}, quint16(m_lanPort), true);
+    return anyAddress ? QcLanAddresses::current(static_cast<quint16>(m_lanPort)) : QcLanAddresses::describe({m_lanBind}, static_cast<quint16>(m_lanPort), true);
 }

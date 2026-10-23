@@ -83,7 +83,7 @@ public:
     QcAdventureRules adventure;
 
 private:
-    qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(m_sizeX) * (z + qsizetype(m_sizeZ) * y); }
+    qsizetype cellIndex(int x, int y, int z) const { return x + static_cast<qsizetype>(m_sizeX) * (z + static_cast<qsizetype>(m_sizeZ) * y); }
 
     QString m_name;
     int m_sizeX = 0;

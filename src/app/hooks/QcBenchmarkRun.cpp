@@ -31,9 +31,9 @@ QString tickPhasePairs(const QcTickSummary &ticks)
 {
     QStringList pairs;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        const QLatin1StringView id(QcTickPhases::ids[std::size_t(phase)]);
-        pairs.append(u"tick_%1_avg_ms=%2"_s.arg(id).arg(ticks.phaseAverageMs[std::size_t(phase)], 0, 'f', 4));
-        pairs.append(u"tick_%1_max_ms=%2"_s.arg(id).arg(ticks.phaseWorstMs[std::size_t(phase)], 0, 'f', 3));
+        const QLatin1StringView id(QcTickPhases::ids[static_cast<std::size_t>(phase)]);
+        pairs.append(u"tick_%1_avg_ms=%2"_s.arg(id).arg(ticks.phaseAverageMs[static_cast<std::size_t>(phase)], 0, 'f', 4));
+        pairs.append(u"tick_%1_max_ms=%2"_s.arg(id).arg(ticks.phaseWorstMs[static_cast<std::size_t>(phase)], 0, 'f', 3));
     }
     return pairs.join(u' ');
 }
@@ -58,7 +58,7 @@ void QcBenchmarkRun::configure(int seconds, const QString &scenario, const QStri
     if (!m_packSwitch.isEmpty()) {
         connect(m_settings.texturePacks(), &QcTexturePackController::atlasBuilt, this, [this] {
             if (m_switch >= 0) {
-                m_switches[std::size_t(m_switch)].atlasReady(m_clock.nsecsElapsed());
+                m_switches[static_cast<std::size_t>(m_switch)].atlasReady(m_clock.nsecsElapsed());
             }
         });
     }
@@ -85,7 +85,7 @@ void QcBenchmarkRun::recordFrame()
     const qint64 ns = m_frame.nsecsElapsed();
     m_frameNs.append(ns);
     if (m_switch >= 0) {
-        m_switches[std::size_t(m_switch)].addFrame(m_clock.nsecsElapsed(), ns);
+        m_switches[static_cast<std::size_t>(m_switch)].addFrame(m_clock.nsecsElapsed(), ns);
     }
     if (ns > 100'000'000) {
         // A hidden or covered window may stall frames for reasons outside the game.
@@ -103,10 +103,10 @@ void QcBenchmarkRun::recordGuiFrame(double guiCpuMs, qint64 entityNs, qint64 pre
         return;
     }
 
-    m_frameProfile.addGuiFrame(guiCpuMs, double(entityNs) / 1e6, double(previewNs) / 1e6);
+    m_frameProfile.addGuiFrame(guiCpuMs, static_cast<double>(entityNs) / 1e6, static_cast<double>(previewNs) / 1e6);
     m_frameProfile.addRenderSamples(samples);
     if (m_switch >= 0) {
-        QcPackSwitchHitch &hitch = m_switches[std::size_t(m_switch)];
+        QcPackSwitchHitch &hitch = m_switches[static_cast<std::size_t>(m_switch)];
         const qint64 now = m_clock.nsecsElapsed();
         hitch.addGuiCpu(now, guiCpuMs);
         for (const QcRenderSample &sample : samples) {
@@ -173,8 +173,8 @@ void QcBenchmarkRun::startTorchRing()
         constexpr int ring = 12;
         const int index = (*step / 2) % ring;
         const double angle = index * 2.0 * std::numbers::pi / ring;
-        const int x = int(std::lround(std::cos(angle) * 9.0));
-        const int z = int(std::lround(std::sin(angle) * 9.0));
+        const int x = static_cast<int>(std::lround(std::cos(angle) * 9.0));
+        const int z = static_cast<int>(std::lround(std::sin(angle) * 9.0));
         m_parts.session->sendChat(u"/setblock ~%1 ~ ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? u"torch"_s : u"air"_s));
         ++*step;
     });
@@ -194,8 +194,8 @@ void QcBenchmarkRun::startLiquidRing()
         constexpr int ring = 6;
         const int index = (*step / 2) % ring;
         const double angle = index * 2.0 * std::numbers::pi / ring;
-        const int x = int(std::lround(std::cos(angle) * 8.0));
-        const int z = int(std::lround(std::sin(angle) * 8.0));
+        const int x = static_cast<int>(std::lround(std::cos(angle) * 8.0));
+        const int z = static_cast<int>(std::lround(std::sin(angle) * 8.0));
         const QString source = index % 3 == 2 ? u"lava"_s : u"water"_s;
         m_parts.session->sendChat(u"/setblock ~%1 ~4 ~%2 %3"_s.arg(x).arg(z).arg(*step % 2 == 0 ? source : u"air"_s));
         ++*step;
@@ -214,7 +214,7 @@ void QcBenchmarkRun::startWalking()
         held.insert(keys.key(A::Jump, 0));
     }
     m_input.holdKeys(std::move(held));
-    m_frameNs.reserve(qsizetype(m_seconds) * 240);
+    m_frameNs.reserve(static_cast<qsizetype>(m_seconds) * 240);
     m_frame.start();
     m_running = true;
     m_checkpoint = m_parts.session->playerMotion().position;
@@ -249,7 +249,7 @@ void QcBenchmarkRun::switchPacks(int index)
     }
 
     m_switch = index;
-    m_switches[std::size_t(index)].start(m_clock.nsecsElapsed());
+    m_switches[static_cast<std::size_t>(index)].start(m_clock.nsecsElapsed());
     // The whole selection at once (one atlas build) and only for this run: the player's stored
     // selection stays as it was (decision E-332).
     QcTexturePackController *packs = m_settings.texturePacks();
@@ -273,12 +273,12 @@ void QcBenchmarkRun::finish()
         return;
     }
 
-    const double p99Ms = double(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
+    const double p99Ms = static_cast<double>(sorted[std::min(sorted.size() - 1, sorted.size() * 99 / 100)]) / 1e6;
     logBenchLine(sorted, p99Ms);
     logReport(sorted, p99Ms);
     for (int i = 0; i <= m_switch; ++i) {
         qCInfo(lcGame).noquote() << u"PACKSWITCH %1 packs=%2 %3"_s.arg(i == 0 ? u"on"_s : u"off"_s, m_packSwitch.join(u','),
-                                                                    m_switches[std::size_t(i)].summary());
+                                                                    m_switches[static_cast<std::size_t>(i)].summary());
     }
     QCoreApplication::quit();
 }
@@ -291,14 +291,14 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
     }
 
     const QcTickSummary ticks = m_parts.server ? m_parts.server->tickStats() : QcTickSummary();
-    const double averageMs = double(total) / double(sorted.size()) / 1e6;
+    const double averageMs = static_cast<double>(total) / static_cast<double>(sorted.size()) / 1e6;
     const qsizetype entities = m_parts.session ? m_parts.session->entities().size() : 0;
 
     // Block changes until their sections show (with their light), the most sections and light jobs
     // waiting at once, and the light thread's work per job.
     const QcMeshScheduler::Stats mesh = m_parts.meshes->stats();
-    const double latencyMs = mesh.latencySamples > 0 ? mesh.latencyTotalMs / double(mesh.latencySamples) : 0.0;
-    const double lightMs = mesh.lightJobs > 0 ? mesh.lightTotalMs / double(mesh.lightJobs) : 0.0;
+    const double latencyMs = mesh.latencySamples > 0 ? mesh.latencyTotalMs / static_cast<double>(mesh.latencySamples) : 0.0;
+    const double lightMs = mesh.lightJobs > 0 ? mesh.lightTotalMs / static_cast<double>(mesh.lightJobs) : 0.0;
 
     qCInfo(lcGame).noquote() << u"BENCH frame_avg_ms=%1 frame_p99_ms=%2 tick_avg_ms=%3 tick_worst_ms=%4 peak_rss_mb=%5 entities=%6 "
                                 u"change_mesh_avg_ms=%7 change_mesh_max_ms=%8 change_sections=%9 mesh_backlog_max=%10 "
@@ -318,7 +318,7 @@ void QcBenchmarkRun::logBenchLine(const QList<qint64> &sorted, double p99Ms) con
                                     .arg(lightMs, 0, 'f', 3)
                                     .arg(mesh.lightWorstMs, 0, 'f', 3)
                                     .arg(mesh.meshJobs)
-                                    .arg(mesh.meshJobs > 0 ? mesh.meshTotalMs / double(mesh.meshJobs) : 0.0, 0, 'f', 3)
+                                    .arg(mesh.meshJobs > 0 ? mesh.meshTotalMs / static_cast<double>(mesh.meshJobs) : 0.0, 0, 'f', 3)
                                     .arg(mesh.meshWorstMs, 0, 'f', 3)
                                     .arg(ticks.lateAverageMs, 0, 'f', 3)
                                     .arg(ticks.lateP99Ms, 0, 'f', 3)
@@ -352,8 +352,8 @@ QString QcBenchmarkRun::memoryPairs() const
         .arg(QcProcessMemory::peakFootprintMb(), 0, 'f', 1)
         .arg(blocks.chunks)
         .arg(blocks.palettedSections)
-        .arg(double(blocks.bytes) / mb, 0, 'f', 1)
-        .arg(double(m_parts.meshes->lightBytes()) / mb, 0, 'f', 1);
+        .arg(static_cast<double>(blocks.bytes) / mb, 0, 'f', 1)
+        .arg(static_cast<double>(m_parts.meshes->lightBytes()) / mb, 0, 'f', 1);
 }
 
 QString QcBenchmarkRun::entityPairs() const
@@ -383,8 +383,8 @@ void QcBenchmarkRun::logReport(const QList<qint64> &sorted, double p99Ms) const
         total += ns;
     }
 
-    const double averageFps = double(sorted.size()) * 1e9 / double(total);
-    const double worstMs = double(sorted.constLast()) / 1e6;
+    const double averageFps = static_cast<double>(sorted.size()) * 1e9 / static_cast<double>(total);
+    const double worstMs = static_cast<double>(sorted.constLast()) / 1e6;
     const QcVec3 position = m_parts.session ? m_parts.session->playerMotion().position : QcVec3{};
     const QString report = u"Benchmark: %1 frames in %2 s, average %3 FPS, 99th percentile frame %4 ms (%5 FPS), worst %6 ms, "
                            u"view distance %7, walked to %8 / %9, %10 chunks loaded"_s.arg(sorted.size())

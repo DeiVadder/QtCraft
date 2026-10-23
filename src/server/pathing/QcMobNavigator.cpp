@@ -27,7 +27,7 @@ constexpr double stepLookAhead = 0.7;
 
 QcVec3 centreOf(QcBlockPos cell)
 {
-    return {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+    return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
 }
 
 double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
@@ -42,7 +42,7 @@ int tolerance(const QcCreature &mob)
     if (mob.path.purpose != QcMobPath::Purpose::Chase) {
         return 0;
     }
-    return std::max(1, int(horizontalDistance(mob.motion.position, mob.path.goal) / 4.0));
+    return std::max(1, static_cast<int>(horizontalDistance(mob.motion.position, mob.path.goal) / 4.0));
 }
 
 int cellsApart(QcBlockPos a, QcBlockPos b)
@@ -162,7 +162,7 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const QcPathGroun
 
     const QcBlockPos waypoint = path.cells[path.next];
     // The way left: to the waypoint, then about a metre per waypoint after it.
-    const double left = horizontalDistance(mob.motion.position, centreOf(waypoint)) + double(path.cells.size() - path.next - 1);
+    const double left = horizontalDistance(mob.motion.position, centreOf(waypoint)) + static_cast<double>(path.cells.size() - path.next - 1);
     QcPhysics::Steering steering = towards(mob, centreOf(waypoint), brakedSpeed(mob, speed, left, ground.world));
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, floorSink, 0.0});
     steering.jump = waypoint.y > feet.y && horizontalDistance(mob.motion.position, centreOf(waypoint)) < jumpDistance;
@@ -258,7 +258,7 @@ bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcPathGround
     }
 
     QcPathDirectCells direct(ground.world, ground.cells);
-    for (int dy = 1; dy >= -std::max(int(ground.rules.maxDrop), QcPathRules::waterDrop); --dy) {
+    for (int dy = 1; dy >= -std::max(static_cast<int>(ground.rules.maxDrop), QcPathRules::waterDrop); --dy) {
         const QcBlockPos cell = ahead.offset(0, dy, 0);
         if (QcPathTerrain::standAt(direct, cell, ground.rules).ok) {
             return QcPathTerrain::safeLanding(direct, cell, -dy, ground.rules);

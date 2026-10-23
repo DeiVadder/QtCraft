@@ -62,7 +62,7 @@ bool hasMarkup(const QString &name)
 {
     QString name = QcNameText::clean(requested, maxPlayerNameLength);
     const QList<uint> codePoints = name.toUcs4();
-    if (hasMarkup(name) || std::ranges::none_of(codePoints, [](uint codePoint) { return namesSomebody(char32_t(codePoint)); })) {
+    if (hasMarkup(name) || std::ranges::none_of(codePoints, [](uint codePoint) { return namesSomebody(static_cast<char32_t>(codePoint)); })) {
         return std::nullopt;
     }
     return name;

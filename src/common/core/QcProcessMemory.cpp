@@ -45,10 +45,11 @@ double currentMb()
 #if defined(Q_OS_DARWIN)
     mach_task_basic_info_data_t info{};
     mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): task_info takes the info struct as an integer array (Mach API)
     if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO, reinterpret_cast<task_info_t>(&info), &count) != KERN_SUCCESS) {
         return 0.0;
     }
-    return double(info.resident_size) / bytesPerMb;
+    return static_cast<double>(info.resident_size) / bytesPerMb;
 #elif defined(Q_OS_LINUX)
     // Second field of statm: resident pages.
     QFile statm(QStringLiteral("/proc/self/statm"));
@@ -56,10 +57,10 @@ double currentMb()
         return 0.0;
     }
     const QList<QByteArray> fields = statm.readAll().split(' ');
-    return fields.size() > 1 ? fields[1].toDouble() * double(sysconf(_SC_PAGESIZE)) / bytesPerMb : 0.0;
+    return fields.size() > 1 ? fields[1].toDouble() * static_cast<double>(sysconf(_SC_PAGESIZE)) / bytesPerMb : 0.0;
 #elif defined(Q_OS_WIN)
     const std::optional<PROCESS_MEMORY_COUNTERS> counters = windowsCounters();
-    return counters ? double(counters->WorkingSetSize) / bytesPerMb : 0.0;
+    return counters ? static_cast<double>(counters->WorkingSetSize) / bytesPerMb : 0.0;
 #else
     return 0.0;
 #endif
@@ -73,13 +74,13 @@ double peakMb()
         return 0.0;
     }
 #if defined(Q_OS_DARWIN)
-    return double(usage.ru_maxrss) / bytesPerMb; // bytes
+    return static_cast<double>(usage.ru_maxrss) / bytesPerMb; // bytes
 #else
-    return double(usage.ru_maxrss) / 1024.0; // kilobytes
+    return static_cast<double>(usage.ru_maxrss) / 1024.0; // kilobytes
 #endif
 #elif defined(Q_OS_WIN)
     const std::optional<PROCESS_MEMORY_COUNTERS> counters = windowsCounters();
-    return counters ? double(counters->PeakWorkingSetSize) / bytesPerMb : 0.0;
+    return counters ? static_cast<double>(counters->PeakWorkingSetSize) / bytesPerMb : 0.0;
 #else
     return 0.0;
 #endif
@@ -92,6 +93,7 @@ std::optional<task_vm_info_data_t> vmInfo()
 {
     task_vm_info_data_t info{};
     mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): task_info takes the info struct as an integer array (Mach API)
     if (task_info(mach_task_self(), TASK_VM_INFO, reinterpret_cast<task_info_t>(&info), &count) != KERN_SUCCESS) {
         return std::nullopt;
     }
@@ -105,7 +107,7 @@ double footprintMb()
 {
 #if defined(Q_OS_DARWIN)
     const std::optional<task_vm_info_data_t> info = vmInfo();
-    return info ? double(info->phys_footprint) / bytesPerMb : 0.0;
+    return info ? static_cast<double>(info->phys_footprint) / bytesPerMb : 0.0;
 #else
     return currentMb();
 #endif
@@ -115,7 +117,7 @@ double peakFootprintMb()
 {
 #if defined(Q_OS_DARWIN)
     const std::optional<task_vm_info_data_t> info = vmInfo();
-    return info ? double(info->ledger_phys_footprint_peak) / bytesPerMb : 0.0;
+    return info ? static_cast<double>(info->ledger_phys_footprint_peak) / bytesPerMb : 0.0;
 #else
     return peakMb();
 #endif

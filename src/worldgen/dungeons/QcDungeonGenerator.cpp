@@ -14,7 +14,7 @@ constexpr qsizetype cacheCapacity = 4096;
 
 int floorDiv(int value, int divisor)
 {
-    return int(std::floor(double(value) / divisor));
+    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
 } // namespace
@@ -24,10 +24,10 @@ QcDungeonGenerator::QcDungeonGenerator(const QcTerrainGenerator &terrain, const 
     , m_seed(qcMixSeed(seed, 0x3802))
     , m_lootTable(content.worldgen().terrainSettings().dungeons.lootTable)
 {
-    m_rock.resize(std::size_t(content.stateCount()));
+    m_rock.resize(static_cast<std::size_t>(content.stateCount()));
     m_liquid.resize(m_rock.size());
     for (std::size_t id = 0; id < m_rock.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         m_rock[id] = block.solid && block.opaque && block.tool == QStringLiteral("pickaxe");
         m_liquid[id] = block.liquid;
     }
@@ -35,7 +35,7 @@ QcDungeonGenerator::QcDungeonGenerator(const QcTerrainGenerator &terrain, const 
 
 std::shared_ptr<const QcDungeonPlan> QcDungeonGenerator::planOf(int regionX, int regionZ) const
 {
-    const qint64 key = (qint64(regionX) << 32) ^ qint64(quint32(regionZ));
+    const qint64 key = (static_cast<qint64>(regionX) << 32) ^ static_cast<qint64>(static_cast<quint32>(regionZ));
     {
         const QMutexLocker lock(&m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
@@ -110,7 +110,7 @@ void QcDungeonGenerator::build(QcChunk &chunk, const QcDungeonPlan &plan) const
     // The corridors: lined where they border no rock, then carved.
     const int floorY = plan.origin.y;
     for (const QcBlockPos &cell : plan.lining) {
-        if (inChunk(cell) && !m_rock[std::size_t(chunk.block(cell.localX(), cell.y, cell.localZ()))]) {
+        if (inChunk(cell) && !m_rock[static_cast<std::size_t>(chunk.block(cell.localX(), cell.y, cell.localZ()))]) {
             set(cell, wallAt(cell, cell.y <= floorY));
         }
     }
@@ -149,7 +149,7 @@ void QcDungeonGenerator::sealLiquids(QcChunk &chunk, const QcDungeonPlan &plan) 
             if (next.chunk() != chunk.pos() || !next.isInsideWorldHeight() || carved.contains(next) || plan.inRoom(next)) {
                 continue;
             }
-            if (m_liquid[std::size_t(chunk.block(next.localX(), next.y, next.localZ()))]) {
+            if (m_liquid[static_cast<std::size_t>(chunk.block(next.localX(), next.y, next.localZ()))]) {
                 chunk.setBlock(next.localX(), next.y, next.localZ(), wallAt(next, false));
             }
         }
@@ -182,7 +182,8 @@ QcChunkFurnishing QcDungeonGenerator::furnishingIn(QcChunkPos pos) const
         }
         for (const QcDungeonPlan::Placed &chest : plan->chests) {
             if (chest.at.chunk() == pos) {
-                const quint64 seed = qcMixSeed(m_seed, quint64(qcPositionRandom(m_seed ^ 0x5eed, chest.at.x, chest.at.y, chest.at.z) * 4294967296.0));
+                const quint64 seed = qcMixSeed(m_seed,
+                    static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, chest.at.x, chest.at.y, chest.at.z) * 4294967296.0));
                 furnishing.chests.append({chest.at, m_lootTable, seed});
             }
         }

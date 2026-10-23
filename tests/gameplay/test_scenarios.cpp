@@ -116,8 +116,8 @@ private:
         const double half = width / 2.0;
         for (double distance = 1.0;; distance += 0.25) {
             const QcVec3 at = centre + direction * distance;
-            const int x = int(std::floor(at.x));
-            const int z = int(std::floor(at.z));
+            const int x = static_cast<int>(std::floor(at.x));
+            const int z = static_cast<int>(std::floor(at.z));
             const bool apartX = x >= centre.x + half || x + 1 <= centre.x - half;
             const bool apartZ = z >= centre.z + half || z + 1 <= centre.z - half;
             if (apartX || apartZ) {
@@ -194,9 +194,9 @@ private slots:
     {
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
         const QJsonObject below = request({{u"cmd"_s, u"block"_s},
-                                           {u"x"_s, int(std::floor(feet.x))},
-                                           {u"y"_s, int(std::floor(feet.y)) - 1},
-                                           {u"z"_s, int(std::floor(feet.z))}});
+                                           {u"x"_s, static_cast<int>(std::floor(feet.x))},
+                                           {u"y"_s, static_cast<int>(std::floor(feet.y)) - 1},
+                                           {u"z"_s, static_cast<int>(std::floor(feet.z))}});
         const QString name = below.value(u"block"_s).toString();
         QVERIFY2(name == u"qtcraft:grass_block"_s || name == u"qtcraft:sand"_s, qPrintable(name));
         const QJsonObject around = request({{u"cmd"_s, u"blocks"_s}, {u"radius"_s, 1}});
@@ -232,9 +232,9 @@ private slots:
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~2 ~ ~ dirt"_s}});
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
         const QJsonObject mined = request({{u"cmd"_s, u"mine"_s},
-                                           {u"x"_s, int(std::floor(feet.x)) + 2},
-                                           {u"y"_s, int(std::floor(feet.y))},
-                                           {u"z"_s, int(std::floor(feet.z))}});
+                                           {u"x"_s, static_cast<int>(std::floor(feet.x)) + 2},
+                                           {u"y"_s, static_cast<int>(std::floor(feet.y))},
+                                           {u"z"_s, static_cast<int>(std::floor(feet.z))}});
         QVERIFY2(mined.value(u"ok"_s).toBool(), QJsonDocument(mined).toJson().constData());
         request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
         const QJsonObject heard = request({{u"cmd"_s, u"sounds"_s}});
@@ -271,9 +271,9 @@ private slots:
 
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
         const QJsonObject used = request({{u"cmd"_s, u"use"_s},
-                                          {u"x"_s, int(std::floor(feet.x)) + 2},
-                                          {u"y"_s, int(std::floor(feet.y)) - 1},
-                                          {u"z"_s, int(std::floor(feet.z))},
+                                          {u"x"_s, static_cast<int>(std::floor(feet.x)) + 2},
+                                          {u"y"_s, static_cast<int>(std::floor(feet.y)) - 1},
+                                          {u"z"_s, static_cast<int>(std::floor(feet.z))},
                                           {u"face"_s, u"up"_s}});
         QVERIFY2(used.value(u"ok"_s).toBool(), QJsonDocument(used).toJson().constData());
         request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
@@ -313,9 +313,9 @@ private slots:
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give flint_and_steel 1"_s}});
         QVERIFY(QTest::qWaitFor([&] { return countOf(u"qtcraft:flint_and_steel"_s) == 1; }, timeoutMs));
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
-        const int x = int(std::floor(feet.x)) + 2;
-        const int y = int(std::floor(feet.y));
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x)) + 2;
+        const int y = static_cast<int>(std::floor(feet.y));
+        const int z = static_cast<int>(std::floor(feet.z));
         const QJsonObject lit = request({{u"cmd"_s, u"ignite"_s}, {u"x"_s, x}, {u"y"_s, y - 1}, {u"z"_s, z}, {u"face"_s, u"up"_s}});
         QVERIFY2(lit.value(u"ok"_s).toBool(), QJsonDocument(lit).toJson().constData());
         request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 2}});
@@ -341,9 +341,9 @@ private slots:
         QCOMPARE(before.value(u"experienceForNext"_s).toInt(), 7);
 
         const QcVec3 feet = position(before);
-        const int x = int(std::floor(feet.x)) + 1;
-        const int y = int(std::floor(feet.y));
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x)) + 1;
+        const int y = static_cast<int>(std::floor(feet.y));
+        const int z = static_cast<int>(std::floor(feet.z));
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~1 ~ ~ diamond_ore"_s}});
         QVERIFY(QTest::qWaitFor([&] { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString() == u"qtcraft:diamond_ore"_s; }, timeoutMs));
         const QJsonObject mined = request({{u"cmd"_s, u"mine"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}});
@@ -465,9 +465,9 @@ private slots:
         chat(u"/give wooden_hoe"_s);
         chat(u"/give wheat_seeds 1"_s);
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
-        const int x = int(std::floor(feet.x)) + 2;
-        const int y = int(std::floor(feet.y)) - 1;
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x)) + 2;
+        const int y = static_cast<int>(std::floor(feet.y)) - 1;
+        const int z = static_cast<int>(std::floor(feet.z));
         const auto blockAt = [&](int dy) { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y + dy}, {u"z"_s, z}}); };
         const auto useOn = [&](const QString &item) {
             QVERIFY(select(item));
@@ -592,7 +592,8 @@ private slots:
         const QcVec3 pig = position(*settled);
         const std::shared_ptr<const QcContentRegistry> content = m_session->content();
         const double width = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)].width;
-        const QcBlockPos ground = groundCellBeyond(pig, QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized(), width, int(std::floor(feet.y)) - 1);
+        const QcBlockPos ground = groundCellBeyond(pig, QcVec3{pig.x - feet.x, 0.0, pig.z - feet.z}.normalized(), width,
+            static_cast<int>(std::floor(feet.y)) - 1);
         const QcVec3 face{ground.x + 0.5, ground.y + 1.0, ground.z + 0.5};
         QVERIFY((face - (feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0})).length() < QcRaycast::playerReach);
         const QJsonObject used = request({{u"cmd"_s, u"use"_s}, {u"x"_s, ground.x}, {u"y"_s, ground.y}, {u"z"_s, ground.z}, {u"face"_s, u"up"_s}});

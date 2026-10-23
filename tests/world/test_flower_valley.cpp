@@ -35,7 +35,7 @@ struct ValleySample
 ValleySample sample(const QcTerrainGenerator &generator)
 {
     ValleySample result;
-    result.biomes.reserve(qsizetype(gridCells) * gridCells);
+    result.biomes.reserve(static_cast<qsizetype>(gridCells) * gridCells);
     for (int i = 0; i < gridCells; ++i) {
         for (int j = 0; j < gridCells; ++j) {
             const int x = -gridReach + j * gridStep;
@@ -127,7 +127,7 @@ private slots:
             const QcTerrainGenerator generator(m_content, seed);
             QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
             const ValleySample one = sample(generator);
-            qInfo("seed %lld: flower valley %.4f of the land", seed, double(one.valley) / one.land);
+            qInfo("seed %lld: flower valley %.4f of the land", seed, static_cast<double>(one.valley) / one.land);
             total.land += one.land;
             total.valley += one.valley;
             total.outsideSpots += one.outsideSpots;
@@ -138,9 +138,9 @@ private slots:
             seedsWithValleys += one.valley > 0 ? 1 : 0;
         }
 
-        const double share = double(total.valley) / total.land;
-        const double valleyHeight = double(total.valleyHeight) / total.valley;
-        const double plainsHeight = double(total.plainsHeight) / total.plains;
+        const double share = static_cast<double>(total.valley) / total.land;
+        const double valleyHeight = static_cast<double>(total.valleyHeight) / total.valley;
+        const double plainsHeight = static_cast<double>(total.plainsHeight) / total.plains;
         qInfo("flower valley %.4f of the land (%d samples, %d in ponds), height %.1f against plains %.1f", share, total.valley,
               total.ponds, valleyHeight, plainsHeight);
         // Measured: 0.024 of the land (0.021-0.030 per seed), 5 % of the valley in ponds, 67.3 against
@@ -198,7 +198,8 @@ private slots:
                     different += same ? 0 : 1;
                 }
             }
-            qInfo("seed %lld: %.3f of the samples in the spots, %d outside where only one builds a river", qlonglong(seed), double(inside) / (inside + outside), rivers);
+            qInfo("seed %lld: %.3f of the samples in the spots, %d outside where only one builds a river", static_cast<qlonglong>(seed),
+                static_cast<double>(inside) / (inside + outside), rivers);
             QVERIFY2(inside > 0, qPrintable(QString::number(seed)));
             // The spots cover about a third of the samples (0.35 on both seeds, decision E-824), most
             // of it where the valley loses to the climate's own biome.

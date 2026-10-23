@@ -22,18 +22,18 @@ namespace {
         return qcError(u"Cannot write %1"_s.arg(path));
     }
 
-    const auto dataBytes = quint32(buffer.samples.size() * sizeof(qint16));
+    const auto dataBytes = static_cast<quint32>(buffer.samples.size() * sizeof(qint16));
     QDataStream stream(&file);
     stream.setByteOrder(QDataStream::LittleEndian);
     stream.writeRawData("RIFF", 4);
-    stream << quint32(36 + dataBytes);
+    stream << static_cast<quint32>(36 + dataBytes);
     stream.writeRawData("WAVEfmt ", 8);
-    stream << quint32(16) << quint16(1) << quint16(1) << quint32(buffer.sampleRate) << quint32(buffer.sampleRate * 2) << quint16(2)
-           << quint16(16);
+    stream << quint32{16} << quint16{1} << quint16{1} << static_cast<quint32>(buffer.sampleRate) << static_cast<quint32>(buffer.sampleRate * 2) << quint16{2}
+           << quint16{16};
     stream.writeRawData("data", 4);
     stream << dataBytes;
     for (const float sample : buffer.samples) {
-        stream << qint16(std::lround(std::clamp(sample, -1.0f, 1.0f) * 32767.0f));
+        stream << static_cast<qint16>(std::lround(std::clamp(sample, -1.0f, 1.0f) * 32767.0f));
     }
 
     if (!file.commit()) {

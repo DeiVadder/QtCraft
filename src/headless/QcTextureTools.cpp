@@ -71,7 +71,7 @@ QImage previewOf(const QHash<QString, QImage> &tiles, int resolution)
     preview.fill(Qt::transparent);
     QPainter painter(&preview);
     for (qsizetype i = 0; i < previewKeys.size(); ++i) {
-        painter.drawImage(int(i % 4) * resolution, int(i / 4) * resolution, tiles.value(previewKeys[i]));
+        painter.drawImage(static_cast<int>(i % 4) * resolution, static_cast<int>(i / 4) * resolution, tiles.value(previewKeys[i]));
     }
     return preview;
 }
@@ -146,7 +146,7 @@ int printAtlasStats(const QcContentRegistry &content, const QString &modsDirecto
             best = std::min(best, timer.elapsed());
         }
         std::println("ATLAS {} {} {} {}x{} {} {:.1f} {} {} {}", id.isEmpty() ? "base" : id.toStdString(), atlas.requestedTileSize(), atlas.tileSize(),
-                     atlas.image().width(), atlas.image().height(), atlas.levels().size(), double(atlas.bytes()) / (1024.0 * 1024.0), loadMs,
+                     atlas.image().width(), atlas.image().height(), atlas.levels().size(), static_cast<double>(atlas.bytes()) / (1024.0 * 1024.0), loadMs,
                      best, id.isEmpty() ? 0 : atlas.sources().value(id));
     }
     return 0;

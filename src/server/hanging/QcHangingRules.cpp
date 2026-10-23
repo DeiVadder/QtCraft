@@ -77,7 +77,7 @@ bool overlaps(const QcHangingManager &hangings, const QcHanging &hanging)
         candidate.type = QcHangingType::Painting;
         candidate.width = motif.width;
         candidate.height = motif.height;
-        candidate.motif = quint8(index);
+        candidate.motif = static_cast<quint8>(index);
         const int left = (motif.width - 1) / 2;
         candidate.cell = clicked.offset(-right.dx * left, -(motif.height - 1) / 2, -right.dz * left);
         const int area = motif.width * motif.height;
@@ -94,7 +94,7 @@ bool overlaps(const QcHangingManager &hangings, const QcHanging &hanging)
     if (fitting.isEmpty()) {
         return std::nullopt;
     }
-    return fitting[qsizetype(random.bounded(quint32(fitting.size())))];
+    return fitting[static_cast<qsizetype>(random.bounded(static_cast<quint32>(fitting.size())))];
 }
 
 } // namespace QcHangingRules

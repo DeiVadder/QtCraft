@@ -43,7 +43,7 @@ protected:
         }
     }
 
-    QcVec3 at(double dx, double dz) const { return {m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5}; }
+    QcVec3 at(double dx, double dz) const { return {m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5}; }
 
     quint32 spawn(const char *name, double dx, double dz)
     {

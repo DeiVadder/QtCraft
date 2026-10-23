@@ -76,7 +76,7 @@ bool QcBodyBurning::inSunlight(const QcEntity &body, double height) const
 
 bool QcBodyBurning::damageDue(const QcEntity &body) const
 {
-    return (m_state.clock().tick() + body.id) % quint64(burnIntervalTicks) == 0;
+    return (m_state.clock().tick() + body.id) % static_cast<quint64>(burnIntervalTicks) == 0;
 }
 
 void QcBodyBurning::tickPlayer(QcServerClient &client)
@@ -127,7 +127,7 @@ void QcBodyBurning::tickWetCreatures()
     QList<quint32> wet;
     for (const QcCreature &mob : m_state.entities().creatures().mobs()) {
         const QcMobDefinition &definition = m_state.content().mobs()[mob.type];
-        if (definition.waterDamage > 0.0 && !mob.dormant && (m_state.clock().tick() + mob.id) % quint64(wetIntervalTicks) == 0
+        if (definition.waterDamage > 0.0 && !mob.dormant && (m_state.clock().tick() + mob.id) % static_cast<quint64>(wetIntervalTicks) == 0
             && (inWater(mob.motion.position, definition.height) || rainsOn(mob.motion.position))) {
             wet.append(mob.id);
         }
@@ -155,8 +155,8 @@ void QcBodyBurning::tickDryCreatures()
         if (!aquatic || mob.dormant) {
             continue;
         }
-        const int air = int(std::lround(aquatic->airSeconds * QcPhysics::tickRate));
-        if (mob.dryTicks > air && (mob.dryTicks - air) % int(QcPhysics::tickRate) == 0) {
+        const int air = static_cast<int>(std::lround(aquatic->airSeconds * QcPhysics::tickRate));
+        if (mob.dryTicks > air && (mob.dryTicks - air) % static_cast<int>(QcPhysics::tickRate) == 0) {
             dry.append({mob.id, aquatic->suffocationDamage});
         }
     }

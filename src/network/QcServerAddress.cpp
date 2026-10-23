@@ -13,7 +13,7 @@ namespace {
     if (!ok || port == 0 || port > 65535) {
         return qcError(u"Invalid port '%1'"_s.arg(text));
     }
-    return quint16(port);
+    return static_cast<quint16>(port);
 }
 
 } // namespace

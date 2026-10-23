@@ -57,7 +57,7 @@ void QcServerFallingBlocks::land(QcBlockId block, QcBlockPos cell, bool placed)
 
     // A block landing inside a player or mob would trap it, so it drops as items instead.
     QList<QcAabb> boxes;
-    const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
+    const QcVec3 corner{static_cast<double>(cell.x), static_cast<double>(cell.y), static_cast<double>(cell.z)};
     for (const QcAabb &box : m_state.content().state(block).collision) {
         boxes.append(box.moved(corner));
     }

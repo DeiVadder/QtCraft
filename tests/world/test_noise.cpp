@@ -74,7 +74,7 @@ private slots:
                 const double r = qcPositionRandom(42, x, 0, z);
                 QVERIFY(r >= 0.0 && r < 1.0);
                 QCOMPARE(r, qcPositionRandom(42, x, 0, z));
-                ++buckets[int(r * 10)];
+                ++buckets[static_cast<int>(r * 10)];
             }
         }
 

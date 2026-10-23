@@ -542,7 +542,7 @@ void PackReader::loadHoldDefaults()
     for (auto it = entries.constBegin(); it != entries.constEnd(); ++it) {
         added += registry.translations().has(it.key(), language) ? 0 : 1;
     }
-    return registry.translations().total() + added <= qsizetype(QcStreamLimits::maxTranslations);
+    return registry.translations().total() + added <= static_cast<qsizetype>(QcStreamLimits::maxTranslations);
 }
 
 void PackReader::loadTranslations()

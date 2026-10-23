@@ -113,7 +113,7 @@ int QcItemStack::compare(const QcItemStack &a, const QcItemStack &b)
     const bool aEmpty = a.isEmpty();
     const bool bEmpty = b.isEmpty();
     if (aEmpty || bEmpty) {
-        return int(bEmpty) - int(aEmpty);
+        return static_cast<int>(bEmpty) - static_cast<int>(aEmpty);
     }
     if (a.item != b.item) {
         return a.item < b.item ? -1 : 1;
@@ -172,7 +172,7 @@ int QcItemData::depth() const
 
 int QcItemData::stacksInside() const
 {
-    int stacks = int(contents.size());
+    int stacks = static_cast<int>(contents.size());
     for (const QcItemStack &slot : contents) {
         stacks += slot.itemData().stacksInside();
     }

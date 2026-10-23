@@ -12,7 +12,7 @@ QcFrameReader::QcFrameReader(qint64 maxFrameBytes)
 QByteArray QcFrameReader::header(qsizetype size)
 {
     QByteArray bytes(headerBytes, Qt::Uninitialized);
-    qToBigEndian(quint32(size), bytes.data());
+    qToBigEndian(static_cast<quint32>(size), bytes.data());
     return bytes;
 }
 
@@ -48,12 +48,12 @@ std::optional<QByteArray> QcFrameReader::next()
         m_failed = true;
         return std::nullopt;
     }
-    if (buffered() < headerBytes + qsizetype(length)) {
+    if (buffered() < headerBytes + static_cast<qsizetype>(length)) {
         return std::nullopt;
     }
 
-    QByteArray frame = m_buffer.mid(m_offset + headerBytes, qsizetype(length));
-    m_offset += headerBytes + qsizetype(length);
+    QByteArray frame = m_buffer.mid(m_offset + headerBytes, static_cast<qsizetype>(length));
+    m_offset += headerBytes + static_cast<qsizetype>(length);
     if (m_offset == m_buffer.size()) {
         m_buffer.clear();
         m_offset = 0;

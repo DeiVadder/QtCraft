@@ -84,7 +84,7 @@ public:
     };
     EntityCounts entityCounts();
     // A tick running longer than this is named by health() (tick watchdog).
-    static constexpr qint64 stalledTickNs = qint64(10) * 1'000'000'000;
+    static constexpr qint64 stalledTickNs = qint64{10} * 1'000'000'000;
     // The server's part of the health line (decision E-834): players, chunks, entities, network
     // traffic and the tick times since the previous call (blocks until the server thread counted);
     // empty when no world is open, and when a tick has run for longer than stalledTickNs: then it

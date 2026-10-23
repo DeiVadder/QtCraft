@@ -30,10 +30,10 @@ QcMsg::AdminStatus QcAdminReports::status(const QcMsg::AdminSample &sample, quin
     status.sample = sample;
     const QcPhaseWindow &window = m_phases.window();
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        status.phaseMeanMs[std::size_t(phase)] = float(window.mean(phase));
+        status.phaseMeanMs[static_cast<std::size_t>(phase)] = static_cast<float>(window.mean(phase));
     }
     status.entities = entitiesByKind();
-    status.peakMemoryMb = float(QcProcessMemory::peakMb());
+    status.peakMemoryMb = static_cast<float>(QcProcessMemory::peakMb());
     status.uptimeMs = uptimeMs;
     status.tick = m_state.clock().tick();
     status.skippedTicks = m_ticks.stats().skipped();
@@ -48,7 +48,7 @@ QcMsg::AdminStatus QcAdminReports::status(const QcMsg::AdminSample &sample, quin
 std::array<quint32, QcEntityKinds::count> QcAdminReports::entitiesByKind() const
 {
     std::array<quint32, QcEntityKinds::count> counts{};
-    m_state.entities().forEach([&counts](const QcEntity &entity) { ++counts[std::size_t(entity.kind)]; });
+    m_state.entities().forEach([&counts](const QcEntity &entity) { ++counts[static_cast<std::size_t>(entity.kind)]; });
     return counts;
 }
 
@@ -79,12 +79,12 @@ QcMsg::AdminCatalogue QcAdminReports::catalogue() const
     QcMsg::AdminCatalogue report;
     const QList<const QcCommandSpec *> commands = m_registry.commands();
     for (const QcCommandSpec *spec : commands) {
-        report.commands.append({spec->name, spec->aliases.mid(0, Limits::maxAliases), quint8(spec->permission), spec->needsPlayer, false,
+        report.commands.append({spec->name, spec->aliases.mid(0, Limits::maxAliases), static_cast<quint8>(spec->permission), spec->needsPlayer, false,
                                 QString::fromUtf8(spec->usage), QString::fromUtf8(spec->description)});
     }
     for (const QcCommandMacroDefinition &macro : m_state.content().commandMacros()) {
         if (!m_registry.find(macro.name) && std::cmp_less(report.commands.size(), Limits::maxCommands)) {
-            report.commands.append({macro.name, {}, quint8(macro.operatorOnly ? QcPermission::Operator : QcPermission::Player), false, true,
+            report.commands.append({macro.name, {}, static_cast<quint8>(macro.operatorOnly ? QcPermission::Operator : QcPermission::Player), false, true,
                                     macro.usage, macro.description});
         }
     }
@@ -136,10 +136,10 @@ const QSet<QString> &QcAdminReports::serverCategories()
 QcAdminReports::Log QcAdminReports::log(QcMsg::AdminLogLine::Level level, qsizetype count, quint64 after, bool tail) const
 {
     const QSet<QString> &categories = m_state.config().fullAdminLog ? QSet<QString>{} : serverCategories();
-    const QcMessageLog::Recent recent = QcMessageLog::recent(int(level), std::min<qsizetype>(count, Limits::maxLogLines), after, categories);
+    const QcMessageLog::Recent recent = QcMessageLog::recent(static_cast<int>(level), std::min<qsizetype>(count, Limits::maxLogLines), after, categories);
     Log report{{tail, {}}, recent.latest};
     for (const QcMessageLog::RecentLine &line : recent.lines) {
-        report.message.lines.append({line.timeMs, QcMsg::AdminLogLine::Level(line.severity), line.category.left(Limits::maxText), line.text});
+        report.message.lines.append({line.timeMs, static_cast<QcMsg::AdminLogLine::Level>(line.severity), line.category.left(Limits::maxText), line.text});
     }
     return report;
 }

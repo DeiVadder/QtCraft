@@ -10,7 +10,7 @@
 namespace QcContentFingerprint {
 
 // Packs larger than this are compared by id and version only.
-inline constexpr qint64 maxPackBytes = qint64(256) * 1024 * 1024;
+inline constexpr qint64 maxPackBytes = qint64{256} * 1024 * 1024;
 inline constexpr int maxPackFiles = 20'000;
 
 // Lower-case hex of the first 16 bytes of SHA-256 over the files the content loader reads from the

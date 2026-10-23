@@ -58,7 +58,7 @@ public:
     void showWindow(QQuickWindow &window);
     bool controlsWindow() const { return m_window != nullptr; }
 
-    WindowMode windowMode() const { return WindowMode(m_options.windowMode); }
+    WindowMode windowMode() const { return static_cast<WindowMode>(m_options.windowMode); }
     void setWindowMode(WindowMode mode);
     QStringList screens() const { return QcWindowPlacement::screenLabels(); }
     int screen() const;
@@ -66,9 +66,9 @@ public:
     bool vsync() const { return m_options.vsync; }
     void setVsync(bool on);
     bool restartNeeded() const { return m_options.vsync != m_vsyncInEffect; }
-    FrameLimit frameLimit() const { return FrameLimit(m_options.frameLimit); }
+    FrameLimit frameLimit() const { return static_cast<FrameLimit>(m_options.frameLimit); }
     void setFrameLimit(FrameLimit limit);
-    FrameLimit backgroundFrameLimit() const { return FrameLimit(m_options.backgroundFrameLimit); }
+    FrameLimit backgroundFrameLimit() const { return static_cast<FrameLimit>(m_options.backgroundFrameLimit); }
     void setBackgroundFrameLimit(FrameLimit limit);
     int activeFrameLimit() const { return m_frames.limit(); }
     const QcDisplayOptions &options() const { return m_options; }

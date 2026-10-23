@@ -43,8 +43,8 @@ QcStandCommands::QcStandCommands(QcServerState &state, QcServerStands &stands, Q
 
 QcArmourStand *QcStandCommands::standInView(const QcServerClient &client)
 {
-    const double yaw = qDegreesToRadians(double(client.yaw));
-    const double pitch = qDegreesToRadians(double(client.pitch));
+    const double yaw = qDegreesToRadians(static_cast<double>(client.yaw));
+    const double pitch = qDegreesToRadians(static_cast<double>(client.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
@@ -112,7 +112,7 @@ void QcStandCommands::armorStand(QcServerClient &client, const QStringList &word
 
 std::optional<QcVec3> QcStandCommands::summonPosition(const QcServerClient &client) const
 {
-    const double yaw = qDegreesToRadians(double(client.yaw));
+    const double yaw = qDegreesToRadians(static_cast<double>(client.yaw));
     const QcVec3 ahead = client.motion.position + QcVec3{std::sin(yaw) * 3.0, 0.0, -std::cos(yaw) * 3.0};
     const QcBlockPos column = QcPhysics::blockContaining(ahead);
 
@@ -121,7 +121,7 @@ std::optional<QcVec3> QcStandCommands::summonPosition(const QcServerClient &clie
         const QcBlockPos below = column.offset(0, dy - 1, 0);
         const std::optional<QcBlockId> block = m_state.world().blockAt(below);
         if (block && m_state.content().isValidBlock(*block) && m_state.content().block(*block).solid) {
-            return QcVec3{column.x + 0.5, double(column.y + dy), column.z + 0.5};
+            return QcVec3{column.x + 0.5, static_cast<double>(column.y + dy), column.z + 0.5};
         }
     }
     return std::nullopt;
@@ -206,7 +206,7 @@ QString QcStandCommands::describe(const QcArmourStand &stand)
     QStringList parts;
     for (std::size_t i = 0; i < QcStandPose::partCount; ++i) {
         const QcStandPose::Rotation &rotation = stand.pose.parts[i];
-        parts.append(u"%1 %2 %3 %4"_s.arg(QcStandPose::partName(QcStandPose::Part(i))).arg(rotation.x).arg(rotation.y).arg(rotation.z));
+        parts.append(u"%1 %2 %3 %4"_s.arg(QcStandPose::partName(static_cast<QcStandPose::Part>(i))).arg(rotation.x).arg(rotation.y).arg(rotation.z));
     }
     const auto flag = [](bool on) { return on ? u"true"_s : u"false"_s; };
     const QString cape = stand.cape.isEmpty() ? u"none"_s : stand.cape;

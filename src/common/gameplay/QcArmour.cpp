@@ -64,7 +64,7 @@ double reducedDamage(double damage, int points)
 
 int wearOf(double damage)
 {
-    return std::max(1, int(std::floor(damage / damagePerWear)));
+    return std::max(1, static_cast<int>(std::floor(damage / damagePerWear)));
 }
 
 } // namespace QcArmour

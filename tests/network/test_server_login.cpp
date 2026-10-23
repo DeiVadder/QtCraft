@@ -228,7 +228,7 @@ private slots:
             QVERIFY(client.challenge.has_value());
             QcMsg::LoginResponse response = client.answer(*client.challenge);
             if (withIdentity) {
-                response.identityProof[0] = char(response.identityProof[0] ^ 1);
+                response.identityProof[0] = static_cast<char>(response.identityProof[0] ^ 1);
             } else {
                 response.identity.clear();
             }
@@ -405,7 +405,7 @@ private slots:
             case 0:
                 frame.resize(1 + random.bounded(200));
                 for (char &byte : frame) {
-                    byte = char(random.bounded(256));
+                    byte = static_cast<char>(random.bounded(256));
                 }
                 break;
             case 1:
@@ -414,13 +414,13 @@ private slots:
             case 2:
                 frame = hello;
                 for (int flips = 0; flips < 3; ++flips) {
-                    frame[random.bounded(frame.size())] = char(random.bounded(256));
+                    frame[random.bounded(frame.size())] = static_cast<char>(random.bounded(256));
                 }
                 break;
             default:
                 frame = (i % 8 == 3 ? response : hello).left(4);
                 for (int extra = random.bounded(64); extra > 0; --extra) {
-                    frame.append(char(random.bounded(256)));
+                    frame.append(static_cast<char>(random.bounded(256)));
                 }
                 break;
             }

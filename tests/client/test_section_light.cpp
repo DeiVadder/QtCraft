@@ -70,7 +70,7 @@ struct Fixture
         for (int i = 0; i < 9; ++i) {
             auto chunk = std::make_shared<QcChunk>(QcChunkPos{i % 3 - 1, i / 3 - 1});
             fill(*chunk, random);
-            result[std::size_t(i)] = std::move(chunk);
+            result[static_cast<std::size_t>(i)] = std::move(chunk);
         }
         return result;
     }
@@ -135,7 +135,7 @@ private slots:
         // RG8 texels in cell order: x fastest, then z, then y.
         const QByteArray texels = light.texels();
         QCOMPARE(texels.size(), 4096 * 2);
-        const qsizetype at = qsizetype(QcChunkSection::index(3, 4, 5)) * 2;
+        const qsizetype at = static_cast<qsizetype>(QcChunkSection::index(3, 4, 5)) * 2;
         QCOMPARE(quint8(texels[at]), quint8(0));
         QCOMPARE(quint8(texels[at + 1]), quint8(7 * 17));
         QCOMPARE(quint8(texels[1]), quint8(255));
@@ -230,7 +230,7 @@ private slots:
         QCOMPARE(pool.usedSlots(), 3);
         QCOMPARE(pool.bytes(), quint64(2 * 2 * 4096 * 2));
         for (int k = 0; k < 3; ++k) {
-            const QcSectionLightPool::Slot slot = *pool.slot(quint64(k));
+            const QcSectionLightPool::Slot slot = *pool.slot(static_cast<quint64>(k));
             QCOMPARE(slot.page, k / 2);
             QCOMPARE(slot.index, k % 2);
             QCOMPARE(readSlot(m_rhi.get(), pool.page(slot.page), slot.firstSlice()), lights[k].texels());

@@ -95,7 +95,7 @@ QcAnimator::BodyPose standBody(const QcStandPose &pose, double seconds)
     QcAnimator::BodyPose body;
     for (const auto &[part, role] : roles) {
         const QcStandPose::Rotation &rotation = pose.at(part);
-        body.bones[std::size_t(role)] = {rotation.x, rotation.z, rotation.y};
+        body.bones[static_cast<std::size_t>(role)] = {rotation.x, rotation.z, rotation.y};
     }
     const QcCapeSwing::Angles cape = QcCapeSwing::target(QcCapeDrive(), seconds);
     body.capeLift = cape.lift;
@@ -171,7 +171,7 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item)
     look.sprite = definition.texture;
     const std::optional<QcBlockId> block = content.blockId(definition.placesBlock);
     if (block) {
-        look.glow = float(content.block(*block).lightLevel) / float(QcLightVolume::maxLevel);
+        look.glow = static_cast<float>(content.block(*block).lightLevel) / static_cast<float>(QcLightVolume::maxLevel);
     }
     if (block && content.block(*block).itemTexture.isEmpty() && !content.state(*block).boxes.isEmpty()
         && content.block(*block).renderLayer != QcRenderLayer::Invisible) {

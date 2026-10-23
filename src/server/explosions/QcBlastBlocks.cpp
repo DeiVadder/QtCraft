@@ -41,7 +41,7 @@ void QcBlastBlocks::add(const QList<QcBlockPos> &cells, const Effects &effects)
 
 quint32 QcBlastBlocks::roll(const Work &work, quint32 salt, quint32 bound) const
 {
-    const QcFireRules::Dice dice{quint64(m_state.config().seed), work.effects.centre, 0};
+    const QcFireRules::Dice dice{static_cast<quint64>(m_state.config().seed), work.effects.centre, 0};
     return dice.roll(work.pos, salt, bound);
 }
 
@@ -78,7 +78,7 @@ void QcBlastBlocks::breakCell(const Work &work, QcBlockId block)
     const QcBlockDefinition &definition = m_state.content().block(block);
     // Block drops stay away while many drops wait for room, so the contents chests spill (which
     // always drop) are not pushed out of the waiting queue by rubble.
-    const bool drops = double(roll(work, DropSalt, dropDice)) < work.effects.dropChance * dropDice
+    const bool drops = static_cast<double>(roll(work, DropSalt, dropDice)) < work.effects.dropChance * dropDice
                        && !m_state.entities().items().crowded();
     // A door or bed breaks as a whole, with its sound, like a player breaks it.
     if ((definition.door || definition.bed) && QcBlockRules::hasPartner(m_state.world(), work.pos, block)) {
@@ -132,7 +132,7 @@ void QcBlastBlocks::sendBatch()
             }
         }
         // A client refuses a batch above maxUpdates (the limits allow more blocks per tick).
-        const QList<QcMsg::BlockBatch> batches = pieces(updates, qsizetype(QcMsg::BlockBatch::maxUpdates));
+        const QList<QcMsg::BlockBatch> batches = pieces(updates, static_cast<qsizetype>(QcMsg::BlockBatch::maxUpdates));
         for (const QcMsg::BlockBatch &batch : batches) {
             client->connection->send(batch);
         }

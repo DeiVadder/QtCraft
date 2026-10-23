@@ -12,7 +12,7 @@ QcAdminLineModel::QcAdminLineModel(QObject *parent)
 
 int QcAdminLineModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : int(m_lines.size());
+    return parent.isValid() ? 0 : static_cast<int>(m_lines.size());
 }
 
 QVariant QcAdminLineModel::data(const QModelIndex &index, int role) const
@@ -47,11 +47,11 @@ void QcAdminLineModel::append(const QList<Line> &lines, qsizetype limit)
     if (lines.isEmpty()) {
         return;
     }
-    beginInsertRows({}, int(m_lines.size()), int(m_lines.size() + lines.size() - 1));
+    beginInsertRows({}, static_cast<int>(m_lines.size()), static_cast<int>(m_lines.size() + lines.size() - 1));
     m_lines.append(lines);
     endInsertRows();
     if (m_lines.size() > limit) {
-        beginRemoveRows({}, 0, int(m_lines.size() - limit - 1));
+        beginRemoveRows({}, 0, static_cast<int>(m_lines.size() - limit - 1));
         m_lines.remove(0, m_lines.size() - limit);
         endRemoveRows();
     }

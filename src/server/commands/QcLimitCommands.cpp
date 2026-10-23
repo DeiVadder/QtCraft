@@ -32,7 +32,7 @@ constexpr const char *usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /lim
 
     QJsonObject limits = root.value(u"limits"_s).toObject();
     if (value) {
-        limits.insert(key, double(*value));
+        limits.insert(key, static_cast<double>(*value));
     } else {
         limits.remove(key);
     }
@@ -120,7 +120,7 @@ QcStatus QcLimitCommands::store(const QString &key, std::optional<qint64> value)
     if (!m_state.config().limitsFromServer) {
         QJsonObject &own = m_state.info().limits;
         if (value) {
-            own.insert(key, double(*value));
+            own.insert(key, static_cast<double>(*value));
         } else {
             own.remove(key);
         }

@@ -62,7 +62,7 @@ struct Fixture
                     in.chunks[4] = centre;
                 } else if (withNeighbours) {
                     const int index = (dz + 1) * 3 + (dx + 1);
-                    in.chunks[std::size_t(index)] = std::make_shared<QcChunk>(QcChunkPos{dx, dz});
+                    in.chunks[static_cast<std::size_t>(index)] = std::make_shared<QcChunk>(QcChunkPos{dx, dz});
                 }
             }
         }
@@ -73,7 +73,7 @@ struct Fixture
 
 int quadCount(const QList<quint32> &indices)
 {
-    return int(indices.size() / 6);
+    return static_cast<int>(indices.size() / 6);
 }
 
 QVector3D position(const QcBlockVertex &v)
@@ -94,8 +94,8 @@ private slots:
         // half a step; out-of-range values are clamped.
         for (int level = 0; level <= 15; ++level) {
             QcBlockVertex vertex;
-            vertex.setSkyLight(float(level) / 15.0f);
-            vertex.setBlockLight(float(level) / 15.0f);
+            vertex.setSkyLight(static_cast<float>(level) / 15.0f);
+            vertex.setBlockLight(static_cast<float>(level) / 15.0f);
             QCOMPARE(vertex.light[QcBlockVertex::skyLightIndex], quint8(17 * level));
             QCOMPARE(vertex.skyLight(), float(level) / 15.0f);
             QCOMPARE(vertex.blockLight(), float(level) / 15.0f);
@@ -160,7 +160,7 @@ private slots:
 
         // Each diagonal is drawn once from each side: the triangles of a pair face opposite ways.
         const auto normal = [&mesh](int quad) {
-            const quint32 *index = mesh.cutoutIndices.constData() + qsizetype(quad) * 6;
+            const quint32 *index = mesh.cutoutIndices.constData() + static_cast<qsizetype>(quad) * 6;
             const QVector3D a = position(mesh.cutoutVertices[index[0]]);
             const QVector3D b = position(mesh.cutoutVertices[index[1]]);
             const QVector3D c = position(mesh.cutoutVertices[index[2]]);
@@ -378,7 +378,7 @@ private slots:
         chunk->setBlock(6, 2, 5, flowing);
         QcMeshInput in;
         for (int i = 0; i < 9; ++i) {
-            in.chunks[std::size_t(i)] = std::make_shared<QcChunk>(QcChunkPos{i % 3 - 1, i / 3 - 1});
+            in.chunks[static_cast<std::size_t>(i)] = std::make_shared<QcChunk>(QcChunkPos{i % 3 - 1, i / 3 - 1});
         }
         in.chunks[4] = chunk;
         in.renderTable = table;
@@ -588,7 +588,7 @@ private slots:
                     }
                 }
                 const int index = (dz + 1) * 3 + (dx + 1);
-                in.chunks[std::size_t(index)] = chunk;
+                in.chunks[static_cast<std::size_t>(index)] = chunk;
             }
         }
 
@@ -615,7 +615,7 @@ private slots:
             // z the two cells per x column give (level(x - 1) + level(x)) / 2 for the corner at x.
             for (qsizetype i = quad; i < quad + 4; ++i) {
                 const QcBlockVertex &v = mesh.opaqueVertices[i];
-                const int cornerX = int(v.x);
+                const int cornerX = static_cast<int>(v.x);
                 const double expected = (expectedLevel(cornerX - 1) + expectedLevel(cornerX)) / 2.0 / 15.0;
                 // Light is stored as a byte (value × 255), exact to half a step.
                 QVERIFY2(std::abs(v.skyLight() - expected) <= 0.5 / 255.0 + 1e-6,

@@ -25,7 +25,7 @@ private:
 
     int updatesAt(QcBlockPos pos) const
     {
-        return int(std::ranges::count_if(m_client->blockUpdates, [pos](QcMsg::BlockUpdate update) { return update.pos == pos; }));
+        return static_cast<int>(std::ranges::count_if(m_client->blockUpdates, [pos](QcMsg::BlockUpdate update) { return update.pos == pos; }));
     }
 
     // A lever on the floor at (0, 0, 5), dust east of it, a repeater (delay 1) at x = 4 and a lamp
@@ -218,7 +218,7 @@ private slots:
         // An item presses the wooden plate but not the stone one.
         for (const QcBlockPos cell : {at(3, 0, 3), at(8, 0, 3)}) {
             const QcVec3 centre{cell.x + 0.5, cell.y + 0.05, cell.z + 0.5};
-            const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 900000 + quint32(cell.x & 0xFFFF));
+            const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 900000 + static_cast<quint32>(cell.x & 0xFFFF));
             for (QcItemEntity &entity : m_server->items().editableItems()) {
                 if (entity.id == dropped) {
                     entity.motion.position = centre;

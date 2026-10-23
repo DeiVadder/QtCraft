@@ -6,11 +6,11 @@
 
 QcChunkLoaders::QcChunkLoaders(const QcContentRegistry &content)
 {
-    const auto stateCount = std::size_t(content.stateCount());
+    const auto stateCount = static_cast<std::size_t>(content.stateCount());
     m_loader.resize(stateCount);
     const QString loaders = QString::fromLatin1(tag);
     for (std::size_t id = 0; id < stateCount; ++id) {
-        const QStringList &tags = content.block(QcBlockId(id)).itemTags;
+        const QStringList &tags = content.block(static_cast<QcBlockId>(id)).itemTags;
         m_loader[id] = tags.contains(loaders) || tags.contains(loaders.section(u':', 1));
     }
 }

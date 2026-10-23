@@ -29,7 +29,7 @@ QcWetlandPattern::QcWetlandPattern(quint64 seed)
     , m_plantSeed(qcMixSeed(seed, qcNameSalt(u"qtcraft:village_wetland_plants"_s)))
 {
     std::vector<double> samples;
-    samples.reserve(std::size_t(sampleGrid) * sampleGrid);
+    samples.reserve(static_cast<std::size_t>(sampleGrid) * sampleGrid);
     for (int j = 0; j < sampleGrid; ++j) {
         for (int i = 0; i < sampleGrid; ++i) {
             samples.push_back(m_noise.fractal2(i * sampleSpacing, j * sampleSpacing, poolOctaves));
@@ -38,8 +38,8 @@ QcWetlandPattern::QcWetlandPattern(quint64 seed)
     std::ranges::sort(samples);
 
     for (int step = 0; step <= quantileSteps; ++step) {
-        const std::size_t index = std::min(samples.size() - 1, samples.size() * std::size_t(step) / quantileSteps);
-        m_quantiles[std::size_t(step)] = samples[index];
+        const std::size_t index = std::min(samples.size() - 1, samples.size() * static_cast<std::size_t>(step) / quantileSteps);
+        m_quantiles[static_cast<std::size_t>(step)] = samples[index];
     }
 }
 
@@ -53,9 +53,9 @@ double QcWetlandPattern::quantile(double share) const
     }
     // Linear between the percent samples.
     const double at = share * quantileSteps;
-    const int low = int(std::floor(at));
+    const int low = static_cast<int>(std::floor(at));
     const double part = at - low;
-    return m_quantiles[std::size_t(low)] + part * (m_quantiles[std::size_t(low) + 1] - m_quantiles[std::size_t(low)]);
+    return m_quantiles[static_cast<std::size_t>(low)] + part * (m_quantiles[static_cast<std::size_t>(low) + 1] - m_quantiles[static_cast<std::size_t>(low)]);
 }
 
 double QcWetlandPattern::poolNoise(const QcVillageStyle::Wetland &settings, int x, int z) const
@@ -112,6 +112,6 @@ bool QcWetlandPattern::floatingPlantAt(const QcVillageStyle::Wetland &settings, 
 
 double QcWetlandPattern::plantDraw(int x, int z) const
 {
-    const quint64 hash = qcMixSeed(qcMixSeed(m_plantSeed, quint32(x)), quint32(z));
-    return double(hash >> 11) * 0x1.0p-53;
+    const quint64 hash = qcMixSeed(qcMixSeed(m_plantSeed, static_cast<quint32>(x)), static_cast<quint32>(z));
+    return static_cast<double>(hash >> 11) * 0x1.0p-53;
 }

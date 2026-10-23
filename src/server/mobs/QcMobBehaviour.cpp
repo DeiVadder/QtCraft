@@ -80,7 +80,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
                                                     const QList<QcMobManager::PlayerView> &players, Clock clock)
 {
     QList<QcMobManager::PlayerHit> hits;
-    m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[std::size_t(mob.type)]; });
+    m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[static_cast<std::size_t>(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
     m_hoverers.build(mobs, m_content->mobs());
     m_fish.startTick(mobs, *m_content);
@@ -96,7 +96,7 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
                                               .mobs = mobs,
                                               .worldTime = clock.worldTime,
                                               .dt = clock.dt,
-                                              .rules = m_rules[std::size_t(mobs[i].type)],
+                                              .rules = m_rules[static_cast<std::size_t>(mobs[i].type)],
                                               .players = &players,
                                               .hits = &hits,
                                               .tick = m_tick,
@@ -163,7 +163,7 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     case QcMobCrowd::Tier::Throttled: {
         ++m_tiers.throttled;
         const int interval = m_crowd.thinkInterval(index);
-        steering = (m_tick + mob.id) % quint64(interval) == 0 ? brain.think(mob, definition, context, interval)
+        steering = (m_tick + mob.id) % static_cast<quint64>(interval) == 0 ? brain.think(mob, definition, context, interval)
                                                               : withoutThinking(mob, definition, context, true);
         break;
     }
@@ -171,7 +171,7 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
         ++m_tiers.idle;
         if (brain.thinksInIdleCrowd()) {
             const int interval = QcMobSteering::sightCheckTicks;
-            steering = (m_tick + mob.id) % quint64(interval) == 0 ? brain.think(mob, definition, context, interval)
+            steering = (m_tick + mob.id) % static_cast<quint64>(interval) == 0 ? brain.think(mob, definition, context, interval)
                                                                   : withoutThinking(mob, definition, context, true);
             break;
         }
@@ -214,7 +214,7 @@ void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDe
     // where it is.
     QcMobUpkeep::leaveBlocks(mob, definition, world);
     if (definition.hover) {
-        QcMobHover::fly(mob, definition, world, {}, double(m_tick) * QcPhysics::tickDuration);
+        QcMobHover::fly(mob, definition, world, {}, static_cast<double>(m_tick) * QcPhysics::tickDuration);
         return;
     }
     mob.motion.inWater = QcPhysics::isLiquidAt(world, QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.4, 0.0}));
@@ -251,7 +251,7 @@ QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature 
 {
     // The crowd pushes apart, but not off a cliff.
     const QcVec3 push = m_crowd.push(index, mob, m_content->mobs()[mob.type].width * 0.5);
-    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[std::size_t(mob.type)]})) {
+    if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[static_cast<std::size_t>(mob.type)]})) {
         return steering;
     }
 
@@ -315,7 +315,7 @@ void QcMobBehaviour::hover(QcCreature &mob, const QcMobDefinition &definition, c
     if (!definition.hover) {
         return;
     }
-    const double seconds = double(m_tick) * QcPhysics::tickDuration;
+    const double seconds = static_cast<double>(m_tick) * QcPhysics::tickDuration;
     QcMobHover::Course course{steering, std::nullopt};
     // Only a child that chases nobody looks for its parent among the creatures.
     if (mob.parent != 0 && mob.chasing == 0) {
@@ -354,7 +354,7 @@ void QcMobBehaviour::fly(QcCreature &mob, const QcMobDefinition &definition, QcS
     // Height above the first solid or liquid block below (at most a few metres down).
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position);
     double height = QcMobManager::flyMaxHeight + 1.0;
-    for (int down = 0; down <= int(QcMobManager::flyMaxHeight) + 1; ++down) {
+    for (int down = 0; down <= static_cast<int>(QcMobManager::flyMaxHeight) + 1; ++down) {
         const QcBlockPos below = feet.offset(0, -down, 0);
         if (QcPhysics::isSolidAt(world, below) || QcPhysics::isLiquidAt(world, below)) {
             height = mob.motion.position.y - (below.y + 1.0);

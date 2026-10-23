@@ -56,7 +56,7 @@ void QcFallingBlockManager::start(QcBlockPos from, QcBlockId block, quint32 id)
     QcFallingBlock falling;
     falling.id = id;
     falling.block = block;
-    falling.motion.position = {from.x + 0.5, double(from.y), from.z + 0.5};
+    falling.motion.position = {from.x + 0.5, static_cast<double>(from.y), from.z + 0.5};
     m_falling.append(falling);
 }
 

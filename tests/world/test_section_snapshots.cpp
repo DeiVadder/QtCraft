@@ -18,7 +18,7 @@ namespace {
 // from 4 over 8 to 16 bits per index while the readers run.
 QcBlockId blockFor(int round, int cell)
 {
-    return QcBlockId((round * 31 + cell) % 400 + 1);
+    return static_cast<QcBlockId>((round * 31 + cell) % 400 + 1);
 }
 
 // A snapshot with the round it was taken in; the cells written up to that round are known.

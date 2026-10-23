@@ -81,8 +81,8 @@ void QcChunkSpawns::spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos
     const QcContentRegistry &content = *m_content;
     const AnimalGrounds grounds = animalGrounds(content);
     // A random column; the group stands there and on neighbours of the same height.
-    const int lx = int(random(1) * (QcWorld::chunkSize - 1));
-    const int lz = int(random(2) * (QcWorld::chunkSize - 1));
+    const int lx = static_cast<int>(random(1) * (QcWorld::chunkSize - 1));
+    const int lz = static_cast<int>(random(2) * (QcWorld::chunkSize - 1));
     const int floorY = animalGroundAt(content, chunk, grounds, lx, lz);
     if (floorY < 0) {
         return;
@@ -95,16 +95,17 @@ void QcChunkSpawns::spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos
     const int chosen = pickAnimal(candidates, random(3));
     const QcMobDefinition &definition = content.mobs()[chosen];
     // Groups of two up to the kind's largest group.
-    const int group = std::min({definition.maxGroup, 2 + int(random(4) * std::max(1, definition.maxGroup - 1)), int(groupOffsets.size())});
+    const int group = std::min({definition.maxGroup, 2 + static_cast<int>(random(4) * std::max(1, definition.maxGroup - 1)),
+        static_cast<int>(groupOffsets.size())});
     for (int i = 0; i < group; ++i) {
-        const int x = lx + groupOffsets[std::size_t(i)].first;
-        const int z = lz + groupOffsets[std::size_t(i)].second;
+        const int x = lx + groupOffsets[static_cast<std::size_t>(i)].first;
+        const int z = lz + groupOffsets[static_cast<std::size_t>(i)].second;
         const int y = animalGroundAt(content, chunk, grounds, x, z);
         if (y != floorY
             || (!definition.spawnBlocks.isEmpty() && !definition.spawnBlocks.contains(content.block(chunk.block(x, y, z)).name))) {
             continue;
         }
-        m_mobs.spawn(chosen, {pos.x * QcWorld::chunkSize + x + 0.5, double(y + 1), pos.z * QcWorld::chunkSize + z + 0.5}, nextEntityId(),
+        m_mobs.spawn(chosen, {pos.x * QcWorld::chunkSize + x + 0.5, static_cast<double>(y + 1), pos.z * QcWorld::chunkSize + z + 0.5}, nextEntityId(),
               false, true);
     }
 }
@@ -117,7 +118,7 @@ void QcChunkSpawns::spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos,
     }
     for (const QcVillagePlan::Mob &mob : village->mobs) {
         const std::optional<int> type = m_content->mobIndex(mob.mob);
-        const QcBlockPos cell{int(std::floor(mob.at.x)), int(std::floor(mob.at.y)), int(std::floor(mob.at.z))};
+        const QcBlockPos cell{static_cast<int>(std::floor(mob.at.x)), static_cast<int>(std::floor(mob.at.y)), static_cast<int>(std::floor(mob.at.z))};
         if (type && cell.chunk() == pos) {
             const quint32 id = m_mobs.spawn(*type, mob.at, nextEntityId(), false, true);
             QcCreature &creature = *m_mobs.find(id);
@@ -138,7 +139,7 @@ QList<int> QcChunkSpawns::animalCandidates(const QcServerWorld &world, QcChunkPo
         const QcMobDefinition &definition = content.mobs()[type];
         if (!QcChunkSpawns::isAnimal(definition) || definition.spawnWeight <= 0.0 || !ground.solid
             || (!definition.spawnBlocks.isEmpty() && !definition.spawnBlocks.contains(ground.name))
-            || floor.y + 1 > definition.spawnMaxY || !spawnsInChunk(int(type), pos, definition.spawnChunkChance, 0)) {
+            || floor.y + 1 > definition.spawnMaxY || !spawnsInChunk(static_cast<int>(type), pos, definition.spawnChunkChance, 0)) {
             continue;
         }
 
@@ -151,7 +152,7 @@ QList<int> QcChunkSpawns::animalCandidates(const QcServerWorld &world, QcChunkPo
             }
         }
 
-        candidates.append(int(type));
+        candidates.append(static_cast<int>(type));
     }
 
     return candidates;
@@ -185,8 +186,8 @@ bool QcChunkSpawns::spawnsInChunk(int type, QcChunkPos pos, double chance, int r
     quint64 kind = 14695981039346656037ULL;
     const QByteArray utf8 = definition.name.toUtf8();
     for (const char byte : utf8) {
-        kind = (kind ^ quint8(byte)) * 1099511628211ULL;
+        kind = (kind ^ static_cast<quint8>(byte)) * 1099511628211ULL;
     }
     // Extra rules (index above 0) get their own set of chunks.
-    return qcPositionRandom(qcMixSeed(m_seed, 5000 + kind + quint64(rule) * 7919), pos.x, 0, pos.z) < chance;
+    return qcPositionRandom(qcMixSeed(m_seed, 5000 + kind + static_cast<quint64>(rule) * 7919), pos.x, 0, pos.z) < chance;
 }

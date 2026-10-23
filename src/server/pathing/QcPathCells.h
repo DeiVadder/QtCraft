@@ -54,8 +54,8 @@ inline constexpr int liftShift = 6;
 
 inline Kind kindOf(quint8 cell) { return Kind(cell & kindMask); }
 // How high a body stands on the low block of the cell (rounded up to an eighth); 0 for other kinds.
-inline double liftOf(quint8 cell) { return kindOf(cell) == Kind::Low ? double((cell >> liftShift) + 1) / 8.0 : 0.0; }
-inline quint8 make(Kind kind, quint8 flags = 0) { return quint8(quint8(kind) | flags); }
+inline double liftOf(quint8 cell) { return kindOf(cell) == Kind::Low ? static_cast<double>((cell >> liftShift) + 1) / 8.0 : 0.0; }
+inline quint8 make(Kind kind, quint8 flags = 0) { return static_cast<quint8>(static_cast<quint8>(kind) | flags); }
 
 // The cell of one block state.
 quint8 classify(const QcContentRegistry &content, QcBlockId id);

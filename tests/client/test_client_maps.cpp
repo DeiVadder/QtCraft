@@ -18,10 +18,10 @@ QcMsg::MapUpdate update(quint32 id, int scale, QPoint centre, QRect area, quint1
 {
     QcMsg::MapUpdate made;
     made.id = id;
-    made.scale = quint8(scale);
+    made.scale = static_cast<quint8>(scale);
     made.centre = centre;
     made.area = area;
-    made.pixels = QList<quint16>(qsizetype(area.width()) * area.height(), value);
+    made.pixels = QList<quint16>(static_cast<qsizetype>(area.width()) * area.height(), value);
     return made;
 }
 
@@ -48,7 +48,7 @@ QcBlockDefinition block(const QString &name, const QString &top, const QString &
     made.renderLayer = QcRenderLayer::Opaque;
     made.opaque = true;
     made.faceTextures.fill(sides);
-    made.faceTextures[std::size_t(QcBlockFace::Up)] = top;
+    made.faceTextures[static_cast<std::size_t>(QcBlockFace::Up)] = top;
     return made;
 }
 
@@ -144,7 +144,7 @@ private slots:
     void forgetsTheMapUpdatedLongestAgo()
     {
         QcClientMaps maps;
-        for (quint32 id = 0; id < quint32(QcClientMaps::maxMaps); ++id) {
+        for (quint32 id = 0; id < static_cast<quint32>(QcClientMaps::maxMaps); ++id) {
             maps.apply(update(id, 0, {0, 0}, {}, 0));
         }
         // Map 0 is updated again, so map 1 is the oldest.

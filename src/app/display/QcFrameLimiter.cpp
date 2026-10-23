@@ -46,7 +46,7 @@ void QcFrameLimiter::requestNextFrame(QQuickWindow *window)
     }
     if (!m_timer.isActive()) {
         // Rounded up: a millisecond early would be an early frame again.
-        m_timer.start(int((delayNs + 999'999) / 1'000'000));
+        m_timer.start(static_cast<int>((delayNs + 999'999) / 1'000'000));
     }
 }
 

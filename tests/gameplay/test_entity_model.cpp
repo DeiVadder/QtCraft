@@ -104,7 +104,7 @@ private:
     QcVec3 ground(QcChunkPos chunk, int x, int z) const
     {
         const std::shared_ptr<const QcChunk> loaded = m_server->world().chunk(chunk);
-        return {chunk.x * QcWorld::chunkSize + x + 0.5, double(loaded->highestNonAir(x, z) + 1), chunk.z * QcWorld::chunkSize + z + 0.5};
+        return {chunk.x * QcWorld::chunkSize + x + 0.5, static_cast<double>(loaded->highestNonAir(x, z) + 1), chunk.z * QcWorld::chunkSize + z + 0.5};
     }
 
     void teleport(const QcVec3 &to)

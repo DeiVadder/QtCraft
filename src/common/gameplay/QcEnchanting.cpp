@@ -29,7 +29,7 @@ QStringList kindsOf(const QcItemDefinition &item)
         static constexpr std::array<QLatin1StringView, 4> slotKinds{QLatin1StringView("armour_head"), QLatin1StringView("armour_chest"),
                                                                     QLatin1StringView("armour_legs"), QLatin1StringView("armour_feet")};
         kinds.append(u"armour"_s);
-        const auto slot = std::size_t(item.armour->slot);
+        const auto slot = static_cast<std::size_t>(item.armour->slot);
         if (slot < slotKinds.size()) {
             kinds.append(QString(slotKinds[slot]));
         }
@@ -68,7 +68,7 @@ int levelOf(const QcContentRegistry &content, const QcItemStack &stack, QcEnchan
 
 double speedBonus(int level)
 {
-    return level > 0 ? double(level * level + 1) : 0.0;
+    return level > 0 ? static_cast<double>(level * level + 1) : 0.0;
 }
 
 bool keepsDurability(int level, double roll, bool armour)
@@ -76,7 +76,7 @@ bool keepsDurability(int level, double roll, bool armour)
     if (level <= 0) {
         return false;
     }
-    const double keep = double(level) / double(level + 1);
+    const double keep = static_cast<double>(level) / static_cast<double>(level + 1);
     return roll < (armour ? 0.4 * keep : keep);
 }
 

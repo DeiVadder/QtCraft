@@ -145,8 +145,8 @@ struct Table
     Table()
     {
         for (std::size_t i = 0; i < std::size(bitmaps); ++i) {
-            index.insert(bitmaps[i].character, int(i));
-            glyphs[i] = glyphOf(bitmaps[i], int(i));
+            index.insert(bitmaps[i].character, static_cast<int>(i));
+            glyphs[i] = glyphOf(bitmaps[i], static_cast<int>(i));
         }
     }
 
@@ -156,7 +156,7 @@ struct Table
         int first = columns;
         int last = -1;
         for (int column = 0; column < columns; ++column) {
-            const auto bit = quint8(1U << unsigned(columns - 1 - column));
+            const auto bit = static_cast<quint8>(1U << static_cast<unsigned>(columns - 1 - column));
             if (std::ranges::any_of(bitmap.rows, [bit](quint8 row) { return (row & bit) != 0; })) {
                 first = std::min(first, column);
                 last = column;
@@ -179,7 +179,7 @@ QImage glyphImage(Bitmap bitmap)
     image.fill(Qt::transparent);
     for (int row = 0; row < QcPixelFont::glyphHeight; ++row) {
         for (int column = 0; column < columns; ++column) {
-            if ((bitmap.rows[std::size_t(row)] & (1U << unsigned(columns - 1 - column))) != 0) {
+            if ((bitmap.rows[static_cast<std::size_t>(row)] & (1U << static_cast<unsigned>(columns - 1 - column))) != 0) {
                 image.setPixelColor(column, row, Qt::white);
             }
         }
@@ -199,7 +199,7 @@ bool contains(char32_t character)
 Glyph glyph(char32_t character)
 {
     const Table &glyphs = table();
-    return glyphs.glyphs[std::size_t(glyphs.index.value(character, glyphs.index.value(U'?')))];
+    return glyphs.glyphs[static_cast<std::size_t>(glyphs.index.value(character, glyphs.index.value(U'?')))];
 }
 
 int advance(char32_t character)
@@ -213,7 +213,7 @@ int lineWidth(const QString &line)
     int width = 0;
     const QList<uint> characters = line.toUcs4();
     for (const uint code : characters) {
-        const auto character = char32_t(code);
+        const auto character = static_cast<char32_t>(code);
         width += advance(character);
     }
     return std::max(0, width - 1);
@@ -221,7 +221,7 @@ int lineWidth(const QString &line)
 
 int pageCount()
 {
-    return int((std::size(bitmaps) + glyphsPerPage - 1) / glyphsPerPage);
+    return static_cast<int>((std::size(bitmaps) + glyphsPerPage - 1) / glyphsPerPage);
 }
 
 QString pageName(int page)
@@ -237,7 +237,7 @@ QImage page(int page, int tileSize)
         QPainter painter(&image);
         painter.setCompositionMode(QPainter::CompositionMode_Source);
         for (int cell = 0; cell < glyphsPerPage; ++cell) {
-            const std::size_t index = std::size_t(page) * glyphsPerPage + std::size_t(cell);
+            const std::size_t index = static_cast<std::size_t>(page) * glyphsPerPage + static_cast<std::size_t>(cell);
             if (index < std::size(bitmaps)) {
                 painter.drawImage(QPoint((cell % cellsPerRow) * cellSize, (cell / cellsPerRow) * cellSize), glyphImage(bitmaps[index]));
             }

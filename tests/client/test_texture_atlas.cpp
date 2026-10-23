@@ -257,8 +257,8 @@ private slots:
                 const QRectF uv = atlas.uv(name);
                 const int tile = resolution >> level;
                 const int gutter = tile / 8;
-                const int x0 = int(std::lround(uv.x() * image.width()));
-                const int y0 = int(std::lround(uv.y() * image.height()));
+                const int x0 = static_cast<int>(std::lround(uv.x() * image.width()));
+                const int y0 = static_cast<int>(std::lround(uv.y() * image.height()));
                 // The whole cell, gutter included, has the tile's colour.
                 for (const QPoint p : {QPoint(x0 - gutter, y0 - gutter), QPoint(x0 + tile + gutter - 1, y0 + tile + gutter - 1),
                                        QPoint(x0 - gutter, y0 + tile - 1), QPoint(x0 + tile / 2, y0 + tile / 2)}) {
@@ -288,7 +288,7 @@ private slots:
 
         const QImage &last = atlas.levels().back();
         const QRectF uv = atlas.uv(u"t:line"_s);
-        const QPoint origin(int(std::lround(uv.x() * last.width())), int(std::lround(uv.y() * last.height())));
+        const QPoint origin(static_cast<int>(std::lround(uv.x() * last.width())), static_cast<int>(std::lround(uv.y() * last.height())));
         int drawn = 0;
         for (int y = 0; y < 8; ++y) {
             for (int x = 0; x < 8; ++x) {
@@ -332,7 +332,7 @@ private slots:
         QVERIFY(limited.sameLayout(QcTextureAtlas::build(content)));
 
         QcTextureAtlas::Options memory;
-        memory.memoryBudget = qint64(200) * 1024;
+        memory.memoryBudget = qint64{200} * 1024;
         const QcTextureAtlas budget = QcTextureAtlas::build(content, {big}, memory);
         QVERIFY(budget.bytes() <= memory.memoryBudget);
         QCOMPARE(budget.tileSize(), 64);
@@ -634,7 +634,7 @@ private slots:
 
         // The active packs together must fit the memory budget: the lowest priority goes first.
         QcTextureStackBuild::Request tight = stackRequest({u"user:cold"_s, u"user:warm"_s}, entries, {{u"user:warm"_s, first.stack.front()}}, content);
-        tight.memoryBudget = qint64(64) * 64 * 4;
+        tight.memoryBudget = qint64{64} * 64 * 4;
         const QcTextureStackBuild::Result budget = QcTextureStackBuild::run(tight);
         QCOMPARE(budget.stack.size(), 1);
         QCOMPARE(budget.stack.front()->id, u"user:cold"_s);

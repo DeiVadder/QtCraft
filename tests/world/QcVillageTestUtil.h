@@ -79,14 +79,14 @@ inline Chunks generateInOrder(const QcTerrainGenerator &generator, const QList<Q
 // The chunks generated backwards, spread over four threads, by `generator`.
 inline Chunks generateOnThreads(const QcTerrainGenerator &generator, const QList<QcChunkPos> &chunks)
 {
-    std::vector<std::shared_ptr<QcChunk>> results(std::size_t(chunks.size()));
+    std::vector<std::shared_ptr<QcChunk>> results(static_cast<std::size_t>(chunks.size()));
     constexpr int threadCount = 4;
     std::vector<std::thread> threads;
     threads.reserve(threadCount);
     for (int t = 0; t < threadCount; ++t) {
         threads.emplace_back([&generator, &chunks, &results, t] {
             for (qsizetype i = chunks.size() - 1 - t; i >= 0; i -= threadCount) {
-                results[std::size_t(i)] = generator.generate(chunks[i]);
+                results[static_cast<std::size_t>(i)] = generator.generate(chunks[i]);
             }
         });
     }
@@ -96,7 +96,7 @@ inline Chunks generateOnThreads(const QcTerrainGenerator &generator, const QList
 
     Chunks generated;
     for (qsizetype i = 0; i < chunks.size(); ++i) {
-        generated.insert(chunks[i], results[std::size_t(i)]);
+        generated.insert(chunks[i], results[static_cast<std::size_t>(i)]);
     }
     return generated;
 }

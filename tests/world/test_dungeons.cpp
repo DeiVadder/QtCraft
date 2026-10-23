@@ -303,7 +303,7 @@ private slots:
             first.pools = {table->pools.constFirst()};
             first.pools[0].minRolls = 1;
             first.pools[0].maxRolls = 1;
-            const QList<QcItemStack> drawn = QcLootTables::draw(first, quint64(i) * 7919, items);
+            const QList<QcItemStack> drawn = QcLootTables::draw(first, static_cast<quint64>(i) * 7919, items);
             if (!drawn.isEmpty()) {
                 counts[m_content->item(drawn.constFirst().item).name] += 1;
             }
@@ -313,7 +313,7 @@ private slots:
             total += entry.weight;
         }
         for (const QcLootTableDefinition::Entry &entry : table->pools.constFirst().entries) {
-            const double expected = double(entry.weight) / total * draws;
+            const double expected = static_cast<double>(entry.weight) / total * draws;
             const int seen = counts[entry.item];
             QVERIFY2(std::abs(seen - expected) < 4.0 * std::sqrt(expected) + 5.0, qPrintable(u"%1: %2 of %3"_s.arg(entry.item).arg(seen).arg(expected)));
         }

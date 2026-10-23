@@ -163,7 +163,7 @@ private slots:
         const QList<QcVillagePlan::Mob> pair = pairOf(*plan);
         QCOMPARE(pair.size(), 2);
         QcServerWorld world(m_content, std::move(generator));
-        const QcChunkPos chunk = QcBlockPos{int(pair[0].at.x), 0, int(pair[0].at.z)}.chunk();
+        const QcChunkPos chunk = QcBlockPos{static_cast<int>(pair[0].at.x), 0, static_cast<int>(pair[0].at.z)}.chunk();
         world.loadChunk(chunk);
 
         QcMobManager mobs(m_content, 42);
@@ -177,7 +177,7 @@ private slots:
             });
         };
         for (const QcVillagePlan::Mob &spot : plan->mobs) {
-            if (QcBlockPos{int(spot.at.x), 0, int(spot.at.z)}.chunk() == chunk) {
+            if (QcBlockPos{static_cast<int>(spot.at.x), 0, static_cast<int>(spot.at.z)}.chunk() == chunk) {
                 QCOMPARE(atSpot(spot), 1);
             }
         }
@@ -223,7 +223,7 @@ private slots:
         placeBed(foot);
         const QcBlockPos head = foot.offset(0, 0, -1);
         send(QcMsg::StartMining{head});
-        ticks(int(std::ceil(QcMining::breakSeconds(m_content->block(*m_server->world().blockAt(head)), nullptr) * QcPhysics::tickRate)));
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(m_content->block(*m_server->world().blockAt(head)), nullptr) * QcPhysics::tickRate)));
         send(QcMsg::FinishMining{head});
         ticks(2);
         QCOMPARE(m_server->world().blockAt(head), qcAirBlockId);
@@ -284,7 +284,7 @@ private slots:
         village.minZ = 0;
         village.maxZ = 20;
         // A persistent id beyond what a JSON number holds exactly (decision E-420).
-        constexpr quint64 holder = (quint64(1) << 60) + 7;
+        constexpr quint64 holder = (quint64{1} << 60) + 7;
         village.beds = {{{5, 70, 5}, {}, holder}, {{500, 70, 5}, {}, 0}};
         const std::optional<QcVillage> back = QcVillage::fromJson(village.toJson(), {});
         QVERIFY(back);

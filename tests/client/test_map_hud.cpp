@@ -45,7 +45,7 @@ private slots:
         const QImage unknown = provider.requestImage(u"4/1-1"_s, nullptr, {});
         QCOMPARE(qAlpha(unknown.pixel(0, 0)), 0);
         // Only a few images are kept.
-        for (quint32 id = 10; id < 10 + quint32(QcMapImageProvider::maxImages); ++id) {
+        for (quint32 id = 10; id < 10 + static_cast<quint32>(QcMapImageProvider::maxImages); ++id) {
             provider.setImage(id, red);
         }
         const QImage dropped = provider.requestImage(u"3/17-1"_s, nullptr, {});

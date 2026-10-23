@@ -40,15 +40,15 @@ QcServerHoppers::QcServerHoppers(QcServerState &state, const QcSignalTable &tabl
     , m_table(table)
 {
     const QcContentRegistry &content = state.content();
-    m_fillsCell.resize(std::size_t(content.stateCount()));
+    m_fillsCell.resize(static_cast<std::size_t>(content.stateCount()));
     for (std::size_t id = 0; id < m_fillsCell.size(); ++id) {
-        m_fillsCell[id] = fillsUnitCell(content.state(QcBlockId(id)).collision);
+        m_fillsCell[id] = fillsUnitCell(content.state(static_cast<QcBlockId>(id)).collision);
     }
 }
 
 bool QcServerHoppers::fillsCell(QcBlockId block) const
 {
-    return std::size_t(block) < m_fillsCell.size() && m_fillsCell[std::size_t(block)];
+    return static_cast<std::size_t>(block) < m_fillsCell.size() && m_fillsCell[static_cast<std::size_t>(block)];
 }
 
 std::optional<QcBlockFace> QcServerHoppers::facingOf(QcBlockPos hopper) const
@@ -81,7 +81,7 @@ void QcServerHoppers::tick()
 
 void QcServerHoppers::startCooldown(QcBlockPos hopper)
 {
-    const quint64 ready = m_state.clock().tick() + quint64(m_state.hoppers().cooldownTicks);
+    const quint64 ready = m_state.clock().tick() + static_cast<quint64>(m_state.hoppers().cooldownTicks);
     if (QcBlockEntities::Container *container = m_state.blockEntities().container(hopper)) {
         container->readyAt = ready;
     }
@@ -154,7 +154,7 @@ QList<QcBlockPos> QcServerHoppers::actors()
     }
     std::ranges::sort(ready, before);
 
-    const auto budget = qsizetype(m_state.config().limits.hopperBudget);
+    const auto budget = static_cast<qsizetype>(m_state.config().limits.hopperBudget);
     if (ready.size() > budget) {
         // Overloaded: go on after the hopper where the last tick stopped, the rest waits.
         const auto start = m_cursor ? std::ranges::upper_bound(ready, *m_cursor, before) : ready.begin();
@@ -189,8 +189,8 @@ QSet<QcBlockPos> QcServerHoppers::push(const QList<QcBlockPos> &hoppers, QcInven
         for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
             const QcItemStack unit = stacks[slot].withCount(1);
             if (!stacks[slot].isEmpty() && access.slotFor(target, room, cells, unit) >= 0) {
-                wanted.append({target, face, unit, int(sources.size()), -1});
-                sources.append({hopper, int(slot)});
+                wanted.append({target, face, unit, static_cast<int>(sources.size()), -1});
+                sources.append({hopper, static_cast<int>(slot)});
                 break;
             }
         }

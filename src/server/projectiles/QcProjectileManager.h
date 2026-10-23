@@ -22,8 +22,8 @@ class QcContentRegistry;
 class QcProjectileManager
 {
 public:
-    static constexpr qsizetype defaultLimit = qsizetype(QcServerLimits{}.projectiles);
-    static constexpr qsizetype defaultPerChunk = qsizetype(QcServerLimits{}.projectilesPerChunk);
+    static constexpr qsizetype defaultLimit = static_cast<qsizetype>(QcServerLimits{}.projectiles);
+    static constexpr qsizetype defaultPerChunk = static_cast<qsizetype>(QcServerLimits{}.projectilesPerChunk);
     // A player picks up a stuck projectile when it is within his box grown by this much.
     static constexpr double pickupReach = 0.5;
     // A projectile that hits a body during its short invulnerability bounces back with this share

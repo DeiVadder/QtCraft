@@ -35,7 +35,7 @@ Cell cellAt(const QcBlockAccess &world, QcBlockPos pos)
 
 QcVec3 middleOf(QcBlockPos feet)
 {
-    return {feet.x + 0.5, double(feet.y), feet.z + 0.5};
+    return {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5};
 }
 
 // The open cell a point arrived through: its own cell when open, else the first open cell back along
@@ -44,9 +44,9 @@ std::optional<QcBlockPos> openCellBefore(const QcBlockAccess &world, const QcVec
 {
     constexpr double step = 0.05;
     const QcVec3 back = along.length() > 1e-9 ? along.normalized() * -step : QcVec3{};
-    const int steps = back.length() > 0.0 ? int(QcSafeSpot::backtrack / step) : 0;
+    const int steps = back.length() > 0.0 ? static_cast<int>(QcSafeSpot::backtrack / step) : 0;
     for (int i = 0; i <= steps; ++i) {
-        const QcBlockPos cell = QcPhysics::blockContaining(point + back * double(i));
+        const QcBlockPos cell = QcPhysics::blockContaining(point + back * static_cast<double>(i));
         if (cellAt(world, cell) == Cell::Open) {
             return cell;
         }
@@ -60,7 +60,7 @@ namespace QcSafeSpot {
 
 int cellsOf(double height)
 {
-    return std::max(1, int(std::ceil(height - 1e-6)));
+    return std::max(1, static_cast<int>(std::ceil(height - 1e-6)));
 }
 
 bool fits(const QcBlockAccess &world, QcBlockPos feet, int cells)
@@ -81,7 +81,7 @@ bool canStand(const QcBlockAccess &world, QcBlockPos feet, int cells)
 std::optional<QcVec3> randomAround(const QcBlockAccess &world, const QcVec3 &around, Search search, QRandomGenerator &random)
 {
     const QcBlockPos centre = QcPhysics::blockContaining(around);
-    const int reach = std::max(1, int(search.range));
+    const int reach = std::max(1, static_cast<int>(search.range));
     for (int attempt = 0; attempt < search.attempts; ++attempt) {
         const int dx = random.bounded(-reach, reach + 1);
         const int dy = random.bounded(-reach, reach + 1);

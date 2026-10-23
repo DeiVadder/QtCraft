@@ -37,7 +37,7 @@ CatchUp catchUp(QcClientAdmin::Arrivals seen, QcClientAdmin::Arrivals now, qsize
     if (now.replacements != seen.replacements || now.total < seen.total) {
         return {true, 0};
     }
-    return {false, qsizetype(std::min<quint64>(now.total - seen.total, quint64(available)))};
+    return {false, static_cast<qsizetype>(std::min<quint64>(now.total - seen.total, static_cast<quint64>(available)))};
 }
 
 // The newest point of the series the charts show and the number of points.
@@ -133,7 +133,7 @@ void QcAdminController::open()
 
 void QcAdminController::subscribe()
 {
-    m_admin->follow(QcMsg::AdminSubscribe::all, Level(m_logLevel));
+    m_admin->follow(QcMsg::AdminSubscribe::all, static_cast<Level>(m_logLevel));
     // Following anew starts from the server's history and tail.
     m_chat.replace(QcAdminViews::chatLines(m_admin->chat()));
     m_log.replace(QcAdminViews::logLines(m_admin->log()));
@@ -158,7 +158,7 @@ void QcAdminController::close()
     m_active = false;
     emit activeChanged();
     if (m_admin) {
-        m_admin->follow(0, Level(m_logLevel));
+        m_admin->follow(0, static_cast<Level>(m_logLevel));
     }
 }
 
@@ -217,43 +217,43 @@ void QcAdminController::setChartsShown(bool shown)
 
 int QcAdminController::chartCapacity() const
 {
-    return int(m_minutes ? QcAdminSamples::minutesKept : QcAdminSamples::secondsKept);
+    return static_cast<int>(m_minutes ? QcAdminSamples::minutesKept : QcAdminSamples::secondsKept);
 }
 
 int QcAdminController::ticksPerSecond()
 {
-    return int(QcPhysics::tickRate);
+    return static_cast<int>(QcPhysics::tickRate);
 }
 
 int QcAdminController::tickBudgetMs()
 {
-    return int(1000.0 / QcPhysics::tickRate);
+    return static_cast<int>(1000.0 / QcPhysics::tickRate);
 }
 
 int QcAdminController::nameLength()
 {
-    return int(QcProfileValidation::maxPlayerNameLength);
+    return static_cast<int>(QcProfileValidation::maxPlayerNameLength);
 }
 
 int QcAdminController::textLength()
 {
-    return int(QcMsg::AdminLimits::maxText);
+    return static_cast<int>(QcMsg::AdminLimits::maxText);
 }
 
 int QcAdminController::reasonLength()
 {
-    return int(QcMsg::AdminLimits::maxReason);
+    return static_cast<int>(QcMsg::AdminLimits::maxReason);
 }
 
 int QcAdminController::labelLength()
 {
-    return int(QcMsg::AdminLimits::maxBackupLabel);
+    return static_cast<int>(QcMsg::AdminLimits::maxBackupLabel);
 }
 
 void QcAdminController::setLogLevel(LogLevel level)
 {
-    if (int(level) < int(LogLevel::Debug) || int(level) > int(LogLevel::Critical)) {
-        qCWarning(lcGame) << "Manage server: no log level" << int(level);
+    if (static_cast<int>(level) < static_cast<int>(LogLevel::Debug) || static_cast<int>(level) > static_cast<int>(LogLevel::Critical)) {
+        qCWarning(lcGame) << "Manage server: no log level" << static_cast<int>(level);
         return;
     }
     if (level == m_logLevel) {
@@ -265,7 +265,7 @@ void QcAdminController::setLogLevel(LogLevel level)
     if (m_active && m_admin) {
         // The server answers a new level with its tail at that level (not limited like LogTail),
         // which replaces the lines shown when it arrives; new lines follow from its newest on.
-        m_admin->follow(QcMsg::AdminSubscribe::all, Level(level));
+        m_admin->follow(QcMsg::AdminSubscribe::all, static_cast<Level>(level));
     }
 }
 
@@ -277,7 +277,7 @@ bool QcAdminController::limitsFromServer() const
 void QcAdminController::act(QcClientAdmin::Kind kind, const QStringList &arguments)
 {
     if (!m_admin) {
-        qCWarning(lcGame) << "Manage server: no session for request" << int(kind);
+        qCWarning(lcGame) << "Manage server: no session for request" << static_cast<int>(kind);
         return;
     }
     if (const quint32 id = m_admin->request(kind, arguments); id != 0) {
@@ -406,7 +406,7 @@ void QcAdminController::runCommand(const QString &line)
     if (command.isEmpty() || !m_admin) {
         return;
     }
-    appendOutput({u"> "_s + command}, int(Level::Info));
+    appendOutput({u"> "_s + command}, static_cast<int>(Level::Info));
     if (const quint32 id = m_admin->runCommand(command); id != 0) {
         m_pending.insert(id, {true, {}, 0});
     }
@@ -477,9 +477,9 @@ void QcAdminController::onResult(quint32 id)
     const bool reasoned = result->refusal != QcMsg::AdminResult::Refusal::None;
     if (asked.command) {
         if (reasoned) {
-            appendOutput({refusalText(m_admin->lastRefusal(), lines.join(u' '))}, int(Level::Critical));
+            appendOutput({refusalText(m_admin->lastRefusal(), lines.join(u' '))}, static_cast<int>(Level::Critical));
         } else {
-            appendOutput(lines, int(result->ok ? Level::Info : Level::Warning));
+            appendOutput(lines, static_cast<int>(result->ok ? Level::Info : Level::Warning));
         }
     } else if (!result->ok) {
         setNotice(Notice::Refused, refusalText(m_admin->lastRefusal(), lines.join(u' ')));
@@ -504,7 +504,7 @@ void QcAdminController::onSettingSaved(const Pending &pending, const QcMsg::Admi
     if (more) {
         return;
     }
-    const int refused = int(m_settingRefusals.size());
+    const int refused = static_cast<int>(m_settingRefusals.size());
     if (refused == 0) {
         setNotice(Notice::Done, tr("Saved %n value(s).", "", m_settingsSaved));
     } else {

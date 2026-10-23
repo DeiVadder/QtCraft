@@ -11,7 +11,7 @@ namespace {
 
 quint64 ticksOf(double seconds)
 {
-    return quint64(std::max<qint64>(1, std::llround(seconds / QcPhysics::tickDuration)));
+    return static_cast<quint64>(std::max<qint64>(1, std::llround(seconds / QcPhysics::tickDuration)));
 }
 
 } // namespace
@@ -36,13 +36,13 @@ void QcMobDrinking::tick()
         if (!state.drinking()) {
             // Begins when a whole drink would heal and the last one is far enough past; the draw ends.
             if (mob.health <= definition.maxHealth - drink.heal && now >= state.drinkReady) {
-                state.drinkStart = qint64(now);
+                state.drinkStart = static_cast<qint64>(now);
                 state.drawStart = -1;
                 m_state.entities().markStale(mob.id);
             }
             continue;
         }
-        if (now - quint64(state.drinkStart) < ticksOf(drink.seconds)) {
+        if (now - static_cast<quint64>(state.drinkStart) < ticksOf(drink.seconds)) {
             continue;
         }
 

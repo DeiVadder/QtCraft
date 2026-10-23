@@ -12,7 +12,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
     const QcBlockDefinition &chestBlock = content.block(context.container);
     const int perChest = std::max(1, chestBlock.containerSlots);
     const qsizetype items = content.items().size();
-    const int chests = std::max(1, int((items + perChest - 1) / perChest));
+    const int chests = std::max(1, static_cast<int>((items + perChest - 1) / perChest));
 
     // Chests on a podium every two metres, their fronts to the south where people come from.
     constexpr int depth = 4;
@@ -25,7 +25,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
         structure->set(x, 2, z, chest);
 
         QcStructure::Contents contents{{x, 2, z}, {}};
-        const qsizetype first = qsizetype(i) * perChest;
+        const qsizetype first = static_cast<qsizetype>(i) * perChest;
         const qsizetype last = std::min(items, first + perChest);
         for (qsizetype item = first; item < last; ++item) {
             contents.items.append({content.items()[item].name, 1});

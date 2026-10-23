@@ -9,10 +9,10 @@ bool QcCampfires::Entry::isEmpty() const
 
 QcCampfires::QcCampfires(const QcContentRegistry &content)
 {
-    const auto count = std::size_t(content.stateCount());
+    const auto count = static_cast<std::size_t>(content.stateCount());
     m_slots.resize(count);
     for (std::size_t id = 0; id < count; ++id) {
-        m_slots[id] = content.block(QcBlockId(id)).campfire.slotCount;
+        m_slots[id] = content.block(static_cast<QcBlockId>(id)).campfire.slotCount;
     }
 }
 
@@ -28,10 +28,10 @@ void QcCampfires::noteBlock(QcBlockPos pos, QcBlockId after)
     Entry kept = *it;
     Spill spill{pos, {}};
     for (int index = count; index < QcCampfireDefinition::maxSlots; ++index) {
-        if (!kept.places[std::size_t(index)].stack.isEmpty()) {
-            spill.stacks.append(kept.places[std::size_t(index)].stack);
+        if (!kept.places[static_cast<std::size_t>(index)].stack.isEmpty()) {
+            spill.stacks.append(kept.places[static_cast<std::size_t>(index)].stack);
         }
-        kept.places[std::size_t(index)] = {};
+        kept.places[static_cast<std::size_t>(index)] = {};
     }
     if (!spill.stacks.isEmpty()) {
         m_spills.append(std::move(spill));
@@ -80,7 +80,7 @@ bool QcCampfires::put(QcBlockPos pos, int slotCount, QcItemId item)
 {
     Entry entry = m_entries.value(pos, Entry{pos, {}});
     for (int index = 0; index < std::min(slotCount, QcCampfireDefinition::maxSlots); ++index) {
-        Slot &slot = entry.places[std::size_t(index)];
+        Slot &slot = entry.places[static_cast<std::size_t>(index)];
         if (slot.stack.isEmpty()) {
             slot = {QcItemStack{item, 1, 0}, 0.0};
             set(entry);

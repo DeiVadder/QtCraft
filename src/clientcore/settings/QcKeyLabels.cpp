@@ -146,7 +146,7 @@ QString QcKeyLabels::handAction(QcKeyBindings::Action action)
     case A::Hotbar7:
     case A::Hotbar8:
     case A::Hotbar9:
-        return tr("Hotbar slot %1").arg(int(action) - int(A::Hotbar1) + 1);
+        return tr("Hotbar slot %1").arg(static_cast<int>(action) - static_cast<int>(A::Hotbar1) + 1);
 
     // The actions of the other groups.
     case A::Forward:

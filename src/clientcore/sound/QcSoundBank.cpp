@@ -11,7 +11,7 @@ QcSoundBank QcSoundBank::build(const QcContentRegistry &content, int sampleRate)
 
     for (const QcSoundDefinition &sound : content.assets().sounds()) {
         // Checked before rendering, so an oversized mod sound costs no time either.
-        const auto needed = qsizetype(std::ceil(sound.seconds() * sampleRate)) * sound.variants;
+        const auto needed = static_cast<qsizetype>(std::ceil(sound.seconds() * sampleRate)) * sound.variants;
         if (bank.m_totalSamples + needed > maxSamples) {
             bank.m_skipped.append(sound.name);
             continue;
@@ -21,7 +21,7 @@ QcSoundBank QcSoundBank::build(const QcContentRegistry &content, int sampleRate)
         entry.definition = sound;
         for (int variant = 0; variant < sound.variants; ++variant) {
             auto buffer = std::make_shared<QcSampleBuffer>(QcSoundSynthesizer::render(sound, variant, sampleRate));
-            bank.m_totalSamples += qsizetype(buffer->samples.size());
+            bank.m_totalSamples += static_cast<qsizetype>(buffer->samples.size());
             entry.variants.append(buffer);
         }
 

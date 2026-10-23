@@ -207,7 +207,7 @@ private slots:
         QVERIFY(changed.count() >= 1);
         QCOMPARE(labels(presets).at(1), u"Bergmann"_s);
 
-        const int before = int(changed.count());
+        const int before = static_cast<int>(changed.count());
         QVERIFY(QCoreApplication::removeTranslator(&german));
         QVERIFY(changed.count() > before);
         QCOMPARE(labels(presets).at(1), u"Miner"_s);
@@ -216,10 +216,10 @@ private slots:
     void presetPlacesAreLimited()
     {
         QcCharacterPresets presets;
-        const int builtIn = int(QcCharacterProfile::builtInPresets().size());
+        const int builtIn = static_cast<int>(QcCharacterProfile::builtInPresets().size());
         QcAppearance look;
         for (int index = 0; index < QcCharacterProfile::maxPresets; ++index) {
-            look.skinColor = quint32(index);
+            look.skinColor = static_cast<quint32>(index);
             QVERIFY(presets.save(u"Look %1"_s.arg(index), look));
         }
         QVERIFY(!presets.canSave());
@@ -392,7 +392,7 @@ private slots:
             QCOMPARE(QcDebugOptions::levelFromName(QcDebugOptions::levelName(level)), std::optional(level));
         }
         for (int visual = 0; visual < QcDebugOptions::visualCount; ++visual) {
-            const auto id = QcDebugOptions::visualId(QcDebugOptions::Visual(visual));
+            const auto id = QcDebugOptions::visualId(static_cast<QcDebugOptions::Visual>(visual));
             QCOMPARE(QcDebugOptions::visualFromId(id), std::optional(QcDebugOptions::Visual(visual)));
         }
         QCOMPARE(QcDebugOptions::visualFromId(u"xray"_s), std::nullopt);

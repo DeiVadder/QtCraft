@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
     , m_seed(seed)
-    , m_random(quint32(seed ^ (seed >> 32) ^ 0x5A91u))
+    , m_random(static_cast<quint32>(seed ^ (seed >> 32) ^ 0x5A91u))
 {
     QHash<QString, QcTreeShape::Params> features;
     for (const QcFeatureDefinition &feature : m_content->worldgen().features()) {
@@ -37,7 +37,7 @@ QcPlantManager::QcPlantManager(std::shared_ptr<const QcContentRegistry> content,
             continue;
         }
 
-        const QcBlockId block = m_content->stateTable().firstState(quint32(i));
+        const QcBlockId block = m_content->stateTable().firstState(static_cast<quint32>(i));
         QSet<QcBlockId> ground;
         for (const QString &name : sapling.plantOn) {
             if (const std::optional<QcBlockId> id = m_content->blockId(name)) {
@@ -71,7 +71,7 @@ void QcPlantManager::addTrunk(QcBlockId block)
     const QcBlockId first = m_content->stateTable().firstState(m_content->state(block).type);
     const qsizetype states = QcBlockStateTable::stateCountOf(m_content->block(block));
     for (qsizetype state = 0; state < states; ++state) {
-        m_trunks.insert(first + QcBlockId(state));
+        m_trunks.insert(first + static_cast<QcBlockId>(state));
     }
 }
 

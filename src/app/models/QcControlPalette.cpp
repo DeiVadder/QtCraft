@@ -17,7 +17,7 @@ QByteArray propertyName(QPalette::ColorRole role)
 {
     QByteArray name = QMetaEnum::fromType<QPalette::ColorRole>().valueToKey(role);
     if (!name.isEmpty()) {
-        name[0] = char(std::tolower(static_cast<unsigned char>(name[0])));
+        name[0] = static_cast<char>(std::tolower(static_cast<unsigned char>(name[0])));
     }
     return name;
 }

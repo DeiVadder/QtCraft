@@ -65,7 +65,7 @@ struct Fixture
         QcMeshInput in;
         for (int dz = -1; dz <= 1; ++dz) {
             for (int dx = -1; dx <= 1; ++dx) {
-                const auto index = std::size_t(dz + 1) * 3 + std::size_t(dx + 1);
+                const auto index = static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1);
                 in.chunks[index] = chunks[index] ? chunks[index] : std::make_shared<QcChunk>(QcChunkPos{dx, dz});
             }
         }
@@ -108,7 +108,7 @@ struct Quad
         double result = 1.0;
         for (std::size_t i = 0; i < 3; ++i) {
             if (high[i] - low[i] > 1e-6f) {
-                result *= double(high[i] - low[i]);
+                result *= static_cast<double>(high[i] - low[i]);
             }
         }
         return result;
@@ -172,7 +172,7 @@ private slots:
     {
         // A column of three cells lit from the top: a covered top face keeps the light out of the
         // cell, a covered bottom face lets it in but not further down.
-        for (const auto &[faces, middle, low] : {std::tuple{quint8(0), 9, 8}, std::tuple{QcLightPassage::bit(QcBlockFace::Up), 0, 0},
+        for (const auto &[faces, middle, low] : {std::tuple{quint8{0}, 9, 8}, std::tuple{QcLightPassage::bit(QcBlockFace::Up), 0, 0},
                                                  std::tuple{QcLightPassage::bit(QcBlockFace::Down), 9, 0}}) {
             QcLightVolume volume(1, 3, 1);
             volume.setOpacity(0, 1, 0, 0, faces);
@@ -379,8 +379,8 @@ private slots:
 
             for (const QcBlockVertex &v : quad.corners) {
                 // A corner of a top face averages the four open cells around it.
-                const int x = int(v.x);
-                const int z = int(v.z);
+                const int x = static_cast<int>(v.x);
+                const int z = static_cast<int>(v.z);
                 const double expected = (levelAt(x - 1, 17, z - 1) + levelAt(x, 17, z - 1) + levelAt(x - 1, 17, z) + levelAt(x, 17, z)) / 4.0 / 15.0;
                 // Light is stored as a byte (value × 255), exact to half a step.
                 QVERIFY2(std::abs(v.blockLight() - expected) <= 0.5 / 255.0 + 1e-6, qPrintable(u"%1 %2: %3 vs %4"_s.arg(x).arg(z).arg(v.blockLight()).arg(expected)));

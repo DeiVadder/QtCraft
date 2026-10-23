@@ -25,7 +25,7 @@ bool QcPointerRadial::move(QPointF delta)
     if (length > reach) {
         m_pointer *= reach / length;
     }
-    return m_radial.point(float(m_pointer.x() / reach), float(m_pointer.y() / reach));
+    return m_radial.point(static_cast<float>(m_pointer.x() / reach), static_cast<float>(m_pointer.y() / reach));
 }
 
 std::optional<int> QcPointerRadial::close()

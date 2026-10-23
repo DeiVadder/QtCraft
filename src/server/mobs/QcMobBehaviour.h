@@ -50,7 +50,7 @@ public:
     QcVillagerBehaviour &villagers() { return m_villagers; }
     const QcVillagerBehaviour &villagers() const { return m_villagers; }
     // The brain of the creatures of kind `type`.
-    QcMobBrain &brainOf(int type) const { return *m_brains[std::size_t(type)]; }
+    QcMobBrain &brainOf(int type) const { return *m_brains[static_cast<std::size_t>(type)]; }
 
     // When a tick happens: the world's time and the tick's length in seconds.
     struct Clock

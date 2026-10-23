@@ -36,7 +36,7 @@ QcStandPose QcStandPose::normalized() const
 
 quint8 QcStandPose::flags() const
 {
-    return quint8((arms ? Arms : 0) | (basePlate ? BasePlate : 0) | (small ? Small : 0) | (showName ? ShowName : 0));
+    return static_cast<quint8>((arms ? Arms : 0) | (basePlate ? BasePlate : 0) | (small ? Small : 0) | (showName ? ShowName : 0));
 }
 
 QcStandPose QcStandPose::withFlags(quint8 flags)
@@ -52,14 +52,14 @@ QcStandPose QcStandPose::withFlags(quint8 flags)
 QString QcStandPose::partName(Part part)
 {
     static const std::array<QString, partCount> names{u"head"_s, u"body"_s, u"left_arm"_s, u"right_arm"_s, u"left_leg"_s, u"right_leg"_s};
-    return names[std::size_t(part)];
+    return names[static_cast<std::size_t>(part)];
 }
 
 std::optional<QcStandPose::Part> QcStandPose::partFromName(const QString &name)
 {
     for (std::size_t i = 0; i < partCount; ++i) {
-        if (partName(Part(i)) == name) {
-            return Part(i);
+        if (partName(static_cast<Part>(i)) == name) {
+            return static_cast<Part>(i);
         }
     }
     return std::nullopt;

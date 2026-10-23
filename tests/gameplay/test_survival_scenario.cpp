@@ -277,7 +277,7 @@ private:
     bool placeCraftingTableNearby()
     {
         const QcVec3 here = position(request({{u"cmd"_s, u"status"_s}}));
-        const int feetY = int(std::floor(here.y));
+        const int feetY = static_cast<int>(std::floor(here.y));
         // Collecting the logs moved the player somewhere near the trunk; try the free spots around.
         QList<std::pair<int, int>> spots;
         for (int ox = -3; ox <= 3; ++ox) {
@@ -291,8 +291,8 @@ private:
 
         // The ground may be a block higher or lower than the player's feet.
         for (const auto &[ox, oz] : std::as_const(spots)) {
-            const int x = int(std::floor(here.x)) + ox;
-            const int z = int(std::floor(here.z)) + oz;
+            const int x = static_cast<int>(std::floor(here.x)) + ox;
+            const int z = static_cast<int>(std::floor(here.z)) + oz;
             for (const int y : {feetY, feetY + 1, feetY - 1}) {
                 if (placeCraftingTableAt(x, y, z)) {
                     return true;
@@ -549,9 +549,9 @@ private slots:
         for (int depth = 0; depth < 12 && countOf(u"qtcraft:cobblestone"_s) == 0; ++depth) {
             // The player is 0.6 m wide and may stand on up to four blocks; dig all of them.
             const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
-            const int y = int(std::floor(feet.y)) - 1;
-            for (int x = int(std::floor(feet.x - 0.3)); x <= int(std::floor(feet.x + 0.3)); ++x) {
-                for (int z = int(std::floor(feet.z - 0.3)); z <= int(std::floor(feet.z + 0.3)); ++z) {
+            const int y = static_cast<int>(std::floor(feet.y)) - 1;
+            for (int x = static_cast<int>(std::floor(feet.x - 0.3)); x <= static_cast<int>(std::floor(feet.x + 0.3)); ++x) {
+                for (int z = static_cast<int>(std::floor(feet.z - 0.3)); z <= static_cast<int>(std::floor(feet.z + 0.3)); ++z) {
                     if (request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString()
                         == u"qtcraft:air"_s) {
                         continue;
@@ -573,9 +573,9 @@ private slots:
     {
         // A furnace just above the head, with room cleared between it and the eyes.
         const QcVec3 feet = position(request({{u"cmd"_s, u"status"_s}}));
-        const int x = int(std::floor(feet.x));
-        const int y = int(std::floor(feet.y));
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x));
+        const int y = static_cast<int>(std::floor(feet.y));
+        const int z = static_cast<int>(std::floor(feet.z));
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~2 ~ air"_s}});
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/setblock ~ ~3 ~ furnace"_s}});
         request({{u"cmd"_s, u"chat"_s}, {u"text"_s, u"/give raw_iron 2"_s}});

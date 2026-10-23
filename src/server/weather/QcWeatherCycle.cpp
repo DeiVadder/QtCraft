@@ -10,7 +10,7 @@ namespace {
 // A well-mixed 64-bit value of the seed, the spell and what it decides (splitmix64).
 quint64 mix(qint64 seed, qint64 spell, quint64 salt)
 {
-    quint64 z = quint64(seed) ^ (quint64(spell) * 0x9E3779B97F4A7C15ull) ^ (salt * 0xD1B54A32D192ED03ull);
+    quint64 z = static_cast<quint64>(seed) ^ (static_cast<quint64>(spell) * 0x9E3779B97F4A7C15ull) ^ (salt * 0xD1B54A32D192ED03ull);
     z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
     z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
     return z ^ (z >> 31);
@@ -24,7 +24,7 @@ constexpr quint64 randomSalt = 16;
 // Moves `level` one fade step towards `target`.
 float fade(float level, float target)
 {
-    const float step = 1.0f / float(QcWeatherCycle::fadeTicks);
+    const float step = 1.0f / static_cast<float>(QcWeatherCycle::fadeTicks);
     if (level < target) {
         return std::min(target, level + step);
     }
@@ -40,7 +40,7 @@ QcWeatherKind nextKind(qint64 seed, qint64 spell, QcWeatherKind previous)
     if (previous != QcWeatherKind::Clear) {
         return QcWeatherKind::Clear;
     }
-    return mix(seed, spell, kindSalt) % 100 < quint64(thunderChance) ? QcWeatherKind::Thunder : QcWeatherKind::Rain;
+    return mix(seed, spell, kindSalt) % 100 < static_cast<quint64>(thunderChance) ? QcWeatherKind::Thunder : QcWeatherKind::Rain;
 }
 
 qint64 lengthOf(qint64 seed, qint64 spell, QcWeatherKind kind)
@@ -54,7 +54,7 @@ qint64 lengthOf(qint64 seed, qint64 spell, QcWeatherKind kind)
         shortest = minThunderTicks;
         longest = maxThunderTicks;
     }
-    return shortest + qint64(mix(seed, spell, lengthSalt) % quint64(longest - shortest + 1));
+    return shortest + static_cast<qint64>(mix(seed, spell, lengthSalt) % static_cast<quint64>(longest - shortest + 1));
 }
 
 Draws::Draws(qint64 seed, const QcWeatherState &state, quint64 purpose)
@@ -69,7 +69,7 @@ int Draws::bounded(int lowest, int highest)
     z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
     z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
     z ^= z >> 31;
-    return lowest + int(z % quint64(highest - lowest));
+    return lowest + static_cast<int>(z % static_cast<quint64>(highest - lowest));
 }
 
 QcWeatherState next(QcWeatherState state, qint64 seed, bool cycle)
@@ -105,8 +105,8 @@ QJsonObject toJson(const QcWeatherState &state)
     return {{u"kind"_s, QcWeather::name(state.kind)},
             {u"ticksLeft"_s, state.ticksLeft},
             {u"spell"_s, state.spell},
-            {u"rain"_s, double(state.rain)},
-            {u"thunder"_s, double(state.thunder)},
+            {u"rain"_s, static_cast<double>(state.rain)},
+            {u"thunder"_s, static_cast<double>(state.thunder)},
             {u"ticks"_s, state.ticks}};
 }
 
@@ -122,7 +122,7 @@ QcWeatherState fromJson(const QJsonObject &json)
     // Negated comparisons, so NaN becomes 0.
     const auto strength = [&json](const QString &key) {
         const double value = json.value(key).toDouble();
-        return float(value > 0.0 ? std::min(value, 1.0) : 0.0);
+        return static_cast<float>(value > 0.0 ? std::min(value, 1.0) : 0.0);
     };
     state.kind = *kind;
     state.spell = spell;

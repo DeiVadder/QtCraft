@@ -27,8 +27,8 @@ bool QcCircuitState::isNearCircuit(const QcServerWorld &world, QcBlockPos pos) c
     }
 
     // The sections from two below to two above, as bits.
-    const auto low = unsigned(std::max(0, pos.y - reach) / QcWorld::sectionHeight);
-    const auto high = unsigned(std::min(QcWorld::worldHeight - 1, pos.y + reach) / QcWorld::sectionHeight);
+    const auto low = static_cast<unsigned>(std::max(0, pos.y - reach) / QcWorld::sectionHeight);
+    const auto high = static_cast<unsigned>(std::min(QcWorld::worldHeight - 1, pos.y + reach) / QcWorld::sectionHeight);
     const quint32 sections = ((2U << high) - 1U) & ~((1U << low) - 1U);
     for (const int dx : {-reach, reach}) {
         for (const int dz : {-reach, reach}) {
@@ -127,7 +127,7 @@ void QcCircuitState::wakeBorder(const QcServerWorld &world, QcChunkPos chunk, Qc
     const QcFaceOffset offset = qcFaceOffset(face);
     const int fixed = offset.dx + offset.dz > 0 ? QcWorld::chunkSize - 1 : 0;
     for (int section = 0; section < QcWorld::sectionCount; ++section) {
-        if ((sections & (1U << unsigned(section))) == 0) {
+        if ((sections & (1U << static_cast<unsigned>(section))) == 0) {
             continue;
         }
         for (int y = section * QcWorld::sectionHeight; y < (section + 1) * QcWorld::sectionHeight; ++y) {

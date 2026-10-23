@@ -41,7 +41,7 @@ public:
     void follow(QcClientSession *session);
 
     QVariantList players() const;
-    int count() const { return int(m_entries.size()); }
+    int count() const { return static_cast<int>(m_entries.size()); }
     QString serverName() const;
     QString motd() const;
 

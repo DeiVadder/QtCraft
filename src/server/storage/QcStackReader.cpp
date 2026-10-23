@@ -50,7 +50,7 @@ QcItemStack QcStackReader::fitted(const Saved &saved) const
     QcItemData data = saved.data;
     // Saved before the map id was item data (decision E-823): one read moves it over.
     if (definition.map == QcMapItem::Filled && data.mapId == 0 && saved.damage > 0) {
-        data.mapId = quint32(saved.damage);
+        data.mapId = static_cast<quint32>(saved.damage);
     }
     data.name.truncate(QcItemData::maxNameLength);
     const QcItemStack plain{saved.item, 1, definition.keptDamage(saved.damage)};
@@ -96,16 +96,16 @@ std::optional<QcItemData> QcStackReader::readData(QDataStream &stream, int depth
             if (!name || name->isEmpty() || level == 0) {
                 return false;
             }
-            data.enchantments.append({*name, std::min(int(level), QcItemData::maxEnchantmentLevel)});
+            data.enchantments.append({*name, std::min(static_cast<int>(level), QcItemData::maxEnchantmentLevel)});
         }
         return true;
     };
     const quint16 version = QcItemDataCodec::version;
     std::optional<QcComponentFrames::ReadComponents> components =
-        QcComponentFrames::read(stream, {{quint16(QcItemData::Component::MapId), version, mapId},
-                                         {quint16(QcItemData::Component::Contents), version, contents},
-                                         {quint16(QcItemData::Component::Name), version, name},
-                                         {quint16(QcItemData::Component::Enchantments), version, enchantments}});
+        QcComponentFrames::read(stream, {{static_cast<quint16>(QcItemData::Component::MapId), version, mapId},
+                                         {static_cast<quint16>(QcItemData::Component::Contents), version, contents},
+                                         {static_cast<quint16>(QcItemData::Component::Name), version, name},
+                                         {static_cast<quint16>(QcItemData::Component::Enchantments), version, enchantments}});
     if (!components) {
         return std::nullopt;
     }

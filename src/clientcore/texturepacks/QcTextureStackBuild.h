@@ -21,7 +21,7 @@ namespace QcTextureStackBuild {
 
 // Decoded images of all active packs together; packs beyond it (the lowest priority first) are
 // left out with a notice.
-inline constexpr qint64 stackMemoryBudget = qint64(384) * 1024 * 1024;
+inline constexpr qint64 stackMemoryBudget = qint64{384} * 1024 * 1024;
 
 // A preview image read before, with the modification time of its file.
 struct Preview

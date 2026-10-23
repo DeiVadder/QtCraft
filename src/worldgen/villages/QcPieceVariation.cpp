@@ -71,7 +71,7 @@ QList<int> QcPieceVariation::optionCounts() const
 {
     QList<int> counts;
     for (const QList<Option> &options : m_choices) {
-        counts.append(int(options.size()));
+        counts.append(static_cast<int>(options.size()));
     }
     return counts;
 }
@@ -89,7 +89,7 @@ QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double(
 {
     Selection selection;
     for (const QList<Option> &options : m_choices) {
-        selection.options.append(std::min(int(options.size()) - 1, int(random() * double(options.size()))));
+        selection.options.append(std::min(static_cast<int>(options.size()) - 1, static_cast<int>(random() * static_cast<double>(options.size()))));
     }
     for (const QcStructureDefinition::Part &part : m_parts) {
         selection.parts.append(random() < part.chance);
@@ -137,9 +137,9 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
     for (qsizetype cell = 0; cell < cells.size(); ++cell) {
         if (cells[cell] >= 0) {
             // Cells run x fastest, then z, then y (QcStructureDefinition::cellIndex).
-            const int x = int(cell % base.sizeX());
-            const int z = int(cell / base.sizeX() % base.sizeZ());
-            const int y = int(cell / (qsizetype(base.sizeX()) * base.sizeZ()));
+            const int x = static_cast<int>(cell % base.sizeX());
+            const int z = static_cast<int>(cell / base.sizeX() % base.sizeZ());
+            const int y = static_cast<int>(cell / (static_cast<qsizetype>(base.sizeX()) * base.sizeZ()));
             structure->set(x, y, z, states[cells[cell]]);
         }
     }

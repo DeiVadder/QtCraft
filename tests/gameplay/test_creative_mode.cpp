@@ -139,7 +139,7 @@ private slots:
         QVERIFY(m_client->stacks[3].isEmpty());
 
         // Unknown items and counts above the stack size are cut to what the content allows.
-        send(QcMsg::CreativeItem{4, {QcItemId(m_content->itemCount() + 5), 1, 0}});
+        send(QcMsg::CreativeItem{4, {static_cast<QcItemId>(m_content->itemCount() + 5), 1, 0}});
         QVERIFY(m_client->stacks[4].isEmpty());
         send(QcMsg::CreativeItem{4, {item("qtcraft:diamond_helmet"), 7, 99999}});
         QCOMPARE(m_client->stacks[4].count, 1);
@@ -190,7 +190,7 @@ private slots:
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pit.x + 0.5, double(pit.y - 1), pit.z + 0.5}, 500);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
         ticks(1);
         send(QcMsg::AttackEntity{pig});
         QVERIFY(!m_server->mobs().find(pig) || m_server->mobs().find(pig)->health < 10.0);
@@ -247,7 +247,7 @@ private slots:
             join(config);
             chat(u"/time set night"_s);
             const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
-            const QcVec3 near{m_feet.x + 3.5, double(m_feet.y), m_feet.z + 0.5};
+            const QcVec3 near{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
             const quint32 mobId = m_server->mobs().spawn(zombie, near, 900'000);
             idle(10);
 
@@ -528,13 +528,13 @@ private slots:
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QcSaveFile::streamVersion);
-        stream << 1.5 << 80.0 << -2.5 << 0.0 << 0.0 << 0.0 << true << 0.0f << 0.0f << 15.0 << qint32(2);
-        stream << quint32(QcInventory::slotCount);
+        stream << 1.5 << 80.0 << -2.5 << 0.0 << 0.0 << 0.0 << true << 0.0f << 0.0f << 15.0 << qint32{2};
+        stream << static_cast<quint32>(QcInventory::slotCount);
         for (int i = 0; i < QcInventory::slotCount; ++i) {
             QcSaveFile::writeStack(stream, i == 2 ? QcItemStack{item("qtcraft:stone"), 12, 0} : QcItemStack{}, *m_content);
         }
-        stream << qint32(9) << 1.5;
-        stream << quint32(QcEquipment::slotCount);
+        stream << qint32{9} << 1.5;
+        stream << static_cast<quint32>(QcEquipment::slotCount);
         for (std::size_t i = 0; i < QcEquipment::slotCount; ++i) {
             QcSaveFile::writeStack(stream, {}, *m_content);
         }

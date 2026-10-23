@@ -76,7 +76,7 @@ int QcServerExperience::takeWhole(QcServerState &state, double experience)
     }
 
     const double whole = std::floor(experience);
-    return int(whole) + (state.random().generateDouble() < experience - whole ? 1 : 0);
+    return static_cast<int>(whole) + (state.random().generateDouble() < experience - whole ? 1 : 0);
 }
 
 int QcServerExperience::roll(QcServerState &state, QcExperienceDrop range)
@@ -86,5 +86,5 @@ int QcServerExperience::roll(QcServerState &state, QcExperienceDrop range)
     }
 
     const int low = std::clamp(range.min, 0, range.max);
-    return low + int(state.random().bounded(quint32(range.max - low + 1)));
+    return low + static_cast<int>(state.random().bounded(static_cast<quint32>(range.max - low + 1)));
 }

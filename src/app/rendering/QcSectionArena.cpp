@@ -26,7 +26,7 @@ void QcSectionArena::reset(QRhi *rhi, QRhiBuffer::UsageFlags usage, Layout layou
     m_usage = usage;
     m_layout = layout;
     m_frame = 0;
-    m_delay = rhi ? quint64(rhi->resourceLimit(QRhi::FramesInFlight)) + 1 : 3;
+    m_delay = rhi ? static_cast<quint64>(rhi->resourceLimit(QRhi::FramesInFlight)) + 1 : 3;
 }
 
 void QcSectionArena::clear()
@@ -40,7 +40,7 @@ QcSectionArena::Page *QcSectionArena::createPage(quint32 vertexCount, quint32 wo
     quint32 vertices = vertexCount;
     quint32 words = wordCount;
     if (m_layout == Layout::Shared) {
-        const int grown = std::min(int(m_pages.size()), 3);
+        const int grown = std::min(static_cast<int>(m_pages.size()), 3);
         const quint32 standard = std::min(largestPageVertices, firstPageVertices << grown);
         vertices = std::max(standard, vertexCount);
         words = std::max(standard * wordsPerVertex, wordCount);

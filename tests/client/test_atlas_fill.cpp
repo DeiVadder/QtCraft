@@ -210,8 +210,8 @@ private slots:
         for (int y = 0; y < black.height(); ++y) {
             uchar *line = black.scanLine(y);
             for (int x = 0; x < black.width(); ++x) {
-                if (line[std::ptrdiff_t(x) * 4 + 3] == 0) {
-                    std::fill_n(line + std::ptrdiff_t(x) * 4, 3, uchar(0));
+                if (line[static_cast<std::ptrdiff_t>(x) * 4 + 3] == 0) {
+                    std::fill_n(line + static_cast<std::ptrdiff_t>(x) * 4, 3, static_cast<uchar>(0));
                 }
             }
         }
@@ -243,8 +243,8 @@ private slots:
             const QRectF uv = atlas.uv(name);
             QVERIFY2(uv != atlas.uv(u"t:unknown"_s), qPrintable(name));
             for (const QImage &level : atlas.levels()) {
-                const QRect tile(int(std::lround(uv.x() * level.width())), int(std::lround(uv.y() * level.height())),
-                                 int(std::lround(uv.width() * level.width())), int(std::lround(uv.height() * level.height())));
+                const QRect tile(static_cast<int>(std::lround(uv.x() * level.width())), static_cast<int>(std::lround(uv.y() * level.height())),
+                                 static_cast<int>(std::lround(uv.width() * level.width())), static_cast<int>(std::lround(uv.height() * level.height())));
                 int transparent = 0;
                 int black = 0;
                 for (int y = tile.top(); y <= tile.bottom(); ++y) {

@@ -13,11 +13,11 @@ using namespace QcTexturePaint;
 // Stalks at every third column, slightly bent, with an ear in the secondary colour at the top.
 QColor paintCrop(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const int column = x - int(hashPixel(spec.seed, x / 3, 0) % 2);
+    const int column = x - static_cast<int>(hashPixel(spec.seed, x / 3, 0) % 2);
     if (column % 3 != 1) {
         return clear();
     }
-    const int top = 1 + int(hashPixel(spec.seed + 5, x / 3, 1) % 4);
+    const int top = 1 + static_cast<int>(hashPixel(spec.seed + 5, x / 3, 1) % 4);
     if (y < top) {
         return clear();
     }
@@ -29,7 +29,7 @@ QColor paintRootCrop(const QcTextureSpec &spec, int x, int y, QColor color)
 {
     const int tuft = x / 4;
     const int centre = tuft * 4 + 2;
-    const int top = 3 + int(hashPixel(spec.seed, tuft, 0) % 5);
+    const int top = 3 + static_cast<int>(hashPixel(spec.seed, tuft, 0) % 5);
     const int spread = (y - top) / 3 + 1;
     if (y >= size - 3 && std::abs(x - centre) <= 1) {
         return varied(spec, spec.secondary, x, y, 7);
@@ -84,7 +84,7 @@ QColor paintPumpkinTop(const QcTextureSpec &spec, int x, int y, QColor color)
 // Dark stripes wandering down a light green rind.
 QColor paintMelonSide(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const int wobble = int(hashPixel(spec.seed, 0, y) % 2);
+    const int wobble = static_cast<int>(hashPixel(spec.seed, 0, y) % 2);
     return (x + wobble) % 5 == 0 || (x + wobble) % 5 == 1 ? varied(spec, spec.secondary, x, y, 3) : color;
 }
 
@@ -246,14 +246,14 @@ QColor paintShears(const QcTextureSpec &spec, int x, int y, QColor color)
 QColor paintReeds(const QcTextureSpec &spec, int x, int y, QColor color)
 {
     for (int stalk = 0; stalk < 5; ++stalk) {
-        const int base = 1 + stalk * 3 + int(hashPixel(spec.seed, stalk, 0) % 2);
-        const int top = 1 + int(hashPixel(spec.seed + 3, stalk, 1) % 5);
-        const int lean = y < 8 ? int(hashPixel(spec.seed + 7, stalk, 2) % 3) - 1 : 0;
+        const int base = 1 + stalk * 3 + static_cast<int>(hashPixel(spec.seed, stalk, 0) % 2);
+        const int top = 1 + static_cast<int>(hashPixel(spec.seed + 3, stalk, 1) % 5);
+        const int lean = y < 8 ? static_cast<int>(hashPixel(spec.seed + 7, stalk, 2) % 3) - 1 : 0;
         if (x == base + lean && y >= top) {
             const bool head = hashPixel(spec.seed + 11, stalk, 3) % 2 == 0 && y >= top + 1 && y <= top + 4;
             return head ? varied(spec, spec.secondary, x, y, 4) : varied(spec, color, x, y, 3);
         }
-        const int leafRow = 8 + int(hashPixel(spec.seed + 13, stalk, 4) % 5);
+        const int leafRow = 8 + static_cast<int>(hashPixel(spec.seed + 13, stalk, 4) % 5);
         const int side = hashPixel(spec.seed + 17, stalk, 5) % 2 == 0 ? 1 : -1;
         if (y == leafRow - std::abs(x - base) / 2 && (x - base) * side > 0 && std::abs(x - base) <= 3) {
             return varied(spec, color, x, y, 5);

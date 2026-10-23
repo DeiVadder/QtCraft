@@ -45,13 +45,16 @@ public:
     using Traits = quint8;
 
     static Traits traitsOf(const QcBlockDefinition &block);
-    static constexpr Traits bit(QcBlockTrait trait) { return Traits(1u << unsigned(trait)); }
+    static constexpr Traits bit(QcBlockTrait trait) { return static_cast<Traits>(1u << static_cast<unsigned>(trait)); }
 
     QcSectionMarks() = default;
     // `traits` is indexed by block state id.
     explicit QcSectionMarks(std::vector<Traits> traits);
 
-    Traits traitsOf(QcBlockId block) const { return std::size_t(block) < m_traits.size() ? m_traits[std::size_t(block)] : Traits(0); }
+    Traits traitsOf(QcBlockId block) const
+    {
+        return static_cast<std::size_t>(block) < m_traits.size() ? m_traits[static_cast<std::size_t>(block)] : static_cast<Traits>(0);
+    }
     bool isMarked(QcBlockId block, QcBlockTrait trait) const { return (traitsOf(block) & bit(trait)) != 0; }
 
     // Replaces the bits of a chunk that entered the world from its section palettes.
@@ -61,8 +64,8 @@ public:
     void forgetChunk(QcChunkPos pos);
 
     // Whether no loaded chunk may hold a block with the trait.
-    bool isEmpty(QcBlockTrait trait) const { return m_chunkCount[std::size_t(trait)] == 0; }
-    qsizetype chunkCount(QcBlockTrait trait) const { return m_chunkCount[std::size_t(trait)]; }
+    bool isEmpty(QcBlockTrait trait) const { return m_chunkCount[static_cast<std::size_t>(trait)] == 0; }
+    qsizetype chunkCount(QcBlockTrait trait) const { return m_chunkCount[static_cast<std::size_t>(trait)]; }
     // The bits of a chunk for the trait (bit n: section n), 0 for a chunk without such sections.
     quint32 sectionsOf(QcChunkPos pos, QcBlockTrait trait) const;
     // The chunks with sections marked for the trait, sorted by x, then z: an order that does not

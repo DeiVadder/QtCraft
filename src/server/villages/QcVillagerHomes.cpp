@@ -134,7 +134,7 @@ std::optional<Lying> lyingIn(const QcBlockAccess &world, QcBlockPos head)
     for (const QcAabb &box : content.state(*block).collision) {
         top = std::max(top, box.max.y);
     }
-    const QcVec3 towardsHead{double(head.x - foot.x), 0.0, double(head.z - foot.z)};
+    const QcVec3 towardsHead{static_cast<double>(head.x - foot.x), 0.0, static_cast<double>(head.z - foot.z)};
     const QcVec3 centre{foot.x + 0.5, foot.y + top, foot.z + 0.5};
     return Lying{centre + towardsHead * lyingShift, QcMobSteering::yawTowards(towardsHead * -1.0)};
 }
@@ -236,7 +236,7 @@ int dropLostClaims(QcVillage &village, const QSet<quint64> &present)
             }
         }
     }
-    return int(lost.size());
+    return static_cast<int>(lost.size());
 }
 
 } // namespace QcVillagerHomes

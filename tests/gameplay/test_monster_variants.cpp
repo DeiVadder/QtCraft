@@ -50,7 +50,7 @@ private:
 
     quint32 spawn(const char *name, QcBlockPos at)
     {
-        return m_server->entities().creatures().spawn(type(name), {at.x + 0.5, double(at.y), at.z + 0.5}, m_server->entities().newId());
+        return m_server->entities().creatures().spawn(type(name), {at.x + 0.5, static_cast<double>(at.y), at.z + 0.5}, m_server->entities().newId());
     }
 
     // Metres the player walks forward in `count` ticks of input.
@@ -59,7 +59,7 @@ private:
         const QcVec3 start = player().motion.position;
         for (int i = 0; i < count; ++i) {
             QcPlayerInput input;
-            input.sequence = quint32(1000 + m_walked++);
+            input.sequence = static_cast<quint32>(1000 + m_walked++);
             input.forward = 1.0f;
             m_client->connection.send(QcMsg::PlayerInput{input});
             QcTestUtil::pump();

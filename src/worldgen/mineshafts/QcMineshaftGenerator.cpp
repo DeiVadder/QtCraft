@@ -11,7 +11,7 @@ constexpr qsizetype cacheCapacity = 1024;
 
 int floorDiv(int value, int divisor)
 {
-    return int(std::floor(double(value) / divisor));
+    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
 } // namespace
@@ -25,7 +25,7 @@ QcMineshaftGenerator::QcMineshaftGenerator(const QcTerrainGenerator &terrain, co
 
 std::shared_ptr<const QcMineshaftPlan> QcMineshaftGenerator::planOf(int regionX, int regionZ) const
 {
-    const qint64 key = (qint64(regionX) << 32) ^ qint64(quint32(regionZ));
+    const qint64 key = (static_cast<qint64>(regionX) << 32) ^ static_cast<qint64>(static_cast<quint32>(regionZ));
     {
         const QMutexLocker lock(&m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
@@ -82,7 +82,7 @@ void QcMineshaftGenerator::buildEntrances(QcChunk &chunk) const
 
 quint64 QcMineshaftGenerator::lootSeed(QcBlockPos at) const
 {
-    return qcMixSeed(m_seed, quint64(qcPositionRandom(m_seed ^ 0x5eed, at.x, at.y, at.z) * 4294967296.0));
+    return qcMixSeed(m_seed, static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, at.x, at.y, at.z) * 4294967296.0));
 }
 
 QcChunkFurnishing QcMineshaftGenerator::furnishingIn(QcChunkPos pos) const
@@ -116,7 +116,7 @@ QcChunkFurnishing QcMineshaftGenerator::roomFurnishing(QcChunkPos pos, const QcM
     const QcStructurePlacement &placement = room.placement;
     for (const QcStructureDefinition::Loot &loot : placement.structure().loot) {
         if (const QcBlockPos at = placement.toWorld(loot.at); at.chunk() == pos) {
-            furnishing.chests.append({at, loot.table, qcMixSeed(seed, quint64(qcPositionRandom(seed, at.x, at.y, at.z) * 4294967296.0))});
+            furnishing.chests.append({at, loot.table, qcMixSeed(seed, static_cast<quint64>(qcPositionRandom(seed, at.x, at.y, at.z) * 4294967296.0))});
         }
     }
     for (const QcStructureDefinition::Spawner &spawner : placement.structure().spawners) {

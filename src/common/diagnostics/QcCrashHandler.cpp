@@ -32,7 +32,7 @@ std::atomic<bool> g_installed{false};
 int overflowStack(std::uint64_t depth)
 {
     std::array<volatile char, 4096> buffer{};
-    buffer[0] = char(depth);
+    buffer[0] = static_cast<char>(depth);
     return depth == 0 ? 0 : overflowStack(depth + 1) + buffer[0];
 }
 
@@ -119,9 +119,9 @@ void prepareThread()
 void setReason(const QByteArray &reason)
 {
     // Racing writers may mix their texts; the report still names a reason.
-    const qsizetype length = std::min<qsizetype>(reason.size(), qsizetype(g_reason.size()) - 1);
+    const qsizetype length = std::min<qsizetype>(reason.size(), static_cast<qsizetype>(g_reason.size()) - 1);
     std::copy_n(reason.constData(), length, g_reason.begin());
-    g_reason[std::size_t(length)] = '\0';
+    g_reason[static_cast<std::size_t>(length)] = '\0';
 }
 
 void setLogHandle(int handle)

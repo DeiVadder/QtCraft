@@ -11,7 +11,7 @@ namespace {
 
 using R = Role;
 
-constexpr std::array<Entry, std::size_t(Role::RoleCount)> palette = {{
+constexpr std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> palette = {{
     {R::Text, "text", 0xffffffff},
     {R::TextSecondary, "textSecondary", 0xffe2e2e2},
     {R::TextMuted, "textMuted", 0xffb4b4b4},
@@ -127,12 +127,12 @@ constexpr std::array<Override, 4> qtNeon = {{
 
 Preset activePreset = defaultPreset;
 
-std::array<Entry, std::size_t(Role::RoleCount)> makeEntries(Preset preset)
+std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> makeEntries(Preset preset)
 {
-    std::array<Entry, std::size_t(Role::RoleCount)> made = palette;
+    std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> made = palette;
     const auto apply = [&made](std::span<const Override> overrides) {
         for (const Override &change : overrides) {
-            made[std::size_t(change.role)].argb = change.argb;
+            made[static_cast<std::size_t>(change.role)].argb = change.argb;
         }
     };
     if (preset != Preset::Classic) {
@@ -144,7 +144,7 @@ std::array<Entry, std::size_t(Role::RoleCount)> makeEntries(Preset preset)
     return made;
 }
 
-std::array<Entry, std::size_t(Role::RoleCount)> activeEntries = makeEntries(defaultPreset);
+std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> activeEntries = makeEntries(defaultPreset);
 
 double channel(int value)
 {
@@ -192,12 +192,12 @@ std::span<const Entry> entries()
 
 QColor color(Role role)
 {
-    return QColor::fromRgba(activeEntries[std::size_t(role)].argb);
+    return QColor::fromRgba(activeEntries[static_cast<std::size_t>(role)].argb);
 }
 
 QString name(Role role)
 {
-    return QString::fromLatin1(activeEntries[std::size_t(role)].name);
+    return QString::fromLatin1(activeEntries[static_cast<std::size_t>(role)].name);
 }
 
 QList<TextPair> textPairs()
@@ -354,7 +354,7 @@ double contrast(const QColor &a, const QColor &b)
 QColor composite(const QColor &over, const QColor &under)
 {
     const double alpha = over.alphaF();
-    const auto mix = [alpha](int top, int bottom) { return int(std::lround(top * alpha + bottom * (1.0 - alpha))); };
+    const auto mix = [alpha](int top, int bottom) { return static_cast<int>(std::lround(top * alpha + bottom * (1.0 - alpha))); };
     return QColor(mix(over.red(), under.red()), mix(over.green(), under.green()), mix(over.blue(), under.blue()));
 }
 

@@ -247,7 +247,7 @@ private slots:
         QCOMPARE(current->version, 7);
 
         // Version 6 is the same without the seed at the end.
-        const QByteArray old = QcSaveFile::bytes("QCPL", current->bytes.chopped(int(sizeof(quint32))), 6);
+        const QByteArray old = QcSaveFile::bytes("QCPL", current->bytes.chopped(static_cast<int>(sizeof(quint32))), 6);
         const QcPlayerStorage::Result read = storage.parse(u"Old"_s, old);
         QVERIFY(read.has_value() && read->player.has_value());
         QCOMPARE(read->player->enchantSeed, 0u);
@@ -267,8 +267,8 @@ private slots:
         // The client's prediction (QcHandActions) with efficiency V.
         const QcItemStack enchanted = stackOf("qtcraft:iron_pickaxe", {{u"qtcraft:efficiency"_s, 5}});
         const int level = QcEnchanting::levelOf(*m_content, enchanted, QcEnchantmentEffect::Efficiency);
-        const int predicted = int(std::ceil(QcMining::breakSeconds(obsidian, &pickaxe, QcEnchanting::speedBonus(level)) * QcPhysics::tickRate));
-        const int plain = int(std::ceil(QcMining::breakSeconds(obsidian, &pickaxe) * QcPhysics::tickRate));
+        const int predicted = static_cast<int>(std::ceil(QcMining::breakSeconds(obsidian, &pickaxe, QcEnchanting::speedBonus(level)) * QcPhysics::tickRate));
+        const int plain = static_cast<int>(std::ceil(QcMining::breakSeconds(obsidian, &pickaxe) * QcPhysics::tickRate));
         QVERIFY2(plain > predicted + 10, qPrintable(u"%1 vs %2"_s.arg(plain).arg(predicted)));
 
         // Without the enchantment the predicted time is far too short.
@@ -286,7 +286,7 @@ private slots:
         const QcItemId chestplate = item("qtcraft:iron_chestplate");
         const int durability = m_content->item(chestplate).durability;
         const QList<QcEnchantment> protection{{u"qtcraft:protection"_s, 4}};
-        player().equipment.stacks[std::size_t(QcEquipmentSlot::Chest)] = QcItemStack{chestplate, 1, durability - 1}.withEnchantments(protection);
+        player().equipment.stacks[static_cast<std::size_t>(QcEquipmentSlot::Chest)] = QcItemStack{chestplate, 1, durability - 1}.withEnchantments(protection);
         const int points = QcArmour::points(*m_content, player().equipment);
         const double expected = QcEnchanting::reducedDamage(QcArmour::reducedDamage(1.0, points), 4);
 

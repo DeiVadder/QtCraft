@@ -46,7 +46,7 @@ public:
     explicit QcCampfires(const QcContentRegistry &content);
 
     // Item slots of a block state that cooks (a lit campfire), 0 for others.
-    int slotsOf(QcBlockId block) const { return std::size_t(block) < m_slots.size() ? m_slots[std::size_t(block)] : 0; }
+    int slotsOf(QcBlockId block) const { return static_cast<std::size_t>(block) < m_slots.size() ? m_slots[static_cast<std::size_t>(block)] : 0; }
 
     // The block at `pos` became `after` (QcServerWorld::setBlock): an entry it no longer fits goes and
     // its items spill.

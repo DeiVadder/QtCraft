@@ -355,7 +355,7 @@ void QcClientSession::updateSounds()
 {
     m_entities.stepSounds(*m_worldMirror.world(), [this](const QcSoundCue &step) { cue(step); });
     const QcVec3 eye = playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    const double rain = m_worldMirror.weather().rainAt(int(std::floor(eye.y)));
+    const double rain = m_worldMirror.weather().rainAt(static_cast<int>(std::floor(eye.y)));
     m_sounds.updateAmbience(*m_worldMirror.world(), eye, rain, m_tickCount, [this](const QcSoundCue &sound) { cue(sound); });
     const QList<QcSoundCue> thunder = m_worldMirror.weather().tick(m_tickCount);
     for (const QcSoundCue &sound : thunder) {

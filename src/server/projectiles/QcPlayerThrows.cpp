@@ -40,7 +40,7 @@ bool QcPlayerThrows::throwHeld(QcServerClient &client)
     }
 
     client.swung = true;
-    client.throwReady.insert(stack.item, now + quint64(std::lround(held->throwable->cooldownSeconds / QcPhysics::tickDuration)));
+    client.throwReady.insert(stack.item, now + static_cast<quint64>(std::lround(held->throwable->cooldownSeconds / QcPhysics::tickDuration)));
     if (!creative) {
         client.inventory.setSlot(slot, stack.count > 1 ? stack.withCount(stack.count - 1) : QcItemStack{});
         m_inventory.send(client);

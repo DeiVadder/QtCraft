@@ -17,7 +17,7 @@ QcFishSwimming::QcFishSwimming(QRandomGenerator &random)
 qint64 QcFishSwimming::cellKey(int x, int y, int z)
 {
     // 21 bits per axis: worlds are far smaller than a million cells of a metre or more.
-    const auto bits = [](int value) { return qint64(value) & 0x1FFFFF; };
+    const auto bits = [](int value) { return static_cast<qint64>(value) & 0x1FFFFF; };
     return (bits(x) << 42) | (bits(y) << 21) | bits(z);
 }
 
@@ -28,14 +28,15 @@ double QcFishSwimming::cellSizeOf(const QcAquaticDefinition &aquatic)
 
 QcFishSwimming::CellKey QcFishSwimming::cellOf(int type, const QcVec3 &position, double size)
 {
-    return {type, cellKey(int(std::floor(position.x / size)), int(std::floor(position.y / size)), int(std::floor(position.z / size)))};
+    return {type, cellKey(static_cast<int>(std::floor(position.x / size)), static_cast<int>(std::floor(position.y / size)),
+        static_cast<int>(std::floor(position.z / size)))};
 }
 
 void QcFishSwimming::startTick(std::span<const QcCreature> mobs, const QcContentRegistry &content)
 {
     // Emptied without giving back their storage: the grid is built anew every tick.
     m_cellIndex.removeIf([](const auto &) { return true; });
-    m_cellOfMob.assign(std::size_t(mobs.size()), -1);
+    m_cellOfMob.assign(static_cast<std::size_t>(mobs.size()), -1);
     m_cellStart.clear();
 
     // First the cell of each awake water creature and the size of each cell ...
@@ -48,11 +49,11 @@ void QcFishSwimming::startTick(std::span<const QcCreature> mobs, const QcContent
         const CellKey key = cellOf(mob.type, mob.motion.position, cellSizeOf(*aquatic));
         auto cell = m_cellIndex.find(key);
         if (cell == m_cellIndex.end()) {
-            cell = m_cellIndex.insert(key, qsizetype(m_cellStart.size()));
+            cell = m_cellIndex.insert(key, static_cast<qsizetype>(m_cellStart.size()));
             m_cellStart.push_back(0);
         }
-        m_cellOfMob[std::size_t(i)] = *cell;
-        ++m_cellStart[std::size_t(*cell)];
+        m_cellOfMob[static_cast<std::size_t>(i)] = *cell;
+        ++m_cellStart[static_cast<std::size_t>(*cell)];
     }
 
     // ... then the start of each cell's run, and the creatures sorted into their runs.
@@ -61,11 +62,11 @@ void QcFishSwimming::startTick(std::span<const QcCreature> mobs, const QcContent
         total += std::exchange(start, total);
     }
     m_cellStart.push_back(total);
-    m_members.assign(std::size_t(total), 0);
+    m_members.assign(static_cast<std::size_t>(total), 0);
     std::vector<qsizetype> &next = m_cellStart;
     for (qsizetype i = 0; i < std::ssize(mobs); ++i) {
-        if (const qsizetype cell = m_cellOfMob[std::size_t(i)]; cell >= 0) {
-            m_members[std::size_t(next[std::size_t(cell)]++)] = i;
+        if (const qsizetype cell = m_cellOfMob[static_cast<std::size_t>(i)]; cell >= 0) {
+            m_members[static_cast<std::size_t>(next[static_cast<std::size_t>(cell)]++)] = i;
         }
     }
     // Filling moved every start to the next cell's start: shift them back.
@@ -88,9 +89,9 @@ void QcFishSwimming::collectFrom(std::span<const QcCreature> mobs, qsizetype ind
     }
 
     const QcVec3 &self = mobs[index].motion.position;
-    const qsizetype end = m_cellStart[std::size_t(*found + 1)];
-    for (qsizetype member = m_cellStart[std::size_t(*found)]; member < end; ++member) {
-        const qsizetype other = m_members[std::size_t(member)];
+    const qsizetype end = m_cellStart[static_cast<std::size_t>(*found + 1)];
+    for (qsizetype member = m_cellStart[static_cast<std::size_t>(*found)]; member < end; ++member) {
+        const qsizetype other = m_members[static_cast<std::size_t>(member)];
         const QcVec3 apart = mobs[other].motion.position - self;
         const double distanceSquared = apart.x * apart.x + apart.y * apart.y + apart.z * apart.z;
         if (other != index && distanceSquared <= radius * radius) {
@@ -111,9 +112,9 @@ const QList<const QcCreature *> &QcFishSwimming::neighboursOf(std::span<const Qc
     const QcCreature &self = mobs[index];
     const double size = cellSizeOf(aquatic);
     const QcVec3 &p = self.motion.position;
-    const int cx = int(std::floor(p.x / size));
-    const int cy = int(std::floor(p.y / size));
-    const int cz = int(std::floor(p.z / size));
+    const int cx = static_cast<int>(std::floor(p.x / size));
+    const int cy = static_cast<int>(std::floor(p.y / size));
+    const int cz = static_cast<int>(std::floor(p.z / size));
     for (int dx = -1; dx <= 1; ++dx) {
         for (int dy = -1; dy <= 1; ++dy) {
             for (int dz = -1; dz <= 1; ++dz) {
@@ -124,9 +125,9 @@ const QList<const QcCreature *> &QcFishSwimming::neighboursOf(std::span<const Qc
 
     // The nearest ones, whichever cell they are in, so that no direction is preferred.
     const auto nearer = [](Candidate a, Candidate b) { return a.distanceSquared < b.distanceSquared; };
-    if (m_candidates.size() > std::size_t(aquatic.neighbours)) {
+    if (m_candidates.size() > static_cast<std::size_t>(aquatic.neighbours)) {
         std::nth_element(m_candidates.begin(), m_candidates.begin() + aquatic.neighbours, m_candidates.end(), nearer);
-        m_candidates.resize(std::size_t(aquatic.neighbours));
+        m_candidates.resize(static_cast<std::size_t>(aquatic.neighbours));
     }
     for (const Candidate &candidate : m_candidates) {
         m_found.append(candidate.mob);
@@ -153,7 +154,7 @@ QcVec3 QcFishSwimming::schooling(const QcVec3 &position, const QList<const QcCre
             apart += away.normalized() * (1.0 - distance / aquatic.separationDistance);
         }
     }
-    centre = centre * (1.0 / double(others.size()));
+    centre = centre * (1.0 / static_cast<double>(others.size()));
 
     QcVec3 steering;
     const QcVec3 toCentre = centre - position;
@@ -260,7 +261,7 @@ void QcFishSwimming::flopOnLand(QcCreature &mob, const QcMobDefinition &definiti
         const double angle = m_random.bounded(2.0 * std::numbers::pi);
         const double sideways = aquatic.flopSpeed / 3.0;
         mob.motion.velocity = {std::sin(angle) * sideways, aquatic.flopSpeed, -std::cos(angle) * sideways};
-        mob.yaw = float(m_random.bounded(360.0));
+        mob.yaw = static_cast<float>(m_random.bounded(360.0));
     }
 
     // It keeps the speed of its flop through the air (a body without wish keeps nothing on the ground).

@@ -133,7 +133,7 @@ struct Listing
             continue;
         }
         // Twice the file limit: room for reporting wrong files without reading an endless folder.
-        const Listing space = listNamespace(folder, std::max<qsizetype>(0, 2 * qsizetype(limits.maxFiles) - listing.files.size()));
+        const Listing space = listNamespace(folder, std::max<qsizetype>(0, 2 * static_cast<qsizetype>(limits.maxFiles) - listing.files.size()));
         listing.files.append(space.files);
         listing.problems.append(space.problems);
     }
@@ -209,10 +209,10 @@ void PackLoader::addTexture(const TextureFile &file)
         return;
     }
 
-    const qint64 bytesNeeded = qint64(image->image.sizeInBytes());
+    const qint64 bytesNeeded = static_cast<qint64>(image->image.sizeInBytes());
     if (m_pack.decodedBytes + bytesNeeded > m_limits.memoryBudget) {
         m_pack.problems.append({file.relative, QT_TRANSLATE_NOOP("QcTexturePack", "Skipped: the pack's images exceed the memory budget of %1 MiB"),
-                              {QString::number(m_limits.memoryBudget / (qint64(1024) * 1024))}});
+                              {QString::number(m_limits.memoryBudget / (qint64{1024} * 1024))}});
         return;
     }
     if (image->frames > 1) {

@@ -132,7 +132,7 @@ QcHandbookEntry signalTable(const QcHandbookContext &context)
         if (signal.kind == QcSignalKind::Torch && !signal.strongPowersAbove) {
             note += context.text.label(u"value.signal.noStrongAbove"_s);
         }
-        roles[std::size_t(signalRole(signal.kind))].append({int(signal.kind), context.links.blockLink(block.name, note)});
+        roles[static_cast<std::size_t>(signalRole(signal.kind))].append({static_cast<int>(signal.kind), context.links.blockLink(block.name, note)});
     }
 
     const std::array<QString, 3> titles{u"section.signalSources"_s, u"section.signalWires"_s, u"section.signalSlots"_s};
@@ -275,7 +275,7 @@ LightBlocking lightBlocking(const QcContentRegistry &content, const QcBlockDefin
         const QcBlockStateTable &states = content.stateTable();
         const quint32 type = content.state(*id).type;
         for (int index = 0; index < states.stateCount(type); ++index) {
-            const QcBlockState &state = states.state(states.firstState(type) + quint32(index));
+            const QcBlockState &state = states.state(states.firstState(type) + static_cast<quint32>(index));
             partial = partial || !state.fullCube;
             coversSides = coversSides || state.lightBlockedFaces != 0;
         }

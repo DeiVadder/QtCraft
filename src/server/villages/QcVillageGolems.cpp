@@ -23,7 +23,7 @@ constexpr quint64 gossipSalt = 4300;
 // The tick of a world time, for the draws.
 int tickOf(double worldTime)
 {
-    return int(std::fmod(worldTime * 20.0, 1e9));
+    return static_cast<int>(std::fmod(worldTime * 20.0, 1e9));
 }
 
 // Whether a moment lies within `seconds` before `now` (a moment after `now`: the time went back).
@@ -125,7 +125,7 @@ QList<QcVillageGolems::Spawn> QcVillageGolems::summon(const Group &group, int ty
     QcVillage *village = group.village != 0 ? context.world.villages().find(group.village) : nullptr;
     const QcVillageGolemSettings settings = m_content->villageCatalog().golemOfStyle(village ? village->style : QString());
     // Gossip summons with its chance once per check and village.
-    const double roll = qcPositionRandom(qcMixSeed(context.seed, gossipSalt), int(group.village % 1000003), tickOf(context.worldTime), 0);
+    const double roll = qcPositionRandom(qcMixSeed(context.seed, gossipSalt), static_cast<int>(group.village % 1000003), tickOf(context.worldTime), 0);
     QList<Spawn> spawns;
     for (const QcCreature *summoner : group.wanting) {
         if (spawns.size() >= allowed || (village && !spawns.isEmpty())) {
@@ -235,7 +235,7 @@ qint64 QcVillageGolems::golemsInWorld(const QList<QcCreature> &mobs, int type, c
 
 int QcVillageGolems::golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, int type)
 {
-    return int(std::ranges::count_if(mobs, [&](const QcCreature &mob) {
+    return static_cast<int>(std::ranges::count_if(mobs, [&](const QcCreature &mob) {
         return mob.type == type && village.contains(QcPhysics::blockContaining(mob.motion.position));
     }));
 }
@@ -274,9 +274,9 @@ std::optional<QcVec3> QcVillageGolems::placeNear(const QcVec3 &around, int type,
     const int tick = tickOf(context.worldTime);
     const int span = 2 * radius + 1;
     for (int attempt = 0; attempt < placeAttempts; ++attempt) {
-        const quint64 seed = qcMixSeed(qcMixSeed(context.seed, placeSalt + quint64(attempt)), draw);
-        const int x = centre.x - radius + std::min(span - 1, int(qcPositionRandom(seed, centre.x, tick, centre.z) * span));
-        const int z = centre.z - radius + std::min(span - 1, int(qcPositionRandom(seed, centre.z, tick, centre.x) * span));
+        const quint64 seed = qcMixSeed(qcMixSeed(context.seed, placeSalt + static_cast<quint64>(attempt)), draw);
+        const int x = centre.x - radius + std::min(span - 1, static_cast<int>(qcPositionRandom(seed, centre.x, tick, centre.z) * span));
+        const int z = centre.z - radius + std::min(span - 1, static_cast<int>(qcPositionRandom(seed, centre.z, tick, centre.x) * span));
         // From the top down, like the reference: the highest place of the column within reach.
         for (int dy = QcVillageGolemSettings::spawnHeight; dy >= -QcVillageGolemSettings::spawnHeight; --dy) {
             if (const std::optional<QcVec3> at = standsAt({x, centre.y + dy, z}, type, context)) {

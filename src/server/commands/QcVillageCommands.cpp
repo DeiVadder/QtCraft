@@ -104,7 +104,7 @@ void QcVillageCommands::locate(const QcCommandContext &context)
         return;
     }
     const QcBlockPos centre = found->village.centre;
-    const int distance = int(std::lround(std::hypot(double(centre.x - origin->x), double(centre.z - origin->z))));
+    const int distance = static_cast<int>(std::lround(std::hypot(static_cast<double>(centre.x - origin->x), static_cast<double>(centre.z - origin->z))));
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Village (%1, %2) at %3 %4 %5, %6 blocks away"),
                   {found->village.style, found->plan->layout, QString::number(centre.x), QString::number(centre.y), QString::number(centre.z),
                    QString::number(distance)});
@@ -120,7 +120,7 @@ void QcVillageCommands::locateStructure(const QcCommandContext &context, QcBlock
         return;
     }
     const QcBlockPos middle = found->toWorld(QcBlockPos{found->structure().sizeX() / 2, found->structure().groundLayer + 1, found->structure().sizeZ() / 2});
-    const int distance = int(std::lround(std::hypot(double(middle.x - origin.x), double(middle.z - origin.z))));
+    const int distance = static_cast<int>(std::lround(std::hypot(static_cast<double>(middle.x - origin.x), static_cast<double>(middle.z - origin.z))));
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3 %4, %5 blocks away"),
                   {name, QString::number(middle.x), QString::number(middle.y), QString::number(middle.z), QString::number(distance)});
 }
@@ -147,7 +147,7 @@ void QcVillageCommands::village(const QcCommandContext &context)
     }
     QJsonObject json = found->village.toJson();
     json.insert(u"known"_s, found->known);
-    json.insert(u"freeBeds"_s, qint64(found->village.freeBeds()));
+    json.insert(u"freeBeds"_s, static_cast<qint64>(found->village.freeBeds()));
     // The street plan (decision E-408) comes from the plan; the state does not keep it.
     json.insert(u"layout"_s, found->plan->layout);
     json.insert(u"winding"_s, found->plan->winding);

@@ -68,7 +68,7 @@ void fill(QcServerState &state, const QcWorldSetup::Contents &contents)
         }
     } else if (QcBlockEntities::Machine *machine = entities.machine(contents.at)) {
         for (qsizetype i = 0; i < stacks.size() && i < QcBlockEntities::Machine::slotCount; ++i) {
-            machine->stacks[std::size_t(i)] = stacks[i];
+            machine->stacks[static_cast<std::size_t>(i)] = stacks[i];
         }
     }
     state.noteContents(contents.at);
@@ -84,7 +84,7 @@ void write(QcServerState &state, const QcWorldSetup::Sign &sign)
     }
     QcSignText::Lines lines;
     for (qsizetype line = 0; line < sign.lines.size() && line < QcSignText::maxLines; ++line) {
-        lines[std::size_t(line)] = sign.lines[line];
+        lines[static_cast<std::size_t>(line)] = sign.lines[line];
     }
     const QcSignDefinition &definition = state.content().block(block).sign;
     state.world().signs().set(sign.at, QcSignText::cleaned(lines, definition.lines, definition.lineLength));
@@ -174,14 +174,14 @@ void placeHanging(QcServerState &state, const QcWorldSetup::Hanging &setup, std:
     hanging.hanging.type = hangs->type;
     hanging.hanging.face = setup.face;
     hanging.hanging.cell = setup.at;
-    hanging.hanging.rotation = quint8(setup.rotation);
+    hanging.hanging.rotation = static_cast<quint8>(setup.rotation);
     if (hangs->type == QcHangingType::Painting) {
         const auto motif = std::ranges::find(hangs->motifs, setup.motif, &QcPaintingMotif::name);
         if (motif == hangs->motifs.end()) {
             qCWarning(lcServer) << "World setup: no painting motif" << setup.motif;
             return;
         }
-        hanging.hanging.motif = quint8(motif - hangs->motifs.begin());
+        hanging.hanging.motif = static_cast<quint8>(motif - hangs->motifs.begin());
         hanging.hanging.width = motif->width;
         hanging.hanging.height = motif->height;
     } else if (!setup.held.isEmpty()) {

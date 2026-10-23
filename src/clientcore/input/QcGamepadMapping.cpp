@@ -15,7 +15,7 @@ Walk walk(const QcGamepadState &shaped)
 QPointF lookDelta(const QcGamepadState &shaped, double lookSpeed, double seconds)
 {
     const double degrees = std::isfinite(lookSpeed * seconds) ? lookSpeed * seconds : 0.0;
-    return {double(shaped.axis(QcGamepadAxis::RightX)) * degrees, double(shaped.axis(QcGamepadAxis::RightY)) * degrees};
+    return {static_cast<double>(shaped.axis(QcGamepadAxis::RightX)) * degrees, static_cast<double>(shaped.axis(QcGamepadAxis::RightY)) * degrees};
 }
 
 bool clearlyDeflected(const QcGamepadState &raw)
@@ -27,7 +27,7 @@ bool clearlyDeflected(const QcGamepadState &raw)
 bool used(const QcGamepadState &raw)
 {
     for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
-        if (raw.pressed(QcGamepadButton(button))) {
+        if (raw.pressed(static_cast<QcGamepadButton>(button))) {
             return true;
         }
     }
@@ -85,7 +85,7 @@ constexpr std::array<ActionEntry, actionCount> actionTable{{
 static_assert(
     [] {
         for (std::size_t index = 0; index < actionTable.size(); ++index) {
-            if (actionTable[index].action != Action(index)) {
+            if (actionTable[index].action != static_cast<Action>(index)) {
                 return false;
             }
         }
@@ -95,7 +95,7 @@ static_assert(
 
 ButtonField fieldOf(Action action)
 {
-    return action < Action::Count ? actionTable[std::size_t(action)].field : nullptr;
+    return action < Action::Count ? actionTable[static_cast<std::size_t>(action)].field : nullptr;
 }
 
 } // namespace
@@ -164,15 +164,15 @@ std::array<bool, actionCount> withCombos(std::array<bool, actionCount> now, cons
         // A press keeps what it began as: the combo once it started with the modifier held, the
         // button's own action when that was held before the modifier came.
         const std::optional<Action> own = bindings.action(combo.button);
-        const bool ownBefore = own && *own != combo.action && before[std::size_t(*own)];
-        const bool comboBefore = before[std::size_t(combo.action)];
-        if (!comboBefore && (ownBefore || !now[std::size_t(combo.modifier)])) {
+        const bool ownBefore = own && *own != combo.action && before[static_cast<std::size_t>(*own)];
+        const bool comboBefore = before[static_cast<std::size_t>(combo.action)];
+        if (!comboBefore && (ownBefore || !now[static_cast<std::size_t>(combo.modifier)])) {
             continue;
         }
 
-        now[std::size_t(combo.action)] = true;
+        now[static_cast<std::size_t>(combo.action)] = true;
         if (own && *own != combo.action && *own != combo.modifier) {
-            now[std::size_t(*own)] = false;
+            now[static_cast<std::size_t>(*own)] = false;
         }
     }
 
@@ -203,7 +203,7 @@ QList<Action> Bindings::conflicts() const
         if (!entry.field || this->*entry.field == unbound) {
             continue;
         }
-        bool &seen = used[std::size_t(this->*entry.field)];
+        bool &seen = used[static_cast<std::size_t>(this->*entry.field)];
         if (seen) {
             result.append(entry.action);
         }
@@ -214,7 +214,7 @@ QList<Action> Bindings::conflicts() const
 
 QString actionName(Action action)
 {
-    return action < Action::Count ? actionTable[std::size_t(action)].name.toString() : QString();
+    return action < Action::Count ? actionTable[static_cast<std::size_t>(action)].name.toString() : QString();
 }
 
 std::optional<Action> actionFromName(const QString &name)

@@ -20,7 +20,7 @@ namespace {
 constexpr QDataStream::Version streamVersion = QDataStream::Qt_6_8;
 constexpr qint64 headerBytes = 4 + 2 + 4 + 4;
 constexpr qint64 entryBytes = 2 + 2 + 4 + 4 + 4;
-constexpr qint64 maxFileBytes = qint64(1024) * 1024 * 1024;
+constexpr qint64 maxFileBytes = qint64{1024} * 1024 * 1024;
 
 QcChunkPos chunkOfSlot(QcChunkPos region, int slot)
 {
@@ -57,7 +57,7 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
         return std::nullopt;
     }
     const qint64 limit = QcWorld::maxHorizontalChunk / regionSize + 1;
-    if (std::abs(qint64(region.x)) > limit || std::abs(qint64(region.z)) > limit) {
+    if (std::abs(static_cast<qint64>(region.x)) > limit || std::abs(static_cast<qint64>(region.z)) > limit) {
         return std::nullopt;
     }
     return region;
@@ -86,27 +86,29 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
         return qcError(fileVersion < version ? u"%1 is from an older development version"_s.arg(path)
                                              : u"%1 has unsupported format version %2"_s.arg(path).arg(fileVersion));
     }
-    if (count > quint32(chunksPerRegion)) {
+    if (count > static_cast<quint32>(chunksPerRegion)) {
         return qcError(u"%1 is damaged (chunk count)"_s.arg(path));
     }
 
-    const QByteArray entries = file.read(qint64(count) * entryBytes);
-    if (entries.size() != qint64(count) * entryBytes || qcCrc32(entries) != crc) {
+    const QByteArray entries = file.read(static_cast<qint64>(count) * entryBytes);
+    if (entries.size() != static_cast<qint64>(count) * entryBytes || qcCrc32(entries) != crc) {
         return qcError(u"%1 is damaged (index)"_s.arg(path));
     }
 
     Index index;
     QDataStream table(entries);
     table.setVersion(streamVersion);
-    const qint64 dataStart = headerBytes + qint64(count) * entryBytes;
+    const qint64 dataStart = headerBytes + static_cast<qint64>(count) * entryBytes;
     for (quint32 i = 0; i < count; ++i) {
         quint16 slot = 0;
         Entry entry;
         table >> slot >> entry.marks >> entry.offset >> entry.size >> entry.crc;
         const QcChunkPos chunk = chunkOfSlot(region, slot);
-        const bool inWorld = std::abs(qint64(chunk.x)) <= QcWorld::maxHorizontalChunk && std::abs(qint64(chunk.z)) <= QcWorld::maxHorizontalChunk;
-        if (int(slot) >= chunksPerRegion || !inWorld || index.contains(chunk) || std::cmp_less(entry.offset, dataStart) || entry.size > maxBlobBytes
-            || qint64(entry.offset) + qint64(entry.size) > fileSize) {
+        const bool inWorld = std::abs(static_cast<qint64>(chunk.x)) <= QcWorld::maxHorizontalChunk
+            && std::abs(static_cast<qint64>(chunk.z)) <= QcWorld::maxHorizontalChunk;
+        if (static_cast<int>(slot) >= chunksPerRegion || !inWorld || index.contains(chunk) || std::cmp_less(entry.offset, dataStart)
+            || entry.size > maxBlobBytes
+            || static_cast<qint64>(entry.offset) + static_cast<qint64>(entry.size) > fileSize) {
             return qcError(u"%1 is damaged (entry %2)"_s.arg(path).arg(i));
         }
         index.insert(chunk, entry);
@@ -121,7 +123,7 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
         return qcError(u"Cannot read %1: %2"_s.arg(path, file.errorString()));
     }
     QByteArray data = file.read(entry.size);
-    if (data.size() != qsizetype(entry.size) || qcCrc32(data) != entry.crc) {
+    if (data.size() != static_cast<qsizetype>(entry.size) || qcCrc32(data) != entry.crc) {
         return qcError(u"%1 is damaged (chunk data)"_s.arg(path));
     }
     return data;
@@ -138,7 +140,7 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
     result.blobs.reserve(index.size());
     for (auto it = index.cbegin(); it != index.cend(); ++it) {
         const Entry &entry = it.value();
-        if (qint64(entry.offset) + qint64(entry.size) > all.size()) {
+        if (static_cast<qint64>(entry.offset) + static_cast<qint64>(entry.size) > all.size()) {
             return qcError(u"%1 is damaged (chunk data)"_s.arg(path));
         }
         QByteArray data = all.mid(entry.offset, entry.size);
@@ -164,10 +166,10 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
     QByteArray entries;
     QDataStream table(&entries, QIODevice::WriteOnly);
     table.setVersion(streamVersion);
-    qint64 offset = headerBytes + qint64(sorted.size()) * entryBytes;
+    qint64 offset = headerBytes + static_cast<qint64>(sorted.size()) * entryBytes;
     for (const Blob *blob : std::as_const(sorted)) {
-        const Entry entry{blob->marks, quint32(offset), quint32(blob->data.size()), blob->crc.value_or(qcCrc32(blob->data))};
-        table << quint16(slotOf(blob->chunk)) << entry.marks << entry.offset << entry.size << entry.crc;
+        const Entry entry{blob->marks, static_cast<quint32>(offset), static_cast<quint32>(blob->data.size()), blob->crc.value_or(qcCrc32(blob->data))};
+        table << static_cast<quint16>(slotOf(blob->chunk)) << entry.marks << entry.offset << entry.size << entry.crc;
         index.insert(blob->chunk, entry);
         offset += blob->data.size();
     }
@@ -181,11 +183,11 @@ QString path(const QString &folder, QcChunkPos region, const QString &extension)
     }
     QDataStream stream(&file);
     stream.setVersion(streamVersion);
-    stream.writeRawData(magic.data(), int(magic.size()));
-    stream << version << quint32(sorted.size()) << qcCrc32(entries);
-    stream.writeRawData(entries.constData(), int(entries.size()));
+    stream.writeRawData(magic.data(), static_cast<int>(magic.size()));
+    stream << version << static_cast<quint32>(sorted.size()) << qcCrc32(entries);
+    stream.writeRawData(entries.constData(), static_cast<int>(entries.size()));
     for (const Blob *blob : std::as_const(sorted)) {
-        stream.writeRawData(blob->data.constData(), int(blob->data.size()));
+        stream.writeRawData(blob->data.constData(), static_cast<int>(blob->data.size()));
     }
     if (stream.status() != QDataStream::Ok || !file.commit()) {
         return qcError(u"Cannot write %1: %2"_s.arg(path, file.errorString()));

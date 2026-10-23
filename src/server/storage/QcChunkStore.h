@@ -34,7 +34,7 @@ public:
         // The circuit marks of the chunk (QcChunkLinks), kept with its block entities.
         quint16 marks = 0;
 
-        bool has(Kind kind) const { return (kinds & (1u << quint8(kind))) != 0; }
+        bool has(Kind kind) const { return (kinds & (1u << static_cast<quint8>(kind))) != 0; }
     };
 
     // The data of a chunk as stored; a kind without data is missing.

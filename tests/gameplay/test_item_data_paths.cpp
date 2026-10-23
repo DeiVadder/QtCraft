@@ -50,12 +50,12 @@ private slots:
         m_server->blockEntities().container(at(2, 0, 2))->stacks[0] = full;
         m_server->blockEntities().container(at(2, 0, 2))->stacks[1] = map(5);
         const QcBlockPos ground = at(6, 0, 6);
-        m_server->items().spawn({soil, {ground.x + 0.5, double(ground.y), ground.z + 0.5}, {}}, m_server->entities().newId());
+        m_server->items().spawn({soil, {ground.x + 0.5, static_cast<double>(ground.y), ground.z + 0.5}, {}}, m_server->entities().newId());
         player().inventory.setSlot(4, full);
         const QcItemStack helmet = named("qtcraft:iron_helmet", 1, u"Lid"_s);
         const QcItemDefinition &helmetItem = m_content->item(helmet.item);
         QVERIFY(helmetItem.armour);
-        player().equipment.stacks[std::size_t(helmetItem.armour->slot)] = helmet;
+        player().equipment.stacks[static_cast<std::size_t>(helmetItem.armour->slot)] = helmet;
         QVERIFY(m_server->save().has_value());
         const QcBlockPos origin = m_origin;
         cleanup();

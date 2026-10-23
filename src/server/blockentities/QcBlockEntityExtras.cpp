@@ -31,7 +31,7 @@ void QcBlockEntityExtras::dropOrphanTails(QcBlockPos pos, const Tables &tables)
     // and for entries that end without a block change is QcBlockEntityRecord::pruneKept.
     using Table = QcBlockEntityRecord::Table;
     tails->removeIf([&](const QcEntityComponent &tail) {
-        switch (Table(tail.id)) {
+        switch (static_cast<Table>(tail.id)) {
         case Table::Containers:
             return entities.container(pos) == nullptr;
         case Table::Machines:

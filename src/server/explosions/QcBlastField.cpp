@@ -8,7 +8,7 @@ QcBlastField::QcBlastField(const QcBlockAccess &world, const QcBlastTable &table
     , m_origin(centre.offset(-radius, -radius, -radius))
     , m_size(2 * radius + 1)
 {
-    const auto cells = std::size_t(m_size) * std::size_t(m_size) * std::size_t(m_size);
+    const auto cells = static_cast<std::size_t>(m_size) * static_cast<std::size_t>(m_size) * static_cast<std::size_t>(m_size);
     m_cells.resize(cells);
     m_known.resize(cells, false);
 }
@@ -44,7 +44,8 @@ const QcBlastField::Cell &QcBlastField::at(QcBlockPos pos)
         return m_outside;
     }
 
-    const std::size_t index = (std::size_t(y) * std::size_t(m_size) + std::size_t(z)) * std::size_t(m_size) + std::size_t(x);
+    const std::size_t index = (static_cast<std::size_t>(y) * static_cast<std::size_t>(m_size)
+        + static_cast<std::size_t>(z)) * static_cast<std::size_t>(m_size) + static_cast<std::size_t>(x);
     if (!m_known[index]) {
         m_cells[index] = lookUp(pos);
         m_known[index] = true;

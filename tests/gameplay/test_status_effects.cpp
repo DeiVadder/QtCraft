@@ -92,7 +92,7 @@ private slots:
     void creaturesArePoisonedUnlessImmune()
     {
         join();
-        const QcVec3 at{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 at{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QcMobManager &creatures = m_server->entities().creatures();
         const quint32 pig = creatures.spawn(type("pig"), at, m_server->entities().newId());
         const quint32 zombie = creatures.spawn(type("zombie"), at, m_server->entities().newId());

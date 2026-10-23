@@ -33,7 +33,7 @@ std::unique_ptr<QcLocalServerHost> makeHost(const std::shared_ptr<const QcConten
 
 QcBlockPos feetBlock(const QcEntityMotion &motion)
 {
-    return {int(std::floor(motion.position.x)), int(std::floor(motion.position.y)), int(std::floor(motion.position.z))};
+    return {static_cast<int>(std::floor(motion.position.x)), static_cast<int>(std::floor(motion.position.y)), static_cast<int>(std::floor(motion.position.z))};
 }
 
 } // namespace
@@ -59,7 +59,7 @@ private slots:
         moving.id = 10;
         moving.block = qcAirBlockId;
         QVERIFY(!entities.spawn(moving, m_content.get()));
-        moving.block = QcBlockId(m_content->stateCount());
+        moving.block = static_cast<QcBlockId>(m_content->stateCount());
         QVERIFY(!entities.spawn(moving, m_content.get()));
     }
 
@@ -247,18 +247,18 @@ private slots:
         QTest::addColumn<int>("count");
         QTest::addColumn<bool>("accepted");
         const quint32 dirt = *QcTestUtil::loadContent()->itemId(u"qtcraft:dirt"_s);
-        const int item = int(QcEntityKind::Item);
+        const int item = static_cast<int>(QcEntityKind::Item);
         QTest::newRow("dirt") << item << dirt << 3 << true;
         QTest::newRow("unknown item") << item << 999999u << 3 << false;
-        QTest::newRow("no item") << item << quint32(qcNoItem) << 3 << false;
+        QTest::newRow("no item") << item << static_cast<quint32>(qcNoItem) << 3 << false;
         QTest::newRow("empty stack") << item << dirt << 0 << false;
-        QTest::newRow("falling block of air") << int(QcEntityKind::FallingBlock) << dirt << 3 << false;
+        QTest::newRow("falling block of air") << static_cast<int>(QcEntityKind::FallingBlock) << dirt << 3 << false;
     }
 
     void itemEntitiesAreMirroredAndBogusOnesRejected()
     {
         QFETCH(int, kind);
-        const QcEntityKind type = QcEntityKind(kind);
+        const QcEntityKind type = static_cast<QcEntityKind>(kind);
         QFETCH(quint32, item);
         QFETCH(int, count);
         QFETCH(bool, accepted);

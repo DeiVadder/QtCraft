@@ -28,7 +28,7 @@ public:
     const QcDebugOptions &options() const { return m_options; }
     void load(QcDebugOptions options);
 
-    int level() const { return int(m_options.level); }
+    int level() const { return static_cast<int>(m_options.level); }
     void setLevel(int level);
     QcDebugOptions::Level levelValue() const { return m_options.level; }
     // Off, compact, full, off ...

@@ -42,7 +42,7 @@ private:
     QcVec3 surface(QcServerWorld &world, int x, int z)
     {
         const QcBlockPos pos{x, 0, z};
-        return {x + 0.5, double(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
+        return {x + 0.5, static_cast<double>(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
     }
 
     int type(const char *name) const
@@ -149,7 +149,7 @@ private slots:
         auto world = makeWorld(8);
         QcMobManager mobs(m_content, 6);
         for (quint32 id = 1; id <= 4; ++id) {
-            mobs.spawn(type("pig"), surface(*world, int(id) * 2, 0), id);
+            mobs.spawn(type("pig"), surface(*world, static_cast<int>(id) * 2, 0), id);
         }
         int first = 0;
         int second = 0;

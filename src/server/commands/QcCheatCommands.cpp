@@ -190,7 +190,7 @@ void QcCheatCommands::spawnItem(const QcCommandContext &context)
 
     // Two metres in front of the player, on the ground.
     const QcServerClient &player = context.player();
-    const double yaw = qDegreesToRadians(double(player.yaw));
+    const double yaw = qDegreesToRadians(static_cast<double>(player.yaw));
     const QcVec3 position = player.motion.position + QcVec3{std::sin(yaw) * 2.0, 0.5, -std::cos(yaw) * 2.0};
     m_state.entities().items().spawnScattered({*item, *count, 0}, position, m_state.entities().newId());
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Dropped %1 x %2"), {QString::number(*count), name});
@@ -226,7 +226,7 @@ void QcCheatCommands::summon(const QcCommandContext &context)
     }
 
     // Three metres in front of the player.
-    const double yaw = qDegreesToRadians(double(player.yaw));
+    const double yaw = qDegreesToRadians(static_cast<double>(player.yaw));
     const QcVec3 position = player.motion.position + QcVec3{std::sin(yaw) * 3.0, 0.5, -std::cos(yaw) * 3.0};
     const QcMobDefinition &definition = m_state.content().mobs()[*type];
     for (int i = 0; i < *count; ++i) {
@@ -262,7 +262,7 @@ bool QcCheatCommands::summonCarts(const QcCommandContext &context)
     // Three metres in front of the player, one behind the other along the view (a row on a rail
     // laid there); each stands on a rail in its cell or the one below, else falls.
     const QcServerClient &player = context.player();
-    const double yaw = qDegreesToRadians(double(player.yaw));
+    const double yaw = qDegreesToRadians(static_cast<double>(player.yaw));
     const QcVec3 along{std::sin(yaw), 0.0, -std::cos(yaw)};
     int summoned = 0;
     for (int i = 0; i < *count; ++i) {

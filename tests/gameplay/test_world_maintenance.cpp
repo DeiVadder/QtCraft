@@ -130,8 +130,8 @@ private slots:
         chat(u"/regenerate"_s);
         chat(u"/confirm"_s);
         ticks(1);
-        const QcBlockPos feet{int(std::floor(m_client->motion.position.x)), int(std::floor(m_client->motion.position.y)),
-                              int(std::floor(m_client->motion.position.z))};
+        const QcBlockPos feet{static_cast<int>(std::floor(m_client->motion.position.x)), static_cast<int>(std::floor(m_client->motion.position.y)),
+                              static_cast<int>(std::floor(m_client->motion.position.z))};
         QCOMPARE(*m_server->world().blockAt(feet), qcAirBlockId);
         QCOMPARE(*m_server->world().blockAt(feet.offset(0, 1, 0)), qcAirBlockId);
     }

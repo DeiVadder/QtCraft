@@ -43,7 +43,7 @@ QStringList shape(const QcCommandSyntax::Form &form)
     static constexpr std::array<const char *, 3> kinds{"literal", "required", "optional"};
     QStringList parts;
     for (const Parameter &p : form.parameters) {
-        parts.append(u"%1:%2:%3"_s.arg(p.name, QLatin1StringView(kinds[std::size_t(p.kind)]), QcCommandSyntax::typeName(p.type)));
+        parts.append(u"%1:%2:%3"_s.arg(p.name, QLatin1StringView(kinds[static_cast<std::size_t>(p.kind)]), QcCommandSyntax::typeName(p.type)));
     }
     return parts;
 }
@@ -106,7 +106,7 @@ private slots:
         QByteArray frame;
         QDataStream stream(&frame, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
-        stream << quint16(QcMessage(QcMsg::AdminRequest{}).index()) << quint32(1) << quint8(Kind::Command) << quint32(1)
+        stream << static_cast<quint16>(QcMessage(QcMsg::AdminRequest{}).index()) << quint32{1} << static_cast<quint8>(Kind::Command) << quint32{1}
                << QString(QcMsg::AdminLimits::maxText + 1, u'x');
         QVERIFY(!QcProtocol::decode(frame, client));
         QVERIFY(!decoded(QcMsg::AdminRequest{1, Kind(QcMsg::AdminRequest::kindCount), {}}, client));
@@ -119,7 +119,7 @@ private slots:
         QcMsg::AdminStatus status;
         status.sample = sample(1000);
         status.phaseMeanMs[3] = 0.75f;
-        status.entities[std::size_t(QcEntityKind::Creature)] = 17;
+        status.entities[static_cast<std::size_t>(QcEntityKind::Creature)] = 17;
         status.worldName = u"Welt"_s;
         status.seed = -42;
         status.version = u"qtcraft-headless 0.1.0"_s;

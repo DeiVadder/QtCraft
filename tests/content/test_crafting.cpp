@@ -41,7 +41,7 @@ private:
 
     QList<QcItemStack> grid(int size, const QList<std::pair<int, QcItemId>> &cells) const
     {
-        QList<QcItemStack> result(qsizetype(size) * size);
+        QList<QcItemStack> result(static_cast<qsizetype>(size) * size);
         for (const auto &[index, item] : cells) {
             result[index] = {item, 1, 0};
         }

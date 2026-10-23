@@ -23,7 +23,7 @@ const std::array<QString, 4> &directions()
 int directionIndex(const QString &name)
 {
     for (int i = 0; i < 4; ++i) {
-        if (directions()[std::size_t(i)] == name) {
+        if (directions()[static_cast<std::size_t>(i)] == name) {
             return i;
         }
     }
@@ -56,7 +56,7 @@ QString turnedDirection(const QString &direction, int turns)
     if (index < 0) {
         return direction;
     }
-    return directions()[std::size_t(((index + turns) % 4 + 4) % 4)];
+    return directions()[static_cast<std::size_t>(((index + turns) % 4 + 4) % 4)];
 }
 
 QcBlockId turned(const QcContentRegistry &content, QcBlockId state, int turns)

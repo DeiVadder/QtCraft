@@ -24,7 +24,7 @@ QLatin1StringView kindName(Kind kind)
     static constexpr std::array<const char *, QcMsg::AdminRequest::kindCount> names{
         "catalogue", "players", "lists",       "settings",         "log",     "command", "chat",    "kick", "ban",    "unban",
         "op",        "deop",    "whitelist add", "whitelist remove", "whitelist", "gamerule", "limit", "save", "backup", "stop"};
-    return QLatin1StringView(names[std::size_t(kind)]);
+    return QLatin1StringView(names[static_cast<std::size_t>(kind)]);
 }
 
 // A word of a command line: not empty and without spaces, so it cannot shift the words after it.
@@ -141,12 +141,12 @@ void QcServerAdmin::subscribe(QcServerClient &client, QcMsg::AdminSubscribe subs
     Subscriber &subscriber = m_subscribers[client.id];
     const QcMsg::AdminLogLine::Level previousLevel = subscriber.logLevel;
     subscriber.topics = subscribe.topics;
-    subscriber.logLevel = QcMsg::AdminLogLine::Level(subscribe.logLevel);
+    subscriber.logLevel = static_cast<QcMsg::AdminLogLine::Level>(subscribe.logLevel);
     const quint8 added = subscribe.topics & ~before;
     if ((added & QcMsg::AdminSubscribe::status) != 0) {
         client.connection->send(QcMsg::AdminHistory{m_recorder.seconds(), m_recorder.minutes()});
         if (const std::optional<QcMsg::AdminSample> latest = m_recorder.latest()) {
-            client.connection->send(m_reports.status(*latest, quint64(m_uptime.elapsed())));
+            client.connection->send(m_reports.status(*latest, static_cast<quint64>(m_uptime.elapsed())));
         }
         client.connection->send(m_reports.players(pings()));
     }
@@ -261,12 +261,12 @@ void QcServerAdmin::logTail(QcServerClient &client, const QcMsg::AdminRequest &r
 
     const int level = request.arguments.value(0, u"1"_s).toInt();
     const qsizetype lines = request.arguments.size() > 1 ? request.arguments[1].toInt() : tailLines;
-    const int boundedLevel = std::clamp(level, 0, int(QcMsg::AdminLogLine::levelCount) - 1);
+    const int boundedLevel = std::clamp(level, 0, static_cast<int>(QcMsg::AdminLogLine::levelCount) - 1);
     const qsizetype boundedLines = std::clamp<qsizetype>(lines, 0, Limits::maxLogLines);
     if (boundedLevel != level || boundedLines != lines) {
         qCWarning(lcAdmin).noquote() << u"Log tail of %1: level %2 and %3 lines bounded to %4 and %5"_s.arg(client.name).arg(level).arg(lines).arg(boundedLevel).arg(boundedLines);
     }
-    const QcAdminReports::Log tail = m_reports.log(QcMsg::AdminLogLine::Level(boundedLevel), boundedLines, 0, true);
+    const QcAdminReports::Log tail = m_reports.log(static_cast<QcMsg::AdminLogLine::Level>(boundedLevel), boundedLines, 0, true);
     // The tail replaces what the client shows: new lines follow from its newest on, not twice.
     if (const auto subscriber = m_subscribers.find(client.id); subscriber != m_subscribers.end()) {
         subscriber->logSeen = std::max(subscriber->logSeen, tail.latest);
@@ -306,7 +306,7 @@ void QcServerAdmin::pong(const QcServerClient &client, quint32 nonce)
 {
     const auto ping = m_pings.find(client.id);
     if (ping != m_pings.end() && ping->waiting && ping->nonce == nonce) {
-        ping->lastMs = qint32(std::min<qint64>(ping->sent.elapsed(), std::numeric_limits<qint32>::max()));
+        ping->lastMs = static_cast<qint32>(std::min<qint64>(ping->sent.elapsed(), std::numeric_limits<qint32>::max()));
         ping->waiting = false;
     }
 }
@@ -404,17 +404,17 @@ void QcServerAdmin::sendChat()
 void QcServerAdmin::sampleSecond()
 {
     const qint64 now = m_state.clock().playerTimeNs();
-    const double seconds = m_lastSampleNs > 0 ? double(now - m_lastSampleNs) / 1e9 : 1.0;
+    const double seconds = m_lastSampleNs > 0 ? static_cast<double>(now - m_lastSampleNs) / 1e9 : 1.0;
     m_lastSampleNs = now;
 
     QcAdminStatusRecorder::Counts counts;
     counts.timeMs = QDateTime::currentMSecsSinceEpoch();
-    counts.players = quint32(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }));
-    counts.loadedChunks = quint32(m_state.world().loadedChunkCount());
+    counts.players = static_cast<quint32>(std::ranges::count_if(m_state.clients(), [](const auto &client) { return client->joined; }));
+    counts.loadedChunks = static_cast<quint32>(m_state.world().loadedChunkCount());
     for (const quint32 count : m_reports.entitiesByKind()) {
         counts.entities += count;
     }
-    counts.memoryMb = float(QcProcessMemory::currentMb());
+    counts.memoryMb = static_cast<float>(QcProcessMemory::currentMb());
     const QcTraffic bytes = traffic();
     counts.sentBytes = bytes.sent;
     counts.receivedBytes = bytes.received;
@@ -425,7 +425,7 @@ void QcServerAdmin::sampleSecond()
         following = following || (it->topics & QcMsg::AdminSubscribe::status) != 0;
     }
     if (following) {
-        const QcMsg::AdminStatus status = m_reports.status(sample, quint64(m_uptime.elapsed()));
+        const QcMsg::AdminStatus status = m_reports.status(sample, static_cast<quint64>(m_uptime.elapsed()));
         const QcMsg::AdminPlayers players = m_reports.players(pings());
         for (const auto &client : m_state.clients()) {
             if ((m_subscribers.value(client->id).topics & QcMsg::AdminSubscribe::status) != 0) {

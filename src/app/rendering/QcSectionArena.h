@@ -22,7 +22,7 @@ struct QcArenaSlot
     quint32 page = 0;
 
     bool isValid() const { return vertices != nullptr; }
-    quint64 bytes() const { return quint64(vertexBytes) + indexBytes; }
+    quint64 bytes() const { return static_cast<quint64>(vertexBytes) + indexBytes; }
 };
 
 // The section buffers of the world as pages, each a vertex and an index buffer (decision E-820).
@@ -65,7 +65,7 @@ public:
 
     // GPU bytes of all pages (their capacity, used or not).
     quint64 bytes() const;
-    int pageCount() const { return int(m_pages.size()); }
+    int pageCount() const { return static_cast<int>(m_pages.size()); }
     Layout layout() const { return m_layout; }
     // Frames a released range waits before it is reused: the frames in flight and one more.
     quint64 reuseDelay() const { return m_delay; }

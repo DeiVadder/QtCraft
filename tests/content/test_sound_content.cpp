@@ -56,7 +56,7 @@ private slots:
         QCOMPARE(key(block, QcBlockSoundAction::Hit), u"qtcraft:block.stone.hit"_s);
 
         // An explicit key replaces the material's sound for that action only.
-        block.soundKeys[std::size_t(QcBlockSoundAction::Step)] = u"mod:squeak"_s;
+        block.soundKeys[static_cast<std::size_t>(QcBlockSoundAction::Step)] = u"mod:squeak"_s;
         QCOMPARE(key(block, QcBlockSoundAction::Step), u"mod:squeak"_s);
         QCOMPARE(key(block, QcBlockSoundAction::Break), u"qtcraft:block.stone.break"_s);
 
@@ -242,7 +242,7 @@ private slots:
                 continue;
             }
             for (int action = 0; action < qcBlockSoundActionCount; ++action) {
-                const QString name = key(block, QcBlockSoundAction(action));
+                const QString name = key(block, static_cast<QcBlockSoundAction>(action));
                 QVERIFY2(content.assets().sound(name), qPrintable(block.name + u": "_s + name));
             }
         }

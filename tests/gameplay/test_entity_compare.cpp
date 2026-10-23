@@ -196,7 +196,7 @@ private:
     QcVec3 feetAt(int x, int y, int z) const
     {
         const QcBlockPos cell = at(x, y, z);
-        return {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
     }
 
     quint32 creature(const char *name, int x, int y, int z, bool persistent = true)

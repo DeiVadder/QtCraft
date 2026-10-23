@@ -64,8 +64,9 @@ private:
     {
         QStringList parts;
         for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-            if (tick.phases.at(std::size_t(phase)) >= 500'000) {
-                parts.append(u"%1=%2"_s.arg(QString::fromLatin1(QcTickPhases::ids.at(std::size_t(phase)))).arg(double(tick.phases.at(std::size_t(phase))) / 1e6, 0, 'f', 2));
+            if (tick.phases.at(static_cast<std::size_t>(phase)) >= 500'000) {
+                parts.append(u"%1=%2"_s.arg(QString::fromLatin1(QcTickPhases::ids.at(static_cast<std::size_t>(phase))))
+                                .arg(static_cast<double>(tick.phases.at(static_cast<std::size_t>(phase))) / 1e6, 0, 'f', 2));
             }
         }
         return parts.join(u' ');
@@ -77,14 +78,14 @@ private:
         for (const Tick &tick : ticks) {
             total += tick.ns;
         }
-        report("ticks", double(ticks.size()), "");
-        report("tick-mean", double(total) / double(ticks.size()) / 1e6, "ms");
+        report("ticks", static_cast<double>(ticks.size()), "");
+        report("tick-mean", static_cast<double>(total) / static_cast<double>(ticks.size()) / 1e6, "ms");
         std::ranges::sort(ticks, [](const Tick &a, const Tick &b) { return a.ns > b.ns; });
         const std::size_t slowestPercent = ticks.size() / 100;
-        report("tick-p99", double(ticks.at(slowestPercent).ns) / 1e6, "ms");
-        report("tick-max", double(ticks.front().ns) / 1e6, "ms");
+        report("tick-p99", static_cast<double>(ticks.at(slowestPercent).ns) / 1e6, "ms");
+        report("tick-max", static_cast<double>(ticks.front().ns) / 1e6, "ms");
         for (std::size_t i = 0; i < std::min<std::size_t>(5, ticks.size()); ++i) {
-            qInfo("MEASURE slow-tick %d %.3f ms %s", ticks.at(i).index, double(ticks.at(i).ns) / 1e6, qPrintable(phasesOf(ticks.at(i))));
+            qInfo("MEASURE slow-tick %d %.3f ms %s", ticks.at(i).index, static_cast<double>(ticks.at(i).ns) / 1e6, qPrintable(phasesOf(ticks.at(i))));
         }
     }
 
@@ -121,7 +122,7 @@ private slots:
             }
             console(u"tp Raw %1 200 %2"_s.arg(x).arg(start.z));
             for (int i = 0; i < 5; ++i) {
-                const int index = int(ticks.size());
+                const int index = static_cast<int>(ticks.size());
                 if (index > 0 && index % 1200 == 0) {
                     m_server->saveInBackground();
                 }
@@ -138,15 +139,15 @@ private slots:
 
         // The server keeps up: the chunks around the player are there at the end of the flight.
         for (int i = 0; i < 400 && !m_server->world().chunk(QcChunkStreaming::chunkOf(m_client->motion.position)); ++i) {
-            ticks.push_back(timedTick(int(ticks.size())));
+            ticks.push_back(timedTick(static_cast<int>(ticks.size())));
         }
         QVERIFY(m_server->world().chunk(QcChunkStreaming::chunkOf(m_client->motion.position)));
-        const qsizetype square = qsizetype(2 * m_viewDistance + 3) * qsizetype(2 * m_viewDistance + 3);
+        const qsizetype square = static_cast<qsizetype>(2 * m_viewDistance + 3) * static_cast<qsizetype>(2 * m_viewDistance + 3);
         QVERIFY2(mostLoaded <= 2 * square, qPrintable(QString::number(mostLoaded)));
 
-        report("wall", double(wall.elapsed()) / 1e3, "s");
-        report("most-loaded", double(mostLoaded), "chunks");
-        report("stored", double(m_server->world().saves().storedChunkCount()), "chunks");
+        report("wall", static_cast<double>(wall.elapsed()) / 1e3, "s");
+        report("most-loaded", static_cast<double>(mostLoaded), "chunks");
+        report("stored", static_cast<double>(m_server->world().saves().storedChunkCount()), "chunks");
         reportTicks(std::move(ticks));
         cleanup();
     }

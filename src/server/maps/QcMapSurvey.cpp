@@ -106,7 +106,7 @@ public:
             return Area{};
         }
         const auto [block, liquid] = counts.mostCommon();
-        return Area{double(heights) / filled, block, liquid, double(depths) / (side * side)};
+        return Area{static_cast<double>(heights) / filled, block, liquid, static_cast<double>(depths) / (side * side)};
     }
 
 private:
@@ -153,7 +153,7 @@ QcMapPixel::Shade shadeOf(const Area &area, const std::optional<Area> &north, QP
     using enum QcMapPixel::Shade;
     const int checker = (pixel.x() + pixel.y()) & 1;
     if (area.liquid) {
-        const double depth = std::min(area.depth, double(QcMapSurvey::deepWater)) * 0.1 + checker * 0.2;
+        const double depth = std::min(area.depth, static_cast<double>(QcMapSurvey::deepWater)) * 0.1 + checker * 0.2;
         return depth < 0.5 ? Bright : depth > 0.9 ? Dark : Normal;
     }
     if (!north || north->height < 0) {
@@ -178,16 +178,16 @@ namespace QcMapSurvey {
 QList<QPoint> pixelsDue(const QcMapData &map, QPointF holder, quint64 tick)
 {
     const int scale = map.blocksPerPixel();
-    const double radius = double(revealRadius) / scale;
+    const double radius = static_cast<double>(revealRadius) / scale;
     const QPointF offset = map.offsetOf(holder.x(), holder.y()) / 2.0;
     const QPointF middle = offset + QPointF(QcMapData::size / 2.0, QcMapData::size / 2.0);
-    const int phase = int(tick % sweep);
+    const int phase = static_cast<int>(tick % sweep);
 
     QList<QPoint> due;
-    const int left = std::max(0, int(std::floor(middle.x() - radius)));
-    const int right = std::min(QcMapData::size - 1, int(std::ceil(middle.x() + radius)));
-    const int top = std::max(0, int(std::floor(middle.y() - radius)));
-    const int bottom = std::min(QcMapData::size - 1, int(std::ceil(middle.y() + radius)));
+    const int left = std::max(0, static_cast<int>(std::floor(middle.x() - radius)));
+    const int right = std::min(QcMapData::size - 1, static_cast<int>(std::ceil(middle.x() + radius)));
+    const int top = std::max(0, static_cast<int>(std::floor(middle.y() - radius)));
+    const int bottom = std::min(QcMapData::size - 1, static_cast<int>(std::ceil(middle.y() + radius)));
     for (int x = left + ((phase - left) % sweep + sweep) % sweep; x <= right; x += sweep) {
         for (int y = top; y <= bottom; ++y) {
             const double dx = x + 0.5 - middle.x();

@@ -109,7 +109,7 @@ void QcServerHanging::useFrame(QcServerClient &client, quint32 id)
 {
     QcHangingEntity &frame = *m_state.entities().hangings().find(id);
     if (!frame.held.isEmpty()) {
-        frame.hanging.rotation = quint8((frame.hanging.rotation + 1) % QcHanging::rotations);
+        frame.hanging.rotation = static_cast<quint8>((frame.hanging.rotation + 1) % QcHanging::rotations);
         m_sounds.play(turnSound, frame.motion.position);
         changed(frame);
         return;

@@ -38,7 +38,7 @@ double QcFrameProfile::average(const QList<double> &values)
     for (const double value : values) {
         total += value;
     }
-    return total / double(values.size());
+    return total / static_cast<double>(values.size());
 }
 
 double QcFrameProfile::percentile99(QList<double> values)
@@ -73,8 +73,8 @@ QString QcFrameProfile::summary() const
         }
         drawCalls.append(sample.drawCalls);
         visible.append(sample.visibleSections);
-        triangles.append(double(sample.indicesDrawn) / 3.0);
-        uploadBytes += double(sample.uploadBytes);
+        triangles.append(static_cast<double>(sample.indicesDrawn) / 3.0);
+        uploadBytes += static_cast<double>(sample.uploadBytes);
     }
 
     const QcRenderSample last = m_render.isEmpty() ? QcRenderSample{} : m_render.constLast();
@@ -89,7 +89,7 @@ QString QcFrameProfile::summary() const
         .arg(ms(average(gpu)), ms(percentile99(gpu)), ms(average(m_entityMeshMs)), ms(percentile99(m_entityMeshMs)),
              QString::number(average(drawCalls), 'f', 0), QString::number(average(visible), 'f', 0),
              QString::number(average(triangles), 'f', 0), QString::number(last.sections),
-             QString::number(double(last.sectionBytes) / QcProcessMemory::bytesPerMb, 'f', 1))
+             QString::number(static_cast<double>(last.sectionBytes) / QcProcessMemory::bytesPerMb, 'f', 1))
         .arg(QString::number(m_render.size()), ms(average(m_previewMeshMs)),
              ms(m_previewMeshMs.isEmpty() ? 0.0 : *std::ranges::max_element(m_previewMeshMs)));
 }

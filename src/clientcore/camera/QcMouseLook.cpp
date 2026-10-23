@@ -11,13 +11,13 @@ QcPlayerInput apply(QcPlayerInput intent, QPointF delta, double sensitivity, boo
         return intent;
     }
 
-    const auto horizontal = float(sensitivity);
+    const auto horizontal = static_cast<float>(sensitivity);
     const float vertical = invert ? -horizontal : horizontal;
-    const float yaw = std::fmod(intent.yaw + float(delta.x()) * horizontal, 360.0f);
+    const float yaw = std::fmod(intent.yaw + static_cast<float>(delta.x()) * horizontal, 360.0f);
     const float wrapped = yaw < 0.0f ? yaw + 360.0f : yaw;
     // A tiny negative yaw rounds to exactly 360 after the addition; the range is [0, 360).
     intent.yaw = wrapped >= 360.0f ? 0.0f : wrapped;
-    intent.pitch = std::clamp(intent.pitch - float(delta.y()) * vertical, -89.9f, 89.9f);
+    intent.pitch = std::clamp(intent.pitch - static_cast<float>(delta.y()) * vertical, -89.9f, 89.9f);
     return intent;
 }
 

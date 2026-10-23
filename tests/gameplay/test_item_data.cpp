@@ -226,11 +226,11 @@ private slots:
 
         // A plain stack is as long as before item data; a component bit this version does not know.
         // Item id, count, damage; then the component bits of a stack with data.
-        constexpr qsizetype bits = qsizetype(sizeof(QcItemId)) + 8;
+        constexpr qsizetype bits = static_cast<qsizetype>(sizeof(QcItemId)) + 8;
         QCOMPARE(wire(dirt).size(), bits);
         QByteArray unknown = wire(dirt.withMapId(3));
         QCOMPARE(unknown.at(bits), char(1));
-        unknown[bits] = char(8);
+        unknown[bits] = static_cast<char>(8);
         QVERIFY(!fromWire(unknown));
     }
 
@@ -252,7 +252,7 @@ private slots:
         // The tail of a newer name component and a later version's component of an unknown id, in
         // the order they are written and read.
         QcItemData data = named("qtcraft:dirt", 1, u"Soil"_s).itemData();
-        data.kept = {{quint16(QcItemData::Component::Name), 2, true, "italic"}, {0x8001, 3, false, "mod data"}};
+        data.kept = {{static_cast<quint16>(QcItemData::Component::Name), 2, true, "italic"}, {0x8001, 3, false, "mod data"}};
         const QcItemStack stack = QcItemStack{item("qtcraft:dirt"), 1, 0}.withData(data);
         const QByteArray bytes = saved(stack);
         const std::optional<QcItemStack> read = fromSave(bytes);

@@ -76,7 +76,7 @@ qsizetype QcWorkerPool::discardQueued()
     }
 
     // The jobs' captures are released outside the lock.
-    return qsizetype(dropped.size());
+    return static_cast<qsizetype>(dropped.size());
 }
 
 void QcWorkerPool::run()

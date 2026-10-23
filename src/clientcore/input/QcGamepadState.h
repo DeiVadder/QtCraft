@@ -47,16 +47,16 @@ enum class QcGamepadType {
     SwitchPro,
 };
 
-inline constexpr std::size_t qcGamepadButtonCount = std::size_t(QcGamepadButton::Count);
-inline constexpr std::size_t qcGamepadAxisCount = std::size_t(QcGamepadAxis::Count);
+inline constexpr std::size_t qcGamepadButtonCount = static_cast<std::size_t>(QcGamepadButton::Count);
+inline constexpr std::size_t qcGamepadAxisCount = static_cast<std::size_t>(QcGamepadAxis::Count);
 
 // One pad's buttons and axes at one moment, normalised and independent of the backend.
 class QcGamepadState
 {
 public:
-    bool pressed(QcGamepadButton button) const { return m_buttons[std::size_t(button)]; }
-    float axis(QcGamepadAxis axis) const { return m_axes[std::size_t(axis)]; }
-    void setPressed(QcGamepadButton button, bool pressed) { m_buttons[std::size_t(button)] = pressed; }
+    bool pressed(QcGamepadButton button) const { return m_buttons[static_cast<std::size_t>(button)]; }
+    float axis(QcGamepadAxis axis) const { return m_axes[static_cast<std::size_t>(axis)]; }
+    void setPressed(QcGamepadButton button, bool pressed) { m_buttons[static_cast<std::size_t>(button)] = pressed; }
     // Clamps to [-1, 1] for the sticks and [0, 1] for the triggers; NaN counts as 0.
     void setAxis(QcGamepadAxis axis, float value);
 

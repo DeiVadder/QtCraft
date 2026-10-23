@@ -53,9 +53,9 @@ float QcFrameDriver::advanceFrameClocks()
 {
     const qint64 sinceLast = m_frameClock.restart();
     if (m_healthLog) {
-        m_frameTimes.add(double(sinceLast));
+        m_frameTimes.add(static_cast<double>(sinceLast));
     }
-    return float(std::min<qint64>(sinceLast, 100)) / 1000.0f;
+    return static_cast<float>(std::min<qint64>(sinceLast, 100)) / 1000.0f;
 }
 
 void QcFrameDriver::startHealthLog(int seconds)
@@ -112,7 +112,7 @@ void QcFrameDriver::onFrame()
     // After the keyboard: a deflected stick wins over the held keys, a centred one leaves them.
     m_targets.gamepad.applyFrame(*m_parts.session, frameSeconds, m_targets.input.worldFocused());
 
-    const double alpha = std::clamp(double(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
+    const double alpha = std::clamp(static_cast<double>(m_sinceTick.elapsed()) / (QcPhysics::tickDuration * 1000.0), 0.0, 1.0);
     const QcVec3 feet = lerp(m_parts.session->prediction().previousMotion().position, m_parts.session->playerMotion().position, alpha);
     const QcVec3 eye = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
     // The control interface may switch the view too; the session holds the current mode.

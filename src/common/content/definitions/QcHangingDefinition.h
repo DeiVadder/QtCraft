@@ -52,7 +52,7 @@ struct QcPaintingMotif
     }
 
     // The texture of the block in `column` and `row`; the texture itself for a motif of one block.
-    const QString &tileTexture(int column, int row) const { return tiles.isEmpty() ? texture : tiles.at(qsizetype(row) * width + column); }
+    const QString &tileTexture(int column, int row) const { return tiles.isEmpty() ? texture : tiles.at(static_cast<qsizetype>(row) * width + column); }
 
     bool operator==(const QcPaintingMotif &) const = default;
 };

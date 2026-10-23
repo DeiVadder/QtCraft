@@ -30,7 +30,7 @@ public:
     static constexpr int formatVersion = 2;
     // Per list; further entries of a file are left out with a warning.
     static constexpr qsizetype maxEntries = 4096;
-    static constexpr qint64 maxFileBytes = qint64(1024) * 1024;
+    static constexpr qint64 maxFileBytes = qint64{1024} * 1024;
     static constexpr qsizetype maxReasonLength = 128;
 
     enum class List { Operators, Bans, Whitelist };

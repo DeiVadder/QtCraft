@@ -25,7 +25,7 @@ constexpr double pathTilt = 0.25;
 
 QVector3D mix(QVector3D a, QVector3D b, double t)
 {
-    return a + (b - a) * float(std::clamp(t, 0.0, 1.0));
+    return a + (b - a) * static_cast<float>(std::clamp(t, 0.0, 1.0));
 }
 
 double smooth(double edge0, double edge1, double x)
@@ -46,7 +46,7 @@ QcSkyState at(double worldTime)
 {
     QcSkyState sky;
     const double angle = 2.0 * std::numbers::pi * QcDayCycle::phase(worldTime);
-    sky.sunDirection = QVector3D(float(std::cos(angle)), float(std::sin(angle)), float(pathTilt)).normalized();
+    sky.sunDirection = QVector3D(static_cast<float>(std::cos(angle)), static_cast<float>(std::sin(angle)), static_cast<float>(pathTilt)).normalized();
     sky.moonDirection = -QVector3D(sky.sunDirection.x(), sky.sunDirection.y(), -sky.sunDirection.z());
     sky.daylight = QcDayCycle::daylight(worldTime);
 
@@ -56,14 +56,14 @@ QcSkyState at(double worldTime)
     const double dusk = duskShare(sunHeight);
     sky.zenith = mix(nightZenith, dayZenith, day);
     sky.horizon = mix(mix(nightHorizon, dayHorizon, day), duskHorizon, dusk * 0.85);
-    sky.glow = duskGlow * float(dusk);
+    sky.glow = duskGlow * static_cast<float>(dusk);
     sky.stars = 1.0 - smooth(-0.25, 0.02, sunHeight);
     sky.cloudColor = mix(mix(nightClouds, dayClouds, day), QVector3D(1.0f, 0.70f, 0.55f), dusk * 0.6);
 
     // One step per day (days begin at sunrise, so a night keeps its moon); the first night of a
     // world has a full moon.
     const double dayNumber = std::floor(worldTime / QcDayCycle::dayLength);
-    const double phase = std::fmod(dayNumber / double(lunarDays) + 0.5, 1.0);
+    const double phase = std::fmod(dayNumber / static_cast<double>(lunarDays) + 0.5, 1.0);
     sky.moonPhase = phase < 0.0 ? phase + 1.0 : phase;
 
     sky.cloudOffsetX = worldTime * cloudSpeed;
@@ -83,13 +83,13 @@ QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash
     // Grey of the same brightness, darker with the rain and darker still in a thunderstorm.
     const auto overcastColour = [rain, thunder](QVector3D colour, double darkening) {
         const float grey = 0.3f * colour.x() + 0.59f * colour.y() + 0.11f * colour.z();
-        const QVector3D target = QVector3D(grey, grey, grey * 1.06f) * float(darkening * (1.0 - 0.45 * thunder));
+        const QVector3D target = QVector3D(grey, grey, grey * 1.06f) * static_cast<float>(darkening * (1.0 - 0.45 * thunder));
         return mix(colour, target, rain * 0.85);
     };
     sky.zenith = overcastColour(sky.zenith, 0.55);
     sky.horizon = overcastColour(sky.horizon, 0.72);
     sky.cloudColor = overcastColour(sky.cloudColor, 0.62);
-    sky.glow *= float(1.0 - rain);
+    sky.glow *= static_cast<float>(1.0 - rain);
     sky.stars *= 1.0 - rain;
     sky.overcast = rain;
     sky.fogScale = 1.0 - 0.45 * rain - 0.15 * thunder;
@@ -110,7 +110,7 @@ QcSkyState seenFrom(QcSkyState sky, double eyeY)
         return sky;
     }
 
-    const float light = float(std::clamp(1.0 - eyeY / QcWorld::voidLimitY, 0.0, 1.0));
+    const float light = static_cast<float>(std::clamp(1.0 - eyeY / QcWorld::voidLimitY, 0.0, 1.0));
     sky.zenith *= light;
     sky.horizon *= light;
     sky.glow *= light;

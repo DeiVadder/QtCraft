@@ -118,7 +118,7 @@ struct QcVillageDraft
     {
     }
 
-    static qint64 cellKey(int x, int z) { return (qint64(x) << 32) | quint32(z); }
+    static qint64 cellKey(int x, int z) { return (static_cast<qint64>(x) << 32) | static_cast<quint32>(z); }
     // The quarter turns clockwise after which the door of a piece (the south side of its first
     // layer) faces (fx, fz), an axis direction.
     static int turnsFacing(int fx, int fz);

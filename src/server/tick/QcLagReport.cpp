@@ -12,14 +12,14 @@ namespace {
 
 QString milliseconds(qint64 ns)
 {
-    return QString::number(double(ns) / 1e6, 'f', 1);
+    return QString::number(static_cast<double>(ns) / 1e6, 'f', 1);
 }
 
 } // namespace
 
 std::optional<QString> QcLagReport::check(const QcTickPhaseTimer::Durations &phases, qint64 nowNs)
 {
-    const qint64 tickNs = std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64(0));
+    const qint64 tickNs = std::accumulate(phases.begin(), phases.begin() + QcTickPhases::inTick, qint64{0});
     if (tickNs <= thresholdNs) {
         return std::nullopt;
     }
@@ -54,12 +54,13 @@ QString QcLagReport::line(const QcTickPhaseTimer::Durations &phases, qint64 tick
 {
     std::array<int, QcTickPhases::inTick> order{};
     std::ranges::iota(order, 0);
-    std::ranges::stable_sort(order, std::greater{}, [&phases](int phase) { return phases[std::size_t(phase)]; });
+    std::ranges::stable_sort(order, std::greater{}, [&phases](int phase) { return phases[static_cast<std::size_t>(phase)]; });
 
     QStringList parts;
     for (const int phase : order | std::views::take(shownPhases)) {
-        if (phases[std::size_t(phase)] > 0) {
-            parts.append(u"%1 %2"_s.arg(QLatin1StringView(QcTickPhases::ids[std::size_t(phase)]), milliseconds(phases[std::size_t(phase)])));
+        if (phases[static_cast<std::size_t>(phase)] > 0) {
+            parts.append(u"%1 %2"_s.arg(QLatin1StringView(QcTickPhases::ids[static_cast<std::size_t>(phase)]),
+                milliseconds(phases[static_cast<std::size_t>(phase)])));
         }
     }
     return u"Lag spike: tick took %1 ms (%2)"_s.arg(milliseconds(tickNs), parts.join(u", "_s));

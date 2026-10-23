@@ -130,8 +130,8 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     }
 
     // The head follows the view pitch: looking up tilts its top backwards, looking down forwards.
-    result.bone(QcBoneRole::Head).pitch = std::clamp(double(pose.headPitch), -80.0, 80.0);
-    result.bone(QcBoneRole::Head).yaw = std::clamp(double(pose.headYaw), -maxHeadYaw, maxHeadYaw);
+    result.bone(QcBoneRole::Head).pitch = std::clamp(static_cast<double>(pose.headPitch), -80.0, 80.0);
+    result.bone(QcBoneRole::Head).yaw = std::clamp(static_cast<double>(pose.headYaw), -maxHeadYaw, maxHeadYaw);
     if (pose.body == QcPose::Lying) {
         result.lieOnBack(idle);
     }

@@ -44,15 +44,15 @@ QJsonObject QcControlTradeCommands::tradesJson() const
         for (const QcItemStack &cost : offer.costs) {
             costs.append(m_context.reports().stackJson(cost));
         }
-        offers.append(QJsonObject{{u"index"_s, int(i)},
+        offers.append(QJsonObject{{u"index"_s, static_cast<int>(i)},
                                   {u"costs"_s, costs},
                                   {u"result"_s, m_context.reports().stackJson(offer.result)},
                                   {u"uses"_s, offer.uses},
                                   {u"maxUses"_s, offer.maxUses},
-                                  {u"affordable"_s, trading.affordable(int(i), session().inventory().allSlots())}});
+                                  {u"affordable"_s, trading.affordable(static_cast<int>(i), session().inventory().allSlots())}});
     }
     return {{u"open"_s, true},
-            {u"villager"_s, qint64(state.villager)},
+            {u"villager"_s, static_cast<qint64>(state.villager)},
             {u"profession"_s, state.profession},
             {u"level"_s, state.level},
             {u"experience"_s, state.experience},
@@ -70,7 +70,7 @@ void QcControlTradeCommands::openTrade(const QJsonObject &request)
 {
     // Looks at the villager and uses it like a player; answers once the server opened its screen.
     const quint64 startTick = session().tickCount();
-    const quint32 wanted = quint32(request.value(u"entity"_s).toInteger(-1));
+    const quint32 wanted = static_cast<quint32>(request.value(u"entity"_s).toInteger(-1));
     const auto entity = session().entities().constFind(wanted);
     const std::shared_ptr<const QcContentRegistry> content = session().content();
     const QcMobDefinition *creature = content && entity != session().entities().constEnd() ? entity->creature(*content) : nullptr;

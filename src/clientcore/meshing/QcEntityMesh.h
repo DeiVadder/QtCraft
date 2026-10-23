@@ -16,7 +16,7 @@ struct QcEntityMesh
     // also adds the two facing the other way.
     void addQuad(const std::array<QcEntityVertex, 4> &corners, bool bothSides = false)
     {
-        const auto base = quint32(vertices.size());
+        const auto base = static_cast<quint32>(vertices.size());
         for (const QcEntityVertex &corner : corners) {
             vertices.append(corner);
         }

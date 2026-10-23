@@ -53,8 +53,8 @@ QcEntityPose pose(Animation animation, double seconds, Gaze gaze)
 {
     QcEntityPose pose;
     pose.onGround = true;
-    pose.headYaw = float(gaze.yaw);
-    pose.headPitch = float(gaze.pitch);
+    pose.headYaw = static_cast<float>(gaze.yaw);
+    pose.headPitch = static_cast<float>(gaze.pitch);
     if (animation == Animation::Walk) {
         pose.speed = QcPhysics::walkSpeed;
         pose.walkDistance = seconds * QcPhysics::walkSpeed;

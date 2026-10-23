@@ -48,7 +48,7 @@ constexpr double positionMargin = 4.0;
         return std::nullopt;
     }
 
-    const QcBlockPos cell{int(point->x), int(point->y), int(point->z)};
+    const QcBlockPos cell{static_cast<int>(point->x), static_cast<int>(point->y), static_cast<int>(point->z)};
     if (cell.x < 0 || cell.y < 0 || cell.z < 0 || cell.x >= structure.sizeX || cell.y >= structure.sizeY || cell.z >= structure.sizeZ) {
         return std::nullopt;
     }
@@ -133,7 +133,7 @@ void StructureReader::parsePalette()
             m_reader.fail(u"palette entry '%1' needs a single character other than space and a block name"_s.arg(it.key()));
             return;
         }
-        m_keys.insert(it.key().front(), qint16(m_structure.palette.size()));
+        m_keys.insert(it.key().front(), static_cast<qint16>(m_structure.palette.size()));
         m_structure.palette.append(state);
     }
 }
@@ -145,9 +145,9 @@ bool StructureReader::measureLayers(const QJsonArray &layers)
         return false;
     }
 
-    m_structure.sizeY = int(layers.size());
-    m_structure.sizeZ = int(layers[0].toArray().size());
-    m_structure.sizeX = m_structure.sizeZ > 0 ? int(layers[0].toArray()[0].toString().size()) : 0;
+    m_structure.sizeY = static_cast<int>(layers.size());
+    m_structure.sizeZ = static_cast<int>(layers[0].toArray().size());
+    m_structure.sizeX = m_structure.sizeZ > 0 ? static_cast<int>(layers[0].toArray()[0].toString().size()) : 0;
     if (m_structure.sizeZ < 1 || m_structure.sizeZ > Structure::maxSize || m_structure.sizeX < 1 || m_structure.sizeX > Structure::maxSize) {
         return false;
     }
@@ -190,7 +190,7 @@ void StructureReader::parseLayers()
         return;
     }
 
-    m_structure.cells.resize(qsizetype(m_structure.sizeX) * m_structure.sizeY * m_structure.sizeZ, Structure::keep);
+    m_structure.cells.resize(static_cast<qsizetype>(m_structure.sizeX) * m_structure.sizeY * m_structure.sizeZ, Structure::keep);
     for (int y = 0; y < m_structure.sizeY; ++y) {
         const QJsonArray rows = layers[y].toArray();
         for (int z = 0; z < m_structure.sizeZ; ++z) {
@@ -240,7 +240,7 @@ void StructureReader::parseStands()
             return;
         }
 
-        Structure::Stand stand{*at, float(yaw), {}};
+        Structure::Stand stand{*at, static_cast<float>(yaw), {}};
         for (const auto &property : properties) {
             stand.properties.append(property.toString().left(256));
         }

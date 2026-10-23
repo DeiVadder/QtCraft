@@ -300,7 +300,7 @@ struct QcBlockDefinition
     // drowned and fish, putting out burning bodies and QcPhysics::isWaterAt.
     bool isWater() const { return liquid && fire.setsAlightSeconds == 0; }
     bool hasRandomTicks() const { return growth.grows() || crop.isCrop() || soil.isSoil(); }
-    const QString &texture(QcBlockFace face) const { return faceTextures[std::size_t(face)]; }
+    const QString &texture(QcBlockFace face) const { return faceTextures[static_cast<std::size_t>(face)]; }
     // Texture of a named slot, or empty.
     QString slotTexture(const QString &slot) const
     {

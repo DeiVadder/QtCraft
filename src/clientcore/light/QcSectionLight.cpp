@@ -14,7 +14,7 @@ struct ReducedChannel
 {
     const int level = cells ? cells->uniformLevel() : -1;
     if (level >= 0) {
-        return {nullptr, quint8(level)};
+        return {nullptr, static_cast<quint8>(level)};
     }
     return {std::move(cells), uniform};
 }
@@ -23,12 +23,13 @@ struct ReducedChannel
 
 QByteArray QcSectionLight::texels() const
 {
-    QByteArray result(qsizetype(QcLightNibbles::cellCount) * texelBytes, Qt::Uninitialized);
+    QByteArray result(static_cast<qsizetype>(QcLightNibbles::cellCount) * texelBytes, Qt::Uninitialized);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): byte view of the QByteArray storage
     auto *out = reinterpret_cast<quint8 *>(result.data());
     for (int index = 0; index < QcLightNibbles::cellCount; ++index) {
-        const qsizetype at = qsizetype(index) * texelBytes;
-        out[at] = quint8(blockLevel(index) * 17);
-        out[at + 1] = quint8(skyLevel(index) * 17);
+        const qsizetype at = static_cast<qsizetype>(index) * texelBytes;
+        out[at] = static_cast<quint8>(blockLevel(index) * 17);
+        out[at + 1] = static_cast<quint8>(skyLevel(index) * 17);
     }
     return result;
 }

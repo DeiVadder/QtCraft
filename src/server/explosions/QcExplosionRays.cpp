@@ -16,14 +16,14 @@ namespace {
 double forceOf(const QcExplosionRays::Blast &blast, QcBlockPos centre, int ray)
 {
     quint64 h = blast.seed ^ 0x9E3779B97F4A7C15ull;
-    const auto word = [](int value) { return quint64(quint32(value)); };
+    const auto word = [](int value) { return static_cast<quint64>(static_cast<quint32>(value)); };
     for (const quint64 value : {word(centre.x), word(centre.y), word(centre.z), word(ray)}) {
         h += value + 0x9E3779B97F4A7C15ull;
         h = (h ^ (h >> 30)) * 0xBF58476D1CE4E5B9ull;
         h = (h ^ (h >> 27)) * 0x94D049BB133111EBull;
         h ^= h >> 31;
     }
-    const double unit = double(h >> 11) / double(1ull << 53);
+    const double unit = static_cast<double>(h >> 11) / static_cast<double>(1ull << 53);
     return blast.power * (0.7 + 0.6 * unit);
 }
 
@@ -51,8 +51,8 @@ struct BrokenCells
                 return;
             }
             if (at.block != qcAirBlockId) {
-                force -= (double(at.resistance) + 0.3) * QcExplosionRays::stepLength;
-                if (force > 0.0 && at.resistance < float(QcBlastDefinition::unbreakable)) {
+                force -= (static_cast<double>(at.resistance) + 0.3) * QcExplosionRays::stepLength;
+                if (force > 0.0 && at.resistance < static_cast<float>(QcBlastDefinition::unbreakable)) {
                     cells.insert(cell);
                 }
             }
@@ -73,10 +73,10 @@ double distanceSquared(QcBlockPos cell, const QcVec3 &centre)
 bool sees(QcBlastField &field, const QcVec3 &from, const QcVec3 &to)
 {
     const QcVec3 delta = to - from;
-    const int steps = std::max(1, int(std::ceil(delta.length() * 4.0)));
+    const int steps = std::max(1, static_cast<int>(std::ceil(delta.length() * 4.0)));
     const QcBlockPos last = QcPhysics::blockContaining(to);
     for (int step = 1; step < steps; ++step) {
-        const QcBlockPos cell = QcPhysics::blockContaining(from + delta * (double(step) / steps));
+        const QcBlockPos cell = QcPhysics::blockContaining(from + delta * (static_cast<double>(step) / steps));
         if (cell == last) {
             break;
         }
@@ -116,7 +116,7 @@ namespace QcExplosionRays {
 int reach(double power)
 {
     // The longest ray: 1.3 × power of force at stepCost per step of stepLength blocks.
-    return int(std::ceil(1.3 * power / stepCost * stepLength)) + 1;
+    return static_cast<int>(std::ceil(1.3 * power / stepCost * stepLength)) + 1;
 }
 
 QList<QcBlockPos> broken(QcBlastField &field, const Blast &blast, qsizetype limit)
@@ -145,7 +145,7 @@ double exposure(QcBlastField &field, const QcVec3 &centre, const QcAabb &box)
 {
     // Like the reference game: a grid over the box with about two points per block of its size.
     const QcVec3 size = box.max - box.min;
-    const auto points = [](double extent) { return std::max(2, int(std::floor(extent * 2.0)) + 2); };
+    const auto points = [](double extent) { return std::max(2, static_cast<int>(std::floor(extent * 2.0)) + 2); };
     const int nx = points(size.x);
     const int ny = points(size.y);
     const int nz = points(size.z);
@@ -158,7 +158,7 @@ double exposure(QcBlastField &field, const QcVec3 &centre, const QcAabb &box)
             }
         }
     }
-    return double(seen) / double(nx * ny * nz);
+    return static_cast<double>(seen) / static_cast<double>(nx * ny * nz);
 }
 
 } // namespace QcExplosionRays

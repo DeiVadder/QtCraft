@@ -241,11 +241,11 @@ private slots:
                 m_server->tickScheduler().stopSprint();
             }
         }
-        const double seconds = double(timer.elapsed()) / 1000.0;
+        const double seconds = static_cast<double>(timer.elapsed()) / 1000.0;
         QVERIFY2(lastLine().startsWith(u"Sprint ended: "_s), qPrintable(lastLine()));
 
         // The sprint ran thousands of ticks; real time is what counts.
-        const auto bound = [seconds](double perSecond) { return int(seconds * perSecond) + 3; };
+        const auto bound = [seconds](double perSecond) { return static_cast<int>(seconds * perSecond) + 3; };
         const QString counts = u"%1 s: %2 autosaves, %3 times, %4 moves, %5 chat lines"_s.arg(seconds).arg(m_server->autosaveCount() - autosaves)
                                    .arg(m_client->timeMessages - timeBefore).arg(m_client->entityMoveMessages - movesBefore)
                                    .arg(ownChatLines() - chatBefore);
@@ -266,7 +266,7 @@ private slots:
         quint32 id = 900100;
         for (int x = 3; x < 8; ++x) {
             for (int z = -2; z < 2; ++z) {
-                m_server->mobs().spawn(pig, m_client->motion.position + QcVec3{double(x), 0.0, double(z)}, id++, false, true);
+                m_server->mobs().spawn(pig, m_client->motion.position + QcVec3{static_cast<double>(x), 0.0, static_cast<double>(z)}, id++, false, true);
             }
         }
         qsizetype heard = m_client->sounds.size();

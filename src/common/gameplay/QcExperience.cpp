@@ -58,7 +58,7 @@ QcExperience QcExperience::fromTotal(qint64 total)
 
     QcExperience experience;
     experience.m_level = low;
-    experience.m_points = low == maxLevel ? 0 : int(wanted - totalForLevel(low));
+    experience.m_points = low == maxLevel ? 0 : static_cast<int>(wanted - totalForLevel(low));
     return experience;
 }
 
@@ -88,7 +88,7 @@ int QcExperience::addPoints(qint64 points)
 
 void QcExperience::addLevels(int levels)
 {
-    setLevel(int(std::clamp<qint64>(qint64(m_level) + levels, 0, maxLevel)));
+    setLevel(static_cast<int>(std::clamp<qint64>(static_cast<qint64>(m_level) + levels, 0, maxLevel)));
 }
 
 bool QcExperience::spendLevels(int levels)
@@ -106,7 +106,7 @@ void QcExperience::setLevel(int level)
     // Like the reference, the share of the way to the next level stays.
     const double share = progress();
     m_level = std::clamp(level, 0, maxLevel);
-    m_points = std::clamp(int(std::floor(share * pointsForNext(m_level))), 0, mostPoints(m_level));
+    m_points = std::clamp(static_cast<int>(std::floor(share * pointsForNext(m_level))), 0, mostPoints(m_level));
 }
 
 bool QcExperience::setPoints(int points)

@@ -66,10 +66,10 @@ Cell sampleColumn(const QcTerrainGenerator &generator, Window &window, int x, in
 Window survey(const QcTerrainGenerator &generator, int reach, int step)
 {
     Window window{reach, step, 2 * reach / step, {}};
-    window.grid.resize(qsizetype(window.cells) * window.cells);
+    window.grid.resize(static_cast<qsizetype>(window.cells) * window.cells);
     for (int j = 0; j < window.cells; ++j) {
         for (int i = 0; i < window.cells; ++i) {
-            window.grid[qsizetype(j) * window.cells + i] = sampleColumn(generator, window, -reach + i * step, -reach + j * step);
+            window.grid[static_cast<qsizetype>(j) * window.cells + i] = sampleColumn(generator, window, -reach + i * step, -reach + j * step);
         }
     }
     return window;
@@ -105,8 +105,8 @@ Body flood(const Window &window, QList<bool> &seen, qsizetype start)
     while (!stack.isEmpty()) {
         const qsizetype cell = stack.takeLast();
         ++body.size;
-        const int i = int(cell % window.cells);
-        const int j = int(cell / window.cells);
+        const int i = static_cast<int>(cell % window.cells);
+        const int j = static_cast<int>(cell / window.cells);
         body.leaves = body.leaves || i == 0 || j == 0 || i == window.cells - 1 || j == window.cells - 1;
         for (int dj = -2; dj <= 2; ++dj) {
             for (int di = -2; di <= 2; ++di) {
@@ -115,7 +115,7 @@ Body flood(const Window &window, QList<bool> &seen, qsizetype start)
                 if (ni < 0 || nj < 0 || ni >= window.cells || nj >= window.cells) {
                     continue;
                 }
-                const qsizetype next = qsizetype(nj) * window.cells + ni;
+                const qsizetype next = static_cast<qsizetype>(nj) * window.cells + ni;
                 body.joins = body.joins || (std::abs(di) <= 1 && std::abs(dj) <= 1 && window.grid[next] == Cell::OtherWater);
                 if (window.grid[next] == Cell::River && !seen[next]) {
                     seen[next] = true;
@@ -172,7 +172,7 @@ private:
     {
         bool ok = false;
         const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
-        const qint64 seed = ok ? fixed : qint64(QRandomGenerator::global()->generate() & 0x7fffffff);
+        const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
         qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
         return seed;
     }
@@ -357,7 +357,7 @@ private slots:
     // water, no floating water, nothing that flows when the chunks load.
     void noWaterBesideAir()
     {
-        for (const qint64 seed : {qint64(42), qint64(1234), m_randomSeed}) {
+        for (const qint64 seed : {qint64{42}, qint64{1234}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 8, 384);
             QVERIFY2(rivers.size() >= 6, qPrintable(u"seed %1"_s.arg(seed)));
@@ -374,7 +374,7 @@ private slots:
     void coldRiversFreeze()
     {
         int frozen = 0;
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234)}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 60, 128);
             for (const auto [x, z] : rivers) {
@@ -412,8 +412,8 @@ private slots:
         // that turned on a bridge (no longer: bridges run straight); 298323796: failed on the old check;
         // 20261017: a bridge over a river and the low water beside it in another biome.
         // 782953143 and 614800303: failed on earlier bridge placements.
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1059853484), qint64(555555), qint64(888888888),
-                                  qint64(298323796), qint64(20261017), qint64(782953143), qint64(614800303), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1059853484}, qint64{555555}, qint64{888888888},
+                                  qint64{298323796}, qint64{20261017}, qint64{782953143}, qint64{614800303}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             QSet<qint64> seen;
             // Villages lie a region (384 blocks, 24 chunks) apart: every sixth chunk finds each.
@@ -482,8 +482,8 @@ private slots:
         // closed pieces were left out (decision E-851): large rings and arcs ending on land at both
         // ends. 1360590162 (random) had 14 %: a long river whose gorge stretch was water a block
         // wide, joined only at corners, and three blocks wide still broke on the survey grid.
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(1034578912), qint64(1448947576), qint64(345777499),
-                                  qint64(476165307), qint64(807288324), qint64(2025406668), qint64(1360590162), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
+                                  qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const Window window = survey(generator, 1536, 2);
             climates.dryLand += window.dryLand;
@@ -491,10 +491,10 @@ private slots:
             climates.humidLand += window.humidLand;
             climates.humidRiver += window.humidRiver;
             const Outlets outlets = outletsOf(window);
-            const double share = double(window.river) / double(window.land);
-            const double closed = double(outlets.closed) / double(outlets.joined + outlets.leaving + outlets.closed);
-            const double dry = double(window.dryRiver) / double(std::max<qint64>(1, window.dryLand));
-            const double humid = double(window.humidRiver) / double(std::max<qint64>(1, window.humidLand));
+            const double share = static_cast<double>(window.river) / static_cast<double>(window.land);
+            const double closed = static_cast<double>(outlets.closed) / static_cast<double>(outlets.joined + outlets.leaving + outlets.closed);
+            const double dry = static_cast<double>(window.dryRiver) / static_cast<double>(std::max<qint64>(1, window.dryLand));
+            const double humid = static_cast<double>(window.humidRiver) / static_cast<double>(std::max<qint64>(1, window.humidLand));
             qInfo("seed %lld: rivers %.4f of the land (dry %.4f of %lld, humid %.4f of %lld); river columns into other water %lld, "
                   "out of the window %lld, closed %lld (%.3f)",
                   seed, share, dry, window.dryLand, humid, window.humidLand, outlets.joined, outlets.leaving, outlets.closed, closed);
@@ -511,8 +511,8 @@ private slots:
         // fade out from a humidity of 0.22 down to 0.05, so the share of one window depends on how
         // its dry land spreads over that range (1 to 21 % of the humid share on 9 seeds, but 99 %
         // for 1448947576), so the seeds count together.
-        const double dry = double(climates.dryRiver) / double(std::max<qint64>(1, climates.dryLand));
-        const double humid = double(climates.humidRiver) / double(std::max<qint64>(1, climates.humidLand));
+        const double dry = static_cast<double>(climates.dryRiver) / static_cast<double>(std::max<qint64>(1, climates.dryLand));
+        const double humid = static_cast<double>(climates.humidRiver) / static_cast<double>(std::max<qint64>(1, climates.humidLand));
         qInfo("all seeds: dry %.4f of %lld, humid %.4f of %lld", dry, climates.dryLand, humid, climates.humidLand);
         QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
     }

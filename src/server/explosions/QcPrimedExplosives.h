@@ -47,5 +47,5 @@ public:
 
 private:
     QList<QcPrimedExplosive> m_primed;
-    qsizetype m_limit = qsizetype(QcServerLimits{}.primedExplosives);
+    qsizetype m_limit = static_cast<qsizetype>(QcServerLimits{}.primedExplosives);
 };

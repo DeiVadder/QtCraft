@@ -49,7 +49,7 @@ enum EntityFlag : quint16 {
 // The pose bits of a creature's flags, and the pose they carry.
 inline quint16 poseFlags(QcPose pose)
 {
-    return pose == QcPose::Lying ? quint16(Lying) : pose == QcPose::Sitting ? quint16(Sitting) : quint16(0);
+    return pose == QcPose::Lying ? static_cast<quint16>(Lying) : pose == QcPose::Sitting ? static_cast<quint16>(Sitting) : quint16{0};
 }
 inline QcPose poseOf(quint16 flags)
 {

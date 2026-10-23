@@ -51,7 +51,7 @@ private:
                     }
                 }
             }
-            best = std::min(best, double(timer.nsecsElapsed()) / 1.0e6 / double(edge * edge));
+            best = std::min(best, static_cast<double>(timer.nsecsElapsed()) / 1.0e6 / static_cast<double>(edge * edge));
         }
         return best;
     }
@@ -71,7 +71,7 @@ private:
                     sum += generator.column(corner.first + x, corner.second + z).height;
                 }
             }
-            best = std::min(best, double(timer.nsecsElapsed()) / 1.0e3 / double(edge * edge));
+            best = std::min(best, static_cast<double>(timer.nsecsElapsed()) / 1.0e3 / static_cast<double>(edge * edge));
         }
         // Uses the heights, so the loop is not optimised away.
         if (sum <= 0) {
@@ -87,7 +87,7 @@ private slots:
     {
         const int edge = full() ? 12 : 2;
         quint64 sum = 0;
-        for (const qint64 seed : {qint64(1), qint64(7), qint64(42), qint64(1234)}) {
+        for (const qint64 seed : {qint64{1}, qint64{7}, qint64{42}, qint64{1234}}) {
             const QcTerrainGenerator generator(m_content, seed);
             for (int dz = 0; dz < edge; ++dz) {
                 for (int dx = 0; dx < edge; ++dx) {
@@ -108,7 +108,7 @@ private slots:
         double chunkSum = 0.0;
         double columnSum = 0.0;
         int samples = 0;
-        for (const qint64 seed : {qint64(1), qint64(7), qint64(42), qint64(1234)}) {
+        for (const qint64 seed : {qint64{1}, qint64{7}, qint64{42}, qint64{1234}}) {
             for (const QcChunkPos corner : fields) {
                 const double chunk = perChunk(seed, corner, edge, runs);
                 const double column = perColumn(seed, {corner.x * QcWorld::chunkSize, corner.z * QcWorld::chunkSize}, edge * 8, runs);
@@ -132,7 +132,7 @@ private slots:
             QSKIP("only with QTCRAFT_TERRAIN_MEASURE");
         }
         double chunkSum = 0.0;
-        for (const auto &[seed, corner] : {std::pair{qint64(7), QcChunkPos{17, -68}}, std::pair{qint64(42), QcChunkPos{42, -8}}}) {
+        for (const auto &[seed, corner] : {std::pair{qint64{7}, QcChunkPos{17, -68}}, std::pair{qint64{42}, QcChunkPos{42, -8}}}) {
             const double chunk = perChunk(seed, corner, 16, 3);
             qInfo("seed %lld, delta chunks from %d %d: %.3f ms per chunk", seed, corner.x, corner.z, chunk);
             chunkSum += chunk;

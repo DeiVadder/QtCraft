@@ -54,7 +54,7 @@ public:
 
     // Forgets the waiting cells (the game rule explosionBlockDamage was switched off).
     void drop() { m_waiting.clear(); }
-    qsizetype waiting() const { return qsizetype(m_waiting.size()); }
+    qsizetype waiting() const { return static_cast<qsizetype>(m_waiting.size()); }
     quint64 broken() const { return m_broken; }
 
     // `updates` cut into batches of at most `most` updates each, in order.

@@ -136,7 +136,7 @@ void QcServerEnchanting::choose(QcServerClient &client, QcMsg::ChooseEnchantment
         return;
     }
 
-    const int slot = std::clamp(int(request.slot), 0, QcEnchantingTable::offerCount - 1);
+    const int slot = std::clamp(static_cast<int>(request.slot), 0, QcEnchantingTable::offerCount - 1);
     QcServerClient::Enchanting &table = *client.screen.enchanting;
     // Only the offer the client saw counts: when the offers changed since (shelves, item), the
     // client gets the new ones and chooses again.
@@ -145,7 +145,7 @@ void QcServerEnchanting::choose(QcServerClient &client, QcMsg::ChooseEnchantment
         m_inventory.send(client);
         return;
     }
-    const QcEnchantingTable::Offer &offer = current[std::size_t(slot)];
+    const QcEnchantingTable::Offer &offer = current[static_cast<std::size_t>(slot)];
     const int price = QcEnchantingTable::priceOf(slot);
     // Creative players pay nothing (the reference's rule); others need the offer's level, and pay
     // levels and lapis by the offer's place.

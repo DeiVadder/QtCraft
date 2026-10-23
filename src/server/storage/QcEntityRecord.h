@@ -30,7 +30,7 @@ struct QcEntityRecord
     };
 
     // Waiting drops come after every item that already lies in the world.
-    static constexpr quint64 waitingOrderBase = quint64(1) << 32;
+    static constexpr quint64 waitingOrderBase = quint64{1} << 32;
 
     QcChunkPos chunk;
     // Persistent creatures; the others are not saved and appear again around the players.

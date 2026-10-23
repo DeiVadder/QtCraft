@@ -71,7 +71,7 @@ QcServerCircuits::QcServerCircuits(QcServerState &state, QcServerSounds &sounds,
 void QcServerCircuits::tick()
 {
     const QcServerLimits &limits = m_state.config().limits;
-    m_budget = qsizetype(limits.signalBudget);
+    m_budget = static_cast<qsizetype>(limits.signalBudget);
     m_pistonActs.clear();
     if (m_state.clock().tick() % pruneIntervalTicks == 0) {
         m_state.blockEntities().prune(m_state.clock().tick(), QcCircuitComponents::burnoutWindowTicks, QcMovingBlocks::moveTicks);
@@ -80,7 +80,7 @@ void QcServerCircuits::tick()
     m_state.circuits().takeReaders(m_state.world());
     pressPlates();
     // Changes may not take the whole budget: due scheduled ticks always get their share.
-    settle(qsizetype(limits.scheduleReserve()));
+    settle(static_cast<qsizetype>(limits.scheduleReserve()));
 
     while (m_budget > 0) {
         const auto group = m_state.blockEntities().schedule().nextGroup(m_state.clock().tick());
@@ -90,7 +90,7 @@ void QcServerCircuits::tick()
         runScheduled(group->first, group->second);
         settle(0);
     }
-    m_lastWork = qsizetype(limits.signalBudget) - m_budget;
+    m_lastWork = static_cast<qsizetype>(limits.signalBudget) - m_budget;
     // Hoppers have their own bound (QcServerLimits::hopperBudget).
     m_hoppers.tick();
 }
@@ -130,7 +130,7 @@ bool QcServerCircuits::use(QcBlockPos pos)
             return true;
         }
         m_blocks.setAndBroadcast(pos, m_table.withFlag(*block, u"powered"_s, true));
-        m_state.blockEntities().schedule().add(pos, m_state.clock().tick() + quint64(definition.pulseTicks), QcSignalSchedule::Priority::Release);
+        m_state.blockEntities().schedule().add(pos, m_state.clock().tick() + static_cast<quint64>(definition.pulseTicks), QcSignalSchedule::Priority::Release);
         break;
     case QcSignalKind::Repeater: {
         const QString delay = QString::number(state.delay % 4 + 1);
@@ -166,7 +166,8 @@ bool QcServerCircuits::hitTarget(QcBlockPos pos, int power, bool stuck)
     m_blocks.setAndBroadcast(pos, m_table.content().withProperty(*block, u"power"_s, QString::number(strength)));
     QcSignalSchedule &schedule = m_state.blockEntities().schedule();
     schedule.remove(pos);
-    schedule.add(pos, m_state.clock().tick() + quint64(stuck ? definition.stuckHitTicks : definition.hitTicks), QcSignalSchedule::Priority::Release);
+    schedule.add(pos, m_state.clock().tick() + static_cast<quint64>(stuck ? definition.stuckHitTicks : definition.hitTicks),
+        QcSignalSchedule::Priority::Release);
     return true;
 }
 
@@ -177,11 +178,11 @@ int QcServerCircuits::targetStrength(QcBlockPos pos, QcBlockFace face, const QcV
     double distance = 0.0;
     for (int axis = 0; axis < 3; ++axis) {
         if (axis != normal) {
-            distance = std::max(distance, std::abs(std::clamp(local[std::size_t(axis)], 0.0, 1.0) - 0.5));
+            distance = std::max(distance, std::abs(std::clamp(local[static_cast<std::size_t>(axis)], 0.0, 1.0) - 0.5));
         }
     }
     const double share = std::clamp((0.5 - distance) / 0.5, 0.0, 1.0);
-    return std::max(1, int(std::ceil(QcSignalDefinition::maxPower * share - 1e-9)));
+    return std::max(1, static_cast<int>(std::ceil(QcSignalDefinition::maxPower * share - 1e-9)));
 }
 
 void QcServerCircuits::playNote(QcBlockPos pos)
@@ -201,7 +202,7 @@ void QcServerCircuits::playNote(QcBlockPos pos)
     const QString sound = content.block(*block).signal.instruments.of(ground.name, ground.soundMaterial);
     // Semitones around the middle note: 0.5 (F#3) to 2 (F#5) times the instrument's own pitch.
     const int note = std::clamp(content.property(*block, u"note"_s).toInt(), 0, QcSignalDefinition::noteCount - 1);
-    m_sounds.play(sound, centreOf(pos), 1.0f, float(std::exp2(double(note - 12) / 12.0)));
+    m_sounds.play(sound, centreOf(pos), 1.0f, static_cast<float>(std::exp2(static_cast<double>(note - 12) / 12.0)));
 }
 
 void QcServerCircuits::pressPlates()
@@ -217,7 +218,9 @@ void QcServerCircuits::pressPlates()
     const auto note = [this, &marks, &readings](const QcEntity &body) {
         --m_budget;
         const QcBlockPos cell = QcPhysics::blockContaining(body.motion.position);
-        if (!cell.isInsideWorldHeight() || (marks.sectionsOf(cell.chunk(), QcBlockTrait::Plate) & (1U << unsigned(cell.y / QcWorld::sectionHeight))) == 0) {
+        if (!cell.isInsideWorldHeight()
+            || (marks.sectionsOf(cell.chunk(), QcBlockTrait::Plate)
+                & (1U << static_cast<unsigned>(cell.y / QcWorld::sectionHeight))) == 0) {
             return;
         }
         const std::optional<QcBlockId> block = m_state.world().blockAt(cell);
@@ -384,7 +387,7 @@ QList<QcCircuitState::Change> QcServerCircuits::takeChanges(qsizetype limit)
 {
     QList<QcCircuitState::Change> changes = std::exchange(m_state.circuits().changes, {});
     const QcServerLimits &limits = m_state.config().limits;
-    const qsizetype room = std::max(limit / qsizetype(limits.signalWorkPerChange), qsizetype(limits.signalMinimumStep));
+    const qsizetype room = std::max(limit / static_cast<qsizetype>(limits.signalWorkPerChange), static_cast<qsizetype>(limits.signalMinimumStep));
     if (changes.size() > room) {
         // Too many for one step: the first ones in a fixed order of positions now, the rest in the
         // next step. Such a split step is no longer simultaneous (decision E-335).
@@ -469,7 +472,7 @@ void QcServerCircuits::runScheduled(quint64 due, QcSignalSchedule::Priority prio
     QList<QcBlockPos> positions = m_state.blockEntities().schedule().takeGroup(due, priority);
     std::ranges::sort(positions, before);
     const QcServerLimits &limits = m_state.config().limits;
-    const qsizetype room = std::max(m_budget / qsizetype(limits.signalWorkPerChange), qsizetype(limits.signalMinimumStep));
+    const qsizetype room = std::max(m_budget / static_cast<qsizetype>(limits.signalWorkPerChange), static_cast<qsizetype>(limits.signalMinimumStep));
     // A group larger than the budget: the rest stays due with its tick and priority for the next
     // tick (not simultaneous with the first part any more).
     for (qsizetype i = room; i < positions.size(); ++i) {
@@ -497,7 +500,7 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
 {
     m_budget -= std::max<qsizetype>(1, plan.work);
     for (const QcCircuitPlan::Schedule &schedule : std::as_const(plan.schedules)) {
-        m_state.blockEntities().schedule().add(schedule.pos, m_state.clock().tick() + quint64(std::max(1, schedule.delay)), schedule.priority);
+        m_state.blockEntities().schedule().add(schedule.pos, m_state.clock().tick() + static_cast<quint64>(std::max(1, schedule.delay)), schedule.priority);
     }
 
     applyWrites(plan);
@@ -521,7 +524,7 @@ void QcServerCircuits::apply(QcCircuitPlan &plan)
 void QcServerCircuits::applyWrites(const QcCircuitPlan &plan)
 {
     std::vector<QcBlockPos> cells;
-    cells.reserve(std::size_t(plan.writes.size()));
+    cells.reserve(static_cast<std::size_t>(plan.writes.size()));
     for (auto it = plan.writes.constBegin(); it != plan.writes.constEnd(); ++it) {
         cells.push_back(it.key());
     }

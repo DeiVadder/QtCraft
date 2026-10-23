@@ -38,8 +38,8 @@ class TestArmourStands : public QcServerTestFixture
     const QcArmourStand *stand(quint32 id) { return m_server->stands().find(id); }
 
     // Ticks until the attack cooldown is over, and ticks of the break window.
-    static constexpr int cooldownTicks = int(QcServerCombat::playerAttackCooldown * QcPhysics::tickRate) + 1;
-    static constexpr int breakWindowTicks = int(QcArmourStand::breakWindow * QcPhysics::tickRate);
+    static constexpr int cooldownTicks = static_cast<int>(QcServerCombat::playerAttackCooldown * QcPhysics::tickRate) + 1;
+    static constexpr int breakWindowTicks = static_cast<int>(QcArmourStand::breakWindow * QcPhysics::tickRate);
     static_assert(cooldownTicks + 1 < breakWindowTicks, "a second hit after the cooldown must fit into the break window");
 
     // A second raw client on the server.

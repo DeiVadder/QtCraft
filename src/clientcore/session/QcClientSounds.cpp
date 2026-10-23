@@ -25,7 +25,7 @@ void QcClientSounds::updateAmbience(const QcBlockAccess &world, const QcVec3 &ey
 
         // A fixed pseudo-random sequence over the samples keeps sessions reproducible.
         const quint64 sample = tick / ambienceTicks;
-        const double roll = double((sample * 2654435761ULL) % 1000ULL) / 1000.0;
+        const double roll = static_cast<double>((sample * 2654435761ULL) % 1000ULL) / 1000.0;
         if (roll < QcAmbience::lavaPopChance) {
             if (const std::optional<QcBlockPos> lava = QcAmbience::nearestGlowingLiquid(world, eye)) {
                 play({QString::fromLatin1(QcSoundKeys::lavaPop), {lava->x + 0.5, lava->y + 1.0, lava->z + 0.5}, 1.0f, 1.0f,

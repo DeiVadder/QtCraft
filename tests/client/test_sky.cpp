@@ -87,7 +87,7 @@ private slots:
     void transitionsAreSmooth()
     {
         QcSkyState previous = QcSky::at(0.0);
-        for (int halfSeconds = 1; halfSeconds <= int(day) * 2; ++halfSeconds) {
+        for (int halfSeconds = 1; halfSeconds <= static_cast<int>(day) * 2; ++halfSeconds) {
             const double time = halfSeconds * 0.5;
             const QcSkyState sky = QcSky::at(time);
             QVERIFY2((sky.horizon - previous.horizon).length() < 0.02f, qPrintable(QString::number(time)));

@@ -9,15 +9,15 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
     : m_config(std::move(serverConfig))
     , m_content(registry)
     , m_world(std::move(registry), std::move(generator))
-    , m_entities(m_content, quint64(m_config.seed), m_clients)
+    , m_entities(m_content, static_cast<quint64>(m_config.seed), m_clients)
     , m_spawnPoint(m_world, m_config, m_clients)
     , m_contactDamage(*m_content)
-    , m_plants(m_content, quint64(m_config.seed))
-    , m_growth(m_content, quint64(m_config.seed))
+    , m_plants(m_content, static_cast<quint64>(m_config.seed))
+    , m_growth(m_content, static_cast<quint64>(m_config.seed))
     , m_machineRules(m_content)
     , m_liquids(m_content)
-    , m_random(quint32(quint64(m_config.seed) ^ 0xD2095u))
-    , m_soundRandom(quint32(quint64(m_config.seed) ^ 0x50D5u))
+    , m_random(static_cast<quint32>(static_cast<quint64>(m_config.seed) ^ 0xD2095u))
+    , m_soundRandom(static_cast<quint32>(static_cast<quint64>(m_config.seed) ^ 0x50D5u))
 {
     // Villagers claim beds and workstations in the village state (decision E-411).
     m_entities.creatures().population().setVillages(&m_world.villages());
@@ -27,14 +27,16 @@ QcServerState::QcServerState(QcServerConfig serverConfig, std::shared_ptr<const 
 void QcServerState::applyLimits()
 {
     const QcServerLimits &limits = m_config.limits;
-    m_circuits.maxPendingChanges = qsizetype(limits.signalMaxPendingChanges);
-    m_hoppers.cooldownTicks = int(limits.hopperCooldownTicks);
-    m_world.blockEntities().setLimits({qsizetype(limits.maxContainers), qsizetype(limits.maxMachines), qsizetype(limits.maxSaplings)});
-    m_liquids.setMaxPlanned(qsizetype(limits.liquidPlannedSteps));
-    m_world.fires().setLimits({qsizetype(limits.firesPerChunk), qsizetype(limits.fires)});
-    m_world.villages().setLimits({qsizetype(limits.villages), qsizetype(limits.villageBeds), qsizetype(limits.villageWorkstations)});
+    m_circuits.maxPendingChanges = static_cast<qsizetype>(limits.signalMaxPendingChanges);
+    m_hoppers.cooldownTicks = static_cast<int>(limits.hopperCooldownTicks);
+    m_world.blockEntities().setLimits({static_cast<qsizetype>(limits.maxContainers), static_cast<qsizetype>(limits.maxMachines),
+        static_cast<qsizetype>(limits.maxSaplings)});
+    m_liquids.setMaxPlanned(static_cast<qsizetype>(limits.liquidPlannedSteps));
+    m_world.fires().setLimits({static_cast<qsizetype>(limits.firesPerChunk), static_cast<qsizetype>(limits.fires)});
+    m_world.villages().setLimits({static_cast<qsizetype>(limits.villages), static_cast<qsizetype>(limits.villageBeds),
+        static_cast<qsizetype>(limits.villageWorkstations)});
     m_entities.applyLimits(limits);
-    m_growth.setRandomTicksPerSection(int(limits.randomTicksPerSection));
+    m_growth.setRandomTicksPerSection(static_cast<int>(limits.randomTicksPerSection));
     m_plants.setLeafLimits(limits.leafDecaysPerTick, limits.leafChecksPerTick, limits.leafPendingChecks);
 }
 

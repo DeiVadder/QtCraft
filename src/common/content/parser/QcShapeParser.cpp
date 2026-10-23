@@ -32,7 +32,7 @@ QList<QcAabb> parseShapeBoxes(const QJsonValue &value, double maxY, const QStrin
         std::array<double, 6> v{};
         for (int i = 0; ok && i < 6; ++i) {
             ok = numbers.at(i).isDouble();
-            v[std::size_t(i)] = numbers.at(i).toDouble();
+            v[static_cast<std::size_t>(i)] = numbers.at(i).toDouble();
         }
 
         const QcAabb box{{v[0], v[1], v[2]}, {v[3], v[4], v[5]}};

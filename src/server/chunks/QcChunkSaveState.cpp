@@ -19,8 +19,8 @@ void QcChunkSaveState::noteKept(const QcChunkIo::Departure &departure)
     using Kind = QcChunkStore::Kind;
     Stored stored = m_catalog.value(departure.pos);
     const auto set = [&stored](Kind kind, bool present) {
-        const auto bit = quint8(1u << quint8(kind));
-        stored.kinds = present ? quint8(stored.kinds | bit) : quint8(stored.kinds & ~bit);
+        const auto bit = static_cast<quint8>(1u << static_cast<quint8>(kind));
+        stored.kinds = present ? static_cast<quint8>(stored.kinds | bit) : static_cast<quint8>(stored.kinds & ~bit);
     };
     if (departure.blocks) {
         set(Kind::Blocks, true);

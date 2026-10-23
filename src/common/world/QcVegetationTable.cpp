@@ -33,7 +33,7 @@ QcVegetationTable::Resolved QcVegetationTable::resolve(const QcContentRegistry &
 
 const QcVegetationTable::Plant &QcVegetationTable::pick(double random) const
 {
-    int left = std::clamp(int(random * m_totalWeight), 0, m_totalWeight - 1);
+    int left = std::clamp(static_cast<int>(random * m_totalWeight), 0, m_totalWeight - 1);
     for (const Plant &plant : m_plants) {
         if (left < plant.weight) {
             return plant;

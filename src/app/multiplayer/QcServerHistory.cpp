@@ -61,7 +61,7 @@ QcServerHistory QcServerHistory::load(QSettings &file)
 void QcServerHistory::save(QSettings &file) const
 {
     file.remove(QString::fromLatin1(group));
-    file.beginWriteArray(QString::fromLatin1(group), int(m_entries.size()));
+    file.beginWriteArray(QString::fromLatin1(group), static_cast<int>(m_entries.size()));
     for (int i = 0; i < m_entries.size(); ++i) {
         file.setArrayIndex(i);
         file.setValue(u"address"_s, m_entries[i].address);

@@ -15,14 +15,15 @@ QList<QRect> QcScriptedRun::builtInDisplays()
     std::array<CGDirectDisplayID, 16> displays{};
     uint32_t count = 0;
     QList<QRect> result;
-    if (CGGetActiveDisplayList(uint32_t(displays.size()), displays.data(), &count) != kCGErrorSuccess) {
+    if (CGGetActiveDisplayList(static_cast<uint32_t>(displays.size()), displays.data(), &count) != kCGErrorSuccess) {
         return result;
     }
 
     for (uint32_t i = 0; i < count; ++i) {
         if (CGDisplayIsBuiltin(displays[i])) {
             const CGRect bounds = CGDisplayBounds(displays[i]);
-            result.append(QRect(int(bounds.origin.x), int(bounds.origin.y), int(bounds.size.width), int(bounds.size.height)));
+            result.append(QRect(static_cast<int>(bounds.origin.x), static_cast<int>(bounds.origin.y),
+                                static_cast<int>(bounds.size.width), static_cast<int>(bounds.size.height)));
         }
     }
     return result;

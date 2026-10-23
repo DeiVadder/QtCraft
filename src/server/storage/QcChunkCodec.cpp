@@ -14,7 +14,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Uncompressed chunks are far smaller; more is damaged data.
-constexpr qsizetype maxRawBytes = qsizetype(64) * 1024 * 1024;
+constexpr qsizetype maxRawBytes = qsizetype{64} * 1024 * 1024;
 
 } // namespace
 
@@ -35,7 +35,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
         QList<QcBlockId> palette;
         for (const QcBlockId id : section.palette()) {
             if (!localIds.contains(id)) {
-                localIds.insert(id, QcBlockId(names.size()));
+                localIds.insert(id, static_cast<QcBlockId>(names.size()));
                 names.append(content.stateName(id));
             }
             palette.append(localIds.value(id));
@@ -47,7 +47,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
     QByteArray raw;
     QDataStream stream(&raw, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    stream << quint32(names.size());
+    stream << static_cast<quint32>(names.size());
     for (const QString &name : std::as_const(names)) {
         stream << name;
     }
@@ -60,7 +60,7 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
 {
     // qUncompress reads the expected size from the first four bytes; a damaged one could ask for
     // gigabytes.
-    if (blob.size() < 4 || qFromBigEndian<quint32>(blob.constData()) > quint32(maxRawBytes)) {
+    if (blob.size() < 4 || qFromBigEndian<quint32>(blob.constData()) > static_cast<quint32>(maxRawBytes)) {
         return qcError(u"damaged chunk data"_s);
     }
     const QByteArray raw = qUncompress(blob);
@@ -103,10 +103,10 @@ QByteArray encode(const QcChunk &chunk, const QcContentRegistry &content)
         QcChunkSection &section = (*read)->section(s);
         QList<QcBlockId> palette;
         for (const QcBlockId local : section.palette()) {
-            if (qsizetype(local) >= runtimeIds.size()) {
+            if (static_cast<qsizetype>(local) >= runtimeIds.size()) {
                 return qcError(u"damaged chunk data (block index)"_s);
             }
-            palette.append(runtimeIds[qsizetype(local)]);
+            palette.append(runtimeIds[static_cast<qsizetype>(local)]);
         }
         if (!section.replacePalette(std::move(palette))) {
             return qcError(u"damaged chunk data (section)"_s);

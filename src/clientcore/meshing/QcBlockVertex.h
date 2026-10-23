@@ -50,8 +50,8 @@ struct QcBlockVertex
     static constexpr std::size_t blockLightIndex = 2;
     static constexpr std::size_t surfaceIndex = 3;
 
-    static quint8 pack(float value) { return quint8(std::lround(std::clamp(value, 0.0f, 1.0f) * 255.0f)); }
-    static float unpack(quint8 value) { return float(value) / 255.0f; }
+    static quint8 pack(float value) { return static_cast<quint8>(std::lround(std::clamp(value, 0.0f, 1.0f) * 255.0f)); }
+    static float unpack(quint8 value) { return static_cast<float>(value) / 255.0f; }
 
     // Shading in [0, 1].
     float shade() const { return unpack(light[shadeIndex]); }
@@ -67,12 +67,12 @@ struct QcBlockVertex
     std::optional<QcBlockFace> normal() const
     {
         const int bits = light[surfaceIndex] & 0x07;
-        return bits == 0 ? std::nullopt : std::optional<QcBlockFace>(QcBlockFace(bits - 1));
+        return bits == 0 ? std::nullopt : std::optional<QcBlockFace>(static_cast<QcBlockFace>(bits - 1));
     }
-    QcSurfaceMaterial material() const { return QcSurfaceMaterial(light[surfaceIndex] >> 3); }
+    QcSurfaceMaterial material() const { return static_cast<QcSurfaceMaterial>(light[surfaceIndex] >> 3); }
     void setSurface(std::optional<QcBlockFace> normal, QcSurfaceMaterial material)
     {
-        light[surfaceIndex] = quint8((quint8(material) << 3) | (normal ? int(*normal) + 1 : 0));
+        light[surfaceIndex] = static_cast<quint8>((static_cast<quint8>(material) << 3) | (normal ? static_cast<int>(*normal) + 1 : 0));
     }
 };
 static_assert(sizeof(QcBlockVertex) == 24);

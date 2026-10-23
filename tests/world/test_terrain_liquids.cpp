@@ -192,7 +192,7 @@ private slots:
     {
         const QList<QcBlockPos> first = lavaPoolCells(12345);
         // A few pools in 144 chunks, deep underground and open to a cave.
-        qInfo("lava cells in 12 x 12 chunks: %lld", qint64(first.size()));
+        qInfo("lava cells in 12 x 12 chunks: %lld", static_cast<qint64>(first.size()));
         QVERIFY2(first.size() >= 20, qPrintable(QString::number(first.size())));
         QCOMPARE(lavaPoolCells(12345), first);
 

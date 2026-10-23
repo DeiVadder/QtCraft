@@ -42,7 +42,7 @@ private:
         for (int y = 0; y < structure.sizeY(); ++y) {
             for (int z = 0; z < structure.sizeZ(); ++z) {
                 for (int x = 0; x < structure.sizeX(); ++x) {
-                    cells.append(structure.block(x, y, z).value_or(QcBlockId(0xffff)));
+                    cells.append(structure.block(x, y, z).value_or(static_cast<QcBlockId>(0xffff)));
                 }
             }
         }
@@ -226,7 +226,7 @@ private slots:
             const QList<const QcStructurePlacement *> found = piecesNamed(*plan, u"_pen"_s);
             QVERIFY(found.size() <= 1);
             ++villages;
-            pens += int(found.size());
+            pens += static_cast<int>(found.size());
             // The creatures of a village are its pen's pair, two of one kind inside the fence, and a cat in
             // each large house (decision E-480).
             QList<QcVillagePlan::Mob> pair;
@@ -239,7 +239,7 @@ private slots:
                 catHouses += std::ranges::count(house->structure().mobs, u"qtcraft:cat"_s, &QcStructure::Mob::mob);
             }
             QCOMPARE(plan->mobs.size() - pair.size(), catHouses);
-            cats += int(catHouses);
+            cats += static_cast<int>(catHouses);
             if (found.isEmpty()) {
                 continue;
             }
@@ -256,7 +256,7 @@ private slots:
         // swamp villages: 37 of the 96 villages of the sample at seed 42 (0.39). One standard
         // deviation of the share among 96 villages is about 0.05; the bounds lie three to four of
         // them around it.
-        const double share = double(pens) / villages;
+        const double share = static_cast<double>(pens) / villages;
         qInfo("%d pens and %d cats in %d villages", pens, cats, villages);
         QVERIFY(cats > 0);
         QVERIFY2(share > 0.2 && share < 0.6, qPrintable(u"%1 pens in %2 villages"_s.arg(pens).arg(villages)));
@@ -339,7 +339,7 @@ private slots:
         for (const std::shared_ptr<const QcVillagePlan> &plan : std::as_const(m_plans)) {
             const qsizetype found = piecesNamed(*plan, u"_tower"_s).size();
             QVERIFY(found <= 1);
-            towers += int(found);
+            towers += static_cast<int>(found);
             // The base game's styles build towers in villages whose roads are 200 blocks long
             // together (decision E-408).
             large += plan->roadLength >= 200 ? 1 : 0;

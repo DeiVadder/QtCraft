@@ -69,13 +69,13 @@ bool QcRateLimiter::isUnlimited(const QcMessage &message)
 const char *QcRateLimiter::name(Kind kind)
 {
     static constexpr std::array<const char *, kindCount> names{"mining", "use", "attack", "chat", "drop", "inventory", "appearance", "switch", "sign", "admin"};
-    return names[size_t(kind)];
+    return names[static_cast<size_t>(kind)];
 }
 
 bool QcRateLimiter::allow(Kind kind, qint64 nowNs)
 {
     const Limit rule = limit(kind);
-    Bucket &bucket = m_buckets[size_t(kind)];
+    Bucket &bucket = m_buckets[static_cast<size_t>(kind)];
 
     // A bucket starts full on its first message.
     if (bucket.tokens < 0.0) {
@@ -84,7 +84,7 @@ bool QcRateLimiter::allow(Kind kind, qint64 nowNs)
     }
 
     if (nowNs > bucket.refilledAt) {
-        const double refill = double(nowNs - bucket.refilledAt) * 1e-9 * rule.perSecond;
+        const double refill = static_cast<double>(nowNs - bucket.refilledAt) * 1e-9 * rule.perSecond;
         bucket.tokens = std::min(rule.burst, bucket.tokens + refill);
         bucket.refilledAt = nowNs;
     }
@@ -100,7 +100,7 @@ bool QcRateLimiter::allow(Kind kind, qint64 nowNs)
 
 quint64 QcRateLimiter::takeDropReport(Kind kind, qint64 nowNs)
 {
-    Bucket &bucket = m_buckets[size_t(kind)];
+    Bucket &bucket = m_buckets[static_cast<size_t>(kind)];
     if (bucket.dropped == 0 || (bucket.reported && nowNs - bucket.reportedAt < reportIntervalNs)) {
         return 0;
     }

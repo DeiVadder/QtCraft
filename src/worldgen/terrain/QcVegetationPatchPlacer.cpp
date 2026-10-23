@@ -39,33 +39,33 @@ QcVegetationPatchPlacer::QcVegetationPatchPlacer(const QcTerrainGenerator &gener
 
 std::optional<QcVegetationPatchPlacer::Patch> QcVegetationPatchPlacer::patchIn(int cellX, int cellZ, int layer) const
 {
-    const quint64 seed = m_seeds[std::size_t(layer)];
+    const quint64 seed = m_seeds[static_cast<std::size_t>(layer)];
     const double roll = qcPositionRandom(seed, cellX, 0, cellZ);
     // Most cells have no patch: decided before the climate of the centre is computed.
-    if (roll >= m_definitions.maxPatchChance[std::size_t(layer)]) {
+    if (roll >= m_definitions.maxPatchChance[static_cast<std::size_t>(layer)]) {
         return std::nullopt;
     }
 
     Patch patch;
     patch.layer = layer;
-    patch.centreX = cellX * cell + int(qcPositionRandom(seed, cellX, 1, cellZ) * cell);
-    patch.centreZ = cellZ * cell + int(qcPositionRandom(seed, cellX, 2, cellZ) * cell);
+    patch.centreX = cellX * cell + static_cast<int>(qcPositionRandom(seed, cellX, 1, cellZ) * cell);
+    patch.centreZ = cellZ * cell + static_cast<int>(qcPositionRandom(seed, cellX, 2, cellZ) * cell);
     patch.biome = m_generator.column(patch.centreX, patch.centreZ).biome;
-    const QcTerrainDefinitions::VegetationPatches &layerPatches = m_definitions.biomes[patch.biome].patches[std::size_t(layer)];
+    const QcTerrainDefinitions::VegetationPatches &layerPatches = m_definitions.biomes[patch.biome].patches[static_cast<std::size_t>(layer)];
     if (layerPatches.plants.isEmpty() || roll >= layerPatches.patches.chance) {
         return std::nullopt;
     }
 
     patch.radius = layerPatches.patches.radius;
     patch.block = layerPatches.plants.pick(qcPositionRandom(seed, cellX, 3, cellZ)).block;
-    const quint64 patchSeed = qcMixSeed(seed, quint64(quint32(cellX)) << 32 | quint32(cellZ));
+    const quint64 patchSeed = qcMixSeed(seed, static_cast<quint64>(static_cast<quint32>(cellX)) << 32 | static_cast<quint32>(cellZ));
     const int span = patch.radius + 1;
     for (int attempt = 0; attempt < layerPatches.patches.tries; ++attempt) {
         // The difference of two even draws: most tries near the centre, as in the reference.
         const auto offset = [&](int axis) {
             return attempt == 0 ? 0
-                                : int(qcPositionRandom(patchSeed, attempt, 2 * axis, 0) * span)
-                                      - int(qcPositionRandom(patchSeed, attempt, 2 * axis + 1, 0) * span);
+                                : static_cast<int>(qcPositionRandom(patchSeed, attempt, 2 * axis, 0) * span)
+                                      - static_cast<int>(qcPositionRandom(patchSeed, attempt, 2 * axis + 1, 0) * span);
         };
         patch.tries.append({patch.centreX + offset(0), patch.centreZ + offset(1)});
     }
@@ -78,7 +78,7 @@ QList<QcVegetationPatchPlacer::Patch> QcVegetationPatchPlacer::patchesNear(QcChu
     const CellRange xs = cellsAround(pos.x);
     const CellRange zs = cellsAround(pos.z);
     for (int layer = 0; layer < QcTerrainDefinitions::VegetationLayers; ++layer) {
-        if (m_definitions.maxPatchChance[std::size_t(layer)] <= 0.0) {
+        if (m_definitions.maxPatchChance[static_cast<std::size_t>(layer)] <= 0.0) {
             continue;
         }
         // The cells row by row, as one index.
@@ -101,7 +101,7 @@ void QcVegetationPatchPlacer::place(QcChunk &chunk, const QcTerrainColumnGrid &c
     const QList<Patch> patches = patchesNear(chunk.pos());
     for (const Patch &patch : patches) {
         const QSet<QcBlockId> *ground = nullptr;
-        for (const QcVegetationTable::Plant &plant : m_definitions.biomes[patch.biome].patches[std::size_t(patch.layer)].plants.plants()) {
+        for (const QcVegetationTable::Plant &plant : m_definitions.biomes[patch.biome].patches[static_cast<std::size_t>(patch.layer)].plants.plants()) {
             ground = plant.block == patch.block ? &plant.ground : ground;
         }
 

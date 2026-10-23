@@ -26,7 +26,7 @@ QHash<QcChunkPos, QList<QcWorldLabel>> labelsAt(const QList<QcWorldLabel> &label
 {
     QHash<QcChunkPos, QList<QcWorldLabel>> byChunk;
     for (const QcWorldLabel &label : labels) {
-        byChunk[QcBlockPos{int(std::floor(label.position.x)), 0, int(std::floor(label.position.z))}.chunk()].append(label);
+        byChunk[QcBlockPos{static_cast<int>(std::floor(label.position.x)), 0, static_cast<int>(std::floor(label.position.z))}.chunk()].append(label);
     }
     return byChunk;
 }
@@ -167,7 +167,7 @@ private slots:
         // the far one is not looked at this frame.
         const std::array<double, 4> rows{63.0, 64.0, 67.0, 68.0};
         for (int i = 0; i < QcLabelProjector::maxSightRays; ++i) {
-            labels.append(label({-5.5 + (i % 12), rows[std::size_t(i / 12)], -4.5}, QString::number(i)));
+            labels.append(label({-5.5 + (i % 12), rows[static_cast<std::size_t>(i / 12)], -4.5}, QString::number(i)));
         }
         QVERIFY(QcLabelProjector::visible(labelsAt(labels), northView(), &world).isEmpty());
         // Without a world nothing is hidden and no rays are needed: the nearest maxShown show.

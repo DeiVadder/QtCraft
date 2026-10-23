@@ -50,7 +50,7 @@ public:
 private:
     // Opacity, blocked faces and light source of the world's block `cell` at volume cell (x, y, z).
     void setCell(const QcBlockAccess &world, int x, int y, int z, QcBlockPos cell);
-    qsizetype index(int x, int y, int z) const { return (qsizetype(y) * m_sizeZ + z) * m_sizeX + x; }
+    qsizetype index(int x, int y, int z) const { return (static_cast<qsizetype>(y) * m_sizeZ + z) * m_sizeX + x; }
 
     int m_sizeX = 0;
     int m_sizeY = 0;

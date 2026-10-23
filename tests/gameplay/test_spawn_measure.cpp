@@ -40,7 +40,8 @@ private:
                 continue;
             }
             result.hostile += 1;
-            const QcBlockPos feet{int(std::floor(mob.motion.position.x)), int(std::floor(mob.motion.position.y)), int(std::floor(mob.motion.position.z))};
+            const QcBlockPos feet{static_cast<int>(std::floor(mob.motion.position.x)), static_cast<int>(std::floor(mob.motion.position.y)),
+                static_cast<int>(std::floor(mob.motion.position.z))};
             result.openSky += world.skyLight(feet) >= 15;
         }
         return result;
@@ -54,7 +55,7 @@ private:
                 world.loadChunk({x, z});
             }
         }
-        const QcVec3 player{0.5, double(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
+        const QcVec3 player{0.5, static_cast<double>(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
         QcMobManager mobs(m_content, 42);
         const QList<QcMobManager::PlayerView> players{{7, player, true}};
 
@@ -67,7 +68,7 @@ private:
             if (tick % (20 * 30) == 0 || tick == seconds * 20) {
                 const Count now = count(world, mobs);
                 qInfo("MEASURE spawn %s %3d s: hostile %3d (open sky %3d), other creatures %3d, creature tick %.3f ms", name, tick / 20,
-                      now.hostile, now.openSky, now.others, double(nanoseconds) / 1e6 / tick);
+                      now.hostile, now.openSky, now.others, static_cast<double>(nanoseconds) / 1e6 / tick);
             }
         }
         QVERIFY(mobs.mobs().size() < 1000);

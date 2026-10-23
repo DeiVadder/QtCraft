@@ -30,10 +30,10 @@ private:
         constexpr double inset = 1e-6;
         const QcAabb box = QcPhysics::boxAt(mob.motion.position, definition.width, definition.height);
         const QcAabb body{box.min + QcVec3{inset, inset, inset}, box.max - QcVec3{inset, inset, inset}};
-        for (int x = int(std::floor(body.min.x + inset)); x <= int(std::floor(body.max.x - inset)); ++x) {
+        for (int x = static_cast<int>(std::floor(body.min.x + inset)); x <= static_cast<int>(std::floor(body.max.x - inset)); ++x) {
             // From one cell lower: fences and walls reach 1.5 m up.
-            for (int y = int(std::floor(body.min.y + inset)) - 1; y <= int(std::floor(body.max.y - inset)); ++y) {
-                for (int z = int(std::floor(body.min.z + inset)); z <= int(std::floor(body.max.z - inset)); ++z) {
+            for (int y = static_cast<int>(std::floor(body.min.y + inset)) - 1; y <= static_cast<int>(std::floor(body.max.y - inset)); ++y) {
+                for (int z = static_cast<int>(std::floor(body.min.z + inset)); z <= static_cast<int>(std::floor(body.max.z - inset)); ++z) {
                     const QList<QcAabb> boxes = QcPhysics::collisionBoxesAt(m_server->world(), {x, y, z});
                     if (std::ranges::any_of(boxes, [&body](const QcAabb &box) { return box.intersects(body); })) {
                         return true;
@@ -48,8 +48,8 @@ private:
     void addNaturalPigs(int count)
     {
         for (int i = 0; i < count; ++i) {
-            const QcVec3 at{m_feet.x - 2.5 + (i % 6) * 0.8, double(m_feet.y), m_feet.z + 1.5 + std::floor(i / 6.0) * 0.1};
-            m_server->mobs().spawn(mobType("pig"), at, 50000 + quint32(i), false, true);
+            const QcVec3 at{m_feet.x - 2.5 + (i % 6) * 0.8, static_cast<double>(m_feet.y), m_feet.z + 1.5 + std::floor(i / 6.0) * 0.1};
+            m_server->mobs().spawn(mobType("pig"), at, 50000 + static_cast<quint32>(i), false, true);
         }
     }
 

@@ -33,14 +33,15 @@ void frame(QDataStream &out, quint16 id, quint16 version, const QByteArray &payl
     if (id != 0) {
         out << id;
     }
-    out << version << length.value_or(quint32(payload.size()));
-    out.writeRawData(payload.constData(), int(payload.size()));
+    out << version << length.value_or(static_cast<quint32>(payload.size()));
+    out.writeRawData(payload.constData(), static_cast<int>(payload.size()));
 }
 
 // The fields of a sapling entry of version 1: position, seconds left, planting order.
 QByteArray saplingFields(QcBlockPos pos)
 {
-    return bytes([pos](QDataStream &out) { out << qint32(pos.x) << qint32(pos.y) << qint32(pos.z) << 12.5 << quint64(7); });
+    return bytes([pos](QDataStream &out) { out << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z)
+        << 12.5 << quint64{7}; });
 }
 
 // What can be wrong with a chunk's block entities.
@@ -73,7 +74,7 @@ QByteArray futureBlob(QcBlockPos sapling, Damage damage)
         break;
     case Damage::EntryBeyondTable:
         // Into the table that follows: within the data, beyond its own table.
-        entryLength = quint32(entry.size()) + 3 + 2 + 1;
+        entryLength = static_cast<quint32>(entry.size()) + 3 + 2 + 1;
         break;
     case Damage::EntryVersionZero:
         entryVersion = 0;
@@ -89,7 +90,7 @@ QByteArray futureBlob(QcBlockPos sapling, Damage damage)
     }
     entry += "xyz";
     const QByteArray table = bytes([&](QDataStream &out) {
-        out << quint32(1);
+        out << quint32{1};
         frame(out, 0, entryVersion, entry, entryLength);
         out.writeRawData("TT", 2);
     });
@@ -100,17 +101,17 @@ QByteArray futureBlob(QcBlockPos sapling, Damage damage)
         const quint16 tableVersion = damage == Damage::TableVersionZero ? 0 : damage == Damage::TableOfThisVersionTooLong ? 1 : 2;
         std::optional<quint32> tableLength;
         if (damage == Damage::TableBeyondData) {
-            tableLength = quint32(table.size() + 100);
+            tableLength = static_cast<quint32>(table.size() + 100);
         } else if (damage == Damage::TableOf4GB) {
             tableLength = 0xffffffffu;
         }
-        frame(out, quint16(Table::Saplings), tableVersion, table, tableLength);
+        frame(out, static_cast<quint16>(Table::Saplings), tableVersion, table, tableLength);
         if (damage == Damage::TableTwice) {
-            frame(out, quint16(Table::Saplings), 2, table);
+            frame(out, static_cast<quint16>(Table::Saplings), 2, table);
         }
         frame(out, 77, 5, "mod");
         for (quint16 i = 2; i < count && damage == Damage::TooManyTables; ++i) {
-            frame(out, quint16(100 + i), 1, "x");
+            frame(out, static_cast<quint16>(100 + i), 1, "x");
         }
     });
 }
@@ -127,7 +128,7 @@ class TestBlockEntityComponents : public QcServerTestFixture
 private:
     static QcEntityComponent tail(Table table, quint16 version, const QByteArray &payload)
     {
-        return {quint16(table), version, true, payload};
+        return {static_cast<quint16>(table), version, true, payload};
     }
 
     QcResult<QcBlockEntityRecord> decode(const QByteArray &blob, QcChunkPos chunk, QcLoadWarnings &warnings) const
@@ -227,9 +228,9 @@ private slots:
     void unknownTablesBeyondWhatAChunkKeepsAreDropped()
     {
         const QByteArray blob = bytes([](QDataStream &out) {
-            out << quint16(QcComponentFrames::maxComponents);
+            out << static_cast<quint16>(QcComponentFrames::maxComponents);
             for (quint16 i = 0; i < QcComponentFrames::maxComponents; ++i) {
-                frame(out, quint16(1000 + i), 1, "mod");
+                frame(out, static_cast<quint16>(1000 + i), 1, "mod");
             }
         });
         QcLoadWarnings warnings;
@@ -256,13 +257,13 @@ private slots:
         // with what the newer version appended after its list.
         const QcBlockPos wake{1, 70, -2};
         const QByteArray blob = bytes([wake](QDataStream &out) {
-            out << quint16(2);
-            frame(out, quint16(Table::Saplings), 2, bytes([](QDataStream &table) {
-                      table << quint32(0);
+            out << quint16{2};
+            frame(out, static_cast<quint16>(Table::Saplings), 2, bytes([](QDataStream &table) {
+                      table << quint32{0};
                       table.writeRawData("TT", 2);
                   }));
-            frame(out, quint16(Table::Wakes), 2, bytes([wake](QDataStream &table) {
-                      table << quint32(1) << qint32(wake.x) << qint32(wake.y) << qint32(wake.z);
+            frame(out, static_cast<quint16>(Table::Wakes), 2, bytes([wake](QDataStream &table) {
+                      table << quint32{1} << static_cast<qint32>(wake.x) << static_cast<qint32>(wake.y) << static_cast<qint32>(wake.z);
                       table.writeRawData("WW", 2);
                   }));
         });
@@ -285,7 +286,7 @@ private slots:
             frame(out, 0, 2, fields + "t");
         };
         const QByteArray saplings = bytes([&entry](QDataStream &out) {
-            out << quint32(QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::worldHeight);
+            out << static_cast<quint32>(QcWorld::chunkSize * QcWorld::chunkSize * QcWorld::worldHeight);
             for (int y = 0; y < QcWorld::worldHeight; ++y) {
                 for (int z = 0; z < QcWorld::chunkSize; ++z) {
                     for (int x = 0; x < QcWorld::chunkSize; ++x) {
@@ -295,16 +296,16 @@ private slots:
             }
         });
         const QByteArray memories = bytes([&entry](QDataStream &out) {
-            out << quint32(1);
+            out << quint32{1};
             // Position, burnout ticks left, powered, extending, age.
             entry(out, bytes([](QDataStream &fields) {
-                      fields << qint32(1) << qint32(2) << qint32(3) << quint32(0) << quint8(0) << quint8(0) << quint32(0);
+                      fields << qint32{1} << qint32{2} << qint32{3} << quint32{0} << quint8{0} << quint8{0} << quint32{0};
                   }));
         });
         const QByteArray blob = bytes([&](QDataStream &out) {
-            out << quint16(2);
-            frame(out, quint16(Table::Saplings), 1, saplings);
-            frame(out, quint16(Table::Memories), 1, memories);
+            out << quint16{2};
+            frame(out, static_cast<quint16>(Table::Saplings), 1, saplings);
+            frame(out, static_cast<quint16>(Table::Memories), 1, memories);
         });
         QcLoadWarnings warnings;
         const QcResult<QcBlockEntityRecord> read = decode(blob, {0, 0}, warnings);
@@ -328,18 +329,18 @@ private slots:
         record.kept.tables = {{4711, 1, false, QByteArray(500, 'm')}};
         const QByteArray full = QcBlockEntityCodec::encode(record, *m_content);
 
-        const QcResult<QcBlockEntityCodec::Fitted> fits = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(full.size()));
+        const QcResult<QcBlockEntityCodec::Fitted> fits = QcBlockEntityCodec::encodeWithin(record, *m_content, static_cast<quint32>(full.size()));
         QVERIFY(fits.has_value());
         QCOMPARE(fits->blob, full);
         QVERIFY(!fits->warning);
 
-        const QcResult<QcBlockEntityCodec::Fitted> trimmed = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(plain.size()));
+        const QcResult<QcBlockEntityCodec::Fitted> trimmed = QcBlockEntityCodec::encodeWithin(record, *m_content, static_cast<quint32>(plain.size()));
         QVERIFY(trimmed.has_value());
         QCOMPARE(trimmed->blob, plain);
         QVERIFY(trimmed->warning);
         QVERIFY2(trimmed->warning->contains(u"chunk 2, 3"_s), qPrintable(*trimmed->warning));
 
-        const QcResult<QcBlockEntityCodec::Fitted> refused = QcBlockEntityCodec::encodeWithin(record, *m_content, quint32(plain.size() - 1));
+        const QcResult<QcBlockEntityCodec::Fitted> refused = QcBlockEntityCodec::encodeWithin(record, *m_content, static_cast<quint32>(plain.size() - 1));
         QVERIFY(!refused.has_value());
         QVERIFY2(refused.error().contains(u"not saved"_s), qPrintable(refused.error()));
 
@@ -349,7 +350,7 @@ private slots:
         {
             QcChunkIo io(directory.path(), m_content);
             QVERIFY(io.open().has_value());
-            io.setBlockEntityLimit(quint32(plain.size()));
+            io.setBlockEntityLimit(static_cast<quint32>(plain.size()));
             QcChunkIo::Departure departure;
             departure.pos = record.chunk;
             departure.blockEntities = record;

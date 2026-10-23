@@ -23,11 +23,11 @@ constexpr int gridCells = 2 * 1024 / gridStep;
 // Biome index per grid cell (row-major), -1 for water and coasts.
 QList<int> biomeGrid(const QcTerrainGenerator &generator)
 {
-    QList<int> biomes(qsizetype(gridCells) * gridCells, -1);
+    QList<int> biomes(static_cast<qsizetype>(gridCells) * gridCells, -1);
     for (int i = 0; i < gridCells; ++i) {
         for (int j = 0; j < gridCells; ++j) {
             const QcTerrainGenerator::Column column = generator.column(-1024 + j * gridStep, -1024 + i * gridStep);
-            biomes[qsizetype(i) * gridCells + j] = column.landFactor > 0.99 ? column.biome : -1;
+            biomes[static_cast<qsizetype>(i) * gridCells + j] = column.landFactor > 0.99 ? column.biome : -1;
         }
     }
     return biomes;
@@ -36,8 +36,8 @@ QList<int> biomeGrid(const QcTerrainGenerator &generator)
 // Counts the land neighbours east and south of the cell (i, j) of `biome` and those in another biome.
 void countBorders(const QList<int> &biomes, int i, int j, int biome, BiomeSample &result)
 {
-    const int east = j + 1 < gridCells ? biomes[qsizetype(i) * gridCells + j + 1] : -1;
-    const int south = i + 1 < gridCells ? biomes[qsizetype(i + 1) * gridCells + j] : -1;
+    const int east = j + 1 < gridCells ? biomes[static_cast<qsizetype>(i) * gridCells + j + 1] : -1;
+    const int south = i + 1 < gridCells ? biomes[static_cast<qsizetype>(i + 1) * gridCells + j] : -1;
     for (const int other : {east, south}) {
         if (other >= 0) {
             ++result.pairs;
@@ -52,7 +52,7 @@ BiomeSample sample(const QcTerrainGenerator &generator)
     BiomeSample result;
     for (int i = 0; i < gridCells; ++i) {
         for (int j = 0; j < gridCells; ++j) {
-            const int biome = biomes[qsizetype(i) * gridCells + j];
+            const int biome = biomes[static_cast<qsizetype>(i) * gridCells + j];
             if (biome < 0) {
                 continue;
             }
@@ -87,8 +87,8 @@ private slots:
             total.borders += one.borders;
         }
 
-        const double mountainShare = double(total.mountains) / total.land;
-        const double borderShare = double(total.borders) / total.pairs;
+        const double mountainShare = static_cast<double>(total.mountains) / total.land;
+        const double borderShare = static_cast<double>(total.borders) / total.pairs;
         qInfo("mountains %.3f of the land, borders %.3f of neighbouring samples", mountainShare, borderShare);
         // Measured: mountains 0.263 (0.197 before E-101), borders 0.088 (0.061 before).
         QVERIFY2(mountainShare > 0.22 && mountainShare < 0.32, qPrintable(QString::number(mountainShare)));

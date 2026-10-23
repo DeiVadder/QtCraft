@@ -11,10 +11,10 @@ namespace {
 template<typename Opaque>
 [[nodiscard]] QList<bool> collect(int size, const Opaque &isOpaque)
 {
-    QList<bool> texels(qsizetype(size) * size, false);
+    QList<bool> texels(static_cast<qsizetype>(size) * size, false);
     for (int y = 0; y < size; ++y) {
         for (int x = 0; x < size; ++x) {
-            texels[qsizetype(y) * size + x] = isOpaque(x, y);
+            texels[static_cast<qsizetype>(y) * size + x] = isOpaque(x, y);
         }
     }
     return texels;
@@ -39,7 +39,7 @@ QcSpriteShape QcSpriteShape::fromImage(const QImage &tile)
 QcSpriteShape QcSpriteShape::fromRows(const QStringList &rows)
 {
     QcSpriteShape shape;
-    shape.m_size = int(rows.size());
+    shape.m_size = static_cast<int>(rows.size());
     shape.m_opaque = collect(shape.m_size, [&rows](int x, int y) { return x < rows[y].size() && rows[y][x] == u'#'; });
     shape.measure();
     return shape;
@@ -90,7 +90,7 @@ bool QcSpriteShape::opaque(int x, int y) const
     if (x < 0 || y < 0 || x >= m_size || y >= m_size) {
         return false;
     }
-    return m_opaque[qsizetype(y) * m_size + x];
+    return m_opaque[static_cast<qsizetype>(y) * m_size + x];
 }
 
 QPoint QcSpriteShape::handle() const

@@ -112,8 +112,8 @@ struct SiteKeyHash
 {
     std::size_t operator()(SiteKey key) const
     {
-        const quint64 cell = (quint64(quint32(key.cellX)) << 32) | quint32(key.cellZ);
-        return std::size_t(qcMixSeed(key.sites ^ cell, 3));
+        const quint64 cell = (static_cast<quint64>(static_cast<quint32>(key.cellX)) << 32) | static_cast<quint32>(key.cellZ);
+        return static_cast<std::size_t>(qcMixSeed(key.sites ^ cell, 3));
     }
 };
 
@@ -149,7 +149,7 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::siteNear(double x, doubl
     // from far out at sea or far from the river fail now and then; their cells would leave square
     // gaps in a fan). Each is a pure function of the sites and the cells, so the order of
     // generation does not matter.
-    const SiteKey key{m_instance, qint32(std::floor(x / siteCell)), qint32(std::floor(z / siteCell))};
+    const SiteKey key{m_instance, static_cast<qint32>(std::floor(x / siteCell)), static_cast<qint32>(std::floor(z / siteCell))};
     thread_local std::unordered_map<SiteKey, std::shared_ptr<const Site>, SiteKeyHash> remembered;
     if (const auto found = remembered.find(key); found != remembered.end()) {
         return found->second;
@@ -196,8 +196,8 @@ std::optional<QcDeltaSites::Reach> QcDeltaSites::reachFrom(double x, double z, c
 {
     // Onto the river's middle line from where the noise's slope points, and the river's direction
     // there.
-    const int fromX = int(std::lround(x));
-    const int fromZ = int(std::lround(z));
+    const int fromX = static_cast<int>(std::lround(x));
+    const int fromZ = static_cast<int>(std::lround(z));
     const QcRiverField::Course course = m_rivers.courseAt(fromX, fromZ, m_rivers.valueAt(fromX, fromZ));
     if (std::abs(course.offset) >= within) {
         return std::nullopt;
@@ -205,8 +205,8 @@ std::optional<QcDeltaSites::Reach> QcDeltaSites::reachFrom(double x, double z, c
     Reach reach;
     reach.x = fromX - course.offset * course.acrossX;
     reach.z = fromZ - course.offset * course.acrossZ;
-    const int atX = int(std::lround(reach.x));
-    const int atZ = int(std::lround(reach.z));
+    const int atX = static_cast<int>(std::lround(reach.x));
+    const int atZ = static_cast<int>(std::lround(reach.z));
     const double continent = land.continentAt(atX, atZ);
     const double coastX = (land.continentAt(atX + coastStep, atZ) - continent) / coastStep;
     const double coastZ = (land.continentAt(atX, atZ + coastStep) - continent) / coastStep;
@@ -284,15 +284,15 @@ std::optional<QcDeltaSites::Site> QcDeltaSites::search(double x, double z, const
     }
     for (int i = 0; i < traitCount; ++i) {
         const double reading = m_chanceNoise.fractal2(site.mouthX / traitScale + traitApart * i, site.mouthZ / traitScale - traitApart * i, 1);
-        site.traits[std::size_t(i)] = smoothstep(-0.45, 0.45, reading);
+        site.traits[static_cast<std::size_t>(i)] = smoothstep(-0.45, 0.45, reading);
     }
     return site;
 }
 
 QcDeltaSites::Verdict QcDeltaSites::verdictAt(const Reach &coast, double mouthX, double mouthZ, const Land &land) const
 {
-    const int atX = int(std::lround(mouthX));
-    const int atZ = int(std::lround(mouthZ));
+    const int atX = static_cast<int>(std::lround(mouthX));
+    const int atZ = static_cast<int>(std::lround(mouthZ));
     const QcTerrainClimate::Point climate = land.climateAt(atX, atZ);
     double allowed = QcRiverField::strengthAt(climate) * (1.0 - smoothstep(flatTo, flatFrom, climate.ruggedness))
                      * chanceAt(mouthX, mouthZ)
@@ -301,8 +301,8 @@ QcDeltaSites::Verdict QcDeltaSites::verdictAt(const Reach &coast, double mouthX,
         return {};
     }
     allowed *= 1.0 - smoothstep(missFrom, missTo, std::abs(land.continentAt(atX, atZ) - coastContinent));
-    const int seaX = int(std::lround(mouthX + openSeaBeyond * coast.downX));
-    const int seaZ = int(std::lround(mouthZ + openSeaBeyond * coast.downZ));
+    const int seaX = static_cast<int>(std::lround(mouthX + openSeaBeyond * coast.downX));
+    const int seaZ = static_cast<int>(std::lround(mouthZ + openSeaBeyond * coast.downZ));
     allowed *= allowed > 0.0 ? 1.0 - smoothstep(openSeaFrom, openSeaTo, land.continentAt(seaX, seaZ)) : 0.0;
     if (allowed <= 0.0) {
         return {};

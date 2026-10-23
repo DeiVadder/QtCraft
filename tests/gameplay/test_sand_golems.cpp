@@ -114,7 +114,7 @@ double threadSeconds()
 {
     timespec now{};
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-    return double(now.tv_sec) + double(now.tv_nsec) / 1e9;
+    return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
 }
 
 } // namespace
@@ -159,7 +159,7 @@ private:
 
     // Ticks within which a zone seen for the first time gets its guardian: half its cooldown and two
     // checks.
-    static int firstWait(double cooldown = defaultCooldown) { return int(cooldown * 10.0) + 2 * QcGuardians::checkTicks; }
+    static int firstWait(double cooldown = defaultCooldown) { return static_cast<int>(cooldown * 10.0) + 2 * QcGuardians::checkTicks; }
 
     QcGuardSite site(QcBlockPos min, QcBlockPos max, double cooldown = defaultCooldown) const
     {
@@ -225,7 +225,7 @@ private:
     // A golem standing at the cell's middle (its feet in `feet`), facing `yaw`.
     quint32 golemAt(QcBlockPos feet, float yaw = 0.0f)
     {
-        const quint32 id = m_server->mobs().spawn(golemType(), {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_server->entities().newId());
+        const quint32 id = m_server->mobs().spawn(golemType(), {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(id)->yaw = yaw;
         return id;
     }
@@ -346,13 +346,13 @@ private slots:
         joinWorld();
         buildCellar();
         // 7 blocks from the zone: too close.
-        teleport({m_cellar.x - 9.5, double(m_feet.y), m_cellar.z + 0.5});
+        teleport({m_cellar.x - 9.5, static_cast<double>(m_feet.y), m_cellar.z + 0.5});
         QCOMPARE(ticksUntilGolem(firstWait()), -1);
         // 60 blocks away: too far.
-        teleport({m_cellar.x - 62.5, double(m_feet.y), m_cellar.z + 0.5});
+        teleport({m_cellar.x - 62.5, static_cast<double>(m_feet.y), m_cellar.z + 0.5});
         QCOMPARE(ticksUntilGolem(QcGuardians::checkTicks * 3), -1);
         // In between it comes.
-        teleport({m_cellar.x - 24.5, double(m_feet.y), m_cellar.z + 0.5});
+        teleport({m_cellar.x - 24.5, static_cast<double>(m_feet.y), m_cellar.z + 0.5});
         QVERIFY(ticksUntilGolem(QcGuardians::checkTicks * 2) > 0);
     }
 
@@ -414,7 +414,7 @@ private slots:
         ticks(1);
         QCOMPARE(golems().size(), 1);
         m_server->world().setBlock(feet.offset(-1, 0, 0), qcAirBlockId);
-        m_server->mobs().find(golems().constFirst()->id)->motion.position = {feet.x + 0.5, double(feet.y), feet.z + 0.5};
+        m_server->mobs().find(golems().constFirst()->id)->motion.position = {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5};
 
         // A source block beside its body: gone, its build in its place (arms east and west of a
         // golem facing north, the head facing north too).
@@ -553,14 +553,14 @@ private slots:
         QCOMPARE(m_server->mobs().find(id)->chasing, 0U);
 
         // A player within its leash (6) of the zone is chased, one beyond it is let go.
-        teleport({zone.x - 5.5, double(m_feet.y), zone.z + 0.5});
+        teleport({zone.x - 5.5, static_cast<double>(m_feet.y), zone.z + 0.5});
         bool chased = false;
         for (int tick = 0; tick < 60 && !chased; ++tick) {
             ticks(1);
             chased = m_server->mobs().find(id) && m_server->mobs().find(id)->chasing == player().id;
         }
         QVERIFY(chased);
-        teleport({zone.x - 14.5, double(m_feet.y), zone.z + 0.5});
+        teleport({zone.x - 14.5, static_cast<double>(m_feet.y), zone.z + 0.5});
         ticks(30);
         QCOMPARE(m_server->mobs().find(id)->chasing, 0U);
     }

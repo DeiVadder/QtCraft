@@ -89,8 +89,8 @@ public:
 private:
     using Lists = QMap<QString, QStringList>;
 
-    const Lists &lists(Action action) const { return m_lists[std::size_t(action)]; }
-    Lists &lists(Action action) { return m_lists[std::size_t(action)]; }
+    const Lists &lists(Action action) const { return m_lists[static_cast<std::size_t>(action)]; }
+    Lists &lists(Action action) { return m_lists[static_cast<std::size_t>(action)]; }
 
     std::array<Lists, actionCount> m_lists;
 };

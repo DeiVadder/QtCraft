@@ -41,7 +41,7 @@ namespace {
 int slotsPerLine(qsizetype shows)
 {
     if (shows <= 14) {
-        return int(std::max<qsizetype>(1, shows));
+        return static_cast<int>(std::max<qsizetype>(1, shows));
     }
     return shows <= 100 ? 14 : QcShowcaseBlockArea::maxLineSlots;
 }
@@ -188,7 +188,7 @@ QList<QcBlockId> shownStates(const QcContentRegistry &content, quint32 type)
     const bool axesOnly = table.stateCount(type) > maxAllStates;
     QList<QcBlockId> states;
     for (int index = 0; index < table.stateCount(type); ++index) {
-        const QcBlockId state = first + quint32(index);
+        const QcBlockId state = first + static_cast<quint32>(index);
         if (block.door && half && content.property(state, u"half"_s) != half->values.value(0)) {
             continue;
         }

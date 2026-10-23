@@ -37,8 +37,8 @@ struct BodyPose
     double capeLift = 0.0;
     double capeSway = 0.0;
 
-    const BoneRotation &bone(QcBoneRole role) const { return bones[std::size_t(role)]; }
-    BoneRotation &bone(QcBoneRole role) { return bones[std::size_t(role)]; }
+    const BoneRotation &bone(QcBoneRole role) const { return bones[static_cast<std::size_t>(role)]; }
+    BoneRotation &bone(QcBoneRole role) { return bones[static_cast<std::size_t>(role)]; }
 
     // On the back around a point just above the feet, the limbs straight, the head on the pillow;
     // only the breath (`idle`) moves the arms.

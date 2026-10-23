@@ -44,13 +44,13 @@ class TestMeshMeasure : public QObject
                 return;
             }
             vertexCount += list.size();
-            vertices += list.size() * qint64(sizeof(QcBlockVertex));
+            vertices += list.size() * static_cast<qint64>(sizeof(QcBlockVertex));
             const qint64 indexSize = QcIndexPacking::fitsShortIndices(list.size()) ? 2 : 4;
             indices += indexList.size() * indexSize;
         }
         QString text(const QString &key) const
         {
-            return u"%1_vertices=%2 %1_kb=%3"_s.arg(key).arg(vertexCount).arg(double(vertices + indices) / 1024.0, 0, 'f', 1);
+            return u"%1_vertices=%2 %1_kb=%3"_s.arg(key).arg(vertexCount).arg(static_cast<double>(vertices + indices) / 1024.0, 0, 'f', 1);
         }
     };
 
@@ -98,9 +98,9 @@ class TestMeshMeasure : public QObject
             qInfo().noquote() << u"MEASURE mesh region=%7 sections=%1 meshed=%2 mesh_avg_ms=%3 mesh_max_ms=%4 buffers_mb=%5 bytes_per_meshed=%6"_s
                                      .arg(sections)
                                      .arg(meshed)
-                                     .arg(double(meshNs) / 1e6 / std::max(1, meshed), 0, 'f', 4)
-                                     .arg(double(maxNs) / 1e6, 0, 'f', 3)
-                                     .arg(double(totalBytes) / 1048576.0, 0, 'f', 2)
+                                     .arg(static_cast<double>(meshNs) / 1e6 / std::max(1, meshed), 0, 'f', 4)
+                                     .arg(static_cast<double>(maxNs) / 1e6, 0, 'f', 3)
+                                     .arg(static_cast<double>(totalBytes) / 1048576.0, 0, 'f', 2)
                                      .arg(totalBytes / std::max(1, meshed))
                                      .arg(region);
             qInfo().noquote() << u"MEASURE lists %1 %2 %3 %4 run_sections=%5"_s
@@ -121,14 +121,14 @@ class TestMeshMeasure : public QObject
         {
         }
 
-        static qint64 key(int x, int z) { return (qint64(x) << 32) ^ qint64(quint32(z)); }
+        static qint64 key(int x, int z) { return (static_cast<qint64>(x) << 32) ^ static_cast<qint64>(static_cast<quint32>(z)); }
 
         QcMeshInput input(int cx, int cz, const std::shared_ptr<const QcBlockRenderTable> &table) const
         {
             QcMeshInput result;
             for (int dz = -1; dz <= 1; ++dz) {
                 for (int dx = -1; dx <= 1; ++dx) {
-                    const std::size_t index = std::size_t(dz + 1) * 3 + std::size_t(dx + 1);
+                    const std::size_t index = static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1);
                     result.chunks[index] = chunks.at(key(cx + dx, cz + dz));
                     result.blockLight[index] = std::make_shared<const QcChunkLight>(light.snapshot({cx + dx, cz + dz}));
                 }

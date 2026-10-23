@@ -35,7 +35,7 @@ QByteArray encode(const QcMessage &message)
     QByteArray frame;
     QDataStream stream(&frame, QIODevice::WriteOnly);
     stream.setVersion(streamVersion);
-    stream << quint16(message.index());
+    stream << static_cast<quint16>(message.index());
     std::visit([&stream](const auto &payload) { QcProtocolCodec::encode(stream, payload); }, message);
     return frame;
 }

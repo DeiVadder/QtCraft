@@ -15,7 +15,7 @@ namespace {
 double share(quint32 id, quint32 salt)
 {
     const quint32 hash = (id ^ salt) * 2654435761u;
-    return double(hash >> 8) / double(1u << 24);
+    return static_cast<double>(hash >> 8) / static_cast<double>(1u << 24);
 }
 
 // The top of what carries a hoverer in the cell `pos` (a collision box or a liquid), if anything.
@@ -56,7 +56,7 @@ Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, doubl
 {
     Room room{feet.y - reach, std::nullopt};
     const QcBlockPos start = QcPhysics::blockContaining(feet + QcVec3{0.0, height * 0.5, 0.0});
-    for (int down = 0; down <= int(std::ceil(reach + height)) + 1; ++down) {
+    for (int down = 0; down <= static_cast<int>(std::ceil(reach + height)) + 1; ++down) {
         const QcBlockPos cell = start.offset(0, -down, 0);
         // Only what lies below the middle of the body carries it.
         if (const std::optional<double> top = floorIn(world, cell); top && *top <= feet.y + height * 0.5) {
@@ -64,7 +64,7 @@ Room roomAt(const QcBlockAccess &world, const QcVec3 &feet, double height, doubl
             break;
         }
     }
-    for (int up = 0; up <= int(std::ceil(height)) + 2; ++up) {
+    for (int up = 0; up <= static_cast<int>(std::ceil(height)) + 2; ++up) {
         const QcBlockPos cell = start.offset(0, up, 0);
         if (const std::optional<double> bottom = ceilingIn(world, cell); bottom && *bottom >= feet.y + height * 0.5) {
             room.ceiling = bottom;
@@ -163,8 +163,8 @@ Course towards(const QcCreature &mob, const QcVec3 &point, double speed)
 
 float turned(float from, float to, double degrees)
 {
-    const double delta = std::remainder(double(to) - double(from), 360.0);
-    return float(double(from) + std::clamp(delta, -degrees, degrees));
+    const double delta = std::remainder(static_cast<double>(to) - static_cast<double>(from), 360.0);
+    return static_cast<float>(static_cast<double>(from) + std::clamp(delta, -degrees, degrees));
 }
 
 } // namespace QcMobHover

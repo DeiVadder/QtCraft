@@ -57,7 +57,7 @@ int loadLimit(const QSettings &file, QLatin1StringView key, int fallback)
 
 QString QcDisplayOptions::modeName(WindowMode mode)
 {
-    return modeNames[std::size_t(mode)].toString();
+    return modeNames[static_cast<std::size_t>(mode)].toString();
 }
 
 std::optional<QcDisplayOptions::WindowMode> QcDisplayOptions::modeFromName(QStringView name)
@@ -66,7 +66,7 @@ std::optional<QcDisplayOptions::WindowMode> QcDisplayOptions::modeFromName(QStri
     if (found == modeNames.end()) {
         return std::nullopt;
     }
-    return WindowMode(found - modeNames.begin());
+    return static_cast<WindowMode>(found - modeNames.begin());
 }
 
 bool QcDisplayOptions::isFrameLimit(int framesPerSecond)

@@ -90,12 +90,12 @@ public:
         }
     }
 
-    QcBlockId randomBlock() { return palette[qsizetype(random.bounded(quint32(palette.size())))]; }
+    QcBlockId randomBlock() { return palette[static_cast<qsizetype>(random.bounded(static_cast<quint32>(palette.size())))]; }
 
     // A rough ground with random blocks above it, on overhang and canopy heights and at the top.
     void generateColumn(QcChunk &chunk, int x, int z)
     {
-        const int ground = 60 + int(random.bounded(6u));
+        const int ground = 60 + static_cast<int>(random.bounded(6u));
         for (int y = 0; y <= ground; ++y) {
             chunk.setBlock(x, y, z, stone);
         }
@@ -236,13 +236,14 @@ public:
     QcBlockPos randomPos()
     {
         const auto coordinate = [this] {
-            const int chunk = first + int(random.bounded(quint32(span)));
+            const int chunk = first + static_cast<int>(random.bounded(static_cast<quint32>(span)));
             const quint32 roll = random.bounded(4u);
-            const int local = roll == 0 ? 0 : (roll == 1 ? 15 : int(random.bounded(16u)));
+            const int local = roll == 0 ? 0 : (roll == 1 ? 15 : static_cast<int>(random.bounded(16u)));
             return chunk * 16 + local;
         };
         const quint32 band = random.bounded(4u);
-        const int y = band == 0 ? 55 + int(random.bounded(20u)) : (band == 1 ? 236 + int(random.bounded(20u)) : int(random.bounded(256u)));
+        const int y = band == 0 ? 55 + static_cast<int>(random.bounded(20u))
+            : (band == 1 ? 236 + static_cast<int>(random.bounded(20u)) : static_cast<int>(random.bounded(256u)));
         return {coordinate(), y, coordinate()};
     }
 };
@@ -306,7 +307,8 @@ private slots:
         fixture.generate();
         fixture.loadAll();
         for (int round = 0; round < 6; ++round) {
-            const QcChunkPos gone{first + int(fixture.random.bounded(quint32(span))), first + int(fixture.random.bounded(quint32(span)))};
+            const QcChunkPos gone{first + static_cast<int>(fixture.random.bounded(static_cast<quint32>(span))),
+                first + static_cast<int>(fixture.random.bounded(static_cast<quint32>(span)))};
             fixture.engine.removeChunk(gone);
             fixture.loaded.remove(gone);
             for (int edit = 0; edit < 10; ++edit) {
@@ -334,7 +336,8 @@ private slots:
             fixture.loaded.insert(it.key());
         }
         for (int round = 0; round < 6; ++round) {
-            const QcChunkPos gone{first + int(fixture.random.bounded(quint32(span))), first + int(fixture.random.bounded(quint32(span)))};
+            const QcChunkPos gone{first + static_cast<int>(fixture.random.bounded(static_cast<quint32>(span))),
+                first + static_cast<int>(fixture.random.bounded(static_cast<quint32>(span)))};
             fixture.engine.removeChunk(gone);
             fixture.loaded.remove(gone);
             for (int edit = 0; edit < 10; ++edit) {

@@ -20,7 +20,7 @@ void encode(QDataStream &stream, const QcMsg::ChunkData &m)
 
 void encode(QDataStream &stream, QcMsg::ChunkUnload m)
 {
-    stream << qint32(m.pos.x) << qint32(m.pos.z);
+    stream << static_cast<qint32>(m.pos.x) << static_cast<qint32>(m.pos.z);
 }
 
 void encode(QDataStream &stream, QcMsg::BlockUpdate m)
@@ -45,7 +45,7 @@ void encode(QDataStream &stream, QcMsg::FinishMining m)
 void encode(QDataStream &stream, const QcMsg::UseItem &m)
 {
     writePos(stream, m.target);
-    stream << quint8(m.face) << m.hit << m.sequence << bool(m.view);
+    stream << static_cast<quint8>(m.face) << m.hit << m.sequence << static_cast<bool>(m.view);
     if (m.view) {
         stream << m.view->yaw << m.view->pitch;
     }
@@ -70,7 +70,7 @@ void encode(QDataStream &stream, const QcMsg::SoundEvent &m)
 
 void encode(QDataStream &stream, const QcMsg::ChunkLabels &m)
 {
-    stream << qint32(m.pos.x) << qint32(m.pos.z) << quint32(m.labels.size());
+    stream << static_cast<qint32>(m.pos.x) << static_cast<qint32>(m.pos.z) << static_cast<quint32>(m.labels.size());
     for (const QcWorldLabel &label : m.labels) {
         stream << label.position << label.text << label.detail << label.heading;
     }
@@ -160,7 +160,7 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
     if (!inCell(m.hit.x) || !inCell(m.hit.y) || !inCell(m.hit.z)) {
         return qcError(u"Invalid hit point"_s);
     }
-    m.face = QcBlockFace(face);
+    m.face = static_cast<QcBlockFace>(face);
     return m;
 }
 
@@ -187,7 +187,7 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
     qint32 z = 0;
     stream >> x >> z;
     m.pos = {x, z};
-    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcWorldLabel::maxPerChunk));
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, static_cast<quint32>(QcWorldLabel::maxPerChunk));
     if (!countRead) {
         return qcError(u"Too many labels"_s);
     }
@@ -207,7 +207,7 @@ void encode(QDataStream &stream, QcMsg::SpawnerDisplay m)
 
 void encode(QDataStream &stream, QcMsg::Weather m)
 {
-    stream << m.rain << m.thunder << m.climate.dry << qint16(m.climate.snowFrom);
+    stream << m.rain << m.thunder << m.climate.dry << static_cast<qint16>(m.climate.snowFrom);
 }
 
 void encode(QDataStream &stream, const QcMsg::Lightning &m)
@@ -240,7 +240,7 @@ void encode(QDataStream &stream, const QcMsg::Lightning &m)
 
 void encode(QDataStream &stream, const QcMsg::BlockBatch &m)
 {
-    stream << quint32(m.updates.size());
+    stream << static_cast<quint32>(m.updates.size());
     for (const QcMsg::BlockUpdate &update : m.updates) {
         encode(stream, update);
     }
@@ -282,7 +282,7 @@ void encode(QDataStream &stream, const QcMsg::Explosion &m)
 void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m)
 {
     writePos(stream, m.pos);
-    stream << quint32(m.items.size());
+    stream << static_cast<quint32>(m.items.size());
     for (const quint32 item : m.items) {
         stream << item;
     }
@@ -294,7 +294,7 @@ void encode(QDataStream &stream, const QcMsg::CampfireDisplay &m)
     m.pos = readPos(stream);
     quint32 count = 0;
     stream >> count;
-    if (count > quint32(QcMsg::CampfireDisplay::maxItems)) {
+    if (count > static_cast<quint32>(QcMsg::CampfireDisplay::maxItems)) {
         return qcError(u"Invalid campfire display"_s);
     }
     for (quint32 i = 0; i < count; ++i) {

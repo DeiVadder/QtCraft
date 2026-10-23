@@ -45,11 +45,11 @@ std::optional<int> QcHotbarRadial::slotAt(float x, float y, int slots)
     }
 
     // Angle clockwise from straight up (y is positive down), in [0, 2 pi).
-    double angle = std::atan2(double(x), double(-y));
+    double angle = std::atan2(static_cast<double>(x), static_cast<double>(-y));
     if (angle < 0.0) {
         angle += 2.0 * std::numbers::pi;
     }
     const double sector = 2.0 * std::numbers::pi / slots;
     // Each slot's sector is centred on its direction.
-    return int(std::floor(angle / sector + 0.5)) % slots;
+    return static_cast<int>(std::floor(angle / sector + 0.5)) % slots;
 }

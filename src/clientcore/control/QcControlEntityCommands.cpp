@@ -60,7 +60,7 @@ QJsonObject animationJson(const QcClientEntity &entity)
 QJsonObject projectileJson(const QcContentRegistry *content, const QcClientEntity &entity, double distance)
 {
     const bool known = content && content->isValidItem(entity.item.item);
-    return {{u"id"_s, qint64(entity.id)},
+    return {{u"id"_s, static_cast<qint64>(entity.id)},
             {u"type"_s, u"projectile"_s},
             {u"item"_s, known ? content->item(entity.item.item).name : QString()},
             {u"stuck"_s, (entity.flags & QcMsg::Stuck) != 0},
@@ -77,7 +77,7 @@ QJsonObject blockEntityJson(const QcContentRegistry *content, const QcClientEnti
     } else if (entity.isPrimedExplosive()) {
         type = u"primedExplosive"_s;
     }
-    return {{u"id"_s, qint64(entity.id)},
+    return {{u"id"_s, static_cast<qint64>(entity.id)},
             {u"type"_s, type},
             {u"block"_s, content ? content->stateName(entity.block) : QString()},
             {u"position"_s, QcControlReports::vectorJson(entity.position)},
@@ -88,7 +88,7 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
 {
     if (entity.isItem()) {
         const bool known = content && content->isValidItem(entity.item.item);
-        return {{u"id"_s, qint64(entity.id)},
+        return {{u"id"_s, static_cast<qint64>(entity.id)},
                 {u"type"_s, u"item"_s},
                 {u"item"_s, known ? content->item(entity.item.item).name : QString()},
                 {u"count"_s, entity.item.count},
@@ -98,7 +98,7 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
 
     if (entity.isMinecart()) {
         const bool known = content && content->isValidItem(entity.item.item);
-        return {{u"id"_s, qint64(entity.id)},
+        return {{u"id"_s, static_cast<qint64>(entity.id)},
                 {u"type"_s, u"minecart"_s},
                 {u"item"_s, known ? content->item(entity.item.item).name : QString()},
                 {u"yaw"_s, entity.yaw},
@@ -107,9 +107,9 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
     }
 
     if (entity.isExperienceOrb()) {
-        return {{u"id"_s, qint64(entity.id)},
+        return {{u"id"_s, static_cast<qint64>(entity.id)},
                 {u"type"_s, u"experienceOrb"_s},
-                {u"value"_s, int(entity.health)},
+                {u"value"_s, static_cast<int>(entity.health)},
                 {u"position"_s, QcControlReports::vectorJson(entity.position)},
                 {u"distance"_s, distance}};
     }
@@ -123,7 +123,7 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
     }
 
     const QcMobDefinition *creature = content ? entity.creature(*content) : nullptr;
-    QJsonObject json{{u"id"_s, qint64(entity.id)},
+    QJsonObject json{{u"id"_s, static_cast<qint64>(entity.id)},
                      {u"type"_s, creature ? creature->name : u"player"_s},
                      {u"name"_s, entity.name},
                      {u"hostile"_s, creature && creature->hostile},
@@ -188,7 +188,7 @@ void QcControlEntityCommands::entities(const QJsonObject &request)
 bool QcControlEntityCommands::turnToEntity(const QJsonObject &request)
 {
     const qint64 wanted = entityArgument(request);
-    const auto it = session().entities().constFind(quint32(wanted));
+    const auto it = session().entities().constFind(static_cast<quint32>(wanted));
     if (wanted < 0 || it == session().entities().constEnd()) {
         m_context.fail(request, u"No entity with this id nearby"_s);
         return false;
@@ -212,14 +212,14 @@ void QcControlEntityCommands::attack(const QJsonObject &request)
 
     const qint64 wanted = entityArgument(request);
     bool sent = false;
-    const double healthBefore = session().entities().constFind(quint32(wanted))->health;
+    const double healthBefore = session().entities().constFind(static_cast<quint32>(wanted))->health;
 
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(6), [this, startTick, sent, wanted, healthBefore]() mutable {
                          if (!sent) {
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().hand().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().attack()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(static_cast<quint32>(wanted)) || !session().attack()) {
                                  m_context.setActiveError(u"Entity is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -232,7 +232,7 @@ void QcControlEntityCommands::attack(const QJsonObject &request)
                          }
 
                          // The server drops hits during the attack cooldown or out of its reach.
-                         const auto target = session().entities().constFind(quint32(wanted));
+                         const auto target = session().entities().constFind(static_cast<quint32>(wanted));
                          if (target != session().entities().constEnd() && target->health >= healthBefore) {
                              m_context.setActiveError(u"The hit did not land (attack cooldown or out of reach)"_s);
                          }
@@ -250,7 +250,7 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
     }
 
     const qint64 wanted = entityArgument(request);
-    const UseBefore before{session().inventory().selectedStack(), session().entities().value(quint32(wanted)).flags};
+    const UseBefore before{session().inventory().selectedStack(), session().entities().value(static_cast<quint32>(wanted)).flags};
     std::optional<quint64> sentTick;
 
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(useSettleTicks), [this, startTick, sentTick, wanted, before]() mutable {
@@ -258,7 +258,7 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                              if (session().tickCount() <= startTick) {
                                  return false;
                              }
-                             if (session().hand().targetEntity() != std::optional<quint32>(quint32(wanted)) || !session().useItem()) {
+                             if (session().hand().targetEntity() != std::optional<quint32>(static_cast<quint32>(wanted)) || !session().useItem()) {
                                  m_context.setActiveError(u"Entity is not in reach or not in sight"_s);
                                  return true;
                              }
@@ -271,13 +271,13 @@ void QcControlEntityCommands::useEntity(const QJsonObject &request)
                          // the next entity update, so a used item beside a creature still there waits
                          // a few ticks more before it counts as refused.
                          const quint64 ticks = session().tickCount() - *sentTick;
-                         const bool stillThere = session().entities().contains(quint32(wanted));
+                         const bool stillThere = session().entities().contains(static_cast<quint32>(wanted));
                          const QcItemStack &held = session().inventory().selectedStack();
                          const bool heldChanged = held.item != before.held.item || held.count != before.held.count;
                          if (ticks < 4 || (heldChanged && stillThere && ticks < useSettleTicks)) {
                              return false;
                          }
-                         if (const QString error = useEntityError(quint32(wanted), before); !error.isEmpty()) {
+                         if (const QString error = useEntityError(static_cast<quint32>(wanted), before); !error.isEmpty()) {
                              m_context.setActiveError(error);
                          }
                          return true;
@@ -315,7 +315,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
         return;
     }
 
-    const quint32 wanted = quint32(entityArgument(request));
+    const quint32 wanted = static_cast<quint32>(entityArgument(request));
     bool sent = false;
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(20), [this, startTick, sent, wanted]() mutable {
                          if (!sent) {
@@ -376,7 +376,7 @@ void QcControlEntityCommands::collect(const QJsonObject &request)
     const int maxTicks = std::clamp(QcControlArguments::intField(request, u"maxTicks"_s, 200), 1, QcControlArguments::maxCommandTicks);
 
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(maxTicks), [this, radius, startTick, maxTicks] {
-                         return walkToNearestItem(radius, session().tickCount() >= startTick + quint64(maxTicks));
+                         return walkToNearestItem(radius, session().tickCount() >= startTick + static_cast<quint64>(maxTicks));
                      }});
 }
 
@@ -402,7 +402,7 @@ bool QcControlEntityCommands::walkToNearestItem(double radius, bool timeUp)
             target = {std::floor(target.x) + 0.5, target.y, std::floor(target.z) + 0.5};
         }
         const QcVec3 delta = target - me;
-        intent.yaw = float(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
+        intent.yaw = static_cast<float>(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
         const double horizontal = std::hypot(delta.x, delta.z);
         // Walk until the item is within the pickup reach, jump onto steps.
         const double close = below ? 0.1 : 0.4;

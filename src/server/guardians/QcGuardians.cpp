@@ -59,7 +59,7 @@ void QcGuardians::tick()
 bool QcGuardians::serve(const QcGuardSite &site, const QList<QcVec3> &players, int total)
 {
     const quint64 now = m_state.clock().tick();
-    const quint64 cooldown = quint64(std::llround(site.rule.cooldownSeconds * QcPhysics::tickRate));
+    const quint64 cooldown = static_cast<quint64>(std::llround(site.rule.cooldownSeconds * QcPhysics::tickRate));
     if (guardianCount(site.id) >= site.rule.max) {
         m_readyAt.insert(site.id, now + cooldown);
         return false;
@@ -119,14 +119,14 @@ bool QcGuardians::bringForth(const QcGuardSite &site, int type)
     light.maxLight = site.rule.maxLight;
     QRandomGenerator &random = m_state.random();
     for (int attempt = 0; attempt < attempts; ++attempt) {
-        const QcBlockPos feet{site.min.x + int(random.bounded(quint32(site.max.x - site.min.x + 1))),
-                              site.min.y + int(random.bounded(quint32(site.max.y - site.min.y + 1))),
-                              site.min.z + int(random.bounded(quint32(site.max.z - site.min.z + 1)))};
+        const QcBlockPos feet{site.min.x + static_cast<int>(random.bounded(static_cast<quint32>(site.max.x - site.min.x + 1))),
+                              site.min.y + static_cast<int>(random.bounded(static_cast<quint32>(site.max.y - site.min.y + 1))),
+                              site.min.z + static_cast<int>(random.bounded(static_cast<quint32>(site.max.z - site.min.z + 1)))};
         if (!m_cells.fits(feet, light, type)) {
             continue;
         }
         QcMobManager &mobs = m_state.entities().creatures();
-        mobs.spawn(type, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_state.entities().newId(), true, false);
+        mobs.spawn(type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, m_state.entities().newId(), true, false);
         mobs.editableMobs().last().guards = QcGuardPost{site.id, site.min, site.max};
         return true;
     }
@@ -135,12 +135,13 @@ bool QcGuardians::bringForth(const QcGuardSite &site, int type)
 
 int QcGuardians::guardianCount() const
 {
-    return int(std::ranges::count_if(m_state.entities().creatures().mobs(), [](const QcCreature &mob) { return mob.guards.has_value(); }));
+    return static_cast<int>(std::ranges::count_if(m_state.entities().creatures().mobs(), [](const QcCreature &mob) { return mob.guards.has_value(); }));
 }
 
 int QcGuardians::guardianCount(quint64 site) const
 {
-    return int(std::ranges::count_if(m_state.entities().creatures().mobs(), [site](const QcCreature &mob) { return mob.guards && mob.guards->site == site; }));
+    return static_cast<int>(std::ranges::count_if(m_state.entities().creatures().mobs(),
+        [site](const QcCreature &mob) { return mob.guards && mob.guards->site == site; }));
 }
 
 std::optional<quint64> QcGuardians::readyAt(quint64 site) const

@@ -76,7 +76,7 @@ class TestServerLight : public QObject
             const QcBlockPos column{random.bounded(-radius * 16, radius * 16 + 16), 0, random.bounded(-radius * 16, radius * 16 + 16)};
             const int surface = world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
             const QcBlockPos pos{column.x, std::clamp(surface - 4 + random.bounded(10), 0, 255), column.z};
-            if (!world.setBlock(pos, blocks[qsizetype(random.bounded(quint32(blocks.size())))])) {
+            if (!world.setBlock(pos, blocks[static_cast<qsizetype>(random.bounded(static_cast<quint32>(blocks.size())))])) {
                 return {};
             }
             edited.append(pos);

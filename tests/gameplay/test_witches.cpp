@@ -56,7 +56,7 @@ private:
 
     quint32 spawn(const char *name, double dx, double dz)
     {
-        const QcVec3 at{m_feet.x + 0.5 + dx, double(m_feet.y), m_feet.z + 0.5 + dz};
+        const QcVec3 at{m_feet.x + 0.5 + dx, static_cast<double>(m_feet.y), m_feet.z + 0.5 + dz};
         return m_server->entities().creatures().spawn(type(name), at, m_server->entities().newId());
     }
 
@@ -227,14 +227,14 @@ private slots:
         QCOMPARE(m_client->held.value(witch), drink.itemId);
 
         // After the drink's time it heals by `heal`, puts the bottle away and waits its cooldown.
-        const int drinkTicks = int(std::lround(drink.seconds / QcPhysics::tickDuration));
+        const int drinkTicks = static_cast<int>(std::lround(drink.seconds / QcPhysics::tickDuration));
         ticks(drinkTicks);
         QCOMPARE(mob(witch)->health, 22.0);
         QVERIFY(!mob(witch)->archer->drinking());
         QCOMPARE(m_server->creatures().drinking().drinks(), 1);
         QCOMPARE(m_client->held.value(witch), qcNoItem);
         mob(witch)->health = 10.0;
-        const int cooldownTicks = int(std::lround(drink.cooldownSeconds / QcPhysics::tickDuration));
+        const int cooldownTicks = static_cast<int>(std::lround(drink.cooldownSeconds / QcPhysics::tickDuration));
         ticks(cooldownTicks - 2);
         QVERIFY(!mob(witch)->archer->drinking());
         ticks(3);
@@ -249,7 +249,7 @@ private slots:
         mob(witch)->health = 5.0;
         ticks(1);
         QVERIFY(mob(witch)->archer->drinking());
-        const int drinkTicks = int(std::lround(witchKind().drinks->seconds / QcPhysics::tickDuration));
+        const int drinkTicks = static_cast<int>(std::lround(witchKind().drinks->seconds / QcPhysics::tickDuration));
         for (int tick = 0; tick < drinkTicks - 2; ++tick) {
             ticks(1);
             QVERIFY(m_server->entities().projectiles().all().isEmpty());
@@ -277,14 +277,14 @@ private slots:
         const auto threadSeconds = [] {
             timespec now{};
             clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-            return double(now.tv_sec) + double(now.tv_nsec) / 1e9;
+            return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
         };
         const auto perTick = [&](const char *kind) {
             joinArena();
             chat(u"/gamemode survival"_s);
             chat(u"/gamerule naturalRegeneration false"_s);
             for (int i = 0; kind && i < 10; ++i) {
-                spawn(kind, double(i - 5) * 1.5, -9.0);
+                spawn(kind, static_cast<double>(i - 5) * 1.5, -9.0);
             }
             ticks(20);
             const double start = threadSeconds();

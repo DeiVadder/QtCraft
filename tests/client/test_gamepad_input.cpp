@@ -94,13 +94,13 @@ private slots:
     {
         QStringList seen;
         for (std::size_t i = 0; i < qcGamepadButtonCount; ++i) {
-            const QString name = QcGamepadNames::button(QcGamepadButton(i));
+            const QString name = QcGamepadNames::button(static_cast<QcGamepadButton>(i));
             QVERIFY(!name.isEmpty() && !seen.contains(name));
             seen.append(name);
             QCOMPARE(QcGamepadNames::buttonFromName(name), std::optional(QcGamepadButton(i)));
         }
         for (std::size_t i = 0; i < qcGamepadAxisCount; ++i) {
-            const QString name = QcGamepadNames::axis(QcGamepadAxis(i));
+            const QString name = QcGamepadNames::axis(static_cast<QcGamepadAxis>(i));
             QCOMPARE(QcGamepadNames::axisFromName(name), std::optional(QcGamepadAxis(i)));
         }
         for (const QcGamepadType type : {QcGamepadType::Generic, QcGamepadType::Xbox, QcGamepadType::PlayStation, QcGamepadType::SwitchPro}) {
@@ -135,7 +135,7 @@ private slots:
 
         float previous = 0.0f;
         for (int step = 16; step <= 100; ++step) {
-            const float raw = float(step) / 100.0f;
+            const float raw = static_cast<float>(step) / 100.0f;
             const float out = length(QcGamepadCurve::stick({raw * 0.6f, raw * -0.8f}, response));
             QVERIFY2(out >= previous - 1e-6f, qPrintable(u"%1 at %2"_s.arg(out).arg(raw)));
             previous = out;

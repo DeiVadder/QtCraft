@@ -35,7 +35,7 @@ Palette paletteOf(const QcMapData &map, const QcContentRegistry &content)
             continue;
         }
         if (!indices.contains(*block)) {
-            indices.insert(*block, quint16(palette.names.size()));
+            indices.insert(*block, static_cast<quint16>(palette.names.size()));
             palette.names.append(content.blocks()[*block].name);
         }
         palette.pixels.append(QcMapPixel::make(indices.value(*block), QcMapPixel::shadeOf(pixel)));
@@ -55,8 +55,8 @@ QByteArray packPixels(const QList<quint16> &pixels)
 // The runtime pixels for the file's pixels; std::nullopt for a damaged block.
 [[nodiscard]] std::optional<QList<quint16>> unpackPixels(const QByteArray &packed, const QList<std::optional<quint32>> &blocks)
 {
-    constexpr qsizetype rawSize = qsizetype(QcMapData::pixelCount) * 2;
-    if (packed.size() < 4 || qFromBigEndian<quint32>(packed.constData()) != quint32(rawSize)) {
+    constexpr qsizetype rawSize = static_cast<qsizetype>(QcMapData::pixelCount) * 2;
+    if (packed.size() < 4 || qFromBigEndian<quint32>(packed.constData()) != static_cast<quint32>(rawSize)) {
         return std::nullopt;
     }
     const QByteArray raw = qUncompress(packed);
@@ -99,7 +99,8 @@ QByteArray write(const QcMapData &map, const QcContentRegistry &content)
     QByteArray payload;
     QDataStream out(&payload, QIODevice::WriteOnly);
     out.setVersion(QcSaveFile::streamVersion);
-    out << overworld.toString() << quint8(map.scale()) << qint32(map.centre().x()) << qint32(map.centre().y()) << quint32(palette.names.size());
+    out << overworld.toString() << static_cast<quint8>(map.scale()) << static_cast<qint32>(map.centre().x())
+        << static_cast<qint32>(map.centre().y()) << static_cast<quint32>(palette.names.size());
     for (const QString &name : palette.names) {
         out << name;
     }

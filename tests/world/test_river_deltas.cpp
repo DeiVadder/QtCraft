@@ -54,23 +54,23 @@ Delta floodDelta(const QList<int> &biome, QList<bool> &seen, qsizetype start, in
     seen[start] = true;
     while (!stack.isEmpty()) {
         const qsizetype cell = stack.takeLast();
-        const int i = int(cell % cells);
-        const int j = int(cell / cells);
+        const int i = static_cast<int>(cell % cells);
+        const int j = static_cast<int>(cell / cells);
         ++delta.points;
         sumI += i;
         sumJ += j;
         for (const auto [di, dj] : sides) {
             const int ni = i + di;
             const int nj = j + dj;
-            const qsizetype next = qsizetype(nj) * cells + ni;
+            const qsizetype next = static_cast<qsizetype>(nj) * cells + ni;
             if (ni >= 0 && nj >= 0 && ni < cells && nj < cells && biome[next] >= 0 && !seen[next]) {
                 seen[next] = true;
                 stack.append(next);
             }
         }
     }
-    delta.x = int(sumI / delta.points);
-    delta.z = int(sumJ / delta.points);
+    delta.x = static_cast<int>(sumI / delta.points);
+    delta.z = static_cast<int>(sumJ / delta.points);
     return delta;
 }
 
@@ -79,12 +79,12 @@ Survey survey(const QcTerrainGenerator &generator, int reach, int step)
 {
     const int cells = 2 * reach / step;
     Survey result;
-    QList<int> biome(qsizetype(cells) * cells, -1);
+    QList<int> biome(static_cast<qsizetype>(cells) * cells, -1);
     for (int j = 0; j < cells; ++j) {
         for (int i = 0; i < cells; ++i) {
             const QcTerrainColumn column = generator.column(-reach + i * step, -reach + j * step);
             const bool delta = generator.isDeltaBiome(column.biome);
-            biome[qsizetype(j) * cells + i] = delta ? column.biome : -1;
+            biome[static_cast<qsizetype>(j) * cells + i] = delta ? column.biome : -1;
             result.land += delta || (column.height > generator.seaLevel() && column.landFactor > 0.99) ? 1 : 0;
             result.delta += delta ? 1 : 0;
         }
@@ -126,7 +126,7 @@ Waters watersAround(const QcTerrainGenerator &generator, const Delta &delta, int
 {
     const int cells = 2 * reach + 1;
     QList<QcTerrainColumn> columns;
-    columns.reserve(qsizetype(cells) * cells);
+    columns.reserve(static_cast<qsizetype>(cells) * cells);
     for (int j = 0; j < cells; ++j) {
         for (int i = 0; i < cells; ++i) {
             columns.append(generator.column(delta.x - reach + i, delta.z - reach + j));
@@ -146,10 +146,10 @@ Waters watersAround(const QcTerrainGenerator &generator, const Delta &delta, int
     }
     while (!stack.isEmpty()) {
         const qsizetype cell = stack.takeLast();
-        const int i = int(cell % cells);
-        const int j = int(cell / cells);
+        const int i = static_cast<int>(cell % cells);
+        const int j = static_cast<int>(cell / cells);
         for (const auto [di, dj] : std::array<std::pair<int, int>, 4>{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}}) {
-            const qsizetype next = qsizetype(j + dj) * cells + (i + di);
+            const qsizetype next = static_cast<qsizetype>(j + dj) * cells + (i + di);
             if (i + di >= 0 && j + dj >= 0 && i + di < cells && j + dj < cells && !seen[next] && water(next)) {
                 seen[next] = true;
                 stack.append(next);
@@ -161,8 +161,8 @@ Waters watersAround(const QcTerrainGenerator &generator, const Delta &delta, int
     // blocks only into the sea.
     Waters waters;
     for (qsizetype cell = 0; cell < columns.size(); ++cell) {
-        const int i = int(cell % cells);
-        const int j = int(cell / cells);
+        const int i = static_cast<int>(cell % cells);
+        const int j = static_cast<int>(cell / cells);
         if (!generator.isDeltaBiome(columns[cell].biome) || !water(cell) || std::max(std::abs(i - reach), std::abs(j - reach)) > reach / 2) {
             continue;
         }
@@ -201,7 +201,7 @@ private:
     {
         bool ok = false;
         const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
-        const qint64 seed = ok ? fixed : qint64(QRandomGenerator::global()->generate() & 0x7fffffff);
+        const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
         qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
         return seed;
     }
@@ -273,14 +273,14 @@ private slots:
     // one such delta per seed, and none cut off by much.
     void armsRunIntoTheSea()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             int cutShort = 0;
             for (const Delta &delta : deltas) {
                 const Waters waters = watersAround(generator, delta, 240);
-                const double reached = double(waters.reached) / double(std::max<qint64>(1, waters.deltaWater));
-                const double deep = double(waters.deepReached) / double(std::max<qint64>(1, waters.deepWater));
+                const double reached = static_cast<double>(waters.reached) / static_cast<double>(std::max<qint64>(1, waters.deltaWater));
+                const double deep = static_cast<double>(waters.deepReached) / static_cast<double>(std::max<qint64>(1, waters.deepWater));
                 qInfo("seed %lld, delta at %d %d: water %lld, %.3f joined to the sea; deep %lld, %.3f", seed, delta.x, delta.z,
                       waters.deltaWater, reached, waters.deepWater, deep);
                 const QString where = u"seed %1 at %2 %3: %4, %5"_s.arg(seed).arg(delta.x).arg(delta.z).arg(deep).arg(reached);
@@ -294,7 +294,7 @@ private slots:
     // No water stands beside or over air in and around deltas, also across chunk borders.
     void noWaterBesideAir()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 2);
             for (const Delta &delta : deltas) {
@@ -311,7 +311,7 @@ private slots:
     // block or two above it; nothing of it stands high.
     void islandsJustAboveTheSea()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), noDeltaSeed, m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, noDeltaSeed, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             qint64 land = 0;
@@ -336,7 +336,8 @@ private slots:
                 QVERIFY2(mayLackDeltas(seed) && land == 0, qPrintable(u"seed %1"_s.arg(seed)));
                 continue;
             }
-            qInfo("seed %lld: delta land %lld columns, %.3f at most 2 above the sea, highest %d", seed, land, double(low) / double(land), highest);
+            qInfo("seed %lld: delta land %lld columns, %.3f at most 2 above the sea, highest %d", seed, land,
+                static_cast<double>(low) / static_cast<double>(land), highest);
             QVERIFY2(land > 300, qPrintable(u"seed %1: %2 columns"_s.arg(seed).arg(land)));
             QVERIFY2(double(low) / double(land) > 0.9 && highest <= 10, qPrintable(u"seed %1"_s.arg(seed)));
         }
@@ -345,10 +346,10 @@ private slots:
     // Deltas cover a small share of the land.
     void shareSmallAndBounded()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
             const Survey &area = surveyOf(m_content, seed, 3072);
-            const double share = double(area.delta) / double(area.land);
-            qInfo("seed %lld: deltas %.4f of the land, %lld deltas of 20 points and more", seed, share, qint64(largest(area.deltas, 20).size()));
+            const double share = static_cast<double>(area.delta) / static_cast<double>(area.land);
+            qInfo("seed %lld: deltas %.4f of the land, %lld deltas of 20 points and more", seed, share, static_cast<qint64>(largest(area.deltas, 20).size()));
             QVERIFY2((share > 0.0 || seed == m_randomSeed) && share < 0.004, qPrintable(u"seed %1: %2"_s.arg(seed).arg(share)));
         }
     }
@@ -360,14 +361,14 @@ private slots:
     {
         qint64 mouths = 0;
         qint64 deltas = 0;
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
             const qsizetype wide = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20).size();
             const qsizetype found = largest(surveyOf(m_content, seed, 3072).deltas, 20).size();
-            qInfo("seed %lld: %lld wide river mouths, %lld deltas", seed, qint64(wide), qint64(found));
+            qInfo("seed %lld: %lld wide river mouths, %lld deltas", seed, static_cast<qint64>(wide), static_cast<qint64>(found));
             mouths += wide;
             deltas += found;
         }
-        const double share = double(deltas) / double(std::max<qint64>(1, mouths));
+        const double share = static_cast<double>(deltas) / static_cast<double>(std::max<qint64>(1, mouths));
         qInfo("%lld deltas of %lld wide river mouths: %.3f", deltas, mouths, share);
         QVERIFY2(mouths >= 20 && share <= 0.2, qPrintable(u"%1 of %2"_s.arg(deltas).arg(mouths)));
     }
@@ -415,7 +416,7 @@ private slots:
     {
         int ice = 0;
         int open = 0;
-        for (const qint64 seed : {qint64(7), qint64(42)}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}}) {
             const QcTerrainGenerator generator(m_everyMouth, seed);
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {
@@ -479,7 +480,7 @@ private slots:
     void villagesAndStructuresKeepOff()
     {
         int checked = 0;
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_everyMouth, seed);
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {

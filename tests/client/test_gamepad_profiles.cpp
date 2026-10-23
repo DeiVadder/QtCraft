@@ -217,7 +217,7 @@ private slots:
         QVERIFY(!QcGamepadMapping::rebindable(Action::Mine));
         QVERIFY(QcGamepadMapping::rebindable(Action::HotbarRadial));
         for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
-            const QString name = QcGamepadMapping::actionName(Action(index));
+            const QString name = QcGamepadMapping::actionName(static_cast<Action>(index));
             QVERIFY(!name.isEmpty());
             QCOMPARE(QcGamepadMapping::actionFromName(name), std::optional(Action(index)));
         }
@@ -281,11 +281,11 @@ private slots:
             }
             Held now{};
             for (std::size_t index = 0; index < now.size(); ++index) {
-                now[index] = QcGamepadMapping::held(Action(index), state, bindings, before[index]);
+                now[index] = QcGamepadMapping::held(static_cast<Action>(index), state, bindings, before[index]);
             }
             return QcGamepadMapping::withCombos(now, before, state, bindings);
         };
-        const auto on = [](const Held &held, Action action) { return held[std::size_t(action)]; };
+        const auto on = [](const Held &held, Action action) { return held[static_cast<std::size_t>(action)]; };
 
         const Held back = step({}, {QcGamepadButton::Back});
         QVERIFY(on(back, Action::PlayerList));

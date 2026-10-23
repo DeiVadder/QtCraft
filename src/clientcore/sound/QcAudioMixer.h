@@ -58,11 +58,11 @@ public:
     void stopAll() { m_voices.clear(); }
     void setGain(VoiceId id, float gain);
     bool isPlaying(VoiceId id) const;
-    int voiceCount() const { return int(m_voices.size()); }
+    int voiceCount() const { return static_cast<int>(m_voices.size()); }
     const QList<Voice> &voices() const { return m_voices; }
 
     void setBusVolume(QcSoundBus bus, float volume);
-    float busVolume(QcSoundBus bus) const { return m_busVolumes[std::size_t(bus)]; }
+    float busVolume(QcSoundBus bus) const { return m_busVolumes[static_cast<std::size_t>(bus)]; }
     void setMasterVolume(float volume);
     float masterVolume() const { return m_master; }
     void setMuted(bool muted) { m_muted = muted; }

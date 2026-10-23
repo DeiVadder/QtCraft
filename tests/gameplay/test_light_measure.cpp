@@ -32,7 +32,7 @@ class TestLightMeasure : public QObject
 
         void add(qint64 nanoseconds)
         {
-            const double ms = double(nanoseconds) / 1e6;
+            const double ms = static_cast<double>(nanoseconds) / 1e6;
             totalMs += ms;
             maxMs = std::max(maxMs, ms);
             ++count;

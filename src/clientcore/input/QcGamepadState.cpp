@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 void QcGamepadState::setAxis(QcGamepadAxis axis, float value)
 {
     const float low = isTrigger(axis) ? 0.0f : -1.0f;
-    m_axes[std::size_t(axis)] = std::isnan(value) ? 0.0f : std::clamp(value, low, 1.0f);
+    m_axes[static_cast<std::size_t>(axis)] = std::isnan(value) ? 0.0f : std::clamp(value, low, 1.0f);
 }
 
 namespace {
@@ -48,17 +48,17 @@ std::optional<Enum> fromName(const QStringList &names, const QString &name)
 
 QString QcGamepadNames::button(QcGamepadButton button)
 {
-    return buttonNames().value(qsizetype(button));
+    return buttonNames().value(static_cast<qsizetype>(button));
 }
 
 QString QcGamepadNames::axis(QcGamepadAxis axis)
 {
-    return axisNames().value(qsizetype(axis));
+    return axisNames().value(static_cast<qsizetype>(axis));
 }
 
 QString QcGamepadNames::type(QcGamepadType type)
 {
-    return typeNames().value(qsizetype(type));
+    return typeNames().value(static_cast<qsizetype>(type));
 }
 
 std::optional<QcGamepadButton> QcGamepadNames::buttonFromName(const QString &name)

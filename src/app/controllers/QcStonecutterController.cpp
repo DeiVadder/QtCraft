@@ -63,7 +63,7 @@ void QcStonecutterController::update()
             m_recipes.append(recipe.name);
             m_results.append(stackMap(recipe.resultItem, recipe.resultCount));
         }
-        m_selected = int(m_recipes.indexOf(m_parts.session->stonecutter().recipe()));
+        m_selected = static_cast<int>(m_recipes.indexOf(m_parts.session->stonecutter().recipe()));
     }
     emit changed();
 }

@@ -45,7 +45,7 @@ double percentile(QList<double> values, double share)
         return 0.0;
     }
     std::ranges::sort(values);
-    return values[qsizetype(std::lround(share * double(values.size() - 1)))];
+    return values[static_cast<qsizetype>(std::lround(share * static_cast<double>(values.size() - 1)))];
 }
 
 } // namespace
@@ -90,7 +90,7 @@ private:
         disconnect(own);
         disconnect(server);
         session.setMining(false);
-        return done ? double(meshes.deliveredAtNs(key) - startNs) / 1e6 : -1.0;
+        return done ? static_cast<double>(meshes.deliveredAtNs(key) - startNs) / 1e6 : -1.0;
     }
 
     static void report(const Case &measured)
@@ -112,7 +112,7 @@ private:
         QVERIFY(session.world()->blockAt(bench.target) == (breaking ? m_content->blockId(u"qtcraft:stone"_s) : qcAirBlockId));
         QVERIFY(QcPredictionFixture::aim(session, breaking ? bench.target : bench.target.offset(0, -1, 0), QcBlockFace::Up));
         if (!breaking && m_sinceUse.isValid() && m_sinceUse.elapsed() < usePaceMs) {
-            QTest::qWait(int(usePaceMs - m_sinceUse.elapsed()));
+            QTest::qWait(static_cast<int>(usePaceMs - m_sinceUse.elapsed()));
         }
         if (measured.scenario == u"backlog"_s) {
             bench.meshes.scheduler().remeshAll();

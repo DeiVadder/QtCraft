@@ -52,7 +52,7 @@ private:
                     }
                 }
             }
-            best = std::min(best, double(timer.nsecsElapsed()) / 1e6 / double(edge * edge));
+            best = std::min(best, static_cast<double>(timer.nsecsElapsed()) / 1e6 / static_cast<double>(edge * edge));
         }
         return best;
     }
@@ -102,16 +102,17 @@ private:
     template<typename T>
     static qsizetype listBytes(const QList<T> &list)
     {
-        return list.capacity() * qsizetype(sizeof(T));
+        return list.capacity() * static_cast<qsizetype>(sizeof(T));
     }
 
     // What one structure of a plan holds: its cells, palette and the palette's index.
     static qsizetype structureBytes(const QcStructure &structure)
     {
-        const qsizetype cells = qsizetype(structure.sizeX()) * structure.sizeY() * structure.sizeZ();
+        const qsizetype cells = static_cast<qsizetype>(structure.sizeX()) * structure.sizeY() * structure.sizeZ();
         const qsizetype palette = structure.palette().size();
         // QHash<QcBlockId, qint16>: about 16 bytes per entry with its spans.
-        return qsizetype(sizeof(QcStructure)) + cells * qsizetype(sizeof(qint16)) + palette * qsizetype(sizeof(QcBlockId)) + palette * 16;
+        return static_cast<qsizetype>(sizeof(QcStructure)) + cells * static_cast<qsizetype>(sizeof(qint16))
+            + palette * static_cast<qsizetype>(sizeof(QcBlockId)) + palette * 16;
     }
 
     struct PlanBytes
@@ -135,12 +136,12 @@ private:
                 own.insert(structure);
                 bytes.structures += structureBytes(*structure);
             }
-            bytes.placements += structure->palette().size() * qsizetype(sizeof(QcBlockId));
+            bytes.placements += structure->palette().size() * static_cast<qsizetype>(sizeof(QcBlockId));
         }
         bytes.placements += listBytes(plan.pieces);
         bytes.cells = listBytes(plan.roads) + listBytes(plan.branchRoads) + listBytes(plan.thresholds) + listBytes(plan.steps)
                       + listBytes(plan.decks) + listBytes(plan.runs);
-        bytes.other = qsizetype(sizeof(QcVillagePlan)) + listBytes(plan.beds) + listBytes(plan.workstations) + listBytes(plan.mobs)
+        bytes.other = static_cast<qsizetype>(sizeof(QcVillagePlan)) + listBytes(plan.beds) + listBytes(plan.workstations) + listBytes(plan.mobs)
                       + listBytes(plan.wetland.wet) + listBytes(plan.wetland.dry);
         return bytes;
     }
@@ -181,7 +182,7 @@ private slots:
                 if (const std::shared_ptr<const QcVillagePlan> plan = generator.villages().regionPlan(rx, rz)) {
                     qInfo("V %s %s w%d c %d %d %d box %d %d %d %d len %d pieces %lld", qPrintable(plan->style), qPrintable(plan->layout),
                           plan->winding ? 1 : 0, plan->centre.x, plan->centre.y, plan->centre.z, plan->minX, plan->minZ, plan->maxX,
-                          plan->maxZ, plan->roadLength, qint64(plan->pieces.size()));
+                          plan->maxZ, plan->roadLength, static_cast<qint64>(plan->pieces.size()));
                 }
             }
         }
@@ -214,13 +215,14 @@ private slots:
             }
         }
         QVERIFY(villages > 0);
-        const double perPlan = double(sum.total()) / villages;
-        const double cache = perPlan * double(villages) / double(regions) * double(QcVillageGenerator::cachedPlans);
+        const double perPlan = static_cast<double>(sum.total()) / villages;
+        const double cache = perPlan * static_cast<double>(villages) / static_cast<double>(regions) * static_cast<double>(QcVillageGenerator::cachedPlans);
         qInfo("plans: %d villages in %d regions, %.1f KB per village (structures %.1f, placements %.1f, road cells %.1f, other %.1f), "
               "largest %.1f KB; a full cache of %lld regions about %.1f MB",
-              villages, regions, perPlan / 1024.0, double(sum.structures) / villages / 1024.0, double(sum.placements) / villages / 1024.0,
-              double(sum.cells) / villages / 1024.0, double(sum.other) / villages / 1024.0, double(largest) / 1024.0,
-              qint64(QcVillageGenerator::cachedPlans), cache / 1024.0 / 1024.0);
+              villages, regions, perPlan / 1024.0, static_cast<double>(sum.structures) / villages / 1024.0,
+              static_cast<double>(sum.placements) / villages / 1024.0,
+              static_cast<double>(sum.cells) / villages / 1024.0, static_cast<double>(sum.other) / villages / 1024.0, static_cast<double>(largest) / 1024.0,
+              static_cast<qint64>(QcVillageGenerator::cachedPlans), cache / 1024.0 / 1024.0);
     }
 
     void generationWithAndWithoutVillages()
@@ -254,10 +256,10 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             QVERIFY(generator.nearestVillage({0, 64, 0}, 2048));
-            best = std::min(best, double(timer.nsecsElapsed()) / 1e6);
+            best = std::min(best, static_cast<double>(timer.nsecsElapsed()) / 1e6);
             timer.restart();
             QVERIFY(generator.nearestVillage({0, 64, 0}, 2048));
-            cached = std::min(cached, double(timer.nsecsElapsed()) / 1e6);
+            cached = std::min(cached, static_cast<double>(timer.nsecsElapsed()) / 1e6);
         }
         qInfo("nearest village within 2048 blocks: %.1f ms first, %.3f ms planned already", best, cached);
     }
@@ -278,7 +280,7 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             QVERIFY(generator.villages().regionPlan(regionX, regionZ));
-            best = std::min(best, double(timer.nsecsElapsed()) / 1e6);
+            best = std::min(best, static_cast<double>(timer.nsecsElapsed()) / 1e6);
         }
         qInfo("one village planned anew: %.2f ms", best);
     }

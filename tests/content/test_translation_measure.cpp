@@ -39,9 +39,9 @@ private:
 #if defined(Q_OS_DARWIN)
         malloc_statistics_t stats{};
         malloc_zone_statistics(nullptr, &stats);
-        return double(stats.size_in_use) / (1024.0 * 1024.0);
+        return static_cast<double>(stats.size_in_use) / (1024.0 * 1024.0);
 #elif defined(__GLIBC__)
-        return double(mallinfo2().uordblks) / (1024.0 * 1024.0);
+        return static_cast<double>(mallinfo2().uordblks) / (1024.0 * 1024.0);
 #else
         return 0.0;
 #endif
@@ -96,15 +96,15 @@ private:
         QElapsedTimer timer;
         timer.start();
         const QcModLoader::Loaded loaded = QcModLoader::load(modsDirectory);
-        report("mod load", double(timer.nsecsElapsed()) / 1e6, "ms");
+        report("mod load", static_cast<double>(timer.nsecsElapsed()) / 1e6, "ms");
         QVERIFY(loaded.has_value());
         for (const QcModStatus &mod : loaded->mods) {
             qInfo("MEASURE mod %s: %s", qPrintable(mod.info.id), mod.reason.isEmpty() ? "loaded" : qPrintable(mod.reason));
         }
 
         const qsizetype entries = loaded->content->translations().total();
-        qInfo("MEASURE translations after loading %lld entries in %lld languages", qlonglong(entries),
-              qlonglong(loaded->content->translations().languages().size()));
+        qInfo("MEASURE translations after loading %lld entries in %lld languages", static_cast<qlonglong>(entries),
+              static_cast<qlonglong>(loaded->content->translations().languages().size()));
         report("heap after loading", heapMb() - heapBefore, "MB");
         report("peak before", peakBefore, "MB");
         report("peak after", QcProcessMemory::peakMb(), "MB");
@@ -117,7 +117,7 @@ private slots:
         QElapsedTimer timer;
         timer.start();
         const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
-        const double loadMs = double(timer.nsecsElapsed()) / 1e6;
+        const double loadMs = static_cast<double>(timer.nsecsElapsed()) / 1e6;
         QVERIFY(base.has_value());
         const QcContentRegistry &content = *base->registry;
 
@@ -127,10 +127,10 @@ private slots:
         }
         const QStringList languages = content.translations().languages();
         for (const QString &language : languages) {
-            qInfo("MEASURE translations %s %lld entries", qPrintable(language), qlonglong(content.translations().count(language)));
+            qInfo("MEASURE translations %s %lld entries", qPrintable(language), static_cast<qlonglong>(content.translations().count(language)));
             QVERIFY(content.translations().count(language) > parts);
         }
-        qInfo("MEASURE part blocks %lld", qlonglong(parts));
+        qInfo("MEASURE part blocks %lld", static_cast<qlonglong>(parts));
         report("content load", loadMs, "ms");
         report("content heap", heapMb() - heapBefore, "MB");
 
@@ -160,8 +160,8 @@ private slots:
                 entries += parsed->size();
             }
         }
-        report("language files read and parse", double(timer.nsecsElapsed()) / 1e6 / rounds, "ms");
-        qInfo("MEASURE language files %lld entries", qlonglong(entries));
+        report("language files read and parse", static_cast<double>(timer.nsecsElapsed()) / 1e6 / rounds, "ms");
+        qInfo("MEASURE language files %lld entries", static_cast<qlonglong>(entries));
     }
 
     // Reading one language file of almost 4 MiB with the shortest entries (the most a mod file may
@@ -179,7 +179,7 @@ private slots:
         QElapsedTimer timer;
         timer.start();
         const QJsonObject json = QJsonDocument::fromJson(data).object();
-        report("parse", double(timer.nsecsElapsed()) / 1e6, "ms");
+        report("parse", static_cast<double>(timer.nsecsElapsed()) / 1e6, "ms");
         report("peak before parse", peakBefore, "MB");
         report("peak after parse", QcProcessMemory::peakMb(), "MB");
         QVERIFY(!json.isEmpty());

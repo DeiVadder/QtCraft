@@ -10,7 +10,7 @@ namespace {
 
 void writePacks(QDataStream &stream, const QList<QcPackFingerprint> &packs)
 {
-    stream << quint32(packs.size());
+    stream << static_cast<quint32>(packs.size());
     for (const QcPackFingerprint &pack : packs) {
         stream << pack.id << pack.version << pack.hash;
     }
@@ -18,7 +18,7 @@ void writePacks(QDataStream &stream, const QList<QcPackFingerprint> &packs)
 
 [[nodiscard]] std::optional<QList<QcPackFingerprint>> readPacks(QDataStream &stream)
 {
-    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcMsg::LoginChallenge::maxPacks));
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, static_cast<quint32>(QcMsg::LoginChallenge::maxPacks));
     if (!countRead) {
         return std::nullopt;
     }
@@ -60,7 +60,7 @@ void encode(QDataStream &stream, const QcMsg::LoginResponse &m)
 
 void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 {
-    stream << quint32(m.players.size());
+    stream << static_cast<quint32>(m.players.size());
     for (const QcMsg::PlayerList::Entry &entry : m.players) {
         stream << entry.entityId << entry.name << entry.operatorRights << entry.spectator;
     }
@@ -109,7 +109,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerList>, QDataStream &stream)
 {
     QcMsg::PlayerList m;
-    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, quint32(QcMsg::PlayerList::maxPlayers));
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, static_cast<quint32>(QcMsg::PlayerList::maxPlayers));
     if (!countRead) {
         return qcError(u"Too many players"_s);
     }

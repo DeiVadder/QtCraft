@@ -52,14 +52,14 @@ private:
     {
         using Kind = QcChunkStore::Kind;
         marks.insert(pos, blobs.marks);
-        if (const auto &data = blobs.data[std::size_t(Kind::Blocks)]) {
+        if (const auto &data = blobs.data[static_cast<std::size_t>(Kind::Blocks)]) {
             QcResult<std::shared_ptr<QcChunk>> chunk = QcChunkCodec::decode(*data, pos, content, loadWarnings);
             if (!chunk) {
                 return qcError(chunk.error());
             }
             chunks.insert(pos, *chunk);
         }
-        if (const auto &data = blobs.data[std::size_t(Kind::BlockEntities)]) {
+        if (const auto &data = blobs.data[static_cast<std::size_t>(Kind::BlockEntities)]) {
             QcResult<QcBlockEntityRecord> record = QcBlockEntityCodec::decode(*data, pos, content, loadWarnings);
             if (!record) {
                 return qcError(record.error());
@@ -68,7 +68,7 @@ private:
                 blockEntities.append(*record);
             }
         }
-        if (const auto &data = blobs.data[std::size_t(Kind::Entities)]) {
+        if (const auto &data = blobs.data[static_cast<std::size_t>(Kind::Entities)]) {
             QcResult<QcEntityRecord> record = QcEntityCodec::decode(*data, pos, content, loadWarnings);
             if (!record) {
                 return qcError(record.error());

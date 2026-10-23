@@ -386,12 +386,12 @@ private:
     static void checkButtons(QcSdlGamepadSource &source, int id, SDL_Joystick *joystick)
     {
         for (std::size_t i = 0; i < qcGamepadButtonCount; ++i) {
-            QVERIFY(SDL_SetJoystickVirtualButton(joystick, int(i), true));
+            QVERIFY(SDL_SetJoystickVirtualButton(joystick, static_cast<int>(i), true));
             source.poll();
             for (std::size_t j = 0; j < qcGamepadButtonCount; ++j) {
                 QVERIFY2(source.state(id).pressed(QcGamepadButton(j)) == (i == j), qPrintable(u"button %1 while %2 is down"_s.arg(j).arg(i)));
             }
-            QVERIFY(SDL_SetJoystickVirtualButton(joystick, int(i), false));
+            QVERIFY(SDL_SetJoystickVirtualButton(joystick, static_cast<int>(i), false));
         }
         source.poll();
         QCOMPARE(source.state(id), QcGamepadState{});

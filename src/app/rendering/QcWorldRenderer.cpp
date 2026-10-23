@@ -4,6 +4,7 @@
 #include "app/hooks/QcThreadCpuClock.h"
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/camera/QcFrustum.h"
+#include "common/core/QcDowncast.h"
 
 #include <QColor>
 #include <QElapsedTimer>
@@ -65,7 +66,7 @@ void QcWorldRenderer::dropPass()
 void QcWorldRenderer::synchronize(QQuickRhiItem *item)
 {
     // Render thread, GUI thread blocked: the only point where the view is read.
-    auto *view = static_cast<QcWorldView *>(item);
+    auto *view = qcDowncast<QcWorldView>(item);
     m_frame = view->m_frame;
 
     if (view->m_clearAllMeshes) {
@@ -105,7 +106,7 @@ void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
 
     const qint64 threadCpuNs = QcThreadCpuClock::nowNs();
     if (threadCpuNs >= 0 && m_lastThreadCpuNs >= 0) {
-        m_sample.renderThreadCpuMs = double(threadCpuNs - m_lastThreadCpuNs) / 1e6;
+        m_sample.renderThreadCpuMs = static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6;
     }
     m_lastThreadCpuNs = threadCpuNs;
     m_sample.gpuMs = commandBuffer->lastCompletedGpuTime() * 1000.0;
@@ -138,7 +139,7 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
         m_sample.uploadBytes += m_device.framedMaps.upload(m_device.rhi, updates, *m_frame.framedMapTiles, m_device.frameUniforms.get());
     }
     m_sample.uploadBytes += m_meshStore.uploadQueued(updates);
-    m_sample.uploadMs = double(uploadTime.nsecsElapsed()) / 1e6;
+    m_sample.uploadMs = static_cast<double>(uploadTime.nsecsElapsed()) / 1e6;
 }
 
 void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize) const
@@ -154,18 +155,18 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.fogColor[2] = fog.z();
     uniforms.fogColor[3] = 1.0f;
     // Rain brings the fog closer (QcSkyState::fogScale); the far plane stays where the clear fog ends.
-    uniforms.params[0] = m_frame.fogStart * float(m_frame.sky.fogScale);
-    uniforms.params[1] = m_frame.fogEnd * float(0.5 + 0.5 * m_frame.sky.fogScale);
-    uniforms.params[2] = float(m_frame.sky.daylight);
+    uniforms.params[0] = m_frame.fogStart * static_cast<float>(m_frame.sky.fogScale);
+    uniforms.params[1] = m_frame.fogEnd * static_cast<float>(0.5 + 0.5 * m_frame.sky.fogScale);
+    uniforms.params[2] = static_cast<float>(m_frame.sky.daylight);
     uniforms.params[3] = minimumLight;
     uniforms.extra[0] = m_device.rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
-    uniforms.extra[1] = float(outputSize.width());
-    uniforms.extra[2] = float(outputSize.height());
+    uniforms.extra[1] = static_cast<float>(outputSize.width());
+    uniforms.extra[2] = static_cast<float>(outputSize.height());
     uniforms.extra[3] = skyLightFloor;
-    uniforms.atlas[0] = float(m_device.atlasGrid.width());
-    uniforms.atlas[1] = float(m_device.atlasGrid.height());
+    uniforms.atlas[0] = static_cast<float>(m_device.atlasGrid.width());
+    uniforms.atlas[1] = static_cast<float>(m_device.atlasGrid.height());
     uniforms.atlas[2] = m_device.atlasCellPixels;
-    uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? float(m_frame.anisotropicSamples) : 1.0f;
+    uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? static_cast<float>(m_frame.anisotropicSamples) : 1.0f;
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
@@ -255,7 +256,7 @@ void QcWorldRenderer::drawTranslucentRuns(const QcGpuMesh &mesh, const std::func
         if (count == 0) {
             continue;
         }
-        const auto kind = std::size_t(run % 2);
+        const auto kind = static_cast<std::size_t>(run % 2);
         use(kind == 0 ? waterPipelineInTranslucent() : m_pass.translucentPipeline.get());
         drawBuffers(commandBuffer, kind == 0 ? mesh.water : mesh.translucent, next[kind], count);
         next[kind] += count;
@@ -317,7 +318,7 @@ QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjectio
     // By page, so the opaque pass binds each page once (decision E-820); the passes sorted by
     // distance keep their own order.
     std::ranges::sort(paged, std::ranges::less{}, &std::pair<quint32, const QcGpuMesh *>::first);
-    view.visible.reserve(qsizetype(paged.size()));
+    view.visible.reserve(static_cast<qsizetype>(paged.size()));
     for (const auto &[page, mesh] : paged) {
         view.visible.append(mesh);
     }
@@ -403,7 +404,7 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
         // Shadow maps and the offscreen scene come with the realistic mode (stage 45).
         if (group.target != QcRenderTarget::Output) {
             if (!m_warnedTarget) {
-                qCWarning(lcRenderer) << "Render target" << int(group.target) << "is not supported; its steps are skipped";
+                qCWarning(lcRenderer) << "Render target" << static_cast<int>(group.target) << "is not supported; its steps are skipped";
                 m_warnedTarget = true;
             }
             continue;
@@ -413,7 +414,7 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
         commandBuffer->beginPass(renderTarget(), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
         updates = nullptr;
         if (ready) {
-            commandBuffer->setViewport(QRhiViewport(0, 0, float(outputSize.width()), float(outputSize.height())));
+            commandBuffer->setViewport(QRhiViewport(0, 0, static_cast<float>(outputSize.width()), static_cast<float>(outputSize.height())));
             for (const QcRenderPass pass : group.passes) {
                 drawPass(commandBuffer, pass, view);
             }
@@ -440,7 +441,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     prepareResources(updates);
 
     const QSize outputSize = renderTarget()->pixelSize();
-    const float aspect = outputSize.height() > 0 ? float(outputSize.width()) / float(outputSize.height()) : 1.0f;
+    const float aspect = outputSize.height() > 0 ? static_cast<float>(outputSize.width()) / static_cast<float>(outputSize.height()) : 1.0f;
     const float farPlane = m_frame.fogEnd + QcCamera::farPlaneMargin;
     const QMatrix4x4 viewProjection =
         m_device.rhi->clipSpaceCorrMatrix() * m_frame.camera.projectionMatrix(aspect, farPlane) * m_frame.camera.viewMatrix();
@@ -454,13 +455,13 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
                           {m_device.rhi->clipSpaceCorrMatrix() * m_frame.camera.projectionMatrix(aspect, farPlane) * viewRotation, m_frame.sky, m_frame.camera.position});
 
     const FrameView view = cull(viewProjection);
-    m_sample.visibleSections = int(view.visible.size());
+    m_sample.visibleSections = static_cast<int>(view.visible.size());
     drawPlan(commandBuffer, updates, view, outputSize);
 
     if (m_frame.collectRenderSamples) {
-        m_sample.sections = int(m_meshStore.meshes().size());
+        m_sample.sections = static_cast<int>(m_meshStore.meshes().size());
         m_sample.sectionBytes = m_meshStore.bytes();
-        m_sample.worldRenderMs = double(renderTime.nsecsElapsed()) / 1e6;
+        m_sample.worldRenderMs = static_cast<double>(renderTime.nsecsElapsed()) / 1e6;
         m_samples.append(m_sample);
     }
 }

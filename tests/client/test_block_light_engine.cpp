@@ -207,13 +207,14 @@ QcBlockLightEngine::Changes editRandomBlock(Fixture &fixture, QcBlockLightEngine
 {
     QRandomGenerator &random = fixture.random;
     const auto coordinate = [&random] {
-        const int chunk = first + int(random.bounded(quint32(span)));
+        const int chunk = first + static_cast<int>(random.bounded(static_cast<quint32>(span)));
         const quint32 roll = random.bounded(4u);
-        const int local = roll == 0 ? 0 : (roll == 1 ? 15 : int(random.bounded(16u)));
+        const int local = roll == 0 ? 0 : (roll == 1 ? 15 : static_cast<int>(random.bounded(16u)));
         return chunk * 16 + local;
     };
     const quint32 band = random.bounded(4u);
-    const int y = band == 0 ? int(random.bounded(18u)) : (band == 1 ? 238 + int(random.bounded(18u)) : 60 + int(random.bounded(10u)));
+    const int y = band == 0 ? static_cast<int>(random.bounded(18u))
+        : (band == 1 ? 238 + static_cast<int>(random.bounded(18u)) : 60 + static_cast<int>(random.bounded(10u)));
     const QcBlockPos pos{coordinate(), y, coordinate()};
 
     auto changed = std::make_shared<QcChunk>(*fixture.chunks.value(pos.chunk()));
@@ -253,7 +254,7 @@ QString unmeshedReader(QcBlockPos cell, const QSet<quint64> &remesh)
 QString unmeshedLightChange(QcChunkPos chunk, const QcChunkLight &now, const QcChunkLight &was, const QSet<quint64> &remesh, int &lightChanges)
 {
     for (int section = 0; section < QcWorld::sectionCount; ++section) {
-        if (now.sections[std::size_t(section)] == was.sections[std::size_t(section)]) {
+        if (now.sections[static_cast<std::size_t>(section)] == was.sections[static_cast<std::size_t>(section)]) {
             continue;
         }
         for (int ly = 0; ly < 16; ++ly) {
@@ -281,7 +282,8 @@ QString unmeshedLightChange(QcChunkPos chunk, const QcChunkLight &now, const QcC
 QString reloadRandomChunk(Fixture &fixture, QcBlockLightEngine &engine)
 {
     QRandomGenerator &random = fixture.random;
-    const QcChunkPos away{first + int(random.bounded(quint32(span))), first + int(random.bounded(quint32(span)))};
+    const QcChunkPos away{first + static_cast<int>(random.bounded(static_cast<quint32>(span))),
+        first + static_cast<int>(random.bounded(static_cast<quint32>(span)))};
     engine.removeChunk(away);
     fixture.loaded.remove(away);
     engine.takeChanges();
@@ -391,7 +393,7 @@ private slots:
             for (int dy = -1; dy <= 2; ++dy) {
                 for (int x = -1; x <= 1; ++x) {
                     const bool inside = x == 0 && dy >= 0 && dy <= 1 && z >= -2 && z <= 3;
-                    fixture.set(engine, {x, y + dy, z}, inside ? qcAirBlockId : QcBlockId(1));
+                    fixture.set(engine, {x, y + dy, z}, inside ? qcAirBlockId : static_cast<QcBlockId>(1));
                 }
             }
         }

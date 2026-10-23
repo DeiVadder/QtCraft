@@ -25,6 +25,7 @@ QQuickAccessibleAttached *attachedOf(const QQuickItem &item)
 {
     // Read only: an item without Accessible properties gets none here.
     return qobject_cast<QQuickAccessibleAttached *>(
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast): qmlAttachedPropertiesObject takes a mutable QObject and only reads with create = false
         qmlAttachedPropertiesObject<QQuickAccessibleAttached>(const_cast<QQuickItem *>(&item), false));
 }
 

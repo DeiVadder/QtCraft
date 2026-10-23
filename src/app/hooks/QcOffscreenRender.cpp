@@ -168,6 +168,7 @@ void QcOffscreenRender::renderFrame(bool readBack)
     m_renderControl->endFrame();
 
     if (readBack) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): QImage reads the pixel bytes of the QByteArray as uchar
         const QImage image(reinterpret_cast<const uchar *>(result.data.constData()), result.pixelSize.width(), result.pixelSize.height(),
                            QImage::Format_RGBA8888_Premultiplied);
         m_lastImage = (m_renderControl->rhi()->isYUpInFramebuffer() ? image.mirrored() : image).convertToFormat(QImage::Format_RGB32);

@@ -35,7 +35,7 @@ class QcContentPackLoader
 {
 public:
     // Largest file a pack may contain.
-    static constexpr qint64 maxContentFileBytes = qint64(4) * 1024 * 1024;
+    static constexpr qint64 maxContentFileBytes = qint64{4} * 1024 * 1024;
     // lang/<language><suffix>.json adds to <language> (handbook texts kept apart from names).
     static constexpr auto handbookLanguageSuffix = ".handbook";
 

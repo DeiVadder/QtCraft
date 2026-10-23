@@ -233,7 +233,7 @@ void addRoad(QcVillagePlan &plan, const QcVillageStyle &style, const Frame &fram
 // The turns of the `index`-th village laid out by spread.
 int turnsOf(const QcVillageFixture::Options &base, qsizetype index)
 {
-    return base.turnEach ? base.turns + int(index) : base.turns;
+    return base.turnEach ? base.turns + static_cast<int>(index) : base.turns;
 }
 
 } // namespace
@@ -449,7 +449,7 @@ std::shared_ptr<const QcVillagePlan> Terrain::villageFor(QcChunkPos pos) const
 std::shared_ptr<const QcVillagePlan> Terrain::nearestVillage(QcBlockPos from, int reach) const
 {
     std::shared_ptr<const QcVillagePlan> nearest;
-    qint64 best = qint64(reach) * reach;
+    qint64 best = static_cast<qint64>(reach) * reach;
     for (const std::shared_ptr<const QcVillagePlan> &plan : m_villages) {
         const qint64 dx = plan->centre.x - from.x;
         const qint64 dz = plan->centre.z - from.z;

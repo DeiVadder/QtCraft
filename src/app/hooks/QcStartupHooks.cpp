@@ -456,7 +456,7 @@ void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
     // may grant less than the settings ask for.
     const int streamed = m_parts.session->welcome().viewDistance > 0 ? m_parts.session->welcome().viewDistance : viewDistance + 1;
     const int ring = 2 * streamed + 1;
-    const bool allChunksArrived = m_parts.session->world()->chunkCount() >= qsizetype(ring) * ring;
+    const bool allChunksArrived = m_parts.session->world()->chunkCount() >= static_cast<qsizetype>(ring) * ring;
     if (m_screenshotHook && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
         && m_parts.meshes->jobsInFlight() == 0) {
         m_screenshotReleased = true;

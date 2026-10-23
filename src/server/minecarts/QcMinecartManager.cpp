@@ -18,7 +18,7 @@ std::array<QcBlockPos, 6> beyondCells(QcBlockPos rail, QcRails::Track track)
     for (std::size_t end = 0; end < 2; ++end) {
         const QcBlockPos beyond = qcNeighbour(rail, track.ends[end].side);
         for (std::size_t level = 0; level < 3; ++level) {
-            cells[end * 3 + level] = beyond.offset(0, int(level) - 1, 0);
+            cells[end * 3 + level] = beyond.offset(0, static_cast<int>(level) - 1, 0);
         }
     }
     return cells;
@@ -148,12 +148,12 @@ QcMinecart::Rest QcMinecartManager::groundRestOf(const QcVec3 &position, const Q
     const QcBlockPos high = QcPhysics::blockContaining(box.max);
     QcMinecart::Rest rest{position, cell, qcAirBlockId, {}, {}, true};
     // Cells beyond the body's columns, and those of a chunk that is not loaded, read as no block.
-    rest.around.fill(QcBlockId(~0u));
+    rest.around.fill(static_cast<QcBlockId>(~0u));
     std::size_t next = 0;
     for (int x = low.x; x <= std::min(high.x, low.x + 1); ++x) {
         for (int z = low.z; z <= std::min(high.z, low.z + 1); ++z) {
             for (int dy = -1; dy <= 1; ++dy) {
-                rest.around[next++] = world.blockAt({x, cell.y + dy, z}).value_or(QcBlockId(~0u));
+                rest.around[next++] = world.blockAt({x, cell.y + dy, z}).value_or(static_cast<QcBlockId>(~0u));
             }
         }
     }

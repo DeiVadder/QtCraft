@@ -40,7 +40,7 @@ QcTickPhaseTimer::Durations phases(std::initializer_list<std::pair<QcTickPhase, 
 {
     QcTickPhaseTimer::Durations durations{};
     for (const auto &[phase, ms] : times) {
-        durations[std::size_t(phase)] = qint64(ms * 1e6);
+        durations[static_cast<std::size_t>(phase)] = static_cast<qint64>(ms * 1e6);
     }
     return durations;
 }
@@ -111,7 +111,7 @@ private slots:
         const QTemporaryDir temp;
         const QString path = QDir(temp.path()).filePath(u"sub/qtcraft-20261021-153012.log"_s);
         // Room for two lines besides the line naming the previous part, whose length is the path's.
-        const qint64 cap = qint64(3) * 40 + QcLogFiles::rotatedPath(path, 1).toUtf8().size();
+        const qint64 cap = qint64{3} * 40 + QcLogFiles::rotatedPath(path, 1).toUtf8().size();
         QcLogWriter writer(path, {.maxBytes = cap, .rotations = 2});
         QVERIFY(cap < qint64(30) * 40);
         QVERIFY(writer.open().has_value());
@@ -158,8 +158,8 @@ private slots:
         sample.loadedChunks = 441;
         sample.entities = 37;
         sample.players = 2;
-        sample.traffic = QcTraffic{quint64(1024) * 1000 + 61440, 2048};
-        const QString line = QcHealthLog::line(sample, {512.0, 600.0}, QcTraffic{quint64(1024) * 1000, 0}, 60.0);
+        sample.traffic = QcTraffic{quint64{1024} * 1000 + 61440, 2048};
+        const QString line = QcHealthLog::line(sample, {512.0, 600.0}, QcTraffic{quint64{1024} * 1000, 0}, 60.0);
         QCOMPARE(line, u"HEALTH memory 512 MiB (peak 600 MiB) | frames 62.5 fps, 16.0 ms mean, 40.3 ms max | tick 3.3 ms mean, 12.0 ms max"
                        u" | chunks 441 | entities 37 | players 2 | round trip 54.0 ms mean, 80.0 ms max | network out 1.0 KiB/s, in 0.0 KiB/s"_s);
         // A new connection counts from zero: no negative rates.
@@ -224,7 +224,7 @@ private slots:
         // At most five phases, the longest first.
         QcTickPhaseTimer::Durations many{};
         for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-            many[std::size_t(phase)] = qint64(phase + 1) * 1'000'000;
+            many[static_cast<std::size_t>(phase)] = static_cast<qint64>(phase + 1) * 1'000'000;
         }
         const std::optional<QString> crowded = lag.check(many, 30 * second);
         QVERIFY(crowded);
@@ -256,7 +256,7 @@ private slots:
         QVERIFY(!stats.take().roundTrip);
 
         for (quint32 sequence = 10; sequence < 10 + QcLinkStats::remembered + 1; ++sequence) {
-            stats.inputSent(sequence, qint64(sequence) * ms);
+            stats.inputSent(sequence, static_cast<qint64>(sequence) * ms);
         }
         stats.acknowledged(10, 500 * ms);
         QVERIFY(!stats.take().roundTrip);

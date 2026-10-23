@@ -54,9 +54,9 @@ void QcSignController::write(const QStringList &lines)
     }
 
     QcSignText::Lines written;
-    const int count = std::min<int>(int(lines.size()), lineCount());
+    const int count = std::min<int>(static_cast<int>(lines.size()), lineCount());
     for (int line = 0; line < count; ++line) {
-        written[std::size_t(line)] = lines[line];
+        written[static_cast<std::size_t>(line)] = lines[line];
     }
     m_parts.session->signEditor().write(QcSignText::cleaned(written, lineCount(), lineLength()));
     m_screens.setOverlay(QcScreenState::Overlay::None);

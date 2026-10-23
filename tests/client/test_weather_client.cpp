@@ -56,7 +56,7 @@ private:
         QcClientWeather weather;
         weather.receive({rain, 0.0f, climate});
         for (int tick = 0; tick < 200; ++tick) {
-            weather.tick(quint64(tick));
+            weather.tick(static_cast<quint64>(tick));
         }
         return weather;
     }
@@ -243,10 +243,10 @@ private slots:
             qsizetype bytes = 0;
             for (int frame = 0; frame < frames; ++frame) {
                 field.update(*world, weather, eye, 1.0 / 60.0);
-                bytes += pool.fill(field, 1.0f)->size() * qsizetype(sizeof(QcPrecipitationDrop));
+                bytes += pool.fill(field, 1.0f)->size() * static_cast<qsizetype>(sizeof(QcPrecipitationDrop));
             }
             qInfo("%s: %lld particles, %.4f ms per frame, %lld bytes uploaded per frame", climate.snowFrom == 0 ? "snow" : "rain",
-                  qint64(field.particles().size()), double(clock.nsecsElapsed()) / 1e6 / frames, qint64(bytes / frames));
+                  static_cast<qint64>(field.particles().size()), static_cast<double>(clock.nsecsElapsed()) / 1e6 / frames, static_cast<qint64>(bytes / frames));
         }
     }
 

@@ -31,7 +31,7 @@ void QcFireQueue::noteChunk(QcChunkPos pos, const QcChunk &chunk, quint32 sectio
     constexpr int size = QcWorld::chunkSize;
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
         const QcChunkSection &section = chunk.section(index);
-        if ((sections & (1u << unsigned(index))) == 0 || !std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isFire(id); })) {
+        if ((sections & (1u << static_cast<unsigned>(index))) == 0 || !std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isFire(id); })) {
             continue;
         }
 
@@ -124,7 +124,7 @@ bool QcFireQueue::plan(const Fire &fire)
 
 qsizetype QcFireQueue::dueCount(quint64 now) const
 {
-    return qsizetype(std::distance(m_due.begin(), m_due.upper_bound(Key{now, ~quint64(0)})));
+    return static_cast<qsizetype>(std::distance(m_due.begin(), m_due.upper_bound(Key{now, ~quint64{0}})));
 }
 
 QList<QcBlockPos> QcFireQueue::takeUnplanned()
@@ -157,7 +157,7 @@ QList<QcFireQueue::Saved> QcFireQueue::savedOf(QcChunkPos chunk, quint64 now) co
     for (const Entry &entry : entries) {
         const Fire &fire = entry.fire;
         const quint64 left = fire.due > now ? fire.due - now : 0;
-        saved.append({fire.pos, fire.origin, fire.age, quint32(std::min<quint64>(left, quint64(1) << 20))});
+        saved.append({fire.pos, fire.origin, fire.age, static_cast<quint32>(std::min<quint64>(left, quint64{1} << 20))});
     }
     return saved;
 }
@@ -178,7 +178,7 @@ void QcFireQueue::restore(const QList<Saved> &fires, quint64 now, const QcChunk 
             m_refused.insert(pos);
             continue;
         }
-        add({pos, saved.origin, quint8(std::min<int>(saved.age, maxAge)), now + saved.ticksLeft, eternal});
+        add({pos, saved.origin, static_cast<quint8>(std::min<int>(saved.age, maxAge)), now + saved.ticksLeft, eternal});
     }
 }
 

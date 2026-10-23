@@ -6,7 +6,7 @@ bool carries(const QcContentRegistry &content, QcBlockId ground)
 {
     const QcBlockDefinition &block = content.block(ground);
     return block.solid && block.renderLayer == QcRenderLayer::Opaque && !block.keepsSpawnsAway()
-           && content.state(ground).fullFace[std::size_t(QcBlockFace::Up)];
+           && content.state(ground).fullFace[static_cast<std::size_t>(QcBlockFace::Up)];
 }
 
 bool leavesRoom(const QcContentRegistry &content, QcBlockId cell)
@@ -21,7 +21,7 @@ Carrying carryingOf(const QcContentRegistry &content, quint32 type)
     const QcBlockId first = states.firstState(type);
     int carrying = 0;
     for (int index = 0; index < states.stateCount(type); ++index) {
-        carrying += carries(content, QcBlockId(first + quint32(index)));
+        carrying += carries(content, static_cast<QcBlockId>(first + static_cast<quint32>(index)));
     }
 
     if (carrying == 0) {

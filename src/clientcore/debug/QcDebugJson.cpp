@@ -67,8 +67,8 @@ QJsonObject clientJson(const QcDebugSnapshot &snapshot)
     const QcBlockPos block = snapshot.block();
     const QcDebugSnapshot::Entities &entities = snapshot.entities;
     QJsonObject json{
-        {u"tick"_s, qint64(snapshot.clientTick)},
-        {u"protocol"_s, qint64(snapshot.protocol)},
+        {u"tick"_s, static_cast<qint64>(snapshot.clientTick)},
+        {u"protocol"_s, static_cast<qint64>(snapshot.protocol)},
         {u"world"_s, snapshot.worldName},
         {u"seed"_s, QString::number(snapshot.seed)},
         {u"position"_s, QJsonArray{rounded(snapshot.position.x), rounded(snapshot.position.y), rounded(snapshot.position.z)}},
@@ -83,11 +83,11 @@ QJsonObject clientJson(const QcDebugSnapshot &snapshot)
                                     {u"players"_s, entities.players},
                                     {u"items"_s, entities.items},
                                     {u"fallingBlocks"_s, entities.fallingBlocks}}},
-        {u"loadedChunks"_s, qint64(snapshot.loadedChunks)},
+        {u"loadedChunks"_s, static_cast<qint64>(snapshot.loadedChunks)},
         {u"memoryMb"_s, std::round(snapshot.memoryMb)},
         {u"peakMemoryMb"_s, std::round(snapshot.peakMemoryMb)},
         {u"footprintMb"_s, std::round(snapshot.footprintMb)},
-        {u"blocksMb"_s, megabytes(double(snapshot.blockBytes))},
+        {u"blocksMb"_s, megabytes(static_cast<double>(snapshot.blockBytes))},
     };
     if (snapshot.target) {
         json.insert(u"target"_s, targetJson(*snapshot.target));
@@ -102,63 +102,63 @@ QJsonObject frameJson(const QcDebugSnapshot::Frame &frame)
 {
     QJsonObject phases;
     for (int phase = 0; phase < QcFramePhases::count; ++phase) {
-        const QcDebugSnapshot::Timing &value = frame.phases[std::size_t(phase)];
-        if (QcFramePhase(phase) != QcFramePhase::Gpu || frame.gpuTimed) {
-            phases.insert(QLatin1StringView(QcFramePhases::ids[std::size_t(phase)]), timing(value.meanMs, value.maxMs));
+        const QcDebugSnapshot::Timing &value = frame.phases[static_cast<std::size_t>(phase)];
+        if (static_cast<QcFramePhase>(phase) != QcFramePhase::Gpu || frame.gpuTimed) {
+            phases.insert(QLatin1StringView(QcFramePhases::ids[static_cast<std::size_t>(phase)]), timing(value.meanMs, value.maxMs));
         }
     }
     return {{u"fps"_s, std::round(frame.fps * 10.0) / 10.0},
             {u"phases"_s, phases},
             {u"drawCalls"_s, frame.drawCalls},
             {u"visibleSections"_s, frame.visibleSections},
-            {u"meshedSections"_s, qint64(frame.meshedSections)},
-            {u"meshBacklog"_s, qint64(frame.meshBacklog)},
+            {u"meshedSections"_s, static_cast<qint64>(frame.meshedSections)},
+            {u"meshBacklog"_s, static_cast<qint64>(frame.meshBacklog)},
             {u"lightJobsPending"_s, frame.lightJobsPending},
             {u"meshJobMs"_s, rounded(frame.meshJobMs)},
             {u"lightJobMs"_s, rounded(frame.lightJobMs)},
-            {u"sectionMb"_s, megabytes(double(frame.sectionBytes))},
-            {u"blockLightMb"_s, megabytes(double(frame.blockLightBytes))}};
+            {u"sectionMb"_s, megabytes(static_cast<double>(frame.sectionBytes))},
+            {u"blockLightMb"_s, megabytes(static_cast<double>(frame.blockLightBytes))}};
 }
 
 QJsonObject serverJson(const QcMsg::ServerDebug &server)
 {
     QJsonObject phases;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        phases.insert(QLatin1StringView(QcTickPhases::ids[std::size_t(phase)]),
-                      timing(server.phaseMeanMs[std::size_t(phase)], server.phaseMaxMs[std::size_t(phase)]));
+        phases.insert(QLatin1StringView(QcTickPhases::ids[static_cast<std::size_t>(phase)]),
+                      timing(server.phaseMeanMs[static_cast<std::size_t>(phase)], server.phaseMaxMs[static_cast<std::size_t>(phase)]));
     }
-    QJsonObject json{{u"tick"_s, qint64(server.tick)},
+    QJsonObject json{{u"tick"_s, static_cast<qint64>(server.tick)},
             {u"phases"_s, phases},
             {u"tickMs"_s, timing(server.tickMeanMs, server.tickMaxMs)},
             {u"lateMs"_s, timing(server.lateMeanMs, server.lateMaxMs)},
-            {u"skippedTicks"_s, qint64(server.skippedTicks)},
-            {u"loadedChunks"_s, qint64(server.loadedChunks)},
-            {u"players"_s, qint64(server.players)},
-            {u"mobs"_s, qint64(server.mobs)},
-            {u"items"_s, qint64(server.items)},
-            {u"fallingBlocks"_s, qint64(server.fallingBlocks)},
-            {u"pendingBlockUpdates"_s, qint64(server.pendingBlockUpdates)},
-            {u"waitingBlockUpdates"_s, qint64(server.waitingBlockUpdates)},
+            {u"skippedTicks"_s, static_cast<qint64>(server.skippedTicks)},
+            {u"loadedChunks"_s, static_cast<qint64>(server.loadedChunks)},
+            {u"players"_s, static_cast<qint64>(server.players)},
+            {u"mobs"_s, static_cast<qint64>(server.mobs)},
+            {u"items"_s, static_cast<qint64>(server.items)},
+            {u"fallingBlocks"_s, static_cast<qint64>(server.fallingBlocks)},
+            {u"pendingBlockUpdates"_s, static_cast<qint64>(server.pendingBlockUpdates)},
+            {u"waitingBlockUpdates"_s, static_cast<qint64>(server.waitingBlockUpdates)},
             {u"biome"_s, server.biome},
             {u"worldType"_s, server.worldType},
-            {u"chunks"_s, QJsonObject{{u"stored"_s, qint64(server.chunks.stored)},
-                                       {u"arriving"_s, qint64(server.chunks.arriving)},
-                                       {u"unsaved"_s, qint64(server.chunks.unsaved)},
-                                       {u"groups"_s, qint64(server.chunks.groups)},
-                                       {u"largestGroup"_s, qint64(server.chunks.largestGroup)},
-                                       {u"playerGroup"_s, qint64(server.chunks.playerGroup)},
-                                       {u"oversizeGroups"_s, qint64(server.chunks.oversizeGroups)},
-                                       {u"tickets"_s, qint64(server.chunks.tickets)},
-                                       {u"refusedTickets"_s, qint64(server.chunks.refusedTickets)},
-                                       {u"forced"_s, qint64(server.chunks.forced)},
-                                       {u"loaders"_s, qint64(server.chunks.loaders)}}}};
+            {u"chunks"_s, QJsonObject{{u"stored"_s, static_cast<qint64>(server.chunks.stored)},
+                                       {u"arriving"_s, static_cast<qint64>(server.chunks.arriving)},
+                                       {u"unsaved"_s, static_cast<qint64>(server.chunks.unsaved)},
+                                       {u"groups"_s, static_cast<qint64>(server.chunks.groups)},
+                                       {u"largestGroup"_s, static_cast<qint64>(server.chunks.largestGroup)},
+                                       {u"playerGroup"_s, static_cast<qint64>(server.chunks.playerGroup)},
+                                       {u"oversizeGroups"_s, static_cast<qint64>(server.chunks.oversizeGroups)},
+                                       {u"tickets"_s, static_cast<qint64>(server.chunks.tickets)},
+                                       {u"refusedTickets"_s, static_cast<qint64>(server.chunks.refusedTickets)},
+                                       {u"forced"_s, static_cast<qint64>(server.chunks.forced)},
+                                       {u"loaders"_s, static_cast<qint64>(server.chunks.loaders)}}}};
 
     if (!server.goals.isEmpty()) {
         static constexpr std::array<const char *, QcMsg::MobGoal::kindCount> kinds{"wander", "chase", "flee"};
         QJsonArray goals;
         for (const QcMsg::MobGoal &goal : server.goals) {
-            goals.append(QJsonObject{{u"id"_s, qint64(goal.entityId)},
-                                     {u"kind"_s, QString::fromLatin1(kinds[std::size_t(goal.kind)])},
+            goals.append(QJsonObject{{u"id"_s, static_cast<qint64>(goal.entityId)},
+                                     {u"kind"_s, QString::fromLatin1(kinds[static_cast<std::size_t>(goal.kind)])},
                                      {u"goal"_s, QJsonArray{rounded(goal.goal.x), rounded(goal.goal.y), rounded(goal.goal.z)}}});
         }
         json.insert(u"goals"_s, goals);

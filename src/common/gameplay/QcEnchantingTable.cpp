@@ -58,7 +58,7 @@ int powerOf(int levelCost, int enchantability, QRandomGenerator &random)
     const int quarter = enchantability / 4 + 1;
     const int power = levelCost + 1 + random.bounded(quarter) + random.bounded(quarter);
     const double spread = (random.generateDouble() + random.generateDouble() - 1.0) * 0.15;
-    return std::max(1, int(std::lround(power + power * spread)));
+    return std::max(1, static_cast<int>(std::lround(power + power * spread)));
 }
 
 } // namespace
@@ -96,7 +96,7 @@ std::array<int, offerCount> levelCosts(quint32 seed, int shelves, int enchantabi
     for (int slot = 0; slot < offerCount; ++slot) {
         const int base = random.bounded(8) + 1 + shelves / 2 + random.bounded(shelves + 1);
         const int cost = slot == 0 ? std::max(base / 3, 1) : slot == 1 ? base * 2 / 3 + 1 : std::max(base, shelves * 2);
-        costs[std::size_t(slot)] = cost < slot + 1 ? 0 : cost;
+        costs[static_cast<std::size_t>(slot)] = cost < slot + 1 ? 0 : cost;
     }
     return costs;
 }
@@ -132,10 +132,10 @@ Offers offers(const QcContentRegistry &content, const QcItemStack &stack, int sh
     }
     const std::array<int, offerCount> costs = levelCosts(seed, shelves, content.item(stack.item).enchantability);
     for (int slot = 0; slot < offerCount; ++slot) {
-        const int cost = costs[std::size_t(slot)];
-        QList<QcEnchantment> enchantments = cost > 0 ? enchantmentsFor(content, stack, cost, seed + quint32(slot)) : QList<QcEnchantment>();
+        const int cost = costs[static_cast<std::size_t>(slot)];
+        QList<QcEnchantment> enchantments = cost > 0 ? enchantmentsFor(content, stack, cost, seed + static_cast<quint32>(slot)) : QList<QcEnchantment>();
         if (!enchantments.isEmpty()) {
-            result[std::size_t(slot)] = {cost, std::move(enchantments)};
+            result[static_cast<std::size_t>(slot)] = {cost, std::move(enchantments)};
         }
     }
     return result;

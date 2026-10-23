@@ -12,7 +12,7 @@ quint16 flagsOf(const QcEntity &entity, bool swung, bool sneaking, bool sprintin
     const QcEntityMotion &motion = entity.motion;
     // Sneaking in flight is descending: the figure does not crouch (decision E-284).
     const bool crouching = sneaking && !motion.flying;
-    return quint16((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
+    return static_cast<quint16>((swung ? QcMsg::Swing : 0) | (motion.onGround ? QcMsg::OnGround : 0) | (motion.inWater ? QcMsg::InWater : 0)
                    | (crouching ? QcMsg::Sneaking : 0) | (sprinting ? QcMsg::Sprinting : 0) | (entity.burnTicks > 0 ? QcMsg::Burning : 0));
 }
 
@@ -29,15 +29,15 @@ QcItemId heldBy(const QcCreature &creature, const QcMobDefinition &kind)
 // The move of a creature: `now` with its turn, health, flags and what it holds.
 QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature, const QcMobDefinition &kind)
 {
-    const quint16 breeding = quint16((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
+    const quint16 breeding = static_cast<quint16>((creature.isYoung() ? QcMsg::Young : 0) | (creature.love > 0.0 ? QcMsg::InLove : 0)
                                      | QcMsg::poseFlags(creature.pose));
     now.yaw = creature.yaw;
     now.health = creature.health;
     now.hurt = creature.hurtThisTick;
-    now.flags = quint16(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
+    now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
     now.held = heldBy(creature, kind);
     if (creature.archer.has() && creature.archer->drawing()) {
-        now.flags = quint16(now.flags | QcMsg::Drawing);
+        now.flags = static_cast<quint16>(now.flags | QcMsg::Drawing);
     }
     return now;
 }
@@ -69,11 +69,11 @@ QcMsg::EntityMove playerMove(QcMsg::EntityMove now, const QcServerClient &player
     now.pitch = player.pitch;
     now.flags = flagsOf(player, player.swung, player.sneaking, player.sprinting);
     if (riding) {
-        now.flags = quint16((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
+        now.flags = static_cast<quint16>((now.flags & ~QcMsg::Sneaking) | QcMsg::Riding);
     }
     now.held = held.isEmpty() ? qcNoItem : held.item;
     if (player.drawing) {
-        now.flags = quint16(now.flags | QcMsg::Drawing);
+        now.flags = static_cast<quint16>(now.flags | QcMsg::Drawing);
     }
     return now;
 }
@@ -132,7 +132,7 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
         const auto &projectile = entity.as<QcProjectile>();
         now.yaw = projectile.yaw;
         now.pitch = projectile.pitch;
-        now.flags = projectile.stuck ? quint16(QcMsg::Stuck) : quint16(0);
+        now.flags = projectile.stuck ? static_cast<quint16>(QcMsg::Stuck) : quint16{0};
         break;
     }
     case QcEntityKind::PrimedExplosive:

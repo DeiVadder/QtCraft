@@ -67,8 +67,8 @@ private:
         window.x0 = firstX * QcWorld::chunkSize;
         window.z0 = firstZ * QcWorld::chunkSize;
         window.size = windowChunks * QcWorld::chunkSize;
-        window.top.resize(qsizetype(window.size) * window.size);
-        window.biome.resize(qsizetype(window.size) * window.size);
+        window.top.resize(static_cast<qsizetype>(window.size) * window.size);
+        window.biome.resize(static_cast<qsizetype>(window.size) * window.size);
         for (int cz = 0; cz < windowChunks; ++cz) {
             for (int cx = 0; cx < windowChunks; ++cx) {
                 const std::shared_ptr<QcChunk> chunk = generator.generate({firstX + cx, firstZ + cz});
@@ -206,8 +206,8 @@ private:
     static std::vector<Spot> spots(qint64 seed, Wanted wanted)
     {
         std::vector<Spot> found;
-        const int originX = int(seed % 61) * 64 - 1900;
-        const int originZ = int(seed % 53) * 64 - 1700;
+        const int originX = static_cast<int>(seed % 61) * 64 - 1900;
+        const int originZ = static_cast<int>(seed % 53) * 64 - 1700;
         for (int z = originZ - 2048; z < originZ + 2048 && found.size() < 2; z += 48) {
             for (int x = originX - 2048; x < originX + 2048 && found.size() < 2; x += 48) {
                 if (wanted(x, z, x + 16, z) || wanted(x, z, x, z + 16)) {
@@ -301,7 +301,7 @@ private:
     static FrozenTemperatures frozenTemperatures(const QcTerrainGenerator &generator, QcBlockId ice, qint64 seed)
     {
         FrozenTemperatures sums;
-        const int offset = int(seed % 1000);
+        const int offset = static_cast<int>(seed % 1000);
         for (int z = -2048; z < 2048; z += 16) {
             for (int x = -2048; x < 2048; x += 16) {
                 const QcTerrainColumn column = generator.column(x + offset, z);

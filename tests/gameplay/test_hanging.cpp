@@ -19,7 +19,7 @@ class TestHanging : public QcMachineFixture
 {
     Q_OBJECT
 
-    static constexpr int cooldownTicks = int(QcServerCombat::playerAttackCooldown * QcPhysics::tickRate) + 1;
+    static constexpr int cooldownTicks = static_cast<int>(QcServerCombat::playerAttackCooldown * QcPhysics::tickRate) + 1;
 
     QcHangingManager &hangings() { return m_server->entities().hangings(); }
 
@@ -61,7 +61,7 @@ class TestHanging : public QcMachineFixture
         hanging.item = u"qtcraft:item_frame"_s;
         hanging.hanging.face = face;
         hanging.hanging.cell = cell;
-        hanging.hanging.rotation = quint8(rotation);
+        hanging.hanging.rotation = static_cast<quint8>(rotation);
         hanging.held = held ? QcItemStack{item(held), 1, 0} : QcItemStack();
         hanging.motion.position = hanging.hanging.centre();
         return hanging;

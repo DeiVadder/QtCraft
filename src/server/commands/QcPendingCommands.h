@@ -15,7 +15,7 @@ class QcPendingCommands
 {
 public:
     static constexpr int timeoutSeconds = 30;
-    static constexpr qint64 timeoutNs = qint64(timeoutSeconds) * 1'000'000'000;
+    static constexpr qint64 timeoutNs = static_cast<qint64>(timeoutSeconds) * 1'000'000'000;
     using Action = std::function<void(const QcCommandSource &source)>;
 
     // Keeps `action` for the context's source and tells it how to confirm; `nowNs` is the players'

@@ -129,7 +129,7 @@ private:
     static QcVillagerRecord sampleRecord()
     {
         QcVillagerRecord record;
-        record.village = (qint64(5) << 32) | 7;
+        record.village = (qint64{5} << 32) | 7;
         record.home = QcBlockPos{100, 70, -20};
         record.work = QcBlockPos{104, 70, -18};
         record.profession = u"qtcraft:smith"_s;
@@ -226,7 +226,7 @@ private slots:
             const auto swimmer = std::ranges::find_if(built.mobs->editableMobs(), [](const QcCreature &mob) { return mob.isVillager(); });
             QVERIFY(swimmer != built.mobs->editableMobs().end());
             const quint32 id = swimmer->id;
-            swimmer->motion.position = {water.x + 0.5, double(water.y) + 0.5, water.z + 0.5};
+            swimmer->motion.position = {water.x + 0.5, static_cast<double>(water.y) + 0.5, water.z + 0.5};
             bool out = false;
             for (int tick = 0; tick < 1200 && !out; ++tick) {
                 this->tick(built, 0.7);
@@ -258,12 +258,12 @@ private slots:
         QVERIFY(homeInside != built.plan->beds.end() && homeElsewhere != built.plan->beds.end());
         const int type = *m_content->mobIndex(u"qtcraft:villager"_s);
         const QcVillagerSettings &settings = *m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s);
-        const quint32 out = built.mobs->spawn(type, {door.x + 0.5, double(door.y), door.z + 0.5}, built.nextId++);
+        const quint32 out = built.mobs->spawn(type, {door.x + 0.5, static_cast<double>(door.y), door.z + 0.5}, built.nextId++);
         *built.mobs->find(out)->villager = QcVillagerHomes::settle(built.state(), homeElsewhere->at, built.mobs->find(out)->uid, settings, 1);
         // On the porch, a little off its middle line and away from the door.
-        const QcVec3 outwards{double(porch.x - door.x), 0.0, double(porch.z - door.z)};
+        const QcVec3 outwards{static_cast<double>(porch.x - door.x), 0.0, static_cast<double>(porch.z - door.z)};
         const QcVec3 aside{outwards.z, 0.0, outwards.x};
-        const QcVec3 onPorch = QcVec3{porch.x + 0.5, double(porch.y), porch.z + 0.5} + outwards * 0.2 - aside * 0.2;
+        const QcVec3 onPorch = QcVec3{porch.x + 0.5, static_cast<double>(porch.y), porch.z + 0.5} + outwards * 0.2 - aside * 0.2;
         const quint32 in = built.mobs->spawn(type, onPorch, built.nextId++);
         *built.mobs->find(in)->villager = QcVillagerHomes::settle(built.state(), homeInside->at, built.mobs->find(in)->uid, settings, 2);
         bool home = false;
@@ -350,7 +350,7 @@ private slots:
         QcMobManager::Stored stored;
         stored.uid = 5;
         stored.type = *m_content->mobIndex(u"qtcraft:villager"_s);
-        stored.position = {state.beds[1].at.x + 0.5, double(state.beds[1].at.y), state.beds[1].at.z + 0.5};
+        stored.position = {state.beds[1].at.x + 0.5, static_cast<double>(state.beds[1].at.y), state.beds[1].at.z + 0.5};
         stored.health = 20.0;
         QcVillagerRecord record;
         record.village = state.id;
@@ -538,7 +538,7 @@ private slots:
             {
                 QDataStream out(&huge, QIODevice::WriteOnly);
                 out << record.village << false << false << length;
-                out.writeRawData(QByteArray(int(length < 4096 ? length : 64), 'a').constData(), int(length < 4096 ? length : 64));
+                out.writeRawData(QByteArray(static_cast<int>(length < 4096 ? length : 64), 'a').constData(), static_cast<int>(length < 4096 ? length : 64));
             }
             QDataStream hugeIn(huge);
             QVERIFY(!QcVillagerCodec::read(hugeIn, QcVillagerCodec::version));

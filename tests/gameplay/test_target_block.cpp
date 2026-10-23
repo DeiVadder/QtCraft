@@ -42,8 +42,8 @@ private slots:
         const auto strength = [pos](QcBlockFace face, double a, double b) {
             const bool sideX = face == QcBlockFace::West || face == QcBlockFace::East;
             const QcVec3 point = face == QcBlockFace::Up ? QcVec3{pos.x + a, pos.y + 1.0, pos.z + b}
-                                 : sideX                 ? QcVec3{double(pos.x), pos.y + a, pos.z + b}
-                                                         : QcVec3{pos.x + a, pos.y + b, double(pos.z)};
+                                 : sideX                 ? QcVec3{static_cast<double>(pos.x), pos.y + a, pos.z + b}
+                                                         : QcVec3{pos.x + a, pos.y + b, static_cast<double>(pos.z)};
             return QcServerCircuits::targetStrength(pos, face, point);
         };
         QCOMPARE(strength(QcBlockFace::West, 0.5, 0.5), 15);

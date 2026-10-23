@@ -60,8 +60,8 @@ public:
 
     // Updates of loaded chunks waiting for the next ticks, of player actions and of commands.
     qsizetype pendingCount() const { return pendingPlayerCount() + pendingCommandCount(); }
-    qsizetype pendingPlayerCount() const { return qsizetype(m_playerUpdates.size()); }
-    qsizetype pendingCommandCount() const { return qsizetype(m_commandUpdates.size()); }
+    qsizetype pendingPlayerCount() const { return static_cast<qsizetype>(m_playerUpdates.size()); }
+    qsizetype pendingCommandCount() const { return static_cast<qsizetype>(m_commandUpdates.size()); }
     qsizetype waitingCount() const { return m_waitingCount; }
     quint64 processedCount() const { return m_processed; }
     quint64 droppedCount() const { return m_dropped; }

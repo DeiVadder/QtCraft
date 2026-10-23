@@ -15,10 +15,10 @@ class QcBlockStateTable
 public:
     // Signal Dust needs 16 strengths times 81 connection shapes (decision E-334).
     static constexpr int maxStatesPerBlock = 2048;
-    static constexpr qsizetype maxStates = qsizetype(1) << 16;
+    static constexpr qsizetype maxStates = qsizetype{1} << 16;
     // States of a block that turn, flip and select the same parts share their derived data; this
     // limits the boxes of all distinct variants of all blocks together (memory and build time).
-    static constexpr qsizetype maxDerivedBoxes = qsizetype(1) << 17;
+    static constexpr qsizetype maxDerivedBoxes = qsizetype{1} << 17;
 
     // Product of the value counts; 0 when a property has no values.
     static qsizetype stateCountOf(const QcBlockDefinition &block);
@@ -43,9 +43,9 @@ public:
     qsizetype size() const { return m_states.size(); }
     qsizetype typeCount() const { return m_firstState.size(); }
     // Precondition: id < size().
-    const QcBlockState &state(quint32 id) const { return m_states[qsizetype(id)]; }
-    quint32 firstState(quint32 type) const { return m_firstState[qsizetype(type)]; }
-    int stateCount(quint32 type) const { return m_stateCounts[qsizetype(type)]; }
+    const QcBlockState &state(quint32 id) const { return m_states[static_cast<qsizetype>(id)]; }
+    quint32 firstState(quint32 type) const { return m_firstState[static_cast<qsizetype>(type)]; }
+    int stateCount(quint32 type) const { return m_stateCounts[static_cast<qsizetype>(type)]; }
 
     // Value of `property` in state `index` of `block`, empty when the block has no such property.
     static QString value(const QcBlockDefinition &block, quint32 index, const QString &property);

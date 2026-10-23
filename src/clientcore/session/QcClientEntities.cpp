@@ -136,7 +136,7 @@ bool QcClientEntities::spawn(const QcMsg::EntitySpawn &spawn, const QcContentReg
     // The motion starts where it appeared, at about the time it appeared.
     m_tracks.remove(entity.id);
     if (m_clock.latestServerMs() >= 0) {
-        m_tracks[entity.id].push({double(m_clock.latestServerMs()), spawn.position, spawn.yaw, spawn.pitch}, m_clock.intervalMs());
+        m_tracks[entity.id].push({static_cast<double>(m_clock.latestServerMs()), spawn.position, spawn.yaw, spawn.pitch}, m_clock.intervalMs());
     }
     return true;
 }
@@ -145,7 +145,7 @@ void QcClientEntities::moves(const QcMsg::EntityMoves &moves, qint64 localMs)
 {
     m_clock.observe(moves.timeMs, localMs);
     for (const QcMsg::EntityMove &move : moves.moves) {
-        applyMove(move, double(moves.timeMs));
+        applyMove(move, static_cast<double>(moves.timeMs));
     }
 }
 

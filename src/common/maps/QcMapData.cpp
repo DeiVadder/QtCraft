@@ -72,7 +72,7 @@ bool QcMapData::set(QPoint pixel, quint16 value)
 QList<quint16> QcMapData::pixelsIn(QRect area) const
 {
     QList<quint16> values;
-    values.reserve(qsizetype(area.width()) * area.height());
+    values.reserve(static_cast<qsizetype>(area.width()) * area.height());
     for (int y = area.top(); y <= area.bottom(); ++y) {
         for (int x = area.left(); x <= area.right(); ++x) {
             values.append(at({x, y}));
@@ -83,7 +83,7 @@ QList<quint16> QcMapData::pixelsIn(QRect area) const
 
 bool QcMapData::setPixels(QRect area, const QList<quint16> &values)
 {
-    if (area.isEmpty() || !bounds().contains(area) || values.size() != qsizetype(area.width()) * area.height()) {
+    if (area.isEmpty() || !bounds().contains(area) || values.size() != static_cast<qsizetype>(area.width()) * area.height()) {
         return false;
     }
     qsizetype next = 0;
@@ -97,5 +97,5 @@ bool QcMapData::setPixels(QRect area, const QList<quint16> &values)
 
 int QcMapData::revealedCount() const
 {
-    return int(std::ranges::count_if(m_pixels, [](quint16 value) { return value != 0; }));
+    return static_cast<int>(std::ranges::count_if(m_pixels, [](quint16 value) { return value != 0; }));
 }

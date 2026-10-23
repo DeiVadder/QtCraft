@@ -15,7 +15,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr qint64 maxFileBytes = qint64(1024) * 1024;
+constexpr qint64 maxFileBytes = qint64{1024} * 1024;
 
 // Reads an integer key within [low, high]; `absent` when the key is missing, nullopt when invalid.
 [[nodiscard]] std::optional<int> readInt(const QJsonObject &json, const QString &key, int low, int high, int absent)
@@ -27,7 +27,7 @@ constexpr qint64 maxFileBytes = qint64(1024) * 1024;
     if (!json.value(key).isDouble() || number != std::floor(number) || number < low || number > high) {
         return std::nullopt;
     }
-    return int(number);
+    return static_cast<int>(number);
 }
 
 // Reads a text key of at most `maxLength` characters; `absent` when the key is missing, nullopt
@@ -94,7 +94,7 @@ QString invalid(const QString &key)
         }
         *range.value = *read;
     }
-    settings.port = quint16(port);
+    settings.port = static_cast<quint16>(port);
 
     for (const auto &[key, value] : {std::pair{u"serverName"_s, &settings.serverName}, std::pair{u"motd"_s, &settings.motd},
                                      std::pair{u"bindAddress"_s, &settings.bindAddress}, std::pair{u"password"_s, &settings.password},
@@ -264,7 +264,7 @@ QcNetworkConfig QcServerSettings::networkConfig() const
     network.bindAddress = address().value_or(QHostAddress(QHostAddress::Any));
     network.port = port;
     network.connections.perSecond = connectionsPerSecond;
-    network.connections.burst = double(connectionBurst);
+    network.connections.burst = static_cast<double>(connectionBurst);
     network.connections.perAddress = maxConnectionsPerAddress;
     network.connections.total = std::max(maxPlayers + 16, maxPlayers * 2);
     return network;

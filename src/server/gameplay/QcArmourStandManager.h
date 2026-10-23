@@ -18,7 +18,7 @@ class QcArmourStandManager
 public:
     // Stands in the world by default (QcServerLimits::maxArmourStands); a save holds at most the
     // highest limit.
-    static constexpr int maxStands = int(QcServerLimits{}.maxArmourStands);
+    static constexpr int maxStands = static_cast<int>(QcServerLimits{}.maxArmourStands);
     static constexpr int maxStoredStands = 65536;
     static constexpr int maxNameLength = 32;
 

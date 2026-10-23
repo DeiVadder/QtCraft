@@ -82,7 +82,7 @@ private:
         [[maybe_unused]] const bool done = QTest::qWaitFor([&] {
             m_output += QString::fromUtf8(m_process.readAllStandardOutput());
             const QRegularExpressionMatch match = listening.match(m_output);
-            port = match.hasMatch() ? quint16(match.captured(1).toUInt()) : 0;
+            port = match.hasMatch() ? static_cast<quint16>(match.captured(1).toUInt()) : 0;
             return port != 0 || m_process.state() == QProcess::NotRunning;
         }, timeoutMs);
         return port;
@@ -260,7 +260,7 @@ private slots:
     {
         const quint16 port = startServer({});
         QVERIFY(port != 0);
-        ::kill(pid_t(m_process.processId()), SIGINT);
+        ::kill(static_cast<pid_t>(m_process.processId()), SIGINT);
         const QString output = finish();
         QCOMPARE(m_process.exitCode(), 0);
         QVERIFY2(output.contains(u"Stopping (SIGINT)"_s) && output.contains(u"World saved"_s), qPrintable(output));

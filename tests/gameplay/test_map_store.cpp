@@ -175,13 +175,13 @@ private slots:
     void unknownBlocksOfAMapFileReadAsBlank()
     {
         // A map file naming a block no pack has any more (a removed mod) and a known one.
-        QByteArray raw(qsizetype(QcMapData::pixelCount) * 2, '\0');
+        QByteArray raw(static_cast<qsizetype>(QcMapData::pixelCount) * 2, '\0');
         qToLittleEndian(QcMapPixel::make(0, QcMapPixel::Shade::Normal), raw.data());
         qToLittleEndian(QcMapPixel::make(1, QcMapPixel::Shade::Bright), raw.data() + 2);
         QByteArray payload;
         QDataStream out(&payload, QIODevice::WriteOnly);
         out.setVersion(QcSaveFile::streamVersion);
-        out << QcMapSaveCodec::overworld.toString() << quint8(0) << qint32(0) << qint32(0) << quint32(2);
+        out << QcMapSaveCodec::overworld.toString() << quint8{0} << qint32{0} << qint32{0} << quint32{2};
         out << u"gone:ruby_block"_s << u"qtcraft:stone"_s << qCompress(raw);
         const QByteArray file = QcSaveFile::bytes(QcMapSaveCodec::magic, payload);
 

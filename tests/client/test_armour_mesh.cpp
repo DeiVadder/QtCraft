@@ -18,7 +18,7 @@ namespace {
 // Every texture gets its own little rectangle, so tests can tell faces apart by their UVs.
 QRectF uvOf(const QString &texture)
 {
-    const double u = double(qHash(texture) % 1000) / 1000.0;
+    const double u = static_cast<double>(qHash(texture) % 1000) / 1000.0;
     return {u, 0.0, 0.0005, 0.0005};
 }
 
@@ -31,7 +31,8 @@ QList<QcEntityVertex> drawnWith(const QcEntityMesh &mesh, const QStringList &tex
     for (const QcEntityVertex &vertex : mesh.vertices) {
         const bool match = std::ranges::any_of(textures, [&vertex](const QString &texture) {
             const QRectF rect = uvOf(texture);
-            return double(vertex.u) >= rect.left() - 1e-6 && double(vertex.u) <= rect.right() + 1e-6 && double(vertex.v) <= rect.bottom() + 1e-6;
+            return static_cast<double>(vertex.u) >= rect.left() - 1e-6 && static_cast<double>(vertex.u) <= rect.right() + 1e-6
+                && static_cast<double>(vertex.v) <= rect.bottom() + 1e-6;
         });
         if (match) {
             found.append(vertex);
@@ -52,7 +53,7 @@ std::pair<double, double> capeAndLayer(const QcEntityMesh &mesh)
     if (cape.isEmpty() || layer.isEmpty()) {
         return {0.0, 1.0};
     }
-    return {double(std::ranges::min(cape, {}, &QcEntityVertex::z).z), double(std::ranges::max(layer, {}, &QcEntityVertex::z).z)};
+    return {static_cast<double>(std::ranges::min(cape, {}, &QcEntityVertex::z).z), static_cast<double>(std::ranges::max(layer, {}, &QcEntityVertex::z).z)};
 }
 
 QcAabb boundsOf(const QcEntityMesh &mesh, qsizetype first, qsizetype count)
@@ -60,8 +61,8 @@ QcAabb boundsOf(const QcEntityMesh &mesh, qsizetype first, qsizetype count)
     QcAabb box{{1e9, 1e9, 1e9}, {-1e9, -1e9, -1e9}};
     for (qsizetype i = first; i < first + count; ++i) {
         const QcEntityVertex &v = mesh.vertices[i];
-        box.min = {std::min(box.min.x, double(v.x)), std::min(box.min.y, double(v.y)), std::min(box.min.z, double(v.z))};
-        box.max = {std::max(box.max.x, double(v.x)), std::max(box.max.y, double(v.y)), std::max(box.max.z, double(v.z))};
+        box.min = {std::min(box.min.x, static_cast<double>(v.x)), std::min(box.min.y, static_cast<double>(v.y)), std::min(box.min.z, static_cast<double>(v.z))};
+        box.max = {std::max(box.max.x, static_cast<double>(v.x)), std::max(box.max.y, static_cast<double>(v.y)), std::max(box.max.z, static_cast<double>(v.z))};
     }
     return box;
 }
@@ -163,7 +164,7 @@ private slots:
 
         // Unknown items (a mod gone) draw nothing.
         QcEquipment unknown;
-        unknown.at(QcEquipmentSlot::Head) = {QcItemId(60000), 1, 0};
+        unknown.at(QcEquipmentSlot::Head) = {static_cast<QcItemId>(60000), 1, 0};
         QCOMPARE(playerMesh(unknown).vertices.size(), bare.vertices.size());
     }
 
@@ -322,7 +323,7 @@ private slots:
         spawn.name = u"Tin"_s;
         spawn.yaw = 90.0f;
         spawn.equipment.at(QcEquipmentSlot::Chest) = {item("iron_chestplate"), 1, 4};
-        spawn.equipment.at(QcEquipmentSlot::Head) = {QcItemId(60000), 1, 0};
+        spawn.equipment.at(QcEquipmentSlot::Head) = {static_cast<QcItemId>(60000), 1, 0};
         spawn.stand.small = true;
         QVERIFY(entities.spawn(spawn, m_content.get()));
 

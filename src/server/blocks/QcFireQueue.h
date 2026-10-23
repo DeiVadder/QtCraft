@@ -63,10 +63,10 @@ public:
     // Both indexed by block state id: which states are fire, and on which fire burns for ever.
     QcFireQueue(std::vector<bool> fire, std::vector<bool> eternalGround);
 
-    bool isFire(QcBlockId block) const { return std::size_t(block) < m_fire.size() && m_fire[std::size_t(block)]; }
+    bool isFire(QcBlockId block) const { return static_cast<std::size_t>(block) < m_fire.size() && m_fire[static_cast<std::size_t>(block)]; }
     bool isEternalGround(QcBlockId block) const
     {
-        return std::size_t(block) < m_eternalGround.size() && m_eternalGround[std::size_t(block)];
+        return static_cast<std::size_t>(block) < m_eternalGround.size() && m_eternalGround[static_cast<std::size_t>(block)];
     }
     void setLimits(Limits limits) { m_limits = limits; }
     const Limits &limits() const { return m_limits; }
@@ -127,7 +127,7 @@ private:
     // Due tick and order of planning.
     using Key = std::pair<quint64, quint64>;
     // The key of a fire taking its step: in no order of steps.
-    static constexpr Key unplanned{~quint64(0), ~quint64(0)};
+    static constexpr Key unplanned{~quint64{0}, ~quint64{0}};
 
     struct Entry
     {

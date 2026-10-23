@@ -84,20 +84,20 @@ QcBlockFace turnedFace(QcBlockFace face, int turns)
         // Rolling about the z axis: up, east, down and west follow each other.
         constexpr std::array<QcBlockFace, 4> roll = {QcBlockFace::Up, QcBlockFace::East, QcBlockFace::Down, QcBlockFace::West};
         const auto it = std::ranges::find(roll, face);
-        return it == roll.end() ? face : roll[(std::size_t(it - roll.begin()) + 1) % roll.size()];
+        return it == roll.end() ? face : roll[(static_cast<std::size_t>(it - roll.begin()) + 1) % roll.size()];
     }
     if (turns == turnUp || turns == turnDown || turns == turnAxisZ) {
         // Tilting about the x axis: north, up, south and down follow each other.
         constexpr std::array<QcBlockFace, 4> tilt = {QcBlockFace::North, QcBlockFace::Up, QcBlockFace::South, QcBlockFace::Down};
         const auto it = std::ranges::find(tilt, face);
         const std::size_t step = turns == turnUp ? 1 : 3;
-        return it == tilt.end() ? face : tilt[(std::size_t(it - tilt.begin()) + step) % tilt.size()];
+        return it == tilt.end() ? face : tilt[(static_cast<std::size_t>(it - tilt.begin()) + step) % tilt.size()];
     }
 
     constexpr std::array<QcBlockFace, 4> ring = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
     for (std::size_t i = 0; i < ring.size(); ++i) {
         if (ring[i] == face) {
-            return ring[(i + std::size_t(turns)) % ring.size()];
+            return ring[(i + static_cast<std::size_t>(turns)) % ring.size()];
         }
     }
     return face;
@@ -114,7 +114,7 @@ quint8 uvTurns(QcBlockFace face, int turns)
         if (!vertical) {
             return 0;
         }
-        return quint8(face == QcBlockFace::Up ? turns : (4 - turns) % 4);
+        return static_cast<quint8>(face == QcBlockFace::Up ? turns : (4 - turns) % 4);
     }
     if (turns != turnAxisX && turns != turnAxisZ) {
         return 0;
@@ -257,7 +257,7 @@ QString partTexture(const QcBlockDefinition &block, const QcShapePart &part, qui
 quint64 valueIndex(const QcBlockDefinition &block, quint32 index, const QString &property)
 {
     const QcBlockProperty *values = block.property(property);
-    return values ? quint64(std::max<qsizetype>(0, values->values.indexOf(QcBlockStateTable::value(block, index, property)))) : 0;
+    return values ? static_cast<quint64>(std::max<qsizetype>(0, values->values.indexOf(QcBlockStateTable::value(block, index, property)))) : 0;
 }
 
 // The values of the properties that name texture slots ("$<property>"), 5 bits each from bit 38 on
@@ -288,11 +288,12 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
             return condition.values.contains(QcBlockStateTable::value(block, index, condition.property));
         });
         if (applies) {
-            mask |= quint32(1) << part;
+            mask |= quint32{1} << part;
         }
     }
 
-    return quint64(mask) | (quint64(turns.quarters) << 32) | (quint64(flip ? 1 : 0) << 35) | (quint64(turns.sixteenths) << 36)
+    return static_cast<quint64>(mask) | (static_cast<quint64>(turns.quarters) << 32) | (static_cast<quint64>(flip ? 1 : 0) << 35)
+        | (static_cast<quint64>(turns.sixteenths) << 36)
            | textureKey(block, shape, index);
 }
 
@@ -303,7 +304,7 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
     state.index = index;
     const Turns spun = turnsOf(block, shape, index);
     const int turns = spun.quarters;
-    state.fineTurns = quint8(spun.sixteenths);
+    state.fineTurns = static_cast<quint8>(spun.sixteenths);
     const bool flip = !shape.flip.isEmpty() && QcBlockStateTable::value(block, index, shape.flip) == u"top"_s;
     const auto place = [turns, flip](const QcAabb &box) { return turned(flip ? flipped(box) : box, turns); };
 
@@ -333,8 +334,8 @@ quint64 variantKey(const QcBlockDefinition &block, const QcShapeDefinition &shap
     }
 
     for (const QcBlockFace face : qcAllBlockFaces) {
-        state.faceSource[std::size_t(turnedFace(face, turns))] = face;
-        state.faceUvTurns[std::size_t(face)] = uvTurns(face, turns);
+        state.faceSource[static_cast<std::size_t>(turnedFace(face, turns))] = face;
+        state.faceUvTurns[static_cast<std::size_t>(face)] = uvTurns(face, turns);
     }
     return state;
 }
@@ -396,7 +397,7 @@ qsizetype QcBlockStateTable::derivedBoxes(const QcBlockDefinition &block, const 
         return 1;
     }
 
-    const auto count = quint32(std::max<qsizetype>(1, std::min<qsizetype>(stateCountOf(block), maxStatesPerBlock)));
+    const auto count = static_cast<quint32>(std::max<qsizetype>(1, std::min<qsizetype>(stateCountOf(block), maxStatesPerBlock)));
     QSet<quint64> seen;
     qsizetype boxes = 0;
 
@@ -407,9 +408,9 @@ qsizetype QcBlockStateTable::derivedBoxes(const QcBlockDefinition &block, const 
         }
         seen.insert(key);
 
-        const quint32 mask = quint32(key);
+        const quint32 mask = static_cast<quint32>(key);
         for (qsizetype part = 0; part < shape.parts.size(); ++part) {
-            if (mask & (quint32(1) << part)) {
+            if (mask & (quint32{1} << part)) {
                 const QcShapePart &applied = shape.parts[part];
                 boxes += applied.boxes.size() + applied.crosses.size() + applied.target.size() + (applied.customCollision ? applied.collision.size() : applied.boxes.size());
             }
@@ -420,7 +421,7 @@ qsizetype QcBlockStateTable::derivedBoxes(const QcBlockDefinition &block, const 
 
 bool QcBlockStateTable::fits(std::optional<quint32> type, qsizetype boxes) const
 {
-    const qsizetype replaced = type && qsizetype(*type) < m_boxes.size() ? m_boxes[qsizetype(*type)] : 0;
+    const qsizetype replaced = type && static_cast<qsizetype>(*type) < m_boxes.size() ? m_boxes[static_cast<qsizetype>(*type)] : 0;
     return m_totalBoxes - replaced + boxes <= maxDerivedBoxes;
 }
 
@@ -440,18 +441,18 @@ QList<QcBlockState> QcBlockStateTable::computeAll(const QcBlockDefinition &block
     QHash<quint64, qsizetype> variants;
 
     for (int index = 0; index < count; ++index) {
-        const quint64 key = variantKey(block, shape, quint32(index));
+        const quint64 key = variantKey(block, shape, static_cast<quint32>(index));
         const auto variant = variants.constFind(key);
         if (variant != variants.constEnd()) {
             // Same boxes, faces and flags: share the lists of the first state of this variant.
             QcBlockState state = states[*variant];
-            state.index = quint32(index);
+            state.index = static_cast<quint32>(index);
             states.append(std::move(state));
             continue;
         }
 
         variants.insert(key, states.size());
-        QcBlockState state = compute(block, shape, quint32(index));
+        QcBlockState state = compute(block, shape, static_cast<quint32>(index));
         state.type = type;
         states.append(std::move(state));
     }
@@ -461,9 +462,9 @@ QList<QcBlockState> QcBlockStateTable::computeAll(const QcBlockDefinition &block
 
 void QcBlockStateTable::append(const QcBlockDefinition &block, const QcShapeDefinition &shape)
 {
-    const auto type = quint32(m_firstState.size());
-    const auto count = int(std::max<qsizetype>(1, stateCountOf(block)));
-    m_firstState.append(quint32(m_states.size()));
+    const auto type = static_cast<quint32>(m_firstState.size());
+    const auto count = static_cast<int>(std::max<qsizetype>(1, stateCountOf(block)));
+    m_firstState.append(static_cast<quint32>(m_states.size()));
     m_stateCounts.append(count);
 
     const qsizetype boxes = derivedBoxes(block, shape);
@@ -475,16 +476,16 @@ void QcBlockStateTable::append(const QcBlockDefinition &block, const QcShapeDefi
 
 void QcBlockStateTable::update(quint32 type, const QcBlockDefinition &block, const QcShapeDefinition &shape)
 {
-    const quint32 first = m_firstState[qsizetype(type)];
-    const int count = m_stateCounts[qsizetype(type)];
+    const quint32 first = m_firstState[static_cast<qsizetype>(type)];
+    const int count = m_stateCounts[static_cast<qsizetype>(type)];
 
     const qsizetype boxes = derivedBoxes(block, shape);
-    m_totalBoxes += boxes - m_boxes[qsizetype(type)];
-    m_boxes[qsizetype(type)] = boxes;
+    m_totalBoxes += boxes - m_boxes[static_cast<qsizetype>(type)];
+    m_boxes[static_cast<qsizetype>(type)] = boxes;
 
     QList<QcBlockState> states = computeAll(block, shape, count, type);
     for (int index = 0; index < count; ++index) {
-        m_states[qsizetype(first) + index] = std::move(states[index]);
+        m_states[static_cast<qsizetype>(first) + index] = std::move(states[index]);
     }
 }
 
@@ -492,9 +493,9 @@ QString QcBlockStateTable::value(const QcBlockDefinition &block, quint32 index, 
 {
     quint32 rest = index;
     for (const QcBlockProperty &candidate : block.properties) {
-        const auto count = quint32(candidate.values.size());
+        const auto count = static_cast<quint32>(candidate.values.size());
         if (candidate.name == property) {
-            return candidate.values[qsizetype(rest % count)];
+            return candidate.values[static_cast<qsizetype>(rest % count)];
         }
         rest /= count;
     }
@@ -506,14 +507,14 @@ std::optional<quint32> QcBlockStateTable::withValue(const QcBlockDefinition &blo
 {
     quint32 stride = 1;
     for (const QcBlockProperty &candidate : block.properties) {
-        const auto count = quint32(candidate.values.size());
+        const auto count = static_cast<quint32>(candidate.values.size());
         if (candidate.name == property) {
             const qsizetype wanted = candidate.values.indexOf(value);
             if (wanted < 0) {
                 return std::nullopt;
             }
             const quint32 current = (index / stride) % count;
-            return index - current * stride + quint32(wanted) * stride;
+            return index - current * stride + static_cast<quint32>(wanted) * stride;
         }
         stride *= count;
     }
@@ -529,8 +530,8 @@ QString QcBlockStateTable::describe(const QcBlockDefinition &block, quint32 inde
     QStringList parts;
     quint32 rest = index;
     for (const QcBlockProperty &property : block.properties) {
-        const auto count = quint32(property.values.size());
-        parts.append(property.name + u'=' + property.values[qsizetype(rest % count)]);
+        const auto count = static_cast<quint32>(property.values.size());
+        parts.append(property.name + u'=' + property.values[static_cast<qsizetype>(rest % count)]);
         rest /= count;
     }
     return u'[' + parts.join(u',') + u']';
@@ -558,14 +559,14 @@ QcBlockState QcBlockStateTable::compute(const QcBlockDefinition &block, const Qc
     state.lightOpacity = block.lightOpacity;
 
     for (const QcBlockFace face : qcAllBlockFaces) {
-        state.fullFace[std::size_t(face)] = coversSide(state.boxes, face);
+        state.fullFace[static_cast<std::size_t>(face)] = coversSide(state.boxes, face);
     }
 
     // A partial shape of a light-dimming block (stairs, slabs) dims light by its covered faces only.
     if (!state.fullCube && state.lightOpacity > 0) {
         state.lightOpacity = 0;
         for (const QcBlockFace face : qcAllBlockFaces) {
-            state.lightBlockedFaces |= state.fullFace[std::size_t(face)] ? QcLightPassage::bit(face) : quint8(0);
+            state.lightBlockedFaces |= state.fullFace[static_cast<std::size_t>(face)] ? QcLightPassage::bit(face) : quint8{0};
         }
     }
     return state;

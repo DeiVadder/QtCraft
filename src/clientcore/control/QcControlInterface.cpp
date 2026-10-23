@@ -55,7 +55,7 @@ void QcControlInterface::setSession(QcClientSession *session)
         connect(session, &QcClientSession::ticked, this, [this, session] {
             const bool active = session->state() == QcClientSession::State::Playing && !session->isDead() && !session->machine().isOpen()
                                 && !session->trading().isOpen();
-            m_gamepad.applyFrame(*session, float(QcPhysics::tickDuration), active);
+            m_gamepad.applyFrame(*session, static_cast<float>(QcPhysics::tickDuration), active);
         });
     }
 }

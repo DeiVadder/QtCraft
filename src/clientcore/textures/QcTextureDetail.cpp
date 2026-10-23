@@ -33,17 +33,17 @@ Pixel pixelAt(const QImage &image, int x, int y)
     // Textures tile, so neighbours wrap around (an icon's border is transparent either way).
     const int wrappedX = (x + image.width()) % image.width();
     const int wrappedY = (y + image.height()) % image.height();
-    const uchar *p = image.constScanLine(wrappedY) + std::ptrdiff_t(wrappedX) * 4;
+    const uchar *p = image.constScanLine(wrappedY) + static_cast<std::ptrdiff_t>(wrappedX) * 4;
     return {p[0], p[1], p[2], p[3]};
 }
 
 void setPixel(QImage &image, int x, int y, Pixel pixel)
 {
-    uchar *p = image.scanLine(y) + std::ptrdiff_t(x) * 4;
-    p[0] = uchar(pixel.r);
-    p[1] = uchar(pixel.g);
-    p[2] = uchar(pixel.b);
-    p[3] = uchar(pixel.a);
+    uchar *p = image.scanLine(y) + static_cast<std::ptrdiff_t>(x) * 4;
+    p[0] = static_cast<uchar>(pixel.r);
+    p[1] = static_cast<uchar>(pixel.g);
+    p[2] = static_cast<uchar>(pixel.b);
+    p[3] = static_cast<uchar>(pixel.a);
 }
 
 bool similar(Pixel first, Pixel second)
@@ -93,7 +93,7 @@ QImage scale2x(const QImage &source, bool smooth)
 
 int channel(double value)
 {
-    return std::clamp(int(std::lround(value)), 0, 255);
+    return std::clamp(static_cast<int>(std::lround(value)), 0, 255);
 }
 
 Pixel shaded(Pixel pixel, double factor)
@@ -125,7 +125,7 @@ double bevelFactor(const QImage &shape, int x, int y, double strength, int width
     }
 
     for (int distance = 1; distance <= width; ++distance) {
-        const double weight = strength * (1.0 - double(distance - 1) / width);
+        const double weight = strength * (1.0 - static_cast<double>(distance - 1) / width);
         const bool lit = acrossEdge(shape, self, x, y, {0, -1, distance}) || acrossEdge(shape, self, x, y, {-1, 0, distance});
         const bool dark = acrossEdge(shape, self, x, y, {0, 1, distance}) || acrossEdge(shape, self, x, y, {1, 0, distance});
         if (lit || dark) {
@@ -230,7 +230,7 @@ QImage enlarge(const QImage &base, int resolution, const Params &params, quint32
         addBevel(image, shape, params.bevel, bevelWidth);
     }
     if (params.grain > 0.0) {
-        addGrain(image, params.grain, seed * 31u + quint32(resolution));
+        addGrain(image, params.grain, seed * 31u + static_cast<quint32>(resolution));
     }
     return image;
 }

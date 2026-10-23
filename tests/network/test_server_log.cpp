@@ -53,7 +53,7 @@ private:
         [[maybe_unused]] const bool up = QTest::qWaitFor([&] {
             m_output += QString::fromUtf8(m_process.readAllStandardOutput());
             const QRegularExpressionMatch match = listening.match(m_output);
-            port = match.hasMatch() ? quint16(match.captured(1).toUInt()) : 0;
+            port = match.hasMatch() ? static_cast<quint16>(match.captured(1).toUInt()) : 0;
             return port != 0 || m_process.state() == QProcess::NotRunning;
         }, timeoutMs);
         return port;

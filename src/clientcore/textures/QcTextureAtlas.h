@@ -15,7 +15,7 @@ struct QcTextureAtlasOptions
     // Largest texture edge the GPU takes (QRhi::TextureSizeMax; 8192 until the renderer knows).
     int maxExtent = 8192;
     // Bytes of all mip levels together.
-    qint64 memoryBudget = qint64(256) * 1024 * 1024;
+    qint64 memoryBudget = qint64{256} * 1024 * 1024;
     // Largest tile size used: textures (QcTexturePackLoader::Limits::maxStoredResolution); smaller
     // for atlases that only feed icons.
     int maxTileSize = 256;

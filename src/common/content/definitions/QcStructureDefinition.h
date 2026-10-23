@@ -254,5 +254,5 @@ struct QcStructureDefinition
     // every allow-list they hold in the whole world.
     QcAdventureRules adventure;
 
-    qsizetype cellIndex(int x, int y, int z) const { return x + qsizetype(sizeX) * (z + qsizetype(sizeZ) * y); }
+    qsizetype cellIndex(int x, int y, int z) const { return x + static_cast<qsizetype>(sizeX) * (z + static_cast<qsizetype>(sizeZ) * y); }
 };

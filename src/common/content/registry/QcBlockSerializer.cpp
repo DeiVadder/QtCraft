@@ -11,7 +11,7 @@ namespace {
 
 void writeAabbs(QDataStream &stream, const QList<QcAabb> &boxes)
 {
-    stream << quint32(boxes.size());
+    stream << static_cast<quint32>(boxes.size());
     for (const QcAabb &box : boxes) {
         stream << box.min.x << box.min.y << box.min.z << box.max.x << box.max.y << box.max.z;
     }
@@ -46,11 +46,11 @@ void writeAabbs(QDataStream &stream, const QList<QcAabb> &boxes)
 
 void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 {
-    stream << shape.name << shape.rotate << shape.flip << shape.spin << quint32(shape.parts.size());
+    stream << shape.name << shape.rotate << shape.flip << shape.spin << static_cast<quint32>(shape.parts.size());
     for (const QcShapePart &part : shape.parts) {
-        stream << quint32(part.when.size());
+        stream << static_cast<quint32>(part.when.size());
         for (const QcShapeCondition &condition : part.when) {
-            stream << condition.property << quint32(condition.values.size());
+            stream << condition.property << static_cast<quint32>(condition.values.size());
             for (const QString &value : condition.values) {
                 stream << value;
             }
@@ -158,13 +158,13 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     // Machine speed and fuel time drive server-side timers; they must stay within the parser's ranges.
     const bool machineOk = block.machine.category.size() <= 64 && std::isfinite(block.machine.speed)
                            && block.machine.speed > 0.0 && block.machine.speed <= 100.0 && block.machine.kinds.size() <= 16;
-    if (renderLayer > quint8(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
+    if (renderLayer > static_cast<quint8>(QcRenderLayer::Translucent) || lightOpacity < 0 || lightOpacity > 15
         || !machineOk || !QcBlockSerializer::plausibleFuel(block.fuelSeconds)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
 
-    block.renderLayer = QcRenderLayer(renderLayer);
+    block.renderLayer = static_cast<QcRenderLayer>(renderLayer);
     block.lightOpacity = lightOpacity;
     block.toolLevel = toolLevel;
     return block;
@@ -299,12 +299,12 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     block.sign = {signLines, signLength};
     block.bites.food = biteFood;
     block.campfire.slotCount = campfireSlots;
-    if (signalKind >= quint8(qcSignalKindCount) || signLines > QcSignDefinition::maxLines || signLength < 1
+    if (signalKind >= static_cast<quint8>(qcSignalKindCount) || signLines > QcSignDefinition::maxLines || signLength < 1
         || signLength > QcSignDefinition::maxLineLength) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
-    block.signal.kind = QcSignalKind(signalKind);
+    block.signal.kind = static_cast<QcSignalKind>(signalKind);
     const auto factor = [](double value, double low, double high) { return std::isfinite(value) && value >= low && value <= high; };
     if (flowDistance < 0 || flowDistance > QcLiquidDefinition::maxDistance || !factor(block.flow.movementFactor, 0.05, 2.0)
         || !factor(block.slowsInside, 0.01, 1.0) || !factor(block.surfaceSpeed, 0.1, 2.0) || !factor(block.surfaceJump, 0.1, 2.0)
@@ -315,7 +315,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 
     block.flow.distance = flowDistance;
     if (stream.status() != QDataStream::Ok || lightLevel < 0 || lightLevel > QcBlockDefinition::maxLightLevel
-        || facingRule > quint8(QcFacingRule::Against) || support > quint8(QcBlockSupport::Attached) || containerSlots < 0
+        || facingRule > static_cast<quint8>(QcFacingRule::Against) || support > static_cast<quint8>(QcBlockSupport::Attached) || containerSlots < 0
         || containerColumns < 1 || containerColumns > 9
         || containerSlots > QcBlockDefinition::maxContainerSlots || biteFood < 0 || biteFood > QcItemDefinition::maxFood
         || campfireSlots < 0 || campfireSlots > QcCampfireDefinition::maxSlots || !QcBlockStateTable::problem(block).isEmpty()) {
@@ -324,8 +324,8 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     }
 
     block.lightLevel = lightLevel;
-    block.facingRule = QcFacingRule(facingRule);
-    block.support = QcBlockSupport(support);
+    block.facingRule = static_cast<QcFacingRule>(facingRule);
+    block.support = static_cast<QcBlockSupport>(support);
     block.containerSlots = containerSlots;
     block.containerColumns = containerColumns;
     return block;
@@ -342,22 +342,22 @@ bool plausibleFuel(double seconds)
 
 void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcShapeDefinition &shape)
 {
-    stream << block.name << block.translationKey << quint8(block.renderLayer) << block.solid << block.opaque
-           << block.liquid << block.replaceable << qint32(block.lightOpacity) << block.hardness << block.tool
-           << qint32(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.opensEnchanting << block.machine.category
+    stream << block.name << block.translationKey << static_cast<quint8>(block.renderLayer) << block.solid << block.opaque
+           << block.liquid << block.replaceable << static_cast<qint32>(block.lightOpacity) << block.hardness << block.tool
+           << static_cast<qint32>(block.toolLevel) << block.opensCrafting << block.opensStonecutter << block.opensEnchanting << block.machine.category
            << block.machine.speed << block.fuelSeconds << block.machine.sound << block.machine.kinds << block.soundMaterial;
     for (const QString &key : block.soundKeys) {
         stream << key;
     }
 
-    stream << quint32(block.drops.size());
+    stream << static_cast<quint32>(block.drops.size());
     for (const QcItemDrop &drop : block.drops) {
-        stream << drop.item << qint32(drop.count) << drop.chance << qint32(drop.maxCount);
+        stream << drop.item << static_cast<qint32>(drop.count) << drop.chance << static_cast<qint32>(drop.maxCount);
     }
 
     const QcSaplingDefinition &sapling = block.sapling;
     stream << sapling.feature << sapling.minSeconds << sapling.maxSeconds << sapling.plantChance
-           << quint32(sapling.plantOn.size());
+           << static_cast<quint32>(sapling.plantOn.size());
     for (const QString &ground : sapling.plantOn) {
         stream << ground;
     }
@@ -366,34 +366,36 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
         stream << texture;
     }
 
-    stream << quint32(block.properties.size());
+    stream << static_cast<quint32>(block.properties.size());
     for (const QcBlockProperty &property : block.properties) {
-        stream << property.name << quint32(property.values.size());
+        stream << property.name << static_cast<quint32>(property.values.size());
         for (const QString &value : property.values) {
             stream << value;
         }
     }
 
     writeShape(stream, shape);
-    stream << quint32(block.textureSlots.size());
+    stream << static_cast<quint32>(block.textureSlots.size());
     for (const auto &[slot, texture] : block.textureSlots) {
         stream << slot << texture;
     }
 
-    stream << block.itemTexture << qint32(block.lightLevel) << block.climbable << block.toggles << block.door
-           << quint8(block.facingRule) << quint8(block.support) << block.connectGroup << quint32(block.connectsTo.size());
+    stream << block.itemTexture << static_cast<qint32>(block.lightLevel) << block.climbable << block.toggles << block.door
+           << static_cast<quint8>(block.facingRule) << static_cast<quint8>(block.support) << block.connectGroup
+           << static_cast<quint32>(block.connectsTo.size());
     for (const QString &group : block.connectsTo) {
         stream << group;
     }
-    stream << qint32(block.containerSlots) << qint32(block.containerColumns) << qint32(block.flow.distance) << block.flow.movementFactor;
-    stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << block.slipperiness << quint8(block.signal.kind);
+    stream << static_cast<qint32>(block.containerSlots) << static_cast<qint32>(block.containerColumns)
+        << static_cast<qint32>(block.flow.distance) << block.flow.movementFactor;
+    stream << block.slowsInside << block.surfaceSpeed << block.surfaceJump << block.slipperiness << static_cast<quint8>(block.signal.kind);
     // Whether it is fire: the client shows the default fire around burning bodies.
     stream << block.fire.isFire;
     // Signs: the client draws their text and offers the editor (decision E-766).
-    stream << quint8(block.sign.lines) << quint8(block.sign.lineLength);
+    stream << static_cast<quint8>(block.sign.lines) << static_cast<quint8>(block.sign.lineLength);
     // What makes the use button act on the block: a lily pad aims at liquids, cake and a lit campfire
     // take the use instead of food being eaten.
-    stream << block.floats << qint32(block.bites.food) << qint32(block.campfire.slotCount);
+    stream << block.floats << static_cast<qint32>(block.bites.food) << static_cast<qint32>(block.campfire.slotCount);
     // How a hand holds its item (decision E-831).
     QcHoldSerializer::write(stream, block.hold);
 }

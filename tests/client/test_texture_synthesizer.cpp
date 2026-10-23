@@ -68,7 +68,8 @@ double ringContrast(const QImage &image)
     for (int y = 0; y <= last; ++y) {
         for (int x = 0; x <= last; ++x) {
             const QColor c = image.pixelColor(x, y);
-            const std::array<double, 4> channels = {double(c.red()), double(c.green()), double(c.blue()), double(c.alpha())};
+            const std::array<double, 4> channels = {static_cast<double>(c.red()), static_cast<double>(c.green()),
+                static_cast<double>(c.blue()), static_cast<double>(c.alpha())};
             const bool onRing = x == 0 || y == 0 || x == last || y == last;
             std::array<double, 4> &sum = onRing ? ring : inner;
             for (std::size_t i = 0; i < 4; ++i) {

@@ -35,12 +35,12 @@ public:
     // Adds the labels of the chunk at `pos` that are within their reach of the eye.
     void addChunk(QcChunkPos pos, const QList<QcWorldLabel> &labels, const QcVec3 &eye)
     {
-        const quint64 chunkKey = (quint64(quint32(pos.x)) << 40) ^ (quint64(quint32(pos.z)) << 16);
+        const quint64 chunkKey = (static_cast<quint64>(static_cast<quint32>(pos.x)) << 40) ^ (static_cast<quint64>(static_cast<quint32>(pos.z)) << 16);
         for (qsizetype i = 0; i < labels.size(); ++i) {
             const QcWorldLabel &label = labels[i];
             const double distance = (label.position - eye).length();
             if (distance <= (label.heading ? QcLabelProjector::headingReach : QcLabelProjector::labelReach)) {
-                m_list.append({&label, chunkKey ^ quint64(i), distance});
+                m_list.append({&label, chunkKey ^ static_cast<quint64>(i), distance});
             }
         }
     }
@@ -54,8 +54,8 @@ private:
 [[nodiscard]] QList<Candidate> candidatesNear(const QHash<QcChunkPos, QList<QcWorldLabel>> &labels, const QcVec3 &eye)
 {
     Candidates candidates;
-    const QcChunkPos centre = QcBlockPos{int(std::floor(eye.x)), 0, int(std::floor(eye.z))}.chunk();
-    const int radius = int(std::ceil(QcLabelProjector::headingReach / QcWorld::chunkSize)) + 1;
+    const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(eye.x)), 0, static_cast<int>(std::floor(eye.z))}.chunk();
+    const int radius = static_cast<int>(std::ceil(QcLabelProjector::headingReach / QcWorld::chunkSize)) + 1;
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dz = -radius; dz <= radius; ++dz) {
             const QcChunkPos pos{centre.x + dx, centre.z + dz};
@@ -98,7 +98,7 @@ bool hidesAt(const QcBlockAccess &world, QcBlockPos pos)
 [[nodiscard]] std::optional<QcScreenLabel> project(const Candidate &candidate, const QMatrix4x4 &viewProjection, double focal, const QcLabelProjector::View &view)
 {
     const QcVec3 &p = candidate.label->position;
-    const QVector4D clip = viewProjection * QVector4D(float(p.x), float(p.y), float(p.z), 1.0f);
+    const QVector4D clip = viewProjection * QVector4D(static_cast<float>(p.x), static_cast<float>(p.y), static_cast<float>(p.z), 1.0f);
     if (clip.w() <= QcCamera::nearPlane) {
         return std::nullopt;
     }
@@ -139,7 +139,7 @@ bool QcLabelProjector::isHidden(const QcBlockAccess &world, const QcVec3 &eye, c
     // hide it, glass, panes and leaves on the way do not, whatever lies behind them.
     const QcVec3 direction = toPoint * (1.0 / distance);
     const double end = distance - 0.3;
-    QcBlockPos cell{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    QcBlockPos cell{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     std::array<AxisWalk, 3> walks{axisWalk(eye.x, direction.x, cell.x), axisWalk(eye.y, direction.y, cell.y),
                                   axisWalk(eye.z, direction.z, cell.z)};
     for (double travelled = 0.0; travelled <= end;) {
@@ -167,7 +167,7 @@ QList<QcScreenLabel> QcLabelProjector::visible(const QHash<QcChunkPos, QList<QcW
     QList<Candidate> candidates = candidatesNear(labels, eye);
     std::ranges::sort(candidates, {}, &Candidate::distance);
 
-    const QMatrix4x4 projection = view.camera.projectionMatrix(float(view.width / view.height), projectionFar);
+    const QMatrix4x4 projection = view.camera.projectionMatrix(static_cast<float>(view.width / view.height), projectionFar);
     const QMatrix4x4 viewProjection = projection * view.camera.viewMatrix();
     const double focal = 0.5 * view.height * projection(1, 1);
     QList<QcScreenLabel> shown;

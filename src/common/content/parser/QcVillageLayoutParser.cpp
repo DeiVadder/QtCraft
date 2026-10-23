@@ -31,10 +31,12 @@ QcVillageRange<Value> readRange(const QString &key, QcVillageRange<Value> fallba
 
     const QJsonArray array = value.isArray() ? value.toArray() : QJsonArray{value, value};
     const auto inside = [&bounds](const QJsonValue &end) {
-        return end.isDouble() && end.toDouble() >= double(bounds.first) && end.toDouble() <= double(bounds.second);
+        return end.isDouble() && end.toDouble() >= static_cast<double>(bounds.first) && end.toDouble() <= static_cast<double>(bounds.second);
     };
     if (array.size() != 2 || !inside(array[0]) || !inside(array[1]) || array[0].toDouble() > array[1].toDouble()) {
-        reader.fail(u"'%1' must be a number or [low, high] within %2 to %3"_s.arg(key).arg(double(bounds.first)).arg(double(bounds.second)));
+        reader.fail(u"'%1' must be a number or [low, high] within %2 to %3"_s.arg(key)
+                        .arg(static_cast<double>(bounds.first))
+                        .arg(static_cast<double>(bounds.second)));
         return fallback;
     }
     return {Value(array[0].toDouble()), Value(array[1].toDouble())};

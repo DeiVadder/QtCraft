@@ -22,7 +22,7 @@ constexpr double standChance = 0.4;
 
 QcVec3 centreOf(QcBlockPos cell)
 {
-    return {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+    return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
 }
 
 double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
@@ -80,11 +80,12 @@ QcVillagerBehaviour::QcVillagerBehaviour(std::shared_ptr<const QcContentRegistry
     for (const QcVillagerSettings &species : registry.villageCatalog().villagerSpecies()) {
         m_trades.insert(species.name, QcVillagerTrades(registry, species));
     }
-    m_ripe.assign(std::size_t(registry.stateCount()), false);
+    m_ripe.assign(static_cast<std::size_t>(registry.stateCount()), false);
     for (qsizetype id = 0; id < registry.stateCount(); ++id) {
-        const QcBlockDefinition &block = registry.block(QcBlockId(id));
+        const QcBlockDefinition &block = registry.block(static_cast<QcBlockId>(id));
         const QcBlockProperty *stages = block.crop.isCrop() ? block.property(block.crop.property) : nullptr;
-        m_ripe[std::size_t(id)] = stages && !stages->values.isEmpty() && registry.property(QcBlockId(id), block.crop.property) == stages->values.constLast();
+        m_ripe[static_cast<std::size_t>(id)] = stages && !stages->values.isEmpty()
+            && registry.property(static_cast<QcBlockId>(id), block.crop.property) == stages->values.constLast();
     }
 }
 
@@ -455,7 +456,7 @@ void QcVillagerBehaviour::arrive(QcCreature &mob, const Context &context)
 
     // There: within reach or the target's closeEnough (the meeting), or at the end of a path that
     // gets there; it stays there while it stands a little farther (pushed by the crowd).
-    const double near = std::max(reach, double(villager.closeEnough));
+    const double near = std::max(reach, static_cast<double>(villager.closeEnough));
     const bool pathThere = mob.path.finished() && mob.path.reachesGoal && mob.path.plannedGoal == target && level;
     villager.arrived = (distance <= near && level) || pathThere || (villager.arrived && distance <= near + 1.0 && level);
     if (!villager.arrived) {

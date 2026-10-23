@@ -4,6 +4,7 @@
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/input/QcGamepadMapping.h"
 #include "clientcore/input/QcGamepadSource.h"
+#include "common/core/QcDowncast.h"
 
 #include <QCoreApplication>
 #include <QMouseEvent>
@@ -190,7 +191,7 @@ QVariantMap QcGamepadUi::actions() const
     using QcGamepadMapping::Action;
     QVariantMap result;
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
-        const auto action = Action(index);
+        const auto action = static_cast<Action>(index);
         const std::optional<QcGamepadButton> button = m_world.profile().bindings.button(action);
         // The triggers' actions are axes; the others without a button are "".
         const QString trigger = action == Action::Mine ? u"rightTrigger"_s : action == Action::Use ? u"leftTrigger"_s : QString();
@@ -255,7 +256,7 @@ void QcGamepadUi::captureFrom(int id)
         return;
     }
     for (std::size_t index = 0; index < qcGamepadButtonCount; ++index) {
-        const auto button = QcGamepadButton(index);
+        const auto button = static_cast<QcGamepadButton>(index);
         if (now.pressed(button) && !before.pressed(button) && QcGamepadMapping::bindable(button)) {
             cancelCapture();
             emit buttonCaptured(QcGamepadNames::button(button));
@@ -337,7 +338,7 @@ bool QcGamepadUi::eventFilter(QObject *watched, QEvent *event)
     }
 
     if (event->type() == QEvent::MouseMove && watched->isWindowType()) {
-        if (mouseMoved(static_cast<const QWindow &>(*watched), static_cast<const QMouseEvent &>(*event))) {
+        if (mouseMoved(*qcDowncast<const QWindow>(watched), *qcDowncast<const QMouseEvent>(event))) {
             setActive(false);
         }
     } else if (keyOrClick(watched, event)) {

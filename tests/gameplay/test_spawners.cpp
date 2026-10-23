@@ -198,17 +198,18 @@ private:
             return out;
         };
         QByteArray entry;
-        *stream(entry) << qint32(pos.x) << qint32(pos.y) << qint32(pos.z) << u"qtcraft:zombie"_s << quint32(9) << quint8(1) << quint16(0xbeef);
+        *stream(entry) << static_cast<qint32>(pos.x) << static_cast<qint32>(pos.y) << static_cast<qint32>(pos.z) << u"qtcraft:zombie"_s
+            << quint32{9} << quint8{1} << quint16{0xbeef};
         QByteArray payload;
         {
             const auto out = stream(payload);
-            *out << quint32(1) << quint16(2) << quint32(entry.size());
-            out->writeRawData(entry.constData(), int(entry.size()));
+            *out << quint32{1} << quint16{2} << static_cast<quint32>(entry.size());
+            out->writeRawData(entry.constData(), static_cast<int>(entry.size()));
         }
         QByteArray blob;
         const auto out = stream(blob);
-        *out << quint16(1) << quint16(QcBlockEntityRecord::Table::Spawners) << quint16(1) << quint32(payload.size());
-        out->writeRawData(payload.constData(), int(payload.size()));
+        *out << quint16{1} << static_cast<quint16>(QcBlockEntityRecord::Table::Spawners) << quint16{1} << static_cast<quint32>(payload.size());
+        out->writeRawData(payload.constData(), static_cast<int>(payload.size()));
         return blob;
     }
 
@@ -247,7 +248,7 @@ private slots:
     void waitsWhileNoPlayerIsNear()
     {
         joinArena();
-        teleport({m_feet.x + 0.5, double(m_feet.y), m_feet.z - 9.5});
+        teleport({m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z - 9.5});
         placeSpawner();
         const quint32 before = spawner()->delay;
         ticks(60);
@@ -255,7 +256,7 @@ private slots:
         QVERIFY(spawned().isEmpty());
 
         // Within 16 blocks it counts down again.
-        teleport({m_feet.x + 0.5, double(m_feet.y), m_feet.z - 6.5});
+        teleport({m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z - 6.5});
         ticks(5);
         QVERIFY(spawner()->delay < before);
     }
@@ -280,9 +281,10 @@ private slots:
         joinArena();
         placeSpawner();
         for (int i = 0; i < 6; ++i) {
-            m_server->mobs().spawn(zombieType(), {spawnerPos().x + 0.5 + (i % 3), double(spawnerPos().y), spawnerPos().z + 2.5}, m_server->entities().newId());
+            m_server->mobs().spawn(zombieType(),
+                {spawnerPos().x + 0.5 + (i % 3), static_cast<double>(spawnerPos().y), spawnerPos().z + 2.5}, m_server->entities().newId());
         }
-        ticks(int(QcSpawners::firstDelay) + 1);
+        ticks(static_cast<int>(QcSpawners::firstDelay) + 1);
         QVERIFY(spawned().isEmpty());
         // Its area was full: it waits a whole delay.
         QVERIFY(spawner()->delay >= 10 * 20 - 2);
@@ -295,7 +297,7 @@ private slots:
         joinArena(config);
         placeSpawner();
         for (int cycle = 0; cycle < 6; ++cycle) {
-            ticks(int(spawner()->delay) + 2);
+            ticks(static_cast<int>(spawner()->delay) + 2);
         }
         QVERIFY(!spawned().isEmpty());
         QVERIFY(spawned().size() <= 2);
@@ -331,7 +333,7 @@ private slots:
         m_server->orbs().clear();
         const QcItemDefinition &pickaxe = m_content->item(item("qtcraft:iron_pickaxe"));
         send(QcMsg::StartMining{pos});
-        ticks(int(std::ceil(QcMining::breakSeconds(m_content->block(id("qtcraft:spawner")), &pickaxe) * QcPhysics::tickRate)) + 1);
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(m_content->block(id("qtcraft:spawner")), &pickaxe) * QcPhysics::tickRate)) + 1);
         send(QcMsg::FinishMining{pos});
         ticks(1);
         QCOMPARE(*m_server->world().blockAt(pos), qcAirBlockId);
@@ -423,12 +425,12 @@ private slots:
             joinArena();
             placeSpawner();
             for (int i = 0; i < 6; ++i) {
-                const QcVec3 at = inside ? QcVec3{spawnerPos().x + 0.5 + (i % 3), double(spawnerPos().y + 4), spawnerPos().z + 0.5}
-                                         : QcVec3{spawnerPos().x + 5.5, double(spawnerPos().y), spawnerPos().z - 2.5 + i % 3};
+                const QcVec3 at = inside ? QcVec3{spawnerPos().x + 0.5 + (i % 3), static_cast<double>(spawnerPos().y + 4), spawnerPos().z + 0.5}
+                                         : QcVec3{spawnerPos().x + 5.5, static_cast<double>(spawnerPos().y), spawnerPos().z - 2.5 + i % 3};
                 m_server->world().setBlock(QcPhysics::blockContaining(at).offset(0, -1, 0), id("qtcraft:stone"));
                 m_server->mobs().spawn(zombieType(), at, m_server->entities().newId());
             }
-            ticks(int(QcSpawners::firstDelay) + 1);
+            ticks(static_cast<int>(QcSpawners::firstDelay) + 1);
             QVERIFY2(spawned().isEmpty() == inside, qPrintable(QString::number(spawned().size())));
         }
     }
@@ -514,7 +516,7 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             ticks(400);
-            return double(timer.nsecsElapsed()) / 400.0 / 1e6;
+            return static_cast<double>(timer.nsecsElapsed()) / 400.0 / 1e6;
         };
         const double before = perTick();
         for (int i = 0; i < 120; ++i) {
@@ -658,7 +660,7 @@ private slots:
                     found += lookup(pos);
                 }
             }
-            return std::pair{double(timer.nsecsElapsed()) / 1e6 / 20.0, found};
+            return std::pair{static_cast<double>(timer.nsecsElapsed()) / 1e6 / 20.0, found};
         };
         const auto every = time([&](QcChunkPos pos) { return generator.dungeons().plansTouching(pos).size(); });
         const auto marked = time([&](QcChunkPos pos) -> qsizetype {

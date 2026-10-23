@@ -73,7 +73,7 @@ private:
 
     void waitTicks(int ticks)
     {
-        const quint64 until = m_session->tickCount() + quint64(ticks);
+        const quint64 until = m_session->tickCount() + static_cast<quint64>(ticks);
         QTRY_VERIFY_WITH_TIMEOUT(m_session->tickCount() >= until, timeoutMs);
     }
 
@@ -93,7 +93,7 @@ private:
         connect(&frames.timer, &QTimer::timeout, this, [this, &frames] {
             QThread::msleep(3);
             QcPlayerInput intent = frames.intent;
-            intent.yaw = float(++frames.frame % 2) * 0.01f;
+            intent.yaw = static_cast<float>(++frames.frame % 2) * 0.01f;
             m_session->setIntent(intent);
         });
         frames.timer.start();

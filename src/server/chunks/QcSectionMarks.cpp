@@ -45,12 +45,12 @@ QcSectionMarks::QcSectionMarks(std::vector<Traits> traits)
 quint32 QcSectionMarks::sectionsOf(QcChunkPos pos, QcBlockTrait trait) const
 {
     const auto it = m_chunks.constFind(pos);
-    return it == m_chunks.constEnd() ? 0u : (*it)[std::size_t(trait)];
+    return it == m_chunks.constEnd() ? 0u : (*it)[static_cast<std::size_t>(trait)];
 }
 
 void QcSectionMarks::noteBits(const Bits &before, const Bits &after)
 {
-    for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+    for (std::size_t trait = 0; trait < static_cast<std::size_t>(qcBlockTraitCount); ++trait) {
         if ((before[trait] == 0) != (after[trait] == 0)) {
             m_chunkCount[trait] += after[trait] != 0 ? 1 : -1;
             m_orderStale[trait] = true;
@@ -66,7 +66,7 @@ void QcSectionMarks::noteChunk(QcChunkPos pos, const QcChunk &chunk)
         for (const QcBlockId id : chunk.section(index).palette()) {
             traits |= traitsOf(id);
         }
-        for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+        for (std::size_t trait = 0; trait < static_cast<std::size_t>(qcBlockTraitCount); ++trait) {
             if ((traits & (1u << trait)) != 0) {
                 after[trait] |= 1u << index;
             }
@@ -91,7 +91,7 @@ void QcSectionMarks::noteBlock(QcBlockPos pos, QcBlockId block)
 
     Bits &bits = m_chunks[pos.chunk()];
     const Bits before = bits;
-    for (std::size_t trait = 0; trait < std::size_t(qcBlockTraitCount); ++trait) {
+    for (std::size_t trait = 0; trait < static_cast<std::size_t>(qcBlockTraitCount); ++trait) {
         if ((traits & (1u << trait)) != 0) {
             bits[trait] |= 1u << (pos.y / QcWorld::sectionHeight);
         }
@@ -112,7 +112,7 @@ void QcSectionMarks::forgetChunk(QcChunkPos pos)
 
 const QList<QcChunkPos> &QcSectionMarks::orderedChunks(QcBlockTrait trait) const
 {
-    const auto index = std::size_t(trait);
+    const auto index = static_cast<std::size_t>(trait);
     if (m_orderStale[index]) {
         QList<QcChunkPos> &order = m_order[index];
         order.clear();

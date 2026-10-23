@@ -36,7 +36,7 @@ private:
     {
         for (int i = 0; i < count; ++i) {
             const int row = i / 10;
-            orbAt({m_feet.x - 12.0 + (i % 10) * 0.3, double(m_feet.y), m_feet.z + row * 0.3}, 1);
+            orbAt({m_feet.x - 12.0 + (i % 10) * 0.3, static_cast<double>(m_feet.y), m_feet.z + row * 0.3}, 1);
         }
     }
 
@@ -158,7 +158,7 @@ private slots:
     void aPlayerCollectsOneOrbEveryTwoTicks()
     {
         join();
-        const QcVec3 feet{m_feet.x + 0.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 feet{m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         for (int i = 0; i < 6; ++i) {
             orbAt(feet + QcVec3{0.0, 0.3, 0.0}, 1);
         }
@@ -208,7 +208,7 @@ private slots:
         config.limits.experienceOrbs = 3;
         join(config);
         constexpr int nearlyFull = QcExperienceOrbManager::maxValue - 1;
-        const QcVec3 spot{m_feet.x - 12.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 spot{m_feet.x - 12.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         orbAt(spot, nearlyFull);
         orbAt(spot + QcVec3{0.3, 0.0, 0.0}, 5);
         ticks(QcExperienceOrbManager::mergeIntervalTicks);
@@ -263,7 +263,7 @@ private slots:
     void orbsDespawnAfterFiveMinutes()
     {
         join();
-        orbAt({m_feet.x - 15.5, double(m_feet.y), m_feet.z + 0.5}, 4);
+        orbAt({m_feet.x - 15.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 4);
         m_server->orbs().editableOrbs().front().age = QcExperienceOrbManager::despawnSeconds - 0.12;
         ticks(2);
         QCOMPARE(m_server->orbs().orbs().size(), 1);
@@ -363,7 +363,7 @@ private slots:
         join(config);
         chat(u"/xp set Raw 17 levels"_s);
         chat(u"/xp set Raw 20 points"_s);
-        const QcVec3 lying{m_feet.x - 10.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 lying{m_feet.x - 10.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         orbAt(lying, 37);
         ticks(40);
         const QcVec3 saved = m_server->orbs().orbs().front().motion.position;
@@ -382,7 +382,7 @@ private slots:
     void clientsSeeOrbsWithTheirValue()
     {
         join();
-        orbAt({m_feet.x - 10.5, double(m_feet.y), m_feet.z + 0.5}, 17);
+        orbAt({m_feet.x - 10.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 17);
         ticks(1);
         const quint32 id = m_server->orbs().orbs().front().id;
         QVERIFY(m_client->spawns.contains(id));
@@ -390,7 +390,7 @@ private slots:
         QCOMPARE(m_client->spawns[id].health, 17.0);
 
         // Merged into a bigger orb: sent again with the new value.
-        orbAt({m_feet.x - 10.3, double(m_feet.y), m_feet.z + 0.5}, 3);
+        orbAt({m_feet.x - 10.3, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 3);
         ticks(QcExperienceOrbManager::mergeIntervalTicks);
         QCOMPARE(m_server->orbs().orbs().size(), 1);
         QCOMPARE(m_client->spawns[id].health, 20.0);
@@ -406,11 +406,11 @@ private slots:
         qint64 lastMs = 0;
         m_client->onEntityMessage = [&](const QcMessage &message) {
             if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
-                tracks[spawn->id].push({double(lastMs), spawn->position, 0.0f, 0.0f}, 50.0);
+                tracks[spawn->id].push({static_cast<double>(lastMs), spawn->position, 0.0f, 0.0f}, 50.0);
             } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
                 lastMs = moves->timeMs;
                 for (const QcMsg::EntityMove &move : moves->moves) {
-                    tracks[move.id].push({double(moves->timeMs), move.position, 0.0f, 0.0f}, 50.0);
+                    tracks[move.id].push({static_cast<double>(moves->timeMs), move.position, 0.0f, 0.0f}, 50.0);
                 }
             }
         };
@@ -492,18 +492,18 @@ private slots:
 private:
     void measureCase(const char *name, int ticksToRun)
     {
-        const int items = int(QcTickPhase::Items);
+        const int items = static_cast<int>(QcTickPhase::Items);
         qint64 sum = 0;
         qint64 most = 0;
         const qsizetype before = m_server->orbs().orbs().size();
         for (int i = 0; i < ticksToRun; ++i) {
             ticks(1);
-            const qint64 ns = m_server->tickPhases().lastTick()[std::size_t(items)];
+            const qint64 ns = m_server->tickPhases().lastTick()[static_cast<std::size_t>(items)];
             sum += ns;
             most = std::max(most, ns);
         }
-        qInfo("MEASURE orbs %s: %lld before, %lld after, Items phase mean %.4f ms, max %.4f ms over %d ticks", name, qint64(before),
-              qint64(m_server->orbs().orbs().size()), double(sum) / ticksToRun / 1e6, double(most) / 1e6, ticksToRun);
+        qInfo("MEASURE orbs %s: %lld before, %lld after, Items phase mean %.4f ms, max %.4f ms over %d ticks", name, static_cast<qint64>(before),
+              static_cast<qint64>(m_server->orbs().orbs().size()), static_cast<double>(sum) / ticksToRun / 1e6, static_cast<double>(most) / 1e6, ticksToRun);
     }
 };
 

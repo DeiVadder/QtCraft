@@ -98,7 +98,7 @@ private slots:
         glass.tool = u"pickaxe"_s;
         glass.toolLevel = 2;
         glass.drops = {{u"a:shard"_s, 3}};
-        glass.faceTextures[std::size_t(QcBlockFace::Up)] = u"a:glass_top"_s;
+        glass.faceTextures[static_cast<std::size_t>(QcBlockFace::Up)] = u"a:glass_top"_s;
         QVERIFY(registry.registerBlock(glass).has_value());
         registry.assets().registerTexture({u"a:glass"_s, json(R"({"pattern":"glass","seed":3})"), {}});
         registry.assets().registerTexture({u"a:png"_s, {}, QByteArray("\x89PNG-bytes", 10)});
@@ -145,7 +145,7 @@ private slots:
             registry.writeTo(out);
         }
 
-        for (const qsizetype cut : {qsizetype(2), data.size() / 2, data.size() - 1}) {
+        for (const qsizetype cut : {qsizetype{2}, data.size() / 2, data.size() - 1}) {
             QDataStream in(data.left(cut));
             QVERIFY(!QcContentRegistry::readFrom(in).has_value());
         }

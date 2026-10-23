@@ -38,7 +38,8 @@ struct QcGuardSite
             QcGuardSite site;
             site.min = {std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};
             site.max = {std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};
-            site.id = qcMixSeed(qcMixSeed(qcMixSeed(qcNameSalt(rule.mob), quint32(site.min.x)), quint32(site.min.y)), quint32(site.min.z));
+            site.id = qcMixSeed(qcMixSeed(qcMixSeed(qcNameSalt(rule.mob), static_cast<quint32>(site.min.x)),
+                static_cast<quint32>(site.min.y)), static_cast<quint32>(site.min.z));
             site.rule = rule;
             sites.append(site);
         }

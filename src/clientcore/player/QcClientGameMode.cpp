@@ -14,7 +14,8 @@ void QcClientGameMode::setMode(QcGameMode mode)
 
 quint8 QcClientGameMode::steppedFlySpeed(quint8 speed, int steps)
 {
-    return quint8(std::clamp(int(speed) + steps, int(QcPlayerInput::minFlySpeed), int(QcPlayerInput::maxFlySpeed)));
+    return static_cast<quint8>(std::clamp(static_cast<int>(speed) + steps, static_cast<int>(QcPlayerInput::minFlySpeed),
+        static_cast<int>(QcPlayerInput::maxFlySpeed)));
 }
 
 void QcClientGameMode::creativeItem(int slot, const QcItemStack &stack) const

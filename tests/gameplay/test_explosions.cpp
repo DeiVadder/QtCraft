@@ -306,7 +306,7 @@ private slots:
         const double full = m_client->health;
         stand(at(6, 0, 4));
         put(6, 0, 7, u"obsidian"_s);
-        explosions().explode({QcVec3{at(6, 0, 7).x + 0.5, double(at(6, 1, 7).y) + 0.5, at(6, 0, 7).z + 0.5}, 4.0, false, false});
+        explosions().explode({QcVec3{at(6, 0, 7).x + 0.5, static_cast<double>(at(6, 1, 7).y) + 0.5, at(6, 0, 7).z + 0.5}, 4.0, false, false});
         idle(2);
         QVERIFY2(m_client->health < full, qPrintable(u"health %1"_s.arg(m_client->health)));
         QCOMPARE(explosions().numbers().playersHit, quint64(1));
@@ -320,7 +320,7 @@ private slots:
             }
         }
         stand(at(6, 0, 3));
-        explosions().explode({QcVec3{at(6, 0, 8).x + 0.5, double(at(6, 0, 8).y) + 0.5, at(6, 0, 8).z + 0.5}, 4.0, false, false});
+        explosions().explode({QcVec3{at(6, 0, 8).x + 0.5, static_cast<double>(at(6, 0, 8).y) + 0.5, at(6, 0, 8).z + 0.5}, 4.0, false, false});
         idle(2);
         QCOMPARE(explosions().numbers().playersHit, quint64(1));
     }
@@ -448,8 +448,8 @@ private slots:
                                  .arg(explosions().numbers().refused)
                                  .arg(explosions().numbers().waited)
                                  .arg(explosions().blocksBroken())
-                                 .arg(double(totalNs) / std::max(1, count) / 1e6, 0, 'f', 2)
-                                 .arg(double(worstNs) / 1e6, 0, 'f', 2);
+                                 .arg(static_cast<double>(totalNs) / std::max(1, count) / 1e6, 0, 'f', 2)
+                                 .arg(static_cast<double>(worstNs) / 1e6, 0, 'f', 2);
     }
 
     void exposureAndImpact()

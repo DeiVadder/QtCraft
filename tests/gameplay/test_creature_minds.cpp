@@ -218,7 +218,7 @@ private slots:
         // The one in view loses its mind; a word that is no creature changes nothing.
         const auto chicken = std::ranges::find(m_server->entities().creatures().mobs(), type("chicken"), &QcCreature::type);
         const quint32 chickenId = chicken->id;
-        mob(chickenId)->motion.position = {m_feet.x + 5.5, double(m_feet.y), m_feet.z + 0.5};
+        mob(chickenId)->motion.position = {m_feet.x + 5.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         ticks(1);
         lookAt(mob(chickenId)->motion.position + QcVec3{0.0, 0.3, 0.0});
         chat(u"/mob looking noai on"_s);

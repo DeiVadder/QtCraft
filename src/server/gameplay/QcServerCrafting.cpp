@@ -67,7 +67,7 @@ std::optional<qsizetype> QcServerCrafting::craftingMatch(const QcContentRegistry
 bool QcServerCrafting::isNearCraftingTable(const QcServerClient &client) const
 {
     const QcBlockPos feet = QcPhysics::blockContaining(client.motion.position);
-    const int reach = int(std::ceil(craftingTableReach));
+    const int reach = static_cast<int>(std::ceil(craftingTableReach));
 
     for (int dx = -reach; dx <= reach; ++dx) {
         for (int dy = -reach; dy <= reach; ++dy) {
@@ -81,11 +81,11 @@ bool QcServerCrafting::isNearCraftingTable(const QcServerClient &client) const
 
 bool QcServerCrafting::hasCraftingTableInColumn(QcBlockPos feet, int dx, int dy) const
 {
-    const int reach = int(std::ceil(craftingTableReach));
+    const int reach = static_cast<int>(std::ceil(craftingTableReach));
     for (int dz = -reach; dz <= reach; ++dz) {
         const std::optional<QcBlockId> block = m_state.world().blockAt(feet.offset(dx, dy, dz));
         if (block && m_state.content().block(*block).opensCrafting
-            && QcVec3{double(dx), double(dy), double(dz)}.length() <= craftingTableReach) {
+            && QcVec3{static_cast<double>(dx), static_cast<double>(dy), static_cast<double>(dz)}.length() <= craftingTableReach) {
             return true;
         }
     }

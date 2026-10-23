@@ -32,7 +32,7 @@ double passShare(QcSpawnLight::Cell cell, int draws)
     for (int i = 0; i < draws; ++i) {
         passed += QcSpawnLight::darkEnough(cell, QcSpawnLight::draw(random));
     }
-    return double(passed) / draws;
+    return static_cast<double>(passed) / draws;
 }
 
 } // namespace
@@ -94,7 +94,7 @@ private:
     // A living player standing on the ground of column (x, z).
     static QcMobManager::PlayerView playerAt(const QcServerWorld &world, int x, int z, bool alive = true)
     {
-        return {7 + quint32(std::abs(x) + std::abs(z)), {x + 0.5, double(top(world, x, z) + 1), z + 0.5}, alive};
+        return {7 + static_cast<quint32>(std::abs(x) + std::abs(z)), {x + 0.5, static_cast<double>(top(world, x, z) + 1), z + 0.5}, alive};
     }
 
     // Distance from `at` to the nearest player with a body.
@@ -271,15 +271,15 @@ private slots:
     {
         auto world = makeWorld(m_content, 4);
         QcMobManager mobs(m_content, 3);
-        const QcVec3 player{0.5, double(top(*world, 0, 0) + 1), 0.5};
-        mobs.spawn(type(u"zombie"_s), {30.5, double(top(*world, 30, 0) + 1), 0.5}, m_nextId++);
-        mobs.spawn(type(u"skeleton"_s), {-30.5, double(top(*world, -30, 0) + 1), 0.5}, m_nextId++);
+        const QcVec3 player{0.5, static_cast<double>(top(*world, 0, 0) + 1), 0.5};
+        mobs.spawn(type(u"zombie"_s), {30.5, static_cast<double>(top(*world, 30, 0) + 1), 0.5}, m_nextId++);
+        mobs.spawn(type(u"skeleton"_s), {-30.5, static_cast<double>(top(*world, -30, 0) + 1), 0.5}, m_nextId++);
         // Peaceful creatures and creatures of spawners take no room from the monsters.
-        mobs.spawn(type(u"pig"_s), {10.5, double(top(*world, 10, 0) + 1), 0.5}, m_nextId++, false, true);
-        mobs.spawn(type(u"zombie"_s), {20.5, double(top(*world, 20, 0) + 1), 0.5}, m_nextId++);
+        mobs.spawn(type(u"pig"_s), {10.5, static_cast<double>(top(*world, 10, 0) + 1), 0.5}, m_nextId++, false, true);
+        mobs.spawn(type(u"zombie"_s), {20.5, static_cast<double>(top(*world, 20, 0) + 1), 0.5}, m_nextId++);
         mobs.editableMobs().last().spawner = QcBlockPos{20, 10, 0};
         // Nor do kept monsters (named ones, those placed with the world).
-        mobs.spawn(type(u"zombie"_s), {40.5, double(top(*world, 40, 0) + 1), 0.5}, m_nextId++, false, true);
+        mobs.spawn(type(u"zombie"_s), {40.5, static_cast<double>(top(*world, 40, 0) + 1), 0.5}, m_nextId++, false, true);
 
         const QcMonsterCap cap = mobs.spawner().monsterCap(*world, {{7, player, true}});
         QCOMPARE(cap.worldCap(), 70 * 81 / 289);
@@ -294,9 +294,9 @@ private slots:
         auto world = makeWorld(m_content, 9);
         QcMobManager mobs(m_content, 4);
         mobs.setNaturalSpawning(false);
-        const QcVec3 player{0.5, double(top(*world, 0, 0) + 1), 0.5};
-        const quint32 near = mobs.spawn(type(u"spider"_s), {120.5, double(top(*world, 120, 0) + 1), 0.5}, m_nextId++);
-        const quint32 far = mobs.spawn(type(u"spider"_s), {135.5, double(top(*world, 135, 0) + 1), 0.5}, m_nextId++);
+        const QcVec3 player{0.5, static_cast<double>(top(*world, 0, 0) + 1), 0.5};
+        const quint32 near = mobs.spawn(type(u"spider"_s), {120.5, static_cast<double>(top(*world, 120, 0) + 1), 0.5}, m_nextId++);
+        const quint32 far = mobs.spawn(type(u"spider"_s), {135.5, static_cast<double>(top(*world, 135, 0) + 1), 0.5}, m_nextId++);
         mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
         QVERIFY(mobs.find(near));
         QVERIFY(!mobs.find(far));
@@ -340,16 +340,16 @@ private slots:
         auto world = makeWorld(m_content, 8);
         QcMobManager mobs(m_content, 6);
         mobs.setNaturalSpawning(false);
-        const QcVec3 player{0.5, double(top(*world, 0, 0) + 1), 0.5};
+        const QcVec3 player{0.5, static_cast<double>(top(*world, 0, 0) + 1), 0.5};
         for (int i = 0; i < 200; ++i) {
             const double angle = i * 0.7;
             const double radius = 40.0 + (i % 9) * 10.0;
-            const int x = int(std::floor(std::cos(angle) * radius));
-            const int z = int(std::floor(std::sin(angle) * radius));
-            mobs.spawn(type(u"spider"_s), {x + 0.5, double(top(*world, x, z) + 1), z + 0.5}, m_nextId++);
+            const int x = static_cast<int>(std::floor(std::cos(angle) * radius));
+            const int z = static_cast<int>(std::floor(std::sin(angle) * radius));
+            mobs.spawn(type(u"spider"_s), {x + 0.5, static_cast<double>(top(*world, x, z) + 1), z + 0.5}, m_nextId++);
             mobs.editableMobs().last().noAi = true;
         }
-        const quint32 close = mobs.spawn(type(u"spider"_s), {10.5, double(top(*world, 10, 0) + 1), 0.5}, m_nextId++);
+        const quint32 close = mobs.spawn(type(u"spider"_s), {10.5, static_cast<double>(top(*world, 10, 0) + 1), 0.5}, m_nextId++);
         mobs.editableMobs().last().noAi = true;
 
         const auto tickFor = [&](int ticks) {
@@ -371,7 +371,7 @@ private slots:
         auto world = makeWorld(m_content, 4);
         QcMobManager mobs(m_content, 6);
         mobs.setNaturalSpawning(false);
-        const quint32 spider = mobs.spawn(type(u"spider"_s), {40.5, double(top(*world, 40, 0) + 1), 0.5}, m_nextId++);
+        const quint32 spider = mobs.spawn(type(u"spider"_s), {40.5, static_cast<double>(top(*world, 40, 0) + 1), 0.5}, m_nextId++);
         mobs.editableMobs().last().noAi = true;
         for (int tick = 0; tick < 100; ++tick) {
             mobs.tick(*world, {playerAt(*world, 0, 0)}, noon, dt, [this] { return m_nextId++; });

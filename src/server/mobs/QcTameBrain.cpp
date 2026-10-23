@@ -38,7 +38,7 @@ QcTameBrain::QcTameBrain(QRandomGenerator &random, QcPathPlanner &paths, QcMobBr
 bool QcTameBrain::teleportNear(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, QRandomGenerator &random,
                                const QcVec3 &owner)
 {
-    const int range = int(teleportRange);
+    const int range = static_cast<int>(teleportRange);
     const int cells = QcSafeSpot::cellsOf(definition.height);
     const QcBlockPos centre = QcPhysics::blockContaining(owner);
     for (int attempt = 0; attempt < teleportAttempts; ++attempt) {
@@ -46,7 +46,7 @@ bool QcTameBrain::teleportNear(QcCreature &mob, const QcMobDefinition &definitio
         const int dz = random.bounded(-range, range + 1);
         const QcBlockPos feet = centre.offset(dx, random.bounded(-1, 2), dz);
         if ((std::abs(dx) > 1 || std::abs(dz) > 1) && QcSafeSpot::canStand(world, feet, cells)) {
-            QcMobTeleport::land(mob, {feet.x + 0.5, double(feet.y), feet.z + 0.5});
+            QcMobTeleport::land(mob, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5});
             return true;
         }
     }

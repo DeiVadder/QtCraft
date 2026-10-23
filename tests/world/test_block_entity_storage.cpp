@@ -212,7 +212,7 @@ private slots:
         } else if (cut < 0) {
             data = data.left(flipAt);
         } else {
-            data[flipAt] = char(data[flipAt] ^ 0x40);
+            data[flipAt] = static_cast<char>(data[flipAt] ^ 0x40);
         }
         file.resize(0);
         file.seek(0);
@@ -260,7 +260,7 @@ private slots:
             machine.progress = std::numeric_limits<double>::infinity();
             break;
         default:
-            record.scheduled = {{{3, 64, 3}, 5, QcSignalSchedule::Priority(7)}};
+            record.scheduled = {{{3, 64, 3}, 5, static_cast<QcSignalSchedule::Priority>(7)}};
             break;
         }
         record.machines = {machine};
@@ -322,7 +322,7 @@ private slots:
         QVERIFY(QcBlockEntityRecords::apply(*read, entities, circuits, hoppers, 100).isEmpty());
         QCOMPARE(entities.container({1, 64, 1})->readyAt, quint64(108));
 
-        record.saplings = {{{4, 64, 4}, 10.0, quint64(1) << 63}};
+        record.saplings = {{{4, 64, 4}, 10.0, quint64{1} << 63}};
         QVERIFY(storage.writeBlockEntities({record}).has_value());
         QVERIFY(!storage.readBlockEntities(warnings).has_value());
     }

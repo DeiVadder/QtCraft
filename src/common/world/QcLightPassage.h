@@ -10,7 +10,7 @@ namespace QcLightPassage {
 
 constexpr quint8 bit(QcBlockFace face)
 {
-    return quint8(1u << unsigned(face));
+    return static_cast<quint8>(1u << static_cast<unsigned>(face));
 }
 
 constexpr QcBlockFace opposite(QcBlockFace face)

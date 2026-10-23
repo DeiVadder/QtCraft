@@ -18,12 +18,16 @@ bool isSupported(const QRhi *rhi)
 bool write(QRhiBuffer *buffer, quint32 offset, const void *data, quint32 size)
 {
     const QRhiBuffer::NativeBuffer native = buffer->nativeBuffer();
-    if (native.slotCount != 1 || !native.objects[0] || quint64(offset) + size > buffer->size()) {
+    if (native.slotCount != 1 || !native.objects[0] || static_cast<quint64>(offset) + size > buffer->size()) {
         return false;
     }
 
-    // objects[0] points at the backend's id<MTLBuffer>.
+    // objects[0] points at the backend's id<MTLBuffer>. An Objective-C bridge cast has only the
+    // C-style form, so -Wold-style-cast is silenced for this one line (E-865).
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wold-style-cast"
     id<MTLBuffer> metal = (__bridge id<MTLBuffer>)(*static_cast<void *const *>(native.objects[0]));
+#pragma clang diagnostic pop
     void *contents = metal ? [metal contents] : nullptr;
     if (!contents) {
         return false; // private storage: only a blit could fill it

@@ -93,7 +93,7 @@ private:
     {
         bool ok = false;
         const qint64 fixed = qEnvironmentVariable("QC_TEST_SEED").toLongLong(&ok);
-        const qint64 seed = ok ? fixed : qint64(QRandomGenerator::global()->generate() & 0x7fffffff);
+        const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
         qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
         return seed;
     }
@@ -132,7 +132,8 @@ private:
             }
         }
         const QcBlockPos column{centre.x, 0, centre.z};
-        const QcVec3 player{centre.x + 0.5, double(world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ()) + 1), centre.z + 0.5};
+        const QcVec3 player{centre.x + 0.5,
+            static_cast<double>(world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ()) + 1), centre.z + 0.5};
         QcMobManager mobs(content, run.draws);
         quint32 nextId = 100;
         Spawns spawns;
@@ -163,7 +164,7 @@ private:
     template<typename Fits>
     static std::optional<QcBlockPos> findColumn(qint64 seed, const Fits &fits)
     {
-        QRandomGenerator random{quint32(seed)};
+        QRandomGenerator random{static_cast<quint32>(seed)};
         const int ox = random.bounded(-500, 500);
         const int oz = random.bounded(-500, 500);
         for (int ring = 0; ring <= 62; ++ring) {
@@ -189,7 +190,7 @@ private:
         double term = std::pow(1.0 - p, n); // P(X = 0)
         double sum = term;
         for (int i = 1; i <= k; ++i) {
-            term *= double(n - i + 1) / double(i) * p / (1.0 - p);
+            term *= static_cast<double>(n - i + 1) / static_cast<double>(i) * p / (1.0 - p);
             sum += term;
         }
         return sum;
@@ -218,7 +219,7 @@ private:
             }
             QcServerWorld world(content, std::make_unique<QcTerrainGenerator>(content, seed));
             const int ticks = biome == u"qtcraft:desert"_s ? 4800 : 800;
-            const Spawns spawns = spawnsIn(content, world, *found, {midnight, ticks, 4, quint32(seed)});
+            const Spawns spawns = spawnsIn(content, world, *found, {midnight, ticks, 4, static_cast<quint32>(seed)});
             qInfo() << "seed" << seed << biome << "at" << found->x << found->z << spawns.byKind;
             for (const Spawns::One &one : spawns.all) {
                 const QcBlockPos feet = QcPhysics::blockContaining(one.feet);
@@ -313,7 +314,7 @@ private slots:
         QFETCH(QString, replaced);
         const Spawns spawns = spawnsInBiome(biome, midnight, 1600);
         const auto count = [&spawns](const QString &kind) { return spawns.byKind.value(kind); };
-        const int total = int(spawns.all.size());
+        const int total = static_cast<int>(spawns.all.size());
         QVERIFY2(total > 250, qPrintable(QString::number(total)));
         qInfo() << biome << spawns.byKind;
 
@@ -328,7 +329,7 @@ private slots:
         const double kjuts = count(u"qtcraft:kjut"_s);
         QVERIFY2(kjuts > 0.75 * spiders && kjuts < 1.33 * spiders, qPrintable(u"%1 %2"_s.arg(kjuts).arg(spiders)));
         if (!variant.isEmpty()) {
-            const double share = double(count(variant)) / (count(variant) + count(replaced));
+            const double share = static_cast<double>(count(variant)) / (count(variant) + count(replaced));
             QVERIFY2(share > 0.7 && share < 0.9, qPrintable(QString::number(share)));
             QVERIFY2(count(variant) + count(replaced) > 0.75 * spiders && count(variant) + count(replaced) < 1.33 * spiders,
                      qPrintable(QString::number(count(variant) + count(replaced))));
@@ -391,7 +392,8 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             const Spawns spawns = spawnsIn(content, world, centre, {midnight, 400, 4});
-            qInfo() << (centre == *ocean ? "sea" : "land") << "at" << centre.x << centre.z << double(timer.nsecsElapsed()) / 400e6 << "ms per tick" << spawns.byKind;
+            qInfo() << (centre == *ocean ? "sea" : "land") << "at" << centre.x << centre.z
+                << static_cast<double>(timer.nsecsElapsed()) / 400e6 << "ms per tick" << spawns.byKind;
             for (const Spawns::One &one : spawns.all) {
                 const bool water = QcPhysics::isWaterAt(world, QcPhysics::blockContaining(one.feet));
                 QVERIFY2(!water || one.kind == u"qtcraft:drowned"_s, qPrintable(one.kind));
@@ -402,7 +404,7 @@ private slots:
     void generatedWorlds()
     {
         m_desert = {};
-        for (const qint64 seed : {qint64(7), qint64(42), m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, m_randomSeed}) {
             checkGeneratedWorld(seed);
             if (QTest::currentTestFailed()) {
                 return;

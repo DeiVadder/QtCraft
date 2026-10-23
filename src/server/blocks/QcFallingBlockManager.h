@@ -20,7 +20,7 @@ class QcFallingBlockManager
 {
 public:
     // Falling blocks at once by default (QcServerLimits::fallingBlocks).
-    static constexpr int maxFalling = int(QcServerLimits{}.fallingBlocks);
+    static constexpr int maxFalling = static_cast<int>(QcServerLimits{}.fallingBlocks);
     // Edge length of the falling cube, a little less than a block so it slides into one-wide shafts.
     static constexpr double size = 0.98;
     // A block still falling after this long (stuck on something) drops as items.

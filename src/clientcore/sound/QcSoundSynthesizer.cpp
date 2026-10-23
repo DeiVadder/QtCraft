@@ -19,7 +19,7 @@ struct Random
         return state;
     }
     // Uniform in [0, 1).
-    double unit() { return double(next() >> 8) / double(1u << 24); }
+    double unit() { return static_cast<double>(next() >> 8) / static_cast<double>(1u << 24); }
     // Uniform in [-1, 1).
     double signedUnit() { return unit() * 2.0 - 1.0; }
 };
@@ -99,20 +99,20 @@ public:
     double envelope(std::size_t i) const
     {
         double envelope = 1.0;
-        if (double(i) < m_attackSamples) {
-            envelope = double(i) / m_attackSamples;
+        if (static_cast<double>(i) < m_attackSamples) {
+            envelope = static_cast<double>(i) / m_attackSamples;
         } else if (m_layer.curve > 0.0) {
-            const double decay = (double(i) - m_attackSamples) / std::max(1.0, double(m_count) - m_attackSamples);
+            const double decay = (static_cast<double>(i) - m_attackSamples) / std::max(1.0, static_cast<double>(m_count) - m_attackSamples);
             envelope = std::pow(std::max(0.0, 1.0 - decay), m_layer.curve);
         }
 
-        const double remaining = double(m_count - i);
+        const double remaining = static_cast<double>(m_count - i);
         if (remaining < m_fadeSamples) {
             envelope *= remaining / m_fadeSamples;
         }
 
         if (m_layer.tremoloDepth > 0.0) {
-            const double t = double(i) / m_sampleRate;
+            const double t = static_cast<double>(i) / m_sampleRate;
             envelope *= 1.0 - m_layer.tremoloDepth * (0.5 - 0.5 * std::cos(2.0 * std::numbers::pi * m_layer.tremoloRate * t));
         }
 
@@ -135,7 +135,7 @@ private:
             return x;
         }
 
-        const double progress = double(i) / double(m_count);
+        const double progress = static_cast<double>(i) / static_cast<double>(m_count);
         const double x = tone(m_layer.wave, m_phase);
         const double frequency = m_sweep ? m_layer.frequency * std::pow(m_ratio, progress) : m_layer.frequency;
         m_phase += frequency / m_sampleRate;
@@ -170,8 +170,8 @@ struct Mix
     // Adds one layer, cut off at the end of the samples.
     void addLayer(const QcSoundLayer &layer, quint32 seed, bool loop, int sampleRate)
     {
-        const auto first = std::size_t(std::max(0LL, std::llround(layer.start * sampleRate)));
-        const auto count = std::size_t(std::max(0LL, std::llround(layer.duration * sampleRate)));
+        const auto first = static_cast<std::size_t>(std::max(0LL, std::llround(layer.start * sampleRate)));
+        const auto count = static_cast<std::size_t>(std::max(0LL, std::llround(layer.duration * sampleRate)));
         if (count == 0 || first >= samples.size()) {
             return;
         }
@@ -180,7 +180,7 @@ struct Mix
         const std::size_t end = std::min(count, samples.size() - first);
         for (std::size_t i = 0; i < end; ++i) {
             const double x = voice.signal(i);
-            samples[first + i] += float(layer.gain * voice.envelope(i) * x);
+            samples[first + i] += static_cast<float>(layer.gain * voice.envelope(i) * x);
         }
     }
 };
@@ -195,7 +195,7 @@ quint32 QcSoundSynthesizer::seedOf(const QString &name, int variant)
         hash ^= c.unicode();
         hash *= 16777619u;
     }
-    return mix(hash ^ (quint32(variant) * 0x9E3779B9u));
+    return mix(hash ^ (static_cast<quint32>(variant) * 0x9E3779B9u));
 }
 
 QcSampleBuffer QcSoundSynthesizer::render(const QcSoundDefinition &sound, int variant, int sampleRate)
@@ -220,9 +220,9 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
         return buffer;
     }
 
-    Mix mix{std::vector<float>(std::size_t(std::llround(seconds * sampleRate)), 0.0f)};
+    Mix mix{std::vector<float>(static_cast<std::size_t>(std::llround(seconds * sampleRate)), 0.0f)};
     for (qsizetype index = 0; index < layers.size(); ++index) {
-        mix.addLayer(layers[index], seed ^ (quint32(index + 1) * 0x85EBCA6Bu), loop, sampleRate);
+        mix.addLayer(layers[index], seed ^ (static_cast<quint32>(index + 1) * 0x85EBCA6Bu), loop, sampleRate);
     }
     buffer.samples = std::move(mix.samples);
     std::vector<float> &out = buffer.samples;
@@ -230,12 +230,12 @@ QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layer
     if (loop) {
         // Blend the tail into the head and cut the tail off: the last sample then leads straight
         // into the first. Equal-power weights keep the level of uncorrelated noise steady.
-        const auto blend = std::size_t(std::min(double(out.size()) * loopBlendShare, maxLoopBlendSeconds * sampleRate));
+        const auto blend = static_cast<std::size_t>(std::min(static_cast<double>(out.size()) * loopBlendShare, maxLoopBlendSeconds * sampleRate));
         if (blend >= 1 && out.size() > 2 * blend) {
             const std::size_t tail = out.size() - blend;
             for (std::size_t i = 0; i < blend; ++i) {
-                const double w = double(i) / double(blend);
-                out[i] = float(out[i] * std::sqrt(w) + out[tail + i] * std::sqrt(1.0 - w));
+                const double w = static_cast<double>(i) / static_cast<double>(blend);
+                out[i] = static_cast<float>(out[i] * std::sqrt(w) + out[tail + i] * std::sqrt(1.0 - w));
             }
             out.resize(tail);
         }

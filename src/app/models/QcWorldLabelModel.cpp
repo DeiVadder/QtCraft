@@ -18,7 +18,7 @@ void QcWorldLabelModel::update(const QList<QcScreenLabel> &labels, const QcConte
             m_rows[i].label = labels[i];
         }
         if (!m_rows.isEmpty()) {
-            emit dataChanged(index(0), index(int(m_rows.size()) - 1), {XRole, YRole, ScaleRole, OpacityRole, MaxWidthRole});
+            emit dataChanged(index(0), index(static_cast<int>(m_rows.size()) - 1), {XRole, YRole, ScaleRole, OpacityRole, MaxWidthRole});
         }
         return;
     }
@@ -44,7 +44,7 @@ void QcWorldLabelModel::clear()
 
 int QcWorldLabelModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : int(m_rows.size());
+    return parent.isValid() ? 0 : static_cast<int>(m_rows.size());
 }
 
 QVariant QcWorldLabelModel::data(const QModelIndex &index, int role) const

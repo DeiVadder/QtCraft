@@ -11,7 +11,7 @@ void QcServerDebugMirror::receive(const QcMsg::ServerDebug &message)
     const qsizetype count = message.recentTickMs.size();
     qsizetype fresh = count;
     if (m_historyTick) {
-        fresh = *m_historyTick >= message.tick ? 0 : qsizetype(std::min<quint64>(message.tick - *m_historyTick, quint64(count)));
+        fresh = *m_historyTick >= message.tick ? 0 : static_cast<qsizetype>(std::min<quint64>(message.tick - *m_historyTick, static_cast<quint64>(count)));
     }
     if (fresh > 0) {
         m_tickHistory.append(message.recentTickMs.mid(count - fresh));

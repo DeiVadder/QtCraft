@@ -29,7 +29,7 @@ private:
         return [&calls](int regionX, int regionZ) {
             calls.fetch_add(1);
             auto plan = std::make_shared<QcVillagePlan>();
-            plan->id = qint64(regionX) * 100000 + regionZ;
+            plan->id = static_cast<qint64>(regionX) * 100000 + regionZ;
             return std::shared_ptr<const QcVillagePlan>(std::move(plan));
         };
     }
@@ -96,7 +96,7 @@ private slots:
             threads.emplace_back([&cache, &planner, &wrong, t] {
                 for (int i = 0; i < 2000; ++i) {
                     const int x = (i * 7 + t) % 40;
-                    if (cache.plan(x, 1, planner)->id != qint64(x) * 100000 + 1) {
+                    if (cache.plan(x, 1, planner)->id != static_cast<qint64>(x) * 100000 + 1) {
                         wrong.fetch_add(1);
                     }
                 }
@@ -131,7 +131,7 @@ private slots:
         QVERIFY(held);
 
         const QcVillagePlanCache &cache = generator.villages().cache();
-        fill(generator, int(cache.capacity()) + 64, 0);
+        fill(generator, static_cast<int>(cache.capacity()) + 64, 0);
         QVERIFY(cache.size() <= cache.capacity());
         const quint64 planned = cache.planned();
         QCOMPARE(villages.planOf(id).get(), held);
@@ -144,7 +144,7 @@ private slots:
         QCOMPARE(villages.heldPlans(), 1);
         villages.forgetChunk({centre.chunk().x + 1, centre.chunk().z});
         QCOMPARE(villages.heldPlans(), 0);
-        fill(generator, int(cache.capacity()) + 64, 1);
+        fill(generator, static_cast<int>(cache.capacity()) + 64, 1);
         const quint64 refilled = cache.planned();
         const std::shared_ptr<const QcVillagePlan> again = villages.planOf(id);
         QCOMPARE(cache.planned(), refilled + 1);

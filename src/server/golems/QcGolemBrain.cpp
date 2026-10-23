@@ -33,7 +33,7 @@ bool isPrey(const QcCreature &mob, const QcMobDefinition &definition, const QcCr
 QcPhysics::Steering QcGolemBrain::think(QcCreature &mob, const QcMobDefinition &definition, const Context &context, int thinkTicks)
 {
     const bool mayPlan = thinkTicks <= 1;
-    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
+    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < static_cast<quint64>(std::max(1, thinkTicks));
     mob.fleeTimer = 0.0;
 
     // A player it is angry with comes first, then the hostile creature it hunts.
@@ -90,7 +90,7 @@ void QcGolemBrain::keepToVillage(QcCreature &mob, const Context &context, double
     const bool leaves = strolling && !home->contains(QcPhysics::blockContaining(path.goal));
     const bool outside = !home->contains(at) && !strolling;
     if (leaves || outside) {
-        const QcVec3 centre{home->centre.x + 0.5, double(home->centre.y), home->centre.z + 0.5};
+        const QcVec3 centre{home->centre.x + 0.5, static_cast<double>(home->centre.y), home->centre.z + 0.5};
         mob.path.clear();
         QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Wander, centre, 0);
         // Long enough to walk there: the next stroll does not cut the way back short.

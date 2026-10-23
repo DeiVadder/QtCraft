@@ -9,7 +9,7 @@ namespace QcSoundKeys {
 QString actionName(QcBlockSoundAction action)
 {
     static const std::array<QString, qcBlockSoundActionCount> names = {u"break"_s, u"place"_s, u"step"_s, u"hit"_s};
-    return names[std::size_t(action)];
+    return names[static_cast<std::size_t>(action)];
 }
 
 QString defaultMaterialFor(const QcBlockDefinition &block)
@@ -34,7 +34,7 @@ QString defaultMaterialFor(const QcBlockDefinition &block)
 
 QString blockSound(const QcBlockDefinition &block, QcBlockSoundAction action)
 {
-    const QString &explicitKey = block.soundKeys[std::size_t(action)];
+    const QString &explicitKey = block.soundKeys[static_cast<std::size_t>(action)];
     if (!explicitKey.isEmpty()) {
         return explicitKey;
     }

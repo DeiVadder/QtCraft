@@ -118,7 +118,8 @@ private slots:
     void allNamesTogetherStayWithinTheCap()
     {
         // The lists of the largest legal set fit a protocol frame many times over.
-        static_assert(qint64(QcAdventureRules::maxNames) * (4 + 2 * qint64(QcAdventureRules::maxNameLength)) < qint64(2) * 1024 * 1024);
+        static_assert(static_cast<qint64>(QcAdventureRules::maxNames) * (4 + 2 * static_cast<qint64>(QcAdventureRules::maxNameLength))
+                      < qint64{2} * 1024 * 1024);
 
         QcAdventureRules rules;
         QStringList blocks;
@@ -154,16 +155,16 @@ private slots:
         for (const Action action : {Action::Break, Action::PlaceOn}) {
             const QStringList items = rules.items(action);
             const bool extra = action == Action::Break;
-            more << quint32(items.size() + (extra ? 1 : 0));
+            more << static_cast<quint32>(items.size() + (extra ? 1 : 0));
             for (const QString &item : items) {
                 const QStringList listed = rules.blocks(action, item);
-                more << item << quint32(listed.size());
+                more << item << static_cast<quint32>(listed.size());
                 for (const QString &block : listed) {
                     more << block;
                 }
             }
             if (extra) {
-                more << u"zzz"_s << quint32(1) << u"a"_s;
+                more << u"zzz"_s << quint32{1} << u"a"_s;
             }
         }
         QDataStream in(larger);

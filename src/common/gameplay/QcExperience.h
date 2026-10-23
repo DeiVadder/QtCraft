@@ -38,7 +38,7 @@ public:
     int points() const { return m_points; }
     qint64 total() const { return totalForLevel(m_level) + m_points; }
     // Share of the way to the next level, 0..1 (the bar in the HUD).
-    double progress() const { return double(m_points) / double(pointsForNext(m_level)); }
+    double progress() const { return static_cast<double>(m_points) / static_cast<double>(pointsForNext(m_level)); }
 
     // Adds points (negative ones take away, down to nothing); returns the levels gained (negative
     // when lost).

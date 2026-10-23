@@ -40,7 +40,7 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::TradeState &m)
 {
     stream << m.villager << m.profession << m.level << m.experience << m.levelStart << m.levelEnd;
-    stream << quint32(m.offers.size());
+    stream << static_cast<quint32>(m.offers.size());
     for (const QcMsg::TradeOffer &offer : m.offers) {
         writeOffer(stream, offer);
     }

@@ -62,8 +62,8 @@ void writeVector(QDataStream &stream, const QcVec3 &v)
     QcArmourPart part;
     quint8 bone = 0;
     stream >> bone >> part.texture >> part.front;
-    part.bone = QcBoneRole(bone);
-    if (stream.status() != QDataStream::Ok || bone > quint8(QcBoneRole::LeftLeg)) {
+    part.bone = static_cast<QcBoneRole>(bone);
+    if (stream.status() != QDataStream::Ok || bone > static_cast<quint8>(QcBoneRole::LeftLeg)) {
         return std::nullopt;
     }
 
@@ -88,17 +88,17 @@ void write(QDataStream &stream, const std::optional<QcArmourDefinition> &armour)
         return;
     }
 
-    stream << quint8(armour->slot) << qint32(armour->points) << armour->set << quint32(armour->layers.size());
+    stream << static_cast<quint8>(armour->slot) << static_cast<qint32>(armour->points) << armour->set << static_cast<quint32>(armour->layers.size());
     for (const QcArmourLayer &layer : armour->layers) {
-        stream << quint32(layer.covers.size());
+        stream << static_cast<quint32>(layer.covers.size());
         for (const QString &slot : layer.covers) {
             stream << slot;
         }
         stream << layer.texture << layer.front << layer.inflate << layer.fromY << layer.toY;
     }
-    stream << quint32(armour->parts.size());
+    stream << static_cast<quint32>(armour->parts.size());
     for (const QcArmourPart &part : armour->parts) {
-        stream << quint8(part.bone) << part.texture << part.front;
+        stream << static_cast<quint8>(part.bone) << part.texture << part.front;
         writeVector(stream, part.from);
         writeVector(stream, part.to);
     }
@@ -116,14 +116,14 @@ std::optional<std::optional<QcArmourDefinition>> read(QDataStream &stream)
     quint8 slot = 0;
     qint32 points = 0;
     stream >> slot >> points >> definition.set;
-    if (slot > quint8(QcEquipmentSlot::Feet) || points < 0 || points > QcArmourDefinition::maxPoints) {
+    if (slot > static_cast<quint8>(QcEquipmentSlot::Feet) || points < 0 || points > QcArmourDefinition::maxPoints) {
         return std::nullopt;
     }
     const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcArmourDefinition::maxLayers);
     if (!layerCountRead) {
         return std::nullopt;
     }
-    definition.slot = QcEquipmentSlot(slot);
+    definition.slot = static_cast<QcEquipmentSlot>(slot);
     definition.points = points;
 
     definition.layers.reserve(*layerCountRead);

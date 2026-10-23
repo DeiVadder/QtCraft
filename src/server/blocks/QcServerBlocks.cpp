@@ -144,7 +144,8 @@ void QcServerBlocks::dropItemsWithoutExperience(QcBlockId block, QcBlockPos pos)
             continue;
         }
         if (const std::optional<QcItemId> item = m_state.content().itemId(drop.item)) {
-            const int extra = drop.mostCount() > drop.count ? int(m_state.random().bounded(quint32(drop.mostCount() - drop.count + 1))) : 0;
+            const int extra = drop.mostCount() > drop.count
+                ? static_cast<int>(m_state.random().bounded(static_cast<quint32>(drop.mostCount() - drop.count + 1))) : 0;
             m_state.entities().items().spawnScattered({*item, drop.count + extra, 0}, centre, m_state.entities().newId());
         }
     }

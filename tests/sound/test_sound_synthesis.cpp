@@ -33,7 +33,7 @@ QcSoundDefinition sound(const QString &name, QList<QcSoundLayer> layers)
     return definition;
 }
 
-float peakOf(const std::vector<float> &samples, std::size_t from = 0, std::size_t to = std::size_t(-1))
+float peakOf(const std::vector<float> &samples, std::size_t from = 0, std::size_t to = static_cast<std::size_t>(-1))
 {
     float peak = 0.0f;
     for (std::size_t i = from; i < std::min(to, samples.size()); ++i) {
@@ -46,9 +46,9 @@ double rms(const std::vector<float> &samples, std::size_t from, std::size_t to)
 {
     double sum = 0.0;
     for (std::size_t i = from; i < to; ++i) {
-        sum += double(samples[i]) * samples[i];
+        sum += static_cast<double>(samples[i]) * samples[i];
     }
-    return std::sqrt(sum / double(to - from));
+    return std::sqrt(sum / static_cast<double>(to - from));
 }
 
 // Upward zero crossings between two sample indices: about one per period of a tone.
@@ -69,7 +69,7 @@ double roughness(const std::vector<float> &samples)
     for (std::size_t i = 1; i < samples.size(); ++i) {
         steps += std::abs(samples[i] - samples[i - 1]);
     }
-    return steps / double(samples.size() - 1) / rms(samples, 0, samples.size());
+    return steps / static_cast<double>(samples.size() - 1) / rms(samples, 0, samples.size());
 }
 
 } // namespace
@@ -128,7 +128,7 @@ private slots:
         QcSoundLayer delayed = layer(QcSoundWave::Sine, 0.3, 500.0);
         delayed.start = 0.2;
         const QcSampleBuffer buffer = QcSoundSynthesizer::render(sound(u"t:late"_s, {delayed}), 0);
-        const auto start = std::size_t(0.2 * rate);
+        const auto start = static_cast<std::size_t>(0.2 * rate);
         QCOMPARE(peakOf(buffer.samples, 0, start), 0.0f);
         QVERIFY(peakOf(buffer.samples, start, start + 200) > 0.1f);
         // A held tone still ends at zero rather than with a click.
@@ -149,7 +149,7 @@ private slots:
         QcSoundLayer sweep = layer(QcSoundWave::Sine, 1.0, 200.0);
         sweep.endFrequency = 800.0;
         const QcSampleBuffer swept = QcSoundSynthesizer::render(sound(u"t:a"_s, {sweep}), 0);
-        const auto tenth = std::size_t(rate / 10);
+        const auto tenth = static_cast<std::size_t>(rate / 10);
         const int early = upwardCrossings(swept.samples, 0, tenth);
         const int late = upwardCrossings(swept.samples, swept.samples.size() - tenth, swept.samples.size());
 
@@ -311,7 +311,7 @@ private slots:
         QVERIFY(std::ranges::all_of(buffer.samples, [](float sample) { return std::isfinite(sample); }));
 
         // Music, not silence: every second has sound.
-        for (int second = 0; second + 1 < int(piece.seconds); ++second) {
+        for (int second = 0; second + 1 < static_cast<int>(piece.seconds); ++second) {
             QVERIFY2(rms(buffer.samples, std::size_t(second * musicRate), std::size_t((second + 1) * musicRate)) > 0.01,
                      qPrintable(QString::number(second)));
         }

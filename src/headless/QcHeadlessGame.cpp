@@ -485,7 +485,7 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
 {
     bool seedOk = true;
     const qint64 seed = request.contains(u"seed"_s) ? request.value(u"seed"_s).toVariant().toString().toLongLong(&seedOk)
-                                                    : qint64(QRandomGenerator::global()->generate64() >> 1);
+                                                    : static_cast<qint64>(QRandomGenerator::global()->generate64() >> 1);
     if (!seedOk) {
         return qcError(u"'seed' must be an integer"_s);
     }

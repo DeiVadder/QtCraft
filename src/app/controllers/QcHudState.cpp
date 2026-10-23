@@ -135,7 +135,7 @@ const QHash<QcChunkPos, QList<QcWorldLabel>> &QcHudState::labelsToDraw()
         m_mergedFrom = world;
         m_mergedLabels = world;
         for (const QcWorldLabel &label : std::as_const(stands)) {
-            const QcBlockPos at{int(std::floor(label.position.x)), 0, int(std::floor(label.position.z))};
+            const QcBlockPos at{static_cast<int>(std::floor(label.position.x)), 0, static_cast<int>(std::floor(label.position.z))};
             m_mergedLabels[at.chunk()].append(label);
         }
         m_standLabels = std::move(stands);

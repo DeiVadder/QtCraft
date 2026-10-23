@@ -42,7 +42,7 @@ void QcRangeAllocator::release(quint32 start, quint32 count)
     }
     // A range outside the capacity or more units than are in use is a caller's bug; ignoring it keeps
     // the free list consistent.
-    if (quint64(start) + count > m_capacity || count > m_used) {
+    if (static_cast<quint64>(start) + count > m_capacity || count > m_used) {
         qCWarning(lcRenderer).nospace() << "Range " << start << "+" << count << " was not handed out by this allocator";
         return;
     }

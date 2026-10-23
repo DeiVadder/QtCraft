@@ -42,8 +42,8 @@ private:
             QElapsedTimer timer;
             timer.start();
             m_server->tick();
-            const double tickMs = double(timer.nsecsElapsed()) / 1e6;
-            const double phaseMs = double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Projectiles)]) / 1e6;
+            const double tickMs = static_cast<double>(timer.nsecsElapsed()) / 1e6;
+            const double phaseMs = static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Projectiles)]) / 1e6;
             times.phaseMeanMs += phaseMs / ticks;
             times.phaseMaxMs = std::max(times.phaseMaxMs, phaseMs);
             times.tickMeanMs += tickMs / ticks;
@@ -75,7 +75,7 @@ private slots:
         // Pigs on the stage among which the arrows fall.
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
         for (int i = 0; i < measured.pigs; ++i) {
-            const QcVec3 at{m_feet.x - 3.0 + (i % 7), double(m_feet.y), m_feet.z - 3.0 + (i / 7) % 7};
+            const QcVec3 at{m_feet.x - 3.0 + (i % 7), static_cast<double>(m_feet.y), m_feet.z - 3.0 + (i / 7) % 7};
             m_server->entities().creatures().spawn(pig, at, m_server->entities().newId());
         }
 
@@ -131,7 +131,7 @@ private slots:
         for (int i = 0; i < skeletons; ++i) {
             const double angle = 2.0 * std::numbers::pi * i / skeletons;
             const double radius = 7.0 + 4.0 * (i % 3) / 2.0;
-            const QcVec3 at{m_feet.x + 0.5 + radius * std::cos(angle), double(m_feet.y), m_feet.z + 0.5 + radius * std::sin(angle)};
+            const QcVec3 at{m_feet.x + 0.5 + radius * std::cos(angle), static_cast<double>(m_feet.y), m_feet.z + 0.5 + radius * std::sin(angle)};
             m_server->entities().creatures().spawn(skeleton, at, m_server->entities().newId());
         }
 
@@ -146,11 +146,11 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             m_server->tick();
-            const double ms = double(timer.nsecsElapsed()) / 1e6;
+            const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
             tickMs += ms / count;
             maxTickMs = std::max(maxTickMs, ms);
-            mobsMs += double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Mobs)]) / 1e6 / count;
-            projectilesMs += double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Projectiles)]) / 1e6 / count;
+            mobsMs += static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Mobs)]) / 1e6 / count;
+            projectilesMs += static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Projectiles)]) / 1e6 / count;
             for (const QcProjectile &projectile : m_server->entities().projectiles().all()) {
                 shots.insert(projectile.id);
             }
@@ -159,7 +159,7 @@ private slots:
         // Every skeleton shoots about once in two seconds once it has seen the player.
         QVERIFY2(shots.size() >= skeletons, qPrintable(QString::number(shots.size())));
         qInfo("MEASURE skeletons=%d ticks=%d shots=%lld tick_mean_ms=%.4f tick_max_ms=%.4f mobs_mean_ms=%.4f projectiles_mean_ms=%.4f",
-              skeletons, count, qint64(shots.size()), tickMs, maxTickMs, mobsMs, projectilesMs);
+              skeletons, count, static_cast<qint64>(shots.size()), tickMs, maxTickMs, mobsMs, projectilesMs);
     }
 };
 

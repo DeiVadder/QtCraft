@@ -40,7 +40,7 @@ public:
     quint16 paletteIndex(int cell) const
     {
         Q_ASSERT(cell >= 0 && cell < QcWorld::blocksPerSection);
-        return isUniform() ? quint16(0) : packedIndex(cell);
+        return isUniform() ? quint16{0} : packedIndex(cell);
     }
     // Bits per stored palette index: 0 for a uniform section, else 1, 2, 4, 8 or 16.
     int bitsPerIndex() const { return isUniform() ? 0 : 16 >> m_entriesPerWordLog2; }
@@ -51,7 +51,7 @@ public:
     // full for each holder), for memory statistics.
     qsizetype heapBytes() const
     {
-        return m_palette.capacity() * qsizetype(sizeof(QcBlockId)) + m_words.capacity() * qsizetype(sizeof(quint16));
+        return m_palette.capacity() * static_cast<qsizetype>(sizeof(QcBlockId)) + m_words.capacity() * static_cast<qsizetype>(sizeof(quint16));
     }
 
     // Calls `visit(pos)` for every cell whose block is `wanted`, with the section's lowest corner at
@@ -76,7 +76,7 @@ public:
     void forEachRun(Visit &&visit) const
     {
         if (isUniform()) {
-            visit(QcWorld::blocksPerSection, quint16(0));
+            visit(QcWorld::blocksPerSection, quint16{0});
             return;
         }
         const unsigned perWordLog2 = m_entriesPerWordLog2;
@@ -85,18 +85,18 @@ public:
         const unsigned mask = (1u << bits) - 1u;
         quint16 current = packedIndex(0);
         int start = 0;
-        for (int cell = 0; cell < QcWorld::blocksPerSection; cell += int(perWord)) {
+        for (int cell = 0; cell < QcWorld::blocksPerSection; cell += static_cast<int>(perWord)) {
             const unsigned word = m_words.at(cell >> perWordLog2);
             // A word whose every slot holds `current` continues the run.
-            if (word == unsigned(current) * (0xFFFFu / mask)) {
+            if (word == static_cast<unsigned>(current) * (0xFFFFu / mask)) {
                 continue;
             }
             for (unsigned slot = 0; slot < perWord; ++slot) {
-                const auto entry = quint16((word >> (slot * bits)) & mask);
+                const auto entry = static_cast<quint16>((word >> (slot * bits)) & mask);
                 if (entry != current) {
-                    visit(cell + int(slot) - start, current);
+                    visit(cell + static_cast<int>(slot) - start, current);
                     current = entry;
-                    start = cell + int(slot);
+                    start = cell + static_cast<int>(slot);
                 }
             }
         }
@@ -118,8 +118,8 @@ private:
     {
         const unsigned perWordLog2 = m_entriesPerWordLog2;
         const unsigned bits = 16u >> perWordLog2;
-        const unsigned slot = unsigned(cell) & ((1u << perWordLog2) - 1u);
-        return quint16((unsigned(m_words.at(cell >> perWordLog2)) >> (slot * bits)) & ((1u << bits) - 1u));
+        const unsigned slot = static_cast<unsigned>(cell) & ((1u << perWordLog2) - 1u);
+        return static_cast<quint16>((static_cast<unsigned>(m_words.at(cell >> perWordLog2)) >> (slot * bits)) & ((1u << bits) - 1u));
     }
     // Packs `indices` (one per cell) with 2^perWordLog2 indices per word into m_words.
     void pack(const QList<quint16> &indices, unsigned perWordLog2);

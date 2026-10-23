@@ -70,7 +70,7 @@ private:
         std::vector<bool> land;
         std::vector<bool> sea;
 
-        std::size_t index(int i, int j) const { return std::size_t(j) * std::size_t(width) + std::size_t(i); }
+        std::size_t index(int i, int j) const { return static_cast<std::size_t>(j) * static_cast<std::size_t>(width) + static_cast<std::size_t>(i); }
         std::pair<int, int> column(int i, int j) const { return {firstX + (i - reach) * step, firstZ + (j - reach) * step}; }
         // A point of the sea within `reach` points.
         bool nearSea(int i, int j) const;

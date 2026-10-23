@@ -78,8 +78,8 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     const int efficiency = QcEnchanting::levelOf(m_state.content(), heldStack, QcEnchantmentEffect::Efficiency);
     const double seconds = QcMining::breakSeconds(definition, held, QcEnchanting::speedBonus(efficiency));
     // In the players' time, so the mining takes as long at every tick rate.
-    constexpr qint64 tickNs = qint64(QcPhysics::tickDuration * 1e9);
-    const qint64 requiredNs = qint64(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
+    constexpr qint64 tickNs = static_cast<qint64>(QcPhysics::tickDuration * 1e9);
+    const qint64 requiredNs = static_cast<qint64>(std::ceil(seconds * QcPhysics::tickRate)) * tickNs;
     const qint64 toleranceNs = (miningToleranceTicks - 1) * tickNs + std::max(tickNs, m_state.clock().lastTickNs());
     if (seconds < 0.0 || m_state.clock().playerTimeNs() - client.mining.startNs + toleranceNs < requiredNs) {
         client.connection->send(QcMsg::BlockUpdate{pos, *block});
@@ -290,12 +290,14 @@ bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBl
 
     // Nobody, player or mob, may end up inside what is placed (both halves of a door or bed).
     QList<QcAabb> boxes;
-    const QcVec3 corner{double(target.x), double(target.y), double(target.z)};
+    const QcVec3 corner{static_cast<double>(target.x), static_cast<double>(target.y), static_cast<double>(target.z)};
     const QcBlockPos other = QcBlockRules::otherHalf(m_state.world(), target, state);
     for (const QcAabb &box : content.state(state).collision) {
         boxes.append(box.moved(corner));
         if (placedDefinition.door || placedDefinition.bed) {
-            boxes.append(box.moved(corner + QcVec3{double(other.x - target.x), double(other.y - target.y), double(other.z - target.z)}));
+            boxes.append(box.moved(corner
+                + QcVec3{static_cast<double>(other.x - target.x), static_cast<double>(other.y - target.y),
+                static_cast<double>(other.z - target.z)}));
         }
     }
 

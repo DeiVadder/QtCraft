@@ -101,7 +101,7 @@ private slots:
     {
         QcVillagerTrades::Offer offer;
         offer.definition.demand = 3;
-        offer.costs = {{QcItemId(1), 10, 0}, {QcItemId(2), 1, 0}};
+        offer.costs = {{static_cast<QcItemId>(1), 10, 0}, {static_cast<QcItemId>(2), 1, 0}};
         offer.firstMaxStack = 64;
         QCOMPARE(m_trades.priceOf(offer, {u"x"_s, 0, 0}).constFirst().count, 10);
         QCOMPARE(m_trades.priceOf(offer, {u"x"_s, 0, 2}).constFirst().count, 16);
@@ -343,7 +343,7 @@ private slots:
     void tradeMessagesRoundTrip()
     {
         QcMsg::TradeState state{12, u"profession.qtcraft.smith"_s, 2, 30, 10, 70, {}};
-        state.offers.append({{{QcItemId(3), 4, 0}, {QcItemId(5), 1, 0}}, {QcItemId(9), 1, 0}, 2, 12});
+        state.offers.append({{{static_cast<QcItemId>(3), 4, 0}, {static_cast<QcItemId>(5), 1, 0}}, {static_cast<QcItemId>(9), 1, 0}, 2, 12});
         const QcResult<QcMessage> decoded = QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server);
         QVERIFY(decoded && std::get<QcMsg::TradeState>(*decoded) == state);
 
@@ -358,7 +358,7 @@ private slots:
         // An offer without costs or with uses beyond its limit is refused.
         state.offers[0].uses = 13;
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server));
-        state.offers[0] = {{}, {QcItemId(9), 1, 0}, 0, 1};
+        state.offers[0] = {{}, {static_cast<QcItemId>(9), 1, 0}, 0, 1};
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server));
     }
 };

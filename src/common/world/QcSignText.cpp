@@ -43,7 +43,7 @@ Lines cleaned(const Lines &lines, int count, int lineLength)
     Lines result;
     const int kept = std::clamp(count, 0, maxLines);
     for (int line = 0; line < kept; ++line) {
-        result[std::size_t(line)] = QcNameText::clean(lines[std::size_t(line)], std::clamp(lineLength, 0, maxLineLength));
+        result[static_cast<std::size_t>(line)] = QcNameText::clean(lines[static_cast<std::size_t>(line)], std::clamp(lineLength, 0, maxLineLength));
     }
     return result;
 }

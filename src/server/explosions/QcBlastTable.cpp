@@ -5,12 +5,12 @@
 QcBlastTable::QcBlastTable(const QcContentRegistry &content)
     : m_content(content)
 {
-    const auto count = std::size_t(content.stateCount());
+    const auto count = static_cast<std::size_t>(content.stateCount());
     m_entries.reserve(count);
     for (std::size_t id = 0; id < count; ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         Entry entry;
-        entry.resistance = float(block.blast.effectiveResistance(block.hardness, block.liquid));
+        entry.resistance = static_cast<float>(block.blast.effectiveResistance(block.hardness, block.liquid));
         entry.solid = block.solid;
         entry.explosive = block.blast.isExplosive();
         m_entries.push_back(entry);
@@ -24,7 +24,7 @@ QcBlastTable::QcBlastTable(const QcContentRegistry &content)
 const QcBlastTable::Entry &QcBlastTable::of(QcBlockId block) const
 {
     static const Entry none;
-    return std::size_t(block) < m_entries.size() ? m_entries[std::size_t(block)] : none;
+    return static_cast<std::size_t>(block) < m_entries.size() ? m_entries[static_cast<std::size_t>(block)] : none;
 }
 
 const QcBlastDefinition &QcBlastTable::blast(QcBlockId block) const

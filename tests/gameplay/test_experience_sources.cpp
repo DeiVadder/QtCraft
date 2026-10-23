@@ -43,7 +43,7 @@ private:
         const QcItemStack &held = m_client->stacks[m_client->selected];
         const QcItemDefinition *tool = held.isEmpty() ? nullptr : &m_content->item(held.item);
         send(QcMsg::StartMining{pos});
-        ticks(int(std::ceil(QcMining::breakSeconds(block, tool) * QcPhysics::tickRate)) + 1);
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(block, tool) * QcPhysics::tickRate)) + 1);
         send(QcMsg::FinishMining{pos});
         QCOMPARE(*m_server->world().blockAt(pos), qcAirBlockId);
     }
@@ -100,7 +100,7 @@ private:
 
     QString crafted(const QList<const char *> &cells, int size) const
     {
-        QList<QcItemStack> grid(qsizetype(size) * size);
+        QList<QcItemStack> grid(static_cast<qsizetype>(size) * size);
         for (qsizetype i = 0; i < cells.size(); ++i) {
             grid[i] = cells[i] ? QcItemStack{item(cells[i]), 1, 0} : QcItemStack();
         }
@@ -154,7 +154,7 @@ private slots:
         join();
         const std::optional<int> zombie = m_content->mobIndex(u"qtcraft:zombie"_s);
         QVERIFY(zombie);
-        const quint32 id = m_server->mobs().spawn(*zombie, {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
+        const quint32 id = m_server->mobs().spawn(*zombie, {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(id)->health = 0.5;
         send(QcMsg::AttackEntity{id});
         QVERIFY(!m_server->mobs().find(id));
@@ -164,7 +164,7 @@ private slots:
         forget();
         ticks(20);
         const std::optional<int> pig = m_content->mobIndex(u"qtcraft:pig"_s);
-        const quint32 pigId = m_server->mobs().spawn(*pig, {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
+        const quint32 pigId = m_server->mobs().spawn(*pig, {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(pigId)->health = 0.5;
         send(QcMsg::AttackEntity{pigId});
         QVERIFY(gathered() >= 1 && gathered() <= 3);
@@ -172,7 +172,7 @@ private slots:
         // A piglet gives none.
         forget();
         ticks(20);
-        const quint32 pigletId = m_server->mobs().spawn(*pig, {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
+        const quint32 pigletId = m_server->mobs().spawn(*pig, {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(pigletId)->growUp = 600.0;
         m_server->mobs().find(pigletId)->health = 0.5;
         send(QcMsg::AttackEntity{pigletId});
@@ -261,7 +261,7 @@ private slots:
     {
         join();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const QcVec3 place{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 place{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QList<quint32> parents;
         for (const double dz : {-0.5, 0.5}) {
             parents.append(m_server->mobs().spawn(pig, place + QcVec3{0.0, 0.0, dz}, m_server->entities().newId(), false, true));

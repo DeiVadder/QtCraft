@@ -82,7 +82,7 @@ private:
     quint16 m_port = 0;
     std::vector<std::unique_ptr<QcBotProcess>> m_bots;
 
-    QcBotProcess &bot(qsizetype index) { return *m_bots[std::size_t(index)]; }
+    QcBotProcess &bot(qsizetype index) { return *m_bots[static_cast<std::size_t>(index)]; }
     QcBotProcess &alice() { return bot(0); }
     QcBotProcess &bob() { return bot(1); }
     QcBotProcess &carol() { return bot(2); }
@@ -125,7 +125,7 @@ private:
         static const QRegularExpression listening(u"Listening on port (\\d+)"_s);
         QVERIFY2(QTest::qWaitFor([&] {
             readServer();
-            m_port = quint16(listening.match(m_serverOutput).captured(1).toUInt());
+            m_port = static_cast<quint16>(listening.match(m_serverOutput).captured(1).toUInt());
             return m_port != 0 || m_server.state() == QProcess::NotRunning;
         }, timeoutMs), qPrintable(m_serverOutput));
         QVERIFY2(m_port != 0, qPrintable(m_serverOutput));
@@ -158,9 +158,9 @@ private:
     {
         const QJsonArray position = status[u"position"_s].toArray();
         const double yaw = qDegreesToRadians(status[u"yaw"_s].toDouble());
-        const int x = int(std::floor(position[0].toDouble() + 1.5 * std::sin(yaw)));
-        const int z = int(std::floor(position[2].toDouble() - 1.5 * std::cos(yaw)));
-        return {x, int(std::floor(position[1].toDouble())) - 1, z};
+        const int x = static_cast<int>(std::floor(position[0].toDouble() + 1.5 * std::sin(yaw)));
+        const int z = static_cast<int>(std::floor(position[2].toDouble() - 1.5 * std::cos(yaw)));
+        return {x, static_cast<int>(std::floor(position[1].toDouble())) - 1, z};
     }
 
     // The bot mines the grass one step to the west (by hand, as a player), walks into the hole to

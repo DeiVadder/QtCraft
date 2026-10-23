@@ -17,15 +17,15 @@ public:
 
     int level(int index) const
     {
-        const quint8 pair = m_data[std::size_t(index >> 1)];
+        const quint8 pair = m_data[static_cast<std::size_t>(index >> 1)];
         return (index & 1) != 0 ? pair >> 4 : pair & 0x0F;
     }
     void setLevel(int index, int level)
     {
-        quint8 &pair = m_data[std::size_t(index >> 1)];
-        pair = (index & 1) != 0 ? quint8((pair & 0x0F) | (level << 4)) : quint8((pair & 0xF0) | level);
+        quint8 &pair = m_data[static_cast<std::size_t>(index >> 1)];
+        pair = (index & 1) != 0 ? static_cast<quint8>((pair & 0x0F) | (level << 4)) : static_cast<quint8>((pair & 0xF0) | level);
     }
-    void fill(int level) { m_data.fill(quint8(level * 0x11)); }
+    void fill(int level) { m_data.fill(static_cast<quint8>(level * 0x11)); }
     // The level of every cell when all cells have the same one, else -1.
     int uniformLevel() const
     {

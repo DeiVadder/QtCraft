@@ -49,14 +49,14 @@ Canvas canvasOf(const QcTextureSpec &spec, int x, int y)
 QColor mix(const QColor &a, const QColor &b, double t)
 {
     const double s = std::clamp(t, 0.0, 1.0);
-    const auto channel = [s](int from, int to) { return int(std::lround(from + (to - from) * s)); };
+    const auto channel = [s](int from, int to) { return static_cast<int>(std::lround(from + (to - from) * s)); };
     return QColor(channel(a.red(), b.red()), channel(a.green(), b.green()), channel(a.blue(), b.blue()));
 }
 
 // A seeded value in [0, 1) for `salt`, the same for every pixel of a painting.
 double seeded(const QcTextureSpec &spec, quint32 salt)
 {
-    return double(hashPixel(spec.seed, int(salt), 7) & 0xFFFFu) / 65536.0;
+    return static_cast<double>(hashPixel(spec.seed, static_cast<int>(salt), 7) & 0xFFFFu) / 65536.0;
 }
 
 // The dark wooden rim around the whole canvas, or nothing inside it.
@@ -99,7 +99,7 @@ QColor paintLandscape(const QcTextureSpec &spec, int x, int y, QColor)
         return brushed(spec, spec.primary, c);
     }
     const double sunU = 0.2 + 0.6 * seeded(spec, 5);
-    const double aspect = double(c.width) / c.height;
+    const double aspect = static_cast<double>(c.width) / c.height;
     if (std::hypot((c.u - sunU) * aspect, c.v - 0.25) < 0.09) {
         return QColor(250, 222, 110);
     }
@@ -167,7 +167,7 @@ QColor paintNight(const QcTextureSpec &spec, int x, int y, QColor)
     if (c.v > peak) {
         return brushed(spec, QColor(26, 28, 36), c);
     }
-    const double aspect = double(c.width) / c.height;
+    const double aspect = static_cast<double>(c.width) / c.height;
     const double moonU = 0.15 + 0.7 * seeded(spec, 3);
     const double moon = std::hypot((c.u - moonU) * aspect, c.v - 0.22);
     if (moon < 0.08 && std::hypot((c.u - moonU - 0.03) * aspect, c.v - 0.2) > 0.07) {
@@ -186,7 +186,7 @@ QColor paintSunset(const QcTextureSpec &spec, int x, int y, QColor)
         return *frame;
     }
     constexpr double horizon = 0.6;
-    const double aspect = double(c.width) / c.height;
+    const double aspect = static_cast<double>(c.width) / c.height;
     const double sunU = 0.3 + 0.4 * seeded(spec, 1);
     if (c.v < horizon && std::hypot((c.u - sunU) * aspect, c.v - horizon) < 0.16) {
         return QColor(255, 214, 96);
@@ -206,7 +206,7 @@ QColor paintRings(const QcTextureSpec &spec, int x, int y, QColor)
     if (const std::optional<QColor> frame = rim(c)) {
         return *frame;
     }
-    const double aspect = double(c.width) / c.height;
+    const double aspect = static_cast<double>(c.width) / c.height;
     double wave = 0.0;
     for (quint32 centre = 0; centre < 3; ++centre) {
         const double cu = seeded(spec, 10 + centre);

@@ -24,7 +24,7 @@ struct QcChunkLight
             return 0;
         }
 
-        const std::shared_ptr<const Section> &section = sections[std::size_t(y / QcWorld::sectionHeight)];
+        const std::shared_ptr<const Section> &section = sections[static_cast<std::size_t>(y / QcWorld::sectionHeight)];
         return section ? section->level(QcChunkSection::index(x, y % QcWorld::sectionHeight, z)) : 0;
     }
 };

@@ -35,7 +35,7 @@ QString qualified(const QString &name)
     if (!ok || !std::isfinite(value) || std::abs(value) > 3600.0) {
         return std::nullopt;
     }
-    return qcNormalizedAngle(float(value));
+    return qcNormalizedAngle(static_cast<float>(value));
 }
 
 } // namespace
@@ -118,7 +118,7 @@ QList<QcItemStack> itemsNamed(const QcContentRegistry &content, const QString &n
     for (qsizetype i = 0; i < content.items().size(); ++i) {
         const QcItemDefinition &item = content.items()[i];
         if (item.armour && item.armour->set == qualified(name)) {
-            set.append({QcItemId(i + 1), 1, 0});
+            set.append({static_cast<QcItemId>(i + 1), 1, 0});
         }
     }
     if (!set.isEmpty()) {

@@ -9,7 +9,7 @@ QcStructure::QcStructure(QString name, int sizeX, int sizeY, int sizeZ)
     , m_sizeX(std::max(0, sizeX))
     , m_sizeY(std::max(0, sizeY))
     , m_sizeZ(std::max(0, sizeZ))
-    , m_cells(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, QcStructureDefinition::keep)
+    , m_cells(static_cast<qsizetype>(m_sizeX) * m_sizeY * m_sizeZ, QcStructureDefinition::keep)
 {
 }
 
@@ -34,9 +34,9 @@ QcStructure::Loaded QcStructure::fromDefinition(const QcStructureDefinition &def
         const qint16 index = definition.cells[cell];
         if (index >= 0 && index < states.size()) {
             // Cells run x fastest, then z, then y (QcStructureDefinition::cellIndex).
-            const int x = int(cell % definition.sizeX);
-            const int z = int(cell / definition.sizeX % definition.sizeZ);
-            const int y = int(cell / (qsizetype(definition.sizeX) * definition.sizeZ));
+            const int x = static_cast<int>(cell % definition.sizeX);
+            const int z = static_cast<int>(cell / definition.sizeX % definition.sizeZ);
+            const int y = static_cast<int>(cell / (static_cast<qsizetype>(definition.sizeX) * definition.sizeZ));
             structure.set(x, y, z, states[index]);
         }
     }
@@ -64,7 +64,7 @@ void QcStructure::set(int x, int y, int z, QcBlockId state)
     qint16 index = m_paletteIndex.value(state, QcStructureDefinition::keep);
     if (index < 0) {
         Q_ASSERT(m_palette.size() < std::numeric_limits<qint16>::max());
-        index = qint16(m_palette.size());
+        index = static_cast<qint16>(m_palette.size());
         m_paletteIndex.insert(state, index);
         m_palette.append(state);
     }

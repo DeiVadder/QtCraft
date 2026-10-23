@@ -306,7 +306,7 @@ private slots:
         QCOMPARE(m_controller->log()->lines().constFirst().text, u"a"_s);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"no log level 9"_s));
-        m_controller->setLogLevel(QcAdminController::LogLevel(9));
+        m_controller->setLogLevel(static_cast<QcAdminController::LogLevel>(9));
         QCOMPARE(m_controller->logLevel(), QcAdminController::LogLevel::Debug);
     }
 
@@ -336,7 +336,7 @@ private slots:
         m_controller->open();
         QcAdminLineModel *log = m_controller->log();
         QList<QcMsg::AdminLogLine> tail;
-        for (int i = 0; i < int(QcClientAdmin::logLimit); ++i) {
+        for (int i = 0; i < static_cast<int>(QcClientAdmin::logLimit); ++i) {
             tail.append({i, QcMsg::AdminLogLine::Level::Info, u"qtcraft.server"_s, u"line %1"_s.arg(i)});
         }
         QVERIFY(m_admin->receive(QcMsg::AdminLog{true, tail}));
@@ -364,7 +364,7 @@ private slots:
         using Type = QcMsg::AdminSettings::Type;
         QcMsg::AdminSettings settings;
         settings.rules.append(Setting{u"keepInventory"_s, u"Players"_s, u"Keep it."_s, Type::Boolean, 0, 1, 0, 0});
-        settings.limits.append(Setting{u"signalBudget"_s, u"Signal"_s, u"Work."_s, Type::Integer, 256, qint64(1) << 40, 1000, 1000});
+        settings.limits.append(Setting{u"signalBudget"_s, u"Signal"_s, u"Work."_s, Type::Integer, 256, qint64{1} << 40, 1000, 1000});
         settings.limits.append(Setting{u"fires"_s, u"Fire"_s, u"Fires."_s, Type::Integer, 16, 4096, 100, 100});
         m_controller->open();
         QVERIFY(m_admin->receive(settings));

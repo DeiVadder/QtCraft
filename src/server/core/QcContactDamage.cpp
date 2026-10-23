@@ -24,7 +24,7 @@ using Touch = QcContactDamage::Touch;
 
 Touch touchOf(const std::vector<Touch> &table, QcBlockId id)
 {
-    return std::size_t(id) < table.size() ? table[std::size_t(id)] : Touch{};
+    return static_cast<std::size_t>(id) < table.size() ? table[static_cast<std::size_t>(id)] : Touch{};
 }
 
 // The stronger of both values of two touches.
@@ -69,11 +69,11 @@ Touch touchInChunk(const QcChunk &chunk, quint32 mask, const BlockBounds &local,
 } // namespace
 
 QcContactDamage::QcContactDamage(const QcContentRegistry &content)
-    : m_touch(std::size_t(content.stateCount()))
+    : m_touch(static_cast<std::size_t>(content.stateCount()))
 {
     for (std::size_t id = 0; id < m_touch.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
-        m_touch[id] = {block.contactDamage, int(std::lround(block.fire.setsAlightSeconds * QcPhysics::tickRate)),
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
+        m_touch[id] = {block.contactDamage, static_cast<int>(std::lround(block.fire.setsAlightSeconds * QcPhysics::tickRate)),
                        block.contactDamage > 0.0 && block.burnsItems};
     }
 }
@@ -94,14 +94,14 @@ QcContactDamage::Touch QcContactDamage::touching(const QcServerWorld &world, con
     constexpr int size = QcWorld::chunkSize;
 
     BlockBounds bounds;
-    bounds.minX = int(std::floor(box.min.x + inset));
-    bounds.maxX = int(std::floor(box.max.x - inset));
-    bounds.minZ = int(std::floor(box.min.z + inset));
-    bounds.maxZ = int(std::floor(box.max.z - inset));
+    bounds.minX = static_cast<int>(std::floor(box.min.x + inset));
+    bounds.maxX = static_cast<int>(std::floor(box.max.x - inset));
+    bounds.minZ = static_cast<int>(std::floor(box.min.z + inset));
+    bounds.maxZ = static_cast<int>(std::floor(box.max.z - inset));
 
     // Outside the world height there is only air, which does no damage.
-    bounds.minY = std::max(int(std::floor(box.min.y + inset)), 0);
-    bounds.maxY = std::min(int(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
+    bounds.minY = std::max(static_cast<int>(std::floor(box.min.y + inset)), 0);
+    bounds.maxY = std::min(static_cast<int>(std::floor(box.max.y - inset)), QcWorld::worldHeight - 1);
     if (!isPossibleIn(world) || bounds.minX > bounds.maxX || bounds.minY > bounds.maxY || bounds.minZ > bounds.maxZ) {
         return {};
     }

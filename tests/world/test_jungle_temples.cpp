@@ -116,7 +116,7 @@ private:
     {
         timespec now{};
         clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-        return double(now.tv_sec) + double(now.tv_nsec) / 1e9;
+        return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
     }
 
     // The content without the surface rules of the two kinds (for the measurement).
@@ -196,8 +196,8 @@ private slots:
         const QList<QcChunkPos> planChunks = chunksOf(plan);
         for (const QcChunkPos &pos : planChunks) {
             const QcChunkFurnishing furnishing = m_terrain->furnishingIn(pos);
-            chests += int(std::ranges::count(furnishing.chests, u"qtcraft:jungle_temple_chest"_s, &QcChunkFurnishing::Chest::lootTable));
-            dispensers += int(std::ranges::count(furnishing.chests, u"qtcraft:jungle_temple_dispenser"_s, &QcChunkFurnishing::Chest::lootTable));
+            chests += static_cast<int>(std::ranges::count(furnishing.chests, u"qtcraft:jungle_temple_chest"_s, &QcChunkFurnishing::Chest::lootTable));
+            dispensers += static_cast<int>(std::ranges::count(furnishing.chests, u"qtcraft:jungle_temple_dispenser"_s, &QcChunkFurnishing::Chest::lootTable));
         }
         QCOMPARE(chests, 2);
         QCOMPARE(dispensers, 3);
@@ -295,7 +295,7 @@ private slots:
             plainTime += seconds(QcTerrainGenerator(without, seed), chunks);
             withTime += seconds(QcTerrainGenerator(m_content, seed), chunks);
         }
-        const double count = 2.0 * double(chunks.size());
+        const double count = 2.0 * static_cast<double>(chunks.size());
         qInfo().noquote() << u"chunks/s of %1 temple and hut chunks without them %2, with %3"_s.arg(chunks.size())
                                  .arg(count / plainTime, 0, 'f', 1)
                                  .arg(count / withTime, 0, 'f', 1);
@@ -311,8 +311,8 @@ private slots:
         const double a = seconds(QcTerrainGenerator(without, seed), area);
         const double b = seconds(QcTerrainGenerator(m_content, seed), area);
         qInfo().noquote() << u"chunks/s of %1 chunks around a temple without the two kinds %2, with %3"_s.arg(area.size())
-                                 .arg(double(area.size()) / a, 0, 'f', 1)
-                                 .arg(double(area.size()) / b, 0, 'f', 1);
+                                 .arg(static_cast<double>(area.size()) / a, 0, 'f', 1)
+                                 .arg(static_cast<double>(area.size()) / b, 0, 'f', 1);
     }
 };
 

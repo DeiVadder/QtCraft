@@ -72,7 +72,7 @@ void QcFramedMapAtlas::setColours(QList<QRgb> colours)
 QRectF QcFramedMapAtlas::uvOf(int index)
 {
     const double inset = 0.5 / side;
-    const double tile = double(QcMapData::size) / side;
+    const double tile = static_cast<double>(QcMapData::size) / side;
     const int column = index % columns;
     const int row = index / columns;
     const QPointF corner(column * tile, row * tile);

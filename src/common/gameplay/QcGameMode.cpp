@@ -71,12 +71,12 @@ QLatin1StringView name(QcGameMode mode)
 
 [[nodiscard]] std::optional<QcGameMode> fromValue(quint8 value)
 {
-    switch (QcGameMode(value)) {
+    switch (static_cast<QcGameMode>(value)) {
     case QcGameMode::Survival:
     case QcGameMode::Creative:
     case QcGameMode::Adventure:
     case QcGameMode::Spectator:
-        return QcGameMode(value);
+        return static_cast<QcGameMode>(value);
     }
     return std::nullopt;
 }

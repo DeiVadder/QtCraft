@@ -135,7 +135,7 @@ void QcWorldCommands::reportBackup(quint32 requester, const QcResult<QcWorldBack
                                             .arg(m_clock.elapsed() - startedMs)
                                             .arg(result->directory);
         line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup with %1 files (%2 MB) in %3"),
-                                   {QString::number(result->files), megabytes(double(result->bytes) / (1024.0 * 1024.0)), result->directory});
+                                   {QString::number(result->files), megabytes(static_cast<double>(result->bytes) / (1024.0 * 1024.0)), result->directory});
     } else {
         qCWarning(lcCommands).noquote() << u"Backup failed: %1"_s.arg(result.error());
         line = QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Backup failed: %1"), {result.error()});
@@ -185,7 +185,7 @@ void QcWorldCommands::worldInfo(const QcCommandContext &context) const
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Tick: %1 ms mean, %2 ms max, %3 ms late on average, %4 skipped; slowest phase %5 (%6 ms)"),
                   {ms(window.mean(QcTickPhaseTimer::durationSeries)), ms(window.max(QcTickPhaseTimer::durationSeries)),
                    ms(window.mean(QcTickPhaseTimer::lateSeries)), QString::number(m_parts.ticks.stats().skipped()),
-                   QString::fromLatin1(QcTickPhases::ids[std::size_t(slowest)]), ms(window.mean(slowest))});
+                   QString::fromLatin1(QcTickPhases::ids[static_cast<std::size_t>(slowest)]), ms(window.mean(slowest))});
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Memory: %1 MB now, %2 MB at most"),
                   {megabytes(QcProcessMemory::currentMb()), megabytes(QcProcessMemory::peakMb())});
 }
@@ -238,7 +238,8 @@ QcWorldCommands::Swept QcWorldCommands::sweep(const Removal &removal, bool apply
     const auto itemMatches = [&](const QcItemEntity &item) {
         return matchesItem(removal.what, item.stack) && inRange(removal.centre, removal.radius, item.motion.position);
     };
-    const Swept swept{int(mobs.size()), int(std::ranges::count_if(m_state.entities().items().items(), itemMatches)), int(stands.size())};
+    const Swept swept{static_cast<int>(mobs.size()),
+        static_cast<int>(std::ranges::count_if(m_state.entities().items().items(), itemMatches)), static_cast<int>(stands.size())};
     if (!apply) {
         return swept;
     }

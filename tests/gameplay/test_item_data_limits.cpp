@@ -41,7 +41,7 @@ class TestItemDataLimits : public QObject
             chain = holding({chain}).withMapId(1).withName(name);
         }
         QList<QcItemStack> outerSlots{chain};
-        const int holdingOne = QcItemData::maxStacksInside - int(QcItemData::maxContents) - (QcItemData::maxDepth - 1);
+        const int holdingOne = QcItemData::maxStacksInside - static_cast<int>(QcItemData::maxContents) - (QcItemData::maxDepth - 1);
         for (int slot = 0; slot < holdingOne; ++slot) {
             outerSlots.append(holding({loaded()}).withMapId(1).withName(name));
         }

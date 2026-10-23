@@ -13,8 +13,9 @@ namespace {
 
 void writeHanging(QDataStream &stream, const QcHanging &hanging)
 {
-    stream << quint8(hanging.type) << quint8(hanging.face) << qint32(hanging.cell.x) << qint32(hanging.cell.y) << qint32(hanging.cell.z)
-           << quint8(hanging.width) << quint8(hanging.height) << hanging.rotation << hanging.motif;
+    stream << static_cast<quint8>(hanging.type) << static_cast<quint8>(hanging.face) << static_cast<qint32>(hanging.cell.x)
+        << static_cast<qint32>(hanging.cell.y) << static_cast<qint32>(hanging.cell.z)
+           << static_cast<quint8>(hanging.width) << static_cast<quint8>(hanging.height) << hanging.rotation << hanging.motif;
 }
 
 // The hanging part of an EntitySpawn; std::nullopt for values no frame or painting has.
@@ -33,8 +34,8 @@ void writeHanging(QDataStream &stream, const QcHanging &hanging)
         || height > QcPaintingMotif::maxSide || hanging.rotation >= QcHanging::rotations) {
         return std::nullopt;
     }
-    hanging.type = QcHangingType(type);
-    hanging.face = QcBlockFace(face);
+    hanging.type = static_cast<QcHangingType>(type);
+    hanging.face = static_cast<QcBlockFace>(face);
     hanging.cell = {x, y, z};
     hanging.width = width;
     hanging.height = height;
@@ -47,7 +48,7 @@ namespace QcProtocolCodec {
 
 void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
 {
-    stream << m.id << quint8(m.kind);
+    stream << m.id << static_cast<quint8>(m.kind);
     if (m.kind == QcEntityKind::Creature) {
         stream << m.creatureType;
     }
@@ -65,7 +66,7 @@ void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
 
 void encode(QDataStream &stream, const QcMsg::EntityMoves &m)
 {
-    stream << m.timeMs << quint32(m.moves.size());
+    stream << m.timeMs << static_cast<quint32>(m.moves.size());
     for (const QcMsg::EntityMove &move : m.moves) {
         stream << move.id << move.position << move.yaw << move.health << move.hurt << move.pitch << move.flags << move.held;
     }

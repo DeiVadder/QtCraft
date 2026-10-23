@@ -61,7 +61,7 @@ private:
     // A new client session over a link with latency, waiting until it plays.
     void connectSession(int delayMs, int jitterMs)
     {
-        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 17 + jitterMs));
+        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 17 + jitterMs));
         m_session = std::make_unique<QcClientSession>(std::move(link), u"Player"_s);
         m_session->start();
         QTRY_VERIFY_WITH_TIMEOUT(m_session->state() == QcClientSession::State::Playing, timeoutMs);
@@ -181,7 +181,7 @@ private slots:
             QcPlayerInput fast;
             fast.forward = 1.0f;
             fast.sprint = true;
-            fast.yaw = float(tick * 3);
+            fast.yaw = static_cast<float>(tick * 3);
             return fast;
         });
         // Descending by sneaking does not crouch the figure (E-284).
@@ -282,7 +282,7 @@ private slots:
             fast.forward = 1.0f;
             fast.sprint = true;
             fast.flySpeed = 25;
-            fast.yaw = float(tick * 2);
+            fast.yaw = static_cast<float>(tick * 2);
             return fast;
         });
         QVERIFY(m_session->playerMotion().flying);

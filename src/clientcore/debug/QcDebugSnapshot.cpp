@@ -75,14 +75,14 @@ QcBlockPos QcDebugSnapshot::block() const
 
 int QcDebugSnapshot::facingIndex(float yaw)
 {
-    const double turned = std::fmod(std::fmod(double(yaw), 360.0) + 360.0 + 45.0, 360.0);
-    return int(turned / 90.0) % 4;
+    const double turned = std::fmod(std::fmod(static_cast<double>(yaw), 360.0) + 360.0 + 45.0, 360.0);
+    return static_cast<int>(turned / 90.0) % 4;
 }
 
 const char *QcDebugSnapshot::facing(float yaw)
 {
     static constexpr std::array<const char *, 4> names{"north", "east", "south", "west"};
-    return names[std::size_t(facingIndex(yaw))];
+    return names[static_cast<std::size_t>(facingIndex(yaw))];
 }
 
 QcDebugSnapshot QcDebugSnapshot::collect(const QcClientSession &session, const std::optional<QcVec3> &feet)

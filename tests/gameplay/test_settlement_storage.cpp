@@ -29,7 +29,7 @@ private:
         return foot.offset(0, 0, -1);
     }
 
-    static QcVec3 centreOf(QcBlockPos cell) { return {cell.x + 0.5, double(cell.y), cell.z + 0.5}; }
+    static QcVec3 centreOf(QcBlockPos cell) { return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5}; }
 
 private slots:
     void cleanup()

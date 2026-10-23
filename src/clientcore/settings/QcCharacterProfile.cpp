@@ -71,21 +71,23 @@ const QList<QcCharacterPreset> &builtInPresets()
 QcAppearance random(const QStringList &outfits, const QStringList &hairStyles, const QStringList &capes, quint32 seed)
 {
     QRandomGenerator generator(seed);
-    const auto pick = [&generator](const QList<quint32> &colors) { return colors[qsizetype(generator.bounded(quint32(colors.size())))]; };
+    const auto pick = [&generator](const QList<quint32> &colors) {
+        return colors[static_cast<qsizetype>(generator.bounded(static_cast<quint32>(colors.size())))];
+    };
 
     QcAppearance appearance;
     if (!outfits.isEmpty()) {
-        appearance.outfit = outfits[qsizetype(generator.bounded(quint32(outfits.size())))];
+        appearance.outfit = outfits[static_cast<qsizetype>(generator.bounded(static_cast<quint32>(outfits.size())))];
     }
     // One more choice than there are hair styles: no hair.
-    const auto hair = qsizetype(generator.bounded(quint32(hairStyles.size() + 1)));
+    const auto hair = static_cast<qsizetype>(generator.bounded(static_cast<quint32>(hairStyles.size() + 1)));
     appearance.hair = hair < hairStyles.size() ? hairStyles[hair] : QString();
     appearance.skinColor = pick(skinColors());
     appearance.hairColor = pick(hairColors());
     appearance.shirtColor = pick(clothColors());
     appearance.pantsColor = pick(clothColors());
     // As with hair: one more choice than there are capes, for none.
-    const auto cape = qsizetype(generator.bounded(quint32(capes.size() + 1)));
+    const auto cape = static_cast<qsizetype>(generator.bounded(static_cast<quint32>(capes.size() + 1)));
     appearance.cape = cape < capes.size() ? capes[cape] : QString();
     return appearance;
 }
@@ -97,7 +99,7 @@ QString cleanPresetName(const QString &name)
 
 QString hex(quint32 rgb)
 {
-    return u"#%1"_s.arg(uint(rgb & 0xFFFFFFu), 6, 16, QChar(u'0'));
+    return u"#%1"_s.arg(static_cast<uint>(rgb & 0xFFFFFFu), 6, 16, QChar(u'0'));
 }
 
 QVariantMap lookMap(const QcAppearance &appearance)

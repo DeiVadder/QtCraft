@@ -22,7 +22,7 @@ struct SectionReach
         for (int dy = ly == 0 ? -1 : 0; dy <= (ly == QcWorld::sectionHeight - 1 ? 1 : 0); ++dy) {
             for (int dz = lz == 0 ? -1 : 0; dz <= (lz == last ? 1 : 0); ++dz) {
                 for (int dx = lx == 0 ? -1 : 0; dx <= (lx == last ? 1 : 0); ++dx) {
-                    sections[std::size_t(dy + 1) * 9 + std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = true;
+                    sections[static_cast<std::size_t>(dy + 1) * 9 + static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1)] = true;
                 }
             }
         }
@@ -128,7 +128,7 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
         if (it == m_published.end()) {
             continue;
         }
-        std::shared_ptr<const QcChunkLight::Section> &published = it->second[std::size_t(ref.section)];
+        std::shared_ptr<const QcChunkLight::Section> &published = it->second[static_cast<std::size_t>(ref.section)];
         const SectionDiff diff = diffSection(m_engine.section(Channel::Block, ref.chunk, ref.section),
                                              m_engine.uniformLevel(Channel::Block, ref.chunk, ref.section), published.get());
         if (!diff.changed) {
@@ -141,7 +141,7 @@ QcBlockLightEngine::Changes QcBlockLightEngine::takeChanges()
         published = diff.lit ? current(ref.chunk, ref.section) : nullptr;
         changes.sections.append({ref.chunk, ref.section, published});
         for (int i = 0; i < 27; ++i) {
-            if (diff.reach.sections[std::size_t(i)]) {
+            if (diff.reach.sections[static_cast<std::size_t>(i)]) {
                 remesh.add({ref.chunk.x + i % 3 - 1, ref.chunk.z + (i / 3) % 3 - 1}, ref.section + i / 9 - 1);
             }
         }

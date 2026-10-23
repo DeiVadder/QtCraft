@@ -33,7 +33,10 @@ public:
     QList<float> history(int series, int count) const;
 
 private:
-    float value(int sample, int series) const { return m_values[std::size_t(sample) * std::size_t(m_series) + std::size_t(series)]; }
+    float value(int sample, int series) const
+    {
+        return m_values[static_cast<std::size_t>(sample) * static_cast<std::size_t>(m_series) + static_cast<std::size_t>(series)];
+    }
 
     int m_series = 0;
     int m_capacity = 0;

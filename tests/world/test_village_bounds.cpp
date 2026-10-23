@@ -46,7 +46,7 @@ private:
         lamp.sizeY = 2;
         lamp.sizeZ = 7;
         lamp.palette = {u"qtcraft:cobblestone"_s};
-        lamp.cells.fill(0, qsizetype(lamp.sizeX) * lamp.sizeY * lamp.sizeZ);
+        lamp.cells.fill(0, static_cast<qsizetype>(lamp.sizeX) * lamp.sizeY * lamp.sizeZ);
         content->worldgen().registerStructure(lamp);
         const QList<QcVillageStyleDefinition> styles = content->villageCatalog().styles();
         for (QcVillageStyleDefinition style : styles) {
@@ -231,7 +231,7 @@ private slots:
                 for (const Door &door : found) {
                     failures += walkableBeside(chunks, door, shortName(piece)) ? 0 : 1;
                 }
-                doors += int(found.size());
+                doors += static_cast<int>(found.size());
             }
         }
         QVERIFY2(doors >= 10, qPrintable(u"%1 doors"_s.arg(doors)));

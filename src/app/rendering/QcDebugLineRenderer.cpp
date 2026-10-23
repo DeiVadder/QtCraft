@@ -46,13 +46,13 @@ void QcDebugLineRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResou
     }
 
     // A dynamic buffer that grows on demand and is reused every frame.
-    const auto bytes = quint32(m_corners.size() * qsizetype(sizeof(Corner)));
+    const auto bytes = static_cast<quint32>(m_corners.size() * static_cast<qsizetype>(sizeof(Corner)));
     if (!m_vertices || m_vertices->size() < bytes) {
         m_vertices.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, bytes * 2));
         m_vertices->create();
     }
     updates->updateDynamicBuffer(m_vertices.get(), 0, bytes, m_corners.constData());
-    m_vertexCount = quint32(m_corners.size());
+    m_vertexCount = static_cast<quint32>(m_corners.size());
 }
 
 bool QcDebugLineRenderer::draw(QRhiCommandBuffer *commandBuffer) const
@@ -80,10 +80,10 @@ void QcDebugLineRenderer::createPipeline(QRhi *rhi, QRhiRenderTarget *target, QR
                                {QRhiShaderStage::Fragment, loadShader(u":/shaders/debugline.frag.qsb"_s, lcRenderer())}});
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({{sizeof(Corner)}});
-    inputLayout.setAttributes({{0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(Corner, position))},
-                               {0, 1, QRhiVertexInputAttribute::Float3, quint32(offsetof(Corner, other))},
-                               {0, 2, QRhiVertexInputAttribute::Float, quint32(offsetof(Corner, side))},
-                               {0, 3, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(Corner, rgba))}});
+    inputLayout.setAttributes({{0, 0, QRhiVertexInputAttribute::Float3, static_cast<quint32>(offsetof(Corner, position))},
+                               {0, 1, QRhiVertexInputAttribute::Float3, static_cast<quint32>(offsetof(Corner, other))},
+                               {0, 2, QRhiVertexInputAttribute::Float, static_cast<quint32>(offsetof(Corner, side))},
+                               {0, 3, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(Corner, rgba))}});
     pipeline->setVertexInputLayout(inputLayout);
     pipeline->setTopology(QRhiGraphicsPipeline::Triangles);
     pipeline->setCullMode(QRhiGraphicsPipeline::None);

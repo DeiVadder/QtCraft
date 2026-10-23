@@ -45,7 +45,7 @@ protected:
         const QcItemStack &held = m_client->stacks[m_client->selected];
         const QcItemDefinition *tool = held.isEmpty() ? nullptr : &m_content->item(held.item);
         send(QcMsg::StartMining{pos});
-        ticks(int(std::ceil(QcMining::breakSeconds(block, tool) * QcPhysics::tickRate)) + 1);
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(block, tool) * QcPhysics::tickRate)) + 1);
         send(QcMsg::FinishMining{pos});
         QCOMPARE(*m_server->world().blockAt(pos), qcAirBlockId);
     }
@@ -54,7 +54,7 @@ protected:
     // makes (empty when no recipe matches).
     std::pair<QString, int> crafted(const QList<std::pair<int, QString>> &cells, int size) const
     {
-        QList<QcItemStack> grid(qsizetype(size) * size);
+        QList<QcItemStack> grid(static_cast<qsizetype>(size) * size);
         for (const auto &[cell, name] : cells) {
             grid[cell] = {baseItem(name), 1, 0};
         }

@@ -56,7 +56,7 @@ public:
     // Number of block definitions; runtime ids range over stateCount() states.
     qsizetype blockCount() const { return m_blocks.size(); }
     qsizetype stateCount() const { return m_states.size(); }
-    bool isValidBlock(QcBlockId id) const { return qsizetype(id) < m_states.size(); }
+    bool isValidBlock(QcBlockId id) const { return static_cast<qsizetype>(id) < m_states.size(); }
     // The definition of a block state. Precondition: isValidBlock(id).
     const QcBlockDefinition &block(QcBlockId id) const;
     const QcBlockState &state(QcBlockId id) const;
@@ -101,7 +101,7 @@ public:
     const QList<QcPartFamily> &partFamilies() const { return m_partFamilies.items(); }
     const QList<QcMaterialDefinition> &materials() const { return m_materials.items(); }
     qsizetype itemCount() const { return m_items.size(); }
-    bool isValidItem(QcItemId id) const { return id != qcNoItem && qsizetype(id) <= m_items.size(); }
+    bool isValidItem(QcItemId id) const { return id != qcNoItem && static_cast<qsizetype>(id) <= m_items.size(); }
     // Precondition: isValidItem(id).
     const QcItemDefinition &item(QcItemId id) const;
     [[nodiscard]] std::optional<QcItemId> itemId(const QString &name) const;

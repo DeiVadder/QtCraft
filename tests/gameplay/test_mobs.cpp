@@ -54,7 +54,7 @@ private:
     QcVec3 surface(QcServerWorld &world, int x, int z)
     {
         const QcBlockPos pos{x, 0, z};
-        return {x + 0.5, double(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
+        return {x + 0.5, static_cast<double>(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
     }
 
     int type(const char *name) const
@@ -72,7 +72,7 @@ private:
     void coverSurface(QcServerWorld &world, const QcContentRegistry &content, const char *block, int dy) const
     {
         const QcBlockId id = *content.blockId(u"qtcraft:"_s + QString::fromLatin1(block));
-        const int reach = int(QcNaturalSpawner::monsterRadiusMax) + 2;
+        const int reach = static_cast<int>(QcNaturalSpawner::monsterRadiusMax) + 2;
         for (int x = -reach; x <= reach; ++x) {
             for (int z = -reach; z <= reach; ++z) {
                 const QcBlockPos column{x, 0, z};
@@ -102,7 +102,7 @@ private:
         for (int tick = 0; tick < 20 * 30; ++tick) {
             mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
         }
-        return int(std::ranges::count(mobs.mobs(), zombie, &QcCreature::type));
+        return static_cast<int>(std::ranges::count(mobs.mobs(), zombie, &QcCreature::type));
     }
 
     // Animals the chunks around the origin get, with `block` over the surface (dy 1, or `dy`) if
@@ -120,7 +120,7 @@ private:
                 mobs.populateChunk(*world, {x, z}, [this] { return m_nextId++; });
             }
         }
-        return int(mobs.mobs().size());
+        return static_cast<int>(mobs.mobs().size());
     }
 
 private slots:
@@ -223,7 +223,7 @@ private slots:
 
         // At most about chunkAnimalChance of the 625 chunks get a group (fewer where the chosen
         // column is sand or water).
-        const double share = double(groups) / chunks;
+        const double share = static_cast<double>(groups) / chunks;
         QVERIFY2(share > 0.03 && share < QcNaturalSpawner::chunkAnimalChance + 0.04, qPrintable(QString::number(share)));
 
         for (const QcCreature &mob : mobs.mobs()) {
@@ -517,7 +517,7 @@ private slots:
                 // A stone border, inside it a shape on every second cell, the middle free.
                 const bool border = std::abs(dx) == 4 || std::abs(dz) == 4;
                 const bool shapeCell = (dx + dz) % 2 == 0 && (dx != 0 || dz != 0);
-                const char *shape = border ? "stone" : shapes[std::size_t(dx + 4) % shapes.size()];
+                const char *shape = border ? "stone" : shapes[static_cast<std::size_t>(dx + 4) % shapes.size()];
                 if (border || shapeCell) {
                     world->setBlock(base.offset(dx, 0, dz), *m_content->blockId(u"qtcraft:"_s + QString::fromLatin1(shape)));
                 }
@@ -567,8 +567,8 @@ private slots:
         for (int tick = 0; tick < ticks; ++tick) {
             mobs.tick(*world, players, noon, dt, [this] { return m_nextId++; });
         }
-        const double msPerTick = double(timer.nsecsElapsed()) / 1e6 / ticks;
-        qInfo("MEASURE 1000 walking pigs: %.4f ms per tick (%lld creatures)", msPerTick, qlonglong(mobs.mobs().size()));
+        const double msPerTick = static_cast<double>(timer.nsecsElapsed()) / 1e6 / ticks;
+        qInfo("MEASURE 1000 walking pigs: %.4f ms per tick (%lld creatures)", msPerTick, static_cast<qlonglong>(mobs.mobs().size()));
     }
 
     void spawningDependsOnTimeOfDay()

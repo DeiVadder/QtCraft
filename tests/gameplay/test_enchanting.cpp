@@ -152,8 +152,8 @@ private slots:
         QCOMPARE(QcEnchanting::damageBonus(5), 3.0);
 
         QcEquipment equipment;
-        equipment.stacks[std::size_t(QcEquipmentSlot::Feet)] = stackOf("qtcraft:iron_boots", {{u"qtcraft:feather_falling"_s, 4}});
-        equipment.stacks[std::size_t(QcEquipmentSlot::Chest)] = stackOf("qtcraft:iron_chestplate", {{u"qtcraft:protection"_s, 4}});
+        equipment.stacks[static_cast<std::size_t>(QcEquipmentSlot::Feet)] = stackOf("qtcraft:iron_boots", {{u"qtcraft:feather_falling"_s, 4}});
+        equipment.stacks[static_cast<std::size_t>(QcEquipmentSlot::Chest)] = stackOf("qtcraft:iron_chestplate", {{u"qtcraft:protection"_s, 4}});
         QCOMPARE(QcEnchanting::protectionPoints(content, equipment, false), 4);
         QCOMPARE(QcEnchanting::protectionPoints(content, equipment, true), 16);
         QCOMPARE(QcEnchanting::reducedDamage(10.0, 16), 3.6);

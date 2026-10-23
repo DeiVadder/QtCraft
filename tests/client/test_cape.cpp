@@ -37,7 +37,7 @@ struct NamedUv
         if (!names.contains(texture)) {
             names.append(texture);
         }
-        return {double(names.indexOf(texture)), 0.0, 0.5, 1.0};
+        return {static_cast<double>(names.indexOf(texture)), 0.0, 0.5, 1.0};
     }
 };
 
@@ -62,9 +62,9 @@ Meshed meshPlayer(const QcContentRegistry &content, const QcAppearance &appearan
 QList<QcEntityVertex> withTexture(const Meshed &meshed, const QString &texture)
 {
     QList<QcEntityVertex> found;
-    const auto index = double(meshed.textures.indexOf(texture));
+    const auto index = static_cast<double>(meshed.textures.indexOf(texture));
     for (const QcEntityVertex &vertex : meshed.mesh.vertices) {
-        if (std::abs(double(vertex.u) - index) < 1e-6 || std::abs(double(vertex.u) - index - 0.5) < 1e-6) {
+        if (std::abs(static_cast<double>(vertex.u) - index) < 1e-6 || std::abs(static_cast<double>(vertex.u) - index - 0.5) < 1e-6) {
             found.append(vertex);
         }
     }
@@ -367,7 +367,7 @@ private slots:
         QVERIFY(heel.y < 0.4 && heel.z > 0.4);
         const double lowest = capeLine[2].first;
         QVERIFY(lowest < 0.6);
-        const double from = std::max(lowest, double(heel.y));
+        const double from = std::max(lowest, static_cast<double>(heel.y));
         for (int centimetre = 0; from + centimetre * 0.01 <= 0.6; ++centimetre) {
             const double y = from + centimetre * 0.01;
             const double leg = heel.z - (y - heel.y) * std::tan(legAngle);

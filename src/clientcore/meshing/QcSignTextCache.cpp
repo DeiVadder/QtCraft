@@ -37,8 +37,8 @@ QList<QcBlockPos> QcSignTextCache::signsNear(const QcVec3 &viewer, double distan
     QList<QcBlockPos> near;
     for (auto chunk = m_chunks.cbegin(); chunk != m_chunks.cend(); ++chunk) {
         // The horizontal distance from the viewer to the nearest point of the chunk.
-        const double west = double(chunk.key().x * QcWorld::chunkSize);
-        const double north = double(chunk.key().z * QcWorld::chunkSize);
+        const double west = static_cast<double>(chunk.key().x * QcWorld::chunkSize);
+        const double north = static_cast<double>(chunk.key().z * QcWorld::chunkSize);
         const double dx = std::max({west - viewer.x, 0.0, viewer.x - west - QcWorld::chunkSize});
         const double dz = std::max({north - viewer.z, 0.0, viewer.z - north - QcWorld::chunkSize});
         if (dx * dx + dz * dz > distance * distance) {
@@ -80,5 +80,5 @@ const std::vector<QcSignTextMesher::Quad> &QcSignTextCache::quads(QcBlockPos pos
 
 std::pair<int, int> QcSignTextCache::lightKey(QcEntityLight light)
 {
-    return {int(std::lround(light.sky * lightSteps)), int(std::lround(light.block * lightSteps))};
+    return {static_cast<int>(std::lround(light.sky * lightSteps)), static_cast<int>(std::lround(light.block * lightSteps))};
 }

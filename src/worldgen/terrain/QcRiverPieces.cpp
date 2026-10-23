@@ -48,8 +48,8 @@ struct PieceKeyHash
 {
     std::size_t operator()(PieceKey key) const
     {
-        const quint64 cell = (quint64(quint32(key.cellX)) << 32) | quint32(key.cellZ);
-        return std::size_t(qcMixSeed(key.pieces ^ cell, 5));
+        const quint64 cell = (static_cast<quint64>(static_cast<quint32>(key.cellX)) << 32) | static_cast<quint32>(key.cellZ);
+        return static_cast<std::size_t>(qcMixSeed(key.pieces ^ cell, 5));
     }
 };
 
@@ -69,7 +69,7 @@ QcRiverPieces::QcRiverPieces(const QcRiverField &rivers)
 
 bool QcRiverPieces::leadsOn(const QcRiverField::Sample &sample, const QcRiverField::Land &land) const
 {
-    return cellLeadsOn(qint32(std::floor(sample.lineX / pieceCell)), qint32(std::floor(sample.lineZ / pieceCell)), land);
+    return cellLeadsOn(static_cast<qint32>(std::floor(sample.lineX / pieceCell)), static_cast<qint32>(std::floor(sample.lineZ / pieceCell)), land);
 }
 
 bool QcRiverPieces::cellLeadsOn(qint32 cellX, qint32 cellZ, const QcRiverField::Land &land) const
@@ -124,7 +124,7 @@ QcRiverPieces::Walk QcRiverPieces::walk(const OnLine &from, double side, double 
         }
         const Crossings crossed = crossings(here.at, next->at);
         for (int i = 0; i < crossed.count; ++i) {
-            const QcRiverField::Point at = crossed.at[std::size_t(i)];
+            const QcRiverField::Point at = crossed.at[static_cast<std::size_t>(i)];
             // The length up to the crossing the walk ends at, not to the end of the step.
             const double length = walked.length + std::hypot(at.x - here.at.x, at.z - here.at.z);
             // A march point right at a lattice line finds its crossing again with the next step.
@@ -149,8 +149,8 @@ QcRiverPieces::Walk QcRiverPieces::walk(const OnLine &from, double side, double 
 QcRiverPieces::End QcRiverPieces::endAt(QcRiverField::Point at, const QcRiverField::Land &land) const
 {
     const QcRiverField::Point column = m_rivers.unbent(at.x, at.z);
-    const int x = int(std::lround(column.x));
-    const int z = int(std::lround(column.z));
+    const int x = static_cast<int>(std::lround(column.x));
+    const int z = static_cast<int>(std::lround(column.z));
     const std::optional<QcTerrainClimate::Point> climate = land.dryClimateAt(x, z);
     if (!climate) {
         return End::Sea;
@@ -214,8 +214,8 @@ QcRiverPieces::Crossings QcRiverPieces::crossings(QcRiverField::Point from, QcRi
         }
         // In the order the walk passes them.
         const bool before = crossed.count == 1 && t < share[0];
-        crossed.at[std::size_t(crossed.count)] = *at;
-        share[std::size_t(crossed.count)] = t;
+        crossed.at[static_cast<std::size_t>(crossed.count)] = *at;
+        share[static_cast<std::size_t>(crossed.count)] = t;
         if (before) {
             std::swap(crossed.at[0], crossed.at[1]);
         }

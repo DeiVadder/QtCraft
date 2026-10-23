@@ -29,7 +29,7 @@ private:
     // cells; an empty name and 0 when no recipe matches.
     std::pair<QString, int> crafted(const QList<std::pair<int, QString>> &cells, int size) const
     {
-        QList<QcItemStack> grid(qsizetype(size) * size);
+        QList<QcItemStack> grid(static_cast<qsizetype>(size) * size);
         for (const auto &[cell, name] : cells) {
             grid[cell] = {baseItem(name), 1, 0};
         }
@@ -187,8 +187,10 @@ private slots:
     void lyingLogsShowRingsAtTheirEnds()
     {
         const QcBlockId log = id("qtcraft:oak_log");
-        const auto source = [this](QcBlockId state, QcBlockFace face) { return m_content->state(state).faceSource[std::size_t(face)]; };
-        const auto turns = [this](QcBlockId state, QcBlockFace face) { return int(m_content->state(state).faceUvTurns[std::size_t(face)]); };
+        const auto source = [this](QcBlockId state, QcBlockFace face) { return m_content->state(state).faceSource[static_cast<std::size_t>(face)]; };
+        const auto turns = [this](QcBlockId state, QcBlockFace face) {
+            return static_cast<int>(m_content->state(state).faceUvTurns[static_cast<std::size_t>(face)]);
+        };
 
         // Upright: rings on top and bottom, nothing turned.
         QCOMPARE(source(log, QcBlockFace::Up), QcBlockFace::Up);

@@ -62,11 +62,11 @@ double QcJsonFieldReader::number(const QString &key, double fallback, double low
 int QcJsonFieldReader::integer(const QString &key, int fallback, int low, int high)
 {
     const double value = number(key, fallback, low, high);
-    if (value != double(int(value))) {
+    if (value != static_cast<double>(static_cast<int>(value))) {
         fail(u"'%1' must be an integer"_s.arg(key));
         return fallback;
     }
-    return int(value);
+    return static_cast<int>(value);
 }
 
 QString QcJsonFieldReader::name(const QString &key, const QString &packNamespace, const QString &fallback)

@@ -30,9 +30,9 @@ QList<MotifNote> makeMotif(QRandomGenerator &random, int centre)
 
     while (t < phraseBeats) {
         MotifNote note;
-        note.beats = std::min(lengths[random.bounded(int(lengths.size()))], phraseBeats - t);
+        note.beats = std::min(lengths[random.bounded(static_cast<int>(lengths.size()))], phraseBeats - t);
         note.rest = !motif.isEmpty() && random.bounded(100) < 12;
-        degree = std::clamp(degree + steps[random.bounded(int(steps.size()))], 0, melodyDegrees - 1);
+        degree = std::clamp(degree + steps[random.bounded(static_cast<int>(steps.size()))], 0, melodyDegrees - 1);
         note.degree = degree;
         motif.append(note);
         t += note.beats;
@@ -65,7 +65,7 @@ double QcMusicComposer::frequency(int midiPitch)
 
 QcMusicComposer::Piece QcMusicComposer::compose(quint64 seed)
 {
-    const std::array<quint32, 2> seedWords = {quint32(seed), quint32(seed >> 32)};
+    const std::array<quint32, 2> seedWords = {static_cast<quint32>(seed), static_cast<quint32>(seed >> 32)};
     QRandomGenerator random(seedWords.data(), seedWords.data() + seedWords.size());
 
     Piece piece;
@@ -75,42 +75,42 @@ QcMusicComposer::Piece QcMusicComposer::compose(quint64 seed)
 
     const double beat = 60.0 / piece.beatsPerMinute;
     const std::array<int, 5> steps = scale(piece.minor);
-    const auto melodyPitch = [&](int degree) { return piece.root + 24 + 12 * (degree / 5) + steps[std::size_t(degree % 5)]; };
+    const auto melodyPitch = [&](int degree) { return piece.root + 24 + 12 * (degree / 5) + steps[static_cast<std::size_t>(degree % 5)]; };
 
     const QList<MotifNote> a = makeMotif(random, 3);
     const QList<MotifNote> b = makeMotif(random, 5);
     const QList<QList<MotifNote>> phrases = {a, vary(a, random), b, a};
     for (qsizetype phrase = 0; phrase < phrases.size(); ++phrase) {
-        double t = double(phrase * phraseBeats);
+        double t = static_cast<double>(phrase * phraseBeats);
         for (const MotifNote &step : phrases[phrase]) {
             if (!step.rest) {
-                const auto velocity = float(0.55 + 0.25 * random.generateDouble());
+                const auto velocity = static_cast<float>(0.55 + 0.25 * random.generateDouble());
                 piece.notes.append({t * beat, step.beats * beat * 0.95, melodyPitch(step.degree), velocity, Voice::Lead});
             }
             t += step.beats;
         }
     }
 
-    const int bars = int(phrases.size()) * barsPerPhrase;
+    const int bars = static_cast<int>(phrases.size()) * barsPerPhrase;
     static constexpr std::array<int, 4> bassDegrees = {0, 3, 4, 0};
     for (int bar = 0; bar < bars; ++bar) {
-        const int pitch = piece.root + steps[std::size_t(bassDegrees[std::size_t(bar % 4)])];
+        const int pitch = piece.root + steps[static_cast<std::size_t>(bassDegrees[static_cast<std::size_t>(bar % 4)])];
         piece.notes.append({bar * beatsPerBar * beat, beatsPerBar * beat * 0.98, pitch, 0.6f, Voice::Bass});
     }
 
     // Held chord under the B phrase.
     const double bStart = 2.0 * phraseBeats * beat;
     for (const int degree : {0, 2, 3}) {
-        piece.notes.append({bStart, phraseBeats * beat, piece.root + 12 + steps[std::size_t(degree)], 0.35f, Voice::Pad});
+        piece.notes.append({bStart, phraseBeats * beat, piece.root + 12 + steps[static_cast<std::size_t>(degree)], 0.35f, Voice::Pad});
     }
 
     // Ending: root in all voices for one bar.
-    const double end = double(bars * beatsPerBar) * beat;
+    const double end = static_cast<double>(bars * beatsPerBar) * beat;
     const double last = beatsPerBar * beat;
     piece.notes.append({end, last, melodyPitch(5), 0.6f, Voice::Lead});
     piece.notes.append({end, last, piece.root, 0.6f, Voice::Bass});
     for (const int degree : {0, 2, 3}) {
-        piece.notes.append({end, last, piece.root + 12 + steps[std::size_t(degree)], 0.3f, Voice::Pad});
+        piece.notes.append({end, last, piece.root + 12 + steps[static_cast<std::size_t>(degree)], 0.3f, Voice::Pad});
     }
 
     piece.seconds = end + last;

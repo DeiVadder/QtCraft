@@ -4,10 +4,10 @@
 
 QcSignTexts::QcSignTexts(const QcContentRegistry &content)
 {
-    const auto count = std::size_t(content.stateCount());
+    const auto count = static_cast<std::size_t>(content.stateCount());
     m_sign.resize(count);
     for (std::size_t id = 0; id < count; ++id) {
-        m_sign[id] = content.block(QcBlockId(id)).sign;
+        m_sign[id] = content.block(static_cast<QcBlockId>(id)).sign;
     }
 }
 
@@ -54,7 +54,7 @@ void QcSignTexts::restore(const QList<Entry> &entries, const QcChunk &chunk)
         }
         const QcBlockId block = chunk.block(entry.pos.localX(), entry.pos.y, entry.pos.localZ());
         if (isSign(block)) {
-            const QcSignDefinition &sign = m_sign[std::size_t(block)];
+            const QcSignDefinition &sign = m_sign[static_cast<std::size_t>(block)];
             const QString color = QcSignText::colorOfDye(entry.color).value_or(QString());
             put(entry.pos, {QcSignText::cleaned(entry.lines, sign.lines, sign.lineLength), color});
         }

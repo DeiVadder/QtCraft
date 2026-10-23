@@ -42,7 +42,7 @@ class TestBackpack : public QcCircuitFixture
     {
         const QcBlockDefinition &block = m_content->block(*m_server->world().blockAt(pos));
         send(QcMsg::StartMining{pos});
-        ticks(int(std::ceil(QcMining::breakSeconds(block, nullptr) * QcPhysics::tickRate)) + 1);
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(block, nullptr) * QcPhysics::tickRate)) + 1);
         send(QcMsg::FinishMining{pos});
         QCOMPARE(*m_server->world().blockAt(pos), qcAirBlockId);
     }
@@ -67,7 +67,7 @@ class TestBackpack : public QcCircuitFixture
         return found;
     }
 
-    int itemsOnTheGround() const { return int(m_server->items().items().size()); }
+    int itemsOnTheGround() const { return static_cast<int>(m_server->items().items().size()); }
 
     QList<QcItemStack> padded(QList<QcItemStack> stacks) const
     {
@@ -185,7 +185,7 @@ private slots:
         put(2, 0, 2, u"backpack[facing=south]"_s);
         m_server->blockEntities().container(at(2, 0, 2))->stacks = padded(inside);
         const QcBlockPos ground = at(6, 0, 6);
-        m_server->items().spawn({packed(inside), {ground.x + 0.5, double(ground.y), ground.z + 0.5}, {}}, m_server->entities().newId());
+        m_server->items().spawn({packed(inside), {ground.x + 0.5, static_cast<double>(ground.y), ground.z + 0.5}, {}}, m_server->entities().newId());
         player().inventory.setSlot(4, packed(inside));
         QVERIFY(m_server->save().has_value());
         const QcBlockPos origin = m_origin;
@@ -207,7 +207,7 @@ private slots:
         const QcItemStack full = packed({stackOf("qtcraft:dirt", 5)}).withName(u"Kit"_s);
         const QcBlockPos ground = m_feet.offset(3, 0, 3);
         const quint32 entity = m_server->entities().newId();
-        m_server->items().spawn({full, {ground.x + 0.5, double(ground.y), ground.z + 0.5}, {}, 1000}, entity);
+        m_server->items().spawn({full, {ground.x + 0.5, static_cast<double>(ground.y), ground.z + 0.5}, {}, 1000}, entity);
         ticks(2);
         QVERIFY(m_client->items.contains(entity));
         const QcItemStack seen = m_client->items.value(entity);

@@ -45,7 +45,7 @@ private:
 
     quint32 spawn(const char *name, int dx, int dy, int dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y + dy), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y + dy), m_feet.z + dz + 0.5};
         return m_server->entities().creatures().spawn(type(name), at, m_server->entities().newId());
     }
 
@@ -171,8 +171,8 @@ private slots:
         ticks(2);
         QcServerClient &bystander = *m_server->entities().clients().back();
         QVERIFY(&bystander != &player());
-        bystander.motion.position = QcVec3{m_feet.x + 3.5, double(m_feet.y), m_feet.z + 0.5};
-        const QcVec3 far{m_feet.x - 8.5, double(m_feet.y), m_feet.z + 0.5};
+        bystander.motion.position = QcVec3{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 far{m_feet.x - 8.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         player().motion.position = far;
         const quint32 spider = spawn("spider", 2, 0, 0);
         ticks(40);
@@ -184,7 +184,7 @@ private slots:
         QCOMPARE(mob(spider)->chasing, player().id);
         // It walks off to the attacker; the bystander stays unharmed although the spider began next to it.
         for (int i = 0; i < 200 && player().health >= 20.0; ++i) {
-            bystander.motion.position = QcVec3{m_feet.x + 3.5, double(m_feet.y), m_feet.z + 0.5};
+            bystander.motion.position = QcVec3{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
             ticks(1);
         }
         QVERIFY(player().health < 20.0);
@@ -251,7 +251,7 @@ private slots:
             for (int i = 0; i < count; ++i) {
                 const double angle = 2.0 * std::numbers::pi * i / count;
                 const double radius = 6.0 + 4.0 * (i % 3) / 2.0;
-                const QcVec3 at{m_feet.x + 0.5 + radius * std::cos(angle), double(m_feet.y), m_feet.z + 0.5 + radius * std::sin(angle)};
+                const QcVec3 at{m_feet.x + 0.5 + radius * std::cos(angle), static_cast<double>(m_feet.y), m_feet.z + 0.5 + radius * std::sin(angle)};
                 ids.append(m_server->entities().creatures().spawn(type(kind), at, m_server->entities().newId()));
             }
 
@@ -263,10 +263,10 @@ private slots:
                 QElapsedTimer timer;
                 timer.start();
                 m_server->tick();
-                const double ms = double(timer.nsecsElapsed()) / 1e6;
+                const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
                 tickMs += ms / ticksToRun;
                 maxTickMs = std::max(maxTickMs, ms);
-                mobsMs += double(m_server->tickPhases().lastTick()[std::size_t(QcTickPhase::Mobs)]) / 1e6 / ticksToRun;
+                mobsMs += static_cast<double>(m_server->tickPhases().lastTick()[static_cast<std::size_t>(QcTickPhase::Mobs)]) / 1e6 / ticksToRun;
             }
             const auto onTop = std::ranges::count_if(ids, [&](quint32 id) { return mob(id) && mob(id)->motion.position.y >= m_feet.y + 3.9; });
             if (qstrcmp(kind, "spider") == 0) {
@@ -275,7 +275,7 @@ private slots:
                 QCOMPARE(onTop, 0);
             }
             qInfo("MEASURE climbing kind=%s count=%d ticks=%d on_top=%lld tick_mean_ms=%.4f tick_max_ms=%.4f mobs_mean_ms=%.4f", kind, count,
-                  ticksToRun, qint64(onTop), tickMs, maxTickMs, mobsMs);
+                  ticksToRun, static_cast<qint64>(onTop), tickMs, maxTickMs, mobsMs);
         }
     }
 };

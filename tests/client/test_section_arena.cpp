@@ -28,7 +28,7 @@ void advance(QcSectionArena &arena, quint64 frames)
 quint32 firstPageUnits(QcSectionArena &arena)
 {
     const QcArenaSlot slot = arena.allocate(stride, word).value();
-    const auto units = quint32(arena.bytes() / (stride + word));
+    const auto units = static_cast<quint32>(arena.bytes() / (stride + word));
     arena.release(slot);
     advance(arena, arena.reuseDelay());
     return units;

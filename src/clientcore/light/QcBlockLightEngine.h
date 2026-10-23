@@ -59,7 +59,7 @@ public:
 private:
     struct PosHash
     {
-        std::size_t operator()(QcChunkPos pos) const { return std::size_t(qHash(pos)); }
+        std::size_t operator()(QcChunkPos pos) const { return static_cast<std::size_t>(qHash(pos)); }
     };
     using Published = std::array<std::shared_ptr<const QcChunkLight::Section>, QcWorld::sectionCount>;
 

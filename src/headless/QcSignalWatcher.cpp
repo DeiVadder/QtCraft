@@ -7,6 +7,8 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #else
+#include "common/diagnostics/QcSignalDefault.h"
+
 #include <csignal>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -39,10 +41,10 @@ int signalSockets[2] = {-1, -1};
 
 void handleSignal(int number)
 {
-    const char byte = char(number);
+    const char byte = static_cast<char>(number);
     [[maybe_unused]] const ssize_t written = ::write(signalSockets[0], &byte, 1);
     // Back to the default: a second request ends the process at once.
-    std::signal(number, SIG_DFL);
+    std::signal(number, qcDefaultSignalHandler());
 }
 
 #endif
@@ -64,7 +66,7 @@ QcSignalWatcher::QcSignalWatcher(QObject *parent)
         watcher.store(nullptr);
         return;
     }
-    m_notifier = std::make_unique<QSocketNotifier>(qintptr(signalSockets[1]), QSocketNotifier::Read);
+    m_notifier = std::make_unique<QSocketNotifier>(static_cast<qintptr>(signalSockets[1]), QSocketNotifier::Read);
     connect(m_notifier.get(), &QSocketNotifier::activated, this, &QcSignalWatcher::onRequest);
 
     struct sigaction action{};
@@ -84,8 +86,8 @@ QcSignalWatcher::~QcSignalWatcher()
 #ifdef Q_OS_WIN
     SetConsoleCtrlHandler(consoleHandler, FALSE);
 #else
-    std::signal(SIGTERM, SIG_DFL);
-    std::signal(SIGINT, SIG_DFL);
+    std::signal(SIGTERM, qcDefaultSignalHandler());
+    std::signal(SIGINT, qcDefaultSignalHandler());
     // The notifier goes before the socket it watches is closed.
     m_notifier.reset();
     ::close(signalSockets[0]);
@@ -102,6 +104,6 @@ void QcSignalWatcher::onRequest()
     if (::read(signalSockets[1], &byte, 1) != 1) {
         return;
     }
-    emit stopRequested(int(byte) == SIGTERM ? u"SIGTERM"_s : u"SIGINT"_s);
+    emit stopRequested(static_cast<int>(byte) == SIGTERM ? u"SIGTERM"_s : u"SIGINT"_s);
 #endif
 }

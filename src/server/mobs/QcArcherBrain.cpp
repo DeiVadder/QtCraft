@@ -39,7 +39,7 @@ QcPhysics::Steering QcArcherBrain::think(QcCreature &mob, const QcMobDefinition 
         mob.archer.emplace();
     }
     const bool mayPlan = thinkTicks <= 1;
-    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
+    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < static_cast<quint64>(std::max(1, thinkTicks));
     const QcMobManager::PlayerView *target = QcMobSteering::chooseTarget(mob, definition, *context.players, context.world, looks);
     if (!target) {
         mob.archer->drawStart = -1;
@@ -73,9 +73,9 @@ void QcArcherState::track(quint32 targetId, const QcVec3 &position, quint64 tick
 {
     // A new target, one not seen for a while or one that jumped (a teleport) starts at rest.
     const quint64 since = tick - seenTick;
-    const double elapsed = double(since) * dt;
+    const double elapsed = static_cast<double>(since) * dt;
     const double moved = (position - targetPosition).length();
-    if (target != targetId || since == 0 || since > quint64(QcMobSteering::sightCheckTicks)
+    if (target != targetId || since == 0 || since > static_cast<quint64>(QcMobSteering::sightCheckTicks)
         || moved > QcArcherBrain::maxTargetSpeed * elapsed + QcArcherBrain::targetJump) {
         targetVelocity = {};
     } else {
@@ -103,14 +103,14 @@ void QcArcherBrain::drawAndShoot(QcCreature &mob, const QcMobDefinition &definit
     }
     if (!state.drawing()) {
         if (mob.attackCooldown <= 0.0) {
-            state.drawStart = qint64(context.tick);
+            state.drawStart = static_cast<qint64>(context.tick);
         }
         return;
     }
     const qint64 drawTicks = std::max<qint64>(1, std::llround(archer.drawSeconds / QcPhysics::tickDuration));
     const QString &type = projectileFor(archer, target);
     const QcProjectileDefinition *projectile = m_content.projectile(type);
-    if (qint64(context.tick) - state.drawStart < drawTicks || !projectile || !context.launches) {
+    if (static_cast<qint64>(context.tick) - state.drawStart < drawTicks || !projectile || !context.launches) {
         return;
     }
 
@@ -182,7 +182,7 @@ QcVec3 QcArcherBrain::aim(const QcVec3 &from, const QcVec3 &target, const QcVec3
     QcVec3 point = target;
     int steps = 1;
     for (int round = 0; round < 2; ++round) {
-        steps = std::clamp(int(std::lround((point - from).length() / speed / dt)), 1, maxAimSteps);
+        steps = std::clamp(static_cast<int>(std::lround((point - from).length() / speed / dt)), 1, maxAimSteps);
         point = target + targetVelocity * (steps * dt);
     }
 

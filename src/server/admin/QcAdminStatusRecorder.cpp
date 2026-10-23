@@ -13,7 +13,7 @@ double percentile99(QList<double> values)
     if (values.isEmpty()) {
         return 0.0;
     }
-    const auto rank = qsizetype(std::ceil(0.99 * double(values.size()))) - 1;
+    const auto rank = static_cast<qsizetype>(std::ceil(0.99 * static_cast<double>(values.size()))) - 1;
     const auto nth = values.begin() + std::clamp<qsizetype>(rank, 0, values.size() - 1);
     std::nth_element(values.begin(), nth, values.end());
     return *nth;
@@ -22,7 +22,7 @@ double percentile99(QList<double> values)
 // Bytes per second over `seconds` in KiB, 0 when the counter went back (a restart of the counts).
 float rate(quint64 now, quint64 before, double seconds)
 {
-    return now >= before && seconds > 0.0 ? float(double(now - before) / 1024.0 / seconds) : 0.0f;
+    return now >= before && seconds > 0.0 ? static_cast<float>(static_cast<double>(now - before) / 1024.0 / seconds) : 0.0f;
 }
 
 } // namespace
@@ -41,10 +41,10 @@ QcMsg::AdminSample QcAdminStatusRecorder::sample(const Counts &counts, double se
 {
     QcMsg::AdminSample sample;
     sample.timeMs = counts.timeMs;
-    sample.tickMeanMs = m_tickCount > 0 ? float(m_tickSum / double(m_tickCount)) : 0.0f;
-    sample.tickP99Ms = float(percentile99(m_ticks));
-    sample.tickMaxMs = float(m_tickMax);
-    sample.ticksPerSecond = seconds > 0.0 ? float(double(m_tickCount) / seconds) : 0.0f;
+    sample.tickMeanMs = m_tickCount > 0 ? static_cast<float>(m_tickSum / static_cast<double>(m_tickCount)) : 0.0f;
+    sample.tickP99Ms = static_cast<float>(percentile99(m_ticks));
+    sample.tickMaxMs = static_cast<float>(m_tickMax);
+    sample.ticksPerSecond = seconds > 0.0 ? static_cast<float>(static_cast<double>(m_tickCount) / seconds) : 0.0f;
     sample.players = counts.players;
     sample.loadedChunks = counts.loadedChunks;
     sample.entities = counts.entities;

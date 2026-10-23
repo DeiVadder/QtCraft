@@ -118,8 +118,8 @@ Motion simulateWalk(bool buffered, int delayMs, int jitterMs, quint32 seed)
     std::map<qint64, std::vector<QcMsg::EntityMoves>> arrivals;
     qint64 previousArrival = 0;
     for (int k = 1; k <= ticks; ++k) {
-        const qint64 arrival = std::max(previousArrival, qint64(k) * tickMs + delayMs + random.bounded(jitterMs + 1));
-        arrivals[arrival].push_back(walkerAt(qint64(k) * tickMs, {speed * k * tickMs / 1000.0, 64.0, 0.0}));
+        const qint64 arrival = std::max(previousArrival, static_cast<qint64>(k) * tickMs + delayMs + random.bounded(jitterMs + 1));
+        arrivals[arrival].push_back(walkerAt(static_cast<qint64>(k) * tickMs, {speed * k * tickMs / 1000.0, 64.0, 0.0}));
         previousArrival = arrival;
     }
 
@@ -128,7 +128,7 @@ Motion simulateWalk(bool buffered, int delayMs, int jitterMs, quint32 seed)
     entities.spawn(walkerSpawn(), nullptr);
     MotionRecorder recorder(speed);
     qint64 lastTick = 0;
-    for (qint64 now = 0; now < qint64(ticks) * tickMs; ++now) {
+    for (qint64 now = 0; now < static_cast<qint64>(ticks) * tickMs; ++now) {
         for (const QcMsg::EntityMoves &moves : arrivals[now]) {
             entities.moves(moves, now);
         }
@@ -137,10 +137,10 @@ Motion simulateWalk(bool buffered, int delayMs, int jitterMs, quint32 seed)
             lastTick = now;
         }
         // Measured once the clock settled and while the walker still walks.
-        if (now % 4 == 0 && now >= 2000 && now <= qint64(ticks) * tickMs - 400) {
+        if (now % 4 == 0 && now >= 2000 && now <= static_cast<qint64>(ticks) * tickMs - 400) {
             const QcClientEntity &walker = entities.all().value(moverId);
-            const double alpha = std::clamp(double(now - lastTick) / tickMs, 0.0, 1.0);
-            recorder.sample(double(now), walker.previousPosition.x + (walker.position.x - walker.previousPosition.x) * alpha);
+            const double alpha = std::clamp(static_cast<double>(now - lastTick) / tickMs, 0.0, 1.0);
+            recorder.sample(static_cast<double>(now), walker.previousPosition.x + (walker.position.x - walker.previousPosition.x) * alpha);
         }
     }
     return recorder.result();
@@ -207,7 +207,7 @@ private slots:
         QVERIFY(!clock.advance(0).has_value());
         // Arrivals 30 to 80 ms after their server time: the fastest counts.
         for (int k = 0; k < 40; ++k) {
-            clock.observe(qint64(k) * 50, qint64(k) * 50 + (k % 3 == 0 ? 30 : 80));
+            clock.observe(static_cast<qint64>(k) * 50, static_cast<qint64>(k) * 50 + (k % 3 == 0 ? 30 : 80));
         }
         QCOMPARE(clock.intervalMs(), 50.0);
         QCOMPARE(clock.delayMs(), 100.0);
@@ -216,8 +216,8 @@ private slots:
         clock.observe(2000, 2100);
         double shown = *clock.advance(2050);
         for (int k = 1; k <= 60; ++k) {
-            clock.observe(2000 + qint64(k) * 50, 2000 + qint64(k) * 50 + 100);
-            const double next = *clock.advance(2050 + qint64(k) * 50);
+            clock.observe(2000 + static_cast<qint64>(k) * 50, 2000 + static_cast<qint64>(k) * 50 + 100);
+            const double next = *clock.advance(2050 + static_cast<qint64>(k) * 50);
             QVERIFY(next - shown >= 45.0 - 1e-9 && next - shown <= 55.0 + 1e-9);
             shown = next;
         }
@@ -225,7 +225,7 @@ private slots:
         // One tick per second (/tick rate 1): the delay covers an interval plus the allowance.
         QcSnapshotClock slow;
         for (int k = 0; k < 3; ++k) {
-            slow.observe(qint64(k) * 1000, qint64(k) * 1000 + 20);
+            slow.observe(static_cast<qint64>(k) * 1000, static_cast<qint64>(k) * 1000 + 20);
         }
         QCOMPARE(slow.delayMs(), 1050.0);
     }
@@ -244,7 +244,7 @@ private slots:
             }
             if (now % 50 == 25) {
                 if (const std::optional<double> shown = clock.advance(now)) {
-                    shownLag[now] = double(now) - *shown;
+                    shownLag[now] = static_cast<double>(now) - *shown;
                 }
             }
         }
@@ -302,7 +302,7 @@ private slots:
         qint64 now = 0;
         for (int k = 1; k <= 40; ++k) {
             const double x = k <= 20 ? 0.1 * k : 100.0;
-            entities.moves(walkerAt(qint64(k) * tickMs, {x, 64.0, 0.0}), now += tickMs);
+            entities.moves(walkerAt(static_cast<qint64>(k) * tickMs, {x, 64.0, 0.0}), now += tickMs);
             entities.tick(now + 10);
             const QcClientEntity &walker = entities.all().value(moverId);
             // Never anywhere between the old place and the new one.
@@ -396,8 +396,8 @@ private slots:
             frames.setTimerType(Qt::PreciseTimer);
             connect(&frames, &QTimer::timeout, this, [&] {
                 const QcClientEntity entity = watcher.entities().value(walker.welcome().playerEntityId);
-                const double alpha = std::clamp(double(clock.elapsed() - lastTick) / tickMs, 0.0, 1.0);
-                recorder.sample(double(clock.elapsed()), entity.previousPosition.x + (entity.position.x - entity.previousPosition.x) * alpha);
+                const double alpha = std::clamp(static_cast<double>(clock.elapsed() - lastTick) / tickMs, 0.0, 1.0);
+                recorder.sample(static_cast<double>(clock.elapsed()), entity.previousPosition.x + (entity.position.x - entity.previousPosition.x) * alpha);
             });
             frames.start(4);
             QTest::qWait(3000);

@@ -63,7 +63,7 @@ public:
     // Drops are logged at most this often per player and kind (the first one at once).
     static constexpr qint64 reportIntervalNs = 1'000'000'000;
 
-    static constexpr Limit limit(Kind kind) { return limits[size_t(kind)]; }
+    static constexpr Limit limit(Kind kind) { return limits[static_cast<size_t>(kind)]; }
     // The bucket a client message pays into; std::nullopt for messages that are not limited here.
     [[nodiscard]] static std::optional<Kind> kindOf(const QcMessage &message);
     // The client messages that are deliberately not limited here: PlayerInput has its own budget,

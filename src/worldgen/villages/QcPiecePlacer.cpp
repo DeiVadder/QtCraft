@@ -67,7 +67,7 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
     if (high - low > maxSlope) {
         return std::nullopt;
     }
-    return int(std::lround(double(sum) / double(samples.size()))) - 1;
+    return static_cast<int>(std::lround(static_cast<double>(sum) / static_cast<double>(samples.size()))) - 1;
 }
 
 void QcPiecePlacer::placeCentre(QcVillageDraft &draft) const
@@ -85,7 +85,7 @@ void QcPiecePlacer::placeCentre(QcVillageDraft &draft) const
 bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const
 {
     // The door faces the main road (the axis next to it when that is diagonal).
-    const auto [fx, fz] = directions[std::size_t(draft.mainDirection / 2) * 2];
+    const auto [fx, fz] = directions[static_cast<std::size_t>(draft.mainDirection / 2) * 2];
     const int turns = QcVillageDraft::turnsFacing(fx, fz);
     const int sizeX = turns % 2 == 0 ? centre.structure()->sizeX() : centre.structure()->sizeZ();
     const int sizeZ = turns % 2 == 0 ? centre.structure()->sizeZ() : centre.structure()->sizeX();
@@ -118,11 +118,11 @@ void QcPiecePlacer::placeRulePieces(QcVillageDraft &draft, const QList<Road> &ro
 
         const int wanted = std::max(1, piece.max);
         while (draft.counts[i] < wanted) {
-            const bool placed = piece.water > 0 ? placeAtWater(draft, roads, int(i)) : placeAnywhere(draft, roads, int(i));
+            const bool placed = piece.water > 0 ? placeAtWater(draft, roads, static_cast<int>(i)) : placeAnywhere(draft, roads, static_cast<int>(i));
             if (!placed) {
                 break;
             }
-            draft.countPiece(int(i));
+            draft.countPiece(static_cast<int>(i));
         }
     }
 }
@@ -130,10 +130,10 @@ void QcPiecePlacer::placeRulePieces(QcVillageDraft &draft, const QList<Road> &ro
 bool QcPiecePlacer::placeAnywhere(QcVillageDraft &draft, const QList<Road> &roads, int index) const
 {
     for (int attempt = 0; attempt < ruleAttempts && !roads.isEmpty(); ++attempt) {
-        const Road &road = roads[std::min(roads.size() - 1, qsizetype(draft.random() * double(roads.size())))];
+        const Road &road = roads[std::min(roads.size() - 1, static_cast<qsizetype>(draft.random() * static_cast<double>(roads.size())))];
         const int side = draft.random() < 0.5 ? -1 : 1;
         const int room = std::max(1, road.length - road.firstSlot - 3);
-        const int along = road.firstSlot + 1 + int(draft.random() * room);
+        const int along = road.firstSlot + 1 + static_cast<int>(draft.random() * room);
         if (placeAt(draft, road, {along, side}, index) > 0) {
             return true;
         }
@@ -144,7 +144,7 @@ bool QcPiecePlacer::placeAnywhere(QcVillageDraft &draft, const QList<Road> &road
 bool QcPiecePlacer::placeAtWater(QcVillageDraft &draft, const QList<Road> &roads, int index) const
 {
     const QcVillageStyle::Piece &piece = draft.style->pieces[index];
-    const qsizetype first = std::min(roads.size() - 1, qsizetype(draft.random() * double(roads.size())));
+    const qsizetype first = std::min(roads.size() - 1, static_cast<qsizetype>(draft.random() * static_cast<double>(roads.size())));
     for (qsizetype n = 0; n < roads.size(); ++n) {
         const Road &road = roads[(first + n) % roads.size()];
         if (!road.end || road.diagonal()) {
@@ -321,13 +321,13 @@ int QcPiecePlacer::choosePiece(QcVillageDraft &draft)
         return -1;
     }
 
-    int pick = int(draft.random() * total);
+    int pick = static_cast<int>(draft.random() * total);
     for (qsizetype i = 0; i < pieces.size(); ++i) {
         if (!open(i)) {
             continue;
         }
         if (pick < pieces[i].weight) {
-            return int(i);
+            return static_cast<int>(i);
         }
         pick -= pieces[i].weight;
     }
@@ -377,7 +377,7 @@ const QcVillageStyle::Blueprint &QcPiecePlacer::chooseBlueprint(QcVillageDraft &
     for (const QcVillageStyle::Blueprint &blueprint : piece.blueprints) {
         total += blueprint.weight;
     }
-    int pick = int(draft.random() * total);
+    int pick = static_cast<int>(draft.random() * total);
     for (const QcVillageStyle::Blueprint &blueprint : piece.blueprints) {
         if (pick < blueprint.weight) {
             return blueprint;

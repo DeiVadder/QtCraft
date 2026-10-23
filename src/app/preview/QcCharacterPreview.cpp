@@ -15,9 +15,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-static_assert(int(QcCharacterPreview::Animation::Stand) == int(QcPreviewPose::Animation::Stand)
-              && int(QcCharacterPreview::Animation::Walk) == int(QcPreviewPose::Animation::Walk)
-              && int(QcCharacterPreview::Animation::Mine) == int(QcPreviewPose::Animation::Mine),
+static_assert(static_cast<int>(QcCharacterPreview::Animation::Stand) == static_cast<int>(QcPreviewPose::Animation::Stand)
+              && static_cast<int>(QcCharacterPreview::Animation::Walk) == static_cast<int>(QcPreviewPose::Animation::Walk)
+              && static_cast<int>(QcCharacterPreview::Animation::Mine) == static_cast<int>(QcPreviewPose::Animation::Mine),
               "QcCharacterPreview::Animation follows QcPreviewPose::Animation");
 
 } // namespace
@@ -96,12 +96,12 @@ void QcCharacterPreview::applyHook()
 void QcCharacterPreview::setAnimation(Animation animation)
 {
     if (animation < Animation::Stand || animation > Animation::Mine) {
-        qCWarning(lcPreview) << "Character preview" << objectName() << ": ignoring unknown animation" << int(animation);
+        qCWarning(lcPreview) << "Character preview" << objectName() << ": ignoring unknown animation" << static_cast<int>(animation);
         return;
     }
     // Equal values and the --preview hook's fixed animation (it wins over the screen's buttons on
     // purpose) leave it as it is without a message.
-    const auto pose = QcPreviewPose::Animation(animation);
+    const auto pose = static_cast<QcPreviewPose::Animation>(animation);
     if (pose == m_animation || (m_source && m_source->hook().animation)) {
         return;
     }
@@ -281,7 +281,7 @@ void QcCharacterPreview::buildFrame()
     // Content, look and held item are read anew every frame, so changes show in the next one.
     applyHook();
     const qint64 now = m_clock.elapsed();
-    const double seconds = m_lastFrameMs < 0 ? 0.0 : std::min(0.1, double(now - m_lastFrameMs) / 1000.0);
+    const double seconds = m_lastFrameMs < 0 ? 0.0 : std::min(0.1, static_cast<double>(now - m_lastFrameMs) / 1000.0);
     m_lastFrameMs = now;
     const bool fixedTime = m_source->hook().time.has_value();
     m_seconds += fixedTime ? 0.0 : seconds;
@@ -356,6 +356,6 @@ void QcCharacterPreview::wheelEvent(QWheelEvent *event)
         event->ignore();
         return;
     }
-    setZoom(m_camera.zoom() + QcPreviewCamera::zoomPerStep * double(event->angleDelta().y()) / 120.0);
+    setZoom(m_camera.zoom() + QcPreviewCamera::zoomPerStep * static_cast<double>(event->angleDelta().y()) / 120.0);
     event->accept();
 }

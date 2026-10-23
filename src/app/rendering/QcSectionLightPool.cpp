@@ -76,7 +76,7 @@ std::optional<QcSectionLightPool::Slot> QcSectionLightPool::slot(quint64 key) co
 
 quint64 QcSectionLightPool::bytes() const
 {
-    return quint64(m_pages.size()) * quint64(m_slotsPerPage) * sectionSize * sliceBytes;
+    return static_cast<quint64>(m_pages.size()) * static_cast<quint64>(m_slotsPerPage) * sectionSize * sliceBytes;
 }
 
 std::optional<QcSectionLightPool::Slot> QcSectionLightPool::takeSlot(QRhi *rhi)
@@ -89,7 +89,7 @@ std::optional<QcSectionLightPool::Slot> QcSectionLightPool::takeSlot(QRhi *rhi)
             return std::nullopt;
         }
 
-        const int pageIndex = int(m_pages.size());
+        const int pageIndex = static_cast<int>(m_pages.size());
         m_pages.push_back(std::move(page));
         // Taken from the back: the first slot of the page first.
         for (int index = m_slotsPerPage - 1; index >= 0; --index) {
@@ -111,7 +111,7 @@ void QcSectionLightPool::upload(QRhiResourceUpdateBatch *updates, Slot slot, con
     QList<QRhiTextureUploadEntry> entries;
     entries.reserve(sectionSize);
     for (int y = 0; y < sectionSize; ++y) {
-        const QRhiTextureSubresourceUploadDescription slice(texels.constData() + qsizetype(y) * sliceBytes, quint32(sliceBytes));
+        const QRhiTextureSubresourceUploadDescription slice(texels.constData() + static_cast<qsizetype>(y) * sliceBytes, static_cast<quint32>(sliceBytes));
         entries.append(QRhiTextureUploadEntry(slot.firstSlice() + y, 0, slice));
     }
 

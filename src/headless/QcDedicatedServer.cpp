@@ -120,7 +120,7 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
         if (!stored) {
             return qcError(stored.error());
         }
-        const qint64 seed = settings.seed.value_or(qint64(QRandomGenerator::global()->generate64() >> 1));
+        const qint64 seed = settings.seed.value_or(static_cast<qint64>(QRandomGenerator::global()->generate64() >> 1));
         const QcWorldLibrary::NewWorld setup{.generator = settings.worldType,
                                              .options = *stored,
                                              .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival)};

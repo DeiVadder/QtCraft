@@ -123,7 +123,7 @@ private:
         for (int y = -1; y < height; ++y) {
             for (int z = 0; z < size; ++z) {
                 for (int x = 0; x < size; ++x) {
-                    blocks.append(m_server->world().blockAt(corner.offset(x, y, z)).value_or(QcBlockId(~0u)));
+                    blocks.append(m_server->world().blockAt(corner.offset(x, y, z)).value_or(static_cast<QcBlockId>(~0u)));
                 }
             }
         }
@@ -169,6 +169,7 @@ private:
         QByteArray bytes;
         const QList<QcBlockId> blocks = blocksOf(corner, size, trunkHeight + 3);
         for (const QcBlockId block : blocks) {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of a trivially copyable value
             bytes.append(reinterpret_cast<const char *>(&block), sizeof(block));
         }
         const QByteArray hash = QCryptographicHash::hash(bytes, QCryptographicHash::Sha256).toHex();
@@ -208,7 +209,7 @@ private slots:
         QCOMPARE(m_server->fires().size(), 0);
         QCOMPARE(fireBlocksIn(corner, size, height), 0);
 
-        const int reach = int(QcServerLimits{}.fireSpreadRadius);
+        const int reach = static_cast<int>(QcServerLimits{}.fireSpreadRadius);
         const QList<QcBlockPos> changed = changedCells(corner, size, height, before);
         QSet<std::pair<int, int>> columns;
         for (const QcBlockPos &cell : changed) {
@@ -532,16 +533,16 @@ private slots:
         wall.start();
         burnOut(6000, [&] {
             const auto &phases = m_server->tickPhases().lastTick();
-            firePhase.append(double(phases[std::size_t(QcTickPhase::Fire)]) / 1e6);
+            firePhase.append(static_cast<double>(phases[static_cast<std::size_t>(QcTickPhase::Fire)]) / 1e6);
             qint64 total = 0;
             for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-                total += phases[std::size_t(phase)];
+                total += phases[static_cast<std::size_t>(phase)];
             }
-            tick.append(double(total) / 1e6);
+            tick.append(static_cast<double>(total) / 1e6);
             most = std::max(most, m_server->fires().size());
         });
         QCOMPARE(m_server->fires().size(), 0);
-        const auto mean = [](const QList<double> &values) { return std::accumulate(values.begin(), values.end(), 0.0) / double(values.size()); };
+        const auto mean = [](const QList<double> &values) { return std::accumulate(values.begin(), values.end(), 0.0) / static_cast<double>(values.size()); };
         const auto maximum = [](const QList<double> &values) { return *std::ranges::max_element(values); };
         const QcServerFire::Numbers &numbers = m_server->systems().fire.numbers();
         qInfo().noquote() << u"FIRE size %1 sparks %2 ticks %3 wall %4 ms: fire phase mean %5 ms max %6 ms, tick mean %7 ms max %8 ms; "

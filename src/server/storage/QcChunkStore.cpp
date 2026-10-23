@@ -48,11 +48,11 @@ constexpr quint32 maxJournalSteps = 1u << 20;
 constexpr quint16 journalVersion = 2;
 // The head of a file a step checks: a region's header and index (whose entries hold the checksum of
 // every blob), or all of a small file.
-constexpr qint64 headBytes = qint64(64) * 1024;
+constexpr qint64 headBytes = qint64{64} * 1024;
 
 const KindFiles &filesOf(QcChunkStore::Kind kind)
 {
-    return kinds[std::size_t(kind)];
+    return kinds[static_cast<std::size_t>(kind)];
 }
 
 // Makes renames and removals in `directory` durable (a rename is in the folder's entry, not in the
@@ -161,7 +161,7 @@ void QcChunkStore::removeStaged() const
 {
     QStringList folders{m_directory, absolute(u"players"_s)};
     for (int kind = 0; kind < kindCount; ++kind) {
-        folders.append(absolute(folderOf(Kind(kind))));
+        folders.append(absolute(folderOf(static_cast<Kind>(kind))));
     }
     for (const QString &folder : std::as_const(folders)) {
         const QDir dir(folder);
@@ -175,7 +175,7 @@ void QcChunkStore::removeStaged() const
 QcStatus QcChunkStore::readIndexes()
 {
     for (int k = 0; k < kindCount; ++k) {
-        const Kind kind = Kind(k);
+        const Kind kind = static_cast<Kind>(k);
         const QDir folder(absolute(folderOf(kind)));
         const QStringList names = folder.entryList({u"r.*.%1"_s.arg(extensionOf(kind))}, QDir::Files, QDir::Name);
         for (const QString &name : names) {
@@ -188,7 +188,7 @@ QcStatus QcChunkStore::readIndexes()
                 return qcError(index.error());
             }
             if (!index->isEmpty()) {
-                m_indexes[std::size_t(k)].insert(*region, *index);
+                m_indexes[static_cast<std::size_t>(k)].insert(*region, *index);
             }
         }
     }
@@ -198,8 +198,8 @@ QcStatus QcChunkStore::readIndexes()
 QHash<QcChunkPos, quint16> QcChunkStore::chunksOf(Kind kind) const
 {
     QHash<QcChunkPos, quint16> chunks;
-    const QHash<QcChunkPos, Pending> &pending = m_pending[std::size_t(kind)];
-    for (const QcRegionFile::Index &index : m_indexes[std::size_t(kind)]) {
+    const QHash<QcChunkPos, Pending> &pending = m_pending[static_cast<std::size_t>(kind)];
+    for (const QcRegionFile::Index &index : m_indexes[static_cast<std::size_t>(kind)]) {
         for (auto it = index.cbegin(); it != index.cend(); ++it) {
             if (!pending.contains(it.key())) {
                 chunks.insert(it.key(), it->marks);
@@ -218,11 +218,11 @@ QHash<QcChunkPos, QcChunkStore::Stored> QcChunkStore::catalog() const
 {
     QHash<QcChunkPos, Stored> catalog;
     for (int k = 0; k < kindCount; ++k) {
-        const Kind kind = Kind(k);
+        const Kind kind = static_cast<Kind>(k);
         const QHash<QcChunkPos, quint16> chunks = chunksOf(kind);
         for (auto it = chunks.cbegin(); it != chunks.cend(); ++it) {
             Stored &stored = catalog[it.key()];
-            stored.kinds |= quint8(1u << quint8(kind));
+            stored.kinds |= static_cast<quint8>(1u << static_cast<quint8>(kind));
             if (kind == Kind::BlockEntities) {
                 stored.marks = it.value();
             }
@@ -238,9 +238,9 @@ QcResult<QcChunkStore::Blobs> QcChunkStore::read(QcChunkPos chunk)
     }
     Blobs blobs;
     for (int k = 0; k < kindCount; ++k) {
-        const Kind kind = Kind(k);
-        auto &slot = blobs.data[std::size_t(k)];
-        if (const auto pending = m_pending[std::size_t(k)].constFind(chunk); pending != m_pending[std::size_t(k)].cend()) {
+        const Kind kind = static_cast<Kind>(k);
+        auto &slot = blobs.data[static_cast<std::size_t>(k)];
+        if (const auto pending = m_pending[static_cast<std::size_t>(k)].constFind(chunk); pending != m_pending[static_cast<std::size_t>(k)].cend()) {
             slot = pending->blob;
             if (kind == Kind::BlockEntities) {
                 blobs.marks = pending->marks;
@@ -249,8 +249,8 @@ QcResult<QcChunkStore::Blobs> QcChunkStore::read(QcChunkPos chunk)
         }
 
         const QcChunkPos region = QcRegionFile::regionOf(chunk);
-        const auto index = m_indexes[std::size_t(k)].constFind(region);
-        if (index == m_indexes[std::size_t(k)].cend() || !index->contains(chunk)) {
+        const auto index = m_indexes[static_cast<std::size_t>(k)].constFind(region);
+        if (index == m_indexes[static_cast<std::size_t>(k)].cend() || !index->contains(chunk)) {
             continue;
         }
         const QcRegionFile::Entry entry = index->value(chunk);
@@ -268,7 +268,7 @@ QcResult<QcChunkStore::Blobs> QcChunkStore::read(QcChunkPos chunk)
 
 bool QcChunkStore::has(Kind kind, QcChunkPos chunk) const
 {
-    const std::size_t k = std::size_t(kind);
+    const std::size_t k = static_cast<std::size_t>(kind);
     if (const auto pending = m_pending[k].constFind(chunk); pending != m_pending[k].cend()) {
         return pending->blob.has_value();
     }
@@ -278,7 +278,7 @@ bool QcChunkStore::has(Kind kind, QcChunkPos chunk) const
 
 void QcChunkStore::put(Kind kind, QcChunkPos chunk, std::optional<QByteArray> blob, quint16 marks)
 {
-    m_pending[std::size_t(kind)].insert(chunk, Pending{std::move(blob), kind == Kind::BlockEntities ? marks : quint16(0)});
+    m_pending[static_cast<std::size_t>(kind)].insert(chunk, Pending{std::move(blob), kind == Kind::BlockEntities ? marks : quint16{0}});
 }
 
 qsizetype QcChunkStore::pendingChunks() const
@@ -292,7 +292,7 @@ qsizetype QcChunkStore::pendingChunks() const
 
 QcResult<QcChunkStore::StagedRegion> QcChunkStore::stageRegion(Kind kind, QcChunkPos region)
 {
-    const std::size_t k = std::size_t(kind);
+    const std::size_t k = static_cast<std::size_t>(kind);
     const QString folder = absolute(folderOf(kind));
     const QString path = QcRegionFile::path(folder, region, extensionOf(kind));
     const QcRegionFile::Index old = m_indexes[k].value(region);
@@ -307,7 +307,8 @@ QcResult<QcChunkStore::StagedRegion> QcChunkStore::stageRegion(Kind kind, QcChun
         if (!it->blob) {
             changed = entry != old.cend();
         } else {
-            changed = entry == old.cend() || qsizetype(entry->size) != it->blob->size() || entry->crc != qcCrc32(*it->blob) || entry->marks != it->marks;
+            changed = entry == old.cend() || static_cast<qsizetype>(entry->size) != it->blob->size() || entry->crc != qcCrc32(*it->blob)
+                || entry->marks != it->marks;
         }
     }
     if (!changed) {
@@ -361,7 +362,7 @@ QcStatus QcChunkStore::writeJournal(const QList<Step> &steps) const
     QByteArray payload;
     QDataStream stream(&payload, QIODevice::WriteOnly);
     stream.setVersion(QcSaveFile::streamVersion);
-    stream << quint32(steps.size());
+    stream << static_cast<quint32>(steps.size());
     for (const Step &step : steps) {
         stream << step.name << step.remove << step.size << step.headCrc;
     }
@@ -425,18 +426,18 @@ QcResult<QcChunkStore::Staging> QcChunkStore::stageAll()
     QList<Step> &steps = staging.steps;
     for (int k = 0; k < kindCount; ++k) {
         QSet<QcChunkPos> regions;
-        for (auto it = m_pending[std::size_t(k)].cbegin(); it != m_pending[std::size_t(k)].cend(); ++it) {
+        for (auto it = m_pending[static_cast<std::size_t>(k)].cbegin(); it != m_pending[static_cast<std::size_t>(k)].cend(); ++it) {
             regions.insert(QcRegionFile::regionOf(it.key()));
         }
         for (const QcChunkPos &region : std::as_const(regions)) {
-            const QcResult<StagedRegion> staged = stageRegion(Kind(k), region);
+            const QcResult<StagedRegion> staged = stageRegion(static_cast<Kind>(k), region);
             if (!staged) {
                 return qcError(staged.error());
             }
             if (staged->step) {
                 steps.append(*staged->step);
             }
-            staging.written[std::size_t(k)].insert(region, staged->index);
+            staging.written[static_cast<std::size_t>(k)].insert(region, staged->index);
         }
     }
     for (auto file = m_pendingFiles.cbegin(); file != m_pendingFiles.cend(); ++file) {
@@ -522,14 +523,14 @@ QcStatus QcChunkStore::commit(const QList<WholeFile> &files)
     syncDirectory(m_directory);
 
     for (int k = 0; k < kindCount; ++k) {
-        for (auto it = written[std::size_t(k)].cbegin(); it != written[std::size_t(k)].cend(); ++it) {
+        for (auto it = written[static_cast<std::size_t>(k)].cbegin(); it != written[static_cast<std::size_t>(k)].cend(); ++it) {
             if (it->isEmpty()) {
-                m_indexes[std::size_t(k)].remove(it.key());
+                m_indexes[static_cast<std::size_t>(k)].remove(it.key());
             } else {
-                m_indexes[std::size_t(k)].insert(it.key(), it.value());
+                m_indexes[static_cast<std::size_t>(k)].insert(it.key(), it.value());
             }
         }
-        m_pending[std::size_t(k)].clear();
+        m_pending[static_cast<std::size_t>(k)].clear();
     }
     m_pendingFiles.clear();
     return {};
@@ -550,5 +551,5 @@ QcResult<std::optional<QByteArray>> QcChunkStore::readFile(const QString &name)
     if (!file.open(QIODevice::ReadOnly)) {
         return qcError(u"Cannot open %1: %2"_s.arg(file.fileName(), file.errorString()));
     }
-    return std::optional<QByteArray>(file.read(qint64(64) * 1024 * 1024));
+    return std::optional<QByteArray>(file.read(qint64{64} * 1024 * 1024));
 }

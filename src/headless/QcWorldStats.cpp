@@ -51,7 +51,7 @@ QString percent(double part, double whole, int precision = 1)
 
 QString perMille(qint64 part, qint64 whole)
 {
-    return whole > 0 ? QString::number(1000.0 * double(part) / double(whole), 'f', 2) : u"-"_s;
+    return whole > 0 ? QString::number(1000.0 * static_cast<double>(part) / static_cast<double>(whole), 'f', 2) : u"-"_s;
 }
 
 QString biomeLabel(const QcTerrainGenerator &generator, int biome)
@@ -210,11 +210,11 @@ BiomeGrid sampleBiomes(const QcTerrainGenerator &generator, int radius)
 {
     BiomeGrid grid;
     grid.size = 2 * radius / biomeStep;
-    grid.cells.resize(qsizetype(grid.size) * grid.size);
+    grid.cells.resize(static_cast<qsizetype>(grid.size) * grid.size);
     QtConcurrent::blockingMap(grid.cells, [&](int &cell) {
         const qsizetype index = &cell - grid.cells.data();
-        const int x = -radius + int(index % grid.size) * biomeStep;
-        const int z = -radius + int(index / grid.size) * biomeStep;
+        const int x = -radius + static_cast<int>(index % grid.size) * biomeStep;
+        const int z = -radius + static_cast<int>(index / grid.size) * biomeStep;
         const QcTerrainGenerator::Column column = generator.column(x, z);
         // Water does not split biomes: regions describe the climate map, the ocean share is extra.
         cell = column.landFactor < 0.5 ? oceanBiome : column.biome;
@@ -241,8 +241,8 @@ Region RegionLabels::flood(const BiomeGrid &grid, qsizetype start, int id)
     while (!stack.isEmpty()) {
         const qsizetype cell = stack.takeLast();
         region.cells += 1;
-        const int cx = int(cell % grid.size);
-        const int cz = int(cell / grid.size);
+        const int cx = static_cast<int>(cell % grid.size);
+        const int cz = static_cast<int>(cell / grid.size);
 
         for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}) {
             const int nx = cx + dx;
@@ -251,7 +251,7 @@ Region RegionLabels::flood(const BiomeGrid &grid, qsizetype start, int id)
                 continue;
             }
 
-            const qsizetype neighbour = qsizetype(nz) * grid.size + nx;
+            const qsizetype neighbour = static_cast<qsizetype>(nz) * grid.size + nx;
             if (grid.cells[neighbour] != region.biome) {
                 region.edges += 1;
             } else if (ids[neighbour] < 0) {
@@ -271,7 +271,7 @@ QList<Region> biomeRegions(const QcTerrainGenerator &generator, int radius)
     QList<Region> regions;
     for (qsizetype start = 0; start < grid.cells.size(); ++start) {
         if (labels.ids[start] < 0) {
-            regions.append(labels.flood(grid, start, int(regions.size())));
+            regions.append(labels.flood(grid, start, static_cast<int>(regions.size())));
         }
     }
     return regions;
@@ -299,7 +299,7 @@ QStringList undergroundLines(const ChunkCounts &total, const QcContentRegistry &
         QString line = u"%1 %2 %3 %4"_s.arg(content.block(block).name, -16)
                            .arg(perMille(total.underground[block], solid), 8)
                            .arg(perMille(total.exposed.value(block), exposedSolid), 8)
-                           .arg(double(total.underground[block]) / double(chunks), 10, 'f', 1);
+                           .arg(static_cast<double>(total.underground[block]) / static_cast<double>(chunks), 10, 'f', 1);
         for (std::size_t band = 0; band < bands.size(); ++band) {
             qint64 bandSolid = 0;
             for (const qint64 count : total.perBand[band]) {
@@ -316,7 +316,7 @@ QStringList undergroundLines(const ChunkCounts &total, const QcContentRegistry &
 QString nearestPlaces(const QList<QcBlockPos> &found)
 {
     QList<QcBlockPos> list = found;
-    std::ranges::sort(list, {}, [](QcBlockPos pos) { return qint64(pos.x) * pos.x + qint64(pos.z) * pos.z; });
+    std::ranges::sort(list, {}, [](QcBlockPos pos) { return static_cast<qint64>(pos.x) * pos.x + static_cast<qint64>(pos.z) * pos.z; });
     QStringList parts;
     const QList<QcBlockPos> nearest = list.first(std::min<qsizetype>(list.size(), 6));
     for (const QcBlockPos &pos : nearest) {
@@ -330,11 +330,11 @@ QStringList caveLines(const ChunkCounts &total)
     QString caves = u"== Caves: air below the soil layer"_s;
     for (std::size_t band = 0; band < bands.size(); ++band) {
         caves += u", y%1-%2 %3"_s.arg(bands[band].first).arg(bands[band].second - 1)
-                     .arg(percent(double(total.caveAir[band]), double(total.cells[band])));
+                     .arg(percent(static_cast<double>(total.caveAir[band]), static_cast<double>(total.cells[band])));
     }
     return {QString(),
             caves,
-            u"== Dry columns whose ground a cave opens: %1"_s.arg(percent(double(total.openColumns), double(total.dryColumns), 2)),
+            u"== Dry columns whose ground a cave opens: %1"_s.arg(percent(static_cast<double>(total.openColumns), static_cast<double>(total.dryColumns), 2)),
             u"== Nearest lava lakes: %1"_s.arg(nearestPlaces(total.lavaLakes)),
             u"== Nearest cave entrances: %1"_s.arg(nearestPlaces(total.entrances))};
 }
@@ -352,7 +352,7 @@ QStringList surfaceLines(const ChunkCounts &total, const QcTerrainGenerator &gen
         std::ranges::sort(tops, [&](QcBlockId a, QcBlockId b) { return biome->value(a) > biome->value(b); });
         QStringList parts;
         for (const QcBlockId top : std::as_const(tops)) {
-            parts << u"%1 %2"_s.arg(content.block(top).name, percent(double(biome->value(top)), double(columns)));
+            parts << u"%1 %2"_s.arg(content.block(top).name, percent(static_cast<double>(biome->value(top)), static_cast<double>(columns)));
         }
 
         lines << u"%1 (%2 columns): %3"_s.arg(biomeLabel(generator, biome.key())).arg(columns).arg(parts.join(u", "_s));
@@ -369,23 +369,24 @@ QString regionLine(const QString &label, QList<Region> list, qint64 cells)
     double compactWeighted = 0.0;
     for (const Region &region : std::as_const(list)) {
         area += region.cells;
-        const double perimeter = double(region.edges);
+        const double perimeter = static_cast<double>(region.edges);
         if (perimeter > 0.0) {
-            compactWeighted += double(region.cells) * std::min(1.0, 4.0 * std::numbers::pi * double(region.cells) / (perimeter * perimeter));
+            compactWeighted += static_cast<double>(region.cells) * std::min(1.0,
+                4.0 * std::numbers::pi * static_cast<double>(region.cells) / (perimeter * perimeter));
         }
     }
 
     const qint64 median = list[list.size() / 2].cells;
     // Speckles at borders: regions of fewer than four grid cells.
     const auto tiny = std::ranges::count_if(list, [&](const Region &region) { return region.cells < 4; });
-    const double cellArea = double(biomeStep * biomeStep) / 1000.0;
+    const double cellArea = static_cast<double>(biomeStep * biomeStep) / 1000.0;
     return u"%1 %2 %3 %4 %5 %6 %7"_s.arg(label, -14)
-        .arg(percent(double(area), double(cells)), 7)
+        .arg(percent(static_cast<double>(area), static_cast<double>(cells)), 7)
         .arg(list.size(), 8)
-        .arg(double(median) * cellArea, 8, 'f', 0)
-        .arg(double(list.constLast().cells) * cellArea, 9, 'f', 0)
+        .arg(static_cast<double>(median) * cellArea, 8, 'f', 0)
+        .arg(static_cast<double>(list.constLast().cells) * cellArea, 9, 'f', 0)
         .arg(tiny, 8)
-        .arg(compactWeighted / double(area), 8, 'f', 2);
+        .arg(compactWeighted / static_cast<double>(area), 8, 'f', 2);
 }
 
 QStringList regionLines(const QcTerrainGenerator &generator, int biomeRadius)
@@ -431,7 +432,7 @@ QMap<QString, TerrainStats> sampleTerrain(const QcTerrainGenerator &generator)
                                            std::abs(generator.column(x, z + 1).height - column.height)});
             TerrainStats &entry = terrain[biomeLabel(generator, column.biome)];
             entry.columns += 1;
-            entry.slope[std::size_t(std::min(steepest, 5))] += 1;
+            entry.slope[static_cast<std::size_t>(std::min(steepest, 5))] += 1;
             entry.heights.append(column.height - 1);
         }
     }
@@ -449,13 +450,14 @@ QStringList terrainLines(const QcTerrainGenerator &generator)
     for (auto it = terrain.begin(); it != terrain.end(); ++it) {
         TerrainStats &entry = it.value();
         std::ranges::sort(entry.heights);
-        const auto at = [&](double q) { return entry.heights[qsizetype(q * double(entry.heights.size() - 1))]; };
+        const auto at = [&](double q) { return entry.heights[static_cast<qsizetype>(q * static_cast<double>(entry.heights.size() - 1))]; };
 
         QString line = u"%1"_s.arg(it.key(), -14);
         for (const qint64 count : entry.slope) {
-            line += u" %1"_s.arg(percent(double(count), double(entry.columns)), 7);
+            line += u" %1"_s.arg(percent(static_cast<double>(count), static_cast<double>(entry.columns)), 7);
         }
-        line += u" %1   %2/%3/%4/%5"_s.arg(percent(double(entry.slope[3] + entry.slope[4] + entry.slope[5]), double(entry.columns)), 7)
+        line += u" %1   %2/%3/%4/%5"_s.arg(percent(static_cast<double>(entry.slope[3] + entry.slope[4] + entry.slope[5]),
+            static_cast<double>(entry.columns)), 7)
                     .arg(at(0.05)).arg(at(0.5)).arg(at(0.95)).arg(entry.heights.constLast());
         lines << line;
     }

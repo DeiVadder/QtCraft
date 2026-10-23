@@ -34,7 +34,7 @@ void fillChest(QcServerState &state, const QcChunkFurnishing::Chest &chest)
     if (!container || std::ranges::any_of(container->stacks, [](const QcItemStack &stack) { return !stack.isEmpty(); })) {
         return;
     }
-    container->stacks = lootFor(state.content(), *table, chest.seed, int(container->stacks.size()));
+    container->stacks = lootFor(state.content(), *table, chest.seed, static_cast<int>(container->stacks.size()));
 }
 
 // Puts a minecart in the middle of the rail at `cart.at` (decision E-570), a container cart filled
@@ -58,7 +58,7 @@ void placeCart(QcServerState &state, const QcChunkFurnishing::Cart &setup)
     cart.motion.onGround = true;
     cart.yaw = QcMinecartMotion::yawAlong(to - from);
     if (const QcLootTableDefinition *table = content.lootTables().find(setup.lootTable); table && !cart.stacks.isEmpty()) {
-        cart.stacks = lootFor(content, *table, setup.seed, int(cart.stacks.size()));
+        cart.stacks = lootFor(content, *table, setup.seed, static_cast<int>(cart.stacks.size()));
     }
     if (!state.entities().minecarts().add(cart)) {
         qCWarning(lcServer) << "Too many minecarts for the cart at" << setup.at.x << setup.at.y << setup.at.z;

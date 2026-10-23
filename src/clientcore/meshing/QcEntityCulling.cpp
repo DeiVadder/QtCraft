@@ -10,7 +10,7 @@ namespace {
 
 QVector3D toVector(const QcVec3 &v)
 {
-    return {float(v.x), float(v.y), float(v.z)};
+    return {static_cast<float>(v.x), static_cast<float>(v.y), static_cast<float>(v.z)};
 }
 
 QcAabb grown(const QcAabb &box, double by)
@@ -26,7 +26,7 @@ std::optional<QcFrustum::Planes> viewPlanes(const QcCamera &camera, double width
     if (width <= 0.0 || height <= 0.0) {
         return std::nullopt;
     }
-    return QcFrustum::planes(camera.projectionMatrix(float(width / height), farPlane) * camera.viewMatrix());
+    return QcFrustum::planes(camera.projectionMatrix(static_cast<float>(width / height), farPlane) * camera.viewMatrix());
 }
 
 QcAabb viewBox(const QcClientEntity &entity, const QcContentRegistry &content)

@@ -72,7 +72,7 @@ int categoryOf(const QcBlockDefinition &block, const QcContentRegistry &content)
             return i;
         }
     }
-    return std::max(0, int(categories.size()) - 1);
+    return std::max(0, static_cast<int>(categories.size()) - 1);
 }
 
 QList<QList<quint32>> sort(const QcContentRegistry &content)
@@ -83,7 +83,7 @@ QList<QList<quint32>> sort(const QcContentRegistry &content)
         if (block.renderLayer == QcRenderLayer::Invisible || block.name == QLatin1StringView(QcContentRegistry::airName)) {
             continue;
         }
-        sorted[categoryOf(block, content)].append(quint32(type));
+        sorted[categoryOf(block, content)].append(static_cast<quint32>(type));
     }
     return sorted;
 }

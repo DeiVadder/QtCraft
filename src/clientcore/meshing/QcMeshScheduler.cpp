@@ -128,7 +128,7 @@ void QcMeshScheduler::submitLight(std::function<void(QcBlockLightEngine &)> work
         }
         result.dirty = dirty;
         result.changedAtNs = changedAtNs;
-        result.workMs = double(timer.nsecsElapsed()) / 1e6;
+        result.workMs = static_cast<double>(timer.nsecsElapsed()) / 1e6;
 
         if (m_lightResults.push(std::move(result))) {
             QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverLight, Qt::QueuedConnection);
@@ -311,7 +311,7 @@ void QcMeshScheduler::setLight(QcChunkPos chunk, int section, std::shared_ptr<co
     }
     // Copy on write: running mesh jobs keep the snapshot they were given.
     auto copy = std::make_shared<QcChunkLight>(**it);
-    copy->sections[std::size_t(section)] = std::move(light);
+    copy->sections[static_cast<std::size_t>(section)] = std::move(light);
     *it = std::move(copy);
 }
 
@@ -393,8 +393,8 @@ std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world
                 sidesLoaded = false;
             }
             const int index = (dz + 1) * 3 + (dx + 1);
-            input.chunks[std::size_t(index)] = std::move(chunk);
-            input.blockLight[std::size_t(index)] = m_light.value(pos);
+            input.chunks[static_cast<std::size_t>(index)] = std::move(chunk);
+            input.blockLight[static_cast<std::size_t>(index)] = m_light.value(pos);
         }
     }
     if (!sidesLoaded) {
@@ -421,7 +421,7 @@ qint64 QcMeshScheduler::lightBytes() const
             }
         }
     }
-    return qint64(sections.size()) * qint64(sizeof(QcChunkLight::Section));
+    return static_cast<qint64>(sections.size()) * static_cast<qint64>(sizeof(QcChunkLight::Section));
 }
 
 void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input, Priority priority)
@@ -433,7 +433,7 @@ void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input, Priority priori
         QElapsedTimer work;
         work.start();
         auto mesh = std::make_shared<const QcChunkMesh>(QcChunkMesher::mesh(input));
-        if (m_results.push({key, version, std::move(mesh), double(work.nsecsElapsed()) / 1e6})) {
+        if (m_results.push({key, version, std::move(mesh), static_cast<double>(work.nsecsElapsed()) / 1e6})) {
             QMetaObject::invokeMethod(this, &QcMeshScheduler::deliverResults, Qt::QueuedConnection);
         }
     };
@@ -521,7 +521,7 @@ void QcMeshScheduler::jobFinished(quint64 key)
 void QcMeshScheduler::noteLatency(quint64 key)
 {
     if (const auto changed = m_changedAt.constFind(key); changed != m_changedAt.constEnd()) {
-        const double ms = double(m_clock.nsecsElapsed() - *changed) / 1e6;
+        const double ms = static_cast<double>(m_clock.nsecsElapsed() - *changed) / 1e6;
         ++m_stats.latencySamples;
         m_stats.latencyTotalMs += ms;
         m_stats.latencyWorstMs = std::max(m_stats.latencyWorstMs, ms);

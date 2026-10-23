@@ -4,11 +4,11 @@
 
 QcSpawners::QcSpawners(const QcContentRegistry &content)
 {
-    const auto count = std::size_t(content.stateCount());
+    const auto count = static_cast<std::size_t>(content.stateCount());
     m_spawner.resize(count);
     m_defaultMob.resize(count);
     for (std::size_t id = 0; id < count; ++id) {
-        const QcSpawnerDefinition &spawner = content.block(QcBlockId(id)).spawner;
+        const QcSpawnerDefinition &spawner = content.block(static_cast<QcBlockId>(id)).spawner;
         m_spawner[id] = spawner.isSpawner;
         m_defaultMob[id] = spawner.mob;
     }
@@ -22,7 +22,7 @@ void QcSpawners::noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after)
         return;
     }
     if (!m_entries.contains(pos)) {
-        add({pos, m_defaultMob[std::size_t(after)]});
+        add({pos, m_defaultMob[static_cast<std::size_t>(after)]});
     }
 }
 
@@ -31,7 +31,7 @@ void QcSpawners::noteChunk(QcChunkPos pos, const QcChunk &chunk, quint32 section
     constexpr int size = QcWorld::chunkSize;
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
         const QcChunkSection &section = chunk.section(index);
-        if ((sections & (1u << unsigned(index))) == 0 || !std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isSpawner(id); })) {
+        if ((sections & (1u << static_cast<unsigned>(index))) == 0 || !std::ranges::any_of(section.palette(), [this](QcBlockId id) { return isSpawner(id); })) {
             continue;
         }
 
@@ -42,7 +42,7 @@ void QcSpawners::noteChunk(QcChunkPos pos, const QcChunk &chunk, quint32 section
             const int y = cell / (size * size);
             const QcBlockId block = section.block(x, y, z);
             if (isSpawner(block) && !m_entries.contains(corner.offset(x, y, z))) {
-                add({corner.offset(x, y, z), m_defaultMob[std::size_t(block)]});
+                add({corner.offset(x, y, z), m_defaultMob[static_cast<std::size_t>(block)]});
             }
         }
     }

@@ -82,7 +82,7 @@ private:
     // Ticks until a fish bites (at most the longest wait).
     void waitForBite()
     {
-        const int limit = int(rod().maxSeconds / QcPhysics::tickDuration) + 40;
+        const int limit = static_cast<int>(rod().maxSeconds / QcPhysics::tickDuration) + 40;
         for (int i = 0; i < limit && player().fishing.biteTicks == 0; ++i) {
             ticks(1);
         }
@@ -130,8 +130,8 @@ private slots:
         QRandomGenerator a(4711);
         QRandomGenerator b(4711);
         QRandomGenerator rain(4711);
-        const int low = int(std::lround(rod().minSeconds / QcPhysics::tickDuration));
-        const int high = int(std::lround(rod().maxSeconds / QcPhysics::tickDuration));
+        const int low = static_cast<int>(std::lround(rod().minSeconds / QcPhysics::tickDuration));
+        const int high = static_cast<int>(std::lround(rod().maxSeconds / QcPhysics::tickDuration));
         for (int i = 0; i < 200; ++i) {
             const int dry = QcPlayerFishing::waitTicks(rod(), false, a);
             QCOMPARE(QcPlayerFishing::waitTicks(rod(), false, b), dry);
@@ -157,8 +157,8 @@ private slots:
             total += entry.weight;
         }
         for (const QcFishingLoot &entry : rod().loot) {
-            const double expected = double(entry.weight) / total;
-            const double share = double(drawn.value(entry.item)) / rolls;
+            const double expected = static_cast<double>(entry.weight) / total;
+            const double share = static_cast<double>(drawn.value(entry.item)) / rolls;
             QVERIFY2(std::abs(share - expected) < 0.015, qPrintable(u"%1: %2 instead of %3"_s.arg(entry.item).arg(share).arg(expected)));
         }
 
@@ -298,7 +298,7 @@ private slots:
     {
         joinWithRod();
         const int cow = *m_content->mobIndex(u"qtcraft:cow"_s);
-        const QcVec3 at{m_feet.x + 0.5, double(m_feet.y), m_feet.z - 2.5};
+        const QcVec3 at{m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};
         const quint32 id = m_server->entities().creatures().spawn(cow, at, m_server->entities().newId(), false, true);
         const double health = m_server->entities().creatures().find(id)->health;
         player().yaw = 0.0f;

@@ -100,7 +100,7 @@ void QcServerEffects::tickCreatures()
             continue;
         }
         // No push; a passive creature runs on the way it faces.
-        const double yaw = qDegreesToRadians(double(mob->yaw));
+        const double yaw = qDegreesToRadians(static_cast<double>(mob->yaw));
         const QcVec3 behind = mob->motion.position - QcVec3{std::sin(yaw), 0.0, -std::cos(yaw)};
         QcServerCombat::hurtCreature(m_state, m_sounds, {.creature = id, .damage = damage, .from = behind, .knockback = 0.0});
     }

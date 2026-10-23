@@ -63,7 +63,7 @@ QcDeltaArms::QcDeltaArms(const QcDeltaSites::Site &site)
 
 double QcDeltaArms::nextTrait()
 {
-    return m_site.traits[std::size_t(m_trait++ % QcDeltaSites::traitCount)];
+    return m_site.traits[static_cast<std::size_t>(m_trait++ % QcDeltaSites::traitCount)];
 }
 
 int QcDeltaArms::add(Arm arm)
@@ -76,7 +76,7 @@ int QcDeltaArms::add(Arm arm)
     arm.wave = 2.0 + 4.5 * nextTrait();
     arm.frequency = 0.8 + 1.2 * nextTrait();
     arm.phase = nextTrait();
-    m_arms[std::size_t(m_count)] = arm;
+    m_arms[static_cast<std::size_t>(m_count)] = arm;
     return m_count++;
 }
 
@@ -159,14 +159,14 @@ double QcDeltaArms::channelAt(double along, double lateral, double halfWidth, do
     const double side = std::max(1.0, armSide * halfWidth);
     double channel = edge + armBank * 64.0;
     for (int i = 0; i < m_count; ++i) {
-        const Arm &arm = m_arms[std::size_t(i)];
-        const double parent = arm.parent >= 0 ? middles[std::size_t(arm.parent)] : 0.0;
-        middles[std::size_t(i)] = middleOf(arm, parent, along, halfWidth);
+        const Arm &arm = m_arms[static_cast<std::size_t>(i)];
+        const double parent = arm.parent >= 0 ? middles[static_cast<std::size_t>(arm.parent)] : 0.0;
+        middles[static_cast<std::size_t>(i)] = middleOf(arm, parent, along, halfWidth);
         const double width = widthOf(arm, along);
         if (width <= 0.0) {
             continue;
         }
-        const double middle = side * std::tanh(middles[std::size_t(i)] / side);
+        const double middle = side * std::tanh(middles[static_cast<std::size_t>(i)] / side);
         const double distance = std::abs(lateral - middle);
         double ground = edge + armBank * (distance - width);
         if (distance < width) {

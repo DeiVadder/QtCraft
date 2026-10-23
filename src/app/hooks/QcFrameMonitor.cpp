@@ -35,7 +35,7 @@ QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 enti
     QList<QcRenderSample> samples;
     if (m_depth == Depth::Full) {
         const qint64 threadCpuNs = QcThreadCpuClock::nowNs();
-        m_lastGuiCpuMs = threadCpuNs >= 0 && m_lastThreadCpuNs >= 0 ? double(threadCpuNs - m_lastThreadCpuNs) / 1e6 : -1.0;
+        m_lastGuiCpuMs = threadCpuNs >= 0 && m_lastThreadCpuNs >= 0 ? static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6 : -1.0;
         m_lastThreadCpuNs = threadCpuNs;
         if (view) {
             samples = view->takeRenderSamples();
@@ -48,14 +48,14 @@ QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 enti
 
     if (intervalNs >= 0) {
         std::array<float, QcFramePhases::count> values{};
-        values[std::size_t(QcFramePhase::Interval)] = float(double(intervalNs) / 1e6);
-        values[std::size_t(QcFramePhase::GuiCpu)] = float(std::max(0.0, m_lastGuiCpuMs));
-        values[std::size_t(QcFramePhase::EntityMesh)] = float(double(entityNs) / 1e6);
-        values[std::size_t(QcFramePhase::Preview)] = float(double(previewNs) / 1e6);
-        values[std::size_t(QcFramePhase::RenderCpu)] = float(std::max(0.0, m_render.renderThreadCpuMs));
-        values[std::size_t(QcFramePhase::WorldRender)] = float(m_render.worldRenderMs);
-        values[std::size_t(QcFramePhase::Upload)] = float(m_render.uploadMs);
-        values[std::size_t(QcFramePhase::Gpu)] = float(m_render.gpuMs);
+        values[static_cast<std::size_t>(QcFramePhase::Interval)] = static_cast<float>(static_cast<double>(intervalNs) / 1e6);
+        values[static_cast<std::size_t>(QcFramePhase::GuiCpu)] = static_cast<float>(std::max(0.0, m_lastGuiCpuMs));
+        values[static_cast<std::size_t>(QcFramePhase::EntityMesh)] = static_cast<float>(static_cast<double>(entityNs) / 1e6);
+        values[static_cast<std::size_t>(QcFramePhase::Preview)] = static_cast<float>(static_cast<double>(previewNs) / 1e6);
+        values[static_cast<std::size_t>(QcFramePhase::RenderCpu)] = static_cast<float>(std::max(0.0, m_render.renderThreadCpuMs));
+        values[static_cast<std::size_t>(QcFramePhase::WorldRender)] = static_cast<float>(m_render.worldRenderMs);
+        values[static_cast<std::size_t>(QcFramePhase::Upload)] = static_cast<float>(m_render.uploadMs);
+        values[static_cast<std::size_t>(QcFramePhase::Gpu)] = static_cast<float>(m_render.gpuMs);
         m_window.add(values);
     }
     return samples;
@@ -65,9 +65,9 @@ QcDebugSnapshot::Frame QcFrameMonitor::frame(const QcMeshScheduler &meshes, qsiz
 {
     QcDebugSnapshot::Frame frame;
     for (int phase = 0; phase < QcFramePhases::count; ++phase) {
-        frame.phases[std::size_t(phase)] = {m_window.mean(phase), m_window.max(phase)};
+        frame.phases[static_cast<std::size_t>(phase)] = {m_window.mean(phase), m_window.max(phase)};
     }
-    const double interval = m_window.mean(int(QcFramePhase::Interval));
+    const double interval = m_window.mean(static_cast<int>(QcFramePhase::Interval));
     frame.fps = interval > 0.0 ? 1000.0 / interval : 0.0;
     frame.gpuTimed = m_gpuTimed;
     frame.drawCalls = m_render.drawCalls;
@@ -80,13 +80,13 @@ QcDebugSnapshot::Frame QcFrameMonitor::frame(const QcMeshScheduler &meshes, qsiz
     // The scheduler counts since its last reset (the benchmark resets it): differences since the
     // reader's previous call, from zero after a reset.
     const QcMeshScheduler::Stats stats = meshes.stats();
-    QcMeshScheduler::Stats &previous = m_previousMeshStats[std::size_t(reader)];
+    QcMeshScheduler::Stats &previous = m_previousMeshStats[static_cast<std::size_t>(reader)];
     const bool reset = stats.meshJobs < previous.meshJobs || stats.lightJobs < previous.lightJobs;
     const QcMeshScheduler::Stats before = reset ? QcMeshScheduler::Stats{} : previous;
     const quint64 meshJobs = stats.meshJobs - before.meshJobs;
     const quint64 lightJobs = stats.lightJobs - before.lightJobs;
-    frame.meshJobMs = meshJobs > 0 ? (stats.meshTotalMs - before.meshTotalMs) / double(meshJobs) : 0.0;
-    frame.lightJobMs = lightJobs > 0 ? (stats.lightTotalMs - before.lightTotalMs) / double(lightJobs) : 0.0;
+    frame.meshJobMs = meshJobs > 0 ? (stats.meshTotalMs - before.meshTotalMs) / static_cast<double>(meshJobs) : 0.0;
+    frame.lightJobMs = lightJobs > 0 ? (stats.lightTotalMs - before.lightTotalMs) / static_cast<double>(lightJobs) : 0.0;
     previous = stats;
     return frame;
 }

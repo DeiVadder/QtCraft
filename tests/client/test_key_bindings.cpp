@@ -230,21 +230,21 @@ private slots:
     {
         QTest::addColumn<int>("key");
         QTest::addColumn<QString>("name");
-        QTest::newRow("letter") << int(Qt::Key_V) << u"V"_s;
-        QTest::newRow("digit") << int(Qt::Key_7) << u"7"_s;
-        QTest::newRow("F5") << int(Qt::Key_F5) << u"F5"_s;
-        QTest::newRow("F12") << int(Qt::Key_F12) << u"F12"_s;
-        QTest::newRow("space") << int(Qt::Key_Space) << u"Space"_s;
-        QTest::newRow("shift") << int(Qt::Key_Shift) << u"Shift"_s;
-        QTest::newRow("control") << int(Qt::Key_Control) << u"Control"_s;
-        QTest::newRow("meta") << int(Qt::Key_Meta) << u"Meta"_s;
-        QTest::newRow("return") << int(Qt::Key_Return) << u"Return"_s;
-        QTest::newRow("slash") << int(Qt::Key_Slash) << u"/"_s;
-        QTest::newRow("comma") << int(Qt::Key_Comma) << u","_s;
-        QTest::newRow("semicolon") << int(Qt::Key_Semicolon) << u";"_s;
-        QTest::newRow("umlaut") << int(Qt::Key_Odiaeresis) << u"Ö"_s;
-        QTest::newRow("sharp s") << int(Qt::Key_ssharp) << u"ß"_s;
-        QTest::newRow("up") << int(Qt::Key_Up) << u"Up"_s;
+        QTest::newRow("letter") << static_cast<int>(Qt::Key_V) << u"V"_s;
+        QTest::newRow("digit") << static_cast<int>(Qt::Key_7) << u"7"_s;
+        QTest::newRow("F5") << static_cast<int>(Qt::Key_F5) << u"F5"_s;
+        QTest::newRow("F12") << static_cast<int>(Qt::Key_F12) << u"F12"_s;
+        QTest::newRow("space") << static_cast<int>(Qt::Key_Space) << u"Space"_s;
+        QTest::newRow("shift") << static_cast<int>(Qt::Key_Shift) << u"Shift"_s;
+        QTest::newRow("control") << static_cast<int>(Qt::Key_Control) << u"Control"_s;
+        QTest::newRow("meta") << static_cast<int>(Qt::Key_Meta) << u"Meta"_s;
+        QTest::newRow("return") << static_cast<int>(Qt::Key_Return) << u"Return"_s;
+        QTest::newRow("slash") << static_cast<int>(Qt::Key_Slash) << u"/"_s;
+        QTest::newRow("comma") << static_cast<int>(Qt::Key_Comma) << u","_s;
+        QTest::newRow("semicolon") << static_cast<int>(Qt::Key_Semicolon) << u";"_s;
+        QTest::newRow("umlaut") << static_cast<int>(Qt::Key_Odiaeresis) << u"Ö"_s;
+        QTest::newRow("sharp s") << static_cast<int>(Qt::Key_ssharp) << u"ß"_s;
+        QTest::newRow("up") << static_cast<int>(Qt::Key_Up) << u"Up"_s;
     }
 
     void keyNamesRoundTrip()

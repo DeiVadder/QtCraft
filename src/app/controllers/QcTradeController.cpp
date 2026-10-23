@@ -71,12 +71,12 @@ double QcTradeController::levelProgress() const
     if (state.levelEnd <= state.levelStart) {
         return 1.0;
     }
-    return std::clamp(double(state.experience - state.levelStart) / double(state.levelEnd - state.levelStart), 0.0, 1.0);
+    return std::clamp(static_cast<double>(state.experience - state.levelStart) / static_cast<double>(state.levelEnd - state.levelStart), 0.0, 1.0);
 }
 
 void QcTradeController::select(int index)
 {
-    const int clamped = std::clamp(index, 0, std::max(0, int(m_offers.size()) - 1));
+    const int clamped = std::clamp(index, 0, std::max(0, static_cast<int>(m_offers.size()) - 1));
     if (clamped != m_selected) {
         m_selected = clamped;
         emit changed();
@@ -119,10 +119,10 @@ void QcTradeController::update()
                                         {u"uses"_s, offer.uses},
                                         {u"maxUses"_s, offer.maxUses},
                                         {u"soldOut"_s, offer.uses >= offer.maxUses},
-                                        {u"affordable"_s, trading.affordable(int(i), inventory)}});
+                                        {u"affordable"_s, trading.affordable(static_cast<int>(i), inventory)}});
         }
     }
-    m_selected = std::clamp(m_selected, 0, std::max(0, int(m_offers.size()) - 1));
+    m_selected = std::clamp(m_selected, 0, std::max(0, static_cast<int>(m_offers.size()) - 1));
     emit changed();
 }
 

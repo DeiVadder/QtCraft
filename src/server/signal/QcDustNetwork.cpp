@@ -41,13 +41,13 @@ public:
         : m_levels(std::move(inputs))
     {
         for (qsizetype i = 0; i < m_levels.size(); ++i) {
-            m_buckets[std::size_t(m_levels[i])].append(int(i));
+            m_buckets[static_cast<std::size_t>(m_levels[i])].append(static_cast<int>(i));
         }
     }
 
     [[nodiscard]] int of(int node) const { return m_levels[node]; }
     // The dust put into the bucket of `level` so far.
-    [[nodiscard]] const QList<int> &bucket(int level) const { return m_buckets[std::size_t(level)]; }
+    [[nodiscard]] const QList<int> &bucket(int level) const { return m_buckets[static_cast<std::size_t>(level)]; }
 
     // Gives `level` to the linked dust that has less and puts it into that level's bucket.
     void spread(const QList<int> &linked, int level)
@@ -55,7 +55,7 @@ public:
         for (const int node : linked) {
             if (m_levels[node] < level) {
                 m_levels[node] = level;
-                m_buckets[std::size_t(level)].append(node);
+                m_buckets[static_cast<std::size_t>(level)].append(node);
             }
         }
     }
@@ -144,7 +144,7 @@ QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seed
     QList<int> depth;
     for (const QcBlockPos &seed : seeds) {
         if (!index.contains(seed) && isDust(seed) && region.nodes.size() < maxNodes) {
-            index.insert(seed, int(region.nodes.size()));
+            index.insert(seed, static_cast<int>(region.nodes.size()));
             region.nodes.append(seed);
             depth.append(0);
         }
@@ -158,7 +158,7 @@ QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seed
         const QList<QcBlockPos> linked = links(region.nodes[next]);
         for (const QcBlockPos &pos : linked) {
             if (depth[next] < QcSignalDefinition::maxPower && !index.contains(pos) && region.nodes.size() < maxNodes) {
-                index.insert(pos, int(region.nodes.size()));
+                index.insert(pos, static_cast<int>(region.nodes.size()));
                 region.nodes.append(pos);
                 depth.append(depth[next] + 1);
             }

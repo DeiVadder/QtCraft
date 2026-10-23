@@ -32,7 +32,7 @@ private slots:
         QVERIFY(rate >= 8000 && rate <= 384000);
 
         auto buffer = std::make_shared<QcSampleBuffer>();
-        buffer->samples.assign(std::size_t(rate / 20), 0.5f);
+        buffer->samples.assign(static_cast<std::size_t>(rate / 20), 0.5f);
         buffer->sampleRate = rate;
         QcAudioMixer::VoiceId voice = 0;
         output.withMixer([&](QcAudioMixer &mixer) {

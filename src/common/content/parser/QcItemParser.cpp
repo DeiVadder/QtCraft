@@ -254,7 +254,7 @@ void ItemReader::parseBaseFields()
     m_item.enchantability = m_reader.integer(u"enchantability"_s, 0, 0, 100);
     m_item.attackDamage = m_reader.number(u"attackDamage"_s, 1.0, 0.0, 1000.0);
     // Whole food points; larger values (older content) fill the bar completely.
-    m_item.food = int(std::lround(std::min(m_reader.number(u"food"_s, 0.0, 0.0, 100.0), double(QcItemDefinition::maxFood))));
+    m_item.food = static_cast<int>(std::lround(std::min(m_reader.number(u"food"_s, 0.0, 0.0, 100.0), static_cast<double>(QcItemDefinition::maxFood))));
     m_item.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
     m_item.tags = QcContentFields::parseTags(m_json.value(u"tags"_s), m_namespace, m_reader);
     m_item.scoops = m_reader.boolean(u"scoops"_s, false);

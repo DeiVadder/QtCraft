@@ -18,11 +18,11 @@ struct QcInProcessTransport::Link
     // Precondition: mutex is held.
     void wake(int side)
     {
-        QcInProcessTransport *end = ends[std::size_t(side)];
-        if (!end || wakePending[std::size_t(side)]) {
+        QcInProcessTransport *end = ends[static_cast<std::size_t>(side)];
+        if (!end || wakePending[static_cast<std::size_t>(side)]) {
             return;
         }
-        wakePending[std::size_t(side)] = true;
+        wakePending[static_cast<std::size_t>(side)] = true;
         // Posted events of a destroyed receiver are discarded; `end` is valid now because the
         // destructor clears it under the same mutex.
         QMetaObject::invokeMethod(end, &QcInProcessTransport::drainInbox, Qt::QueuedConnection);
@@ -39,7 +39,7 @@ QcInProcessTransport::~QcInProcessTransport()
 {
     close();
     const std::scoped_lock lock(m_link->mutex);
-    m_link->ends[std::size_t(m_side)] = nullptr;
+    m_link->ends[static_cast<std::size_t>(m_side)] = nullptr;
 }
 
 std::pair<std::unique_ptr<QcInProcessTransport>, std::unique_ptr<QcInProcessTransport>> QcInProcessTransport::createPair()
@@ -58,7 +58,7 @@ void QcInProcessTransport::sendFrame(const QByteArray &frame)
         return;
     }
     const int peer = 1 - m_side;
-    m_link->inboxes[std::size_t(peer)].push_back(frame);
+    m_link->inboxes[static_cast<std::size_t>(peer)].push_back(frame);
     m_link->wake(peer);
 }
 
@@ -85,8 +85,8 @@ void QcInProcessTransport::drainInbox()
     bool open = true;
     {
         const std::scoped_lock lock(m_link->mutex);
-        frames = std::exchange(m_link->inboxes[std::size_t(m_side)], {});
-        m_link->wakePending[std::size_t(m_side)] = false;
+        frames = std::exchange(m_link->inboxes[static_cast<std::size_t>(m_side)], {});
+        m_link->wakePending[static_cast<std::size_t>(m_side)] = false;
         open = m_link->open;
     }
 

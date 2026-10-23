@@ -22,10 +22,10 @@ struct Limits
     int maxNamespaces = 64;
     // Problems kept per pack; the rest is counted in one line.
     int maxProblems = 100;
-    qint64 maxImageFileBytes = qint64(4) * 1024 * 1024;
-    qint64 maxSpecFileBytes = qint64(64) * 1024;
+    qint64 maxImageFileBytes = qint64{4} * 1024 * 1024;
+    qint64 maxSpecFileBytes = qint64{64} * 1024;
     // Decoded RGBA bytes of all images of one pack.
-    qint64 memoryBudget = qint64(192) * 1024 * 1024;
+    qint64 memoryBudget = qint64{192} * 1024 * 1024;
     // Images above this edge length are stored scaled down (the atlas never uses more, E-300).
     int maxStoredResolution = 256;
     // Vertical strips of animation frames: at most this many frames; the first is used.

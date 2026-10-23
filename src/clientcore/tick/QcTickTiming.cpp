@@ -4,13 +4,13 @@
 
 void QcTickTiming::record(qint64 lateNs)
 {
-    const double lateMs = double(std::max<qint64>(lateNs, 0)) / 1e6;
+    const double lateMs = static_cast<double>(std::max<qint64>(lateNs, 0)) / 1e6;
     const std::scoped_lock lock(m_mutex);
 
-    if (qsizetype(m_lateMs.size()) < maxSamples) {
-        m_lateMs.push_back(float(lateMs));
+    if (static_cast<qsizetype>(m_lateMs.size()) < maxSamples) {
+        m_lateMs.push_back(static_cast<float>(lateMs));
     } else {
-        m_lateMs[size_t(m_nextSample)] = float(lateMs);
+        m_lateMs[static_cast<size_t>(m_nextSample)] = static_cast<float>(lateMs);
         m_nextSample = (m_nextSample + 1) % maxSamples;
     }
 
@@ -37,15 +37,15 @@ QcTickTiming::Summary QcTickTiming::summary() const
         }
 
         result.ticks = m_ticks;
-        result.lateAverageMs = m_lateTotalMs / double(m_ticks);
+        result.lateAverageMs = m_lateTotalMs / static_cast<double>(m_ticks);
         result.lateMaxMs = m_lateMaxMs;
         sorted = m_lateMs;
     }
 
     // Nearest-rank percentile over the kept samples: the ceil(0.99 n)-th smallest.
     const size_t rank = (sorted.size() * 99 + 99) / 100 - 1;
-    std::ranges::nth_element(sorted, sorted.begin() + qsizetype(rank));
-    result.lateP99Ms = double(sorted[rank]);
+    std::ranges::nth_element(sorted, sorted.begin() + static_cast<qsizetype>(rank));
+    result.lateP99Ms = static_cast<double>(sorted[rank]);
     return result;
 }
 

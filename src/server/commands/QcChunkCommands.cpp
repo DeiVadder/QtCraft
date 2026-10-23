@@ -52,7 +52,7 @@ std::optional<QList<QcChunkPos>> QcChunkCommands::area(const QcCommandContext &c
     }
     const int width = std::abs(to->x - from->x) + 1;
     const int depth = std::abs(to->z - from->z) + 1;
-    if (qint64(width) * depth > maxArea) {
+    if (static_cast<qint64>(width) * depth > maxArea) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "At most %1 chunks at once"), {QString::number(maxArea)});
         return std::nullopt;
     }

@@ -57,9 +57,9 @@ void QcPoolPlacer::placeInCaves(QcChunk &chunk) const
             }
 
             // Cells on the chunk's edge never become liquid (their neighbours lie in other chunks).
-            const int x = 1 + int(random(1) * (QcWorld::chunkSize - 2));
-            const int z = 1 + int(random(2) * (QcWorld::chunkSize - 2));
-            const int startY = pool.minY + int(random(3) * (pool.maxY - pool.minY + 1));
+            const int x = 1 + static_cast<int>(random(1) * (QcWorld::chunkSize - 2));
+            const int z = 1 + static_cast<int>(random(2) * (QcWorld::chunkSize - 2));
+            const int startY = pool.minY + static_cast<int>(random(3) * (pool.maxY - pool.minY + 1));
             if (const std::optional<int> floorY = caveFloor(chunk, {x, startY, z}, pool.minY)) {
                 sink(chunk, pool, {x, *floorY, z}, attempt);
             }

@@ -79,7 +79,7 @@ private:
             return in.status() == QDataStream::Ok;
         };
         std::optional<QcComponentFrames::ReadComponents> components =
-            item ? QcComponentFrames::read(m_stream, {{quint16(Component::Hanging), QcEntityCodec::kindVersion, readFields}}) : std::nullopt;
+            item ? QcComponentFrames::read(m_stream, {{static_cast<quint16>(Component::Hanging), QcEntityCodec::kindVersion, readFields}}) : std::nullopt;
         if (!components || fields.type >= qcHangingTypeCount || fields.face >= qcBlockFaceCount || fields.rotation >= QcHanging::rotations) {
             return std::nullopt;
         }
@@ -107,15 +107,15 @@ private:
     {
         const std::optional<QcItemId> item = m_content.itemId(itemName);
         const QcItemDefinition *definition = item ? &m_content.item(*item) : nullptr;
-        if (!definition || !definition->hangs || definition->hangs->type != QcHangingType(fields.type)) {
+        if (!definition || !definition->hangs || definition->hangs->type != static_cast<QcHangingType>(fields.type)) {
             m_warnings.addOnce(u"hanging:"_s + itemName, u"%1: unknown frame or painting '%2' dropped (in this world reported only here)"_s.arg(m_path, itemName));
             return std::nullopt;
         }
 
         QcHangingEntity hanging;
         hanging.item = itemName;
-        hanging.hanging.type = QcHangingType(fields.type);
-        hanging.hanging.face = QcBlockFace(fields.face);
+        hanging.hanging.type = static_cast<QcHangingType>(fields.type);
+        hanging.hanging.face = static_cast<QcBlockFace>(fields.face);
         hanging.hanging.cell = {fields.x, fields.y, fields.z};
         hanging.hanging.rotation = fields.rotation;
         hanging.held = hanging.hanging.type == QcHangingType::ItemFrame ? fields.held : QcItemStack();
@@ -126,7 +126,7 @@ private:
                 m_warnings.addOnce(u"motif:"_s + fields.motif, u"%1: unknown painting motif '%2' dropped (in this world reported only here)"_s.arg(m_path, fields.motif));
                 return std::nullopt;
             }
-            hanging.hanging.motif = quint8(it - motifs.begin());
+            hanging.hanging.motif = static_cast<quint8>(it - motifs.begin());
             hanging.hanging.width = it->width;
             hanging.hanging.height = it->height;
         }
@@ -151,7 +151,7 @@ void write(QDataStream &stream, const QList<Entry> &hangings, const QcContentReg
     if (hangings.isEmpty()) {
         return;
     }
-    stream << quint32(hangings.size());
+    stream << static_cast<quint32>(hangings.size());
     for (const auto &[hanging, order] : hangings) {
         stream << hanging.item << order;
         QString motif;
@@ -161,9 +161,10 @@ void write(QDataStream &stream, const QList<Entry> &hangings, const QcContentReg
             }
         }
         QcComponentFrames::Writer components(stream, hanging.kept.components);
-        components.add(quint16(Component::Hanging), QcEntityCodec::kindVersion, [&](QDataStream &out) {
+        components.add(static_cast<quint16>(Component::Hanging), QcEntityCodec::kindVersion, [&](QDataStream &out) {
             const QcBlockPos cell = hanging.hanging.cell;
-            out << quint8(hanging.hanging.type) << quint8(hanging.hanging.face) << qint32(cell.x) << qint32(cell.y) << qint32(cell.z) << motif
+            out << static_cast<quint8>(hanging.hanging.type) << static_cast<quint8>(hanging.hanging.face) << static_cast<qint32>(cell.x)
+                << static_cast<qint32>(cell.y) << static_cast<qint32>(cell.z) << motif
                 << hanging.hanging.rotation;
             QcSaveFile::writeStack(out, hanging.held, content);
         });

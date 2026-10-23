@@ -340,7 +340,7 @@ private slots:
     {
         const QcContentRegistry &content = *m_content;
         int turnedStates = 0;
-        for (QcBlockId state = 0; qsizetype(state) < content.stateCount(); ++state) {
+        for (QcBlockId state = 0; static_cast<qsizetype>(state) < content.stateCount(); ++state) {
             const QcBlockId once = QcStateRotation::turned(content, state, 1);
             turnedStates += once != state ? 1 : 0;
             QCOMPARE(QcStateRotation::turned(content, once, 3), state);

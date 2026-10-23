@@ -35,7 +35,7 @@ constexpr std::array<QStringView, 22> overlayNames{
     u"admin",
     u"enchanting",
 };
-static_assert(overlayNames.size() == std::size_t(QcScreenState::Overlay::Enchanting) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Enchanting) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -55,7 +55,7 @@ QcScreenState::QcScreenState(const QcSessionParts &parts, QObject *parent)
 
 QString QcScreenState::overlayName(Overlay overlay)
 {
-    const auto index = std::size_t(overlay);
+    const auto index = static_cast<std::size_t>(overlay);
     return index < overlayNames.size() ? overlayNames[index].toString() : QString();
 }
 
@@ -84,7 +84,7 @@ std::optional<QcScreenState::Overlay> QcScreenState::overlayFromName(QStringView
 {
     for (std::size_t index = 0; index < overlayNames.size(); ++index) {
         if (overlayNames[index] == name) {
-            return Overlay(index);
+            return static_cast<Overlay>(index);
         }
     }
     return std::nullopt;
@@ -120,8 +120,8 @@ void QcScreenState::setInputEnabled(bool enabled)
 
 void QcScreenState::setOverlay(Overlay overlay)
 {
-    if (overlayNames.size() <= std::size_t(overlay)) {
-        qCWarning(lcGame) << "Ignoring unknown overlay" << int(overlay);
+    if (overlayNames.size() <= static_cast<std::size_t>(overlay)) {
+        qCWarning(lcGame) << "Ignoring unknown overlay" << static_cast<int>(overlay);
         return;
     }
     // The same screen again changes nothing (screens set it on every click of their buttons).

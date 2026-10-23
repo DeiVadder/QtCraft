@@ -26,14 +26,14 @@ QJsonObject QcControlGamepadCommands::padJson(const QcGamepadInfo &pad) const
     const QcGamepadState state = m_source.state(pad.id);
     QJsonArray pressed;
     for (std::size_t i = 0; i < qcGamepadButtonCount; ++i) {
-        if (state.pressed(QcGamepadButton(i))) {
-            pressed.append(QcGamepadNames::button(QcGamepadButton(i)));
+        if (state.pressed(static_cast<QcGamepadButton>(i))) {
+            pressed.append(QcGamepadNames::button(static_cast<QcGamepadButton>(i)));
         }
     }
 
     QJsonObject axes;
     for (std::size_t i = 0; i < qcGamepadAxisCount; ++i) {
-        axes.insert(QcGamepadNames::axis(QcGamepadAxis(i)), double(state.axis(QcGamepadAxis(i))));
+        axes.insert(QcGamepadNames::axis(static_cast<QcGamepadAxis>(i)), static_cast<double>(state.axis(static_cast<QcGamepadAxis>(i))));
     }
     return {{u"pad"_s, pad.id},
             {u"name"_s, pad.name},
@@ -104,7 +104,7 @@ std::optional<QString> QcControlGamepadCommands::applyChanges(const QJsonObject 
         if (!axis || !it.value().isDouble()) {
             return u"Axis '%1' unknown or not a number"_s.arg(it.key());
         }
-        state.setAxis(*axis, float(it.value().toDouble()));
+        state.setAxis(*axis, static_cast<float>(it.value().toDouble()));
     }
     return std::nullopt;
 }

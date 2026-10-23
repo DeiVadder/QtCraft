@@ -15,7 +15,7 @@ QcPhysics::Steering QcGuardianBrain::think(QcCreature &mob, const QcMobDefinitio
     // It looks once in sightCheckTicks like hostile creatures, among the players within its leash
     // only: the nearest of them is its target, one who left the leash is let go.
     const bool mayPlan = thinkTicks <= 1;
-    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
+    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < static_cast<quint64>(std::max(1, thinkTicks));
     QList<QcMobManager::PlayerView> leashed;
     for (const QcMobManager::PlayerView &player : *context.players) {
         if (mob.guards->distanceTo(player.position) <= definition.guardLeash) {
@@ -46,8 +46,8 @@ void QcGuardianBrain::keepToZone(QcCreature &mob, const QcGuardPost &post, doubl
     const bool leaves = strolling && post.distanceTo(path.goal) > 0.0;
     const bool outside = !strolling && post.distanceTo(mob.motion.position) > homeSlack;
     if (leaves || outside) {
-        const QcVec3 goal{post.min.x + random().bounded(double(post.max.x - post.min.x + 1)), double(post.min.y),
-                          post.min.z + random().bounded(double(post.max.z - post.min.z + 1))};
+        const QcVec3 goal{post.min.x + random().bounded(static_cast<double>(post.max.x - post.min.x + 1)), static_cast<double>(post.min.y),
+                          post.min.z + random().bounded(static_cast<double>(post.max.z - post.min.z + 1))};
         const QcVec3 to = outside ? post.centre() : goal;
         mob.path.clear();
         QcMobNavigator::setGoal(mob, QcMobPath::Purpose::Wander, to, 1);

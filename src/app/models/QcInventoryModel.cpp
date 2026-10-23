@@ -40,7 +40,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     } else if (row < resultRow) {
         stack = m_craftingGrid.value(row - gridFirstRow);
     } else if (row >= equipmentFirstRow) {
-        stack = m_equipment.stacks[std::size_t(row - equipmentFirstRow)];
+        stack = m_equipment.stacks[static_cast<std::size_t>(row - equipmentFirstRow)];
     } else if (row >= machineFirstRow) {
         stack = m_machine.value(row - machineFirstRow);
     }
@@ -64,7 +64,7 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case IconRole:
         return QcItemIconUrls::url(item.name);
     case DurabilityRole:
-        return item.durability > 0 ? 1.0 - double(stack.damage) / item.durability : -1.0;
+        return item.durability > 0 ? 1.0 - static_cast<double>(stack.damage) / item.durability : -1.0;
     case TooltipRole: {
         QStringList lines = tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack))
                                 .split(u'\n');

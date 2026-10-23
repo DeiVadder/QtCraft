@@ -437,7 +437,7 @@ private slots:
         QVERIFY2(QTest::qWaitFor([&] { return heldCount() == 4; }, timeoutMs), qPrintable(QString::number(heldCount())));
         QVERIFY(setPad({{u"east"_s, true}}));
         ticks(1);
-        QTest::qWait(int(QcGamepadMapping::dropStackMs) + 50);
+        QTest::qWait(static_cast<int>(QcGamepadMapping::dropStackMs) + 50);
         ticks(1);
         QVERIFY(setPad({{u"east"_s, false}}));
         QVERIFY2(QTest::qWaitFor([&] { return heldCount() == 0; }, timeoutMs), qPrintable(QString::number(heldCount())));
@@ -446,9 +446,9 @@ private slots:
         QVERIFY(QTest::qWaitFor([&] { return status().value(u"gameMode"_s).toString() == u"creative"_s; }, timeoutMs));
         chat(u"/setblock ~2 ~ ~ oak_planks"_s);
         const QcVec3 feet = position();
-        const int x = int(std::floor(feet.x)) + 2;
-        const int y = int(std::floor(feet.y));
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x)) + 2;
+        const int y = static_cast<int>(std::floor(feet.y));
+        const int z = static_cast<int>(std::floor(feet.z));
         QVERIFY(QTest::qWaitFor([&] {
             return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString() == u"qtcraft:oak_planks"_s;
         }, timeoutMs));
@@ -494,9 +494,9 @@ private slots:
         chat(u"/gamemode creative"_s);
         chat(u"/setblock ~2 ~ ~ dirt"_s);
         const QcVec3 feet = position();
-        const int x = int(std::floor(feet.x)) + 2;
-        const int y = int(std::floor(feet.y));
-        const int z = int(std::floor(feet.z));
+        const int x = static_cast<int>(std::floor(feet.x)) + 2;
+        const int y = static_cast<int>(std::floor(feet.y));
+        const int z = static_cast<int>(std::floor(feet.z));
         const auto blockAt = [&] { return request({{u"cmd"_s, u"block"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}}).value(u"block"_s).toString(); };
         QVERIFY(QTest::qWaitFor([&] { return blockAt() == u"qtcraft:dirt"_s; }, timeoutMs));
         request({{u"cmd"_s, u"lookAt"_s}, {u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}});

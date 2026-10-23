@@ -50,7 +50,7 @@ double lowestY(const QcEntityMesh &mesh)
 {
     double lowest = 1e9;
     for (const QcEntityVertex &vertex : mesh.vertices) {
-        lowest = std::min(lowest, double(vertex.y));
+        lowest = std::min(lowest, static_cast<double>(vertex.y));
     }
     return lowest;
 }
@@ -236,7 +236,7 @@ private slots:
         QcEntityMesher::appendModel(big, {modelLook, nullptr}, QcAnimator::animateBody({}, 0.0), placement, anyUv);
         double top = 0.0;
         for (const QcEntityVertex &vertex : std::as_const(big.vertices)) {
-            top = std::max(top, double(vertex.y));
+            top = std::max(top, static_cast<double>(vertex.y));
         }
         QVERIFY(std::abs(top - (64.0 + 3.6)) < 1e-4);
     }
@@ -266,7 +266,7 @@ private slots:
         const auto minZ = [](const QcEntityMesh &mesh, qsizetype firstVertex) {
             double z = 1e9;
             for (qsizetype i = firstVertex; i < mesh.vertices.size(); ++i) {
-                z = std::min(z, double(mesh.vertices[i].z));
+                z = std::min(z, static_cast<double>(mesh.vertices[i].z));
             }
             return z;
         };
@@ -295,7 +295,7 @@ private slots:
         // Looking north (-Z): the arm lies ahead, to the right and below the eyes, within reach.
         QcVec3 centre;
         for (const QcEntityVertex &vertex : std::as_const(mesh.vertices)) {
-            centre += QcVec3{vertex.x, vertex.y, vertex.z} * (1.0 / double(mesh.vertices.size()));
+            centre += QcVec3{vertex.x, vertex.y, vertex.z} * (1.0 / static_cast<double>(mesh.vertices.size()));
         }
         QVERIFY(centre.z < 0.0);
         QVERIFY(centre.x > 0.0);
@@ -307,7 +307,7 @@ private slots:
         QcEntityMesher::appendHand(east, {modelLook, nullptr}, {}, {eye, 90.0, 0.0, 1.0f}, anyUv);
         QcVec3 eastCentre;
         for (const QcEntityVertex &vertex : std::as_const(east.vertices)) {
-            eastCentre += QcVec3{vertex.x, vertex.y, vertex.z} * (1.0 / double(east.vertices.size()));
+            eastCentre += QcVec3{vertex.x, vertex.y, vertex.z} * (1.0 / static_cast<double>(east.vertices.size()));
         }
         QVERIFY(eastCentre.x > 0.0);
         QVERIFY(eastCentre.z > 0.0);

@@ -45,8 +45,8 @@ private:
     static Survey survey(const QcTerrainGenerator &generator, qint64 seed, int reach)
     {
         Survey result;
-        const int offsetX = int(seed % 97) * 10 - 480;
-        const int offsetZ = int(seed % 89) * 10 - 440;
+        const int offsetX = static_cast<int>(seed % 97) * 10 - 480;
+        const int offsetZ = static_cast<int>(seed % 89) * 10 - 440;
         for (int cz = offsetZ - reach; cz < offsetZ + reach; ++cz) {
             for (int cx = offsetX - reach; cx < offsetX + reach; ++cx) {
                 result.chunks += 1;
@@ -200,7 +200,7 @@ private slots:
                 qInfo("seed %lld: first lake in chunk %d,%d, level %d", seed, first.chunk.x, first.chunk.z, first.level);
             }
             chunks += found.chunks;
-            lakes += int(found.lakes.size());
+            lakes += static_cast<int>(found.lakes.size());
             for (qsizetype i = 0; i < found.lakes.size(); ++i) {
                 for (qsizetype j = i + 1; j < found.lakes.size(); ++j) {
                     const QcChunkPos a = found.lakes[i].chunk;
@@ -210,7 +210,7 @@ private slots:
             }
         }
 
-        const double perLake = lakes > 0 ? double(chunks) / lakes : 0.0;
+        const double perLake = lakes > 0 ? static_cast<double>(chunks) / lakes : 0.0;
         qInfo("%d lava lakes in %d chunks: one per %.0f chunks; nearest two %d chunks apart", lakes, chunks, perLake, nearest);
         QVERIFY2(perLake >= 130.0 && perLake <= 360.0, qPrintable(QString::number(perLake)));
         // The tried chunks of two squares keep `spacing` chunks between them.
@@ -245,7 +245,7 @@ private slots:
                 checked += 1;
             }
         }
-        qInfo("%d lakes checked, %lld different sizes", checked, qint64(sizes.size()));
+        qInfo("%d lakes checked, %lld different sizes", checked, static_cast<qint64>(sizes.size()));
         QVERIFY(checked >= 6);
         QVERIFY(sizes.size() >= 3);
     }

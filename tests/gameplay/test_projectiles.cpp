@@ -176,7 +176,7 @@ private slots:
     {
         join();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const QcVec3 target{m_feet.x + 3.5, double(m_feet.y), m_feet.z - 2.5};
+        const QcVec3 target{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z - 2.5};
         const quint32 mob = m_server->entities().creatures().spawn(pig, target, m_server->entities().newId());
         const double before = m_server->entities().creatures().find(mob)->health;
 
@@ -211,7 +211,7 @@ private slots:
         player().health = QcServerClient::maxHealth;
         player().hurt.clear();
         player().equipment.at(QcEquipmentSlot::Chest) = {item("qtcraft:diamond_chestplate"), 1, 0};
-        player().motion.position = {m_feet.x + 0.5, double(m_feet.y), m_feet.z + 0.5};
+        player().motion.position = {m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QVERIFY(shoot(from, {60.0, 0.0, 0.0}));
         ticks(2);
         const int points = QcArmour::points(*m_content, player().equipment);
@@ -246,7 +246,7 @@ private slots:
         QCOMPARE(projectiles().all().front().stuckIn.y, m_feet.y - 1);
 
         // It goes after despawnSeconds.
-        ticks(int(std::lround((arrow().despawnSeconds - projectiles().all().front().age) / dt)) - 2);
+        ticks(static_cast<int>(std::lround((arrow().despawnSeconds - projectiles().all().front().age) / dt)) - 2);
         QCOMPARE(projectiles().all().size(), 1);
         ticks(3);
         QVERIFY(projectiles().all().isEmpty());

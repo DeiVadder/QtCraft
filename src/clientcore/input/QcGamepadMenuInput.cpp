@@ -179,7 +179,7 @@ void QcGamepadMenuInput::advance(qint64 nowMs)
         scroll += scrollAxis(state);
     }
     if (scroll != 0.0f) {
-        emit scrolled(scroll * scrollSpeed * float(std::min<qint64>(elapsedMs, 100)) / 1000.0f);
+        emit scrolled(scroll * scrollSpeed * static_cast<float>(std::min<qint64>(elapsedMs, 100)) / 1000.0f);
     }
 }
 

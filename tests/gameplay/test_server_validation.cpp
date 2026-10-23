@@ -55,7 +55,7 @@ private slots:
         QCOMPARE(m_server->items().items().size(), 1);
 
         // The player falls into the hole and lands on the item.
-        idle(int(QcItemEntityManager::pickupDelay * QcPhysics::tickRate) + 10);
+        idle(static_cast<int>(QcItemEntityManager::pickupDelay * QcPhysics::tickRate) + 10);
         QCOMPARE(countOf(item("qtcraft:dirt")), 1);
         QVERIFY(m_server->items().items().isEmpty());
     }
@@ -205,7 +205,7 @@ private slots:
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
         const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s),
-                                                    {pit.x + 0.5, double(pit.y - 1), pit.z + 0.5}, 500);
+                                                    {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
         ticks(1);
         QVERIFY(m_client->entities.contains(pig));
         // Bare hands deal 1 damage, the pig has 10 health; hits closer than 0.5 s apart do nothing.
@@ -299,12 +299,12 @@ private slots:
         idle(100);
         QCOMPARE(m_client->health, 13.0);
         chat(u"/feed 18"_s);
-        idle(int(QcHunger::regenerationInterval * QcPhysics::tickRate) + 1);
+        idle(static_cast<int>(QcHunger::regenerationInterval * QcPhysics::tickRate) + 1);
         QCOMPARE(m_client->health, 14.0);
 
         // Starving costs one point every 4 s down to one point: 13 points take 52 s.
         chat(u"/feed 0"_s);
-        idle(int(13 * QcHunger::starvationInterval * QcPhysics::tickRate) + 10);
+        idle(static_cast<int>(13 * QcHunger::starvationInterval * QcPhysics::tickRate) + 10);
         QCOMPARE(m_client->health, 1.0);
         QVERIFY(!m_client->dead);
         idle(200);
@@ -567,7 +567,7 @@ private slots:
                               })->id;
 
         const QcVec3 p = bob.motion.position;
-        const QcBlockPos feet{int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        const QcBlockPos feet{static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
         for (int dy = -1; dy >= -10; --dy) {
             m_server->world().setBlock(feet.offset(0, dy, 0), qcAirBlockId);
         }

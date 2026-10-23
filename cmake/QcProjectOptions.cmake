@@ -16,8 +16,9 @@ if(MSVC)
     target_compile_options(qc_project_options INTERFACE /W4 /WX /EHs-c- /permissive- /wd4702)
     target_compile_definitions(qc_project_options INTERFACE _HAS_EXCEPTIONS=0)
 else()
+    # -Wold-style-cast: casts only as named casts (ES.49, E-865); MSVC has no such warning.
     target_compile_options(qc_project_options INTERFACE
-        -Wall -Wextra -Wpedantic -Werror
+        -Wall -Wextra -Wpedantic -Wold-style-cast -Werror
         -fno-exceptions)
 endif()
 

@@ -21,7 +21,7 @@ namespace {
 template<typename Definition, typename Write>
 void writeList(QDataStream &stream, const QList<Definition> &list, Write write)
 {
-    stream << quint32(list.size());
+    stream << static_cast<quint32>(list.size());
     for (const Definition &definition : list) {
         write(stream, definition);
     }
@@ -37,7 +37,7 @@ bool plausibleVector(const QcVec3 &v)
 
 void writeBoxes(QDataStream &stream, const QList<QcModelBox> &boxes)
 {
-    stream << quint32(boxes.size());
+    stream << static_cast<quint32>(boxes.size());
     for (const QcModelBox &box : boxes) {
         stream << box.from.x << box.from.y << box.from.z << box.to.x << box.to.y << box.to.z << box.slot;
     }
@@ -65,22 +65,22 @@ void writeBoxes(QDataStream &stream, const QList<QcModelBox> &boxes)
 
 void writeRecipe(QDataStream &stream, const QcRecipeDefinition &recipe)
 {
-    stream << recipe.name << recipe.shaped << quint32(recipe.pattern.size());
+    stream << recipe.name << recipe.shaped << static_cast<quint32>(recipe.pattern.size());
     for (const QString &row : recipe.pattern) {
         stream << row;
     }
 
-    stream << quint32(recipe.keys.size());
+    stream << static_cast<quint32>(recipe.keys.size());
     for (const auto &[key, item] : recipe.keys) {
         stream << key << item;
     }
 
-    stream << quint32(recipe.ingredients.size());
+    stream << static_cast<quint32>(recipe.ingredients.size());
     for (const QString &ingredient : recipe.ingredients) {
         stream << ingredient;
     }
 
-    stream << recipe.resultItem << qint32(recipe.resultCount);
+    stream << recipe.resultItem << static_cast<qint32>(recipe.resultCount);
 }
 
 // Texts per language, then per key.
@@ -88,9 +88,9 @@ using Translations = QHash<QString, QHash<QString, QString>>;
 
 void writeTranslations(QDataStream &stream, const Translations &translations)
 {
-    stream << quint32(translations.size());
+    stream << static_cast<quint32>(translations.size());
     for (auto language = translations.constBegin(); language != translations.constEnd(); ++language) {
-        stream << language.key() << quint32(language->size());
+        stream << language.key() << static_cast<quint32>(language->size());
         for (auto entry = language->constBegin(); entry != language->constEnd(); ++entry) {
             stream << entry.key() << entry.value();
         }
@@ -99,19 +99,19 @@ void writeTranslations(QDataStream &stream, const Translations &translations)
 
 void writeModel(QDataStream &stream, const QcModelDefinition &model)
 {
-    stream << model.name << quint32(model.bones.size());
+    stream << model.name << static_cast<quint32>(model.bones.size());
     for (const QcModelBone &bone : model.bones) {
-        stream << bone.name << quint8(bone.role) << bone.pivot.x << bone.pivot.y << bone.pivot.z;
+        stream << bone.name << static_cast<quint8>(bone.role) << bone.pivot.x << bone.pivot.y << bone.pivot.z;
         writeBoxes(stream, bone.boxes);
     }
 }
 
 void writeAppearance(QDataStream &stream, const QcAppearanceDefinition &appearance)
 {
-    stream << appearance.name << appearance.translationKey << quint8(appearance.kind) << appearance.playable
-           << quint32(appearance.layers.size());
+    stream << appearance.name << appearance.translationKey << static_cast<quint8>(appearance.kind) << appearance.playable
+           << static_cast<quint32>(appearance.layers.size());
     for (const QcAppearanceLayer &layer : appearance.layers) {
-        stream << layer.slot << layer.texture << quint8(layer.tint);
+        stream << layer.slot << layer.texture << static_cast<quint8>(layer.tint);
     }
     writeBoxes(stream, appearance.boxes);
     stream << appearance.cape.width << appearance.cape.length << appearance.cape.thickness << appearance.cape.offset;
@@ -119,10 +119,10 @@ void writeAppearance(QDataStream &stream, const QcAppearanceDefinition &appearan
 
 void writeSound(QDataStream &stream, const QcSoundDefinition &sound)
 {
-    stream << sound.name << quint8(sound.bus) << sound.volume << sound.pitchVariation << qint32(sound.variants) << sound.loop
-           << sound.range << quint32(sound.layers.size());
+    stream << sound.name << static_cast<quint8>(sound.bus) << sound.volume << sound.pitchVariation << static_cast<qint32>(sound.variants) << sound.loop
+           << sound.range << static_cast<quint32>(sound.layers.size());
     for (const QcSoundLayer &layer : sound.layers) {
-        stream << quint8(layer.wave) << layer.frequency << layer.endFrequency << layer.start << layer.duration << layer.attack
+        stream << static_cast<quint8>(layer.wave) << layer.frequency << layer.endFrequency << layer.start << layer.duration << layer.attack
                << layer.curve << layer.gain << layer.lowpass << layer.highpass << layer.tremoloRate << layer.tremoloDepth
                << layer.density;
     }
@@ -303,7 +303,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         QcModelBone bone;
         quint8 role = 0;
         stream >> bone.name >> role >> bone.pivot.x >> bone.pivot.y >> bone.pivot.z;
-        if (role > quint8(QcBoneRole::LeftLeg) || !plausibleVector(bone.pivot)) {
+        if (role > static_cast<quint8>(QcBoneRole::LeftLeg) || !plausibleVector(bone.pivot)) {
             return std::nullopt;
         }
         std::optional<QList<QcModelBox>> boxes = readBoxes(stream, QcModelDefinition::maxBoxesPerBone);
@@ -312,7 +312,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         }
         bone.boxes = std::move(*boxes);
 
-        bone.role = QcBoneRole(role);
+        bone.role = static_cast<QcBoneRole>(role);
         model.bones.append(std::move(bone));
     }
     return stream.status() == QDataStream::Ok ? std::optional(std::move(model)) : std::nullopt;
@@ -324,7 +324,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
 
     quint8 kind = 0;
     stream >> appearance.name >> appearance.translationKey >> kind >> appearance.playable;
-    if (kind > quint8(QcAppearanceDefinition::Kind::Cape)) {
+    if (kind > static_cast<quint8>(QcAppearanceDefinition::Kind::Cape)) {
         return std::nullopt;
     }
     const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcAppearanceDefinition::maxLayers);
@@ -333,16 +333,16 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     }
     const quint32 layerCount = *layerCountRead;
 
-    appearance.kind = QcAppearanceDefinition::Kind(kind);
+    appearance.kind = static_cast<QcAppearanceDefinition::Kind>(kind);
 
     for (quint32 l = 0; l < layerCount; ++l) {
         QcAppearanceLayer layer;
         quint8 tint = 0;
         stream >> layer.slot >> layer.texture >> tint;
-        if (tint > quint8(QcTint::Pants)) {
+        if (tint > static_cast<quint8>(QcTint::Pants)) {
             return std::nullopt;
         }
-        layer.tint = QcTint(tint);
+        layer.tint = static_cast<QcTint>(tint);
         appearance.layers.append(std::move(layer));
     }
     std::optional<QList<QcModelBox>> boxes = readBoxes(stream, QcAppearanceDefinition::maxBoxes);
@@ -384,7 +384,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
     }
     const quint32 layerCount = *layerCountRead;
 
-    sound.bus = QcSoundBus(bus);
+    sound.bus = static_cast<QcSoundBus>(bus);
     sound.variants = variants;
 
     for (quint32 l = 0; l < layerCount; ++l) {
@@ -392,7 +392,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         quint8 wave = 0;
         stream >> wave >> layer.frequency >> layer.endFrequency >> layer.start >> layer.duration >> layer.attack >> layer.curve
             >> layer.gain >> layer.lowpass >> layer.highpass >> layer.tremoloRate >> layer.tremoloDepth >> layer.density;
-        layer.wave = QcSoundWave(wave);
+        layer.wave = static_cast<QcSoundWave>(wave);
         sound.layers.append(layer);
     }
 
@@ -504,7 +504,7 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
 void writeEffect(QDataStream &stream, const QcEffectDefinition &effect)
 {
     stream << effect.name << effect.translationKey << effect.icon << effect.colour << effect.tintsHearts << effect.damage
-           << qint32(effect.periodTicks) << effect.minHealth << effect.speed;
+           << static_cast<qint32>(effect.periodTicks) << effect.minHealth << effect.speed;
 }
 
 [[nodiscard]] QcStatus readEffects(QDataStream &stream, QcContentRegistry &registry)
@@ -555,7 +555,7 @@ void QcContentSerializer::write(const QcContentRegistry &content, QDataStream &s
     writeList(stream, content.assets().models(), writeModel);
     writeList(stream, content.assets().appearances(), writeAppearance);
     writeList(stream, content.smeltingRecipes() + content.stonecuttingRecipes(), [](QDataStream &out, const QcSmeltingRecipe &recipe) {
-        out << recipe.name << recipe.category << recipe.kind << recipe.inputItem << recipe.resultItem << qint32(recipe.resultCount)
+        out << recipe.name << recipe.category << recipe.kind << recipe.inputItem << recipe.resultItem << static_cast<qint32>(recipe.resultCount)
             << recipe.seconds;
     });
     writeList(stream, content.assets().sounds(), writeSound);

@@ -47,7 +47,7 @@ struct Listing
         listing.files.append(root.relativeFilePath(info.filePath()));
         listing.bytes += info.size();
         if (listing.bytes > maxWorldBytes) {
-            return qcError(u"The world is larger than %1 MB"_s.arg(maxWorldBytes / (qint64(1024) * 1024)));
+            return qcError(u"The world is larger than %1 MB"_s.arg(maxWorldBytes / (qint64{1024} * 1024)));
         }
     }
     return listing;
@@ -92,8 +92,10 @@ QString freeTarget(const QDir &root, const QString &base)
 [[nodiscard]] bool hardLink(const QString &from, const QString &to)
 {
 #ifdef Q_OS_WIN
+    // NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast): QString stores UTF-16, which is wchar_t on Windows
     return CreateHardLinkW(reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(to).utf16()),
                            reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(from).utf16()), nullptr) != 0;
+    // NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
 #else
     return ::link(QFile::encodeName(from).constData(), QFile::encodeName(to).constData()) == 0;
 #endif
@@ -152,7 +154,7 @@ bool isValidLabel(const QString &label)
 
     const QStorageInfo storage(root);
     if (storage.isValid() && storage.bytesAvailable() < listing->bytes + reserveBytes) {
-        return qcError(u"Not enough free disk space for the backup (%1 MB needed)"_s.arg((listing->bytes + reserveBytes) / (qint64(1024) * 1024)));
+        return qcError(u"Not enough free disk space for the backup (%1 MB needed)"_s.arg((listing->bytes + reserveBytes) / (qint64{1024} * 1024)));
     }
 
     QString base = u"%1-%2"_s.arg(QFileInfo(worldDirectory).fileName(), now.toString(u"yyyyMMdd-HHmmss"_s));
@@ -197,7 +199,7 @@ bool isValidLabel(const QString &label)
         QDir(incomplete).removeRecursively();
         return qcError(problem);
     }
-    return Summary{snapshot.target, int(snapshot.files.size()), snapshot.bytes};
+    return Summary{snapshot.target, static_cast<int>(snapshot.files.size()), snapshot.bytes};
 }
 
 [[nodiscard]] QcResult<Summary> copy(const QString &worldDirectory, const QString &root, const QString &label, const QDateTime &now)

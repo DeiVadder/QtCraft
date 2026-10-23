@@ -15,7 +15,7 @@ QString QcConnectionLimiter::sourceOf(const QHostAddress &address)
 
     // The first 64 bits; the rest is the interface, chosen freely by the host.
     Q_IPV6ADDR bytes = address.toIPv6Address();
-    std::fill(std::begin(bytes.c) + 8, std::end(bytes.c), quint8(0));
+    std::fill(std::begin(bytes.c) + 8, std::end(bytes.c), quint8{0});
     return QHostAddress(bytes).toString() + u"/64";
 }
 
@@ -39,7 +39,7 @@ bool QcConnectionLimiter::admit(const QString &address, qint64 nowMs)
         bucket = m_buckets.insert(address, {m_limits.burst, nowMs});
     }
 
-    const double refill = double(std::max<qint64>(0, nowMs - bucket->refilledAt)) * 1e-3 * m_limits.perSecond;
+    const double refill = static_cast<double>(std::max<qint64>(0, nowMs - bucket->refilledAt)) * 1e-3 * m_limits.perSecond;
     bucket->tokens = std::min(m_limits.burst, bucket->tokens + refill);
     bucket->refilledAt = nowMs;
     if (bucket->tokens < 1.0) {
@@ -68,7 +68,7 @@ void QcConnectionLimiter::closed(const QString &address)
 void QcConnectionLimiter::forgetFullBuckets(qint64 nowMs)
 {
     m_buckets.removeIf([this, nowMs](QHash<QString, Bucket>::iterator it) {
-        const double tokens = it->tokens + double(std::max<qint64>(0, nowMs - it->refilledAt)) * 1e-3 * m_limits.perSecond;
+        const double tokens = it->tokens + static_cast<double>(std::max<qint64>(0, nowMs - it->refilledAt)) * 1e-3 * m_limits.perSecond;
         return tokens >= m_limits.burst && !m_openPerAddress.contains(it.key());
     });
 

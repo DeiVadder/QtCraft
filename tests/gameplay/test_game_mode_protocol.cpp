@@ -24,7 +24,7 @@ QByteArray gameModeFrame(quint8 value)
     QDataStream stream(&frame, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_6_8);
     // Two empty adventure allow-lists follow the mode (decision E-735).
-    stream << quint16(QcMessage(QcMsg::GameMode{}).index()) << value << quint32(0) << quint32(0);
+    stream << static_cast<quint16>(QcMessage(QcMsg::GameMode{}).index()) << value << quint32{0} << quint32{0};
     return frame;
 }
 
@@ -69,15 +69,15 @@ private slots:
         QByteArray frame;
         QDataStream stream(&frame, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
-        stream << quint16(QcMessage(QcMsg::GameMode{}).index()) << quint8(2) << quint32(QcAdventureRules::maxItems + 1);
+        stream << static_cast<quint16>(QcMessage(QcMsg::GameMode{}).index()) << quint8{2} << static_cast<quint32>(QcAdventureRules::maxItems + 1);
         QVERIFY(!QcProtocol::decode(frame, QcProtocol::Peer::Server));
 
         // A name longer than the limit.
         QByteArray named;
         QDataStream out(&named, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_6_8);
-        out << quint16(QcMessage(QcMsg::GameMode{}).index()) << quint8(2) << quint32(1) << QString(QcAdventureRules::maxNameLength + 1, u'x')
-            << quint32(1) << u"qtcraft:stone"_s << quint32(0);
+        out << static_cast<quint16>(QcMessage(QcMsg::GameMode{}).index()) << quint8{2} << quint32{1} << QString(QcAdventureRules::maxNameLength + 1, u'x')
+            << quint32{1} << u"qtcraft:stone"_s << quint32{0};
         QVERIFY(!QcProtocol::decode(named, QcProtocol::Peer::Server));
     }
 

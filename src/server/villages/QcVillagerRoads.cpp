@@ -12,7 +12,7 @@ constexpr std::array<std::pair<int, int>, 8> directions{{{1, 0}, {-1, 0}, {0, 1}
 
 quint64 columnKey(int x, int z)
 {
-    return (quint64(quint32(x)) << 32) | quint32(z);
+    return (static_cast<quint64>(static_cast<quint32>(x)) << 32) | static_cast<quint32>(z);
 }
 
 bool withinReach(QcBlockPos a, QcBlockPos b, int reach)
@@ -44,15 +44,15 @@ std::optional<QcBlockPos> QcVillagerRoads::nextLeg(const QcVillagePlan &plan, Qc
         const QcBlockPos cell = graph.cells[i];
         const int distance = graph.distance[i];
         if (distance >= 0 && distance < bestDistance && withinReach(cell, from, legReach) && std::abs(cell.y - from.y) <= legHeight) {
-            best = int(i);
+            best = static_cast<int>(i);
             bestDistance = distance;
         }
     }
-    const int own = graph.distance[std::size_t(start)];
+    const int own = graph.distance[static_cast<std::size_t>(start)];
     if (best < 0 || (own >= 0 && bestDistance >= own)) {
         return std::nullopt;
     }
-    return graph.cells[std::size_t(best)];
+    return graph.cells[static_cast<std::size_t>(best)];
 }
 
 std::optional<QcBlockPos> QcVillagerRoads::wayOutOfWater(const QcVillagePlan &plan, QcBlockPos from)
@@ -95,7 +95,7 @@ std::shared_ptr<QcVillagerRoads::Graph> QcVillagerRoads::build(const QcVillagePl
     const auto add = [&](QcBlockPos ground) {
         const QcBlockPos stand = ground.offset(0, 1, 0);
         if (!index.contains(columnKey(stand.x, stand.z))) {
-            index.insert(columnKey(stand.x, stand.z), int(graph->cells.size()));
+            index.insert(columnKey(stand.x, stand.z), static_cast<int>(graph->cells.size()));
             graph->cells.push_back(stand);
         }
     };
@@ -118,7 +118,7 @@ std::shared_ptr<QcVillagerRoads::Graph> QcVillagerRoads::build(const QcVillagePl
         const QcBlockPos cell = graph->cells[i];
         for (std::size_t d = 0; d < directions.size(); ++d) {
             const int other = index.value(columnKey(cell.x + directions[d].first, cell.z + directions[d].second), -1);
-            const bool joined = other >= 0 && std::abs(graph->cells[std::size_t(other)].y - cell.y) <= 1;
+            const bool joined = other >= 0 && std::abs(graph->cells[static_cast<std::size_t>(other)].y - cell.y) <= 1;
             graph->neighbours[i][d] = joined ? other : -1;
         }
     }
@@ -129,7 +129,7 @@ std::shared_ptr<QcVillagerRoads::Graph> QcVillagerRoads::build(const QcVillagePl
 int QcVillagerRoads::nearest(const Graph &graph, QcBlockPos pos, bool walker)
 {
     // Cells out of a walker's step come after all within it.
-    constexpr qint64 outOfStep = qint64(1) << 40;
+    constexpr qint64 outOfStep = qint64{1} << 40;
     int best = -1;
     qint64 bestScore = std::numeric_limits<qint64>::max();
     for (std::size_t i = 0; i < graph.cells.size(); ++i) {
@@ -139,7 +139,7 @@ int QcVillagerRoads::nearest(const Graph &graph, QcBlockPos pos, bool walker)
         const int dy = std::abs(cell.y - pos.y);
         const qint64 score = (dx * dx + dz * dz) * 4 + dy + (walker && dy > 1 ? outOfStep : 0);
         if (score < bestScore) {
-            best = int(i);
+            best = static_cast<int>(i);
             bestScore = score;
         }
     }
@@ -150,13 +150,13 @@ void QcVillagerRoads::Graph::measureFrom(int start)
 {
     std::ranges::fill(distance, -1);
     queue.clear();
-    distance[std::size_t(start)] = 0;
+    distance[static_cast<std::size_t>(start)] = 0;
     queue.push_back(start);
     for (std::size_t head = 0; head < queue.size(); ++head) {
         const int cell = queue[head];
-        for (const int next : neighbours[std::size_t(cell)]) {
-            if (next >= 0 && distance[std::size_t(next)] < 0) {
-                distance[std::size_t(next)] = distance[std::size_t(cell)] + 1;
+        for (const int next : neighbours[static_cast<std::size_t>(cell)]) {
+            if (next >= 0 && distance[static_cast<std::size_t>(next)] < 0) {
+                distance[static_cast<std::size_t>(next)] = distance[static_cast<std::size_t>(cell)] + 1;
                 queue.push_back(next);
             }
         }

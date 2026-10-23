@@ -41,7 +41,7 @@ public:
 
     bool held() const { return m_held; }
     bool known() const { return m_revision > 0; }
-    int mapId() const { return int(m_mapId); }
+    int mapId() const { return static_cast<int>(m_mapId); }
     int scale() const { return m_scale; }
     QString source() const;
     QVariantList markers() const { return m_markers; }

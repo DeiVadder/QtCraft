@@ -47,7 +47,7 @@ protected:
 
     quint32 spawn(const char *name, int dx, int dz, bool confined = false)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         const quint32 id = m_server->entities().creatures().spawn(type(name), at, m_server->entities().newId());
         mob(id)->confined = confined;
         return id;
@@ -58,8 +58,8 @@ protected:
     {
         const QcVec3 eyes = player().motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
         const QcVec3 towards = (point - eyes).normalized();
-        player().yaw = float(std::atan2(towards.x, -towards.z) * 180.0 / std::numbers::pi);
-        player().pitch = float(std::asin(towards.y) * 180.0 / std::numbers::pi);
+        player().yaw = static_cast<float>(std::atan2(towards.x, -towards.z) * 180.0 / std::numbers::pi);
+        player().pitch = static_cast<float>(std::asin(towards.y) * 180.0 / std::numbers::pi);
     }
 
     QcVec3 headOf(quint32 id) { return mob(id)->motion.position + QcVec3{0.0, endermanKind().height * endermanKind().gaze->headShare, 0.0}; }
@@ -117,7 +117,7 @@ protected:
         if (build) {
             build(world);
         }
-        const QcVec3 player{0.5, double(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
+        const QcVec3 player{0.5, static_cast<double>(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
         QcMobManager mobs(m_content, 11);
         quint32 nextId = 100;
         QHash<quint32, QcCreature> seen;

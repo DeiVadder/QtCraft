@@ -159,7 +159,7 @@ protected:
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
-        m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        m_feet = {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
 
         // The spawn lies at a chunk corner; generate the neighbours now so the whole stage exists.
         for (int cx = -1; cx <= 1; ++cx) {

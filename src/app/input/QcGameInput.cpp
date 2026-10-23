@@ -9,6 +9,7 @@
 #include "clientcore/camera/QcMouseLook.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/definitions/QcSoundKeys.h"
+#include "common/core/QcDowncast.h"
 
 #include <QCoreApplication>
 #include <QCursor>
@@ -146,12 +147,12 @@ void QcGameInput::clickIfButton(QPointF scenePosition) const
 bool QcGameInput::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == m_parts.window && event->type() == QEvent::MouseButtonRelease && !m_capture.captured()) {
-        clickIfButton(static_cast<QMouseEvent *>(event)->scenePosition());
+        clickIfButton(qcDowncast<QMouseEvent>(event)->scenePosition());
     }
 
     // Keys of the game come before shortcuts (of the platform or of items below the world).
     if (event->type() == QEvent::ShortcutOverride && worldInput()) {
-        const auto *key = static_cast<QKeyEvent *>(event);
+        const auto *key = qcDowncast<QKeyEvent>(event);
         if (m_settings.keys()->bindings().actionForPress(key->key(), key->modifiers())) {
             event->accept();
             return true;
@@ -168,27 +169,27 @@ bool QcGameInput::filterWorldEvent(QEvent *event)
 {
     switch (event->type()) {
     case QEvent::KeyPress:
-        handleWorldKey(*static_cast<QKeyEvent *>(event));
+        handleWorldKey(*qcDowncast<QKeyEvent>(event));
         return true;
     case QEvent::KeyRelease:
-        handleKeyRelease(*static_cast<QKeyEvent *>(event));
+        handleKeyRelease(*qcDowncast<QKeyEvent>(event));
         return true;
     case QEvent::MouseButtonPress:
-        handleMousePress(*static_cast<QMouseEvent *>(event));
+        handleMousePress(*qcDowncast<QMouseEvent>(event));
         return true;
     case QEvent::MouseButtonRelease: {
         const bool captured = m_capture.captured();
         // The release of the click that captured the mouse, or of a button held while a screen
         // closed, does nothing.
-        if (m_capture.acceptRelease(static_cast<QMouseEvent *>(event)->button())) {
-            handleMouseButton(static_cast<QMouseEvent *>(event)->button(), false);
+        if (m_capture.acceptRelease(qcDowncast<QMouseEvent>(event)->button())) {
+            handleMouseButton(qcDowncast<QMouseEvent>(event)->button(), false);
         }
         return captured;
     }
     case QEvent::Wheel:
-        return handleWheel(*static_cast<QWheelEvent *>(event));
+        return handleWheel(*qcDowncast<QWheelEvent>(event));
     case QEvent::MouseMove:
-        return handleMouseMove(*static_cast<QMouseEvent *>(event));
+        return handleMouseMove(*qcDowncast<QMouseEvent>(event));
     default:
         return false;
     }
@@ -282,7 +283,7 @@ bool QcGameInput::handleWheel(const QWheelEvent &wheel)
 double QcGameInput::flySpeed() const
 {
     const quint8 speed = m_parts.session ? m_parts.session->intent().flySpeed : QcPlayerInput::normalFlySpeed;
-    return double(speed) / double(QcPlayerInput::normalFlySpeed);
+    return static_cast<double>(speed) / static_cast<double>(QcPlayerInput::normalFlySpeed);
 }
 
 void QcGameInput::turn(QPointF delta)
@@ -356,7 +357,7 @@ void QcGameInput::handleWorldKey(const QKeyEvent &key)
     }
 
     if (*action >= A::Hotbar1 && *action <= A::Hotbar9) {
-        m_parts.session->selectHotbarSlot(int(*action) - int(A::Hotbar1));
+        m_parts.session->selectHotbarSlot(static_cast<int>(*action) - static_cast<int>(A::Hotbar1));
         return;
     }
     if (*action == A::HotbarRadial) {
@@ -465,11 +466,11 @@ bool QcGameInput::handlePlayerAction(QcKeyBindings::Action action, const QKeyEve
         m_parts.session->dropItem(key.modifiers().testFlag(QcKeyBindings::stackModifier(m_settings.keys()->bindings().platform())));
         return true;
     case A::Forward:
-        m_sprint.forwardPressed(qint64(key.timestamp()));
+        m_sprint.forwardPressed(static_cast<qint64>(key.timestamp()));
         m_keysDown.insert(key.key());
         return true;
     case A::Jump:
-        if (m_flight.jumpPressed(qint64(key.timestamp()))) {
+        if (m_flight.jumpPressed(static_cast<qint64>(key.timestamp()))) {
             m_parts.session->gameMode().toggleFlight();
         }
         m_keysDown.insert(key.key());
@@ -483,13 +484,15 @@ void QcGameInput::updateIntentFromKeys(float frameSeconds)
 {
     using A = QcKeyBindings::Action;
     QcPlayerInput intent = m_parts.session->intent();
-    intent.forward = float(int(keyDown(A::Forward)) - int(keyDown(A::Back)));
-    intent.strafe = float(int(keyDown(A::Right)) - int(keyDown(A::Left)));
+    intent.forward = static_cast<float>(static_cast<int>(keyDown(A::Forward)) - static_cast<int>(keyDown(A::Back)));
+    intent.strafe = static_cast<float>(static_cast<int>(keyDown(A::Right)) - static_cast<int>(keyDown(A::Left)));
     intent.jump = keyDown(A::Jump);
     intent.sneak = keyDown(A::Sneak);
     intent.sprint = m_sprint.update(keyDown(A::Forward), keyDown(A::Sprint), intent.sneak);
     const float look = keyboardLookSpeed * frameSeconds;
-    intent.yaw += look * float(int(keyDown(A::LookRight)) - int(keyDown(A::LookLeft)));
-    intent.pitch = std::clamp(intent.pitch + look * float(int(keyDown(A::LookUp)) - int(keyDown(A::LookDown))), -89.9f, 89.9f);
+    intent.yaw += look * static_cast<float>(static_cast<int>(keyDown(A::LookRight)) - static_cast<int>(keyDown(A::LookLeft)));
+    intent.pitch = std::clamp(
+        intent.pitch + look * static_cast<float>(static_cast<int>(keyDown(A::LookUp)) - static_cast<int>(keyDown(A::LookDown))),
+        -89.9f, 89.9f);
     m_parts.session->setIntent(intent);
 }

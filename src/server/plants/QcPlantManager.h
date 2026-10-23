@@ -30,11 +30,11 @@ public:
     static constexpr double maxDecayDelay = 4.0;
     // Leaves decaying and checked per tick and checks waiting at most, by default (QcServerLimits
     // leafDecaysPerTick, leafChecksPerTick, leafPendingChecks).
-    static constexpr int maxDecaysPerTick = int(QcServerLimits{}.leafDecaysPerTick);
-    static constexpr int maxChecksPerTick = int(QcServerLimits{}.leafChecksPerTick);
+    static constexpr int maxDecaysPerTick = static_cast<int>(QcServerLimits{}.leafDecaysPerTick);
+    static constexpr int maxChecksPerTick = static_cast<int>(QcServerLimits{}.leafChecksPerTick);
     // Leaves next to unloaded chunks are checked again after this many seconds.
     static constexpr double recheckSeconds = 5.0;
-    static constexpr int maxPendingChecks = int(QcServerLimits{}.leafPendingChecks);
+    static constexpr int maxPendingChecks = static_cast<int>(QcServerLimits{}.leafPendingChecks);
     // A sapling without room to grow tries again after this many seconds.
     static constexpr double retrySeconds = 30.0;
 

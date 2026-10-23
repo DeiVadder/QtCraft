@@ -30,7 +30,7 @@ int QcMinecartHoppers::slotFor(const QList<QcItemStack> &stacks, const QcItemSta
     for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
         const QcItemStack &stack = stacks[slot];
         if (stack.isEmpty() || (stack.stacksWith(unit) && stack.count < maxStack)) {
-            return int(slot);
+            return static_cast<int>(slot);
         }
     }
     return -1;
@@ -59,7 +59,7 @@ void QcMinecartHoppers::tick()
             const Pull pull = pullFromAbove(cart, access);
             const bool pulled = pull == Pull::Moved || (pull == Pull::NoContainer && pickUp(cart));
             if (pulled) {
-                cart.readyAt = now + quint64(m_state.hoppers().cooldownTicks);
+                cart.readyAt = now + static_cast<quint64>(m_state.hoppers().cooldownTicks);
             }
             moved = moved || pulled;
         }
@@ -81,7 +81,7 @@ QList<qsizetype> QcMinecartHoppers::actors()
     }
     std::ranges::sort(carts, [&all](qsizetype a, qsizetype b) { return all[a].id < all[b].id; });
 
-    const auto budget = qsizetype(m_state.config().limits.hopperBudget);
+    const auto budget = static_cast<qsizetype>(m_state.config().limits.hopperBudget);
     if (carts.size() > budget) {
         // Overloaded: go on after the cart where the last tick stopped.
         const auto start = std::ranges::upper_bound(carts, m_cursor, {}, [&all](qsizetype index) { return all[index].id; });
@@ -123,7 +123,7 @@ bool QcMinecartHoppers::unloadInto(QcMinecart &cart, QcBlockPos hopper, QcInvent
             stack = {};
         }
         // The hopper rests for its cooldown, then passes the item on.
-        const quint64 ready = m_state.clock().tick() + quint64(m_state.hoppers().cooldownTicks);
+        const quint64 ready = m_state.clock().tick() + static_cast<quint64>(m_state.hoppers().cooldownTicks);
         if (QcBlockEntities::Container *container = m_state.blockEntities().container(hopper)) {
             container->readyAt = ready;
         }

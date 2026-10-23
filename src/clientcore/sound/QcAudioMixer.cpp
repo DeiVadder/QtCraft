@@ -75,8 +75,8 @@ bool QcAudioMixer::isPlaying(VoiceId id) const
 
 void QcAudioMixer::setBusVolume(QcSoundBus bus, float volume)
 {
-    if (std::size_t(bus) < m_busVolumes.size()) {
-        m_busVolumes[std::size_t(bus)] = clampVolume(volume);
+    if (static_cast<std::size_t>(bus) < m_busVolumes.size()) {
+        m_busVolumes[static_cast<std::size_t>(bus)] = clampVolume(volume);
     }
 }
 
@@ -87,8 +87,8 @@ void QcAudioMixer::setMasterVolume(float volume)
 
 std::pair<float, float> QcAudioMixer::panGains(float pan)
 {
-    const double angle = (double(std::clamp(pan, -1.0f, 1.0f)) + 1.0) * std::numbers::pi / 4.0;
-    return {float(std::cos(angle)), float(std::sin(angle))};
+    const double angle = (static_cast<double>(std::clamp(pan, -1.0f, 1.0f)) + 1.0) * std::numbers::pi / 4.0;
+    return {static_cast<float>(std::cos(angle)), static_cast<float>(std::sin(angle))};
 }
 
 float QcAudioMixer::limit(float sample)
@@ -112,16 +112,16 @@ std::span<const float> QcAudioMixer::mix(int frames)
         return {};
     }
 
-    m_output.assign(std::size_t(frames) * 2, 0.0f);
+    m_output.assign(static_cast<std::size_t>(frames) * 2, 0.0f);
     float *out = m_output.data();
     const float master = m_muted ? 0.0f : m_master;
     for (Voice &voice : m_voices) {
         const std::vector<float> &samples = voice.buffer->samples;
-        const auto length = double(samples.size());
+        const auto length = static_cast<double>(samples.size());
         const double step = voice.pitch * voice.buffer->sampleRate / m_outputRate;
-        const float bus = m_busVolumes[std::size_t(voice.bus)] * master;
+        const float bus = m_busVolumes[static_cast<std::size_t>(voice.bus)] * master;
         const auto [left, right] = panGains(voice.pan);
-        const float gainStep = (voice.gain - voice.appliedGain) / float(frames);
+        const float gainStep = (voice.gain - voice.appliedGain) / static_cast<float>(frames);
         float gain = voice.appliedGain;
 
         for (int frame = 0; frame < frames; ++frame) {
@@ -132,22 +132,22 @@ std::span<const float> QcAudioMixer::mix(int frames)
                 voice.position = std::fmod(voice.position, length);
             }
 
-            const auto index = std::size_t(voice.position);
-            const double fraction = voice.position - double(index);
+            const auto index = static_cast<std::size_t>(voice.position);
+            const double fraction = voice.position - static_cast<double>(index);
             // Linear interpolation; a loop's last sample leads into its first.
             const std::size_t next = index + 1 < samples.size() ? index + 1 : (voice.loop ? 0 : index);
-            const auto sample = float(samples[index] + (samples[next] - samples[index]) * fraction);
+            const auto sample = static_cast<float>(samples[index] + (samples[next] - samples[index]) * fraction);
 
             gain += gainStep;
             const float value = sample * gain * bus;
-            out[2 * qsizetype(frame)] += value * left;
-            out[2 * qsizetype(frame) + 1] += value * right;
+            out[2 * static_cast<qsizetype>(frame)] += value * left;
+            out[2 * static_cast<qsizetype>(frame) + 1] += value * right;
             voice.position += step;
         }
         voice.appliedGain = voice.gain;
     }
 
-    m_voices.removeIf([](const Voice &voice) { return !voice.loop && voice.position >= double(voice.buffer->samples.size()); });
+    m_voices.removeIf([](const Voice &voice) { return !voice.loop && voice.position >= static_cast<double>(voice.buffer->samples.size()); });
     for (float &sample : m_output) {
         sample = limit(sample);
     }

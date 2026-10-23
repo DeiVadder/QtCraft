@@ -169,7 +169,7 @@ private:
             const int regions = reach / rule.rule.spacing + 1;
             for (int rz = -regions; rz <= regions; ++rz) {
                 for (int rx = -regions; rx <= regions; ++rx) {
-                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(int(kind), rx, rz)) {
+                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(static_cast<int>(kind), rx, rz)) {
                         structures.append(QcCoastalTowerPlan::footprintOf(*copy));
                         ++copies[rule.name];
                     }
@@ -390,7 +390,7 @@ private slots:
         qsizetype near = 0;
         double nearest = 1.0e9;
         QHash<QString, qsizetype> copies;
-        for (const qint64 each : {seed, qint64(51), qint64(7), QcTestUtil::randomSeed()}) {
+        for (const qint64 each : {seed, qint64{51}, qint64{7}, QcTestUtil::randomSeed()}) {
             const QcTerrainGenerator terrain(m_content, each);
             const QList<QcCoastalTowerPlan::Footprint> structures = surfaceFootprints(terrain, reach, copies);
             QList<std::pair<int, int>> centres;
@@ -417,7 +417,7 @@ private slots:
         }
         const double area = 4.0 * std::pow((2 * towerRegions + 1) * size / 1000.0, 2.0);
         qInfo().noquote() << u"%1 towers (%2 per km²), nearest two %3 blocks apart, %4 within 64 blocks of a surface structure"_s.arg(towers)
-                                 .arg(double(towers) / area, 0, 'f', 3)
+                                 .arg(static_cast<double>(towers) / area, 0, 'f', 3)
                                  .arg(nearest, 0, 'f', 0)
                                  .arg(near)
                           << copies;
@@ -448,7 +448,7 @@ private slots:
                 terrain.generate(pos);
             }
             clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return double(end.tv_sec - start.tv_sec) + double(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
         };
         const QcTerrainGenerator with(m_content, seed);
         const QcTerrainGenerator plain(without, seed);
@@ -466,7 +466,8 @@ private slots:
             withTime += seconds(with, chunks);
             count += chunks.size();
         }
-        qInfo().noquote() << u"chunks/s without coastal towers %1, with %2"_s.arg(double(count) / plainTime, 0, 'f', 1).arg(double(count) / withTime, 0, 'f', 1);
+        qInfo().noquote() << u"chunks/s without coastal towers %1, with %2"_s.arg(static_cast<double>(count) / plainTime, 0, 'f', 1)
+            .arg(static_cast<double>(count) / withTime, 0, 'f', 1);
     }
 };
 

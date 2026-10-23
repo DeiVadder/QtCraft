@@ -65,7 +65,7 @@ void writeTransform(QDataStream &stream, const QcHoldTransform &transform)
 template<typename Enum>
 quint8 code(const std::optional<Enum> &value)
 {
-    return value ? quint8(*value) : unset;
+    return value ? static_cast<quint8>(*value) : unset;
 }
 
 // An engaged optional holding the value (or std::nullopt when unset); std::nullopt when the code

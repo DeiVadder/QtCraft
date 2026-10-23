@@ -59,10 +59,10 @@ bool QcAudioOutput::start()
     m_device = std::make_unique<QcMixerDevice>([this](int frames) { return render(frames); }, sampleFormat);
     m_device->open(QIODevice::ReadOnly);
     m_sink = std::make_unique<QAudioSink>(device, format);
-    m_sink->setBufferSize(format.bytesForDuration(qint64(bufferMilliseconds) * 1000));
+    m_sink->setBufferSize(format.bytesForDuration(static_cast<qint64>(bufferMilliseconds) * 1000));
     m_sink->start(m_device.get());
     if (m_sink->error() != QtAudio::NoError) {
-        const int code = int(m_sink->error());
+        const int code = static_cast<int>(m_sink->error());
         m_sink.reset();
         m_device.reset();
         fail(u"the audio output could not be started (error %1)"_s.arg(code));
@@ -72,7 +72,7 @@ bool QcAudioOutput::start()
     // A device that goes away later stops the sink; say so instead of going quiet without a word.
     connect(m_sink.get(), &QAudioSink::stateChanged, this, [this](QtAudio::State state) {
         if (state == QtAudio::StoppedState && m_sink && m_sink->error() != QtAudio::NoError) {
-            qCWarning(lcAudio) << "Audio output stopped, error" << int(m_sink->error());
+            qCWarning(lcAudio) << "Audio output stopped, error" << static_cast<int>(m_sink->error());
         }
     });
 

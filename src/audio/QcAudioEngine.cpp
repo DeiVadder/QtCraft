@@ -49,7 +49,7 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
         m_output.withMixer([this, &piece](QcAudioMixer &mixer) {
             m_musicVoice = mixer.play(piece, {musicGain, 0.0f, 1.0, QcSoundBus::Music, false});
         });
-        scheduleMusic(int(piece->seconds()) + m_random.bounded(minMusicPause, maxMusicPause + 1));
+        scheduleMusic(static_cast<int>(piece->seconds()) + m_random.bounded(minMusicPause, maxMusicPause + 1));
     });
 }
 
@@ -95,10 +95,10 @@ void QcAudioEngine::setContent(std::shared_ptr<const QcContentRegistry> content)
 void QcAudioEngine::setVolumes(double master, double effects, double music, double ambient, bool muted)
 {
     m_output.withMixer([=](QcAudioMixer &mixer) {
-        mixer.setMasterVolume(float(master));
-        mixer.setBusVolume(QcSoundBus::Effects, float(effects));
-        mixer.setBusVolume(QcSoundBus::Music, float(music));
-        mixer.setBusVolume(QcSoundBus::Ambient, float(ambient));
+        mixer.setMasterVolume(static_cast<float>(master));
+        mixer.setBusVolume(QcSoundBus::Effects, static_cast<float>(effects));
+        mixer.setBusVolume(QcSoundBus::Music, static_cast<float>(music));
+        mixer.setBusVolume(QcSoundBus::Ambient, static_cast<float>(ambient));
         mixer.setMuted(muted);
     });
 }
@@ -109,7 +109,7 @@ std::shared_ptr<const QcSampleBuffer> QcAudioEngine::pickVariant(const QcSoundBa
         return {};
     }
 
-    return entry.variants[m_random.bounded(int(entry.variants.size()))];
+    return entry.variants[m_random.bounded(static_cast<int>(entry.variants.size()))];
 }
 
 QcAudioMixer::VoiceId QcAudioEngine::startVoice(const QcSoundBank::Entry &entry, const QcAudioMixer::PlayParameters &parameters)
@@ -144,8 +144,8 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcVec3 &ears, double yawDe
 
     const QcSoundDefinition &sound = entry->definition;
     const QcSoundSpatial::Placement placement =
-        QcSoundSpatial::place(ears, yawDegrees, cue.position, sound.range * std::max(1.0, double(cue.volume)));
-    const float gain = float(sound.volume) * cue.volume * placement.gain;
+        QcSoundSpatial::place(ears, yawDegrees, cue.position, sound.range * std::max(1.0, static_cast<double>(cue.volume)));
+    const float gain = static_cast<float>(sound.volume) * cue.volume * placement.gain;
     if (gain < audibleGain) {
         return;
     }
@@ -167,7 +167,7 @@ void QcAudioEngine::playUi(const QString &key)
     }
 
     const double pitch = 1.0 + entry->definition.pitchVariation * (2.0 * m_random.generateDouble() - 1.0);
-    startVoice(*entry, {float(entry->definition.volume), 0.0f, pitch, entry->definition.bus, false});
+    startVoice(*entry, {static_cast<float>(entry->definition.volume), 0.0f, pitch, entry->definition.bus, false});
 }
 
 void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
@@ -184,7 +184,7 @@ void QcAudioEngine::setAmbience(QcAmbience::Levels levels)
             continue;
         }
 
-        const float gain = values[i] * float(entry->definition.volume);
+        const float gain = values[i] * static_cast<float>(entry->definition.volume);
         QcAudioMixer::VoiceId &voice = m_ambienceVoices[i];
         if (voice == 0) {
             // Levels fade in from zero, so the loop starts quietly.

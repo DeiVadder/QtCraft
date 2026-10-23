@@ -28,7 +28,7 @@ public:
 
     explicit QcChunkLoaders(const QcContentRegistry &content);
 
-    bool isLoader(QcBlockId block) const { return std::size_t(block) < m_loader.size() && m_loader[std::size_t(block)]; }
+    bool isLoader(QcBlockId block) const { return static_cast<std::size_t>(block) < m_loader.size() && m_loader[static_cast<std::size_t>(block)]; }
     // A block was set in a loaded chunk.
     void noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId after);
     // A chunk entered the world: its loaders are known now, those it no longer has are forgotten.

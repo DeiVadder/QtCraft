@@ -25,8 +25,8 @@ const QString breakSound = u"qtcraft:block.wood.break"_s;
 
 QcVec3 viewDirection(const QcServerClient &client)
 {
-    const double yaw = qDegreesToRadians(double(client.yaw));
-    const double pitch = qDegreesToRadians(double(client.pitch));
+    const double yaw = qDegreesToRadians(static_cast<double>(client.yaw));
+    const double pitch = qDegreesToRadians(static_cast<double>(client.pitch));
     return {std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
 }
 
@@ -70,7 +70,7 @@ bool QcServerStands::isFreeForStand(QcBlockPos feet) const
         }
     }
 
-    const QcAabb cell{{double(feet.x), double(feet.y), double(feet.z)}, {feet.x + 1.0, feet.y + 2.0, feet.z + 1.0}};
+    const QcAabb cell{{static_cast<double>(feet.x), static_cast<double>(feet.y), static_cast<double>(feet.z)}, {feet.x + 1.0, feet.y + 2.0, feet.z + 1.0}};
     return std::ranges::none_of(m_state.entities().stands().stands(), [&](const auto &stand) { return QcArmourStandManager::bodyOf(stand).intersects(cell); });
 }
 
@@ -91,7 +91,7 @@ bool QcServerStands::place(QcServerClient &client, const QcMsg::UseItem &message
     }
 
     QcArmourStand stand;
-    stand.motion.position = {feet.x + 0.5, double(feet.y), feet.z + 0.5};
+    stand.motion.position = {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5};
     stand.yaw = facingYaw(client.yaw);
     stand.item = held->name;
     if (!spawn(stand)) {

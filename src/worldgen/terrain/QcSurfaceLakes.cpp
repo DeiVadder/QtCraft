@@ -50,7 +50,7 @@ QcSurfaceLakes::QcSurfaceLakes(const QcTerrainGenerator &terrain, const QcTerrai
 
 double QcSurfaceLakes::random(const Pool &pool, int x, int salt, int z) const
 {
-    return qcPositionRandom(qcMixSeed(pool.seed, quint64(salt)), x, 0, z);
+    return qcPositionRandom(qcMixSeed(pool.seed, static_cast<quint64>(salt)), x, 0, z);
 }
 
 std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteIn(QcChunkPos pos) const
@@ -60,7 +60,7 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteIn(QcChunkPos pos) const
         if (!pool.surface || pool.chance <= 0.0) {
             continue;
         }
-        std::optional<Site> site = planOf(int(i), qcFloorDiv(pos.x, pool.region), qcFloorDiv(pos.z, pool.region));
+        std::optional<Site> site = planOf(static_cast<int>(i), qcFloorDiv(pos.x, pool.region), qcFloorDiv(pos.z, pool.region));
         if (site && site->chunk == pos) {
             return site;
         }
@@ -70,7 +70,7 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteIn(QcChunkPos pos) const
 
 std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::planOf(int pool, int regionX, int regionZ) const
 {
-    const QPair<int, qint64> key{pool, (qint64(regionX) << 32) ^ qint64(quint32(regionZ))};
+    const QPair<int, qint64> key{pool, (static_cast<qint64>(regionX) << 32) ^ static_cast<qint64>(static_cast<quint32>(regionZ))};
     {
         const QMutexLocker lock(&m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
@@ -95,8 +95,8 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::plan(int pool, int regionX, 
     // The tried chunks keep `spacing` chunks from those of the next square.
     const int span = lake.region - lake.spacing;
     for (int attempt = 0; attempt < lake.attempts; ++attempt) {
-        const int x = regionX * lake.region + int(random(lake, regionX * 8 + attempt, ChunkX, regionZ) * span);
-        const int z = regionZ * lake.region + int(random(lake, regionX * 8 + attempt, ChunkZ, regionZ) * span);
+        const int x = regionX * lake.region + static_cast<int>(random(lake, regionX * 8 + attempt, ChunkX, regionZ) * span);
+        const int z = regionZ * lake.region + static_cast<int>(random(lake, regionX * 8 + attempt, ChunkZ, regionZ) * span);
         if (std::optional<Site> site = siteAt(pool, {x, z}, attempt)) {
             return site;
         }
@@ -112,9 +112,9 @@ QVarLengthArray<QcSurfaceLakes::Blob, 6> QcSurfaceLakes::blobsOf(const Pool &poo
     const auto draw = [&](int salt) { return random(pool, baseX + attempt, Shape * 64 + salt, baseZ); };
     const double centreX = baseX + 7 + (draw(0) < 0.5 ? 0 : 1);
     const double centreZ = baseZ + 7 + (draw(1) < 0.5 ? 0 : 1);
-    const double reach = std::min(double(pool.radius) + 0.5, maxReach);
+    const double reach = std::min(static_cast<double>(pool.radius) + 0.5, maxReach);
     const double maxOffset = std::clamp(reach - 2.5, 0.0, 2.0);
-    const int count = 3 + int(draw(2) * 3);
+    const int count = 3 + static_cast<int>(draw(2) * 3);
 
     QVarLengthArray<Blob, 6> blobs;
     for (int i = 0; i < count; ++i) {
@@ -148,7 +148,7 @@ int QcSurfaceLakes::depthAt(const Site &site, int x, int z) const
             deepest = std::max(deepest, blob.depth * std::sqrt(1.0 - reach));
         }
     }
-    return int(std::lround(deepest));
+    return static_cast<int>(std::lround(deepest));
 }
 
 std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteAt(int pool, QcChunkPos chunk, int attempt) const

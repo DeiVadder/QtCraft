@@ -29,7 +29,7 @@ float QcSoundSpatial::attenuation(double distance, double range)
     }
 
     const double closeness = 1.0 - std::max(0.0, distance) / range;
-    return float(closeness * closeness);
+    return static_cast<float>(closeness * closeness);
 }
 
 float QcSoundSpatial::pan(const QcVec3 &listener, double yawDegrees, const QcVec3 &source)
@@ -38,7 +38,7 @@ float QcSoundSpatial::pan(const QcVec3 &listener, double yawDegrees, const QcVec
     const double yaw = qDegreesToRadians(yawDegrees);
     // Right-hand side of a listener looking along (sin yaw, 0, -cos yaw).
     const double right = direction.x * std::cos(yaw) + direction.z * std::sin(yaw);
-    return float(right) * panWidth;
+    return static_cast<float>(right) * panWidth;
 }
 
 QcSoundSpatial::Placement QcSoundSpatial::place(const QcVec3 &listener, double yawDegrees, const QcVec3 &source, double range)
@@ -49,7 +49,7 @@ QcSoundSpatial::Placement QcSoundSpatial::place(const QcVec3 &listener, double y
     const double yaw = qDegreesToRadians(yawDegrees);
     const double ahead = direction.x * std::sin(yaw) - direction.z * std::cos(yaw);
     const double behind = std::max(0.0, -ahead);
-    placement.gain = attenuation(placement.distance, range) * float(1.0 - rearDamping * behind);
+    placement.gain = attenuation(placement.distance, range) * static_cast<float>(1.0 - rearDamping * behind);
     placement.pan = pan(listener, yawDegrees, source);
     return placement;
 }

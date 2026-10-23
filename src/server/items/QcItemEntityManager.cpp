@@ -29,7 +29,7 @@ QcAabb itemBox(const QcVec3 &position)
 
 QcItemEntityManager::QcItemEntityManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
-    , m_random(quint32(seed ^ (seed >> 32) ^ 0x17E3u))
+    , m_random(static_cast<quint32>(seed ^ (seed >> 32) ^ 0x17E3u))
 {
 }
 

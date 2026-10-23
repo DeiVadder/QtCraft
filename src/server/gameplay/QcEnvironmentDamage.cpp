@@ -90,7 +90,7 @@ void QcEnvironmentDamage::applyContactDamage()
 
 bool QcEnvironmentDamage::contactDue(const QcEntity &body) const
 {
-    return (m_state.clock().tick() + body.id) % quint64(contactIntervalTicks) == 0;
+    return (m_state.clock().tick() + body.id) % static_cast<quint64>(contactIntervalTicks) == 0;
 }
 
 namespace {

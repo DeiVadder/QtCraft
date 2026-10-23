@@ -24,7 +24,7 @@ class BiomeMap
 public:
     explicit BiomeMap(const QcTerrainGenerator &generator)
         : m_generator(generator)
-        , m_biomes(qsizetype(gridCells) * gridCells, -1)
+        , m_biomes(static_cast<qsizetype>(gridCells) * gridCells, -1)
     {
         for (int i = 0; i < gridCells; ++i) {
             for (int j = 0; j < gridCells; ++j) {
@@ -35,7 +35,7 @@ public:
         }
     }
 
-    [[nodiscard]] QString name(int biome) const { return m_generator.biomeName(biome).mid(qsizetype(8)); }
+    [[nodiscard]] QString name(int biome) const { return m_generator.biomeName(biome).mid(qsizetype{8}); }
 
     // Land samples per biome name.
     [[nodiscard]] QHash<QString, int> shares() const
@@ -80,7 +80,7 @@ public:
     [[nodiscard]] const QList<int> &biomes() const { return m_biomes; }
 
 private:
-    static qsizetype index(int i, int j) { return qsizetype(i) * gridCells + j; }
+    static qsizetype index(int i, int j) { return static_cast<qsizetype>(i) * gridCells + j; }
 
     // The other biomes within `cells` grid cells of (i, j), each once.
     [[nodiscard]] QList<int> neighbours(int i, int j, int cells) const
@@ -142,14 +142,14 @@ Gradients gradients(const QcTerrainGenerator &generator)
 
 double quantile(const QList<double> &sorted, double q)
 {
-    return sorted[std::min(sorted.size() - 1, qsizetype(q * double(sorted.size())))];
+    return sorted[std::min(sorted.size() - 1, static_cast<qsizetype>(q * static_cast<double>(sorted.size())))];
 }
 
 // Biomes of the cold and the hot end of the temperature axis; they never meet.
 const QStringList coldBiomes{u"tundra"_s, u"snowy_taiga"_s, u"taiga"_s};
 const QStringList hotBiomes{u"desert"_s, u"forest_steppe"_s, u"jungle_edge"_s, u"jungle"_s, u"swamp"_s};
 
-constexpr std::array seeds{qint64(1), qint64(7), qint64(42), qint64(1234)};
+constexpr std::array seeds{qint64{1}, qint64{7}, qint64{42}, qint64{1234}};
 
 // Where a climate point lies in the climate order: cold, hot or neither.
 enum class Band : quint8 { Cold, Temperate, Hot };
@@ -162,12 +162,12 @@ public:
     static constexpr int steps = 100;
 
     ClimateCells(const QcTerrainGenerator &generator, double ruggedness, double rarity)
-        : m_bands(qsizetype(steps + 1) * (steps + 1), Band::Temperate)
+        : m_bands(static_cast<qsizetype>(steps + 1) * (steps + 1), Band::Temperate)
     {
         for (int i = 0; i <= steps; ++i) {
             for (int j = 0; j <= steps; ++j) {
-                const QcTerrainClimate::Point point{double(i) / steps, double(j) / steps, ruggedness, rarity};
-                const QString name = generator.biomeName(generator.biomeForClimate(point)).mid(qsizetype(8));
+                const QcTerrainClimate::Point point{static_cast<double>(i) / steps, static_cast<double>(j) / steps, ruggedness, rarity};
+                const QString name = generator.biomeName(generator.biomeForClimate(point)).mid(qsizetype{8});
                 const bool cold = coldBiomes.contains(name);
                 m_bands[index(i, j)] = cold ? Band::Cold : hotBiomes.contains(name) ? Band::Hot : Band::Temperate;
             }
@@ -190,7 +190,7 @@ public:
     }
 
 private:
-    static qsizetype index(int i, int j) { return qsizetype(i) * (steps + 1) + j; }
+    static qsizetype index(int i, int j) { return static_cast<qsizetype>(i) * (steps + 1) + j; }
 
     [[nodiscard]] QList<std::array<int, 2>> edge(Band band) const
     {
@@ -301,8 +301,8 @@ private slots:
             if (biome.river || biome.delta) {
                 continue;
             }
-            const QString name = biome.name.mid(qsizetype(8));
-            const double share = double(m_survey.shares.value(name)) / m_survey.land;
+            const QString name = biome.name.mid(qsizetype{8});
+            const double share = static_cast<double>(m_survey.shares.value(name)) / m_survey.land;
             qInfo("share %-16s %.3f", qPrintable(name), share);
             // Rare biomes are pinned by their own tests (flower valley: 2-4.5 %).
             const double low = biome.rarity > 0.0 ? 0.01 : 0.025;
@@ -336,13 +336,13 @@ private slots:
         constexpr int step = 24;
         QHash<QString, int> counts;
         int land = 0;
-        for (const qint64 seed : {qint64(7), qint64(42), qint64(1234), qint64(99)}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{99}}) {
             const QcTerrainGenerator generator(m_content, seed);
             for (int z = -reach; z < reach; z += step) {
                 for (int x = -reach; x < reach; x += step) {
                     const QcTerrainGenerator::Column column = generator.column(x, z);
                     if (column.landFactor > 0.99 && column.height > generator.seaLevel()) {
-                        ++counts[generator.biomeName(column.biome).mid(qsizetype(8))];
+                        ++counts[generator.biomeName(column.biome).mid(qsizetype{8})];
                         ++land;
                     }
                 }
@@ -351,7 +351,7 @@ private slots:
         const QList<std::pair<QString, double>> lowest{
             {u"desert"_s, 0.05}, {u"jungle"_s, 0.055}, {u"swamp"_s, 0.046}, {u"flower_valley"_s, 0.023}};
         for (const auto &[name, low] : lowest) {
-            const double share = double(counts.value(name)) / land;
+            const double share = static_cast<double>(counts.value(name)) / land;
             qInfo("wide share %-14s %.4f", qPrintable(name), share);
             QVERIFY2(share >= low, qPrintable(name + u' ' + QString::number(share)));
         }

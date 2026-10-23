@@ -70,7 +70,7 @@ void QcVillagePopulation::spawnVillagers(QcServerWorld &world, QcChunkPos pos, c
             m_bedsWaiting.insert(pos);
             continue;
         }
-        const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4100), bed.x, bed.y, bed.z) * 4294967295.0);
+        const auto look = static_cast<quint32>(qcPositionRandom(qcMixSeed(m_seed, 4100), bed.x, bed.y, bed.z) * 4294967295.0);
         m_mobs.spawn(*type, *at, nextEntityId());
         QcCreature &villager = m_mobs.editableMobs().last();
         *villager.villager = QcVillagerHomes::settle(*village, bed, villager.uid, settings, look);
@@ -146,8 +146,8 @@ void QcVillagePopulation::reconcileClaims(QcServerWorld &world, QcVillage &villa
         }
     }
     // Its population is who is there.
-    const bool changed = village.population != int(present.size());
-    village.population = int(present.size());
+    const bool changed = village.population != static_cast<int>(present.size());
+    village.population = static_cast<int>(present.size());
     village.residents = {true, present};
     if (QcVillagerHomes::dropLostClaims(village, present) > 0 || changed) {
         world.villages().noteChanged();
@@ -200,7 +200,8 @@ void QcVillagePopulation::liveInVillages(QcServerWorld &world, double worldTime,
     const QList<QcVillagerBreeding::Birth> births = m_breeding.check(m_mobs.editableMobs(), breeding);
     for (const QcVillagerBreeding::Birth &birth : births) {
         QcVillage *village = world.villages().find(birth.village);
-        const auto look = quint32(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x, int(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
+        const auto look = static_cast<quint32>(qcPositionRandom(qcMixSeed(m_seed, 4101), birth.bed.x,
+            static_cast<int>(std::fmod(worldTime, 1e9)), birth.bed.z) * 4294967295.0);
         const QcVillagerSettings &settings = m_content->villagerSettingsOf(birth.type);
         m_mobs.spawn(birth.type, birth.position, nextEntityId());
         QcCreature &child = m_mobs.editableMobs().last();

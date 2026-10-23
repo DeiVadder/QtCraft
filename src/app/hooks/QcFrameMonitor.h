@@ -43,7 +43,7 @@ public:
     // The frame part of the debug data; mesh job times are those since `reader`'s previous call.
     QcDebugSnapshot::Frame frame(const QcMeshScheduler &meshes, qsizetype meshedSections, Reader reader);
     // Frame intervals in milliseconds, oldest first (graph).
-    QList<float> intervalHistory() const { return m_window.history(int(QcFramePhase::Interval), windowFrames); }
+    QList<float> intervalHistory() const { return m_window.history(static_cast<int>(QcFramePhase::Interval), windowFrames); }
     void clear();
 
 private:

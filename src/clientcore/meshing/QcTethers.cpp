@@ -30,7 +30,7 @@ void QcTethers::learn(const std::shared_ptr<const QcContentRegistry> &content)
     for (qsizetype type = 0; type < m_content->mobs().size(); ++type) {
         const std::optional<QcFamilyDefinition> &family = m_content->mobs()[type].family;
         if (family && family->childType >= 0 && !family->tetherTexture.isEmpty()) {
-            m_parentOf.insert(family->childType, {int(type), &*family});
+            m_parentOf.insert(family->childType, {static_cast<int>(type), &*family});
         }
     }
 }

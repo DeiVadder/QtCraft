@@ -34,7 +34,7 @@ std::optional<int> QcSurfacePlanner::kindIndex(const QString &name) const
 {
     for (qsizetype i = 0; i < m_kinds.size(); ++i) {
         if (m_kinds[i].name == name) {
-            return int(i);
+            return static_cast<int>(i);
         }
     }
     return std::nullopt;
@@ -59,11 +59,11 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
     const int room = rule.spacing - width;
     std::optional<QcStructurePlacement> first;
     for (int attempt = 0; attempt < rule.attempts; ++attempt) {
-        const int turns = int(qcPositionRandom(type.seed, regionX, 3 * attempt + 1, regionZ) * 4.0) % 4;
+        const int turns = static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 1, regionZ) * 4.0) % 4;
         const int sizeX = turns % 2 == 0 ? type.structure()->sizeX() : type.structure()->sizeZ();
         const int sizeZ = turns % 2 == 0 ? type.structure()->sizeZ() : type.structure()->sizeX();
-        const int x0 = regionX * rule.spacing + int(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
-        const int z0 = regionZ * rule.spacing + int(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
+        const int x0 = regionX * rule.spacing + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
+        const int z0 = regionZ * rule.spacing + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
         const Rect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
         const std::optional<int> floor = floorFor(type, rect);
         if (!floor || occupied(kind, rect, rule.villageMargin)) {

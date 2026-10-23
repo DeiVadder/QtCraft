@@ -99,7 +99,7 @@ private:
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
-        m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        m_feet = {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
         for (int cx = -1; cx <= 1; ++cx) {
             for (int cz = -1; cz <= 1; ++cz) {
                 m_server->world().loadChunk({m_feet.chunk().x + cx, m_feet.chunk().z + cz});
@@ -497,7 +497,7 @@ private slots:
 
         // Mining the upper half takes the lower one with it, and one door drops.
         send(QcMsg::StartMining{door.offset(0, 1, 0)});
-        ticks(int(std::ceil(QcMining::breakSeconds(m_content->block(at(door)), nullptr) * QcPhysics::tickRate)));
+        ticks(static_cast<int>(std::ceil(QcMining::breakSeconds(m_content->block(at(door)), nullptr) * QcPhysics::tickRate)));
         send(QcMsg::FinishMining{door.offset(0, 1, 0)});
         QCOMPARE(at(door.offset(0, 1, 0)), qcAirBlockId);
         QCOMPARE(at(door), qcAirBlockId);
@@ -815,7 +815,7 @@ private slots:
 
         // A pig in the doorway: the door cannot swing shut onto it.
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        m_server->mobs().spawn(pig, {door.x + 0.5, double(door.y), door.z + 0.5}, 9000);
+        m_server->mobs().spawn(pig, {door.x + 0.5, static_cast<double>(door.y), door.z + 0.5}, 9000);
         use(door, QcBlockFace::South);
         QCOMPARE(m_content->property(at(door), u"open"_s), u"true"_s);
         m_server->mobs().removeAll();
@@ -824,7 +824,7 @@ private slots:
 
         // Nor can a block be placed into a mob.
         const QcBlockPos cell = m_feet.offset(-2, 0, -2);
-        m_server->mobs().spawn(pig, {cell.x + 0.5, double(cell.y), cell.z + 0.5}, 9001);
+        m_server->mobs().spawn(pig, {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5}, 9001);
         hold("cobblestone");
         use(cell.offset(0, -1, 0), QcBlockFace::Up);
         QCOMPARE(at(cell), qcAirBlockId);
@@ -880,7 +880,7 @@ private slots:
         QVERIFY(m_client->machineCategory.isEmpty());
         QCOMPARE(m_client->machineStacks.size(), 27);
         chat(u"/give cobblestone 40"_s);
-        const int slot = int(m_client->stacks.indexOf(QcItemStack{item("cobblestone"), 40, 0}));
+        const int slot = static_cast<int>(m_client->stacks.indexOf(QcItemStack{item("cobblestone"), 40, 0}));
         QVERIFY(slot >= 0);
         send(QcMsg::MoveInventoryItem{slot, QcMsg::MoveInventoryItem::machineInputSlot + 26, 0});
         QCOMPARE(m_client->machineStacks[26], (QcItemStack{item("cobblestone"), 40, 0}));

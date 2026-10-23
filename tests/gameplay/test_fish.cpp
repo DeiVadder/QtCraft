@@ -57,12 +57,12 @@ private:
         for (const QcVec3 &p : positions) {
             centre += p;
         }
-        centre = centre * (1.0 / double(positions.size()));
+        centre = centre * (1.0 / static_cast<double>(positions.size()));
         double sum = 0.0;
         for (const QcVec3 &p : positions) {
             sum += (p - centre).length();
         }
-        return sum / double(positions.size());
+        return sum / static_cast<double>(positions.size());
     }
 
     void hold(const char *name)
@@ -161,7 +161,7 @@ private slots:
         // Walls keep it on the stage, so it cannot flop into other water.
         const quint32 fish = spawnFish("salmon", 2.0, 0.0, 2.0);
         bool flopped = false;
-        const int air = int(kind("salmon").aquatic->airSeconds * 20.0);
+        const int air = static_cast<int>(kind("salmon").aquatic->airSeconds * 20.0);
         for (int i = 0; i < air; ++i) {
             ticks(1);
             QVERIFY(mob(fish));
@@ -229,7 +229,7 @@ private slots:
             QElapsedTimer timer;
             timer.start();
             ticks(count);
-            return double(timer.nsecsElapsed()) / 1e6 / count;
+            return static_cast<double>(timer.nsecsElapsed()) / 1e6 / count;
         };
         ticks(20);
         const double alone = meanTickMs(200);
@@ -241,7 +241,7 @@ private slots:
         const double withFish = meanTickMs(200);
         for (int i = 0; i < 20; ++i) {
             const int row = i / 5;
-            const QcVec3 at{m_feet.x - 2.5 + i % 5, double(m_feet.y), m_feet.z - 2.5 + row};
+            const QcVec3 at{m_feet.x - 2.5 + i % 5, static_cast<double>(m_feet.y), m_feet.z - 2.5 + row};
             creatures().spawn(*m_content->mobIndex(u"qtcraft:cow"_s), at, m_server->entities().newId(), false, true);
         }
         ticks(20);
@@ -312,7 +312,7 @@ private slots:
         QList<QcCreature> crowd;
         for (int i = 0; i < 40; ++i) {
             QcCreature fish;
-            fish.id = quint32(i + 1);
+            fish.id = static_cast<quint32>(i + 1);
             fish.type = type("cod");
             fish.motion.position = {0.5, 0.5, 0.5};
             crowd.append(fish);

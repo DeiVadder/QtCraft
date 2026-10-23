@@ -90,7 +90,7 @@ private:
     {
         int hits = 0;
         for (int tick = 0; tick < ticks; ++tick) {
-            hits += int(mobs.tick(world, players, midnight, dt, [this] { return m_nextId++; }).size());
+            hits += static_cast<int>(mobs.tick(world, players, midnight, dt, [this] { return m_nextId++; }).size());
         }
         return hits;
     }
@@ -270,7 +270,7 @@ private slots:
         auto mobs = makeMobs();
         quint32 zombie = 0;
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
-            const QcVec3 local = placed.at - QcVec3{double(origin.x), double(origin.y), double(origin.z)};
+            const QcVec3 local = placed.at - QcVec3{static_cast<double>(origin.x), static_cast<double>(origin.y), static_cast<double>(origin.z)};
             if (local.x >= 0.0 && local.x < station->sizeX && local.z >= 0.0 && local.z < station->sizeZ) {
                 const quint32 id = mobs->spawn(*m_content->mobIndex(placed.mob), placed.at, m_nextId++, false, true);
                 zombie = placed.mob.endsWith(u"zombie"_s) ? id : zombie;
@@ -317,7 +317,7 @@ private slots:
                 }
             }
         }
-        const QcVec3 centre{cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        const QcVec3 centre{cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
         for (int i = 0; i < 30; ++i) {
             m_server->mobs().spawn(type("pig"), centre, m_server->entities().newId(), false, true);
         }
@@ -338,7 +338,7 @@ private slots:
                 return key == u"qtcraft:mob.pig.hurt"_s || key == u"qtcraft:mob.pig.death"_s;
             });
             QVERIFY2(pains <= QcServerCreatures::crammingSoundsPerTick, qPrintable(QString::number(pains)));
-            crammingSounds += int(pains);
+            crammingSounds += static_cast<int>(pains);
         }
         QVERIFY(crammingSounds > 20);
         QVERIFY(pigsIn(cell) < left + 200);

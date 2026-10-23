@@ -23,7 +23,7 @@ void QcServerSounds::play(const QString &key, const QcVec3 &position, float volu
         return;
     }
 
-    const double range = sound->range * std::max(1.0, double(volume));
+    const double range = sound->range * std::max(1.0, static_cast<double>(volume));
     const QcMsg::SoundEvent event{key, position, volume, pitch};
 
     for (const auto &client : m_state.clients()) {

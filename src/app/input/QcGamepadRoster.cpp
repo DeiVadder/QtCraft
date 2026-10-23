@@ -13,7 +13,7 @@ const QStringList &inputNames()
     static const QStringList names = [] {
         QStringList result;
         for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
-            result.append(QcGamepadNames::button(QcGamepadButton(button)));
+            result.append(QcGamepadNames::button(static_cast<QcGamepadButton>(button)));
         }
         result << u"leftTrigger"_s << u"rightTrigger"_s << u"leftStickMove"_s << u"rightStickMove"_s;
         return result;

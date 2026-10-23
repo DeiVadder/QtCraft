@@ -224,5 +224,5 @@ qsizetype QcProjectileManager::adopt(const QList<QcProjectile> &projectiles, con
 
     const qint64 before = m_crowdedOut;
     thinChunks(chunks);
-    return left + qsizetype(m_crowdedOut - before);
+    return left + static_cast<qsizetype>(m_crowdedOut - before);
 }

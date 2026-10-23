@@ -26,7 +26,7 @@ bool QcSignalSchedule::add(QcBlockPos pos, quint64 due, Priority priority)
         return false;
     }
 
-    const Key key{due, quint8(priority), m_sequence++};
+    const Key key{due, static_cast<quint8>(priority), m_sequence++};
     m_entries.emplace(key, pos);
     index(pos, key);
     return true;
@@ -72,14 +72,14 @@ std::optional<std::pair<quint64, QcSignalSchedule::Priority>> QcSignalSchedule::
     if (std::get<0>(first) > now) {
         return std::nullopt;
     }
-    return std::pair{std::get<0>(first), Priority(std::get<1>(first))};
+    return std::pair{std::get<0>(first), static_cast<Priority>(std::get<1>(first))};
 }
 
 QList<QcBlockPos> QcSignalSchedule::takeGroup(quint64 due, Priority priority)
 {
     QList<QcBlockPos> positions;
-    auto it = m_entries.lower_bound(Key{due, quint8(priority), 0});
-    while (it != m_entries.end() && std::get<0>(it->first) == due && std::get<1>(it->first) == quint8(priority)) {
+    auto it = m_entries.lower_bound(Key{due, static_cast<quint8>(priority), 0});
+    while (it != m_entries.end() && std::get<0>(it->first) == due && std::get<1>(it->first) == static_cast<quint8>(priority)) {
         positions.append(it->second);
         unindex(it->second);
         it = m_entries.erase(it);
@@ -90,9 +90,9 @@ QList<QcBlockPos> QcSignalSchedule::takeGroup(quint64 due, Priority priority)
 QList<QcSignalSchedule::Entry> QcSignalSchedule::entries() const
 {
     QList<Entry> list;
-    list.reserve(qsizetype(m_entries.size()));
+    list.reserve(static_cast<qsizetype>(m_entries.size()));
     for (const auto &[key, pos] : m_entries) {
-        list.append({pos, std::get<0>(key), Priority(std::get<1>(key))});
+        list.append({pos, std::get<0>(key), static_cast<Priority>(std::get<1>(key))});
     }
     return list;
 }
@@ -108,7 +108,7 @@ QList<QcSignalSchedule::Entry> QcSignalSchedule::entriesIn(QcChunkPos chunk) con
 
     QList<Entry> list;
     for (const auto &[key, pos] : std::as_const(found)) {
-        list.append({pos, std::get<0>(key), Priority(std::get<1>(key))});
+        list.append({pos, std::get<0>(key), static_cast<Priority>(std::get<1>(key))});
     }
     return list;
 }

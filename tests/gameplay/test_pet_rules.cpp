@@ -344,11 +344,11 @@ private:
         for (int tick = 0; tick < steps; ++tick) {
             const double along = std::fmod(tick * 0.2, 64.0);
             const double side = std::fmod(along, 16.0) - 8.0;
-            const int edge = int(along / 16.0);
+            const int edge = static_cast<int>(along / 16.0);
             player().motion.position = edge == 0 ? at(side, -8) : edge == 1 ? at(8, side) : edge == 2 ? at(-side, 8) : at(-8, -side);
             ticks(1);
         }
-        return double(timer.nsecsElapsed()) / 1e6 / steps;
+        return static_cast<double>(timer.nsecsElapsed()) / 1e6 / steps;
     }
 };
 

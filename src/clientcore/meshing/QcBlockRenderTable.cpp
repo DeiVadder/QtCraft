@@ -70,14 +70,15 @@ std::array<double, 3> high(const QcAabb &box)
 double planeOf(const QcAabb &box, QcBlockFace face)
 {
     const int axis = normalAxis(face);
-    return positiveFace(face) ? high(box)[std::size_t(axis)] : low(box)[std::size_t(axis)];
+    return positiveFace(face) ? high(box)[static_cast<std::size_t>(axis)] : low(box)[static_cast<std::size_t>(axis)];
 }
 
 SideRect rectOf(const QcAabb &box, QcBlockFace face)
 {
     const auto [a, b] = QcBlockRenderTable::axes(face);
-    return {float(low(box)[std::size_t(a)]), float(high(box)[std::size_t(a)]), float(low(box)[std::size_t(b)]),
-            float(high(box)[std::size_t(b)])};
+    return {static_cast<float>(low(box)[static_cast<std::size_t>(a)]), static_cast<float>(high(box)[static_cast<std::size_t>(a)]),
+        static_cast<float>(low(box)[static_cast<std::size_t>(b)]),
+            static_cast<float>(high(box)[static_cast<std::size_t>(b)])};
 }
 
 QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRectF &uv, bool stretch)
@@ -87,7 +88,7 @@ QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRe
     quad.boundary = planeOf(box, face) == (positiveFace(face) ? 1.0 : 0.0);
     quad.rect = rectOf(box, face);
 
-    const auto &template_ = faceCorners[std::size_t(face)];
+    const auto &template_ = faceCorners[static_cast<std::size_t>(face)];
     const std::array<double, 3> lows = low(box);
     const std::array<double, 3> highs = high(box);
 
@@ -100,7 +101,7 @@ QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRe
     for (std::size_t corner = 0; corner < 4; ++corner) {
         std::array<float, 3> position{};
         for (std::size_t axis = 0; axis < 3; ++axis) {
-            position[axis] = float(template_[corner][axis] != 0 ? highs[axis] : lows[axis]);
+            position[axis] = static_cast<float>(template_[corner][axis] != 0 ? highs[axis] : lows[axis]);
         }
 
         float u = 0.0f;
@@ -109,13 +110,13 @@ QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRe
             const int du = c1[axis] - c0[axis];
             const int dv = c3[axis] - c0[axis];
             // Stretched faces measure positions within the box instead of the cell.
-            const float along = stretch ? float((position[axis] - lows[axis]) / (highs[axis] - lows[axis])) : position[axis];
-            u += float(du) * (along - float(c0[axis]));
-            v += float(dv) * (along - float(c0[axis]));
+            const float along = stretch ? static_cast<float>((position[axis] - lows[axis]) / (highs[axis] - lows[axis])) : position[axis];
+            u += static_cast<float>(du) * (along - static_cast<float>(c0[axis]));
+            v += static_cast<float>(dv) * (along - static_cast<float>(c0[axis]));
         }
 
         quad.corners[corner] = position;
-        quad.uvs[corner] = {float(uv.left() + u * uv.width()), float(uv.bottom() - v * uv.height())};
+        quad.uvs[corner] = {static_cast<float>(uv.left() + u * uv.width()), static_cast<float>(uv.bottom() - v * uv.height())};
     }
 
     return quad;
@@ -152,10 +153,10 @@ struct Shape
             if (insideShape(state.boxes, box, face)) {
                 continue;
             }
-            const QRectF uv = slot.isEmpty() ? faceUv[std::size_t(face)] : atlas.uv(block.slotTexture(slot));
+            const QRectF uv = slot.isEmpty() ? faceUv[static_cast<std::size_t>(face)] : atlas.uv(block.slotTexture(slot));
             const QcBlockRenderTable::Quad quad = makeQuad(box, face, uv, stretch);
             if (quad.boundary) {
-                shape.cover[std::size_t(face)].append(quad.rect);
+                shape.cover[static_cast<std::size_t>(face)].append(quad.rect);
             }
             shape.quads.append(quad);
         }
@@ -164,8 +165,9 @@ struct Shape
     for (qsizetype c = 0; c < state.crosses.size(); ++c) {
         const QcAabb &box = state.crosses[c];
         const QString slot = state.crossTextures.value(c);
-        const QRectF uv = slot.isEmpty() ? faceUv[std::size_t(QcBlockFace::North)] : atlas.uv(block.slotTexture(slot));
-        shape.crosses.append({{float(box.min.x), float(box.min.y), float(box.min.z), float(box.max.x), float(box.max.y), float(box.max.z)}, uv});
+        const QRectF uv = slot.isEmpty() ? faceUv[static_cast<std::size_t>(QcBlockFace::North)] : atlas.uv(block.slotTexture(slot));
+        shape.crosses.append({{static_cast<float>(box.min.x), static_cast<float>(box.min.y), static_cast<float>(box.min.z),
+            static_cast<float>(box.max.x), static_cast<float>(box.max.y), static_cast<float>(box.max.z)}, uv});
     }
     return shape;
 }
@@ -175,9 +177,9 @@ struct Shape
 // sides: none is hidden by a neighbour, none hides one.
 void spin(Shape &shape, int sixteenths)
 {
-    const double angle = double(sixteenths) * std::numbers::pi / 8.0;
-    const auto c = float(std::cos(angle));
-    const auto s = float(std::sin(angle));
+    const double angle = static_cast<double>(sixteenths) * std::numbers::pi / 8.0;
+    const auto c = static_cast<float>(std::cos(angle));
+    const auto s = static_cast<float>(std::sin(angle));
     for (QcBlockRenderTable::Quad &quad : shape.quads) {
         quad.boundary = false;
         for (std::array<float, 3> &corner : quad.corners) {
@@ -197,7 +199,7 @@ float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlo
 {
     const bool falling = content.property(id, u"falling"_s) == u"true"_s;
     const int level = content.property(id, u"level"_s).toInt();
-    const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - float(level) / float(block.flow.distance + 1);
+    const float share = falling || block.flow.distance <= 0 ? 1.0f : 1.0f - static_cast<float>(level) / static_cast<float>(block.flow.distance + 1);
     return (1.0f - QcBlockRenderTable::liquidSurfaceDrop) * std::clamp(share, 0.0f, 1.0f);
 }
 
@@ -240,7 +242,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     entry.lightLevel = block.lightLevel;
     entry.material = materialOf(entry);
     for (const QcBlockFace face : qcAllBlockFaces) {
-        entry.faceUv[std::size_t(face)] = atlas.uv(block.texture(state.faceSource[std::size_t(face)]));
+        entry.faceUv[static_cast<std::size_t>(face)] = atlas.uv(block.texture(state.faceSource[static_cast<std::size_t>(face)]));
     }
     entry.faceUvTurns = state.faceUvTurns;
 
@@ -254,7 +256,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
         entry.cover = std::move(shape.cover);
     } else {
         for (const QcBlockFace face : qcAllBlockFaces) {
-            entry.cover[std::size_t(face)] = {SideRect{}};
+            entry.cover[static_cast<std::size_t>(face)] = {SideRect{}};
         }
     }
     return entry;
@@ -280,7 +282,7 @@ bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace fac
     if (neighbour.layer != QcRenderLayer::Opaque && !sameTranslucent) {
         return false;
     }
-    const QList<SideRect> &covers = neighbour.cover[std::size_t(opposite(face))];
+    const QList<SideRect> &covers = neighbour.cover[static_cast<std::size_t>(opposite(face))];
     return std::ranges::any_of(covers, [rect](SideRect cover) { return cover.contains(rect); });
 }
 
@@ -289,12 +291,12 @@ QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const Q
 {
     m_entries.reserve(content.stateCount());
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
-        m_hasLightSources = m_hasLightSources || content.block(QcBlockId(id)).lightLevel > 0;
-        m_entries.append(entryOf(content, atlas, QcBlockId(id)));
+        m_hasLightSources = m_hasLightSources || content.block(static_cast<QcBlockId>(id)).lightLevel > 0;
+        m_entries.append(entryOf(content, atlas, static_cast<QcBlockId>(id)));
     }
 }
 
 const QcBlockRenderTable::Entry &QcBlockRenderTable::entry(QcBlockId id) const
 {
-    return qsizetype(id) < m_entries.size() ? m_entries[qsizetype(id)] : m_invisible;
+    return static_cast<qsizetype>(id) < m_entries.size() ? m_entries[static_cast<qsizetype>(id)] : m_invisible;
 }

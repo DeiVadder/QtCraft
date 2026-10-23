@@ -25,14 +25,14 @@ QString qualified(const QString &name)
         value = word.toLongLong(&ok);
     } else if (origin) {
         const qint64 offset = word.size() > 1 ? QStringView(word).mid(1).toLongLong(&ok) : 0;
-        ok = (word.size() == 1 || ok) && offset >= -2 * qint64(worldLimit) && offset <= 2 * qint64(worldLimit);
-        value = qint64(*origin) + offset;
+        ok = (word.size() == 1 || ok) && offset >= -2 * static_cast<qint64>(worldLimit) && offset <= 2 * static_cast<qint64>(worldLimit);
+        value = static_cast<qint64>(*origin) + offset;
     }
 
     if (!ok || value < -worldLimit || value > worldLimit) {
         return std::nullopt;
     }
-    return int(value);
+    return static_cast<int>(value);
 }
 
 [[nodiscard]] std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype first, std::optional<QcBlockPos> origin)

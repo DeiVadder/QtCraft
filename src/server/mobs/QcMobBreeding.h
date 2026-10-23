@@ -22,8 +22,8 @@ public:
     // No young one is born while this many animals of the kind (awake or dormant) live in the 3 x 3
     // chunks around the birth place or this many bred animals of the kind live in the whole world,
     // by default (QcServerLimits::breedingCrowd, bredPerKind).
-    static constexpr int crowdLimit = int(QcServerLimits{}.breedingCrowd);
-    static constexpr int maxBredPerKind = int(QcServerLimits{}.bredPerKind);
+    static constexpr int crowdLimit = static_cast<int>(QcServerLimits{}.breedingCrowd);
+    static constexpr int maxBredPerKind = static_cast<int>(QcServerLimits{}.bredPerKind);
     // Seconds an animal is in love before it pairs (others see it in love first).
     static constexpr double courtshipSeconds = 1.0;
 

@@ -15,7 +15,7 @@ namespace {
 QcEntityKept newerData(QcEntityCodec::Component kind, quint16 unknownId, bool withType)
 {
     QcEntityKept kept;
-    kept.components = {{quint16(kind), 3, true, QByteArray("tail of a newer version")}, {unknownId, 2, false, QByteArray("component of a mod")}};
+    kept.components = {{static_cast<quint16>(kind), 3, true, QByteArray("tail of a newer version")}, {unknownId, 2, false, QByteArray("component of a mod")}};
     kept.uid = 4000 + unknownId;
     kept.type = withType ? u"newer:kind"_s : QString();
     return kept;

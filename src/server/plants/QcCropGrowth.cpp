@@ -12,7 +12,7 @@ QcCropGrowth::QcCropGrowth(std::shared_ptr<const QcContentRegistry> content, dou
 {
     for (std::size_t reach = 0; reach < m_ringOffsets.size(); ++reach) {
         std::vector<std::pair<int, int>> &offsets = m_ringOffsets[reach];
-        const int r = int(reach);
+        const int r = static_cast<int>(reach);
         for (int dx = -r; dx <= r; ++dx) {
             for (int dz = -r; dz <= r; ++dz) {
                 offsets.emplace_back(dx, dz);
@@ -39,13 +39,13 @@ bool QcCropGrowth::randomTick(const QcServerWorld &world, QcBlockPos pos, QcBloc
 int QcCropGrowth::stageOf(QcBlockId block, const QString &property) const
 {
     const QcBlockProperty *values = m_content->block(block).property(property);
-    return values ? int(values->values.indexOf(m_content->property(block, property))) : -1;
+    return values ? static_cast<int>(values->values.indexOf(m_content->property(block, property))) : -1;
 }
 
 int QcCropGrowth::stageCount(QcBlockId block, const QString &property) const
 {
     const QcBlockProperty *values = m_content->block(block).property(property);
-    return values ? int(values->values.size()) : 0;
+    return values ? static_cast<int>(values->values.size()) : 0;
 }
 
 double QcCropGrowth::stageChance(QcBlockId crop, bool wet) const
@@ -122,7 +122,7 @@ bool QcCropGrowth::putFruit(const QcBlockAccess &world, QcBlockPos pos, const Qc
         }
     }
 
-    const auto &[dx, dz] = sides[random.bounded(quint32(sides.size()))];
+    const auto &[dx, dz] = sides[random.bounded(static_cast<quint32>(sides.size()))];
     const QcBlockPos target = pos.offset(dx, 0, dz);
     const std::optional<QcBlockId> existing = world.blockAt(target);
     const std::optional<QcBlockId> ground = world.blockAt(target.offset(0, -1, 0));
@@ -137,7 +137,7 @@ bool QcCropGrowth::putFruit(const QcBlockAccess &world, QcBlockPos pos, const Qc
 QcCropGrowth::Water QcCropGrowth::waterNear(const QcBlockAccess &world, QcBlockPos pos, const QcSoilDefinition &soil) const
 {
     bool unknown = false;
-    for (const auto &[dx, dz] : m_ringOffsets[std::size_t(std::clamp(soil.reach, 0, int(m_ringOffsets.size()) - 1))]) {
+    for (const auto &[dx, dz] : m_ringOffsets[static_cast<std::size_t>(std::clamp(soil.reach, 0, static_cast<int>(m_ringOffsets.size()) - 1))]) {
         for (int dy = 0; dy <= 1; ++dy) {
             const std::optional<QcBlockId> block = world.blockAt(pos.offset(dx, dy, dz));
             if (!block) {
@@ -170,7 +170,7 @@ bool QcCropGrowth::tickSoil(const QcServerWorld &world, QcBlockPos pos, QcBlockI
         return false;
     }
 
-    const int wettest = int(values->values.size()) - 1;
+    const int wettest = static_cast<int>(values->values.size()) - 1;
     // Rain on the cell above wets it like water near it.
     const bool rained = m_rainsOn && m_rainsOn(pos.offset(0, 1, 0));
     const Water water = rained ? Water::Near : waterNear(world, pos, soil);

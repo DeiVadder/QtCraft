@@ -117,7 +117,7 @@ private slots:
             m_server->tick();
             measuredNs += outside.nsecsElapsed();
             const QcTickPhaseTimer::Durations &tick = m_server->tickPhases().lastTick();
-            phasesNs += std::accumulate(tick.begin(), tick.begin() + QcTickPhases::inTick, qint64(0));
+            phasesNs += std::accumulate(tick.begin(), tick.begin() + QcTickPhases::inTick, qint64{0});
             QcTestUtil::pump();
         }
 
@@ -218,7 +218,7 @@ private slots:
         // A subscription is state: after 21 quick toggles the server follows the last one, even
         // though they came faster than any rate limit would let through.
         for (int i = 0; i <= 20; ++i) {
-            m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::stats : 0)});
+            m_client->connection.send(QcMsg::DebugSubscribe{static_cast<quint8>(i % 2 == 0 ? QcMsg::DebugSubscribe::stats : 0)});
         }
         QcTestUtil::pump();
         ticks(1);
@@ -226,7 +226,7 @@ private slots:
 
         // Ending with "off" stops the messages.
         for (int i = 0; i < 20; ++i) {
-            m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::all : 0)});
+            m_client->connection.send(QcMsg::DebugSubscribe{static_cast<quint8>(i % 2 == 0 ? QcMsg::DebugSubscribe::all : 0)});
         }
         QcTestUtil::pump();
         ticks(30);
@@ -240,7 +240,7 @@ private slots:
 
         // A new subscription every tick does not bring a message every tick.
         for (int i = 0; i < 40; ++i) {
-            m_client->connection.send(QcMsg::DebugSubscribe{quint8(i % 2 == 0 ? QcMsg::DebugSubscribe::stats : QcMsg::DebugSubscribe::all)});
+            m_client->connection.send(QcMsg::DebugSubscribe{i % 2 == 0 ? QcMsg::DebugSubscribe::stats : QcMsg::DebugSubscribe::all});
             QcTestUtil::pump();
             ticks(1);
         }
@@ -298,10 +298,10 @@ private slots:
         elapsed.start();
         timer.beginTick();
         for (int i = 0; i < laps; ++i) {
-            timer.lap(QcTickPhase(i % QcTickPhases::inTick));
+            timer.lap(static_cast<QcTickPhase>(i % QcTickPhases::inTick));
         }
         timer.endTick(0);
-        const double perLapNs = double(elapsed.nsecsElapsed()) / laps;
+        const double perLapNs = static_cast<double>(elapsed.nsecsElapsed()) / laps;
         qInfo("%.1f ns per lap", perLapNs);
         QVERIFY2(perLapNs < 2000.0, qPrintable(u"%1 ns per lap"_s.arg(perLapNs)));
     }

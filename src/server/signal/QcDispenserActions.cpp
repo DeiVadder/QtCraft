@@ -27,7 +27,7 @@ QcVec3 centreOf(QcBlockPos pos)
 
 QcAabb cellBox(QcBlockPos pos)
 {
-    const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
+    const QcVec3 corner{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)};
     return {corner, corner + QcVec3{1.0, 1.0, 1.0}};
 }
 
@@ -54,7 +54,7 @@ std::optional<QcDispenserActions::Shot> QcDispenserActions::aim(QcBlockPos pos) 
     QList<int> filled;
     for (qsizetype slot = 0; slot < stacks.size(); ++slot) {
         if (!stacks[slot].isEmpty()) {
-            filled.append(int(slot));
+            filled.append(static_cast<int>(slot));
         }
     }
     if (filled.isEmpty()) {
@@ -69,11 +69,11 @@ std::optional<QcDispenserActions::Shot> QcDispenserActions::aim(QcBlockPos pos) 
     quint64 contents = 0;
     for (const QcItemStack &stack : stacks) {
         const quint64 item = stack.isEmpty() || !content.isValidItem(stack.item) ? 0 : qcNameSalt(content.item(stack.item).name);
-        contents = contents * 0x100000001B3ULL ^ (item << 20 ^ quint64(stack.count));
+        contents = contents * 0x100000001B3ULL ^ (item << 20 ^ static_cast<quint64>(stack.count));
     }
-    const quint64 seed = quint64(m_state.config().seed) * 0x9E3779B97F4A7C15ULL ^ m_state.clock().tick() * 0xBF58476D1CE4E5B9ULL ^ contents;
-    QRandomGenerator random(quint32(seed ^ (seed >> 32)));
-    const int slot = filled[qsizetype(random.bounded(quint32(filled.size())))];
+    const quint64 seed = static_cast<quint64>(m_state.config().seed) * 0x9E3779B97F4A7C15ULL ^ m_state.clock().tick() * 0xBF58476D1CE4E5B9ULL ^ contents;
+    QRandomGenerator random(static_cast<quint32>(seed ^ (seed >> 32)));
+    const int slot = filled[static_cast<qsizetype>(random.bounded(static_cast<quint32>(filled.size())))];
     return Shot{pos, *state.facing, slot, stacks[slot].withCount(1)};
 }
 
@@ -108,7 +108,7 @@ QList<QcDispenserActions::Shot> QcDispenserActions::insertDropped(const QList<Sh
         const QcBlockPos front = qcNeighbour(shots[i].dispenser, shots[i].facing);
         const bool dropper = !m_state.content().block(m_state.world().blockAt(shots[i].dispenser).value_or(qcAirBlockId)).signal.usesItems;
         if (dropper && access.hasInventory(front) && access.ensure(front)) {
-            insertions.append({front, QcBlockRules::opposite(shots[i].facing), shots[i].unit, int(i), -1});
+            insertions.append({front, QcBlockRules::opposite(shots[i].facing), shots[i].unit, static_cast<int>(i), -1});
         } else {
             others.append(shots[i]);
         }
@@ -326,7 +326,7 @@ bool QcDispenserActions::shoot(const Shot &shot, QcInventoryAccess &access)
 {
     // Straight out of the front, just outside it, without spread: a trap hits where it points.
     const QcFaceOffset offset = qcFaceOffset(shot.facing);
-    const QcVec3 along{double(offset.dx), double(offset.dy), double(offset.dz)};
+    const QcVec3 along{static_cast<double>(offset.dx), static_cast<double>(offset.dy), static_cast<double>(offset.dz)};
     QcProjectileManager::Launch launch;
     launch.type = m_state.content().item(shot.unit.item).projectile;
     launch.position = centreOf(shot.dispenser) + along * shotOffset;
@@ -379,7 +379,7 @@ void QcDispenserActions::throwItem(const Shot &shot, QcInventoryAccess &access)
     }
 
     const QcFaceOffset offset = qcFaceOffset(shot.facing);
-    const QcVec3 along{double(offset.dx), double(offset.dy), double(offset.dz)};
+    const QcVec3 along{static_cast<double>(offset.dx), static_cast<double>(offset.dy), static_cast<double>(offset.dz)};
     QcItemEntityManager::Drop drop;
     drop.stack = shot.unit;
     // At the front face, just outside it (also in front of a block, as in the reference).

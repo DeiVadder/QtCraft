@@ -114,7 +114,7 @@ private:
         timer.start();
         mobs.tick(world, players, midnight, 0.05, [this] { return m_nextId++; });
         run.died += cram(mobs, tick);
-        const double ms = double(timer.nsecsElapsed()) / 1e6;
+        const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
         run.total += ms;
         run.worst = std::max(run.worst, ms);
         ++run.ticks;
@@ -129,7 +129,7 @@ private:
 #endif
         qInfo("MEASURE %s: %.3f ms mean, %.3f ms max per tick, %lld creatures at the end, %d crammed to death, %lld searches, "
               "tiers full/throttled/idle %s",
-              name, run.total / run.ticks, run.worst, qlonglong(mobs.mobs().size()), run.died, qlonglong(mobs.paths().searches()),
+              name, run.total / run.ticks, run.worst, static_cast<qlonglong>(mobs.mobs().size()), run.died, static_cast<qlonglong>(mobs.paths().searches()),
               qPrintable(tiers));
     }
 
@@ -169,13 +169,13 @@ private:
         auto mobs = makeMobs();
         const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
         for (int i = 0; i < 1000; ++i) {
-            mobs->spawn(zombie, {0.5, double(ground), 0.5}, m_nextId++);
+            mobs->spawn(zombie, {0.5, static_cast<double>(ground), 0.5}, m_nextId++);
         }
-        const QList<QcMobManager::PlayerView> players{{7, {5.5, double(ground), 0.5}, true}};
+        const QList<QcMobManager::PlayerView> players{{7, {5.5, static_cast<double>(ground), 0.5}, true}};
         Run run;
         for (quint64 tick = 0; tick < 220; ++tick) {
             while (refill && mobs->mobs().size() < 1000) {
-                mobs->spawn(zombie, {0.5, double(ground), 0.5}, m_nextId++);
+                mobs->spawn(zombie, {0.5, static_cast<double>(ground), 0.5}, m_nextId++);
             }
             Run warmUp;
             tickTimed(*mobs, *world, players, tick, tick < 20 ? warmUp : run);
@@ -192,14 +192,14 @@ private slots:
         auto mobs = makeMobs();
         const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
         for (int i = 0; i < 1000; ++i) {
-            const int x = int((i * 7919u) % 80u) - 40;
-            const int z = int((i * 104729u / 80u) % 80u) - 40;
-            mobs->spawn(zombie, {x + 0.5, double(ground), z + 0.5}, m_nextId++);
+            const int x = static_cast<int>((i * 7919u) % 80u) - 40;
+            const int z = static_cast<int>((i * 104729u / 80u) % 80u) - 40;
+            mobs->spawn(zombie, {x + 0.5, static_cast<double>(ground), z + 0.5}, m_nextId++);
         }
         Run run;
         for (quint64 tick = 0; tick < 220; ++tick) {
-            const double angle = double(tick) * 0.025;
-            const QList<QcMobManager::PlayerView> players{{7, {4.0 * std::cos(angle), double(ground), 4.0 * std::sin(angle)}, true}};
+            const double angle = static_cast<double>(tick) * 0.025;
+            const QList<QcMobManager::PlayerView> players{{7, {4.0 * std::cos(angle), static_cast<double>(ground), 4.0 * std::sin(angle)}, true}};
             Run warmUp;
             tickTimed(*mobs, *world, players, tick, tick < 20 ? warmUp : run);
         }
@@ -214,11 +214,11 @@ private slots:
         shaft(*world, ground + 22);
         auto mobs = makeMobs();
         const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
-        const QList<QcMobManager::PlayerView> players{{7, {10.5, double(ground), 0.5}, true}};
+        const QList<QcMobManager::PlayerView> players{{7, {10.5, static_cast<double>(ground), 0.5}, true}};
         Run run;
         for (quint64 tick = 0; tick < 1200; ++tick) {
             if (tick % 5 == 0) {
-                mobs->spawn(zombie, {0.5, double(ground + 20), 0.5}, m_nextId++);
+                mobs->spawn(zombie, {0.5, static_cast<double>(ground + 20), 0.5}, m_nextId++);
             }
             tickTimed(*mobs, *world, players, tick, run);
         }

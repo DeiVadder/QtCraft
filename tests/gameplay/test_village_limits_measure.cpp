@@ -43,7 +43,7 @@ private:
             ticks += waited;
             longest = std::max(longest, waited);
         }
-        double mean() const { return searches > 0 ? double(ticks) / double(searches) : 0.0; }
+        double mean() const { return searches > 0 ? static_cast<double>(ticks) / static_cast<double>(searches) : 0.0; }
     };
 
     struct Totals
@@ -98,9 +98,9 @@ private:
     // village the dark ground where hostile creatures spawn (QcNaturalSpawner::spawnRadiusMax).
     void addPlayers(int players)
     {
-        const int ring = int(QcNaturalSpawner::spawnRadiusMax) / QcWorld::chunkSize + 1;
+        const int ring = static_cast<int>(QcNaturalSpawner::spawnRadiusMax) / QcWorld::chunkSize + 1;
         for (int i = 0; i < players; ++i) {
-            const QList<QcChunkPos> around = QcVillageFixture::chunksOf(*m_plans[qsizetype(i) * m_plans.size() / players], ring);
+            const QList<QcChunkPos> around = QcVillageFixture::chunksOf(*m_plans[static_cast<qsizetype>(i) * m_plans.size() / players], ring);
             for (const QcChunkPos &chunk : around) {
                 m_server->world().loadChunk(chunk);
             }
@@ -112,7 +112,7 @@ private:
             m_players.back()->hello(u"Player%1"_s.arg(i));
             QcTestUtil::pump();
             ticks(2);
-            const QcBlockPos at = m_plans[qsizetype(i) * m_plans.size() / players]->centre;
+            const QcBlockPos at = m_plans[static_cast<qsizetype>(i) * m_plans.size() / players]->centre;
             chat(u"/tp Player%1 %2 %3 %4"_s.arg(i).arg(at.x).arg(at.y + 2).arg(at.z + 6));
         }
     }
@@ -144,7 +144,7 @@ private:
         for (int i = 0; i < count; ++i) {
             timer.start();
             m_server->tick();
-            totals.times.append(double(timer.nsecsElapsed()) / 1e6);
+            totals.times.append(static_cast<double>(timer.nsecsElapsed()) / 1e6);
             const QcPathPlanner &paths = m_server->mobs().paths();
             totals.nodes += paths.nodesLastTick();
             totals.villagerNodes += paths.villagerNodesLastTick();
@@ -165,17 +165,20 @@ private:
         for (const double time : totals.times) {
             sum += time;
         }
-        const auto n = double(std::max<qsizetype>(1, totals.times.size()));
+        const auto n = static_cast<double>(std::max<qsizetype>(1, totals.times.size()));
         const qsizetype villagers = std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) { return mob.isVillager(); });
         const qsizetype hostiles = std::ranges::count_if(m_server->mobs().mobs(), [this](const QcCreature &mob) { return m_content->mobs()[mob.type].hostile; });
         qInfo("LIMITS %s: villages=%lld villagers=%lld others=%lld (hostile %lld) players=%lld chunks=%lld ticks=%lld; tick mean %.3f p99 %.3f max %.3f ms; "
               "nodes/tick %.0f (villagers %.0f, others %.0f), most %d; budget used up in %.1f %% of ticks; wait villagers %.2f (max %d, "
               "%lld searches), others %.2f (max %d, %lld searches) ticks",
-              phase, qint64(m_plans.size()), qint64(villagers), qint64(m_server->mobs().mobs().size() - villagers), qint64(hostiles),
-              qint64(m_players.size() + 1),
-              qint64(m_server->world().loadedChunkCount()), qint64(totals.times.size()), sum / n, totals.times[qsizetype((n - 1) * 0.99)],
-              totals.times.last(), double(totals.nodes) / n, double(totals.villagerNodes) / n, double(totals.nodes - totals.villagerNodes) / n,
-              totals.mostNodes, 100.0 * double(totals.budgetUsed) / n, totals.villagers.mean(), totals.villagers.longest,
+              phase, static_cast<qint64>(m_plans.size()), static_cast<qint64>(villagers),
+              static_cast<qint64>(m_server->mobs().mobs().size() - villagers), static_cast<qint64>(hostiles),
+              static_cast<qint64>(m_players.size() + 1),
+              static_cast<qint64>(m_server->world().loadedChunkCount()), static_cast<qint64>(totals.times.size()), sum / n,
+              totals.times[static_cast<qsizetype>((n - 1) * 0.99)],
+              totals.times.last(), static_cast<double>(totals.nodes) / n, static_cast<double>(totals.villagerNodes) / n,
+              static_cast<double>(totals.nodes - totals.villagerNodes) / n,
+              totals.mostNodes, 100.0 * static_cast<double>(totals.budgetUsed) / n, totals.villagers.mean(), totals.villagers.longest,
               totals.villagers.searches, totals.others.mean(), totals.others.longest, totals.others.searches);
     }
 
@@ -198,7 +201,7 @@ private slots:
         // The evening: everybody walks home (0.55 to 0.65 of the day), the night with hostile
         // creatures spawning around the players (to 0.8), then the dawn and the morning, when
         // everybody gets up and walks to work (to 0.1 of the next day).
-        const auto ticksFor = [measure](double share) { return measure ? int(QcDayCycle::dayLength * 20.0 * share) : 40; };
+        const auto ticksFor = [measure](double share) { return measure ? static_cast<int>(QcDayCycle::dayLength * 20.0 * share) : 40; };
         m_server->setWorldTime(QcDayCycle::dayLength * 10.55);
         report("evening", run(ticksFor(0.1)));
         report("night", run(ticksFor(0.15)));

@@ -47,7 +47,7 @@ private:
             QcTestUtil::failCase(QStringLiteral("Test uses the creature %1, which the content does not have").arg(QString::fromLatin1(name)));
             return 0;
         }
-        return m_server->mobs().spawn(*type, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
+        return m_server->mobs().spawn(*type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
     }
 
     // The content with the weather settings changed by `change`.

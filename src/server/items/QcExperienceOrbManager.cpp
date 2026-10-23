@@ -21,19 +21,19 @@ constexpr double floatSpeed = 1.0;
 // A cell of the merge grid as one key: mergeRadius-sized cells, 21 bits per axis.
 quint64 cellKey(qint64 x, qint64 y, qint64 z)
 {
-    constexpr qint64 mask = (qint64(1) << 21) - 1;
-    return (quint64(x & mask) << 42) | (quint64(y & mask) << 21) | quint64(z & mask);
+    constexpr qint64 mask = (qint64{1} << 21) - 1;
+    return (static_cast<quint64>(x & mask) << 42) | (static_cast<quint64>(y & mask) << 21) | static_cast<quint64>(z & mask);
 }
 
 qint64 cellOf(double coordinate)
 {
-    return qint64(std::floor(coordinate / QcExperienceOrbManager::mergeRadius));
+    return static_cast<qint64>(std::floor(coordinate / QcExperienceOrbManager::mergeRadius));
 }
 
 } // namespace
 
 QcExperienceOrbManager::QcExperienceOrbManager(quint64 seed)
-    : m_random(quint32(seed ^ (seed >> 32) ^ 0x0E9Bu))
+    : m_random(static_cast<quint32>(seed ^ (seed >> 32) ^ 0x0E9Bu))
 {
 }
 

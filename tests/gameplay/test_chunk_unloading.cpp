@@ -155,15 +155,15 @@ private:
         flip(11, 0, 3);
 
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        m_server->mobs().spawn(pig, QcVec3{at(3, 0, 8).x + 0.5, double(at(3, 0, 8).y), at(3, 0, 8).z + 0.5}, m_nextId++, false, true);
+        m_server->mobs().spawn(pig, QcVec3{at(3, 0, 8).x + 0.5, static_cast<double>(at(3, 0, 8).y), at(3, 0, 8).z + 0.5}, m_nextId++, false, true);
         QcItemEntityManager::Drop drop;
         drop.stack = stack("qtcraft:diamond", 3);
-        drop.position = {at(8, 0, 5).x + 0.5, double(at(8, 0, 5).y), at(8, 0, 5).z + 0.5};
+        drop.position = {at(8, 0, 5).x + 0.5, static_cast<double>(at(8, 0, 5).y), at(8, 0, 5).z + 0.5};
         m_server->items().spawn(drop, m_nextId++);
         QcArmourStand stand;
         stand.id = m_nextId++;
         stand.name = u"Keeper"_s;
-        stand.motion.position = {at(10, 0, 11).x + 0.5, double(at(10, 0, 11).y), at(10, 0, 11).z + 0.5};
+        stand.motion.position = {at(10, 0, 11).x + 0.5, static_cast<double>(at(10, 0, 11).y), at(10, 0, 11).z + 0.5};
         stand.item = u"qtcraft:armor_stand"_s;
         QVERIFY(m_server->stands().add(stand));
         chat(u"/setblock %1 %2 %3 qtcraft:sand"_s.arg(at(5, 6, 6).x).arg(at(5, 6, 6).y).arg(at(5, 6, 6).z));
@@ -415,7 +415,7 @@ private slots:
             QcExperienceOrb orb;
             orb.id = m_nextId++;
             orb.value = value;
-            orb.motion.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+            orb.motion.position = {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
             QVERIFY(m_server->orbs().add(orb));
         }
         ticks(20);
@@ -562,7 +562,7 @@ private slots:
         QByteArray steps;
         QDataStream stream(&steps, QIODevice::WriteOnly);
         stream.setVersion(QcSaveFile::streamVersion);
-        stream << quint32(1) << u"world.json"_s << false << qint64(1) << quint32(0);
+        stream << quint32{1} << u"world.json"_s << false << qint64{1} << quint32{0};
         QVERIFY(QcSaveFile::write(directory.filePath(u"save.journal"_s), "QCSJ", steps, 2).has_value());
         {
             QcServer server(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
@@ -610,7 +610,7 @@ private slots:
             QVERIFY(m_server->world().setBlock(here.offset(0, 40, 0), id("qtcraft:glass")));
             QcItemEntityManager::Drop drop;
             drop.stack = stack("qtcraft:stick", 1 + leg % 60);
-            drop.position = {here.x + 0.5, double(here.y + 41), here.z + 0.5};
+            drop.position = {here.x + 0.5, static_cast<double>(here.y + 41), here.z + 0.5};
             m_server->items().spawn(drop, m_nextId++);
             // Within the chat rate of a player (2 lines a second): one teleport per leg.
             ticks(10);
@@ -618,7 +618,7 @@ private slots:
             mostEntities = std::max(mostEntities, m_server->items().items().size());
             QVERIFY(m_server->chunkLoading().numbers().unsaved <= 2 * qsizetype(config.limits.unsavedChunks) + 25);
         }
-        const qsizetype square = qsizetype(2 * m_viewDistance + 3) * qsizetype(2 * m_viewDistance + 3);
+        const qsizetype square = static_cast<qsizetype>(2 * m_viewDistance + 3) * static_cast<qsizetype>(2 * m_viewDistance + 3);
         QVERIFY2(mostLoaded <= 2 * square, qPrintable(QString::number(mostLoaded)));
         QVERIFY2(mostEntities <= 30, qPrintable(QString::number(mostEntities)));
         QVERIFY(m_server->world().saves().storedChunkCount() >= legs);

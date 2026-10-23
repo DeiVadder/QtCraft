@@ -69,7 +69,7 @@ private:
     {
         const qint64 before = m_driver->framesHandled();
         for (const double ms : nowMs) {
-            m_nowNs = qint64(ms * double(msNs));
+            m_nowNs = static_cast<qint64>(ms * static_cast<double>(msNs));
             m_driver->onFrame();
         }
         return m_driver->framesHandled() - before;

@@ -53,7 +53,7 @@ QColor paintBricks(const QcTextureSpec &spec, int x, int y, QColor color)
 
 QColor paintLogSide(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    return (x + int(hashPixel(spec.seed, x, 0) % 3)) % 4 == 0 ? varied(spec, spec.secondary, x, y, 5) : color;
+    return (x + static_cast<int>(hashPixel(spec.seed, x, 0) % 3)) % 4 == 0 ? varied(spec, spec.secondary, x, y, 5) : color;
 }
 
 QColor paintLogTop(const QcTextureSpec &spec, int x, int y, QColor color)
@@ -64,7 +64,7 @@ QColor paintLogTop(const QcTextureSpec &spec, int x, int y, QColor color)
     if (radius > 6.8) {
         return varied(spec, spec.secondary, x, y, 5);
     }
-    return int(radius) % 2 == 0 ? scaled(color, 0.88) : color;
+    return static_cast<int>(radius) % 2 == 0 ? scaled(color, 0.88) : color;
 }
 
 QColor paintLeaves(const QcTextureSpec &spec, int x, int y, QColor color)
@@ -90,13 +90,13 @@ QColor paintGlass(const QcTextureSpec &spec, int x, int y, QColor)
 
 QColor paintGrassSide(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const int fringe = 3 + int(hashPixel(spec.seed + 17, x, 0) % 3);
+    const int fringe = 3 + static_cast<int>(hashPixel(spec.seed + 17, x, 0) % 3);
     return y < fringe ? varied(spec, spec.secondary, x, y, 3) : color;
 }
 
 QColor paintOre(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const int cluster = int(hashPixel(spec.seed + 19, x / 3, y / 3) % 7);
+    const int cluster = static_cast<int>(hashPixel(spec.seed + 19, x / 3, y / 3) % 7);
     const bool inside = (hashPixel(spec.seed + 23, x, y) % 3) != 0;
     return cluster == 0 && inside ? varied(spec, spec.secondary, x, y, 29) : color;
 }
@@ -232,7 +232,7 @@ QColor paintTorchItem(const QcTextureSpec &spec, int x, int y, QColor)
     // A thin stick with a glowing tip and a flame tapering upwards, narrower at the bottom than at
     // its widest row so it reads as a flame, not as a cross.
     static constexpr std::array<std::pair<int, int>, 6> flameRows = {{{8, 8}, {7, 8}, {7, 9}, {6, 9}, {6, 9}, {7, 8}}};
-    const bool inFlame = y >= 1 && y <= 6 && x >= flameRows[std::size_t(y - 1)].first && x <= flameRows[std::size_t(y - 1)].second;
+    const bool inFlame = y >= 1 && y <= 6 && x >= flameRows[static_cast<std::size_t>(y - 1)].first && x <= flameRows[static_cast<std::size_t>(y - 1)].second;
     const bool stick = (x == 7 || x == 8) && y >= 7 && y <= 15;
     if (stick) {
         return varied(spec, x == 8 ? scaled(spec.primary, 0.75) : spec.primary, x, y, 5);
@@ -242,7 +242,7 @@ QColor paintTorchItem(const QcTextureSpec &spec, int x, int y, QColor)
     }
 
     const bool core = (x == 7 || x == 8) && y >= 2 && y <= 5;
-    const bool edge = x == flameRows[std::size_t(y - 1)].first || x == flameRows[std::size_t(y - 1)].second;
+    const bool edge = x == flameRows[static_cast<std::size_t>(y - 1)].first || x == flameRows[static_cast<std::size_t>(y - 1)].second;
     if (y == 6) {
         return QColor(150, 60, 20);
     }
@@ -331,7 +331,7 @@ QColor paintFire(const QcTextureSpec &spec, int x, int y, QColor color)
 {
     // Each column carries a tongue of flame up to its own height, narrowing towards the tip.
     const double height = 7.0 + 7.0 * (0.5 + 0.5 * noise(spec.seed + 71, x / 2, 0)) + 1.5 * std::sin(x * 1.3);
-    const double rise = double(size - y);
+    const double rise = static_cast<double>(size - y);
     if (rise > height || (rise > height - 3.0 && (hashPixel(spec.seed + 73, x, y) % 3) == 0)) {
         return clear();
     }
@@ -361,7 +361,7 @@ QColor paintFlower(const QcTextureSpec &spec, int x, int y, QColor)
 
 QColor paintTallGrass(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const int height = 5 + int(hashPixel(spec.seed + 59, x, 0) % 10);
+    const int height = 5 + static_cast<int>(hashPixel(spec.seed + 59, x, 0) % 10);
     const bool blade = (hashPixel(spec.seed + 61, x, 1) % 3) != 0 && y >= size - height;
     if (!blade) {
         return clear();
@@ -488,7 +488,7 @@ QColor paintSleeve(const QcTextureSpec &spec, int x, int y, QColor)
 {
     const double weave = (x + y) % 2 == 0 ? 1.0 : 0.96;
     // Folds run diagonally around the sleeve.
-    const double fold = 1.0 - 0.08 * std::max(0.0, std::sin((x + 2.0 * y + double(spec.seed % 7)) * 0.55));
+    const double fold = 1.0 - 0.08 * std::max(0.0, std::sin((x + 2.0 * y + static_cast<double>(spec.seed % 7)) * 0.55));
     const double shade = roundShade(x) * weave * fold * (1.0 + spec.variation * noise(spec.seed, x, y));
     if (y >= 13) {
         return scaled(spec.secondary, shade);

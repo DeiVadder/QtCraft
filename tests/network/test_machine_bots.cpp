@@ -186,7 +186,7 @@ private slots:
         static const QRegularExpression listening(u"Listening on port (\\d+)"_s);
         QVERIFY2(QTest::qWaitFor([&] {
             readServer();
-            m_port = quint16(listening.match(m_serverOutput).captured(1).toUInt());
+            m_port = static_cast<quint16>(listening.match(m_serverOutput).captured(1).toUInt());
             return m_port != 0 || m_server.state() == QProcess::NotRunning;
         }, timeoutMs), qPrintable(m_serverOutput));
         QVERIFY(console(u"gamerule mobSpawning false"_s, u"mobSpawning"_s));
@@ -195,9 +195,9 @@ private slots:
         joinAndWait(m_bob);
         QVERIFY(console(u"op Alice"_s, u"Alice is an operator"_s));
         const QJsonArray position = m_alice.request(command(u"status"_s)).value(u"position"_s).toArray();
-        m_x = int(std::floor(position[0].toDouble()));
-        m_y = int(std::floor(position[1].toDouble()));
-        m_z = int(std::floor(position[2].toDouble()));
+        m_x = static_cast<int>(std::floor(position[0].toDouble()));
+        m_y = static_cast<int>(std::floor(position[1].toDouble()));
+        m_z = static_cast<int>(std::floor(position[2].toDouble()));
         for (const QString &give : {u"/give wheat 64"_s, u"/give string 64"_s, u"/give string 64"_s, u"/give dirt 16"_s, u"/give water_bucket 1"_s,
                                     u"/give diamond 5"_s}) {
             const QJsonObject answer = m_alice.request(command(u"chat"_s, {{u"text"_s, give}}));

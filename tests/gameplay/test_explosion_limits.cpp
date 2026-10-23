@@ -40,7 +40,7 @@ private:
         primed.block = id("qtcraft:explosive");
         primed.fuse = fuse;
         const QcBlockPos pos = at(x, y, z);
-        primed.motion.position = {pos.x + 0.5, double(pos.y), pos.z + 0.5};
+        primed.motion.position = {pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5};
         return {primed, order};
     }
 
@@ -79,10 +79,10 @@ private slots:
     {
         // More blocks in a tick than a client takes in one batch (explosionBlocksPerTick raised far
         // above QcMsg::BlockBatch::maxUpdates) go out in several batches, in order.
-        constexpr qsizetype most = qsizetype(QcMsg::BlockBatch::maxUpdates);
+        constexpr qsizetype most = static_cast<qsizetype>(QcMsg::BlockBatch::maxUpdates);
         QList<QcMsg::BlockUpdate> updates;
         for (qsizetype i = 0; i < 2 * most + 1; ++i) {
-            updates.append({QcBlockPos{int(i % 4096), int(i / 4096), 0}, qcAirBlockId});
+            updates.append({QcBlockPos{static_cast<int>(i % 4096), static_cast<int>(i / 4096), 0}, qcAirBlockId});
         }
         const QList<QcMsg::BlockBatch> batches = QcBlastBlocks::pieces(updates, most);
         QCOMPARE(batches.size(), qsizetype(3));

@@ -9,12 +9,13 @@
 namespace {
 
 using Step = QcUiScaling::Step;
-static_assert(int(Step::Auto) == int(QcUiScale::Step::Auto) && int(Step::Percent75) == int(QcUiScale::Step::Percent75)
-                  && int(Step::Percent100) == int(QcUiScale::Step::Percent100)
-                  && int(Step::Percent125) == int(QcUiScale::Step::Percent125)
-                  && int(Step::Percent150) == int(QcUiScale::Step::Percent150)
-                  && int(Step::Percent175) == int(QcUiScale::Step::Percent175)
-                  && int(Step::Percent200) == int(QcUiScale::Step::Percent200),
+static_assert(static_cast<int>(Step::Auto) == static_cast<int>(QcUiScale::Step::Auto)
+    && static_cast<int>(Step::Percent75) == static_cast<int>(QcUiScale::Step::Percent75)
+                  && static_cast<int>(Step::Percent100) == static_cast<int>(QcUiScale::Step::Percent100)
+                  && static_cast<int>(Step::Percent125) == static_cast<int>(QcUiScale::Step::Percent125)
+                  && static_cast<int>(Step::Percent150) == static_cast<int>(QcUiScale::Step::Percent150)
+                  && static_cast<int>(Step::Percent175) == static_cast<int>(QcUiScale::Step::Percent175)
+                  && static_cast<int>(Step::Percent200) == static_cast<int>(QcUiScale::Step::Percent200),
               "QcUiScaling::Step follows QcUiScale::Step");
 
 } // namespace
@@ -33,7 +34,7 @@ bool QcUiScaling::known(Step step)
 void QcUiScaling::setSetting(Step step)
 {
     if (!known(step)) {
-        qCWarning(lcGame) << "UI scale: ignoring unknown step" << int(step);
+        qCWarning(lcGame) << "UI scale: ignoring unknown step" << static_cast<int>(step);
         return;
     }
     // The same step again changes nothing (Main.qml binds it on every settings change).

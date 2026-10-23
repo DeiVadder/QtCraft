@@ -29,7 +29,7 @@ QcChunkPos chunkOfColumn(int x, int z)
 
 qint64 QcBlockCommands::BlockArea::volume() const
 {
-    return (qint64(high.x) - low.x + 1) * (qint64(high.y) - low.y + 1) * (qint64(high.z) - low.z + 1);
+    return (static_cast<qint64>(high.x) - low.x + 1) * (static_cast<qint64>(high.y) - low.y + 1) * (static_cast<qint64>(high.z) - low.z + 1);
 }
 
 QcBlockCommands::QcBlockCommands(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcPendingCommands &pending)
@@ -257,7 +257,7 @@ void QcBlockCommands::regenerate(const QcCommandContext &context)
 
     const QcChunkPos low = chunkOfColumn(std::min(from->x, to->x), std::min(from->z, to->z));
     const QcChunkPos high = chunkOfColumn(std::max(from->x, to->x), std::max(from->z, to->z));
-    if ((qint64(high.x) - low.x + 1) * (qint64(high.z) - low.z + 1) > QcChunkRegeneration::maxChunks) {
+    if ((static_cast<qint64>(high.x) - low.x + 1) * (static_cast<qint64>(high.z) - low.z + 1) > QcChunkRegeneration::maxChunks) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "At most %1 chunks at once"), {QString::number(QcChunkRegeneration::maxChunks)});
         return;
     }

@@ -317,15 +317,15 @@ private slots:
         QByteArray payload;
         QDataStream stream(&payload, QIODevice::WriteOnly);
         stream.setVersion(QDataStream::Qt_6_8);
-        stream << 0.5 << 70.0 << 0.5 << 0.0 << 0.0 << 0.0 << true << 90.0f << 0.0f << 12.0 << qint32(2)
-               << quint32(QcInventory::slotCount);
+        stream << 0.5 << 70.0 << 0.5 << 0.0 << 0.0 << 0.0 << true << 90.0f << 0.0f << 12.0 << qint32{2}
+               << static_cast<quint32>(QcInventory::slotCount);
         for (int i = 0; i < QcInventory::slotCount; ++i) {
-            stream << (i == 0 ? u"a:stone"_s : QString()) << qint32(i == 0 ? 5 : 0) << qint32(0);
+            stream << (i == 0 ? u"a:stone"_s : QString()) << static_cast<qint32>(i == 0 ? 5 : 0) << qint32{0};
         }
         QByteArray file("QCPL");
         QDataStream header(&file, QIODevice::Append);
         header.setVersion(QDataStream::Qt_6_8);
-        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
+        header << quint16{1} << static_cast<quint32>(payload.size()) << qcCrc32(payload);
         file.append(payload);
         QFile old(dir.filePath(u"players/"_s + QcWorldStorage::playerFileName(u"Old"_s)));
         QVERIFY(old.open(QIODevice::WriteOnly));
@@ -436,7 +436,7 @@ private slots:
         {
             QDataStream stream(&payload, QIODevice::WriteOnly);
             stream.setVersion(QDataStream::Qt_6_8);
-            stream << quint32(2) << u"a:air_like"_s << u"a:stone"_s << quint32(1);
+            stream << quint32{2} << u"a:air_like"_s << u"a:stone"_s << quint32{1};
             QcProtocol::writeChunk(stream, chunk);
         }
 
@@ -445,8 +445,8 @@ private slots:
         QDataStream header(&file);
         header.setVersion(QDataStream::Qt_6_8);
         header.writeRawData("QCRG", 4);
-        header << quint16(1) << quint32(payload.size()) << qcCrc32(payload);
-        header.writeRawData(payload.constData(), int(payload.size()));
+        header << quint16{1} << static_cast<quint32>(payload.size()) << qcCrc32(payload);
+        header.writeRawData(payload.constData(), static_cast<int>(payload.size()));
         file.close();
 
         auto content = std::make_shared<QcContentRegistry>();

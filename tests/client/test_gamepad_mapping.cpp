@@ -113,7 +113,8 @@ private slots:
         for (std::size_t button = 0; button < qcGamepadButtonCount; ++button) {
             int actions = 0;
             for (std::size_t action = 0; action < QcGamepadMapping::actionCount; ++action) {
-                actions += int(QcGamepadMapping::held(Action(action), onlyPressed(QcGamepadButton(button)), bindings, false));
+                const QcGamepadState state = onlyPressed(static_cast<QcGamepadButton>(button));
+                actions += static_cast<int>(QcGamepadMapping::held(static_cast<Action>(action), state, bindings, false));
             }
             QCOMPARE(actions, QcGamepadButton(button) == QcGamepadButton::Guide ? 0 : 1);
         }

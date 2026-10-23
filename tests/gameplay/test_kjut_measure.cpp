@@ -48,7 +48,7 @@ class TestKjutMeasure : public QcServerTestFixture
         QList<quint32> ids;
         for (int i = 0; i < families; ++i) {
             const double angle = 2.0 * std::numbers::pi * i / families;
-            const QcVec3 at{m_feet.x + 0.5 + 12.0 * std::cos(angle), double(m_feet.y), m_feet.z + 0.5 + 12.0 * std::sin(angle)};
+            const QcVec3 at{m_feet.x + 0.5 + 12.0 * std::cos(angle), static_cast<double>(m_feet.y), m_feet.z + 0.5 + 12.0 * std::sin(angle)};
             ids.append(m_server->mobs().spawn(type, at, m_server->entities().newId()));
         }
         return ids;
@@ -91,7 +91,7 @@ class TestKjutMeasure : public QcServerTestFixture
         for (int i = 0; i < count; ++i) {
             nanoseconds += step();
         }
-        return double(nanoseconds) / 1e6 / count;
+        return static_cast<double>(nanoseconds) / 1e6 / count;
     }
 
 private slots:
@@ -114,7 +114,7 @@ private slots:
                     return mob.type == kind(name) || mob.type == kind(u"qtcraft:kjut_child"_s);
                 });
                 qInfo("MEASURE kjut %s round %d: %lld creatures, server tick %.3f ms (%.2f us per creature)", qPrintable(name), r,
-                      qlonglong(creatures), ms, ms * 1000.0 / double(creatures));
+                      static_cast<qlonglong>(creatures), ms, ms * 1000.0 / static_cast<double>(creatures));
                 const qsizetype expected = name == u"qtcraft:kjut"_s ? families * (1 + childrenEach) : families;
                 QCOMPARE(creatures, expected);
             }

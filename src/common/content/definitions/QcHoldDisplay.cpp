@@ -51,24 +51,24 @@ namespace QcHoldNames {
 
 QString category(QcHoldCategory category)
 {
-    return categoryNames().value(int(category));
+    return categoryNames().value(static_cast<int>(category));
 }
 
 std::optional<QcHoldCategory> category(const QString &name)
 {
     const qsizetype index = categoryNames().indexOf(name);
-    return index < 0 ? std::nullopt : std::optional(QcHoldCategory(index));
+    return index < 0 ? std::nullopt : std::optional(static_cast<QcHoldCategory>(index));
 }
 
 QString grip(QcHoldGrip grip)
 {
-    return gripNames().value(int(grip));
+    return gripNames().value(static_cast<int>(grip));
 }
 
 std::optional<QcHoldGrip> grip(const QString &name)
 {
     const qsizetype index = gripNames().indexOf(name);
-    return index < 0 ? std::nullopt : std::optional(QcHoldGrip(index));
+    return index < 0 ? std::nullopt : std::optional(static_cast<QcHoldGrip>(index));
 }
 
 } // namespace QcHoldNames

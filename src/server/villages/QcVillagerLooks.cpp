@@ -11,7 +11,7 @@ template<typename T>
 T pick(const QList<T> &choices, const QList<T> &defaults, quint32 seed, int shift, const T &fallback)
 {
     const QList<T> &list = choices.isEmpty() ? defaults : choices;
-    return list.isEmpty() ? fallback : list[qsizetype(((seed >> shift) & 0xffu) % quint32(list.size()))];
+    return list.isEmpty() ? fallback : list[static_cast<qsizetype>(((seed >> shift) & 0xffu) % static_cast<quint32>(list.size()))];
 }
 
 const QcVillagerLook &lookOf(const QcContentRegistry &content, const QcVillagerSettings &species, const QString &style)

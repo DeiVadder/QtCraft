@@ -66,14 +66,14 @@ QcNoise::QcNoise(quint64 seed)
 {
     std::array<quint8, 256> values{};
     for (int i = 0; i < 256; ++i) {
-        values[std::size_t(i)] = quint8(i);
+        values[static_cast<std::size_t>(i)] = static_cast<quint8>(i);
     }
 
     SplitMix random{seed};
     // Fisher-Yates shuffle driven by SplitMix64: platform independent, unlike std::shuffle.
     for (int i = 255; i > 0; --i) {
-        const auto j = std::size_t(random.next() % quint64(i + 1));
-        std::swap(values[std::size_t(i)], values[j]);
+        const auto j = static_cast<std::size_t>(random.next() % static_cast<quint64>(i + 1));
+        std::swap(values[static_cast<std::size_t>(i)], values[j]);
     }
 
     for (std::size_t i = 0; i < 512; ++i) {
@@ -86,9 +86,9 @@ double QcNoise::noise3(double x, double y, double z) const
     const double fx = std::floor(x);
     const double fy = std::floor(y);
     const double fz = std::floor(z);
-    const int X = int(qint64(fx) & 255);
-    const int Y = int(qint64(fy) & 255);
-    const int Z = int(qint64(fz) & 255);
+    const int X = static_cast<int>(static_cast<qint64>(fx) & 255);
+    const int Y = static_cast<int>(static_cast<qint64>(fy) & 255);
+    const int Z = static_cast<int>(static_cast<qint64>(fz) & 255);
     x -= fx;
     y -= fy;
     z -= fz;
@@ -97,7 +97,7 @@ double QcNoise::noise3(double x, double y, double z) const
     const double v = fade(y);
     const double w = fade(z);
 
-    const auto p = [this](int index) { return int(m_permutation[std::size_t(index)]); };
+    const auto p = [this](int index) { return static_cast<int>(m_permutation[static_cast<std::size_t>(index)]); };
     const int A = p(X) + Y;
     const int AA = p(A) + Z;
     const int AB = p(A + 1) + Z;
@@ -116,15 +116,15 @@ double QcNoise::noise2(double x, double z) const
 {
     const double fx = std::floor(x);
     const double fz = std::floor(z);
-    const int X = int(qint64(fx) & 255);
-    const int Z = int(qint64(fz) & 255);
+    const int X = static_cast<int>(static_cast<qint64>(fx) & 255);
+    const int Z = static_cast<int>(static_cast<qint64>(fz) & 255);
     x -= fx;
     z -= fz;
 
     const double u = fade(x);
     const double w = fade(z);
 
-    const auto p = [this](int index) { return int(m_permutation[std::size_t(index)]); };
+    const auto p = [this](int index) { return static_cast<int>(m_permutation[static_cast<std::size_t>(index)]); };
     const int A = p(X) + Z;
     const int B = p(X + 1) + Z;
 
@@ -179,14 +179,15 @@ quint64 qcNameSalt(const QString &name)
     quint64 hash = 0xCBF29CE484222325ull;
     const QByteArray bytes = name.toUtf8();
     for (const char byte : bytes) {
-        hash = (hash ^ quint8(byte)) * 0x100000001B3ull;
+        hash = (hash ^ static_cast<quint8>(byte)) * 0x100000001B3ull;
     }
     return hash;
 }
 
 double qcPositionRandom(quint64 seed, int x, int y, int z)
 {
-    SplitMix random{seed ^ (quint64(quint32(x)) * 0x9E3779B97F4A7C15ull) ^ (quint64(quint32(y)) * 0xC2B2AE3D27D4EB4Full)
-                    ^ (quint64(quint32(z)) * 0x165667B19E3779F9ull)};
-    return double(random.next() >> 11) * (1.0 / 9007199254740992.0);
+    SplitMix random{seed ^ (static_cast<quint64>(static_cast<quint32>(x)) * 0x9E3779B97F4A7C15ull)
+        ^ (static_cast<quint64>(static_cast<quint32>(y)) * 0xC2B2AE3D27D4EB4Full)
+                    ^ (static_cast<quint64>(static_cast<quint32>(z)) * 0x165667B19E3779F9ull)};
+    return static_cast<double>(random.next() >> 11) * (1.0 / 9007199254740992.0);
 }

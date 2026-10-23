@@ -40,7 +40,7 @@ double clockAngle(double worldTime)
 ClockTime clockTime(double worldTime)
 {
     // Phase 0 is sunrise, shown as 6:00.
-    const int minutes = int(std::floor(QcDayCycle::phase(worldTime) * 24.0 * 60.0)) + 6 * 60;
+    const int minutes = static_cast<int>(std::floor(QcDayCycle::phase(worldTime) * 24.0 * 60.0)) + 6 * 60;
     const int ofDay = minutes % (24 * 60);
     return {ofDay / 60, ofDay % 60};
 }

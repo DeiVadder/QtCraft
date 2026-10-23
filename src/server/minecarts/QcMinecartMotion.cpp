@@ -138,7 +138,7 @@ bool headsIntoUnloaded(const QcMinecart &cart, const QcBlockAccess &world, doubl
 // raised end) stands in the cart's way: a buffer stop, also for a powered rail starting a cart.
 bool blockedBeyond(const Segment &segment, int end, const QcBlockAccess &world)
 {
-    const QcRails::End &at = segment.track.ends[std::size_t(end)];
+    const QcRails::End &at = segment.track.ends[static_cast<std::size_t>(end)];
     const QcBlockPos beyond = qcNeighbour(segment.cell, at.side).offset(0, at.raised ? 1 : 0, 0);
     return world.blockAt(beyond) && !QcPhysics::collisionBoxesAt(world, beyond).isEmpty();
 }
@@ -146,7 +146,7 @@ bool blockedBeyond(const Segment &segment, int end, const QcBlockAccess &world)
 // Whether the cells beyond end `end` of the segment lie in a chunk that is not loaded.
 bool beyondUnloaded(const Segment &segment, int end, const QcBlockAccess &world)
 {
-    return !world.blockAt(qcNeighbour(segment.cell, segment.track.ends[std::size_t(end)].side));
+    return !world.blockAt(qcNeighbour(segment.cell, segment.track.ends[static_cast<std::size_t>(end)].side));
 }
 
 // What a powered rail does to the speed: an unpowered one brakes, a powered one speeds up a rolling
@@ -284,7 +284,7 @@ private:
 QcVec3 exitVelocity(const Run &run, int end)
 {
     const QcVec3 velocity = run.segment.direction * run.speed;
-    const QcFaceOffset out = qcFaceOffset(run.segment.track.ends[std::size_t(end)].side);
+    const QcFaceOffset out = qcFaceOffset(run.segment.track.ends[static_cast<std::size_t>(end)].side);
     const double horizontal = std::hypot(velocity.x, velocity.z);
     return {out.dx * horizontal, velocity.y, out.dz * horizontal};
 }
@@ -311,7 +311,7 @@ void leaveTrack(QcMinecart &cart, const Run &run, const QcBlockAccess &world)
 
 float yawAlong(const QcVec3 &direction)
 {
-    return qcNormalizedAngle(float(qRadiansToDegrees(std::atan2(direction.x, -direction.z))));
+    return qcNormalizedAngle(static_cast<float>(qRadiansToDegrees(std::atan2(direction.x, -direction.z))));
 }
 
 std::optional<Segment> segmentAt(const QcVec3 &feet, const QcRails::Table &rails, const QcBlockAccess &world, bool fromAbove)

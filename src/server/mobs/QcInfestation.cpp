@@ -50,7 +50,7 @@ quint32 QcInfestation::release(QcServerState &state, const QcBlockDefinition &de
     if (!type) {
         return 0;
     }
-    const QcVec3 feet{pos.x + 0.5, double(pos.y), pos.z + 0.5};
+    const QcVec3 feet{pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5};
     return state.entities().creatures().spawn(*type, feet, state.entities().newId());
 }
 
@@ -74,7 +74,7 @@ void QcInfestation::tick()
         wake(mob);
     }
     for (const QcCreature &mob : std::as_const(idle)) {
-        hide(mob, qcAllBlockFaces[m_state.random().bounded(quint32(qcBlockFaceCount))]);
+        hide(mob, qcAllBlockFaces[m_state.random().bounded(static_cast<quint32>(qcBlockFaceCount))]);
     }
 }
 
@@ -146,11 +146,11 @@ const QcInfestation::Map &QcInfestation::map()
         }
         // Every state of an infested block lets its creature out.
         for (qsizetype id = 0; id < content.stateCount(); ++id) {
-            const QcBlockDefinition &definition = content.block(QcBlockId(id));
+            const QcBlockDefinition &definition = content.block(static_cast<QcBlockId>(id));
             const std::optional<int> kind = definition.infestsMob.isEmpty() ? std::nullopt : content.mobIndex(definition.infestsMob);
             const std::optional<QcBlockId> base = definition.infestsBlock.isEmpty() ? std::nullopt : content.blockId(definition.infestsBlock);
             if (kind) {
-                m_map.waking[*kind].insert(QcBlockId(id), base.value_or(qcAirBlockId));
+                m_map.waking[*kind].insert(static_cast<QcBlockId>(id), base.value_or(qcAirBlockId));
             }
         }
         m_mapped = true;

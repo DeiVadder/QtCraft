@@ -15,7 +15,7 @@
 struct QcPackedMesh
 {
     enum class List : quint8 { Opaque, Cutout, Translucent, Water, Underside };
-    static constexpr int listCount = int(List::Underside) + 1;
+    static constexpr int listCount = static_cast<int>(List::Underside) + 1;
     static constexpr int indexAlignment = 4;
 
     // Where one list lies in the packed data; indexCount 0 for an empty list.
@@ -31,7 +31,7 @@ struct QcPackedMesh
     QByteArray indices;
     std::array<Place, listCount> places{};
 
-    const Place &place(List list) const { return places[std::size_t(list)]; }
+    const Place &place(List list) const { return places[static_cast<std::size_t>(list)]; }
     bool isEmpty() const { return indices.isEmpty(); }
 
     static QcPackedMesh pack(const QcChunkMesh &mesh);

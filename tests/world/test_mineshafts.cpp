@@ -329,7 +329,7 @@ private slots:
         int nodes = 0;
         for (const auto &plan : std::as_const(m_plans)) {
             levels += plan->levels;
-            nodes += int(plan->nodes.size());
+            nodes += static_cast<int>(plan->nodes.size());
             const int region = settings.regionSize;
             QVERIFY(plan->minX >= plan->regionX * region && plan->maxX < (plan->regionX + 1) * region);
             QVERIFY(plan->minZ >= plan->regionZ * region && plan->maxZ < (plan->regionZ + 1) * region);
@@ -343,15 +343,15 @@ private slots:
         int spawners = 0;
         for (const auto &plan : std::as_const(m_plans)) {
             entrances += plan->entrance ? 1 : 0;
-            rooms += int(plan->rooms.size());
-            carts += int(plan->carts.size());
-            spawners += int(plan->spawners.size());
+            rooms += static_cast<int>(plan->rooms.size());
+            carts += static_cast<int>(plan->carts.size());
+            spawners += static_cast<int>(plan->spawners.size());
         }
         qInfo().noquote() << u"%1 mine shafts in %2 regions, %3 levels and %4 nodes on average; %5 entrances, %6 rooms, %7 carts, %8 spawners"_s
                                  .arg(m_plans.size())
                                  .arg((2 * regions + 1) * (2 * regions + 1))
-                                 .arg(double(levels) / m_plans.size(), 0, 'f', 2)
-                                 .arg(double(nodes) / m_plans.size(), 0, 'f', 1)
+                                 .arg(static_cast<double>(levels) / m_plans.size(), 0, 'f', 2)
+                                 .arg(static_cast<double>(nodes) / m_plans.size(), 0, 'f', 1)
                                  .arg(entrances)
                                  .arg(rooms)
                                  .arg(carts)
@@ -680,7 +680,7 @@ private slots:
                 terrain.generate(pos);
             }
             clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return double(end.tv_sec - start.tv_sec) + double(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
         };
         const auto area = [](int offsetX, int offsetZ) {
             QList<QcChunkPos> chunks;
@@ -704,7 +704,8 @@ private slots:
             withTime += seconds(with, chunks);
             count += chunks.size();
         }
-        qInfo().noquote() << u"chunks/s without mine shafts %1, with %2"_s.arg(double(count) / plainTime, 0, 'f', 1).arg(double(count) / withTime, 0, 'f', 1);
+        qInfo().noquote() << u"chunks/s without mine shafts %1, with %2"_s.arg(static_cast<double>(count) / plainTime, 0, 'f', 1)
+            .arg(static_cast<double>(count) / withTime, 0, 'f', 1);
 
         // Only the chunks of one mine shaft, its plan made afresh.
         const QList<QcChunkPos> chunks = chunksOf(*m_plans.constFirst());
@@ -712,7 +713,9 @@ private slots:
         const QcTerrainGenerator plainAgain(without, seed);
         const double c = seconds(plainAgain, chunks);
         const double d = seconds(withAgain, chunks);
-        qInfo().noquote() << u"chunks/s of a mine shaft's %1 chunks without mine shafts %2, with %3"_s.arg(chunks.size()).arg(double(chunks.size()) / c, 0, 'f', 1).arg(double(chunks.size()) / d, 0, 'f', 1);
+        qInfo().noquote() << u"chunks/s of a mine shaft's %1 chunks without mine shafts %2, with %3"_s.arg(chunks.size())
+            .arg(static_cast<double>(chunks.size()) / c, 0, 'f', 1)
+            .arg(static_cast<double>(chunks.size()) / d, 0, 'f', 1);
     }
 };
 

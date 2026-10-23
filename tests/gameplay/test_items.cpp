@@ -17,7 +17,7 @@ constexpr double dt = QcPhysics::tickDuration;
 
 int ticksFor(double seconds)
 {
-    return int(std::ceil(seconds / dt));
+    return static_cast<int>(std::ceil(seconds / dt));
 }
 
 } // namespace
@@ -226,7 +226,7 @@ private slots:
             stone += entry.stack.item == item("qtcraft:stone") ? 1 : 0;
             pickaxes += entry.stack.item == pickaxe ? 1 : 0;
             if (entry.stack.item == map) {
-                maps.append(entry.stack.count * 100 + int(entry.stack.mapId()));
+                maps.append(entry.stack.count * 100 + static_cast<int>(entry.stack.mapId()));
             }
         }
         std::ranges::sort(maps);
@@ -267,7 +267,7 @@ private slots:
             const int row = (i / 16) % 16;
             const int layer = i / 256;
             const QcVec3 position{column - 8.0 + 0.5, 64.0 + layer * 3.0, row - 8.0 + 0.5};
-            items.spawn(dropAt({kinds[i % 3], 1, 0}, position), quint32(i + 1));
+            items.spawn(dropAt({kinds[i % 3], 1, 0}, position), static_cast<quint32>(i + 1));
         }
 
         QCOMPARE(items.items().size(), QcItemEntityManager::activeLimit);
@@ -285,12 +285,12 @@ private slots:
     {
         QcItemEntityManager items(m_content, 1);
         for (int i = 0; i < QcItemEntityManager::activeLimit; ++i) {
-            items.spawn(dropAt({item("qtcraft:dirt"), 1, 0}, {0.5, 64.0, 0.5}), quint32(i + 1));
+            items.spawn(dropAt({item("qtcraft:dirt"), 1, 0}, {0.5, 64.0, 0.5}), static_cast<quint32>(i + 1));
         }
 
         // Each waiting drop lies far from the others, so they cannot be combined.
         for (int i = 0; i < QcItemEntityManager::queueLimit + 10; ++i) {
-            items.spawn(dropAt({item("qtcraft:stone"), 1, 0}, {double(i) * 3.0, 64.0, 0.5}), 0);
+            items.spawn(dropAt({item("qtcraft:stone"), 1, 0}, {static_cast<double>(i) * 3.0, 64.0, 0.5}), 0);
         }
         QCOMPARE(items.queued().size(), QcItemEntityManager::queueLimit);
         QCOMPARE(items.discardedCount(), 10);
@@ -298,7 +298,7 @@ private slots:
         // Close equal drops waiting in the queue combine into one entry.
         QcItemEntityManager combined(m_content, 1);
         for (int i = 0; i < QcItemEntityManager::activeLimit; ++i) {
-            combined.spawn(dropAt({item("qtcraft:dirt"), 1, 0}, {0.5, 64.0, 0.5}), quint32(i + 1));
+            combined.spawn(dropAt({item("qtcraft:dirt"), 1, 0}, {0.5, 64.0, 0.5}), static_cast<quint32>(i + 1));
         }
 
         combined.spawn(dropAt({item("qtcraft:stone"), 3, 0}, {0.5, 64.0, 0.5}), 0);
@@ -313,7 +313,7 @@ private slots:
         QcItemEntityManager items(m_content, 1);
         QList<QcItemEntityManager::Drop> drops;
         for (int i = 0; i < QcItemEntityManager::totalLimit + 100; ++i) {
-            drops.append(dropAt({item("qtcraft:dirt"), 1, 0}, {double(i) * 2.0, 64.0, 0.5}));
+            drops.append(dropAt({item("qtcraft:dirt"), 1, 0}, {static_cast<double>(i) * 2.0, 64.0, 0.5}));
         }
         drops.append(dropAt({qcNoItem, 1, 0}, {0.5, 64.0, 0.5}));
 
@@ -336,8 +336,8 @@ private slots:
         QcItemEntityManager items(m_content, 1);
         QList<QcItemEntityManager::Drop> drops;
         for (int i = 0; i < 2000; ++i) {
-            QcItemEntityManager::Drop drop = dropAt({item("qtcraft:dirt"), 1, 0}, {double(i) * 3.0, 64.0, 0.5});
-            drop.age = double(i % 100);
+            QcItemEntityManager::Drop drop = dropAt({item("qtcraft:dirt"), 1, 0}, {static_cast<double>(i) * 3.0, 64.0, 0.5});
+            drop.age = static_cast<double>(i % 100);
             drops.append(drop);
         }
         quint32 nextId = 1;
@@ -378,7 +378,7 @@ private slots:
         // Only the first 300 items stay loaded: all of them are awake now; nothing moved or vanished.
         const auto firstLoaded = [](const QcVec3 &position) { return position.x < 900.0; };
         const auto keep = [](quint32, const QcItemStack &stack) { return stack.count; };
-        const auto noId = [] { return quint32(0); };
+        const auto noId = [] { return quint32{0}; };
         for (int i = 0; i < 3; ++i) {
             tickOnce(items, world, {}, QcItemEntityManager::TickCallbacks{firstLoaded, keep, noId});
         }
@@ -403,7 +403,7 @@ private slots:
         QcItemEntityManager items(m_content, 1);
         QList<QcItemEntityManager::Drop> drops;
         for (int i = 0; i < QcItemEntityManager::activeLimit + 20; ++i) {
-            QcItemEntityManager::Drop drop = dropAt({item("qtcraft:dirt"), 1, 0}, {double(i) * 3.0, 64.0, 0.5});
+            QcItemEntityManager::Drop drop = dropAt({item("qtcraft:dirt"), 1, 0}, {static_cast<double>(i) * 3.0, 64.0, 0.5});
             drop.age = 100.0 + i % 100;
             drops.append(drop);
         }
@@ -428,7 +428,7 @@ private slots:
         QcItemEntityManager full(m_content, 1);
         QList<QcItemEntityManager::Drop> drops;
         for (int i = 0; i < QcItemEntityManager::totalLimit + 7; ++i) {
-            drops.append(dropAt({item("qtcraft:dirt"), 1, 0}, {double(i) * 3.0, 64.0, 0.5}));
+            drops.append(dropAt({item("qtcraft:dirt"), 1, 0}, {static_cast<double>(i) * 3.0, 64.0, 0.5}));
         }
         quint32 nextId = 1;
         full.restore(drops, [&nextId] { return nextId++; });

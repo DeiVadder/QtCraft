@@ -28,7 +28,7 @@ protected:
             }
         } else {
             for (qsizetype i = 0; i < stacks.size(); ++i) {
-                m_server->blockEntities().machine(pos)->stacks[std::size_t(i)] = stacks[i];
+                m_server->blockEntities().machine(pos)->stacks[static_cast<std::size_t>(i)] = stacks[i];
             }
         }
         m_server->noteContents(pos);
@@ -81,7 +81,7 @@ protected:
     // (0.5 is the middle of the cell in every turn).
     quint32 drop(double x, double y, double z, const QcItemStack &dropped)
     {
-        const QcBlockPos cell = at(int(std::floor(x)), int(std::floor(y)), int(std::floor(z)));
+        const QcBlockPos cell = at(static_cast<int>(std::floor(x)), static_cast<int>(std::floor(y)), static_cast<int>(std::floor(z)));
         QcItemEntityManager::Drop entity;
         entity.stack = dropped;
         entity.position = {cell.x + 0.5, cell.y + (y - std::floor(y)), cell.z + 0.5};

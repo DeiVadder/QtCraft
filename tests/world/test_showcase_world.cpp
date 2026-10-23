@@ -113,7 +113,7 @@ private:
         for (const QcWorldSetup::Mob &mob : mobs) {
             children += mob.children;
         }
-        return int(mobs.size()) + children;
+        return static_cast<int>(mobs.size()) + children;
     }
 
     // Distinct items in the server's chests.
@@ -390,7 +390,7 @@ private slots:
         QcServerConfig config;
         config.generator = u"showcase"_s;
         config.viewDistance = 1;
-        config.spawnColumn = std::array<int, 2>{int(std::floor(planned->position.x)), int(std::floor(planned->position.z)) + 3};
+        config.spawnColumn = std::array<int, 2>{static_cast<int>(std::floor(planned->position.x)), static_cast<int>(std::floor(planned->position.z)) + 3};
         QcServer server(config, content, QcWorldGenerators::create(u"showcase"_s, content, 0));
         QVERIFY(server.openWorld());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
@@ -404,7 +404,7 @@ private slots:
         }
 
         QVERIFY2(client.connection.isOpen(), qPrintable(client.connection.lastError()));
-        const QcBlockPos column{int(std::floor(planned->position.x)), 0, int(std::floor(planned->position.z))};
+        const QcBlockPos column{static_cast<int>(std::floor(planned->position.x)), 0, static_cast<int>(std::floor(planned->position.z))};
         QVERIFY(client.chunkLabels.value(column.chunk()).contains(*planned));
         QVERIFY(server.stop());
     }

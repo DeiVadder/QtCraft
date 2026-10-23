@@ -19,9 +19,9 @@ bool QcBlockEntities::Machine::isIdle() const
 QcBlockEntities::QcBlockEntities(std::shared_ptr<const QcContentRegistry> content)
     : m_content(std::move(content))
 {
-    m_plain.resize(std::size_t(m_content->stateCount()));
+    m_plain.resize(static_cast<std::size_t>(m_content->stateCount()));
     for (std::size_t id = 0; id < m_plain.size(); ++id) {
-        const QcBlockDefinition &block = m_content->block(QcBlockId(id));
+        const QcBlockDefinition &block = m_content->block(static_cast<QcBlockId>(id));
         m_plain[id] = block.containerSlots == 0 && !block.machine.isMachine() && !block.sapling.isSapling();
     }
 }
@@ -203,7 +203,7 @@ QList<QcItemStack> QcBlockEntities::fillPortable(QcBlockPos pos, const QcItemSta
     if (!held || !stack.hasContents()) {
         return held ? QList<QcItemStack>() : stack.contents();
     }
-    const int slotCount = int(held->stacks.size());
+    const int slotCount = static_cast<int>(held->stacks.size());
     held->stacks = QcPortableContainers::slotsOf(*m_content, stack, slotCount);
     return QcPortableContainers::leftOver(*m_content, stack, slotCount);
 }
@@ -475,7 +475,7 @@ void QcBlockEntities::removeSapling(QcBlockPos pos)
 QList<QcBlockEntities::Sapling> QcBlockEntities::saplingsInOrder() const
 {
     QList<Sapling> saplings;
-    saplings.reserve(qsizetype(m_saplings.size()));
+    saplings.reserve(static_cast<qsizetype>(m_saplings.size()));
     for (const auto &[order, sapling] : m_saplings) {
         saplings.append(sapling);
     }
@@ -485,7 +485,7 @@ QList<QcBlockEntities::Sapling> QcBlockEntities::saplingsInOrder() const
 QList<quint64> QcBlockEntities::saplingOrders() const
 {
     QList<quint64> orders;
-    orders.reserve(qsizetype(m_saplings.size()));
+    orders.reserve(static_cast<qsizetype>(m_saplings.size()));
     for (const auto &[order, sapling] : m_saplings) {
         orders.append(order);
     }

@@ -327,7 +327,7 @@ private slots:
         join();
         const QcBlockPos target = buildWallWithTargetBehind();
         // Dirt by hand: 0.5 * 1.5 s = 15 ticks.
-        const int enough = int(QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr) * QcPhysics::tickRate) + 2;
+        const int enough = static_cast<int>(QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr) * QcPhysics::tickRate) + 2;
 
         mine(target, enough);
         QCOMPARE(m_server->world().blockAt(target), std::optional<QcBlockId>(id("qtcraft:dirt")));
@@ -362,7 +362,7 @@ private slots:
         buildWallWithTargetBehind();
         // A pig behind the wall; no tick runs, so it stays there.
         const QcBlockPos pen = m_feet.offset(3, 0, 1);
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pen.x + 0.5, double(pen.y), pen.z + 0.5}, 600);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pen.x + 0.5, static_cast<double>(pen.y), pen.z + 0.5}, 600);
         const double health = m_server->mobs().find(pig)->health;
 
         m_client->connection.send(QcMsg::AttackEntity{pig});
@@ -416,9 +416,10 @@ private slots:
         const QcBlockPos eyeCell = m_feet.offset(0, 1, 0);
         const QcBlockPos target = m_feet.offset(2, 1, 0);
         m_server->world().setBlock(target, id("qtcraft:dirt"));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {m_feet.x + 0.5, double(m_feet.y), m_feet.z + 2.5}, 600);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s),
+            {m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 2.5}, 600);
         const double health = m_server->mobs().find(pig)->health;
-        const int enough = int(QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr) * QcPhysics::tickRate) + 2;
+        const int enough = static_cast<int>(QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr) * QcPhysics::tickRate) + 2;
 
         // The cane is put in after the ticks of mining, so no plant rule removes it first.
         m_client->connection.send(QcMsg::StartMining{target});

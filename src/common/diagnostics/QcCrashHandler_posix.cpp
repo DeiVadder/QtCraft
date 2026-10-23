@@ -5,6 +5,7 @@
 // prepareThread().
 
 #include "common/diagnostics/QcCrashHandler.h"
+#include "common/diagnostics/QcSignalDefault.h"
 
 #include <QFile>
 
@@ -33,7 +34,7 @@ namespace {
 // SIGTRAP: __builtin_trap and the checks of the C++ library on arm64; SIGSYS: a bad system call.
 constexpr std::array fatalSignals{SIGSEGV, SIGBUS, SIGILL, SIGFPE, SIGABRT, SIGTRAP, SIGSYS};
 constexpr int maxFrames = 128;
-constexpr std::size_t signalStackBytes = std::size_t(128) * 1024;
+constexpr std::size_t signalStackBytes = std::size_t{128} * 1024;
 // How long a second crashing thread waits for the report of the first.
 constexpr int waitForReportMs = 5000;
 
@@ -119,10 +120,11 @@ void writeReport(int fd, int signal, const siginfo_t *info)
 {
     writeText(fd, g_header.data());
     writeText(fd, "signal: ");
-    writeNumber(fd, std::uintmax_t(signal), 10);
+    writeNumber(fd, static_cast<std::uintmax_t>(signal), 10);
     writeText(fd, " ");
     writeText(fd, signalName(signal));
     writeText(fd, "\naddress: 0x");
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): the faulting address is printed as a number
     writeNumber(fd, info ? reinterpret_cast<std::uintptr_t>(info->si_addr) : 0, 16);
     writeText(fd, "\nthread: ");
     writeNumber(fd, QcCrashHandler::threadId(), 10);
@@ -182,7 +184,7 @@ void onSignal(int signal, siginfo_t *info, void * /*context*/)
     // (a trap instruction would call this handler for ever). The signal is blocked until the handler
     // returns, then it ends the process as it would have without the handler.
     struct sigaction standard{};
-    standard.sa_handler = SIG_DFL;
+    standard.sa_handler = qcDefaultSignalHandler();
     sigemptyset(&standard.sa_mask);
     sigaction(signal, &standard, nullptr);
     raise(signal);
@@ -190,13 +192,13 @@ void onSignal(int signal, siginfo_t *info, void * /*context*/)
 
 bool fits(std::span<char> target, const QByteArray &text)
 {
-    return text.size() < qsizetype(target.size());
+    return text.size() < static_cast<qsizetype>(target.size());
 }
 
 // Copies `text` with a terminating zero, cut to the size of `target`.
 void copyInto(std::span<char> target, const QByteArray &text)
 {
-    const std::size_t length = std::min(std::size_t(text.size()), target.size() - 1);
+    const std::size_t length = std::min(static_cast<std::size_t>(text.size()), target.size() - 1);
     std::copy_n(text.constData(), length, target.begin());
     target[length] = '\0';
 }
@@ -217,7 +219,7 @@ bool installPlatform(const Setup &setup)
 #if defined(QC_HAS_BACKTRACE)
     // The first call may load libraries: not in the signal handler.
     std::array<void *, 4> warmUp{};
-    backtrace(warmUp.data(), int(warmUp.size()));
+    backtrace(warmUp.data(), static_cast<int>(warmUp.size()));
 #endif
 
     stack_t stack{};
@@ -258,9 +260,10 @@ quint64 threadId()
     pthread_threadid_np(nullptr, &id);
     return id;
 #elif defined(Q_OS_LINUX)
-    return quint64(syscall(SYS_gettid));
+    return static_cast<quint64>(syscall(SYS_gettid));
 #else
-    return quint64(reinterpret_cast<std::uintptr_t>(pthread_self()));
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): pthread_t is an opaque pointer on these systems
+    return static_cast<quint64>(reinterpret_cast<std::uintptr_t>(pthread_self()));
 #endif
 }
 

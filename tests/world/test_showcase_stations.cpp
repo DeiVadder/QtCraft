@@ -60,10 +60,10 @@ private:
             const QcStructure &structure = placement->structure();
             const QcBlockPos a = placement->toWorld(QcBlockPos{0, 0, 0});
             const QcBlockPos b = placement->toWorld(QcBlockPos{structure.sizeX() - 1, structure.sizeY() - 1, structure.sizeZ() - 1});
-            pen.box = {{double(std::min(a.x, b.x)), double(a.y), double(std::min(a.z, b.z))},
-                       {double(std::max(a.x, b.x) + 1), double(b.y + 1), double(std::max(a.z, b.z) + 1)}};
-            for (int x = int(pen.box.min.x) - 16; x <= int(pen.box.max.x) + 16; x += 16) {
-                for (int z = int(pen.box.min.z) - 16; z <= int(pen.box.max.z) + 16; z += 16) {
+            pen.box = {{static_cast<double>(std::min(a.x, b.x)), static_cast<double>(a.y), static_cast<double>(std::min(a.z, b.z))},
+                       {static_cast<double>(std::max(a.x, b.x) + 1), static_cast<double>(b.y + 1), static_cast<double>(std::max(a.z, b.z) + 1)}};
+            for (int x = static_cast<int>(pen.box.min.x) - 16; x <= static_cast<int>(pen.box.max.x) + 16; x += 16) {
+                for (int z = static_cast<int>(pen.box.min.z) - 16; z <= static_cast<int>(pen.box.max.z) + 16; z += 16) {
                     server.world().loadChunk(QcBlockPos{x, 0, z}.chunk());
                 }
             }
@@ -293,7 +293,7 @@ private slots:
         }
         server->mobs().onDeparture([&](const QcCreature &mob, QcMobManager::Departure why) {
             const QcVec3 &at = mob.motion.position;
-            departures += u"%1 #%2 reason %3 health %4 at %5 %6 %7"_s.arg(m_content->mobs()[mob.type].name).arg(mob.id).arg(int(why))
+            departures += u"%1 #%2 reason %3 health %4 at %5 %6 %7"_s.arg(m_content->mobs()[mob.type].name).arg(mob.id).arg(static_cast<int>(why))
                               .arg(mob.health).arg(at.x).arg(at.y).arg(at.z);
         });
 

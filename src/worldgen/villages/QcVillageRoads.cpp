@@ -14,7 +14,7 @@ const QcVillageStyle::Road &choose(const QList<QcVillageStyle::Road> &roads, dou
     for (const QcVillageStyle::Road &road : roads) {
         total += road.weight;
     }
-    int pick = int(random * total);
+    int pick = static_cast<int>(random * total);
     for (const QcVillageStyle::Road &road : roads) {
         if (pick < road.weight) {
             return road;

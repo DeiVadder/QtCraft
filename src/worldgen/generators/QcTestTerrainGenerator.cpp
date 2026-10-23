@@ -17,7 +17,7 @@ QcTestTerrainGenerator::QcTestTerrainGenerator(std::shared_ptr<const QcContentRe
 int QcTestTerrainGenerator::surfaceHeight(int x, int z)
 {
     const double hills = 4.0 * std::sin(x * 0.11) + 3.0 * std::cos(z * 0.09) + 2.0 * std::sin((x + z) * 0.05);
-    return QcWorld::seaLevel + 3 + int(std::floor(hills));
+    return QcWorld::seaLevel + 3 + static_cast<int>(std::floor(hills));
 }
 
 QcBlockId QcTestTerrainGenerator::groundBlock(int y, int height) const

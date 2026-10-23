@@ -17,7 +17,7 @@ namespace {
     if (!ok) {
         return std::nullopt;
     }
-    return QColor(int((rgb >> 16) & 0xFF), int((rgb >> 8) & 0xFF), int(rgb & 0xFF));
+    return QColor(static_cast<int>((rgb >> 16) & 0xFF), static_cast<int>((rgb >> 8) & 0xFF), static_cast<int>(rgb & 0xFF));
 }
 
 } // namespace

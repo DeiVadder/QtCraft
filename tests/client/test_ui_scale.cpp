@@ -108,7 +108,7 @@ private slots:
         QCOMPARE(scaling.scale(), 1.5);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"UI scale: ignoring unknown step 12"_s));
-        scaling.setSetting(QcUiScaling::Step(12));
+        scaling.setSetting(static_cast<QcUiScaling::Step>(12));
         QCOMPARE(scaling.setting(), QcUiScaling::Step::Auto);
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"UI scale: ignoring window size"_s));
         scaling.setWindowSize({-5, 100});

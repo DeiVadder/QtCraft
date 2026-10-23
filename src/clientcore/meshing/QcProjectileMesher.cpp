@@ -11,16 +11,16 @@ namespace {
 void emitSquare(QcEntityMesh &mesh, const std::array<QcVec3, 4> &corners, const QRectF &icon, QcEntityLight light)
 {
     // Tail: bottom left of the icon; head: top right; `across` takes the top left.
-    const std::array<std::pair<float, float>, 4> uvs = {{{float(icon.left()), float(icon.bottom())},
-                                                         {float(icon.left()), float(icon.top())},
-                                                         {float(icon.right()), float(icon.top())},
-                                                         {float(icon.right()), float(icon.bottom())}}};
+    const std::array<std::pair<float, float>, 4> uvs = {{{static_cast<float>(icon.left()), static_cast<float>(icon.bottom())},
+                                                         {static_cast<float>(icon.left()), static_cast<float>(icon.top())},
+                                                         {static_cast<float>(icon.right()), static_cast<float>(icon.top())},
+                                                         {static_cast<float>(icon.right()), static_cast<float>(icon.bottom())}}};
     std::array<QcEntityVertex, 4> quad;
     for (std::size_t i = 0; i < corners.size(); ++i) {
         QcEntityVertex vertex;
-        vertex.x = float(corners[i].x);
-        vertex.y = float(corners[i].y);
-        vertex.z = float(corners[i].z);
+        vertex.x = static_cast<float>(corners[i].x);
+        vertex.y = static_cast<float>(corners[i].y);
+        vertex.z = static_cast<float>(corners[i].z);
         vertex.u = uvs[i].first;
         vertex.v = uvs[i].second;
         vertex.shade = 0.95f;

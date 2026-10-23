@@ -9,13 +9,14 @@ namespace {
 // A number in [0, 1) for puff round `round` of puff `index` of the campfire at `pos`.
 double unitOf(QcBlockPos pos, int index, qint64 round, quint32 salt)
 {
-    quint64 h = quint64(qint64(pos.x)) * 0x9E3779B97F4A7C15ull ^ quint64(qint64(pos.y)) * 0xC2B2AE3D27D4EB4Full
-                ^ quint64(qint64(pos.z)) * 0x165667B19E3779F9ull;
-    h += quint64(index) * 0x27D4EB2F165667C5ull + quint64(round) * 0x94D049BB133111EBull + salt;
+    quint64 h = static_cast<quint64>(static_cast<qint64>(pos.x)) * 0x9E3779B97F4A7C15ull
+        ^ static_cast<quint64>(static_cast<qint64>(pos.y)) * 0xC2B2AE3D27D4EB4Full
+                ^ static_cast<quint64>(static_cast<qint64>(pos.z)) * 0x165667B19E3779F9ull;
+    h += static_cast<quint64>(index) * 0x27D4EB2F165667C5ull + static_cast<quint64>(round) * 0x94D049BB133111EBull + salt;
     h = (h ^ (h >> 30)) * 0xBF58476D1CE4E5B9ull;
     h = (h ^ (h >> 27)) * 0x94D049BB133111EBull;
     h ^= h >> 31;
-    return double(h >> 11) / double(1ull << 53);
+    return static_cast<double>(h >> 11) / static_cast<double>(1ull << 53);
 }
 
 } // namespace
@@ -37,15 +38,15 @@ void QcCampfireSmoke::refresh(const QcClientWorld &world, const QcVec3 &eye, qui
 void QcCampfireSmoke::learn(const QcContentRegistry &content)
 {
     m_content = &content;
-    m_smokes.assign(std::size_t(content.stateCount()), false);
+    m_smokes.assign(static_cast<std::size_t>(content.stateCount()), false);
     for (std::size_t id = 0; id < m_smokes.size(); ++id) {
-        m_smokes[id] = content.block(QcBlockId(id)).campfire.cooks();
+        m_smokes[id] = content.block(static_cast<QcBlockId>(id)).campfire.cooks();
     }
 }
 
 bool QcCampfireSmoke::smokes(QcBlockId id) const
 {
-    return std::size_t(id) < m_smokes.size() && m_smokes[std::size_t(id)];
+    return static_cast<std::size_t>(id) < m_smokes.size() && m_smokes[static_cast<std::size_t>(id)];
 }
 
 QList<QcBlockPos> QcCampfireSmoke::campfiresIn(const QcChunkSection &section, QcBlockPos origin) const
@@ -68,7 +69,7 @@ QList<QcBlockPos> QcCampfireSmoke::campfiresIn(const QcChunkSection &section, Qc
 
 QList<QcBlockPos> QcCampfireSmoke::scan(const QcClientWorld &world, const QcVec3 &eye) const
 {
-    const QcBlockPos centre{int(std::floor(eye.x)), int(std::floor(eye.y)), int(std::floor(eye.z))};
+    const QcBlockPos centre{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     const int lowest = std::max(0, (centre.y - radius) / QcWorld::sectionHeight);
     const int highest = std::min(QcWorld::sectionCount - 1, (centre.y + radius) / QcWorld::sectionHeight);
     QList<QcBlockPos> found;
@@ -94,8 +95,8 @@ QList<QcCampfireSmoke::Puff> QcCampfireSmoke::puffsOf(QcBlockPos pos, double sec
     for (int index = 0; index < puffsPerCampfire; ++index) {
         // Each puff starts its loop at its own time; every loop drifts its own way.
         const double time = seconds + index * puffSeconds / puffsPerCampfire;
-        const auto round = qint64(std::floor(time / puffSeconds));
-        const double age = time / puffSeconds - double(round);
+        const auto round = static_cast<qint64>(std::floor(time / puffSeconds));
+        const double age = time / puffSeconds - static_cast<double>(round);
         const double driftX = (unitOf(pos, index, round, 1) - 0.5) * 0.8;
         const double driftZ = (unitOf(pos, index, round, 2) - 0.5) * 0.8;
         const double rise = 0.45 + age * 3.2;

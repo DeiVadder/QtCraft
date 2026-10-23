@@ -71,7 +71,7 @@ private:
         m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
 
-        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 13 + jitterMs));
+        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 13 + jitterMs));
         m_session = std::make_unique<QcClientSession>(std::move(link), u"Player"_s);
         m_session->start();
         QTRY_VERIFY_WITH_TIMEOUT(m_session->state() == QcClientSession::State::Playing, timeoutMs);

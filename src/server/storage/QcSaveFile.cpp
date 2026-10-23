@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr qint64 maxFileBytes = qint64(256) * 1024 * 1024;
+constexpr qint64 maxFileBytes = qint64{256} * 1024 * 1024;
 
 } // namespace
 
@@ -21,9 +21,9 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
     stream.setVersion(streamVersion);
-    stream.writeRawData(magic.data(), int(magic.size()));
-    stream << version << quint32(payload.size()) << qcCrc32(payload);
-    stream.writeRawData(payload.constData(), int(payload.size()));
+    stream.writeRawData(magic.data(), static_cast<int>(magic.size()));
+    stream << version << static_cast<quint32>(payload.size()) << qcCrc32(payload);
+    stream.writeRawData(payload.constData(), static_cast<int>(payload.size()));
     return data;
 }
 
@@ -66,7 +66,7 @@ QByteArray bytes(QByteArrayView magic, const QByteArray &payload, quint16 versio
     if (fileVersion < baseVersion || fileVersion > newestVersion) {
         return qcError(u"%1 has unsupported format version %2"_s.arg(path).arg(fileVersion));
     }
-    if (qsizetype(size) != data.size() - headerSize) {
+    if (static_cast<qsizetype>(size) != data.size() - headerSize) {
         return qcError(u"%1 is truncated or damaged"_s.arg(path));
     }
     QByteArray payload = data.mid(headerSize);
@@ -81,7 +81,7 @@ void writeStack(QDataStream &stream, const QcItemStack &stack, const QcContentRe
     const QString name = !stack.isEmpty() && content.isValidItem(stack.item) ? content.item(stack.item).name : QString();
     const bool withData = !name.isEmpty() && stack.data;
     const qint32 count = name.isEmpty() ? 0 : stack.count;
-    stream << name << (withData ? count | QcItemDataCodec::dataFlag : count) << qint32(stack.damage);
+    stream << name << (withData ? count | QcItemDataCodec::dataFlag : count) << static_cast<qint32>(stack.damage);
     if (withData) {
         QcItemDataCodec::write(stream, stack.itemData(), content);
     }

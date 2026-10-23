@@ -40,7 +40,7 @@ private:
         m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
 
-        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, quint32(delayMs * 17 + jitterMs));
+        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 17 + jitterMs));
         m_session = std::make_unique<QcClientSession>(std::move(link), u"Player"_s);
         connect(m_session.get(), &QcClientSession::chatReceived, this, [this](const QString &text) { m_chat.append(text); });
         m_session->start();

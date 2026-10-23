@@ -68,7 +68,7 @@ int resolutionOf(const QcTexturePackStack &packs, int maxResolution)
     for (const QcTexturePackRef &pack : packs) {
         resolution = std::max(resolution, pack->manifest.resolution);
     }
-    return std::min(resolution, std::max(maxResolution, int(QcTextureSynthesizer::tileSize)));
+    return std::min(resolution, std::max(maxResolution, QcTextureSynthesizer::tileSize));
 }
 
 QcResult<Resolved> resolve(const QcTextureDefinition &definition, const QcTexturePackStack &packs, int resolution)

@@ -44,7 +44,7 @@ private:
         QcTestUtil::pump();
 
         const QcVec3 p = client.motion.position;
-        return {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        return {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
     }
 
 private slots:

@@ -411,7 +411,8 @@ private slots:
         }
         QVERIFY2(onePass <= cascade.evaluations, qPrintable(u"%1 > %2"_s.arg(onePass).arg(cascade.evaluations)));
         qInfo("SIGNAL-SCALING %s size=%d onePass=%lld cascade=%lld onePassUs=%.1f cascadeUs=%.1f", grid ? "grid" : "line", size,
-              qint64(onePass), qint64(cascade.evaluations), double(onePassNs) / 1000.0, double(cascadeNs) / 1000.0);
+              static_cast<qint64>(onePass), static_cast<qint64>(cascade.evaluations), static_cast<double>(onePassNs) / 1000.0,
+              static_cast<double>(cascadeNs) / 1000.0);
     }
 };
 

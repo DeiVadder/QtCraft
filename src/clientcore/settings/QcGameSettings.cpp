@@ -35,7 +35,7 @@ QStringList loadTexturePacks(QSettings &file)
 void saveTexturePacks(QSettings &file, const QStringList &ids)
 {
     file.remove(u"texturePacks"_s);
-    file.beginWriteArray(u"texturePacks"_s, int(ids.size()));
+    file.beginWriteArray(u"texturePacks"_s, static_cast<int>(ids.size()));
     for (int i = 0; i < ids.size(); ++i) {
         file.setArrayIndex(i);
         file.setValue(u"id"_s, ids[i]);

@@ -352,7 +352,7 @@ private slots:
         m_screensOpen = true;
         const qint64 start = m_ui->menuInput().now();
         for (int step = 1; step <= 10; ++step) {
-            m_ui->menuInput().advance(start + qint64(step) * 100);
+            m_ui->menuInput().advance(start + static_cast<qint64>(step) * 100);
         }
         QCOMPARE(focus(), u"middle"_s);
         QCOMPARE(list->property("contentY").toDouble(), 0.0);
@@ -378,7 +378,7 @@ private slots:
         m_source.setAxis(m_pad, QcGamepadAxis::RightY, 1.0f);
         const qint64 start = m_ui->menuInput().now();
         for (int step = 1; step <= 4; ++step) {
-            m_ui->menuInput().advance(start + qint64(step) * 100);
+            m_ui->menuInput().advance(start + static_cast<qint64>(step) * 100);
         }
         m_source.setAxis(m_pad, QcGamepadAxis::RightY, 0.0f);
         QVERIFY(list->property("contentY").toDouble() > 300.0);

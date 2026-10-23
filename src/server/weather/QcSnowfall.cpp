@@ -32,8 +32,8 @@ void QcSnowfall::tick()
         }
 
         const QcVec3 &position = client->motion.position;
-        const int px = int(std::floor(position.x));
-        const int pz = int(std::floor(position.z));
+        const int px = static_cast<int>(std::floor(position.x));
+        const int pz = static_cast<int>(std::floor(position.z));
         for (int i = 0; i < columns; ++i) {
             const int x = px + draws.bounded(-reach, reach + 1);
             const int z = pz + draws.bounded(-reach, reach + 1);

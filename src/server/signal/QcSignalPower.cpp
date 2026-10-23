@@ -23,7 +23,7 @@ bool dustPoints(QcSignalState state, QcBlockFace towards)
         return false;
     }
     const bool lone = std::ranges::all_of(state.sides, [](QcDustSide side) { return side == QcDustSide::None; });
-    return lone || state.sides[std::size_t(index)] != QcDustSide::None;
+    return lone || state.sides[static_cast<std::size_t>(index)] != QcDustSide::None;
 }
 
 } // namespace
@@ -131,7 +131,7 @@ int QcSignalPower::input(QcBlockPos pos, quint8 ignoredFaces) const
 {
     int level = 0;
     for (const QcBlockFace face : qcAllBlockFaces) {
-        if ((ignoredFaces & (1U << unsigned(face))) == 0) {
+        if ((ignoredFaces & (1U << static_cast<unsigned>(face))) == 0) {
             level = std::max(level, inputFrom(pos, face));
         }
     }

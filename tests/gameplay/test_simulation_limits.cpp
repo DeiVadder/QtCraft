@@ -186,7 +186,8 @@ private slots:
         config.limits.maxContainers = 16;
         buildArea(config);
         for (quint32 i = 0; i < 30; ++i) {
-            m_server->items().spawnScattered(stack("qtcraft:stick", 1), {at(5, 1, 5).x + 0.5, double(at(5, 1, 5).y), at(5, 1, 5).z + 0.5}, 800000 + i);
+            m_server->items().spawnScattered(stack("qtcraft:stick", 1),
+                {at(5, 1, 5).x + 0.5, static_cast<double>(at(5, 1, 5).y), at(5, 1, 5).z + 0.5}, 800000 + i);
         }
         QCOMPARE(m_server->items().activeCount(), 20);
         QVERIFY(!m_server->fallingBlocks().isFull());

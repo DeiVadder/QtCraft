@@ -18,7 +18,7 @@ bool cellOverlaps(const QcBlockAccess &world, QcBlockPos cell, const QcAabb &box
         return false;
     }
 
-    const QcVec3 origin{double(cell.x), double(cell.y), double(cell.z)};
+    const QcVec3 origin{static_cast<double>(cell.x), static_cast<double>(cell.y), static_cast<double>(cell.z)};
     const std::optional<QcBlockId> block = world.blockAt(cell);
     if (!block) {
         return unloaded == Unloaded::Blocked && QcAabb{origin, origin + QcVec3{1.0, 1.0, 1.0}}.intersects(box);

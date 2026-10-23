@@ -12,13 +12,13 @@ namespace {
 
 quint64 columnKey(int x, int z)
 {
-    return (quint64(quint32(x)) << 32) | quint32(z);
+    return (static_cast<quint64>(static_cast<quint32>(x)) << 32) | static_cast<quint32>(z);
 }
 
 QcBlockPos feetOf(const QcServerClient &client)
 {
     const QcVec3 &position = client.motion.position;
-    return {int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
+    return {static_cast<int>(std::floor(position.x)), static_cast<int>(std::floor(position.y)), static_cast<int>(std::floor(position.z))};
 }
 
 } // namespace
@@ -26,7 +26,7 @@ QcBlockPos feetOf(const QcServerClient &client)
 QcServerWeather::QcServerWeather(QcServerState &state)
     : m_state(state)
     , m_table(state.content())
-    , m_meanStrikeTicks(std::max(1, int(std::lround(state.content().weather().lightning.meanSeconds / QcPhysics::tickDuration))))
+    , m_meanStrikeTicks(std::max(1, static_cast<int>(std::lround(state.content().weather().lightning.meanSeconds / QcPhysics::tickDuration))))
 {
 }
 
@@ -88,7 +88,7 @@ QcPrecipitation QcServerWeather::precipitationAt(QcBlockPos pos) const
 void QcServerWeather::strike(QcBlockPos pos)
 {
     ++m_strikes;
-    const QcVec3 at{pos.x + 0.5, double(pos.y), pos.z + 0.5};
+    const QcVec3 at{pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5};
     for (const auto &client : m_state.clients()) {
         const QcVec3 &position = client->motion.position;
         if (client->state == QcServerClient::State::Playing && std::hypot(position.x - at.x, position.z - at.z) <= strikeHearing) {

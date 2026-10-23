@@ -49,9 +49,9 @@ public:
     // Creatures spawning by themselves by default (QcServerLimits monstersPer289Chunks: monsters per
     // QcMonsterCap::areaChunks loaded chunks around players; passiveCreaturesPerPlayer,
     // ambientCreaturesPerPlayer: fireflies, around one player).
-    static constexpr int monsterCapPer289Chunks = int(QcServerLimits{}.monstersPer289Chunks);
-    static constexpr int passiveCapPerPlayer = int(QcServerLimits{}.passiveCreaturesPerPlayer);
-    static constexpr int ambientCapPerPlayer = int(QcServerLimits{}.ambientCreaturesPerPlayer);
+    static constexpr int monsterCapPer289Chunks = static_cast<int>(QcServerLimits{}.monstersPer289Chunks);
+    static constexpr int passiveCapPerPlayer = static_cast<int>(QcServerLimits{}.passiveCreaturesPerPlayer);
+    static constexpr int ambientCapPerPlayer = static_cast<int>(QcServerLimits{}.ambientCreaturesPerPlayer);
     // Blocks of rock above a cave floor for it to count as dark enough for cave spawns.
     static constexpr int caveDepth = 8;
 
@@ -224,7 +224,7 @@ private:
     int m_hostileCap = monsterCapPer289Chunks;
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;
-    int m_waterCap = int(QcServerLimits{}.waterCreaturesPerPlayer);
+    int m_waterCap = static_cast<int>(QcServerLimits{}.waterCreaturesPerPlayer);
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;
     double m_spawnTimer = 0.0;

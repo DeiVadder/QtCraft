@@ -53,7 +53,7 @@ private:
 
     quint32 spawn(const char *name, int dx, int dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->entities().creatures().spawn(type(name), at, m_server->entities().newId());
     }
 
@@ -89,7 +89,7 @@ private:
                 world.loadChunk({x, z});
             }
         }
-        const QcVec3 player{0.5, double(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
+        const QcVec3 player{0.5, static_cast<double>(world.chunk({0, 0})->highestNonAir(0, 0) + 1), 0.5};
         QcMobManager mobs(m_content, 7);
         quint32 nextId = 100;
         QSet<quint32> seen;
@@ -101,7 +101,7 @@ private:
                 }
             }
         }
-        return int(seen.size());
+        return static_cast<int>(seen.size());
     }
 
 private slots:
@@ -175,8 +175,8 @@ private slots:
 
         // It sees the player within a look (10 ticks) and then draws one second before each shot;
         // after a shot it waits one second before it draws again.
-        const int drawTicks = int(std::lround(skeletonKind().archer.drawSeconds / dt));
-        const int cooldownTicks = int(std::lround(skeletonKind().archer.cooldownSeconds / dt));
+        const int drawTicks = static_cast<int>(std::lround(skeletonKind().archer.drawSeconds / dt));
+        const int cooldownTicks = static_cast<int>(std::lround(skeletonKind().archer.cooldownSeconds / dt));
         QVERIFY2(shots[0] >= drawTicks && shots[0] <= drawTicks + QcMobSteering::sightCheckTicks, qPrintable(QString::number(shots[0])));
         for (qsizetype i = 1; i < shots.size(); ++i) {
             const int gap = shots[i] - shots[i - 1];
@@ -278,7 +278,7 @@ private slots:
         QVERIFY(!burns("pig", 0, 8));
 
         // A roof directly above the head block is shade; glass there lets the sky through.
-        const int aboveHead = int(std::floor(skeletonKind().height * 0.9)) + 1;
+        const int aboveHead = static_cast<int>(std::floor(skeletonKind().height * 0.9)) + 1;
         QCOMPARE(aboveHead, 2);
         m_server->world().setBlock(m_feet.offset(8, aboveHead, -8), id("qtcraft:stone"));
         QVERIFY(!burns("skeleton", 8, -8));
@@ -377,8 +377,8 @@ private slots:
     void drawEndsWithoutSightAndDoesNotResume()
     {
         joinArena();
-        const int drawTicks = int(std::lround(skeletonKind().archer.drawSeconds / dt));
-        const QcVec3 at{m_feet.x + 9.5, double(m_feet.y), m_feet.z + 0.5};
+        const int drawTicks = static_cast<int>(std::lround(skeletonKind().archer.drawSeconds / dt));
+        const QcVec3 at{m_feet.x + 9.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         const quint32 archer = m_server->entities().creatures().spawn(type("skeleton"), at, m_server->entities().newId(), false, true);
         const auto untilDrawing = [&](quint32 id) {
             return QTest::qWaitFor(
@@ -434,7 +434,7 @@ private slots:
     void aStrikeBreaksTheDraw()
     {
         joinArena();
-        const int drawTicks = int(std::lround(skeletonKind().archer.drawSeconds / dt));
+        const int drawTicks = static_cast<int>(std::lround(skeletonKind().archer.drawSeconds / dt));
         const quint32 archer = spawn("skeleton", 9, 0);
         QVERIFY(QTest::qWaitFor(
             [&] {
@@ -488,7 +488,7 @@ private slots:
         // Fleeing sideways at 30 m/s: the lead believes at most maxTargetSpeed.
         for (int tick = 0; tick < 120; ++tick) {
             const double x = ((tick / 12) % 2 == 0 ? -9.0 : 9.0) + ((tick / 12) % 2 == 0 ? 1.5 : -1.5) * (tick % 12);
-            player().motion.position = {m_feet.x + 0.5 + x, double(m_feet.y), m_feet.z + 0.5};
+            player().motion.position = {m_feet.x + 0.5 + x, static_cast<double>(m_feet.y), m_feet.z + 0.5};
             player().health = QcServerClient::maxHealth;
             ticks(1);
             if (mob(archer)->archer.has()) {
@@ -499,7 +499,7 @@ private slots:
 
         // Jumping 16 m to and fro: each jump starts the estimate at rest.
         for (int tick = 0; tick < 60; ++tick) {
-            player().motion.position = {m_feet.x + 0.5 + (tick % 2 == 0 ? -8.0 : 8.0), double(m_feet.y), m_feet.z + 0.5};
+            player().motion.position = {m_feet.x + 0.5 + (tick % 2 == 0 ? -8.0 : 8.0), static_cast<double>(m_feet.y), m_feet.z + 0.5};
             player().health = QcServerClient::maxHealth;
             ticks(1);
             if (tick > 0 && mob(archer)->archer.has() && mob(archer)->archer->target == player().id) {

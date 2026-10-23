@@ -16,7 +16,7 @@ struct QcTexturePackManifest
     static constexpr int formatVersion = 1;
     static constexpr int minResolution = 16;
     static constexpr int maxResolution = 512;
-    static constexpr qint64 maxBytes = qint64(64) * 1024;
+    static constexpr qint64 maxBytes = qint64{64} * 1024;
     static constexpr int maxNameLength = 64;
     static constexpr int maxTextLength = 1000;
     static constexpr int maxCredits = 32;

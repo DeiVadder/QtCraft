@@ -105,7 +105,7 @@ public:
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
     // First person, behind, front or side; the camera view key cycles through them.
-    CameraMode cameraMode() const { return CameraMode(m_cameraMode); }
+    CameraMode cameraMode() const { return static_cast<CameraMode>(m_cameraMode); }
     void setCameraMode(CameraMode mode);
     QcCameraMode cameraModeValue() const { return m_cameraMode; }
     void setCameraModeValue(QcCameraMode mode);
@@ -114,7 +114,7 @@ public:
     TextureFiltering textureFiltering() const { return m_textureFiltering; }
     void setTextureFiltering(TextureFiltering filtering);
     // Samples of the choice, for the renderer (1: plain mip mapping).
-    int textureFilteringSamples() const { return int(m_textureFiltering); }
+    int textureFilteringSamples() const { return static_cast<int>(m_textureFiltering); }
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcDisplaySettings *display() const { return m_display; }
@@ -153,7 +153,7 @@ private:
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcUiScale::Step m_uiScale = QcUiScale::defaultStep;
-    TextureFiltering m_textureFiltering = TextureFiltering(QcGameSettings::defaultTextureFiltering);
+    TextureFiltering m_textureFiltering = static_cast<TextureFiltering>(QcGameSettings::defaultTextureFiltering);
     QString m_contentLanguage = QStringLiteral("en");
     QcGameSettings m_storedSettings;
     int m_commandLineViewDistance = 0;

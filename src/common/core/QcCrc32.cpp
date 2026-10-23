@@ -25,7 +25,7 @@ quint32 qcCrc32(QByteArrayView data)
 {
     quint32 crc = 0xFFFFFFFFu;
     for (const char byte : data) {
-        crc = crcTable[(crc ^ quint8(byte)) & 0xFFu] ^ (crc >> 8);
+        crc = crcTable[(crc ^ static_cast<quint8>(byte)) & 0xFFu] ^ (crc >> 8);
     }
     return crc ^ 0xFFFFFFFFu;
 }

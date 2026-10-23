@@ -36,12 +36,13 @@ constexpr Tint hurtTint = {255, 110, 110, 255};
 
 Tint multiply(Tint a, Tint b)
 {
-    return {quint8(a[0] * b[0] / 255), quint8(a[1] * b[1] / 255), quint8(a[2] * b[2] / 255), quint8(a[3] * b[3] / 255)};
+    return {static_cast<quint8>(a[0] * b[0] / 255), static_cast<quint8>(a[1] * b[1] / 255), static_cast<quint8>(a[2] * b[2] / 255),
+        static_cast<quint8>(a[3] * b[3] / 255)};
 }
 
 Tint fromRgb(quint32 rgb)
 {
-    return {quint8((rgb >> 16) & 0xFF), quint8((rgb >> 8) & 0xFF), quint8(rgb & 0xFF), 255};
+    return {static_cast<quint8>((rgb >> 16) & 0xFF), static_cast<quint8>((rgb >> 8) & 0xFF), static_cast<quint8>(rgb & 0xFF), 255};
 }
 
 Tint tintFor(QcTint tint, const QcAppearance &colors)
@@ -94,13 +95,13 @@ void emitBox(QcEntityMesh &mesh, const QcAabb &box, const Place &place, const Su
         std::array<QcEntityVertex, 4> quad;
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const auto &c = faceCorners[face][corner];
-            const QcVec3 &world = placed[std::size_t(c[0]) + 2 * std::size_t(c[1]) + 4 * std::size_t(c[2])];
+            const QcVec3 &world = placed[static_cast<std::size_t>(c[0]) + 2 * static_cast<std::size_t>(c[1]) + 4 * static_cast<std::size_t>(c[2])];
             QcEntityVertex vertex;
-            vertex.x = float(world.x);
-            vertex.y = float(world.y);
-            vertex.z = float(world.z);
-            vertex.u = float((corner == 0 || corner == 3) ? rect.left() : rect.right());
-            vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
+            vertex.x = static_cast<float>(world.x);
+            vertex.y = static_cast<float>(world.y);
+            vertex.z = static_cast<float>(world.z);
+            vertex.u = static_cast<float>((corner == 0 || corner == 3) ? rect.left() : rect.right());
+            vertex.v = static_cast<float>(corner < 2 ? rect.bottom() : rect.top());
             vertex.shade = faceShade[face];
             vertex.skyLight = surface.light.sky;
             vertex.blockLight = surface.light.block;
@@ -125,13 +126,13 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const QcVec3 world = place(corners[corner]);
             QcEntityVertex vertex;
-            vertex.x = float(world.x);
-            vertex.y = float(world.y);
-            vertex.z = float(world.z);
+            vertex.x = static_cast<float>(world.x);
+            vertex.y = static_cast<float>(world.y);
+            vertex.z = static_cast<float>(world.z);
             // Mirrored on the back so the picture reads the same from both sides.
             const bool left = (corner == 0 || corner == 3) != back;
-            vertex.u = float(left ? rect.left() : rect.right());
-            vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
+            vertex.u = static_cast<float>(left ? rect.left() : rect.right());
+            vertex.v = static_cast<float>(corner < 2 ? rect.bottom() : rect.top());
             vertex.shade = 0.95f;
             vertex.skyLight = light.sky;
             vertex.blockLight = light.block;
@@ -158,7 +159,7 @@ void emitItem(QcEntityMesh &mesh, const ItemLook &look, const Place &place, QcEn
         const auto local = [half](const QcVec3 &p) { return QcVec3{p.x * 2.0 * half - half, p.y * 2.0 * half - half, p.z * 2.0 * half - half}; };
         for (const QcAabb &box : boxes) {
             for (int face = 0; face < 6; ++face) {
-                emitBox(mesh, {local(box.min), local(box.max)}, place, {uv(look.faces[std::size_t(face)]), white, light}, face);
+                emitBox(mesh, {local(box.min), local(box.max)}, place, {uv(look.faces[static_cast<std::size_t>(face)]), white, light}, face);
             }
         }
         return;
@@ -375,15 +376,15 @@ struct CapePiece
 template<typename Place>
 void emitCapePiece(QcEntityMesh &mesh, const CapePiece &piece, const Place &place, const CapeSurfaces &surfaces)
 {
-    emitBox(mesh, piece.box, place, *piece.outer, int(QcBlockFace::South));
-    emitBox(mesh, piece.box, place, surfaces.inside, int(QcBlockFace::North));
-    emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::East));
-    emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::West));
+    emitBox(mesh, piece.box, place, *piece.outer, static_cast<int>(QcBlockFace::South));
+    emitBox(mesh, piece.box, place, surfaces.inside, static_cast<int>(QcBlockFace::North));
+    emitBox(mesh, piece.box, place, surfaces.edge, static_cast<int>(QcBlockFace::East));
+    emitBox(mesh, piece.box, place, surfaces.edge, static_cast<int>(QcBlockFace::West));
     if (piece.top) {
-        emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::Up));
+        emitBox(mesh, piece.box, place, surfaces.edge, static_cast<int>(QcBlockFace::Up));
     }
     if (piece.bottom) {
-        emitBox(mesh, piece.box, place, surfaces.edge, int(QcBlockFace::Down));
+        emitBox(mesh, piece.box, place, surfaces.edge, static_cast<int>(QcBlockFace::Down));
     }
 }
 

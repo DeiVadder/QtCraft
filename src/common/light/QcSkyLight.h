@@ -17,7 +17,7 @@ namespace QcSkyLight {
 
 // The top of every cell column of a chunk, by QcLightCells::columnIndex; -1 for a column open down
 // to the bottom of the world.
-using Tops = std::array<qint16, std::size_t(QcWorld::chunkSize) * QcWorld::chunkSize>;
+using Tops = std::array<qint16, static_cast<std::size_t>(QcWorld::chunkSize) * QcWorld::chunkSize>;
 
 // The top of the cell column (lx, lz) of `blocks`.
 [[nodiscard]] int columnTop(const QcChunk &blocks, const QcLightTable &table, int lx, int lz);
@@ -34,7 +34,7 @@ void forEachEdgeCell(const Tops &tops, TopAt topAt, Visit visit)
 {
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
-            const int top = tops[std::size_t(QcLightCells::columnIndex(lx, lz))];
+            const int top = tops[static_cast<std::size_t>(QcLightCells::columnIndex(lx, lz))];
             int reach = top + 1;
             for (const QcBlockFace face : QcLightCells::horizontalFaces) {
                 const QcFaceOffset offset = qcFaceOffset(face);

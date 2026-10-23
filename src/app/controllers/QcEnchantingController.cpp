@@ -45,7 +45,7 @@ void QcEnchantingController::update()
         const int lapis = state.lapis.isEmpty() ? 0 : state.lapis.count;
         m_shelves = state.shelves;
         for (int slot = 0; std::cmp_less(slot, state.offers.size()); ++slot) {
-            const QcMsg::EnchantingOffer &offer = state.offers[std::size_t(slot)];
+            const QcMsg::EnchantingOffer &offer = state.offers[static_cast<std::size_t>(slot)];
             const int price = QcEnchantingTable::priceOf(slot);
             const QString clue = offer.levelCost > 0
                                      ? QcEnchantmentTexts::nameOf(*content, {offer.clue, offer.clueLevel}, m_settings.contentLanguage())

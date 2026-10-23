@@ -220,7 +220,8 @@ private:
     static std::optional<QcChunkPos> chunkInAnotherRegion(QcChunkPos low, QcChunkPos high, QcChunkPos home, int spacing)
     {
         const auto regionOf = [spacing](QcChunkPos pos) {
-            return std::pair{qFloor(double(pos.x * QcWorld::chunkSize) / spacing), qFloor(double(pos.z * QcWorld::chunkSize) / spacing)};
+            return std::pair{qFloor(static_cast<double>(pos.x * QcWorld::chunkSize) / spacing),
+                qFloor(static_cast<double>(pos.z * QcWorld::chunkSize) / spacing)};
         };
         for (int z = low.z; z <= high.z; ++z) {
             for (int x = low.x; x <= high.x; ++x) {
@@ -490,7 +491,7 @@ private slots:
             freeABed(built);
             const qsizetype before = villagersOf(built).size();
             const QcBlockPos at = built.state().centre.offset(0, 40, 0);
-            const QcVec3 spot{at.x + 0.5, double(at.y), at.z + 0.5};
+            const QcVec3 spot{at.x + 0.5, static_cast<double>(at.y), at.z + 0.5};
             if (wall) {
                 fill(built, at.offset(1, -1, -3), at.offset(1, 3, 3), block(built, u"qtcraft:stone"_s));
             }

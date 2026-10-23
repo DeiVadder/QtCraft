@@ -126,7 +126,7 @@ private:
 
         QcInventory inventory;
         for (quint32 i = 0; i < *slotCountRead; ++i) {
-            inventory.setSlot(int(i), m_stacks.read(m_stream));
+            inventory.setSlot(static_cast<int>(i), m_stacks.read(m_stream));
         }
         return m_stream.status() == QDataStream::Ok ? std::optional(std::move(inventory)) : std::nullopt;
     }
@@ -149,7 +149,7 @@ private:
             const QcItemDefinition &definition = m_content.item(read.item);
             const QcItemStack stack = read.withCount(1);
             // A piece a mod moved to another slot (or that is no armour any more) goes into the inventory.
-            if (definition.armour && definition.armour->slot == QcEquipmentSlot(i)) {
+            if (definition.armour && definition.armour->slot == static_cast<QcEquipmentSlot>(i)) {
                 worn.equipment.stacks[i] = stack;
             } else if (worn.inventory.add(stack, m_content) > 0) {
                 m_warnings.add(u"%1: '%2' is no armour for its slot and the inventory is full; dropped"_s.arg(m_path, definition.name));
@@ -239,15 +239,15 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     stream.setVersion(QcSaveFile::streamVersion);
     const QcEntityMotion &m = player.motion;
     stream << m.position.x << m.position.y << m.position.z << m.velocity.x << m.velocity.y << m.velocity.z << m.onGround
-           << player.yaw << player.pitch << player.health << qint32(player.inventory.selectedHotbarSlot());
+           << player.yaw << player.pitch << player.health << static_cast<qint32>(player.inventory.selectedHotbarSlot());
     writeSlots(stream, player.inventory);
-    stream << qint32(player.food) << player.exhaustion;
+    stream << static_cast<qint32>(player.food) << player.exhaustion;
     writeEquipment(stream, player.equipment);
 
-    stream << quint8(player.gameMode) << m.flying << qint32(player.keptInventory.selectedHotbarSlot());
+    stream << static_cast<quint8>(player.gameMode) << m.flying << static_cast<qint32>(player.keptInventory.selectedHotbarSlot());
     writeSlots(stream, player.keptInventory);
     writeEquipment(stream, player.keptEquipment);
-    stream << qint32(player.experience.level()) << qint32(player.experience.points());
+    stream << static_cast<qint32>(player.experience.level()) << static_cast<qint32>(player.experience.points());
     QcStatusEffects::write(stream, player.effects);
     stream << player.enchantSeed;
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
@@ -255,7 +255,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
 
 void QcPlayerStorage::writeSlots(QDataStream &stream, const QcInventory &inventory) const
 {
-    stream << quint32(QcInventory::slotCount);
+    stream << static_cast<quint32>(QcInventory::slotCount);
     for (int i = 0; i < QcInventory::slotCount; ++i) {
         QcSaveFile::writeStack(stream, inventory.slot(i), *m_content);
     }
@@ -263,7 +263,7 @@ void QcPlayerStorage::writeSlots(QDataStream &stream, const QcInventory &invento
 
 void QcPlayerStorage::writeEquipment(QDataStream &stream, const QcEquipment &equipment) const
 {
-    stream << quint32(QcEquipment::slotCount);
+    stream << static_cast<quint32>(QcEquipment::slotCount);
     for (const QcItemStack &stack : equipment.stacks) {
         QcSaveFile::writeStack(stream, stack, *m_content);
     }
@@ -278,7 +278,7 @@ QcPlayerStorage::Result QcPlayerStorage::read(const QString &playerName) const
     if (!stored.open(QIODevice::ReadOnly)) {
         return std::unexpected(Failure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
     }
-    return parse(playerName, stored.read(qint64(16) * 1024 * 1024));
+    return parse(playerName, stored.read(qint64{16} * 1024 * 1024));
 }
 
 QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const std::optional<QByteArray> &contents) const

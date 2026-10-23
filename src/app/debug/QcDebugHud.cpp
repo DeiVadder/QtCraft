@@ -20,7 +20,7 @@ QList<qreal> toReals(const QList<float> &values)
     QList<qreal> reals;
     reals.reserve(values.size());
     for (const float value : values) {
-        reals.append(qreal(value));
+        reals.append(static_cast<qreal>(value));
     }
     return reals;
 }

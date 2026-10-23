@@ -103,5 +103,5 @@ int QcBlastBodies::hurtCreatures(QcBlastField &field, const QcVec3 &centre, doub
     for (const QcServerCombat::Blow &blow : std::as_const(blows)) {
         QcServerCombat::hurtCreature(m_state, m_sounds, blow);
     }
-    return int(blows.size());
+    return static_cast<int>(blows.size());
 }

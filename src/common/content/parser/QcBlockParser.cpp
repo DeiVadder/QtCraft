@@ -530,7 +530,7 @@ void BlockReader::readFarming()
 void BlockReader::readSounds(QcJsonFieldReader &soundReader)
 {
     for (int action = 0; action < qcBlockSoundActionCount; ++action) {
-        m_block.soundKeys[std::size_t(action)] = soundReader.name(QcSoundKeys::actionName(QcBlockSoundAction(action)), m_namespace);
+        m_block.soundKeys[static_cast<std::size_t>(action)] = soundReader.name(QcSoundKeys::actionName(static_cast<QcBlockSoundAction>(action)), m_namespace);
     }
 }
 

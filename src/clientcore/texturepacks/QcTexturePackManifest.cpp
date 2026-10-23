@@ -75,7 +75,7 @@ QList<QcTexturePackManifest::Credit> FieldReader::credits()
         }
 
         const QJsonObject object = entry.toObject();
-        const qsizetype limit = qsizetype(QcTexturePackManifest::maxNameLength) * 4;
+        const qsizetype limit = static_cast<qsizetype>(QcTexturePackManifest::maxNameLength) * 4;
         const QcTexturePackManifest::Credit credit{textOf(object, u"author"_s, limit), textOf(object, u"license"_s, limit),
                                                    textOf(object, u"source"_s, limit), textOf(object, u"note"_s, limit)};
         if (m_problem) {
@@ -93,12 +93,12 @@ int FieldReader::resolution()
     if (m_problem) {
         return QcTexturePackManifest::minResolution;
     }
-    if (!value.isDouble() || number != double(int(number)) || !QcTexturePackManifest::isValidResolution(int(number))) {
+    if (!value.isDouble() || number != static_cast<double>(static_cast<int>(number)) || !QcTexturePackManifest::isValidResolution(static_cast<int>(number))) {
         fail({{}, QT_TRANSLATE_NOOP("QcTexturePack", "'resolution' must be a power of two from %1 to %2"),
               {QString::number(QcTexturePackManifest::minResolution), QString::number(QcTexturePackManifest::maxResolution)}});
         return QcTexturePackManifest::minResolution;
     }
-    return int(number);
+    return static_cast<int>(number);
 }
 
 int FieldReader::format()
@@ -148,7 +148,7 @@ std::expected<QcTexturePackManifest, QcTexturePackProblem> QcTexturePackManifest
     manifest.format = reader.format();
     manifest.name = reader.text(u"name"_s, maxNameLength);
     manifest.description = reader.text(u"description"_s, maxTextLength);
-    manifest.license = reader.text(u"license"_s, qsizetype(maxNameLength) * 4);
+    manifest.license = reader.text(u"license"_s, static_cast<qsizetype>(maxNameLength) * 4);
     manifest.resolution = reader.resolution();
     manifest.credits = reader.credits();
     manifest.preview = reader.preview();
@@ -164,7 +164,7 @@ std::expected<QcTexturePackManifest, QcTexturePackProblem> QcTexturePackManifest
 
 bool QcTexturePackManifest::isValidResolution(int resolution)
 {
-    return resolution >= minResolution && resolution <= maxResolution && std::has_single_bit(unsigned(resolution));
+    return resolution >= minResolution && resolution <= maxResolution && std::has_single_bit(static_cast<unsigned>(resolution));
 }
 
 bool QcTexturePackManifest::isPlainFileName(const QString &name)

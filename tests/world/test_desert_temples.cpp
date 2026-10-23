@@ -242,7 +242,8 @@ private slots:
         int chests = 0;
         const QList<QcChunkPos> templeChunks = chunksOf(temple);
         for (const QcChunkPos &pos : templeChunks) {
-            chests += int(std::ranges::count(terrain.furnishingIn(pos).chests, u"qtcraft:desert_temple_chest"_s, &QcChunkFurnishing::Chest::lootTable));
+            chests += static_cast<int>(std::ranges::count(terrain.furnishingIn(pos).chests, u"qtcraft:desert_temple_chest"_s,
+                &QcChunkFurnishing::Chest::lootTable));
         }
         QCOMPARE(chests, 4);
         const QcBlockPos cellar = temple.toWorld(QcBlockPos{7, 1, 7});
@@ -273,7 +274,7 @@ private slots:
                 terrain.generate(pos);
             }
             clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return double(end.tv_sec - start.tv_sec) + double(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
         };
 
         // The chunks of the temples, fresh generators interleaved (plans made afresh).
@@ -289,7 +290,7 @@ private slots:
             plainTime += seconds(plain, chunks);
             withTime += seconds(with, chunks);
         }
-        const double count = 2.0 * double(chunks.size());
+        const double count = 2.0 * static_cast<double>(chunks.size());
         qInfo().noquote() << u"chunks/s of %1 temple chunks without temples %2, with %3"_s.arg(chunks.size())
                                  .arg(count / plainTime, 0, 'f', 1)
                                  .arg(count / withTime, 0, 'f', 1);
@@ -307,8 +308,8 @@ private slots:
         const double a = seconds(plain, area);
         const double b = seconds(with, area);
         qInfo().noquote() << u"chunks/s of %1 chunks around a temple without temples %2, with %3"_s.arg(area.size())
-                                 .arg(double(area.size()) / a, 0, 'f', 1)
-                                 .arg(double(area.size()) / b, 0, 'f', 1);
+                                 .arg(static_cast<double>(area.size()) / a, 0, 'f', 1)
+                                 .arg(static_cast<double>(area.size()) / b, 0, 'f', 1);
     }
 };
 

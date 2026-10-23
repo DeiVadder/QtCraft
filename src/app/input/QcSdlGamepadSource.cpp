@@ -54,7 +54,7 @@ QcGamepadType typeOf(SDL_Gamepad *gamepad, const QString &name)
 QString guidOf(SDL_JoystickID id)
 {
     std::array<char, 33> text{};
-    SDL_GUIDToString(SDL_GetGamepadGUIDForID(id), text.data(), int(text.size()));
+    SDL_GUIDToString(SDL_GetGamepadGUIDForID(id), text.data(), static_cast<int>(text.size()));
     return QString::fromLatin1(text.data());
 }
 
@@ -136,8 +136,8 @@ bool QcSdlGamepadSource::rumble(int id, float strength, int durationMs)
     }
 
     // Both motors alike: the strong (low frequency) and the weak one.
-    const auto motor = Uint16(std::clamp(strength, 0.0f, 1.0f) * 65535.0f);
-    return SDL_RumbleGamepad(it->gamepad, motor, motor, Uint32(std::max(durationMs, 0)));
+    const auto motor = static_cast<Uint16>(std::clamp(strength, 0.0f, 1.0f) * 65535.0f);
+    return SDL_RumbleGamepad(it->gamepad, motor, motor, static_cast<Uint32>(std::max(durationMs, 0)));
 }
 
 void QcSdlGamepadSource::openNewPads()
@@ -190,13 +190,13 @@ QcGamepadState QcSdlGamepadSource::readState(SDL_Gamepad *gamepad) const
 {
     QcGamepadState state;
     for (std::size_t i = 0; i < qcGamepadButtonCount; ++i) {
-        state.setPressed(QcGamepadButton(i), SDL_GetGamepadButton(gamepad, sdlButtons[i]));
+        state.setPressed(static_cast<QcGamepadButton>(i), SDL_GetGamepadButton(gamepad, sdlButtons[i]));
     }
 
     // SDL reports -32768..32767 for the sticks and 0..32767 for the triggers; setAxis clamps the
     // -32768 of a stick to -1.
     for (std::size_t i = 0; i < qcGamepadAxisCount; ++i) {
-        state.setAxis(QcGamepadAxis(i), float(SDL_GetGamepadAxis(gamepad, sdlAxes[i])) / 32767.0f);
+        state.setAxis(static_cast<QcGamepadAxis>(i), static_cast<float>(SDL_GetGamepadAxis(gamepad, sdlAxes[i])) / 32767.0f);
     }
     return state;
 }

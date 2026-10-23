@@ -55,7 +55,7 @@ private:
         }
         QcBlockEntities::Machine &machine = *m_server->blockEntities().machine(pos);
         machine.stacks = {QcItemStack{baseItem(input), 8, 0}, QcItemStack{baseItem(u"coal"_s), 4, 0}, QcItemStack{}};
-        ticks(int(std::lround(seconds / QcPhysics::tickDuration)));
+        ticks(static_cast<int>(std::lround(seconds / QcPhysics::tickDuration)));
         return *m_server->blockEntities().machine(pos);
     }
 
@@ -239,12 +239,12 @@ private slots:
         m_server->world().setBlock(fire.offset(0, 1, 0), qcAirBlockId);
 
         // After 30 s each comes off cooked and lies near the fire without burning.
-        ticks(int(29.0 / QcPhysics::tickDuration));
+        ticks(static_cast<int>(29.0 / QcPhysics::tickDuration));
         QCOMPARE(itemsOn(fire).size(), 4);
-        ticks(int(1.5 / QcPhysics::tickDuration));
+        ticks(static_cast<int>(1.5 / QcPhysics::tickDuration));
         QVERIFY(itemsOn(fire).isEmpty());
         QCOMPARE(m_client->campfires.value(fire), QList<quint32>{});
-        ticks(int(3.0 / QcPhysics::tickDuration));
+        ticks(static_cast<int>(3.0 / QcPhysics::tickDuration));
         QCOMPARE(cooked(u"cooked_beef"_s), 4);
     }
 

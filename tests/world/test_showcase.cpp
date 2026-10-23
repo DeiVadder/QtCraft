@@ -119,13 +119,13 @@ private slots:
             // Every state, doors with both halves (the upper halves stand on the lower ones); of blocks
             // with more than 32 states those that differ from the default in one property.
             const QcBlockStateTable &table = content.stateTable();
-            const QcBlockId first = table.firstState(quint32(type));
-            for (int index = 0; index < table.stateCount(quint32(type)); ++index) {
-                const QcBlockId state = first + quint32(index);
+            const QcBlockId first = table.firstState(static_cast<quint32>(type));
+            for (int index = 0; index < table.stateCount(static_cast<quint32>(type)); ++index) {
+                const QcBlockId state = first + static_cast<quint32>(index);
                 const auto differs = [&](const QcBlockProperty &property) {
                     return content.property(state, property.name) != content.property(first, property.name);
                 };
-                if (table.stateCount(quint32(type)) > 32 && std::ranges::count_if(block.properties, differs) > 1) {
+                if (table.stateCount(static_cast<quint32>(type)) > 32 && std::ranges::count_if(block.properties, differs) > 1) {
                     continue;
                 }
                 ++expectedStates;
@@ -147,8 +147,8 @@ private slots:
             }
             for (const QList<QcWorldLabel> &labels : plan.labelsByChunk) {
                 for (const QcWorldLabel &label : labels) {
-                    const int x = int(std::floor(label.position.x));
-                    const int z = int(std::floor(label.position.z));
+                    const int x = static_cast<int>(std::floor(label.position.x));
+                    const int z = static_cast<int>(std::floor(label.position.z));
                     const bool inArea = x >= area.origin.x && x < area.origin.x + area.sizeX && z >= area.origin.z
                                         && z < area.origin.z + area.sizeZ;
                     if (!inArea || label.heading) {
@@ -253,7 +253,8 @@ private slots:
             }
             withoutMind += mob.noAi ? 1 : 0;
             // Every creature stands in free space on the ground.
-            const QcBlockPos feet{int(std::floor(mob.at.x)), int(std::floor(mob.at.y + 0.1)) + 0, int(std::floor(mob.at.z))};
+            const QcBlockPos feet{static_cast<int>(std::floor(mob.at.x)), static_cast<int>(std::floor(mob.at.y + 0.1)) + 0,
+                static_cast<int>(std::floor(mob.at.z))};
             QVERIFY2(!m_content->block(blockAt(m_chunks, feet.offset(0, 1, 0))).solid, qPrintable(mob.mob));
         }
         for (const QcMobDefinition &mob : m_content->mobs()) {
@@ -316,7 +317,8 @@ private slots:
             if (!mob.hostile || mob.attackDamage <= 0.0) {
                 continue;
             }
-            const QcBlockPos start{int(std::floor(placed.at.x)), int(std::floor(placed.at.y)), int(std::floor(placed.at.z))};
+            const QcBlockPos start{static_cast<int>(std::floor(placed.at.x)), static_cast<int>(std::floor(placed.at.y)),
+                static_cast<int>(std::floor(placed.at.z))};
             for (const auto &[dx, dz] : {std::pair{1, 0}, std::pair{-1, 0}, std::pair{0, 1}, std::pair{0, -1}}) {
                 // Pens built from data may have walls of other blocks (the spider cave's stone): only
                 // glass within reach of the creature counts here, and the walk ends at the first solid
@@ -354,8 +356,8 @@ private slots:
                 continue;
             }
             bool roofed = false;
-            for (int y = int(std::floor(placed.at.y + mob.height)); y < QcWorld::worldHeight && !roofed; ++y) {
-                const QcBlockId block = blockAt(chunks, {int(std::floor(placed.at.x)), y, int(std::floor(placed.at.z))});
+            for (int y = static_cast<int>(std::floor(placed.at.y + mob.height)); y < QcWorld::worldHeight && !roofed; ++y) {
+                const QcBlockId block = blockAt(chunks, {static_cast<int>(std::floor(placed.at.x)), y, static_cast<int>(std::floor(placed.at.z))});
                 roofed = block != qcAirBlockId && content->block(block).opaque;
             }
             QVERIFY2(roofed, qPrintable(mob.name));

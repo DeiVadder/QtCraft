@@ -15,7 +15,7 @@ QString roman(int level)
         QLatin1StringView("I"),  QLatin1StringView("II"),  QLatin1StringView("III"), QLatin1StringView("IV"), QLatin1StringView("V"),
         QLatin1StringView("VI"), QLatin1StringView("VII"), QLatin1StringView("VIII"), QLatin1StringView("IX"), QLatin1StringView("X"),
     };
-    return level >= 1 && std::cmp_less_equal(level, numerals.size()) ? QString(numerals[std::size_t(level - 1)]) : QString::number(level);
+    return level >= 1 && std::cmp_less_equal(level, numerals.size()) ? QString(numerals[static_cast<std::size_t>(level - 1)]) : QString::number(level);
 }
 
 QString nameOf(const QcContentRegistry &content, const QcEnchantment &enchantment, const QString &language)

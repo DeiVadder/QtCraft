@@ -273,7 +273,7 @@ private slots:
             for (int tick = 0; tick < 20; ++tick) {
                 recorder.noteTick(tick == 19 ? 40.0 : 2.0);
             }
-            recorder.sample({qint64(second) * 1000, 2, 100, 10, 300.0f, quint64(second) * 2048, 0}, 1.0);
+            recorder.sample({static_cast<qint64>(second) * 1000, 2, 100, 10, 300.0f, static_cast<quint64>(second) * 2048, 0}, 1.0);
         }
         QCOMPARE(recorder.seconds().size(), 125);
         QCOMPARE(recorder.minutes().size(), 2);

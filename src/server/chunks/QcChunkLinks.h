@@ -62,7 +62,11 @@ private:
 
     Counts countChunk(const QcChunk &chunk) const;
     static quint16 marksOf(const Counts &counts);
-    bool matters(QcBlockId block) const { return std::size_t(block) < m_part.size() && (m_part[std::size_t(block)] || m_piston[std::size_t(block)] != 0); }
+    bool matters(QcBlockId block) const
+    {
+        return static_cast<std::size_t>(block) < m_part.size()
+            && (m_part[static_cast<std::size_t>(block)] || m_piston[static_cast<std::size_t>(block)] != 0);
+    }
 
     // Per block state: a circuit part, and the side a piston faces plus one (0: none or up/down).
     std::vector<bool> m_part;

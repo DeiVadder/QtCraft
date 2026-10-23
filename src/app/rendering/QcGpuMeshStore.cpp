@@ -32,7 +32,7 @@ void QcGpuMeshStore::reset(QRhi *rhi, bool sectionLight)
 
 void QcGpuMeshStore::fill(QRhiResourceUpdateBatch *updates, QRhiBuffer *buffer, quint32 offset, const QByteArray &data)
 {
-    const auto size = quint32(data.size());
+    const auto size = static_cast<quint32>(data.size());
     if (m_directWrite) {
         if (QcBufferWrite::write(buffer, offset, data.constData(), size)) {
             ++m_directWrites;
@@ -62,7 +62,7 @@ QcGpuList gpuList(const QcArenaSlot &slot, QcPackedMesh::Place place)
                      place.indexCount,
                      place.shortIndices ? QRhiCommandBuffer::IndexUInt16 : QRhiCommandBuffer::IndexUInt32,
                      indexOffset / indexSize,
-                     qint32(vertexOffset / QcSectionArena::vertexStride)};
+                     static_cast<qint32>(vertexOffset / QcSectionArena::vertexStride)};
 }
 
 } // namespace
@@ -75,7 +75,7 @@ QcGpuMesh QcGpuMeshStore::createMesh(QRhiResourceUpdateBatch *updates, const QcC
         return gpuMesh;
     }
 
-    const std::optional<QcArenaSlot> slot = m_arena.allocate(quint32(packed.vertices.size()), quint32(packed.indices.size()));
+    const std::optional<QcArenaSlot> slot = m_arena.allocate(static_cast<quint32>(packed.vertices.size()), static_cast<quint32>(packed.indices.size()));
     if (!slot) {
         return gpuMesh; // nothing to draw; the arena reported it
     }
@@ -166,8 +166,8 @@ quint32 QcGpuBuffers::uploadDynamic(QRhi *rhi, QRhiResourceUpdateBatch *updates,
         return 0;
     }
 
-    const auto vertexBytes = quint32(mesh->vertices.size() * qsizetype(sizeof(QcEntityVertex)));
-    const auto indexBytes = quint32(mesh->indices.size() * qsizetype(sizeof(quint32)));
+    const auto vertexBytes = static_cast<quint32>(mesh->vertices.size() * static_cast<qsizetype>(sizeof(QcEntityVertex)));
+    const auto indexBytes = static_cast<quint32>(mesh->indices.size() * static_cast<qsizetype>(sizeof(quint32)));
     if (!vertices || vertices->size() < vertexBytes) {
         vertices.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, vertexBytes * 2));
         vertices->create();
@@ -179,6 +179,6 @@ quint32 QcGpuBuffers::uploadDynamic(QRhi *rhi, QRhiResourceUpdateBatch *updates,
 
     updates->updateDynamicBuffer(vertices.get(), 0, vertexBytes, mesh->vertices.constData());
     updates->updateDynamicBuffer(indices.get(), 0, indexBytes, mesh->indices.constData());
-    indexCount = quint32(mesh->indices.size());
+    indexCount = static_cast<quint32>(mesh->indices.size());
     return vertexBytes + indexBytes;
 }

@@ -126,10 +126,10 @@ std::optional<quint64> QcTickCommands::parseDuration(const QString &word)
     }
 
     const double ticks = std::round(seconds * QcPhysics::tickRate);
-    if (!ok || !std::isfinite(ticks) || ticks < 1.0 || ticks > double(maxSprintTicks)) {
+    if (!ok || !std::isfinite(ticks) || ticks < 1.0 || ticks > static_cast<double>(maxSprintTicks)) {
         return std::nullopt;
     }
-    return quint64(ticks);
+    return static_cast<quint64>(ticks);
 }
 
 void QcTickCommands::sprint(const QcCommandContext &context)
@@ -157,7 +157,7 @@ void QcTickCommands::sprint(const QcCommandContext &context)
     m_parts.ticks.startSprint(*ticks);
     qCInfo(lcCommands).noquote() << u"Sprint of %1 ticks started by %2"_s.arg(*ticks).arg(context.source.name());
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Sprinting %1 ticks (%2 s of game time); /tick sprint stop ends it"),
-                  {QString::number(*ticks), number(double(*ticks) * QcPhysics::tickDuration)});
+                  {QString::number(*ticks), number(static_cast<double>(*ticks) * QcPhysics::tickDuration)});
 }
 
 void QcTickCommands::reportSprintEnd()
@@ -168,8 +168,8 @@ void QcTickCommands::reportSprintEnd()
     }
 
     const quint64 ticks = sprint->ticks;
-    const double seconds = std::max(double(sprint->elapsedNs) / 1e9, 1e-9);
-    const QStringList arguments{QString::number(ticks), number(seconds * 1000.0), number(double(ticks) / seconds)};
+    const double seconds = std::max(static_cast<double>(sprint->elapsedNs) / 1e9, 1e-9);
+    const QStringList arguments{QString::number(ticks), number(seconds * 1000.0), number(static_cast<double>(ticks) / seconds)};
     qCInfo(lcCommands).noquote() << u"Sprint ended: %1 ticks in %2 ms (%3 ticks per second)"_s.arg(arguments[0], arguments[1], arguments[2]);
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && m_state.permissionOf(*client) != QcPermission::Player) {
@@ -195,7 +195,7 @@ void QcTickCommands::query(const QcCommandContext &context) const
 
     QStringList phases;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        phases.append(u"%1 %2"_s.arg(QString::fromLatin1(QcTickPhases::ids[std::size_t(phase)]), QString::number(window.mean(phase), 'f', 2)));
+        phases.append(u"%1 %2"_s.arg(QString::fromLatin1(QcTickPhases::ids[static_cast<std::size_t>(phase)]), QString::number(window.mean(phase), 'f', 2)));
     }
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Tick %1 ms mean, %2 ms max; phases (ms): %3"),
                   {QString::number(window.mean(QcTickPhaseTimer::durationSeries), 'f', 2),

@@ -38,7 +38,7 @@ public:
     static constexpr int resultRow = gridFirstRow + 9;
     static constexpr int machineFirstRow = resultRow + 1;
     static constexpr int equipmentFirstRow = machineFirstRow + QcMsg::MachineState::maxSlots;
-    static constexpr int rowCountTotal = equipmentFirstRow + int(QcEquipment::slotCount);
+    static constexpr int rowCountTotal = equipmentFirstRow + static_cast<int>(QcEquipment::slotCount);
 
     // Protocol slot (QcMsg::MoveInventoryItem) of a row; -1 for the crafting result.
     static int slotOfRow(int row);

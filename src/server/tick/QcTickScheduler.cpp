@@ -16,7 +16,7 @@ QcTickScheduler::QcTickScheduler(Clock clock)
 QcTickScheduler::Clock QcTickScheduler::steadyClock()
 {
     return [] {
-        return qint64(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+        return static_cast<qint64>(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
     };
 }
 
@@ -27,7 +27,7 @@ void QcTickScheduler::start()
 
 void QcTickScheduler::setRate(double ticksPerSecond)
 {
-    m_intervalNs = qint64(std::llround(1e9 / std::clamp(ticksPerSecond, minRate, maxRate)));
+    m_intervalNs = static_cast<qint64>(std::llround(1e9 / std::clamp(ticksPerSecond, minRate, maxRate)));
     m_nextDueNs = m_clock() + m_intervalNs;
     m_tickStarts.clear();
 }
@@ -76,7 +76,7 @@ void QcTickScheduler::noteTickStart(qint64 started)
 double QcTickScheduler::sprintRate() const
 {
     const qint64 elapsed = m_clock() - m_sprintStartedNs;
-    return m_sprintRemaining == 0 || m_sprintDone == 0 || elapsed <= 0 ? 0.0 : double(m_sprintDone) * 1e9 / double(elapsed);
+    return m_sprintRemaining == 0 || m_sprintDone == 0 || elapsed <= 0 ? 0.0 : static_cast<double>(m_sprintDone) * 1e9 / static_cast<double>(elapsed);
 }
 
 double QcTickScheduler::measuredRate() const
@@ -84,7 +84,7 @@ double QcTickScheduler::measuredRate() const
     if (m_tickStarts.size() < 2 || m_tickStarts.last() <= m_tickStarts.first()) {
         return 0.0;
     }
-    return double(m_tickStarts.size() - 1) * 1e9 / double(m_tickStarts.last() - m_tickStarts.first());
+    return static_cast<double>(m_tickStarts.size() - 1) * 1e9 / static_cast<double>(m_tickStarts.last() - m_tickStarts.first());
 }
 
 qint64 QcTickScheduler::runDue(const std::function<void()> &tick)
@@ -138,13 +138,13 @@ int QcTickScheduler::takeDueTicks(qint64 now)
 
     const qint64 due = (now - m_nextDueNs) / m_intervalNs + 1;
     if (due <= maxCatchUpTicks) {
-        return int(due);
+        return static_cast<int>(due);
     }
 
     // The dropped ticks are lost game time; the grid moves on so no drift builds up.
     const qint64 skipped = due - maxCatchUpTicks;
     m_nextDueNs += skipped * m_intervalNs;
-    m_stats.addSkipped(quint64(skipped));
+    m_stats.addSkipped(static_cast<quint64>(skipped));
     qCWarning(lcServer) << "Server overloaded, skipped" << skipped << "ticks";
     return maxCatchUpTicks;
 }

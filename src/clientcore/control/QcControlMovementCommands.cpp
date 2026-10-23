@@ -44,8 +44,8 @@ void QcControlMovementCommands::look(const QJsonObject &request)
 {
     QcPlayerInput intent = session().intent();
     // Wrapped in double precision first: huge values would overflow a float.
-    intent.yaw = float(std::fmod(request.value(u"yaw"_s).toDouble(intent.yaw), 360.0));
-    intent.pitch = float(std::clamp(request.value(u"pitch"_s).toDouble(intent.pitch), -90.0, 90.0));
+    intent.yaw = static_cast<float>(std::fmod(request.value(u"yaw"_s).toDouble(intent.yaw), 360.0));
+    intent.pitch = static_cast<float>(std::clamp(request.value(u"pitch"_s).toDouble(intent.pitch), -90.0, 90.0));
     session().setIntent(intent);
 
     m_context.finish(request, m_context.reports().playerStatus());
@@ -94,26 +94,26 @@ void QcControlMovementCommands::move(const QJsonObject &request, bool isJump)
     const quint64 startTick = session().tickCount();
 
     QcPlayerInput intent = session().intent();
-    intent.forward = float(std::clamp(request.value(u"forward"_s).toDouble(0.0), -1.0, 1.0));
-    intent.strafe = float(std::clamp(request.value(u"strafe"_s).toDouble(0.0), -1.0, 1.0));
+    intent.forward = static_cast<float>(std::clamp(request.value(u"forward"_s).toDouble(0.0), -1.0, 1.0));
+    intent.strafe = static_cast<float>(std::clamp(request.value(u"strafe"_s).toDouble(0.0), -1.0, 1.0));
     intent.jump = isJump || request.value(u"jump"_s).toBool(false);
     intent.sneak = request.value(u"sneak"_s).toBool(false);
     intent.sprint = request.value(u"sprint"_s).toBool(false);
     // A spectator's flight speed in tenths (decision E-730); it stays after the move like the wheel's.
     if (request.contains(u"flySpeed"_s)) {
         const int speed = request.value(u"flySpeed"_s).toInt(QcPlayerInput::normalFlySpeed);
-        const int clamped = std::clamp(speed, int(QcPlayerInput::minFlySpeed), int(QcPlayerInput::maxFlySpeed));
+        const int clamped = std::clamp(speed, static_cast<int>(QcPlayerInput::minFlySpeed), static_cast<int>(QcPlayerInput::maxFlySpeed));
         if (clamped != speed) {
             qCWarning(lcSession) << "Control: flySpeed" << speed << "is outside" << QcPlayerInput::minFlySpeed << "to"
                                  << QcPlayerInput::maxFlySpeed << "- using" << clamped;
         }
-        intent.flySpeed = quint8(clamped);
+        intent.flySpeed = static_cast<quint8>(clamped);
     }
     session().setIntent(intent);
 
     const int ticks = QcControlArguments::ticks(request, isJump ? 2 : 20);
     m_context.begin({request, QcControlActiveCommand::timeoutPolls(ticks), [this, startTick, ticks] {
-                         if (session().tickCount() < startTick + quint64(ticks)) {
+                         if (session().tickCount() < startTick + static_cast<quint64>(ticks)) {
                              return false;
                          }
 
@@ -149,7 +149,7 @@ bool QcControlMovementCommands::isReady() const
     }
 
     const QcVec3 p = session().playerMotion().position;
-    const QcChunkPos centre = QcBlockPos{int(std::floor(p.x)), 0, int(std::floor(p.z))}.chunk();
+    const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(p.x)), 0, static_cast<int>(std::floor(p.z))}.chunk();
 
     for (int dx = -1; dx <= 1; ++dx) {
         for (int dz = -1; dz <= 1; ++dz) {

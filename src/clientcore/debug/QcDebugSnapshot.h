@@ -24,7 +24,7 @@ enum class QcFramePhase : quint8 { Interval, GuiCpu, EntityMesh, Preview, Render
 
 namespace QcFramePhases {
 
-inline constexpr int count = int(QcFramePhase::Gpu) + 1;
+inline constexpr int count = static_cast<int>(QcFramePhase::Gpu) + 1;
 inline constexpr std::array<const char *, count> ids{"frame", "guiCpu", "entityMesh", "preview", "renderCpu", "worldRender", "upload", "gpu"};
 
 } // namespace QcFramePhases

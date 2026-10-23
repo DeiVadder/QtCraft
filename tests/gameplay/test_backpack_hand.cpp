@@ -259,10 +259,10 @@ private slots:
     {
         QTest::addColumn<int>("mode");
         QTest::addColumn<bool>("opens");
-        QTest::addRow("survival") << int(QcGameMode::Survival) << true;
-        QTest::addRow("adventure") << int(QcGameMode::Adventure) << true;
-        QTest::addRow("creative") << int(QcGameMode::Creative) << true;
-        QTest::addRow("spectator") << int(QcGameMode::Spectator) << false;
+        QTest::addRow("survival") << static_cast<int>(QcGameMode::Survival) << true;
+        QTest::addRow("adventure") << static_cast<int>(QcGameMode::Adventure) << true;
+        QTest::addRow("creative") << static_cast<int>(QcGameMode::Creative) << true;
+        QTest::addRow("spectator") << static_cast<int>(QcGameMode::Spectator) << false;
     }
 
     void gameModesOpenAsForOtherContainers()
@@ -270,7 +270,7 @@ private slots:
         QFETCH(int, mode);
         QFETCH(bool, opens);
         QcServerConfig config;
-        config.defaultGameMode = QcGameMode(mode);
+        config.defaultGameMode = static_cast<QcGameMode>(mode);
         join(config);
         player().inventory.setSlot(2, packed({stackOf("qtcraft:dirt", 5)}));
         send(QcMsg::SelectHotbarSlot{2});

@@ -128,7 +128,7 @@ bool passable(Cells &cells, QcBlockPos pos, QcPathRules rules, bool feet)
 template<typename Cells>
 bool clearAbove(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
 {
-    const int top = int(std::ceil(lift + rules.height - 1e-6)) - 1;
+    const int top = static_cast<int>(std::ceil(lift + rules.height - 1e-6)) - 1;
     for (int up = 1; up <= top; ++up) {
         if (!passable(cells, feet.offset(0, up, 0), rules, false)) {
             return false;

@@ -35,7 +35,7 @@ void QcPreviewCamera::drag(double pixels)
 
 void QcPreviewCamera::wheel(int angleDelta)
 {
-    setZoom(m_zoom + zoomPerStep * double(angleDelta) / 120.0);
+    setZoom(m_zoom + zoomPerStep * static_cast<double>(angleDelta) / 120.0);
 }
 
 void QcPreviewCamera::show(Side side)
@@ -69,7 +69,7 @@ QcCamera QcPreviewCamera::camera() const
 {
     const QcVec3 at = target();
     QcCamera camera;
-    camera.position = QVector3D(float(at.x), float(at.y), float(at.z + distance()));
+    camera.position = QVector3D(static_cast<float>(at.x), static_cast<float>(at.y), static_cast<float>(at.z + distance()));
     camera.yaw = 0.0f;
     camera.pitch = 0.0f;
     camera.fieldOfView = fieldOfView;

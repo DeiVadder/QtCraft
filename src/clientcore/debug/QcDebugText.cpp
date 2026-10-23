@@ -61,12 +61,12 @@ constexpr std::array<const char *, 4> facingNames{
 
 QString QcDebugText::phaseName(QcTickPhase phase)
 {
-    return tr(tickPhaseNames[std::size_t(phase)]);
+    return tr(tickPhaseNames[static_cast<std::size_t>(phase)]);
 }
 
 QString QcDebugText::phaseName(QcFramePhase phase)
 {
-    return tr(framePhaseNames[std::size_t(phase)]);
+    return tr(framePhaseNames[static_cast<std::size_t>(phase)]);
 }
 
 QString QcDebugText::compact(const QcDebugSnapshot &snapshot)
@@ -75,7 +75,7 @@ QString QcDebugText::compact(const QcDebugSnapshot &snapshot)
         return tr("No frame statistics");
     }
 
-    const QcDebugSnapshot::Timing &interval = snapshot.frame->phases[std::size_t(QcFramePhase::Interval)];
+    const QcDebugSnapshot::Timing &interval = snapshot.frame->phases[static_cast<std::size_t>(QcFramePhase::Interval)];
     QString line = tr("%1 FPS · %2 ms (max %3 ms)").arg(qRound(snapshot.frame->fps)).arg(ms(interval.meanMs), ms(interval.maxMs));
     if (snapshot.frame->frameLimit <= 0) {
         return line;
@@ -114,7 +114,7 @@ QStringList QcDebugText::placeLines(const QcDebugSnapshot &snapshot)
             // Below the world (the void) the section counts on downwards.
             .arg(qcFloorDiv(block.y, QcWorld::sectionHeight)),
         tr("Facing: %1 (yaw %2°, pitch %3°)")
-            .arg(tr(facingNames[std::size_t(QcDebugSnapshot::facingIndex(snapshot.yaw))]))
+            .arg(tr(facingNames[static_cast<std::size_t>(QcDebugSnapshot::facingIndex(snapshot.yaw))]))
             .arg(snapshot.yaw, 0, 'f', 1)
             .arg(snapshot.pitch, 0, 'f', 1),
         tr("Light at the feet: sky %1, block %2").arg(level(snapshot.feetLight.sky), level(snapshot.feetLight.block)),
@@ -178,9 +178,9 @@ QStringList QcDebugText::worldLines(const QcDebugSnapshot &snapshot)
     if (const std::optional<QcDebugSnapshot::Frame> &frame = snapshot.frame) {
         constexpr double mb = QcProcessMemory::bytesPerMb;
         lines.append(tr("Client memory: blocks %1 MiB · block light %2 MiB · section buffers %3 MiB · footprint %4 MiB")
-                         .arg(qRound(double(snapshot.blockBytes) / mb))
-                         .arg(qRound(double(frame->blockLightBytes) / mb))
-                         .arg(qRound(double(frame->sectionBytes) / mb))
+                         .arg(qRound(static_cast<double>(snapshot.blockBytes) / mb))
+                         .arg(qRound(static_cast<double>(frame->blockLightBytes) / mb))
+                         .arg(qRound(static_cast<double>(frame->sectionBytes) / mb))
                          .arg(qRound(snapshot.footprintMb)));
     }
     return lines;
@@ -220,10 +220,10 @@ QStringList QcDebugText::timings(const QcDebugSnapshot &snapshot)
 {
     int width = 0;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        width = std::max(width, int(phaseName(QcTickPhase(phase)).size()));
+        width = std::max(width, static_cast<int>(phaseName(static_cast<QcTickPhase>(phase)).size()));
     }
     for (int phase = 0; phase < QcFramePhases::count; ++phase) {
-        width = std::max(width, int(phaseName(QcFramePhase(phase)).size()));
+        width = std::max(width, static_cast<int>(phaseName(static_cast<QcFramePhase>(phase)).size()));
     }
     width += 2;
 
@@ -231,17 +231,18 @@ QStringList QcDebugText::timings(const QcDebugSnapshot &snapshot)
     if (const std::optional<QcDebugSnapshot::Frame> &frame = snapshot.frame) {
         lines.append(row(tr("Client frame"), width, tr("mean"), tr("max")));
         for (int phase = 0; phase < QcFramePhases::count; ++phase) {
-            const QcDebugSnapshot::Timing &timing = frame->phases[std::size_t(phase)];
-            const bool unknown = QcFramePhase(phase) == QcFramePhase::Gpu && !frame->gpuTimed;
-            lines.append(row(phaseName(QcFramePhase(phase)), width, unknown ? u"–"_s : ms(timing.meanMs), unknown ? u"–"_s : ms(timing.maxMs)));
+            const QcDebugSnapshot::Timing &timing = frame->phases[static_cast<std::size_t>(phase)];
+            const bool unknown = static_cast<QcFramePhase>(phase) == QcFramePhase::Gpu && !frame->gpuTimed;
+            lines.append(row(phaseName(static_cast<QcFramePhase>(phase)), width, unknown ? u"–"_s : ms(timing.meanMs),
+                             unknown ? u"–"_s : ms(timing.maxMs)));
         }
     }
 
     if (const std::optional<QcMsg::ServerDebug> &server = snapshot.server) {
         lines.append(row(tr("Server tick"), width, tr("mean"), tr("max")));
         for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-            lines.append(row(phaseName(QcTickPhase(phase)), width, ms(server->phaseMeanMs[std::size_t(phase)]),
-                             ms(server->phaseMaxMs[std::size_t(phase)])));
+            lines.append(row(phaseName(static_cast<QcTickPhase>(phase)), width, ms(server->phaseMeanMs[static_cast<std::size_t>(phase)]),
+                             ms(server->phaseMaxMs[static_cast<std::size_t>(phase)])));
         }
         lines.append(row(tr("Whole tick"), width, ms(server->tickMeanMs), ms(server->tickMaxMs)));
     }

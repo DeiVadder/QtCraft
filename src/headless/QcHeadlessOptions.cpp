@@ -103,7 +103,7 @@ namespace {
         return value;
     };
 
-    settings.port = quint16(number(options.port, 0, 65535, settings.port));
+    settings.port = static_cast<quint16>(number(options.port, 0, 65535, settings.port));
     settings.maxPlayers = number(options.maxPlayers, 1, QcServerSettings::maxPlayersLimit, settings.maxPlayers);
     settings.viewDistance = number(options.view, 1, QcServerSettings::maxViewDistance, settings.viewDistance);
     const auto text = [&parser](const QCommandLineOption &option, const QString &fallback) {

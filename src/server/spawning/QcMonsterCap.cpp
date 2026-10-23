@@ -20,7 +20,7 @@ QcMonsterCap::QcMonsterCap(int perArea, const QList<QcChunkPos> &playerChunks, c
 
 QcMonsterCap::QcMonsterCap(int perArea, const QList<QcChunkPos> &playerChunks, qsizetype loadedChunks)
     : m_perArea(perArea)
-    , m_worldCap(int(qint64(perArea) * loadedChunks / areaChunks))
+    , m_worldCap(static_cast<int>(static_cast<qint64>(perArea) * loadedChunks / areaChunks))
 {
     for (const QcChunkPos centre : playerChunks) {
         m_areas.append({centre, 0});

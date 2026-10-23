@@ -124,7 +124,7 @@ std::optional<Pool> Loader::pool(const QcFeatureDefinition &definition, quint64 
     for (const QString &biome : definition.biomes) {
         const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
         if (found != m_content.worldgen().biomes().end()) {
-            pool.biomes.insert(int(found - m_content.worldgen().biomes().begin()));
+            pool.biomes.insert(static_cast<int>(found - m_content.worldgen().biomes().begin()));
         } else {
             warn(u"Pool %1 references unknown biome %2"_s.arg(definition.name, biome));
         }
@@ -195,7 +195,7 @@ Biome Loader::biome(const QcBiomeDefinition &definition, QcBlockId stone, QcBloc
     const decltype(Biome::features) placed = featuresOf(definition);
     for (const auto &[feature, density] : placed) {
         if (isGiant(feature)) {
-            constexpr double cellArea = double(QcTerrainDefinitions::giantCell) * QcTerrainDefinitions::giantCell;
+            constexpr double cellArea = static_cast<double>(QcTerrainDefinitions::giantCell) * QcTerrainDefinitions::giantCell;
             biome.giants.append({feature, std::min(1.0, density * cellArea)});
         } else {
             biome.features.append({feature, density});
@@ -217,7 +217,7 @@ decltype(Biome::features) Loader::featuresOf(const QcBiomeDefinition &definition
             warn(u"Biome %1 lists the pool %2; pools are placed in every chunk"_s.arg(definition.name, placement.feature));
             continue;
         }
-        features.append({int(it - m_content.worldgen().features().begin()), placement.density});
+        features.append({static_cast<int>(it - m_content.worldgen().features().begin()), placement.density});
     }
     return features;
 }
@@ -280,11 +280,11 @@ QList<int> Loader::kindBiomes(const QList<Biome> &biomes, const QString &fallbac
 {
     const QString label = kind == &Biome::river ? u"river"_s : u"delta"_s;
     const auto first = std::ranges::find_if(biomes, kind);
-    int firstKind = first == biomes.end() ? -1 : int(first - biomes.begin());
+    int firstKind = first == biomes.end() ? -1 : static_cast<int>(first - biomes.begin());
     if (!fallback.isEmpty()) {
         const auto found = std::ranges::find(biomes, fallback, &Biome::name);
         if (found != biomes.end() && (*found).*kind) {
-            firstKind = int(found - biomes.begin());
+            firstKind = static_cast<int>(found - biomes.begin());
         } else {
             warn(u"Terrain names %1 as the %2 biome, which is no %2 biome"_s.arg(fallback, label));
         }
@@ -303,7 +303,7 @@ QList<int> Loader::kindBiomes(const QList<Biome> &biomes, const QString &fallbac
         if (!fits) {
             warn(u"Biome %1 names %2 as its %3 biome, which is no %3 biome"_s.arg(biomes[i].name, name, label));
         }
-        kinds[i] = fits ? int(found - biomes.begin()) : firstKind;
+        kinds[i] = fits ? static_cast<int>(found - biomes.begin()) : firstKind;
     }
     return kinds;
 }
@@ -331,7 +331,7 @@ std::optional<Ore> Loader::ore(const QcOreDefinition &definition, QcBlockId ston
     for (const QString &biome : definition.biomes) {
         const auto found = std::ranges::find(m_content.worldgen().biomes(), biome, &QcBiomeDefinition::name);
         if (found != m_content.worldgen().biomes().end()) {
-            ore.biomes.insert(int(found - m_content.worldgen().biomes().begin()));
+            ore.biomes.insert(static_cast<int>(found - m_content.worldgen().biomes().begin()));
         } else {
             warn(u"Ore %1 references unknown biome %2"_s.arg(definition.name, biome));
         }
@@ -468,7 +468,7 @@ QcTerrainDefinitions::QcTerrainDefinitions(const QcContentRegistry &content, qui
         biome.frozenWater = coldEdges.byTemperature && biome.frozenWater == water ? coldEdges.ice : biome.frozenWater;
         BiomeVegetation vegetation = loader.vegetation(definition, seed);
         for (auto &[feature, density] : vegetation.scattered) {
-            biome.features.append({int(features.size()), density});
+            biome.features.append({static_cast<int>(features.size()), density});
             features.append(std::move(feature));
         }
         for (std::size_t layer = 0; layer < vegetation.patches.size(); ++layer) {

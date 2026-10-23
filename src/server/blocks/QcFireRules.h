@@ -34,7 +34,7 @@ public:
     const Traits &of(QcBlockId block) const
     {
         static const Traits none;
-        return std::size_t(block) < m_traits.size() ? m_traits[std::size_t(block)] : none;
+        return static_cast<std::size_t>(block) < m_traits.size() ? m_traits[static_cast<std::size_t>(block)] : none;
     }
     // The fire block a spark lights (QcContentRegistry::defaultFire).
     std::optional<QcBlockId> defaultFire() const { return m_defaultFire; }

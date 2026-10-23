@@ -66,7 +66,7 @@ void plantSaplings(QcStructure &structure, const QcShowcaseContext &context, con
         }
 
         const int width = giant ? 2 : 1;
-        const QcBlockId sapling = context.content.stateTable().firstState(quint32(type));
+        const QcBlockId sapling = context.content.stateTable().firstState(static_cast<quint32>(type));
         for (int dx = 0; dx < width; ++dx) {
             for (int dz = 0; dz < width; ++dz) {
                 const QcBlockPos pos{x + offset + dx, 1, treeZ + saplingDistance + dz};

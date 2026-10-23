@@ -89,7 +89,7 @@ struct AdminRequest
         // Stops only with the argument "confirm".
         Stop,
     };
-    static constexpr quint8 kindCount = quint8(Kind::Stop) + 1;
+    static constexpr quint8 kindCount = static_cast<quint8>(Kind::Stop) + 1;
 
     quint32 id = 0;
     Kind kind = Kind::Players;
@@ -103,7 +103,7 @@ struct AdminRequest
 struct AdminResult
 {
     enum class Refusal : quint8 { None, Rights, Arguments, Confirmation, TooSoon };
-    static constexpr quint8 refusalCount = quint8(Refusal::TooSoon) + 1;
+    static constexpr quint8 refusalCount = static_cast<quint8>(Refusal::TooSoon) + 1;
 
     quint32 id = 0;
     bool ok = false;

@@ -25,7 +25,7 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-constexpr qint64 maxSettingsBytes = qint64(64) * 1024;
+constexpr qint64 maxSettingsBytes = qint64{64} * 1024;
 
 // An item name, or "#tag" carried by at least one item.
 bool knowsItem(const QcContentRegistry &content, const QString &name)
@@ -151,7 +151,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
 
     // Silent at run time; the author should know.
     for (int action = 0; action < qcBlockSoundActionCount; ++action) {
-        const QString name = QcSoundKeys::blockSound(block, QcBlockSoundAction(action));
+        const QString name = QcSoundKeys::blockSound(block, static_cast<QcBlockSoundAction>(action));
         if (!knowsSound(content, name)) {
             warnings.append(u"block %1: unknown sound '%2'"_s.arg(block.name, name));
         }
@@ -236,7 +236,7 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
 // Room the content sync frame leaves for the registry.
 constexpr qint64 contentSyncBudget = QcProtocol::maxFrameBytes - 4096;
 // Bytes all mods together may make the loader read (hard links count every time they are read).
-constexpr qint64 totalReadBudget = qint64(64) * 1024 * 1024;
+constexpr qint64 totalReadBudget = qint64{64} * 1024 * 1024;
 // World generation cost: ore definitions and their veins x size per chunk, biomes, features.
 constexpr qsizetype maxOres = 256;
 constexpr qint64 maxOreBlocksPerChunk = 4096;
@@ -250,7 +250,7 @@ QString worldgenProblem(const QcContentRegistry &content)
 {
     qint64 oreBlocks = 0;
     for (const QcOreDefinition &ore : content.worldgen().ores()) {
-        oreBlocks += qint64(ore.veinsPerChunk) * ore.veinSize;
+        oreBlocks += static_cast<qint64>(ore.veinsPerChunk) * ore.veinSize;
     }
     if (content.worldgen().ores().size() > maxOres || oreBlocks > maxOreBlocksPerChunk) {
         return u"too many ores (at most %1 definitions and %2 ore blocks per chunk)"_s.arg(maxOres).arg(maxOreBlocksPerChunk);
@@ -269,7 +269,7 @@ QString worldgenProblem(const QcContentRegistry &content)
     qint64 poolAttempts = 0;
     for (const QcFeatureDefinition &feature : content.worldgen().features()) {
         // A surface lake tries its sites once per square of region × region chunks (decision E-856).
-        const qint64 chunks = feature.surface ? qint64(feature.region) * feature.region : 1;
+        const qint64 chunks = feature.surface ? static_cast<qint64>(feature.region) * feature.region : 1;
         poolAttempts += feature.type == QcFeatureDefinition::Type::Pool ? (feature.attempts + chunks - 1) / chunks : 0;
     }
     if (poolAttempts > maxPoolAttemptsPerChunk) {
@@ -503,7 +503,7 @@ ModLoadState::Admission ModLoadState::admit(const QcModStatus &mod, const QcCont
     // attempt counts, also for mods that are refused afterwards.
     const qint64 size = QcContentPackLoader::measure(mod.info.directory);
     if (readBytes + size > totalReadBudget || size > contentSyncBudget) {
-        return {qcError(u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - readBytes) / (qint64(1024) * 1024))), {}};
+        return {qcError(u"the mod's files exceed the %1 MiB left for mods"_s.arg((totalReadBudget - readBytes) / (qint64{1024} * 1024))), {}};
     }
 
     readBytes += size;

@@ -16,7 +16,7 @@ void QcLinkStats::acknowledged(quint32 sequence, qint64 nowNs)
     m_acknowledged = sequence;
     for (const Sent &sent : m_sent) {
         if (sent.sequence == sequence && sent.atNs > 0) {
-            m_roundTrip.add(double(nowNs - sent.atNs) / 1e6);
+            m_roundTrip.add(static_cast<double>(nowNs - sent.atNs) / 1e6);
             return;
         }
     }

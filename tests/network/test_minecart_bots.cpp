@@ -113,7 +113,7 @@ private slots:
         static const QRegularExpression listening(u"Listening on port (\\d+)"_s);
         QVERIFY2(QTest::qWaitFor([&] {
             readServer();
-            m_port = quint16(listening.match(m_serverOutput).captured(1).toUInt());
+            m_port = static_cast<quint16>(listening.match(m_serverOutput).captured(1).toUInt());
             return m_port != 0 || m_server.state() == QProcess::NotRunning;
         }, timeoutMs), qPrintable(m_serverOutput));
         QVERIFY(console(u"gamerule mobSpawning false"_s, u"mobSpawning"_s));
@@ -125,9 +125,9 @@ private slots:
         QVERIFY(m_bob.request(command(u"move"_s, {{u"forward"_s, 1.0}, {u"ticks"_s, 15}})).value(u"ok"_s).toBool());
         QVERIFY(console(u"op Alice"_s, u"Alice"_s));
         const QJsonArray position = m_alice.request(command(u"status"_s)).value(u"position"_s).toArray();
-        m_x = int(std::floor(position[0].toDouble()));
-        m_y = int(std::floor(position[1].toDouble()));
-        m_z = int(std::floor(position[2].toDouble()));
+        m_x = static_cast<int>(std::floor(position[0].toDouble()));
+        m_y = static_cast<int>(std::floor(position[1].toDouble()));
+        m_z = static_cast<int>(std::floor(position[2].toDouble()));
     }
 
     void cleanupTestCase()

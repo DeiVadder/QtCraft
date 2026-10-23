@@ -56,7 +56,7 @@ public:
 
     QcPreviewSource *source() const { return m_source; }
     void setSource(QcPreviewSource *source);
-    Animation animation() const { return Animation(m_animation); }
+    Animation animation() const { return static_cast<Animation>(m_animation); }
     void setAnimation(Animation animation);
     Side side() const;
     double zoom() const { return m_camera.zoom(); }

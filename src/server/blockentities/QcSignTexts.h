@@ -34,7 +34,7 @@ public:
 
     explicit QcSignTexts(const QcContentRegistry &content);
 
-    bool isSign(QcBlockId block) const { return std::size_t(block) < m_sign.size() && m_sign[std::size_t(block)].isSign(); }
+    bool isSign(QcBlockId block) const { return static_cast<std::size_t>(block) < m_sign.size() && m_sign[static_cast<std::size_t>(block)].isSign(); }
 
     // The block at `pos` changed (QcServerWorld::setBlock): no sign, no text.
     void noteBlock(QcBlockPos pos, QcBlockId after);

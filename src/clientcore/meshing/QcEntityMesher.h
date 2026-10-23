@@ -103,7 +103,7 @@ struct Attachment
 // Bit of a bone role in Figure::hiddenBones.
 constexpr quint8 boneBit(QcBoneRole role)
 {
-    return quint8(1u << unsigned(role));
+    return static_cast<quint8>(1u << static_cast<unsigned>(role));
 }
 
 // A skeleton model as drawn: its look, the item in its right hand and what it wears (both optional,

@@ -257,7 +257,7 @@ private slots:
 
         // Nine textures of almost 4 MiB exceed the 32 MiB content sync frame.
         writeJson(dir.filePath(u"huge/pack.json"_s), {{u"id"_s, u"huge"_s}, {u"version"_s, u"1"_s}});
-        const QByteArray filler(int(QcContentPackLoader::maxContentFileBytes - 16), 'x');
+        const QByteArray filler(static_cast<int>(QcContentPackLoader::maxContentFileBytes - 16), 'x');
         for (int i = 0; i < 9; ++i) {
             writeText(dir.filePath(u"huge/textures/t%1.png"_s.arg(i)), filler);
         }
@@ -280,7 +280,7 @@ private slots:
 
         // Hard links to one file take no space on disk but would be read again and again.
         writeJson(dir.filePath(u"links/pack.json"_s), {{u"id"_s, u"links"_s}, {u"version"_s, u"1"_s}});
-        const QByteArray filler(qsizetype(1024) * 1024, 'x');
+        const QByteArray filler(qsizetype{1024} * 1024, 'x');
         writeText(dir.filePath(u"links/textures/t0.png"_s), filler);
         for (int i = 1; i < 64; ++i) {
             QCOMPARE(::link(QFile::encodeName(dir.filePath(u"links/textures/t0.png"_s)).constData(),
@@ -323,7 +323,7 @@ private slots:
 #ifdef Q_OS_UNIX
         // Each mod alone fits, together they would read far more than any client can take.
         QTemporaryDir dir;
-        const QByteArray filler(qsizetype(4) * 1024 * 1024 - 64, ' ');
+        const QByteArray filler(qsizetype{4} * 1024 * 1024 - 64, ' ');
         writeText(dir.filePath(u"source.json"_s), "{}" + filler);
         for (int m = 0; m < 6; ++m) {
             const QString mod = dir.filePath(u"m%1"_s.arg(m));
@@ -431,7 +431,7 @@ private slots:
         QTemporaryDir dir;
 
         // About 4 MB of whitespace around a tiny object: cheap to parse, expensive to read.
-        writeText(dir.filePath(u"padding.json"_s), "{\"k\":\"v\"}" + QByteArray(qsizetype(3900) * 1024, ' '));
+        writeText(dir.filePath(u"padding.json"_s), "{\"k\":\"v\"}" + QByteArray(qsizetype{3900} * 1024, ' '));
         for (int m = 0; m < 5; ++m) {
             const QString mod = dir.filePath(u"f%1"_s.arg(m));
             writeJson(mod + u"/pack.json"_s, {{u"id"_s, u"f%1"_s.arg(m)}, {u"version"_s, u"1"_s}});
@@ -474,10 +474,10 @@ private slots:
         // b3 each tip it over, b2 and b4 are harmless, b5 depends on b3.
         const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
         QVERIFY(base.has_value());
-        const int baseEntries = int(base->registry->translations().count(u"en"_s));
+        const int baseEntries = static_cast<int>(base->registry->translations().count(u"en"_s));
 
         writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
-        writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, int(QcStreamLimits::maxDefinitions) - baseEntries - 500));
+        writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, static_cast<int>(QcStreamLimits::maxDefinitions) - baseEntries - 500));
         for (const QString &id : {u"b1"_s, u"b3"_s}) {
             writeJson(dir.filePath(id + u"/pack.json"_s), {{u"id"_s, id}, {u"version"_s, u"1"_s}});
             writeJson(dir.filePath(id + u"/lang/en.json"_s), words(id == u"b1"_s ? 70000 : 80000, 1000));

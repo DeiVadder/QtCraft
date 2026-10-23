@@ -42,7 +42,7 @@ public:
     // orbs merge and take overflow only while their sum stays within it.
     static constexpr int maxValue = 1 << 24;
     // The bound by default (QcServerLimits::experienceOrbs).
-    static constexpr qsizetype defaultLimit = qsizetype(QcServerLimits{}.experienceOrbs);
+    static constexpr qsizetype defaultLimit = static_cast<qsizetype>(QcServerLimits{}.experienceOrbs);
 
     struct PlayerView
     {

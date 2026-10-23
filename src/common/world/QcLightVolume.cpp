@@ -27,16 +27,16 @@ QcLightVolume::QcLightVolume(int sizeX, int sizeY, int sizeZ)
     : m_sizeX(std::max(0, sizeX))
     , m_sizeY(std::max(0, sizeY))
     , m_sizeZ(std::max(0, sizeZ))
-    , m_levels(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
-    , m_opacity(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
-    , m_blockedFaces(qsizetype(m_sizeX) * m_sizeY * m_sizeZ, 0)
+    , m_levels(static_cast<qsizetype>(m_sizeX) * m_sizeY * m_sizeZ, 0)
+    , m_opacity(static_cast<qsizetype>(m_sizeX) * m_sizeY * m_sizeZ, 0)
+    , m_blockedFaces(static_cast<qsizetype>(m_sizeX) * m_sizeY * m_sizeZ, 0)
 {
 }
 
 void QcLightVolume::setOpacity(int x, int y, int z, int opacity, quint8 blockedFaces)
 {
     if (contains(x, y, z)) {
-        m_opacity[index(x, y, z)] = quint8(std::clamp(opacity, 0, maxLevel));
+        m_opacity[index(x, y, z)] = static_cast<quint8>(std::clamp(opacity, 0, maxLevel));
         m_blockedFaces[index(x, y, z)] = blockedFaces;
     }
 }
@@ -49,7 +49,7 @@ void QcLightVolume::addSource(int x, int y, int z, int level)
 
     quint8 &current = m_levels[index(x, y, z)];
     if (std::cmp_greater(level, current)) {
-        current = quint8(std::min(level, maxLevel));
+        current = static_cast<quint8>(std::min(level, maxLevel));
         m_queue.append({x, y, z});
     }
 }
@@ -77,7 +77,7 @@ void QcLightVolume::propagate()
             const int opacity = m_opacity[neighbour];
             const int candidate = light - std::max(1, opacity);
             if (opacity < maxLevel && std::cmp_greater(candidate, m_levels[neighbour])) {
-                m_levels[neighbour] = quint8(candidate);
+                m_levels[neighbour] = static_cast<quint8>(candidate);
                 m_queue.append({nx, ny, nz});
             }
         }

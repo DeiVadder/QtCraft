@@ -67,7 +67,7 @@ public:
         // Esc: fixed, because Esc also cancels every screen and the key capture.
         Pause,
     };
-    static constexpr int actionCount = int(Action::Pause) + 1;
+    static constexpr int actionCount = static_cast<int>(Action::Pause) + 1;
     static constexpr int slotCount = 2;
     // Mac keyboards (Cmd, Control, Option) or the others (Ctrl, Meta, Alt).
     enum class Platform { Mac, Other };
@@ -136,7 +136,7 @@ public:
     friend bool operator==(const QcKeyBindings &, const QcKeyBindings &) = default;
 
 private:
-    void set(Action action, int slot, int key) { m_keys[std::size_t(action)][std::size_t(slot)] = key; }
+    void set(Action action, int slot, int key) { m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)] = key; }
 
     std::array<std::array<int, slotCount>, actionCount> m_keys{};
     Platform m_platform = Platform::Other;

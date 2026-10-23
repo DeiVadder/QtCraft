@@ -15,7 +15,7 @@ bool QcPrimedExplosives::prime(QcBlockPos cell, QcBlockId block, int fuse, quint
     primed.id = id;
     primed.block = block;
     primed.fuse = fuse;
-    primed.motion.position = {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+    primed.motion.position = {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
     primed.motion.velocity = {std::cos(sideways) * hopSide, hopUp, std::sin(sideways) * hopSide};
     m_primed.append(primed);
     return true;

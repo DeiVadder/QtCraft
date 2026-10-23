@@ -56,7 +56,7 @@ public:
 
     const QcSignalState &at(QcBlockId id) const
     {
-        return std::size_t(id) < m_states.size() ? m_states[std::size_t(id)] : m_none;
+        return static_cast<std::size_t>(id) < m_states.size() ? m_states[static_cast<std::size_t>(id)] : m_none;
     }
     const QcContentRegistry &content() const { return m_content; }
 

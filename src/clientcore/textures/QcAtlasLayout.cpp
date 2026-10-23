@@ -17,14 +17,14 @@ constexpr double tileUnits = 8.0;
 
 QcAtlasLayout::QcAtlasLayout(qsizetype tiles)
 {
-    m_columns = std::max(1, int(std::ceil(std::sqrt(double(std::max<qsizetype>(1, tiles))))));
-    m_rows = std::max(1, int((std::max<qsizetype>(1, tiles) + m_columns - 1) / m_columns));
+    m_columns = std::max(1, static_cast<int>(std::ceil(std::sqrt(static_cast<double>(std::max<qsizetype>(1, tiles))))));
+    m_rows = std::max(1, static_cast<int>((std::max<qsizetype>(1, tiles) + m_columns - 1) / m_columns));
 }
 
 QRectF QcAtlasLayout::uv(qsizetype index) const
 {
-    const int column = int(index % m_columns);
-    const int row = int(index / m_columns);
+    const int column = static_cast<int>(index % m_columns);
+    const int row = static_cast<int>(index / m_columns);
     const double width = m_columns * cellUnits;
     const double height = m_rows * cellUnits;
     return {(column * cellUnits + gutterUnits) / width, (row * cellUnits + gutterUnits) / height, tileUnits / width, tileUnits / height};
@@ -32,7 +32,7 @@ QRectF QcAtlasLayout::uv(qsizetype index) const
 
 int QcAtlasLayout::levelCount(int tileSize)
 {
-    return std::max(1, std::bit_width(unsigned(std::max(tileSize, minimumMipTile))) - std::bit_width(unsigned(minimumMipTile)) + 1);
+    return std::max(1, std::bit_width(static_cast<unsigned>(std::max(tileSize, minimumMipTile))) - std::bit_width(static_cast<unsigned>(minimumMipTile)) + 1);
 }
 
 QSize QcAtlasLayout::gridOf(QSize lastLevel)
@@ -49,7 +49,7 @@ qint64 QcAtlasLayout::bytes(int tileSize) const
     qint64 total = 0;
     QSize size = extent(tileSize);
     for (int level = 0; level < levelCount(tileSize); ++level) {
-        total += qint64(size.width()) * size.height() * 4;
+        total += static_cast<qint64>(size.width()) * size.height() * 4;
         size /= 2;
     }
     return total;
@@ -58,7 +58,7 @@ qint64 QcAtlasLayout::bytes(int tileSize) const
 QPoint QcAtlasLayout::tileOrigin(qsizetype index, int tileSize) const
 {
     const int cell = cellSize(tileSize);
-    return {int(index % m_columns) * cell + gutter(tileSize), int(index / m_columns) * cell + gutter(tileSize)};
+    return {static_cast<int>(index % m_columns) * cell + gutter(tileSize), static_cast<int>(index / m_columns) * cell + gutter(tileSize)};
 }
 
 void QcAtlasLayout::place(QImage &atlas, qsizetype index, const QImage &tile) const
@@ -69,20 +69,23 @@ void QcAtlasLayout::place(QImage &atlas, qsizetype index, const QImage &tile) co
 
     // Rows of the tile with their left and right gutter.
     for (int y = 0; y < size; ++y) {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): a 32-bit image scan line is an array of quint32 (Qt idiom)
         const auto *source = reinterpret_cast<const quint32 *>(tile.constScanLine(y));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): a 32-bit image scan line is an array of quint32 (Qt idiom)
         auto *target = reinterpret_cast<quint32 *>(atlas.scanLine(origin.y() + y)) + origin.x();
-        std::memcpy(target, source, std::size_t(size) * 4);
+        std::memcpy(target, source, static_cast<std::size_t>(size) * 4);
         std::fill(target - edge, target, source[0]);
         std::fill(target + size, target + size + edge, source[size - 1]);
     }
 
     // The top and bottom gutter repeat the first and last row (with their gutters).
-    const std::size_t rowBytes = std::size_t(size + 2 * edge) * 4;
+    const std::size_t rowBytes = static_cast<std::size_t>(size + 2 * edge) * 4;
     const int left = origin.x() - edge;
     for (int step = 1; step <= edge; ++step) {
-        std::memcpy(atlas.scanLine(origin.y() - step) + std::ptrdiff_t(left) * 4, atlas.constScanLine(origin.y()) + std::ptrdiff_t(left) * 4, rowBytes);
-        std::memcpy(atlas.scanLine(origin.y() + size - 1 + step) + std::ptrdiff_t(left) * 4,
-                    atlas.constScanLine(origin.y() + size - 1) + std::ptrdiff_t(left) * 4, rowBytes);
+        std::memcpy(atlas.scanLine(origin.y() - step) + static_cast<std::ptrdiff_t>(left) * 4,
+            atlas.constScanLine(origin.y()) + static_cast<std::ptrdiff_t>(left) * 4, rowBytes);
+        std::memcpy(atlas.scanLine(origin.y() + size - 1 + step) + static_cast<std::ptrdiff_t>(left) * 4,
+                    atlas.constScanLine(origin.y() + size - 1) + static_cast<std::ptrdiff_t>(left) * 4, rowBytes);
     }
 }
 
@@ -105,9 +108,9 @@ namespace {
         }
     }
     for (std::size_t c = 0; c < 3; ++c) {
-        pixel[c] = alpha > 0 ? uchar((colour[c] + alpha / 2) / alpha) : uchar((plain[c] + 2) / 4);
+        pixel[c] = alpha > 0 ? static_cast<uchar>((colour[c] + alpha / 2) / alpha) : static_cast<uchar>((plain[c] + 2) / 4);
     }
-    pixel[3] = uchar((alpha + 2) / 4);
+    pixel[3] = static_cast<uchar>((alpha + 2) / 4);
     return pixel;
 }
 

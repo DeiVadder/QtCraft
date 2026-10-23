@@ -22,15 +22,15 @@ private:
     QcVec3 centreOf(int x, int y, int z) const
     {
         const QcBlockPos cell = at(x, y, z);
-        return {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
     }
 
     // Whether a box overlaps any solid collision box of the world.
     bool insideSolid(const QcAabb &box) const
     {
-        for (int x = int(std::floor(box.min.x)); x <= int(std::floor(box.max.x - 1e-6)); ++x) {
-            for (int y = int(std::floor(box.min.y)); y <= int(std::floor(box.max.y - 1e-6)); ++y) {
-                for (int z = int(std::floor(box.min.z)); z <= int(std::floor(box.max.z - 1e-6)); ++z) {
+        for (int x = static_cast<int>(std::floor(box.min.x)); x <= static_cast<int>(std::floor(box.max.x - 1e-6)); ++x) {
+            for (int y = static_cast<int>(std::floor(box.min.y)); y <= static_cast<int>(std::floor(box.max.y - 1e-6)); ++y) {
+                for (int z = static_cast<int>(std::floor(box.min.z)); z <= static_cast<int>(std::floor(box.max.z - 1e-6)); ++z) {
                     const QList<QcAabb> solids = QcPhysics::collisionBoxesAt(m_server->world(), {x, y, z});
                     if (std::ranges::any_of(solids, [&box](const QcAabb &solid) { return solid.intersects(box); })) {
                         return true;
@@ -176,9 +176,9 @@ private slots:
             ticks(1);
             const QcBlockPos between = at(2, 0, 6);
             const QcBlockPos other = at(3, 0, 6);
-            const QcVec3 start{(between.x + other.x) * 0.5 + 0.5, double(between.y), (between.z + other.z) * 0.5 + 0.5};
+            const QcVec3 start{(between.x + other.x) * 0.5 + 0.5, static_cast<double>(between.y), (between.z + other.z) * 0.5 + 0.5};
             m_server->items().removeWhere([](const QcItemEntity &) { return true; });
-            const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, start, 710000 + quint32(turns));
+            const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, start, 710000 + static_cast<quint32>(turns));
             for (QcItemEntity &entity : m_server->items().editableItems()) {
                 entity.motion.position = entity.id == dropped ? start : entity.motion.position;
                 entity.motion.velocity = {};

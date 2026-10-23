@@ -56,7 +56,7 @@ QList<QcEquipmentSlot> QcEquipment::wear(const QcContentRegistry &content, doubl
         stack.damage += loss;
         if (stack.damage >= content.item(stack.item).durability) {
             stack = {};
-            broken.append(QcEquipmentSlot(i));
+            broken.append(static_cast<QcEquipmentSlot>(i));
         }
     }
     return broken;

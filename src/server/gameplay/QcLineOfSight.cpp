@@ -33,7 +33,7 @@ private:
 
 QcBlockPos cellOf(const QcVec3 &point)
 {
-    return {int(std::floor(point.x)), int(std::floor(point.y)), int(std::floor(point.z))};
+    return {static_cast<int>(std::floor(point.x)), static_cast<int>(std::floor(point.y)), static_cast<int>(std::floor(point.z))};
 }
 
 bool reachesPoint(const QcBlockAccess &world, const QcVec3 &eye, const QcVec3 &point, std::optional<QcBlockPos> target)
@@ -91,7 +91,7 @@ bool seesPoint(const QcBlockAccess &world, const QcVec3 &eye, const QcVec3 &poin
 
 QcAabb blockBox(QcBlockPos pos)
 {
-    const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
+    const QcVec3 corner{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)};
     return {corner, corner + QcVec3{1.0, 1.0, 1.0}};
 }
 

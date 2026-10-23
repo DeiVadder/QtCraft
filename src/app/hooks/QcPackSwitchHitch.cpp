@@ -66,7 +66,7 @@ void QcPackSwitchHitch::addRender(qint64 nowNs, double renderThreadCpuMs, double
 
 double QcPackSwitchHitch::atlasMs() const
 {
-    return started() && m_readyNs >= 0 ? double(m_readyNs - m_startNs) / 1e6 : -1.0;
+    return started() && m_readyNs >= 0 ? static_cast<double>(m_readyNs - m_startNs) / 1e6 : -1.0;
 }
 
 QString QcPackSwitchHitch::summary() const

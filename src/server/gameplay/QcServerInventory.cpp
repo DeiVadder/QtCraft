@@ -90,7 +90,7 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
         open.blockSlots = QcMachineRules::slotCount;
     } else if (open.container) {
         open.combined.stacks.append(*open.container->stacks);
-        open.blockSlots = int(open.container->stacks->size());
+        open.blockSlots = static_cast<int>(open.container->stacks->size());
     } else if (client.screen.stonecutter) {
         // Never open together with a machine or chest (QcServerClient::Screen). Only the input
         // slot: the output is taken through QcServerStonecutter.
@@ -132,7 +132,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
         const auto countOf = [](const QcItemStack &stack) { return stack.isEmpty() ? 0 : stack.count; };
         const bool tookOutput = countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
-            open.machine->stacks[std::size_t(slot)] = open.combined.stacks[machineSlot + slot];
+            open.machine->stacks[static_cast<std::size_t>(slot)] = open.combined.stacks[machineSlot + slot];
         }
         if (tookOutput) {
             const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
@@ -202,7 +202,7 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
     }
 
     QcQuickMove::Situation situation;
-    situation.containerSlots = open.container ? int(open.container->stacks->size()) : 0;
+    situation.containerSlots = open.container ? static_cast<int>(open.container->stacks->size()) : 0;
     // A backpack takes nothing with contents (decision E-832); one opened from the hand moves only
     // between its slots and the hotbar, never into its own slot (decision E-833).
     if (open.container && open.container->portable && !QcPortableContainers::mayHold(m_state.content(), open.combined.stacks[move.slot])) {
@@ -365,8 +365,8 @@ void QcServerInventory::returnScreenInputs(QcServerClient &client)
 
 void QcServerInventory::throwFromPlayer(const QcServerClient &client, const QcItemStack &stack)
 {
-    const double yaw = qDegreesToRadians(double(client.yaw));
-    const double pitch = qDegreesToRadians(double(client.pitch));
+    const double yaw = qDegreesToRadians(static_cast<double>(client.yaw));
+    const double pitch = qDegreesToRadians(static_cast<double>(client.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
 
     QcItemEntityManager::Drop drop;
@@ -408,8 +408,8 @@ void QcServerInventory::exchangeHeld(QcServerClient &client, const QString &item
 bool QcServerInventory::armourFits(const QList<QcItemStack> &combined) const
 {
     for (std::size_t i = 0; i < QcEquipment::slotCount; ++i) {
-        const QcItemStack &stack = combined[equipmentSlot + qsizetype(i)];
-        if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, QcEquipmentSlot(i))) {
+        const QcItemStack &stack = combined[equipmentSlot + static_cast<qsizetype>(i)];
+        if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, static_cast<QcEquipmentSlot>(i))) {
             return false;
         }
     }
@@ -422,7 +422,7 @@ int QcServerInventory::freeArmourSlotFor(const QcServerClient &client, const QcI
     if (!armour || !client.equipment.at(armour->slot).isEmpty()) {
         return -1;
     }
-    return equipmentSlot + int(armour->slot);
+    return equipmentSlot + static_cast<int>(armour->slot);
 }
 
 void QcServerInventory::setEquipment(QcServerClient &client, const QcEquipment &equipment)

@@ -79,7 +79,7 @@ QcResult<QcBlockId> QcContentRegistry::registerBlock(QcBlockDefinition definitio
         return qcError(u"Block '%1': too many block states in total"_s.arg(definition.name));
     }
 
-    const auto type = quint32(m_blocks.size());
+    const auto type = static_cast<quint32>(m_blocks.size());
     m_blockIds.insert(definition.name, type);
     m_blocks.append(std::move(definition));
     m_states.append(m_blocks.constLast(), shapeOf(m_blocks.constLast()));
@@ -122,7 +122,7 @@ QcStatus QcContentRegistry::registerShape(QcShapeDefinition shape)
 
     for (qsizetype type = 0; type < m_blocks.size(); ++type) {
         if (m_blocks[type].shapeName == name) {
-            m_states.update(quint32(type), m_blocks[type], shapeOf(m_blocks[type]));
+            m_states.update(static_cast<quint32>(type), m_blocks[type], shapeOf(m_blocks[type]));
         }
     }
 
@@ -154,20 +154,20 @@ const QcBlockState &QcContentRegistry::state(QcBlockId id) const
 QString QcContentRegistry::property(QcBlockId id, const QString &property) const
 {
     const QcBlockState &info = state(id);
-    return QcBlockStateTable::value(m_blocks[qsizetype(info.type)], info.index, property);
+    return QcBlockStateTable::value(m_blocks[static_cast<qsizetype>(info.type)], info.index, property);
 }
 
 QcBlockId QcContentRegistry::withProperty(QcBlockId id, const QString &property, const QString &value) const
 {
     const QcBlockState &info = state(id);
-    const std::optional<quint32> index = QcBlockStateTable::withValue(m_blocks[qsizetype(info.type)], info.index, property, value);
+    const std::optional<quint32> index = QcBlockStateTable::withValue(m_blocks[static_cast<qsizetype>(info.type)], info.index, property, value);
     return index ? m_states.firstState(info.type) + *index : id;
 }
 
 QString QcContentRegistry::stateName(QcBlockId id) const
 {
     const QcBlockState &info = state(id);
-    const QcBlockDefinition &definition = m_blocks[qsizetype(info.type)];
+    const QcBlockDefinition &definition = m_blocks[static_cast<qsizetype>(info.type)];
     return definition.name + QcBlockStateTable::describe(definition, info.index);
 }
 
@@ -197,7 +197,7 @@ QcContentRegistry::ParsedState QcContentRegistry::parseState(const QString &text
         const QString property = assignment.left(equals);
         const QString value = equals < 0 ? QString() : assignment.mid(equals + 1);
         const QcBlockId changed = withProperty(id, property, value);
-        if (changed == id && QcBlockStateTable::value(m_blocks[qsizetype(*type)], state(id).index, property) != value) {
+        if (changed == id && QcBlockStateTable::value(m_blocks[static_cast<qsizetype>(*type)], state(id).index, property) != value) {
             problems.append(u"%1: unknown state '%2'"_s.arg(name, assignment));
             continue;
         }
@@ -218,11 +218,11 @@ QcResult<QcItemId> QcContentRegistry::registerItem(QcItemDefinition definition)
 
     const auto existing = m_itemIds.constFind(definition.name);
     if (existing != m_itemIds.constEnd()) {
-        m_items[qsizetype(*existing) - 1] = std::move(definition);
+        m_items[static_cast<qsizetype>(*existing) - 1] = std::move(definition);
         return *existing;
     }
 
-    const auto id = QcItemId(m_items.size() + 1);
+    const auto id = static_cast<QcItemId>(m_items.size() + 1);
     m_itemIds.insert(definition.name, id);
     m_items.append(std::move(definition));
     return id;
@@ -261,7 +261,7 @@ void QcContentRegistry::createBlockItems()
 const QcItemDefinition &QcContentRegistry::item(QcItemId id) const
 {
     Q_ASSERT(isValidItem(id));
-    return m_items[qsizetype(id) - 1];
+    return m_items[static_cast<qsizetype>(id) - 1];
 }
 
 std::optional<QcItemId> QcContentRegistry::itemId(const QString &name) const
@@ -400,7 +400,7 @@ QStringList QcContentRegistry::finish()
         if (!id) {
             continue;
         }
-        m_blocks[qsizetype(m_states.state(*id).type)].signal.kind = QcSignalKind::None;
+        m_blocks[static_cast<qsizetype>(m_states.state(*id).type)].signal.kind = QcSignalKind::None;
         warnings.append(u"block '%1': %2; it takes no part in circuits"_s.arg(name, problem));
     }
     createBlockItems();
@@ -412,7 +412,7 @@ QStringList QcContentRegistry::finish()
     // AI carries out (decision E-423).
     m_mobs.updateAll([this, &warnings](QcMobDefinition &mob) {
         const std::optional<qsizetype> settings = m_villages.villagerSettingsIndex(mob.villagerSettings);
-        mob.villagerSettingsIndex = mob.villager && settings ? int(*settings) : -1;
+        mob.villagerSettingsIndex = mob.villager && settings ? static_cast<int>(*settings) : -1;
         if (mob.villager && mob.villagerSettingsIndex < 0) {
             warnings.append(u"mob '%1': no villager settings '%2'; it is no villager%3"_s.arg(mob.name, mob.villagerSettings,
                                                                                              mob.abilities.opensDoors ? u" and opens no doors"_s : QString()));
@@ -498,7 +498,7 @@ void QcContentRegistry::registerMob(QcMobDefinition definition)
 std::optional<int> QcContentRegistry::mobIndex(const QString &name) const
 {
     const std::optional<qsizetype> index = m_mobs.indexOf(name);
-    return index ? std::optional<int>(int(*index)) : std::nullopt;
+    return index ? std::optional<int>(static_cast<int>(*index)) : std::nullopt;
 }
 
 void QcContentRegistry::registerRecipe(QcRecipeDefinition definition)
@@ -597,7 +597,7 @@ const QcCommandMacroDefinition *QcContentRegistry::commandMacro(const QString &n
 const QcBlockDefinition &QcContentRegistry::block(QcBlockId id) const
 {
     Q_ASSERT(isValidBlock(id));
-    return m_blocks[qsizetype(m_states.state(id).type)];
+    return m_blocks[static_cast<qsizetype>(m_states.state(id).type)];
 }
 
 std::optional<QcBlockId> QcContentRegistry::blockId(const QString &name) const
@@ -613,7 +613,7 @@ std::optional<QcBlockId> QcContentRegistry::defaultFire() const
 {
     for (qsizetype index = 0; index < m_blocks.size(); ++index) {
         if (m_blocks[index].fire.isFire) {
-            return m_states.firstState(quint32(index));
+            return m_states.firstState(static_cast<quint32>(index));
         }
     }
     return std::nullopt;

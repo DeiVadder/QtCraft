@@ -345,7 +345,7 @@ private slots:
 
         // The raw player goes far beyond hearing (and stays in the air: the server moves raw players
         // only on input); the other stays at the spawn.
-        const QcBlockPos away = m_feet.offset(int(QcServerWeather::strikeHearing) * 3, 0, 0);
+        const QcBlockPos away = m_feet.offset(static_cast<int>(QcServerWeather::strikeHearing) * 3, 0, 0);
         chat(u"/tp %1 %2 %3"_s.arg(away.x + 0.5).arg(QcWorld::worldHeight - 20).arg(away.z + 0.5));
         ticks(200);
         const QcVec3 here = m_client->motion.position;
@@ -353,12 +353,12 @@ private slots:
         QVERIFY(std::abs(here.x - there.x) > QcServerWeather::strikeHearing);
 
         // A strike near one player reaches only that one.
-        const QcBlockPos nearOther{int(std::floor(there.x)) + 10, int(std::floor(there.y)), int(std::floor(there.z))};
+        const QcBlockPos nearOther{static_cast<int>(std::floor(there.x)) + 10, static_cast<int>(std::floor(there.y)), static_cast<int>(std::floor(there.z))};
         m_server->systems().weather.strike(nearOther);
         QcTestUtil::pump();
         QCOMPARE(other->lightning.size(), 1);
         QCOMPARE(m_client->lightning.size(), 0);
-        const QcBlockPos nearRaw{int(std::floor(here.x)) - 10, int(std::floor(here.y)), int(std::floor(here.z))};
+        const QcBlockPos nearRaw{static_cast<int>(std::floor(here.x)) - 10, static_cast<int>(std::floor(here.y)), static_cast<int>(std::floor(here.z))};
         m_server->systems().weather.strike(nearRaw);
         QcTestUtil::pump();
         QCOMPARE(other->lightning.size(), 1);

@@ -387,7 +387,7 @@ private slots:
 
         // A village or structure column (refused by the filter) gets no patch plant.
         const QcTerrainColumnGrid columns(generator, *pos);
-        const QList<bool> carved(qsizetype(QcWorld::chunkSize) * QcWorld::chunkSize, false);
+        const QList<bool> carved(static_cast<qsizetype>(QcWorld::chunkSize) * QcWorld::chunkSize, false);
         generator.vegetationPatches().place(*chunk, columns, carved, [](int, int) { return false; });
         QCOMPARE(patchPlants(*chunk, patches, false), 0);
 

@@ -30,7 +30,7 @@ QcClientWorld::Memory QcClientWorld::memory() const
     Memory memory;
     memory.chunks = m_chunks.size();
     for (const std::shared_ptr<const QcChunk> &chunk : m_chunks) {
-        memory.bytes += qint64(sizeof(QcChunk));
+        memory.bytes += static_cast<qint64>(sizeof(QcChunk));
         for (int index = 0; index < QcWorld::sectionCount; ++index) {
             const QcChunkSection &section = chunk->section(index);
             memory.bytes += section.heapBytes();

@@ -10,13 +10,13 @@ namespace QcMobSerializer {
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
 {
     stream << mob.name << mob.translationKey << mob.maxHealth << mob.width << mob.height << mob.hostile
-           << quint32(mob.parts.size());
+           << static_cast<quint32>(mob.parts.size());
     for (const QcMobPart &part : mob.parts) {
-        stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture << quint8(part.tint)
+        stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture << static_cast<quint8>(part.tint)
                << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z;
     }
     stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.villager << mob.ambientSound << mob.hurtSound << mob.deathSound
-           << mob.flying << qint32(mob.glow) << mob.catchWith << mob.catchItem << quint32(mob.breeding.food.size());
+           << mob.flying << static_cast<qint32>(mob.glow) << mob.catchWith << mob.catchItem << static_cast<quint32>(mob.breeding.food.size());
     for (const QString &food : mob.breeding.food) {
         stream << food;
     }
@@ -29,7 +29,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     const bool tethers = mob.family && mob.family->childType >= 0 && !mob.family->tetherTexture.isEmpty();
     stream << tethers;
     if (tethers) {
-        stream << qint32(mob.family->childType) << mob.family->tetherTexture << mob.family->tetherRange;
+        stream << static_cast<qint32>(mob.family->childType) << mob.family->tetherTexture << mob.family->tetherRange;
     }
 }
 
@@ -49,17 +49,17 @@ std::optional<QcMobDefinition> readMob(QDataStream &stream)
         quint8 tint = 0;
         stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
             >> part.sitOffset.y >> part.sitOffset.z;
-        if (tint != quint8(QcTint::None) && tint != quint8(QcTint::Collar)) {
+        if (tint != static_cast<quint8>(QcTint::None) && tint != static_cast<quint8>(QcTint::Collar)) {
             return std::nullopt;
         }
-        part.tint = QcTint(tint);
+        part.tint = static_cast<QcTint>(tint);
         mob.parts.append(part);
     }
 
     qint32 glow = 0;
     stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.villager >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
         >> mob.flying >> glow >> mob.catchWith >> mob.catchItem;
-    mob.glow = std::clamp(int(glow), 0, QcMobDefinition::maxGlow);
+    mob.glow = std::clamp(static_cast<int>(glow), 0, QcMobDefinition::maxGlow);
     // What it eats for breeding, so the client knows to use it on the creature (decision E-293).
     const std::optional<quint32> foodCountRead = QcStreamLimits::readCount(stream, 64);
     if (!foodCountRead) {

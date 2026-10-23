@@ -35,7 +35,7 @@ inline QStringList chunkLines(const QcBlockEntities::Chunk &chunk, quint64 now, 
             lines.append(QStringLiteral("container %1: %2").arg(posText(container.pos), stacks.join(u' ')));
         }
         if (container.readyAt > now) {
-            lines.append(QStringLiteral("cooldown %1: +%2").arg(posText(container.pos)).arg(qint64(container.readyAt) - qint64(now)));
+            lines.append(QStringLiteral("cooldown %1: +%2").arg(posText(container.pos)).arg(static_cast<qint64>(container.readyAt) - static_cast<qint64>(now)));
         }
     }
     for (const QcBlockEntities::Machine &machine : chunk.machines) {
@@ -57,13 +57,13 @@ inline QStringList chunkLines(const QcBlockEntities::Chunk &chunk, quint64 now, 
     }
     for (auto it = chunk.memories.constBegin(); it != chunk.memories.constEnd(); ++it) {
         if (it->burntOutUntil != 0) {
-            lines.append(QStringLiteral("burnt %1: +%2").arg(posText(it.key())).arg(qint64(it->burntOutUntil) - qint64(now)));
+            lines.append(QStringLiteral("burnt %1: +%2").arg(posText(it.key())).arg(static_cast<qint64>(it->burntOutUntil) - static_cast<qint64>(now)));
         }
         if (it->powered) {
             lines.append(QStringLiteral("powered %1").arg(posText(it.key())));
         }
         if (it->extendingSince) {
-            lines.append(QStringLiteral("extending %1: %2").arg(posText(it.key())).arg(qint64(*it->extendingSince) - qint64(now)));
+            lines.append(QStringLiteral("extending %1: %2").arg(posText(it.key())).arg(static_cast<qint64>(*it->extendingSince) - static_cast<qint64>(now)));
         }
     }
     return lines;
@@ -88,13 +88,13 @@ inline QStringList recordLines(const QcBlockEntityRecord &record, const QcConten
         memory.burntOutUntil = saved.burntOutLeft;
         memory.powered = saved.powered;
         if (saved.extendingAge) {
-            memory.extendingSince = -qint64(*saved.extendingAge);
+            memory.extendingSince = -static_cast<qint64>(*saved.extendingAge);
         }
         chunk.memories.insert(saved.pos, memory);
     }
     QStringList lines = chunkLines(chunk, 0, content);
     for (const QcBlockEntityRecord::Scheduled &entry : record.scheduled) {
-        lines.append(QStringLiteral("scheduled %1: +%2 %3").arg(posText(entry.pos)).arg(entry.ticksLeft).arg(int(entry.priority)));
+        lines.append(QStringLiteral("scheduled %1: +%2 %3").arg(posText(entry.pos)).arg(entry.ticksLeft).arg(static_cast<int>(entry.priority)));
     }
     return lines;
 }
@@ -118,7 +118,10 @@ inline QStringList lines(QcServer &server, const QcContentRegistry &content)
     }
     const QList<QcSignalSchedule::Entry> scheduled = entities.schedule().entries();
     for (const QcSignalSchedule::Entry &entry : scheduled) {
-        lines.append(QStringLiteral("scheduled %1: +%2 %3").arg(posText(entry.pos)).arg(qint64(entry.due) - qint64(now)).arg(int(entry.priority)));
+        lines.append(QStringLiteral("scheduled %1: +%2 %3")
+                             .arg(posText(entry.pos))
+                             .arg(static_cast<qint64>(entry.due) - static_cast<qint64>(now))
+                             .arg(static_cast<int>(entry.priority)));
     }
     std::ranges::sort(lines);
     return lines;

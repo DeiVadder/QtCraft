@@ -19,7 +19,7 @@ private:
 
     quint32 spawn(int dx, int dy, int dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y + dy), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y + dy), m_feet.z + dz + 0.5};
         return m_server->entities().creatures().spawn(chickenType(), at, m_server->entities().newId(), false, true);
     }
 
@@ -128,7 +128,7 @@ private slots:
         // Back in the world it lays on the saved time.
         QcMobManager &creatures = m_server->entities().creatures();
         creatures.restore({read->creatures.at(0).entry}, {}, [this] { return m_server->entities().newId(); });
-        const auto restored = std::ranges::find(creatures.mobs(), quint64(9), &QcCreature::uid);
+        const auto restored = std::ranges::find(creatures.mobs(), quint64{9}, &QcCreature::uid);
         QVERIFY(restored != creatures.mobs().end());
         QCOMPARE(restored->layTimer, 123.25);
     }
@@ -162,7 +162,7 @@ private slots:
         int laid = 0;
         const int hours = 10;
         for (int i = 0; i < hours * 3600; ++i) {
-            laid += int(QcMobLaying::tick(content, hens, random, 1.0).size());
+            laid += static_cast<int>(QcMobLaying::tick(content, hens, random, 1.0).size());
         }
         // 20 hens for ten hours: 1600 eggs expected.
         QVERIFY2(laid > 1500 && laid < 1700, qPrintable(QString::number(laid)));

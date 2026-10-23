@@ -12,7 +12,7 @@ constexpr double dt = 0.05;
 // Ticks the hunger for `seconds` and applies the health changes; returns the new health.
 double run(QcHunger &hunger, double health, double seconds)
 {
-    for (int i = 0; i < int(std::lround(seconds / dt)); ++i) {
+    for (int i = 0; i < static_cast<int>(std::lround(seconds / dt)); ++i) {
         health += hunger.tick(dt, health, 20.0);
     }
     return health;
@@ -22,8 +22,8 @@ double run(QcHunger &hunger, double health, double seconds)
 int foodAfter(double minutes, double speed, bool sprinting, double jumpsPerSecond)
 {
     QcHunger hunger;
-    const int ticks = int(std::lround(minutes * 60.0 / dt));
-    const int ticksPerJump = jumpsPerSecond > 0.0 ? int(std::lround(1.0 / (jumpsPerSecond * dt))) : 0;
+    const int ticks = static_cast<int>(std::lround(minutes * 60.0 / dt));
+    const int ticksPerJump = jumpsPerSecond > 0.0 ? static_cast<int>(std::lround(1.0 / (jumpsPerSecond * dt))) : 0;
     for (int i = 0; i < ticks; ++i) {
         const bool jumped = ticksPerJump > 0 && i % ticksPerJump == 0;
         hunger.exhaust(QcHunger::movementExhaustion(speed * dt, sprinting, false, jumped));

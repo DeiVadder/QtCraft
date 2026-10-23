@@ -156,12 +156,12 @@ void QcServerGameModes::putIntoSlot(QcServerClient &client, int slot, const QcIt
 
 bool QcServerGameModes::putIntoArmourSlot(QcServerClient &client, int slot, const QcItemStack &stack) const
 {
-    if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, QcEquipmentSlot(slot))) {
+    if (!stack.isEmpty() && !QcArmour::fits(m_state.content(), stack, static_cast<QcEquipmentSlot>(slot))) {
         return false;
     }
 
     QcEquipment worn = client.equipment;
-    worn.stacks[std::size_t(slot)] = stack.isEmpty() ? QcItemStack{} : stack.withCount(1);
+    worn.stacks[static_cast<std::size_t>(slot)] = stack.isEmpty() ? QcItemStack{} : stack.withCount(1);
     m_inventory.setEquipment(client, worn);
     return true;
 }
@@ -180,7 +180,7 @@ std::optional<QcItemId> QcServerGameModes::itemForBlock(const QcContentRegistry 
     const QList<QcItemDefinition> &items = content.items();
     for (qsizetype i = 0; i < items.size(); ++i) {
         if (items[i].placesBlock == definition.name) {
-            return QcItemId(i + 1);
+            return static_cast<QcItemId>(i + 1);
         }
     }
 

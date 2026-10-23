@@ -78,7 +78,7 @@ QcVec3 clampedToWorld(const QcVec3 &goal)
         if (kind >= QcMsg::MobGoal::kindCount || !QcProtocolCodec::isFinite(goal.goal)) {
             return std::nullopt;
         }
-        goal.kind = QcMsg::MobGoal::Kind(kind);
+        goal.kind = static_cast<QcMsg::MobGoal::Kind>(kind);
         goal.goal = clampedToWorld(goal.goal);
         goals.append(goal);
     }
@@ -101,7 +101,7 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
     }
     stream << m.tickMeanMs << m.tickMaxMs << m.lateMeanMs << m.lateMaxMs;
 
-    stream << quint32(m.recentTickMs.size());
+    stream << static_cast<quint32>(m.recentTickMs.size());
     for (const float ms : m.recentTickMs) {
         stream << ms;
     }
@@ -112,9 +112,9 @@ void encode(QDataStream &stream, const QcMsg::ServerDebug &m)
     stream << c.stored << c.arriving << c.unsaved << c.groups << c.largestGroup << c.playerGroup << c.oversizeGroups << c.tickets << c.refusedTickets
            << c.forced << c.loaders;
 
-    stream << quint32(m.goals.size());
+    stream << static_cast<quint32>(m.goals.size());
     for (const QcMsg::MobGoal &goal : m.goals) {
-        stream << goal.entityId << quint8(goal.kind) << goal.goal;
+        stream << goal.entityId << static_cast<quint8>(goal.kind) << goal.goal;
     }
 }
 

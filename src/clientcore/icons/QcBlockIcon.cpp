@@ -33,8 +33,8 @@ QPointF project(std::array<float, 3> p, int size)
 {
     // Seen from above the south-east corner: +x goes right and down, +z left and down.
     const double scale = size * 0.42;
-    const double sx = (double(p[0]) - double(p[2])) * 0.866;
-    const double sy = (double(p[0]) + double(p[2])) * 0.5 - double(p[1]);
+    const double sx = (static_cast<double>(p[0]) - static_cast<double>(p[2])) * 0.866;
+    const double sy = (static_cast<double>(p[0]) + static_cast<double>(p[2])) * 0.5 - static_cast<double>(p[1]);
     return {size * 0.5 + sx * scale, size * 0.5 + sy * scale};
 }
 
@@ -45,7 +45,7 @@ void darken(QImage &image, float shade)
         uchar *line = image.scanLine(y);
         for (int x = 0; x < image.width(); ++x) {
             for (int channel = 0; channel < 3; ++channel) {
-                line[x * 4 + channel] = uchar(float(line[x * 4 + channel]) * shade);
+                line[x * 4 + channel] = static_cast<uchar>(static_cast<float>(line[x * 4 + channel]) * shade);
             }
         }
     }
@@ -59,9 +59,9 @@ std::array<QImage, 6> shadedAtlases(const QImage &atlas)
     for (const QcBlockFace face : qcAllBlockFaces) {
         QImage image = atlas.convertToFormat(QImage::Format_RGBA8888);
         if (visible(face)) {
-            darken(image, QcChunkMesher::faceShade[std::size_t(face)]);
+            darken(image, QcChunkMesher::faceShade[static_cast<std::size_t>(face)]);
         }
-        shaded[std::size_t(face)] = std::move(image);
+        shaded[static_cast<std::size_t>(face)] = std::move(image);
     }
     return shaded;
 }
@@ -74,14 +74,14 @@ QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6
     QList<Quad> quads;
     if (entry.fullCube) {
         for (const QcBlockFace face : qcAllBlockFaces) {
-            const QRectF &uv = entry.faceUv[std::size_t(face)];
+            const QRectF &uv = entry.faceUv[static_cast<std::size_t>(face)];
             Quad quad;
             quad.face = face;
             for (std::size_t corner = 0; corner < 4; ++corner) {
-                const auto &c = faceCorners[std::size_t(face)][corner];
-                quad.corners[corner] = {float(c[0]), float(c[1]), float(c[2])};
+                const auto &c = faceCorners[static_cast<std::size_t>(face)][corner];
+                quad.corners[corner] = {static_cast<float>(c[0]), static_cast<float>(c[1]), static_cast<float>(c[2])};
                 const bool left = corner == 0 || corner == 3;
-                quad.uvs[corner] = {float(left ? uv.left() : uv.right()), float(corner < 2 ? uv.bottom() : uv.top())};
+                quad.uvs[corner] = {static_cast<float>(left ? uv.left() : uv.right()), static_cast<float>(corner < 2 ? uv.bottom() : uv.top())};
             }
             quads.append(quad);
         }
@@ -106,7 +106,7 @@ QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6
             continue;
         }
 
-        const QImage &atlas = shadedAtlas[std::size_t(quad.face)];
+        const QImage &atlas = shadedAtlas[static_cast<std::size_t>(quad.face)];
         const QPointF s0 = project(quad.corners[0], size);
         const QPointF s1 = project(quad.corners[1], size);
         const QPointF s3 = project(quad.corners[3], size);

@@ -47,10 +47,10 @@ void preselectWorldType(const QQuickWindow &window)
     QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
     QObject *page = window.findChild<QObject *>(u"newWorldPage"_s);
     if (index >= 0 && choice) {
-        choice->setProperty("currentIndex", int(index));
+        choice->setProperty("currentIndex", static_cast<int>(index));
     }
     if (index >= 0 && page) {
-        page->setProperty("startWorldType", int(index));
+        page->setProperty("startWorldType", static_cast<int>(index));
     }
 
     // QTCRAFT_MENU_GAME_MODE=creative (or another mode) preselects the game mode the same way.

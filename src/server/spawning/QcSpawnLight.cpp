@@ -17,9 +17,9 @@ int skyDarkening(double worldTime, float rain, float thunder)
     // five sixteenths of it, as in the original.
     const double daylight = QcDayCycle::daylight(worldTime);
     double sun = (daylight - QcDayCycle::minimumDaylight) / (1.0 - QcDayCycle::minimumDaylight);
-    sun *= 1.0 - std::clamp(double(rain), 0.0, 1.0) * 5.0 / 16.0;
-    sun *= 1.0 - std::clamp(double(thunder), 0.0, 1.0) * 5.0 / 16.0;
-    return std::clamp(int((1.0 - sun) * nightDarkening), 0, nightDarkening);
+    sun *= 1.0 - std::clamp(static_cast<double>(rain), 0.0, 1.0) * 5.0 / 16.0;
+    sun *= 1.0 - std::clamp(static_cast<double>(thunder), 0.0, 1.0) * 5.0 / 16.0;
+    return std::clamp(static_cast<int>((1.0 - sun) * nightDarkening), 0, nightDarkening);
 }
 
 Draws draw(QRandomGenerator &random)

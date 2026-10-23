@@ -31,7 +31,7 @@ void encode(QDataStream &stream, const QcMsg::ContentSync &m)
 
 void encode(QDataStream &stream, const QcMsg::Disconnect &m)
 {
-    stream << m.reason << m.key << quint32(m.arguments.size());
+    stream << m.reason << m.key << static_cast<quint32>(m.arguments.size());
     for (const QString &argument : m.arguments) {
         stream << argument;
     }
@@ -44,7 +44,7 @@ void encode(QDataStream &stream, const QcMsg::ChatInput &m)
 
 void encode(QDataStream &stream, const QcMsg::ChatMessage &m)
 {
-    stream << m.text << m.key << quint32(m.arguments.size());
+    stream << m.text << m.key << static_cast<quint32>(m.arguments.size());
     for (const QString &argument : m.arguments) {
         stream << argument;
     }
@@ -72,7 +72,7 @@ void encode(QDataStream &stream, const QcMsg::WorldTime &m)
     // Other versions may lay out the rest differently: skip it so the server can report the version
     // mismatch instead of a decode error.
     if (m.protocolVersion != QcProtocol::version) {
-        stream.skipRawData(int(stream.device()->bytesAvailable()));
+        stream.skipRawData(static_cast<int>(stream.device()->bytesAvailable()));
         return m;
     }
 

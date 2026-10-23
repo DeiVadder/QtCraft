@@ -42,9 +42,9 @@ public:
     static constexpr double driftSpeed = 1.2;
     static constexpr int mergeIntervalTicks = 10;
     // The bounds by default (QcServerLimits::itemsAwake, itemsQueued, itemsTotal).
-    static constexpr int activeLimit = int(QcServerLimits{}.itemsAwake);
-    static constexpr int queueLimit = int(QcServerLimits{}.itemsQueued);
-    static constexpr int totalLimit = int(QcServerLimits{}.itemsTotal);
+    static constexpr int activeLimit = static_cast<int>(QcServerLimits{}.itemsAwake);
+    static constexpr int queueLimit = static_cast<int>(QcServerLimits{}.itemsQueued);
+    static constexpr int totalLimit = static_cast<int>(QcServerLimits{}.itemsTotal);
 
     struct Drop
     {

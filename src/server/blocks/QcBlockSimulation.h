@@ -21,7 +21,7 @@ public:
     // Neighbour updates (connections, lost support) processed per tick at most by default
     // (QcServerLimits::blockUpdatesPerTick); the rest waits for the next tick, so a long chain of falling torches never stalls the server. Updates caused by
     // players go first; those of commands (/fill) and their cascades use what is left.
-    static constexpr int maxBlockUpdatesPerTick = int(QcServerLimits{}.blockUpdatesPerTick);
+    static constexpr int maxBlockUpdatesPerTick = static_cast<int>(QcServerLimits{}.blockUpdatesPerTick);
 
     QcBlockSimulation(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates, QcServerBlocks &blocks,
                       QcServerFallingBlocks &falling);

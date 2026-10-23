@@ -27,9 +27,9 @@ public:
     // Map ids are handed out from 1 up to this; a world with more maps makes no new ones.
     static constexpr quint32 maxId = 1u << 30;
     // A map nobody looked at, changed or held for this many ticks (five minutes) leaves memory.
-    static constexpr quint64 idleTicks = quint64(5) * 60 * 20;
+    static constexpr quint64 idleTicks = quint64{5} * 60 * 20;
     // Ticks between two looks for idle maps.
-    static constexpr quint64 evictionInterval = quint64(60) * 20;
+    static constexpr quint64 evictionInterval = quint64{60} * 20;
 
     // The loader and the next free id of an opened world.
     void open(Loader loader, quint32 nextId);

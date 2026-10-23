@@ -84,7 +84,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
 
         Section section{text.label(label), {}, {}, {}};
         for (const QcVegetationPlant &plant : plants) {
-            section.links.append(context.links.blockLink(plant.block, text.percent(double(plant.weight) / total)));
+            section.links.append(context.links.blockLink(plant.block, text.percent(static_cast<double>(plant.weight) / total)));
         }
         if (!section.links.isEmpty()) {
             sections.append(std::move(section));
@@ -103,7 +103,7 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     Section creatures{context.text.label(u"section.creatures"_s), {}, {}, {}};
     for (qsizetype type = 0; type < content.mobs().size(); ++type) {
         const QcMobDefinition &mob = content.mobs()[type];
-        const double weight = weights.weight(int(type), biome.name);
+        const double weight = weights.weight(static_cast<int>(type), biome.name);
         if (mob.isMonster() && weight > 0.0) {
             monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
         } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {
@@ -280,7 +280,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     static constexpr std::array<const char16_t *, 4> types{u"tree", u"column", u"plant", u"pool"};
     const QString kind = feature.type == QcFeatureDefinition::Type::Pool && feature.surface
                              ? u"surfacePool"_s
-                             : QString::fromUtf16(types[std::size_t(feature.type)]);
+                             : QString::fromUtf16(types[static_cast<std::size_t>(feature.type)]);
     facts.append({text.label(u"fact.featureType"_s), text.label(u"value.feature."_s + kind), {}});
 
     Fact blocks{text.label(u"fact.blocks"_s), {}, {}};

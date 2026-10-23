@@ -400,7 +400,7 @@ private slots:
         // Seed 20261017: the village beside the highest ground of the seed's 38 swamp villages within
         // 60 regions of the origin (region 34, -44: x 13165..13276, z -16775..-16703, the terrain up
         // to y 82); a wetland beside high ground once cut a pit with steps of 6 blocks (decision E-660).
-        QTest::newRow("village beside a hill") << qint64(20261017) << 34 << -44;
+        QTest::newRow("village beside a hill") << qint64{20261017} << 34 << -44;
     }
 
     void theWetlandBlendsIntoTheTerrain()
@@ -443,7 +443,7 @@ private slots:
                 }
             }
         }
-        qInfo("%d villages, %d shaped columns, steepest step %d over the terrain's", int(plans.size()), shaped, steepest);
+        qInfo("%d villages, %d shaped columns, steepest step %d over the terrain's", static_cast<int>(plans.size()), shaped, steepest);
         QVERIFY(shaped > 1000);
     }
 
@@ -466,7 +466,7 @@ private slots:
                 openAll += count;
             }
             const int openWater = census.open[QcWetlandPattern::Cover::Water] + census.open[QcWetlandPattern::Cover::DeepWater];
-            const double share = double(openWater) / std::max(1, openAll);
+            const double share = static_cast<double>(openWater) / std::max(1, openAll);
             qInfo("village %d %d: water %.0f %% of the open wetland (%d columns), %.0f %% of all (%d), mud %d, grass %d, deepened %d", plan->minX,
                   plan->minZ, 100.0 * share, openAll, 100.0 * census.water / std::max(1, census.all), census.all, census.open[QcWetlandPattern::Cover::Mud],
                   census.open[QcWetlandPattern::Cover::Grass], census.deepened);

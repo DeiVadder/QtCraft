@@ -34,10 +34,10 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     const QcClientSession &session = *m_parts.session;
     const QcViewCamera::Placement placed = QcViewCamera::place(eye, session.intent().yaw, session.intent().pitch, mode, *session.world());
     QcCamera camera = m_parts.view->camera();
-    camera.position = QVector3D(float(placed.position.x), float(placed.position.y), float(placed.position.z));
+    camera.position = QVector3D(static_cast<float>(placed.position.x), static_cast<float>(placed.position.y), static_cast<float>(placed.position.z));
     camera.yaw = placed.yaw;
     camera.pitch = placed.pitch;
-    camera.fieldOfView = float(std::min(m_settings.fieldOfView() * widening, maxWidenedFieldOfView));
+    camera.fieldOfView = static_cast<float>(std::min(m_settings.fieldOfView() * widening, maxWidenedFieldOfView));
     m_parts.view->setCamera(camera);
 }
 
@@ -62,7 +62,7 @@ void QcRenderBridge::updateSky(double alpha)
     const QcClientSession &session = *m_parts.session;
     const QcClientWeather &weather = session.worldMirror().weather();
     QcSkyState sky = QcSky::at(session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration);
-    sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(double(session.tickCount()) + alpha));
+    sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
     m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
 }
 
@@ -89,7 +89,7 @@ void QcRenderBridge::updateSelection()
     QList<QcAabb> selection;
     if (target && !session.hand().targetEntity() && !m_outlineHidden) {
         const std::optional<QcBlockId> block = session.world()->blockAt(target->block);
-        const QcVec3 corner{double(target->block.x), double(target->block.y), double(target->block.z)};
+        const QcVec3 corner{static_cast<double>(target->block.x), static_cast<double>(target->block.y), static_cast<double>(target->block.z)};
         if (block && session.content()->isValidBlock(*block)) {
             const QList<QcAabb> boxes = session.content()->state(*block).targetBoxes();
             for (const QcAabb &box : boxes) {

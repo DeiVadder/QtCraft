@@ -32,7 +32,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr int timeoutMs = 20000;
-constexpr qint64 intervalNs = qint64(QcPhysics::tickDuration * 1e9);
+constexpr qint64 intervalNs = static_cast<qint64>(QcPhysics::tickDuration * 1e9);
 
 bool fullMeasurement()
 {
@@ -65,9 +65,9 @@ Intervals intervalsOf(QList<qint64> ns)
     }
 
     std::ranges::sort(ns);
-    result.p99Ms = double(ns[(ns.size() * 99 + 99) / 100 - 1]) / 1e6;
-    result.maxMs = double(ns.last()) / 1e6;
-    result.gaps = int(std::ranges::count_if(ns, [](qint64 interval) { return interval > intervalNs * 3 / 2; }));
+    result.p99Ms = static_cast<double>(ns[(ns.size() * 99 + 99) / 100 - 1]) / 1e6;
+    result.maxMs = static_cast<double>(ns.last()) / 1e6;
+    result.gaps = static_cast<int>(std::ranges::count_if(ns, [](qint64 interval) { return interval > intervalNs * 3 / 2; }));
     return result;
 }
 
@@ -113,7 +113,7 @@ private:
         QObject::connect(&frames, &QTimer::timeout, [&] {
             if (stallMs > 0 && sinceStall.elapsed() >= 300) {
                 sinceStall.restart();
-                QThread::msleep(quint64(stallMs));
+                QThread::msleep(static_cast<quint64>(stallMs));
             }
         });
 
@@ -140,10 +140,10 @@ private:
 
         Result result;
         result.core = session.tickTiming().summary();
-        const double due = double(elapsed.nsecsElapsed()) / double(intervalNs);
+        const double due = static_cast<double>(elapsed.nsecsElapsed()) / static_cast<double>(intervalNs);
         result.gui = intervalsOf(intervals);
-        result.paceRatio = double(result.core.ticks) / due;
-        result.appliedRatio = double(session.tickCount() - ticksBefore) / due;
+        result.paceRatio = static_cast<double>(result.core.ticks) / due;
+        result.appliedRatio = static_cast<double>(session.tickCount() - ticksBefore) / due;
         session.disconnectFromServer();
         if (!host->shutdown()) {
             return std::nullopt;
@@ -348,7 +348,7 @@ private slots:
                 session.selectHotbarSlot(slot);
                 chosen.append(slot);
                 QcPlayerInput intent = session.intent();
-                intent.yaw = float(slot * 10);
+                intent.yaw = static_cast<float>(slot * 10);
                 session.setIntent(intent);
             }
         }

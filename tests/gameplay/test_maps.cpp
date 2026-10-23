@@ -83,7 +83,7 @@ class TestMaps : public QcServerTestFixture
         QByteArray bytes;
         QDataStream out(&bytes, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_6_8);
-        out << quint16(QcMessage(QcMsg::MapUpdate{}).index());
+        out << static_cast<quint16>(QcMessage(QcMsg::MapUpdate{}).index());
         fields(out);
         return bytes;
     }
@@ -518,22 +518,22 @@ private slots:
     {
         const auto decoded = [](const QByteArray &bytes) { return QcProtocol::decode(bytes, QcProtocol::Peer::Server).has_value(); };
         const auto header = [](QDataStream &out, quint8 width, quint8 height) {
-            out << quint32(1) << quint8(0) << qint32(0) << qint32(0) << quint8(0) << quint8(0) << width << height;
+            out << quint32{1} << quint8{0} << qint32{0} << qint32{0} << quint8{0} << quint8{0} << width << height;
         };
         // A valid update for comparison.
         QVERIFY(decoded(frame([&](QDataStream &out) {
             header(out, 1, 1);
-            out << false << QByteArray(2, '\0') << quint8(0);
+            out << false << QByteArray(2, '\0') << quint8{0};
         })));
         // A rectangle beyond the map's edge.
         QVERIFY(!decoded(frame([](QDataStream &out) {
-            out << quint32(1) << quint8(0) << qint32(0) << qint32(0) << quint8(127) << quint8(0) << quint8(2) << quint8(1);
-            out << false << QByteArray(4, '\0') << quint8(0);
+            out << quint32{1} << quint8{0} << qint32{0} << qint32{0} << quint8{127} << quint8{0} << quint8{2} << quint8{1};
+            out << false << QByteArray(4, '\0') << quint8{0};
         })));
         // Too few pixels for the rectangle.
         QVERIFY(!decoded(frame([&](QDataStream &out) {
             header(out, 2, 2);
-            out << false << QByteArray(6, '\0') << quint8(0);
+            out << false << QByteArray(6, '\0') << quint8{0};
         })));
         // A compressed block claiming more than the rectangle.
         QVERIFY(!decoded(frame([&](QDataStream &out) {
@@ -543,17 +543,18 @@ private slots:
         // Too many markers, a turn beyond the sixteenths, a scale beyond the largest, id 0.
         QVERIFY(!decoded(frame([&](QDataStream &out) {
             header(out, 0, 0);
-            out << quint8(QcMapMarker::maxCount + 1);
+            out << static_cast<quint8>(QcMapMarker::maxCount + 1);
         })));
         QVERIFY(!decoded(frame([&](QDataStream &out) {
             header(out, 0, 0);
-            out << quint8(1) << qint8(0) << qint8(0) << quint8(16) << quint8(1);
+            out << quint8{1} << qint8{0} << qint8{0} << quint8{16} << quint8{1};
         })));
         QVERIFY(!decoded(frame([](QDataStream &out) {
-            out << quint32(1) << quint8(QcMapData::maxScale + 1) << qint32(0) << qint32(0) << quint8(0) << quint8(0) << quint8(0) << quint8(0) << quint8(0);
+            out << quint32{1} << static_cast<quint8>(QcMapData::maxScale + 1) << qint32{0} << qint32{0}
+                << quint8{0} << quint8{0} << quint8{0} << quint8{0} << quint8{0};
         })));
         QVERIFY(!decoded(frame([](QDataStream &out) {
-            out << quint32(0) << quint8(0) << qint32(0) << qint32(0) << quint8(0) << quint8(0) << quint8(0) << quint8(0) << quint8(0);
+            out << quint32{0} << quint8{0} << qint32{0} << qint32{0} << quint8{0} << quint8{0} << quint8{0} << quint8{0} << quint8{0};
         })));
 
         // A whole map compresses well and comes back equal.

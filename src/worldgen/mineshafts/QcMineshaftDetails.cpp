@@ -90,13 +90,13 @@ void QcMineshaftDetails::placeSpawners(Work &work, const Random &random) const
     QList<int> candidates;
     for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
         if (isPlain(plan, plan.corridors[i])) {
-            candidates.append(int(i));
+            candidates.append(static_cast<int>(i));
         }
     }
     const int span = m_settings.maxSpawners - m_settings.minSpawners + 1;
-    const int count = m_settings.minSpawners + std::min(span - 1, int(random(SpawnerCount, 0) * span));
+    const int count = m_settings.minSpawners + std::min(span - 1, static_cast<int>(random(SpawnerCount, 0) * span));
     for (int i = 0; i < count && !candidates.isEmpty(); ++i) {
-        const qsizetype pick = std::min(candidates.size() - 1, qsizetype(random(SpawnerCorridor, i) * double(candidates.size())));
+        const qsizetype pick = std::min(candidates.size() - 1, static_cast<qsizetype>(random(SpawnerCorridor, i) * static_cast<double>(candidates.size())));
         const QcMineshaftPlan::Corridor &corridor = plan.corridors[candidates.takeAt(pick)];
         const QcBlockPos at = spawnerCell(corridor);
         work.place(at, m_blocks.spawner);
@@ -118,7 +118,7 @@ void QcMineshaftDetails::placeSpawnerWebs(Work &work, const QcMineshaftPlan::Cor
     // Beside the spawner from the floor up, above it in the middle lane; not in supports.
     constexpr std::array<std::pair<int, int>, 8> cells{{{-1, 0}, {-1, 1}, {-1, 2}, {1, 0}, {1, 1}, {1, 2}, {0, 1}, {0, 2}}};
     const int middle = corridor.length / 2;
-    const int index = int(work.furnishing.spawners.size());
+    const int index = static_cast<int>(work.furnishing.spawners.size());
     for (int along = std::max(0, middle - 2); along <= std::min(corridor.length - 1, middle + 2); ++along) {
         if (corridor.supports.contains(along)) {
             continue;
@@ -139,17 +139,17 @@ void QcMineshaftDetails::placeRails(Work &work, const Random &random) const
     for (qsizetype i = 0; i < plan.corridors.size(); ++i) {
         const QcMineshaftPlan::Corridor &corridor = plan.corridors[i];
         const bool spawner = std::ranges::any_of(work.furnishing.spawners, [&corridor](const auto &s) { return s.at == spawnerCell(corridor); });
-        if (!isPlain(plan, corridor) || spawner || random(Rails, int(i)) >= m_settings.railChance) {
+        if (!isPlain(plan, corridor) || spawner || random(Rails, static_cast<int>(i)) >= m_settings.railChance) {
             continue;
         }
 
-        work.addRails(int(i));
+        work.addRails(static_cast<int>(i));
         const QcBlockId rail = corridor.dx != 0 ? m_blocks.railEastWest : m_blocks.railNorthSouth;
         for (int along = 0; along < corridor.length; ++along) {
             work.place(corridor.cell(along), rail);
         }
-        if (m_carts && random(Cart, int(i)) < m_settings.cartChance) {
-            const int along = std::min(corridor.length - 1, int(random(CartPlace, int(i)) * corridor.length));
+        if (m_carts && random(Cart, static_cast<int>(i)) < m_settings.cartChance) {
+            const int along = std::min(corridor.length - 1, static_cast<int>(random(CartPlace, static_cast<int>(i)) * corridor.length));
             work.addCart(corridor.cell(along));
         }
     }
@@ -199,11 +199,11 @@ void QcMineshaftDetails::placeLights(Work &work, const Random &random) const
             const QcBlockPos beam = corridor.cell(along).offset(0, 2, 0);
             // A support left out (in a room) has no beam.
             const bool hung = work.cells.contains(beam);
-            if (at < 0 || !hung || work.contains(cell) || random(Light, int(i) * 64 + along) >= m_settings.lightChance
+            if (at < 0 || !hung || work.contains(cell) || random(Light, static_cast<int>(i) * 64 + along) >= m_settings.lightChance
                 || distanceToSpawners(work.furnishing.spawners, cell) < m_settings.lightDistance) {
                 continue;
             }
-            work.place(cell, m_blocks.lights[std::size_t(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
+            work.place(cell, m_blocks.lights[static_cast<std::size_t>(QcMineshaftBlocks::sideOf(beam.x - cell.x, beam.z - cell.z))]);
         }
     }
 }
@@ -211,7 +211,7 @@ void QcMineshaftDetails::placeLights(Work &work, const Random &random) const
 void QcMineshaftDetails::placeCobwebs(Work &work, const Random &random) const
 {
     for (qsizetype i = 0; i < work.plan.corridors.size(); ++i) {
-        placeCobwebsIn(work, int(i), random);
+        placeCobwebsIn(work, static_cast<int>(i), random);
     }
 }
 

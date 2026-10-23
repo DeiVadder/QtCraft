@@ -69,7 +69,7 @@ QString Writer::recipe(const QcHandbookEntry::Recipe &recipe) const
     for (int row = 0; row < recipe.height; ++row) {
         QStringList cells;
         for (int column = 0; column < recipe.width; ++column) {
-            const qsizetype index = qsizetype(row) * recipe.width + column;
+            const qsizetype index = static_cast<qsizetype>(row) * recipe.width + column;
             const QcHandbookEntry::Link cell = index < recipe.cells.size() ? recipe.cells[index] : QcHandbookEntry::Link{};
             cells.append(cell.isEmpty() ? u"·"_s : link(cell));
         }

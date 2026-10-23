@@ -21,7 +21,7 @@ QcCreativeItemModel::QcCreativeItemModel(QObject *parent)
 
 int QcCreativeItemModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : int(m_shown.size());
+    return parent.isValid() ? 0 : static_cast<int>(m_shown.size());
 }
 
 QVariant QcCreativeItemModel::data(const QModelIndex &index, int role) const
@@ -64,7 +64,7 @@ void QcCreativeItemModel::setContent(std::shared_ptr<const QcContentRegistry> co
 
 void QcCreativeItemModel::setCategory(int category)
 {
-    const auto wanted = QcCreativeCatalog::Category(std::clamp(category, 0, QcCreativeCatalog::categoryCount - 1));
+    const auto wanted = static_cast<QcCreativeCatalog::Category>(std::clamp(category, 0, QcCreativeCatalog::categoryCount - 1));
     if (wanted == m_category) {
         return;
     }

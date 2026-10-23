@@ -92,7 +92,7 @@ private slots:
         static const QRegularExpression listening(u"Listening on port (\\d+)"_s);
         QVERIFY2(QTest::qWaitFor([&] {
             readServer();
-            m_port = quint16(listening.match(m_serverOutput).captured(1).toUInt());
+            m_port = static_cast<quint16>(listening.match(m_serverOutput).captured(1).toUInt());
             return m_port != 0 || m_server.state() == QProcess::NotRunning;
         }, timeoutMs), qPrintable(m_serverOutput));
         QVERIFY(console(u"gamerule mobSpawning false"_s, u"mobSpawning"_s));
@@ -164,9 +164,9 @@ private slots:
 
         // The block under Alice's feet breaks without waiting, and Bob's world loses it too.
         const QJsonArray position = status(m_alice).value(u"position"_s).toArray();
-        const int x = int(std::floor(position[0].toDouble()));
-        const int y = int(std::floor(position[1].toDouble())) - 1;
-        const int z = int(std::floor(position[2].toDouble()));
+        const int x = static_cast<int>(std::floor(position[0].toDouble()));
+        const int y = static_cast<int>(std::floor(position[1].toDouble())) - 1;
+        const int z = static_cast<int>(std::floor(position[2].toDouble()));
         const QJsonObject below = command(u"block"_s, {{u"x"_s, x}, {u"y"_s, y}, {u"z"_s, z}});
         const QString before = m_alice.request(below).value(u"block"_s).toString();
         QVERIFY(!before.isEmpty() && before != u"qtcraft:air"_s);

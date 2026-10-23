@@ -21,7 +21,7 @@ private:
 
     quint32 spawn(int dx, int dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->entities().creatures().spawn(cowType(), at, m_server->entities().newId(), false, true);
     }
 

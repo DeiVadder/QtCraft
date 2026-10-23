@@ -102,22 +102,22 @@ void QcGamepadOptions::setInvertLook(bool invert)
 
 void QcGamepadOptions::setDeadZone(double share)
 {
-    edit([share](QcGamepadProfile &profile) { profile.response.deadZone = float(share); });
+    edit([share](QcGamepadProfile &profile) { profile.response.deadZone = static_cast<float>(share); });
 }
 
 void QcGamepadOptions::setCurve(double exponent)
 {
-    edit([exponent](QcGamepadProfile &profile) { profile.response.exponent = float(exponent); });
+    edit([exponent](QcGamepadProfile &profile) { profile.response.exponent = static_cast<float>(exponent); });
 }
 
 void QcGamepadOptions::setTriggerDeadZone(double share)
 {
-    edit([share](QcGamepadProfile &profile) { profile.response.triggerDeadZone = float(share); });
+    edit([share](QcGamepadProfile &profile) { profile.response.triggerDeadZone = static_cast<float>(share); });
 }
 
 void QcGamepadOptions::setTriggerThreshold(double share)
 {
-    edit([share](QcGamepadProfile &profile) { profile.triggerThreshold = float(share); });
+    edit([share](QcGamepadProfile &profile) { profile.triggerThreshold = static_cast<float>(share); });
 }
 
 void QcGamepadOptions::setVibration(bool vibrate)
@@ -137,7 +137,7 @@ QVariantList QcGamepadOptions::rows() const
 {
     QVariantList result;
     for (std::size_t index = 0; index < QcGamepadMapping::actionCount; ++index) {
-        const auto action = QcGamepadMapping::Action(index);
+        const auto action = static_cast<QcGamepadMapping::Action>(index);
         if (!QcGamepadMapping::rebindable(action)) {
             continue;
         }

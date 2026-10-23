@@ -162,7 +162,7 @@ double QcPistonMover::pushDistance(const QcAabb &body, const QList<QcBlockPos> &
     const QcFaceOffset axis = qcFaceOffset(towards);
     double distance = 0.0;
     for (const QcBlockPos &cell : cells) {
-        const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
+        const QcVec3 corner{static_cast<double>(cell.x), static_cast<double>(cell.y), static_cast<double>(cell.z)};
         const QcAabb box{corner, corner + QcVec3{1.0, 1.0, 1.0}};
         if (!body.intersects(box)) {
             continue;
@@ -184,7 +184,7 @@ void QcPistonMover::notePush(quint32 body, const QcAabb &box, const QList<QcBloc
     // Per body and direction the largest push of the step; opposite pushes cancel each other out,
     // whatever order the pistons came in.
     std::array<double, qcBlockFaceCount> &pushes = m_pushes[body];
-    pushes[std::size_t(towards)] = std::max(pushes[std::size_t(towards)], distance);
+    pushes[static_cast<std::size_t>(towards)] = std::max(pushes[static_cast<std::size_t>(towards)], distance);
 }
 
 void QcPistonMover::pushBodies(const QList<QcBlockPos> &cells, QcBlockFace towards)
@@ -208,7 +208,7 @@ QcVec3 QcPistonMover::takePush(quint32 body)
     QcVec3 total;
     for (const QcBlockFace face : qcAllBlockFaces) {
         const QcFaceOffset offset = qcFaceOffset(face);
-        total += QcVec3{double(offset.dx), double(offset.dy), double(offset.dz)} * (*it)[std::size_t(face)];
+        total += QcVec3{static_cast<double>(offset.dx), static_cast<double>(offset.dy), static_cast<double>(offset.dz)} * (*it)[static_cast<std::size_t>(face)];
     }
     m_pushes.erase(it);
     return total;

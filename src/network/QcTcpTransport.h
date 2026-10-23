@@ -25,7 +25,7 @@ public:
         // Frames of the peer larger than this break the connection.
         qint64 maxIncomingFrameBytes = QcProtocol::maxFrameBytes;
         // Bytes waiting to be sent beyond this cut a slow peer off.
-        qint64 maxPendingBytes = qint64(64) * 1024 * 1024;
+        qint64 maxPendingBytes = qint64{64} * 1024 * 1024;
         // A keep-alive frame goes out when nothing was sent for this long.
         int keepAliveMs = 5'000;
         // The connection counts as lost when nothing arrived for this long.

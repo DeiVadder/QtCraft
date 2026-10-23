@@ -12,7 +12,7 @@ QcHitEffects::QcHitEffects()
     add(QString::fromLatin1(QcHitEffect::knockback),
         [](const QcHitEffect &effect, double, Impact &impact) { impact.knockback = std::max(impact.knockback, effect.number); });
     add(QString::fromLatin1(QcHitEffect::ignite), [](const QcHitEffect &effect, double, Impact &impact) {
-        impact.burnTicks = std::max(impact.burnTicks, int(std::lround(effect.number / QcPhysics::tickDuration)));
+        impact.burnTicks = std::max(impact.burnTicks, static_cast<int>(std::lround(effect.number / QcPhysics::tickDuration)));
     });
     // Breaking is the projectile's own (QcProjectileDefinition::breaks); the body takes nothing.
     add(QString::fromLatin1(QcHitEffect::breaks), [](const QcHitEffect &, double, Impact &) {});
@@ -20,7 +20,7 @@ QcHitEffects::QcHitEffects()
     // E-460), on a body as on a block; the body takes nothing.
     add(QString::fromLatin1(QcHitEffect::teleport), [](const QcHitEffect &, double, Impact &) {});
     add(QString::fromLatin1(QcHitEffect::effect), [](const QcHitEffect &effect, double, Impact &impact) {
-        impact.effects.append({effect.subject, effect.level, int(std::lround(effect.number / QcPhysics::tickDuration))});
+        impact.effects.append({effect.subject, effect.level, static_cast<int>(std::lround(effect.number / QcPhysics::tickDuration))});
     });
     // Spawning happens where the projectile breaks (QcServerProjectiles), at a body or a block.
     add(QString::fromLatin1(QcHitEffect::spawn), [](const QcHitEffect &, double, Impact &) {});
@@ -55,7 +55,7 @@ QcHitEffects::Impact QcHitEffects::splashImpact(const QcProjectileDefinition &de
         if (effect.is(QcHitEffect::damage)) {
             impact.damage += effect.number * share;
         } else if (effect.is(QcHitEffect::effect)) {
-            const int ticks = int(std::lround(effect.number * share / QcPhysics::tickDuration));
+            const int ticks = static_cast<int>(std::lround(effect.number * share / QcPhysics::tickDuration));
             if (ticks > 0) {
                 impact.effects.append({effect.subject, effect.level, ticks});
             }

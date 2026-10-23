@@ -21,7 +21,7 @@ QString timing(const QcIntervalTiming &value)
 // KiB per second between two byte counts.
 QString rate(quint64 now, quint64 before, double seconds)
 {
-    const double bytes = now >= before ? double(now - before) : 0.0;
+    const double bytes = now >= before ? static_cast<double>(now - before) : 0.0;
     return QString::number(bytes / 1024.0 / std::max(seconds, 0.001), 'f', 1);
 }
 
@@ -71,7 +71,7 @@ QString QcHealthLog::line(const QcHealthSample &sample, Memory memory, const std
 void QcHealthLog::writeLine()
 {
     const QcHealthSample sample = m_source();
-    const double seconds = double(m_sinceLine.restart()) / 1000.0;
+    const double seconds = static_cast<double>(m_sinceLine.restart()) / 1000.0;
     qCInfo(lcHealth).noquote() << line(sample, {QcProcessMemory::currentMb(), QcProcessMemory::peakMb()}, m_previousTraffic, seconds);
     m_previousTraffic = sample.traffic;
 }

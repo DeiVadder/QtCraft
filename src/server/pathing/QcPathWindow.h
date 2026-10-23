@@ -28,12 +28,12 @@ public:
     quint8 cell(QcBlockPos pos);
 
     // A* state of a node of this search.
-    bool visited(int index) const { return m_nodeStamp[std::size_t(index)] == m_generation; }
-    bool closed(int index) const { return visited(index) && m_closed[std::size_t(index)] != 0; }
-    float cost(int index) const { return m_cost[std::size_t(index)]; }
-    int parent(int index) const { return m_parent[std::size_t(index)]; }
+    bool visited(int index) const { return m_nodeStamp[static_cast<std::size_t>(index)] == m_generation; }
+    bool closed(int index) const { return visited(index) && m_closed[static_cast<std::size_t>(index)] != 0; }
+    float cost(int index) const { return m_cost[static_cast<std::size_t>(index)]; }
+    int parent(int index) const { return m_parent[static_cast<std::size_t>(index)]; }
     void open(int index, float cost, int parent);
-    void close(int index) { m_closed[std::size_t(index)] = 1; }
+    void close(int index) { m_closed[static_cast<std::size_t>(index)] = 1; }
 
 private:
     const QcBlockAccess *m_world = nullptr;

@@ -9,16 +9,16 @@ namespace QcFireRules {
 
 Table::Table(const QcContentRegistry &content)
 {
-    m_traits.resize(std::size_t(content.stateCount()));
+    m_traits.resize(static_cast<std::size_t>(content.stateCount()));
     for (std::size_t id = 0; id < m_traits.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         Traits &traits = m_traits[id];
         traits.fire = block.fire.isFire;
         traits.eternal = block.fire.eternal;
-        traits.solidTop = block.solid && content.state(QcBlockId(id)).fullFace[std::size_t(QcBlockFace::Up)];
-        traits.ignite = quint8(block.fire.ignite);
-        traits.burn = quint8(block.fire.burn);
-        traits.sparks = quint8(block.fire.sparks);
+        traits.solidTop = block.solid && content.state(static_cast<QcBlockId>(id)).fullFace[static_cast<std::size_t>(QcBlockFace::Up)];
+        traits.ignite = static_cast<quint8>(block.fire.ignite);
+        traits.burn = static_cast<quint8>(block.fire.burn);
+        traits.sparks = static_cast<quint8>(block.fire.sparks);
     }
     m_defaultFire = content.defaultFire();
 }
@@ -59,19 +59,20 @@ quint32 Dice::roll(QcBlockPos target, quint32 salt, quint32 bound) const
 {
     // SplitMix64 over the inputs.
     quint64 h = seed ^ 0x9E3779B97F4A7C15ull;
-    const auto word = [](int value) { return quint64(quint32(value)); };
-    for (const quint64 value : {word(fire.x), word(fire.y), word(fire.z), word(age), word(target.x), word(target.y), word(target.z), quint64(salt)}) {
+    const auto word = [](int value) { return static_cast<quint64>(static_cast<quint32>(value)); };
+    for (const quint64 value : {word(fire.x), word(fire.y), word(fire.z), word(age), word(target.x), word(target.y), word(target.z),
+        static_cast<quint64>(salt)}) {
         h += value + 0x9E3779B97F4A7C15ull;
         h = (h ^ (h >> 30)) * 0xBF58476D1CE4E5B9ull;
         h = (h ^ (h >> 27)) * 0x94D049BB133111EBull;
         h ^= h >> 31;
     }
-    return bound == 0 ? 0 : quint32(h % bound);
+    return bound == 0 ? 0 : static_cast<quint32>(h % bound);
 }
 
 quint64 Dice::nextStep(quint64 now) const
 {
-    return now + quint64(minStepTicks) + roll(fire, 1, stepTicksSpread);
+    return now + static_cast<quint64>(minStepTicks) + roll(fire, 1, stepTicksSpread);
 }
 
 } // namespace QcFireRules

@@ -133,7 +133,7 @@ void QcGamepadControls::releaseHeld(int id)
     const Held held = m_held.value(id);
     for (std::size_t index = 0; index < held.size(); ++index) {
         if (held[index]) {
-            queue(Action(index), false, now);
+            queue(static_cast<Action>(index), false, now);
         }
     }
 }
@@ -172,7 +172,7 @@ void QcGamepadControls::onStateChanged(int id)
     const Held before = m_held.value(id);
     Held now{};
     for (std::size_t index = 0; index < now.size(); ++index) {
-        now[index] = QcGamepadMapping::held(Action(index), shaped, profile.bindings, before[index], profile.triggerThreshold);
+        now[index] = QcGamepadMapping::held(static_cast<Action>(index), shaped, profile.bindings, before[index], profile.triggerThreshold);
     }
     now = QcGamepadMapping::withCombos(now, before, shaped, profile.bindings);
 
@@ -188,7 +188,7 @@ void QcGamepadControls::onStateChanged(int id)
         const qint64 timeMs = m_clock.elapsed();
         for (std::size_t index = 0; index < now.size(); ++index) {
             if (now[index] != before[index]) {
-                queue(Action(index), now[index], timeMs);
+                queue(static_cast<Action>(index), now[index], timeMs);
             }
         }
     }
@@ -223,7 +223,7 @@ void QcGamepadControls::applyFrame(QcClientSession &session, float seconds, bool
             emit radialChanged();
         }
     }
-    QPointF look = m_radial.isOpen() ? QPointF() : QcGamepadMapping::lookDelta(shaped, m_profile.lookSpeed, double(seconds));
+    QPointF look = m_radial.isOpen() ? QPointF() : QcGamepadMapping::lookDelta(shaped, m_profile.lookSpeed, static_cast<double>(seconds));
     m_lookWaitsForNeutral = (m_lookWaitsForNeutral || (m_radialWasOpen && !m_radial.isOpen())) && !look.isNull();
     m_radialWasOpen = m_radial.isOpen();
     if (m_lookWaitsForNeutral) {
@@ -254,7 +254,7 @@ void QcGamepadControls::rumbleWhenHurt(const QcClientSession &session)
     m_lastHealth = health;
     if (damage > 0.0 && m_inUse && m_windowActive && m_profile.vibration && m_source) {
         const double strength = std::clamp(0.35 + 0.65 * damage / fullRumbleDamage, 0.0, 1.0);
-        m_source->rumble(m_pad, float(strength), rumbleMs);
+        m_source->rumble(m_pad, static_cast<float>(strength), rumbleMs);
     }
 }
 

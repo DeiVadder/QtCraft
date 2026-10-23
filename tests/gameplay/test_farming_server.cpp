@@ -55,7 +55,7 @@ private:
     int pigCount() const
     {
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        return int(std::ranges::count(m_server->mobs().mobs(), pig, &QcCreature::type));
+        return static_cast<int>(std::ranges::count(m_server->mobs().mobs(), pig, &QcCreature::type));
     }
 
 private slots:
@@ -382,8 +382,8 @@ private slots:
     {
         joinWithoutCreatures();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const quint32 first = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900001, false, true);
-        const quint32 second = m_server->mobs().spawn(pig, QcVec3{m_feet.x - 1.5, double(m_feet.y), m_feet.z + 2.5}, 900002, false, true);
+        const quint32 first = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 900001, false, true);
+        const quint32 second = m_server->mobs().spawn(pig, QcVec3{m_feet.x - 1.5, static_cast<double>(m_feet.y), m_feet.z + 2.5}, 900002, false, true);
         chat(u"/give carrot 5"_s);
         chat(u"/give wheat 1"_s);
         hold("qtcraft:wheat");
@@ -443,8 +443,8 @@ private slots:
                 m_server->world().setBlock({x, m_feet.y + dy, m_feet.z + 2}, id("qtcraft:stone"));
             }
         }
-        const quint32 north = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 0.5, double(m_feet.y), m_feet.z + 1.5}, 900021);
-        const quint32 south = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 0.5, double(m_feet.y), m_feet.z + 3.5}, 900022);
+        const quint32 north = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 1.5}, 900021);
+        const quint32 south = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 3.5}, 900022);
         for (const quint32 id : {north, south}) {
             m_server->mobs().find(id)->love = 30.0;
         }
@@ -477,7 +477,7 @@ private slots:
         const QcBlockPos pillar = m_feet.offset(2, 0, 2);
         m_server->world().setBlock(pillar, id("qtcraft:stone"));
         m_server->world().setBlock(pillar.offset(0, 1, 0), id("qtcraft:stone"));
-        const quint32 below = m_server->mobs().spawn(pig, QcVec3{m_feet.x - 1.5, double(m_feet.y), m_feet.z + 0.5}, 900031);
+        const quint32 below = m_server->mobs().spawn(pig, QcVec3{m_feet.x - 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 900031);
         const quint32 above = m_server->mobs().spawn(pig, QcVec3{pillar.x + 0.5, pillar.y + 2.0, pillar.z + 0.5}, 900032);
         for (const quint32 id : {below, above}) {
             m_server->mobs().find(id)->love = 30.0;
@@ -495,7 +495,7 @@ private slots:
     {
         join();
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const quint32 resting = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900041);
+        const quint32 resting = m_server->mobs().spawn(pig, QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 900041);
         m_server->mobs().find(resting)->breedCooldown = 100.0;
         chat(u"/give carrot 2"_s);
         chat(u"/feed 10"_s);
@@ -509,7 +509,7 @@ private slots:
     {
         join();
         const quint32 zombie = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s),
-                                                      QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900051);
+                                                      QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 900051);
         chat(u"/give bread 1"_s);
         chat(u"/give iron_helmet"_s);
         chat(u"/feed 10"_s);
@@ -533,7 +533,7 @@ private slots:
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), id("qtcraft:stone"));
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        const quint32 id = m_server->mobs().spawn(pig, QcVec3{pit.x + 0.5, double(pit.y), pit.z + 0.5}, 900061);
+        const quint32 id = m_server->mobs().spawn(pig, QcVec3{pit.x + 0.5, static_cast<double>(pit.y), pit.z + 0.5}, 900061);
         chat(u"/give carrot 4"_s);
         hold("qtcraft:carrot");
 
@@ -552,7 +552,7 @@ private slots:
     {
         join();
         const int sheep = *m_content->mobIndex(u"qtcraft:sheep"_s);
-        const quint32 lamb = m_server->mobs().spawn(sheep, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5}, 900010);
+        const quint32 lamb = m_server->mobs().spawn(sheep, QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 900010);
         m_server->mobs().find(lamb)->growUp = 600.0;
         const std::optional<QList<QcItemDrop>> drops = m_server->mobs().damage({.creature = lamb, .damage = 100.0, .from = m_client->motion.position});
         QVERIFY(drops.has_value());

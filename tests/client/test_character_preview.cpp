@@ -61,7 +61,7 @@ std::pair<qsizetype, quint32> fingerprint(const QcEntityMesh &mesh)
     for (const quint32 index : mesh.indices) {
         stream << index;
     }
-    const auto round = [](float value, double scale) { return qint64(std::llround(double(value) * scale)); };
+    const auto round = [](float value, double scale) { return static_cast<qint64>(std::llround(static_cast<double>(value) * scale)); };
     for (const QcEntityVertex &v : mesh.vertices) {
         stream << round(v.x, 1e4) << round(v.y, 1e4) << round(v.z, 1e4) << round(v.u, 1e5) << round(v.v, 1e5) << round(v.shade, 1e4)
                << round(v.skyLight, 1e4) << round(v.blockLight, 1e4) << v.tint[0] << v.tint[1] << v.tint[2] << v.tint[3];
@@ -358,14 +358,14 @@ private slots:
         QcMsg::EntitySpawn player;
         player.id = 7;
         player.equipment.at(QcEquipmentSlot::Head) = {helmet, 1, 3};
-        player.equipment.at(QcEquipmentSlot::Feet) = {QcItemId(60000), 1, 0};
+        player.equipment.at(QcEquipmentSlot::Feet) = {static_cast<QcItemId>(60000), 1, 0};
         QcClientEntities entities;
         QVERIFY(entities.spawn(player, &content));
         QCOMPARE(entities.all().value(7).equipment.at(QcEquipmentSlot::Head), (QcItemStack{helmet, 1, 3}));
         QVERIFY(entities.all().value(7).equipment.at(QcEquipmentSlot::Feet).isEmpty());
 
         // Sent again (a new look): checked again.
-        player.equipment.at(QcEquipmentSlot::Head) = {QcItemId(60001), 1, 0};
+        player.equipment.at(QcEquipmentSlot::Head) = {static_cast<QcItemId>(60001), 1, 0};
         QVERIFY(entities.spawn(player, &content));
         QVERIFY(entities.all().value(7).equipment.isEmpty());
 
@@ -433,7 +433,7 @@ private slots:
         double faceShift = 0.0;
         for (qsizetype i = 0; i < a.vertices.size(); ++i) {
             if (a.vertices[i].y > 1.36 && a.vertices[i].z < -0.226f) {
-                faceShift = std::max(faceShift, double(b.vertices[i].x - a.vertices[i].x));
+                faceShift = std::max(faceShift, static_cast<double>(b.vertices[i].x - a.vertices[i].x));
             }
         }
         QVERIFY2(faceShift > 0.1, qPrintable(QString::number(faceShift)));

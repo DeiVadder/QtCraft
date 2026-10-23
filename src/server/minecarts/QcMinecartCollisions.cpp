@@ -21,7 +21,7 @@ constexpr double closingTolerance = 1e-9;
 
 qint64 columnKey(int x, int z)
 {
-    return (qint64(x) << 32) ^ qint64(quint32(z));
+    return (static_cast<qint64>(x) << 32) ^ static_cast<qint64>(static_cast<quint32>(z));
 }
 
 QcVec3 centreOf(const QcAabb &box)

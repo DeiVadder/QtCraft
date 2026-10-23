@@ -8,10 +8,10 @@
 
 QcPrecipitationTable::QcPrecipitationTable(const QcContentRegistry &content)
 {
-    m_stops.resize(std::size_t(content.stateCount()));
+    m_stops.resize(static_cast<std::size_t>(content.stateCount()));
     for (std::size_t id = 0; id < m_stops.size(); ++id) {
-        const QcBlockState &state = content.state(QcBlockId(id));
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockState &state = content.state(static_cast<QcBlockId>(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         const int opacity = std::clamp(state.lightOpacity, 0, 15);
         const bool skyStop = QcLightPassage::skyStop(opacity, state.lightBlockedFaces) != QcLightPassage::SkyStop::None;
         const bool collides = block.solid && !state.collision.isEmpty();

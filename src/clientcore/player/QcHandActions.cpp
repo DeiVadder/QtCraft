@@ -109,8 +109,8 @@ void QcHandActions::refreshTarget(const QcClientWorld &world, const QcContentReg
     }
 
     const QcPlayerInput &intent = m_view.prediction.intent();
-    const double yaw = qDegreesToRadians(double(intent.yaw));
-    const double pitch = qDegreesToRadians(double(intent.pitch));
+    const double yaw = qDegreesToRadians(static_cast<double>(intent.yaw));
+    const double pitch = qDegreesToRadians(static_cast<double>(intent.pitch));
     const QcVec3 direction{std::sin(yaw) * std::cos(pitch), std::sin(pitch), -std::cos(yaw) * std::cos(pitch)};
     const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
 
@@ -345,7 +345,7 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
         return item ? HandEffect::Refused : HandEffect::None;
     }
 
-    const QcVec3 point = target.point - QcVec3{double(target.block.x), double(target.block.y), double(target.block.z)};
+    const QcVec3 point = target.point - QcVec3{static_cast<double>(target.block.x), static_cast<double>(target.block.y), static_cast<double>(target.block.z)};
     const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
     const QcVec3 hit{clamp01(point.x), clamp01(point.y), clamp01(point.z)};
     const QcPlayerInput &intent = m_view.prediction.intent();

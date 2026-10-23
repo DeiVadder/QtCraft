@@ -123,7 +123,7 @@ void QcMapStore::setWatched(quint32 client, const QList<quint32> &ids)
 
 bool QcMapStore::countMade(const QString &player, quint64 now, int perMinute)
 {
-    constexpr quint64 minute = quint64(60) * 20;
+    constexpr quint64 minute = quint64{60} * 20;
     // Entries of past minutes go once there are many, so the table stays as small as the players
     // making maps.
     if (m_made.size() > 256) {

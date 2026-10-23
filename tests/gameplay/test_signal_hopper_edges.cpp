@@ -84,7 +84,7 @@ private slots:
         }
 
         // Within ceil(5000 / 4096) = 2 ticks every hopper has moved its item.
-        const int bound = int((count + QcServerLimits{}.hopperBudget - 1) / QcServerLimits{}.hopperBudget);
+        const int bound = static_cast<int>((count + QcServerLimits{}.hopperBudget - 1) / QcServerLimits{}.hopperBudget);
         ticks(bound);
         int served = 0;
         for (const QcBlockPos &pos : std::as_const(hoppers)) {
@@ -104,7 +104,7 @@ private slots:
         ticks(2);
         QcItemEntityManager::Drop drop;
         drop.stack = stack("qtcraft:diamond", 3);
-        drop.position = {m_feet.x + 0.5, double(m_feet.y), m_feet.z + 0.5};
+        drop.position = {m_feet.x + 0.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         drop.pickupDelay = 0.0;
         QVERIFY(m_server->items().spawn(drop, 950001) != 0);
         for (int tick = 0; tick < 40; ++tick) {

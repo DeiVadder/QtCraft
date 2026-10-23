@@ -69,8 +69,8 @@ std::optional<QcGiantTreePlacer::Giant> QcGiantTreePlacer::giantIn(int cellX, in
     }
 
     // The spot leaves room for the second trunk row inside the cell.
-    const int x = cellX * cell + int(qcPositionRandom(m_seed, cellX, 1, cellZ) * (cell - 1));
-    const int z = cellZ * cell + int(qcPositionRandom(m_seed, cellX, 2, cellZ) * (cell - 1));
+    const int x = cellX * cell + static_cast<int>(qcPositionRandom(m_seed, cellX, 1, cellZ) * (cell - 1));
+    const int z = cellZ * cell + static_cast<int>(qcPositionRandom(m_seed, cellX, 2, cellZ) * (cell - 1));
     const std::optional<int> feature = chosen(m_generator.column(x, z).biome, roll);
     if (!feature) {
         return std::nullopt;

@@ -109,6 +109,6 @@ private:
     QHash<QcBlockPos, int> m_cellIndex;
     std::vector<Member> m_members;
     Members m_kind = Members::Walkers;
-    int m_throttled = int(QcServerLimits{}.crowdThrottled);
-    int m_idle = int(QcServerLimits{}.crowdIdle);
+    int m_throttled = static_cast<int>(QcServerLimits{}.crowdThrottled);
+    int m_idle = static_cast<int>(QcServerLimits{}.crowdIdle);
 };

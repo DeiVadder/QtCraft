@@ -103,7 +103,7 @@ public:
     static QcBlockPos feet(const QcClientSession &session)
     {
         const QcVec3 &position = session.playerMotion().position;
-        return {int(std::floor(position.x)), int(std::floor(position.y)), int(std::floor(position.z))};
+        return {static_cast<int>(std::floor(position.x)), static_cast<int>(std::floor(position.y)), static_cast<int>(std::floor(position.z))};
     }
 
     // Sets a block through the console and waits until `observer` shows it.

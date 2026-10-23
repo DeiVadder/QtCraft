@@ -27,16 +27,16 @@ QByteArray signBlob(quint16 version, const QByteArray &rest)
         return blob;
     };
     const QByteArray entry = bytes([&](QDataStream &out) {
-        out << qint32(3) << qint32(20) << qint32(5) << quint8(4) << u"Old"_s << u"Sign"_s << u""_s << u""_s;
-        out.writeRawData(rest.constData(), int(rest.size()));
+        out << qint32{3} << qint32{20} << qint32{5} << quint8{4} << u"Old"_s << u"Sign"_s << u""_s << u""_s;
+        out.writeRawData(rest.constData(), static_cast<int>(rest.size()));
     });
     const QByteArray table = bytes([&](QDataStream &out) {
-        out << quint32(1) << version << quint32(entry.size());
-        out.writeRawData(entry.constData(), int(entry.size()));
+        out << quint32{1} << version << static_cast<quint32>(entry.size());
+        out.writeRawData(entry.constData(), static_cast<int>(entry.size()));
     });
     return bytes([&](QDataStream &out) {
-        out << quint16(1) << quint16(QcBlockEntityRecord::Table::Signs) << quint16(1) << quint32(table.size());
-        out.writeRawData(table.constData(), int(table.size()));
+        out << quint16{1} << static_cast<quint16>(QcBlockEntityRecord::Table::Signs) << quint16{1} << static_cast<quint32>(table.size());
+        out.writeRawData(table.constData(), static_cast<int>(table.size()));
     });
 }
 
@@ -241,7 +241,7 @@ private slots:
         QVERIFY2(newer.has_value(), qPrintable(newer ? QString() : newer.error()));
         QCOMPARE(newer->signs.size(), 1);
         QCOMPARE(newer->signs[0].color, u"cyan"_s);
-        const QcEntityComponents tail{{quint16(QcBlockEntityRecord::Table::Signs), 3, true, "zz"}};
+        const QcEntityComponents tail{{static_cast<quint16>(QcBlockEntityRecord::Table::Signs), 3, true, "zz"}};
         QCOMPARE(newer->kept.entries.value({3, 20, 5}), tail);
         QCOMPARE(QcBlockEntityCodec::encode(*newer, *m_content), blob);
     }

@@ -94,7 +94,7 @@ void QcBlockSimulation::processLiquids()
     m_updates.setCommandMode(true);
     const QcLiquidFlow::TickResult result = m_state.liquids().tick(
         m_state.clock().tick(), m_state.world(), [this](QcBlockPos pos, QcBlockId block) { applyFlowStep(pos, block); },
-        int(m_state.config().limits.liquidStepsPerTick));
+        static_cast<int>(m_state.config().limits.liquidStepsPerTick));
     m_updates.setCommandMode(false);
 
     for (const QcBlockPos &pos : result.unloaded) {

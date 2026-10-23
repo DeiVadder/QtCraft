@@ -95,13 +95,13 @@ QByteArray payloadOf(Write write)
 QByteArray creatureBlob(const QString &type, quint64 uid, const QList<RawComponent> &components, quint16 count)
 {
     return payloadOf([&](QDataStream &out) {
-        out << quint32(1) << type << 8.5 << 65.0 << 8.5 << 0.0 << 0.0 << 0.0 << 30.0f << quint64(0) << uid << count;
+        out << quint32{1} << type << 8.5 << 65.0 << 8.5 << 0.0 << 0.0 << 0.0 << 30.0f << quint64{0} << uid << count;
         for (const RawComponent &component : components) {
-            out << component.id << component.version << component.length.value_or(quint32(component.payload.size()));
-            out.writeRawData(component.payload.constData(), int(component.payload.size()));
+            out << component.id << component.version << component.length.value_or(static_cast<quint32>(component.payload.size()));
+            out.writeRawData(component.payload.constData(), static_cast<int>(component.payload.size()));
         }
         // No items, falling blocks, stands, carts, orbs or projectiles; not populated.
-        out << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint32(0) << quint8(0);
+        out << quint32{0} << quint32{0} << quint32{0} << quint32{0} << quint32{0} << quint32{0} << quint8{0};
     });
 }
 
@@ -132,7 +132,7 @@ private:
     QcEntityRecord::Ordered<QcMobManager::Stored> creature(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
                                                            quint32 order) const
     {
-        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt, 1000 + quint64(order)}, order};
+        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt, 1000 + static_cast<quint64>(order)}, order};
     }
 
     QcEntityRecord::Ordered<QcFallingBlock> falling(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
@@ -435,7 +435,8 @@ private slots:
         record.creatures = {creature(*m_content, u"qtcraft:pig"_s, {8.5, 65.0, 8.5}, 0)};
         QcMobManager::Stored &pig = record.creatures.first().entry;
         // In the order they come back: tails with their components, then unknown components.
-        pig.kept.components = {{quint16(QcEntityCodec::Component::Creature), 4, true, QByteArray("\1\2\3", 3)}, {900, 3, false, QByteArray("owner of a mod", 14)}};
+        pig.kept.components = {{static_cast<quint16>(QcEntityCodec::Component::Creature), 4, true, QByteArray("\1\2\3", 3)},
+            {900, 3, false, QByteArray("owner of a mod", 14)}};
         record.stands = {stand(*m_content, {4.5, 63.0, 4.5}, 1)};
         record.stands.first().entry.kept.components = {{901, 1, false, QByteArray(1000, 'x')}};
         const QByteArray blob = QcEntityCodec::encode(record, *m_content);
@@ -463,7 +464,7 @@ private slots:
         // Version 1 ends before the offers (their count, the restock time and count) and the time it
         // last slept (version 3).
         first.chop(4 + 8 + 4 + 8);
-        const quint16 villagerId = quint16(QcEntityCodec::Component::Villager);
+        const quint16 villagerId = static_cast<quint16>(QcEntityCodec::Component::Villager);
         const QByteArray blob = creatureBlob(u"qtcraft:villager"_s, 12, {{villagerId, 1, first, {}}}, 1);
 
         QcLoadWarnings warnings;
@@ -484,7 +485,7 @@ private slots:
 
     void damagedComponentsAreRefused()
     {
-        const quint16 body = quint16(QcEntityCodec::Component::Creature);
+        const quint16 body = static_cast<quint16>(QcEntityCodec::Component::Creature);
         const QByteArray fields = payloadOf([](QDataStream &out) { out << 10.0 << 0.0 << 0.0 << false; });
         const auto decodes = [this](const QByteArray &blob) {
             QcLoadWarnings warnings;
@@ -514,9 +515,9 @@ private slots:
     {
         QList<RawComponent> unknown;
         for (quint16 id = 0; id < QcComponentFrames::maxComponents; ++id) {
-            unknown.append({quint16(1000 + id), 1, QByteArray(1, char(id)), {}});
+            unknown.append({static_cast<quint16>(1000 + id), 1, QByteArray(1, static_cast<char>(id)), {}});
         }
-        const QByteArray blob = creatureBlob(u"qtcraft:pig"_s, 3, unknown, quint16(unknown.size()));
+        const QByteArray blob = creatureBlob(u"qtcraft:pig"_s, 3, unknown, static_cast<quint16>(unknown.size()));
 
         QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> back = QcEntityCodec::decode(blob, {0, 0}, *m_content, warnings);

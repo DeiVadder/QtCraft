@@ -15,7 +15,7 @@ constexpr unsigned fourBitsLog2 = 2;
 constexpr unsigned perWordLog2For(qsizetype size)
 {
     unsigned log2 = oneBitLog2;
-    while (log2 > 0 && (qsizetype(1) << (16u >> log2)) < size) {
+    while (log2 > 0 && (qsizetype{1} << (16u >> log2)) < size) {
         --log2;
     }
     return log2;
@@ -52,11 +52,11 @@ void QcChunkSection::setBlock(int x, int y, int z, QcBlockId block)
     const int cell = index(x, y, z);
     const unsigned perWordLog2 = m_entriesPerWordLog2;
     const unsigned bits = 16u >> perWordLog2;
-    const unsigned shift = (unsigned(cell) & ((1u << perWordLog2) - 1u)) * bits;
+    const unsigned shift = (static_cast<unsigned>(cell) & ((1u << perWordLog2) - 1u)) * bits;
     const unsigned mask = ((1u << bits) - 1u) << shift;
-    const auto value = unsigned(entry - m_palette.begin()) << shift;
+    const auto value = static_cast<unsigned>(entry - m_palette.begin()) << shift;
     quint16 &word = m_words[cell >> perWordLog2];
-    word = quint16((unsigned(word) & ~mask) | value);
+    word = static_cast<quint16>((static_cast<unsigned>(word) & ~mask) | value);
     m_compacted = false;
 }
 
@@ -81,7 +81,7 @@ QList<quint16> QcChunkSection::unpackedIndices() const
     for (const quint16 word : m_words) {
         unsigned rest = word;
         for (unsigned slot = 0; slot < perWord; ++slot) {
-            indices[cell++] = quint16(rest & mask);
+            indices[cell++] = static_cast<quint16>(rest & mask);
             rest >>= bits;
         }
     }
@@ -94,11 +94,11 @@ void QcChunkSection::pack(const QList<quint16> &indices, unsigned perWordLog2)
     const unsigned bits = 16u >> perWordLog2;
     QList<quint16> words(QcWorld::blocksPerSection >> perWordLog2, 0);
     for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
-        const unsigned shift = (unsigned(cell) & ((1u << perWordLog2) - 1u)) * bits;
-        words[cell >> perWordLog2] = quint16(words[cell >> perWordLog2] | (unsigned(indices[cell]) << shift));
+        const unsigned shift = (static_cast<unsigned>(cell) & ((1u << perWordLog2) - 1u)) * bits;
+        words[cell >> perWordLog2] = static_cast<quint16>(words[cell >> perWordLog2] | (static_cast<unsigned>(indices[cell]) << shift));
     }
     m_words = std::move(words);
-    m_entriesPerWordLog2 = quint8(perWordLog2);
+    m_entriesPerWordLog2 = static_cast<quint8>(perWordLog2);
 }
 
 void QcChunkSection::rewrite(std::span<const quint16> remap, unsigned perWordLog2)
@@ -107,11 +107,11 @@ void QcChunkSection::rewrite(std::span<const quint16> remap, unsigned perWordLog
     QList<quint16> words(QcWorld::blocksPerSection >> perWordLog2, 0);
     for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
         const quint16 entry = packedIndex(cell);
-        const unsigned shift = (unsigned(cell) & ((1u << perWordLog2) - 1u)) * bits;
-        words[cell >> perWordLog2] = quint16(words[cell >> perWordLog2] | (unsigned(remap.empty() ? entry : remap[entry]) << shift));
+        const unsigned shift = (static_cast<unsigned>(cell) & ((1u << perWordLog2) - 1u)) * bits;
+        words[cell >> perWordLog2] = static_cast<quint16>(words[cell >> perWordLog2] | (static_cast<unsigned>(remap.empty() ? entry : remap[entry]) << shift));
     }
     m_words = std::move(words);
-    m_entriesPerWordLog2 = quint8(perWordLog2);
+    m_entriesPerWordLog2 = static_cast<quint8>(perWordLog2);
 }
 
 bool QcChunkSection::assign(QList<QcBlockId> palette, const QList<quint16> &indices)
@@ -128,7 +128,7 @@ bool QcChunkSection::assign(QList<QcBlockId> palette, const QList<quint16> &indi
         return false;
     }
 
-    const auto paletteSize = quint16(palette.size());
+    const auto paletteSize = static_cast<quint16>(palette.size());
     if (std::ranges::any_of(indices, [paletteSize](quint16 i) { return i >= paletteSize; })) {
         return false;
     }
@@ -169,14 +169,14 @@ void QcChunkSection::compact()
     // The used entries keep their order, so a palette without unused or repeated entries keeps its
     // indices. An entry whose block an earlier used entry already holds (several unknown blocks
     // loaded as air) maps to that earlier entry.
-    QVarLengthArray<quint16, 256> remap(m_palette.size(), quint16(0));
+    QVarLengthArray<quint16, 256> remap(m_palette.size(), quint16{0});
     QVarLengthArray<QcBlockId, 256> palette;
     for (qsizetype entry = 0; entry < m_palette.size(); ++entry) {
         if (!used[entry]) {
             continue;
         }
         const auto first = std::ranges::find(palette, m_palette[entry]);
-        remap[entry] = quint16(first - palette.begin());
+        remap[entry] = static_cast<quint16>(first - palette.begin());
         if (first == palette.end()) {
             palette.append(m_palette[entry]);
         }

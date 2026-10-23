@@ -121,11 +121,11 @@ private:
                     const QcBlockPos cell = info.origin.offset(x, y, z);
                     const std::optional<QcRails::Track> &track = rails.trackOf(m_server->world().blockAt(cell).value_or(qcAirBlockId));
                     for (int end = 0; track && end < 2; ++end) {
-                        const QcRails::End &at = track->ends[std::size_t(end)];
+                        const QcRails::End &at = track->ends[static_cast<std::size_t>(end)];
                         const QcBlockPos beyond = qcNeighbour(cell, at.side).offset(0, at.raised ? 1 : 0, 0);
                         if (!QcRails::joined(m_server->world(), rails, cell, *track, end)
                             && QcPhysics::collisionBoxesAt(m_server->world(), beyond).isEmpty()) {
-                            open.append(u"%1 %2 %3 %4"_s.arg(x).arg(y).arg(z).arg(QLatin1StringView(sideNames[std::size_t(at.side)])));
+                            open.append(u"%1 %2 %3 %4"_s.arg(x).arg(y).arg(z).arg(QLatin1StringView(sideNames[static_cast<std::size_t>(at.side)])));
                         }
                     }
                 }
@@ -332,7 +332,8 @@ private slots:
         const QString demo = u"demo-ice_slide"_s;
         visit(demo);
         const QcBlockPos base = origin(demo);
-        const auto localOf = [&](const QcMinecart &cart) { return cart.motion.position - QcVec3{double(base.x), double(base.y), double(base.z)}; };
+        const auto localOf = [&](const QcMinecart &cart) { return cart.motion.position - QcVec3{static_cast<double>(base.x),
+            static_cast<double>(base.y), static_cast<double>(base.z)}; };
         const auto cartIn = [&](double fromZ, double toZ) -> const QcMinecart * {
             for (const QcMinecart &cart : m_server->carts().all()) {
                 const QcVec3 at = localOf(cart);

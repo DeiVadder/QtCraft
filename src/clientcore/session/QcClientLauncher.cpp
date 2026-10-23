@@ -57,7 +57,7 @@ bool QcClientLauncher::mayThrow(QcItemId item, const QcThrowableDefinition &thro
     if (m_clock + 1e-6 < m_throwReady.value(item, 0.0)) {
         return false;
     }
-    m_throwReady.insert(item, m_clock + double(std::lround(throwable.cooldownSeconds / QcPhysics::tickDuration)));
+    m_throwReady.insert(item, m_clock + static_cast<double>(std::lround(throwable.cooldownSeconds / QcPhysics::tickDuration)));
     return true;
 }
 

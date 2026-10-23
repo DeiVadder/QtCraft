@@ -17,8 +17,8 @@ struct QcRecipeDefinition
     QString resultItem;
     int resultCount = 1;
 
-    int width() const { return pattern.isEmpty() ? 0 : int(pattern.first().size()); }
-    int height() const { return int(pattern.size()); }
+    int width() const { return pattern.isEmpty() ? 0 : static_cast<int>(pattern.first().size()); }
+    int height() const { return static_cast<int>(pattern.size()); }
     // Item name at a pattern cell, empty for a blank cell.
     QString itemAt(int column, int row) const;
 };

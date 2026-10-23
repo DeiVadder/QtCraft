@@ -131,7 +131,7 @@ private slots:
         m_origin = QcServer::ClientOrigin::Local;
         join();
         for (int i = 0; i < 60; ++i) {
-            m_client->connection.send(QcMsg::AdminRequest{quint32(1000 + i), Kind::Players, {}});
+            m_client->connection.send(QcMsg::AdminRequest{static_cast<quint32>(1000 + i), Kind::Players, {}});
         }
         QcTestUtil::pump();
         m_origin = QcServer::ClientOrigin::Remote;
@@ -362,7 +362,7 @@ private slots:
     {
         join();
         for (int i = 0; i < 60; ++i) {
-            m_client->connection.send(QcMsg::AdminRequest{quint32(1000 + i), Kind::Players, {}});
+            m_client->connection.send(QcMsg::AdminRequest{static_cast<quint32>(1000 + i), Kind::Players, {}});
         }
         QcTestUtil::pump();
         QVERIFY(answers().size() >= 15);

@@ -42,7 +42,7 @@ bool hasSolidFace(const QcBlockAccess &world, QcBlockPos pos, QcBlockFace toward
     const std::optional<QcBlockId> block = world.blockAt(pos);
     const QcContentRegistry &content = world.content();
     return block && content.isValidBlock(*block) && content.block(*block).solid
-           && content.state(*block).fullFace[std::size_t(towards)];
+           && content.state(*block).fullFace[static_cast<std::size_t>(towards)];
 }
 
 // The axis a face lies across: "x" for east and west, "y" for up and down, "z" for north and south.
@@ -112,13 +112,13 @@ bool connectsTo(const QcBlockAccess &world, const QcBlockDefinition &self, QcBlo
 QcBlockFace rightOf(QcBlockFace face)
 {
     const auto it = std::ranges::find(horizontal, face);
-    return it == horizontal.end() ? face : horizontal[std::size_t((it - horizontal.begin() + 1) % std::ssize(horizontal))];
+    return it == horizontal.end() ? face : horizontal[static_cast<std::size_t>((it - horizontal.begin() + 1) % std::ssize(horizontal))];
 }
 
 QString lookDirection(float yaw)
 {
-    const int quarter = int(std::lround(double(yaw) / 90.0)) % 4;
-    return faceName(horizontal[std::size_t((quarter + 4) % 4)]);
+    const int quarter = static_cast<int>(std::lround(static_cast<double>(yaw) / 90.0)) % 4;
+    return faceName(horizontal[static_cast<std::size_t>((quarter + 4) % 4)]);
 }
 
 QString faceName(QcBlockFace face)
@@ -253,7 +253,7 @@ SlabOutcome slabOutcome(const QcBlockAccess &world, QcBlockId state, const Aim &
 {
     const QString attach = content.property(state, u"attach"_s);
     const bool standing = attach.isEmpty() || attach == u"floor"_s;
-    const long steps = standing ? ((std::lround(double(yaw) / 22.5) % 16) + 16) % 16 : 0;
+    const long steps = standing ? ((std::lround(static_cast<double>(yaw) / 22.5) % 16) + 16) % 16 : 0;
     return assigned(content, state, u"rotation"_s, QString::number(steps));
 }
 

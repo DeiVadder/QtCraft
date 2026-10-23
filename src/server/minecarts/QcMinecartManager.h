@@ -24,7 +24,7 @@ class QcMinecartManager
 {
 public:
     // Carts in the world by default (QcServerLimits::maxMinecarts).
-    static constexpr int maxCarts = int(QcServerLimits{}.maxMinecarts);
+    static constexpr int maxCarts = static_cast<int>(QcServerLimits{}.maxMinecarts);
 
     // What a cart carries, from its item (QcItemDefinition::cartBlock, decision E-386).
     struct Load

@@ -109,7 +109,7 @@ private:
             QcMeshInput input;
             for (int dz = -1; dz <= 1; ++dz) {
                 for (int dx = -1; dx <= 1; ++dx) {
-                    input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
+                    input.chunks[static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1)] = world.chunk({dx, dz});
                 }
             }
             input.sectionIndex = section;
@@ -166,7 +166,7 @@ private slots:
         for (int dz = -1; dz <= 1; ++dz) {
             for (int dx = -1; dx <= 1; ++dx) {
                 const int index = (dz + 1) * 3 + (dx + 1);
-                input.chunks[std::size_t(index)] = world.chunk({dx, dz});
+                input.chunks[static_cast<std::size_t>(index)] = world.chunk({dx, dz});
             }
         }
         input.sectionIndex = 1;
@@ -390,7 +390,7 @@ private slots:
         QRandomGenerator random(14);
         for (int i = 0; i < 120; ++i) {
             const QcBlockPos pos{random.bounded(-6, 22), random.bounded(28, 72), random.bounded(-6, 22)};
-            change(pos, *world.blockAt(pos) == qcAirBlockId ? QcBlockId(1) : qcAirBlockId);
+            change(pos, *world.blockAt(pos) == qcAirBlockId ? static_cast<QcBlockId>(1) : qcAirBlockId);
             if (i % 10 == 9) {
                 pumpUntilIdle(scheduler, world);
             }
@@ -421,7 +421,7 @@ private slots:
         QcMeshInput input;
         for (int dz = -1; dz <= 1; ++dz) {
             for (int dx = -1; dx <= 1; ++dx) {
-                input.chunks[std::size_t(dz + 1) * 3 + std::size_t(dx + 1)] = world.chunk({dx, dz});
+                input.chunks[static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1)] = world.chunk({dx, dz});
             }
         }
         input.sectionIndex = 1;

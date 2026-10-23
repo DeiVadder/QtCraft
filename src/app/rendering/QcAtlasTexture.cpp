@@ -64,7 +64,7 @@ void upload(QRhi *rhi, QRhiTexture *texture, const QList<QImage> &levels, QRhiRe
 {
     QList<QRhiTextureUploadEntry> entries;
     for (qsizetype level = 0; level < levels.size() && level < rhi->mipLevelsForSize(levels.front().size()); ++level) {
-        entries.append({0, int(level), QRhiTextureSubresourceUploadDescription(levels[level])});
+        entries.append({0, static_cast<int>(level), QRhiTextureSubresourceUploadDescription(levels[level])});
     }
     QRhiTextureUploadDescription description;
     description.setEntries(entries.cbegin(), entries.cend());

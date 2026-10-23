@@ -13,11 +13,11 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Ticks are saved as 32 bits; longer waits are cut to this.
-constexpr quint64 maxTicks = quint64(1) << 20;
+constexpr quint64 maxTicks = quint64{1} << 20;
 
 quint32 ticksLeft(quint64 due, quint64 now)
 {
-    return quint32(std::min(due - std::min(due, now), maxTicks));
+    return static_cast<quint32>(std::min(due - std::min(due, now), maxTicks));
 }
 
 using Table = QcBlockEntityRecord::Table;
@@ -26,7 +26,7 @@ using Table = QcBlockEntityRecord::Table;
 // saved even when it holds nothing this version would save, so the tail goes back with it.
 bool hasTail(const QcBlockEntityKept *parts, Table table, QcBlockPos pos)
 {
-    return parts && parts->entryTail(quint16(table), pos);
+    return parts && parts->entryTail(static_cast<quint16>(table), pos);
 }
 
 // The entries of one chunk with something to save.
@@ -66,7 +66,7 @@ struct Entries
         const QcBlockEntities::Memory &kept = *entities.memory(pos);
         QcBlockEntityRecord::Memory memory{pos, ticksLeft(kept.burntOutUntil, now), kept.powered, std::nullopt};
         if (kept.extendingSince) {
-            memory.extendingAge = quint32(std::min(now - std::min(now, *kept.extendingSince), maxTicks));
+            memory.extendingAge = static_cast<quint32>(std::min(now - std::min(now, *kept.extendingSince), maxTicks));
         }
         if (memory.burntOutLeft > 0 || memory.powered || memory.extendingAge || hasTail(parts, Table::Memories, pos)) {
             record.memories.append(memory);
@@ -81,7 +81,7 @@ struct Entries
     QStringList warnings;
     for (QcBlockEntities::Container container : record.containers) {
         // A cooldown is never longer than the hoppers' (damaged values, a lowered limit).
-        const quint64 left = std::min<quint64>(container.readyAt, quint64(std::max(0, hoppers.cooldownTicks)));
+        const quint64 left = std::min<quint64>(container.readyAt, static_cast<quint64>(std::max(0, hoppers.cooldownTicks)));
         container.readyAt = left > 0 ? now + left : 0;
         if (entities.putContainer(container) && left > 0) {
             hoppers.wakeAt(container.pos, now + left);
@@ -179,7 +179,7 @@ void QcBlockEntityRecord::pruneKept()
     }
     QHash<quint16, QSet<QcBlockPos>> present;
     const auto note = [&present](Table table, const auto &list) {
-        QSet<QcBlockPos> &positions = present[quint16(table)];
+        QSet<QcBlockPos> &positions = present[static_cast<quint16>(table)];
         for (const auto &entry : list) {
             positions.insert(entry.pos);
         }

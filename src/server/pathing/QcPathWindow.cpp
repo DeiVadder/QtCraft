@@ -53,7 +53,7 @@ quint8 QcPathWindow::cell(QcBlockPos pos)
         return QcPathCell::make(QcPathCell::Kind::Unknown);
     }
 
-    const std::size_t at = std::size_t(index);
+    const std::size_t at = static_cast<std::size_t>(index);
     if (m_cellStamp[at] != m_generation) {
         m_cellStamp[at] = m_generation;
         m_cells[at] = QcPathDirectCells(*m_world, *m_table).cell(pos);
@@ -63,7 +63,7 @@ quint8 QcPathWindow::cell(QcBlockPos pos)
 
 void QcPathWindow::open(int index, float cost, int parent)
 {
-    const std::size_t at = std::size_t(index);
+    const std::size_t at = static_cast<std::size_t>(index);
     m_nodeStamp[at] = m_generation;
     m_cost[at] = cost;
     m_parent[at] = parent;

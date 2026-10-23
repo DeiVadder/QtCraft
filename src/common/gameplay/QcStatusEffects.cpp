@@ -74,16 +74,16 @@ QString QcStatusEffects::levelName(int level)
 {
     static constexpr std::array<const char *, 10> roman{"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"};
     if (level >= 1 && std::cmp_less_equal(level, roman.size())) {
-        return QString::fromLatin1(roman[std::size_t(level - 1)]);
+        return QString::fromLatin1(roman[static_cast<std::size_t>(level - 1)]);
     }
     return QString::number(level);
 }
 
 void QcStatusEffects::write(QDataStream &stream, const QList<QcStatusEffect> &effects)
 {
-    stream << quint32(effects.size());
+    stream << static_cast<quint32>(effects.size());
     for (const QcStatusEffect &effect : effects) {
-        stream << effect.name << qint32(effect.level) << qint32(effect.ticksLeft);
+        stream << effect.name << static_cast<qint32>(effect.level) << static_cast<qint32>(effect.ticksLeft);
     }
 }
 
@@ -91,7 +91,7 @@ std::optional<QList<QcStatusEffect>> QcStatusEffects::read(QDataStream &stream)
 {
     quint32 count = 0;
     stream >> count;
-    if (stream.status() != QDataStream::Ok || count > quint32(maxEffects)) {
+    if (stream.status() != QDataStream::Ok || count > static_cast<quint32>(maxEffects)) {
         return std::nullopt;
     }
     QList<QcStatusEffect> effects;

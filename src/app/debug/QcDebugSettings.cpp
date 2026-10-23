@@ -22,7 +22,7 @@ void QcDebugSettings::load(QcDebugOptions options)
 
 void QcDebugSettings::setLevel(int level)
 {
-    const auto value = QcDebugOptions::Level(std::clamp(level, 0, int(QcDebugOptions::Level::Full)));
+    const auto value = static_cast<QcDebugOptions::Level>(std::clamp(level, 0, static_cast<int>(QcDebugOptions::Level::Full)));
     if (value != m_options.level) {
         m_options.level = value;
         emit levelChanged();
@@ -31,7 +31,7 @@ void QcDebugSettings::setLevel(int level)
 
 void QcDebugSettings::cycleLevel()
 {
-    setLevel(int(QcDebugOptions::nextLevel(m_options.level)));
+    setLevel(static_cast<int>(QcDebugOptions::nextLevel(m_options.level)));
 }
 
 void QcDebugSettings::setShown(Visual visual, bool on)

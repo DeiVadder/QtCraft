@@ -74,7 +74,7 @@ private:
     {
         int hits = 0;
         for (int tick = 0; tick < ticks; ++tick) {
-            hits += int(mobs.tick(world, players, midnight, dt, [this] { return m_nextId++; }).size());
+            hits += static_cast<int>(mobs.tick(world, players, midnight, dt, [this] { return m_nextId++; }).size());
         }
         return hits;
     }
@@ -322,8 +322,8 @@ private slots:
             // On the cells between the pillars, 8 to 16 cells from the player.
             const double angle = i * 2.0 * std::numbers::pi / 200.0;
             const double radius = 8.0 + (i % 9);
-            const int x = int(std::lround(std::cos(angle) * radius / 3.0)) * 3 + 1;
-            const int z = int(std::lround(std::sin(angle) * radius / 3.0)) * 3 + 1;
+            const int x = static_cast<int>(std::lround(std::cos(angle) * radius / 3.0)) * 3 + 1;
+            const int z = static_cast<int>(std::lround(std::sin(angle) * radius / 3.0)) * 3 + 1;
             mobs->spawn(type("zombie"), at(x + 0.5, z + 0.5), m_nextId++);
         }
         // The pillars hide the player from most of them.

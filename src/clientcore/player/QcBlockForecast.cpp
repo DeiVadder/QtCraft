@@ -17,8 +17,8 @@ QList<QcAabb> roomOf(const QcBlockAccess &world, QcBlockId state, QcBlockPos pos
     const QcContentRegistry &content = world.content();
     const QcBlockDefinition &definition = content.block(state);
     const QcBlockPos other = QcBlockRules::otherHalf(world, pos, state);
-    const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
-    const QcVec3 toOther{double(other.x - pos.x), double(other.y - pos.y), double(other.z - pos.z)};
+    const QcVec3 corner{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)};
+    const QcVec3 toOther{static_cast<double>(other.x - pos.x), static_cast<double>(other.y - pos.y), static_cast<double>(other.z - pos.z)};
 
     QList<QcAabb> boxes;
     for (const QcAabb &box : content.state(state).collision) {

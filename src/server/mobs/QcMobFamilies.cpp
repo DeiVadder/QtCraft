@@ -152,9 +152,9 @@ QList<quint32> QcMobFamilies::split(QcServerState &state, quint32 parentId, int 
     // A copy: spawning moves the creatures in the store.
     const QcCreature parent = *found;
     const QcFamilyDefinition &family = *kind->family;
-    const qsizetype room = std::min(family.maxChildren - childrenOf(creatures, parentId).size(), qsizetype(family.maxSplits - parent.splits));
+    const qsizetype room = std::min(family.maxChildren - childrenOf(creatures, parentId).size(), static_cast<qsizetype>(family.maxSplits - parent.splits));
     QList<quint32> children;
-    for (qsizetype i = 0; i < std::min(qsizetype(count), room); ++i) {
+    for (qsizetype i = 0; i < std::min(static_cast<qsizetype>(count), room); ++i) {
         // Within the parent's body, so the smaller child floats where the parent had room, and away
         // from its middle with a little leap.
         const double angle = state.random().bounded(2.0 * std::numbers::pi);
@@ -175,6 +175,6 @@ QList<quint32> QcMobFamilies::split(QcServerState &state, quint32 parentId, int 
         }
         children.append(id);
     }
-    creatures.find(parentId)->splits += int(children.size());
+    creatures.find(parentId)->splits += static_cast<int>(children.size());
     return children;
 }

@@ -29,9 +29,9 @@ QList<QcBlockPos> QcMovingBlocks::tick(quint64 now)
 
 QcVec3 QcMovingBlocks::positionAt(const QcMovingBlock &moving, quint64 now)
 {
-    const double progress = std::clamp(double(now - std::min(now, moving.start)) / moveTicks, 0.0, 1.0);
-    const QcVec3 from{moving.from.x + 0.5, double(moving.from.y), moving.from.z + 0.5};
-    const QcVec3 to{moving.to.x + 0.5, double(moving.to.y), moving.to.z + 0.5};
+    const double progress = std::clamp(static_cast<double>(now - std::min(now, moving.start)) / moveTicks, 0.0, 1.0);
+    const QcVec3 from{moving.from.x + 0.5, static_cast<double>(moving.from.y), moving.from.z + 0.5};
+    const QcVec3 to{moving.to.x + 0.5, static_cast<double>(moving.to.y), moving.to.z + 0.5};
     return from + (to - from) * progress;
 }
 

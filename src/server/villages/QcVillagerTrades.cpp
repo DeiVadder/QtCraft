@@ -45,7 +45,7 @@ std::optional<QcVillagerTrades::Offer> resolve(const QcContentRegistry &content,
 qint64 dayOf(double worldTime)
 {
     // Bounded, so even a damaged time converts to a day without overflow.
-    return qint64(std::floor(std::clamp(worldTime, -1.0, QcVillagerRecord::maxRestockTime) / QcDayCycle::dayLength));
+    return static_cast<qint64>(std::floor(std::clamp(worldTime, -1.0, QcVillagerRecord::maxRestockTime) / QcDayCycle::dayLength));
 }
 
 } // namespace
@@ -108,7 +108,7 @@ QList<const QcVillagerTrades::Offer *> QcVillagerTrades::drawn(const QcVillagerR
     };
     // Each offer's rank for this villager and level: the hash of its look, the level and the
     // offer's id, so an offer added or removed by a mod leaves the others' order alone.
-    const quint64 seed = qcMixSeed(villager.look, quint64(level));
+    const quint64 seed = qcMixSeed(villager.look, static_cast<quint64>(level));
     const auto rank = [seed](const Offer *offer) { return qcMixSeed(seed, qcNameSalt(offer->definition.id)); };
 
     // Saved offers stay; the free places go to the best ranked of the others.
@@ -126,7 +126,7 @@ QList<const QcVillagerTrades::Offer *> QcVillagerTrades::drawn(const QcVillagerR
         }
     }
     std::ranges::stable_sort(others, {}, rank);
-    picked += others.mid(0, std::max(0, perLevel - int(picked.size())));
+    picked += others.mid(0, std::max(0, perLevel - static_cast<int>(picked.size())));
 
     // In the content's order.
     QList<const Offer *> ordered;
@@ -164,7 +164,7 @@ QList<QcItemStack> QcVillagerTrades::priceOf(const Offer &offer, const QcVillage
 
 std::pair<int, int> QcVillagerTrades::levelRange(int level) const
 {
-    const int index = std::clamp(level, 1, int(m_settings.levels.size())) - 1;
+    const int index = std::clamp(level, 1, static_cast<int>(m_settings.levels.size())) - 1;
     const int start = m_settings.levels.value(index);
     return {start, index + 1 < m_settings.levels.size() ? m_settings.levels.value(index + 1) : start};
 }
@@ -173,7 +173,7 @@ int QcVillagerTrades::addExperience(QcVillagerRecord &villager, int points) cons
 {
     villager.experience = std::clamp(villager.experience + std::max(points, 0), 0, QcVillagerRecord::maxExperience);
     int gained = 0;
-    while (villager.level < std::min(QcVillagerRecord::maxLevel, int(m_settings.levels.size()))
+    while (villager.level < std::min(QcVillagerRecord::maxLevel, static_cast<int>(m_settings.levels.size()))
            && villager.experience >= m_settings.levels.value(villager.level)) {
         ++villager.level;
         ++gained;

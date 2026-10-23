@@ -92,7 +92,7 @@ private slots:
         chat(u"/gamerule mobSpawning false"_s);
         // A cart standing on the grass of the stage, without rails.
         QcMinecart standing = m_server->carts().fromItem(u"qtcraft:minecart"_s);
-        standing.motion.position = {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        standing.motion.position = {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         const quint32 id = m_server->systems().minecarts.spawn(standing)->id;
         ticks(2);
         const QcVec3 start = cart(id).motion.position;

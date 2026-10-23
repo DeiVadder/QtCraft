@@ -42,13 +42,13 @@ void QcDebugLines::addLine(const QcVec3 &from, const QcVec3 &to, QRgb color)
 {
     for (const QcVec3 &end : {from, to}) {
         QcDebugLineVertex vertex;
-        vertex.x = float(end.x);
-        vertex.y = float(end.y);
-        vertex.z = float(end.z);
-        vertex.rgba[0] = quint8(qRed(color));
-        vertex.rgba[1] = quint8(qGreen(color));
-        vertex.rgba[2] = quint8(qBlue(color));
-        vertex.rgba[3] = quint8(qAlpha(color));
+        vertex.x = static_cast<float>(end.x);
+        vertex.y = static_cast<float>(end.y);
+        vertex.z = static_cast<float>(end.z);
+        vertex.rgba[0] = static_cast<quint8>(qRed(color));
+        vertex.rgba[1] = static_cast<quint8>(qGreen(color));
+        vertex.rgba[2] = static_cast<quint8>(qBlue(color));
+        vertex.rgba[3] = static_cast<quint8>(qAlpha(color));
         m_vertices.append(vertex);
     }
 }
@@ -62,7 +62,7 @@ void QcDebugLines::addBox(const QcAabb &box, QRgb color)
     constexpr std::array<std::pair<int, int>, 12> edges{
         {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}}};
     for (const auto &[from, to] : edges) {
-        addLine(c[std::size_t(from)], c[std::size_t(to)], color);
+        addLine(c[static_cast<std::size_t>(from)], c[static_cast<std::size_t>(to)], color);
     }
 }
 
@@ -70,7 +70,7 @@ void QcDebugLines::addChunkBorders(const QcVec3 &feet)
 {
     constexpr double size = QcWorld::chunkSize;
     constexpr double top = QcWorld::worldHeight;
-    const QcChunkPos chunk = QcBlockPos{int(std::floor(feet.x)), 0, int(std::floor(feet.z))}.chunk();
+    const QcChunkPos chunk = QcBlockPos{static_cast<int>(std::floor(feet.x)), 0, static_cast<int>(std::floor(feet.z))}.chunk();
 
     for (int dx = -chunkCornerRadius; dx <= chunkCornerRadius + 1; ++dx) {
         for (int dz = -chunkCornerRadius; dz <= chunkCornerRadius + 1; ++dz) {
@@ -117,7 +117,7 @@ void QcDebugLines::addHitboxes(const QcClientSession &session, double alpha)
 
         if (!entity.isItem() && !entity.isBlockEntity()) {
             // Yaw 0 looks north (-Z), 90 east (+X).
-            const double yaw = double(entity.yaw) * std::numbers::pi / 180.0;
+            const double yaw = static_cast<double>(entity.yaw) * std::numbers::pi / 180.0;
             const QcVec3 eye{at.x, at.y + height * 0.85, at.z};
             addLine(eye, eye + QcVec3{std::sin(yaw), 0.0, -std::cos(yaw)} * 1.5, lookColor);
         }
@@ -149,7 +149,7 @@ void QcDebugLines::addRemeshFlashes(const QHash<quint64, qint64> &meshedAt, qint
         if (age < 0 || age >= flashMs) {
             continue;
         }
-        const int alpha = int(255 * (flashMs - age) / flashMs);
+        const int alpha = static_cast<int>(255 * (flashMs - age) / flashMs);
         addBox(sectionBox(it.key()), qRgba(qRed(flashColor), qGreen(flashColor), qBlue(flashColor), alpha));
     }
 }
@@ -157,9 +157,9 @@ void QcDebugLines::addRemeshFlashes(const QHash<quint64, qint64> &meshedAt, qint
 QcAabb QcDebugLines::sectionBox(quint64 sectionKey)
 {
     const QcSectionAddress section = qcSectionFromKey(sectionKey);
-    const double x = section.chunk.x * double(QcWorld::chunkSize);
-    const double z = section.chunk.z * double(QcWorld::chunkSize);
-    const double y = section.sectionIndex * double(QcWorld::sectionHeight);
+    const double x = section.chunk.x * static_cast<double>(QcWorld::chunkSize);
+    const double z = section.chunk.z * static_cast<double>(QcWorld::chunkSize);
+    const double y = section.sectionIndex * static_cast<double>(QcWorld::sectionHeight);
     // A little inside the section, so its box does not hide in the faces of its neighbours.
     constexpr double inset = 0.02;
     return {{x + inset, y + inset, z + inset},

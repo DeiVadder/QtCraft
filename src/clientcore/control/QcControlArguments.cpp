@@ -55,5 +55,5 @@ std::optional<QcBlockFace> QcControlArguments::face(const QJsonObject &request)
 QString QcControlArguments::faceName(QcBlockFace face)
 {
     static const std::array<QString, qcBlockFaceCount> names = {u"east"_s, u"west"_s, u"up"_s, u"down"_s, u"south"_s, u"north"_s};
-    return names[std::size_t(face)];
+    return names[static_cast<std::size_t>(face)];
 }

@@ -12,7 +12,7 @@ namespace {
 
 QcVec3 centreOf(QcBlockPos cell)
 {
-    return {cell.x + 0.5, double(cell.y), cell.z + 0.5};
+    return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
 }
 
 double horizontalDistance(const QcVec3 &a, const QcVec3 &b)

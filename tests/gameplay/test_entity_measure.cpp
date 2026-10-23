@@ -41,18 +41,18 @@ private:
         QVERIFY(m_server->world().setBlock({x, ground + 20, z}, id("qtcraft:stone")));
 
         const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
-        m_server->mobs().spawn(pig, {x + 4.5, double(ground), z + 4.5}, m_nextId++, false, true);
-        m_server->mobs().spawn(pig, {x + 10.5, double(ground), z + 10.5}, m_nextId++, false, true);
+        m_server->mobs().spawn(pig, {x + 4.5, static_cast<double>(ground), z + 4.5}, m_nextId++, false, true);
+        m_server->mobs().spawn(pig, {x + 10.5, static_cast<double>(ground), z + 10.5}, m_nextId++, false, true);
         for (int i = 0; i < 4; ++i) {
             QcItemEntityManager::Drop drop;
             drop.stack = {item(i % 2 == 0 ? "qtcraft:stick" : "qtcraft:diamond"), 1 + i, 0};
-            drop.position = {x + 2.5 + 3 * i, double(loaded->highestNonAir(2 + 3 * i, 13) + 1), z + 13.5};
+            drop.position = {x + 2.5 + 3 * i, static_cast<double>(loaded->highestNonAir(2 + 3 * i, 13) + 1), z + 13.5};
             m_server->items().spawn(drop, m_nextId++);
         }
 
         QcArmourStand stand;
         stand.id = m_nextId++;
-        stand.motion.position = {x + 8.5, double(loaded->highestNonAir(8, 2) + 1), z + 2.5};
+        stand.motion.position = {x + 8.5, static_cast<double>(loaded->highestNonAir(8, 2) + 1), z + 2.5};
         stand.item = u"qtcraft:armor_stand"_s;
         stand.held = {item("qtcraft:stick"), 1, 0};
         QVERIFY(m_server->stands().add(stand));
@@ -89,7 +89,7 @@ private slots:
             for (int i = 0; i < checks; ++i) {
                 hits += std::as_const(m_server->entities()).overlapsLiving(door) ? 1 : 0;
             }
-            return std::pair{double(timer.nsecsElapsed()) / checks / 1e3, hits};
+            return std::pair{static_cast<double>(timer.nsecsElapsed()) / checks / 1e3, hits};
         };
         const auto [empty, emptyHits] = measure();
         QCOMPARE(emptyHits, 0);
@@ -142,23 +142,24 @@ private slots:
             m_server->tick();
             tickNs += timer.nsecsElapsed();
             for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-                phaseNs[std::size_t(phase)] += m_server->tickPhases().lastTick()[std::size_t(phase)];
+                phaseNs[static_cast<std::size_t>(phase)] += m_server->tickPhases().lastTick()[static_cast<std::size_t>(phase)];
             }
             QcTestUtil::pump();
         }
-        report("tick", double(tickNs) / measure.ticks / 1e6);
+        report("tick", static_cast<double>(tickNs) / measure.ticks / 1e6);
         for (int phase = 0; phase < QcTickPhases::inTick; ++phase) {
-            qInfo("MEASURE phase-%s %.3f ms", QcTickPhases::ids[std::size_t(phase)], double(phaseNs[std::size_t(phase)]) / measure.ticks / 1e6);
+            qInfo("MEASURE phase-%s %.3f ms", QcTickPhases::ids[static_cast<std::size_t>(phase)],
+                static_cast<double>(phaseNs[static_cast<std::size_t>(phase)]) / measure.ticks / 1e6);
         }
-        qInfo("MEASURE entities %lld", qlonglong(entityCount()));
+        qInfo("MEASURE entities %lld", static_cast<qlonglong>(entityCount()));
 
         timer.start();
         QVERIFY(m_server->save().has_value());
-        report("first-save", double(timer.nsecsElapsed()) / 1e6);
+        report("first-save", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         ticks(1);
         timer.start();
         QVERIFY(m_server->save().has_value());
-        report("second-save", double(timer.nsecsElapsed()) / 1e6);
+        report("second-save", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         const qsizetype animals = m_server->mobs().mobs().size();
         const qsizetype stands = m_server->stands().stands().size();
         const qsizetype items = m_server->items().items().size() + m_server->items().queued().size();
@@ -168,11 +169,11 @@ private slots:
         timer.start();
         m_server = std::make_unique<QcServer>(config, m_content, std::make_unique<QcTestTerrainGenerator>(m_content));
         QVERIFY(m_server->openWorld().has_value());
-        report("open", double(timer.nsecsElapsed()) / 1e6);
+        report("open", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         // Chunks are read when needed (stage 31.3): reading all of them is measured on its own.
         timer.start();
         loadStored();
-        report("load-all", double(timer.nsecsElapsed()) / 1e6);
+        report("load-all", static_cast<double>(timer.nsecsElapsed()) / 1e6);
         const qsizetype animalsAfter = m_server->mobs().mobs().size();
         const qsizetype standsAfter = m_server->stands().stands().size();
         const qsizetype itemsAfter = m_server->items().items().size() + m_server->items().queued().size();

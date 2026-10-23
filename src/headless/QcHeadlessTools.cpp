@@ -100,7 +100,8 @@ void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry 
         printError(u"Cannot write map"_s);
     }
     for (qsizetype i = 0; i < content.worldgen().biomes().size(); ++i) {
-        std::println("{} {} {}", i, generator.biomeName(int(i)).toStdString(), biomeLegendPlace(generator, int(i), radius).toStdString());
+        std::println("{} {} {}", i, generator.biomeName(static_cast<int>(i)).toStdString(),
+            biomeLegendPlace(generator, static_cast<int>(i), radius).toStdString());
     }
     exitSoon(saved ? 0 : 1);
 }
@@ -221,7 +222,7 @@ bool exportIcon(const QString &directory)
 bool run(const QCommandLineParser &parser, const Options &options, const QcServerConfig &config,
          const std::shared_ptr<const QcContentRegistry> &content)
 {
-    if (runContentTool(parser, options, quint64(config.seed), content)) {
+    if (runContentTool(parser, options, static_cast<quint64>(config.seed), content)) {
         return true;
     }
 

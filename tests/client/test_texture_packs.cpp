@@ -85,7 +85,7 @@ quint32 crc32(const QByteArray &bytes)
 {
     quint32 crc = 0xFFFFFFFFu;
     for (const char byte : bytes) {
-        crc ^= quint8(byte);
+        crc ^= static_cast<quint8>(byte);
         for (int bit = 0; bit < 8; ++bit) {
             crc = (crc >> 1) ^ (0xEDB88320u & (0u - (crc & 1u)));
         }
@@ -98,10 +98,10 @@ QByteArray chunk(const QByteArray &kind, const QByteArray &body)
     QByteArray bytes;
     const auto put = [&bytes](quint32 value) {
         for (int shift = 24; shift >= 0; shift -= 8) {
-            bytes.append(char((value >> shift) & 0xFF));
+            bytes.append(static_cast<char>((value >> shift) & 0xFF));
         }
     };
-    put(quint32(body.size()));
+    put(static_cast<quint32>(body.size()));
     bytes.append(kind + body);
     put(crc32(kind + body));
     return bytes;
@@ -113,7 +113,7 @@ QByteArray headerBomb(quint32 width, quint32 height)
     QByteArray header;
     for (const quint32 value : {width, height}) {
         for (int shift = 24; shift >= 0; shift -= 8) {
-            header.append(char((value >> shift) & 0xFF));
+            header.append(static_cast<char>((value >> shift) & 0xFF));
         }
     }
     header.append(QByteArray("\x08\x06\x00\x00\x00", 5));
@@ -195,7 +195,7 @@ private slots:
             many.append(QJsonObject{{u"author"_s, u"a"_s}});
         }
         QTest::newRow("too many credits") << manifestBytes(32, {{u"credits"_s, many}}) << u"at most 32"_s;
-        QTest::newRow("oversized") << manifestBytes(32, {{u"description"_s, QString(qsizetype(70) * 1024, u'x')}}) << u"larger than 64 KiB"_s;
+        QTest::newRow("oversized") << manifestBytes(32, {{u"description"_s, QString(qsizetype{70} * 1024, u'x')}}) << u"larger than 64 KiB"_s;
     }
 
     void manifestRejectsBadValues()
@@ -302,7 +302,7 @@ private slots:
 
         QcTexturePackLoader::Limits limits;
         limits.maxFiles = 3;
-        limits.memoryBudget = qint64(2) * 32 * 32 * 4;
+        limits.memoryBudget = qint64{2} * 32 * 32 * 4;
         const QcTexturePack pack = loadOk(dir.path(), limits);
         // Three files are read, the third exceeds the budget of two images, the fourth is not read.
         QCOMPARE(pack.images.size(), 2);

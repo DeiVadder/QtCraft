@@ -68,7 +68,7 @@ namespace QcRaycast {
         const double leave = ((positive ? highs[axis] : lows[axis]) - origins[axis]) / directions[axis];
         if (enter > entry) {
             entry = enter;
-            face = positive ? faces[std::size_t(axis)].first : faces[std::size_t(axis)].second;
+            face = positive ? faces[static_cast<std::size_t>(axis)].first : faces[static_cast<std::size_t>(axis)].second;
         }
         exit = std::min(exit, leave);
         if (entry > exit) {
@@ -134,7 +134,7 @@ struct Traversal
 Traversal startTraversal(const QcVec3 &origin, const QcVec3 &dir)
 {
     Traversal t;
-    t.cell = {int(std::floor(origin.x)), int(std::floor(origin.y)), int(std::floor(origin.z))};
+    t.cell = {static_cast<int>(std::floor(origin.x)), static_cast<int>(std::floor(origin.y)), static_cast<int>(std::floor(origin.z))};
     t.stepX = dir.x > 0 ? 1 : (dir.x < 0 ? -1 : 0);
     t.stepY = dir.y > 0 ? 1 : (dir.y < 0 ? -1 : 0);
     t.stepZ = dir.z > 0 ? 1 : (dir.z < 0 ? -1 : 0);
@@ -161,7 +161,7 @@ bool isTarget(const QcBlockDefinition &definition, Targets targets)
 // The nearest of the block-local `boxes` of the block at `cell` that the ray hits.
 FaceHit nearestHit(const Ray &ray, const QList<QcAabb> &boxes, QcBlockPos cell, QcBlockFace face)
 {
-    const QcVec3 corner{double(cell.x), double(cell.y), double(cell.z)};
+    const QcVec3 corner{static_cast<double>(cell.x), static_cast<double>(cell.y), static_cast<double>(cell.z)};
     FaceHit nearest;
     for (const QcAabb &box : boxes) {
         const auto hit = intersectBoxFace(ray.origin, ray.dir, box.moved(corner), ray.maxDistance, face);
@@ -202,7 +202,7 @@ FaceHit nearestHit(const Ray &ray, const QList<QcAabb> &boxes, QcBlockPos cell, 
         return std::nullopt;
     }
 
-    const QcVec3 corner{double(belowPos.x), double(belowPos.y), double(belowPos.z)};
+    const QcVec3 corner{static_cast<double>(belowPos.x), static_cast<double>(belowPos.y), static_cast<double>(belowPos.z)};
     FaceHit nearest;
     for (const QcAabb &box : content.state(*below).collision) {
         if (box.max.y <= 1.0) {

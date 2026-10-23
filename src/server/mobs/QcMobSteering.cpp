@@ -24,7 +24,7 @@ double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
 
 float yawTowards(const QcVec3 &direction)
 {
-    return float(qRadiansToDegrees(std::atan2(direction.x, -direction.z)));
+    return static_cast<float>(qRadiansToDegrees(std::atan2(direction.x, -direction.z)));
 }
 
 namespace {

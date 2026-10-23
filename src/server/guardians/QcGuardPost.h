@@ -24,5 +24,5 @@ struct QcGuardPost
         const double dy = std::max({min.y - point.y, 0.0, point.y - (max.y + 1.0)});
         return std::max(std::hypot(dx, dz), dy);
     }
-    QcVec3 centre() const { return {(min.x + max.x + 1) / 2.0, double(min.y), (min.z + max.z + 1) / 2.0}; }
+    QcVec3 centre() const { return {(min.x + max.x + 1) / 2.0, static_cast<double>(min.y), (min.z + max.z + 1) / 2.0}; }
 };

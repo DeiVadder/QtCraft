@@ -52,7 +52,7 @@ QcColdEdges::Offset QcColdEdges::groundOffset(int x, int z) const
         const double smooth = 1.5 * noise.fractal2(x / groundScale, z / groundScale, 2);
         const double scatter = 2.0 * qcPositionRandom(m_seed, x, salt, z) - 1.0;
         const double shift = (1.0 - groundScatter) * smooth + groundScatter * scatter;
-        return std::clamp(int(std::lround(reach * shift)), -reach, reach);
+        return std::clamp(static_cast<int>(std::lround(reach * shift)), -reach, reach);
     };
     return {along(m_groundNoiseX, 2), along(m_groundNoiseZ, 3)};
 }

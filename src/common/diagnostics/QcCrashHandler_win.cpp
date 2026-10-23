@@ -49,8 +49,10 @@ struct Crash
 const void *instructionPointer(const CONTEXT *context)
 {
 #if defined(_M_X64)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): the register holds the faulting address
     return reinterpret_cast<const void *>(context->Rip);
 #elif defined(_M_ARM64)
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): the register holds the faulting address
     return reinterpret_cast<const void *>(context->Pc);
 #else
     Q_UNUSED(context);
@@ -76,7 +78,7 @@ void writeDump(const Crash &crash)
 void writeText(HANDLE file, const char *text)
 {
     DWORD written = 0;
-    WriteFile(file, text, DWORD(std::char_traits<char>::length(text)), &written, nullptr);
+    WriteFile(file, text, static_cast<DWORD>(std::char_traits<char>::length(text)), &written, nullptr);
 }
 
 // "module+0xoffset" of a code address.
@@ -85,9 +87,10 @@ void writeAddress(HANDLE file, const void *address)
     std::array<char, MAX_PATH> module{};
     HMODULE handle = nullptr;
     const DWORD flags = GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT;
-    if (GetModuleHandleExA(flags, static_cast<LPCSTR>(address), &handle) && GetModuleFileNameA(handle, module.data(), DWORD(module.size())) > 0) {
+    if (GetModuleHandleExA(flags, static_cast<LPCSTR>(address), &handle) && GetModuleFileNameA(handle, module.data(), static_cast<DWORD>(module.size())) > 0) {
         std::array<char, MAX_PATH + 64> line{};
         std::snprintf(line.data(), line.size(), "%s+0x%llx\n", module.data(),
+                      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): offset of the address in its module
                       static_cast<unsigned long long>(reinterpret_cast<const char *>(address) - reinterpret_cast<const char *>(handle)));
         writeText(file, line.data());
         return;
@@ -102,7 +105,7 @@ void writeStack(HANDLE file)
 {
     writeText(file, "stack (return addresses; the minidump has the full stacks):\n");
     std::array<void *, 62> frames{};
-    const USHORT count = CaptureStackBackTrace(0, DWORD(frames.size()), frames.data(), nullptr);
+    const USHORT count = CaptureStackBackTrace(0, static_cast<DWORD>(frames.size()), frames.data(), nullptr);
     for (USHORT i = 0; i < count; ++i) {
         writeAddress(file, frames[i]);
     }

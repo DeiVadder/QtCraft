@@ -217,7 +217,7 @@ QcItemStack *QcInventoryAccess::slotPtr(QcBlockPos pos, int slot)
         return container && slot < container->stacks.size() ? &container->stacks[slot] : nullptr;
     }
     QcBlockEntities::Machine *machine = m_state.machineRules().machineOf(*block) ? m_state.blockEntities().machine(pos) : nullptr;
-    return machine && slot < QcMachineRules::slotCount ? &machine->stacks[std::size_t(slot)] : nullptr;
+    return machine && slot < QcMachineRules::slotCount ? &machine->stacks[static_cast<std::size_t>(slot)] : nullptr;
 }
 
 bool QcInventoryAccess::take(QcBlockPos pos, int slot, int count)

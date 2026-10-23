@@ -100,22 +100,22 @@ bool isFlag(const QcContentRegistry &content, QcBlockId id, const QString &prope
 int QcSignalTable::horizontalIndex(QcBlockFace face)
 {
     const auto it = std::ranges::find(horizontal, face);
-    return it == horizontal.end() ? -1 : int(it - horizontal.begin());
+    return it == horizontal.end() ? -1 : static_cast<int>(it - horizontal.begin());
 }
 
 QcSignalTable::QcSignalTable(const QcContentRegistry &content)
     : m_content(content)
 {
-    const auto count = std::size_t(content.stateCount());
+    const auto count = static_cast<std::size_t>(content.stateCount());
     m_states.reserve(count);
     for (std::size_t id = 0; id < count; ++id) {
-        m_states.push_back(decode(content, QcBlockId(id)));
+        m_states.push_back(decode(content, static_cast<QcBlockId>(id)));
     }
 
     for (qsizetype type = 0; type < content.blocks().size(); ++type) {
         if (content.blocks()[type].signal.kind == QcSignalKind::Dust) {
-            if (const std::optional<DustLayout> layout = dustLayout(content, quint32(type))) {
-                m_dust.insert(quint32(type), *layout);
+            if (const std::optional<DustLayout> layout = dustLayout(content, static_cast<quint32>(type))) {
+                m_dust.insert(static_cast<quint32>(type), *layout);
             }
         }
     }
@@ -126,7 +126,7 @@ bool QcSignalTable::DustLayout::place(const QcBlockProperty &property, int strid
     if (property.name == u"power"_s) {
         powerStride = stride;
         for (int power = 0; power <= QcSignalDefinition::maxPower; ++power) {
-            powerValue[std::size_t(power)] = int(property.values.indexOf(QString::number(power)));
+            powerValue[static_cast<std::size_t>(power)] = static_cast<int>(property.values.indexOf(QString::number(power)));
         }
         return true;
     }
@@ -135,17 +135,17 @@ bool QcSignalTable::DustLayout::place(const QcBlockProperty &property, int strid
     if (side == sideNames().end()) {
         return false;
     }
-    const auto index = std::size_t(side - sideNames().begin());
+    const auto index = static_cast<std::size_t>(side - sideNames().begin());
     sideStride[index] = stride;
     for (const QcDustSide value : {QcDustSide::None, QcDustSide::Side, QcDustSide::Up}) {
-        sideValue[index][std::size_t(value)] = int(property.values.indexOf(sideName(value)));
+        sideValue[index][static_cast<std::size_t>(value)] = static_cast<int>(property.values.indexOf(sideName(value)));
     }
     return true;
 }
 
 std::optional<QcSignalTable::DustLayout> QcSignalTable::dustLayout(const QcContentRegistry &content, quint32 type)
 {
-    const QcBlockDefinition &block = content.blocks()[qsizetype(type)];
+    const QcBlockDefinition &block = content.blocks()[static_cast<qsizetype>(type)];
     DustLayout layout;
     layout.first = content.stateTable().firstState(type);
     int stride = 1;
@@ -153,7 +153,7 @@ std::optional<QcSignalTable::DustLayout> QcSignalTable::dustLayout(const QcConte
 
     for (const QcBlockProperty &property : block.properties) {
         found += layout.place(property, stride) ? 1 : 0;
-        stride *= int(property.values.size());
+        stride *= static_cast<int>(property.values.size());
     }
 
     // The parser made sure every value exists (QcSignalParser).
@@ -181,14 +181,14 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
                       || isFlag(content, id, u"sticky"_s) || isFlag(content, id, u"triggered"_s);
     state.on = signal.kind == QcSignalKind::Torch || signal.kind == QcSignalKind::Lamp ? signal.active : (flag || signal.kind == QcSignalKind::Constant);
     state.facing = faceNamed(content.property(id, block.property(u"attach"_s) ? u"attach"_s : u"facing"_s));
-    state.delay = quint8(std::clamp(content.property(id, u"delay"_s).toInt(), 1, 4));
+    state.delay = static_cast<quint8>(std::clamp(content.property(id, u"delay"_s).toInt(), 1, 4));
     state.locked = isFlag(content, id, u"locked"_s) || content.property(id, u"enabled"_s) == u"false"_s;
     state.subtract = content.property(id, u"mode"_s) == u"subtract"_s;
     state.strongPowersAbove = signal.strongPowersAbove;
 
     const bool counted = signal.kind == QcSignalKind::Target || signal.kind == QcSignalKind::Viewers;
     if (signal.kind == QcSignalKind::Dust || signal.kind == QcSignalKind::Comparator || counted) {
-        state.power = quint8(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
+        state.power = static_cast<quint8>(std::clamp(content.property(id, u"power"_s).toInt(), 0, QcSignalDefinition::maxPower));
     }
     if (counted) {
         state.on = state.power > 0;
@@ -198,7 +198,7 @@ QcSignalState QcSignalTable::decode(const QcContentRegistry &content, QcBlockId 
             state.sides[i] = sideNamed(content.property(id, sideNames()[i]));
         }
     } else if (state.on && emitsWhileOn(signal.kind)) {
-        state.power = quint8(signal.power);
+        state.power = static_cast<quint8>(signal.power);
     }
     return state;
 }
@@ -207,11 +207,11 @@ QcBlockId QcSignalTable::dustState(QcBlockId dust, int power, std::array<QcDustS
 {
     const auto layout = m_dust.constFind(m_content.state(dust).type);
     if (layout != m_dust.constEnd()) {
-        int index = layout->powerValue[std::size_t(std::clamp(power, 0, QcSignalDefinition::maxPower))] * layout->powerStride;
+        int index = layout->powerValue[static_cast<std::size_t>(std::clamp(power, 0, QcSignalDefinition::maxPower))] * layout->powerStride;
         for (std::size_t i = 0; i < sides.size(); ++i) {
-            index += layout->sideValue[i][std::size_t(sides[i])] * layout->sideStride[i];
+            index += layout->sideValue[i][static_cast<std::size_t>(sides[i])] * layout->sideStride[i];
         }
-        return layout->first + QcBlockId(index);
+        return layout->first + static_cast<QcBlockId>(index);
     }
 
     QcBlockId id = m_content.withProperty(dust, u"power"_s, QString::number(std::clamp(power, 0, QcSignalDefinition::maxPower)));

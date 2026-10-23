@@ -27,13 +27,15 @@ private:
     static void addBlockPos(QCryptographicHash &hash, QcBlockPos pos)
     {
         const std::array<qint32, 3> values{pos.x, pos.y, pos.z};
-        hash.addData(QByteArrayView(reinterpret_cast<const char *>(values.data()), qsizetype(sizeof(values))));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of a trivially copyable value for the hash
+        hash.addData(QByteArrayView(reinterpret_cast<const char *>(values.data()), static_cast<qsizetype>(sizeof(values))));
     }
 
     static void addInts(QCryptographicHash &hash, std::initializer_list<qint64> values)
     {
         for (const qint64 value : values) {
-            hash.addData(QByteArrayView(reinterpret_cast<const char *>(&value), qsizetype(sizeof(value))));
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of a trivially copyable value for the hash
+            hash.addData(QByteArrayView(reinterpret_cast<const char *>(&value), static_cast<qsizetype>(sizeof(value))));
         }
     }
 
@@ -119,7 +121,7 @@ private:
         }
         for (const QcVillagePlan::Mob &mob : plan.mobs) {
             addString(hash, mob.mob);
-            addInts(hash, {qint64(mob.at.x * 1024.0), qint64(mob.at.y * 1024.0), qint64(mob.at.z * 1024.0)});
+            addInts(hash, {static_cast<qint64>(mob.at.x * 1024.0), static_cast<qint64>(mob.at.y * 1024.0), static_cast<qint64>(mob.at.z * 1024.0)});
         }
     }
 
@@ -127,7 +129,7 @@ private:
     {
         // The region packed as before the ids had a tag (QcVillagePlan::regionId), so the hashes
         // stay those of the same plans.
-        const qint64 region = (qint64(QcVillagePlan::regionX(plan.id)) << 32) | quint32(QcVillagePlan::regionZ(plan.id));
+        const qint64 region = (static_cast<qint64>(QcVillagePlan::regionX(plan.id)) << 32) | static_cast<quint32>(QcVillagePlan::regionZ(plan.id));
         addInts(hash, {region, plan.minX, plan.minZ, plan.maxX, plan.maxZ, plan.roadLength, plan.winding ? 1 : 0});
         addString(hash, plan.style);
         addString(hash, plan.layout);
@@ -146,7 +148,7 @@ private:
     std::pair<QByteArray, int> hashOf(qint64 seed) const
     {
         QMap<QString, int> kinds;
-        const QcTerrainGenerator generator(m_content, quint64(seed));
+        const QcTerrainGenerator generator(m_content, static_cast<quint64>(seed));
         QCryptographicHash hash(QCryptographicHash::Sha256);
         int villages = 0;
         for (int rz = -rings; rz <= rings; ++rz) {
@@ -172,9 +174,9 @@ private slots:
         QTest::addColumn<qint64>("seed");
         QTest::addColumn<QByteArray>("expected");
         QTest::addColumn<int>("expectedVillages");
-        QTest::newRow("seed 42") << qint64(42) << QByteArray("10bed1ee0b8c24ac6c271c9147e9992b08d457ebd6e0480ea567b44723d1995d") << 166;
-        QTest::newRow("seed 7") << qint64(7) << QByteArray("44229643ab82539d853c3632aabb26a662053285d782cc2e69c7fb5d01f5d345") << 166;
-        QTest::newRow("seed 20261017") << qint64(20261017) << QByteArray("9b0b7f57ceec919a7c13353f70b746c883142dbc29d21b530ba4e2a4d2562805") << 169;
+        QTest::newRow("seed 42") << qint64{42} << QByteArray("10bed1ee0b8c24ac6c271c9147e9992b08d457ebd6e0480ea567b44723d1995d") << 166;
+        QTest::newRow("seed 7") << qint64{7} << QByteArray("44229643ab82539d853c3632aabb26a662053285d782cc2e69c7fb5d01f5d345") << 166;
+        QTest::newRow("seed 20261017") << qint64{20261017} << QByteArray("9b0b7f57ceec919a7c13353f70b746c883142dbc29d21b530ba4e2a4d2562805") << 169;
     }
 
     void plansStayTheSame()

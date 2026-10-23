@@ -212,7 +212,8 @@ private slots:
             }
         }
         QCOMPARE(settlers.size(), 2);
-        const QcBlockPos centre{int(std::floor(settlers.first().x)), int(std::floor(settlers.first().y)), int(std::floor(settlers.first().z))};
+        const QcBlockPos centre{static_cast<int>(std::floor(settlers.first().x)), static_cast<int>(std::floor(settlers.first().y)),
+            static_cast<int>(std::floor(settlers.first().z))};
         loadAround(*server, centre.offset(-32, 0, -32), centre.offset(32, 0, 32));
         const int ripe = ripeWheat(*server, centre);
         QVERIFY(ripe > 0);

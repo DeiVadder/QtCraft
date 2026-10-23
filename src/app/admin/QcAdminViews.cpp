@@ -36,7 +36,7 @@ QVariantList phases(const QcMsg::AdminStatus &status)
 {
     QList<std::pair<float, const char *>> timed;
     for (int phase = 0; phase < QcTickPhases::count; ++phase) {
-        timed.append({status.phaseMeanMs[std::size_t(phase)], QcTickPhases::ids[std::size_t(phase)]});
+        timed.append({status.phaseMeanMs[static_cast<std::size_t>(phase)], QcTickPhases::ids[static_cast<std::size_t>(phase)]});
     }
     std::ranges::stable_sort(timed, std::ranges::greater{}, &std::pair<float, const char *>::first);
 
@@ -54,7 +54,7 @@ QVariantList series(const QList<QcMsg::AdminSample> &samples, Value value)
     QVariantList values;
     values.reserve(samples.size());
     for (const QcMsg::AdminSample &sample : samples) {
-        values.append(qreal(value(sample)));
+        values.append(static_cast<qreal>(value(sample)));
     }
     return values;
 }
@@ -123,9 +123,9 @@ QVariantMap status(const QcMsg::AdminStatus &status)
             {u"peakMemory"_s, status.peakMemoryMb},
             {u"sent"_s, sample.sentKbPerSecond},
             {u"received"_s, sample.receivedKbPerSecond},
-            {u"uptimeMs"_s, qreal(status.uptimeMs)},
-            {u"tick"_s, qreal(status.tick)},
-            {u"skipped"_s, qreal(status.skippedTicks)},
+            {u"uptimeMs"_s, static_cast<qreal>(status.uptimeMs)},
+            {u"tick"_s, static_cast<qreal>(status.tick)},
+            {u"skipped"_s, static_cast<qreal>(status.skippedTicks)},
             {u"world"_s, status.worldName},
             {u"seed"_s, QString::number(status.seed)},
             {u"generator"_s, status.generator},
@@ -157,12 +157,12 @@ QVariantList players(const QList<QcMsg::AdminPlayers::Entry> &players)
     for (const QcMsg::AdminPlayers::Entry &entry : std::as_const(byName)) {
         shown.append(QVariantMap{{u"name"_s, entry.name},
                                  {u"ping"_s, entry.pingMs},
-                                 {u"gameMode"_s, int(entry.gameMode)},
+                                 {u"gameMode"_s, static_cast<int>(entry.gameMode)},
                                  {u"modeName"_s, modeName(entry.gameMode)},
                                  {u"operator"_s, entry.operatorRights},
                                  {u"local"_s, entry.local},
                                  {u"address"_s, entry.address},
-                                 {u"connectedMs"_s, qreal(entry.connectedMs)}});
+                                 {u"connectedMs"_s, static_cast<qreal>(entry.connectedMs)}});
     }
     return shown;
 }
@@ -173,7 +173,7 @@ QVariantMap lists(const QcMsg::AdminLists &lists)
     std::ranges::sort(bans, [](const auto &a, const auto &b) { return a.name.compare(b.name, Qt::CaseInsensitive) < 0; });
     QVariantList banned;
     for (const QcMsg::AdminLists::Ban &ban : std::as_const(bans)) {
-        banned.append(QVariantMap{{u"name"_s, ban.name}, {u"reason"_s, ban.reason}, {u"by"_s, ban.by}, {u"sinceMs"_s, qreal(ban.sinceMs)}});
+        banned.append(QVariantMap{{u"name"_s, ban.name}, {u"reason"_s, ban.reason}, {u"by"_s, ban.by}, {u"sinceMs"_s, static_cast<qreal>(ban.sinceMs)}});
     }
     return {{u"whitelistEnabled"_s, lists.whitelistEnabled},
             {u"operators"_s, sorted(lists.operators)},
@@ -231,7 +231,7 @@ QList<QcAdminLineModel::Line> chatLines(const QList<QcMsg::AdminChatLine> &chat)
     QList<QcAdminLineModel::Line> lines;
     lines.reserve(chat.size());
     for (const QcMsg::AdminChatLine &line : chat) {
-        lines.append({line.timeMs, int(QcMsg::AdminLogLine::Level::Info), line.sender, QcChatText::display(line.message)});
+        lines.append({line.timeMs, static_cast<int>(QcMsg::AdminLogLine::Level::Info), line.sender, QcChatText::display(line.message)});
     }
     return lines;
 }
@@ -241,7 +241,7 @@ QList<QcAdminLineModel::Line> logLines(const QList<QcMsg::AdminLogLine> &log)
     QList<QcAdminLineModel::Line> lines;
     lines.reserve(log.size());
     for (const QcMsg::AdminLogLine &line : log) {
-        lines.append({line.timeMs, int(line.level), line.category, line.text});
+        lines.append({line.timeMs, static_cast<int>(line.level), line.category, line.text});
     }
     return lines;
 }

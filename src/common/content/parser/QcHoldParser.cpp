@@ -145,7 +145,7 @@ QcResult<QcHoldDefaults> parseHoldDefaults(const QJsonObject &json, const QStrin
                 continue;
             }
             categories.nestedObject(key, [&](const QJsonObject &entry, QcJsonFieldReader &nested) {
-                defaults.categories[std::size_t(*category)] = displayOf(entry, nested, false);
+                defaults.categories[static_cast<std::size_t>(*category)] = displayOf(entry, nested, false);
             });
         }
     });

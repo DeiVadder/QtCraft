@@ -17,7 +17,7 @@ QList<QcHandbookWeb::File> iconSheet(const QHash<QString, QImage> &icons)
 {
     QStringList names = icons.keys();
     std::ranges::sort(names);
-    const int rows = std::max<int>(1, int((names.size() + sheetColumns - 1) / sheetColumns));
+    const int rows = std::max<int>(1, static_cast<int>((names.size() + sheetColumns - 1) / sheetColumns));
     QImage sheet(sheetColumns * iconSize, rows * iconSize, QImage::Format_ARGB32);
     sheet.fill(Qt::transparent);
 

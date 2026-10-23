@@ -154,7 +154,7 @@ QcHandbookEntry armourTable(const QcHandbookContext &context)
                                    .arg(text.label(u"slot."_s + qcEquipmentSlotName(item.armour->slot)))
                                    .arg(item.armour->points)
                                    .arg(item.durability);
-        sets[item.armour->set].append({int(item.armour->slot), context.links.itemLink(item.name, detail)});
+        sets[item.armour->set].append({static_cast<int>(item.armour->slot), context.links.itemLink(item.name, detail)});
     }
 
     for (const QString &set : std::as_const(order)) {

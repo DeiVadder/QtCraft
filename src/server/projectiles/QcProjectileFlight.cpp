@@ -100,8 +100,8 @@ void turnAlong(QcProjectile &projectile)
     if (horizontal <= 0.0 && v.y == 0.0) {
         return;
     }
-    projectile.yaw = float(qRadiansToDegrees(std::atan2(v.x, -v.z)));
-    projectile.pitch = float(qRadiansToDegrees(std::atan2(v.y, horizontal)));
+    projectile.yaw = static_cast<float>(qRadiansToDegrees(std::atan2(v.x, -v.z)));
+    projectile.pitch = static_cast<float>(qRadiansToDegrees(std::atan2(v.y, horizontal)));
 }
 
 namespace {

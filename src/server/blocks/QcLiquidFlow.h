@@ -26,7 +26,7 @@ class QcLiquidFlow
 public:
     // Flow steps per server tick at most by default (QcServerLimits::liquidStepsPerTick); the rest
     // waits for the next tick.
-    static constexpr int maxStepsPerTick = int(QcServerLimits{}.liquidStepsPerTick);
+    static constexpr int maxStepsPerTick = static_cast<int>(QcServerLimits{}.liquidStepsPerTick);
     // Planned steps at most by default (QcServerLimits::liquidPlannedSteps); further plans are
     // dropped (the cell flows again when touched).
     static constexpr qsizetype maxPlanned = QcServerLimits{}.liquidPlannedSteps;

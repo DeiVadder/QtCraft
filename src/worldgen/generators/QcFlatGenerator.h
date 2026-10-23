@@ -20,7 +20,7 @@ public:
     QcFlatGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &preset);
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
-    QcBlockPos spawnPoint() const override { return {0, int(m_layers.size()), 0}; }
+    QcBlockPos spawnPoint() const override { return {0, static_cast<int>(m_layers.size()), 0}; }
     bool isNaturalGround(QcBlockId block) const override { return !m_layers.isEmpty() && block == m_layers.constLast(); }
     QcWorldSetup setup() const override;
 

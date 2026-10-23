@@ -147,7 +147,7 @@ bool matchesShapeless(const QcContentRegistry &content, const QcRecipeDefinition
 {
     // A stack with contents (a filled backpack) is no ingredient: crafting would lose what it holds
     // (decision E-832).
-    if (grid.size() < qsizetype(size) * size || std::ranges::any_of(grid, [](const QcItemStack &cell) { return cell.hasContents(); })) {
+    if (grid.size() < static_cast<qsizetype>(size) * size || std::ranges::any_of(grid, [](const QcItemStack &cell) { return cell.hasContents(); })) {
         return std::nullopt;
     }
 

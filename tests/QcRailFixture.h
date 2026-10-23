@@ -24,7 +24,7 @@ protected:
     static QcBlockFace turnedSide(QcBlockFace side, int turns)
     {
         const auto index = std::ranges::find(sides, side) - sides.begin();
-        return sides[std::size_t((index + ((turns % 4) + 4)) % 4)];
+        return sides[static_cast<std::size_t>((index + ((turns % 4) + 4)) % 4)];
     }
 
     QcBlockId railState() const { return id("qtcraft:rail"); }

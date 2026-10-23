@@ -16,7 +16,7 @@ namespace {
 // A position in half pixels from the map's middle, kept on the map's edge.
 qint8 clampedHalfPixel(double value)
 {
-    return qint8(std::clamp(int(std::floor(value)), -128, 127));
+    return static_cast<qint8>(std::clamp(static_cast<int>(std::floor(value)), -128, 127));
 }
 
 } // namespace
@@ -51,7 +51,8 @@ bool QcServerMaps::useHeld(QcServerClient &client)
         return true;
     }
     const QcVec3 &position = client.motion.position;
-    const std::optional<quint32> id = m_state.maps().create(QcMapData::around(int(std::floor(position.x)), int(std::floor(position.z)), 0));
+    const std::optional<quint32> id = m_state.maps().create(QcMapData::around(static_cast<int>(std::floor(position.x)),
+        static_cast<int>(std::floor(position.z)), 0));
     if (!id) {
         return true;
     }
@@ -214,7 +215,7 @@ int QcServerMaps::sendTo(QcServerClient &client, quint32 id, int budget, const F
         return 0;
     }
     const QcMapData &map = *maps.find(id);
-    QcMsg::MapUpdate update{id, quint8(map.scale()), map.centre(), area, map.pixelsIn(area), markersFor(client, id, map, framed)};
+    QcMsg::MapUpdate update{id, static_cast<quint8>(map.scale()), map.centre(), area, map.pixelsIn(area), markersFor(client, id, map, framed)};
     client.connection->send(update);
     return area.width() * area.height();
 }
@@ -252,8 +253,8 @@ QList<QcMapMarker> QcServerMaps::markersFor(const QcServerClient &receiver, quin
         }
         const QPointF offset = map.offsetOf(client->motion.position.x, client->motion.position.z);
         const bool onMap = offset.x() >= -128.0 && offset.x() < 128.0 && offset.y() >= -128.0 && offset.y() < 128.0;
-        const int rotation = int(std::lround(double(client->yaw) / 22.5)) % 16;
-        markers.append({clampedHalfPixel(offset.x()), clampedHalfPixel(offset.y()), quint8((rotation + 16) % 16), onMap, own});
+        const int rotation = static_cast<int>(std::lround(static_cast<double>(client->yaw) / 22.5)) % 16;
+        markers.append({clampedHalfPixel(offset.x()), clampedHalfPixel(offset.y()), static_cast<quint8>((rotation + 16) % 16), onMap, own});
     }
     return markers;
 }
@@ -287,7 +288,7 @@ QcMapMarker QcServerMaps::frameMarker(const QcMapData &map, const QcHanging &han
         rotation = (8 - hanging.rotation % 4 * 4 + 16) % 16;
         break;
     }
-    QcMapMarker marker{clampedHalfPixel(offset.x()), clampedHalfPixel(offset.y()), quint8(rotation), onMap, false};
+    QcMapMarker marker{clampedHalfPixel(offset.x()), clampedHalfPixel(offset.y()), static_cast<quint8>(rotation), onMap, false};
     marker.frame = true;
     return marker;
 }

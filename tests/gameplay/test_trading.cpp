@@ -89,7 +89,7 @@ private:
 
         const quint32 entity = m_server->entities().newId();
         const int type = *m_content->mobIndex(kind);
-        m_server->mobs().spawn(type, QcVec3{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 1.5}, entity);
+        m_server->mobs().spawn(type, QcVec3{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 1.5}, entity);
         *villager(entity)->villager = QcVillagerHomes::settle(*village(), foot.offset(0, 0, -1), villager(entity)->uid, m_content->villagerSettingsOf(type), 7);
         ticks(30);
         return entity;
@@ -103,7 +103,7 @@ private:
     // `dx` blocks east of the player.
     void holdNear(quint32 entity, int dx = 1)
     {
-        villager(entity)->motion.position = QcVec3{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + 0.5};
+        villager(entity)->motion.position = QcVec3{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         villager(entity)->motion.velocity = {};
     }
 
@@ -133,7 +133,7 @@ private:
         for (qsizetype i = 0; m_client->trade && i < m_client->trade->offers.size(); ++i) {
             const QcMsg::TradeOffer &offer = m_client->trade->offers[i];
             if (offer.costs.constFirst().item == item(cost) && offer.result.item == item(result)) {
-                return int(i);
+                return static_cast<int>(i);
             }
         }
         return -1;
@@ -590,7 +590,7 @@ private slots:
                 }
             }
         }
-        villager(farmer)->motion.position = QcVec3{feet.x + 0.5, double(feet.y), feet.z + 0.5};
+        villager(farmer)->motion.position = QcVec3{feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5};
         villager(farmer)->motion.velocity = {};
         const double before = villager(farmer)->health;
         ticks(3 * QcEnvironmentDamage::suffocationIntervalTicks);

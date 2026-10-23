@@ -167,7 +167,7 @@ QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
             for (const QcBlockPos &cell : crops) {
                 plan->fields.insert(pieceOrigin.offset(cell.x, cell.y, cell.z));
             }
-            area->labels.append({{x + piece->sizeX() / 2.0, double(piece->sizeY()) + 1.5, road + 0.5}, titleOf(*piece),
+            area->labels.append({{x + piece->sizeX() / 2.0, static_cast<double>(piece->sizeY()) + 1.5, road + 0.5}, titleOf(*piece),
                                  style->name.mid(style->name.indexOf(u':') + 1), false});
             x += piece->sizeX() + pieceGap;
         }

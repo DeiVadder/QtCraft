@@ -18,7 +18,7 @@ const QcVillageStyle::Crop &chooseCrop(const QList<QcVillageStyle::Crop> &crops,
     for (const QcVillageStyle::Crop &crop : crops) {
         total += crop.weight;
     }
-    int pick = int(random * total);
+    int pick = static_cast<int>(random * total);
     for (const QcVillageStyle::Crop &crop : crops) {
         if (pick < crop.weight) {
             return crop;
@@ -35,7 +35,7 @@ QcBlockId stageOf(const QcVillageStyle::Crop &crop, double random)
         return crop.stages[ripe];
     }
     const double growing = (random - ripeChance) / (1.0 - ripeChance);
-    return crop.stages[std::min(ripe - 1, qsizetype(growing * double(ripe)))];
+    return crop.stages[std::min(ripe - 1, static_cast<qsizetype>(growing * static_cast<double>(ripe)))];
 }
 
 } // namespace

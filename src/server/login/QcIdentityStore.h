@@ -20,7 +20,7 @@ public:
     static constexpr QStringView fileName = u"identities.json";
     static constexpr int formatVersion = 1;
     static constexpr qsizetype maxEntries = 65536;
-    static constexpr qint64 maxFileBytes = qint64(16) * 1024 * 1024;
+    static constexpr qint64 maxFileBytes = qint64{16} * 1024 * 1024;
 
     struct Identity
     {

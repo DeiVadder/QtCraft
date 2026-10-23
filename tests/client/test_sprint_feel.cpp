@@ -17,7 +17,7 @@ private slots:
     void fieldOfViewWidensSmoothly()
     {
         const auto after = [](double seconds, double frameRate, QcFovEffect::Movement movement, QcFovEffect &effect) {
-            const int frames = int(std::lround(seconds * frameRate));
+            const int frames = static_cast<int>(std::lround(seconds * frameRate));
             for (int i = 0; i < frames; ++i) {
                 effect.advance(movement, 1.0 / frameRate);
             }

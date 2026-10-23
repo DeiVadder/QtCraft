@@ -21,11 +21,11 @@ template<typename T>
 QcClientAdmin::Refusal refusalOf(const QcMsg::AdminResult &result)
 {
     using Wire = QcMsg::AdminResult::Refusal;
-    static_assert(int(Wire::TooSoon) == int(QcClientAdmin::Refusal::TooSoon), "the client's reasons follow the protocol's");
+    static_assert(static_cast<int>(Wire::TooSoon) == static_cast<int>(QcClientAdmin::Refusal::TooSoon), "the client's reasons follow the protocol's");
     if (result.ok) {
         return QcClientAdmin::Refusal::None;
     }
-    return result.refusal == Wire::None ? QcClientAdmin::Refusal::Arguments : QcClientAdmin::Refusal(result.refusal);
+    return result.refusal == Wire::None ? QcClientAdmin::Refusal::Arguments : static_cast<QcClientAdmin::Refusal>(result.refusal);
 }
 
 } // namespace
@@ -86,14 +86,14 @@ void QcClientAdmin::setOperatorRights(bool rights)
 void QcClientAdmin::sendFollow()
 {
     if (m_send) {
-        m_send(QcMsg::AdminSubscribe{m_topics, quint8(m_logLevel)});
+        m_send(QcMsg::AdminSubscribe{m_topics, static_cast<quint8>(m_logLevel)});
     }
 }
 
 quint32 QcClientAdmin::request(Kind kind, const QStringList &arguments)
 {
     if (!m_welcomed || !m_send) {
-        qCWarning(lcSession) << "Admin request" << int(kind) << "not sent: no server has welcomed the session";
+        qCWarning(lcSession) << "Admin request" << static_cast<int>(kind) << "not sent: no server has welcomed the session";
         return 0;
     }
     const quint32 id = m_nextId++;
@@ -171,7 +171,7 @@ bool QcClientAdmin::receiveReport(const QcMessage &message)
             ++m_chatArrivals.replacements;
         }
         m_chat = appendedBounded(std::move(m_chat), chat->lines, chatLimit);
-        m_chatArrivals.total += quint64(chat->lines.size());
+        m_chatArrivals.total += static_cast<quint64>(chat->lines.size());
         emit chatReceived();
     } else if (const auto *catalogue = std::get_if<QcMsg::AdminCatalogue>(&message)) {
         m_catalogue = *catalogue;
@@ -188,7 +188,7 @@ bool QcClientAdmin::receiveReport(const QcMessage &message)
             ++m_logArrivals.replacements;
         }
         m_log = appendedBounded(std::move(m_log), log->lines, logLimit);
-        m_logArrivals.total += quint64(log->lines.size());
+        m_logArrivals.total += static_cast<quint64>(log->lines.size());
         emit logReceived();
     } else {
         return false;

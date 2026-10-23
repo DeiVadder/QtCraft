@@ -99,7 +99,7 @@ void applySceneOptions(QcGameController &game, const QcAppOptions &options)
     }
     // Both were checked by debugOptionsError().
     if (const std::optional<QcDebugOptions::Level> level = QcDebugOptions::levelFromName(options.debugDisplay.value_or(QString()))) {
-        game.settings()->debug()->setLevel(int(*level));
+        game.settings()->debug()->setLevel(static_cast<int>(*level));
     }
     const QStringList visuals = options.debugShow.value_or(QString()).split(u',', Qt::SkipEmptyParts);
     for (const QString &name : visuals) {

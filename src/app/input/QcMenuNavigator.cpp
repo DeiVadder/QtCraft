@@ -136,7 +136,7 @@ QQuickItem *QcMenuNavigator::currentScope() const
 
 QString QcMenuNavigator::commandName(Command command)
 {
-    QString name = QString::fromLatin1(QMetaEnum::fromType<Command>().valueToKey(int(command)));
+    QString name = QString::fromLatin1(QMetaEnum::fromType<Command>().valueToKey(static_cast<int>(command)));
     if (!name.isEmpty()) {
         name[0] = name[0].toLower();
     }
@@ -346,7 +346,7 @@ void QcMenuNavigator::click(QQuickItem *item, Qt::MouseButton button, Qt::Keyboa
 {
     ensureVisible(item);
     const QPointF centre = QcFocusCandidates::sceneRect(item).center();
-    m_timestamp = std::max(m_timestamp, ulong(m_clock.elapsed())) + pressSpacingMs;
+    m_timestamp = std::max(m_timestamp, static_cast<ulong>(m_clock.elapsed())) + pressSpacingMs;
     sendMouse(centre, Qt::NoButton, Qt::NoButton, QEvent::MouseMove, modifiers);
     sendMouse(centre, button, button, QEvent::MouseButtonPress, modifiers);
     sendMouse(centre, Qt::NoButton, button, QEvent::MouseButtonRelease, modifiers);
@@ -364,8 +364,8 @@ void QcMenuNavigator::sendMouse(QPointF scenePosition, Qt::MouseButtons buttons,
         return;
     }
 
-    const QPointF position(std::clamp(scenePosition.x(), 0.0, double(m_window->width() - 1)),
-                           std::clamp(scenePosition.y(), 0.0, double(m_window->height() - 1)));
+    const QPointF position(std::clamp(scenePosition.x(), 0.0, static_cast<double>(m_window->width() - 1)),
+                           std::clamp(scenePosition.y(), 0.0, static_cast<double>(m_window->height() - 1)));
     // The platform's input path takes positions in device pixels (QT_SCALE_FACTOR, high DPI).
     const QPointF native = QHighDpi::toNativeLocalPosition(position, m_window.data());
     const QPointF nativeGlobal = QHighDpi::toNativeGlobalPosition(m_window->mapToGlobal(position), m_window.data());
@@ -377,7 +377,7 @@ void QcMenuNavigator::sendMouse(QPointF scenePosition, Qt::MouseButtons buttons,
 
 ulong QcMenuNavigator::nextTimestamp()
 {
-    m_timestamp = std::max(m_timestamp + 1, ulong(m_clock.elapsed()));
+    m_timestamp = std::max(m_timestamp + 1, static_cast<ulong>(m_clock.elapsed()));
     return m_timestamp;
 }
 
@@ -408,7 +408,7 @@ void QcMenuNavigator::scroll(float pixels)
         flickable = findShown(scope, "QQuickFlickable");
     }
     if (flickable) {
-        scrollBy(flickable, double(pixels), true);
+        scrollBy(flickable, static_cast<double>(pixels), true);
         keepFocusInView(flickable);
     }
 }

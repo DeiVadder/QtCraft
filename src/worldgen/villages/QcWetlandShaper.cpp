@@ -34,7 +34,7 @@ double QcWetlandShaper::distanceToWet(const QcVillagePlan::Wetland &wetland, int
     for (const QcVillagePlan::Area &area : wetland.wet) {
         const int dx = std::max({0, area.x0 - x, x - area.x1});
         const int dz = std::max({0, area.z0 - z, z - area.z1});
-        nearest = std::min(nearest, std::hypot(double(dx), double(dz)));
+        nearest = std::min(nearest, std::hypot(static_cast<double>(dx), static_cast<double>(dz)));
         if (nearest == 0.0) {
             break;
         }
@@ -78,7 +78,7 @@ int QcWetlandShaper::levelAt(const QcVillagePlan &plan, int x, int z, int ground
         return ground;
     }
     const int waterSurface = m_terrain.seaLevel() - 1;
-    return int(std::lround(std::clamp(double(waterSurface), ground - freedom, ground + freedom)));
+    return static_cast<int>(std::lround(std::clamp(static_cast<double>(waterSurface), ground - freedom, ground + freedom)));
 }
 
 bool QcWetlandShaper::poolFits(const QcVillagePlan &plan, int x, int z) const

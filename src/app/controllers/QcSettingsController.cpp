@@ -13,8 +13,10 @@ using namespace Qt::StringLiterals;
 namespace {
 
 using CameraMode = QcSettingsController::CameraMode;
-static_assert(int(CameraMode::FirstPerson) == int(QcCameraMode::FirstPerson) && int(CameraMode::Behind) == int(QcCameraMode::Behind)
-                  && int(CameraMode::Front) == int(QcCameraMode::Front) && int(CameraMode::Side) == int(QcCameraMode::Side),
+static_assert(static_cast<int>(CameraMode::FirstPerson) == static_cast<int>(QcCameraMode::FirstPerson)
+                  && static_cast<int>(CameraMode::Behind) == static_cast<int>(QcCameraMode::Behind)
+                  && static_cast<int>(CameraMode::Front) == static_cast<int>(QcCameraMode::Front)
+                  && static_cast<int>(CameraMode::Side) == static_cast<int>(QcCameraMode::Side),
               "QcSettingsController::CameraMode follows QcCameraMode");
 
 // A value from QML or the command line outside the setting's range is used clamped, with a
@@ -74,7 +76,7 @@ void QcSettingsController::loadSettings()
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
     m_uiScale = m_storedSettings.uiScale;
-    m_textureFiltering = TextureFiltering(m_storedSettings.textureFiltering);
+    m_textureFiltering = static_cast<TextureFiltering>(m_storedSettings.textureFiltering);
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings.audio);
@@ -104,7 +106,7 @@ void QcSettingsController::saveSettings()
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.uiScale = m_uiScale;
-    settings.textureFiltering = int(m_textureFiltering);
+    settings.textureFiltering = static_cast<int>(m_textureFiltering);
     settings.appearance = m_character->appearance();
     settings.characterPresets = m_character->savedPresets();
     settings.audio = m_audio->volumes();
@@ -206,10 +208,10 @@ void QcSettingsController::requestLanguage(const QString &requested)
 void QcSettingsController::setCameraMode(CameraMode mode)
 {
     if (mode < CameraMode::FirstPerson || mode > CameraMode::Side) {
-        qCWarning(lcGame) << "Ignoring unknown camera mode" << int(mode);
+        qCWarning(lcGame) << "Ignoring unknown camera mode" << static_cast<int>(mode);
         return;
     }
-    setCameraModeValue(QcCameraMode(mode));
+    setCameraModeValue(static_cast<QcCameraMode>(mode));
 }
 
 void QcSettingsController::setCameraModeValue(QcCameraMode mode)
@@ -229,7 +231,7 @@ void QcSettingsController::setCameraModeValue(QcCameraMode mode)
 void QcSettingsController::setUiScale(QcUiScaling::Step step)
 {
     if (!QcUiScaling::known(step)) {
-        qCWarning(lcGame) << "Ignoring unknown UI scale" << int(step);
+        qCWarning(lcGame) << "Ignoring unknown UI scale" << static_cast<int>(step);
         return;
     }
     // The same step again changes nothing (the screen's box sets it on every choice).
@@ -243,8 +245,8 @@ void QcSettingsController::setUiScale(QcUiScaling::Step step)
 
 void QcSettingsController::setTextureFiltering(TextureFiltering filtering)
 {
-    if (!QcGameSettings::isTextureFiltering(int(filtering))) {
-        qCWarning(lcGame) << "Ignoring unknown texture filtering" << int(filtering);
+    if (!QcGameSettings::isTextureFiltering(static_cast<int>(filtering))) {
+        qCWarning(lcGame) << "Ignoring unknown texture filtering" << static_cast<int>(filtering);
         return;
     }
     // The same choice again changes nothing (the screen's box sets it on every choice).

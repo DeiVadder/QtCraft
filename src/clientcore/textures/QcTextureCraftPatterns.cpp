@@ -65,7 +65,7 @@ QColor paintBookshelf(const QcTextureSpec &spec, int x, int y, QColor color)
     // Book spines in changing colours and heights; a gap here and there.
     const int row = y < 7 ? 0 : 1;
     const quint32 book = hashPixel(spec.seed + 81, x / 2, row);
-    const int top = row == 0 ? 2 + int(book % 3) : 9 + int(book % 3);
+    const int top = row == 0 ? 2 + static_cast<int>(book % 3) : 9 + static_cast<int>(book % 3);
     if (book % 7 == 0 || y < top) {
         return scaled(spec.primary, 0.45);
     }
@@ -300,8 +300,8 @@ QColor paintRawBlock(const QcTextureSpec &spec, int x, int y, QColor color)
     for (int cy = -1; cy <= cells; ++cy) {
         for (int cx = -1; cx <= cells; ++cx) {
             const quint32 jitter = hashPixel(spec.seed + 11, (cx + cells) % cells, (cy + cells) % cells);
-            const double px = cx * cell + 0.5 + double(jitter % cell);
-            const double py = cy * cell + 0.5 + double((jitter / cell) % cell);
+            const double px = cx * cell + 0.5 + static_cast<double>(jitter % cell);
+            const double py = cy * cell + 0.5 + static_cast<double>((jitter / cell) % cell);
             const double distance = std::hypot(x - px, y - py);
             second = std::min(second, std::max(first, distance));
             first = std::min(first, distance);

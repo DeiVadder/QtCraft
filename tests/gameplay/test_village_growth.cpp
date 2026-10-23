@@ -179,7 +179,7 @@ private:
         return left;
     }
 
-    static QcVec3 above(QcBlockPos ground) { return {ground.x + 0.5, double(ground.y + 1), ground.z + 0.5}; }
+    static QcVec3 above(QcBlockPos ground) { return {ground.x + 0.5, static_cast<double>(ground.y + 1), ground.z + 0.5}; }
 
     // A free spot on the fixture's ground well away from every village.
     static QcBlockPos farAway(const World &world)
@@ -357,7 +357,7 @@ private slots:
         lifeCheck(world);
         QcVillage &village = *world.villages().find(id);
         QVERIFY(world.mobs->population().claimsReconciled(id));
-        const int counted = int(villagersOf(world, id).size());
+        const int counted = static_cast<int>(villagersOf(world, id).size());
         QCOMPARE(village.population, counted);
 
         // Its chunk comes back: its claims lapsed, the village does not count it, so it is homeless

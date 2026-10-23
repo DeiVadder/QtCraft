@@ -121,7 +121,7 @@ private:
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
-        m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        m_feet = {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
         for (int cx = -2; cx <= 2; ++cx) {
             for (int cz = -2; cz <= 2; ++cz) {
                 m_server->world().loadChunk({m_feet.chunk().x + cx, m_feet.chunk().z + cz});
@@ -216,7 +216,7 @@ private slots:
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
 
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pit.x + 0.5, double(pit.y - 1), pit.z + 0.5}, 500);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
         ticks(1);
         m_client->sounds.clear();
         m_client->connection.send(QcMsg::AttackEntity{pig});
@@ -249,7 +249,7 @@ private slots:
             m_server->world().setBlock(hole, qcAirBlockId);
             m_server->world().setBlock(hole.offset(0, -1, 0), qcAirBlockId);
             m_server->world().setBlock(hole.offset(0, -2, 0), id("qtcraft:stone"));
-            m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {hole.x + 0.5, double(hole.y - 1), hole.z + 0.5}, 600 + i);
+            m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {hole.x + 0.5, static_cast<double>(hole.y - 1), hole.z + 0.5}, 600 + i);
         }
 
         m_client->sounds.clear();

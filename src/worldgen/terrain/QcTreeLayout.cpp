@@ -69,7 +69,7 @@ void QcTreeLayout::hangVines(const QcTreeShape::Params &params, quint64 seed) co
     for (const auto &[holder, chance] : m_holders) {
         for (std::size_t side = 0; side < sides.size(); ++side) {
             const QcBlockPos pos = holder.offset(sides[side].first, 0, sides[side].second);
-            if (m_occupied.contains(pos) || qcPositionRandom(vineSeed, pos.x * 4 + int(side), pos.y, pos.z) >= chance) {
+            if (m_occupied.contains(pos) || qcPositionRandom(vineSeed, pos.x * 4 + static_cast<int>(side), pos.y, pos.z) >= chance) {
                 continue;
             }
             // The vine holds on to `holder`, which lies on the opposite side of it.
@@ -109,7 +109,7 @@ void QcTreeLayout::buildGiantCone(const QcTreeShape::Params &params, QcBlockPos 
 
 void QcTreeLayout::branch(const QcTreeShape::Params &params, QcBlockPos start, int side, quint64 seed)
 {
-    const auto [stepX, stepZ] = sides[std::size_t(side)];
+    const auto [stepX, stepZ] = sides[static_cast<std::size_t>(side)];
     const QcBlockId lying = stepX != 0 ? params.trunkX : params.trunkZ;
     QcBlockPos end = start;
     for (int step = 1; step <= branchLength; ++step) {
@@ -145,14 +145,14 @@ void QcTreeLayout::buildGiantRound(const QcTreeShape::Params &params, QcBlockPos
     const int top = base.y + trunkHeight - 1;
     for (int y = base.y + trunkHeight / 2; y < top - 3;) {
         const auto random = [&](int salt) { return qcPositionRandom(branchSeed, base.x + salt, y, base.z); };
-        const int side = int(random(0) * 4.0);
+        const int side = static_cast<int>(random(0) * 4.0);
         const int along = random(1) < 0.5 ? 0 : 1;
         static constexpr std::array<std::pair<int, int>, 4> edges{{{-1, 0}, {1, -1}, {-1, 1}, {0, -1}}};
         // The trunk column on that side: x or z fixed by the side, the other one `along`.
-        const auto [fixedX, fixedZ] = edges[std::size_t(side)];
+        const auto [fixedX, fixedZ] = edges[static_cast<std::size_t>(side)];
         const QcBlockPos start{base.x + (fixedX < 0 ? along : fixedX), y, base.z + (fixedZ < 0 ? along : fixedZ)};
         branch(params, start, side, seed);
-        y += 2 + int(random(2) * 3.0);
+        y += 2 + static_cast<int>(random(2) * 3.0);
     }
 
     // The crown: a narrower layer with vines (within the reach beside it) under two wide layers, then
@@ -160,7 +160,7 @@ void QcTreeLayout::buildGiantRound(const QcTreeShape::Params &params, QcBlockPos
     static constexpr std::array<int, 4> radii{giantCrownRadius - 1, giantCrownRadius, giantCrownRadius - 1, 1};
     for (std::size_t layer = 0; layer < radii.size(); ++layer) {
         m_leafVineChance = layer == 0 ? leafVineChance : 0.0;
-        giantLayer(params, {base.x, top - 1 + int(layer), base.z}, radii[layer], seed);
+        giantLayer(params, {base.x, top - 1 + static_cast<int>(layer), base.z}, radii[layer], seed);
     }
     m_leafVineChance = 0.0;
 }

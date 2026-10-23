@@ -143,6 +143,7 @@ target_sources(qc_common PRIVATE
     core/QcCommandSyntax.h core/QcCommandSyntax.cpp
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp
+    core/QcDowncast.h
     core/QcIntMath.h
     core/QcKeptComponent.h
     core/QcLogging.h core/QcLogging.cpp
@@ -170,6 +171,7 @@ target_sources(qc_common PRIVATE
     diagnostics/QcLogFiles.h diagnostics/QcLogFiles.cpp
     diagnostics/QcLogWriter.h diagnostics/QcLogWriter.cpp
     diagnostics/QcMessageLog.h diagnostics/QcMessageLog.cpp
+    diagnostics/QcSignalDefault.h
 )
 target_sources(qc_common PRIVATE
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp

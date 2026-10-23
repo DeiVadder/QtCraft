@@ -101,9 +101,9 @@ private slots:
         QVERIFY(server && client);
         Receiver atClient(*client);
         // A chunk-heavy message: 20 MB, below the 32 MB limit.
-        QByteArray large(qsizetype(20) * 1024 * 1024, Qt::Uninitialized);
+        QByteArray large(qsizetype{20} * 1024 * 1024, Qt::Uninitialized);
         for (qsizetype i = 0; i < large.size(); ++i) {
-            large[i] = char(i * 7 % 251);
+            large[i] = static_cast<char>(i * 7 % 251);
         }
         server->sendFrame(large);
         QTRY_COMPARE_WITH_TIMEOUT(atClient.frames.size(), 1, timeoutMs);
@@ -188,7 +188,7 @@ private slots:
         raw->setReadBufferSize(1);
         QPointer<QTcpSocket> socket(accepted);
         auto transport = std::make_unique<QcTcpTransport>(accepted, QcTcpTransport::Limits{.lingerMs = 300});
-        transport->sendFrame(QByteArray(qsizetype(16) * 1024 * 1024, 'x'));
+        transport->sendFrame(QByteArray(qsizetype{16} * 1024 * 1024, 'x'));
         QVERIFY(transport->pendingBytes() > 0);
         QSignalSpy peerClosed(raw, &QTcpSocket::disconnected);
 
@@ -257,9 +257,9 @@ private slots:
         QVERIFY(accepted);
         // The raw peer reads nothing; the transport holds at most 1 MB.
         raw->setReadBufferSize(1);
-        QcTcpTransport transport(accepted, {.maxPendingBytes = qint64(1024) * 1024});
+        QcTcpTransport transport(accepted, {.maxPendingBytes = qint64{1024} * 1024});
         Receiver received(transport);
-        const QByteArray frame(qsizetype(256) * 1024, 'x');
+        const QByteArray frame(qsizetype{256} * 1024, 'x');
         for (int i = 0; i < 256 && transport.isOpen(); ++i) {
             transport.sendFrame(frame);
         }

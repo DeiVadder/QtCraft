@@ -30,7 +30,7 @@ inline constexpr quint32 maxBlock = (0xffffu >> 2) - 1;
 
 [[nodiscard]] constexpr quint16 make(quint32 block, Shade shade)
 {
-    return block > maxBlock ? blank : quint16(((block + 1) << 2) | quint16(shade));
+    return block > maxBlock ? blank : static_cast<quint16>(((block + 1) << 2) | static_cast<quint16>(shade));
 }
 
 // The block of the pixel, std::nullopt for a blank pixel.
@@ -43,7 +43,7 @@ inline constexpr quint32 maxBlock = (0xffffu >> 2) - 1;
 [[nodiscard]] constexpr Shade shadeOf(quint16 pixel)
 {
     const int bits = pixel & 3;
-    return bits < shadeCount ? Shade(bits) : Shade::Normal;
+    return bits < shadeCount ? static_cast<Shade>(bits) : Shade::Normal;
 }
 
 } // namespace QcMapPixel

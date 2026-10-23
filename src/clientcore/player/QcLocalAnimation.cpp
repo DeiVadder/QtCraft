@@ -85,7 +85,7 @@ QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha
     pose.swingProgress = entity.swingTicks < 0 ? -1.0 : (entity.swingTicks + alpha) / swingTicks;
     pose.hurtProgress = entity.hurtTicks > 0 ? 1.0 - (entity.hurtTicks - alpha) / QcClientEntities::hurtFlashTicks : -1.0;
     pose.deathProgress = entity.deathTicks < 0 ? -1.0 : std::min(1.0, (entity.deathTicks + alpha) / deathTicks);
-    pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * float(alpha);
+    pose.headPitch = entity.previousPitch + (entity.pitch - entity.previousPitch) * static_cast<float>(alpha);
     // Others only tell that they draw (decision E-425): shown fully drawn.
     pose.drawProgress = (entity.flags & QcMsg::Drawing) != 0 ? 1.0 : -1.0;
     return pose;

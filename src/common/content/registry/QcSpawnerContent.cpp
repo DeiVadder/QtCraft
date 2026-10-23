@@ -109,7 +109,7 @@ QStringList checkBlocks(const QcContentRegistry &content)
     QStringList warnings;
     QSet<QString> checked;
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         if (block.spawner.isSpawner && !block.spawner.mob.isEmpty() && !checked.contains(block.name)) {
             checked.insert(block.name);
             if (const QString problem = problemWith(content, block.spawner.mob); !problem.isEmpty()) {

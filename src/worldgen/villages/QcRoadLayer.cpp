@@ -109,7 +109,7 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
     int heading = arm.direction;
     std::pair<int, int> cell{arm.x, arm.z};
     From from{m_terrain.column(arm.x, arm.z).height, 0, arm.direction};
-    ArmTurns turns(arm, arm.winding ? arm.firstSlot + windGapMinimum + int(draft.random() * windGapRange) : -1);
+    ArmTurns turns(arm, arm.winding ? arm.firstSlot + windGapMinimum + static_cast<int>(draft.random() * windGapRange) : -1);
     Road run{arm.x, arm.z, directions[direction].first, directions[direction].second, 0, arm.firstSlot, arm.branch, 0, false, arm.sides};
     int laid = 0;
     // A road on a bridge at the end of its length goes on to the far bank (decision E-841).
@@ -124,7 +124,7 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
             heading = next;
         } else if (due == ArmTurns::Due::Wind) {
             next = (direction + windTurn(draft, cell, direction, heading) + 8) % 8;
-            turns.windAfter(windGapMinimum + int(draft.random() * windGapRange));
+            turns.windAfter(windGapMinimum + static_cast<int>(draft.random() * windGapRange));
         }
 
         const auto [dx, dz] = directions[next];
@@ -268,10 +268,10 @@ int QcRoadLayer::windTurn(QcVillageDraft &draft, std::pair<int, int> cell, int d
             count = 0;
         }
         if (score == best) {
-            flattest[std::size_t(count++)] = turn;
+            flattest[static_cast<std::size_t>(count++)] = turn;
         }
     }
-    return flattest[std::size_t(std::min(count - 1, qsizetype(draft.random() * double(count))))];
+    return flattest[static_cast<std::size_t>(std::min(count - 1, static_cast<qsizetype>(draft.random() * static_cast<double>(count))))];
 }
 
 void QcRoadLayer::recordRuns(QcVillageDraft &draft, const QList<Road> &runs, bool closed) const

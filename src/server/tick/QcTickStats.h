@@ -17,7 +17,7 @@ class QcTickStats
 {
 public:
     // Lateness samples kept for the percentile (the latest ones; about 55 minutes of ticks).
-    static constexpr qsizetype maxSamples = qsizetype(1) << 16;
+    static constexpr qsizetype maxSamples = qsizetype{1} << 16;
 
     using Summary = QcTickSummary;
 

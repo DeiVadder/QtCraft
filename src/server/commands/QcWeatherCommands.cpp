@@ -43,7 +43,7 @@ constexpr const char *usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /wea
 
 QString seconds(qint64 ticks)
 {
-    return QString::number(qRound64(double(ticks) * QcPhysics::tickDuration));
+    return QString::number(qRound64(static_cast<double>(ticks) * QcPhysics::tickDuration));
 }
 
 } // namespace
@@ -76,7 +76,7 @@ void QcWeatherCommands::weather(const QcCommandContext &context)
     std::optional<qint64> ticks;
     if (ok && args.size() == 2) {
         const double wanted = args[1].toDouble(&ok);
-        const double maxSeconds = double(QcWeatherCycle::maxSetTicks) * QcPhysics::tickDuration;
+        const double maxSeconds = static_cast<double>(QcWeatherCycle::maxSetTicks) * QcPhysics::tickDuration;
         ok = ok && std::isfinite(wanted) && wanted >= 1.0 && wanted <= maxSeconds;
         ticks = ok ? std::optional<qint64>(qRound64(wanted / QcPhysics::tickDuration)) : std::nullopt;
     }

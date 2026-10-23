@@ -39,7 +39,7 @@ private slots:
     {
         const QMetaEnum overlays = QMetaEnum::fromType<QcScreenState::Overlay>();
         for (int index = 0; index < overlays.keyCount(); ++index) {
-            const auto overlay = QcScreenState::Overlay(overlays.value(index));
+            const auto overlay = static_cast<QcScreenState::Overlay>(overlays.value(index));
             QCOMPARE(QcScreenState::overlayFromName(QcScreenState::overlayName(overlay)), overlay);
         }
         QCOMPARE(QcScreenState::overlayFromName(u""_s), QcScreenState::Overlay::None);
@@ -78,7 +78,7 @@ private slots:
         QCOMPARE(changed.count(), 1);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown overlay 99"_s));
-        screens.setOverlay(QcScreenState::Overlay(99));
+        screens.setOverlay(static_cast<QcScreenState::Overlay>(99));
         QCOMPARE(screens.overlay(), QcScreenState::Overlay::Pause);
         QCOMPARE(changed.count(), 1);
     }
@@ -97,7 +97,7 @@ private slots:
         QCOMPARE(settings.cameraModeValue(), QcCameraMode::Behind);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown camera mode 7"_s));
-        settings.setCameraMode(QcSettingsController::CameraMode(7));
+        settings.setCameraMode(static_cast<QcSettingsController::CameraMode>(7));
         QCOMPARE(settings.cameraModeValue(), QcCameraMode::Behind);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"fieldOfView.*instead of 500"_s));
@@ -125,7 +125,7 @@ private slots:
             QCOMPARE(changed.count(), 1);
 
             QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown UI scale 9"_s));
-            settings.setUiScale(QcUiScaling::Step(9));
+            settings.setUiScale(static_cast<QcUiScaling::Step>(9));
             QCOMPARE(settings.uiScale(), QcUiScaling::Step::Auto);
 
             settings.setUiScale(QcUiScaling::Step::Percent175);
@@ -187,7 +187,7 @@ private slots:
         QCOMPARE(changed.count(), 1);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"ignoring unknown animation 5"_s));
-        preview.setAnimation(QcCharacterPreview::Animation(5));
+        preview.setAnimation(static_cast<QcCharacterPreview::Animation>(5));
         QCOMPARE(preview.animation(), QcCharacterPreview::Animation::Mine);
     }
 

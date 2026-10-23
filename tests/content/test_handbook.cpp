@@ -506,11 +506,11 @@ private slots:
         for (const QcContentRegistry *content : {m_base.get(), m_modded.get()}) {
             const QcBlockStateTable &states = content->stateTable();
             for (qsizetype typeIndex = 0; typeIndex < states.typeCount(); ++typeIndex) {
-                const quint32 type = quint32(typeIndex);
+                const quint32 type = static_cast<quint32>(typeIndex);
                 bool partial = false;
                 bool coversSides = false;
                 for (int index = 0; index < states.stateCount(type); ++index) {
-                    const QcBlockState &state = states.state(states.firstState(type) + quint32(index));
+                    const QcBlockState &state = states.state(states.firstState(type) + static_cast<quint32>(index));
                     partial = partial || !state.fullCube;
                     coversSides = coversSides || state.lightBlockedFaces != 0;
                 }
@@ -686,7 +686,7 @@ private slots:
 
             // Within its category the mod's entries follow every entry of the base game.
             const QList<qsizetype> &entries = book.category(entry->category)->entries;
-            const qsizetype position = entries.indexOf(qsizetype(entry - book.entries().data()));
+            const qsizetype position = entries.indexOf(static_cast<qsizetype>(entry - book.entries().data()));
             QVERIFY(position >= 0);
             for (qsizetype i = position; i < entries.size(); ++i) {
                 QCOMPARE(book.entries()[entries[i]].pack, u"rubies"_s);

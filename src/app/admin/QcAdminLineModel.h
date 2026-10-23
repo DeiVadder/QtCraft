@@ -35,7 +35,7 @@ public:
     int rowCount(const QModelIndex &parent = {}) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-    int count() const { return int(m_lines.size()); }
+    int count() const { return static_cast<int>(m_lines.size()); }
     const QList<Line> &lines() const { return m_lines; }
 
     void replace(const QList<Line> &lines);

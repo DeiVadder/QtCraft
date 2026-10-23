@@ -14,7 +14,7 @@ namespace {
 constexpr const char *usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /effect give <player> <effect> [seconds] [level] or /effect clear <player> [effect]");
 
 // The longest effect /effect gives, in seconds (QcStatusEffects::maxTicks).
-constexpr int maxSeconds = QcStatusEffects::maxTicks / int(QcPhysics::tickRate);
+constexpr int maxSeconds = QcStatusEffects::maxTicks / static_cast<int>(QcPhysics::tickRate);
 
 } // namespace
 
@@ -67,7 +67,7 @@ void QcEffectCommands::give(const QcCommandContext &context, const QList<QcServe
     }
 
     for (QcServerClient *player : targets) {
-        const QcStatusEffect effect{name, *level, *seconds * int(QcPhysics::tickRate)};
+        const QcStatusEffect effect{name, *level, *seconds * static_cast<int>(QcPhysics::tickRate)};
         if (QcServerEffects::givePlayer(m_state.content(), *player, effect)) {
             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Gave %1 level %2 for %3 s to %4"),
                           {name, QString::number(*level), QString::number(*seconds), player->name});

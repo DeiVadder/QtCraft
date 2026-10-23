@@ -95,7 +95,7 @@ private:
             QcTestUtil::failCase(QStringLiteral("Test uses the creature %1, which the content does not have").arg(QString::fromLatin1(name)));
             return 0;
         }
-        return m_server->mobs().spawn(*type, {feet.x + 0.5, double(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
+        return m_server->mobs().spawn(*type, {feet.x + 0.5, static_cast<double>(feet.y), feet.z + 0.5}, m_server->entities().newId(), false, true);
     }
 
 private slots:
@@ -299,7 +299,7 @@ private slots:
         clear(m_feet);
 
         // Fire sets a body alight for 8 s (setsAlight of the content).
-        const int alight = m_content->block(id("qtcraft:fire")).fire.setsAlightSeconds * int(QcPhysics::tickRate);
+        const int alight = m_content->block(id("qtcraft:fire")).fire.setsAlightSeconds * static_cast<int>(QcPhysics::tickRate);
         QCOMPARE(alight, 160);
         int burnt = 0;
         while (m_client->burning && burnt < 2 * alight) {
@@ -430,7 +430,7 @@ private slots:
         set(m_feet.offset(2, 0, 0), "qtcraft:fire");
         QcItemEntityManager::Drop drop;
         drop.stack = {item("qtcraft:stick"), 1, 0};
-        drop.position = {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        drop.position = {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         m_server->items().spawn(drop, m_server->entities().newId());
         ticks(2);
         QCOMPARE(droppedCount(item("qtcraft:stick")), 0);
@@ -484,7 +484,7 @@ private slots:
         // A hopper cart on a rail picks up an item lying in its cell.
         const QcBlockPos rail = m_feet.offset(2, 0, 2);
         set(rail, "qtcraft:rail");
-        QcMinecart *cart = m_server->systems().minecarts.summon(u"qtcraft:hopper_minecart"_s, {rail.x + 0.5, double(rail.y), rail.z + 0.5}, 0.0f);
+        QcMinecart *cart = m_server->systems().minecarts.summon(u"qtcraft:hopper_minecart"_s, {rail.x + 0.5, static_cast<double>(rail.y), rail.z + 0.5}, 0.0f);
         QVERIFY(cart);
         const quint32 id = cart->id;
         QcItemEntityManager::Drop drop;

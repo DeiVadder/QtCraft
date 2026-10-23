@@ -5,22 +5,22 @@
 QcPhaseWindow::QcPhaseWindow(int series, int capacity)
     : m_series(std::max(series, 1))
     , m_capacity(std::max(capacity, 1))
-    , m_values(std::size_t(m_series) * std::size_t(m_capacity), 0.0f)
-    , m_sums(std::size_t(m_series), 0.0)
+    , m_values(static_cast<std::size_t>(m_series) * static_cast<std::size_t>(m_capacity), 0.0f)
+    , m_sums(static_cast<std::size_t>(m_series), 0.0)
 {
 }
 
 void QcPhaseWindow::add(std::span<const float> values)
 {
-    float *slot = m_values.data() + std::size_t(m_next) * std::size_t(m_series);
+    float *slot = m_values.data() + static_cast<std::size_t>(m_next) * static_cast<std::size_t>(m_series);
     const bool full = m_size == m_capacity;
 
     for (int s = 0; s < m_series; ++s) {
-        const float incoming = std::size_t(s) < values.size() ? values[std::size_t(s)] : 0.0f;
+        const float incoming = static_cast<std::size_t>(s) < values.size() ? values[static_cast<std::size_t>(s)] : 0.0f;
         if (full) {
-            m_sums[std::size_t(s)] -= double(slot[s]);
+            m_sums[static_cast<std::size_t>(s)] -= static_cast<double>(slot[s]);
         }
-        m_sums[std::size_t(s)] += double(incoming);
+        m_sums[static_cast<std::size_t>(s)] += static_cast<double>(incoming);
         slot[s] = incoming;
     }
 
@@ -42,7 +42,7 @@ double QcPhaseWindow::mean(int series) const
         return 0.0;
     }
     // Running sums of many additions and removals may end a hair below zero.
-    return std::max(0.0, m_sums[std::size_t(series)] / double(m_size));
+    return std::max(0.0, m_sums[static_cast<std::size_t>(series)] / static_cast<double>(m_size));
 }
 
 double QcPhaseWindow::max(int series) const
@@ -55,7 +55,7 @@ double QcPhaseWindow::max(int series) const
     for (int sample = 0; sample < m_size; ++sample) {
         highest = std::max(highest, value(sample, series));
     }
-    return double(highest);
+    return static_cast<double>(highest);
 }
 
 float QcPhaseWindow::latest(int series) const

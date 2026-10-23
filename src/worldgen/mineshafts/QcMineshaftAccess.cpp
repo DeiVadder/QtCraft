@@ -50,7 +50,7 @@ QList<QcMineshaftPlan::Room> QcMineshaftAccess::roomsOf(const QcMineshaftPlan &p
         return rooms;
     }
     for (qsizetype i = 1; i < plan.nodes.size() && rooms.size() < m_settings.maxRooms; ++i) {
-        const int node = int(i);
+        const int node = static_cast<int>(i);
         const auto link = std::ranges::find_if(network.links(), [node](QcMineshaftNetwork::Link l) { return l.from == node || l.to == node; });
         if (network.degree(node) != 1 || link->stairs || random(RoomChance, node) >= m_settings.roomChance) {
             continue;
@@ -81,7 +81,7 @@ bool QcMineshaftAccess::crossedByPillars(const QcMineshaftNetwork &network, cons
 
 std::optional<QcStructurePlacement> QcMineshaftAccess::roomAt(const QcMineshaftPlan::Node &at, int turns, QcMineshaftSite &site, double pick) const
 {
-    int left = int(pick * m_totalWeight);
+    int left = static_cast<int>(pick * m_totalWeight);
     const auto chosen = std::ranges::find_if(m_rooms, [&left](const RoomKind &kind) {
         left -= kind.weight;
         return left < 0;

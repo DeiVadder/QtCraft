@@ -20,9 +20,9 @@ QcChunkSection sectionWith(int entries)
     QcChunkSection section;
     for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
         const int y = cell / 256;
-        QcBlockId block = QcBlockId(1 + y / 4 % 4);
+        QcBlockId block = static_cast<QcBlockId>(1 + y / 4 % 4);
         if (cell % 7 == 0 && entries > 5) {
-            block = QcBlockId(5 + cell / 7 % (entries - 4));
+            block = static_cast<QcBlockId>(5 + cell / 7 % (entries - 4));
         }
         section.setBlock(cell % 16, y, cell / 16 % 16, block);
     }
@@ -37,8 +37,8 @@ std::array<std::array<quint8, 3>, QcWorld::blocksPerSection> shuffledCells()
     quint32 state = 12345;
     for (int i = 0; i < QcWorld::blocksPerSection; ++i) {
         state = state * 1664525u + 1013904223u;
-        const int cell = int((state >> 8) % quint32(QcWorld::blocksPerSection));
-        cells[std::size_t(i)] = {quint8(cell % 16), quint8(cell / 256), quint8(cell / 16 % 16)};
+        const int cell = static_cast<int>((state >> 8) % static_cast<quint32>(QcWorld::blocksPerSection));
+        cells[static_cast<std::size_t>(i)] = {static_cast<quint8>(cell % 16), static_cast<quint8>(cell / 256), static_cast<quint8>(cell / 16 % 16)};
     }
     return cells;
 }
@@ -123,7 +123,7 @@ private slots:
             QcBlockId block = 1;
             for (const auto &[x, y, z] : cells) {
                 section.setBlock(x, y, z, block);
-                block = block % QcBlockId(entries - 1) + 1;
+                block = block % static_cast<QcBlockId>(entries - 1) + 1;
             }
         }
         QVERIFY(!section.isUniform());

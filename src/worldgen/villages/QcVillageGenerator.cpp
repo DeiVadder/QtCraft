@@ -68,7 +68,7 @@ QcChunkFurnishing QcVillageGenerator::furnishingIn(QcChunkPos pos, const QcVilla
         for (const QcStructureDefinition::Loot &loot : piece.structure().loot) {
             const QcBlockPos at = piece.toWorld(loot.at);
             if (at.chunk() == pos) {
-                furnishing.chests.append({at, loot.table, quint64(qHashMulti(0x403u, at.x, at.y, at.z))});
+                furnishing.chests.append({at, loot.table, static_cast<quint64>(qHashMulti(0x403u, at.x, at.y, at.z))});
             }
         }
     }
@@ -121,14 +121,14 @@ std::shared_ptr<const QcVillagePlan> QcVillageGenerator::nearest(QcBlockPos from
     const int regionZ = regionOf(from.z, spacing);
     const int rings = reach / spacing + 1;
     std::shared_ptr<const QcVillagePlan> best;
-    double bestDistance = double(reach);
+    double bestDistance = static_cast<double>(reach);
     for (int dz = -rings; dz <= rings; ++dz) {
         for (int dx = -rings; dx <= rings; ++dx) {
             std::shared_ptr<const QcVillagePlan> plan = regionPlan(regionX + dx, regionZ + dz);
             if (!plan) {
                 continue;
             }
-            const double distance = std::hypot(double(plan->centre.x - from.x), double(plan->centre.z - from.z));
+            const double distance = std::hypot(static_cast<double>(plan->centre.x - from.x), static_cast<double>(plan->centre.z - from.z));
             if (distance <= bestDistance) {
                 bestDistance = distance;
                 best = std::move(plan);
@@ -151,7 +151,7 @@ std::optional<QcStructurePlacement> QcVillageGenerator::nearestPiece(const QStri
     }
 
     std::optional<QcStructurePlacement> best;
-    double bestDistance = double(reach);
+    double bestDistance = static_cast<double>(reach);
     for (const QcStructurePlacement &piece : std::as_const(pieces)) {
         const double distance = std::hypot(piece.origin().x + piece.sizeX() / 2.0 - from.x, piece.origin().z + piece.sizeZ() / 2.0 - from.z);
         if (piece.structure().name() == name && distance <= bestDistance) {

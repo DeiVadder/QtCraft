@@ -28,7 +28,7 @@ class QcPlantGrowth
 {
 public:
     // Random ticks per marked section and tick by default (QcServerLimits::randomTicksPerSection).
-    static constexpr int randomTicksPerSection = int(QcServerLimits{}.randomTicksPerSection);
+    static constexpr int randomTicksPerSection = static_cast<int>(QcServerLimits{}.randomTicksPerSection);
     // Average seconds between two random ticks of one block at the default; the growth chances
     // count with it, so more random ticks make plants grow faster.
     static constexpr double randomTickSeconds = 4096.0 / randomTicksPerSection * QcPhysics::tickDuration;

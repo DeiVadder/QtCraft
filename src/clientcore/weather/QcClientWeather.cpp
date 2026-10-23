@@ -37,9 +37,9 @@ void QcClientWeather::lightning(const QcMsg::Lightning &strike, const QcVec3 &li
     QcSoundCue cue{QString::fromLatin1(QcSoundKeys::weatherThunder), strike.position, 1.0f, 1.0f, QcSoundCue::Origin::Local, 0};
     if (distance > thunderPlacement) {
         cue.position = listener + towards * (thunderPlacement / distance);
-        cue.volume = float(thunderPlacement / distance);
+        cue.volume = static_cast<float>(thunderPlacement / distance);
     }
-    const auto delay = quint64(std::llround(distance / speedOfSound / QcPhysics::tickDuration));
+    const auto delay = static_cast<quint64>(std::llround(distance / speedOfSound / QcPhysics::tickDuration));
     m_thunderOnItsWay.append({tick + delay, cue});
 }
 
@@ -74,7 +74,7 @@ float QcClientWeather::flash(double ticks) const
         return 0.0f;
     }
 
-    const double since = ticks - double(*m_flashTick);
+    const double since = ticks - static_cast<double>(*m_flashTick);
     if (since < 0.0 || since >= flashTicks) {
         return 0.0f;
     }
@@ -88,5 +88,5 @@ float QcClientWeather::flash(double ticks) const
     if (since < 5.0) {
         return 0.8f;
     }
-    return float(0.8 * (1.0 - (since - 5.0) / (flashTicks - 5.0)));
+    return static_cast<float>(0.8 * (1.0 - (since - 5.0) / (flashTicks - 5.0)));
 }

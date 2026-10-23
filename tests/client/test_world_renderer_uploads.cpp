@@ -152,7 +152,7 @@ private slots:
     void replacedBeforeTheFrame()
     {
         for (int frame = 0; frame < 20; ++frame) {
-            const quint64 key = 100 + quint64(frame);
+            const quint64 key = 100 + static_cast<quint64>(frame);
             m_view->submitMesh(key, quadMesh(1.0f));
             m_view->submitMesh(key, quadMesh(2.0f));
             m_view->submitMesh(key, quadMesh(3.0f));
@@ -164,7 +164,7 @@ private slots:
     void removedBeforeTheFrame()
     {
         for (int frame = 0; frame < 20; ++frame) {
-            const quint64 key = 200 + quint64(frame);
+            const quint64 key = 200 + static_cast<quint64>(frame);
             m_view->submitMesh(key, quadMesh(1.0f));
             m_view->removeMesh(key);
             m_view->submitMesh(key + 1000, quadMesh(1.0f));
@@ -183,11 +183,11 @@ private slots:
         renderFrame();
         for (int frame = 0; frame < 30; ++frame) {
             for (quint64 key = 300; key < 340; ++key) {
-                m_view->submitMesh(key, quadMesh(float(frame)));
-                if ((key + quint64(frame)) % 3 == 0) {
+                m_view->submitMesh(key, quadMesh(static_cast<float>(frame)));
+                if ((key + static_cast<quint64>(frame)) % 3 == 0) {
                     m_view->removeMesh(key);
                 }
-                m_view->submitMesh(key, quadMesh(float(frame) + 0.5f));
+                m_view->submitMesh(key, quadMesh(static_cast<float>(frame) + 0.5f));
             }
             renderFrame();
         }

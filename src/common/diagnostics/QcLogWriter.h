@@ -15,7 +15,7 @@ class QcLogWriter
 public:
     struct Limits
     {
-        qint64 maxBytes = qint64(20) * 1024 * 1024;
+        qint64 maxBytes = qint64{20} * 1024 * 1024;
         // Rotated parts kept besides the current file.
         int rotations = 2;
     };

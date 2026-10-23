@@ -46,7 +46,7 @@ private:
     {
         const QcBlockPos cell = at(x, y, z);
         const QcVec3 centre{cell.x + 0.5, cell.y + 0.05, cell.z + 0.5};
-        const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 780000 + quint32(cell.x & 0xFFFF));
+        const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 780000 + static_cast<quint32>(cell.x & 0xFFFF));
         for (QcItemEntity &entity : m_server->items().editableItems()) {
             if (entity.id == dropped) {
                 entity.motion.position = centre;

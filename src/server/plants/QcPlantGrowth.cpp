@@ -9,10 +9,10 @@
 
 QcPlantGrowth::QcPlantGrowth(std::shared_ptr<const QcContentRegistry> content, quint64 seed)
     : m_content(std::move(content))
-    , m_random(quint32(seed ^ 0x6A0Fu))
+    , m_random(static_cast<quint32>(seed ^ 0x6A0Fu))
     , m_crops(m_content, randomTickSeconds)
 {
-    for (QcBlockId id = 0; qsizetype(id) < m_content->stateCount(); ++id) {
+    for (QcBlockId id = 0; static_cast<qsizetype>(id) < m_content->stateCount(); ++id) {
         if (m_content->block(id).hasRandomTicks()) {
             m_growing.insert(id);
         }
@@ -30,7 +30,7 @@ void QcPlantGrowth::forRandomPlants(const QcChunk &chunk, quint32 sections, Visi
 
         for (int i = 0; i < m_randomTicksPerSection; ++i) {
             // A random cell of the section: x, z and y in 16 values each.
-            const int cell = int(m_random.bounded(4096u));
+            const int cell = static_cast<int>(m_random.bounded(4096u));
             const int x = cell % 16;
             const int z = cell / 16 % 16;
             const int y = index * QcWorld::sectionHeight + cell / 256;

@@ -43,7 +43,7 @@ enum class QcTickPhase : quint8 {
 
 namespace QcTickPhases {
 
-inline constexpr int count = int(QcTickPhase::Messages) + 1;
+inline constexpr int count = static_cast<int>(QcTickPhase::Messages) + 1;
 // Phases inside a tick: all but Messages; their sum is the tick's duration.
 inline constexpr int inTick = count - 1;
 
@@ -53,7 +53,7 @@ inline constexpr std::array<const char *, count> ids{"players", "saving",   "chu
 
 constexpr const char *id(QcTickPhase phase)
 {
-    return ids[std::size_t(phase)];
+    return ids[static_cast<std::size_t>(phase)];
 }
 
 } // namespace QcTickPhases

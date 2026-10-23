@@ -57,7 +57,7 @@ private:
 
     quint32 spawnKjut(double dx, double dz)
     {
-        const QcVec3 at{m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+        const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
         return m_server->mobs().spawn(kjut(), at, m_server->entities().newId());
     }
 
@@ -110,7 +110,7 @@ private:
         send(QcMsg::AttackEntity{id});
     }
 
-    QcVec3 beside() const { return {m_feet.x + 1.5, double(m_feet.y), m_feet.z + 0.5}; }
+    QcVec3 beside() const { return {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}; }
 
     // A place in the middle of the chunk east of `chunk`, high above the ground (it falls there).
     static QcVec3 eastOf(QcChunkPos chunk)
@@ -669,7 +669,7 @@ private slots:
         mob.id = 1;
         mob.type = child();
         mob.motion.position = {m_feet.x - 4.5, m_feet.y + 0.5, m_feet.z + 0.5};
-        const QcMobHover::Course course{{}, double(m_feet.y) - 2.0};
+        const QcMobHover::Course course{{}, static_cast<double>(m_feet.y) - 2.0};
         for (int i = 0; i < 40; ++i) {
             QcMobHover::fly(mob, kind, m_server->world(), course, i * QcPhysics::tickDuration);
             QVERIFY2(mob.motion.position.y >= m_feet.y - 1e-6, qPrintable(QString::number(mob.motion.position.y - m_feet.y)));
@@ -719,7 +719,7 @@ private slots:
             const QcBlockPos column{0, 0, 0};
             const int top = world.chunk(column.chunk())->highestNonAir(column.localX(), column.localZ());
             QcMobManager mobs(m_content, 9);
-            const QList<QcMobManager::PlayerView> players{{7, {0.5, double(top + 1), 0.5}}};
+            const QList<QcMobManager::PlayerView> players{{7, {0.5, static_cast<double>(top + 1), 0.5}}};
             quint32 next = 100;
             QSet<quint32> kjuts;
             for (int tick = 0; tick < 20 * 30; ++tick) {

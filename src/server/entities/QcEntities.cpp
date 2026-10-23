@@ -21,23 +21,25 @@ QcEntities::QcEntities(const std::shared_ptr<const QcContentRegistry> &content, 
 
 void QcEntities::applyLimits(const QcServerLimits &limits)
 {
-    m_falling.setMaxFalling(qsizetype(limits.fallingBlocks));
-    m_items.setLimits(qsizetype(limits.itemsAwake), qsizetype(limits.itemsQueued), qsizetype(limits.itemsTotal));
-    m_creatures.spawner().setCaps(int(limits.monstersPer289Chunks), int(limits.passiveCreaturesPerPlayer), int(limits.ambientCreaturesPerPlayer));
-    m_creatures.spawner().setWaterCap(int(limits.waterCreaturesPerPlayer));
+    m_falling.setMaxFalling(static_cast<qsizetype>(limits.fallingBlocks));
+    m_items.setLimits(static_cast<qsizetype>(limits.itemsAwake), static_cast<qsizetype>(limits.itemsQueued), static_cast<qsizetype>(limits.itemsTotal));
+    m_creatures.spawner().setCaps(static_cast<int>(limits.monstersPer289Chunks), static_cast<int>(limits.passiveCreaturesPerPlayer),
+        static_cast<int>(limits.ambientCreaturesPerPlayer));
+    m_creatures.spawner().setWaterCap(static_cast<int>(limits.waterCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
-    m_creatures.population().setVillagerLimits({qsizetype(limits.villagersPerVillage), qsizetype(limits.villagers)},
-                                  {int(limits.villagerThoughtsPerTick), int(limits.villagerRoutesPerTick), int(limits.villagerHarvestsPerTick)});
+    m_creatures.population().setVillagerLimits({static_cast<qsizetype>(limits.villagersPerVillage), static_cast<qsizetype>(limits.villagers)},
+                                  {static_cast<int>(limits.villagerThoughtsPerTick), static_cast<int>(limits.villagerRoutesPerTick),
+                                  static_cast<int>(limits.villagerHarvestsPerTick)});
     m_creatures.population().setGolemLimit(limits.villageGolems);
-    m_stands.setLimit(qsizetype(limits.maxArmourStands));
-    m_hangings.setLimit(qsizetype(limits.maxHangings));
-    m_moving.setMaxMoving(qsizetype(limits.movingBlocksShown));
-    m_carts.setLimit(qsizetype(limits.maxMinecarts));
-    m_orbs.setLimit(qsizetype(limits.experienceOrbs));
-    m_projectiles.setLimit(qsizetype(limits.projectiles));
-    m_projectiles.setPerChunk(qsizetype(limits.projectilesPerChunk));
-    m_explosives.setLimit(qsizetype(limits.primedExplosives));
+    m_stands.setLimit(static_cast<qsizetype>(limits.maxArmourStands));
+    m_hangings.setLimit(static_cast<qsizetype>(limits.maxHangings));
+    m_moving.setMaxMoving(static_cast<qsizetype>(limits.movingBlocksShown));
+    m_carts.setLimit(static_cast<qsizetype>(limits.maxMinecarts));
+    m_orbs.setLimit(static_cast<qsizetype>(limits.experienceOrbs));
+    m_projectiles.setLimit(static_cast<qsizetype>(limits.projectiles));
+    m_projectiles.setPerChunk(static_cast<qsizetype>(limits.projectilesPerChunk));
+    m_explosives.setLimit(static_cast<qsizetype>(limits.primedExplosives));
 }
 
 namespace {

@@ -22,13 +22,13 @@ QcServerWorld::QcServerWorld(std::shared_ptr<const QcContentRegistry> content, s
     // Leave cores for the GUI, render, server and meshing threads.
     , m_generationPool(std::max(1, QThread::idealThreadCount() / 3))
 {
-    const auto stateCount = std::size_t(m_content->stateCount());
+    const auto stateCount = static_cast<std::size_t>(m_content->stateCount());
     std::vector<QcSectionMarks::Traits> traits(stateCount);
     std::vector<bool> hoppers(stateCount);
     std::vector<bool> fires(stateCount);
     std::vector<bool> eternalGround(stateCount);
     for (std::size_t id = 0; id < stateCount; ++id) {
-        const QcBlockDefinition &block = m_content->block(QcBlockId(id));
+        const QcBlockDefinition &block = m_content->block(static_cast<QcBlockId>(id));
         traits[id] = QcSectionMarks::traitsOf(block);
         hoppers[id] = block.signal.kind == QcSignalKind::Hopper;
         fires[id] = block.fire.isFire;

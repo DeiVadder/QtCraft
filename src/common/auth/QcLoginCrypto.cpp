@@ -32,10 +32,10 @@ QByteArray randomBytes(qsizetype count)
 {
     QByteArray bytes(count, Qt::Uninitialized);
     std::array<quint32, 8> block{};
-    for (qsizetype offset = 0; offset < count; offset += qsizetype(sizeof(block))) {
+    for (qsizetype offset = 0; offset < count; offset += static_cast<qsizetype>(sizeof(block))) {
         QRandomGenerator::system()->fillRange(block.data(), block.size());
-        const qsizetype length = std::min<qsizetype>(qsizetype(sizeof(block)), count - offset);
-        std::memcpy(bytes.data() + offset, block.data(), size_t(length));
+        const qsizetype length = std::min<qsizetype>(static_cast<qsizetype>(sizeof(block)), count - offset);
+        std::memcpy(bytes.data() + offset, block.data(), static_cast<size_t>(length));
     }
     return bytes;
 }
@@ -58,7 +58,7 @@ QByteArray pbkdf2(QByteArrayView password, QByteArrayView salt, int rounds)
         mac.addData(block);
         block = mac.result();
         for (qsizetype i = 0; i < result.size(); ++i) {
-            result[i] = char(result[i] ^ block[i]);
+            result[i] = static_cast<char>(result[i] ^ block[i]);
         }
     }
     return result;

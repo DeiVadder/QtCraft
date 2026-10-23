@@ -29,11 +29,11 @@ qsizetype aligned(qsizetype bytes)
 void copyIndices(char *out, const QList<quint32> &indices, bool shortIndices)
 {
     if (!shortIndices) {
-        std::memcpy(out, indices.constData(), std::size_t(indices.size()) * sizeof(quint32));
+        std::memcpy(out, indices.constData(), static_cast<std::size_t>(indices.size()) * sizeof(quint32));
         return;
     }
     for (const quint32 index : indices) {
-        const auto value = quint16(index);
+        const auto value = static_cast<quint16>(index);
         std::memcpy(out, &value, sizeof(value));
         out += sizeof(value);
     }
@@ -54,11 +54,11 @@ QcPackedMesh QcPackedMesh::pack(const QcChunkMesh &mesh)
         }
         Place &place = packed.places[list];
         place.shortIndices = QcIndexPacking::fitsShortIndices(source.vertices->size());
-        place.vertexOffset = quint32(vertexBytes);
-        place.indexOffset = quint32(indexBytes);
-        place.indexCount = quint32(source.indices->size());
-        vertexBytes += source.vertices->size() * qsizetype(sizeof(QcBlockVertex));
-        indexBytes = aligned(indexBytes + source.indices->size() * qsizetype(place.shortIndices ? sizeof(quint16) : sizeof(quint32)));
+        place.vertexOffset = static_cast<quint32>(vertexBytes);
+        place.indexOffset = static_cast<quint32>(indexBytes);
+        place.indexCount = static_cast<quint32>(source.indices->size());
+        vertexBytes += source.vertices->size() * static_cast<qsizetype>(sizeof(QcBlockVertex));
+        indexBytes = aligned(indexBytes + source.indices->size() * static_cast<qsizetype>(place.shortIndices ? sizeof(quint16) : sizeof(quint32)));
     }
 
     // Each list is written exactly once; only the index padding needs zeroing.
@@ -71,7 +71,7 @@ QcPackedMesh QcPackedMesh::pack(const QcChunkMesh &mesh)
         }
         const Source &source = lists[list];
         std::memcpy(packed.vertices.data() + place.vertexOffset, source.vertices->constData(),
-                    std::size_t(source.vertices->size()) * sizeof(QcBlockVertex));
+                    static_cast<std::size_t>(source.vertices->size()) * sizeof(QcBlockVertex));
         copyIndices(packed.indices.data() + place.indexOffset, *source.indices, place.shortIndices);
     }
     return packed;

@@ -44,8 +44,8 @@ std::optional<QcVec3> freePlaceAbove(const QcBlockAccess &world, const QcVec3 &f
     }
 
     // Whole cells upwards from the one above the feet, so the body stands on what it rose out of.
-    for (int y = int(std::floor(feet.y)) + 1; y < QcWorld::worldHeight; ++y) {
-        const QcVec3 candidate{feet.x, double(y), feet.z};
+    for (int y = static_cast<int>(std::floor(feet.y)) + 1; y < QcWorld::worldHeight; ++y) {
+        const QcVec3 candidate{feet.x, static_cast<double>(y), feet.z};
         if (freeAt(candidate)) {
             return candidate;
         }

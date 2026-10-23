@@ -14,7 +14,7 @@ constexpr int doorHeight = 3;
 
 int floorDiv(int value, int divisor)
 {
-    return int(std::floor(double(value) / divisor));
+    return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
 } // namespace
@@ -23,9 +23,9 @@ QcCoastalTowerGenerator::QcCoastalTowerGenerator(const QcTerrainGenerator &terra
     : m_planner(terrain, content, seed)
     , m_seed(qcMixSeed(seed, 0x5102))
 {
-    m_ground.resize(std::size_t(content.stateCount()));
+    m_ground.resize(static_cast<std::size_t>(content.stateCount()));
     for (std::size_t id = 0; id < m_ground.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         m_ground[id] = block.solid && block.opaque && !block.liquid;
     }
 }
@@ -34,12 +34,12 @@ namespace {
 
 qint64 squared(int value)
 {
-    return qint64(value) * value;
+    return static_cast<qint64>(value) * value;
 }
 
 qint64 regionKey(int regionX, int regionZ)
 {
-    return (qint64(regionX) << 32) ^ qint64(quint32(regionZ));
+    return (static_cast<qint64>(regionX) << 32) ^ static_cast<qint64>(static_cast<quint32>(regionZ));
 }
 
 } // namespace
@@ -79,7 +79,7 @@ bool QcCoastalTowerGenerator::crowded(const QcCoastalTowerPlan &plan) const
             // Only a neighbour of higher priority whose region comes near the tower can crowd it:
             // the others are never planned for this.
             // Squared distances in doubled coordinates, compared with the doubled distance squared.
-            const qint64 limit = 4 * qint64(minDistance) * minDistance;
+            const qint64 limit = 4 * static_cast<qint64>(minDistance) * minDistance;
             if ((dx == 0 && dz == 0) || m_planner.priority(regionX, regionZ) <= own || regionDistanceSquared(regionX, regionZ, x, z) >= limit) {
                 continue;
             }
@@ -181,7 +181,7 @@ void QcCoastalTowerGenerator::prepareColumn(QcChunk &chunk, const QcCoastalTower
 
     const int bottom = std::max(0, floor - m_planner.settings().maxFoundation);
     for (int y = floor - 1; y >= bottom; --y) {
-        if (m_ground[std::size_t(chunk.block(localX, y, localZ))]) {
+        if (m_ground[static_cast<std::size_t>(chunk.block(localX, y, localZ))]) {
             break;
         }
         chunk.setBlock(localX, y, localZ, m_planner.foundation());
@@ -194,10 +194,10 @@ QcChunkFurnishing QcCoastalTowerGenerator::furnishingIn(QcChunkPos pos) const
     const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansTouching(pos);
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : plans) {
         const QcStructurePlacement &placement = plan->placement;
-        const quint64 seed = qcMixSeed(m_seed, quint64(qcPositionRandom(m_seed ^ 0x5eed, plan->regionX, 0, plan->regionZ) * 4294967296.0));
+        const quint64 seed = qcMixSeed(m_seed, static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, plan->regionX, 0, plan->regionZ) * 4294967296.0));
         for (const QcStructureDefinition::Loot &loot : placement.structure().loot) {
             if (const QcBlockPos at = placement.toWorld(loot.at); at.chunk() == pos) {
-                furnishing.chests.append({at, loot.table, qcMixSeed(seed, quint64(qcPositionRandom(seed, at.x, at.y, at.z) * 4294967296.0))});
+                furnishing.chests.append({at, loot.table, qcMixSeed(seed, static_cast<quint64>(qcPositionRandom(seed, at.x, at.y, at.z) * 4294967296.0))});
             }
         }
         for (const QcStructureDefinition::Spawner &spawner : placement.structure().spawners) {

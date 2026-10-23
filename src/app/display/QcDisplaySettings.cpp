@@ -3,6 +3,7 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "clientcore/settings/QcKeyControls.h"
+#include "common/core/QcDowncast.h"
 
 #include <QCoreApplication>
 #include <QGuiApplication>
@@ -19,9 +20,9 @@ using namespace Qt::StringLiterals;
 namespace {
 
 using Mode = QcDisplayOptions::WindowMode;
-static_assert(int(QcDisplaySettings::WindowMode::Windowed) == int(Mode::Windowed)
-                  && int(QcDisplaySettings::WindowMode::Borderless) == int(Mode::Borderless)
-                  && int(QcDisplaySettings::WindowMode::Fullscreen) == int(Mode::Fullscreen),
+static_assert(static_cast<int>(QcDisplaySettings::WindowMode::Windowed) == static_cast<int>(Mode::Windowed)
+                  && static_cast<int>(QcDisplaySettings::WindowMode::Borderless) == static_cast<int>(Mode::Borderless)
+                  && static_cast<int>(QcDisplaySettings::WindowMode::Fullscreen) == static_cast<int>(Mode::Fullscreen),
               "QcDisplaySettings::WindowMode follows QcDisplayOptions::WindowMode");
 
 // The key capture of the controls page takes every key, the fullscreen key too.
@@ -86,10 +87,10 @@ int QcDisplaySettings::screen() const
 {
     const QStringList names = QcWindowPlacement::screenNames();
     if (const std::optional<qsizetype> index = QcDisplayOptions::screenIndex(names, m_options.screen)) {
-        return int(*index);
+        return static_cast<int>(*index);
     }
     const QScreen *primary = QGuiApplication::primaryScreen();
-    return primary ? std::max(0, int(names.indexOf(primary->name()))) : 0;
+    return primary ? std::max(0, static_cast<int>(names.indexOf(primary->name()))) : 0;
 }
 
 void QcDisplaySettings::setScreen(int index)
@@ -116,10 +117,10 @@ void QcDisplaySettings::setScreen(int index)
 void QcDisplaySettings::setWindowMode(WindowMode mode)
 {
     if (mode != WindowMode::Windowed && mode != WindowMode::Borderless && mode != WindowMode::Fullscreen) {
-        qCWarning(lcDisplay) << "Window mode" << int(mode) << "rejected: unknown";
+        qCWarning(lcDisplay) << "Window mode" << static_cast<int>(mode) << "rejected: unknown";
         return;
     }
-    switchMode(Mode(mode));
+    switchMode(static_cast<Mode>(mode));
 }
 
 void QcDisplaySettings::toggleFullscreen()
@@ -174,11 +175,11 @@ void QcDisplaySettings::setVsync(bool on)
 
 std::optional<int> QcDisplaySettings::checkedLimit(FrameLimit limit, const char *setting)
 {
-    if (!QcDisplayOptions::isFrameLimit(int(limit))) {
-        qCWarning(lcDisplay) << "Frame limit" << int(limit) << "for" << setting << "rejected: not one of the choices";
+    if (!QcDisplayOptions::isFrameLimit(static_cast<int>(limit))) {
+        qCWarning(lcDisplay) << "Frame limit" << static_cast<int>(limit) << "for" << setting << "rejected: not one of the choices";
         return std::nullopt;
     }
-    return int(limit);
+    return static_cast<int>(limit);
 }
 
 void QcDisplaySettings::setFrameLimit(FrameLimit limit)
@@ -283,7 +284,7 @@ void QcDisplaySettings::save() const
 bool QcDisplaySettings::eventFilter(QObject *watched, QEvent *event)
 {
     if (watched == m_window && event->type() == QEvent::KeyPress) {
-        const auto *key = static_cast<const QKeyEvent *>(event);
+        const auto *key = qcDowncast<const QKeyEvent>(event);
         if (!key->isAutoRepeat() && !capturingKeys(*m_window)
             && m_keys.bindings().actionForPress(key->key(), key->modifiers()) == QcKeyBindings::Action::Fullscreen) {
             toggleFullscreen();

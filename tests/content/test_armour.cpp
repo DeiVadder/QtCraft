@@ -222,7 +222,7 @@ private slots:
         QByteArray bytes;
         {
             QDataStream out(&bytes, QIODevice::WriteOnly);
-            out << true << quint8(QcEquipmentSlot::Chest) << qint32(6) << u"iron"_s << quint32(1) << quint32(0xFFFFFFF0u);
+            out << true << static_cast<quint8>(QcEquipmentSlot::Chest) << qint32{6} << u"iron"_s << quint32{1} << static_cast<quint32>(0xFFFFFFF0u);
         }
         QDataStream in(bytes);
         QVERIFY(!QcArmourSerializer::read(in));
@@ -291,7 +291,7 @@ private slots:
         const QcItemId pick = item("iron_pickaxe");
         const QcItemId chest = item("iron_chestplate");
         const int durability = m_content->item(chest).durability;
-        const int bonus = int(std::floor(durability * QcRepair::bonusShare));
+        const int bonus = static_cast<int>(std::floor(durability * QcRepair::bonusShare));
 
         QList<QcItemStack> grid(4);
         grid[0] = {chest, 1, 200};
@@ -345,12 +345,12 @@ private slots:
         const QcStandPose normal = pose.normalized();
         QCOMPARE(normal.at(QcStandPose::Part::Head), (QcStandPose::Rotation{40.0f, 0.0f, -90.0f}));
 
-        for (const quint8 flags : {quint8(0), quint8(1), quint8(6), quint8(15)}) {
+        for (const quint8 flags : {quint8{0}, quint8{1}, quint8{6}, quint8{15}}) {
             QCOMPARE(QcStandPose::withFlags(flags).flags(), flags);
         }
         QCOMPARE(QcStandPose().flags(), quint8(3));
         for (std::size_t i = 0; i < QcStandPose::partCount; ++i) {
-            const auto part = QcStandPose::Part(i);
+            const auto part = static_cast<QcStandPose::Part>(i);
             QCOMPARE(QcStandPose::partFromName(QcStandPose::partName(part)), std::optional(part));
         }
         QVERIFY(!QcStandPose::partFromName(u"tail"_s));

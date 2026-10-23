@@ -29,7 +29,7 @@ public:
     void waitForIdle();
     // Drops the jobs that have not started yet and returns how many; running jobs go on.
     qsizetype discardQueued();
-    int threadCount() const { return int(m_threads.size()); }
+    int threadCount() const { return static_cast<int>(m_threads.size()); }
 
 private:
     void run();

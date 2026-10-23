@@ -79,9 +79,9 @@ QVariantList QcHeldMap::markerList(const QList<QcMapMarker> &markers)
     list.reserve(markers.size());
     for (const QcMapMarker &marker : markers) {
         list.append(QVariantMap{
-            {u"x"_s, double(marker.x) / halfPixelsToEdge},
-            {u"z"_s, double(marker.z) / halfPixelsToEdge},
-            {u"rotation"_s, double(marker.rotation % 16) * degreesPerStep},
+            {u"x"_s, static_cast<double>(marker.x) / halfPixelsToEdge},
+            {u"z"_s, static_cast<double>(marker.z) / halfPixelsToEdge},
+            {u"rotation"_s, static_cast<double>(marker.rotation % 16) * degreesPerStep},
             {u"onMap"_s, marker.onMap},
             {u"own"_s, marker.own},
             {u"frame"_s, marker.frame},

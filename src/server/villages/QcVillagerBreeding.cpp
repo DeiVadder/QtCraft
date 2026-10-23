@@ -141,7 +141,7 @@ std::optional<QcBlockPos> QcVillagerBreeding::nearestFreeBed(const QcVillage &vi
     std::optional<QcBlockPos> nearest;
     double best = std::numeric_limits<double>::max();
     for (const QcVillage::Spot &bed : village.beds) {
-        const double distance = (QcVec3{bed.at.x + 0.5, double(bed.at.y), bed.at.z + 0.5} - near).length();
+        const double distance = (QcVec3{bed.at.x + 0.5, static_cast<double>(bed.at.y), bed.at.z + 0.5} - near).length();
         if (bed.claimedBy == 0 && distance < best) {
             nearest = bed.at;
             best = distance;

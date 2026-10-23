@@ -42,10 +42,10 @@ struct QcMineshaftBlocks
     [[nodiscard]] static Resolved resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content);
     // The side index of a unit step (north, east, south, west).
     static int sideOf(int dx, int dz);
-    bool isOpen(QcBlockId block) const { return open[std::size_t(block)]; }
-    bool isLiquid(QcBlockId block) const { return liquid[std::size_t(block)]; }
-    bool falls(QcBlockId block) const { return falling[std::size_t(block)]; }
-    bool isFoliage(QcBlockId block) const { return foliage[std::size_t(block)]; }
+    bool isOpen(QcBlockId block) const { return open[static_cast<std::size_t>(block)]; }
+    bool isLiquid(QcBlockId block) const { return liquid[static_cast<std::size_t>(block)]; }
+    bool falls(QcBlockId block) const { return falling[static_cast<std::size_t>(block)]; }
+    bool isFoliage(QcBlockId block) const { return foliage[static_cast<std::size_t>(block)]; }
 };
 
 struct QcMineshaftBlocks::Resolved

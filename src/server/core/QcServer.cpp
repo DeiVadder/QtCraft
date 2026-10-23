@@ -82,7 +82,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits,
                 m_explosions}
 {
-    static_assert(QcTickScheduler::intervalNs == qint64(QcPhysics::tickDuration * 1e9));
+    static_assert(QcTickScheduler::intervalNs == static_cast<qint64>(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);
     m_tickTimer->setSingleShot(true);
     connect(m_tickTimer, &QTimer::timeout, this, &QcServer::runDueTicks);
@@ -497,7 +497,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.pitch = std::clamp(input.pitch, -90.0f, 90.0f);
     input.yaw = std::fmod(input.yaw, 360.0f);
     // The speed follows the player's effects as the server knows them, never the client's word.
-    input.speedFactor = float(client.effects.speedFactor(m_state.content()));
+    input.speedFactor = static_cast<float>(client.effects.speedFactor(m_state.content()));
 
     // A rider does not move: the cart carries the player (decision E-382).
     if (m_minecarts.steer(client, input)) {

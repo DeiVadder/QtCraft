@@ -99,7 +99,7 @@ Glyph buttonGlyph(QcGamepadFamily family, QcGamepadButton button)
     case QcGamepadButton::East:
     case QcGamepadButton::West:
     case QcGamepadButton::North:
-        return faceGlyph(family, std::size_t(button) - std::size_t(QcGamepadButton::South));
+        return faceGlyph(family, static_cast<std::size_t>(button) - static_cast<std::size_t>(QcGamepadButton::South));
     case QcGamepadButton::Back:
         return glyphOf(Shape::Label, labels.back.toString(), {}, {});
     case QcGamepadButton::Guide:
@@ -201,7 +201,7 @@ QString shapeName(Shape shape)
 {
     static const std::array<QStringView, 10> names{u"label", u"cross",    u"circle", u"square", u"triangle",
                                                    u"position", u"shoulder", u"trigger", u"stick", u"dpad"};
-    return names[std::size_t(shape)].toString();
+    return names[static_cast<std::size_t>(shape)].toString();
 }
 
 std::optional<Glyph> glyph(QcGamepadFamily family, const QString &input)

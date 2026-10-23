@@ -107,7 +107,7 @@ private:
     static QcVec3 roadSpot(const Village &village, int along)
     {
         const QcBlockPos centre = village.plan->centre;
-        return {centre.x + along + 0.5, double(QcVillageFixture::landFloor + 1), centre.z + 3.5};
+        return {centre.x + along + 0.5, static_cast<double>(QcVillageFixture::landFloor + 1), centre.z + 3.5};
     }
 
     // For one check of village life: the first `count` adults stand on the road a block apart and
@@ -310,7 +310,7 @@ private slots:
         }
         const auto spot = [&](int n) {
             const int farm = n / 3;
-            return QcVec3{far.x + n % 3 + 0.5, double(far.y), far.z + farm * apart + 0.5};
+            return QcVec3{far.x + n % 3 + 0.5, static_cast<double>(far.y), far.z + farm * apart + 0.5};
         };
         QList<quint32> strays;
         for (int n = 0; n < 6; ++n) {
@@ -360,7 +360,7 @@ private slots:
                 }
             }
         };
-        const QcVec3 around{centre.x + 0.5, double(centre.y), centre.z + 0.5};
+        const QcVec3 around{centre.x + 0.5, static_cast<double>(centre.y), centre.z + 0.5};
         fill(centre.offset(-10, 0, -10), centre.offset(10, 10, 10), qcAirBlockId);
         fill(centre.offset(-10, -1, -10), centre.offset(10, -1, 10), stone);
 

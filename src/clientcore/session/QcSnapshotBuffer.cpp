@@ -9,14 +9,15 @@ namespace {
 float lerpAngle(float from, float to, double t)
 {
     const float difference = std::remainder(to - from, 360.0f);
-    return from + difference * float(t);
+    return from + difference * static_cast<float>(t);
 }
 
 QcSnapshotBuffer::Snapshot lerp(const QcSnapshotBuffer::Snapshot &from, const QcSnapshotBuffer::Snapshot &to, double serverMs)
 {
     const double span = to.serverMs - from.serverMs;
     const double t = span > 0.0 ? (serverMs - from.serverMs) / span : 1.0;
-    return {serverMs, from.position + (to.position - from.position) * t, lerpAngle(from.yaw, to.yaw, t), from.pitch + (to.pitch - from.pitch) * float(t)};
+    return {serverMs, from.position + (to.position - from.position) * t, lerpAngle(from.yaw, to.yaw, t),
+        from.pitch + (to.pitch - from.pitch) * static_cast<float>(t)};
 }
 
 } // namespace

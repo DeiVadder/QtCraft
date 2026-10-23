@@ -25,7 +25,7 @@ void QcControlAim::lookAtPoint(QcClientSession &session, const QcVec3 &point)
     const QcVec3 delta = point - eye;
 
     QcPlayerInput intent = session.intent();
-    intent.yaw = float(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
-    intent.pitch = float(qRadiansToDegrees(std::atan2(delta.y, std::sqrt(delta.x * delta.x + delta.z * delta.z))));
+    intent.yaw = static_cast<float>(qRadiansToDegrees(std::atan2(delta.x, -delta.z)));
+    intent.pitch = static_cast<float>(qRadiansToDegrees(std::atan2(delta.y, std::sqrt(delta.x * delta.x + delta.z * delta.z))));
     session.setIntent(intent);
 }

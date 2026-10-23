@@ -28,12 +28,12 @@ namespace {
 
     int alpha = 255;
     if (text.size() == 9) {
-        alpha = int(QStringView(text).mid(7, 2).toUInt(&ok, 16));
+        alpha = static_cast<int>(QStringView(text).mid(7, 2).toUInt(&ok, 16));
         if (!ok) {
             return std::nullopt;
         }
     }
-    return QColor(int((rgb >> 16) & 0xFF), int((rgb >> 8) & 0xFF), int(rgb & 0xFF), alpha);
+    return QColor(static_cast<int>((rgb >> 16) & 0xFF), static_cast<int>((rgb >> 8) & 0xFF), static_cast<int>(rgb & 0xFF), alpha);
 }
 
 } // namespace
@@ -55,7 +55,7 @@ namespace QcProceduralTexture {
     spec.primary = *primary;
     spec.secondary = *secondary;
     spec.variation = std::clamp(definition.value(u"variation"_s).toDouble(0.1), 0.0, 1.0);
-    spec.seed = quint32(definition.value(u"seed"_s).toInteger(0));
+    spec.seed = static_cast<quint32>(definition.value(u"seed"_s).toInteger(0));
     // Checked by the content parser (QcContentParser::textureTiles); a texture pack's spec is clamped.
     const QJsonArray tiles = definition.value(u"tiles"_s).toArray();
     if (tiles.size() == 2) {

@@ -120,7 +120,7 @@ private slots:
         for (int x = 0; x < 16; ++x) {
             for (int z = 0; z < 16; ++z) {
                 for (int y = 0; y < 60; ++y) {
-                    chunk->setBlock(x, y, z, QcBlockId(1 + (x + y + z) % 3));
+                    chunk->setBlock(x, y, z, static_cast<QcBlockId>(1 + (x + y + z) % 3));
                 }
             }
         }
@@ -222,7 +222,7 @@ private slots:
         furnace.name = u"a:furnace"_s;
         furnace.faceTextures.fill(u"a:furnace"_s);
         furnace.soundMaterial = u"a:metal"_s;
-        furnace.soundKeys[std::size_t(QcBlockSoundAction::Hit)] = u"a:clank"_s;
+        furnace.soundKeys[static_cast<std::size_t>(QcBlockSoundAction::Hit)] = u"a:clank"_s;
         furnace.machine = {u"smelting"_s, 1.0, u"a:roar"_s};
         QVERIFY(content->registerBlock(furnace).has_value());
 
@@ -308,8 +308,8 @@ private slots:
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::DebugSubscribe{0x80}), QcProtocol::Peer::Client));
 
         QcMsg::ServerDebug debug;
-        debug.phaseMeanMs[std::size_t(QcTickPhase::Liquids)] = 1.25f;
-        debug.phaseMaxMs[std::size_t(QcTickPhase::Messages)] = 7.5f;
+        debug.phaseMeanMs[static_cast<std::size_t>(QcTickPhase::Liquids)] = 1.25f;
+        debug.phaseMaxMs[static_cast<std::size_t>(QcTickPhase::Messages)] = 7.5f;
         debug.tickMeanMs = 3.0f;
         debug.tickMaxMs = 12.0f;
         debug.lateMeanMs = 0.25f;

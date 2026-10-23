@@ -25,7 +25,7 @@ int cellIndex(int x, int y, int z)
 
 constexpr std::size_t channelIndex(QcLightEngine::Channel channel)
 {
-    return std::size_t(channel);
+    return static_cast<std::size_t>(channel);
 }
 
 } // namespace
@@ -67,13 +67,13 @@ const QcLightTable::Entry &QcLightEngine::entryAt(const Column &column, int x, i
 template<QcLightEngine::Channel C>
 int QcLightEngine::levelIn(const Column &column, int x, int y, int z)
 {
-    const Section &section = column.light[channelIndex(C)][std::size_t(y / QcWorld::sectionHeight)];
+    const Section &section = column.light[channelIndex(C)][static_cast<std::size_t>(y / QcWorld::sectionHeight)];
     return section.cells ? section.cells->level(cellIndex(x, y, z)) : section.uniform;
 }
 
 bool QcLightEngine::Column::setLevel(std::size_t channel, int x, int y, int z, int level)
 {
-    Section &section = light[channel][std::size_t(y / QcWorld::sectionHeight)];
+    Section &section = light[channel][static_cast<std::size_t>(y / QcWorld::sectionHeight)];
     if (!section.cells) {
         if (std::cmp_equal(level, section.uniform)) {
             return false;
@@ -101,7 +101,7 @@ void QcLightEngine::setLevel(Column &column, int x, int y, int z, int level)
 void QcLightEngine::noteCompactable(Channel channel, quint64 key)
 {
     // Propagation writes many cells of one section in a row: the set sees each run once.
-    const std::pair<quint64, int> entry{key, int(channel)};
+    const std::pair<quint64, int> entry{key, static_cast<int>(channel)};
     if (m_lastCompactable == entry) {
         return;
     }
@@ -115,7 +115,7 @@ int QcLightEngine::emission(const Column &column, int x, int y, int z) const
     if constexpr (C == Channel::Block) {
         return entryAt(column, x, y, z).emission;
     } else {
-        return y > column.skyTop[std::size_t(columnIndex(localOf(x), localOf(z)))] ? maxLevel : 0;
+        return y > column.skyTop[static_cast<std::size_t>(columnIndex(localOf(x), localOf(z)))] ? maxLevel : 0;
     }
 }
 
@@ -160,7 +160,7 @@ void QcLightEngine::propagateAdd()
             }
 
             const QcLightTable::Entry &entry = entryAt(*target, next.x, next.y, next.z);
-            const int candidate = light - std::max(1, int(entry.opacity));
+            const int candidate = light - std::max(1, static_cast<int>(entry.opacity));
             const bool passes = entry.opacity < maxLevel && QcLightPassage::crosses(blocked, entry.blockedFaces, face);
             if (passes && candidate > levelIn<C>(*target, next.x, next.y, next.z)) {
                 setLevel<C>(*target, next.x, next.y, next.z, candidate);
@@ -274,8 +274,8 @@ void QcLightEngine::visitLitBorder(const Column &column, QcChunkPos pos, QcBlock
     const int lz = offset.dz > 0 ? last : 0;
 
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        const Section &section = column.light[channelIndex(C)][std::size_t(index)];
-        const Section &beside = across.light[channelIndex(C)][std::size_t(index)];
+        const Section &section = column.light[channelIndex(C)][static_cast<std::size_t>(index)];
+        const Section &beside = across.light[channelIndex(C)][static_cast<std::size_t>(index)];
         if (!section.cells && (section.uniform == 0 || (!beside.cells && section.uniform <= beside.uniform))) {
             continue;
         }
@@ -355,19 +355,19 @@ quint32 QcLightEngine::Column::seedSky(const SkyTops &tops)
     const int highest = highestTop;
     quint32 lit = 0;
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        Section &section = light[std::size_t(Channel::Sky)][std::size_t(index)];
+        Section &section = light[static_cast<std::size_t>(Channel::Sky)][static_cast<std::size_t>(index)];
         const int low = index * QcWorld::sectionHeight;
         const int high = low + QcWorld::sectionHeight - 1;
 
         // Sections above every top are lit by the open sky, sections below every top start dark.
         section.cells.reset();
-        section.uniform = low > highest ? quint8(maxLevel) : 0;
+        section.uniform = low > highest ? static_cast<quint8>(maxLevel) : 0;
         if (low > highest || high <= lowest) {
             continue;
         }
 
         section.cells = QcSkyLight::sectionCells(skyTop, low, high);
-        lit |= quint32(1) << index;
+        lit |= quint32{1} << index;
     }
     return lit;
 }
@@ -379,7 +379,7 @@ void QcLightEngine::seedSky(Column &column, QcChunkPos pos)
         return;
     }
     for (int index = 0; index < QcWorld::sectionCount; ++index) {
-        if (lit & (quint32(1) << index)) {
+        if (lit & (quint32{1} << index)) {
             touch(Channel::Sky, pos.x * QcWorld::chunkSize, index * QcWorld::sectionHeight, pos.z * QcWorld::chunkSize);
         }
     }
@@ -390,10 +390,10 @@ void QcLightEngine::queueSkyEdges(const Column &column, QcChunkPos pos)
     // Top of the column (lx, lz) of this chunk or of a loaded neighbour; -1 when not loaded.
     const auto topAt = [this, &column, pos](int lx, int lz) {
         if (lx >= 0 && lx < QcWorld::chunkSize && lz >= 0 && lz < QcWorld::chunkSize) {
-            return int(column.skyTop[std::size_t(columnIndex(lx, lz))]);
+            return static_cast<int>(column.skyTop[static_cast<std::size_t>(columnIndex(lx, lz))]);
         }
         const Column *other = find({pos.x + floorChunk(lx), pos.z + floorChunk(lz)});
-        return other ? int(other->skyTop[std::size_t(columnIndex(localOf(lx), localOf(lz)))]) : -1;
+        return other ? static_cast<int>(other->skyTop[static_cast<std::size_t>(columnIndex(localOf(lx), localOf(lz)))]) : -1;
     };
     QcSkyLight::forEachEdgeCell(column.skyTop, topAt, [this, pos](int lx, int y, int lz) {
         m_add.push_back({pos.x * QcWorld::chunkSize + lx, y, pos.z * QcWorld::chunkSize + lz});
@@ -409,7 +409,7 @@ void QcLightEngine::compactColumn(Column &column)
             }
             if (const int level = section.cells->uniformLevel(); level >= 0) {
                 section.cells.reset();
-                section.uniform = quint8(level);
+                section.uniform = static_cast<quint8>(level);
             }
         }
     }
@@ -419,7 +419,7 @@ void QcLightEngine::compactWritten()
 {
     for (const auto &[key, channel] : std::as_const(m_compactable)) {
         const QcSectionAddress address = qcSectionFromKey(key);
-        compact(Channel(channel), address.chunk, address.sectionIndex);
+        compact(static_cast<Channel>(channel), address.chunk, address.sectionIndex);
     }
     m_compactable.clear();
     m_lastCompactable.reset();
@@ -571,10 +571,10 @@ void QcLightEngine::change(QcBlockPos pos, QcBlockId previous, const QcChunk &bl
     }
 
     // The sources of the column move when the change stops sky light differently.
-    const std::size_t index = std::size_t(columnIndex(pos.localX(), pos.localZ()));
+    const std::size_t index = static_cast<std::size_t>(columnIndex(pos.localX(), pos.localZ()));
     const int oldTop = own->skyTop[index];
     const int newTop = before.skyStop == after.skyStop ? oldTop : QcSkyLight::columnTop(blocks, *m_table, pos.localX(), pos.localZ());
-    own->skyTop[index] = qint16(newTop);
+    own->skyTop[index] = static_cast<qint16>(newTop);
     relight<Channel::Sky>(cell, oldTop + 1, newTop, newTop + 1, oldTop);
     compactWritten();
 }
@@ -618,13 +618,13 @@ int QcLightEngine::level(Channel channel, QcBlockPos pos) const
 const QcLightNibbles *QcLightEngine::section(Channel channel, QcChunkPos pos, int index) const
 {
     const auto it = m_columns.find(pos);
-    return it == m_columns.end() ? nullptr : it->second.light[channelIndex(channel)][std::size_t(index)].cells.get();
+    return it == m_columns.end() ? nullptr : it->second.light[channelIndex(channel)][static_cast<std::size_t>(index)].cells.get();
 }
 
 int QcLightEngine::uniformLevel(Channel channel, QcChunkPos pos, int index) const
 {
     const auto it = m_columns.find(pos);
-    return it == m_columns.end() ? 0 : it->second.light[channelIndex(channel)][std::size_t(index)].uniform;
+    return it == m_columns.end() ? 0 : it->second.light[channelIndex(channel)][static_cast<std::size_t>(index)].uniform;
 }
 
 void QcLightEngine::compact(Channel channel, QcChunkPos pos, int index)
@@ -633,11 +633,11 @@ void QcLightEngine::compact(Channel channel, QcChunkPos pos, int index)
     if (it == m_columns.end()) {
         return;
     }
-    Section &section = it->second.light[channelIndex(channel)][std::size_t(index)];
+    Section &section = it->second.light[channelIndex(channel)][static_cast<std::size_t>(index)];
     if (section.cells) {
         if (const int level = section.cells->uniformLevel(); level >= 0) {
             section.cells.reset();
-            section.uniform = quint8(level);
+            section.uniform = static_cast<quint8>(level);
         }
     }
 }
@@ -652,18 +652,20 @@ QList<QcLightEngine::SectionRef> QcLightEngine::takeTouched(Channel channel)
 int QcLightEngine::skyTop(QcBlockPos column) const
 {
     const auto it = m_columns.find(column.chunk());
-    return it == m_columns.end() ? QcWorld::worldHeight : int(it->second.skyTop[std::size_t(columnIndex(column.localX(), column.localZ()))]);
+    return it == m_columns.end() ? QcWorld::worldHeight
+        : static_cast<int>(it->second.skyTop[static_cast<std::size_t>(columnIndex(column.localX(), column.localZ()))]);
 }
 
 QcLightEngine::Memory QcLightEngine::memory() const
 {
     Memory memory;
-    memory.columns = qsizetype(m_columns.size());
+    memory.columns = static_cast<qsizetype>(m_columns.size());
     for (const auto &[pos, column] : m_columns) {
         for (std::size_t channel = 0; channel < channelCount; ++channel) {
-            memory.sections[channel] += std::ranges::count_if(column.light[channel], [](const Section &section) { return bool(section.cells); });
+            memory.sections[channel] += std::ranges::count_if(column.light[channel], [](const Section &section) { return static_cast<bool>(section.cells); });
         }
     }
-    memory.bytes = memory.columns * qsizetype(sizeof(Column)) + (memory.sections[0] + memory.sections[1]) * qsizetype(sizeof(QcLightNibbles));
+    memory.bytes = memory.columns * static_cast<qsizetype>(sizeof(Column))
+        + (memory.sections[0] + memory.sections[1]) * static_cast<qsizetype>(sizeof(QcLightNibbles));
     return memory;
 }

@@ -420,7 +420,7 @@ private slots:
 
         // An item, an armour stand and a pig in the cell the stone moves into.
         const QcBlockPos cell = at(3, 0, 10);
-        const QcVec3 centre{cell.x + 0.5, double(cell.y), cell.z + 0.5};
+        const QcVec3 centre{cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
         const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centre, 800001);
         QcArmourStand stand;
         stand.id = 800002;

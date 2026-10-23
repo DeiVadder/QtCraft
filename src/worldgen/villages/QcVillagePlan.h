@@ -91,12 +91,19 @@ struct QcVillagePlan
     // settlement's id (QcVillage::settlementId, bit 62).
     static constexpr qint64 regionId(int x, int z)
     {
-        constexpr quint64 mask = (quint64(1) << 24) - 1;
-        return qint64((quint64(1) << 61) | ((quint64(quint32(x)) & mask) << 24) | (quint64(quint32(z)) & mask));
+        constexpr quint64 mask = (quint64{1} << 24) - 1;
+        return static_cast<qint64>((quint64{1} << 61) | ((static_cast<quint64>(static_cast<quint32>(x)) & mask) << 24)
+            | (static_cast<quint64>(static_cast<quint32>(z)) & mask));
     }
     // The region x and z of a regionId().
-    static constexpr int regionX(qint64 id) { return int(qint32(quint32((quint64(id) >> 24) & 0xffffff) << 8) >> 8); }
-    static constexpr int regionZ(qint64 id) { return int(qint32(quint32(quint64(id) & 0xffffff) << 8) >> 8); }
+    static constexpr int regionX(qint64 id)
+    {
+        return static_cast<int>(static_cast<qint32>(static_cast<quint32>((static_cast<quint64>(id) >> 24) & 0xffffff) << 8) >> 8);
+    }
+    static constexpr int regionZ(qint64 id)
+    {
+        return static_cast<int>(static_cast<qint32>(static_cast<quint32>(static_cast<quint64>(id) & 0xffffff) << 8) >> 8);
+    }
 
     // regionId() of its region; the showcase and test fixtures number their villages from 1.
     qint64 id = 0;

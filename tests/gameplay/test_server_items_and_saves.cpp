@@ -156,7 +156,7 @@ private slots:
         QCOMPARE(seen, 5);
 
         // Thrown items land a few metres ahead, out of the player's reach.
-        ticks(int(QcItemEntityManager::thrownPickupDelay * QcPhysics::tickRate) + 5);
+        ticks(static_cast<int>(QcItemEntityManager::thrownPickupDelay * QcPhysics::tickRate) + 5);
         QCOMPARE(countOf(item("qtcraft:dirt")), 0);
         for (const QcItemEntity &thrown : m_server->items().items()) {
             QVERIFY((thrown.motion.position - m_client->motion.position).length() > 1.5);
@@ -166,7 +166,7 @@ private slots:
     void itemsMergeAndClientsLearnTheNewCount()
     {
         join();
-        const QcVec3 spot{m_feet.x + 2.5, double(m_feet.y), m_feet.z + 0.5};
+        const QcVec3 spot{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QcItemEntityManager::Drop drop;
         drop.stack = {item("qtcraft:dirt"), 3, 0};
         drop.position = spot;
@@ -202,7 +202,7 @@ private slots:
         // Breaking the ground breaks the sapling, which drops itself.
         const double grassSeconds = QcMining::breakSeconds(m_content->block(id("qtcraft:grass_block")), nullptr);
         send(QcMsg::StartMining{grass});
-        ticks(int(std::ceil(grassSeconds * QcPhysics::tickRate)));
+        ticks(static_cast<int>(std::ceil(grassSeconds * QcPhysics::tickRate)));
         send(QcMsg::FinishMining{grass});
         QCOMPARE(m_server->world().blockAt(grass), std::optional<QcBlockId>(qcAirBlockId));
         QCOMPARE(m_server->world().blockAt(grass.offset(0, 1, 0)), std::optional<QcBlockId>(qcAirBlockId));
@@ -221,7 +221,7 @@ private slots:
         m_server->world().setBlock(dirt, id("qtcraft:dirt"));
         const double seconds = QcMining::breakSeconds(m_content->block(id("qtcraft:dirt")), nullptr);
         send(QcMsg::StartMining{dirt});
-        ticks(int(std::ceil(seconds * QcPhysics::tickRate)));
+        ticks(static_cast<int>(std::ceil(seconds * QcPhysics::tickRate)));
         const qsizetype itemsBefore = m_client->items.size();
 
         // Handled at once, acknowledged only with the next world sync.
@@ -248,10 +248,10 @@ private slots:
                 }
                 QcItemEntityManager::Drop drop;
                 drop.stack = {item("qtcraft:oak_sapling"), 1, 0};
-                drop.position = {m_feet.x + dx + 0.5, double(m_feet.y), m_feet.z + dz + 0.5};
+                drop.position = {m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
                 drop.age = QcItemEntityManager::despawnSeconds - 0.01;
                 drop.pickupDelay = 10.0;
-                m_server->items().spawn(drop, quint32(9100 + spawned++));
+                m_server->items().spawn(drop, static_cast<quint32>(9100 + spawned++));
             }
         }
 
@@ -270,7 +270,7 @@ private slots:
         // Other items just vanish.
         QcItemEntityManager::Drop dirt;
         dirt.stack = {item("qtcraft:dirt"), 1, 0};
-        dirt.position = {m_feet.x + 0.5, double(m_feet.y) + 3.0, m_feet.z + 3.5};
+        dirt.position = {m_feet.x + 0.5, static_cast<double>(m_feet.y) + 3.0, m_feet.z + 3.5};
         dirt.age = QcItemEntityManager::despawnSeconds - 0.01;
         m_server->items().spawn(dirt, 9200);
         ticks(1);
@@ -288,7 +288,7 @@ private slots:
 
         QcItemEntityManager::Drop drop;
         drop.stack = {item("qtcraft:stone_pickaxe"), 1, 7};
-        drop.position = {m_feet.x + 2.5, double(m_feet.y), m_feet.z + 2.5};
+        drop.position = {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 2.5};
         m_server->items().spawn(drop, 9300);
 
         const QcBlockPos sapling = m_feet.offset(-2, 0, -2);

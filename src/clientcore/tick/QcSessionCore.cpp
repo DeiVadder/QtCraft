@@ -13,7 +13,7 @@
 QcSessionCore::QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink)
     : m_sink(std::move(sink))
     , m_timer(new QTimer(this))
-    , m_pacer(qint64(QcPhysics::tickDuration * 1e9))
+    , m_pacer(static_cast<qint64>(QcPhysics::tickDuration * 1e9))
 {
     m_connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Server,
                                                   [this](QcMessage &&message) { onMessage(std::move(message)); });
@@ -67,7 +67,7 @@ void QcSessionCore::start(const QcSessionCommand::Start &start)
     m_connection->send(start.hello);
     if (start.timer) {
         m_pacer.start(m_now());
-        m_timer->start(int(QcPhysics::tickDuration * 1000.0));
+        m_timer->start(static_cast<int>(QcPhysics::tickDuration * 1000.0));
     }
 }
 
@@ -77,7 +77,7 @@ void QcSessionCore::onTimer()
     if (!m_closed) {
         // Rounded up: a shot a little early would find nothing due and cost a wake-up.
         const qint64 untilNs = m_pacer.untilNextNs(m_now());
-        m_timer->start(int((untilNs + 999'999) / 1'000'000));
+        m_timer->start(static_cast<int>((untilNs + 999'999) / 1'000'000));
     }
 }
 
@@ -105,7 +105,7 @@ bool QcSessionCore::tick()
     QcSessionEvent::Ticked ticked;
     if (!m_vitals.isDead()) {
         const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
-        m_prediction.setSpeedFactor(content ? float(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
+        m_prediction.setSpeedFactor(content ? static_cast<float>(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
         const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), m_gameMode.rules().movement());
         if (!m_prediction.riding().isRiding()) {
             // A landing or a mode without flight ended the flight: the wish follows the state.

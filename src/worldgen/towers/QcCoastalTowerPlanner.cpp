@@ -68,7 +68,7 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
 
 double QcCoastalTowerPlanner::random(int regionX, int regionZ, int purpose, int index) const
 {
-    return qcPositionRandom(qcMixSeed(m_seed, quint64(purpose)), regionX, index, regionZ);
+    return qcPositionRandom(qcMixSeed(m_seed, static_cast<quint64>(purpose)), regionX, index, regionZ);
 }
 
 double QcCoastalTowerPlanner::priority(int regionX, int regionZ) const
@@ -78,7 +78,7 @@ double QcCoastalTowerPlanner::priority(int regionX, int regionZ) const
 
 const QcCoastalTowerPlanner::Kind &QcCoastalTowerPlanner::pick(double random) const
 {
-    int left = int(random * m_totalWeight);
+    int left = static_cast<int>(random * m_totalWeight);
     const auto chosen = std::ranges::find_if(m_kinds, [&left](const Kind &kind) {
         left -= kind.weight;
         return left < 0;
@@ -98,7 +98,7 @@ std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerPlanner::plan(int region
     const qsizetype tries = std::min<qsizetype>(sites.size(), m_settings.attempts);
     for (qsizetype i = 0; i < tries; ++i) {
         const auto [x, z] = sites[i];
-        if (std::optional<QcCoastalTowerPlan> site = siteAt(kind, x, z, random(regionX, regionZ, Turn, int(i)))) {
+        if (std::optional<QcCoastalTowerPlan> site = siteAt(kind, x, z, random(regionX, regionZ, Turn, static_cast<int>(i)))) {
             site->regionX = regionX;
             site->regionZ = regionZ;
             return std::make_shared<const QcCoastalTowerPlan>(std::move(*site));
@@ -118,7 +118,7 @@ QcCoastalTowerPlanner::Grid QcCoastalTowerPlanner::gridOf(int regionX, int regio
     grid.firstZ = regionZ * m_settings.regionSize + margin;
     grid.count = (m_settings.regionSize - 2 * margin - 1) / grid.step + 1;
     grid.width = grid.count + 2 * grid.reach;
-    grid.land.resize(std::size_t(grid.width) * std::size_t(grid.width));
+    grid.land.resize(static_cast<std::size_t>(grid.width) * static_cast<std::size_t>(grid.width));
     grid.sea.resize(grid.land.size());
     for (int j = 0; j < grid.width; ++j) {
         for (int i = 0; i < grid.width; ++i) {
@@ -194,7 +194,7 @@ std::optional<QcCoastalTowerPlan> QcCoastalTowerPlanner::siteAt(const Kind &kind
 {
     // Each of the four turns from a random one on, the first whose door opens onto ground one can
     // step from; the footprint of a square structure is the same for all of them.
-    const int first = std::min(3, int(turn * 4));
+    const int first = std::min(3, static_cast<int>(turn * 4));
     // The floor per footprint: even and odd turns.
     std::array<std::optional<std::optional<int>>, 2> floors;
     for (int i = 0; i < 4; ++i) {
@@ -202,7 +202,7 @@ std::optional<QcCoastalTowerPlan> QcCoastalTowerPlanner::siteAt(const Kind &kind
         const int sizeX = turns % 2 == 0 ? kind.structure->sizeX() : kind.structure->sizeZ();
         const int sizeZ = turns % 2 == 0 ? kind.structure->sizeZ() : kind.structure->sizeX();
         const Footprint footprint{x - sizeX / 2, z - sizeZ / 2, x - sizeX / 2 + sizeX - 1, z - sizeZ / 2 + sizeZ - 1};
-        std::optional<std::optional<int>> &known = floors[std::size_t(turns % 2)];
+        std::optional<std::optional<int>> &known = floors[static_cast<std::size_t>(turns % 2)];
         if (!known) {
             known = floorOver(footprint);
         }

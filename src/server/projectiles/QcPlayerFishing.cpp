@@ -21,7 +21,7 @@ constexpr double catchLift = 0.6;
 
 int ticksOf(double seconds)
 {
-    return std::max(1, int(std::lround(seconds / QcPhysics::tickDuration)));
+    return std::max(1, static_cast<int>(std::lround(seconds / QcPhysics::tickDuration)));
 }
 
 // A spectator has no body to fish with (decision E-730): a cast bobber goes.
@@ -55,7 +55,7 @@ const QcFishingLoot *QcPlayerFishing::draw(const QcFishingDefinition &rod, QRand
         return nullptr;
     }
 
-    int roll = int(random.bounded(quint32(total)));
+    int roll = static_cast<int>(random.bounded(static_cast<quint32>(total)));
     for (const QcFishingLoot &entry : rod.loot) {
         roll -= entry.weight;
         if (roll < 0) {
@@ -82,7 +82,7 @@ bool QcPlayerFishing::use(QcServerClient &client)
     const bool done = bobberOf(client) ? (reel(client, *held->fishing), true) : cast(client, *held->fishing);
     if (done) {
         client.swung = true;
-        client.throwReady.insert(rod, now + quint64(useCooldownTicks));
+        client.throwReady.insert(rod, now + static_cast<quint64>(useCooldownTicks));
     }
     return done;
 }

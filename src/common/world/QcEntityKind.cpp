@@ -7,7 +7,7 @@ namespace QcEntityKinds {
     if (value >= count) {
         return std::nullopt;
     }
-    return QcEntityKind(value);
+    return static_cast<QcEntityKind>(value);
 }
 
 QLatin1StringView name(QcEntityKind kind)

@@ -11,7 +11,7 @@ qint64 QcThreadCpuClock::nowNs()
     if (clock_gettime(CLOCK_THREAD_CPUTIME_ID, &time) != 0) {
         return -1;
     }
-    return qint64(time.tv_sec) * 1'000'000'000 + qint64(time.tv_nsec);
+    return static_cast<qint64>(time.tv_sec) * 1'000'000'000 + static_cast<qint64>(time.tv_nsec);
 #else
     return -1;
 #endif

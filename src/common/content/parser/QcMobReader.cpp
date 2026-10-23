@@ -174,7 +174,7 @@ QList<QcStatusEffect> parseBlowEffects(const QJsonObject &json, QcJsonFieldReade
         QcStatusEffect effect;
         effect.name = nested.name(u"effect"_s, packNamespace);
         effect.level = nested.integer(u"level"_s, 1, 1, QcEffectDefinition::maxLevel);
-        effect.ticksLeft = int(std::lround(nested.number(u"seconds"_s, 5.0, 0.05, 3600.0) * 20.0));
+        effect.ticksLeft = static_cast<int>(std::lround(nested.number(u"seconds"_s, 5.0, 0.05, 3600.0) * 20.0));
         if (!entry.isObject() || effect.name.isEmpty()) {
             nested.fail(u"every entry is an object with an 'effect'"_s);
         }

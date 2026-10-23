@@ -44,7 +44,7 @@ enum class Action {
     Screenshot,
     Count
 };
-inline constexpr std::size_t actionCount = std::size_t(Action::Count);
+inline constexpr std::size_t actionCount = static_cast<std::size_t>(Action::Count);
 // The "button" of an action that has none (decision E-692): every button of a pad carries an
 // action already, so the photo mode's actions start without one until the player gives them one.
 inline constexpr QcGamepadButton unbound = QcGamepadButton::Count;

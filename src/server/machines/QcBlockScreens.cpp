@@ -102,7 +102,7 @@ std::optional<QList<QcItemStack>> QcBlockScreens::openHeld(QcServerClient &clien
     }
 
     // The item keeps only what its slots show; the rest goes back to the player.
-    QList<QcItemStack> leftOver = QcPortableContainers::leftOver(m_state.content(), stack, int(container->stacks->size()));
+    QList<QcItemStack> leftOver = QcPortableContainers::leftOver(m_state.content(), stack, static_cast<int>(container->stacks->size()));
     if (!leftOver.isEmpty()) {
         const std::optional<QcItemStack> trimmed = stack.tryWithContents(*container->stacks);
         if (!trimmed) {
@@ -290,8 +290,8 @@ void QcBlockScreens::send(QcServerClient &client, bool force)
     QcMsg::MachineState state;
     state.pos = machine->pos;
     state.stacks = QList<QcItemStack>(machine->stacks.begin(), machine->stacks.end());
-    state.burn = float(m_state.machineRules().burnFraction(*machine));
-    state.progress = float(m_state.machineRules().progressFraction(*machine, m_state.world().blockAt(machine->pos).value_or(qcAirBlockId)));
+    state.burn = static_cast<float>(m_state.machineRules().burnFraction(*machine));
+    state.progress = static_cast<float>(m_state.machineRules().progressFraction(*machine, m_state.world().blockAt(machine->pos).value_or(qcAirBlockId)));
 
     // Bars move in steps of one percent; smaller changes are not worth a message.
     const auto percent = [](float value) { return qRound(value * 100.0f); };

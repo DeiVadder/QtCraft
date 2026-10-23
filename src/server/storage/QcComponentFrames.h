@@ -101,7 +101,7 @@ public:
         const qint64 start = begin(id, tail ? tail->version : version);
         write(m_stream);
         if (tail) {
-            m_stream.writeRawData(tail->payload.constData(), int(tail->payload.size()));
+            m_stream.writeRawData(tail->payload.constData(), static_cast<int>(tail->payload.size()));
         }
         end(start);
     }

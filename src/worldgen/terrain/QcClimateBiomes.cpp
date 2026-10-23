@@ -53,12 +53,12 @@ int choose(const QList<Biome> &biomes, const QcTerrainClimate::Point &climate)
         const double own = weight(biome, climate);
         if (own > nearestWeight) {
             nearestWeight = own;
-            nearest = int(i);
+            nearest = static_cast<int>(i);
         }
         const double gated = own * rarityGate(biome, climate.rarity);
         if (gated > bestWeight) {
             bestWeight = gated;
-            best = int(i);
+            best = static_cast<int>(i);
         }
     }
     // Every biome rare and the point outside the spots (decision E-815): the nearest biome.

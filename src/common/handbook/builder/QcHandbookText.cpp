@@ -42,7 +42,7 @@ QString QcHandbookText::number(double value) const
 {
     const double rounded = std::round(value * 100.0) / 100.0;
     if (rounded == std::floor(rounded) && std::abs(rounded) < 1e15) {
-        return m_locale.toString(qint64(rounded));
+        return m_locale.toString(static_cast<qint64>(rounded));
     }
 
     const int decimals = std::round(rounded * 10.0) / 10.0 == rounded ? 1 : 2;

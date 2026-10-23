@@ -35,7 +35,7 @@ qint64 seedFromText(const QString &text)
         hash ^= c.unicode();
         hash *= 1099511628211ull;
     }
-    return qint64(hash);
+    return static_cast<qint64>(hash);
 }
 
 } // namespace
@@ -364,7 +364,7 @@ void QcGameController::beginSession()
     if (m_parts.view) {
         m_parts.view->clearMeshes();
         const int viewDistance = m_settings->viewDistance();
-        m_parts.view->setFogRange(float(viewDistance * QcWorld::chunkSize) * 0.6f, float(viewDistance * QcWorld::chunkSize));
+        m_parts.view->setFogRange(static_cast<float>(viewDistance * QcWorld::chunkSize) * 0.6f, static_cast<float>(viewDistance * QcWorld::chunkSize));
     }
     m_frame.startTickClock();
 }

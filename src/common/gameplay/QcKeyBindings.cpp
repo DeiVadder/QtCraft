@@ -167,7 +167,7 @@ const QList<QcKeyBindings::Action> &QcKeyBindings::actions()
 
 QString QcKeyBindings::id(Action action)
 {
-    return actionRows[std::size_t(action)].id.toString();
+    return actionRows[static_cast<std::size_t>(action)].id.toString();
 }
 
 std::optional<QcKeyBindings::Action> QcKeyBindings::actionFromId(const QString &id)
@@ -210,7 +210,7 @@ QString QcKeyBindings::keyName(int key)
     }
 
     if (key < firstSpecialKey) {
-        const char32_t code = char32_t(key);
+        const char32_t code = static_cast<char32_t>(key);
         const QString text = QString::fromUcs4(&code, 1);
         // Printable characters only; Qt reports letters in upper case (lower-case letters are no keys).
         const QString upper = text.toUpper();
@@ -248,7 +248,7 @@ std::optional<int> QcKeyBindings::keyFromName(const QString &name)
         return std::nullopt;
     }
 
-    const int key = int(codes.first());
+    const int key = static_cast<int>(codes.first());
     if (key >= firstSpecialKey || keyName(key).isEmpty()) {
         return std::nullopt;
     }
@@ -260,13 +260,13 @@ int QcKeyBindings::key(Action action, int slot) const
     if (slot < 0 || slot >= slotCount) {
         return 0;
     }
-    return m_keys[std::size_t(action)][std::size_t(slot)];
+    return m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)];
 }
 
 QList<int> QcKeyBindings::keys(Action action) const
 {
     QList<int> list;
-    for (const int key : m_keys[std::size_t(action)]) {
+    for (const int key : m_keys[static_cast<std::size_t>(action)]) {
         if (key != 0) {
             list.append(key);
         }
@@ -276,7 +276,7 @@ QList<int> QcKeyBindings::keys(Action action) const
 
 bool QcKeyBindings::matches(Action action, int key) const
 {
-    return key != 0 && std::ranges::find(m_keys[std::size_t(action)], key) != m_keys[std::size_t(action)].end();
+    return key != 0 && std::ranges::find(m_keys[static_cast<std::size_t>(action)], key) != m_keys[static_cast<std::size_t>(action)].end();
 }
 
 std::optional<QcKeyBindings::Action> QcKeyBindings::actionFor(int key) const

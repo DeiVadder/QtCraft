@@ -77,7 +77,7 @@ private slots:
         QcChunkSection section;
         QCOMPARE(section.bitsPerIndex(), 0);
         int next = 1;
-        const auto blockOf = [](int cell) { return QcBlockId(cell % 300 + 1); };
+        const auto blockOf = [](int cell) { return static_cast<QcBlockId>(cell % 300 + 1); };
         const auto growTo = [&](int entries) {
             for (; next < entries; ++next) {
                 const int cell = next - 1;
@@ -130,12 +130,12 @@ private slots:
 
         QList<QcBlockId> palette;
         for (int i = 0; i < entries; ++i) {
-            palette.append(QcBlockId(1000 + i));
+            palette.append(static_cast<QcBlockId>(1000 + i));
         }
         QList<quint16> indices(QcWorld::blocksPerSection);
         for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
             // Long runs in the lower half (whole words alike), scattered indices above.
-            indices[cell] = quint16(cell < 2048 ? cell / 300 % entries : (cell * 7 + cell / 13) % entries);
+            indices[cell] = static_cast<quint16>(cell < 2048 ? cell / 300 % entries : (cell * 7 + cell / 13) % entries);
         }
 
         QcChunkSection section;
@@ -224,7 +224,7 @@ private slots:
     {
         QList<quint16> indices(QcWorld::blocksPerSection);
         for (int cell = 0; cell < QcWorld::blocksPerSection; ++cell) {
-            indices[cell] = quint16(cell % 4);
+            indices[cell] = static_cast<quint16>(cell % 4);
         }
         QcChunkSection section;
         QVERIFY(section.assign({3, 5, 3, 5}, indices));
@@ -275,7 +275,7 @@ private slots:
         original.setBlock(0, 0, 0, 3);
         const QcChunkSection snapshot = original;
         for (int i = 0; i < 20; ++i) {
-            original.setBlock(i % 16, 1, 0, QcBlockId(10 + i));
+            original.setBlock(i % 16, 1, 0, static_cast<QcBlockId>(10 + i));
         }
         QCOMPARE(original.bitsPerIndex(), 8);
         QCOMPARE(snapshot.bitsPerIndex(), 4);

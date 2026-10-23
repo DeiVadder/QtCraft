@@ -56,5 +56,5 @@ void QcControlContext::write(const QJsonObject &response)
 void QcControlContext::waitTicks(const QJsonObject &request, quint64 startTick, int ticks, std::function<QJsonObject()> result)
 {
     begin({request, QcControlActiveCommand::timeoutPolls(ticks),
-           [this, startTick, ticks] { return m_session->tickCount() >= startTick + quint64(ticks); }, std::move(result)});
+           [this, startTick, ticks] { return m_session->tickCount() >= startTick + static_cast<quint64>(ticks); }, std::move(result)});
 }

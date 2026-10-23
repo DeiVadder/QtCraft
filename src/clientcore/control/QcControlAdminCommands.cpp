@@ -34,9 +34,9 @@ QJsonObject sampleJson(const QcMsg::AdminSample &s)
             {u"tickP99Ms"_s, s.tickP99Ms},
             {u"tickMaxMs"_s, s.tickMaxMs},
             {u"ticksPerSecond"_s, s.ticksPerSecond},
-            {u"players"_s, qint64(s.players)},
-            {u"loadedChunks"_s, qint64(s.loadedChunks)},
-            {u"entities"_s, qint64(s.entities)},
+            {u"players"_s, static_cast<qint64>(s.players)},
+            {u"loadedChunks"_s, static_cast<qint64>(s.loadedChunks)},
+            {u"entities"_s, static_cast<qint64>(s.entities)},
             {u"memoryMb"_s, s.memoryMb},
             {u"sentKbPerSecond"_s, s.sentKbPerSecond},
             {u"receivedKbPerSecond"_s, s.receivedKbPerSecond}};
@@ -67,7 +67,7 @@ QJsonArray formsJson(const QString &usage)
         for (const QcCommandSyntax::Parameter &p : form.parameters) {
             static constexpr std::array<const char *, 3> kinds{"literal", "required", "optional"};
             parameters.append(QJsonObject{{u"name"_s, p.name},
-                                          {u"kind"_s, QLatin1StringView(kinds[std::size_t(p.kind)])},
+                                          {u"kind"_s, QLatin1StringView(kinds[static_cast<std::size_t>(p.kind)])},
                                           {u"type"_s, QcCommandSyntax::typeName(p.type)},
                                           {u"choices"_s, texts(p.choices)}});
         }
@@ -94,7 +94,7 @@ std::optional<Kind> QcControlAdminCommands::kindNamed(const QString &name)
 {
     for (std::size_t i = 0; i < kindNames.size(); ++i) {
         if (name == QLatin1StringView(kindNames[i])) {
-            return Kind(i);
+            return static_cast<Kind>(i);
         }
     }
     return std::nullopt;
@@ -152,8 +152,8 @@ void QcControlAdminCommands::follow(const QJsonObject &request)
         m_context.fail(request, u"'level' must be debug, info, warning, critical or fatal"_s);
         return;
     }
-    session().admin().follow(topics, QcMsg::AdminLogLine::Level(level - levelNames.begin()));
-    m_context.finish(request, {{u"topics"_s, int(session().admin().topics())}});
+    session().admin().follow(topics, static_cast<QcMsg::AdminLogLine::Level>(level - levelNames.begin()));
+    m_context.finish(request, {{u"topics"_s, static_cast<int>(session().admin().topics())}});
 }
 
 void QcControlAdminCommands::status(const QJsonObject &request)
@@ -194,9 +194,9 @@ QJsonObject QcControlAdminCommands::resultJson(quint32 id, Kind kind) const
 QJsonObject QcControlAdminCommands::statusJson() const
 {
     const QcClientAdmin &admin = session().admin();
-    QJsonObject json{{u"topics"_s, int(admin.topics())},
-                     {u"historySeconds"_s, int(admin.history().seconds.size())},
-                     {u"historyMinutes"_s, int(admin.history().minutes.size())},
+    QJsonObject json{{u"topics"_s, static_cast<int>(admin.topics())},
+                     {u"historySeconds"_s, static_cast<int>(admin.history().seconds.size())},
+                     {u"historyMinutes"_s, static_cast<int>(admin.history().minutes.size())},
                      {u"players"_s, playersJson()},
                      {u"log"_s, logJson()}};
     QJsonArray chat;
@@ -207,17 +207,17 @@ QJsonObject QcControlAdminCommands::statusJson() const
     if (const std::optional<QcMsg::AdminStatus> &status = admin.status()) {
         QJsonObject entities;
         for (int kind = 0; kind < QcEntityKinds::count; ++kind) {
-            entities.insert(QcEntityKinds::name(QcEntityKind(kind)), qint64(status->entities[std::size_t(kind)]));
+            entities.insert(QcEntityKinds::name(static_cast<QcEntityKind>(kind)), static_cast<qint64>(status->entities[static_cast<std::size_t>(kind)]));
         }
         json.insert(u"status"_s, QJsonObject{{u"sample"_s, sampleJson(status->sample)},
                                               {u"entities"_s, entities},
-                                              {u"uptimeMs"_s, qint64(status->uptimeMs)},
-                                              {u"tick"_s, qint64(status->tick)},
+                                              {u"uptimeMs"_s, static_cast<qint64>(status->uptimeMs)},
+                                              {u"tick"_s, static_cast<qint64>(status->tick)},
                                               {u"world"_s, status->worldName},
                                               {u"seed"_s, QString::number(status->seed)},
                                               {u"generator"_s, status->generator},
                                               {u"version"_s, status->version},
-                                              {u"protocol"_s, qint64(status->protocol)}});
+                                              {u"protocol"_s, static_cast<qint64>(status->protocol)}});
     }
     return json;
 }
@@ -264,7 +264,7 @@ QJsonObject QcControlAdminCommands::playersJson() const
 {
     QJsonArray players;
     for (const QcMsg::AdminPlayers::Entry &p : session().admin().players()) {
-        players.append(QJsonObject{{u"entity"_s, qint64(p.entityId)},
+        players.append(QJsonObject{{u"entity"_s, static_cast<qint64>(p.entityId)},
                                    {u"name"_s, p.name},
                                    {u"pingMs"_s, p.pingMs},
                                    {u"position"_s, QJsonArray{p.position.x, p.position.y, p.position.z}},
@@ -281,7 +281,7 @@ QJsonObject QcControlAdminCommands::logJson() const
     QJsonArray lines;
     for (const QcMsg::AdminLogLine &line : session().admin().log()) {
         lines.append(QJsonObject{{u"timeMs"_s, line.timeMs},
-                                 {u"level"_s, QLatin1StringView(levelNames[std::size_t(line.level)])},
+                                 {u"level"_s, QLatin1StringView(levelNames[static_cast<std::size_t>(line.level)])},
                                  {u"category"_s, line.category},
                                  {u"text"_s, line.text}});
     }

@@ -16,7 +16,7 @@ class QcSoundBank
 {
 public:
     // Memory budget for rendered samples (64 MiB of floats); sounds beyond it stay silent.
-    static constexpr qsizetype maxSamples = qsizetype(16) * 1024 * 1024;
+    static constexpr qsizetype maxSamples = qsizetype{16} * 1024 * 1024;
 
     struct Entry
     {

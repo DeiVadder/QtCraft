@@ -14,7 +14,7 @@ constexpr double dt = QcPhysics::tickDuration;
 
 int ticksFor(double seconds)
 {
-    return int(std::ceil(seconds / dt));
+    return static_cast<int>(std::ceil(seconds / dt));
 }
 
 // Own small content with round numbers: one ore takes 1 s, coal burns 3.5 s, a twig 0.5 s.

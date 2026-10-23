@@ -68,12 +68,12 @@ private:
             before(tick);
             timer.start();
             m_server->tick();
-            const double ms = double(timer.nsecsElapsed()) / 1e6;
+            const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
             QcTestUtil::pump();
             const qsizetype work = m_server->systems().circuits.lastTickWork();
             sample.meanMs += ms / count;
             sample.maxMs = std::max(sample.maxMs, ms);
-            sample.meanWork += double(work) / count;
+            sample.meanWork += static_cast<double>(work) / count;
             sample.maxWork = std::max(sample.maxWork, work);
         }
         return sample;
@@ -96,9 +96,9 @@ private:
             before(tick);
             if (tick > 0) {
                 const QcServerHoppers::Stats &stats = m_server->systems().circuits.hoppers().lastTick();
-                sample.meanActing += double(stats.acting) / count;
-                sample.meanSearches += double(stats.searches) / count;
-                sample.meanWoken += double(stats.woken) / count;
+                sample.meanActing += static_cast<double>(stats.acting) / count;
+                sample.meanSearches += static_cast<double>(stats.searches) / count;
+                sample.meanWoken += static_cast<double>(stats.woken) / count;
             }
         });
         return sample;
@@ -115,7 +115,7 @@ private:
     QList<QcBlockPos> hopperChains(int hoppers, const QString &above, int gap = 2)
     {
         const int chains = (hoppers + 9) / 10;
-        const int rows = int(std::ceil(std::sqrt(double(chains))));
+        const int rows = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(chains))));
         prepare(rows * 12, rows * gap);
         QList<QcBlockPos> placed;
         for (int chain = 0; chain < chains; ++chain) {
@@ -161,7 +161,7 @@ private:
     static void report(const char *scenario, int size, const Sample &sample)
     {
         qInfo("SIGNAL-MEASURE %s size=%d tickMeanMs=%.3f tickMaxMs=%.3f workMean=%.0f workMax=%lld", scenario, size, sample.meanMs,
-              sample.maxMs, sample.meanWork, qint64(sample.maxWork));
+              sample.maxMs, sample.meanWork, static_cast<qint64>(sample.maxWork));
     }
 
     void toggleLever(QcBlockPos lever) { QVERIFY(m_server->systems().circuits.use(lever)); }
@@ -256,7 +256,7 @@ private slots:
         // A torch on a block, its wire through a repeater (delay 4) back into the block: a clock of 20
         // ticks per period, slow enough not to burn out.
         const int clocks = m_full ? 1000 : 32;
-        const int columns = int(std::ceil(std::sqrt(double(clocks))));
+        const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(clocks))));
         prepare(columns * 4, columns * 4);
         for (int i = 0; i < clocks; ++i) {
             const int x = (i % columns) * 4;
@@ -293,7 +293,7 @@ private slots:
     void pistonsSwitchedTogether()
     {
         const int pistons = m_full ? 500 : 32;
-        const int columns = int(std::ceil(std::sqrt(double(pistons))));
+        const int columns = static_cast<int>(std::ceil(std::sqrt(static_cast<double>(pistons))));
         prepare(columns * 4, columns * 3);
         QList<QcBlockPos> levers;
         for (int i = 0; i < pistons; ++i) {
@@ -372,13 +372,13 @@ private slots:
         prepare(kinds.size() * 5 + 4, 4);
         const int line = 2;
         for (qsizetype unit = 0; unit < kinds.size(); ++unit) {
-            sorterUnit(1 + int(unit) * 5, line, kinds[unit]);
+            sorterUnit(1 + static_cast<int>(unit) * 5, line, kinds[unit]);
         }
-        for (int x = 0; x <= int(kinds.size()) * 5; ++x) {
+        for (int x = 0; x <= static_cast<int>(kinds.size()) * 5; ++x) {
             put(x, line, u"signal_hopper[facing=east]"_s, 3);
         }
         put(0, line, u"chest[facing=south]"_s, 4);
-        put(int(kinds.size()) * 5 + 1, line, u"chest[facing=south]"_s, 3);
+        put(static_cast<int>(kinds.size()) * 5 + 1, line, u"chest[facing=south]"_s, 3);
         // Refilled with single items of the kinds in turn whenever it is empty (a stream that mixes
         // the kinds; one kind at full speed works too, see test_signal_hoppers).
         const QcBlockPos inputPos = m_base.offset(0, 4, line);
@@ -402,7 +402,7 @@ private slots:
         int sorted = 0;
         for (qsizetype unit = 0; unit < kinds.size(); ++unit) {
             for (const int y : {0, 1}) {
-                const QcBlockEntities::Container *box = m_server->blockEntities().container(m_base.offset(1 + int(unit) * 5, y, line));
+                const QcBlockEntities::Container *box = m_server->blockEntities().container(m_base.offset(1 + static_cast<int>(unit) * 5, y, line));
                 for (const QcItemStack &stack : box->stacks) {
                     sorted += stack.item == item(kinds[unit]) ? stack.count : 0;
                 }
@@ -415,7 +415,7 @@ private slots:
     void observerClocks()
     {
         const int observers = m_full ? 500 : 40;
-        const int columns = int(std::ceil(std::sqrt(observers / 2.0)));
+        const int columns = static_cast<int>(std::ceil(std::sqrt(observers / 2.0)));
         prepare(columns * 4, columns * 2);
         for (int i = 0; i < observers / 2; ++i) {
             const int x = (i % columns) * 4;
@@ -485,7 +485,7 @@ private slots:
             QcItemEntityManager::Drop drop;
             drop.stack = {item("qtcraft:diamond"), 1, 0};
             // On the floor between the chains, not on hoppers.
-            drop.position = {m_base.x + 10.5 + (i % 2) * 0.2, double(m_base.y), m_base.z + 0.5 + (i / 2) % 40 * 2.0};
+            drop.position = {m_base.x + 10.5 + (i % 2) * 0.2, static_cast<double>(m_base.y), m_base.z + 0.5 + (i / 2) % 40 * 2.0};
             lying.append(drop);
         }
         quint32 restored = 720000;

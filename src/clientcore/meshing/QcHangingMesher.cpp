@@ -10,7 +10,7 @@ namespace {
 
 QcVec3 vectorOf(QcFaceOffset offset)
 {
-    return {double(offset.dx), double(offset.dy), double(offset.dz)};
+    return {static_cast<double>(offset.dx), static_cast<double>(offset.dy), static_cast<double>(offset.dz)};
 }
 
 QcVec3 cross(const QcVec3 &a, const QcVec3 &b)
@@ -56,12 +56,12 @@ std::array<QcEntityVertex, 4> quad(const std::array<QcVec3, 4> &corners, const Q
     std::array<QcEntityVertex, 4> vertices;
     for (std::size_t corner = 0; corner < 4; ++corner) {
         QcEntityVertex vertex;
-        vertex.x = float(corners[corner].x);
-        vertex.y = float(corners[corner].y);
-        vertex.z = float(corners[corner].z);
+        vertex.x = static_cast<float>(corners[corner].x);
+        vertex.y = static_cast<float>(corners[corner].y);
+        vertex.z = static_cast<float>(corners[corner].z);
         // Corners run bottom left, bottom right, top right, top left.
-        vertex.u = float((corner == 0 || corner == 3) ? rect.left() : rect.right());
-        vertex.v = float(corner < 2 ? rect.bottom() : rect.top());
+        vertex.u = static_cast<float>((corner == 0 || corner == 3) ? rect.left() : rect.right());
+        vertex.v = static_cast<float>(corner < 2 ? rect.bottom() : rect.top());
         vertex.shade = shade;
         vertex.skyLight = light.sky;
         vertex.blockLight = light.block;
@@ -130,7 +130,7 @@ void appendPainting(QcEntityMesh &mesh, const QcClientEntity &entity, const QcHa
     const double depth = QcHanging::paintingDepth;
 
     // The edges in the back texture up to the picture, then one picture tile per block in front.
-    boardEdges(mesh, axes, {0.0, 0.0, double(motif.width), double(motif.height), depth}, back, light);
+    boardEdges(mesh, axes, {0.0, 0.0, static_cast<double>(motif.width), static_cast<double>(motif.height), depth}, back, light);
     for (int row = 0; row < motif.height; ++row) {
         for (int column = 0; column < motif.width; ++column) {
             const QRectF tile = uv(motif.tileTexture(column, motif.height - 1 - row));
@@ -161,7 +161,7 @@ void appendFramedMap(QcEntityMesh &mesh, const QcHanging &hanging, const QRectF 
 
     // Turning the picture clockwise moves each corner's texture coordinates one corner on.
     const std::array<QcEntityVertex, 4> unturned = corners;
-    const auto turns = std::size_t(mapQuarterTurns(hanging.rotation));
+    const auto turns = static_cast<std::size_t>(mapQuarterTurns(hanging.rotation));
     for (std::size_t corner = 0; corner < 4; ++corner) {
         corners[corner].u = unturned[(corner + turns) % 4].u;
         corners[corner].v = unturned[(corner + turns) % 4].v;

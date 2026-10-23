@@ -19,9 +19,9 @@
 namespace QcWorldBackup {
 
 // Worlds larger than this are refused (the copy blocks the server tick).
-inline constexpr qint64 maxWorldBytes = qint64(2) * 1024 * 1024 * 1024;
+inline constexpr qint64 maxWorldBytes = qint64{2} * 1024 * 1024 * 1024;
 // Kept free on the target disk besides the copy.
-inline constexpr qint64 reserveBytes = qint64(256) * 1024 * 1024;
+inline constexpr qint64 reserveBytes = qint64{256} * 1024 * 1024;
 inline constexpr qsizetype maxLabelLength = 32;
 
 struct Summary

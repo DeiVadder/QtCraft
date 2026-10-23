@@ -30,9 +30,9 @@ QColor mapPixel(const QcTerrainGenerator &generator, const QcTerrainGenerator::C
     const QColor water(50, 90, 200);
     const int depth = generator.seaLevel() - column.height;
     if (depth > 0) {
-        return QColor::fromRgbF(water.redF() * 0.8f, water.greenF() * 0.8f, std::clamp(water.blueF() * (1.1f - float(depth) * 0.02f), 0.3f, 1.0f));
+        return QColor::fromRgbF(water.redF() * 0.8f, water.greenF() * 0.8f, std::clamp(water.blueF() * (1.1f - static_cast<float>(depth) * 0.02f), 0.3f, 1.0f));
     }
-    const float light = std::clamp(0.75f + float(column.height - generator.seaLevel()) * 0.006f, 0.6f, 1.25f);
+    const float light = std::clamp(0.75f + static_cast<float>(column.height - generator.seaLevel()) * 0.006f, 0.6f, 1.25f);
     return QColor::fromRgbF(std::min(1.0f, colour.redF() * light), std::min(1.0f, colour.greenF() * light),
                             std::min(1.0f, colour.blueF() * light));
 }
@@ -94,8 +94,8 @@ QImage renderBiomes(const QcTerrainGenerator &generator, Area area)
                 continue;
             }
             // Evenly spread hues; brighter with height.
-            const float light = std::clamp(0.45f + float(column.height - generator.seaLevel()) * 0.008f, 0.4f, 0.95f);
-            image.setPixelColor(px, py, QColor::fromHsvF(std::fmod(float(column.biome) * 0.381966f, 1.0f), 0.65f, light));
+            const float light = std::clamp(0.45f + static_cast<float>(column.height - generator.seaLevel()) * 0.008f, 0.4f, 0.95f);
+            image.setPixelColor(px, py, QColor::fromHsvF(std::fmod(static_cast<float>(column.biome) * 0.381966f, 1.0f), 0.65f, light));
         }
     }
 

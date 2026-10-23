@@ -22,7 +22,7 @@ constexpr int maxOutlineBoxes = QcWorldDeviceResources::maxOutlineBoxes;
 class OutlineVertices
 {
 public:
-    static constexpr std::size_t floatsPerBox = std::size_t(12) * 2 * 3;
+    static constexpr std::size_t floatsPerBox = std::size_t{12} * 2 * 3;
 
     // Adds the edges of `box`; false (and nothing added) when maxOutlineBoxes boxes are in.
     [[nodiscard]] bool addBox(const QcAabb &box);
@@ -32,7 +32,7 @@ public:
     std::size_t size() const { return m_size; }
 
 private:
-    std::array<float, std::size_t(maxOutlineBoxes) * floatsPerBox> m_values{};
+    std::array<float, static_cast<std::size_t>(maxOutlineBoxes) * floatsPerBox> m_values{};
     std::size_t m_size = 0;
 };
 
@@ -47,18 +47,18 @@ bool OutlineVertices::addBox(const QcAabb &box)
     constexpr std::array<std::pair<int, int>, 12> edges = {
         {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}}};
 
-    const float x0 = float(box.min.x) - grow;
-    const float y0 = float(box.min.y) - grow;
-    const float z0 = float(box.min.z) - grow;
-    const float x1 = float(box.max.x) + grow;
-    const float y1 = float(box.max.y) + grow;
-    const float z1 = float(box.max.z) + grow;
+    const float x0 = static_cast<float>(box.min.x) - grow;
+    const float y0 = static_cast<float>(box.min.y) - grow;
+    const float z0 = static_cast<float>(box.min.z) - grow;
+    const float x1 = static_cast<float>(box.max.x) + grow;
+    const float y1 = static_cast<float>(box.max.y) + grow;
+    const float z1 = static_cast<float>(box.max.z) + grow;
     const std::array<std::array<float, 3>, 8> corners = {{{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1},
                                                           {x0, y1, z0}, {x1, y1, z0}, {x1, y1, z1}, {x0, y1, z1}}};
 
     for (const auto &[from, to] : edges) {
         for (const int corner : {from, to}) {
-            for (const float value : corners[std::size_t(corner)]) {
+            for (const float value : corners[static_cast<std::size_t>(corner)]) {
                 m_values[m_size++] = value;
             }
         }
@@ -117,7 +117,7 @@ float atlasCellPixelsOf(QSize texture, QSize grid)
 {
     const int cell = texture.width() / grid.width();
     const bool whole = texture.width() % grid.width() == 0 && texture.height() == grid.height() * cell;
-    return whole && cell >= QcAtlasLayout::cellSize(QcAtlasLayout::minimumMipTile) ? float(cell) : 0.0f;
+    return whole && cell >= QcAtlasLayout::cellSize(QcAtlasLayout::minimumMipTile) ? static_cast<float>(cell) : 0.0f;
 }
 
 QRhiVertexInputLayout blockVertexLayout()
@@ -125,9 +125,9 @@ QRhiVertexInputLayout blockVertexLayout()
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({{sizeof(QcBlockVertex)}});
     inputLayout.setAttributes({
-        {0, 0, QRhiVertexInputAttribute::Float3, quint32(offsetof(QcBlockVertex, x))},
-        {0, 1, QRhiVertexInputAttribute::Float2, quint32(offsetof(QcBlockVertex, u))},
-        {0, 2, QRhiVertexInputAttribute::UNormByte4, quint32(offsetof(QcBlockVertex, light))},
+        {0, 0, QRhiVertexInputAttribute::Float3, static_cast<quint32>(offsetof(QcBlockVertex, x))},
+        {0, 1, QRhiVertexInputAttribute::Float2, static_cast<quint32>(offsetof(QcBlockVertex, u))},
+        {0, 2, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcBlockVertex, light))},
     });
     return inputLayout;
 }
@@ -148,7 +148,8 @@ QcWorldDeviceResources QcWorldDeviceResources::create(QRhi *rhi)
     device.outlineBindings->create();
     // 12 edges as line segments per box.
     device.outlineVertices.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer,
-                                                quint32(std::size_t(maxOutlineBoxes) * OutlineVertices::floatsPerBox * sizeof(float))));
+                                                static_cast<quint32>(static_cast<std::size_t>(maxOutlineBoxes)
+                                                                     * OutlineVertices::floatsPerBox * sizeof(float))));
     device.outlineVertices->create();
     return device;
 }
@@ -209,8 +210,8 @@ void QcWorldDeviceResources::uploadOutline(QRhiResourceUpdateBatch *updates, con
         }
     }
 
-    updates->updateDynamicBuffer(outlineVertices.get(), 0, quint32(vertices.size() * sizeof(float)), vertices.data());
-    outlineVertexCount = quint32(vertices.size() / 3);
+    updates->updateDynamicBuffer(outlineVertices.get(), 0, static_cast<quint32>(vertices.size() * sizeof(float)), vertices.data());
+    outlineVertexCount = static_cast<quint32>(vertices.size() / 3);
     uploadedSelection = selection;
 }
 

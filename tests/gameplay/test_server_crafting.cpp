@@ -204,7 +204,7 @@ private slots:
         move(slotOf(item("qtcraft:coal")), fuel);
         QCOMPARE(countOf(item("qtcraft:raw_iron")), 0);
         // Raw iron takes 10 s (content/qtcraft/smelting/iron_ingot.json); one coal burns 80 s.
-        ticks(10 * int(QcPhysics::tickRate) + 5);
+        ticks(10 * static_cast<int>(QcPhysics::tickRate) + 5);
         QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:raw_iron"), 2, 0}));
         QVERIFY(m_client->machineStacks[1].isEmpty());
         QCOMPARE(m_client->machineStacks[2], (QcItemStack{item("qtcraft:iron_ingot"), 1, 0}));
@@ -240,7 +240,7 @@ private slots:
         move(slotOf(item("qtcraft:raw_iron")), input);
         move(slotOf(item("qtcraft:lava_bucket")), fuel);
         QCOMPARE(countOf(item("qtcraft:lava_bucket")), 0);
-        ticks(10 * int(QcPhysics::tickRate) + 5);
+        ticks(10 * static_cast<int>(QcPhysics::tickRate) + 5);
 
         // The lava burns, the empty bucket stays in the fuel slot.
         QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:bucket"), 1, 0}));

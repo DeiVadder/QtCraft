@@ -102,7 +102,7 @@ private:
         for (int i = 0; i < count; ++i) {
             timer.start();
             m_server->tick();
-            times.append(double(timer.nsecsElapsed()) / 1e6);
+            times.append(static_cast<double>(timer.nsecsElapsed()) / 1e6);
             QcTestUtil::pump();
             if (i == count * 3 / 4) {
                 asleep = std::ranges::count_if(m_server->mobs().mobs(), [](const QcCreature &mob) { return mob.pose == QcPose::Lying; });
@@ -113,7 +113,7 @@ private:
         for (const double time : std::as_const(times)) {
             sum += time;
         }
-        return {sum / double(times.size()), times[qsizetype(double(times.size() - 1) * 0.99)], times.last(), asleep};
+        return {sum / static_cast<double>(times.size()), times[static_cast<qsizetype>(static_cast<double>(times.size() - 1) * 0.99)], times.last(), asleep};
     }
 
     // A server on seed 42 with the `count` villages (of `style`, unless empty) nearest to the origin
@@ -160,7 +160,7 @@ private:
         for (int i = 0; i < rounds; ++i) {
             breeding.check(copy, {world, world.villages(), QcDayCycle::dayLength * 10.1, {}, {}});
         }
-        return double(timer.nsecsElapsed()) / 1e3 / rounds;
+        return static_cast<double>(timer.nsecsElapsed()) / 1e3 / rounds;
     }
 
     void measure(int villageCount, bool grow = false)
@@ -173,7 +173,7 @@ private:
         const qsizetype villagers = m_server->mobs().mobs().size();
         QVERIFY(villagers > 0);
         const double check = breedingCheckMicros();
-        const int dayTicks = full() ? int(QcDayCycle::dayLength * 20.0) : 40;
+        const int dayTicks = full() ? static_cast<int>(QcDayCycle::dayLength * 20.0) : 40;
         const Ticks with = day(dayTicks);
         const qsizetype born = m_server->mobs().mobs().size() - villagers;
 
@@ -181,8 +181,8 @@ private:
         const Ticks without = day(dayTicks);
         qInfo("VILLAGERS villages=%d villagers=%lld chunks=%lld ticks=%d with: mean %.4f p99 %.4f max %.3f ms; without: mean %.4f "
               "p99 %.4f max %.3f ms; asleep at midnight %lld; born %lld; breeding check %.2f us",
-              villageCount, qint64(villagers), qint64(m_server->world().loadedChunkCount()), dayTicks, with.mean, with.p99, with.max,
-              without.mean, without.p99, without.max, qint64(with.asleep), qint64(born), check);
+              villageCount, static_cast<qint64>(villagers), static_cast<qint64>(m_server->world().loadedChunkCount()), dayTicks, with.mean, with.p99, with.max,
+              without.mean, without.p99, without.max, static_cast<qint64>(with.asleep), static_cast<qint64>(born), check);
     }
 
 private slots:
@@ -205,7 +205,7 @@ private slots:
         QVERIFY(villagers >= 10);
 
         m_server->setWorldTime(QcDayCycle::dayLength * 10.0);
-        const int toMidnight = int(QcDayCycle::dayLength * 20.0 * 0.75);
+        const int toMidnight = static_cast<int>(QcDayCycle::dayLength * 20.0 * 0.75);
         for (int i = 0; i < toMidnight; ++i) {
             m_server->tick();
             if (i % 20 == 0) {
@@ -225,7 +225,7 @@ private slots:
             }
         }
         const qsizetype asleep = villagers - awake.size();
-        qInfo("swamp village: %lld of %lld villagers asleep at midnight", qint64(asleep), qint64(villagers));
+        qInfo("swamp village: %lld of %lld villagers asleep at midnight", static_cast<qint64>(asleep), static_cast<qint64>(villagers));
         QVERIFY2(awake.isEmpty(), qPrintable(awake.join(u"; "_s)));
     }
 

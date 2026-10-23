@@ -31,9 +31,9 @@ void writeUses(QDataStream &stream, const QcItemDefinition &item)
     // A fishing rod (decision E-503): the client sends its use as ThrowItem; the rest is the server's.
     stream << item.fishing.has_value();
     // The dial the client draws while the item is held (decision E-769).
-    stream << quint8(item.dial);
+    stream << static_cast<quint8>(item.dial);
     // A map (decision E-804): the client sends the use of an empty one and draws a filled one.
-    stream << quint8(item.map);
+    stream << static_cast<quint8>(item.map);
     // A portable container (a backpack, decision E-832): the client sends its use in the air as
     // ConsumeItem and lists its contents in the tooltip.
     stream << item.portableContainer;
@@ -47,9 +47,9 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
     if (!hangs) {
         return;
     }
-    stream << quint8(hangs->type) << hangs->back << quint32(hangs->motifs.size());
+    stream << static_cast<quint8>(hangs->type) << hangs->back << static_cast<quint32>(hangs->motifs.size());
     for (const QcPaintingMotif &motif : hangs->motifs) {
-        stream << motif.name << motif.texture << qint32(motif.width) << qint32(motif.height);
+        stream << motif.name << motif.texture << static_cast<qint32>(motif.width) << static_cast<qint32>(motif.height);
     }
 }
 
@@ -69,7 +69,7 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
     if (type >= qcHangingTypeCount || !count) {
         return std::nullopt;
     }
-    read.type = QcHangingType(type);
+    read.type = static_cast<QcHangingType>(type);
     for (quint32 i = 0; i < *count; ++i) {
         QcPaintingMotif motif;
         qint32 width = 0;
@@ -152,18 +152,18 @@ void writeHanging(QDataStream &stream, const std::optional<QcHangingDefinition> 
     }
     quint8 dial = 0;
     stream >> dial;
-    if (dial >= quint8(qcItemDialCount)) {
+    if (dial >= static_cast<quint8>(qcItemDialCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
-    item.dial = QcItemDial(dial);
+    item.dial = static_cast<QcItemDial>(dial);
     quint8 map = 0;
     stream >> map;
-    if (map >= quint8(qcMapItemCount)) {
+    if (map >= static_cast<quint8>(qcMapItemCount)) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
-    item.map = QcMapItem(map);
+    item.map = static_cast<QcMapItem>(map);
     stream >> item.portableContainer;
     return item;
 }
@@ -174,9 +174,10 @@ namespace QcItemSerializer {
 
 void write(QDataStream &stream, const QcItemDefinition &item)
 {
-    stream << item.name << item.translationKey << item.texture << qint32(item.maxStack) << item.placesBlock << item.tool
-           << qint32(item.toolLevel) << item.toolSpeed << qint32(item.durability) << item.attackDamage << qint32(item.food)
-           << item.fuelSeconds << quint32(item.tags.size());
+    stream << item.name << item.translationKey << item.texture << static_cast<qint32>(item.maxStack) << item.placesBlock << item.tool
+           << static_cast<qint32>(item.toolLevel) << item.toolSpeed << static_cast<qint32>(item.durability) << item.attackDamage
+           << static_cast<qint32>(item.food)
+           << item.fuelSeconds << static_cast<quint32>(item.tags.size());
     for (const QString &tag : item.tags) {
         stream << tag;
     }

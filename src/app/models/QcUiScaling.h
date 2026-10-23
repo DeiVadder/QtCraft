@@ -37,8 +37,8 @@ public:
 
     explicit QcUiScaling(QObject *parent = nullptr);
 
-    static Step fromValue(QcUiScale::Step step) { return Step(step); }
-    static QcUiScale::Step toValue(Step step) { return QcUiScale::Step(step); }
+    static Step fromValue(QcUiScale::Step step) { return static_cast<Step>(step); }
+    static QcUiScale::Step toValue(Step step) { return static_cast<QcUiScale::Step>(step); }
     // Whether `step` is one of the enumeration's values (QML may pass any number).
     static bool known(Step step);
 

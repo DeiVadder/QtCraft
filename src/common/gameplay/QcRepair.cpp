@@ -26,7 +26,7 @@ namespace QcRepair {
         return std::nullopt;
     }
 
-    const int bonus = int(std::floor(durability * bonusShare));
+    const int bonus = static_cast<int>(std::floor(durability * bonusShare));
     const int remaining = (durability - filled[0].damage) + (durability - filled[1].damage) + bonus;
     // The repaired item keeps a custom name (the first one's, as the anvil would); contents and the
     // components a save kept never come along (decision E-832).

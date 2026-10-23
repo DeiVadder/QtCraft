@@ -247,7 +247,7 @@ void QcTexturePackController::apply(const QcTextureStackBuild::Result &result)
 
 void QcTexturePackController::describe(const QcTextureAtlas &atlas, qint64 milliseconds)
 {
-    const double mebibytes = double(atlas.bytes()) / (1024.0 * 1024.0);
+    const double mebibytes = static_cast<double>(atlas.bytes()) / (1024.0 * 1024.0);
     m_status = tr("%1x textures: atlas %2 x %3 pixels with %4 mip levels, %5 MiB, ready in %6 ms")
                    .arg(atlas.tileSize())
                    .arg(atlas.image().width())

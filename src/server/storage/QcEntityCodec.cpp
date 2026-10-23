@@ -86,7 +86,7 @@ void writeEntry(QDataStream &stream, const Header &header, const QcEntityCompone
 // A component this version reads, by its id, with its reader (`read(stream, version)`).
 QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames::FieldReader read)
 {
-    return {quint16(id), version, read};
+    return {static_cast<quint16>(id), version, read};
 }
 
 // Reads the entries of one chunk record from a region file and checks them: every entity lies in
@@ -468,7 +468,7 @@ private:
         shot.kept = keptOf(header, false);
         std::optional<QcEntityComponents> components = readComponents({known(Component::Projectile, kindVersion, fields)});
         if (!components || !std::isfinite(shot.age) || !std::isfinite(shot.pitch) || !std::isfinite(shot.damageFactor)
-            || pickup > quint8(QcProjectilePickup::Never)) {
+            || pickup > static_cast<quint8>(QcProjectilePickup::Never)) {
             return false;
         }
         shot.kept.components = std::move(*components);
@@ -479,7 +479,7 @@ private:
             return true;
         }
         shot.type = header.type;
-        shot.pickup = QcProjectilePickup(pickup);
+        shot.pickup = static_cast<QcProjectilePickup>(pickup);
         shot.age = std::clamp(shot.age, 0.0, 3600.0);
         shot.damageFactor = std::clamp(shot.damageFactor, 0.0, 100.0);
         shot.motion.velocity = clampedVelocity(shot.motion.velocity);
@@ -501,7 +501,7 @@ private:
     {
         for (std::size_t slot = 0; slot < QcEquipment::slotCount; ++slot) {
             QcItemStack &stack = stand.equipment.stacks[slot];
-            if (!stack.isEmpty() && !QcArmour::fits(m_content, stack, QcEquipmentSlot(slot))) {
+            if (!stack.isEmpty() && !QcArmour::fits(m_content, stack, static_cast<QcEquipmentSlot>(slot))) {
                 m_warnings.add(u"%1: '%2' is no armour for its slot on a stand; dropped"_s.arg(m_path, m_content.item(stack.item).name));
                 stack = {};
             }
@@ -528,7 +528,7 @@ private:
 template<typename Entry, typename Write>
 void writeEntries(QDataStream &stream, const QList<QcEntityRecord::Ordered<Entry>> &entries, Write write)
 {
-    stream << quint32(entries.size());
+    stream << static_cast<quint32>(entries.size());
     for (const auto &[entry, order] : entries) {
         write(entry, order);
     }
@@ -537,7 +537,7 @@ void writeEntries(QDataStream &stream, const QList<QcEntityRecord::Ordered<Entry
 // The known components of each kind, added to the writer of its entry.
 void addStand(QcComponentFrames::Writer &components, const QcArmourStand &stand, const QcContentRegistry &content)
 {
-    components.add(quint16(Component::ArmourStand), kindVersion, [&](QDataStream &out) {
+    components.add(static_cast<quint16>(Component::ArmourStand), kindVersion, [&](QDataStream &out) {
         QcProtocolCodec::writeStandPose(out, stand.pose);
         out << stand.name << stand.item;
         QcSaveFile::writeStack(out, stand.held, content);
@@ -550,8 +550,8 @@ void addStand(QcComponentFrames::Writer &components, const QcArmourStand &stand,
 
 void addMinecart(QcComponentFrames::Writer &components, const QcMinecart &cart, const QcContentRegistry &content)
 {
-    components.add(quint16(Component::Minecart), kindVersion, [&](QDataStream &out) {
-        out << cart.item << quint32(cart.stacks.size());
+    components.add(static_cast<quint16>(Component::Minecart), kindVersion, [&](QDataStream &out) {
+        out << cart.item << static_cast<quint32>(cart.stacks.size());
         for (const QcItemStack &stack : cart.stacks) {
             QcSaveFile::writeStack(out, stack, content);
         }
@@ -571,29 +571,31 @@ void writeItemsAndBlocks(QDataStream &stream, const QcEntityRecord &record, cons
 {
     writeEntries(stream, record.items, [&](const QcItemEntityManager::Drop &drop, quint64 order) {
         const QString name = drop.stack.isEmpty() ? QString() : content.item(drop.stack.item).name;
-        const auto fields = [&drop](QDataStream &out) { out << qint32(drop.stack.count) << qint32(drop.stack.damage) << drop.age << drop.pickupDelay; };
+        const auto fields = [&drop](QDataStream &out) {
+            out << static_cast<qint32>(drop.stack.count) << static_cast<qint32>(drop.stack.damage) << drop.age << drop.pickupDelay;
+        };
         const auto dataFields = [&drop, &content](QDataStream &out) { QcItemDataCodec::write(out, drop.stack.itemData(), content); };
         writeEntry(stream, {name, drop.position, drop.velocity, 0.0f, order, drop.kept.uid}, drop.kept.components,
                    [&](QcComponentFrames::Writer &components) {
-                       components.add(quint16(Component::Item), kindVersion, fields);
+                       components.add(static_cast<quint16>(Component::Item), kindVersion, fields);
                        if (drop.stack.data) {
-                           components.add(quint16(Component::ItemData), kindVersion, dataFields);
+                           components.add(static_cast<quint16>(Component::ItemData), kindVersion, dataFields);
                        }
                    });
     });
     // Lit explosives are falling block entries with a fuse (decision E-601), in the same list.
-    stream << quint32(record.fallingBlocks.size() + record.primedExplosives.size());
+    stream << static_cast<quint32>(record.fallingBlocks.size() + record.primedExplosives.size());
     for (const auto &[falling, order] : record.fallingBlocks) {
         const Header header{content.stateName(falling.block), falling.motion.position, falling.motion.velocity, 0.0f, order, falling.kept.uid};
         const auto fields = [&falling](QDataStream &out) { out << falling.age; };
         writeEntry(stream, header, falling.kept.components,
-                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::FallingBlock), kindVersion, fields); });
+                   [&fields](QcComponentFrames::Writer &components) { components.add(static_cast<quint16>(Component::FallingBlock), kindVersion, fields); });
     }
     for (const auto &[primed, order] : record.primedExplosives) {
         const Header header{content.stateName(primed.block), primed.motion.position, primed.motion.velocity, 0.0f, order, primed.kept.uid};
         writeEntry(stream, header, primed.kept.components, [&primed](QcComponentFrames::Writer &components) {
-            components.add(quint16(Component::FallingBlock), kindVersion, [](QDataStream &out) { out << 0.0; });
-            components.add(quint16(Component::Fuse), kindVersion, [&primed](QDataStream &out) { out << qint32(primed.fuse); });
+            components.add(static_cast<quint16>(Component::FallingBlock), kindVersion, [](QDataStream &out) { out << 0.0; });
+            components.add(static_cast<quint16>(Component::Fuse), kindVersion, [&primed](QDataStream &out) { out << static_cast<qint32>(primed.fuse); });
         });
     }
 }
@@ -614,9 +616,9 @@ void writeCartsAndOrbs(QDataStream &stream, const QcEntityRecord &record, const 
     });
     writeEntries(stream, record.orbs, [&](const QcExperienceOrb &orb, quint64 order) {
         const Header header{orb.kept.type, orb.motion.position, orb.motion.velocity, 0.0f, order, orb.kept.uid};
-        const auto fields = [&orb](QDataStream &out) { out << qint32(orb.value) << orb.age << orb.pickupDelay; };
+        const auto fields = [&orb](QDataStream &out) { out << static_cast<qint32>(orb.value) << orb.age << orb.pickupDelay; };
         writeEntry(stream, header, orb.kept.components,
-                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::ExperienceOrb), kindVersion, fields); });
+                   [&fields](QcComponentFrames::Writer &components) { components.add(static_cast<quint16>(Component::ExperienceOrb), kindVersion, fields); });
     });
 }
 
@@ -626,11 +628,11 @@ void writeProjectiles(QDataStream &stream, const QcEntityRecord &record, const Q
         const Header header{shot.type, shot.motion.position, shot.motion.velocity, shot.yaw, order, shot.kept.uid};
         const QString state = shot.stuck ? content.stateName(shot.stuckState) : QString();
         const auto fields = [&shot, &state](QDataStream &out) {
-            out << shot.pitch << shot.age << quint8(shot.pickup) << shot.damageFactor << shot.stuck << shot.stuckIn.x << shot.stuckIn.y
+            out << shot.pitch << shot.age << static_cast<quint8>(shot.pickup) << shot.damageFactor << shot.stuck << shot.stuckIn.x << shot.stuckIn.y
                 << shot.stuckIn.z << state;
         };
         writeEntry(stream, header, shot.kept.components,
-                   [&fields](QcComponentFrames::Writer &components) { components.add(quint16(Component::Projectile), kindVersion, fields); });
+                   [&fields](QcComponentFrames::Writer &components) { components.add(static_cast<quint16>(Component::Projectile), kindVersion, fields); });
     });
 }
 
@@ -648,7 +650,7 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     writeStands(stream, record, content);
     writeCartsAndOrbs(stream, record, content);
     writeProjectiles(stream, record, content);
-    stream << quint8(record.populated ? 1 : 0);
+    stream << static_cast<quint8>(record.populated ? 1 : 0);
     QcHangingCodec::write(stream, record.hangings, content);
     return blob;
 }

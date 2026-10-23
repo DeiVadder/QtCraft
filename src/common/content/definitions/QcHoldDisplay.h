@@ -78,7 +78,7 @@ struct QcHoldDefaults
 {
     std::array<QcHoldDisplay, qcHoldCategoryCount> categories;
 
-    const QcHoldDisplay &of(QcHoldCategory category) const { return categories[std::size_t(category)]; }
+    const QcHoldDisplay &of(QcHoldCategory category) const { return categories[static_cast<std::size_t>(category)]; }
     // These defaults with every field `later` sets taken from it.
     [[nodiscard]] QcHoldDefaults merged(const QcHoldDefaults &later) const;
     bool operator==(const QcHoldDefaults &) const = default;

@@ -56,7 +56,7 @@ std::optional<QList<QcVillagePlan::Deck>> lay(const QcTerrainGenerator &terrain,
     }
     const QList<int> &heights = *shore;
     // Blocks past the road end to the first water.
-    const int water = int(heights.size()) + 1;
+    const int water = static_cast<int>(heights.size()) + 1;
 
     // Out over the water, but no further than it reaches (a narrow river ends the walkway early).
     int end = water;

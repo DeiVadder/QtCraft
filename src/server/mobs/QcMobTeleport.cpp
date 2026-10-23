@@ -23,7 +23,7 @@ bool teleport(QcCreature &mob, const QcMobDefinition &definition, const QcBlockA
         return false;
     }
     land(mob, *target);
-    mob.teleportCooldown = int(std::lround(rules.cooldownSeconds / QcPhysics::tickDuration));
+    mob.teleportCooldown = static_cast<int>(std::lround(rules.cooldownSeconds / QcPhysics::tickDuration));
     return true;
 }
 

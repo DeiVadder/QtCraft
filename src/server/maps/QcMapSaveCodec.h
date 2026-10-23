@@ -17,7 +17,7 @@ namespace QcMapSaveCodec {
 inline constexpr QByteArrayView magic = "QCMP";
 inline constexpr QStringView overworld = u"overworld";
 // The longest file a map may have (a map of noise compresses to about 40 KiB).
-inline constexpr qsizetype maxBytes = qsizetype(256) * 1024;
+inline constexpr qsizetype maxBytes = qsizetype{256} * 1024;
 
 QString fileName(quint32 id);
 // The id of a map file name ("maps/12.qcmap" or "12.qcmap"), std::nullopt for any other name and

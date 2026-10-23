@@ -76,12 +76,12 @@ private slots:
         QSignalSpy changed(&display, &QcDisplaySettings::changed);
 
         QTest::ignoreMessage(QtWarningMsg, "Frame limit 45 for frameLimit rejected: not one of the choices");
-        display.setFrameLimit(FrameLimit(45));
+        display.setFrameLimit(static_cast<FrameLimit>(45));
         QTest::ignoreMessage(QtWarningMsg, "Frame limit -1 for backgroundFrameLimit rejected: not one of the choices");
-        display.setBackgroundFrameLimit(FrameLimit(-1));
+        display.setBackgroundFrameLimit(static_cast<FrameLimit>(-1));
         QTest::ignoreMessage(QtWarningMsg, "Window mode 7 rejected: unknown");
-        display.setWindowMode(WindowMode(7));
-        const int screens = int(QGuiApplication::screens().size());
+        display.setWindowMode(static_cast<WindowMode>(7));
+        const int screens = static_cast<int>(QGuiApplication::screens().size());
         QTest::ignoreMessage(QtWarningMsg, qPrintable(u"Screen %1 rejected: there are %1 screens"_s.arg(screens)));
         display.setScreen(screens);
         QTest::ignoreMessage(QtWarningMsg, qPrintable(u"Screen -1 rejected: there are %1 screens"_s.arg(screens)));

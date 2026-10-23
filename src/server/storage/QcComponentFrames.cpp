@@ -44,7 +44,7 @@ Writer::Writer(QDataStream &stream, const QcEntityComponents &kept)
     , m_kept(kept)
     , m_countAt(stream.device()->pos())
 {
-    m_stream << quint16(0);
+    m_stream << quint16{0};
 }
 
 const QcEntityComponent *Writer::tailOf(quint16 id, quint16 version) const
@@ -56,13 +56,13 @@ const QcEntityComponent *Writer::tailOf(quint16 id, quint16 version) const
 qint64 Writer::begin(quint16 id, quint16 version)
 {
     ++m_count;
-    m_stream << id << version << quint32(0);
+    m_stream << id << version << quint32{0};
     return m_stream.device()->pos();
 }
 
 void Writer::end(qint64 start)
 {
-    patchLength(m_stream, start - qint64(sizeof(quint32)), quint32(m_stream.device()->pos() - start));
+    patchLength(m_stream, start - static_cast<qint64>(sizeof(quint32)), static_cast<quint32>(m_stream.device()->pos() - start));
 }
 
 void Writer::finish()
@@ -70,8 +70,8 @@ void Writer::finish()
     for (const QcEntityComponent &kept : m_kept) {
         if (!kept.tail) {
             ++m_count;
-            m_stream << kept.id << kept.version << quint32(kept.payload.size());
-            m_stream.writeRawData(kept.payload.constData(), int(kept.payload.size()));
+            m_stream << kept.id << kept.version << static_cast<quint32>(kept.payload.size());
+            m_stream.writeRawData(kept.payload.constData(), static_cast<int>(kept.payload.size()));
         }
     }
     Q_ASSERT(m_count <= maxComponents);
@@ -84,8 +84,8 @@ std::optional<QByteArray> readRaw(QDataStream &stream, qint64 length)
     if (length < 0 || length > stream.device()->bytesAvailable()) {
         return std::nullopt;
     }
-    QByteArray bytes(qsizetype(length), Qt::Uninitialized);
-    if (stream.readRawData(bytes.data(), int(length)) != int(length)) {
+    QByteArray bytes(static_cast<qsizetype>(length), Qt::Uninitialized);
+    if (stream.readRawData(bytes.data(), static_cast<int>(length)) != static_cast<int>(length)) {
         return std::nullopt;
     }
     return bytes;
@@ -109,7 +109,7 @@ namespace {
     if (version <= known.version) {
         return std::optional<std::optional<QcEntityComponent>>(std::in_place, std::nullopt);
     }
-    std::optional<QByteArray> payload = readRaw(stream, qint64(length) - used);
+    std::optional<QByteArray> payload = readRaw(stream, static_cast<qint64>(length) - used);
     if (!payload) {
         return std::nullopt;
     }
@@ -134,7 +134,7 @@ std::optional<ReadComponents> read(QDataStream &stream, std::initializer_list<Kn
         quint32 length = 0;
         stream >> id >> version >> length;
         // The length is checked against the data left before anything is read.
-        if (stream.status() != QDataStream::Ok || version == 0 || length > lengthLimit || qint64(length) > stream.device()->bytesAvailable()
+        if (stream.status() != QDataStream::Ok || version == 0 || length > lengthLimit || static_cast<qint64>(length) > stream.device()->bytesAvailable()
             || std::find(seen.begin(), seen.begin() + i, id) != seen.begin() + i) {
             return std::nullopt;
         }
@@ -177,17 +177,17 @@ std::optional<QString> readText(QDataStream &stream, qsizetype maxChars)
     if (bytes == null) {
         return QString();
     }
-    if (bytes % 2 != 0 || bytes > quint32(maxChars) * 2) {
+    if (bytes % 2 != 0 || bytes > static_cast<quint32>(maxChars) * 2) {
         stream.setStatus(QDataStream::ReadCorruptData);
         return std::nullopt;
     }
 
-    QByteArray raw(qsizetype(bytes), Qt::Uninitialized);
-    if (stream.readRawData(raw.data(), int(bytes)) != int(bytes)) {
+    QByteArray raw(static_cast<qsizetype>(bytes), Qt::Uninitialized);
+    if (stream.readRawData(raw.data(), static_cast<int>(bytes)) != static_cast<int>(bytes)) {
         stream.setStatus(QDataStream::ReadPastEnd);
         return std::nullopt;
     }
-    QString text(qsizetype(bytes / 2), Qt::Uninitialized);
+    QString text(static_cast<qsizetype>(bytes / 2), Qt::Uninitialized);
     if (stream.byteOrder() == QDataStream::BigEndian) {
         qFromBigEndian<char16_t>(raw.constData(), text.size(), text.data());
     } else {

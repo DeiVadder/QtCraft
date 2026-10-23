@@ -116,7 +116,7 @@ void QcControlSessionCommands::players(const QJsonObject &request)
 {
     QJsonArray list;
     for (const QcMsg::PlayerList::Entry &player : session().players()) {
-        list.append(QJsonObject{{u"name"_s, player.name}, {u"entity"_s, qint64(player.entityId)}, {u"operator"_s, player.operatorRights}});
+        list.append(QJsonObject{{u"name"_s, player.name}, {u"entity"_s, static_cast<qint64>(player.entityId)}, {u"operator"_s, player.operatorRights}});
     }
     m_context.finish(request, {{u"players"_s, list}});
 }

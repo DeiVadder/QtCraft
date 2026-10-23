@@ -68,7 +68,7 @@ void QcPlayerLaunchers::draw(QcServerClient &client, QcMsg::DrawLauncher::Action
 
     if (client.drawing) {
         client.drawing = false;
-        const double seconds = double(m_state.clock().tick() - client.drawStart) * QcPhysics::tickDuration;
+        const double seconds = static_cast<double>(m_state.clock().tick() - client.drawStart) * QcPhysics::tickDuration;
         shoot(client, held->launcher->powerAfter(seconds));
     }
 }
@@ -123,7 +123,7 @@ bool QcPlayerLaunchers::shoot(QcServerClient &client, double power)
     if (!m_projectiles.launch(shot)) {
         return false;
     }
-    m_sounds.play(QString::fromLatin1(QcSoundKeys::bowShoot), eye, 1.0f, float(0.8 + 0.4 * power));
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::bowShoot), eye, 1.0f, static_cast<float>(0.8 + 0.4 * power));
     client.swung = true;
     if (creative) {
         return true;

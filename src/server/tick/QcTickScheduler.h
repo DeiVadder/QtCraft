@@ -47,7 +47,7 @@ public:
 
     // Ticks per second (clamped to minRate..maxRate); the next tick is due one new interval from now.
     void setRate(double ticksPerSecond);
-    double rate() const { return 1e9 / double(m_intervalNs); }
+    double rate() const { return 1e9 / static_cast<double>(m_intervalNs); }
     qint64 currentIntervalNs() const { return m_intervalNs; }
     // Runs `ticks` ticks as fast as possible with the next runDue() calls; replaces a running sprint.
     void startSprint(quint64 ticks);

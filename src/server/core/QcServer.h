@@ -92,7 +92,7 @@ public:
     enum class ClientOrigin { Remote, Local };
     void addClient(std::unique_ptr<QcTransport> transport, ClientOrigin origin = ClientOrigin::Remote);
 
-    int clientCount() const { return int(m_state.clients().size()); }
+    int clientCount() const { return static_cast<int>(m_state.clients().size()); }
     static constexpr double playerMaxHealth = QcServerClient::maxHealth;
     quint64 tickCount() const { return m_state.clock().tick(); }
     QcServerWorld &world() { return m_state.world(); }

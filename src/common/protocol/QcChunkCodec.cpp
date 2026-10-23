@@ -18,7 +18,7 @@ constexpr qsizetype runBufferRuns = 512;
 
 void writeSection(QDataStream &stream, const QcChunkSection &section)
 {
-    stream << quint32(section.palette().size());
+    stream << static_cast<quint32>(section.palette().size());
     for (const QcBlockId id : section.palette()) {
         stream << id;
     }
@@ -34,13 +34,14 @@ void writeSection(QDataStream &stream, const QcChunkSection &section)
     const bool bigEndian = stream.byteOrder() == QDataStream::BigEndian;
     QVarLengthArray<quint16, 2 * runBufferRuns> runs;
     section.forEachRun([&runs, bigEndian](int length, quint16 index) {
-        for (const quint16 value : {quint16(length), index}) {
+        for (const quint16 value : {static_cast<quint16>(length), index}) {
             runs.append(bigEndian ? qToBigEndian(value) : qToLittleEndian(value));
         }
     });
 
-    stream << quint32(runs.size() / 2);
-    stream.writeRawData(reinterpret_cast<const char *>(runs.constData()), int(runs.size() * qsizetype(sizeof(quint16))));
+    stream << static_cast<quint32>(runs.size() / 2);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of the quint16 runs for QDataStream
+    stream.writeRawData(reinterpret_cast<const char *>(runs.constData()), static_cast<int>(runs.size() * static_cast<qsizetype>(sizeof(quint16))));
 }
 
 bool readSection(QDataStream &stream, QcChunkSection &section)
@@ -64,8 +65,9 @@ bool readSection(QDataStream &stream, QcChunkSection &section)
         }
         const quint32 runCount = *runCountRead;
 
-        QVarLengthArray<quint16, 2 * runBufferRuns> runs(qsizetype(runCount) * 2);
-        const int bytes = int(runs.size() * qsizetype(sizeof(quint16)));
+        QVarLengthArray<quint16, 2 * runBufferRuns> runs(static_cast<qsizetype>(runCount) * 2);
+        const int bytes = static_cast<int>(runs.size() * static_cast<qsizetype>(sizeof(quint16)));
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of the quint16 runs for QDataStream
         if (stream.readRawData(reinterpret_cast<char *>(runs.data()), bytes) != bytes) {
             return false;
         }
@@ -91,7 +93,7 @@ namespace QcProtocol {
 
 void writeChunk(QDataStream &stream, const QcChunk &chunk)
 {
-    stream << qint32(chunk.pos().x) << qint32(chunk.pos().z);
+    stream << static_cast<qint32>(chunk.pos().x) << static_cast<qint32>(chunk.pos().z);
     for (int i = 0; i < QcWorld::sectionCount; ++i) {
         writeSection(stream, chunk.section(i));
     }

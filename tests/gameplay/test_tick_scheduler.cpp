@@ -46,7 +46,7 @@ struct Simulation
     }
 
     // Ticks the grid has had due by now since start().
-    quint64 gridTicks() const { return quint64((now - started) / QcTickScheduler::intervalNs); }
+    quint64 gridTicks() const { return static_cast<quint64>((now - started) / QcTickScheduler::intervalNs); }
 };
 
 } // namespace
@@ -229,8 +229,8 @@ private slots:
         Simulation simulation;
         simulation.start();
         for (int i = 0; i < 100'000; ++i) {
-            const qint64 delay = qint64(random.bounded(40)) * ms + qint64(random.bounded(1'000'000));
-            simulation.fire([&random](quint64) { return qint64(random.bounded(20)) * ms; }, delay);
+            const qint64 delay = static_cast<qint64>(random.bounded(40)) * ms + static_cast<qint64>(random.bounded(1'000'000));
+            simulation.fire([&random](quint64) { return static_cast<qint64>(random.bounded(20)) * ms; }, delay);
         }
 
         // About 2.5 simulated hours: ticks and real time still agree to one tick.
@@ -246,7 +246,7 @@ private slots:
         QcTickStats stats;
         // Lateness 1 .. 100 ms in shuffled order.
         for (int i = 0; i < 100; ++i) {
-            stats.record(qint64((i * 37) % 100 + 1) * ms, 0);
+            stats.record(static_cast<qint64>((i * 37) % 100 + 1) * ms, 0);
         }
         stats.addSkipped(3);
 

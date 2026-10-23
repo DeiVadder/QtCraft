@@ -108,7 +108,7 @@ private:
         ticks(2);
 
         const QcVec3 p = m_client->motion.position;
-        m_feet = {int(std::floor(p.x)), int(std::floor(p.y)), int(std::floor(p.z))};
+        m_feet = {static_cast<int>(std::floor(p.x)), static_cast<int>(std::floor(p.y)), static_cast<int>(std::floor(p.z))};
         for (int cx = -1; cx <= 1; ++cx) {
             for (int cz = -1; cz <= 1; ++cz) {
                 m_server->world().loadChunk({m_feet.chunk().x + cx, m_feet.chunk().z + cz});
@@ -285,9 +285,9 @@ private slots:
         // Independent reference: every overlapped cell looked up one by one.
         const auto expected = [&](const QcAabb &box) {
             double damage = 0.0;
-            for (int x = int(std::floor(box.min.x + 1e-3)); x <= int(std::floor(box.max.x - 1e-3)); ++x) {
-                for (int y = int(std::floor(box.min.y + 1e-3)); y <= int(std::floor(box.max.y - 1e-3)); ++y) {
-                    for (int z = int(std::floor(box.min.z + 1e-3)); z <= int(std::floor(box.max.z - 1e-3)); ++z) {
+            for (int x = static_cast<int>(std::floor(box.min.x + 1e-3)); x <= static_cast<int>(std::floor(box.max.x - 1e-3)); ++x) {
+                for (int y = static_cast<int>(std::floor(box.min.y + 1e-3)); y <= static_cast<int>(std::floor(box.max.y - 1e-3)); ++y) {
+                    for (int z = static_cast<int>(std::floor(box.min.z + 1e-3)); z <= static_cast<int>(std::floor(box.max.z - 1e-3)); ++z) {
                         const std::optional<QcBlockId> block = world.blockAt({x, y, z});
                         damage = std::max(damage, block ? m_content->block(*block).contactDamage : 0.0);
                     }
@@ -507,7 +507,7 @@ private slots:
         }
         const std::optional<int> pig = m_content->mobIndex(u"qtcraft:pig"_s);
         QVERIFY(pig);
-        m_server->mobs().spawn(*pig, {cell.x + 1.0, double(cell.y), cell.z + 0.5}, 900001);
+        m_server->mobs().spawn(*pig, {cell.x + 1.0, static_cast<double>(cell.y), cell.z + 0.5}, 900001);
         const double sandBefore = dropped(item("sand")) + count(item("sand"));
         chat(u"/setblock %1 sand"_s.arg(cmdPos(cell.offset(0, 2, 0))));
 
@@ -515,7 +515,7 @@ private slots:
         double x = 0.0;
         bool fell = false;
         for (int tick = 0; tick < 20; ++tick) {
-            const auto body = std::ranges::find(m_server->mobs().mobs(), quint32(900001), &QcCreature::id);
+            const auto body = std::ranges::find(m_server->mobs().mobs(), quint32{900001}, &QcCreature::id);
             QVERIFY(body != m_server->mobs().mobs().end());
             if (!m_server->fallingBlocks().all().isEmpty()) {
                 x = body->motion.position.x;
@@ -691,7 +691,7 @@ private slots:
         int most = 0;
         for (int tick = 0; tick < 20 * 60; ++tick) {
             mobs.tick(*swamp, {{7, player, true}}, midnight, 0.05, [&next] { return next++; });
-            most = std::max(most, int(countFireflies(mobs)));
+            most = std::max(most, static_cast<int>(countFireflies(mobs)));
             // Fireflies fly: never on the ground.
             for (const QcCreature &mob : mobs.mobs()) {
                 if (mob.type == firefly) {
@@ -783,7 +783,7 @@ private slots:
     void moreMaterialsWoolDyesCarpetsAndSnow()
     {
         const auto crafted = [&](const QList<std::pair<int, const char *>> &cells, int size) {
-            QList<QcItemStack> grid(qsizetype(size) * size);
+            QList<QcItemStack> grid(static_cast<qsizetype>(size) * size);
             for (const auto &[cell, name] : cells) {
                 grid[cell] = {item(name), 1, 0};
             }

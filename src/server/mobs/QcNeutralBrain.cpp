@@ -38,7 +38,7 @@ bool validTarget(const QcMobManager::PlayerView &player)
 QcPhysics::Steering QcNeutralBrain::think(QcCreature &mob, const QcMobDefinition &definition, const Context &context, int thinkTicks)
 {
     const bool mayPlan = thinkTicks <= 1;
-    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < quint64(std::max(1, thinkTicks));
+    const bool looks = (context.tick + mob.id) % QcMobSteering::sightCheckTicks < static_cast<quint64>(std::max(1, thinkTicks));
     // Water hurts a teleporter (QcBodyBurning): it leaves at once.
     if (definition.teleport && definition.teleport->whenWet && mob.motion.inWater) {
         QcMobTeleport::teleport(mob, definition, context.world, random());

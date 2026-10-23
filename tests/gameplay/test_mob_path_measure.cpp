@@ -58,10 +58,10 @@ private:
         for (int b = -reach / 4 * 4; b <= reach; b += 4) {
             for (int a = -reach; a <= reach; ++a) {
                 const int offset = qFloorMod(a, 4);
-                const quint32 hash = quint32((a - offset) * 73856093) ^ quint32(b * 19349663);
+                const quint32 hash = static_cast<quint32>((a - offset) * 73856093) ^ static_cast<quint32>(b * 19349663);
                 // Every other wall piece (by the hash) has its gap: dead ends and closed pockets.
-                const bool wallX = offset == 0 || offset != 1 + int(hash % 3) || (hash >> 4) % 2 == 0;
-                const bool wallZ = offset == 0 || offset != 1 + int((hash >> 8) % 3) || (hash >> 12) % 2 == 0;
+                const bool wallX = offset == 0 || offset != 1 + static_cast<int>(hash % 3) || (hash >> 4) % 2 == 0;
+                const bool wallZ = offset == 0 || offset != 1 + static_cast<int>((hash >> 8) % 3) || (hash >> 12) % 2 == 0;
                 for (int y = 5; y <= 7; ++y) {
                     if (wallX) {
                         world->setBlock({b, y, a}, stone);
@@ -109,8 +109,8 @@ private:
             const double angle = i * 2.399963;
             const double distance = 8.0 + (i * 37 % 120) / 10.0;
             // Off the maze's wall lines.
-            int x = int(std::floor(std::cos(angle) * distance)) + 2;
-            int z = int(std::floor(std::sin(angle) * distance)) + 2;
+            int x = static_cast<int>(std::floor(std::cos(angle) * distance)) + 2;
+            int z = static_cast<int>(std::floor(std::sin(angle) * distance)) + 2;
             x += qFloorMod(x, 4) == 0 ? 1 : 0;
             z += qFloorMod(z, 4) == 0 ? 1 : 0;
             mobs.spawn(zombie, {x + 0.5, surfaceY(world, x, z), z + 0.5}, m_nextId++);
@@ -121,7 +121,7 @@ private:
             const double angle = tick * 0.025;
             const double x = 2.5 + 4.0 * std::cos(angle);
             const double z = 2.5 + 4.0 * std::sin(angle);
-            return QList<QcMobManager::PlayerView>{{7, {x, surfaceY(world, int(std::floor(x)), int(std::floor(z))), z}, true}};
+            return QList<QcMobManager::PlayerView>{{7, {x, surfaceY(world, static_cast<int>(std::floor(x)), static_cast<int>(std::floor(z))), z}, true}};
         };
         for (int tick = 0; tick < 20; ++tick) {
             mobs.tick(world, player(tick), midnight, 0.05, [this] { return m_nextId++; });
@@ -136,7 +136,7 @@ private:
             QElapsedTimer timer;
             timer.start();
             mobs.tick(world, players, midnight, 0.05, [this] { return m_nextId++; });
-            const double ms = double(timer.nsecsElapsed()) / 1e6;
+            const double ms = static_cast<double>(timer.nsecsElapsed()) / 1e6;
             total += ms;
             worst = std::max(worst, ms);
 #ifdef QC_HAS_PATHS
@@ -153,7 +153,8 @@ private:
 #endif
         qInfo("MEASURE %s %d zombies, %lld nodes/tick budget: %.3f ms mean, %.3f ms max per tick, %.0f nodes/tick, %lld searches, "
               "%lld chasing at the end",
-              name, count, qlonglong(nodesPerTick), total / ticks, worst, double(nodes) / ticks, qlonglong(searches), qlonglong(chasing));
+              name, count, static_cast<qlonglong>(nodesPerTick), total / ticks, worst, static_cast<double>(nodes) / ticks,
+              static_cast<qlonglong>(searches), static_cast<qlonglong>(chasing));
     }
 
 private slots:

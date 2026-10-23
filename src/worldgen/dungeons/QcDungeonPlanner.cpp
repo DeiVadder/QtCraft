@@ -19,7 +19,7 @@ constexpr std::array<const char *, 4> sideNames{"north", "east", "south", "west"
 
 int sideOf(int dx, int dz)
 {
-    return int(std::ranges::find(sides, std::pair{dx, dz}) - sides.begin());
+    return static_cast<int>(std::ranges::find(sides, std::pair{dx, dz}) - sides.begin());
 }
 
 // The side a chest faces from the wall it stands against (0 north, 1 east, 2 south, 3 west), given its
@@ -55,7 +55,7 @@ public:
 
     const QcTerrainColumn &column(int x, int z)
     {
-        const qint64 key = (qint64(x) << 32) ^ qint64(quint32(z));
+        const qint64 key = (static_cast<qint64>(x) << 32) ^ static_cast<qint64>(static_cast<quint32>(z));
         auto it = m_columns.find(key);
         if (it == m_columns.end()) {
             it = m_columns.insert(key, m_terrain.column(x, z));
@@ -109,7 +109,7 @@ QcDungeonPlanner::QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcCo
 
 double QcDungeonPlanner::random(const QcDungeonPlan &plan, int purpose, int index) const
 {
-    return qcPositionRandom(qcMixSeed(m_seed, quint64(purpose)), plan.regionX, index, plan.regionZ);
+    return qcPositionRandom(qcMixSeed(m_seed, static_cast<quint64>(purpose)), plan.regionX, index, plan.regionZ);
 }
 
 namespace {
@@ -142,8 +142,8 @@ std::shared_ptr<const QcDungeonPlan> QcDungeonPlanner::plan(int regionX, int reg
     }
 
     const int sizes = (m_settings.maxSize - m_settings.minSize) / 2 + 1;
-    plan->sizeX = m_settings.minSize + 2 * std::min(sizes - 1, int(random(*plan, 2) * sizes));
-    plan->sizeZ = m_settings.minSize + 2 * std::min(sizes - 1, int(random(*plan, 3) * sizes));
+    plan->sizeX = m_settings.minSize + 2 * std::min(sizes - 1, static_cast<int>(random(*plan, 2) * sizes));
+    plan->sizeZ = m_settings.minSize + 2 * std::min(sizes - 1, static_cast<int>(random(*plan, 3) * sizes));
     Probe probe(m_terrain);
     const std::optional<QcBlockPos> origin = findRoom(probe, regionX, regionZ, plan->sizeX, plan->sizeZ);
     if (!origin) {
@@ -171,9 +171,9 @@ std::optional<QcBlockPos> QcDungeonPlanner::findRoom(Probe &probe, int regionX, 
     key.regionX = regionX;
     key.regionZ = regionZ;
     for (int attempt = 0; attempt < m_settings.attempts; ++attempt) {
-        const int x = regionX * region + regionMargin + int(random(key, 10, attempt) * std::max(1, region - 2 * regionMargin - sizeX));
-        const int z = regionZ * region + regionMargin + int(random(key, 11, attempt) * std::max(1, region - 2 * regionMargin - sizeZ));
-        const int y = m_settings.minY + int(random(key, 12, attempt) * (m_settings.maxY - m_settings.minY + 1));
+        const int x = regionX * region + regionMargin + static_cast<int>(random(key, 10, attempt) * std::max(1, region - 2 * regionMargin - sizeX));
+        const int z = regionZ * region + regionMargin + static_cast<int>(random(key, 11, attempt) * std::max(1, region - 2 * regionMargin - sizeZ));
+        const int y = m_settings.minY + static_cast<int>(random(key, 12, attempt) * (m_settings.maxY - m_settings.minY + 1));
         const QcBlockPos origin{x, y, z};
         if (deepEnough(probe, origin, sizeX, sizeZ) && fewCaves(probe, origin, sizeX, sizeZ, m_settings.maxCaveShare * 5 * sizeX * sizeZ)) {
             return origin;
@@ -209,7 +209,7 @@ QString QcDungeonPlanner::mobOf(const QcDungeonPlan &plan) const
     for (const QcDungeonSettings::Mob &mob : m_settings.mobs) {
         total += mob.weight;
     }
-    int pick = int(random(plan, 20) * total);
+    int pick = static_cast<int>(random(plan, 20) * total);
     const auto chosen = std::ranges::find_if(m_settings.mobs, [&pick](const QcDungeonSettings::Mob &mob) {
         pick -= mob.weight;
         return pick < 0;
@@ -221,9 +221,9 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestsOf(const QcDungeonPlan &pla
 {
     QList<QcDungeonPlan::Placed> chests;
     QList<QcDungeonPlan::Placed> places = chestPlaces(plan);
-    const int count = m_settings.minChests + int(random(plan, 21) * (m_settings.maxChests - m_settings.minChests + 1));
+    const int count = m_settings.minChests + static_cast<int>(random(plan, 21) * (m_settings.maxChests - m_settings.minChests + 1));
     for (int i = 0; i < count && !places.isEmpty(); ++i) {
-        chests.append(places.takeAt(qsizetype(random(plan, 22, i) * double(places.size()))));
+        chests.append(places.takeAt(static_cast<qsizetype>(random(plan, 22, i) * static_cast<double>(places.size()))));
     }
     return chests;
 }
@@ -242,7 +242,7 @@ QList<QcDungeonPlan::Placed> QcDungeonPlanner::chestPlaces(const QcDungeonPlan &
             const bool middle = std::abs(x - plan.spawner.x) <= 1 || std::abs(z - plan.spawner.z) <= 1;
             const int side = middle ? -1 : facingFrom(x - x0, x1 - x, z - z0, z1 - z);
             if (side >= 0) {
-                places.append({{x, plan.spawner.y, z}, m_blocks.chests[std::size_t(side)]});
+                places.append({{x, plan.spawner.y, z}, m_blocks.chests[static_cast<std::size_t>(side)]});
             }
         }
     }
@@ -384,7 +384,7 @@ std::optional<QcDungeonPlan::Placed> QcDungeonPlanner::lightAt(const QcDungeonPl
         const int wz = step.first * turn;
         const QcBlockPos wall = head.offset(wx, 0, wz);
         if (!inside.contains(wall) && !plan.inRoom(wall)) {
-            return QcDungeonPlan::Placed{head, m_blocks.lights[std::size_t(sideOf(wx, wz))]};
+            return QcDungeonPlan::Placed{head, m_blocks.lights[static_cast<std::size_t>(sideOf(wx, wz))]};
         }
     }
     return std::nullopt;

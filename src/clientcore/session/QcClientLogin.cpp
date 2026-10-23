@@ -31,7 +31,7 @@ QcMsg::LoginResponse QcClientLogin::answer(const QcMsg::LoginChallenge &challeng
         response.passwordProof = QcLoginCrypto::proof(key, challenge.nonce, Purpose::Password);
     }
 
-    response.viewDistance = std::clamp(m_credentials.viewDistance, 0, int(challenge.maxViewDistance));
+    response.viewDistance = std::clamp(m_credentials.viewDistance, 0, static_cast<int>(challenge.maxViewDistance));
     response.packs = m_credentials.packs;
     return response;
 }

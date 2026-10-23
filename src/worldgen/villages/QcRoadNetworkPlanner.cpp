@@ -32,7 +32,7 @@ QcRoadNetworkPlanner::QcRoadNetworkPlanner(const QcTerrainGenerator &terrain, co
 
 int QcRoadNetworkPlanner::drawCount(QcVillageDraft &draft, QcVillageRange<int> range)
 {
-    return range.min + std::min(range.max - range.min, int(draft.random() * double(range.max - range.min + 1)));
+    return range.min + std::min(range.max - range.min, static_cast<int>(draft.random() * static_cast<double>(range.max - range.min + 1)));
 }
 
 double QcRoadNetworkPlanner::drawShare(QcVillageDraft &draft, QcVillageRange<double> range)
@@ -47,7 +47,7 @@ QcVillageDraft::Layout QcRoadNetworkPlanner::chooseLayout(QcVillageDraft &draft)
     for (const QcVillageLayout &entry : layouts) {
         total += entry.weight;
     }
-    int pick = int(draft.random() * total);
+    int pick = static_cast<int>(draft.random() * total);
     QcVillageDraft::Layout layout;
     layout.shape = &layouts.back();
     for (const QcVillageLayout &entry : layouts) {
@@ -63,11 +63,11 @@ QcVillageDraft::Layout QcRoadNetworkPlanner::chooseLayout(QcVillageDraft &draft)
     const QcVillageLayout &shape = *layout.shape;
     const double draw = draft.random();
     if (shape.diagonals && shape.kind == Kind::Street) {
-        layout.mainDirection = int(draw * 8.0);
+        layout.mainDirection = static_cast<int>(draw * 8.0);
     } else if (shape.diagonals && shape.kind == Kind::Tree) {
-        layout.mainDirection = 2 * int(draw * 4.0) + 1;
+        layout.mainDirection = 2 * static_cast<int>(draw * 4.0) + 1;
     } else {
-        layout.mainDirection = 2 * int(draw * 4.0);
+        layout.mainDirection = 2 * static_cast<int>(draw * 4.0);
     }
     layout.winding = shape.diagonals && draft.random() < shape.winding;
     return layout;
@@ -79,7 +79,7 @@ QcRoadNetworkPlanner::Arm QcRoadNetworkPlanner::fromCentre(QcVillageDraft &draft
     arm.x = draft.centreX;
     arm.z = draft.centreZ;
     arm.direction = direction % 8;
-    arm.length = int(draft.region.radius * drawShare(draft, draft.shape->armLength));
+    arm.length = static_cast<int>(draft.region.radius * drawShare(draft, draft.shape->armLength));
     arm.firstSlot = clearOfCentre(draft, arm.direction);
     arm.winding = draft.winding;
     return arm;
@@ -192,7 +192,7 @@ std::optional<QcRoadNetworkPlanner::Network> QcRoadNetworkPlanner::layPlaza(QcVi
     const int exits = drawCount(draft, draft.shape->exits);
     QList<Arm> arms;
     for (int n = 0; n < exits && !sides.isEmpty(); ++n) {
-        const int direction = sides.takeAt(std::min(sides.size() - 1, qsizetype(draft.random() * double(sides.size())))) % 8;
+        const int direction = sides.takeAt(std::min(sides.size() - 1, static_cast<qsizetype>(draft.random() * static_cast<double>(sides.size())))) % 8;
         const auto [dx, dz] = directions[direction];
         // Off the middle of its side, so the exits and the spoke never line up into a cross.
         const int shift = exitShift(draft, ring);
@@ -200,7 +200,7 @@ std::optional<QcRoadNetworkPlanner::Network> QcRoadNetworkPlanner::layPlaza(QcVi
         exit.x = draft.centreX + dx * ring + dz * shift;
         exit.z = draft.centreZ + dz * ring + dx * shift;
         exit.direction = direction;
-        exit.length = int(draft.region.radius * drawShare(draft, draft.shape->armLength)) - ring;
+        exit.length = static_cast<int>(draft.region.radius * drawShare(draft, draft.shape->armLength)) - ring;
         exit.firstSlot = roadHalfWidth + 1;
         exit.winding = draft.winding;
         if (exit.length >= exitMinimum) {
@@ -223,7 +223,7 @@ int QcRoadNetworkPlanner::exitShift(QcVillageDraft &draft, int ring) const
 {
     // Two to ring / 2 blocks to either side; the corners of the ring stay clear.
     const int most = std::max(2, std::min(ring / 2, ring - roadHalfWidth - 2));
-    const int shift = 2 + int(draft.random() * double(most - 1));
+    const int shift = 2 + static_cast<int>(draft.random() * static_cast<double>(most - 1));
     return draft.random() < 0.5 ? -shift : shift;
 }
 
@@ -250,7 +250,7 @@ QList<int> QcRoadNetworkPlanner::treeDirections(QcVillageDraft &draft) const
     const int count = std::min(drawCount(draft, draft.shape->arms), diagonals ? 8 : 4);
     QList<int> chosen{draft.mainDirection};
     for (int attempt = 0; attempt < treeAttempts && chosen.size() < count; ++attempt) {
-        const int direction = diagonals ? int(draft.random() * 8.0) : 2 * int(draft.random() * 4.0);
+        const int direction = diagonals ? static_cast<int>(draft.random() * 8.0) : 2 * static_cast<int>(draft.random() * 4.0);
         const int apart = attempt < treeAttempts / 2 ? 2 : 1;
         if (std::ranges::all_of(chosen, [&](int other) { return turnDistance(direction, other) >= apart; })) {
             chosen.append(direction);
@@ -266,7 +266,7 @@ QList<std::pair<int, int>> QcRoadNetworkPlanner::branchSpots(QcVillageDraft &dra
     QList<std::pair<int, int>> spots;
     if (shape.branchEvery == 0) {
         if (length >= branchMinimum && draft.random() < shape.branchChance) {
-            const int at = int(length * (0.5 + 0.2 * draft.random()));
+            const int at = static_cast<int>(length * (0.5 + 0.2 * draft.random()));
             spots.append({at, draft.random() < 0.5 ? -1 : 1});
         }
         return spots;
@@ -291,12 +291,12 @@ QList<QcRoadNetworkPlanner::Road> QcRoadNetworkPlanner::layBranches(QcVillageDra
         for (const auto &[at, side] : spots) {
             const auto run = std::ranges::find_if(trunk, [at](const Road &r) { return at >= r.armOffset && at < r.armOffset + r.length; });
             const int along = at - run->armOffset;
-            const int direction = int(std::ranges::find(directions, std::pair{run->dx, run->dz}) - directions.begin());
+            const int direction = static_cast<int>(std::ranges::find(directions, std::pair{run->dx, run->dz}) - directions.begin());
             Arm branch;
             branch.x = run->x + run->dx * along;
             branch.z = run->z + run->dz * along;
             branch.direction = (direction + 2 * side + 8) % 8;
-            branch.length = int(draft.region.radius * drawShare(draft, draft.shape->branchLength));
+            branch.length = static_cast<int>(draft.region.radius * drawShare(draft, draft.shape->branchLength));
             branch.firstSlot = roadHalfWidth + 1;
             branch.branch = true;
             branch.winding = draft.winding;

@@ -225,7 +225,7 @@ QList<Parameter> next(const QList<Form> &forms, const QStringList &words)
 QLatin1StringView typeName(Parameter::Type type)
 {
     static constexpr std::array<const char *, 9> names{"word", "text", "player", "integer", "coordinate", "block", "item", "creature", "choice"};
-    return QLatin1StringView(names[std::size_t(type)]);
+    return QLatin1StringView(names[static_cast<std::size_t>(type)]);
 }
 
 } // namespace QcCommandSyntax

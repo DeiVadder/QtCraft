@@ -38,8 +38,8 @@ double footprint(const QcBlockState &state)
 // A low block with the height of its top in eighths, rounded up (a carpet 1, a slab 4).
 quint8 lowCell(double top, quint8 flags)
 {
-    const int eighths = std::clamp(int(std::ceil(top * 8.0 - 1e-6)), 1, 4);
-    return make(Kind::Low, quint8(flags | quint8((eighths - 1) << liftShift)));
+    const int eighths = std::clamp(static_cast<int>(std::ceil(top * 8.0 - 1e-6)), 1, 4);
+    return make(Kind::Low, static_cast<quint8>(flags | static_cast<quint8>((eighths - 1) << liftShift)));
 }
 
 } // namespace
@@ -49,7 +49,7 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
     const QcBlockDefinition &block = content.block(id);
     const QcBlockState &state = content.state(id);
     const bool hurts = block.contactDamage > 0.0 || block.fire.isFire || block.fire.setsAlightSeconds > 0;
-    quint8 flags = hurts ? hurtsFlag : quint8(0);
+    quint8 flags = hurts ? hurtsFlag : quint8{0};
     if (block.slowsInside < 1.0) {
         flags |= slowsFlag;
     }
@@ -85,15 +85,15 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
         return lowCell(top, flags);
     }
     // A slippery floor (ice, decision E-430) carries its flag where low cells keep their height.
-    return make(Kind::Solid, block.slipperiness > QcBlockDefinition::grippingSlipperiness ? quint8(flags | slipperyFlag) : flags);
+    return make(Kind::Solid, block.slipperiness > QcBlockDefinition::grippingSlipperiness ? static_cast<quint8>(flags | slipperyFlag) : flags);
 }
 
 } // namespace QcPathCell
 
 QcPathCellTable::QcPathCellTable(const QcContentRegistry &content)
 {
-    m_cells.resize(std::size_t(content.stateCount()));
+    m_cells.resize(static_cast<std::size_t>(content.stateCount()));
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
-        m_cells[std::size_t(id)] = QcPathCell::classify(content, QcBlockId(id));
+        m_cells[static_cast<std::size_t>(id)] = QcPathCell::classify(content, static_cast<QcBlockId>(id));
     }
 }

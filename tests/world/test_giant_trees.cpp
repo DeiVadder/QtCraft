@@ -19,12 +19,13 @@ constexpr int groundY = 63;
 
 int ticksFor(double seconds)
 {
-    return int(std::ceil(seconds / dt));
+    return static_cast<int>(std::ceil(seconds / dt));
 }
 
 QcChunkPos chunkOf(QcBlockPos pos)
 {
-    return {int(std::floor(pos.x / double(QcWorld::chunkSize))), int(std::floor(pos.z / double(QcWorld::chunkSize)))};
+    return {static_cast<int>(std::floor(pos.x / static_cast<double>(QcWorld::chunkSize))),
+        static_cast<int>(std::floor(pos.z / static_cast<double>(QcWorld::chunkSize)))};
 }
 
 } // namespace

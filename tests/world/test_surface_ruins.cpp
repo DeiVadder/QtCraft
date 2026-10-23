@@ -313,7 +313,7 @@ private slots:
                 for (int z = 0; z < structure.sizeZ(); ++z) {
                     for (int x = 0; x < structure.sizeX(); ++x) {
                         const std::optional<QcBlockId> block = structure.block(x, y, z);
-                        cells.append(block ? qint64(*block) : -1);
+                        cells.append(block ? static_cast<qint64>(*block) : -1);
                         obsidianCells += block == obsidian;
                         cryingCells += block == crying;
                     }
@@ -386,7 +386,7 @@ private slots:
             const QList<QcChunkPos> planChunks = chunksOf(plan);
             for (const QcChunkPos &pos : planChunks) {
                 const QcChunkFurnishing furnishing = m_terrain->furnishingIn(pos);
-                chests += int(std::ranges::count(furnishing.chests, u"qtcraft:ruined_portal_chest"_s, &QcChunkFurnishing::Chest::lootTable));
+                chests += static_cast<int>(std::ranges::count(furnishing.chests, u"qtcraft:ruined_portal_chest"_s, &QcChunkFurnishing::Chest::lootTable));
             }
             QCOMPARE(chests, 1);
             const Chunks chunks = generate(*m_terrain, planChunks);
@@ -402,7 +402,7 @@ private slots:
         };
         std::set<QcItemId> drawn;
         for (int i = 0; i < 400; ++i) {
-            const QList<QcItemStack> stacks = QcLootTables::draw(*table, quint64(i) * 7919, items);
+            const QList<QcItemStack> stacks = QcLootTables::draw(*table, static_cast<quint64>(i) * 7919, items);
             for (const QcItemStack &stack : stacks) {
                 drawn.insert(stack.item);
             }
@@ -498,7 +498,7 @@ private slots:
                 terrain.generate(pos);
             }
             clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return double(end.tv_sec - start.tv_sec) + double(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
         };
 
         // The chunks of one copy of each kind, fresh generators interleaved (plans made afresh).
@@ -514,7 +514,7 @@ private slots:
             plainTime += seconds(plain, chunks);
             withTime += seconds(with, chunks);
         }
-        const double count = 2.0 * double(chunks.size());
+        const double count = 2.0 * static_cast<double>(chunks.size());
         qInfo().noquote() << u"chunks/s of %1 chunks of ruins, wells and oases without them %2, with %3"_s.arg(chunks.size())
                                  .arg(count / plainTime, 0, 'f', 1)
                                  .arg(count / withTime, 0, 'f', 1);
@@ -532,8 +532,8 @@ private slots:
         const double a = seconds(plain, area);
         const double b = seconds(with, area);
         qInfo().noquote() << u"chunks/s of %1 chunks around a ruin without them %2, with %3"_s.arg(area.size())
-                                 .arg(double(area.size()) / a, 0, 'f', 1)
-                                 .arg(double(area.size()) / b, 0, 'f', 1);
+                                 .arg(static_cast<double>(area.size()) / a, 0, 'f', 1)
+                                 .arg(static_cast<double>(area.size()) / b, 0, 'f', 1);
     }
 };
 

@@ -42,7 +42,7 @@ QRectF glyphRect(QcPixelFont::Glyph glyph, const QRectF &page)
     constexpr double tile = QcPixelFont::cellSize * QcPixelFont::cellsPerRow;
     const double column = (glyph.cell % QcPixelFont::cellsPerRow) * QcPixelFont::cellSize + glyph.left;
     const int row = (glyph.cell / QcPixelFont::cellsPerRow) * QcPixelFont::cellSize;
-    return {page.left() + column / tile * page.width(), page.top() + double(row) / tile * page.height(), glyph.width / tile * page.width(),
+    return {page.left() + column / tile * page.width(), page.top() + static_cast<double>(row) / tile * page.height(), glyph.width / tile * page.width(),
             QcPixelFont::glyphHeight / tile * page.height()};
 }
 
@@ -72,7 +72,7 @@ public:
         double x = place.left;
         const QList<uint> characters = line.toUcs4();
         for (const uint code : characters) {
-            const auto character = char32_t(code);
+            const auto character = static_cast<char32_t>(code);
             const QcPixelFont::Glyph glyph = QcPixelFont::glyph(character);
             if (glyph.width > 0) {
                 m_quads.push_back(glyphQuad(glyphRect(glyph, pageRect(glyph.page)), place, x, glyph.width));
@@ -106,8 +106,8 @@ private:
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const QcVec3 at = m_face.centre + m_face.right * corners[corner].first + QcVec3{0.0, corners[corner].second, 0.0};
             const bool left = corner == 0 || corner == 3;
-            quad[corner] = {float(at.x), float(at.y), float(at.z), float(left ? rect.left() : rect.right()),
-                            float(corner < 2 ? rect.bottom() : rect.top()), 1.0f, m_light.sky, m_light.block, m_ink};
+            quad[corner] = {static_cast<float>(at.x), static_cast<float>(at.y), static_cast<float>(at.z), static_cast<float>(left ? rect.left() : rect.right()),
+                            static_cast<float>(corner < 2 ? rect.bottom() : rect.top()), 1.0f, m_light.sky, m_light.block, m_ink};
         }
         return quad;
     }
@@ -138,7 +138,7 @@ std::optional<Face> faceOf(const QcContentRegistry &content, QcBlockId block, Qc
     const int sixteenths = quarterTurns(attach) * 4 + std::clamp(content.property(block, u"rotation"_s).toInt(), 0, 15);
     const double angle = sixteenths * std::numbers::pi / 8.0;
 
-    const QcVec3 corner{double(pos.x), double(pos.y), double(pos.z)};
+    const QcVec3 corner{static_cast<double>(pos.x), static_cast<double>(pos.y), static_cast<double>(pos.z)};
     const QcVec3 middle = turned({0.5, 0.0, 0.5}, angle);
     const QcVec3 east = turned({1.5, 0.0, 0.5}, angle) - middle;
     const QcVec3 south = turned({0.5, 0.0, 1.5}, angle) - middle;
@@ -158,7 +158,7 @@ std::vector<Quad> textQuads(const Face &face, const QcSignText::Text &text, QcEn
         }
         // Too wide for the board: narrower glyphs, as high as the others.
         const double along = width > maxLineWidth ? pixel * maxLineWidth / width : pixel;
-        const double top = blockHeight / 2.0 - double(index) * lineStep * pixel;
+        const double top = blockHeight / 2.0 - static_cast<double>(index) * lineStep * pixel;
         pen.write(lines[index], {-width * along / 2.0, top, along});
     }
     return pen.takeQuads();

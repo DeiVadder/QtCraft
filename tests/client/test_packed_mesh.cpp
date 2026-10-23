@@ -12,7 +12,7 @@ QList<QcBlockVertex> vertices(int count, float first)
     QList<QcBlockVertex> list;
     for (int i = 0; i < count; ++i) {
         QcBlockVertex vertex;
-        vertex.x = first + float(i);
+        vertex.x = first + static_cast<float>(i);
         list.append(vertex);
     }
     return list;
@@ -21,21 +21,21 @@ QList<QcBlockVertex> vertices(int count, float first)
 QcBlockVertex vertexAt(const QcPackedMesh &packed, quint32 offset, int index)
 {
     QcBlockVertex vertex;
-    std::memcpy(&vertex, packed.vertices.constData() + offset + index * qsizetype(sizeof(QcBlockVertex)), sizeof(vertex));
+    std::memcpy(&vertex, packed.vertices.constData() + offset + index * static_cast<qsizetype>(sizeof(QcBlockVertex)), sizeof(vertex));
     return vertex;
 }
 
 quint16 shortIndexAt(const QcPackedMesh &packed, quint32 offset, int index)
 {
     quint16 value = 0;
-    std::memcpy(&value, packed.indices.constData() + offset + index * qsizetype(sizeof(quint16)), sizeof(value));
+    std::memcpy(&value, packed.indices.constData() + offset + index * static_cast<qsizetype>(sizeof(quint16)), sizeof(value));
     return value;
 }
 
 quint32 longIndexAt(const QcPackedMesh &packed, quint32 offset, int index)
 {
     quint32 value = 0;
-    std::memcpy(&value, packed.indices.constData() + offset + index * qsizetype(sizeof(quint32)), sizeof(value));
+    std::memcpy(&value, packed.indices.constData() + offset + index * static_cast<qsizetype>(sizeof(quint32)), sizeof(value));
     return value;
 }
 

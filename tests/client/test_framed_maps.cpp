@@ -28,7 +28,7 @@ QcHanging southFrame(int rotation)
     QcHanging hanging;
     hanging.face = QcBlockFace::South;
     hanging.cell = {4, 64, 7};
-    hanging.rotation = quint8(rotation);
+    hanging.rotation = static_cast<quint8>(rotation);
     return hanging;
 }
 
@@ -154,7 +154,8 @@ private slots:
         atlas.beginFrame({3}, maps);
         QCOMPARE(atlas.place(3, maps), placed);
         QCOMPARE(atlas.tiles(), drawn);
-        const int index = int(placed.x() * QcFramedMapAtlas::columns) + QcFramedMapAtlas::columns * int(placed.y() * QcFramedMapAtlas::columns);
+        const int index = static_cast<int>(placed.x() * QcFramedMapAtlas::columns)
+            + QcFramedMapAtlas::columns * static_cast<int>(placed.y() * QcFramedMapAtlas::columns);
         const QImage image = drawn->at(index).image;
         QCOMPARE(image.size(), QSize(QcMapData::size, QcMapData::size));
         const QImage expected = QcMapColors::render(maps.find(3)->data, {qRgb(10, 20, 30), qRgb(200, 100, 50)});
@@ -182,14 +183,14 @@ private slots:
     {
         QcClientMaps maps;
         QList<quint32> nearestFirst;
-        for (quint32 id = 1; id <= quint32(QcFramedMapAtlas::tileCount); ++id) {
+        for (quint32 id = 1; id <= static_cast<quint32>(QcFramedMapAtlas::tileCount); ++id) {
             maps.apply(wholeMap(id, QcMapPixel::make(0, QcMapPixel::Shade::Normal)));
             nearestFirst.append(id);
         }
         QcFramedMapAtlas atlas;
         atlas.beginFrame(nearestFirst, maps);
         std::set<std::pair<double, double>> used;
-        for (quint32 id = 1; id < quint32(QcFramedMapAtlas::tileCount); ++id) {
+        for (quint32 id = 1; id < static_cast<quint32>(QcFramedMapAtlas::tileCount); ++id) {
             const QPointF corner = atlas.place(id, maps).topLeft();
             used.insert({corner.x(), corner.y()});
         }

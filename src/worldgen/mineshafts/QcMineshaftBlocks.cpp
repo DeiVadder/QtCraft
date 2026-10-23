@@ -49,12 +49,12 @@ QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings
         return {std::nullopt, warnings};
     }
 
-    blocks.open.resize(std::size_t(content.stateCount()));
+    blocks.open.resize(static_cast<std::size_t>(content.stateCount()));
     blocks.liquid.resize(blocks.open.size());
     blocks.falling.resize(blocks.open.size());
     blocks.foliage.resize(blocks.open.size());
     for (std::size_t id = 0; id < blocks.open.size(); ++id) {
-        const QcBlockDefinition &block = content.block(QcBlockId(id));
+        const QcBlockDefinition &block = content.block(static_cast<QcBlockId>(id));
         blocks.open[id] = !block.solid || block.liquid;
         blocks.liquid[id] = block.liquid;
         blocks.falling[id] = block.falls;

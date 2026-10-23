@@ -35,7 +35,7 @@ public:
 
     // Milliseconds from start() to atlasReady(), -1 while no atlas arrived.
     double atlasMs() const;
-    double worstFrameMs() const { return double(m_worstFrameNs) / 1e6; }
+    double worstFrameMs() const { return static_cast<double>(m_worstFrameNs) / 1e6; }
     int frames() const { return m_frames; }
     int slowFrames() const { return m_slowFrames; }
     double guiCpuMaxMs() const { return m_guiCpuMaxMs; }

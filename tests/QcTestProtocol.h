@@ -17,7 +17,7 @@ inline QByteArray helloWithoutClientText(const QString &name)
     QByteArray frame;
     QDataStream stream(&frame, QIODevice::WriteOnly);
     stream.setVersion(QDataStream::Qt_6_8);
-    stream << quint16(QcMessage(QcMsg::Hello{}).index()) << quint32(QcProtocol::firstVersionWithClientText - 1) << name << QcAppearance{};
+    stream << static_cast<quint16>(QcMessage(QcMsg::Hello{}).index()) << (QcProtocol::firstVersionWithClientText - 1) << name << QcAppearance{};
     return frame;
 }
 

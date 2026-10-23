@@ -130,7 +130,7 @@ private:
         auto world = flatWorld();
         fill(*world, {-20, ground - 1, -3}, {20, ground - 1, 3}, name);
         auto mobs = makeMobs();
-        mobs->spawn(type("pig"), {0.5, double(ground), 0.5}, 1);
+        mobs->spawn(type("pig"), {0.5, static_cast<double>(ground), 0.5}, 1);
         QcCreature &pig = mobs->editableMobs().first();
         pig.wanderTimer = 1e9;
         pig.motion.onGround = true;
@@ -251,10 +251,10 @@ private slots:
         auto world = flatWorld();
         fill(*world, {-2, ground - 1, -8}, {16, ground - 1, 8}, u"ice"_s);
         auto mobs = makeMobs();
-        mobs->spawn(type("pig"), {0.5, double(ground), 0.5}, 1);
+        mobs->spawn(type("pig"), {0.5, static_cast<double>(ground), 0.5}, 1);
         QcCreature &pig = mobs->editableMobs().first();
         pig.wanderTimer = 1e9;
-        const QcVec3 goal{7.5, double(ground), 0.5};
+        const QcVec3 goal{7.5, static_cast<double>(ground), 0.5};
         QcMobNavigator::setGoal(pig, QcMobPath::Purpose::Wander, goal, 0);
 
         // It gets there without sliding past the goal on the way, then stays: no sliding past the

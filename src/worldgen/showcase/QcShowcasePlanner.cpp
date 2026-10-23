@@ -52,8 +52,8 @@ QcShowcaseTourStop stopLookingAt(const QString &name, QcBlockPos column, double 
     const double dx = target.x - (column.x + 0.5);
     const double dz = target.z - (column.z + 0.5);
     const double horizontal = std::max(1.0, std::hypot(dx, dz));
-    const float yaw = float(qRadiansToDegrees(std::atan2(dx, -dz)));
-    const float pitch = float(-qRadiansToDegrees(std::atan2(eyeY - target.y, horizontal)));
+    const float yaw = static_cast<float>(qRadiansToDegrees(std::atan2(dx, -dz)));
+    const float pitch = static_cast<float>(-qRadiansToDegrees(std::atan2(eyeY - target.y, horizontal)));
     return {name, column.x, column.z, yaw < 0.0f ? yaw + 360.0f : yaw, pitch};
 }
 
@@ -91,7 +91,7 @@ QcShowcaseContext QcShowcasePlanner::context() const
     const QcShowcaseDefinition &settings = m_content.worldgen().showcase();
     return {m_content,
             settings,
-            int(m_groundColumn.size()) - 1,
+            static_cast<int>(m_groundColumn.size()) - 1,
             m_groundColumn.constLast(),
             resolved(m_content, settings.podium, u"qtcraft:stone"_s),
             resolved(m_content, settings.enclosure, u"qtcraft:glass"_s),
@@ -165,10 +165,10 @@ QList<QcShowcaseAreaBuilder> QcShowcasePlanner::builders(const QcShowcaseContext
 QcShowcasePlanner::Placed QcShowcasePlanner::placeNext(const QcShowcaseAreaBuilder &builder, Cursor cursor) const
 {
     const int rowEnd = firstAreaX + m_content.worldgen().showcase().rowWidth;
-    QcShowcaseArea area = builder({cursor.x, int(m_groundColumn.size()) - 1, cursor.front});
+    QcShowcaseArea area = builder({cursor.x, static_cast<int>(m_groundColumn.size()) - 1, cursor.front});
     if (cursor.x > firstAreaX && cursor.x + area.structure->sizeX() > rowEnd) {
         cursor = {firstAreaX, cursor.north - rowGap, cursor.north - rowGap};
-        area = builder({cursor.x, int(m_groundColumn.size()) - 1, cursor.front});
+        area = builder({cursor.x, static_cast<int>(m_groundColumn.size()) - 1, cursor.front});
     }
 
     cursor.x += area.structure->sizeX() + areaGap;
@@ -220,14 +220,14 @@ void QcShowcasePlanner::addArea(const QcShowcaseArea &area, int front)
 
     // The near stop looks north along the west part of the area from the walkway in front of it.
     const QcBlockPos near{area.origin.x + 3, 0, front + 6};
-    const QcVec3 nearTarget{near.x + 0.5, area.origin.y + 1.0, std::max(double(area.origin.z), front - 4.0)};
+    const QcVec3 nearTarget{near.x + 0.5, area.origin.y + 1.0, std::max(static_cast<double>(area.origin.z), front - 4.0)};
     m_plan.tour.append(stopLookingAt(area.name + u"-near"_s, near, area.origin.y + 1 + eyeHeight, nearTarget));
 }
 
 void QcShowcasePlanner::addLookout(const QcShowcaseArea &area, int front)
 {
     const QcStructure &structure = *area.structure;
-    const QcVec3 centre{area.origin.x + structure.sizeX() / 2.0, double(area.origin.y + 1), area.origin.z + structure.sizeZ() / 2.0};
+    const QcVec3 centre{area.origin.x + structure.sizeX() / 2.0, static_cast<double>(area.origin.y + 1), area.origin.z + structure.sizeZ() / 2.0};
     if (!m_lookout) {
         const QcBlockPos column{area.origin.x - 3, 0, front + 5};
         m_plan.tour.append(stopLookingAt(area.name, column, area.origin.y + 1 + eyeHeight, centre));
@@ -245,7 +245,7 @@ void QcShowcasePlanner::addLookout(const QcShowcaseArea &area, int front)
     }
 
     // A station behind glass: from the walkway in front of its middle, at eye height, into it.
-    const QcBlockPos ahead{int(std::floor(centre.x)), 0, front + 5};
+    const QcBlockPos ahead{static_cast<int>(std::floor(centre.x)), 0, front + 5};
     m_plan.tour.append(stopLookingAt(area.name, ahead, area.origin.y + 1 + eyeHeight, centre + QcVec3{0.0, 0.8, 0.0}));
 }
 
@@ -260,7 +260,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         m_plan.setup.mobs.append({mob.mob, placement.toWorld(mob.at), mob.confined, mob.owner, mob.sitting, mob.noAi, mob.children});
     }
     for (const QcStructure::Stand &stand : structure.stands) {
-        m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * float(placement.turns()), stand.properties});
+        m_plan.setup.stands.append({placement.toWorld(stand.at), stand.yaw + 90.0f * static_cast<float>(placement.turns()), stand.properties});
     }
     for (const QcStructure::Contents &contents : structure.contents) {
         m_plan.setup.contents.append({placement.toWorld(contents.at), contents.items});
@@ -300,7 +300,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     }
     for (const QcStructureDefinition::Loot &loot : structure.loot) {
         const QcBlockPos at = placement.toWorld(loot.at);
-        m_plan.furnishingByChunk[at.chunk()].chests.append({at, loot.table, quint64(qHash(at))});
+        m_plan.furnishingByChunk[at.chunk()].chests.append({at, loot.table, static_cast<quint64>(qHash(at))});
     }
     m_plan.guardSites.append(QcGuardSite::of(placement));
 
@@ -316,7 +316,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
 
 void QcShowcasePlanner::addLabel(const QcWorldLabel &label)
 {
-    const QcBlockPos pos{int(std::floor(label.position.x)), 0, int(std::floor(label.position.z))};
+    const QcBlockPos pos{static_cast<int>(std::floor(label.position.x)), 0, static_cast<int>(std::floor(label.position.z))};
     QList<QcWorldLabel> &labels = m_plan.labelsByChunk[pos.chunk()];
     if (labels.size() >= QcWorldLabel::maxPerChunk) {
         warn(u"showcase: more than %1 labels in chunk %2, %3; '%4' is left out"_s.arg(QcWorldLabel::maxPerChunk).arg(pos.chunk().x).arg(pos.chunk().z).arg(label.text));

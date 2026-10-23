@@ -23,7 +23,7 @@ void QcLightningStrike::strike(QcBlockPos pos)
     ++m_numbers.strikes;
     hitPlayers(pos);
     hitCreatures(pos);
-    m_numbers.fires += quint64(m_ignition.lightning(pos, m_state.content().weather().lightning.sparks));
+    m_numbers.fires += static_cast<quint64>(m_ignition.lightning(pos, m_state.content().weather().lightning.sparks));
 }
 
 bool QcLightningStrike::withinReach(QcBlockPos pos, const QcVec3 &feet) const
@@ -31,7 +31,7 @@ bool QcLightningStrike::withinReach(QcBlockPos pos, const QcVec3 &feet) const
     // A box around the struck cell like the reference game: `radius` to each side and below,
     // reachUp above.
     const double radius = m_state.content().weather().lightning.radius;
-    const QcVec3 centre{pos.x + 0.5, double(pos.y), pos.z + 0.5};
+    const QcVec3 centre{pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5};
     return std::abs(feet.x - centre.x) <= radius + 0.5 && std::abs(feet.z - centre.z) <= radius + 0.5 && feet.y >= centre.y - radius
            && feet.y <= centre.y + reachUp;
 }
@@ -47,8 +47,8 @@ void QcLightningStrike::hitPlayers(QcBlockPos pos)
 
         ++m_numbers.playersHit;
         // Alight first, so the health sent with the damage says it burns.
-        client->burnTicks = std::max(client->burnTicks, lightning.burnSeconds * int(QcPhysics::tickRate));
-        m_health.damage(*client, lightning.damage, client->motion.position - QcVec3{pos.x + 0.5, double(pos.y), pos.z + 0.5},
+        client->burnTicks = std::max(client->burnTicks, lightning.burnSeconds * static_cast<int>(QcPhysics::tickRate));
+        m_health.damage(*client, lightning.damage, client->motion.position - QcVec3{pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5},
                         QcPlayerHealth::DamageKind::Armoured);
         if (client->dead) {
             client->burnTicks = 0;
@@ -60,13 +60,13 @@ void QcLightningStrike::hitPlayers(QcBlockPos pos)
 void QcLightningStrike::hitCreatures(QcBlockPos pos)
 {
     const QcWeatherDefinition::Lightning &lightning = m_state.content().weather().lightning;
-    const QcVec3 from{pos.x + 0.5, double(pos.y), pos.z + 0.5};
+    const QcVec3 from{pos.x + 0.5, static_cast<double>(pos.y), pos.z + 0.5};
 
     // Hurting may remove a creature, so the struck ones are collected first.
     QList<quint32> struck;
     for (QcCreature &mob : m_state.entities().creatures().editableMobs()) {
         if (!mob.dormant && withinReach(pos, mob.motion.position)) {
-            mob.burnTicks = std::max(mob.burnTicks, lightning.burnSeconds * int(QcPhysics::tickRate));
+            mob.burnTicks = std::max(mob.burnTicks, lightning.burnSeconds * static_cast<int>(QcPhysics::tickRate));
             struck.append(mob.id);
         }
     }

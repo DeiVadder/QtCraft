@@ -38,7 +38,7 @@ QcBlockId QcTerrainSurface::surface(const QcTerrainColumn &column, int x, int z)
         return biome.beach;
     }
     if (biome.snowLine > 0
-        && top >= biome.snowLine - snowLineJitter + int(qcPositionRandom(m_seed, x, 7, z) * (2 * snowLineJitter + 1))) {
+        && top >= biome.snowLine - snowLineJitter + static_cast<int>(qcPositionRandom(m_seed, x, 7, z) * (2 * snowLineJitter + 1))) {
         return biome.snow;
     }
     if (biome.steep != qcAirBlockId && column.slope >= biome.steepSlope) {

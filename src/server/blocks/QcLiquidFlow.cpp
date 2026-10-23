@@ -10,7 +10,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 constexpr std::array<QcBlockFace, 4> sideways = {QcBlockFace::North, QcBlockFace::East, QcBlockFace::South, QcBlockFace::West};
-constexpr int sideCount = int(sideways.size());
+constexpr int sideCount = static_cast<int>(sideways.size());
 
 // Cells the liquid `spread` may run through: those it could flow into at any level (air, replaceable
 // and washable blocks, flowing parts of the same liquid).
@@ -46,7 +46,7 @@ public:
         QList<QcBlockPos> frontier;
         for (int i = 0; i < sideCount; ++i) {
             if (openSteps & (1 << i)) {
-                const QcBlockPos side = qcNeighbour(m_centre, sideways[std::size_t(i)]);
+                const QcBlockPos side = qcNeighbour(m_centre, sideways[static_cast<std::size_t>(i)]);
                 cell(side) = {1, 1 << i};
                 frontier.append(side);
             }
@@ -80,7 +80,7 @@ private:
     Cell &cell(QcBlockPos pos)
     {
         const int index = (pos.z - m_centre.z + size / 2) * size + pos.x - m_centre.x + size / 2;
-        return m_cells[std::size_t(index)];
+        return m_cells[static_cast<std::size_t>(index)];
     }
 
     int stepsToDrops(const QList<QcBlockPos> &frontier)
@@ -136,7 +136,7 @@ private:
     QcBlockId m_spread;
     QcBlockId m_falling;
     int m_radius;
-    std::array<Cell, std::size_t(size * size)> m_cells{};
+    std::array<Cell, static_cast<std::size_t>(size * size)> m_cells{};
 };
 
 } // namespace
@@ -197,7 +197,7 @@ QcVec3 QcLiquidFlow::current(const QcBlockAccess &world, QcBlockPos pos)
         }
 
         const QcBlockPos step = qcNeighbour({0, 0, 0}, side);
-        push = push + QcVec3{double(step.x), 0.0, double(step.z)} * double(depth - (sameLiquid ? depthOf(*block) : 0));
+        push = push + QcVec3{static_cast<double>(step.x), 0.0, static_cast<double>(step.z)} * static_cast<double>(depth - (sameLiquid ? depthOf(*block) : 0));
     }
     return push.length() > 1e-9 ? push.normalized() : QcVec3{};
 }
@@ -329,7 +329,7 @@ bool QcLiquidFlow::schedule(const QcBlockAccess &world, QcBlockPos pos, quint64 
         return false;
     }
 
-    const quint64 due = now + quint64(m_content->block(*block).flow.ticks);
+    const quint64 due = now + static_cast<quint64>(m_content->block(*block).flow.ticks);
     m_planned.insert(pos, due);
     m_due[due].append(pos);
     return true;
@@ -472,7 +472,7 @@ QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlock
     int flowable = 0;
     int passable = 0;
     for (int i = 0; i < sideCount; ++i) {
-        const QcBlockPos side = qcNeighbour(pos, sideways[std::size_t(i)]);
+        const QcBlockPos side = qcNeighbour(pos, sideways[static_cast<std::size_t>(i)]);
         flowable |= canFlowInto(world, side, spread) ? 1 << i : 0;
         passable |= isPassable(world, side, spread) ? 1 << i : 0;
     }
@@ -480,14 +480,14 @@ QList<QcBlockFace> QcLiquidFlow::spreadFaces(const QcBlockAccess &world, QcBlock
     // Drops further than the spreading parts can still reach do not matter.
     const QcLiquidDefinition &definition = world.content().block(spread).flow;
     const int radius = std::min(definition.dropSearch, definition.distance - level(world.content(), spread) + 1);
-    const bool search = flowable != 0 && radius > 0 && std::popcount(unsigned(passable)) > 1;
+    const bool search = flowable != 0 && radius > 0 && std::popcount(static_cast<unsigned>(passable)) > 1;
     const int nearest = search ? DropSearch(world, pos, spread, radius).nearestDropSteps(passable) : 0;
     const int chosen = (nearest != 0 ? nearest : passable) & flowable;
 
     QList<QcBlockFace> faces;
     for (int i = 0; i < sideCount; ++i) {
         if (chosen & (1 << i)) {
-            faces.append(sideways[std::size_t(i)]);
+            faces.append(sideways[static_cast<std::size_t>(i)]);
         }
     }
     return faces;

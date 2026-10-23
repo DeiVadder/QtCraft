@@ -125,7 +125,8 @@ std::optional<int> wetAround(const QcTerrainGenerator &terrain, const QcVillageS
     }
     // Most of the ground carries stilts (pieces and boardwalks keep off the rest), and some of it
     // is water: a village over water stands in the wet part of its biome.
-    const bool fits = double(carried) >= stiltShare * double(samples) && wet > 0 && double(wet) >= style.stilts.water * double(samples);
+    const bool fits = static_cast<double>(carried) >= stiltShare * static_cast<double>(samples) && wet > 0
+        && static_cast<double>(wet) >= style.stilts.water * static_cast<double>(samples);
     return fits ? std::optional<int>(wet) : std::nullopt;
 }
 
@@ -154,8 +155,8 @@ std::optional<QcVillageDraft::Stairs> stairsAt(const QcTerrainGenerator &terrain
 
     // The land access stays dry: the stairs and a strip beyond them through the wetland's reach.
     const int beyond = draft.style->wetland.reach() + 1;
-    const int farX = endX + road.dx * (int(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
-    const int farZ = endZ + road.dz * (int(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
+    const int farX = endX + road.dx * (static_cast<int>(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
+    const int farZ = endZ + road.dz * (static_cast<int>(flight.size()) / (2 * QcVillageDraft::roadHalfWidth + 1) + beyond);
     const int side = QcVillageDraft::roadHalfWidth + 1;
     const QcVillageDraft::Rect dry{std::min(rect.x0, farX - side * std::abs(road.dz)), std::min(rect.z0, farZ - side * std::abs(road.dx)),
                                    std::max(rect.x1, farX + side * std::abs(road.dz)), std::max(rect.z1, farZ + side * std::abs(road.dx))};

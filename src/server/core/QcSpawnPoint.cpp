@@ -37,7 +37,7 @@ QcVec3 QcSpawnPoint::position()
         }
         if (ground) {
             m_lastGround = ground;
-            return {ground->x + 0.5, double(ground->y + 1), ground->z + 0.5};
+            return {ground->x + 0.5, static_cast<double>(ground->y + 1), ground->z + 0.5};
         }
     }
 
@@ -54,7 +54,7 @@ QcVec3 QcSpawnPoint::position()
             spawn.y = ground.y + 1;
         }
     }
-    return {spawn.x + 0.5, double(spawn.y), spawn.z + 0.5};
+    return {spawn.x + 0.5, static_cast<double>(spawn.y), spawn.z + 0.5};
 }
 
 bool QcSpawnPoint::placeGround(QcBlockPos pos)

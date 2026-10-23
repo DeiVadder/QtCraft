@@ -14,7 +14,7 @@ void QcMapPending::add(QPoint pixel)
     if (!QcMapData::bounds().contains(pixel)) {
         return;
     }
-    Span &row = m_rows[std::size_t(pixel.y())];
+    Span &row = m_rows[static_cast<std::size_t>(pixel.y())];
     row.left = std::min(row.left, pixel.x());
     row.right = std::max(row.right, pixel.x());
 }
@@ -23,7 +23,7 @@ QRect QcMapPending::take(int budget)
 {
     for (int step = 0; step < QcMapData::size; ++step) {
         const int first = (m_cursor + step) % QcMapData::size;
-        Span span = m_rows[std::size_t(first)];
+        Span span = m_rows[static_cast<std::size_t>(first)];
         if (span.isEmpty()) {
             continue;
         }
@@ -33,8 +33,8 @@ QRect QcMapPending::take(int budget)
 
         // Adjacent changed rows join while the rectangle stays within the budget.
         int last = first;
-        while (last + 1 < QcMapData::size && !m_rows[std::size_t(last) + 1].isEmpty()) {
-            const Span next = m_rows[std::size_t(last) + 1];
+        while (last + 1 < QcMapData::size && !m_rows[static_cast<std::size_t>(last) + 1].isEmpty()) {
+            const Span next = m_rows[static_cast<std::size_t>(last) + 1];
             const Span joined{std::min(span.left, next.left), std::max(span.right, next.right)};
             if ((joined.right - joined.left + 1) * (last + 2 - first) > budget) {
                 break;

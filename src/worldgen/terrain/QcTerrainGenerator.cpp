@@ -55,8 +55,8 @@ double kindRandom(const QcTerrainDefinitions::Feature &feature, int x, int z)
     const int size = feature.patchSize / 2;
     const double warpX = feature.patches.noise2(x / 9.0 + 31.7, z / 9.0) * size * 0.5;
     const double warpZ = feature.patches.noise2(x / 9.0, z / 9.0 + 57.3) * size * 0.5;
-    const int areaX = int(std::floor((x + warpX) / size));
-    const int areaZ = int(std::floor((z + warpZ) / size));
+    const int areaX = static_cast<int>(std::floor((x + warpX) / size));
+    const int areaZ = static_cast<int>(std::floor((z + warpZ) / size));
     return qcPositionRandom(feature.seed, areaX, 2, areaZ);
 }
 
@@ -64,24 +64,24 @@ double kindRandom(const QcTerrainDefinitions::Feature &feature, int x, int z)
 
 QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed)
     : m_content(std::move(content))
-    , m_seed(quint64(seed))
-    , m_definitions(*m_content, quint64(seed))
-    , m_caves(quint64(seed), m_content->worldgen().terrainSettings(), m_definitions)
+    , m_seed(static_cast<quint64>(seed))
+    , m_definitions(*m_content, static_cast<quint64>(seed))
+    , m_caves(static_cast<quint64>(seed), m_content->worldgen().terrainSettings(), m_definitions)
     , m_pools(m_content, m_definitions)
-    , m_climate(quint64(seed), m_definitions.anyRare)
-    , m_rivers(quint64(seed))
+    , m_climate(static_cast<quint64>(seed), m_definitions.anyRare)
+    , m_rivers(static_cast<quint64>(seed))
     , m_riverPieces(m_rivers)
-    , m_deltas(quint64(seed), m_rivers, m_definitions.seaLevel, m_definitions.deltaShare)
-    , m_coldEdges(m_definitions.coldEdges, quint64(seed))
-    , m_ground(m_definitions, m_rivers, quint64(seed))
-    , m_continentNoise(qcMixSeed(quint64(seed), 1))
-    , m_detailNoise(qcMixSeed(quint64(seed), 2))
-    , m_warpNoiseX(qcMixSeed(quint64(seed), 9))
-    , m_warpNoiseZ(qcMixSeed(quint64(seed), 10))
-    , m_hillNoise(qcMixSeed(quint64(seed), 11))
-    , m_ridgeNoise(qcMixSeed(quint64(seed), 12))
-    , m_terraceNoise(qcMixSeed(quint64(seed), 13))
-    , m_overhangNoise(qcMixSeed(quint64(seed), 16))
+    , m_deltas(static_cast<quint64>(seed), m_rivers, m_definitions.seaLevel, m_definitions.deltaShare)
+    , m_coldEdges(m_definitions.coldEdges, static_cast<quint64>(seed))
+    , m_ground(m_definitions, m_rivers, static_cast<quint64>(seed))
+    , m_continentNoise(qcMixSeed(static_cast<quint64>(seed), 1))
+    , m_detailNoise(qcMixSeed(static_cast<quint64>(seed), 2))
+    , m_warpNoiseX(qcMixSeed(static_cast<quint64>(seed), 9))
+    , m_warpNoiseZ(qcMixSeed(static_cast<quint64>(seed), 10))
+    , m_hillNoise(qcMixSeed(static_cast<quint64>(seed), 11))
+    , m_ridgeNoise(qcMixSeed(static_cast<quint64>(seed), 12))
+    , m_terraceNoise(qcMixSeed(static_cast<quint64>(seed), 13))
+    , m_overhangNoise(qcMixSeed(static_cast<quint64>(seed), 16))
 {
     m_villages = std::make_unique<QcVillageGenerator>(*this, m_content, m_seed);
     m_dungeons = std::make_unique<QcDungeonGenerator>(*this, *m_content, m_seed);
@@ -209,7 +209,7 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
         double weight = QcClimateBiomes::weight(biome, climate);
         if (weight > nearestWeight) {
             nearestWeight = weight;
-            nearest = int(i);
+            nearest = static_cast<int>(i);
         }
         weight *= QcClimateBiomes::rarityGate(biome, climate.rarity);
         weightSum += weight;
@@ -218,7 +218,7 @@ QcTerrainGenerator::Blend QcTerrainGenerator::blend(const QcTerrainClimate::Poin
         if (weight > bestWeight) {
             result.runnerUpWeight = bestWeight;
             bestWeight = weight;
-            result.biome = int(i);
+            result.biome = static_cast<int>(i);
         } else {
             result.runnerUpWeight = std::max(result.runnerUpWeight, weight);
         }
@@ -302,10 +302,10 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     // weight comes close to the heaviest's (weights fall with the fourth power of the distance).
     const bool nearBorder = m_coldEdges.groundBlend() > 0 && blended.runnerUpWeight >= nearBorderWeight * blended.bestWeight;
     result.groundBiome = nearBorder ? Column::unresolvedGround : -1;
-    result.height = std::clamp(int(std::lround(height)), 4, QcWorld::worldHeight - 8);
+    result.height = std::clamp(static_cast<int>(std::lround(height)), 4, QcWorld::worldHeight - 8);
     // Overhangs fade out towards the coast and never reach down to the sea level, so no hollow
     // lies next to or under water.
-    const double overhangAmplitude = std::min(blended.overhang * result.landFactor, double(result.height - seaLevel() - 3));
+    const double overhangAmplitude = std::min(blended.overhang * result.landFactor, static_cast<double>(result.height - seaLevel() - 3));
     result.overhang = overhangAmplitude < 1.0 ? 0.0 : overhangAmplitude;
     return result;
 }
@@ -327,8 +327,8 @@ QcTerrainGenerator::OverhangBand QcTerrainGenerator::overhangBand(int x, int z, 
 {
     const double amplitude = column.overhang;
     OverhangBand band;
-    band.bottom = std::max(1, int(std::floor(column.height - amplitude)));
-    const int end = std::min(QcWorld::worldHeight, int(std::ceil(column.height + amplitude)) + 1);
+    band.bottom = std::max(1, static_cast<int>(std::floor(column.height - amplitude)));
+    const int end = std::min(QcWorld::worldHeight, static_cast<int>(std::ceil(column.height + amplitude)) + 1);
     band.size = std::min(end - band.bottom, maxOverhangBand);
 
     // A 3D noise reshapes the ground around the surface. Below the plain height it cuts hollows
@@ -340,14 +340,14 @@ QcTerrainGenerator::OverhangBand QcTerrainGenerator::overhangBand(int x, int z, 
         const int y = band.bottom + i;
         const double density = (column.height - 0.5 - y) / amplitude + 3.0 * m_overhangNoise.fractal3(x / 16.0, y / 7.0, z / 16.0, 2);
         if (y < column.height - amplitude) {
-            solid[std::size_t(i)] = true;
+            solid[static_cast<std::size_t>(i)] = true;
         } else if (y >= column.height + amplitude) {
-            solid[std::size_t(i)] = false;
+            solid[static_cast<std::size_t>(i)] = false;
         } else if (y < column.height) {
-            solid[std::size_t(i)] = density > 0.0;
+            solid[static_cast<std::size_t>(i)] = density > 0.0;
         } else {
             stacked = stacked && density > 0.0;
-            solid[std::size_t(i)] = stacked;
+            solid[static_cast<std::size_t>(i)] = stacked;
         }
     }
     return band;
@@ -361,7 +361,7 @@ int QcTerrainGenerator::groundTop(int x, int z, const Column &column) const
 
     const OverhangBand band = overhangBand(x, z, column);
     for (int i = band.size - 1; i >= 0; --i) {
-        if (band.solid[std::size_t(i)]) {
+        if (band.solid[static_cast<std::size_t>(i)]) {
             return band.bottom + i;
         }
     }
@@ -381,7 +381,7 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
     const bool overhangs = column.overhang >= 1.0;
     const OverhangBand band = overhangs ? overhangBand(worldX, worldZ, column) : OverhangBand{.bottom = column.height};
     const int highest = overhangs ? band.bottom + band.size - 1 : column.height - 1;
-    const auto solidAt = [&](int y) { return y < band.bottom || (y - band.bottom < band.size && band.solid[std::size_t(y - band.bottom)]); };
+    const auto solidAt = [&](int y) { return y < band.bottom || (y - band.bottom < band.size && band.solid[static_cast<std::size_t>(y - band.bottom)]); };
 
     // From the top down: the first solid block under air is the surface, the next ones the soil.
     int depth = -1;
@@ -405,7 +405,7 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
         }
 
         // Solid at the bottom, thinning out over the layers above.
-        if (y == 0 || (y < bedrockLayers && qcPositionRandom(m_seed, worldX, y, worldZ) < double(bedrockLayers - y) / bedrockLayers)) {
+        if (y == 0 || (y < bedrockLayers && qcPositionRandom(m_seed, worldX, y, worldZ) < static_cast<double>(bedrockLayers - y) / bedrockLayers)) {
             block = bedrock;
         }
 
@@ -421,7 +421,7 @@ void QcTerrainGenerator::fillColumn(QcChunk &chunk, int localX, int localZ, cons
 QList<bool> QcTerrainGenerator::carvedColumns(const QcChunk &chunk, const QcTerrainColumnGrid &columns) const
 {
     const QcChunkPos pos = chunk.pos();
-    QList<bool> carved(qsizetype(QcWorld::chunkSize) * QcWorld::chunkSize);
+    QList<bool> carved(static_cast<qsizetype>(QcWorld::chunkSize) * QcWorld::chunkSize);
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
             const int worldX = pos.x * QcWorld::chunkSize + lx;
@@ -441,11 +441,11 @@ QcTerrainGenerator::Vein QcTerrainGenerator::grownVein(const Ore &ore, int vein,
     // A compact clump: each block grows from a random earlier one onto a free face, kept inside
     // this chunk so veins never depend on neighbours.
     Vein cells;
-    cells.append({int(random(0) * QcWorld::chunkSize), ore.minY + int(random(1) * (ore.maxY - ore.minY + 1)),
-                  int(random(2) * QcWorld::chunkSize)});
+    cells.append({static_cast<int>(random(0) * QcWorld::chunkSize), ore.minY + static_cast<int>(random(1) * (ore.maxY - ore.minY + 1)),
+                  static_cast<int>(random(2) * QcWorld::chunkSize)});
     for (int step = 1, tries = 0; step < ore.veinSize && tries < 4 * ore.veinSize; ++tries) {
-        const QcBlockPos from = cells[qsizetype(random(3 + tries * 2) * double(cells.size()))];
-        const auto &direction = directions[std::size_t(random(4 + tries * 2) * 6.0)];
+        const QcBlockPos from = cells[static_cast<qsizetype>(random(3 + tries * 2) * static_cast<double>(cells.size()))];
+        const auto &direction = directions[static_cast<std::size_t>(random(4 + tries * 2) * 6.0)];
         const QcBlockPos next{from.x + direction[0], from.y + direction[1], from.z + direction[2]};
         if (next.x < 0 || next.x >= QcWorld::chunkSize || next.z < 0 || next.z >= QcWorld::chunkSize || next.y < ore.minY
             || next.y > ore.maxY || cells.contains(next)) {
@@ -499,7 +499,7 @@ std::optional<int> QcTerrainGenerator::chosenFeature(const Column &column, int x
         if (feature.patchSize > 0) {
             // Patches: dense where the noise is high, none where it is low; symmetric around 1, so
             // the average density stays about the same.
-            const double patch = feature.patches.fractal2(x / double(feature.patchSize), z / double(feature.patchSize), 2);
+            const double patch = feature.patches.fractal2(x / static_cast<double>(feature.patchSize), z / static_cast<double>(feature.patchSize), 2);
             localDensity *= std::clamp(1.0 + 3.0 * patch, 0.0, 2.0);
         }
         if (qcPositionRandom(feature.seed, x, 0, z) < localDensity) {

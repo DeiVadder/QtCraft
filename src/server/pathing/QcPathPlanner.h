@@ -51,7 +51,7 @@ public:
     // Of them, the nodes of villagers' searches (measurements of the shared budget, decision E-424).
     int villagerNodesLastTick() const { return m_villagerNodesLastTick; }
     int searchesLastTick() const { return m_searchesLastTick; }
-    qsizetype waiting() const { return qsizetype(m_queue.size()); }
+    qsizetype waiting() const { return static_cast<qsizetype>(m_queue.size()); }
     // Searches run since the start (tests).
     qint64 searches() const { return m_searches; }
 
@@ -78,9 +78,9 @@ private:
     std::vector<quint32> m_deferred;
     // The waiting creatures as (id, index in the list), sorted by id.
     std::vector<std::pair<quint32, qsizetype>> m_queued;
-    int m_nodesPerTick = int(QcServerLimits{}.pathNodesPerTick);
-    int m_nodesPerSearch = int(QcServerLimits{}.pathNodesPerSearch);
-    int m_pathLength = int(QcServerLimits{}.pathLength);
+    int m_nodesPerTick = static_cast<int>(QcServerLimits{}.pathNodesPerTick);
+    int m_nodesPerSearch = static_cast<int>(QcServerLimits{}.pathNodesPerSearch);
+    int m_pathLength = static_cast<int>(QcServerLimits{}.pathLength);
     int m_nodesLastTick = 0;
     int m_villagerNodesLastTick = 0;
     int m_searchesLastTick = 0;
