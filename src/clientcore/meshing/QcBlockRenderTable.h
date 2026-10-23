@@ -114,6 +114,16 @@ public:
     static std::pair<int, int> axes(QcBlockFace face);
     // Whether a face of `self` with rectangle `rect` on the side towards `neighbour` is hidden by it.
     static bool hides(const Entry &self, SideRect rect, QcBlockFace face, const Entry &neighbour);
+    // Whether the face of a translucent liquid (water) stands for the boundary instead of the Up or
+    // Down face of a translucent non-liquid block (ice, glass) next to it: always above the block,
+    // below it only over source or falling water (full surface). Translucent faces are drawn
+    // unsorted without depth writes, so two faces on one boundary blend in mesh order and the
+    // result flips from block to block (E-868).
+    static bool liquidStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour);
+    // Whether the side face of a translucent non-liquid block (ice, glass) stands for the boundary
+    // instead of the side face of a translucent liquid next to it, where the block covers the side
+    // (`hides` checks the cover; the block's side reaches higher than the liquid's) (E-868).
+    static bool blockStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour);
 
 private:
     QList<Entry> m_entries;

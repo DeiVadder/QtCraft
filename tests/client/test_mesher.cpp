@@ -33,6 +33,7 @@ struct Fixture
     QcBlockId leaves = 0;
     QcBlockId glass = 0;
     QcBlockId sapling = 0;
+    QcBlockId ice = 0;
     std::shared_ptr<const QcBlockRenderTable> table;
 
     Fixture()
@@ -49,6 +50,7 @@ struct Fixture
             return part;
         }()};
         sapling = *content.registerBlock(cross);
+        ice = *content.registerBlock(makeBlock(u"t:ice"_s, QcRenderLayer::Translucent, false));
         table = std::make_shared<const QcBlockRenderTable>(content, QcTextureAtlas::build(content));
     }
 
@@ -79,6 +81,16 @@ int quadCount(const QList<quint32> &indices)
 QVector3D position(const QcBlockVertex &v)
 {
     return {v.x, v.y, v.z};
+}
+
+// Quads of a vertex list that face `face`.
+int facesTowards(const QList<QcBlockVertex> &vertices, QcBlockFace face)
+{
+    int count = 0;
+    for (qsizetype i = 0; i < vertices.size(); i += 4) {
+        count += vertices[i].normal() == std::optional<QcBlockFace>(face) ? 1 : 0;
+    }
+    return count;
 }
 
 } // namespace
@@ -421,8 +433,8 @@ private slots:
         chunk->setBlock(12, 2, 5, f.sapling);
         const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
 
-        // Glass and water do not hide each other.
-        QCOMPARE(quadCount(mesh.waterIndices), 6);
+        // Glass and water: the glass side alone stands for their shared side (E-868).
+        QCOMPARE(quadCount(mesh.waterIndices), 5);
         QCOMPARE(quadCount(mesh.translucentIndices), 6);
         for (const QcBlockVertex &v : mesh.waterVertices) {
             QCOMPARE(v.material(), QcSurfaceMaterial::Water);
@@ -490,6 +502,105 @@ private slots:
         chunk->setBlock(2, 2, 5, qcAirBlockId);
         chunk->setBlock(4, 3, 5, f.glass);
         QVERIFY(QcChunkMesher::mesh(f.input(chunk)).translucentRuns.isEmpty());
+    }
+
+    // Ice or glass on water: the water surface alone stands for the boundary, so no two unsorted
+    // translucent faces blend in mesh order (decision E-868); the side faces stay.
+    void translucentBlockOnWaterLeavesTheBoundaryToTheWater()
+    {
+        const Fixture f;
+        for (const QcBlockId block : {f.glass, f.ice}) {
+            auto chunk = std::make_shared<QcChunk>();
+            chunk->setBlock(5, 2, 5, f.water);
+            chunk->setBlock(5, 3, 5, block);
+            chunk->setBlock(8, 3, 5, f.water);
+            chunk->setBlock(8, 2, 5, block);
+            const QcChunkMesh mesh = QcChunkMesher::mesh(f.input(chunk));
+            QCOMPARE(facesTowards(mesh.translucentVertices, QcBlockFace::Down), 1);
+            QCOMPARE(facesTowards(mesh.translucentVertices, QcBlockFace::Up), 1);
+            QCOMPARE(facesTowards(mesh.translucentVertices, QcBlockFace::East), 2);
+            QCOMPARE(facesTowards(mesh.waterVertices, QcBlockFace::Up), 2);
+            QCOMPARE(facesTowards(mesh.waterVertices, QcBlockFace::Down), 2);
+        }
+    }
+
+    // Which faces next to liquids drop, by render layer and water level (E-868): only translucent
+    // blocks give way to water, only to translucent water, below only to a full surface; at the
+    // shore the block's side stands for the water's.
+    void facesNextToLiquidsFollowLayerAndLevel()
+    {
+        QcContentRegistry content;
+        const auto add = [&content](const QString &name, QcRenderLayer layer, bool opaque, bool liquid = false) {
+            return *content.registerBlock(makeBlock(name, layer, opaque, liquid));
+        };
+        const QcBlockId stone = add(u"t:stone"_s, QcRenderLayer::Opaque, true);
+        const QcBlockId leaves = add(u"t:leaves"_s, QcRenderLayer::Cutout, false);
+        const QcBlockId ice = add(u"t:ice"_s, QcRenderLayer::Translucent, false);
+        const QcBlockId lava = add(u"t:lava"_s, QcRenderLayer::Cutout, false, true);
+        QcBlockDefinition water = makeBlock(u"t:water"_s, QcRenderLayer::Translucent, false, true);
+        water.properties = {QcBlockProperty{u"level"_s, {u"0"_s, u"1"_s, u"2"_s, u"3"_s}}};
+        water.flow.distance = 3;
+        const QcBlockId source = *content.registerBlock(water);
+        const QcBlockId flowing = content.withProperty(source, u"level"_s, u"2"_s);
+        const QcBlockRenderTable table(content, QcTextureAtlas::build(content));
+        const auto hides = [&table](QcBlockId self, QcBlockFace face, QcBlockId neighbour) {
+            return QcBlockRenderTable::hides(table.entry(self), {}, face, table.entry(neighbour));
+        };
+
+        QVERIFY(!hides(stone, QcBlockFace::Up, source));
+        QVERIFY(!hides(leaves, QcBlockFace::Up, source));
+        QVERIFY(!hides(ice, QcBlockFace::Up, lava));
+        QVERIFY(!hides(ice, QcBlockFace::Down, lava));
+        QVERIFY(hides(ice, QcBlockFace::Up, flowing));
+        QVERIFY(hides(ice, QcBlockFace::Down, source));
+        QVERIFY(!hides(ice, QcBlockFace::Down, flowing));
+
+        QVERIFY(!hides(ice, QcBlockFace::West, source));
+        QVERIFY(hides(source, QcBlockFace::East, ice));
+        QVERIFY(hides(flowing, QcBlockFace::East, ice));
+        QVERIFY(!hides(source, QcBlockFace::East, leaves));
+        QVERIFY(!hides(lava, QcBlockFace::East, ice));
+    }
+
+    // The same across the border of two sections: water at y = 15, ice at y = 16.
+    void translucentBlockOnWaterAcrossASectionBorder()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(5, 15, 5, f.water);
+        chunk->setBlock(5, 16, 5, f.ice);
+        QcMeshInput upper = f.input(chunk);
+        upper.sectionIndex = 1;
+        const QcChunkMesh ice = QcChunkMesher::mesh(upper);
+        QCOMPARE(quadCount(ice.translucentIndices), 5);
+        QCOMPARE(facesTowards(ice.translucentVertices, QcBlockFace::Down), 0);
+        const QcChunkMesh water = QcChunkMesher::mesh(f.input(chunk));
+        QCOMPARE(facesTowards(water.waterVertices, QcBlockFace::Up), 1);
+    }
+
+    // Ice next to ice keeps no inner faces, also across chunk and section borders.
+    void iceNextToIceAcrossBordersHasNoInnerFaces()
+    {
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>();
+        chunk->setBlock(15, 2, 5, f.ice);
+        QcMeshInput in = f.input(chunk);
+        auto east = std::make_shared<QcChunk>(QcChunkPos{1, 0});
+        east->setBlock(0, 2, 5, f.ice);
+        in.chunks[5] = east;
+        const QcChunkMesh acrossChunks = QcChunkMesher::mesh(in);
+        QCOMPARE(quadCount(acrossChunks.translucentIndices), 5);
+        QCOMPARE(facesTowards(acrossChunks.translucentVertices, QcBlockFace::East), 0);
+
+        auto column = std::make_shared<QcChunk>();
+        column->setBlock(5, 15, 5, f.ice);
+        column->setBlock(5, 16, 5, f.ice);
+        const QcChunkMesh lower = QcChunkMesher::mesh(f.input(column));
+        QCOMPARE(quadCount(lower.translucentIndices), 5);
+        QCOMPARE(facesTowards(lower.translucentVertices, QcBlockFace::Up), 0);
+        QcMeshInput upper = f.input(column);
+        upper.sectionIndex = 1;
+        QCOMPARE(facesTowards(QcChunkMesher::mesh(upper).translucentVertices, QcBlockFace::Down), 0);
     }
 
     void cutoutBlocksKeepFacesBetweenEachOther()

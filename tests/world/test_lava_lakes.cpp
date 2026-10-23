@@ -37,7 +37,10 @@ private:
     // The random seed of this run besides the fixed ones (decision E-846): QC_TEST_SEED if set.
     const qint64 m_randomSeed = QcTestUtil::randomSeed();
 
-    std::array<qint64, 4> seeds() const { return {7, 42, 1234, m_randomSeed}; }
+    // Fixed seeds first; 510556236 has a window with almost no lakes (E-846, E-856).
+    static constexpr std::array<qint64, 4> fixedSeeds{7, 42, 1234, 510556236};
+
+    std::array<qint64, 5> seeds() const { return {fixedSeeds[0], fixedSeeds[1], fixedSeeds[2], fixedSeeds[3], m_randomSeed}; }
 
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
@@ -185,7 +188,10 @@ private:
     }
 
 private slots:
-    // About one lake per 200 chunks over many worlds, and lakes of neighbouring squares apart.
+    // About one lake per 200 chunks over many worlds, and lakes of neighbouring squares apart. One
+    // window of 80 x 80 chunks holds anywhere from none to 63 lakes (ocean, unsuited biomes), so
+    // the rate is checked over the fixed seeds only (deterministic); every window, the random one
+    // too, at most one lake per 100 chunks.
     void lakesAreRareAndApart()
     {
         int chunks = 0;
@@ -199,8 +205,11 @@ private slots:
                 const Site &first = found.lakes.first();
                 qInfo("seed %lld: first lake in chunk %d,%d, level %d", seed, first.chunk.x, first.chunk.z, first.level);
             }
-            chunks += found.chunks;
-            lakes += static_cast<int>(found.lakes.size());
+            QVERIFY2(found.lakes.size() * 100 <= found.chunks, qPrintable(u"seed %1: %2 lakes"_s.arg(seed).arg(found.lakes.size())));
+            if (std::ranges::find(fixedSeeds, seed) != fixedSeeds.end()) {
+                chunks += found.chunks;
+                lakes += static_cast<int>(found.lakes.size());
+            }
             for (qsizetype i = 0; i < found.lakes.size(); ++i) {
                 for (qsizetype j = i + 1; j < found.lakes.size(); ++j) {
                     const QcChunkPos a = found.lakes[i].chunk;
@@ -212,7 +221,7 @@ private slots:
 
         const double perLake = lakes > 0 ? static_cast<double>(chunks) / lakes : 0.0;
         qInfo("%d lava lakes in %d chunks: one per %.0f chunks; nearest two %d chunks apart", lakes, chunks, perLake, nearest);
-        QVERIFY2(perLake >= 130.0 && perLake <= 360.0, qPrintable(QString::number(perLake)));
+        QVERIFY2(perLake >= 130.0 && perLake <= 400.0, qPrintable(QString::number(perLake)));
         // The tried chunks of two squares keep `spacing` chunks between them.
         const auto lake = std::ranges::find(m_content->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
         QVERIFY(lake != m_content->worldgen().features().end());

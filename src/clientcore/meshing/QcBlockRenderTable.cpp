@@ -270,6 +270,29 @@ std::pair<int, int> QcBlockRenderTable::axes(QcBlockFace face)
     return {axis == 0 ? 1 : 0, axis == 2 ? 1 : 2};
 }
 
+bool QcBlockRenderTable::liquidStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour)
+{
+    const bool translucentBlock = !self.liquid && self.layer == QcRenderLayer::Translucent;
+    const bool translucentLiquid = neighbour.liquid && neighbour.layer == QcRenderLayer::Translucent;
+    if (!translucentBlock || !translucentLiquid) {
+        return false;
+    }
+    if (face == QcBlockFace::Up) {
+        return true;
+    }
+    // Over low flowing water the gap down to its surface is wide: the block keeps its bottom.
+    static constexpr float tolerance = 1.0e-4f;
+    return face == QcBlockFace::Down && neighbour.liquidHeight >= 1.0f - liquidSurfaceDrop - tolerance;
+}
+
+bool QcBlockRenderTable::blockStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour)
+{
+    const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
+    const bool translucentLiquid = self.liquid && self.layer == QcRenderLayer::Translucent;
+    const bool translucentBlock = !neighbour.liquid && neighbour.layer == QcRenderLayer::Translucent;
+    return side && translucentLiquid && translucentBlock;
+}
+
 bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace face, const Entry &neighbour)
 {
     if (neighbour.opaque) {
@@ -278,8 +301,11 @@ bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace fac
     if (self.liquid && neighbour.liquid) {
         return true;
     }
+    if (liquidStandsFor(self, face, neighbour)) {
+        return true;
+    }
     const bool sameTranslucent = neighbour.type == self.type && self.layer == QcRenderLayer::Translucent;
-    if (neighbour.layer != QcRenderLayer::Opaque && !sameTranslucent) {
+    if (neighbour.layer != QcRenderLayer::Opaque && !sameTranslucent && !blockStandsFor(self, face, neighbour)) {
         return false;
     }
     const QList<SideRect> &covers = neighbour.cover[static_cast<std::size_t>(opposite(face))];
