@@ -1,7 +1,7 @@
 #pragma once
 
 #include "worldgen/generators/QcChunkFurnishing.h"
-#include "worldgen/generators/QcGuardSite.h"
+#include "worldgen/generators/QcStructureSites.h"
 #include "worldgen/villages/QcVillagePlan.h"
 #include "worldgen/villages/QcVillagePlanCache.h"
 #include "worldgen/villages/QcVillagePlanner.h"
@@ -44,23 +44,23 @@ public:
     // The loot of the chests of `plan`'s pieces in the chunk (decision E-590: the temple at the
     // centre of a desert village).
     [[nodiscard]] static QcChunkFurnishing furnishingIn(QcChunkPos pos, const QcVillagePlan &plan);
-    // The guardian zones (decision E-591) of the pieces of the villages in the regions within
-    // `reach` of `from`.
-    QList<QcGuardSite> sitesNear(QcBlockPos from, int reach) const;
+    // The guardian zones (decision E-591) and spawn areas (decision E-871) of the pieces of the
+    // villages in the regions within `reach` of `from`.
+    QcStructureSites sitesNear(QcBlockPos from, int reach) const;
     // The same from the regions planned so far, never planning (the server's tick thread);
     // std::nullopt when a region within `reach` is not planned yet.
-    [[nodiscard]] std::optional<QList<QcGuardSite>> plannedSitesNear(QcBlockPos from, int reach) const;
-    // The guardian zones of the pieces of one village.
-    static QList<QcGuardSite> sitesOf(const QcVillagePlan &plan);
+    [[nodiscard]] std::optional<QcStructureSites> plannedSitesNear(QcBlockPos from, int reach) const;
+    // The guardian zones and spawn areas of the pieces of one village.
+    static QcStructureSites sitesOf(const QcVillagePlan &plan);
     const QcVillageStyles &styles() const { return m_styles; }
     const QcWetlandShaper &wetland() const { return m_wetland; }
     const QcVillagePlanCache &cache() const { return m_cache; }
     int spacing() const { return m_planner.spacing(); }
 
 private:
-    // The guardian zones of the regions within `reach` of `from`; with `mayPlan` false only from
+    // The sites of the regions within `reach` of `from`; with `mayPlan` false only from
     // planned regions (std::nullopt when one is not planned yet).
-    [[nodiscard]] std::optional<QList<QcGuardSite>> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
+    [[nodiscard]] std::optional<QcStructureSites> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
     void buildPiece(QcChunk &chunk, const QcStructurePlacement &piece, const QcVillagePlan &plan) const;
     // Over water (decision E-407): whether a world column of a piece gets a post, every `spacing`
     // cells from its north west corner and at its far edges.

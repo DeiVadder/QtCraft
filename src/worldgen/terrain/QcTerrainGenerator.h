@@ -76,8 +76,8 @@ public:
     [[nodiscard]] std::optional<QcSurfaceLakes::Site> lakeIn(QcChunkPos pos) const;
     // Whether a mine shaft's entrance lies within `featureMargin` of a footprint (world) near the chunk.
     [[nodiscard]] bool mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const;
-    QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override;
-    [[nodiscard]] std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override;
+    QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
+    [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
 
     // Shape and biome of a column. Near a biome border its ground biome is left `unresolvedGround`

@@ -123,6 +123,7 @@ QcStructure::Loaded QcStructure::fromDefinition(const QcStructureDefinition &def
     structure.signs = definition.signs;
     structure.hangings = definition.hangings;
     structure.guardians = definition.guardians;
+    structure.spawnArea = definition.spawnArea;
     structure.groundLayer = definition.groundLayer;
     return structure;
 }

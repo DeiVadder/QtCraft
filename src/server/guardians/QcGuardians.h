@@ -10,7 +10,7 @@ class QcServerState;
 
 // Guardians that come back to the zones of structures (decision E-591; the sand golem in the cellar
 // of a desert temple, a renewable source of sand). Every checkTicks game ticks it asks the world
-// generator for the zones within `reach` of each living player (QcWorldGenerator::plannedGuardSitesNear,
+// generator for the zones within `reach` of each living player (QcWorldGenerator::plannedStructureSitesNear,
 // from its plans, never planning on the tick thread: around a player whose regions are not all
 // planned yet they are planned on a generation thread and the zones come with a later check; nothing
 // is saved) and gives a zone a guardian when all of these hold: fewer than the

@@ -56,7 +56,7 @@ private:
     std::shared_ptr<const QList<QcGuardSite>> m_sites = std::make_shared<const QList<QcGuardSite>>();
 };
 
-// The test terrain with guardian zones the test sets after joining (QcWorldGenerator::guardSitesNear).
+// The test terrain with guardian zones the test sets after joining (QcWorldGenerator::structureSitesNear).
 class GuardedTerrain : public QcTestTerrainGenerator
 {
 public:
@@ -66,7 +66,7 @@ public:
     {
     }
 
-    // Cold: the zones count as planned only once guardSitesNear ran (QcWorldGenerator::plannedGuardSitesNear).
+    // Cold: the zones count as planned only once structureSitesNear ran (QcWorldGenerator::plannedStructureSitesNear).
     void makeCold()
     {
         m_planned = false;
@@ -76,19 +76,19 @@ public:
     bool plannedOnMainThread() const { return m_plannedOnMainThread; }
     bool planned() const { return m_planned; }
 
-    std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const override
+    std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override
     {
         if (m_cold && !m_planned) {
             return std::nullopt;
         }
-        return sitesNear(from, reach);
+        return QcStructureSites{sitesNear(from, reach), {}};
     }
 
-    QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const override
+    QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override
     {
         m_plannedOnMainThread = m_plannedOnMainThread || QThread::isMainThread();
         m_planned = true;
-        return sitesNear(from, reach);
+        return QcStructureSites{sitesNear(from, reach), {}};
     }
 
 private:

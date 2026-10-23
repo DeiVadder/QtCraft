@@ -72,14 +72,14 @@ void QcServerWorld::generateInBackground(QcChunkPos pos, Arrival kept)
     });
 }
 
-void QcServerWorld::planGuardSitesInBackground(QcBlockPos from, int reach)
+void QcServerWorld::planStructureSitesInBackground(QcBlockPos from, int reach)
 {
     if (m_planningSites->exchange(true)) {
         return;
     }
     m_generationPool.submit([this, from, reach, planning = m_planningSites]() {
         // Only for its plans, which the generator keeps.
-        m_generator->guardSitesNear(from, reach);
+        m_generator->structureSitesNear(from, reach);
         planning->store(false);
     });
 }

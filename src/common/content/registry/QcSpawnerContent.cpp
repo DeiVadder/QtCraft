@@ -95,6 +95,14 @@ QStringList checkStructures(const QcContentRegistry &content)
                 warnings.append(u"structure '%1': guardians with %2, none come"_s.arg(structure.name, problem));
             }
         }
+        // A spawn area (decision E-871) brings forth monsters only: kinds of the natural monster spawns.
+        const QStringList areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
+        for (const QString &mob : areaMonsters) {
+            const std::optional<int> type = content.mobIndex(mob);
+            if (!type || !content.mobs()[*type].isMonster()) {
+                warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, mob));
+            }
+        }
         for (const QcStructureDefinition::Loot &loot : structure.loot) {
             if (!content.lootTables().find(loot.table)) {
                 warnings.append(u"structure '%1': unknown loot table '%2', the chest stays empty"_s.arg(structure.name, loot.table));

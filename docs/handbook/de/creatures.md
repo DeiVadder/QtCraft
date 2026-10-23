@@ -195,7 +195,7 @@ Jeder feste Block, auch Glas und Laub, oder eine Flüssigkeitsoberfläche.
 
 ### <a id="mob-qtcraft-witch"></a>Hexe
 
-Lebt in einer Hütte auf Stelzen im Sumpf und kehrt dorthin zurück, solange kein Spieler in der Nähe ist; ab und zu kommt auch eine im Dunkeln heraus wie andere Monster. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Sie ist immun gegen Gift.
+Erscheint nur in Hexenhütten im Sumpf: überall über oder unter der Grundfläche einer Hütte, im Dunkeln wie andere Monster. Sie hält Abstand und wirft Wurftränke: Gift, solange du nicht vergiftet bist, danach Schaden. Verletzt hält sie inne und trinkt einen Heiltrank. Sie ist immun gegen Gift.
 
 | | |
 |---|---|

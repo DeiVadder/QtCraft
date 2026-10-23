@@ -147,6 +147,17 @@ struct QcStructureDefinition
         bool operator==(const Guardian &) const = default;
     };
 
+    // The structure's footprint over the whole height of the world as a spawn area of the original
+    // game (decision E-871; `"spawnArea": {"monsters": [...]}`): a monster that spawns naturally in
+    // one of its columns is one of `monsters`, drawn alike, by the monsters' rules of light, ground,
+    // distance and cap, one at a time (QcSpawnAreas). The witch hut and its witches.
+    struct SpawnArea
+    {
+        QStringList monsters;
+
+        bool operator==(const SpawnArea &) const = default;
+    };
+
     // Where the terrain generator places the structure by itself (decision E-590; `"surface"`): at
     // most one copy per square region of `spacing` blocks (whole chunks), with `chance`, at the first
     // of `attempts` places that lies wholly inside the region on land above the sea in one of
@@ -249,6 +260,7 @@ struct QcStructureDefinition
     // places it (villages, mine shafts, the showcase).
     std::optional<Surface> surface;
     QList<Guardian> guardians;
+    std::optional<SpawnArea> spawnArea;
     // Allow-list entries of adventure mode (decision E-735) the showcase adds to the world when it
     // places the structure (`"adventure": {"canBreak": {item: [blocks]}, "canPlaceOn": {…}}`); like
     // every allow-list they hold in the whole world.

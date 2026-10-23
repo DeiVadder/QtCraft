@@ -88,7 +88,11 @@ public:
     // Zones whose guardians come back (decision E-591) and the layer at the ground's top block
     // (decision E-590).
     QList<QcStructureDefinition::Guardian> guardians;
+    // The monsters of its footprint (decision E-871).
+    std::optional<QcStructureDefinition::SpawnArea> spawnArea;
     int groundLayer = 0;
+    // Whether placed copies have guardian zones or a spawn area (QcStructureSites).
+    bool hasSites() const { return !guardians.isEmpty() || spawnArea.has_value(); }
     // Allow-list entries of adventure mode the showcase adds to the world (decision E-735).
     QcAdventureRules adventure;
 

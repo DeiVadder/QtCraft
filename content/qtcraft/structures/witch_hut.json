@@ -13,26 +13,11 @@
         "preferWater": true,
         "clearFrom": 4
     },
-    "guardians": [
-        {
-            "mob": "witch",
-            "from": [
-                2,
-                5,
-                3
-            ],
-            "to": [
-                4,
-                5,
-                5
-            ],
-            "max": 1,
-            "cooldownSeconds": 120,
-            "minPlayerDistance": 10,
-            "maxPlayerDistance": 48,
-            "maxLight": 7
-        }
-    ],
+    "spawnArea": {
+        "monsters": [
+            "witch"
+        ]
+    },
     "palette": {
         ".": "air",
         "L": "oak_log",

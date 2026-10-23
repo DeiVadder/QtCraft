@@ -8,6 +8,7 @@
 #include "server/mobs/QcMobManager.h"
 #include "server/spawning/QcChunkSpawns.h"
 #include "server/spawning/QcMonsterCap.h"
+#include "server/spawning/QcSpawnAreas.h"
 #include "server/spawning/QcSpawnLight.h"
 
 #include <QHash>
@@ -23,7 +24,8 @@ class QcChunk;
 class QcServerWorld;
 
 // Creatures that come by themselves (decision E-422): monsters every tick around the living players
-// by the original game's rules (decision E-836: QcSpawnLight, QcSpawnGround, QcMonsterCap), the
+// by the original game's rules (decision E-836: QcSpawnLight, QcSpawnGround, QcMonsterCap; in the
+// spawn areas of structures only their kinds, decision E-871: QcSpawnAreas), the
 // other kinds every second up to four spawn attempts around each living player by time of day,
 // place, light and the data's spawn rules, within the caps per player; and the creatures of a chunk
 // seen for the first time: its group of persistent animals (decision E-086) and the creatures of the
@@ -93,6 +95,8 @@ public:
     }
     // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks).
     bool spawnsInChunk(int type, QcChunkPos pos) const;
+    // The spawn areas of structures around the players, as of the last monster pass.
+    const QcSpawnAreas &spawnAreas() const { return m_areas; }
 
 private:
     int capOf(const QcMobDefinition &definition) const;
@@ -176,13 +180,16 @@ private:
     void spawnMonsters(QcServerWorld &world, const QList<PlayerView> &players, Sky sky, const NextId &nextEntityId);
     // A group of monsters at the place, at most `room`; returns how many spawned.
     int spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky sky, int room, const NextId &nextEntityId);
+    // One monster of the area's kinds at the place, drawn alike, by its area rule; how many spawned.
+    int spawnInArea(QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area, const NextId &nextEntityId);
     // Awake creatures within `radius` of `centre`, by category and kind.
     NearbyCounts countNear(const QcVec3 &centre, double radius) const;
     // A random place around `centre`; consumes the random numbers of one spawn attempt.
     std::optional<SpawnPlace> randomPlace(const QcServerWorld &world, const QcVec3 &centre);
-    // A random place in the chunks of the monster area around `centre` (QcMonsterCap::reach): one of
-    // the floors of a random column.
-    std::optional<SpawnPlace> randomMonsterPlace(const QcServerWorld &world, const QcVec3 &centre);
+    // The places of one attempt in the chunks of the monster area around `centre` (QcMonsterCap::reach):
+    // one of the floors of a random column, or every floor when the column lies in a spawn area
+    // (decision E-871); none when the column has no floor or is not loaded.
+    QList<SpawnPlace> randomMonsterPlaces(const QcServerWorld &world, const QcVec3 &centre);
     // The surface of the column or, half of the time, a cave floor well below it.
     std::optional<SpawnPlace> placeInColumn(const QcServerWorld &world, QcBlockPos column);
     // A cave floor with room for a mob, searched downwards from a random height below `surface`;
@@ -214,6 +221,10 @@ private:
     QcChunkSpawns m_chunks;
     // The monster lists of the biomes (decision E-838).
     QcSpawnWeights m_weights;
+    // The spawn areas of structures (decision E-871) and the rules their kinds spawn by there
+    // (QcSpawnAreas::ruleOf), indexed by type.
+    QcSpawnAreas m_areas;
+    QList<QcMobDefinition::SpawnRule> m_areaRules;
     // The areas of the last monster cap and their loaded chunks (currentMonsterCap).
     QList<QcChunkPos> m_areaCentres;
     qsizetype m_areaChunks = 0;

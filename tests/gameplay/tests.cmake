@@ -33,6 +33,7 @@ qc_add_test(test_server_items_and_saves SOURCES gameplay/test_server_items_and_s
 qc_add_test(test_server_limits SOURCES gameplay/test_server_limits.cpp QcServerTestFixture.h QcRawClient.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_mobs SOURCES gameplay/test_mobs.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_monster_spawning SOURCES gameplay/test_monster_spawning.cpp LIBRARIES qc_server TIMEOUT 600)
+qc_add_test(test_witch_hut_spawns SOURCES gameplay/test_witch_hut_spawns.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_monster_variants SOURCES gameplay/test_monster_variants.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_biome_spawning SOURCES gameplay/test_biome_spawning.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_mob_departures SOURCES gameplay/test_mob_departures.cpp LIBRARIES qc_server)

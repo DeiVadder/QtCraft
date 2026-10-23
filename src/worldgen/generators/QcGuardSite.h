@@ -11,7 +11,7 @@
 
 // A zone of a placed structure whose guardians come back by themselves (decision E-591): the
 // desert temple's cellar and its sand golem. The world generator names the zones near a place
-// (QcWorldGenerator::guardSitesNear) from its plans alone, so they need no saving; the server keeps
+// (QcWorldGenerator::structureSitesNear) from its plans alone, so they need no saving; the server keeps
 // their cooldowns while it runs (QcGuardians).
 struct QcGuardSite
 {

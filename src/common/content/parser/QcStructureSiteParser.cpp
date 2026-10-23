@@ -126,6 +126,29 @@ std::optional<QcBlockPos> readCorner(const QJsonValue &value, const Structure &s
     return result;
 }
 
+constexpr int maxAreaMonsters = 8;
+
+// The kinds of a spawn area (decision E-871): at least one and at most maxAreaMonsters names.
+[[nodiscard]] Structure::SpawnArea parseSpawnArea(const QJsonObject &json, QcJsonFieldReader &reader, const QString &packNamespace)
+{
+    Structure::SpawnArea area;
+    const QJsonValue value = json.value(u"monsters"_s);
+    const QJsonArray entries = value.toArray();
+    if (!value.isArray() || entries.isEmpty() || entries.size() > maxAreaMonsters) {
+        reader.fail(u"needs 'monsters', an array of 1 to %1 creature names"_s.arg(maxAreaMonsters));
+        return area;
+    }
+    for (const auto &entry : entries) {
+        const QString mob = entry.isString() ? QcContentNames::qualify(entry.toString(), packNamespace) : QString();
+        if (mob.isEmpty()) {
+            reader.fail(u"'monsters' must be an array of creature names"_s);
+            return area;
+        }
+        area.monsters.append(mob);
+    }
+    return area;
+}
+
 } // namespace
 
 namespace QcStructureSiteParser {
@@ -140,6 +163,9 @@ Site parseSite(const QJsonObject &json, const QcStructureDefinition &structure, 
     if (reader.ok()) {
         site.guardians = parseGuardians(json, structure, reader, packNamespace);
     }
+    reader.nestedObject(u"spawnArea"_s, [&](const QJsonObject &object, QcJsonFieldReader &nested) {
+        site.spawnArea = parseSpawnArea(object, nested, packNamespace);
+    });
     return site;
 }
 

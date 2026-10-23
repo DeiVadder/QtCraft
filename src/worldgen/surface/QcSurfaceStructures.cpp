@@ -195,22 +195,22 @@ QcChunkFurnishing QcSurfaceStructures::furnishingIn(QcChunkPos pos) const
     return furnishing;
 }
 
-QList<QcGuardSite> QcSurfaceStructures::sitesNear(QcBlockPos from, int reach) const
+QcStructureSites QcSurfaceStructures::sitesNear(QcBlockPos from, int reach) const
 {
-    return collectSites(from, reach, true).value_or(QList<QcGuardSite>{});
+    return collectSites(from, reach, true).value_or(QcStructureSites{});
 }
 
-std::optional<QList<QcGuardSite>> QcSurfaceStructures::plannedSitesNear(QcBlockPos from, int reach) const
+std::optional<QcStructureSites> QcSurfaceStructures::plannedSitesNear(QcBlockPos from, int reach) const
 {
     return collectSites(from, reach, false);
 }
 
-std::optional<QList<QcGuardSite>> QcSurfaceStructures::collectSites(QcBlockPos from, int reach, bool mayPlan) const
+std::optional<QcStructureSites> QcSurfaceStructures::collectSites(QcBlockPos from, int reach, bool mayPlan) const
 {
-    QList<QcGuardSite> sites;
+    QcStructureSites sites;
     const QcSurfacePlanner::Rect area{from.x - reach, from.z - reach, from.x + reach, from.z + reach};
     for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
-        if (m_planner.kinds()[kind].structure()->guardians.isEmpty()) {
+        if (!m_planner.kinds()[kind].structure()->hasSites()) {
             continue;
         }
         const QList<std::pair<int, int>> regions = regionsOver(area, m_planner.kinds()[kind].rule.spacing);
@@ -221,7 +221,7 @@ std::optional<QList<QcGuardSite>> QcSurfaceStructures::collectSites(QcBlockPos f
                 return std::nullopt;
             }
             if (*plan) {
-                sites.append(QcGuardSite::of(**plan));
+                sites.add(QcStructureSites::of(**plan));
             }
         }
     }

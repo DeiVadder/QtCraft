@@ -489,6 +489,7 @@ void StructureReader::parseExtras()
     m_structure.groundLayer = site.groundLayer;
     m_structure.surface = std::move(site.surface);
     m_structure.guardians = std::move(site.guardians);
+    m_structure.spawnArea = std::move(site.spawnArea);
 }
 
 QcResult<QcStructureDefinition> StructureReader::read()

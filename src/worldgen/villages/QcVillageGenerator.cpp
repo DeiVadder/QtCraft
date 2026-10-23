@@ -75,20 +75,20 @@ QcChunkFurnishing QcVillageGenerator::furnishingIn(QcChunkPos pos, const QcVilla
     return furnishing;
 }
 
-QList<QcGuardSite> QcVillageGenerator::sitesNear(QcBlockPos from, int reach) const
+QcStructureSites QcVillageGenerator::sitesNear(QcBlockPos from, int reach) const
 {
-    return collectSites(from, reach, true).value_or(QList<QcGuardSite>{});
+    return collectSites(from, reach, true).value_or(QcStructureSites{});
 }
 
-std::optional<QList<QcGuardSite>> QcVillageGenerator::plannedSitesNear(QcBlockPos from, int reach) const
+std::optional<QcStructureSites> QcVillageGenerator::plannedSitesNear(QcBlockPos from, int reach) const
 {
     return collectSites(from, reach, false);
 }
 
-std::optional<QList<QcGuardSite>> QcVillageGenerator::collectSites(QcBlockPos from, int reach, bool mayPlan) const
+std::optional<QcStructureSites> QcVillageGenerator::collectSites(QcBlockPos from, int reach, bool mayPlan) const
 {
     const int spacing = m_planner.spacing();
-    QList<QcGuardSite> sites;
+    QcStructureSites sites;
     for (int rz = regionOf(from.z - reach, spacing); rz <= regionOf(from.z + reach, spacing); ++rz) {
         for (int rx = regionOf(from.x - reach, spacing); rx <= regionOf(from.x + reach, spacing); ++rx) {
             const std::optional<std::shared_ptr<const QcVillagePlan>> plan = mayPlan ? regionPlan(rx, rz) : m_cache.planned(rx, rz);
@@ -96,19 +96,19 @@ std::optional<QList<QcGuardSite>> QcVillageGenerator::collectSites(QcBlockPos fr
                 return std::nullopt;
             }
             if (*plan) {
-                sites.append(sitesOf(**plan));
+                sites.add(sitesOf(**plan));
             }
         }
     }
     return sites;
 }
 
-QList<QcGuardSite> QcVillageGenerator::sitesOf(const QcVillagePlan &plan)
+QcStructureSites QcVillageGenerator::sitesOf(const QcVillagePlan &plan)
 {
-    QList<QcGuardSite> sites;
+    QcStructureSites sites;
     for (const QcStructurePlacement &piece : plan.pieces) {
-        if (!piece.structure().guardians.isEmpty()) {
-            sites.append(QcGuardSite::of(piece));
+        if (piece.structure().hasSites()) {
+            sites.add(QcStructureSites::of(piece));
         }
     }
     return sites;

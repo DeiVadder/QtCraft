@@ -131,10 +131,10 @@ public:
     // Moves every finished background chunk into the world at once (worlds without groups: tests).
     QList<QcChunkPos> collectGeneratedChunks();
     qsizetype pendingGenerationCount() const { return m_pending.size(); }
-    // Plans the generator's guardian zones within `reach` of `from` on a generation thread, so the
-    // tick thread finds them planned (QcWorldGenerator::plannedGuardSitesNear, QcGuardians); one such
-    // job at a time, a call while one runs is dropped.
-    void planGuardSitesInBackground(QcBlockPos from, int reach);
+    // Plans the generator's guardian zones and spawn areas within `reach` of `from` on a generation
+    // thread, so the tick thread finds them planned (QcWorldGenerator::plannedStructureSitesNear,
+    // QcGuardians, QcSpawnAreas); one such job at a time, a call while one runs is dropped.
+    void planStructureSitesInBackground(QcBlockPos from, int reach);
 
     // Takes a chunk out of the world with what was derived from its blocks (marks, hoppers, links);
     // its block entities must have been taken before (QcBlockEntityRecord::takeFrom). Returns its blocks

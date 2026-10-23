@@ -205,7 +205,7 @@ private slots:
         QVERIFY(m_content->lootTables().find(u"qtcraft:jungle_temple_dispenser"_s));
         // A temple has no guardian zone.
         const QcBlockPos middle = plan.toWorld(QcBlockPos{8, 1, 6});
-        const QList<QcGuardSite> sites = m_terrain->guardSitesNear(middle, 16);
+        const QList<QcGuardSite> sites = m_terrain->structureSitesNear(middle, 16).guards;
         QVERIFY(std::ranges::none_of(sites, [&](const QcGuardSite &site) { return site.contains(middle); }));
     }
 
@@ -263,13 +263,24 @@ private slots:
         QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{1, 0, 2})), u"qtcraft:oak_log"_s);
         QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{4, 5, 6})), u"qtcraft:cauldron"_s);
 
-        // Its inside is the witch's guardian zone, on the platform.
+        // Its footprint over the whole height is the witches' spawn area (decision E-871), and it has
+        // no guardian zone.
         const QcBlockPos inside = plan.toWorld(QcBlockPos{3, 5, 4});
-        const QList<QcGuardSite> sites = m_terrain->guardSitesNear(inside, 32);
-        const auto site = std::ranges::find_if(sites, [&](const QcGuardSite &s) { return s.contains(inside); });
-        QVERIFY(site != sites.cend());
-        QCOMPARE(site->rule.mob, u"qtcraft:witch"_s);
-        QCOMPARE(site->min.y, plan.origin().y + 5);
+        const QcStructureSites sites = m_terrain->structureSitesNear(inside, 32);
+        QVERIFY(std::ranges::none_of(sites.guards, [&](const QcGuardSite &s) { return s.contains(inside); }));
+        const auto area = std::ranges::find_if(sites.spawnAreas, [&](const QcSpawnArea &a) { return a.containsColumn(inside.x, inside.z); });
+        QVERIFY(area != sites.spawnAreas.cend());
+        QCOMPARE(area->monsters, QStringList{u"qtcraft:witch"_s});
+        QCOMPARE(area->min.y, 0);
+        QCOMPARE(area->max.y, QcWorld::worldHeight - 1);
+        QCOMPARE(area->max.x - area->min.x + 1, plan.sizeX());
+        QCOMPARE(area->max.z - area->min.z + 1, plan.sizeZ());
+        for (const QcBlockPos corner : {QcBlockPos{0, 0, 0}, QcBlockPos{plan.structure().sizeX() - 1, 0, plan.structure().sizeZ() - 1}}) {
+            const QcBlockPos at = plan.toWorld(corner);
+            QVERIFY(area->containsColumn(at.x, at.z));
+        }
+        const QcBlockPos outside = plan.toWorld(QcBlockPos{-1, 0, -1});
+        QVERIFY(!area->containsColumn(outside.x, outside.z));
     }
 
     void measureGenerationCost()

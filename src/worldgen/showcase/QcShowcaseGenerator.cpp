@@ -42,14 +42,22 @@ std::shared_ptr<const QcVillagePlan> QcShowcaseGenerator::villageFor(QcChunkPos 
     return nullptr;
 }
 
-QList<QcGuardSite> QcShowcaseGenerator::guardSitesNear(QcBlockPos from, int reach) const
+QcStructureSites QcShowcaseGenerator::structureSitesNear(QcBlockPos from, int reach) const
 {
-    QList<QcGuardSite> sites;
-    for (const QcGuardSite &site : m_plan.guardSites) {
-        const int dx = std::max({site.min.x - from.x, 0, from.x - site.max.x});
-        const int dz = std::max({site.min.z - from.z, 0, from.z - site.max.z});
-        if (dx <= reach && dz <= reach) {
-            sites.append(site);
+    const auto near = [&](QcBlockPos min, QcBlockPos max) {
+        const int dx = std::max({min.x - from.x, 0, from.x - max.x});
+        const int dz = std::max({min.z - from.z, 0, from.z - max.z});
+        return dx <= reach && dz <= reach;
+    };
+    QcStructureSites sites;
+    for (const QcGuardSite &site : m_plan.sites.guards) {
+        if (near(site.min, site.max)) {
+            sites.guards.append(site);
+        }
+    }
+    for (const QcSpawnArea &area : m_plan.sites.spawnAreas) {
+        if (near(area.min, area.max)) {
+            sites.spawnAreas.append(area);
         }
     }
     return sites;

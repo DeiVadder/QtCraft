@@ -3,7 +3,7 @@
 #include "common/world/QcChunk.h"
 #include "common/world/QcWorldLabel.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
-#include "worldgen/generators/QcGuardSite.h"
+#include "worldgen/generators/QcStructureSites.h"
 #include "worldgen/generators/QcWorldSetup.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
@@ -73,20 +73,20 @@ public:
         Q_UNUSED(pos);
         return {};
     }
-    // The guardian zones (decision E-591) of the structures within about `reach` blocks of `from`
-    // (whole regions); empty for generators without any.
-    virtual QList<QcGuardSite> guardSitesNear(QcBlockPos from, int reach) const
+    // The guardian zones (decision E-591) and spawn areas (decision E-871) of the structures within
+    // about `reach` blocks of `from` (whole regions); empty for generators without any.
+    virtual QcStructureSites structureSitesNear(QcBlockPos from, int reach) const
     {
         Q_UNUSED(from);
         Q_UNUSED(reach);
         return {};
     }
     // The same from the plans made so far, never planning (the server's tick thread asks this);
-    // std::nullopt when a region within `reach` is not planned yet (guardSitesNear plans it, on a
-    // generation thread). Generators whose plans are all made up front answer guardSitesNear.
-    [[nodiscard]] virtual std::optional<QList<QcGuardSite>> plannedGuardSitesNear(QcBlockPos from, int reach) const
+    // std::nullopt when a region within `reach` is not planned yet (structureSitesNear plans it, on a
+    // generation thread). Generators whose plans are all made up front answer structureSitesNear.
+    [[nodiscard]] virtual std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const
     {
-        return guardSitesNear(from, reach);
+        return structureSitesNear(from, reach);
     }
     // The placed copy of the structure `name` that the generator places by itself (decision E-590),
     // alone or as a village piece (the temple at a desert village's centre, E-592), nearest to `from`

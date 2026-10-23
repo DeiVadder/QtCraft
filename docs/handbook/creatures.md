@@ -666,7 +666,7 @@ Lives in a village with a bed of its own and, with luck, a workstation that give
 
 ### <a id="mob-qtcraft-witch"></a>Witch
 
-Lives in a hut on stilts in the swamp and comes back there while no player is near; now and then one also comes out in the dark like other monsters. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
+Spawns only in witch huts in the swamp: anywhere above or below a hut's footprint, in the dark like other monsters. She keeps her distance and throws splash potions: poison while you are not poisoned, harming once you are. When hurt she stops to drink a potion of healing. She is immune to poison.
 
 | | |
 |---|---|

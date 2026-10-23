@@ -9,7 +9,8 @@
 
 // Parses where the world generator places a structure by itself and what guards it (decisions
 // E-590, E-591): `groundLayer`, `surface` (biomes, region spacing, chance, attempts, slope, margin
-// to villages, foundation) and `guardians` (zones whose creatures come back). Used by
+// to villages, foundation), `guardians` (zones whose creatures come back) and `spawnArea` (the
+// monsters of its footprint, decision E-871). Used by
 // QcStructureParser after the layers, so the zones are checked against the structure's size.
 namespace QcStructureSiteParser {
 
@@ -20,6 +21,7 @@ struct Site
     int groundLayer = 0;
     std::optional<QcStructureDefinition::Surface> surface;
     QList<QcStructureDefinition::Guardian> guardians;
+    std::optional<QcStructureDefinition::SpawnArea> spawnArea;
 };
 
 // `structure` is the structure read so far (its size bounds the zones and the ground layer).

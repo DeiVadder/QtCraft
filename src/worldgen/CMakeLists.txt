@@ -13,6 +13,7 @@ target_sources(qc_worldgen PRIVATE
     generators/QcChunkFurnishing.h
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
+    generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
     generators/QcWorldGenerator.h

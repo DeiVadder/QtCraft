@@ -207,7 +207,7 @@ private slots:
 
         // The cellar is a guardian zone of the sand golem, on the cellar's floor.
         const QcBlockPos middle = plan.toWorld(QcBlockPos{7, 1, 7});
-        const QList<QcGuardSite> sites = m_terrain->guardSitesNear(middle, 64);
+        const QList<QcGuardSite> sites = m_terrain->structureSitesNear(middle, 64).guards;
         const auto site = std::ranges::find_if(sites, [&](const QcGuardSite &s) { return s.contains(middle); });
         QVERIFY(site != sites.cend());
         QCOMPARE(site->rule.mob, u"qtcraft:sand_golem"_s);
@@ -247,7 +247,7 @@ private slots:
         }
         QCOMPARE(chests, 4);
         const QcBlockPos cellar = temple.toWorld(QcBlockPos{7, 1, 7});
-        const QList<QcGuardSite> sites = terrain.guardSitesNear(cellar, 32);
+        const QList<QcGuardSite> sites = terrain.structureSitesNear(cellar, 32).guards;
         QVERIFY(std::ranges::any_of(sites, [&](const QcGuardSite &site) { return site.contains(cellar); }));
         // /locate finds it as well (QcWorldGenerator::nearestStructure).
         const std::optional<QcStructurePlacement> located = terrain.nearestStructure(u"qtcraft:desert_temple"_s, found->centre, 32);

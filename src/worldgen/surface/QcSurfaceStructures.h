@@ -2,7 +2,7 @@
 
 #include "common/world/QcChunk.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
-#include "worldgen/generators/QcGuardSite.h"
+#include "worldgen/generators/QcStructureSites.h"
 #include "worldgen/surface/QcSurfacePlanner.h"
 
 #include <QHash>
@@ -45,20 +45,20 @@ public:
     void build(QcChunk &chunk) const;
     // The loot of the copies' chests in the chunk.
     [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
-    // The guardian zones of the copies in the regions within `reach` of `from`.
-    QList<QcGuardSite> sitesNear(QcBlockPos from, int reach) const;
+    // The guardian zones and spawn areas of the copies in the regions within `reach` of `from`.
+    QcStructureSites sitesNear(QcBlockPos from, int reach) const;
     // The same from the regions planned so far, never planning (the server's tick thread);
     // std::nullopt when a region within `reach` is not planned yet.
-    [[nodiscard]] std::optional<QList<QcGuardSite>> plannedSitesNear(QcBlockPos from, int reach) const;
+    [[nodiscard]] std::optional<QcStructureSites> plannedSitesNear(QcBlockPos from, int reach) const;
     // The copy of kind `name` nearest to `from` within `reach` blocks, if any.
     [[nodiscard]] std::optional<QcStructurePlacement> nearest(const QString &name, QcBlockPos from, int reach) const;
 
 private:
     // The copy of kind `kind` in the region when the region is planned; std::nullopt otherwise.
     [[nodiscard]] std::optional<std::shared_ptr<const QcStructurePlacement>> plannedOf(int kind, int regionX, int regionZ) const;
-    // The guardian zones of the regions within `reach` of `from`; with `mayPlan` false only from
+    // The sites of the regions within `reach` of `from`; with `mayPlan` false only from
     // planned regions (std::nullopt when one is not planned yet).
-    [[nodiscard]] std::optional<QList<QcGuardSite>> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
+    [[nodiscard]] std::optional<QcStructureSites> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
     // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint.
     bool occupied(int kind, QcSurfacePlanner::Rect footprint, int margin) const;
     void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;

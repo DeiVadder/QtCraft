@@ -34,12 +34,12 @@ void QcGuardians::tick()
         // Only planned regions: planning one takes milliseconds, it happens on a generation thread
         // and the zones there are served from a later check.
         const QcBlockPos from = QcPhysics::blockContaining(player);
-        const std::optional<QList<QcGuardSite>> near = m_state.world().generator().plannedGuardSitesNear(from, reach);
+        const std::optional<QcStructureSites> near = m_state.world().generator().plannedStructureSitesNear(from, reach);
         if (!near) {
-            m_state.world().planGuardSitesInBackground(from, reach);
+            m_state.world().planStructureSitesInBackground(from, reach);
             continue;
         }
-        for (const QcGuardSite &site : *near) {
+        for (const QcGuardSite &site : near->guards) {
             if (!seen.contains(site.id)) {
                 seen.insert(site.id);
                 sites.append(site);

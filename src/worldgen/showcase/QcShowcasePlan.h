@@ -2,7 +2,7 @@
 
 #include "common/world/QcWorldLabel.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
-#include "worldgen/generators/QcGuardSite.h"
+#include "worldgen/generators/QcStructureSites.h"
 #include "worldgen/generators/QcWorldSetup.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
@@ -50,8 +50,8 @@ struct QcShowcasePlan
     QcWorldSetup setup;
     // The structures' spawners and loot chests by chunk (decision E-520).
     QHash<QcChunkPos, QcChunkFurnishing> furnishingByChunk;
-    // The structures' guardian zones (decision E-591).
-    QList<QcGuardSite> guardSites;
+    // The structures' guardian zones (decision E-591) and spawn areas (decision E-871).
+    QcStructureSites sites;
     QcBlockPos spawn;
     QList<QcShowcaseTourStop> tour;
     // The rows of the village area, each a village of its own (decision E-411).

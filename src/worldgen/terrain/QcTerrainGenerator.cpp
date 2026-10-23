@@ -107,19 +107,22 @@ QcChunkFurnishing QcTerrainGenerator::furnishingIn(QcChunkPos pos) const
     return furnishing;
 }
 
-QList<QcGuardSite> QcTerrainGenerator::guardSitesNear(QcBlockPos from, int reach) const
+QcStructureSites QcTerrainGenerator::structureSitesNear(QcBlockPos from, int reach) const
 {
-    return m_surface->sitesNear(from, reach) + m_villages->sitesNear(from, reach);
+    QcStructureSites sites = m_surface->sitesNear(from, reach);
+    sites.add(m_villages->sitesNear(from, reach));
+    return sites;
 }
 
-std::optional<QList<QcGuardSite>> QcTerrainGenerator::plannedGuardSitesNear(QcBlockPos from, int reach) const
+std::optional<QcStructureSites> QcTerrainGenerator::plannedStructureSitesNear(QcBlockPos from, int reach) const
 {
-    const std::optional<QList<QcGuardSite>> surface = m_surface->plannedSitesNear(from, reach);
-    const std::optional<QList<QcGuardSite>> villages = m_villages->plannedSitesNear(from, reach);
+    std::optional<QcStructureSites> surface = m_surface->plannedSitesNear(from, reach);
+    const std::optional<QcStructureSites> villages = m_villages->plannedSitesNear(from, reach);
     if (!surface || !villages) {
         return std::nullopt;
     }
-    return *surface + *villages;
+    surface->add(*villages);
+    return surface;
 }
 
 std::optional<QcStructurePlacement> QcTerrainGenerator::nearestStructure(const QString &name, QcBlockPos from, int reach) const

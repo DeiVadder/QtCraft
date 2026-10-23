@@ -302,7 +302,7 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
         const QcBlockPos at = placement.toWorld(loot.at);
         m_plan.furnishingByChunk[at.chunk()].chests.append({at, loot.table, static_cast<quint64>(qHash(at))});
     }
-    m_plan.guardSites.append(QcGuardSite::of(placement));
+    m_plan.sites.add(QcStructureSites::of(placement));
 
     const QcChunkPos first = placement.origin().chunk();
     const QcChunkPos last = placement.origin().offset(placement.sizeX() - 1, 0, placement.sizeZ() - 1).chunk();

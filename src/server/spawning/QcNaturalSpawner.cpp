@@ -78,10 +78,12 @@ QcNaturalSpawner::QcNaturalSpawner(QcMobManager &mobs, std::shared_ptr<const QcC
     , m_monsterRandom(static_cast<quint32>(qcMixSeed(seed, 6000)))
     , m_chunks(mobs, m_content, seed)
     , m_weights(*m_content)
+    , m_areas(m_content)
     , m_draws(&random)
 {
     for (const QcMobDefinition &definition : m_content->mobs()) {
         m_rules.append(definition.spawnRules());
+        m_areaRules.append(QcSpawnAreas::ruleOf(definition));
     }
 }
 
@@ -189,15 +191,18 @@ void QcNaturalSpawner::spawnMonsters(QcServerWorld &world, const QList<PlayerVie
         m_draws = &m_random;
         m_mobs.setYawRandom(nullptr);
     });
+    m_areas.refresh(world, players);
     QcMonsterCap cap = currentMonsterCap(world, players);
-    for (const PlayerView &player : players) {
-        for (int attempt = 0; attempt < monsterAttemptsPerTick && player.alive && cap.hasRoom(); ++attempt) {
-            const std::optional<SpawnPlace> place = randomMonsterPlace(world, player.position);
-            const QcChunkPos chunk = place ? QcBlockPos{place->x, 0, place->z}.chunk() : QcChunkPos{};
-            if (!place || !inMonsterRange({place->x + 0.5, static_cast<double>(place->floorY + 1), place->z + 0.5}, players) || cap.roomIn(chunk) <= 0) {
+    // monsterAttemptsPerTick attempts for each player in turn, while there is room.
+    for (qsizetype attempt = 0; attempt < players.size() * monsterAttemptsPerTick && cap.hasRoom(); ++attempt) {
+        const PlayerView &player = players.at(attempt / monsterAttemptsPerTick);
+        const QList<SpawnPlace> places = player.alive ? randomMonsterPlaces(world, player.position) : QList<SpawnPlace>{};
+        for (const SpawnPlace &place : places) {
+            const QcChunkPos chunk = QcBlockPos{place.x, 0, place.z}.chunk();
+            if (!inMonsterRange({place.x + 0.5, static_cast<double>(place.floorY + 1), place.z + 0.5}, players) || cap.roomIn(chunk) <= 0) {
                 continue;
             }
-            const int spawned = spawnMonsterAt(world, *place, sky, cap.roomIn(chunk), nextEntityId);
+            const int spawned = spawnMonsterAt(world, place, sky, cap.roomIn(chunk), nextEntityId);
             for (int i = 0; i < spawned; ++i) {
                 cap.add(chunk);
             }
@@ -207,6 +212,11 @@ void QcNaturalSpawner::spawnMonsters(QcServerWorld &world, const QList<PlayerVie
 
 int QcNaturalSpawner::spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky sky, int room, const NextId &nextEntityId)
 {
+    // In a spawn area of a structure only its kinds come, over the whole height (decision E-871).
+    if (const QcSpawnAreas::Area *area = m_areas.at(place.x, place.z)) {
+        return spawnInArea(world, place, sky, *area, nextEntityId);
+    }
+
     // Most places fail the light test: the kinds are checked first, without counts.
     QList<SpawnCandidate> candidates = candidatesAt(world, place, sky, NearbyCounts{}, Pass::Monsters);
     if (candidates.isEmpty()) {
@@ -235,6 +245,21 @@ int QcNaturalSpawner::spawnMonsterAt(QcServerWorld &world, SpawnPlace place, Sky
     return spawnGroup(world, place, *chosen, std::min(room, kindRoom), nextEntityId);
 }
 
+int QcNaturalSpawner::spawnInArea(QcServerWorld &world, SpawnPlace place, Sky sky, const QcSpawnAreas::Area &area, const NextId &nextEntityId)
+{
+    if (area.types.isEmpty()) {
+        return 0;
+    }
+    // As in the original game: the kinds of the area alike, one at a time, and the light test, the
+    // ground and the room for the body as anywhere else (the caller checked distance and cap).
+    const int type = area.types.at(static_cast<qsizetype>(m_draws->bounded(static_cast<int>(area.types.size()))));
+    const SpawnCandidate chosen{type, &m_areaRules.at(type)};
+    if (!ruleAllows(world, place, chosen, sky)) {
+        return 0;
+    }
+    return spawnGroup(world, place, chosen, 1, nextEntityId);
+}
+
 QcNaturalSpawner::NearbyCounts QcNaturalSpawner::countNear(const QcVec3 &centre, double radius) const
 {
     // Animals spawn naturally only where none is awake around the player: most come with new chunks.
@@ -261,7 +286,7 @@ std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomPlace(const 
         static_cast<int>(std::floor(centre.z - std::cos(angle) * radius))});
 }
 
-std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlace(const QcServerWorld &world, const QcVec3 &centre)
+QList<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlaces(const QcServerWorld &world, const QcVec3 &centre)
 {
     // A random column of a random chunk of the area, so every loaded chunk gets its share as in the
     // original game.
@@ -273,7 +298,7 @@ std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlace
     const int z = chunkZ * QcWorld::chunkSize + m_draws->bounded(QcWorld::chunkSize);
     const std::shared_ptr<const QcChunk> chunk = world.chunk(QcBlockPos{x, 0, z}.chunk());
     if (!chunk) {
-        return std::nullopt;
+        return {};
     }
 
     // One of the floors of the column, each as likely: the open surface, the ground under trees and
@@ -295,16 +320,30 @@ std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::randomMonsterPlace
         }
     }
     if (floors.isEmpty()) {
-        return std::nullopt;
+        return {};
     }
 
-    SpawnPlace place;
-    place.x = x;
-    place.z = z;
-    std::tie(place.floorY, place.water) = floors[static_cast<qsizetype>(m_draws->bounded(static_cast<int>(floors.size())))];
-    place.cave = top - 1 > place.floorY + 1 + caveDepth;
-    place.ground = chunk->block(column.localX(), place.floorY, column.localZ());
-    return place;
+    const auto placeOn = [&](std::pair<int, bool> floor) {
+        SpawnPlace place;
+        place.x = x;
+        place.z = z;
+        std::tie(place.floorY, place.water) = floor;
+        place.cave = top - 1 > place.floorY + 1 + caveDepth;
+        place.ground = chunk->block(column.localX(), place.floorY, column.localZ());
+        return place;
+    };
+    // In a spawn area every floor is a place of its own (decision E-871): each storey of a farm gets
+    // the rate of a single floor, as with the original game's random height.
+    // The floors come from a random one on, so the first ones do not take the room of the cap first.
+    if (m_areas.at(x, z)) {
+        const qsizetype first = m_draws->bounded(static_cast<int>(floors.size()));
+        QList<SpawnPlace> places;
+        for (qsizetype i = 0; i < floors.size(); ++i) {
+            places.append(placeOn(floors[(first + i) % floors.size()]));
+        }
+        return places;
+    }
+    return {placeOn(floors[static_cast<qsizetype>(m_draws->bounded(static_cast<int>(floors.size())))])};
 }
 
 std::optional<QcNaturalSpawner::SpawnPlace> QcNaturalSpawner::placeInColumn(const QcServerWorld &world, QcBlockPos column)
@@ -407,7 +446,8 @@ bool QcNaturalSpawner::ruleAllows(const QcServerWorld &world, SpawnPlace &place,
     // before the chunk hash, the cells above and the biome.
     const bool lightOk = rule.darkness ? place.darkEnough(world, sky, rule.maxLight, *m_draws)
                                        : rule.maxLight >= QcLightEngine::maxLevel || place.lightIn(world) <= rule.maxLight;
-    const int ruleIndex = static_cast<int>(candidate.rule - m_rules.at(candidate.type).constData());
+    // The index of the kind's rule matters only for a share of chunks (rules of spawn areas have none).
+    const int ruleIndex = rule.chunkChance < 1.0 ? static_cast<int>(candidate.rule - m_rules.at(candidate.type).constData()) : 0;
     // Husks and strays only under the open sky, like the reference's test of the sky light.
     if (rule.sky && place.skyLightIn(world) < QcLightEngine::maxLevel) {
         return false;
@@ -490,9 +530,15 @@ int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, 
     const QcMobDefinition &definition = m_content->mobs()[chosen.type];
     const int group = 1 + m_draws->bounded(definition.maxGroup);
 
-    // The group stands on neighbouring blocks of the same height, never inside walls.
+    // The group stands on neighbouring blocks of the same height, never inside walls. Monsters stay
+    // on their side of the edge of a spawn area (decision E-871): its kinds inside, the others out.
+    const QcSpawnAreas::Area *area = isMonster(definition) ? m_areas.at(place.x, place.z) : nullptr;
     int spawned = 0;
     for (int i = 0; i < group && i < std::ssize(QcChunkSpawns::groupOffsets) && spawned < room; ++i) {
+        const auto [dx, dz] = QcChunkSpawns::groupOffsets[static_cast<std::size_t>(i)];
+        if (isMonster(definition) && m_areas.at(place.x + dx, place.z + dz) != area) {
+            continue;
+        }
         const bool member = definition.aquatic    ? spawnSwimmer(world, place, i, chosen, nextEntityId)
                             : definition.flying   ? spawnFlyer(world, place, i, chosen, nextEntityId)
                             : chosen.rule->water ? spawnWader(world, place, i, chosen, nextEntityId)
