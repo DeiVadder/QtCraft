@@ -458,6 +458,27 @@ Item {
         }
     }
 
+    // The custom name of the stack in the hand (decision E-866), in italics right above the end of
+    // the hotbar, beside the status rows.
+    Repeater {
+        model: SlotRange {
+            source: hud.game.player.inventory
+            first: hud.game.player.inventory.selectedSlot
+            count: 1
+        }
+
+        HudLabel {
+            required property string customName
+            objectName: "heldName"
+            anchors.left: hotbar.right
+            anchors.leftMargin: Ui.hudPx(4)
+            anchors.bottom: hotbar.top
+            visible: customName !== "" && hotbar.visible
+            text: customName
+            font.italic: true
+        }
+    }
+
     // A held compass or clock (decision E-769) right of the hotbar.
     DialDisplay {
         hudState: hud.game.hud

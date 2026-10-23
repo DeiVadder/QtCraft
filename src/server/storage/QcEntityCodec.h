@@ -73,6 +73,8 @@ enum class Component : quint16 {
     // The persistent id of the parent of a child of a kept family and the chunk it was last in
     // (version 1, decision E-839).
     Family = 20,
+    // The name a name tag gave a creature (version 1, decision E-866).
+    Name = 21,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

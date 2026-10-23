@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 250,
     "enchantability": 14,
+    "repairWith": "qtcraft:iron_ingot",
     "attackDamage": 3.5,
     "tool": "pickaxe",
     "toolLevel": 3,

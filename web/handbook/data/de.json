@@ -41,12 +41,15 @@
             "entries": [
                 "block:qtcraft:farmland",
                 "block:qtcraft:activator_rail",
+                "block:qtcraft:anvil",
+                "block:qtcraft:chipped_anvil",
                 "block:qtcraft:powered_rail",
                 "block:qtcraft:infested_stone_bricks",
                 "block:qtcraft:infested_cobblestone",
                 "block:qtcraft:infested_stone",
                 "block:qtcraft:mossy_stone_bricks",
                 "block:qtcraft:mossy_cobblestone",
+                "block:qtcraft:damaged_anvil",
                 "block:qtcraft:bed",
                 "block:qtcraft:birch_planks",
                 "block:qtcraft:birch_trapdoor",
@@ -523,6 +526,7 @@
                 "item:qtcraft:magenta_dye",
                 "item:qtcraft:melon_seeds",
                 "item:qtcraft:milk_bucket",
+                "item:qtcraft:name_tag",
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:paper",
                 "item:qtcraft:arrow",
@@ -5553,6 +5557,211 @@
             ],
             "text": "Eine violette Blütenkugel auf Wiesen und im Gebirge; ergibt magentafarbenen Farbstoff.",
             "title": "Zierlauch"
+        },
+        "block:qtcraft:anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:anvil"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,63 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fällt ohne Stütze",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Amboss",
+                    "links": [
+                    ],
+                    "value": "öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:anvil",
+            "id": "block:qtcraft:anvil",
+            "name": "qtcraft:anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Eisenblock"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Eisenblock"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Eisenblock"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Eisenbarren"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:anvil",
+                            "needsTable": true,
+                            "note": "Werkbank (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:anvil",
+                                "note": "",
+                                "target": "block:qtcraft:anvil",
+                                "text": "Amboss"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "Herstellung"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den linken Platz und sein Material, einen zweiten Gegenstand derselben Art oder nichts in den rechten, gib bei Bedarf einen Namen ein und nimm das Ergebnis, bezahlt mit Erfahrungsstufen. Jede Benutzung nutzt ihn etwas ab (angeschlagen, beschädigt, dann zerbricht er), und jedes Mal, wenn ein Gegenstand über einen Amboss geht, kostet die nächste Benutzung mehr. Er fällt wie Sand und verletzt, auf wen er fällt.",
+            "title": "Amboss"
         },
         "block:qtcraft:backpack": {
             "category": "blocks",
@@ -19697,6 +19906,138 @@
             "text": "Lagert 27 Stapel. Beim Abbauen fällt der Inhalt heraus.",
             "title": "Truhe"
         },
+        "block:qtcraft:chipped_anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Chipped Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chipped_anvil"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,63 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fällt ohne Stütze",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Amboss",
+                    "links": [
+                    ],
+                    "value": "öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:chipped_anvil",
+            "id": "block:qtcraft:chipped_anvil",
+            "name": "qtcraft:chipped_anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Ein schon benutzter Amboss; er arbeitet wie ein neuer und wird mit der Zeit zum beschädigten Amboss.",
+            "title": "Angeschlagener Amboss"
+        },
         "block:qtcraft:chiseled_stone_bricks": {
             "category": "blocks",
             "categoryTitle": "Blöcke",
@@ -27213,6 +27554,138 @@
             ],
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Türkiser Teppich"
+        },
+        "block:qtcraft:damaged_anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Damaged Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:damaged_anvil"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke, Stufe 1 oder besser (nötig für Beute)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,63 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Beute ohne passendes Werkzeug",
+                    "links": [
+                    ],
+                    "value": "nichts"
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Fällt ohne Stütze",
+                    "links": [
+                    ],
+                    "value": "ja"
+                },
+                {
+                    "label": "Amboss",
+                    "links": [
+                    ],
+                    "value": "öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                }
+            ],
+            "icon": "qtcraft:damaged_anvil",
+            "id": "block:qtcraft:damaged_anvil",
+            "name": "qtcraft:damaged_anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Abbaubar mit"
+                }
+            ],
+            "text": "Ein Amboss kurz vor dem Zerbrechen; er arbeitet wie ein neuer, aber die nächste Abnutzung zerbricht ihn.",
+            "title": "Beschädigter Amboss"
         },
         "block:qtcraft:dandelion": {
             "category": "blocks",
@@ -37523,6 +37996,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
                         {
                             "icon": "qtcraft:iron_ingot",
                             "note": "",
@@ -103060,6 +103539,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
                             "icon": "qtcraft:mossy_cobblestone_wall",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone_wall",
@@ -103118,6 +103609,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone",
                             "text": "Bemooster Bruchstein"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:blue_glazed_terracotta",
@@ -106284,6 +106781,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
                             "icon": "qtcraft:mossy_cobblestone_wall",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone_wall",
@@ -106342,6 +106851,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone",
                             "text": "Bemooster Bruchstein"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:blue_glazed_terracotta",
@@ -108660,6 +109175,12 @@
                             "text": "Aktivierungsschiene"
                         },
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
                             "icon": "qtcraft:bucket",
                             "note": "",
                             "target": "item:qtcraft:bucket",
@@ -109209,6 +109730,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
                             "icon": "qtcraft:mossy_cobblestone_wall",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone_wall",
@@ -109267,6 +109800,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone",
                             "text": "Bemooster Bruchstein"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:blue_glazed_terracotta",
@@ -112366,6 +112905,34 @@
             ],
             "text": "Eine sättigende Suppe aus beiden Pilzen; die Schüssel bleibt.",
             "title": "Pilzsuppe"
+        },
+        "item:qtcraft:name_tag": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Name Tag",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:name_tag"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:name_tag",
+            "id": "item:qtcraft:name_tag",
+            "name": "qtcraft:name_tag",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Nicht herstellbar; zu finden in Truhen von Verliesen, Minen und Tempeln oder bei Dorfbewohnern zu kaufen. Am Amboss beschriften und dann auf ein Wesen anwenden: der Name steht über ihm, und ein benanntes Wesen verschwindet nie.",
+            "title": "Namensschild"
         },
         "item:qtcraft:orange_dye": {
             "category": "items",
@@ -116049,6 +116616,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
                             "icon": "qtcraft:mossy_cobblestone_wall",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone_wall",
@@ -116107,6 +116686,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone",
                             "text": "Bemooster Bruchstein"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:blue_glazed_terracotta",
@@ -118329,6 +118914,18 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
                             "icon": "qtcraft:mossy_cobblestone_wall",
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone_wall",
@@ -118387,6 +118984,12 @@
                             "note": "Stufe 1",
                             "target": "block:qtcraft:mossy_cobblestone",
                             "text": "Bemooster Bruchstein"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Stufe 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:blue_glazed_terracotta",
@@ -124566,6 +125169,24 @@
                             "text": "Ziegeltreppe"
                         },
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "5, aus der Härte",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "5, aus der Härte",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "5, aus der Härte",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
+                        },
+                        {
                             "icon": "qtcraft:iron_trapdoor",
                             "note": "5, aus der Härte",
                             "target": "block:qtcraft:iron_trapdoor",
@@ -129808,7 +130429,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Stufe 1 nötig für: Bemooste Steinziegel, Bemooster Bruchstein, Blaue glasierte Terrakotta, Blaue Terrakotta, Blauer Beton, Braune glasierte Terrakotta, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe glasierte Terrakotta, Gelbe Terrakotta, Gelber Beton, Gemeißelte Steinziegel, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glatter Stein, Glattstein, Graue glasierte Terrakotta, Graue Terrakotta, Grauer Beton, Grüne glasierte Terrakotta, Grüne Terrakotta, Grüner Beton, Hellblaue glasierte Terrakotta, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue glasierte Terrakotta, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne glasierte Terrakotta, Hellgrüne Terrakotta, Hellgrüner Beton, Kette, Knochenblock, Kohleblock, Kupferfalltür, Kupfergitter, Kupferkette, Kupfertür, Lehmziegel, Magentafarbene glasierte Terrakotta, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene glasierte Terrakotta, Orangefarbene Terrakotta, Orangefarbener Beton, Räucherofen, Rissige Steinziegel, Rosafarbene glasierte Terrakotta, Rosafarbene Terrakotta, Rosafarbener Beton, Rote glasierte Terrakotta, Rote Terrakotta, Roter Beton, Sandstein, Schmelzofen, Schwarze glasierte Terrakotta, Schwarze Terrakotta, Schwarzer Beton, Signalstaubblock, Stein, Steinkohle, Steinschneider, Steinziegel, Terrakotta, Türkise glasierte Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette glasierte Terrakotta, Violette Terrakotta, Violetter Beton, Weiße glasierte Terrakotta, Weiße Terrakotta, Weißer Beton, Zaubertisch, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Kupferblock, Kupfererz, Lapislazuliblock, Lapislazulierz, Roheisenblock, Rohkupferblock, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Rohgoldblock, Smaragdblock, Smaragderz, Weinender Obsidian",
+                    "text": "- Stufe 1 nötig für: Amboss, Angeschlagener Amboss, Bemooste Steinziegel, Bemooster Bruchstein, Beschädigter Amboss, Blaue glasierte Terrakotta, Blaue Terrakotta, Blauer Beton, Braune glasierte Terrakotta, Braune Terrakotta, Brauner Beton, Bruchstein, Eisenfalltür, Eisengitter, Eisentür, Gelbe glasierte Terrakotta, Gelbe Terrakotta, Gelber Beton, Gemeißelte Steinziegel, Gemeißelter Sandstein, Geschnittener Sandstein, Glatter Sandstein, Glatter Stein, Glattstein, Graue glasierte Terrakotta, Graue Terrakotta, Grauer Beton, Grüne glasierte Terrakotta, Grüne Terrakotta, Grüner Beton, Hellblaue glasierte Terrakotta, Hellblaue Terrakotta, Hellblauer Beton, Hellgraue glasierte Terrakotta, Hellgraue Terrakotta, Hellgrauer Beton, Hellgrüne glasierte Terrakotta, Hellgrüne Terrakotta, Hellgrüner Beton, Kette, Knochenblock, Kohleblock, Kupferfalltür, Kupfergitter, Kupferkette, Kupfertür, Lehmziegel, Magentafarbene glasierte Terrakotta, Magentafarbene Terrakotta, Magentafarbener Beton, Magmablock, Monster-Spawner, Ofen, Orangefarbene glasierte Terrakotta, Orangefarbene Terrakotta, Orangefarbener Beton, Räucherofen, Rissige Steinziegel, Rosafarbene glasierte Terrakotta, Rosafarbene Terrakotta, Rosafarbener Beton, Rote glasierte Terrakotta, Rote Terrakotta, Roter Beton, Sandstein, Schmelzofen, Schwarze glasierte Terrakotta, Schwarze Terrakotta, Schwarzer Beton, Signalstaubblock, Stein, Steinkohle, Steinschneider, Steinziegel, Terrakotta, Türkise glasierte Terrakotta, Türkise Terrakotta, Türkiser Beton, Violette glasierte Terrakotta, Violette Terrakotta, Violetter Beton, Weiße glasierte Terrakotta, Weiße Terrakotta, Weißer Beton, Zaubertisch, Ziegel\n- Stufe 2 nötig für: Chunk-Lader, Eisenblock, Eisenerz, Kupferblock, Kupfererz, Lapislazuliblock, Lapislazulierz, Roheisenblock, Rohkupferblock, Signalerz\n- Stufe 3 nötig für: Diamantblock, Diamanterz, Goldblock, Golderz, Obsidian, Rohgoldblock, Smaragdblock, Smaragderz, Weinender Obsidian",
                     "title": "Spitzhacke"
                 },
                 {
@@ -129872,6 +130493,24 @@
                             "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:farmland",
                             "text": "Ackerboden"
+                        },
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Angeschlagener Amboss"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Beschädigter Amboss"
                         },
                         {
                             "icon": "qtcraft:bed",

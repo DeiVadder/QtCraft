@@ -147,6 +147,15 @@ struct QcBlockDefinition
     bool opensStonecutter = false;
     // Using the block opens the enchanting table's screen (decision E-864).
     bool opensEnchanting = false;
+    // Using the block opens the anvil's screen (decision E-866).
+    bool opensAnvil = false;
+    // The anvil this one wears into when used or after a fall (chipped, damaged); empty: it breaks.
+    // Server side only.
+    QString wearsInto;
+    // Damage a falling block deals to bodies in the cell it lands in, per block fallen beyond the
+    // first (an anvil: 2, at most landingDamageLimit); 0 for none. Server side only.
+    double landingDamage = 0.0;
+    static constexpr double landingDamageLimit = 40.0;
     // Using the block opens its machine screen (furnace).
     QcMachineDefinition machine;
     // Seconds the block's item burns as fuel in a machine; 0 for blocks that are no fuel.

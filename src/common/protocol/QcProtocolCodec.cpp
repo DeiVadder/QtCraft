@@ -61,14 +61,15 @@ enum StackBits : quint8 {
     ContentsBit = 2,
     NameBit = 4,
     EnchantmentsBit = 8,
-    KnownBits = MapIdBit | ContentsBit | NameBit | EnchantmentsBit,
+    PriorWorkBit = 16,
+    KnownBits = MapIdBit | ContentsBit | NameBit | EnchantmentsBit | PriorWorkBit,
 };
 
 // The component bits of `data` on the wire; 0 for none.
 quint8 bitsOf(const QcItemData &data)
 {
     return static_cast<quint8>((data.mapId != 0 ? MapIdBit : 0) | (data.contents.isEmpty() ? 0 : ContentsBit) | (data.name.isEmpty() ? 0 : NameBit)
-                  | (data.enchantments.isEmpty() ? 0 : EnchantmentsBit));
+                  | (data.enchantments.isEmpty() ? 0 : EnchantmentsBit) | (data.priorWork == 0 ? 0 : PriorWorkBit));
 }
 
 // Writes the components of `data` after their bits, which are not 0.
@@ -97,6 +98,9 @@ void writeData(QDataStream &stream, const QcItemData &data)
         for (const QcEnchantment &enchantment : data.enchantments) {
             stream << enchantment.name << static_cast<quint8>(enchantment.level);
         }
+    }
+    if (data.priorWork != 0) {
+        stream << static_cast<quint8>(data.priorWork);
     }
 }
 
@@ -162,6 +166,14 @@ std::optional<QcItemData> readData(QDataStream &stream, int depth)
             return std::nullopt;
         }
         data.enchantments = std::move(*enchantments);
+    }
+    if ((bits & PriorWorkBit) != 0) {
+        quint8 uses = 0;
+        stream >> uses;
+        if (uses == 0 || uses > QcItemData::maxPriorWork) {
+            return std::nullopt;
+        }
+        data.priorWork = uses;
     }
     return data;
 }

@@ -164,6 +164,7 @@ target_sources(qc_server PRIVATE
     machines/QcCampfires.h machines/QcCampfires.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
+    machines/QcServerAnvil.h machines/QcServerAnvil.cpp
     machines/QcServerEnchanting.h machines/QcServerEnchanting.cpp
     machines/QcServerKitchen.h machines/QcServerKitchen.cpp
     machines/QcServerMachines.h machines/QcServerMachines.cpp
@@ -206,6 +207,7 @@ target_sources(qc_server PRIVATE
     mobs/QcMobSteering.h mobs/QcMobSteering.cpp
     mobs/QcMobTeleport.h mobs/QcMobTeleport.cpp
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
+    mobs/QcNameTags.h mobs/QcNameTags.cpp
     mobs/QcNeutralBrain.h mobs/QcNeutralBrain.cpp
     mobs/QcPetCare.h mobs/QcPetCare.cpp
     mobs/QcPetOwners.h mobs/QcPetOwners.cpp

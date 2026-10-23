@@ -88,6 +88,11 @@ struct QcItemDefinition
     // How well the enchanting table enchants it (the reference's enchantability, decision E-864):
     // 0 for items the table does not take. Server side only.
     int enchantability = 0;
+    // What repairs it at the anvil (decision E-866): an item name or "#tag"; empty for none. Each
+    // item restores a quarter of the durability. Server side only.
+    QString repairWith;
+    // A name tag (decision E-866): with a custom name, used on a creature it names it. Server side only.
+    bool namesCreatures = false;
     // Damage dealt when hitting with this item, in health points.
     double attackDamage = 1.0;
     // Food points restored when eaten (a full player has 20); 0 for items that are not food.

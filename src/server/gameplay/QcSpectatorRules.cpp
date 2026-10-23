@@ -24,7 +24,8 @@ bool acts(const QcMessage &message)
            || std::holds_alternative<QcMsg::CraftRecipe>(message) || std::holds_alternative<QcMsg::Trade>(message)
            || std::holds_alternative<QcMsg::DropItem>(message) || std::holds_alternative<QcMsg::CreativeItem>(message)
            || std::holds_alternative<QcMsg::PickBlock>(message) || std::holds_alternative<QcMsg::EditSign>(message)
-           || std::holds_alternative<QcMsg::SelectStonecutterRecipe>(message) || std::holds_alternative<QcMsg::ChooseEnchantment>(message);
+           || std::holds_alternative<QcMsg::SelectStonecutterRecipe>(message) || std::holds_alternative<QcMsg::ChooseEnchantment>(message)
+           || std::holds_alternative<QcMsg::RenameAnvil>(message) || std::holds_alternative<QcMsg::ForgeAnvil>(message);
 }
 
 } // namespace

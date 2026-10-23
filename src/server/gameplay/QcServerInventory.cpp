@@ -13,6 +13,7 @@
 #include "server/gameplay/QcToolWear.h"
 #include "server/items/QcServerExperience.h"
 #include "server/machines/QcBlockScreens.h"
+#include "server/machines/QcServerAnvil.h"
 #include "server/machines/QcServerEnchanting.h"
 
 #include <QtMath>
@@ -78,11 +79,29 @@ void QcServerInventory::send(QcServerClient &client)
     if (client.screen.enchanting) {
         client.connection->send(QcServerEnchanting::stateOf(m_state, client));
     }
+    if (client.screen.anvil) {
+        client.connection->send(QcServerAnvil::stateOf(m_state, client));
+    }
+}
+
+void QcServerInventory::OpenSlots::storeWorkstationSlots() const
+{
+    if (stonecutter) {
+        stonecutter->setInput(combined.stacks[machineSlot]);
+    }
+    if (enchanting) {
+        enchanting->item = combined.stacks[machineSlot];
+        enchanting->lapis = combined.stacks[machineSlot + 1];
+    }
+    if (anvil) {
+        anvil->setLeft(combined.stacks[machineSlot]);
+        anvil->right = combined.stacks[machineSlot + 1];
+    }
 }
 
 QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client)
 {
-    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), nullptr, nullptr, 0, {}};
+    OpenSlots open{m_screens.openMachineOf(client), m_screens.openContainerOf(client), nullptr, nullptr, nullptr, 0, {}};
     open.combined.stacks = client.inventory.allSlots();
     open.combined.stacks.append(client.crafting.grid);
     if (open.machine) {
@@ -102,6 +121,12 @@ QcServerInventory::OpenSlots QcServerInventory::openSlots(QcServerClient &client
         open.enchanting = &*client.screen.enchanting;
         open.combined.stacks.append(open.enchanting->item);
         open.combined.stacks.append(open.enchanting->lapis);
+        open.blockSlots = 2;
+    } else if (client.screen.anvil) {
+        // The left and right slots (decision E-866); the output is taken through QcServerAnvil.
+        open.anvil = &*client.screen.anvil;
+        open.combined.stacks.append(open.anvil->left);
+        open.combined.stacks.append(open.anvil->right);
         open.blockSlots = 2;
     }
     // The armour slots follow at their own numbers; the cells between them stay unusable.
@@ -153,13 +178,7 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
             client.inventory.setSlot(open.container->heldSlot, held.tryWithContents(*open.container->stacks).value_or(held));
         }
     }
-    if (open.stonecutter) {
-        open.stonecutter->setInput(open.combined.stacks[machineSlot]);
-    }
-    if (open.enchanting) {
-        open.enchanting->item = open.combined.stacks[machineSlot];
-        open.enchanting->lapis = open.combined.stacks[machineSlot + 1];
-    }
+    open.storeWorkstationSlots();
     QcEquipment equipment;
     std::ranges::copy(open.combined.stacks.mid(equipmentSlot, QcEquipment::slotCount), equipment.stacks.begin());
     setEquipment(client, equipment);
@@ -209,7 +228,7 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
         situation.containerSlots = 0;
     }
     situation.hotbarOnly = client.screen.held.has_value();
-    situation.machineOpen = open.machine != nullptr || open.stonecutter != nullptr || open.enchanting != nullptr;
+    situation.machineOpen = open.machine != nullptr || open.stonecutter != nullptr || open.enchanting != nullptr || open.anvil != nullptr;
     situation.freeArmourSlot = freeArmourSlotFor(client, open.combined.stacks[move.slot]);
     if (open.stonecutter) {
         // Stone goes into the stonecutter's input like smeltable items into a furnace's.
@@ -222,6 +241,11 @@ void QcServerInventory::quickMove(QcServerClient &client, QcMsg::QuickMoveItem m
         const QcItemStack &moved = open.combined.stacks[move.slot];
         situation.smeltable = m_state.content().isValidItem(moved.item) && m_state.content().item(moved.item).enchantability > 0;
         situation.fuel = m_state.content().itemId(QString(QcEnchantingTable::lapisItem)) == moved.item;
+    }
+    if (open.anvil) {
+        // Into the left slot while it is empty, else into the right one.
+        situation.smeltable = open.combined.stacks[machineSlot].isEmpty();
+        situation.fuel = !situation.smeltable;
     }
     if (open.machine) {
         const QcItemId item = open.combined.stacks[move.slot].item;
@@ -320,6 +344,10 @@ void QcServerInventory::dropAll(QcServerClient &client)
         stacks.append(std::exchange(client.screen.enchanting->item, {}));
         stacks.append(std::exchange(client.screen.enchanting->lapis, {}));
     }
+    if (client.screen.anvil) {
+        stacks.append(std::exchange(client.screen.anvil->left, {}));
+        stacks.append(std::exchange(client.screen.anvil->right, {}));
+    }
     stacks.append(QList<QcItemStack>(client.equipment.stacks.begin(), client.equipment.stacks.end()));
 
     for (const QcItemStack &stack : std::as_const(stacks)) {
@@ -348,6 +376,10 @@ void QcServerInventory::returnScreenInputs(QcServerClient &client)
     if (client.screen.enchanting) {
         inputs.append(std::exchange(client.screen.enchanting->item, {}));
         inputs.append(std::exchange(client.screen.enchanting->lapis, {}));
+    }
+    if (client.screen.anvil) {
+        inputs.append(std::exchange(client.screen.anvil->left, {}));
+        inputs.append(std::exchange(client.screen.anvil->right, {}));
     }
 
     for (const QcItemStack &input : std::as_const(inputs)) {

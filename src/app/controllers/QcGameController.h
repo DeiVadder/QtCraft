@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/admin/QcAdminController.h"
+#include "app/controllers/QcAnvilController.h"
 #include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcHudState.h"
@@ -79,6 +80,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcStonecutterController *stonecutter READ stonecutter CONSTANT FINAL)
     // The enchanting table's screen (decision E-864).
     Q_PROPERTY(QcEnchantingController *enchanting READ enchanting CONSTANT FINAL)
+    // The anvil's screen (decision E-866).
+    Q_PROPERTY(QcAnvilController *anvil READ anvil CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
@@ -124,6 +127,7 @@ public:
     QcSignController *sign() const { return m_sign.get(); }
     QcStonecutterController *stonecutter() const { return m_stonecutter.get(); }
     QcEnchantingController *enchanting() const { return m_enchanting.get(); }
+    QcAnvilController *anvil() const { return m_anvil.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
@@ -220,6 +224,7 @@ private:
     std::unique_ptr<QcSignController> m_sign;
     std::unique_ptr<QcStonecutterController> m_stonecutter;
     std::unique_ptr<QcEnchantingController> m_enchanting;
+    std::unique_ptr<QcAnvilController> m_anvil;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;
     std::unique_ptr<QcHandbookController> m_handbook;

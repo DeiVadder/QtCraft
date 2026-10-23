@@ -121,4 +121,47 @@ struct CloseEnchanting
 {
 };
 
+// Server -> client: the player opened the anvil at `pos` (decision E-866); AnvilState follows. Its
+// left and right slots are machineInputSlot and machineFuelSlot of MoveInventoryItem and
+// QuickMoveItem while no machine or chest is open.
+struct OpenAnvil
+{
+    QcBlockPos pos;
+};
+
+// Server -> client: the open anvil's slots, the name in its name field, what it would make and the
+// levels that costs (QcAnvil::Result; 0 and an empty output for nothing).
+struct AnvilState
+{
+    QcItemStack left;
+    QcItemStack right;
+    QString name;
+    QcItemStack output;
+    qint32 levelCost = 0;
+};
+
+// Client -> server: the text of the anvil's name field changed (at most QcItemData::maxNameLength
+// characters after trimming).
+struct RenameAnvil
+{
+    // The longest text the field sends (spaces around it included); the name is cut to
+    // QcItemData::maxNameLength.
+    static constexpr qsizetype maxText = 256;
+
+    QString name;
+};
+
+// Client -> server: take the anvil's output `output` for `levelCost` levels, as the last
+// AnvilState showed them; refused when either changed since.
+struct ForgeAnvil
+{
+    qint32 levelCost = 0;
+    QcItemStack output;
+};
+
+// Client -> server: the anvil screen closed. Server -> client: the anvil closed (broken, out of reach).
+struct CloseAnvil
+{
+};
+
 } // namespace QcMsg

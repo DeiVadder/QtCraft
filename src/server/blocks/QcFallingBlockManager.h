@@ -34,6 +34,8 @@ public:
         // The cell the block came to rest in; `placed` when it may become the block there.
         QcBlockPos pos;
         bool placed = false;
+        // Blocks it fell (0 when unknown).
+        double fallen = 0.0;
     };
 
     explicit QcFallingBlockManager(std::shared_ptr<const QcContentRegistry> content);

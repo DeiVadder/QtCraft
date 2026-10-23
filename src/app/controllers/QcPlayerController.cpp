@@ -263,6 +263,8 @@ void QcPlayerController::updateInventory()
         block = session.stonecutter().slotStacks(*session.content());
     } else if (session.enchanting().isOpen()) {
         block = session.enchanting().slotStacks();
+    } else if (session.anvil().isOpen()) {
+        block = session.anvil().slotStacks();
     }
     m_inventory->setInventory(session.inventory(), session.inventoryMirror().craftingGrid(), session.inventoryMirror().craftingResult(), block,
                               session.inventoryMirror().equipment());
@@ -311,6 +313,10 @@ void QcPlayerController::nameOpenMachine()
         const bool known = content->isValidItem(stack.item);
         const std::optional<QcBlockId> block = known ? content->blockId(content->item(stack.item).placesBlock) : std::nullopt;
         m_machineLabel = known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString();
+        // A backpack named at the anvil shows its name (decision E-866).
+        if (!stack.name().isEmpty()) {
+            m_machineLabel = stack.name();
+        }
         m_containerColumns = block ? content->block(*block).containerColumns : 9;
         return;
     }

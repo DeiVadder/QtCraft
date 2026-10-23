@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 495,
     "enchantability": 10,
+    "repairWith": "qtcraft:diamond",
     "armour": {
         "slot": "legs",
         "points": 6,

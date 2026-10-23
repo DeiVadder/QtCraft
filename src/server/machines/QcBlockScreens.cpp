@@ -224,10 +224,16 @@ void QcBlockScreens::setEnchantingCloser(std::function<void(QcServerClient &)> c
     m_closeEnchanting = std::move(closer);
 }
 
+void QcBlockScreens::setAnvilCloser(std::function<void(QcServerClient &)> closer)
+{
+    m_closeAnvil = std::move(closer);
+}
+
 void QcBlockScreens::closeOtherScreens(QcServerClient &client)
 {
     closeStonecutter(client);
     closeEnchanting(client);
+    closeAnvil(client);
     endTrade(client);
 }
 
@@ -244,6 +250,14 @@ void QcBlockScreens::closeEnchanting(QcServerClient &client)
     // The table's item and lapis go back to the player (QcServerEnchanting::close).
     if (client.screen.enchanting && m_closeEnchanting) {
         m_closeEnchanting(client);
+    }
+}
+
+void QcBlockScreens::closeAnvil(QcServerClient &client)
+{
+    // The anvil's slots go back to the player (QcServerAnvil::close).
+    if (client.screen.anvil && m_closeAnvil) {
+        m_closeAnvil(client);
     }
 }
 

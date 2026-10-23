@@ -136,7 +136,7 @@ if(NOT QC_SANITIZERS)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1200 COST 80
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1260 COST 80
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
 endif()
@@ -289,6 +289,6 @@ set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
-    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 1860 COST 60
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 1920 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
 endif()

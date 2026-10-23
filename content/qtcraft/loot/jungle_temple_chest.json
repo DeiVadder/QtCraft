@@ -8,6 +8,10 @@
             ],
             "entries": [
                 {
+                    "item": "name_tag",
+                    "weight": 4
+                },
+                {
                     "item": "diamond",
                     "weight": 3,
                     "count": [

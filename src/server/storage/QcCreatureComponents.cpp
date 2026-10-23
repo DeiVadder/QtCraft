@@ -1,7 +1,11 @@
 #include "server/storage/QcCreatureComponents.h"
 
+#include "common/gameplay/QcItemStack.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcVillagerCodec.h"
+
+#include <tuple>
+#include <utility>
 
 namespace {
 
@@ -35,6 +39,9 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
     if (mob.layTimer >= 0.0) {
         components.add(static_cast<quint16>(Component::Laying), layingVersion, [&mob](QDataStream &out) { out << mob.layTimer; });
     }
+    if (!mob.name.isEmpty()) {
+        components.add(static_cast<quint16>(Component::Name), kindVersion, [&mob](QDataStream &out) { out << mob.name; });
+    }
     if (mob.parentUid != 0) {
         components.add(static_cast<quint16>(Component::Family), kindVersion, [&mob](QDataStream &out) {
             const QcChunkPos chunk = mob.parentChunk.value_or(QcChunkPos{});
@@ -42,6 +49,27 @@ QcComponentFrames::Known known(Component id, quint16 version, QcComponentFrames:
         });
     }
     return components;
+}
+
+// Reads the family component: the kept parent's id (0 for none) and the chunk it was last in.
+std::pair<quint64, std::optional<QcChunkPos>> readFamily(QDataStream &in)
+{
+    quint64 parentUid = 0;
+    bool known = false;
+    qint32 x = 0;
+    qint32 z = 0;
+    in >> parentUid >> known >> x >> z;
+    return {parentUid, known ? std::optional<QcChunkPos>(QcChunkPos{x, z}) : std::nullopt};
+}
+
+// Reads the tame component (owner, sitting, collar); nothing without an owner, since a tame
+// creature without one (or whose owner could not be read) cannot be.
+std::optional<QcTameState> readTame(QDataStream &in)
+{
+    QcTameState state;
+    state.owner = QcComponentFrames::readText(in, maxTypeName).value_or(QString());
+    in >> state.sitting >> state.collar;
+    return state.owner.isEmpty() ? std::nullopt : std::optional<QcTameState>(state);
 }
 
 } // namespace
@@ -86,20 +114,17 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
         in >> mob.playerBuilt;
         return true;
     };
+    const auto tame = [&mob](QDataStream &in, quint16) {
+        mob.tame = readTame(in);
+        return mob.tame.has_value();
+    };
     const auto family = [&mob](QDataStream &in, quint16) {
-        bool known = false;
-        qint32 x = 0;
-        qint32 z = 0;
-        in >> mob.parentUid >> known >> x >> z;
-        mob.parentChunk = known ? std::optional<QcChunkPos>(QcChunkPos{x, z}) : std::nullopt;
+        std::tie(mob.parentUid, mob.parentChunk) = readFamily(in);
         return mob.parentUid != 0;
     };
-    const auto tame = [&mob](QDataStream &in, quint16) {
-        QcTameState &state = mob.tame.emplace();
-        state.owner = QcComponentFrames::readText(in, maxTypeName).value_or(QString());
-        in >> state.sitting >> state.collar;
-        // A tame creature without an owner (or whose owner could not be read) cannot be.
-        return !state.owner.isEmpty();
+    const auto name = [&mob](QDataStream &in, quint16) {
+        mob.name = QcComponentFrames::readText(in, QcItemData::maxNameLength).value_or(QString());
+        return !mob.name.isEmpty();
     };
 
     std::optional<QcComponentFrames::ReadComponents> components =
@@ -107,7 +132,8 @@ std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob)
                                          known(Component::Effects, effectsVersion, effects), known(Component::Carried, kindVersion, carriedBlock),
                                          known(Component::Confined, kindVersion, confined), known(Component::Golem, kindVersion, golem),
                                          known(Component::Laying, layingVersion, laying), known(Component::Tame, kindVersion, tame),
-                                         known(Component::NoAi, kindVersion, noAi), known(Component::Family, kindVersion, family)});
+                                         known(Component::NoAi, kindVersion, noAi), known(Component::Family, kindVersion, family),
+                                         known(Component::Name, kindVersion, name)});
     if (!components) {
         return std::nullopt;
     }

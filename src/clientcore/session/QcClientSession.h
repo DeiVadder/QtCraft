@@ -10,6 +10,7 @@
 #include "clientcore/player/QcHandTimers.h"
 #include "clientcore/player/QcLocalAnimation.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/session/QcClientAnvil.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEnchanting.h"
 #include "clientcore/session/QcClientEntities.h"
@@ -149,6 +150,9 @@ public:
     // The enchanting table's screen the server opened (decision E-864).
     QcClientEnchanting &enchanting() { return m_enchanting; }
     const QcClientEnchanting &enchanting() const { return m_enchanting; }
+    // The anvil's screen the server opened (decision E-866).
+    QcClientAnvil &anvil() { return m_anvil; }
+    const QcClientAnvil &anvil() const { return m_anvil; }
     void sendChat(const QString &text);
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
@@ -282,6 +286,7 @@ private:
     QcClientSignEditor m_signEditor;
     QcClientStonecutter m_stonecutter;
     QcClientEnchanting m_enchanting;
+    QcClientAnvil m_anvil;
     QcHandActions m_hand{{m_prediction, m_inventory, m_entities},
                          m_gameMode,
                          [this](const QcMessage &message) { sendToServer(message); },

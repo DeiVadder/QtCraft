@@ -181,6 +181,7 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     }
     case QcEntityKind::Creature:
         spawn.creatureType = entity.as<QcCreature>().type;
+        spawn.name = entity.as<QcCreature>().name;
         spawn.appearance = creatureLook(entity.as<QcCreature>(), m_state.content());
         break;
     case QcEntityKind::ExperienceOrb:

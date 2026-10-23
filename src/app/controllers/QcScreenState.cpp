@@ -11,7 +11,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The command-line names in the order of QcScreenState::Overlay.
-constexpr std::array<QStringView, 22> overlayNames{
+constexpr std::array<QStringView, 23> overlayNames{
     u"",
     u"inventory",
     u"creative",
@@ -34,8 +34,9 @@ constexpr std::array<QStringView, 22> overlayNames{
     u"interface",
     u"admin",
     u"enchanting",
+    u"anvil",
 };
-static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Enchanting) + 1, "a name for every overlay");
+static_assert(overlayNames.size() == static_cast<std::size_t>(QcScreenState::Overlay::Anvil) + 1, "a name for every overlay");
 
 } // namespace
 
@@ -166,6 +167,9 @@ void QcScreenState::closeSessionScreens() const
     if (m_overlay != Overlay::Enchanting) {
         m_parts.session->enchanting().close();
     }
+    if (m_overlay != Overlay::Anvil) {
+        m_parts.session->anvil().close();
+    }
     // A sign editor closed another way than by its Done button keeps the sign's text.
     QcClientSignEditor &sign = m_parts.session->signEditor();
     if (m_overlay != Overlay::Sign && sign.isOpen()) {
@@ -189,7 +193,7 @@ void QcScreenState::gameModeChanged(QcGameModes::Rules rules)
     // A spectator uses no screen of items (decision E-730): it closes, which tells the server.
     const bool itemScreen = m_overlay == Overlay::Inventory || m_overlay == Overlay::Creative || m_overlay == Overlay::Furnace
                             || m_overlay == Overlay::Chest || m_overlay == Overlay::Trade || m_overlay == Overlay::Stonecutter
-                            || m_overlay == Overlay::Enchanting;
+                            || m_overlay == Overlay::Enchanting || m_overlay == Overlay::Anvil;
     if (itemScreen && !rules.interacts) {
         setOverlay(Overlay::None);
         return;
@@ -238,6 +242,18 @@ void QcScreenState::stonecutterOpened()
 void QcScreenState::stonecutterClosed()
 {
     if (m_overlay == Overlay::Stonecutter) {
+        setOverlay(Overlay::None);
+    }
+}
+
+void QcScreenState::anvilOpened()
+{
+    setOverlay(Overlay::Anvil);
+}
+
+void QcScreenState::anvilClosed()
+{
+    if (m_overlay == Overlay::Anvil) {
         setOverlay(Overlay::None);
     }
 }

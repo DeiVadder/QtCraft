@@ -800,5 +800,10 @@
     "enchantment.qtcraft.protection": "Protection",
     "enchantment.qtcraft.feather_falling": "Feather Falling",
     "effect.qtcraft.hunger": "Hunger",
-    "structure.qtcraft.monster_variants": "Monsters of the biomes: husk, stray and drowned"
+    "structure.qtcraft.monster_variants": "Monsters of the biomes: husk, stray and drowned",
+    "block.qtcraft.anvil": "Anvil",
+    "block.qtcraft.chipped_anvil": "Chipped Anvil",
+    "block.qtcraft.damaged_anvil": "Damaged Anvil",
+    "item.qtcraft.name_tag": "Name Tag",
+    "structure.qtcraft.anvil": "Anvil: three anvils (new, chipped, damaged), a chest with worn and enchanted tools, iron ingots, planks and name tags, and a pen with a sheep to name"
 }

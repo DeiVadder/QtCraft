@@ -254,6 +254,8 @@ void BlockReader::readMiningFields()
     m_block.opensCrafting = m_reader.boolean(u"crafting"_s, false);
     m_block.opensStonecutter = m_reader.boolean(u"stonecutter"_s, false);
     m_block.opensEnchanting = m_reader.boolean(u"enchanting"_s, false);
+    m_block.opensAnvil = m_reader.boolean(u"anvil"_s, false);
+    m_block.wearsInto = m_reader.name(u"wearsInto"_s, m_namespace);
     m_block.fuelSeconds = m_reader.number(u"fuelSeconds"_s, 0.0, 0.0, QcContentFields::maxFuelSeconds);
 }
 
@@ -399,6 +401,7 @@ void BlockReader::readBehaviourFields()
     m_block.floats = m_reader.boolean(u"floats"_s, false);
     m_block.washable = m_reader.boolean(u"washable"_s, isCross(m_block));
     m_block.falls = m_reader.boolean(u"falls"_s, false);
+    m_block.landingDamage = m_reader.number(u"landingDamage"_s, 0.0, 0.0, QcBlockDefinition::landingDamageLimit);
     if (m_block.falls && (m_block.liquid || !m_block.solid)) {
         m_reader.fail(u"only solid blocks can fall"_s);
     }

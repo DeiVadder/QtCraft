@@ -97,6 +97,9 @@ qc_add_test(test_target_block SOURCES gameplay/test_target_block.cpp QcPlayerUse
 qc_add_test(test_tripwire SOURCES gameplay/test_tripwire.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_enchanting SOURCES gameplay/test_enchanting.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_enchanting_table SOURCES gameplay/test_enchanting_table.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+# The anvil and name tags (decision E-866).
+qc_add_test(test_anvil SOURCES gameplay/test_anvil.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
+qc_add_test(test_anvil_screen SOURCES gameplay/test_anvil_screen.cpp gameplay/QcEnchantingFixture.h QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_stonecutter SOURCES gameplay/test_stonecutter.cpp QcPlayerUseFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 # Headless measurement of the signal phase; QTCRAFT_SIGNAL_MEASURE=full for the recorded sizes.
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

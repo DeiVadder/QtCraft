@@ -5,7 +5,7 @@
 #include <optional>
 
 // What a raw protocol client (QcRawClient) recorded about the open workstation screens: the
-// stonecutter (decision E-785) and the enchanting table (decision E-864).
+// stonecutter (decision E-785), the enchanting table (decision E-864) and the anvil (decision E-866).
 struct QcRawWorkstations
 {
     // Opens, states and closes of the workstations; false for another message.
@@ -26,6 +26,13 @@ struct QcRawWorkstations
         } else if (std::holds_alternative<QcMsg::CloseEnchanting>(message)) {
             enchanting.reset();
             enchantingState = {};
+        } else if (const auto *opened = std::get_if<QcMsg::OpenAnvil>(&message)) {
+            anvil = opened->pos;
+        } else if (const auto *state = std::get_if<QcMsg::AnvilState>(&message)) {
+            anvilState = *state;
+        } else if (std::holds_alternative<QcMsg::CloseAnvil>(message)) {
+            anvil.reset();
+            anvilState = {};
         } else {
             return false;
         }
@@ -39,4 +46,7 @@ struct QcRawWorkstations
     // The open enchanting table and its state as last sent.
     std::optional<QcBlockPos> enchanting;
     QcMsg::EnchantingState enchantingState;
+    // The open anvil and its state as last sent.
+    std::optional<QcBlockPos> anvil;
+    QcMsg::AnvilState anvilState;
 };

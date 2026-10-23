@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 195,
     "enchantability": 9,
+    "repairWith": "qtcraft:iron_ingot",
     "armour": {
         "slot": "feet",
         "points": 2,

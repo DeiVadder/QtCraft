@@ -1,0 +1,7 @@
+{
+    "name": "anvil_side",
+    "pattern": "noise",
+    "primary": "#45454b",
+    "variation": 0.08,
+    "seed": 4201
+}

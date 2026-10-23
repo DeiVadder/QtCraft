@@ -26,6 +26,10 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
         held.append(client.screen.enchanting->item);
         held.append(client.screen.enchanting->lapis);
     }
+    if (client.screen.anvil) {
+        held.append(client.screen.anvil->left);
+        held.append(client.screen.anvil->right);
+    }
     for (const QcItemStack &cell : std::as_const(held)) {
         if (!cell.isEmpty()) {
             record.lost += player.inventory.add(cell, content);

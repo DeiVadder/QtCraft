@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 32,
     "enchantability": 22,
+    "repairWith": "qtcraft:gold_ingot",
     "attackDamage": 2.0,
     "tool": "shovel",
     "toolLevel": 1,

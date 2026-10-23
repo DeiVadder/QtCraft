@@ -86,6 +86,13 @@ QcItemStack QcItemStack::withEnchantments(QList<QcEnchantment> list) const
     return withData(next);
 }
 
+QcItemStack QcItemStack::withPriorWork(int uses) const
+{
+    QcItemData next = itemData();
+    next.priorWork = std::clamp(uses, 0, QcItemData::maxPriorWork);
+    return withData(next);
+}
+
 QcItemStack QcItemStack::withoutKept() const
 {
     if (itemData().kept.isEmpty()) {
@@ -105,6 +112,7 @@ QcItemStack QcItemStack::forDisplay() const
     shown.mapId = mapId();
     shown.name = name();
     shown.enchantments = enchantments();
+    shown.priorWork = priorWork();
     return withData(shown);
 }
 
@@ -187,7 +195,8 @@ bool QcItemData::fitsLimits() const
                && enchantment.level <= maxEnchantmentLevel;
     };
     return name.size() <= maxNameLength && contents.size() <= maxContents && depth() <= maxDepth && stacksInside() <= maxStacksInside
-           && enchantments.size() <= maxEnchantments && std::ranges::all_of(enchantments, validEnchantment);
+           && enchantments.size() <= maxEnchantments && std::ranges::all_of(enchantments, validEnchantment) && priorWork >= 0
+           && priorWork <= maxPriorWork;
 }
 
 int QcItemData::compare(const QcItemData &a, const QcItemData &b)
@@ -207,6 +216,9 @@ int QcItemData::compare(const QcItemData &a, const QcItemData &b)
             return key(a.enchantments[i]) < key(b.enchantments[i]) ? -1 : 1;
         }
     }
+    if (a.priorWork != b.priorWork) {
+        return a.priorWork < b.priorWork ? -1 : 1;
+    }
     if (a.contents.size() != b.contents.size()) {
         return a.contents.size() < b.contents.size() ? -1 : 1;
     }
@@ -220,5 +232,5 @@ int QcItemData::compare(const QcItemData &a, const QcItemData &b)
 
 bool QcItemData::operator==(const QcItemData &other) const
 {
-    return mapId == other.mapId && name == other.name && enchantments == other.enchantments && contents == other.contents && kept == other.kept;
+    return mapId == other.mapId && name == other.name && enchantments == other.enchantments && priorWork == other.priorWork && contents == other.contents && kept == other.kept;
 }

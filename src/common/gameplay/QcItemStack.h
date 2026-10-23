@@ -52,6 +52,7 @@ struct QcItemStack
     [[nodiscard]] QcItemStack withContents(QList<QcItemStack> stacks) const;
     [[nodiscard]] QcItemStack withName(QString text) const;
     [[nodiscard]] QcItemStack withEnchantments(QList<QcEnchantment> list) const;
+    [[nodiscard]] QcItemStack withPriorWork(int uses) const;
     // The same stack with `next` as its data, or nothing (with the warning of withData) when the
     // data is beyond the limits. Callers that take items out of slots to put them into the data
     // (filling a backpack) ask first, so a refusal loses and doubles nothing (stage 68.2).
@@ -81,6 +82,8 @@ struct QcItemStack
     QString name() const;
     // The enchantments it carries (decision E-864); empty for none.
     const QList<QcEnchantment> &enchantments() const;
+    // How often it went through an anvil (decision E-866).
+    int priorWork() const;
     // The data, or an empty one.
     const QcItemData &itemData() const;
 
@@ -98,6 +101,7 @@ public:
         Contents = 2,
         Name = 3,
         Enchantments = 4,
+        PriorWork = 5,
     };
     static constexpr quint16 firstModId = 0x8000;
     // The longest custom name (characters).
@@ -114,6 +118,8 @@ public:
     static constexpr qsizetype maxEnchantments = 16;
     static constexpr qsizetype maxEnchantmentName = 64;
     static constexpr int maxEnchantmentLevel = 255;
+    // The most anvil uses a stack remembers (decision E-866); its penalty is 2^priorWork − 1 levels.
+    static constexpr int maxPriorWork = 31;
 
     // The map id of a filled map; 0: none.
     quint32 mapId = 0;
@@ -121,10 +127,12 @@ public:
     QList<QcItemStack> contents;
     QString name;
     QList<QcEnchantment> enchantments;
+    // How often the stack went through an anvil (decision E-866); 0 for never.
+    int priorWork = 0;
     // Components read from a save this version does not know, written back as read.
     QcKeptComponents kept;
 
-    bool isEmpty() const { return mapId == 0 && contents.isEmpty() && name.isEmpty() && enchantments.isEmpty() && kept.isEmpty(); }
+    bool isEmpty() const { return mapId == 0 && contents.isEmpty() && name.isEmpty() && enchantments.isEmpty() && priorWork == 0 && kept.isEmpty(); }
     // The same data with trailing empty slots of the contents left out.
     [[nodiscard]] QcItemData normalized() const;
     // How deep its contents nest: 0 without contents, 1 for contents without contents, ….
@@ -175,6 +183,11 @@ inline bool QcItemStack::hasContents() const
 inline QString QcItemStack::name() const
 {
     return data ? data->value.name : QString();
+}
+
+inline int QcItemStack::priorWork() const
+{
+    return data ? data->value.priorWork : 0;
 }
 
 inline const QList<QcEnchantment> &QcItemStack::enchantments() const

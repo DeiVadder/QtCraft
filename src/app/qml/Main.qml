@@ -156,6 +156,17 @@ ApplicationWindow {
         }
     }
 
+    LazyScreen {
+        anchors.fill: parent
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Anvil
+
+        screen: AnvilScreen {
+            game: root.controller
+        }
+    }
+
     // With its sub-screens: settings, character and open to LAN.
     LazyScreen {
         anchors.fill: parent

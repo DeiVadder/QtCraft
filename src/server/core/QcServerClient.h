@@ -138,6 +138,26 @@ struct QcServerClient : QcEntity
         int shownShelves = -1;
     };
 
+    // The open anvil (QcServerAnvil, decision E-866): where it stands, its left and right slots and
+    // the text of its name field. What it makes follows from them (QcAnvil::result). The name field
+    // follows the left stack: whenever another stack (or the same with other data) lies there, the
+    // field holds that stack's custom name, so a repair keeps the name (as in the reference).
+    struct Anvil
+    {
+        QcBlockPos pos;
+        QcItemStack left;
+        QcItemStack right;
+        QString name;
+
+        void setLeft(const QcItemStack &stack)
+        {
+            if (stack.item != left.item || !(stack.itemData() == left.itemData())) {
+                name = stack.name();
+            }
+            left = stack;
+        }
+    };
+
     // The machine, container or villager whose screen the player has open, and what the client was
     // last told about it.
     // A portable container opened from the hand (a backpack, decision E-833): the hotbar slot that
@@ -168,6 +188,8 @@ struct QcServerClient : QcEntity
         std::optional<Stonecutter> stonecutter;
         // The enchanting table whose screen is open; never together with any of the above.
         std::optional<Enchanting> enchanting;
+        // The anvil whose screen is open; never together with any of the above.
+        std::optional<Anvil> anvil;
         // The sign whose editor the server opened for the player (QcServerSigns, decision E-766).
         std::optional<QcBlockPos> sign;
     };

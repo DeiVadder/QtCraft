@@ -1,5 +1,6 @@
 #include "app/session/QcSessionWiring.h"
 
+#include "app/controllers/QcAnvilController.h"
 #include "app/controllers/QcEnchantingController.h"
 #include "app/controllers/QcHudState.h"
 #include "app/controllers/QcPlayerController.h"
@@ -87,6 +88,7 @@ void QcSessionWiring::connectPlayer()
     connect(&session->signEditor(), &QcClientSignEditor::opened, &m_targets.screens, &QcScreenState::signOpened);
     connectStonecutter();
     connectEnchanting();
+    connectAnvil();
     // On death the screens close before the health properties notify QML.
     connect(session, &QcClientSession::healthChanged, this, [this] { m_targets.screens.healthChanged(m_parts.session->isDead()); });
     connect(session, &QcClientSession::healthChanged, player, &QcPlayerController::healthChanged);
@@ -106,6 +108,26 @@ void QcSessionWiring::connectStonecutter()
     connect(&session->stonecutter(), &QcClientStonecutter::opened, player, &QcPlayerController::updateInventory);
     connect(&session->stonecutter(), &QcClientStonecutter::changed, player, &QcPlayerController::updateInventory);
     connect(&session->stonecutter(), &QcClientStonecutter::closed, player, &QcPlayerController::updateInventory);
+}
+
+void QcSessionWiring::connectAnvil()
+{
+    const QcClientSession *session = m_parts.session.get();
+    const QcClientAnvil *anvil = &session->anvil();
+    const QcAnvilController *controller = &m_targets.anvil;
+    connect(anvil, &QcClientAnvil::opened, &m_targets.screens, &QcScreenState::anvilOpened);
+    connect(anvil, &QcClientAnvil::closed, &m_targets.screens, &QcScreenState::anvilClosed);
+    connect(anvil, &QcClientAnvil::opened, controller, &QcAnvilController::update);
+    connect(anvil, &QcClientAnvil::closed, controller, &QcAnvilController::update);
+    connect(anvil, &QcClientAnvil::changed, controller, &QcAnvilController::update);
+    connect(session, &QcClientSession::experienceChanged, controller, &QcAnvilController::update);
+    // The left, right and output slots live in the inventory model's machine rows.
+    const QcPlayerController *player = &m_targets.player;
+    connect(anvil, &QcClientAnvil::opened, player, &QcPlayerController::updateInventory);
+    connect(anvil, &QcClientAnvil::changed, player, &QcPlayerController::updateInventory);
+    connect(anvil, &QcClientAnvil::closed, player, &QcPlayerController::updateInventory);
+    // `--overlay anvil` fills the left and right slots from the hotbar like a furnace.
+    connect(anvil, &QcClientAnvil::opened, &m_targets.startup, &QcStartupHooks::machineOpened);
 }
 
 void QcSessionWiring::connectEnchanting()

@@ -52,13 +52,17 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     if (empty) {
         return role == CountRole ? QVariant(0) : QVariant(QString());
     }
+    if (role == CustomNameRole) {
+        // A name given at the anvil (decision E-866), shown in italics.
+        return stack.name();
+    }
 
     const QcItemDefinition &item = m_content->item(stack.item);
     switch (role) {
     case ItemNameRole:
         return item.name;
     case LabelRole:
-        return m_content->translations().translate(item.translationKey, m_language);
+        return stack.name().isEmpty() ? m_content->translations().translate(item.translationKey, m_language) : stack.name();
     case CountRole:
         return stack.count;
     case IconRole:
@@ -66,8 +70,9 @@ QVariant QcInventoryModel::data(const QModelIndex &index, int role) const
     case DurabilityRole:
         return item.durability > 0 ? 1.0 - static_cast<double>(stack.damage) / item.durability : -1.0;
     case TooltipRole: {
-        QStringList lines = tooltipOf(*m_content, stack, m_content->translations().translate(item.translationKey, m_language), mapScaleOf(item, stack))
-                                .split(u'\n');
+        // A custom name stands in for the item's name on the first line (decision E-866).
+        const QString title = stack.name().isEmpty() ? m_content->translations().translate(item.translationKey, m_language) : stack.name();
+        QStringList lines = tooltipOf(*m_content, stack, title, mapScaleOf(item, stack)).split(u'\n');
         // Enchantments right below the name, as in the reference (decision E-864).
         const QStringList enchantments = QcEnchantmentTexts::linesOf(*m_content, stack, m_language);
         for (qsizetype i = 0; i < enchantments.size(); ++i) {
@@ -85,7 +90,7 @@ QHash<int, QByteArray> QcInventoryModel::roleNames() const
 {
     return {{ItemNameRole, "itemName"}, {LabelRole, "label"},           {CountRole, "count"},
             {IconRole, "icon"},         {DurabilityRole, "durability"}, {EmptyRole, "empty"},
-            {TooltipRole, "tooltip"}};
+            {TooltipRole, "tooltip"},   {CustomNameRole, "customName"}};
 }
 
 void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> content, QString language)

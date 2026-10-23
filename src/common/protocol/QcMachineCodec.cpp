@@ -188,4 +188,78 @@ void encode(QDataStream &, QcMsg::CloseEnchanting) {}
     return QcMsg::CloseEnchanting{};
 }
 
+void encode(QDataStream &stream, QcMsg::OpenAnvil m)
+{
+    writePos(stream, m.pos);
+}
+
+void encode(QDataStream &stream, const QcMsg::AnvilState &m)
+{
+    writeStack(stream, m.left);
+    writeStack(stream, m.right);
+    stream << m.name;
+    writeStack(stream, m.output);
+    stream << m.levelCost;
+}
+
+void encode(QDataStream &stream, const QcMsg::RenameAnvil &m)
+{
+    stream << m.name;
+}
+
+void encode(QDataStream &stream, const QcMsg::ForgeAnvil &m)
+{
+    stream << m.levelCost;
+    writeStack(stream, m.output);
+}
+
+void encode(QDataStream &, QcMsg::CloseAnvil) {}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenAnvil>, QDataStream &stream)
+{
+    QcMsg::OpenAnvil m;
+    m.pos = readPos(stream);
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AnvilState>, QDataStream &stream)
+{
+    QcMsg::AnvilState m;
+    m.left = readStack(stream);
+    m.right = readStack(stream);
+    stream >> m.name;
+    m.output = readStack(stream);
+    stream >> m.levelCost;
+    if (m.name.size() > QcMsg::RenameAnvil::maxText || m.levelCost < 0) {
+        return qcError(u"Invalid anvil state"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::RenameAnvil>, QDataStream &stream)
+{
+    QcMsg::RenameAnvil m;
+    stream >> m.name;
+    if (m.name.size() > QcMsg::RenameAnvil::maxText) {
+        return qcError(u"Anvil name too long"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ForgeAnvil>, QDataStream &stream)
+{
+    QcMsg::ForgeAnvil m;
+    stream >> m.levelCost;
+    m.output = readStack(stream);
+    if (m.levelCost < 0) {
+        return qcError(u"Invalid anvil cost"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseAnvil>, QDataStream &)
+{
+    return QcMsg::CloseAnvil{};
+}
+
 } // namespace QcProtocolCodec

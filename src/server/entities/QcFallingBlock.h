@@ -3,6 +3,8 @@
 #include "common/content/definitions/QcBlockDefinition.h"
 #include "server/entities/QcEntity.h"
 
+#include <optional>
+
 // A block falling while nothing holds it (decision E-055, E-364); QcFallingBlockManager lets it fall
 // and land.
 struct QcFallingBlock : QcEntity
@@ -17,4 +19,7 @@ struct QcFallingBlock : QcEntity
 
     QcBlockId block = qcAirBlockId;
     double age = 0.0;
+    // The height it started falling from (an anvil's landing damage, decision E-866); unknown for
+    // blocks read from a save, which then count as not having fallen.
+    std::optional<double> startY;
 };

@@ -393,6 +393,9 @@ void BlockPage::addUseFacts()
     if (block.opensEnchanting) {
         addFact(u"enchanting"_s, label(u"value.enchantingScreen"_s));
     }
+    if (block.opensAnvil) {
+        addFact(u"anvil"_s, label(u"value.anvilScreen"_s));
+    }
     if (block.containerSlots > 0) {
         addFact(u"storage"_s, label(u"unit.slots"_s).arg(block.containerSlots));
     }

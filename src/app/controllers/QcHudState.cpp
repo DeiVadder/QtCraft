@@ -38,6 +38,11 @@ void QcHudState::updateTarget()
         const QcClientEntity entity = session.entities().value(*targetEntity);
         const QcMobDefinition *creature = entity.creature(content);
         targetLabel = creature ? content.translations().translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;
+        // A creature a name tag named (decision E-866) shows its name first.
+        if (creature && !entity.name.isEmpty()) {
+            //: A named creature in the target text: %1 its name, %2 its kind.
+            targetLabel = tr("%1 (%2)", "named creature").arg(entity.name, targetLabel);
+        }
         if (creature) {
             m_targetName = u"mob:"_s + creature->name;
         }
@@ -116,6 +121,12 @@ QList<QcWorldLabel> QcHudState::standLabels() const
         if (entity.isArmourStand() && entity.stand.showName && !entity.name.isEmpty()) {
             const double top = QcStandPose::bodyHeight * (entity.stand.small ? 0.5 : 1.0) + 0.35;
             labels.append({entity.position + QcVec3{0.0, top, 0.0}, entity.name, {}, false});
+        }
+        // Creatures a name tag named (decision E-866) carry their name above the head.
+        const QcMobDefinition *creature = m_parts.session->content() ? entity.creature(*m_parts.session->content()) : nullptr;
+        if (creature && !entity.name.isEmpty()) {
+            const double scale = (entity.flags & QcMsg::Young) != 0 ? QcMsg::youngScale : 1.0;
+            labels.append({entity.position + QcVec3{0.0, creature->height * scale + 0.35, 0.0}, entity.name, {}, false});
         }
     }
     return labels;

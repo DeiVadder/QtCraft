@@ -91,6 +91,22 @@
             "playerExperience": 5
         },
         {
+            "level": 2,
+            "costs": [
+                {
+                    "item": "emerald",
+                    "count": 20
+                }
+            ],
+            "result": {
+                "item": "name_tag",
+                "count": 1
+            },
+            "maxUses": 12,
+            "villagerExperience": 5,
+            "playerExperience": 3
+        },
+        {
             "level": 3,
             "costs": [
                 {

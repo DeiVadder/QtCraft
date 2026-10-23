@@ -1,0 +1,145 @@
+{
+    "name": "anvil",
+    "showcase": {
+        "order": 110
+    },
+    "palette": {
+        "P": "polished_stone",
+        "A": "anvil",
+        "C": "chipped_anvil",
+        "D": "damaged_anvil",
+        "c": "chest[facing=north]",
+        "F": "oak_fence"
+    },
+    "layers": [
+        [
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP"
+        ],
+        [
+            "  FFFFF  ",
+            "  F   F  ",
+            "  FFFFF  ",
+            "         ",
+            "    c    ",
+            "         ",
+            "         ",
+            " A  C  D ",
+            "         "
+        ],
+        [
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         ",
+            "         "
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                4,
+                1,
+                4
+            ],
+            "items": [
+                {
+                    "item": "name_tag",
+                    "count": 8
+                },
+                {
+                    "item": "iron_ingot",
+                    "count": 32
+                },
+                {
+                    "item": "oak_planks",
+                    "count": 32
+                },
+                {
+                    "item": "iron_pickaxe",
+                    "count": 1
+                },
+                {
+                    "item": "iron_pickaxe",
+                    "count": 1
+                },
+                {
+                    "item": "iron_sword",
+                    "count": 1
+                },
+                {
+                    "item": "diamond_chestplate",
+                    "count": 1
+                },
+                {
+                    "item": "chest",
+                    "count": 1
+                },
+                {
+                    "item": "barrel",
+                    "count": 1
+                },
+                {
+                    "item": "anvil",
+                    "count": 1
+                }
+            ]
+        }
+    ],
+    "mobs": [
+        {
+            "mob": "sheep",
+            "at": [
+                4.5,
+                1.0,
+                1.5
+            ],
+            "confined": true
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                1.5,
+                2.4,
+                7.5
+            ],
+            "text": "block.qtcraft.anvil"
+        },
+        {
+            "at": [
+                4.5,
+                2.4,
+                7.5
+            ],
+            "text": "block.qtcraft.chipped_anvil"
+        },
+        {
+            "at": [
+                7.5,
+                2.4,
+                7.5
+            ],
+            "text": "block.qtcraft.damaged_anvil"
+        },
+        {
+            "at": [
+                4.5,
+                2.4,
+                4.5
+            ],
+            "text": "item.qtcraft.name_tag"
+        }
+    ]
+}

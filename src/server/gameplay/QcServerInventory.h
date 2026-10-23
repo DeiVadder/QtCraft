@@ -74,8 +74,12 @@ private:
         std::optional<QcBlockScreens::OpenContainer> container;
         QcServerClient::Stonecutter *stonecutter = nullptr;
         QcServerClient::Enchanting *enchanting = nullptr;
+        QcServerClient::Anvil *anvil = nullptr;
         int blockSlots = 0;
         QcSlotList combined;
+
+        // Writes the block slots of the list back into the open stonecutter, enchanting table or anvil.
+        void storeWorkstationSlots() const;
     };
 
     OpenSlots openSlots(QcServerClient &client);

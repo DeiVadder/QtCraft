@@ -1,0 +1,27 @@
+{
+    "name": "name_tag",
+    "pattern": "icon",
+    "primary": "#c8b48a",
+    "variation": 0.0,
+    "seed": 4205,
+    "palette": {
+        "S": "#6a6a70",
+        "T": "#d9c79c",
+        "t": "#b39c6c",
+        "L": "#8a7650"
+    },
+    "bitmap": [
+        "",
+        "",
+        "  SS",
+        "  S S",
+        "   S S",
+        "    TTTTTTTT",
+        "   TTtttttttT",
+        "   TtLLLLLttT",
+        "   TtttttttTT",
+        "   TtLLLLttT",
+        "   TTttttttT",
+        "    TTTTTTT"
+    ]
+}

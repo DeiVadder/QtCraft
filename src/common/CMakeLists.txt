@@ -175,6 +175,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
+    gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp
     gameplay/QcCreativeCatalog.h gameplay/QcCreativeCatalog.cpp

@@ -52,7 +52,9 @@ std::optional<QcRateLimiter::Kind> QcRateLimiter::kindOf(const QcMessage &messag
                            || std::holds_alternative<QcMsg::CloseTrade>(message)
                            || std::holds_alternative<QcMsg::SelectStonecutterRecipe>(message)
                            || std::holds_alternative<QcMsg::CloseStonecutter>(message)
-                           || std::holds_alternative<QcMsg::ChooseEnchantment>(message) || std::holds_alternative<QcMsg::CloseEnchanting>(message);
+                           || std::holds_alternative<QcMsg::ChooseEnchantment>(message) || std::holds_alternative<QcMsg::CloseEnchanting>(message)
+                           || std::holds_alternative<QcMsg::RenameAnvil>(message) || std::holds_alternative<QcMsg::ForgeAnvil>(message)
+                           || std::holds_alternative<QcMsg::CloseAnvil>(message);
     return inventory ? std::optional<Kind>(Kind::Inventory) : std::nullopt;
 }
 

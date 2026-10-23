@@ -26,5 +26,13 @@
     "Level %1: %2 … (%n level(s), %n lapis)": [
         "Level %1: %2 … (%n level, %n lapis)",
         "Level %1: %2 … (%n levels, %n lapis)"
+    ],
+    "Too expensive (%n level(s))": [
+        "Too expensive (%n level)",
+        "Too expensive (%n levels)"
+    ],
+    "Cost: %n level(s)": [
+        "Cost: %n level",
+        "Cost: %n levels"
     ]
 }

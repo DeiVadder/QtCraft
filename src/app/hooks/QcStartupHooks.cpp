@@ -154,7 +154,7 @@ void QcStartupHooks::sendStartupChat()
 void QcStartupHooks::openStartupOverlay()
 {
     if (m_startupOverlay == u"furnace"_s || m_startupOverlay == u"chest"_s || m_startupOverlay == u"trade"_s
-        || m_startupOverlay == u"enchanting"_s) {
+        || m_startupOverlay == u"enchanting"_s || m_startupOverlay == u"anvil"_s) {
         openMachineInView();
     } else if (m_startupOverlay == u"handbook"_s || !m_startupHandbook.isEmpty()) {
         m_screens.handbook.open(m_startupHandbook);

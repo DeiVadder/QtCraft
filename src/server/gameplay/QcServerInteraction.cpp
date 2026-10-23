@@ -191,6 +191,10 @@ bool QcServerInteraction::useClickedBlock(QcServerClient &client, QcBlockPos tar
     if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.enchanting.open(client, target)) {
         return true;
     }
+    // The anvil (decision E-866).
+    if (clickedBlock && !client.sneaking && QcLineOfSight::isWithinReach(client, target) && m_parts.workstations.anvil.open(client, target)) {
+        return true;
+    }
 
     if (clickedBlock && m_state.content().block(*clickedBlock).toggles && !client.sneaking && QcLineOfSight::isWithinReach(client, target)) {
         QcOpeners(m_state, m_parts.sounds, m_parts.blocks).toggle(target, *clickedBlock);

@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 65,
     "enchantability": 15,
+    "repairWith": "qtcraft:leather",
     "armour": {
         "slot": "feet",
         "points": 1,

@@ -16,6 +16,8 @@ Loader {
     property string text
     // Whether the tooltip shows, e.g. while the item is hovered.
     property bool shown
+    // Whether the first line is a custom name (decision E-866), shown in italics.
+    property bool italicTitle
 
     active: shown
 
@@ -26,12 +28,27 @@ Loader {
         visible: true
         text: holder.text
 
-        contentItem: Text {
-            text: tip.text
-            font: tip.font
-            color: Theme.text
-            wrapMode: Text.Wrap
-            textFormat: Text.PlainText
+        contentItem: Column {
+            Text {
+                width: Math.min(implicitWidth, tip.availableWidth)
+                text: tip.text.split("\n")[0]
+                font.pixelSize: tip.font.pixelSize
+                font.family: tip.font.family
+                font.italic: holder.italicTitle
+                color: Theme.text
+                wrapMode: Text.Wrap
+                textFormat: Text.PlainText
+            }
+
+            Text {
+                width: Math.min(implicitWidth, tip.availableWidth)
+                visible: text !== ""
+                text: tip.text.split("\n").slice(1).join("\n")
+                font: tip.font
+                color: Theme.text
+                wrapMode: Text.Wrap
+                textFormat: Text.PlainText
+            }
         }
 
         background: Rectangle {

@@ -1,0 +1,16 @@
+{
+    "name": "anvil",
+    "type": "shaped",
+    "pattern": [
+        "BBB",
+        " I ",
+        "III"
+    ],
+    "key": {
+        "B": "iron_block",
+        "I": "iron_ingot"
+    },
+    "result": {
+        "item": "anvil"
+    }
+}

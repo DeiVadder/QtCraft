@@ -2,6 +2,7 @@
 
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -73,6 +74,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     // Young animals give neither loot nor experience (like the reference); read before the hit
     // removes a dead creature.
     const bool young = mob->isYoung();
+    const QString named = mob->name;
 
     // Hits during the short invulnerability after a hit do nothing and make no sound, unless they
     // are stronger: those deal the difference, silently (decision E-429).
@@ -86,6 +88,7 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
     if (drops) {
         state.entities().noteDeath(blow.creature);
         sounds.play(definition.deathSound, lootPosition);
+        tellNamedDeath(state, named);
     } else if (take == QcHurtWindow::Take::Fresh) {
         sounds.play(definition.hurtSound, lootPosition);
     }
@@ -99,6 +102,18 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
         }
     }
     return take != QcHurtWindow::Take::Ignored;
+}
+
+void QcServerCombat::tellNamedDeath(QcServerState &state, const QString &name)
+{
+    if (name.isEmpty()) {
+        return;
+    }
+    for (const auto &client : state.clients()) {
+        if (client->state == QcServerClient::State::Playing) {
+            client->connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 died"), {name}));
+        }
+    }
 }
 
 void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)

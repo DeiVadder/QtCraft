@@ -13,6 +13,25 @@
     </message>
 </context>
 <context>
+    <name>AnvilScreen</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="25"/>
+        <source>Too expensive (%n level(s))</source>
+        <translation>
+            <numerusform>Too expensive (%n level)</numerusform>
+            <numerusform>Too expensive (%n levels)</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="26"/>
+        <source>Cost: %n level(s)</source>
+        <translation>
+            <numerusform>Cost: %n level</numerusform>
+            <numerusform>Cost: %n levels</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>EnchantingScreen</name>
     <message numerus="yes">
         <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="25"/>
@@ -67,7 +86,7 @@
 <context>
     <name>QcInventoryModel</name>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="149"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="154"/>
         <source>and %n more</source>
         <translation>
             <numerusform>and %n more</numerusform>

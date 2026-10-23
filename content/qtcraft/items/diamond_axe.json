@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 1561,
     "enchantability": 10,
+    "repairWith": "qtcraft:diamond",
     "attackDamage": 5.0,
     "tool": "axe",
     "toolLevel": 4,

@@ -12,6 +12,7 @@ target_sources(qc_app_core PRIVATE
     admin/QcAdminViews.h admin/QcAdminViews.cpp
 )
 target_sources(qc_app_core PRIVATE
+    controllers/QcAnvilController.h controllers/QcAnvilController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
@@ -238,6 +239,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/PlayerListOverlay.qml
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
+        qml/inventory/AnvilScreen.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
         qml/inventory/EnchantingScreen.qml

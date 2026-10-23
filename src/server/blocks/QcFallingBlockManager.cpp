@@ -57,6 +57,7 @@ void QcFallingBlockManager::start(QcBlockPos from, QcBlockId block, quint32 id)
     falling.id = id;
     falling.block = block;
     falling.motion.position = {from.x + 0.5, static_cast<double>(from.y), from.z + 0.5};
+    falling.startY = from.y;
     m_falling.append(falling);
 }
 
@@ -92,7 +93,8 @@ QList<QcFallingBlockManager::Landing> QcFallingBlockManager::tick(const QcBlockA
 
         // Resting on something: the cell holding the lower half of the block.
         const QcBlockPos cell = QcPhysics::blockContaining(motion.position + QcVec3{0.0, size * 0.25, 0.0});
-        landed.append({falling.block, cell, motion.onGround && cell.isInsideWorldHeight() && isPassable(world, cell)});
+        const double fallen = falling.startY ? std::max(0.0, *falling.startY - motion.position.y) : 0.0;
+        landed.append({falling.block, cell, motion.onGround && cell.isInsideWorldHeight() && isPassable(world, cell), fallen});
     }
 
     m_falling = std::move(still);

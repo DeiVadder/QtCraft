@@ -334,15 +334,19 @@ bool QcMobManager::teleport(quint32 mobId, const QcBlockAccess &world)
 
 void QcMobManager::keep(QcCreature &mob, bool kept)
 {
+    // A named creature is always kept (decision E-866), whoever lets it go (a family, a released
+    // child, a carried block put down).
+    const bool keeps = kept || !mob.name.isEmpty();
+
     // A guardian belongs to its zone, not to the world: its post is not saved, and a kept one would
-    // come back without it beside the one the zone brings (decision E-591).
-    if (kept && mob.guards) {
+    // come back without it beside the one the zone brings (decision E-591). A named guardian too.
+    if (keeps && mob.guards) {
         return;
     }
-    if (kept && !mob.persistent) {
+    if (keeps && !mob.persistent) {
         mob.persistent = true;
         mob.uid = m_nextUid++;
-    } else if (!kept && mob.persistent) {
+    } else if (!keeps && mob.persistent) {
         mob.persistent = false;
         mob.uid = 0;
     }
@@ -517,6 +521,7 @@ QcMobManager::Stored QcMobManager::storedOf(const QcCreature &mob)
     }
     stored.parentUid = mob.parentUid;
     stored.parentChunk = mob.parentChunk;
+    stored.name = mob.name;
     return stored;
 }
 
@@ -560,6 +565,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
         mob.parentChunk = stored.parentChunk;
         mob.confined = stored.confined;
         mob.noAi = stored.noAi;
+        mob.name = stored.name;
         if (stored.tame && !stored.tame->owner.isEmpty()) {
             mob.tame.emplace(QcTameState{.owner = stored.tame->owner, .sitting = stored.tame->sitting, .collar = stored.tame->collar});
             mob.pose = stored.tame->sitting ? QcPose::Sitting : QcPose::Standing;

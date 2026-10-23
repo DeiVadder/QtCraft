@@ -62,7 +62,8 @@ QString targetEntityName(const QcClientSession &session)
 
     const QcClientEntity entity = session.entities().value(*id);
     const QcMobDefinition *creature = entity.creature(*session.content());
-    const QString name = creature ? creature->name : entity.name;
+    // A named creature (decision E-866) shows its kind and its name.
+    const QString name = !creature ? entity.name : entity.name.isEmpty() ? creature->name : QStringLiteral("%1 \"%2\"").arg(creature->name, entity.name);
     return QStringLiteral("%1 #%2").arg(name).arg(*id);
 }
 

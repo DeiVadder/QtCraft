@@ -25,7 +25,7 @@ class QcInventoryModel : public QAbstractListModel
     Q_PROPERTY(int selectedSlot READ selectedSlot NOTIFY selectedSlotChanged FINAL)
 
 public:
-    enum Role { ItemNameRole = Qt::UserRole + 1, LabelRole, CountRole, IconRole, DurabilityRole, EmptyRole, TooltipRole };
+    enum Role { ItemNameRole = Qt::UserRole + 1, LabelRole, CountRole, IconRole, DurabilityRole, EmptyRole, TooltipRole, CustomNameRole };
 
     explicit QcInventoryModel(QObject *parent = nullptr);
 

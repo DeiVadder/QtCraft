@@ -100,12 +100,20 @@ std::optional<QcItemData> QcStackReader::readData(QDataStream &stream, int depth
         }
         return true;
     };
+    // Anvil uses (decision E-866), capped like everything the anvil writes.
+    const auto priorWork = [&data](QDataStream &in, quint16) {
+        quint16 uses = 0;
+        in >> uses;
+        data.priorWork = std::min(static_cast<int>(uses), QcItemData::maxPriorWork);
+        return true;
+    };
     const quint16 version = QcItemDataCodec::version;
     std::optional<QcComponentFrames::ReadComponents> components =
         QcComponentFrames::read(stream, {{static_cast<quint16>(QcItemData::Component::MapId), version, mapId},
                                          {static_cast<quint16>(QcItemData::Component::Contents), version, contents},
                                          {static_cast<quint16>(QcItemData::Component::Name), version, name},
-                                         {static_cast<quint16>(QcItemData::Component::Enchantments), version, enchantments}});
+                                         {static_cast<quint16>(QcItemData::Component::Enchantments), version, enchantments},
+                                         {static_cast<quint16>(QcItemData::Component::PriorWork), version, priorWork}});
     if (!components) {
         return std::nullopt;
     }

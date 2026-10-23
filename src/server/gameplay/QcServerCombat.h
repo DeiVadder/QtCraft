@@ -46,6 +46,8 @@ public:
     // Drops the loot of a creature that died at `position`, each drop by its chance (also burn
     // deaths, QcBodyBurning).
     static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position);
+    // Tells every player that the creature named `name` died (decision E-866); nothing for no name.
+    static void tellNamedDeath(QcServerState &state, const QString &name);
 
 private:
 

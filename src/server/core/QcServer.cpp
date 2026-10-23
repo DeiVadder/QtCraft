@@ -14,6 +14,7 @@
 #include "server/gameplay/QcSpectatorRules.h"
 #include "server/hanging/QcServerHanging.h"
 #include "server/maps/QcServerMaps.h"
+#include "server/mobs/QcNameTags.h"
 
 #include <QTimer>
 
@@ -29,7 +30,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_sounds(m_state, m_ticks)
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
-    , m_fallingBlocks(m_state, m_sounds, m_blockUpdates, m_blocks)
+    , m_fallingBlocks(m_state, m_sounds, m_blockUpdates, m_blocks, m_health)
     , m_fire(m_state, m_blocks, m_sounds)
     , m_weather(m_state)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks, m_fallingBlocks)
@@ -41,7 +42,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_ignition(m_state, m_fire, m_sounds, m_inventory)
     , m_health(m_state, m_sounds, m_inventory)
     , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
-    , m_workstations(m_state, m_sounds, m_inventory, m_screens)
+    , m_workstations(m_state, m_sounds, m_inventory, m_screens, m_blocks)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
     , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
     , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)
@@ -332,7 +333,7 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)
+        if (!QcNameTags::use(m_state, client, useEntity->id) && !m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)
             && !QcServerHanging(m_state, m_sounds, m_inventory).use(client, useEntity->id) && !m_trading.open(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }

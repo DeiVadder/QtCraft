@@ -43,8 +43,10 @@ struct QcCreature : QcEntity
     bool blockedLastTick = false;
     // Spawned on a cave floor: night creatures there stay in daylight.
     bool underground = false;
-    // Never despawns and is saved with the world (peaceful animals).
+    // Never despawns and is saved with the world (peaceful animals, named creatures).
     bool persistent = false;
+    // The name a name tag gave it (decision E-866); empty for none.
+    QString name;
     // The persistent id of a creature that is saved (decision E-420; 0 for the others): unique in its
     // world and kept across saving, loading and unloading, unlike the entity id (QcEntity::id), which
     // only holds while the world is open. Villages claim beds and workstations under it; other saved

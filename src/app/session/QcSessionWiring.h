@@ -11,6 +11,7 @@ class QcPlayerController;
 class QcScreenState;
 class QcStartupHooks;
 class QcStonecutterController;
+class QcAnvilController;
 class QcEnchantingController;
 class QcTradeController;
 class QcWorldAtlas;
@@ -36,6 +37,7 @@ public:
         QcTradeController &trade;
         QcStonecutterController &stonecutter;
         QcEnchantingController &enchanting;
+        QcAnvilController &anvil;
         QcScreenState &screens;
         QcStartupHooks &startup;
         QcWorldAtlas &atlas;
@@ -61,6 +63,8 @@ private:
     void connectStonecutter();
     // The enchanting table's screen (decision E-864).
     void connectEnchanting();
+    // The anvil's screen (decision E-866).
+    void connectAnvil();
     void onSessionState(QcClientSession::State state);
     void onContentReady();
     void onMachineOpened();

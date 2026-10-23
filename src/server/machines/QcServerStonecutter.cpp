@@ -31,6 +31,7 @@ bool QcServerStonecutter::open(QcServerClient &client, QcBlockPos pos)
     m_screens.close(client, true);
     m_screens.endTrade(client);
     m_screens.closeEnchanting(client);
+    m_screens.closeAnvil(client);
     if (client.screen.stonecutter && client.screen.stonecutter->pos != pos) {
         m_inventory.returnScreenInputs(client);
     }

@@ -16,8 +16,8 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // families with the content (decision E-839), 67 brings the admin channel (decision E-848), 68
 // sends the speed of status effects with the content (decision E-838), 69 numbers the predicted
 // block actions and acknowledges them (decision E-853), 70 brings the enchanting table and
-// enchantments on stacks (decision E-864).
-inline constexpr quint32 version = 70;
+// enchantments on stacks (decision E-864), 71 the anvil and the prior work on stacks (decision E-866).
+inline constexpr quint32 version = 71;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

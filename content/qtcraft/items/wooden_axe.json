@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 59,
     "enchantability": 15,
+    "repairWith": "#qtcraft:planks",
     "attackDamage": 3.5,
     "tool": "axe",
     "toolLevel": 1,

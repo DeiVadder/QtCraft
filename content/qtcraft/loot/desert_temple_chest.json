@@ -4,6 +4,7 @@
         {
             "rolls": [2, 4],
             "entries": [
+                { "item": "name_tag", "weight": 4 },
                 { "item": "gold_ingot", "weight": 15, "count": [2, 7] },
                 { "item": "iron_ingot", "weight": 15, "count": [1, 5] },
                 { "item": "emerald", "weight": 15, "count": [1, 3] },

@@ -4,6 +4,7 @@
     "maxStack": 1,
     "durability": 77,
     "enchantability": 25,
+    "repairWith": "qtcraft:gold_ingot",
     "armour": {
         "slot": "head",
         "points": 2,

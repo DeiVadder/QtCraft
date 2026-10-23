@@ -38,6 +38,7 @@ bool QcServerEnchanting::open(QcServerClient &client, QcBlockPos pos)
     m_screens.close(client, true);
     m_screens.endTrade(client);
     m_screens.closeStonecutter(client);
+    m_screens.closeAnvil(client);
     if (!same) {
         m_inventory.returnScreenInputs(client);
         client.screen.enchanting = QcServerClient::Enchanting{pos, {}, {}, {}, -1};

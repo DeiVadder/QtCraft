@@ -41,6 +41,7 @@
             "entries": [
                 "block:qtcraft:activator_rail",
                 "block:qtcraft:allium",
+                "block:qtcraft:anvil",
                 "block:qtcraft:backpack",
                 "block:qtcraft:barrel",
                 "block:qtcraft:bed",
@@ -105,6 +106,7 @@
                 "block:qtcraft:cauldron",
                 "block:qtcraft:chain",
                 "block:qtcraft:chest",
+                "block:qtcraft:chipped_anvil",
                 "block:qtcraft:chiseled_stone_bricks",
                 "block:qtcraft:chunk_loader",
                 "block:qtcraft:clay",
@@ -132,6 +134,7 @@
                 "block:qtcraft:cyan_stained_glass_pane",
                 "block:qtcraft:cyan_terracotta",
                 "block:qtcraft:cyan_wool",
+                "block:qtcraft:damaged_anvil",
                 "block:qtcraft:dandelion",
                 "block:qtcraft:dead_bush",
                 "block:qtcraft:detector_rail",
@@ -531,6 +534,7 @@
                 "item:qtcraft:minecart",
                 "item:qtcraft:chest_minecart",
                 "item:qtcraft:hopper_minecart",
+                "item:qtcraft:name_tag",
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:painting",
                 "item:qtcraft:paper",
@@ -5553,6 +5557,211 @@
             ],
             "text": "A purple ball of blossoms on meadows and mountains; gives magenta dye.",
             "title": "Allium"
+        },
+        "block:qtcraft:anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:anvil"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Falls without support",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Anvil",
+                    "links": [
+                    ],
+                    "value": "opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:anvil",
+            "id": "block:qtcraft:anvil",
+            "name": "qtcraft:anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Block of iron"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Block of iron"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_block",
+                                    "note": "",
+                                    "target": "block:qtcraft:iron_block",
+                                    "text": "Block of iron"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                },
+                                {
+                                    "icon": "qtcraft:iron_ingot",
+                                    "note": "",
+                                    "target": "item:qtcraft:iron_ingot",
+                                    "text": "Iron ingot"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 3,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:anvil",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:anvil",
+                                "note": "",
+                                "target": "block:qtcraft:anvil",
+                                "text": "Anvil"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "Repairs, combines and renames: use it, put an item into the left slot and its material, a second item of the same kind or nothing into the right one, type a name if you like and take the result, paid with experience levels. Each use wears it a little (chipped, damaged, then it breaks), and every time an item goes through an anvil the next use costs more. It falls like sand and hurts whoever it lands on.",
+            "title": "Anvil"
         },
         "block:qtcraft:backpack": {
             "category": "blocks",
@@ -19697,6 +19906,138 @@
             "text": "Stores 27 stacks. Its contents drop when it is broken.",
             "title": "Chest"
         },
+        "block:qtcraft:chipped_anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Chipped Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:chipped_anvil"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Falls without support",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Anvil",
+                    "links": [
+                    ],
+                    "value": "opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:chipped_anvil",
+            "id": "block:qtcraft:chipped_anvil",
+            "name": "qtcraft:chipped_anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "An anvil that has seen some use; it works like a new one and wears into a damaged anvil.",
+            "title": "Chipped Anvil"
+        },
         "block:qtcraft:chiseled_stone_bricks": {
             "category": "blocks",
             "categoryTitle": "Blocks",
@@ -27213,6 +27554,138 @@
             ],
             "text": "A thin layer of wool that needs a block below.",
             "title": "Cyan carpet"
+        },
+        "block:qtcraft:damaged_anvil": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Damaged Anvil",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:damaged_anvil"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe, level 1 or better (needed for drops)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.63 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Drops without the right tool",
+                    "links": [
+                    ],
+                    "value": "nothing"
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Falls without support",
+                    "links": [
+                    ],
+                    "value": "yes"
+                },
+                {
+                    "label": "Anvil",
+                    "links": [
+                    ],
+                    "value": "opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                }
+            ],
+            "icon": "qtcraft:damaged_anvil",
+            "id": "block:qtcraft:damaged_anvil",
+            "name": "qtcraft:damaged_anvil",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Mined with"
+                }
+            ],
+            "text": "An anvil close to breaking; it works like a new one, but the next wear breaks it.",
+            "title": "Damaged Anvil"
         },
         "block:qtcraft:dandelion": {
             "category": "blocks",
@@ -37523,6 +37996,12 @@
                 },
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
                         {
                             "icon": "qtcraft:iron_ingot",
                             "note": "",
@@ -103060,6 +103539,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:black_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:black_concrete",
@@ -103234,6 +103719,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:chiseled_stone_bricks",
                             "note": "level 1",
                             "target": "block:qtcraft:chiseled_stone_bricks",
@@ -103358,6 +103849,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:diamond_ore",
@@ -106284,6 +106781,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:black_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:black_concrete",
@@ -106404,6 +106907,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:chiseled_stone_bricks",
                             "note": "level 1",
                             "target": "block:qtcraft:chiseled_stone_bricks",
@@ -106510,6 +107019,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:enchanting_table",
@@ -108660,6 +109175,12 @@
                             "text": "Activator Rail"
                         },
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:blast_furnace",
                             "note": "",
                             "target": "block:qtcraft:blast_furnace",
@@ -109209,6 +109730,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:black_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:black_concrete",
@@ -109383,6 +109910,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:chiseled_stone_bricks",
                             "note": "level 1",
                             "target": "block:qtcraft:chiseled_stone_bricks",
@@ -109507,6 +110040,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:diamond_ore",
@@ -112366,6 +112905,34 @@
             ],
             "text": "A filling soup of both mushrooms; the bowl stays.",
             "title": "Mushroom stew"
+        },
+        "item:qtcraft:name_tag": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Name Tag",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:name_tag"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "64"
+                }
+            ],
+            "icon": "qtcraft:name_tag",
+            "id": "item:qtcraft:name_tag",
+            "name": "qtcraft:name_tag",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+            ],
+            "text": "Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns.",
+            "title": "Name Tag"
         },
         "item:qtcraft:orange_dye": {
             "category": "items",
@@ -116049,6 +116616,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:black_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:black_concrete",
@@ -116199,6 +116772,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:chiseled_stone_bricks",
                             "note": "level 1",
                             "target": "block:qtcraft:chiseled_stone_bricks",
@@ -116317,6 +116896,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:enchanting_table",
@@ -118329,6 +118914,12 @@
                 {
                     "links": [
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:black_concrete",
                             "note": "level 1",
                             "target": "block:qtcraft:black_concrete",
@@ -118449,6 +119040,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:chiseled_stone_bricks",
                             "note": "level 1",
                             "target": "block:qtcraft:chiseled_stone_bricks",
@@ -118555,6 +119152,12 @@
                             "note": "level 1",
                             "target": "block:qtcraft:cyan_terracotta",
                             "text": "Cyan terracotta"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "level 1",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:enchanting_table",
@@ -124566,10 +125169,28 @@
                             "text": "Stone vertical slab"
                         },
                         {
+                            "icon": "qtcraft:anvil",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
+                        {
                             "icon": "qtcraft:bell",
                             "note": "5, from hardness",
                             "target": "block:qtcraft:bell",
                             "text": "Bell"
+                        },
+                        {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "5, from hardness",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:enchanting_table",
@@ -129808,7 +130429,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "- Level 1 needed for: Black concrete, Black glazed terracotta, Black terracotta, Blast furnace, Block of coal, Block of Signal Dust, Blue concrete, Blue glazed terracotta, Blue terracotta, Bone block, Bricks, Brown concrete, Brown glazed terracotta, Brown terracotta, Carved sandstone, Chain, Chiseled stone bricks, Coal ore, Cobblestone, Copper bars, Copper chain, Copper door, Copper trapdoor, Cracked stone bricks, Cut sandstone, Cyan concrete, Cyan glazed terracotta, Cyan terracotta, Enchanting Table, Furnace, Gray concrete, Gray glazed terracotta, Gray terracotta, Green concrete, Green glazed terracotta, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue glazed terracotta, Light blue terracotta, Light gray concrete, Light gray glazed terracotta, Light gray terracotta, Lime concrete, Lime glazed terracotta, Lime terracotta, Magenta concrete, Magenta glazed terracotta, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mossy stone bricks, Mud bricks, Orange concrete, Orange glazed terracotta, Orange terracotta, Pink concrete, Pink glazed terracotta, Pink terracotta, Polished stone, Purple concrete, Purple glazed terracotta, Purple terracotta, Red concrete, Red glazed terracotta, Red terracotta, Sandstone, Smoker, Smooth sandstone, Smooth stone, Stone, Stone bricks, Stonecutter, Terracotta, White concrete, White glazed terracotta, White terracotta, Yellow concrete, Yellow glazed terracotta, Yellow terracotta\n- Level 2 needed for: Block of copper, Block of iron, Block of lapis lazuli, Block of raw copper, Block of raw iron, Chunk Loader, Copper ore, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Block of raw gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
+                    "text": "- Level 1 needed for: Anvil, Black concrete, Black glazed terracotta, Black terracotta, Blast furnace, Block of coal, Block of Signal Dust, Blue concrete, Blue glazed terracotta, Blue terracotta, Bone block, Bricks, Brown concrete, Brown glazed terracotta, Brown terracotta, Carved sandstone, Chain, Chipped Anvil, Chiseled stone bricks, Coal ore, Cobblestone, Copper bars, Copper chain, Copper door, Copper trapdoor, Cracked stone bricks, Cut sandstone, Cyan concrete, Cyan glazed terracotta, Cyan terracotta, Damaged Anvil, Enchanting Table, Furnace, Gray concrete, Gray glazed terracotta, Gray terracotta, Green concrete, Green glazed terracotta, Green terracotta, Iron bars, Iron door, Iron trapdoor, Light blue concrete, Light blue glazed terracotta, Light blue terracotta, Light gray concrete, Light gray glazed terracotta, Light gray terracotta, Lime concrete, Lime glazed terracotta, Lime terracotta, Magenta concrete, Magenta glazed terracotta, Magenta terracotta, Magma block, Monster spawner, Mossy cobblestone, Mossy stone bricks, Mud bricks, Orange concrete, Orange glazed terracotta, Orange terracotta, Pink concrete, Pink glazed terracotta, Pink terracotta, Polished stone, Purple concrete, Purple glazed terracotta, Purple terracotta, Red concrete, Red glazed terracotta, Red terracotta, Sandstone, Smoker, Smooth sandstone, Smooth stone, Stone, Stone bricks, Stonecutter, Terracotta, White concrete, White glazed terracotta, White terracotta, Yellow concrete, Yellow glazed terracotta, Yellow terracotta\n- Level 2 needed for: Block of copper, Block of iron, Block of lapis lazuli, Block of raw copper, Block of raw iron, Chunk Loader, Copper ore, Iron ore, Lapis lazuli ore, Signal ore\n- Level 3 needed for: Block of diamond, Block of emerald, Block of gold, Block of raw gold, Crying obsidian, Diamond ore, Emerald ore, Gold ore, Obsidian",
                     "title": "Pickaxe"
                 },
                 {
@@ -129867,6 +130488,12 @@
             "sections": [
                 {
                     "links": [
+                        {
+                            "icon": "qtcraft:anvil",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:anvil",
+                            "text": "Anvil"
+                        },
                         {
                             "icon": "qtcraft:bed",
                             "note": "light passes, no creatures spawn on it",
@@ -129982,6 +130609,12 @@
                             "text": "Chain"
                         },
                         {
+                            "icon": "qtcraft:chipped_anvil",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:chipped_anvil",
+                            "text": "Chipped Anvil"
+                        },
+                        {
                             "icon": "qtcraft:copper_bars",
                             "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:copper_bars",
@@ -130022,6 +130655,12 @@
                             "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:cyan_stained_glass_pane",
                             "text": "Cyan stained glass pane"
+                        },
+                        {
+                            "icon": "qtcraft:damaged_anvil",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:damaged_anvil",
+                            "text": "Damaged Anvil"
                         },
                         {
                             "icon": "qtcraft:dirt_path",

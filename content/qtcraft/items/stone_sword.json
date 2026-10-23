@@ -4,5 +4,6 @@
     "maxStack": 1,
     "durability": 131,
     "enchantability": 5,
+    "repairWith": "qtcraft:cobblestone",
     "attackDamage": 5.0
 }

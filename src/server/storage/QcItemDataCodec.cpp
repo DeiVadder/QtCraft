@@ -30,6 +30,10 @@ void write(QDataStream &stream, const QcItemData &data, const QcContentRegistry 
             }
         });
     }
+    if (data.priorWork != 0) {
+        components.add(static_cast<quint16>(QcItemData::Component::PriorWork), version,
+                       [&data](QDataStream &out) { out << static_cast<quint16>(data.priorWork); });
+    }
     components.finish();
 }
 

@@ -56,6 +56,8 @@ struct Stored
     quint64 parentUid = 0;
     // The chunk that parent was in when the child last saw it (QcCreature::parentChunk).
     std::optional<QcChunkPos> parentChunk = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // The name a name tag gave it (QcCreature::name, decision E-866).
+    QString name = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const Stored &) const = default;
 };

@@ -1,0 +1,21 @@
+{
+    "name": "anvil",
+    "sound": "stone",
+    "shape": "anvil",
+    "render": "cutout",
+    "solid": true,
+    "opaque": false,
+    "lightOpacity": 0,
+    "hardness": 5.0,
+    "tool": "pickaxe",
+    "toolLevel": 1,
+    "anvil": true,
+    "wearsInto": "chipped_anvil",
+    "falls": true,
+    "landingDamage": 2.0,
+    "textures": {
+        "all": "anvil_side",
+        "top": "anvil_top",
+        "bottom": "anvil_side"
+    }
+}

@@ -195,6 +195,16 @@ void encode(QDataStream &stream, QcMsg::CloseEnchanting m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::EnchantingState>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ChooseEnchantment>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseEnchanting>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::OpenAnvil m);
+void encode(QDataStream &stream, const QcMsg::AnvilState &m);
+void encode(QDataStream &stream, const QcMsg::RenameAnvil &m);
+void encode(QDataStream &stream, const QcMsg::ForgeAnvil &m);
+void encode(QDataStream &stream, QcMsg::CloseAnvil m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::OpenAnvil>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::AnvilState>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::RenameAnvil>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ForgeAnvil>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::CloseAnvil>, QDataStream &stream);
 
 // Debug display and statistics (QcDebugCodec.cpp)
 void encode(QDataStream &stream, QcMsg::DebugSubscribe m);
