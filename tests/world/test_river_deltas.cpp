@@ -221,9 +221,14 @@ private:
         return m_surveys.emplace(key, survey(QcTerrainGenerator(content, seed), reach, 8)).first->second;
     }
 
+    // A seed whose window of 9216 blocks holds no delta (it once failed a test that divided by
+    // the delta land it found).
+    static constexpr qint64 noDeltaSeed = 2115900183;
+
     // Deltas are rare (about one in ten wide river mouths): a fixed seed's window of 6144 blocks
     // holds one to four; the random seed's is larger and may still hold none.
-    [[nodiscard]] int reachOf(qint64 seed) const { return seed == m_randomSeed ? 4608 : 3072; }
+    [[nodiscard]] bool mayLackDeltas(qint64 seed) const { return seed == m_randomSeed || seed == noDeltaSeed; }
+    [[nodiscard]] int reachOf(qint64 seed) const { return mayLackDeltas(seed) ? 4608 : 3072; }
 
     // The largest deltas of a seed (at most `count`; a fixed seed has at least one, checked).
     [[nodiscard]] QList<Delta> deltasOf(qint64 seed, int count) const
@@ -232,7 +237,7 @@ private:
         for (const Delta &delta : found) {
             qInfo("seed %lld: %s at %d %d, %d points", seed, qPrintable(delta.biome), delta.x, delta.z, delta.points);
         }
-        [&] { QVERIFY2(!found.isEmpty() || seed == m_randomSeed, qPrintable(u"seed %1: no delta"_s.arg(seed))); }();
+        [&] { QVERIFY2(!found.isEmpty() || mayLackDeltas(seed), qPrintable(u"seed %1: no delta"_s.arg(seed))); }();
         return found.mid(0, count);
     }
 
@@ -306,7 +311,7 @@ private slots:
     // block or two above it; nothing of it stands high.
     void islandsJustAboveTheSea()
     {
-        for (const qint64 seed : {qint64(7), qint64(42), m_randomSeed}) {
+        for (const qint64 seed : {qint64(7), qint64(42), noDeltaSeed, m_randomSeed}) {
             const QcTerrainGenerator generator(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             qint64 land = 0;
@@ -326,8 +331,13 @@ private slots:
                     }
                 }
             }
+            // Only a seed that may lack deltas finds no delta land (and nothing to measure).
+            if (deltas.isEmpty()) {
+                QVERIFY2(mayLackDeltas(seed) && land == 0, qPrintable(u"seed %1"_s.arg(seed)));
+                continue;
+            }
             qInfo("seed %lld: delta land %lld columns, %.3f at most 2 above the sea, highest %d", seed, land, double(low) / double(land), highest);
-            QVERIFY(land > 300 || (deltas.isEmpty() && seed == m_randomSeed));
+            QVERIFY2(land > 300, qPrintable(u"seed %1: %2 columns"_s.arg(seed).arg(land)));
             QVERIFY2(double(low) / double(land) > 0.9 && highest <= 10, qPrintable(u"seed %1"_s.arg(seed)));
         }
     }
