@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/content/definitions/QcAnvilSwap.h"
 #include "common/content/definitions/QcArmourDefinition.h"
 #include "common/content/definitions/QcHangingDefinition.h"
 #include "common/content/definitions/QcHoldDisplay.h"
@@ -91,6 +92,9 @@ struct QcItemDefinition
     // What repairs it at the anvil (decision E-866): an item name or "#tag"; empty for none. Each
     // item restores a quarter of the durability. Server side only.
     QString repairWith;
+    // The item the anvil swaps it for and with what (decision E-870), set by QcAnvilSwaps on both
+    // items of a block's `anvilSwap`. Server side only.
+    std::optional<QcAnvilSwap> anvilSwap;
     // A name tag (decision E-866): with a custom name, used on a creature it names it. Server side only.
     bool namesCreatures = false;
     // Damage dealt when hitting with this item, in health points.

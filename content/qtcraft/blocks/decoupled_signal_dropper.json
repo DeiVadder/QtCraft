@@ -1,0 +1,42 @@
+{
+    "name": "decoupled_signal_dropper",
+    "sound": "stone",
+    "shape": "facing_cube",
+    "facing": "toward",
+    "hardness": 3.5,
+    "tool": "pickaxe",
+    "container": {
+        "slots": 9,
+        "columns": 3
+    },
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west",
+            "up",
+            "down"
+        ],
+        "triggered": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "furnace_side",
+        "top": "furnace_top",
+        "bottom": "furnace_top",
+        "north": "decoupled_signal_dropper_front"
+    },
+    "signal": {
+        "type": "dispenser",
+        "uses": false,
+        "comparator": "contents",
+        "quasiConnectivity": false
+    },
+    "anvilSwap": {
+        "into": "signal_dropper",
+        "with": "signal_dust_chunk"
+    }
+}

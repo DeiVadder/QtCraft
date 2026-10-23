@@ -323,6 +323,20 @@ private slots:
         QCOMPARE(book.packs().constLast().id, u"test"_s);
     }
 
+    void decoupledBlocksShowTheirAnvilSwap()
+    {
+        // Both blocks of a pair name the other and the Signal Dust chunk (decision E-870).
+        const QcHandbookEntry *decoupled = m_english.entry(u"block:qtcraft:decoupled_signal_piston"_s);
+        const QcHandbookEntry *ordinary = m_english.entry(u"block:qtcraft:signal_piston"_s);
+        QVERIFY(decoupled && ordinary);
+        QCOMPARE(targets(fact(*decoupled, u"Anvil swap"_s)->links), (QStringList{u"block:qtcraft:signal_piston"_s, u"item:qtcraft:signal_dust_chunk"_s}));
+        QCOMPARE(targets(fact(*ordinary, u"Anvil swap"_s)->links), (QStringList{u"block:qtcraft:decoupled_signal_piston"_s, u"item:qtcraft:signal_dust_chunk"_s}));
+        QVERIFY(fact(*ordinary, u"Anvil swap"_s)->value.contains(u"one level per started 16 blocks"_s));
+        const QcHandbookEntry *stone = m_english.entry(u"block:qtcraft:stone"_s);
+        QVERIFY(stone);
+        QVERIFY(!fact(*stone, u"Anvil swap"_s));
+    }
+
     void ironOreFactsMatchTheRules()
     {
         const QcHandbookEntry *ore = m_english.entry(u"block:qtcraft:iron_ore"_s);

@@ -1,0 +1,42 @@
+{
+    "name": "decoupled_signal_piston",
+    "sound": "stone",
+    "shape": "signal_piston",
+    "render": "cutout",
+    "facing": "toward",
+    "lightOpacity": 0,
+    "hardness": 1.5,
+    "tool": "pickaxe",
+    "states": {
+        "facing": [
+            "north",
+            "east",
+            "south",
+            "west",
+            "up",
+            "down"
+        ],
+        "extended": [
+            false,
+            true
+        ]
+    },
+    "textures": {
+        "all": "decoupled_signal_piston_side",
+        "north": "signal_piston_top",
+        "south": "signal_piston_bottom",
+        "slots": {
+            "arm": "oak_planks"
+        }
+    },
+    "signal": {
+        "type": "piston",
+        "sticky": false,
+        "head": "signal_piston_head",
+        "quasiConnectivity": false
+    },
+    "anvilSwap": {
+        "into": "signal_piston",
+        "with": "signal_dust_chunk"
+    }
+}

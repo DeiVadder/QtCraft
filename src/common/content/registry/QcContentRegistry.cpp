@@ -6,6 +6,7 @@
 #include "common/content/registry/QcVillageContent.h"
 #include "common/content/registry/QcVillagerOutfits.h"
 
+#include "common/content/registry/QcAnvilSwaps.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/content/registry/QcPartGenerator.h"
@@ -389,6 +390,17 @@ void QcContentRegistry::registerMaterial(QcMaterialDefinition material)
     m_materials.set(std::move(material));
 }
 
+QStringList QcContentRegistry::applyAnvilSwaps()
+{
+    // Every item's swap comes from the blocks again, so finishing twice gives the same swaps.
+    QcAnvilSwaps::Resolved swaps = QcAnvilSwaps::resolve(*this);
+    for (QcItemDefinition &item : m_items) {
+        const auto swap = swaps.byItem.constFind(item.name);
+        item.anvilSwap = swap == swaps.byItem.constEnd() ? std::nullopt : std::optional{*swap};
+    }
+    return std::move(swaps.warnings);
+}
+
 QStringList QcContentRegistry::finish()
 {
     QStringList warnings = QcPartGenerator::generate(*this);
@@ -406,6 +418,7 @@ QStringList QcContentRegistry::finish()
     createBlockItems();
     // After the items: generated recipes need the items of the parts.
     QcStonecutting::generate(*this);
+    warnings.append(applyAnvilSwaps());
     warnings.append(QcVillageContent::resolveSpecies(*this));
     // A creature naming villager settings no pack has is no villager (decision E-421); the others
     // keep the index of theirs. It keeps its abilities except opening doors, which only the villager

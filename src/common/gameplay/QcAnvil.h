@@ -14,11 +14,16 @@ struct QcEnchantmentDefinition;
 // highest, otherwise the higher stays; conflicting or unfitting ones cost a level and stay off) and
 // renamed (one level). Every use adds the prior-work penalty 2^n − 1 of both stacks and raises the
 // result's count of uses by one (a rename alone does not). From tooExpensive levels on the anvil
-// refuses, except a rename alone, which costs at most tooExpensive − 1.
+// refuses, except a rename alone, which costs at most tooExpensive − 1. An anvil swap (decision E-870,
+// QcItemDefinition::anvilSwap) turns a whole stack into its other item, paid with one `with` in the
+// right slot and one level per started swapLevelItems items; it adds the prior-work penalty but keeps
+// the stack's prior work.
 namespace QcAnvil {
 
 // From this cost on the anvil refuses (outside creative mode), as in the reference.
 inline constexpr int tooExpensive = 40;
+// Items per level of an anvil swap: a full stack of 64 costs 4 levels.
+inline constexpr int swapLevelItems = 16;
 // The chance that an anvil wears one step on each use.
 inline constexpr double wearChance = 0.12;
 // Chance per block fallen (rounded up) that a falling anvil wears on a landing that hurts.
@@ -46,6 +51,8 @@ struct Result
 [[nodiscard]] Result result(const QcContentRegistry &content, const QcItemStack &left, const QcItemStack &right, const QString &name);
 // The levels the prior-work count `uses` adds: 2^uses − 1.
 [[nodiscard]] int penaltyOf(int uses);
+// The levels an anvil swap of `count` items costs: one per started swapLevelItems, at least one.
+[[nodiscard]] int swapLevels(int count);
 // The levels each level of an enchantment costs when merged, from its weight as the reference's
 // rarity: 1 (weight 10 or more), 2 (5 or more), 4 (2 or more), else 8.
 [[nodiscard]] int costPerLevel(const QcEnchantmentDefinition &enchantment);

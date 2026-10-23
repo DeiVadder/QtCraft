@@ -1,5 +1,6 @@
 #include "common/handbook/builder/QcHandbookBlockPages.h"
 
+#include "common/gameplay/QcAnvil.h"
 #include "common/gameplay/QcMining.h"
 #include "common/handbook/builder/QcHandbookBlockTables.h"
 #include "common/handbook/builder/QcHandbookContext.h"
@@ -60,6 +61,8 @@ private:
     void addMovementFacts();
     void addUseFacts();
     void addMachineFacts();
+    // The block the anvil swaps this one for (decision E-870), on both blocks of the pair.
+    void addAnvilSwapFact();
     // A campfire's cooking and a cake's bites (decisions E-772, E-773).
     void addKitchenFacts();
     void addSaplingFacts();
@@ -396,6 +399,7 @@ void BlockPage::addUseFacts()
     if (block.opensAnvil) {
         addFact(u"anvil"_s, label(u"value.anvilScreen"_s));
     }
+    addAnvilSwapFact();
     if (block.containerSlots > 0) {
         addFact(u"storage"_s, label(u"unit.slots"_s).arg(block.containerSlots));
     }
@@ -405,6 +409,18 @@ void BlockPage::addUseFacts()
     addKitchenFacts();
     if (block.fuelSeconds > 0.0) {
         addFact(u"fuel"_s, m_text.seconds(block.fuelSeconds), {m_links.tableLink(u"fuels"_s)});
+    }
+}
+
+void BlockPage::addAnvilSwapFact()
+{
+    const std::optional<QcItemId> item = m_content.itemId(m_block.name);
+    if (!item) {
+        return;
+    }
+    const std::optional<QcAnvilSwap> &swap = m_content.item(*item).anvilSwap;
+    if (swap) {
+        addFact(u"anvilSwap"_s, label(u"value.anvilSwap"_s).arg(QcAnvil::swapLevelItems), {m_links.blockLink(swap->into), m_links.itemLink(swap->with)});
     }
 }
 

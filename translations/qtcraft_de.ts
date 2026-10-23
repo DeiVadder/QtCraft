@@ -921,13 +921,21 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="130"/>
-        <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
-        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz. %1: aufnehmen und ablegen. %2: einen ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
+        <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). %1: aufnehmen und ablegen. %2: einen ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="132"/>
+        <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
+        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). Linksklick: aufnehmen und ablegen. Rechtsklick: einen ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+    </message>
+    <message>
+        <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation type="vanished">Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz. %1: aufnehmen und ablegen. %2: einen ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
+    </message>
+    <message>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
-        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz. Linksklick: aufnehmen und ablegen. Rechtsklick: einen ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+        <translation type="vanished">Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz. Linksklick: aufnehmen und ablegen. Rechtsklick: einen ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>
@@ -6549,7 +6557,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verwendung: /limits</translation>
     </message>
     <message>
-        <source>Shows the simulation limits of the server (server.json or world.json, &quot;limits&quot;).</source>
+        <source>Shows the simulation limits of the server (server.json or world.json, "limits").</source>
         <translation type="vanished">Zeigt die Simulationsgrenzen des Servers (server.json oder world.json, „limits“).</translation>
     </message>
     <message>
@@ -6622,7 +6630,7 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcLimitCommands.cpp" line="59"/>
-        <source>Shows the simulation limits of the server (server.json or world.json, &quot;limits&quot;), or sets one or resets it to its default.</source>
+        <source>Shows the simulation limits of the server (server.json or world.json, "limits"), or sets one or resets it to its default.</source>
         <translation>Zeigt die Simulationsgrenzen des Servers (server.json oder world.json, „limits“), setzt eine oder stellt sie auf ihren Standard zurück.</translation>
     </message>
     <message>

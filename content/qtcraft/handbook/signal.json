@@ -36,10 +36,14 @@
         "trapped_chest",
         "signal_piston",
         "sticky_signal_piston",
+        "decoupled_signal_piston",
+        "decoupled_sticky_signal_piston",
         "signal_hopper",
         "signal_comparator",
         "signal_observer",
         "signal_dispenser",
-        "signal_dropper"
+        "signal_dropper",
+        "decoupled_signal_dispenser",
+        "decoupled_signal_dropper"
     ]
 }

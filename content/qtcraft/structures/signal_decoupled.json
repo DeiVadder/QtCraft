@@ -1,0 +1,253 @@
+{
+    "name": "signal_decoupled",
+    "showcase": {
+        "order": 85
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "S": "stone",
+        "G": "gold_block",
+        "E": "lever[attach=east,powered=true]",
+        "N": "signal_piston[facing=north]",
+        "n": "decoupled_signal_piston[facing=north]",
+        "K": "sticky_signal_piston[facing=north]",
+        "k": "decoupled_sticky_signal_piston[facing=north]",
+        "I": "signal_dispenser[facing=north]",
+        "i": "decoupled_signal_dispenser[facing=north]",
+        "R": "signal_dropper[facing=north]",
+        "r": "decoupled_signal_dropper[facing=north]",
+        "c": "chest[facing=south]",
+        "C": "chest[facing=north]",
+        "A": "anvil"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "........................",
+            "..G....G.........c......",
+            "..N....K....I....R......",
+            "........................",
+            "........................",
+            "..G....G....c....c......",
+            "..n....k....i....r......",
+            "........................",
+            "...................C.A..",
+            "........................"
+        ],
+        [
+            "........................",
+            "........................",
+            "...ES...ES...ES...ES....",
+            "........................",
+            "........................",
+            "........................",
+            "...ES...ES...ES...ES....",
+            "........................",
+            "........................",
+            "........................"
+        ],
+        [
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................"
+        ],
+        [
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................",
+            "........................"
+        ]
+    ],
+    "updates": [
+        [
+            2,
+            1,
+            2
+        ],
+        [
+            2,
+            1,
+            6
+        ],
+        [
+            7,
+            1,
+            2
+        ],
+        [
+            7,
+            1,
+            6
+        ],
+        [
+            12,
+            1,
+            2
+        ],
+        [
+            12,
+            1,
+            6
+        ],
+        [
+            17,
+            1,
+            2
+        ],
+        [
+            17,
+            1,
+            6
+        ]
+    ],
+    "contents": [
+        {
+            "at": [
+                12,
+                1,
+                2
+            ],
+            "items": [
+                {
+                    "item": "stick",
+                    "count": 16
+                }
+            ]
+        },
+        {
+            "at": [
+                12,
+                1,
+                6
+            ],
+            "items": [
+                {
+                    "item": "stick",
+                    "count": 16
+                }
+            ]
+        },
+        {
+            "at": [
+                17,
+                1,
+                2
+            ],
+            "items": [
+                {
+                    "item": "stick",
+                    "count": 16
+                }
+            ]
+        },
+        {
+            "at": [
+                17,
+                1,
+                6
+            ],
+            "items": [
+                {
+                    "item": "stick",
+                    "count": 16
+                }
+            ]
+        },
+        {
+            "at": [
+                19,
+                1,
+                8
+            ],
+            "items": [
+                {
+                    "item": "signal_piston",
+                    "count": 64
+                },
+                {
+                    "item": "sticky_signal_piston",
+                    "count": 64
+                },
+                {
+                    "item": "signal_dispenser",
+                    "count": 64
+                },
+                {
+                    "item": "signal_dropper",
+                    "count": 64
+                },
+                {
+                    "item": "decoupled_signal_piston",
+                    "count": 64
+                },
+                {
+                    "item": "decoupled_sticky_signal_piston",
+                    "count": 64
+                },
+                {
+                    "item": "decoupled_signal_dispenser",
+                    "count": 64
+                },
+                {
+                    "item": "decoupled_signal_dropper",
+                    "count": 64
+                },
+                {
+                    "item": "signal_dust_chunk",
+                    "count": 64
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                11.5,
+                3.6,
+                2.5
+            ],
+            "text": "structure.qtcraft.signal_decoupled.with_bud"
+        },
+        {
+            "at": [
+                11.5,
+                3.6,
+                6.5
+            ],
+            "text": "structure.qtcraft.signal_decoupled.without_bud"
+        },
+        {
+            "at": [
+                20.5,
+                2.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_decoupled.anvil"
+        }
+    ]
+}

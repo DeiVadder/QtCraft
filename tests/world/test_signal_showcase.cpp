@@ -11,9 +11,10 @@ using namespace Qt::StringLiterals;
 
 // The Signal Dust station of the showcase world (decision E-340): its demos start by themselves
 // once their chunks are loaded around a player, and each shows what it is about after some ticks:
-// lit lamps, an opened door, dust shapes, a burnt-out clock, a waiting and an updated BUD piston, a
-// spat block, a closed and an open piston door, a pushed chest with its contents and armour stand,
-// a long wire; the rails station of stage 32.2 (a cart kept going by powered rails lights a lamp at
+// lit lamps, an opened door, dust shapes, a burnt-out clock, a waiting and an updated BUD piston,
+// decoupled pistons, dispenser and dropper that stay still where the ordinary ones act, a spat
+// block, a closed and an open piston door, a pushed chest with its contents and armour stand, a long
+// wire; the rails station of stage 32.2 (a cart kept going by powered rails lights a lamp at
 // a detector rail, carts unloaded into chests by hoppers under the rails); the ice station of stage
 // 54 (a cart kept going by powered rails jumps a gap off a ramp and lands on the track again, round
 // after round; a cart rolls off its track onto blue ice and coasts far); the tracks of the stations
@@ -199,6 +200,46 @@ private slots:
         // The clock burnt out within its first sixty ticks.
         QCOMPARE(block(demo, 2, 2, 2), u"signal_torch_off"_s);
         QVERIFY(burntOut(origin(demo).offset(2, 2, 2)));
+    }
+
+    void decoupledBlocksStayStill()
+    {
+        // Each pair has power only above it and a block update: the ordinary piston pushes its gold
+        // block, the decoupled one stays in; the ordinary dispenser and dropper throw a stick (the
+        // dispenser onto the floor in front, the dropper into the chest in front), the decoupled ones keep theirs (decision E-870).
+        const QString demo = u"demo-signal_decoupled"_s;
+        visit(demo);
+        const auto sticksIn = [&](int x, int z) {
+            const QcBlockEntities::Container *chest = m_server->blockEntities().container(origin(demo).offset(x, 1, z));
+            int sticks = 0;
+            for (const QcItemStack &stack : chest ? chest->stacks : QList<QcItemStack>()) {
+                sticks += !stack.isEmpty() && m_content->item(stack.item).name == u"qtcraft:stick"_s ? stack.count : 0;
+            }
+            return sticks;
+        };
+        for (const int x : {2, 7}) {
+            QCOMPARE(property(demo, x, 1, 2, u"extended"_s), u"true"_s);
+            QCOMPARE(block(demo, x, 1, 0), u"gold_block"_s);
+            QCOMPARE(property(demo, x, 1, 6, u"extended"_s), u"false"_s);
+            QCOMPARE(block(demo, x, 1, 5), u"gold_block"_s);
+        }
+        QCOMPARE(block(demo, 2, 1, 6), u"decoupled_signal_piston"_s);
+        QCOMPARE(block(demo, 17, 1, 6), u"decoupled_signal_dropper"_s);
+        // Each threw one of its sixteen sticks; the dropper's went into the chest in front.
+        for (const int x : {12, 17}) {
+            QCOMPARE(sticksIn(x, 2), 15);
+            QCOMPARE(sticksIn(x, 6), 16);
+            QCOMPARE(sticksIn(x, 5), 0);
+        }
+        QCOMPARE(sticksIn(17, 1), 1);
+        // The ordinary dispenser's stick lies in the open in front of it.
+        const QcBlockPos dispenser = origin(demo).offset(12, 1, 2);
+        QCOMPARE(block(demo, 12, 1, 1), u"air"_s);
+        QVERIFY(std::ranges::any_of(m_server->items().items(), [&](const QcItemEntity &dropped) {
+            const auto &at = dropped.motion.position;
+            return m_content->item(dropped.stack.item).name == u"qtcraft:stick"_s && std::abs(at.x - (dispenser.x + 0.5)) < 3.0 && at.z < dispenser.z;
+        }));
+        QCOMPARE(block(demo, 21, 1, 8), u"anvil"_s);
     }
 
     void pistonsMoveDoorsChestsAndStands()

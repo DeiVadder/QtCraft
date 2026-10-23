@@ -137,6 +137,10 @@
                 "block:qtcraft:damaged_anvil",
                 "block:qtcraft:dandelion",
                 "block:qtcraft:dead_bush",
+                "block:qtcraft:decoupled_signal_dispenser",
+                "block:qtcraft:decoupled_signal_dropper",
+                "block:qtcraft:decoupled_signal_piston",
+                "block:qtcraft:decoupled_sticky_signal_piston",
                 "block:qtcraft:detector_rail",
                 "block:qtcraft:diamond_ore",
                 "block:qtcraft:dirt",
@@ -27982,6 +27986,558 @@
             ],
             "text": "A dry shrub of the desert; breaking it gives a stick or two.",
             "title": "Dead bush"
+        },
+        "block:qtcraft:decoupled_signal_dispenser": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Decoupled Signal Dispenser",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_dispenser"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "5.25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.44 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Decoupled Signal Dispenser"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dispenser",
+                            "text": "Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
+                },
+                {
+                    "label": "Storage",
+                    "links": [
+                    ],
+                    "value": "9 slots"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west, up, down); triggered (false, true)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_dispenser",
+            "id": "block:qtcraft:decoupled_signal_dispenser",
+            "name": "qtcraft:decoupled_signal_dispenser",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A Signal Dispenser without quasi-connectivity: only power next to it sets it off, never power above it. An anvil turns it into a Signal Dispenser and back with a Signal Dust chunk.",
+            "title": "Decoupled Signal Dispenser"
+        },
+        "block:qtcraft:decoupled_signal_dropper": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Decoupled Signal Dropper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_dropper"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "3.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "5.25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.44 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Decoupled Signal Dropper"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dropper",
+                            "text": "Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
+                },
+                {
+                    "label": "Storage",
+                    "links": [
+                    ],
+                    "value": "9 slots"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west, up, down); triggered (false, true)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_dropper",
+            "id": "block:qtcraft:decoupled_signal_dropper",
+            "name": "qtcraft:decoupled_signal_dropper",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A Signal Dropper without quasi-connectivity: only power next to it sets it off, never power above it. An anvil turns it into a Signal Dropper and back with a Signal Dust chunk.",
+            "title": "Decoupled Signal Dropper"
+        },
+        "block:qtcraft:decoupled_signal_piston": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Decoupled Signal Piston",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_piston"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "2.25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.19 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "extended (false, true); facing (north, east, south, west, up, down)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_piston",
+            "id": "block:qtcraft:decoupled_signal_piston",
+            "name": "qtcraft:decoupled_signal_piston",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A Signal Piston without quasi-connectivity: only power next to it moves it, never power above it, so it never waits for a block update. An anvil turns it into a Signal Piston and back with a Signal Dust chunk.",
+            "title": "Decoupled Signal Piston"
+        },
+        "block:qtcraft:decoupled_sticky_signal_piston": {
+            "category": "blocks",
+            "categoryTitle": "Blocks",
+            "englishTitle": "Decoupled Sticky Signal Piston",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_sticky_signal_piston"
+                },
+                {
+                    "label": "Hardness",
+                    "links": [
+                    ],
+                    "value": "1.5"
+                },
+                {
+                    "label": "Breaking by hand",
+                    "links": [
+                    ],
+                    "value": "2.25 s"
+                },
+                {
+                    "label": "Tool",
+                    "links": [
+                    ],
+                    "value": "Pickaxe (faster, not needed)"
+                },
+                {
+                    "label": "Breaking with the best tool",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        }
+                    ],
+                    "value": "0.19 s"
+                },
+                {
+                    "label": "Drops",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Light blocked",
+                    "links": [
+                    ],
+                    "value": "0 of 15"
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:sticky_signal_piston",
+                            "text": "Sticky Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
+                },
+                {
+                    "label": "Sound",
+                    "links": [
+                    ],
+                    "value": "stone"
+                },
+                {
+                    "label": "States",
+                    "links": [
+                    ],
+                    "value": "extended (false, true); facing (north, east, south, west, up, down)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_sticky_signal_piston",
+            "id": "block:qtcraft:decoupled_sticky_signal_piston",
+            "name": "qtcraft:decoupled_sticky_signal_piston",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Golden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "level 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Wooden pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "level 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Stone pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "level 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Iron pickaxe"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "level 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamond pickaxe"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Faster with"
+                }
+            ],
+            "text": "A Sticky Signal Piston without quasi-connectivity: only power next to it moves it, never power above it. An anvil turns it into a Sticky Signal Piston and back with a Signal Dust chunk.",
+            "title": "Decoupled Sticky Signal Piston"
         },
         "block:qtcraft:detector_rail": {
             "category": "blocks",
@@ -71932,6 +72488,24 @@
                     "value": ""
                 },
                 {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Decoupled Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
+                },
+                {
                     "label": "Storage",
                     "links": [
                     ],
@@ -72133,6 +72707,24 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Decoupled Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
                 },
                 {
                     "label": "Storage",
@@ -73811,6 +74403,24 @@
                     "links": [
                     ],
                     "value": "0 of 15"
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
                 },
                 {
                     "label": "Sound",
@@ -81892,6 +82502,24 @@
                     "links": [
                     ],
                     "value": "0 of 15"
+                },
+                {
+                    "label": "Anvil swap",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signal Dust chunk"
+                        }
+                    ],
+                    "value": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started 16 blocks"
                 },
                 {
                     "label": "Sound",
@@ -95322,7 +95950,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a piston can refuse it in its data. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.",
+                    "text": "Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a block can refuse it in its data, as the decoupled pistons, dispenser and dropper do: an anvil turns a whole stack of them into the ordinary ones and back for one Signal Dust chunk and one level per started 16 blocks. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.",
                     "title": "Known quirks"
                 },
                 {
@@ -95446,6 +96074,18 @@
                             "text": "Sticky Signal Piston"
                         },
                         {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
+                        },
+                        {
                             "icon": "qtcraft:signal_hopper",
                             "note": "",
                             "target": "block:qtcraft:signal_hopper",
@@ -95474,6 +96114,18 @@
                             "note": "",
                             "target": "block:qtcraft:signal_dropper",
                             "text": "Signal Dropper"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Decoupled Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Decoupled Signal Dropper"
                         }
                     ],
                     "recipes": [
@@ -125325,6 +125977,18 @@
                             "text": "Blast furnace"
                         },
                         {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "3.5, from hardness",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Decoupled Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "3.5, from hardness",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Decoupled Signal Dropper"
+                        },
+                        {
                             "icon": "qtcraft:furnace",
                             "note": "3.5, from hardness",
                             "target": "block:qtcraft:furnace",
@@ -125911,6 +126575,18 @@
                             "note": "1.5, from hardness",
                             "target": "block:qtcraft:copper_lantern",
                             "text": "Copper lantern"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "1.5, from hardness",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
                         },
                         {
                             "icon": "qtcraft:lantern",
@@ -128445,6 +129121,18 @@
                             "text": "Spruce trapdoor"
                         },
                         {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "pushes up to 12 blocks while powered; passes no power through",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "pushes up to 12 blocks while powered and pulls one back; passes no power through",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
+                        },
+                        {
                             "icon": "qtcraft:signal_piston",
                             "note": "pushes up to 12 blocks while powered; passes no power through",
                             "target": "block:qtcraft:signal_piston",
@@ -128461,6 +129149,18 @@
                             "note": "moves items; any power stops it",
                             "target": "block:qtcraft:signal_hopper",
                             "text": "Signal Hopper"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "on rising power uses or shoots one item after 4 ticks",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Decoupled Signal Dispenser"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "on rising power throws one item after 4 ticks",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Decoupled Signal Dropper"
                         },
                         {
                             "icon": "qtcraft:signal_dispenser",
@@ -130661,6 +131361,18 @@
                             "note": "light passes, no creatures spawn on it",
                             "target": "block:qtcraft:damaged_anvil",
                             "text": "Damaged Anvil"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Decoupled Signal Piston"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "light passes, no creatures spawn on it",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Decoupled Sticky Signal Piston"
                         },
                         {
                             "icon": "qtcraft:dirt_path",

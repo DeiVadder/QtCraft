@@ -127,9 +127,9 @@ SlotScreen {
         Label {
             Layout.maximumWidth: Ui.size.formColumn * 2
             wrapMode: Text.Wrap
-            text: screen.game.gamepad.active ? qsTr("Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.")
+            text: screen.game.gamepad.active ? qsTr("Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.")
                     .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                  : qsTr("Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
+                  : qsTr("Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
             color: Theme.textSecondary
             font.pixelSize: Ui.type.help
         }

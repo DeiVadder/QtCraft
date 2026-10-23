@@ -1,0 +1,8 @@
+{
+    "name": "decoupled_signal_dispenser_front",
+    "pattern": "dispenser",
+    "primary": "#6f8f88",
+    "secondary": "#1e1a18",
+    "variation": 0.1,
+    "seed": 9714
+}

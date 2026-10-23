@@ -13,6 +13,7 @@ target_sources(qc_common PRIVATE
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
 )
 target_sources(qc_common PRIVATE
+    content/definitions/QcAnvilSwap.h
     content/definitions/QcAppearance.h
     content/definitions/QcAppearanceDefinition.h
     content/definitions/QcArmourDefinition.h
@@ -109,6 +110,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
 )
 target_sources(qc_common PRIVATE
+    content/registry/QcAnvilSwaps.h content/registry/QcAnvilSwaps.cpp
     content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp
     content/registry/QcAssetCatalog.h
     content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp

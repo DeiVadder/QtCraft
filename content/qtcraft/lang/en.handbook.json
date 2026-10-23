@@ -957,6 +957,8 @@
     "block.qtcraft.chunk_loader.description": "Keeps its chunk loaded while no player is near, with every chunk its circuits connect to, so farms and machines go on working. Each player may place a few (chunkLoadersPerPlayer, 4 by default); only so many work in a world (chunkLoaders, 64).",
     "block.qtcraft.signal_piston.description": "Pushes up to twelve blocks in front of it while powered, chests and furnaces with their contents, and pushes players and creatures along.",
     "block.qtcraft.sticky_signal_piston.description": "A piston that pulls the block in front of it back when it retracts; a too short signal makes it let go of the block.",
+    "block.qtcraft.decoupled_signal_piston.description": "A Signal Piston without quasi-connectivity: only power next to it moves it, never power above it, so it never waits for a block update. An anvil turns it into a Signal Piston and back with a Signal Dust chunk.",
+    "block.qtcraft.decoupled_sticky_signal_piston.description": "A Sticky Signal Piston without quasi-connectivity: only power next to it moves it, never power above it. An anvil turns it into a Sticky Signal Piston and back with a Signal Dust chunk.",
     "block.qtcraft.signal_piston_head.description": "The head of an extended piston.",
     "block.qtcraft.signal_ore.description": "Ore deep below that gives Signal Dust; needs an iron pickaxe.",
     "block.qtcraft.rail.description": "Track for minecarts. It needs a solid block below, joins the rails beside it and climbs one block towards a rail above.",
@@ -987,7 +989,7 @@
     "chapter.qtcraft.signal.dispensers.title": "Dispensers and droppers",
     "chapter.qtcraft.signal.dispensers.text": "When their power comes, a Signal Dispenser and a Signal Dropper eject one item from a random slot four ticks later (powered like a piston, also through the block above). A dropper facing a container puts the item into it, otherwise it throws it out. A dispenser pours water and lava buckets, takes a liquid with an empty bucket, puts armour on a player or armour stand in front, shoots arrows and splash potions straight ahead and throws everything else out, also in front of a container. Seeds, carrots and potatoes are thrown, never planted: they plant themselves when they land on free farmland.",
     "chapter.qtcraft.signal.quirks.title": "Known quirks",
-    "chapter.qtcraft.signal.quirks.text": "Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a piston can refuse it in its data. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.",
+    "chapter.qtcraft.signal.quirks.text": "Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a block can refuse it in its data, as the decoupled pistons, dispenser and dropper do: an anvil turns a whole stack of them into the ordinary ones and back for one Signal Dust chunk and one level per started 16 blocks. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.",
     "chapter.qtcraft.signal.rotation.title": "Same in every place",
     "chapter.qtcraft.signal.rotation.text": "A circuit behaves the same at every coordinate and in every rotation. Everything that switches in the same step decides on the world as it was before the step and switches together. When two pistons want the same block or cell in the same step, both stay where they are.",
     "chapter.qtcraft.signal.multiplayer.title": "On a server",
@@ -1369,5 +1371,7 @@
     "block.qtcraft.damaged_anvil.description": "An anvil close to breaking; it works like a new one, but the next wear breaks it.",
     "item.qtcraft.name_tag.description": "Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns.",
     "handbook.fact.anvil": "Anvil",
-    "handbook.value.anvilScreen": "opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use"
+    "handbook.value.anvilScreen": "opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use",
+    "handbook.fact.anvilSwap": "Anvil swap",
+    "handbook.value.anvilSwap": "at an anvil a whole stack turns into the first block, and back, for one of the second item and one level per started %1 blocks"
 }

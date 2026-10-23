@@ -108,6 +108,10 @@
                 "block:qtcraft:iron_trapdoor",
                 "block:qtcraft:iron_bars",
                 "block:qtcraft:iron_door",
+                "block:qtcraft:decoupled_sticky_signal_piston",
+                "block:qtcraft:decoupled_signal_piston",
+                "block:qtcraft:decoupled_signal_dispenser",
+                "block:qtcraft:decoupled_signal_dropper",
                 "block:qtcraft:stripped_birch_log",
                 "block:qtcraft:stripped_jungle_log",
                 "block:qtcraft:stripped_oak_log",
@@ -27982,6 +27986,558 @@
             ],
             "text": "Ein vertrockneter Strauch der Wüste; abgebaut gibt er ein oder zwei Stöcke.",
             "title": "Toter Busch"
+        },
+        "block:qtcraft:decoupled_signal_dispenser": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Decoupled Signal Dispenser",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_dispenser"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "3,5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "5,25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,44 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Entkoppelter Signalspender"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dispenser",
+                            "text": "Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
+                },
+                {
+                    "label": "Lager",
+                    "links": [
+                    ],
+                    "value": "9 Felder"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west, up, down); triggered (false, true)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_dispenser",
+            "id": "block:qtcraft:decoupled_signal_dispenser",
+            "name": "qtcraft:decoupled_signal_dispenser",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein Signalspender ohne Quasi-Konnektivität: Nur Signal direkt daneben löst ihn aus, nie Signal über ihm. Ein Amboss macht ihn mit einem Signalstaubstück zum Signalspender und zurück.",
+            "title": "Entkoppelter Signalspender"
+        },
+        "block:qtcraft:decoupled_signal_dropper": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Decoupled Signal Dropper",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_dropper"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "3,5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "5,25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,44 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Entkoppelter Signalwerfer"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:signal_dropper",
+                            "text": "Signalwerfer"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
+                },
+                {
+                    "label": "Lager",
+                    "links": [
+                    ],
+                    "value": "9 Felder"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "facing (north, east, south, west, up, down); triggered (false, true)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_dropper",
+            "id": "block:qtcraft:decoupled_signal_dropper",
+            "name": "qtcraft:decoupled_signal_dropper",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein Signalwerfer ohne Quasi-Konnektivität: Nur Signal direkt daneben löst ihn aus, nie Signal über ihm. Ein Amboss macht ihn mit einem Signalstaubstück zum Signalwerfer und zurück.",
+            "title": "Entkoppelter Signalwerfer"
+        },
+        "block:qtcraft:decoupled_signal_piston": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Decoupled Signal Piston",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_signal_piston"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "1,5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "2,25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,19 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:signal_piston",
+                            "text": "Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "extended (false, true); facing (north, east, south, west, up, down)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_signal_piston",
+            "id": "block:qtcraft:decoupled_signal_piston",
+            "name": "qtcraft:decoupled_signal_piston",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein Signalkolben ohne Quasi-Konnektivität: Nur Signal direkt daneben bewegt ihn, nie Signal über ihm, er wartet also nie auf ein Block-Update. Ein Amboss macht ihn mit einem Signalstaubstück zum Signalkolben und zurück.",
+            "title": "Entkoppelter Signalkolben"
+        },
+        "block:qtcraft:decoupled_sticky_signal_piston": {
+            "category": "blocks",
+            "categoryTitle": "Blöcke",
+            "englishTitle": "Decoupled Sticky Signal Piston",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:decoupled_sticky_signal_piston"
+                },
+                {
+                    "label": "Härte",
+                    "links": [
+                    ],
+                    "value": "1,5"
+                },
+                {
+                    "label": "Abbauen mit der Hand",
+                    "links": [
+                    ],
+                    "value": "2,25 s"
+                },
+                {
+                    "label": "Werkzeug",
+                    "links": [
+                    ],
+                    "value": "Spitzhacke (schneller, nicht nötig)"
+                },
+                {
+                    "label": "Abbauen mit dem besten Werkzeug",
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        }
+                    ],
+                    "value": "0,19 s"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        }
+                    ],
+                    "value": ""
+                },
+                {
+                    "label": "Lichtdämpfung",
+                    "links": [
+                    ],
+                    "value": "0 von 15"
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:sticky_signal_piston",
+                            "text": "Klebriger Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
+                },
+                {
+                    "label": "Klang",
+                    "links": [
+                    ],
+                    "value": "Stein"
+                },
+                {
+                    "label": "Zustände",
+                    "links": [
+                    ],
+                    "value": "extended (false, true); facing (north, east, south, west, up, down)"
+                }
+            ],
+            "icon": "qtcraft:decoupled_sticky_signal_piston",
+            "id": "block:qtcraft:decoupled_sticky_signal_piston",
+            "name": "qtcraft:decoupled_sticky_signal_piston",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:golden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:golden_pickaxe",
+                            "text": "Goldspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:wooden_pickaxe",
+                            "note": "Stufe 1",
+                            "target": "item:qtcraft:wooden_pickaxe",
+                            "text": "Holzspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:stone_pickaxe",
+                            "note": "Stufe 2",
+                            "target": "item:qtcraft:stone_pickaxe",
+                            "text": "Steinspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:iron_pickaxe",
+                            "note": "Stufe 3",
+                            "target": "item:qtcraft:iron_pickaxe",
+                            "text": "Eisenspitzhacke"
+                        },
+                        {
+                            "icon": "qtcraft:diamond_pickaxe",
+                            "note": "Stufe 4",
+                            "target": "item:qtcraft:diamond_pickaxe",
+                            "text": "Diamantspitzhacke"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Schneller mit"
+                }
+            ],
+            "text": "Ein klebriger Signalkolben ohne Quasi-Konnektivität: Nur Signal direkt daneben bewegt ihn, nie Signal über ihm. Ein Amboss macht ihn mit einem Signalstaubstück zum klebrigen Signalkolben und zurück.",
+            "title": "Entkoppelter klebriger Signalkolben"
         },
         "block:qtcraft:detector_rail": {
             "category": "blocks",
@@ -71932,6 +72488,24 @@
                     "value": ""
                 },
                 {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Entkoppelter Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
+                },
+                {
                     "label": "Lager",
                     "links": [
                     ],
@@ -72133,6 +72707,24 @@
                         }
                     ],
                     "value": ""
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Entkoppelter Signalwerfer"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
                 },
                 {
                     "label": "Lager",
@@ -73811,6 +74403,24 @@
                     "links": [
                     ],
                     "value": "0 von 15"
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
                 },
                 {
                     "label": "Klang",
@@ -81892,6 +82502,24 @@
                     "links": [
                     ],
                     "value": "0 von 15"
+                },
+                {
+                    "label": "Amboss-Umwandlung",
+                    "links": [
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:signal_dust_chunk",
+                            "note": "",
+                            "target": "item:qtcraft:signal_dust_chunk",
+                            "text": "Signalstaubstück"
+                        }
+                    ],
+                    "value": "am Amboss wird ein ganzer Stapel zum ersten Block und zurück, für ein Stück des zweiten Items und eine Stufe je angefangene 16 Blöcke"
                 },
                 {
                     "label": "Klang",
@@ -95322,7 +95950,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert: Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Kolben kann es in seinen Daten ablehnen. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.",
+                    "text": "Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert: Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Block kann es in seinen Daten ablehnen, wie die entkoppelten Kolben, Spender und Werfer: Ein Amboss wandelt einen ganzen Stapel davon für ein Signalstaubstück und eine Stufe je angefangene 16 Blöcke in die gewöhnlichen um und zurück. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.",
                     "title": "Bekannte Eigenheiten"
                 },
                 {
@@ -95446,6 +96074,18 @@
                             "text": "Klebriger Signalkolben"
                         },
                         {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        },
+                        {
                             "icon": "qtcraft:signal_hopper",
                             "note": "",
                             "target": "block:qtcraft:signal_hopper",
@@ -95474,6 +96114,18 @@
                             "note": "",
                             "target": "block:qtcraft:signal_dropper",
                             "text": "Signalwerfer"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Entkoppelter Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Entkoppelter Signalwerfer"
                         }
                     ],
                     "recipes": [
@@ -125319,6 +125971,18 @@
                             "text": "Weiße Terrakotta"
                         },
                         {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "3,5, aus der Härte",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Entkoppelter Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "3,5, aus der Härte",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Entkoppelter Signalwerfer"
+                        },
+                        {
                             "icon": "qtcraft:furnace",
                             "note": "3,5, aus der Härte",
                             "target": "block:qtcraft:furnace",
@@ -125905,6 +126569,18 @@
                             "note": "1,5, aus der Härte",
                             "target": "block:qtcraft:bookshelf",
                             "text": "Bücherregal"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "1,5, aus der Härte",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "1,5, aus der Härte",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
                         },
                         {
                             "icon": "qtcraft:sticky_signal_piston",
@@ -128445,6 +129121,18 @@
                             "text": "Kupfertür"
                         },
                         {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "schiebt bis zu 12 Blöcke, solange er Strom hat, und zieht einen zurück; leitet keinen Strom durch",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "schiebt bis zu 12 Blöcke, solange er Strom hat; leitet keinen Strom durch",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
+                        },
+                        {
                             "icon": "qtcraft:sticky_signal_piston",
                             "note": "schiebt bis zu 12 Blöcke, solange er Strom hat, und zieht einen zurück; leitet keinen Strom durch",
                             "target": "block:qtcraft:sticky_signal_piston",
@@ -128461,6 +129149,18 @@
                             "note": "bewegt Items; jeder Strom hält ihn an",
                             "target": "block:qtcraft:signal_hopper",
                             "text": "Signaltrichter"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dispenser",
+                            "note": "benutzt oder verschießt bei steigendem Strom ein Item nach 4 Ticks",
+                            "target": "block:qtcraft:decoupled_signal_dispenser",
+                            "text": "Entkoppelter Signalspender"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_dropper",
+                            "note": "wirft bei steigendem Strom ein Item nach 4 Ticks aus",
+                            "target": "block:qtcraft:decoupled_signal_dropper",
+                            "text": "Entkoppelter Signalwerfer"
                         },
                         {
                             "icon": "qtcraft:signal_dispenser",
@@ -130631,6 +131331,18 @@
                             "note": "Licht geht durch, keine Wesen erscheinen darauf",
                             "target": "block:qtcraft:iron_door",
                             "text": "Eisentür"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_sticky_signal_piston",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:decoupled_sticky_signal_piston",
+                            "text": "Entkoppelter klebriger Signalkolben"
+                        },
+                        {
+                            "icon": "qtcraft:decoupled_signal_piston",
+                            "note": "Licht geht durch, keine Wesen erscheinen darauf",
+                            "target": "block:qtcraft:decoupled_signal_piston",
+                            "text": "Entkoppelter Signalkolben"
                         },
                         {
                             "icon": "qtcraft:spruce_trapdoor",

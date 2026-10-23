@@ -197,6 +197,8 @@ private:
     // Checks that ammunition and projectile kinds name each other's kinds (finish): ammunition of
     // an unknown kind is none; the warnings.
     QStringList resolveProjectiles();
+    // Gives the items their anvil swaps (QcAnvilSwaps, finish); the warnings.
+    QStringList applyAnvilSwaps();
 
     QList<QcBlockDefinition> m_blocks;
     // Block name -> index into m_blocks.

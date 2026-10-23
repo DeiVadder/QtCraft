@@ -22,7 +22,27 @@ struct Work
     int cost = 0;
     int rightUsed = 0;
     std::optional<QList<QcEnchantment>> enchantments = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    // A swap (decision E-870) leaves the prior work as it is, so swapped stacks stack with fresh ones.
+    bool keepsPriorWork = false;
 };
+
+// The anvil swap of `left` paid with `right` (decision E-870): the whole stack becomes the other
+// item for one level per started swapLevelItems items, using up one `with`; nothing when the right
+// stack is no `with` or the other item holds fewer.
+std::optional<Work> swapWork(const QcContentRegistry &content, const QcItemStack &left, const QcItemStack &right)
+{
+    const std::optional<QcAnvilSwap> &swap = content.item(left.item).anvilSwap;
+    if (!swap || right.isEmpty() || !content.isValidItem(right.item) || content.item(right.item).name != swap->with) {
+        return std::nullopt;
+    }
+    const std::optional<QcItemId> into = content.itemId(swap->into);
+    if (!into || content.item(*into).maxStack < left.count) {
+        return std::nullopt;
+    }
+    QcItemStack swapped = left;
+    swapped.item = *into;
+    return Work{swapped, swapLevels(left.count), 1, std::nullopt, true};
+}
 
 // Whether `right` is the material that repairs `item` (QcItemDefinition::repairWith).
 bool repairs(const QcItemDefinition &item, const QcItemDefinition &right)
@@ -113,6 +133,9 @@ Work workOn(const QcContentRegistry &content, const QcItemStack &left, const QcI
     if (right.isEmpty()) {
         return {left, 0, 0};
     }
+    if (std::optional<Work> swapped = swapWork(content, left, right)) {
+        return *std::move(swapped);
+    }
     if (left.count != 1 || !content.isValidItem(right.item)) {
         return {};
     }
@@ -151,7 +174,7 @@ Result result(const QcContentRegistry &content, const QcItemStack &left, const Q
         data.name = wanted;
         ++work.cost;
     }
-    if (!right.isEmpty()) {
+    if (!right.isEmpty() && !work.keepsPriorWork) {
         data.priorWork = std::clamp(std::max(left.priorWork(), right.priorWork()) + 1, 0, QcItemData::maxPriorWork);
     }
     const std::optional<QcItemStack> output = work.output.tryWithData(data);
@@ -172,6 +195,11 @@ int penaltyOf(int uses)
 {
     const int clamped = std::clamp(uses, 0, 20);
     return (1 << clamped) - 1;
+}
+
+int swapLevels(int count)
+{
+    return std::max(1, (count + swapLevelItems - 1) / swapLevelItems);
 }
 
 int costPerLevel(const QcEnchantmentDefinition &enchantment)

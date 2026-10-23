@@ -78,6 +78,7 @@ private:
     void readContainer(QcJsonFieldReader &containerReader);
     void readMiningFields();
     void readInfested(QcJsonFieldReader &infestedReader);
+    void readAnvilSwap(QcJsonFieldReader &swapReader);
     void readSpawner(QcJsonFieldReader &spawnerReader);
     void readMachine(const QJsonObject &machineJson, QcJsonFieldReader &machineReader);
     void readDrops();
@@ -267,6 +268,17 @@ void BlockReader::readInfested(QcJsonFieldReader &infestedReader)
     if (infestedReader.ok() && (m_block.infestsBlock.isEmpty() || m_block.infestsMob.isEmpty())) {
         infestedReader.fail(u"needs 'block' and 'mob'"_s);
     }
+}
+
+// An anvil swap (decision E-870): the block it turns into and the item that pays for it.
+void BlockReader::readAnvilSwap(QcJsonFieldReader &swapReader)
+{
+    QcAnvilSwap swap{swapReader.name(u"into"_s, m_namespace), swapReader.name(u"with"_s, m_namespace)};
+    if (swapReader.ok() && (swap.into.isEmpty() || swap.with.isEmpty())) {
+        swapReader.fail(u"needs 'into' and 'with'"_s);
+        return;
+    }
+    m_block.anvilSwap = std::move(swap);
 }
 
 // A monster spawner (decision E-520): its rules; the area's sizes are odd so it centres on the block.
@@ -561,6 +573,7 @@ void BlockReader::readNamedObjects()
     m_reader.nestedObject(u"bites"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_block.bites = QcCookingParser::parseBites(m_block, nested); });
     m_reader.nestedObject(u"spawner"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readSpawner(nested); });
     m_reader.nestedObject(u"sapling"_s, [this](const QJsonObject &object, QcJsonFieldReader &nested) { readSapling(object, nested); });
+    m_reader.nestedObject(u"anvilSwap"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { readAnvilSwap(nested); });
     m_reader.nestedObject(u"sign"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
         m_block.sign.lines = nested.integer(u"lines"_s, QcSignDefinition::maxLines, 1, QcSignDefinition::maxLines);
         m_block.sign.lineLength = nested.integer(u"lineLength"_s, 15, 1, QcSignDefinition::maxLineLength);

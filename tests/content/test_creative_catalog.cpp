@@ -70,6 +70,11 @@ private slots:
         // Circuit parts have their own tab (decision E-340); doors stay blocks.
         QCOMPARE(categoryOf("qtcraft:signal_dust"), C::Signal);
         QCOMPARE(categoryOf("qtcraft:sticky_signal_piston"), C::Signal);
+        // The decoupled variants (decision E-870) are circuit parts too.
+        for (const char *decoupled : {"qtcraft:decoupled_signal_piston", "qtcraft:decoupled_sticky_signal_piston", "qtcraft:decoupled_signal_dispenser",
+                                      "qtcraft:decoupled_signal_dropper"}) {
+            QCOMPARE(categoryOf(decoupled), C::Signal);
+        }
         QCOMPARE(categoryOf("qtcraft:lever"), C::Signal);
         QCOMPARE(categoryOf("qtcraft:oak_door"), C::Blocks);
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/content/definitions/QcAnvilSwap.h"
 #include "common/content/definitions/QcBlastDefinition.h"
 #include "common/content/definitions/QcBlockProperty.h"
 #include "common/content/definitions/QcCookingDefinitions.h"
@@ -152,6 +153,9 @@ struct QcBlockDefinition
     // The anvil this one wears into when used or after a fall (chipped, damaged); empty: it breaks.
     // Server side only.
     QString wearsInto;
+    // The block the anvil turns this one into and back (decision E-870; QcAnvilSwaps puts it on both
+    // items), declared on one of the two blocks. Server side only.
+    std::optional<QcAnvilSwap> anvilSwap;
     // Damage a falling block deals to bodies in the cell it lands in, per block fallen beyond the
     // first (an anvil: 2, at most landingDamageLimit); 0 for none. Server side only.
     double landingDamage = 0.0;
