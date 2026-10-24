@@ -66,15 +66,17 @@ private:
         bool bridge = false;
     };
     // The ground of the next cell of a road, coming `from` its last cell; std::nullopt where the road
-    // ends there (water, a steep step, a piece, the radius).
+    // ends there (water, a steep step, a piece, the radius, a river delta).
     [[nodiscard]] std::optional<Ground> roadGround(const QcVillageDraft &draft, std::pair<int, int> cell, int direction, From from,
                                                    bool checkPieces) const;
     // A run of low bank and water cells from `cell` on in direction (dx, dz): how many (at most one
-    // more than maxBridge), whether some is a river's, and the height of the dry cell after it.
+    // more than maxBridge), whether some is a river's or a delta's (decision E-850), and the height
+    // of the dry cell after it.
     struct Stretch
     {
         int cells = 0;
         bool river = false;
+        bool delta = false;
         std::optional<int> bankHeight;
     };
     [[nodiscard]] Stretch wetStretch(std::pair<int, int> cell, int dx, int dz) const;

@@ -66,7 +66,9 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
         const int z0 = regionZ * rule.spacing + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
         const Rect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
         const std::optional<int> floor = floorFor(type, rect);
-        if (!floor || occupied(kind, rect, rule.villageMargin)) {
+        // No column of the footprint in a river delta (decision E-850): an arm may cross between
+        // the samples of floorFor().
+        if (!floor || occupied(kind, rect, rule.villageMargin) || m_terrain.touchesDelta(rect)) {
             continue;
         }
         QcStructurePlacement placement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);

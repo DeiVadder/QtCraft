@@ -21,9 +21,7 @@ constexpr double longestStep = 64.0;
 constexpr double settled = 2.0;
 // Searched from the apex, the mouth lies at most this many blocks from where it was found.
 constexpr double agree = 8.0;
-// The sites are searched from the middle of cells of this many blocks; the last ones searched (at
-// most maxRemembered) are kept per thread.
-constexpr double siteCell = 8.0;
+// The last sites searched (at most maxRemembered) are kept per thread.
 // A cell reaches the river from this many blocks away (the widest fan's side with its margin and
 // a cell more).
 constexpr double cellReach = 120.0;

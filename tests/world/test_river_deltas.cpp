@@ -16,6 +16,7 @@
 #include <cmath>
 #include <map>
 #include <memory>
+#include <set>
 #include <tuple>
 #include <utility>
 
@@ -433,13 +434,12 @@ private slots:
         QVERIFY(ice > 0 && open > 0);
     }
 
-    // The delta columns on a grid of 2 blocks in the rectangle from (x0, z0) to (x1, z1), both
-    // inclusive.
+    // The delta columns in the rectangle from `from` to `to` (x and z, both inclusive): every column.
     static QStringList deltaColumnsIn(const QcTerrainGenerator &generator, QcBlockPos from, QcBlockPos to)
     {
         QStringList found;
-        for (int z = from.z; z <= to.z; z += 2) {
-            for (int x = from.x; x <= to.x; x += 2) {
+        for (int z = from.z; z <= to.z; ++z) {
+            for (int x = from.x; x <= to.x; ++x) {
                 if (generator.isDeltaBiome(generator.column(x, z).biome)) {
                     found.append(u"%1 %2"_s.arg(x).arg(z));
                 }
@@ -448,13 +448,18 @@ private slots:
         return found;
     }
 
-    // The delta columns under the pieces, decks and bridges of a village.
+    // The delta columns under the pieces, road cells (with the paths to the doors), decks and bridges
+    // of a village.
     static QStringList deltaColumnsOf(const QcTerrainGenerator &generator, const QcVillagePlan &plan)
     {
         QStringList found;
         for (const QcStructurePlacement &piece : plan.pieces) {
             const QcBlockPos at = piece.origin();
             found += deltaColumnsIn(generator, at, {at.x + piece.sizeX() - 1, 0, at.z + piece.sizeZ() - 1});
+        }
+        const QList<QcBlockPos> roads = plan.roads + plan.branchRoads;
+        for (const QcBlockPos &cell : roads) {
+            found += deltaColumnsIn(generator, cell, cell);
         }
         const QList<QcVillagePlan::Deck> decks = plan.bridges + plan.decks;
         for (const QcVillagePlan::Deck &deck : decks) {
@@ -463,33 +468,45 @@ private slots:
         return found;
     }
 
-    // The delta columns under the footprints of the structures, coastal towers and lakes of a chunk.
-    static QStringList deltaColumnsUnderStructures(const QcTerrainGenerator &generator, QcChunkPos pos)
+    // The footprints of the structures, coastal towers and lakes of the chunks within `reach` of
+    // `middle`, each once.
+    static QList<QcSurfacePlanner::Rect> footprintsAround(const QcTerrainGenerator &generator, QcChunkPos middle, int reach)
     {
-        QStringList found;
-        const QList<QcSurfacePlanner::Rect> footprints = generator.structureFootprintsNear(pos, 0);
-        for (const QcSurfacePlanner::Rect &rect : footprints) {
-            found += deltaColumnsIn(generator, {rect.x0, 0, rect.z0}, {rect.x1, 0, rect.z1});
+        QList<QcSurfacePlanner::Rect> footprints;
+        std::set<std::tuple<int, int, int, int>> seen;
+        for (int cz = middle.z - reach; cz <= middle.z + reach; ++cz) {
+            for (int cx = middle.x - reach; cx <= middle.x + reach; ++cx) {
+                const QList<QcSurfacePlanner::Rect> near = generator.structureFootprintsNear({cx, cz}, 0);
+                for (const QcSurfacePlanner::Rect &rect : near) {
+                    if (seen.insert({rect.x0, rect.z0, rect.x1, rect.z1}).second) {
+                        footprints.append(rect);
+                    }
+                }
+            }
         }
-        return found;
+        return footprints;
     }
 
-    // Villages and structures keep off deltas: no piece, road, deck or bridge of a village and no
-    // footprint of a structure lies on the delta's columns (with a delta at every wide mouth, for
-    // more villages near deltas).
+    // Villages and structures keep off deltas: no column of a piece, road, path, deck or bridge of a
+    // village and none of the footprint of a structure lies in a delta (with a delta at every wide
+    // mouth, for more villages near deltas). Seed 613409102 has a ruined portal whose edge an arm
+    // crosses between the samples of its ground, seed 23846387 a village jetty out over an arm.
     void villagesAndStructuresKeepOff()
     {
         int checked = 0;
-        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
+        for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{613409102}, qint64{23846387}, m_randomSeed}) {
             const QcTerrainGenerator generator(m_everyMouth, seed);
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {
                 const QcChunkPos middle = QcBlockPos{delta.x, 0, delta.z}.chunk();
+                const QList<QcSurfacePlanner::Rect> footprints = footprintsAround(generator, middle, 8);
+                for (const QcSurfacePlanner::Rect &rect : footprints) {
+                    const QStringList under = deltaColumnsIn(generator, {rect.x0, 0, rect.z0}, {rect.x1, 0, rect.z1});
+                    QVERIFY2(under.isEmpty(), qPrintable(u"seed %1: structure at %2"_s.arg(seed).arg(under.value(0))));
+                }
                 QSet<qint64> seen;
                 for (int cz = middle.z - 8; cz <= middle.z + 8; ++cz) {
                     for (int cx = middle.x - 8; cx <= middle.x + 8; ++cx) {
-                        const QStringList underStructures = deltaColumnsUnderStructures(generator, {cx, cz});
-                        QVERIFY2(underStructures.isEmpty(), qPrintable(u"seed %1: structure at %2"_s.arg(seed).arg(underStructures.value(0))));
                         const std::shared_ptr<const QcVillagePlan> plan = generator.villageFor({cx, cz});
                         if (!plan || seen.contains(plan->id)) {
                             continue;

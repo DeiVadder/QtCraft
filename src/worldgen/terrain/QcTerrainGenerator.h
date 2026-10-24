@@ -116,6 +116,11 @@ public:
     [[nodiscard]] bool isRiverBiome(int biome) const;
     // Whether a biome is a delta biome (the arms and islands of a river delta, decision E-850).
     [[nodiscard]] bool isDeltaBiome(int biome) const;
+    // Whether any column of a footprint (world, corners inclusive) lies in a river delta (decision
+    // E-850): every column is read, since an arm narrower than the samples of a placement may cross
+    // it between them. Only near a delta: away from the band along the coasts it reads the
+    // continent on a grid of a few blocks, near it the remembered delta of each cell of sites.
+    [[nodiscard]] bool touchesDelta(QcSurfacePlanner::Rect footprint) const;
     // The block of the top water layer of a column under the sea level (decision E-858): with
     // freezing by temperature ice where the column is cold enough, else the biome's frozenWater;
     // with a `frozenDepth` only where the water is that shallow (decision E-850).
@@ -187,6 +192,10 @@ private:
         int biome = 0;
     };
     [[nodiscard]] std::optional<DeltaCut> deltaCut(int x, int z, double continent, const RiverCut &river) const;
+    // The two gates of touchesDelta(), each one conservative: whether a footprint reaches into the
+    // band along the coasts, and whether a cell of sites under it has a delta.
+    [[nodiscard]] bool nearDeltaBand(QcSurfacePlanner::Rect footprint) const;
+    [[nodiscard]] bool deltaSiteUnder(QcSurfacePlanner::Rect footprint) const;
     // Overhangs: solidity of the band around the plain height that the 3D noise reshapes (below
     // it everything is solid, above it nothing). `solid` starts at the band's lowest y `bottom`.
     static constexpr int maxOverhangBand = 40;

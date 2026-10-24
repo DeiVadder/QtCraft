@@ -113,9 +113,16 @@ QcRiverDelta::QcRiverDelta(quint64 seed, const QcRiverField &rivers, int seaLeve
 {
 }
 
-bool QcRiverDelta::mayReach(double continent)
+bool QcRiverDelta::mayReach(double continent, double pad)
 {
-    return continent > bandSea && continent < bandLand;
+    return continent > bandSea - pad && continent < bandLand + pad;
+}
+
+bool QcRiverDelta::hasSiteAt(int x, int z, const Land &land) const
+{
+    // The same reading as shape() for the column.
+    const std::shared_ptr<const QcDeltaSites::Site> site = m_sites.siteNear(x, z, land);
+    return site && site->allowed > 0.0;
 }
 
 std::optional<QcRiverDelta::Fan> QcRiverDelta::fanAt(int x, int z, double continent, double riverValue) const

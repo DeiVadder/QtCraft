@@ -30,7 +30,8 @@ QList<int> doorColumns(const QList<QcBlockPos> &doorsteps, bool alongX, int row,
 }
 
 // One column of a forecourt, cellAt(1), cellAt(2), ... up to the first road cell; empty when it
-// does not reach a road within the forecourt's reach, std::nullopt when it crosses a piece or water.
+// does not reach a road within the forecourt's reach, std::nullopt when it crosses a piece, water or
+// a river delta.
 std::optional<QList<std::pair<int, int>>> forecourtColumn(const QcTerrainGenerator &terrain, const QcVillageDraft &draft,
                                                           const std::function<std::pair<int, int>(int)> &cellAt)
 {
@@ -41,7 +42,9 @@ std::optional<QList<std::pair<int, int>>> forecourtColumn(const QcTerrainGenerat
             return column;
         }
         const bool onPiece = std::ranges::any_of(draft.pieces, [&](Rect piece) { return piece.intersects({x, z, x, z}, 0); });
-        if (onPiece || terrain.column(x, z).height - 1 < terrain.seaLevel()) {
+        // No path through a river delta either (decision E-850).
+        const QcTerrainColumn ground = terrain.column(x, z);
+        if (onPiece || ground.height - 1 < terrain.seaLevel() || terrain.isDeltaBiome(ground.biome)) {
             return std::nullopt;
         }
         column.append({x, z});

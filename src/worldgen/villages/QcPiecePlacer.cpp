@@ -39,8 +39,12 @@ QcPiecePlacer::QcPiecePlacer(const QcTerrainGenerator &terrain, const QcContentR
 
 std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rect, int maxSlope) const
 {
+    const QcSurfacePlanner::Rect footprint{rect.x0, rect.z0, rect.x1, rect.z1};
     if (draft.style->overWater) {
-        return QcBoardwalkPlanner::floorFor(m_terrain, draft.style->stilts, {rect.x0, rect.z0}, {rect.x1, rect.z1});
+        const std::optional<int> floor = QcBoardwalkPlanner::floorFor(m_terrain, draft.style->stilts, {rect.x0, rect.z0}, {rect.x1, rect.z1});
+        // No column of a piece in a river delta (decision E-850): an arm may cross between the
+        // samples of the stilts.
+        return floor && !m_terrain.touchesDelta(footprint) ? floor : std::nullopt;
     }
 
     const std::array<std::pair<int, int>, 5> samples{
@@ -65,6 +69,11 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
         sum += column.height;
     }
     if (high - low > maxSlope) {
+        return std::nullopt;
+    }
+    // No column of a piece in a river delta (decision E-850): an arm may cross between the
+    // samples. Last, after the cheaper tests.
+    if (m_terrain.touchesDelta(footprint)) {
         return std::nullopt;
     }
     return static_cast<int>(std::lround(static_cast<double>(sum) / static_cast<double>(samples.size()))) - 1;

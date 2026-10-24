@@ -2,7 +2,9 @@
 
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include <algorithm>
 #include <cstdlib>
+#include <utility>
 
 namespace {
 
@@ -16,6 +18,22 @@ bool isWater(const QcTerrainColumn &column, int seaLevel)
 bool isWater(const QcTerrainGenerator &terrain, int x, int z)
 {
     return isWater(terrain.column(x, z), terrain.seaLevel());
+}
+
+// The column of the walkway's cell `along` blocks past the road end and `across` blocks to the
+// side of its middle line.
+std::pair<int, int> cellOf(const QcJettyPlanner::Request &request, int along, int across)
+{
+    return {request.x + request.dx * along - request.dz * across, request.z + request.dz * along + request.dx * across};
+}
+
+// The footprint of a walkway out to `end` blocks past the road end: the box round its corners.
+QcSurfacePlanner::Rect footprintOf(const QcJettyPlanner::Request &request, int end)
+{
+    const int half = request.width / 2;
+    const auto [x0, z0] = cellOf(request, 1, -half);
+    const auto [x1, z1] = cellOf(request, end, half);
+    return {std::min(x0, x1), std::min(z0, z1), std::max(x0, x1), std::max(z0, z1)};
 }
 
 // The walkway follows the ground down to the shore in steps of at most this much.
@@ -63,7 +81,8 @@ std::optional<QList<QcVillagePlan::Deck>> lay(const QcTerrainGenerator &terrain,
     while (end < water + request.over - 1 && isWater(terrain, request.x + request.dx * (end + 1), request.z + request.dz * (end + 1))) {
         ++end;
     }
-    if (end - water + 1 < 2) {
+    // No walkway over the arms of a river delta (decision E-850).
+    if (end - water + 1 < 2 || terrain.touchesDelta(footprintOf(request, end))) {
         return std::nullopt;
     }
 
@@ -75,8 +94,7 @@ std::optional<QList<QcVillagePlan::Deck>> lay(const QcTerrainGenerator &terrain,
         // On the ground's top block down to the shore, then just above the water.
         const int y = d < water ? heights[d - 1] : terrain.seaLevel();
         for (int w = -half; w <= half; ++w) {
-            const int x = request.x + request.dx * d - request.dz * w;
-            const int z = request.z + request.dz * d + request.dx * w;
+            const auto [x, z] = cellOf(request, d, w);
             const bool post = postRow && (w == -half || w == half);
             decks.append({{x, y, z}, request.deck, post ? request.post : qcAirBlockId});
         }

@@ -183,6 +183,12 @@ std::optional<QcRoadLayer::Ground> QcRoadLayer::roadGround(const QcVillageDraft 
     if (ends || blocked || !draft.insideRadius(rect)) {
         return std::nullopt;
     }
+    // Roads and bridges keep off river deltas (decision E-850): no column of the cell's widest
+    // brush (the square one of a bend) in a delta. Last, after the cheaper tests.
+    const Rect square = QcVillageDraft::brush(cell, dx, dz, true);
+    if (m_terrain.touchesDelta({square.x0, square.z0, square.x1, square.z1})) {
+        return std::nullopt;
+    }
     return ground;
 }
 
@@ -211,6 +217,7 @@ QcRoadLayer::Stretch QcRoadLayer::wetStretch(std::pair<int, int> cell, int dx, i
             return stretch;
         }
         stretch.river = stretch.river || m_terrain.isRiverBiome(column.biome);
+        stretch.delta = stretch.delta || m_terrain.isDeltaBiome(column.biome);
         ++stretch.cells;
     }
     return stretch;
@@ -230,7 +237,9 @@ std::optional<int> QcRoadLayer::bridgeHeight(const QcVillageDraft &draft, std::p
     const Stretch ahead = wetStretch(cell, dx, dz);
     const Stretch behind = wetStretch({cell.first - dx, cell.second - dz}, -dx, -dz);
     const bool fits = ahead.bankHeight && std::abs(*ahead.bankHeight - deck) <= 1 && ahead.cells + behind.cells <= maxBridge;
-    return fits && (ahead.river || behind.river) ? std::optional<int>(deck) : std::nullopt;
+    // No bridge into the arms of a delta (decision E-850).
+    const bool delta = ahead.delta || behind.delta;
+    return fits && !delta && (ahead.river || behind.river) ? std::optional<int>(deck) : std::nullopt;
 }
 
 int QcRoadLayer::bridgeDeck() const

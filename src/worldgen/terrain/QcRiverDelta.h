@@ -24,8 +24,13 @@ public:
     QcRiverDelta(quint64 seed, const QcRiverField &rivers, int seaLevel, double share);
 
     // Whether a column with this continent value (the terrain's, before the coast's smoothstep) can
-    // lie in a delta at all: a band along the coasts. Free; every other test costs noise.
-    [[nodiscard]] static bool mayReach(double continent);
+    // lie in a delta at all: a band along the coasts, widened by `pad` on both sides for a value
+    // read a few blocks away. Free; every other test costs noise.
+    [[nodiscard]] static bool mayReach(double continent, double pad = 0.0);
+    // Whether the cell of sites (QcDeltaSites::siteCell blocks) of a column has a delta that allows
+    // any: a column of a cell without one never lies in a delta (its shape() has no weight). The
+    // site is remembered per thread, so reading it again for the columns costs nothing.
+    [[nodiscard]] bool hasSiteAt(int x, int z, const Land &land) const;
 
     // A column that may lie in the fan of a delta, before its delta is known (that costs readings
     // of the continent, the climate and the river, remembered per cell): its continent value and

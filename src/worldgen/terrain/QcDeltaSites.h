@@ -48,6 +48,9 @@ public:
     static constexpr double coastContinent = -0.14;
     // A fan reaches this many blocks up the river from the mouth.
     static constexpr double fanLength = 110.0;
+    // The sites are searched from the middle of cells of this many blocks: every column of a cell
+    // has the same site.
+    static constexpr double siteCell = 8.0;
 
     // `rivers` must outlive the sites (the terrain generator owns both); `share`: the share of the
     // wide river mouths that get a delta (0..1; 1 every one).
