@@ -112,7 +112,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
     , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits,
-                m_explosions}
+                m_explosions, m_interaction}
 {
     static_assert(QcTickScheduler::intervalNs == static_cast<qint64>(QcPhysics::tickDuration * 1e9));
     m_tickTimer->setTimerType(Qt::PreciseTimer);

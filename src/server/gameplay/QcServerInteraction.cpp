@@ -4,6 +4,7 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
+#include "common/gameplay/QcSwingSpeed.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
 #include "common/protocol/QcChatText.h"
@@ -450,7 +451,7 @@ void QcServerInteraction::swingWhileMining()
 {
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && client->mining.pos
-            && (m_state.clock().tick() - client->mining.startTick) % miningSwingTicks == 0) {
+            && (m_state.clock().tick() - client->mining.startTick) % QcSwingSpeed::of(client->effects.all()).ticks() == 0) {
             client->swung = true;
         }
     }

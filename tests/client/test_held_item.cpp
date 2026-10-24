@@ -1,6 +1,7 @@
 #include "clientcore/meshing/QcAnimator.h"
 #include "clientcore/meshing/QcEntityMesher.h"
 #include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/meshing/QcHandSwing.h"
 #include "clientcore/meshing/QcHeldItemMesher.h"
 #include "clientcore/meshing/QcSpriteShape.h"
 #include "common/content/loader/QcBaseContent.h"
@@ -129,6 +130,32 @@ double handleToArm(const QcEntityMesh &mesh)
     return nearest;
 }
 
+// The first point along the edges of a hand's quads that lies on the crosshair or on the hotbar's
+// slots (the middle 76 % of the width, below -0.77 in y), as the default view shows them; empty
+// when there is none. A held sprite's front and back (the two quads after the arm) span its whole
+// square, transparent corners included; its sides outline the opaque texels and stand for it
+// (`sprite`; a block's faces all count).
+QString hudOverlap(const QcEntityMesh &mesh, bool sprite)
+{
+    const QRectF hotbar(QPointF(-0.38, -1.0), QPointF(0.38, -0.77));
+    for (qsizetype quad = 0; quad + 3 < mesh.vertices.size(); quad += 4) {
+        if (sprite && (quad == armVertices || quad == armVertices + quadVertices)) {
+            continue;
+        }
+        for (int corner = 0; corner < 4; ++corner) {
+            const QcVec3 a = at(mesh.vertices[quad + corner]);
+            const QcVec3 b = at(mesh.vertices[quad + (corner + 1) % 4]);
+            for (int i = 0; i <= 8; ++i) {
+                const QPointF p = screen(a + (b - a) * (i / 8.0));
+                if (hotbar.contains(p) || std::hypot(p.x(), p.y()) < 0.1) {
+                    return u"%1 %2 (%3)"_s.arg(p.x()).arg(p.y()).arg(quad < armVertices ? u"arm"_s : u"item"_s);
+                }
+            }
+        }
+    }
+    return {};
+}
+
 } // namespace
 
 // The item in a hand (decision E-831): sprite shapes, extruded sprites, the first-person grip and
@@ -161,6 +188,17 @@ class TestHeldItem : public QObject
 
     // Stone, a full block, as the base content holds it.
     QcEntityMesher::ItemLook block() const { return baseLook(u"qtcraft:stone"_s); }
+
+    // The first-person hand holding `look` at `progress` of a swing (negative: at rest), of the
+    // mining loop or a click's.
+    QcEntityMesh handMesh(const QcEntityMesher::ItemLook &look, double progress, bool mining) const
+    {
+        QcEntityPose pose;
+        pose.swingProgress = progress;
+        QcEntityMesh mesh;
+        QcEntityMesher::appendHand(mesh, {m_look, &look}, QcAnimator::animateHand(pose, 0.0, {.mining = mining}), {{}, 0.0, 0.0, 1.0f}, anyUv);
+        return mesh;
+    }
 
 private slots:
     void initTestCase()
@@ -243,82 +281,161 @@ private slots:
         QcEntityMesher::appendHand(mesh, {m_look, &pick}, {}, {{}, 0.0, 0.0, 1.0f}, anyUv);
         QVERIFY(mesh.vertices.size() > armVertices + 2 * quadVertices);
 
-        // Large in the lower right, right of the crosshair: from the end of the handle, hidden in
-        // the fist near the bottom of the screen, up to the head a little above the crosshair; the
-        // part above the arm is about a third of the screen high.
+        // In the lower right corner like the reference (decision E-881): the head a little above
+        // the crosshair's height but well right of it, the handle running down out of the screen
+        // (handKeepsClearOfCrosshairAndHotbar checks the crosshair itself).
         const QRectF item = screenBounds(mesh, armVertices, mesh.vertices.size());
-        QVERIFY2(item.height() > 1.2 && item.height() < 1.7, qPrintable(QString::number(item.height())));
-        QVERIFY2(item.center().x() > 0.15 && item.right() < 1.0, qPrintable(QString::number(item.center().x())));
+        QVERIFY2(item.left() > 0.15 && item.right() > 0.8, qPrintable(u"%1 %2"_s.arg(item.left()).arg(item.right())));
         // The rectangle has y up: top() is its lowest point, bottom() its highest.
-        QVERIFY2(item.bottom() > 0.1 && item.bottom() < 0.5 && item.top() > -1.3, qPrintable(QString::number(item.bottom())));
+        QVERIFY2(item.bottom() < 0.45 && item.bottom() > -0.3 && item.top() < -0.6, qPrintable(u"%1 %2"_s.arg(item.bottom()).arg(item.top())));
+        QVERIFY2(item.height() > 0.5, qPrintable(QString::number(item.height())));
 
         // The arm comes up from below the screen to the fist.
         const QRectF arm = screenBounds(mesh, 0, armVertices);
         QVERIFY(arm.top() < -1.0);
         QVERIFY(arm.bottom() > -1.0);
 
-        // The end of the handle lies inside the arm's end.
-        QVERIFY2(handleToArm(mesh) < 0.15, qPrintable(QString::number(handleToArm(mesh))));
+        // The end of the handle lies at the arm's end (near one of its corners; the larger tool's
+        // grip sits a little farther up the handle).
+        QVERIFY2(handleToArm(mesh) < 0.2, qPrintable(QString::number(handleToArm(mesh))));
 
-        // At rest the flat side faces the viewer, so the tool is readable: the front's normal
-        // points mostly along the line of sight.
+        // At rest the flat side faces the viewer nearly squarely, like the reference (decision
+        // E-881), so the tool reads clearly.
         QVERIFY2(facing(mesh) > 0.6, qPrintable(QString::number(facing(mesh))));
     }
 
-    void swingTurnsThePointTowardsTheBlock()
+    // Decision E-881: arm and tool swing as one rigid body. Every distance between two vertices of
+    // the hand (arm and tool alike) stays what it is at rest over the whole swing, for the mining
+    // loop and for a click; nothing bends, shears or squashes.
+    void swingIsRigid()
     {
         const QcEntityMesher::ItemLook pick = tool();
-        QVERIFY(pick.swing.rotate != pick.firstPerson.rotate);
-        QcEntityPose swinging;
-        const auto meshAt = [&](double progress) {
-            swinging.swingProgress = progress;
-            QcEntityMesh mesh;
-            QcEntityMesher::appendHand(mesh, {m_look, &pick}, QcAnimator::animateHand(swinging, 0.0, -1.0, -1.0, -1.0), {{}, 0.0, 0.0, 1.0f}, anyUv);
-            return mesh;
-        };
+        const QcEntityMesh rest = handMesh(pick, -1.0, true);
+        // Every fifth vertex, so arm, front, back and sides are all sampled.
+        QList<qsizetype> sample;
+        for (qsizetype i = 0; i < rest.vertices.size(); i += 5) {
+            sample.append(i);
+        }
+        QVERIFY(sample.size() > 20);
 
-        // The turn into the swing placement runs smoothly there and back: none at the start and
-        // the end, all of it in the middle of the swing.
-        QCOMPARE(QcAnimator::animateHand(swinging, 0.0, -1.0, -1.0, -1.0).swing, 0.0);
-        const double rest = facing(meshAt(-1.0));
-        QCOMPARE(facing(meshAt(0.0)), rest);
-        QVERIFY(std::abs(facing(meshAt(1.0)) - rest) < 1e-6);
-
-        // In the middle of the swing (pitching about the camera's x axis) the flat side faces
-        // sideways (mostly along x), so the point of the head, not its face, comes down onto the
-        // block.
-        const QcEntityMesh middle = meshAt(0.5);
-        const QcVec3 face = normalOf(middle, armVertices / quadVertices);
-        QVERIFY2(std::abs(face.x) > 0.85 * face.length(), qPrintable(u"%1 %2 %3"_s.arg(face.x).arg(face.y).arg(face.z)));
-
-        // The handle stays in the fist all the time.
-        for (const double progress : {0.15, 0.3, 0.5, 0.7, 0.9}) {
-            const QcEntityMesh mesh = meshAt(progress);
-            QVERIFY2(handleToArm(mesh) < 0.15, qPrintable(u"%1: %2"_s.arg(progress).arg(handleToArm(mesh))));
+        for (const bool mining : {true, false}) {
+            for (int step = 0; step <= 20; ++step) {
+                const double progress = step / 20.0;
+                const QcEntityMesh moved = handMesh(pick, progress, mining);
+                QCOMPARE(moved.vertices.size(), rest.vertices.size());
+                double worst = 0.0;
+                for (const qsizetype a : sample) {
+                    for (const qsizetype b : sample) {
+                        const double before = (at(rest.vertices[a]) - at(rest.vertices[b])).length();
+                        const double after = (at(moved.vertices[a]) - at(moved.vertices[b])).length();
+                        worst = std::max(worst, std::abs(after - before));
+                    }
+                }
+                QVERIFY2(worst < 1e-4, qPrintable(u"mining %1, progress %2: %3 m"_s.arg(mining).arg(progress).arg(worst)));
+                // The handle never leaves the fist.
+                QVERIFY2(handleToArm(moved) < 0.2, qPrintable(QString::number(progress)));
+            }
         }
     }
 
-    void swingMovesArmAndToolTogether()
+    // Decision E-881: from the corner the strike travels a good part of the way towards the middle
+    // of the screen (the head's left end moves by more than a tenth of the screen's width) after a
+    // lift, and back.
+    void swingStrikesTowardsTheMiddle()
     {
         const QcEntityMesher::ItemLook pick = tool();
-        QcEntityPose swinging;
         const auto toolAt = [&](double progress) {
-            swinging.swingProgress = progress;
-            QcEntityMesh mesh;
-            QcEntityMesher::appendHand(mesh, {m_look, &pick}, QcAnimator::animateHand(swinging, 0.0, -1.0, -1.0, -1.0), {{}, 0.0, 0.0, 1.0f}, anyUv);
+            const QcEntityMesh mesh = handMesh(pick, progress, true);
             return screenBounds(mesh, armVertices, mesh.vertices.size());
         };
+        const QcHandSwing::Shape &shape = QcHandSwing::shapeOf(QcHandSwing::Style::Mining);
 
         const QRectF rest = toolAt(-1.0);
-        const QRectF top = toolAt(QcAnimator::swingTop);
-        const QRectF bottom = toolAt(QcAnimator::swingBottom);
-        // Up first, then down and inwards, always on the screen.
-        QVERIFY(top.top() > rest.top());
-        QVERIFY(bottom.bottom() < rest.bottom());
-        QVERIFY(bottom.center().x() < rest.center().x());
-        for (const QRectF &moment : {rest, top, bottom}) {
-            QVERIFY(moment.intersects(QRectF(-1.0, -1.0, 2.0, 2.0)));
+        const QRectF top = toolAt(shape.windUpEnd);
+        const QRectF bottom = toolAt(shape.strikeEnd);
+        // bottom() is the highest point (y up).
+        QVERIFY(top.bottom() > rest.bottom());
+        QVERIFY2(rest.left() - bottom.left() > 0.2, qPrintable(u"%1 %2"_s.arg(rest.left()).arg(bottom.left())));
+        QVERIFY(std::abs(toolAt(1.0).left() - rest.left()) < 1e-6);
+    }
+
+    // Decision E-881: at no moment of a mining swing or a click do arm or held item reach the
+    // crosshair or cover the hotbar, as the default view shows them.
+    void handKeepsClearOfCrosshairAndHotbar()
+    {
+        for (const QString &name : {u"pickaxe"_s, u"qtcraft:iron_sword"_s, u"qtcraft:iron_axe"_s, u"qtcraft:stone"_s}) {
+            const QcEntityMesher::ItemLook look = name == u"pickaxe"_s ? tool() : baseLook(name);
+            for (const bool mining : {true, false}) {
+                for (int step = -1; step <= 20; ++step) {
+                    const QString overlap = hudOverlap(handMesh(look, step / 20.0, mining), !look.cube);
+                    QVERIFY2(overlap.isEmpty(), qPrintable(u"%1 mining %2 step %3: %4"_s.arg(name).arg(mining).arg(step).arg(overlap)));
+                }
+            }
         }
+    }
+
+    // A mod's swing placement (ItemLook::swing, decisions E-831 and E-881; the base content sets
+    // none): over a swing the item turns about the grip from its rest placement towards it, not at
+    // all where the swing starts and ends, fully in its middle, the handle in the fist throughout.
+    void modSwingPlacementTurnsInTheFist()
+    {
+        const QcEntityMesher::ItemLook plain = tool();
+        QCOMPARE(plain.swing.rotate, plain.firstPerson.rotate);
+        QcEntityMesher::ItemLook turning = plain;
+        turning.swing.rotate = plain.firstPerson.rotate + QcVec3{0.0, 40.0, -30.0};
+        // The same item resting in the swing placement: what the turning one shows halfway.
+        QcEntityMesher::ItemLook turned = turning;
+        turned.firstPerson = turning.swing;
+        turned.firstPerson.scale = plain.firstPerson.scale;
+        turned.swing = turned.firstPerson;
+
+        // The largest distance between the same vertex of two meshes.
+        const auto apart = [](const QcEntityMesh &a, const QcEntityMesh &b) {
+            double worst = 0.0;
+            for (qsizetype i = 0; i < a.vertices.size(); ++i) {
+                worst = std::max(worst, (at(a.vertices[i]) - at(b.vertices[i])).length());
+            }
+            return worst;
+        };
+        for (const double progress : {0.0, 1.0}) {
+            QVERIFY2(apart(handMesh(turning, progress, true), handMesh(plain, progress, true)) < 1e-6, qPrintable(QString::number(progress)));
+        }
+        QVERIFY(apart(handMesh(turning, 0.5, true), handMesh(turned, 0.5, true)) < 1e-6);
+        QVERIFY(apart(handMesh(turning, 0.5, true), handMesh(plain, 0.5, true)) > 0.05);
+        for (const double progress : {0.25, 0.5, 0.75}) {
+            QVERIFY2(handleToArm(handMesh(turning, progress, true)) < 0.2, qPrintable(QString::number(progress)));
+        }
+    }
+
+    // Decision E-881: tools are held larger than before (rest scale 0.45), so the head reads
+    // clearly, and leaning to the right.
+    void toolsAreHeldLargeAndLeaningRight()
+    {
+        constexpr double previousScale = 0.45;
+        for (const QString &item : {u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_sword"_s, u"qtcraft:iron_axe"_s, u"qtcraft:iron_shovel"_s,
+                                    u"qtcraft:iron_hoe"_s}) {
+            const QcEntityMesher::ItemLook look = baseLook(item);
+            const double factor = look.firstPerson.scale.x / previousScale;
+            QVERIFY2(factor >= 1.2 && factor <= 1.6, qPrintable(u"%1: %2"_s.arg(item).arg(factor)));
+        }
+
+        // From the end of the handle to the sprite's upper right corner (the end of the head's
+        // right prong): up, to the right and forward (-z), 15 to 40 degrees off the vertical, so
+        // the tool leans to the right like the reference.
+        const QcEntityMesh mesh = handMesh(tool(), -1.0, true);
+        const auto front = mesh.vertices.mid(armVertices, quadVertices);
+        const auto corner = [&](float u, float v) { return at(*std::ranges::find_if(front, [&](const QcEntityVertex &w) { return w.u == u && w.v == v; })); };
+        const QcVec3 lowerLeft = corner(0.0f, 1.0f);
+        const QcVec3 handle = lowerLeft + (corner(1.0f, 1.0f) - lowerLeft) * (0.5 / 16.0) + (corner(0.0f, 0.0f) - lowerLeft) * (1.5 / 16.0);
+        const QcVec3 upperRight = corner(1.0f, 0.0f);
+        const QcVec3 along = upperRight - handle;
+        const double offVertical = qRadiansToDegrees(std::acos(along.y / along.length()));
+        QVERIFY2(along.y > 0.0 && along.x > 0.0 && along.z < 0.0, qPrintable(u"%1 %2 %3"_s.arg(along.x).arg(along.y).arg(along.z)));
+        QVERIFY2(offVertical > 15.0 && offVertical < 40.0, qPrintable(QString::number(offVertical)));
+
+        // A sword shows enough of its flat side that the blade reads as a blade, not as an edge.
+        const double sword = facing(handMesh(baseLook(u"qtcraft:iron_sword"_s), -1.0, true));
+        QVERIFY2(sword > 0.3, qPrintable(QString::number(sword)));
     }
 
     void blocksAndShapelessSpritesSitOnTheFist()

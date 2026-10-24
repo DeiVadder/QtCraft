@@ -551,9 +551,11 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
-    const QcHandTimers timers = session.handTimers(alpha);
+    QcHandTimers timers = session.handTimers(alpha);
+    // Screenshot hook: a frozen "swing" is a moment of the mining swing.
+    timers.mining = timers.mining || m_forcedPose.startsWith(u"swing"_s);
     const double seconds = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
-    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers.switchProgress, timers.landing, timers.use);
+    const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.
     const QcBlockPos head{static_cast<int>(std::floor(eye.x)), static_cast<int>(std::floor(eye.y)), static_cast<int>(std::floor(eye.z))};
     const QcEntityLight light(skyExposure(*session.world(), head), blockLightAt(head));

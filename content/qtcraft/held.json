@@ -2,14 +2,12 @@
     "categories": {
         "tool": {
             "grip": "handle",
-            "firstPerson": { "translate": [0, 0, 0], "rotate": [0, -20, 62], "scale": 0.45 },
-            "swing": { "rotate": [0, -85, -15] },
+            "firstPerson": { "translate": [-0.17, -0.1, 0], "rotate": [-30, 30, 20], "scale": 0.6 },
             "thirdPerson": { "translate": [0, 0, 0], "rotate": [-30, -75, 0], "scale": 0.6 }
         },
         "weapon": {
             "grip": "handle",
-            "firstPerson": { "translate": [0, 0, 0], "rotate": [0, -20, 62], "scale": 0.45 },
-            "swing": { "rotate": [0, -85, -15] },
+            "firstPerson": { "translate": [-0.17, -0.1, 0], "rotate": [-30, 30, 20], "scale": 0.6 },
             "thirdPerson": { "translate": [0, 0, 0], "rotate": [-30, -75, 0], "scale": 0.6 }
         },
         "launcher": {

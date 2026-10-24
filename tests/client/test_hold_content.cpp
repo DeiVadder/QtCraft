@@ -84,16 +84,14 @@ private slots:
         QVERIFY(stone.cube && stone.boxes.isEmpty());
         QCOMPARE(stone.firstPerson.scale, *content.holdDefaults().of(QcHoldCategory::Block).firstPerson.scale);
 
-        // Tools and weapons turn into another placement during the swing; the swing keeps the rest
-        // translation and size it does not set. Everything else keeps its rest placement.
-        for (const QcHoldCategory swinging : {QcHoldCategory::Tool, QcHoldCategory::Weapon}) {
-            QVERIFY(content.holdDefaults().of(swinging).swing.rotate);
-            QVERIFY(content.holdDefaults().of(swinging).swing.rotate != content.holdDefaults().of(swinging).firstPerson.rotate);
+        // Nothing of the base game turns in the fist during the swing (decision E-881): arm and item
+        // swing as one rigid body, so every swing placement is the rest placement.
+        for (std::size_t category = 0; category < qcHoldCategoryCount; ++category) {
+            QVERIFY(content.holdDefaults().of(static_cast<QcHoldCategory>(category)).swing.isEmpty());
         }
-        QCOMPARE(pickaxe.swing.rotate, *content.holdDefaults().of(QcHoldCategory::Tool).swing.rotate);
-        QCOMPARE(pickaxe.swing.translate, pickaxe.firstPerson.translate);
         QCOMPARE(pickaxe.swing.scale, pickaxe.firstPerson.scale);
-        for (const QString &still : {u"qtcraft:bow"_s, u"qtcraft:torch"_s, u"qtcraft:stone"_s, u"qtcraft:oak_door"_s}) {
+        for (const QString &still : {u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_sword"_s, u"qtcraft:bow"_s, u"qtcraft:torch"_s, u"qtcraft:stone"_s,
+                                     u"qtcraft:oak_door"_s}) {
             const QcEntityMesher::ItemLook look = lookOf(content, still);
             QVERIFY2(look.swing.rotate == look.firstPerson.rotate && look.swing.translate == look.firstPerson.translate, qPrintable(still));
         }

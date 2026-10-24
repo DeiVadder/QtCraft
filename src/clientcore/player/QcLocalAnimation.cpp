@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
-void QcLocalAnimation::tick(QcItemId held, bool mining)
+void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
 {
     const auto advance = [](int &ticks, int length) {
         if (ticks < 0) {
@@ -18,7 +18,7 @@ void QcLocalAnimation::tick(QcItemId held, bool mining)
         }
     };
 
-    advance(m_swingTicks, swingTicks);
+    advance(m_swingTicks, m_swingLength);
     advance(m_useTicks, QcHandTimers::useTicks);
     advance(m_switchTicks, QcHandTimers::switchTicks);
     advance(m_landingTicks, QcHandTimers::landingTicks);
@@ -28,9 +28,12 @@ void QcLocalAnimation::tick(QcItemId held, bool mining)
         m_switchTicks = 0;
     }
 
-    // Keep swinging while a block is being mined.
+    // Keep swinging while a block is being mined: the next swing starts in the tick the last one
+    // ends, so the loop has no pause and its period is the swing's length, like the server's
+    // cadence of swings (QcServerInteraction::swingWhileMining).
+    m_nextSwingLength = speed.ticks();
     if (mining && m_swingTicks < 0) {
-        m_swingTicks = 0;
+        startSwing(QcHandSwing::Style::Mining);
     }
 }
 
@@ -58,7 +61,7 @@ QcEntityPose QcLocalAnimation::localPose(double alpha, const QcPrediction &predi
     pose.flying = motion.flying;
     pose.riding = prediction.riding().isRiding();
     pose.sneaking = pose.sneaking && !pose.riding;
-    pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / swingTicks;
+    pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / m_swingLength;
     pose.drawProgress = drawProgress;
     pose.headPitch = intent.pitch;
     return pose;
@@ -68,7 +71,7 @@ QcHandTimers QcLocalAnimation::handTimers(double alpha) const
 {
     const auto progress = [alpha](int ticks, int length) { return ticks < 0 ? -1.0 : (ticks + alpha) / length; };
     return {progress(m_switchTicks, QcHandTimers::switchTicks), progress(m_landingTicks, QcHandTimers::landingTicks),
-            progress(m_useTicks, QcHandTimers::useTicks)};
+            progress(m_useTicks, QcHandTimers::useTicks), m_swingTicks >= 0 && m_swingStyle == QcHandSwing::Style::Mining};
 }
 
 QcEntityPose QcLocalAnimation::poseOf(const QcClientEntity &entity, double alpha)

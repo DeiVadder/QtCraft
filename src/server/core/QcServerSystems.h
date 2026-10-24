@@ -8,13 +8,15 @@ class QcServerCircuits;
 class QcServerExperience;
 class QcServerExplosions;
 class QcServerFire;
+class QcServerInteraction;
 class QcServerMinecarts;
 class QcServerProjectiles;
 class QcServerWeather;
 class QcSnowfall;
 
 // The gameplay systems of a server: each runs its own part of the tick on the world and its bodies
-// (fire, weather, health, minecarts, experience, projectiles, circuits). QcServer owns them and
+// (fire, weather, health, minecarts, experience, projectiles, circuits, explosions, the players'
+// mining and using). QcServer owns them and
 // hands them out together through QcServer::systems(), for the headless game, tools and tests that
 // drive or inspect one of them directly.
 struct QcServerSystems
@@ -39,4 +41,6 @@ struct QcServerSystems
     QcServerCircuits &circuits;
     // Explosives and explosions (decisions E-600 to E-604).
     QcServerExplosions &explosions;
+    // Mining, using items and entities, and the swings while mining (decision E-881).
+    QcServerInteraction &interaction;
 };

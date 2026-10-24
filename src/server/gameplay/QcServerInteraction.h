@@ -29,8 +29,6 @@ class QcServerState;
 class QcServerInteraction
 {
 public:
-    static constexpr int miningSwingTicks = 6;
-
     // Ticks of slack (of 50 ms) when checking a client's claim that a block is broken (network
     // jitter); at a slower tick rate the latest tick's real time counts as slack too, since the
     // players' time only moves with the ticks (decision E-249).
@@ -60,7 +58,8 @@ public:
     void finishMining(QcServerClient &client, QcBlockPos pos);
     void useItem(QcServerClient &client, const QcMsg::UseItem &message);
     void useEntity(QcServerClient &client, quint32 entityId);
-    // While a player mines, the arm swings again every miningSwingTicks (simulated ticks only).
+    // While a player mines, the arm swings again every swing length (QcSwingSpeed of his status
+    // effects, decision E-881; simulated ticks only), in step with his own client's loop.
     void swingWhileMining();
 
 private:

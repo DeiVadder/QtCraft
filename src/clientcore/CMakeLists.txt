@@ -89,6 +89,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcEntityPose.h
     meshing/QcEntityVertex.h
     meshing/QcFigureLook.h meshing/QcFigureLook.cpp
+    meshing/QcHandSwing.h meshing/QcHandSwing.cpp
     meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
     meshing/QcHeldItemMesher.h meshing/QcHeldItemMesher.cpp
     meshing/QcIndexPacking.h

@@ -1,5 +1,7 @@
 #include "clientcore/meshing/QcAnimator.h"
 
+#include "clientcore/meshing/QcHandSwing.h"
+
 #include "common/physics/QcPhysics.h"
 
 #include <QtMath>
@@ -22,6 +24,8 @@ constexpr double maxHeadYaw = 80.0;
 // Lying on the back turns the body around this height above the feet: the back rests just above
 // the place the entity stands on (the top of its bed); the server's box of a lying body follows it.
 constexpr double sleepPivot = QcPhysics::lyingPivot;
+// How far the empty arm punches forward in the middle of a swing, in metres.
+constexpr double emptyPunch = 0.14;
 
 double smooth(double t)
 {
@@ -144,7 +148,7 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     return result;
 }
 
-HandPose animateHand(const QcEntityPose &pose, double time, double switchProgress, double landing, double useProgress)
+HandPose animateHand(const QcEntityPose &pose, double time, const QcHandTimers &timers)
 {
     HandPose hand;
     // Walking bob: the hand traces a small arc with each stride; breathing at rest.
@@ -158,28 +162,34 @@ HandPose animateHand(const QcEntityPose &pose, double time, double switchProgres
         hand.offset.y += 0.03;
         hand.pitch += 6.0;
     }
-    if (landing >= 0.0) {
-        hand.offset.y -= 0.05 * std::sin(std::clamp(landing, 0.0, 1.0) * M_PI);
+    if (timers.landing >= 0.0) {
+        hand.offset.y -= 0.05 * std::sin(std::clamp(timers.landing, 0.0, 1.0) * M_PI);
     }
-    if (switchProgress >= 0.0) {
+    if (timers.switchProgress >= 0.0) {
         // Down and up again while the new item is drawn.
-        hand.offset.y -= 0.35 * std::sin(std::clamp(switchProgress, 0.0, 1.0) * M_PI);
+        hand.offset.y -= 0.35 * std::sin(std::clamp(timers.switchProgress, 0.0, 1.0) * M_PI);
     }
 
+    // Arm and item turn as one about the shoulder (decision E-881): mining loops the full swing, a
+    // click (attacking, placing, using) makes the short one. A swing placement of the content, if
+    // any, is reached in the middle of every swing; the empty arm punches forward meanwhile.
+    double swingProgress = -1.0;
+    QcHandSwing::Style style = QcHandSwing::Style::Click;
     if (pose.swingProgress >= 0.0) {
-        // Up first, then down and inwards across the crosshair, then back to rest; small angles
-        // keep the arm and the held item on the screen.
-        const double lift = swingLift(pose.swingProgress);
-        const double down = std::max(0.0, -lift);
-        const double thrust = std::sin(std::clamp(pose.swingProgress, 0.0, 1.0) * M_PI);
-        hand.offset.x -= 0.08 * down;
-        hand.offset.y += 0.04 * lift;
-        hand.offset.z -= 0.10 * thrust;
-        hand.pitch += lift >= 0.0 ? 22.0 * lift : 12.0 * lift;
-        hand.yaw += 18.0 * down;
-        // The item turns into its swing placement on the way up and back after the blow, fully
-        // turned around the middle of the swing.
-        hand.swing = thrust;
+        swingProgress = pose.swingProgress;
+        style = timers.mining ? QcHandSwing::Style::Mining : QcHandSwing::Style::Click;
+    } else if (timers.use >= 0.0) {
+        swingProgress = timers.use;
+    }
+    if (swingProgress >= 0.0) {
+        const QcHandSwing::Angles swing = QcHandSwing::at(swingProgress, style);
+        const double middle = std::sin(std::clamp(swingProgress, 0.0, 1.0) * M_PI);
+        hand.pitch += swing.pitch;
+        hand.yaw += swing.yaw;
+        hand.roll += swing.roll;
+        hand.reach = swing.reach;
+        hand.swing = middle;
+        hand.punch = emptyPunch * middle;
     }
     if (pose.drawProgress >= 0.0) {
         // Drawing a bow: the hand comes to the middle and pulls back, trembling at a full draw.
@@ -190,11 +200,6 @@ HandPose animateHand(const QcEntityPose &pose, double time, double switchProgres
         hand.offset.z += 0.12 * draw;
         hand.yaw += 20.0;
         hand.pitch += 10.0;
-    }
-    if (useProgress >= 0.0) {
-        const double push = std::sin(std::clamp(useProgress, 0.0, 1.0) * M_PI);
-        hand.offset.z -= 0.12 * push;
-        hand.pitch += 15.0 * push;
     }
     return hand;
 }

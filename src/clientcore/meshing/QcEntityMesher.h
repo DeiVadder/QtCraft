@@ -124,14 +124,21 @@ inline constexpr double itemSpriteSize = 0.45;
 // metres) and how large the empty arm is drawn (decision E-722).
 inline constexpr QcVec3 emptyHandShoulder{0.4, -0.4, -0.08};
 inline constexpr double emptyHandScale = 0.8;
+// Metres the empty arm rises per metre of its punch forward (HandPose::punch), so the fist strikes
+// ahead over the swing's downward turn instead of dropping onto the hotbar.
+inline constexpr double emptyPunchRise = 1.4;
 // The first-person arm holding an item (decision E-831): the grip in the camera's frame, low right
 // of the crosshair; the arm's pitch (degrees, 90 points it forward) and turn (negative: inwards)
 // and its scale; the grip lies this far (model metres) above the end of the arm, inside the fist.
-inline constexpr QcVec3 heldGrip{0.3, -0.3, -0.55};
+inline constexpr QcVec3 heldGrip{0.55, -0.40, -0.55};
 inline constexpr double heldArmPitch = 100.0;
 inline constexpr double heldArmYaw = -20.0;
 inline constexpr double heldArmScale = 0.8;
 inline constexpr double heldFistInset = 0.08;
+// Where the arm holding an item moves at the bottom of a strike (HandPose::reach; metres, camera
+// frame): up, left and a little forward, so the blow travels from the lower right corner towards
+// the middle of the screen and stays above the hotbar (decision E-881).
+inline constexpr QcVec3 heldStrikeShift{-0.03, 0.14, -0.02};
 
 // Height the humanoid models are built for.
 inline constexpr double modelHeight = 1.8;

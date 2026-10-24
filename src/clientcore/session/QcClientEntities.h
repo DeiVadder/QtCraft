@@ -6,6 +6,7 @@
 #include "clientcore/session/QcSnapshotClock.h"
 #include "clientcore/sound/QcLocalSounds.h"
 #include "clientcore/sound/QcSoundCue.h"
+#include "common/gameplay/QcSwingSpeed.h"
 #include "common/protocol/QcMessages.h"
 
 #include <QElapsedTimer>
@@ -24,8 +25,9 @@ class QcClientEntities
 public:
     QcClientEntities() { m_localClock.start(); }
 
-    // Animation lengths in ticks.
-    static constexpr int swingTicks = 6;
+    // Animation lengths in ticks. Other players' swings take the base length (their status
+    // effects are not sent, decision E-881).
+    static constexpr int swingTicks = QcSwingSpeed::baseTicks;
     static constexpr int deathTicks = 20;
     static constexpr int hurtFlashTicks = 6;
     // Share of the newest tick in the smoothed walking speed.

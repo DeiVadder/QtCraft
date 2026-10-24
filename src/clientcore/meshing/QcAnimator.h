@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/player/QcHandTimers.h"
 #include "common/content/definitions/QcModelDefinition.h"
 #include "common/core/QcVec3.h"
 
@@ -49,32 +50,39 @@ struct BodyPose
 };
 
 // Where the first-person arm and held item sit relative to their rest position, in the camera's
-// frame (x right, y up, z backwards) in metres, and how far the arm is turned (degrees). `swing`
-// (0..1) is how far the held item has turned from its rest placement to its swing placement
-// (ItemLook::swing, decision E-831).
+// frame (x right, y up, z backwards) in metres, and how far arm and item are turned together about
+// the shoulder (degrees; QcHandSwing::Angles). `swing` (0..1) is how far the held item has turned
+// from its rest placement to its swing placement (ItemLook::swing, decision E-831); the base
+// content gives none, so arm and item swing as one rigid body (decision E-881). `roll` turns an
+// arm holding an item about the fist and `reach` (0..1, how far into the strike) moves it as a
+// whole towards the middle of the screen (QcEntityMesher::heldStrikeShift); `punch` (metres) moves
+// the empty arm, and only it, forward as a whole: a fist strikes ahead, not just down.
 struct HandPose
 {
     QcVec3 offset;
     double pitch = 0.0;
     double yaw = 0.0;
+    double roll = 0.0;
     double swing = 0.0;
+    double reach = 0.0;
+    double punch = 0.0;
 };
 
 // Share of a mining or attack swing at which the arm is highest and lowest.
 inline constexpr double swingTop = 0.2;
 inline constexpr double swingBottom = 0.6;
 
-// Height of the swinging arm over its progress (0..1): rises quickly to 1 at swingTop, strikes
-// down to -1 at swingBottom, and settles back to 0 at the end. Shared by the first-person hand and
-// the body, so both strike from top to bottom.
+// Height of a figure's swinging arm over its progress (0..1): rises quickly to 1 at swingTop,
+// strikes down to -1 at swingBottom, and settles back to 0 at the end. The first-person hand
+// swings by QcHandSwing.
 double swingLift(double progress);
 
 // `time` is a free-running clock in seconds for idle motion.
 BodyPose animateBody(const QcEntityPose &pose, double time);
 
-// `switchProgress` runs from 0 to 1 after the held item changed (negative when idle); `landing`
-// from 0 to 1 after touching the ground (negative otherwise); `useProgress` like swingProgress
-// for placing or eating.
-HandPose animateHand(const QcEntityPose &pose, double time, double switchProgress, double landing, double useProgress);
+// The hand of the own player: `pose.swingProgress` swings it (the mining loop or a click's short
+// swing, by `timers.mining`), `timers` switch the item, land and use (placing or eating: a click's
+// swing too); `time` drives the breathing.
+HandPose animateHand(const QcEntityPose &pose, double time, const QcHandTimers &timers);
 
 } // namespace QcAnimator

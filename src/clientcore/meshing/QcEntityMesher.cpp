@@ -297,14 +297,15 @@ double armLength(const QcModelBone *arm)
 
 // The empty first-person arm: the shoulder sits low on the right, a little ahead of the eyes so
 // the sleeve's cuff shows; the arm points forward, slightly up and inwards, drawn smaller and lower
-// than an arm holding an item (decision E-722). `toWorld` maps the camera's frame to world space.
+// than an arm holding an item (decision E-722); a swing's punch moves it forward as a whole. `toWorld`
+// maps the camera's frame to world space.
 void emitEmptyHand(const LayerPainter &paint, const ModelLook &look, const QcAnimator::HandPose &hand, const PlaceFunction &toWorld)
 {
     const QcModelBone *arm = look.model ? boneWithRole(*look.model, QcBoneRole::RightArm) : nullptr;
     if (!arm || !look.outfit) {
         return;
     }
-    const QcVec3 shoulder = emptyHandShoulder + hand.offset;
+    const QcVec3 shoulder = emptyHandShoulder + hand.offset + QcVec3{0.0, emptyPunchRise * hand.punch, -hand.punch};
     const Rotate armRotate(108.0 + hand.pitch, 0.0);
     const Turn armTurn(-14.0 - hand.yaw);
     emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return toWorld(shoulder + armTurn(armRotate(local * emptyHandScale))); });
@@ -323,10 +324,13 @@ void emitHeldHand(const LayerPainter &paint, const Figure &figure, const QcAnima
     const auto armRest = [&](const QcVec3 &local) { return armTurn(armPitch(local * heldArmScale)); };
     // Points at rest relative to the shoulder; the grip lies inside the fist, above the arm's end.
     const QcVec3 grip = armRest({0.0, heldFistInset - armLength(arm), 0.0});
-    const QcVec3 shoulder = heldGrip - grip + hand.offset;
+    const QcVec3 shoulder = heldGrip - grip + hand.offset + heldStrikeShift * hand.reach;
     const Rotate swingPitch(hand.pitch, 0.0);
     const Turn swingTurn(-hand.yaw);
-    const auto camera = [&](const QcVec3 &rest) { return toWorld(shoulder + swingTurn(swingPitch(rest))); };
+    // The roll turns the hand about the fist, in the picture's plane: the tool's head swings down
+    // and to the left while the fist stays in the corner.
+    const Rotate swingRoll(0.0, hand.roll);
+    const auto camera = [&](const QcVec3 &rest) { return toWorld(shoulder + swingTurn(swingPitch(grip + swingRoll(rest - grip)))); };
 
     if (arm && look.outfit) {
         emitHandArm(paint, *look.outfit, *arm, [&](const QcVec3 &local) { return camera(armRest(local)); });

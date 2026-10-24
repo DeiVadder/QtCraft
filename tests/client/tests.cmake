@@ -65,6 +65,7 @@ qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientco
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES client/test_entity_culling.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_hand_swing SOURCES client/test_hand_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_held_item SOURCES client/test_held_item.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_hold_content SOURCES client/test_hold_content.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_base_content qc_clientcore)

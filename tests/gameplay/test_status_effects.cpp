@@ -1,6 +1,9 @@
+#include "common/gameplay/QcSwingSpeed.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcServerTestFixture.h"
+#include "server/core/QcServerSystems.h"
 #include "server/gameplay/QcServerEffects.h"
+#include "server/gameplay/QcServerInteraction.h"
 #include "server/projectiles/QcHitEffects.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcPlayerStorage.h"
@@ -302,6 +305,37 @@ private slots:
             return mob.type == type("pig") && mob.isYoung() && mob.persistent;
         });
         QCOMPARE(young, 2);
+    }
+
+    // While a player mines, the server marks a swing for the others every swing length (decision
+    // E-881): every 6 ticks without effects, every 4 with haste II (a pack's effect, set directly).
+    void miningSwingsFollowTheSwingLength()
+    {
+        // The gaps in ticks between the swings over 20 ticks of mining.
+        const auto swingGaps = [this] {
+            const QcBlockPos at = m_feet.offset(2, -1, 0);
+            m_server->world().setBlock(at, id("qtcraft:stone"));
+            send(QcMsg::StartMining{at});
+            QList<int> gaps;
+            int last = -1;
+            for (int tick = 0; tick < 20; ++tick) {
+                player().swung = false;
+                m_server->systems().interaction.swingWhileMining();
+                if (player().swung && last >= 0) {
+                    gaps.append(tick - last);
+                }
+                last = player().swung ? tick : last;
+                ticks(1);
+            }
+            send(QcMsg::CancelMining{});
+            return gaps;
+        };
+
+        joinHungry();
+        QCOMPARE(QcSwingSpeed::of(player().effects.all()).ticks(), 6);
+        QCOMPARE(swingGaps(), (QList<int>{6, 6}));
+        QVERIFY(player().effects.give({u"mypack:haste"_s, 2, 1000}));
+        QCOMPARE(swingGaps(), (QList<int>{4, 4, 4, 4}));
     }
 
     void effectsReachTheClientContent()

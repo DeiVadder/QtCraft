@@ -199,6 +199,7 @@ target_sources(qc_common PRIVATE
     gameplay/QcSlotList.h gameplay/QcSlotList.cpp
     gameplay/QcStandPose.h gameplay/QcStandPose.cpp
     gameplay/QcStatusEffects.h gameplay/QcStatusEffects.cpp
+    gameplay/QcSwingSpeed.h gameplay/QcSwingSpeed.cpp
 )
 target_sources(qc_common PRIVATE
     handbook/QcHandbook.h handbook/QcHandbook.cpp

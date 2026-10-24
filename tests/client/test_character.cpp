@@ -139,28 +139,38 @@ private slots:
     void handFollowsActions()
     {
         const QcEntityPose idle;
-        const QcAnimator::HandPose rest = QcAnimator::animateHand(idle, 0.0, -1.0, -1.0, -1.0);
+        const QcAnimator::HandPose rest = QcAnimator::animateHand(idle, 0.0, {});
         QVERIFY(rest.offset.length() < 0.01);
+        QCOMPARE(rest.pitch, 0.0);
 
         // Switching items lowers the hand most in the middle of the switch.
-        QVERIFY(QcAnimator::animateHand(idle, 0.0, 0.5, -1.0, -1.0).offset.y < -0.3);
-        QVERIFY(QcAnimator::animateHand(idle, 0.0, 1.0, -1.0, -1.0).offset.y > -0.01);
+        QVERIFY(QcAnimator::animateHand(idle, 0.0, {.switchProgress = 0.5}).offset.y < -0.3);
+        QVERIFY(QcAnimator::animateHand(idle, 0.0, {.switchProgress = 1.0}).offset.y > -0.01);
 
+        // A swing turns the arm (decision E-881): near the bottom of the strike it is turned down,
+        // inwards and in the picture's plane and has reached into the strike; the bob and breath
+        // offsets stay as they were.
         QcEntityPose swinging;
-        swinging.swingProgress = 0.5;
-        const QcAnimator::HandPose swing = QcAnimator::animateHand(swinging, 0.0, -1.0, -1.0, -1.0);
-        QVERIFY(swing.offset.z < -0.05);
-        QVERIFY(QcAnimator::animateHand(idle, 0.0, -1.0, -1.0, 0.5).offset.z < -0.05);
-        QVERIFY(QcAnimator::animateHand(idle, 0.0, -1.0, 0.5, -1.0).offset.y < -0.02);
+        swinging.swingProgress = 0.4;
+        const QcAnimator::HandPose swing = QcAnimator::animateHand(swinging, 0.0, {});
+        QVERIFY(swing.pitch < -1.0);
+        QVERIFY(swing.yaw > 10.0);
+        QVERIFY(swing.roll > 3.0);
+        QVERIFY(swing.reach > 0.5);
+        QCOMPARE(swing.offset.x, rest.offset.x);
+        QCOMPARE(swing.offset.z, rest.offset.z);
+        // Using (placing) makes a click's swing; landing dips the hand.
+        QVERIFY(QcAnimator::animateHand(idle, 0.0, {.use = 0.32}).reach > 0.9);
+        QVERIFY(QcAnimator::animateHand(idle, 0.0, {.landing = 0.5}).offset.y < -0.02);
 
         QcEntityPose walking;
         walking.speed = QcPhysics::walkSpeed;
         walking.walkDistance = 0.3;
-        QVERIFY(QcAnimator::animateHand(walking, 0.0, -1.0, -1.0, -1.0).offset.length() > 0.01);
+        QVERIFY(QcAnimator::animateHand(walking, 0.0, {}).offset.length() > 0.01);
     }
 
-    // The swing strikes from top to bottom: the arm is raised early, then falls steadily to its
-    // lowest point and settles back to rest; the first-person hand and the body agree.
+    // A figure's swing strikes from top to bottom: the arm is raised early, then falls steadily to
+    // its lowest point and settles back to rest.
     void swingStrikesFromTopToBottom()
     {
         QCOMPARE(QcAnimator::swingLift(0.0), 0.0);
@@ -169,33 +179,20 @@ private slots:
         QCOMPARE(QcAnimator::swingLift(1.0), 0.0);
         QVERIFY(QcAnimator::swingTop < 0.25);
 
-        const auto handAt = [](double progress) {
-            QcEntityPose pose;
-            pose.swingProgress = progress;
-            return QcAnimator::animateHand(pose, 0.0, -1.0, -1.0, -1.0);
-        };
         const auto armAt = [](double progress) {
             QcEntityPose pose;
             pose.swingProgress = progress;
             return QcAnimator::animateBody(pose, 0.0).bone(QcBoneRole::RightArm).pitch;
         };
-        const QcAnimator::HandPose rest = handAt(0.0);
-        QVERIFY(handAt(QcAnimator::swingTop).pitch > rest.pitch + 15.0);
-        QVERIFY(handAt(QcAnimator::swingTop).offset.y > rest.offset.y + 0.02);
-        QVERIFY(handAt(QcAnimator::swingBottom).pitch < rest.pitch - 10.0);
-        QVERIFY(handAt(QcAnimator::swingBottom).offset.y < rest.offset.y - 0.03);
 
-        // Between the highest and the lowest point every step goes down, in both views.
+        // Between the highest and the lowest point every step goes down.
         double previousLift = 2.0;
-        double previousHand = 1e9;
         double previousArm = 1e9;
         for (int step = 0; step <= 8; ++step) {
             const double progress = QcAnimator::swingTop + step * 0.05;
             QVERIFY(QcAnimator::swingLift(progress) < previousLift);
-            QVERIFY(handAt(progress).pitch < previousHand);
             QVERIFY(armAt(progress) < previousArm);
             previousLift = QcAnimator::swingLift(progress);
-            previousHand = handAt(progress).pitch;
             previousArm = armAt(progress);
         }
         // The rise before is short; the arm hangs again at the end.
