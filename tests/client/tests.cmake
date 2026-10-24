@@ -39,6 +39,7 @@ qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTr
 # death and respawn, riding, the same walk as with the timer in the session's thread.
 qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_push_bodies SOURCES client/test_push_bodies.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"
                                                   QTCRAFT_THEME_HEADER="${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")

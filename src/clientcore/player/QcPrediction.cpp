@@ -18,11 +18,12 @@ void QcPrediction::setIntent(const QcPlayerInput &intent)
     m_intent.yaw = qcWrappedYaw(intent.yaw);
 }
 
-QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcMovement movement)
+QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcMovement movement, const QcVec3 &push)
 {
     QcPlayerInput input = m_intent;
     input.sequence = m_nextSequence++;
     input.flying = flying;
+    input.push = push;
     m_previousMotion = m_motion;
     if (!m_riding.isRiding()) {
         m_motion.stepPlayer(input, world, QcPhysics::tickDuration, movement);

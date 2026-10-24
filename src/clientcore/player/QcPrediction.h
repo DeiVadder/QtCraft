@@ -49,10 +49,13 @@ public:
     const QcClientRiding &riding() const { return m_riding; }
 
     // Predicts one tick from the intent: on foot or flying (with `flying` as the wish sent and
-    // `movement` from the game mode) through the shared physics; riding the motion stays (followCart
-    // moves it). Returns the input to send; it carries the next sequence number and is kept until
-    // acknowledged.
-    QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement);
+    // `movement` from the game mode) through the shared physics, pushed by the creatures with `push`
+    // (QcPushBodies, decision E-882; kept with the input, so a replay pushes alike: after a
+    // correction the replayed steps keep the pushes of the places predicted before, not of the
+    // corrected ones, and the next correction takes up the difference); riding the motion stays
+    // (followCart moves it). Returns the input to send; it carries the next sequence number and is
+    // kept until acknowledged.
+    QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement, const QcVec3 &push = {});
     // The factor of the player's status effects on his speed (slowness, decision E-838), as the
     // server told them; the next inputs carry it, so replaying them moves as predicted.
     void setSpeedFactor(float factor) { m_intent.speedFactor = factor; }

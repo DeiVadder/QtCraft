@@ -40,6 +40,17 @@ bool notePauseRequest(QcServerClient &client, bool paused)
     return false;
 }
 
+// How far a player went on his own in one step from `from` to `to`, horizontally: without the
+// share of the creatures' `push` (decision E-882), which moves him but costs him no food. Where a
+// wall held the push back, at most the distance he moved.
+double walkedDistance(const QcVec3 &from, const QcVec3 &to, const QcVec3 &push)
+{
+    const double dx = to.x - from.x;
+    const double dz = to.z - from.z;
+    const QcVec3 pushed = push * QcPhysics::tickDuration;
+    return std::min(std::hypot(dx, dz), std::hypot(dx - pushed.x, dz - pushed.z));
+}
+
 } // namespace
 
 QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
@@ -536,6 +547,8 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
         return;
     }
 
+    // The creatures push the player's body out of theirs (decision E-882); a spectator has none.
+    input.push = client.hasBody() ? m_state.entities().creatures().pushOnPlayer(client.motion.position, m_state.clock().tick()) : QcVec3{};
     const bool wasOnGround = client.motion.onGround;
     const bool wasInWater = client.motion.inWater;
     const QcVec3 previous = client.motion.position;
@@ -551,7 +564,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
 
     const bool jumped = input.jump && wasOnGround && !client.motion.onGround && client.motion.velocity.y > 0.0;
-    const double distance = std::hypot(client.motion.position.x - previous.x, client.motion.position.z - previous.z);
+    const double distance = walkedDistance(previous, client.motion.position, input.push);
     client.hunger.exhaust(QcHunger::movementExhaustion(distance, client.sprinting, client.motion.inWater, jumped));
 
     client.input.lastSequence = input.sequence;

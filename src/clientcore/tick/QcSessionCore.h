@@ -3,6 +3,7 @@
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientVitals.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/player/QcPushBodies.h"
 #include "clientcore/session/QcBlockMirror.h"
 #include "clientcore/tick/QcLinkStats.h"
 #include "clientcore/tick/QcSessionCommand.h"
@@ -23,12 +24,12 @@ class QTimer;
 // The part of a client session that keeps time (decision E-560): the connection to the server, the
 // ticks on the 50 ms grid (QcTickPacer) and the local player's prediction with what it needs, its
 // own mirror of the blocks (sharing the immutable chunks, with the player's predicted blocks,
-// decision E-853), the game mode's wish to fly and whether
-// the player is dead. Every tick it predicts and sends the input; every message it receives it
-// applies to that state and passes on, with the ticks and reconciliations, as one ordered stream of
-// QcSessionEvent to its sink. Lives in the session's tick thread (QcSessionLink) or, without one,
-// in the session's thread; every member is used in that thread only, except pacer().timing() and
-// linkStats().
+// decision E-853) and of the creatures that push him (QcPushBodies, decision E-882), the game
+// mode's wish to fly and whether the player is dead. Every tick it predicts and sends the input;
+// every message it receives it applies to that state and passes on, with the ticks and
+// reconciliations, as one ordered stream of QcSessionEvent to its sink. Lives in the session's tick
+// thread (QcSessionLink) or, without one, in the session's thread; every member is used in that
+// thread only, except pacer().timing() and linkStats().
 class QcSessionCore : public QObject
 {
     Q_OBJECT
@@ -78,6 +79,8 @@ private:
     void reconcile(const QcMsg::PlayerState &state);
     void onClosed();
     QcSessionEvent::Prediction prediction() const;
+    // The push of the creatures on the player for the next step in `movement` (decision E-882).
+    [[nodiscard]] QcVec3 push(QcMovement movement) const;
 
     std::unique_ptr<QcConnection> m_connection;
     Sink m_sink;
@@ -88,6 +91,10 @@ private:
     QcLinkStats m_linkStats;
     QcBlockMirror m_blocks;
     QcPrediction m_prediction;
+    // The creatures that push the player (decision E-882), and whether they are moved on by the
+    // lead of the input (QcPushBodies::extrapolationWanted).
+    QcPushBodies m_pushBodies;
+    bool m_pushLeads = QcPushBodies::extrapolationWanted();
     QcClientGameMode m_gameMode;
     QcClientVitals m_vitals;
     bool m_playing = false;

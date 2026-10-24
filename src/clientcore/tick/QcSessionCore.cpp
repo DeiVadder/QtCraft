@@ -123,7 +123,8 @@ bool QcSessionCore::tick()
     if (!m_vitals.isDead() && !m_serverPaused) {
         const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
         m_prediction.setSpeedFactor(content ? static_cast<float>(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
-        const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), m_gameMode.rules().movement());
+        const QcMovement movement = m_gameMode.rules().movement();
+        const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), movement, push(movement));
         if (!m_prediction.riding().isRiding()) {
             // A landing or a mode without flight ended the flight: the wish follows the state.
             m_gameMode.stepped(m_prediction.motion().flying);
@@ -155,9 +156,10 @@ void QcSessionCore::onMessage(QcMessage &&message)
         return;
     }
 
-    // The core needs the blocks only: an invalid message closes the session (QcClientSession), and
-    // what changed the session takes from its own mirror.
+    // The core needs the blocks and the creatures that push the player only: an invalid message
+    // closes the session (QcClientSession), and what changed the session takes from its own mirror.
     std::ignore = m_blocks.handle(message);
+    m_pushBodies.apply(message);
     if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message);
         welcome && welcome->restoredView && welcome->protocolVersion == QcProtocol::version) {
         // The session sets the same view; the core must not tick with the old one meanwhile.
@@ -198,6 +200,20 @@ void QcSessionCore::onClosed()
     m_closed = true;
     m_timer->stop();
     m_sink({QcSessionEvent::Closed{m_connection->lastError()}});
+}
+
+QcVec3 QcSessionCore::push(QcMovement movement) const
+{
+    // As the server does (QcServer::handleInput): a spectator has no body to push, a rider sits in
+    // his cart.
+    const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
+    if (!content || movement == QcMovement::NoClip || m_prediction.riding().isRiding()) {
+        return {};
+    }
+    // The inputs not yet acknowledged are those sent during the last round trip: as many ticks
+    // ahead of the creatures the server sent last is this input when it arrives there.
+    const int lead = m_pushLeads ? static_cast<int>(m_prediction.pendingInputCount()) : 0;
+    return m_pushBodies.pushOnPlayer(m_prediction.motion().position, *content, lead);
 }
 
 QcSessionEvent::Prediction QcSessionCore::prediction() const

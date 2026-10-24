@@ -119,6 +119,8 @@ MoveResult moveBox(const QcAabb &box, const QcVec3 &delta, const QcBlockAccess &
 // `speed` its target speed, `jump` jumps on ground, swims up in water or climbs, `hold` keeps a
 // climber in place, `slideDrag` is how it slides on slippery ground (footDrag, itemDrag, coastDrag).
 // A body that `climbsWalls` (spiders) holds on to any wall it touches (clingsToWall) as to a ladder.
+// `push` is a horizontal velocity added to this tick's move only, not kept in the body's velocity
+// (the push of the bodies it overlaps, decision E-882): it stops with the overlap, also on ice.
 struct Steering
 {
     QcVec3 wish;
@@ -127,6 +129,7 @@ struct Steering
     bool hold = false;
     double slideDrag = footDrag;
     bool climbsWalls = false;
+    QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 // Share of its horizontal velocity a body on ground of `slipperiness` keeps per tick of `dt`

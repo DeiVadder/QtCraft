@@ -50,7 +50,8 @@ QList<QcMobManager::PlayerView> QcServerCreatures::playerViews() const
                             .effects = &client->effects,
                             .speed = std::hypot(velocity.x, velocity.z),
                             .hurtTick = client->foes.hurtTick,
-                            .struckTick = client->foes.struckTick});
+                            .struckTick = client->foes.struckTick,
+                            .seated = m_state.entities().minecarts().ridden(client->id) != nullptr});
         }
     }
     return players;

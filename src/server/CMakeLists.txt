@@ -189,6 +189,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     mobs/QcArcherBrain.h mobs/QcArcherBrain.cpp
     mobs/QcArcherState.h
+    mobs/QcCreatureBodies.h mobs/QcCreatureBodies.cpp
     mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
     mobs/QcFishSwimming.h mobs/QcFishSwimming.cpp

@@ -7,6 +7,7 @@
 #include "server/entities/QcCreature.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/gameplay/QcServerCombat.h"
+#include "server/mobs/QcCreatureBodies.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/mobs/QcMobExchange.h"
 #include "server/projectiles/QcProjectileManager.h"
@@ -157,7 +158,11 @@ public:
     // Spawns a mob directly (commands, tests); returns its id.
     quint32 spawn(int type, const QcVec3 &position, quint32 id, bool underground = false, bool persistent = false);
     // Clears the store without departures (tests that want an empty world).
-    void removeAll() { m_mobs.clear(); }
+    void removeAll()
+    {
+        m_mobs.clear();
+        ++m_generation;
+    }
     // Game rule mobSpawning: without it no creature spawns by itself, neither around players nor
     // with new chunks (decision E-221); /summon and world setups still add them.
     void setNaturalSpawning(bool on) { m_naturalSpawning = on; }
@@ -195,6 +200,12 @@ public:
     qsizetype awakeCount() const;
     qsizetype awakeSummonedCount() const;
     const QList<QcCreature> &mobs() const { return m_mobs; }
+    // The push of the creatures on a player with his feet at `feet` in server tick `tick` (decision
+    // E-882), a horizontal velocity for his next step (QcPlayerInput::push).
+    [[nodiscard]] QcVec3 pushOnPlayer(const QcVec3 &feet, quint64 tick)
+    {
+        return m_bodies.pushOnPlayer(feet, m_mobs, m_content->mobs(), tick, m_generation);
+    }
     // For the breeding timers (QcMobBreeding) and the parts that set up a mob they just spawned;
     // never add or remove mobs through it.
     QList<QcCreature> &editableMobs() { return m_mobs; }
@@ -227,6 +238,10 @@ private:
     // Uses m_random, so it comes after it.
     std::unique_ptr<QcMobBehaviour> m_behaviour;
     QList<QcCreature> m_mobs;
+    QcCreatureBodies m_bodies;
+    // Counts every creature added to or removed from m_mobs, so that the creatures' push on players
+    // (m_bodies) knows when its grid is out of date between two ticks.
+    quint64 m_generation = 0;
     QSet<QcChunkPos> m_populated;
     quint64 m_nextUid = 1;
     bool m_naturalSpawning = true;

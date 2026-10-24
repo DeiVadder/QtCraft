@@ -94,6 +94,9 @@ struct PlayerView
     // fights a foe anew (decision E-480).
     quint64 hurtTick = 0;
     quint64 struckTick = 0;
+    // Rides a minecart: the cart meets the creatures (decision E-382), the player's body does not
+    // push them (decision E-882).
+    bool seated = false;
 };
 
 // A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server

@@ -10,6 +10,9 @@
 #include "server/mobs/QcServerCreatures.h"
 #define QC_HAS_CROWDS 1
 #endif
+#if __has_include("server/mobs/QcCreatureBodies.h")
+#define QC_HAS_BODY_PUSH 1
+#endif
 #if __has_include("QcMobCramming.h")
 #include "server/mobs/QcMobCramming.h"
 #define QC_HAS_CRAMMING 1
@@ -26,7 +29,8 @@ using namespace Qt::StringLiterals;
 // Cost of the creature tick (the server's "mobs" phase) with crowds (decision E-401): 1000 zombies
 // in one 1 x 1 spawner cell (also refilled to 1000 before every tick), 1000 spread over a flat
 // field around a player, and a mob farm where zombies drop down a shaft into a 1 x 1 killing cell
-// (with the cramming of the game rule maxEntityCramming 24 where the code has it). A measurement, not a check: set
+// (with the cramming of the game rule maxEntityCramming 24 where the code has it), and players
+// pushed by a spread crowd (decision E-882). A measurement, not a check: set
 // QTCRAFT_CROWD_MEASURE=1 and use a Release build. The ticks run as fast as they can, not in real
 // time. Without QcMobCrowd the file uses only what QcMobManager offered in stage 37.1a, so the same
 // file measures the state before the crowds.
@@ -204,6 +208,46 @@ private slots:
             tickTimed(*mobs, *world, players, tick, tick < 20 ? warmUp : run);
         }
         report("spread", *mobs, run);
+    }
+
+    // The push of the creatures on players (decision E-882): 1000 zombies spread as above and 8
+    // players walking circles among them; each tick the creatures move, then every player's input
+    // asks for his push (the grid is built once per tick).
+    void playersInACrowd()
+    {
+#if defined(QC_HAS_BODY_PUSH)
+        auto world = flat();
+        auto mobs = makeMobs();
+        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        for (int i = 0; i < 1000; ++i) {
+            const int x = static_cast<int>((i * 7919u) % 80u) - 40;
+            const int z = static_cast<int>((i * 104729u / 80u) % 80u) - 40;
+            mobs->spawn(zombie, {x + 0.5, static_cast<double>(ground), z + 0.5}, m_nextId++);
+        }
+        Run run;
+        double pushMs = 0.0;
+        double pushed = 0.0;
+        for (quint64 tick = 0; tick < 220; ++tick) {
+            QList<QcMobManager::PlayerView> players;
+            for (quint32 p = 0; p < 8; ++p) {
+                const double angle = static_cast<double>(tick) * 0.025 + static_cast<double>(p) * 0.785;
+                const double r = 4.0 + 4.0 * static_cast<double>(p);
+                players.append({7 + p, {r * std::cos(angle), static_cast<double>(ground), r * std::sin(angle)}, true});
+            }
+            Run warmUp;
+            tickTimed(*mobs, *world, players, tick, tick < 20 ? warmUp : run);
+            QElapsedTimer timer;
+            timer.start();
+            for (const QcMobManager::PlayerView &player : std::as_const(players)) {
+                pushed += mobs->pushOnPlayer(player.position, tick).length();
+            }
+            pushMs += tick < 20 ? 0.0 : static_cast<double>(timer.nsecsElapsed()) / 1e6;
+        }
+        report("players-in-crowd", *mobs, run);
+        qInfo("MEASURE players-in-crowd push: %.4f ms per tick for 8 players (sum of pushes %.2f)", pushMs / run.ticks, pushed);
+#else
+        QSKIP("no push between players and creatures in this build");
+#endif
     }
 
     // A farm: four zombies a second appear at the top of a shaft 20 blocks high and drop into the

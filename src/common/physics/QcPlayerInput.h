@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/core/QcVec3.h"
+
 #include <QtGlobal>
 
 #include <cmath>
@@ -30,6 +32,10 @@ struct QcPlayerInput
     // side that steps the input: the server from the player's effects, the client from those the
     // server told it. Never sent.
     float speedFactor = 1.0f;
+    // The push of the creatures the player overlaps (decision E-882), a horizontal velocity in m/s
+    // added to his move, set like speedFactor by the side that steps the input: the server from its
+    // creatures, the client from those it knows (QcPushBodies). Never sent.
+    QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 
     bool operator==(const QcPlayerInput &) const = default;
 };

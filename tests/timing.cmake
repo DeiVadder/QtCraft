@@ -22,7 +22,7 @@
 #   test_tcp_transport       closing a transport within 100 ms, linger times measured by the clock
 #   test_network_game        logins and messages over TCP, ticks paced by wall-time deadlines
 #   test_latency             delayed links: round trips and pending inputs bounded by wall time
-#   test_creative_client, test_void_client, test_ice_client
+#   test_creative_client, test_void_client, test_ice_client, test_push_client
 #                            client and server host over a delayed link, waiting in real time
 #   test_survival_scenario   long scenario waiting in real time for the server host (smelting etc.)
 #   test_multiplayer_bots, test_creative_bots, test_signal_bots, test_minecart_bots, test_machine_bots
@@ -45,7 +45,7 @@
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
     test_tcp_transport test_network_game test_latency test_pause_keepalive
-    test_creative_client test_void_client test_ice_client test_survival_scenario
+    test_creative_client test_void_client test_ice_client test_push_client test_survival_scenario
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
     test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu

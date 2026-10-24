@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/physics/QcBodyPush.h"
 #include "server/golems/QcGolemBrain.h"
 #include "server/guardians/QcGuardianBrain.h"
 #include "server/mobs/QcArcherBrain.h"
@@ -86,7 +87,7 @@ private:
     // at a player in melee.
     QcPhysics::Steering withoutThinking(QcCreature &mob, const QcMobDefinition &definition, const QcMobBrain::Context &context,
                                         bool coasts);
-    // `steering` with the push of the crowd added.
+    // `steering` with the push of the crowd and of the players (decision E-882) added.
     [[nodiscard]] QcPhysics::Steering withCrowd(qsizetype index, const QcCreature &mob, const QcServerWorld &world,
                                                 QcPhysics::Steering steering) const;
     // The steering with the factor of the creature's status effects on its speed (slowness,
@@ -127,6 +128,9 @@ private:
     QcMobCrowd m_hoverers{QcMobCrowd::Members::Hoverers};
     // Water creatures (decision E-502).
     QcFishSwimming m_fish;
+    // The bodies of the players that push walkers in this tick (decision E-882): alive, not in a
+    // minecart. Players are few, so each walker looks at all of them.
+    std::vector<QcBodyPush::Body> m_pushers;
     TierCounts m_tiers;
     QList<QcProjectileManager::Launch> m_launches;
     QList<QcMobManager::CreatureHit> m_creatureHits;

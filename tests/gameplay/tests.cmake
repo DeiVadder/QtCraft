@@ -41,6 +41,7 @@ qc_add_test(test_mob_paths SOURCES gameplay/test_mob_paths.cpp QcTestWorld.h LIB
 qc_add_test(test_mob_navigation SOURCES gameplay/test_mob_navigation.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_slippery_ground SOURCES gameplay/test_slippery_ground.cpp QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_mob_crowds SOURCES gameplay/test_mob_crowds.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_entity_push SOURCES gameplay/test_entity_push.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_mob_path_measure SOURCES gameplay/test_mob_path_measure.cpp LIBRARIES qc_server)
 qc_add_test(test_mob_crowd_measure SOURCES gameplay/test_mob_crowd_measure.cpp LIBRARIES qc_server)
 qc_add_test(test_spawn_measure SOURCES gameplay/test_spawn_measure.cpp LIBRARIES qc_server TIMEOUT 240)

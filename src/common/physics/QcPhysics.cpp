@@ -325,24 +325,25 @@ constexpr double lowStepHeight = 0.125;
 
 // Walking into something low (a slab, a stair step): the same move lifted by up to stepHeight (or
 // lowStepHeight when the full lift gets no further) when it gets further than `move`; none otherwise.
+// `across` is the horizontal part of the move that was blocked.
 [[nodiscard]] std::optional<MoveResult> steppedUp(const MoveResult &move, const QcEntityMotion &motion, BodySize size, const QcBlockAccess &world,
-                                                  double dt)
+                                                  const QcVec3 &across)
 {
     const QcAabb start = boxAt(motion.position, size.width, size.height);
     const double plain = std::hypot(move.applied.x, move.applied.z);
     for (const double lift : {stepHeight, lowStepHeight}) {
         const MoveResult up = moveBox(start, {0.0, lift, 0.0}, world);
         const QcAabb raised = start.moved(up.applied);
-        const MoveResult across = moveBox(raised, {motion.velocity.x * dt, 0.0, motion.velocity.z * dt}, world);
-        const QcAabb moved = raised.moved(across.applied);
+        const MoveResult sideways = moveBox(raised, {across.x, 0.0, across.z}, world);
+        const QcAabb moved = raised.moved(sideways.applied);
         const MoveResult down = moveBox(moved, {0.0, -up.applied.y, 0.0}, world);
 
-        const double stepped = std::hypot(across.applied.x, across.applied.z);
+        const double stepped = std::hypot(sideways.applied.x, sideways.applied.z);
         if (stepped > plain && up.applied.y + down.applied.y > 0.0) {
             MoveResult result = move;
-            result.applied = up.applied + across.applied + down.applied;
-            result.blockedX = across.blockedX;
-            result.blockedZ = across.blockedZ;
+            result.applied = up.applied + sideways.applied + down.applied;
+            result.blockedX = sideways.blockedX;
+            result.blockedZ = sideways.blockedZ;
             result.blockedY = true;
             return result;
         }
@@ -421,10 +422,11 @@ MoveResult QcEntityMotion::step(const Steering &steering, BodySize size, const Q
         velocity.y *= inside;
     }
 
-    MoveResult move = moveBox(boxAt(position, size.width, size.height), velocity * dt, world);
+    const QcVec3 delta = (velocity + QcVec3{steering.push.x, 0.0, steering.push.z}) * dt;
+    MoveResult move = moveBox(boxAt(position, size.width, size.height), delta, world);
     // A body that just jumped keeps its jump instead of stepping up.
     if (onGround && !inWater && velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
-        if (const std::optional<MoveResult> stepped = steppedUp(move, *this, size, world, dt)) {
+        if (const std::optional<MoveResult> stepped = steppedUp(move, *this, size, world, delta)) {
             move = *stepped;
             velocity.y = std::min(velocity.y, 0.0);
         }
@@ -452,7 +454,8 @@ void QcEntityMotion::stepFlying(const QcPlayerInput &input, const QcVec3 &wish, 
     velocity.z += (wish.z * speed - velocity.z) * blend;
     velocity.y += (vertical - velocity.y) * blend;
 
-    applyMove(moveBox(body, velocity * dt, world));
+    // Flying bodies are pushed like walking ones (decision E-882).
+    applyMove(moveBox(body, (velocity + QcVec3{input.push.x, 0.0, input.push.z}) * dt, world));
     if (onGround) {
         flying = false;
     }
@@ -517,5 +520,5 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
     }
     speed *= std::clamp(static_cast<double>(input.speedFactor), 0.0, 4.0);
 
-    step({wish, speed, input.jump, input.sneak}, {playerWidth, playerHeight}, world, dt);
+    step({.wish = wish, .speed = speed, .jump = input.jump, .hold = input.sneak, .push = input.push}, {playerWidth, playerHeight}, world, dt);
 }

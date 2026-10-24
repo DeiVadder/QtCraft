@@ -119,6 +119,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcHandTimers.h
     player/QcLocalAnimation.h player/QcLocalAnimation.cpp
     player/QcPrediction.h player/QcPrediction.cpp
+    player/QcPushBodies.h player/QcPushBodies.cpp
     player/QcSprintLatch.h player/QcSprintLatch.cpp
 )
 target_sources(qc_clientcore PRIVATE

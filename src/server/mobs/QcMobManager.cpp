@@ -109,6 +109,7 @@ quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool u
         mob.uid = m_nextUid++;
     }
     m_mobs.append(std::move(mob));
+    ++m_generation;
     return id;
 }
 
@@ -272,6 +273,7 @@ void QcMobManager::erase(QList<QcCreature>::iterator it, Departure why)
     const qsizetype index = it - m_mobs.begin();
     depart(m_mobs.at(index), why);
     m_mobs.removeAt(index);
+    ++m_generation;
 }
 
 void QcMobManager::departWhere(const std::function<std::optional<Departure>(const QcCreature &mob)> &leaves)
@@ -304,6 +306,7 @@ void QcMobManager::departWhere(const std::function<std::optional<Departure>(cons
         ++kept;
     }
     m_mobs.remove(kept, m_mobs.size() - kept);
+    ++m_generation;
 }
 
 QList<QcProjectileManager::Launch> QcMobManager::takeLaunches()
@@ -593,6 +596,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
             }
         }
         m_mobs.append(std::move(mob));
+        ++m_generation;
     }
     relinkFamilies();
 }

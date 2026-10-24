@@ -83,6 +83,12 @@ QList<QcMobManager::PlayerHit> QcMobBehaviour::tick(std::span<QcCreature> mobs, 
     m_paths.serve(world, mobs, [this](const QcCreature &mob) { return m_rules[static_cast<std::size_t>(mob.type)]; });
     m_crowd.build(mobs, m_content->mobs());
     m_hoverers.build(mobs, m_content->mobs());
+    m_pushers.clear();
+    for (const QcMobManager::PlayerView &player : players) {
+        if (player.alive && !player.seated) {
+            m_pushers.push_back(QcBodyPush::player(player.position));
+        }
+    }
     m_fish.startTick(mobs, *m_content);
     m_villagers.startTick();
     m_tiers = {};
@@ -249,8 +255,21 @@ QcPhysics::Steering QcMobBehaviour::withoutThinking(QcCreature &mob, const QcMob
 QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature &mob, const QcServerWorld &world,
                                               QcPhysics::Steering steering) const
 {
-    // The crowd pushes apart, but not off a cliff.
-    const QcVec3 push = m_crowd.push(index, mob, m_content->mobs()[mob.type].width * 0.5);
+    // The crowd and the players push apart, but not off a cliff. One without a mind stays where it
+    // was put for the players (a display in a pen); only its crowd moves it (decision E-882).
+    const QcMobDefinition &definition = m_content->mobs()[mob.type];
+    QcVec3 push = m_crowd.push(index, mob, definition.width * 0.5);
+    if (!mob.noAi) {
+        const QcBodyPush::Body body = QcBodyPush::creature(definition, mob.motion.position);
+        QcVec3 players;
+        for (const QcBodyPush::Body &player : m_pushers) {
+            players += QcBodyPush::between(body, player, QcBodyPush::creatureParting);
+        }
+        // A walker goes around a player in its way rather than stalling in front of him; one that
+        // chases a player or follows its owner presses in.
+        const bool pressesIn = mob.chasing != 0 || (mob.tame && !mob.tame->sitting);
+        push += pressesIn ? players : QcBodyPush::passing(players, steering.wish);
+    }
     if (push.length() <= 0.0 || !QcMobNavigator::safeStep(mob, push, {world, m_paths.cells(), m_rules[static_cast<std::size_t>(mob.type)]})) {
         return steering;
     }
@@ -259,7 +278,7 @@ QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature 
     if (steering.wish.length() > 1.0) {
         steering.wish = steering.wish.normalized();
     }
-    steering.speed = std::max(steering.speed, m_content->mobs()[mob.type].walkSpeed);
+    steering.speed = std::max(steering.speed, definition.walkSpeed);
     return steering;
 }
 

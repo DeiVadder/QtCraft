@@ -239,6 +239,8 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     physics/QcBodyFit.h physics/QcBodyFit.cpp
+    physics/QcBodyGrid.h physics/QcBodyGrid.cpp
+    physics/QcBodyPush.h physics/QcBodyPush.cpp
     physics/QcEntityMotion.h
     physics/QcPhysics.h physics/QcPhysics.cpp
     physics/QcPlayerInput.h
