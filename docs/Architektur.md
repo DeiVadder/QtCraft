@@ -439,11 +439,16 @@ Decision E-231. `CharacterPreview` (`QcCharacterPreview`, a `QQuickRhiItem`) sho
   definition `QC_TLS_ENABLED`); the version and the SHA-256 of its release tarball stand in
   `3rdparty/openssl-version.txt`. `scripts/build-openssl.sh` builds it once into
   `~/.cache/qtcraft/openssl/<version>-<arch>-<config>` (`QC_OPENSSL_CACHE`; universal on macOS,
-  macOS 13.3, shared libraries with `@rpath` install names); the first configure step runs it when
-  the entry is missing (`QC_OPENSSL_AUTO_BUILD`). `QC_OPENSSL_ROOT` takes another prefix of the same
+  macOS 13.3, shared libraries with `@rpath` install names); on Windows
+  `scripts/windows/build-openssl.ps1` builds the DLLs `libcrypto-3-<x64|arm64>.dll` and
+  `libssl-3-<x64|arm64>.dll` with MSVC, which QcTls.cmake copies next to the programs and tests;
+  the first configure step runs the script when the entry is missing (`QC_OPENSSL_AUTO_BUILD`).
+  Linux uses the OpenSSL 3 of the system (`find_package`). `QC_OPENSSL_ROOT` takes another prefix of the same
   version. At run time `QcTlsBackend::ensure()` makes `openssl` Qt's active TLS backend before the
-  first certificate or socket; the libraries are already loaded through the executable's rpath (in
-  the bundle `Contents/Frameworks`), which is where Qt's backend finds them. `QC_TLS=OFF` builds
+  first certificate or socket; the libraries are already loaded when Qt's backend opens libssl by
+  name, so it gets the same ones: on macOS through the executable's rpath (in the bundle
+  `Contents/Frameworks`), on Windows as import DLLs from the executable's folder (Qt's
+  `QSystemLibrary` also searches that folder first), on Linux the system's `libssl.so.3`. `QC_TLS=OFF` builds
   plain TCP with a configure warning (no certificate, no pinning, `test_tls_credentials` not built).
 
 | Option | Effect |

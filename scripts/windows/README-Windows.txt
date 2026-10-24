@@ -72,4 +72,6 @@ Weiteres
 - Der Ordner mods enthält das Beispiel-Mod „rubies“; es wird beim ersten Start ausgeschaltet in
   den Datenordner übernommen.
 - Lizenzen: LICENSE (GPL 3, das Spiel), THIRD_PARTY.md, CREDITS.md und der Ordner licenses (Qt unter
-  der LGPL 3 mit Qt-NOTICE.txt, SDL3, HIDAPI, SDL-libm, Schrift Pixelify Sans).
+  der LGPL 3 mit Qt-NOTICE.txt, SDL3, HIDAPI, SDL-libm, OpenSSL, Schrift Pixelify Sans).
+- libssl-3-x64.dll und libcrypto-3-x64.dll neben qtcraft.exe sind OpenSSL (Apache License 2.0):
+  damit verschlüsselt das Spiel die Verbindungen im Mehrspieler (TLS). Nicht löschen.

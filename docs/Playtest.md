@@ -115,11 +115,16 @@ QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere L
   beide ZIPs nach `deploy/` im Haupt-Checkout: `QtCraft-<version>-<commit>-Windows-x64.zip` (Spiel)
   und `…-pdb.zip` (PDB-Dateien für die Speicherabbilder, nicht an die Spieler). In der VM bleibt in
   `dist` nur das neueste Paket; `package.lock` verhindert zwei Läufe zugleich.
-- Inhalt: beide Programme, `windeployqt --release --no-compiler-runtime --no-opengl-sw --qmldir
-  src/app/qml`, die VC++-Laufzeit app-lokal (alle DLLs aus `Microsoft.VC143.CRT`, kein
-  `vc_redist.x64.exe`), Beispiel-Mod `mods\rubies`, `LICENSE`, `THIRD_PARTY.md`, `CREDITS.md`,
-  `licenses\` (Qt: `Qt-LGPL-3.0.txt`, `Qt-GPL-3.0.txt` und `Qt-NOTICE.txt` mit Version und
-  Quellort; SDL3, HIDAPI, SDL-libm, Pixelify Sans) und eine deutsche `README-Windows.txt` (Zulassen,
+- Inhalt: beide Programme, `windeployqt --release --force-openssl --no-compiler-runtime
+  --no-opengl-sw --qmldir src/app/qml` (`--force-openssl` nimmt Qts OpenSSL-Plugin
+  `tls\qopensslbackend.dll` mit, das windeployqt sonst auslässt), das mitgelieferte OpenSSL
+  (`libcrypto-3-x64.dll`, `libssl-3-x64.dll` neben der exe, aus dem Cache-Eintrag in
+  `C:\Qt-Projekte\Claude\QtCraft\openssl`, den das Konfigurieren beim ersten Lauf einer Version baut,
+  rund 10 min; die PDB-Dateien ins PDB-Zip; E-872), die VC++-Laufzeit app-lokal (alle DLLs aus
+  `Microsoft.VC143.CRT`, kein `vc_redist.x64.exe`), Beispiel-Mod `mods\rubies`, `LICENSE`,
+  `THIRD_PARTY.md`, `CREDITS.md`, `licenses\` (Qt: `Qt-LGPL-3.0.txt`, `Qt-GPL-3.0.txt` und
+  `Qt-NOTICE.txt` mit Version und Quellort; SDL3, HIDAPI, SDL-libm, `OpenSSL-LICENSE.txt`,
+  Pixelify Sans) und eine deutsche `README-Windows.txt` (Zulassen,
   Start, SmartScreen und Intelligente App-Steuerung, LAN-Adresse, Protokolle). Das x64-Kit hat nur
   das Windows-Media-Backend: weder FFmpeg noch `opengl32sw.dll` (Mesa) sind im Paket; die Prüfung
   schlägt an, falls sie auftauchen (dann gehören ihre Lizenztexte dazu).
@@ -128,11 +133,14 @@ QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere L
   Windows-Komponenten aus `System32` (Produktname mit „Windows“; VC++-Laufzeit nie von dort) oder
   API-Sets (`dumpbin /dependents`); eine aus der ZIP entpackte Kopie startet mit einem `PATH` ohne
   Qt `qtcraft-headless --help` und einen Server (`--server --port 0`), dessen geladene Module alle
-  aus der Kopie oder Windows kommen, und stoppt ihn mit `/stop`.
+  aus der Kopie oder Windows kommen, und stoppt ihn mit `/stop`. TLS (E-872): der Build hat
+  `QC_TLS=ON`, das Paket enthält beide OpenSSL-DLLs und `tls\qopensslbackend.dll`, die Dateiversion
+  der DLLs ist die aus `3rdparty/openssl-version.txt`; der Server meldet „TLS through OpenSSL
+  <Version>“ (Standardfehler) und den Fingerabdruck seines Zertifikats (Log), hat beide DLLs und
+  das Plugin aus der Kopie geladen, und ein Bot der Kopie tritt ihm über TLS bei (`--join`, der Pin
+  landet in `known-servers.json`).
 - Spiel und Server müssen aus demselben Commit gebaut sein (Inhalts-Hash, Protokollversion): den
   Server auf dem Mac aus demselben Stand von `dev` bauen.
-- **TODO (48 TLS):** sobald das mitgelieferte OpenSSL in `dev` ist, gehören `libssl-3-x64.dll` und
-  `libcrypto-3-x64.dll` ins Paket (`package-windows.ps1`).
 
 ## 4. Für die Spieler (Windows)
 

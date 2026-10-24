@@ -20,7 +20,9 @@
 #                        (default 192.168.0.201:25600)
 # Example: scripts/vm-package-windows.sh dev -- -GuiCheck
 #
-# TODO(48 TLS): after the bundled OpenSSL lands, package-windows.ps1 must ship the OpenSSL DLLs.
+# The package carries the bundled OpenSSL (DLLs and licence; decision E-872): the configure step in
+# the VM builds it once per version into <QC_VM_ROOT>\openssl (scripts/windows/build-openssl.ps1
+# of the packaged ref; first run about 10 min).
 
 set -u
 

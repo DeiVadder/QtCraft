@@ -14,7 +14,9 @@
 # nobody can create (/var/empty/qtcraft-openssl), so no openssl.cnf of the system or of another
 # program changes how the game's TLS behaves (the game also initialises OpenSSL without reading any
 # configuration, OPENSSL_CONF included; QcTlsBackend). A finished entry has the file .complete and is never
-# built again. The configure step of QtCraft runs this script itself when the entry is missing.
+# built again. The configure step of QtCraft runs this script itself on macOS when the entry is
+# missing. Linux builds use the OpenSSL 3 of the system; there this script builds a prefix for
+# QC_OPENSSL_ROOT only (cmake/QcTls.cmake). Windows has its own script, scripts/windows/build-openssl.ps1.
 #
 # Usage: scripts/build-openssl.sh [--print-prefix]
 #   --print-prefix  only print the cache directory of this version and architecture and exit

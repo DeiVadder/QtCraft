@@ -21,6 +21,15 @@
 #ifdef Q_OS_MACOS
 #include <mach-o/dyld.h>
 #endif
+#ifdef Q_OS_WIN
+#include <QCoreApplication>
+#include <QDir>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -83,7 +92,9 @@ private slots:
         QCOMPARE(QcDer::time(QDateTime(QDate(9000, 12, 31), QTime(23, 59, 59), QTimeZone::UTC)), QByteArray("\x18\x0f" "90001231235959Z"));
     }
 
-    // Qt's OpenSSL backend is active and runs on the OpenSSL the game ships, not one of the system.
+    // Qt's OpenSSL backend is active and runs on the OpenSSL of the build: on macOS and Windows the
+    // one the game ships (not one of Homebrew or of another program), on Linux the system's, of the
+    // version its headers name.
     void bundledOpenSsl()
     {
         const QcStatus tls = QcTlsBackend::ensure();
@@ -105,6 +116,25 @@ private slots:
         loaded.sort();
         const QString prefix = QFileInfo(QStringLiteral(QC_TEST_OPENSSL_PREFIX "/lib")).canonicalFilePath();
         QCOMPARE(loaded, (QStringList{prefix + u"/libcrypto.3.dylib"_s, prefix + u"/libssl.3.dylib"_s}));
+#endif
+#ifdef Q_OS_WIN
+        // Both DLLs come from the folder of the program (QcTls.cmake copies them there), not from
+        // another folder on PATH.
+#ifdef Q_PROCESSOR_ARM_64
+        const QStringList names{u"libcrypto-3-arm64.dll"_s, u"libssl-3-arm64.dll"_s};
+#else
+        const QStringList names{u"libcrypto-3-x64.dll"_s, u"libssl-3-x64.dll"_s};
+#endif
+        const QString programFolder = QFileInfo(QCoreApplication::applicationDirPath()).canonicalFilePath();
+        for (const QString &name : names) {
+            const HMODULE module = GetModuleHandleW(reinterpret_cast<const wchar_t *>(name.utf16()));
+            QVERIFY2(module != nullptr, qPrintable(name));
+            wchar_t path[MAX_PATH] = {};
+            const DWORD length = GetModuleFileNameW(module, path, MAX_PATH);
+            QVERIFY2(length > 0 && length < MAX_PATH, qPrintable(name));
+            const QString file = QDir::fromNativeSeparators(QString::fromWCharArray(path, static_cast<qsizetype>(length)));
+            QCOMPARE(QFileInfo(QFileInfo(file).absolutePath()).canonicalFilePath(), programFolder);
+        }
 #endif
     }
 

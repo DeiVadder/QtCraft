@@ -1,7 +1,7 @@
 # Windows x64 package (stage 74.4): builds qtcraft and qtcraft-headless from a git ref of the Mac
 # repository in the Parallels ARM64 VM (cross build ARM64 host -> x64 target, vcvarsall
 # arm64_amd64), assembles a standalone folder with windeployqt, the app-local VC++ runtime, the
-# example mods and the licence texts, checks it and packs
+# OpenSSL DLLs, the example mods and the licence texts, checks it and packs
 #   QtCraft-<version>-<shortsha>-Windows-x64.zip       (the game, unzip and start qtcraft.exe)
 #   QtCraft-<version>-<shortsha>-Windows-x64-pdb.zip   (PDB files for the minidumps, E-834)
 # into <Root>\dist.
@@ -13,12 +13,16 @@
 #     System32 or API sets (dumpbin /dependents, including delay-load imports); a VC++ runtime DLL
 #     (vcruntime, msvcp, concrt, vcomp, vccorlib) must come from the package, never from System32
 #   - all DLLs of Microsoft.VC143.CRT, the Qt platform and multimedia plugins, QML modules, example
-#     mod and the licence texts (game, Qt under the LGPL 3, SDL3, HIDAPI, SDL libm, Pixelify Sans)
-#     are present; no software OpenGL (opengl32sw.dll) and no FFmpeg files without a notice
+#     mod, the OpenSSL DLLs (libssl-3-x64.dll, libcrypto-3-x64.dll of the pinned version, E-872)
+#     and the licence texts (game, Qt under the LGPL 3, SDL3, HIDAPI, SDL libm, OpenSSL, Pixelify
+#     Sans) are present; Qt's OpenSSL backend plugin (tls\qopensslbackend.dll) is there; no
+#     software OpenGL (opengl32sw.dll) and no FFmpeg files without a notice
 #   - a copy unpacked from the zip, started with a PATH without Qt: qtcraft-headless --help, a
 #     dedicated server (--server --console --port 0 --bind 127.0.0.1, own data directory) that
-#     reports "Listening on port", whose loaded modules all come from the copy or C:\Windows, and
-#     that stops with /stop
+#     reports "Listening on port", TLS through the bundled OpenSSL of the pinned version and its
+#     certificate, whose loaded modules all come from the copy or C:\Windows (the OpenSSL DLLs and
+#     Qt's OpenSSL backend from the copy), that a bot of the copy joins over TLS (--join, the
+#     certificate pinned), and that stops with /stop
 #   - optional (-GuiCheck): qtcraft.exe from the copy renders a world into a screenshot; its loaded
 #     modules are checked the same way (a failure there is reported, not fatal: the SSH session of
 #     the VM has no interactive desktop)
@@ -35,9 +39,9 @@
 #   -Server  the LAN address of the playtest server, written into README-Windows.txt
 # One run at a time: <Root>\package.lock is held open while the script runs.
 #
-# TODO(48 TLS): once the bundled OpenSSL is in dev, copy libssl-3-x64.dll and libcrypto-3-x64.dll
-# next to qtcraft.exe (windeployqt only deploys Qt's tls plugins, not OpenSSL) and add them to the
-# required parts below.
+# OpenSSL (decision E-872) comes from the cache entry scripts\windows\build-openssl.ps1 builds into
+# <Root>\openssl during the configure step (once per version); windeployqt deploys only Qt's TLS
+# plugins, so its DLLs are copied next to the executables here, their PDB files into the PDB zip.
 
 param(
     [string]$Ref = "dev",
@@ -181,6 +185,44 @@ function Test-LoadedModules([System.Diagnostics.Process]$process, [string]$copy,
     }
 }
 
+# The dedicated server speaks TLS through the OpenSSL of the copy: its log names the certificate it
+# made, and both DLLs and Qt's OpenSSL backend are loaded from the copy.
+function Test-Tls([System.Diagnostics.Process]$process, [string]$copy, [string]$log) {
+    $text = Get-Content -Raw $log
+    if ($text -match "Certificate fingerprint \(SHA-256\): ([0-9A-F ]+)") { Ok "dedicated server: certificate $($Matches[1].Trim())" } else { Problem "dedicated server: no certificate fingerprint in $log" }
+    try {
+        $process.Refresh()
+        $modules = @($process.Modules | ForEach-Object { $_.FileName })
+    } catch {
+        $modules = @()
+    }
+    foreach ($dll in $opensslDlls + @("tls\qopensslbackend.dll")) {
+        $expected = Join-Path $copy $dll
+        if ($modules -contains $expected) { Ok "dedicated server loaded $dll from the copy" } else { Problem "dedicated server did not load $expected" }
+    }
+}
+
+# A bot of the copy joins the server of the copy over TLS (a full handshake between two Windows
+# OpenSSL ends, the certificate pinned in the bot's data directory) and leaves at the end of its
+# input.
+function Test-Join([string]$copy, [string]$log) {
+    $port = (Select-String -Path $log -Pattern 'Listening on port (\d+)' | Select-Object -First 1).Matches[0].Groups[1].Value
+    $data = Join-Path $Work "join-data"
+    New-Item -ItemType Directory -Force $data | Out-Null
+    $bot = Start-Copy (Join-Path $copy "qtcraft-headless.exe") "--join 127.0.0.1:$port --player-name PackageCheck --data-dir `"$data`" --time-limit 60" @{}
+    $out = $bot.StandardOutput.ReadToEndAsync()
+    $err = $bot.StandardError.ReadToEndAsync()
+    $bot.StandardInput.Close()
+    if (-not $bot.WaitForExit(90000)) {
+        $bot.Kill()
+        Problem "join bot did not end within 90 s"
+    }
+    $err.Result | Set-Content (Join-Path $Work "join-stderr.txt")
+    $out.Result | Set-Content (Join-Path $Work "join-stdout.txt")
+    if ($bot.ExitCode -eq 0 -and "$($err.Result)" -match "joined '") { Ok "a bot of the copy joined the server over TLS (port $port)" } else { Problem "join bot exit code $($bot.ExitCode), see $Work\join-stderr.txt" }
+    if (Test-Path (Join-Path $data "known-servers.json")) { Ok "join bot pinned the certificate (known-servers.json)" } else { Problem "join bot has no known-servers.json" }
+}
+
 function Start-Copy([string]$exe, [string]$arguments, [hashtable]$environment) {
     $info = New-Object System.Diagnostics.ProcessStartInfo $exe
     $info.Arguments = $arguments
@@ -230,6 +272,8 @@ function Test-Server([string]$copy) {
     if ($log -and (Wait-ForFile $log.FullName "Listening on port" 90)) {
         Ok "dedicated server: $((Select-String -Path $log.FullName -Pattern 'Listening on port' | Select-Object -First 1).Line.Trim())"
         Test-LoadedModules $server $copy "dedicated server"
+        Test-Tls $server $copy $log.FullName
+        Test-Join $copy $log.FullName
         $head = Get-Content $log.FullName -TotalCount 6
         $head | ForEach-Object { "     $_" }
     } else {
@@ -244,6 +288,8 @@ function Test-Server([string]$copy) {
     }
     $out.Result | Set-Content (Join-Path $Work "server-stdout.txt")
     $err.Result | Set-Content (Join-Path $Work "server-stderr.txt")
+    # QcTlsBackend names the library at the start, before the log file exists: standard error.
+    if ("$($err.Result)" -match "TLS through (OpenSSL $([regex]::Escape($opensslVersion)) [^\r\n]*)") { Ok "dedicated server: TLS through $($Matches[1])" } else { Problem "dedicated server: no 'TLS through OpenSSL $opensslVersion' on standard error" }
 }
 
 function Test-Game([string]$copy) {
@@ -302,6 +348,11 @@ Write-Output "== $name (Qt $QtDir, $Jobs jobs)"
 Write-Output "== configure and build"
 Push-Location $Source
 $env:QC_SDL_CACHE = (Join-Path $Root "sdl3").Replace("\", "/")
+# OpenSSL's cache entry lives next to the SDL3 one in <Root>, outside the source checkout, so it
+# survives every fetch; the configure step builds it once per version and options
+# (scripts\windows\build-openssl.ps1, with the jobs of this run).
+$env:QC_OPENSSL_CACHE = Join-Path $Root "openssl"
+$env:QC_BUILD_JOBS = "$Jobs"
 $prefix = $QtDir.Replace("\", "/")
 Invoke-Checked "configure" "cmake" @("--preset", "release", "-DCMAKE_PREFIX_PATH=$prefix")
 Invoke-Checked "build" "cmake" @("--build", "--preset", "release", "--target", "qtcraft", "qtcraft-headless", "-j", "$Jobs")
@@ -315,6 +366,12 @@ if (-not $qtUsed.StartsWith($prefix + "/", "OrdinalIgnoreCase")) {
     Abort "the build uses Qt from '$qtUsed', not from $QtDir"
 }
 $gamepad = Get-CacheValue "QC_GAMEPAD"
+if ((Get-CacheValue "QC_TLS") -ne "ON") {
+    Abort "the build has no TLS (QC_TLS=$(Get-CacheValue "QC_TLS")): a package must encrypt multiplayer connections"
+}
+$openssl = Get-CacheValue "QC_OPENSSL_PREFIX"
+$opensslDlls = @("libcrypto-3-x64.dll", "libssl-3-x64.dll")
+$opensslVersion = ((Get-Content -TotalCount 1 (Join-Path $Source "3rdparty\openssl-version.txt")) -split '\s+')[0]
 
 Write-Output "== assemble"
 if (Test-Path $Work) { Remove-Item -Recurse -Force $Work }
@@ -330,9 +387,10 @@ foreach ($exe in @("qtcraft", "qtcraft-headless")) {
 }
 # The VC++ runtime goes app-locally next to the exe instead of the redistributable installer
 # (no installer, no admin rights; Windows 10/11 bring the Universal CRT). No software OpenGL: the
-# game renders with Direct3D 11/12.
+# game renders with Direct3D 11/12. --force-openssl deploys Qt's OpenSSL backend plugin, which
+# windeployqt otherwise skips when it finds no OpenSSL of its own; the DLLs are copied below.
 $windeployqt = Join-Path $QtDir "bin\windeployqt.exe"
-Invoke-Checked "windeployqt" $windeployqt @("--release", "--no-compiler-runtime", "--no-opengl-sw", "--qmldir", (Join-Path $Source "src\app\qml"),
+Invoke-Checked "windeployqt" $windeployqt @("--release", "--force-openssl", "--no-compiler-runtime", "--no-opengl-sw", "--qmldir", (Join-Path $Source "src\app\qml"),
     (Join-Path $package "qtcraft.exe"), (Join-Path $package "qtcraft-headless.exe"))
 $crt = Join-Path $env:VCToolsRedistDir "x64\Microsoft.VC143.CRT"
 $crtDlls = @(Get-ChildItem -File $crt -Filter *.dll | ForEach-Object { $_.Name })
@@ -341,6 +399,10 @@ if ($crtDlls.Count -eq 0) {
 }
 foreach ($dll in $crtDlls) {
     Copy-Required (Join-Path $crt $dll) (Join-Path $package $dll)
+}
+foreach ($dll in $opensslDlls) {
+    Copy-Required (Join-Path $openssl "bin\$dll") (Join-Path $package $dll)
+    Copy-Required (Join-Path $openssl "bin\$([System.IO.Path]::ChangeExtension($dll, "pdb"))") $pdbs
 }
 # SQL drivers come with QtSql (QtQuick.LocalStorage); the game keeps no data in SQL. Mimer, ODBC
 # and PostgreSQL need client libraries outside Qt; SQLite stays (same as scripts/release.sh).
@@ -360,6 +422,7 @@ foreach ($file in @("LICENSE", "THIRD_PARTY.md", "CREDITS.md")) {
     Copy-Required (Join-Path $Source $file) (Join-Path $package $file)
 }
 Copy-Required (Join-Path $Source "src\app\fonts\OFL.txt") (Join-Path $licenses "PixelifySans-OFL.txt")
+Copy-Required (Join-Path $openssl "LICENSE.txt") (Join-Path $licenses "OpenSSL-LICENSE.txt")
 # Qt is used under the LGPL 3 (THIRD_PARTY.md): its text, the GPL 3 it builds on, and a notice.
 $qtLicenses = Join-Path (Split-Path $QtDir) "Src\qtbase\LICENSES"
 Copy-Required (Join-Path $qtLicenses "LGPL-3.0-only.txt") (Join-Path $licenses "Qt-LGPL-3.0.txt")
@@ -396,12 +459,18 @@ Write-Output "== checks"
 $required = @("qtcraft.exe", "qtcraft-headless.exe", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
     "platforms\qwindows.dll", "multimedia\windowsmediaplugin.dll", "qml\QtQuick\Controls", "qml\QtQuick\Layouts",
     "mods\rubies\pack.json", "LICENSE", "THIRD_PARTY.md", "CREDITS.md", "README-Windows.txt", "licenses\PixelifySans-OFL.txt",
-    "licenses\Qt-LGPL-3.0.txt", "licenses\Qt-GPL-3.0.txt", "licenses\Qt-NOTICE.txt") + $crtDlls
+    "licenses\Qt-LGPL-3.0.txt", "licenses\Qt-GPL-3.0.txt", "licenses\Qt-NOTICE.txt", "licenses\OpenSSL-LICENSE.txt",
+    "tls\qopensslbackend.dll") + $crtDlls + $opensslDlls
 foreach ($part in $required) {
     if (Test-Path (Join-Path $package $part)) { Ok "contains $part" } else { Problem "missing $part" }
 }
 foreach ($dll in @("vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll")) {
     if ($crtDlls -notcontains $dll) { Problem "Microsoft.VC143.CRT has no $dll" }
+}
+# The DLLs are the ones of the pinned version (OpenSSL writes its version into their resources).
+foreach ($dll in $opensslDlls) {
+    $fileVersion = (Get-Item (Join-Path $package $dll)).VersionInfo.ProductVersion
+    if ("$fileVersion" -eq $opensslVersion) { Ok "$dll is OpenSSL $fileVersion" } else { Problem "$dll is OpenSSL '$fileVersion', 3rdparty\openssl-version.txt wants $opensslVersion" }
 }
 if (Test-Path (Join-Path $package "opengl32sw.dll")) { Problem "the package contains opengl32sw.dll (Mesa, needs its notice)" } else { Ok "no software OpenGL (opengl32sw.dll)" }
 # The x64 kit has only the Windows Media backend; an FFmpeg backend would need its LGPL 2.1 notice.
