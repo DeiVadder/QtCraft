@@ -216,6 +216,11 @@ struct QcBlockDefinition
     // item that carries its contents; it holds no portable container. Its item gets
     // QcItemDefinition::portableContainer. Server side only.
     bool portableContainer = false;
+    // Sounds of a storage block opening (its first viewer) and closing (its last one): a chest's lid,
+    // a barrel's cover, a backpack's flap (`"openSound"`, `"closeSound"`, decision E-879); empty for
+    // silence. Server side only.
+    QString containerOpenSound;
+    QString containerCloseSound;
     // Tags of the item that places this block (server side only).
     QStringList itemTags;
     // "<material>/<family>" for building parts made by QcPartGenerator, empty otherwise (server side only).

@@ -1,24 +1,49 @@
 {
     "name": "block.grass.break",
-    "volume": 0.8,
+    "volume": 0.75,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "noise",
             "duration": 0.25,
-            "attack": 0.02,
-            "curve": 1.5,
-            "lowpass": 6000,
-            "highpass": 1500,
-            "tremoloRate": 30,
-            "tremoloDepth": 0.5
+            "attack": 0.006,
+            "curve": 2.5,
+            "bandpass": 3000,
+            "resonance": 0.8,
+            "lowpass": 9000,
+            "gain": 0.5
         },
         {
             "wave": "crackle",
             "duration": 0.22,
-            "density": 600,
-            "highpass": 2000,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 7000,
+            "highpass": 1800,
+            "density": 900,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.08,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 150,
+            "resonance": 1.2,
+            "lowpass": 450,
+            "gain": 0.7
+        },
+        {
+            "wave": "crackle",
+            "start": 0.06,
+            "duration": 0.12,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4000,
+            "highpass": 800,
+            "density": 300,
             "gain": 0.4
         }
     ]

@@ -1,23 +1,40 @@
 {
     "name": "block.sand.break",
-    "volume": 0.8,
+    "volume": 0.75,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "noise",
-            "duration": 0.2,
-            "attack": 0.02,
-            "curve": 1.5,
-            "lowpass": 4000,
-            "highpass": 800
+            "duration": 0.22,
+            "attack": 0.005,
+            "curve": 2.5,
+            "bandpass": 2400,
+            "resonance": 0.7,
+            "lowpass": 7200,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.09,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 150,
+            "resonance": 1.2,
+            "lowpass": 450,
+            "gain": 1.0
         },
         {
             "wave": "crackle",
+            "start": 0.01,
             "duration": 0.2,
-            "density": 2000,
-            "lowpass": 5000,
-            "gain": 0.3
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 6000,
+            "highpass": 1500,
+            "density": 1800,
+            "gain": 0.35
         }
     ]
 }

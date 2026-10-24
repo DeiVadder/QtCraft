@@ -4,6 +4,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/light/QcSky.h"
 #include "clientcore/session/QcClientSession.h"
+#include "clientcore/session/QcExplosionEffects.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>
@@ -12,6 +13,8 @@ namespace {
 
 // The widened view stays below a fish-eye even from the widest setting (110°).
 constexpr double maxWidenedFieldOfView = 130.0;
+// A shaken camera never tips over the vertical.
+constexpr float maxShakenPitch = 89.5f;
 
 } // namespace
 
@@ -22,7 +25,7 @@ QcRenderBridge::QcRenderBridge(const QcSessionParts &parts, const QcSettingsCont
 {
 }
 
-void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds)
+void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds, double alpha)
 {
     // Sprinting widens the view only while the player is faster than walking: not at a wall, not
     // swimming (where a sprint does nothing).
@@ -37,6 +40,16 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     camera.position = QVector3D(static_cast<float>(placed.position.x), static_cast<float>(placed.position.y), static_cast<float>(placed.position.z));
     camera.yaw = placed.yaw;
     camera.pitch = placed.pitch;
+    // While the world is paused its ticks stand still: the shake stops instead of freezing at a tilt
+    // and goes on (with the rest of the blast) once the world runs again.
+    if (m_settings.cameraShake() && !session.serverPaused()) {
+        // Only the view trembles; the player's aim stays where it was.
+        const QcExplosionEffects &explosions = session.worldMirror().extras().explosions();
+        const double ticks = static_cast<double>(session.tickCount()) + alpha;
+        const QcExplosionEffects::Shake shake = QcExplosionEffects::shake(explosions.shakeAt(eye, ticks), ticks);
+        camera.yaw += static_cast<float>(shake.yaw);
+        camera.pitch = std::clamp(camera.pitch + static_cast<float>(shake.pitch), -maxShakenPitch, maxShakenPitch);
+    }
     camera.fieldOfView = static_cast<float>(std::min(m_settings.fieldOfView() * widening, maxWidenedFieldOfView));
     m_parts.view->setCamera(camera);
 }
@@ -63,6 +76,11 @@ void QcRenderBridge::updateSky(double alpha)
     const QcClientWeather &weather = session.worldMirror().weather();
     QcSkyState sky = QcSky::at(session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration);
     sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
+    const QVector3D camera = m_parts.view->camera().position;
+    const QcVec3 eye{camera.x(), camera.y(), camera.z()};
+    // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.
+    const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);
+    sky = QcSky::withBlast(sky, flash);
     m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
 }
 

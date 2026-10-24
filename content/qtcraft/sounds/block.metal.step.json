@@ -1,0 +1,45 @@
+{
+    "name": "block.metal.step",
+    "volume": 0.45,
+    "variants": 4,
+    "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.005,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 3000,
+            "gain": 0.01
+        },
+        {
+            "wave": "noise",
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 950,
+            "resonance": 18,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 2600,
+            "resonance": 20,
+            "gain": 0.4
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 160,
+            "resonance": 1.2,
+            "lowpass": 480,
+            "gain": 0.5
+        }
+    ]
+}

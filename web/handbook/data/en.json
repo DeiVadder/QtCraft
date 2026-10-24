@@ -5289,7 +5289,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -5644,7 +5644,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:anvil",
@@ -6574,7 +6574,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:bell",
@@ -19366,7 +19366,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:cauldron",
@@ -19559,7 +19559,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -19992,7 +19992,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:chipped_anvil",
@@ -23088,7 +23088,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -23273,7 +23273,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:copper_block",
@@ -23478,7 +23478,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -23663,7 +23663,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -23866,7 +23866,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -24197,7 +24197,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -27641,7 +27641,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:damaged_anvil",
@@ -28621,7 +28621,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -33144,7 +33144,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:gold_block",
@@ -38274,7 +38274,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -38459,7 +38459,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 }
             ],
             "icon": "qtcraft:iron_block",
@@ -38676,7 +38676,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -38983,7 +38983,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -42987,7 +42987,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -65630,7 +65630,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -67924,7 +67924,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",
@@ -73444,7 +73444,7 @@
                     "label": "Sound",
                     "links": [
                     ],
-                    "value": "stone"
+                    "value": "metal"
                 },
                 {
                     "label": "States",

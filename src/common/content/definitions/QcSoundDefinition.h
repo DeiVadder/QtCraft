@@ -43,6 +43,12 @@ struct QcSoundLayer
     double tremoloRate = 0.0;
     double tremoloDepth = 0.0;
     double density = 200.0;
+    // Resonant band-pass around this centre frequency (a two-pole state-variable filter, unity gain at
+    // the centre); 0 switches it off. Noise through it rings like a struck body (a plank's knock, a
+    // stone's click) without a pitched tone (decision E-879).
+    double bandpass = 0.0;
+    // Sharpness of the band-pass (its Q): higher rings narrower and longer.
+    double resonance = 1.0;
 
     friend bool operator==(const QcSoundLayer &, const QcSoundLayer &) = default;
 };
@@ -58,6 +64,9 @@ struct QcSoundDefinition
     static constexpr double maxFrequency = 20000.0;
     static constexpr double maxRange = 128.0;
     static constexpr double defaultRange = 16.0;
+    static constexpr double minResonance = 0.5;
+    static constexpr double maxResonance = 30.0;
+    static constexpr double maxDrive = 8.0;
 
     QString name;
     QcSoundBus bus = QcSoundBus::Effects;
@@ -65,6 +74,11 @@ struct QcSoundDefinition
     double volume = 1.0;
     // Random pitch change per play, as a share (0.1 = up to +-10 %).
     double pitchVariation = 0.0;
+    // Random loudness change per play, as a share (0.2 = up to 20 % quieter; decision E-879).
+    double volumeVariation = 0.0;
+    // Soft saturation of the rendering (0 off, up to maxDrive): the quieter parts come up towards the
+    // peak, so a blast sounds dense and loud while its peak stays where it was (decision E-879).
+    double drive = 0.0;
     // Differently seeded renderings; one is picked per play.
     int variants = 1;
     // Loops play until stopped (ambience) and are rendered seamless.

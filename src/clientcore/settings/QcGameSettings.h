@@ -50,6 +50,8 @@ struct QcGameSettings
     // A world hosted in the game opens its pause menu, and so pauses, when the window loses the
     // focus (decision E-877).
     bool pauseOnFocusLoss = false;
+    // Explosions near the player shake the camera (decision E-879).
+    bool cameraShake = true;
     // "" follows the system language, otherwise a two-letter language code such as "de".
     QString language;
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;

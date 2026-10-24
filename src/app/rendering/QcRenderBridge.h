@@ -30,15 +30,16 @@ public:
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_entities.setForcedPose(pose); }
 
-    // The camera at the eye, with the field of view widened while sprinting (decision E-280);
-    // `frameSeconds` advances the widening's easing.
-    void placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds);
+    // The camera at the eye, with the field of view widened while sprinting (decision E-280) and
+    // shaken by explosions nearby when the settings allow (decision E-879); `frameSeconds` advances
+    // the widening's easing, `alpha` is the frame's fraction of a tick.
+    void placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds, double alpha);
     // Creatures, dropped items, falling blocks and, seen from outside, the player.
     void updateEntities(double alpha, QcCameraMode mode);
     // The first-person arm with the held item; hidden in the other camera modes and for a spectator.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
-    // After placeCamera: the sky of the time of day under the weather and a lightning flash; below
-    // the world it darkens with the camera height.
+    // After placeCamera: the sky of the time of day under the weather, a lightning flash and the
+    // flash of explosions nearby; below the world it darkens with the camera height.
     void updateSky(double alpha);
     // Rain and snow around the eye, advanced by `frameSeconds` (decision E-395).
     void updateWeather(const QcVec3 &eye, double frameSeconds);

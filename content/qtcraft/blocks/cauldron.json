@@ -1,6 +1,6 @@
 {
     "name": "cauldron",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "cauldron",
     "render": "cutout",
     "lightOpacity": 0,

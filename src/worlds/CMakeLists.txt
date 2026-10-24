@@ -8,6 +8,7 @@ qt_add_library(qc_worlds STATIC)
 target_sources(qc_worlds PRIVATE
     QcBundledMods.h QcBundledMods.cpp
     QcContentFingerprint.h QcContentFingerprint.cpp
+    QcContentReferences.h QcContentReferences.cpp
     QcHandbookRules.h QcHandbookRules.cpp
     QcLocalServerHost.h QcLocalServerHost.cpp
     QcModLoader.h QcModLoader.cpp

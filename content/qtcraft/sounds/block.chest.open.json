@@ -1,0 +1,50 @@
+{
+    "name": "block.chest.open",
+    "volume": 0.6,
+    "variants": 3,
+    "pitchVariation": 0.06,
+    "volumeVariation": 0.1,
+    "layers": [
+        {
+            "wave": "crackle",
+            "duration": 0.3,
+            "attack": 0.03,
+            "curve": 1.5,
+            "bandpass": 820,
+            "resonance": 9,
+            "density": 140,
+            "gain": 1.0
+        },
+        {
+            "wave": "crackle",
+            "start": 0.03,
+            "duration": 0.26,
+            "attack": 0.03,
+            "curve": 1.5,
+            "bandpass": 1700,
+            "resonance": 10,
+            "density": 90,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "start": 0.27,
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 260,
+            "resonance": 2,
+            "lowpass": 780,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "start": 0.27,
+            "duration": 0.006,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2000,
+            "gain": 0.01
+        }
+    ]
+}

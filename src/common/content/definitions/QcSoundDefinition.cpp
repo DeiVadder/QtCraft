@@ -31,6 +31,9 @@ QString QcSoundDefinition::problem() const
     if (!within(volume, 0.0, 1.0) || !within(pitchVariation, 0.0, 0.5) || !within(range, 1.0, maxRange)) {
         return u"'volume' (0..1), 'pitchVariation' (0..0.5) or 'range' (1..%1) out of range"_s.arg(maxRange);
     }
+    if (!within(volumeVariation, 0.0, 0.5) || !within(drive, 0.0, maxDrive)) {
+        return u"'volumeVariation' (0..0.5) or 'drive' (0..%1) out of range"_s.arg(maxDrive);
+    }
     if (variants < 1 || variants > maxVariants) {
         return u"'variants' must be within 1..%1"_s.arg(maxVariants);
     }
@@ -40,7 +43,9 @@ QString QcSoundDefinition::problem() const
 
     for (const QcSoundLayer &layer : layers) {
         const bool filtersOk = (layer.lowpass == 0.0 || within(layer.lowpass, minFrequency, maxFrequency))
-                               && (layer.highpass == 0.0 || within(layer.highpass, minFrequency, maxFrequency));
+                               && (layer.highpass == 0.0 || within(layer.highpass, minFrequency, maxFrequency))
+                               && (layer.bandpass == 0.0 || within(layer.bandpass, minFrequency, maxFrequency))
+                               && within(layer.resonance, minResonance, maxResonance);
         const bool sweepOk = layer.endFrequency == 0.0 || within(layer.endFrequency, minFrequency, maxFrequency);
         if (layer.wave > QcSoundWave::Crackle || !within(layer.frequency, minFrequency, maxFrequency) || !sweepOk
             || !within(layer.start, 0.0, maxLayerStart) || !within(layer.duration, 0.001, maxLayerSeconds)

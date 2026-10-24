@@ -1,23 +1,39 @@
 {
     "name": "block.snow.step",
-    "volume": 0.5,
+    "volume": 0.45,
     "variants": 4,
     "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
     "layers": [
-        {
-            "wave": "noise",
-            "duration": 0.12,
-            "attack": 0.02,
-            "curve": 1.5,
-            "lowpass": 1800,
-            "highpass": 300
-        },
         {
             "wave": "crackle",
             "duration": 0.11,
-            "density": 700,
-            "lowpass": 2500,
-            "gain": 0.35
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 6000,
+            "highpass": 1500,
+            "density": 1500,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.006,
+            "curve": 3,
+            "bandpass": 1700,
+            "resonance": 1.5,
+            "lowpass": 5100,
+            "gain": 0.5
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 170,
+            "resonance": 1.2,
+            "lowpass": 510,
+            "gain": 0.6
         }
     ]
 }

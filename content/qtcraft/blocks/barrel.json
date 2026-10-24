@@ -6,7 +6,9 @@
     "hardness": 2.5,
     "tool": "axe",
     "container": {
-        "slots": 27
+        "slots": 27,
+        "openSound": "block.barrel.open",
+        "closeSound": "block.barrel.close"
     },
     "states": {
         "facing": [

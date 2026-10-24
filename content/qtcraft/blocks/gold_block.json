@@ -1,6 +1,6 @@
 {
     "name": "gold_block",
-    "sound": "stone",
+    "sound": "metal",
     "hardness": 3.0,
     "blastResistance": 6.0,
     "tool": "pickaxe",

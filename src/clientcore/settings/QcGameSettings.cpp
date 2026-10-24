@@ -144,6 +144,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.showLabels = file.value(u"showLabels"_s, true).toBool();
     settings.photoHidesHand = file.value(u"photoHidesHand"_s, true).toBool();
     settings.pauseOnFocusLoss = file.value(u"pauseOnFocusLoss"_s, false).toBool();
+    settings.cameraShake = file.value(u"cameraShake"_s, true).toBool();
     settings.language = cleanLanguage(file.value(u"language"_s).toString());
     settings.cameraMode = QcViewCamera::fromName(file.value(u"cameraMode"_s).toString()).value_or(QcCameraMode::FirstPerson);
     settings.uiScale = QcUiScale::fromName(file.value(u"uiScale"_s).toString()).value_or(QcUiScale::defaultStep);
@@ -186,6 +187,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"showLabels"_s, showLabels);
     file.setValue(u"photoHidesHand"_s, photoHidesHand);
     file.setValue(u"pauseOnFocusLoss"_s, pauseOnFocusLoss);
+    file.setValue(u"cameraShake"_s, cameraShake);
     file.setValue(u"language"_s, language);
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));
     file.setValue(u"uiScale"_s, QcUiScale::name(uiScale));

@@ -1,32 +1,69 @@
 {
     "name": "block.stone.break",
-    "volume": 0.8,
+    "volume": 0.85,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "noise",
-            "duration": 0.2,
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2000,
+            "gain": 0.04
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1700,
+            "resonance": 2,
+            "lowpass": 5100,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 400,
+            "resonance": 1.8,
+            "lowpass": 1200,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
             "attack": 0.002,
-            "curve": 3,
-            "lowpass": 2500,
-            "highpass": 200
+            "curve": 4,
+            "bandpass": 110,
+            "resonance": 1.2,
+            "lowpass": 330,
+            "gain": 0.8
         },
         {
             "wave": "crackle",
-            "duration": 0.18,
-            "density": 400,
-            "lowpass": 4000,
-            "gain": 0.5
-        },
-        {
-            "wave": "sine",
-            "duration": 0.08,
-            "frequency": 120,
-            "endFrequency": 60,
+            "start": 0.01,
+            "duration": 0.25,
             "attack": 0.002,
             "curve": 2,
-            "gain": 0.6
+            "lowpass": 5000,
+            "highpass": 1000,
+            "density": 700,
+            "gain": 0.45
+        },
+        {
+            "wave": "noise",
+            "start": 0.06,
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 2600,
+            "resonance": 3,
+            "lowpass": 7800,
+            "gain": 0.5
         }
     ]
 }

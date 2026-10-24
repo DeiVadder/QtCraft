@@ -103,7 +103,11 @@ void QcServerExplosions::explode(const Blast &blast)
 
 void QcServerExplosions::announce(const Blast &blast)
 {
-    m_sounds.play(QString::fromLatin1(QcSoundKeys::explosion), blast.centre);
+    // Louder and further for stronger blasts (decision E-879): TNT (power 4) sounds at 1.1, so that its
+    // rendering (peak 0.9) peaks at about 1.0 and one blast stays near the client's limiter knee; its
+    // loudness comes from the rendering's drive. Stronger blasts go up to 1.4.
+    const float volume = std::clamp(0.275f * static_cast<float>(blast.power), 0.8f, 1.4f);
+    m_sounds.play(QString::fromLatin1(QcSoundKeys::explosion), blast.centre, volume);
     const QcMsg::Explosion message{blast.centre, static_cast<float>(blast.power)};
     for (const auto &client : m_state.clients()) {
         if (client->state == QcServerClient::State::Playing && (client->motion.position - blast.centre).length() <= viewDistance) {

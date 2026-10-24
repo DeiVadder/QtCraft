@@ -119,12 +119,12 @@ void writeAppearance(QDataStream &stream, const QcAppearanceDefinition &appearan
 
 void writeSound(QDataStream &stream, const QcSoundDefinition &sound)
 {
-    stream << sound.name << static_cast<quint8>(sound.bus) << sound.volume << sound.pitchVariation << static_cast<qint32>(sound.variants) << sound.loop
-           << sound.range << static_cast<quint32>(sound.layers.size());
+    stream << sound.name << static_cast<quint8>(sound.bus) << sound.volume << sound.pitchVariation << sound.volumeVariation << sound.drive
+           << static_cast<qint32>(sound.variants) << sound.loop << sound.range << static_cast<quint32>(sound.layers.size());
     for (const QcSoundLayer &layer : sound.layers) {
         stream << static_cast<quint8>(layer.wave) << layer.frequency << layer.endFrequency << layer.start << layer.duration << layer.attack
-               << layer.curve << layer.gain << layer.lowpass << layer.highpass << layer.tremoloRate << layer.tremoloDepth
-               << layer.density;
+               << layer.curve << layer.gain << layer.lowpass << layer.highpass << layer.bandpass << layer.resonance << layer.tremoloRate
+               << layer.tremoloDepth << layer.density;
     }
 }
 
@@ -377,7 +377,8 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
 
     quint8 bus = 0;
     qint32 variants = 0;
-    stream >> sound.name >> bus >> sound.volume >> sound.pitchVariation >> variants >> sound.loop >> sound.range;
+    stream >> sound.name >> bus >> sound.volume >> sound.pitchVariation >> sound.volumeVariation >> sound.drive >> variants >> sound.loop
+        >> sound.range;
     const std::optional<quint32> layerCountRead = QcStreamLimits::readCount(stream, QcSoundDefinition::maxLayers);
     if (!layerCountRead) {
         return std::nullopt;
@@ -391,7 +392,8 @@ bool readItem(QDataStream &stream, QcContentRegistry &registry)
         QcSoundLayer layer;
         quint8 wave = 0;
         stream >> wave >> layer.frequency >> layer.endFrequency >> layer.start >> layer.duration >> layer.attack >> layer.curve
-            >> layer.gain >> layer.lowpass >> layer.highpass >> layer.tremoloRate >> layer.tremoloDepth >> layer.density;
+            >> layer.gain >> layer.lowpass >> layer.highpass >> layer.bandpass >> layer.resonance >> layer.tremoloRate >> layer.tremoloDepth
+            >> layer.density;
         layer.wave = static_cast<QcSoundWave>(wave);
         sound.layers.append(layer);
     }

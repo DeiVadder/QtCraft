@@ -30,6 +30,13 @@ QcVec3 directionOf(const QcVec3 &centre, int index)
     return {std::cos(angle) * flat, rise, std::sin(angle) * flat};
 }
 
+// 1 at the centre, falling to 0 at `reach`.
+double closeness(const QcVec3 &eye, const QcVec3 &centre, double reach)
+{
+    const double distance = (eye - centre).length();
+    return reach > 0.0 ? std::clamp(1.0 - distance / reach, 0.0, 1.0) : 0.0;
+}
+
 } // namespace
 
 void QcExplosionEffects::add(const QcMsg::Explosion &explosion, quint64 tick)
@@ -37,6 +44,13 @@ void QcExplosionEffects::add(const QcMsg::Explosion &explosion, quint64 tick)
     const double power = std::clamp(static_cast<double>(explosion.power), 0.5, 16.0);
     const int smoke = static_cast<int>(std::ceil(power * smokePuffsPerPower));
     const int count = flashPuffs + smoke;
+    // A chain of many blasts shakes and flashes as one: the strongest counts, not the sum. When the
+    // list is full, the new blast takes the place of the weakest, the oldest among equals.
+    if (m_blasts.size() >= maxBlasts) {
+        const auto weakest = std::ranges::min_element(m_blasts, [](const Blast &a, const Blast &b) { return a.power != b.power ? a.power < b.power : a.tick < b.tick; });
+        m_blasts.erase(weakest);
+    }
+    m_blasts.append({explosion.centre, power, tick});
     if (m_puffs.size() + count > maxPuffs) {
         return;
     }
@@ -48,9 +62,15 @@ void QcExplosionEffects::add(const QcMsg::Explosion &explosion, quint64 tick)
         puff.centre = explosion.centre;
         puff.velocity = directionOf(explosion.centre, index) * speed;
         puff.startTick = tick;
-        puff.lifeTicks = flash ? 6 : 20 + static_cast<int>(unitOf(explosion.centre, index, 4) * 20.0);
+        puff.lifeTicks = flash ? 6 + static_cast<int>(unitOf(explosion.centre, index, 4) * 4.0) : 20 + static_cast<int>(unitOf(explosion.centre, index, 4) * 30.0);
         puff.size = (flash ? 0.5 : 0.25) * power * (0.6 + 0.4 * unitOf(explosion.centre, index, 5));
         puff.flash = flash;
+        if (index == 0) {
+            // The fireball: one large flash that stays at the centre.
+            puff.velocity = {};
+            puff.size = 0.6 * power;
+            puff.lifeTicks = 5;
+        }
         m_puffs.append(puff);
     }
 }
@@ -58,6 +78,47 @@ void QcExplosionEffects::add(const QcMsg::Explosion &explosion, quint64 tick)
 void QcExplosionEffects::prune(quint64 tick)
 {
     m_puffs.removeIf([tick](const Puff &puff) { return tick >= puff.startTick + static_cast<quint64>(puff.lifeTicks); });
+    m_blasts.removeIf([tick](const Blast &blast) { return tick >= blast.tick + static_cast<quint64>(std::max(flashTicks, shakeTicks)); });
+}
+
+double QcExplosionEffects::flashAt(const QcVec3 &eye, double ticks) const
+{
+    double flash = 0.0;
+    for (const Blast &blast : m_blasts) {
+        const double age = ticks - static_cast<double>(blast.tick);
+        if (age < 0.0 || age >= flashTicks) {
+            continue;
+        }
+        const double fade = 1.0 - age / flashTicks;
+        flash = std::max(flash, closeness(eye, blast.centre, flashReachPerPower * blast.power) * fade * fade);
+    }
+    return flash;
+}
+
+double QcExplosionEffects::shakeAt(const QcVec3 &eye, double ticks) const
+{
+    double strength = 0.0;
+    for (const Blast &blast : m_blasts) {
+        const double age = ticks - static_cast<double>(blast.tick);
+        if (age < 0.0 || age >= shakeTicks) {
+            continue;
+        }
+        // Strong at once, then dying away over shakeTicks.
+        const double near = closeness(eye, blast.centre, shakeReachPerPower * blast.power);
+        const double fade = std::pow(1.0 - age / shakeTicks, 2.0);
+        strength = std::max(strength, near * near * fade);
+    }
+    return strength;
+}
+
+QcExplosionEffects::Shake QcExplosionEffects::shake(double strength, double ticks)
+{
+    // Sines of unrelated frequencies make an irregular tremble that is smooth from frame to frame.
+    const double seconds = ticks * QcPhysics::tickDuration;
+    const double yaw = std::sin(seconds * 47.0) * 0.6 + std::sin(seconds * 71.0 + 1.3) * 0.4;
+    const double pitch = std::sin(seconds * 53.0 + 0.7) * 0.6 + std::sin(seconds * 83.0 + 2.1) * 0.4;
+    const double degrees = std::clamp(strength, 0.0, 1.0) * maxShakeDegrees;
+    return {yaw * degrees, pitch * degrees};
 }
 
 std::optional<QcExplosionEffects::Look> QcExplosionEffects::lookAt(const Puff &puff, double ticks)

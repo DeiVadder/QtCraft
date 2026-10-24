@@ -193,6 +193,53 @@ private slots:
         QVERIFY(roughness(filtered.samples) > 4.0 * roughness(plain.samples));
     }
 
+    // The resonant band-pass (decision E-879): noise through it rings at the centre, about one
+    // period per 1/centre seconds, narrower with more resonance; it is stable up to the top of the range.
+    void bandPassRingsAtItsCentre()
+    {
+        QcSoundLayer ring = layer(QcSoundWave::Noise, 0.5);
+        ring.bandpass = 1000.0;
+        ring.resonance = 12.0;
+        // The band's slow flanks let some high noise through, which adds crossings; a low-pass far
+        // above the centre takes it away, so the count shows the centre.
+        ring.lowpass = 1500.0;
+        const QcSampleBuffer narrow = QcSoundSynthesizer::render(sound(u"t:ring"_s, {ring}), 0);
+        const int crossings = upwardCrossings(narrow.samples, 0, narrow.samples.size());
+        QVERIFY2(std::abs(crossings - 500) < 60, qPrintable(QString::number(crossings)));
+        ring.lowpass = 0.0;
+
+        // The same band without the low-pass, once resonant and once wide open: only the resonance
+        // differs, and the wide band lets the noise around the centre through, so it is rougher.
+        const QcSampleBuffer resonant = QcSoundSynthesizer::render(sound(u"t:ring"_s, {ring}), 0);
+        QcSoundLayer wide = ring;
+        wide.resonance = QcSoundDefinition::minResonance;
+        const QcSampleBuffer open = QcSoundSynthesizer::render(sound(u"t:ring"_s, {wide}), 0);
+        QVERIFY2(roughness(open.samples) > 1.5 * roughness(resonant.samples),
+                 qPrintable(u"%1 vs %2"_s.arg(roughness(open.samples)).arg(roughness(resonant.samples))));
+
+        QcSoundLayer top = ring;
+        top.bandpass = QcSoundDefinition::maxFrequency;
+        top.resonance = QcSoundDefinition::maxResonance;
+        const QcSampleBuffer high = QcSoundSynthesizer::render(sound(u"t:top"_s, {top}), 0);
+        QVERIFY(std::ranges::all_of(high.samples, [](float sample) { return std::isfinite(sample) && std::abs(sample) <= QcSoundSynthesizer::peak + 1e-6f; }));
+        QVERIFY(peakOf(high.samples) > 0.5f);
+    }
+
+    // Drive (decision E-879) lifts the quieter parts towards the peak without raising the peak.
+    void driveRaisesTheLevelNotThePeak()
+    {
+        QcSoundLayer decaying = layer(QcSoundWave::Noise, 0.5);
+        decaying.curve = 3.0;
+        QcSoundDefinition plain = sound(u"t:blast"_s, {decaying});
+        QcSoundDefinition driven = plain;
+        driven.drive = 3.0;
+        const QcSampleBuffer quiet = QcSoundSynthesizer::render(plain, 0);
+        const QcSampleBuffer loud = QcSoundSynthesizer::render(driven, 0);
+        QCOMPARE(loud.samples.size(), quiet.samples.size());
+        QVERIFY(std::abs(peakOf(loud.samples) - QcSoundSynthesizer::peak) < 1e-3f);
+        QVERIFY(rms(loud.samples, 0, loud.samples.size()) > 1.5 * rms(quiet.samples, 0, quiet.samples.size()));
+    }
+
     void loopsAreSeamless()
     {
         QcSoundLayer wind = layer(QcSoundWave::Noise, 1.0);

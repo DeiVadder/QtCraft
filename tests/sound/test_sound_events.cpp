@@ -39,6 +39,7 @@ public:
             sounds.append(*sound);
         } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
+            ++states;
         } else if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
             stacks = inventory->stacks;
         }
@@ -59,6 +60,7 @@ public:
     QByteArray key;
     QList<QcMsg::SoundEvent> sounds;
     QcEntityMotion motion;
+    int states = 0;
     QList<QcItemStack> stacks;
 };
 
@@ -103,6 +105,28 @@ private:
             }
         }
         return -1;
+    }
+
+    // A second player, logged in and playing next to the first.
+    std::unique_ptr<SoundClient> connectGuest()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd));
+        auto guest = std::make_unique<SoundClient>(std::move(clientEnd));
+        guest->hello(u"Guest"_s);
+        for (int i = 0; i < 20 && guest->states == 0; ++i) {
+            QcTestUtil::pump();
+            ticks(1);
+        }
+        ticks(2);
+        return guest;
+    }
+
+    void send(SoundClient &client, const QcMessage &message)
+    {
+        client.connection.send(message);
+        QcTestUtil::pump();
+        ticks(1);
     }
 
     void join()
@@ -204,6 +228,135 @@ private slots:
         m_client->sounds.clear();
         chat(u"/setblock %1 %2 %3 air"_s.arg(pool.x).arg(pool.y).arg(pool.z));
         QVERIFY(m_client->sounds.isEmpty());
+    }
+
+    // Storage blocks sound when the first player opens them and when the last one closes them; a
+    // backpack in the hand when its holder opens and closes it (decision E-879).
+    void containersSoundWhenOpenedAndClosed()
+    {
+        join();
+        const auto count = [this](const char *key) { return m_client->soundsNamed(QString::fromLatin1(key)).size(); };
+        const QcBlockPos chest = m_feet.offset(2, 0, 0);
+        const QcBlockPos barrel = m_feet.offset(0, 0, 2);
+        QVERIFY(m_server->world().setBlock(chest, id("qtcraft:chest")));
+        QVERIFY(m_server->world().setBlock(barrel, id("qtcraft:barrel")));
+
+        send(QcMsg::UseItem{chest, QcBlockFace::West});
+        ticks(1);
+        const QList<QcMsg::SoundEvent> opened = m_client->soundsNamed(u"qtcraft:block.chest.open"_s);
+        QCOMPARE(opened.size(), 1);
+        QCOMPARE(opened[0].position, centreOf(chest));
+        QCOMPARE(count("qtcraft:block.chest.close"), 0);
+
+        // Looking into it for a while makes no more sound; closing it does, once.
+        ticks(10);
+        QCOMPARE(count("qtcraft:block.chest.open"), 1);
+        send(QcMsg::CloseMachine{});
+        ticks(1);
+        QCOMPARE(count("qtcraft:block.chest.close"), 1);
+        QCOMPARE(m_client->soundsNamed(u"qtcraft:block.chest.close"_s)[0].position, centreOf(chest));
+
+        // Going from one container straight to another closes the first and opens the second.
+        send(QcMsg::UseItem{chest, QcBlockFace::West});
+        send(QcMsg::UseItem{barrel, QcBlockFace::North});
+        ticks(1);
+        QCOMPARE(count("qtcraft:block.chest.open"), 2);
+        QCOMPARE(count("qtcraft:block.chest.close"), 2);
+        QCOMPARE(count("qtcraft:block.barrel.open"), 1);
+        send(QcMsg::CloseMachine{});
+        ticks(1);
+        QCOMPARE(count("qtcraft:block.barrel.close"), 1);
+
+        // A backpack opened in the hand.
+        chat(u"/give backpack 1"_s);
+        send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:backpack"))});
+        send(QcMsg::ConsumeItem{});
+        ticks(1);
+        QCOMPARE(count("qtcraft:block.backpack.open"), 1);
+        send(QcMsg::CloseMachine{});
+        ticks(1);
+        QCOMPARE(count("qtcraft:block.backpack.close"), 1);
+
+        // A furnace has a screen but no lid: it opens and closes silently.
+        const QcBlockPos furnace = m_feet.offset(-2, 0, 0);
+        QVERIFY(m_server->world().setBlock(furnace, id("qtcraft:furnace")));
+        const qsizetype before = m_client->sounds.size();
+        send(QcMsg::UseItem{furnace, QcBlockFace::East});
+        send(QcMsg::CloseMachine{});
+        ticks(1);
+        QCOMPARE(m_client->sounds.size(), before);
+    }
+
+    // Two players at one chest: it opens with the first and closes with the last. A player who dies or
+    // leaves with the chest open closes it like anyone else (decision E-879).
+    void sharedChestSoundsForTheFirstAndLastViewer()
+    {
+        join();
+        std::unique_ptr<SoundClient> guest = connectGuest();
+        QVERIFY(guest->states > 0);
+        const QcBlockPos chest = m_feet.offset(2, 0, 0);
+        QVERIFY(m_server->world().setBlock(chest, id("qtcraft:chest")));
+        const auto count = [](const SoundClient &client, const char *key) { return client.soundsNamed(QString::fromLatin1(key)).size(); };
+        m_client->sounds.clear();
+        guest->sounds.clear();
+
+        send(QcMsg::UseItem{chest, QcBlockFace::West});
+        send(*guest, QcMsg::UseItem{chest, QcBlockFace::West});
+        ticks(2);
+        QCOMPARE(count(*m_client, "qtcraft:block.chest.open"), 1);
+        send(QcMsg::CloseMachine{});
+        ticks(2);
+        QCOMPARE(count(*m_client, "qtcraft:block.chest.close"), 0);
+        send(*guest, QcMsg::CloseMachine{});
+        ticks(1);
+        QCOMPARE(count(*m_client, "qtcraft:block.chest.close"), 1);
+        QCOMPARE(count(*guest, "qtcraft:block.chest.close"), 1);
+
+        // The first player dies with the chest open: the other one hears it close.
+        send(QcMsg::UseItem{chest, QcBlockFace::West});
+        QCOMPARE(count(*guest, "qtcraft:block.chest.open"), 2);
+        chat(u"/kill"_s);
+        ticks(1);
+        QCOMPARE(count(*guest, "qtcraft:block.chest.close"), 2);
+        send(QcMsg::Respawn{});
+        ticks(2);
+
+        // The guest leaves with the chest open: it closes.
+        send(*guest, QcMsg::UseItem{chest, QcBlockFace::West});
+        QCOMPARE(count(*guest, "qtcraft:block.chest.open"), 3);
+        const qsizetype closedBefore = count(*m_client, "qtcraft:block.chest.close");
+        guest->connection.close();
+        QcTestUtil::pump();
+        ticks(2);
+        QCOMPARE(count(*m_client, "qtcraft:block.chest.close"), closedBefore + 1);
+    }
+
+    // A chest broken while open makes its breaking sound, not the closing one; a trapped chest, whose
+    // power state changes while it is open, still closes audibly (decision E-879).
+    void brokenAndTrappedChestsCloseRight()
+    {
+        join();
+        const auto count = [this](const char *key) { return m_client->soundsNamed(QString::fromLatin1(key)).size(); };
+        const QcBlockPos chest = m_feet.offset(2, 0, 0);
+        QVERIFY(m_server->world().setBlock(chest, id("qtcraft:chest")));
+        send(QcMsg::UseItem{chest, QcBlockFace::West});
+        QCOMPARE(count("qtcraft:block.chest.open"), 1);
+        chat(u"/setblock %1 %2 %3 air"_s.arg(chest.x).arg(chest.y).arg(chest.z));
+        ticks(2);
+        QCOMPARE(m_server->world().blockAt(chest), std::optional<QcBlockId>(qcAirBlockId));
+        QCOMPARE(count("qtcraft:block.wood.break"), 1);
+        QCOMPARE(count("qtcraft:block.chest.close"), 0);
+
+        const QcBlockPos trapped = m_feet.offset(0, 0, 2);
+        QVERIFY(m_server->world().setBlock(trapped, id("qtcraft:trapped_chest")));
+        send(QcMsg::UseItem{trapped, QcBlockFace::North});
+        ticks(2);
+        QCOMPARE(count("qtcraft:block.chest.open"), 2);
+        QVERIFY(m_server->world().blockAt(trapped) != std::optional<QcBlockId>(id("qtcraft:trapped_chest")));
+        QVERIFY(m_content->isSameBlock(*m_server->world().blockAt(trapped), id("qtcraft:trapped_chest")));
+        send(QcMsg::CloseMachine{});
+        ticks(2);
+        QCOMPARE(count("qtcraft:block.chest.close"), 1);
     }
 
     void creaturesSoundWhenHurtKilledAndNowAndThen()

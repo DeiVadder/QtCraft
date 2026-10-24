@@ -1,0 +1,54 @@
+{
+    "name": "block.metal.place",
+    "volume": 0.7,
+    "variants": 3,
+    "pitchVariation": 0.06,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2500,
+            "gain": 0.03
+        },
+        {
+            "wave": "noise",
+            "duration": 0.25,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 820,
+            "resonance": 25,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.18,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 2210,
+            "resonance": 28,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 3570,
+            "resonance": 30,
+            "gain": 0.4
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 150,
+            "resonance": 1.2,
+            "lowpass": 450,
+            "gain": 0.6
+        }
+    ]
+}

@@ -241,6 +241,8 @@ void BlockReader::readContainer(QcJsonFieldReader &containerReader)
     m_block.containerSlots = containerReader.integer(u"slots"_s, 27, 1, QcBlockDefinition::maxContainerSlots);
     m_block.containerColumns = containerReader.integer(u"columns"_s, 9, 1, 9);
     m_block.portableContainer = containerReader.boolean(u"portable"_s, false);
+    m_block.containerOpenSound = containerReader.name(u"openSound"_s, m_namespace);
+    m_block.containerCloseSound = containerReader.name(u"closeSound"_s, m_namespace);
     if (containerReader.ok() && (m_block.opensCrafting || m_json.contains(u"machine"_s))) {
         containerReader.fail(u"a block cannot store items and also be a crafting table or machine"_s);
     }

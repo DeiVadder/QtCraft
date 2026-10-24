@@ -21,8 +21,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // items that store their enchantments in the content (decision E-873), 73 the building part of a
 // block (`partOf`) in the content (decision E-874), 74 the pause of the server (PauseRequest,
 // ServerPause; decision E-877), 75 runs every network connection over TLS (decision E-872; the
-// messages are unchanged).
-inline constexpr quint32 version = 75;
+// messages are unchanged), 76 the band-pass, volume variation and drive of sounds in the content
+// (decision E-879).
+inline constexpr quint32 version = 76;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

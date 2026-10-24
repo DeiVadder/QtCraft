@@ -2203,29 +2203,39 @@ Als Nächstes: %3</translation>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="157"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="158"/>
+        <source>Camera shake</source>
+        <translation>Kamerawackeln</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="159"/>
+        <source>Explosions nearby shake the view</source>
+        <translation>Explosionen in der Nähe lassen die Ansicht wackeln</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="166"/>
         <source>Quality</source>
         <translation>Qualität</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="163"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="172"/>
         <source>Texture filtering</source>
         <translation>Texturfilterung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="164"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="173"/>
         <source>Keeps distant ground sharp; more costs more GPU time</source>
         <translation>Hält entfernten Boden scharf; mehr kostet mehr Grafikleistung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="166"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="175"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="167"/>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="168"/>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="169"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="177"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="178"/>
         <source>%1×</source>
         <translation>%1×</translation>
     </message>
@@ -5398,7 +5408,7 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/network/QcSocketErrors.cpp" line="13"/>
-        <location filename="../src/network/QcTcpTransport.cpp" line="173"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="209"/>
         <source>The other side closed the connection</source>
         <translation>Die Gegenseite hat die Verbindung geschlossen</translation>
     </message>
@@ -5429,23 +5439,23 @@ Als Nächstes: %3</translation>
         <translation>Das System erlaubt diese Verbindung nicht</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpTransport.cpp" line="55"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="64"/>
         <source>Not connected</source>
         <translation>Nicht verbunden</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpTransport.cpp" line="110"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="146"/>
         <source>The connection is too slow</source>
         <translation>Die Verbindung ist zu langsam</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpTransport.cpp" line="145"/>
-        <location filename="../src/network/QcTcpTransport.cpp" line="162"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="181"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="198"/>
         <source>The other side sent a frame that is too large</source>
         <translation>Die Gegenseite hat einen zu großen Datenblock gesendet</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpTransport.cpp" line="187"/>
+        <location filename="../src/network/QcTcpTransport.cpp" line="223"/>
         <source>The connection timed out</source>
         <translation>Die Verbindung hat das Zeitlimit überschritten</translation>
     </message>
@@ -5489,12 +5499,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcNetworkClient</name>
     <message>
-        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="69"/>
+        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="133"/>
         <source>QtCraft cannot check the server&apos;s certificate (no list of known servers), so it does not connect</source>
         <translation>QtCraft kann das Zertifikat des Servers nicht prüfen (keine Liste bekannter Server) und verbindet deshalb nicht</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="98"/>
+        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="158"/>
         <source>The server shows another certificate than at your first connection. Someone may be intercepting the connection, so QtCraft does not connect. If the server&apos;s owner made a new certificate, forget the old one and join again.
 Pinned: %1
 Now: %2</source>
@@ -5503,7 +5513,7 @@ Gemerkt: %1
 Jetzt: %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="110"/>
+        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="115"/>
         <source>The connection was lost</source>
         <translation>Die Verbindung ist abgebrochen</translation>
     </message>
@@ -6921,7 +6931,7 @@ Jetzt: %2</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="276"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="184"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="185"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
@@ -6932,7 +6942,7 @@ Jetzt: %2</translation>
     </message>
     <message>
         <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="290"/>
-        <location filename="../src/server/machines/QcBlockScreens.cpp" line="204"/>
+        <location filename="../src/server/machines/QcBlockScreens.cpp" line="205"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
     </message>

@@ -1,6 +1,6 @@
 {
     "name": "anvil",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "anvil",
     "render": "cutout",
     "solid": true,

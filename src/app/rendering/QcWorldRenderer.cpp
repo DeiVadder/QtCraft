@@ -158,7 +158,8 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.params[0] = m_frame.fogStart * static_cast<float>(m_frame.sky.fogScale);
     uniforms.params[1] = m_frame.fogEnd * static_cast<float>(0.5 + 0.5 * m_frame.sky.fogScale);
     uniforms.params[2] = static_cast<float>(m_frame.sky.daylight);
-    uniforms.params[3] = minimumLight;
+    // The floor with a blast's flash, kept so that floor and its sky-light share stay at most 1.
+    uniforms.params[3] = std::min(minimumLight + static_cast<float>(m_frame.sky.flashLight), 1.0f - QcRenderPipelines::skyLightFloor);
     uniforms.extra[0] = m_device.rhi->isClipDepthZeroToOne() ? 1.0f : 0.0f;
     uniforms.extra[1] = static_cast<float>(outputSize.width());
     uniforms.extra[2] = static_cast<float>(outputSize.height());

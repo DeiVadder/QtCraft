@@ -57,6 +57,55 @@ double filterCoefficient(double cutoff, int sampleRate)
     return 1.0 - std::exp(-2.0 * std::numbers::pi * cutoff / sampleRate);
 }
 
+// Resonant band-pass: a two-pole state-variable filter in the trapezoidal (zero-delay feedback)
+// form, stable at every centre and Q, with unity gain at the centre (decision E-879).
+class BandPass
+{
+public:
+    BandPass(double centre, double resonance, int sampleRate)
+    {
+        // The form needs the centre below Nyquist; content may name up to 20 kHz.
+        const double limited = std::min(centre, 0.45 * sampleRate);
+        const double g = std::tan(std::numbers::pi * limited / sampleRate);
+        m_damping = 1.0 / std::max(resonance, QcSoundDefinition::minResonance);
+        m_a1 = 1.0 / (1.0 + g * (g + m_damping));
+        m_a2 = g * m_a1;
+        m_a3 = g * m_a2;
+    }
+
+    double process(double x)
+    {
+        const double v3 = x - m_state2;
+        const double v1 = m_a1 * m_state1 + m_a2 * v3;
+        const double v2 = m_state2 + m_a2 * m_state1 + m_a3 * v3;
+        m_state1 = 2.0 * v1 - m_state1;
+        m_state2 = 2.0 * v2 - m_state2;
+        return m_damping * v1;
+    }
+
+private:
+    double m_damping = 1.0;
+    double m_a1 = 0.0;
+    double m_a2 = 0.0;
+    double m_a3 = 0.0;
+    double m_state1 = 0.0;
+    double m_state2 = 0.0;
+};
+
+// A rendering normalised to `peak`, softly saturated (decision E-879): tanh lifts the quieter parts
+// towards the peak, and the result is scaled back so that the peak stays where it was.
+QcSampleBuffer saturated(QcSampleBuffer buffer, double drive, float peak)
+{
+    if (drive <= 0.0) {
+        return buffer;
+    }
+    const double scale = static_cast<double>(peak) / std::tanh(drive);
+    for (float &sample : buffer.samples) {
+        sample = static_cast<float>(scale * std::tanh(drive * static_cast<double>(sample) / peak));
+    }
+    return buffer;
+}
+
 // One layer while its samples are generated: oscillator or noise source, filters and envelope.
 class LayerVoice
 {
@@ -70,6 +119,7 @@ public:
         , m_ratio(m_sweep ? layer.endFrequency / layer.frequency : 1.0)
         , m_lowpass(layer.lowpass > 0.0 ? filterCoefficient(layer.lowpass, sampleRate) : 0.0)
         , m_highpass(layer.highpass > 0.0 ? filterCoefficient(layer.highpass, sampleRate) : 0.0)
+        , m_bandpass(layer.bandpass, layer.resonance, sampleRate)
         , m_crackleChance(layer.density / sampleRate)
         // Each crackle impulse rings for about 1.5 ms.
         , m_crackleDecay(std::exp(-1.0 / (0.0015 * sampleRate)))
@@ -82,6 +132,9 @@ public:
     double signal(std::size_t i)
     {
         double x = source(i);
+        if (m_layer.bandpass > 0.0) {
+            x = m_bandpass.process(x);
+        }
         if (m_layer.lowpass > 0.0) {
             // Two one-pole stages: a gentle 12 dB per octave slope.
             m_low1 += m_lowpass * (x - m_low1);
@@ -151,6 +204,7 @@ private:
     double m_ratio = 1.0;
     double m_lowpass = 0.0;
     double m_highpass = 0.0;
+    BandPass m_bandpass;
     double m_crackleChance = 0.0;
     double m_crackleDecay = 0.0;
     double m_attackSamples = 0.0;
@@ -200,7 +254,7 @@ quint32 QcSoundSynthesizer::seedOf(const QString &name, int variant)
 
 QcSampleBuffer QcSoundSynthesizer::render(const QcSoundDefinition &sound, int variant, int sampleRate)
 {
-    return renderLayers(sound.layers, seedOf(sound.name, variant), sound.loop, sampleRate);
+    return saturated(renderLayers(sound.layers, seedOf(sound.name, variant), sound.loop, sampleRate), sound.drive, peak);
 }
 
 QcSampleBuffer QcSoundSynthesizer::renderLayers(const QList<QcSoundLayer> &layers, quint32 seed, bool loop, int sampleRate)

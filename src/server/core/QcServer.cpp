@@ -55,7 +55,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_weather(m_state)
     , m_blockSimulation(m_state, m_sounds, m_blockUpdates, m_blocks, m_fallingBlocks)
     , m_circuits(m_state, m_sounds, m_blocks)
-    , m_screens(m_state, m_blocks)
+    , m_screens(m_state, m_blocks, m_sounds)
     , m_machines(m_state, m_sounds)
     , m_inventory(m_state, m_screens, m_sounds)
     , m_crafting(m_state, m_inventory)

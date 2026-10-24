@@ -44,7 +44,7 @@ Schiene, die auf Loren wirkt, solange sie Strom bekommt: Der Fahrer steigt aus, 
 | Fest | nein |
 | Braucht Halt | einen festen Block darunter |
 | Wird von Flüssigkeiten weggespült | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **Herstellung**
@@ -77,7 +77,7 @@ Repariert, kombiniert und benennt um: benutze ihn, lege einen Gegenstand in den 
 | Lichtdämpfung | 0 von 15 |
 | Fällt ohne Stütze | ja |
 | Amboss | öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -109,7 +109,7 @@ Ein schon benutzter Amboss; er arbeitet wie ein neuer und wird mit der Zeit zum 
 | Lichtdämpfung | 0 von 15 |
 | Fällt ohne Stütze | ja |
 | Amboss | öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab |
-| Klang | Stein |
+| Klang | Metall |
 
 **Abbaubar mit**
 
@@ -131,7 +131,7 @@ Schiene, die Loren beschleunigt, solange sie Signal-Dust-Strom bekommt, und sie 
 | Fest | nein |
 | Braucht Halt | einen festen Block darunter |
 | Wird von Flüssigkeiten weggespült | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **Herstellung**
@@ -363,7 +363,7 @@ Ein Amboss kurz vor dem Zerbrechen; er arbeitet wie ein neuer, aber die nächste
 | Lichtdämpfung | 0 von 15 |
 | Fällt ohne Stütze | ja |
 | Amboss | öffnet den Amboss: reparieren mit Material oder einem zweiten Gegenstand, Verzauberungen vereinen, umbenennen; bezahlt mit Stufen, mehr für Gegenstände, die schon über einen Amboss gingen; nutzt sich ab |
-| Klang | Stein |
+| Klang | Metall |
 
 **Abbaubar mit**
 
@@ -2107,7 +2107,7 @@ Neun Eisenbarren als Block; zurück ergibt er alle neun.
 | Abbauen mit dem besten Werkzeug | 0,94 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
 | Beute | [Eisenblock](#block-qtcraft-iron_block) |
 | Beute ohne passendes Werkzeug | nichts |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -2164,7 +2164,7 @@ Eine schwere Klappe, die nur ein Signal öffnet.
 | Beute | [Eisenfalltür](#block-qtcraft-iron_trapdoor) |
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **Herstellung**
@@ -2195,7 +2195,7 @@ Gitterstäbe, die sich wie Glasscheiben mit ihren Nachbarn verbinden.
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
 | Verbindet sich mit | Scheiben, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **Herstellung**
@@ -2226,7 +2226,7 @@ Eine schwere Tür, die nur ein Signal öffnet: ein Hebel, ein Knopf, eine Druckp
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
 | Zwei Blöcke hoch | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **Herstellung**
@@ -3841,7 +3841,7 @@ Hängt über dem Treffpunkt in der Mitte jedes Dorfs.
 | Beute | [Glocke](#block-qtcraft-bell) |
 | Lichtdämpfung | 0 von 15 |
 | Braucht Halt | einen festen Block darunter |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -3894,7 +3894,7 @@ Neun Goldbarren als Block; zurück ergibt er alle neun.
 | Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
 | Beute | [Goldblock](#block-qtcraft-gold_block) |
 | Beute ohne passendes Werkzeug | nichts |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -5369,7 +5369,7 @@ Ein eiserner Topf auf kurzen Beinen, wie Hexen ihn in ihren Hütten haben. Vorer
 | Abbauen mit dem besten Werkzeug | 0,25 s: [Goldspitzhacke](tools.md#item-qtcraft-golden_pickaxe) |
 | Beute | [Kessel](#block-qtcraft-cauldron) |
 | Lichtdämpfung | 0 von 15 |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -5399,7 +5399,7 @@ Eine Eisenkette, die entlang der Fläche verläuft, auf die du sie setzt: aufrec
 | Beute | [Kette](#block-qtcraft-chain) |
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | axis (y, x, z) |
 
 **Herstellung**
@@ -5764,7 +5764,7 @@ Neun Kupferbarren als Block; zurück ergibt er alle neun.
 | Abbauen mit dem besten Werkzeug | 0,56 s: [Diamantspitzhacke](tools.md#item-qtcraft-diamond_pickaxe) |
 | Beute | [Kupferblock](#block-qtcraft-copper_block) |
 | Beute ohne passendes Werkzeug | nichts |
-| Klang | Stein |
+| Klang | Metall |
 
 **Herstellung**
 
@@ -5822,7 +5822,7 @@ Eine Metallklappe, die sich von Hand und mit einem Signal öffnet.
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
 | Öffnet und schließt beim Benutzen | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **Herstellung**
@@ -5853,7 +5853,7 @@ Kupfergitter, das sich wie Glasscheiben und Eisengitter mit seinen Nachbarn verb
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
 | Verbindet sich mit | Scheiben, volle feste Blöcke |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **Herstellung**
@@ -5883,7 +5883,7 @@ Eine Kette aus Kupfer; sie verläuft, hängt und hält Laternen wie die Eisenket
 | Beute | [Kupferkette](#block-qtcraft-copper_chain) |
 | Beute ohne passendes Werkzeug | nichts |
 | Lichtdämpfung | 0 von 15 |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | axis (y, x, z) |
 
 **Herstellung**
@@ -5916,7 +5916,7 @@ Eine Kupferlaterne um eine Fackelflamme mit grünlichem Schein; so hell wie die 
 | Lichtdämpfung | 0 von 15 |
 | Fest | nein |
 | Braucht Halt | eine feste Fläche, an der es hängt |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | attach (floor, ceiling, north, east, south, west) |
 
 **Herstellung**
@@ -5949,7 +5949,7 @@ Eine Metalltür, die sich wie eine Holztür von Hand öffnet und auch mit einem 
 | Lichtdämpfung | 0 von 15 |
 | Öffnet und schließt beim Benutzen | ja |
 | Zwei Blöcke hoch | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **Herstellung**
@@ -6206,7 +6206,7 @@ Eine Eisenlaterne um eine Fackelflamme; das hellste Licht, das sich bauen lässt
 | Lichtdämpfung | 0 von 15 |
 | Fest | nein |
 | Braucht Halt | eine feste Fläche, an der es hängt |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | attach (floor, ceiling, north, east, south, west) |
 
 **Herstellung**
@@ -8547,7 +8547,7 @@ Gleis für Loren. Sie braucht einen festen Block darunter, verbindet sich mit de
 | Fest | nein |
 | Braucht Halt | einen festen Block darunter |
 | Wird von Flüssigkeiten weggespült | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); shape (straight, ascending, curve) |
 
 **Herstellung**
@@ -9070,7 +9070,7 @@ Schiene, die ein Signal gibt, solange eine Lore auf ihr steht, wie eine Druckpla
 | Fest | nein |
 | Braucht Halt | einen festen Block darunter |
 | Wird von Flüssigkeiten weggespült | ja |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **Herstellung**
@@ -9488,7 +9488,7 @@ Bewegt Items: Alle acht Ticks gibt er ein Item in den Behälter, auf den sein Au
 | Beute | [Signaltrichter](#block-qtcraft-signal_hopper) |
 | Lichtdämpfung | 0 von 15 |
 | Lager | 5 Felder |
-| Klang | Stein |
+| Klang | Metall |
 | Zustände | enabled (true, false); facing (down, north, east, south, west) |
 
 **Herstellung**

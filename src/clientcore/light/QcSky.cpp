@@ -104,6 +104,21 @@ QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash
     return sky;
 }
 
+QcSkyState withBlast(QcSkyState sky, double flash)
+{
+    flash = std::clamp(flash, 0.0, 1.0);
+    if (flash <= 0.0) {
+        return sky;
+    }
+
+    const QVector3D fireColour(1.0f, 0.78f, 0.5f);
+    sky.zenith = mix(sky.zenith, fireColour * 0.8f, flash * 0.35);
+    sky.horizon = mix(sky.horizon, fireColour, flash * 0.5);
+    sky.cloudColor = mix(sky.cloudColor, fireColour, flash * 0.5);
+    sky.flashLight = std::max(sky.flashLight, flash * 0.6);
+    return sky;
+}
+
 QcSkyState seenFrom(QcSkyState sky, double eyeY)
 {
     if (eyeY >= 0.0) {

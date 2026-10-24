@@ -1,6 +1,6 @@
 {
     "name": "bell",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "bell",
     "render": "cutout",
     "opaque": false,

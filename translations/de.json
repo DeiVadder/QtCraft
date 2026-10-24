@@ -986,6 +986,8 @@
     "Behind the pause menu, in character previews and while another window has the focus": "Hinter dem Pausenmenü, in Charaktervorschauen und solange ein anderes Fenster den Fokus hat",
     "from the next world start": "ab Weltstart",
     "Field of view when sprinting": "Sichtfeld beim Sprinten",
+    "Camera shake": "Kamerawackeln",
+    "Explosions nearby shake the view": "Explosionen in der Nähe lassen die Ansicht wackeln",
     "How much the view widens; 0 % keeps it still": "Wie weit sich die Sicht öffnet; 0 % hält sie ruhig",
     "Quality": "Qualität",
     "Keeps distant ground sharp; more costs more GPU time": "Hält entfernten Boden scharf; mehr kostet mehr Grafikleistung",

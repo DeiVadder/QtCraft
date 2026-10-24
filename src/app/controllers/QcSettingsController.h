@@ -41,6 +41,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(bool photoHidesHand READ photoHidesHand WRITE setPhotoHidesHand NOTIFY settingsChanged FINAL)
     // A world hosted in the game pauses when the window loses the focus (decision E-877).
     Q_PROPERTY(bool pauseOnFocusLoss READ pauseOnFocusLoss WRITE setPauseOnFocusLoss NOTIFY settingsChanged FINAL)
+    // Explosions near the player shake the camera (decision E-879).
+    Q_PROPERTY(bool cameraShake READ cameraShake WRITE setCameraShake NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
@@ -105,6 +107,8 @@ public:
     void setPhotoHidesHand(bool hides);
     bool pauseOnFocusLoss() const { return m_pauseOnFocusLoss; }
     void setPauseOnFocusLoss(bool pause);
+    bool cameraShake() const { return m_cameraShake; }
+    void setCameraShake(bool shake);
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
@@ -155,6 +159,7 @@ private:
     bool m_showLabels = true;
     bool m_photoHidesHand = true;
     bool m_pauseOnFocusLoss = false;
+    bool m_cameraShake = true;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcUiScale::Step m_uiScale = QcUiScale::defaultStep;

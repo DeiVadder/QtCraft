@@ -3,10 +3,12 @@
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcMessages.h"
 #include "server/blockentities/QcBlockEntities.h"
+#include "server/machines/QcContainerSounds.h"
 
 #include <functional>
 
 class QcServerBlocks;
+class QcServerSounds;
 struct QcMinecart;
 struct QcServerClient;
 class QcServerState;
@@ -14,7 +16,7 @@ class QcServerState;
 // The screens of containers and machines the players have open (chests, hoppers, dispensers,
 // furnaces, container minecarts): opening, closing, sending their state. A container whose signal
 // counts its viewers (the trapped chest, decision E-783) shows in its state `power` how many players
-// look into it, at most 15.
+// look into it, at most 15. Storage blocks sound as they open and close (QcContainerSounds).
 class QcBlockScreens
 {
 public:
@@ -30,7 +32,7 @@ public:
         int heldSlot = QcMsg::OpenMachine::noHeldSlot;
     };
 
-    QcBlockScreens(QcServerState &state, QcServerBlocks &blocks);
+    QcBlockScreens(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds);
 
     // Opens the machine or chest screen of the block at `pos` for the player.
     void open(QcServerClient &client, QcBlockPos pos);
@@ -77,7 +79,8 @@ public:
     void setAnvilCloser(std::function<void(QcServerClient &)> closer);
 
     // Once per tick: sends what changed, closes screens whose block is gone, whose chunk unloaded or
-    // whose player died or walked away; containers that count their viewers take the new count.
+    // whose player died or walked away; containers that count their viewers take the new count, and
+    // containers opened or closed since the last tick sound.
     void update();
     // Nobody looks into the containers of a chunk that just arrived: those that count their viewers
     // start at 0 whatever was saved.
@@ -101,6 +104,7 @@ private:
     QcServerBlocks &m_blocks;
     // The containers counting their viewers that had any at the latest update.
     QHash<QcBlockPos, int> m_viewers;
+    QcContainerSounds m_containerSounds;
     std::function<void(QcServerClient &)> m_closeStonecutter;
     std::function<void(QcServerClient &)> m_closeEnchanting;
     std::function<void(QcServerClient &)> m_closeAnvil;

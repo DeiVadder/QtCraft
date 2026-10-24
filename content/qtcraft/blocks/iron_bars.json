@@ -1,6 +1,6 @@
 {
     "name": "iron_bars",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "pane",
     "render": "cutout",
     "lightOpacity": 0,

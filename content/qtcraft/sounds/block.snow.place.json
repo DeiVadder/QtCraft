@@ -1,16 +1,39 @@
 {
     "name": "block.snow.place",
-    "volume": 0.65,
-    "variants": 2,
+    "volume": 0.6,
+    "variants": 3,
     "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "noise",
+            "wave": "crackle",
             "duration": 0.12,
-            "attack": 0.02,
-            "curve": 1.5,
-            "lowpass": 1800,
-            "highpass": 300
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 6000,
+            "highpass": 1500,
+            "density": 1400,
+            "gain": 0.8
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 1800,
+            "resonance": 1.5,
+            "lowpass": 5400,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 180,
+            "resonance": 1.2,
+            "lowpass": 540,
+            "gain": 0.8
         }
     ]
 }

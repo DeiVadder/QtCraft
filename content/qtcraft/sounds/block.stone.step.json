@@ -1,23 +1,39 @@
 {
     "name": "block.stone.step",
-    "volume": 0.5,
+    "volume": 0.45,
     "variants": 4,
     "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "noise",
-            "duration": 0.07,
-            "attack": 0.002,
-            "curve": 4,
-            "lowpass": 1500,
-            "highpass": 300
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 6,
+            "bandpass": 1500,
+            "resonance": 1.5,
+            "lowpass": 4500,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.05,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 350,
+            "resonance": 1.5,
+            "lowpass": 1050,
+            "gain": 1.0
         },
         {
             "wave": "crackle",
             "duration": 0.05,
-            "density": 300,
-            "lowpass": 3000,
-            "gain": 0.4
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4000,
+            "highpass": 1500,
+            "density": 400,
+            "gain": 0.2
         }
     ]
 }

@@ -1,25 +1,37 @@
 {
     "name": "block.wood.hit",
-    "volume": 0.45,
+    "volume": 0.5,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "triangle",
-            "duration": 0.05,
-            "frequency": 260,
-            "endFrequency": 200,
+            "wave": "noise",
+            "duration": 0.006,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2000,
+            "gain": 0.02
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
             "attack": 0.001,
-            "curve": 3,
-            "lowpass": 1800
+            "curve": 5,
+            "bandpass": 700,
+            "resonance": 6,
+            "lowpass": 2100,
+            "gain": 1.0
         },
         {
             "wave": "noise",
             "duration": 0.04,
             "attack": 0.001,
-            "curve": 4,
-            "lowpass": 1500,
-            "gain": 0.6
+            "curve": 5,
+            "bandpass": 1500,
+            "resonance": 7,
+            "lowpass": 4500,
+            "gain": 0.5
         }
     ]
 }

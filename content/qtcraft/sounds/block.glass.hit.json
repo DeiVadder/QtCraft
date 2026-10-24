@@ -3,21 +3,32 @@
     "volume": 0.45,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "sine",
-            "duration": 0.05,
-            "frequency": 3000,
-            "attack": 0.001,
-            "curve": 3,
-            "gain": 0.5
+            "wave": "noise",
+            "duration": 0.005,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 4000,
+            "gain": 0.014
         },
         {
             "wave": "noise",
-            "duration": 0.04,
+            "duration": 0.08,
             "attack": 0.001,
             "curve": 4,
-            "highpass": 3000,
+            "bandpass": 3100,
+            "resonance": 16,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 5200,
+            "resonance": 20,
             "gain": 0.5
         }
     ]

@@ -42,6 +42,8 @@ QcSoundLayer parseLayer(QcJsonFieldReader &layerReader)
     layer.gain = layerReader.number(u"gain"_s, 1.0, 0.0, 1.0);
     layer.lowpass = layerReader.number(u"lowpass"_s, 0.0, 0.0, high);
     layer.highpass = layerReader.number(u"highpass"_s, 0.0, 0.0, high);
+    layer.bandpass = layerReader.number(u"bandpass"_s, 0.0, 0.0, high);
+    layer.resonance = layerReader.number(u"resonance"_s, 1.0, QcSoundDefinition::minResonance, QcSoundDefinition::maxResonance);
     layer.tremoloRate = layerReader.number(u"tremoloRate"_s, 0.0, 0.0, 50.0);
     layer.tremoloDepth = layerReader.number(u"tremoloDepth"_s, 0.0, 0.0, 1.0);
     layer.density = layerReader.number(u"density"_s, layer.density, 1.0, 5000.0);
@@ -74,6 +76,8 @@ namespace QcSoundParser {
 
     sound.volume = reader.number(u"volume"_s, 1.0, 0.0, 1.0);
     sound.pitchVariation = reader.number(u"pitchVariation"_s, 0.0, 0.0, 0.5);
+    sound.volumeVariation = reader.number(u"volumeVariation"_s, 0.0, 0.0, 0.5);
+    sound.drive = reader.number(u"drive"_s, 0.0, 0.0, QcSoundDefinition::maxDrive);
     sound.variants = reader.integer(u"variants"_s, 1, 1, QcSoundDefinition::maxVariants);
     sound.loop = reader.boolean(u"loop"_s, false);
     sound.range = reader.number(u"range"_s, QcSoundDefinition::defaultRange, 1.0, QcSoundDefinition::maxRange);

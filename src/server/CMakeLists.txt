@@ -162,6 +162,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     machines/QcBlockScreens.h machines/QcBlockScreens.cpp
     machines/QcCampfires.h machines/QcCampfires.cpp
+    machines/QcContainerSounds.h machines/QcContainerSounds.cpp
     machines/QcInventoryAccess.h machines/QcInventoryAccess.cpp
     machines/QcMachineRules.h machines/QcMachineRules.cpp
     machines/QcServerAnvil.h machines/QcServerAnvil.cpp

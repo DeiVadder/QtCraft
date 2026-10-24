@@ -121,6 +121,8 @@ Bewertung: Bei 8 Chunks liegt jeder Frame bei unter 2 ms Arbeit pro Thread; die 
 
 `profile.sh alloc` (8 Chunks, stand, nach 10 s): physischer Footprint 520 MB (Spitze 657 MB), davon Heap 143 MB in 217 000 Blöcken, `IOAccelerator (graphics)` 41 MB (Sektions- und Entity-Puffer, Atlas), `IOSurface` 42 MB (Drawables), `owned unmapped (graphics)` 250 MB. Letzterer Posten wächst nicht mit der Sichtweite (Sichtweite 2: 386 MB, 16: 250 MB) und ändert sich nicht mit dem Puffertyp (`Static` statt `Immutable` probiert); er gehört zum Grafiktreiber und ist im Spitzenwert `peak_rss_mb` des Benchmarks nicht enthalten. Bei 16 Chunks: Footprint 908 MB, `IOAccelerator` 143 MB, Heap (`MALLOC_SMALL`) 379 MB – vor allem Chunks im Client und im Server (In-Process-Server), 4-KiB-Paletten-Indizes pro Sektion.
 
+Klangbank (`QcSoundBank`, E-879): alle Klänge des Basisspiels mit ihren Varianten sind bei 48 kHz rund 7,2 Mi Proben (29 MiB Floats); das Budget `QcSoundBank::maxSamples` ist 16 Mi (64 MiB). Ein Ausgabegerät mit 96 kHz verdoppelt das auf rund 14,4 Mi, knapp unter der Grenze: längere oder mehr Klänge (Mods) brauchen dann ein höheres Budget oder eine Abtastrate unabhängig vom Gerät; was nicht passt, bleibt stumm und wird gemeldet.
+
 Lecks (`profile.sh leaks`): 288 Lecks mit 18,8 KB, alle in Systemframeworks (XPC-Verbindung von AppIntents), keines in QtCraft.
 
 Sektionen bei 8/12/16 Chunks: 972 / 2160 / 3744 (Sprint am Ende 1250 / 2587 / 4373), davon sichtbar 272 / 606 / 1075; im Mittel rund 230 Dreiecke pro sichtbarer Sektion.

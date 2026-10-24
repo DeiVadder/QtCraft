@@ -1,25 +1,29 @@
 {
     "name": "block.gravel.step",
-    "volume": 0.5,
+    "volume": 0.45,
     "variants": 4,
     "pitchVariation": 0.12,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "crackle",
-            "duration": 0.12,
-            "density": 900,
-            "lowpass": 3000,
-            "highpass": 300,
-            "attack": 0.005,
-            "curve": 2
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 4000,
+            "highpass": 800,
+            "density": 1000,
+            "gain": 1.0
         },
         {
             "wave": "noise",
-            "duration": 0.1,
-            "attack": 0.005,
-            "curve": 3,
-            "lowpass": 900,
-            "gain": 0.3
+            "duration": 0.06,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 170,
+            "resonance": 1.2,
+            "lowpass": 510,
+            "gain": 0.6
         }
     ]
 }

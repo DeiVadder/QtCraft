@@ -51,6 +51,8 @@ private slots:
     {
         QTemporaryDir dir;
         QCOMPARE(QcGameSettings::load(dir.filePath(u"settings.ini"_s)), QcGameSettings{});
+        // Explosions shake the camera unless the player switches it off (decision E-879).
+        QVERIFY(QcGameSettings{}.cameraShake);
     }
 
     void settingsRoundTrip()
@@ -67,6 +69,7 @@ private slots:
         settings.debug.set(QcDebugOptions::Visual::Hitboxes, true);
         settings.debug.set(QcDebugOptions::Visual::RemeshFlash, true);
         settings.showLabels = false;
+        settings.cameraShake = false;
         settings.language = u"de"_s;
         settings.cameraMode = QcCameraMode::Front;
         settings.uiScale = QcUiScale::Step::Percent150;

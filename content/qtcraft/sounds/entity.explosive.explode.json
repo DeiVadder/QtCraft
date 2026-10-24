@@ -2,38 +2,79 @@
     "name": "entity.explosive.explode",
     "volume": 1.0,
     "variants": 3,
-    "pitchVariation": 0.12,
-    "range": 96,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.05,
+    "range": 128,
+    "drive": 2.5,
     "layers": [
         {
             "wave": "noise",
-            "duration": 0.25,
+            "duration": 0.06,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 500,
+            "gain": 0.3
+        },
+        {
+            "wave": "noise",
+            "duration": 0.45,
             "attack": 0.001,
             "curve": 3,
-            "lowpass": 6000,
-            "highpass": 80,
+            "lowpass": 2500,
+            "highpass": 60,
+            "gain": 0.25
+        },
+        {
+            "wave": "noise",
+            "duration": 1.6,
+            "attack": 0.004,
+            "curve": 2.2,
+            "bandpass": 55,
+            "resonance": 1.0,
+            "lowpass": 165,
             "gain": 1.0
         },
         {
             "wave": "noise",
-            "start": 0.02,
-            "duration": 1.6,
-            "attack": 0.02,
+            "duration": 1.0,
+            "attack": 0.003,
             "curve": 2.5,
-            "lowpass": 300,
-            "highpass": 20,
-            "tremoloRate": 6,
-            "tremoloDepth": 0.3,
-            "gain": 1.0
+            "bandpass": 110,
+            "resonance": 1.0,
+            "lowpass": 330,
+            "gain": 0.8
         },
         {
             "wave": "sine",
-            "duration": 0.6,
-            "frequency": 70,
-            "endFrequency": 35,
-            "attack": 0.005,
+            "duration": 1.0,
+            "frequency": 58,
+            "endFrequency": 40,
+            "attack": 0.004,
+            "curve": 2.5,
+            "gain": 0.3
+        },
+        {
+            "wave": "noise",
+            "start": 0.08,
+            "duration": 3.2,
+            "attack": 0.25,
             "curve": 2,
-            "gain": 0.8
+            "lowpass": 220,
+            "highpass": 25,
+            "tremoloRate": 3.5,
+            "tremoloDepth": 0.4,
+            "gain": 1.0
+        },
+        {
+            "wave": "crackle",
+            "start": 0.2,
+            "duration": 1.6,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 3500,
+            "highpass": 400,
+            "density": 90,
+            "gain": 0.25
         }
     ]
 }

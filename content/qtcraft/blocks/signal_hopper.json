@@ -1,6 +1,6 @@
 {
     "name": "signal_hopper",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "signal_hopper",
     "render": "cutout",
     "facing": "into",

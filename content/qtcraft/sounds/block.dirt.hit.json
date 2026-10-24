@@ -3,14 +3,37 @@
     "volume": 0.45,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
             "wave": "noise",
             "duration": 0.05,
             "attack": 0.002,
-            "curve": 3,
-            "lowpass": 1000,
-            "highpass": 100
+            "curve": 4,
+            "bandpass": 200,
+            "resonance": 1.2,
+            "lowpass": 600,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.04,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 800,
+            "resonance": 1.2,
+            "lowpass": 2400,
+            "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.04,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 2500,
+            "highpass": 400,
+            "density": 300,
+            "gain": 0.2
         }
     ]
 }

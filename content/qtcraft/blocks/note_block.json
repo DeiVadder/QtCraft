@@ -51,6 +51,7 @@
             "sounds": {
                 "wood": "note.bass",
                 "stone": "note.basedrum",
+                "metal": "note.basedrum",
                 "sand": "note.snare",
                 "gravel": "note.snare",
                 "glass": "note.hat",

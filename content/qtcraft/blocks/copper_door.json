@@ -1,7 +1,7 @@
 {
     "name": "copper_door",
     "hold": { "firstPerson": { "scale": 0.3 }, "thirdPerson": { "scale": 0.4 } },
-    "sound": "stone",
+    "sound": "metal",
     "shape": "door",
     "render": "cutout",
     "lightOpacity": 0,

@@ -1,25 +1,47 @@
 {
     "name": "block.wood.place",
-    "volume": 0.65,
-    "variants": 2,
+    "volume": 0.7,
+    "variants": 3,
     "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "triangle",
-            "duration": 0.08,
-            "frequency": 220,
-            "endFrequency": 160,
-            "attack": 0.002,
-            "curve": 3,
-            "lowpass": 1500
+            "wave": "noise",
+            "duration": 0.008,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1800,
+            "gain": 0.024
         },
         {
             "wave": "noise",
-            "duration": 0.08,
-            "attack": 0.002,
-            "curve": 3,
-            "lowpass": 900,
+            "duration": 0.09,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 520,
+            "resonance": 6,
+            "lowpass": 1560,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.06,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1150,
+            "resonance": 7,
+            "lowpass": 3450,
             "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 160,
+            "resonance": 1.2,
+            "lowpass": 480,
+            "gain": 0.8
         }
     ]
 }

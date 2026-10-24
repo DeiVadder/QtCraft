@@ -1,6 +1,6 @@
 {
     "name": "copper_chain",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "chain",
     "render": "cutout",
     "lightOpacity": 0,

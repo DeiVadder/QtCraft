@@ -1,6 +1,6 @@
 {
     "name": "copper_trapdoor",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "trapdoor",
     "render": "cutout",
     "lightOpacity": 0,

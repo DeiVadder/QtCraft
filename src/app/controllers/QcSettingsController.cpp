@@ -74,6 +74,7 @@ void QcSettingsController::loadSettings()
     setShowLabels(m_storedSettings.showLabels);
     setPhotoHidesHand(m_storedSettings.photoHidesHand);
     setPauseOnFocusLoss(m_storedSettings.pauseOnFocusLoss);
+    setCameraShake(m_storedSettings.cameraShake);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
     m_uiScale = m_storedSettings.uiScale;
@@ -105,6 +106,7 @@ void QcSettingsController::saveSettings()
     settings.showLabels = m_showLabels;
     settings.photoHidesHand = m_photoHidesHand;
     settings.pauseOnFocusLoss = m_pauseOnFocusLoss;
+    settings.cameraShake = m_cameraShake;
     settings.language = m_languageSetting;
     settings.cameraMode = m_cameraMode;
     settings.uiScale = m_uiScale;
@@ -196,6 +198,14 @@ void QcSettingsController::setPauseOnFocusLoss(bool pause)
 {
     if (m_pauseOnFocusLoss != pause) {
         m_pauseOnFocusLoss = pause;
+        emit settingsChanged();
+    }
+}
+
+void QcSettingsController::setCameraShake(bool shake)
+{
+    if (m_cameraShake != shake) {
+        m_cameraShake = shake;
         emit settingsChanged();
     }
 }

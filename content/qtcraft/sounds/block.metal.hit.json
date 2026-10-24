@@ -1,0 +1,35 @@
+{
+    "name": "block.metal.hit",
+    "volume": 0.5,
+    "variants": 3,
+    "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
+    "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.006,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 3000,
+            "gain": 0.024
+        },
+        {
+            "wave": "noise",
+            "duration": 0.16,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 1250,
+            "resonance": 25,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 3080,
+            "resonance": 28,
+            "gain": 0.5
+        }
+    ]
+}

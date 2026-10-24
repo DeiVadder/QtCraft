@@ -1,9 +1,11 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentSerializer.h"
 #include "QcTestUtil.h"
 #include "worlds/QcModLoader.h"
 
+#include <QDataStream>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
@@ -142,10 +144,12 @@ private slots:
     void soundDefinitionsAreParsed()
     {
         const QcResult<QcSoundDefinition> sound = QcContentParser::parseSound(json(R"({
-            "name": "chime", "bus": "ambient", "volume": 0.5, "pitchVariation": 0.2, "variants": 4, "loop": true, "range": 30,
+            "name": "chime", "bus": "ambient", "volume": 0.5, "pitchVariation": 0.2, "volumeVariation": 0.3, "drive": 2.5,
+            "variants": 4, "loop": true, "range": 30,
             "layers": [
                 {"wave": "sine", "frequency": 880, "endFrequency": 440, "start": 0.1, "duration": 1.5, "attack": 0.05,
-                 "curve": 1.5, "gain": 0.7, "lowpass": 3000, "highpass": 100, "tremoloRate": 5, "tremoloDepth": 0.25},
+                 "curve": 1.5, "gain": 0.7, "lowpass": 3000, "highpass": 100, "tremoloRate": 5, "tremoloDepth": 0.25,
+                 "bandpass": 1200, "resonance": 8},
                 {"wave": "crackle", "density": 700, "duration": 0.5}
             ]})"),
                                                                                     u"mod"_s);
@@ -154,11 +158,13 @@ private slots:
         QCOMPARE(sound->bus, QcSoundBus::Ambient);
         QCOMPARE(sound->volume, 0.5);
         QCOMPARE(sound->pitchVariation, 0.2);
+        QCOMPARE(sound->volumeVariation, 0.3);
+        QCOMPARE(sound->drive, 2.5);
         QCOMPARE(sound->variants, 4);
         QVERIFY(sound->loop);
         QCOMPARE(sound->range, 30.0);
         QCOMPARE(sound->layers.size(), 2);
-        const QcSoundLayer expected{QcSoundWave::Sine, 880.0, 440.0, 0.1, 1.5, 0.05, 1.5, 0.7, 3000.0, 100.0, 5.0, 0.25, 200.0};
+        const QcSoundLayer expected{QcSoundWave::Sine, 880.0, 440.0, 0.1, 1.5, 0.05, 1.5, 0.7, 3000.0, 100.0, 5.0, 0.25, 200.0, 1200.0, 8.0};
         QVERIFY(sound->layers[0] == expected);
         QCOMPARE(sound->layers[1].wave, QcSoundWave::Crackle);
         QCOMPARE(sound->layers[1].density, 700.0);
@@ -174,7 +180,11 @@ private slots:
         QCOMPARE(plain->variants, 1);
         QVERIFY(!plain->loop);
         QCOMPARE(plain->range, 16.0);
+        QCOMPARE(plain->volumeVariation, 0.0);
+        QCOMPARE(plain->drive, 0.0);
         QCOMPARE(plain->layers.constFirst().wave, QcSoundWave::Noise);
+        QCOMPARE(plain->layers.constFirst().bandpass, 0.0);
+        QCOMPARE(plain->layers.constFirst().resonance, 1.0);
     }
 
     void badSoundDefinitionsAreRefused_data()
@@ -201,6 +211,10 @@ private slots:
         QTest::newRow("gain") << QByteArray(R"({"name":"a","layers":[{"gain":2}]})") << u"'gain'"_s;
         QTest::newRow("text number") << QByteArray(R"({"name":"a","layers":[{"duration":"1"}]})") << u"'duration'"_s;
         QTest::newRow("range") << QByteArray(R"({"name":"a","range":500,"layers":[{}]})") << u"'range'"_s;
+        QTest::newRow("band below hearing") << QByteArray(R"({"name":"a","layers":[{"bandpass":5}]})") << u"out of range"_s;
+        QTest::newRow("resonance") << QByteArray(R"({"name":"a","layers":[{"bandpass":500,"resonance":50}]})") << u"'resonance'"_s;
+        QTest::newRow("volume variation") << QByteArray(R"({"name":"a","volumeVariation":0.8,"layers":[{}]})") << u"'volumeVariation'"_s;
+        QTest::newRow("drive") << QByteArray(R"({"name":"a","drive":9,"layers":[{}]})") << u"'drive'"_s;
     }
 
     void badSoundDefinitionsAreRefused()
@@ -276,6 +290,81 @@ private slots:
             QCOMPARE(sound->bus, QcSoundBus::Ambient);
             QVERIFY(sound->loop);
         }
+    }
+
+    // Decision E-879: the block sounds are short noise bodies without a pitch sweep or a hard tone
+    // and vary in loudness per play; metal
+    // blocks clank; storage blocks sound as they open and close; an explosion is a long, saturated boom.
+    void baseSoundDesign()
+    {
+        const QcResult<QcBaseContent::Loaded> loaded = QcBaseContent::load();
+        QVERIFY2(loaded.has_value(), qcErrorText(loaded));
+        const QcContentRegistry &content = *loaded->registry;
+
+        for (const char *material : {"stone", "wood", "dirt", "gravel", "sand", "grass", "snow", "glass", "wool", "metal"}) {
+            for (int action = 0; action < qcBlockSoundActionCount; ++action) {
+                const QString name = u"qtcraft:block.%1.%2"_s.arg(QString::fromLatin1(material), QcSoundKeys::actionName(static_cast<QcBlockSoundAction>(action)));
+                const QcSoundDefinition *sound = content.assets().sound(name);
+                QVERIFY2(sound, qPrintable(name));
+                QVERIFY2(sound->volumeVariation > 0.0, qPrintable(name));
+                for (const QcSoundLayer &layer : sound->layers) {
+                    QVERIFY2(layer.wave == QcSoundWave::Noise || layer.wave == QcSoundWave::Crackle, qPrintable(name));
+                }
+            }
+        }
+
+        const auto block = [&content](const char *name) -> const QcBlockDefinition & {
+            return content.block(*content.blockId(QString::fromLatin1(name)));
+        };
+        QCOMPARE(key(block("qtcraft:iron_block"), QcBlockSoundAction::Place), u"qtcraft:block.metal.place"_s);
+        QCOMPARE(key(block("qtcraft:anvil"), QcBlockSoundAction::Hit), u"qtcraft:block.metal.hit"_s);
+
+        const QList<std::pair<const char *, QString>> containers = {
+            {"qtcraft:chest", u"chest"_s}, {"qtcraft:trapped_chest", u"chest"_s}, {"qtcraft:barrel", u"barrel"_s}, {"qtcraft:backpack", u"backpack"_s}};
+        for (const auto &[name, sound] : containers) {
+            QCOMPARE(block(name).containerOpenSound, u"qtcraft:block.%1.open"_s.arg(sound));
+            QCOMPARE(block(name).containerCloseSound, u"qtcraft:block.%1.close"_s.arg(sound));
+            QVERIFY(content.assets().sound(block(name).containerOpenSound));
+            QVERIFY(content.assets().sound(block(name).containerCloseSound));
+        }
+        QCOMPARE(block("qtcraft:signal_hopper").containerOpenSound, QString());
+
+        const QcSoundDefinition *explosion = content.assets().sound(QString::fromLatin1(QcSoundKeys::explosion));
+        QVERIFY(explosion);
+        QVERIFY(explosion->drive > 0.0);
+        QCOMPARE(explosion->range, QcSoundDefinition::maxRange);
+        QVERIFY(explosion->seconds() >= 3.0);
+    }
+
+    // The content a server sends its clients carries the sound fields of decision E-879.
+    void soundFieldsSurviveTheContentTransfer()
+    {
+        QcContentRegistry content;
+        QcSoundDefinition sound;
+        sound.name = u"t:knock"_s;
+        sound.volumeVariation = 0.3;
+        sound.drive = 2.5;
+        QcSoundLayer layer;
+        layer.wave = QcSoundWave::Noise;
+        layer.duration = 0.2;
+        layer.bandpass = 900.0;
+        layer.resonance = 7.0;
+        sound.layers = {layer};
+        content.assets().registerSound(sound);
+
+        QByteArray bytes;
+        {
+            QDataStream out(&bytes, QIODevice::WriteOnly);
+            QcContentSerializer::write(content, out);
+        }
+        QDataStream in(bytes);
+        const QcResult<QcContentRegistry> copy = QcContentSerializer::read(in);
+        QVERIFY2(copy.has_value(), qcErrorText(copy));
+        const QcSoundDefinition *received = copy->assets().sound(sound.name);
+        QVERIFY(received);
+        QCOMPARE(*received, sound);
+        QCOMPARE(received->layers[0].bandpass, 900.0);
+        QCOMPARE(received->drive, 2.5);
     }
 
     void modsAddReplaceAndReferenceSounds()

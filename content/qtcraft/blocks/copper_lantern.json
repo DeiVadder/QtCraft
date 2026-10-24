@@ -1,6 +1,6 @@
 {
     "name": "copper_lantern",
-    "sound": "stone",
+    "sound": "metal",
     "shape": "mine_lamp",
     "render": "cutout",
     "solid": false,

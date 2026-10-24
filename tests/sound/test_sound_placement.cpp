@@ -3,6 +3,9 @@
 #include "clientcore/sound/QcAudioMixer.h"
 #include "clientcore/sound/QcPositionalVoices.h"
 #include "clientcore/sound/QcSoundSpatial.h"
+#include "clientcore/sound/QcSoundSynthesizer.h"
+#include "common/content/definitions/QcSoundKeys.h"
+#include "QcTestUtil.h"
 
 #include <QTest>
 
@@ -45,6 +48,39 @@ QcAudioMixer::VoiceId start(QcAudioMixer &mixer, QcPositionalVoices &voices, con
     const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
     const QcAudioMixer::VoiceId id = voices.start(mixer, longBuffer(), key, source, {placement.gain, placement.pan, 1.0, QcSoundBus::Effects, false});
     return id;
+}
+
+// The share of the output samples above the limiter's knee while `blasts` explosions of `buffer`
+// start a quarter second apart next to the listener at the server's TNT volume (1.1). `stacked`
+// starts them as the engine does (QcPositionalVoices), otherwise straight in the mixer.
+double shareAboveKnee(const std::shared_ptr<const QcSampleBuffer> &buffer, const QcSoundDefinition &sound, int blasts, bool stacked)
+{
+    QcAudioMixer mixer(buffer->sampleRate);
+    QcPositionalVoices voices;
+    const QcSoundSpatial::Listener listener{{0.0, 64.0, 0.0}, 0.0};
+    const QcSoundCue cue{QString::fromLatin1(QcSoundKeys::explosion), listener.ears, 1.1f, 1.0f, QcSoundCue::Origin::Server, 0};
+    const QcSoundSpatial::Source source = QcSoundSpatial::source(sound, cue);
+    const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
+    const QcAudioMixer::PlayParameters parameters{placement.gain, placement.pan, 1.0, QcSoundBus::Effects, false};
+
+    qsizetype above = 0;
+    qsizetype total = 0;
+    const auto mixFor = [&](int frames) {
+        for (const float sample : mixer.mix(frames)) {
+            above += std::abs(sample) > QcAudioMixer::limiterKnee ? 1 : 0;
+            ++total;
+        }
+    };
+    for (int i = 0; i < blasts; ++i) {
+        if (stacked) {
+            voices.start(mixer, buffer, cue.key, source, parameters);
+        } else {
+            mixer.play(buffer, parameters);
+        }
+        mixFor(buffer->sampleRate / 4);
+    }
+    mixFor(static_cast<int>(buffer->samples.size()));
+    return static_cast<double>(above) / static_cast<double>(total);
 }
 
 } // namespace
@@ -134,6 +170,28 @@ private slots:
         // Other sounds have their own share.
         start(mixer, voices, QcSoundSpatial::source(definition(16.0), cueAt({1.0, 64.0, 0.0})), listener, u"t.sound"_s);
         QCOMPARE(mixer.voiceCount(), QcPositionalVoices::maxPerKey + 1);
+    }
+
+    // A single TNT blast stays below the limiter's knee; a chain of four overlapping ones, each quieter
+    // by the explosions still sounding, spends far less time in the limiter than at full level
+    // (decision E-879).
+    void explosionChainsStayOutOfTheLimiter()
+    {
+        const std::shared_ptr<const QcContentRegistry> content = QcTestUtil::loadContent();
+        const QcSoundDefinition *sound = content->assets().sound(QString::fromLatin1(QcSoundKeys::explosion));
+        QVERIFY(sound);
+        // A low rate keeps the rendering quick; the envelope and the levels are the same.
+        const auto buffer = std::make_shared<const QcSampleBuffer>(QcSoundSynthesizer::render(*sound, 0, 12000));
+
+        QCOMPARE(shareAboveKnee(buffer, *sound, 1, true), 0.0);
+        const double plain = shareAboveKnee(buffer, *sound, 4, false);
+        const double stacked = shareAboveKnee(buffer, *sound, 4, true);
+        qInfo() << "share above the knee, four blasts: plain" << plain << "stacked" << stacked;
+        QVERIFY2(stacked < 0.5 * plain, qPrintable(u"%1 vs %2"_s.arg(stacked).arg(plain)));
+        QVERIFY(stacked < 0.01);
+
+        QCOMPARE(QcPositionalVoices::stackedGain(0), 1.0f);
+        QCOMPARE(QcPositionalVoices::stackedGain(3), 0.5f);
     }
 
     void creatureStepsSoundWhereTheCreatureIs()

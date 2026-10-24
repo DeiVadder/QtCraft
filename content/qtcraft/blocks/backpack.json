@@ -7,7 +7,9 @@
     "hardness": 0.8,
     "container": {
         "slots": 9,
-        "portable": true
+        "portable": true,
+        "openSound": "block.backpack.open",
+        "closeSound": "block.backpack.close"
     },
     "states": {
         "facing": [

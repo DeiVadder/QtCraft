@@ -1,25 +1,47 @@
 {
     "name": "block.stone.place",
-    "volume": 0.65,
-    "variants": 2,
+    "volume": 0.7,
+    "variants": 3,
     "pitchVariation": 0.08,
+    "volumeVariation": 0.15,
     "layers": [
+        {
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 2500,
+            "gain": 0.036
+        },
+        {
+            "wave": "noise",
+            "duration": 0.07,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1900,
+            "resonance": 2.5,
+            "lowpass": 5700,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.001,
+            "curve": 4,
+            "bandpass": 450,
+            "resonance": 2,
+            "lowpass": 1350,
+            "gain": 1.0
+        },
         {
             "wave": "noise",
             "duration": 0.1,
             "attack": 0.002,
             "curve": 4,
-            "lowpass": 1800,
-            "highpass": 150
-        },
-        {
-            "wave": "sine",
-            "duration": 0.06,
-            "frequency": 150,
-            "endFrequency": 80,
-            "attack": 0.002,
-            "curve": 2,
-            "gain": 0.7
+            "bandpass": 130,
+            "resonance": 1.2,
+            "lowpass": 390,
+            "gain": 0.9
         }
     ]
 }

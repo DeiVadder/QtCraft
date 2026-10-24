@@ -151,6 +151,15 @@ SettingsPage {
             valueText: qsTr("%1 %").arg(Math.round(value * 100))
             onMoved: page.game.settings.fovEffects = value
         }
+
+        // Explosions near the player shake the view (decision E-879).
+        SettingSwitch {
+            objectName: "cameraShake"
+            label: qsTr("Camera shake")
+            help: qsTr("Explosions nearby shake the view")
+            checked: page.game.settings.cameraShake
+            onToggled: page.game.settings.cameraShake = checked
+        }
     }
 
     SettingGroup {

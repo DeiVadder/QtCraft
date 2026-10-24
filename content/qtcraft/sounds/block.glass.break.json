@@ -1,50 +1,75 @@
 {
     "name": "block.glass.break",
-    "volume": 0.8,
+    "volume": 0.85,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "sine",
-            "duration": 0.3,
-            "frequency": 3000,
-            "endFrequency": 2500,
-            "attack": 0.001,
-            "curve": 3,
-            "gain": 0.5
-        },
-        {
-            "wave": "sine",
-            "duration": 0.25,
-            "frequency": 4700,
-            "attack": 0.001,
-            "curve": 3,
-            "gain": 0.3
-        },
-        {
-            "wave": "sine",
-            "duration": 0.2,
-            "frequency": 6200,
-            "attack": 0.001,
-            "curve": 3,
-            "gain": 0.25
-        },
-        {
-            "wave": "crackle",
-            "duration": 0.25,
-            "density": 2500,
+            "wave": "noise",
+            "duration": 0.012,
+            "attack": 0.0005,
+            "curve": 4,
             "highpass": 3000,
-            "attack": 0.001,
-            "curve": 2,
-            "gain": 0.8
+            "gain": 0.04
         },
         {
             "wave": "noise",
-            "duration": 0.15,
+            "duration": 0.3,
             "attack": 0.001,
             "curve": 3,
-            "highpass": 4000,
+            "bandpass": 3000,
+            "resonance": 20,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "duration": 0.25,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 4700,
+            "resonance": 24,
+            "gain": 0.7
+        },
+        {
+            "wave": "noise",
+            "duration": 0.2,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 6200,
+            "resonance": 26,
             "gain": 0.5
+        },
+        {
+            "wave": "crackle",
+            "duration": 0.3,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 12000,
+            "highpass": 3000,
+            "density": 2500,
+            "gain": 0.9
+        },
+        {
+            "wave": "noise",
+            "start": 0.08,
+            "duration": 0.2,
+            "attack": 0.001,
+            "curve": 3,
+            "bandpass": 3700,
+            "resonance": 20,
+            "gain": 0.6
+        },
+        {
+            "wave": "crackle",
+            "start": 0.1,
+            "duration": 0.2,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 10000,
+            "highpass": 3000,
+            "density": 1200,
+            "gain": 0.6
         }
     ]
 }

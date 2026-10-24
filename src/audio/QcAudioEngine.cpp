@@ -163,7 +163,9 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcSoundSpatial::Listener &
     }
 
     const QcSoundDefinition &sound = entry->definition;
-    const QcSoundSpatial::Source source = QcSoundSpatial::source(sound, cue);
+    QcSoundSpatial::Source source = QcSoundSpatial::source(sound, cue);
+    // Kept in the source, so that the voice stays at its loudness while the listener moves.
+    source.volume *= static_cast<float>(1.0 - sound.volumeVariation * m_random.generateDouble());
     const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
     if (placement.gain < audibleGain) {
         return;

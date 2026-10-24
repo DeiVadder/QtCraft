@@ -22,7 +22,7 @@ Rail that acts on carts while it gets power: the rider gets out and a hopper car
 | Solid | no |
 | Needs support | a solid block below |
 | Washed away by liquids | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **How to make it**
@@ -80,7 +80,7 @@ Repairs, combines and renames: use it, put an item into the left slot and its ma
 | Light blocked | 0 of 15 |
 | Falls without support | yes |
 | Anvil | opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -217,7 +217,7 @@ Hangs over the meeting point in the middle of every village.
 | Drops | [Bell](#block-qtcraft-bell) |
 | Light blocked | 0 of 15 |
 | Needs support | a solid block below |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -854,7 +854,7 @@ Nine copper ingots packed into a block; crafting it back gives all nine.
 | Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
 | Drops | [Block of copper](#block-qtcraft-copper_block) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -953,7 +953,7 @@ Nine gold ingots packed into a block; crafting it back gives all nine.
 | Breaking with the best tool | 0.56 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
 | Drops | [Block of gold](#block-qtcraft-gold_block) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -986,7 +986,7 @@ Nine iron ingots packed into a block; crafting it back gives all nine.
 | Breaking with the best tool | 0.94 s: [Diamond pickaxe](tools.md#item-qtcraft-diamond_pickaxe) |
 | Drops | [Block of iron](#block-qtcraft-iron_block) |
 | Drops without the right tool | nothing |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -2108,7 +2108,7 @@ An iron pot on short legs, as witches keep them in their huts. For now it only s
 | Breaking with the best tool | 0.25 s: [Golden pickaxe](tools.md#item-qtcraft-golden_pickaxe) |
 | Drops | [Cauldron](#block-qtcraft-cauldron) |
 | Light blocked | 0 of 15 |
-| Sound | stone |
+| Sound | metal |
 
 **How to make it**
 
@@ -2138,7 +2138,7 @@ An iron chain that runs along the face you place it on: upright, or lying east t
 | Drops | [Chain](#block-qtcraft-chain) |
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
-| Sound | stone |
+| Sound | metal |
 | States | axis (y, x, z) |
 
 **How to make it**
@@ -2207,7 +2207,7 @@ An anvil that has seen some use; it works like a new one and wears into a damage
 | Light blocked | 0 of 15 |
 | Falls without support | yes |
 | Anvil | opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use |
-| Sound | stone |
+| Sound | metal |
 
 **Mined with**
 
@@ -2527,7 +2527,7 @@ Copper bars that connect to their neighbours like glass panes and iron bars.
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Connects to | panes, full solid blocks |
-| Sound | stone |
+| Sound | metal |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **How to make it**
@@ -2557,7 +2557,7 @@ A chain of copper; it runs, hangs and holds lanterns like the iron chain.
 | Drops | [Copper chain](#block-qtcraft-copper_chain) |
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
-| Sound | stone |
+| Sound | metal |
 | States | axis (y, x, z) |
 
 **How to make it**
@@ -2590,7 +2590,7 @@ A metal door that opens by hand like a wooden one and also with a signal: a leve
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
 | Two blocks tall | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **How to make it**
@@ -2623,7 +2623,7 @@ A copper lantern around a torch flame with a greenish glow; as bright as the iro
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Needs support | a solid face it hangs on |
-| Sound | stone |
+| Sound | metal |
 | States | attach (floor, ceiling, north, east, south, west) |
 
 **How to make it**
@@ -2678,7 +2678,7 @@ A metal hatch that opens by hand and with a signal.
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Opens and closes when used | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **How to make it**
@@ -3126,7 +3126,7 @@ An anvil close to breaking; it works like a new one, but the next wear breaks it
 | Light blocked | 0 of 15 |
 | Falls without support | yes |
 | Anvil | opens the anvil: repair with material or a second item, merge enchantments, rename; paid with levels, more for items that went through an anvil before; wears with use |
-| Sound | stone |
+| Sound | metal |
 
 **Mined with**
 
@@ -3280,7 +3280,7 @@ Rail that gives a signal while a minecart is on it, like a pressure plate. A Sig
 | Solid | no |
 | Needs support | a solid block below |
 | Washed away by liquids | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **How to make it**
@@ -4766,7 +4766,7 @@ Bars that connect to their neighbours like glass panes.
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Connects to | panes, full solid blocks |
-| Sound | stone |
+| Sound | metal |
 | States | east (false, true); north (false, true); south (false, true); west (false, true) |
 
 **How to make it**
@@ -4797,7 +4797,7 @@ A heavy door that only a signal opens: a lever, a button, a plate or Signal Dust
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
 | Two blocks tall | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); half (bottom, top); hinge (left, right); open (false, true) |
 
 **How to make it**
@@ -4851,7 +4851,7 @@ A heavy hatch that only a signal opens.
 | Drops | [Iron trapdoor](#block-qtcraft-iron_trapdoor) |
 | Drops without the right tool | nothing |
 | Light blocked | 0 of 15 |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); half (bottom, top); open (false, true) |
 
 **How to make it**
@@ -5213,7 +5213,7 @@ An iron lantern around a torch flame; the brightest light you can build.
 | Light blocked | 0 of 15 |
 | Solid | no |
 | Needs support | a solid face it hangs on |
-| Sound | stone |
+| Sound | metal |
 | States | attach (floor, ceiling, north, east, south, west) |
 
 **How to make it**
@@ -7872,7 +7872,7 @@ Rail that speeds carts up while it gets Signal Dust power and brakes them to a s
 | Solid | no |
 | Needs support | a solid block below |
 | Washed away by liquids | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); powered (false, true); shape (straight, ascending) |
 
 **How to make it**
@@ -8201,7 +8201,7 @@ Track for minecarts. It needs a solid block below, joins the rails beside it and
 | Solid | no |
 | Needs support | a solid block below |
 | Washed away by liquids | yes |
-| Sound | stone |
+| Sound | metal |
 | States | facing (north, east, south, west); shape (straight, ascending, curve) |
 
 **How to make it**
@@ -8773,7 +8773,7 @@ Moves items: every eight ticks it passes one item into the container its spout p
 | Drops | [Signal Hopper](#block-qtcraft-signal_hopper) |
 | Light blocked | 0 of 15 |
 | Storage | 5 slots |
-| Sound | stone |
+| Sound | metal |
 | States | enabled (true, false); facing (down, north, east, south, west) |
 
 **How to make it**

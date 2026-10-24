@@ -1,6 +1,9 @@
 #include "clientcore/sound/QcPositionalVoices.h"
 
+#include "common/content/definitions/QcSoundKeys.h"
+
 #include <algorithm>
+#include <cmath>
 #include <utility>
 
 std::optional<QcAudioMixer::VoiceId> QcPositionalVoices::makeRoom(const QString &key)
@@ -17,11 +20,30 @@ std::optional<QcAudioMixer::VoiceId> QcPositionalVoices::makeRoom(const QString 
     return id;
 }
 
+int QcPositionalVoices::playing(const QcAudioMixer &mixer, const QString &key) const
+{
+    return static_cast<int>(std::ranges::count_if(m_voices, [&](const Tracked &voice) { return voice.key == key && mixer.isPlaying(voice.id); }));
+}
+
+float QcPositionalVoices::stackedGain(int playing)
+{
+    return 1.0f / std::sqrt(static_cast<float>(std::max(0, playing) + 1));
+}
+
 QcAudioMixer::VoiceId QcPositionalVoices::start(QcAudioMixer &mixer, std::shared_ptr<const QcSampleBuffer> buffer, const QString &key,
                                                 const QcSoundSpatial::Source &source, const QcAudioMixer::PlayParameters &parameters)
 {
+    QcSoundSpatial::Source heard = source;
+    QcAudioMixer::PlayParameters played = parameters;
+    if (key == QLatin1StringView(QcSoundKeys::explosion)) {
+        // Kept in the source as well, so that update() does not bring the full level back.
+        const float stacked = stackedGain(playing(mixer, key));
+        heard.volume *= stacked;
+        played.gain *= stacked;
+    }
+
     // A sound the mixer would refuse does not push out one of the same key.
-    if (!mixer.wouldPlay(buffer, parameters.gain)) {
+    if (!mixer.wouldPlay(buffer, played.gain)) {
         return 0;
     }
 
@@ -29,8 +51,8 @@ QcAudioMixer::VoiceId QcPositionalVoices::start(QcAudioMixer &mixer, std::shared
     if (const std::optional<QcAudioMixer::VoiceId> oldest = makeRoom(key)) {
         mixer.fadeOut(*oldest);
     }
-    const QcAudioMixer::VoiceId id = mixer.play(std::move(buffer), parameters);
-    track(id, key, source);
+    const QcAudioMixer::VoiceId id = mixer.play(std::move(buffer), played);
+    track(id, key, heard);
     return id;
 }
 

@@ -1,9 +1,11 @@
 #include "clientcore/light/QcSky.h"
+#include "clientcore/session/QcExplosionEffects.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/world/QcDayCycle.h"
 
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
 
 namespace {
@@ -121,6 +123,84 @@ private slots:
         QVERIFY(std::abs(later.cloudOffsetX - early.cloudOffsetX - 10.0 * QcSky::cloudSpeed) < 1e-9);
         QVERIFY(later.cloudOffsetZ > early.cloudOffsetZ);
         QVERIFY(brightness(QcSky::at(midnight).cloudColor) < brightness(QcSky::at(noon).cloudColor) * 0.3f);
+    }
+
+    // An explosion's flash (decision E-879) warms the sky and lifts the light floor of every block,
+    // also where no sky light reaches; without a flash nothing changes.
+    void explosionFlashWarmsAndLightsEverything()
+    {
+        const QcSkyState night = QcSky::at(midnight);
+        const QcSkyState quiet = QcSky::withBlast(night, 0.0);
+        QCOMPARE(quiet.flashLight, 0.0);
+        QVERIFY(quiet.horizon == night.horizon);
+
+        const QcSkyState lit = QcSky::withBlast(night, 1.0);
+        QVERIFY(lit.flashLight > 0.5);
+        QVERIFY(brightness(lit.horizon) > brightness(night.horizon) * 2.0f);
+        // Warm: more red than blue.
+        QVERIFY(lit.horizon.x() > lit.horizon.z());
+        QCOMPARE(QcSky::withBlast(night, 5.0).flashLight, lit.flashLight);
+    }
+
+    // Explosions flash and shake the camera only nearby and only for a moment; the strongest of
+    // several counts, not their sum (decision E-879).
+    void explosionsFlashAndShakeNearbyAndBriefly()
+    {
+        QcExplosionEffects effects;
+        const QcVec3 centre{10.0, 70.0, 10.0};
+        effects.add({centre, 4.0F}, 100);
+        const QcVec3 near = centre + QcVec3{3.0, 0.0, 0.0};
+        const QcVec3 far = centre + QcVec3{100.0, 0.0, 0.0};
+
+        QVERIFY(effects.flashAt(near, 100.0) > 0.8);
+        QCOMPARE(effects.flashAt(far, 100.0), 0.0);
+        QCOMPARE(effects.flashAt(near, 100.0 + QcExplosionEffects::flashTicks), 0.0);
+        QCOMPARE(effects.flashAt(near, 99.0), 0.0);
+
+        const double strong = effects.shakeAt(near, 100.0);
+        QVERIFY(strong > 0.5);
+        QVERIFY(effects.shakeAt(near, 110.0) < strong);
+        QCOMPARE(effects.shakeAt(near, 100.0 + QcExplosionEffects::shakeTicks), 0.0);
+        QCOMPARE(effects.shakeAt(far, 100.0), 0.0);
+
+        // Many blasts at once shake no harder than the strongest.
+        for (int i = 0; i < 10; ++i) {
+            effects.add({centre, 4.0F}, 100);
+        }
+        QCOMPARE(effects.shakeAt(near, 100.0), strong);
+
+        // The offsets stay within the largest shake, change from frame to frame and vanish without strength.
+        double largest = 0.0;
+        for (int frame = 0; frame < 60; ++frame) {
+            const QcExplosionEffects::Shake shake = QcExplosionEffects::shake(1.0, 100.0 + frame * 0.37);
+            largest = std::max({largest, std::abs(shake.yaw), std::abs(shake.pitch)});
+        }
+        QVERIFY(largest > 0.3 * QcExplosionEffects::maxShakeDegrees);
+        QVERIFY(largest <= QcExplosionEffects::maxShakeDegrees + 1e-9);
+        QCOMPARE(QcExplosionEffects::shake(0.0, 105.0).yaw, 0.0);
+
+        // Pruned once over: nothing flashes or shakes any more, the puffs are gone too.
+        QVERIFY(!effects.puffs().isEmpty());
+        effects.prune(100 + 200);
+        QCOMPARE(effects.shakeAt(near, 101.0), 0.0);
+        QVERIFY(effects.puffs().isEmpty());
+    }
+
+    // With every place for blasts taken, a new blast replaces the weakest instead of being dropped.
+    void aNewBlastReplacesTheWeakestWhenFull()
+    {
+        QcExplosionEffects effects;
+        const QcVec3 centre{10.0, 70.0, 10.0};
+        const QcVec3 far = centre + QcVec3{0.0, 0.0, 30.0};
+        for (qsizetype i = 0; i < QcExplosionEffects::maxBlasts; ++i) {
+            effects.add({far, 1.0F}, 100);
+        }
+        const QcVec3 near = centre + QcVec3{1.0, 0.0, 0.0};
+        QCOMPARE(effects.shakeAt(near, 101.0), 0.0);
+
+        effects.add({centre, 4.0F}, 101);
+        QVERIFY(effects.shakeAt(near, 101.0) > 0.5);
+        QVERIFY(effects.flashAt(near, 101.0) > 0.8);
     }
 };
 

@@ -26,6 +26,9 @@ struct QcSkyState
     QVector3D cloudColor;
     // Sky light factor of the block shaders (QcDayCycle::daylight, less in rain, more in a flash).
     double daylight = 1.0;
+    // Light an explosion's flash adds to the shaders' floor for a moment, also where no sky light
+    // reaches (0 most of the time, decision E-879).
+    double flashLight = 0.0;
     // How much of the sky the clouds cover beyond the fair-weather clouds: 0 clear, 1 overcast.
     double overcast = 0.0;
     // Factor on the fog's distances: 1 clear, smaller in rain (the fog comes closer).
@@ -51,5 +54,8 @@ QcSkyState seenFrom(QcSkyState sky, double eyeY);
 // (0..1) darkens it further; a lightning flash (0..1) lights everything up for a moment. Only the
 // shaders' factors change, so no section is meshed again.
 QcSkyState withWeather(QcSkyState sky, double rain, double thunder, double flash);
+// The sky in an explosion's flash (0..1, QcExplosionEffects::flashAt; decision E-879): a warm light
+// on the dome and the clouds and on everything around, in caves too.
+QcSkyState withBlast(QcSkyState sky, double flash);
 
 } // namespace QcSky

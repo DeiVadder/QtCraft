@@ -6,7 +6,7 @@
     "lightOpacity": 0,
     "hardness": 2.5,
     "tool": "axe",
-    "container": { "slots": 27 },
+    "container": { "slots": 27, "openSound": "block.chest.open", "closeSound": "block.chest.close" },
     "states": { "facing": ["north", "east", "south", "west"] },
     "textures": {
         "side": "chest_side",

@@ -20,9 +20,10 @@ bool countsViewers(const QcServerState &state, QcBlockId block)
 
 } // namespace
 
-QcBlockScreens::QcBlockScreens(QcServerState &state, QcServerBlocks &blocks)
+QcBlockScreens::QcBlockScreens(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds)
     : m_state(state)
     , m_blocks(blocks)
+    , m_containerSounds(state, sounds)
 {
 }
 
@@ -357,6 +358,7 @@ void QcBlockScreens::update()
         }
     }
     updateViewers();
+    m_containerSounds.update();
 }
 
 void QcBlockScreens::updateViewers()

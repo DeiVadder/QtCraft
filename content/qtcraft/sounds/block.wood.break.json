@@ -1,33 +1,70 @@
 {
     "name": "block.wood.break",
-    "volume": 0.8,
+    "volume": 0.85,
     "variants": 3,
     "pitchVariation": 0.1,
+    "volumeVariation": 0.15,
     "layers": [
         {
-            "wave": "triangle",
-            "duration": 0.15,
-            "frequency": 180,
-            "endFrequency": 120,
-            "attack": 0.002,
-            "curve": 2.5,
-            "lowpass": 1500
+            "wave": "noise",
+            "duration": 0.01,
+            "attack": 0.0005,
+            "curve": 4,
+            "highpass": 1500,
+            "gain": 0.03
         },
         {
             "wave": "noise",
-            "duration": 0.2,
-            "attack": 0.003,
-            "curve": 2.5,
-            "lowpass": 1200,
-            "highpass": 150,
-            "gain": 0.7
+            "duration": 0.12,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 480,
+            "resonance": 5,
+            "lowpass": 1440,
+            "gain": 1.0
+        },
+        {
+            "wave": "noise",
+            "start": 0.03,
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 1050,
+            "resonance": 6,
+            "lowpass": 3150,
+            "gain": 0.6
+        },
+        {
+            "wave": "noise",
+            "duration": 0.1,
+            "attack": 0.002,
+            "curve": 4,
+            "bandpass": 150,
+            "resonance": 1.2,
+            "lowpass": 450,
+            "gain": 0.8
         },
         {
             "wave": "crackle",
-            "duration": 0.2,
-            "density": 150,
-            "lowpass": 2500,
-            "gain": 0.5
+            "start": 0.01,
+            "duration": 0.22,
+            "attack": 0.002,
+            "curve": 2,
+            "lowpass": 3500,
+            "highpass": 600,
+            "density": 260,
+            "gain": 0.35
+        },
+        {
+            "wave": "noise",
+            "start": 0.07,
+            "duration": 0.08,
+            "attack": 0.001,
+            "curve": 5,
+            "bandpass": 620,
+            "resonance": 5,
+            "lowpass": 1860,
+            "gain": 0.6
         }
     ]
 }
