@@ -72,7 +72,7 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
             continue;
         }
         QcStructurePlacement placement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);
-        const QcTerrainColumn middle = m_terrain.column((rect.x0 + rect.x1) / 2, (rect.z0 + rect.z1) / 2);
+        const QcTerrainColumn middle = m_terrain.column(rect.middleX(), rect.middleZ());
         if (!rule.preferWater || middle.height < m_terrain.seaLevel()) {
             return placement;
         }
@@ -97,7 +97,7 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
 {
     // The middle and the edges every few blocks, corners included: no hill or hollow along an edge
     // goes unseen.
-    QList<std::pair<int, int>> samples{{(rect.x0 + rect.x1) / 2, (rect.z0 + rect.z1) / 2}, {rect.x1, rect.z0}, {rect.x1, rect.z1}};
+    QList<std::pair<int, int>> samples{{rect.middleX(), rect.middleZ()}, {rect.x1, rect.z0}, {rect.x1, rect.z1}};
     for (int x = rect.x0; x < rect.x1; x += edgeStep) {
         samples.append({{x, rect.z0}, {x, rect.z1}});
     }

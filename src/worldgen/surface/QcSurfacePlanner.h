@@ -50,6 +50,11 @@ public:
         int x1 = 0;
         int z1 = 0;
 
+        // The middle column, summed in 64 bits: near the edge of the world (E-883) two corners
+        // add up beyond int.
+        int middleX() const { return static_cast<int>((qint64{x0} + x1) / 2); }
+        int middleZ() const { return static_cast<int>((qint64{z0} + z1) / 2); }
+
         bool intersects(Rect other, int margin) const
         {
             return x0 - margin <= other.x1 && other.x0 <= x1 + margin && z0 - margin <= other.z1 && other.z0 <= z1 + margin;

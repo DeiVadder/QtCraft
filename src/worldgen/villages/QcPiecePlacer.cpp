@@ -48,7 +48,7 @@ std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rec
     }
 
     const std::array<std::pair<int, int>, 5> samples{
-        {{rect.x0, rect.z0}, {rect.x1, rect.z0}, {rect.x0, rect.z1}, {rect.x1, rect.z1}, {(rect.x0 + rect.x1) / 2, (rect.z0 + rect.z1) / 2}}};
+        {{rect.x0, rect.z0}, {rect.x1, rect.z0}, {rect.x0, rect.z1}, {rect.x1, rect.z1}, {rect.middleX(), rect.middleZ()}}};
     int low = QcWorld::worldHeight;
     int high = 0;
     int sum = 0;

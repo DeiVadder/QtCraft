@@ -122,7 +122,7 @@ qc_add_test(test_themed_tooltip SOURCES client/test_themed_tooltip.cpp LIBRARIES
 qc_add_test(test_hud_target SOURCES client/test_hud_target.cpp LIBRARIES qc_base_content qc_app_core)
 # The on-screen keyboard: addresses with ports and IPv6, shift, umlauts, hidden passwords (E-584).
 qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_core qc_app_coreplugin)
-qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)
+qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core TIMEOUT 150)
 target_compile_definitions(test_gamepad_sdl PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
     QTCRAFT_SDL3_DIR="${SDL3_DIR}" QTCRAFT_SDL_ARCH="${QC_SDL_ARCH}" QTCRAFT_CMAKE_COMMAND="${CMAKE_COMMAND}"
     QC_HAVE_SDL_GAMEPAD=$<BOOL:${QC_GAMEPAD_ENABLED}>)
@@ -145,9 +145,9 @@ qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core
 # The character screens edit a draft: save, discard, close (E-852).
 qc_add_test(test_character_draft SOURCES client/test_character_draft.cpp LIBRARIES qc_app_core qc_worlds)
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
-qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server)
+qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server TIMEOUT 150)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
-qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
 target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.

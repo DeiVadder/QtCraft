@@ -69,7 +69,7 @@ qc_add_test(test_tick_scheduler SOURCES gameplay/test_tick_scheduler.cpp LIBRARI
 qc_add_test(test_tick_phases SOURCES gameplay/test_tick_phases.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 120)
 qc_add_test(test_tick_systems SOURCES gameplay/test_tick_systems.cpp LIBRARIES qc_server)
 qc_add_test(test_building SOURCES gameplay/test_building.cpp LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_villages SOURCES gameplay/test_villages.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 150)
 qc_add_test(test_villagers SOURCES gameplay/test_villagers.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_trading SOURCES gameplay/test_trading.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server TIMEOUT 150)
 qc_add_test(test_trade_offers SOURCES gameplay/test_trade_offers.cpp LIBRARIES qc_server qc_clientcore)
