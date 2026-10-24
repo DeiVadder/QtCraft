@@ -101,10 +101,35 @@ std::unique_ptr<QRhiTexture> create(QRhi *rhi, const QList<QImage> &levels, QRhi
     return texture;
 }
 
+std::unique_ptr<QRhiTexture> createAnimationMap(QRhi *rhi, const QImage &map, QRhiResourceUpdateBatch *updates)
+{
+    QImage image = map.isNull() ? QImage() : map.convertToFormat(QImage::Format_RGBA8888);
+    if (image.isNull()) {
+        image = QImage(1, 1, QImage::Format_RGBA8888);
+        image.fill(QColor(0, 0, 0, 0));
+    }
+
+    std::unique_ptr<QRhiTexture> texture(rhi->newTexture(QRhiTexture::RGBA8, image.size()));
+    if (!texture->create()) {
+        qCWarning(lcRenderer) << "Texture atlas: the GPU refused the animation map of" << image.size();
+        return nullptr;
+    }
+    updates->uploadTexture(texture.get(), image);
+    return texture;
+}
+
 std::unique_ptr<QRhiSampler> createSampler(QRhi *rhi)
 {
     std::unique_ptr<QRhiSampler> sampler(
         rhi->newSampler(QRhiSampler::Nearest, QRhiSampler::Nearest, QRhiSampler::Linear, QRhiSampler::ClampToEdge, QRhiSampler::ClampToEdge));
+    sampler->create();
+    return sampler;
+}
+
+std::unique_ptr<QRhiSampler> createAnimationMapSampler(QRhi *rhi)
+{
+    std::unique_ptr<QRhiSampler> sampler(
+        rhi->newSampler(QRhiSampler::Nearest, QRhiSampler::Nearest, QRhiSampler::None, QRhiSampler::ClampToEdge, QRhiSampler::ClampToEdge));
     sampler->create();
     return sampler;
 }

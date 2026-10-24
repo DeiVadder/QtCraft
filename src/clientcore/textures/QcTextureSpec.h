@@ -296,6 +296,10 @@ struct QcTextureSpec
     int tilesWide = 1;
     int tilesHigh = 1;
     std::optional<std::pair<int, int>> tile = std::nullopt;
+    // Where in its loop an animation frame lies (decision E-878): frame / frames, in [0, 1). The
+    // patterns that animate (fire, lava, water) move with it so the last frame leads seamlessly into
+    // the first; 0 paints the still texture.
+    double phase = 0.0;
 };
 
 [[nodiscard]] std::optional<QcTextureSpec::Pattern> qcTexturePatternFromName(const QString &name);

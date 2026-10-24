@@ -162,6 +162,10 @@ public:
     void requestPause(bool paused);
     // Whether the server's ticks pause (QcMsg::ServerPause): the player's own prediction rests too.
     bool serverPaused() const { return m_serverPaused; }
+    // The server's ticks per normal tick as the world shows them (QcMsg::WorldTime::speed: more in a
+    // sprint, 0 under /tick freeze), 0 while it pauses even before its WorldTime arrives: the clock
+    // of the animated textures (QcAnimationClock, decision E-878).
+    double serverSpeed() const { return m_serverPaused ? 0.0 : worldMirror().timeSpeed(); }
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
     // The mirror itself: the dying entities, its snapshot clock and buffering (decision E-271).

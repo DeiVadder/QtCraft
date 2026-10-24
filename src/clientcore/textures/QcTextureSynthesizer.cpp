@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <numbers>
 #include <utility>
 
 namespace {
@@ -102,9 +103,25 @@ QColor paintOre(const QcTextureSpec &spec, int x, int y, QColor color)
     return cluster == 0 && inside ? varied(spec, spec.secondary, x, y, 29) : color;
 }
 
+// The phase of an animation frame as an angle (decision E-878): a whole turn over the loop, so
+// waves painted with it close the loop without a jump; 0 for still textures.
+double phaseTurn(const QcTextureSpec &spec)
+{
+    return 2.0 * std::numbers::pi * spec.phase;
+}
+
+// Rows an animation frame has moved by (0 to size - 1, decision E-878): pixel noise read `drift`
+// rows further down moves up and wraps after the loop.
+int phaseRows(const QcTextureSpec &spec)
+{
+    return std::clamp(static_cast<int>(std::floor(spec.phase * size)), 0, size - 1);
+}
+
 QColor paintWater(const QcTextureSpec &spec, int x, int y, QColor)
 {
-    return scaled(spec.primary, 1.0 + spec.variation * std::sin((x + 2 * y) * 0.7 + noise(spec.seed, x, y)), spec.primary.alpha());
+    // Animated, the waves run along the diagonal once per loop.
+    const double wave = std::sin((x + 2 * y) * 0.7 + noise(spec.seed, x, y) + phaseTurn(spec));
+    return scaled(spec.primary, 1.0 + spec.variation * wave, spec.primary.alpha());
 }
 
 QColor paintTool(const QcTextureSpec &spec, int x, int y, QColor)
@@ -321,23 +338,31 @@ QColor paintChest(const QcTextureSpec &spec, int x, int y, QColor color)
 
 QColor paintLava(const QcTextureSpec &spec, int x, int y, QColor color)
 {
-    const double wave = std::sin(x * 0.9 + 1.7 * noise(spec.seed, x / 3, y / 3)) + std::cos(y * 0.75 + x * 0.3);
+    // Animated, the glowing streaks flow slowly downwards and the dark crust drifts with them.
+    const double turn = phaseTurn(spec);
+    const double wave = std::sin(x * 0.9 + 1.7 * noise(spec.seed, x / 3, y / 3) + turn) + std::cos(y * 0.75 + x * 0.3 - turn);
     if (wave > 1.1) {
         return varied(spec, spec.secondary, x, y, 3);
     }
-    return wave < -1.3 || (hashPixel(spec.seed + 47, x, y) % 11) == 0 ? scaled(spec.primary, 0.7) : color;
+    const int crustRow = (y + size - phaseRows(spec)) % size;
+    return wave < -1.3 || (hashPixel(spec.seed + 47, x, crustRow) % 11) == 0 ? scaled(spec.primary, 0.7) : color;
 }
 
 QColor paintFire(const QcTextureSpec &spec, int x, int y, QColor color)
 {
     // Each column carries a tongue of flame up to its own height, narrowing towards the tip.
-    const double height = 7.0 + 7.0 * (0.5 + 0.5 * noise(spec.seed + 71, x / 2, 0)) + 1.5 * std::sin(x * 1.3);
+    // Animated, the tongues flicker (each column on its own beat) and the ragged pixels rise.
+    const double turn = phaseTurn(spec);
+    const double beat = 6.28 * noise(spec.seed + 83, x, 0);
+    const double flicker = 1.5 * (std::sin(2.0 * turn + beat) - std::sin(beat));
+    const double height = 7.0 + 7.0 * (0.5 + 0.5 * noise(spec.seed + 71, x / 2, 0)) + 1.5 * std::sin(x * 1.3 + 2.0 * turn) + flicker;
     const double rise = static_cast<double>(size - y);
-    if (rise > height || (rise > height - 3.0 && (hashPixel(spec.seed + 73, x, y) % 3) == 0)) {
+    const int row = (y + phaseRows(spec)) % size;
+    if (rise > height || (rise > height - 3.0 && (hashPixel(spec.seed + 73, x, row) % 3) == 0)) {
         return clear();
     }
     const double heat = 1.0 - rise / height;
-    return heat > 0.45 && (hashPixel(spec.seed + 79, x, y) % 5) != 0 ? varied(spec, spec.secondary, x, y, 7) : color;
+    return heat > 0.45 && (hashPixel(spec.seed + 79, x, row) % 5) != 0 ? varied(spec, spec.secondary, x, row, 7) : color;
 }
 
 QColor paintFlower(const QcTextureSpec &spec, int x, int y, QColor)

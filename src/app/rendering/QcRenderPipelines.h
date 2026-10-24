@@ -25,8 +25,11 @@ struct FrameUniforms
     // (QcAtlasLayout::grid), z: pixels per cell in the uploaded texture's largest level, w: most
     // samples along a slanted footprint (1: plain mip mapping).
     float atlas[4];
+    // Animated textures (decision E-878): x: the time in ticks, wrapped where every animation of
+    // the atlas starts over (QcTextureAtlas::animationCycleTicks); y, z, w unused.
+    float animation[4];
 };
-static_assert(sizeof(FrameUniforms) == 144);
+static_assert(sizeof(FrameUniforms) == 160);
 
 // Light the shaders never go below (caves without sky light).
 inline constexpr float minimumLight = 0.08f;

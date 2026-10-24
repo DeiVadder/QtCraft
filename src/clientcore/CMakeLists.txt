@@ -191,6 +191,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     textures/QcAlphaCoverage.h textures/QcAlphaCoverage.cpp
+    textures/QcAnimationClock.h textures/QcAnimationClock.cpp
     textures/QcAtlasLayout.h textures/QcAtlasLayout.cpp
     textures/QcGpuLimits.h textures/QcGpuLimits.cpp
     textures/QcPixelFont.h textures/QcPixelFont.cpp

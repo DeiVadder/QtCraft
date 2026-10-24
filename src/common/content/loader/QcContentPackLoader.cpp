@@ -1,5 +1,6 @@
 #include "common/content/loader/QcContentPackLoader.h"
 
+#include "common/content/definitions/QcTextureAnimation.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/protocol/QcStreamLimits.h"
@@ -292,6 +293,13 @@ void PackReader::loadTextures()
         if (!texture) {
             m_warnings.append(u"%1: %2"_s.arg(path, texture.error()));
             continue;
+        }
+        // Kept: the frames only cost atlas space (decision E-878).
+        const QString pattern = texture->procedural.value(u"pattern"_s).toString();
+        const QcResult<QcTextureAnimation> animation = QcTextureAnimation::read(texture->procedural);
+        if (animation && animation->animated() && !QcTextureAnimation::patternMoves(pattern)) {
+            m_warnings.append(u"%1: texture '%2': pattern '%3' does not move, its %4 'frames' all show the same picture"_s.arg(
+                path, texture->name, pattern, QString::number(animation->frames)));
         }
 
         const QList<QcTextureDefinition> tiles = QcContentParser::textureTiles(*texture);

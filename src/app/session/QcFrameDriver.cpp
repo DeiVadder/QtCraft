@@ -127,6 +127,7 @@ void QcFrameDriver::onFrame()
     const QList<QcRenderSample> renderSamples = m_targets.hud.debug()->recordFrame(entityNs, previewNs, m_targets.benchmark.isRunning());
     m_targets.benchmark.recordGuiFrame(m_targets.hud.debug()->lastGuiCpuMs(), entityNs, previewNs, renderSamples);
     m_targets.render.updateSky(alpha);
+    m_targets.render.updateAnimations(frameSeconds);
     m_targets.render.updateWeather(eye, frameSeconds);
     m_targets.hud.updateTimeOfDay(alpha);
     m_targets.hud.updateDial(alpha);

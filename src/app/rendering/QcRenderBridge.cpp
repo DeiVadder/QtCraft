@@ -84,6 +84,12 @@ void QcRenderBridge::updateSky(double alpha)
     m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
 }
 
+void QcRenderBridge::updateAnimations(double frameSeconds)
+{
+    m_animationClock.advance(frameSeconds, m_parts.session->serverSpeed());
+    m_parts.view->setAnimationTime(m_animationClock.ticks());
+}
+
 void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
 {
     const QcClientSession &session = *m_parts.session;

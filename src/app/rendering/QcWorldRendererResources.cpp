@@ -141,6 +141,7 @@ QcWorldDeviceResources QcWorldDeviceResources::create(QRhi *rhi)
     device.frameUniforms.reset(rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, sizeof(FrameUniforms)));
     device.frameUniforms->create();
     device.atlasSampler = QcAtlasTexture::createSampler(rhi);
+    device.animationSampler = QcAtlasTexture::createAnimationMapSampler(rhi);
 
     device.outlineBindings.reset(rhi->newShaderResourceBindings());
     device.outlineBindings->setBindings({QRhiShaderResourceBinding::uniformBuffer(
@@ -154,7 +155,8 @@ QcWorldDeviceResources QcWorldDeviceResources::create(QRhi *rhi)
     return device;
 }
 
-void QcWorldDeviceResources::replaceAtlas(const QList<QImage> &levels, quint64 version, QRhiResourceUpdateBatch *updates)
+void QcWorldDeviceResources::replaceAtlas(const QList<QImage> &levels, const QImage &animationMap, quint64 version,
+                                          QRhiResourceUpdateBatch *updates)
 {
     atlasTried = true;
     // The placeholder is drawn plainly: the block shader's filtering needs a real atlas.
@@ -170,6 +172,7 @@ void QcWorldDeviceResources::replaceAtlas(const QList<QImage> &levels, quint64 v
     // refer to the old one go first.
     bindings.reset();
     atlasTexture = QcAtlasTexture::create(rhi, uploaded, updates);
+    animationTexture = QcAtlasTexture::createAnimationMap(rhi, atlas ? animationMap : QImage(), updates);
     uploadedAtlasVersion = version;
     atlasGrid = {1, 1};
     atlasCellPixels = 0.0f;
@@ -191,6 +194,7 @@ QRhiShaderResourceBindings *QcWorldDeviceResources::atlasBindings()
             0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, frameUniforms.get()),
         QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, atlasTexture.get(),
                                                   atlasSampler.get()),
+        QRhiShaderResourceBinding::sampledTexture(2, QRhiShaderResourceBinding::VertexStage, animationTexture.get(), animationSampler.get()),
     });
     bindings->create();
     return bindings.get();

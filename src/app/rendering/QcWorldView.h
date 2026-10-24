@@ -49,6 +49,10 @@ public:
         // The atlas's mip levels and a counter that changes with every setAtlas().
         QList<QImage> atlas;
         quint64 atlasVersion = 0;
+        // The atlas's animations (QcTextureAtlas::animationMap, decision E-878), uploaded with it,
+        // and the animation time in ticks, wrapped where every animation starts over.
+        QImage animationMap;
+        float animationTicks = 0.0f;
         // Sky dome, fog colour and the daylight factor of the shaders.
         QcSkyState sky = QcSky::at(QcDayCycle::startTime);
         float fogStart = 80.0f;
@@ -73,8 +77,13 @@ public:
     void setCamera(const QcCamera &camera);
     const QcCamera &camera() const { return m_frame.camera; }
 
-    // The atlas's mip levels, level 0 first (QcTextureAtlas::levels()).
-    void setAtlas(const QList<QImage> &levels);
+    // The atlas's mip levels, level 0 first (QcTextureAtlas::levels()), its animations
+    // (QcTextureAtlas::animationMap) and the ticks after which they all start over
+    // (QcTextureAtlas::animationCycleTicks).
+    void setAtlas(const QList<QImage> &levels, const QImage &animationMap = {}, int animationCycleTicks = 1);
+    // The time of the animated textures in ticks (decision E-878), QcAnimationClock::ticks(); the
+    // test hook QTCRAFT_ANIMATION_TICK holds it at a fixed tick.
+    void setAnimationTime(double ticks);
     void submitMesh(quint64 key, std::shared_ptr<const QcChunkMesh> mesh);
     void removeMesh(quint64 key);
     void clearMeshes();
@@ -122,6 +131,9 @@ private:
     void meshesLostOnDevice();
 
     FrameInput m_frame;
+    int m_animationCycleTicks = 1;
+    // QTCRAFT_ANIMATION_TICK: the animation time of every frame (screenshots of chosen frames).
+    std::optional<double> m_fixedAnimationTicks;
     // Handed over, not copied: the renderer takes the updates and keeps the list's capacity.
     QList<MeshUpdate> m_pendingMeshUpdates;
     bool m_clearAllMeshes = false;

@@ -14,6 +14,7 @@
 #include <cmath>
 #include <atomic>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 using namespace Qt::StringLiterals;
@@ -68,6 +69,9 @@ std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const
                 continue;
             }
             QcAlphaCoverage::fillTransparentColour(resolved->image);
+            for (QImage &frame : resolved->laterFrames) {
+                QcAlphaCoverage::fillTransparentColour(frame);
+            }
             tile.resolved = std::move(*resolved);
         }
         done[static_cast<std::size_t>(first)].store(true, std::memory_order_release);
@@ -91,6 +95,17 @@ std::vector<Tile> drawTiles(const QList<QcTextureDefinition> &definitions, const
         Q_ASSERT(finished.load(std::memory_order_acquire));
     }
     return tiles;
+}
+
+// The animation of every definition as the atlas shows it (decision E-878).
+QList<QcTextureAnimation> animationsOf(const QList<QcTextureDefinition> &definitions, const QcTexturePackStack &packs)
+{
+    QList<QcTextureAnimation> animations;
+    animations.reserve(definitions.size());
+    for (const QcTextureDefinition &definition : definitions) {
+        animations.append(QcTextureSources::animationOf(definition, packs));
+    }
+    return animations;
 }
 
 } // namespace
@@ -124,7 +139,13 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
     // font (decision E-766).
     const bool signs = std::ranges::any_of(content.blocks(), [](const QcBlockDefinition &block) { return block.sign.isSign(); });
     const int glyphPages = signs ? QcPixelFont::pageCount() : 0;
-    const QcAtlasLayout layout(definitions.size() + 1 + glyphPages);
+    // Every frame of an animated texture is a tile of its own; the frames after the first follow
+    // all other tiles (decision E-878).
+    const QList<QcTextureAnimation> animations = animationsOf(definitions, packs);
+    const qsizetype laterFrames = std::accumulate(animations.begin(), animations.end(), qsizetype{0},
+                                                  [](qsizetype sum, QcTextureAnimation animation) { return sum + animation.frames - 1; });
+    const QcAtlasLayout layout(definitions.size() + 1 + glyphPages + laterFrames);
+    atlas.m_layout = layout;
     atlas.m_requestedTileSize = QcTextureSources::resolutionOf(packs, QcTexturePackManifest::maxResolution);
     atlas.m_tileSize = atlas.tileSizeFor(layout, options);
 
@@ -136,6 +157,7 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
 
     const std::vector<Tile> tiles = drawTiles(definitions, packs, atlas.m_tileSize, options.threads);
 
+    QList<PendingFrames> pending;
     qsizetype index = 1;
     for (qsizetype i = 0; i < definitions.size(); ++i) {
         const QcTextureDefinition &definition = definitions[i];
@@ -146,6 +168,9 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         }
         layout.place(level, index, resolved->image);
         atlas.m_uvs.insert(definition.name, layout.uv(index));
+        if (animations[i].animated()) {
+            pending.append({definition.name, index, animations[i], QList<QImage>{resolved->image} + resolved->laterFrames});
+        }
         ++atlas.m_sources[resolved->pack];
         ++index;
     }
@@ -156,6 +181,7 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         atlas.m_uvs.insert(QcPixelFont::pageName(page), layout.uv(index));
         ++index;
     }
+    index = atlas.placeLaterFrames(level, pending, index);
 
     const QList<double> coverage = QcAlphaCoverage::measure(level, layout, index, atlas.m_tileSize);
     atlas.m_levels = {level};
@@ -175,6 +201,57 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
     atlas.m_problems.append(atlas.transparentTexelsOfOpaqueBlocks(content));
     atlas.m_problems.removeDuplicates();
     return atlas;
+}
+
+qsizetype QcTextureAtlas::placeLaterFrames(QImage &level, const QList<PendingFrames> &pending, qsizetype next)
+{
+    m_animationMap = QImage(m_layout.columns(), m_layout.rows(), QImage::Format_RGBA8888);
+    m_animationMap.fill(QColor(0, 0, 0, 0));
+    for (const PendingFrames &texture : pending) {
+        const qsizetype later = next;
+        for (int frame = 1; frame < texture.animation.frames; ++frame) {
+            m_layout.place(level, next, texture.frames[std::min<qsizetype>(frame, texture.frames.size() - 1)]);
+            ++next;
+        }
+        // The shader reads the tile index in two bytes (block.vert): further on, the texture stays
+        // still (its frames are placed all the same, the layout counted them).
+        if (later > 0xFFFF) {
+            m_problems.append(u"Texture %1 is shown still: its frames lie beyond tile 65535 of the atlas"_s.arg(texture.name));
+            continue;
+        }
+        m_animated.insert(texture.name, {texture.animation, texture.first, later});
+        const int interpolate = texture.animation.interpolate ? 128 : 0;
+        const QColor entry(texture.animation.frames + interpolate, texture.animation.frameTicks, static_cast<int>(later & 0xFF),
+                           static_cast<int>((later >> 8) & 0xFF));
+        m_animationMap.setPixelColor(static_cast<int>(texture.first % m_layout.columns()), static_cast<int>(texture.first / m_layout.columns()), entry);
+    }
+    return next;
+}
+
+QcTextureAnimation QcTextureAtlas::animation(const QString &textureName) const
+{
+    return m_animated.value(textureName).animation;
+}
+
+QRectF QcTextureAtlas::frameUv(const QString &textureName, int frame) const
+{
+    const auto it = m_animated.constFind(textureName);
+    if (it == m_animated.constEnd() || frame % it->animation.frames == 0) {
+        return uv(textureName);
+    }
+    return m_layout.uv(it->later + frame % it->animation.frames - 1);
+}
+
+int QcTextureAtlas::animationCycleTicks() const
+{
+    qint64 cycle = 1;
+    for (const Animated &animated : m_animated) {
+        cycle = std::lcm(cycle, qint64{animated.animation.cycleTicks()});
+        if (cycle > maxCycleTicks) {
+            return maxCycleTicks;
+        }
+    }
+    return static_cast<int>(cycle);
 }
 
 QStringList QcTextureAtlas::transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const

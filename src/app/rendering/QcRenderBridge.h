@@ -3,6 +3,7 @@
 #include "app/rendering/QcEntityFrameBuilder.h"
 #include "clientcore/camera/QcFovEffect.h"
 #include "clientcore/camera/QcViewCamera.h"
+#include "clientcore/textures/QcAnimationClock.h"
 #include "clientcore/weather/QcDropPool.h"
 #include "clientcore/weather/QcPrecipitationField.h"
 
@@ -41,6 +42,10 @@ public:
     // After placeCamera: the sky of the time of day under the weather, a lightning flash and the
     // flash of explosions nearby; below the world it darkens with the camera height.
     void updateSky(double alpha);
+    // The time of the animated textures (decision E-878): advanced by `frameSeconds` at the
+    // server's speed, so animations follow the server's ticks and stand while the game is paused
+    // or /tick freeze holds the world (QcAnimationClock).
+    void updateAnimations(double frameSeconds);
     // Rain and snow around the eye, advanced by `frameSeconds` (decision E-395).
     void updateWeather(const QcVec3 &eye, double frameSeconds);
     void updateSelection();
@@ -60,6 +65,7 @@ private:
     QcFovEffect m_fov;
     QcPrecipitationField m_precipitation{QcPrecipitationField::selectedBudget()};
     QcDropPool m_drops;
+    QcAnimationClock m_animationClock;
     bool m_outlineHidden = false;
     bool m_handHidden = false;
 };

@@ -3,6 +3,7 @@
 #include "clientcore/texturepacks/QcTexturePack.h"
 #include "clientcore/texturepacks/QcTexturePackProblem.h"
 #include "clientcore/textures/QcAtlasLayout.h"
+#include "common/content/definitions/QcTextureAnimation.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QHash>
@@ -57,6 +58,26 @@ public:
     // The level whose tiles are at most `maxSide` pixels (at least the last level).
     const QImage &levelForTile(int maxSide) const;
 
+    // The animated textures for the block shader (decision E-878): one RGBA8 texel per cell of the
+    // atlas grid (columns x rows), set at the cell of an animated texture's first frame: red the
+    // frame count plus 128 with interpolation, green the frame time in ticks, blue and alpha the
+    // low and high byte of the tile index of its second frame (the later frames follow it, row by
+    // row); 0 at every other cell. Each frame is a tile of its own with its gutter, so filtering and
+    // mip levels never mix frames.
+    const QImage &animationMap() const { return m_animationMap; }
+    // For tests and tools (the renderer reads animationMap()): the animation of a texture (a still
+    // one for unknown names) and the UV rectangle of its frame `frame` (frame 0 and still
+    // textures: uv()).
+    QcTextureAnimation animation(const QString &textureName) const;
+    QRectF frameUv(const QString &textureName, int frame) const;
+    // Ticks after which every animation of the atlas starts over (the least common multiple of
+    // their loops): the time handed to the shader wraps there, so the float it gets keeps 1/8 tick
+    // at most. Capped at maxCycleTicks (2^20 ticks, about 14.5 h): a larger multiple (loops of
+    // many different prime lengths) wraps there anyway, and the animations whose loop does not
+    // divide it jump once at that wrap.
+    int animationCycleTicks() const;
+    static constexpr int maxCycleTicks = 1 << 20;
+
     // Content problems (English, for the log).
     QStringList problems() const { return m_problems; }
     // For the player: the atlas uses a lower resolution than the packs asked for.
@@ -65,12 +86,36 @@ public:
     const QHash<QString, int> &sources() const { return m_sources; }
 
 private:
+    // An animated texture: its animation, and the tile indices of its first and second frame.
+    struct Animated
+    {
+        QcTextureAnimation animation;
+        qsizetype first = 0;
+        qsizetype later = 0;
+    };
+    // A texture whose frames after the first are still to be placed.
+    struct PendingFrames
+    {
+        QString name;
+        qsizetype first = 0;
+        QcTextureAnimation animation;
+        // All frames the source gave, the first included.
+        QList<QImage> frames;
+    };
+
     int tileSizeFor(QcAtlasLayout layout, const Options &options);
+    // Places the later frames of `pending` from tile `next` on and fills the animation map; a
+    // texture whose source gave fewer frames than reserved repeats its last one. Returns the index
+    // after the last frame placed.
+    qsizetype placeLaterFrames(QImage &level, const QList<PendingFrames> &pending, qsizetype next);
 
     QList<QImage> m_levels = {QImage()};
     int m_tileSize = 16;
     int m_requestedTileSize = 16;
     QHash<QString, QRectF> m_uvs;
+    QcAtlasLayout m_layout;
+    QHash<QString, Animated> m_animated;
+    QImage m_animationMap;
     // One problem per texture with a transparent texel that a block of the opaque layer uses: it
     // is drawn without alpha test (decision E-756).
     QStringList transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const;

@@ -568,7 +568,6 @@
     "Not a valid JSON object": "Kein gültiges JSON-Objekt",
     "Invalid procedural texture: %1": "Ungültige prozedurale Textur: %1",
     "Skipped: the pack's images exceed the memory budget of %1 MiB": "Übersprungen: Die Bilder des Pakets überschreiten das Speicherbudget von %1 MiB",
-    "Has %1 animation frames; textures are not animated yet, the first frame is used": "Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet",
     "The preview image is missing": "Das Vorschaubild fehlt",
     "The preview must be a PNG of at most 512 x 512 pixels": "Die Vorschau muss ein PNG mit höchstens 512 × 512 Pixeln sein",
     "The pack has no manifest": "Das Paket hat kein Manifest",

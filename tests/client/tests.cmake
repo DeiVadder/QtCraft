@@ -16,6 +16,10 @@ qc_add_test(test_map_hud SOURCES client/test_map_hud.cpp LIBRARIES qc_app_core)
 qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_app_core)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
+# Animated textures (decision E-878): frames by time, definitions, pack strips, frames in the atlas.
+qc_add_test(test_texture_animation SOURCES client/test_texture_animation.cpp LIBRARIES qc_base_content qc_clientcore)
+# block.vert's frame choice in float32 with reciprocal division, and the animation clock (E-878).
+qc_add_test(test_texture_animation_shader SOURCES client/test_texture_animation_shader.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_atlas_fill SOURCES client/test_atlas_fill.cpp LIBRARIES qc_base_content qc_clientcore)
 # The settings' texture pack controller at model level (decision E-301), from the app's library.
 qc_add_test(test_texture_pack_controller SOURCES client/test_texture_pack_controller.cpp LIBRARIES qc_app_core)

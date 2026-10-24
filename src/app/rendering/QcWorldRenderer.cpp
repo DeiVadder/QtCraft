@@ -117,11 +117,11 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     // The pipelines with the atlas bindings go before the bindings and the texture they refer to.
     if (m_device.atlasOutdated(m_frame.atlasVersion)) {
         m_pass.releaseAtlasPipelines();
-        m_device.replaceAtlas(m_frame.atlas, m_frame.atlasVersion, updates);
+        m_device.replaceAtlas(m_frame.atlas, m_frame.animationMap, m_frame.atlasVersion, updates);
     }
     // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn; a
     // refused pipeline is tried again only with a new atlas or pass group.
-    if (m_device.atlasTexture && !m_pass.atlasPipelinesTried) {
+    if (m_device.hasAtlas() && !m_pass.atlasPipelinesTried) {
         m_pass.createAtlasPipelines(m_device.rhi, renderTarget(), m_device.atlasBindings());
     }
     if (!m_pass.outlinePipelineTried) {
@@ -168,6 +168,7 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.atlas[1] = static_cast<float>(m_device.atlasGrid.height());
     uniforms.atlas[2] = m_device.atlasCellPixels;
     uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? static_cast<float>(m_frame.anisotropicSamples) : 1.0f;
+    uniforms.animation[0] = m_frame.animationTicks;
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }

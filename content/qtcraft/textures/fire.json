@@ -4,5 +4,7 @@
     "primary": "#e8641a",
     "secondary": "#ffd84a",
     "variation": 0.12,
-    "seed": 811
+    "seed": 811,
+    "frames": 16,
+    "frameTime": 1
 }

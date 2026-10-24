@@ -209,19 +209,17 @@ void PackLoader::addTexture(const TextureFile &file)
         return;
     }
 
-    const qint64 bytesNeeded = static_cast<qint64>(image->image.sizeInBytes());
+    const qint64 bytesNeeded = static_cast<qint64>(image->image.sizeInBytes()) * image->frames;
     if (m_pack.decodedBytes + bytesNeeded > m_limits.memoryBudget) {
         m_pack.problems.append({file.relative, QT_TRANSLATE_NOOP("QcTexturePack", "Skipped: the pack's images exceed the memory budget of %1 MiB"),
                               {QString::number(m_limits.memoryBudget / (qint64{1024} * 1024))}});
         return;
     }
-    if (image->frames > 1) {
-        m_pack.problems.append({file.relative,
-                              QT_TRANSLATE_NOOP("QcTexturePack", "Has %1 animation frames; textures are not animated yet, the first frame is used"),
-                              {QString::number(image->frames)}});
-    }
     m_pack.decodedBytes += bytesNeeded;
     m_pack.images.insert(file.key, image->image);
+    if (!image->laterFrames.isEmpty()) {
+        m_pack.laterFrames.insert(file.key, image->laterFrames);
+    }
 }
 
 void PackLoader::capProblems()
@@ -349,12 +347,19 @@ std::expected<Image, QcTexturePackProblem> readImage(const QByteArray &bytes, in
         return std::unexpected(Problem{{}, QT_TRANSLATE_NOOP("QcTexturePack", "The image is damaged and cannot be decoded")});
     }
 
-    image = image.copy(0, 0, resolution, resolution).convertToFormat(QImage::Format_RGBA8888);
-    if (resolution > limits.maxStoredResolution) {
-        image = image.scaled(limits.maxStoredResolution, limits.maxStoredResolution, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)
-                    .convertToFormat(QImage::Format_RGBA8888);
+    const auto frame = [&image, &limits, resolution](int index) {
+        QImage square = image.copy(0, index * resolution, resolution, resolution).convertToFormat(QImage::Format_RGBA8888);
+        if (resolution > limits.maxStoredResolution) {
+            square = square.scaled(limits.maxStoredResolution, limits.maxStoredResolution, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)
+                         .convertToFormat(QImage::Format_RGBA8888);
+        }
+        return square;
+    };
+    QList<QImage> laterFrames;
+    for (int index = 1; index < frames; ++index) {
+        laterFrames.append(frame(index));
     }
-    return Image{image, frames};
+    return Image{frame(0), frames, laterFrames};
 }
 
 } // namespace QcTexturePackLoader

@@ -40,12 +40,16 @@ struct QcWorldDeviceResources
     // Whether the atlas of `version` (QcWorldView::FrameInput::atlasVersion) still has to be tried.
     // Tried once per version: a texture the GPU refused is not asked for again every frame.
     [[nodiscard]] bool atlasOutdated(quint64 version) const { return !atlasTried || uploadedAtlasVersion != version; }
-    // Uploads `levels` as a new texture, or a magenta placeholder without levels. Drops the bindings
-    // that refer to the old texture before the texture; the pipelines that use them are the pass
-    // group's and go first (QcWorldPassResources::releaseAtlasPipelines).
-    void replaceAtlas(const QList<QImage> &levels, quint64 version, QRhiResourceUpdateBatch *updates);
-    // The bindings of the frame uniforms (0) and the atlas (1), created on first use after a new
-    // atlas texture; the block, entity and hand pipelines are built with them.
+    // Uploads `levels` as a new texture, or a magenta placeholder without levels, and its
+    // `animationMap` (QcTextureAtlas::animationMap, decision E-878). Drops the bindings that refer
+    // to the old ones before the textures; the pipelines that use them are the pass group's and go
+    // first (QcWorldPassResources::releaseAtlasPipelines).
+    void replaceAtlas(const QList<QImage> &levels, const QImage &animationMap, quint64 version, QRhiResourceUpdateBatch *updates);
+    // Whether the atlas and its animation map are on the GPU; without them the world is not drawn.
+    [[nodiscard]] bool hasAtlas() const { return atlasTexture && animationTexture; }
+    // The bindings of the frame uniforms (0), the atlas (1) and its animation map (2), created on
+    // first use after a new atlas texture (hasAtlas()); the block, entity and hand pipelines are
+    // built with them.
     QRhiShaderResourceBindings *atlasBindings();
     // The line vertices of the first maxOutlineBoxes boxes of `selection`, when it is not empty and
     // differs from the uploaded one.
@@ -54,7 +58,10 @@ struct QcWorldDeviceResources
     QRhi *rhi = nullptr;
     std::unique_ptr<QRhiBuffer> frameUniforms;
     std::unique_ptr<QRhiTexture> atlasTexture;
+    // The atlas's animations (decision E-878), read by the block vertex shader with animationSampler.
+    std::unique_ptr<QRhiTexture> animationTexture;
     std::unique_ptr<QRhiSampler> atlasSampler;
+    std::unique_ptr<QRhiSampler> animationSampler;
     std::unique_ptr<QRhiBuffer> outlineVertices;
     // Per-frame entity meshes (dynamic buffers that grow on demand, QcGpuBuffers::uploadDynamic).
     QcGpuBuffers entityBuffers;

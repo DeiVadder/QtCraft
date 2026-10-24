@@ -4,5 +4,8 @@
     "primary": "#c8400c",
     "secondary": "#ffb22a",
     "variation": 0.12,
-    "seed": 301
+    "seed": 301,
+    "frames": 16,
+    "frameTime": 4,
+    "interpolate": true
 }

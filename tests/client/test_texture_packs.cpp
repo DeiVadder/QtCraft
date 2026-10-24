@@ -318,7 +318,8 @@ private slots:
         QVERIFY(hasProblem(tooLarge, u"textures/qtcraft/a.png"_s, u"larger than 0 KiB"_s));
     }
 
-    void animationStripsUseTheirFirstFrame()
+    // A vertical strip keeps every frame (decision E-878).
+    void animationStripsKeepEveryFrame()
     {
         QImage strip(32, 96, QImage::Format_RGBA8888);
         strip.fill(Qt::blue);
@@ -332,6 +333,9 @@ private slots:
         QCOMPARE(image->frames, 3);
         QCOMPARE(image->image.size(), QSize(32, 32));
         QCOMPARE(image->image.pixelColor(31, 31), QColor(Qt::yellow));
+        QCOMPARE(image->laterFrames.size(), 2);
+        QCOMPARE(image->laterFrames.front().size(), QSize(32, 32));
+        QCOMPARE(image->laterFrames.back().pixelColor(0, 0), QColor(Qt::blue));
 
         QcTexturePackLoader::Limits limits;
         limits.maxFrames = 2;

@@ -72,13 +72,15 @@ namespace QcProceduralTexture {
     return spec;
 }
 
-[[nodiscard]] QcResult<QImage> render(const QJsonObject &definition, int resolution)
+[[nodiscard]] QcResult<QImage> render(const QJsonObject &definition, int resolution, int frame)
 {
-    const QcResult<QcTextureSpec> parsed = spec(definition);
+    QcResult<QcTextureSpec> parsed = spec(definition);
     if (!parsed) {
         return qcError(parsed.error());
     }
 
+    const QcTextureAnimation animation = animationOf(definition);
+    parsed->phase = static_cast<double>(std::clamp(frame, 0, animation.frames - 1)) / animation.frames;
     QImage base = QcTextureSynthesizer::synthesize(*parsed);
     if (resolution <= QcTextureSynthesizer::tileSize) {
         return base;
@@ -87,6 +89,26 @@ namespace QcProceduralTexture {
     const QcTextureDetail::Params params =
         QcTextureDetail::withOverrides(QcTextureDetail::forPattern(parsed->pattern), definition.value(u"detail"_s).toObject());
     return QcTextureDetail::enlarge(base, resolution, params, parsed->seed);
+}
+
+[[nodiscard]] QcResult<QList<QImage>> renderFrames(const QJsonObject &definition, int resolution)
+{
+    QList<QImage> frames;
+    const int count = animationOf(definition).frames;
+    for (int frame = 0; frame < count; ++frame) {
+        QcResult<QImage> image = render(definition, resolution, frame);
+        if (!image) {
+            return qcError(image.error());
+        }
+        frames.append(std::move(*image));
+    }
+    return frames;
+}
+
+[[nodiscard]] QcTextureAnimation animationOf(const QJsonObject &definition)
+{
+    const QcResult<QcTextureAnimation> animation = QcTextureAnimation::read(definition);
+    return animation ? *animation : QcTextureAnimation{};
 }
 
 } // namespace QcProceduralTexture

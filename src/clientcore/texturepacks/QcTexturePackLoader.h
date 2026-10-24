@@ -1,9 +1,11 @@
 #pragma once
 
 #include "clientcore/texturepacks/QcTexturePack.h"
+#include "common/content/definitions/QcTextureAnimation.h"
 
 #include <QByteArray>
 #include <QImage>
+#include <QList>
 
 #include <expected>
 
@@ -28,15 +30,17 @@ struct Limits
     qint64 memoryBudget = qint64{192} * 1024 * 1024;
     // Images above this edge length are stored scaled down (the atlas never uses more, E-300).
     int maxStoredResolution = 256;
-    // Vertical strips of animation frames: at most this many frames; the first is used.
-    int maxFrames = 32;
+    // Vertical strips of animation frames (decision E-878): at most this many frames.
+    int maxFrames = QcTextureAnimation::maxFrames;
 };
 
-// A checked PNG texture: the first frame at the pack's resolution and how many frames the file had.
+// A checked PNG texture: the first frame at the pack's resolution and how many frames the file had,
+// the frames after the first at the same size (a vertical strip animates, decision E-878).
 struct Image
 {
     QImage image;
     int frames = 1;
+    QList<QImage> laterFrames;
 };
 
 // The manifest of the folder alone (for listing packs without loading their images).

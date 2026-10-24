@@ -57,6 +57,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcSoundKeys.h content/definitions/QcSoundKeys.cpp
     content/definitions/QcSpawnerDefinition.h
     content/definitions/QcStructureDefinition.h
+    content/definitions/QcTextureAnimation.h content/definitions/QcTextureAnimation.cpp
     content/definitions/QcTextureDefinition.h
     content/definitions/QcTradeDefinitions.h
     content/definitions/QcVegetationDefinition.h

@@ -75,7 +75,7 @@ An invalid or missing manifest makes the pack unusable; the settings show why.
 
 One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully transparent pixels are holes on cut-out blocks (`"render": "cutout"`: leaves, plants, torches), on items and on figures; partial transparency is kept where the game draws a block as translucent (glass, water, ice). Blocks of the opaque layer (the default: stone, logs, planks and the like) are drawn without alpha test (decision E-756), so a transparent pixel in their textures shows in its colour, not as a hole; a texture pack must keep those textures fully opaque. Faces of blocks, item icons and the body parts of figures use the same squares as the 16×16 originals, so the easiest start is an export at the resolution you want.
 
-**Animation:** the game has no animated textures yet. A vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames) is accepted and its first frame is used; the settings note it.
+**Animation** (decision E-878): a vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames, the first at the top) animates. The frames are shown at the frame time of the game's own texture when that one is animated (fire, lava, water: `frameTime` and `interpolate` of its definition), otherwise for 2 ticks (100 ms) each without blending; a strip of one frame keeps an animated texture still. `--export-textures` writes animated textures as such strips, a good start for your own frames. A procedural spec animates with the same fields as the content (`frames`, `frameTime`, `interpolate`, see below).
 
 ## Procedural textures
 
@@ -92,6 +92,16 @@ A `.json` file uses the same format as `content/*/textures/*.json` (`pattern`, `
 | `smooth` | Round diagonal and curved outlines while enlarging; `false` keeps straight boards and bricks crisp |
 
 `detail` also works in a mod's own texture definitions; at 16× it has no effect.
+
+Animated textures (decision E-878) add three fields:
+
+| Field | Effect |
+|-------|--------|
+| `frames` (1–32) | Pictures in the loop; 1 (or leaving it out) is a still texture |
+| `frameTime` (1–255) | Ticks (50 ms) each frame is shown; default 2 |
+| `interpolate` | `true` blends each frame smoothly into the next (slow lava, water); default `false` (flickering fire) |
+
+The pattern is painted once per frame with the same seed and a phase from 0 to just below 1 (frame / frames); the patterns `fire`, `lava` and `water` move with it so the last frame leads into the first without a jump, other patterns look the same in every frame. Each frame takes a tile of the atlas. A texture over several blocks (`tiles`) cannot animate.
 
 ## Fallback order
 

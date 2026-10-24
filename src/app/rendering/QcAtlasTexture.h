@@ -28,7 +28,14 @@ QImage placeholder();
 // next smaller one is tried, then the placeholder (logged); null only when that fails too.
 std::unique_ptr<QRhiTexture> create(QRhi *rhi, const QList<QImage> &levels, QRhiResourceUpdateBatch *updates);
 
+// The atlas's animation map (QcTextureAtlas::animationMap, decision E-878) as an RGBA8 texture
+// without mip levels, which the block shader reads texel by texel; for a null image a 1 x 1 map
+// without animations. Null when the GPU refuses it.
+std::unique_ptr<QRhiTexture> createAnimationMap(QRhi *rhi, const QImage &map, QRhiResourceUpdateBatch *updates);
+
 // Pixel art up close, mip levels blended with distance; clamped at the atlas border.
 std::unique_ptr<QRhiSampler> createSampler(QRhi *rhi);
+// The animation map texel by texel: nearest, without mip levels, clamped.
+std::unique_ptr<QRhiSampler> createAnimationMapSampler(QRhi *rhi);
 
 } // namespace QcAtlasTexture

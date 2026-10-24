@@ -1,6 +1,7 @@
 #include "common/content/parser/QcContentParser.h"
 
 #include "common/content/definitions/QcHangingDefinition.h"
+#include "common/content/definitions/QcTextureAnimation.h"
 #include "common/content/parser/QcContentFields.h"
 #include "common/content/parser/QcJsonFieldReader.h"
 #include "common/content/registry/QcContentNames.h"
@@ -52,6 +53,35 @@ bool isDetail(const QJsonValue &value)
                const QJsonValue field = detail.value(key);
                return ((key == u"grain"_s || key == u"bevel"_s) && isShare(field)) || (key == u"smooth"_s && field.isBool());
            });
+}
+
+// `base` with the fields of `extra` added (replacing those of the same name).
+[[nodiscard]] QJsonObject merged(QJsonObject base, const QJsonObject &extra)
+{
+    for (auto field = extra.constBegin(); field != extra.constEnd(); ++field) {
+        base.insert(field.key(), field.value());
+    }
+    return base;
+}
+
+// The animation fields of a texture definition (decision E-878), checked; a texture over several
+// blocks cannot animate.
+[[nodiscard]] QcResult<QJsonObject> animationFields(const QJsonObject &json)
+{
+    const QcResult<QcTextureAnimation> animation = QcTextureAnimation::read(json);
+    if (!animation) {
+        return qcError(animation.error());
+    }
+    if (animation->animated() && json.contains(u"tiles"_s)) {
+        return qcError(u"a texture over several blocks ('tiles') cannot have 'frames'"_s);
+    }
+    QJsonObject fields;
+    for (const QString &key : {u"frames"_s, u"frameTime"_s, u"interpolate"_s}) {
+        if (json.contains(key)) {
+            fields.insert(key, json.value(key));
+        }
+    }
+    return fields;
 }
 
 } // namespace
@@ -109,6 +139,11 @@ namespace QcContentParser {
         }
     }
 
+    const QcResult<QJsonObject> animation = animationFields(json);
+    if (!animation) {
+        return qcError(u"texture '%1': %2"_s.arg(texture.name, animation.error()));
+    }
+    texture.procedural = merged(texture.procedural, *animation);
     return texture;
 }
 

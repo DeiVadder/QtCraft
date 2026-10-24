@@ -6,6 +6,9 @@ layout(location = 2) in float vDistance;
 layout(location = 3) in float vCutout;
 // World position, for the footprint where atlas coordinates jump between faces.
 layout(location = 4) in vec3 vPosition;
+// Animated textures (decision E-878): the next frame and the share of it, the same over a face.
+layout(location = 5) in vec2 vNextTexCoord;
+layout(location = 6) in float vBlend;
 
 layout(location = 0) out vec4 fragColor;
 
@@ -18,6 +21,7 @@ layout(std140, binding = 0) uniform Frame {
     // x, y: the atlas's grid of cells, z: pixels per cell at its largest level, w: most samples
     // along a slanted footprint
     vec4 atlas;
+    vec4 animation;
 } frame;
 
 layout(binding = 1) uniform sampler2D atlas;
@@ -51,18 +55,17 @@ vec4 calmCutout(vec4 texel, vec2 uv, float lod, float alphaBias, float lastLevel
 // last one whose tiles do not mix, so far away grass does not pick up the colours of other tiles.
 // A face shows one tile, so atlas coordinates that change by more than a tile between neighbouring
 // pixels come from two faces (a cube edge, distant faces side by side): there the level follows the
-// distance in the world between the pixels, with one sample.
-vec4 sampleAtlas(vec2 uv, vec3 position, float alphaBias)
+// distance in the world between the pixels (`worldStep`), with one sample.
+// Every lookup takes its level or its derivatives (`dx`, `dy`: of the atlas coordinates along the
+// screen axes) from the caller, which computes them in uniform control flow: the second lookup of
+// a blended face runs only on some pixels of a 2 x 2 quad (decision E-878).
+vec4 sampleAtlas(vec2 uv, vec2 dx, vec2 dy, float worldStep, float alphaBias)
 {
     if (frame.atlas.w < 1.5)
-        return texture(atlas, uv);
+        return textureGrad(atlas, uv, dx, dy);
 
     vec2 grid = frame.atlas.xy;
     vec2 pixels = grid * frame.atlas.z;
-    vec2 dx = dFdx(uv);
-    vec2 dy = dFdy(uv);
-    vec3 stepX = dFdx(position);
-    vec3 stepY = dFdy(position);
     vec2 texelsX = dx * pixels;
     vec2 texelsY = dy * pixels;
     float squareX = dot(texelsX, texelsX);
@@ -74,7 +77,6 @@ vec4 sampleAtlas(vec2 uv, vec3 position, float alphaBias)
     float lastLevel = log2(max(frame.atlas.z / lastCellPixels, 1.0));
     float majorSquare = max(squareX, squareY);
     if (majorSquare > tilePixels * tilePixels) {
-        float worldStep = sqrt(max(dot(stepX, stepX), dot(stepY, stepY)));
         float edgeLod = clamp(log2(max(worldStep * tilePixels, 1.0)), 0.0, lastLevel);
         return calmCutout(textureLod(atlas, uv, edgeLod), uv, edgeLod, alphaBias, lastLevel);
     }
@@ -106,7 +108,16 @@ vec4 sampleAtlas(vec2 uv, vec3 position, float alphaBias)
 
 void main()
 {
-    vec4 texel = sampleAtlas(vTexCoord, vPosition, vCutout);
+    // Derivatives before any branch that depends on the pixel. The next frame of a blended face is
+    // the same picture moved by whole cells, so it has the derivatives of vTexCoord.
+    vec2 dx = dFdx(vTexCoord);
+    vec2 dy = dFdy(vTexCoord);
+    vec3 stepX = dFdx(vPosition);
+    vec3 stepY = dFdy(vPosition);
+    float worldStep = sqrt(max(dot(stepX, stepX), dot(stepY, stepY)));
+    vec4 texel = sampleAtlas(vTexCoord, dx, dy, worldStep, vCutout);
+    if (vBlend > 0.0)
+        texel = mix(texel, sampleAtlas(vNextTexCoord, dx, dy, worldStep, vCutout), vBlend);
 #ifndef QC_SOLID
     if (texel.a < 0.1)
         discard;

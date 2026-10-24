@@ -9,6 +9,7 @@
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcSnapshotClock.h"
+#include "clientcore/textures/QcAnimationClock.h"
 #include "QcServerTestFixture.h"
 #include "worlds/QcLocalServerHost.h"
 
@@ -159,12 +160,27 @@ private slots:
         m_parts.session->start();
         QTRY_VERIFY_WITH_TIMEOUT(m_parts.session->state() == QcClientSession::State::Playing, timeoutMs);
 
+        // The animated textures run with the server's speed (decision E-878).
+        QcAnimationClock animations;
+        QTRY_COMPARE_WITH_TIMEOUT(m_parts.session->serverSpeed(), 1.0, timeoutMs);
+        animations.advance(0.5, m_parts.session->serverSpeed());
+        QCOMPARE(animations.ticks(), 10.0);
+
         m_screens->setOverlay(Overlay::Pause);
         QTRY_VERIFY_WITH_TIMEOUT(m_pause->paused(), timeoutMs);
         QVERIFY(m_settings->audio()->worldPaused());
         QCOMPARE(m_pause->hint(), QcWorldPause::Hint::None);
+        // Paused they stand where they were ...
+        QTRY_VERIFY_WITH_TIMEOUT(m_parts.session->serverPaused(), timeoutMs);
+        QCOMPARE(m_parts.session->serverSpeed(), 0.0);
+        animations.advance(2.0, m_parts.session->serverSpeed());
+        QCOMPARE(animations.ticks(), 10.0);
         m_screens->setOverlay(Overlay::None);
         QTRY_VERIFY_WITH_TIMEOUT(!m_pause->paused(), timeoutMs);
+        // ... and go on from there.
+        QTRY_COMPARE_WITH_TIMEOUT(m_parts.session->serverSpeed(), 1.0, timeoutMs);
+        animations.advance(0.05, m_parts.session->serverSpeed());
+        QCOMPARE(animations.ticks(), 11.0);
         QVERIFY(!m_settings->audio()->worldPaused());
 
         // Focus loss with the setting opens the pause menu while the host is alone.

@@ -104,7 +104,8 @@ int exportPack(const QcContentRegistry &content, const ExportRequest &request)
 
         const QcResult<QcTextureSources::Resolved> resolved = QcTextureSources::resolve(definition, *loaded, request.resolution);
         const QString path = directory.filePath(u"textures/%1/%2.png"_s.arg(space, name));
-        if (!resolved || !QDir().mkpath(QFileInfo(path).path()) || !resolved->image.save(path, "PNG")) {
+        // An animated texture as a vertical strip of its frames (decision E-878), as packs hold it.
+        if (!resolved || !QDir().mkpath(QFileInfo(path).path()) || !resolved->strip().save(path, "PNG")) {
             QcHeadlessOptions::printError(u"Cannot export %1 %2"_s.arg(definition.name, resolved ? QString() : resolved.error()));
             return 1;
         }

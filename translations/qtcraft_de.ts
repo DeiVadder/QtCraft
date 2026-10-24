@@ -7773,7 +7773,7 @@ Jetzt: %2</translation>
         <translation>Erwartet wird ein Namensraum-Ordner wie textures/qtcraft</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="236"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="234"/>
         <source>… and %1 more problems</source>
         <translation>… und %1 weitere Probleme</translation>
     </message>
@@ -7793,44 +7793,43 @@ Jetzt: %2</translation>
         <translation>Übersprungen: Die Bilder des Pakets überschreiten das Speicherbudget von %1 MiB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="220"/>
         <source>Has %1 animation frames; textures are not animated yet, the first frame is used</source>
-        <translation>Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet</translation>
+        <translation type="vanished">Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="283"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="281"/>
         <source>The preview image is missing</source>
         <translation>Das Vorschaubild fehlt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="288"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="298"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="286"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="296"/>
         <source>The preview must be a PNG of at most 512 x 512 pixels</source>
         <translation>Die Vorschau muss ein PNG mit höchstens 512 × 512 Pixeln sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="309"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="307"/>
         <source>The pack has no manifest</source>
         <translation>Das Paket hat kein Manifest</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="254"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="252"/>
         <source>More than %1 texture files; the rest was skipped</source>
         <translation>Mehr als %1 Texturdateien; der Rest wurde übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="328"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="326"/>
         <source>Not a PNG image</source>
         <translation>Kein PNG-Bild</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="336"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="349"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="334"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="347"/>
         <source>The image is damaged and cannot be decoded</source>
         <translation>Das Bild ist beschädigt und kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="342"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="340"/>
         <source>The image is %1 x %2 pixels; this pack needs %3 x %3 (or a vertical strip of such frames)</source>
         <translation>Das Bild hat %1 × %2 Pixel; dieses Paket braucht %3 × %3 (oder einen senkrechten Streifen solcher Bilder)</translation>
     </message>
@@ -7880,7 +7879,7 @@ Jetzt: %2</translation>
         <translation>Das Manifest braucht einen „name“</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="111"/>
+        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="126"/>
         <source>Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit the GPU texture size and the memory budget</source>
         <translation>Texturen werden mit %1x statt %2x gezeigt: Das Spiel nutzt höchstens 256x, und der Atlas muss in die Texturgrenze der GPU und das Speicherbudget passen</translation>
     </message>

@@ -3,9 +3,18 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcWorldRenderer.h"
 
+#include <algorithm>
+#include <cmath>
+
 QcWorldView::QcWorldView(QQuickItem *parent)
     : QQuickRhiItem(parent)
 {
+    bool fixed = false;
+    const double ticks = qEnvironmentVariable("QTCRAFT_ANIMATION_TICK").toDouble(&fixed);
+    if (fixed && ticks >= 0.0) {
+        m_fixedAnimationTicks = ticks;
+        qCInfo(lcRenderer) << "World view: animated textures held at tick" << ticks;
+    }
 }
 
 QQuickRhiItemRenderer *QcWorldView::createRenderer()
@@ -34,11 +43,20 @@ void QcWorldView::setCamera(const QcCamera &camera)
     update();
 }
 
-void QcWorldView::setAtlas(const QList<QImage> &levels)
+void QcWorldView::setAtlas(const QList<QImage> &levels, const QImage &animationMap, int animationCycleTicks)
 {
     m_frame.atlas = levels;
+    m_frame.animationMap = animationMap;
+    m_animationCycleTicks = std::max(1, animationCycleTicks);
     ++m_frame.atlasVersion;
     update();
+}
+
+void QcWorldView::setAnimationTime(double ticks)
+{
+    // Wrapped in double, so the float the shader gets stays exact however long the game runs.
+    const double time = std::fmod(std::max(0.0, m_fixedAnimationTicks.value_or(ticks)), static_cast<double>(m_animationCycleTicks));
+    m_frame.animationTicks = static_cast<float>(time);
 }
 
 void QcWorldView::submitMesh(quint64 key, std::shared_ptr<const QcChunkMesh> mesh)

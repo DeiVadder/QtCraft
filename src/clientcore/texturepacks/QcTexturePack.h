@@ -6,6 +6,7 @@
 #include <QHash>
 #include <QImage>
 #include <QJsonObject>
+#include <QList>
 #include <QString>
 
 #include <memory>
@@ -29,6 +30,9 @@ struct QcTexturePack
     QcTexturePackManifest manifest;
     // PNG textures at the pack's resolution (larger ones stored at maxStoredResolution).
     QHash<QString, QImage> images;
+    // The frames after the first of the images that are vertical strips of animation frames
+    // (decision E-878), at the size of their first frame.
+    QHash<QString, QList<QImage>> laterFrames;
     // Procedural definitions (the fields of content/*/textures/*.json).
     QHash<QString, QJsonObject> specs;
     // Optional preview from the manifest's "preview".
