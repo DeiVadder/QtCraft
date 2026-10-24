@@ -5,6 +5,7 @@
 #include "app/models/QcEnchantmentTexts.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
+#include "clientcore/session/QcRuneScript.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcEnchantingTable.h"
 
@@ -18,6 +19,21 @@ QcEnchantingController::QcEnchantingController(const QcSessionParts &parts, cons
     , m_settings(settings)
 {
 }
+
+namespace {
+
+// The signs of a clue for QML: one map per character with its rune (-1: readable) and text.
+QVariantList signsOf(const std::vector<QcRuneScript::Sign> &signs)
+{
+    QVariantList list;
+    list.reserve(static_cast<qsizetype>(signs.size()));
+    for (const QcRuneScript::Sign &sign : signs) {
+        list.append(QVariantMap{{u"rune"_s, sign.rune}, {u"text"_s, sign.character}});
+    }
+    return list;
+}
+
+} // namespace
 
 bool QcEnchantingController::isOpen() const
 {
@@ -50,9 +66,22 @@ void QcEnchantingController::update()
             const QString clue = offer.levelCost > 0
                                      ? QcEnchantmentTexts::nameOf(*content, {offer.clue, offer.clueLevel}, m_settings.contentLanguage())
                                      : QString();
-            const bool affordable = offer.levelCost > 0 && (free || (level >= offer.levelCost && lapis >= price));
-            m_offers.append(QVariantMap{
-                {u"levelCost"_s, offer.levelCost}, {u"price"_s, price}, {u"clue"_s, clue}, {u"affordable"_s, affordable}});
+            // Why an offer cannot be taken, for screen readers.
+            const bool levelsLacking = !free && level < offer.levelCost;
+            const bool lapisLacking = !free && lapis < price;
+            const bool affordable = offer.levelCost > 0 && !levelsLacking && !lapisLacking;
+            const std::vector<QcRuneScript::Sign> signs = QcRuneScript::write(clue, state.runeSeed, slot, state.shelves);
+            const QcRuneScript::Legibility legible = QcRuneScript::legibility(signs);
+            m_offers.append(QVariantMap{{u"levelCost"_s, offer.levelCost},
+                                        {u"price"_s, price},
+                                        {u"signs"_s, signsOf(signs)},
+                                        {u"letters"_s, legible.letters},
+                                        {u"readableLetters"_s, legible.readable},
+                                        // The clue in plain text only once every letter is readable.
+                                        {u"clue"_s, legible.readable == legible.letters ? clue : QString()},
+                                        {u"levelsLacking"_s, levelsLacking},
+                                        {u"lapisLacking"_s, lapisLacking},
+                                        {u"affordable"_s, affordable}});
         }
     }
     emit changed();

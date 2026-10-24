@@ -134,6 +134,10 @@ endif()
 qc_add_test(test_sprint_feel SOURCES client/test_sprint_feel.cpp LIBRARIES qc_clientcore)
 # The control palette of the windows (decision E-279).
 qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARIES qc_app_core)
+# The enchanting table's runes, the screens' pixel art and the book and runes in the world (E-884).
+qc_add_test(test_rune_script SOURCES client/test_rune_script.cpp LIBRARIES qc_app_core)
+# The enchanting screen's offers in QML: click, Enter, focus, screen reader, level tones (E-884).
+qc_add_test(test_enchanting_offer SOURCES client/test_enchanting_offer.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 # The screens that exist only while shown and a while after (LazyScreen.qml, decision E-691),
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).

@@ -1,3 +1,5 @@
+#include "clientcore/session/QcClientWorld.h"
+#include "clientcore/session/QcEnchantingAura.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcEnchanting.h"
@@ -5,6 +7,7 @@
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcMining.h"
 #include "common/protocol/QcProtocol.h"
+#include "common/world/QcChunk.h"
 #include "gameplay/QcEnchantingFixture.h"
 #include "QcTestUtil.h"
 #include "server/storage/QcLoadWarnings.h"
@@ -13,7 +16,35 @@
 
 #include <QJsonObject>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// Empty chunks around the origin (x and z from -32 to 31).
+QList<std::shared_ptr<const QcChunk>> emptyChunks()
+{
+    QList<std::shared_ptr<const QcChunk>> chunks;
+    for (int cx = -2; cx <= 1; ++cx) {
+        for (int cz = -2; cz <= 1; ++cz) {
+            chunks.append(std::make_shared<const QcChunk>(QcChunkPos{cx, cz}));
+        }
+    }
+    return chunks;
+}
+
+// The positions of the tables an aura shows, in its order.
+QList<QcBlockPos> tablesOf(const QcEnchantingAura &aura)
+{
+    QList<QcBlockPos> positions;
+    for (const QcEnchantingAura::Table &table : aura.tables()) {
+        positions.append(table.pos);
+    }
+    return positions;
+}
+
+} // namespace
 
 // The enchanting table (decision E-864): enchantments come from data and reach the client, the
 // offers follow the bookshelves around the table and the player's seed as in the reference, the
@@ -72,6 +103,89 @@ private slots:
         QCOMPARE(QcEnchantingTable::shelvesAround(table, tooHigh, everywhere), 0);
     }
 
+    void clientCountsTheShelvesAsTheServer()
+    {
+        join();
+        const QcBlockPos table = openTable(15);
+        // Stone between the table and three shelves of the east side hides them; tall grass between
+        // the table and three shelves of the south side does not (decision E-884: one rule, in
+        // QcEnchantingTable::shelvesIn, for the server's offers and the client's runes).
+        putAt(table.offset(1, 0, 0), id("qtcraft:stone"));
+        putAt(table.offset(0, 0, 1), id("qtcraft:tall_grass"));
+        ticks(1);
+        QCOMPARE(m_client->workstations.enchantingState.shelves, 12);
+
+        QcClientWorld world(m_content);
+        for (int cx = -1; cx <= 1; ++cx) {
+            for (int cz = -1; cz <= 1; ++cz) {
+                const QcChunkPos pos{table.chunk().x + cx, table.chunk().z + cz};
+                if (const std::shared_ptr<const QcChunk> chunk = m_server->world().chunk(pos)) {
+                    world.setChunk(chunk);
+                }
+            }
+        }
+        QcEnchantingAura aura;
+        aura.refresh(world, {m_feet.x + 0.5, m_feet.y + 1.6, m_feet.z + 0.5}, 0);
+        const auto found = std::ranges::find(aura.tables(), table, &QcEnchantingAura::Table::pos);
+        QVERIFY(found != aura.tables().end());
+        QCOMPARE(static_cast<int>(found->shelves.size()), m_client->workstations.enchantingState.shelves);
+    }
+
+    void runeSeedIsNotTheEnchantingSeed()
+    {
+        // The screen gets the player's own rune seed, whatever the enchanting seed (decision E-884).
+        join();
+        player().enchantSeed = 1234;
+        player().runeSeed = 99;
+        openTable(15);
+        QCOMPARE(m_client->workstations.enchantingState.runeSeed, 99u);
+        send(QcMsg::CloseEnchanting{});
+
+        // A player of an older file has none: one is drawn, and the offers stay.
+        player().runeSeed = 0;
+        openTable(15);
+        QVERIFY(player().runeSeed != 0);
+        QCOMPARE(m_client->workstations.enchantingState.runeSeed, player().runeSeed);
+        QCOMPARE(player().enchantSeed, 1234u);
+    }
+
+    void auraShowsTheNearestTables()
+    {
+        // Ten tables in a row east of the viewer, two blocks apart; the nearest eight are shown.
+        QcClientWorld world(m_content);
+        const QList<std::shared_ptr<const QcChunk>> chunks = emptyChunks();
+        for (const std::shared_ptr<const QcChunk> &chunk : chunks) {
+            world.setChunk(chunk);
+        }
+        QList<QcBlockPos> tables;
+        for (int index = 0; index < 10; ++index) {
+            tables.append({2 + 2 * index, 64, 0});
+            QVERIFY(world.setBlock(tables.constLast(), id("qtcraft:enchanting_table")));
+        }
+        const QcVec3 eye{0.5, 65.6, 0.5};
+        QcEnchantingAura aura;
+        aura.refresh(world, eye, 100);
+        QCOMPARE(tablesOf(aura), tables.first(QcEnchantingAura::maxTables));
+        QVERIFY(aura.tables().constFirst().shelves.isEmpty());
+
+        // A table taken away stays shown until rescanTicks have passed.
+        QVERIFY(world.setBlock(tables[0], qcAirBlockId));
+        aura.refresh(world, eye, 100 + QcEnchantingAura::rescanTicks - 1);
+        QCOMPARE(tablesOf(aura).constFirst(), tables[0]);
+        aura.refresh(world, eye, 100 + QcEnchantingAura::rescanTicks);
+        QCOMPARE(tablesOf(aura), tables.mid(1, QcEnchantingAura::maxTables));
+
+        // Other content (a world joined anew) looks again at once.
+        QVERIFY(world.setBlock(tables[1], qcAirBlockId));
+        QcClientWorld rejoined(QcTestUtil::loadContent());
+        const QList<QcChunkPos> positions = world.chunkPositions();
+        for (const QcChunkPos pos : positions) {
+            rejoined.setChunk(world.chunk(pos));
+        }
+        aura.refresh(rejoined, eye, 100 + QcEnchantingAura::rescanTicks + 1);
+        QCOMPARE(tablesOf(aura), tables.mid(2, QcEnchantingAura::maxTables));
+    }
+
     void offersFollowShelvesAndSeed()
     {
         const QcItemStack pickaxe = stackOf("qtcraft:iron_pickaxe");
@@ -119,10 +233,12 @@ private slots:
         state.item = sword;
         state.shelves = 12;
         state.offers[1] = {9, u"qtcraft:sharpness"_s, 2};
+        state.runeSeed = 0xdeadbeef;
         const QcResult<QcMessage> back = QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server);
         QVERIFY(back.has_value());
         QCOMPARE(std::get<QcMsg::EnchantingState>(*back).item, sword);
         QCOMPARE(std::get<QcMsg::EnchantingState>(*back).offers, state.offers);
+        QCOMPARE(std::get<QcMsg::EnchantingState>(*back).runeSeed, 0xdeadbeefu);
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ChooseEnchantment{1}), QcProtocol::Peer::Server).has_value());
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::ChooseEnchantment{3}), QcProtocol::Peer::Client).has_value());
 
@@ -172,12 +288,19 @@ private slots:
         QCOMPARE(m_client->workstations.enchantingState.offers[2].levelCost, 30);
         const quint32 seed = player().enchantSeed;
         QVERIFY(seed != 0);
+        // The rune seed is drawn on its own, not derived from the enchanting seed (decision E-884):
+        // the client gets it, and it changes when the enchanting seed is drawn again.
+        const quint32 runeSeed = m_client->workstations.enchantingState.runeSeed;
+        QVERIFY(runeSeed != 0);
+        QCOMPARE(runeSeed, player().runeSeed);
 
         send(QcMsg::ChooseEnchantment{2});
         QCOMPARE(player().experience.level(), 37);
         QCOMPARE(m_client->workstations.enchantingState.lapis.count, 2);
         QVERIFY(!m_client->workstations.enchantingState.item.enchantments().isEmpty());
         QVERIFY(player().enchantSeed != seed);
+        QVERIFY(m_client->workstations.enchantingState.runeSeed != runeSeed);
+        QCOMPARE(m_client->workstations.enchantingState.runeSeed, player().runeSeed);
         // An enchanted item gets no more offers; a second try changes nothing.
         QCOMPARE(m_client->workstations.enchantingState.offers[0].levelCost, 0);
         send(QcMsg::ChooseEnchantment{0});

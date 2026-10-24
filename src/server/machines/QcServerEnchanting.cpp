@@ -87,14 +87,8 @@ void QcServerEnchanting::update()
 
 int QcServerEnchanting::shelvesAt(const QcServerState &state, QcBlockPos pos)
 {
-    const QcContentRegistry &content = state.content();
-    const std::optional<QcBlockId> shelf = content.blockId(u"qtcraft:bookshelf"_s);
-    const auto isShelf = [&state, shelf](QcBlockPos at) { return shelf && state.world().blockAt(at) == shelf; };
-    const auto isFree = [&state, &content](QcBlockPos at) {
-        const std::optional<QcBlockId> block = state.world().blockAt(at);
-        return block && (*block == qcAirBlockId || (content.isValidBlock(*block) && content.block(*block).replaceable));
-    };
-    return QcEnchantingTable::shelvesAround(pos, isShelf, isFree);
+    const auto blockAt = [&state](QcBlockPos at) { return state.world().blockAt(at); };
+    return static_cast<int>(QcEnchantingTable::shelvesIn(state.content(), pos, blockAt).size());
 }
 
 QcEnchantingTable::Offers QcServerEnchanting::offersFor(QcServerState &state, QcServerClient &client)
@@ -104,6 +98,11 @@ QcEnchantingTable::Offers QcServerEnchanting::offersFor(QcServerState &state, Qc
     }
     while (client.enchantSeed == 0) {
         client.enchantSeed = state.random().generate();
+    }
+    // Drawn on its own, never derived from enchantSeed (decision E-884); 0 after enchanting and in
+    // player files of version 7.
+    while (client.runeSeed == 0) {
+        client.runeSeed = state.random().generate();
     }
     const QcServerClient::Enchanting &table = *client.screen.enchanting;
     return QcEnchantingTable::offers(state.content(), table.item, shelvesAt(state, table.pos), client.enchantSeed);
@@ -121,6 +120,9 @@ QcMsg::EnchantingState QcServerEnchanting::stateOf(QcServerState &state, QcServe
     const QcEnchantingTable::Offers offers = offersFor(state, client);
     client.screen.enchanting->shown = offers;
     client.screen.enchanting->shownShelves = message.shelves;
+    // A seed of its own, not the enchanting seed: the screen orders its runes by it (decision E-884)
+    // and learns nothing about the offers of other items from it.
+    message.runeSeed = client.runeSeed;
     for (std::size_t slot = 0; slot < offers.size(); ++slot) {
         const QcEnchantingTable::Offer &offer = offers[slot];
         if (offer.levelCost > 0) {
@@ -169,6 +171,7 @@ void QcServerEnchanting::choose(QcServerClient &client, QcMsg::ChooseEnchantment
     table.item = *enchanted;
     table.item.item = QcEnchantingTable::enchantedItem(m_state.content(), enchanted->item);
     client.enchantSeed = 0;
+    client.runeSeed = 0;
     m_sounds.play(QString::fromLatin1(QcSoundKeys::levelUp), QcVec3{table.pos.x + 0.5, table.pos.y + 0.5, table.pos.z + 0.5});
     m_inventory.send(client);
 }

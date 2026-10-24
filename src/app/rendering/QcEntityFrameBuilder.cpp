@@ -4,6 +4,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/maps/QcMapColors.h"
+#include "clientcore/meshing/QcEnchantingMesher.h"
 #include "clientcore/meshing/QcEntityCulling.h"
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/meshing/QcHangingMesher.h"
@@ -362,6 +363,29 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
     }
 }
 
+void QcEntityFrameBuilder::appendEnchantingTables(QcEntityMesh &mesh, const EntityFrame &frame, const std::optional<QcEntityCulling::ViewPlanes> &planes)
+{
+    // Book and runes stay within this distance of the table's middle (the shelves are two blocks away).
+    constexpr double reach = 2.5;
+
+    const QcClientSession &session = *m_parts.session;
+    const QcVec3 eye = session.playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    // The book and the runes face the camera, which in third person is not at the player's eye.
+    const QcVec3 viewer = m_parts.view ? m_parts.view->camera().position : eye;
+    m_aura.refresh(frame.world, eye, session.tickCount());
+    for (const QcEnchantingAura::Table &table : m_aura.tables()) {
+        const QcVec3 middle{table.pos.x + 0.5, table.pos.y + 1.0, table.pos.z + 0.5};
+        if (!QcEntityCulling::mayBeSeen(planes, {middle - QcVec3{reach, reach, reach}, middle + QcVec3{reach, reach, reach}})) {
+            continue;
+        }
+        const QcEnchantingAura::Book pose = QcEnchantingAura::bookOf(table.pos, viewer, frame.seconds);
+        QcEnchantingMesher::appendBook(mesh, pose, entityLight(frame.world, pose.spine), frame.uv);
+        for (const QcEnchantingAura::Rune &rune : m_aura.runesOf(table, frame.seconds)) {
+            QcEnchantingMesher::appendRune(mesh, rune, viewer, frame.uv);
+        }
+    }
+}
+
 void QcEntityFrameBuilder::appendStand(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
                                  const EntityFrame &frame) const
 {
@@ -502,6 +526,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendSpawners(*mesh, frame);
     appendSigns(*mesh, frame);
     appendCampfires(*mesh, frame);
+    appendEnchantingTables(*mesh, frame, planes);
     appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).
     if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {

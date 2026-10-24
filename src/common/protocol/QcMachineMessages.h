@@ -100,7 +100,10 @@ struct EnchantingOffer
     bool operator==(const EnchantingOffer &) const = default;
 };
 
-// Server -> client: the open enchanting table's slots, the bookshelves that count and the offers.
+// Server -> client: the open enchanting table's slots, the bookshelves that count, the offers and the
+// rune seed the screen writes the clues with (decision E-884: a random value of the player's own,
+// drawn anew with the enchanting seed but not derived from it, so the order of the readable letters
+// stays until the player enchants and tells nothing about the offers).
 struct EnchantingState
 {
     // The longest enchantment name a clue may carry.
@@ -110,6 +113,7 @@ struct EnchantingState
     QcItemStack lapis;
     qint32 shelves = 0;
     std::array<EnchantingOffer, 3> offers;
+    quint32 runeSeed = 0;
 };
 
 // Client -> server: take offer `slot` (0–2) of the open enchanting table.

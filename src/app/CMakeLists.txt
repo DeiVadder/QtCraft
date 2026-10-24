@@ -81,6 +81,7 @@ target_sources(qc_app_core PRIVATE
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcItemIconUrls.h models/QcItemIconUrls.cpp
     models/QcMapImageProvider.h models/QcMapImageProvider.cpp
+    models/QcPixelArtProvider.h models/QcPixelArtProvider.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     models/QcUiScaling.h models/QcUiScaling.cpp
@@ -247,14 +248,20 @@ qt_add_qml_module(qc_app_core
         qml/inventory/AnvilScreen.qml
         qml/inventory/ChestScreen.qml
         qml/inventory/CreativeScreen.qml
+        qml/inventory/EnchantingOffer.qml
         qml/inventory/EnchantingScreen.qml
         qml/inventory/FurnaceScreen.qml
         qml/inventory/InventoryScreen.qml
         qml/inventory/InventorySlot.qml
+        qml/inventory/LevelBadge.qml
+        qml/inventory/MachineSlotRow.qml
+        qml/inventory/ParchmentField.qml
+        qml/inventory/PixelArt.qml
         qml/inventory/PlayerSlots.qml
         qml/inventory/SlotScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
+        qml/inventory/WorkbenchTitle.qml
         qml/menus/CharacterPage.qml
         qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml

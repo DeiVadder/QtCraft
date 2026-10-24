@@ -67,22 +67,43 @@ namespace QcEnchantingTable {
 
 int shelvesAround(QcBlockPos table, const std::function<bool(QcBlockPos)> &isShelf, const std::function<bool(QcBlockPos)> &isFree)
 {
+    return static_cast<int>(shelvesOf(table, isShelf, isFree).size());
+}
+
+QList<QcBlockPos> shelvesOf(QcBlockPos table, const std::function<bool(QcBlockPos)> &isShelf, const std::function<bool(QcBlockPos)> &isFree)
+{
     // The 16 columns of the ring two blocks around the table (x, z).
     static constexpr std::array<std::array<int, 2>, 16> ring{{
         {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2}, {-2, 2}, {-1, 2}, {0, 2},
         {1, 2},   {2, 2},   {-2, -1}, {-2, 0}, {-2, 1}, {2, -1}, {2, 0}, {2, 1},
     }};
-    int shelves = 0;
+    QList<QcBlockPos> shelves;
     for (int dy = 0; dy <= 1; ++dy) {
         for (const auto &[dx, dz] : ring) {
             const QcBlockPos shelf{table.x + dx, table.y + dy, table.z + dz};
             const QcBlockPos between{table.x + dx / 2, table.y + dy, table.z + dz / 2};
-            if (isShelf(shelf) && isFree(between)) {
-                ++shelves;
+            if (shelves.size() < maxShelves && isShelf(shelf) && isFree(between)) {
+                shelves.append(shelf);
             }
         }
     }
-    return std::min(shelves, maxShelves);
+    return shelves;
+}
+
+bool letsShelfThrough(const QcContentRegistry &content, std::optional<QcBlockId> block)
+{
+    return block && (*block == qcAirBlockId || (content.isValidBlock(*block) && content.block(*block).replaceable));
+}
+
+QList<QcBlockPos> shelvesIn(const QcContentRegistry &content, QcBlockPos table, const BlockAt &blockAt)
+{
+    const std::optional<QcBlockId> shelf = content.blockId(QStringLiteral("qtcraft:bookshelf"));
+    if (!shelf) {
+        return {};
+    }
+    const auto isShelf = [&blockAt, shelf](QcBlockPos at) { return blockAt(at) == shelf; };
+    const auto isFree = [&blockAt, &content](QcBlockPos at) { return letsShelfThrough(content, blockAt(at)); };
+    return shelvesOf(table, isShelf, isFree);
 }
 
 std::array<int, offerCount> levelCosts(quint32 seed, int shelves, int enchantability)

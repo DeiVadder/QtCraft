@@ -45,6 +45,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.keptEquipment = client.keptEquipment;
     player.experience = client.experience;
     player.enchantSeed = client.enchantSeed;
+    player.runeSeed = client.runeSeed;
     player.effects = client.effects.all();
     return record;
 }
@@ -64,6 +65,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.keptEquipment = player.keptEquipment;
     client.experience = player.experience;
     client.enchantSeed = player.enchantSeed;
+    client.runeSeed = player.runeSeed;
     client.effects.restore(player.effects);
     QcServerGameModes::applyRules(client);
 }

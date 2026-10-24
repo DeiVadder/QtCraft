@@ -879,12 +879,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>AnvilScreen</name>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="23"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="26"/>
         <source>Nothing to forge</source>
         <translation>Nichts zu schmieden</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="25"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="28"/>
         <source>Too expensive (%n level(s))</source>
         <translation>
             <numerusform>Zu teuer (%n Stufe)</numerusform>
@@ -892,7 +892,7 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="26"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="29"/>
         <source>Cost: %n level(s)</source>
         <translation>
             <numerusform>Kosten: %n Stufe</numerusform>
@@ -900,32 +900,32 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="35"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="38"/>
         <source>Anvil</source>
         <translation>Amboss</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="44"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="45"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="47"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="49"/>
         <source>Name (empty: no custom name)</source>
         <translation>Name (leer: kein eigener Name)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="118"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="151"/>
         <source>Forge</source>
         <translation>Schmieden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="130"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="163"/>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
         <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). %1: aufnehmen und ablegen. %2: einen ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="132"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="165"/>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
         <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). Linksklick: aufnehmen und ablegen. Rechtsklick: einen ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
     </message>
@@ -1763,43 +1763,88 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
-    <name>EnchantingScreen</name>
+    <name>EnchantingOffer</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="27"/>
+        <source>Level %1, %n lapis: %2</source>
+        <translation>
+            <numerusform>Stufe %1, %n Lapis: %2</numerusform>
+            <numerusform>Stufe %1, %n Lapis: %2</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="28"/>
+        <source>Level %1, %n lapis, %2 of %3 letters readable</source>
+        <translation>
+            <numerusform>Stufe %1, %n Lapis, %2 von %3 Buchstaben lesbar</numerusform>
+            <numerusform>Stufe %1, %n Lapis, %2 von %3 Buchstaben lesbar</numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="24"/>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="31"/>
+        <source>%1, not enough levels and lapis</source>
+        <translation>%1, zu wenige Stufen und zu wenig Lapis</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="34"/>
+        <source>%1, not enough levels</source>
+        <translation>%1, zu wenige Stufen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="36"/>
+        <source>%1, not enough lapis</source>
+        <translation>%1, zu wenig Lapis</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="24"/>
         <source>No offer</source>
         <translation>Kein Angebot</translation>
+    </message>
+</context>
+<context>
+    <name>EnchantingScreen</name>
+    <message>
+        <source>No offer</source>
+        <translation type="vanished">Kein Angebot</translation>
     </message>
     <message>
         <source>Level %1: %2 … (%3 levels, %3 lapis)</source>
         <translation type="vanished">Stufe %1: %2 … (%3 Stufen, %3 Lapis)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="25"/>
         <source>Level %1: %2 … (%n level(s), %n lapis)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Stufe %1: %2 … (%n Stufe, %n Lapis)</numerusform>
             <numerusform>Stufe %1: %2 … (%n Stufen, %n Lapis)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="34"/>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="28"/>
         <source>Enchanting Table</source>
         <translation>Zaubertisch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="68"/>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="59"/>
         <source>Bookshelves: %1 / 15</source>
         <translation>Bücherregale: %1 / 15</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="102"/>
-        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
-        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.</translation>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="107"/>
+        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers and make more of their runes readable. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote und machen mehr ihrer Runen lesbar. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="104"/>
+        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="109"/>
+        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers and make more of their runes readable. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
+        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote und machen mehr ihrer Runen lesbar. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+    </message>
+    <message>
+        <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
+        <translation type="vanished">Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.</translation>
+    </message>
+    <message>
         <source>Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
-        <translation>Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+        <translation type="vanished">Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>
@@ -1831,7 +1876,7 @@ Als Nächstes: %3</translation>
 <context>
     <name>GameLogo</name>
     <message>
-        <location filename="../src/app/qml/controls/GameLogo.qml" line="11"/>
+        <location filename="../src/app/qml/controls/GameLogo.qml" line="12"/>
         <source>QtCraft</source>
         <translation>QtCraft</translation>
     </message>
@@ -6889,17 +6934,17 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="216"/>
+        <location filename="../src/server/core/QcServer.cpp" line="227"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="464"/>
+        <location filename="../src/server/core/QcServer.cpp" line="475"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="494"/>
+        <location filename="../src/server/core/QcServer.cpp" line="505"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -6960,18 +7005,18 @@ Jetzt: %2</translation>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="276"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="277"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="185"/>
         <source>Too many chests in the world (at most %1)</source>
         <translation>Zu viele Truhen in der Welt (höchstens %1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="284"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="285"/>
         <source>You have placed as many chunk loaders as you may (%1)</source>
         <translation>Du hast schon so viele Chunk-Lader gesetzt, wie du darfst (%1)</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="290"/>
+        <location filename="../src/server/gameplay/QcServerInteraction.cpp" line="291"/>
         <location filename="../src/server/machines/QcBlockScreens.cpp" line="205"/>
         <source>Too many machines in the world (at most %1)</source>
         <translation>Zu viele Maschinen in der Welt (höchstens %1)</translation>
@@ -7414,7 +7459,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="257"/>
+        <location filename="../src/server/core/QcServer.cpp" line="268"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="96"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -7909,7 +7954,7 @@ Jetzt: %2</translation>
         <translation>Das Manifest braucht einen „name“</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="126"/>
+        <location filename="../src/clientcore/textures/QcTextureAtlas.cpp" line="127"/>
         <source>Textures are shown at %1x instead of %2x: the game uses at most 256x, and the atlas must fit the GPU texture size and the memory budget</source>
         <translation>Texturen werden mit %1x statt %2x gezeigt: Das Spiel nutzt höchstens 256x, und der Atlas muss in die Texturgrenze der GPU und das Speicherbudget passen</translation>
     </message>

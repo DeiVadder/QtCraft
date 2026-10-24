@@ -242,19 +242,26 @@ private slots:
         player.motion.position = {0.5, 70.0, 0.5};
         player.experience = QcExperience(7, 0);
         player.enchantSeed = 1234;
-        const QcResult<QcSaveFile::Payload> current = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 7);
+        player.runeSeed = 99;
+        const QcResult<QcSaveFile::Payload> current = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 8);
         QVERIFY(current.has_value());
-        QCOMPARE(current->version, 7);
+        QCOMPARE(current->version, 8);
+        const auto seedSize = static_cast<qsizetype>(sizeof(quint32));
 
-        // Version 6 is the same without the seed at the end.
-        const QByteArray old = QcSaveFile::bytes("QCPL", current->bytes.chopped(static_cast<int>(sizeof(quint32))), 6);
-        const QcPlayerStorage::Result read = storage.parse(u"Old"_s, old);
-        QVERIFY(read.has_value() && read->player.has_value());
-        QCOMPARE(read->player->enchantSeed, 0u);
-        QCOMPARE(read->player->experience.level(), 7);
+        // Version 7 is the same without the rune seed at the end (decision E-884), version 6 without
+        // both seeds.
+        const QcPlayerStorage::Result seven = storage.parse(u"Seven"_s, QcSaveFile::bytes("QCPL", current->bytes.chopped(seedSize), 7));
+        QVERIFY(seven.has_value() && seven->player.has_value());
+        QCOMPARE(seven->player->enchantSeed, 1234u);
+        QCOMPARE(seven->player->runeSeed, 0u);
+        const QcPlayerStorage::Result six = storage.parse(u"Six"_s, QcSaveFile::bytes("QCPL", current->bytes.chopped(2 * seedSize), 6));
+        QVERIFY(six.has_value() && six->player.has_value());
+        QCOMPARE(six->player->enchantSeed, 0u);
+        QCOMPARE(six->player->experience.level(), 7);
         const QcPlayerStorage::Result again = storage.parse(u"New"_s, storage.bytes(player));
         QVERIFY(again.has_value() && again->player.has_value());
         QCOMPARE(again->player->enchantSeed, 1234u);
+        QCOMPARE(again->player->runeSeed, 99u);
     }
 
     void efficiencyBreaksAsTheClientPredicts()

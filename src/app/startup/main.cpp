@@ -5,6 +5,7 @@
 #include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcItemIconProvider.h"
 #include "app/models/QcMapImageProvider.h"
+#include "app/models/QcPixelArtProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "app/startup/QcAppLanguage.h"
 #include "app/startup/QcAppOptions.h"
@@ -26,6 +27,30 @@
 #include <print>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The image providers the game hands its pictures to; the engine owns and deletes them.
+struct ImageProviders
+{
+    QcItemIconProvider *icons = nullptr;
+    QcTexturePackPreviewProvider *texturePackPreviews = nullptr;
+    QcMapImageProvider *maps = nullptr;
+};
+
+// Adds every image provider of the game to `engine`: item icons, texture pack previews, maps and
+// the pixel art of the workbench screens (decision E-884, which needs nothing afterwards).
+ImageProviders addImageProviders(QQmlApplicationEngine &engine)
+{
+    const ImageProviders providers{new QcItemIconProvider, new QcTexturePackPreviewProvider, new QcMapImageProvider};
+    engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), providers.icons);
+    engine.addImageProvider(QString::fromLatin1(QcTexturePackPreviewProvider::providerId), providers.texturePackPreviews);
+    engine.addImageProvider(QString::fromLatin1(QcMapImageProvider::providerId), providers.maps);
+    engine.addImageProvider(QString::fromLatin1(QcPixelArtProvider::providerId), new QcPixelArtProvider);
+    return providers;
+}
+
+} // namespace
 
 // The steps of the start in their order: command line, scripted-run setup, language, the QML
 // engine and its main window, then settings, language switching and the game (decision E-530).
@@ -60,13 +85,7 @@ int main(int argc, char *argv[])
     const QString contentLanguage = QcAppLanguage::install(translator, language);
 
     QQmlApplicationEngine engine;
-    // The engine owns and deletes the provider.
-    auto *icons = new QcItemIconProvider;
-    engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), icons);
-    auto *texturePackPreviews = new QcTexturePackPreviewProvider;
-    engine.addImageProvider(QString::fromLatin1(QcTexturePackPreviewProvider::providerId), texturePackPreviews);
-    auto *maps = new QcMapImageProvider;
-    engine.addImageProvider(QString::fromLatin1(QcMapImageProvider::providerId), maps);
+    const ImageProviders providers = addImageProviders(engine);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app, [] { QCoreApplication::exit(1); },
                      Qt::QueuedConnection);
     engine.loadFromModule("QtCraft", "Main");
@@ -89,9 +108,9 @@ int main(int argc, char *argv[])
     }
 
     game->settings()->diagnostics()->setSession(diagnostics);
-    game->setIconProvider(icons);
-    game->setMapProvider(maps);
-    game->settings()->texturePacks()->setPreviewProvider(texturePackPreviews);
+    game->setIconProvider(providers.icons);
+    game->setMapProvider(providers.maps);
+    game->settings()->texturePacks()->setPreviewProvider(providers.texturePackPreviews);
     QcAppStartup::loadSettings(*game);
     QcAppLanguage::followSettings(*game, engine, translator, contentLanguage);
     QcAppStartup::startGame(*game, options, *window, offscreenRender->get());

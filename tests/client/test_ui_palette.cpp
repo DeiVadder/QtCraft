@@ -173,6 +173,15 @@ QStringList ownSizes(const QString &path)
     return found;
 }
 
+// The shared parts of the workbench screens (decision E-884), the first inventory parts on the named
+// steps (the screens themselves name rows of the inventory model).
+bool isWorkbench(const QString &path)
+{
+    static const QStringList files = {u"/EnchantingOffer.qml"_s, u"/LevelBadge.qml"_s, u"/MachineSlotRow.qml"_s,
+                                      u"/ParchmentField.qml"_s,  u"/PixelArt.qml"_s,   u"/WorkbenchTitle.qml"_s};
+    return std::ranges::any_of(files, [&path](const QString &name) { return path.endsWith(name); });
+}
+
 } // namespace
 
 class TestUiPalette : public QObject
@@ -426,8 +435,8 @@ private slots:
         for (const QString &path : files) {
             const bool folder = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.contains(u"/menus/"_s)
                                 || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s)
-                                || path.contains(u"/admin/"_s);
-            const bool covered = folder && std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
+                                || path.contains(u"/admin/"_s) || isWorkbench(path);
+            const bool covered = folder &&std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
             // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
             // (ItemSlot.px), in the HUD and on the screens alike.
             if (!covered || path.endsWith(u"/Ui.qml"_s) || path.endsWith(u"/ItemSlot.qml"_s)) {

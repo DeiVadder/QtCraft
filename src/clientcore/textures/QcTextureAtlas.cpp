@@ -4,6 +4,7 @@
 #include "clientcore/texturepacks/QcTextureSources.h"
 #include "clientcore/textures/QcAlphaCoverage.h"
 #include "clientcore/textures/QcPixelFont.h"
+#include "clientcore/textures/QcRuneGlyphs.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 
 #include <QSet>
@@ -131,20 +132,43 @@ int QcTextureAtlas::tileSizeFor(QcAtlasLayout layout, const Options &options)
     return size;
 }
 
+namespace {
+
+// The tiles the game draws itself, at 16 x 16 pixels with their atlas names: for content with signs
+// the pages of the sign font (decision E-766), for content with an enchanting table the pages of its
+// runes and its floating book (decision E-884).
+QList<std::pair<QString, QImage>> gameTiles(const QcContentRegistry &content)
+{
+    constexpr int baseTile = 16;
+    QList<std::pair<QString, QImage>> tiles;
+    if (std::ranges::any_of(content.blocks(), [](const QcBlockDefinition &block) { return block.sign.isSign(); })) {
+        for (int page = 0; page < QcPixelFont::pageCount(); ++page) {
+            tiles.append({QcPixelFont::pageName(page), QcPixelFont::page(page, baseTile)});
+        }
+    }
+    if (std::ranges::any_of(content.blocks(), [](const QcBlockDefinition &block) { return block.opensEnchanting; })) {
+        for (int page = 0; page < QcRuneGlyphs::pageCount(); ++page) {
+            tiles.append({QcRuneGlyphs::pageName(page), QcRuneGlyphs::page(page, baseTile)});
+        }
+        tiles.append({QString::fromLatin1(QcRuneGlyphs::bookTileName), QcRuneGlyphs::bookTile(baseTile)});
+    }
+    return tiles;
+}
+
+} // namespace
+
 QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcTexturePackStack &packs, const Options &options)
 {
     QcTextureAtlas atlas;
     const QList<QcTextureDefinition> &definitions = content.assets().textures();
-    // The placeholder, the content's textures and, for content with signs, the pages of the sign
-    // font (decision E-766).
-    const bool signs = std::ranges::any_of(content.blocks(), [](const QcBlockDefinition &block) { return block.sign.isSign(); });
-    const int glyphPages = signs ? QcPixelFont::pageCount() : 0;
+    // The placeholder, the content's textures and the tiles the game draws itself.
+    const QList<std::pair<QString, QImage>> ownTiles = gameTiles(content);
     // Every frame of an animated texture is a tile of its own; the frames after the first follow
     // all other tiles (decision E-878).
     const QList<QcTextureAnimation> animations = animationsOf(definitions, packs);
     const qsizetype laterFrames = std::accumulate(animations.begin(), animations.end(), qsizetype{0},
                                                   [](qsizetype sum, QcTextureAnimation animation) { return sum + animation.frames - 1; });
-    const QcAtlasLayout layout(definitions.size() + 1 + glyphPages + laterFrames);
+    const QcAtlasLayout layout(definitions.size() + 1 + ownTiles.size() + laterFrames);
     atlas.m_layout = layout;
     atlas.m_requestedTileSize = QcTextureSources::resolutionOf(packs, QcTexturePackManifest::maxResolution);
     atlas.m_tileSize = atlas.tileSizeFor(layout, options);
@@ -174,11 +198,11 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         ++atlas.m_sources[resolved->pack];
         ++index;
     }
-    for (int page = 0; page < glyphPages; ++page) {
-        QImage glyphs = QcPixelFont::page(page, atlas.m_tileSize);
-        QcAlphaCoverage::fillTransparentColour(glyphs);
-        layout.place(level, index, glyphs);
-        atlas.m_uvs.insert(QcPixelFont::pageName(page), layout.uv(index));
+    for (const auto &[name, picture] : ownTiles) {
+        QImage tile = picture.scaled(atlas.m_tileSize, atlas.m_tileSize, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+        QcAlphaCoverage::fillTransparentColour(tile);
+        layout.place(level, index, tile);
+        atlas.m_uvs.insert(name, layout.uv(index));
         ++index;
     }
     index = atlas.placeLaterFrames(level, pending, index);

@@ -37,6 +37,8 @@ struct QcPlayerData
     QcExperience experience;
     // The enchantment seed (decision E-864); 0 in files of version 6.
     quint32 enchantSeed = 0;
+    // The rune seed of the enchanting screen (decision E-884); 0 in files of versions 6 and 7.
+    quint32 runeSeed = 0;
     // Status effects (decision E-450).
     QList<QcStatusEffect> effects;
 };

@@ -94,6 +94,14 @@ constexpr std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> palette =
     {R::KnobOutline, "knobOutline", 0xff1a1a1a},
     {R::BevelLight, "bevelLight", 0x30ffffff},
     {R::BevelDark, "bevelDark", 0x80000000},
+    {R::Parchment, "parchment", 0xffe3cf9c},
+    {R::ParchmentHover, "parchmentHover", 0xfff1e2b8},
+    {R::ParchmentDisabled, "parchmentDisabled", 0xff5e4e3a},
+    {R::Ink, "ink", 0xff3a2414},
+    {R::InkDisabled, "inkDisabled", 0xffbcaa8a},
+    {R::Level, "level", 0xff8cf04a},
+    {R::LevelOnParchment, "levelOnParchment", 0xff2a5e10},
+    {R::ErrorOnParchment, "errorOnParchment", 0xffffb4ac},
     {R::Clear, "clear", 0x00000000},
 }};
 
@@ -200,9 +208,30 @@ QString name(Role role)
     return QString::fromLatin1(activeEntries[static_cast<std::size_t>(role)].name);
 }
 
-QList<TextPair> textPairs()
+namespace {
+
+// The text pairs of the workbench screens (decision E-884): runes and letters on the parchment of an
+// offer or the name field, levels on the panel and on the parchment of usable and unusable offers.
+QList<TextPair> workbenchPairs()
 {
     return {
+        {"Enchanting offers and anvil name", R::Ink, {R::Scrim, R::Panel, R::Parchment}},
+        {"Hovered enchanting offer", R::Ink, {R::Scrim, R::Panel, R::ParchmentHover}},
+        {"Level costs", R::Level, {R::Scrim, R::Panel}},
+        {"Lacking level costs", R::Error, {R::Scrim, R::Panel}},
+        {"Level of an enchanting offer", R::LevelOnParchment, {R::Scrim, R::Panel, R::Parchment}},
+        {"Level of a hovered enchanting offer", R::LevelOnParchment, {R::Scrim, R::Panel, R::ParchmentHover}},
+        {"Lacking level of an unusable enchanting offer", R::ErrorOnParchment, {R::Scrim, R::Panel, R::ParchmentDisabled}},
+        // Unusable controls need no contrast (WCAG 1.4.3), but the runes should stay visible.
+        {"Runes of an unusable enchanting offer", R::InkDisabled, {R::Scrim, R::Panel, R::ParchmentDisabled}, true},
+    };
+}
+
+} // namespace
+
+QList<TextPair> textPairs()
+{
+    QList<TextPair> pairs{
         {"HUD texts (debug line, target, time, chat, hints)", R::Text, {R::HudBackdrop}},
         {"Screen titles over the dimmed world (pause, death)", R::Text, {R::Scrim}, true},
         {"Death screen", R::Text, {R::DeathScrim}, true},
@@ -266,6 +295,8 @@ QList<TextPair> textPairs()
         {"Knob outline on the slider track and a switch that is off", R::KnobOutline, {R::Track}, true},
         {"Check box outline on the panel", R::Track, {R::PanelSolid, R::PanelRaised}, true},
     };
+    pairs += workbenchPairs();
+    return pairs;
 }
 
 QList<QColor> worldBackgrounds()

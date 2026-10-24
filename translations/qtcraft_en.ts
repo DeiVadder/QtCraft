@@ -15,7 +15,7 @@
 <context>
     <name>AnvilScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="25"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="28"/>
         <source>Too expensive (%n level(s))</source>
         <translation>
             <numerusform>Too expensive (%n level)</numerusform>
@@ -23,7 +23,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="26"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="29"/>
         <source>Cost: %n level(s)</source>
         <translation>
             <numerusform>Cost: %n level</numerusform>
@@ -32,11 +32,29 @@
     </message>
 </context>
 <context>
+    <name>EnchantingOffer</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="27"/>
+        <source>Level %1, %n lapis: %2</source>
+        <translation>
+            <numerusform>Level %1, %n lapis: %2</numerusform>
+            <numerusform>Level %1, %n lapis: %2</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="28"/>
+        <source>Level %1, %n lapis, %2 of %3 letters readable</source>
+        <translation>
+            <numerusform>Level %1, %n lapis, %2 of %3 letters readable</numerusform>
+            <numerusform>Level %1, %n lapis, %2 of %3 letters readable</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>EnchantingScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingScreen.qml" line="25"/>
         <source>Level %1: %2 … (%n level(s), %n lapis)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>Level %1: %2 … (%n level, %n lapis)</numerusform>
             <numerusform>Level %1: %2 … (%n levels, %n lapis)</numerusform>
         </translation>

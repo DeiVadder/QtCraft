@@ -84,6 +84,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
+    meshing/QcEnchantingMesher.h meshing/QcEnchantingMesher.cpp
     meshing/QcEntityCulling.h meshing/QcEntityCulling.cpp
     meshing/QcEntityMesh.h
     meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
@@ -151,7 +152,9 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientStonecutter.h session/QcClientStonecutter.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
+    session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
@@ -199,6 +202,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcGpuLimits.h textures/QcGpuLimits.cpp
     textures/QcPixelFont.h textures/QcPixelFont.cpp
     textures/QcProceduralTexture.h textures/QcProceduralTexture.cpp
+    textures/QcRuneGlyphs.h textures/QcRuneGlyphs.cpp
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
     textures/QcTextureBuildingPatterns.h textures/QcTextureBuildingPatterns.cpp

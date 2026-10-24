@@ -23,9 +23,13 @@
         "%n value not saved; it stays changed here:",
         "%n values not saved; they stay changed here:"
     ],
-    "Level %1: %2 … (%n level(s), %n lapis)": [
-        "Level %1: %2 … (%n level, %n lapis)",
-        "Level %1: %2 … (%n levels, %n lapis)"
+    "Level %1, %n lapis: %2": [
+        "Level %1, %n lapis: %2",
+        "Level %1, %n lapis: %2"
+    ],
+    "Level %1, %n lapis, %2 of %3 letters readable": [
+        "Level %1, %n lapis, %2 of %3 letters readable",
+        "Level %1, %n lapis, %2 of %3 letters readable"
     ],
     "Too expensive (%n level(s))": [
         "Too expensive (%n level)",

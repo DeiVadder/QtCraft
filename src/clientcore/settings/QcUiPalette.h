@@ -129,6 +129,18 @@ enum class Role {
     KnobOutline,
     BevelLight,
     BevelDark,
+    // The workbench screens (enchanting table and anvil, decision E-884): the parchment of the
+    // offers and the name field with its hovered and unusable states, the ink written on it (runes
+    // and letters) and the green of experience levels and costs. On parchment the levels take a dark
+    // green (a usable offer's light parchment) and a light red (an unusable offer's dark parchment).
+    Parchment,
+    ParchmentHover,
+    ParchmentDisabled,
+    Ink,
+    InkDisabled,
+    Level,
+    LevelOnParchment,
+    ErrorOnParchment,
     // Fully transparent (no background, no border).
     Clear,
     RoleCount,

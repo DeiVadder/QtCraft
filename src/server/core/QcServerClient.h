@@ -279,6 +279,9 @@ struct QcServerClient : QcEntity
     // Fixes the enchanting table's offers until the player enchants (decision E-864); saved with the
     // player, 0 until the server draws one.
     quint32 enchantSeed = 0;
+    // Orders the runes of the enchanting screen (decision E-884): drawn on its own whenever
+    // enchantSeed is, so the client learns nothing about the offers from it; saved with the player.
+    quint32 runeSeed = 0;
     std::optional<QcExperience> sentExperience;
     // The creatures this player fought lately (decision E-480): the last that hurt them and the last
     // they struck (entity ids, 0: none) with the tick it happened; their pets defend them

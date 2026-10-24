@@ -18,8 +18,12 @@ class QcEnchantingController : public QObject
     Q_PROPERTY(bool open READ isOpen NOTIFY changed FINAL)
     // Bookshelves around the table that count (0–15).
     Q_PROPERTY(int shelves READ shelves NOTIFY changed FINAL)
-    // One map per offer: levelCost (0: none), price (levels and lapis it takes), clue (the first
-    // enchantment by name), affordable (the player can take it now).
+    // One map per offer: levelCost (0: none), price (levels and lapis it takes), signs (the first
+    // enchantment by name as runes and readable characters, QcRuneScript: a list of maps with rune,
+    // -1 for a readable character, and text), letters and readableLetters (how many letters, not
+    // counting spaces, and how many of them are readable), clue (the name in plain text once all
+    // letters are readable, else empty), levelsLacking and lapisLacking (why it cannot be taken),
+    // affordable (the player can take it now).
     Q_PROPERTY(QVariantList offers READ offers NOTIFY changed FINAL)
 
 public:

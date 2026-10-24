@@ -23,8 +23,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // ServerPause; decision E-877), 75 runs every network connection over TLS (decision E-872; the
 // messages are unchanged), 76 the band-pass, volume variation and drive of sounds in the content
 // (decision E-879), 77 map centres and debug goals over the whole technical bound of the world
-// (decision E-883).
-inline constexpr quint32 version = 77;
+// (decision E-883), 78 the rune seed of the enchanting screen (EnchantingState::runeSeed, decision
+// E-884).
+inline constexpr quint32 version = 78;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

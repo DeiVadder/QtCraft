@@ -98,6 +98,11 @@ QtObject {
         property real lines
         // The widest a tooltip's text runs before it wraps (ThemedToolTip).
         property real tooltip
+        // The workbench screens (decision E-884): screen pixels per pixel of their pixel art (runes,
+        // book, symbols; whole pixels keep it blocky) and an enchanting offer's field.
+        property real artPixel
+        property real offerWidth
+        property real offerHeight
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -179,6 +184,9 @@ QtObject {
         chart: ui.px(64)
         lines: ui.px(200)
         tooltip: ui.px(360)
+        artPixel: Math.max(1, ui.px(2))
+        offerWidth: ui.px(320)
+        offerHeight: ui.px(40)
         handbookEntries: ui.px(220)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)
@@ -195,6 +203,12 @@ QtObject {
         marginVertical: ui.px(16)
         column: ui.px(320)
         height: ui.px(560)
+    }
+
+    // The pixel font Pixelify Sans (SIL Open Font License 1.1, src/app/fonts) for the logo and the
+    // workbench screens' titles, runes and levels (decision E-884).
+    readonly property FontLoader pixelFont: FontLoader {
+        source: "qrc:/qt/qml/QtCraft/fonts/PixelifySans.ttf"
     }
 
     readonly property TypeScale type: TypeScale {

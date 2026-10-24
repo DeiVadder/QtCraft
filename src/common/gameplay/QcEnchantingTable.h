@@ -1,10 +1,12 @@
 #pragma once
 
+#include "common/content/definitions/QcBlockDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcItemStack.h"
 
 #include <array>
 #include <functional>
+#include <optional>
 
 class QcContentRegistry;
 
@@ -35,6 +37,19 @@ using Offers = std::array<Offer, offerCount>;
 // (at the table's height and one above) with a free block between them and the table, at most
 // maxShelves. `isShelf` and `isFree` tell what stands at a position.
 [[nodiscard]] int shelvesAround(QcBlockPos table, const std::function<bool(QcBlockPos)> &isShelf, const std::function<bool(QcBlockPos)> &isFree);
+// The positions of those bookshelves, at most maxShelves (the runes in the world fly from them,
+// decision E-884).
+[[nodiscard]] QList<QcBlockPos> shelvesOf(QcBlockPos table, const std::function<bool(QcBlockPos)> &isShelf,
+                                         const std::function<bool(QcBlockPos)> &isFree);
+// What stands at a position of a world (none: not loaded there).
+using BlockAt = std::function<std::optional<QcBlockId>(QcBlockPos)>;
+// Whether `block` lets a bookshelf's power through to the table: air or a replaceable block (tall
+// grass, fire); not a position that is not loaded.
+[[nodiscard]] bool letsShelfThrough(const QcContentRegistry &content, std::optional<QcBlockId> block);
+// The bookshelves (qtcraft:bookshelf) that count for the table at `table` in the world `blockAt`
+// tells (shelvesOf with letsShelfThrough): the one rule of the server's offers and the client's
+// runes in the world (decision E-884).
+[[nodiscard]] QList<QcBlockPos> shelvesIn(const QcContentRegistry &content, QcBlockPos table, const BlockAt &blockAt);
 // The levels of the three offers for an item with `enchantability` (0: none) and `shelves`.
 [[nodiscard]] std::array<int, offerCount> levelCosts(quint32 seed, int shelves, int enchantability);
 // The three offers for `stack` (nothing for an empty stack, more than one item, one already enchanted

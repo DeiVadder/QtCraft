@@ -95,6 +95,14 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor knobOutline MEMBER m_knobOutline CONSTANT FINAL)
     Q_PROPERTY(QColor bevelLight MEMBER m_bevelLight CONSTANT FINAL)
     Q_PROPERTY(QColor bevelDark MEMBER m_bevelDark CONSTANT FINAL)
+    Q_PROPERTY(QColor parchment MEMBER m_parchment CONSTANT FINAL)
+    Q_PROPERTY(QColor parchmentHover MEMBER m_parchmentHover CONSTANT FINAL)
+    Q_PROPERTY(QColor parchmentDisabled MEMBER m_parchmentDisabled CONSTANT FINAL)
+    Q_PROPERTY(QColor ink MEMBER m_ink CONSTANT FINAL)
+    Q_PROPERTY(QColor inkDisabled MEMBER m_inkDisabled CONSTANT FINAL)
+    Q_PROPERTY(QColor level MEMBER m_level CONSTANT FINAL)
+    Q_PROPERTY(QColor levelOnParchment MEMBER m_levelOnParchment CONSTANT FINAL)
+    Q_PROPERTY(QColor errorOnParchment MEMBER m_errorOnParchment CONSTANT FINAL)
     Q_PROPERTY(QColor clear MEMBER m_clear CONSTANT FINAL)
 
 public:
@@ -186,5 +194,13 @@ private:
     QColor m_knobOutline = QcUiPalette::color(QcUiPalette::Role::KnobOutline);
     QColor m_bevelLight = QcUiPalette::color(QcUiPalette::Role::BevelLight);
     QColor m_bevelDark = QcUiPalette::color(QcUiPalette::Role::BevelDark);
+    QColor m_parchment = QcUiPalette::color(QcUiPalette::Role::Parchment);
+    QColor m_parchmentHover = QcUiPalette::color(QcUiPalette::Role::ParchmentHover);
+    QColor m_parchmentDisabled = QcUiPalette::color(QcUiPalette::Role::ParchmentDisabled);
+    QColor m_ink = QcUiPalette::color(QcUiPalette::Role::Ink);
+    QColor m_inkDisabled = QcUiPalette::color(QcUiPalette::Role::InkDisabled);
+    QColor m_level = QcUiPalette::color(QcUiPalette::Role::Level);
+    QColor m_levelOnParchment = QcUiPalette::color(QcUiPalette::Role::LevelOnParchment);
+    QColor m_errorOnParchment = QcUiPalette::color(QcUiPalette::Role::ErrorOnParchment);
     QColor m_clear = QcUiPalette::color(QcUiPalette::Role::Clear);
 };

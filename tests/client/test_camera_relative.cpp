@@ -1,6 +1,7 @@
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/camera/QcFrustum.h"
 #include "clientcore/camera/QcRenderOrigin.h"
+#include "clientcore/meshing/QcEnchantingMesher.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 
 #include <QTest>
@@ -139,6 +140,35 @@ private slots:
         QCOMPARE(vertex.x, 1.125f);
         QCOMPARE(vertex.y, 1.5f);
         QCOMPARE(vertex.z, 0.25f);
+    }
+
+    // The enchanting table's book and runes (decision E-884) are written relative to the mesh origin
+    // too: far out they lie within a millimetre of where they belong, and stay small floats.
+    void enchantingBookAndRunesAreRelativeToTheMeshOrigin()
+    {
+        const QcVec3 table{1e8 + 0.5, 65.0, 1e8 + 0.5};
+        QcEntityMesh mesh;
+        mesh.origin = QcRenderOrigin::blockNear(table + QcVec3{0.0, 1.0, -3.0});
+        const QcEntityMesher::UvLookup uv = [](const QString &) { return QRectF(0.0, 0.0, 0.25, 0.25); };
+        const QcEnchantingAura::Book book{table + QcVec3{0.0, 0.8, 0.0}, 0.3, 0.7};
+        QcEnchantingMesher::appendBook(mesh, book, QcEntityLight(1.0f, 0.0f), uv);
+        const QcEnchantingAura::Rune rune{table + QcVec3{1.25, 0.5, -0.75}, 3, 0.2};
+        QcEnchantingMesher::appendRune(mesh, rune, table + QcVec3{0.0, 1.0, -3.0}, uv);
+        QCOMPARE(mesh.vertices.size(), 12);
+
+        for (const QcEntityVertex &vertex : std::as_const(mesh.vertices)) {
+            // Every corner lies within a metre of the book or the rune, relative to the origin.
+            const QcVec3 world = mesh.origin + QcVec3{vertex.x, vertex.y, vertex.z};
+            QVERIFY2(std::min((world - book.spine).length(), (world - rune.position).length()) < 1.0, qPrintable(QString::number(vertex.x)));
+            QVERIFY(std::abs(vertex.x) < 8.0f && std::abs(vertex.y) < 8.0f && std::abs(vertex.z) < 8.0f);
+        }
+        // The rune's middle comes out exactly: corners are symmetric about it.
+        QcVec3 middle;
+        for (qsizetype i = 8; i < 12; ++i) {
+            const QcEntityVertex &vertex = mesh.vertices.at(i);
+            middle = middle + (mesh.origin + QcVec3{vertex.x, vertex.y, vertex.z}) * 0.25;
+        }
+        QVERIFY((middle - rune.position).length() < 1e-3);
     }
 };
 

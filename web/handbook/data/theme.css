@@ -82,5 +82,13 @@
     --qc-knobOutline: rgba(26, 26, 26, 1.000);
     --qc-bevelLight: rgba(255, 255, 255, 0.188);
     --qc-bevelDark: rgba(0, 0, 0, 0.502);
+    --qc-parchment: rgba(227, 207, 156, 1.000);
+    --qc-parchmentHover: rgba(241, 226, 184, 1.000);
+    --qc-parchmentDisabled: rgba(94, 78, 58, 1.000);
+    --qc-ink: rgba(58, 36, 20, 1.000);
+    --qc-inkDisabled: rgba(188, 170, 138, 1.000);
+    --qc-level: rgba(140, 240, 74, 1.000);
+    --qc-levelOnParchment: rgba(42, 94, 16, 1.000);
+    --qc-errorOnParchment: rgba(255, 180, 172, 1.000);
     --qc-clear: rgba(0, 0, 0, 0.000);
 }

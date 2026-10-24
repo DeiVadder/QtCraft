@@ -142,6 +142,7 @@ void encode(QDataStream &stream, const QcMsg::EnchantingState &m)
     for (const QcMsg::EnchantingOffer &offer : m.offers) {
         stream << offer.levelCost << offer.clue << offer.clueLevel;
     }
+    stream << m.runeSeed;
 }
 
 void encode(QDataStream &stream, QcMsg::ChooseEnchantment m)
@@ -170,6 +171,7 @@ void encode(QDataStream &, QcMsg::CloseEnchanting) {}
             return qcError(u"Invalid enchanting offer"_s);
         }
     }
+    stream >> m.runeSeed;
     if (m.shelves < 0 || m.shelves > 15) {
         return qcError(u"Invalid bookshelf count"_s);
     }

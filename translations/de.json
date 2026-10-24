@@ -1288,12 +1288,19 @@
     "No offer": "Kein Angebot",
     "Enchanting Table": "Zaubertisch",
     "Bookshelves: %1 / 15": "Bücherregale: %1 / 15",
-    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.",
-    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.",
-    "Level %1: %2 … (%n level(s), %n lapis)": [
-        "Stufe %1: %2 … (%n Stufe, %n Lapis)",
-        "Stufe %1: %2 … (%n Stufen, %n Lapis)"
+    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers and make more of their runes readable. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote und machen mehr ihrer Runen lesbar. %1: aufnehmen und ablegen. %2: eins ablegen. %3: Stapel hinüberschieben. %4 schließt.",
+    "Put a tool, weapon or armour into the left slot and lapis lazuli beside it, then choose an offer. More bookshelves around the table give higher offers and make more of their runes readable. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.": "Lege ein Werkzeug, eine Waffe oder eine Rüstung in den linken Platz und Lapislazuli daneben, dann wähle ein Angebot. Mehr Bücherregale um den Tisch geben höhere Angebote und machen mehr ihrer Runen lesbar. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben. %1 oder Esc schließt.",
+    "Level %1, %n lapis: %2": [
+        "Stufe %1, %n Lapis: %2",
+        "Stufe %1, %n Lapis: %2"
     ],
+    "Level %1, %n lapis, %2 of %3 letters readable": [
+        "Stufe %1, %n Lapis, %2 von %3 Buchstaben lesbar",
+        "Stufe %1, %n Lapis, %2 von %3 Buchstaben lesbar"
+    ],
+    "%1, not enough levels and lapis": "%1, zu wenige Stufen und zu wenig Lapis",
+    "%1, not enough levels": "%1, zu wenige Stufen",
+    "%1, not enough lapis": "%1, zu wenig Lapis",
     "Nothing to forge": "Nichts zu schmieden",
     "Anvil": "Amboss",
     "Name (empty: no custom name)": "Name (leer: kein eigener Name)",
