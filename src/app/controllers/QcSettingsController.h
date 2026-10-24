@@ -39,6 +39,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(bool showLabels READ showLabels WRITE setShowLabels NOTIFY settingsChanged FINAL)
     // Photo mode: hiding the HUD hides the hand as well (decision E-692).
     Q_PROPERTY(bool photoHidesHand READ photoHidesHand WRITE setPhotoHidesHand NOTIFY settingsChanged FINAL)
+    // A world hosted in the game pauses when the window loses the focus (decision E-877).
+    Q_PROPERTY(bool pauseOnFocusLoss READ pauseOnFocusLoss WRITE setPauseOnFocusLoss NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
@@ -101,6 +103,8 @@ public:
     void setShowLabels(bool show);
     bool photoHidesHand() const { return m_photoHidesHand; }
     void setPhotoHidesHand(bool hides);
+    bool pauseOnFocusLoss() const { return m_pauseOnFocusLoss; }
+    void setPauseOnFocusLoss(bool pause);
     QString language() const { return m_languageSetting; }
     // Stores the choice and asks the application to switch the UI language now.
     void requestLanguage(const QString &requested);
@@ -150,6 +154,7 @@ private:
     bool m_invertMouse = false;
     bool m_showLabels = true;
     bool m_photoHidesHand = true;
+    bool m_pauseOnFocusLoss = false;
     QString m_languageSetting;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcUiScale::Step m_uiScale = QcUiScale::defaultStep;

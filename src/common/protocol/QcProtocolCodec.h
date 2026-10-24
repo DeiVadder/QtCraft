@@ -63,6 +63,10 @@ void encode(QDataStream &stream, QcMsg::Ping m);
 void encode(QDataStream &stream, QcMsg::Pong m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Ping>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::Pong>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::PauseRequest m);
+void encode(QDataStream &stream, QcMsg::ServerPause m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PauseRequest>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ServerPause>, QDataStream &stream);
 
 // World (QcWorldCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::ChunkData &m);

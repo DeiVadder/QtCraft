@@ -117,4 +117,19 @@ struct Pong
     quint32 nonce = 0;
 };
 
+// Client -> server: the player opened (`paused`) or left the pause menu (decision E-877). Only the
+// local player of a world hosted in the game pauses it, and only while no one else is connected; the
+// server ignores the wish of a network client.
+struct PauseRequest
+{
+    bool paused = false;
+};
+
+// Server -> client: the server stopped (`paused`) or resumed its ticks (decision E-877). While paused
+// the client predicts no movement of its own and sends no input; the connection stays.
+struct ServerPause
+{
+    bool paused = false;
+};
+
 } // namespace QcMsg

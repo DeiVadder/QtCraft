@@ -38,6 +38,10 @@ public:
     // The values to store.
     [[nodiscard]] QcGameSettings::AudioVolumes volumes() const;
     void apply() const;
+    // The world pauses (decision E-877): music and ambience fall silent until it resumes; the
+    // effects (menu clicks) stay.
+    void setWorldPaused(bool paused);
+    bool worldPaused() const { return m_worldPaused; }
 
 signals:
     void changed();
@@ -53,4 +57,5 @@ private:
     double m_musicVolume = QcGameSettings::defaultMusicVolume;
     double m_ambientVolume = QcGameSettings::defaultAmbientVolume;
     bool m_muted = false;
+    bool m_worldPaused = false;
 };

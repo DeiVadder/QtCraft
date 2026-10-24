@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <optional>
+#include <ranges>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -290,6 +291,63 @@ private slots:
         QCOMPARE(tickedEvents().size(), QcTickPacer::maxCatchUp);
         QCOMPARE(core.pacer().timing().summary().missed, quint64(20 - QcTickPacer::maxCatchUp));
         QCOMPARE(core.pacer().untilNextNs(now), intervalNs);
+
+        core.shutdown();
+        QVERIFY(host->shutdown().has_value());
+    }
+
+    void coreRestsWhileTheServerPauses()
+    {
+        // The host's own player asks for the pause (decision E-877): once the server says it paused,
+        // the core's ticks predict nothing and send no input, so the player neither drifts nor
+        // piles up inputs for the resumed server; after the resume it predicts again.
+        auto host = makeHost(m_content);
+        auto recording = std::make_unique<QcRecordingTransport>(host->connectClient());
+        const QcRecordingTransport *wire = recording.get();
+        std::vector<QcSessionEvent> events;
+        QcSessionCore core(std::move(recording), [&](QcSessionEvent &&event) { events.push_back(std::move(event)); });
+        qint64 now = 0;
+        core.setClock([&now] { return now; });
+        core.apply({QcSessionCommand::Start{QcMsg::Hello{QcProtocol::version, u"Rest"_s, {}, {}}, true}});
+        QVERIFY(QTest::qWaitFor(
+            [&] {
+                now += intervalNs;
+                return core.runDueTicks() == 1;
+            },
+            timeoutMs));
+
+        const auto heardPause = [&events](bool paused) {
+            return std::ranges::any_of(events, [paused](const QcSessionEvent &event) {
+                const auto *received = std::get_if<QcSessionEvent::Received>(&event.what);
+                const auto *pause = received ? std::get_if<QcMsg::ServerPause>(&received->message) : nullptr;
+                return pause && pause->paused == paused;
+            });
+        };
+        const auto lastTickPredicted = [&events] {
+            for (const QcSessionEvent &event : std::ranges::reverse_view(events)) {
+                if (const auto *ticked = std::get_if<QcSessionEvent::Ticked>(&event.what)) {
+                    return ticked->predicted;
+                }
+            }
+            return false;
+        };
+
+        core.apply({QcSessionCommand::Send{QcMsg::PauseRequest{true}}});
+        QVERIFY(QTest::qWaitFor([&] { return heardPause(true); }, timeoutMs));
+        const qsizetype inputs = wire->sentOf<QcMsg::PlayerInput>().size();
+        for (int i = 0; i < 10; ++i) {
+            now += intervalNs;
+            QCOMPARE(core.runDueTicks(), 1);
+            QVERIFY(!lastTickPredicted());
+        }
+        QCOMPARE(wire->sentOf<QcMsg::PlayerInput>().size(), inputs);
+
+        core.apply({QcSessionCommand::Send{QcMsg::PauseRequest{false}}});
+        QVERIFY(QTest::qWaitFor([&] { return heardPause(false); }, timeoutMs));
+        now += intervalNs;
+        QCOMPARE(core.runDueTicks(), 1);
+        QVERIFY(lastTickPredicted());
+        QCOMPARE(wire->sentOf<QcMsg::PlayerInput>().size(), inputs + 1);
 
         core.shutdown();
         QVERIFY(host->shutdown().has_value());

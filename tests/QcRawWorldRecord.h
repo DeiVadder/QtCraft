@@ -43,6 +43,8 @@ struct QcRawWorldRecord
             worldTime = time->time;
             timeRunning = time->running;
             timeSpeed = time->speed;
+        } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {
+            pauses.append(pause->paused);
         } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
             ++weatherMessages;
             this->weather = *weather;
@@ -98,6 +100,8 @@ struct QcRawWorldRecord
     bool timeRunning = true;
     // Server ticks per client tick for the time of day (decision E-249).
     double timeSpeed = 1.0;
+    // Every ServerPause received, in order (decision E-877).
+    QList<bool> pauses;
     // Debug data received after a DebugSubscribe, oldest first.
     QList<QcMsg::ServerDebug> debugMessages;
 };

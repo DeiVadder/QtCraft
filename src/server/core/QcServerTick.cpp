@@ -77,6 +77,13 @@ void QcServer::armTickTimer(qint64 remainingNs)
 
 void QcServer::tick()
 {
+    // A paused server runs no tick: the counter, the clock and the world stand still (decision E-877).
+    if (m_pause.paused()) {
+        m_ticks.skipCurrentTick();
+        pausedUpkeep();
+        return;
+    }
+
     // Each system's lap gives the time since the previous one to its phase (decisions E-225, E-700);
     // the start of the tick counts to the first phase.
     m_phases.beginTick();
@@ -100,6 +107,53 @@ void QcServer::tick()
     if (const std::optional<QString> lag = m_lag.check(phases, m_phases.now())) {
         qCInfo(lcLag).noquote() << *lag;
     }
+    // The server became empty long enough, or the last network player left the host's paused menu.
+    updatePause();
+}
+
+void QcServer::pausedUpkeep()
+{
+    m_login.expire();
+    removeClosedClients();
+    m_commands.pollBackups();
+    if (m_state.takePlayerListChanged()) {
+        sendPlayerList();
+    }
+    // Console commands while the empty server rests are saved now; they reach the clients' view with
+    // the first tick after the resume (decision E-877).
+    if (m_pause.takeChange() && m_persistence.hasStorage()) {
+        m_persistence.saveInBackground();
+    }
+    updatePause();
+}
+
+void QcServer::updatePause()
+{
+    const std::optional<QcServerPause::Reason> changed = m_pause.update(
+        m_state.clients(), m_state.clock().playerTimeNs(), [this](const Client &client) { return m_chunkStreaming.viewComplete(client); });
+    if (!changed) {
+        return;
+    }
+
+    // An empty server saves before it rests, like an autosave; one save runs at a time.
+    if (*changed == QcServerPause::Reason::Empty && m_persistence.hasStorage() && !m_persistence.saveRunning()) {
+        m_lastAutosaveNs = m_state.clock().playerTimeNs();
+        ++m_autosaves;
+        m_persistence.saveInBackground();
+    }
+    if (m_pause.paused()) {
+        qCInfo(lcServer).noquote() << u"Server paused (%1): no ticks until it resumes"_s.arg(QString::fromLatin1(QcServerPause::name(*changed)));
+    } else {
+        qCInfo(lcServer) << "Server resumed";
+    }
+
+    for (const auto &client : m_state.clients()) {
+        if (client->state == Client::State::Playing) {
+            client->connection->send(QcMsg::ServerPause{m_pause.paused()});
+        }
+    }
+    // The clients' clocks of the day stand still with the server's (speed 0).
+    sendTimeToAll();
 }
 
 void QcServer::addUpkeepSystems()
@@ -309,6 +363,7 @@ QcHealthSample QcServer::health()
     // Bytes of the clients that left count on, so the rates never go back.
     sample.traffic = m_admin.traffic();
     sample.ticks = m_healthTicks.take();
+    sample.paused = m_pause.paused();
     return sample;
 }
 

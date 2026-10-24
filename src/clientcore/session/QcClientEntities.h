@@ -52,6 +52,8 @@ public:
     void setBuffered(bool buffered) { m_buffered = buffered; }
     bool isBuffered() const { return m_buffered; }
     const QcSnapshotClock &clock() const { return m_clock; }
+    // The server resumed after a pause (decision E-877): the snapshot clock starts anew.
+    void restartClock() { m_clock.restart(); }
     // Passes a step sound to `cue` for every creature that walked a stride.
     template<typename Cue>
     void stepSounds(const QcClientWorld &world, Cue &&cue);

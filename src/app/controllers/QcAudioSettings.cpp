@@ -86,5 +86,15 @@ QcGameSettings::AudioVolumes QcAudioSettings::volumes() const
 
 void QcAudioSettings::apply() const
 {
-    m_audio->setVolumes(m_masterVolume, m_effectsVolume, m_musicVolume, m_ambientVolume, m_muted);
+    const double music = m_worldPaused ? 0.0 : m_musicVolume;
+    const double ambient = m_worldPaused ? 0.0 : m_ambientVolume;
+    m_audio->setVolumes(m_masterVolume, m_effectsVolume, music, ambient, m_muted);
+}
+
+void QcAudioSettings::setWorldPaused(bool paused)
+{
+    if (m_worldPaused != paused) {
+        m_worldPaused = paused;
+        apply();
+    }
 }

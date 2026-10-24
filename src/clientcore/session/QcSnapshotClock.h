@@ -36,6 +36,14 @@ public:
     // Moves the shown moment on to local time `localMs` (once per client tick) and returns the
     // server time to show; std::nullopt before the first snapshot.
     std::optional<double> advance(qint64 localMs);
+    // The server's time stood still while the local time went on (a pause, decision E-877): the next
+    // snapshot starts a new history, so the shown moment neither runs ahead of it nor waits out the
+    // old lag.
+    void restart()
+    {
+        m_arrivals.clear();
+        m_shownLagMs.reset();
+    }
 
     // The newest server time that arrived (-1 before the first).
     qint64 latestServerMs() const { return m_latestServerMs; }

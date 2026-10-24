@@ -27,7 +27,8 @@ public:
         Chat,
         // Throwing items (each spawns an entity).
         Drop,
-        // Inventory, crafting and machine screen actions; mouse drags and the wheel send many.
+        // Inventory, crafting and machine screen actions; mouse drags and the wheel send many. The
+        // pause menu's PauseRequest counts here too (decision E-877).
         Inventory,
         // A new look is sent again to every player who sees the player.
         Appearance,

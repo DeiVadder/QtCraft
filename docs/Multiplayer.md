@@ -31,6 +31,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `seed`, `worldType` | `--seed`, `--generator` | random, terrain | For a new world only |
 | `viewDistance` | `--view-distance` | 8 | Chunks streamed at most; clients may ask for fewer |
 | `loginTimeoutSeconds` | – | 10 | A login must be done within this time |
+| `pauseWhenEmptySeconds` | – | 60 | Seconds without anyone connected before the server pauses (0: never; E-877) |
 | `connectionsPerSecond`, `connectionBurst`, `maxConnectionsPerAddress` | – | 1, 8, 8 | Limits for new connections per address |
 | `operators` | – | empty | Operators by name (bound to their identity at their login) |
 | `defaultGameMode` | `--game-mode` | empty (the world's own default) | `survival`, `creative` or `adventure`: the mode of players who join for the first time; a new world is created with it as its default (E-282, E-735) |
@@ -108,6 +109,18 @@ Observers and dispensers have no bounds of their own: their pulses and shots are
   before it has saved: the world keeps its last autosave and the players their last save. Stop the
   server with `stop` or Ctrl+C first.
 - The server prints `Listening on port N` when it is ready.
+- **Pause when empty** (E-877): when no one has been connected for `pauseWhenEmptySeconds` (60 by
+  default, counted in game time), the server saves like an autosave and stops ticking: the world,
+  the time of day, creatures, plants, machines and circuits stand still and the tick counter stops.
+  The log says `Server paused (no players)`, the `HEALTH` line says `paused` (its tick times then
+  stay empty). The console, the admin channel and new connections keep working; the first
+  connection resumes the server at once (`Server resumed`), before its login is done, so the login
+  runs as usual. 0 keeps the server ticking without players.
+- **Pause menu** (E-877): a world hosted in the game pauses while its own player has the pause menu
+  open (also the settings and the handbook opened from there), but only while no one else is
+  connected; a world opened to the LAN with a guest playing keeps running, and the pause menu says
+  so. A dedicated server never pauses for one player's pause menu: the server ignores a network
+  client's wish to pause.
 - Operators, bans and the whitelist are kept per world in `access.json`, the players' identities
   in `identities.json` (both in the world folder; see "Identity" below). New identities are written
   with the next tick and then at most once a second, and always when the server saves or stops.

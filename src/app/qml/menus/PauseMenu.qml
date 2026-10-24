@@ -44,11 +44,26 @@ Rectangle {
 
         Label {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Game paused")
+            // The world runs on while others play in it (decision E-877).
+            text: menu.game.pause.hint === WorldPause.None ? qsTr("Game paused") : qsTr("Game menu")
             color: Theme.text
-            Layout.bottomMargin: Ui.space.s
+            Layout.bottomMargin: menu.game.pause.hint === WorldPause.None ? Ui.space.s : 0
             font.pixelSize: Ui.type.title
             font.bold: true
+        }
+
+        Label {
+            Layout.fillWidth: true
+            Layout.bottomMargin: Ui.space.s
+            visible: menu.game.pause.hint !== WorldPause.None
+            text: menu.game.pause.hint === WorldPause.OthersConnected
+                  ? qsTr("The game keeps running: other players are connected.")
+                  : menu.game.pause.hint === WorldPause.Pending
+                    ? qsTr("The game pauses as soon as the world around you has loaded.")
+                    : qsTr("The game keeps running on the server.")
+            color: Theme.textMuted
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
         }
 
         GameButton {

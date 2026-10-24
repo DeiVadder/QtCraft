@@ -208,6 +208,11 @@ struct QcServerClient : QcEntity
     // always an operator, no login.
     bool local = false;
     bool joined = false;
+    // The player has the pause menu open (QcMsg::PauseRequest, decision E-877); only a local
+    // player's wish pauses the server (QcServerPause).
+    bool pauseRequested = false;
+    // A network client's pause request was refused in the log already (once per connection).
+    bool pauseRefusalLogged = false;
     QString name;
     Login login;
     Input input;

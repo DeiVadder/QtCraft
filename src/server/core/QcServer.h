@@ -46,6 +46,7 @@
 #include "server/storage/QcServerPersistence.h"
 #include "server/tick/QcClientSyncPace.h"
 #include "server/tick/QcLagReport.h"
+#include "server/tick/QcServerPause.h"
 #include "server/tick/QcTickControl.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
@@ -146,10 +147,6 @@ public:
     const QcServerPersistence::DamagedFile &damagedFile() const { return m_persistence.damagedFile(); }
     void setWorldTime(double seconds);
 
-    static constexpr double attackReach = QcServerCombat::attackReach;
-    static constexpr double playerAttackCooldown = QcServerCombat::playerAttackCooldown;
-    static constexpr double fallDamageThreshold = QcPlayerHealth::fallDamageThreshold;
-    static constexpr double craftingTableReach = QcServerCrafting::craftingTableReach;
     static constexpr int craftingGridSlot = QcServerInventory::craftingGridSlot;
     const QcServerConfig &config() const { return m_state.config(); }
 
@@ -157,12 +154,13 @@ public:
     void tick();
     // Autosaves since the server started.
     quint64 autosaveCount() const { return m_autosaves; }
+    // Whether the tick loop pauses (decision E-877): tick() runs only the players' upkeep then.
+    const QcServerPause &pause() const { return m_pause; }
     // Server ticks per tick of a client's clock, sent with WorldTime: the tick rate / 20, the
-    // sprint's speed while one runs, 0 while frozen (decision E-249).
+    // sprint's speed while one runs, 0 while frozen or paused (decisions E-249, E-877).
     double timeSpeed() const;
 
     static constexpr int maxBlockUpdatesPerTick = QcBlockSimulation::maxBlockUpdatesPerTick;
-    static constexpr qint64 maxFillBlocks = QcBlockCommands::maxFillBlocks;
     // The queues of block updates and their counters (pending, waiting, processed, dropped).
     const QcBlockUpdateQueue &blockUpdates() const { return m_blockUpdates; }
 
@@ -242,6 +240,11 @@ private:
     // Arms the single shot timerLeadNs before the next tick is due, `remainingNs` from now.
     void armTickTimer(qint64 remainingNs);
     void removeClosedClients();
+    // Pauses or resumes the tick loop as QcServerPause decides, saving before an empty pause and
+    // telling the clients (decision E-877).
+    void updatePause();
+    // What a paused tick still does: logins time out, clients that left go (decision E-877).
+    void pausedUpkeep();
 
     QcServerState m_state;
     QcTickScheduler m_ticks;
@@ -250,6 +253,7 @@ private:
     // Tick durations since the previous health() (the shared tick statistics stay untouched).
     QcIntervalStats m_healthTicks;
     QcTickControl m_tickControl;
+    QcServerPause m_pause;
     // The systems of one tick in their order (decision E-700).
     QcTickSystems m_tickSystems;
     QcClientSyncPace m_syncPace;

@@ -51,6 +51,9 @@ public:
     qint64 currentIntervalNs() const { return m_intervalNs; }
     // Runs `ticks` ticks as fast as possible with the next runDue() calls; replaces a running sprint.
     void startSprint(quint64 ticks);
+    // Called from the running tick when it did nothing (a paused server, decision E-877): it counts
+    // neither in the stats nor as a tick of a sprint, and a sprint waits for the next due time.
+    void skipCurrentTick() { m_tickSkipped = true; }
     // Ends a sprint early; the normal schedule starts one interval from now.
     void stopSprint();
     bool sprinting() const { return m_sprintRemaining > 0; }
@@ -100,6 +103,7 @@ private:
     // Set while a sprint tick runs (tickRealNs()).
     std::optional<qint64> m_sprintTickNs;
     bool m_sprintEnded = false;
+    bool m_tickSkipped = false;
     // Start times of the latest ticks, oldest first.
     QList<qint64> m_tickStarts;
     qint64 m_nextDueNs = 0;

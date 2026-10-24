@@ -81,10 +81,11 @@ QString invalid(const QString &key)
         int high;
         int *value;
     };
-    const std::array<Range, 6> ranges{{{u"port"_s, 0, 65535, &port},
+    const std::array<Range, 7> ranges{{{u"port"_s, 0, 65535, &port},
                                        {u"maxPlayers"_s, 1, QcServerSettings::maxPlayersLimit, &settings.maxPlayers},
                                        {u"viewDistance"_s, 1, QcServerSettings::maxViewDistance, &settings.viewDistance},
                                        {u"loginTimeoutSeconds"_s, 1, 600, &settings.loginTimeoutSeconds},
+                                       {u"pauseWhenEmptySeconds"_s, 0, QcServerSettings::maxPauseWhenEmptySeconds, &settings.pauseWhenEmptySeconds},
                                        {u"connectionBurst"_s, 1, 1000, &settings.connectionBurst},
                                        {u"maxConnectionsPerAddress"_s, 1, 1000, &settings.maxConnectionsPerAddress}}};
     for (const Range &range : ranges) {
@@ -205,6 +206,7 @@ QJsonObject QcServerSettings::toJson() const
             {u"worldType"_s, worldType},
             {u"viewDistance"_s, viewDistance},
             {u"loginTimeoutSeconds"_s, loginTimeoutSeconds},
+            {u"pauseWhenEmptySeconds"_s, pauseWhenEmptySeconds},
             {u"connectionsPerSecond"_s, connectionsPerSecond},
             {u"connectionBurst"_s, connectionBurst},
             {u"maxConnectionsPerAddress"_s, maxConnectionsPerAddress},
@@ -248,6 +250,7 @@ QcServerConfig QcServerSettings::serverConfig() const
     config.maxPlayers = maxPlayers;
     config.viewDistance = viewDistance;
     config.loginTimeoutMs = loginTimeoutSeconds * 1000;
+    config.pauseWhenEmptySeconds = pauseWhenEmptySeconds;
     config.operators = operators;
     config.defaultGameMode = defaultGameMode;
     config.limits = limits;

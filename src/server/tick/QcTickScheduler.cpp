@@ -98,8 +98,11 @@ qint64 QcTickScheduler::runDue(const std::function<void()> &tick)
         const qint64 started = m_clock();
         noteTickStart(started);
         m_currentLateNs = started - m_nextDueNs;
+        m_tickSkipped = false;
         tick();
-        m_stats.record(m_currentLateNs, m_clock() - started);
+        if (!std::exchange(m_tickSkipped, false)) {
+            m_stats.record(m_currentLateNs, m_clock() - started);
+        }
         m_nextDueNs += m_intervalNs;
         m_currentLateNs = 0;
     }
@@ -116,8 +119,13 @@ qint64 QcTickScheduler::runSprint(const std::function<void()> &tick)
         noteTickStart(started);
         m_sprintTickNs = std::clamp<qint64>(started - m_previousSprintTickNs, 0, m_intervalNs);
         m_previousSprintTickNs = started;
+        m_tickSkipped = false;
         tick();
         m_sprintTickNs.reset();
+        // A paused server keeps the rest of the sprint for after the pause, at the normal pace meanwhile.
+        if (std::exchange(m_tickSkipped, false)) {
+            return m_intervalNs;
+        }
         m_stats.record(0, m_clock() - started);
         --m_sprintRemaining;
         ++m_sprintDone;

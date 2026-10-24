@@ -202,4 +202,28 @@ void encode(QDataStream &stream, QcMsg::Pong m)
     return m;
 }
 
+void encode(QDataStream &stream, QcMsg::PauseRequest m)
+{
+    stream << m.paused;
+}
+
+void encode(QDataStream &stream, QcMsg::ServerPause m)
+{
+    stream << m.paused;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PauseRequest>, QDataStream &stream)
+{
+    QcMsg::PauseRequest m;
+    stream >> m.paused;
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ServerPause>, QDataStream &stream)
+{
+    QcMsg::ServerPause m;
+    stream >> m.paused;
+    return m;
+}
+
 } // namespace QcProtocolCodec

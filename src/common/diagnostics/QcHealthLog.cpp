@@ -57,6 +57,9 @@ QString QcHealthLog::line(const QcHealthSample &sample, Memory memory, const std
     count(u"chunks"_s, sample.loadedChunks);
     count(u"entities"_s, sample.entities);
     count(u"players"_s, sample.players);
+    if (sample.paused) {
+        parts.append(u"paused"_s);
+    }
     if (sample.roundTrip) {
         parts.append(u"round trip %1"_s.arg(timing(*sample.roundTrip)));
     }

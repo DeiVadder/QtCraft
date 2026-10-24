@@ -33,6 +33,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
+    controllers/QcWorldPause.h controllers/QcWorldPause.cpp
 )
 target_sources(qc_app_core PRIVATE
     debug/QcAppLogging.h debug/QcAppLogging.cpp

@@ -39,7 +39,7 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 - **Mittlere Maustaste** oder **B**: den anvisierten Block wählen
 - **Q**: ein Item werfen, **Strg+Q**: den ganzen Stapel
 - **1–9**, Mausrad: Feld der Schnellleiste wählen; **G** gehalten öffnet das Rad der Schnellleiste, ein Feld wählst du mit der Maus
-- **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Debug-Anzeige (aus, kompakt, voll), **O / F4**: Debug-Optionen, **Esc**: Menü
+- **E**: Inventar, **T / Enter**: Chat, **/**: Befehl, **V / F5**: Kameraansicht, **H / F1**: Handbuch, **I / F3**: Debug-Anzeige (aus, kompakt, voll), **O / F4**: Debug-Optionen, **Esc**: Menü; in einer Einzelspielerwelt hält es das Spiel an, bis du zurückkehrst, außer andere Spieler sind verbunden (Handbuch und Einstellungen aus dem Menü heraus lassen es angehalten)
 - Alle Tasten außer Esc lassen sich unter Einstellungen → Steuerung ändern.
 
 **Mac-Tastaturen**

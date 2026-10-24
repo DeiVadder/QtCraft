@@ -137,8 +137,8 @@ public:
             connection.send(QcMsg::Pong{ping->nonce});
             return true;
         }
-        // The admin messages end the variant, followed only by BlockAck (QcRawWorldRecord).
-        if (message.index() < QcMessage(QcMsg::AdminSubscribe{}).index() || std::holds_alternative<QcMsg::BlockAck>(message)) {
+        // The admin messages run from AdminSubscribe to AdminLog in the variant.
+        if (message.index() < QcMessage(QcMsg::AdminSubscribe{}).index() || message.index() > QcMessage(QcMsg::AdminLog{}).index()) {
             return false;
         }
         admin.append(message);

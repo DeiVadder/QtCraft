@@ -41,9 +41,10 @@
 #                            survival mining paced by the wall clock (the server times it in its
 #                            players' time); the time from an action to its mesh (E-853)
 #   test_audio_output        the real audio device keeps playing while the GUI thread sleeps 300 ms
+#   test_pause_keepalive     a paused server's TCP link held by keep-alives over three idle timeouts
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
-    test_tcp_transport test_network_game test_latency
+    test_tcp_transport test_network_game test_latency test_pause_keepalive
     test_creative_client test_void_client test_ice_client test_survival_scenario
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
     test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase

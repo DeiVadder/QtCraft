@@ -14,6 +14,7 @@
 #include "app/controllers/QcStonecutterController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/controllers/QcWorldPause.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
@@ -94,6 +95,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcPhotoMode *photo READ photo CONSTANT FINAL)
     // "Manage server" for operators (decision E-863).
     Q_PROPERTY(QcAdminController *admin READ admin CONSTANT FINAL)
+    // The pause of a world hosted here (decision E-877).
+    Q_PROPERTY(QcWorldPause *pause READ pause CONSTANT FINAL)
 
 public:
     // What the window shows (QcScreenState::Phase); QML compares against GameController.Phase.Playing etc.
@@ -138,6 +141,7 @@ public:
     // Joining and hosting network games (decision E-251).
     QcMultiplayerController *multiplayer() const { return m_multiplayer.get(); }
     QcPhotoMode *photo() const { return m_photo.get(); }
+    QcWorldPause *pause() const { return m_pause.get(); }
     QcAdminController *admin() const { return m_admin.get(); }
     // Plays the world of a network server: takes over a logged-in session (QcNetworkClient).
     void startRemoteSession(std::unique_ptr<QcClientSession> session);
@@ -234,6 +238,7 @@ private:
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
     std::unique_ptr<QcAdminController> m_admin;
+    std::unique_ptr<QcWorldPause> m_pause;
     std::unique_ptr<QcGamepadSource> m_gamepadSource;
     QcGamepadControls m_gamepad;
     QcGamepadUi m_gamepadUi;

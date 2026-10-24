@@ -26,6 +26,12 @@ qtcraft-headless --server --console --log-rules "qtcraft.network.debug=true;qtcr
   Kicks, Tick-Spitzen über 50 ms mit den längsten Phasen (`qtcraft.lag`) und jede Minute eine Zeile
   `HEALTH` (Speicher, Tickzeiten, Chunks, Entities, Spieler, Netzraten). `--health-log <s>` ändert
   den Abstand. Das Passwort steht nie im Protokoll.
+- **Pause ohne Spieler** (E-877): Ist 60 s lang niemand verbunden, speichert der Server und hält an
+  (`Server paused (no players)` im Protokoll, `paused` in der `HEALTH`-Zeile, deren Tickzeiten dann
+  leer bleiben). Die erste Verbindung setzt ihn sofort fort (`Server resumed`); Konsole,
+  Admin-Kanal und Anmeldungen gehen auch während der Pause. `pauseWhenEmptySeconds` in
+  `server.json` ändert die Zeit, 0 schaltet die Pause ab. Das Pausenmenü eines Spielers hält einen
+  Server nie an.
 - **Beenden:** `stop` in der Konsole oder Strg+C; beides speichert die Welt.
 - **Diagnose sammeln:** in der Konsole `diagnostics` eintippen, oder nach dem Beenden (auch nach
   einem Absturz) `qtcraft-headless --write-diagnostics` (mit demselben `--data-dir`). Ergebnis:

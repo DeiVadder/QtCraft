@@ -25,6 +25,8 @@
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcHunger.h"
 #include "server/gameplay/QcPlayerHealth.h"
+#include "server/gameplay/QcServerCombat.h"
+#include "server/gameplay/QcServerCrafting.h"
 #include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcExperienceOrbManager.h"
 #include "server/items/QcItemEntityManager.h"
@@ -158,9 +160,9 @@ QMap<QString, double> playerValues()
     return {
         {u"player.maxHealth"_s, QcServer::playerMaxHealth},
         {u"player.reach"_s, QcRaycast::playerReach},
-        {u"player.attackReach"_s, QcServer::attackReach},
-        {u"player.attackCooldown"_s, QcServer::playerAttackCooldown},
-        {u"player.fallDamageThreshold"_s, QcServer::fallDamageThreshold},
+        {u"player.attackReach"_s, QcServerCombat::attackReach},
+        {u"player.attackCooldown"_s, QcServerCombat::playerAttackCooldown},
+        {u"player.fallDamageThreshold"_s, QcPlayerHealth::fallDamageThreshold},
         {u"player.walkSpeed"_s, QcPhysics::walkSpeed},
         {u"player.sprintSpeed"_s, QcPhysics::sprintSpeed},
         {u"player.flySpeed"_s, QcPhysics::flySpeed},
@@ -236,7 +238,7 @@ QMap<QString, double> fireValues()
 QMap<QString, double> commandValues()
 {
     return {
-        {u"commands.maxFill"_s, static_cast<double>(QcServer::maxFillBlocks)},
+        {u"commands.maxFill"_s, static_cast<double>(QcBlockCommands::maxFillBlocks)},
         {u"commands.summonLimit"_s, static_cast<double>(QcServerLimits{}.summonLimit)},
         {u"commands.confirmSeconds"_s, QcPendingCommands::timeoutSeconds},
         {u"commands.confirmFill"_s, static_cast<double>(QcBlockCommands::confirmFillBlocks)},
@@ -255,7 +257,7 @@ QMap<QString, double> values(const QcContentRegistry &content)
         {u"day.halfLength"_s, QcDayCycle::dayLength / 2.0},
         {u"inventory.slots"_s, QcInventory::slotCount},
         {u"inventory.hotbar"_s, QcInventory::hotbarSize},
-        {u"crafting.tableReach"_s, QcServer::craftingTableReach},
+        {u"crafting.tableReach"_s, QcServerCrafting::craftingTableReach},
         {u"mining.secondsPerHardness"_s, QcMining::secondsPerHardness},
         {u"mining.secondsPerHardnessWithoutTool"_s, QcMining::secondsPerHardnessWithoutTool},
         {u"farming.randomTickSeconds"_s, std::round(QcPlantGrowth::randomTickSeconds)},

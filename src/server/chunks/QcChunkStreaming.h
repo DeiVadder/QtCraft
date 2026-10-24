@@ -3,6 +3,8 @@
 #include "common/core/QcChunkPos.h"
 #include "common/core/QcVec3.h"
 
+#include <QList>
+
 class QcChunkLoading;
 struct QcServerClient;
 class QcServerState;
@@ -17,8 +19,13 @@ public:
     static QcChunkPos chunkOf(const QcVec3 &position);
 
     void stream(QcServerClient &client);
+    // Whether the client has every chunk of its view (a pause waits for it, decision E-877).
+    bool viewComplete(const QcServerClient &client) const;
 
 private:
+    int radiusOf(const QcServerClient &client) const;
+    // The chunks of the client's view it has not been sent.
+    [[nodiscard]] QList<QcChunkPos> missingChunks(const QcServerClient &client) const;
     // The generator's labels of a chunk just sent (decision E-222).
     void sendLabels(QcServerClient &client, QcChunkPos pos) const;
     // The creatures spinning in the spawners of a chunk just sent (decision E-520) and the items on its

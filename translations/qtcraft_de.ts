@@ -2579,6 +2579,21 @@ Als Nächstes: %3</translation>
         <source>When the HUD is hidden for a picture</source>
         <translation>Wenn die Anzeige für ein Bild ausgeblendet ist</translation>
     </message>
+    <message>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="104"/>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="107"/>
+        <source>Pause when the window loses focus</source>
+        <translation>Pausieren, wenn das Fenster den Fokus verliert</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="108"/>
+        <source>Opens the pause menu of a single-player world</source>
+        <translation>Öffnet das Pausenmenü einer Einzelspielerwelt</translation>
+    </message>
 </context>
 <context>
     <name>InventoryScreen</name>
@@ -3622,57 +3637,77 @@ Als Nächstes: %3</translation>
 <context>
     <name>PauseMenu</name>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="47"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="48"/>
         <source>Game paused</source>
         <translation>Spiel pausiert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="58"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="48"/>
+        <source>Game menu</source>
+        <translation>Spielmenü</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="60"/>
+        <source>The game keeps running: other players are connected.</source>
+        <translation>Das Spiel läuft weiter: andere Spieler sind verbunden.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="62"/>
+        <source>The game pauses as soon as the world around you has loaded.</source>
+        <translation>Das Spiel hält an, sobald die Welt um dich geladen ist.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="63"/>
+        <source>The game keeps running on the server.</source>
+        <translation>Das Spiel läuft auf dem Server weiter.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="73"/>
         <source>Back to game</source>
         <translation>Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="66"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="81"/>
         <source>Save world</source>
         <translation>Welt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="76"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="91"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="83"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="98"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="91"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="106"/>
         <source>Open on port %1</source>
         <translation>Offen auf Port %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="91"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="106"/>
         <source>Open to LAN</source>
         <translation>Im LAN öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="101"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="116"/>
         <source>Manage server</source>
         <translation>Server verwalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="108"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="123"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="148"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="163"/>
         <source>‹ Back to game</source>
         <translation>‹ Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="148"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="163"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
@@ -3681,17 +3716,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Handbuch (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="116"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="131"/>
         <source>Disconnect</source>
         <translation>Verbindung trennen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="117"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
         <source>Save and quit to menu</source>
         <translation>Speichern und zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="117"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
         <source>Quit to menu</source>
         <translation>Zum Menü</translation>
     </message>
@@ -4662,14 +4697,14 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="255"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="258"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="283"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="275"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="284"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="278"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="287"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -4678,22 +4713,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="334"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="337"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="359"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="362"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -4738,12 +4773,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="344"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="347"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="465"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="468"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -4985,26 +5020,26 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="56"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="57"/>
         <source>%1 (%2)</source>
         <comment>item frame with its item</comment>
         <extracomment>An item frame in the target text: %1 the frame, %2 the item it holds.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="70"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="71"/>
         <source>%1 (%2)</source>
         <comment>named creature</comment>
         <extracomment>A named creature in the target text: %1 its name, %2 its kind.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="106"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="107"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="106"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="107"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -6728,22 +6763,22 @@ Als Nächstes: %3</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="196"/>
+        <location filename="../src/server/core/QcServer.cpp" line="216"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="438"/>
+        <location filename="../src/server/core/QcServer.cpp" line="464"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="468"/>
+        <location filename="../src/server/core/QcServer.cpp" line="494"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="234"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="288"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -6768,7 +6803,7 @@ Als Nächstes: %3</translation>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="249"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="303"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -7253,7 +7288,7 @@ Als Nächstes: %3</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="235"/>
+        <location filename="../src/server/core/QcServer.cpp" line="257"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="96"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>

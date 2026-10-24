@@ -147,6 +147,12 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
     } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
         m_players = players->players;
         emit playersChanged();
+    } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {
+        m_serverPaused = pause->paused;
+        if (!m_serverPaused) {
+            m_entities.restartClock();
+        }
+        emit serverPauseChanged();
     } else {
         return false;
     }
@@ -488,6 +494,11 @@ void QcClientSession::respawn()
     if (m_vitals.isDead()) {
         sendToServer(QcMsg::Respawn{});
     }
+}
+
+void QcClientSession::requestPause(bool paused)
+{
+    sendToServer(QcMsg::PauseRequest{paused});
 }
 
 void QcClientSession::sendChat(const QString &text)

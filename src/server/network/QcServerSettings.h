@@ -20,6 +20,7 @@ struct QcServerSettings
     static constexpr int formatVersion = 1;
     static constexpr int maxViewDistance = 32;
     static constexpr int maxPlayersLimit = 1000;
+    static constexpr int maxPauseWhenEmptySeconds = 86'400;
 
     QString serverName = QStringLiteral("QtCraft server");
     QString motd;
@@ -35,6 +36,8 @@ struct QcServerSettings
     QString worldType = QStringLiteral("terrain");
     int viewDistance = 8;
     int loginTimeoutSeconds = 10;
+    // Seconds without anyone connected before the server stops ticking (decision E-877); 0 never.
+    int pauseWhenEmptySeconds = 60;
     double connectionsPerSecond = 1.0;
     int connectionBurst = 8;
     int maxConnectionsPerAddress = 8;

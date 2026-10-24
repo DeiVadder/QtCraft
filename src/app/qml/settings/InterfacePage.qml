@@ -99,4 +99,15 @@ SettingsPage {
             onToggled: page.game.settings.photoHidesHand = checked
         }
     }
+
+    SettingGroup {
+        title: qsTr("Pause")
+
+        SettingSwitch {
+            label: qsTr("Pause when the window loses focus")
+            help: qsTr("Opens the pause menu of a single-player world")
+            checked: page.game.settings.pauseOnFocusLoss
+            onToggled: page.game.settings.pauseOnFocusLoss = checked
+        }
+    }
 }

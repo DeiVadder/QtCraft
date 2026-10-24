@@ -39,4 +39,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::AdminHistory, QcMsg::AdminPlayers, QcMsg::AdminChat, QcMsg::AdminCatalogue,
                                QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog, QcMsg::BlockAck,
                                QcMsg::OpenEnchanting, QcMsg::EnchantingState, QcMsg::ChooseEnchantment, QcMsg::CloseEnchanting,
-                               QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil>;
+                               QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil,
+                               QcMsg::PauseRequest, QcMsg::ServerPause>;

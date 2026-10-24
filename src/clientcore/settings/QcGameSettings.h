@@ -47,6 +47,9 @@ struct QcGameSettings
     bool showLabels = true;
     // Photo mode (decision E-692): hiding the HUD hides the hand as well.
     bool photoHidesHand = true;
+    // A world hosted in the game opens its pause menu, and so pauses, when the window loses the
+    // focus (decision E-877).
+    bool pauseOnFocusLoss = false;
     // "" follows the system language, otherwise a two-letter language code such as "de".
     QString language;
     QcCameraMode cameraMode = QcCameraMode::FirstPerson;

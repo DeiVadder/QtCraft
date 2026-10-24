@@ -32,10 +32,45 @@ QcChunkPos QcChunkStreaming::chunkOf(const QcVec3 &position)
     return QcBlockPos{static_cast<int>(std::floor(position.x)), 0, static_cast<int>(std::floor(position.z))}.chunk();
 }
 
+int QcChunkStreaming::radiusOf(const QcServerClient &client) const
+{
+    return client.view.distance > 0 ? client.view.distance : m_state.config().viewDistance;
+}
+
+QList<QcChunkPos> QcChunkStreaming::missingChunks(const QcServerClient &client) const
+{
+    const QcChunkPos centre = chunkOf(client.motion.position);
+    const int radius = radiusOf(client);
+    QList<QcChunkPos> missing;
+    for (int dx = -radius; dx <= radius; ++dx) {
+        for (int dz = -radius; dz <= radius; ++dz) {
+            const QcChunkPos pos{centre.x + dx, centre.z + dz};
+            if (!client.view.sentChunks.contains(pos)) {
+                missing.append(pos);
+            }
+        }
+    }
+    return missing;
+}
+
+bool QcChunkStreaming::viewComplete(const QcServerClient &client) const
+{
+    const QcChunkPos centre = chunkOf(client.motion.position);
+    const int radius = radiusOf(client);
+    for (int dx = -radius; dx <= radius; ++dx) {
+        for (int dz = -radius; dz <= radius; ++dz) {
+            if (!client.view.sentChunks.contains({centre.x + dx, centre.z + dz})) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void QcChunkStreaming::stream(QcServerClient &client)
 {
     const QcChunkPos centre = chunkOf(client.motion.position);
-    const int radius = client.view.distance > 0 ? client.view.distance : m_state.config().viewDistance;
+    const int radius = radiusOf(client);
 
     // Unload with one chunk of hysteresis so walking along a border does not thrash.
     for (auto it = client.view.sentChunks.begin(); it != client.view.sentChunks.end();) {
@@ -48,16 +83,7 @@ void QcChunkStreaming::stream(QcServerClient &client)
         }
     }
 
-    QList<QcChunkPos> missing;
-    for (int dx = -radius; dx <= radius; ++dx) {
-        for (int dz = -radius; dz <= radius; ++dz) {
-            const QcChunkPos pos{centre.x + dx, centre.z + dz};
-            if (!client.view.sentChunks.contains(pos)) {
-                missing.append(pos);
-            }
-        }
-    }
-
+    QList<QcChunkPos> missing = missingChunks(client);
     std::ranges::sort(missing, [centre](QcChunkPos a, QcChunkPos b) {
         const auto distance = [centre](QcChunkPos p) {
             return (p.x - centre.x) * (p.x - centre.x) + (p.z - centre.z) * (p.z - centre.z);

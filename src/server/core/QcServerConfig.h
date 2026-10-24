@@ -27,6 +27,10 @@ struct QcServerConfig
     // Directory of the saved world; empty runs without persistence (tests, throw-away worlds).
     QString worldDirectory;
     int autosaveSeconds = 60;
+    // The server stops ticking after no one was connected for this many seconds of the players'
+    // time, saving first, and resumes when someone connects (decision E-877); 0 never pauses. A
+    // dedicated server takes 60 from server.json; tests and worlds hosted in the game keep 0.
+    int pauseWhenEmptySeconds = 0;
     // Test hook: no chunk leaves the world once loaded; for tests that build away from their player
     // or look at the whole world without one.
     bool keepChunksLoaded = false;

@@ -23,10 +23,30 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// Keeps the local player's wish to pause (decision E-877) and returns true. A network client's wish
+// never pauses the server: it is dropped (false), and the log says so once per connection.
+bool notePauseRequest(QcServerClient &client, bool paused)
+{
+    if (client.local) {
+        client.pauseRequested = paused;
+        return true;
+    }
+    if (paused && !client.pauseRefusalLogged) {
+        client.pauseRefusalLogged = true;
+        qCInfo(lcServer).noquote() << u"Ignoring the pause request of network player %1: only the host's own player pauses the world"_s.arg(client.name);
+    }
+    return false;
+}
+
+} // namespace
+
 QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                    std::unique_ptr<QcWorldGenerator> generator, QObject *parent)
     : QObject(parent)
     , m_state(std::move(config), std::move(content), std::move(generator))
+    , m_pause(m_state.config().pauseWhenEmptySeconds)
     , m_sounds(m_state, m_ticks)
     , m_blockUpdates(m_state)
     , m_blocks(m_state, m_sounds, m_blockUpdates)
@@ -212,6 +232,8 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
 
     m_state.clientList().push_back(std::move(client));
     emit clientCountChanged(clientCount());
+    // Someone connecting resumes a paused server at once, so the login runs (decision E-877).
+    updatePause();
 }
 
 void QcServer::handleMessage(Client &client, QcMessage &&message)
@@ -347,6 +369,10 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
         QcServerSigns(m_state).edit(client, *sign);
     } else if (const auto *debug = std::get_if<QcMsg::DebugSubscribe>(&message)) {
         m_debug.subscribe(client, debug->flags);
+    } else if (const auto *pause = std::get_if<QcMsg::PauseRequest>(&message)) {
+        if (notePauseRequest(client, pause->paused)) {
+            updatePause();
+        }
     } else if (!m_admin.handle(client, message)) {
         return false;
     }
@@ -474,6 +500,9 @@ void QcServer::disconnectRemoteClients()
 void QcServer::runConsoleCommand(const QString &line, const QcCommandSource::Output &output)
 {
     m_commands.console(line, output);
+    // A command while the empty server rests may change the world: it is saved with the next
+    // paused tick (decision E-877).
+    m_pause.noteChange();
 }
 
 void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
@@ -546,7 +575,7 @@ void QcServer::sendTimeToAll()
 
 double QcServer::timeSpeed() const
 {
-    if (m_tickControl.frozen()) {
+    if (m_tickControl.frozen() || m_pause.paused()) {
         return 0.0;
     }
 

@@ -154,6 +154,11 @@ public:
     QcClientAnvil &anvil() { return m_anvil; }
     const QcClientAnvil &anvil() const { return m_anvil; }
     void sendChat(const QString &text);
+    // Asks the server to pause while the pause menu is open (decision E-877); the server only hears
+    // the local player of a world hosted in the game, and only while no one else is connected.
+    void requestPause(bool paused);
+    // Whether the server's ticks pause (QcMsg::ServerPause): the player's own prediction rests too.
+    bool serverPaused() const { return m_serverPaused; }
 
     const QHash<quint32, QcClientEntity> &entities() const { return m_entities.all(); }
     // The mirror itself: the dying entities, its snapshot clock and buffering (decision E-271).
@@ -219,6 +224,7 @@ signals:
     void chatReceived(const QString &text);
     void playersChanged();
     void gameModeChanged();
+    void serverPauseChanged();
     // The mode refused a mining or use of the player (adventure allow-lists); at most once every
     // refusalReportTicks.
     void actionRefused();
@@ -270,6 +276,7 @@ private:
     QcMsg::Disconnect m_disconnectMessage;
     QcClientLogin m_login;
     QList<QcMsg::PlayerList::Entry> m_players;
+    bool m_serverPaused = false;
     // The server's Welcome: world, seed, view distance and our entity (all zero before it came).
     QcMsg::Welcome m_welcome;
     QcWorldMirror m_worldMirror;

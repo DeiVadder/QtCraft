@@ -103,7 +103,8 @@ bool QcSessionCore::tick()
     }
 
     QcSessionEvent::Ticked ticked;
-    if (!m_vitals.isDead()) {
+    // A paused server takes no input (decision E-877): the player rests where the server has him.
+    if (!m_vitals.isDead() && !m_serverPaused) {
         const std::shared_ptr<const QcContentRegistry> &content = m_blocks.content();
         m_prediction.setSpeedFactor(content ? static_cast<float>(QcStatusEffects::speedFactor(*content, m_vitals.effects())) : 1.0f);
         const QcPlayerInput input = m_prediction.predict(*m_blocks.world(), m_gameMode.flightWanted(), m_gameMode.rules().movement());
@@ -150,6 +151,8 @@ void QcSessionCore::onMessage(QcMessage &&message)
         m_prediction.setIntent(intent);
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
+    } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {
+        m_serverPaused = pause->paused;
     } else if (m_vitals.apply(message) == QcClientVitals::Change::Health && m_vitals.isDead()) {
         // A player comes back from death on the ground.
         m_gameMode.setFlightWanted(false);

@@ -85,5 +85,7 @@ private:
     QcClientVitals m_vitals;
     bool m_playing = false;
     bool m_closed = false;
+    // The server's ticks pause (QcMsg::ServerPause, decision E-877): no prediction, no input.
+    bool m_serverPaused = false;
     quint64 m_mirroredApplied = 0;
 };

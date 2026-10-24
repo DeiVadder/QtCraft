@@ -130,6 +130,8 @@ qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARI
 qc_add_test(test_ui_enums SOURCES client/test_ui_enums.cpp LIBRARIES qc_app_core qc_worlds)
 # The character screens edit a draft: save, discard, close (E-852).
 qc_add_test(test_character_draft SOURCES client/test_character_draft.cpp LIBRARIES qc_app_core qc_worlds)
+# The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
+qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)

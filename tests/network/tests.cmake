@@ -6,6 +6,9 @@
 qc_add_test(test_login_protocol SOURCES network/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)
 qc_add_test(test_server_login SOURCES network/test_server_login.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_tcp_transport SOURCES network/test_tcp_transport.cpp LIBRARIES qc_network Qt::Network)
+# The pause of the server (decision E-877): by hand, and the keep-alives of a paused TCP link.
+qc_add_test(test_server_pause SOURCES network/test_server_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
+qc_add_test(test_pause_keepalive SOURCES network/test_pause_keepalive.cpp QcRawClient.h LIBRARIES qc_server Qt::Network)
 qc_add_test(test_network_game SOURCES network/test_network_game.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 240)
 target_compile_definitions(test_dedicated_server PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
