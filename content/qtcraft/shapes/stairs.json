@@ -1,6 +1,7 @@
 {
     "name": "stairs",
     "rotate": "facing",
+    "lockTextures": true,
     "flip": "half",
     "parts": [
         { "boxes": [[0, 0, 0, 1, 0.5, 1]] },

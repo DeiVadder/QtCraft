@@ -63,6 +63,8 @@ qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIB
 qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
+# Piston heads and diode tops of the base content (decision E-874).
+qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
@@ -101,6 +103,10 @@ set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120
 qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 # Dialogs that need an answer are modal for the whole window (E-852).
 qc_add_test(test_modal_dialog SOURCES client/test_modal_dialog.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+# A shown tooltip has a size and its text, its lines wrap at Ui.size.tooltip (E-874).
+qc_add_test(test_themed_tooltip SOURCES client/test_themed_tooltip.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+# The crosshair text of targeted entities: health only for creatures and players (E-874).
+qc_add_test(test_hud_target SOURCES client/test_hud_target.cpp LIBRARIES qc_base_content qc_app_core)
 # The on-screen keyboard: addresses with ports and IPv6, shift, umlauts, hidden passwords (E-584).
 qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_core qc_app_coreplugin)
 qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core)

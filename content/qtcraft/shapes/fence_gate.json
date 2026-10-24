@@ -1,6 +1,7 @@
 {
     "name": "fence_gate",
     "rotate": "facing",
+    "lockTextures": true,
     "parts": [
         {
             "boxes": [[0, 0.3125, 0.4375, 0.125, 1, 0.5625], [0.875, 0.3125, 0.4375, 1, 1, 0.5625]],

@@ -38,9 +38,9 @@ struct QcBlockState
     std::array<bool, qcBlockFaceCount> fullFace{};
     // Face of the definition whose texture shows on each world face (turned blocks such as furnaces).
     std::array<QcBlockFace, qcBlockFaceCount> faceSource = qcAllBlockFaces;
-    // Quarter turns (0..3, clockwise as the face is seen) of the texture on each world face of a full
-    // cube: the top of a turned block (glazed terracotta) and the bark of a lying log run with the
-    // block (decision E-751).
+    // Quarter turns (0..3, clockwise as the face is seen) of the texture on each world face, for full
+    // cubes and the boxes of shapes alike: the top of a turned block (glazed terracotta, the arrow of
+    // a repeater) and the bark of a lying log run with the block (decisions E-751, E-874).
     std::array<quint8, qcBlockFaceCount> faceUvTurns{};
     // Sixteenths of a turn (0..3, clockwise seen from above) the drawn faces turn beyond the quarter
     // turns of the boxes: the 16 directions of a standing sign (QcShapeDefinition::spin).

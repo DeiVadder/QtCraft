@@ -28,9 +28,19 @@ Loader {
         visible: true
         text: holder.text
 
+        // The lines wrap at a width of their own (Ui.size.tooltip, at most the window less the
+        // tooltip's margins and padding), never at the tooltip's: its width comes from this column,
+        // and a bound on availableWidth went round in a circle that could settle at 0 (decision E-874).
         contentItem: Column {
+            id: lines
+
+            // A popup's margins are -1 while unset.
+            readonly property real roomInWindow: (holder.Window.window ? holder.Window.window.width : Ui.size.tooltip)
+                - Math.max(0, tip.leftMargin) - Math.max(0, tip.rightMargin) - tip.leftPadding - tip.rightPadding
+            readonly property real wrapWidth: Math.max(0, Math.min(Ui.size.tooltip, roomInWindow))
+
             Text {
-                width: Math.min(implicitWidth, tip.availableWidth)
+                width: Math.min(implicitWidth, lines.wrapWidth)
                 text: tip.text.split("\n")[0]
                 font.pixelSize: tip.font.pixelSize
                 font.family: tip.font.family
@@ -41,7 +51,7 @@ Loader {
             }
 
             Text {
-                width: Math.min(implicitWidth, tip.availableWidth)
+                width: Math.min(implicitWidth, lines.wrapWidth)
                 visible: text !== ""
                 text: tip.text.split("\n").slice(1).join("\n")
                 font: tip.font

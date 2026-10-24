@@ -1,6 +1,7 @@
 {
     "name": "button",
     "rotate": "attach",
+    "lockTextures": true,
     "parts": [
         {
             "when": {

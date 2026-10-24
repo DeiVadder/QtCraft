@@ -46,7 +46,7 @@ void writeAabbs(QDataStream &stream, const QList<QcAabb> &boxes)
 
 void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 {
-    stream << shape.name << shape.rotate << shape.flip << shape.spin << static_cast<quint32>(shape.parts.size());
+    stream << shape.name << shape.rotate << shape.flip << shape.spin << shape.lockTextures << static_cast<quint32>(shape.parts.size());
     for (const QcShapePart &part : shape.parts) {
         stream << static_cast<quint32>(part.when.size());
         for (const QcShapeCondition &condition : part.when) {
@@ -120,7 +120,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
 [[nodiscard]] std::optional<QcShapeDefinition> readShape(QDataStream &stream)
 {
     QcShapeDefinition shape;
-    stream >> shape.name >> shape.rotate >> shape.flip >> shape.spin;
+    stream >> shape.name >> shape.rotate >> shape.flip >> shape.spin >> shape.lockTextures;
     const std::optional<quint32> partCountRead = QcStreamLimits::readCount(stream, QcShapeDefinition::maxParts);
     if (!partCountRead) {
         return std::nullopt;
@@ -400,6 +400,9 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
     stream << block.floats << static_cast<qint32>(block.bites.food) << static_cast<qint32>(block.campfire.slotCount);
     // How a hand holds its item (decision E-831).
     QcHoldSerializer::write(stream, block.hold);
+    // The material and family of a building part, "<material>/<family>" (the creative tab Building
+    // parts sorts by it, decision E-874).
+    stream << block.partOf;
 }
 
 std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
@@ -429,10 +432,14 @@ std::optional<QcBlockDefinition> readBlock(QDataStream &stream)
 
     block = withBehaviour(stream, std::move(*block));
     std::optional<QcHoldDisplay> hold = block ? QcHoldSerializer::read(stream) : std::nullopt;
-    if (!hold || stream.status() != QDataStream::Ok) {
+    if (!hold) {
         return std::nullopt;
     }
     block->hold = *hold;
+    stream >> block->partOf;
+    if (stream.status() != QDataStream::Ok) {
+        return std::nullopt;
+    }
     return block;
 }
 

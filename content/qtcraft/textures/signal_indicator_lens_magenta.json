@@ -1,6 +1,6 @@
 {
     "name": "signal_indicator_lens_magenta",
-    "pattern": "gem",
+    "pattern": "slime",
     "primary": "#541f50",
     "secondary": "#782d73",
     "variation": 0.04,

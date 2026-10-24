@@ -1,7 +1,9 @@
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcCreativeCatalog.h"
 #include "QcTestUtil.h"
 
+#include <QDataStream>
 #include <QSet>
 #include <QTest>
 
@@ -90,7 +92,7 @@ private slots:
         const QcCreativeCatalog catalog(*m_content, u"en"_s);
         qsizetype total = 0;
         for (int tab = 1; tab < QcCreativeCatalog::categoryCount; ++tab) {
-            total += catalog.filter(C(tab), {}).size();
+            total += catalog.filter(static_cast<C>(tab), {}).size();
         }
         QCOMPARE(total, listedCount());
         QCOMPARE(catalog.entries().first().category, C::Blocks);
@@ -110,6 +112,35 @@ private slots:
         const QStringList pickaxes = namesOf(*m_content, german.filter(C::Tools, u"diamond pickaxe"_s));
         QCOMPARE(pickaxes, QStringList{u"qtcraft:diamond_pickaxe"_s});
         QVERIFY(german.filter(C::Food, u"pickaxe"_s).isEmpty());
+    }
+
+    // The client builds its catalogue from the content the server sent (decision E-874): the
+    // building parts keep their material and family on the way, so their tab is not empty, and
+    // every other tab has items too.
+    void clientCatalogueHasEveryTab()
+    {
+        QByteArray bytes;
+        {
+            QDataStream out(&bytes, QIODevice::WriteOnly);
+            QcContentSerializer::write(*m_content, out);
+        }
+        QDataStream in(bytes);
+        const QcResult<QcContentRegistry> received = QcContentSerializer::read(in);
+        QVERIFY2(received.has_value(), qcErrorText(received).constData());
+
+        using C = QcCreativeCatalog::Category;
+        const QcCreativeCatalog catalog(*received, u"en"_s);
+        for (int tab = 0; tab < QcCreativeCatalog::categoryCount; ++tab) {
+            QVERIFY2(!catalog.filter(static_cast<C>(tab), {}).isEmpty(), qPrintable(u"tab %1 is empty"_s.arg(tab)));
+        }
+        const QStringList parts = namesOf(*received, catalog.filter(C::Parts, {}));
+        for (const QString &part : {u"qtcraft:oak_stairs"_s, u"qtcraft:oak_slab"_s, u"qtcraft:oak_vertical_slab"_s, u"qtcraft:oak_fence"_s,
+                                    u"qtcraft:cobblestone_wall"_s, u"qtcraft:stone_stairs"_s}) {
+            QVERIFY2(parts.contains(part), qPrintable(part));
+        }
+        // A part is only in its own tab.
+        QVERIFY(!namesOf(*received, catalog.filter(C::Blocks, {})).contains(u"qtcraft:oak_stairs"_s));
+        QCOMPARE(QcCreativeCatalog(*received, u"en"_s).filter(C::Parts, {}).size(), QcCreativeCatalog(*m_content, u"en"_s).filter(C::Parts, {}).size());
     }
 
     void modItemsAppear()

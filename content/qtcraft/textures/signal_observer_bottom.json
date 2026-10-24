@@ -1,0 +1,8 @@
+{
+    "name": "signal_observer_bottom",
+    "pattern": "observer_bottom",
+    "primary": "#7a7a7a",
+    "secondary": "#5a5a5a",
+    "variation": 0.08,
+    "seed": 2933
+}

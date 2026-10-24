@@ -106,10 +106,17 @@ QcBlockFace turnedFace(QcBlockFace face, int turns)
 // Quarter turns of the texture on the world face `face` of a state turned by `turns`. Horizontal turns
 // take the top and bottom textures with them. A lying block (turnAxisX, turnAxisZ) turns the
 // textures of the faces along its axis whose upward texture direction (y on the sides, z on the top
-// and bottom) crosses the axis, so stripes run along the block. Tilted facings keep their textures.
+// and bottom) crosses the axis, so stripes run along the block. Tilted facings (turnUp, turnDown)
+// keep the textures of the sides upright; the top and bottom textures tilt onto the south and north
+// sides with their upward direction (north on the top, south on the bottom) turned as the block
+// turns, which on the north side is upside down (decision E-874: an observer's arrows keep pointing
+// from its face to its back).
 quint8 uvTurns(QcBlockFace face, int turns)
 {
     const bool vertical = face == QcBlockFace::Up || face == QcBlockFace::Down;
+    if (turns == turnUp || turns == turnDown) {
+        return face == QcBlockFace::North ? 2 : 0;
+    }
     if (turns >= 1 && turns <= 3) {
         if (!vertical) {
             return 0;

@@ -1,6 +1,7 @@
 {
     "name": "vertical_slab",
     "rotate": "facing",
+    "lockTextures": true,
     "parts": [
         { "when": { "double": false }, "boxes": [[0, 0, 0, 1, 1, 0.5]] },
         { "when": { "double": true }, "boxes": [[0, 0, 0, 1, 1, 1]] }

@@ -96,6 +96,8 @@ QtObject {
         // A small line chart (LineChart) and the list of the admin screen's chat, log and output.
         property real chart
         property real lines
+        // The widest a tooltip's text runs before it wraps (ThemedToolTip).
+        property real tooltip
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -176,6 +178,7 @@ QtObject {
         padHints: ui.px(48)
         chart: ui.px(64)
         lines: ui.px(200)
+        tooltip: ui.px(360)
         handbookEntries: ui.px(220)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)

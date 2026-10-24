@@ -4,6 +4,7 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/player/QcDials.h"
+#include "clientcore/session/QcClientEntity.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
@@ -11,6 +12,26 @@
 #include <cmath>
 
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// The name of `stack` in `language`: its custom name, else its item's; empty for an unknown item.
+QString stackName(const QcContentRegistry &content, const QcItemStack &stack, const QString &language)
+{
+    if (!stack.name().isEmpty()) {
+        return stack.name();
+    }
+    return content.isValidItem(stack.item) ? content.translations().translate(content.item(stack.item).translationKey, language) : QString();
+}
+
+// The translated name of the item `item`, else of the item with the content key `fallback`.
+QString itemName(const QcContentRegistry &content, QcItemId item, const QString &fallback, const QString &language)
+{
+    const QString key = content.isValidItem(item) ? content.item(item).translationKey : fallback;
+    return content.translations().translate(key, language);
+}
+
+} // namespace
 
 QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent)
     : QObject(parent)
@@ -22,6 +43,36 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
 {
 }
 
+QcHudState::EntityTarget QcHudState::entityTarget(const QcContentRegistry &content, const QcClientEntity &entity, const QString &language)
+{
+    if (entity.isMinecart()) {
+        return {itemName(content, entity.item.item, u"item.qtcraft.minecart"_s, language), {}};
+    }
+    if (entity.isHanging()) {
+        const bool painting = entity.hanging.type == QcHangingType::Painting;
+        const QString own = itemName(content, entity.held, painting ? u"item.qtcraft.painting"_s : u"item.qtcraft.item_frame"_s, language);
+        const QString shown = entity.item.isEmpty() ? QString() : stackName(content, entity.item, language);
+        //: An item frame in the target text: %1 the frame, %2 the item it holds.
+        return {shown.isEmpty() ? own : tr("%1 (%2)", "item frame with its item").arg(own, shown), {}};
+    }
+    if (entity.isArmourStand()) {
+        return {entity.name.isEmpty() ? content.translations().translate(u"item.qtcraft.armor_stand"_s, language) : entity.name, {}};
+    }
+
+    const QcMobDefinition *creature = entity.creature(content);
+    if (!creature && !entity.isPlayer()) {
+        return {entity.name, {}};
+    }
+    QString label = creature ? content.translations().translate(creature->translationKey, language) : entity.name;
+    // A creature a name tag named (decision E-866) shows its name first.
+    if (creature && !entity.name.isEmpty()) {
+        //: A named creature in the target text: %1 its name, %2 its kind.
+        label = tr("%1 (%2)", "named creature").arg(entity.name, label);
+    }
+    label += u" (%1)"_s.arg(qRound(entity.health));
+    return {label, creature ? u"mob:"_s + creature->name : QString()};
+}
+
 void QcHudState::updateTarget()
 {
     const QcClientSession &session = *m_parts.session;
@@ -30,23 +81,10 @@ void QcHudState::updateTarget()
     const std::optional<quint32> targetEntity = session.hand().targetEntity();
     QString targetLabel;
     m_targetName.clear();
-    if (targetEntity && session.entities().value(*targetEntity).isMinecart()) {
-        const QcItemStack item = session.entities().value(*targetEntity).item;
-        const QString key = content.isValidItem(item.item) ? content.item(item.item).translationKey : u"item.qtcraft.minecart"_s;
-        targetLabel = content.translations().translate(key, m_settings.contentLanguage());
-    } else if (targetEntity) {
-        const QcClientEntity entity = session.entities().value(*targetEntity);
-        const QcMobDefinition *creature = entity.creature(content);
-        targetLabel = creature ? content.translations().translate(creature->translationKey, m_settings.contentLanguage()) : entity.name;
-        // A creature a name tag named (decision E-866) shows its name first.
-        if (creature && !entity.name.isEmpty()) {
-            //: A named creature in the target text: %1 its name, %2 its kind.
-            targetLabel = tr("%1 (%2)", "named creature").arg(entity.name, targetLabel);
-        }
-        if (creature) {
-            m_targetName = u"mob:"_s + creature->name;
-        }
-        targetLabel += u" (%1)"_s.arg(qRound(entity.health));
+    if (targetEntity) {
+        const EntityTarget entity = entityTarget(content, session.entities().value(*targetEntity), m_settings.contentLanguage());
+        targetLabel = entity.label;
+        m_targetName = entity.name;
     } else if (target) {
         if (const std::optional<QcBlockId> block = session.world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = content.block(*block);

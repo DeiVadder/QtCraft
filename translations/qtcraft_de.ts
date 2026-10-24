@@ -4982,19 +4982,26 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="44"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="56"/>
+        <source>%1 (%2)</source>
+        <comment>item frame with its item</comment>
+        <extracomment>An item frame in the target text: %1 the frame, %2 the item it holds.</extracomment>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="70"/>
         <source>%1 (%2)</source>
         <comment>named creature</comment>
         <extracomment>A named creature in the target text: %1 its name, %2 its kind.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="68"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="106"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="68"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="106"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -6779,12 +6786,12 @@ Als Nächstes: %3</translation>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="183"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="185"/>
         <source>%1 was shot by %2</source>
         <translation>%1 wurde von %2 erschossen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="184"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="186"/>
         <source>%1 was slain by %2</source>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>

@@ -26,6 +26,10 @@ struct QcShapeDefinition
     QString rotate;
     QString flip;
     QString spin;
+    // Whether the textures of its faces stay as on the world's faces whatever `rotate` turns
+    // (building parts, so boards and brick courses line up with the full blocks beside them, like
+    // the reference's uvlock); directional shapes (repeaters, observers, beds) turn theirs (E-874).
+    bool lockTextures = false;
 
     bool isEmpty() const { return parts.isEmpty(); }
     int boxCount() const

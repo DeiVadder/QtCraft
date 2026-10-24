@@ -18,8 +18,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // block actions and acknowledges them (decision E-853), 70 brings the enchanting table and
 // enchantments on stacks (decision E-864), 71 the anvil and the prior work on stacks (decision E-866),
 // 72 the names of chests and machines (OpenMachine), content keys of chat lines (ChatMessage) and
-// items that store their enchantments in the content (decision E-873).
-inline constexpr quint32 version = 72;
+// items that store their enchantments in the content (decision E-873), 73 the building part of a
+// block (`partOf`) in the content (decision E-874).
+inline constexpr quint32 version = 73;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

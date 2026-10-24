@@ -120,13 +120,33 @@ QColor paintObserverBack(const QcTextureSpec &spec, int x, int y, QColor color)
     return x < 1 || y < 1 || x >= size - 1 || y >= size - 1 ? scaled(color, 0.75) : color;
 }
 
-// A side with an arrow (secondary) pointing up, towards the face.
-QColor paintObserverSide(const QcTextureSpec &spec, int x, int y, QColor color)
+// An arrow (secondary) pointing to the texture's top edge.
+bool observerArrowAt(int x, int y)
 {
     const int arrow = std::abs(2 * x - 15);
     const bool head = y >= 3 && y <= 7 && arrow <= 2 * (y - 3) + 1;
     const bool shaft = (x == 7 || x == 8) && y >= 7 && y <= 12;
-    return head || shaft ? varied(spec, spec.secondary, x, y, 17) : color;
+    return head || shaft;
+}
+
+// A side: two grooves (secondary) along the texture, no direction, since a side's texture stands
+// upright whichever way the observer faces (decision E-874).
+QColor paintObserverSide(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    const bool groove = (x == 4 || x == 11) && y >= 3 && y <= 12;
+    return groove ? varied(spec, spec.secondary, x, y, 17) : color;
+}
+
+// The top and the bottom: an arrow from the face to the back, where the pulse leaves. On the top the
+// face lies at the texture's top edge, on the bottom at its bottom edge (decision E-874).
+QColor paintObserverTop(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return observerArrowAt(x, size - 1 - y) ? varied(spec, spec.secondary, x, y, 17) : color;
+}
+
+QColor paintObserverBottom(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return observerArrowAt(x, y) ? varied(spec, spec.secondary, x, y, 17) : color;
 }
 
 // A stone face (primary) with a round mouth (dispenser) or a narrow slot (dropper) in the secondary colour.
@@ -188,7 +208,7 @@ QColor paintMinecart(const QcTextureSpec &spec, int x, int y, QColor color)
     return rim ? scaled(color, 1.15) : varied(spec, color, x, y, 13);
 }
 
-constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
+constexpr std::array<std::pair<Pattern, Painter>, 17> painters = {{
     {Pattern::Dust, paintDust},
     {Pattern::Lever, paintLever},
     {Pattern::Repeater, paintRepeater},
@@ -200,6 +220,8 @@ constexpr std::array<std::pair<Pattern, Painter>, 15> painters = {{
     {Pattern::ObserverFace, paintObserverFace},
     {Pattern::ObserverBack, paintObserverBack},
     {Pattern::ObserverSide, paintObserverSide},
+    {Pattern::ObserverTop, paintObserverTop},
+    {Pattern::ObserverBottom, paintObserverBottom},
     {Pattern::Dispenser, paintDispenser},
     {Pattern::Dropper, paintDropper},
     {Pattern::Rail, paintRail},

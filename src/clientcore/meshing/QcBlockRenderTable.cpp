@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numbers>
+#include <tuple>
 
 using namespace Qt::StringLiterals;
 
@@ -81,7 +82,21 @@ SideRect rectOf(const QcAabb &box, QcBlockFace face)
             static_cast<float>(high(box)[static_cast<std::size_t>(b)])};
 }
 
-QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRectF &uv, bool stretch)
+// The texture position (u, v) on a face turned by `turns` quarter turns, as the full cube turns its
+// face textures (corner k takes the texture corner k + turns): (u, v) -> (1 - v, u) per turn.
+std::pair<float, float> turnedUv(float u, float v, std::size_t turns)
+{
+    for (std::size_t turn = 0; turn < turns % 4; ++turn) {
+        const float turnedU = 1.0f - v;
+        v = u;
+        u = turnedU;
+    }
+    return {u, v};
+}
+
+// `turns`: quarter turns of the face's texture (QcBlockState::faceUvTurns), so a turned shape turns
+// its textures with it as the full cube does (an arrow on a repeater points where it sends).
+QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRectF &uv, bool stretch, std::size_t turns)
 {
     QcBlockRenderTable::Quad quad;
     quad.face = face;
@@ -116,6 +131,7 @@ QcBlockRenderTable::Quad makeQuad(const QcAabb &box, QcBlockFace face, const QRe
         }
 
         quad.corners[corner] = position;
+        std::tie(u, v) = turnedUv(u, v, turns);
         quad.uvs[corner] = {static_cast<float>(uv.left() + u * uv.width()), static_cast<float>(uv.bottom() - v * uv.height())};
     }
 
@@ -141,8 +157,9 @@ struct Shape
 };
 
 // The shape of `state`; boxes without a texture slot of their own use the face textures `faceUv`.
+// `lockTextures`: the face textures stay as on the world's faces (QcShapeDefinition::lockTextures).
 [[nodiscard]] Shape shapeOf(const QcBlockState &state, const QcBlockDefinition &block, const QcTextureAtlas &atlas,
-                            const std::array<QRectF, 6> &faceUv)
+                            const std::array<QRectF, 6> &faceUv, bool lockTextures)
 {
     Shape shape;
     for (qsizetype b = 0; b < state.boxes.size(); ++b) {
@@ -154,7 +171,8 @@ struct Shape
                 continue;
             }
             const QRectF uv = slot.isEmpty() ? faceUv[static_cast<std::size_t>(face)] : atlas.uv(block.slotTexture(slot));
-            const QcBlockRenderTable::Quad quad = makeQuad(box, face, uv, stretch);
+            const std::size_t turns = lockTextures ? 0 : state.faceUvTurns[static_cast<std::size_t>(face)];
+            const QcBlockRenderTable::Quad quad = makeQuad(box, face, uv, stretch, turns);
             if (quad.boundary) {
                 shape.cover[static_cast<std::size_t>(face)].append(quad.rect);
             }
@@ -247,7 +265,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
     entry.faceUvTurns = state.faceUvTurns;
 
     if (!state.fullCube) {
-        Shape shape = shapeOf(state, block, atlas, entry.faceUv);
+        Shape shape = shapeOf(state, block, atlas, entry.faceUv, content.shapeOf(block).lockTextures);
         if (state.fineTurns > 0) {
             spin(shape, state.fineTurns);
         }

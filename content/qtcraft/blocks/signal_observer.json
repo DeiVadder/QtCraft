@@ -21,7 +21,7 @@
     "textures": {
         "all": "signal_observer_side",
         "top": "signal_observer_top",
-        "bottom": "signal_observer_top",
+        "bottom": "signal_observer_bottom",
         "north": "signal_observer_front",
         "south": "signal_observer_back",
         "slots": {

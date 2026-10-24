@@ -209,6 +209,8 @@ struct QcTextureSpec
         ObserverFace,
         ObserverBack,
         ObserverSide,
+        ObserverTop,
+        ObserverBottom,
         Dispenser,
         Dropper,
         Rail,

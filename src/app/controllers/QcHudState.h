@@ -14,7 +14,9 @@
 #include <QStringList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
+class QcContentRegistry;
 class QcSettingsController;
+struct QcClientEntity;
 struct QcSessionParts;
 
 // HUD texts that change while playing (GameController.hud): what the crosshair points at with the
@@ -60,6 +62,16 @@ public:
     QcDebugHud *debug() const { return m_debug; }
     // Content name under the crosshair ("qtcraft:stone", "mob:qtcraft:pig") for the handbook key.
     QString targetName() const { return m_targetName; }
+
+    // What the crosshair text shows for a targeted entity in `language` (decision E-874) and the
+    // content name of a creature for the handbook key (empty for other kinds). Health only for
+    // creatures and players; carts, item frames, paintings and armour stands show their item's name.
+    struct EntityTarget
+    {
+        QString label;
+        QString name;
+    };
+    [[nodiscard]] static EntityTarget entityTarget(const QcContentRegistry &content, const QcClientEntity &entity, const QString &language);
 
     // The session's target and mining progress, once per frame.
     void updateTarget();
