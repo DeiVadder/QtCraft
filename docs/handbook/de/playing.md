@@ -725,9 +725,9 @@ Jeder Spieler hat einen Spielmodus. Im **Überleben** sammelst, stellst her, iss
 
 Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. Im Flug steigt **Leertaste**, **Umschalt** sinkt und **Strg** verdoppelt das Tempo (10,9 m/s, mit Sprint 21,6 m/s); das Sichtfeld weitet sich etwas. Sinkst du auf den Boden, landest du und der Flug endet. Die Showcase-Welt hat eine Plattform hoch über dem Boden, die nur Fliegende erreichen.
 
-**Kreativ-Inventar**
+**Kreativinventar**
 
-**E** öffnet das Kreativ-Inventar: alle Blöcke und Gegenstände des Spiels und der geladenen Mods, in Reitern (Blöcke, Bauteile, Werkzeug und Rüstung, Nahrung, Sonstiges) und mit einer Suche, die Namen in deiner Sprache, englische Namen und IDs wie `oak_planks` findet. Linksklick nimmt einen vollen Stapel, Rechtsklick einen Gegenstand, Umschalt-Klick legt einen vollen Stapel direkt ins Inventar; ein Klick auf ein Feld legt ihn dort ab. Der Mülleimer löscht einen Stapel. **Herstellen und Rüstung** führt zum gewohnten Inventar mit Werkbankraster und Rüstungsfeldern.
+**E** öffnet das Kreativinventar: alle Blöcke und Gegenstände des Spiels und der geladenen Mods, in Reitern (Blöcke, Bauteile, Werkzeug und Rüstung, Nahrung, Sonstiges) und mit einer Suche, die Namen in deiner Sprache, englische Namen und IDs wie `oak_planks` findet. Linksklick nimmt einen vollen Stapel, Rechtsklick einen Gegenstand, Umschalt-Klick legt einen vollen Stapel direkt ins Inventar; ein Klick auf ein Feld legt ihn dort ab. Der Mülleimer löscht einen Stapel. **Herstellen und Rüstung** führt zum gewohnten Inventar mit Werkbankraster und Rüstungsfeldern.
 
 **Regeln im Kreativmodus**
 
@@ -738,7 +738,7 @@ Tippe zweimal schnell **Leertaste**, um abzuheben oder das Fliegen zu beenden. I
 
 **Zwischen den Modi wechseln**
 
-Überleben und Kreativ haben je ein eigenes Inventar und eigene Rüstung. Ein Wechsel legt die aktuellen beiseite und holt die des anderen Modus zurück, Kreativ-Gegenstände landen also nie im Überlebensinventar. Gesundheit und Nahrung bleiben, wie sie waren. Truhen gehören zur Welt: Was du im Kreativmodus in eine Truhe legst, liegt im Überleben auch dort.
+Überleben und Kreativ haben je ein eigenes Inventar und eigene Rüstung. Ein Wechsel legt die aktuellen beiseite und holt die des anderen Modus zurück, Kreativ-Gegenstände landen also nie im Überlebensinventar; nichts geht verloren, und eine Nachricht im Chat sagt, welches Inventar du jetzt hast. Ein in der Hand geöffneter Rucksack schließt sich. Gesundheit und Nahrung bleiben, wie sie waren. Truhen gehören zur Welt: Was du im Kreativmodus in eine Truhe legst, liegt im Überleben auch dort.
 
 **Siehe auch**
 

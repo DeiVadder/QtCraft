@@ -738,7 +738,7 @@ Tap **Space** twice quickly to take off or to stop flying. While flying, **Space
 
 **Changing between the modes**
 
-Survival and creative each have their own inventory and armour. Changing the mode puts the current ones aside and brings back those of the other mode, so creative items never end up in your survival inventory. Health and food stay as they were. Chests belong to the world: what you put into a chest in creative mode is there in survival too.
+Survival and creative each have their own inventory and armour. Changing the mode puts the current ones aside and brings back those of the other mode, so creative items never end up in your survival inventory; nothing is lost, and a message in the chat says which inventory you now have. A backpack open in your hand closes. Health and food stay as they were. Chests belong to the world: what you put into a chest in creative mode is there in survival too.
 
 **See also**
 

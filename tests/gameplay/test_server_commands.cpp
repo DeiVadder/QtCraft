@@ -403,10 +403,14 @@ private slots:
         join();
         chat(u"/gamemode"_s);
         QCOMPARE(lastLine(), u"Game mode of Raw: survival"_s);
+        const qsizetype from = m_client->chatLines.size();
         chat(u"/gamemode creative"_s);
-        QCOMPARE(lastLine(), u"Set the game mode of Raw to creative"_s);
-        // The mode is part of the key, so the client translates it with the line (E-094).
-        QCOMPARE(m_client->chatKeys.constLast().key, u"Set the game mode of %1 to creative"_s);
+        // The confirmation, then the hint on the swapped inventory set (decision E-283). The mode
+        // is part of the key, so the client translates it with the line (E-094).
+        QCOMPARE(m_client->chatLines.mid(from),
+            (QStringList{u"Set the game mode of Raw to creative"_s,
+                u"Creative inventory: your survival inventory is kept and comes back when you leave creative mode"_s}));
+        QCOMPARE(m_client->chatKeys.at(from).key, u"Set the game mode of %1 to creative"_s);
         chat(u"/gamemode"_s);
         QCOMPARE(lastLine(), u"Game mode of Raw: creative"_s);
         QCOMPARE(m_client->chatKeys.constLast().key, u"Game mode of %1: creative"_s);

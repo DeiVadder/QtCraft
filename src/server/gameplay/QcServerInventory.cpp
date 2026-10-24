@@ -366,6 +366,13 @@ void QcServerInventory::dropAll(QcServerClient &client)
     send(client);
 }
 
+void QcServerInventory::closeHeldScreen(QcServerClient &client)
+{
+    if (client.screen.held) {
+        m_screens.close(client, true);
+    }
+}
+
 void QcServerInventory::returnScreenInputs(QcServerClient &client)
 {
     QList<QcItemStack> inputs;

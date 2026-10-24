@@ -27,11 +27,12 @@ public:
     // (server.json, an unsaved world) or else the world's default.
     QcGameMode defaultMode() const;
     // Puts the player into `mode`. A mode of the other inventory set swaps the inventory and armour
-    // with the kept ones (the crafting grid goes back into the old inventory first); a mode without
-    // flight ends a flight; a mode without a body leaves the minecart; leaving spectator mode stops
-    // the flight's momentum and lifts a player inside blocks out of them (decision E-730). Tells the
-    // player, sends the inventory and the player list again.
-    void setMode(QcServerClient &client, QcGameMode mode);
+    // with the kept ones (a backpack open in the hand is closed and the crafting grid goes back into
+    // the old inventory first; decision E-283); a mode without flight ends a flight; a mode without
+    // a body leaves the minecart; leaving spectator mode stops the flight's momentum and lifts a
+    // player inside blocks out of them (decision E-730). Tells the player, sends the inventory and
+    // the player list again. True when the inventory set was swapped.
+    bool setMode(QcServerClient &client, QcGameMode mode);
     // What follows from the mode without changing it (frozen hunger); after joining.
     static void applyRules(QcServerClient &client);
     // The player's mode; in adventure mode with the world's allow-lists (decision E-735).

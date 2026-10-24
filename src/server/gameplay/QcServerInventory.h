@@ -47,6 +47,9 @@ public:
     // does not fit is thrown; catalogue items that do not fit are gone); the screen stays open and
     // nothing is sent.
     void returnScreenInputs(QcServerClient &client);
+    // Closes the screen of a backpack open in the hand (decision E-833), for the player too; no
+    // other screen. The item in the locked slot keeps its contents, nothing else is touched.
+    void closeHeldScreen(QcServerClient &client);
     // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
     void giveOrThrow(QcServerClient &client, const QcItemStack &stack);
     // Spawns the stack as an item entity thrown from the player's eyes along the view direction.

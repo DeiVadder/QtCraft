@@ -85,6 +85,16 @@ private:
         send(QcMsg::FinishMining{pos});
     }
 
+    // The keys of the chat lines the client got since `from`.
+    QStringList keysSince(qsizetype from) const
+    {
+        QStringList keys;
+        for (qsizetype i = from; i < m_client->chatKeys.size(); ++i) {
+            keys.append(m_client->chatKeys[i].key);
+        }
+        return keys;
+    }
+
 private slots:
     void newPlayersStartInTheDefaultMode()
     {
@@ -114,6 +124,94 @@ private slots:
         chat(u"/gamemode c"_s);
         QCOMPARE(countOf(item("qtcraft:diamond")), 5);
         QCOMPARE(countOf(item("qtcraft:stone")), 0);
+    }
+
+    void swappingTheInventorySetTellsThePlayer()
+    {
+        const QString creativeHint = u"Creative inventory: your survival inventory is kept and comes back when you leave creative mode"_s;
+        const QString survivalHint = u"Survival inventory restored: your creative inventory is kept for the next time in creative mode"_s;
+        join();
+
+        qsizetype from = m_client->chatKeys.size();
+        chat(u"/gamemode creative"_s);
+        QCOMPARE(keysSince(from), (QStringList{u"Set the game mode of %1 to creative"_s, creativeHint}));
+
+        from = m_client->chatKeys.size();
+        chat(u"/gamemode adventure"_s);
+        QCOMPARE(keysSince(from), (QStringList{u"Set the game mode of %1 to adventure"_s, survivalHint}));
+
+        // Survival and adventure share their inventory: no hint.
+        from = m_client->chatKeys.size();
+        chat(u"/gamemode survival"_s);
+        QCOMPARE(keysSince(from), QStringList{u"Set the game mode of %1 to survival"_s});
+
+        // Another one (here the console) changing the mode hears of the swap as well.
+        QList<QcMsg::ChatMessage> console;
+        from = m_client->chatKeys.size();
+        m_server->runConsoleCommand(u"gamemode creative Raw"_s, [&console](const QcMsg::ChatMessage &line) { console.append(line); });
+        QcTestUtil::pump();
+        QCOMPARE(console.size(), 1);
+        QCOMPARE(console.first().key, u"Set the game mode of %1 to creative; the creative inventory is in use, the survival one is kept"_s);
+        QCOMPARE(keysSince(from), (QStringList{u"Your game mode is now creative"_s, creativeHint}));
+
+        // The same mode again swaps nothing.
+        console.clear();
+        from = m_client->chatKeys.size();
+        m_server->runConsoleCommand(u"gamemode creative Raw"_s, [&console](const QcMsg::ChatMessage &line) { console.append(line); });
+        QcTestUtil::pump();
+        QCOMPARE(keysSince(from), QStringList{u"Your game mode is now creative"_s});
+        QCOMPARE(console.size(), 1);
+        QCOMPARE(console.first().key, u"Set the game mode of %1 to creative"_s);
+
+        // Back to survival from the console: the swap the other way.
+        console.clear();
+        from = m_client->chatKeys.size();
+        m_server->runConsoleCommand(u"gamemode survival Raw"_s, [&console](const QcMsg::ChatMessage &line) { console.append(line); });
+        QcTestUtil::pump();
+        QCOMPARE(console.size(), 1);
+        QCOMPARE(console.first().key, u"Set the game mode of %1 to survival; the survival inventory is back, the creative one is kept"_s);
+        QCOMPARE(keysSince(from), (QStringList{u"Your game mode is now survival"_s, survivalHint}));
+    }
+
+    void aBackpackOpenInTheHandClosesWhenTheInventorySetIsSwapped()
+    {
+        join();
+        chat(u"/give backpack"_s);
+        chat(u"/give cobblestone 7"_s);
+        const int slot = slotOf(item("qtcraft:backpack"));
+        QVERIFY(slot >= 0 && slot < QcInventory::hotbarSize);
+        send(QcMsg::SelectHotbarSlot{slot});
+        send(QcMsg::ConsumeItem{});
+        QCOMPARE(m_client->openMachineHeldSlot, slot);
+        QVERIFY(!m_client->machineClosed);
+
+        // A stack into the open backpack: the item in the locked slot carries it.
+        const QcItemStack cobblestone{item("qtcraft:cobblestone"), 7, 0};
+        move(slotOf(cobblestone.item), QcMsg::MoveInventoryItem::machineInputSlot);
+        QCOMPARE(countOf(cobblestone.item), 0);
+        QCOMPARE(m_client->stacks.at(slot).contents().value(0), cobblestone);
+
+        // Survival and adventure share the inventory: the backpack stays open.
+        chat(u"/gamemode adventure"_s);
+        QVERIFY(!m_client->machineClosed);
+
+        // No screen opens again after the swap (a held slot the client would lock).
+        constexpr int noScreenSent = -2;
+        m_client->openMachineHeldSlot = noScreenSent;
+        chat(u"/gamemode creative"_s);
+        QVERIFY(m_client->machineClosed);
+        QCOMPARE(m_client->openMachineHeldSlot, noScreenSent);
+        QCOMPARE(countOf(item("qtcraft:backpack")), 0);
+
+        // The creative inventory has its own slot there; using it changes nothing in the kept set.
+        send(QcMsg::CreativeItem{slot, {item("qtcraft:dirt"), 5, 0}});
+        QCOMPARE(countOf(item("qtcraft:dirt")), 5);
+        chat(u"/gamemode survival"_s);
+        QCOMPARE(m_client->openMachineHeldSlot, noScreenSent);
+        QCOMPARE(countOf(item("qtcraft:backpack")), 1);
+        QCOMPARE(countOf(item("qtcraft:dirt")), 0);
+        QCOMPARE(m_client->stacks.at(slot).item, item("qtcraft:backpack"));
+        QCOMPARE(m_client->stacks.at(slot).contents().value(0), cobblestone);
     }
 
     void catalogueItemsAreRefusedInSurvival()

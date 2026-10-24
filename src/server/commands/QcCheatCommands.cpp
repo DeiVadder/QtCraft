@@ -57,6 +57,12 @@ constexpr ModeKeys modeSet{QT_TRANSLATE_NOOP("QcServerMessages", "Set the game m
                            QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to creative"),
                            QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to adventure"),
                            QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to spectator")};
+// The operator's line when the other player's inventory set was swapped (decision E-283).
+constexpr ModeKeys modeSetSwapped{
+    QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to survival; the survival inventory is back, the creative one is kept"),
+    QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to creative; the creative inventory is in use, the survival one is kept"),
+    QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to adventure; the survival inventory is back, the creative one is kept"),
+    QT_TRANSLATE_NOOP("QcServerMessages", "Set the game mode of %1 to spectator; the survival inventory is back, the creative one is kept")};
 constexpr ModeKeys modeNow{QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now survival"),
                            QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now creative"),
                            QT_TRANSLATE_NOOP("QcServerMessages", "Your game mode is now adventure"),
@@ -65,6 +71,12 @@ constexpr ModeKeys newPlayersStart{QT_TRANSLATE_NOOP("QcServerMessages", "New pl
                                    QT_TRANSLATE_NOOP("QcServerMessages", "New players start in creative"),
                                    QT_TRANSLATE_NOOP("QcServerMessages", "New players start in adventure"),
                                    QT_TRANSLATE_NOOP("QcServerMessages", "New players start in spectator")};
+
+// The player's hint when his inventory set was swapped (decision E-283): the other set is kept.
+constexpr const char *creativeInventoryHint = QT_TRANSLATE_NOOP(
+    "QcServerMessages", "Creative inventory: your survival inventory is kept and comes back when you leave creative mode");
+constexpr const char *survivalInventoryHint =
+    QT_TRANSLATE_NOOP("QcServerMessages", "Survival inventory restored: your creative inventory is kept for the next time in creative mode");
 
 // The usage of /gamerule, also the reply to an unknown rule or a wrong value.
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
@@ -472,10 +484,14 @@ void QcCheatCommands::gamemode(const QcCommandContext &context)
 
 void QcCheatCommands::setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode)
 {
-    m_parts.gameModes.setMode(target, mode);
-    context.reply(modeSet(mode), {target.name});
-    if (&target != context.source.player()) {
+    const bool swapped = m_parts.gameModes.setMode(target, mode);
+    const bool other = &target != context.source.player();
+    context.reply(swapped && other ? modeSetSwapped(mode) : modeSet(mode), {target.name});
+    if (other) {
         target.connection->send(QcChatText::message(modeNow(mode)));
+    }
+    if (swapped) {
+        target.connection->send(QcChatText::message(mode == QcGameMode::Creative ? creativeInventoryHint : survivalInventoryHint));
     }
 }
 

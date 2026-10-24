@@ -25,9 +25,12 @@ QcGameMode QcServerGameModes::defaultMode() const
     return m_state.config().defaultGameMode.value_or(m_state.info().defaultGameMode);
 }
 
-void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
+bool QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
 {
-    if (QcGameModes::inventorySet(client.gameMode) != QcGameModes::inventorySet(mode)) {
+    const bool swapsInventory = QcGameModes::inventorySet(client.gameMode) != QcGameModes::inventorySet(mode);
+    if (swapsInventory) {
+        // A backpack open in the hand is locked to a slot of the inventory that is put aside.
+        m_inventory.closeHeldScreen(client);
         // The items of the grid and the stonecutter belong to the inventory that is put aside.
         m_crafting.returnCraftingGrid(client);
         m_inventory.returnScreenInputs(client);
@@ -54,6 +57,7 @@ void QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
     m_state.notePlayerListChanged();
     send(client, m_state.info().adventure);
     m_inventory.send(client);
+    return swapsInventory;
 }
 
 void QcServerGameModes::comeOutOfBlocks(QcServerClient &client) const
