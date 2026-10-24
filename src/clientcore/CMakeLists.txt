@@ -198,6 +198,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureArmourPatterns.h textures/QcTextureArmourPatterns.cpp
     textures/QcTextureAtlas.h textures/QcTextureAtlas.cpp
     textures/QcTextureBuildingPatterns.h textures/QcTextureBuildingPatterns.cpp
+    textures/QcTextureCoatPatterns.h textures/QcTextureCoatPatterns.cpp
     textures/QcTextureCraftPatterns.h textures/QcTextureCraftPatterns.cpp
     textures/QcTextureDetail.h textures/QcTextureDetail.cpp
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp

@@ -272,6 +272,9 @@ struct QcTextureSpec
         // Reeds (decision E-850): thin stalks with long leaves (primary), a few with a brown head
         // (secondary).
         Reeds,
+        // A creature's coat (QcTextureCoatPatterns, decision E-880): a few large smooth-edged
+        // patches (secondary) on the primary colour, like a Holstein cow; the seed places them.
+        Patches,
     };
 
     // Emblem and Icon only: up to 16 rows of up to 16 characters, top row first.

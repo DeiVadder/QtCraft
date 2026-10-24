@@ -1,8 +1,8 @@
 {
     "name": "cow_head",
-    "pattern": "speckle",
-    "primary": "#3a2a20",
-    "secondary": "#e8e2d8",
-    "variation": 0.2,
+    "pattern": "patches",
+    "primary": "#eeeae2",
+    "secondary": "#2e2620",
+    "variation": 0.08,
     "seed": 7102
 }

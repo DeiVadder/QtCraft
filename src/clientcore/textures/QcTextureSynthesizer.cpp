@@ -2,6 +2,7 @@
 
 #include "clientcore/textures/QcTextureArmourPatterns.h"
 #include "clientcore/textures/QcTextureBuildingPatterns.h"
+#include "clientcore/textures/QcTextureCoatPatterns.h"
 #include "clientcore/textures/QcTextureCraftPatterns.h"
 #include "clientcore/textures/QcTextureEmblem.h"
 #include "clientcore/textures/QcTextureFarmPatterns.h"
@@ -575,6 +576,9 @@ Painter painterFor(Pattern pattern)
     }
     if (const Painter painting = qcPaintingPatternPainter(pattern)) {
         return painting;
+    }
+    if (const Painter coat = qcCoatPatternPainter(pattern)) {
+        return coat;
     }
     const Painter armour = qcArmourPatternPainter(pattern);
     return armour ? armour : paintNoise;

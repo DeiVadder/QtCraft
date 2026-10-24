@@ -1,6 +1,6 @@
 {
     "name": "villager_smith_apron",
-    "pattern": "leather",
+    "pattern": "armour_leather",
     "primary": "#4a3426",
     "secondary": "#35241a",
     "variation": 0.08,
