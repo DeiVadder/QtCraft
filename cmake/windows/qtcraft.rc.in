@@ -1,0 +1,34 @@
+// Resources of @QC_RC_NAME@.exe, configured by qc_add_windows_resources (cmake/QcWindowsResources.cmake).
+#include <winver.h>
+
+// IDI_ICON1: the name Qt's Windows platform plugin also takes for windows without their own icon.
+IDI_ICON1 ICON "@QC_RC_ICON@"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+PRODUCTVERSION @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+FILEFLAGS 0x0L
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "QtCraft"
+            VALUE "FileDescription", "@QC_RC_DESCRIPTION@"
+            VALUE "FileVersion", "@PROJECT_VERSION@"
+            VALUE "InternalName", "@QC_RC_NAME@"
+            VALUE "LegalCopyright", "Copyright 2026 the QtCraft authors"
+            VALUE "OriginalFilename", "@QC_RC_NAME@.exe"
+            VALUE "ProductName", "QtCraft"
+            VALUE "ProductVersion", "@PROJECT_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

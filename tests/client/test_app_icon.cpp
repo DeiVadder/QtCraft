@@ -3,10 +3,15 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "QcTestUtil.h"
 
+#include <QBuffer>
+#include <QFile>
+#include <QImageReader>
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
+#include <cstdlib>
 
 using namespace Qt::StringLiterals;
 
@@ -17,6 +22,50 @@ QImage solidTile(QColor colour)
     QImage tile(16, 16, QImage::Format_ARGB32);
     tile.fill(colour);
     return tile;
+}
+
+// The images of an .ico file as Qt's own ico reader (an independent decoder) sees them.
+QList<QImage> readIco(const QByteArray &data)
+{
+    QBuffer buffer;
+    buffer.setData(data);
+    buffer.open(QIODevice::ReadOnly);
+    QImageReader reader(&buffer, "ico");
+    QList<QImage> images;
+    for (int i = 0; i < reader.imageCount(); ++i) {
+        if (!reader.jumpToImage(i)) {
+            break;
+        }
+        images.append(reader.read().convertToFormat(QImage::Format_ARGB32_Premultiplied));
+    }
+    return images;
+}
+
+// The largest difference of a channel between two images of the same size.
+int largestDifference(const QImage &first, const QImage &second)
+{
+    int largest = 0;
+    for (int y = 0; y < first.height(); ++y) {
+        for (int x = 0; x < first.width(); ++x) {
+            const QRgb a = first.pixel(x, y);
+            const QRgb b = second.pixel(x, y);
+            largest = std::max({largest, std::abs(qRed(a) - qRed(b)), std::abs(qGreen(a) - qGreen(b)), std::abs(qBlue(a) - qBlue(b)),
+                                std::abs(qAlpha(a) - qAlpha(b))});
+        }
+    }
+    return largest;
+}
+
+QList<QImage> renderIcoImages(const QcTextureAtlas &atlas)
+{
+    QList<QImage> images;
+    const QList<int> sizes = QcAppIcon::icoSizes();
+    for (const int size : sizes) {
+        images.append(QcAppIcon::render(atlas.tile(u"qtcraft:grass_top"_s), atlas.tile(u"qtcraft:grass_side"_s),
+                                        atlas.tile(u"qtcraft:iron_pickaxe"_s), size)
+                          .convertToFormat(QImage::Format_ARGB32_Premultiplied));
+    }
+    return images;
 }
 
 } // namespace
@@ -121,6 +170,57 @@ private slots:
         QCOMPARE(QImage(QDir(iconSet).filePath(u"icon_256x256.png"_s)).convertToFormat(first.format()), first);
     }
 
+    // The Windows icon (decision E-875): every size from 16 to 256 pixels, read back by Qt's ico
+    // reader pixel for pixel (BMP entries below 256, a PNG entry for 256).
+    void icoHoldsEverySize()
+    {
+        QCOMPARE(QcAppIcon::icoSizes(), (QList<int>{16, 24, 32, 48, 64, 128, 256}));
+        QVERIFY2(QImageReader::supportedImageFormats().contains("ico"), "Qt's ico image plugin is needed to read the icon back");
+        const QImage half = solidTile(QColor(10, 200, 30, 128));
+        QList<QImage> images;
+        const QList<int> sizes = QcAppIcon::icoSizes();
+        for (const int size : sizes) {
+            images.append(QcAppIcon::render(solidTile(QColor(0, 200, 0)), half, solidTile(QColor(255, 0, 255)), size)
+                              .convertToFormat(QImage::Format_ARGB32_Premultiplied));
+        }
+
+        const QByteArray ico = QcAppIcon::encodeIco(images);
+        // The header: reserved 0, type 1 (icon), seven entries.
+        QCOMPARE(ico.left(6), QByteArray::fromHex("000001000700"));
+        // The 256 pixel entry is a PNG.
+        QVERIFY(ico.contains(QByteArray::fromHex("89504e470d0a1a0a")));
+        const QList<QImage> read = readIco(ico);
+        QCOMPARE(read.size(), images.size());
+        for (qsizetype i = 0; i < read.size(); ++i) {
+            QCOMPARE(read[i].size(), images[i].size());
+            // Premultiplying again after the round trip through straight alpha may shift a channel by one.
+            QVERIFY2(largestDifference(read[i], images[i]) <= 1, qPrintable(u"size %1"_s.arg(images[i].width())));
+        }
+    }
+
+    // The committed cmake/windows/QtCraft.ico (embedded into the Windows executables) is the icon of
+    // today's textures: after a texture change, `qtcraft-headless --export-icon
+    // cmake/windows/QtCraft.ico` writes it again.
+    void committedIcoIsUpToDate()
+    {
+        QFile file(QStringLiteral(QTCRAFT_SOURCE_DIR "/cmake/windows/QtCraft.ico"));
+        QVERIFY2(file.open(QIODevice::ReadOnly), qPrintable(file.fileName()));
+        const QList<QImage> committed = readIco(file.readAll());
+
+        const auto base = QcTestUtil::baseContent();
+        QVERIFY2(base, qPrintable(base ? QString() : base.error()));
+        const QList<QImage> rendered = renderIcoImages(QcTextureAtlas::build(*base->registry));
+        QCOMPARE(committed.size(), rendered.size());
+        for (qsizetype i = 0; i < committed.size(); ++i) {
+            QCOMPARE(committed[i].size(), rendered[i].size());
+            // A little room for anti-aliasing that differs between platforms.
+            const int difference = largestDifference(committed[i], rendered[i]);
+            QVERIFY2(difference <= 8, qPrintable(u"size %1 differs by %2; run qtcraft-headless --export-icon cmake/windows/QtCraft.ico"_s
+                                                     .arg(rendered[i].width())
+                                                     .arg(difference)));
+        }
+    }
+
     void missingTextureIsAnError()
     {
         QcContentRegistry empty;
@@ -130,6 +230,8 @@ private slots:
         QVERIFY(!written);
         QVERIFY(written.error().contains(u"qtcraft:grass_top"_s));
         QVERIFY(!QDir(directory.filePath(u"icons"_s)).exists());
+        QVERIFY(!QcAppIcon::writeIco(atlas, directory.filePath(u"QtCraft.ico"_s)));
+        QVERIFY(!QFile::exists(directory.filePath(u"QtCraft.ico"_s)));
     }
 };
 

@@ -253,11 +253,12 @@ private slots:
             }
         }
 
-        // Under the open sky the wind fades in, and there is no cave.
+        // Under the open sky the wind fades in (at least the calm breeze of the ground, 0.12, E-876),
+        // and there is no cave.
         const QJsonObject outside = request({{u"cmd"_s, u"wait"_s}, {u"ticks"_s, 60}});
         QVERIFY(outside.value(u"ok"_s).toBool());
         const QJsonObject ambience = request({{u"cmd"_s, u"sounds"_s}}).value(u"ambience"_s).toObject();
-        QVERIFY2(ambience.value(u"wind"_s).toDouble() >= 0.25, QJsonDocument(ambience).toJson().constData());
+        QVERIFY2(ambience.value(u"wind"_s).toDouble() >= 0.1, QJsonDocument(ambience).toJson().constData());
         QCOMPARE(ambience.value(u"cave"_s).toDouble(), 0.0);
     }
 

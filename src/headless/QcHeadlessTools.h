@@ -18,9 +18,10 @@ namespace QcHeadlessTools {
 // Ends the application with `code` once the event loop runs.
 void exitSoon(int code);
 
-// --icon: writes the icon set of the base game to `directory` (the icon must not depend on the mods
-// of whoever builds the game); false when the base game cannot be loaded.
-bool exportIcon(const QString &directory);
+// --export-icon: writes the icon of the base game to `path`, a Windows .ico file when the path ends
+// in .ico, else a macOS .iconset directory (the icon must not depend on the mods of whoever builds
+// the game); false when the base game cannot be loaded.
+bool exportIcon(const QString &path);
 
 // Runs the tool the command line asks for with `content` and `config` (seed, generator); false when
 // it asks for none. Builds the world generator first and prints its warnings in any case.

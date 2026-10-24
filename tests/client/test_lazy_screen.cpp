@@ -1,6 +1,7 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QQuickItem>
+#include <QQuickWindow>
 #include <QTest>
 
 #include <QPointer>
@@ -18,7 +19,8 @@ class TestLazyScreen : public QObject
 private:
     // A LazyScreen (in an item, as in Main.qml) whose screen counts how often it became visible
     // (onVisibleChanged); the window's root item is kept in m_root.
-    QObject *create(QQmlEngine &engine, int keepAliveMs)
+    // Synchronous unless `asynchronous` (the game's default) is asked for.
+    QObject *create(QQmlEngine &engine, int keepAliveMs, bool asynchronous = false)
     {
         QQmlComponent component(&engine);
         const QByteArray qml = u"import QtQuick\n"
@@ -26,10 +28,12 @@ private:
                                "    LazyScreen {\n"
                                "        objectName: \"lazy\"\n"
                                "        keepAliveMs: %1\n"
+                               "        asynchronous: %2\n"
                                "        property int openings: 0\n"
                                "        screen: Item { objectName: \"inner\"; onVisibleChanged: if (visible) parent.parent.parent.openings++ }\n"
                                "    }\n"
                                "}\n"_s.arg(keepAliveMs)
+                                   .arg(asynchronous ? u"true"_s : u"false"_s)
                                    .toUtf8();
         component.setData(qml, QUrl::fromLocalFile(QStringLiteral(QTCRAFT_QML_CONTROLS_DIR "/Test.qml")));
         m_root.reset(component.create());
@@ -116,6 +120,34 @@ private slots:
         lazy->setProperty("shown", false);
         QCOMPARE(item(lazy), nullptr);
         QVERIFY(!lazy->property("keepingAlive").toBool());
+    }
+
+    // The game's screens load asynchronously (decision E-875): made over the following frames by the
+    // window's incubation controller, then shown once, with their opening handler run once.
+    void loadsAsynchronously()
+    {
+        QQmlEngine engine;
+        QQuickWindow window;
+        engine.setIncubationController(window.incubationController());
+        QObject *lazy = create(engine, 60000, true);
+        QVERIFY(lazy);
+        QCOMPARE(lazy->property("asynchronous").toBool(), true);
+        lazy->setProperty("shown", true);
+        // Not made within the change of `shown`: pending until a later frame made it (the
+        // screenshot hook waits for that).
+        QVERIFY(!lazy->property("loaded").toBool());
+        QVERIFY(lazy->property("screenPending").toBool());
+        QTRY_VERIFY(lazy->property("loaded").toBool());
+        QVERIFY(!lazy->property("screenPending").toBool());
+        QCOMPARE(item(lazy)->objectName(), u"inner"_s);
+        QCOMPARE(lazy->property("openings").toInt(), 1);
+
+        // Closed and opened again within the keep-alive time: the same screen at once.
+        QPointer<QObject> first = item(lazy);
+        lazy->setProperty("shown", false);
+        lazy->setProperty("shown", true);
+        QCOMPARE(item(lazy), first.data());
+        QCOMPARE(lazy->property("openings").toInt(), 2);
     }
 
     // Preloaded: made hidden before it is shown, its opening handler runs when it is shown, and

@@ -86,5 +86,11 @@ void QcUiScaling::update()
     m_requested = requested;
     m_scale = scale;
     m_hudScale = hudScale;
+    qCInfo(lcGame).noquote() << QStringLiteral("UI scale: screens %1 %, HUD %2 % in the window %3x%4 (choice %5)")
+                                    .arg(qRound(scale * 100.0))
+                                    .arg(qRound(hudScale * 100.0))
+                                    .arg(m_windowSize.width())
+                                    .arg(m_windowSize.height())
+                                    .arg(QcUiScale::name(m_setting));
     emit factorsChanged();
 }

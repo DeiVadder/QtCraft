@@ -183,6 +183,7 @@ Rectangle {
     MenuSidebar {
         id: sidebar
 
+        objectName: "menuSidebar"
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -198,17 +199,19 @@ Rectangle {
         onChosen: entry => menu.choose(entry)
     }
 
-    // The page keeps the menu's margin to the window and is no wider than a large screen.
+    // The page keeps the menu's margin to the window and is no wider than a large screen; in a
+    // window wider than that (a large monitor in fullscreen) it stands in the middle of the room
+    // beside the side bar rather than at its left edge.
     StackLayout {
+        objectName: "menuPages"
         visible: !settingsScreen.visible && !menu.game.handbook.isOpen
-        anchors.left: sidebar.right
+        x: Ui.pageX(sidebar.width, parent.width, width)
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: Ui.screen.margin
         anchors.topMargin: Ui.space.xl
         // Room for the pad's hints (PadHints) while they show.
         anchors.bottomMargin: Ui.space.xl + (menu.game.gamepad.focusShown ? Ui.size.padHints : 0)
-        width: Math.min(parent.width - sidebar.width - 2 * Ui.screen.margin, Ui.screen.l)
+        width: Ui.pageWidth(sidebar.width, parent.width)
         currentIndex: menu.page
 
         HomePage {

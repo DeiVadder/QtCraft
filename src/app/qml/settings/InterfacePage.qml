@@ -11,7 +11,9 @@ SettingsPage {
     // The lists show the stored values whenever the screen opens.
     function refresh() {
         languageBox.currentIndex = languageBox.indexOfValue(game.settings.language);
-        uiScaleBox.currentIndex = uiScaleBox.indexOfValue(game.settings.uiScale);
+        // Auto (older settings files) is 100 %.
+        const scale = game.settings.uiScale === UiScaling.Step.Auto ? UiScaling.Step.Percent100 : game.settings.uiScale;
+        uiScaleBox.currentIndex = uiScaleBox.indexOfValue(scale);
         cameraBox.currentIndex = cameraBox.indexOfValue(game.settings.cameraMode);
     }
 
@@ -37,8 +39,9 @@ SettingsPage {
             onActivated: page.game.settings.language = currentValue
         }
 
-        // The size of the HUD and the screens (decision E-725); Auto follows the window. A window
-        // too small for the chosen size shows the screens as large as fits.
+        // The size of the HUD and the screens (decisions E-725, E-875), relative to the window: a
+        // large window shows every step larger. A window too small for the chosen size shows the
+        // screens as large as fits.
         SettingDropdown {
             id: uiScaleBox
 
@@ -47,17 +50,17 @@ SettingsPage {
             help: UiScaling.scale < UiScaling.requested
                   ? qsTr("Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.")
                         .arg(Math.round(UiScaling.scale * 100)).arg(Math.round(UiScaling.hudScale * 100))
-                  : currentValue === UiScaling.Step.Auto ? qsTr("Now %1 %").arg(Math.round(UiScaling.scale * 100)) : ""
+                  : currentIndex >= 0 && Math.round(UiScaling.scale * 100) !== model[currentIndex].percent
+                    ? qsTr("Now %1 % (grows with large windows)").arg(Math.round(UiScaling.scale * 100)) : ""
             textRole: "text"
             valueRole: "value"
             model: [
-                { text: qsTr("Auto"), value: UiScaling.Step.Auto },
-                { text: qsTr("%1 %").arg(75), value: UiScaling.Step.Percent75 },
-                { text: qsTr("%1 %").arg(100), value: UiScaling.Step.Percent100 },
-                { text: qsTr("%1 %").arg(125), value: UiScaling.Step.Percent125 },
-                { text: qsTr("%1 %").arg(150), value: UiScaling.Step.Percent150 },
-                { text: qsTr("%1 %").arg(175), value: UiScaling.Step.Percent175 },
-                { text: qsTr("%1 %").arg(200), value: UiScaling.Step.Percent200 }
+                { text: qsTr("%1 %").arg(75), value: UiScaling.Step.Percent75, percent: 75 },
+                { text: qsTr("%1 %").arg(100), value: UiScaling.Step.Percent100, percent: 100 },
+                { text: qsTr("%1 %").arg(125), value: UiScaling.Step.Percent125, percent: 125 },
+                { text: qsTr("%1 %").arg(150), value: UiScaling.Step.Percent150, percent: 150 },
+                { text: qsTr("%1 %").arg(175), value: UiScaling.Step.Percent175, percent: 175 },
+                { text: qsTr("%1 %").arg(200), value: UiScaling.Step.Percent200, percent: 200 }
             ]
             onActivated: page.game.settings.uiScale = currentValue
         }

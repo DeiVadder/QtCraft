@@ -4,6 +4,7 @@
 #include "app/hooks/QcAccessibilityCheck.h"
 #include "app/hooks/QcLayoutCheck.h"
 #include "app/hooks/QcOffscreenRender.h"
+#include "app/hooks/QcPendingScreens.h"
 #include "common/core/QcProcessMemory.h"
 
 #include <QCoreApplication>
@@ -41,6 +42,7 @@ QcScreenshotHook *QcScreenshotHook::createFromEnvironment(QQuickWindow *window, 
     hook->m_checkLayout = qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1;
     hook->m_logUiStats = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
     hook->m_checkAccessibility = qEnvironmentVariableIntValue("QTCRAFT_ACCESSIBILITY_CHECK") == 1;
+    hook->m_loggedItems = qEnvironmentVariable("QTCRAFT_LOG_ITEMS").split(u',', Qt::SkipEmptyParts);
     return hook;
 }
 
@@ -78,7 +80,7 @@ void QcScreenshotHook::onFrameSwapped()
         return;
     }
 
-    if (m_holdCount > 0 || --m_remainingFrames > 0) {
+    if (m_holdCount > 0 || --m_remainingFrames > 0 || waitingForScreens()) {
         // Keep frames coming even when the scene is static.
         m_window->update();
         return;
@@ -94,6 +96,7 @@ void QcScreenshotHook::onFrameSwapped()
     if (m_checkAccessibility) {
         logAccessibilityCheck();
     }
+    logItems();
     const QImage image = m_grabber ? m_grabber() : m_window->grabWindow();
     if (image.isNull() || !image.save(m_filePath)) {
         qCCritical(lcScreenshot) << "Failed to save screenshot to" << m_filePath;
@@ -103,6 +106,19 @@ void QcScreenshotHook::onFrameSwapped()
 
     qCInfo(lcScreenshot) << "Saved screenshot to" << m_filePath;
     QTimer::singleShot(0, qApp, [] { QCoreApplication::quit(); });
+}
+
+bool QcScreenshotHook::waitingForScreens()
+{
+    if (!QcPendingScreens::any(*m_window)) {
+        return false;
+    }
+    if (++m_screenWaitFrames <= QcPendingScreens::maxWaitFrames) {
+        return true;
+    }
+
+    qCWarning(lcScreenshot) << "A shown screen is still being made after" << QcPendingScreens::maxWaitFrames << "more frames; taking the picture";
+    return false;
 }
 
 void QcScreenshotHook::logLayoutCheck() const
@@ -119,6 +135,27 @@ void QcScreenshotHook::logLayoutCheck() const
         qCWarning(lcScreenshot).noquote() << "Chat lines overlap:" << row;
     }
     qCInfo(lcScreenshot).noquote() << u"HUD check: chat lines overlap %1 status rows"_s.arg(overlaps.size());
+}
+
+void QcScreenshotHook::logItems() const
+{
+    const QQuickItem *content = m_window->contentItem();
+    for (const QString &name : m_loggedItems) {
+        // The items keep their QObject parents when offscreen runs move them into another window.
+        const auto *item = m_window->findChild<QQuickItem *>(name);
+        if (!item) {
+            qCInfo(lcScreenshot).noquote() << u"Item %1: not found"_s.arg(name);
+            continue;
+        }
+        const QRectF rect = item->mapRectToScene(QRectF(0.0, 0.0, item->width(), item->height()));
+        qCInfo(lcScreenshot).noquote() << u"Item %1: x %2 y %3 width %4 height %5 in the window %6x%7"_s.arg(name)
+                                              .arg(rect.x())
+                                              .arg(rect.y())
+                                              .arg(rect.width())
+                                              .arg(rect.height())
+                                              .arg(content->width())
+                                              .arg(content->height());
+    }
 }
 
 void QcScreenshotHook::logUiStats() const

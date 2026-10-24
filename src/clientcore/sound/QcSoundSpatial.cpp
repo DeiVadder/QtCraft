@@ -53,3 +53,16 @@ QcSoundSpatial::Placement QcSoundSpatial::place(const QcVec3 &listener, double y
     placement.pan = pan(listener, yawDegrees, source);
     return placement;
 }
+
+QcSoundSpatial::Source QcSoundSpatial::source(const QcSoundDefinition &sound, const QcSoundCue &cue)
+{
+    const double range = sound.range * std::max(1.0, static_cast<double>(cue.volume));
+    return {cue.position, static_cast<float>(sound.volume) * cue.volume, range};
+}
+
+QcSoundSpatial::Placement QcSoundSpatial::hear(const Source &source, const Listener &listener)
+{
+    Placement placement = place(listener.ears, listener.yawDegrees, source.position, source.range);
+    placement.gain *= source.volume;
+    return placement;
+}

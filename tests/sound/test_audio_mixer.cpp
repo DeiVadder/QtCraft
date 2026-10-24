@@ -308,6 +308,88 @@ private slots:
         const QcSoundSpatial::Placement far = QcSoundSpatial::place(listener, 0.0, {0.0, 80.0, 0.0}, 16.0);
         QCOMPARE(far.gain, 0.0f);
     }
+
+    void aMixerAtAnotherRateKeepsTheVolumes()
+    {
+        QcAudioMixer mixer(44100);
+        mixer.setMasterVolume(0.7f);
+        mixer.setBusVolume(QcSoundBus::Music, 0.2f);
+        mixer.setMuted(true);
+        QVERIFY(mixer.play(constant(0.5f, 100), {}) != 0);
+
+        const QcAudioMixer other = mixer.withRate(48000);
+        QCOMPARE(other.outputRate(), 48000);
+        QCOMPARE(other.masterVolume(), 0.7f);
+        QCOMPARE(other.busVolume(QcSoundBus::Music), 0.2f);
+        QCOMPARE(other.busVolume(QcSoundBus::Effects), 1.0f);
+        QVERIFY(other.isMuted());
+        QCOMPARE(other.voiceCount(), 0);
+    }
+
+    void panOfAPlayingVoiceChanges()
+    {
+        QcAudioMixer mixer(1000);
+        const QcAudioMixer::VoiceId id = mixer.play(constant(0.5f, 100), {});
+        mixer.setPan(id, 1.0f);
+        std::vector<float> mixed = mixFrames(mixer, 1);
+        QVERIFY(std::abs(mixed[0]) < 1e-6f);
+        QVERIFY(mixed[1] > 0.4f);
+        mixer.setPan(id, std::numeric_limits<float>::quiet_NaN());
+        QCOMPARE(mixer.voices().constFirst().pan, 0.0f);
+    }
+
+    void panChangesRampOverOneBlock()
+    {
+        QcAudioMixer mixer(1000);
+        const QcAudioMixer::VoiceId id = mixer.play(constant(1.0f, 1000), {0.5f, -1.0f, 1.0, QcSoundBus::Effects, true});
+        mixer.setPan(id, 1.0f);
+        const std::vector<float> out = mixFrames(mixer, 10);
+        // The left gain falls from 1 to 0 and the right one rises in ten equal steps, no jump.
+        for (int frame = 0; frame < 10; ++frame) {
+            const float reached = 0.1f * static_cast<float>(frame + 1);
+            QVERIFY2(std::abs(out[static_cast<std::size_t>(2 * frame)] - 0.5f * (1.0f - reached)) < 1e-5f, qPrintable(QString::number(frame)));
+            QVERIFY2(std::abs(out[static_cast<std::size_t>(2 * frame + 1)] - 0.5f * reached) < 1e-5f, qPrintable(QString::number(frame)));
+        }
+        const std::vector<float> after = mixFrames(mixer, 1);
+        QVERIFY(std::abs(after[0]) < 1e-6f);
+        QVERIFY(std::abs(after[1] - 0.5f) < 1e-6f);
+    }
+
+    void aFadedVoiceFallsSilentAndGoes()
+    {
+        // 5 ms at 2000 Hz: ten frames, over two blocks of six and four.
+        QcAudioMixer mixer(2000);
+        const QcAudioMixer::VoiceId id = mixer.play(constant(0.5f, 2000), {1.0f, -1.0f, 1.0, QcSoundBus::Effects, false});
+        QCOMPARE(mixFrames(mixer, 1)[0], 0.5f);
+        mixer.fadeOut(id);
+        // Fading, it ignores new gains.
+        mixer.setGain(id, 1.0f);
+        const std::vector<float> first = mixFrames(mixer, 6);
+        for (int frame = 0; frame < 6; ++frame) {
+            const float expected = 0.5f * (1.0f - 0.1f * static_cast<float>(frame + 1));
+            QVERIFY2(std::abs(first[static_cast<std::size_t>(2 * frame)] - expected) < 1e-5f, qPrintable(QString::number(frame)));
+        }
+        QVERIFY(mixer.isPlaying(id));
+        const std::vector<float> second = mixFrames(mixer, 6);
+        QVERIFY(std::abs(second[0] - 0.5f * 0.3f) < 1e-5f);
+        QVERIFY(std::abs(second[6]) < 1e-6f);
+        QVERIFY(std::abs(second[10]) < 1e-6f);
+        QVERIFY(!mixer.isPlaying(id));
+    }
+
+    void wouldPlayAnswersLikePlay()
+    {
+        QcAudioMixer mixer(1000);
+        QVERIFY(!mixer.wouldPlay(nullptr, 1.0f));
+        QVERIFY(mixer.wouldPlay(constant(0.1f, 10), 0.0f));
+        for (int i = 0; i < QcAudioMixer::maxVoices; ++i) {
+            mixer.play(constant(0.1f, 1000), {0.5f, 0.0f, 1.0, QcSoundBus::Effects, false});
+        }
+        QVERIFY(!mixer.wouldPlay(constant(0.1f, 10), 0.2f));
+        QCOMPARE(mixer.play(constant(0.1f, 10), {0.2f, 0.0f, 1.0, QcSoundBus::Effects, false}), QcAudioMixer::VoiceId(0));
+        QVERIFY(mixer.wouldPlay(constant(0.1f, 10), 0.6f));
+        QVERIFY(mixer.play(constant(0.1f, 10), {0.6f, 0.0f, 1.0, QcSoundBus::Effects, false}) != 0);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestAudioMixer)

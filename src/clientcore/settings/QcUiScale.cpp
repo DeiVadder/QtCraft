@@ -69,19 +69,19 @@ std::optional<double> fixedFactor(Step step)
     return percentOf(step) / 100.0;
 }
 
-double autoFactor(QSizeF window)
+double windowFactor(QSizeF window)
 {
     if (!usable(window)) {
         return 1.0;
     }
 
-    const double bySize = std::min(window.width() / autoReferenceSize.width(), window.height() / autoReferenceSize.height());
-    return std::clamp(floorTo(bySize, 4.0), 1.0, maxFactor);
+    const double bySize = std::min(window.width() / windowReferenceSize.width(), window.height() / windowReferenceSize.height());
+    return std::clamp(std::round(bySize * 8.0) / 8.0, 1.0, maxWindowFactor);
 }
 
 double requestedFactor(Step step, QSizeF window)
 {
-    return fixedFactor(step).value_or(autoFactor(window));
+    return fixedFactor(step).value_or(1.0) * windowFactor(window);
 }
 
 double fittedFactor(double requested, QSizeF window, QSizeF designSize)

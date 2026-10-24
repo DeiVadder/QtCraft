@@ -40,6 +40,13 @@ ApplicationWindow {
         property: "windowSize"
         value: Qt.size(root.width, root.height)
     }
+    // The chat lines of the HUD all show while the chat line is open and fade while it is closed
+    // (decision E-875).
+    Binding {
+        target: game.hud.chat
+        property: "open"
+        value: game.overlay === GameController.Overlay.Chat
+    }
     // Controls (buttons, boxes, labels, tooltips, popups) inherit the window's font.
     WindowFont {
         target: root
@@ -232,6 +239,9 @@ ApplicationWindow {
         keepAliveMs: root.controller.screenKeepAliveMs
         logCreation: root.controller.logScreenCreation
         shown: game.phase === GameController.Phase.Menu
+        // Made at once (decision E-875): it is the first screen at start-up, where test hooks and
+        // the pad act on it right away, and when a world closes nothing plays that a stall could cut.
+        asynchronous: false
 
         screen: MainMenu {
             game: root.controller

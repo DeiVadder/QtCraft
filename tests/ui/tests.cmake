@@ -130,6 +130,12 @@ if(NOT QC_SANITIZERS)
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 240)
+    # The main menu fills windows up to 3440 x 1440 (a large monitor in fullscreen, decision E-875):
+    # Auto lets the page grow with the window, and it stands centred beside the side bar.
+    add_test(NAME app_offscreen_window_fill COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh $<TARGET_FILE:qtcraft>
+        ${CMAKE_BINARY_DIR}/test-data/app_offscreen_window_fill)
+    set_tests_properties(app_offscreen_window_fill PROPERTIES TIMEOUT 300 COST 20
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh")
     # Every screen and the HUD at 100 % and at 200 % (limited to what fits) in a 1280 x 720 window:
     # nothing outside the window, every control with an accessible name and role (decision E-725).
     foreach(scale 100 200)
@@ -137,6 +143,19 @@ if(NOT QC_SANITIZERS)
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
         set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1260 COST 80
+            REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
+    endforeach()
+    # The same screens at 100 % in the windows of large monitors at 100 % display scaling (decision
+    # E-875): the window's factor grows every screen and the HUD (screens/HUD in percent), nothing
+    # lies outside the window.
+    foreach(window "1920x1080:113/113" "2560x1440:150/150" "3840x2160:213/213")
+        string(REPLACE ":" ";" parts "${window}")
+        list(GET parts 0 size)
+        list(GET parts 1 expect)
+        add_test(NAME app_offscreen_ui_scale_100_${size} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> 100
+            ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_100_${size})
+        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 1800 COST 100
+            ENVIRONMENT "QC_UI_SIZE=${size};QC_UI_EXPECT=${expect}"
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
 endif()

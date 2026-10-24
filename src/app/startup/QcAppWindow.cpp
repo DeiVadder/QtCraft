@@ -13,6 +13,7 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QGuiApplication>
+#include <QIcon>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <rhi/qrhi.h>
@@ -108,6 +109,19 @@ void QcAppWindow::applyAppearance()
 {
     applyColorScheme();
     applyControlStyle();
+    applyWindowIcon();
+}
+
+void QcAppWindow::applyWindowIcon()
+{
+#if !defined(Q_OS_MACOS)
+    const QIcon icon(u":/icons/QtCraft.ico"_s);
+    if (icon.availableSizes().isEmpty()) {
+        qCWarning(lcStartup, "The window icon cannot be read (image format plugin qico missing?); the system's default icon stays");
+        return;
+    }
+    QGuiApplication::setWindowIcon(icon);
+#endif
 }
 
 void QcAppWindow::applyControlStyle()
@@ -165,6 +179,9 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
         return nullptr;
     }
     game.preview()->setOffscreen(true);
+    // The window is never shown: QTCRAFT_WINDOW_SIZE may be larger than the screen it was placed
+    // on (a 2560 x 1440 monitor's fullscreen on a MacBook, decision E-875).
+    applyWindowSize(window);
     // Created after placing: it takes the window's size and screen.
     auto render = std::make_unique<QcOffscreenRender>(window);
     applyControlPalette(*render->window());

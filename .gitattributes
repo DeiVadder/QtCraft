@@ -2,5 +2,7 @@
 # byte for the login comparison (QcContentFingerprint, decision E-861): a Windows checkout with
 # core.autocrlf=true would otherwise turn their JSON into CRLF and differ from a macOS server.
 * text=auto eol=lf
+# The Windows icon is binary (cmake/windows/QtCraft.ico).
+*.ico binary
 # The font licence is kept byte for byte as published (CRLF).
 src/app/fonts/OFL.txt -text

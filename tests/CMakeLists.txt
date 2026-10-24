@@ -33,7 +33,7 @@ set(qc_concurrency_tests
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
-    test_block_prediction test_block_prediction_measure)
+    test_block_prediction test_block_prediction_measure test_session_audio)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -97,6 +97,7 @@ set_tests_properties(scenario_headless_admin_channel PROPERTIES
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
+set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
 set_tests_properties(test_english_plurals PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/translations/qtcraft_de.ts;${PROJECT_SOURCE_DIR}/translations/qtcraft_en.ts")
 set_tests_properties(test_gamepad_sdl PROPERTIES

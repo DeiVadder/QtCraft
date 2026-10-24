@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QString>
+#include <QStringList>
 
 #include <functional>
 
@@ -18,7 +19,10 @@ class QQuickWindow;
 // items <n> memory <MB> MB": the QML objects below the window, its Qt Quick items and the
 // resident memory of the process (decision E-690). With QTCRAFT_ACCESSIBILITY_CHECK=1 it logs
 // every shown control without an accessible name or role (QcAccessibilityCheck) and a summary line
-// "Accessibility check: <n> controls without a name" (decision E-725).
+// "Accessibility check: <n> controls without a name" (decision E-725). With
+// QTCRAFT_LOG_ITEMS=<objectName>,... it logs "Item <name>: x <x> y <y> width <w> height <h> in the
+// window <w>x<h>" for each named item, in window coordinates (decision E-875), or "Item <name>:
+// not found". The picture waits for shown screens that are still being made (LazyScreen).
 class QcScreenshotHook : public QObject
 {
     Q_OBJECT
@@ -42,15 +46,22 @@ public:
 
 private:
     void onFrameSwapped();
+    // Whether a shown LazyScreen is still being made and the picture should wait for it
+    // (QcPendingScreens, at most maxWaitFrames frames).
+    [[nodiscard]] bool waitingForScreens();
     void logLayoutCheck() const;
     void logUiStats() const;
     void logAccessibilityCheck() const;
+    void logItems() const;
 
     QPointer<QQuickWindow> m_window;
     std::function<QImage()> m_grabber;
     QString m_filePath;
+    // QTCRAFT_LOG_ITEMS.
+    QStringList m_loggedItems;
     int m_remainingFrames = 0;
     int m_holdCount = 0;
+    int m_screenWaitFrames = 0;
     bool m_done = false;
     bool m_checkLayout = false;
     bool m_logUiStats = false;

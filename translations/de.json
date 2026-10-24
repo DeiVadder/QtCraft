@@ -984,7 +984,7 @@
     "Keeps distant ground sharp; more costs more GPU time": "Hält entfernten Boden scharf; mehr kostet mehr Grafikleistung",
     "Interface": "Oberfläche",
     "Language and size": "Sprache und Größe",
-    "Now %1 %": "Jetzt %1 %",
+    "Now %1 % (grows with large windows)": "Jetzt %1 % (wächst mit großen Fenstern)",
     "Camera": "Kamera",
     "Names floating over places, such as the areas of the showcase": "Namen über Orten, etwa den Bereichen der Schauwelt",
     "Hide the hand with the HUD": "Hand mit der Anzeige ausblenden",

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/controllers/QcChatFeed.h"
 #include "app/controllers/QcHeldMap.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/models/QcWorldLabelModel.h"
@@ -11,7 +12,6 @@
 #include <QList>
 #include <QObject>
 #include <QString>
-#include <QStringList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QcContentRegistry;
@@ -21,7 +21,7 @@ struct QcSessionParts;
 
 // HUD texts that change while playing (GameController.hud): what the crosshair points at with the
 // mining progress, the time of day, the dial of a held compass or clock, the debug display and the
-// last chat lines.
+// chat lines (QcChatFeed).
 class QcHudState : public QObject
 {
     Q_OBJECT
@@ -30,7 +30,8 @@ class QcHudState : public QObject
     Q_PROPERTY(double miningProgress READ miningProgress NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(QString targetLabel READ targetLabel NOTIFY frameStateChanged FINAL)
     Q_PROPERTY(QString timeOfDay READ timeOfDay NOTIFY frameStateChanged FINAL)
-    Q_PROPERTY(QStringList chatLines READ chatLines NOTIFY chatLinesChanged FINAL)
+    // The chat lines of the HUD, fading while the chat is closed (decision E-875).
+    Q_PROPERTY(QcChatFeed *chat READ chat CONSTANT FINAL)
     // The dial of the held item (decision E-769), its needle or hand in degrees clockwise from the
     // top (QcDials) and the clock's time ("14:05").
     Q_PROPERTY(Dial dial READ dial NOTIFY dialChanged FINAL)
@@ -53,7 +54,7 @@ public:
     double miningProgress() const { return m_miningProgress; }
     QString targetLabel() const { return m_targetLabel; }
     QString timeOfDay() const { return m_timeOfDay; }
-    QStringList chatLines() const { return m_chatLines; }
+    QcChatFeed *chat() const { return m_chat; }
     Dial dial() const { return m_dial; }
     double dialAngle() const { return m_dialAngle; }
     QString clockText() const { return m_clockText; }
@@ -84,7 +85,6 @@ public:
 
 signals:
     void frameStateChanged();
-    void chatLinesChanged();
     void dialChanged();
 
 private:
@@ -99,7 +99,7 @@ private:
     QString m_targetLabel;
     QString m_targetName;
     QString m_timeOfDay;
-    QStringList m_chatLines;
+    QcChatFeed *m_chat = nullptr;
     Dial m_dial = Dial::None;
     double m_dialAngle = 0.0;
     QString m_clockText;

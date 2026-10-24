@@ -55,6 +55,25 @@ private slots:
         QVERIFY(!output.isActive());
     }
 
+    void aStalledGuiThreadDoesNotStopTheSound()
+    {
+        QcAudioOutput output;
+        if (!output.start()) {
+            return;
+        }
+
+        output.withMixer([](QcAudioMixer &mixer) { mixer.setMuted(true); });
+        QTRY_VERIFY_WITH_TIMEOUT(output.framesRendered() > 0, 3000);
+        // The GUI thread blocks for 300 ms (a screen opening for the first time): the audio thread
+        // keeps pulling, far more than the sink's 80 ms buffer would cover.
+        const qint64 before = output.framesRendered();
+        QThread::msleep(300);
+        const qint64 pulled = output.framesRendered() - before;
+        qInfo() << "frames pulled while the GUI thread slept" << pulled << "at" << output.sampleRate() << "Hz";
+        QVERIFY(pulled >= output.sampleRate() / 5);
+        output.stop();
+    }
+
     void switchedOffEngineIgnoresEverything()
     {
         QcAudioEngine engine;
@@ -62,7 +81,7 @@ private slots:
         QVERIFY(!engine.isActive());
         engine.setContent(QcTestUtil::loadContent());
         QVERIFY(!engine.isBankReady());
-        engine.play({QString::fromLatin1(QcSoundKeys::playerHurt), {}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {}, 0.0);
+        engine.play({QString::fromLatin1(QcSoundKeys::playerHurt), {}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {});
         engine.setAmbience({1.0f, 1.0f, 1.0f});
         engine.setMusicEnabled(true);
         engine.output().withMixer([](QcAudioMixer &mixer) { QCOMPARE(mixer.voiceCount(), 0); });
@@ -92,10 +111,10 @@ private slots:
         // In range a cue becomes a voice, out of range or unknown it does not.
         const QcVec3 ears{0.0, 65.0, 0.0};
         const QString key = QString::fromLatin1(QcSoundKeys::playerDeath);
-        engine.play({key, {0.0, 65.0, 50.0}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, ears, 0.0);
-        engine.play({u"qtcraft:no.such.sound"_s, ears, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, ears, 0.0);
+        engine.play({key, {0.0, 65.0, 50.0}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {ears, 0.0});
+        engine.play({u"qtcraft:no.such.sound"_s, ears, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {ears, 0.0});
         QCOMPARE(voices(), 0);
-        engine.play({key, {3.0, 65.0, 0.0}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, ears, 0.0);
+        engine.play({key, {3.0, 65.0, 0.0}, 1.0f, 1.0f, QcSoundCue::Origin::Server, 0}, {ears, 0.0});
         QCOMPARE(voices(), 1);
 
         // Ambience loops start with their first audible level and stop with the world.

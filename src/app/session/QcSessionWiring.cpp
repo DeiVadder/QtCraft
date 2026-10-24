@@ -13,11 +13,11 @@
 #include "app/session/QcWorldAtlas.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
-#include "common/physics/QcPhysics.h"
 
 QcSessionWiring::QcSessionWiring(QcSessionParts &parts, const Targets &targets)
     : m_parts(parts)
     , m_targets(targets)
+    , m_audio(targets.audio)
 {
 }
 
@@ -40,16 +40,9 @@ void QcSessionWiring::connectWorld()
     connect(session, &QcClientSession::playerBlockChanged, this, [this](QcBlockPos pos, QcBlockId previous) {
         m_parts.meshes->blockChanged(*m_parts.session->world(), pos, previous, QcMeshScheduler::Priority::Player);
     });
-    connect(session, &QcClientSession::ticked, this, [this] {
-        emit ticked();
-        m_targets.audio.setAmbience(m_parts.session->sounds().ambience());
-    });
-    connect(session, &QcClientSession::soundCue, this, [this](const QcSoundCue &cue) {
-        const QcVec3 ears = m_parts.session->playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-        // Left and right as seen on screen: the front view looks back at the player.
-        const bool front = m_parts.session->cameraMode() == QcCameraMode::Front;
-        m_targets.audio.play(cue, ears, m_parts.session->intent().yaw + (front ? 180.0f : 0.0f));
-    });
+    connect(session, &QcClientSession::ticked, this, &QcSessionWiring::ticked);
+    // After the tick above: the sounds follow the player of this tick.
+    m_audio.connectSession(*session);
     connect(session, &QcClientSession::chatReceived, &m_targets.hud, &QcHudState::addChatLine);
     connect(session, &QcClientSession::stateChanged, this, &QcSessionWiring::onSessionState);
 

@@ -7,6 +7,9 @@
 # A missing check line or a QML warning fails the test too. No step waits for the wall clock: the
 # screens open with the world (--overlay, --game-mode), the pad's steps run one after another and
 # the screenshot waits for each to be reported (QcScriptedPad).
+# Large windows (decision E-875): QC_UI_SIZE=<width>x<height> renders in that window instead, and
+# QC_UI_EXPECT=<screens>/<hud> (percent) is the factor the game must log ("UI scale: screens <n> %,
+# HUD <n> %") in every run, so no screen keeps the size of a small window.
 # Usage: test_ui_scale.sh <qtcraft executable> <scale> <data directory> [directory for the screenshots]
 # The data directory (build/<preset>/test-data/<test>, E-380) is emptied first and keeps the logs.
 set -u
@@ -16,7 +19,8 @@ DATA=$3
 [ -n "$DATA" ] || exit 2
 rm -rf "$DATA" && mkdir -p "$DATA" || exit 2
 SHOTS=${4:-$DATA}
-SIZE=1280x720
+SIZE=${QC_UI_SIZE:-1280x720}
+EXPECT=${QC_UI_EXPECT:-}
 printf '[General]\nuiScale=%s\n[debug]\nlevel=off\n[audio]\nmuted=true\n' "$SCALE" >"$DATA/settings.ini"
 failed=0
 
@@ -47,6 +51,10 @@ check() {
         failed=1
     elif grep -E '\.qml(:[0-9]+)?(:[0-9]+)?: |no block in view opened' "$DATA/$name.log"; then
         echo "$name: QML reported problems or the screen did not open"
+        failed=1
+    elif [ -n "$EXPECT" ] && ! grep 'UI scale: screens' "$DATA/$name.log" | tail -1 | grep -q "screens ${EXPECT%/*} %, HUD ${EXPECT#*/} %"; then
+        echo "$name: UI scale is not ${EXPECT%/*} % / ${EXPECT#*/} % in the window $SIZE:"
+        grep 'UI scale:' "$DATA/$name.log"
         failed=1
     else
         echo "$name: inside the window, every control named"

@@ -124,9 +124,20 @@ QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere L
   eigenem Limit für Menüs, Pause und Hintergrund (Standard 30); **F11** schaltet Vollbild ein und
   zurück. Lüfter laut oder Grafikkarte heiß: ein Limit von 60 setzen. Am ruhigsten läuft das Bild
   mit VSync ohne Limit.
+- **Größe der Oberfläche** (E-875): wächst mit dem Fenster (Vollbild auf 1920 × 1080 etwa 113 %, auf
+  2560 × 1440 150 %, auf 3840 × 2160 213 %); Einstellungen → Oberfläche → „Größe der Oberfläche“
+  wählt 75–200 % davon. Das Protokoll nennt die Größe („UI scale: …“).
+- **Chat:** Zeilen verschwinden nach 10 s; mit geöffnetem Chat sind die letzten 20 wieder da.
+  `/clearchat` leert die Anzeige.
 - **Prüfpunkt Bildraten-Limit (Spielleitung):** Limit 60 an einem 60-Hz-Monitor und an einem
   120- oder 144-Hz-Monitor einstellen, in der Welt gehen und sich umsehen: ruckelt das Bild
   gegenüber „Unbegrenzt“ sichtbar (Timer-Takt gegen VSync, E-835), bitte mit Monitor und Hz notieren.
+- **Ton** (E-876): Das Spiel folgt dem Standard-Ausgabegerät von Windows: ein später
+  eingeschaltetes Headset oder ein angesteckter Lautsprecher wird übernommen, sobald Windows es zum
+  Standardgerät macht (im Protokoll „Audio output changes: … -> …“). Eine Auswahl des Geräts in den
+  Einstellungen gibt es nicht. Bekannte Eigenheiten: beim Wechsel auf ein Gerät mit anderer
+  Abtastrate verstummen laufende Klänge kurz, Umgebungsgeräusche setzen nach etwa einer Sekunde
+  wieder ein, die Musik mit dem nächsten Stück; Loren haben kein Rollgeräusch.
 - **Protokoll ist standardmäßig an.** Jeder Start schreibt ein Sitzungsprotokoll; die letzten 10
   Sitzungen bleiben. Abschalten (nicht empfohlen): Einstellungen → Debug → „Protokolldatei
   schreiben“ (gilt ab dem nächsten Start).

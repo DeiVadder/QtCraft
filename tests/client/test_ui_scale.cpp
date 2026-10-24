@@ -37,21 +37,27 @@ private slots:
         QCOMPARE(QcUiScale::defaultStep, Step::Percent100);
     }
 
-    // Auto: the window's logical size against 1280 x 720 in quarter steps, never below 100 % or
-    // above 200 %.
-    void autoFollowsTheWindow()
+    // The window's factor (decision E-875): its logical size against 1550 x 1000 (a MacBook's
+    // screen, 1.0) in eighths, never below 100 % or above 300 %; every step is multiplied with it.
+    void windowFactorFollowsTheWindow()
     {
-        QCOMPARE(QcUiScale::autoFactor({1280, 720}), 1.0);
-        QCOMPARE(QcUiScale::autoFactor({1024, 640}), 1.0);
-        QCOMPARE(QcUiScale::autoFactor({1920, 1080}), 1.5);
-        QCOMPARE(QcUiScale::autoFactor({2560, 1440}), 2.0);
-        QCOMPARE(QcUiScale::autoFactor({3840, 2160}), 2.0);
+        QCOMPARE(QcUiScale::windowFactor({1280, 720}), 1.0);
+        QCOMPARE(QcUiScale::windowFactor({1024, 640}), 1.0);
+        QCOMPARE(QcUiScale::windowFactor({1512, 982}), 1.0);
+        QCOMPARE(QcUiScale::windowFactor({1920, 1080}), 1.125);
+        QCOMPARE(QcUiScale::windowFactor({2560, 1440}), 1.5);
+        QCOMPARE(QcUiScale::windowFactor({3840, 2160}), 2.125);
+        QCOMPARE(QcUiScale::windowFactor({7680, 4320}), 3.0);
         // The smaller side decides: a wide, low window stays at 100 %.
-        QCOMPARE(QcUiScale::autoFactor({2560, 720}), 1.0);
-        QCOMPARE(QcUiScale::autoFactor({1600, 900}), 1.25);
-        QCOMPARE(QcUiScale::autoFactor({0, 0}), 1.0);
-        QCOMPARE(QcUiScale::autoFactor({qQNaN(), 720}), 1.0);
-        QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Auto, {1920, 1080}), 1.5);
+        QCOMPARE(QcUiScale::windowFactor({3440, 1000}), 1.0);
+        QCOMPARE(QcUiScale::windowFactor({3440, 1440}), 1.5);
+        QCOMPARE(QcUiScale::windowFactor({0, 0}), 1.0);
+        QCOMPARE(QcUiScale::windowFactor({qQNaN(), 720}), 1.0);
+        QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Percent100, {2560, 1440}), 1.5);
+        QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Percent200, {2560, 1440}), 3.0);
+        QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Percent75, {2560, 1440}), 1.125);
+        // Auto, from older settings files, is 100 %.
+        QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Auto, {2560, 1440}), 1.5);
         QCOMPARE(QcUiScale::requestedFactor(QcUiScale::Step::Percent175, {1024, 640}), 1.75);
     }
 
@@ -98,14 +104,16 @@ private slots:
         // A slightly larger window stays within the same eighth: no new factors.
         scaling.setWindowSize({1290, 725});
         QCOMPARE(factors.count(), 1);
+        // 200 % of the window's 1.5: the screens as large as fits (2560 / 1024 = 2.5, 1440 / 640 = 2.25).
         scaling.setWindowSize({2560, 1440});
-        QCOMPARE(scaling.scale(), 2.0);
+        QCOMPARE(scaling.requested(), 3.0);
+        QCOMPARE(scaling.scale(), 2.25);
         QCOMPARE(factors.count(), 2);
 
         scaling.setSetting(QcUiScaling::Step::Auto);
         scaling.setWindowSize({1920, 1080});
-        QCOMPARE(scaling.requested(), 1.5);
-        QCOMPARE(scaling.scale(), 1.5);
+        QCOMPARE(scaling.requested(), 1.125);
+        QCOMPARE(scaling.scale(), 1.125);
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"UI scale: ignoring unknown step 12"_s));
         scaling.setSetting(static_cast<QcUiScaling::Step>(12));

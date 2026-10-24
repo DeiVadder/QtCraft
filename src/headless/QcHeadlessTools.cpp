@@ -203,7 +203,7 @@ void exitSoon(int code)
     QTimer::singleShot(0, qApp, [code] { QCoreApplication::exit(code); });
 }
 
-bool exportIcon(const QString &directory)
+bool exportIcon(const QString &path)
 {
     const QcResult<QcBaseContent::Loaded> base = QcBaseContent::load();
     if (!base) {
@@ -211,7 +211,10 @@ bool exportIcon(const QString &directory)
         return false;
     }
 
-    const QcStatus written = QcAppIcon::writeIconSet(QcTextureAtlas::build(*base->registry), directory);
+    // A path ending in .ico gets the Windows icon (cmake/windows/QtCraft.ico), any other an .iconset.
+    const QcTextureAtlas atlas = QcTextureAtlas::build(*base->registry);
+    const bool ico = path.endsWith(u".ico"_s, Qt::CaseInsensitive);
+    const QcStatus written = ico ? QcAppIcon::writeIco(atlas, path) : QcAppIcon::writeIconSet(atlas, path);
     if (!written) {
         printError(written.error());
     }

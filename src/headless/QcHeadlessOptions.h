@@ -93,8 +93,9 @@ struct Options
                             u"address"_s};
     QCommandLineOption playerName{u"player-name"_s, u"Name of the bot that joins with --join."_s, u"name"_s, u"Bot"_s};
     QCommandLineOption icon{u"export-icon"_s,
-                            u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory and exit."_s,
-                            u"dir"_s};
+                            u"Write the application icon (base game textures) as the PNG images of a macOS .iconset directory, or as a "
+                            u"Windows icon when the path ends in .ico, and exit."_s,
+                            u"path"_s};
 
     QCommandLineOption exportTextures{u"export-textures"_s,
                                       u"Write the content's textures as an image texture pack (texturepack.json, textures/<namespace>/<name>.png, "

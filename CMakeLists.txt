@@ -23,6 +23,7 @@ qt_standard_project_setup(REQUIRES 6.8 I18N_SOURCE_LANGUAGE en I18N_TRANSLATED_L
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(QcProjectOptions)
 include(QcGamepad)
+include(QcWindowsResources)
 
 enable_testing()
 

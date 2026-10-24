@@ -2419,62 +2419,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="508"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="531"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="511"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="534"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="513"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="536"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="536"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="559"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="537"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="560"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="538"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="561"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="539"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="562"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="541"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="564"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="542"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="565"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="543"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="566"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="544"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="567"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="545"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="568"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -2482,97 +2482,100 @@ Als Nächstes: %3</translation>
 <context>
     <name>InterfacePage</name>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="18"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="20"/>
         <source>Interface</source>
         <translation>Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="23"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="25"/>
         <source>Language and size</source>
         <translation>Sprache und Größe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="28"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="30"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="33"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="35"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="46"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="49"/>
         <source>Interface size</source>
         <translation>Größe der Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="48"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="51"/>
         <source>Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.</source>
         <translation>Bildschirme erscheinen in diesem Fenster mit %1 %, die Anzeige im Spiel mit %2 %. Ein größeres Fenster zeigt sie größer.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="50"/>
         <source>Now %1 %</source>
-        <translation>Jetzt %1 %</translation>
+        <translation type="vanished">Jetzt %1 %</translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translation type="vanished">Automatisch</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="54"/>
-        <source>Auto</source>
-        <translation>Automatisch</translation>
+        <source>Now %1 % (grows with large windows)</source>
+        <translation>Jetzt %1 % (wächst mit großen Fenstern)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="55"/>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="56"/>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="57"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="58"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="59"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="60"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="62"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="63"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="67"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="70"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="72"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="75"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="76"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="79"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="77"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="80"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="78"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="81"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="84"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="87"/>
         <source>Labels in the world</source>
         <translation>Beschriftungen in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="85"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="88"/>
         <source>Names floating over places, such as the areas of the showcase</source>
         <translation>Namen über Orten, etwa den Bereichen der Schauwelt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="92"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="95"/>
         <source>Hide the hand with the HUD</source>
         <translation>Hand mit der Anzeige ausblenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="93"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="96"/>
         <source>When the HUD is hidden for a picture</source>
         <translation>Wenn die Anzeige für ein Bild ausgeblendet ist</translation>
     </message>
@@ -2777,17 +2780,17 @@ Als Nächstes: %3</translation>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="252"/>
+        <location filename="../src/app/qml/Main.qml" line="262"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="252"/>
+        <location filename="../src/app/qml/Main.qml" line="262"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="352"/>
+        <location filename="../src/app/qml/Main.qml" line="362"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -2796,12 +2799,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="370"/>
+        <location filename="../src/app/qml/Main.qml" line="380"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="375"/>
+        <location filename="../src/app/qml/Main.qml" line="385"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -3001,7 +3004,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">„%1“ endgültig löschen? Das lässt sich nicht rückgängig machen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="266"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="269"/>
         <source>‹ Main menu</source>
         <translation>‹ Hauptmenü</translation>
     </message>
@@ -4685,12 +4688,12 @@ Als Nächstes: %3</translation>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="329"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="334"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="354"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="359"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -4735,12 +4738,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="339"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="344"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="460"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="465"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>

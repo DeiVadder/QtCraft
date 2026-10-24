@@ -43,7 +43,7 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
     Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
-    // Size of the HUD and the screens (decision E-725): UiScaling.Step.Auto or Percent75 … Percent200.
+    // Size of the HUD and the screens (decision E-725): UiScaling.Step.Percent75 … Percent200, relative to the window (E-875).
     Q_PROPERTY(QcUiScaling::Step uiScale READ uiScale WRITE setUiScale NOTIFY settingsChanged FINAL)
     // GameSettings.TextureFiltering.Off, X2, X4 or X8 (decision E-721).
     Q_PROPERTY(QcSettingsController::TextureFiltering textureFiltering READ textureFiltering WRITE setTextureFiltering NOTIFY

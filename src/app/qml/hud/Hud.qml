@@ -141,26 +141,49 @@ Item {
         font.pixelSize: Ui.hudPx(16)
     }
 
-    // The chat lines above the status rows; long lines wrap within the window.
-    Column {
-        id: chat
+    // The chat lines above the status rows (decision E-875): closed, the last lines fade out after
+    // ten seconds; open, the last twenty show again. Long lines wrap at a width that grows with the
+    // HUD scale, so a long list (/help) does not run across a wide window. The area never reaches
+    // above the window's top: there the oldest lines of a long open chat are cut off. A fading
+    // line animates its own opacity over the time the feed gives it (`fadeMs`), so the list is
+    // only made again when a line comes, starts to fade or goes.
+    Item {
+        id: chatArea
 
         objectName: "hudChat"
         x: Ui.hudPx(12)
+        width: Math.min(hud.width - 2 * x, Ui.hudPx(480))
+        height: Math.min(chat.height, Math.max(0, hud.statusTop - Ui.hudPx(6) - Ui.hudPx(12)))
         y: hud.statusTop - Ui.hudPx(6) - height
-        width: hud.width - 2 * x
-        spacing: Ui.hudPx(2)
+        clip: true
 
-        Repeater {
-            model: hud.game.hud.chatLines
+        Column {
+            id: chat
 
-            HudLabel {
-                required property string modelData
+            anchors.bottom: parent.bottom
+            width: parent.width
+            spacing: Ui.hudPx(2)
 
-                width: Math.min(implicitWidth, chat.width)
-                wrapMode: Text.Wrap
-                text: modelData
-                font.pixelSize: Ui.hudPx(15)
+            Repeater {
+                model: hud.game.hud.chat.entries
+
+                HudLabel {
+                    id: chatLine
+
+                    required property var modelData
+
+                    width: Math.min(implicitWidth, chat.width)
+                    wrapMode: Text.Wrap
+                    text: modelData.text
+                    opacity: modelData.opacity
+                    font.pixelSize: Ui.hudPx(15)
+
+                    NumberAnimation on opacity {
+                        running: chatLine.modelData.fadeMs > 0
+                        to: 0
+                        duration: chatLine.modelData.fadeMs
+                    }
+                }
             }
         }
     }

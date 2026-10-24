@@ -15,8 +15,12 @@ struct QcAppOptions;
 class QcAppWindow
 {
 public:
-    // Colour scheme and control style, before the QML engine starts.
+    // Colour scheme, control style and window icon, before the QML engine starts.
     static void applyAppearance();
+    // The icon of the title bar and the taskbar on Windows and Linux (decision E-875): the
+    // procedural icon of cmake/windows/QtCraft.ico from the resources (the .exe carries the same
+    // file for Explorer). macOS shows the bundle's QtCraft.icns and is left alone.
+    static void applyWindowIcon();
     // The game screens are drawn dark over the world (E-079), so the controls are dark too, whatever
     // the system appearance. QTCRAFT_COLOR_SCHEME=light or =system is a test hook for comparison;
     // =system also keeps the system's control palette instead of the game's (E-279).

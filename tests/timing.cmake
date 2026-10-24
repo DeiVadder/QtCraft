@@ -40,6 +40,7 @@
 #   test_block_prediction, test_block_prediction_measure
 #                            survival mining paced by the wall clock (the server times it in its
 #                            players' time); the time from an action to its mesh (E-853)
+#   test_audio_output        the real audio device keeps playing while the GUI thread sleeps 300 ms
 set(qc_timing_tests
     test_tick_scheduler test_tick_phases test_tick_control test_interpolation
     test_tcp_transport test_network_game test_latency
@@ -48,5 +49,5 @@ set(qc_timing_tests
     test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
     app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu test_gamepad_scenarios test_session_tick test_session_thread
-    test_block_prediction test_block_prediction_measure)
+    test_block_prediction test_block_prediction_measure test_audio_output)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

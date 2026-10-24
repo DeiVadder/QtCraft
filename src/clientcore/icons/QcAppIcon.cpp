@@ -2,7 +2,10 @@
 
 #include "clientcore/textures/QcTextureAtlas.h"
 
+#include <QBuffer>
+#include <QDataStream>
 #include <QDir>
+#include <QFile>
 #include <QLinearGradient>
 #include <QPainter>
 #include <QPainterPath>
@@ -12,6 +15,7 @@
 
 #include <cmath>
 #include <numbers>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -51,9 +55,101 @@ void drawFace(QPainter &painter, const QImage &texture, const Parallelogram &fac
     painter.restore();
 }
 
+// The three texture tiles of the icon.
+struct Tiles
+{
+    QImage top;
+    QImage side;
+    QImage tool;
+};
+
+QcResult<Tiles> tilesOf(const QcTextureAtlas &atlas)
+{
+    const QString topName = u"qtcraft:grass_top"_s;
+    const QString sideName = u"qtcraft:grass_side"_s;
+    const QString toolName = u"qtcraft:iron_pickaxe"_s;
+    for (const QString &name : {topName, sideName, toolName}) {
+        if (!atlas.contains(name)) {
+            return qcError(u"Texture %1 is missing"_s.arg(name));
+        }
+    }
+    return Tiles{atlas.tile(topName), atlas.tile(sideName), atlas.tile(toolName)};
+}
+
+// Size of the header and of one directory entry of an .ico file, and of a BITMAPINFOHEADER.
+constexpr int icoHeaderBytes = 6;
+constexpr int icoEntryBytes = 16;
+constexpr int bitmapHeaderBytes = 40;
+// The largest edge an .ico entry describes in its directory (written as 0).
+constexpr int icoLargest = 256;
+
+// The image data of one entry: PNG for 256 pixels, else a 32-bit bottom-up DIB (BGRA) followed by
+// an AND mask of zeros (the alpha channel decides; Windows XP and later).
+QByteArray icoEntryData(const QImage &source)
+{
+    const QImage image = source.convertToFormat(QImage::Format_ARGB32);
+    QByteArray data;
+    if (image.width() >= icoLargest) {
+        QBuffer buffer(&data);
+        buffer.open(QIODevice::WriteOnly);
+        image.save(&buffer, "PNG");
+        return data;
+    }
+
+    const int width = image.width();
+    const int height = image.height();
+    // Mask rows are padded to 32 bits.
+    const int maskRowBytes = ((width + 31) / 32) * 4;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setByteOrder(QDataStream::LittleEndian);
+    out << static_cast<quint32>(bitmapHeaderBytes) << static_cast<qint32>(width) << static_cast<qint32>(2 * height)
+        << static_cast<quint16>(1) << static_cast<quint16>(32) << static_cast<quint32>(0)
+        << static_cast<quint32>(width * height * 4 + maskRowBytes * height) << static_cast<qint32>(0) << static_cast<qint32>(0)
+        << static_cast<quint32>(0) << static_cast<quint32>(0);
+    for (int y = height - 1; y >= 0; --y) {
+        for (int x = 0; x < width; ++x) {
+            const QRgb pixel = image.pixel(x, y);
+            out << static_cast<quint8>(qBlue(pixel)) << static_cast<quint8>(qGreen(pixel)) << static_cast<quint8>(qRed(pixel))
+                << static_cast<quint8>(qAlpha(pixel));
+        }
+    }
+    data.append(QByteArray(static_cast<qsizetype>(maskRowBytes) * height, '\0'));
+    return data;
+}
+
 } // namespace
 
 namespace QcAppIcon {
+
+QList<int> icoSizes()
+{
+    return {16, 24, 32, 48, 64, 128, 256};
+}
+
+QByteArray encodeIco(const QList<QImage> &images)
+{
+    QList<QByteArray> entries;
+    for (const QImage &image : images) {
+        entries.append(icoEntryData(image));
+    }
+
+    QByteArray file;
+    QDataStream out(&file, QIODevice::WriteOnly);
+    out.setByteOrder(QDataStream::LittleEndian);
+    out << static_cast<quint16>(0) << static_cast<quint16>(1) << static_cast<quint16>(images.size());
+    qsizetype offset = icoHeaderBytes + icoEntryBytes * images.size();
+    for (qsizetype i = 0; i < images.size(); ++i) {
+        // 256 is written as 0.
+        const auto edge = static_cast<quint8>(images[i].width() >= icoLargest ? 0 : images[i].width());
+        out << edge << edge << static_cast<quint8>(0) << static_cast<quint8>(0) << static_cast<quint16>(1) << static_cast<quint16>(32)
+            << static_cast<quint32>(entries[i].size()) << static_cast<quint32>(offset);
+        offset += entries[i].size();
+    }
+    for (const QByteArray &entry : std::as_const(entries)) {
+        file.append(entry);
+    }
+    return file;
+}
 
 QList<IconFile> iconSetFiles()
 {
@@ -115,31 +211,42 @@ QImage render(const QImage &top, const QImage &side, const QImage &tool, int siz
     return image;
 }
 
-[[nodiscard]] QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory)
+QcStatus writeIconSet(const QcTextureAtlas &atlas, const QString &directory)
 {
-    const QString topName = u"qtcraft:grass_top"_s;
-    const QString sideName = u"qtcraft:grass_side"_s;
-    const QString toolName = u"qtcraft:iron_pickaxe"_s;
-
-    for (const QString &name : {topName, sideName, toolName}) {
-        if (!atlas.contains(name)) {
-            return qcError(u"Texture %1 is missing"_s.arg(name));
-        }
+    const QcResult<Tiles> tiles = tilesOf(atlas);
+    if (!tiles) {
+        return std::unexpected(tiles.error());
     }
-
     if (!QDir().mkpath(directory)) {
         return qcError(u"Cannot create %1"_s.arg(directory));
     }
 
-    const QImage top = atlas.tile(topName);
-    const QImage side = atlas.tile(sideName);
-    const QImage tool = atlas.tile(toolName);
     const QList<IconFile> files = iconSetFiles();
     for (const IconFile &file : files) {
         const QString path = QDir(directory).filePath(file.name);
-        if (!render(top, side, tool, file.pixels).save(path, "PNG")) {
+        if (!render(tiles->top, tiles->side, tiles->tool, file.pixels).save(path, "PNG")) {
             return qcError(u"Cannot write %1"_s.arg(path));
         }
+    }
+    return {};
+}
+
+QcStatus writeIco(const QcTextureAtlas &atlas, const QString &path)
+{
+    const QcResult<Tiles> tiles = tilesOf(atlas);
+    if (!tiles) {
+        return std::unexpected(tiles.error());
+    }
+
+    QList<QImage> images;
+    const QList<int> sizes = icoSizes();
+    for (const int size : sizes) {
+        images.append(render(tiles->top, tiles->side, tiles->tool, size));
+    }
+    QFile file(path);
+    const QByteArray data = encodeIco(images);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate) || file.write(data) != data.size()) {
+        return qcError(u"Cannot write %1"_s.arg(path));
     }
     return {};
 }

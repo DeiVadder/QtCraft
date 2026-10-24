@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/session/QcSessionAudio.h"
 #include "clientcore/session/QcClientSession.h"
 
 #include <QObject>
@@ -74,4 +75,5 @@ private:
 
     QcSessionParts &m_parts;
     Targets m_targets;
+    QcSessionAudio m_audio;
 };

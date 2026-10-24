@@ -17,5 +17,6 @@ qt_add_executable(qtcraft-headless
     QcWorldStats.h QcWorldStats.cpp
 )
 qc_configure_target(qtcraft-headless)
+qc_add_windows_resources(qtcraft-headless "QtCraft server and tools")
 set_target_properties(qtcraft-headless PROPERTIES MACOSX_BUNDLE OFF)
 target_link_libraries(qtcraft-headless PRIVATE qc_server qc_worlds qc_clientcore Qt::Core Qt::Gui)

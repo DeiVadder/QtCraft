@@ -7,7 +7,11 @@ target_sources(qc_audio PRIVATE
     QcAudioEngine.h QcAudioEngine.cpp
     QcAudioLogging.h QcAudioLogging.cpp
     QcAudioOutput.h QcAudioOutput.cpp
+    QcAudioPlatform.h
+    QcAudioRoute.h QcAudioRoute.cpp
+    QcAudioSinkHost.h QcAudioSinkHost.cpp
     QcMixerDevice.h QcMixerDevice.cpp
+    QcSystemAudio.h QcSystemAudio.cpp
 )
 qc_configure_target(qc_audio)
 # Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):

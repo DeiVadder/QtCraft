@@ -1,6 +1,7 @@
 #include "app/hooks/QcScriptedPad.h"
 
 #include "app/debug/QcAppLogging.h"
+#include "app/hooks/QcPendingScreens.h"
 #include "app/input/QcGamepadUi.h"
 
 #include <QQuickItem>
@@ -129,7 +130,11 @@ void QcScriptedPad::onFrameSwapped()
     if (!m_afterFrames) {
         return;
     }
-    if (--m_framesLeft > 0) {
+    // A screen the step opened is made over the next frames: the step waits for it (at most
+    // QcPendingScreens::maxWaitFrames more frames).
+    const QQuickWindow *shown = m_ui.navigator().window();
+    const bool pending = shown && m_framesLeft > -QcPendingScreens::maxWaitFrames && QcPendingScreens::any(*shown);
+    if (--m_framesLeft > 0 || pending) {
         // A still scene renders only on request.
         if (QQuickWindow *window = m_ui.navigator().window()) {
             window->update();

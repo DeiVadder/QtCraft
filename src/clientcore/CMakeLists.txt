@@ -172,6 +172,7 @@ target_sources(qc_clientcore PRIVATE
     sound/QcAudioMixer.h sound/QcAudioMixer.cpp
     sound/QcLocalSounds.h sound/QcLocalSounds.cpp
     sound/QcMusicComposer.h sound/QcMusicComposer.cpp
+    sound/QcPositionalVoices.h sound/QcPositionalVoices.cpp
     sound/QcSampleBuffer.h
     sound/QcSoundBank.h sound/QcSoundBank.cpp
     sound/QcSoundCue.h

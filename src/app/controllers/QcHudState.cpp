@@ -37,6 +37,7 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
     : QObject(parent)
     , m_parts(parts)
     , m_settings(settings)
+    , m_chat(new QcChatFeed(this))
     , m_heldMap(new QcHeldMap(parts, this))
     , m_labels(new QcWorldLabelModel(this))
     , m_debug(new QcDebugHud(parts, settings, this))
@@ -143,13 +144,7 @@ void QcHudState::updateDial(double alpha)
 
 void QcHudState::addChatLine(const QString &text)
 {
-    m_chatLines.append(text);
-    // Only the last few lines stay on screen.
-    constexpr qsizetype maxChatLines = 8;
-    while (m_chatLines.size() > maxChatLines) {
-        m_chatLines.removeFirst();
-    }
-    emit chatLinesChanged();
+    m_chat->add(text);
 }
 
 QList<QcWorldLabel> QcHudState::standLabels() const

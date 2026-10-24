@@ -51,6 +51,8 @@ QcAudioEngine::QcAudioEngine(QObject *parent)
         });
         scheduleMusic(static_cast<int>(piece->seconds()) + m_random.bounded(minMusicPause, maxMusicPause + 1));
     });
+
+    connect(&m_output, &QcAudioOutput::mixerReset, this, &QcAudioEngine::mixerReset);
 }
 
 QcAudioEngine::~QcAudioEngine()
@@ -81,6 +83,11 @@ void QcAudioEngine::setContent(std::shared_ptr<const QcContentRegistry> content)
 
     stopWorldSounds();
     m_content = std::move(content);
+    buildBank();
+}
+
+void QcAudioEngine::buildBank()
+{
     m_bank.reset();
     if (!m_content || !isActive()) {
         return;
@@ -90,6 +97,19 @@ void QcAudioEngine::setContent(std::shared_ptr<const QcContentRegistry> content)
     m_bankWatcher.setFuture(QtConcurrent::run([content = m_content, rate] {
         return std::make_shared<const QcSoundBank>(QcSoundBank::build(*content, rate));
     }));
+}
+
+void QcAudioEngine::mixerReset()
+{
+    // The new mixer is silent: the voices are gone. Ambience loops start again with the next
+    // setAmbience once the bank is ready, music with its next piece.
+    m_ambienceVoices = {};
+    m_musicVoice = 0;
+    m_positional.clear();
+    buildBank();
+    if (m_musicEnabled) {
+        scheduleMusic(firstMusicDelay);
+    }
 }
 
 void QcAudioEngine::setVolumes(double master, double effects, double music, double ambient, bool muted)
@@ -130,7 +150,7 @@ void QcAudioEngine::warnUnknown(const QString &key)
     }
 }
 
-void QcAudioEngine::play(const QcSoundCue &cue, const QcVec3 &ears, double yawDegrees)
+void QcAudioEngine::play(const QcSoundCue &cue, const QcSoundSpatial::Listener &listener)
 {
     if (!isActive() || !m_bank) {
         return;
@@ -143,15 +163,27 @@ void QcAudioEngine::play(const QcSoundCue &cue, const QcVec3 &ears, double yawDe
     }
 
     const QcSoundDefinition &sound = entry->definition;
-    const QcSoundSpatial::Placement placement =
-        QcSoundSpatial::place(ears, yawDegrees, cue.position, sound.range * std::max(1.0, static_cast<double>(cue.volume)));
-    const float gain = static_cast<float>(sound.volume) * cue.volume * placement.gain;
-    if (gain < audibleGain) {
+    const QcSoundSpatial::Source source = QcSoundSpatial::source(sound, cue);
+    const QcSoundSpatial::Placement placement = QcSoundSpatial::hear(source, listener);
+    if (placement.gain < audibleGain) {
         return;
     }
 
     const double pitch = cue.pitch * (1.0 + sound.pitchVariation * (2.0 * m_random.generateDouble() - 1.0));
-    startVoice(*entry, {gain, placement.pan, pitch, sound.bus, false});
+    std::shared_ptr<const QcSampleBuffer> buffer = pickVariant(*entry);
+    m_output.withMixer([&](QcAudioMixer &mixer) {
+        m_positional.start(mixer, std::move(buffer), cue.key, source, {placement.gain, placement.pan, pitch, sound.bus, false});
+    });
+}
+
+void QcAudioEngine::moveListener(const QcSoundSpatial::Listener &listener)
+{
+    m_listener = listener;
+    if (!isActive()) {
+        return;
+    }
+
+    m_output.withMixer([&](QcAudioMixer &mixer) { m_positional.update(mixer, listener); });
 }
 
 void QcAudioEngine::playUi(const QString &key)
@@ -239,4 +271,5 @@ void QcAudioEngine::stopWorldSounds()
     m_ambienceVoices = {};
     m_musicVoice = 0;
     m_ambience = {};
+    m_positional.clear();
 }

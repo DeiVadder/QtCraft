@@ -15,6 +15,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcAnvilController.h controllers/QcAnvilController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
+    controllers/QcChatFeed.h controllers/QcChatFeed.cpp
     controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
     controllers/QcEnchantingController.h controllers/QcEnchantingController.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
@@ -53,6 +54,7 @@ target_sources(qc_app_core PRIVATE
     hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
+    hooks/QcPendingScreens.h hooks/QcPendingScreens.cpp
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
     hooks/QcScriptedPad.h hooks/QcScriptedPad.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
@@ -119,6 +121,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     session/QcFrameDriver.h session/QcFrameDriver.cpp
+    session/QcSessionAudio.h session/QcSessionAudio.cpp
     session/QcSessionParts.h
     session/QcSessionWiring.h session/QcSessionWiring.cpp
     session/QcWorldAtlas.h session/QcWorldAtlas.cpp
@@ -341,6 +344,13 @@ if(APPLE)
         VERBATIM)
     target_sources(qtcraft PRIVATE ${QC_ICNS})
     set_source_files_properties(${QC_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+else()
+    # Windows and Linux: the same icon for the title bar and the taskbar (QcAppWindow::applyWindowIcon),
+    # on Windows also embedded into the .exe for Explorer (decision E-875).
+    set(QC_ICO ${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico)
+    set_source_files_properties(${QC_ICO} PROPERTIES QT_RESOURCE_ALIAS QtCraft.ico)
+    qt_add_resources(qtcraft "qtcraft_icon" PREFIX "/icons" FILES ${QC_ICO})
+    qc_add_windows_resources(qtcraft "QtCraft")
 endif()
 
 target_link_libraries(qtcraft PRIVATE qc_app_core qc_app_coreplugin)

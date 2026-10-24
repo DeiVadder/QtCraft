@@ -314,6 +314,11 @@ void QcGameController::saveWorld() const
 
 void QcGameController::sendChat(const QString &text) const
 {
+    // A client command (decision E-875): empties the chat lines of the HUD, the server never sees it.
+    if (text.trimmed().compare(QcChatFeed::clearCommand, Qt::CaseInsensitive) == 0) {
+        m_hud->chat()->clear();
+        return;
+    }
     if (m_parts.session) {
         m_parts.session->sendChat(text);
     }

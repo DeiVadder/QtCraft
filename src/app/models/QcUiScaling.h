@@ -17,11 +17,11 @@ class QcUiScaling : public QObject
     Q_OBJECT
     QML_NAMED_ELEMENT(UiScaling)
     QML_SINGLETON
-    // UiScaling.Step.Auto, Percent75 … Percent200.
+    // UiScaling.Step.Percent75 … Percent200 (Auto, from older settings files, is 100 %).
     Q_PROPERTY(QcUiScaling::Step setting READ setting WRITE setSetting NOTIFY inputsChanged FINAL)
     // The window's content size in logical pixels.
     Q_PROPERTY(QSizeF windowSize READ windowSize WRITE setWindowSize NOTIFY inputsChanged FINAL)
-    // The factor of the choice (Auto: from the window), before fitting.
+    // The choice times the window's factor (decision E-875), before fitting.
     Q_PROPERTY(double requested READ requested NOTIFY factorsChanged FINAL)
     // Screens and menus: laid out for 1024 x 640 at 1.0.
     Q_PROPERTY(double scale READ scale NOTIFY factorsChanged FINAL)
@@ -61,7 +61,7 @@ private:
     void update();
 
     QcUiScale::Step m_setting = QcUiScale::defaultStep;
-    QSizeF m_windowSize = QcUiScale::autoReferenceSize;
+    QSizeF m_windowSize = QcUiScale::windowReferenceSize;
     double m_requested = 1.0;
     double m_scale = 1.0;
     double m_hudScale = 1.0;

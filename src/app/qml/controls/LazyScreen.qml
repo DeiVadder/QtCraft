@@ -7,8 +7,10 @@ import QtQuick
 // (tabs, search text, scroll positions that matter) lives in the C++ controllers.
 // The screen is made hidden and shown once it is complete, so its onVisibleChanged handlers (the
 // focus a screen takes when it opens) run on the first opening as on every later one. Loading is
-// synchronous: the screen exists when the change of `shown` has been handled, so test hooks and
-// the pad's focus find it in the same event.
+// asynchronous (decision E-875): the screen is made over the next frames instead of stalling the
+// GUI thread (the first pause menu took long enough for the sound to drop out), and it shows,
+// takes the focus and reacts to the pad once it is complete (`loaded`). `asynchronous: false`
+// makes it within the change of `shown`.
 Item {
     id: lazy
 
@@ -19,11 +21,16 @@ Item {
     property bool preload: false
     // How long a closed screen stays loaded; 0 unloads it at once.
     property int keepAliveMs: 60000
+    // Made over the next frames (see above).
+    property bool asynchronous: true
     // The screen: a Component whose item fills this one.
     property Component screen
     // The loaded screen, null while unloaded.
     readonly property Item item: loader.item as Item
     readonly property bool loaded: loader.status === Loader.Ready
+    // To be seen but still being made: the screenshot hook waits while any screen is pending
+    // (QcScreenshotHook, decision E-875), so pictures always show the complete screen.
+    readonly property bool screenPending: shown && !loaded && screen !== null
     // Logs "UI stats: <screen> made in <n> ms" each time the screen is made (decision E-690).
     property bool logCreation: false
     // When the Loader was told to make the screen (Date.now()), for logCreation.
@@ -39,7 +46,7 @@ Item {
     // Unloads the closed screen now, as when its keep-alive time runs out (tests advance the clock
     // through this; a shown screen stays).
     // Passes `make` through to Loader.active and notes the time when it is true: the binding runs
-    // only when `live` changes, before the Loader makes the screen synchronously and sends `loaded`.
+    // only when `live` changes, before the Loader starts to make the screen and sends `loaded`.
     function startClock(make: bool): bool {
         if (make)
             makeStartMs = Date.now();
@@ -78,6 +85,7 @@ Item {
             id: loader
 
             anchors.fill: parent
+            asynchronous: lazy.asynchronous
             active: lazy.startClock(lazy.live || lazy.preload)
             sourceComponent: lazy.screen
 

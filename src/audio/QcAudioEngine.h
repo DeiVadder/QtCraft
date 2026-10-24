@@ -3,8 +3,10 @@
 #include "audio/QcAudioOutput.h"
 #include "clientcore/sound/QcAmbience.h"
 #include "clientcore/sound/QcAudioMixer.h"
+#include "clientcore/sound/QcPositionalVoices.h"
 #include "clientcore/sound/QcSoundBank.h"
 #include "clientcore/sound/QcSoundCue.h"
+#include "clientcore/sound/QcSoundSpatial.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QFutureWatcher>
@@ -47,8 +49,12 @@ public:
     bool isBankReady() const { return m_bank != nullptr; }
     void setVolumes(double master, double effects, double music, double ambient, bool muted);
 
-    // A cue heard by a listener with `ears` at that position looking along `yawDegrees`.
-    void play(const QcSoundCue &cue, const QcVec3 &ears, double yawDegrees);
+    // A cue heard by `listener`; its voice follows the listener until it ends (moveListener).
+    void play(const QcSoundCue &cue, const QcSoundSpatial::Listener &listener);
+    // Places the playing positional voices anew for where the listener is now (every tick).
+    void moveListener(const QcSoundSpatial::Listener &listener);
+    // Where moveListener() placed the listener last (also while the output is inactive).
+    const QcSoundSpatial::Listener &listener() const { return m_listener; }
     // A sound without a position (menu clicks).
     void playUi(const QString &key);
     // Levels of the ambience loops; a loop starts with its first audible level.
@@ -62,6 +68,9 @@ signals:
     void bankReady();
 
 private:
+    void buildBank();
+    // The output runs a fresh mixer at a new rate: rebuilds what was rendered for the old one.
+    void mixerReset();
     std::shared_ptr<const QcSampleBuffer> pickVariant(const QcSoundBank::Entry &entry);
     QcAudioMixer::VoiceId startVoice(const QcSoundBank::Entry &entry, const QcAudioMixer::PlayParameters &parameters);
     void scheduleMusic(int seconds);
@@ -78,6 +87,8 @@ private:
     QcAudioMixer::VoiceId m_musicVoice = 0;
     std::array<QcAudioMixer::VoiceId, 4> m_ambienceVoices{};
     QcAmbience::Levels m_ambience;
+    QcPositionalVoices m_positional;
+    QcSoundSpatial::Listener m_listener;
     QRandomGenerator m_random;
     QSet<QString> m_warned;
 };

@@ -8,7 +8,8 @@ import QtCraft
 // A screen one level down the side bar (drill-down, docs/UI-Leitfaden.md 8b, decision E-852): the
 // settings and the handbook. The side bar keeps its place and the logo; its entries are a back
 // entry ("‹ Main menu", "‹ Pause menu", "‹ Back to game"), the screen's title and its categories;
-// the chosen category shows on the right, in the menu's margin and no wider than a large screen.
+// the chosen category shows on the right, in the menu's margin and no wider than a large screen
+// (centred in the room beside the bar when the window is wider).
 // In the main menu it lies on the menu's background, in the game on the nearly opaque panel, so
 // neither the world nor the HUD shows through the text. The same screen serves both.
 FocusScope {
@@ -106,12 +107,12 @@ FocusScope {
         id: contentArea
 
         visible: !screen.covered
-        anchors.left: bar.right
+        // In the middle of the room beside the bar when the window is wider than a large screen.
+        x: Ui.pageX(bar.width, screen.width, width)
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: Ui.screen.margin
         anchors.topMargin: Ui.space.xl
         anchors.bottomMargin: Ui.space.l + screen.bottomRoom
-        width: Math.min(screen.width - bar.width - 2 * Ui.screen.margin, Ui.screen.l)
+        width: Ui.pageWidth(bar.width, screen.width)
     }
 }

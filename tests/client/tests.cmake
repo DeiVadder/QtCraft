@@ -41,6 +41,7 @@ qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
+target_compile_definitions(test_app_icon PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_worlds qc_clientcore Qt::Qml)
 target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
@@ -91,6 +92,8 @@ qc_add_test(test_gamepad_navigation SOURCES client/test_gamepad_navigation.cpp L
 # The gamepad controls behind the keyboard in the game's frame order: focus, screens, background
 # presses, the lead between pads (decision E-541).
 qc_add_test(test_gamepad_controls SOURCES client/test_gamepad_controls.cpp LIBRARIES qc_server qc_app_core qc_worlds)
+# The session's sounds reach the audio engine each tick (QcSessionAudio, part of QcSessionWiring).
+qc_add_test(test_session_audio SOURCES client/test_session_audio.cpp LIBRARIES qc_server qc_app_core qc_worlds)
 # The pad on the screens of a window: focus moves, clicks, back, tabs, lists, popups, keyboard
 # requests and the device in use (decisions E-583, E-584).
 qc_add_test(test_gamepad_screens SOURCES client/test_gamepad_screens.cpp LIBRARIES qc_app_core)
@@ -160,3 +163,4 @@ qc_add_test(test_frame_plan SOURCES client/test_frame_plan.cpp LIBRARIES qc_app_
 # lines and the settings, without a window.
 qc_add_test(test_multiplayer_ui SOURCES client/test_multiplayer_ui.cpp LIBRARIES qc_app_core)
 qc_add_test(test_admin_controller SOURCES client/test_admin_controller.cpp LIBRARIES qc_app_core)
+qc_add_test(test_chat_feed SOURCES client/test_chat_feed.cpp LIBRARIES qc_app_core)

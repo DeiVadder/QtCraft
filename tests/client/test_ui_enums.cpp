@@ -118,15 +118,15 @@ private slots:
             QCOMPARE(settings.uiScale(), QcUiScaling::Step::Percent100);
             QSignalSpy changed(&settings, &QcSettingsController::settingsChanged);
 
-            QVERIFY(settings.setProperty("uiScale", int(QcUiScaling::Step::Auto)));
-            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Auto);
+            QVERIFY(settings.setProperty("uiScale", static_cast<int>(QcUiScaling::Step::Percent150)));
+            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Percent150);
             QCOMPARE(changed.count(), 1);
-            settings.setUiScale(QcUiScaling::Step::Auto);
+            settings.setUiScale(QcUiScaling::Step::Percent150);
             QCOMPARE(changed.count(), 1);
 
             QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown UI scale 9"_s));
             settings.setUiScale(static_cast<QcUiScaling::Step>(9));
-            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Auto);
+            QCOMPARE(settings.uiScale(), QcUiScaling::Step::Percent150);
 
             settings.setUiScale(QcUiScaling::Step::Percent175);
             settings.saveSettings();

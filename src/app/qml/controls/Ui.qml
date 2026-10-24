@@ -228,4 +228,18 @@ QtObject {
     function hudPx(size: real): real {
         return scaled(size, hudScale);
     }
+
+    // A page beside a side bar `barWidth` wide at the window's left edge, in a window
+    // `windowWidth` wide (the main menu's pages, SidebarScreen; decision E-875): it keeps the
+    // menu's margin to the bar and the window and is no wider than a large screen.
+    function pageWidth(barWidth: real, windowWidth: real): real {
+        return Math.min(windowWidth - barWidth - 2 * screen.margin, screen.l);
+    }
+
+    // The left edge of such a page `width` wide: after the bar and the margin, and in the middle
+    // of the room beside the bar when the window is wider than the page needs (a large monitor in
+    // fullscreen).
+    function pageX(barWidth: real, windowWidth: real, width: real): real {
+        return barWidth + screen.margin + Math.max(0, (windowWidth - barWidth - 2 * screen.margin - width) / 2);
+    }
 }
