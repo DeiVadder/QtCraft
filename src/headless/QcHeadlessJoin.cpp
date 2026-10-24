@@ -1,5 +1,6 @@
 #include "headless/QcHeadlessJoin.h"
 
+#include "clientcore/network/QcKnownServers.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"
@@ -39,6 +40,8 @@ QcStatus QcHeadlessJoin::start(const Options &options, const QcModLoader::Result
     request.address = *address;
     request.playerName = options.playerName;
     request.tickMode = QcSessionTickMode::Timer;
+    // Each bot pins the servers in its own data folder.
+    request.knownServersFile = QDir(options.dataDirectory).filePath(QString::fromLatin1(QcKnownServers::fileName));
     request.credentials = {*key, options.password, QcContentFingerprint::of(*content.content, content.mods), options.viewDistance};
     m_client->join(request);
     return {};

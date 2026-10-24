@@ -846,7 +846,7 @@ Choose **Multiplayer** in the main menu, type the server's address and your play
 
 **Opening your world to the LAN**
 
-In a single-player world, open the menu (Esc) and choose **Open to LAN**. Pick a port (0 takes any free one), an optional password and how many players may join, then **Open to other players**. The screen shows the port and the addresses of your computer; friends in the same network join with one of them. You keep playing as before and stay the world's operator; **Stop hosting** or leaving the world closes it again. The firewall may ask once whether QtCraft may accept incoming connections.
+In a single-player world, open the menu (Esc) and choose **Open to LAN**. Pick a port (0 takes any free one), an optional password and how many players may join, then **Open to other players**. The screen shows the port and the addresses of your computer; friends in the same network join with one of them. The world is offered over IPv4 only, which your router keeps inside your network; **Also over IPv6** adds IPv6 addresses, which are often reachable from the internet, so set a password then. You keep playing as before and stay the world's operator; **Stop hosting** or leaving the world closes it again. The firewall may ask once whether QtCraft may accept incoming connections.
 
 **Dedicated server and the internet**
 
@@ -858,7 +858,7 @@ Hold **Tab** to see who is online: the server's name and message of the day, eve
 
 **Limits of the security**
 
-There are no accounts: every installation has a random key that proves your name on each server (the first player to use a name on a server keeps it). Passwords are never sent in plain text, but nothing else is encrypted, so chat and play can be read on the way. Open a server to the internet only with a password and to people you know.
+There are no accounts: every installation has a random key that proves your name on each server (the first player to use a name on a server keeps it). Every connection is encrypted. Each server has its own certificate, which your game remembers at the first join; if a server later shows another one, the game refuses to connect, because someone may be listening in. Choose **Forget the old certificate** only when the server's owner tells you he made a new one. Open a server to the internet only with a password and to people you know.
 
 ### <a id="chapter-qtcraft-texture_packs"></a>Texture packs
 

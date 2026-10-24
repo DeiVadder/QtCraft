@@ -1,8 +1,9 @@
 #include "clientcore/control/QcControlAim.h"
+#include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
-#include "network/QcTcpConnector.h"
 #include "QcRecordingTransport.h"
+#include "QcTestTls.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "server/network/QcNetworkServer.h"
@@ -237,27 +238,30 @@ private slots:
         QcNetworkConfig network;
         network.bindAddress = QHostAddress::LocalHost;
         network.port = 0;
+        network.tls = QcTestTls::credentials();
         const QcResult<quint16> port = m_host->listen(network);
         QVERIFY(port.has_value());
 
-        const auto connectTcp = [this, &port](const QString &name) {
-            QcTcpConnector connector;
-            QSignalSpy connected(&connector, &QcTcpConnector::connected);
-            connector.connectTo({u"127.0.0.1"_s, *port}, timeoutMs);
-            [[maybe_unused]] const bool ok = connected.wait(timeoutMs);
-            auto session = std::make_unique<QcClientSession>(connector.takeTransport(), name);
-            QcClientLogin::Credentials credentials;
-            credentials.installationKey = QByteArray(32, name.at(0).toLatin1());
-            credentials.viewDistance = 1;
+        // Joined like the game joins: the TLS socket is made in the session's tick thread.
+        const auto connectTcp = [this, &port](const QString &name) -> std::unique_ptr<QcClientSession> {
+            QcNetworkClient client;
+            QSignalSpy joined(&client, &QcNetworkClient::joined);
+            QcNetworkClient::Request request;
+            request.address = {u"127.0.0.1"_s, *port};
+            request.playerName = name;
+            request.connectTimeoutMs = timeoutMs;
+            request.pinning = QcNetworkClient::Pinning::DisabledForTests;
+            request.credentials.installationKey = QByteArray(32, name.at(0).toLatin1());
+            request.credentials.viewDistance = 1;
             for (const QcPackReference &pack : m_content->packs()) {
-                credentials.packs.append({pack.id, pack.version, {}});
+                request.credentials.packs.append({pack.id, pack.version, {}});
             }
-            session->setCredentials(credentials);
-            session->start();
-            return session;
+            client.join(request);
+            return joined.wait(timeoutMs) ? client.takeSession() : nullptr;
         };
         std::unique_ptr<QcClientSession> guest = connectTcp(u"Guest"_s);
         std::unique_ptr<QcClientSession> leaver = connectTcp(u"Leaver"_s);
+        QVERIFY(guest && leaver);
         QTRY_VERIFY_WITH_TIMEOUT(guest->state() == QcClientSession::State::Playing, timeoutMs);
         QTRY_VERIFY_WITH_TIMEOUT(leaver->state() == QcClientSession::State::Playing, timeoutMs);
 

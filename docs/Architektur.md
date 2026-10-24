@@ -139,7 +139,7 @@ Every class has its own header and source, except the thematic message headers a
 | Thread | Runs |
 |--------|------|
 | GUI | QML, `QcGameController`, `QcClientSession` (applies the ordered events of its tick core between two frames, so every reader of a frame sees one state; E-560), mesh scheduling decisions |
-| Session tick | `QcSessionCore`, one thread per session (`QcSessionLink`): the connection to the server (in-process or TCP), the 20 Hz ticks on a fixed grid that catches up to 5 missed ticks after a hold-up (`QcTickPacer`), the local player's prediction with its own block mirror (sharing the immutable chunks, with the player's predicted blocks, `QcBlockMirror`, E-853), the wish to fly and the death state; commands from the session and events to it through one `QcMailbox` each, in order (E-560). `QcSessionTickMode::Timer` (headless: exact tick counts for the control interface), `Manual` (tests) and `QTCRAFT_SESSION_THREAD=0` keep the core in the session's thread |
+| Session tick | `QcSessionCore`, one thread per session (`QcSessionLink`, `QcSessionThread`; a network join starts it first and connects in it, so the TLS socket never changes threads, E-872): the connection to the server (in-process or TCP), the 20 Hz ticks on a fixed grid that catches up to 5 missed ticks after a hold-up (`QcTickPacer`), the local player's prediction with its own block mirror (sharing the immutable chunks, with the player's predicted blocks, `QcBlockMirror`, E-853), the wish to fly and the death state; commands from the session and events to it through one `QcMailbox` each, in order (E-560). `QcSessionTickMode::Timer` (headless: exact tick counts for the control interface), `Manual` (tests) and `QTCRAFT_SESSION_THREAD=0` keep the core in the session's thread |
 | Render (Qt Quick) | `QcWorldRenderer` |
 | Server | `QcServer` and, when listening, `QcNetworkServer` with every TCP socket of the remote clients (no locks for the game state, E-251): client messages and the 20 Hz ticks (1–100 Hz with `/tick rate`, back to back in 20 ms slices during `/tick sprint`, E-249) in one event loop; input budgets, rate limits, autosaves and confirmations follow the players' time (`QcServerClock::playerTimeNs`, the real time each tick stands for), not the tick count; the next tick is a single-shot timer on the deadline grid of `QcTickScheduler` (E-090); console commands arrive as blocking queued calls from the host (E-247) |
 | Generation workers | `QcTerrainGenerator::generate` (`QcWorkerPool` in `QcServerWorld`) |
@@ -431,6 +431,18 @@ Armour (decisions E-234 to E-239): items with `armour` are worn in four slots (`
 Decision E-231. `CharacterPreview` (`QcCharacterPreview`, a `QQuickRhiItem`) shows the player's figure as a UI element in the character screen (`CharacterScreen.qml` with `CharacterPreviewPanel.qml` and `CharacterPresets.qml`), the inventory and the main menu's `ProfileCard.qml`. Every frame it builds the figure with `QcPreviewScene::build`, which uses the world's code for other players (`QcFigureLook::player`/`item`, `QcAnimator::animateBody`, `QcEntityMesher::appendModel`); `QcCharacterPreviewRenderer` draws it with the world's entity pipeline and shaders (`QcRenderPipelines`) at full daylight over a transparent background. `QcPreviewCamera` turns the figure (dragging) and zooms (wheel), `QcPreviewPose` gives the animations stand, walk and mine and turns the head towards the mouse pointer (`QcEntityPose::headYaw`) while the window is active. `QcPreviewPacer` lets it draw only while it is shown and at most 30 times a second (the menu's profile card 15); a hidden preview stops its timer. `QcPreviewSource` (`GameController.preview`) hands out the content and atlas (the world's, or in the menu the library content with an atlas built on first use), the look, the held item and the `--preview` hook, and sums the meshing time for the debug display's frame phase "Character preview". Looks and presets: `QcCharacterSettings` (`GameController.settings.character`) with `QcCharacterProfile` (colours on offer, four built-in presets, up to eight own presets stored as `characterPresets/<n>/…` in `settings.ini`, random looks). The server checks every look and name before taking them over (`QcProfileValidation`, E-232).
 
 ## Build options and test hooks
+
+- **TLS (`cmake/QcTls.cmake`, decision E-872):** `QC_TLS` (default on) links the network layer
+  against the bundled OpenSSL (imported targets `QcOpenSSL::SSL` and `QcOpenSSL::Crypto`, compile
+  definition `QC_TLS_ENABLED`); the version and the SHA-256 of its release tarball stand in
+  `3rdparty/openssl-version.txt`. `scripts/build-openssl.sh` builds it once into
+  `~/.cache/qtcraft/openssl/<version>-<arch>-<config>` (`QC_OPENSSL_CACHE`; universal on macOS,
+  macOS 13.3, shared libraries with `@rpath` install names); the first configure step runs it when
+  the entry is missing (`QC_OPENSSL_AUTO_BUILD`). `QC_OPENSSL_ROOT` takes another prefix of the same
+  version. At run time `QcTlsBackend::ensure()` makes `openssl` Qt's active TLS backend before the
+  first certificate or socket; the libraries are already loaded through the executable's rpath (in
+  the bundle `Contents/Frameworks`), which is where Qt's backend finds them. `QC_TLS=OFF` builds
+  plain TCP with a configure warning (no certificate, no pinning, `test_tls_credentials` not built).
 
 | Option | Effect |
 |--------|--------|

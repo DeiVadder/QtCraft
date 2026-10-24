@@ -24,6 +24,9 @@ public:
     virtual qint64 pendingBytes() const { return 0; }
     // Why the transport closed itself (timeout, too slow, broken frame); empty otherwise.
     virtual QString closeReason() const { return {}; }
+    // Whether the transport must stay in the thread it was made in (moveToThread() would break it;
+    // a TLS socket, decision E-872). Whoever wants it in another thread makes it there.
+    virtual bool keepsItsThread() const { return false; }
 
 signals:
     void frameReceived(const QByteArray &frame);

@@ -38,13 +38,20 @@ public:
     // Nanoseconds on a steady clock; the ticks are paced on it.
     using Clock = std::function<qint64()>;
 
+    // Without a transport the core waits for attach() before it starts.
     QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink);
     // Shuts down (shutdown()) if that did not happen yet.
     ~QcSessionCore() override;
 
+    // Takes the connection's transport, in the core's thread; once, before Start, when the core was
+    // made without one (a TLS transport made in the core's thread, decision E-872).
+    void attach(std::unique_ptr<QcTransport> transport);
     // Moves the core with its connection and transport to `thread`; called in the core's thread
-    // (or before the thread runs).
+    // (or before the thread runs). Never with a transport that keeps its thread.
     void moveAllToThread(QThread *thread);
+    // Whether the connection's transport must stay in the thread it was made in
+    // (QcTransport::keepsItsThread).
+    bool transportKeepsItsThread() const;
     // Replaces the steady clock (tests); before Start.
     void setClock(Clock clock) { m_now = std::move(clock); }
     void apply(QcSessionCommand &&command);

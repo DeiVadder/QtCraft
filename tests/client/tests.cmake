@@ -31,7 +31,7 @@ qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp QcTestWor
 qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 # The session on its tick thread against a server: wish to fly after landing, server stop and kick,
 # death and respawn, riding, the same walk as with the timer in the session's thread.
-qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"

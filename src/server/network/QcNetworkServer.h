@@ -9,12 +9,12 @@
 #include <QObject>
 
 class QcServer;
-class QTcpServer;
+class QcTlsListener;
 
 // Accepts TCP connections for a QcServer in the server's thread (decision E-251): every accepted
 // socket becomes a QcTcpTransport and a remote client of the server, which logs it in; no data is
 // shared with another thread, so the game state needs no locks. New connections pass the
-// QcConnectionLimiter first.
+// QcConnectionLimiter first, then the TLS handshake begins (decision E-872).
 class QcNetworkServer : public QObject
 {
     Q_OBJECT
@@ -35,7 +35,7 @@ private:
 
     QcServer &m_server;
     QcNetworkConfig m_config;
-    QTcpServer *m_listener = nullptr;
+    QcTlsListener *m_listener = nullptr;
     QcConnectionLimiter m_limiter;
     QElapsedTimer m_clock;
     quint64 m_refused = 0;

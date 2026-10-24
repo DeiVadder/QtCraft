@@ -3,7 +3,9 @@
 #include "server/core/QcServer.h"
 #include "server/core/QcServerLogging.h"
 
-#include <QTcpServer>
+#include "network/tls/QcTlsBackend.h"
+#include "network/tls/QcTlsListener.h"
+
 #include <QTcpSocket>
 
 using namespace Qt::StringLiterals;
@@ -12,7 +14,7 @@ QcNetworkServer::QcNetworkServer(QcServer &server, QcNetworkConfig config, QObje
     : QObject(parent)
     , m_server(server)
     , m_config(std::move(config))
-    , m_listener(new QTcpServer(this))
+    , m_listener(new QcTlsListener(m_config.tls, this))
     , m_limiter(m_config.connections)
 {
     m_clock.start();
@@ -23,6 +25,12 @@ QcNetworkServer::~QcNetworkServer() = default;
 
 QcResult<quint16> QcNetworkServer::listen()
 {
+    if (const QcStatus tls = QcTlsBackend::ensure(); !tls) {
+        return qcError(u"Cannot listen on port %1: %2"_s.arg(m_config.port).arg(tls.error()));
+    }
+    if (QcTlsBackend::enabled && m_config.tls.isNull()) {
+        return qcError(u"Cannot listen on port %1: no server certificate"_s.arg(m_config.port));
+    }
     if (!m_listener->listen(m_config.bindAddress, m_config.port)) {
         return qcError(u"Cannot listen on port %1: %2"_s.arg(m_config.port).arg(m_listener->errorString()));
     }
@@ -50,6 +58,9 @@ void QcNetworkServer::acceptPending()
             continue;
         }
 
+        // The handshake only for connections within the limits; until it ends the transport's
+        // frames wait in the socket, and the login time limit covers a handshake that never ends.
+        QcTlsListener::startEncryption(socket);
         auto transport = std::make_unique<QcTcpTransport>(socket, m_config.transport);
         connect(transport.get(), &QObject::destroyed, this, [this, address] { m_limiter.closed(address); });
         qCInfo(lcNetwork).noquote() << u"Connection from %1"_s.arg(transport->peerAddress());

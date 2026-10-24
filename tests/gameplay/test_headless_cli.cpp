@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -301,6 +302,60 @@ private slots:
         QVERIFY(QString::fromUtf8(m_process.readAllStandardOutput()).contains(u"Standard input closed; the server keeps running."_s));
     }
 
+    // --join checks the server's certificate against the pins in its data folder and pins it at
+    // the first connection (decision E-872): known-servers.json appears there with the fingerprint
+    // the dedicated server printed.
+    void joiningPinsTheServerInTheDataDirectory()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QTemporaryDir serverData;
+        QTemporaryDir botData;
+        QVERIFY(serverData.isValid() && botData.isValid());
+        QProcess server;
+        server.setProgram(QStringLiteral(QTCRAFT_HEADLESS_PATH));
+        server.setArguments({u"--server"_s, u"--data-dir"_s, serverData.path(), u"--bind"_s, u"127.0.0.1"_s, u"--port"_s, u"0"_s,
+                             u"--no-mods"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s});
+        server.start();
+        QVERIFY(server.waitForStarted(timeoutMs));
+        server.closeWriteChannel();
+        static const QRegularExpression listening(u"Listening on port (\\d+)"_s);
+        static const QRegularExpression printed(u"Certificate fingerprint \\(SHA-256\\): ([0-9A-F ]+)"_s);
+        QString output;
+        QVERIFY(QTest::qWaitFor([&] {
+            output += QString::fromUtf8(server.readAllStandardOutput());
+            return listening.match(output).hasMatch() || server.state() == QProcess::NotRunning;
+        }, answerTimeoutMs));
+        const QString port = listening.match(output).captured(1);
+        QVERIFY2(!port.isEmpty(), qPrintable(output));
+        if (output.contains(u"Connections are NOT encrypted"_s)) {
+            server.terminate();
+            QVERIFY(server.waitForFinished(timeoutMs));
+            QSKIP("built without TLS (QC_TLS=OFF)");
+        }
+
+        const QString knownFile = QDir(botData.path()).filePath(u"known-servers.json"_s);
+        m_process.setArguments({u"--join"_s, u"127.0.0.1:"_s + port, u"--player-name"_s, u"Pin"_s, u"--data-dir"_s, botData.path(),
+                                u"--no-mods"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"60"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        QVERIFY2(QTest::qWaitFor([&] { return QFile::exists(knownFile) || m_process.state() == QProcess::NotRunning; }, answerTimeoutMs),
+                 m_process.readAllStandardError().constData());
+        QFile known(knownFile);
+        QVERIFY2(known.open(QIODevice::ReadOnly), m_process.readAllStandardError().constData());
+        const QJsonArray servers = QJsonDocument::fromJson(known.readAll()).object().value(u"servers"_s).toArray();
+        QCOMPARE(servers.size(), 1);
+        QCOMPARE(servers.first().toObject().value(u"address"_s).toString(), u"127.0.0.1:"_s + port);
+        const QString fingerprint = printed.match(output).captured(1).remove(u' ').toLower();
+        QVERIFY2(fingerprint.size() == 64, qPrintable(output));
+        QCOMPARE(servers.first().toObject().value(u"fingerprint"_s).toString(), fingerprint);
+
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(answerTimeoutMs));
+        server.terminate();
+        QVERIFY(server.waitForFinished(timeoutMs));
+    }
+
     void showcaseWorldsAndTour()
     {
         QTemporaryDir data;
@@ -374,7 +429,7 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 74);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 75);
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
         QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
         const QJsonObject server = debug.value(u"server"_s).toObject();
@@ -398,7 +453,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 74);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 75);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

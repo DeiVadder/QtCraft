@@ -1,13 +1,12 @@
 #include "clientcore/tick/QcSessionLink.h"
 
+#include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionCore.h"
-#include "common/diagnostics/QcCrashHandler.h"
+#include "clientcore/tick/QcSessionThread.h"
 #include "common/protocol/QcTransport.h"
 
 #include <QPointer>
 #include <QThread>
-
-#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -17,6 +16,16 @@ QcSessionLink::QcSessionLink(std::unique_ptr<QcTransport> transport, Handler han
 {
 }
 
+QcSessionLink::QcSessionLink(std::unique_ptr<QcSessionThread> thread, std::unique_ptr<QcTransport> transport, Handler handler)
+    : m_handler(std::move(handler))
+    , m_core(std::make_unique<QcSessionCore>(nullptr, [this](QcSessionEvent &&event) { deliver(std::move(event)); }))
+    , m_thread(std::move(thread))
+{
+    // Without a connection the core moves freely; the transport stays where it was made.
+    m_core->moveAllToThread(m_thread->thread());
+    m_thread->run([this, &transport] { m_core->attach(std::move(transport)); });
+}
+
 QcSessionLink::~QcSessionLink()
 {
     if (!m_thread) {
@@ -24,25 +33,14 @@ QcSessionLink::~QcSessionLink()
     }
 
     // Queued after the wake-ups of the commands given before, so those still reach the core. The
-    // core stops and comes back with its connection; nothing calls deliver() any more. The
-    // connection closes here: a TCP socket lingers in this thread (QcTcpTransport::lingerAndDelete),
-    // which goes on, rather than in the tick thread, which ends now.
-    //
-    // The core thread hands the core back through a std::mutex and std::condition_variable rather
-    // than a Qt::BlockingQueuedConnection: the latter waits on a semaphore inside QtCore, which TSan
-    // does not instrument, so TSan would see no ordering between the core's last steps in its thread
-    // and what this thread does with the core afterwards. For the same reason the queued call carries
-    // only `this` (as the wake-ups do, tests/tsan.supp); the core thread signals while holding the
-    // mutex, its last access to the link.
-    QMetaObject::invokeMethod(m_core.get(), [this] { handBack(); }, Qt::QueuedConnection);
-    {
-        std::unique_lock lock(m_handBackMutex);
-        m_handedBackChanged.wait(lock, [this] { return m_handedBack; });
-    }
-
-    m_core->shutdown();
-    m_thread->quit();
-    m_thread->wait();
+    // core stops and closes its connection in its thread (a TLS socket never leaves it, decision
+    // E-872) and comes back without it; nothing calls deliver() any more. The thread ends only
+    // after a TCP socket's last frames left (~QcSessionThread, at most the linger time).
+    m_thread->run([this, linkThread = thread()] {
+        m_core->shutdown();
+        m_core->moveAllToThread(linkThread);
+    });
+    m_thread.reset();
 }
 
 bool QcSessionLink::threadWanted()
@@ -53,12 +51,15 @@ bool QcSessionLink::threadWanted()
 void QcSessionLink::start(const QcSessionCommand::Start &start, bool threaded)
 {
     if (threaded && start.timer && !m_thread) {
-        // Set before the thread runs; deliver() reads it from there.
-        m_thread = std::make_unique<QThread>();
-        m_thread->setObjectName(u"session tick"_s);
-        connect(m_thread.get(), &QThread::started, m_thread.get(), &QcCrashHandler::prepareThread, Qt::DirectConnection);
-        m_core->moveAllToThread(m_thread.get());
-        m_thread->start();
+        if (m_core->transportKeepsItsThread()) {
+            qCWarning(lcSession) << "The session ticks in its own thread: its transport cannot move to a tick thread";
+        } else {
+            // Set and moved before the thread starts: a transport's queued work may run there at
+            // once, and deliver() reads m_thread from there.
+            m_thread = std::make_unique<QcSessionThread>();
+            m_core->moveAllToThread(m_thread->thread());
+            m_thread->start();
+        }
     }
     command({start});
 }
@@ -141,15 +142,4 @@ void QcSessionLink::drainCommands()
     for (QcSessionCommand &command : m_commands.takeAll()) {
         m_core->apply(std::move(command));
     }
-}
-
-void QcSessionLink::handBack()
-{
-    // In the core's thread: stops the core and moves it to the link's thread (the destructor waits).
-    m_core->stop();
-    m_core->moveAllToThread(thread());
-
-    const std::scoped_lock lock(m_handBackMutex);
-    m_handedBack = true;
-    m_handedBackChanged.notify_one();
 }

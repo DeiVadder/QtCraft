@@ -14,7 +14,9 @@ class QTimer;
 // A transport over TCP (decision E-251): frames with a length prefix (QcFrameReader), a keep-alive
 // frame when nothing was sent for a while, a timeout when nothing arrives, and a bound for the
 // bytes waiting to be sent, beyond which a peer counts as too slow and is cut off. Lives in the
-// thread of its socket (server thread or the client's GUI thread).
+// thread of its socket (server thread, the client's session tick thread or GUI thread). The socket
+// may be a QSslSocket (decision E-872): frames written before its handshake ends wait and go out
+// encrypted. A transport over TLS never changes threads (keepsItsThread()).
 class QcTcpTransport : public QcTransport
 {
     Q_OBJECT
@@ -45,6 +47,14 @@ public:
     QString peerAddress() const override { return m_peerAddress; }
     qint64 pendingBytes() const override;
     QString closeReason() const override { return m_closeReason; }
+    // True over TLS: Qt's OpenSSL backend keeps the socket's TLS state in an object of its own
+    // that stays in the thread the socket was made in (decision E-872).
+    bool keepsItsThread() const override;
+
+    // Runs the calling thread's event loop until the sockets lingering in it (destroyed transports
+    // still sending their last frames) are closed, at most their linger time; for a thread that is
+    // about to end, which would otherwise cut them off at once. Returns at once in a thread without.
+    static void finishLingering();
 
 private:
     void onReadyRead();

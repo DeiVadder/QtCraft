@@ -205,6 +205,9 @@ private slots:
         // The file has the defaults, not the command line.
         QCOMPARE(written->port, quint16(25600));
         QCOMPARE(written->bindAddress, QString());
+        // No bind address: IPv4 and IPv6 on every interface (dual stack; the playtest reaches the
+        // server over IPv6 only).
+        QCOMPARE(written->address().value_or(QHostAddress()), QHostAddress(QHostAddress::Any));
     }
 
     void invalidSettingsStopTheStart()

@@ -104,6 +104,7 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcTethers.h meshing/QcTethers.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    network/QcKnownServers.h network/QcKnownServers.cpp
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
 target_sources(qc_clientcore PRIVATE
@@ -215,6 +216,7 @@ target_sources(qc_clientcore PRIVATE
     tick/QcSessionCore.h tick/QcSessionCore.cpp
     tick/QcSessionEvent.h
     tick/QcSessionLink.h tick/QcSessionLink.cpp
+    tick/QcSessionThread.h tick/QcSessionThread.cpp
     tick/QcSessionTickMode.h
     tick/QcTickPacer.h tick/QcTickPacer.cpp
     tick/QcTickTiming.h tick/QcTickTiming.cpp

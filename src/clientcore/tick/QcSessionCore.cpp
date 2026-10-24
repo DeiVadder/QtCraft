@@ -15,9 +15,9 @@ QcSessionCore::QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink)
     , m_timer(new QTimer(this))
     , m_pacer(static_cast<qint64>(QcPhysics::tickDuration * 1e9))
 {
-    m_connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Server,
-                                                  [this](QcMessage &&message) { onMessage(std::move(message)); });
-    connect(m_connection.get(), &QcConnection::closed, this, &QcSessionCore::onClosed);
+    if (transport) {
+        attach(std::move(transport));
+    }
     m_clock.start();
     m_now = [this] { return m_clock.nsecsElapsed(); };
     m_timer->setTimerType(Qt::PreciseTimer);
@@ -31,11 +31,27 @@ QcSessionCore::~QcSessionCore()
     shutdown();
 }
 
+void QcSessionCore::attach(std::unique_ptr<QcTransport> transport)
+{
+    Q_ASSERT(!m_connection);
+    m_connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Server,
+                                                  [this](QcMessage &&message) { onMessage(std::move(message)); });
+    connect(m_connection.get(), &QcConnection::closed, this, &QcSessionCore::onClosed);
+}
+
 void QcSessionCore::moveAllToThread(QThread *thread)
 {
     moveToThread(thread);
-    m_connection->moveToThread(thread);
-    m_connection->transport().moveToThread(thread);
+    if (m_connection) {
+        Q_ASSERT(!m_connection->transport().keepsItsThread());
+        m_connection->moveToThread(thread);
+        m_connection->transport().moveToThread(thread);
+    }
+}
+
+bool QcSessionCore::transportKeepsItsThread() const
+{
+    return m_connection && m_connection->transport().keepsItsThread();
 }
 
 void QcSessionCore::apply(QcSessionCommand &&command)

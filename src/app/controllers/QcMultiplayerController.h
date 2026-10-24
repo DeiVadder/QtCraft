@@ -38,6 +38,12 @@ class QcMultiplayerController : public QObject
     Q_PROPERTY(int lanPort READ lanPort NOTIFY lanPortChanged FINAL)
     // The running world is a network server's (joined), not this computer's.
     Q_PROPERTY(bool networkGame READ networkGame NOTIFY networkGameChanged FINAL)
+    // The address whose server showed another certificate than the pinned one at the last join
+    // (decision E-872); empty otherwise. forgetCertificate() drops the pin.
+    Q_PROPERTY(QString certificateChangedAddress READ certificateChangedAddress NOTIFY certificateChangedAddressChanged FINAL)
+    // The fingerprint of the certificate players pin while the running world is open to the
+    // network, for the host to read out ("AB12 CD34 …"); empty when it is not open.
+    Q_PROPERTY(QString lanFingerprint READ lanFingerprint NOTIFY lanPortChanged FINAL)
     Q_PROPERTY(QcPlayerList *players READ players CONSTANT FINAL)
     Q_PROPERTY(QcMultiplayerSettings *settings READ settings CONSTANT FINAL)
 
@@ -55,6 +61,8 @@ public:
     QString lastAddress() const { return m_lastAddress; }
     int lanPort() const { return m_lanPort; }
     bool networkGame() const { return m_networkGame; }
+    QString certificateChangedAddress() const { return m_certificateChangedAddress; }
+    QString lanFingerprint() const { return m_lanPort > 0 ? m_lanFingerprint : QString(); }
     QcPlayerList *players() const { return m_players; }
     QcMultiplayerSettings *settings() const { return m_settings; }
 
@@ -65,9 +73,13 @@ public:
     // The last join once more (after a disconnect).
     Q_INVOKABLE void joinAgain();
     Q_INVOKABLE void cancelJoin();
+    // Drops the pinned certificate of "host[:port]" (QcKnownServers): the next join pins what the
+    // server shows then. False with joinFailed() when the list cannot be written.
+    Q_INVOKABLE bool forgetCertificate(const QString &address);
     // Opens the running single-player world to network players on `port` (0: any free one) on
-    // every interface; returns the port, or -1 after lanFailed().
-    Q_INVOKABLE int openToLan(int port = defaultPort, const QString &password = {}, int maxPlayers = 8);
+    // every interface, over IPv4 only unless `ipv6` (decision E-872: an IPv6 address is often
+    // reachable from the internet); returns the port, or -1 after lanFailed().
+    Q_INVOKABLE int openToLan(int port = defaultPort, const QString &password = {}, int maxPlayers = 8, bool ipv6 = false);
     Q_INVOKABLE void closeLan();
     // "address:port" for every address other computers may reach this one at while it hosts.
     Q_INVOKABLE QStringList lanAddresses() const;
@@ -83,6 +95,7 @@ signals:
     void joiningChanged();
     void lanPortChanged();
     void networkGameChanged();
+    void certificateChangedAddressChanged();
     // A join succeeded: the game takes the session (takeJoinedSession()) and plays its world;
     // joined() follows.
     void sessionJoined();
@@ -93,6 +106,7 @@ signals:
 private:
     void onJoined();
     void setNetworkGame(bool networkGame);
+    void setCertificateChangedAddress(const QString &address);
     // Id, version and hash of the packs this game would load, cached (decision E-277).
     [[nodiscard]] QcResult<QList<QcPackFingerprint>> contentPacks();
 
@@ -110,6 +124,8 @@ private:
     QString m_lastAddress;
     QString m_lastName;
     QString m_lastPassword;
+    QString m_certificateChangedAddress;
+    QString m_lanFingerprint;
     std::optional<QList<QcPackFingerprint>> m_packs;
     QString m_packsDirectory;
     int m_packsGeneration = -1;

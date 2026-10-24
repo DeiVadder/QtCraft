@@ -14,8 +14,12 @@
 #   - with gamepad support (QC_GAMEPAD, decision E-540): SDL3 is linked statically into the game for
 #     both architectures, the bundle contains no SDL library and carries the licence texts of SDL,
 #     HIDAPI and SDL's libm (THIRD_PARTY.md)
+#   - with TLS (QC_TLS, decision E-872): the bundled OpenSSL (libssl.3.dylib, libcrypto.3.dylib) is
+#     in Contents/Frameworks for both architectures, Qt's OpenSSL backend in PlugIns/tls, and the
+#     bundle carries OpenSSL's licence text (Apache 2.0)
 #   - the dedicated server of a copy starts (--server --port 0 --bind 127.0.0.1, temporary data
-#     directory), reports "Listening on port", loads only libraries from the copy or the system
+#     directory), reports the certificate fingerprint (with TLS) and "Listening on port", loads
+#     only libraries from the copy or the system
 #     (DYLD_PRINT_LIBRARIES) and stops with exit code 0 on SIGTERM
 #   - a copy of the bundle in a temporary directory starts a world and saves a screenshot, loads
 #     only libraries from inside the copy or the system (DYLD_PRINT_LIBRARIES), opens the audio
@@ -98,6 +102,10 @@ echo "== build (preset $PRESET, $BUILD_DIR)"
 limited 1200 "$PROJECT_DIR/scripts/build-sdl.sh" --universal >"$WORK/build-sdl.txt" 2>"$WORK/build-sdl.log" ||
     abort "SDL3 build failed, see $WORK/build-sdl.log"
 SDL_PREFIX=$(tail -1 "$WORK/build-sdl.txt")
+# The universal OpenSSL for TLS likewise (decision E-872); configure links the game against it.
+limited 1200 "$PROJECT_DIR/scripts/build-openssl.sh" >"$WORK/build-openssl.txt" 2>"$WORK/build-openssl.log" ||
+    abort "OpenSSL build failed, see $WORK/build-openssl.log"
+OPENSSL_PREFIX=$(tail -1 "$WORK/build-openssl.txt")
 limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
 limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
     abort "build failed, see $WORK/build.log"
@@ -137,6 +145,11 @@ if [ "$GAMEPAD" = ON ]; then
         cp "$SDL_PREFIX/HIDAPI-LICENSE.txt" "$LICENSES/HIDAPI-LICENSE.txt" &&
         cp "$SDL_PREFIX/LIBM-NOTICE.txt" "$LICENSES/SDL3-LIBM-NOTICE.txt" ||
         abort "cannot copy the licence texts of SDL3"
+fi
+TLS=$(sed -n 's/^QC_TLS:BOOL=//p' "$BUILD_DIR/CMakeCache.txt")
+if [ "$TLS" = ON ]; then
+    mkdir -p "$APP/Contents/Resources/licenses" && cp "$OPENSSL_PREFIX/LICENSE.txt" "$APP/Contents/Resources/licenses/OpenSSL-LICENSE.txt" ||
+        abort "cannot copy the licence text of OpenSSL"
 fi
 # The logo's pixel font is built into the game's resources; its licence (SIL OFL 1.1) asks that
 # every copy carries the licence text.
@@ -232,6 +245,22 @@ else
     ok "built without gamepad support (QC_GAMEPAD=$GAMEPAD), no SDL checks"
 fi
 [ -s "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ] && ok "contains PixelifySans-OFL.txt" || problem "missing PixelifySans-OFL.txt"
+
+# OpenSSL comes as two libraries next to the Qt frameworks; Qt's backend opens libssl by name and
+# finds it loaded by the executables (QcTlsBackend). Both halves, like the executables.
+if [ "$TLS" = ON ]; then
+    for part in Frameworks/libssl.3.dylib Frameworks/libcrypto.3.dylib PlugIns/tls/libqopensslbackend.dylib; do
+        architectures=$(lipo -archs "$APP/Contents/$part" 2>/dev/null)
+        if echo " $architectures " | grep -q ' arm64 ' && echo " $architectures " | grep -q ' x86_64 '; then
+            ok "contains $part ($architectures)"
+        else
+            problem "missing or not universal: $part ($architectures)"
+        fi
+    done
+    [ -s "$APP/Contents/Resources/licenses/OpenSSL-LICENSE.txt" ] && ok "contains OpenSSL-LICENSE.txt" || problem "missing OpenSSL-LICENSE.txt"
+else
+    problem "built without TLS (QC_TLS=$TLS): a release must encrypt multiplayer connections"
+fi
 
 plist="$APP/Contents/Info.plist"
 for key in CFBundleIdentifier CFBundleShortVersionString CFBundleVersion CFBundleIconFile LSMinimumSystemVersion \
@@ -434,6 +463,11 @@ wait_for_server() {
 }
 
 wait_for_server 120 'grep -q "Listening on port" "$WORK/server.log"'
+if grep -q "Certificate fingerprint (SHA-256): " "$WORK/server.log"; then
+    ok "dedicated server: TLS certificate made"
+else
+    problem "dedicated server shows no certificate fingerprint (log: $WORK/server.log)"
+fi
 if grep -q "Listening on port" "$WORK/server.log"; then
     ok "dedicated server: $(grep -o 'Listening on port [0-9]*' "$WORK/server.log" | head -1)"
 else

@@ -1,5 +1,7 @@
 #include "network/QcTcpConnector.h"
+#include "network/tls/QcTlsBackend.h"
 #include "QcServerTestFixture.h"
+#include "QcTestTls.h"
 #include "QcTestUtil.h"
 #include "server/network/QcConnectionLimiter.h"
 #include "server/network/QcNetworkServer.h"
@@ -42,6 +44,7 @@ private:
         QVERIFY(m_server->openWorld().has_value());
         network.bindAddress = QHostAddress::LocalHost;
         network.port = 0;
+        network.tls = QcTestTls::credentials();
         m_network = std::make_unique<QcNetworkServer>(*m_server, network);
         const QcResult<quint16> port = m_network->listen();
         QVERIFY2(port.has_value(), qcErrorText(port).constData());
@@ -247,9 +250,17 @@ private slots:
         std::unique_ptr<RawClient> first = join(u"Ann"_s);
         std::unique_ptr<RawClient> second = join(u"Bob"_s);
         QVERIFY(first && second && first->entityId != 0 && second->entityId != 0);
-        std::unique_ptr<RawClient> third = connectRaw();
-        QVERIFY(third);
-        QVERIFY(tickUntil([&] { return !third->connection.isOpen(); }));
+        // The third is closed before its TLS handshake starts, so it never becomes a transport.
+        if constexpr (QcTlsBackend::enabled) {
+            QcTcpConnector third;
+            QSignalSpy failed(&third, &QcTcpConnector::failed);
+            third.connectTo({u"127.0.0.1"_s, m_port}, timeoutMs);
+            QVERIFY(failed.wait(timeoutMs));
+        } else {
+            std::unique_ptr<RawClient> third = connectRaw();
+            QVERIFY(third);
+            QVERIFY(tickUntil([&] { return !third->connection.isOpen(); }));
+        }
         QCOMPARE(m_network->refusedConnections(), 1u);
 
         // When one leaves, there is room again.
@@ -302,6 +313,7 @@ private slots:
         QcNetworkConfig network;
         network.bindAddress = QHostAddress::LocalHost;
         network.port = 0;
+        network.tls = QcTestTls::credentials();
         const QcResult<quint16> port = host.listen(network);
         QVERIFY2(port.has_value(), qcErrorText(port).constData());
         QCOMPARE(host.listeningPort(), *port);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "network/QcTcpTransport.h"
+#include "network/tls/QcTlsCredentials.h"
 
 #include <QHostAddress>
 
@@ -17,9 +18,12 @@ struct QcConnectionLimits
     int total = 64;
 };
 
-// Settings of the listener of a network game (decisions E-251, E-254).
+// Settings of the listener of a network game (decisions E-251, E-254, E-872).
 struct QcNetworkConfig
 {
+    // The certificate and key of the TLS handshake (QcTlsCredentials::loadOrCreate in the data
+    // folder); a listener without them does not start.
+    QcTlsCredentials tls;
     // Any: IPv4 and IPv6 on all interfaces (LAN and internet); LocalHost or LocalHostIPv6 for this
     // computer only.
     QHostAddress bindAddress = QHostAddress::Any;

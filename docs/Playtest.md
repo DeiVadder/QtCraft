@@ -55,13 +55,24 @@ qtcraft-headless --server --console --log-rules "qtcraft.network.debug=true;qtcr
   öffnet** (das Spiel lauscht dann selbst); weder der Einzelspieler (der Server läuft im selben
   Prozess ohne Netz) noch das Beitreten zu einem Server brauchen eine Freigabe.
 
+### Über IPv6 (Anschluss mit DS-Lite)
+
+Ein DS-Lite-Anschluss hat keine öffentliche IPv4-Adresse, wohl aber IPv6. Der dedizierte Server
+hört ohne `bindAddress` auf IPv4 und IPv6 zugleich (E-872). Im Router für die IPv6-Adresse des Macs
+TCP 25600 freigeben (bei der FRITZ!Box „Freigaben“ → Gerät → „IPv6-Freigabe“ mit Port 25600; die
+stabile Adresse des Geräts nehmen, nicht die wechselnde temporäre) und den Spielern diese Adresse
+geben. Sie tippen sie als `[2a02:…]:25600`, `[2a02:…]` oder `2a02:…` (Port 25600 ist Standard);
+die Spieler brauchen selbst IPv6. Das gemerkte Zertifikat gilt für die Adresse in Normalform,
+Schreibweisen derselben Adresse zählen gleich. Vor dem Spiel den Fingerabdruck aus der Ausgabe des
+Servers über einen anderen Kanal an die Spieler schicken.
+
 ### Über das Internet ohne Router-Einstellung: Tailscale (Playtest)
 
 QtCraft kann (noch) keine Verbindung durch NAT herstellen; ein eingebauter Weg ist offen
 (`docs/FORTSCHRITT.md`, Paket 74.6). Für den Playtest verbindet Tailscale die Rechner in einem
 privaten, mit WireGuard verschlüsselten Netz, ohne Portweiterleitung und auch hinter CGNAT/DS-Lite.
-Das deckt bis zur TLS-Verschlüsselung (Etappe 48) auch ab, dass Name und Passwort sonst im Klartext
-übers Netz gingen.
+Seit Etappe 48 ist die Verbindung des Spiels selbst mit TLS verschlüsselt (E-872); Tailscale
+verschlüsselt sie zusätzlich und hält den Server aus dem offenen Internet heraus.
 
 1. **Mac (Spielleitung):** Tailscale installieren und mit einem Konto (Google, Microsoft, GitHub …)
    anmelden. In der Admin-Konsole beim Mac **„Share…“** wählen und je Spieler einen Einladungslink

@@ -5,11 +5,17 @@
 # Multiplayer (stage 25, decisions E-251 to E-256).
 qc_add_test(test_login_protocol SOURCES network/test_login_protocol.cpp LIBRARIES qc_network Qt::Network)
 qc_add_test(test_server_login SOURCES network/test_server_login.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_tcp_transport SOURCES network/test_tcp_transport.cpp LIBRARIES qc_network Qt::Network)
+# TLS: the server's own key and certificate (stage 48, decision E-872).
+# Only with TLS: it checks the bundled OpenSSL (cmake/QcTls.cmake).
+if(QC_TLS_ENABLED)
+    qc_add_test(test_tls_credentials SOURCES network/test_tls_credentials.cpp LIBRARIES qc_network Qt::Network)
+    target_compile_definitions(test_tls_credentials PRIVATE QC_TEST_OPENSSL_PREFIX="${QC_OPENSSL_ROOT_FOUND}")
+endif()
+qc_add_test(test_tcp_transport SOURCES network/test_tcp_transport.cpp QcTestTls.h LIBRARIES qc_network Qt::Network)
 # The pause of the server (decision E-877): by hand, and the keep-alives of a paused TCP link.
 qc_add_test(test_server_pause SOURCES network/test_server_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_server)
 qc_add_test(test_pause_keepalive SOURCES network/test_pause_keepalive.cpp QcRawClient.h LIBRARIES qc_server Qt::Network)
-qc_add_test(test_network_game SOURCES network/test_network_game.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
+qc_add_test(test_network_game SOURCES network/test_network_game.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h QcTestTls.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_dedicated_server SOURCES network/test_dedicated_server.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_server qc_worlds TIMEOUT 240)
 target_compile_definitions(test_dedicated_server PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
                                                          QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
@@ -18,7 +24,7 @@ add_dependencies(test_dedicated_server qtcraft-headless)
 qc_add_test(test_server_log SOURCES network/test_server_log.cpp QcRawClient.h QcTestLogin.h LIBRARIES qc_network qc_common Qt::Network TIMEOUT 120)
 target_compile_definitions(test_server_log PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_server_log qtcraft-headless)
-qc_add_test(test_network_client SOURCES network/test_network_client.cpp LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_network_client SOURCES network/test_network_client.cpp QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 240)
 qc_add_test(test_adventure_client SOURCES network/test_adventure_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_backpack_control SOURCES network/test_backpack_control.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 120)

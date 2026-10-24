@@ -3,13 +3,18 @@
 #include "network/QcSocketErrors.h"
 
 #include <QCoreApplication>
+#include <QDeadlineTimer>
+#include <QEventLoop>
 #include <QHostAddress>
+#include <QPointer>
+#include <QSslSocket>
 #include <QTcpSocket>
 #include <QThread>
 #include <QTimer>
 
 #include <algorithm>
 #include <utility>
+#include <vector>
 
 using namespace Qt::StringLiterals;
 
@@ -21,6 +26,11 @@ QString addressText(const QTcpSocket &socket)
     const QString host = address.protocol() == QAbstractSocket::IPv6Protocol ? u"[%1]"_s.arg(address.toString()) : address.toString();
     return u"%1:%2"_s.arg(host).arg(socket.peerPort());
 }
+
+// The sockets lingering in this thread when it is not the application's (finishLingering()).
+thread_local std::vector<QPointer<QTcpSocket>> t_lingering;
+// The longest linger time of those sockets.
+thread_local int t_lingerMs = 0;
 
 } // namespace
 
@@ -93,7 +103,34 @@ void QcTcpTransport::lingerAndDelete(std::unique_ptr<QTcpSocket> owned, int ling
         socket->setParent(application);
     } else {
         QObject::connect(socket->thread(), &QThread::finished, socket, &QObject::deleteLater, Qt::DirectConnection);
+        std::erase_if(t_lingering, [](const QPointer<QTcpSocket> &lingering) { return lingering.isNull(); });
+        t_lingering.emplace_back(socket);
+        t_lingerMs = std::max(t_lingerMs, lingerMs);
     }
+}
+
+void QcTcpTransport::finishLingering()
+{
+    const auto open = [] {
+        return std::ranges::any_of(t_lingering, [](const QPointer<QTcpSocket> &socket) {
+            return socket && socket->state() != QAbstractSocket::UnconnectedState;
+        });
+    };
+    // Every lingering socket is cut off after its linger time (lingerAndDelete), so this ends; the
+    // deadline only guards against a socket that never reports it.
+    const QDeadlineTimer deadline(t_lingerMs + 100);
+    while (open() && !deadline.hasExpired()) {
+        QEventLoop loop;
+        QTimer::singleShot(10, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    t_lingering.clear();
+    t_lingerMs = 0;
+}
+
+bool QcTcpTransport::keepsItsThread() const
+{
+    return m_socket && m_socket->inherits("QSslSocket");
 }
 
 void QcTcpTransport::sendFrame(const QByteArray &frame)
@@ -105,7 +142,7 @@ void QcTcpTransport::sendFrame(const QByteArray &frame)
     m_socket->write(QcFrameReader::header(frame.size()));
     m_socket->write(frame);
     m_lastSent.restart();
-    if (m_socket->bytesToWrite() > m_limits.maxPendingBytes) {
+    if (pendingBytes() > m_limits.maxPendingBytes) {
         fail(QCoreApplication::translate("QcNetwork", "The connection is too slow"));
     }
 }
@@ -125,6 +162,10 @@ void QcTcpTransport::close()
 
 qint64 QcTcpTransport::pendingBytes() const
 {
+    // Over TLS the bytes not encrypted yet and those encrypted but not sent.
+    if (const auto *secure = qobject_cast<const QSslSocket *>(m_socket)) {
+        return secure->bytesToWrite() + secure->encryptedBytesToWrite();
+    }
     return m_socket->bytesToWrite();
 }
 

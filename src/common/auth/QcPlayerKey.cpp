@@ -1,12 +1,12 @@
 #include "common/auth/QcPlayerKey.h"
 
 #include "common/auth/QcLoginCrypto.h"
+#include "common/auth/QcSecretFile.h"
 #include "common/core/QcDataRoot.h"
 
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QSaveFile>
 
 using namespace Qt::StringLiterals;
 
@@ -34,13 +34,8 @@ QString defaultPath()
 
     QByteArray key = QcLoginCrypto::randomBytes(QcLoginCrypto::keyBytes);
     QDir().mkpath(QFileInfo(path).absolutePath());
-    QSaveFile file(path);
-    if (!file.open(QIODevice::WriteOnly) || file.write(key.toHex() + '\n') < 0) {
-        return qcError(u"Cannot write the player key %1: %2"_s.arg(path, file.errorString()));
-    }
-    file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (!file.commit()) {
-        return qcError(u"Cannot write the player key %1: %2"_s.arg(path, file.errorString()));
+    if (const QcStatus written = QcSecretFile::write(path, key.toHex() + '\n'); !written) {
+        return qcError(u"Cannot write the player key %1: %2"_s.arg(path, written.error()));
     }
     return key;
 }

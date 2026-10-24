@@ -192,7 +192,7 @@ ColumnLayout {
                 }
 
                 HelpLine {
-                    text: qsTr("Only needed if the server has one. Passwords are never saved; the game connects directly to the address, without encryption.")
+                    text: qsTr("Only needed if the server has one. Passwords are never saved; the game connects directly to the address, encrypted.")
                 }
 
                 GameButton {
@@ -244,6 +244,18 @@ ColumnLayout {
                       : screen.game.multiplayer.joinStage === NetworkClient.Stage.LoggingIn ? qsTr("Logging in …")
                       : screen.failure.length > 0 ? qsTr("Could not join: %1").arg(screen.failure)
                       : ""
+            }
+
+            // The server showed another certificate than the pinned one (decision E-872).
+            GameButton {
+                objectName: "forgetCertificateButton"
+                visible: !screen.game.multiplayer.joining && screen.failure.length > 0 && screen.game.multiplayer.certificateChangedAddress.length > 0
+                large: true
+                text: qsTr("Forget the old certificate")
+                onClicked: {
+                    if (screen.game.multiplayer.forgetCertificate(screen.game.multiplayer.certificateChangedAddress))
+                        screen.failure = qsTr("The old certificate is forgotten. Join again only if you are sure the server's owner made a new one.");
+                }
             }
 
             GameButton {

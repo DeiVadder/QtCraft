@@ -846,7 +846,7 @@ Wähle im Hauptmenü **Mehrspieler**, gib die Adresse des Servers und deinen Spi
 
 **Die eigene Welt im LAN öffnen**
 
-Öffne in einer Einzelspielerwelt das Menü (Esc) und wähle **Im LAN öffnen**. Wähle einen Port (0 nimmt einen beliebigen freien), optional ein Passwort und wie viele Spieler beitreten dürfen, dann **Für andere Spieler öffnen**. Der Bildschirm zeigt den Port und die Adressen deines Computers; Freunde im selben Netzwerk treten mit einer davon bei. Du spielst weiter wie bisher und bleibst Operator der Welt; **Hosten beenden** oder das Verlassen der Welt schließt sie wieder. Die Firewall fragt eventuell einmal, ob QtCraft eingehende Verbindungen annehmen darf.
+Öffne in einer Einzelspielerwelt das Menü (Esc) und wähle **Im LAN öffnen**. Wähle einen Port (0 nimmt einen beliebigen freien), optional ein Passwort und wie viele Spieler beitreten dürfen, dann **Für andere Spieler öffnen**. Der Bildschirm zeigt den Port und die Adressen deines Computers; Freunde im selben Netzwerk treten mit einer davon bei. Die Welt ist nur über IPv4 erreichbar, das dein Router im eigenen Netz hält; **Auch über IPv6** nimmt IPv6-Adressen dazu, die oft aus dem Internet erreichbar sind, setze dann ein Passwort. Du spielst weiter wie bisher und bleibst Operator der Welt; **Hosten beenden** oder das Verlassen der Welt schließt sie wieder. Die Firewall fragt eventuell einmal, ob QtCraft eingehende Verbindungen annehmen darf.
 
 **Eigener Server und Internet**
 
@@ -858,7 +858,7 @@ Halte **Tab**, um zu sehen, wer online ist: Name und Nachricht des Tages des Ser
 
 **Grenzen der Sicherheit**
 
-Es gibt keine Konten: Jede Installation hat einen zufälligen Schlüssel, der auf jedem Server deinen Namen beweist (wer einen Namen auf einem Server zuerst nutzt, behält ihn). Passwörter gehen nie im Klartext über das Netz, alles andere ist aber unverschlüsselt, Chat und Spiel sind unterwegs lesbar. Öffne einen Server für das Internet nur mit Passwort und nur für Leute, die du kennst.
+Es gibt keine Konten: Jede Installation hat einen zufälligen Schlüssel, der auf jedem Server deinen Namen beweist (wer einen Namen auf einem Server zuerst nutzt, behält ihn). Jede Verbindung ist verschlüsselt. Jeder Server hat ein eigenes Zertifikat, das sich dein Spiel beim ersten Beitreten merkt; zeigt ein Server später ein anderes, verbindet das Spiel nicht, denn dann könnte jemand mithören. Wähle **Altes Zertifikat vergessen** nur, wenn dir der Betreiber des Servers sagt, dass er ein neues erzeugt hat. Öffne einen Server für das Internet nur mit Passwort und nur für Leute, die du kennst.
 
 ### <a id="chapter-qtcraft-texture_packs"></a>Texturpakete
 

@@ -2,6 +2,7 @@
 
 #include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionLink.h"
+#include "clientcore/tick/QcSessionThread.h"
 #include "common/diagnostics/QcBuildInfo.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
@@ -19,6 +20,19 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
     : QObject(parent)
     , m_playerName(std::move(playerName))
     , m_link(std::make_unique<QcSessionLink>(std::move(transport), [this](QcSessionEvent &&event) { onEvent(std::move(event)); }))
+{
+    connectParts();
+}
+
+QcClientSession::QcClientSession(std::unique_ptr<QcSessionThread> thread, std::unique_ptr<QcTransport> transport, QString playerName)
+    : m_playerName(std::move(playerName))
+    , m_link(std::make_unique<QcSessionLink>(std::move(thread), std::move(transport),
+                                             [this](QcSessionEvent &&event) { onEvent(std::move(event)); }))
+{
+    connectParts();
+}
+
+void QcClientSession::connectParts()
 {
     const auto send = [this](const QcMessage &message) { sendToServer(message); };
     m_gameMode.setSender(send);

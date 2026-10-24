@@ -20,8 +20,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // 72 the names of chests and machines (OpenMachine), content keys of chat lines (ChatMessage) and
 // items that store their enchantments in the content (decision E-873), 73 the building part of a
 // block (`partOf`) in the content (decision E-874), 74 the pause of the server (PauseRequest,
-// ServerPause; decision E-877).
-inline constexpr quint32 version = 74;
+// ServerPause; decision E-877), 75 runs every network connection over TLS (decision E-872; the
+// messages are unchanged).
+inline constexpr quint32 version = 75;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

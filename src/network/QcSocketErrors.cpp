@@ -17,6 +17,8 @@ QString describe(QAbstractSocket::SocketError error, const QString &fallback)
         return QCoreApplication::translate("QcNetwork", "The server did not answer in time");
     case QAbstractSocket::NetworkError:
         return QCoreApplication::translate("QcNetwork", "The network cannot be reached");
+    case QAbstractSocket::SslHandshakeFailedError:
+        return QCoreApplication::translate("QcNetwork", "The encrypted connection could not be set up");
     case QAbstractSocket::SocketAccessError:
         return QCoreApplication::translate("QcNetwork", "The system does not allow this connection");
     default:

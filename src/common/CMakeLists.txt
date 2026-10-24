@@ -5,6 +5,7 @@ target_sources(qc_common PRIVATE
     auth/QcLoginCrypto.h auth/QcLoginCrypto.cpp
     auth/QcPlayerKey.h auth/QcPlayerKey.cpp
     auth/QcProfileValidation.h auth/QcProfileValidation.cpp
+    auth/QcSecretFile.h auth/QcSecretFile.cpp
 )
 target_sources(qc_common PRIVATE
     blockrules/QcBlockRules.h blockrules/QcBlockRules.cpp

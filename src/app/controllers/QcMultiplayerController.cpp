@@ -9,12 +9,16 @@
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldStarter.h"
+#include "clientcore/network/QcKnownServers.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcPlayerKey.h"
 #include "common/auth/QcProfileValidation.h"
+#include "common/core/QcDataRoot.h"
 #include "common/protocol/QcLoginSettings.h"
 #include "network/QcNetworkConfig.h"
+#include "network/tls/QcTlsBackend.h"
+#include "network/tls/QcTlsCredentials.h"
 #include "worlds/QcContentFingerprint.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcModLoader.h"
@@ -35,6 +39,11 @@ QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const Qc
 {
     connect(m_client, &QcNetworkClient::stageChanged, this, &QcMultiplayerController::joiningChanged);
     connect(m_client, &QcNetworkClient::joined, this, &QcMultiplayerController::onJoined);
+    connect(m_client, &QcNetworkClient::certificateChanged, this, &QcMultiplayerController::setCertificateChangedAddress);
+    // OpenSSL with the game's start, so a broken installation shows in the log at once (decision
+    // E-872); joining and hosting report the reason again.
+    // ensure() logs a failure itself.
+    [[maybe_unused]] const QcStatus tls = QcTlsBackend::ensure();
     connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) {
         qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(reason);
         emit joinFailed(reason);
@@ -61,6 +70,36 @@ void QcMultiplayerController::sessionStarted()
     // Without an in-process server the session belongs to a network game.
     setNetworkGame(!m_parts.server);
     m_players->follow(m_parts.session.get());
+}
+
+void QcMultiplayerController::setCertificateChangedAddress(const QString &address)
+{
+    if (m_certificateChangedAddress != address) {
+        m_certificateChangedAddress = address;
+        emit certificateChangedAddressChanged();
+    }
+}
+
+bool QcMultiplayerController::forgetCertificate(const QString &address)
+{
+    const QcResult<QcServerAddress> parsed = QcServerAddress::parse(address.trimmed());
+    if (!parsed) {
+        qCWarning(lcGame).noquote() << u"Not forgetting the certificate of \"%1\": not an address"_s.arg(address);
+        emit joinFailed(tr("Invalid address: %1").arg(address));
+        return false;
+    }
+    QcKnownServers known(QcKnownServers::defaultPath());
+    QcStatus forgotten = known.load();
+    if (forgotten) {
+        forgotten = known.forget(*parsed);
+    }
+    if (!forgotten) {
+        emit joinFailed(forgotten.error());
+        return false;
+    }
+    qCInfo(lcGame).noquote() << u"Forgot the pinned certificate of %1"_s.arg(parsed->toString());
+    setCertificateChangedAddress({});
+    return true;
 }
 
 void QcMultiplayerController::setNetworkGame(bool networkGame)
@@ -102,6 +141,7 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     m_lastAddress = address.trimmed();
     m_lastName = name;
     m_lastPassword = password;
+    setCertificateChangedAddress({});
     const QcResult<QByteArray> key = QcPlayerKey::loadOrCreate(QcPlayerKey::defaultPath());
     if (!key) {
         emit joinFailed(key.error());
@@ -121,6 +161,7 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     request.appearance = m_gameSettings.character()->appearance();
     // One extra ring like in single player: sections are meshed once their neighbours are known.
     request.credentials = {*key, password, *packs, m_gameSettings.viewDistance() + 1};
+    request.knownServersFile = QcKnownServers::defaultPath();
     m_client->join(request);
 }
 
@@ -166,7 +207,7 @@ void QcMultiplayerController::onJoined()
     }
 }
 
-int QcMultiplayerController::openToLan(int port, const QString &password, int maxPlayers)
+int QcMultiplayerController::openToLan(int port, const QString &password, int maxPlayers, bool ipv6)
 {
     if (!m_parts.server || !m_parts.session || !m_parts.session->content()) {
         emit lanFailed(tr("Only a running single-player world can be opened to the network"));
@@ -175,11 +216,21 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
 
     QcNetworkConfig network;
     network.port = static_cast<quint16>(std::clamp(port, 0, 65535));
+    network.bindAddress = ipv6 ? QHostAddress::Any : QHostAddress::AnyIPv4;
     // Test hook: QTCRAFT_LAN_BIND=127.0.0.1 keeps scripted runs on this computer.
     if (const QHostAddress bind(qEnvironmentVariable("QTCRAFT_LAN_BIND")); !bind.isNull()) {
         network.bindAddress = bind;
     }
     m_lanBind = network.bindAddress;
+    // The certificate of this installation (decision E-872), made the first time a world is opened.
+    QcResult<QcTlsCredentials> tls = QcTlsCredentials::loadOrCreate(QcDataRoot::path());
+    if (!tls) {
+        emit lanFailed(tls.error());
+        return -1;
+    }
+    network.tls = std::move(*tls);
+    // Empty in a build without TLS: then there is no certificate.
+    m_lanFingerprint = network.tls.isNull() ? QString() : QcTlsFingerprint::display(QcTlsFingerprint::of(network.tls.certificate));
     QcLoginSettings login;
     login.password = password;
     login.maxPlayers = std::max(1, maxPlayers);
@@ -211,6 +262,13 @@ QStringList QcMultiplayerController::lanAddresses() const
         return {};
     }
     // A listener on one address is reached only there.
-    const bool anyAddress = m_lanBind == QHostAddress::Any || m_lanBind == QHostAddress::AnyIPv4 || m_lanBind == QHostAddress::AnyIPv6;
-    return anyAddress ? QcLanAddresses::current(static_cast<quint16>(m_lanPort)) : QcLanAddresses::describe({m_lanBind}, static_cast<quint16>(m_lanPort), true);
+    const auto port = static_cast<quint16>(m_lanPort);
+    if (m_lanBind == QHostAddress::AnyIPv4) {
+        // Bound to IPv4 only: the IPv6 addresses do not reach it.
+        QStringList addresses = QcLanAddresses::current(port);
+        addresses.removeIf([](const QString &address) { return address.startsWith(u'['); });
+        return addresses;
+    }
+    const bool anyAddress = m_lanBind == QHostAddress::Any || m_lanBind == QHostAddress::AnyIPv6;
+    return anyAddress ? QcLanAddresses::current(port) : QcLanAddresses::describe({m_lanBind}, port, true);
 }

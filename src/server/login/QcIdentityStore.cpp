@@ -2,6 +2,7 @@
 
 #include "common/auth/QcLoginCrypto.h"
 #include "common/auth/QcProfileValidation.h"
+#include "common/auth/QcSecretFile.h"
 #include "common/protocol/QcLoginMessages.h"
 #include "server/commands/QcAccessList.h"
 #include "server/core/QcServerLogging.h"
@@ -12,7 +13,6 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QSaveFile>
 
 using namespace Qt::StringLiterals;
 
@@ -126,14 +126,9 @@ QcStatus QcIdentityStore::write() const
     }
     const QJsonObject root{{u"format"_s, formatVersion}, {u"salt"_s, QString::fromLatin1(m_salt.toBase64())}, {u"players"_s, players}};
 
-    QSaveFile file(m_path);
-    if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(root).toJson()) < 0) {
-        return qcError(u"Cannot write %1: %2"_s.arg(m_path, file.errorString()));
-    }
     // The identities are secrets of the players on this server.
-    file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (!file.commit()) {
-        return qcError(u"Cannot write %1: %2"_s.arg(m_path, file.errorString()));
+    if (const QcStatus written = QcSecretFile::write(m_path, QJsonDocument(root).toJson()); !written) {
+        return qcError(u"Cannot write %1: %2"_s.arg(m_path, written.error()));
     }
     return {};
 }

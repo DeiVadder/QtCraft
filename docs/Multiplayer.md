@@ -1,10 +1,10 @@
 # Multiplayer
 
 QtCraft lets several players share a world over TCP, in a LAN or over the internet, with a direct
-connection to the server's address and port. There are no accounts, no relay or matchmaking
-servers and no encryption. This document covers running a server, joining one, what the login
-checks and, honestly, what it does not protect against. Decisions: E-251 to E-261, E-270, E-271 and
-E-272 to E-277 in `docs/Entscheidungen.md`.
+connection to the server's address and port, encrypted with TLS. There are no accounts and no relay
+or matchmaking servers. This document covers running a server, joining one, the encryption, what
+the login checks and, honestly, what it does not protect against. Decisions: E-251 to E-261, E-270,
+E-271, E-272 to E-277 and E-872 in `docs/Entscheidungen.md`.
 
 ## Running a dedicated server
 
@@ -108,6 +108,9 @@ Observers and dispensers have no bounds of their own: their pulses and shots are
   way (untested); closing the console window, logging off or shutting Windows down ends the process
   before it has saved: the world keeps its last autosave and the players their last save. Stop the
   server with `stop` or Ctrl+C first.
+- On the first start the server also makes its own TLS key and certificate, `<data>/server-key.pem`
+  (readable only by the user) and `<data>/server-certificate.pem` (see "Encryption" below). It
+  prints the certificate's fingerprint (`Certificate fingerprint (SHA-256): …`) at every start.
 - The server prints `Listening on port N` when it is ready.
 - **Pause when empty** (E-877): when no one has been connected for `pauseWhenEmptySeconds` (60 by
   default, counted in game time), the server saves like an autosave and stops ticking: the world,
@@ -156,7 +159,10 @@ Terminal; it needs no window and no other installation:
 A single-player world can be opened to other players while its owner keeps playing: the local
 player stays in-process, a listener in the server thread accepts network players
 (`game.multiplayer.openToLan(port, password, maxPlayers)`; the command line test hook is
-`qtcraft --play --host-lan <port>`). The owner is always an operator.
+`qtcraft --play --host-lan <port>`). The owner is always an operator. The world is offered over
+IPv4 only unless the host switches on "Also over IPv6" (see below). The certificate is the
+game's own (`server-certificate.pem` and `server-key.pem` in the game's data folder), made the
+first time a world is opened.
 
 ## Joining
 
@@ -181,11 +187,18 @@ The game connects to `host`, `host:port`, `1.2.3.4:port` or `[ipv6]:port` (the p
   IPv6 addresses) for friends to type, a hint about the firewall and port forwarding, and **Stop
   hosting**, which closes the listener and disconnects the network players ("The host stopped
   sharing the world"; they are saved). The pause menu button then reads "Open on port N". Leaving the
-  world closes the listener; network players are disconnected with "The server stopped".
-- **Open to LAN listens on every interface**, IPv4 and IPv6, not only the local network: on a network
-  with IPv6 and no firewall rule against incoming connections (many home routers block them, not all;
-  a laptop on a public network may have none) the world is reachable from the internet at the
-  computer's IPv6 address. Set a password when you open a world on such a network.
+  world closes the listener; network players are disconnected with "The server stopped". The open
+  screen also shows the fingerprint of the host's certificate, for friends who want to compare it.
+- **Open to LAN listens on every interface, over IPv4 only by default** (decision E-872): behind the
+  router's NAT an IPv4 address stays in the local network unless a port is forwarded. **Also over
+  IPv6** (a switch on the screen, off each time it opens) adds IPv6: on a network with IPv6 and no
+  firewall rule against incoming connections (many home routers block them, not all; a laptop on a
+  public network may have none) the world is then reachable from the internet at the computer's
+  IPv6 address. Set a password when you switch it on.
+- **A changed certificate** (decision E-872): when a server shows another certificate than at the
+  first join to its address, the join is refused with both fingerprints and **Forget the old
+  certificate** appears; only after that does the next join pin the new one. Use it only when the
+  server's owner confirms that he made a new certificate.
 - **Player list** (E-259): hold **Tab** (key action `playerList`, rebindable under Settings →
   Controls). Shows the server's name (the world's name for an own world), its message of the day,
   the number of players and every player sorted by name with an "Operator" mark; the own entry is
@@ -219,10 +232,64 @@ The game connects to `host`, `host:port`, `1.2.3.4:port` or `[ipv6]:port` (the p
 - Over the internet the server must be reachable: forward the TCP port in the router to the
   server computer (port forwarding), or run it on a machine with a public address. QtCraft does no
   NAT traversal (no UPnP, no hole punching) and uses no relay servers.
-- IPv6 works where both sides have it; a server bound to all interfaces accepts IPv4 and IPv6. With
-  IPv6 there is no NAT: unless a firewall blocks it, a server (or a world opened to the LAN) on all
-  interfaces is reachable from the internet at its IPv6 address. Bind to an IPv4 address
-  (`bindAddress`, e.g. `192.168.1.20`) to stay within the LAN.
+- IPv6 works where both sides have it; a dedicated server bound to all interfaces (the default)
+  accepts IPv4 and IPv6. With IPv6 there is no NAT: unless a firewall blocks it, such a server is
+  reachable from the internet at its IPv6 address. Bind to an IPv4 address (`bindAddress`, e.g.
+  `192.168.1.20`, or `0.0.0.0` for every IPv4 interface) to stay within the LAN. A world opened to
+  the LAN uses IPv4 only unless the host switches IPv6 on.
+- **Hosting over IPv6 only** (for example a home line with DS-Lite, which has no public IPv4
+  address): start the dedicated server without `bindAddress` (one dual-stack socket for IPv4 and
+  IPv6 on the port), open TCP 25600 for the server computer's IPv6 address in the router (often
+  called "IPv6 exposed host" or a port release; the computer keeps its address only while its
+  privacy extension does not change it, so prefer its stable address) and give players that
+  address. They type it with or without brackets: `[2a02:…]:25600`, `[2a02:…]` or `2a02:…` alone
+  (port 25600), the same on the command line (`--join`); a host name with an AAAA record works as
+  well. The pin's key is the address in its canonical form, so `2A02:0DB8:0::1` and `2a02:db8::1`
+  are one server. Tests: `test_tcp_transport::aDualStackListenerTakesIpv4Ipv6AndNames` (TLS
+  handshake over 127.0.0.1, `[::1]` and `localhost` on one `Any` listener),
+  `test_dedicated_server` (default bind `Any`), `test_login_protocol` (address forms),
+  `test_network_client` (pin keys).
+
+## Encryption (TLS)
+
+Every network connection runs over TLS 1.3, and only over it (decision E-872, protocol 75): no
+older protocol, no renegotiation, no cipher suites of TLS 1.2. The messages inside are the same as
+before. The single-player game in the same process has no network
+connection and is unaffected.
+
+- **The server's certificate is its own.** At its first start a server (the dedicated server, or
+  the game when it first opens a world to the LAN) makes an EC key on the curve P-256 and a
+  certificate signed with it (ECDSA with SHA-256), valid until the year 9000, and keeps them in its data folder
+  (`server-certificate.pem`, `server-key.pem`). No authority signs it. A damaged file, or one of the
+  two alone, stops the start with a message and is never replaced: players have pinned the
+  certificate, and a new one would look like an attack to them. Moving both files away makes a new
+  certificate at the next start; every player then has to forget the old one.
+- **Clients pin it at the first connection** (trust on first use, like SSH): the SHA-256
+  fingerprint of the certificate goes into `<data>/known-servers.json` (readable only by the user)
+  under the normalised address (`host:port`, a name in lower case, an IP address in its canonical
+  form, so every spelling of one IPv6 address is one pin). Every later join to that address
+  compares the certificate before anything is sent; another certificate refuses the join
+  ("The server shows another certificate than at your first connection …") with both
+  fingerprints. The same server under another name or address is pinned anew. Bots
+  (`qtcraft-headless --join`) keep their pins in their own data folder. A program cannot join
+  unchecked: without a file for the pins the join fails.
+- **Comparing fingerprints:** the dedicated server prints its fingerprint at every start, the Open
+  to LAN screen shows the host's, and the game writes the pinned one into its log at the first join
+  (`First connection to … : its certificate … is pinned`). Whoever wants to rule out a man in the
+  middle at the first join compares the two over another channel.
+- **One TLS library everywhere:** Qt's `openssl` backend on every platform, with the OpenSSL the
+  game ships (3.5, an LTS line; `3rdparty/openssl-version.txt`). The game initialises it without
+  reading any configuration file (neither `OPENSSL_CONF` nor one of the system changes its TLS). The libraries are part of the release (`QtCraft.app/Contents/Frameworks`), so
+  the game never uses an OpenSSL of the system or of Homebrew, and the server's key never enters a
+  keychain. A game whose OpenSSL is missing logs "No TLS, multiplayer is not possible" at its start
+  and cannot host or join; single player still works.
+- **Builds without TLS:** a build configured with `-DQC_TLS=OFF` (for a platform without OpenSSL
+  yet) talks plain TCP: nothing is encrypted and nothing pinned, the dedicated server says so at its
+  start. It cannot talk to a normal build.
+- **Older versions:** a client before protocol 75 cannot talk to a newer server and the other way
+  round; the newer client says "The server did not set up an encrypted connection (does it run the
+  same version of QtCraft?)".
+- **Costs:** see decision E-872 (handshake time and CPU per player, measured headless).
 
 ## What the login checks
 
@@ -255,17 +322,19 @@ the same installation.
 QtCraft is a hobby project; its network security guards against mistakes and simple abuse, not
 against a determined attacker.
 
-- **No encryption.** Everything, chat included, travels in plain text. Anybody on the path
-  (the same Wi-Fi, a provider) can read it and could take over a running connection.
-- **No server authentication.** The client cannot tell whether it talks to the real server.
-- **The first login sends the identity for that server in plain text.** Whoever records it can log
-  in as that player on that server. Later logins send only proofs bound to a fresh nonce, which
-  cannot be replayed. But the client sends the identity whenever the challenge says the name is not
-  known yet: **a hostile server, or anybody who can change the traffic on the way (man in the middle),
-  can claim that on any login** and so receive the identity of every player who joins, not only on
-  their first login.
-- **Passwords can be guessed offline** by whoever records a login: PBKDF2 slows guessing down, a
-  long password is still needed.
+- **The first connection to an address is trusted blindly** (trust on first use). Whoever sits
+  on the path at exactly that moment (the same Wi-Fi, a provider) can show his own certificate; the
+  client pins it and talks to him. Later connections are protected: another certificate is refused.
+  Compare the fingerprint with the server's owner to be sure. Everything else, chat included, is
+  encrypted; a recorded connection reveals neither the identity nor anything to guess the password
+  from.
+- **Whoever has `server-key.pem` is the server** for every player who pinned it. Keep the data folder
+  to yourself; a copied key lets someone impersonate the server.
+- **A hostile server** learns what a player sends it: the identity for that server (the client
+  sends it whenever the challenge says the name is not known yet), chat and actions. It cannot learn
+  the identity for another server unless it presents that server's salt (see below).
+- **A forgotten pin is trusted anew.** "Forget the old certificate" is meant for a server whose owner
+  really made a new one; used against a real attack it hands the connection to the attacker.
 - **A hostile server** could present the salt of another server and so learn the player's identity
   for that other server (only for players who join it).
 - **The key is the player.** Whoever copies `player.key` can play as that player everywhere; whoever
@@ -345,9 +414,8 @@ Every action is the command an operator could type, so the channel has no rules 
 admin messages share a rate limit (5 per second, bursts of 20; the local player is exempt like his
 chat) and bounds on every count and text (`QcMsg::AdminLimits`); a frame beyond them closes the
 connection. Clients of protocol versions before 67 are refused at the login as for every version
-difference; older clients have no admin channel. The channel adds no protection of its own: what
-"Limits of this security" says about plain text applies to it too, so manage a server on the
-internet only over a network you trust.
+difference; older clients have no admin channel. The channel adds no protection of its own: it is as safe as the connection it runs
+on (TLS, pinned at the first join; see "Limits of this security").
 
 ## Network behaviour
 

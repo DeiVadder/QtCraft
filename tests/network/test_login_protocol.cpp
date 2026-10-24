@@ -268,6 +268,9 @@ private slots:
         QCOMPARE(Address::parse(u"[::1]:4001"_s)->port, 4001);
         QCOMPARE(Address::parse(u"[fe80::1]"_s)->port, Address::defaultPort);
         QCOMPARE(Address::parse(u"2001:db8::7"_s)->host, u"2001:db8::7"_s);
+        QCOMPARE(Address::parse(u"2001:db8::7"_s)->port, Address::defaultPort);
+        QCOMPARE(Address::parse(u"[2a02:810d:1:2::3]:25600"_s)->host, u"2a02:810d:1:2::3"_s);
+        QCOMPARE(Address::parse(u"[2a02:810d:1:2::3]:25600"_s)->port, 25600);
         QCOMPARE(Address::parse(u"[::1]:4001"_s)->toString(), u"[::1]:4001"_s);
         QCOMPARE(Address::parse(u"host:12"_s)->toString(), u"host:12"_s);
         for (const QString &bad : {u""_s, u"host:"_s, u"host:0"_s, u"host:70000"_s, u"[::1"_s, u"[::1]x"_s, u"a b"_s, u"1:2:zz"_s}) {

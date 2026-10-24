@@ -1,11 +1,11 @@
 #include "server/network/QcServerSettings.h"
 
 #include "common/auth/QcProfileValidation.h"
+#include "common/auth/QcSecretFile.h"
 
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QSaveFile>
 
 #include <algorithm>
 #include <array>
@@ -217,14 +217,9 @@ QJsonObject QcServerSettings::toJson() const
 
 QcStatus QcServerSettings::write(const QString &target) const
 {
-    QSaveFile file(target);
-    if (!file.open(QIODevice::WriteOnly) || file.write(QJsonDocument(toJson()).toJson()) < 0) {
-        return qcError(u"Cannot write %1: %2"_s.arg(target, file.errorString()));
-    }
     // It may hold the server password.
-    file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-    if (!file.commit()) {
-        return qcError(u"Cannot write %1: %2"_s.arg(target, file.errorString()));
+    if (const QcStatus written = QcSecretFile::write(target, QJsonDocument(toJson()).toJson()); !written) {
+        return qcError(u"Cannot write %1: %2"_s.arg(target, written.error()));
     }
     return {};
 }

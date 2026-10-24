@@ -1,6 +1,9 @@
 #include "common/protocol/QcFrameReader.h"
 #include "network/QcTcpConnector.h"
 #include "network/QcTcpTransport.h"
+#include "network/tls/QcTlsBackend.h"
+#include "network/tls/QcTlsListener.h"
+#include "QcTestTls.h"
 
 #include <QElapsedTimer>
 #include <QPointer>
@@ -268,10 +271,12 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(received.closed, 1, timeoutMs);
     }
 
+    // Over TLS (decision E-872): the connector hands the transport over after the handshake, with
+    // the fingerprint of the server's certificate; frames go both ways.
     void connectsOverIpv4AndIpv6()
     {
         for (const QHostAddress &address : {QHostAddress(QHostAddress::LocalHost), QHostAddress(QHostAddress::LocalHostIPv6)}) {
-            QTcpServer listener;
+            QcTlsListener listener(QcTestTls::credentials());
             if (!listener.listen(address, 0)) {
                 QVERIFY2(address.protocol() == QAbstractSocket::IPv6Protocol, qPrintable(listener.errorString()));
                 qWarning("No IPv6 loopback here: %s", qPrintable(listener.errorString()));
@@ -282,18 +287,74 @@ private slots:
             QSignalSpy connected(&connector, &QcTcpConnector::connected);
             const QString text = address.protocol() == QAbstractSocket::IPv6Protocol ? u"[::1]:%1"_s : u"127.0.0.1:%1"_s;
             connector.connectTo(*QcServerAddress::parse(text.arg(listener.serverPort())));
-            QVERIFY(connected.wait(timeoutMs));
+            QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+            QTcpSocket *accepted = listener.nextPendingConnection();
+            QcTlsListener::startEncryption(accepted);
+            QcTcpTransport server(accepted, {});
+            Receiver atServer(server);
+            server.sendFrame("welcome");
+
+            QVERIFY(connected.count() == 1 || connected.wait(timeoutMs));
+            // Without TLS (QC_TLS=OFF) there is no certificate and nothing to pin.
+            QCOMPARE(connector.peerFingerprint(), QcTlsBackend::enabled ? QcTlsFingerprint::of(QcTestTls::credentials().certificate) : QByteArray());
             std::unique_ptr<QcTcpTransport> client = connector.takeTransport();
             QVERIFY(client && client->isOpen());
             QVERIFY(!connector.takeTransport());
-
-            QVERIFY(listener.hasPendingConnections() || listener.waitForNewConnection(timeoutMs));
-            QcTcpTransport server(listener.nextPendingConnection(), {});
-            Receiver atServer(server);
+            Receiver atClient(*client);
             client->sendFrame("over " + address.toString().toLatin1());
             QTRY_COMPARE_WITH_TIMEOUT(atServer.frames.size(), 1, timeoutMs);
             QCOMPARE(atServer.frames.first(), "over " + address.toString().toLatin1());
+            QTRY_COMPARE_WITH_TIMEOUT(atClient.frames.size(), 1, timeoutMs);
+            QCOMPARE(atClient.frames.first(), QByteArray("welcome"));
         }
+    }
+
+    // The dedicated server's default (QHostAddress::Any) takes IPv4 and IPv6 on one port, and a host
+    // name with an IPv6 address (AAAA, here "localhost" as ::1) reaches it; each with a handshake.
+    void aDualStackListenerTakesIpv4Ipv6AndNames()
+    {
+        QcTlsListener listener(QcTestTls::credentials());
+        QVERIFY2(listener.listen(QHostAddress::Any, 0), qPrintable(listener.errorString()));
+        QStringList targets{u"127.0.0.1:%1"_s, u"localhost:%1"_s};
+        if (QTcpServer probe; probe.listen(QHostAddress::LocalHostIPv6, 0)) {
+            targets.append(u"[::1]:%1"_s);
+        } else {
+            qWarning("No IPv6 loopback here: %s", qPrintable(probe.errorString()));
+        }
+
+        for (const QString &target : std::as_const(targets)) {
+            QcTcpConnector connector;
+            QSignalSpy connected(&connector, &QcTcpConnector::connected);
+            connector.connectTo(*QcServerAddress::parse(target.arg(listener.serverPort())));
+            QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+            QTcpSocket *accepted = listener.nextPendingConnection();
+            QcTlsListener::startEncryption(accepted);
+            QcTcpTransport server(accepted, {});
+            QVERIFY2(connected.count() == 1 || connected.wait(timeoutMs), qPrintable(target));
+            QVERIFY(QcTlsBackend::enabled == !connector.peerFingerprint().isEmpty());
+            qInfo().noquote() << u"%1 arrived from %2"_s.arg(target.arg(listener.serverPort()), server.peerAddress());
+        }
+    }
+
+    // A server of a version before TLS takes the handshake for a frame too large and hangs up:
+    // the player learns that no encrypted connection came about.
+    void aServerWithoutTlsFails()
+    {
+        if constexpr (!QcTlsBackend::enabled) {
+            QSKIP("built without TLS (QC_TLS=OFF)");
+        }
+        QTcpServer listener;
+        QVERIFY(listener.listen(QHostAddress::LocalHost, 0));
+        QcTcpConnector connector;
+        QSignalSpy failed(&connector, &QcTcpConnector::failed);
+        connector.connectTo({u"127.0.0.1"_s, listener.serverPort()});
+        QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+        auto old = std::make_unique<QcTcpTransport>(listener.nextPendingConnection(), QcTcpTransport::Limits{.maxIncomingFrameBytes = qint64{256} * 1024});
+
+        QVERIFY(failed.count() == 1 || failed.wait(timeoutMs));
+        QVERIFY2(failed.first().first().toString().contains(u"encrypted connection"_s), qPrintable(failed.first().first().toString()));
+        QVERIFY(!connector.takeTransport());
+        QTRY_VERIFY_WITH_TIMEOUT(!old->isOpen(), timeoutMs);
     }
 
     void aRefusedConnectionFails()

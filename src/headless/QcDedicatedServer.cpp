@@ -6,6 +6,7 @@
 #include "common/diagnostics/QcMessageLog.h"
 #include "headless/QcServerConsole.h"
 #include "headless/QcSignalWatcher.h"
+#include "network/tls/QcTlsCredentials.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcWorldLibrary.h"
@@ -75,7 +76,14 @@ QcStatus QcDedicatedServer::start(const Options &options)
     }
     connect(m_host.get(), &QcLocalServerHost::stopRequested, this, [this] { stop(u"/stop"_s, 0); });
 
-    const QcResult<quint16> port = m_host->listen(options.settings.networkConfig());
+    // The certificate players pin (decision E-872), made at the first start.
+    QcNetworkConfig network = options.settings.networkConfig();
+    QcResult<QcTlsCredentials> tls = QcTlsCredentials::loadOrCreate(options.dataDirectory);
+    if (!tls) {
+        return qcError(tls.error());
+    }
+    network.tls = std::move(*tls);
+    const QcResult<quint16> port = m_host->listen(network);
     if (!port) {
         return qcError(port.error());
     }
@@ -86,6 +94,11 @@ QcStatus QcDedicatedServer::start(const Options &options)
 
     say(u"Server \"%1\" with world \"%2\" (%3), up to %4 players"_s.arg(config->serverName, config->worldName, QDir(config->worldDirectory).dirName())
             .arg(config->maxPlayers));
+    if (network.tls.isNull()) {
+        say(u"Connections are NOT encrypted: this build has no TLS (QC_TLS=OFF)"_s);
+    } else {
+        say(u"Certificate fingerprint (SHA-256): %1"_s.arg(QcTlsFingerprint::display(QcTlsFingerprint::of(network.tls.certificate))));
+    }
     say(u"Listening on port %1"_s.arg(*port));
 
     m_dataDirectory = options.dataDirectory;

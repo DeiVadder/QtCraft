@@ -34,6 +34,7 @@
 #include <optional>
 
 class QcSessionLink;
+class QcSessionThread;
 class QcLinkStats;
 class QcTickTiming;
 class QcTransport;
@@ -55,6 +56,8 @@ public:
     Q_ENUM(State)
 
     QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent = nullptr);
+    // Ticks on `thread`, where `transport` was made (a TLS connection, decisions E-560, E-872).
+    QcClientSession(std::unique_ptr<QcSessionThread> thread, std::unique_ptr<QcTransport> transport, QString playerName);
     ~QcClientSession() override;
 
     using TickMode = QcSessionTickMode;
@@ -232,6 +235,8 @@ signals:
     void soundCue(const QcSoundCue &cue);
 
 private:
+    // Gives the parts that talk to the server their way out (both constructors).
+    void connectParts();
     void handleMessage(QcMessage &&message);
     // Message groups; each returns false for messages outside its group.
     bool handleConnectionMessage(const QcMessage &message);

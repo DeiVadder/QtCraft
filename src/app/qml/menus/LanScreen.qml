@@ -18,7 +18,7 @@ Popup {
     function openWorld() {
         screen.failure = "";
         const port = portField.text.length > 0 ? parseInt(portField.text) : 0;
-        screen.game.multiplayer.openToLan(port, passwordField.text, maxPlayers.value);
+        screen.game.multiplayer.openToLan(port, passwordField.text, maxPlayers.value, ipv6Switch.checked);
         passwordField.text = "";
     }
 
@@ -33,6 +33,7 @@ Popup {
 
     onAboutToShow: {
         screen.failure = "";
+        ipv6Switch.checked = false;
         portField.text = String(screen.game.multiplayer.settings.hostPort);
         maxPlayers.value = screen.game.multiplayer.settings.hostMaxPlayers;
     }
@@ -144,6 +145,32 @@ Popup {
                 editable: true
             }
 
+            // IPv4 only by default (decision E-872): behind the router's NAT it stays in the
+            // local network, while IPv6 addresses are often reachable from the internet.
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.topMargin: Ui.space.s
+                spacing: Ui.space.m
+
+                FieldLabel {
+                    Layout.topMargin: 0
+                    text: qsTr("Also over IPv6")
+                }
+                GameSwitch {
+                    id: ipv6Switch
+
+                    objectName: "lanIpv6Switch"
+                    Accessible.name: qsTr("Also over IPv6")
+                    Accessible.description: ipv6Help.text
+                }
+            }
+
+            HelpLine {
+                id: ipv6Help
+
+                text: qsTr("Off: only IPv4, which the router keeps inside your network. On: IPv6 addresses too, which are often reachable from the internet; then set a password.")
+            }
+
             Hint {
                 Layout.fillWidth: true
                 Layout.topMargin: Ui.space.s
@@ -221,6 +248,14 @@ Popup {
 
             HelpLine {
                 text: qsTr("The firewall may ask whether QtCraft may accept incoming connections: allow it. Players over the internet need the port forwarded in your router (see the handbook).")
+            }
+
+            // The certificate friends pin at their first join (decision E-872).
+            HelpLine {
+                objectName: "lanFingerprint"
+                visible: screen.game.multiplayer.lanFingerprint.length > 0
+                textFormat: Text.PlainText
+                text: qsTr("The connection is encrypted. Fingerprint of this computer's certificate, for friends who want to compare it with the one their game pinned: %1").arg(screen.game.multiplayer.lanFingerprint)
             }
 
             RowLayout {
