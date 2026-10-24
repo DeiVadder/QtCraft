@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/light/QcSky.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
@@ -37,7 +38,7 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     const QcClientSession &session = *m_parts.session;
     const QcViewCamera::Placement placed = QcViewCamera::place(eye, session.intent().yaw, session.intent().pitch, mode, *session.world());
     QcCamera camera = m_parts.view->camera();
-    camera.position = QVector3D(static_cast<float>(placed.position.x), static_cast<float>(placed.position.y), static_cast<float>(placed.position.z));
+    camera.position = placed.position;
     camera.yaw = placed.yaw;
     camera.pitch = placed.pitch;
     // While the world is paused its ticks stand still: the shake stops instead of freezing at a tilt
@@ -76,12 +77,11 @@ void QcRenderBridge::updateSky(double alpha)
     const QcClientWeather &weather = session.worldMirror().weather();
     QcSkyState sky = QcSky::at(session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration);
     sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
-    const QVector3D camera = m_parts.view->camera().position;
-    const QcVec3 eye{camera.x(), camera.y(), camera.z()};
+    const QcVec3 &eye = m_parts.view->camera().position;
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.
     const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);
     sky = QcSky::withBlast(sky, flash);
-    m_parts.view->setSky(QcSky::seenFrom(sky, m_parts.view->camera().position.y()));
+    m_parts.view->setSky(QcSky::seenFrom(sky, eye.y));
 }
 
 void QcRenderBridge::updateAnimations(double frameSeconds)
@@ -99,11 +99,12 @@ void QcRenderBridge::updateWeather(const QcVec3 &eye, double frameSeconds)
 
     m_precipitation.update(*session.world(), session.worldMirror().weather(), eye, frameSeconds);
     if (m_precipitation.particles().isEmpty()) {
-        m_parts.view->setPrecipitation(nullptr);
+        m_parts.view->setPrecipitation(nullptr, QcVec3{});
         return;
     }
 
-    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain()));
+    const QcVec3 origin = QcRenderOrigin::blockNear(eye);
+    m_parts.view->setPrecipitation(m_drops.fill(m_precipitation, session.worldMirror().weather().rain(), origin), origin);
 }
 
 void QcRenderBridge::updateSelection()

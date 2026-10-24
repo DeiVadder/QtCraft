@@ -131,6 +131,7 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
             }
         }
 
+        gpuMesh.origin = mesh->origin;
         gpuMesh.boundsMin = low;
         gpuMesh.boundsMax = high;
         uploaded += gpuMesh.bytes();
@@ -165,6 +166,7 @@ quint32 QcGpuBuffers::uploadDynamic(QRhi *rhi, QRhiResourceUpdateBatch *updates,
     if (!mesh || mesh->indices.isEmpty()) {
         return 0;
     }
+    origin = mesh->origin;
 
     const auto vertexBytes = static_cast<quint32>(mesh->vertices.size() * static_cast<qsizetype>(sizeof(QcEntityVertex)));
     const auto indexBytes = static_cast<quint32>(mesh->indices.size() * static_cast<qsizetype>(sizeof(quint32)));

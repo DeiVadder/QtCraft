@@ -147,6 +147,41 @@ private slots:
         QVERIFY(meshes.contains(qcSectionKey({0, 0}, 1)));
     }
 
+    void edgeChunksMeshWithoutNeighboursBeyondTheWorld_data()
+    {
+        QTest::addColumn<int>("side");
+        QTest::newRow("minus") << -1;
+        QTest::newRow("plus") << 1;
+    }
+
+    // The outermost chunk of the world never gets a neighbour beyond the bound (decision E-883); the
+    // mesher treats that missing side as an opaque wall, so the chunk still gets its meshes.
+    void edgeChunksMeshWithoutNeighboursBeyondTheWorld()
+    {
+        QFETCH(int, side);
+        QcClientWorld world(m_content);
+        QcMeshScheduler scheduler;
+        scheduler.setRenderTable(m_table);
+        QHash<quint64, std::shared_ptr<const QcChunkMesh>> meshes;
+        connect(&scheduler, &QcMeshScheduler::meshReady, this,
+                [&meshes](quint64 key, const std::shared_ptr<const QcChunkMesh> &mesh) { meshes.insert(key, mesh); });
+        const QcChunkPos edge{side * QcWorld::maxHorizontalChunk, 0};
+        QVERIFY(edge.isInsideWorld());
+        QVERIFY(!(QcChunkPos{edge.x + side, 0}.isInsideWorld()));
+        const QList<QcChunkPos> loaded{edge, {edge.x - side, 0}, {edge.x, 1}, {edge.x, -1}};
+        for (const QcChunkPos &pos : loaded) {
+            world.setChunk(flatChunk(pos, 20));
+            scheduler.chunkLoaded(world, pos);
+        }
+        pumpUntilIdle(scheduler, world);
+
+        QVERIFY(meshes.contains(qcSectionKey(edge, 1)));
+        QVERIFY(!meshes.value(qcSectionKey(edge, 1))->isEmpty());
+        // The in-world neighbours still miss a side neighbour of their own.
+        QVERIFY(!meshes.contains(qcSectionKey({edge.x - side, 0}, 1)));
+        QVERIFY(!meshes.contains(qcSectionKey({edge.x, 1}, 1)));
+    }
+
     void scheduledMeshEqualsDirectMeshing()
     {
         QcClientWorld world(m_content);

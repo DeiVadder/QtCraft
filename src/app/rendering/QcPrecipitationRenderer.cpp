@@ -16,13 +16,15 @@ namespace {
 // (-1 at the drop, 1 at the far end of the streak).
 constexpr std::array<float, 12> quadCorners = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
 
-// The Shape block of precipitation.vert (std140: four vec4).
+// The Shape block of precipitation.vert (std140: five vec4).
 struct ShapeUniforms
 {
     float streak[4];
     float flake[4];
     float rainColor[4];
     float snowColor[4];
+    // xyz: the offset of the drops' origin from the camera (decision E-883).
+    float origin[4];
 };
 
 ShapeUniforms shapeUniforms()
@@ -33,7 +35,8 @@ ShapeUniforms shapeUniforms()
             {static_cast<float>(QcPrecipitationField::flakeSize), 1.5f, 4.5f, 0.0f},
             // Grey-blue streaks of rain, white flakes, both in full daylight.
             {0.82f, 0.88f, 0.98f, 1.0f},
-            {0.97f, 0.98f, 1.0f, 1.0f}};
+            {0.97f, 0.98f, 1.0f, 1.0f},
+            {0.0f, 0.0f, 0.0f, 0.0f}};
 }
 
 } // namespace
@@ -48,10 +51,10 @@ void QcPrecipitationRenderer::reset()
     m_instanceCount = 0;
 }
 
-void QcPrecipitationRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms,
-                                      const std::shared_ptr<const QList<QcPrecipitationDrop>> &drops)
+void QcPrecipitationRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms, const Drops &frame)
 {
     m_instanceCount = 0;
+    const std::shared_ptr<const QList<QcPrecipitationDrop>> &drops = frame.instances;
     if (!drops || drops->isEmpty()) {
         return;
     }
@@ -69,8 +72,12 @@ void QcPrecipitationRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiR
         m_instances->create();
     }
     updates->updateDynamicBuffer(m_instances.get(), 0, bytes, drops->constData());
-    // 64 bytes; set every frame, as a dynamic buffer has one copy per frame in flight.
-    static const ShapeUniforms shape = shapeUniforms();
+    // 80 bytes; set every frame, as a dynamic buffer has one copy per frame in flight.
+    static const ShapeUniforms fixed = shapeUniforms();
+    ShapeUniforms shape = fixed;
+    shape.origin[0] = static_cast<float>(frame.offset.x);
+    shape.origin[1] = static_cast<float>(frame.offset.y);
+    shape.origin[2] = static_cast<float>(frame.offset.z);
     updates->updateDynamicBuffer(m_shape.get(), 0, static_cast<quint32>(sizeof(ShapeUniforms)), &shape);
     m_instanceCount = static_cast<quint32>(drops->size());
 }

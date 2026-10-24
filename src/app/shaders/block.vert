@@ -1,16 +1,21 @@
 #version 440
 
+// Relative to the section's corner (QcChunkMesh::origin): 0 to 16 along each axis.
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 texCoord;
 // x: face shading and ambient occlusion, y: sky light, z: block light (unsigned normalised bytes);
 // w: the surface byte (decision E-390: normal in the low three bits, material class in the high five).
 layout(location = 2) in vec4 light;
+// Per draw (QcDrawOrigins, decision E-883): xyz the section's corner relative to the camera, w the
+// corner modulo cellPeriod in sixteens of a block, packed x + 64 y + 4096 z (QcRenderOrigin).
+layout(location = 6) in vec4 origin;
 
 layout(location = 0) out vec2 vTexCoord;
 layout(location = 1) out vec3 vLight;
 layout(location = 2) out float vDistance;
 // 1 on alpha-tested blocks drawn in the opaque pass (leaves), else 0.
 layout(location = 3) out float vCutout;
+// Relative to the camera, for the footprint where atlas coordinates jump between faces.
 layout(location = 4) out vec3 vPosition;
 // Animated textures (decision E-878): the atlas coordinates of the next frame and how far the
 // picture has blended into it (0: only vTexCoord), the same at every vertex of a face.
@@ -18,7 +23,9 @@ layout(location = 5) out vec2 vNextTexCoord;
 layout(location = 6) out float vBlend;
 
 layout(std140, binding = 0) uniform Frame {
+    // The projection of the camera's rotation: positions are relative to the camera (decision E-883).
     mat4 viewProjection;
+    // The camera in that space: always the origin.
     vec4 cameraPosition;
     vec4 fogColor;
     // x: fog start, y: fog end, z: daylight factor, w: minimum light
@@ -42,6 +49,20 @@ const vec3 blockTint = vec3(1.0, 0.86, 0.66);
 const float cutoutMaterial = 1.0;
 // Brightness of leaves varies by this much from corner to corner (decision E-724).
 const float foliageVariation = 0.25;
+// The world coordinates of the corner hash repeat after this many blocks
+// (QcRenderOrigin::hashPeriod), so the hash stays exact in floats however far out the section lies.
+const float cellPeriod = 1024.0;
+
+// The section's corner modulo cellPeriod, unpacked from origin.w (whole sixteens: exact, as are
+// the divisions by powers of two).
+vec3 sectionCell()
+{
+    float packed = origin.w;
+    float z = floor(packed / 4096.0);
+    float y = floor((packed - z * 4096.0) / 64.0);
+    float x = packed - z * 4096.0 - y * 64.0;
+    return vec3(x, y, z) * 16.0;
+}
 
 // A value in [0, 1) for a block corner, the same for every face that shares it.
 float cornerHash(vec3 p)
@@ -108,8 +129,9 @@ void main()
     vCutout = material == cutoutMaterial ? 1.0 : 0.0;
     // Leaves get a little lighter and darker from corner to corner, so a crown is not one flat
     // green (decision E-724).
-    vLight *= 1.0 - vCutout * foliageVariation * cornerHash(position);
-    vDistance = length(position - frame.cameraPosition.xyz);
-    vPosition = position;
-    gl_Position = frame.viewProjection * vec4(position, 1.0);
+    vLight *= 1.0 - vCutout * foliageVariation * cornerHash(mod(position + sectionCell(), cellPeriod));
+    vec3 relative = position + origin.xyz;
+    vDistance = length(relative - frame.cameraPosition.xyz);
+    vPosition = relative;
+    gl_Position = frame.viewProjection * vec4(relative, 1.0);
 }

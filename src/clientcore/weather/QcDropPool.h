@@ -19,9 +19,10 @@
 class QcDropPool
 {
 public:
-    // The particles of `field` as drops (QcPrecipitationField::dropOf) in a list nobody else holds
-    // (asserted in debug builds); a new list when all three are still held.
-    [[nodiscard]] std::shared_ptr<const QList<QcPrecipitationDrop>> fill(const QcPrecipitationField &field, float strength);
+    // The particles of `field` as drops (QcPrecipitationField::dropOf) relative to `origin` in a list
+    // nobody else holds (asserted in debug builds); a new list when all three are still held.
+    [[nodiscard]] std::shared_ptr<const QList<QcPrecipitationDrop>> fill(const QcPrecipitationField &field, float strength,
+                                                                         const QcVec3 &origin);
 
 private:
     std::array<std::shared_ptr<QList<QcPrecipitationDrop>>, 3> m_lists;

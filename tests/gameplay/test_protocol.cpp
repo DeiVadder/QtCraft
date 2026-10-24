@@ -357,11 +357,11 @@ private slots:
 
         // Goals far outside the world arrive at its edge.
         QcMsg::ServerDebug far = debug;
-        far.goals[0].goal = {1e12, -1e9, -3e7 - 5.0};
+        far.goals[0].goal = {1e12, -1e9, -2e9 - 5.0};
         const QcVec3 clamped = roundTrip(far).goals[0].goal;
-        QCOMPARE(clamped.x, double(QcWorld::maxHorizontalBlock));
+        QCOMPARE(clamped.x, QcWorld::highestBody);
         QCOMPARE(clamped.y, -double(QcWorld::worldHeight));
-        QCOMPARE(clamped.z, -double(QcWorld::maxHorizontalBlock));
+        QCOMPARE(clamped.z, QcWorld::lowestBody);
         QCOMPARE(roundTrip(far).goals[1], debug.goals[1]);
     }
 

@@ -111,7 +111,8 @@ void QcChunkLoading::warnOversize(const QcChunkGroups::Group &group)
 void QcChunkLoading::request(QcChunkPos pos)
 {
     QcServerWorld &world = m_state.world();
-    if (world.chunk(pos) || m_waiting.contains(pos)) {
+    // Beyond the technical bound of the world (decision E-883) nothing is generated or saved.
+    if (!pos.isInsideWorld() || world.chunk(pos) || m_waiting.contains(pos)) {
         return;
     }
     if (m_state.config().loadChunksAtOnce) {

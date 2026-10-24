@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/core/QcWorldConstants.h"
+
 #include <QTypeInfo>
 #include <QtGlobal>
 
@@ -12,6 +14,14 @@ struct QcChunkPos
     int z = 0;
 
     auto operator<=>(const QcChunkPos &) const = default;
+
+    // Whether the chunk lies within the technical bound of the world (QcWorld::maxHorizontalChunk,
+    // decision E-883); the server loads, generates and saves no chunk beyond it.
+    constexpr bool isInsideWorld() const
+    {
+        return x >= -QcWorld::maxHorizontalChunk && x <= QcWorld::maxHorizontalChunk && z >= -QcWorld::maxHorizontalChunk
+               && z <= QcWorld::maxHorizontalChunk;
+    }
 };
 
 Q_DECLARE_TYPEINFO(QcChunkPos, Q_PRIMITIVE_TYPE);

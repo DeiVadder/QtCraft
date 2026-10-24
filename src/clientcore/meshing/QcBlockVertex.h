@@ -29,9 +29,10 @@ enum class QcSurfaceMaterial : quint8 {
     Emissive,
 };
 
-// Vertex layout shared by the mesher and the GPU pipeline: position and atlas coordinates as
-// floats, shading, light and the surface as unsigned bytes (read as one UNormByte4 attribute), 24
-// bytes per vertex. Light levels k / 15 are stored exactly (17 k); other values to within 1 / 510.
+// Vertex layout shared by the mesher and the GPU pipeline: position (relative to the section's
+// corner, QcChunkMesh::origin) and atlas coordinates as floats, shading, light and the surface as
+// unsigned bytes (read as one UNormByte4 attribute), 24 bytes per vertex. Light levels k / 15 are
+// stored exactly (17 k); other values to within 1 / 510.
 struct QcBlockVertex
 {
     float x = 0.0f;

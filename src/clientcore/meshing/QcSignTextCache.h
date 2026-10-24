@@ -32,7 +32,8 @@ public:
     [[nodiscard]] QList<QcBlockPos> signsNear(const QcVec3 &viewer, double distance) const;
     // The quads of the sign at `pos`, shown by block `block` in `light`; built with `content` and
     // `uv` when the block or the light differ from the last call. Empty for unknown positions and
-    // blocks that are no signs.
+    // blocks that are no signs. Positions are relative to the corner of the sign's block (decision
+    // E-883), so they stay exact however far out the sign stands.
     [[nodiscard]] const std::vector<QcSignTextMesher::Quad> &quads(QcBlockPos pos, QcBlockId block, QcEntityLight light,
                                                                    const QcContentRegistry &content, const QcEntityMesher::UvLookup &uv);
 

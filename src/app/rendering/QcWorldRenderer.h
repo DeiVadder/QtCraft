@@ -31,12 +31,23 @@ protected:
     void render(QRhiCommandBuffer *commandBuffer) override;
 
 private:
-    // What the steps of one frame share: the sections in view and where the camera is.
+    // A section in view and the entry of its offset from the camera (QcDrawOrigins).
+    struct VisibleSection
+    {
+        const QcGpuMesh *mesh = nullptr;
+        quint32 origin = 0;
+    };
+
+    // What the steps of one frame share: the sections in view, where the camera is and the entries
+    // of the draws' offsets from it (decision E-883).
     struct FrameView
     {
-        QList<const QcGpuMesh *> visible;
+        QList<VisibleSection> visible;
         // The underside of the world faces down from y = 0: from above it is always turned away.
         bool belowWorld = false;
+        quint32 entityOrigin = 0;
+        quint32 framedMapOrigin = 0;
+        quint32 handOrigin = 0;
     };
 
     // Both groups and the mesh store for the new rhi(), the pass group first.
@@ -48,43 +59,50 @@ private:
     // Atlas, pipelines and the uploads of this frame.
     void prepareResources(QRhiResourceUpdateBatch *updates);
     void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize) const;
-    // The sections inside the view frustum.
-    FrameView cull(const QMatrix4x4 &viewProjection) const;
+    // The sections inside the view frustum of `viewProjection` (relative to the camera), with the
+    // offsets of the frame's draws from the camera (QcDrawOrigins, uploaded into `updates`).
+    FrameView cull(const QMatrix4x4 &viewProjection, QRhiResourceUpdateBatch *updates);
     // The steps of the plan, one GPU render pass per target.
     void drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates, const FrameView &view, QSize outputSize);
     void drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pass, const FrameView &view);
     void drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view);
-    void drawEntities(QRhiCommandBuffer *commandBuffer);
+    void drawEntities(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     // Back to front by section centre; with the plan's water drawn here too, the water of a section
     // comes right before its other translucent faces.
     void drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     // The water lists alone, back to front, with the water pipeline (a plan with a Water step).
     void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
-    void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
+    void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     // Sets the pipeline with its shader resources (the pipeline's own without `resources`) and
     // forgets the bound vertex input.
     void usePipeline(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPipeline *pipeline, QRhiShaderResourceBindings *resources = nullptr);
-    // `count` indices from `firstIndex`, all of them when `count` is 0; binds the list's buffers only
-    // when they differ from the bound ones (with QRhi::BaseVertex).
-    void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 firstIndex = 0, quint32 count = 0);
+    // `count` indices from `firstIndex`, all of them when `count` is 0, placed by the offset entry
+    // `origin` (QcDrawOrigins); binds the list's buffers only when they differ from the bound ones
+    // (with QRhi::BaseVertex, and QRhi::BaseInstance for the offsets).
+    void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 origin, quint32 firstIndex = 0, quint32 count = 0);
     // The pipeline the translucent step draws the water lists with: the translucent one as long as
     // the water pipeline does the same (m_waterLikeTranslucent), so alternating draws need no switch.
     QRhiGraphicsPipeline *waterPipelineInTranslucent() const;
     // The water and translucent faces of one section in the mesher's order, switching pipelines.
-    void drawTranslucentRuns(const QcGpuMesh &mesh, const std::function<void(QRhiGraphicsPipeline *)> &use,
+    void drawTranslucentRuns(VisibleSection section, const std::function<void(QRhiGraphicsPipeline *)> &use,
                              QRhiCommandBuffer *commandBuffer);
 
-    // The vertex and index buffers bound since the last usePipeline() (decision E-820).
+    // The vertex and index buffers bound since the last usePipeline() (decision E-820), and the
+    // offset entry the origins are bound at (always 0 with base instances).
     struct Binding
     {
         const QRhiBuffer *vertices = nullptr;
         const QRhiBuffer *indices = nullptr;
         QRhiCommandBuffer::IndexFormat indexFormat = QRhiCommandBuffer::IndexUInt16;
+        quint32 origin = 0;
         bool operator==(const Binding &) const = default;
     };
     Binding m_bound;
     // Draws take a base vertex, so lists sharing buffers need no new binding (QRhi::BaseVertex).
     bool m_baseVertex = false;
+    // Draws pick their offset from the camera as their first instance (QRhi::BaseInstance), so the
+    // offsets are bound once with the buffers; without it they are bound at each draw's entry.
+    bool m_baseInstance = false;
 
     // GPU resources by lifetime: the pass group is dropped with the device group and on its own
     // when the render target's pass changes (initialize()).

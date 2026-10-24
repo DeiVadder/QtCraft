@@ -270,8 +270,10 @@ private slots:
 
     void linesForBoxesSectionsAndFlashes()
     {
-        QcDebugLines lines;
-        lines.addBox({{0.0, 0.0, 0.0}, {1.0, 2.0, 1.0}}, QcDebugLines::hitboxColor);
+        // Vertices lie relative to the origin of the lines (decision E-883), exact far out.
+        const QcVec3 far{1e8, 0.0, -1e8};
+        QcDebugLines lines(far);
+        lines.addBox({far + QcVec3{0.0, 0.0, 0.0}, far + QcVec3{1.0, 2.0, 1.0}}, QcDebugLines::hitboxColor);
         // Twelve edges, two ends each, all within the box.
         QCOMPARE(lines.vertices().size(), 24);
         for (const QcDebugLineVertex &vertex : lines.vertices()) {
@@ -286,7 +288,7 @@ private slots:
         QVERIFY(std::abs(box.min.z - 80.0) < 0.05 && std::abs(box.max.z - 96.0) < 0.05);
 
         // A fresh mesh flashes brightly, an older one fainter, one past the flash not at all.
-        QcDebugLines flashes;
+        QcDebugLines flashes(QcVec3{});
         const QHash<quint64, qint64> meshedAt{{qcSectionKey({0, 0}, 1), 1000}, {qcSectionKey({1, 0}, 1), 400}};
         flashes.addRemeshFlashes(meshedAt, 1000 + QcDebugLines::flashMs / 2);
         QCOMPARE(flashes.vertices().size(), 24);
@@ -294,7 +296,7 @@ private slots:
 
         // Chunk borders: corners of the 6 x 6 chunk corners around, rings at the 17 section
         // borders, the wall grid; nothing outside the reach of the corners.
-        QcDebugLines borders;
+        QcDebugLines borders(QcVec3{});
         borders.addChunkBorders({8.5, 70.0, -3.5});
         constexpr qsizetype corners = 36;
         constexpr qsizetype rings = 204;

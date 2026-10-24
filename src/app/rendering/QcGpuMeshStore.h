@@ -4,6 +4,8 @@
 #include "app/rendering/QcSectionLightPool.h"
 #include "clientcore/meshing/QcChunkMesh.h"
 #include "clientcore/meshing/QcEntityMesh.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcVec3.h"
 
 #include <QList>
 #include <QVector3D>
@@ -37,6 +39,8 @@ struct QcGpuBuffers
     std::unique_ptr<QRhiBuffer> indices;
     quint32 indexCount = 0;
     QRhiCommandBuffer::IndexFormat indexFormat = QRhiCommandBuffer::IndexUInt32;
+    // The uploaded mesh's origin (QcEntityMesh::origin), the vertices being relative to it.
+    QcVec3 origin;
     quint64 bytes() const { return (vertices ? vertices->size() : 0) + (indices ? indices->size() : 0); }
     QcGpuList list() const { return {vertices.get(), indices.get(), 0, 0, indexCount, indexFormat}; }
 
@@ -59,11 +63,20 @@ struct QcGpuMesh
     QcGpuList underside;
     // Water and other translucent faces in the mesher's order (QcChunkMesh::translucentRuns).
     QList<quint32> translucentRuns;
+    // The section's corner in the world (QcChunkMesh::origin) and the box of its vertices relative
+    // to it (decision E-883).
+    QcBlockPos origin;
     QVector3D boundsMin;
     QVector3D boundsMax;
     // GPU bytes of the section's data in its page.
     quint64 bytes() const { return slot.bytes(); }
-    QVector3D centre() const { return (boundsMin + boundsMax) * 0.5f; }
+    // The middle of the vertices' box in the world.
+    QcVec3 centre() const
+    {
+        const QVector3D middle = (boundsMin + boundsMax) * 0.5f;
+        return QcVec3{static_cast<double>(origin.x) + middle.x(), static_cast<double>(origin.y) + middle.y(),
+                      static_cast<double>(origin.z) + middle.z()};
+    }
     // Whether a frame draws anything of the section: any list with faces; the underside only from
     // below the world (a section of plants or leaves alone has only cut-out faces, decision E-756).
     bool isDrawable(bool belowWorld) const

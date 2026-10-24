@@ -45,7 +45,9 @@ QList<QcChunkPos> QcChunkStreaming::missingChunks(const QcServerClient &client) 
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dz = -radius; dz <= radius; ++dz) {
             const QcChunkPos pos{centre.x + dx, centre.z + dz};
-            if (!client.view.sentChunks.contains(pos)) {
+            // No chunk exists beyond the technical bound (decision E-883); the client takes the
+            // missing chunks there as a wall.
+            if (pos.isInsideWorld() && !client.view.sentChunks.contains(pos)) {
                 missing.append(pos);
             }
         }
@@ -59,7 +61,8 @@ bool QcChunkStreaming::viewComplete(const QcServerClient &client) const
     const int radius = radiusOf(client);
     for (int dx = -radius; dx <= radius; ++dx) {
         for (int dz = -radius; dz <= radius; ++dz) {
-            if (!client.view.sentChunks.contains({centre.x + dx, centre.z + dz})) {
+            const QcChunkPos pos{centre.x + dx, centre.z + dz};
+            if (pos.isInsideWorld() && !client.view.sentChunks.contains(pos)) {
                 return false;
             }
         }

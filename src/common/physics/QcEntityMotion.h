@@ -49,4 +49,8 @@ private:
     // One tick of a spectator's flight towards `wish` (decision E-730): like creative flight, at the
     // speed of input.flySpeed, through every block.
     void stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, double dt);
+    // Holds the feet within [QcWorld::lowestBody, QcWorld::highestBody] (decision E-883), the
+    // centres of the outermost block columns of the world, and stops the velocity across it; the
+    // same rule on server and client.
+    void keepInsideWorld();
 };

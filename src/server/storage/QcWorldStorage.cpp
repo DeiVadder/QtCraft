@@ -32,8 +32,8 @@ constexpr qsizetype maxForcedChunks = 65536;
     for (const auto &entry : loaders) {
         const QJsonObject loader = entry.toObject();
         const QcBlockPos pos{loader.value(u"x"_s).toInt(), loader.value(u"y"_s).toInt(), loader.value(u"z"_s).toInt()};
-        if (result.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(pos.x)) <= QcWorld::maxHorizontalBlock
-            && std::abs(static_cast<qint64>(pos.z)) <= QcWorld::maxHorizontalBlock) {
+        if (result.size() < maxForcedChunks && pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(pos.x)) <= QcWorld::maxChunkBlock
+            && std::abs(static_cast<qint64>(pos.z)) <= QcWorld::maxChunkBlock) {
             result.append({pos, loader.value(u"owner"_s).toString().left(64)});
         }
     }
@@ -277,8 +277,8 @@ QcResult<QList<QcBlockPos>> QcWorldStorage::readBlockUpdates() const
         stream >> x >> y >> z;
 
         const QcBlockPos pos{x, y, z};
-        if (stream.status() != QDataStream::Ok || !pos.isInsideWorldHeight() || std::abs(x) > QcWorld::maxHorizontalBlock
-            || std::abs(z) > QcWorld::maxHorizontalBlock) {
+        if (stream.status() != QDataStream::Ok || !pos.isInsideWorldHeight() || std::abs(static_cast<qint64>(x)) > QcWorld::maxChunkBlock
+            || std::abs(static_cast<qint64>(z)) > QcWorld::maxChunkBlock) {
             return qcError(u"%1 is damaged (position %2)"_s.arg(path).arg(i));
         }
         positions.append(pos);

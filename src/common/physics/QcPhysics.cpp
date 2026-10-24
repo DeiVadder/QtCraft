@@ -387,6 +387,7 @@ void QcEntityMotion::applyMove(const MoveResult &move)
         position.y = QcWorld::voidFloorY;
         velocity.y = std::max(0.0, velocity.y);
     }
+    keepInsideWorld();
 
     if (move.blockedY) {
         velocity.y = 0.0;
@@ -485,6 +486,21 @@ void QcEntityMotion::stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, 
     if (position.y < QcWorld::voidFloorY) {
         position.y = QcWorld::voidFloorY;
         velocity.y = std::max(0.0, velocity.y);
+    }
+    keepInsideWorld();
+}
+
+void QcEntityMotion::keepInsideWorld()
+{
+    constexpr double low = QcWorld::lowestBody;
+    constexpr double high = QcWorld::highestBody;
+    if (position.x < low || position.x > high) {
+        position.x = std::clamp(position.x, low, high);
+        velocity.x = 0.0;
+    }
+    if (position.z < low || position.z > high) {
+        position.z = std::clamp(position.z, low, high);
+        velocity.z = 0.0;
     }
 }
 

@@ -17,10 +17,10 @@ void QcDebugLineRenderer::reset()
     m_vertexCount = 0;
 }
 
-void QcDebugLineRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms,
-                                  const std::shared_ptr<const QList<QcDebugLineVertex>> &lines)
+void QcDebugLineRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms, const Lines &frame)
 {
     m_vertexCount = 0;
+    const std::shared_ptr<const QList<QcDebugLineVertex>> &lines = frame.vertices;
     if (!lines || lines->isEmpty()) {
         return;
     }
@@ -31,15 +31,21 @@ void QcDebugLineRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResou
         return;
     }
 
-    // Two triangles per segment, each corner knowing the other end.
+    // Two triangles per segment, each corner knowing the other end, placed relative to the camera.
+    const float dx = static_cast<float>(frame.offset.x);
+    const float dy = static_cast<float>(frame.offset.y);
+    const float dz = static_cast<float>(frame.offset.z);
     m_corners.clear();
     m_corners.reserve(lines->size() * 3);
     for (qsizetype i = 0; i + 1 < lines->size(); i += 2) {
         const QcDebugLineVertex &a = lines->at(i);
         const QcDebugLineVertex &b = lines->at(i + 1);
         // The shader widens by `side` times three pixels.
-        const auto corner = [](QcDebugLineVertex end, QcDebugLineVertex other, float side) {
-            return Corner{{end.x, end.y, end.z}, {other.x, other.y, other.z}, side, {end.rgba[0], end.rgba[1], end.rgba[2], end.rgba[3]}};
+        const auto corner = [dx, dy, dz](QcDebugLineVertex end, QcDebugLineVertex other, float side) {
+            return Corner{{end.x + dx, end.y + dy, end.z + dz},
+                          {other.x + dx, other.y + dy, other.z + dz},
+                          side,
+                          {end.rgba[0], end.rgba[1], end.rgba[2], end.rgba[3]}};
         };
         m_corners.append({corner(a, b, -1.0f), corner(a, b, 1.0f), corner(b, a, 1.0f)});
         m_corners.append({corner(a, b, -1.0f), corner(b, a, 1.0f), corner(b, a, -1.0f)});

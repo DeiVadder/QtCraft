@@ -2,6 +2,7 @@
 
 #include "clientcore/light/QcSectionLight.h"
 #include "clientcore/meshing/QcBlockVertex.h"
+#include "common/core/QcBlockPos.h"
 
 #include <QList>
 
@@ -16,8 +17,14 @@
 // bottom layer, decision E-288) are kept apart: only a camera below y = 0 can see them, so the
 // renderer skips them otherwise (one such face per column would otherwise add a draw call to every
 // bottom section).
+//
+// Vertex positions are relative to `origin`, the section's bottom north-west corner (decision
+// E-883): from 0 to 16 along each axis, exact in a float wherever the section lies; the renderer adds
+// the origin's offset from the camera (QcRenderOrigin).
 struct QcChunkMesh
 {
+    // The corner of the section in the world: chunk x * 16, section index * 16, chunk z * 16.
+    QcBlockPos origin;
     QList<QcBlockVertex> opaqueVertices;
     QList<quint32> opaqueIndices;
     QList<QcBlockVertex> cutoutVertices;

@@ -16,7 +16,7 @@ constexpr double height = 500.0;
 QcLabelProjector::View northView()
 {
     QcCamera camera;
-    camera.position = {0.5f, 65.6f, 0.5f};
+    camera.position = {0.5, 65.6, 0.5};
     camera.yaw = 0.0f;
     camera.pitch = 0.0f;
     return {camera, width, height};

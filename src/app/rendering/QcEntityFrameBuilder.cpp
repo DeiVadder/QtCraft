@@ -2,6 +2,7 @@
 
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/maps/QcMapColors.h"
 #include "clientcore/meshing/QcEntityCulling.h"
 #include "clientcore/meshing/QcFigureLook.h"
@@ -307,7 +308,14 @@ void QcEntityFrameBuilder::appendSigns(QcEntityMesh &mesh, const EntityFrame &fr
         }
         // The text lies inside the sign's cell, so it has the light of the cell's middle.
         const QcEntityLight light = entityLight(frame.world, {pos.x + 0.5, pos.y + 0.5, pos.z + 0.5});
-        for (const QcSignTextMesher::Quad &quad : m_signTexts.quads(pos, *block, light, frame.content, frame.uv)) {
+        // The quads lie relative to the sign's corner; the corner relative to the mesh's origin.
+        const QcEntityVertex corner = mesh.vertexAt(QcRenderOrigin::toVec3(pos));
+        for (QcSignTextMesher::Quad quad : m_signTexts.quads(pos, *block, light, frame.content, frame.uv)) {
+            for (QcEntityVertex &vertex : quad) {
+                vertex.x += corner.x;
+                vertex.y += corner.y;
+                vertex.z += corner.z;
+            }
             mesh.addQuad(quad);
         }
     }
@@ -445,6 +453,13 @@ void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity
     }
 }
 
+QcVec3 QcEntityFrameBuilder::meshOrigin() const
+{
+    // Near the camera (decision E-883): the vertices stay small floats, the renderer adds the
+    // origin's offset from the camera.
+    return QcRenderOrigin::blockNear(m_parts.view ? m_parts.view->camera().position : m_parts.session->playerMotion().position);
+}
+
 std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, QcCameraMode mode)
 {
     if (!m_atlas) {
@@ -452,6 +467,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     }
 
     auto mesh = std::make_shared<QcEntityMesh>();
+    mesh->origin = meshOrigin();
     // Sized like the previous frame's mesh, so the lists do not grow vertex by vertex.
     mesh->vertices.reserve(m_entityMeshSize.first);
     mesh->indices.reserve(m_entityMeshSize.second);
@@ -466,7 +482,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
 
     // Entities outside the view are not built (decision E-862).
     const QcWorldView *view = m_parts.view;
-    const std::optional<QcFrustum::Planes> planes =
+    const std::optional<QcEntityCulling::ViewPlanes> planes =
         view ? QcEntityCulling::viewPlanes(view->camera(), view->width(), view->height()) : std::nullopt;
     for (const QcClientEntity &entity : session.entities()) {
         if (!QcEntityCulling::mayBeSeen(planes, QcEntityCulling::viewBox(entity, frame.content))) {
@@ -507,13 +523,12 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildFramedMaps(const Entity
         const QcClientEntity *entity = nullptr;
     };
     const QcClientSession &session = *m_parts.session;
-    const QVector3D eye = m_parts.view ? m_parts.view->camera().position : QVector3D();
+    const QcVec3 origin = meshOrigin();
     QList<Framed> framed;
     for (const QcClientEntity &entity : session.entities()) {
         if (const std::optional<quint32> id = QcHangingMesher::framedMap(entity, frame.content)) {
-            const QcVec3 centre = entity.hanging.centre();
-            const QVector3D offset = QVector3D(static_cast<float>(centre.x), static_cast<float>(centre.y), static_cast<float>(centre.z)) - eye;
-            framed.append({offset.lengthSquared(), *id, &entity});
+            const QcVec3 offset = entity.hanging.centre() - origin;
+            framed.append({static_cast<float>(offset.dot(offset)), *id, &entity});
         }
     }
 
@@ -527,6 +542,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildFramedMaps(const Entity
     const QcClientMaps &maps = session.worldMirror().maps();
     m_framedMaps.beginFrame(nearestFirst, maps);
     auto mesh = std::make_shared<QcEntityMesh>();
+    mesh->origin = origin;
     for (const Framed &each : std::as_const(framed)) {
         const QRectF tile = m_framedMaps.place(each.id, maps);
         QcHangingMesher::appendFramedMap(*mesh, each.entity->hanging, tile, entityLight(frame.world, each.entity->position));
@@ -548,6 +564,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     }
 
     auto mesh = std::make_shared<QcEntityMesh>();
+    mesh->origin = QcRenderOrigin::blockNear(eye);
     const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);

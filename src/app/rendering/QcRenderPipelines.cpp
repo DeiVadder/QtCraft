@@ -1,6 +1,7 @@
 #include "app/rendering/QcRenderPipelines.h"
 
 #include "app/debug/QcAppLogging.h"
+#include "app/rendering/QcDrawOrigins.h"
 #include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QFile>
@@ -23,7 +24,8 @@ QRhiVertexInputLayout entityLayout()
         {0, 5, QRhiVertexInputAttribute::Float, static_cast<quint32>(offsetof(QcEntityVertex, blockLight))},
         {0, 4, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcEntityVertex, tint))},
     });
-    return layout;
+    // The mesh's offset from the camera, per draw (decision E-883).
+    return QcDrawOrigins::withOrigins(layout);
 }
 
 } // namespace

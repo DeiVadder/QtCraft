@@ -22,8 +22,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // block (`partOf`) in the content (decision E-874), 74 the pause of the server (PauseRequest,
 // ServerPause; decision E-877), 75 runs every network connection over TLS (decision E-872; the
 // messages are unchanged), 76 the band-pass, volume variation and drive of sounds in the content
-// (decision E-879).
-inline constexpr quint32 version = 76;
+// (decision E-879), 77 map centres and debug goals over the whole technical bound of the world
+// (decision E-883).
+inline constexpr quint32 version = 77;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

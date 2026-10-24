@@ -57,9 +57,10 @@ bool validTimes(const QcMsg::ServerDebug &m)
 // line builder with coordinates no float can place sensibly.
 QcVec3 clampedToWorld(const QcVec3 &goal)
 {
-    constexpr double horizontal = QcWorld::maxHorizontalBlock;
+    constexpr double low = QcWorld::lowestBody;
+    constexpr double high = QcWorld::highestBody;
     constexpr double vertical = QcWorld::worldHeight;
-    return {std::clamp(goal.x, -horizontal, horizontal), std::clamp(goal.y, -vertical, 2.0 * vertical), std::clamp(goal.z, -horizontal, horizontal)};
+    return {std::clamp(goal.x, low, high), std::clamp(goal.y, -vertical, 2.0 * vertical), std::clamp(goal.z, low, high)};
 }
 
 [[nodiscard]] std::optional<QList<QcMsg::MobGoal>> readGoals(QDataStream &stream)

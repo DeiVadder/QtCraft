@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPrecipitationField &field, float strength)
+std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPrecipitationField &field, float strength, const QcVec3 &origin)
 {
     const auto slot = std::ranges::find_if(m_lists, [](const auto &list) { return !list || list.use_count() == 1; });
     std::shared_ptr<QList<QcPrecipitationDrop>> drops = slot != m_lists.end() ? *slot : nullptr;
@@ -20,7 +20,7 @@ std::shared_ptr<const QList<QcPrecipitationDrop>> QcDropPool::fill(const QcPreci
     drops->clear();
     drops->reserve(field.particles().size());
     for (const QcPrecipitationField::Particle &particle : field.particles()) {
-        drops->append(QcPrecipitationField::dropOf(particle, strength));
+        drops->append(QcPrecipitationField::dropOf(particle, strength, origin));
     }
     return drops;
 }

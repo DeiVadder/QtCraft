@@ -167,7 +167,7 @@ private slots:
 
         // One drop per particle at its position; the streak reaches up from it, never below.
         QcDropPool pool;
-        std::shared_ptr<const QList<QcPrecipitationDrop>> drops = pool.fill(field, 1.0f);
+        std::shared_ptr<const QList<QcPrecipitationDrop>> drops = pool.fill(field, 1.0f, QcVec3{});
         QCOMPARE(drops->size(), field.particles().size());
         for (qsizetype i = 0; i < field.particles().size(); ++i) {
             QCOMPARE((*drops)[i].y, float(field.particles()[i].position.y));
@@ -179,10 +179,10 @@ private slots:
         // still held is left alone.
         const QcPrecipitationDrop *memory = drops->constData();
         drops.reset();
-        drops = pool.fill(field, 0.5f);
+        drops = pool.fill(field, 0.5f, QcVec3{});
         QCOMPARE(drops->constData(), memory);
         QVERIFY(drops->constFirst().alpha < 190);
-        const std::shared_ptr<const QList<QcPrecipitationDrop>> next = pool.fill(field, 0.5f);
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> next = pool.fill(field, 0.5f, QcVec3{});
         QVERIFY(next->constData() != memory);
         QCOMPARE(field.columnTop(*world, 3, 3), 70);
         QCOMPARE(field.columnTop(*world, -3, 3), 60);
@@ -208,10 +208,10 @@ private slots:
         QVERIFY(std::ranges::all_of(snow.particles(), &QcPrecipitationField::Particle::snow));
         // One drop per flake; flakes fade in with the strength like rain.
         QcDropPool pool;
-        const std::shared_ptr<const QList<QcPrecipitationDrop>> flakes = pool.fill(snow, 1.0f);
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> flakes = pool.fill(snow, 1.0f, QcVec3{});
         QCOMPARE(flakes->size(), snow.particles().size());
         QVERIFY(std::ranges::all_of(*flakes, [](QcPrecipitationDrop drop) { return drop.snow != 0; }));
-        const std::shared_ptr<const QList<QcPrecipitationDrop>> faint = pool.fill(snow, 0.1f);
+        const std::shared_ptr<const QList<QcPrecipitationDrop>> faint = pool.fill(snow, 0.1f, QcVec3{});
         QVERIFY(faint->constFirst().alpha < flakes->constFirst().alpha);
 
         // A shower that stops in a dry climate: what is falling lands, nothing new starts.
@@ -243,7 +243,7 @@ private slots:
             qsizetype bytes = 0;
             for (int frame = 0; frame < frames; ++frame) {
                 field.update(*world, weather, eye, 1.0 / 60.0);
-                bytes += pool.fill(field, 1.0f)->size() * static_cast<qsizetype>(sizeof(QcPrecipitationDrop));
+                bytes += pool.fill(field, 1.0f, QcVec3{})->size() * static_cast<qsizetype>(sizeof(QcPrecipitationDrop));
             }
             qInfo("%s: %lld particles, %.4f ms per frame, %lld bytes uploaded per frame", climate.snowFrom == 0 ? "snow" : "rain",
                   static_cast<qint64>(field.particles().size()), static_cast<double>(clock.nsecsElapsed()) / 1e6 / frames, static_cast<qint64>(bytes / frames));

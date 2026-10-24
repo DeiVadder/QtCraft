@@ -21,9 +21,16 @@ inline constexpr double margin = 2.5;
 // the near plane cull.
 inline constexpr float farPlane = 4096.0f;
 
+// The clip planes of a camera, for boxes relative to its eye (decision E-883).
+struct ViewPlanes
+{
+    QcFrustum::Planes planes;
+    QcVec3 eye;
+};
+
 // The clip planes of `camera` for a view of `width` x `height`; none for a view without a size
 // (then every entity is built).
-[[nodiscard]] std::optional<QcFrustum::Planes> viewPlanes(const QcCamera &camera, double width, double height);
+[[nodiscard]] std::optional<ViewPlanes> viewPlanes(const QcCamera &camera, double width, double height);
 
 // The box an entity may be drawn in this frame: its body (the creature's size, else 1 x 2 m)
 // around its feet at the start and at the end of the client tick, grown by `margin`; for an item
@@ -31,6 +38,6 @@ inline constexpr float farPlane = 4096.0f;
 [[nodiscard]] QcAabb viewBox(const QcClientEntity &entity, const QcContentRegistry &content);
 
 // Whether a box may show: always without planes, else unless it lies outside one of them.
-[[nodiscard]] bool mayBeSeen(const std::optional<QcFrustum::Planes> &planes, const QcAabb &box);
+[[nodiscard]] bool mayBeSeen(const std::optional<ViewPlanes> &planes, const QcAabb &box);
 
 } // namespace QcEntityCulling

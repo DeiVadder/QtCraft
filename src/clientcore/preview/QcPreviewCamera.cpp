@@ -69,7 +69,7 @@ QcCamera QcPreviewCamera::camera() const
 {
     const QcVec3 at = target();
     QcCamera camera;
-    camera.position = QVector3D(static_cast<float>(at.x), static_cast<float>(at.y), static_cast<float>(at.z + distance()));
+    camera.position = {at.x, at.y, at.z + distance()};
     camera.yaw = 0.0f;
     camera.pitch = 0.0f;
     camera.fieldOfView = fieldOfView;

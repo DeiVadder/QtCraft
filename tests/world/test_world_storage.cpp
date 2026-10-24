@@ -231,7 +231,7 @@ private slots:
         QTest::addColumn<float>("yaw");
         QTest::addColumn<float>("pitch");
         QTest::newRow("far away") << 1e300 << 70.0 << 0.0f << 0.0f;
-        QTest::newRow("beyond the world edge") << 40'000'000.0 << 70.0 << 0.0f << 0.0f;
+        QTest::newRow("beyond the world edge") << static_cast<double>(QcWorld::maxChunkBlock) + 2.0 << 70.0 << 0.0f << 0.0f;
         QTest::newRow("below the void floor") << 0.0 << -1000.0 << 0.0f << 0.0f;
         QTest::newRow("nan yaw") << 0.0 << 70.0 << std::numeric_limits<float>::quiet_NaN() << 0.0f;
         QTest::newRow("pitch over 90") << 0.0 << 70.0 << 0.0f << 120.0f;
@@ -283,6 +283,34 @@ private slots:
         const auto read = QcTestWorldFiles(dir.path(), content).readPlayer(u"Hurt"_s);
         QVERIFY(read.has_value() && read->player.has_value());
         QCOMPARE(read->player->health, 0.0);
+    }
+
+    void chunksFarOutRoundTrip()
+    {
+        // 1e8 blocks out and the four corners of the technical bound (decision E-883): region files
+        // r.x.z take them like any other.
+        QTemporaryDir dir;
+        const auto content = registryWith({u"a:stone"_s});
+        constexpr int far = 100'000'000 / QcWorld::chunkSize;
+        constexpr int edge = QcWorld::maxHorizontalChunk;
+        const QList<QcChunkPos> places{{far, -far}, {edge, edge}, {-edge, -edge}, {edge, -edge}, {-edge, edge}};
+        QHash<QcChunkPos, std::shared_ptr<const QcChunk>> chunks;
+        for (const QcChunkPos pos : places) {
+            auto chunk = std::make_shared<QcChunk>(pos);
+            chunk->setBlock(15, 10, 15, 1);
+            chunks.insert(pos, chunk);
+        }
+        const QcTestWorldFiles storage(dir.path(), content);
+        QVERIFY(storage.writeChunks(chunks).has_value());
+
+        QStringList warnings;
+        const auto read = storage.readChunks(warnings);
+        QVERIFY2(read.has_value(), qcErrorText(read).constData());
+        QCOMPARE(read->size(), places.size());
+        for (const QcChunkPos pos : places) {
+            QVERIFY(read->value(pos));
+            QCOMPARE(read->value(pos)->block(15, 10, 15), 1u);
+        }
     }
 
     void chunksBeyondTheWorldEdgeAreRejected()

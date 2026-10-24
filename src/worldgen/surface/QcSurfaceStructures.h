@@ -32,7 +32,19 @@ public:
     // Regions whose plans are kept at most; beyond, the cache starts over.
     static constexpr qsizetype cacheCapacity = 4096;
 
+    // The cache key of a kind's region (decision E-883): the kind and both region coordinates in
+    // full, 32 bits each, so no two regions of the world share a key however far out they lie.
+    struct PlanKey
+    {
+        int kind = 0;
+        qint64 region = 0;
+        bool operator==(const PlanKey &) const = default;
+        friend size_t qHash(PlanKey key, size_t seed = 0) noexcept { return qHashMulti(seed, key.kind, key.region); }
+    };
+
     QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content, quint64 seed);
+
+    [[nodiscard]] static PlanKey planKey(int kind, int regionX, int regionZ);
 
     const QcSurfacePlanner &planner() const { return m_planner; }
     // The copy of kind `kind` in the region, planned once.
@@ -68,6 +80,6 @@ private:
     // Per block state: ground a foundation stops at (solid and not a liquid).
     std::vector<bool> m_ground;
     mutable QMutex m_mutex;
-    // By kind and region (QcSurfaceStructures.cpp, planKey).
-    mutable QHash<quint64, std::shared_ptr<const QcStructurePlacement>> m_plans;
+    // By kind and region (planKey).
+    mutable QHash<PlanKey, std::shared_ptr<const QcStructurePlacement>> m_plans;
 };

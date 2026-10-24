@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/rendering/QcDrawOrigins.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 
@@ -46,6 +47,9 @@ private:
     std::unique_ptr<QRhiBuffer> m_vertices;
     std::unique_ptr<QRhiBuffer> m_indices;
     quint32 m_indexCount = 0;
+    // The mesh's offset from the camera, the one entry of the entity pipeline's binding 1.
+    QcDrawOrigins m_origins;
+    quint32 m_origin = 0;
 
     std::shared_ptr<const QcEntityMesh> m_mesh;
     std::shared_ptr<const QcEntityMesh> m_uploadedMesh;

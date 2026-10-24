@@ -45,6 +45,8 @@ target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SO
                                                   QTCRAFT_THEME_HEADER="${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 qc_add_test(test_screen_choice SOURCES client/test_screen_choice.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_camera_relative SOURCES client/test_camera_relative.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_draw_origins SOURCES client/test_draw_origins.cpp LIBRARIES qc_app_core)
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
@@ -71,9 +73,9 @@ qc_add_test(test_hold_content SOURCES client/test_hold_content.cpp LIBRARIES qc_
 qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp QcWorldMesh.h LIBRARIES qc_clientcore)
 # Piston heads and diode tops of the base content (decision E-874).
-qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp QcWorldMesh.h LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)

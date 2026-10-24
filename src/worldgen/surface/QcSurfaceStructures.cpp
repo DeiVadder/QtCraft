@@ -28,14 +28,12 @@ QcSurfacePlanner::Rect grown(QcSurfacePlanner::Rect rect, int margin)
     return {rect.x0 - margin, rect.z0 - margin, rect.x1 + margin, rect.z1 + margin};
 }
 
-// The cache key of a kind's region: 24 bits per region coordinate (regions are at least 64 blocks).
-quint64 planKey(int kind, int regionX, int regionZ)
-{
-    return (static_cast<quint64>(kind) << 48) | ((static_cast<quint64>(static_cast<quint32>(regionX)) & 0xffffffU) << 24)
-        | (static_cast<quint64>(static_cast<quint32>(regionZ)) & 0xffffffU);
-}
-
 } // namespace
+
+QcSurfaceStructures::PlanKey QcSurfaceStructures::planKey(int kind, int regionX, int regionZ)
+{
+    return {kind, static_cast<qint64>((static_cast<quint64>(static_cast<quint32>(regionX)) << 32) | static_cast<quint32>(regionZ))};
+}
 
 QcSurfaceStructures::QcSurfaceStructures(const QcTerrainGenerator &terrain, const QcVillageGenerator &villages, const QcContentRegistry &content,
                                          quint64 seed)
@@ -51,7 +49,7 @@ QcSurfaceStructures::QcSurfaceStructures(const QcTerrainGenerator &terrain, cons
 
 std::shared_ptr<const QcStructurePlacement> QcSurfaceStructures::planOf(int kind, int regionX, int regionZ) const
 {
-    const quint64 key = planKey(kind, regionX, regionZ);
+    const PlanKey key = planKey(kind, regionX, regionZ);
     {
         const QMutexLocker lock(&m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {

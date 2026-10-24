@@ -9,6 +9,7 @@
 
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 
 using namespace Qt::StringLiterals;
@@ -45,6 +46,7 @@ void QcCharacterPreviewRenderer::releaseResources()
     m_uniforms.reset();
     m_vertices.reset();
     m_indices.reset();
+    m_origins.reset();
     m_uploadedMesh.reset();
     m_indexCount = 0;
     m_uploadedAtlasVersion = 0;
@@ -151,13 +153,15 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
 {
     const QSize size = renderTarget()->pixelSize();
     const float aspect = size.height() > 0 ? static_cast<float>(size.width()) / static_cast<float>(size.height()) : 1.0f;
-    const QMatrix4x4 viewProjection = m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewMatrix();
+    // Relative to the camera like the world (decision E-883): the mesh's offset goes per draw.
+    const QMatrix4x4 viewProjection = m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewRotation();
+    m_origins.begin(m_camera.position);
+    m_origin = m_origins.add(m_mesh ? m_mesh->origin : QcVec3{});
+    // The preview counts no uploaded bytes.
+    static_cast<void>(m_origins.upload(m_rhi, updates));
 
     QcRenderPipelines::FrameUniforms uniforms{};
     std::copy_n(viewProjection.constData(), 16, uniforms.viewProjection);
-    uniforms.cameraPosition[0] = m_camera.position.x();
-    uniforms.cameraPosition[1] = m_camera.position.y();
-    uniforms.cameraPosition[2] = m_camera.position.z();
     uniforms.params[0] = noFog;
     uniforms.params[1] = noFog * 2.0f;
     // Full daylight: as at noon in the open.
@@ -185,8 +189,8 @@ void QcCharacterPreviewRenderer::render(QRhiCommandBuffer *commandBuffer)
         commandBuffer->setGraphicsPipeline(m_pipeline.get());
         commandBuffer->setViewport(QRhiViewport(0, 0, static_cast<float>(size.width()), static_cast<float>(size.height())));
         commandBuffer->setShaderResources();
-        const QRhiCommandBuffer::VertexInput input(m_vertices.get(), 0);
-        commandBuffer->setVertexInput(0, 1, &input, m_indices.get(), 0, QRhiCommandBuffer::IndexUInt32);
+        const std::array<QRhiCommandBuffer::VertexInput, 2> inputs{QRhiCommandBuffer::VertexInput(m_vertices.get(), 0), m_origins.inputAt(m_origin, false)};
+        commandBuffer->setVertexInput(0, static_cast<int>(inputs.size()), inputs.data(), m_indices.get(), 0, QRhiCommandBuffer::IndexUInt32);
         commandBuffer->drawIndexed(m_indexCount);
     }
     commandBuffer->endPass();

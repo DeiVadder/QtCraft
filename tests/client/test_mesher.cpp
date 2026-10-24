@@ -1,6 +1,7 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "QcWorldMesh.h"
 
 #include <QMap>
 #include <QTest>
@@ -138,9 +139,30 @@ private slots:
         QCOMPARE(quadCount(mesh.opaqueIndices), 6);
         QCOMPARE(mesh.opaqueVertices.size(), 24);
         QVERIFY(mesh.translucentIndices.isEmpty());
+        // Relative to the section's corner at y 16 (decision E-883).
+        QVERIFY(mesh.origin == (QcBlockPos{0, 16, 0}));
         for (const QcBlockVertex &v : mesh.opaqueVertices) {
             QVERIFY(v.x == 3.0f || v.x == 4.0f);
-            QVERIFY(v.y == 20.0f || v.y == 21.0f);
+            QVERIFY(v.y == 4.0f || v.y == 5.0f);
+            QVERIFY(v.z == 5.0f || v.z == 6.0f);
+        }
+    }
+
+    void farSectionsKeepSmallExactPositions()
+    {
+        // At the bound of the world a float holds a block coordinate only to 128 m; the vertices
+        // are relative to the section's corner, which the mesh carries (decision E-883).
+        const Fixture f;
+        auto chunk = std::make_shared<QcChunk>(QcChunkPos{QcWorld::maxHorizontalChunk, -QcWorld::maxHorizontalChunk});
+        chunk->setBlock(3, 20, 5, f.stone);
+        QcMeshInput in = f.input(chunk);
+        in.sectionIndex = 1;
+        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        QVERIFY(mesh.origin == (QcBlockPos{QcWorld::maxHorizontalBlock, 16, -QcWorld::maxHorizontalBlock}));
+        QCOMPARE(quadCount(mesh.opaqueIndices), 6);
+        for (const QcBlockVertex &v : mesh.opaqueVertices) {
+            QVERIFY(v.x == 3.0f || v.x == 4.0f);
+            QVERIFY(v.y == 4.0f || v.y == 5.0f);
             QVERIFY(v.z == 5.0f || v.z == 6.0f);
         }
     }
@@ -165,7 +187,7 @@ private slots:
             if (v.x > 3.0f && v.x < 4.0f) {
                 ++plantVertices;
                 QVERIFY(v.z > 5.0f && v.z < 6.0f);
-                QVERIFY(v.y == 20.0f || v.y == 21.0f);
+                QVERIFY(v.y == 4.0f || v.y == 5.0f);
             }
         }
         QCOMPARE(plantVertices, 16);
@@ -705,7 +727,8 @@ private slots:
 
         in.renderTable = f.table;
         in.sectionIndex = 1;
-        const QcChunkMesh mesh = QcChunkMesher::mesh(in);
+        // In world coordinates: the checks below name world heights.
+        const QcChunkMesh mesh = qcWorldMesh(in);
 
         // The floor top face at y = 17 under the roof; the open sky column nearest to the centre chunk
         // is west x = 7 (world x = -9). Light falls straight down there (level 15 at y = 17), then

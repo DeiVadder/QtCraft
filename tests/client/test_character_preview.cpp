@@ -130,10 +130,10 @@ private slots:
         camera.wheel(-240);
         QCOMPARE(camera.zoom(), 0.0);
         QCOMPARE(camera.distance(), 4.4);
-        QCOMPARE(camera.camera().position, QVector3D(0.0f, 0.92f, 4.4f));
+        QVERIFY((camera.camera().position - QcVec3{0.0, 0.92, 4.4}).length() < 1e-9);
         camera.setZoom(7.0);
         QCOMPARE(camera.zoom(), 1.0);
-        QCOMPARE(camera.camera().position, QVector3D(0.0f, 1.55f, 1.5f));
+        QVERIFY((camera.camera().position - QcVec3{0.0, 1.55, 1.5}).length() < 1e-9);
         camera.setZoom(std::nan(""));
         QCOMPARE(camera.zoom(), 1.0);
 

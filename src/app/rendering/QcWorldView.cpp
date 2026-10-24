@@ -137,18 +137,20 @@ void QcWorldView::setAnisotropicSamples(int samples)
     }
 }
 
-void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines)
+void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines, const QcVec3 &origin)
 {
     if (lines || m_frame.debugLines) {
         m_frame.debugLines = std::move(lines);
+        m_frame.debugLinesOrigin = origin;
         update();
     }
 }
 
-void QcWorldView::setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops)
+void QcWorldView::setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops, const QcVec3 &origin)
 {
     if (drops || m_frame.precipitation) {
         m_frame.precipitation = std::move(drops);
+        m_frame.precipitationOrigin = origin;
         update();
     }
 }

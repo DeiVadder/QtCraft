@@ -2790,3 +2790,16 @@ Das Spawnen selbst kostet nichts Messbares (crowd, explore gleich; die Wahl aus 
 | crowd | 0,863 → 0,806 (−7 %) | 1,231 → 1,170 (−5 %) | 1,43 → 1,43 | 11,9 → 12,9 | 2,26 → 2,39 |
 
 GUI-CPU liegt wieder auf oder unter der Basis (stand −1 %, sprint −20 %, showcase −23 %). In crowd stehen fast alle Wesen vor der Kamera, dort wirkt nur die Platzierung; p99 und GPU dort im Rauschen (Spanne 24–29 % bzw. 8 %). Tick unverändert (Server nicht geändert).
+
+## Paket 45.0 (kamera-relatives Rendering, E-883), Fenster-A/B (2026-10-24)
+
+`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` 669c488, B = 45.0. Mediane:
+
+| Szenario | Bildzeit Ø | GPU Ø | Render-CPU Ø | Welt-Render Ø (CPU) | Upload | Zeichenaufrufe |
+|---|---|---|---|---|---|---|
+| stand | 8,42 → 8,47 ms (+0,5 %) | +5,1 % | +4,1 % | 0,50 → 0,58 ms (+16 %) | +3,7 % | 557 = 557 |
+| sprint | 8,42 → 8,42 ms (±0 %) | +3,8 % | +13,8 % | 0,43 → 0,56 ms (+32 %) | +6,5 % | 604 = 604 |
+| showcase | 8,45 → 8,45 ms (±0 %) | +4,7 % | ±0 % | 0,25 → 0,28 ms (+11 %) | +3,4 % | 305 = 305 |
+| crowd | 8,44 → 8,43 ms (−0,2 %) | +3,4 % | +8,4 % | 0,61 → 0,68 ms (+13 %) | −4,8 % | 561 = 561 |
+
+Speicher gleich (±1 %). Die Bildzeit bleibt an 120 Hz gebunden; die Mehrkosten sitzen auf der CPU im Welt-Render (Versätze je Zeichenaufruf in `double`, Hochladen des Versatz-Puffers, ~16 B je sichtbarer Sektion) und sind mit 0,03–0,14 ms je Bild klein. P99 stand +22 % bei n = 6, in den anderen Szenarien nicht sichtbar: Streuung. Bewertung: angenommen; Folgepaket für Versätze nur bei Kamerabewegung.

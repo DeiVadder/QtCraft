@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/light/QcSky.h"
+#include "common/core/QcVec3.h"
 
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -21,8 +22,12 @@ public:
         // Projection x view without the camera's translation.
         QMatrix4x4 viewRotation;
         QcSkyState sky;
-        QVector3D camera;
+        QcVec3 camera;
     };
+
+    // The cloud pattern repeats after this many metres (sky.frag: 1000 cells of 40 m): camera and
+    // drift are wrapped by it, so the shader's floats stay small far out (decision E-883).
+    static constexpr double cloudPeriod = 40000.0;
 
     void prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, const Frame &frame);
     void draw(QRhiCommandBuffer *commandBuffer) const;

@@ -41,10 +41,11 @@ std::pair<double, double> bodySize(const QcClientEntity &entity, const QcContent
 void QcDebugLines::addLine(const QcVec3 &from, const QcVec3 &to, QRgb color)
 {
     for (const QcVec3 &end : {from, to}) {
+        const QcVec3 local = end - m_origin;
         QcDebugLineVertex vertex;
-        vertex.x = static_cast<float>(end.x);
-        vertex.y = static_cast<float>(end.y);
-        vertex.z = static_cast<float>(end.z);
+        vertex.x = static_cast<float>(local.x);
+        vertex.y = static_cast<float>(local.y);
+        vertex.z = static_cast<float>(local.z);
         vertex.rgba[0] = static_cast<quint8>(qRed(color));
         vertex.rgba[1] = static_cast<quint8>(qGreen(color));
         vertex.rgba[2] = static_cast<quint8>(qBlue(color));

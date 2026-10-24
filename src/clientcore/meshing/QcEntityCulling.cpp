@@ -8,9 +8,11 @@ namespace QcEntityCulling {
 
 namespace {
 
-QVector3D toVector(const QcVec3 &v)
+// `v` relative to `eye`, subtracted in double.
+QVector3D relative(const QcVec3 &v, const QcVec3 &eye)
 {
-    return {static_cast<float>(v.x), static_cast<float>(v.y), static_cast<float>(v.z)};
+    const QcVec3 offset = v - eye;
+    return {static_cast<float>(offset.x), static_cast<float>(offset.y), static_cast<float>(offset.z)};
 }
 
 QcAabb grown(const QcAabb &box, double by)
@@ -21,12 +23,13 @@ QcAabb grown(const QcAabb &box, double by)
 
 } // namespace
 
-std::optional<QcFrustum::Planes> viewPlanes(const QcCamera &camera, double width, double height)
+std::optional<ViewPlanes> viewPlanes(const QcCamera &camera, double width, double height)
 {
     if (width <= 0.0 || height <= 0.0) {
         return std::nullopt;
     }
-    return QcFrustum::planes(camera.projectionMatrix(static_cast<float>(width / height), farPlane) * camera.viewMatrix());
+    return ViewPlanes{QcFrustum::planes(camera.projectionMatrix(static_cast<float>(width / height), farPlane) * camera.viewRotation()),
+                      camera.position};
 }
 
 QcAabb viewBox(const QcClientEntity &entity, const QcContentRegistry &content)
@@ -45,9 +48,9 @@ QcAabb viewBox(const QcClientEntity &entity, const QcContentRegistry &content)
     return grown(body, margin);
 }
 
-bool mayBeSeen(const std::optional<QcFrustum::Planes> &planes, const QcAabb &box)
+bool mayBeSeen(const std::optional<ViewPlanes> &planes, const QcAabb &box)
 {
-    return !planes || QcFrustum::intersectsBox(*planes, toVector(box.min), toVector(box.max));
+    return !planes || QcFrustum::intersectsBox(planes->planes, relative(box.min, planes->eye), relative(box.max, planes->eye));
 }
 
 } // namespace QcEntityCulling

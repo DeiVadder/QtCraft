@@ -11,11 +11,11 @@ namespace {
 QcCamera northCamera()
 {
     QcCamera camera;
-    camera.position = {0.0f, 1.6f, 0.0f};
+    camera.position = {0.0, 1.6, 0.0};
     return camera;
 }
 
-std::optional<QcFrustum::Planes> northPlanes()
+std::optional<QcEntityCulling::ViewPlanes> northPlanes()
 {
     return QcEntityCulling::viewPlanes(northCamera(), 1000.0, 500.0);
 }
@@ -29,7 +29,7 @@ QcClientEntity standingAt(const QcVec3 &feet)
     return entity;
 }
 
-bool seen(const std::optional<QcFrustum::Planes> &planes, const QcClientEntity &entity)
+bool seen(const std::optional<QcEntityCulling::ViewPlanes> &planes, const QcClientEntity &entity)
 {
     const QcContentRegistry content;
     return QcEntityCulling::mayBeSeen(planes, QcEntityCulling::viewBox(entity, content));
@@ -44,18 +44,31 @@ class TestEntityCulling : public QObject
 private slots:
     void inFrontIsBuiltBehindIsNot()
     {
-        const std::optional<QcFrustum::Planes> planes = northPlanes();
+        const std::optional<QcEntityCulling::ViewPlanes> planes = northPlanes();
         QVERIFY(planes);
         QVERIFY(seen(planes, standingAt({0.0, 0.0, -10.0})));
         QVERIFY(!seen(planes, standingAt({0.0, 0.0, 10.0})));
         QVERIFY(!seen(planes, standingAt({30.0, 0.0, -10.0})));
     }
 
+    void cullsTheSameFarFromTheOrigin()
+    {
+        // Relative to the eye (decision E-883): a float holds 1e9 only to 64 m.
+        QcCamera camera = northCamera();
+        const QcVec3 far{1e9, 0.0, -1e9};
+        camera.position = camera.position + far;
+        const std::optional<QcEntityCulling::ViewPlanes> planes = QcEntityCulling::viewPlanes(camera, 1000.0, 500.0);
+        QVERIFY(planes);
+        QVERIFY(seen(planes, standingAt(far + QcVec3{0.0, 0.0, -10.0})));
+        QVERIFY(!seen(planes, standingAt(far + QcVec3{0.0, 0.0, 10.0})));
+        QVERIFY(!seen(planes, standingAt(far + QcVec3{30.0, 0.0, -10.0})));
+    }
+
     void heldItemReachKeepsABodyJustBesideTheView()
     {
         // The body (x 17 to 18, z -10.5 to -9.5) lies beside the view (edge near x 15.5 there),
         // what it holds may not; a body 6.5 m further out is beyond the margin.
-        const std::optional<QcFrustum::Planes> planes = northPlanes();
+        const std::optional<QcEntityCulling::ViewPlanes> planes = northPlanes();
         QVERIFY(seen(planes, standingAt({17.5, 0.0, -10.0})));
         QVERIFY(!seen(planes, standingAt({24.0, 0.0, -10.0})));
     }
@@ -91,7 +104,7 @@ private slots:
 
     void withoutASizedViewEverythingIsBuilt()
     {
-        const std::optional<QcFrustum::Planes> none = QcEntityCulling::viewPlanes(northCamera(), 0.0, 500.0);
+        const std::optional<QcEntityCulling::ViewPlanes> none = QcEntityCulling::viewPlanes(northCamera(), 0.0, 500.0);
         QVERIFY(!none);
         QVERIFY(seen(none, standingAt({0.0, 0.0, 10.0})));
     }

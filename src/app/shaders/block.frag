@@ -4,7 +4,8 @@ layout(location = 0) in vec2 vTexCoord;
 layout(location = 1) in vec3 vLight;
 layout(location = 2) in float vDistance;
 layout(location = 3) in float vCutout;
-// World position, for the footprint where atlas coordinates jump between faces.
+// Position relative to the camera (decision E-883), for the footprint where atlas coordinates
+// jump between faces.
 layout(location = 4) in vec3 vPosition;
 // Animated textures (decision E-878): the next frame and the share of it, the same over a face.
 layout(location = 5) in vec2 vNextTexCoord;

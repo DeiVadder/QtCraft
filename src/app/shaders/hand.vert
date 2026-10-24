@@ -6,6 +6,9 @@ layout(location = 2) in float shade;
 layout(location = 3) in float skyLight;
 layout(location = 4) in vec4 tint;
 layout(location = 5) in float blockLight;
+// Per draw (QcDrawOrigins, decision E-883): xyz the mesh's origin relative to the camera; the
+// vertices are relative to the origin (QcEntityMesh::origin).
+layout(location = 6) in vec4 origin;
 
 layout(location = 0) out vec2 vTexCoord;
 layout(location = 1) out vec3 vLight;
@@ -30,8 +33,9 @@ void main()
     // Block light (torches) is warm and does not follow the time of day.
     vLight = shade * max(vec3(sky), blockLight * vec3(1.0, 0.86, 0.66));
     vTint = tint;
-    vDistance = length(position - frame.cameraPosition.xyz);
-    vec4 clip = frame.viewProjection * vec4(position, 1.0);
+    vec3 relative = position + origin.xyz;
+    vDistance = length(relative - frame.cameraPosition.xyz);
+    vec4 clip = frame.viewProjection * vec4(relative, 1.0);
     // Squeeze the depth into the front 5 % of the range so the hand is drawn over the world.
     float depth = clip.z / clip.w;
     float front = frame.extra.x > 0.5 ? depth : depth * 0.5 + 0.5;

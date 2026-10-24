@@ -134,9 +134,7 @@ private:
             const QcVec3 world = m_place(local(corners[i]));
             const QPointF at = texel ? QPointF(texel->x() + 0.5, texel->y() + 0.5) : QPointF(corners[i].x, corners[i].y);
             QcEntityVertex &vertex = quad[i];
-            vertex.x = static_cast<float>(world.x);
-            vertex.y = static_cast<float>(world.y);
-            vertex.z = static_cast<float>(world.z);
+            vertex = m_mesh.vertexAt(world);
             vertex.u = static_cast<float>(rect.left() + rect.width() * at.x() / m_texels);
             vertex.v = static_cast<float>(rect.top() + rect.height() * at.y() / m_texels);
             vertex.shade = shade;

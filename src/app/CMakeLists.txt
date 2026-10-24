@@ -104,6 +104,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
     rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
+    rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
     rendering/QcEntityFrameBuilder.h rendering/QcEntityFrameBuilder.cpp
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h

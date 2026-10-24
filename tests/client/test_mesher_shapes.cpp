@@ -4,6 +4,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcLightPassage.h"
 #include "common/world/QcLightVolume.h"
+#include "QcWorldMesh.h"
 
 #include <QJsonDocument>
 #include <QTest>
@@ -192,7 +193,7 @@ private slots:
         chunk->setBlock(6, 20, 5, m_f.id(u"t:stone"_s));
         chunk->setBlock(5, 20, 8, m_f.id(u"t:stairs[facing=north,half=bottom]"_s));
         chunk->setBlock(5, 21, 8, m_f.id(u"t:stone"_s));
-        const QcChunkMesh mesh = QcChunkMesher::mesh(m_f.input(chunk, 1));
+        const QcChunkMesh mesh = qcWorldMesh(m_f.input(chunk, 1));
 
         int checked = 0;
         const QList<Quad> meshQuads = quads(mesh.opaqueVertices);
@@ -226,7 +227,7 @@ private slots:
                 chunk->setBlock(x, 24, z, m_f.id(u"t:slab[type=bottom]"_s));
             }
         }
-        const QcChunkMesh mesh = QcChunkMesher::mesh(m_f.input(chunk, 1));
+        const QcChunkMesh mesh = qcWorldMesh(m_f.input(chunk, 1));
 
         const QList<Quad> meshQuads = quads(mesh.opaqueVertices);
         for (const Quad &quad : meshQuads) {
@@ -247,33 +248,33 @@ private slots:
         const QcBlockId slab = m_f.id(u"t:slab[type=bottom]"_s);
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(5, 20, 5, slab);
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).opaqueVertices).size(), 6);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(chunk, 1)).opaqueVertices).size(), 6);
 
         // Two slabs side by side hide their touching halves.
         chunk->setBlock(6, 20, 5, slab);
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).opaqueVertices).size(), 10);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(chunk, 1)).opaqueVertices).size(), 10);
 
         // Next to stone: the slab's side is hidden, the stone's side stays (half of it is open).
         auto withStone = std::make_shared<QcChunk>();
         withStone->setBlock(5, 20, 5, slab);
         withStone->setBlock(6, 20, 5, m_f.id(u"t:stone"_s));
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(withStone, 1)).opaqueVertices).size(), 5 + 6);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(withStone, 1)).opaqueVertices).size(), 5 + 6);
 
         // A top slab above a bottom slab: neither touches the other's faces, nothing is culled.
         auto stacked = std::make_shared<QcChunk>();
         stacked->setBlock(5, 20, 5, slab);
         stacked->setBlock(5, 21, 5, m_f.id(u"t:slab[type=top]"_s));
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(stacked, 1)).opaqueVertices).size(), 12);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(stacked, 1)).opaqueVertices).size(), 12);
 
         // A stone block on a top slab hides the slab's top and the stone's bottom.
         stacked->setBlock(5, 22, 5, m_f.id(u"t:stone"_s));
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(stacked, 1)).opaqueVertices).size(), 12 + 6 - 2);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(stacked, 1)).opaqueVertices).size(), 12 + 6 - 2);
 
         // A double slab is a full cube.
         auto doubled = std::make_shared<QcChunk>();
         doubled->setBlock(5, 20, 5, m_f.id(u"t:slab[type=double]"_s));
         doubled->setBlock(6, 20, 5, m_f.id(u"t:stone"_s));
-        QCOMPARE(quads(QcChunkMesher::mesh(m_f.input(doubled, 1)).opaqueVertices).size(), 10);
+        QCOMPARE(quads(qcWorldMesh(m_f.input(doubled, 1)).opaqueVertices).size(), 10);
     }
 
     void onlyBoundaryFacesTowardsTheVoidGoToTheUnderside()
@@ -283,7 +284,7 @@ private slots:
         // a boundary face looking into y = -1.
         auto bottom = std::make_shared<QcChunk>();
         bottom->setBlock(5, 0, 5, m_f.id(u"t:slab[type=bottom]"_s));
-        const QcChunkMesh bottomMesh = QcChunkMesher::mesh(m_f.input(bottom, 0));
+        const QcChunkMesh bottomMesh = qcWorldMesh(m_f.input(bottom, 0));
         const QList<Quad> bottomUnderside = quads(bottomMesh.undersideVertices);
         QCOMPARE(bottomUnderside.size(), 1);
         QCOMPARE(bottomUnderside[0].normal(), (std::array<int, 3>{0, -1, 0}));
@@ -301,7 +302,7 @@ private slots:
         // it), so it stays opaque. Nothing goes to the underside.
         auto top = std::make_shared<QcChunk>();
         top->setBlock(5, 0, 5, m_f.id(u"t:slab[type=top]"_s));
-        const QcChunkMesh topMesh = QcChunkMesher::mesh(m_f.input(top, 0));
+        const QcChunkMesh topMesh = qcWorldMesh(m_f.input(top, 0));
         QVERIFY(topMesh.undersideIndices.isEmpty());
         const QList<Quad> topOpaque = quads(topMesh.opaqueVertices);
         QCOMPARE(topOpaque.size(), 6);
@@ -317,7 +318,7 @@ private slots:
     {
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(5, 20, 5, m_f.id(u"t:stairs[facing=north,half=bottom]"_s));
-        const QList<Quad> list = quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).opaqueVertices);
+        const QList<Quad> list = quads(qcWorldMesh(m_f.input(chunk, 1)).opaqueVertices);
 
         // Lower box: 6 faces; upper box: 5 (its bottom lies on the lower box).
         QCOMPARE(list.size(), 11);
@@ -341,7 +342,7 @@ private slots:
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(5, 20, 5, m_f.id(u"t:fence[east=true,west=false]"_s));
         chunk->setBlock(6, 20, 5, m_f.id(u"t:fence[east=false,west=true]"_s));
-        const QList<Quad> list = quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).opaqueVertices);
+        const QList<Quad> list = quads(qcWorldMesh(m_f.input(chunk, 1)).opaqueVertices);
         for (const Quad &quad : list) {
             const bool onBorder = std::ranges::all_of(quad.corners, [](const QcBlockVertex &v) { return v.x == 6.0f; });
             QVERIFY(!onBorder);
@@ -369,7 +370,7 @@ private slots:
         auto west = std::make_shared<QcChunk>(QcChunkPos{-1, 0});
         west->setBlock(15, 17, 8, *m_f.content.blockId(u"t:torch"_s));
         chunks[3] = west;
-        const QList<Quad> lit = quads(QcChunkMesher::mesh(m_f.input(centre, 1, chunks)).opaqueVertices);
+        const QList<Quad> lit = quads(qcWorldMesh(m_f.input(centre, 1, chunks)).opaqueVertices);
 
         int checked = 0;
         for (const Quad &quad : lit) {
@@ -391,7 +392,7 @@ private slots:
 
         // Without the torch the same mesh is dark.
         west->setBlock(15, 17, 8, qcAirBlockId);
-        const QList<Quad> dark = quads(QcChunkMesher::mesh(m_f.input(centre, 1, chunks)).opaqueVertices);
+        const QList<Quad> dark = quads(qcWorldMesh(m_f.input(centre, 1, chunks)).opaqueVertices);
         for (const Quad &quad : dark) {
             for (const QcBlockVertex &v : quad.corners) {
                 QCOMPARE(v.blockLight(), 0.0f);
@@ -404,7 +405,7 @@ private slots:
         auto chunk = std::make_shared<QcChunk>();
         chunk->setBlock(5, 20, 5, *m_f.content.blockId(u"t:torch"_s));
         // A torch is cut out: its faces lie in the cut-out list (decision E-756).
-        const QList<Quad> list = quads(QcChunkMesher::mesh(m_f.input(chunk, 1)).cutoutVertices);
+        const QList<Quad> list = quads(qcWorldMesh(m_f.input(chunk, 1)).cutoutVertices);
 
         // A thin box: six faces. All but the bottom lie inside the cell and get the torch's own
         // light; the bottom lies on the floor of the cell and is lit by the cells below (level 13 and

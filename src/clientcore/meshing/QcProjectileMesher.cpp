@@ -17,10 +17,7 @@ void emitSquare(QcEntityMesh &mesh, const std::array<QcVec3, 4> &corners, const 
                                                          {static_cast<float>(icon.right()), static_cast<float>(icon.bottom())}}};
     std::array<QcEntityVertex, 4> quad;
     for (std::size_t i = 0; i < corners.size(); ++i) {
-        QcEntityVertex vertex;
-        vertex.x = static_cast<float>(corners[i].x);
-        vertex.y = static_cast<float>(corners[i].y);
-        vertex.z = static_cast<float>(corners[i].z);
+        QcEntityVertex vertex = mesh.vertexAt(corners[i]);
         vertex.u = uvs[i].first;
         vertex.v = uvs[i].second;
         vertex.shade = 0.95f;

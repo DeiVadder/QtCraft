@@ -51,14 +51,13 @@ struct Panel
     double depth = 0.0;
 };
 
-std::array<QcEntityVertex, 4> quad(const std::array<QcVec3, 4> &corners, const QRectF &rect, QcEntityLight light, float shade)
+// The corners as vertices of `mesh` (relative to its origin), not yet added.
+std::array<QcEntityVertex, 4> quad(const QcEntityMesh &mesh, const std::array<QcVec3, 4> &corners, const QRectF &rect, QcEntityLight light,
+                                   float shade)
 {
     std::array<QcEntityVertex, 4> vertices;
     for (std::size_t corner = 0; corner < 4; ++corner) {
-        QcEntityVertex vertex;
-        vertex.x = static_cast<float>(corners[corner].x);
-        vertex.y = static_cast<float>(corners[corner].y);
-        vertex.z = static_cast<float>(corners[corner].z);
+        QcEntityVertex vertex = mesh.vertexAt(corners[corner]);
         // Corners run bottom left, bottom right, top right, top left.
         vertex.u = static_cast<float>((corner == 0 || corner == 3) ? rect.left() : rect.right());
         vertex.v = static_cast<float>(corner < 2 ? rect.bottom() : rect.top());
@@ -75,7 +74,7 @@ void boardFront(QcEntityMesh &mesh, const Axes &axes, const Panel &panel, const 
 {
     const double depth = panel.depth;
     const auto p = [&](double a, double b, double c) { return axes.at(a, b, c); };
-    mesh.addQuad(quad({p(panel.a0, panel.b0, depth), p(panel.a1, panel.b0, depth), p(panel.a1, panel.b1, depth), p(panel.a0, panel.b1, depth)}, front, light, 1.0f));
+    mesh.addQuad(quad(mesh, {p(panel.a0, panel.b0, depth), p(panel.a1, panel.b0, depth), p(panel.a1, panel.b1, depth), p(panel.a0, panel.b1, depth)}, front, light, 1.0f));
 }
 
 // The four edges of a board from its front back to the wall.
@@ -83,10 +82,10 @@ void boardEdges(QcEntityMesh &mesh, const Axes &axes, const Panel &panel, const 
 {
     const double depth = panel.depth;
     const auto p = [&](double a, double b, double c) { return axes.at(a, b, c); };
-    mesh.addQuad(quad({p(panel.a0, panel.b0, 0.0), p(panel.a1, panel.b0, 0.0), p(panel.a1, panel.b0, depth), p(panel.a0, panel.b0, depth)}, edge, light, 0.7f), true);
-    mesh.addQuad(quad({p(panel.a0, panel.b1, depth), p(panel.a1, panel.b1, depth), p(panel.a1, panel.b1, 0.0), p(panel.a0, panel.b1, 0.0)}, edge, light, 0.9f), true);
-    mesh.addQuad(quad({p(panel.a0, panel.b0, 0.0), p(panel.a0, panel.b0, depth), p(panel.a0, panel.b1, depth), p(panel.a0, panel.b1, 0.0)}, edge, light, 0.8f), true);
-    mesh.addQuad(quad({p(panel.a1, panel.b0, depth), p(panel.a1, panel.b0, 0.0), p(panel.a1, panel.b1, 0.0), p(panel.a1, panel.b1, depth)}, edge, light, 0.8f), true);
+    mesh.addQuad(quad(mesh, {p(panel.a0, panel.b0, 0.0), p(panel.a1, panel.b0, 0.0), p(panel.a1, panel.b0, depth), p(panel.a0, panel.b0, depth)}, edge, light, 0.7f), true);
+    mesh.addQuad(quad(mesh, {p(panel.a0, panel.b1, depth), p(panel.a1, panel.b1, depth), p(panel.a1, panel.b1, 0.0), p(panel.a0, panel.b1, 0.0)}, edge, light, 0.9f), true);
+    mesh.addQuad(quad(mesh, {p(panel.a0, panel.b0, 0.0), p(panel.a0, panel.b0, depth), p(panel.a0, panel.b1, depth), p(panel.a0, panel.b1, 0.0)}, edge, light, 0.8f), true);
+    mesh.addQuad(quad(mesh, {p(panel.a1, panel.b0, depth), p(panel.a1, panel.b0, 0.0), p(panel.a1, panel.b1, 0.0), p(panel.a1, panel.b1, depth)}, edge, light, 0.8f), true);
 }
 
 void appendFrame(QcEntityMesh &mesh, const QcClientEntity &entity, const QcContentRegistry &content, QcEntityLight light,
@@ -135,7 +134,7 @@ void appendPainting(QcEntityMesh &mesh, const QcClientEntity &entity, const QcHa
         for (int column = 0; column < motif.width; ++column) {
             const QRectF tile = uv(motif.tileTexture(column, motif.height - 1 - row));
             const auto p = [&](double a, double b) { return axes.at(column + a, row + b, depth); };
-            mesh.addQuad(quad({p(0.0, 0.0), p(1.0, 0.0), p(1.0, 1.0), p(0.0, 1.0)}, tile, light, 1.0f));
+            mesh.addQuad(quad(mesh, {p(0.0, 0.0), p(1.0, 0.0), p(1.0, 1.0), p(0.0, 1.0)}, tile, light, 1.0f));
         }
     }
 }
@@ -157,7 +156,7 @@ void appendFramedMap(QcEntityMesh &mesh, const QcHanging &hanging, const QRectF 
 {
     const Axes axes(hanging);
     const auto p = [&](double a, double b) { return axes.at(a, b, QcHanging::frameDepth); };
-    std::array<QcEntityVertex, 4> corners = quad({p(0.0, 0.0), p(1.0, 0.0), p(1.0, 1.0), p(0.0, 1.0)}, uv, light, 1.0f);
+    std::array<QcEntityVertex, 4> corners = quad(mesh, {p(0.0, 0.0), p(1.0, 0.0), p(1.0, 1.0), p(0.0, 1.0)}, uv, light, 1.0f);
 
     // Turning the picture clockwise moves each corner's texture coordinates one corner on.
     const std::array<QcEntityVertex, 4> unturned = corners;

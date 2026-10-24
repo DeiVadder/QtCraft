@@ -66,8 +66,11 @@ public:
         // The maps in item frames and the tiles of the texture they are drawn with (decision E-809).
         std::shared_ptr<const QcEntityMesh> framedMapMesh;
         std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles;
+        // The debug lines and the precipitation, each relative to its origin (decision E-883).
         std::shared_ptr<const QList<QcDebugLineVertex>> debugLines;
+        QcVec3 debugLinesOrigin;
         std::shared_ptr<const QList<QcPrecipitationDrop>> precipitation;
+        QcVec3 precipitationOrigin;
         // Benchmark: the renderer records one QcRenderSample per frame while set.
         bool collectRenderSamples = false;
     };
@@ -101,11 +104,12 @@ public:
     void setFogRange(float start, float end);
     // Texture filtering of the blocks (decision E-721): 1, 2, 4 or 8 samples.
     void setAnisotropicSamples(int samples);
-    // Debug visualisations for this frame (decision E-225); null or empty draws none.
-    void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines);
-    // Rain and snow for this frame, one instance per particle (QcPrecipitationField); null or empty
+    // Debug visualisations for this frame (decision E-225), relative to `origin`; null or empty
     // draws none.
-    void setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops);
+    void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines, const QcVec3 &origin);
+    // Rain and snow for this frame, one instance per particle (QcPrecipitationField), relative to
+    // `origin`; null or empty draws none.
+    void setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDrop>> drops, const QcVec3 &origin);
 
     qsizetype meshCount() const { return m_meshKeys.size(); }
 

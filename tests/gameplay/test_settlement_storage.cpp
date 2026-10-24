@@ -3,6 +3,7 @@
 #include "server/villages/QcVillagerHomes.h"
 #include "server/villages/QcVillages.h"
 
+#include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -40,6 +41,26 @@ private slots:
 
     // A settlement grown by a second bed (decision E-490) is saved with its id, style, area and
     // claims, and after loading its claims are reconciled with its villager in the world.
+    // Every column within the technical bound of the world has its own settlement id (decision
+    // E-883), never a region's id and never 0.
+    void settlementIdsAreUniqueUpToTheBoundOfTheWorld()
+    {
+        constexpr int low = -QcWorld::maxHorizontalBlock;
+        constexpr int high = QcWorld::maxChunkBlock;
+        const QList<QcBlockPos> columns{{low, 70, low},  {low + 1, 70, low}, {low, 70, low + 1}, {high, 70, high},
+                                        {high - 1, 70, high}, {high, 70, high - 1}, {0, 70, 0},   {-1, 70, 0},
+                                        {0, 70, -1},      {high, 70, low},    {low, 70, high},    {1 << 26, 70, 0}};
+        QSet<qint64> ids;
+        for (const QcBlockPos &column : columns) {
+            const qint64 id = QcVillage::settlementId(column);
+            QVERIFY(id > 0);
+            QVERIFY((id & (qint64{1} << 62)) != 0);
+            ids.insert(id);
+        }
+        QCOMPARE(ids.size(), columns.size());
+        QCOMPARE(QcVillage::settlementId({5, 60, 7}), QcVillage::settlementId({5, 90, 7}));
+    }
+
     void aGrownSettlementIsSavedAndLoaded()
     {
         QTemporaryDir directory;

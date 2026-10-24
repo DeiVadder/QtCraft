@@ -35,6 +35,10 @@ public:
     // Adds the labels of the chunk at `pos` that are within their reach of the eye.
     void addChunk(QcChunkPos pos, const QList<QcWorldLabel> &labels, const QcVec3 &eye)
     {
+        // The low 24 bits of x in bits 40 to 63, z in bits 16 to 47, the index below: keys only
+        // need to differ among the labels of one projection, whose chunks lie within a few chunks
+        // of each other. Two such chunks differ in the low bits of x or z, so the keys differ
+        // anywhere in the world (decision E-883), up to 65536 labels per chunk.
         const quint64 chunkKey = (static_cast<quint64>(static_cast<quint32>(pos.x)) << 40) ^ (static_cast<quint64>(static_cast<quint32>(pos.z)) << 16);
         for (qsizetype i = 0; i < labels.size(); ++i) {
             const QcWorldLabel &label = labels[i];
@@ -94,11 +98,11 @@ bool hidesAt(const QcBlockAccess &world, QcBlockPos pos)
     return block && world.content().state(*block).opaque;
 }
 
-// `focal`: pixels per metre at a depth of one metre.
+// `viewProjection` maps positions relative to the camera (decision E-883); `focal`: pixels per
+// metre at a depth of one metre.
 [[nodiscard]] std::optional<QcScreenLabel> project(const Candidate &candidate, const QMatrix4x4 &viewProjection, double focal, const QcLabelProjector::View &view)
 {
-    const QcVec3 &p = candidate.label->position;
-    const QVector4D clip = viewProjection * QVector4D(static_cast<float>(p.x), static_cast<float>(p.y), static_cast<float>(p.z), 1.0f);
+    const QVector4D clip = viewProjection * QVector4D(view.camera.relative(candidate.label->position), 1.0f);
     if (clip.w() <= QcCamera::nearPlane) {
         return std::nullopt;
     }
@@ -163,12 +167,12 @@ QList<QcScreenLabel> QcLabelProjector::visible(const QHash<QcChunkPos, QList<QcW
         return {};
     }
 
-    const QcVec3 eye{view.camera.position.x(), view.camera.position.y(), view.camera.position.z()};
+    const QcVec3 &eye = view.camera.position;
     QList<Candidate> candidates = candidatesNear(labels, eye);
     std::ranges::sort(candidates, {}, &Candidate::distance);
 
     const QMatrix4x4 projection = view.camera.projectionMatrix(static_cast<float>(view.width / view.height), projectionFar);
-    const QMatrix4x4 viewProjection = projection * view.camera.viewMatrix();
+    const QMatrix4x4 viewProjection = projection * view.camera.viewRotation();
     const double focal = 0.5 * view.height * projection(1, 1);
     QList<QcScreenLabel> shown;
     int rays = 0;

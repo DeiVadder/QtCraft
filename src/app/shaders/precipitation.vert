@@ -8,7 +8,8 @@
 // in radius on screen, so near flakes stay small dots and far ones do not vanish. Pixel sizes are
 // those of a picture 1080 pixels high and grow with the output's height.
 layout(location = 0) in vec2 corner;
-layout(location = 1) in vec3 position;
+// The drop relative to the origin of the frame's drops (shape.origin).
+layout(location = 1) in vec3 dropPosition;
 // x: above 0 for a snowflake (QcPrecipitationDrop::snow), 0 for a raindrop; y: opacity
 layout(location = 2) in vec4 kind;
 
@@ -35,9 +36,15 @@ layout(std140, binding = 1) uniform Shape {
     vec4 flake;
     vec4 rainColor;
     vec4 snowColor;
+    // xyz: the offset of the drops' origin from the camera (decision E-883); the drops are relative
+    // to it, so `dropPosition + shape.origin.xyz` is relative to the camera.
+    vec4 origin;
 } shape;
 
 const float nearW = 0.01;
+
+// The drop relative to the camera (decision E-883), set first in main().
+vec3 position;
 
 // Moves `from` towards `to` until it lies in front of the camera, so a streak that reaches behind
 // the camera keeps its direction on screen.
@@ -93,6 +100,7 @@ vec4 snowCorner(vec2 halfViewport)
 
 void main()
 {
+    position = dropPosition + shape.origin.xyz;
     vec2 halfViewport = max(frame.extra.yz, vec2(1.0)) * 0.5;
     vSnow = kind.x > 0.0 ? 1.0 : 0.0;
     vShape = kind.x > 0.0 ? corner : vec2(0.0);

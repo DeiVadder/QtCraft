@@ -18,9 +18,16 @@ class QcPrecipitationRenderer
 public:
     // Drops all GPU resources (new QRhi or incompatible render target).
     void reset();
+    // The particles of a frame (QcDropPool::fill) and the offset of their origin from the camera
+    // (decision E-883), added in the shader.
+    struct Drops
+    {
+        std::shared_ptr<const QList<QcPrecipitationDrop>> instances;
+        QcVec3 offset;
+    };
+
     // Uploads this frame's particles; `frameUniforms` is the world renderer's Frame block.
-    void prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms,
-                 const std::shared_ptr<const QList<QcPrecipitationDrop>> &drops);
+    void prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms, const Drops &frame);
     // Returns whether it drew.
     bool draw(QRhiCommandBuffer *commandBuffer) const;
 

@@ -19,6 +19,10 @@ layout(std140, binding = 0) uniform Sky {
 const float sunRadius = 0.9994;
 const float moonRadius = 0.045;
 const float cloudCell = 40.0;
+// The cloud pattern repeats after this many cells (QcSkyRenderer::cloudPeriod = 40 km), its finer
+// layer after 2.7 times as many of its own: the renderer wraps camera and drift by that period, so
+// they stay small floats however far out the camera is (decision E-883), without a seam.
+const float cloudCells = 1000.0;
 
 float hash3(vec3 p)
 {
@@ -27,15 +31,17 @@ float hash3(vec3 p)
     return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
 }
 
-float noise2(vec2 p)
+// Value noise over cells of size 1 that repeats after `period` cells (a whole number).
+float noise2(vec2 p, float period)
 {
-    vec2 cell = floor(p);
+    vec2 cell = mod(floor(p), period);
+    vec2 next = mod(cell + 1.0, period);
     vec2 f = fract(p);
     f = f * f * (3.0 - 2.0 * f);
     float a = hash3(vec3(cell, 0.0));
-    float b = hash3(vec3(cell + vec2(1.0, 0.0), 0.0));
-    float c = hash3(vec3(cell + vec2(0.0, 1.0), 0.0));
-    float d = hash3(vec3(cell + vec2(1.0, 1.0), 0.0));
+    float b = hash3(vec3(next.x, cell.y, 0.0));
+    float c = hash3(vec3(cell.x, next.y, 0.0));
+    float d = hash3(vec3(next, 0.0));
     return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
@@ -92,7 +98,7 @@ vec3 addMoon(vec3 color, vec3 dir)
     float angle = 6.2831853 * sky.moonDirection.w;
     vec3 light = vec3(sin(angle), 0.0, -cos(angle));
     float lit = smoothstep(-0.06, 0.06, dot(normal, light));
-    float craters = 0.82 + 0.18 * noise2(local * 3.0 + 7.0);
+    float craters = 0.82 + 0.18 * noise2(local * 3.0 + 7.0, cloudCells);
     vec3 moon = mix(vec3(0.07, 0.08, 0.11), vec3(0.96, 0.95, 0.88) * craters, lit);
     float edge = 1.0 - smoothstep(0.9, 1.0, r2);
     return mix(color, moon, edge * mix(0.35, 1.0, lit));
@@ -105,7 +111,7 @@ vec3 addClouds(vec3 color, vec3 dir)
         return color;
     float distance = height / dir.y;
     vec2 point = (sky.camera.xz + dir.xz * distance + sky.params.zw) / cloudCell;
-    float density = noise2(point) * 0.65 + noise2(point * 2.7 + 3.1) * 0.35;
+    float density = noise2(point, cloudCells) * 0.65 + noise2(point * 2.7 + 3.1, cloudCells * 2.7) * 0.35;
     // cloudColor.w: how overcast the weather makes the sky (0 fair-weather clouds, 1 closed cover).
     float overcast = sky.cloudColor.w;
     float cover = smoothstep(mix(0.58, 0.12, overcast), mix(0.70, 0.42, overcast), density);

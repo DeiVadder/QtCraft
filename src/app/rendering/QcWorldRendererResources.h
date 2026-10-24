@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app/rendering/QcDebugLineRenderer.h"
+#include "app/rendering/QcDrawOrigins.h"
 #include "app/rendering/QcFramedMapTexture.h"
 #include "app/rendering/QcGpuMeshStore.h"
 #include "app/rendering/QcPrecipitationRenderer.h"
@@ -51,9 +52,9 @@ struct QcWorldDeviceResources
     // first use after a new atlas texture (hasAtlas()); the block, entity and hand pipelines are
     // built with them.
     QRhiShaderResourceBindings *atlasBindings();
-    // The line vertices of the first maxOutlineBoxes boxes of `selection`, when it is not empty and
-    // differs from the uploaded one.
-    void uploadOutline(QRhiResourceUpdateBatch *updates, const QList<QcAabb> &selection);
+    // The line vertices of the first maxOutlineBoxes boxes of `selection` relative to `eye` (decision
+    // E-883), when it is not empty and it or the eye differs from the uploaded one.
+    void uploadOutline(QRhiResourceUpdateBatch *updates, const QList<QcAabb> &selection, const QcVec3 &eye);
 
     QRhi *rhi = nullptr;
     std::unique_ptr<QRhiBuffer> frameUniforms;
@@ -67,6 +68,8 @@ struct QcWorldDeviceResources
     QcGpuBuffers entityBuffers;
     QcGpuBuffers handBuffers;
     QcGpuBuffers framedMapBuffers;
+    // The offsets of the frame's draws from the camera (decision E-883), a buffer of its own.
+    QcDrawOrigins drawOrigins;
     // The framed-map texture; its bindings refer to frameUniforms (declared after it, released first).
     QcFramedMapTexture framedMaps;
     // The bindings refer to the resources above and are declared after them (released first).
@@ -74,8 +77,10 @@ struct QcWorldDeviceResources
     std::unique_ptr<QRhiShaderResourceBindings> bindings;
     // Frame uniforms only, for the outline pipeline.
     std::unique_ptr<QRhiShaderResourceBindings> outlineBindings;
-    // The selection whose lines are in outlineVertices; unset before the first upload.
+    // The selection whose lines are in outlineVertices and the eye they are relative to; unset
+    // before the first upload.
     std::optional<QList<QcAabb>> uploadedSelection;
+    QcVec3 uploadedEye;
     quint32 outlineVertexCount = 0;
     // The atlas's grid of cells and the pixels per cell of atlasTexture's largest level (0 without
     // a texture), for the block shader's filtering (decision E-721).

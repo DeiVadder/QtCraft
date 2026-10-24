@@ -151,7 +151,8 @@ private:
                                       const QcBlockRenderTable::Entry &after) const;
     // Dirty sections not being meshed, nearest to the focus first.
     QList<quint64> nearestDirtyFirst() const;
-    // Nullopt while a side neighbour of the chunk is missing.
+    // Nullopt while a side neighbour of the chunk is missing. A neighbour beyond the bound of the world
+    // (QcChunkPos::isInsideWorld) never arrives and stays null; QcChunkMesher treats it as an opaque wall.
     [[nodiscard]] std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
     void submitMesh(quint64 key, QcMeshInput input, Priority priority);
     // Starts the job of the dirty section `key`, or drops the mark while it cannot be meshed yet

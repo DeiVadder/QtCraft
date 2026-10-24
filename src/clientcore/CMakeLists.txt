@@ -12,6 +12,7 @@ target_sources(qc_clientcore PRIVATE
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
     camera/QcMouseCapture.h camera/QcMouseCapture.cpp
     camera/QcMouseLook.h camera/QcMouseLook.cpp
+    camera/QcRenderOrigin.h camera/QcRenderOrigin.cpp
     camera/QcViewCamera.h camera/QcViewCamera.cpp
 )
 target_sources(qc_clientcore PRIVATE

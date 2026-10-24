@@ -43,16 +43,24 @@ private slots:
                                                                     + QString::number(camera.forward().z())));
     }
 
-    void viewMatrixMapsForwardPointOntoNegativeViewZ()
+    void viewRotationMapsForwardPointOntoNegativeViewZ()
     {
         QcCamera camera;
-        camera.position = QVector3D(10, 70, -4);
+        camera.position = {10.0, 70.0, -4.0};
         camera.yaw = 90.0f;
         // A point 5 m east of an east-facing camera lies straight ahead: view space (0, 0, -5).
-        const QVector3D inView = camera.viewMatrix().map(QVector3D(15, 70, -4));
+        const QVector3D inView = camera.viewRotation().map(camera.relative({15.0, 70.0, -4.0}));
         QVERIFY(fuzzyEqual(inView, QVector3D(0, 0, -5)));
         // A point 1 m above the camera is up in view space.
-        QVERIFY(fuzzyEqual(camera.viewMatrix().map(QVector3D(10, 71, -4)), QVector3D(0, 1, 0)));
+        QVERIFY(fuzzyEqual(camera.viewRotation().map(camera.relative({10.0, 71.0, -4.0})), QVector3D(0, 1, 0)));
+    }
+
+    void relativePositionsStayExactFarFromTheOrigin()
+    {
+        // Subtracted in double (decision E-883): a float holds 1e9 only to 64 m.
+        QcCamera camera;
+        camera.position = {1e9 + 0.25, 70.5, -1e9 - 0.75};
+        QVERIFY(fuzzyEqual(camera.relative({1e9 + 3.0, 71.0, -1e9 - 2.0}), QVector3D(2.75f, 0.5f, -1.25f)));
     }
 
     void projectionPlacesNearAndFarPlanesAtClipDepthLimits()

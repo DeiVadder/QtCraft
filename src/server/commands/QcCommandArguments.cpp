@@ -25,11 +25,11 @@ QString qualified(const QString &name)
         value = word.toLongLong(&ok);
     } else if (origin) {
         const qint64 offset = word.size() > 1 ? QStringView(word).mid(1).toLongLong(&ok) : 0;
-        ok = (word.size() == 1 || ok) && offset >= -2 * static_cast<qint64>(worldLimit) && offset <= 2 * static_cast<qint64>(worldLimit);
+        ok = (word.size() == 1 || ok) && offset >= -2 * static_cast<qint64>(highestBlock) && offset <= 2 * static_cast<qint64>(highestBlock);
         value = static_cast<qint64>(*origin) + offset;
     }
 
-    if (!ok || value < -worldLimit || value > worldLimit) {
+    if (!ok || value < lowestBlock || value > highestBlock) {
         return std::nullopt;
     }
     return static_cast<int>(value);
@@ -70,6 +70,11 @@ namespace {
     return *origin + offset;
 }
 
+[[nodiscard]] bool isBodyCoordinate(double value)
+{
+    return value >= QcWorld::lowestBody && value <= QcWorld::highestBody;
+}
+
 } // namespace
 
 [[nodiscard]] std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::optional<QcVec3> origin)
@@ -81,7 +86,7 @@ namespace {
     const std::optional<double> x = pointCoordinate(words[first], origin ? std::optional<double>(origin->x) : std::nullopt);
     const std::optional<double> y = pointCoordinate(words[first + 1], origin ? std::optional<double>(origin->y) : std::nullopt);
     const std::optional<double> z = pointCoordinate(words[first + 2], origin ? std::optional<double>(origin->z) : std::nullopt);
-    if (!x || !y || !z || std::abs(*x) > worldLimit || std::abs(*z) > worldLimit || *y < lowestTeleportY || *y > QcWorld::worldHeight) {
+    if (!x || !y || !z || !isBodyCoordinate(*x) || !isBodyCoordinate(*z) || *y < lowestTeleportY || *y > QcWorld::worldHeight) {
         return std::nullopt;
     }
     return QcVec3{*x, *y, *z};

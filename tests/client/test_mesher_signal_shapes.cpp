@@ -5,6 +5,7 @@
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "QcTestUtil.h"
+#include "QcWorldMesh.h"
 
 #include <QTest>
 
@@ -216,7 +217,7 @@ private:
         if (!support.isEmpty()) {
             chunk->setBlock(8 + supportOffset[0], 20 + supportOffset[1], 8 + supportOffset[2], id(support));
         }
-        const QcChunkMesh mesh = QcChunkMesher::mesh(input(chunk));
+        const QcChunkMesh mesh = qcWorldMesh(input(chunk));
         QList<MeshQuad> quads = quadsOf(mesh.opaqueVertices);
         quads.append(quadsOf(mesh.cutoutVertices));
         quads.append(quadsOf(mesh.translucentVertices));
@@ -303,7 +304,7 @@ private slots:
         chunk->setBlock(base[0], base[1], base[2], id(u"%1[facing=%2,extended=true]"_s.arg(piston, which.name)));
         chunk->setBlock(head[0], head[1], head[2],
                         id(u"qtcraft:signal_piston_head[facing=%1,sticky=%2]"_s.arg(which.name, sticky ? u"true"_s : u"false"_s)));
-        const QcChunkMesh mesh = QcChunkMesher::mesh(input(chunk));
+        const QcChunkMesh mesh = qcWorldMesh(input(chunk));
         QVERIFY(mesh.opaqueVertices.isEmpty());
         const QList<MeshQuad> quads = quadsOf(mesh.cutoutVertices);
 

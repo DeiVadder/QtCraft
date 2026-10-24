@@ -295,6 +295,35 @@ private slots:
         QCOMPARE(m_content->worldgen().structure(u"qtcraft:oasis"_s)->surface->biomes, QStringList{u"qtcraft:desert"_s});
     }
 
+    void farRegionsKeepTheirOwnPlans()
+    {
+        // The cache key holds both region coordinates in full (decision E-883): with 24 bits each,
+        // regions 2^24 apart shared one, and regions of 64 blocks reach 2^24 within the world.
+        const auto key = &QcSurfaceStructures::planKey;
+        QVERIFY(key(0, 1 << 23, 5) != key(0, -(1 << 23), 5));
+        QVERIFY(key(0, 5, 1 << 23) != key(0, 5, -(1 << 23)));
+        QVERIFY(key(0, -1, 0) != key(0, 0, -1));
+        QVERIFY(key(0, 3, 4) != key(1, 3, 4));
+        QVERIFY(key(2, -7, 9) == key(2, -7, 9));
+
+        // At both ends of the world a plan lies in the region it was planned for, also with the
+        // region at the other end in the cache.
+        const QcTerrainGenerator terrain(m_content, seed);
+        for (const QString &name : std::as_const(m_names)) {
+            const int kind = kindOf(terrain, name);
+            const int spacing = spacingOf(name);
+            const int edge = QcWorld::maxHorizontalBlock / spacing - 1;
+            for (const int region : {edge, -edge}) {
+                for (int rz = 0; rz < 4; ++rz) {
+                    if (const std::shared_ptr<const QcStructurePlacement> plan = terrain.surfaceStructures().planOf(kind, region, rz)) {
+                        QCOMPARE(qcFloorDiv(plan->origin().x, spacing), region);
+                        QCOMPARE(qcFloorDiv(plan->origin().z, spacing), rz);
+                    }
+                }
+            }
+        }
+    }
+
     void ruinsVaryFromCopyToCopy()
     {
         // Parts and choices are drawn per copy: the copies of one kind are not all built alike, and

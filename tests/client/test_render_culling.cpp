@@ -29,7 +29,7 @@ QMatrix4x4 correction(int kind)
 
 QcFrustum::Planes planesFor(const QcCamera &camera, int kind)
 {
-    return QcFrustum::planes(correction(kind) * camera.projectionMatrix(aspect, farPlane) * camera.viewMatrix());
+    return QcFrustum::planes(correction(kind) * camera.projectionMatrix(aspect, farPlane) * camera.viewRotation());
 }
 
 // Half-extent of the view at `distance` in front of the camera, from the field of view alone.
@@ -41,14 +41,16 @@ float halfHeightAt(float distance)
 QcCamera cameraAtOrigin(float yaw = 0.0f)
 {
     QcCamera camera;
-    camera.position = QVector3D(0.0f, eyeY, 0.0f);
+    camera.position = {0.0, eyeY, 0.0};
     camera.yaw = yaw;
     return camera;
 }
 
 bool visible(const QcFrustum::Planes &planes, QVector3D low, QVector3D high)
 {
-    return QcFrustum::intersectsBox(planes, low, high);
+    // The planes are those of the camera at the origin (decision E-883): the boxes relative to it.
+    const QVector3D eye(0.0f, eyeY, 0.0f);
+    return QcFrustum::intersectsBox(planes, low - eye, high - eye);
 }
 
 } // namespace

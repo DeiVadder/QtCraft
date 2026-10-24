@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QList>
 #include <QPoint>
@@ -20,8 +21,9 @@ public:
     static constexpr int pixelCount = size * size;
     // Scale 0 shows one block per pixel, every step doubles it (zooming out, decision E-804).
     static constexpr int maxScale = 4;
-    // Centres further out than this are damaged data (the world ends long before).
-    static constexpr int maxCentre = 30'000'000;
+    // Centres further out than this are damaged data: the centre of the largest map around the
+    // farthest block column of the world (decision E-883) lies less than its width beyond it.
+    static constexpr int maxCentre = QcWorld::maxChunkBlock + (size << maxScale);
 
     QcMapData() = default;
     // The blank map of `scale` whose grid square holds the block column (x, z).

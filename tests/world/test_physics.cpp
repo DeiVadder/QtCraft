@@ -72,6 +72,38 @@ private slots:
         QVERIFY(motion.position.y > QcWorld::voidFloorY);
     }
 
+    void bodiesStopAtTheBoundOfTheWorld()
+    {
+        // The technical bound (decision E-883) holds every body, also one that passes through blocks
+        // (a spectator) or falls through the void, where nothing else would stop it.
+        QcTestWorld world(m_content);
+        world.loadedRadius = 0;
+        // Both sides stop at the centre of the outermost block column: -maxHorizontalBlock on the
+        // negative side, maxChunkBlock (the last column of the edge chunk) on the positive side.
+        constexpr double low = QcWorld::lowestBody;
+        constexpr double high = QcWorld::highestBody;
+        static_assert(low == -QcWorld::maxHorizontalBlock + 0.5 && high == QcWorld::maxChunkBlock + 0.5);
+        QcPlayerInput east;
+        east.yaw = 90.0f;
+        east.forward = 1.0f;
+        QcEntityMotion spectator;
+        spectator.position = {high - 2.0, 70.0, low};
+        for (int i = 0; i < 40; ++i) {
+            spectator.stepPlayer(east, world, dt, QcMovement::NoClip);
+        }
+        QCOMPARE(spectator.position.x, high);
+        QCOMPARE(spectator.velocity.x, 0.0);
+        QCOMPARE(spectator.position.z, low);
+
+        QcPlayerInput west = east;
+        west.yaw = -90.0f;
+        QcEntityMotion falling;
+        falling.position = {low + 1.0, -10.0, 0.5};
+        run(falling, west, world, 40);
+        QCOMPARE(falling.position.x, low);
+        QVERIFY(falling.position.y < -10.0);
+    }
+
     void jumpApexMatchesHandComputedHeight()
     {
         QcTestWorld world(m_content);

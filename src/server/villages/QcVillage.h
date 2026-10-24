@@ -92,16 +92,20 @@ struct QcVillage
 
     bool operator==(const QcVillage &) const = default;
 
-    // The id of a settlement founded at `first` (decision E-490): bit 62 set, bit 63 clear, the block
-    // position packed below (26 bits each for x and z, 10 for y). Region ids (QcVillagePlan::regionId:
-    // bit 61) never look so, and no id is 0 (no village).
+    // The id of a settlement founded at `first` (decision E-490): bit 62 set, bit 63 clear, the
+    // column packed below (31 bits each for x and z, offset by QcWorld::maxHorizontalBlock, so every
+    // column of the world within its technical bound has its own id; decision E-883). No two
+    // settlements share a column (QcVillages::clashes), so the height is left out. Region ids
+    // (QcVillagePlan::regionId: bit 62 clear) never look so, and no id is 0 (no village).
     static qint64 settlementId(QcBlockPos first)
     {
-        constexpr qint64 horizontal = qint64{1} << 25;
-        const auto x = static_cast<quint64>(first.x + horizontal) & ((quint64{1} << 26) - 1);
-        const auto z = static_cast<quint64>(first.z + horizontal) & ((quint64{1} << 26) - 1);
-        const auto y = static_cast<quint64>(first.y) & ((quint64{1} << 10) - 1);
-        return static_cast<qint64>((quint64{1} << 62) | (x << 36) | (z << 10) | y);
+        constexpr int bits = 31;
+        constexpr quint64 mask = (quint64{1} << bits) - 1;
+        static_assert(qint64{QcWorld::maxChunkBlock} + QcWorld::maxHorizontalBlock <= static_cast<qint64>(mask));
+        constexpr qint64 offset = QcWorld::maxHorizontalBlock;
+        const auto x = static_cast<quint64>(first.x + offset) & mask;
+        const auto z = static_cast<quint64>(first.z + offset) & mask;
+        return static_cast<qint64>((quint64{1} << 62) | (x << bits) | z);
     }
     static bool isSettlement(qint64 id) { return id > 0 && (id >> 62) == 1; }
     bool settlement() const { return isSettlement(id); }

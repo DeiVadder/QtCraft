@@ -16,22 +16,25 @@ class QcServerState;
 // by the command before it changes anything.
 namespace QcCommandArguments {
 
-// Horizontal limit of positions a command accepts (teleport, block areas, chunks).
-inline constexpr int worldLimit = 30'000'000;
+// Block coordinates a command accepts (block areas, chunks): the block columns of the chunks within
+// the technical bound of the world (decision E-883). Teleports accept x and z in the range bodies
+// stay in (QcWorld::lowestBody, QcWorld::highestBody).
+inline constexpr int lowestBlock = -QcWorld::maxHorizontalBlock;
+inline constexpr int highestBlock = QcWorld::maxChunkBlock;
 // Lowest height a teleport accepts: down into the void, where a player dies (decision E-288).
 inline constexpr double lowestTeleportY = -128.0;
 
 // Names without a namespace mean the base game's.
 QString qualified(const QString &name);
 
-// A block coordinate within ±worldLimit: a whole number, or with `origin` also "~" and "~<n>"
+// A block coordinate within [lowestBlock, highestBlock]: a whole number, or with `origin` also "~" and "~<n>"
 // relative to it; std::nullopt for anything else, however large.
 [[nodiscard]] std::optional<int> blockCoordinate(const QString &word, std::optional<int> origin);
 // Three block coordinates starting at `words[first]`, relative to `origin` where they use "~";
-// std::nullopt when one is invalid, missing or outside ±worldLimit (the caller checks the height).
+// std::nullopt when one is invalid, missing or outside [lowestBlock, highestBlock] (the caller checks the height).
 [[nodiscard]] std::optional<QcBlockPos> blockPosition(const QStringList &words, qsizetype first, std::optional<QcBlockPos> origin);
-// A point for teleporting: finite numbers, "~" relative to `origin`, inside the world limit and
-// from lowestTeleportY to the top of the world.
+// A point for teleporting: finite numbers, "~" relative to `origin`, x and z within the body range
+// (QcWorld::lowestBody, QcWorld::highestBody) and y from lowestTeleportY to the top of the world.
 [[nodiscard]] std::optional<QcVec3> point(const QStringList &words, qsizetype first, std::optional<QcVec3> origin);
 // A whole number within [low, high], or `fallback` when the word is missing.
 [[nodiscard]] std::optional<int> count(const QStringList &words, qsizetype index, int fallback, int low, int high);

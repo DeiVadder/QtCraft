@@ -343,12 +343,13 @@ struct Surface
     QcSurfaceMaterial material = QcSurfaceMaterial::Solid;
 };
 
-// A visible block being meshed: its render entry, chunk-local cell and world position.
+// A visible block being meshed: its render entry, chunk-local cell (y in the world) and its corner
+// relative to the section's origin (QcChunkMesh::origin), where its vertices are placed.
 struct PlacedBlock
 {
     const Entry &entry;
     Cell cell;
-    QcBlockPos world;
+    QcBlockPos local;
 };
 
 void appendQuad(const Output &out, const std::array<QcBlockVertex, 4> &corners, bool flipDiagonal, Surface surface)
@@ -368,9 +369,10 @@ void appendQuad(const Output &out, const std::array<QcBlockVertex, 4> &corners, 
     }
 }
 
-// One side of one diagonal quad of a cross, running from ends[0] to ends[1].
+// One side of one diagonal quad of a cross, running from ends[0] to ends[1], in the cell whose
+// corner lies at `local` in the section.
 std::array<QcBlockVertex, 4> crossSide(const QcBlockRenderTable::Cross &cross, std::array<std::array<float, 2>, 2> ends,
-                                       QcBlockPos pos, QuadLight light)
+                                       QcBlockPos local, QuadLight light)
 {
     const QRectF &uv = cross.uv;
     const float y0 = cross.box[1];
@@ -380,9 +382,9 @@ std::array<QcBlockVertex, 4> crossSide(const QcBlockRenderTable::Cross &cross, s
     for (std::size_t corner = 0; corner < 4; ++corner) {
         const auto &end = ends[(corner == 1 || corner == 2) ? 1 : 0];
         QcBlockVertex &vertex = corners[corner];
-        vertex.x = static_cast<float>(pos.x) + end[0];
-        vertex.y = static_cast<float>(pos.y) + (corner < 2 ? y0 : y1);
-        vertex.z = static_cast<float>(pos.z) + end[1];
+        vertex.x = static_cast<float>(local.x) + end[0];
+        vertex.y = static_cast<float>(local.y) + (corner < 2 ? y0 : y1);
+        vertex.z = static_cast<float>(local.z) + end[1];
         vertex.u = static_cast<float>((corner == 0 || corner == 3) ? uv.left() : uv.right());
         vertex.v = static_cast<float>(corner < 2 ? uv.bottom() : uv.top());
         vertex.setShade(light.shade);
@@ -395,7 +397,7 @@ std::array<QcBlockVertex, 4> crossSide(const QcBlockRenderTable::Cross &cross, s
 
 // Two quads along the diagonals of `cross`, each with a front and a back side so back-face culling
 // keeps both visible. Without a normal; plants unless the block's material says more (light sources).
-void appendCross(const Output &out, const QcBlockRenderTable::Cross &cross, QcBlockPos pos, QuadLight light, QcSurfaceMaterial material)
+void appendCross(const Output &out, const QcBlockRenderTable::Cross &cross, QcBlockPos local, QuadLight light, QcSurfaceMaterial material)
 {
     const bool plant = material == QcSurfaceMaterial::Solid || material == QcSurfaceMaterial::Cutout;
     const Surface surface{std::nullopt, plant ? QcSurfaceMaterial::Plant : material};
@@ -405,7 +407,7 @@ void appendCross(const Output &out, const QcBlockRenderTable::Cross &cross, QcBl
         for (const bool back : {false, true}) {
             const std::array<std::array<float, 2>, 2> ends = back ? std::array<std::array<float, 2>, 2>{{{bx, bz}, {ax, az}}}
                                                                    : std::array<std::array<float, 2>, 2>{{{ax, az}, {bx, bz}}};
-            appendQuad(out, crossSide(cross, ends, pos, light), false, surface);
+            appendQuad(out, crossSide(cross, ends, local, light), false, surface);
         }
     }
 }
@@ -419,8 +421,7 @@ public:
         , m_around(input)
         , m_light(m_around, input)
         , m_mesh(mesh)
-        , m_worldX(input.chunks[4]->pos().x * QcWorld::chunkSize)
-        , m_worldZ(input.chunks[4]->pos().z * QcWorld::chunkSize)
+        , m_baseY(input.sectionIndex * QcWorld::sectionHeight)
     {
     }
 
@@ -433,7 +434,7 @@ public:
             return;
         }
 
-        const PlacedBlock block{entry, cell, {m_worldX + cell.x, cell.y, m_worldZ + cell.z}};
+        const PlacedBlock block{entry, cell, {cell.x, cell.y - m_baseY, cell.z}};
         if (entry.fullCube) {
             appendCube(block);
         } else {
@@ -514,7 +515,7 @@ private:
         const float ownSky = static_cast<float>(m_light.sky(x, y, z));
         const float ownBlock = static_cast<float>(m_light.block(x, y, z));
         for (const QcBlockRenderTable::Cross &cross : block.entry.crosses) {
-            appendCross(outputFor(block.entry, block.cell), cross, block.world, {0.9f, ownSky / maxLevel, ownBlock / maxLevel},
+            appendCross(outputFor(block.entry, block.cell), cross, block.local, {0.9f, ownSky / maxLevel, ownBlock / maxLevel},
                         block.entry.material);
         }
         for (const QcBlockRenderTable::Quad &quad : block.entry.quads) {
@@ -546,9 +547,9 @@ private:
 
         for (std::size_t corner = 0; corner < 4; ++corner) {
             QcBlockVertex &vertex = corners[corner];
-            vertex.x = static_cast<float>(block.world.x) + quad.corners[corner][0];
-            vertex.y = static_cast<float>(block.world.y) + quad.corners[corner][1];
-            vertex.z = static_cast<float>(block.world.z) + quad.corners[corner][2];
+            vertex.x = static_cast<float>(block.local.x) + quad.corners[corner][0];
+            vertex.y = static_cast<float>(block.local.y) + quad.corners[corner][1];
+            vertex.z = static_cast<float>(block.local.z) + quad.corners[corner][2];
             vertex.u = quad.uvs[corner][0];
             vertex.v = quad.uvs[corner][1];
         }
@@ -647,9 +648,9 @@ private:
             const bool bottomEdge = uvCorner < 2;
             const bool leftEdge = uvCorner == 0 || uvCorner == 3;
             QcBlockVertex &vertex = corners[corner];
-            vertex.x = static_cast<float>(block.world.x + c[0]);
-            vertex.y = static_cast<float>(block.cell.y) + (c[1] == 1 ? surface : *base);
-            vertex.z = static_cast<float>(block.world.z + c[2]);
+            vertex.x = static_cast<float>(block.local.x + c[0]);
+            vertex.y = static_cast<float>(block.local.y) + (c[1] == 1 ? surface : *base);
+            vertex.z = static_cast<float>(block.local.z + c[2]);
             vertex.u = static_cast<float>(leftEdge ? uv.left() : uv.right());
             vertex.v = static_cast<float>(bottomEdge ? uv.bottom() : uv.top());
             vertex.setShade(QcChunkMesher::faceShade[faceIndex] * QcChunkMesher::ambientOcclusionLevels[static_cast<std::size_t>(values.ao[corner])]);
@@ -666,8 +667,8 @@ private:
     const Neighbourhood m_around;
     const Lighting m_light;
     QcChunkMesh &m_mesh;
-    const int m_worldX = 0;
-    const int m_worldZ = 0;
+    // The world height of the section's bottom.
+    const int m_baseY = 0;
 };
 
 } // namespace
@@ -679,6 +680,7 @@ QcChunkMesh QcChunkMesher::mesh(const QcMeshInput &input)
     if (!centre || !input.renderTable) {
         return mesh;
     }
+    mesh.origin = {centre->pos().x * QcWorld::chunkSize, input.sectionIndex * QcWorld::sectionHeight, centre->pos().z * QcWorld::chunkSize};
     const QcChunkSection &section = centre->section(input.sectionIndex);
     if (section.isEmpty()) {
         return mesh;

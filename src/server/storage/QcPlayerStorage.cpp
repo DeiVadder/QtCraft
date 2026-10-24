@@ -318,7 +318,9 @@ bool QcPlayerStorage::isPlausible(const QcPlayerData &player)
 {
     const auto finite = [](const QcVec3 &v) { return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z); };
     const QcEntityMotion &m = player.motion;
-    constexpr double horizontalLimit = QcWorld::maxHorizontalBlock;
+    // Bodies stop at the centre of the outermost block column (QcWorld::lowestBody, highestBody;
+    // decision E-883); the limit holds both with a margin.
+    constexpr double horizontalLimit = QcWorld::maxChunkBlock + 1;
     constexpr double verticalMargin = 64.0;
     // A player saved while falling through the void may be far below it, down to where bodies stop
     // sinking (decision E-288).

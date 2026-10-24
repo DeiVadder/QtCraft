@@ -43,6 +43,12 @@ public:
     static constexpr QRgb fleeColor = qRgba(255, 200, 40, 255);
     static constexpr QRgb flashColor = qRgba(255, 120, 255, 255);
 
+    // The vertices are placed relative to `origin` (decision E-883), near where the lines are drawn.
+    explicit QcDebugLines(const QcVec3 &origin)
+        : m_origin(origin)
+    {
+    }
+
     void addLine(const QcVec3 &from, const QcVec3 &to, QRgb color);
     void addBox(const QcAabb &box, QRgb color);
 
@@ -61,9 +67,12 @@ public:
     // The box of a section (QcSectionKey).
     static QcAabb sectionBox(quint64 sectionKey);
 
+    // The vertices, relative to origin().
     const QList<QcDebugLineVertex> &vertices() const { return m_vertices; }
+    const QcVec3 &origin() const { return m_origin; }
     bool isEmpty() const { return m_vertices.isEmpty(); }
 
 private:
+    QcVec3 m_origin;
     QList<QcDebugLineVertex> m_vertices;
 };

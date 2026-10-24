@@ -19,9 +19,7 @@ void appendRibbon(QcEntityMesh &mesh, const Thread &thread, const QcVec3 &side, 
     std::array<QcEntityVertex, 4> quad;
     for (std::size_t i = 0; i < corners.size(); ++i) {
         QcEntityVertex &vertex = quad[i];
-        vertex.x = static_cast<float>(corners[i].x);
-        vertex.y = static_cast<float>(corners[i].y);
-        vertex.z = static_cast<float>(corners[i].z);
+        vertex = mesh.vertexAt(corners[i]);
         vertex.u = static_cast<float>(i == 0 || i == 3 ? uv.left() : uv.right());
         vertex.v = static_cast<float>(i < 2 ? uv.bottom() : uv.top());
         vertex.skyLight = light.sky;

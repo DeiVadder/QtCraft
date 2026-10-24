@@ -16,9 +16,17 @@ class QcDebugLineRenderer
 public:
     // Drops all GPU resources (new QRhi or incompatible render target).
     void reset();
-    // Uploads this frame's lines; `frameUniforms` is the world renderer's Frame block.
-    void prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms,
-                 const std::shared_ptr<const QList<QcDebugLineVertex>> &lines);
+    // The lines of a frame (QcDebugLines::vertices) and the offset of their origin from the camera
+    // (decision E-883), in double until it is added to the small vertices.
+    struct Lines
+    {
+        std::shared_ptr<const QList<QcDebugLineVertex>> vertices;
+        QcVec3 offset;
+    };
+
+    // Uploads this frame's lines relative to the camera; `frameUniforms` is the world renderer's
+    // Frame block.
+    void prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms, const Lines &frame);
     // Returns whether it drew.
     bool draw(QRhiCommandBuffer *commandBuffer) const;
 

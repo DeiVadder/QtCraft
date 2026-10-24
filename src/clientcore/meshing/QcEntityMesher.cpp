@@ -96,10 +96,7 @@ void emitBox(QcEntityMesh &mesh, const QcAabb &box, const Place &place, const Su
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const auto &c = faceCorners[face][corner];
             const QcVec3 &world = placed[static_cast<std::size_t>(c[0]) + 2 * static_cast<std::size_t>(c[1]) + 4 * static_cast<std::size_t>(c[2])];
-            QcEntityVertex vertex;
-            vertex.x = static_cast<float>(world.x);
-            vertex.y = static_cast<float>(world.y);
-            vertex.z = static_cast<float>(world.z);
+            QcEntityVertex vertex = mesh.vertexAt(world);
             vertex.u = static_cast<float>((corner == 0 || corner == 3) ? rect.left() : rect.right());
             vertex.v = static_cast<float>(corner < 2 ? rect.bottom() : rect.top());
             vertex.shade = faceShade[face];
@@ -125,10 +122,7 @@ void emitSprite(QcEntityMesh &mesh, double size, const Place &place, const QRect
         std::array<QcEntityVertex, 4> quad;
         for (std::size_t corner = 0; corner < 4; ++corner) {
             const QcVec3 world = place(corners[corner]);
-            QcEntityVertex vertex;
-            vertex.x = static_cast<float>(world.x);
-            vertex.y = static_cast<float>(world.y);
-            vertex.z = static_cast<float>(world.z);
+            QcEntityVertex vertex = mesh.vertexAt(world);
             // Mirrored on the back so the picture reads the same from both sides.
             const bool left = (corner == 0 || corner == 3) != back;
             vertex.u = static_cast<float>(left ? rect.left() : rect.right());

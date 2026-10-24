@@ -1,6 +1,7 @@
 #include "app/debug/QcDebugVisuals.h"
 
 #include "app/session/QcSessionParts.h"
+#include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/debug/QcDebugLines.h"
 #include "clientcore/session/QcClientSession.h"
 
@@ -23,7 +24,7 @@ void QcDebugVisuals::update(QcDebugOptions options, double alpha, const QcVec3 &
     const qint64 now = m_clock.elapsed();
     m_meshedAt.removeIf([now](const auto &entry) { return now - entry.value() >= QcDebugLines::flashMs; });
 
-    QcDebugLines lines;
+    QcDebugLines lines(QcRenderOrigin::blockNear(feet));
     if (options.shows(V::ChunkBorders)) {
         lines.addChunkBorders(feet);
     }
@@ -44,7 +45,7 @@ void QcDebugVisuals::update(QcDebugOptions options, double alpha, const QcVec3 &
         return;
     }
     m_drawing = !lines.isEmpty();
-    m_parts.view->setDebugLines(m_drawing ? std::make_shared<const QList<QcDebugLineVertex>>(lines.vertices()) : nullptr);
+    m_parts.view->setDebugLines(m_drawing ? std::make_shared<const QList<QcDebugLineVertex>>(lines.vertices()) : nullptr, lines.origin());
 }
 
 void QcDebugVisuals::clear()
@@ -52,6 +53,6 @@ void QcDebugVisuals::clear()
     m_meshedAt.clear();
     m_drawing = false;
     if (m_parts.view) {
-        m_parts.view->setDebugLines(nullptr);
+        m_parts.view->setDebugLines(nullptr, QcVec3{});
     }
 }

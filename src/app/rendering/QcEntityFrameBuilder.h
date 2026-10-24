@@ -88,6 +88,8 @@ private:
     // The maps in item frames (decision E-806), their tiles given nearest to the camera first
     // (decision E-809).
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildFramedMaps(const EntityFrame &frame);
+    // The origin of the frame's entity meshes: the block of the camera (QcEntityMesh::origin).
+    [[nodiscard]] QcVec3 meshOrigin() const;
     // A falling or moving block or a lit explosive, drawn as its block.
     void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).

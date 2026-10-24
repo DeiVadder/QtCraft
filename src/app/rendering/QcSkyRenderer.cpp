@@ -35,6 +35,13 @@ void copy(QVector3D value, float w, float (&target)[4])
     target[3] = w;
 }
 
+// `value` modulo the cloud period, in [0, cloudPeriod).
+float wrapped(double value)
+{
+    const double rest = std::fmod(value, QcSkyRenderer::cloudPeriod);
+    return static_cast<float>(rest < 0.0 ? rest + QcSkyRenderer::cloudPeriod : rest);
+}
+
 } // namespace
 
 void QcSkyRenderer::reset()
@@ -90,12 +97,16 @@ void QcSkyRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpd
     copy(sky.moonDirection, static_cast<float>(sky.moonPhase), uniforms.moonDirection);
     copy(sky.cloudColor, static_cast<float>(sky.overcast), uniforms.cloudColor);
     const float starAngle = std::atan2(sky.sunDirection.y(), sky.sunDirection.x());
-    // Offsets wrap after 100 km so the floats keep their precision in long sessions.
+    // Drift and camera wrap by the period of the cloud pattern, so the floats keep their precision
+    // in long sessions and far from the origin without a seam.
     uniforms.params[0] = static_cast<float>(sky.stars);
     uniforms.params[1] = starAngle;
-    uniforms.params[2] = static_cast<float>(std::fmod(sky.cloudOffsetX, 100000.0));
-    uniforms.params[3] = static_cast<float>(std::fmod(sky.cloudOffsetZ, 100000.0));
-    copy(frame.camera, static_cast<float>(QcSky::cloudHeight), uniforms.camera);
+    uniforms.params[2] = wrapped(sky.cloudOffsetX);
+    uniforms.params[3] = wrapped(sky.cloudOffsetZ);
+    uniforms.camera[0] = wrapped(frame.camera.x);
+    uniforms.camera[1] = static_cast<float>(frame.camera.y);
+    uniforms.camera[2] = wrapped(frame.camera.z);
+    uniforms.camera[3] = static_cast<float>(QcSky::cloudHeight);
     updates->updateDynamicBuffer(m_uniforms.get(), 0, sizeof(SkyUniforms), &uniforms);
 }
 

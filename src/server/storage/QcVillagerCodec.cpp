@@ -37,8 +37,8 @@ struct Spot
     qint32 z = 0;
     stream >> x >> y >> z;
     const QcBlockPos pos{x, y, z};
-    const bool inside = pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(x)) <= QcWorld::maxHorizontalBlock
-                        && std::abs(static_cast<qint64>(z)) <= QcWorld::maxHorizontalBlock;
+    const bool inside = pos.isInsideWorldHeight() && std::abs(static_cast<qint64>(x)) <= QcWorld::maxChunkBlock
+                        && std::abs(static_cast<qint64>(z)) <= QcWorld::maxChunkBlock;
     return {pos, inside};
 }
 

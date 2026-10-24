@@ -389,7 +389,7 @@ std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world
         for (int dx = -1; dx <= 1; ++dx) {
             const QcChunkPos pos{address.chunk.x + dx, address.chunk.z + dz};
             auto chunk = world.chunk(pos);
-            if (!chunk && (dx == 0 || dz == 0)) {
+            if (!chunk && (dx == 0 || dz == 0) && pos.isInsideWorld()) {
                 sidesLoaded = false;
             }
             const int index = (dz + 1) * 3 + (dx + 1);

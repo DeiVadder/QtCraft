@@ -11,6 +11,8 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/core/QcBlockPos.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QCoreApplication>
 #include <QMouseEvent>
@@ -19,6 +21,7 @@
 #include <QTimer>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -33,6 +36,15 @@ namespace {
         return std::nullopt;
     }
     return delayMs;
+}
+
+// How many of the chunk coordinates from centre - radius to centre + radius lie within the bound of
+// the world (QcWorld::maxHorizontalChunk).
+[[nodiscard]] qsizetype chunksInsideWorld(int centre, int radius)
+{
+    const qint64 low = std::max<qint64>(qint64{centre} - radius, -QcWorld::maxHorizontalChunk);
+    const qint64 high = std::min<qint64>(qint64{centre} + radius, QcWorld::maxHorizontalChunk);
+    return static_cast<qsizetype>(std::max<qint64>(0, high - low + 1));
 }
 
 } // namespace
@@ -455,8 +467,11 @@ void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
     // The server streams the view distance (plus a ring) it granted in Welcome; a network server
     // may grant less than the settings ask for.
     const int streamed = m_parts.session->welcome().viewDistance > 0 ? m_parts.session->welcome().viewDistance : viewDistance + 1;
-    const int ring = 2 * streamed + 1;
-    const bool allChunksArrived = m_parts.session->world()->chunkCount() >= static_cast<qsizetype>(ring) * ring;
+    // Near the bound of the world (decision E-883) the server sends only the chunks inside it.
+    const QcVec3 &feet = m_parts.session->playerMotion().position;
+    const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(feet.x)), 0, static_cast<int>(std::floor(feet.z))}.chunk();
+    const qsizetype expected = chunksInsideWorld(centre.x, streamed) * chunksInsideWorld(centre.z, streamed);
+    const bool allChunksArrived = m_parts.session->world()->chunkCount() >= expected;
     if (m_screenshotHook && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
         && m_parts.meshes->jobsInFlight() == 0) {
         m_screenshotReleased = true;

@@ -13,6 +13,8 @@ namespace QcRenderPipelines {
 // std140 layout of the Frame uniform block in the shaders.
 struct FrameUniforms
 {
+    // Projection x the camera's rotation: the shaders take positions relative to the camera
+    // (decision E-883), so cameraPosition, the camera in that space, is zero.
     float viewProjection[16];
     float cameraPosition[4];
     float fogColor[4];
@@ -43,7 +45,8 @@ inline constexpr float skyLightFloor = 0.16f;
 QShader loadShader(const QString &path, const QLoggingCategory &category);
 
 // Entity meshes (QcEntityVertex) with depth test and write, back faces culled, drawn with the
-// bindings of a frame uniform buffer (0) and the texture atlas (1).
+// bindings of a frame uniform buffer (0) and the texture atlas (1); vertex input binding 1 takes
+// the mesh's offset from the camera per instance (QcDrawOrigins, decision E-883).
 std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
                                                            const QShader &vertexShader, const QShader &fragmentShader);
 

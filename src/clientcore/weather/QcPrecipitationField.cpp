@@ -132,10 +132,10 @@ void QcPrecipitationField::update(const QcClientWorld &world, const QcClientWeat
     }
 }
 
-QcPrecipitationDrop QcPrecipitationField::dropOf(const Particle &particle, float strength)
+QcPrecipitationDrop QcPrecipitationField::dropOf(const Particle &particle, float strength, const QcVec3 &origin)
 {
     const float shown = std::clamp(strength, 0.0f, 1.0f);
-    const QcVec3 &p = particle.position;
+    const QcVec3 p = particle.position - origin;
     const auto alpha = static_cast<quint8>(particle.snow ? shown * 190.0f + 40.0f : shown * 150.0f + 40.0f);
     return {static_cast<float>(p.x), static_cast<float>(p.y), static_cast<float>(p.z), static_cast<quint8>(particle.snow ? 1 : 0), alpha, {0, 0}};
 }

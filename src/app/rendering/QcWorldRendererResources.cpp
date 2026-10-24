@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcAtlasTexture.h"
+#include "app/rendering/QcDrawOrigins.h"
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/textures/QcAtlasLayout.h"
 
@@ -24,8 +25,9 @@ class OutlineVertices
 public:
     static constexpr std::size_t floatsPerBox = std::size_t{12} * 2 * 3;
 
-    // Adds the edges of `box`; false (and nothing added) when maxOutlineBoxes boxes are in.
-    [[nodiscard]] bool addBox(const QcAabb &box);
+    // Adds the edges of `box` relative to `eye`; false (and nothing added) when maxOutlineBoxes
+    // boxes are in.
+    [[nodiscard]] bool addBox(const QcAabb &box, const QcVec3 &eye);
 
     const float *data() const { return m_values.data(); }
     // Number of floats written so far.
@@ -36,7 +38,7 @@ private:
     std::size_t m_size = 0;
 };
 
-bool OutlineVertices::addBox(const QcAabb &box)
+bool OutlineVertices::addBox(const QcAabb &box, const QcVec3 &eye)
 {
     if (m_size + floatsPerBox > m_values.size()) {
         return false;
@@ -47,12 +49,15 @@ bool OutlineVertices::addBox(const QcAabb &box)
     constexpr std::array<std::pair<int, int>, 12> edges = {
         {{0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}}};
 
-    const float x0 = static_cast<float>(box.min.x) - grow;
-    const float y0 = static_cast<float>(box.min.y) - grow;
-    const float z0 = static_cast<float>(box.min.z) - grow;
-    const float x1 = static_cast<float>(box.max.x) + grow;
-    const float y1 = static_cast<float>(box.max.y) + grow;
-    const float z1 = static_cast<float>(box.max.z) + grow;
+    // Relative to the eye in double, then small floats (decision E-883).
+    const QcVec3 low = box.min - eye;
+    const QcVec3 high = box.max - eye;
+    const float x0 = static_cast<float>(low.x) - grow;
+    const float y0 = static_cast<float>(low.y) - grow;
+    const float z0 = static_cast<float>(low.z) - grow;
+    const float x1 = static_cast<float>(high.x) + grow;
+    const float y1 = static_cast<float>(high.y) + grow;
+    const float z1 = static_cast<float>(high.z) + grow;
     const std::array<std::array<float, 3>, 8> corners = {{{x0, y0, z0}, {x1, y0, z0}, {x1, y0, z1}, {x0, y0, z1},
                                                           {x0, y1, z0}, {x1, y1, z0}, {x1, y1, z1}, {x0, y1, z1}}};
 
@@ -129,7 +134,8 @@ QRhiVertexInputLayout blockVertexLayout()
         {0, 1, QRhiVertexInputAttribute::Float2, static_cast<quint32>(offsetof(QcBlockVertex, u))},
         {0, 2, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcBlockVertex, light))},
     });
-    return inputLayout;
+    // The section's offset from the camera, per draw (decision E-883).
+    return QcDrawOrigins::withOrigins(inputLayout);
 }
 
 } // namespace
@@ -200,16 +206,16 @@ QRhiShaderResourceBindings *QcWorldDeviceResources::atlasBindings()
     return bindings.get();
 }
 
-void QcWorldDeviceResources::uploadOutline(QRhiResourceUpdateBatch *updates, const QList<QcAabb> &selection)
+void QcWorldDeviceResources::uploadOutline(QRhiResourceUpdateBatch *updates, const QList<QcAabb> &selection, const QcVec3 &eye)
 {
-    if (selection.isEmpty() || selection == uploadedSelection || !outlineVertices) {
+    if (selection.isEmpty() || (selection == uploadedSelection && eye == uploadedEye) || !outlineVertices) {
         return;
     }
 
     // The outline shows the first maxOutlineBoxes boxes of a shape.
     OutlineVertices vertices;
     for (const QcAabb &box : selection) {
-        if (!vertices.addBox(box)) {
+        if (!vertices.addBox(box, eye)) {
             break;
         }
     }
@@ -217,6 +223,7 @@ void QcWorldDeviceResources::uploadOutline(QRhiResourceUpdateBatch *updates, con
     updates->updateDynamicBuffer(outlineVertices.get(), 0, static_cast<quint32>(vertices.size() * sizeof(float)), vertices.data());
     outlineVertexCount = static_cast<quint32>(vertices.size() / 3);
     uploadedSelection = selection;
+    uploadedEye = eye;
 }
 
 bool QcWorldPassResources::fits(const QRhiRenderTarget *target) const

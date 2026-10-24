@@ -72,7 +72,8 @@ const std::vector<QcSignTextMesher::Quad> &QcSignTextCache::quads(QcBlockPos pos
 
     sign.block = block;
     sign.light = key;
-    const std::optional<QcSignTextMesher::Face> face = QcSignTextMesher::faceOf(content, block, pos);
+    // The face of the block at the origin: the quads relative to the sign's corner.
+    const std::optional<QcSignTextMesher::Face> face = QcSignTextMesher::faceOf(content, block, QcBlockPos{});
     sign.quads = face ? QcSignTextMesher::textQuads(*face, sign.text, light, uv) : std::vector<QcSignTextMesher::Quad>{};
     ++m_builds;
     return sign.quads;

@@ -150,7 +150,7 @@ private:
     // A finite place in this record's chunk, with room above and below the world.
     bool inChunk(const QcVec3 &feet) const
     {
-        return isFinite(feet) && std::abs(feet.x) <= QcWorld::maxHorizontalBlock && std::abs(feet.z) <= QcWorld::maxHorizontalBlock
+        return isFinite(feet) && std::abs(feet.x) <= QcWorld::maxChunkBlock + 1 && std::abs(feet.z) <= QcWorld::maxChunkBlock + 1
                && std::abs(feet.y) <= 4.0 * QcWorld::worldHeight && QcPhysics::blockContaining(feet).chunk() == m_record.chunk;
     }
 

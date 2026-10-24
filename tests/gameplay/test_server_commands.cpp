@@ -1,4 +1,5 @@
 #include "common/content/parser/QcCommandMacroParser.h"
+#include "common/core/QcWorldConstants.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 #include "server/commands/QcCommandRegistry.h"
@@ -368,9 +369,16 @@ private slots:
         chat(u"/confirm"_s);
         QCOMPARE(lastLine(), u"Nothing to confirm"_s);
 
-        // The edge of the world limit itself still works (a chunk there is not loaded).
-        chat(u"/setblock 30000000 60 -30000000 stone"_s);
+        // The outermost block columns on both sides still work (a chunk there is not loaded): the
+        // positive edge chunk ends at maxChunkBlock, the negative one at -maxHorizontalBlock. One
+        // block beyond the technical bound does not (decision E-883).
+        static_assert(QcWorld::maxChunkBlock == 1073741823 && QcWorld::maxHorizontalBlock == 1073741808);
+        chat(u"/setblock 1073741823 60 -1073741808 stone"_s);
         QCOMPARE(lastLine(), u"Nothing set: the chunks are not loaded"_s);
+        for (const QString &beyond : {u"/setblock 1073741824 60 0 stone"_s, u"/setblock 0 60 -1073741809 stone"_s}) {
+            chat(beyond);
+            QVERIFY2(lastLine().startsWith(u"Usage: /setblock"_s), qPrintable(lastLine()));
+        }
     }
 
     void teleportMovesPlayers()
@@ -389,8 +397,20 @@ private slots:
         ticks(1);
         QCOMPARE(m_client->motion.position.x, 0.0);
 
-        // Invalid numbers, positions outside the world and unknown players change nothing.
-        for (const QString &bad : {u"/tp 1 nan 1"_s, u"/tp 1 900 1"_s, u"/tp 99999999 70 0"_s, u"/tp Nobody"_s, u"/tp 1 2"_s}) {
+        // Far out the world goes on (decision E-883): 1e8 blocks away the chunk is loaded and the
+        // position exact.
+        chat(u"/tp 100000000.5 80 -100000000.25"_s);
+        ticks(1);
+        QCOMPARE(m_client->motion.position.x, 100000000.5);
+        QCOMPARE(m_client->motion.position.z, -100000000.25);
+        QVERIFY(m_server->world().chunk(QcBlockPos{100'000'000, 80, -100'000'001}.chunk()) != nullptr);
+        chat(u"/tp Raw 0 70 0"_s);
+        ticks(1);
+
+        // Invalid numbers, positions beyond the centre of the outermost block column (decision
+        // E-883) and unknown players change nothing.
+        for (const QString &bad : {u"/tp 1 nan 1"_s, u"/tp 1 900 1"_s, u"/tp 1073741824 70 0"_s, u"/tp 0 70 -1073741808"_s,
+                                   u"/tp Nobody"_s, u"/tp 1 2"_s}) {
             chat(bad);
             QVERIFY2(lastLine().startsWith(u"Usage: /tp"_s), qPrintable(bad));
         }
