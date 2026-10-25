@@ -9,9 +9,10 @@
 
 // One-pass recalculation of Signal Dust (decision E-335). Dust is joined by links: flat to the dust
 // next to it, up the side of a block when nothing opaque lies on the lower dust, down the side of a
-// block that is not opaque. Strength falls by one per link, so a change can only reach dust within
-// 15 links of where it happened: that part of the network is the region recomputed, the dust just
-// outside keeps its strength and feeds the region like a source. The region's strengths come from
+// block that is not opaque; the signal only goes down such a link from dust on a conductor.
+// Strength falls by one per link, so a change can only reach dust within 15 links of where it
+// happened: that part of the network is the region recomputed, the dust just outside keeps its
+// strength and feeds the region like a source. The region's strengths come from
 // one breadth-first pass from the strongest inputs down (each dust and link looked at once), its
 // connections (dot, line, cross, slopes) in the same pass, and only dust whose state really changes
 // is reported. A long wire therefore costs the same as a short one, and the result does not depend
@@ -52,6 +53,10 @@ public:
     std::array<QcDustSide, 4> sidesOf(QcBlockPos pos) const;
     // The dust the dust at `pos` is linked to.
     QList<QcBlockPos> links(QcBlockPos pos) const;
+    // Whether the dust at `from` gives its strength to the linked dust at `to`. A link down the side
+    // of a block only carries the signal down when the upper dust lies on a conductor; dust on glass
+    // or an upper slab passes it up a stair but not down (decision E-887, like the role model).
+    bool feeds(QcBlockPos from, QcBlockPos to) const;
 
     // Recomputes the dust within 15 links of the dust among `seeds` (other positions are ignored):
     // the dust that changes and the parts that wait for a chunk.

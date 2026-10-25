@@ -235,7 +235,7 @@ Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pump
 
 **The wire**
 
-Signal Dust comes from Signal ore deep below (an iron pickaxe or better). Laid on a block it becomes a wire: it connects to the dust next to it, climbs up the side of a block when nothing opaque lies on it, and runs down the side of a block that is not opaque. A lone dust is a dot that powers all four sides; one connection makes a straight line that points on; more make corners and crosses. A signal starts with strength 15 and loses one per block of wire, so after fifteen blocks it is gone; a Signal Repeater starts it at 15 again.
+Signal Dust comes from Signal ore deep below (an iron pickaxe or better). Laid on a block it becomes a wire: it connects to the dust next to it, climbs up the side of a block when nothing opaque lies on it, and runs down the side of a block that is not opaque. The signal only goes down a step from dust on a block that conducts signals (not glass, slabs or the Signal Dust block): dust on glass or an upper slab passes it up a stair but not down. A lone dust is a dot that powers all four sides; one connection makes a straight line that points on; more make corners and crosses. A signal starts with strength 15 and loses one per block of wire, so after fifteen blocks it is gone; a Signal Repeater starts it at 15 again.
 
 **Powered blocks**
 
@@ -259,7 +259,7 @@ What reacts to a signal is called a slot. A Signal Lamp lights at once and goes 
 
 **Pistons**
 
-A powered Signal Piston pushes up to 12 blocks in front of it by one. Chests, barrels and furnaces move with everything in them. Plants, torches, dust and liquids in the way break; bedrock, obsidian and extended pistons stop it. Players, creatures, items and armour stands in the way are pushed along. A Sticky Signal Piston pulls the block in front of its head back when it retracts. A piston is not powered through its front.
+A powered Signal Piston pushes up to 12 blocks in front of it by one. Chests, barrels and furnaces move with everything in them. Plants, torches, dust and liquids in the way break; bedrock, obsidian and extended pistons stop it. Players, creatures, items and armour stands in the way are pushed along. A Sticky Signal Piston pulls the block in front of its head back when it retracts. A piston is not powered through its front. Levers, buttons, torches and dust on its back, sides, top or bottom stay when it extends; what hangs on the first pushed block or on a pulled block drops; on blocks further along it currently stays.
 
 **Hoppers**
 
@@ -267,7 +267,7 @@ A Signal Hopper moves 2.5 items a second: it passes one item from its first slot
 
 **Comparators**
 
-A Signal Comparator passes on the strength from its back, two ticks later. A chest, barrel, hopper, dispenser or furnace behind it (also behind one full block) gives its fullness instead: nothing in it is 0, otherwise 1 plus 14 times how full its slots are on average. Ripe wheat, carrots and potatoes are read too (0 to 15 by their stage). In compare mode a stronger side input (dust, a repeater or comparator pointing at it) switches it off; in subtract mode the side input is taken off. Use it to switch the mode. A hopper sorter whose filter is read by a comparator needs an inverter to lock the hopper below the filter: a Signal Torch burns out when one kind of item comes at full hopper speed (eight times off within three seconds) and the filter then drains; a comparator in subtract mode with a lever behind it does not burn out (the showcase's sorter).
+A Signal Comparator passes on the strength from its back, two ticks later. A chest, barrel, hopper, dispenser or furnace behind it (also behind one full block) gives its fullness instead: nothing in it is 0, otherwise 1 plus 14 times how full its slots are on average. Ripe wheat, carrots and potatoes are read too (0 to 15 by their stage). In compare mode a stronger side input (dust, a Signal Dust block, a repeater or comparator pointing at it) switches it off; in subtract mode the side input is taken off. Use it to switch the mode. A hopper sorter whose filter is read by a comparator needs an inverter to lock the hopper below the filter: a Signal Torch burns out when one kind of item comes at full hopper speed (eight times off within three seconds) and the filter then drains; a comparator in subtract mode with a lever behind it does not burn out (the showcase's sorter).
 
 **Observers**
 
@@ -279,7 +279,7 @@ When their power comes, a Signal Dispenser and a Signal Dropper eject one item f
 
 **Known quirks**
 
-Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes: a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a block can refuse it in its data, as the decoupled pistons, dispenser and dropper do: an anvil turns a whole stack of them into the ordinary ones and back for one Signal Dust chunk and one level per started 16 blocks. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.
+Pistons are also powered by whatever would power the block above them, but only notice it when a block next to them changes, or a Signal Torch or dust two blocks away (next to one of their neighbours): a piston can sit powered and still until then (a block update detector, BUD). The game rule quasiConnectivity switches this off for a world; a block can refuse it in its data, as the decoupled pistons, dispenser and dropper do: an anvil turns a whole stack of them into the ordinary ones and back for one Signal Dust chunk and one level per started 16 blocks. A pulse shorter than a piston's two-tick extension (down to one that comes and goes within a single tick) pushes the block and lets go of it: a sticky piston leaves its block one further (block spitting). Torch clocks burn out, and repeaters keep their delays.
 
 **Same in every place**
 

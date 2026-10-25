@@ -181,8 +181,9 @@ private:
         }
         put(x + 1, line, u"stone"_s, 1);
         put(x + 1, line, u"signal_comparator[facing=east]"_s, 2);
+        // The dust stepping down lies on a conductor (decision E-887).
         for (const auto &[dx, dz] : {std::pair{2, 0}, std::pair{3, 0}, std::pair{3, -1}}) {
-            put(x + dx, line + dz, u"glass"_s, 1);
+            put(x + dx, line + dz, dz == 0 ? u"glass"_s : u"stone"_s, 1);
             put(x + dx, line + dz, u"signal_dust"_s, 2);
         }
         put(x + 2, line - 1, u"stone"_s, 2);

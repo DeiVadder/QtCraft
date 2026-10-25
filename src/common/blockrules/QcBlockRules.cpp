@@ -45,6 +45,49 @@ bool hasSolidFace(const QcBlockAccess &world, QcBlockPos pos, QcBlockFace toward
            && content.state(*block).fullFace[static_cast<std::size_t>(towards)];
 }
 
+// Whether `attached` is a signal attachment a piston base holds: a lever, a button, a torch (plain,
+// small or signal) or dust (decision E-887). Rails, carpets, plates, snow, ladders, signs and
+// lanterns keep the full-face rule.
+bool isSignalAttachment(const QcContentRegistry &content, QcBlockId attached)
+{
+    if (!content.isValidBlock(attached)) {
+        return false;
+    }
+
+    const QcBlockDefinition &definition = content.block(attached);
+    switch (definition.signal.kind) {
+    case QcSignalKind::Lever:
+    case QcSignalKind::Button:
+    case QcSignalKind::Torch:
+    case QcSignalKind::Dust:
+        return true;
+    default:
+        return definition.shapeName == u"qtcraft:torch"_s || definition.shapeName == u"qtcraft:small_torch"_s;
+    }
+}
+
+// A piston base holds a signal attachment on any of its sides but its front (the head side), retracted
+// or extended (decision E-887): its extended shape leaves the sides short of the front, but a lever on
+// a piston must not fall off when the piston it switches extends. The front face is full only while
+// retracted; it holds there by the full-face rule, not by this one.
+bool pistonBaseHolds(const QcBlockAccess &world, QcBlockPos pos, QcBlockFace towards, QcBlockId attached)
+{
+    const std::optional<QcBlockId> block = world.blockAt(pos);
+    const QcContentRegistry &content = world.content();
+    if (!block || !content.isValidBlock(*block) || content.block(*block).signal.kind != QcSignalKind::Piston
+        || !isSignalAttachment(content, attached)) {
+        return false;
+    }
+    return faceFromName(content.property(*block, u"facing"_s)) != towards;
+}
+
+// Whether the block at `pos` holds `attached` resting on or hanging at its side `towards`: a full
+// solid face, or for a signal attachment a piston base's side other than its front.
+bool holdsOnFace(const QcBlockAccess &world, QcBlockPos pos, QcBlockFace towards, QcBlockId attached)
+{
+    return hasSolidFace(world, pos, towards) || pistonBaseHolds(world, pos, towards, attached);
+}
+
 // The axis a face lies across: "x" for east and west, "y" for up and down, "z" for north and south.
 QString axisName(QcBlockFace face)
 {
@@ -52,12 +95,12 @@ QString axisName(QcBlockFace face)
     return offset.dx != 0 ? u"x"_s : (offset.dy != 0 ? u"y"_s : u"z"_s);
 }
 
-// Whether the block at `holder` holds a block attached to its side `side`: a solid block with that
-// side completely covered, or a block whose `axis` runs through that side, like the end of a chain
-// (decision E-742).
-bool holdsAttached(const QcBlockAccess &world, QcBlockPos holder, QcBlockFace side)
+// Whether the block at `holder` holds `attached` at its side `side`: a solid block with that side
+// completely covered (or a piston base, see holdsOnFace), or a block whose `axis` runs through that
+// side, like the end of a chain (decision E-742).
+bool holdsAttached(const QcBlockAccess &world, QcBlockPos holder, QcBlockFace side, QcBlockId attached)
 {
-    if (hasSolidFace(world, holder, side)) {
+    if (holdsOnFace(world, holder, side, attached)) {
         return true;
     }
 
@@ -421,7 +464,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         }
 
         if (definition.groundBlocks.isEmpty() && definition.groundLiquid.isEmpty()) {
-            return hasSolidFace(world, below, QcBlockFace::Up) || (content.isValidBlock(*ground) && content.block(*ground).supportsAbove);
+            return holdsOnFace(world, below, QcBlockFace::Up, id) || (content.isValidBlock(*ground) && content.block(*ground).supportsAbove);
         }
 
         if (!content.isValidBlock(*ground)) {
@@ -447,7 +490,7 @@ bool isSupported(const QcBlockAccess &world, QcBlockPos pos, QcBlockId id)
         }
 
         const QcBlockPos holder = qcNeighbour(pos, *towards);
-        return !world.blockAt(holder) || holdsAttached(world, holder, opposite(*towards));
+        return !world.blockAt(holder) || holdsAttached(world, holder, opposite(*towards), id);
     }
     }
     return true;

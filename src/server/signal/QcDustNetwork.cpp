@@ -74,13 +74,53 @@ struct QcDustNetwork::Region
     QList<QcBlockPos> nodes;
     // Indices into `nodes` of the dust each node links to inside the region.
     QList<QList<int>> links;
+    // The part of `links` each node gives its strength to (QcDustNetwork::feeds).
+    QList<QList<int>> feeds;
     // What the dust linked to each node from outside the region gives it (its strength minus one).
     QList<int> outside;
     // Per node: an unloaded chunk it reads, if any.
     QList<std::optional<QcChunkPos>> unloaded;
     // The number of seeds: the first nodes.
     qsizetype seeds = 0;
+
+    // Fills `links`, `feeds` and `outside` from the dust `linked` to each node (`index`: the node
+    // of each position in the region). `network` is a small view of the world, passed by value.
+    void join(QcDustNetwork network, const QHash<QcBlockPos, int> &index, const QList<QList<QcBlockPos>> &linked);
+    // The same for the one node `node`.
+    void joinNode(QcDustNetwork network, const QHash<QcBlockPos, int> &index, qsizetype node, const QList<QcBlockPos> &linked);
 };
+
+void QcDustNetwork::Region::join(QcDustNetwork network, const QHash<QcBlockPos, int> &index,
+                                 const QList<QList<QcBlockPos>> &linked)
+{
+    links.resize(nodes.size());
+    feeds.resize(nodes.size());
+    outside.fill(0, nodes.size());
+    for (qsizetype i = 0; i < nodes.size(); ++i) {
+        joinNode(network, index, i, linked[i]);
+    }
+}
+
+void QcDustNetwork::Region::joinNode(QcDustNetwork network, const QHash<QcBlockPos, int> &index, qsizetype node,
+                                     const QList<QcBlockPos> &linked)
+{
+    const QcBlockPos pos = nodes[node];
+    for (const QcBlockPos &other : linked) {
+        const auto it = index.constFind(other);
+        if (it == index.constEnd()) {
+            // Dust just outside the region feeds it like a source, where it may feed this way.
+            if (network.feeds(other, pos)) {
+                outside[node] = std::max(outside[node], network.m_power.at(other).power - 1);
+            }
+            continue;
+        }
+
+        links[node].append(*it);
+        if (network.feeds(pos, other)) {
+            feeds[node].append(*it);
+        }
+    }
+}
 
 QcDustNetwork::QcDustNetwork(const QcSignalPower &power)
     : m_power(power)
@@ -137,6 +177,11 @@ QList<QcBlockPos> QcDustNetwork::links(QcBlockPos pos) const
     return linked;
 }
 
+bool QcDustNetwork::feeds(QcBlockPos from, QcBlockPos to) const
+{
+    return to.y >= from.y || m_power.at(from.offset(0, -1, 0)).conductor;
+}
+
 QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seeds) const
 {
     Region region;
@@ -166,17 +211,7 @@ QcDustNetwork::Region QcDustNetwork::collect(const std::vector<QcBlockPos> &seed
         linkedPositions.append(linked);
     }
 
-    region.links.resize(region.nodes.size());
-    region.outside.fill(0, region.nodes.size());
-    for (qsizetype i = 0; i < region.nodes.size(); ++i) {
-        for (const QcBlockPos &pos : std::as_const(linkedPositions[i])) {
-            if (const auto it = index.constFind(pos); it != index.constEnd()) {
-                region.links[i].append(*it);
-            } else {
-                region.outside[i] = std::max(region.outside[i], m_power.at(pos).power - 1);
-            }
-        }
-    }
+    region.join(*this, index, linkedPositions);
     return region;
 }
 
@@ -240,7 +275,7 @@ QList<int> QcDustNetwork::strengths(const Region &region, QList<int> inputs)
     for (int level = QcSignalDefinition::maxPower; level > 1; --level) {
         for (const int node : levels.bucket(level)) {
             if (levels.of(node) == level) {
-                levels.spread(region.links[node], level - 1);
+                levels.spread(region.feeds[node], level - 1);
             }
         }
     }

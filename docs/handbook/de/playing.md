@@ -235,7 +235,7 @@ Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zu
 
 **Die Leitung**
 
-Signalstaub stammt aus Signalerz tief unten (Eisenspitzhacke oder besser). Auf einen Block gelegt wird er zur Leitung: Er verbindet sich mit dem Staub daneben, steigt an der Seite eines Blocks hinauf, wenn nichts Undurchsichtiges auf ihm liegt, und läuft an der Seite eines nicht undurchsichtigen Blocks hinab. Ein einzelner Staub ist ein Punkt, der alle vier Seiten versorgt; eine Verbindung ergibt eine gerade Linie, die weiter zeigt; mehr ergeben Ecken und Kreuze. Ein Signal beginnt mit Stärke 15 und verliert je Leitungsblock eins, nach fünfzehn Blöcken ist es weg; ein Signal-Repeater bringt es wieder auf 15.
+Signalstaub stammt aus Signalerz tief unten (Eisenspitzhacke oder besser). Auf einen Block gelegt wird er zur Leitung: Er verbindet sich mit dem Staub daneben, steigt an der Seite eines Blocks hinauf, wenn nichts Undurchsichtiges auf ihm liegt, und läuft an der Seite eines nicht undurchsichtigen Blocks hinab. Hinab geht das Signal nur von Staub auf einem Block, der Signale leitet (nicht Glas, Stufen oder der Signalstaubblock): Staub auf Glas oder einer oberen Stufe gibt es eine Treppe hinauf weiter, aber nicht hinab. Ein einzelner Staub ist ein Punkt, der alle vier Seiten versorgt; eine Verbindung ergibt eine gerade Linie, die weiter zeigt; mehr ergeben Ecken und Kreuze. Ein Signal beginnt mit Stärke 15 und verliert je Leitungsblock eins, nach fünfzehn Blöcken ist es weg; ein Signal-Repeater bringt es wieder auf 15.
 
 **Versorgte Blöcke**
 
@@ -259,7 +259,7 @@ Was auf ein Signal reagiert, heißt Slot. Eine Signallampe leuchtet sofort und e
 
 **Kolben**
 
-Ein versorgter Signalkolben schiebt bis zu 12 Blöcke vor sich um einen weiter. Truhen, Fässer und Öfen wandern samt Inhalt mit. Pflanzen, Fackeln, Staub und Flüssigkeiten im Weg gehen kaputt; Grundgestein, Obsidian und ausgefahrene Kolben halten ihn auf. Spieler, Wesen, Gegenstände und Rüstungsständer im Weg werden mitgeschoben. Ein klebriger Signalkolben zieht den Block vor seinem Kopf beim Einfahren zurück. Durch seine Vorderseite wird ein Kolben nicht versorgt.
+Ein versorgter Signalkolben schiebt bis zu 12 Blöcke vor sich um einen weiter. Truhen, Fässer und Öfen wandern samt Inhalt mit. Pflanzen, Fackeln, Staub und Flüssigkeiten im Weg gehen kaputt; Grundgestein, Obsidian und ausgefahrene Kolben halten ihn auf. Spieler, Wesen, Gegenstände und Rüstungsständer im Weg werden mitgeschoben. Ein klebriger Signalkolben zieht den Block vor seinem Kopf beim Einfahren zurück. Durch seine Vorderseite wird ein Kolben nicht versorgt. Hebel, Knöpfe, Fackeln und Staub an seiner Rückseite, seinen Seiten, oben oder unten bleiben, wenn er ausfährt; was am ersten geschobenen oder an einem gezogenen Block hängt, fällt ab; an weiter geschobenen Blöcken bleibt es derzeit hängen.
 
 **Trichter**
 
@@ -267,7 +267,7 @@ Ein Signaltrichter bewegt 2,5 Items pro Sekunde: Er gibt ein Item aus seinem ers
 
 **Komparatoren**
 
-Ein Signalkomparator gibt die Stärke von hinten zwei Ticks später weiter. Eine Truhe, ein Fass, Trichter, Spender oder Ofen dahinter (auch hinter einem vollen Block) gibt stattdessen ihren Füllstand: leer ist 0, sonst 1 plus 14 mal, wie voll die Felder im Mittel sind. Auch Weizen, Karotten und Kartoffeln werden gelesen (0 bis 15 nach ihrer Stufe). Im Vergleichsmodus schaltet ihn ein stärkerer Seiteneingang (Staub, ein Repeater oder Komparator, der auf ihn zeigt) ab, im Subtraktionsmodus wird der Seiteneingang abgezogen. Benutzen wechselt den Modus. Ein Trichter-Sortierer, dessen Filter ein Komparator liest, braucht einen Inverter, der den Trichter unter dem Filter sperrt: Eine Signalfackel brennt durch, wenn eine Item-Sorte in voller Trichter-Geschwindigkeit kommt (achtmal aus in drei Sekunden), und der Filter leert sich; ein Komparator im Subtraktionsmodus mit einem Hebel dahinter brennt nicht durch (der Sortierer der Showcase).
+Ein Signalkomparator gibt die Stärke von hinten zwei Ticks später weiter. Eine Truhe, ein Fass, Trichter, Spender oder Ofen dahinter (auch hinter einem vollen Block) gibt stattdessen ihren Füllstand: leer ist 0, sonst 1 plus 14 mal, wie voll die Felder im Mittel sind. Auch Weizen, Karotten und Kartoffeln werden gelesen (0 bis 15 nach ihrer Stufe). Im Vergleichsmodus schaltet ihn ein stärkerer Seiteneingang (Staub, ein Signalstaubblock, ein Repeater oder Komparator, der auf ihn zeigt) ab, im Subtraktionsmodus wird der Seiteneingang abgezogen. Benutzen wechselt den Modus. Ein Trichter-Sortierer, dessen Filter ein Komparator liest, braucht einen Inverter, der den Trichter unter dem Filter sperrt: Eine Signalfackel brennt durch, wenn eine Item-Sorte in voller Trichter-Geschwindigkeit kommt (achtmal aus in drei Sekunden), und der Filter leert sich; ein Komparator im Subtraktionsmodus mit einem Hebel dahinter brennt nicht durch (der Sortierer der Showcase).
 
 **Beobachter**
 
@@ -279,7 +279,7 @@ Kommt ihre Versorgung, werfen ein Signalspender und ein Signalwerfer vier Ticks 
 
 **Bekannte Eigenheiten**
 
-Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert: Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Block kann es in seinen Daten ablehnen, wie die entkoppelten Kolben, Spender und Werfer: Ein Amboss wandelt einen ganzen Stapel davon für ein Signalstaubstück und eine Stufe je angefangene 16 Blöcke in die gewöhnlichen um und zurück. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.
+Kolben werden auch von allem versorgt, was den Block über ihnen versorgen würde, merken es aber erst, wenn sich ein Block neben ihnen ändert oder eine Signalfackel oder Staub zwei Blöcke weiter (neben einem ihrer Nachbarn): Ein Kolben kann so lange versorgt still stehen (Block-Update-Detektor, BUD). Die Spielregel quasiConnectivity schaltet das für eine Welt ab; ein Block kann es in seinen Daten ablehnen, wie die entkoppelten Kolben, Spender und Werfer: Ein Amboss wandelt einen ganzen Stapel davon für ein Signalstaubstück und eine Stufe je angefangene 16 Blöcke in die gewöhnlichen um und zurück. Ein Puls, kürzer als das Ausfahren eines Kolbens von zwei Ticks (bis hin zu einem, der im selben Tick kommt und geht), schiebt den Block und lässt ihn los: Ein Klebkolben lässt seinen Block eins weiter liegen (Block-Spitting). Fackeltakte brennen aus, Repeater behalten ihre Verzögerungen.
 
 **Überall gleich**
 

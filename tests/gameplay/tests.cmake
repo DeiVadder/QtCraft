@@ -113,6 +113,7 @@ qc_add_test(test_stonecutter SOURCES gameplay/test_stonecutter.cpp QcPlayerUseFi
 qc_add_test(test_signal_measure SOURCES gameplay/test_signal_measure.cpp QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_signal_bodies SOURCES gameplay/test_signal_bodies.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_signal_pistons SOURCES gameplay/test_signal_pistons.cpp QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_signal_parity SOURCES gameplay/test_signal_parity.cpp QcMachineFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_minecarts SOURCES gameplay/test_minecarts.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_minecart_momentum SOURCES gameplay/test_minecart_momentum.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_minecart_riders SOURCES gameplay/test_minecart_riders.cpp QcRailFixture.h QcCircuitFixture.h QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

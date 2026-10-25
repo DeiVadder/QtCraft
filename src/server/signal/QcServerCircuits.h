@@ -97,6 +97,11 @@ private:
 
         // The components and dust that `change` may concern.
         void addAround(const QcCircuitState::Change &change, const QcSignalTable &table);
+        // The pistons, dispensers and droppers two blocks out (next to a neighbour of the cell) of a
+        // torch or dust that `change` concerns: the role model's torch and dust update that far, which
+        // a powered component with quasi-connectivity notices (decision E-887). The 18 lookups per
+        // change are not charged to the circuit budget.
+        void addTwoOut(const QcCircuitState::Change &change, const QcServerWorld &world, const QcSignalTable &table);
         // The observers looking at `pos`.
         void addObservers(QcBlockPos pos, const QcServerWorld &world, const QcSignalTable &table);
         // The comparators reading `pos`: behind it, or two behind it through a conductor.

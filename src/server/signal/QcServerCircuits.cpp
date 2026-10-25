@@ -314,6 +314,11 @@ QcServerCircuits::Collected QcServerCircuits::collect(const QList<QcCircuitState
             continue;
         }
         collected.addAround(change, m_table);
+        // Only a component with quasi-connectivity notices the update two out, and only a real change
+        // sends it.
+        if (m_state.info().quasiConnectivity && change.before != change.after) {
+            collected.addTwoOut(change, m_state.world(), m_table);
+        }
         if (change.before != change.after) {
             collected.addObservers(change.pos, m_state.world(), m_table);
             // A block placed or broken two behind a comparator, behind a conductor.
@@ -336,6 +341,33 @@ void QcServerCircuits::Collected::addReaders(QcBlockPos pos, const QcServerWorld
 {
     const QList<QcBlockPos> found = QcCircuitState::readersOf(world, pos);
     readers.insert(readers.end(), found.begin(), found.end());
+}
+
+void QcServerCircuits::Collected::addTwoOut(const QcCircuitState::Change &change, const QcServerWorld &world, const QcSignalTable &table)
+{
+    const auto spreads = [&](QcBlockId id) {
+        const QcSignalKind kind = table.at(id).kind;
+        return kind == QcSignalKind::Torch || kind == QcSignalKind::Dust;
+    };
+    if (!spreads(change.before) && !spreads(change.after)) {
+        return;
+    }
+
+    // The cells next to a neighbour: all 18 at a distance of two steps. Only components that react
+    // to a bare update look: the others see every power they take through the neighbours of what
+    // the torch or dust powers (addAround).
+    static constexpr std::array<std::array<int, 3>, 18> twoSteps{{
+        {2, 0, 0}, {-2, 0, 0}, {0, 2, 0}, {0, -2, 0}, {0, 0, 2}, {0, 0, -2},
+        {1, 1, 0}, {1, -1, 0}, {-1, 1, 0}, {-1, -1, 0}, {1, 0, 1}, {1, 0, -1},
+        {-1, 0, 1}, {-1, 0, -1}, {0, 1, 1}, {0, 1, -1}, {0, -1, 1}, {0, -1, -1},
+    }};
+    for (const auto &[dx, dy, dz] : twoSteps) {
+        const QcBlockPos far = change.pos.offset(dx, dy, dz);
+        const QcSignalKind kind = table.at(world.blockAt(far).value_or(qcAirBlockId)).kind;
+        if (kind == QcSignalKind::Piston || kind == QcSignalKind::Dispenser) {
+            components.push_back(far);
+        }
+    }
 }
 
 void QcServerCircuits::Collected::addObservers(QcBlockPos pos, const QcServerWorld &world, const QcSignalTable &table)

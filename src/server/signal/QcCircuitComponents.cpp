@@ -444,6 +444,8 @@ int QcCircuitComponents::sideInput(QcBlockPos pos, QcBlockFace side) const
     const QcBlockFace towards = QcBlockRules::opposite(side);
     switch (neighbour.kind) {
     case QcSignalKind::Dust:
+    // The Signal Dust block feeds a side with its full strength, like the role model's (decision E-887).
+    case QcSignalKind::Constant:
         return neighbour.power;
     case QcSignalKind::Repeater:
     case QcSignalKind::Comparator:

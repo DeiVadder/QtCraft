@@ -60,8 +60,10 @@ private:
         fill(x, 2, line, {stack(filter, 18), stack(junk, 24), stack(junk, 24), stack(junk, 24), stack(junk, 24)});
         put(x + 1, 1, line, u"stone"_s);
         put(x + 1, 2, line, u"signal_comparator[facing=east]"_s);
+        // The last dust up there steps down, so it lies on a conductor: dust on glass passes no
+        // signal down (decision E-887).
         for (const auto &[dx, dz] : {std::pair{2, 0}, std::pair{3, 0}, std::pair{3, -1}}) {
-            put(x + dx, 1, line + dz, u"glass"_s);
+            put(x + dx, 1, line + dz, dz == 0 ? u"glass"_s : u"stone"_s);
             put(x + dx, 2, line + dz, u"signal_dust"_s);
         }
         // Keeps the first dust from linking down to the last one.

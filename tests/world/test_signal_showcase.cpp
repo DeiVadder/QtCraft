@@ -242,6 +242,29 @@ private slots:
         QCOMPARE(block(demo, 21, 1, 8), u"anvil"_s);
     }
 
+    void parityStationShowsTheRoleModelsRules()
+    {
+        // Levers on a piston, on its side and on a block beside it keep it extended; a lever
+        // diagonally above leaves it waiting; a torch two blocks out wakes a quasi-powered piston but
+        // not the decoupled one; dust on glass carries the signal up, not down (decision E-887).
+        const QString demo = u"demo-signal_parity"_s;
+        visit(demo);
+        for (const int x : {2, 6, 10}) {
+            QCOMPARE(property(demo, x, 1, 3, u"extended"_s), u"true"_s);
+            QCOMPARE(block(demo, x, 1, 1), u"gold_block"_s);
+        }
+        QCOMPARE(block(demo, 2, 2, 3), u"lever"_s);
+        QCOMPARE(block(demo, 7, 1, 3), u"lever"_s);
+        QCOMPARE(property(demo, 14, 1, 3, u"extended"_s), u"false"_s);
+        QCOMPARE(block(demo, 2, 1, 9), u"signal_torch"_s);
+        QCOMPARE(property(demo, 2, 1, 7, u"extended"_s), u"true"_s);
+        QCOMPARE(property(demo, 6, 1, 7, u"extended"_s), u"false"_s);
+        QCOMPARE(block(demo, 14, 2, 7), u"signal_lamp_lit"_s);
+        QCOMPARE(property(demo, 12, 2, 9, u"power"_s), u"14"_s);
+        QCOMPARE(property(demo, 11, 1, 9, u"power"_s), u"0"_s);
+        QCOMPARE(block(demo, 10, 1, 9), u"signal_lamp"_s);
+    }
+
     void pistonsMoveDoorsChestsAndStands()
     {
         const QString demo = u"demo-signal_pistons"_s;

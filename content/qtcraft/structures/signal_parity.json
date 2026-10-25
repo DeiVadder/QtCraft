@@ -1,0 +1,159 @@
+{
+    "name": "signal_parity",
+    "showcase": {
+        "order": 111
+    },
+    "palette": {
+        "P": "polished_stone",
+        ".": "air",
+        "S": "stone",
+        "G": "gold_block",
+        "g": "glass",
+        "N": "signal_piston[facing=north]",
+        "n": "decoupled_signal_piston[facing=north]",
+        "F": "lever[attach=floor,powered=true]",
+        "W": "lever[attach=west,powered=true]",
+        "E": "lever[attach=east,powered=true]",
+        "T": "signal_torch_off[attach=north]",
+        "d": "signal_dust",
+        "L": "signal_lamp"
+    },
+    "layers": [
+        [
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP",
+            "PPPPPPPPPPPPPPPPPP"
+        ],
+        [
+            "..................",
+            "..................",
+            "..G...G...G...G...",
+            "..N...NW..NSW.N...",
+            "..................",
+            "..................",
+            "..G...G...........",
+            "..N...n...FdgSS...",
+            "..S...S...........",
+            "..T...T...LdgSS...",
+            ".................."
+        ],
+        [
+            "..................",
+            "..................",
+            "..................",
+            "..F............ES.",
+            "..................",
+            "..................",
+            "..................",
+            "...ES..ES...ddL...",
+            "..................",
+            "............ddF...",
+            ".................."
+        ],
+        [
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            ".................."
+        ],
+        [
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            "..................",
+            ".................."
+        ]
+    ],
+    "updates": [
+        [
+            2,
+            1,
+            3
+        ],
+        [
+            6,
+            1,
+            3
+        ],
+        [
+            10,
+            1,
+            3
+        ],
+        [
+            2,
+            1,
+            9
+        ],
+        [
+            6,
+            1,
+            9
+        ],
+        [
+            10,
+            1,
+            7
+        ],
+        [
+            14,
+            2,
+            9
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                6.5,
+                3.6,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_parity.on_piston"
+        },
+        {
+            "at": [
+                14.5,
+                3.6,
+                3.5
+            ],
+            "text": "structure.qtcraft.signal_parity.diagonal"
+        },
+        {
+            "at": [
+                4.5,
+                3.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_parity.two_out"
+        },
+        {
+            "at": [
+                12.5,
+                3.6,
+                8.5
+            ],
+            "text": "structure.qtcraft.signal_parity.glass"
+        }
+    ]
+}

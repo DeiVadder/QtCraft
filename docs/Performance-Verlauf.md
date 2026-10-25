@@ -2816,3 +2816,17 @@ Speicher gleich (±1 %). Die Bildzeit bleibt an 120 Hz gebunden; die Mehrkosten 
 | crowd | 8,40 → 8,41 ms | −1,7 % | −3,8 % | 0,718 → 0,675 ms (−5,9 %) | 690,1 → 672,1 MB (−2,6 %) |
 
 Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (stand 170,5 MB, sprint 108,0 MB in der 45.0-Messung als A). Welt-Render-CPU sinkt um 3–6 %, also rund ein Drittel bis die Hälfte der Mehrkosten von 45.0 (absolute Werte schwanken zwischen den Messabenden: dev lag diesmal höher als die 45.0-Messung). P99: sprint −12 %, crowd +20 % bei n = 6, gegenläufig: Streuung. Bewertung: übernommen.
+
+## Paket 79.12 (Signal-Parität, E-887), headless, Release (2026-10-25)
+
+`scripts/bench-headless.sh` mit `SCENARIOS=@signal` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `dev` = `90cb3f8` (exportierter Quellstand, eigener Release-Baum), `new` = Branch `feature/79-12-signal-parity`; Median je Szenario. Neu ist vor allem die BUD-Reichweite zwei Blöcke weit: jede Änderung einer Fackel oder eines Staubs schlägt 18 Zellen nach (Kolben, Spender, Werfer).
+
+| Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Spitzenspeicher (MB) |
+|---|---:|---|---|---|
+| signal-stress | 3 | 6,268 → 6,509 (+3,8 %) | 12,440 → 12,803 (+2,9 %) | 92,5 → 92,6 |
+| showcase-signal_components | 3 | 0,101 → 0,074 | 0,189 → 0,156 | 56,1 → 56,2 |
+| showcase-signal_machines | 3 | 0,096 → 0,096 | 0,172 → 0,179 | 56,5 → 56,5 |
+| showcase-signal_farm | 3 | 0,107 → 0,105 | 0,184 → 0,182 | 55,8 → 56,2 |
+
+`showcase-signal_components` hat 49 statt 72 Wesen in Reichweite: die neue Station `signal_parity` (Reihenfolge 111) ist in die Folge der Showcase-Stationen eingefügt, alle späteren Stationen rücken weiter. Der Unterschied kommt von den Wesen, nicht von den Signalen; die Reihe `showcase-signal_components` ist über diesen Commit hinweg nicht vergleichbar. Erste Fassung (36 Nachschläge je Änderung, die 18 Zellen im Abstand zwei doppelt): `signal-stress` 6,263 → 6,699 ms (+7,0 %), 6 Runden.
+
