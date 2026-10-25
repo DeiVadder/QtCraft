@@ -479,8 +479,8 @@ void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity
 
 QcVec3 QcEntityFrameBuilder::meshOrigin() const
 {
-    // Near the camera (decision E-883): the vertices stay small floats, the renderer adds the
-    // origin's offset from the camera.
+    // Near the camera (decision E-883): the vertices stay small floats, the renderer places the
+    // origin relative to the camera (QcDrawOrigins).
     return QcRenderOrigin::blockNear(m_parts.view ? m_parts.view->camera().position : m_parts.session->playerMotion().position);
 }
 

@@ -153,10 +153,14 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
 {
     const QSize size = renderTarget()->pixelSize();
     const float aspect = size.height() > 0 ? static_cast<float>(size.width()) / static_cast<float>(size.height()) : 1.0f;
-    // Relative to the camera like the world (decision E-883): the mesh's offset goes per draw.
+    // Relative to the camera like the world (decision E-883): the mesh's origin goes per draw.
     const QMatrix4x4 viewProjection = m_rhi->clipSpaceCorrMatrix() * m_camera.projectionMatrix(aspect, farPlane) * m_camera.viewRotation();
-    m_origins.begin(m_camera.position);
-    m_origin = m_origins.add(m_mesh ? m_mesh->origin : QcVec3{});
+    const QcVec3 origin = m_mesh ? m_mesh->origin : QcVec3{};
+    if (m_origins.size() == 0) {
+        m_origin = m_origins.add(origin);
+    }
+    m_origins.move(m_origin, origin);
+    const QVector3D drawCamera = m_origins.follow(m_camera.position);
     // The preview counts no uploaded bytes.
     static_cast<void>(m_origins.upload(m_rhi, updates));
 
@@ -171,6 +175,9 @@ void QcCharacterPreviewRenderer::uploadUniforms(QRhiResourceUpdateBatch *updates
     uniforms.extra[1] = static_cast<float>(size.width());
     uniforms.extra[2] = static_cast<float>(size.height());
     uniforms.extra[3] = QcRenderPipelines::skyLightFloor;
+    uniforms.drawCamera[0] = drawCamera.x();
+    uniforms.drawCamera[1] = drawCamera.y();
+    uniforms.drawCamera[2] = drawCamera.z();
     updates->updateDynamicBuffer(m_uniforms.get(), 0, sizeof(uniforms), &uniforms);
 }
 

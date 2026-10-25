@@ -24,7 +24,7 @@ QRhiVertexInputLayout entityLayout()
         {0, 5, QRhiVertexInputAttribute::Float, static_cast<quint32>(offsetof(QcEntityVertex, blockLight))},
         {0, 4, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcEntityVertex, tint))},
     });
-    // The mesh's offset from the camera, per draw (decision E-883).
+    // The mesh's origin, per draw (decision E-883).
     return QcDrawOrigins::withOrigins(layout);
 }
 

@@ -6,8 +6,8 @@ layout(location = 2) in float shade;
 layout(location = 3) in float skyLight;
 layout(location = 4) in vec4 tint;
 layout(location = 5) in float blockLight;
-// Per draw (QcDrawOrigins, decision E-883): xyz the mesh's origin relative to the camera; the
-// vertices are relative to the origin (QcEntityMesh::origin).
+// Per draw (QcDrawOrigins, decision E-883): xyz the mesh's origin relative to the render anchor;
+// the vertices are relative to the origin (QcEntityMesh::origin).
 layout(location = 6) in vec4 origin;
 
 layout(location = 0) out vec2 vTexCoord;
@@ -23,6 +23,10 @@ layout(std140, binding = 0) uniform Frame {
     vec4 params;
     // x: 1 when clip-space depth runs from 0 to 1, w: floor light per unit of sky light
     vec4 extra;
+    vec4 atlas;
+    vec4 animation;
+    // xyz: the camera relative to the render anchor (QcDrawOrigins::follow)
+    vec4 drawCamera;
 } frame;
 
 void main()
@@ -33,7 +37,7 @@ void main()
     // Block light (torches) is warm and does not follow the time of day.
     vLight = shade * max(vec3(sky), blockLight * vec3(1.0, 0.86, 0.66));
     vTint = tint;
-    vec3 relative = position + origin.xyz;
+    vec3 relative = position + origin.xyz - frame.drawCamera.xyz;
     vDistance = length(relative - frame.cameraPosition.xyz);
     vec4 clip = frame.viewProjection * vec4(relative, 1.0);
     // Squeeze the depth into the front 5 % of the range so the hand is drawn over the world.

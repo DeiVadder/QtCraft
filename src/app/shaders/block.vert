@@ -6,8 +6,8 @@ layout(location = 1) in vec2 texCoord;
 // x: face shading and ambient occlusion, y: sky light, z: block light (unsigned normalised bytes);
 // w: the surface byte (decision E-390: normal in the low three bits, material class in the high five).
 layout(location = 2) in vec4 light;
-// Per draw (QcDrawOrigins, decision E-883): xyz the section's corner relative to the camera, w the
-// corner modulo cellPeriod in sixteens of a block, packed x + 64 y + 4096 z (QcRenderOrigin).
+// Per draw (QcDrawOrigins, decision E-883): xyz the section's corner relative to the render anchor,
+// w the corner modulo cellPeriod in sixteens of a block, packed x + 64 y + 4096 z (QcRenderOrigin).
 layout(location = 6) in vec4 origin;
 
 layout(location = 0) out vec2 vTexCoord;
@@ -36,6 +36,8 @@ layout(std140, binding = 0) uniform Frame {
     vec4 atlas;
     // x: the animation time in ticks, wrapped where every animation starts over
     vec4 animation;
+    // xyz: the camera relative to the render anchor (QcDrawOrigins::follow)
+    vec4 drawCamera;
 } frame;
 
 // One texel per atlas cell (QcTextureAtlas::animationMap): at the cell of an animated texture's
@@ -130,7 +132,9 @@ void main()
     // Leaves get a little lighter and darker from corner to corner, so a crown is not one flat
     // green (decision E-724).
     vLight *= 1.0 - vCutout * foliageVariation * cornerHash(mod(position + sectionCell(), cellPeriod));
-    vec3 relative = position + origin.xyz;
+    // Both offsets from the anchor are small floats: the difference is exact to a few hundredths of a
+    // millimetre near the camera.
+    vec3 relative = position + origin.xyz - frame.drawCamera.xyz;
     vDistance = length(relative - frame.cameraPosition.xyz);
     vPosition = relative;
     gl_Position = frame.viewProjection * vec4(relative, 1.0);

@@ -5,6 +5,7 @@
 
 #include "app/rendering/QcBufferWrite.h"
 #include "app/rendering/QcGpuMeshStore.h"
+#include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/meshing/QcPackedMesh.h"
 
 #include <QTest>
@@ -303,6 +304,45 @@ private slots:
         uploadFrame(m_rhi.get(), store);
         QCOMPARE(store.pageCount(), 0);
         QCOMPARE(store.bytes(), quint64(0));
+    }
+
+    // Each section with faces holds an entry of the draw origins (decision E-883) from its upload to
+    // its removal, a section without faces none; a removed section's entry goes to the next one, and
+    // clearing the store keeps the entries the renderer added itself.
+    void sectionsHoldTheirDrawOrigin()
+    {
+        if (!m_rhi) {
+            QSKIP("no Metal device for the offscreen QRhi");
+        }
+        QcGpuMeshStore store;
+        store.reset(m_rhi.get(), false);
+        const quint32 hand = store.origins().add(QcVec3{});
+        auto placed = std::make_shared<QcChunkMesh>(*sectionMesh());
+        placed->origin = {1'000'000'000 + 48, 64, -1'000'000'000 + 16};
+        store.queue(1, placed);
+        store.queue(2, std::make_shared<const QcChunkMesh>());
+        uploadFrame(m_rhi.get(), store);
+
+        const quint32 entry = store.meshes().at(1).drawOrigin;
+        QVERIFY(entry != hand);
+        QCOMPARE(store.meshes().at(2).drawOrigin, QcDrawOrigins::none);
+        QCOMPARE(store.origins().size(), 2);
+        const QcVec3 camera{1e9 + 40.5, 70.0, -1e9 + 0.5};
+        const QVector3D drawCamera = store.origins().follow(camera);
+        QCOMPARE(store.origins().at(entry).toVector3D() - drawCamera, QVector3D(7.5f, -6.0f, 15.5f));
+        QCOMPARE(store.origins().at(entry).w(), QcRenderOrigin::sectionCell(placed->origin));
+
+        store.queue(1, nullptr);
+        uploadFrame(m_rhi.get(), store);
+        QCOMPARE(store.origins().size(), 1);
+        store.queue(3, placed);
+        uploadFrame(m_rhi.get(), store);
+        QCOMPARE(store.meshes().at(3).drawOrigin, entry);
+
+        store.clearAll();
+        uploadFrame(m_rhi.get(), store);
+        QCOMPARE(store.origins().size(), 1);
+        QCOMPARE(store.origins().at(hand), QcRenderOrigin::entry(QcVec3{}, store.origins().anchor()));
     }
 };
 

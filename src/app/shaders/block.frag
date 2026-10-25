@@ -23,6 +23,9 @@ layout(std140, binding = 0) uniform Frame {
     // along a slanted footprint
     vec4 atlas;
     vec4 animation;
+    // Unused here, declared as in block.vert: the stages of a pipeline declare the identical block
+    // (QRhi's GL backend makes it a struct uniform that must match across stages; test_frame_uniforms).
+    vec4 drawCamera;
 } frame;
 
 layout(binding = 1) uniform sampler2D atlas;

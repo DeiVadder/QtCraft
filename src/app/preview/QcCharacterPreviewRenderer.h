@@ -47,7 +47,7 @@ private:
     std::unique_ptr<QRhiBuffer> m_vertices;
     std::unique_ptr<QRhiBuffer> m_indices;
     quint32 m_indexCount = 0;
-    // The mesh's offset from the camera, the one entry of the entity pipeline's binding 1.
+    // The mesh's origin, the one entry of the entity pipeline's binding 1.
     QcDrawOrigins m_origins;
     quint32 m_origin = 0;
 

@@ -2803,3 +2803,16 @@ GUI-CPU liegt wieder auf oder unter der Basis (stand −1 %, sprint −20 %, sho
 | crowd | 8,44 → 8,43 ms (−0,2 %) | +3,4 % | +8,4 % | 0,61 → 0,68 ms (+13 %) | −4,8 % | 561 = 561 |
 
 Speicher gleich (±1 %). Die Bildzeit bleibt an 120 Hz gebunden; die Mehrkosten sitzen auf der CPU im Welt-Render (Versätze je Zeichenaufruf in `double`, Hochladen des Versatz-Puffers, ~16 B je sichtbarer Sektion) und sind mit 0,03–0,14 ms je Bild klein. P99 stand +22 % bei n = 6, in den anderen Szenarien nicht sichtbar: Streuung. Bewertung: angenommen; Folgepaket für Versätze nur bei Kamerabewegung.
+
+## Paket 45.0b (Render-Anker, nur geänderte Einträge hochladen, E-883), Fenster-A/B (2026-10-25)
+
+`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` e049ca9 (mit 45.0), B = 45.0b. Mediane:
+
+| Szenario | Bildzeit Ø | GPU Ø | Render-CPU Ø | Welt-Render Ø (CPU) | Upload |
+|---|---|---|---|---|---|
+| stand | 8,43 → 8,44 ms | +0,3 % | −2,1 % | 0,582 → 0,558 ms (−4,1 %) | 177,0 → 170,6 MB (−3,6 %) |
+| sprint | 8,44 → 8,42 ms | −2,3 % | −2,9 % | 0,569 → 0,540 ms (−5,2 %) | 115,1 → 107,8 MB (−6,3 %) |
+| showcase | 8,40 → 8,40 ms | −0,1 % | −0,7 % | 0,292 → 0,282 ms (−3,6 %) | 96,0 → 93,1 MB (−3,1 %) |
+| crowd | 8,40 → 8,41 ms | −1,7 % | −3,8 % | 0,718 → 0,675 ms (−5,9 %) | 690,1 → 672,1 MB (−2,6 %) |
+
+Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (stand 170,5 MB, sprint 108,0 MB in der 45.0-Messung als A). Welt-Render-CPU sinkt um 3–6 %, also rund ein Drittel bis die Hälfte der Mehrkosten von 45.0 (absolute Werte schwanken zwischen den Messabenden: dev lag diesmal höher als die 45.0-Messung). P99: sprint −12 %, crowd +20 % bei n = 6, gegenläufig: Streuung. Bewertung: übernommen.

@@ -30,8 +30,11 @@ struct FrameUniforms
     // Animated textures (decision E-878): x: the time in ticks, wrapped where every animation of
     // the atlas starts over (QcTextureAtlas::animationCycleTicks); y, z, w unused.
     float animation[4];
+    // xyz: the camera's offset from the render anchor (QcDrawOrigins::follow, decision E-883), which
+    // the block and entity shaders subtract from their draws' origins; w unused.
+    float drawCamera[4];
 };
-static_assert(sizeof(FrameUniforms) == 160);
+static_assert(sizeof(FrameUniforms) == 176);
 
 // Light the shaders never go below (caves without sky light).
 inline constexpr float minimumLight = 0.08f;
@@ -46,7 +49,7 @@ QShader loadShader(const QString &path, const QLoggingCategory &category);
 
 // Entity meshes (QcEntityVertex) with depth test and write, back faces culled, drawn with the
 // bindings of a frame uniform buffer (0) and the texture atlas (1); vertex input binding 1 takes
-// the mesh's offset from the camera per instance (QcDrawOrigins, decision E-883).
+// the mesh's origin per instance (QcDrawOrigins, decision E-883).
 std::unique_ptr<QRhiGraphicsPipeline> createEntityPipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *bindings,
                                                            const QShader &vertexShader, const QShader &fragmentShader);
 

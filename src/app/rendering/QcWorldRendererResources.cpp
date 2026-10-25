@@ -134,7 +134,7 @@ QRhiVertexInputLayout blockVertexLayout()
         {0, 1, QRhiVertexInputAttribute::Float2, static_cast<quint32>(offsetof(QcBlockVertex, u))},
         {0, 2, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcBlockVertex, light))},
     });
-    // The section's offset from the camera, per draw (decision E-883).
+    // The section's corner, per draw (decision E-883).
     return QcDrawOrigins::withOrigins(inputLayout);
 }
 

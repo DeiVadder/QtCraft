@@ -11,6 +11,7 @@
 void QcGpuMeshStore::reset(QRhi *rhi, bool sectionLight)
 {
     m_meshes.clear();
+    m_origins.reset();
     m_lightPool.reset();
     m_rhi = rhi;
     m_sectionLight = sectionLight;
@@ -95,6 +96,9 @@ void QcGpuMeshStore::release(quint64 key)
 {
     if (const auto found = m_meshes.find(key); found != m_meshes.end()) {
         m_arena.release(found->second.slot);
+        if (found->second.drawOrigin != QcDrawOrigins::none) {
+            m_origins.release(found->second.drawOrigin);
+        }
         m_meshes.erase(found);
     }
 }
@@ -102,6 +106,12 @@ void QcGpuMeshStore::release(quint64 key)
 quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
 {
     if (m_clearAll) {
+        // The renderer's own draw origins stay.
+        for (const auto &[key, mesh] : m_meshes) {
+            if (mesh.drawOrigin != QcDrawOrigins::none) {
+                m_origins.release(mesh.drawOrigin);
+            }
+        }
         m_meshes.clear();
         m_arena.clear();
         m_lightPool.reset();
@@ -134,6 +144,10 @@ quint64 QcGpuMeshStore::uploadQueued(QRhiResourceUpdateBatch *updates)
         gpuMesh.origin = mesh->origin;
         gpuMesh.boundsMin = low;
         gpuMesh.boundsMax = high;
+        // An entry only for a section with faces: most sections of air have none.
+        if (gpuMesh.isDrawable(true)) {
+            gpuMesh.drawOrigin = m_origins.addSection(mesh->origin);
+        }
         uploaded += gpuMesh.bytes();
         m_meshes.insert_or_assign(key, std::move(gpuMesh));
     }

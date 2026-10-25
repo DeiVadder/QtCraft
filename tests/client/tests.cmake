@@ -156,6 +156,11 @@ qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp LIBRARIES qc_app_
 qc_add_test(test_shader_variants SOURCES client/test_shader_variants.cpp LIBRARIES Qt::Gui Qt::GuiPrivate)
 target_compile_definitions(test_shader_variants PRIVATE QTCRAFT_QSB_DIR="${PROJECT_BINARY_DIR}/src/app/.qsb/shaders")
 add_dependencies(test_shader_variants qtcraft)
+# The Frame uniform block of the baked block, entity and hand shaders: offsets as FrameUniforms
+# writes them, identical in the vertex and fragment stage of a pipeline (E-883).
+qc_add_test(test_frame_uniforms SOURCES client/test_frame_uniforms.cpp LIBRARIES qc_app_core)
+target_compile_definitions(test_frame_uniforms PRIVATE QTCRAFT_QSB_DIR="${PROJECT_BINARY_DIR}/src/app/.qsb/shaders")
+add_dependencies(test_frame_uniforms qtcraft)
 # The shared atlas texture of the character previews, on the Null backend of QRhi.
 qc_add_test(test_preview_atlas_cache SOURCES client/test_preview_atlas_cache.cpp LIBRARIES qc_app_core)
 # The per-cell light of the sections (decision E-390): mesher, texels and the GPU pool, uploaded and

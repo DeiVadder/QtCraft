@@ -1,7 +1,6 @@
 #pragma once
 
 #include "app/rendering/QcDebugLineRenderer.h"
-#include "app/rendering/QcDrawOrigins.h"
 #include "app/rendering/QcFramedMapTexture.h"
 #include "app/rendering/QcGpuMeshStore.h"
 #include "app/rendering/QcPrecipitationRenderer.h"
@@ -68,8 +67,6 @@ struct QcWorldDeviceResources
     QcGpuBuffers entityBuffers;
     QcGpuBuffers handBuffers;
     QcGpuBuffers framedMapBuffers;
-    // The offsets of the frame's draws from the camera (decision E-883), a buffer of its own.
-    QcDrawOrigins drawOrigins;
     // The framed-map texture; its bindings refer to frameUniforms (declared after it, released first).
     QcFramedMapTexture framedMaps;
     // The bindings refer to the resources above and are declared after them (released first).

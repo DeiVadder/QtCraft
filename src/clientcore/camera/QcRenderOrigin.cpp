@@ -16,9 +16,15 @@ int cellOf(int coordinate)
 
 } // namespace
 
-QVector4D entry(const QcVec3 &origin, const QcVec3 &camera, float cell)
+bool outOfReach(const QcVec3 &anchor, const QcVec3 &camera)
 {
-    const QcVec3 offset = origin - camera;
+    const QcVec3 offset = camera - anchor;
+    return std::abs(offset.x) > anchorReach || std::abs(offset.y) > anchorReach || std::abs(offset.z) > anchorReach;
+}
+
+QVector4D entry(const QcVec3 &origin, const QcVec3 &anchor, float cell)
+{
+    const QcVec3 offset = origin - anchor;
     return {static_cast<float>(offset.x), static_cast<float>(offset.y), static_cast<float>(offset.z), cell};
 }
 

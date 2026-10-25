@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/rendering/QcDrawOrigins.h"
 #include "app/rendering/QcSectionArena.h"
 #include "app/rendering/QcSectionLightPool.h"
 #include "clientcore/meshing/QcChunkMesh.h"
@@ -68,15 +69,12 @@ struct QcGpuMesh
     QcBlockPos origin;
     QVector3D boundsMin;
     QVector3D boundsMax;
+    // The entry of the corner in the store's draw origins (QcDrawOrigins); none without faces.
+    quint32 drawOrigin = QcDrawOrigins::none;
     // GPU bytes of the section's data in its page.
     quint64 bytes() const { return slot.bytes(); }
-    // The middle of the vertices' box in the world.
-    QcVec3 centre() const
-    {
-        const QVector3D middle = (boundsMin + boundsMax) * 0.5f;
-        return QcVec3{static_cast<double>(origin.x) + middle.x(), static_cast<double>(origin.y) + middle.y(),
-                      static_cast<double>(origin.z) + middle.z()};
-    }
+    // The middle of the vertices' box relative to the corner.
+    QVector3D middle() const { return (boundsMin + boundsMax) * 0.5f; }
     // Whether a frame draws anything of the section: any list with faces; the underside only from
     // below the world (a section of plants or leaves alone has only cut-out faces, decision E-756).
     bool isDrawable(bool belowWorld) const
@@ -89,13 +87,16 @@ struct QcGpuMesh
 // The sections of the world on the GPU, one mesh per section key in the pages of a section arena
 // (decision E-820): the meshes received since the last frame are queued and uploaded in one resource
 // update batch, together with their per-cell light when the frame plan reads it (QcSectionLightPool).
-// Drawing them is QcWorldRenderer's part. Render thread only.
+// Each section with faces holds an entry of the draw origins (decision E-883) from its upload to its
+// removal; the renderer adds the entries of its other draws to the same origins. Drawing them is
+// QcWorldRenderer's part. Render thread only.
 class QcGpuMeshStore
 {
 public:
     using Meshes = std::unordered_map<quint64, QcGpuMesh>;
 
-    // Forgets every section, for a new QRhi; `sectionLight` says whether the plan reads the light pool.
+    // Forgets every section and draw origin, for a new QRhi; `sectionLight` says whether the plan
+    // reads the light pool.
     void reset(QRhi *rhi, bool sectionLight);
     // Removes every section with the next upload, together with what was queued before.
     void clearAll()
@@ -109,6 +110,9 @@ public:
     quint64 uploadQueued(QRhiResourceUpdateBatch *updates);
 
     const Meshes &meshes() const { return m_meshes; }
+    // The origins of the draws, the sections' and the renderer's other ones.
+    QcDrawOrigins &origins() { return m_origins; }
+    const QcDrawOrigins &origins() const { return m_origins; }
     // GPU bytes of the section pages (their capacity, decision E-820).
     quint64 bytes() const { return m_arena.bytes(); }
     // Pages of the section arena.
@@ -135,6 +139,7 @@ private:
     bool m_warnedWriteFallback = false;
     quint64 m_directWrites = 0;
     Meshes m_meshes;
+    QcDrawOrigins m_origins;
     QcSectionArena m_arena;
     // The latest mesh of each section changed since the last frame (null: removed). One entry per
     // section: only the latest mesh is worth a slot and an upload (decision E-413).

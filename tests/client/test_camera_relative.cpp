@@ -10,14 +10,15 @@
 
 // Camera-relative rendering (decision E-883): the arithmetic of the shaders reproduced in float on
 // the CPU. A vertex is stored relative to its section's corner, the draw takes the corner's offset
-// from the camera (subtracted in double), and the shader adds the two in float: the position
-// relative to the camera must come out within a millimetre however far out the camera stands.
+// from the render anchor (subtracted in double), the frame the camera's offset from the anchor, and
+// the shader adds and subtracts them in float: the position relative to the camera must come out
+// within a millimetre however far out the camera stands and wherever it is within the anchor's reach.
 namespace {
 
-// The block shader: the vertex relative to the camera, as the GPU adds it.
-QVector3D shaderRelative(QVector3D local, QVector4D entry)
+// The block shader: the vertex relative to the camera, as the GPU computes it.
+QVector3D shaderRelative(QVector3D local, QVector4D entry, QVector3D drawCamera)
 {
-    return local + entry.toVector3D();
+    return local + entry.toVector3D() - drawCamera;
 }
 
 // The exact position relative to the camera, in double.
@@ -47,28 +48,44 @@ private slots:
     void vertexPositionsStayExactFarOut_data()
     {
         QTest::addColumn<double>("far");
-        QTest::newRow("1e3") << 1e3;
-        QTest::newRow("1e6") << 1e6;
-        QTest::newRow("1e8") << 1e8;
-        QTest::newRow("1e9") << 1e9;
+        // How far the camera has moved from where the anchor was placed: none, and almost the
+        // anchor's reach, the largest offsets the shaders subtract.
+        QTest::addColumn<bool>("atReach");
+        for (const double far : {1e3, 1e6, 1e8, 1e9}) {
+            const QByteArray name = QByteArray::number(far, 'g', 1);
+            QTest::addRow("%s at the anchor", name.constData()) << far << false;
+            QTest::addRow("%s at the reach", name.constData()) << far << true;
+        }
     }
 
     void vertexPositionsStayExactFarOut()
     {
         QFETCH(double, far);
+        QFETCH(bool, atReach);
+        const QcVec3 drift = atReach ? QcVec3{127.55, -60.41, -127.87} : QcVec3{};
         // A camera between whole blocks and sections up to 200 m around it, near and far in view.
         QcCamera camera;
-        camera.position = {far + 0.371, 70.62, -far - 0.813};
+        const QcVec3 placed{far + 0.371, 70.62, -far - 0.813};
+        const QcVec3 anchor = QcRenderOrigin::blockNear(placed);
+        camera.position = placed + drift;
+        QVERIFY(!QcRenderOrigin::outOfReach(anchor, camera.position));
+        const QVector3D drawCamera = QcRenderOrigin::entry(camera.position, anchor).toVector3D();
         camera.yaw = 30.0f;
         camera.pitch = -20.0f;
         const QMatrix4x4 viewProjection = camera.projectionMatrix(16.0f / 9.0f, 512.0f) * camera.viewRotation();
         const QVector3D local(7.25f, 3.5f, 12.75f);
         for (const double away : {0.0, 3.0, 47.5, 199.0}) {
             const QcBlockPos corner{sectionCorner(camera.position.x + away), 64, sectionCorner(camera.position.z - away)};
-            const QVector4D entry = QcRenderOrigin::entry(QcRenderOrigin::toVec3(corner), camera.position);
-            const QVector3D relative = shaderRelative(local, entry);
+            const QVector4D entry = QcRenderOrigin::entry(QcRenderOrigin::toVec3(corner), anchor);
+            // The corner's offset from the anchor is a whole number, exact in a float.
+            QCOMPARE(static_cast<double>(entry.x()), corner.x - anchor.x);
+            const QVector3D relative = shaderRelative(local, entry, drawCamera);
             const QcVec3 exact = exactRelative(corner, local, camera.position);
             QVERIFY2(distance(relative, exact) < 1e-3, qPrintable(QString::number(distance(relative, exact))));
+            // Near the camera, where an error would show most, within a tenth of a millimetre.
+            if (away < 10.0) {
+                QVERIFY2(distance(relative, exact) < 1e-4, qPrintable(QString::number(distance(relative, exact))));
+            }
 
             // The projection works on small numbers: the same point on screen as the exact one.
             const QVector3D onScreen = viewProjection.map(relative);
@@ -89,17 +106,30 @@ private slots:
 
     void cullingWorksRelativeToTheCamera()
     {
+        // As QcWorldRenderer::cull: the corner's entry minus the camera's offset from the anchor.
         QcCamera camera;
         camera.position = {1e9 + 0.5, 70.0, -1e9 + 0.5};
+        const QcVec3 anchor = QcRenderOrigin::blockNear(camera.position + QcVec3{-100.25, 30.0, 90.75});
+        const QVector3D drawCamera = QcRenderOrigin::entry(camera.position, anchor).toVector3D();
         const QcFrustum::Planes planes = QcFrustum::planes(camera.projectionMatrix(16.0f / 9.0f, 256.0f) * camera.viewRotation());
         const auto visible = [&](QcBlockPos corner) {
-            const QVector3D offset = QcRenderOrigin::entry(QcRenderOrigin::toVec3(corner), camera.position).toVector3D();
+            const QVector3D offset = QcRenderOrigin::entry(QcRenderOrigin::toVec3(corner), anchor).toVector3D() - drawCamera;
             return QcFrustum::intersectsBox(planes, offset, offset + QVector3D(16.0f, 16.0f, 16.0f));
         };
         // Yaw 0 looks north (-z).
         QVERIFY(visible({1'000'000'000, 64, -1'000'000'000 - 64}));
         QVERIFY(!visible({1'000'000'000, 64, -1'000'000'000 + 64}));
         QVERIFY(!visible({1'000'000'000 + 512, 64, -1'000'000'000 - 64}));
+    }
+
+    void anchorFollowsOnlyBeyondItsReach()
+    {
+        const QcVec3 anchor{1e9, 70.0, -1e9};
+        QVERIFY(!QcRenderOrigin::outOfReach(anchor, anchor));
+        QVERIFY(!QcRenderOrigin::outOfReach(anchor, anchor + QcVec3{QcRenderOrigin::anchorReach, -QcRenderOrigin::anchorReach, 0.0}));
+        QVERIFY(QcRenderOrigin::outOfReach(anchor, anchor + QcVec3{QcRenderOrigin::anchorReach + 0.01, 0.0, 0.0}));
+        QVERIFY(QcRenderOrigin::outOfReach(anchor, anchor + QcVec3{0.0, -QcRenderOrigin::anchorReach - 0.01, 0.0}));
+        QVERIFY(QcRenderOrigin::outOfReach(anchor, anchor + QcVec3{0.0, 0.0, 1e6}));
     }
 
     void sectionCellsCarryTheCornerModuloThePeriod()

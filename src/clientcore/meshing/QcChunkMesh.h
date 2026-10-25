@@ -19,8 +19,8 @@
 // bottom section).
 //
 // Vertex positions are relative to `origin`, the section's bottom north-west corner (decision
-// E-883): from 0 to 16 along each axis, exact in a float wherever the section lies; the renderer adds
-// the origin's offset from the camera (QcRenderOrigin).
+// E-883): from 0 to 16 along each axis, exact in a float wherever the section lies; the renderer
+// places the origin relative to the camera (QcRenderOrigin).
 struct QcChunkMesh
 {
     // The corner of the section in the world: chunk x * 16, section index * 16, chunk z * 16.

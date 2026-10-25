@@ -11,7 +11,7 @@
 //
 // Vertex positions are relative to `origin` (decision E-883), which the builder sets before the
 // first vertex near where the mesh lies (the camera, the eye): the floats stay small however far the
-// world reaches, and the renderer adds the origin's offset from the camera (QcRenderOrigin).
+// world reaches, and the renderer places the origin relative to the camera (QcRenderOrigin).
 struct QcEntityMesh
 {
     QList<QcEntityVertex> vertices;

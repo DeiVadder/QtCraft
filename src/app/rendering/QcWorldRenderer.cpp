@@ -4,7 +4,6 @@
 #include "app/hooks/QcThreadCpuClock.h"
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/camera/QcFrustum.h"
-#include "clientcore/camera/QcRenderOrigin.h"
 #include "common/core/QcDowncast.h"
 
 #include <QColor>
@@ -56,9 +55,13 @@ void QcWorldRenderer::replaceDevice()
     // on one that has them, for comparison screenshots.
     m_baseInstance = rhi()->isFeatureSupported(QRhi::BaseInstance) && qEnvironmentVariableIntValue("QTCRAFT_NO_BASE_INSTANCE") != 1;
     if (!m_baseInstance) {
-        qCInfo(lcRenderer) << "World renderer: draws bind their offset from the camera (no base instance)";
+        qCInfo(lcRenderer) << "World renderer: draws bind their origin entry (no base instance)";
     }
     m_meshStore.reset(rhi(), m_plan.sectionLight);
+    QcDrawOrigins &origins = m_meshStore.origins();
+    m_entityOrigin = origins.add({});
+    m_framedMapOrigin = origins.add({});
+    m_handOrigin = origins.add({});
     // The pass group first: its pipelines refer to the device's bindings.
     dropPass();
     const QcWorldDeviceResources retired = std::exchange(m_device, QcWorldDeviceResources::create(rhi()));
@@ -149,12 +152,17 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     m_sample.uploadMs = static_cast<double>(uploadTime.nsecsElapsed()) / 1e6;
 }
 
-void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize) const
+void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QVector3D drawCamera,
+                                          QSize outputSize) const
 {
     FrameUniforms uniforms{};
     std::copy_n(viewProjection.constData(), 16, uniforms.viewProjection);
     // The shaders see positions relative to the camera (decision E-883): the camera stays at the
-    // origin of their space, cameraPosition is zero.
+    // origin of their space, cameraPosition is zero. The block and entity shaders subtract the
+    // camera's offset from the render anchor from their draws' origins (QcDrawOrigins).
+    uniforms.drawCamera[0] = drawCamera.x();
+    uniforms.drawCamera[1] = drawCamera.y();
+    uniforms.drawCamera[2] = drawCamera.z();
     const QVector3D fog = m_frame.sky.fogColor();
     uniforms.fogColor[0] = fog.x();
     uniforms.fogColor[1] = fog.y();
@@ -194,10 +202,10 @@ void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuL
     }
 
     const quint32 drawn = count > 0 ? count : list.indexCount;
-    // The draw's offset from the camera (decision E-883): its first instance reads the entry, or the
-    // offsets are bound at the entry.
+    // The draw's origin (decision E-883): its first instance reads the entry, or the origins are
+    // bound at the entry.
     const quint32 instance = m_baseInstance ? origin : 0;
-    const QRhiCommandBuffer::VertexInput offsets = m_device.drawOrigins.inputAt(origin, m_baseInstance);
+    const QRhiCommandBuffer::VertexInput offsets = m_meshStore.origins().inputAt(origin, m_baseInstance);
     if (m_baseVertex) {
         // The buffers from their start, bound only when they change: the lists of a section page
         // differ in first index and base vertex alone (decision E-820).
@@ -227,16 +235,16 @@ void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const Fr
     // Back-to-front by section centre so overlapping translucent sections blend correctly; only
     // the sections with translucent faces (or water, when it is drawn here) take part.
     const bool withWater = m_plan.waterWithTranslucent();
-    const QcVec3 &eye = m_frame.camera.position;
-    QList<std::pair<double, VisibleSection>> translucent;
+    const QcDrawOrigins &origins = m_meshStore.origins();
+    QList<std::pair<float, VisibleSection>> &translucent = m_sorted;
+    translucent.clear();
     for (const VisibleSection &section : view.visible) {
         const QcGpuMesh *mesh = section.mesh;
         if (mesh->translucent.indexCount > 0 || (withWater && mesh->water.indexCount > 0)) {
-            const QcVec3 offset = mesh->centre() - eye;
-            translucent.append({offset.dot(offset), section});
+            translucent.append({distanceSquared(*mesh, origins, view.camera), section});
         }
     }
-    std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<double, VisibleSection>::first);
+    std::ranges::sort(translucent, std::ranges::greater{}, &std::pair<float, VisibleSection>::first);
 
     // The pipeline changes only where a section's water and its other faces meet, and only while the
     // water pipeline differs from the translucent one; today they are alike, so the step binds one
@@ -291,15 +299,15 @@ QRhiGraphicsPipeline *QcWorldRenderer::waterPipelineInTranslucent() const
 
 void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
-    const QcVec3 &eye = m_frame.camera.position;
-    QList<std::pair<double, VisibleSection>> water;
+    const QcDrawOrigins &origins = m_meshStore.origins();
+    QList<std::pair<float, VisibleSection>> &water = m_sorted;
+    water.clear();
     for (const VisibleSection &section : view.visible) {
         if (section.mesh->water.indexCount > 0) {
-            const QcVec3 offset = section.mesh->centre() - eye;
-            water.append({offset.dot(offset), section});
+            water.append({distanceSquared(*section.mesh, origins, view.camera), section});
         }
     }
-    std::ranges::sort(water, std::ranges::greater{}, &std::pair<double, VisibleSection>::first);
+    std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, VisibleSection>::first);
 
     usePipeline(commandBuffer, m_pass.waterPipeline.get());
     for (const auto &[distance, section] : std::as_const(water)) {
@@ -307,7 +315,7 @@ void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameVie
     }
 }
 
-void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer, const FrameView &view)
+void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer)
 {
     if (!m_frame.selection.isEmpty() && m_pass.outlinePipeline && m_device.outlineVertexCount > 0) {
         usePipeline(commandBuffer, m_pass.outlinePipeline.get());
@@ -319,39 +327,52 @@ void QcWorldRenderer::drawOutlineAndHand(QRhiCommandBuffer *commandBuffer, const
     // Last, with its depth squeezed to the front: the arm never disappears into a wall.
     if (m_device.handBuffers.indexCount > 0 && m_pass.handPipeline) {
         usePipeline(commandBuffer, m_pass.handPipeline.get());
-        drawBuffers(commandBuffer, m_device.handBuffers.list(), view.handOrigin);
+        drawBuffers(commandBuffer, m_device.handBuffers.list(), m_handOrigin);
     }
 }
 
-QcWorldRenderer::FrameView QcWorldRenderer::cull(const QMatrix4x4 &viewProjection, QRhiResourceUpdateBatch *updates)
+float QcWorldRenderer::distanceSquared(const QcGpuMesh &mesh, const QcDrawOrigins &origins, QVector3D camera)
+{
+    // In floats relative to the render anchor: a few hundred blocks at most, plenty for the order.
+    return (origins.at(mesh.drawOrigin).toVector3D() + mesh.middle() - camera).lengthSquared();
+}
+
+const QcWorldRenderer::FrameView &QcWorldRenderer::cull(const QMatrix4x4 &viewProjection, QVector3D drawCamera,
+                                                        QRhiResourceUpdateBatch *updates)
 {
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
-    const QcVec3 &eye = m_frame.camera.position;
-    FrameView view;
-    view.belowWorld = eye.y < 0.0;
-    QcDrawOrigins &origins = m_device.drawOrigins;
-    origins.begin(eye);
-    view.entityOrigin = origins.add(m_device.entityBuffers.origin);
-    view.framedMapOrigin = origins.add(m_device.framedMapBuffers.origin);
-    view.handOrigin = origins.add(m_device.handBuffers.origin);
+    FrameView &view = m_view;
+    view.visible.clear();
+    view.belowWorld = m_frame.camera.position.y < 0.0;
+    view.camera = drawCamera;
+    // The entity meshes and the hand are built around a block near the camera: their entries change
+    // when that block does.
+    QcDrawOrigins &origins = m_meshStore.origins();
+    origins.move(m_entityOrigin, m_device.entityBuffers.origin);
+    origins.move(m_framedMapOrigin, m_device.framedMapBuffers.origin);
+    origins.move(m_handOrigin, m_device.handBuffers.origin);
 
     const QcGpuMeshStore::Meshes &meshes = m_meshStore.meshes();
     // Each with its page, so the sort below compares a dense array instead of the scattered meshes.
-    std::vector<std::pair<quint32, const QcGpuMesh *>> paged;
-    paged.reserve(meshes.size());
+    m_paged.clear();
+    m_paged.reserve(meshes.size());
     for (const auto &[key, mesh] : meshes) {
-        // The box relative to the camera, its corner subtracted in double (decision E-883).
-        const QVector3D corner = QcRenderOrigin::entry(QcRenderOrigin::toVec3(mesh.origin), eye).toVector3D();
-        if (mesh.isDrawable(view.belowWorld) && QcFrustum::intersectsBox(planes, corner + mesh.boundsMin, corner + mesh.boundsMax)) {
-            paged.emplace_back(mesh.slot.page, &mesh);
+        if (!mesh.isDrawable(view.belowWorld)) {
+            continue;
+        }
+        // The box relative to the camera: the corner's entry (relative to the render anchor, decision
+        // E-883) minus the camera's offset from the anchor, both small floats.
+        const QVector3D corner = origins.at(mesh.drawOrigin).toVector3D() - drawCamera;
+        if (QcFrustum::intersectsBox(planes, corner + mesh.boundsMin, corner + mesh.boundsMax)) {
+            m_paged.emplace_back(mesh.slot.page, &mesh);
         }
     }
     // By page, so the opaque pass binds each page once (decision E-820); the passes sorted by
     // distance keep their own order.
-    std::ranges::sort(paged, std::ranges::less{}, &std::pair<quint32, const QcGpuMesh *>::first);
-    view.visible.reserve(static_cast<qsizetype>(paged.size()));
-    for (const auto &[page, mesh] : paged) {
-        view.visible.append({mesh, origins.addSection(mesh->origin)});
+    std::ranges::sort(m_paged, std::ranges::less{}, &std::pair<quint32, const QcGpuMesh *>::first);
+    view.visible.reserve(static_cast<qsizetype>(m_paged.size()));
+    for (const auto &[page, mesh] : m_paged) {
+        view.visible.append({mesh, mesh->drawOrigin});
     }
     m_sample.uploadBytes += origins.upload(m_device.rhi, updates);
     return view;
@@ -382,16 +403,16 @@ void QcWorldRenderer::drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameVi
     }
 }
 
-void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer, const FrameView &view)
+void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
 {
     if (m_device.entityBuffers.indexCount > 0 && m_pass.entityPipeline) {
         usePipeline(commandBuffer, m_pass.entityPipeline.get());
-        drawBuffers(commandBuffer, m_device.entityBuffers.list(), view.entityOrigin);
+        drawBuffers(commandBuffer, m_device.entityBuffers.list(), m_entityOrigin);
     }
     // The maps in item frames: the same pipeline with the framed-map texture (decision E-809).
     if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && m_device.framedMaps.bindings()) {
         usePipeline(commandBuffer, m_pass.entityPipeline.get(), m_device.framedMaps.bindings());
-        drawBuffers(commandBuffer, m_device.framedMapBuffers.list(), view.framedMapOrigin);
+        drawBuffers(commandBuffer, m_device.framedMapBuffers.list(), m_framedMapOrigin);
     }
 }
 
@@ -405,7 +426,7 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
         drawOpaque(commandBuffer, view);
         break;
     case QcRenderPass::Entities:
-        drawEntities(commandBuffer, view);
+        drawEntities(commandBuffer);
         break;
     case QcRenderPass::Water:
         drawWater(commandBuffer, view);
@@ -418,7 +439,7 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
         break;
     case QcRenderPass::Overlay:
         m_sample.drawCalls += m_pass.debugLineRenderer.draw(commandBuffer) ? 1 : 0;
-        drawOutlineAndHand(commandBuffer, view);
+        drawOutlineAndHand(commandBuffer);
         break;
     case QcRenderPass::Shadow:
     case QcRenderPass::PostProcess:
@@ -479,15 +500,17 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     // which the sky shares.
     const QMatrix4x4 viewProjection =
         m_device.rhi->clipSpaceCorrMatrix() * m_frame.camera.projectionMatrix(aspect, farPlane) * m_frame.camera.viewRotation();
-    uploadFrameUniforms(updates, viewProjection, outputSize);
     const QcVec3 &eye = m_frame.camera.position;
+    // After the uploads of the new sections: a new anchor rewrites their entries too.
+    const QVector3D drawCamera = m_meshStore.origins().follow(eye);
+    uploadFrameUniforms(updates, viewProjection, drawCamera, outputSize);
     m_pass.debugLineRenderer.prepare(m_device.rhi, renderTarget(), updates, m_device.frameUniforms.get(),
                                      {m_frame.debugLines, m_frame.debugLinesOrigin - eye});
     m_pass.precipitationRenderer.prepare(m_device.rhi, renderTarget(), updates, m_device.frameUniforms.get(),
                                          {m_frame.precipitation, m_frame.precipitationOrigin - eye});
     m_pass.skyRenderer.prepare(m_device.rhi, renderTarget(), updates, {viewProjection, m_frame.sky, eye});
 
-    const FrameView view = cull(viewProjection, updates);
+    const FrameView &view = cull(viewProjection, drawCamera, updates);
     m_sample.visibleSections = static_cast<int>(view.visible.size());
     drawPlan(commandBuffer, updates, view, outputSize);
 

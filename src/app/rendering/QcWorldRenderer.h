@@ -10,6 +10,8 @@
 #include <rhi/qrhi.h>
 
 #include <functional>
+#include <utility>
+#include <vector>
 
 // Render-thread side of QcWorldView: the drawing of a frame, which is the list of steps of the
 // render mode (QcFramePlan, decision E-390), drawn in order into their targets. The GPU resources
@@ -31,23 +33,22 @@ protected:
     void render(QRhiCommandBuffer *commandBuffer) override;
 
 private:
-    // A section in view and the entry of its offset from the camera (QcDrawOrigins).
+    // A section in view and the entry of its origin (QcDrawOrigins).
     struct VisibleSection
     {
         const QcGpuMesh *mesh = nullptr;
         quint32 origin = 0;
     };
 
-    // What the steps of one frame share: the sections in view, where the camera is and the entries
-    // of the draws' offsets from it (decision E-883).
+    // What the steps of one frame share: the sections in view and where the camera is relative to
+    // the render anchor (decision E-883).
     struct FrameView
     {
         QList<VisibleSection> visible;
         // The underside of the world faces down from y = 0: from above it is always turned away.
         bool belowWorld = false;
-        quint32 entityOrigin = 0;
-        quint32 framedMapOrigin = 0;
-        quint32 handOrigin = 0;
+        // The camera's offset from the render anchor (QcDrawOrigins::follow).
+        QVector3D camera;
     };
 
     // Both groups and the mesh store for the new rhi(), the pass group first.
@@ -58,25 +59,28 @@ private:
     void startSample(QRhiCommandBuffer *commandBuffer);
     // Atlas, pipelines and the uploads of this frame.
     void prepareResources(QRhiResourceUpdateBatch *updates);
-    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QSize outputSize) const;
+    void uploadFrameUniforms(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection, QVector3D drawCamera, QSize outputSize) const;
     // The sections inside the view frustum of `viewProjection` (relative to the camera), with the
-    // offsets of the frame's draws from the camera (QcDrawOrigins, uploaded into `updates`).
-    FrameView cull(const QMatrix4x4 &viewProjection, QRhiResourceUpdateBatch *updates);
+    // camera's offset from the render anchor `drawCamera`; uploads the draw origins written since
+    // the last frame (QcDrawOrigins) into `updates`. The view is kept for the next frame's lists.
+    const FrameView &cull(const QMatrix4x4 &viewProjection, QVector3D drawCamera, QRhiResourceUpdateBatch *updates);
+    // The square distance of a section's middle from the camera, for the passes sorted back to front.
+    [[nodiscard]] static float distanceSquared(const QcGpuMesh &mesh, const QcDrawOrigins &origins, QVector3D camera);
     // The steps of the plan, one GPU render pass per target.
     void drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates, const FrameView &view, QSize outputSize);
     void drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pass, const FrameView &view);
     void drawOpaque(QRhiCommandBuffer *commandBuffer, const FrameView &view);
-    void drawEntities(QRhiCommandBuffer *commandBuffer, const FrameView &view);
+    void drawEntities(QRhiCommandBuffer *commandBuffer);
     // Back to front by section centre; with the plan's water drawn here too, the water of a section
     // comes right before its other translucent faces.
     void drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     // The water lists alone, back to front, with the water pipeline (a plan with a Water step).
     void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
-    void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer, const FrameView &view);
+    void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
     // Sets the pipeline with its shader resources (the pipeline's own without `resources`) and
     // forgets the bound vertex input.
     void usePipeline(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPipeline *pipeline, QRhiShaderResourceBindings *resources = nullptr);
-    // `count` indices from `firstIndex`, all of them when `count` is 0, placed by the offset entry
+    // `count` indices from `firstIndex`, all of them when `count` is 0, placed by the origin entry
     // `origin` (QcDrawOrigins); binds the list's buffers only when they differ from the bound ones
     // (with QRhi::BaseVertex, and QRhi::BaseInstance for the offsets).
     void drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 origin, quint32 firstIndex = 0, quint32 count = 0);
@@ -100,8 +104,8 @@ private:
     Binding m_bound;
     // Draws take a base vertex, so lists sharing buffers need no new binding (QRhi::BaseVertex).
     bool m_baseVertex = false;
-    // Draws pick their offset from the camera as their first instance (QRhi::BaseInstance), so the
-    // offsets are bound once with the buffers; without it they are bound at each draw's entry.
+    // Draws pick their origin entry as their first instance (QRhi::BaseInstance), so the origins
+    // are bound once with the buffers; without it they are bound at each draw's entry.
     bool m_baseInstance = false;
 
     // GPU resources by lifetime: the pass group is dropped with the device group and on its own
@@ -117,8 +121,16 @@ private:
     QcFramePlan m_plan = QcFramePlan::classic();
     bool m_warnedTarget = false;
 
-    // The sections on the GPU and the meshes queued for them.
+    // The sections on the GPU and the meshes queued for them, with the draw origins.
     QcGpuMeshStore m_meshStore;
+    // The renderer's entries in the draw origins, added with each new store (replaceDevice()).
+    quint32 m_entityOrigin = 0;
+    quint32 m_framedMapOrigin = 0;
+    quint32 m_handOrigin = 0;
+    // The frame's view and the culling's list by page, kept so that their lists keep their capacity.
+    FrameView m_view;
+    std::vector<std::pair<quint32, const QcGpuMesh *>> m_paged;
+    QList<std::pair<float, VisibleSection>> m_sorted;
     // A new QRhi replaced a previous one and with it the sections on the GPU; reported to the view
     // in the next synchronize().
     bool m_meshesLost = false;
