@@ -42,6 +42,9 @@
     --qc-durabilityGood: rgba(64, 208, 64, 1.000);
     --qc-durabilityLow: rgba(224, 192, 48, 1.000);
     --qc-durabilityBad: rgba(224, 64, 48, 1.000);
+    --qc-statusGood: rgba(80, 230, 80, 1.000);
+    --qc-statusWarn: rgba(224, 192, 48, 1.000);
+    --qc-statusBad: rgba(255, 180, 172, 1.000);
     --qc-infoButton: rgba(32, 32, 32, 0.878);
     --qc-infoButtonHover: rgba(255, 210, 122, 0.941);
     --qc-separator: rgba(255, 255, 255, 0.251);

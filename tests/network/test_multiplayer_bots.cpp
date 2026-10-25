@@ -228,6 +228,22 @@ private slots:
         }
     }
 
+    void botsMeasureTheirRoundTrip()
+    {
+        // Each bot measures its round trip over TCP on this machine, and the server lists everyone's
+        // (decision E-886).
+        for (const auto &each : m_bots) {
+            const QJsonObject latency = each->poll(command(u"latency"_s), [](const QJsonObject &answer) { return answer[u"samples"_s].toInt() >= 2; });
+            QVERIFY2(!latency.contains(u"pollTimedOut"_s) && latency[u"measured"_s].toBool() && latency[u"minMs"_s].toDouble() >= 0.0, qPrintable(describe(latency)));
+            QVERIFY2(latency[u"maxMs"_s].toDouble() < 2000.0, qPrintable(describe(latency)));
+            const QJsonObject players = each->poll(command(u"players"_s), [](const QJsonObject &answer) {
+                const QJsonArray list = answer[u"players"_s].toArray();
+                return list.size() == 4 && std::ranges::all_of(list, [](const QJsonValue &player) { return player[u"latencyMs"_s].toDouble() >= 0.0; });
+            });
+            QVERIFY2(!players.contains(u"pollTimedOut"_s), qPrintable(describe(players)));
+        }
+    }
+
     void operatorCommandsNeedTheOperatorsKey()
     {
         // Bob is no operator: refused, and the time stays.

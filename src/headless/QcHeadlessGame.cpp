@@ -1,10 +1,12 @@
 #include "headless/QcHeadlessGame.h"
 
 #include "clientcore/control/QcControlInterface.h"
+#include "clientcore/debug/QcClientHealth.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
+#include "common/diagnostics/QcHealthLog.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookJson.h"
@@ -197,6 +199,10 @@ void QcHeadlessGame::onJoined(std::unique_ptr<QcClientSession> session, const st
     });
     if (m_statsLog) {
         m_session->debug().setBaseFlags(QcMsg::DebugSubscribe::stats);
+    }
+    // The bot's health line names its round trip to the server (decision E-886).
+    if (m_diagnostics && m_diagnostics->healthSeconds() > 0) {
+        new QcHealthLog(m_diagnostics->healthSeconds(), [this] { return m_session ? QcClientHealth::sample(*m_session) : QcHealthSample{}; }, this);
     }
 
     if (!startControl(scriptFile)) {

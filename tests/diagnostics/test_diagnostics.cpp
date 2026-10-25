@@ -1,3 +1,4 @@
+#include "clientcore/tick/QcLatencyProbe.h"
 #include "clientcore/tick/QcLinkStats.h"
 #include "common/diagnostics/QcBuildInfo.h"
 #include "common/diagnostics/QcDiagnosticsBundle.h"
@@ -6,6 +7,7 @@
 #include "common/diagnostics/QcHealthLog.h"
 #include "common/diagnostics/QcLogFiles.h"
 #include "common/diagnostics/QcLogWriter.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcTestProtocol.h"
 #include "server/tick/QcLagReport.h"
@@ -164,6 +166,150 @@ private slots:
                        u" | chunks 441 | entities 37 | players 2 | round trip 54.0 ms mean, 80.0 ms max | network out 1.0 KiB/s, in 0.0 KiB/s"_s);
         // A new connection counts from zero: no negative rates.
         QVERIFY(QcHealthLog::line(sample, {}, QcTraffic{1u << 30, 1u << 30}, 60.0).contains(u"out 0.0 KiB/s, in 0.0 KiB/s"_s));
+    }
+
+    void theHealthLineNamesTheLatency()
+    {
+        QcHealthSample sample;
+        sample.latency = QcRoundTripSummary{2.0, 1.25, 0.5, 3.0, 0.75, 20};
+        QCOMPARE(QcHealthLog::line(sample, {512.0, 600.0}, std::nullopt, 60.0),
+                 u"HEALTH memory 512 MiB (peak 600 MiB) | latency 1.3 ms (min 0.5, max 3.0, jitter 0.8)"_s);
+        // From 10 ms on in whole milliseconds.
+        QCOMPARE(QcRoundTripSummary::text(9.94), u"9.9"_s);
+        QCOMPARE(QcRoundTripSummary::text(123.4), u"123"_s);
+    }
+
+    void roundTripsAreSmoothedAndKeptForTheWindow()
+    {
+        constexpr qint64 ms = 1'000'000;
+        constexpr qint64 second = 1000 * ms;
+        QcRoundTripStats stats;
+        QVERIFY(!stats.summary(0));
+
+        stats.add(1 * second, 80 * ms);
+        stats.add(2 * second, 40 * ms);
+        stats.add(3 * second, 60 * ms);
+        std::optional<QcRoundTripSummary> summary = stats.summary(3 * second);
+        QVERIFY(summary);
+        QCOMPARE(summary->samples, 3);
+        QCOMPARE(summary->lastMs, 60.0);
+        QCOMPARE(summary->minMs, 40.0);
+        QCOMPARE(summary->maxMs, 80.0);
+        // |40 - 80| and |60 - 40| over two steps.
+        QCOMPARE(summary->jitterMs, 30.0);
+        // EWMA with 1/8: 80, then 75, then 75 - 15/8.
+        QCOMPARE(summary->smoothedMs, 75.0 - 15.0 / 8.0);
+
+        // Ten seconds later only the newest sample is in the window; the smoothed value stays.
+        summary = stats.summary(12 * second + 500 * ms);
+        QCOMPARE(summary->samples, 1);
+        QCOMPARE(summary->minMs, 60.0);
+        QCOMPARE(summary->maxMs, 60.0);
+        QCOMPARE(summary->jitterMs, 0.0);
+        summary = stats.summary(30 * second);
+        QCOMPARE(summary->samples, 0);
+        QCOMPARE(summary->smoothedMs, 75.0 - 15.0 / 8.0);
+        QCOMPARE(summary->minMs, 60.0);
+
+        // A clock going backwards gives no negative round trip.
+        stats.add(31 * second, -5 * ms);
+        QCOMPARE(stats.summary(31 * second)->lastMs, 0.0);
+    }
+
+    void latencyProbesWaitForTheirEcho()
+    {
+        constexpr qint64 ms = 1'000'000;
+        qint64 now = 0;
+        QcLatencyProbe probe([&now] { return now; });
+        QVERIFY(!probe.summary());
+        const std::optional<QcMsg::LatencyProbe> first = probe.due();
+        QVERIFY(first);
+        QCOMPARE(first->reportedUs, -1);
+        // While the probe is on its way no other goes out; an echo of another nonce is ignored.
+        now = 100 * ms;
+        QVERIFY(!probe.due());
+        probe.echoed(first->nonce + 1);
+        QVERIFY(!probe.summary());
+
+        now = 123 * ms + 456'000;
+        probe.echoed(first->nonce);
+        const std::optional<QcRoundTripSummary> summary = probe.summary();
+        QVERIFY(summary);
+        QCOMPARE(summary->samples, 1);
+        QCOMPARE(summary->lastMs, 123.456);
+        QCOMPARE(summary->pendingMs, 0.0);
+        // The same echo twice counts once.
+        probe.echoed(first->nonce);
+        QCOMPARE(probe.summary()->samples, 1);
+
+        // The next probe waits for the interval after the last one went out, and reports the
+        // smoothed round trip at display resolution (whole milliseconds from 10 ms on).
+        now = QcLatencyProbe::intervalNs - 1;
+        QVERIFY(!probe.due());
+        now = QcLatencyProbe::intervalNs;
+        const std::optional<QcMsg::LatencyProbe> second = probe.due();
+        QVERIFY(second);
+        QCOMPARE(second->nonce, first->nonce + 1);
+        QCOMPARE(second->reportedUs, 123'000);
+    }
+
+    void aLostLatencyProbeIsReplacedAndShownAsALowerBound()
+    {
+        constexpr qint64 ms = 1'000'000;
+        qint64 now = 0;
+        QcLatencyProbe probe([&now] { return now; });
+        const quint32 first = probe.due()->nonce;
+        now = 2 * ms;
+        probe.echoed(first);
+        now = QcLatencyProbe::intervalNs;
+        const std::optional<QcMsg::LatencyProbe> stalled = probe.due();
+        QVERIFY(stalled);
+        // A smoothed 2 ms below 10 ms is reported in tenths of a millisecond.
+        QCOMPARE(stalled->reportedUs, 2'000);
+
+        // Younger than the smoothed value the waiting probe says nothing, older it is a lower bound.
+        now += 1 * ms;
+        QCOMPARE(probe.summary()->pendingMs, 0.0);
+        now = QcLatencyProbe::intervalNs + 750 * ms;
+        QCOMPARE(probe.summary()->pendingMs, 750.0);
+
+        // Without an echo for lostAfterNs the probe counts as lost and the next one goes out; its
+        // late echo is ignored.
+        now = QcLatencyProbe::intervalNs + QcLatencyProbe::lostAfterNs - 1;
+        QVERIFY(!probe.due());
+        now = QcLatencyProbe::intervalNs + QcLatencyProbe::lostAfterNs;
+        const std::optional<QcMsg::LatencyProbe> next = probe.due();
+        QVERIFY(next);
+        QCOMPARE(next->nonce, stalled->nonce + 1);
+        probe.echoed(stalled->nonce);
+        QCOMPARE(probe.summary()->samples, 1);
+        QCOMPARE(probe.summary()->pendingMs, 0.0);
+        now += 4 * ms;
+        probe.echoed(next->nonce);
+        QCOMPARE(probe.summary()->samples, 2);
+        QCOMPARE(probe.summary()->lastMs, 4.0);
+    }
+
+    void listedLatencyIgnoresNoise()
+    {
+        // Reports at display resolution: 0.1 ms below 10 ms, whole milliseconds above, at most 60 s.
+        QCOMPARE(QcListedLatency::quantizedUs(0.4321), 400);
+        QCOMPARE(QcListedLatency::quantizedUs(9.94), 9'900);
+        QCOMPARE(QcListedLatency::quantizedUs(123.4), 123'000);
+        QCOMPARE(QcListedLatency::quantizedUs(-1.0), 0);
+        QCOMPARE(QcListedLatency::quantizedUs(1e9), QcMsg::LatencyProbe::maxReportedUs);
+
+        // A change shows from 1 ms and 10 % of the listed value on, at a new signal bar, and between
+        // unknown and known.
+        QVERIFY(!QcListedLatency::changed(-1, -1));
+        QVERIFY(QcListedLatency::changed(-1, 400));
+        QVERIFY(QcListedLatency::changed(400, -1));
+        QVERIFY(!QcListedLatency::changed(400, 1'300));
+        QVERIFY(QcListedLatency::changed(400, 1'400));
+        QVERIFY(!QcListedLatency::changed(100'000, 109'000));
+        QVERIFY(QcListedLatency::changed(100'000, 110'000));
+        QVERIFY(!QcListedLatency::changed(100'000, 91'000));
+        QVERIFY(QcListedLatency::changed(145'000, 150'000));
     }
 
     void intervalStatsStartAnewWhenTaken()

@@ -38,5 +38,9 @@
     "Cost: %n level(s)": [
         "Cost: %n level",
         "Cost: %n levels"
+    ],
+    "%n of 5 signal bars": [
+        "%n of 5 signal bars",
+        "%n of 5 signal bars"
     ]
 }

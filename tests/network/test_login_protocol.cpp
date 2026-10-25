@@ -79,8 +79,13 @@ private slots:
         QCOMPARE(answer->viewDistance, 6);
         QCOMPARE(answer->packs, response.packs);
 
-        const QcMsg::PlayerList list{{{7, u"Ann"_s, true}, {9, u"Bo"_s, false}}};
+        const QcMsg::PlayerList list{{{7, u"Ann"_s, true}, {9, u"Bo"_s, false, true, 12'345}}};
         QCOMPARE(decoded(list)->players, list.players);
+        // The round trip of each player (decision E-886): unknown or up to a minute.
+        QCOMPARE(decoded(list)->players.at(0).latencyUs, -1);
+        QCOMPARE(decoded(list)->players.at(1).latencyUs, 12'345);
+        QVERIFY(!decoded(QcMsg::PlayerList{{{7, u"Ann"_s, false, false, -2}}}).has_value());
+        QVERIFY(!decoded(QcMsg::PlayerList{{{7, u"Ann"_s, false, false, QcMsg::LatencyProbe::maxReportedUs + 1}}}).has_value());
     }
 
     void loginMessagesGoOneWayOnly()

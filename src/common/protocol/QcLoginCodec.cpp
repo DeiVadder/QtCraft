@@ -62,7 +62,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 {
     stream << static_cast<quint32>(m.players.size());
     for (const QcMsg::PlayerList::Entry &entry : m.players) {
-        stream << entry.entityId << entry.name << entry.operatorRights << entry.spectator;
+        stream << entry.entityId << entry.name << entry.operatorRights << entry.spectator << entry.latencyUs;
     }
 }
 
@@ -117,9 +117,12 @@ void encode(QDataStream &stream, const QcMsg::PlayerList &m)
 
     for (quint32 i = 0; i < count && stream.status() == QDataStream::Ok; ++i) {
         QcMsg::PlayerList::Entry entry;
-        stream >> entry.entityId >> entry.name >> entry.operatorRights >> entry.spectator;
+        stream >> entry.entityId >> entry.name >> entry.operatorRights >> entry.spectator >> entry.latencyUs;
         if (entry.name.size() > QcMsg::Hello::maxNameLength) {
             return qcError(u"Player name too long"_s);
+        }
+        if (entry.latencyUs < -1 || entry.latencyUs > QcMsg::LatencyProbe::maxReportedUs) {
+            return qcError(u"Invalid round trip"_s);
         }
         m.players.append(entry);
     }

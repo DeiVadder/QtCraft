@@ -5,6 +5,7 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/player/QcPushBodies.h"
 #include "clientcore/session/QcBlockMirror.h"
+#include "clientcore/tick/QcLatencyProbe.h"
 #include "clientcore/tick/QcLinkStats.h"
 #include "clientcore/tick/QcSessionCommand.h"
 #include "clientcore/tick/QcSessionEvent.h"
@@ -29,7 +30,7 @@ class QTimer;
 // every message it receives it applies to that state and passes on, with the ticks and
 // reconciliations, as one ordered stream of QcSessionEvent to its sink. Lives in the session's tick
 // thread (QcSessionLink) or, without one, in the session's thread; every member is used in that
-// thread only, except pacer().timing() and linkStats().
+// thread only, except pacer().timing(), linkStats() and latency().
 class QcSessionCore : public QObject
 {
     Q_OBJECT
@@ -66,6 +67,9 @@ public:
     QcTickPacer &pacer() { return m_pacer; }
     // Round trip of the inputs and bytes of the connection (health line, decision E-834).
     QcLinkStats &linkStats() { return m_linkStats; }
+    // The round trip to the server, measured with probes from the ticks (decision E-886).
+    QcLatencyProbe &latency() { return m_latency; }
+    const QcLatencyProbe &latency() const { return m_latency; }
     // Stops ticking and taking messages; the connection stays (it may leave the thread with the
     // core and close there, so that a TCP socket lingers in a thread that goes on).
     void stop();
@@ -89,6 +93,7 @@ private:
     Clock m_now;
     QcTickPacer m_pacer;
     QcLinkStats m_linkStats;
+    QcLatencyProbe m_latency;
     QcBlockMirror m_blocks;
     QcPrediction m_prediction;
     // The creatures that push the player (decision E-882), and whether they are moved on by the

@@ -175,6 +175,7 @@ target_sources(qc_common PRIVATE
     diagnostics/QcLogFiles.h diagnostics/QcLogFiles.cpp
     diagnostics/QcLogWriter.h diagnostics/QcLogWriter.cpp
     diagnostics/QcMessageLog.h diagnostics/QcMessageLog.cpp
+    diagnostics/QcRoundTripStats.h diagnostics/QcRoundTripStats.cpp
     diagnostics/QcSignalDefault.h
 )
 target_sources(qc_common PRIVATE

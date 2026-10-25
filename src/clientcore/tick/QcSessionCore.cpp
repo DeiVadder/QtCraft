@@ -118,6 +118,11 @@ bool QcSessionCore::tick()
         return false;
     }
 
+    // The round trip goes on being measured while the server pauses or the player is dead.
+    if (const std::optional<QcMsg::LatencyProbe> probe = m_latency.due()) {
+        m_connection->send(*probe);
+    }
+
     QcSessionEvent::Ticked ticked;
     // A paused server takes no input (decision E-877): the player rests where the server has him.
     if (!m_vitals.isDead() && !m_serverPaused) {
@@ -153,6 +158,11 @@ void QcSessionCore::onMessage(QcMessage &&message)
     // Answered here on the tick thread, so the round trip does not wait for a frame (decision E-848).
     if (const auto *ping = std::get_if<QcMsg::Ping>(&message)) {
         m_connection->send(QcMsg::Pong{ping->nonce});
+        return;
+    }
+    // Taken on arrival, so the round trip does not include the wait for the next tick (decision E-886).
+    if (const auto *echo = std::get_if<QcMsg::LatencyEcho>(&message)) {
+        m_latency.echoed(echo->nonce);
         return;
     }
 

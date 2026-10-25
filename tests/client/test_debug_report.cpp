@@ -210,6 +210,15 @@ private slots:
         QVERIFY(lines.contains(u"Memory: 312 MiB (peak 330 MiB)"_s));
         QVERIFY(std::ranges::any_of(lines, [](const QString &line) { return line.startsWith(u"Server tick 0: 0.50 ms (max 2.00 ms)"_s); }));
         QVERIFY(lines.contains(u"Protocol 20 · world type showcase · seed 42"_s));
+
+        // The round trip (decision E-886): measuring until the first echo, then in milliseconds.
+        QVERIFY(lines.contains(u"Latency: measuring"_s));
+        QcDebugSnapshot measured = fullSnapshot();
+        measured.latency = QcRoundTripSummary{0.42, 0.38, 0.21, 12.6, 0.12, 20};
+        QVERIFY(QcDebugText::general(measured).contains(u"Latency: 0.4 ms (last 0.4 · min 0.2 · max 13 · jitter 0.1 ms)"_s));
+        // A probe waiting longer than the smoothed value shows as a lower bound: a stall is visible.
+        measured.latency->pendingMs = 750.0;
+        QVERIFY(QcDebugText::general(measured).contains(u"Latency: ≥ 750 ms (waiting for an echo · smoothed 0.4 · min 0.2 · max 13 ms)"_s));
     }
 
     void timeColumnIsAligned()
@@ -266,6 +275,16 @@ private slots:
         QVERIFY(bare.contains(u"client"_s));
         QVERIFY(!bare.contains(u"frame"_s));
         QVERIFY(!bare.contains(u"server"_s));
+
+        // The round trip (decision E-886).
+        QCOMPARE(bare.value(u"client"_s).toObject().value(u"latency"_s).toObject(), (QJsonObject{{u"measured"_s, false}}));
+        snapshot.latency = QcRoundTripSummary{0.42, 0.38, 0.21, 12.6, 0.12, 20};
+        const QJsonObject latency = QcDebugJson::toJson(snapshot).value(u"client"_s).toObject().value(u"latency"_s).toObject();
+        QVERIFY(latency.value(u"measured"_s).toBool());
+        QCOMPARE(latency.value(u"smoothedMs"_s).toDouble(), 0.38);
+        QCOMPARE(latency.value(u"maxMs"_s).toDouble(), 12.6);
+        QCOMPARE(latency.value(u"samples"_s).toInt(), 20);
+        QCOMPARE(latency.value(u"pendingMs"_s).toDouble(), 0.0);
     }
 
     void linesForBoxesSectionsAndFlashes()

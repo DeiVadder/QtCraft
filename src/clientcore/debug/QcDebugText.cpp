@@ -102,6 +102,7 @@ QStringList QcDebugText::placeLines(const QcDebugSnapshot &snapshot)
     const QString worldType = snapshot.server ? snapshot.server->worldType : u"?"_s;
     QStringList lines{
         tr("Protocol %1 · world type %2 · seed %3").arg(snapshot.protocol).arg(worldType).arg(snapshot.seed),
+        latencyLine(snapshot.latency),
         tr("XYZ: %1 / %2 / %3").arg(snapshot.position.x, 0, 'f', 3).arg(snapshot.position.y, 0, 'f', 3).arg(snapshot.position.z, 0, 'f', 3),
         tr("Block: %1 %2 %3 · chunk %4 %5 (at %6 %7) · section %8")
             .arg(block.x)
@@ -123,6 +124,22 @@ QStringList QcDebugText::placeLines(const QcDebugSnapshot &snapshot)
         lines.append(tr("Biome: %1").arg(snapshot.server->biome.isEmpty() ? u"–"_s : snapshot.server->biome));
     }
     return lines;
+}
+
+QString QcDebugText::latencyLine(const std::optional<QcRoundTripSummary> &latency)
+{
+    if (!latency) {
+        return tr("Latency: measuring");
+    }
+    using Text = QcRoundTripSummary;
+    // A probe older than the smoothed value is a lower bound of the current round trip: a stall shows.
+    if (latency->pendingMs > 0.0) {
+        return tr("Latency: ≥ %1 ms (waiting for an echo · smoothed %2 · min %3 · max %4 ms)")
+            .arg(Text::text(latency->pendingMs), Text::text(latency->smoothedMs), Text::text(latency->minMs), Text::text(latency->maxMs));
+    }
+    return tr("Latency: %1 ms (last %2 · min %3 · max %4 · jitter %5 ms)")
+        .arg(Text::text(latency->smoothedMs), Text::text(latency->lastMs), Text::text(latency->minMs), Text::text(latency->maxMs),
+             Text::text(latency->jitterMs));
 }
 
 QStringList QcDebugText::targetLines(const QcDebugSnapshot &snapshot)

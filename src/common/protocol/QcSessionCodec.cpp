@@ -226,4 +226,31 @@ void encode(QDataStream &stream, QcMsg::ServerPause m)
     return m;
 }
 
+void encode(QDataStream &stream, QcMsg::LatencyProbe m)
+{
+    stream << m.nonce << m.reportedUs;
+}
+
+void encode(QDataStream &stream, QcMsg::LatencyEcho m)
+{
+    stream << m.nonce;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LatencyProbe>, QDataStream &stream)
+{
+    QcMsg::LatencyProbe m;
+    stream >> m.nonce >> m.reportedUs;
+    if (m.reportedUs < -1 || m.reportedUs > QcMsg::LatencyProbe::maxReportedUs) {
+        return qcError(u"Invalid round trip"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LatencyEcho>, QDataStream &stream)
+{
+    QcMsg::LatencyEcho m;
+    stream >> m.nonce;
+    return m;
+}
+
 } // namespace QcProtocolCodec

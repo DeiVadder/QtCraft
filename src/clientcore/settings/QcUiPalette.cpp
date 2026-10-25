@@ -54,6 +54,9 @@ constexpr std::array<Entry, static_cast<std::size_t>(Role::RoleCount)> palette =
     {R::DurabilityGood, "durabilityGood", 0xff40d040},
     {R::DurabilityLow, "durabilityLow", 0xffe0c030},
     {R::DurabilityBad, "durabilityBad", 0xffe04030},
+    {R::StatusGood, "statusGood", 0xff50e650},
+    {R::StatusWarn, "statusWarn", 0xffe0c030},
+    {R::StatusBad, "statusBad", 0xffffb4ac},
     {R::InfoButton, "infoButton", 0xe0202020},
     {R::InfoButtonHover, "infoButtonHover", 0xf0ffd27a},
     {R::Separator, "separator", 0x40ffffff},
@@ -259,6 +262,10 @@ QList<TextPair> textPairs()
         {"Debug frame graph", R::GraphFrame, {R::HudBackdrop}, true},
         {"Debug tick graph", R::GraphTick, {R::HudBackdrop}, true},
         {"Debug graph budget line", R::GraphLimit, {R::HudBackdrop}, true},
+        // Signal bars of the player list (decision E-886), graphics as well.
+        {"Status good", R::StatusGood, {R::HudBackdrop}, true},
+        {"Status warning", R::StatusWarn, {R::HudBackdrop}, true},
+        {"Status bad", R::StatusBad, {R::HudBackdrop}, true},
         // Pad button symbols are small shapes and letters on their own disc (decision E-612).
         {"Pad button symbols", R::Text, {R::PadGlyph}, true},
         {"Pad button, green", R::PadGreen, {R::PadGlyph}, true},

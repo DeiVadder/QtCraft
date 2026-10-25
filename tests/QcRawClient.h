@@ -58,6 +58,8 @@ public:
         } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
             playerList = players->players;
             ++playerListMessages;
+        } else if (std::holds_alternative<QcMsg::LatencyEcho>(message)) {
+            ++latencyEchoes;
         } else if (const auto *state = std::get_if<QcMsg::PlayerState>(&message)) {
             motion = state->motion;
             acknowledged = state->lastInputSequence;
@@ -183,6 +185,8 @@ public:
     std::optional<QcMsg::LoginChallenge> challenge;
     QList<QcMsg::PlayerList::Entry> playerList;
     int playerListMessages = 0;
+    // Answers to LatencyProbe (decision E-886).
+    int latencyEchoes = 0;
     // The player's own entity id and view distance (from Welcome).
     quint32 entityId = 0;
     qint32 viewDistanceGranted = -1;

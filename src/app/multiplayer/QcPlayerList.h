@@ -13,12 +13,14 @@ class QcClientSession;
 
 // The players on the server for the player list overlay (GameController.multiplayer.players,
 // decision E-259), from the session's QcMsg::PlayerList, with the server's name and message of the
-// day. Announces players who join or leave as chat lines. No ping: the protocol measures none.
+// day. Announces players who join or leave as chat lines. Each player's round trip is the one their
+// client measured and reported to the server (decision E-886).
 class QcPlayerList : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
-    // [{name, operator, self, spectator}] sorted by name without case, spectators last.
+    // [{name, operator, self, spectator, latencyMs (-1: unknown), latencyText ("0.4", "12"), bars
+    // (QcListedLatency::bars)}] sorted by name without case, spectators last.
     Q_PROPERTY(QVariantList players READ players NOTIFY changed FINAL)
     Q_PROPERTY(int count READ count NOTIFY changed FINAL)
     // The server's name; the world's name for a single-player world (also when open to the LAN).

@@ -2474,62 +2474,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="531"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="539"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="534"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="542"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="536"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="544"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="559"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="567"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="560"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="568"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="561"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="569"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="562"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="570"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="564"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="572"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="565"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="573"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="566"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="574"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="567"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="575"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="568"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="576"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -3826,7 +3826,7 @@ Als Nächstes: %3</translation>
 <context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="59"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="60"/>
         <source>%n player(s) online</source>
         <translation>
             <numerusform>%n Spieler online</numerusform>
@@ -3834,19 +3834,37 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="92"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="93"/>
         <source>%1 (you)</source>
         <translation>%1 (du)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="102"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="103"/>
         <source>Spectator</source>
         <translation>Zuschauer</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="109"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="110"/>
         <source>Operator</source>
         <translation>Operator</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="116"/>
+        <source>? ms</source>
+        <translation>? ms</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="116"/>
+        <source>%1 ms</source>
+        <translation>%1 ms</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="133"/>
+        <source>%n of 5 signal bars</source>
+        <translation>
+            <numerusform>%n von 5 Signalbalken</numerusform>
+            <numerusform>%n von 5 Signalbalken</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -4639,82 +4657,97 @@ Als Nächstes: %3</translation>
         <translation>Protokoll %1 · Welttyp %2 · Seed %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="105"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="106"/>
         <source>XYZ: %1 / %2 / %3</source>
         <translation>XYZ: %1 / %2 / %3</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="106"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="107"/>
         <source>Block: %1 %2 %3 · chunk %4 %5 (at %6 %7) · section %8</source>
         <translation>Block: %1 %2 %3 · Chunk %4 %5 (bei %6 %7) · Sektion %8</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="116"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="117"/>
         <source>Facing: %1 (yaw %2°, pitch %3°)</source>
         <translation>Blick: %1 (Gier %2°, Neigung %3°)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="120"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="121"/>
         <source>Light at the feet: sky %1, block %2</source>
         <translation>Licht an den Füßen: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="123"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="124"/>
         <source>Biome: %1</source>
         <translation>Biom: %1</translation>
     </message>
     <message>
         <location filename="../src/clientcore/debug/QcDebugText.cpp" line="132"/>
+        <source>Latency: measuring</source>
+        <translation>Latenz: wird gemessen</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="137"/>
+        <source>Latency: ≥ %1 ms (waiting for an echo · smoothed %2 · min %3 · max %4 ms)</source>
+        <translation>Latenz: ≥ %1 ms (wartet auf Antwort · geglättet %2 · min. %3 · max. %4 ms)</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="140"/>
+        <source>Latency: %1 ms (last %2 · min %3 · max %4 · jitter %5 ms)</source>
+        <translation>Latenz: %1 ms (zuletzt %2 · min. %3 · max. %4 · Schwankung %5 ms)</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="149"/>
         <source>Target: %1 at %2 %3 %4</source>
         <translation>Ziel: %1 bei %2 %3 %4</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="138"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="155"/>
         <source>  State: %1</source>
         <translation>  Zustand: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="141"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="158"/>
         <source>  Tags: %1</source>
         <translation>  Tags: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="143"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="160"/>
         <source>  Light in front: sky %1, block %2</source>
         <translation>  Licht davor: Himmel %1, Block %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="146"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="163"/>
         <source>Creature: %1</source>
         <translation>Wesen: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="155"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="172"/>
         <source>Entities: %1 creatures, %2 players, %3 items, %4 falling blocks</source>
         <translation>Entities: %1 Wesen, %2 Spieler, %3 Items, %4 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="163"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="180"/>
         <source>Chunks: %1 loaded · sections: %2 meshed, %3 visible · %4 draw calls</source>
         <translation>Chunks: %1 geladen · Sektionen: %2 vernetzt, %3 sichtbar · %4 Draw-Calls</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="168"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="185"/>
         <source>Meshing: %1 waiting (%2 ms each) · light jobs: %3 waiting (%4 ms each)</source>
         <translation>Vernetzung: %1 wartend (je %2 ms) · Licht-Jobs: %3 wartend (je %4 ms)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="174"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="191"/>
         <source>Chunks: %1 loaded</source>
         <translation>Chunks: %1 geladen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="177"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="194"/>
         <source>Memory: %1 MiB (peak %2 MiB)</source>
         <translation>Speicher: %1 MiB (Spitze %2 MiB)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="180"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="197"/>
         <source>Client memory: blocks %1 MiB · block light %2 MiB · section buffers %3 MiB · footprint %4 MiB</source>
         <translation>Client-Speicher: Blöcke %1 MiB · Blocklicht %2 MiB · Abschnittspuffer %3 MiB · Gesamtbedarf %4 MiB</translation>
     </message>
@@ -4727,54 +4760,54 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Client-Speicher: Blöcke %1 MB · Blocklicht %2 MB · Abschnittspuffer %3 MB · Gesamtbedarf %4 MB</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="192"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
         <source>Server: %1 chunks · %2 players · %3 creatures · %4 items · %5 falling blocks</source>
         <translation>Server: %1 Chunks · %2 Spieler · %3 Wesen · %4 Items · %5 fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="198"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="215"/>
         <source>Server tick %1: %2 ms (max %3 ms) · late %4 ms (max %5 ms) · %6 skipped</source>
         <translation>Server-Tick %1: %2 ms (max. %3 ms) · verspätet %4 ms (max. %5 ms) · %6 übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="202"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="219"/>
         <source>Block updates: %1 queued, %2 waiting for chunks</source>
         <translation>Block-Updates: %1 in der Warteschlange, %2 warten auf Chunks</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="203"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="220"/>
         <source>Chunks: %1 stored, %2 arriving, %3 not yet saved · forced %4 · loaders %5</source>
         <translation>Chunks: %1 gespeichert, %2 unterwegs, %3 noch nicht gesichert · erzwungen %4 · Lader %5</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="209"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="226"/>
         <source>Groups: %1 (largest %2, here %3, too large %4) · tickets %5 (refused %6)</source>
         <translation>Gruppen: %1 (größte %2, hier %3, zu groß %4) · Lade-Tickets %5 (abgelehnt %6)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="249"/>
         <source>Client frame</source>
         <translation>Client-Frame</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="242"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="249"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="259"/>
         <source>mean</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="232"/>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="242"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="249"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="259"/>
         <source>max</source>
         <translation>max.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="242"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="259"/>
         <source>Server tick</source>
         <translation>Server-Tick</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="247"/>
+        <location filename="../src/clientcore/debug/QcDebugText.cpp" line="264"/>
         <source>Whole tick</source>
         <translation>Ganzer Tick</translation>
     </message>
@@ -5132,12 +5165,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcInventoryModel</name>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="151"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="177"/>
         <source>%1 × %2</source>
         <translation>%1 × %2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="154"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="180"/>
         <source>and %n more</source>
         <translation>
             <numerusform>und %n weiterer</numerusform>
@@ -5145,22 +5178,22 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="168"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="194"/>
         <source>Armour: +%1</source>
         <translation>Rüstung: +%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="172"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="198"/>
         <source>Map #%1</source>
         <translation>Karte Nr. %1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="174"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="200"/>
         <source>Scale 1:%1</source>
         <translation>Maßstab 1:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="178"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="204"/>
         <source>Durability: %1 / %2</source>
         <translation>Haltbarkeit: %1 / %2</translation>
     </message>
@@ -5579,12 +5612,12 @@ Jetzt: %2</translation>
 <context>
     <name>QcPlayerList</name>
     <message>
-        <location filename="../src/app/multiplayer/QcPlayerList.cpp" line="39"/>
+        <location filename="../src/app/multiplayer/QcPlayerList.cpp" line="40"/>
         <source>%1 joined the game</source>
         <translation>%1 ist dem Spiel beigetreten</translation>
     </message>
     <message>
-        <location filename="../src/app/multiplayer/QcPlayerList.cpp" line="42"/>
+        <location filename="../src/app/multiplayer/QcPlayerList.cpp" line="43"/>
         <source>%1 left the game</source>
         <translation>%1 hat das Spiel verlassen</translation>
     </message>
@@ -6939,12 +6972,12 @@ Jetzt: %2</translation>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="475"/>
+        <location filename="../src/server/core/QcServer.cpp" line="485"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="505"/>
+        <location filename="../src/server/core/QcServer.cpp" line="516"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>

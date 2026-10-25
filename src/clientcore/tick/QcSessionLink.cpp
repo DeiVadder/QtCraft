@@ -102,6 +102,16 @@ QcLinkStats &QcSessionLink::linkStats() const
     return m_core->linkStats();
 }
 
+std::optional<QcRoundTripSummary> QcSessionLink::latency() const
+{
+    return m_core->latency().summary();
+}
+
+void QcSessionLink::resetLatency()
+{
+    m_core->latency().reset();
+}
+
 void QcSessionLink::deliver(QcSessionEvent &&event)
 {
     // In the core's thread when it has one.

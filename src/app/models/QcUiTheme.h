@@ -55,6 +55,9 @@ class QcUiTheme : public QObject
     Q_PROPERTY(QColor durabilityGood MEMBER m_durabilityGood CONSTANT FINAL)
     Q_PROPERTY(QColor durabilityLow MEMBER m_durabilityLow CONSTANT FINAL)
     Q_PROPERTY(QColor durabilityBad MEMBER m_durabilityBad CONSTANT FINAL)
+    Q_PROPERTY(QColor statusGood MEMBER m_statusGood CONSTANT FINAL)
+    Q_PROPERTY(QColor statusWarn MEMBER m_statusWarn CONSTANT FINAL)
+    Q_PROPERTY(QColor statusBad MEMBER m_statusBad CONSTANT FINAL)
     Q_PROPERTY(QColor infoButton MEMBER m_infoButton CONSTANT FINAL)
     Q_PROPERTY(QColor infoButtonHover MEMBER m_infoButtonHover CONSTANT FINAL)
     Q_PROPERTY(QColor separator MEMBER m_separator CONSTANT FINAL)
@@ -154,6 +157,9 @@ private:
     QColor m_durabilityGood = QcUiPalette::color(QcUiPalette::Role::DurabilityGood);
     QColor m_durabilityLow = QcUiPalette::color(QcUiPalette::Role::DurabilityLow);
     QColor m_durabilityBad = QcUiPalette::color(QcUiPalette::Role::DurabilityBad);
+    QColor m_statusGood = QcUiPalette::color(QcUiPalette::Role::StatusGood);
+    QColor m_statusWarn = QcUiPalette::color(QcUiPalette::Role::StatusWarn);
+    QColor m_statusBad = QcUiPalette::color(QcUiPalette::Role::StatusBad);
     QColor m_infoButton = QcUiPalette::color(QcUiPalette::Role::InfoButton);
     QColor m_infoButtonHover = QcUiPalette::color(QcUiPalette::Role::InfoButtonHover);
     QColor m_separator = QcUiPalette::color(QcUiPalette::Role::Separator);

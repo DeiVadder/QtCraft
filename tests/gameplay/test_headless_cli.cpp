@@ -429,7 +429,9 @@ private slots:
         const QJsonObject debug = ask(R"({"cmd":"debug","goals":true})");
         QCOMPARE(debug.value(u"ok"_s).toBool(), true);
         const QJsonObject client = debug.value(u"client"_s).toObject();
-        QCOMPARE(client.value(u"protocol"_s).toInt(), 79);
+        QCOMPARE(client.value(u"protocol"_s).toInt(), 80);
+        // The round trip to the in-process server (decision E-886) is reported once measured.
+        QVERIFY(client.value(u"latency"_s).isObject());
         QCOMPARE(client.value(u"position"_s).toArray().size(), 3);
         QVERIFY(client.value(u"light"_s).toObject().value(u"sky"_s).toInt() >= 0);
         const QJsonObject server = debug.value(u"server"_s).toObject();
@@ -453,7 +455,7 @@ private slots:
             timeoutMs));
         const qsizetype start = log.indexOf("STATS {") + 6;
         const QJsonObject line = QJsonDocument::fromJson(log.mid(start, log.indexOf('\n', start) - start)).object();
-        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 79);
+        QCOMPARE(line.value(u"client"_s).toObject().value(u"protocol"_s).toInt(), 80);
         QCOMPARE(ask(R"({"cmd":"debug","off":true})").value(u"ok"_s).toBool(), true);
 
         // The statistics log keeps its share of the subscription: the server's part stays in it.

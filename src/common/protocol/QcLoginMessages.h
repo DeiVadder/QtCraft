@@ -62,7 +62,8 @@ struct LoginResponse
     QList<QcPackFingerprint> packs;
 };
 
-// Server -> client: everyone on the server, sent to all whenever someone joins or leaves.
+// Server -> client: everyone on the server, sent to all whenever someone joins or leaves, and every
+// two seconds while a round trip changed (decision E-886).
 struct PlayerList
 {
     static constexpr qsizetype maxPlayers = 1024;
@@ -74,6 +75,9 @@ struct PlayerList
         bool operatorRights = false;
         // In spectator mode (decision E-730): listed, but shown apart.
         bool spectator = false;
+        // The round trip the player's client measured (decision E-886), smoothed, in microseconds;
+        // -1 while unknown.
+        qint32 latencyUs = -1;
 
         friend bool operator==(const Entry &, const Entry &) = default;
     };

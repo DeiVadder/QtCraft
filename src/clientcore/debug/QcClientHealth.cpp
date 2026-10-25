@@ -12,6 +12,7 @@ QcHealthSample sample(const QcClientSession &session)
     const QcLinkStats::Taken link = session.linkStats().take();
     sample.roundTrip = link.roundTrip;
     sample.traffic = link.traffic;
+    sample.latency = session.latency();
     if (session.state() != QcClientSession::State::Playing) {
         return sample;
     }

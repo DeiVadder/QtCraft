@@ -67,6 +67,10 @@ void encode(QDataStream &stream, QcMsg::PauseRequest m);
 void encode(QDataStream &stream, QcMsg::ServerPause m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PauseRequest>, QDataStream &stream);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::ServerPause>, QDataStream &stream);
+void encode(QDataStream &stream, QcMsg::LatencyProbe m);
+void encode(QDataStream &stream, QcMsg::LatencyEcho m);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LatencyProbe>, QDataStream &stream);
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::LatencyEcho>, QDataStream &stream);
 
 // World (QcWorldCodec.cpp)
 void encode(QDataStream &stream, const QcMsg::ChunkData &m);

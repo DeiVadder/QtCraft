@@ -95,7 +95,23 @@ QJsonObject clientJson(const QcDebugSnapshot &snapshot)
     if (!snapshot.targetEntity.isEmpty()) {
         json.insert(u"targetEntity"_s, snapshot.targetEntity);
     }
+    json.insert(u"latency"_s, latencyJson(snapshot.latency));
     return json;
+}
+
+QJsonObject latencyJson(const std::optional<QcRoundTripSummary> &latency)
+{
+    if (!latency) {
+        return {{u"measured"_s, false}};
+    }
+    return {{u"measured"_s, true},
+            {u"smoothedMs"_s, rounded(latency->smoothedMs)},
+            {u"lastMs"_s, rounded(latency->lastMs)},
+            {u"minMs"_s, rounded(latency->minMs)},
+            {u"maxMs"_s, rounded(latency->maxMs)},
+            {u"jitterMs"_s, rounded(latency->jitterMs)},
+            {u"samples"_s, latency->samples},
+            {u"pendingMs"_s, rounded(latency->pendingMs)}};
 }
 
 QJsonObject frameJson(const QcDebugSnapshot::Frame &frame)

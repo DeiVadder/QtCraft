@@ -273,6 +273,14 @@ void QcServer::handleMessage(Client &client, QcMessage &&message)
         return;
     }
 
+    // Answered at once on the server's thread, without waiting for a tick (decision E-886); a probe
+    // over the limit gets no echo and counts as lost on the client.
+    if (const auto *probe = std::get_if<QcMsg::LatencyProbe>(&message)) {
+        client.connection->send(QcMsg::LatencyEcho{probe->nonce});
+        m_state.reportLatency(client, probe->reportedUs);
+        return;
+    }
+
     // The dead neither mine nor use items; their mining state is dropped.
     const bool worldAction = std::holds_alternative<QcMsg::StartMining>(message)
                              || std::holds_alternative<QcMsg::FinishMining>(message)
@@ -299,9 +307,11 @@ bool QcServer::withinRateLimit(Client &client, const QcMessage &message)
 {
     const std::optional<QcRateLimiter::Kind> kind = QcRateLimiter::kindOf(message);
     // The local player (in-process host, the operator) is not limited in chat and in the admin
-    // channel: command bursts of scripts and benchmark scenarios must arrive complete. All other
-    // kinds stay limited for him.
-    const bool exempt = kind && client.local && (*kind == QcRateLimiter::Kind::Chat || *kind == QcRateLimiter::Kind::Admin);
+    // channel: command bursts of scripts and benchmark scenarios must arrive complete. Nor are his
+    // latency probes: a paused server (decision E-877) stops the players' time that refills the
+    // buckets, while his client goes on probing. All other kinds stay limited for him.
+    const bool exempt = kind && client.local
+                        && (*kind == QcRateLimiter::Kind::Chat || *kind == QcRateLimiter::Kind::Admin || *kind == QcRateLimiter::Kind::Latency);
     if (!kind || exempt || client.input.rateLimiter.allow(*kind, m_state.clock().playerTimeNs())) {
         return true;
     }
@@ -481,7 +491,8 @@ void QcServer::sendPlayerList()
     QcMsg::PlayerList list;
     for (const auto &client : m_state.clients()) {
         if (client->state == Client::State::Playing) {
-            list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator, client->gameMode == QcGameMode::Spectator});
+            list.players.append({client->id, client->name, m_state.permissionOf(*client) == QcPermission::Operator,
+                                 client->gameMode == QcGameMode::Spectator, client->listedLatencyUs});
         }
     }
 

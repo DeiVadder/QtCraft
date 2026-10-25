@@ -71,6 +71,11 @@ enum class Role {
     DurabilityGood,
     DurabilityLow,
     DurabilityBad,
+    // States shown as a graphic, e.g. the signal bars of the player list (decision E-886): good,
+    // warning, bad. Tools keep their own durability colours.
+    StatusGood,
+    StatusWarn,
+    StatusBad,
     InfoButton,
     InfoButtonHover,
     // Handbook: separators, the selected row, link chips.

@@ -41,8 +41,10 @@ public:
         // Admin requests and subscriptions of operators (decision E-848): each may run a command or
         // build a report of the whole server.
         Admin,
+        // Latency probes (decision E-886): the client sends two per second; each costs an echo.
+        Latency,
     };
-    static constexpr int kindCount = 10;
+    static constexpr int kindCount = 11;
 
     struct Limit
     {
@@ -60,6 +62,7 @@ public:
         {5.0, 10.0},
         {1.0, 4.0},
         {5.0, 20.0},
+        {4.0, 4.0},
     }};
     // Drops are logged at most this often per player and kind (the first one at once).
     static constexpr qint64 reportIntervalNs = 1'000'000'000;

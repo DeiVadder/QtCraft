@@ -1331,5 +1331,13 @@
     "The server's key cannot be made: %1": "Der Schlüssel des Servers lässt sich nicht erzeugen: %1",
     "The server's certificate cannot be signed: %1": "Das Zertifikat des Servers lässt sich nicht signieren: %1",
     "The server shows another certificate than at your first connection. Someone may be intercepting the connection, so QtCraft does not connect. If the server's owner made a new certificate, forget the old one and join again.\nPinned: %1\nNow: %2": "Der Server zeigt ein anderes Zertifikat als bei deiner ersten Verbindung. Vielleicht hört jemand die Verbindung ab, deshalb verbindet QtCraft nicht. Hat der Betreiber des Servers ein neues Zertifikat gemacht, vergiss das alte und tritt erneut bei.\nGemerkt: %1\nJetzt: %2",
-    "This build of QtCraft has no encryption (QC_TLS=OFF) and makes no server key": "Diese Version von QtCraft hat keine Verschlüsselung (QC_TLS=OFF) und erzeugt keinen Server-Schlüssel"
+    "This build of QtCraft has no encryption (QC_TLS=OFF) and makes no server key": "Diese Version von QtCraft hat keine Verschlüsselung (QC_TLS=OFF) und erzeugt keinen Server-Schlüssel",
+    "? ms": "? ms",
+    "Latency: measuring": "Latenz: wird gemessen",
+    "Latency: ≥ %1 ms (waiting for an echo · smoothed %2 · min %3 · max %4 ms)": "Latenz: ≥ %1 ms (wartet auf Antwort · geglättet %2 · min. %3 · max. %4 ms)",
+    "Latency: %1 ms (last %2 · min %3 · max %4 · jitter %5 ms)": "Latenz: %1 ms (zuletzt %2 · min. %3 · max. %4 · Schwankung %5 ms)",
+    "%n of 5 signal bars": [
+        "%n von 5 Signalbalken",
+        "%n von 5 Signalbalken"
+    ]
 }

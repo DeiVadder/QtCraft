@@ -71,11 +71,21 @@ QcLinkStats &QcClientSession::linkStats() const
     return m_link->linkStats();
 }
 
+std::optional<QcRoundTripSummary> QcClientSession::latency() const
+{
+    return m_link->latency();
+}
+
 void QcClientSession::setIntent(const QcPlayerInput &intent)
 {
     m_prediction.setIntent(intent);
     m_link->command({QcSessionCommand::SetIntent{m_prediction.intent()}});
     refreshTarget();
+}
+
+void QcClientSession::resetLatency()
+{
+    m_link->resetLatency();
 }
 
 void QcClientSession::resetCorrections()

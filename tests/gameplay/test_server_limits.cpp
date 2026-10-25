@@ -142,6 +142,9 @@ private slots:
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::AttackEntity{}), std::optional(Kind::AttackEntity));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::ChatInput{}), std::optional(Kind::Chat));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::DropItem{}), std::optional(Kind::Drop));
+        QCOMPARE(QcRateLimiter::kindOf(QcMsg::LatencyProbe{}), std::optional(Kind::Latency));
+        QCOMPARE(QcRateLimiter::limit(Kind::Latency).burst, 4.0);
+        QVERIFY(!QcRateLimiter::isUnlimited(QcMsg::LatencyProbe{}));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::MoveInventoryItem{}), std::optional(Kind::Inventory));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::QuickMoveItem{}), std::optional(Kind::Inventory));
         QCOMPARE(QcRateLimiter::kindOf(QcMsg::SetAppearance{}), std::optional(Kind::Appearance));
@@ -196,6 +199,72 @@ private slots:
         }
         QcTestUtil::pump();
         QCOMPARE(m_server->clientCount(), 1);
+    }
+
+    void latencyProbeFloodIsCapped()
+    {
+        join();
+        m_client->latencyEchoes = 0;
+
+        // 20 probes at once (decision E-886): the burst of 4 is echoed, the rest count as lost on the
+        // client. The first drop is reported at once.
+        QTest::ignoreMessage(QtWarningMsg, "Rate limit: dropped 1 latency messages from Raw");
+        for (quint32 nonce = 1; nonce <= 20; ++nonce) {
+            m_client->connection.send(QcMsg::LatencyProbe{nonce, -1});
+        }
+        QcTestUtil::pump();
+        QCOMPARE(m_client->latencyEchoes, 4);
+
+        // Four per second come back: a second later four more probes are echoed; the report counts the
+        // 15 drops of the flood not yet reported plus this one.
+        ticks(20);
+        QTest::ignoreMessage(QtWarningMsg, "Rate limit: dropped 16 latency messages from Raw");
+        for (quint32 nonce = 21; nonce <= 25; ++nonce) {
+            m_client->connection.send(QcMsg::LatencyProbe{nonce, -1});
+        }
+        QcTestUtil::pump();
+        QCOMPARE(m_client->latencyEchoes, 8);
+        QCOMPARE(m_server->clientCount(), 1);
+    }
+
+    void playerListFollowsVisibleLatencyChanges()
+    {
+        // A join sends the list at once.
+        join();
+        const int afterJoin = m_client->playerListMessages;
+        QVERIFY(afterJoin >= 1);
+        QCOMPARE(m_client->playerList.size(), 1);
+        QCOMPARE(m_client->playerList.constFirst().latencyUs, -1);
+        const auto report = [this](qint32 us) {
+            m_client->connection.send(QcMsg::LatencyProbe{1, us});
+            QcTestUtil::pump();
+        };
+
+        // A known round trip after an unknown one is listed, within the 2 s interval of the list.
+        report(40'000);
+        ticks(40);
+        QCOMPARE(m_client->playerListMessages, afterJoin + 1);
+        QCOMPARE(m_client->playerList.constFirst().latencyUs, 40'000);
+
+        // Changes below 1 ms and 10 % do not send the list again, also not later.
+        report(43'000);
+        ticks(10);
+        report(37'000);
+        ticks(60);
+        QCOMPARE(m_client->playerListMessages, afterJoin + 1);
+
+        // A change that shows goes out, but not before 2 s since the last list.
+        report(46'000);
+        ticks(1);
+        const int before = m_client->playerListMessages;
+        QCOMPARE(before, afterJoin + 2);
+        QCOMPARE(m_client->playerList.constFirst().latencyUs, 46'000);
+        report(60'000);
+        ticks(38);
+        QCOMPARE(m_client->playerListMessages, before);
+        ticks(2);
+        QCOMPARE(m_client->playerListMessages, before + 1);
+        QCOMPARE(m_client->playerList.constFirst().latencyUs, 60'000);
     }
 
     void droppedMiningGetsItsTrueBlockBack()

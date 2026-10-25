@@ -95,6 +95,24 @@ private slots:
         QCOMPARE(roundTrip(QcMsg::Ping{43}).nonce, 43u);
     }
 
+    void latencyProbesGoOneWayEach()
+    {
+        // The client probes and reports its round trip, the server echoes (protocol 80, decision E-886).
+        QVERIFY(QcProtocol::version >= 80u);
+        const auto index = [](const QcMessage &message) { return message.index(); };
+        QVERIFY(QcProtocol::isSentBy(index(QcMsg::LatencyProbe{}), QcProtocol::Peer::Client));
+        QVERIFY(!QcProtocol::isSentBy(index(QcMsg::LatencyProbe{}), QcProtocol::Peer::Server));
+        QVERIFY(QcProtocol::isSentBy(index(QcMsg::LatencyEcho{}), QcProtocol::Peer::Server));
+        QVERIFY(!QcProtocol::isSentBy(index(QcMsg::LatencyEcho{}), QcProtocol::Peer::Client));
+
+        const QcMsg::LatencyProbe probe = roundTrip(QcMsg::LatencyProbe{17, 2500}, QcProtocol::Peer::Client);
+        QCOMPARE(probe.nonce, 17u);
+        QCOMPARE(probe.reportedUs, 2500);
+        QCOMPARE(roundTrip(QcMsg::LatencyEcho{18}).nonce, 18u);
+        QVERIFY(!decoded(QcMsg::LatencyProbe{1, -2}, QcProtocol::Peer::Client));
+        QVERIFY(!decoded(QcMsg::LatencyProbe{1, QcMsg::LatencyProbe::maxReportedUs + 1}, QcProtocol::Peer::Client));
+    }
+
     void requestBoundsAreChecked()
     {
         using Kind = QcMsg::AdminRequest::Kind;

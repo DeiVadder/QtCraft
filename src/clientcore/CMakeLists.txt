@@ -222,6 +222,7 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    tick/QcLatencyProbe.h tick/QcLatencyProbe.cpp
     tick/QcLinkStats.h tick/QcLinkStats.cpp
     tick/QcSessionCommand.h
     tick/QcSessionCore.h tick/QcSessionCore.cpp

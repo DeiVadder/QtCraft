@@ -40,4 +40,4 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog, QcMsg::BlockAck,
                                QcMsg::OpenEnchanting, QcMsg::EnchantingState, QcMsg::ChooseEnchantment, QcMsg::CloseEnchanting,
                                QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil,
-                               QcMsg::PauseRequest, QcMsg::ServerPause>;
+                               QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho>;

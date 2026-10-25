@@ -6,8 +6,9 @@ import QtQuick.Layouts
 import QtCraft
 
 // The players on the server while the player list key is held (decision E-259): the server's name
-// and message of the day, then every player with an operator mark; the own entry is highlighted,
-// spectators come last and greyed (decision E-730).
+// and message of the day, then every player with an operator mark and the round trip of their client
+// in milliseconds and signal bars (decision E-886); the own entry is highlighted, spectators come
+// last and greyed (decision E-730).
 // It takes no input, the world keeps moving.
 Item {
     id: overlay
@@ -109,6 +110,41 @@ Item {
                             text: qsTr("Operator")
                             color: Theme.warning
                             font.pixelSize: Ui.hudPx(12)
+                        }
+
+                        Label {
+                            text: playerRow.modelData.latencyMs < 0 ? qsTr("? ms") : qsTr("%1 ms").arg(playerRow.modelData.latencyText)
+                            color: Theme.textSecondary
+                            font.pixelSize: Ui.hudPx(12)
+                            horizontalAlignment: Text.AlignRight
+                            Layout.preferredWidth: Ui.hudPx(52)
+                        }
+
+                        // Signal bars as in the reference: five below 150 ms, one from a second on.
+                        Row {
+                            id: bars
+
+                            readonly property int lit: playerRow.modelData.bars
+                            readonly property color litColor: lit >= 4 ? Theme.statusGood : lit >= 2 ? Theme.statusWarn : Theme.statusBad
+
+                            Layout.alignment: Qt.AlignVCenter
+                            spacing: Ui.hudPx(1)
+                            Accessible.role: Accessible.Indicator
+                            Accessible.name: qsTr("%n of 5 signal bars", "", bars.lit)
+
+                            Repeater {
+                                model: 5
+
+                                delegate: Rectangle {
+                                    required property int index
+
+                                    // Standing on a common base line: the Row places x only.
+                                    y: Ui.hudPx(12) - height
+                                    width: Ui.hudPx(3)
+                                    height: Ui.hudPx(4 + 2 * index)
+                                    color: index < bars.lit ? bars.litColor : Theme.textMuted
+                                }
+                            }
                         }
                     }
                 }

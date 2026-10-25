@@ -74,11 +74,19 @@
 <context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="59"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="60"/>
         <source>%n player(s) online</source>
         <translation>
             <numerusform>%n player online</numerusform>
             <numerusform>%n players online</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="133"/>
+        <source>%n of 5 signal bars</source>
+        <translation>
+            <numerusform>%n of 5 signal bars</numerusform>
+            <numerusform>%n of 5 signal bars</numerusform>
         </translation>
     </message>
 </context>
@@ -104,7 +112,7 @@
 <context>
     <name>QcInventoryModel</name>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="154"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="180"/>
         <source>and %n more</source>
         <translation>
             <numerusform>and %n more</numerusform>

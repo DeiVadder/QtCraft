@@ -132,4 +132,23 @@ struct ServerPause
     bool paused = false;
 };
 
+// Client -> server: measures the round trip of the connection (decision E-886). The client's tick
+// thread sends one every half second while it plays; the server answers on its thread at once with a
+// LatencyEcho of the same nonce, without waiting for a tick. `reportedUs` is the client's smoothed
+// round trip so far, which the server lists with the player (PlayerList); -1 while unknown.
+struct LatencyProbe
+{
+    // Longer round trips are reported as this (a minute).
+    static constexpr qint32 maxReportedUs = 60'000'000;
+
+    quint32 nonce = 0;
+    qint32 reportedUs = -1;
+};
+
+// Server -> client: the answer to LatencyProbe.
+struct LatencyEcho
+{
+    quint32 nonce = 0;
+};
+
 } // namespace QcMsg

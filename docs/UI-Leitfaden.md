@@ -41,6 +41,7 @@ Alle Farben kommen aus `Theme` (`QcUiPalette`, E-097, E-279). Die vorhandenen Ro
 | `link` | #A8D4FF | Verweise, „Mehr dazu im Handbuch“ |
 | `warning` | #FFB060 | Hinweis „Warnung“ (Text und linker Balken) |
 | `error` | #FF9A90 | Fehlermeldungen, ungültige Eingaben |
+| `statusGood`/`statusWarn`/`statusBad` | #50E650 / #E0C030 / #FFB4AC | Zustand als Grafik (gut, Warnung, schlecht; mindestens 3:1 über `hudBackdrop`), z. B. die Signalbalken der Spielerliste (E-886); Werkzeuge behalten ihre eigenen `durability…`-Farben |
 | `panel` | #262626 (94 %) | Fläche der Spielbildschirme über der Welt (Inventar, Handbuch) |
 | `panelSolid` | #262626 (deckend) | Fläche der Menübildschirme und Dialoge (`ScreenFrame`), damit der Bildschirm darunter nicht durchscheint |
 | `panelRaised` | #303030 (63 %) | Gruppenkarte, Listenzeile |

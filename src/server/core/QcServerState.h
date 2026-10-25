@@ -102,8 +102,13 @@ public:
 
     // Someone joined or left, or operator rights changed: the clients get the player list again.
     void notePlayerListChanged() { m_playerListChanged = true; }
-    // Whether the list changed since the last call.
-    bool takePlayerListChanged() { return std::exchange(m_playerListChanged, false); }
+    static constexpr qint64 latencyListIntervalNs = 2'000'000'000;
+    // A client reported its round trip (decision E-886). A change that shows in the list
+    // (QcListedLatency::changed) is listed and the list goes out again, at most once per
+    // latencyListIntervalNs of the players' time; smaller changes are ignored.
+    void reportLatency(QcServerClient &client, qint32 reportedUs);
+    // Whether the list changed since the last call, or round trips changed and their interval passed.
+    bool takePlayerListChanged();
 
 private:
     friend class QcServer;
@@ -131,4 +136,7 @@ private:
     QRandomGenerator m_random;
     QRandomGenerator m_soundRandom;
     bool m_playerListChanged = false;
+    bool m_latencyChanged = false;
+    // Players' time when the list last went out.
+    qint64 m_playerListNs = 0;
 };

@@ -212,7 +212,7 @@ private:
     // the connection.
     void handleLoginMessage(Client &client, const QcMessage &message);
     // Everyone on the server to every player (QcMsg::PlayerList), after joins, leaves and changes
-    // of operator rights.
+    // of operator rights, and with the round trips the clients reported (decision E-886).
     void sendPlayerList();
     void handleInput(Client &client, const QcMsg::PlayerInput &message);
     // Replaces unknown outfits and hair styles with defaults; names come from the content.

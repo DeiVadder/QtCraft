@@ -2,6 +2,7 @@
 #include "app/multiplayer/QcMultiplayerSettings.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/multiplayer/QcServerHistory.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 
 #include <QFile>
 #include <QSettings>
@@ -190,6 +191,21 @@ private slots:
         const QcPlayerList::Changes rejoined = QcPlayerList::compare({{5, u"Bo"_s, false}}, {{6, u"Bo"_s, false}}, 1);
         QCOMPARE(rejoined.joined, QStringList{u"Bo"_s});
         QCOMPARE(rejoined.left, QStringList{u"Bo"_s});
+    }
+
+    void playerListShowsRoundTripsAsBars()
+    {
+        // As in the reference (decision E-886): five bars below 150 ms down to one from a second on.
+        QCOMPARE(QcListedLatency::bars(-1), 0);
+        QCOMPARE(QcListedLatency::bars(0), 5);
+        QCOMPARE(QcListedLatency::bars(149'999), 5);
+        QCOMPARE(QcListedLatency::bars(150'000), 4);
+        QCOMPARE(QcListedLatency::bars(299'999), 4);
+        QCOMPARE(QcListedLatency::bars(300'000), 3);
+        QCOMPARE(QcListedLatency::bars(600'000), 2);
+        QCOMPARE(QcListedLatency::bars(999'999), 2);
+        QCOMPARE(QcListedLatency::bars(1'000'000), 1);
+        QCOMPARE(QcListedLatency::bars(60'000'000), 1);
     }
 
     void playerListWithoutSessionIsEmpty()

@@ -1,6 +1,7 @@
 #include "app/multiplayer/QcPlayerList.h"
 
 #include "clientcore/session/QcClientSession.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 
 #include <algorithm>
 
@@ -80,10 +81,14 @@ QVariantList QcPlayerList::players() const
     const quint32 own = m_session ? m_session->welcome().playerEntityId : 0;
     QVariantList rows;
     for (const Entry &entry : std::as_const(sorted)) {
+        const double latencyMs = entry.latencyUs < 0 ? -1.0 : entry.latencyUs / 1000.0;
         rows.append(QVariantMap{{u"name"_s, entry.name},
                                 {u"operator"_s, entry.operatorRights},
                                 {u"self"_s, own != 0 && entry.entityId == own},
-                                {u"spectator"_s, entry.spectator}});
+                                {u"spectator"_s, entry.spectator},
+                                {u"latencyMs"_s, latencyMs},
+                                {u"latencyText"_s, latencyMs < 0.0 ? QString() : QcRoundTripSummary::text(latencyMs)},
+                                {u"bars"_s, QcListedLatency::bars(entry.latencyUs)}});
     }
     return rows;
 }

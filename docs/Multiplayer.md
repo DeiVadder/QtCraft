@@ -545,6 +545,27 @@ printf '%s\n' '{"cmd":"waitUntilReady"}' '{"cmd":"chat","text":"hello"}' '{"cmd"
   | qtcraft-headless --join 127.0.0.1:<port> --player-name Alice --data-dir /tmp/alice
 ```
 
+**Latency** (E-886): every client measures its round trip to the server with `LatencyProbe` and
+`LatencyEcho` (every 0.5 s, answered by the server at once on its thread, not on its tick). The
+debug screen shows it in the general column (`Latency: 0.4 ms (last … · min … · max … · jitter … ms)`,
+one decimal below 10 ms), the player list shows each player's reported value in milliseconds with
+signal bars like the reference (5 below 150 ms, 4 below 300, 3 below 600, 2 below 1000, else 1).
+Bots report it through the control commands `latency` and `players` (`latencyMs`), in `debug` and
+the statistics log (`client.latency`), and in their `HEALTH` line (`latency … ms (min, max,
+jitter)`; `--health-log <s>`), so network tests and measurements can log it.
+The echo queues behind the data the server has already written to the connection, so the round
+trip includes the server's send backlog (chunk streaming after a join, a burst of block updates),
+not only the network; a probe waiting longer than the smoothed value shows as a lower bound
+(`Latency: ≥ X ms`, `pendingMs`), so a stall is visible at once. Clients report their round trip at
+display resolution (0.1 ms below 10 ms, whole milliseconds above), and the server lists a new value
+only when it shows (at least 1 ms and 10 %, another signal bar, or unknown/known), at most every 2 s;
+a quiet game sends no player lists. Probes are rate limited to bursts of 4 at 4 per second (two per
+second are sent); a probe over the limit gets no echo and counts as lost.
+`test_latency::roundTripIsMeasured` checks it in single player and over links delayed by 100 ms each
+way (with and without 50 ms jitter): after the busy start is forgotten, the smallest round trip lies
+between twice the delay and that plus jitter and 150 ms (larger ones and the smoothed value get a
+second more for the load of parallel tests), and the server lists it with the player.
+
 `test_multiplayer_bots` starts a dedicated server and four bots as processes of their own on
 127.0.0.1 (random free port) and checks through the control interface: everyone sees everyone
 (player list and entities), an operator made on the server console can use `/time` while another

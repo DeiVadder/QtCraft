@@ -23,6 +23,7 @@
 #include "clientcore/session/QcWorldMirror.h"
 #include "clientcore/tick/QcSessionEvent.h"
 #include "clientcore/tick/QcSessionTickMode.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 #include "common/physics/QcPlayerInput.h"
 #include "common/protocol/QcMessages.h"
 
@@ -113,6 +114,11 @@ public:
     QcTickTiming &tickTiming() const;
     // Round trip of the inputs and bytes of the connection (health line, decision E-834).
     QcLinkStats &linkStats() const;
+    // The round trip to the server, measured with probes by the tick thread (decision E-886);
+    // std::nullopt before the first answer.
+    std::optional<QcRoundTripSummary> latency() const;
+    // Forgets the round trips so far, e.g. those of the busy start (tests); the probes go on.
+    void resetLatency();
 
     // The hand: the block or entity the player looks at (updated every tick), mining progress.
     const QcHandActions &hand() const { return m_hand; }

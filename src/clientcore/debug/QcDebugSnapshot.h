@@ -4,6 +4,7 @@
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 #include "common/protocol/QcDebugMessages.h"
 
 #include <QList>
@@ -104,6 +105,8 @@ struct QcDebugSnapshot
     qint64 blockBytes = 0;
     std::optional<QcMsg::ServerDebug> server;
     std::optional<Frame> frame;
+    // The round trip to the server (decision E-886); also in single player, where it is nearly 0.
+    std::optional<QcRoundTripSummary> latency;
 
     // The block containing the feet, its chunk and section.
     QcBlockPos block() const;

@@ -10,6 +10,7 @@
 #include <QElapsedTimer>
 #include <QTest>
 
+#include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
@@ -47,13 +48,18 @@ private:
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
         m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
         QVERIFY(m_host->startError().isEmpty());
-        auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 31 + jitterMs));
-        m_link = link.get();
-        m_session = std::make_unique<QcClientSession>(std::move(link), u"Player"_s);
+        // A negative delay connects without the delaying link, like single player.
+        std::unique_ptr<QcTransport> transport = m_host->connectClient();
+        if (delayMs >= 0) {
+            auto link = std::make_unique<QcLatencyTransport>(std::move(transport), delayMs, jitterMs, static_cast<quint32>(delayMs * 31 + jitterMs));
+            m_link = link.get();
+            transport = std::move(link);
+        }
+        m_session = std::make_unique<QcClientSession>(std::move(transport), u"Player"_s);
         m_session->start();
         QTRY_VERIFY_WITH_TIMEOUT(m_session->state() == QcClientSession::State::Playing && m_session->playerMotion().onGround, timeoutMs);
         // Settle: the first states move the player from the origin to the spawn.
-        QTest::qWait(2 * (delayMs + jitterMs) + 200);
+        QTest::qWait(2 * (std::max(delayMs, 0) + jitterMs) + 200);
         m_session->resetCorrections();
     }
 
@@ -141,7 +147,7 @@ private slots:
             input.yaw = static_cast<float>(tick * 3 % 360);
             return input;
         });
-        QTest::qWait(2 * (delayMs + jitterMs) + 200);
+        QTest::qWait(2 * (std::max(delayMs, 0) + jitterMs) + 200);
 
         // Every server state matched the prediction it answered: no correction, so no jump on screen.
         qInfo("largest correction %.6f m, most pending inputs %lld, largest one-way delay %lld ms", m_session->prediction().largestCorrection(),
@@ -240,6 +246,51 @@ private slots:
             QTRY_VERIFY_WITH_TIMEOUT(m_session->playerMotion().onGround, timeoutMs);
             QTest::qWait(roundTripMs);
         }
+    }
+
+    void roundTripIsMeasured_data()
+    {
+        QTest::addColumn<int>("delayMs");
+        QTest::addColumn<int>("jitterMs");
+        QTest::newRow("single player") << -1 << 0;
+        QTest::newRow("rtt 200 ms") << 100 << 0;
+        QTest::newRow("rtt 200-300 ms") << 100 << 50;
+    }
+
+    // The latency probes (decision E-886) measure the delayed link: the round trip lies between twice
+    // the delay and twice the delay with jitter (plus the time the threads take to answer), and the
+    // server lists it with the player. The rounds of the busy start are forgotten; under the load
+    // of parallel tests single probes may still be late, so only the smallest one is held to the
+    // tight bound.
+    void roundTripIsMeasured()
+    {
+        QFETCH(int, delayMs);
+        QFETCH(int, jitterMs);
+        start(delayMs, jitterMs);
+        m_session->resetLatency();
+
+        const double lowMs = 2.0 * std::max(delayMs, 0) - 2.0;
+        const double highMs = 2.0 * (std::max(delayMs, 0) + jitterMs) + 150.0;
+        const double loadedMs = highMs + 1000.0;
+        QTRY_VERIFY_WITH_TIMEOUT(m_session->latency() && m_session->latency()->samples >= 8, timeoutMs);
+        const QcRoundTripSummary latency = *m_session->latency();
+        qInfo("round trip %.2f ms (last %.2f, min %.2f, max %.2f, jitter %.2f, %d samples)", latency.smoothedMs, latency.lastMs, latency.minMs,
+              latency.maxMs, latency.jitterMs, latency.samples);
+        QVERIFY2(latency.minMs >= lowMs && latency.minMs <= highMs, qPrintable(u"min %1 ms"_s.arg(latency.minMs)));
+        QVERIFY2(latency.maxMs <= loadedMs, qPrintable(u"max %1 ms"_s.arg(latency.maxMs)));
+        QVERIFY2(latency.smoothedMs >= lowMs && latency.smoothedMs <= loadedMs, qPrintable(u"smoothed %1 ms"_s.arg(latency.smoothedMs)));
+        if (jitterMs > 0) {
+            QVERIFY2(latency.jitterMs > 0.0, qPrintable(u"jitter %1 ms"_s.arg(latency.jitterMs)));
+        }
+
+        // The server lists the round trip the client reported with the player.
+        const auto listed = [&]() -> qint32 {
+            const QList<QcMsg::PlayerList::Entry> players = m_session->players();
+            const auto own = std::ranges::find(players, m_session->welcome().playerEntityId, &QcMsg::PlayerList::Entry::entityId);
+            return own == players.end() ? -1 : own->latencyUs;
+        };
+        // A value of the busy start stays listed until a report differs visibly from it.
+        QTRY_VERIFY2_WITH_TIMEOUT(listed() >= lowMs * 1000.0 && listed() <= loadedMs * 1000.0, qPrintable(u"listed %1 us"_s.arg(listed())), timeoutMs);
     }
 };
 

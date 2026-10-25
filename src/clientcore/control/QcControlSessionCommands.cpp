@@ -9,6 +9,7 @@
 
 #include <QJsonArray>
 
+#include <cmath>
 #include <optional>
 #include <utility>
 
@@ -62,6 +63,7 @@ void QcControlSessionCommands::registerCommands(QcControlCommandTable &table)
     table.add(u"sounds"_s, [this](const QJsonObject &request) { sounds(request); });
     table.add(u"mods"_s, [this](const QJsonObject &request) { mods(request); });
     table.add(u"debug"_s, [this](const QJsonObject &request) { debug(request); });
+    table.add(u"latency"_s, [this](const QJsonObject &request) { latency(request); });
 }
 
 QcClientSession &QcControlSessionCommands::session() const
@@ -116,9 +118,19 @@ void QcControlSessionCommands::players(const QJsonObject &request)
 {
     QJsonArray list;
     for (const QcMsg::PlayerList::Entry &player : session().players()) {
-        list.append(QJsonObject{{u"name"_s, player.name}, {u"entity"_s, static_cast<qint64>(player.entityId)}, {u"operator"_s, player.operatorRights}});
+        // The round trip the player's client reported (decision E-886); -1 while unknown.
+        const double latencyMs = player.latencyUs < 0 ? -1.0 : std::round(player.latencyUs / 100.0) / 10.0;
+        list.append(QJsonObject{{u"name"_s, player.name},
+                                {u"entity"_s, static_cast<qint64>(player.entityId)},
+                                {u"operator"_s, player.operatorRights},
+                                {u"latencyMs"_s, latencyMs}});
     }
     m_context.finish(request, {{u"players"_s, list}});
+}
+
+void QcControlSessionCommands::latency(const QJsonObject &request)
+{
+    m_context.finish(request, QcDebugJson::latencyJson(session().latency()));
 }
 
 void QcControlSessionCommands::appearance(const QJsonObject &request)

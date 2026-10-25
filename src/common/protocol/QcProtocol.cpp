@@ -79,7 +79,8 @@ bool isSentBy(std::size_t messageIndex, Peer sender)
                                || is.template operator()<QcMsg::SelectStonecutterRecipe>() || is.template operator()<QcMsg::Pong>()
                                || is.template operator()<QcMsg::AdminSubscribe>() || is.template operator()<QcMsg::AdminRequest>()
                                || is.template operator()<QcMsg::ChooseEnchantment>() || is.template operator()<QcMsg::RenameAnvil>()
-                               || is.template operator()<QcMsg::ForgeAnvil>() || is.template operator()<QcMsg::PauseRequest>();
+                               || is.template operator()<QcMsg::ForgeAnvil>() || is.template operator()<QcMsg::PauseRequest>()
+                               || is.template operator()<QcMsg::LatencyProbe>();
     return clientMessage == (sender == Peer::Client);
 }
 

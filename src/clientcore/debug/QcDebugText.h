@@ -26,6 +26,8 @@ public:
 
 private:
     static QStringList placeLines(const QcDebugSnapshot &snapshot);
+    // The round trip to the server (decision E-886).
+    static QString latencyLine(const std::optional<QcRoundTripSummary> &latency);
     static QStringList targetLines(const QcDebugSnapshot &snapshot);
     static QStringList worldLines(const QcDebugSnapshot &snapshot);
     static QStringList serverLines(const QcMsg::ServerDebug &server);

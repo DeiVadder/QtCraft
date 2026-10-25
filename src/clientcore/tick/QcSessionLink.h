@@ -3,6 +3,7 @@
 #include "clientcore/tick/QcSessionCommand.h"
 #include "clientcore/tick/QcSessionEvent.h"
 #include "common/core/QcMailbox.h"
+#include "common/diagnostics/QcRoundTripStats.h"
 
 #include <QObject>
 
@@ -61,6 +62,10 @@ public:
     QcTickTiming &timing() const;
     // Round trip and traffic of the connection (health line); safe to read from this thread.
     QcLinkStats &linkStats() const;
+    // The round trip to the server (decision E-886); safe to read from this thread.
+    std::optional<QcRoundTripSummary> latency() const;
+    // Forgets the round trips measured so far; safe from this thread.
+    void resetLatency();
 
 private:
     void deliver(QcSessionEvent &&event);

@@ -214,6 +214,10 @@ struct QcServerClient : QcEntity
     // A network client's pause request was refused in the log already (once per connection).
     bool pauseRefusalLogged = false;
     QString name;
+    // The round trip the player list shows for the client (decision E-886), in microseconds; -1
+    // while unknown. A display value: the client's reports replace it only when the change shows
+    // (QcServerState::reportLatency).
+    qint32 listedLatencyUs = -1;
     Login login;
     Input input;
     View view;

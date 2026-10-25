@@ -63,6 +63,11 @@ QString QcHealthLog::line(const QcHealthSample &sample, Memory memory, const std
     if (sample.roundTrip) {
         parts.append(u"round trip %1"_s.arg(timing(*sample.roundTrip)));
     }
+    if (sample.latency) {
+        using Text = QcRoundTripSummary;
+        parts.append(u"latency %1 ms (min %2, max %3, jitter %4)"_s.arg(Text::text(sample.latency->smoothedMs), Text::text(sample.latency->minMs),
+                                                                         Text::text(sample.latency->maxMs), Text::text(sample.latency->jitterMs)));
+    }
     if (sample.traffic) {
         const QcTraffic before = previous.value_or(QcTraffic{});
         parts.append(u"network out %1 KiB/s, in %2 KiB/s"_s.arg(rate(sample.traffic->sent, before.sent, seconds),

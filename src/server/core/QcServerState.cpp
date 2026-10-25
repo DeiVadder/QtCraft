@@ -1,5 +1,6 @@
 #include "server/core/QcServerState.h"
 
+#include "common/diagnostics/QcRoundTripStats.h"
 #include "server/villages/QcVillagePopulation.h"
 
 #include <utility>
@@ -54,4 +55,25 @@ const QcItemDefinition *QcServerState::heldItem(const QcServerClient &client) co
 {
     const QcItemStack &held = client.inventory.selectedStack();
     return !held.isEmpty() && m_content->isValidItem(held.item) ? &m_content->item(held.item) : nullptr;
+}
+
+void QcServerState::reportLatency(QcServerClient &client, qint32 reportedUs)
+{
+    if (QcListedLatency::changed(client.listedLatencyUs, reportedUs)) {
+        client.listedLatencyUs = reportedUs;
+        m_latencyChanged = true;
+    }
+}
+
+bool QcServerState::takePlayerListChanged()
+{
+    const qint64 now = m_clock.playerTimeNs();
+    const bool latencyDue = m_latencyChanged && now - m_playerListNs >= latencyListIntervalNs;
+    if (!std::exchange(m_playerListChanged, false) && !latencyDue) {
+        return false;
+    }
+
+    m_latencyChanged = false;
+    m_playerListNs = now;
+    return true;
 }
