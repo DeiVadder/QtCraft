@@ -22,4 +22,17 @@ std::array<QImage, 6> shadedAtlases(const QImage &atlas);
 
 QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6> &shadedAtlas, int size = iconSize);
 
+// One cell of a block that fills several (a bed's foot and head, decision E-885): its state's entry,
+// drawn `offset` cells away from the first part.
+struct Part
+{
+    const QcBlockRenderTable::Entry *entry = nullptr;
+    std::array<int, 3> offset{};
+};
+
+// The icon of a block of several cells: all parts together, scaled evenly so that the bounds of
+// their geometry take as much of the icon as a full block, centred there. A part without an entry
+// draws nothing; a single part draws like render(entry).
+QImage render(const QList<Part> &parts, const std::array<QImage, 6> &shadedAtlas, int size = iconSize);
+
 } // namespace QcBlockIcon

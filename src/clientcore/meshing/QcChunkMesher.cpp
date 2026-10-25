@@ -1,12 +1,17 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 
 #include "clientcore/light/QcSectionLight.h"
+#include "clientcore/meshing/QcLiquidSurface.h"
+#include "clientcore/meshing/QcMeshNeighbourhood.h"
 #include "common/world/QcLightPassage.h"
 #include "common/world/QcLightVolume.h"
+
+#include <algorithm>
 
 namespace {
 
 using Entry = QcBlockRenderTable::Entry;
+using Neighbourhood = QcMeshNeighbourhood;
 
 // Corners of each face, counter-clockwise seen from outside. Corners 0 and 1 map to the bottom
 // edge of the texture, 2 and 3 to the top edge.
@@ -18,42 +23,6 @@ constexpr std::array<std::array<std::array<int, 3>, 4>, 6> faceCorners = {{
     {{{0, 0, 1}, {1, 0, 1}, {1, 1, 1}, {0, 1, 1}}}, // South
     {{{1, 0, 0}, {0, 0, 0}, {0, 1, 0}, {1, 1, 0}}}, // North
 }};
-
-class Neighbourhood
-{
-public:
-    explicit Neighbourhood(const QcMeshInput &input)
-        : m_input(input)
-    {
-    }
-
-    // Block at chunk-local coordinates; x and z may lie in [-16, 32).
-    // Returns nullopt where the neighbour chunk is missing. Below and above the world is air, so
-    // the underside of the bottom layer is drawn for a view from the void (decision E-288).
-    std::optional<QcBlockId> block(int x, int y, int z) const
-    {
-        if (y < 0 || y >= QcWorld::worldHeight) {
-            return qcAirBlockId;
-        }
-        const int cx = x < 0 ? -1 : (x >= QcWorld::chunkSize ? 1 : 0);
-        const int cz = z < 0 ? -1 : (z >= QcWorld::chunkSize ? 1 : 0);
-        const int index = (cz + 1) * 3 + (cx + 1);
-        const auto &chunk = m_input.chunks[static_cast<std::size_t>(index)];
-        if (!chunk) {
-            return std::nullopt;
-        }
-        return chunk->block(x - cx * QcWorld::chunkSize, y, z - cz * QcWorld::chunkSize);
-    }
-
-    bool isOpaque(int x, int y, int z) const
-    {
-        const std::optional<QcBlockId> id = block(x, y, z);
-        return !id || m_input.renderTable->entry(*id).opaque;
-    }
-
-private:
-    const QcMeshInput &m_input;
-};
 
 // Sky and block light of the 3 x 3 chunk neighbourhood around one section, with a margin of one
 // chunk horizontally and 16 blocks vertically, which is as far as light travels (levels 15 to 0).
@@ -591,29 +560,53 @@ private:
         return top && m_table.entry(*top).liquid ? 1.0f : liquid.liquidHeight;
     }
 
-    void appendCube(const PlacedBlock &block)
+    // The heights of the top corners of a cube (QcLiquidSurface, index x + 2 * z): 1 for a block, a
+    // liquid's surface sloping towards its lower and open neighbours (decision E-885).
+    std::array<float, 4> topOf(const PlacedBlock &block) const
     {
         const float surface = block.entry.liquid ? surfaceOf(block.entry, block.cell) : 1.0f;
+        if (surface >= 1.0f) {
+            return {1.0f, 1.0f, 1.0f, 1.0f};
+        }
+
+        std::array<float, 9> cells{};
+        for (int dz = -1; dz <= 1; ++dz) {
+            for (int dx = -1; dx <= 1; ++dx) {
+                const Cell cell{block.cell.x + dx, block.cell.y, block.cell.z + dz};
+                const std::optional<QcBlockId> id = m_around.block(cell.x, cell.y, cell.z);
+                const Entry *next = id ? &m_table.entry(*id) : nullptr;
+                float value = QcLiquidSurface::closed;
+                if (next && next->liquid && next->type == block.entry.type) {
+                    value = surfaceOf(*next, cell);
+                } else if (next && next->liquidMayEnter) {
+                    value = QcLiquidSurface::open;
+                }
+                cells[static_cast<std::size_t>(dz + 1) * 3 + static_cast<std::size_t>(dx + 1)] = value;
+            }
+        }
+        return QcLiquidSurface::cornerHeights(cells);
+    }
+
+    void appendCube(const PlacedBlock &block)
+    {
+        const std::array<float, 4> top = topOf(block);
         for (const QcBlockFace face : qcAllBlockFaces) {
-            appendCubeFace(block, face, surface);
+            appendCubeFace(block, face, top);
         }
     }
 
-    // Height at which a cube face towards `next` starts (above a lower liquid of the same kind only
-    // the step shows), or nullopt when the face is hidden.
-    std::optional<float> cubeFaceBase(const PlacedBlock &block, const Entry &next, Cell open, QcBlockFace face, float surface) const
+    // Height at which a cube face towards `next` starts, or nullopt when the face is hidden. Beside
+    // a liquid the surfaces of the same liquid meet at the corners they share (QcLiquidSurface), and
+    // another liquid hides the side.
+    std::optional<float> cubeFaceBase(const PlacedBlock &block, const Entry &next, QcBlockFace face, std::array<float, 4> top) const
     {
         const Entry &entry = block.entry;
         const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
         if (entry.liquid && next.liquid && side) {
-            const float nextSurface = surfaceOf(next, open);
-            if (next.type != entry.type || nextSurface >= surface) {
-                return std::nullopt;
-            }
-            return nextSurface;
+            return std::nullopt;
         }
 
-        if (entry.liquid && face == QcBlockFace::Up && surface < 1.0f && !next.liquid) {
+        if (entry.liquid && face == QcBlockFace::Up && std::ranges::min(top) < 1.0f && !next.liquid) {
             // A sunken surface stays visible under a ceiling.
             return 0.0f;
         }
@@ -624,14 +617,14 @@ private:
         return 0.0f;
     }
 
-    void appendCubeFace(const PlacedBlock &block, QcBlockFace face, float surface)
+    void appendCubeFace(const PlacedBlock &block, QcBlockFace face, std::array<float, 4> top)
     {
         const Cell open = neighbourOf(block.cell, face);
         const std::optional<QcBlockId> neighbour = m_around.block(open.x, open.y, open.z);
         if (!neighbour) {
             return;
         }
-        const std::optional<float> base = cubeFaceBase(block, m_table.entry(*neighbour), open, face, surface);
+        const std::optional<float> base = cubeFaceBase(block, m_table.entry(*neighbour), face, top);
         if (!base) {
             return;
         }
@@ -649,7 +642,7 @@ private:
             const bool leftEdge = uvCorner == 0 || uvCorner == 3;
             QcBlockVertex &vertex = corners[corner];
             vertex.x = static_cast<float>(block.local.x + c[0]);
-            vertex.y = static_cast<float>(block.local.y) + (c[1] == 1 ? surface : *base);
+            vertex.y = static_cast<float>(block.local.y) + (c[1] == 1 ? top[static_cast<std::size_t>(c[0]) + 2 * static_cast<std::size_t>(c[2])] : *base);
             vertex.z = static_cast<float>(block.local.z + c[2]);
             vertex.u = static_cast<float>(leftEdge ? uv.left() : uv.right());
             vertex.v = static_cast<float>(bottomEdge ? uv.bottom() : uv.top());

@@ -502,6 +502,14 @@ Item {
         }
     }
 
+    // The name of the selected item for a moment after it changed (decision E-885), centred over
+    // the highest status row above the hotbar (armour, hearts or the hotbar itself in creative mode).
+    HeldItemName {
+        inventory: hud.game.player.inventory
+        anchors.horizontalCenter: hotbar.horizontalCenter
+        y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y) - height - Ui.hudPx(4)
+    }
+
     // A held compass or clock (decision E-769) right of the hotbar.
     DialDisplay {
         hudState: hud.game.hud

@@ -26,7 +26,10 @@ public:
     QcRenderBridge(const QcSessionParts &parts, const QcSettingsController &settings);
 
     // Texture atlas of the running world's content; without one no entities are drawn.
-    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_entities.setAtlas(std::move(atlas)); }
+    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas, std::shared_ptr<const QcBlockRenderTable> renderTable)
+    {
+        m_entities.setAtlas(std::move(atlas), std::move(renderTable));
+    }
     // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_entities.setForcedPose(pose); }

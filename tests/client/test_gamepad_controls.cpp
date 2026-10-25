@@ -250,6 +250,29 @@ private slots:
         QVERIFY(session().hand().miningRequested());
     }
 
+    // Decision E-885: a held mining or use button whose release the window may never see ends when
+    // the keys are forgotten: the window lost its focus (QcGameController calls clearKeys) or the
+    // input was taken (QcScreenState::interrupted).
+    void forgottenKeysEndMiningAndHeldUse()
+    {
+        session().setMining(true);
+        // Looking up at the sky: the use does nothing, but the button counts as held.
+        session().pressUse();
+        QVERIFY(session().hand().miningRequested());
+        QVERIFY(session().hand().useHeld());
+        m_input->clearKeys();
+        QVERIFY(!session().hand().miningRequested());
+        QVERIFY(!session().hand().useHeld());
+
+        session().setMining(true);
+        // Looking up at the sky: the use does nothing, but the button counts as held.
+        session().pressUse();
+        m_screens->setInputEnabled(false);
+        QVERIFY(!session().hand().miningRequested());
+        QVERIFY(!session().hand().useHeld());
+        m_screens->setInputEnabled(true);
+    }
+
     // A second pad takes the lead with a press, not with a drifting stick nor a pushed one while the
     // leading pad walks; the leader's held actions are let go when it hands over.
     void leadSwitchReleasesHeldActions()

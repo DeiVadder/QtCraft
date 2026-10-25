@@ -67,6 +67,11 @@ public:
         // Height of a liquid's surface in its cell when no liquid lies on top (falls with the
         // flow level; sources and falling liquid are nearly full).
         float liquidHeight = 1.0f;
+        // A liquid beside it slopes down into its cell (QcLiquidSurface::open, decision E-885): air
+        // and blocks without collision (torches, plants, rails, signs) or lower than half a block
+        // (thin snow layers, carpets). Solid blocks (also invisible ones), liquids and unknown ids
+        // are walls.
+        bool liquidMayEnter = false;
         // The state is the full cube: drawn from faceUv; otherwise from quads and crosses.
         bool fullCube = true;
         // Light lost when passing through this block (0..15) and block light emitted (0..15).
@@ -111,6 +116,9 @@ public:
     // How the states treat light, as the light engine reads it (the same values as the entries).
     const std::shared_ptr<const QcLightTable> &lightTable() const { return m_lightTable; }
 
+    // The quads an entry is drawn with on its own (an icon, a falling or sliding block): a shape's
+    // quads, a full cube's six faces spelled out (their texture turns left aside).
+    static QList<Quad> drawnQuads(const Entry &entry);
     // The axes (0 = x, 1 = y, 2 = z) along which side rectangles of a face are measured.
     static std::pair<int, int> axes(QcBlockFace face);
     // Whether a face of `self` with rectangle `rect` on the side towards `neighbour` is hidden by it.

@@ -242,6 +242,22 @@ QcSurfaceMaterial materialOf(const Entry &entry)
     return QcSurfaceMaterial::Solid;
 }
 
+// Whether a liquid beside the state slopes down into its cell (Entry::liquidMayEnter).
+bool liquidMayEnter(const QcBlockState &state, const QcBlockDefinition &block)
+{
+    if (block.liquid) {
+        return false;
+    }
+    if (!block.solid) {
+        return true;
+    }
+    if (state.fullCube) {
+        return false;
+    }
+    const QList<QcAabb> &boxes = state.collision.isEmpty() ? state.boxes : state.collision;
+    return std::ranges::all_of(boxes, [](const QcAabb &box) { return box.max.y < 0.5; });
+}
+
 Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcBlockId id)
 {
     const QcBlockState &state = content.state(id);
@@ -255,6 +271,7 @@ Entry entryOf(const QcContentRegistry &content, const QcTextureAtlas &atlas, QcB
         entry.liquidHeight = liquidHeightOf(content, id, block);
     }
     entry.fullCube = state.fullCube;
+    entry.liquidMayEnter = liquidMayEnter(state, block);
     entry.lightOpacity = state.lightOpacity;
     entry.lightBlockedFaces = state.lightBlockedFaces;
     entry.lightLevel = block.lightLevel;
@@ -343,4 +360,27 @@ QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const Q
 const QcBlockRenderTable::Entry &QcBlockRenderTable::entry(QcBlockId id) const
 {
     return static_cast<qsizetype>(id) < m_entries.size() ? m_entries[static_cast<qsizetype>(id)] : m_invisible;
+}
+
+QList<QcBlockRenderTable::Quad> QcBlockRenderTable::drawnQuads(const Entry &entry)
+{
+    if (!entry.fullCube) {
+        return entry.quads;
+    }
+
+    QList<Quad> quads;
+    for (const QcBlockFace face : qcAllBlockFaces) {
+        const QRectF &uv = entry.faceUv[static_cast<std::size_t>(face)];
+        Quad quad;
+        quad.face = face;
+        quad.boundary = true;
+        for (std::size_t corner = 0; corner < 4; ++corner) {
+            const auto &c = faceCorners[static_cast<std::size_t>(face)][corner];
+            quad.corners[corner] = {static_cast<float>(c[0]), static_cast<float>(c[1]), static_cast<float>(c[2])};
+            const bool left = corner == 0 || corner == 3;
+            quad.uvs[corner] = {static_cast<float>(left ? uv.left() : uv.right()), static_cast<float>(corner < 2 ? uv.bottom() : uv.top())};
+        }
+        quads.append(quad);
+    }
+    return quads;
 }

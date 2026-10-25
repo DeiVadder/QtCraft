@@ -4,6 +4,7 @@
 
 #include "clientcore/light/QcEntityLight.h"
 #include "clientcore/meshing/QcAnimator.h"
+#include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 #include "clientcore/meshing/QcSpriteShape.h"
 #include "clientcore/session/QcClientEntity.h"
@@ -228,6 +229,9 @@ void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunct
 
 // A falling block (0.98 m) or the block a cart carries: the block's look (ItemLook with `cube`).
 void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv);
+// A falling or sliding block drawn with the quads of its state (QcBlockRenderTable::drawnQuads,
+// texture coordinates in the atlas): shapes keep their boxes, rotation and texture cut-outs.
+void appendBlockQuads(QcEntityMesh &mesh, const QList<QcBlockRenderTable::Quad> &quads, const BlockPlacement &placement, QcEntityLight light);
 
 // The first-person right arm of `figure` with its held item, placed in front of the camera.
 void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv);

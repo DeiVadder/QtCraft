@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
@@ -380,7 +381,70 @@ private slots:
         for (const QcBlockVertex &v : mesh.waterVertices) {
             highest = std::max(highest, v.y);
         }
-        QCOMPARE(highest, 3.0f - QcChunkMesher::liquidSurfaceDrop);
+        // In the open the surface also slopes down towards the air beside it (decision E-885): the
+        // highest corner is the one the two sources share, with air on its north side (both sources
+        // weigh ten times, the two air cells once).
+        const float full = 1.0f - QcChunkMesher::liquidSurfaceDrop;
+        QCOMPARE(highest, 2.0f + 20.0f * full / 22.0f);
+    }
+
+    // Two sources on either side of a chunk border: each chunk's mesh reads the other's water, so
+    // their surfaces meet on the border at the same height (decision E-885).
+    void waterSurfacesMeetAcrossAChunkBorder()
+    {
+        const Fixture f;
+        auto west = std::make_shared<QcChunk>();
+        west->setBlock(15, 2, 5, f.water);
+        auto east = std::make_shared<QcChunk>(QcChunkPos{1, 0});
+        east->setBlock(0, 2, 5, f.water);
+        QcMeshInput westInput = f.input(west);
+        westInput.chunks[5] = east;
+        QcMeshInput eastInput = f.input(east);
+        eastInput.chunks[3] = west;
+
+        const float full = 1.0f - QcChunkMesher::liquidSurfaceDrop;
+        const float shared = 2.0f + 20.0f * full / 22.0f;
+        for (const QcChunkMesh &mesh : {QcChunkMesher::mesh(westInput), QcChunkMesher::mesh(eastInput)}) {
+            // No side face between the two: top, bottom, north, south and the outer side.
+            QCOMPARE(quadCount(mesh.waterIndices), 5);
+            float low = 99.0f;
+            float high = -99.0f;
+            for (const QcBlockVertex &v : mesh.waterVertices) {
+                low = std::min(low, v.x);
+                high = std::max(high, v.x);
+            }
+            // The border is the side of the cell towards the other chunk: x = 16 in the west chunk,
+            // the cell's low side in the east chunk.
+            const float border = high - low == 1.0f && low == 15.0f ? high : low;
+            int corners = 0;
+            for (const QcBlockVertex &v : mesh.waterVertices) {
+                if (v.x == border && v.y > 2.0f) {
+                    QCOMPARE(v.y, shared);
+                    ++corners;
+                }
+            }
+            QVERIFY(corners >= 2);
+        }
+    }
+
+    // The cells a liquid slopes down into (QcBlockRenderTable::Entry::liquidMayEnter): air and blocks
+    // without collision; not solid blocks (also invisible ones, a barrier), liquids or unknown ids.
+    void liquidsSlopeOnlyIntoOpenCells()
+    {
+        QcContentRegistry content;
+        QcBlockDefinition torch = makeBlock(u"t:torch"_s, QcRenderLayer::Cutout, false);
+        torch.solid = false;
+        const QcBlockId torchId = *content.registerBlock(torch);
+        const QcBlockId barrier = *content.registerBlock(makeBlock(u"t:barrier"_s, QcRenderLayer::Invisible, false));
+        const QcBlockId stone = *content.registerBlock(makeBlock(u"t:stone"_s, QcRenderLayer::Opaque, true));
+        const QcBlockId water = *content.registerBlock(makeBlock(u"t:water"_s, QcRenderLayer::Translucent, false, true));
+        const QcBlockRenderTable table(content, QcTextureAtlas::build(content));
+        QVERIFY(table.entry(qcAirBlockId).liquidMayEnter);
+        QVERIFY(table.entry(torchId).liquidMayEnter);
+        QVERIFY(!table.entry(barrier).liquidMayEnter);
+        QVERIFY(!table.entry(stone).liquidMayEnter);
+        QVERIFY(!table.entry(water).liquidMayEnter);
+        QVERIFY(!table.entry(static_cast<QcBlockId>(table.size()) + 5).liquidMayEnter);
     }
 
     void flowingLiquidSurfacesFollowTheirLevel()
@@ -418,19 +482,32 @@ private slots:
         in.renderTable = table;
         const QcChunkMesh mesh = QcChunkMesher::mesh(in);
 
-        // Source: top, north, south, west and the step above the lower flow on its east side;
-        // flow: top, north, south, east (its west side is below the source's surface).
-        QCOMPARE(quadCount(mesh.waterIndices), 9);
-        const float low = 2.0f + table->entry(flowing).liquidHeight;
-        int stepCorners = 0;
+        // Source: top, north, south and west; flow: top, north, south and east. Between them no side:
+        // the surfaces meet at the corners they share (decision E-885).
+        QCOMPARE(quadCount(mesh.waterIndices), 8);
+        std::optional<float> shared;
+        bool sharedAgrees = true;
+        float far = 3.0f;
         for (const QcBlockVertex &v : mesh.waterVertices) {
             QVERIFY(v.y <= 2.0f + full);
-            // The step quad lies in the plane x = 6 between the two surfaces.
-            if (v.x == 6.0f && v.z >= 5.0f && v.z <= 6.0f && (v.y == low || v.y == 2.0f + full)) {
-                ++stepCorners;
+            if (v.y <= 2.0f) {
+                continue;
+            }
+            if (v.x == 6.0f && v.z == 5.0f) {
+                sharedAgrees = sharedAgrees && (!shared || *shared == v.y);
+                shared = v.y;
+            } else if (v.x == 7.0f && v.z == 5.0f) {
+                far = std::min(far, v.y);
             }
         }
-        QVERIFY(stepCorners >= 4);
+        QVERIFY(shared.has_value());
+        QVERIFY(sharedAgrees);
+        // The surface falls from the source's side towards the flow's far edge: the shared corner
+        // averages the source (ten times), the flow and two air cells, the far one the flow and two
+        // air cells.
+        const float flow = table->entry(flowing).liquidHeight;
+        QCOMPARE(*shared, 2.0f + (10.0f * full + flow) / 13.0f);
+        QCOMPARE(far, 2.0f + flow / 3.0f);
 
         // Under falling water the source is filled to the top and shows no surface of its own.
         chunk->setBlock(5, 3, 5, falling);
@@ -439,7 +516,9 @@ private slots:
         for (const QcBlockVertex &v : covered.waterVertices) {
             highest = std::max(highest, v.y);
         }
-        QCOMPARE(highest, 3.0f + full);
+        // The falling water on top slopes towards the air around it: ten times its own height and
+        // two air cells per corner.
+        QCOMPARE(highest, 3.0f + 10.0f * full / 12.0f);
     }
 
     // Water next to glass: each in its own list; every vertex names its face and its material

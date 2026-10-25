@@ -130,6 +130,9 @@ public:
     quint32 blockSequence() const { return m_blockSequence; }
     // Uses the held item on the targeted block face (places blocks). Returns false without a target.
     bool useItem();
+    // The use button pressed: uses the item like useItem and, while held, again every
+    // QcHandActions::useRepeatTicks ticks until releaseUse or cancelUse (decision E-885).
+    bool pressUse();
     // The use button released: a drawn launcher shoots (decision E-425); cancelUse lets it go without one.
     void releaseUse() { m_hand.endUse(QcMsg::DrawLauncher::Action::Release, m_state == State::Playing); }
     void cancelUse() { m_hand.endUse(QcMsg::DrawLauncher::Action::Cancel, m_state == State::Playing); }

@@ -271,7 +271,7 @@ void writeShape(QDataStream &stream, const QcShapeDefinition &shape)
     qint32 lightLevel = 0;
     quint8 facingRule = 0;
     quint8 support = 0;
-    stream >> block.itemTexture >> lightLevel >> block.climbable >> block.toggles >> block.door >> facingRule >> support
+    stream >> block.itemTexture >> lightLevel >> block.climbable >> block.toggles >> block.door >> block.bed >> facingRule >> support
         >> block.connectGroup;
     const std::optional<quint32> groupCountRead = QcStreamLimits::readCount(stream, 16);
     if (!groupCountRead) {
@@ -382,7 +382,7 @@ void writeBlock(QDataStream &stream, const QcBlockDefinition &block, const QcSha
         stream << slot << texture;
     }
 
-    stream << block.itemTexture << static_cast<qint32>(block.lightLevel) << block.climbable << block.toggles << block.door
+    stream << block.itemTexture << static_cast<qint32>(block.lightLevel) << block.climbable << block.toggles << block.door << block.bed
            << static_cast<quint8>(block.facingRule) << static_cast<quint8>(block.support) << block.connectGroup
            << static_cast<quint32>(block.connectsTo.size());
     for (const QString &group : block.connectsTo) {

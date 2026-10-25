@@ -96,9 +96,14 @@ QHash<int, QByteArray> QcInventoryModel::roleNames() const
 void QcInventoryModel::setContent(std::shared_ptr<const QcContentRegistry> content, QString language)
 {
     beginResetModel();
+    // Another world's content: its first inventory is not announced.
+    if (content != m_content) {
+        m_inventoryShown = false;
+    }
     m_content = std::move(content);
     m_language = std::move(language);
     endResetModel();
+    emit selectedLabelChanged();
 }
 
 int QcInventoryModel::slotOfRow(int row)
@@ -116,6 +121,7 @@ void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<Qc
                                     const QcItemStack &craftingResult, const QList<QcItemStack> &machine, const QcEquipment &equipment)
 {
     const int previousSelection = m_inventory.selectedHotbarSlot();
+    const QcItemStack previousHeld = m_inventory.slot(previousSelection);
     m_inventory = inventory;
     m_craftingGrid = craftingGrid.size() == 9 ? craftingGrid : QList<QcItemStack>(9);
     m_craftingResult = craftingResult;
@@ -125,6 +131,26 @@ void QcInventoryModel::setInventory(const QcInventory &inventory, const QList<Qc
     if (previousSelection != m_inventory.selectedHotbarSlot()) {
         emit selectedSlotChanged();
     }
+    if (previousSelection != m_inventory.selectedHotbarSlot() || !sameItem(previousHeld, m_inventory.slot(m_inventory.selectedHotbarSlot()))) {
+        emit selectedLabelChanged();
+        if (m_inventoryShown) {
+            emit selectedItemAnnounced();
+        }
+    }
+    m_inventoryShown = true;
+}
+
+bool QcInventoryModel::sameItem(const QcItemStack &a, const QcItemStack &b)
+{
+    if (a.isEmpty() || b.isEmpty()) {
+        return a.isEmpty() == b.isEmpty();
+    }
+    return a.item == b.item && a.name() == b.name();
+}
+
+QString QcInventoryModel::selectedLabel() const
+{
+    return data(index(m_inventory.selectedHotbarSlot()), LabelRole).toString();
 }
 
 std::optional<int> QcInventoryModel::mapScaleOf(const QcItemDefinition &item, const QcItemStack &stack) const

@@ -39,9 +39,11 @@ public:
 
     // Texture atlas of the running world's content; without one no entities are built. A new atlas
     // drops the sign texts cut from the old one.
-    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas)
+    // `renderTable`: the block render table built from it, for falling and sliding blocks.
+    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas, std::shared_ptr<const QcBlockRenderTable> renderTable)
     {
         m_atlas = std::move(atlas);
+        m_renderTable = std::move(renderTable);
         m_signTexts.clear();
         m_mapColoursStale = true;
     }
@@ -124,6 +126,7 @@ private:
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
+    std::shared_ptr<const QcBlockRenderTable> m_renderTable;
     // A cache: the shapes of held sprites, cut from the atlas on first use (decision E-831). GUI
     // thread only: frames are built there, and the cache is not locked.
     mutable QcSpriteShapes m_spriteShapes;

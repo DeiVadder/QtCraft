@@ -24,8 +24,8 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // messages are unchanged), 76 the band-pass, volume variation and drive of sounds in the content
 // (decision E-879), 77 map centres and debug goals over the whole technical bound of the world
 // (decision E-883), 78 the rune seed of the enchanting screen (EnchantingState::runeSeed, decision
-// E-884).
-inline constexpr quint32 version = 78;
+// E-884), 79 whether a block is a bed in the content (decision E-885).
+inline constexpr quint32 version = 79;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

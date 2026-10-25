@@ -584,6 +584,27 @@ void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement 
     emitItem(mesh, look, [&](const QcVec3 &p) { return centre + p * scale; }, light, uv);
 }
 
+void appendBlockQuads(QcEntityMesh &mesh, const QList<QcBlockRenderTable::Quad> &quads, const BlockPlacement &placement, QcEntityLight light)
+{
+    // The cell (0..1) scaled to a block of `size` metres, centred above the feet position.
+    const QcVec3 centre = placement.position + QcVec3{0.0, placement.size * 0.5, 0.0};
+    for (const QcBlockRenderTable::Quad &shape : quads) {
+        std::array<QcEntityVertex, 4> quad;
+        for (std::size_t corner = 0; corner < 4; ++corner) {
+            const std::array<float, 3> &c = shape.corners[corner];
+            const QcVec3 local{static_cast<double>(c[0]) - 0.5, static_cast<double>(c[1]) - 0.5, static_cast<double>(c[2]) - 0.5};
+            QcEntityVertex vertex = mesh.vertexAt(centre + local * placement.size);
+            vertex.u = shape.uvs[corner][0];
+            vertex.v = shape.uvs[corner][1];
+            vertex.shade = faceShade[static_cast<std::size_t>(shape.face)];
+            vertex.skyLight = light.sky;
+            vertex.blockLight = light.block;
+            quad[corner] = vertex;
+        }
+        mesh.addQuad(quad);
+    }
+}
+
 void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv)
 {
     emitItem(mesh, look, place, light, uv);

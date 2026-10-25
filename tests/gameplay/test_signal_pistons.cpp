@@ -147,6 +147,92 @@ private slots:
         QVERIFY(arrived());
     }
 
+    void theHeadSlidesInStepWithThePushedBlock()
+    {
+        // Decision E-885: the head slides out of the base like the block it pushes, starting in the
+        // same tick, one cell behind it all the way; the clients get the head's cell only when the
+        // slide ends, so it never shows inside the sliding block.
+        buildArea();
+        put(3, 0, 8, u"lever[attach=floor]"_s);
+        put(4, 0, 8, u"signal_piston[facing=east]"_s);
+        put(5, 0, 8, u"stone"_s);
+        ticks(1);
+        flip(3, 0, 8);
+        ticks(1);
+        QVERIFY(isBlock(5, 0, 8, "signal_piston_head"));
+
+        const QcBlockPos base = at(4, 0, 8);
+        const QcBlockPos headCell = at(5, 0, 8);
+        const QList<QcMovingBlock> &moving = m_server->movingBlocks().all();
+        const auto head = std::ranges::find_if(moving, [&](const QcMovingBlock &m) { return m.from == base && m.to == headCell; });
+        const auto stone = std::ranges::find_if(moving, [&](const QcMovingBlock &m) { return m.from == headCell && m.to == at(6, 0, 8); });
+        QVERIFY(head != moving.end());
+        QVERIFY(stone != moving.end());
+        QCOMPARE(head->block, *m_server->world().blockAt(headCell));
+        QCOMPARE(head->start, stone->start);
+        for (int tick = 0; tick <= QcMovingBlocks::moveTicks; ++tick) {
+            const quint64 now = head->start + static_cast<quint64>(tick);
+            QCOMPARE(QcMovingBlocks::positionAt(*stone, now).x - QcMovingBlocks::positionAt(*head, now).x, 1.0);
+        }
+
+        const QcBlockId headBlock = head->block;
+        const auto shown = [&] {
+            return std::ranges::any_of(m_client->blockUpdates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell && update.block == headBlock; });
+        };
+        QVERIFY(!shown());
+        ticks(QcMovingBlocks::moveTicks);
+        QVERIFY(shown());
+    }
+
+    void aShortPulseStopsTheSlidingHead()
+    {
+        // Decision E-885: retracting before the head arrived, the head's slide ends at once and never
+        // hands the clients a head; its cell stays empty for them.
+        buildArea();
+        put(3, 0, 11, u"lever[attach=floor]"_s);
+        put(4, 0, 11, u"signal_piston[facing=east]"_s);
+        ticks(1);
+        flip(3, 0, 11);
+        ticks(1);
+        const QcBlockPos headCell = at(5, 0, 11);
+        QVERIFY(m_server->movingBlocks().isMovingTo(headCell));
+        flip(3, 0, 11);
+        ticks(1);
+        QVERIFY(!flag(4, 0, 11, u"extended"_s));
+        QVERIFY(!m_server->movingBlocks().isMovingTo(headCell));
+        ticks(QcMovingBlocks::moveTicks + 1);
+        QVERIFY(isBlock(5, 0, 11, "air"));
+        const auto last = std::ranges::find_last_if(m_client->blockUpdates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
+        QVERIFY(last.empty() || last.front().block == qcAirBlockId);
+    }
+
+    void aStickyRetractionEmptiesTheHeadBeforeThePull()
+    {
+        // Decision E-885: the clients see the head's cell empty before the pulled block slides into
+        // it, then the pulled block there once the slide ended.
+        buildArea();
+        put(3, 0, 11, u"lever[attach=floor]"_s);
+        put(4, 0, 11, u"sticky_signal_piston[facing=east]"_s);
+        put(5, 0, 11, u"gold_block"_s);
+        ticks(1);
+        flip(3, 0, 11);
+        ticks(4);
+        const QcBlockPos headCell = at(5, 0, 11);
+        QVERIFY(isBlock(5, 0, 11, "signal_piston_head"));
+        const qsizetype before = m_client->blockUpdates.size();
+        flip(3, 0, 11);
+        ticks(1);
+        QVERIFY(isBlock(5, 0, 11, "gold_block"));
+        const QList<QcMsg::BlockUpdate> updates = m_client->blockUpdates.mid(before);
+        const auto emptied = std::ranges::find_if(updates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
+        QVERIFY(emptied != updates.end());
+        QCOMPARE(emptied->block, qcAirBlockId);
+        ticks(QcMovingBlocks::moveTicks + 1);
+        const auto last = std::ranges::find_last_if(m_client->blockUpdates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
+        QVERIFY(!last.empty());
+        QCOMPARE(last.front().block, *m_server->world().blockAt(headCell));
+    }
+
     void immovableBlocksStopAndSmallOnesBreak()
     {
         buildArea();

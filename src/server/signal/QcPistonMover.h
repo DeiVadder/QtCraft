@@ -43,6 +43,9 @@ private:
     void retract(const QcPistonPlan &plan);
     // Moves the block at `from` with its contents to `to`; the clients get it after the slide.
     void moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block);
+    // The clients see `block` slide from `from` into `to` and get it there when the slide ends
+    // (QcMovingBlocks), or at once when too many blocks slide already.
+    void showSlide(QcBlockPos from, QcBlockPos to, QcBlockId block);
     // Notes how far the bodies in `cells` are pushed along `towards`.
     void pushBodies(const QList<QcBlockPos> &cells, QcBlockFace towards);
     void notePush(quint32 body, const QcAabb &box, const QList<QcBlockPos> &cells, QcBlockFace towards);

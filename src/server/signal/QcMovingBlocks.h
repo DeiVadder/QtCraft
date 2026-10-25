@@ -31,6 +31,9 @@ public:
     static QcVec3 positionAt(const QcMovingBlock &moving, quint64 now);
     // Whether the clients still wait for the block of `cell`.
     bool isMovingTo(QcBlockPos cell) const;
+    // Forgets the slides into `cell` (a piston head that retracts before it arrived): the clients
+    // stop showing them and get no block from them.
+    void cancelTo(QcBlockPos cell);
     const QList<QcMovingBlock> &all() const { return m_moving; }
     // For the entity register (QcEntities); never add or remove through it.
     QList<QcMovingBlock> &editableAll() { return m_moving; }

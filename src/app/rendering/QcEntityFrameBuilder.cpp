@@ -227,9 +227,6 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
 {
-    QcEntityMesher::ItemLook look;
-    look.cube = true;
-    look.faces = frame.content.block(entity.block).faceTextures;
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
     QcEntityMesher::BlockPlacement placement{position};
     QcEntityLight light = entityLight(frame.world, position);
@@ -243,6 +240,17 @@ void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientE
             placement.size *= 1.0 + 0.2 * (1.0 - static_cast<double>(fuse) / primedSwellTicks);
         }
     }
+    // The block is drawn as the world draws it: a shape keeps its boxes, its rotation and its
+    // texture cut-outs while it falls or slides (a piston's head with plate and rod, an anvil;
+    // decision E-885).
+    const QList<QcBlockRenderTable::Quad> quads = m_renderTable ? QcBlockRenderTable::drawnQuads(m_renderTable->entry(entity.block)) : QList<QcBlockRenderTable::Quad>{};
+    if (!quads.isEmpty()) {
+        QcEntityMesher::appendBlockQuads(mesh, quads, placement, light);
+        return;
+    }
+    QcEntityMesher::ItemLook look;
+    look.cube = true;
+    look.faces = frame.content.block(entity.block).faceTextures;
     QcEntityMesher::appendBlock(mesh, look, placement, light, frame.uv);
 }
 

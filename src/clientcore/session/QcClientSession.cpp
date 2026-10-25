@@ -366,6 +366,9 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     }
 
     apply(m_hand.updateMining(*m_worldMirror.world(), *m_worldMirror.content()));
+    if (!m_vitals.isDead()) {
+        apply(m_hand.tickUse(*m_worldMirror.world(), *m_worldMirror.content()));
+    }
     emit ticked();
 }
 
@@ -403,6 +406,16 @@ bool QcClientSession::useItem()
         return false;
     }
     return apply(m_hand.use(*m_worldMirror.world(), *m_worldMirror.content()));
+}
+
+bool QcClientSession::pressUse()
+{
+    // The hold is armed before the first use, so that a screen the use opens at once (cancelUse)
+    // also ends the hold.
+    if (m_state == State::Playing && !m_vitals.isDead()) {
+        m_hand.holdUse();
+    }
+    return useItem();
 }
 
 bool QcClientSession::attack()

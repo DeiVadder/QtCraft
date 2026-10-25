@@ -300,7 +300,7 @@ void QcGamepadControls::runPress(QcClientSession &session, Press press)
         return;
     case Action::Use:
         if (press.pressed) {
-            session.useItem();
+            session.pressUse();
             m_using = true;
         } else if (m_using) {
             session.releaseUse();

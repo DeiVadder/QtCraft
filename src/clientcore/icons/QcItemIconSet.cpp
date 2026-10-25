@@ -8,7 +8,34 @@
 
 #include <array>
 
+using namespace Qt::StringLiterals;
+
 namespace QcItemIconSet {
+
+namespace {
+
+// The icon of the block item placing `block`: a bed with both its halves, head behind foot, as it
+// is two cells long (decision E-885); every other block as its item state.
+QImage blockIcon(const QcContentRegistry &content, const QcBlockRenderTable &renderTable, QcBlockId block, const std::array<QImage, 6> &shaded, int size)
+{
+    const QcBlockId state = QcFigureLook::itemState(content, block);
+    if (!content.block(block).bed) {
+        return QcBlockIcon::render(renderTable.entry(state), shaded, size);
+    }
+
+    // Facing west, the head lies one cell west of the foot: at the back of the icon.
+    const QcBlockId west = content.withProperty(state, u"facing"_s, u"west"_s);
+    const QcBlockId foot = content.withProperty(west, u"part"_s, u"foot"_s);
+    const QcBlockId head = content.withProperty(west, u"part"_s, u"head"_s);
+    // A bed without halves (a mod's, no `part` property) draws its one state.
+    if (head == foot) {
+        return QcBlockIcon::render(renderTable.entry(state), shaded, size);
+    }
+    const QList<QcBlockIcon::Part> parts{{&renderTable.entry(head), {0, 0, 0}}, {&renderTable.entry(foot), {1, 0, 0}}};
+    return QcBlockIcon::render(parts, shaded, size);
+}
+
+} // namespace
 
 QHash<QString, QImage> draw(const QcContentRegistry &content, const QcTextureAtlas &atlas, const QcBlockRenderTable *renderTable,
                             int blockIconSize)
@@ -25,8 +52,7 @@ QHash<QString, QImage> draw(const QcContentRegistry &content, const QcTextureAtl
         const bool model = block && renderTable && content.block(*block).itemTexture.isEmpty()
                            && content.block(*block).renderLayer != QcRenderLayer::Invisible
                            && !content.state(*block).boxes.isEmpty();
-        icons.insert(item.name, model ? QcBlockIcon::render(renderTable->entry(QcFigureLook::itemState(content, *block)), shaded, size)
-                                      : atlas.tile(item.texture, QcBlockIcon::largeIconSize));
+        icons.insert(item.name, model ? blockIcon(content, *renderTable, *block, shaded, size) : atlas.tile(item.texture, QcBlockIcon::largeIconSize));
     }
     return icons;
 }

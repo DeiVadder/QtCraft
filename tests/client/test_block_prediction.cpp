@@ -1,9 +1,13 @@
 #include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/session/QcClientEntities.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "QcPredictionFixture.h"
 #include "QcSessionMeshes.h"
 
+#include <QHash>
 #include <QTest>
+
+#include <array>
 
 using namespace Qt::StringLiterals;
 
@@ -11,7 +15,8 @@ using namespace Qt::StringLiterals;
 // a creative break shows before the server answered and its confirmation changes nothing; survival
 // predicts only at the end of the mining; refusals (out of reach, adventure mode, mining too fast,
 // the item gone, another player first) roll back to the server's block; a rollback brings the old mesh
-// back and a confirmation meshes nothing again; the numbers start anew after a reconnect.
+// back and a confirmation meshes nothing again; the numbers start anew after a reconnect. A held use
+// button places again every four ticks (decision E-885).
 namespace {
 
 // Cells a session's prediction or rollback set (playerBlockChanged), in order.
@@ -65,6 +70,39 @@ private:
             QcTestUtil::failCase(u"no stone to aim at"_s);
         }
         return target;
+    }
+
+    // Turns the player towards `block` until the hand targets it (any face: a lever's small box).
+    static bool aimAnyFace(QcClientSession &session, QcBlockPos block)
+    {
+        for (const QcBlockFace face : {QcBlockFace::Up, QcBlockFace::West, QcBlockFace::East, QcBlockFace::North, QcBlockFace::South}) {
+            QcControlAim::lookAt(session, block, face);
+            const std::optional<QcRaycastHit> &target = session.hand().target();
+            if (target && target->block == block) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // The messages a second hand on the session's view (its prediction and inventory) sends while the
+    // use button is held for one repeat period (QcHandActions::tickUse), aimed like the session's.
+    QList<QcMessage> heldUseSends(QcClientSession &session, bool mining)
+    {
+        const QcClientEntities entities;
+        QList<QcMessage> sent;
+        quint32 predicted = 0;
+        QcHandActions hand({session.prediction(), session.inventoryMirror(), entities}, session.gameMode(),
+                           [&sent](const QcMessage &message) { sent.append(message); }, [](const QcSoundCue &) {},
+                           [&predicted](const QList<QcMsg::BlockUpdate> &) { return ++predicted; });
+        const QcContentRegistry &content = *session.worldMirror().content();
+        hand.refreshTarget(*session.world(), content);
+        hand.setMining(mining);
+        hand.holdUse();
+        for (int tick = 0; tick < QcHandActions::useRepeatTicks; ++tick) {
+            std::ignore = hand.tickUse(*session.world(), content);
+        }
+        return sent;
     }
 
     // A break that the server refuses for a reason it knows before the client does: the block shows
@@ -298,6 +336,123 @@ private slots:
         QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*session) && meshes.idle(); }));
         QCOMPARE(meshes.deliveries(key), predicted);
         QCOMPARE(session->world()->blockAt(target), qcAirBlockId);
+        fixture().forget(session.get());
+    }
+
+    void aHeldUseButtonPlacesEveryFourTicksUntilReleased()
+    {
+        // Decision E-885: the press places at once, the held button again after useRepeatTicks
+        // ticks (against the block just placed, which the aim now hits), never in between, and
+        // nothing more once released.
+        auto session = start(QcGameMode::Survival);
+        QVERIFY(session);
+        QVERIFY(fixture().give(*session, u"qtcraft:dirt"_s, 8));
+        const QcBlockPos cell = QcPredictionFixture::feet(*session).offset(2, 0, 0);
+        QVERIFY(fixture().clearCellOnStone(*session, cell));
+        QVERIFY(QcPredictionFixture::aim(*session, cell.offset(0, -1, 0), QcBlockFace::Up));
+        OwnChanges changes;
+        record(*session, changes);
+
+        const quint64 pressedAt = session->tickCount();
+        QVERIFY(session->pressUse());
+        QCOMPARE(session->blockSequence(), 1u);
+        constexpr quint64 repeat = QcHandActions::useRepeatTicks;
+        QVERIFY(fixture().waitFor([&] { return session->tickCount() >= pressedAt + repeat - 1; }));
+        QCOMPARE(session->blockSequence(), 1u);
+        QVERIFY(fixture().waitFor([&] { return session->tickCount() >= pressedAt + repeat; }));
+        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->world()->blockAt(cell), m_dirt);
+
+        session->releaseUse();
+        const quint64 releasedAt = session->tickCount();
+        QVERIFY(fixture().waitFor([&] { return session->tickCount() >= releasedAt + 3 * repeat; }));
+        QCOMPARE(session->blockSequence(), 2u);
+        QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*session); }));
+        // Both placements stand where they were predicted: the server took both.
+        QCOMPARE(changes.cells.size(), 2);
+        QCOMPARE(changes.cells.first(), cell);
+        QVERIFY(changes.cells.last() != cell);
+        QCOMPARE(session->world()->blockAt(cell), m_dirt);
+        QCOMPARE(session->world()->blockAt(changes.cells.last()), m_dirt);
+        fixture().forget(session.get());
+    }
+
+    void aSingleUseAndACancelledHoldDoNotRepeat()
+    {
+        // useItem (scripts, control commands) is one use; cancelUse (a screen opened) ends a hold.
+        auto session = start(QcGameMode::Survival);
+        QVERIFY(session);
+        QVERIFY(fixture().give(*session, u"qtcraft:dirt"_s, 8));
+        const QcBlockPos cell = QcPredictionFixture::feet(*session).offset(2, 0, 0);
+        QVERIFY(fixture().clearCellOnStone(*session, cell));
+        QVERIFY(QcPredictionFixture::aim(*session, cell.offset(0, -1, 0), QcBlockFace::Up));
+
+        QVERIFY(session->useItem());
+        quint64 since = session->tickCount();
+        constexpr quint64 repeat = QcHandActions::useRepeatTicks;
+        QVERIFY(fixture().waitFor([&] { return session->tickCount() >= since + 2 * repeat; }));
+        QCOMPARE(session->blockSequence(), 1u);
+
+        QVERIFY(session->pressUse());
+        QCOMPARE(session->blockSequence(), 2u);
+        QVERIFY(session->hand().useHeld());
+        session->cancelUse();
+        QVERIFY(!session->hand().useHeld());
+        since = session->tickCount();
+        QVERIFY(fixture().waitFor([&] { return session->tickCount() >= since + 2 * repeat; }));
+        QCOMPARE(session->blockSequence(), 2u);
+        fixture().forget(session.get());
+    }
+
+    void aHeldUseRepeatsOnlyForecastPlacements()
+    {
+        // Decision E-885: the held button repeats only where a placed block is forecast. Reacting
+        // blocks (a door, a crafting table), food (planting food too: the server eats it where it cannot be
+        // planted, decision E-292) and buckets send nothing; nor does anything while mining.
+        auto session = start(QcGameMode::Survival);
+        QVERIFY(session);
+        const QcBlockPos cell = QcPredictionFixture::feet(*session).offset(2, 0, 0);
+        const QcBlockPos ground = cell.offset(0, -1, 0);
+        QVERIFY(fixture().clearCellOnStone(*session, cell));
+
+        struct Case
+        {
+            const char *ground;
+            const char *item;
+            qsizetype sends;
+        };
+        static constexpr std::array cases{
+            Case{"qtcraft:stone", "qtcraft:dirt", 1},     Case{"qtcraft:farmland", "qtcraft:carrot", 0},
+            Case{"qtcraft:farmland", "qtcraft:potato", 0}, Case{"qtcraft:stone", "qtcraft:bread", 0},
+            Case{"qtcraft:stone", "qtcraft:bucket", 0},   Case{"qtcraft:stone", "qtcraft:water_bucket", 0},
+            Case{"qtcraft:crafting_table", "qtcraft:dirt", 0},    Case{"qtcraft:oak_door", "qtcraft:dirt", 0},
+        };
+        // Each item in a hotbar slot of its own (a second give of an item would stack onto the first).
+        QHash<QString, int> slotOf;
+        for (const Case &held : cases) {
+            const QString item = QString::fromLatin1(held.item);
+            if (slotOf.contains(item)) {
+                session->selectHotbarSlot(slotOf.value(item));
+                QVERIFY(fixture().waitFor([&] { return session->inventory().selectedStack().item == m_content->itemId(item); }));
+            } else {
+                const int slot = static_cast<int>(slotOf.size());
+                slotOf.insert(item, slot);
+                session->selectHotbarSlot(slot);
+                QVERIFY(fixture().give(*session, item, 1));
+            }
+            QVERIFY(fixture().setBlock(*session, ground, QString::fromLatin1(held.ground)));
+            QVERIFY2(aimAnyFace(*session, ground), held.ground);
+            QVERIFY2(heldUseSends(*session, false).size() == held.sends, qPrintable(item + u" on "_s + QString::fromLatin1(held.ground)));
+        }
+        QCOMPARE(slotOf.size(), 6);
+
+        // Dirt on stone again, but the mining button is held too: nothing repeats.
+        QVERIFY(fixture().setBlock(*session, ground, u"qtcraft:stone"_s));
+        session->selectHotbarSlot(0);
+        QVERIFY(fixture().waitFor([&] { return session->inventory().selectedStack().item == m_content->itemId(u"qtcraft:dirt"_s); }));
+        QVERIFY(QcPredictionFixture::aim(*session, ground, QcBlockFace::Up));
+        QCOMPARE(heldUseSends(*session, false).size(), 1);
+        QVERIFY(heldUseSends(*session, true).isEmpty());
         fixture().forget(session.get());
     }
 

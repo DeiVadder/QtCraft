@@ -95,6 +95,8 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
     meshing/QcHeldItemMesher.h meshing/QcHeldItemMesher.cpp
     meshing/QcIndexPacking.h
+    meshing/QcLiquidSurface.h meshing/QcLiquidSurface.cpp
+    meshing/QcMeshNeighbourhood.h
     meshing/QcMeshRotation.h
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp

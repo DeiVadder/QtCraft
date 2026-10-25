@@ -39,3 +39,8 @@ bool QcMovingBlocks::isMovingTo(QcBlockPos cell) const
 {
     return std::ranges::any_of(m_moving, [cell](const QcMovingBlock &moving) { return moving.to == cell; });
 }
+
+void QcMovingBlocks::cancelTo(QcBlockPos cell)
+{
+    m_moving.removeIf([cell](const QcMovingBlock &moving) { return moving.to == cell; });
+}

@@ -345,9 +345,7 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
         return item ? HandEffect::Refused : HandEffect::None;
     }
 
-    const QcVec3 point = target.point - QcVec3{static_cast<double>(target.block.x), static_cast<double>(target.block.y), static_cast<double>(target.block.z)};
-    const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
-    const QcVec3 hit{clamp01(point.x), clamp01(point.y), clamp01(point.z)};
+    const QcVec3 hit = hitInside(target);
     const QcPlayerInput &intent = m_view.prediction.intent();
     const quint32 sequence = predictPlacement(world, content, target, hit);
     m_send(QcMsg::UseItem{target.block, target.face, hit, sequence, QcMsg::UseItem::View{intent.yaw, intent.pitch}});
@@ -356,6 +354,12 @@ QcHandActions::HandEffect QcHandActions::use(const QcClientWorld &world, const Q
 
 quint32 QcHandActions::predictPlacement(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target, const QcVec3 &hit)
 {
+    return m_predict(placementForecast(world, content, target, hit));
+}
+
+QList<QcMsg::BlockUpdate> QcHandActions::placementForecast(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target,
+                                                           const QcVec3 &hit) const
+{
     // A block that reacts to the use (a screen, a door, a lever, cake, a campfire) takes it on the
     // server, also out of reach, where the client would not open it: nothing is placed then.
     const QcItemDefinition *item = m_view.inventory.heldDefinition(content);
@@ -363,12 +367,19 @@ quint32 QcHandActions::predictPlacement(const QcClientWorld &world, const QcCont
     const QcPlayerInput &intent = m_view.prediction.intent();
     const QcBlockDefinition *clickedDefinition = clicked && content.isValidBlock(*clicked) ? &content.block(*clicked) : nullptr;
     if (!item || !clickedDefinition || reactsToUse(clickedDefinition, intent.sneak) || takesFood(clickedDefinition, intent.sneak)) {
-        return 0;
+        return {};
     }
 
     const QcBlockRules::Aim aim{target.block, target.face, hit, intent.yaw, intent.pitch};
     const QcVec3 eye = m_view.prediction.motion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
-    return m_predict(QcBlockForecast::placing(world, *item, aim, eye, livingBodies(content)));
+    return QcBlockForecast::placing(world, *item, aim, eye, livingBodies(content));
+}
+
+QcVec3 QcHandActions::hitInside(const QcRaycastHit &target)
+{
+    const QcVec3 point = target.point - QcVec3{static_cast<double>(target.block.x), static_cast<double>(target.block.y), static_cast<double>(target.block.z)};
+    const auto clamp01 = [](double value) { return std::clamp(value, 0.0, 1.0); };
+    return QcVec3{clamp01(point.x), clamp01(point.y), clamp01(point.z)};
 }
 
 QList<QcAabb> QcHandActions::livingBodies(const QcContentRegistry &content) const
@@ -382,8 +393,53 @@ QList<QcAabb> QcHandActions::livingBodies(const QcContentRegistry &content) cons
     return bodies;
 }
 
+void QcHandActions::holdUse()
+{
+    m_useHeld = true;
+    m_useTicks = 0;
+}
+
+QcHandActions::HandEffect QcHandActions::tickUse(const QcClientWorld &world, const QcContentRegistry &content)
+{
+    // While the mining button is held, the use does not repeat (as in the role model, which skips the
+    // use while destroying); the pace starts again once the mining ends.
+    if (!m_useHeld || m_miningRequested || m_miningPos) {
+        return HandEffect::None;
+    }
+    if (++m_useTicks < useRepeatTicks) {
+        return HandEffect::None;
+    }
+
+    // The next try comes useRepeatTicks later, whether this one used anything or not.
+    m_useTicks = 0;
+    if (!repeatsUse(world, content)) {
+        return HandEffect::None;
+    }
+    return use(world, content);
+}
+
+bool QcHandActions::repeatsUse(const QcClientWorld &world, const QcContentRegistry &content) const
+{
+    const QcItemDefinition *item = m_view.inventory.heldDefinition(content);
+    if (!item || !m_target || m_targetEntity || QcClientLauncher::uses(*item) || item->scoops || item->bottles || item->food > 0) {
+        return false;
+    }
+
+    const std::optional<QcBlockId> block = world.blockAt(m_target->block);
+    const QcBlockDefinition *definition = block && content.isValidBlock(*block) ? &content.block(*block) : nullptr;
+    const bool sneaking = m_view.prediction.intent().sneak;
+    if (!definition || reactsToUse(definition, sneaking) || takesFood(definition, sneaking) || QcClientLauncher::consumes(*item, true)) {
+        return false;
+    }
+
+    // Only a use the client forecasts as a placed block repeats: where nothing would be placed the
+    // server could act otherwise (planting food is eaten where it cannot be planted, decision E-292).
+    return !placementForecast(world, content, *m_target, hitInside(*m_target)).isEmpty();
+}
+
 void QcHandActions::endUse(QcMsg::DrawLauncher::Action action, bool send)
 {
+    m_useHeld = false;
     if (m_launcher.release() && send) {
         m_send(QcMsg::DrawLauncher{action});
     }

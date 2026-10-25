@@ -40,6 +40,8 @@ public:
     static constexpr int miningHitTicks = 4;
     // Melee reach of the player.
     static constexpr double attackReach = 4.0;
+    // While the use button is held, the use repeats every this many ticks (decision E-885).
+    static constexpr int useRepeatTicks = 4;
 
     // What an action did beyond its requests, for the session to apply after them.
     enum class HandEffect
@@ -105,8 +107,16 @@ public:
     // Uses the held item on the targeted entity, the block face or itself; None when nothing was used,
     // Refused when the mode forbids the item to act on the block (food is eaten instead).
     HandEffect use(const QcClientWorld &world, const QcContentRegistry &content);
-    // The use button released or cancelled: a drawn launcher shoots or lets go (decision E-425);
-    // the server hears of it only while `send` (the session plays).
+    // The use button was pressed (after its first use()): from now on tickUse repeats the use until
+    // endUse (decision E-885).
+    void holdUse();
+    bool useHeld() const { return m_useHeld; }
+    // Once per tick after the aim: while the use button is held and no mining is wanted, uses the held
+    // item again every useRepeatTicks ticks, but only where a repeat is wanted (repeatsUse); None
+    // otherwise.
+    HandEffect tickUse(const QcClientWorld &world, const QcContentRegistry &content);
+    // The use button released or cancelled: the repeats stop and a drawn launcher shoots or lets go
+    // (decision E-425); the server hears of it only while `send` (the session plays).
     void endUse(QcMsg::DrawLauncher::Action action, bool send);
     // Hits the targeted entity (Swing); None without one.
     HandEffect attack();
@@ -127,12 +137,22 @@ private:
     // The number of the predicted placement of the held item on `target`, aimed at `hit` inside it (0
     // when none is predicted).
     quint32 predictPlacement(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target, const QcVec3 &hit);
+    // The blocks placing the held item on `target` at `hit` is forecast to set (empty: none forecast).
+    [[nodiscard]] QList<QcMsg::BlockUpdate> placementForecast(const QcClientWorld &world, const QcContentRegistry &content, const QcRaycastHit &target,
+                                                              const QcVec3 &hit) const;
+    // Where `target` was hit, relative to its block and clamped into it.
+    [[nodiscard]] static QcVec3 hitInside(const QcRaycastHit &target);
     // The living bodies a placed block must not enclose: the player's own and those of the players and
     // creatures the entity mirror shows.
     QList<QcAabb> livingBodies(const QcContentRegistry &content) const;
     // Whether the mode lets the held item do `action` to the block at `pos` (the same rule as the
     // server's, QcAdventureRules::permits); false where no block is loaded.
     bool permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const;
+    // Whether a held use button repeats on what is aimed at now (decision E-885): a held item used on
+    // a block that neither reacts to the use (screens, doors, levers) nor takes food, and only where
+    // the placement of a block is forecast. Launchers, food (planting food too), buckets and bottles,
+    // entities and the empty hand do not repeat.
+    bool repeatsUse(const QcClientWorld &world, const QcContentRegistry &content) const;
     // Uses the held item on the targeted entity; None when the entity does not take it.
     HandEffect useOnEntity(const QcContentRegistry &content, const QcItemDefinition *item);
 
@@ -148,4 +168,6 @@ private:
     double m_miningProgress = 0.0;
     int m_miningTicks = 0;
     QcClientLauncher m_launcher;
+    bool m_useHeld = false;
+    int m_useTicks = 0;
 };

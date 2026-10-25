@@ -54,7 +54,7 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
         m_parts.meshes->setRenderTable(m_renderTable);
     }
     m_atlas = atlas;
-    m_targets.render.setAtlas(atlas);
+    m_targets.render.setAtlas(atlas, m_renderTable);
     m_targets.preview.useWorld(m_parts.session->content(), atlas);
     const qint64 iconsStart = timer.nsecsElapsed();
     m_targets.icons.draw(content, *atlas, m_renderTable.get());
@@ -73,5 +73,5 @@ void QcWorldAtlas::leaveWorld()
     m_targets.texturePacks.leaveWorld();
     m_atlas.reset();
     m_renderTable.reset();
-    m_targets.render.setAtlas(nullptr);
+    m_targets.render.setAtlas(nullptr, nullptr);
 }

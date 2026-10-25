@@ -218,6 +218,12 @@ void QcGameInput::handleKeyRelease(const QKeyEvent &key)
 
 void QcGameInput::clearKeys()
 {
+    // Held buttons whose release this window may never see (focus lost, a screen opened) end here:
+    // the mining stops and a held use stops repeating (a drawn launcher lets go).
+    if (m_parts.session) {
+        m_parts.session->setMining(false);
+        m_parts.session->cancelUse();
+    }
     m_keysDown.clear();
     m_sprint.reset();
     m_flight.reset();
@@ -252,7 +258,7 @@ void QcGameInput::handleMouseButton(Qt::MouseButton button, bool pressed) const
         }
         m_parts.session->setMining(pressed);
     } else if (button == Qt::RightButton && pressed) {
-        m_parts.session->useItem();
+        m_parts.session->pressUse();
     } else if (button == Qt::RightButton) {
         m_parts.session->releaseUse();
     } else if (button == Qt::MiddleButton && pressed) {
@@ -453,7 +459,7 @@ bool QcGameInput::handlePlayerAction(QcKeyBindings::Action action, const QKeyEve
     using A = QcKeyBindings::Action;
     switch (action) {
     case A::Use:
-        m_parts.session->useItem();
+        m_parts.session->pressUse();
         return true;
     case A::PickBlock:
         pickBlock();

@@ -77,8 +77,13 @@ void QcPistonMover::extend(const QcPistonPlan &plan)
         moveBlock(plan.moved[i], qcNeighbour(plan.moved[i], plan.facing), blocks[i]);
     }
 
+    // The head slides out of the base in step with the blocks it pushes (decision E-885): shown at
+    // once in its cell it would stand inside the first pushed block for the whole slide.
     const std::optional<QcBlockId> base = m_state.world().blockAt(plan.base);
-    m_blocks.setAndBroadcast(plan.head(), headState(plan));
+    const QcBlockId head = headState(plan);
+    if (m_blocks.setQuietly(plan.head(), head)) {
+        showSlide(plan.base, plan.head(), head);
+    }
     if (base) {
         m_blocks.setAndBroadcast(plan.base, m_table.withFlag(*base, u"extended"_s, true));
     }
@@ -97,9 +102,15 @@ void QcPistonMover::retract(const QcPistonPlan &plan)
     m_bodiesLookedAt = 0;
     const QcBlockPos head = plan.head();
     const std::optional<QcBlockId> headBlock = m_state.world().blockAt(head);
+    // The head goes at once (decision E-885): a head still sliding out (a short pulse) stops sliding
+    // and never arrives, and the clients see its cell empty before a pulled block slides into it.
+    m_state.entities().movingBlocks().cancelTo(head);
     if (!plan.moved.isEmpty()) {
         const QcBlockPos pulled = plan.moved.constFirst();
         const QcBlockId block = m_state.world().blockAt(pulled).value_or(qcAirBlockId);
+        if (headBlock && m_table.at(*headBlock).kind == QcSignalKind::PistonHead) {
+            m_blocks.sendBlock(head, qcAirBlockId);
+        }
         moveBlock(pulled, head, block);
         m_blocks.setAndBroadcast(pulled, qcAirBlockId);
     } else if (headBlock && m_table.at(*headBlock).kind == QcSignalKind::PistonHead) {
@@ -145,6 +156,11 @@ void QcPistonMover::moveBlock(QcBlockPos from, QcBlockPos to, QcBlockId block)
 
     // The clients see the source empty at once and the block sliding into its new cell.
     m_blocks.sendBlock(from, qcAirBlockId);
+    showSlide(from, to, block);
+}
+
+void QcPistonMover::showSlide(QcBlockPos from, QcBlockPos to, QcBlockId block)
+{
     QcMovingBlock moving;
     moving.id = m_state.entities().newId();
     moving.block = block;
