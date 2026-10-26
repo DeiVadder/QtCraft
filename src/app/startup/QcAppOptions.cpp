@@ -24,7 +24,7 @@ QList<QCommandLineOption> commandLineOptions()
         {u"seed"_s, u"World seed for --play."_s, u"seed"_s, u"0"_s},
         {u"look"_s, u"Initial view direction 'yaw,pitch' in degrees."_s, u"yaw,pitch"_s},
         {u"camera"_s, u"View mode: first, behind, front or side (test hook, not saved)."_s, u"mode"_s},
-        {u"pose"_s, u"Freeze the player's pose: walk, swing (swing:<0..1> for a moment of the swing), swim, jump, sneak or death (test hook)."_s, u"pose"_s},
+        {u"pose"_s, u"Freeze the player's pose: walk (walk:<metres> also freezes every creature at that point of its walk), swing (swing:<0..1> for a moment of the swing), swim, jump, sneak or death (test hook)."_s, u"pose"_s},
         {u"spawn"_s, u"Spawn above the block column 'x,z' (test hook)."_s, u"x,z"_s},
         {u"chat"_s, u"Chat line or /command sent once the world is loaded (repeatable); '@<ms> <text>' sends it that many milliseconds later."_s,
          u"text"_s},

@@ -118,6 +118,8 @@ private:
     QcMouseCapture::Situation situation() const;
     // Hides the cursor and starts relative motion, or the opposite.
     void applyCapture(QcMouseCapture::Change change);
+    // Hides the cursor over all windows of the game as an override cursor, or shows it again.
+    void setCursorHidden(bool hidden);
     bool handleWheel(const QWheelEvent &wheel);
     bool handleMouseMove(const QMouseEvent &mouse);
     // Mouse motion of the world: turns the view, or points into the open radial menu.
@@ -136,6 +138,8 @@ private:
     QcRelativeMouse m_relativeMouse;
     QSet<int> m_keysDown;
     QcMouseCapture m_capture;
+    // The blank override cursor is set (setCursorHidden).
+    bool m_cursorHidden = false;
     // Sprint by a press of the sprint key or a double tap of forward (decision E-280).
     QcSprintLatch m_sprint;
     // Flying by a double tap of jump in creative mode (decision E-284).

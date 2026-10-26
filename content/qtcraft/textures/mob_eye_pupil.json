@@ -1,0 +1,8 @@
+{
+    "name": "mob_eye_pupil",
+    "pattern": "noise",
+    "primary": "#1a1612",
+    "secondary": "#2a221c",
+    "variation": 0.04,
+    "seed": 5302
+}

@@ -18,7 +18,10 @@
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worlds/QcLocalServerHost.h"
 
+#include <QGuiApplication>
+#include <QQuickItem>
 #include <QQuickWindow>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QTest>
 
@@ -271,6 +274,53 @@ private slots:
         QVERIFY(!session().hand().miningRequested());
         QVERIFY(!session().hand().useHeld());
         m_screens->setInputEnabled(true);
+    }
+
+    // Decision E-888: closing a screen hides the cursor for good, although Qt Quick sets and unsets
+    // the window's cursor for the items under the mouse (a slot's pointing hand, ItemSlot.qml): when
+    // the screen's items leave the window after the capture, Qt Quick resets the window's cursor
+    // (on Windows the arrow came back over the world). The cursor is hidden as the application's
+    // override cursor, which Qt Quick leaves alone.
+    void closingAScreenHidesTheCursorOverItsItems()
+    {
+        m_input->setBackgroundRun(false);
+        // Also after a failed check: the next test cases start without the chest and without a capture.
+        const auto restore = qScopeGuard([this] {
+            m_screens->setOverlay(QcScreenState::Overlay::Chest);
+            m_input->setBackgroundRun(true);
+        });
+        m_screens->setOverlay(QcScreenState::Overlay::Chest);
+        QVERIFY(!m_input->mouseCaptured());
+        QCOMPARE(QGuiApplication::overrideCursor(), nullptr);
+
+        auto slot = std::make_unique<QQuickItem>(m_window->contentItem());
+        slot->setSize(m_window->size());
+        slot->setAcceptHoverEvents(true);
+        slot->setCursor(Qt::PointingHandCursor);
+        QTest::mouseMove(m_window.get(), QPoint(m_window->width() / 2, m_window->height() / 2));
+        QTRY_COMPARE(m_window->cursor().shape(), Qt::PointingHandCursor);
+
+        m_screens->setOverlay(QcScreenState::Overlay::None);
+        QVERIFY(m_input->mouseCaptured());
+        // The chest screen's items go away after the capture.
+        slot->setParentItem(nullptr);
+        QCoreApplication::processEvents();
+        const QCursor *shown = QGuiApplication::overrideCursor();
+        QCOMPARE(shown ? shown->shape() : m_window->cursor().shape(), Qt::BlankCursor);
+
+        // Opening a screen shows the cursor again, once: no override is left behind.
+        m_screens->setOverlay(QcScreenState::Overlay::Chest);
+        QVERIFY(!m_input->mouseCaptured());
+        QCOMPARE(QGuiApplication::overrideCursor(), nullptr);
+        QVERIFY(m_window->cursor().shape() != Qt::BlankCursor);
+
+        // Freeing the mouse another way (window lost the focus) shows the cursor as well.
+        m_screens->setOverlay(QcScreenState::Overlay::None);
+        QVERIFY(m_input->mouseCaptured());
+        QVERIFY(QGuiApplication::overrideCursor() != nullptr);
+        m_input->releaseMouse();
+        QVERIFY(!m_input->mouseCaptured());
+        QCOMPARE(QGuiApplication::overrideCursor(), nullptr);
     }
 
     // A second pad takes the lead with a press, not with a drifting stick nor a pushed one while the

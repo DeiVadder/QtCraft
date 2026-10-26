@@ -1,0 +1,8 @@
+{
+    "name": "sheep_eye",
+    "pattern": "noise",
+    "primary": "#efe6cc",
+    "secondary": "#ddd2b4",
+    "variation": 0.04,
+    "seed": 5304
+}

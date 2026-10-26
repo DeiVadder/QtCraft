@@ -79,6 +79,8 @@ qc_add_test(test_hold_content SOURCES client/test_hold_content.cpp LIBRARIES qc_
 qc_add_test(test_character_preview SOURCES client/test_character_preview.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
+# The walk and the eyes of creatures built from boxes (decision E-888).
+qc_add_test(test_box_legs SOURCES client/test_box_legs.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp QcWorldMesh.h LIBRARIES qc_clientcore)
 # Piston heads and diode tops of the base content (decision E-874).
 qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp QcWorldMesh.h LIBRARIES qc_base_content qc_clientcore)

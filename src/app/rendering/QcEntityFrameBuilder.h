@@ -49,10 +49,15 @@ public:
     }
     // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
     // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
+    // "walk:<metres>" also freezes every other figure and creature at that point of its walk.
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
 
     // The local player's pose at `alpha` between the last two ticks, or the forced pose.
     QcEntityPose localPose(double alpha) const;
+    // The pose of a mirrored creature or player, with the walk of the screenshot hook.
+    QcEntityPose creaturePose(const QcClientEntity &entity, double alpha) const;
+    // The metres walked that `--pose walk:<metres>` fixes; nullopt for other poses.
+    std::optional<double> forcedWalk() const;
     // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an
     // atlas. The maps in item frames go into a mesh of their own (framedMaps()).
     [[nodiscard]] std::shared_ptr<QcEntityMesh> buildEntities(double alpha, QcCameraMode mode);
@@ -133,6 +138,8 @@ private:
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
+    // The legs of the box creatures (decision E-888), found once per model.
+    QcBoxLegsCache m_legs;
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).
     QcSignTextCache m_signTexts;
     QcCampfireSmoke m_smoke;

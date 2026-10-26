@@ -73,6 +73,28 @@ QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &a
     return QcFigureLook::player(*m_parts.session->content(), appearance);
 }
 
+std::optional<double> QcEntityFrameBuilder::forcedWalk() const
+{
+    if (!m_forcedPose.startsWith(u"walk:"_s)) {
+        return std::nullopt;
+    }
+    bool ok = false;
+    const double walked = m_forcedPose.section(u':', 1).toDouble(&ok);
+    return ok ? std::optional(walked) : std::nullopt;
+}
+
+QcEntityPose QcEntityFrameBuilder::creaturePose(const QcClientEntity &entity, double alpha) const
+{
+    QcEntityPose pose = QcLocalAnimation::poseOf(entity, alpha);
+    // Screenshot hook (decision E-888): every creature a fixed moment of its walk at full swing.
+    if (const std::optional<double> walked = forcedWalk()) {
+        pose.walkDistance = *walked;
+        pose.speed = std::max(QcAnimator::fullSwingSpeed, QcPhysics::walkSpeed);
+        pose.onGround = true;
+    }
+    return pose;
+}
+
 QcEntityPose QcEntityFrameBuilder::localPose(double alpha) const
 {
     QcEntityPose pose = m_parts.session->localPose(alpha);
@@ -82,9 +104,9 @@ QcEntityPose QcEntityFrameBuilder::localPose(double alpha) const
 
     // Screenshot hook: a fixed moment of an animation, independent of the real movement.
     pose.onGround = true;
-    if (m_forcedPose == u"walk"_s) {
+    if (m_forcedPose == u"walk"_s || forcedWalk()) {
         pose.speed = QcPhysics::walkSpeed;
-        pose.walkDistance = 0.3;
+        pose.walkDistance = forcedWalk().value_or(0.3);
     } else if (m_forcedPose == u"sprint"_s) {
         pose.speed = QcPhysics::sprintSpeed;
         pose.sprinting = true;
@@ -188,7 +210,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         return;
     }
 
-    QcEntityPose pose = QcLocalAnimation::poseOf(entity, frame.alpha);
+    QcEntityPose pose = creaturePose(entity, frame.alpha);
     QcEntityMesher::ModelLook look;
     if (creature && creature->villager) {
         // Villagers wear the look the server gave them (decision E-411).
@@ -207,8 +229,12 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     if (!look.isValid()) {
         // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
         const bool ownParts = creature && !creature->parts.isEmpty();
-        const QcEntityMesher::PartLook parts{QcMsg::poseOf(entity.flags) == QcPose::Sitting, entity.appearance};
-        QcEntityMesher::appendParts(mesh, ownParts ? creature->parts : QcEntityMesher::playerParts(), placement, frame.uv, parts);
+        const QList<QcMobPart> &boxes = ownParts ? creature->parts : QcEntityMesher::playerParts();
+        const bool sitting = QcMsg::poseOf(entity.flags) == QcPose::Sitting;
+        // A rider (cart, boat) keeps its legs still; the legs are looked up only while it walks.
+        const double speed = pose.riding ? 0.0 : pose.speed;
+        const QcBoxLegs *legs = !sitting && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
+        QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs});
         return;
     }
 

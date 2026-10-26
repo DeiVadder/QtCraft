@@ -65,6 +65,9 @@ QcGameInput::QcGameInput(Screens screens, const QcSessionParts &parts, QcSetting
 
 QcGameInput::~QcGameInput()
 {
+    if (qGuiApp) {
+        setCursorHidden(false);
+    }
     if (QCoreApplication *application = QCoreApplication::instance()) {
         application->removeEventFilter(this);
     }
@@ -99,19 +102,34 @@ void QcGameInput::applyCapture(QcMouseCapture::Change change)
     }
 
     const bool capture = change == QcMouseCapture::Change::Capture;
+    setCursorHidden(capture && m_parts.window != nullptr);
     if (capture && m_parts.window) {
-        m_parts.window->setCursor(Qt::BlankCursor);
         // With platform deltas the cursor is detached and stays put; elsewhere motion is measured
         // against the window centre.
         if (!QcRelativeMouse::hasPlatformDeltas()) {
             QCursor::setPos(m_parts.window->mapToGlobal(QPoint(m_parts.window->width() / 2, m_parts.window->height() / 2)));
         }
-    } else if (m_parts.window) {
-        m_parts.window->unsetCursor();
     }
     m_relativeMouse.setCaptured(capture);
     qCInfo(lcInput) << (capture ? "Mouse capture: on" : "Mouse capture: off");
     emit mouseCapturedChanged();
+}
+
+void QcGameInput::setCursorHidden(bool hidden)
+{
+    if (m_cursorHidden == hidden) {
+        return;
+    }
+
+    // The application's override cursor, not the window's: Qt Quick sets and unsets the window's
+    // cursor for the item under the mouse whenever the items there change (a closing screen's slots
+    // with their pointing hand), which showed the arrow again over the world (decision E-888).
+    m_cursorHidden = hidden;
+    if (hidden) {
+        QGuiApplication::setOverrideCursor(Qt::BlankCursor);
+    } else {
+        QGuiApplication::restoreOverrideCursor();
+    }
 }
 
 QPointF QcGameInput::takeMouseDelta()

@@ -1,0 +1,8 @@
+{
+    "name": "cat_eye",
+    "pattern": "noise",
+    "primary": "#9cc83c",
+    "secondary": "#7aa82c",
+    "variation": 0.04,
+    "seed": 5303
+}

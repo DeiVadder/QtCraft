@@ -80,6 +80,15 @@ double swingLift(double progress);
 // `time` is a free-running clock in seconds for idle motion.
 BodyPose animateBody(const QcEntityPose &pose, double time);
 
+// How a creature of static boxes walks (decision E-888): the legs' swing in degrees (positive moves
+// the leg forward that QcBoxLegs gives phase 1), after `walked` metres at `speed` m/s on legs
+// `legLength` metres long (as drawn). One stride cycle covers 1.8 leg lengths, so short legs step
+// quickly; the swing grows with the speed up to `maxLegSwing` at `fullSwingSpeed` and more
+// (QcBoxLegs::maxSwing narrows it where front and hind feet would meet).
+inline constexpr double maxLegSwing = 32.0;
+inline constexpr double fullSwingSpeed = 1.5;
+double legSwing(double walked, double speed, double legLength);
+
 // The hand of the own player: `pose.swingProgress` swings it (the mining loop or a click's short
 // swing, by `timers.mining`), `timers` switch the item, land and use (placing or eating: a click's
 // swing too); `time` drives the breathing.

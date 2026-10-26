@@ -468,9 +468,19 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const Turn turn(placement.yaw);
     const auto place = [&placement, &turn](const QcVec3 &p) { return placement.position + turn(p * placement.scale); };
     const Tint overlay = placement.hurt ? hurtTint : white;
-    for (const QcMobPart &part : parts) {
+    const bool walking = look.legs && !look.sitting && !look.legs->swings().isEmpty();
+    const double stride = walking ? QcAnimator::legSwing(look.walked, look.speed, look.legs->length() * placement.scale) : 0.0;
+    const double swing = walking ? stride * look.legs->maxSwing() / QcAnimator::maxLegSwing : 0.0;
+    for (qsizetype index = 0; index < parts.size(); ++index) {
+        const QcMobPart &part = parts.at(index);
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
-        emitBox(mesh, {part.from + offset, part.to + offset}, place, {uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light});
+        const Surface surface{uv(part.texture), multiply(tintFor(part.tint, look.colors), overlay), placement.light};
+        if (walking && index < look.legs->swings().size()) {
+            const QcBoxLegs::Swing &leg = look.legs->swings().at(index);
+            emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(leg.apply(p, swing) + offset); }, surface);
+        } else {
+            emitBox(mesh, {part.from + offset, part.to + offset}, place, surface);
+        }
     }
 }
 

@@ -100,6 +100,16 @@ BoneRotation swingingArm(double swingProgress, double rest)
 
 } // namespace
 
+double legSwing(double walked, double speed, double legLength)
+{
+    constexpr double legLengthsPerStride = 1.8;
+    if (legLength <= 0.0) {
+        return 0.0;
+    }
+    const double stride = std::sin(walked / (legLengthsPerStride * legLength) * 2.0 * M_PI);
+    return stride * maxLegSwing * std::clamp(speed / fullSwingSpeed, 0.0, 1.0);
+}
+
 BodyPose animateBody(const QcEntityPose &pose, double time)
 {
     const double stride = std::sin(pose.walkDistance * strideFrequency * M_PI);

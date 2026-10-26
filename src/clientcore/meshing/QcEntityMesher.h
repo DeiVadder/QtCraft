@@ -5,6 +5,7 @@
 #include "clientcore/light/QcEntityLight.h"
 #include "clientcore/meshing/QcAnimator.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
+#include "clientcore/meshing/QcBoxLegs.h"
 #include "clientcore/meshing/QcEntityMesh.h"
 #include "clientcore/meshing/QcSpriteShape.h"
 #include "clientcore/session/QcClientEntity.h"
@@ -178,11 +179,16 @@ struct HandView
 };
 
 // How a creature of static boxes looks this frame (decision E-480): sitting (each part moves by its
-// QcMobPart::sitOffset) and the colours its tinted parts take (the collar: QcTint::Collar).
+// QcMobPart::sitOffset) and the colours its tinted parts take (the collar: QcTint::Collar). While it
+// walks, its `legs` (QcBoxLegs of the parts, not owned; null while it stands, sits or rides) swing by
+// the metres `walked` and its `speed` in m/s (decision E-888).
 struct PartLook
 {
     bool sitting = false;
     QcAppearance colors;
+    double walked = 0.0;
+    double speed = 0.0;
+    const QcBoxLegs *legs = nullptr;
 };
 
 // Static boxes from a mob definition, facing north and turned by the yaw.

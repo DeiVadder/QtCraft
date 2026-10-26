@@ -1,0 +1,8 @@
+{
+    "name": "mob_eye_white",
+    "pattern": "noise",
+    "primary": "#f2efe6",
+    "secondary": "#dcd8cc",
+    "variation": 0.04,
+    "seed": 5301
+}
