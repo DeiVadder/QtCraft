@@ -4,7 +4,7 @@
 
 struct QcGazeDefinition;
 
-// The brain of neutral creatures (QcMobDefinition::Ai::Neutral, decision E-460; the enderman): they
+// The brain of neutral creatures (QcMobDefinition::Ai::Neutral, decision E-460; the shadewalker): they
 // wander like passive ones until a player provokes them, then chase that player like hostile ones
 // for angerSeconds, renewed while they see them. A player provokes one by hurting it (the player
 // who struck or shot it; damage without a player provokes nobody) or, with a `gaze`, by looking at

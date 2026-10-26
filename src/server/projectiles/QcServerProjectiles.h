@@ -19,7 +19,7 @@ struct QcServerClient;
 // projectiles go to the players that touch them. Players shoot through QcPlayerLaunchers and
 // throw through QcPlayerThrows; what a hit does comes from the kind's onHit (QcHitEffects, E-427).
 // Creatures that dodge projectiles teleport away unhurt, and a projectile that teleports its thrower
-// (an ender pearl) brings them where it breaks (decision E-460); a splash (a splash potion, decision
+// (a shade pearl) brings them where it breaks (decision E-460); a splash (a splash potion, decision
 // E-624) reaches every living body around the place it breaks. Fishing rods cast and reel in
 // their bobbers through QcPlayerFishing (decision E-503); a projectile without hit effects (a
 // bobber) bounces off bodies unhurt.
@@ -55,7 +55,7 @@ private:
     bool noteShot(quint32 shooter, quint32 creature);
     quint32 noteShot(quint32 shooter, QcServerClient &player);
     bool pickUp(quint32 player, const QcProjectile &projectile);
-    // A projectile with a teleport effect broke (an ender pearl, decision E-460): its thrower comes
+    // A projectile with a teleport effect broke (a shade pearl, decision E-460): its thrower comes
     // to the nearest safe place there and takes the effect's fall damage.
     void teleportThrower(const QcProjectile &projectile, const QcHitEffect &effect);
     // The creatures of the projectile's spawn effects where it broke (decision E-450).

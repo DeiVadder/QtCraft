@@ -13,7 +13,7 @@
                 { "item": "rotten_flesh", "weight": 25, "count": [3, 7] },
                 { "item": "gold_nugget", "weight": 15, "count": [3, 9] },
                 { "item": "book", "weight": 10 },
-                { "item": "ender_pearl", "weight": 2 },
+                { "item": "shade_pearl", "weight": 2 },
                 { "weight": 15 }
             ]
         },

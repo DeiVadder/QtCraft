@@ -15,7 +15,7 @@ using namespace Qt::StringLiterals;
 
 // The showcase world with the game rule mobGriefing on (decision E-510): the settlement's free
 // farmers harvest their field and pick up bread, while every creature of a pen is confined and
-// changes no block of its pen (the silverfish stay out of the stone, the endermen take nothing),
+// changes no block of its pen (the silverfish stay out of the stone, the shadewalkers take nothing),
 // and the residents of the village rows are confined and leave their ripe fields as built.
 // Ticks are stepped by hand.
 class TestShowcaseGriefing : public QObject

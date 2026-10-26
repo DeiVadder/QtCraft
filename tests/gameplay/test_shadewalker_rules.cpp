@@ -1,4 +1,4 @@
-#include "gameplay/QcEndermanFixture.h"
+#include "gameplay/QcShadewalkerFixture.h"
 #include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/mobs/QcMobSteering.h"
@@ -8,12 +8,12 @@
 
 using namespace Qt::StringLiterals;
 
-// The finer rules of endermen and ender pearls (decision E-460): who provokes an enderman and for
+// The finer rules of shadewalkers and shade pearls (decision E-460): who provokes a shadewalker and for
 // how long, the gaze that narrows with the distance, what it carries and where it puts it, when it
 // is kept with the world, teleports that reach the clients at once, pearls that never pass through a
 // wall or a roof and none after the thrower died, and spawning only with room for its height. Ticks
 // are stepped by hand.
-class TestEndermanRules : public QcEndermanFixture
+class TestShadewalkerRules : public QcShadewalkerFixture
 {
     Q_OBJECT
 
@@ -74,8 +74,8 @@ private:
         return mob(creature) && mob(creature)->carried == block;
     }
 
-    // Content in which only endermen spawn as hostile creatures, also in caves.
-    void onlyEndermenAlsoInCaves()
+    // Content in which only shadewalkers spawn as hostile creatures, also in caves.
+    void onlyShadewalkersAlsoInCaves()
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
         for (const char *other : {"zombie", "skeleton", "slime"}) {
@@ -84,9 +84,9 @@ private:
             quiet.extraSpawns.clear();
             content->registerMob(quiet);
         }
-        QcMobDefinition enderman = endermanKind();
-        enderman.spawnsInCaves = true;
-        content->registerMob(enderman);
+        QcMobDefinition shadewalker = shadewalkerKind();
+        shadewalker.spawnsInCaves = true;
+        content->registerMob(shadewalker);
         m_content = content;
     }
 
@@ -120,45 +120,45 @@ private slots:
         joinArena();
         const std::unique_ptr<RawClient> other = joinOther();
         QcServerClient &nearer = *m_server->entities().clients().back();
-        const quint32 enderman = spawn("enderman", 8, 0, true);
-        nearer.motion.position = mob(enderman)->motion.position + QcVec3{-2.0, 0.0, 0.0};
-        player().motion.position = mob(enderman)->motion.position + QcVec3{-3.5, 0.0, 0.0};
+        const quint32 shadewalker = spawn("shadewalker", 8, 0, true);
+        nearer.motion.position = mob(shadewalker)->motion.position + QcVec3{-2.0, 0.0, 0.0};
+        player().motion.position = mob(shadewalker)->motion.position + QcVec3{-3.5, 0.0, 0.0};
         ticks(1);
 
         // The raw player strikes it through the game; the other player stands closer.
-        send(QcMsg::AttackEntity{enderman});
+        send(QcMsg::AttackEntity{shadewalker});
         ticks(1);
-        QVERIFY(mob(enderman)->health < endermanKind().maxHealth);
-        QCOMPARE(mob(enderman)->provokedBy, player().id);
+        QVERIFY(mob(shadewalker)->health < shadewalkerKind().maxHealth);
+        QCOMPARE(mob(shadewalker)->provokedBy, player().id);
         QVERIFY(nearer.id != player().id);
     }
 
     void damageWithoutAPlayerProvokesNobody()
     {
         joinArena();
-        const quint32 enderman = spawn("enderman", 5, 0, true);
-        m_server->systems().lightning.strike(QcPhysics::blockContaining(mob(enderman)->motion.position));
-        QVERIFY(mob(enderman)->health < endermanKind().maxHealth);
+        const quint32 shadewalker = spawn("shadewalker", 5, 0, true);
+        m_server->systems().lightning.strike(QcPhysics::blockContaining(mob(shadewalker)->motion.position));
+        QVERIFY(mob(shadewalker)->health < shadewalkerKind().maxHealth);
         ticks(2 * QcMobSteering::sightCheckTicks);
-        QCOMPARE(mob(enderman)->provokedBy, 0u);
+        QCOMPARE(mob(shadewalker)->provokedBy, 0u);
     }
 
     void angerEndsTwentySecondsAfterItLastSawTheTarget()
     {
         joinArena();
-        const quint32 enderman = spawn("enderman", 6, 0, true);
-        glassAround(QcPhysics::blockContaining(mob(enderman)->motion.position));
-        m_server->entities().creatures().damage({.creature = enderman, .damage = 1.0, .from = player().motion.position, .attacker = player().id});
+        const quint32 shadewalker = spawn("shadewalker", 6, 0, true);
+        glassAround(QcPhysics::blockContaining(mob(shadewalker)->motion.position));
+        m_server->entities().creatures().damage({.creature = shadewalker, .damage = 1.0, .from = player().motion.position, .attacker = player().id});
         ticks(1);
-        QCOMPARE(mob(enderman)->provokedBy, player().id);
+        QCOMPARE(mob(shadewalker)->provokedBy, player().id);
 
         // Behind glass it does not see the player: angry for 20 s, then calm.
         const int angerTicks = static_cast<int>(QcNeutralBrain::angerSeconds / dt);
         ticks(angerTicks - 20);
-        QCOMPARE(mob(enderman)->provokedBy, player().id);
+        QCOMPARE(mob(shadewalker)->provokedBy, player().id);
         ticks(40);
-        QCOMPARE(mob(enderman)->provokedBy, 0u);
-        QCOMPARE(mob(enderman)->chasing, 0u);
+        QCOMPARE(mob(shadewalker)->provokedBy, 0u);
+        QCOMPARE(mob(shadewalker)->chasing, 0u);
     }
 
     void anInvulnerablePlayersLookDoesNothing()
@@ -166,12 +166,12 @@ private slots:
         joinArena();
         chat(u"/gamemode creative"_s);
         QVERIFY(player().rules().invulnerable);
-        const quint32 enderman = spawn("enderman", 0, -8, true);
+        const quint32 shadewalker = spawn("shadewalker", 0, -8, true);
         for (int tick = 0; tick < 3 * QcMobSteering::sightCheckTicks; ++tick) {
-            lookAt(headOf(enderman));
+            lookAt(headOf(shadewalker));
             ticks(1);
         }
-        QCOMPARE(mob(enderman)->provokedBy, 0u);
+        QCOMPARE(mob(shadewalker)->provokedBy, 0u);
     }
 
     void theGazeNarrowsWithTheDistance()
@@ -181,7 +181,7 @@ private slots:
         for (int x = -1; x <= 4; ++x) {
             world.loadChunk({x, 0});
         }
-        const QcGazeDefinition &gaze = *endermanKind().gaze;
+        const QcGazeDefinition &gaze = *shadewalkerKind().gaze;
         const QcVec3 feet{0.5, 200.0, 8.5};
         const QcVec3 eyes = feet + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
         const auto view = [&](const QcVec3 &target) {
@@ -201,7 +201,7 @@ private slots:
     void onlySingleCellBlocksWithoutBlockEntitiesAreCarried()
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcMobDefinition odd = endermanKind();
+        QcMobDefinition odd = shadewalkerKind();
         odd.name = u"test:odd"_s;
         odd.carries->blocks = {u"qtcraft:chest"_s, u"qtcraft:furnace"_s, u"qtcraft:oak_door"_s, u"qtcraft:bed"_s, u"qtcraft:oak_sapling"_s,
                                u"qtcraft:dirt"_s};
@@ -225,51 +225,51 @@ private slots:
                 m_server->world().setBlock(m_feet.offset(dx, -1, dz), id("qtcraft:stone"));
             }
         }
-        const quint32 enderman = spawn("enderman", 5, 5);
-        m_server->entities().creatures().carryBlock(*mob(enderman), id("qtcraft:poppy"));
+        const quint32 shadewalker = spawn("shadewalker", 5, 5);
+        m_server->entities().creatures().carryBlock(*mob(shadewalker), id("qtcraft:poppy"));
         ticks(200);
         // On stone a poppy would pop at once: it keeps it.
-        QCOMPARE(mob(enderman)->carried, id("qtcraft:poppy"));
+        QCOMPARE(mob(shadewalker)->carried, id("qtcraft:poppy"));
 
         for (int dx = -arena; dx <= arena; ++dx) {
             for (int dz = -arena; dz <= arena; ++dz) {
                 m_server->world().setBlock(m_feet.offset(dx, -1, dz), id("qtcraft:grass_block"));
             }
         }
-        QVERIFY(carriesWithin(enderman, qcAirBlockId, 400));
+        QVERIFY(carriesWithin(shadewalker, qcAirBlockId, 400));
     }
 
     void aCreatureKeptBeforeStaysKept()
     {
         setCarryChances(1.0, 1.0);
         joinArena();
-        const quint32 enderman = spawn("enderman", 5, 5);
-        m_server->entities().creatures().keep(*mob(enderman), true);
-        const quint64 uid = mob(enderman)->uid;
-        QVERIFY(carriesWithin(enderman, id("qtcraft:grass_block"), 400));
-        QVERIFY(!mob(enderman)->keptForBlock);
-        QVERIFY(carriesWithin(enderman, qcAirBlockId, 400));
-        QVERIFY(mob(enderman)->persistent);
-        QCOMPARE(mob(enderman)->uid, uid);
+        const quint32 shadewalker = spawn("shadewalker", 5, 5);
+        m_server->entities().creatures().keep(*mob(shadewalker), true);
+        const quint64 uid = mob(shadewalker)->uid;
+        QVERIFY(carriesWithin(shadewalker, id("qtcraft:grass_block"), 400));
+        QVERIFY(!mob(shadewalker)->keptForBlock);
+        QVERIFY(carriesWithin(shadewalker, qcAirBlockId, 400));
+        QVERIFY(mob(shadewalker)->persistent);
+        QCOMPARE(mob(shadewalker)->uid, uid);
     }
 
     void keptForItsBlockAcrossSavingAndLetGoAfterwards()
     {
         setCarryChances(1.0, 1.0);
         joinArena();
-        const quint32 enderman = spawn("enderman", 5, 5);
-        QVERIFY(carriesWithin(enderman, id("qtcraft:grass_block"), 400));
-        QVERIFY(mob(enderman)->persistent && mob(enderman)->keptForBlock);
+        const quint32 shadewalker = spawn("shadewalker", 5, 5);
+        QVERIFY(carriesWithin(shadewalker, id("qtcraft:grass_block"), 400));
+        QVERIFY(mob(shadewalker)->persistent && mob(shadewalker)->keptForBlock);
 
         // Saved and loaded, it still knows why it is kept; the confined mark comes back too.
-        const quint32 penned = spawn("enderman", -20, -20, true);
+        const quint32 penned = spawn("shadewalker", -20, -20, true);
         m_server->entities().creatures().keep(*mob(penned), true);
-        const QcCreature *loaded = saveAndLoad(enderman, "enderman");
+        const QcCreature *loaded = saveAndLoad(shadewalker, "shadewalker");
         QVERIFY(loaded);
         QVERIFY(loaded->keptForBlock && loaded->persistent);
         QCOMPARE(loaded->carried, id("qtcraft:grass_block"));
         const quint32 carrier = loaded->id;
-        const QcCreature *confined = saveAndLoad(penned, "enderman");
+        const QcCreature *confined = saveAndLoad(penned, "shadewalker");
         QVERIFY(confined && confined->confined && !confined->keptForBlock);
 
         // With mobGriefing off it drops the block as an item and is no longer kept.
@@ -284,26 +284,26 @@ private slots:
     void aTeleportByAProjectileReachesTheClientsAtOnce()
     {
         joinArena();
-        const quint32 enderman = spawn("enderman", 4, -2);
+        const quint32 shadewalker = spawn("shadewalker", 4, -2);
         ticks(3);
-        QVERIFY(m_client->entities.contains(enderman));
+        QVERIFY(m_client->entities.contains(shadewalker));
         QList<QcMsg::EntitySpawn> spawns;
-        m_client->onEntityMessage = [&spawns, enderman](const QcMessage &message) {
+        m_client->onEntityMessage = [&spawns, shadewalker](const QcMessage &message) {
             const auto *spawned = std::get_if<QcMsg::EntitySpawn>(&message);
-            if (spawned && spawned->id == enderman) {
+            if (spawned && spawned->id == shadewalker) {
                 spawns.append(*spawned);
             }
         };
 
-        const QcVec3 before = mob(enderman)->motion.position;
+        const QcVec3 before = mob(shadewalker)->motion.position;
         m_server->systems().projectiles.launch({0, u"qtcraft:arrow"_s, {m_feet.x - 1.5, m_feet.y + 1.0, m_feet.z - 1.5}, {40.0, 0.0, 0.0}});
-        for (int tick = 0; tick < 20 && (mob(enderman)->motion.position - before).length() < 2.0; ++tick) {
+        for (int tick = 0; tick < 20 && (mob(shadewalker)->motion.position - before).length() < 2.0; ++tick) {
             ticks(1);
         }
         // In the tick of the jump the client got it anew at its new place, not a slide.
-        QVERIFY((mob(enderman)->motion.position - before).length() >= 2.0);
+        QVERIFY((mob(shadewalker)->motion.position - before).length() >= 2.0);
         QCOMPARE(spawns.size(), 1);
-        QVERIFY((spawns.front().position - mob(enderman)->motion.position).length() < 1e-3);
+        QVERIFY((spawns.front().position - mob(shadewalker)->motion.position).length() < 1e-3);
         m_client->onEntityMessage = {};
     }
 
@@ -340,7 +340,7 @@ private slots:
     {
         joinArena(noon);
         const QcVec3 eyes = player().motion.position + QcVec3{0.0, 1.5, 0.0};
-        m_server->systems().projectiles.launch({player().id, u"qtcraft:ender_pearl"_s, eyes, {6.0, 12.0, 0.0}});
+        m_server->systems().projectiles.launch({player().id, u"qtcraft:shade_pearl"_s, eyes, {6.0, 12.0, 0.0}});
         ticks(2);
         QVERIFY(!m_server->entities().projectiles().all().isEmpty());
         chat(u"/kill"_s);
@@ -359,22 +359,22 @@ private slots:
 
     void noSpawningUnderALowRoof()
     {
-        // Only endermen spawn, also in caves, and only on stone (planks carry spawns since the general
+        // Only shadewalkers spawn, also in caves, and only on stone (planks carry spawns since the general
         // ground rule, decision E-836): they could only appear in the cave of the world below.
-        onlyEndermenAlsoInCaves();
+        onlyShadewalkersAlsoInCaves();
         auto onStone = std::make_shared<QcContentRegistry>(*m_content);
-        QcMobDefinition enderman = endermanKind();
-        enderman.spawnBlocks = {u"qtcraft:stone"_s};
-        onStone->registerMob(enderman);
+        QcMobDefinition shadewalker = shadewalkerKind();
+        shadewalker.spawnBlocks = {u"qtcraft:stone"_s};
+        onStone->registerMob(shadewalker);
         m_content = onStone;
         const auto caveOf = [this](int height) { return [this, height](QcServerWorld &world) { buildCave(world, height); }; };
         // Two cells high: none; three: some.
-        QVERIFY(spawned("enderman", midnight, 120, caveOf(2)).isEmpty());
+        QVERIFY(spawned("shadewalker", midnight, 120, caveOf(2)).isEmpty());
         QVERIFY(!m_spawnedInsideBlock);
-        QVERIFY(!spawned("enderman", midnight, 120, caveOf(3)).isEmpty());
+        QVERIFY(!spawned("shadewalker", midnight, 120, caveOf(3)).isEmpty());
         QVERIFY(!m_spawnedInsideBlock);
     }
 };
 
-QTEST_GUILESS_MAIN(TestEndermanRules)
-#include "test_enderman_rules.moc"
+QTEST_GUILESS_MAIN(TestShadewalkerRules)
+#include "test_shadewalker_rules.moc"

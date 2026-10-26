@@ -9,10 +9,10 @@
 #include <functional>
 #include <numbers>
 
-// The common ground of the enderman tests (decision E-460): a flat arena at night around the player,
+// The common ground of the shadewalker tests (decision E-460): a flat arena at night around the player,
 // spawning creatures in it, turning the player's look, content with other chances to carry blocks,
 // and natural spawning on a generated world. Ticks are stepped by hand.
-class QcEndermanFixture : public QcServerTestFixture
+class QcShadewalkerFixture : public QcServerTestFixture
 {
     Q_OBJECT
 
@@ -26,7 +26,7 @@ protected:
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
     int type(const char *name) const { return *m_content->mobIndex(QStringLiteral("qtcraft:") + QString::fromLatin1(name)); }
-    const QcMobDefinition &endermanKind() const { return m_content->mobs()[type("enderman")]; }
+    const QcMobDefinition &shadewalkerKind() const { return m_content->mobs()[type("shadewalker")]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
 
     // A server at night with a flat, open arena of grass around the player.
@@ -62,16 +62,16 @@ protected:
         player().pitch = static_cast<float>(std::asin(towards.y) * 180.0 / std::numbers::pi);
     }
 
-    QcVec3 headOf(quint32 id) { return mob(id)->motion.position + QcVec3{0.0, endermanKind().height * endermanKind().gaze->headShare, 0.0}; }
+    QcVec3 headOf(quint32 id) { return mob(id)->motion.position + QcVec3{0.0, shadewalkerKind().height * shadewalkerKind().gaze->headShare, 0.0}; }
 
-    // The base content with the enderman's chances to take and place blocks set (a mod).
+    // The base content with the shadewalker's chances to take and place blocks set (a mod).
     void setCarryChances(double take, double place)
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcMobDefinition enderman = endermanKind();
-        enderman.carries->takeChance = take;
-        enderman.carries->placeChance = place;
-        content->registerMob(enderman);
+        QcMobDefinition shadewalker = shadewalkerKind();
+        shadewalker.carries->takeChance = take;
+        shadewalker.carries->placeChance = place;
+        content->registerMob(shadewalker);
         m_content = content;
     }
 

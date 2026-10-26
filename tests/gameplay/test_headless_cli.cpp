@@ -115,7 +115,7 @@ private slots:
         QCOMPARE(found.first().toObject().value(u"title"_s).toString(), u"Eisenerz"_s);
 
         const QJsonArray creatures = ask(R"({"cmd":"handbook","category":"creatures"})").value(u"entries"_s).toArray();
-        // Zombie, skeleton, spider, cave spider, silverfish, enderman, pig, chicken, slime, firefly,
+        // Zombie, skeleton, spider, cave spider, silverfish, shadewalker, pig, chicken, slime, firefly,
         // sheep, villager, iron golem, sand golem, witch, wolf, dog, cat, ocelot, cow, cod, salmon, the
         // Kjut and its child, and the two mannequins of the showcase (one with a cape).
         QCOMPARE(creatures.size(), 29);

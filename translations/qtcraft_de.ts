@@ -4955,8 +4955,8 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcGameRules.cpp" line="31"/>
-        <source>Creatures change blocks (endermen take and place blocks).</source>
-        <translation>Wesen verändern Blöcke (Endermen nehmen und setzen Blöcke).</translation>
+        <source>Creatures change blocks (shadewalkers take and place blocks).</source>
+        <translation>Wesen verändern Blöcke (Schattenwandler nehmen und setzen Blöcke).</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcGameRules.cpp" line="33"/>

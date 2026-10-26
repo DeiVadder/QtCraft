@@ -45,7 +45,7 @@ struct QcWorldInfo
     // Game rule: the weather changes by itself (decision E-395); off, it stays as it is until
     // /weather changes it.
     bool weatherCycle = true;
-    // Game rule: creatures change blocks of the world (endermen take and place blocks, decision
+    // Game rule: creatures change blocks of the world (shadewalkers take and place blocks, decision
     // E-460); off, they leave every block as it is.
     bool mobGriefing = true;
     // Game rule: explosions break, light and blow away blocks (decision E-603); off, they still hurt

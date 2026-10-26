@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Enderman](#mob-qtcraft-enderman) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -202,35 +202,6 @@ All biomes.
 day and night; only in the dark: no block light, and a dark sky (at night, under roofs, in caves); also in caves at any time; block light up to 0
 
 [River Delta](biomes.md#biome-qtcraft-delta), [Frozen River Delta](biomes.md#biome-qtcraft-frozen_delta), [Frozen River](biomes.md#biome-qtcraft-frozen_river), [Lush River Delta](biomes.md#biome-qtcraft-lush_delta), [River](biomes.md#biome-qtcraft-river)
-
-### <a id="mob-qtcraft-enderman"></a>Enderman
-
-A tall, dark wanderer of the night. It leaves you alone until you look straight at its head or hurt it; then it chases you and hits hard. It teleports away when an arrow or a snowball hits it (they do not hurt it), and water and rain hurt it, so it keeps out of water and jumps away from it. Now and then it picks up a block such as grass, dirt or sand, carries it around in its hand and puts it down somewhere else; it drops it when it dies. Sometimes drops an ender pearl.
-
-| | |
-|---|---|
-| ID | `qtcraft:enderman` |
-| Behaviour | neutral: leaves players alone until one looks at its head or hurts it, then chases and attacks them |
-| Health | 40 health points |
-| Size | 0.6 m wide, 2.9 m tall |
-| Speed | 1.5 m/s walking, 4 m/s chasing |
-| Attack | 7 damage within 2 m, every 1 s |
-| Sees players within | 32 m |
-| Appears | day and night |
-| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
-| Spawn light | block light up to 0 |
-| Group size | up to 1 |
-| Spawn weight | 10 |
-| Limit | all monsters together: 70 per 289 loaded chunks around the players |
-| Drops | [Ender Pearl](items.md#item-qtcraft-ender_pearl) (50 %) |
-
-**Appears on**
-
-Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
-
-**Appears in biomes**
-
-All biomes.
 
 ### <a id="mob-qtcraft-firefly"></a>Firefly
 
@@ -475,6 +446,35 @@ A golem of sand that guards the cellar of a desert temple and attacks whoever cl
 | Sees players within | 14 m |
 | Appears | never by itself (/summon, showcase world) |
 | Drops | [Sand](blocks.md#block-qtcraft-sand) (2×), [Sand](blocks.md#block-qtcraft-sand) (50 %), [Gold nugget](items.md#item-qtcraft-gold_nugget) (30 %) |
+
+### <a id="mob-qtcraft-shadewalker"></a>Shadewalker
+
+A tall, dark wanderer of the night. It leaves you alone until you look straight at its head or hurt it; then it chases you and hits hard. It teleports away when an arrow or a snowball hits it (they do not hurt it), and water and rain hurt it, so it keeps out of water and jumps away from it. Now and then it picks up a block such as grass, dirt or sand, carries it around in its hand and puts it down somewhere else; it drops it when it dies. Sometimes drops a shade pearl.
+
+| | |
+|---|---|
+| ID | `qtcraft:shadewalker` |
+| Behaviour | neutral: leaves players alone until one looks at its head or hurts it, then chases and attacks them |
+| Health | 40 health points |
+| Size | 0.6 m wide, 2.9 m tall |
+| Speed | 1.5 m/s walking, 4 m/s chasing |
+| Attack | 7 damage within 2 m, every 1 s |
+| Sees players within | 32 m |
+| Appears | day and night |
+| Darkness | only in the dark: no block light, and a dark sky (at night, under roofs, in caves) |
+| Spawn light | block light up to 0 |
+| Group size | up to 1 |
+| Spawn weight | 10 |
+| Limit | all monsters together: 70 per 289 loaded chunks around the players |
+| Drops | [Shade Pearl](items.md#item-qtcraft-shade_pearl) (50 %) |
+
+**Appears on**
+
+Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+All biomes.
 
 ### <a id="mob-qtcraft-sheep"></a>Sheep
 

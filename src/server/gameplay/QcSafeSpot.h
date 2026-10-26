@@ -8,8 +8,8 @@
 
 #include <optional>
 
-// Safe places for bodies that teleport (decision E-460): an enderman's jump and the thrower of an
-// ender pearl. Only blocks of loaded chunks count (a cell of a chunk that is not loaded is never
+// Safe places for bodies that teleport (decision E-460): a shadewalker's jump and the thrower of a
+// shade pearl. Only blocks of loaded chunks count (a cell of a chunk that is not loaded is never
 // safe), so a teleport crosses a chunk border only into a loaded chunk.
 namespace QcSafeSpot {
 

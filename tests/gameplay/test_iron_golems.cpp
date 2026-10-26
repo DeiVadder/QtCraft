@@ -11,7 +11,7 @@
 using namespace Qt::StringLiterals;
 
 // The iron golem on a server (decision E-471), with ticks stepped by hand: its data and the rules
-// for golem kinds; it hunts hostile creatures (endermen too, without provoking them at a player)
+// for golem kinds; it hunts hostile creatures (shadewalkers too, without provoking them at a player)
 // and throws them upwards but leaves players alone, unless they hurt it or the villagers or golems
 // of the village it stands in (never when a player built it); players build it from four iron blocks in a T and a carved pumpkin in all four
 // directions, and wrong shapes stay blocks; shears carve pumpkins (decision E-472); an iron ingot
@@ -233,24 +233,24 @@ private slots:
         QCOMPARE(mob(chicken)->health, m_content->mobs()[type("chicken")].maxHealth);
     }
 
-    // Endermen count as hostile, so golems hunt them; a golem's blow comes from no player and so
-    // provokes the enderman at nobody (decision E-460).
-    void aGolemHuntsEndermenWithoutProvokingThemAtPlayers()
+    // Shadewalkers count as hostile, so golems hunt them; a golem's blow comes from no player and so
+    // provokes the shadewalker at nobody (decision E-460).
+    void aGolemHuntsShadewalkersWithoutProvokingThemAtPlayers()
     {
         joinArena();
-        // Looking straight up: no look at the enderman's head.
+        // Looking straight up: no look at the shadewalker's head.
         player().pitch = 90.0f;
         const double full = player().health;
         const quint32 golem = spawn("iron_golem", 0, -8);
-        const quint32 enderman = spawn("enderman", 6, -8);
+        const quint32 shadewalker = spawn("shadewalker", 6, -8);
         // Kept in place, so that it does not teleport out of the golem's reach.
-        mob(enderman)->confined = true;
-        const double fullEnderman = mob(enderman)->health;
+        mob(shadewalker)->confined = true;
+        const double fullShadewalker = mob(shadewalker)->health;
         bool provoked = false;
-        double lowest = fullEnderman;
+        double lowest = fullShadewalker;
         tickUntil(
             [&] {
-                if (const QcCreature *target = mob(enderman)) {
+                if (const QcCreature *target = mob(shadewalker)) {
                     provoked = provoked || target->provokedBy != 0 || target->struckBy != 0;
                     lowest = std::min(lowest, target->health);
                     return false;
@@ -259,7 +259,7 @@ private slots:
                 return true;
             },
             600);
-        QVERIFY(lowest < fullEnderman);
+        QVERIFY(lowest < fullShadewalker);
         QVERIFY(!provoked);
         QVERIFY(mob(golem));
         QCOMPARE(player().health, full);

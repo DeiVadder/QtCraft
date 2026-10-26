@@ -99,7 +99,7 @@ struct PlayerView
     bool seated = false;
 };
 
-// A block a creature takes or puts down in a tick (an enderman, decision E-460), which the server
+// A block a creature takes or puts down in a tick (a shadewalker, decision E-460), which the server
 // carries out after the tick with the usual block changes (QcCreatureTraits): taking only when
 // `block` is still there, placing only into air; dropping (game rule mobGriefing off) lets the
 // carried block fall as an item.

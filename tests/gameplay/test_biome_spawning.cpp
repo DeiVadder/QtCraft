@@ -241,12 +241,12 @@ private slots:
     {
         const QcSpawnWeights weights(*m_content);
         const auto weight = [&](const char *kind, const char *biome) { return weights.weight(type(kind), u"qtcraft:"_s + QString::fromLatin1(biome)); };
-        // The common list: zombies, skeletons, spiders, slimes and Kjuts 100, endermen 10,
+        // The common list: zombies, skeletons, spiders, slimes and Kjuts 100, shadewalkers 10,
         // drowned 5 (deep water only); no witches (only at their huts), cave spiders or variants.
         for (const char *kind : {"zombie", "skeleton", "spider", "slime", "kjut"}) {
             QCOMPARE(weight(kind, "plains"), 100.0);
         }
-        QCOMPARE(weight("enderman", "plains"), 10.0);
+        QCOMPARE(weight("shadewalker", "plains"), 10.0);
         QCOMPARE(weight("witch", "plains"), 0.0);
         QCOMPARE(weight("drowned", "plains"), 5.0);
         QCOMPARE(weight("cave_spider", "plains"), 0.0);
@@ -336,8 +336,8 @@ private slots:
         } else {
             QVERIFY2(count(u"qtcraft:zombie"_s) > 0.75 * spiders && count(u"qtcraft:zombie"_s) < 1.33 * spiders, qPrintable(QString::number(count(u"qtcraft:zombie"_s))));
         }
-        // Endermen 10 of the 100 of a spider, no witches.
-        QVERIFY2(spawns.of("enderman") > 0 && spawns.of("enderman") < 0.25 * spiders, qPrintable(QString::number(spawns.of("enderman"))));
+        // Shadewalkers 10 of the 100 of a spider, no witches.
+        QVERIFY2(spawns.of("shadewalker") > 0 && spawns.of("shadewalker") < 0.25 * spiders, qPrintable(QString::number(spawns.of("shadewalker"))));
         QCOMPARE(spawns.of("witch"), 0);
     }
 

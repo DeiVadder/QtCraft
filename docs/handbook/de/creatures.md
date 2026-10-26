@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Enderman](#mob-qtcraft-enderman) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Dorfbewohner](#mob-qtcraft-villager) · [Eisengolem](#mob-qtcraft-iron_golem) · [Eiswanderer](#mob-qtcraft-stray) · [Ertrunkener](#mob-qtcraft-drowned) · [Gliederpuppe](#mob-qtcraft-mannequin) · [Gliederpuppe mit Umhang](#mob-qtcraft-caped_mannequin) · [Glühwürmchen](#mob-qtcraft-firefly) · [Hexe](#mob-qtcraft-witch) · [Höhlenspinne](#mob-qtcraft-cave_spider) · [Huhn](#mob-qtcraft-chicken) · [Hund](#mob-qtcraft-dog) · [Kabeljau](#mob-qtcraft-cod) · [Katze](#mob-qtcraft-cat) · [Kjut](#mob-qtcraft-kjut) · [Kleiner Kjut](#mob-qtcraft-kjut_child) · [Kuh](#mob-qtcraft-cow) · [Lachs](#mob-qtcraft-salmon) · [Ozelot](#mob-qtcraft-ocelot) · [Sandgolem](#mob-qtcraft-sand_golem) · [Schaf](#mob-qtcraft-sheep) · [Schattenwandler](#mob-qtcraft-shadewalker) · [Schleim](#mob-qtcraft-slime) · [Schwein](#mob-qtcraft-pig) · [Silberfischchen](#mob-qtcraft-silverfish) · [Skelett](#mob-qtcraft-skeleton) · [Spinne](#mob-qtcraft-spider) · [Wolf](#mob-qtcraft-wolf) · [Wüstenzombie](#mob-qtcraft-husk) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -65,35 +65,6 @@ Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis un
 **Erscheint in Biomen**
 
 [Tundra](biomes.md#biome-qtcraft-tundra)
-
-### <a id="mob-qtcraft-enderman"></a>Enderman
-
-Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Enderperle fallen.
-
-| | |
-|---|---|
-| ID | `qtcraft:enderman` |
-| Verhalten | neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an |
-| Gesundheit | 40 Lebenspunkte |
-| Größe | 0,6 m breit, 2,9 m hoch |
-| Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s beim Verfolgen |
-| Angriff | 7 Schaden bis 2 m, alle 1 s |
-| Sieht Spieler bis | 32 m |
-| Erscheint | Tag und Nacht |
-| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
-| Licht beim Erscheinen | Blocklicht bis 0 |
-| Gruppengröße | bis 1 |
-| Erscheinungsgewicht | 10 |
-| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
-| Beute | [Enderperle](items.md#item-qtcraft-ender_pearl) (50 %) |
-
-**Erscheint auf**
-
-Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
-
-**Erscheint in Biomen**
-
-Alle Biome.
 
 ### <a id="mob-qtcraft-drowned"></a>Ertrunkener
 
@@ -494,6 +465,35 @@ Friedliches Tier des Graslands; lässt Wolle fallen.
 **Erscheint auf**
 
 [Grasblock](blocks.md#block-qtcraft-grass_block)
+
+**Erscheint in Biomen**
+
+Alle Biome.
+
+### <a id="mob-qtcraft-shadewalker"></a>Schattenwandler
+
+Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Schattenperle fallen.
+
+| | |
+|---|---|
+| ID | `qtcraft:shadewalker` |
+| Verhalten | neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an |
+| Gesundheit | 40 Lebenspunkte |
+| Größe | 0,6 m breit, 2,9 m hoch |
+| Geschwindigkeit | 1,5 m/s beim Gehen, 4 m/s beim Verfolgen |
+| Angriff | 7 Schaden bis 2 m, alle 1 s |
+| Sieht Spieler bis | 32 m |
+| Erscheint | Tag und Nacht |
+| Dunkelheit | nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen) |
+| Licht beim Erscheinen | Blocklicht bis 0 |
+| Gruppengröße | bis 1 |
+| Erscheinungsgewicht | 10 |
+| Obergrenze | alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler |
+| Beute | [Schattenperle](items.md#item-qtcraft-shade_pearl) (50 %) |
+
+**Erscheint auf**
+
+Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).
 
 **Erscheint in Biomen**
 

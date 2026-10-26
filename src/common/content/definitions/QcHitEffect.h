@@ -40,7 +40,7 @@ struct QcHitEffect
     // creatures `mob` appear there as young ones: `count` of them, or with `groupChance` of those
     // times `groupCount` (an egg's chicks, decision E-452).
     static constexpr const char *spawn = "spawn";
-    // Teleports the player who threw it to where it lands, on a body or a block (an ender pearl,
+    // Teleports the player who threw it to where it lands, on a body or a block (a shade pearl,
     // decision E-460), with `damage` as fall damage; the projectile breaks there.
     static constexpr const char *teleport = "teleport";
     // Where the projectile breaks, its damage (the `amount` of its damage effects, not per speed)

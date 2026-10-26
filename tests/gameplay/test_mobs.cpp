@@ -367,11 +367,11 @@ private slots:
         QCOMPARE(slime.extraSpawns.size(), 1);
         slime.extraSpawns.first().biomes.clear();
         everywhere->registerMob(slime);
-        // Without the rare enderman (decision E-460), whose share of the night's places would shift
+        // Without the rare shadewalker (decision E-460), whose share of the night's places would shift
         // the random sequence this test was laid out with.
-        QcMobDefinition enderman = everywhere->mobs()[type("enderman")];
-        enderman.spawnWeight = 0.0;
-        everywhere->registerMob(enderman);
+        QcMobDefinition shadewalker = everywhere->mobs()[type("shadewalker")];
+        shadewalker.spawnWeight = 0.0;
+        everywhere->registerMob(shadewalker);
         QVERIFY(surfaceSlimes(everywhere, midnight) > 0);
 
         // The rule is for the night: none by day.

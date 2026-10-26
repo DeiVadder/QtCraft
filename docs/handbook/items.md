@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Ender Pearl](#item-qtcraft-ender_pearl) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -737,19 +737,6 @@ Made by enchanting a book at an enchanting table; a book takes every enchantment
 |---|---|
 | ID | `qtcraft:enchanted_book` |
 | Stack size | 1 |
-
-### <a id="item-qtcraft-ender_pearl"></a>Ender Pearl
-
-Dropped by endermen. Thrown with the use button, it carries you to where it lands, on a block or a creature; the landing hurts a little, like a fall. You always arrive in a place with room for you, never inside blocks or water, and never on the other side of a wall or a roof; a pearl that comes down under water is lost, and so are your pearls still in the air when you die. You can throw the next one after a second.
-
-| | |
-|---|---|
-| ID | `qtcraft:ender_pearl` |
-| Stack size | 16 |
-
-**Dropped by**
-
-[Enderman](creatures.md#mob-qtcraft-enderman) (50 %)
 
 ### <a id="item-qtcraft-feather"></a>Feather
 
@@ -1702,6 +1689,19 @@ Made from poppies.
 **Used in**
 
 [Bed](blocks.md#block-qtcraft-bed), [Orange dye](#item-qtcraft-orange_dye), [Pink dye](#item-qtcraft-pink_dye), [Purple dye](#item-qtcraft-purple_dye), [Red concrete powder](blocks.md#block-qtcraft-red_concrete_powder), [Red stained glass](blocks.md#block-qtcraft-red_stained_glass), [Red terracotta](blocks.md#block-qtcraft-red_terracotta), [Red wool](blocks.md#block-qtcraft-red_wool)
+
+### <a id="item-qtcraft-shade_pearl"></a>Shade Pearl
+
+Dropped by shadewalkers. Thrown with the use button, it carries you to where it lands, on a block or a creature; the landing hurts a little, like a fall. You always arrive in a place with room for you, never inside blocks or water, and never on the other side of a wall or a roof; a pearl that comes down under water is lost, and so are your pearls still in the air when you die. You can throw the next one after a second.
+
+| | |
+|---|---|
+| ID | `qtcraft:shade_pearl` |
+| Stack size | 16 |
+
+**Dropped by**
+
+[Shadewalker](creatures.md#mob-qtcraft-shadewalker) (50 %)
 
 ### <a id="item-qtcraft-shears"></a>Shears
 

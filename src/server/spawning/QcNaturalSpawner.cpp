@@ -22,7 +22,7 @@ namespace {
 constexpr double spawnInterval = 1.0;
 constexpr int spawnAttemptsPerPlayer = 4;
 
-// Whether a walker taller than two blocks (an enderman, decision E-460) has room above the two cells
+// Whether a walker taller than two blocks (a shadewalker, decision E-460) has room above the two cells
 // every spawn checks: the cells up to its height are not solid. Unloaded cells count as solid.
 bool roomAbove(const QcServerWorld &world, QcBlockPos feet, double height)
 {

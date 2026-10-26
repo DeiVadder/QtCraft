@@ -175,7 +175,7 @@ struct QcCreature : QcEntity
     // Whether it sits for its owner.
     bool sits() const { return isTame() && tame->sitting; }
     // Whether it may change the world under the game rule mobGriefing `rule` (decision E-510): the
-    // one check of every griefing path (an enderman taking and placing blocks, a silverfish hiding
+    // one check of every griefing path (a shadewalker taking and placing blocks, a silverfish hiding
     // in a block and breaking blocks when it wakes its kind, a farmer harvesting, a villager picking
     // up food). A confined creature and one without a mind change nothing.
     bool mayGrief(bool rule) const { return rule && !confined && !noAi; }

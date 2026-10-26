@@ -9,7 +9,7 @@
 
 #include <optional>
 
-// A creature that a player provokes by looking at its head (the enderman, decision E-460), from its
+// A creature that a player provokes by looking at its head (the shadewalker, decision E-460), from its
 // data (`gaze`): the player's look and the direction from their eyes to the middle of its head agree
 // within `tolerance`, which narrows with the distance d (look · direction > 1 − tolerance / d, like the
 // reference game: about 4.5° at 8 m, 1.8° at 50 m), from no farther than `range` metres, with nothing
@@ -41,7 +41,7 @@ struct QcCrumbleDefinition
     bool operator==(const QcCrumbleDefinition &) const = default;
 };
 
-// A creature that teleports (the enderman, decision E-460), from its data (`teleport`): to a random
+// A creature that teleports (the shadewalker, decision E-460), from its data (`teleport`): to a random
 // safe place within `range` metres (a solid floor, room for its body, no liquid, only in loaded
 // chunks; QcSafeSpot), at most once per `cooldownSeconds`. Server side only.
 struct QcTeleportDefinition
@@ -62,7 +62,7 @@ struct QcTeleportDefinition
     bool operator==(const QcTeleportDefinition &) const = default;
 };
 
-// A creature that takes single blocks and puts them down again (the enderman, decision E-460), from
+// A creature that takes single blocks and puts them down again (the shadewalker, decision E-460), from
 // its data (`carries`): only the blocks of `blocks`, and only while the game rule mobGriefing is on.
 // Server side only.
 struct QcCarryDefinition

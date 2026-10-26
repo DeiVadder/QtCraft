@@ -1,9 +1,9 @@
 {
-    "name": "enderman",
+    "name": "shadewalker",
     "sounds": {
-        "ambient": "mob.enderman.ambient",
-        "hurt": "mob.enderman.hurt",
-        "death": "mob.enderman.death"
+        "ambient": "mob.shadewalker.ambient",
+        "hurt": "mob.shadewalker.hurt",
+        "death": "mob.shadewalker.death"
     },
     "health": 40,
     "width": 0.6,
@@ -28,7 +28,7 @@
         "dodgesProjectiles": true,
         "whenWet": true,
         "towardsTargetChance": 0.1,
-        "sound": "mob.enderman.teleport"
+        "sound": "mob.shadewalker.teleport"
     },
     "carries": {
         "blocks": [
@@ -55,11 +55,11 @@
         "weight": 10,
         "caves": false
     },
-    "skeleton": "enderman",
-    "outfit": "enderman",
+    "skeleton": "shadewalker",
+    "outfit": "shadewalker",
     "drops": [
         {
-            "item": "ender_pearl",
+            "item": "shade_pearl",
             "chance": 0.5
         }
     ],

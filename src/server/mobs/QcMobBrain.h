@@ -39,7 +39,7 @@ public:
         // E-480): QcMobManager::takeCreatureHits
         // hands them to the server, which deals them after the tick.
         QList<QcMobManager::CreatureHit> *creatureHits = nullptr;
-        // Blocks taken and put down in this tick (an enderman, decision E-460): QcMobManager::
+        // Blocks taken and put down in this tick (a shadewalker, decision E-460): QcMobManager::
         // takeBlockActions hands them to the server, which changes the blocks after the tick.
         QList<QcMobManager::BlockAction> *blockActions = nullptr;
         // Game rule mobGriefing: without it no creature takes or places blocks.

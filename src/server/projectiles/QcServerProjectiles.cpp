@@ -139,7 +139,7 @@ bool QcServerProjectiles::hit(const QcProjectileManager::Hit &hit)
     const QcHitEffects::Impact impact = m_effects.impactOf(hit.definition, hit.damage);
     bool took = false;
     if (const QcCreature *target = m_state.entities().creatures().find(hit.body)) {
-        // A creature that dodges projectiles (an enderman, decision E-460) teleports away unhurt;
+        // A creature that dodges projectiles (a shadewalker, decision E-460) teleports away unhurt;
         // the projectile bounces off.
         const QcMobDefinition &definition = m_state.content().mobs()[target->type];
         // A player's arrow leaves the pets of other players unhurt (decision E-480).

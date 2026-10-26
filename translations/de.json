@@ -880,7 +880,7 @@
     "The weather changes by itself.": "Das Wetter ändert sich von selbst.",
     "Chunks around the spawn that stay loaded (0: none, 1: the spawn chunk, 2: 3 x 3 …).": "Chunks um den Spawn, die geladen bleiben (0: keine, 1: der Spawn-Chunk, 2: 3 × 3 …).",
     "Creatures spawn by themselves.": "Wesen erscheinen von selbst.",
-    "Creatures change blocks (endermen take and place blocks).": "Wesen verändern Blöcke (Endermen nehmen und setzen Blöcke).",
+    "Creatures change blocks (shadewalkers take and place blocks).": "Wesen verändern Blöcke (Schattenwandler nehmen und setzen Blöcke).",
     "Creatures in one block cell beyond which they take damage (0: never).": "Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0: nie).",
     "Ticks a creature stays invulnerable after a hurt (0: every hit counts).": "Ticks, die ein Wesen nach einem Treffer unverwundbar bleibt (0: jeder Treffer zählt).",
     "Blocks get random ticks: plants and crops grow, soil changes.": "Blöcke bekommen Zufallsticks: Pflanzen und Feldfrüchte wachsen, Boden verändert sich.",

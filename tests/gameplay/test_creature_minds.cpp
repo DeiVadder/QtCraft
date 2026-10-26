@@ -1,15 +1,15 @@
-#include "gameplay/QcEndermanFixture.h"
+#include "gameplay/QcShadewalkerFixture.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcEntityRecords.h"
 
 using namespace Qt::StringLiterals;
 
 // Griefing and minds per creature (decision E-510): a confined creature changes no block through
-// any path (an enderman takes and places nothing and drops what it carries, a silverfish neither
+// any path (a shadewalker takes and places nothing and drops what it carries, a silverfish neither
 // hides nor breaks infested blocks when it wakes its kind), and a creature without a mind (noAi)
 // neither steers, attacks nor teleports, yet falls and is knocked back, is saved, and comes by
 // /summon … noai and /mob … noai. Ticks are stepped by hand.
-class TestCreatureMinds : public QcEndermanFixture
+class TestCreatureMinds : public QcShadewalkerFixture
 {
     Q_OBJECT
 
@@ -57,14 +57,14 @@ private:
     }
 
 private slots:
-    void confinedEndermanTakesAndPlacesNothing()
+    void confinedShadewalkerTakesAndPlacesNothing()
     {
         setCarryChances(1.0, 1.0);
         joinArena();
         chat(u"/gamemode creative"_s);
         const QcBlockId grass = id("qtcraft:grass_block");
-        const quint32 free = spawn("enderman", 8, 8);
-        const quint32 penned = spawn("enderman", -8, -8, true);
+        const quint32 free = spawn("shadewalker", 8, 8);
+        const quint32 penned = spawn("shadewalker", -8, -8, true);
 
         // The free one takes a block; the confined one, under the same rule and chances, none.
         QVERIFY(carriesWithin(free, grass, 400));
@@ -164,18 +164,18 @@ private slots:
         setCarryChances(1.0, 1.0);
         joinArena();
         chat(u"/gamemode creative"_s);
-        const quint32 enderman = spawn("enderman", 6, 6);
-        mob(enderman)->noAi = true;
-        QVERIFY(!m_server->entities().creatures().teleport(enderman, m_server->world()));
+        const quint32 shadewalker = spawn("shadewalker", 6, 6);
+        mob(shadewalker)->noAi = true;
+        QVERIFY(!m_server->entities().creatures().teleport(shadewalker, m_server->world()));
         ticks(400);
-        QCOMPARE(mob(enderman)->carried, qcAirBlockId);
+        QCOMPARE(mob(shadewalker)->carried, qcAirBlockId);
         // Confined, it does not teleport either; free, it does.
-        mob(enderman)->noAi = false;
-        mob(enderman)->confined = true;
-        QVERIFY(!m_server->entities().creatures().teleport(enderman, m_server->world()));
-        mob(enderman)->confined = false;
-        mob(enderman)->teleportCooldown = 0;
-        QVERIFY(m_server->entities().creatures().teleport(enderman, m_server->world()));
+        mob(shadewalker)->noAi = false;
+        mob(shadewalker)->confined = true;
+        QVERIFY(!m_server->entities().creatures().teleport(shadewalker, m_server->world()));
+        mob(shadewalker)->confined = false;
+        mob(shadewalker)->teleportCooldown = 0;
+        QVERIFY(m_server->entities().creatures().teleport(shadewalker, m_server->world()));
     }
 
     void creatureWithoutMindIsSaved()

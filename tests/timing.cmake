@@ -27,7 +27,7 @@
 #   test_survival_scenario   long scenario waiting in real time for the server host (smelting etc.)
 #   test_multiplayer_bots, test_creative_bots, test_signal_bots, test_minecart_bots, test_machine_bots
 #                            qtcraft-headless server and bot processes, waits by the clock
-#   test_enderman_rules, test_golem_measure, test_taming, test_minecart_momentum, test_signal_showcase
+#   test_shadewalker_rules, test_golem_measure, test_taming, test_minecart_momentum, test_signal_showcase
 #                            heavy server simulations that repeatedly failed only on their TIMEOUT
 #                            under parallel load (golem and minecart measurements time ticks too)
 #   app_offscreen_pad_inventory, app_offscreen_pad_radial, app_offscreen_pad_keyboard, app_offscreen_pad_menu,
@@ -47,7 +47,7 @@ set(qc_timing_tests
     test_tcp_transport test_network_game test_latency test_pause_keepalive
     test_creative_client test_void_client test_ice_client test_push_client test_survival_scenario
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots
-    test_enderman_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
+    test_shadewalker_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
     app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu test_gamepad_scenarios test_session_tick test_session_thread
     test_block_prediction test_block_prediction_measure test_audio_output)

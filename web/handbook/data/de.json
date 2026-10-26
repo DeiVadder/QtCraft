@@ -490,7 +490,6 @@
                 "item:qtcraft:bucket",
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
-                "item:qtcraft:ender_pearl",
                 "item:qtcraft:string",
                 "item:qtcraft:feather",
                 "item:qtcraft:flint",
@@ -541,6 +540,7 @@
                 "item:qtcraft:pink_dye",
                 "item:qtcraft:red_dye",
                 "item:qtcraft:armor_stand",
+                "item:qtcraft:shade_pearl",
                 "item:qtcraft:shears",
                 "item:qtcraft:slimeball",
                 "item:qtcraft:snowball",
@@ -652,7 +652,6 @@
                 "mob:qtcraft:villager",
                 "mob:qtcraft:iron_golem",
                 "mob:qtcraft:stray",
-                "mob:qtcraft:enderman",
                 "mob:qtcraft:drowned",
                 "mob:qtcraft:mannequin",
                 "mob:qtcraft:caped_mannequin",
@@ -670,6 +669,7 @@
                 "mob:qtcraft:ocelot",
                 "mob:qtcraft:sand_golem",
                 "mob:qtcraft:sheep",
+                "mob:qtcraft:shadewalker",
                 "mob:qtcraft:slime",
                 "mob:qtcraft:pig",
                 "mob:qtcraft:silverfish",
@@ -924,12 +924,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -939,6 +933,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -1206,12 +1206,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,64 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "16,39 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -1221,6 +1215,12 @@
                             "note": "16,39 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,64 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -1420,12 +1420,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -1435,6 +1429,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -1704,12 +1704,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -1719,6 +1713,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -1958,12 +1958,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -1973,6 +1967,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -2206,12 +2206,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -2221,6 +2215,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -2426,12 +2426,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,96 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,2 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -2441,6 +2435,12 @@
                             "note": "19,57 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,96 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -2638,12 +2638,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,96 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,2 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -2653,6 +2647,12 @@
                             "note": "19,57 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,96 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -2886,12 +2886,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -2901,6 +2895,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -3140,12 +3140,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -3155,6 +3149,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -3424,12 +3424,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,64 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "16,39 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -3439,6 +3433,12 @@
                             "note": "16,39 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,64 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -3672,12 +3672,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -3687,6 +3681,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -3920,12 +3920,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -3935,6 +3929,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -4156,12 +4156,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,64 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "16,39 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -4171,6 +4165,12 @@
                             "note": "16,39 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,64 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -4376,12 +4376,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -4391,6 +4385,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -4630,12 +4630,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -4645,6 +4639,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -4894,12 +4894,6 @@
                     "links": [
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -4909,6 +4903,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -5108,12 +5108,6 @@
                         },
                         {
                             "icon": "",
-                            "note": "1,94 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        },
-                        {
-                            "icon": "",
                             "note": "0,97 %",
                             "target": "mob:qtcraft:drowned",
                             "text": "Ertrunkener"
@@ -5123,6 +5117,12 @@
                             "note": "19,42 %",
                             "target": "mob:qtcraft:kjut",
                             "text": "Kjut"
+                        },
+                        {
+                            "icon": "",
+                            "note": "1,94 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -93923,7 +93923,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Enderperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.",
+                    "text": "Manche Items wirft man mit der Hand: Drück mit einem Schneeball in der Hand die Benutzen-Taste, und er fliegt sofort los. Nach einem kurzen Moment kannst du wieder werfen. Ein Bogen schießt nur Pfeile, nie Schneebälle. Schneebälle fliegen im Bogen wie Pfeile, richten keinen Schaden an, stoßen das Ziel zurück und zerplatzen, wo sie treffen. Eine Schattenperle wirft man genauso; sie teleportiert dich dorthin, wo sie landet.",
                     "title": "Werfen"
                 },
                 {
@@ -93961,10 +93961,10 @@
                             "text": "Schneeball"
                         },
                         {
-                            "icon": "qtcraft:ender_pearl",
+                            "icon": "qtcraft:shade_pearl",
                             "note": "",
-                            "target": "item:qtcraft:ender_pearl",
-                            "text": "Enderperle"
+                            "target": "item:qtcraft:shade_pearl",
+                            "text": "Schattenperle"
                         },
                         {
                             "icon": "qtcraft:fishing_rod",
@@ -94579,7 +94579,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Jedes Biom hat seine Liste von Monstern, jedes mit einem Gewicht: Zombies, Skelette, Spinnen, Schleime und Kjuts je 100, Endermen 10. Hexen stehen in keiner Liste: Sie erscheinen nur in der Grundfläche ihrer Hütten im Sumpf, die dort an die Stelle der Liste tritt. Jeder Versuch, ein Monster erscheinen zu lassen, wählt eines aus der ganzen Liste nach Gewicht und prüft dann, ob diese Art an der Stelle erscheinen darf; wenn nicht, kommt nichts. So nehmen Schleime ihren Anteil nur in ihren Chunks und Höhlen, und eine Art, die Wasser oder den offenen Himmel braucht, lässt den Anteil der anderen, wie er ist. In der Wüste nehmen Wüstenzombies 80 der 100 der Zombies und erscheinen nur unter offenem Himmel; sie brennen nicht in der Sonne, und ihre Schläge machen hungrig. In den verschneiten Ebenen (Tundra) nehmen Eiswanderer 80 der 100 der Skelette, ebenfalls nur unter offenem Himmel; ihre Pfeile machen langsam. Ertrunkene steigen aus dunklem Wasser: in Flüssen mit Gewicht 100, in zugefrorenen Flüssen 1, sonst 5 und nur im Wasser mindestens sechs Blöcke unter dem Meeresspiegel. Höhlenspinnen kommen nur aus den Spawnern der Minenschächte. Die Seite jedes Bioms zeigt die Anteile seiner Monster.",
+                    "text": "Jedes Biom hat seine Liste von Monstern, jedes mit einem Gewicht: Zombies, Skelette, Spinnen, Schleime und Kjuts je 100, Schattenwandler 10. Hexen stehen in keiner Liste: Sie erscheinen nur in der Grundfläche ihrer Hütten im Sumpf, die dort an die Stelle der Liste tritt. Jeder Versuch, ein Monster erscheinen zu lassen, wählt eines aus der ganzen Liste nach Gewicht und prüft dann, ob diese Art an der Stelle erscheinen darf; wenn nicht, kommt nichts. So nehmen Schleime ihren Anteil nur in ihren Chunks und Höhlen, und eine Art, die Wasser oder den offenen Himmel braucht, lässt den Anteil der anderen, wie er ist. In der Wüste nehmen Wüstenzombies 80 der 100 der Zombies und erscheinen nur unter offenem Himmel; sie brennen nicht in der Sonne, und ihre Schläge machen hungrig. In den verschneiten Ebenen (Tundra) nehmen Eiswanderer 80 der 100 der Skelette, ebenfalls nur unter offenem Himmel; ihre Pfeile machen langsam. Ertrunkene steigen aus dunklem Wasser: in Flüssen mit Gewicht 100, in zugefrorenen Flüssen 1, sonst 5 und nur im Wasser mindestens sechs Blöcke unter dem Meeresspiegel. Höhlenspinnen kommen nur aus den Spawnern der Minenschächte. Die Seite jedes Bioms zeigt die Anteile seiner Monster.",
                     "title": "Monster der Biome"
                 },
                 {
@@ -94627,8 +94627,8 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "Endermen erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Enderman, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.",
-                    "title": "Endermen"
+                    "text": "Schattenwandler erscheinen selten in dunklen Nächten, in jedem Biom. Schaust du ihnen auf den Kopf, werden sie wütend, und je weiter sie weg sind, desto genauer musst du hinschauen; schaust du auf die Beine oder an ihnen vorbei, bleiben sie ruhig. Einer, den du schlägst, verfolgt dich und nicht den Spieler, der ihm am nächsten steht. Sie teleportieren sich an eine sichere Stelle in der Nähe: wenn sie im Wasser oder im Regen stehen, wenn ein Geschoss sie trifft und manchmal, um den verfolgten Spieler zu erreichen. Sie landen nur auf festem Boden mit Platz darüber und nur dort, wo die Welt geladen ist. Mit der Spielregel **mobGriefing** heben sie einzelne Blöcke auf und setzen sie woanders ab; ein Schattenwandler, der einen Block trägt, bleibt in der Welt, bis er ihn absetzt. Ohne die Regel ändert er keine Blöcke und lässt einen getragenen Block als Gegenstand fallen.",
+                    "title": "Schattenwandler"
                 },
                 {
                     "links": [
@@ -94671,8 +94671,8 @@
                         {
                             "icon": "",
                             "note": "",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
                         },
                         {
                             "icon": "",
@@ -95839,7 +95839,7 @@
                     ],
                     "recipes": [
                     ],
-                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Endermen nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **explosionBlockDamage**: Explosionen zerstören Blöcke und zünden anderen Sprengstoff; aus, verletzen und schleudern sie weiter, lassen aber jeden Block, wie er ist (siehe Sprengstoff). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
+                    "text": "**keepInventory**: Inventar beim Tod behalten (beim Anlegen einer Welt gewählt). **daylightCycle**: Die Tageszeit läuft. **mobSpawning**: Wesen erscheinen von selbst. **randomTicks**: Pflanzen, Feldfrüchte und Ackerboden ändern sich von selbst (in der Showcase-Welt aus). **quasiConnectivity**: Kolben reagieren auch auf Signal am Block über ihnen, aber erst nach einem Block-Update neben ihnen (standardmäßig an). **weatherCycle**: Das Wetter wechselt von selbst (in der Showcase-Welt aus). **mobGriefing**: Wesen verändern Blöcke (Schattenwandler nehmen Blöcke auf und setzen sie ab, Silberfischchen verstecken sich in Stein, Bauern ernten, Dorfbewohner heben Essen auf). Wesen, die ein Bauwerk einsperrt (die Gehege und Dorfreihen der Showcase-Welt), und Wesen ohne eigenen Willen (`/mob … noai`) tun das nie, gleich was die Regel sagt. **explosionBlockDamage**: Explosionen zerstören Blöcke und zünden anderen Sprengstoff; aus, verletzen und schleudern sie weiter, lassen aber jeden Block, wie er ist (siehe Sprengstoff). **maxEntityCramming** (eine Zahl, standardmäßig 24 wie im Vorbild): Wesen in einer Blockzelle über diese Zahl hinaus nehmen Schaden, bis nicht mehr übrig sind, und lassen ihre Beute fallen; 0 schaltet es aus. Mob-Farmen töten so, was in eine Zelle von einem Block fällt. **playerInvulnerabilityTicks** und **mobInvulnerabilityTicks** (Zahlen, standardmäßig 10 Ticks, höchstens 200): so viele Spiel-Ticks kann ein Spieler oder ein Wesen nach einem Treffer nicht verletzt werden; ein späterer Treffer in dieser Zeit, der stärker ist als der bisher stärkste, macht nur den Unterschied als Schaden; 0 lässt jeden Treffer zählen. Hunger ist ein Treffer wie jeder andere; Lava, Feuer und Magma behalten ihren eigenen Takt, gleich wie die Regeln stehen: ein Treffer alle 0,5 s. `/gamerule <Regel>` zeigt eine Regel; Operatoren ändern sie mit `/gamerule <Regel> true|false`. Das Kapitel Befehle nennt alle Befehle.",
                     "title": "Spielregeln"
                 }
             ],
@@ -105479,48 +105479,6 @@
             ],
             "text": "Entsteht, wenn man ein Buch am Zaubertisch verzaubert; ein Buch nimmt jede Verzauberung an. In der Hand wirken seine Verzauberungen nicht: Der zu verzaubernde Gegenstand kommt in den linken Platz eines Ambosses, das Buch in den rechten, und die Verzauberungen des Buchs gehen zum halben Preis des Kombinierens zweier Gegenstände auf ihn über. Zwei Bücher mit derselben Verzauberung auf derselben Stufe ergeben ein Buch der nächsten Stufe.",
             "title": "Verzaubertes Buch"
-        },
-        "item:qtcraft:ender_pearl": {
-            "category": "items",
-            "categoryTitle": "Gegenstände",
-            "englishTitle": "Ender Pearl",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:ender_pearl"
-                },
-                {
-                    "label": "Stapelgröße",
-                    "links": [
-                    ],
-                    "value": "16"
-                }
-            ],
-            "icon": "qtcraft:ender_pearl",
-            "id": "item:qtcraft:ender_pearl",
-            "name": "qtcraft:ender_pearl",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                        {
-                            "icon": "",
-                            "note": "50 %",
-                            "target": "mob:qtcraft:enderman",
-                            "text": "Enderman"
-                        }
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "",
-                    "title": "Droppt aus"
-                }
-            ],
-            "text": "Lassen Endermen fallen. Mit der Benutzen-Taste geworfen, bringt sie dich dorthin, wo sie landet, auf einem Block oder einem Wesen; die Landung schmerzt ein wenig wie ein Sturz. Du kommst immer an einer Stelle mit Platz für dich an, nie in Blöcken oder im Wasser und nie auf der anderen Seite einer Wand oder eines Dachs; eine Perle, die unter Wasser landet, ist verloren, ebenso deine Perlen, die noch fliegen, wenn du stirbst. Die nächste kannst du nach einer Sekunde werfen.",
-            "title": "Enderperle"
         },
         "item:qtcraft:feather": {
             "category": "items",
@@ -115946,6 +115904,48 @@
             "text": "Ein Lachs in einem Wassereimer. Ausgegossen setzt er das Wasser und lässt den Lachs frei; ein ausgesetzter Fisch bleibt in der Welt.",
             "title": "Lachseimer"
         },
+        "item:qtcraft:shade_pearl": {
+            "category": "items",
+            "categoryTitle": "Gegenstände",
+            "englishTitle": "Shade Pearl",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:shade_pearl"
+                },
+                {
+                    "label": "Stapelgröße",
+                    "links": [
+                    ],
+                    "value": "16"
+                }
+            ],
+            "icon": "qtcraft:shade_pearl",
+            "id": "item:qtcraft:shade_pearl",
+            "name": "qtcraft:shade_pearl",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "50 %",
+                            "target": "mob:qtcraft:shadewalker",
+                            "text": "Schattenwandler"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Droppt aus"
+                }
+            ],
+            "text": "Lassen Schattenwandler fallen. Mit der Benutzen-Taste geworfen, bringt sie dich dorthin, wo sie landet, auf einem Block oder einem Wesen; die Landung schmerzt ein wenig wie ein Sturz. Du kommst immer an einer Stelle mit Platz für dich an, nie in Blöcken oder im Wasser und nie auf der anderen Seite einer Wand oder eines Dachs; eine Perle, die unter Wasser landet, ist verloren, ebenso deine Perlen, die noch fliegen, wenn du stirbst. Die nächste kannst du nach einer Sekunde werfen.",
+            "title": "Schattenperle"
+        },
         "item:qtcraft:shears": {
             "category": "items",
             "categoryTitle": "Gegenstände",
@@ -121819,128 +121819,6 @@
             "text": "Ein Zombie, der unter Wasser lebt. Er erscheint im dunklen Wasser von Flüssen und seltener in tiefen Meeren und Seen, läuft über den Grund und schwimmt zu dir hoch, wenn du über ihm bist; ans Ufer klettert er dir nach. Brennt im direkten Sonnenlicht, sobald er das Wasser verlässt.",
             "title": "Ertrunkener"
         },
-        "mob:qtcraft:enderman": {
-            "category": "creatures",
-            "categoryTitle": "Wesen",
-            "englishTitle": "Enderman",
-            "facts": [
-                {
-                    "label": "ID",
-                    "links": [
-                    ],
-                    "value": "qtcraft:enderman"
-                },
-                {
-                    "label": "Verhalten",
-                    "links": [
-                    ],
-                    "value": "neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an"
-                },
-                {
-                    "label": "Gesundheit",
-                    "links": [
-                    ],
-                    "value": "40 Lebenspunkte"
-                },
-                {
-                    "label": "Größe",
-                    "links": [
-                    ],
-                    "value": "0,6 m breit, 2,9 m hoch"
-                },
-                {
-                    "label": "Geschwindigkeit",
-                    "links": [
-                    ],
-                    "value": "1,5 m/s beim Gehen, 4 m/s beim Verfolgen"
-                },
-                {
-                    "label": "Angriff",
-                    "links": [
-                    ],
-                    "value": "7 Schaden bis 2 m, alle 1 s"
-                },
-                {
-                    "label": "Sieht Spieler bis",
-                    "links": [
-                    ],
-                    "value": "32 m"
-                },
-                {
-                    "label": "Erscheint",
-                    "links": [
-                    ],
-                    "value": "Tag und Nacht"
-                },
-                {
-                    "label": "Dunkelheit",
-                    "links": [
-                    ],
-                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
-                },
-                {
-                    "label": "Licht beim Erscheinen",
-                    "links": [
-                    ],
-                    "value": "Blocklicht bis 0"
-                },
-                {
-                    "label": "Gruppengröße",
-                    "links": [
-                    ],
-                    "value": "bis 1"
-                },
-                {
-                    "label": "Erscheinungsgewicht",
-                    "links": [
-                    ],
-                    "value": "10"
-                },
-                {
-                    "label": "Obergrenze",
-                    "links": [
-                    ],
-                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
-                },
-                {
-                    "label": "Beute",
-                    "links": [
-                        {
-                            "icon": "qtcraft:ender_pearl",
-                            "note": "50 %",
-                            "target": "item:qtcraft:ender_pearl",
-                            "text": "Enderperle"
-                        }
-                    ],
-                    "value": ""
-                }
-            ],
-            "icon": "qtcraft:ender_pearl",
-            "id": "mob:qtcraft:enderman",
-            "name": "qtcraft:enderman",
-            "pack": "qtcraft",
-            "packName": "QtCraft",
-            "sections": [
-                {
-                    "links": [
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
-                    "title": "Erscheint auf"
-                },
-                {
-                    "links": [
-                    ],
-                    "recipes": [
-                    ],
-                    "text": "Alle Biome.",
-                    "title": "Erscheint in Biomen"
-                }
-            ],
-            "text": "Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Enderperle fallen.",
-            "title": "Enderman"
-        },
         "mob:qtcraft:firefly": {
             "category": "creatures",
             "categoryTitle": "Wesen",
@@ -123224,6 +123102,128 @@
             ],
             "text": "Ein Golem aus Sand, der den Keller eines Wüstentempels bewacht und jeden angreift, der zu ihm hinabsteigt; weit folgt er nicht. Es gibt ihn nur dort, bauen kann man ihn nicht. Berührt er einen Wasser-Quellblock, zerfällt er in vier Sandblöcke in der Form seines Bauplans, mit gemeißeltem Sandstein als Kopf; seine Arme fallen als Sand herab und können ein Wasserloch füllen. In einem dunklen Keller ohne Spieler in der Nähe kommt nach einer Weile ein neuer: eine Quelle für erneuerbaren Sand.",
             "title": "Sandgolem"
+        },
+        "mob:qtcraft:shadewalker": {
+            "category": "creatures",
+            "categoryTitle": "Wesen",
+            "englishTitle": "Shadewalker",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:shadewalker"
+                },
+                {
+                    "label": "Verhalten",
+                    "links": [
+                    ],
+                    "value": "neutral: lässt Spieler in Ruhe, bis einer ihm auf den Kopf schaut oder es verletzt, dann verfolgt und greift es ihn an"
+                },
+                {
+                    "label": "Gesundheit",
+                    "links": [
+                    ],
+                    "value": "40 Lebenspunkte"
+                },
+                {
+                    "label": "Größe",
+                    "links": [
+                    ],
+                    "value": "0,6 m breit, 2,9 m hoch"
+                },
+                {
+                    "label": "Geschwindigkeit",
+                    "links": [
+                    ],
+                    "value": "1,5 m/s beim Gehen, 4 m/s beim Verfolgen"
+                },
+                {
+                    "label": "Angriff",
+                    "links": [
+                    ],
+                    "value": "7 Schaden bis 2 m, alle 1 s"
+                },
+                {
+                    "label": "Sieht Spieler bis",
+                    "links": [
+                    ],
+                    "value": "32 m"
+                },
+                {
+                    "label": "Erscheint",
+                    "links": [
+                    ],
+                    "value": "Tag und Nacht"
+                },
+                {
+                    "label": "Dunkelheit",
+                    "links": [
+                    ],
+                    "value": "nur im Dunkeln: kein Blocklicht und ein dunkler Himmel (nachts, unter Dächern, in Höhlen)"
+                },
+                {
+                    "label": "Licht beim Erscheinen",
+                    "links": [
+                    ],
+                    "value": "Blocklicht bis 0"
+                },
+                {
+                    "label": "Gruppengröße",
+                    "links": [
+                    ],
+                    "value": "bis 1"
+                },
+                {
+                    "label": "Erscheinungsgewicht",
+                    "links": [
+                    ],
+                    "value": "10"
+                },
+                {
+                    "label": "Obergrenze",
+                    "links": [
+                    ],
+                    "value": "alle Monster zusammen: 70 je 289 geladene Chunks um die Spieler"
+                },
+                {
+                    "label": "Beute",
+                    "links": [
+                        {
+                            "icon": "qtcraft:shade_pearl",
+                            "note": "50 %",
+                            "target": "item:qtcraft:shade_pearl",
+                            "text": "Schattenperle"
+                        }
+                    ],
+                    "value": ""
+                }
+            ],
+            "icon": "qtcraft:shade_pearl",
+            "id": "mob:qtcraft:shadewalker",
+            "name": "qtcraft:shadewalker",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Jeder feste, undurchsichtige Block mit voller Oberseite (kein Glas, Laub, Eis und keine untere Stufe).",
+                    "title": "Erscheint auf"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Alle Biome.",
+                    "title": "Erscheint in Biomen"
+                }
+            ],
+            "text": "Ein großer, dunkler Wanderer der Nacht. Er lässt dich in Ruhe, bis du ihm direkt auf den Kopf schaust oder ihn verletzt; dann verfolgt er dich und schlägt hart zu. Pfeile und Schneebälle schaden ihm nicht; trifft ihn einer, teleportiert er sich weg. Wasser und Regen verletzen ihn, darum meidet er Wasser und springt davon weg. Ab und zu hebt er einen Block wie Gras, Erde oder Sand auf, trägt ihn in der Hand herum und setzt ihn woanders wieder ab; stirbt er, fällt der Block herunter. Lässt manchmal eine Schattenperle fallen.",
+            "title": "Schattenwandler"
         },
         "mob:qtcraft:sheep": {
             "category": "creatures",

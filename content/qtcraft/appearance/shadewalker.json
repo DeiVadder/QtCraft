@@ -1,34 +1,34 @@
 {
-    "name": "enderman",
+    "name": "shadewalker",
     "kind": "outfit",
     "playable": false,
     "layers": {
         "head": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         },
         "face": {
-            "texture": "enderman_face",
+            "texture": "shadewalker_face",
             "tint": "none"
         },
         "torso": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         },
         "sleeve": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         },
         "hand": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         },
         "legs": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         },
         "shoes": {
-            "texture": "enderman_skin",
+            "texture": "shadewalker_skin",
             "tint": "none"
         }
     }

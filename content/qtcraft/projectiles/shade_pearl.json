@@ -1,6 +1,6 @@
 {
-    "name": "ender_pearl",
-    "item": "ender_pearl",
+    "name": "shade_pearl",
+    "item": "shade_pearl",
     "gravity": 12.0,
     "drag": 0.2,
     "waterDrag": 10.0,
@@ -11,7 +11,7 @@
         },
         {
             "type": "break",
-            "sound": "entity.ender_pearl.land"
+            "sound": "entity.shade_pearl.land"
         }
     ],
     "size": 0.25,

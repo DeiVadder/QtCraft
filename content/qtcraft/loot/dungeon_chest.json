@@ -13,7 +13,7 @@
                 { "item": "bucket", "weight": 10 },
                 { "item": "apple", "weight": 15 },
                 { "item": "book", "weight": 10 },
-                { "item": "ender_pearl", "weight": 3 },
+                { "item": "shade_pearl", "weight": 3 },
                 { "item": "diamond", "weight": 2 },
                 { "item": "iron_pickaxe", "weight": 4 },
                 { "item": "emerald", "weight": 4, "count": [1, 2] }

@@ -1,8 +1,8 @@
 {
-    "name": "ender_pearl",
-    "texture": "ender_pearl",
+    "name": "shade_pearl",
+    "texture": "shade_pearl",
     "maxStack": 16,
-    "projectile": "ender_pearl",
+    "projectile": "shade_pearl",
     "throwable": {
         "speed": 30.0,
         "cooldownSeconds": 1.0,

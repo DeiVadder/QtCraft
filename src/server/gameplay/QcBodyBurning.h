@@ -19,7 +19,7 @@ class QcServerState;
 // their own burning with their health (QcMsg::PlayerHealth::burning), everyone sees it on the
 // entity (QcMsg::Burning). Creatures that burn in daylight catch fire in direct sunlight. A burning creature makes its hurt sound when the damage takes and drops
 // its loot when it dies, like after a hit. Items in fire or lava burn up in QcEnvironmentDamage.
-// The same water and rain hurt creatures with `waterDamage` (endermen, decision E-460) once every
+// The same water and rain hurt creatures with `waterDamage` (shadewalkers, decision E-460) once every
 // wetIntervalTicks, and one that teleports jumps away from it.
 class QcBodyBurning
 {

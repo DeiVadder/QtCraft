@@ -64,7 +64,7 @@ private:
     // The chat line that tells the player of the death: with the creature that dealt the killing
     // blow or shot (its custom name, else its kind as a content text, decision E-873).
     QcMsg::ChatMessage deathLine(const QcServerClient &client, DamageKind kind, quint32 creature) const;
-    // Projectiles in flight that would teleport the player (ender pearls, decision E-460) forget
+    // Projectiles in flight that would teleport the player (shade pearls, decision E-460) forget
     // their thrower: they bring a dead player nowhere, also not after the respawn.
     void forgetTeleports(const QcServerClient &client);
     // The part of a hit the player's armour lets through; the armour wears down.
