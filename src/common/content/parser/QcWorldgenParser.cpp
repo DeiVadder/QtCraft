@@ -428,6 +428,7 @@ QcMineshaftSettings MineshaftReader::read()
     m_shafts.radius = m_reader.integer(u"radius"_s, m_shafts.radius, 1, Settings::maxRadius);
     m_shafts.minNodes = m_reader.integer(u"minNodes"_s, m_shafts.minNodes, 1, 80);
     m_shafts.maxNodes = m_reader.integer(u"maxNodes"_s, m_shafts.maxNodes, m_shafts.minNodes, 80);
+    m_shafts.maxRun = m_reader.integer(u"maxRun"_s, m_shafts.maxRun, 1, Settings::maxRunLength);
     m_shafts.loopChance = m_reader.number(u"loopChance"_s, m_shafts.loopChance, 0.0, 1.0);
     m_shafts.extraStairChance = m_reader.number(u"extraStairChance"_s, m_shafts.extraStairChance, 0.0, 1.0);
     m_shafts.roomHalf = m_reader.integer(u"roomHalf"_s, m_shafts.roomHalf, 1, 4);

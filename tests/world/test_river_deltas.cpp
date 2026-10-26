@@ -476,7 +476,7 @@ private slots:
         std::set<std::tuple<int, int, int, int>> seen;
         for (int cz = middle.z - reach; cz <= middle.z + reach; ++cz) {
             for (int cx = middle.x - reach; cx <= middle.x + reach; ++cx) {
-                const QList<QcSurfacePlanner::Rect> near = generator.structureFootprintsNear({cx, cz}, 0);
+                const QList<QcSurfacePlanner::Rect> near = generator.structureFootprintsNear({cx, cz}, 0, false);
                 for (const QcSurfacePlanner::Rect &rect : near) {
                     if (seen.insert({rect.x0, rect.z0, rect.x1, rect.z1}).second) {
                         footprints.append(rect);

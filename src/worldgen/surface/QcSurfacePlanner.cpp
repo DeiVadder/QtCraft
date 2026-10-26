@@ -1,5 +1,6 @@
 #include "worldgen/surface/QcSurfacePlanner.h"
 
+#include "worldgen/surface/QcSurfaceBlend.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -55,20 +56,23 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX
     }
 
     // Every attempt draws its centre and turn from its own positions, so one attempt never shifts another.
+    // The footprint and its blended ground (decision E-889) lie wholly inside the region, so the
+    // blend of one copy never reaches into a copy of the same kind next door.
     const int width = std::max(type.structure()->sizeX(), type.structure()->sizeZ());
-    const int room = rule.spacing - width;
+    const int room = rule.spacing - width - 2 * rule.blend;
     std::optional<QcStructurePlacement> first;
     for (int attempt = 0; attempt < rule.attempts; ++attempt) {
         const int turns = static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 1, regionZ) * 4.0) % 4;
         const int sizeX = turns % 2 == 0 ? type.structure()->sizeX() : type.structure()->sizeZ();
         const int sizeZ = turns % 2 == 0 ? type.structure()->sizeZ() : type.structure()->sizeX();
-        const int x0 = regionX * rule.spacing + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
-        const int z0 = regionZ * rule.spacing + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
+        const int x0 = regionX * rule.spacing + rule.blend + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
+        const int z0 = regionZ * rule.spacing + rule.blend + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
         const Rect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
         const std::optional<int> floor = floorFor(type, rect);
-        // No column of the footprint in a river delta (decision E-850): an arm may cross between
-        // the samples of floorFor().
-        if (!floor || occupied(kind, rect, rule.villageMargin) || m_terrain.touchesDelta(rect)) {
+        // No column of the footprint and its blended ground (decision E-889) in a river delta
+        // (decision E-850): an arm may cross between the samples of floorFor().
+        const Rect blended{rect.x0 - rule.blend, rect.z0 - rule.blend, rect.x1 + rule.blend, rect.z1 + rule.blend};
+        if (!floor || occupied(kind, rect, rule.villageMargin) || m_terrain.touchesDelta(blended) || !levelsBeside(rect, *floor, rule.blend)) {
             continue;
         }
         QcStructurePlacement placement(structureOf(type, regionX, regionZ), {x0, *floor - type.structure()->groundLayer, z0}, turns, m_content);
@@ -140,4 +144,25 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
         return std::nullopt;
     }
     return floor;
+}
+
+bool QcSurfacePlanner::levelsBeside(Rect rect, int floor, int blend) const
+{
+    if (blend <= 0) {
+        return true;
+    }
+    // The ring right beside the walls (corners left out): the blend lowers each column there to the
+    // floor, unless its ground lies more than `slope * blend` above it or under an overhang (the
+    // blend shapes the ground below an overhang only).
+    QList<std::pair<int, int>> ring;
+    for (int x = rect.x0; x <= rect.x1; ++x) {
+        ring.append({{x, rect.z0 - 1}, {x, rect.z1 + 1}});
+    }
+    for (int z = rect.z0; z <= rect.z1; ++z) {
+        ring.append({{rect.x0 - 1, z}, {rect.x1 + 1, z}});
+    }
+    return std::ranges::all_of(ring, [&](std::pair<int, int> at) {
+        const QcTerrainColumn column = m_terrain.column(at.first, at.second);
+        return column.overhang < 1.0 && QcSurfaceBlend::levelAt(floor, column.height - 1, 1.0, blend) <= floor;
+    });
 }

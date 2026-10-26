@@ -193,6 +193,13 @@ private slots:
         QTest::newRow("map of one number") << frame.arg(u"\"item\": \"item_frame\", \"held\": \"filled_map\", \"map\": [1]"_s) << u"each 0 to 3"_s;
         QTest::newRow("map on a painting") << frame.arg(u"\"item\": \"painting\", \"motif\": \"valley\", \"map\": [0, 0]"_s) << u"not to a painting"_s;
         QTest::newRow("map in an empty frame") << frame.arg(u"\"item\": \"item_frame\", \"map\": [0, 0]"_s) << u"not to a painting"_s;
+        // The ground blended around a surface structure (decision E-889): 0 to 16 blocks, and the
+        // footprint with its blend fits twice into a region.
+        const QString surface = text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"%1\"]], "
+                                     "\"surface\": {\"biomes\": [\"plains\"], \"spacing\": 64, \"blend\": %2}}");
+        QTest::newRow("blend too wide") << surface.arg(u"#"_s).arg(17) << u"'blend' must be a number within 0..16"_s;
+        QTest::newRow("negative blend") << surface.arg(u"#"_s).arg(-1) << u"'blend' must be a number within 0..16"_s;
+        QTest::newRow("blend beyond the region") << surface.arg(QString(17, u'#')).arg(16) << u"plus its 'blend'"_s;
         const QString wide(65, u'#');
         QTest::newRow("too wide") << text("{\"name\": \"a\", \"palette\": {\"#\": \"stone\"}, \"layers\": [[\"%1\"]]}").arg(wide) << u"at most 64"_s;
     }

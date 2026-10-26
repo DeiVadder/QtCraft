@@ -9,6 +9,7 @@
         "chance": 0.55,
         "attempts": 4,
         "maxSlope": 4,
+        "blend": 8,
         "villageMargin": 16,
         "foundation": "sandstone"
     },

@@ -190,6 +190,13 @@ struct QcStructureDefinition
         bool clearTerrain = true;
         // The first layer cleared with `clearTerrain`; below it ground and water stay.
         int clearFrom = 1;
+        // Columns up to this many blocks beside the footprint whose ground is blended to the floor
+        // (decision E-889): right beside the walls level with it, farther out more and more the
+        // terrain's own height; 0: none.
+        int blend = 0;
+        // Trees and plants of the biome grow on the blended ground (decision E-889), all but the
+        // column right beside the walls; otherwise it stays bare.
+        bool blendVegetation = false;
 
         bool operator==(const Surface &) const = default;
     };

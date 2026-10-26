@@ -35,7 +35,9 @@ private:
 
     void placePillars(QcChunk &chunk, const QcMineshaftPlan &plan) const;
     void placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;
-    void placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan) const;
+    void placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;
+    // Whether a corridor (with its walls) reaches into the area.
+    static bool near(const QcMineshaftPlan::Corridor &corridor, Area area);
     // Opens the cells of the plan's nodes and corridors in the chunk; seals liquid beside them and
     // sand or gravel above them (also beside cells in the neighbouring chunks).
     void open(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const;

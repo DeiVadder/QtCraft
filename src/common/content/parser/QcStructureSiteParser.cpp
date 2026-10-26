@@ -15,6 +15,8 @@ using Structure = QcStructureDefinition;
 // Regions of surface structures are whole chunks between these sizes.
 constexpr int minSpacing = 64;
 constexpr int maxSpacing = 4096;
+// Blocks around a footprint whose ground is blended to the floor at most (decision E-889).
+constexpr int maxBlend = 16;
 constexpr int maxGuardians = 8;
 
 QStringList readBiomes(const QJsonObject &json, const QString &packNamespace, QcJsonFieldReader &reader)
@@ -53,10 +55,16 @@ QStringList readBiomes(const QJsonObject &json, const QString &packNamespace, Qc
     }
     surface.clearFrom = reader.integer(u"clearFrom"_s, surface.clearFrom, 0, std::max(0, structure.sizeY - 1));
     surface.clearTerrain = reader.boolean(u"clearTerrain"_s, surface.clearTerrain);
+    surface.blend = reader.integer(u"blend"_s, surface.blend, 0, maxBlend);
+    surface.blendVegetation = reader.boolean(u"blendVegetation"_s, surface.blendVegetation);
+    if (surface.blendVegetation && surface.blend == 0) {
+        reader.fail(u"'blendVegetation' needs a 'blend'"_s);
+    }
     if (surface.spacing % 16 != 0) {
         reader.fail(u"'spacing' must be whole chunks (a multiple of 16)"_s);
-    } else if (std::max(structure.sizeX, structure.sizeZ) * 2 > surface.spacing) {
-        reader.fail(u"'spacing' must be at least twice the structure's width"_s);
+    } else if ((std::max(structure.sizeX, structure.sizeZ) + surface.blend) * 2 > surface.spacing) {
+        // The footprint and its blended ground lie wholly inside a region (decision E-889).
+        reader.fail(u"'spacing' must be at least twice the structure's width plus its 'blend'"_s);
     }
     return surface;
 }

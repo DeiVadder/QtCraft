@@ -312,12 +312,13 @@ bool QcCoastalTowerPlanner::clearOfOthers(Footprint footprint) const
 
 bool QcCoastalTowerPlanner::nearSurfaceStructure(Footprint around) const
 {
-    // Surface structures are planned without the towers, so the towers keep clear of them.
+    // Surface structures are planned without the towers, so the towers keep clear of them and of
+    // their blended ground (decision E-889).
     const QList<QcChunkPos> chunks = around.chunks();
     for (const QcChunkPos &chunk : chunks) {
-        const QList<std::shared_ptr<const QcStructurePlacement>> plans = m_terrain.surfaceStructures().plansTouching(chunk);
-        const bool near = std::ranges::any_of(plans, [&around](const std::shared_ptr<const QcStructurePlacement> &plan) {
-            return around.touches(QcCoastalTowerPlan::footprintOf(*plan));
+        const QList<QcSurfacePlanner::Rect> footprints = m_terrain.surfaceStructures().footprintsNear(chunk, 0);
+        const bool near = std::ranges::any_of(footprints, [&around](QcSurfacePlanner::Rect footprint) {
+            return around.touches({footprint.x0, footprint.z0, footprint.x1, footprint.z1});
         });
         if (near) {
             return true;

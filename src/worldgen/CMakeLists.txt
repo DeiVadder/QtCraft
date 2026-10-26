@@ -53,6 +53,7 @@ target_sources(qc_worldgen PRIVATE
     structures/QcStructurePlacement.h structures/QcStructurePlacement.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    surface/QcSurfaceBlend.h surface/QcSurfaceBlend.cpp
     surface/QcSurfacePlanner.h surface/QcSurfacePlanner.cpp
     surface/QcSurfaceStructures.h surface/QcSurfaceStructures.cpp
 )

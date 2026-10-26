@@ -62,7 +62,7 @@ set_tests_properties(test_scenarios test_mods test_signal_network test_server_li
 set_tests_properties(test_endermen PROPERTIES COST 60)
 set_tests_properties(test_enderman_rules PROPERTIES COST 80)
 set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
-set_tests_properties(test_mobs test_weather_effects test_block_light_engine test_dungeons test_mineshafts PROPERTIES COST 80)
+set_tests_properties(test_mobs test_weather_effects test_block_light_engine test_dungeons test_mineshafts test_lava_lakes PROPERTIES COST 80)
 set_tests_properties(test_world_details test_spawners test_desert_temples test_showcase_stations test_showcase_world test_surface_ruins PROPERTIES COST 70)
 set_tests_properties(test_coastal_towers test_monster_spawning PROPERTIES COST 90)
 set_tests_properties(test_biome_spawning PROPERTIES COST 80)

@@ -68,8 +68,10 @@ public:
     const QcVegetationPatchPlacer &vegetationPatches() const { return *m_vegetationPatches; }
     const QcGiantTreePlacer &giantTrees() const { return *m_giantTrees; }
     // The footprints of surface structures, coastal towers and surface lakes within `margin` columns
-    // of the chunk at `pos`: no trees grow there.
-    [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin) const;
+    // of the chunk at `pos`: no trees grow there. With `plantsOnBlend` the blended ground of kinds
+    // with `blendVegetation` is left out but for the ring beside their walls (the generator's trees
+    // and plants stand on the ground as built; giant trees are planned on the terrain and keep off).
+    [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
     // Surface lakes (decision E-856): the lake of a chunk, none in or near a village or near a
     // surface structure or coastal tower.
     const QcSurfaceLakes &lakes() const { return *m_lakes; }

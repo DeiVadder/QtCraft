@@ -1,6 +1,7 @@
 #include "worldgen/mineshafts/QcMineshaftAccess.h"
 
 #include "worldgen/mineshafts/QcMineshaftSite.h"
+#include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
@@ -18,7 +19,7 @@ enum Purpose : int {
 
 // The side the ladder of the entrance hangs on: west, against the central room's wall.
 constexpr int ladderSide = 3;
-// Blocks kept free of villages around an entrance.
+// Blocks kept free of villages and surface structures around an entrance.
 constexpr int villageMargin = 8;
 
 } // namespace
@@ -106,8 +107,14 @@ std::optional<QcBlockPos> QcMineshaftAccess::surfaceAt(QcMineshaftSite &site, in
     if (top <= m_terrain.seaLevel() || top < bottom + 2 || site.cave({x, top, z})) {
         return std::nullopt;
     }
-    const std::shared_ptr<const QcVillagePlan> village = m_terrain.villageFor(QcBlockPos{x, 0, z}.chunk());
+    const QcChunkPos chunk = QcBlockPos{x, 0, z}.chunk();
+    const std::shared_ptr<const QcVillagePlan> village = m_terrain.villageFor(chunk);
     if (village && village->covers(x, z, villageMargin)) {
+        return std::nullopt;
+    }
+    // Nor on a surface structure or the ground blended around it (decision E-889).
+    const QList<QcSurfacePlanner::Rect> structures = m_terrain.surfaceStructures().footprintsNear(chunk, villageMargin);
+    if (std::ranges::any_of(structures, [x, z](QcSurfacePlanner::Rect footprint) { return footprint.intersects({x, z, x, z}, villageMargin); })) {
         return std::nullopt;
     }
     if (!level(site, {x, top, z})) {

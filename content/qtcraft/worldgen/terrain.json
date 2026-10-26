@@ -63,18 +63,19 @@
         "lightDistance": 8
     },
     "mineshafts": {
-        "regionSize": 128,
-        "chance": 0.3,
+        "regionSize": 192,
+        "chance": 0.6,
         "minY": 14,
         "maxY": 44,
         "attempts": 6,
         "minLevels": 2,
-        "maxLevels": 3,
+        "maxLevels": 4,
         "levelSpacing": 6,
-        "radius": 4,
-        "minNodes": 7,
-        "maxNodes": 13,
-        "loopChance": 0.25,
+        "radius": 8,
+        "minNodes": 22,
+        "maxNodes": 40,
+        "maxRun": 4,
+        "loopChance": 0.3,
         "extraStairChance": 0.5,
         "roomHalf": 4,
         "roomHeight": 4,
@@ -95,7 +96,7 @@
         "spawner": "spawner",
         "mob": "cave_spider",
         "minSpawners": 1,
-        "maxSpawners": 2,
+        "maxSpawners": 3,
         "cart": "chest_minecart",
         "cartChance": 0.2,
         "lootTable": "mineshaft_cart",
@@ -106,7 +107,7 @@
             "desert": 0.5
         },
         "roomChance": 0.3,
-        "maxRooms": 2
+        "maxRooms": 3
     },
     "coastalTowers": {
         "regionSize": 384,

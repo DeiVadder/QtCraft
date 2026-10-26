@@ -622,9 +622,9 @@ void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid
     m_vegetationPatches->place(chunk, columns, carved, allowed);
 }
 
-QList<QcSurfacePlanner::Rect> QcTerrainGenerator::structureFootprintsNear(QcChunkPos pos, int margin) const
+QList<QcSurfacePlanner::Rect> QcTerrainGenerator::structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const
 {
-    QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, margin);
+    QList<QcSurfacePlanner::Rect> structures = plantsOnBlend ? m_surface->bareNear(pos, margin) : m_surface->footprintsNear(pos, margin);
     const QList<QcCoastalTowerPlan::Footprint> towers = m_coastalTowers->footprintsNear(pos, margin);
     for (const QcCoastalTowerPlan::Footprint &tower : towers) {
         structures.append({tower.minX, tower.minZ, tower.maxX, tower.maxZ});
@@ -672,7 +672,7 @@ bool QcTerrainGenerator::mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner:
 std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
 {
     auto chunk = std::make_shared<QcChunk>(pos);
-    const QcTerrainColumnGrid columns(*this, pos);
+    QcTerrainColumnGrid columns(*this, pos);
     for (int lz = 0; lz < QcWorld::chunkSize; ++lz) {
         for (int lx = 0; lx < QcWorld::chunkSize; ++lx) {
             fillColumn(*chunk, lx, lz, columns.at(pos.x * QcWorld::chunkSize + lx, pos.z * QcWorld::chunkSize + lz));
@@ -686,12 +686,19 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     // Dungeons and mine shafts after the cave pools, so their corridors open into finished caves.
     m_dungeons->build(*chunk);
     m_mineshafts->build(*chunk);
+    // The ground blended around surface structures (decision E-889) before the features, which
+    // stand on the ground as built.
+    m_surface->blend(*chunk);
+    const QList<QcSurfaceStructures::Moved> moved = m_surface->blendedGround(columns, pos);
+    for (const QcSurfaceStructures::Moved &column : moved) {
+        columns.setHeight(column.x, column.z, column.top + 1);
+    }
     // The village of the chunk's region: no features or surface pools there, its pieces last. None
     // near a surface structure or a coastal tower either (decisions E-630, E-605).
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
     // Trees of the margin columns stand up to featureMargin beyond the chunk and keep featureMargin
     // from a footprint: twice the margin, so each chunk a tree reaches decides it alike.
-    const QList<QcSurfacePlanner::Rect> structures = structureFootprintsNear(pos, 2 * featureMargin);
+    const QList<QcSurfacePlanner::Rect> structures = structureFootprintsNear(pos, 2 * featureMargin, true);
     placeFeatures(*chunk, columns, carved, village.get(), structures);
     // Giant trees after the small ones (decision E-822).
     m_giantTrees->build(*chunk, village.get());

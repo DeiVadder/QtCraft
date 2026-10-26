@@ -517,6 +517,18 @@ private slots:
         QCOMPARE(terrain->seaLevel, 40);
         QCOMPARE(terrain->stoneBlock, u"b:rock"_s);
         QVERIFY(!QcContentParser::parseTerrainSettings(json(R"({"seaLevel":40})"), u"b"_s).has_value());
+
+        // Straight runs of a mine shaft's corridors (decision E-889): 1 to 8 lattice steps.
+        const auto shafts = [](int maxRun) {
+            const QString text = uR"({"stone":"rock","water":"h2o","mineshafts":{"maxRun":%1,"planks":"p","post":"p","rail":"r","cobweb":"c",
+                                    "light":"l","ladder":"l","seal":"s","spawner":"s","mob":"m","cart":"c"}})"_s;
+            return QcContentParser::parseTerrainSettings(QJsonDocument::fromJson(text.arg(maxRun).toUtf8()).object(), u"b"_s);
+        };
+        const auto runs = shafts(8);
+        QVERIFY2(runs.has_value(), qcErrorText(runs).constData());
+        QCOMPARE(runs->mineshafts.maxRun, 8);
+        QVERIFY(!shafts(0).has_value());
+        QVERIFY(!shafts(9).has_value());
     }
 
     void parsesMobs()

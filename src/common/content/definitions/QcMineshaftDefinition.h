@@ -39,6 +39,9 @@ struct QcMineshaftSettings
     // Crossings and corners per level, about.
     int minNodes = 7;
     int maxNodes = 13;
+    // Lattice steps a level grows straight on from a node at most per try (decision E-889): runs of
+    // crossings in a line read as long corridors; 1: one step per try.
+    int maxRun = 1;
     // Chance of a corridor between two crossings of a level that are joined another way already.
     double loopChance = 0.25;
     // Chance of a second staircase between two levels.
@@ -85,6 +88,7 @@ struct QcMineshaftSettings
 
     static constexpr int maxRegionSize = 512;
     static constexpr int maxRadius = 8;
+    static constexpr int maxRunLength = 8;
     static constexpr int maxLevelCount = 6;
     // Rooms from structures fit into a lattice cell beside their corridor.
     static constexpr int maxRoomFootprint = 7;

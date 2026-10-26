@@ -37,7 +37,7 @@ void QcMineshaftBuilder::build(QcChunk &chunk, const QcMineshaftPlan &plan) cons
 
     placePillars(chunk, plan);
     placeNodeFloors(chunk, plan, area);
-    placeCorridorFloors(chunk, plan);
+    placeCorridorFloors(chunk, plan, area);
     open(chunk, plan, area);
     for (const QcMineshaftPlan::Room &room : plan.rooms) {
         if (room.placement.overlaps(chunk.pos())) {
@@ -123,9 +123,20 @@ void QcMineshaftBuilder::placeNodeFloors(QcChunk &chunk, const QcMineshaftPlan &
     }
 }
 
-void QcMineshaftBuilder::placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan) const
+bool QcMineshaftBuilder::near(const QcMineshaftPlan::Corridor &corridor, Area area)
 {
+    const QcBlockPos first = corridor.cell(0);
+    const QcBlockPos last = corridor.cell(corridor.length - 1);
+    return area.overlaps(std::min(first.x, last.x) - 1, std::min(first.z, last.z) - 1, std::max(first.x, last.x) + 1, std::max(first.z, last.z) + 1);
+}
+
+void QcMineshaftBuilder::placeCorridorFloors(QcChunk &chunk, const QcMineshaftPlan &plan, Area area) const
+{
+    // Corridors far from the chunk are skipped whole (a large mine shaft has hundreds).
     for (const QcMineshaftPlan::Corridor &corridor : plan.corridors) {
+        if (!near(corridor, area)) {
+            continue;
+        }
         for (int i = 0; i < 3 * corridor.length; ++i) {
             plankIfOpen(chunk, corridor.cell(i / 3, i % 3 - 1).offset(0, -1, 0));
         }
@@ -142,9 +153,7 @@ void QcMineshaftBuilder::open(QcChunk &chunk, const QcMineshaftPlan &plan, Area 
         }
     }
     for (const QcMineshaftPlan::Corridor &corridor : plan.corridors) {
-        const QcBlockPos first = corridor.cell(0);
-        const QcBlockPos last = corridor.cell(corridor.length - 1);
-        if (area.overlaps(std::min(first.x, last.x) - 1, std::min(first.z, last.z) - 1, std::max(first.x, last.x) + 1, std::max(first.z, last.z) + 1)) {
+        if (QcMineshaftBuilder::near(corridor, area)) {
             near.corridors.append(corridor);
         }
     }

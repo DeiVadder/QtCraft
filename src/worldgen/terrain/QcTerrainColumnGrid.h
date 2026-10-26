@@ -22,6 +22,9 @@ public:
 
     // World coordinates within the chunk plus `margin`.
     const QcTerrainColumn &at(int x, int z) const { return m_columns[(z - m_baseZ) * size + (x - m_baseX)]; }
+    // Moves a column's ground (the blend around a surface structure, decision E-889), so features
+    // stand on the ground as built.
+    void setHeight(int x, int z, int height) { m_columns[(z - m_baseZ) * size + (x - m_baseX)].height = height; }
     bool contains(int x, int z) const { return x >= m_baseX && x < m_baseX + size && z >= m_baseZ && z < m_baseZ + size; }
 
 private:

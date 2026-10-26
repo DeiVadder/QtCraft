@@ -649,7 +649,7 @@ Ice, packed ice and blue ice are slippery. On them you speed up slowly and keep 
 
 **Mine shafts**
 
-Abandoned mine shafts lie deep underground: corridors of wooden supports on two or three levels below a central room, joined by staircases. Some corridors carry rails, and now and then a chest minecart with loot stands on them. Where a corridor crosses a cave, it runs on a plank bridge held up by pillars. Cobwebs hang in the corners, thickest around the spawners of cave spiders. Dead ends sometimes lead to a storeroom. Some mine shafts come up to the surface: look for a small wooden headframe with a ladder going down, most often in the mountains.
+Abandoned mine shafts lie deep underground: long corridors of wooden supports with many branches and crossings, reaching up to some 70 blocks from a central room, on two to four levels joined by staircases. Some corridors carry rails, and now and then a chest minecart with loot stands on them. Where a corridor crosses a cave, it runs on a plank bridge held up by pillars. Cobwebs hang in the corners, thickest around the spawners of cave spiders. Dead ends sometimes lead to a storeroom. Some mine shafts come up to the surface: look for a small wooden headframe with a ladder going down, most often in the mountains.
 
 **Desert temples and sand golems**
 

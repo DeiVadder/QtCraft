@@ -10,12 +10,13 @@
 
 // The lattice graph of a mine shaft (decision E-570), before any block: points (x, z) of a square
 // lattice on levels (0 the top), nodes at some of them, corridors between neighbouring nodes of a
-// level and staircases from a node to the neighbouring lattice point one level lower. Level 0
-// grows from the central room at (0, 0); every further level grows from the lower end of the first
-// staircase down to it, so every node is reachable from the room. A judge (the planner, which knows
-// the terrain) decides whether a node or a link fits and whether it bridges a cave. Two elements on
-// the same lattice point or edge never share a level, and where one of them is a bridge, no other
-// level may use that point or edge at all (its pillars would pass through).
+// level (grown in straight runs of up to `maxRun` steps, decision E-889) and staircases from a node
+// to the neighbouring lattice point one level lower. Level 0 grows from the central room at (0, 0);
+// every further level grows from the lower end of the first staircase down to it, so every node is
+// reachable from the room. A judge (the planner, which knows the terrain) decides whether a node or
+// a link fits and whether it bridges a cave. Two elements on the same lattice point or edge never
+// share a level, and where one of them is a bridge, no other level may use that point or edge at
+// all (its pillars would pass through).
 class QcMineshaftNetwork
 {
 public:
@@ -83,7 +84,17 @@ public:
     };
 
 private:
+    // How one try of growLevel() goes on from a node: new nodes at most, and whether it may join an
+    // existing node it meets.
+    struct Run
+    {
+        int steps = 1;
+        bool loop = false;
+    };
+
     void growLevel(int level);
+    // Grows straight on from node `from` along `direction` (decision E-889); returns the new nodes.
+    [[nodiscard]] QList<int> growRun(int from, std::pair<int, int> direction, Run run);
     // A first staircase from level `level` down to a new node of the next level.
     bool addStairsDown(int level);
     // A second staircase between nodes of `level` and the next level, with the settings' chance.

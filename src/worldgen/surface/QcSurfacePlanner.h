@@ -16,13 +16,14 @@ class QcTerrainGenerator;
 // Plans where the structures with a `surface` rule stand (decision E-590), one region of one kind at
 // a time, from the seed, the structure's name and the terrain noise alone (columns, never generated
 // chunks), like the villages: whether the region has a copy (`chance`), then the first of `attempts`
-// places (a centre and a turn per attempt) whose footprint lies wholly inside the region, on land
-// above the sea in one of the rule's biomes at its middle and along its edges, with its ground
-// varying by at most `maxSlope` and its floor on the lowest ground, and clear of what `occupied`
-// reports (villages, other kinds). With `waterDepth` the samples may lie under that much water;
-// with `preferWater` the first place whose middle lies under water wins over the first that fits
-// (a witch hut on stilts, decision E-622). A kind whose structure has `choices` or `parts` builds
-// each copy from a selection drawn from the region's own positions (decision E-630). Thread-safe.
+// places (a centre and a turn per attempt) whose footprint and blended ground (decision E-889) lie
+// wholly inside the region, on land above the sea in one of the rule's biomes at its middle and
+// along its edges, with its ground varying by at most `maxSlope` and its floor on the lowest ground,
+// the ground right beside its walls levelled by the blend, and clear of what `occupied` reports
+// (villages, other kinds). With `waterDepth` the samples may lie under that much water; with
+// `preferWater` the first place whose middle lies under water wins over the first that fits (a
+// witch hut on stilts, decision E-622). A kind whose structure has `choices` or `parts` builds each
+// copy from a selection drawn from the region's own positions (decision E-630). Thread-safe.
 class QcSurfacePlanner
 {
 public:
@@ -83,6 +84,9 @@ private:
     // the edges every edgeStep blocks) is land of the rule's biomes above the sea and the ground
     // varies by at most `maxSlope`.
     [[nodiscard]] std::optional<int> floorFor(const Kind &kind, Rect rect) const;
+    // Whether the blend (decision E-889) levels every column right beside the footprint's walls to
+    // `floor`: none of them buried, so every opening at the floor leads out.
+    [[nodiscard]] bool levelsBeside(Rect rect, int floor, int blend) const;
     // The structure of the copy in the region: the kind's own, or its variation drawn from the region.
     static std::shared_ptr<const QcStructure> structureOf(const Kind &kind, int regionX, int regionZ);
 

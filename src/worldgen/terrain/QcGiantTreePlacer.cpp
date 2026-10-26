@@ -120,7 +120,7 @@ void QcGiantTreePlacer::build(QcChunk &chunk, const QcVillagePlan *village) cons
     }
 
     // Every structure within the reach of any of these giants, so each chunk of a giant decides alike.
-    const QList<QcSurfacePlanner::Rect> structures = m_generator.structureFootprintsNear(chunk.pos(), 2 * maxReach + 1);
+    const QList<QcSurfacePlanner::Rect> structures = m_generator.structureFootprintsNear(chunk.pos(), 2 * maxReach + 1, false);
     for (const Giant &giant : giants) {
         if (!blocked(giant, village, structures)) {
             const QcTerrainDefinitions::Feature &feature = m_definitions.features[giant.feature];

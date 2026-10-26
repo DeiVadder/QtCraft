@@ -27,6 +27,7 @@ enum Purpose : int {
     ExtraStairs,
     ExtraNode,
     ExtraDirection,
+    GrowRun,
 };
 
 } // namespace
@@ -137,24 +138,38 @@ void QcMineshaftNetwork::growLevel(int level)
     for (int attempt = 0; attempt < 8 * target && members.size() < target; ++attempt) {
         const int index = level * 1000 + attempt;
         const int from = members[std::min(members.size() - 1, static_cast<qsizetype>(m_random(GrowNode, index) * static_cast<double>(members.size())))];
-        const auto [dx, dz] = directions[static_cast<std::size_t>(std::min(3, static_cast<int>(m_random(GrowDirection, index) * 4)))];
-        const Point to{m_nodes[from].at.x + dx, m_nodes[from].at.z + dz, level};
-        if (!inside(to)) {
-            continue;
-        }
-
-        const std::optional<int> existing = nodeAt(to);
-        if (existing) {
-            // A loop: two nodes joined another way already.
-            if (!linked(from, *existing) && m_random(GrowLoop, index) < m_settings.loopChance) {
-                tryLink(from, to, existing);
-            }
-            continue;
-        }
-        if (tryLink(from, to, std::nullopt)) {
-            members.append(static_cast<int>(m_nodes.size() - 1));
-        }
+        const auto direction = directions[static_cast<std::size_t>(std::min(3, static_cast<int>(m_random(GrowDirection, index) * 4)))];
+        // A run never grows the level beyond its target.
+        const int drawn = 1 + std::min(m_settings.maxRun - 1, static_cast<int>(m_random(GrowRun, index) * m_settings.maxRun));
+        const int run = std::min(drawn, target - static_cast<int>(members.size()));
+        members.append(growRun(from, direction, {run, m_random(GrowLoop, index) < m_settings.loopChance}));
     }
+}
+
+QList<int> QcMineshaftNetwork::growRun(int from, std::pair<int, int> direction, Run run)
+{
+    // Straight on from `from` while each step fits, up to `steps` new nodes; a step onto an existing
+    // node joins it (a loop, with the run's chance) and ends the run.
+    QList<int> added;
+    int at = from;
+    for (int step = 0; step < run.steps; ++step) {
+        const Point to{m_nodes[at].at.x + direction.first, m_nodes[at].at.z + direction.second, m_nodes[at].at.level};
+        if (!inside(to)) {
+            break;
+        }
+        if (const std::optional<int> existing = nodeAt(to)) {
+            if (!linked(at, *existing) && run.loop) {
+                tryLink(at, to, existing);
+            }
+            break;
+        }
+        if (!tryLink(at, to, std::nullopt)) {
+            break;
+        }
+        at = static_cast<int>(m_nodes.size() - 1);
+        added.append(at);
+    }
+    return added;
 }
 
 bool QcMineshaftNetwork::addStairsDown(int level)

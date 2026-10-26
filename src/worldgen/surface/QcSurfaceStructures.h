@@ -3,7 +3,9 @@
 #include "common/world/QcChunk.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
 #include "worldgen/generators/QcStructureSites.h"
+#include "worldgen/surface/QcSurfaceBlend.h"
 #include "worldgen/surface/QcSurfacePlanner.h"
+#include "worldgen/terrain/QcTerrainColumnGrid.h"
 
 #include <QHash>
 #include <QMutex>
@@ -18,7 +20,8 @@ class QcVillageGenerator;
 // its region, so a chunk asks only the one region of each kind it lies in. Writing a copy into a
 // chunk clears the terrain above its footprint (from its layer `clearFrom` to `clearance` blocks over
 // its top; over water never at or below the sea, decision E-622; not for kinds without
-// `clearTerrain`, decision E-630), fills the ground below it with the kind's foundation down to
+// `clearTerrain`, decision E-630), blends the ground around it to its floor (the rule's `blend`,
+// QcSurfaceBlend, decision E-889), fills the ground below it with the kind's foundation down to
 // solid ground and writes its cells; the same in any order of the chunks. No trees, plants or
 // surface pools grow near a copy (footprintsNear()), so none is cut or left floating. Its loot
 // comes with furnishingIn(), its guardian zones with sitesNear().
@@ -49,11 +52,28 @@ public:
     const QcSurfacePlanner &planner() const { return m_planner; }
     // The copy of kind `kind` in the region, planned once.
     [[nodiscard]] std::shared_ptr<const QcStructurePlacement> planOf(int kind, int regionX, int regionZ) const;
-    // The copies of every kind whose footprint overlaps the chunk.
+    // The copies of every kind whose footprint or blended ground overlaps the chunk.
     QList<std::shared_ptr<const QcStructurePlacement>> plansTouching(QcChunkPos pos) const;
-    // The footprints of the copies of every kind within `margin` columns of the chunk: the terrain
-    // generator places no features and no surface pools there (decision E-630).
+    // The footprints of the copies of every kind, grown by their blended ground, within `margin`
+    // columns of the chunk: the terrain generator places no features and no surface pools there
+    // (decisions E-630, E-889).
     QList<QcSurfacePlanner::Rect> footprintsNear(QcChunkPos pos, int margin) const;
+    // The same where no trees or plants grow: kinds with `blendVegetation` keep only the ring right
+    // beside their walls bare, the others their whole blended ground (decision E-889).
+    QList<QcSurfacePlanner::Rect> bareNear(QcChunkPos pos, int margin) const;
+    // A column whose ground the blend moves: its new top block.
+    struct Moved
+    {
+        int x = 0;
+        int z = 0;
+        int top = 0;
+    };
+    // Blends the ground around the copies touching the chunk (before its features).
+    void blend(QcChunk &chunk) const;
+    // The columns of the grid whose ground blend() moves (in the chunk and its neighbours alike),
+    // in the order blend() shapes them: where two blends meet, the later one wins in both.
+    [[nodiscard]] QList<Moved> blendedGround(const QcTerrainColumnGrid &columns, QcChunkPos pos) const;
+    // Clears the terrain over the copies touching the chunk, lays their foundations and writes them.
     void build(QcChunk &chunk) const;
     // The loot of the copies' chests in the chunk.
     [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
@@ -71,12 +91,20 @@ private:
     // The sites of the regions within `reach` of `from`; with `mayPlan` false only from
     // planned regions (std::nullopt when one is not planned yet).
     [[nodiscard]] std::optional<QcStructureSites> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
-    // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint.
+    // The footprints within `margin` of the chunk grown by their blend, or with `plantsOnBlend` by
+    // the bare ring of kinds with `blendVegetation`.
+    [[nodiscard]] QList<QcSurfacePlanner::Rect> grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
+    // The columns of `grid` (within the column grid) whose ground the blend around `plan` moves.
+    [[nodiscard]] QList<Moved> movedAround(const QcStructurePlacement &plan, int blend, const QcTerrainColumnGrid &columns,
+                                           QcSurfacePlanner::Rect grid) const;
+    // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint, or
+    // within the larger blend of the two (decision E-889).
     bool occupied(int kind, QcSurfacePlanner::Rect footprint, int margin) const;
     void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;
 
     const QcVillageGenerator &m_villages;
     QcSurfacePlanner m_planner;
+    QcSurfaceBlend m_blend;
     // Per block state: ground a foundation stops at (solid and not a liquid).
     std::vector<bool> m_ground;
     mutable QMutex m_mutex;
