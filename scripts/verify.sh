@@ -47,7 +47,8 @@
 # or bench slot (QC_SLOT_ID with QC_SLOT_KIND tsan, asan, verify or bench), the script runs itself
 # once more under `qc-slot.py run`: kind tsan for
 # --tsan-concurrent and --sanitizers tsan, asan for --sanitizers asan, verify otherwise (the full run
-# asks for cores minus two jobs). It waits until the broker grants the slot (no benchmark, jobs free
+# asks for cores minus two jobs). These kinds never start with fewer than 4 jobs (E-892; the full run
+# at least half its wish), so the run waits rather than starting starved. It waits until the broker grants the slot (no benchmark, jobs free
 # within the budget) and gets QC_BUILD_JOBS and QC_TEST_JOBS from it (an own value only lowers them).
 # QC_SLOT_TIMEOUT bounds the wait (seconds, default none). Without a reachable broker it goes on with
 # the lock files as before.

@@ -200,11 +200,133 @@ class SlotBrokerTest(unittest.TestCase):
         self.assertIn("behind #2 verify 'v'", self.status()["queue"][1]["reason"])
 
     def test_explicit_heavy_wish_needs_half(self):
+        self.start_server(QC_SLOT_CORES="16")
+        self.hold("build", "b", "--jobs", "11")
+        out = self.slot("acquire", "--kind", "verify", "--who", "big", "--jobs", "12", "--timeout", "0.3")
+        self.assertEqual(out.returncode, 1, "a run sized for 12 jobs got 5")
+        self.assertEqual(self.hold("verify", "small", "--jobs", "5")["QC_TEST_JOBS"], "5")
+
+    def test_long_minimum_not_reachable_waits(self):
+        # 8 cores, 5 held: 3 free, below the minimum of 4 of a heavy run (E-892).
         self.start_server()
-        self.hold("build", "b", "--jobs", "5")
-        out = self.slot("acquire", "--kind", "verify", "--who", "big", "--jobs", "8", "--timeout", "0.3")
-        self.assertEqual(out.returncode, 1, "a run sized for 8 jobs got 3")
-        self.assertEqual(self.hold("verify", "small")["QC_TEST_JOBS"], "3")
+        first = self.hold("build", "b", "--jobs", "5")
+        out = self.slot("acquire", "--kind", "asan", "--who", "a", "--timeout", "0.3")
+        self.assertEqual(out.returncode, 1, "an asan run started with fewer than 4 jobs")
+        self.assertIn("needs ≥4 jobs, budget allows 3", out.stderr)
+        build = self.acquire("build", "long build", "--min-jobs", "4")
+        wait_until(lambda: self.queued() == ["long build"])
+        entry = self.status()["queue"][0]
+        self.assertEqual(entry["min"], 4)
+        self.assertIn("needs ≥4 jobs", entry["reason"])
+        self.assertIn("min 4", self.slot("status").stdout)
+        self.release(first["QC_SLOT_ID"])
+        self.assertEqual(self.granted(build)["QC_BUILD_JOBS"], "4")
+
+    def test_long_minimum_waits_for_the_load(self):
+        # Load 6 on 8 cores leaves 2: a heavy run waits while the held slot explains the load.
+        self.start_server(QC_SLOT_LOAD_WAIT="0.3")
+        self.hold("test", "b", "--jobs", "1")
+        self.set_load(6)
+        heavy = self.acquire("tsan", "t")
+        wait_until(lambda: self.queued() == ["t"])
+        time.sleep(0.6)
+        self.assertIsNone(heavy.poll(), "a tsan run started at load 6 with fewer than 4 jobs")
+        self.assertIn("needs ≥4 jobs, load", self.status()["queue"][0]["reason"])
+        self.set_load(1)
+        self.assertEqual(self.granted(heavy)["QC_TEST_JOBS"], "4")
+
+    def test_long_minimum_escapes_foreign_load(self):
+        # Nothing held: foreign load holds the long run at most QC_SLOT_LOAD_WAIT, then it gets its minimum.
+        self.set_load(7)
+        self.start_server(QC_SLOT_LOAD_WAIT="0.5")
+        exports = self.granted(self.acquire("verify", "v"))
+        self.assertEqual(exports["QC_TEST_JOBS"], "4")
+        self.assertIn("granted 4 jobs at load 7.0", self.holders()["v"]["note"])
+
+    def test_short_gets_its_minimum_while_long_waits(self):
+        # Load 6 on 8 cores leaves 2: the verify waits for 4; later builds would get 2 but start with 1.
+        self.start_server(QC_SLOT_LOAD_WAIT="30")
+        self.hold("build", "a", "--jobs", "1")
+        self.set_load(6)
+        heavy = self.acquire("verify", "long")
+        wait_until(lambda: self.queued() == ["long"])
+        for who in ("s1", "s2"):
+            out = self.slot("acquire", "--kind", "build", "--who", who, "--hold", "60")
+            self.assertEqual(out.returncode, 0, out.stderr)
+            self.assertIn("QC_BUILD_JOBS=1", out.stdout, "a short build behind a waiting long run got more than 1 job")
+        self.assertIn("long request waits", self.holders()["s1"]["note"])
+        # Budget 8, short slots hold 3: one more leaves the long run exactly 4, a fifth would leave 3.
+        self.assertEqual(self.slot("acquire", "--kind", "test", "--who", "s3", "--hold", "60").returncode, 0)
+        late = self.acquire("build", "s4")
+        wait_until(lambda: len(self.queued()) == 2)
+        self.assertIn("short slots keep that much", self.status()["queue"][1]["reason"])
+        self.assertIsNone(late.poll())
+        self.set_load(0)
+        self.assertEqual(self.granted(heavy)["QC_TEST_JOBS"], "4")
+
+    def test_long_wait_drains_short_requests(self):
+        # After the long run waited QC_SLOT_LOAD_WAIT for the load, later short ones wait for it.
+        self.start_server(QC_SLOT_LOAD_WAIT="0.4")
+        self.hold("build", "a", "--jobs", "2")
+        self.set_load(6)
+        self.acquire("verify", "long")
+        wait_until(lambda: self.queued() == ["long"])
+        time.sleep(0.6)
+        short = self.acquire("build", "short")
+        wait_until(lambda: len(self.queued()) == 2)
+        time.sleep(0.3)
+        self.assertIsNone(short.poll(), "a short build overtook a long run that waited the limit")
+        self.assertIn("no new slots until it starts", self.status()["queue"][1]["reason"])
+
+    def test_one_job_build_does_not_explain_foreign_load(self):
+        # A 1-job build runs about 2 threads: load 7 on 8 cores is mostly foreign, so the long run
+        # waits only QC_SLOT_LOAD_WAIT and then gets its minimum.
+        self.start_server(QC_SLOT_LOAD_WAIT="0.5")
+        self.hold("build", "b", "--jobs", "1")
+        self.set_load(7)
+        heavy = self.acquire("verify", "v")
+        wait_until(lambda: self.queued() == ["v"])
+        self.assertIn("foreign load", self.status()["queue"][0]["reason"])
+        self.assertEqual(self.granted(heavy)["QC_TEST_JOBS"], "4")
+        self.assertIn("granted 4 jobs at load", self.holders()["v"]["note"])
+
+    def test_small_machine_asks_half_the_cores_free(self):
+        # 4 cores, load 1: 3 cores free, fewer than 4 but at least half of 4 cores; no wait.
+        self.set_load(1)
+        self.start_server(QC_SLOT_CORES="4", QC_SLOT_LOAD_WAIT="600")
+        out = self.slot("acquire", "--kind", "verify", "--who", "v", "--jobs", "4", "--timeout", "3")
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertIn("QC_TEST_JOBS=4", out.stdout)
+
+    def test_short_slots_keep_the_budget_of_a_long_one_waiting_for_jobs(self):
+        # 8 jobs: build 3 + verify 4 held, 1 free; the asan waits for the budget. One short build
+        # takes the free job (8 - 3 - 1 = 4 stays for the asan), the next waits.
+        self.start_server()
+        self.hold("build", "b", "--jobs", "3")
+        verify = self.hold("verify", "v")
+        heavy = self.acquire("asan", "a")
+        wait_until(lambda: self.queued() == ["a"])
+        self.assertIn("budget allows 1", self.status()["queue"][0]["reason"])
+        self.assertEqual(self.hold("build", "s1")["QC_BUILD_JOBS"], "1")
+        late = self.acquire("build", "s2")
+        wait_until(lambda: len(self.queued()) == 2)
+        self.assertIn("short slots keep that much", self.status()["queue"][1]["reason"])
+        self.release(verify["QC_SLOT_ID"])
+        self.assertEqual(self.granted(heavy)["QC_TEST_JOBS"], "4")
+        self.assertIsNone(late.poll())
+
+    def test_only_short_requests_never_deadlock(self):
+        # Heavy load, full budget in small slots: short requests run with 1 job as soon as one is free.
+        self.set_load(9)
+        self.start_server(QC_SLOT_LOAD_LIMIT="20")
+        ids = [self.hold("build", f"b{i}")["QC_SLOT_ID"] for i in range(8)]
+        self.assertEqual(self.status()["used"], 8)
+        waiting = [self.acquire("test", f"t{i}") for i in range(3)]
+        wait_until(lambda: len(self.queued()) == 3)
+        for ident in ids[:3]:
+            self.release(ident)
+        for process in waiting:
+            self.assertEqual(self.granted(process)["QC_TEST_JOBS"], "1")
 
     def test_slot_kind_decides_nesting(self):
         self.start_server()
@@ -298,12 +420,13 @@ class SlotBrokerTest(unittest.TestCase):
         self.start_server()
         self.assertEqual(self.hold("verify", "a")["QC_TEST_JOBS"], "4")
         self.assertEqual(self.hold("tsan", "b", "--jobs", "3")["QC_TEST_JOBS"], "3")
-        # One job left: below the minimum of a build.
-        self.acquire("build", "c")
-        wait_until(lambda: self.queued() == ["c"])
+        # One job left: enough for the minimum of a build, none for the next.
+        self.assertEqual(self.hold("build", "c")["QC_BUILD_JOBS"], "1")
+        self.acquire("build", "e")
+        wait_until(lambda: self.queued() == ["e"])
         state = self.status()
-        self.assertEqual((state["used"], state["budget"]), (7, 8))
-        self.assertTrue(state["queue"][0]["reason"].startswith("jobs:"))
+        self.assertEqual((state["used"], state["budget"]), (8, 8))
+        self.assertEqual(state["queue"][0]["reason"], "needs ≥1 jobs, budget allows 0 (8 of 8 in use)")
         # Light work is outside the budget.
         self.assertEqual(self.hold("light", "d")["QC_SLOT_JOBS"], "1")
 
@@ -520,7 +643,7 @@ class SlotBrokerTest(unittest.TestCase):
         second = self.acquire("build", "c")
         wait_until(lambda: len(self.queued()) == 2)
         self.assertIn("foreign load", self.status()["queue"][0]["reason"])
-        self.assertEqual(self.granted(first)["QC_BUILD_JOBS"], "2")
+        self.assertEqual(self.granted(first)["QC_BUILD_JOBS"], "1")
         self.assertIn("granted at load 40.0", self.holders()["b"]["note"])
         time.sleep(0.5)
         self.assertIsNone(second.poll(), "two requests escaped the load gate in one wait period")
@@ -555,10 +678,10 @@ class SlotBrokerTest(unittest.TestCase):
         wait_until(lambda: self.queued() == ["b"])
         self.assertIn("nothing else held", self.status()["queue"][0]["reason"])
         exports = self.granted(build)
-        self.assertEqual(exports["QC_BUILD_JOBS"], "2", "a loaded machine gets the fewest jobs")
+        self.assertEqual(exports["QC_BUILD_JOBS"], "1", "a loaded machine gets the fewest jobs")
         note = self.holders()["b"]["note"]
         self.assertIn("granted at load 12.0", note)
-        self.assertIn("jobs lowered to 2", note)
+        self.assertIn("jobs lowered to 1", note)
 
     def test_wait_limit_counts_from_the_last_release(self):
         self.start_server(QC_SLOT_LOAD_WAIT="0.8")
@@ -577,10 +700,14 @@ class SlotBrokerTest(unittest.TestCase):
         self.start_server()
         self.assertEqual(self.hold("build", "a")["QC_BUILD_JOBS"], "3")
         self.assertIn("jobs lowered to 3 at load 5.0", self.holders()["a"]["note"])
-        # Load 5 plus the 3 jobs just granted: 0 cores left, so the heavy minimum of 3.
-        self.assertEqual(self.hold("verify", "v")["QC_TEST_JOBS"], "3")
+        # Load 5 plus the 3 jobs just granted: 0 cores left, below the heavy minimum of 4: it waits.
+        heavy = self.acquire("verify", "v")
+        wait_until(lambda: self.queued() == ["v"])
+        self.assertIn("needs ≥4 jobs, load 8.0 allows 0", self.status()["queue"][0]["reason"])
         self.set_load(0)
-        self.assertEqual(self.hold("test", "t")["QC_TEST_JOBS"], "2", "free jobs and pending ones still count")
+        # Load 0 plus 3 pending jobs: 5 cores, 5 free jobs.
+        self.assertEqual(self.granted(heavy)["QC_TEST_JOBS"], "4")
+        self.assertEqual(self.hold("test", "t")["QC_TEST_JOBS"], "1", "free jobs and pending ones still count")
 
     def test_jobs_just_granted_count_as_load(self):
         self.start_server(QC_SLOT_LOAD_LIMIT="5", QC_SLOT_LOAD_WINDOW="1")

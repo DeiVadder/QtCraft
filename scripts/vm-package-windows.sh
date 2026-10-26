@@ -93,7 +93,7 @@ scp -q -i "$KEY" "$PROJECT_DIR/scripts/windows/package-windows.ps1" "$PROJECT_DI
 LOG=$(mktemp "${TMPDIR:-/tmp}/qc-vm-package.XXXXXX")
 # The remote command takes the job count the broker granted (QC_BUILD_JOBS), at most 4.
 QC_VM_PS_ARGS="$*" QC_VM_ROOT_Q="$ROOT" QC_VM_REPO_Q="$REPO" QC_VM_REF="$REF" QC_VM_SERVER="$SERVER" QC_VM_KEY_Q="$KEY" QC_VM_HOST_Q="$QC_VM_HOST" \
-    "$PROJECT_DIR/scripts/qc-slot.py" run --kind build --jobs 4 --who "74.4 vm package" -- sh -c '
+    "$PROJECT_DIR/scripts/qc-slot.py" run --kind build --jobs 4 --min-jobs 4 --who "74.4 vm package" -- sh -c '
         jobs=${QC_BUILD_JOBS:-4}
         [ "$jobs" -gt 4 ] && jobs=4
         exec ssh -o ConnectTimeout=15 -o BatchMode=yes -i "$QC_VM_KEY_Q" "$QC_VM_HOST_Q" \

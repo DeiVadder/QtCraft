@@ -7,7 +7,7 @@ directory; Unix socket, log and pid file in ~/.cache/qtcraft, QC_SLOT_DIR overri
 itself after QC_SLOT_IDLE seconds without work, default 900).
 
 Usage:
-  scripts/qc-slot.py run --kind <kind> --who <label> [--jobs n] [--timeout s] -- <command> ...
+  scripts/qc-slot.py run --kind <kind> --who <label> [--jobs n] [--min-jobs n] [--timeout s] -- <command> ...
       Waits for the slot, runs the command with QC_BUILD_JOBS, QC_TEST_JOBS and QC_SLOT_JOBS set to
       the granted job count (an already set QC_BUILD_JOBS/QC_TEST_JOBS only lowers it) and releases
       the slot when the command ends; the exit code is the command's. The open connection is the
@@ -17,7 +17,7 @@ Usage:
       other; QC_SLOT_ID and QC_SLOT_KIND) it runs the command directly. This is the entry point for
       agents. Example (as a background command; the agent is woken when it returns):
         scripts/qc-slot.py run --kind build --who "t1 build" -- cmake --build --preset debug
-  scripts/qc-slot.py acquire --kind <kind> --who <label> [--pid p | --hold s] [--jobs n] [--timeout s]
+  scripts/qc-slot.py acquire --kind <kind> --who <label> [--pid p | --hold s] [--jobs n] [--min-jobs n] [--timeout s]
       Waits for the slot and prints it as shell exports (QC_SLOT_ID, QC_SLOT_JOBS, QC_BUILD_JOBS,
       QC_TEST_JOBS, for a bench QC_BENCH_LOCK_PID). The slot stays held until `release --id`, until
       process --pid ends, or after --hold seconds (default 7200; a bench slot needs --pid or a hold of
@@ -42,7 +42,15 @@ status) until it has a fresh duration; QC_SLOT_BACKFILL=0 turns it off),
 tsan/asan/verify (heavy; job wish max(3, cores/2)), build (wish 4), test (wish 3), light (1 job,
 outside the budget; only waits for a benchmark). Heavy, build and test share a budget of
 QC_SLOT_BUDGET jobs (default the number of cores): a grant gets min(wish, free jobs, cores - load)
-and needs at least 3 (heavy; with --jobs half the wish) or 2 jobs. They also wait while the load
+and never fewer than the request's minimum (E-892): --min-jobs, else 4 for tsan/asan/verify (with
+--jobs at least half the wish) and 1 for build/test/light, at most the wish (bench stays exclusive);
+the load check asks at most half the cores free. A request whose
+minimum the budget or the load does not allow waits (reason "needs ≥4 jobs, load ... allows N");
+against foreign load only QC_SLOT_LOAD_WAIT seconds, then it gets its minimum. While a long request
+(minimum 4 or more) waits, a later short one starts with its minimum (1 job) if the short slots
+still leave the long one its minimum of the budget; after the long one waited QC_SLOT_LOAD_WAIT
+seconds for the load, later requests wait until it started. A build of a sanitizer or release
+tree passes --min-jobs 4. They also wait while the load
 is at or above QC_SLOT_LOAD_LIMIT (default 1.25 x cores); the load is the mean number of runnable
 threads of the last QC_SLOT_LOAD_WINDOW seconds (default 15, derived from successive 1-min load
 averages sampled every second, so it follows a starting or ending run within seconds) plus the jobs
@@ -54,7 +62,8 @@ limit (those slots end and the load drops); otherwise (none held, or the load co
 processes outside the broker) it holds a request at most QC_SLOT_LOAD_WAIT seconds from its arrival,
 the last release of such a slot or the last such escape (default 600; one request escapes per
 period; the grant carries a note). Order: light, bench, then build, test and heavy slots first come
-first served in one queue; a request that waits for jobs is not overtaken by any later one.
+first served in one queue; a request that waits for jobs is not overtaken by any later one, except
+by short ones with their minimum behind a long one (above).
 Lock files of scripts without the broker keep working: no slot is granted while a live foreign
 ~/.cache/qtcraft/bench.lock exists (light and wait included) or a live quiet.lock of a timing phase
 (except light); a granted bench creates bench.lock itself (owner "bench-slot.sh pid=<holder> ...",
@@ -87,7 +96,14 @@ COUNTED = HEAVY + ("build", "test")
 KINDS = ("bench",) + COUNTED + ("light",)
 # Light work and gates first, then benchmarks; build, test and heavy slots share one first-come queue.
 PRIORITY = {"light": 0, "gate": 0, "bench": 1, "build": 2, "test": 2, "tsan": 2, "asan": 2, "verify": 2}
-MIN_JOBS = {"build": 2, "test": 2, "tsan": 3, "asan": 3, "verify": 3}
+# Fewest jobs a kind starts with (E-892): long runs keep their grant for hours, so they wait for 4 jobs
+# rather than starting starved; short ones run with 1. --min-jobs overrides it per request.
+MIN_JOBS = {"build": 1, "test": 1, "light": 1, "tsan": 4, "asan": 4, "verify": 4}
+# Threads a granted job of a build runs (one compiler process, a little linking), for the check
+# whether held slots explain the load in Broker.room_refusal; other kinds use QC_SLOT_THREADS_PER_JOB.
+BUILD_THREADS_PER_JOB = 2
+# A request whose minimum reaches this is long: while it waits, later short ones get at most their minimum.
+LONG_MIN = 4
 # Outside the range of signal deaths (128 + n) and unused by verify.sh and bench-ab.sh, so the shell
 # wrappers never mistake an exit code of the script they ran under the broker for "no broker".
 EXIT_UNAVAILABLE = 211
@@ -97,7 +113,7 @@ BENCH_HOLD_MAX = 1800
 LOADAVG_PERIOD = 5.0
 # Seconds between two load samples; must stay well below LOADAVG_PERIOD.
 LOAD_SAMPLE_SECONDS = 1.0
-VERSION = 3
+VERSION = 4
 # Kinds that may backfill while a benchmark waits (E-847); light never waits for a waiting bench.
 BACKFILL_KINDS = ("build", "test")
 # A release line of the log: kind, label (repr, either quote), seconds held, reason.
@@ -430,8 +446,13 @@ class Entry:
         self.note = ""
         self.escaped = False
         wish = request.get("jobs") or default_wish(self.kind, cores)
-        self.wish = max(1, int(wish))
+        minimum = request.get("min_jobs")
+        self.min_explicit = int(minimum) if str(minimum or "").isdigit() and int(minimum) > 0 else None
+        # A minimum above the wish raises the wish: it would never be granted otherwise.
+        self.wish = max(1, int(wish), self.min_explicit or 0)
         self.jobs_explicit = bool(request.get("jobs_explicit"))
+        # What the request waits for in the queue: "budget", "load" (jobs below its minimum) or None.
+        self.waits_for = None
         timeout = float(request.get("timeout") or 0)
         self.since = time.time()
         self.since_mono = time.monotonic()
@@ -453,10 +474,17 @@ class Entry:
         self.done = threading.Event()
 
     def min_jobs(self):
-        """Fewest jobs worth granting: a heavy run sized with --jobs needs at least half of it."""
+        """Fewest jobs the request starts with (E-892): --min-jobs, else the kind's minimum (a heavy run
+        sized with --jobs at least half of it), never above the wish (an own lower job count wins)."""
+        if self.min_explicit:
+            return self.min_explicit
+        minimum = MIN_JOBS.get(self.kind, 1)
         if self.kind in HEAVY and self.jobs_explicit:
-            return max(MIN_JOBS[self.kind], self.wish // 2)
-        return MIN_JOBS.get(self.kind, 0)
+            minimum = max(minimum, self.wish // 2)
+        return max(1, min(minimum, self.wish))
+
+    def is_long(self):
+        return self.kind in COUNTED and self.min_jobs() >= LONG_MIN
 
     def holder_pid(self):
         if self.lease == "pid" and self.pid:
@@ -466,7 +494,8 @@ class Entry:
         return os.getpid()
 
     def view(self, now):
-        data = {"id": self.id, "kind": self.kind, "who": self.who, "pid": self.holder_pid(), "lease": self.lease}
+        data = {"id": self.id, "kind": self.kind, "who": self.who, "pid": self.holder_pid(), "lease": self.lease,
+                "min": self.min_jobs()}
         if self.granted_at is None:
             data.update(waited=round(now - self.since, 1), reason=self.reason, wish=self.wish)
             if self.eta:
@@ -548,6 +577,7 @@ class Broker:
                 entry.since_mono = time.monotonic() - max(0.0, time.time() - entry.since)
             entry.granted_mono = entry.since_mono
             entry.jobs = int(request.get("jobs") or 0)
+            entry.wish = max(entry.wish, entry.jobs)
             entry.granted_at = entry.since
             entry.result = "granted"
             entry.reason = ""
@@ -648,7 +678,7 @@ class Broker:
                 if reason is None and self.grant(entry, jobs):
                     continue
                 entry.reason = reason or "bench.lock taken by someone else"
-                if behind_jobs is None and entry.kind in COUNTED and entry.reason.startswith("jobs:"):
+                if behind_jobs is None and entry.kind in COUNTED and entry.waits_for:
                     behind_jobs = entry
                 bench_before = bench_before or entry.kind == "bench"
             self.cond.notify_all()
@@ -658,6 +688,7 @@ class Broker:
         benchmark or None; entry.eta and entry.backfill_end are set on the way where known."""
         entry.eta = None
         entry.backfill_end = None
+        entry.waits_for = None
         bench_holder = next((h for h in self.holders.values() if h.kind == "bench" and not self.own_slot(entry, h)), None)
         if bench_holder is not None:
             entry.eta = self.expected_end(bench_holder)
@@ -678,17 +709,83 @@ class Broker:
                 return reason, 0
         if entry.kind == "gate":
             return None, 0
+        cap = None
         if behind_jobs is not None:
-            return f"behind #{behind_jobs.id} {behind_jobs.kind} '{behind_jobs.who}', which came first and waits for jobs", 0
+            reason = self.behind_refusal(entry, behind_jobs)
+            if reason:
+                return reason, 0
+            cap = entry.min_jobs()
         gate = self.gate_load()
         reason = self.load_gate(entry, gate)
         if reason:
             return reason, 0
         free = self.budget - self.used_jobs()
-        if free < min(entry.min_jobs(), self.budget):
+        need = min(entry.min_jobs(), self.budget)
+        if free < need:
             entry.eta = self.first_end()
-            return f"jobs: {self.budget - free} of {self.budget} in use", 0
-        return None, self.scaled_jobs(entry, free, gate)
+            entry.waits_for = "budget"
+            return f"needs ≥{need} jobs, budget allows {max(0, free)} ({self.budget - free} of {self.budget} in use)", 0
+        reason = self.room_refusal(entry, gate, need)
+        if reason:
+            entry.waits_for = "load"
+            return reason, 0
+        return None, self.scaled_jobs(entry, free, gate, cap)
+
+    def held_threads(self):
+        """Threads the held build/test/heavy slots run about: a build job one compiler (2 threads), a
+        test or heavy job QC_SLOT_THREADS_PER_JOB (ctest jobs x test threads)."""
+        return sum(h.jobs * (BUILD_THREADS_PER_JOB if h.kind == "build" else self.threads_per_job)
+                   for h in self.holders.values() if h.kind in COUNTED)
+
+    def short_held(self):
+        """Jobs held by short build/test slots (minimum below LONG_MIN)."""
+        return sum(h.jobs for h in self.holders.values() if h.kind in COUNTED and not h.is_long())
+
+    def behind_refusal(self, entry, long):
+        """Why a request waits behind an earlier one that waits for jobs, or None (E-892).
+
+        Requests do not overtake one that came first and waits for jobs, with one exception: behind a
+        long request (minimum LONG_MIN or more) a short one starts with its minimum (1 job) as long as
+        the short slots then still leave the long one its minimum of the budget, and until the long
+        one has waited QC_SLOT_LOAD_WAIT for the load (then the load drains for it).
+        """
+        base = f"behind #{long.id} {long.kind} '{long.who}', which came first and waits for jobs"
+        if entry.is_long() or not long.is_long():
+            return base
+        need = min(long.min_jobs(), self.budget)
+        cap = entry.min_jobs()
+        if self.budget - self.short_held() - cap < need:
+            return f"{base} (needs ≥{need}; short slots keep that much of the budget free)"
+        waited = time.monotonic() - long.since_mono
+        if long.waits_for == "load" and waited >= self.load_wait:
+            return f"{base} for {duration(waited)}; no new slots until it starts (QC_SLOT_LOAD_WAIT)"
+        if self.budget - self.used_jobs() < cap:
+            return base
+        return None
+
+    def room_refusal(self, entry, gate, need):
+        """Why a request waits because the load leaves fewer cores than its minimum, or None (E-892).
+
+        A request never starts with fewer jobs than its minimum. While held build/test/heavy slots
+        explain the load the wait has no limit (they end and the load drops); against foreign load it
+        lasts at most QC_SLOT_LOAD_WAIT, like the load gate, and then grants the minimum.
+        """
+        room = int(self.cores - gate)
+        # A small machine never has 4 cores free beside its own load: there half the cores suffice.
+        need = min(need, max(1, self.cores // 2))
+        if need <= 1 or room >= need or entry.escaped:
+            return None
+        what = f"needs ≥{need} jobs, load {gate:.1f} allows {max(0, room)}"
+        held = self.used_jobs()
+        if held and self.held_threads() >= gate - (self.cores - need):
+            return f"{what}; the held slots end and the load drops"
+        waited = time.monotonic() - max(entry.since_mono, self.load_wait_since)
+        if waited < self.load_wait:
+            source = "foreign load beyond the held jobs" if held else "nothing else held"
+            return f"{what}; {source}, granted after {self.load_wait:g}s"
+        entry.note = f"granted {need} jobs at load {gate:.1f} after waiting {waited:.0f}s (QC_SLOT_LOAD_WAIT)"
+        entry.escaped = True
+        return None
 
     def expected_end(self, holder):
         """Expected end (wall time) of a held slot from the duration history, None when unknown;
@@ -801,15 +898,21 @@ class Broker:
         entry.escaped = True
         return None
 
-    def scaled_jobs(self, entry, free, gate):
-        """min(wish, free jobs, cores - load), but at least the minimum of the kind: a loaded machine
-        gets fewer jobs."""
+    def scaled_jobs(self, entry, free, gate, cap=None):
+        """min(wish, free jobs, cores - load), but at least the request's minimum: a loaded machine
+        gets fewer jobs; behind a waiting long request at most cap (the short request's minimum)."""
         room = max(entry.min_jobs(), int(self.cores - gate))
         jobs = min(entry.wish, free, room)
         if room < min(entry.wish, free):
-            lowered = f"jobs lowered to {jobs} at load {gate:.1f}"
-            entry.note = f"{entry.note}; {lowered}" if entry.note else lowered
+            self.add_note(entry, f"jobs lowered to {jobs} at load {gate:.1f}")
+        if cap is not None and jobs > cap:
+            jobs = cap
+            self.add_note(entry, f"{jobs} job(s) while a long request waits for its minimum")
         return jobs
+
+    @staticmethod
+    def add_note(entry, text):
+        entry.note = f"{entry.note}; {text}" if entry.note else text
 
     @staticmethod
     def own_slot(entry, holder):
@@ -1275,7 +1378,8 @@ def send_request(sock, args, kind, lease, timeout):
     request = {"op": "acquire", "kind": kind, "who": args.who, "client_pid": os.getpid(), "lease": lease,
                "pid": getattr(args, "pid", None), "hold": getattr(args, "hold", None), "cwd": os.getcwd(),
                "jobs": getattr(args, "jobs", None) or env_wish(),
-               "jobs_explicit": bool(getattr(args, "jobs", None)), "timeout": timeout, "ignore": ignored_pids(),
+               "jobs_explicit": bool(getattr(args, "jobs", None)), "min_jobs": getattr(args, "min_jobs", None),
+               "timeout": timeout, "ignore": ignored_pids(),
                "inside_slot": bool(os.environ.get("QC_SLOT_ID")), "slot_id": os.environ.get("QC_SLOT_ID")}
     try:
         send_json(sock, request)
@@ -1439,6 +1543,7 @@ class RunLease:
             with self.lock:
                 request = {"op": "adopt", "kind": self.args.kind, "who": self.args.who, "client_pid": os.getpid(),
                            "lease": "conn", "cwd": os.getcwd(), "jobs": self.grant["jobs"], "child_pid": self.child_pid,
+                           "min_jobs": getattr(self.args, "min_jobs", None),
                            "id": self.grant["id"], "since": self.granted_at}
             try:
                 send_json(sock, request)
@@ -1659,7 +1764,7 @@ def print_status(state):
     print(f"holders ({len(holders)}):")
     for h in holders:
         clock = time.strftime("%H:%M:%S", time.localtime(h.get("since", 0)))
-        print(f"  #{h.get('id', '?'):<4} {h.get('kind', '?'):<6} jobs {h.get('jobs', '?'):<3} pid {h.get('pid', '?'):<7} "
+        print(f"  #{h.get('id', '?'):<4} {h.get('kind', '?'):<6} jobs {h.get('jobs', '?'):<3} min {h.get('min', '?'):<2} pid {h.get('pid', '?'):<7} "
               f"since {clock} ({duration(h.get('held', 0))})  {h.get('who', '?')}")
         if h.get("backfill_overdue"):
             print(f"         overdue backfill delays bench #{h['backfill_overdue']} (expected end ~{clock_text(h['backfill_end'])})")
@@ -1671,7 +1776,7 @@ def print_status(state):
     print(f"queue ({len(queue)}):")
     for e in queue:
         eta = f" (ETA ~{clock_text(e['eta'])})" if e.get("eta") else ""
-        print(f"  #{e.get('id', '?'):<4} {e.get('kind', '?'):<6} waits {duration(e.get('waited', 0)):<8} "
+        print(f"  #{e.get('id', '?'):<4} {e.get('kind', '?'):<6} min {e.get('min', '?'):<2} waits {duration(e.get('waited', 0)):<8} "
               f"pid {e.get('pid', '?'):<7} {e.get('who', '?')}: {e.get('reason', '?')}{eta}")
 
 
@@ -1715,6 +1820,8 @@ def parse(argv):
         if name != "wait":
             command.add_argument("--kind", required=True, choices=KINDS)
             command.add_argument("--jobs", type=int)
+            command.add_argument("--min-jobs", type=int, help="fewest jobs to start with (default: 4 for "
+                                 "tsan/asan/verify/bench, 1 for build/test/light); waits until the load allows it")
         command.add_argument("--who", default=f"{name} {os.path.basename(os.getcwd())}")
         command.add_argument("--timeout", type=float, default=0, help="seconds, 0 = no limit")
         command.add_argument("--no-fallback", action="store_true", help="exit 211 when the broker is unavailable")
