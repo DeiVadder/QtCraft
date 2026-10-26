@@ -1,5 +1,6 @@
 #!/bin/sh
-# Runs the size limits checks (file and function length), clang-tidy, clazy and qmllint over the project (or over the given files).
+# Runs the size limits checks (file and function length), the warning-only checks of output parameters and
+# member access, clang-tidy, clazy and qmllint over the project (or over the given files).
 # Usage: scripts/static-analysis.sh [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # Every tool run is time-limited; the script exits non-zero when any tool reports findings.
@@ -73,6 +74,16 @@ fi
 if [ "$SELECTED" -eq 0 ]; then
     echo "== output parameters (warning only)"
     python3 "$PROJECT_DIR/scripts/check-out-params.py" | tail -n 1
+fi
+
+# Members used in more than two places without getter/setter (rule in CLAUDE.md, E-891): warning only.
+# The whole tree prints the counts, a selection lists the findings of the classes in the given files.
+echo "== member access (warning only)"
+if [ "$SELECTED" -eq 0 ]; then
+    python3 "$PROJECT_DIR/scripts/check-member-access.py" | tail -n 1
+elif [ -n "$FUNCTION_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-member-access.py" $FUNCTION_FILES
 fi
 
 for tool in "$CLANG_TIDY" "$CLAZY"; do

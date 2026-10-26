@@ -15,3 +15,8 @@ set_tests_properties(script_bench_adaptive PROPERTIES TIMEOUT 60)
 add_test(NAME script_verify_tests_selection
     COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_tests_selection.py ${PROJECT_SOURCE_DIR}/scripts/verify-tests.py)
 set_tests_properties(script_verify_tests_selection PROPERTIES TIMEOUT 60)
+# Samples of the getter/setter check (rule in CLAUDE.md, decision E-891) held in memory; reads no source
+# file below src/, only the check and the helper scripts it imports (REQUIRED_FILES in tests/CMakeLists.txt).
+add_test(NAME script_check_member_access
+    COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_member_access.py ${PROJECT_SOURCE_DIR}/scripts/check-member-access.py)
+set_tests_properties(script_check_member_access PROPERTIES TIMEOUT 60)
