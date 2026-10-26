@@ -2830,3 +2830,9 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 `showcase-signal_components` hat 49 statt 72 Wesen in Reichweite: die neue Station `signal_parity` (Reihenfolge 111) ist in die Folge der Showcase-Stationen eingefügt, alle späteren Stationen rücken weiter. Der Unterschied kommt von den Wesen, nicht von den Signalen; die Reihe `showcase-signal_components` ist über diesen Commit hinweg nicht vergleichbar. Erste Fassung (36 Nachschläge je Änderung, die 18 Zellen im Abstand zwei doppelt): `signal-stress` 6,263 → 6,699 ms (+7,0 %), 6 Runden.
 
+
+## Pakete 79.14a/79.14b (Augen, Laufanimation, Tempel-Angleichung, große Minenschächte, E-888/E-889), Fenster-A/B (2026-10-26)
+
+- **Stände:** vorher `c7d9201` (vor 79.14a), nachher `2e2dd12` (mit 79.14a, 79.14b, 50.3, T1e, T2; Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, Sichtweite 8, eingebautes Display, Mensch nicht am Rechner.
+- **Ergebnis:** Bildzeit im Mittel 8,3–8,4 ms in allen Szenarien (120 Hz), GPU, Render-CPU und Speicher ohne Änderung über 3 % (crowd GPU −4 … −12 %). Bildzeit p99: stand +3,2 %, sprint +0,6 %, showcase +1,4 %, crowd ±0 % (Nachmessung 10 Runden +6,9 % bei 37 % Streuung).
+- **Auffällig: GUI-CPU in crowd** +10,3 % (6 Runden, Streuung 34 %), Nachmessung mit 10 Runden +14,7 % (Streuung 38–47 %). Beide Male dieselbe Richtung, absolut 1,11 → 1,27 ms je Bild (+0,16 ms). Wahrscheinliche Ursache: Bein-Schwung je laufendem Wesen und die zusätzlichen Augen-Kästen beim Entity-Meshing auf dem GUI-Thread (die Beinerkennung ist je Modell zwischengespeichert). sprint +6,4 %, showcase −8,7 % (Rauschen). Über der 10-%-Schwelle, aber klein im Absoluten; offen für den Menschen: hinnehmen oder Profil der Entity-Mesh-Zeit in crowd.
