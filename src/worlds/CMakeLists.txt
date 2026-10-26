@@ -2,7 +2,7 @@
 # server, the worlds and the data folder on disk, mods and their comparison with a server, the rule
 # values of the handbook. The layer between the simulation (qc_server, linked privately: no header
 # of qc_worlds includes a server header) and the programs that run worlds (qtcraft, qtcraft-headless).
-qt_add_library(qc_worlds STATIC)
+qt_add_library(qc_worlds ${QC_LIBRARY_TYPE})
 # Sources sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_worlds PRIVATE

@@ -6,6 +6,14 @@
 #   --quick:          debug build, debug tests (optionally only those matching --tests) and static analysis
 #                     of the files changed against dev (committed on this branch or not yet committed).
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
+#                    A full run in two parts (`--full --sanitizers asan`, then `--full --sanitizers
+#                    tsan`) does the debug build and tests, the release build, the static analysis
+#                    and the debug smoke run only once per commit: a full run that passed every step
+#                    without a sanitizer on a clean tree writes the commit (and the hash of
+#                    CMakeUserPresets.json) to build/debug/.verify-full-shared, and the next full run
+#                    with --sanitizers on the same state skips those steps and says so (decision
+#                    E-890); the cheap checks and the slot broker's self-test run in both parts.
+#                    --defer-timing belongs to the quick levels and is refused with --full.
 # --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
 #                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
 #                    a stage. Before the merge the full run checks every test under TSan. With
@@ -158,6 +166,11 @@ if [ -n "$TSAN_LABEL" ]; then
     SANITIZERS_GIVEN=1
 fi
 
+# --defer-timing leaves tests unrun; the full run before the merge runs every test.
+if [ "$DEFER_TIMING" -eq 1 ] && [ "$MODE" = full ] && [ "$CHANGED" -eq 0 ]; then
+    usage
+fi
+
 # --changed belongs to the levels during a stage; the full run before the merge runs every test.
 if [ "$CHANGED" -eq 1 ]; then
     case "$MODE_GIVEN" in
@@ -216,6 +229,25 @@ failures=""
 timings=""
 limit_warnings=""
 total_start=$(date +%s)
+
+# The commit of a tree without changes (tracked or untracked) and the hash of the local presets
+# (not in git), empty when the tree has changes.
+clean_commit() {
+    [ -z "$(git status --porcelain 2>/dev/null)" ] || return 0
+    commit=$(git rev-parse HEAD 2>/dev/null) || return 0
+    echo "$commit $(git hash-object CMakeUserPresets.json 2>/dev/null || echo none)"
+}
+# One part of a two-part full run skips the steps without a sanitizer when an earlier full run
+# passed them on this same clean commit (decision E-890).
+FULL_STAMP="$PROJECT_DIR/build/debug/.verify-full-shared"
+START_COMMIT=$(clean_commit)
+SKIP_SHARED=0
+if [ "$MODE" = full ] && [ "$SANITIZERS_GIVEN" -eq 1 ] && [ -z "$TEST_REGEX" ] && [ -n "$START_COMMIT" ] &&
+    [ "$(cat "$FULL_STAMP" 2>/dev/null)" = "$START_COMMIT" ]; then
+    SKIP_SHARED=1
+    echo "== commit $START_COMMIT already passed the steps without a sanitizer in an earlier full run ($FULL_STAMP):"
+    echo "   skipping the debug build and tests, the release build, the static analysis and the debug smoke run"
+fi
 
 step() {
     name=$1
@@ -355,7 +387,9 @@ slot_broker_changed() {
 if [ "$MODE" = full ] || slot_broker_changed; then
     step "check-slot-broker" python3 scripts/tests/test_qc_slot.py
 fi
-build_and_test debug
+if [ "$SKIP_SHARED" -eq 0 ]; then
+    build_and_test debug
+fi
 for preset in $SANITIZERS; do
     build_and_test "$preset"
 done
@@ -364,14 +398,16 @@ if [ "$MODE" = quick ]; then
     quiet_pause "static-analysis-changed"
     step "static-analysis-changed" static_analysis_changed
 else
-    # Release build: catches warnings that only appear without assertions.
-    quiet_pause "configure-release"
-    step "configure-release" limited 300 cmake --preset release
-    quiet_pause "build-release"
-    step "build-release" limited 1200 cmake --build --preset release $BUILD_JOBS_ARGS
+    if [ "$SKIP_SHARED" -eq 0 ]; then
+        # Release build: catches warnings that only appear without assertions.
+        quiet_pause "configure-release"
+        step "configure-release" limited 300 cmake --preset release
+        quiet_pause "build-release"
+        step "build-release" limited 1200 cmake --build --preset release $BUILD_JOBS_ARGS
 
-    quiet_pause "static-analysis"
-    step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
+        quiet_pause "static-analysis"
+        step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
+    fi
 
     # Smoke runs render offscreen (E-229); QTCRAFT_SHOT_MODE=window takes the real window, which
     # needs a shown screen: keep the display awake and wait while the screen is locked.
@@ -381,13 +417,15 @@ else
         step "screen-unlocked" wait_for_screen
     fi
 
-    rm -f "$SCREENSHOT"
     # Smoke runs keep their settings and worlds in the build tree, never in the player's data.
     SMOKE_DATA="$PROJECT_DIR/build/smoke-data"
-    # Window smoke runs open on the built-in display in the background (no focus, no captured mouse); all stay silent.
-    step "smoke-run" env $(shot_env) QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
-        perl -e 'alarm shift; exec @ARGV or die' 120 build/debug/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20 --no-audio
-    step "smoke-screenshot" test -s "$SCREENSHOT"
+    if [ "$SKIP_SHARED" -eq 0 ]; then
+        rm -f "$SCREENSHOT"
+        # Window smoke runs open on the built-in display in the background (no focus, no captured mouse); all stay silent.
+        step "smoke-run" env $(shot_env) QTCRAFT_SCREEN="${QTCRAFT_SCREEN:-builtin}" QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$SMOKE_DATA" QTCRAFT_SCREENSHOT="$SCREENSHOT" QTCRAFT_SCREENSHOT_FRAMES=60 \
+            perl -e 'alarm shift; exec @ARGV or die' 120 build/debug/src/app/qtcraft.app/Contents/MacOS/qtcraft --play --seed 42 --look 45,-20 --no-audio
+        step "smoke-screenshot" test -s "$SCREENSHOT"
+    fi
 
     # The renderer and UI code only runs in the app, so it also gets a sanitizer smoke run.
     case " $SANITIZERS " in
@@ -408,6 +446,20 @@ if [ -n "$limit_warnings" ]; then
     echo "== test limits too tight for TSan (warning only; set TIMEOUT/COST in tests/CMakeLists.txt or lighten the test)$limit_warnings"
 fi
 printf '%-24s %6ss\n' "total" "$(($(date +%s) - total_start))"
+
+# A full run that passed every step without a sanitizer on a clean, unchanged commit stamps it for
+# the other part of a two-part full run (E-890).
+shared_failed=0
+for name in $failures; do
+    case "$name" in
+    *-asan | *-tsan) ;;
+    *) shared_failed=1 ;;
+    esac
+done
+if [ "$MODE" = full ] && [ "$SKIP_SHARED" -eq 0 ] && [ "$shared_failed" -eq 0 ] && [ -z "$TEST_REGEX" ] &&
+    [ -n "$START_COMMIT" ] && [ "$(clean_commit)" = "$START_COMMIT" ]; then
+    echo "$START_COMMIT" >"$FULL_STAMP"
+fi
 
 if [ -n "$failures" ]; then
     echo "FAILED:$failures"

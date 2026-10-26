@@ -1,4 +1,4 @@
-qt_add_library(qc_server STATIC)
+qt_add_library(qc_server ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_server PRIVATE

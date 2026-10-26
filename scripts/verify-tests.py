@@ -6,6 +6,8 @@ directory. Its inputs are:
 
   - the executables of the build directory named on its command line or in its REQUIRED_FILES
     (the test binary, qtcraft, qtcraft-headless): a relink changes their modification time;
+  - the project's shared libraries these executables load, directly or through each other
+    (QC_SHARED_LIBS, decision E-890: a change in qc_common relinks libqc_common, not the tests);
   - the source files and directories named there (scripts, scenario files, runtime-read source
     folders such as src/app/qml for test_ui_palette);
   - the runtime data that every test may read (RUNTIME_DATA below: content, translations, mods,
@@ -78,6 +80,12 @@ LC_UUID = 0x1B
 LC_CODE_SIGNATURE = 0x1D
 N_OSO = 0x66
 NLIST_64_SIZE = 16
+# Load commands that name a dynamic library an image needs.
+LC_LOAD_DYLIB = 0xC
+LC_LOAD_WEAK_DYLIB = 0x80000018
+LC_REEXPORT_DYLIB = 0x8000001F
+# Build folders that hold the project's shared libraries (src/<library>, content).
+LIBRARY_FOLDERS = ["src", "content"]
 
 
 def macho_link_noise(data):
@@ -137,7 +145,8 @@ class ContentHasher:
             return "missing"
 
         key = [info.st_mtime_ns, info.st_size]
-        entry = self.cache.get(path)
+        # A shared library is an input of many tests: hashed once per run.
+        entry = self.seen.get(path) or self.cache.get(path)
         if isinstance(entry, list) and len(entry) == 3 and entry[:2] == key:
             self.seen[path] = entry
             return entry[2]
@@ -221,18 +230,85 @@ def candidate_paths(test):
     return paths
 
 
-def test_inputs(test, build_dir):
-    """The inputs of one test: executables of the build directory and project source paths."""
+def test_inputs(test, build_dir, libraries):
+    """The inputs of one test: executables of the build directory, the project libraries they load
+    and project source paths."""
     build_root = os.path.join(ROOT, "build") + os.sep
-    inputs = []
+    inputs, executables = [], []
     for path in candidate_paths(test):
         if path.startswith(build_dir + os.sep):
             # Outputs such as screenshots also live there; only executables are inputs.
             if os.path.isfile(path) and os.access(path, os.X_OK):
-                inputs.append(path)
+                executables.append(path)
         elif path.startswith(ROOT + os.sep) and not path.startswith(build_root):
             inputs.append(path)
-    return sorted(set(inputs))
+    return sorted(set(inputs + executables) | libraries.closure(executables))
+
+
+def macho_dylib_names(header):
+    """File names of the libraries a Mach-O image loads (its load commands), or None if no Mach-O."""
+    if len(header) < 32 or struct.unpack_from("<I", header, 0)[0] != MACHO_MAGIC_64:
+        return None
+
+    count = struct.unpack_from("<I", header, 16)[0]
+    names, offset = set(), 32
+    for _ in range(count):
+        if offset + 8 > len(header):
+            break
+        command, size = struct.unpack_from("<II", header, offset)
+        if command in (LC_LOAD_DYLIB, LC_LOAD_WEAK_DYLIB, LC_REEXPORT_DYLIB):
+            name_offset = struct.unpack_from("<I", header, offset + 8)[0]
+            name = header[offset + name_offset:offset + size].split(b"\0", 1)[0]
+            names.add(os.path.basename(name.decode(errors="replace")))
+        offset += size
+    return names
+
+
+class ProjectLibraries:
+    """The project's shared libraries in a build directory and which of them an image loads."""
+
+    def __init__(self, build_dir):
+        self.paths = {}
+        for folder in LIBRARY_FOLDERS:
+            for directory, _, names in os.walk(os.path.join(build_dir, folder)):
+                for name in names:
+                    if name.startswith("lib") and (name.endswith(".dylib") or ".so" in name):
+                        path = os.path.join(directory, name)
+                        if not os.path.islink(path):
+                            self.paths[name] = path
+        self.direct = {}
+
+    def loaded_by(self, path):
+        """The project libraries one image names; without Mach-O load commands (ELF) every library
+        whose file name occurs in the image, which may include more but never misses one."""
+        if path not in self.direct:
+            self.direct[path] = self._scan(path)
+        return self.direct[path]
+
+    def _scan(self, path):
+        if not self.paths:
+            return []
+        try:
+            with open(path, "rb") as file:
+                header = file.read(32)
+                if len(header) == 32 and struct.unpack_from("<I", header, 0)[0] == MACHO_MAGIC_64:
+                    header += file.read(struct.unpack_from("<I", header, 20)[0])
+                    names = macho_dylib_names(header) or set()
+                    return sorted(self.paths[name] for name in names if name in self.paths)
+                data = header + file.read()
+        except (OSError, struct.error):
+            return []
+        return sorted(path for name, path in self.paths.items() if name.encode() in data)
+
+    def closure(self, executables):
+        """Every project library the executables load, directly or through each other."""
+        found, pending = set(), list(executables)
+        while pending:
+            for library in self.loaded_by(pending.pop()):
+                if library not in found:
+                    found.add(library)
+                    pending.append(library)
+        return found
 
 
 def has_label(test, label):
@@ -295,8 +371,9 @@ def write_json(path, value):
 def fingerprints(tests, build_dir, data_digest, hasher):
     """Current fingerprint of every test: the content of its inputs and the runtime data digest."""
     result = {}
+    libraries = ProjectLibraries(build_dir)
     for name, test in tests.items():
-        inputs = snapshot(test_inputs(test, build_dir), hasher)
+        inputs = snapshot(test_inputs(test, build_dir, libraries), hasher)
         result[name] = {"inputs": digest(inputs), "data": data_digest}
     return result
 

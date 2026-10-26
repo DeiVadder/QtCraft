@@ -15,7 +15,7 @@ qc_add_test(test_kjut_threads SOURCES client/test_kjut_threads.cpp LIBRARIES qc_
 qc_add_test(test_map_hud SOURCES client/test_map_hud.cpp LIBRARIES qc_app_core)
 # When the HUD names the selected item over the hotbar (decision E-885).
 qc_add_test(test_held_item_name SOURCES client/test_held_item_name.cpp LIBRARIES qc_app_core)
-qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_app_core)
+qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_base_content qc_app_core)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
 # Animated textures (decision E-878): frames by time, definitions, pack strips, frames in the atlas.
@@ -55,7 +55,7 @@ qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestW
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
 target_compile_definitions(test_app_icon PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
-qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_worlds qc_clientcore Qt::Qml)
+qc_add_test(test_web_handbook SOURCES client/test_web_handbook.cpp LIBRARIES qc_base_content qc_worlds qc_clientcore Qt::Qml)
 target_compile_definitions(test_web_handbook PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 # The corner heights of a liquid's surface (decision E-885).
@@ -121,21 +121,25 @@ set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120
     ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_SCALE_FACTOR=1.5;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/test_gamepad_screens_scaled;QTEST_FUNCTION_TIMEOUT=120000")
 # The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
 # Enter switches, the arrow keys choose segments (decision E-845).
-qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_qml)
 # Dialogs that need an answer are modal for the whole window (E-852).
-qc_add_test(test_modal_dialog SOURCES client/test_modal_dialog.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_modal_dialog SOURCES client/test_modal_dialog.cpp LIBRARIES qc_app_qml)
 # A shown tooltip has a size and its text, its lines wrap at Ui.size.tooltip (E-874).
-qc_add_test(test_themed_tooltip SOURCES client/test_themed_tooltip.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_themed_tooltip SOURCES client/test_themed_tooltip.cpp LIBRARIES qc_app_qml)
 # The crosshair text of targeted entities: health only for creatures and players (E-874).
 qc_add_test(test_hud_target SOURCES client/test_hud_target.cpp LIBRARIES qc_base_content qc_app_core)
 # The on-screen keyboard: addresses with ports and IPv6, shift, umlauts, hidden passwords (E-584).
-qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_onscreen_keyboard SOURCES client/test_onscreen_keyboard.cpp LIBRARIES qc_app_qml)
 qc_add_test(test_gamepad_sdl SOURCES client/test_gamepad_sdl.cpp LIBRARIES qc_app_core TIMEOUT 150)
 target_compile_definitions(test_gamepad_sdl PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}"
     QTCRAFT_SDL3_DIR="${SDL3_DIR}" QTCRAFT_SDL_ARCH="${QC_SDL_ARCH}" QTCRAFT_CMAKE_COMMAND="${CMAKE_COMMAND}"
     QC_HAVE_SDL_GAMEPAD=$<BOOL:${QC_GAMEPAD_ENABLED}>)
-# The test drives SDL's virtual joysticks itself.
-if(QC_GAMEPAD_ENABLED)
+# The test drives SDL's virtual joysticks itself, in the same SDL instance as QcSdlGamepadSource:
+# a static qc_app_core leaves SDL to the program, a shared one carries it and exports its API, so
+# the test then takes only the headers (a second static copy would be a second SDL, E-890).
+if(QC_GAMEPAD_ENABLED AND QC_SHARED_LIBS)
+    target_link_libraries(test_gamepad_sdl PRIVATE SDL3::Headers)
+elseif(QC_GAMEPAD_ENABLED)
     target_link_libraries(test_gamepad_sdl PRIVATE SDL3::SDL3-static)
 endif()
 # Field of view while sprinting and the sprint latch (decision E-280).
@@ -145,7 +149,7 @@ qc_add_test(test_control_palette SOURCES client/test_control_palette.cpp LIBRARI
 # The enchanting table's runes, the screens' pixel art and the book and runes in the world (E-884).
 qc_add_test(test_rune_script SOURCES client/test_rune_script.cpp LIBRARIES qc_app_core)
 # The enchanting screen's offers in QML: click, Enter, focus, screen reader, level tones (E-884).
-qc_add_test(test_enchanting_offer SOURCES client/test_enchanting_offer.cpp LIBRARIES qc_app_core qc_app_coreplugin)
+qc_add_test(test_enchanting_offer SOURCES client/test_enchanting_offer.cpp LIBRARIES qc_app_qml)
 # The screens that exist only while shown and a while after (LazyScreen.qml, decision E-691),
 # loaded from the source tree.
 # Enumerations instead of strings for QML and the photo mode's state and files (E-692, E-693).
@@ -155,7 +159,7 @@ qc_add_test(test_character_draft SOURCES client/test_character_draft.cpp LIBRARI
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
 qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server TIMEOUT 150)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
-qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_core qc_app_coreplugin TIMEOUT 150)
+qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
 target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.

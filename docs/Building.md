@@ -18,6 +18,20 @@ cmake --build --preset release
 
 Presets: `debug`, `release` (RelWithDebInfo), `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer), `profile` and `deploy` (used by the scripts below); `ci-debug` and `ci-deploy` are the CI's presets (Qt from `QT_ROOT_DIR`). Build directories are `build/<preset>`. All own targets are compiled with warnings as errors and without exceptions.
 
+The presets `debug`, `asan` and `tsan` build the project libraries as shared libraries (`QC_SHARED_LIBS`, decision E-890), so the several hundred test programs load one copy of each library instead of linking their own: on this machine a debug tree takes about 40 GB, an ASan tree about 31 GB and a TSan tree about 26 GB. The sanitizer presets compile with line tables only (`-gline-tables-only`). `release`, `deploy`, `profile`, the CI presets and every Windows build stay static. A program that loads the QML module `QtCraft` links `qc_app_qml`.
+
+**ccache.** When `ccache` is installed, every preset compiles through it (`QC_CCACHE`, on by default; `-DQC_CCACHE=OFF` or a `CMAKE_CXX_COMPILER_LAUNCHER` of your own turns it off). On macOS: `brew install ccache`. Settings used for the project's worktrees (`ccache --set-config <key>=<value>`):
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| `max_size` | `20G` | bounded because sanitizer and debug trees already need much disk |
+| `compression` | `true` | more objects in the same space |
+| `sloppiness` | `pch_defines,time_macros,include_file_mtime,include_file_ctime` | headers that git rewrites on a branch switch still hit |
+| `base_dir` | the main checkout (e.g. `~/Qt-Projekte/Privat/Claude/QtCraft`) | absolute paths below it are hashed relative, so every worktree under `.claude/worktrees/` shares hits |
+| `hash_dir` | `false` | the working directory is not part of the hash, same reason |
+
+Side effect of `base_dir`/`hash_dir`: `__FILE__` becomes relative, and debug, line-table and sanitizer-report paths in a cached object may point to the worktree that compiled the file first (possibly deleted since); configure with `-DQC_CCACHE=OFF` for a debugging session. `scripts/release.sh` always configures with `-DQC_CCACHE=OFF` and refuses a release tree with `QC_SHARED_LIBS=ON`. `ccache -s` shows hits and misses (`ccache -z` resets the counters). An existing build tree picks ccache up at its next `cmake --preset` (one full rebuild, because the compile command changes).
+
 ## SDL3 and OpenSSL
 
 The first configure step also builds two libraries once into `~/.cache/qtcraft`, shared by every preset and checkout:

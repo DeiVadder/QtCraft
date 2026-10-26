@@ -1,7 +1,7 @@
 # World generation (decision E-418): terrain, structures, villages and the showcase as pure
 # functions of the seed and the content; depends on qc_common only, so the generation tests do not
 # link the server.
-qt_add_library(qc_worldgen STATIC)
+qt_add_library(qc_worldgen ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_worldgen PRIVATE

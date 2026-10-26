@@ -5,7 +5,7 @@ file(GLOB_RECURSE QC_BASE_CONTENT_FILES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/qtcraft/*.json
     ${CMAKE_CURRENT_SOURCE_DIR}/qtcraft/*.png)
 
-qt_add_library(qc_base_content STATIC)
+qt_add_library(qc_base_content ${QC_LIBRARY_TYPE})
 qc_configure_target(qc_base_content)
 qt_add_resources(qc_base_content "qc_base_content"
     PREFIX /content
@@ -18,8 +18,10 @@ file(GLOB_RECURSE QC_TEXTURE_PACK_FILES CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/texturepacks/*.json
     ${CMAKE_CURRENT_SOURCE_DIR}/texturepacks/*.png)
 
-qt_add_library(qc_texture_packs STATIC)
+qt_add_library(qc_texture_packs ${QC_LIBRARY_TYPE})
 qc_configure_target(qc_texture_packs)
+# The resource registration calls into Qt Core (a shared library resolves it at its own link).
+target_link_libraries(qc_texture_packs PRIVATE Qt::Core)
 qt_add_resources(qc_texture_packs "qc_texture_packs"
     PREFIX /
     FILES ${QC_TEXTURE_PACK_FILES})

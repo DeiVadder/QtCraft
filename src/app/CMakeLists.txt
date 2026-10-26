@@ -1,8 +1,8 @@
-# The game's C++ side as a static library (decision E-417): controllers, models, rendering, input,
-# hooks and the multiplayer screens, used by the game and by the tests. It is the backing target of
-# the QML module QtCraft as well, because qmltyperegistrar registers only the QML types of the
-# module's own target; the game links the module's static plugin, which registers them at start.
-qt_add_library(qc_app_core STATIC)
+# The game's C++ side as a library (decision E-417; shared with QC_SHARED_LIBS, E-890): controllers,
+# models, rendering, input, hooks and the multiplayer screens, used by the game and by the tests. It
+# is the backing target of the QML module QtCraft as well, because qmltyperegistrar registers only
+# the QML types of the module's own target; programs that load the module link qc_app_qml (below).
+qt_add_library(qc_app_core ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (scripts/check-cmake-lists.py).
 target_sources(qc_app_core PRIVATE
     admin/QcAdminController.h admin/QcAdminController.cpp
@@ -157,7 +157,7 @@ qc_configure_target(qc_app_core)
 add_library(qc_app_core_headers INTERFACE)
 target_include_directories(qc_app_core_headers INTERFACE ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_app_core PUBLIC
-    qc_app_core_headers qc_common qc_worlds qc_clientcore qc_audio
+    qc_app_core_headers qc_common qc_worldgen qc_worlds qc_clientcore qc_audio
     Qt::Gui Qt::GuiPrivate Qt::Quick Qt::QuickControls2)
 # The accessibility check of screenshot runs reads the Accessible attached properties
 # (QcAccessibilityCheck, E-725). The public QAccessible::queryAccessibleInterface() is no substitute
@@ -306,6 +306,16 @@ set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qc_app_core_qmltyperegis
     PROPERTIES INCLUDE_DIRECTORIES
         "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/debug;${CMAKE_CURRENT_SOURCE_DIR}/display;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/preview;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
 
+# The QML module QtCraft for a program that loads it. A static backing library needs the module's
+# static plugin, which registers the types at start. A shared one registers them itself when it is
+# loaded (the module registration of qmltyperegistrar), and the plugin is a loadable module that
+# nothing links; the engine skips it, because qmldir marks it optional (E-890).
+add_library(qc_app_qml INTERFACE)
+target_link_libraries(qc_app_qml INTERFACE qc_app_core)
+if(NOT QC_SHARED_LIBS)
+    target_link_libraries(qc_app_qml INTERFACE qc_app_coreplugin)
+endif()
+
 # The executable: start-up (command line, hooks of a scripted run), shaders, translations, icon.
 qt_add_executable(qtcraft
     hooks/QcScriptedRun.h
@@ -363,7 +373,7 @@ else()
     qc_add_windows_resources(qtcraft "QtCraft")
 endif()
 
-target_link_libraries(qtcraft PRIVATE qc_app_core qc_app_coreplugin)
+target_link_libraries(qtcraft PRIVATE qc_app_qml)
 
 qt_add_shaders(qtcraft "qtcraft_shaders"
     BASE ${CMAKE_CURRENT_SOURCE_DIR}

@@ -106,7 +106,13 @@ SDL_PREFIX=$(tail -1 "$WORK/build-sdl.txt")
 limited 1200 "$PROJECT_DIR/scripts/build-openssl.sh" >"$WORK/build-openssl.txt" 2>"$WORK/build-openssl.log" ||
     abort "OpenSSL build failed, see $WORK/build-openssl.log"
 OPENSSL_PREFIX=$(tail -1 "$WORK/build-openssl.txt")
-limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" >"$WORK/configure.log" 2>&1 || abort "configure failed"
+# A release compiles without ccache (E-890): its shared cache hashes paths relative to the main
+# checkout, so file names in a cached object could point into another worktree.
+limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" -DQC_CCACHE=OFF >"$WORK/configure.log" 2>&1 || abort "configure failed"
+# The package carries the program alone (macdeployqt copies Qt, not project libraries): the project
+# libraries must be static (QC_SHARED_LIBS is for debug and sanitizer trees only, E-890).
+grep -q '^QC_SHARED_LIBS:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" &&
+    abort "build/$PRESET has QC_SHARED_LIBS=ON; a release needs static project libraries (reconfigure with -DQC_SHARED_LIBS=OFF)"
 limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
     abort "build failed, see $WORK/build.log"
 

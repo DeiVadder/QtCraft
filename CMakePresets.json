@@ -8,7 +8,10 @@
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}"
         },
-        { "name": "qc-debug", "hidden": true, "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" } },
+        {
+            "name": "qc-debug", "hidden": true, "inherits": "base",
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SHARED_LIBS": "ON" }
+        },
         { "name": "qc-release", "hidden": true, "inherits": "base", "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
         {
             "name": "qc-deploy", "hidden": true, "inherits": "base",
@@ -20,11 +23,11 @@
         },
         {
             "name": "qc-asan", "hidden": true, "inherits": "base",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "address;undefined" }
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "address;undefined", "QC_SHARED_LIBS": "ON" }
         },
         {
             "name": "qc-tsan", "hidden": true, "inherits": "base",
-            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "thread" }
+            "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "QC_SANITIZERS": "thread", "QC_SHARED_LIBS": "ON" }
         },
         {
             "name": "ci", "hidden": true,

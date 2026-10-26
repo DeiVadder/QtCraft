@@ -3,6 +3,24 @@
 
 set(QC_SANITIZERS "" CACHE STRING "Sanitizers for all QtCraft targets: empty, 'address;undefined' or 'thread'")
 option(QC_QML_DEBUG "Let the game accept a QML profiler/debugger (-qmljsdebugger); profiling builds only" OFF)
+# Project libraries as shared libraries (decision E-890): the presets debug, asan and tsan switch it
+# on, so the ~380 test programs share one (instrumented) copy of each library instead of linking
+# their own. Release, deploy, profile and every Windows build stay static (no export macros, the
+# deployed app unchanged).
+option(QC_SHARED_LIBS "Build the project libraries (qc_common, qc_server, ...) as shared libraries" OFF)
+if(QC_SHARED_LIBS AND WIN32)
+    message(STATUS "QC_SHARED_LIBS: Windows builds keep static project libraries")
+    set(QC_SHARED_LIBS OFF)
+endif()
+# The type every project library passes to qt_add_library.
+if(QC_SHARED_LIBS)
+    set(QC_LIBRARY_TYPE SHARED)
+    # A changed library does not relink the programs that load it (the loader binds at start);
+    # verify.sh --changed still selects their tests through the library's content (E-890).
+    set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
+else()
+    set(QC_LIBRARY_TYPE STATIC)
+endif()
 
 add_library(qc_project_options INTERFACE)
 # C++23 for every own target (a compile feature, so CMake picks the flag for the compiler).
@@ -36,6 +54,29 @@ elseif(QC_SANITIZERS)
     target_compile_options(qc_project_options INTERFACE
         -fsanitize=${_qc_sanitizer_list} -fno-omit-frame-pointer -fno-sanitize-recover=all)
     target_link_options(qc_project_options INTERFACE -fsanitize=${_qc_sanitizer_list})
+    # Line tables are all a sanitizer report needs for file, line and inlined frames (E-890); the
+    # full debug information of -g made the object files of the sanitizer trees several times larger.
+    # The last -g option wins, so this follows the -g of CMAKE_CXX_FLAGS_DEBUG.
+    target_compile_options(qc_project_options INTERFACE
+        $<IF:$<CXX_COMPILER_ID:Clang,AppleClang>,-gline-tables-only,-g1>)
+endif()
+
+# Linux linkers may drop a shared library nothing references directly (--as-needed); the resource
+# libraries (qc_texture_packs) register their files only through a static initializer.
+if(QC_SHARED_LIBS AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_options(qc_project_options INTERFACE LINKER:--no-as-needed)
+endif()
+
+# ccache for every preset when it is installed (E-890; `brew install ccache`); QC_CCACHE=OFF or a
+# launcher of one's own (CMAKE_CXX_COMPILER_LAUNCHER) turns it off.
+option(QC_CCACHE "Compile through ccache when it is installed" ON)
+if(QC_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
+    find_program(QC_CCACHE_PROGRAM ccache)
+    if(QC_CCACHE_PROGRAM)
+        message(STATUS "Compiling through ${QC_CCACHE_PROGRAM}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
+        set(CMAKE_OBJCXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
+    endif()
 endif()
 
 include(QcSourceTree)
