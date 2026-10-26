@@ -4,8 +4,8 @@ Kurzanleitung für den Playtest (Etappe 74): ein dedizierter Server auf dem MacB
 Windows-PCs. Ziel: Was beim Spielen schiefgeht, lässt sich hinterher aus Protokollen,
 Absturzberichten und Speicherabbildern klären. Hintergrund und Einzelheiten: Entscheidung E-834,
 Optionen in `docs/Architektur.md` („Build options and test hooks“), Server allgemein in
-`docs/Multiplayer.md`. Den Windows-Build (Qt-Kits, Module, Werkzeuge) beschreibt die README im
-Abschnitt [„Windows (port in progress)“](../README.md#windows-port-in-progress).
+`docs/Multiplayer.md`. Den Windows-Build (Qt-Kits, Module, Werkzeuge) beschreibt `docs/Building.md` im
+Abschnitt [„Windows“](Building.md#windows).
 
 ## 1. Server auf dem Mac starten
 

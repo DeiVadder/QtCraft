@@ -334,7 +334,7 @@ if (-not $NoFetch) {
     Update-Source
 }
 if (-not (Test-Path (Join-Path $Source "CMakeUserPresets.json"))) {
-    Abort "$Source\CMakeUserPresets.json is missing (preset 'release' with the x64 kit, README.md, section Windows)"
+    Abort "$Source\CMakeUserPresets.json is missing (preset 'release' with the x64 kit, docs/Building.md, section Windows)"
 }
 $commit = (git -C $Source rev-parse --short=7 HEAD).Trim()
 $cmakeLists = Get-Content (Join-Path $Source "CMakeLists.txt") -Raw

@@ -148,8 +148,8 @@ Terminal; it needs no window and no other installation:
   apart from the game's own worlds (`~/Library/Application Support/QtCraft/QtCraft`). To serve a
   world made in the game, pass `--data-dir "$HOME/Library/Application Support/QtCraft/QtCraft" --world <folder>`
   while the game does not have that world open (the world lock refuses a second user).
-- The bundle is signed ad hoc only: if macOS refuses to start the game the first time (see the
-  README), it refuses the server too; once the game has been allowed, the server runs as well.
+- The bundle is signed ad hoc only: if macOS refuses to start the game the first time (see
+  [Playing.md](Playing.md#starting-the-game)), it refuses the server too; once the game has been allowed, the server runs as well.
 - `scripts/release.sh` checks that the server of the bundle starts (`--server --port 0 --bind
   127.0.0.1`, temporary data folder), prints `Listening on port N` and stops with exit code 0 on
   SIGTERM.
