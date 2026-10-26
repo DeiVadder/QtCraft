@@ -230,8 +230,10 @@ private slots:
         QVERIFY(put(3, 2, 3, u"signal_hopper[facing=south]"_s));
         QVERIFY(put(4, 1, 3, u"stone"_s));
         QVERIFY(put(4, 2, 3, u"signal_comparator[facing=east]"_s));
+        // The last dust up there steps down, so it lies on a conductor: dust on glass passes no
+        // signal down (decision E-887).
         for (const auto &[dx, dz] : {std::pair{5, 3}, std::pair{6, 3}, std::pair{6, 2}}) {
-            QVERIFY(put(dx, 1, dz, u"glass"_s));
+            QVERIFY(put(dx, 1, dz, dz == 3 ? u"glass"_s : u"stone"_s));
             QVERIFY(put(dx, 2, dz, u"signal_dust"_s));
         }
         QVERIFY(put(5, 2, 2, u"stone"_s));
