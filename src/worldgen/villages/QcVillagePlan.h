@@ -108,9 +108,13 @@ struct QcVillagePlan
     // regionId() of its region; the showcase and test fixtures number their villages from 1.
     qint64 id = 0;
     QString style;
-    // The meeting point: the bell of the centre piece, else the centre's ground.
+    // The meeting point: the bell of the centre piece, else the centre's floor in its middle.
     QcBlockPos centre;
-    // Columns covered by pieces, roads and jetties (inclusive), over water with the wetland's reach.
+    // The ground within this many blocks of the centre piece is blended to its floor (decision
+    // E-893): the `blend` of the centre's surface rule, like a temple standing alone; 0: none.
+    int centreBlend = 0;
+    // Columns covered by pieces, roads and jetties (inclusive), over water with the wetland's reach,
+    // and the centre's blended ground.
     int minX = 0;
     int minZ = 0;
     int maxX = 0;

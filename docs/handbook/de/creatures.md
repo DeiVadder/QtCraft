@@ -457,7 +457,7 @@ Eine scheue gefleckte Katze des Dschungels (solange es keinen gibt, der Sümpfe)
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sandgolem
 
-Ein Golem aus Sand, der den Keller eines Wüstentempels bewacht und jeden angreift, der zu seinen Truhen hinabsteigt; weit folgt er nicht. Es gibt ihn nur dort, bauen kann man ihn nicht. Berührt er einen Wasser-Quellblock, zerfällt er in vier Sandblöcke in der Form seines Bauplans, mit gemeißeltem Sandstein als Kopf; seine Arme fallen als Sand herab und können ein Wasserloch füllen. In einem dunklen Keller ohne Spieler in der Nähe kommt nach einer Weile ein neuer: eine Quelle für erneuerbaren Sand.
+Ein Golem aus Sand, der den Keller eines Wüstentempels bewacht und jeden angreift, der zu ihm hinabsteigt; weit folgt er nicht. Es gibt ihn nur dort, bauen kann man ihn nicht. Berührt er einen Wasser-Quellblock, zerfällt er in vier Sandblöcke in der Form seines Bauplans, mit gemeißeltem Sandstein als Kopf; seine Arme fallen als Sand herab und können ein Wasserloch füllen. In einem dunklen Keller ohne Spieler in der Nähe kommt nach einer Weile ein neuer: eine Quelle für erneuerbaren Sand.
 
 | | |
 |---|---|

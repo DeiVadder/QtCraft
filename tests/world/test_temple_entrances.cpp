@@ -188,6 +188,41 @@ private:
         return {footprint.x0 - copy.blend, footprint.z0 - copy.blend, footprint.x1 + copy.blend, footprint.z1 + copy.blend};
     }
 
+    // The road cells within the blend around a village's centre that are not the top of their
+    // generated column (decision E-893: the roads lie on the blended ground): the cell solid, above
+    // it nothing but air or the step of a rising road. A cave that opens the ground more than a
+    // block below a cell leaves a hole (the road builder skips it, as anywhere in a village).
+    int roadsOffTheGround(const QcTerrainGenerator &terrain, const QcVillagePlan &plan) const
+    {
+        Chunks chunks;
+        int off = 0;
+        int holes = 0;
+        int checked = 0;
+        const QList<QcBlockPos> cells = plan.roads + plan.branchRoads;
+        for (const QcBlockPos &cell : cells) {
+            const double distance = QcSurfaceBlend::distanceTo(plan.pieces.front(), cell.x, cell.z);
+            if (distance == 0.0 || distance > plan.centreBlend) {
+                continue;
+            }
+            ++checked;
+            if (!chunks.contains(cell.chunk())) {
+                chunks.insert(cell.chunk(), terrain.generate(cell.chunk()));
+            }
+            const QcChunk &chunk = *chunks.value(cell.chunk());
+            const QcBlockId step = chunk.block(cell.localX(), cell.y + 1, cell.localZ());
+            const bool stepOrAir = step == qcAirBlockId || m_content->block(step).name.endsWith(u"_slab"_s);
+            const bool open = stepOrAir && chunk.block(cell.localX(), cell.y + 2, cell.localZ()) == qcAirBlockId;
+            if (open && !solidAt(chunks, cell) && !solidAt(chunks, cell.offset(0, -1, 0))) {
+                ++holes;
+            } else if (!open || !solidAt(chunks, cell)) {
+                qInfo().noquote() << u"road cell %1 %2 %3 is not the top of its column"_s.arg(cell.x).arg(cell.y).arg(cell.z);
+                ++off;
+            }
+        }
+        qInfo().noquote() << u"%1 road cells on the blended ground, %2 of them over a cave mouth"_s.arg(checked).arg(holes);
+        return off;
+    }
+
 private slots:
     // A copy's footprint and its blended ground lie wholly inside its region, so a neighbour's
     // blend never cuts into its walls; nor does the blend of any other copy (decision E-889).
@@ -212,8 +247,8 @@ private slots:
     }
 
     // A desert temple as the centre of a desert village (decision E-592, placed by the village, not
-    // the surface planner): whether it stands on its floor (logged per temple; expected to fail
-    // until the village levels the ground around it).
+    // the surface planner) stands on its floor too: the village blends the ground around it
+    // (decision E-893).
     void villageTemplesStandOnTheirFloor()
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
@@ -222,6 +257,8 @@ private slots:
         content->villageCatalog().registerStyle(desert);
         int temples = 0;
         int sunk = 0;
+        // Road cells on the blended ground around the temple that do not lie at its top.
+        int roadsOff = 0;
         for (const qint64 seed : {qint64{51}, qint64{10}, qint64{1234}, m_randomSeed}) {
             const QcTerrainGenerator terrain(content, seed);
             for (int rz = -4; rz <= 4; ++rz) {
@@ -242,17 +279,14 @@ private slots:
                                              .arg(result.buried);
                     QVERIFY2(result.openings > 0, "a temple has an entrance");
                     sunk += result.blocked > 0 || result.buried > 0 ? 1 : 0;
+                    roadsOff += roadsOffTheGround(terrain, *plan);
                     ++temples;
                 }
             }
         }
         QVERIFY2(temples >= 2, "the seeds have village temples to check");
-        // Open (docs/handoff-79-14b-fixes.md): the village does not blend the ground around its
-        // centre yet; seed 51's village temple at 252 62 950 has its 3 openings blocked.
-        // Unconditional, so the fix of package 79.16 turns this into an unexpected pass that fails
-        // until the marker is removed; the fixed seeds have sunk village temples today.
-        QEXPECT_FAIL("", "a village does not level the ground around a temple at its centre yet", Continue);
         QCOMPARE(sunk, 0);
+        QCOMPARE(roadsOff, 0);
     }
 
     // The ground's freedom ends at the blend's outer edge and rounds to the nearest block.

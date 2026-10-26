@@ -90,7 +90,7 @@ private:
     // The runs without their last `cells` cells (runs left empty dropped, the first kept).
     [[nodiscard]] static QList<Road> withoutLast(QList<Road> runs, int cells);
     // The level of a road's middle line at a cell: its top block, over a river the bridge's deck.
-    [[nodiscard]] QcVillageDraft::RoadLevel roadLevel(int x, int z) const;
+    [[nodiscard]] QcVillageDraft::RoadLevel roadLevel(const QcVillageDraft &draft, int x, int z) const;
     // The turn (-1, 0, 1 eighths) of a winding road towards the flatter neighbouring direction, at
     // most one eighth off its `heading`.
     int windTurn(QcVillageDraft &draft, std::pair<int, int> cell, int direction, int heading) const;

@@ -78,7 +78,9 @@ void QcSurfaceBlend::shapeColumn(QcChunk &chunk, QcBlockPos local, int ground, i
     }
     const int x = chunk.pos().x * QcWorld::chunkSize + local.x;
     const int z = chunk.pos().z * QcWorld::chunkSize + local.z;
-    const QcBlockId surface = m_terrain.surfaceBlockAt(x, z);
+    // The surface block of the new height: the one the plants of the column check (a beach or snow
+    // line follows the height), so no plant stands on a top block it does not grow on.
+    const QcBlockId surface = m_terrain.surfaceBlockAt(x, z, target + 1);
     // Raised ground is the block under the old top (in a cave the surface block).
     const QcBlockId below = chunk.block(local.x, ground - 1, local.z);
     const QcBlockId filler = below == qcAirBlockId ? surface : below;

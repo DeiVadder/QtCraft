@@ -16,8 +16,16 @@
     "guardians": [
         {
             "mob": "sand_golem",
-            "from": [4, 1, 4],
-            "to": [10, 1, 10],
+            "from": [
+                4,
+                3,
+                2
+            ],
+            "to": [
+                16,
+                3,
+                2
+            ],
             "max": 1,
             "cooldownSeconds": 120,
             "minPlayerDistance": 12,
@@ -29,48 +37,52 @@
         ".": "air",
         "S": "sandstone",
         "C": "cut_sandstone",
+        "M": "smooth_sandstone",
         "O": "orange_terracotta",
-        "Y": "yellow_terracotta",
         "B": "blue_terracotta",
+        "V": "sandstone_wall",
+        "h": "carved_sandstone[facing=south]",
+        "n": "sandstone_stairs[facing=north]",
+        "e": "sandstone_stairs[facing=east]",
+        "w": "sandstone_stairs[facing=west]",
         "L": "ladder[attach=north]",
-        "l": "lantern[attach=ceiling]",
+        "J": "ladder[attach=south]",
+        "X": "explosive",
+        "P": "stone_pressure_plate",
         "k": "chest[facing=south]",
-        "K": "chest[facing=north]"
+        "K": "chest[facing=north]",
+        "q": "chest[facing=east]",
+        "Q": "chest[facing=west]",
+        "l": "lantern[attach=ceiling]"
     },
     "layers": [
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSCCCCCCCCCSSS", "SSSCCCCCCCCCSSS", "SSSCCOOOOOCCSSS", "SSSCCOOOOOCCSSS", "SSSCCOOBOOCCSSS", "SSSCCOOOOOCCSSS", "SSSCCOOOOOCCSSS", "SSSCCCCCCCCCSSS", "SSSCCCCCCCCCSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSLSSSSSSS", "SSSCk.....kCSSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSSCK.....KCSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSLSSSSSSS", "SSSC.......CSSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSSC.......CSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSLSSSSSSS", "SSSC.......CSSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSSC.......CSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSLSSSSSSS", "SSSC.......CSSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSS.........SSS", "SSSC.......CSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "SCCCCCCCCCCCCCS", "SCCCCCCLCCCCCCS", "SCCCCCCCCCCCCCS", "SCCCCCCCCCCCCCS", "SCCCCOOOOOCCCCS", "SCCCCOYYYOCCCCS", "SCCCCOYBYOCCCCS", "SCCCCOYYYOCCCCS", "SCCCCOOOOOCCCCS", "SCCCCCCCCCCCCCS", "SCCCCCCCCCCCCCS", "SCCCCCCCCCCCCCS", "SCCCCCCCCCCCCCS", "SSSSSSSSSSSSSSS"],
-        ["SSSSSSSSSSSSSSS", "S.............S", "S.............S", "S.............S", "S...C.....C...S", "S.............S", "S.............S", "S.............S", "S.............S", "S.............S", "S...C.....C...S", "S.............S", "S.............S", "S.............S", "SSSSSS...SSSSSS"],
-        ["CCCCCCCCCCCCCCC", "C.............C", "C.............C", "C.............C", "C...C.....C...C", "C.............C", "C.............C", "C.............C", "C.............C", "C.............C", "C...C.....C...C", "C.............C", "C.............C", "C.............C", "CCCCCC...CCCCCC"],
-        ["OOOOOOO.OOOOOOO", "O.............O", "O.............O", "O.............O", "O...C.....C...O", "O.............O", "O.............O", "...............", "O.............O", "O.............O", "O...C.....C...O", "O.............O", "O.............O", "O.............O", "OOOOOO...OOOOOO"],
-        ["SSSSSSSSSSSSSSS", "S.............S", "S.............S", "S.............S", "S...C.....C...S", "S.............S", "S.............S", "S.............S", "S.............S", "S.............S", "S...C.....C...S", "S.............S", "S.............S", "S.............S", "SSSSSSSSSSSSSSS"],
-        ["CCCCCCCCCCCCCCC", "C.............C", "C.............C", "C.............C", "C...C.....C...C", "C.............C", "C.............C", "C...l.....l...C", "C.............C", "C.............C", "C...C.....C...C", "C.............C", "C.............C", "C.............C", "CCCCCCCCCCCCCCC"],
-        ["SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSS"],
-        ["               ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", " CCCCCCCCCCCCC ", "               "],
-        ["               ", "               ", "               ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "   SSSSSSSSS   ", "               ", "               ", "               "],
-        ["               ", "               ", "               ", "               ", "               ", "     OOOOO     ", "     OOOOO     ", "     OOBOO     ", "     OOOOO     ", "     OOOOO     ", "               ", "               ", "               ", "               ", "               "],
-        ["               ", "               ", "               ", "               ", "               ", "               ", "               ", "       C       ", "               ", "               ", "               ", "               ", "               ", "               ", "               "]
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSXXXSSSSSSSSS", "SSSSSSSSSXXXSSSSSSSSS", "SSSSSSSSSXXXSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSSCCCCCCCCCCCCCCCSSS", "SSSCCCCCCCCCCCCCCCSSS", "SSSCCCCCCCCCCCCCCCSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSCCCXCCCSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSCCCCCCCSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSS.......L.......SSS", "SSS...............SSS", "SSS...............SSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSkSSSSSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSq...P...QSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSSSSSKSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSS.......L.......SSS", "SSS...............SSS", "SSS...............SSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSOOOO.OOOOSSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSS.........SSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSSO.......OSSSSSS", "SSSSSSOOOO.OOOOSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSS.......L.......SSS", "SSS...............SSS", "SSS...............SSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSS.......SSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS", "SSSSSSSSSSSSSSSSSSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SMMMMCCCCCLCCCCCMMMMS", "SMMMMCCCCCCCCCCCMMMMS", "SMMMMCCCCCCCCCCCMMMMS", "SMMMMCCCCCCCCCCCMMMMS", "SMMMMCOOOOOOOOOCMMMMS", "SMMMMCOCCOBOCCOCMMMMS", "SMMMMCOCOBOBOCOCMMMMS", "eMMMMCOOBOOOBOOCMMMMw", "SMMMMCOBOOBOOBOCMMMMS", "SMMMMCOOBOOOBOOCMMMMS", "SMMMMCOCOBOBOCOCMMMMS", "SMMMMCOCCOBOCCOCMMMMS", "SMMMMCOOOOOOOOOCMMMMS", "SMMMMCCCCCCCCCCCMMMMS", "SMMMMCCCCCCCCCCCMMMMS", "SSSSSSSSSSSSSSSSSSSSS", "SCCCSCCCCCCCCCCCSCCCS", "SCCCSCCCCCCCCCCCSCCCS", "SCCCSnnnnnnnnnnnSCCCS", "SSSSS...........SSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "S.........L.........S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", ".....................", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "SS.SSSSSS...SSSSSS.SS", "S...S...........S...S", "S...S...........S...S", "S..JS...........SJ..S", "SSSSS...........SSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", ".....................", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "SS.SSSSSS...SSSSSS.SS", "S...S...........S...S", "S...S...........S...S", "S..JS...........SJ..S", "SSSSS...........SSSSS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "S...................S", "S...................S", "S....C.........C....S", "SSSSSSSSS...SSSSSSSSS", "S...S...........S...S", "S...S...........S...S", "S..JS...........SJ..S", "SSSSS...........SSSSS"],
+        ["OOOOOOOOOOOOOOOOOOOOO", "O...................O", "O...................O", "O....C.........C....O", "O...................O", "O...................O", "O....C.........C....O", "O...................O", "O...................O", "O....C.........C....O", "O...................O", "O...................O", "O....C.........C....O", "O...................O", "O...................O", "O....C.........C....O", "OOOOOOOOOOOOOOOOOOOOO", "O...O           O...O", "O...O           O...O", "O..JO           OJ..O", "OOOOO           OOOOO"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSS.........SSSSSS", "SSSSSSSSSOBOSSSSSSSSS", "SSSSS           SSSSS", ".SSSS           SSSS.", "SSSJS           SJSSS", "SS.SS           SS.SS"],
+        ["SSSSSSSSSSSSSSSSSSSSS", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "S....V.........V....S", "SS.SSSSSSSOSSSSSSS.SS", "S...S           S...S", "S...S           S...S", "S..JS           SJ..S", "SSSSS           SSSSS"],
+        ["SSSS.SSSSSSSSSSS.SSSS", "S...................S", "S...................S", "S...................S", ".....................", "S...................S", "S...................S", "S...................S", "S...................S", "S...................S", "S...................S", "S...................S", ".....................", "S...................S", "S...................S", "S...................S", "SS.SSSSSSSSSSSSSSS.SS", "S...S           S...S", "S...S           S...S", "S..JS           SJ..S", "SSSSS           SSSSS"],
+        ["CCCCCCCCCCCCCCCCCCCCC", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "C...................C", "CCCCCCCCCCCCCCCCCCCCC", "C...C           C...C", "C...C           C...C", "C..JC           CJ..C", "CCCCC           CCCCC"],
+        ["CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCC.....CCCCCCCC", "CCCCCCCC.....CCCCCCCC", "CCCCCCCC.....CCCCCCCC", "CCCCCCCC.....CCCCCCCC", "CCCCCCCC.....CCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "CCCCCCCCCCCCCCCCCCCCC", "SSSSSCCCCCCCCCCCSSSSS", "SCCCS           SCCCS", "SCCCS           SCCCS", "SCCJS           SJCCS", "SSSSS           SSSSS"],
+        ["C C C C C C C C C C C", "                     ", "C                   C", "                     ", "C                   C", "                     ", "C      OOOOOOO      C", "       O.....O       ", "C      O.....O      C", "       O.....O       ", "C      O.....O      C", "       O.....O       ", "C      OOOOOOO      C", "                     ", "C                   C", "                     ", "SS.SS C C C C C SS.SS", "S...S           S...S", "S...S           S...S", "S...S           S...S", "SSSSS           SSSSS"],
+        ["                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "        SSSSS        ", "        S...S        ", "        S.l.S        ", "        S...S        ", "        SSSSS        ", "                     ", "                     ", "                     ", "                     ", "SS.SS           SS.SS", "S...S           S...S", ".....           .....", "S...S           S...S", "SS.SS           SS.SS"],
+        ["                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "         CCC         ", "         CCC         ", "         CCC         ", "                     ", "                     ", "                     ", "                     ", "                     ", "CCCCC           CCCCC", "C...C           C...C", "C...C           C...C", "C...C           C...C", "CCCCC           CCCCC"],
+        ["                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "          h          ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "OCCCO           OCCCO", "CCCCC           CCCCC", "CCCCC           CCCCC", "CCCCC           CCCCC", "OCCCO           OCCCO"],
+        ["                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", " SSS             SSS ", " SSS             SSS ", " SSS             SSS ", "                     "],
+        ["                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "                     ", "  h               h  ", "                     ", "                     "]
     ],
     "loot": [
-        {
-            "at": [4, 1, 3],
-            "table": "desert_temple_chest"
-        },
-        {
-            "at": [10, 1, 3],
-            "table": "desert_temple_chest"
-        },
-        {
-            "at": [4, 1, 11],
-            "table": "desert_temple_chest"
-        },
-        {
-            "at": [10, 1, 11],
-            "table": "desert_temple_chest"
-        }
+        {"at": [10, 3, 5], "table": "desert_temple_chest"},
+        {"at": [10, 3, 13], "table": "desert_temple_chest"},
+        {"at": [6, 3, 9], "table": "desert_temple_chest"},
+        {"at": [14, 3, 9], "table": "desert_temple_chest"}
     ]
 }

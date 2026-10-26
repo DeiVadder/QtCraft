@@ -180,13 +180,22 @@ private slots:
         }
         verifyWritten(plan, first);
 
-        // Cleared above the roof, the cellar open below the ground, the floor at the ground's top.
+        // Cleared above the dome, below the ground the cellar with its ladder up into the hall and
+        // the hidden chamber under the floor pattern with a chest in each wall and the pressure plate
+        // on the explosives (decision E-893); the base at the ground's top.
         const QcStructure &structure = plan.structure();
         QCOMPARE(structure.groundLayer, 5);
-        QCOMPARE(at(first, plan.toWorld(QcBlockPos{7, structure.sizeY() + 1, 7})), qcAirBlockId);
-        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{7, 1, 7})), u"qtcraft:air"_s);
-        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{7, 3, 2})), u"qtcraft:ladder"_s);
-        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{4, 1, 3})), u"qtcraft:chest"_s);
+        QCOMPARE(at(first, plan.toWorld(QcBlockPos{10, structure.sizeY() + 1, 9})), qcAirBlockId);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 4, 2})), u"qtcraft:air"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 4, 1})), u"qtcraft:ladder"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 7, 1})), u"qtcraft:ladder"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 4, 9})), u"qtcraft:air"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 3, 9})), u"qtcraft:stone_pressure_plate"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 2, 9})), u"qtcraft:explosive"_s);
+        QCOMPARE(nameAt(first, plan.toWorld(QcBlockPos{10, 6, 9})), u"qtcraft:blue_terracotta"_s);
+        for (const QcBlockPos chest : {QcBlockPos{10, 3, 5}, QcBlockPos{10, 3, 13}, QcBlockPos{6, 3, 9}, QcBlockPos{14, 3, 9}}) {
+            QCOMPARE(nameAt(first, plan.toWorld(chest)), u"qtcraft:chest"_s);
+        }
     }
 
     void chestsAndCellarAreFurnished()
@@ -205,14 +214,14 @@ private slots:
         }
         QCOMPARE(chests, 4);
 
-        // The cellar is a guardian zone of the sand golem, on the cellar's floor.
-        const QcBlockPos middle = plan.toWorld(QcBlockPos{7, 1, 7});
+        // The cellar is a guardian zone of the sand golem, on the cellar's floor along its middle.
+        const QcBlockPos middle = plan.toWorld(QcBlockPos{10, 3, 2});
         const QList<QcGuardSite> sites = m_terrain->structureSitesNear(middle, 64).guards;
         const auto site = std::ranges::find_if(sites, [&](const QcGuardSite &s) { return s.contains(middle); });
         QVERIFY(site != sites.cend());
         QCOMPARE(site->rule.mob, u"qtcraft:sand_golem"_s);
         QCOMPARE(site->min.y, middle.y);
-        QCOMPARE(site->max.x - site->min.x, 6);
+        QCOMPARE(std::max(site->max.x - site->min.x, site->max.z - site->min.z), 12);
         QVERIFY(m_content->lootTables().find(u"qtcraft:desert_temple_chest"_s));
     }
 
@@ -233,8 +242,9 @@ private slots:
         QVERIFY(found);
         const QcStructurePlacement &temple = found->pieces.front();
         // The roads keep clear of it and its entrance faces the main road; its floor lies at the
-        // ground and the village's meeting point in its hall.
-        QCOMPARE(found->centre.y, temple.origin().y + temple.structure().groundLayer + 1);
+        // ground and the village's meeting point on its hall floor, a step above the ground.
+        QCOMPARE(found->centre.y, temple.origin().y + temple.structure().groundLayer + 2);
+        QCOMPARE(found->centreBlend, 8);
 
         // Its chunks hold the cellar, its chests get loot and its cellar is a guardian zone.
         const Chunks chunks = generate(terrain, chunksOf(temple));
@@ -246,7 +256,7 @@ private slots:
                 &QcChunkFurnishing::Chest::lootTable));
         }
         QCOMPARE(chests, 4);
-        const QcBlockPos cellar = temple.toWorld(QcBlockPos{7, 1, 7});
+        const QcBlockPos cellar = temple.toWorld(QcBlockPos{10, 3, 2});
         const QList<QcGuardSite> sites = terrain.structureSitesNear(cellar, 32).guards;
         QVERIFY(std::ranges::any_of(sites, [&](const QcGuardSite &site) { return site.contains(cellar); }));
         // /locate finds it as well (QcWorldGenerator::nearestStructure).

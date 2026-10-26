@@ -43,6 +43,7 @@ QcVillageGenerator::QcVillageGenerator(const QcTerrainGenerator &terrain, std::s
     , m_styles(*m_content)
     , m_planner(terrain, *m_content, m_styles, seed)
     , m_wetland(terrain, seed)
+    , m_centreBlend(terrain)
     , m_frozenWater(frozenWaterOf(*m_content))
 {
 }
@@ -322,6 +323,10 @@ void QcVillageGenerator::build(QcChunk &chunk, const QcVillagePlan &plan) const
     }
 
     m_wetland.shape(chunk, plan);
+    // The ground around the centre blended to its floor before the roads, which lie on it (decision E-893).
+    if (plan.centreBlend > 0) {
+        m_centreBlend.shape(chunk, plan.pieces.front(), plan.centreBlend);
+    }
     buildThresholds(chunk, plan.thresholds, plan.foundation);
     // Where a branch meets its road, the road from the centre keeps its surface.
     buildRoads(chunk, plan.branchRoads, plan.branchPathBlock);

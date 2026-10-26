@@ -1,6 +1,7 @@
 #include "worldgen/villages/QcVillageDraft.h"
 
 #include "common/content/parser/QcVillageLayoutParser.h"
+#include "worldgen/surface/QcSurfaceBlend.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcBoardwalkPlanner.h"
@@ -94,7 +95,7 @@ void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<in
         const bool post = x % bridgePostSpacing == 0 && z % bridgePostSpacing == 0;
         plan.bridges.append({{x, level->y, z}, style->bridge.deck, post ? style->bridge.post : qcAirBlockId});
     } else if (!style->overWater) {
-        const int ground = column.height - 1;
+        const int ground = groundTop(terrain, x, z);
         const int y = level && std::abs(level->y - ground) <= 1 ? level->y : ground;
         (branch ? plan.branchRoads : plan.roads).append({x, y, z});
     } else {
@@ -198,12 +199,41 @@ void QcVillageDraft::addThresholds(const QList<QcBlockPos> &steps)
     }
 }
 
+bool QcVillageDraft::nearPiece(Rect rect) const
+{
+    for (qsizetype i = 0; i < pieces.size(); ++i) {
+        const int gap = i == 0 ? std::max(pieceGap, plan.centreBlend) : pieceGap;
+        if (rect.intersects(pieces[i], gap)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int QcVillageDraft::groundTop(const QcTerrainGenerator &terrain, int x, int z) const
+{
+    const int ground = terrain.column(x, z).height - 1;
+    if (plan.centreBlend <= 0 || plan.pieces.isEmpty()) {
+        return ground;
+    }
+    const QcStructurePlacement &centre = plan.pieces.front();
+    if (QcSurfaceBlend::distanceTo(centre, x, z) == 0.0) {
+        return centre.origin().y + centre.structure().groundLayer;
+    }
+    return QcSurfaceBlend(terrain).topAt(centre, plan.centreBlend, x, z, ground).value_or(ground);
+}
+
 void QcVillageDraft::coverArea()
 {
     plan.minX = plan.maxX = centreX;
     plan.minZ = plan.maxZ = centreZ;
-    const QList<Rect> covered = pieces + roads;
-    for (const Rect rect : covered) {
+    QList<Rect> covered = pieces + roads;
+    // The centre's blended ground is the village's too: no tree grows on ground that moves.
+    if (plan.centreBlend > 0 && !pieces.isEmpty()) {
+        const Rect centre = pieces.front();
+        covered.append({centre.x0 - plan.centreBlend, centre.z0 - plan.centreBlend, centre.x1 + plan.centreBlend, centre.z1 + plan.centreBlend});
+    }
+    for (const Rect rect : std::as_const(covered)) {
         plan.minX = std::min(plan.minX, rect.x0);
         plan.minZ = std::min(plan.minZ, rect.z0);
         plan.maxX = std::max(plan.maxX, rect.x1);

@@ -462,7 +462,7 @@ A fish of the cold waters of taiga, tundra and mountains. It swims in schools, f
 
 ### <a id="mob-qtcraft-sand_golem"></a>Sand golem
 
-A golem of sand that guards the cellar of a desert temple and attacks whoever climbs down to its chests; it does not follow far. It is found nowhere else and cannot be built. Where it touches a water source block it crumbles into four blocks of sand in the shape of its build, with carved sandstone as its head; its arms fall as sand and can fill a water hole. In a dark cellar with no player close by, a new one comes back after a while: a renewable source of sand.
+A golem of sand that guards the cellar of a desert temple and attacks whoever climbs down into it; it does not follow far. It is found nowhere else and cannot be built. Where it touches a water source block it crumbles into four blocks of sand in the shape of its build, with carved sandstone as its head; its arms fall as sand and can fill a water hole. In a dark cellar with no player close by, a new one comes back after a while: a renewable source of sand.
 
 | | |
 |---|---|

@@ -137,6 +137,12 @@ struct QcVillageDraft
 
     // Whether the rectangle lies within the radius around the centre.
     bool insideRadius(Rect rect) const;
+    // Whether the rectangle comes within the gap of a piece: `pieceGap`, and around the centre piece
+    // at least its blended ground (decision E-893), so no other piece stands on ground that moves.
+    [[nodiscard]] bool nearPiece(Rect rect) const;
+    // The ground's top block at a column as the village builds it: inside the centre piece its floor,
+    // around it the blended ground (decision E-893), elsewhere the terrain's.
+    [[nodiscard]] int groundTop(const QcTerrainGenerator &terrain, int x, int z) const;
     // Whether a road cell lies within `gap` of the rectangle.
     bool touchesRoad(Rect rect, int gap) const;
     // Columns that pieces and lamps keep off (jetties, stairs).

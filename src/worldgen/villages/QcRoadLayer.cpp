@@ -108,7 +108,7 @@ QList<QcRoadLayer::Road> QcRoadLayer::walkArm(QcVillageDraft &draft, const Arm &
     int direction = arm.direction;
     int heading = arm.direction;
     std::pair<int, int> cell{arm.x, arm.z};
-    From from{m_terrain.column(arm.x, arm.z).height, 0, arm.direction};
+    From from{draft.groundTop(m_terrain, arm.x, arm.z) + 1, 0, arm.direction};
     ArmTurns turns(arm, arm.winding ? arm.firstSlot + windGapMinimum + static_cast<int>(draft.random() * windGapRange) : -1);
     Road run{arm.x, arm.z, directions[direction].first, directions[direction].second, 0, arm.firstSlot, arm.branch, 0, false, arm.sides};
     int laid = 0;
@@ -164,7 +164,8 @@ std::optional<QcRoadLayer::Ground> QcRoadLayer::roadGround(const QcVillageDraft 
     // Over water a road is a boardwalk at the floor height: it ends where the ground cannot carry it.
     // On land it crosses rivers on bridges and ends at other water; the whole stretch of water is
     // checked at its first cell, the cells after it in the same direction lie on the same bridge.
-    Ground ground{column.height, false};
+    // Around a centre with blended ground (decision E-893) the road runs on the ground as built.
+    Ground ground{draft.groundTop(m_terrain, x, z) + 1, false};
     if (!draft.style->overWater && column.height - 1 < m_terrain.seaLevel()) {
         const bool sameBridge = from.bridgeCells > 0 && from.direction == direction;
         const std::optional<int> deck = sameBridge ? std::optional<int>(bridgeDeck()) : bridgeHeight(draft, cell, direction);
@@ -247,12 +248,12 @@ int QcRoadLayer::bridgeDeck() const
     return m_terrain.seaLevel() + 1;
 }
 
-QcVillageDraft::RoadLevel QcRoadLayer::roadLevel(int x, int z) const
+QcVillageDraft::RoadLevel QcRoadLayer::roadLevel(const QcVillageDraft &draft, int x, int z) const
 {
     // A road's middle line only runs over water and low bank on a bridge (roadGround).
     const QcTerrainColumn column = m_terrain.column(x, z);
     const bool bridge = column.height - 1 < m_terrain.seaLevel();
-    return bridge ? QcVillageDraft::RoadLevel{m_terrain.seaLevel(), true} : QcVillageDraft::RoadLevel{column.height - 1, false};
+    return bridge ? QcVillageDraft::RoadLevel{m_terrain.seaLevel(), true} : QcVillageDraft::RoadLevel{draft.groundTop(m_terrain, x, z), false};
 }
 
 int QcRoadLayer::windTurn(QcVillageDraft &draft, std::pair<int, int> cell, int direction, int heading) const
@@ -301,7 +302,7 @@ void QcRoadLayer::paintRun(QcVillageDraft &draft, const Road &run, std::pair<boo
         const std::pair<int, int> middle{run.x + run.dx * d, run.z + run.dz * d};
         const Rect rect = QcVillageDraft::brush(middle, run.dx, run.dz, run.diagonal() || joint);
         // The cells across the road lie at the height of its middle line where the ground allows.
-        const QcVillageDraft::RoadLevel level = roadLevel(middle.first, middle.second);
+        const QcVillageDraft::RoadLevel level = roadLevel(draft, middle.first, middle.second);
         for (int z = rect.z0; z <= rect.z1; ++z) {
             for (int x = rect.x0; x <= rect.x1; ++x) {
                 draft.addRoadCell(m_terrain, {x, z}, run.branch, level);

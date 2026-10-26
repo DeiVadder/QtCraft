@@ -2,6 +2,7 @@
 
 #include "worldgen/generators/QcChunkFurnishing.h"
 #include "worldgen/generators/QcStructureSites.h"
+#include "worldgen/surface/QcSurfaceBlend.h"
 #include "worldgen/villages/QcVillagePlan.h"
 #include "worldgen/villages/QcVillagePlanCache.h"
 #include "worldgen/villages/QcVillagePlanner.h"
@@ -87,6 +88,8 @@ private:
     QcVillageStyles m_styles;
     QcVillagePlanner m_planner;
     QcWetlandShaper m_wetland;
+    // The ground around a centre with blended ground (decision E-893).
+    QcSurfaceBlend m_centreBlend;
     QcVillagePlanCache m_cache{cachedPlans};
     // The biomes' frozen water blocks (ice), which isGround() does not count as ground.
     QList<QcBlockId> m_frozenWater;

@@ -107,8 +107,27 @@ bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blu
 
     // A centre with a cellar (decision E-590) has its ground layer at the floor.
     const QcStructurePlacement &placed = addPiece(draft, centre, rect, {rect.x0, *floor - centre.structure()->groundLayer, rect.z0}, turns);
-    draft.setCentre(centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, *floor + 1, draft.centreZ});
+    draft.setCentre(centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, standingHeight(placed), draft.centreZ});
+    // A centre placed on the surface by itself too blends the ground around it there (decision E-893).
+    const QList<QcStructureDefinition> &definitions = m_content.worldgen().structures();
+    const auto definition = std::ranges::find(definitions, centre.structure()->name(), &QcStructureDefinition::name);
+    draft.plan.centreBlend = definition != definitions.end() && definition->surface ? definition->surface->blend : 0;
     return true;
+}
+
+int QcPiecePlacer::standingHeight(const QcStructurePlacement &placed) const
+{
+    // Above the floor in the middle: a raised hall floor (a temple's) lifts the meeting point onto it.
+    const QcStructure &structure = placed.structure();
+    QcBlockPos middle{structure.sizeX() / 2, structure.groundLayer + 1, structure.sizeZ() / 2};
+    const auto solidAt = [&](QcBlockPos local) {
+        const std::optional<QcBlockId> block = placed.worldBlock(local);
+        return block && m_content.block(*block).solid;
+    };
+    while (middle.y < structure.sizeY() && solidAt(middle)) {
+        ++middle.y;
+    }
+    return placed.origin().y + middle.y;
 }
 
 void QcPiecePlacer::placeRulePieces(QcVillageDraft &draft, const QList<Road> &roads) const
@@ -161,7 +180,7 @@ bool QcPiecePlacer::placeAtWater(QcVillageDraft &draft, const QList<Road> &roads
         }
         const int endX = road.x + road.dx * (road.length - 1);
         const int endZ = road.z + road.dz * (road.length - 1);
-        const QcJettyPlanner::Request request{endX, endZ, road.dx, road.dz, m_terrain.column(endX, endZ).height - 1,
+        const QcJettyPlanner::Request request{endX, endZ, road.dx, road.dz, draft.groundTop(m_terrain, endX, endZ),
                                               piece.water, piece.jettyWidth, piece.jettyOver, piece.deck, piece.post};
         const std::optional<QList<QcVillagePlan::Deck>> decks = QcJettyPlanner::lay(m_terrain, request);
         if (!decks || decks->isEmpty()) {
@@ -261,7 +280,7 @@ int QcPiecePlacer::placeAt(QcVillageDraft &draft, const Road &road, std::pair<in
     const int zb = road.z + road.dz * a1 + pz * c1;
     const Rect rect{std::min(xa, xb), std::min(za, zb), std::max(xa, xb), std::max(za, zb)};
 
-    const bool hitsPiece = std::ranges::any_of(draft.pieces, [&](Rect other) { return rect.intersects(other, pieceGap); });
+    const bool hitsPiece = draft.nearPiece(rect);
     // Over water the whole front of a piece lies on the boardwalk, so its door opens onto it.
     const bool pastEnd = draft.style->overWater && a1 >= road.length;
     if (pastEnd || !draft.insideRadius(rect) || hitsPiece || draft.touchesRoad(rect, offset - roadHalfWidth - 1)) {
@@ -299,7 +318,7 @@ int QcPiecePlacer::placeAtDiagonal(QcVillageDraft &draft, const Road &road, std:
             continue;
         }
 
-        const bool hitsPiece = std::ranges::any_of(draft.pieces, [&](Rect other) { return rect.intersects(other, pieceGap); });
+        const bool hitsPiece = draft.nearPiece(rect);
         const std::optional<int> floor = hitsPiece || !draft.insideRadius(rect) ? std::nullopt : floorFor(draft, rect, m_settings.maxPieceSlope);
         // The doors of the blueprint as written (its variations keep them in place).
         const QList<QcBlockPos> steps = floor ? doorsteps(QcStructurePlacement(blueprint.structure(), {rect.x0, *floor, rect.z0}, turns, m_content))
@@ -365,7 +384,7 @@ void QcPiecePlacer::placeLamps(QcVillageDraft &draft, const Road &road) const
             if (draft.touchesRoad(rect, 0)) {
                 continue;
             }
-            const bool free = std::ranges::none_of(draft.pieces, [&](Rect piece) { return rect.intersects(piece, pieceGap); });
+            const bool free = !draft.nearPiece(rect);
             // Inside the radius like the pieces: a wide lamp never crosses the region's edge.
             const std::optional<int> floor = free && draft.insideRadius(rect) ? floorFor(draft, rect, 0) : std::nullopt;
             if (floor) {

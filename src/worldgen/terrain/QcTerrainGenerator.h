@@ -129,6 +129,9 @@ public:
     [[nodiscard]] QcBlockId frozenWaterAt(int x, int z, const Column &column) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
+    // Top block of a column whose ground is moved to `height` (its top block one below; the blend
+    // around a surface structure, decision E-889): the block the features of the column check.
+    QcBlockId surfaceBlockAt(int x, int z, int height) const;
     QString biomeName(int index) const;
     // Highest solid block of the unmodified terrain at a column (overhangs included, caves not).
     int groundTop(int x, int z, const Column &column) const;
@@ -141,6 +144,8 @@ public:
     QcBlockId waterBlock() const { return m_definitions.water; }
 
 private:
+    // The top block of a column with the terrain data `base` (its height possibly moved).
+    [[nodiscard]] QcBlockId surfaceOf(int x, int z, const Column &base) const;
     using Biome = QcTerrainDefinitions::Biome;
     using Feature = QcTerrainDefinitions::Feature;
     using Ore = QcTerrainDefinitions::Ore;

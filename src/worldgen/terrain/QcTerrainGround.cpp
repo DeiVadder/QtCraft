@@ -58,7 +58,19 @@ QcBlockId QcTerrainGenerator::frozenWaterAt(int x, int z, const Column &column) 
 
 QcBlockId QcTerrainGenerator::surfaceBlockAt(int x, int z) const
 {
-    Column info = withGround(x, z, column(x, z));
+    return surfaceOf(x, z, column(x, z));
+}
+
+QcBlockId QcTerrainGenerator::surfaceBlockAt(int x, int z, int height) const
+{
+    Column moved = column(x, z);
+    moved.height = height;
+    return surfaceOf(x, z, moved);
+}
+
+QcBlockId QcTerrainGenerator::surfaceOf(int x, int z, const Column &base) const
+{
+    Column info = withGround(x, z, base);
     if (m_definitions.biomes[info.ground()].steep != qcAirBlockId) {
         info.slope = std::max({std::abs(column(x - 1, z).height - info.height), std::abs(column(x + 1, z).height - info.height),
                                std::abs(column(x, z - 1).height - info.height), std::abs(column(x, z + 1).height - info.height)});

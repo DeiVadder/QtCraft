@@ -49,6 +49,8 @@ private:
     // The centre piece of the blueprint, its door towards the main road; false where the ground does
     // not fit.
     bool placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const;
+    // The height a creature stands at in the middle of a placed centre piece, on its floor.
+    [[nodiscard]] int standingHeight(const QcStructurePlacement &placed) const;
     // A kind without a water rule on a random free spot along a road; false when none fits.
     bool placeAnywhere(QcVillageDraft &draft, const QList<Road> &roads, int index) const;
     // A kind with a water rule beside the end of a road with water ahead, and its jetty from the

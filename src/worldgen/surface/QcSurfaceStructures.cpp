@@ -152,8 +152,9 @@ QList<QcSurfacePlanner::Rect> QcSurfaceStructures::grownFootprintsNear(QcChunkPo
     const QcSurfacePlanner::Rect chunk = chunkRect(pos);
     for (qsizetype kind = 0; kind < m_planner.kinds().size(); ++kind) {
         const QcStructureDefinition::Surface &rule = m_planner.kinds()[kind].rule;
-        // With plants on the blend one column stays bare beside the walls: no leaves before an opening.
-        const int around = plantsOnBlend && rule.blendVegetation ? 1 : rule.blend;
+        // With plants on the blend two columns stay bare beside the walls: no leaves and no bush right
+        // before an opening.
+        const int around = plantsOnBlend && rule.blendVegetation ? 2 : rule.blend;
         const QList<std::pair<int, int>> regions = regionsOver(grown(chunk, margin), rule.spacing);
         for (const auto &[rx, rz] : regions) {
             const std::shared_ptr<const QcStructurePlacement> plan = planOf(static_cast<int>(kind), rx, rz);
