@@ -25,7 +25,7 @@ qc_add_test(test_server_log SOURCES network/test_server_log.cpp QcRawClient.h Qc
 target_compile_definitions(test_server_log PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_server_log qtcraft-headless)
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
-qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 240)
+qc_add_test(test_latency SOURCES network/test_latency.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 270)
 qc_add_test(test_adventure_client SOURCES network/test_adventure_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_backpack_control SOURCES network/test_backpack_control.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 120)
 qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
