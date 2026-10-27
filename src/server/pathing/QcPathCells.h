@@ -4,9 +4,42 @@
 
 #include <QtGlobal>
 
+#include <algorithm>
+#include <optional>
 #include <vector>
 
 class QcContentRegistry;
+
+// A free stretch of a cell along one horizontal axis, in block units from the cell's corner.
+struct QcPathOpening
+{
+    float from = 0.0f;
+    float to = 1.0f;
+
+    float middle() const { return (from + to) / 2.0f; }
+    // The stretch free in both: where they do not overlap, the empty stretch between their inner
+    // edges (its middle lies as far from both panels as can be).
+    QcPathOpening within(QcPathOpening other) const { return {std::max(from, other.from), std::min(to, other.to)}; }
+};
+
+// Where a body goes through the cell of an open door or trapdoor (decision E-905): per horizontal
+// axis, the free opening beside its panel; none along an axis that nothing narrows. A panel narrows
+// the axis across it: an open door's leaf standing along z narrows x.
+struct QcPathGap
+{
+    std::optional<QcPathOpening> x;
+    std::optional<QcPathOpening> z;
+
+    bool narrows() const { return x || z; }
+    // Both gaps at once (a body in two cells): the openings within each other along each axis.
+    QcPathGap within(const QcPathGap &other) const { return {both(x, other.x), both(z, other.z)}; }
+
+private:
+    static std::optional<QcPathOpening> both(std::optional<QcPathOpening> a, std::optional<QcPathOpening> b)
+    {
+        return a && b ? a->within(*b) : a ? a : b;
+    }
+};
 
 // What a block state is to a walking creature looking for a path (decisions E-400, E-402), one byte
 // per state, computed once from the content: the kind of cell, two flags and the height of a low
@@ -59,6 +92,8 @@ inline quint8 make(Kind kind, quint8 flags = 0) { return static_cast<quint8>(sta
 
 // The cell of one block state.
 quint8 classify(const QcContentRegistry &content, QcBlockId id);
+// The gap of one block state: open doors and trapdoors have one beside their panel, every other state none.
+QcPathGap gapOf(const QcContentRegistry &content, QcBlockId id);
 
 } // namespace QcPathCell
 
@@ -70,7 +105,10 @@ public:
 
     // Unknown for ids outside the content.
     quint8 of(QcBlockId state) const { return state < m_cells.size() ? m_cells[state] : QcPathCell::make(QcPathCell::Kind::Unknown); }
+    // No gap for ids outside the content.
+    QcPathGap gap(QcBlockId state) const { return state < m_gaps.size() ? m_gaps[state] : QcPathGap{}; }
 
 private:
     std::vector<quint8> m_cells;
+    std::vector<QcPathGap> m_gaps;
 };

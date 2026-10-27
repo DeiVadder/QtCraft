@@ -22,7 +22,9 @@ struct QcPathRules
     static constexpr double climbHeight = 1.125;
 
     double height = 1.8;
-    // Short, so the rules stay 16 bytes and pass by value.
+    // The body's width: through an open door it keeps to the opening (decision E-905), as long as it
+    // overlaps the door's cell. A float and maxDrop short, so the rules stay 16 bytes and pass by value.
+    float width = 0.6f;
     qint16 maxDrop = defaultMaxDrop;
     // Water costs a walker much (it is used only without a dry way); a swimmer moves through it freely.
     bool swims : 1 = false;
@@ -45,6 +47,7 @@ struct QcPathRules
 
     static QcPathRules of(const QcMobDefinition &definition);
 };
+static_assert(sizeof(QcPathRules) == 16, "QcPathRules passes by value");
 
 // One place a creature can stand in: its feet cell, how high it stands on a low block in that cell
 // (a slab: half a block, a carpet an eighth) and whether it is in water.

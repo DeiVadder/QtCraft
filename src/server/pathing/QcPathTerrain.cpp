@@ -7,6 +7,7 @@ QcPathRules QcPathRules::of(const QcMobDefinition &definition)
 {
     QcPathRules rules;
     rules.height = definition.height;
+    rules.width = static_cast<float>(definition.width);
     // From the creature's abilities (decision E-423): villagers open wooden doors on their way,
     // climb ladders and never jump off a boardwalk into the water (decision E-411).
     const QcMobAbilities &abilities = definition.abilities;

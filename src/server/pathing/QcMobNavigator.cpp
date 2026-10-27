@@ -1,5 +1,6 @@
 #include "server/pathing/QcMobNavigator.h"
 
+#include "server/pathing/QcOpeningSteering.h"
 #include "server/pathing/QcPathPlanner.h"
 
 #include <algorithm>
@@ -24,11 +25,6 @@ constexpr double jumpDistance = 1.3;
 constexpr double floorSink = 0.2;
 // How far ahead safeStep looks for ground.
 constexpr double stepLookAhead = 0.7;
-
-QcVec3 centreOf(QcBlockPos cell)
-{
-    return {cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
-}
 
 double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
 {
@@ -90,23 +86,30 @@ bool downwards(const QcMobPath &path, std::size_t index)
     return next.x == here.x && next.z == here.z && next.y < here.y;
 }
 
-// Passes the waypoints the creature reached and measures its progress towards the next.
-void follow(QcCreature &mob)
+// Passes the waypoints the creature reached and measures its progress towards the next; returns
+// the point of the next waypoint (QcOpeningSteering::waypointPoint), none at the end of the path.
+// A waypoint that lines the creature up for a door counts as reached only on the line, unless the
+// creature made no progress for half of stuckTicks (pushed, knocked back, in a current).
+std::optional<QcOpeningSteering::Point> follow(QcCreature &mob, const QcPathGround &ground)
 {
     QcMobPath &path = mob.path;
+    std::optional<QcOpeningSteering::Point> point;
     while (path.next < path.cells.size()) {
         const QcBlockPos waypoint = path.cells[path.next];
-        if (horizontalDistance(mob.motion.position, centreOf(waypoint)) >= arriveDistance
-            || mob.motion.position.y < waypoint.y - climbSlack || ((mob.motion.climbing || downwards(path, path.next)) && mob.motion.position.y > waypoint.y + descendSlack)) {
+        point = QcOpeningSteering::waypointPoint(path, path.next, ground);
+        const bool lined = point->onLane(mob.motion.position) || path.stuckTicks >= stuckTicks / 2;
+        if (horizontalDistance(mob.motion.position, point->at) >= arriveDistance || !lined || mob.motion.position.y < waypoint.y - climbSlack
+            || ((mob.motion.climbing || downwards(path, path.next)) && mob.motion.position.y > waypoint.y + descendSlack)) {
             break;
         }
+        point.reset();
         ++path.next;
         path.closest = std::numeric_limits<double>::max();
         path.stuckTicks = 0;
     }
 
-    if (path.next < path.cells.size()) {
-        const double distance = horizontalDistance(mob.motion.position, centreOf(path.cells[path.next]));
+    if (point) {
+        const double distance = horizontalDistance(mob.motion.position, point->at);
         if (distance < path.closest - 0.05) {
             path.closest = distance;
             path.stuckTicks = 0;
@@ -114,6 +117,7 @@ void follow(QcCreature &mob)
             ++path.stuckTicks;
         }
     }
+    return point;
 }
 
 bool needsSearch(const QcCreature &mob, const QcPathGround &ground)
@@ -144,16 +148,16 @@ bool needsSearch(const QcCreature &mob, const QcPathGround &ground)
            || (path.finished() && !path.reachesGoal);
 }
 
-// The steering along a planned path: to the next waypoint, then to the goal itself if the path gets
-// there, as long as the step keeps to safe ground (the goal may lie beyond an edge, the path ends
-// within its closeEnough).
-QcPhysics::Steering along(const QcCreature &mob, double speed, const QcPathGround &ground)
+// The steering along a planned path: to the next waypoint (`point`, its point, from follow), then
+// to the goal itself if the path gets there, as long as the step keeps to safe ground (the goal may
+// lie beyond an edge, the path ends within its closeEnough).
+QcPhysics::Steering along(const QcCreature &mob, double speed, const std::optional<QcOpeningSteering::Point> &point, const QcPathGround &ground)
 {
     const QcMobPath &path = mob.path;
     if (!path.planned) {
         return {{}, speed};
     }
-    if (path.next >= path.cells.size()) {
+    if (path.next >= path.cells.size() || !point) {
         const double left = horizontalDistance(mob.motion.position, path.goal);
         const QcPhysics::Steering last =
             path.reachesGoal ? towards(mob, path.goal, brakedSpeed(mob, speed, left, ground.world)) : QcPhysics::Steering{{}, speed};
@@ -161,11 +165,13 @@ QcPhysics::Steering along(const QcCreature &mob, double speed, const QcPathGroun
     }
 
     const QcBlockPos waypoint = path.cells[path.next];
+    const QcOpeningSteering::Target target = QcOpeningSteering::target(mob, *point, ground);
     // The way left: to the waypoint, then about a metre per waypoint after it.
-    const double left = horizontalDistance(mob.motion.position, centreOf(waypoint)) + static_cast<double>(path.cells.size() - path.next - 1);
-    QcPhysics::Steering steering = towards(mob, centreOf(waypoint), brakedSpeed(mob, speed, left, ground.world));
+    const double left = horizontalDistance(mob.motion.position, point->at) + static_cast<double>(path.cells.size() - path.next - 1);
+    QcPhysics::Steering steering = towards(mob, QcOpeningSteering::aimAt(mob, target), brakedSpeed(mob, speed, left, ground.world));
+    steering = QcOpeningSteering::lineUp(mob, *point, steering);
     const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, floorSink, 0.0});
-    steering.jump = waypoint.y > feet.y && horizontalDistance(mob.motion.position, centreOf(waypoint)) < jumpDistance;
+    steering.jump = waypoint.y > feet.y && horizontalDistance(mob.motion.position, point->at) < jumpDistance;
 
     // Down a ladder straight to the waypoint's level: pushing sideways on it would climb it.
     if (mob.motion.climbing && waypoint.y < feet.y) {
@@ -210,12 +216,12 @@ Navigation navigate(QcCreature &mob, double speed, QcPathPlanner &planner, const
 
     ++path.age;
     path.waitTicks = std::max(0, path.waitTicks - 1);
-    follow(mob);
+    const std::optional<QcOpeningSteering::Point> point = follow(mob, ground);
     if (mayPlan && needsSearch(mob, ground)) {
         planner.request(mob);
     }
 
-    return {along(mob, speed, ground), ground.rules.opensDoors ? doorAhead(mob, ground) : std::nullopt};
+    return {along(mob, speed, point, ground), ground.rules.opensDoors ? doorAhead(mob, ground) : std::nullopt};
 }
 
 } // namespace

@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
+#include <vector>
 
 using namespace Qt::StringLiterals;
 
@@ -42,7 +44,63 @@ quint8 lowCell(double top, quint8 flags)
     return make(Kind::Low, static_cast<quint8>(flags | static_cast<quint8>((eighths - 1) << liftShift)));
 }
 
+// Whether the state is the open state of a door, gate or trapdoor (a block with an `open` state).
+bool isOpen(const QcContentRegistry &content, QcBlockId id)
+{
+    return content.block(id).property(u"open"_s) != nullptr && content.property(id, u"open"_s) == u"true"_s;
+}
+
+// Panels reaching no higher than this above the cell's bottom are stepped over, not walked beside.
+constexpr double panelStep = 0.5;
+
+// The widest stretch of the cell along x (`alongX`) or z that no panel covers: a panel is a
+// collision box over the whole cell along the other axis that reaches above panelStep (the leaf of
+// an open door, an open trapdoor). None without a panel or without a free stretch. Panels of the
+// same opening in other cells (the cell above, the next door) are combined by the navigator
+// (QcPathGap::within), not here.
+std::optional<QcPathOpening> opening(const QList<QcAabb> &boxes, bool alongX)
+{
+    constexpr double edge = 1e-6;
+    std::vector<std::pair<double, double>> panels;
+    for (const QcAabb &box : boxes) {
+        const double acrossMin = alongX ? box.min.z : box.min.x;
+        const double acrossMax = alongX ? box.max.z : box.max.x;
+        if (acrossMin <= edge && acrossMax >= 1.0 - edge && box.max.y > panelStep) {
+            panels.emplace_back(std::clamp(alongX ? box.min.x : box.min.z, 0.0, 1.0), std::clamp(alongX ? box.max.x : box.max.z, 0.0, 1.0));
+        }
+    }
+    if (panels.empty()) {
+        return std::nullopt;
+    }
+
+    std::ranges::sort(panels);
+    double from = 0.0;
+    double best = 0.0;
+    std::optional<QcPathOpening> widest;
+    const auto consider = [&](double to) {
+        if (to - from > best) {
+            best = to - from;
+            widest = QcPathOpening{static_cast<float>(from), static_cast<float>(to)};
+        }
+    };
+    for (const auto &[low, high] : panels) {
+        consider(low);
+        from = std::max(from, high);
+    }
+    consider(1.0);
+    return widest;
+}
+
 } // namespace
+
+QcPathGap gapOf(const QcContentRegistry &content, QcBlockId id)
+{
+    if (!isOpen(content, id)) {
+        return {};
+    }
+    const QList<QcAabb> &collision = content.state(id).collision;
+    return {opening(collision, true), opening(collision, false)};
+}
 
 quint8 classify(const QcContentRegistry &content, QcBlockId id)
 {
@@ -60,7 +118,7 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
 
     // Doors, gates and trapdoors (blocks with an `open` state): open ones let bodies through.
     const bool opens = block.property(u"open"_s) != nullptr;
-    if (opens && content.property(id, u"open"_s) == u"true"_s) {
+    if (isOpen(content, id)) {
         return make(Kind::Open, flags);
     }
     if (state.collision.isEmpty()) {
@@ -93,7 +151,9 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
 QcPathCellTable::QcPathCellTable(const QcContentRegistry &content)
 {
     m_cells.resize(static_cast<std::size_t>(content.stateCount()));
+    m_gaps.resize(static_cast<std::size_t>(content.stateCount()));
     for (qsizetype id = 0; id < content.stateCount(); ++id) {
         m_cells[static_cast<std::size_t>(id)] = QcPathCell::classify(content, static_cast<QcBlockId>(id));
+        m_gaps[static_cast<std::size_t>(id)] = QcPathCell::gapOf(content, static_cast<QcBlockId>(id));
     }
 }

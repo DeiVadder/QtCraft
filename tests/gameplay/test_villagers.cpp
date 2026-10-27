@@ -1,3 +1,4 @@
+#include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
@@ -13,6 +14,8 @@
 #include <QScopeGuard>
 #include <QTemporaryDir>
 
+#include <algorithm>
+#include <limits>
 #include <optional>
 
 using namespace Qt::StringLiterals;
@@ -465,6 +468,34 @@ private slots:
         }, 600);
         QVERIFY(through);
         QCOMPARE(jumps, 0);
+    }
+
+    // A villager coming at its door steeply from the side, starting off the line, keeps clear of the
+    // open leaf (decision E-905): the leaf is 3/16 thick, the middle of the opening leaves a body 0.6
+    // wide about 10.6 cm on each side.
+    void aVillagerKeepsClearOfTheOpenLeaf()
+    {
+        start(0.1);
+        const QcBlockPos head = bed(m_feet.offset(4, 0, 4));
+        const QcBlockPos door = wallWithDoor(m_feet.z - 3, u"qtcraft:oak_door"_s);
+        m_server->world().setBlock(m_feet.offset(0, 0, -9), id("qtcraft:furnace"));
+        const quint32 entity = settle(head, QcVec3{door.x + 3.3, static_cast<double>(m_feet.y), door.z + 1.6}).id;
+
+        double clearance = std::numeric_limits<double>::max();
+        int jumps = 0;
+        const bool through = tickUntil([&] {
+            const QcCreature &mob = *villager(entity);
+            jumps += mob.motion.velocity.y > 0.1 ? 1 : 0;
+            const QcAabb body = QcPhysics::boxAt(mob.motion.position, 0.6, 1.95);
+            if (isOpen(door) && body.max.z > door.z && body.min.z < door.z + 1) {
+                const QcAabb leaf = m_content->state(*m_server->world().blockAt(door)).collision.first();
+                clearance = std::min(clearance, std::max(door.x + leaf.min.x - body.max.x, body.min.x - (door.x + leaf.max.x)));
+            }
+            return mob.motion.position.z < door.z - 1.0;
+        }, 600);
+        QVERIFY(through);
+        QCOMPARE(jumps, 0);
+        QVERIFY2(clearance >= 0.08, qPrintable(QString::number(clearance)));
     }
 
     void aDoorIsClosedWhenItsVillagerDies()

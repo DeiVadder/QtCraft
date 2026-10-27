@@ -228,6 +228,7 @@ target_sources(qc_server PRIVATE
     pathing/QcMobLegs.h pathing/QcMobLegs.cpp
     pathing/QcMobNavigator.h pathing/QcMobNavigator.cpp
     pathing/QcMobPath.h
+    pathing/QcOpeningSteering.h pathing/QcOpeningSteering.cpp
     pathing/QcPathCells.h pathing/QcPathCells.cpp
     pathing/QcPathFinder.h pathing/QcPathFinder.cpp
     pathing/QcPathGround.h

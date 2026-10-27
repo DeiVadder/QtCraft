@@ -13,7 +13,8 @@ class QcPathPlanner;
 // stood on, notices when it makes no progress, and asks QcPathPlanner for a new path when the goal
 // moved, the path is blocked or it got stuck, a chase path is old, or a partial path ended. After a
 // path that did not get there it waits (QcMobPath::waitTicks) before it asks again, unless the path
-// is blocked or the goal moved far (farGoalMove).
+// is blocked or the goal moved far (farGoalMove). Through an open door or trapdoor it keeps to the
+// middle of the opening beside the panel, not to the middle of the cell (QcOpeningSteering, E-905).
 namespace QcMobNavigator {
 
 // A chase path is searched again after this many ticks (the prey moves); no goal is searched again
