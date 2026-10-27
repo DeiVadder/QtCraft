@@ -6,6 +6,10 @@
 #include <QAudioFormat>
 #include <QMediaDevices>
 
+#include <mutex>
+#include <optional>
+#include <type_traits>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -46,6 +50,46 @@ std::optional<QcAudioPlatform::Format> formatAt(const QAudioDevice &device, int 
     return std::nullopt;
 }
 
+// Runs `work` on the thread of `host` and waits for it; empty when the call did not run. The
+// blocking queued call carries only the wake-up and the address of the call: `work`, its result and
+// everything it changed cross the threads through a std::mutex, which the thread sanitizer sees (it
+// does not see the semaphore inside Qt). `work` gets the host as an argument, so nothing on the audio
+// thread reads a member of QcSystemAudio.
+template<typename Work>
+auto callOnHostThread(QcAudioSinkHost *host, Work work)
+{
+    using Result = std::invoke_result_t<Work &, QcAudioSinkHost &>;
+    using Stored = std::conditional_t<std::is_void_v<Result>, bool, Result>;
+    struct Call
+    {
+        std::mutex mutex;
+        QcAudioSinkHost *host = nullptr;
+        Work work;
+        std::optional<Stored> result;
+    };
+
+    Call call{{}, host, std::move(work), {}};
+    {
+        // Publishes the call (and what the caller did before) to the audio thread.
+        const std::scoped_lock publish(call.mutex);
+    }
+    QMetaObject::invokeMethod(
+        host,
+        [&call] {
+            const std::scoped_lock run(call.mutex);
+            if constexpr (std::is_void_v<Result>) {
+                call.work(*call.host);
+                call.result = true;
+            } else {
+                call.result = call.work(*call.host);
+            }
+        },
+        Qt::BlockingQueuedConnection);
+
+    const std::scoped_lock collect(call.mutex);
+    return call.result;
+}
+
 } // namespace
 
 QcSystemAudio::QcSystemAudio(QObject *parent)
@@ -55,6 +99,8 @@ QcSystemAudio::QcSystemAudio(QObject *parent)
 
 QcSystemAudio::~QcSystemAudio()
 {
+    // The host closes its sink on the audio thread, then the thread stops (nothing posts to the host
+    // any more: the sink that could is gone) and only then is the host deleted here.
     close();
     m_thread.quit();
     m_thread.wait();
@@ -114,21 +160,21 @@ QcAudioPlatform::Opened QcSystemAudio::open(const QByteArray &device, const Form
 
     startThread();
     const QAudioFormat audioFormat = stereo(output, format.rate, format.sampleFormat);
-    Opened opened;
-    QMetaObject::invokeMethod(
-        m_host.get(),
-        [&] {
-            const QcAudioSinkHost::Opened result = m_host->open(output, audioFormat, format.sampleFormat, render, bufferMilliseconds);
-            opened = {result.error, result.generation};
-        },
-        Qt::BlockingQueuedConnection);
-    return opened;
+    const std::optional<QcAudioSinkHost::Opened> opened =
+        callOnHostThread(m_host.get(), [output, audioFormat, sampleFormat = format.sampleFormat, render](QcAudioSinkHost &host) {
+            return host.open(output, audioFormat, sampleFormat, render, bufferMilliseconds);
+        });
+    if (!opened) {
+        return {QtAudio::OpenError, 0};
+    }
+    return {opened->error, opened->generation};
 }
 
 void QcSystemAudio::close()
 {
     if (m_host && m_thread.isRunning()) {
-        QMetaObject::invokeMethod(m_host.get(), [this] { m_host->close(); }, Qt::BlockingQueuedConnection);
+        // An empty result (the call did not run) needs nothing: then there is no sink either.
+        callOnHostThread(m_host.get(), [](QcAudioSinkHost &host) { host.close(); });
     }
 }
 

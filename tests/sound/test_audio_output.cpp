@@ -1,10 +1,15 @@
 #include "audio/QcAudioEngine.h"
 #include "audio/QcAudioOutput.h"
+#include "audio/QcSystemAudio.h"
 #include "common/content/definitions/QcSoundKeys.h"
 #include "QcTestUtil.h"
 
 #include <QSignalSpy>
 #include <QTest>
+
+#include <algorithm>
+#include <array>
+#include <span>
 
 using namespace Qt::StringLiterals;
 
@@ -72,6 +77,48 @@ private slots:
         qInfo() << "frames pulled while the GUI thread slept" << pulled << "at" << output.sampleRate() << "Hz";
         QVERIFY(pulled >= output.sampleRate() / 5);
         output.stop();
+    }
+
+    // Opening, closing and destroying the system audio in quick turns, the way switching devices and
+    // leaving the game do: the audio thread starts and stops each time, and the thread sanitizer
+    // (this test is in the concurrency list) sees every hand-over between it and the GUI thread.
+    void systemAudioSurvivesOpenCloseDestroyCycles()
+    {
+        // Silence, rendered on the audio thread; nothing here is shared with the GUI thread.
+        static constexpr std::array<float, 16384> silence{};
+        const QcMixerDevice::Render render = [](int frames) {
+            return std::span<const float>(silence).first(std::min(static_cast<std::size_t>(frames) * 2, silence.size()));
+        };
+
+        {
+            // Never opened: no audio thread to stop.
+            QcSystemAudio audio;
+            const QcAudioPlatform::Opened unknown = audio.open("qtcraft-no-such-device", {}, render);
+            QCOMPARE(unknown.error, QtAudio::OpenError);
+        }
+
+        for (int cycle = 0; cycle < 6; ++cycle) {
+            QcSystemAudio audio;
+            const QByteArray device = audio.defaultOutput();
+            const std::optional<QcAudioPlatform::Format> format = audio.format(device, 0);
+            if (!format) {
+                QSKIP("no audio output device");
+            }
+
+            const QcAudioPlatform::Opened first = audio.open(device, *format, render);
+            if (first.error != QtAudio::NoError) {
+                QSKIP("the audio output device does not open");
+            }
+            // Reopening replaces the sink: a new generation.
+            const QcAudioPlatform::Opened second = audio.open(device, *format, render);
+            QCOMPARE(second.error, QtAudio::NoError);
+            QVERIFY(second.generation > first.generation);
+            // Every other cycle closes first; the rest leave the open sink to the destructor.
+            if (cycle % 2 == 0) {
+                audio.close();
+                audio.close();
+            }
+        }
     }
 
     void switchedOffEngineIgnoresEverything()
