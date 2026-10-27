@@ -173,6 +173,53 @@ private slots:
         QCOMPARE(loaded.textureFilteringSamples(), 8);
     }
 
+    // The render mode and quality (decision E-899) are enumeration properties in QcRenderOptions'
+    // order; unknown values and an exposure out of range warn and change nothing; the choices are
+    // saved with the settings and read back.
+    void renderSettingsAreEnumsAndPersist()
+    {
+        QcSessionParts parts;
+        QcAudioEngine audio;
+        QcWorldLibraryController library;
+        using Mode = QcRenderSettings::Mode;
+        using Quality = QcRenderSettings::Quality;
+        {
+            QcSettingsController settings(parts, library, &audio);
+            QcRenderSettings &rendering = *settings.rendering();
+            const QMetaObject &meta = *rendering.metaObject();
+            QVERIFY(meta.property(meta.indexOfProperty("mode")).isEnumType());
+            QVERIFY(meta.property(meta.indexOfProperty("quality")).isEnumType());
+            QCOMPARE(rendering.mode(), Mode::Classic);
+            QCOMPARE(static_cast<int>(Mode::Realistic), static_cast<int>(QcRenderOptions::Mode::Realistic));
+            QCOMPARE(static_cast<int>(Quality::High), static_cast<int>(QcRenderOptions::Quality::High));
+            QSignalSpy changed(&settings, &QcSettingsController::settingsChanged);
+
+            QVERIFY(rendering.setProperty("mode", static_cast<int>(Mode::Realistic)));
+            QCOMPARE(changed.count(), 1);
+            rendering.setMode(Mode::Realistic);
+            QCOMPARE(changed.count(), 1);
+            rendering.setQuality(Quality::Low);
+            rendering.setExposure(1.5);
+            QCOMPARE(changed.count(), 3);
+
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown render mode 7"_s));
+            rendering.setMode(static_cast<Mode>(7));
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring unknown render quality 9"_s));
+            rendering.setQuality(static_cast<Quality>(9));
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring exposure 3"_s));
+            rendering.setExposure(3.0);
+            QCOMPARE(changed.count(), 3);
+            QCOMPARE(rendering.options(), (QcRenderOptions{QcRenderOptions::Mode::Realistic, QcRenderOptions::Quality::Low, 1.5}));
+            settings.saveSettings();
+        }
+
+        QcSettingsController loaded(parts, library, &audio);
+        loaded.loadSettings();
+        QCOMPARE(loaded.rendering()->mode(), Mode::Realistic);
+        QCOMPARE(loaded.rendering()->quality(), Quality::Low);
+        QCOMPARE(loaded.rendering()->exposure(), 1.5);
+    }
+
     // The preview's animation is an enumeration property in QcPreviewPose's order.
     void previewAnimationIsAnEnum()
     {

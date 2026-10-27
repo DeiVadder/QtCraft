@@ -4,6 +4,7 @@
 #include "clientcore/settings/QcCharacterProfile.h"
 #include "clientcore/settings/QcDebugOptions.h"
 #include "clientcore/settings/QcGamepadSettings.h"
+#include "clientcore/settings/QcRenderOptions.h"
 #include "clientcore/settings/QcUiScale.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/core/QcResult.h"
@@ -61,6 +62,8 @@ struct QcGameSettings
     // Texture filtering of surfaces seen at a flat angle, stored as "textureFiltering" (1, 2, 4 or
     // 8 samples); another value gives the default.
     int textureFiltering = defaultTextureFiltering;
+    // Classic or realistic render mode with its quality and exposure (decision E-899), stored as render/<key>.
+    QcRenderOptions render;
     // The player's look; names are checked against the content by the server.
     QcAppearance appearance;
     // Looks the player saved under a name (at most QcCharacterProfile::maxPresets).

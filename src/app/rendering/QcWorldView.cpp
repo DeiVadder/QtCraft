@@ -137,6 +137,22 @@ void QcWorldView::setAnisotropicSamples(int samples)
     }
 }
 
+void QcWorldView::setRenderOptions(QcRenderOptions options)
+{
+    if (m_frame.render != options) {
+        m_frame.render = options;
+        update();
+    }
+}
+
+void QcWorldView::setOutdoors(float outdoors)
+{
+    if (m_frame.outdoors != outdoors) {
+        m_frame.outdoors = outdoors;
+        update();
+    }
+}
+
 void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines, const QcVec3 &origin)
 {
     if (lines || m_frame.debugLines) {

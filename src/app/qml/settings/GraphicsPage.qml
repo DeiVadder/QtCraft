@@ -8,13 +8,15 @@ import QtCraft
 // The graphics page of the settings (decision E-845): the display options first (window mode and
 // screen, VSync and the frame rate limits for playing and for menus, a paused game and a window in
 // the background; decision E-835), then the world (view distance, field of view and its widening
-// while sprinting) and the quality (texture filtering, decision E-721). Every change is stored at
-// once; VSync takes effect at the next start, the view distance at the next world start.
+// while sprinting) and the quality (texture filtering, decision E-721; the render mode with the
+// quality and exposure of the realistic mode, decision E-899). Every change is stored at once; VSync
+// takes effect at the next start, the view distance at the next world start.
 SettingsPage {
     id: page
 
     required property GameController game
     readonly property DisplaySettings display: game.settings.display
+    readonly property RenderSettings rendering: game.settings.rendering
     // The limits on offer, in the order of the lists.
     readonly property var limitModel: [
         { text: qsTr("Unlimited"), value: DisplaySettings.FrameLimit.Unlimited },
@@ -179,6 +181,47 @@ SettingsPage {
             ]
             currentValue: page.game.settings.textureFiltering
             onActivated: value => page.game.settings.textureFiltering = value
+        }
+
+        // Classic or realistic (decision E-899): the realistic mode draws the world in HDR with
+        // height fog, bloom and tonemapping and costs more GPU time.
+        SettingChoice {
+            objectName: "renderModeChoice"
+            label: qsTr("Render mode")
+            help: qsTr("Realistic adds valley fog, glow and richer light; it costs more GPU time")
+            model: [
+                { text: qsTr("Classic"), value: RenderSettings.Mode.Classic },
+                { text: qsTr("Realistic"), value: RenderSettings.Mode.Realistic }
+            ]
+            currentValue: page.rendering.mode
+            onActivated: value => page.rendering.mode = value
+        }
+
+        SettingChoice {
+            objectName: "renderQualityChoice"
+            label: qsTr("Realistic quality")
+            help: qsTr("Low without glow, High with the widest glow")
+            enabled: page.rendering.mode === RenderSettings.Mode.Realistic
+            model: [
+                { text: qsTr("Low"), value: RenderSettings.Quality.Low },
+                { text: qsTr("Medium"), value: RenderSettings.Quality.Medium },
+                { text: qsTr("High"), value: RenderSettings.Quality.High }
+            ]
+            currentValue: page.rendering.quality
+            onActivated: value => page.rendering.quality = value
+        }
+
+        SettingSlider {
+            objectName: "exposure"
+            label: qsTr("Exposure")
+            help: qsTr("Brightness of the realistic mode")
+            enabled: page.rendering.mode === RenderSettings.Mode.Realistic
+            from: page.rendering.minExposure
+            to: page.rendering.maxExposure
+            stepSize: 0.05
+            value: page.rendering.exposure
+            valueText: qsTr("%1×").arg(value.toFixed(2))
+            onMoved: page.rendering.exposure = value
         }
     }
 }

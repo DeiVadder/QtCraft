@@ -26,6 +26,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
     controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
+    controllers/QcRenderSettings.h controllers/QcRenderSettings.cpp
     controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcSignController.h controllers/QcSignController.cpp
@@ -102,6 +103,7 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
+    rendering/QcBloomChain.h rendering/QcBloomChain.cpp
     rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
@@ -109,6 +111,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
+    rendering/QcPostProcess.h rendering/QcPostProcess.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
     rendering/QcRangeAllocator.h rendering/QcRangeAllocator.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
@@ -391,6 +394,20 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/sky.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/post.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_down.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_up.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/composite.frag
+)
+# The first halving of the bloom reads the HDR scene and keeps what exceeds the threshold (decision E-899).
+qt_add_shaders(qtcraft "qtcraft_bloom_prefilter_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_PREFILTER=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_down.frag
+    OUTPUTS
+        shaders/bloom_prefilter.frag.qsb
 )
 # The block fragment shader of the opaque pass writes alpha 1 (decision E-332).
 qt_add_shaders(qtcraft "qtcraft_opaque_shaders"

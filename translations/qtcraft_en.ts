@@ -63,7 +63,7 @@
 <context>
     <name>GraphicsPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="128"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="130"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>

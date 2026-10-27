@@ -76,9 +76,12 @@ vec3 addStars(vec3 color, vec3 dir)
 vec3 addSun(vec3 color, vec3 dir)
 {
     float facing = dot(dir, sky.sunDirection.xyz);
-    color += vec3(1.0, 0.85, 0.6) * pow(max(facing, 0.0), 300.0) * 0.5;
+    // sunDirection.w: extra brightness of the sun in the HDR picture of the realistic mode (decision
+    // E-899), so that it blooms; 0 in the classic mode.
+    float gain = 1.0 + sky.sunDirection.w;
+    color += vec3(1.0, 0.85, 0.6) * pow(max(facing, 0.0), 300.0) * 0.5 * gain;
     float disc = smoothstep(sunRadius - 0.00025, sunRadius, facing);
-    return mix(color, vec3(1.0, 0.97, 0.85), disc);
+    return mix(color, vec3(1.0, 0.97, 0.85) * gain, disc);
 }
 
 vec3 addMoon(vec3 color, vec3 dir)

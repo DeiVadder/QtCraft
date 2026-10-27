@@ -23,6 +23,9 @@ public:
         QMatrix4x4 viewRotation;
         QcSkyState sky;
         QcVec3 camera;
+        // Extra brightness of the sun's disc and halo, so that it blooms in the HDR picture of the
+        // realistic mode (decision E-899); 0 draws the classic sun.
+        float sunGain = 0.0f;
     };
 
     // The cloud pattern repeats after this many metres (sky.frag: 1000 cells of 40 m): camera and

@@ -90,6 +90,7 @@ QcGameController::QcGameController(QObject *parent)
         m_gamepad.setSettings(m_settings->gamepad());
         if (m_parts.view) {
             m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
+            m_parts.view->setRenderOptions(m_settings->rendering()->options());
         }
     });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
@@ -154,6 +155,7 @@ void QcGameController::setView(QcWorldView *view)
         }
         connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
         m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
+        m_parts.view->setRenderOptions(m_settings->rendering()->options());
         connect(m_parts.view, &QcWorldView::meshesLost, this, [this] {
             if (m_parts.meshes) {
                 m_parts.meshes->remeshAll();

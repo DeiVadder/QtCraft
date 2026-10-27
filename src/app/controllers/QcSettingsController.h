@@ -4,6 +4,7 @@
 #include "app/controllers/QcCharacterSettings.h"
 #include "app/controllers/QcDiagnosticsSettings.h"
 #include "app/controllers/QcGamepadOptions.h"
+#include "app/controllers/QcRenderSettings.h"
 #include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcDebugSettings.h"
 #include "app/display/QcDisplaySettings.h"
@@ -52,6 +53,8 @@ class QcSettingsController : public QObject
     // GameSettings.TextureFiltering.Off, X2, X4 or X8 (decision E-721).
     Q_PROPERTY(QcSettingsController::TextureFiltering textureFiltering READ textureFiltering WRITE setTextureFiltering NOTIFY
                    settingsChanged FINAL)
+    // Classic or realistic render mode, its quality and exposure (decision E-899).
+    Q_PROPERTY(QcRenderSettings *rendering READ rendering CONSTANT FINAL)
     // The player's keys.
     Q_PROPERTY(QcKeyControls *keys READ keys CONSTANT FINAL)
     Q_PROPERTY(QcAudioSettings *audio READ audio CONSTANT FINAL)
@@ -124,6 +127,7 @@ public:
     void setTextureFiltering(TextureFiltering filtering);
     // Samples of the choice, for the renderer (1: plain mip mapping).
     int textureFilteringSamples() const { return static_cast<int>(m_textureFiltering); }
+    QcRenderSettings *rendering() const { return m_rendering; }
     QcKeyControls *keys() const { return m_keyControls; }
     QcAudioSettings *audio() const { return m_audio; }
     QcDisplaySettings *display() const { return m_display; }
@@ -152,6 +156,7 @@ private:
     QcDebugSettings *m_debug = nullptr;
     QcTexturePackController *m_texturePacks = nullptr;
     QcGamepadOptions *m_gamepad = nullptr;
+    QcRenderSettings *m_rendering = nullptr;
     int m_viewDistance = QcGameSettings::defaultViewDistance;
     double m_fieldOfView = QcCamera::defaultFieldOfView;
     double m_fovEffects = QcGameSettings::defaultFovEffects;

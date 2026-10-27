@@ -74,6 +74,7 @@ private slots:
         settings.cameraMode = QcCameraMode::Front;
         settings.uiScale = QcUiScale::Step::Percent150;
         settings.textureFiltering = 8;
+        settings.render = {QcRenderOptions::Mode::Realistic, QcRenderOptions::Quality::High, 1.35};
         settings.appearance.outfit = u"mod:robe"_s;
         settings.appearance.hair.clear();
         settings.appearance.skinColor = 0x010203;
@@ -312,7 +313,7 @@ private slots:
         const QString path = dir.filePath(u"settings.ini"_s);
         QFile file(path);
         QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("[General]\ncameraMode=sideways\nuiScale=133\ntextureFiltering=3\n[character]\nskin=red\nhairColor=#12345\nshirt=#00ff0g\n"
+        file.write("[General]\ncameraMode=sideways\nuiScale=133\ntextureFiltering=3\n[render]\nmode=vivid\nquality=ultra\nexposure=7\n[character]\nskin=red\nhairColor=#12345\nshirt=#00ff0g\n"
                    "pants=#abcdef\noutfit=");
         file.write(QByteArray(QcAppearance::maxNameLength + 1, 'x'));
         file.write("\n");
@@ -323,6 +324,8 @@ private slots:
         QCOMPARE(settings.cameraMode, QcCameraMode::FirstPerson);
         QCOMPARE(settings.uiScale, QcUiScale::defaultStep);
         QCOMPARE(settings.textureFiltering, QcGameSettings::defaultTextureFiltering);
+        // Unknown render mode and quality and an exposure out of range give the defaults (decision E-899).
+        QCOMPARE(settings.render, QcRenderOptions{});
         QCOMPARE(settings.appearance.skinColor, defaults.skinColor);
         QCOMPARE(settings.appearance.hairColor, defaults.hairColor);
         QCOMPARE(settings.appearance.shirtColor, defaults.shirtColor);
@@ -399,6 +402,34 @@ private slots:
             QCOMPARE(QcDebugOptions::visualFromId(id), std::optional(QcDebugOptions::Visual(visual)));
         }
         QCOMPARE(QcDebugOptions::visualFromId(u"xray"_s), std::nullopt);
+    }
+
+    // The bloom of the realistic mode grows with the quality; the classic mode and Low have none
+    // (decision E-899). Names round-trip.
+    void renderOptionsAndTheirBloom()
+    {
+        QcRenderOptions options;
+        QCOMPARE(options.mode, QcRenderOptions::Mode::Classic);
+        QCOMPARE(options.bloomLevels(), 0);
+        options.mode = QcRenderOptions::Mode::Realistic;
+        QCOMPARE(options.bloomLevels(), QcRenderOptions::mediumBloomLevels);
+        options.quality = QcRenderOptions::Quality::Low;
+        QCOMPARE(options.bloomLevels(), 0);
+        options.quality = QcRenderOptions::Quality::High;
+        QCOMPARE(options.bloomLevels(), QcRenderOptions::highBloomLevels);
+        QVERIFY(QcRenderOptions::highBloomLevels > QcRenderOptions::mediumBloomLevels);
+
+        for (const auto mode : {QcRenderOptions::Mode::Classic, QcRenderOptions::Mode::Realistic}) {
+            QCOMPARE(QcRenderOptions::modeFromName(QcRenderOptions::modeName(mode)), mode);
+        }
+        for (const auto quality : {QcRenderOptions::Quality::Low, QcRenderOptions::Quality::Medium, QcRenderOptions::Quality::High}) {
+            QCOMPARE(QcRenderOptions::qualityFromName(QcRenderOptions::qualityName(quality)), quality);
+        }
+        QVERIFY(!QcRenderOptions::modeFromName(u"Realistic"_s));
+        QVERIFY(QcRenderOptions::isExposure(QcRenderOptions::minExposure));
+        QVERIFY(QcRenderOptions::isExposure(QcRenderOptions::maxExposure));
+        QVERIFY(!QcRenderOptions::isExposure(QcRenderOptions::maxExposure + 0.01));
+        QVERIFY(!QcRenderOptions::isExposure(qQNaN()));
     }
 
     void clampHelpers()

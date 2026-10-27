@@ -34,7 +34,8 @@ layout(std140, binding = 0) uniform Frame {
     vec4 extra;
     // x, y: the atlas's grid of cells
     vec4 atlas;
-    // x: the animation time in ticks, wrapped where every animation starts over
+    // x: the animation time in ticks, wrapped where every animation starts over; y: the gain of
+    // light sources and lava (above 1 in the HDR picture of the realistic mode, decision E-899)
     vec4 animation;
     // xyz: the camera relative to the render anchor (QcDrawOrigins::follow)
     vec4 drawCamera;
@@ -49,6 +50,9 @@ layout(binding = 2) uniform sampler2D animations;
 const vec3 blockTint = vec3(1.0, 0.86, 0.66);
 // QcSurfaceMaterial::Cutout in the high five bits of the surface byte.
 const float cutoutMaterial = 1.0;
+// QcSurfaceMaterial::Liquid (lava) and Emissive (light sources).
+const float glowingLiquidMaterial = 5.0;
+const float emissiveMaterial = 6.0;
 // Brightness of leaves varies by this much from corner to corner (decision E-724).
 const float foliageVariation = 0.25;
 // The world coordinates of the corner hash repeat after this many blocks
@@ -132,6 +136,10 @@ void main()
     // Leaves get a little lighter and darker from corner to corner, so a crown is not one flat
     // green (decision E-724).
     vLight *= 1.0 - vCutout * foliageVariation * cornerHash(mod(position + sectionCell(), cellPeriod));
+    // Light sources and lava shine beyond white in the realistic mode, so that they bloom; the
+    // classic mode multiplies by exactly 1.
+    if (material == emissiveMaterial || material == glowingLiquidMaterial)
+        vLight *= frame.animation.y;
     // Both offsets from the anchor are small floats: the difference is exact to a few hundredths of a
     // millimetre near the camera.
     vec3 relative = position + origin.xyz - frame.drawCamera.xyz;

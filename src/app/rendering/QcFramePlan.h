@@ -1,5 +1,7 @@
 #pragma once
 
+#include "clientcore/settings/QcRenderOptions.h"
+
 #include <QList>
 #include <QtGlobal>
 
@@ -56,17 +58,39 @@ struct QcFramePlan
                 false};
     }
 
-    // The plan of this run: today's mode; QTCRAFT_SECTION_LIGHT=1 also uploads the per-cell light of
-    // the sections (a test hook: no shader reads it yet, decision E-390). The renderer draws it, the
-    // mesh scheduler follows its sectionLight.
-    static QcFramePlan selected()
+    // The realistic mode (stage 45, decision E-899): the steps of the classic mode into the HDR scene
+    // picture, then post-processing (height fog, bloom, tonemapping) into the output.
+    static QcFramePlan realistic()
     {
         QcFramePlan plan = classic();
+        plan.passes.append(QcRenderPass::PostProcess);
+        return plan;
+    }
+
+    // The plan of the render `mode`; QTCRAFT_SECTION_LIGHT=1 also uploads the per-cell light of the
+    // sections (a test hook: no shader reads it yet, decision E-390). The renderer draws it, the
+    // mesh scheduler follows its sectionLight.
+    static QcFramePlan selected(QcRenderOptions::Mode mode = QcRenderOptions::Mode::Classic)
+    {
+        QcFramePlan plan = mode == QcRenderOptions::Mode::Realistic ? realistic() : classic();
         plan.sectionLight = qEnvironmentVariableIntValue("QTCRAFT_SECTION_LIGHT") == 1;
         return plan;
     }
 
     bool contains(QcRenderPass pass) const { return passes.contains(pass); }
+    // Whether the steps draw into the HDR scene that post-processing finishes (decision E-899).
+    bool postProcessed() const { return contains(QcRenderPass::PostProcess); }
+
+    // In the HDR scene of the realistic mode light sources and lava (block.vert, frame uniform
+    // animation.y) and the sun (sky.frag, sunDirection.w) shine beyond white by these factors
+    // (display values), so that they bloom.
+    static constexpr float realisticGlowGain = 1.5f;
+    static constexpr float realisticSunGain = 2.0f;
+    // The factor of light sources and lava: exactly 1 in a plan without post-processing.
+    float glowGain() const { return postProcessed() ? realisticGlowGain : 1.0f; }
+    // The sun's extra brightness: exactly 0 in a plan without post-processing.
+    float sunGain() const { return postProcessed() ? realisticSunGain : 0.0f; }
+    bool operator==(const QcFramePlan &) const = default;
     // Whether the translucent step draws the water lists too.
     bool waterWithTranslucent() const { return !contains(QcRenderPass::Water); }
 

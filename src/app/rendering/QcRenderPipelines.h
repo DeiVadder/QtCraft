@@ -28,7 +28,9 @@ struct FrameUniforms
     // samples along a slanted footprint (1: plain mip mapping).
     float atlas[4];
     // Animated textures (decision E-878): x: the time in ticks, wrapped where every animation of
-    // the atlas starts over (QcTextureAtlas::animationCycleTicks); y, z, w unused.
+    // the atlas starts over (QcTextureAtlas::animationCycleTicks); y: the gain of light sources and
+    // lava in block.vert (1 in the classic mode, glowGain in the realistic one, decision E-899);
+    // z, w unused.
     float animation[4];
     // xyz: the camera's offset from the render anchor (QcDrawOrigins::follow, decision E-883), which
     // the block and entity shaders subtract from their draws' origins; w unused.

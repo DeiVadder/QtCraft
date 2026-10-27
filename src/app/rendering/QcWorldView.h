@@ -59,6 +59,11 @@ public:
         float fogEnd = 128.0f;
         // Most samples along a slanted footprint (decision E-721); 1 is plain mip mapping.
         int anisotropicSamples = QcGameSettings::defaultTextureFiltering;
+        // Classic or realistic mode with its quality and exposure (decision E-899).
+        QcRenderOptions render;
+        // How far the camera is under the open sky (1) or deep in a cave (0), eased; the height fog
+        // of the realistic mode fades with it, so caves stay clear.
+        float outdoors = 1.0f;
         // Outlined boxes of the targeted block in world space; empty for none.
         QList<QcAabb> selection;
         std::shared_ptr<const QcEntityMesh> entityMesh;
@@ -104,6 +109,10 @@ public:
     void setFogRange(float start, float end);
     // Texture filtering of the blocks (decision E-721): 1, 2, 4 or 8 samples.
     void setAnisotropicSamples(int samples);
+    // Render mode, quality and exposure (decision E-899).
+    void setRenderOptions(QcRenderOptions options);
+    // How far the camera is under the open sky, 0..1 (FrameInput::outdoors).
+    void setOutdoors(float outdoors);
     // Debug visualisations for this frame (decision E-225), relative to `origin`; null or empty
     // draws none.
     void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines, const QcVec3 &origin);

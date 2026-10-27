@@ -2,6 +2,7 @@
 
 #include "app/rendering/QcFramePlan.h"
 #include "app/rendering/QcGpuMeshStore.h"
+#include "app/rendering/QcPostProcess.h"
 #include "app/rendering/QcRenderSample.h"
 #include "app/rendering/QcWorldRendererResources.h"
 #include "app/rendering/QcWorldView.h"
@@ -55,6 +56,15 @@ private:
     void replaceDevice();
     // Releases the pass group (on its own: a render target its pipelines do not fit).
     void dropPass();
+    // The plan of the frame's render mode (decision E-899): the realistic one when its scene target
+    // is ready, else the classic one; a plan with another target drops the pass group, and the
+    // post-processing is released while the classic plan draws.
+    void choosePlan(QSize outputSize, QRhiResourceUpdateBatch *updates);
+    // What the steps before post-processing draw into: the scene target in the realistic mode,
+    // else the item's output.
+    [[nodiscard]] QRhiRenderTarget *drawTarget() const;
+    // The composite pass's input of this frame.
+    [[nodiscard]] QcPostProcess::Composite composite(const QMatrix4x4 &viewProjection) const;
     // Benchmark: CPU time of the render thread since the last frame and the GPU time.
     void startSample(QRhiCommandBuffer *commandBuffer);
     // Atlas, pipelines and the uploads of this frame.
@@ -118,8 +128,18 @@ private:
     // The frame's input, copied from the view in synchronize().
     QcWorldView::FrameInput m_frame;
 
+    // The plan drawn (choosePlan()).
+    [[nodiscard]] const QcFramePlan &plan() const { return m_plan; }
+    void setPlan(const QcFramePlan &plan) { m_plan = plan; }
     QcFramePlan m_plan = QcFramePlan::classic();
+    // Both plans, made once for each QRhi (replaceDevice()).
+    QcFramePlan m_classicPlan = QcFramePlan::classic();
+    QcFramePlan m_realisticPlan = QcFramePlan::realistic();
     bool m_warnedTarget = false;
+    bool m_warnedRealistic = false;
+    // The scene target, bloom and composite of the realistic mode (decision E-899).
+    // NOLINT(qc-member-access): an owned part like m_pass; its own methods change it, the renderer only calls them.
+    QcPostProcess m_post;
 
     // The sections on the GPU and the meshes queued for them, with the draw origins.
     QcGpuMeshStore m_meshStore;

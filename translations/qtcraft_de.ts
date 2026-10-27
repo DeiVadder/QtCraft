@@ -2106,116 +2106,116 @@ Als Nächstes: %3</translation>
 <context>
     <name>GraphicsPage</name>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="20"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="22"/>
         <source>Unlimited</source>
         <translation>Unbegrenzt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="21"/>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="22"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="23"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="24"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="25"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="26"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="27"/>
         <source>%1 FPS</source>
         <translation>%1 FPS</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="36"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="38"/>
         <source>Graphics</source>
         <translation>Grafik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="49"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="51"/>
         <source>Display</source>
         <translation>Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="53"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="55"/>
         <source>Window mode</source>
         <translation>Fenstermodus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="57"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="59"/>
         <source>Window</source>
         <translation>Fenster</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="58"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="60"/>
         <source>Borderless</source>
         <translation>Randlos</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="59"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="61"/>
         <source>Fullscreen</source>
         <translation>Vollbild</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="69"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="71"/>
         <source>Screen</source>
         <translation>Bildschirm</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="70"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="72"/>
         <source>Only one screen is connected</source>
         <translation>Nur ein Bildschirm ist angeschlossen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="78"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="80"/>
         <source>VSync</source>
         <translation>VSync</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="79"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="81"/>
         <source>Waits for the display: no tearing</source>
         <translation>Wartet auf den Bildschirm: kein Zerreißen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="80"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="82"/>
         <source>after a restart</source>
         <translation>nach einem Neustart</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="89"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="91"/>
         <source>Frame rate limit</source>
         <translation>Bildraten-Limit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="90"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="92"/>
         <source>A lower limit keeps the graphics card cooler and quieter</source>
         <translation>Ein niedrigeres Limit hält die Grafikkarte kühler und leiser</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="101"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="103"/>
         <source>In menus and in the background</source>
         <translation>In Menüs und im Hintergrund</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="102"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="104"/>
         <source>Behind the pause menu, in character previews and while another window has the focus</source>
         <translation>Hinter dem Pausenmenü, in Charaktervorschauen und solange ein anderes Fenster den Fokus hat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="113"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="115"/>
         <source>This run places its window itself (a test or measurement); the choices apply at the next normal start.</source>
         <translation>Dieser Lauf platziert sein Fenster selbst (ein Test oder eine Messung); die Auswahl gilt beim nächsten normalen Start.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="118"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="120"/>
         <source>World</source>
         <translation>Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="121"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="123"/>
         <source>View distance</source>
         <translation>Sichtweite</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="122"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="124"/>
         <source>from the next world start</source>
         <translation>ab Weltstart</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="128"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="130"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n Chunk</numerusform>
@@ -2223,66 +2223,122 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="133"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="135"/>
         <source>Field of view</source>
         <translation>Sichtfeld</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="138"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="140"/>
         <source>%1°</source>
         <translation>%1°</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="145"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="147"/>
         <source>Field of view when sprinting</source>
         <translation>Sichtfeld beim Sprinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="146"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="148"/>
         <source>How much the view widens; 0 % keeps it still</source>
         <translation>Wie weit sich die Sicht öffnet; 0 % hält sie ruhig</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="151"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="153"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="158"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="160"/>
         <source>Camera shake</source>
         <translation>Kamerawackeln</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="159"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="161"/>
         <source>Explosions nearby shake the view</source>
         <translation>Explosionen in der Nähe lassen die Ansicht wackeln</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="166"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="168"/>
         <source>Quality</source>
         <translation>Qualität</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="172"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="174"/>
         <source>Texture filtering</source>
         <translation>Texturfilterung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="173"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="175"/>
         <source>Keeps distant ground sharp; more costs more GPU time</source>
         <translation>Hält entfernten Boden scharf; mehr kostet mehr Grafikleistung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="175"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="177"/>
         <source>Off</source>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="176"/>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="177"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="178"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="179"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="180"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="223"/>
         <source>%1×</source>
         <translation>%1×</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="190"/>
+        <source>Render mode</source>
+        <translation>Darstellung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="191"/>
+        <source>Realistic adds valley fog, glow and richer light; it costs more GPU time</source>
+        <translation>Realistisch bringt Dunst in Tälern, Leuchten und reicheres Licht; das kostet mehr Grafikleistung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="193"/>
+        <source>Classic</source>
+        <translation>Klassisch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="194"/>
+        <source>Realistic</source>
+        <translation>Realistisch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="202"/>
+        <source>Realistic quality</source>
+        <translation>Realistische Qualität</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="203"/>
+        <source>Low without glow, High with the widest glow</source>
+        <translation>Niedrig ohne Leuchten, Hoch mit dem weitesten Leuchten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="206"/>
+        <source>Low</source>
+        <translation>Niedrig</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="207"/>
+        <source>Medium</source>
+        <translation>Mittel</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="208"/>
+        <source>High</source>
+        <translation>Hoch</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="216"/>
+        <source>Exposure</source>
+        <translation>Belichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="217"/>
+        <source>Brightness of the realistic mode</source>
+        <translation>Helligkeit des realistischen Modus</translation>
     </message>
 </context>
 <context>
@@ -4815,14 +4871,14 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="258"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="283"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="260"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="285"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="278"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="287"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="280"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="289"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -4831,22 +4887,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="308"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="308"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="337"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="339"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="362"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -4891,12 +4947,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="347"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="468"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="470"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -5563,13 +5619,13 @@ Als Nächstes: %3</translation>
         <translation>Die OpenSSL-Bibliotheken von QtCraft lassen sich nicht laden (gebaut für %1)</translation>
     </message>
     <message>
-        <location filename="../src/network/tls/QcTlsKey.cpp" line="54"/>
+        <location filename="../src/network/tls/QcTlsKey.cpp" line="55"/>
         <source>The server&apos;s key cannot be made: %1</source>
         <translation>Der Schlüssel des Servers lässt sich nicht erzeugen: %1</translation>
     </message>
     <message>
-        <location filename="../src/network/tls/QcTlsKey.cpp" line="95"/>
-        <location filename="../src/network/tls/QcTlsKey.cpp" line="103"/>
+        <location filename="../src/network/tls/QcTlsKey.cpp" line="96"/>
+        <location filename="../src/network/tls/QcTlsKey.cpp" line="104"/>
         <source>The server&apos;s certificate cannot be signed: %1</source>
         <translation>Das Zertifikat des Servers lässt sich nicht signieren: %1</translation>
     </message>
@@ -6967,17 +7023,17 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="227"/>
+        <location filename="../src/server/core/QcServer.cpp" line="232"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="485"/>
+        <location filename="../src/server/core/QcServer.cpp" line="490"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="516"/>
+        <location filename="../src/server/core/QcServer.cpp" line="521"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
@@ -7492,7 +7548,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="268"/>
+        <location filename="../src/server/core/QcServer.cpp" line="273"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="96"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -7860,43 +7916,43 @@ Jetzt: %2</translation>
         <translation>Die Datei kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="103"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="108"/>
         <source>Not a texture file (expected &lt;name&gt;.png or &lt;name&gt;.json with a-z, 0-9, _, - and .)</source>
         <translation>Keine Texturdatei (erwartet &lt;name&gt;.png oder &lt;name&gt;.json mit a-z, 0-9, _, - und .)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="110"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="141"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="115"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="146"/>
         <source>More than %1 entries; the rest was not read</source>
         <translation>Mehr als %1 Einträge; der Rest wurde nicht gelesen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="124"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="129"/>
         <source>Expected a folder &apos;textures&apos; (links are not followed)</source>
         <translation>Erwartet wird ein Ordner „textures“ (Verknüpfungen werden nicht verfolgt)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="132"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="137"/>
         <source>Expected a namespace folder such as textures/qtcraft</source>
         <translation>Erwartet wird ein Namensraum-Ordner wie textures/qtcraft</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="234"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="239"/>
         <source>… and %1 more problems</source>
         <translation>… und %1 weitere Probleme</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="157"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="162"/>
         <source>Not a valid JSON object</source>
         <translation>Kein gültiges JSON-Objekt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="166"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="171"/>
         <source>Invalid procedural texture: %1</source>
         <translation>Ungültige prozedurale Textur: %1</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="214"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="219"/>
         <source>Skipped: the pack&apos;s images exceed the memory budget of %1 MiB</source>
         <translation>Übersprungen: Die Bilder des Pakets überschreiten das Speicherbudget von %1 MiB</translation>
     </message>
@@ -7905,39 +7961,39 @@ Jetzt: %2</translation>
         <translation type="vanished">Hat %1 Animationsbilder; Texturen sind noch nicht animiert, das erste Bild wird verwendet</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="281"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="286"/>
         <source>The preview image is missing</source>
         <translation>Das Vorschaubild fehlt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="286"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="296"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="291"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="301"/>
         <source>The preview must be a PNG of at most 512 x 512 pixels</source>
         <translation>Die Vorschau muss ein PNG mit höchstens 512 × 512 Pixeln sein</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="307"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="312"/>
         <source>The pack has no manifest</source>
         <translation>Das Paket hat kein Manifest</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="252"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="257"/>
         <source>More than %1 texture files; the rest was skipped</source>
         <translation>Mehr als %1 Texturdateien; der Rest wurde übersprungen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="326"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="331"/>
         <source>Not a PNG image</source>
         <translation>Kein PNG-Bild</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="334"/>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="347"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="339"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="352"/>
         <source>The image is damaged and cannot be decoded</source>
         <translation>Das Bild ist beschädigt und kann nicht gelesen werden</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="340"/>
+        <location filename="../src/clientcore/texturepacks/QcTexturePackLoader.cpp" line="345"/>
         <source>The image is %1 x %2 pixels; this pack needs %3 x %3 (or a vertical strip of such frames)</source>
         <translation>Das Bild hat %1 × %2 Pixel; dieses Paket braucht %3 × %3 (oder einen senkrechten Streifen solcher Bilder)</translation>
     </message>

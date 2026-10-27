@@ -173,6 +173,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcGameSettings.h settings/QcGameSettings.cpp
     settings/QcKeyControls.h settings/QcKeyControls.cpp
     settings/QcKeyLabels.h settings/QcKeyLabels.cpp
+    settings/QcRenderOptions.h settings/QcRenderOptions.cpp
     settings/QcScreenChoice.h settings/QcScreenChoice.cpp
     settings/QcUiPalette.h settings/QcUiPalette.cpp
     settings/QcUiScale.h settings/QcUiScale.cpp

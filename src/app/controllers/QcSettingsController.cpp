@@ -42,9 +42,11 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     , m_debug(new QcDebugSettings(this))
     , m_texturePacks(new QcTexturePackController([&library] { return library.modsDirectory(); }, this))
     , m_gamepad(new QcGamepadOptions(this))
+    , m_rendering(new QcRenderSettings(this))
 {
     // The game controller follows settingsChanged (the pad's profiles apply at once).
     connect(m_gamepad, &QcGamepadOptions::changed, this, &QcSettingsController::settingsChanged);
+    connect(m_rendering, &QcRenderSettings::changed, this, &QcSettingsController::settingsChanged);
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
     connect(m_texturePacks, &QcTexturePackController::selectionChanged, this, &QcSettingsController::saveSettings);
 }
@@ -79,6 +81,7 @@ void QcSettingsController::loadSettings()
     m_cameraMode = m_storedSettings.cameraMode;
     m_uiScale = m_storedSettings.uiScale;
     m_textureFiltering = static_cast<TextureFiltering>(m_storedSettings.textureFiltering);
+    m_rendering->load(m_storedSettings.render);
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
     m_keyControls->setBindings(m_storedSettings.keys);
     m_audio->load(m_storedSettings.audio);
@@ -111,6 +114,7 @@ void QcSettingsController::saveSettings()
     settings.cameraMode = m_cameraMode;
     settings.uiScale = m_uiScale;
     settings.textureFiltering = static_cast<int>(m_textureFiltering);
+    settings.render = m_rendering->options();
     settings.appearance = m_character->appearance();
     settings.characterPresets = m_character->savedPresets();
     settings.audio = m_audio->volumes();

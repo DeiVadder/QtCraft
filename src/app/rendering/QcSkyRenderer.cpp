@@ -93,7 +93,7 @@ void QcSkyRenderer::prepare(QRhi *rhi, QRhiRenderTarget *target, QRhiResourceUpd
     copy(sky.zenith, 1.0f, uniforms.zenith);
     copy(sky.horizon, 1.0f, uniforms.horizon);
     copy(sky.glow, 1.0f, uniforms.glow);
-    copy(sky.sunDirection, 0.0f, uniforms.sunDirection);
+    copy(sky.sunDirection, frame.sunGain, uniforms.sunDirection);
     copy(sky.moonDirection, static_cast<float>(sky.moonPhase), uniforms.moonDirection);
     copy(sky.cloudColor, static_cast<float>(sky.overcast), uniforms.cloudColor);
     const float starAngle = std::atan2(sky.sunDirection.y(), sky.sunDirection.x());

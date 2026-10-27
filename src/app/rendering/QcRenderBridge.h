@@ -43,7 +43,8 @@ public:
     // The first-person arm with the held item; hidden in the other camera modes and for a spectator.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
     // After placeCamera: the sky of the time of day under the weather, a lightning flash and the
-    // flash of explosions nearby; below the world it darkens with the camera height.
+    // flash of explosions nearby; below the world it darkens with the camera height. With it how
+    // far the camera is under the open sky, for the height fog (QcWorldView::setOutdoors).
     void updateSky(double alpha);
     // The time of the animated textures (decision E-878): advanced by `frameSeconds` at the
     // server's speed, so animations follow the server's ticks and stand while the game is paused

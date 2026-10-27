@@ -82,6 +82,10 @@ void QcRenderBridge::updateSky(double alpha)
     const double flash = session.serverPaused() ? 0.0 : session.worldMirror().extras().explosions().flashAt(eye, static_cast<double>(session.tickCount()) + alpha);
     sky = QcSky::withBlast(sky, flash);
     m_parts.view->setSky(QcSky::seenFrom(sky, eye.y));
+    // The cave level of the ambience (0 outside, 0.5 to 1 under a thick ceiling, eased) clears the
+    // height fog of the realistic mode in caves.
+    const float cave = session.sounds().ambience().cave;
+    m_parts.view->setOutdoors(std::clamp(1.0f - 2.0f * cave, 0.0f, 1.0f));
 }
 
 void QcRenderBridge::updateAnimations(double frameSeconds)

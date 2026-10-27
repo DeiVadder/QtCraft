@@ -47,6 +47,34 @@ private slots:
         QCOMPARE(plan.groups().size(), 2);
     }
 
+    // The realistic mode (decision E-899) draws the classic steps into the scene and post-processes
+    // it into the output: two GPU render passes; the setting picks the plan.
+    void realisticDrawsTheClassicStepsIntoTheScene()
+    {
+        const QcFramePlan plan = QcFramePlan::realistic();
+        QVERIFY(plan.visitsTargetsOnce());
+        const QList<QcFramePlan::Group> groups = plan.groups();
+        QCOMPARE(groups.size(), 2);
+        QCOMPARE(groups[0].target, QcRenderTarget::Scene);
+        QCOMPARE(groups[0].passes, QcFramePlan::classic().passes);
+        QCOMPARE(groups[1].target, QcRenderTarget::Output);
+        QCOMPARE(groups[1].passes, QList<QcRenderPass>{QcRenderPass::PostProcess});
+
+        // Light sources, lava and the sun shine beyond white only in the post-processed plan; the
+        // classic factors leave the picture exactly as it was.
+        QVERIFY(plan.postProcessed());
+        QCOMPARE(plan.glowGain(), QcFramePlan::realisticGlowGain);
+        QCOMPARE(plan.sunGain(), QcFramePlan::realisticSunGain);
+        QVERIFY(plan.glowGain() > 1.0f);
+        QVERIFY(plan.sunGain() > 0.0f);
+        QVERIFY(!QcFramePlan::classic().postProcessed());
+        QCOMPARE(QcFramePlan::classic().glowGain(), 1.0f);
+        QCOMPARE(QcFramePlan::classic().sunGain(), 0.0f);
+
+        QCOMPARE(QcFramePlan::selected(QcRenderOptions::Mode::Realistic).passes, plan.passes);
+        QCOMPARE(QcFramePlan::selected(QcRenderOptions::Mode::Classic).passes, QcFramePlan::classic().passes);
+    }
+
     // Every GPU render pass clears its target, so a plan must not return to a target: a shadow step
     // between two output steps would wipe the first output pass.
     void aPlanReturningToATargetIsInvalid()

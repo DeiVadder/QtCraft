@@ -4,6 +4,7 @@
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/camera/QcFrustum.h"
 #include "common/core/QcDowncast.h"
+#include "common/core/QcWorldConstants.h"
 #include "common/diagnostics/QcThreadCpuClock.h"
 
 #include <QColor>
@@ -60,7 +61,7 @@ void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
 
     // Qt Quick calls initialize() for every new render target (resize, sample count, format); one
     // the pipelines do not fit drops the pass group only, and render() builds it anew.
-    if (!m_pass.fits(renderTarget())) {
+    if (!m_pass.fits(drawTarget())) {
         dropPass();
     }
 }
@@ -69,7 +70,10 @@ void QcWorldRenderer::replaceDevice()
 {
     // The sections on the old device are gone with it: the view has them meshed again.
     m_meshesLost = m_device.rhi != nullptr;
-    m_plan = QcFramePlan::selected();
+    m_classicPlan = QcFramePlan::selected(QcRenderOptions::Mode::Classic);
+    m_realisticPlan = QcFramePlan::selected(QcRenderOptions::Mode::Realistic);
+    setPlan(m_classicPlan);
+    m_post.reset();
     m_baseVertex = rhi()->isFeatureSupported(QRhi::BaseVertex);
     // Test hook QTCRAFT_NO_BASE_INSTANCE=1: the path of GPUs without base instances (decision E-883)
     // on one that has them, for comparison screenshots.
@@ -77,7 +81,7 @@ void QcWorldRenderer::replaceDevice()
     if (!m_baseInstance) {
         qCInfo(lcRenderer) << "World renderer: draws bind their origin entry (no base instance)";
     }
-    m_meshStore.reset(rhi(), m_plan.sectionLight);
+    m_meshStore.reset(rhi(), plan().sectionLight);
     QcDrawOrigins &origins = m_meshStore.origins();
     m_entityOrigin = origins.add({});
     m_framedMapOrigin = origins.add({});
@@ -91,6 +95,52 @@ void QcWorldRenderer::dropPass()
 {
     // Handed out whole, so its destructor releases it in reverse member order (QcWorldRendererResources.h).
     const QcWorldPassResources retired = std::exchange(m_pass, {});
+}
+
+void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *updates)
+{
+    const bool wanted = m_frame.render.realistic();
+    const bool realistic = wanted && m_post.prepare(m_device.rhi, outputSize, m_frame.render.bloomLevels(), renderTarget(), updates);
+    if (wanted && !realistic && !m_warnedRealistic) {
+        qCWarning(lcRenderer) << "World renderer: the realistic mode cannot be drawn on this GPU; drawing the classic one";
+        m_warnedRealistic = true;
+    }
+    // The classic mode holds no post-processing on the GPU (a refused request stays remembered).
+    if (!realistic) {
+        m_post.release();
+    }
+
+    // Only a change of the target drops the pass group here; a new output is initialize()'s.
+    const QcFramePlan &chosen = realistic ? m_realisticPlan : m_classicPlan;
+    const bool targetChanges = chosen.postProcessed() != plan().postProcessed();
+    setPlan(chosen);
+    if (targetChanges) {
+        dropPass();
+    }
+}
+
+QRhiRenderTarget *QcWorldRenderer::drawTarget() const
+{
+    QRhiRenderTarget *const scene = plan().postProcessed() ? m_post.sceneTarget() : nullptr;
+    return scene ? scene : renderTarget();
+}
+
+QcPostProcess::Composite QcWorldRenderer::composite(const QMatrix4x4 &viewProjection) const
+{
+    const QcSkyState &sky = m_frame.sky;
+    QcPostProcess::Composite composite;
+    composite.viewProjection = viewProjection;
+    composite.fogColor = sky.fogColor();
+    // Rain brings the classic fog closer (fogScale below 1); the height fog thickens with it. Caves
+    // stay clear (FrameInput::outdoors).
+    composite.fogDensity = QcPostProcess::fogDensity * m_frame.outdoors / static_cast<float>(std::max(sky.fogScale, 0.25));
+    composite.cameraHeight = static_cast<float>(m_frame.camera.position.y);
+    composite.fogBase = static_cast<float>(QcWorld::seaLevel) + QcPostProcess::fogBaseAboveSea;
+    composite.fogDistance = m_frame.fogEnd;
+    composite.sunDirection = sky.sunDirection;
+    composite.sunGlow = QcPostProcess::fogSunGlow * static_cast<float>(std::clamp(sky.daylight, 0.0, 1.0));
+    composite.exposure = static_cast<float>(m_frame.render.exposure);
+    return composite;
 }
 
 void QcWorldRenderer::synchronize(QQuickRhiItem *item)
@@ -152,10 +202,10 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn; a
     // refused pipeline is tried again only with a new atlas or pass group.
     if (m_device.hasAtlas() && !m_pass.atlasPipelinesTried) {
-        m_pass.createAtlasPipelines(m_device.rhi, renderTarget(), m_device.atlasBindings());
+        m_pass.createAtlasPipelines(m_device.rhi, drawTarget(), m_device.atlasBindings());
     }
     if (!m_pass.outlinePipelineTried) {
-        m_pass.createOutlinePipeline(m_device.rhi, renderTarget(), m_device.outlineBindings.get());
+        m_pass.createOutlinePipeline(m_device.rhi, drawTarget(), m_device.outlineBindings.get());
     }
 
     QElapsedTimer uploadTime;
@@ -203,6 +253,9 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     uniforms.atlas[2] = m_device.atlasCellPixels;
     uniforms.atlas[3] = m_device.atlasCellPixels > 0.0f ? static_cast<float>(m_frame.anisotropicSamples) : 1.0f;
     uniforms.animation[0] = m_frame.animationTicks;
+    // Light sources and lava beyond white in the HDR scene of the realistic mode, exactly 1 in the
+    // classic one (decision E-899).
+    uniforms.animation[1] = plan().glowGain();
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
@@ -254,7 +307,7 @@ void QcWorldRenderer::drawTranslucent(QRhiCommandBuffer *commandBuffer, const Fr
 {
     // Back-to-front by section centre so overlapping translucent sections blend correctly; only
     // the sections with translucent faces (or water, when it is drawn here) take part.
-    const bool withWater = m_plan.waterWithTranslucent();
+    const bool withWater = plan().waterWithTranslucent();
     const QcDrawOrigins &origins = m_meshStore.origins();
     QList<std::pair<float, VisibleSection>> &translucent = m_sorted;
     translucent.clear();
@@ -464,9 +517,12 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
         m_sample.drawCalls += m_pass.debugLineRenderer.draw(commandBuffer) ? 1 : 0;
         drawOutlineAndHand(commandBuffer);
         break;
-    case QcRenderPass::Shadow:
     case QcRenderPass::PostProcess:
-        // Steps of the realistic mode (stage 45); their targets are not drawn yet (drawPlan).
+        m_post.drawComposite(commandBuffer);
+        ++m_sample.drawCalls;
+        break;
+    case QcRenderPass::Shadow:
+        // A step of the realistic mode (stage 45.2); its target is not drawn yet (drawPlan).
         break;
     }
 }
@@ -475,10 +531,10 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
 {
     const QVector3D horizon = m_frame.sky.horizon;
     const bool ready = m_pass.hasBlockPipelines();
-    const QList<QcFramePlan::Group> groups = m_plan.groups();
+    const QList<QcFramePlan::Group> groups = plan().groups();
     for (const QcFramePlan::Group &group : groups) {
-        // Shadow maps and the offscreen scene come with the realistic mode (stage 45).
-        if (group.target != QcRenderTarget::Output) {
+        // Shadow maps come with stage 45.2.
+        if (group.target == QcRenderTarget::ShadowMap) {
             if (!m_warnedTarget) {
                 qCWarning(lcRenderer) << "Render target" << static_cast<int>(group.target) << "is not supported; its steps are skipped";
                 m_warnedTarget = true;
@@ -486,8 +542,17 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
             continue;
         }
 
+        // The bloom reads the finished scene, the output's composite reads the bloom.
+        if (group.passes.contains(QcRenderPass::PostProcess)) {
+            if (updates) {
+                commandBuffer->resourceUpdate(updates);
+                updates = nullptr;
+            }
+            m_post.drawBloom(commandBuffer);
+        }
         // The uploads of the frame go with the first render pass.
-        commandBuffer->beginPass(renderTarget(), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
+        QRhiRenderTarget *const target = group.target == QcRenderTarget::Scene ? m_post.sceneTarget() : renderTarget();
+        commandBuffer->beginPass(target, QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
         updates = nullptr;
         if (ready) {
             commandBuffer->setViewport(QRhiViewport(0, 0, static_cast<float>(outputSize.width()), static_cast<float>(outputSize.height())));
@@ -514,9 +579,10 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     renderTime.start();
     startSample(commandBuffer);
     QRhiResourceUpdateBatch *updates = m_device.rhi->nextResourceUpdateBatch();
+    const QSize outputSize = renderTarget()->pixelSize();
+    choosePlan(outputSize, updates);
     prepareResources(updates);
 
-    const QSize outputSize = renderTarget()->pixelSize();
     const float aspect = outputSize.height() > 0 ? static_cast<float>(outputSize.width()) / static_cast<float>(outputSize.height()) : 1.0f;
     const float farPlane = m_frame.fogEnd + QcCamera::farPlaneMargin;
     // Positions relative to the camera (decision E-883): the view is the camera's rotation alone,
@@ -527,11 +593,15 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     // After the uploads of the new sections: a new anchor rewrites their entries too.
     const QVector3D drawCamera = m_meshStore.origins().follow(eye);
     uploadFrameUniforms(updates, viewProjection, drawCamera, outputSize);
-    m_pass.debugLineRenderer.prepare(m_device.rhi, renderTarget(), updates, m_device.frameUniforms.get(),
+    QRhiRenderTarget *const target = drawTarget();
+    m_pass.debugLineRenderer.prepare(m_device.rhi, target, updates, m_device.frameUniforms.get(),
                                      {m_frame.debugLines, m_frame.debugLinesOrigin - eye});
-    m_pass.precipitationRenderer.prepare(m_device.rhi, renderTarget(), updates, m_device.frameUniforms.get(),
+    m_pass.precipitationRenderer.prepare(m_device.rhi, target, updates, m_device.frameUniforms.get(),
                                          {m_frame.precipitation, m_frame.precipitationOrigin - eye});
-    m_pass.skyRenderer.prepare(m_device.rhi, renderTarget(), updates, {viewProjection, m_frame.sky, eye});
+    m_pass.skyRenderer.prepare(m_device.rhi, target, updates, {viewProjection, m_frame.sky, eye, plan().sunGain()});
+    if (plan().postProcessed()) {
+        m_post.uploadComposite(updates, composite(viewProjection));
+    }
 
     const FrameView &view = cull(viewProjection, drawCamera, updates);
     m_sample.visibleSections = static_cast<int>(view.visible.size());

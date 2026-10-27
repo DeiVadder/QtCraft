@@ -9,7 +9,8 @@ layout(std140, binding = 0) uniform Sky {
     vec4 zenith;
     vec4 horizon;
     vec4 glow;
-    // xyz: towards the sun / the moon; moonDirection.w: moon phase (0 new, 0.5 full).
+    // xyz: towards the sun / the moon; sunDirection.w: extra brightness of the sun (HDR, 0 in the
+    // classic mode); moonDirection.w: moon phase (0 new, 0.5 full).
     vec4 sunDirection;
     vec4 moonDirection;
     vec4 cloudColor;

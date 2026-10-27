@@ -150,6 +150,7 @@ QcGameSettings QcGameSettings::load(const QString &path)
     settings.uiScale = QcUiScale::fromName(file.value(u"uiScale"_s).toString()).value_or(QcUiScale::defaultStep);
     const int filtering = file.value(u"textureFiltering"_s).toInt(&ok);
     settings.textureFiltering = ok && isTextureFiltering(filtering) ? filtering : defaultTextureFiltering;
+    settings.render = QcRenderOptions::load(file);
 
     settings.appearance = QcCharacterProfile::loadAppearance(file, u"character"_s);
     settings.characterPresets = QcCharacterProfile::loadPresets(file);
@@ -192,6 +193,7 @@ QcStatus QcGameSettings::save(const QString &path) const
     file.setValue(u"cameraMode"_s, QString::fromLatin1(QcViewCamera::name(cameraMode)));
     file.setValue(u"uiScale"_s, QcUiScale::name(uiScale));
     file.setValue(u"textureFiltering"_s, textureFiltering);
+    render.save(file);
 
     QcCharacterProfile::saveAppearance(file, u"character"_s, appearance);
     QcCharacterProfile::savePresets(file, characterPresets);

@@ -186,6 +186,27 @@ qc_add_test(test_world_renderer_uploads SOURCES client/test_world_renderer_uploa
 # Section buffers written directly into GPU memory (decision E-813): uploaded through the mesh store
 # and read back on an offscreen QRhi (Metal; skipped without a device).
 qc_add_test(test_gpu_mesh_upload SOURCES client/test_gpu_mesh_upload.cpp LIBRARIES qc_app_core)
+# The scene target, bloom and composite of the realistic mode (decision E-899) on QRhi's Null
+# backend, with the post-processing shaders baked into the test.
+qc_add_test(test_post_process SOURCES client/test_post_process.cpp LIBRARIES qc_app_core)
+qt_add_shaders(test_post_process "test_post_process_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/post.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_down.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_up.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/composite.frag
+)
+qt_add_shaders(test_post_process "test_post_process_prefilter_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    DEFINES QC_PREFILTER=1
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_down.frag
+    OUTPUTS
+        shaders/bloom_prefilter.frag.qsb
+)
 # The ranges of the section arena's pages (decision E-820): first fit, merging of freed neighbours.
 qc_add_test(test_range_allocator SOURCES client/test_range_allocator.cpp LIBRARIES qc_app_core)
 # The pages of the section arena (decision E-820) on QRhi's Null backend: reuse after the frames in
