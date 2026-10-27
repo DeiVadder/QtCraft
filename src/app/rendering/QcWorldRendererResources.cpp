@@ -125,19 +125,6 @@ float atlasCellPixelsOf(QSize texture, QSize grid)
     return whole && cell >= QcAtlasLayout::cellSize(QcAtlasLayout::minimumMipTile) ? static_cast<float>(cell) : 0.0f;
 }
 
-QRhiVertexInputLayout blockVertexLayout()
-{
-    QRhiVertexInputLayout inputLayout;
-    inputLayout.setBindings({{sizeof(QcBlockVertex)}});
-    inputLayout.setAttributes({
-        {0, 0, QRhiVertexInputAttribute::Float3, static_cast<quint32>(offsetof(QcBlockVertex, x))},
-        {0, 1, QRhiVertexInputAttribute::Float2, static_cast<quint32>(offsetof(QcBlockVertex, u))},
-        {0, 2, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcBlockVertex, light))},
-    });
-    // The section's corner, per draw (decision E-883).
-    return QcDrawOrigins::withOrigins(inputLayout);
-}
-
 } // namespace
 
 QcWorldDeviceResources QcWorldDeviceResources::create(QRhi *rhi)
@@ -231,26 +218,32 @@ bool QcWorldPassResources::fits(const QRhiRenderTarget *target) const
     return renderPass && sampleCount == target->sampleCount() && renderPass->isCompatible(target->renderPassDescriptor());
 }
 
-void QcWorldPassResources::createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *atlasBindings)
+void QcWorldPassResources::createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *atlasBindings,
+                                                bool receivesShadows)
 {
     atlasPipelinesTried = true;
-    const BlockPipelines blocks{rhi, target, atlasBindings, loadShader(u":/shaders/block.vert.qsb"_s, lcRenderer()), blockVertexLayout()};
-    const QShader fragmentShader = loadShader(u":/shaders/block.frag.qsb"_s, lcRenderer());
+    shadowReceivers = receivesShadows;
+    // The receivers of the sun shadows (decision E-903) are the same shaders built with QC_SHADOWS.
+    const QString variant = receivesShadows ? u"_shadow"_s : QString();
+    const auto shader = [&variant](const QString &name) { return loadShader(u":/shaders/"_s + name + variant + u".frag.qsb"_s, lcRenderer()); };
+    const auto vertexShader = [&variant](const QString &name) {
+        return loadShader(u":/shaders/"_s + name + variant + u".vert.qsb"_s, lcRenderer());
+    };
+    const BlockPipelines blocks{rhi, target, atlasBindings, vertexShader(u"block"_s), QcRenderPipelines::blockLayout()};
+    const QShader fragmentShader = shader(u"block"_s);
     // The opaque pass writes alpha 1 (decision E-332): mip levels give cut-out texels an alpha
     // between 0 and 1, which a screenshot or a transparent target would read as half transparent. A
     // colour write mask without alpha did the same but cost up to a third more GPU time. Its solid
     // faces take a shader without `discard`, so the GPU shades only the fragments that stay visible
     // (decision E-756); the cut-out faces keep the alpha test.
-    solidPipeline = blocks.build(loadShader(u":/shaders/block_solid.frag.qsb"_s, lcRenderer()), false);
-    cutoutPipeline = blocks.build(loadShader(u":/shaders/block_opaque.frag.qsb"_s, lcRenderer()), false);
+    solidPipeline = blocks.build(shader(u"block_solid"_s), false);
+    cutoutPipeline = blocks.build(shader(u"block_opaque"_s), false);
     translucentPipeline = blocks.build(fragmentShader, true);
     waterPipeline = blocks.build(fragmentShader, true);
 
-    const QShader entityFragment = loadShader(u":/shaders/entity.frag.qsb"_s, lcRenderer());
-    entityPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings,
-                                                             loadShader(u":/shaders/entity.vert.qsb"_s, lcRenderer()), entityFragment);
-    handPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings,
-                                                           loadShader(u":/shaders/hand.vert.qsb"_s, lcRenderer()), entityFragment);
+    const QShader entityFragment = shader(u"entity"_s);
+    entityPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings, vertexShader(u"entity"_s), entityFragment);
+    handPipeline = QcRenderPipelines::createEntityPipeline(rhi, target, atlasBindings, vertexShader(u"hand"_s), entityFragment);
     renderPass.reset(target->renderPassDescriptor()->newCompatibleRenderPassDescriptor());
     sampleCount = target->sampleCount();
 }

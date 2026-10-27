@@ -65,3 +65,18 @@ quint32 QcFramedMapTexture::upload(QRhi *rhi, QRhiResourceUpdateBatch *updates, 
     }
     return bytes;
 }
+
+std::unique_ptr<QRhiShaderResourceBindings> QcFramedMapTexture::bindingsWith(QRhi *rhi, const QList<QRhiShaderResourceBinding> &extra) const
+{
+    if (!m_bindings) {
+        return {};
+    }
+    QList<QRhiShaderResourceBinding> all(m_bindings->cbeginBindings(), m_bindings->cendBindings());
+    all.append(extra);
+    std::unique_ptr<QRhiShaderResourceBindings> result(rhi->newShaderResourceBindings());
+    result->setBindings(all.cbegin(), all.cend());
+    if (!result->create()) {
+        return {};
+    }
+    return result;
+}

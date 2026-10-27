@@ -185,11 +185,11 @@ SettingsPage {
 
         // Classic or realistic (decision E-899): the realistic mode draws the world in HDR with
         // height fog, bloom, tonemapping, ambient occlusion and moving lights (decision E-902) and
-        // costs more GPU time.
+        // sun shadows (decision E-903), and costs more GPU time.
         SettingChoice {
             objectName: "renderModeChoice"
             label: qsTr("Render mode")
-            help: qsTr("Realistic adds valley fog, glow, soft shade and light from held torches; it costs more GPU time")
+            help: qsTr("Realistic adds sun shadows, valley fog, glow, soft shade and light from held torches; it costs more GPU time")
             model: [
                 { text: qsTr("Classic"), value: RenderSettings.Mode.Classic },
                 { text: qsTr("Realistic"), value: RenderSettings.Mode.Realistic }
@@ -201,7 +201,7 @@ SettingsPage {
         SettingChoice {
             objectName: "renderQualityChoice"
             label: qsTr("Realistic quality")
-            help: qsTr("Low without glow and soft shade, High with the widest glow and the most moving lights")
+            help: qsTr("Low without glow and soft shade and with short shadows, High with the widest glow, the finest shadows and the most moving lights")
             enabled: page.rendering.mode === RenderSettings.Mode.Realistic
             model: [
                 { text: qsTr("Low"), value: RenderSettings.Quality.Low },

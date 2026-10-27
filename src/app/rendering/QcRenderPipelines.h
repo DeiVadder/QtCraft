@@ -55,6 +55,11 @@ inline constexpr float skyLightFloor = 0.16f;
 // (the renderer that needs it) when missing.
 QShader loadShader(const QString &path, const QLoggingCategory &category);
 
+// The vertex input of section meshes (QcBlockVertex) and of entity meshes (QcEntityVertex), each
+// with the draw's origin per instance at binding 1 (QcDrawOrigins, decision E-883).
+QRhiVertexInputLayout blockLayout();
+QRhiVertexInputLayout entityLayout();
+
 // Entity meshes (QcEntityVertex) with depth test and write, back faces culled, drawn with the
 // bindings of a frame uniform buffer (0) and the texture atlas (1); vertex input binding 1 takes
 // the mesh's origin per instance (QcDrawOrigins, decision E-883).

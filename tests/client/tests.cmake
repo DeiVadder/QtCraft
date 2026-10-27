@@ -72,6 +72,8 @@ qc_add_test(test_block_prediction SOURCES client/test_block_prediction.cpp QcPre
 qc_add_test(test_block_prediction_measure SOURCES client/test_block_prediction_measure.cpp QcPredictionFixture.h QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
+# The pure parts of the sun shadows (decision E-903): cascades, light axes, texel snapping, light.
+qc_add_test(test_shadow_cascades SOURCES client/test_shadow_cascades.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_moving_lights SOURCES client/test_moving_lights.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
@@ -208,6 +210,39 @@ qt_add_shaders(test_post_process "test_post_process_prefilter_shaders"
         ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_down.frag
     OUTPUTS
         shaders/bloom_prefilter.frag.qsb
+)
+# The sun's shadow map of the realistic mode (decision E-903) on QRhi's Null backend, with the
+# caster shaders baked into the test.
+qc_add_test(test_shadow_map SOURCES client/test_shadow_map.cpp LIBRARIES qc_app_core)
+qt_add_shaders(test_shadow_map "test_shadow_map_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/shadow.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/shadow_entity.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/shadow.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.frag
+)
+qt_add_shaders(test_shadow_map "test_shadow_map_receiver_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_shadow.vert.qsb
+        shaders/entity_shadow.frag.qsb
+)
+qt_add_shaders(test_shadow_map "test_shadow_map_solid_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    DEFINES QC_SOLID=1
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/shadow.frag
+    OUTPUTS
+        shaders/shadow_solid.frag.qsb
 )
 # The ranges of the section arena's pages (decision E-820): first fit, merging of freed neighbours.
 qc_add_test(test_range_allocator SOURCES client/test_range_allocator.cpp LIBRARIES qc_app_core)

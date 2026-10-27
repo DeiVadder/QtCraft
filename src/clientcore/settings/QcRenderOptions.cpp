@@ -71,6 +71,22 @@ int QcRenderOptions::movingLights() const
     return 0;
 }
 
+QcRenderOptions::Shadows QcRenderOptions::shadows() const
+{
+    if (!realistic()) {
+        return {};
+    }
+    switch (quality) {
+    case Quality::Low:
+        return {.cascades = 1, .resolution = 1024, .distance = 40.0f, .filterTaps = 1};
+    case Quality::Medium:
+        return {.cascades = 2, .resolution = 1536, .distance = 80.0f, .filterTaps = 4};
+    case Quality::High:
+        return {.cascades = maxShadowCascades, .resolution = 2048, .distance = 128.0f, .filterTaps = 9};
+    }
+    return {};
+}
+
 QString QcRenderOptions::modeName(Mode mode)
 {
     return QString::fromLatin1(modeNames[static_cast<std::size_t>(mode)]);

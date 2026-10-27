@@ -2292,13 +2292,21 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="192"/>
-        <source>Realistic adds valley fog, glow, soft shade and light from held torches; it costs more GPU time</source>
-        <translation>Realistisch bringt Dunst in Tälern, Leuchten, sanften Schatten und Licht von gehaltenen Fackeln; das kostet mehr Grafikleistung</translation>
+        <source>Realistic adds sun shadows, valley fog, glow, soft shade and light from held torches; it costs more GPU time</source>
+        <translation>Realistisch bringt Sonnenschatten, Dunst in Tälern, Leuchten, sanften Schatten und Licht von gehaltenen Fackeln; das kostet mehr Grafikleistung</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="204"/>
+        <source>Low without glow and soft shade and with short shadows, High with the widest glow, the finest shadows and the most moving lights</source>
+        <translation>Niedrig ohne Leuchten und sanften Schatten und mit kurzen Schatten, Hoch mit dem weitesten Leuchten, den feinsten Schatten und den meisten bewegten Lichtern</translation>
+    </message>
+    <message>
+        <source>Realistic adds valley fog, glow, soft shade and light from held torches; it costs more GPU time</source>
+        <translation type="vanished">Realistisch bringt Dunst in Tälern, Leuchten, sanften Schatten und Licht von gehaltenen Fackeln; das kostet mehr Grafikleistung</translation>
+    </message>
+    <message>
         <source>Low without glow and soft shade, High with the widest glow and the most moving lights</source>
-        <translation>Niedrig ohne Leuchten und sanften Schatten, Hoch mit dem weitesten Leuchten und den meisten bewegten Lichtern</translation>
+        <translation type="vanished">Niedrig ohne Leuchten und sanften Schatten, Hoch mit dem weitesten Leuchten und den meisten bewegten Lichtern</translation>
     </message>
     <message>
         <source>Realistic adds valley fog, glow and richer light; it costs more GPU time</source>

@@ -120,9 +120,11 @@ target_sources(qc_app_core PRIVATE
     rendering/QcRenderSample.h
     rendering/QcSectionArena.h rendering/QcSectionArena.cpp
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
+    rendering/QcShadowMap.h rendering/QcShadowMap.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldRendererResources.h rendering/QcWorldRendererResources.cpp
+    rendering/QcWorldRendererShadows.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
 target_sources(qc_app_core PRIVATE
@@ -400,6 +402,9 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_up.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/composite.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/occlusion.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow_entity.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow.frag
 )
 # The first halving of the bloom reads the HDR scene and keeps what exceeds the threshold (decision E-899).
 qt_add_shaders(qtcraft "qtcraft_bloom_prefilter_shaders"
@@ -430,6 +435,63 @@ qt_add_shaders(qtcraft "qtcraft_solid_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
     OUTPUTS
         shaders/block_solid.frag.qsb
+)
+# The solid faces cast their shadow without alpha test (decision E-903).
+qt_add_shaders(qtcraft "qtcraft_shadow_solid_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_SOLID=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow.frag
+    OUTPUTS
+        shaders/shadow_solid.frag.qsb
+)
+# The receivers of the sun shadows in the realistic mode (decision E-903): translucent faces,
+qt_add_shaders(qtcraft "qtcraft_block_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+    OUTPUTS
+        shaders/block_shadow.frag.qsb
+)
+# cut-out faces,
+qt_add_shaders(qtcraft "qtcraft_block_opaque_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_OPAQUE=1 QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+    OUTPUTS
+        shaders/block_opaque_shadow.frag.qsb
+)
+# solid faces
+qt_add_shaders(qtcraft "qtcraft_block_solid_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_OPAQUE=1 QC_SOLID=1 QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
+    OUTPUTS
+        shaders/block_solid_shadow.frag.qsb
+)
+# and entities with the hand; their vertex shaders hand the parts of the light on (the classic ones
+# stay as they are).
+qt_add_shaders(qtcraft "qtcraft_entity_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/entity.vert
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/hand.vert
+    OUTPUTS
+        shaders/entity_shadow.frag.qsb
+        shaders/block_shadow.vert.qsb
+        shaders/entity_shadow.vert.qsb
+        shaders/hand_shadow.vert.qsb
 )
 
 qt_add_translations(qtcraft

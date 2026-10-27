@@ -58,11 +58,13 @@ struct QcFramePlan
                 false};
     }
 
-    // The realistic mode (stage 45, decision E-899): the steps of the classic mode into the HDR scene
-    // picture, then post-processing (height fog, bloom, tonemapping) into the output.
+    // The realistic mode (stage 45, decision E-899): the sun's shadow map first (decision E-903),
+    // then the steps of the classic mode into the HDR scene picture, then post-processing (height
+    // fog, bloom, tonemapping) into the output.
     static QcFramePlan realistic()
     {
         QcFramePlan plan = classic();
+        plan.passes.prepend(QcRenderPass::Shadow);
         plan.passes.append(QcRenderPass::PostProcess);
         return plan;
     }

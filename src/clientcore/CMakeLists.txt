@@ -69,6 +69,7 @@ target_sources(qc_clientcore PRIVATE
     light/QcLightProbe.h light/QcLightProbe.cpp
     light/QcMovingLights.h light/QcMovingLights.cpp
     light/QcSectionLight.h light/QcSectionLight.cpp
+    light/QcShadowCascades.h light/QcShadowCascades.cpp
     light/QcSky.h light/QcSky.cpp
 )
 target_sources(qc_clientcore PRIVATE

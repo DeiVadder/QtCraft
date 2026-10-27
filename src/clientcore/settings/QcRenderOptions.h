@@ -33,6 +33,18 @@ struct QcRenderOptions
     static constexpr int lowMovingLights = 4;
     static constexpr int mediumMovingLights = 8;
     static constexpr int maxMovingLights = 16;
+    // The sun's shadow map (decision E-903): cascades side by side in one depth texture of
+    // `resolution` squared tiles, reaching `distance` blocks from the camera, filtered with
+    // `filterTaps` hardware-compared lookups (1, 4 or 9) per pixel.
+    struct Shadows
+    {
+        int cascades = 0;
+        int resolution = 0;
+        float distance = 0.0f;
+        int filterTaps = 0;
+        friend bool operator==(const Shadows &, const Shadows &) = default;
+    };
+    static constexpr int maxShadowCascades = 3;
 
     Mode mode = Mode::Classic;
     Quality quality = Quality::Medium;
@@ -46,6 +58,9 @@ struct QcRenderOptions
     int occlusionSamples() const;
     // The most moving lights drawn, 0 in the classic mode (decision E-902).
     int movingLights() const;
+    // The sun's shadows of the quality (Low one small cascade, Medium two, High three and the widest
+    // filter); no cascades in the classic mode.
+    Shadows shadows() const;
 
     // "classic", "realistic"; "low", "medium", "high".
     static QString modeName(Mode mode);

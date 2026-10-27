@@ -438,6 +438,27 @@ private slots:
         QVERIFY(!QcRenderOptions::isExposure(qQNaN()));
     }
 
+    // The sun shadows (decision E-903) grow with the quality: more cascades, a finer map, a wider
+    // filter and a longer distance; none in the classic mode.
+    void renderOptionsAndTheirShadows()
+    {
+        QcRenderOptions options;
+        QCOMPARE(options.shadows(), QcRenderOptions::Shadows{});
+        options.mode = QcRenderOptions::Mode::Realistic;
+        QcRenderOptions::Shadows previous;
+        for (const auto quality : {QcRenderOptions::Quality::Low, QcRenderOptions::Quality::Medium, QcRenderOptions::Quality::High}) {
+            options.quality = quality;
+            const QcRenderOptions::Shadows shadows = options.shadows();
+            QVERIFY(shadows.cascades >= 1 && shadows.cascades <= QcRenderOptions::maxShadowCascades);
+            QVERIFY(shadows.cascades > previous.cascades);
+            QVERIFY(shadows.resolution > previous.resolution);
+            QVERIFY(shadows.distance > previous.distance);
+            QVERIFY(shadows.filterTaps > previous.filterTaps);
+            previous = shadows;
+        }
+        QCOMPARE(previous.cascades, QcRenderOptions::maxShadowCascades);
+    }
+
     void clampHelpers()
     {
         QCOMPARE(QcGameSettings::clampViewDistance(0), QcGameSettings::minViewDistance);

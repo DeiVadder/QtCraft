@@ -100,9 +100,11 @@ struct QcWorldPassResources
     [[nodiscard]] bool hasBlockPipelines() const { return solidPipeline && cutoutPipeline && translucentPipeline && waterPipeline; }
 
     // The block, water, entity and hand pipelines for `target`, all with `atlasBindings`
-    // (QcWorldDeviceResources::atlasBindings); remembers the pass and sample count they were built
-    // for, and that they were tried (a refused pipeline is not built again every frame).
-    void createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *atlasBindings);
+    // (QcWorldDeviceResources::atlasBindings, or QcShadowMap::receiverBindings with
+    // `receivesShadows`: the shaders that darken what the sun does not reach, decision E-903);
+    // remembers the pass and sample count they were built for, and that they were tried (a refused
+    // pipeline is not built again every frame).
+    void createAtlasPipelines(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *atlasBindings, bool receivesShadows);
     // The outline's line pipeline with `outlineBindings` (QcWorldDeviceResources::outlineBindings);
     // tried once per group.
     void createOutlinePipeline(QRhi *rhi, QRhiRenderTarget *target, QRhiShaderResourceBindings *outlineBindings);
@@ -130,4 +132,6 @@ struct QcWorldPassResources
     // Whether createAtlasPipelines() and createOutlinePipeline() ran for this group.
     bool atlasPipelinesTried = false;
     bool outlinePipelineTried = false;
+    // Whether the atlas pipelines were built as receivers of the sun shadows.
+    bool shadowReceivers = false;
 };

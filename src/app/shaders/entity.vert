@@ -14,6 +14,14 @@ layout(location = 0) out vec2 vTexCoord;
 layout(location = 1) out vec3 vLight;
 layout(location = 2) out float vDistance;
 layout(location = 3) out vec4 vTint;
+#ifdef QC_SHADOWS
+// For the sun shadows of the realistic mode (the _shadow variants, decision E-903): where the
+// shadow map is read (relative to the camera), the parts of vLight (x shade, y the sky light of the
+// time of day, z its floor, w the block light) and the moving lights.
+layout(location = 4) out vec3 vShadowAt;
+layout(location = 5) out vec4 vLightParts;
+layout(location = 6) out vec3 vMoving;
+#endif
 
 layout(std140, binding = 0) uniform Frame {
     mat4 viewProjection;
@@ -66,6 +74,11 @@ void main()
     // Torches in hands and fireflies nearby (realistic mode only).
     if (frame.animation.z > 0.5)
         vLight = max(vLight, shade * movingLight(relative));
+#ifdef QC_SHADOWS
+    vLightParts = vec4(shade, skyLight * frame.params.z, frame.params.w + skyLight * frame.extra.w, blockLight);
+    vMoving = frame.animation.z > 0.5 ? shade * movingLight(relative) : vec3(0.0);
+    vShadowAt = relative;
+#endif
     vDistance = length(relative - frame.cameraPosition.xyz);
     gl_Position = frame.viewProjection * vec4(relative, 1.0);
 }

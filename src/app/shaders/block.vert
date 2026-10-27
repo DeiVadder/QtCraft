@@ -23,6 +23,15 @@ layout(location = 5) out vec2 vNextTexCoord;
 layout(location = 6) out float vBlend;
 // Face shading and ambient occlusion of the vertex, for the moving lights of block.frag.
 layout(location = 7) out float vShade;
+#ifdef QC_SHADOWS
+// The parts of vLight for the sun shadows of the realistic mode (block_shadow.vert.qsb with the
+// block fragment shaders built with QC_SHADOWS, decision E-903): x the factor of shading, leaf
+// variation and glow gain, y the sky light of the time of day, z the floor it never goes below,
+// w the block light.
+layout(location = 8) out vec4 vLightParts;
+// The face's normal from the surface byte (0 for crossed planes).
+layout(location = 9) out vec3 vNormal;
+#endif
 
 layout(std140, binding = 0) uniform Frame {
     // The projection of the camera's rotation: positions are relative to the camera (decision E-883).
@@ -127,6 +136,20 @@ void animate(vec2 uv)
     vBlend = entry.r >= 128.0 ? clamp(position - floor(position + wholeBias), 0.0, 1.0) : 0.0;
 }
 
+#ifdef QC_SHADOWS
+// The normal of the face direction `code` (1 + QcBlockFace: east, west, up, down, south, north);
+// none for 0 (crossed planes).
+vec3 faceNormal(float code)
+{
+    if (code < 0.5)
+        return vec3(0.0);
+    float face = code - 1.0;
+    float axis = floor(face / 2.0 + wholeBias);
+    float sign = face - 2.0 * axis < 0.5 ? 1.0 : -1.0;
+    return vec3(axis < 0.5 ? sign : 0.0, abs(axis - 1.0) < 0.5 ? sign : 0.0, axis > 1.5 ? sign : 0.0);
+}
+#endif
+
 void main()
 {
     animate(texCoord);
@@ -143,6 +166,13 @@ void main()
     // classic mode multiplies by exactly 1.
     if (material == emissiveMaterial || material == glowingLiquidMaterial)
         vLight *= frame.animation.y;
+#ifdef QC_SHADOWS
+    float factor = light.x * (1.0 - vCutout * foliageVariation * cornerHash(mod(position + sectionCell(), cellPeriod)));
+    if (material == emissiveMaterial || material == glowingLiquidMaterial)
+        factor *= frame.animation.y;
+    vLightParts = vec4(factor, light.y * frame.params.z, frame.params.w + light.y * frame.extra.w, light.z);
+    vNormal = faceNormal(floor(light.w * 255.0 + 0.5) - 8.0 * material);
+#endif
     // Both offsets from the anchor are small floats: the difference is exact to a few hundredths of a
     // millimetre near the camera.
     vShade = light.x;

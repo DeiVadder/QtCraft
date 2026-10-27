@@ -4,6 +4,7 @@
 #include "app/rendering/QcGpuMeshStore.h"
 #include "app/rendering/QcPostProcess.h"
 #include "app/rendering/QcRenderSample.h"
+#include "app/rendering/QcShadowMap.h"
 #include "app/rendering/QcWorldRendererResources.h"
 #include "app/rendering/QcWorldView.h"
 
@@ -60,6 +61,19 @@ private:
     // is ready, else the classic one; a plan with another target drops the pass group, and the
     // post-processing is released while the classic plan draws.
     void choosePlan(QSize outputSize, QRhiResourceUpdateBatch *updates);
+    // The sun shadows of the realistic mode's quality (decision E-903); the atlas pipelines are
+    // released whenever they no longer fit them (another map, receivers with or without shadows).
+    void prepareShadows();
+    // The cascades of this frame for the casters and the receivers.
+    void uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D drawCamera);
+    // The shadow step: every cascade into its tile of the map, in a render pass of its own that
+    // takes the frame's `updates`.
+    void drawShadowMap(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates);
+    // The sections, then the entities, whose boxes reach into cascade `index`.
+    void drawCascade(QRhiCommandBuffer *commandBuffer, const QcShadowMap::Casters &casters, int index);
+    // Sets a caster pipeline with the casters' bindings at the cascade's dynamic `offset`.
+    void useCaster(QRhiCommandBuffer *commandBuffer, QRhiGraphicsPipeline *pipeline, QRhiShaderResourceBindings *bindings,
+                   QRhiCommandBuffer::DynamicOffset offset);
     // What the steps before post-processing draw into: the scene target in the realistic mode,
     // else the item's output.
     [[nodiscard]] QRhiRenderTarget *drawTarget() const;
@@ -111,6 +125,8 @@ private:
         quint32 origin = 0;
         bool operator==(const Binding &) const = default;
     };
+    [[nodiscard]] const Binding &bound() const { return m_bound; }
+    void setBound(const Binding &binding) { m_bound = binding; }
     Binding m_bound;
     // Draws take a base vertex, so lists sharing buffers need no new binding (QRhi::BaseVertex).
     bool m_baseVertex = false;
@@ -135,11 +151,13 @@ private:
     // Both plans, made once for each QRhi (replaceDevice()).
     QcFramePlan m_classicPlan = QcFramePlan::classic();
     QcFramePlan m_realisticPlan = QcFramePlan::realistic();
-    bool m_warnedTarget = false;
     bool m_warnedRealistic = false;
     // The scene target, bloom and composite of the realistic mode (decision E-899).
     // NOLINT(qc-member-access): an owned part like m_pass; its own methods change it, the renderer only calls them.
     QcPostProcess m_post;
+    // The sun's shadow map of the realistic mode (decision E-903).
+    // NOLINT(qc-member-access): an owned part like m_post; its own methods change it, the renderer only calls them.
+    QcShadowMap m_shadows;
 
     // The sections on the GPU and the meshes queued for them, with the draw origins.
     QcGpuMeshStore m_meshStore;
@@ -150,6 +168,9 @@ private:
     // The frame's view and the culling's list by page, kept so that their lists keep their capacity.
     FrameView m_view;
     std::vector<std::pair<quint32, const QcGpuMesh *>> m_paged;
+    // The sections of one cascade of the shadow step, by page.
+    // NOLINT(qc-member-access): a scratch list like m_paged, kept only for its capacity.
+    std::vector<std::pair<quint32, const QcGpuMesh *>> m_casters;
     QList<std::pair<float, VisibleSection>> m_sorted;
     // A new QRhi replaced a previous one and with it the sections on the GPU; reported to the view
     // in the next synchronize().

@@ -73,7 +73,10 @@ void QcWorldRenderer::replaceDevice()
     m_classicPlan = QcFramePlan::selected(QcRenderOptions::Mode::Classic);
     m_realisticPlan = QcFramePlan::selected(QcRenderOptions::Mode::Realistic);
     setPlan(m_classicPlan);
+    // The pass group refers to the shadow map's bindings and the scene target: dropped before them.
+    dropPass();
     m_post.reset();
+    m_shadows.reset();
     m_baseVertex = rhi()->isFeatureSupported(QRhi::BaseVertex);
     // Test hook QTCRAFT_NO_BASE_INSTANCE=1: the path of GPUs without base instances (decision E-883)
     // on one that has them, for comparison screenshots.
@@ -105,17 +108,21 @@ void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *upda
         qCWarning(lcRenderer) << "World renderer: the realistic mode cannot be drawn on this GPU; drawing the classic one";
         m_warnedRealistic = true;
     }
-    // The classic mode holds no post-processing on the GPU (a refused request stays remembered).
-    if (!realistic) {
-        m_post.release();
-    }
-
     // Only a change of the target drops the pass group here; a new output is initialize()'s.
     const QcFramePlan &chosen = realistic ? m_realisticPlan : m_classicPlan;
     const bool targetChanges = chosen.postProcessed() != plan().postProcessed();
     setPlan(chosen);
     if (targetChanges) {
         dropPass();
+    }
+
+    // The classic mode holds no post-processing and no shadow map on the GPU (a refused request
+    // stays remembered); the pipelines that read them went with the pass group above.
+    if (realistic) {
+        prepareShadows();
+    } else {
+        m_post.release();
+        m_shadows.release();
     }
 }
 
@@ -197,12 +204,15 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     // The pipelines with the atlas bindings go before the bindings and the texture they refer to.
     if (m_device.atlasOutdated(m_frame.atlasVersion)) {
         m_pass.releaseAtlasPipelines();
+        m_shadows.releaseAtlasBindings();
         m_device.replaceAtlas(m_frame.atlas, m_frame.animationMap, m_frame.atlasVersion, updates);
     }
     // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn; a
     // refused pipeline is tried again only with a new atlas or pass group.
     if (m_device.hasAtlas() && !m_pass.atlasPipelinesTried) {
-        m_pass.createAtlasPipelines(m_device.rhi, drawTarget(), m_device.atlasBindings());
+        // The realistic mode's pipelines receive the sun shadows while there is a map (decision E-903).
+        QRhiShaderResourceBindings *const receivers = plan().postProcessed() ? m_shadows.receiverBindings(m_device) : nullptr;
+        m_pass.createAtlasPipelines(m_device.rhi, drawTarget(), receivers ? receivers : m_device.atlasBindings(), receivers != nullptr);
     }
     if (!m_pass.outlinePipelineTried) {
         m_pass.createOutlinePipeline(m_device.rhi, drawTarget(), m_device.outlineBindings.get());
@@ -273,7 +283,7 @@ void QcWorldRenderer::usePipeline(QRhiCommandBuffer *commandBuffer, QRhiGraphics
     commandBuffer->setGraphicsPipeline(pipeline);
     commandBuffer->setShaderResources(resources);
     // QRhi wants the vertex input set again after a pipeline change.
-    m_bound = {};
+    setBound({});
 }
 
 void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuList &list, quint32 origin, quint32 firstIndex, quint32 count)
@@ -291,15 +301,15 @@ void QcWorldRenderer::drawBuffers(QRhiCommandBuffer *commandBuffer, const QcGpuL
         // The buffers from their start, bound only when they change: the lists of a section page
         // differ in first index and base vertex alone (decision E-820).
         const Binding binding{list.vertices, list.indices, list.indexFormat, m_baseInstance ? 0 : origin};
-        if (binding.vertices != m_bound.vertices || binding.indices != m_bound.indices || binding.indexFormat != m_bound.indexFormat) {
+        if (binding.vertices != bound().vertices || binding.indices != bound().indices || binding.indexFormat != bound().indexFormat) {
             const std::array<QRhiCommandBuffer::VertexInput, 2> inputs{QRhiCommandBuffer::VertexInput(list.vertices, 0), offsets};
             commandBuffer->setVertexInput(0, static_cast<int>(inputs.size()), inputs.data(), list.indices, 0, list.indexFormat);
-            m_bound = binding;
-        } else if (binding.origin != m_bound.origin) {
+            setBound(binding);
+        } else if (binding.origin != bound().origin) {
             // Only the offsets move (no base instance): binding 1 alone. QRhi takes the index buffer
             // with every call, so it is passed again unchanged.
             commandBuffer->setVertexInput(QcDrawOrigins::binding, 1, &offsets, list.indices, 0, list.indexFormat);
-            m_bound = binding;
+            setBound(binding);
         }
         commandBuffer->drawIndexed(drawn, 1, list.firstIndex + firstIndex, list.baseVertex, instance);
     } else {
@@ -491,8 +501,10 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
         drawBuffers(commandBuffer, m_device.entityBuffers.list(), m_entityOrigin);
     }
     // The maps in item frames: the same pipeline with the framed-map texture (decision E-809), whose
-    // bindings must have the pipeline's layout (decision E-896).
-    QRhiShaderResourceBindings *const framedMaps = m_device.framedMaps.bindings();
+    // bindings must have the pipeline's layout (decision E-896): with the receivers' bindings when
+    // the pipeline receives the sun shadows (decision E-903).
+    QRhiShaderResourceBindings *const framedMaps =
+        m_pass.shadowReceivers ? m_shadows.framedMapBindings(m_device) : m_device.framedMaps.bindings();
     if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && framedMaps
         && fitsLayout(m_pass.entityPipeline.get(), framedMaps)) {
         usePipeline(commandBuffer, m_pass.entityPipeline.get(), framedMaps);
@@ -530,7 +542,7 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
         ++m_sample.drawCalls;
         break;
     case QcRenderPass::Shadow:
-        // A step of the realistic mode (stage 45.2); its target is not drawn yet (drawPlan).
+        // Drawn by drawShadowMap() into the shadow map's own target (drawPlan).
         break;
     }
 }
@@ -541,11 +553,12 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
     const bool ready = m_pass.hasBlockPipelines();
     const QList<QcFramePlan::Group> groups = plan().groups();
     for (const QcFramePlan::Group &group : groups) {
-        // Shadow maps come with stage 45.2.
+        // The sun's shadow map (decision E-903), drawn only while a light casts shadows; otherwise
+        // the uploads go with the next pass.
         if (group.target == QcRenderTarget::ShadowMap) {
-            if (!m_warnedTarget) {
-                qCWarning(lcRenderer) << "Render target" << static_cast<int>(group.target) << "is not supported; its steps are skipped";
-                m_warnedTarget = true;
+            if (ready && m_shadows.ready() && m_shadows.casts()) {
+                drawShadowMap(commandBuffer, updates);
+                updates = nullptr;
             }
             continue;
         }
@@ -601,6 +614,9 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     // After the uploads of the new sections: a new anchor rewrites their entries too.
     const QVector3D drawCamera = m_meshStore.origins().follow(eye);
     uploadFrameUniforms(updates, viewProjection, drawCamera, outputSize);
+    if (plan().postProcessed()) {
+        uploadShadows(updates, drawCamera);
+    }
     QRhiRenderTarget *const target = drawTarget();
     m_pass.debugLineRenderer.prepare(m_device.rhi, target, updates, m_device.frameUniforms.get(),
                                      {m_frame.debugLines, m_frame.debugLinesOrigin - eye});

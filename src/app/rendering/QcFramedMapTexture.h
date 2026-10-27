@@ -24,6 +24,10 @@ public:
     quint32 upload(QRhi *rhi, QRhiResourceUpdateBatch *updates, const QList<QcFramedMapAtlas::Tile> &tiles, QRhiBuffer *frameUniforms);
     // Null until the first upload, or when the GPU refused the texture.
     QRhiShaderResourceBindings *bindings() const { return m_bindings.get(); }
+    // New bindings: those of bindings() and `extra` after them, for a pipeline whose layout has
+    // more (the receivers of the sun shadows, decision E-903); null before the first upload or when
+    // the GPU refused them. The caller owns them and releases them before this texture.
+    [[nodiscard]] std::unique_ptr<QRhiShaderResourceBindings> bindingsWith(QRhi *rhi, const QList<QRhiShaderResourceBinding> &extra) const;
 
 private:
     bool create(QRhi *rhi, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms);

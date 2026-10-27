@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcDrawOrigins.h"
+#include "clientcore/meshing/QcBlockVertex.h"
 #include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QFile>
@@ -10,7 +11,18 @@
 
 namespace QcRenderPipelines {
 
-namespace {
+QRhiVertexInputLayout blockLayout()
+{
+    QRhiVertexInputLayout inputLayout;
+    inputLayout.setBindings({{sizeof(QcBlockVertex)}});
+    inputLayout.setAttributes({
+        {0, 0, QRhiVertexInputAttribute::Float3, static_cast<quint32>(offsetof(QcBlockVertex, x))},
+        {0, 1, QRhiVertexInputAttribute::Float2, static_cast<quint32>(offsetof(QcBlockVertex, u))},
+        {0, 2, QRhiVertexInputAttribute::UNormByte4, static_cast<quint32>(offsetof(QcBlockVertex, light))},
+    });
+    // The section's corner, per draw (decision E-883).
+    return QcDrawOrigins::withOrigins(inputLayout);
+}
 
 QRhiVertexInputLayout entityLayout()
 {
@@ -27,8 +39,6 @@ QRhiVertexInputLayout entityLayout()
     // The mesh's origin, per draw (decision E-883).
     return QcDrawOrigins::withOrigins(layout);
 }
-
-} // namespace
 
 QShader loadShader(const QString &path, const QLoggingCategory &category)
 {
