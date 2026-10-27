@@ -123,6 +123,11 @@ if(MSVC)
     set_source_files_properties(${qc_worldgen_fp_sources} PROPERTIES COMPILE_OPTIONS /fp:precise)
 else()
     set_source_files_properties(${qc_worldgen_fp_sources} PROPERTIES COMPILE_OPTIONS -ffp-contract=off)
+    # The noise is optimised in debug and sanitizer builds too (decision E-900): unoptimised, its
+    # small helpers and the checked std::array access took three quarters of the time of every
+    # terrain test. Without fast-math and with contraction off the results stay bit for bit those of
+    # the release build.
+    set_property(SOURCE terrain/QcNoise.cpp APPEND PROPERTY COMPILE_OPTIONS "$<$<CONFIG:Debug>:-O2>")
 endif()
 # Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.

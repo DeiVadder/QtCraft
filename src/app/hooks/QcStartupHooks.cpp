@@ -89,7 +89,12 @@ void QcStartupHooks::setScriptedPad(QcScriptedPad *pad)
 {
     m_scriptedPad = pad;
     if (pad) {
-        connect(pad, &QcScriptedPad::stepReported, this, [this] { releaseScreenshot(); });
+        connect(pad, &QcScriptedPad::stepReported, this, [this] {
+            if (screenshotHook()) {
+                screenshotHook()->checkPadStep();
+            }
+            releaseScreenshot();
+        });
     }
 }
 
@@ -108,17 +113,22 @@ void QcStartupHooks::setMenuScreenshotHook(QcScreenshotHook *hook)
     m_menuHold = hook != nullptr;
 }
 
+QcScreenshotHook *QcStartupHooks::screenshotHook() const
+{
+    return m_screenshotHook;
+}
+
 void QcStartupHooks::holdScreenshot() const
 {
-    if (m_screenshotHook) {
-        m_screenshotHook->hold();
+    if (screenshotHook()) {
+        screenshotHook()->hold();
     }
 }
 
 void QcStartupHooks::releaseScreenshot() const
 {
-    if (m_screenshotHook) {
-        m_screenshotHook->release();
+    if (screenshotHook()) {
+        screenshotHook()->release();
     }
 }
 
@@ -472,9 +482,9 @@ void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
     const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(feet.x)), 0, static_cast<int>(std::floor(feet.z))}.chunk();
     const qsizetype expected = chunksInsideWorld(centre.x, streamed) * chunksInsideWorld(centre.z, streamed);
     const bool allChunksArrived = m_parts.session->world()->chunkCount() >= expected;
-    if (m_screenshotHook && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
+    if (screenshotHook() && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
         && m_parts.meshes->jobsInFlight() == 0) {
         m_screenshotReleased = true;
-        m_screenshotHook->release();
+        screenshotHook()->release();
     }
 }

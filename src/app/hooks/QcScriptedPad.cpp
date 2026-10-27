@@ -97,11 +97,11 @@ void QcScriptedPad::apply(const Step &step)
         m_source.setPressed(m_pad, step.button, true);
         afterFrames(clickFrames, [this, button = step.button] {
             m_source.setPressed(m_pad, button, false);
-            afterFrames(reportFrames, [this] { report(); });
+            afterFrames(m_reportFrames, [this] { report(); });
         });
         return;
     }
-    afterFrames(reportFrames, [this] { report(); });
+    afterFrames(m_reportFrames, [this] { report(); });
 }
 
 void QcScriptedPad::connectAnother(QcGamepadType type)

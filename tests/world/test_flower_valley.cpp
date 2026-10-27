@@ -2,10 +2,13 @@
 #include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include <QScopeGuard>
 #include <QSet>
 #include <QTest>
 
 #include <cmath>
+#include <map>
+#include <memory>
 
 using namespace Qt::StringLiterals;
 
@@ -92,6 +95,34 @@ class TestFlowerValley : public QObject
 
 private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
+    // The base game's generator of each seed, shared by the tests: a generator caches the river and
+    // delta sites it has looked at, and a sparse grid over a large window spends most of its time
+    // finding them (the same seed always gives the same terrain, which isRareAndDeterministic checks
+    // against a fresh generator).
+    // Only seeds 7 and 42 are read by several tests; the others keep theirs only during the test.
+    std::map<qint64, std::unique_ptr<const QcTerrainGenerator>> m_generators;
+
+    [[nodiscard]] static bool sharedSeed(qint64 seed) { return seed == 7 || seed == 42; }
+
+    // Frees the generator of a seed only one test reads (not sharedSeed()) when the returned guard
+    // ends, after that test.
+    [[nodiscard]] auto releaseOneOff(qint64 seed)
+    {
+        return qScopeGuard([this, seed] {
+            if (!sharedSeed(seed)) {
+                m_generators.erase(seed);
+            }
+        });
+    }
+
+    [[nodiscard]] const QcTerrainGenerator &generatorFor(qint64 seed)
+    {
+        std::unique_ptr<const QcTerrainGenerator> &generator = m_generators[seed];
+        if (!generator) {
+            generator = std::make_unique<const QcTerrainGenerator>(m_content, seed);
+        }
+        return *generator;
+    }
 
     // Flower blocks (all biomes' flower tables) on top of the ground of the chunks.
     int flowersIn(const QcTerrainGenerator &generator, const QList<QcChunkPos> &chunks) const
@@ -122,11 +153,16 @@ private slots:
     void isRareAndDeterministic()
     {
         ValleySample total;
+        ValleySample first;
         int seedsWithValleys = 0;
         for (const qint64 seed : {1, 7, 42, 1234}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const auto release = releaseOneOff(seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             QVERIFY2(generator.warnings().isEmpty(), qPrintable(generator.warnings().join(u'\n')));
             const ValleySample one = sample(generator);
+            if (seed == 42) {
+                first = one;
+            }
             qInfo("seed %lld: flower valley %.4f of the land", seed, static_cast<double>(one.valley) / one.land);
             total.land += one.land;
             total.valley += one.valley;
@@ -153,8 +189,7 @@ private slots:
         QVERIFY2(valleyHeight < plainsHeight - 0.5, qPrintable(u"%1 %2"_s.arg(valleyHeight).arg(plainsHeight)));
         QVERIFY2(total.ponds > total.valley / 50 && total.ponds < total.valley / 8, qPrintable(QString::number(total.ponds)));
 
-        // The same seed gives the same map.
-        const ValleySample first = sample(QcTerrainGenerator(m_content, 42));
+        // The same seed gives the same map (a fresh generator against the one sampled above).
         const ValleySample again = sample(QcTerrainGenerator(m_content, 42));
         QVERIFY(first.biomes == again.biomes);
     }
@@ -168,7 +203,7 @@ private slots:
         QCOMPARE(without->worldgen().biomes().size(), m_content->worldgen().biomes().size() - 1);
 
         for (const qint64 seed : {7, 42}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             const QcTerrainGenerator plain(without, seed);
             int outside = 0;
             int inside = 0;
@@ -249,7 +284,7 @@ private slots:
 
     void hasFarMoreFlowersThanThePlains()
     {
-        const QcTerrainGenerator generator(m_content, 42);
+        const QcTerrainGenerator &generator = generatorFor(42);
         const QList<QcChunkPos> valley = chunksIn(generator, u"qtcraft:flower_valley"_s, 6);
         const QList<QcChunkPos> plains = chunksIn(generator, u"qtcraft:plains"_s, 6);
         QCOMPARE(valley.size(), 6);

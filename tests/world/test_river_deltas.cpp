@@ -8,6 +8,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QRandomGenerator>
+#include <QScopeGuard>
 #include <QSet>
 #include <QTest>
 
@@ -212,6 +213,35 @@ private:
     // The surveys of the seeds by content (the base game's or with every mouth), seed and reach (a
     // survey of a large window costs seconds; several tests read the same).
     mutable std::map<std::tuple<const QcContentRegistry *, qint64, int>, Survey> m_surveys;
+    // The generators by content and seed, shared by the surveys and the tests: a generator caches
+    // the river and delta sites it has looked at, which the tests then find again around the deltas
+    // of the survey (the same seed gives the same terrain, which sameSeedSameDeltas checks against
+    // a fresh generator).
+    // A seed only one test reads (sharedSeed()) keeps its generator only during that test
+    // (releaseOneOff()).
+    mutable std::map<std::pair<const QcContentRegistry *, qint64>, std::unique_ptr<const QcTerrainGenerator>> m_generators;
+
+    [[nodiscard]] bool sharedSeed(qint64 seed) const { return seed == 7 || seed == 42 || seed == 1234 || seed == m_randomSeed; }
+
+    // Frees the generator of a seed only one test reads (not sharedSeed()) when the returned guard
+    // ends, after that test.
+    [[nodiscard]] auto releaseOneOff(const std::shared_ptr<const QcContentRegistry> &content, qint64 seed) const
+    {
+        return qScopeGuard([this, key = std::pair{content.get(), seed}] {
+            if (!sharedSeed(key.second)) {
+                m_generators.erase(key);
+            }
+        });
+    }
+
+    [[nodiscard]] const QcTerrainGenerator &generatorOf(const std::shared_ptr<const QcContentRegistry> &content, qint64 seed) const
+    {
+        std::unique_ptr<const QcTerrainGenerator> &generator = m_generators[{content.get(), seed}];
+        if (!generator) {
+            generator = std::make_unique<const QcTerrainGenerator>(content, seed);
+        }
+        return *generator;
+    }
 
     [[nodiscard]] const Survey &surveyOf(const std::shared_ptr<const QcContentRegistry> &content, qint64 seed, int reach) const
     {
@@ -219,7 +249,7 @@ private:
         if (const auto found = m_surveys.find(key); found != m_surveys.end()) {
             return found->second;
         }
-        return m_surveys.emplace(key, survey(QcTerrainGenerator(content, seed), reach, 8)).first->second;
+        return m_surveys.emplace(key, survey(generatorOf(content, seed), reach, 8)).first->second;
     }
 
     // A seed whose window of 9216 blocks holds no delta (it once failed a test that divided by
@@ -245,7 +275,7 @@ private:
 private slots:
     void sameSeedSameDeltas()
     {
-        const QcTerrainGenerator first(m_content, 42);
+        const QcTerrainGenerator &first = generatorOf(m_content, 42);
         const QcTerrainGenerator again(m_content, 42);
         const QList<Delta> deltas = deltasOf(42, 2);
         for (const Delta &delta : deltas) {
@@ -275,7 +305,7 @@ private slots:
     void armsRunIntoTheSea()
     {
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const QcTerrainGenerator &generator = generatorOf(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             int cutShort = 0;
             for (const Delta &delta : deltas) {
@@ -296,7 +326,7 @@ private slots:
     void noWaterBesideAir()
     {
         for (const qint64 seed : {qint64{7}, qint64{42}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const QcTerrainGenerator &generator = generatorOf(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 2);
             for (const Delta &delta : deltas) {
                 for (const auto [dx, dz] : std::array<std::pair<int, int>, 3>{{{0, 0}, {-40, 24}, {32, -40}}}) {
@@ -313,7 +343,8 @@ private slots:
     void islandsJustAboveTheSea()
     {
         for (const qint64 seed : {qint64{7}, qint64{42}, noDeltaSeed, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const auto release = releaseOneOff(m_content, seed);
+            const QcTerrainGenerator &generator = generatorOf(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 3);
             qint64 land = 0;
             qint64 low = 0;
@@ -418,7 +449,7 @@ private slots:
         int ice = 0;
         int open = 0;
         for (const qint64 seed : {qint64{7}, qint64{42}}) {
-            const QcTerrainGenerator generator(m_everyMouth, seed);
+            const QcTerrainGenerator &generator = generatorOf(m_everyMouth, seed);
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {
                 if (delta.biome != u"qtcraft:frozen_delta"_s) {
@@ -495,7 +526,8 @@ private slots:
     {
         int checked = 0;
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{613409102}, qint64{23846387}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_everyMouth, seed);
+            const auto release = releaseOneOff(m_everyMouth, seed);
+            const QcTerrainGenerator &generator = generatorOf(m_everyMouth, seed);
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {
                 const QcChunkPos middle = QcBlockPos{delta.x, 0, delta.z}.chunk();

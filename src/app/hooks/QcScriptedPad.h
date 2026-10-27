@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QStringView>
 
+#include <algorithm>
 #include <functional>
 #include <optional>
 
@@ -35,6 +36,9 @@ public:
     explicit QcScriptedPad(QcGamepadUi &ui, QObject *parent = nullptr);
 
     QcGamepadSource *source() { return &m_source; }
+    // Rendered frames between a step and its report (at least reportFrames; a run that checks every
+    // step waits as long as its screenshot, QcScreenshotHook::frameCount(), decision E-900).
+    void setReportFrames(int frames) { m_reportFrames = std::max(frames, reportFrames); }
     // Queues one step; false (with a warning) for one it cannot read.
     bool run(QStringView step);
 
@@ -76,6 +80,7 @@ private:
     QList<Step> m_queue;
     bool m_running = false;
     int m_framesLeft = 0;
+    int m_reportFrames = reportFrames;
     std::function<void()> m_afterFrames;
     QMetaObject::Connection m_frameConnection;
 };

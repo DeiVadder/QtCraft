@@ -10,13 +10,16 @@
 #include <QJsonObject>
 #include <QMap>
 #include <QRandomGenerator>
+#include <QScopeGuard>
 #include <QSet>
 #include <QTest>
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <map>
 #include <memory>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -179,6 +182,55 @@ private:
 
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
+    // The base game's generator of each seed that several tests read (sharedSeed()), shared by
+    // them: a generator caches the river pieces, villages and delta sites it has looked at (the
+    // same seed gives the same terrain, which sameSeedSameRivers checks against a fresh generator).
+    // A seed only one test reads keeps its generator only during that test (releaseOneOff()).
+    std::map<qint64, std::unique_ptr<const QcTerrainGenerator>> m_generators;
+
+    [[nodiscard]] bool sharedSeed(qint64 seed) const { return seed == 7 || seed == 42 || seed == 1234 || seed == m_randomSeed; }
+
+    // Frees the generator of a seed only one test reads (not sharedSeed()) when the returned guard
+    // ends, after that test.
+    [[nodiscard]] auto releaseOneOff(qint64 seed)
+    {
+        return qScopeGuard([this, seed] {
+            if (!sharedSeed(seed)) {
+                m_generators.erase(seed);
+            }
+        });
+    }
+
+    [[nodiscard]] const QcTerrainGenerator &generatorFor(qint64 seed)
+    {
+        std::unique_ptr<const QcTerrainGenerator> &generator = m_generators[seed];
+        if (!generator) {
+            generator = std::make_unique<const QcTerrainGenerator>(m_content, seed);
+        }
+        return *generator;
+    }
+
+    // Two generators of one seed give the same rivers: the river field at `count` river columns
+    // and every block of the columns.
+    static void compareRivers(const QcTerrainGenerator &first, const QcTerrainGenerator &again, int count)
+    {
+        const QList<std::pair<int, int>> rivers = riverColumns(first, count, 512);
+        QCOMPARE(rivers.size(), static_cast<qsizetype>(count));
+        for (const auto [x, z] : rivers) {
+            const QcRiverField::Sample one = first.riverAt(x, z);
+            const QcRiverField::Sample two = again.riverAt(x, z);
+            QCOMPARE(one.distance, two.distance);
+            QCOMPARE(one.halfWidth, two.halfWidth);
+            const QcChunkPos pos = QcBlockPos{x, 0, z}.chunk();
+            const std::shared_ptr<QcChunk> a = first.generate(pos);
+            const std::shared_ptr<QcChunk> b = again.generate(pos);
+            for (int y = 0; y < QcWorld::worldHeight; ++y) {
+                QCOMPARE(a->block(x - pos.x * QcWorld::chunkSize, y, z - pos.z * QcWorld::chunkSize),
+                         b->block(x - pos.x * QcWorld::chunkSize, y, z - pos.z * QcWorld::chunkSize));
+            }
+        }
+    }
+
     // The bridges of the plan: each stretch of decks on the middle line of a road run, from its
     // first deck on in the run's direction (`along`, along x, z or a diagonal). Across a diagonal
     // road a straight line along x or z leaves the deck at its side, beside the road, so the walk
@@ -292,11 +344,17 @@ private:
     // Every post under a deck of the plan's bridges reaches down to a solid bed (not ice).
     void checkPosts(const QcTerrainGenerator &generator, const QcVillagePlan &plan) const
     {
+        // A bridge's decks lie in a few chunks: each is generated once.
+        std::map<std::pair<int, int>, std::shared_ptr<QcChunk>> chunks;
         for (const QcVillagePlan::Deck &deck : plan.bridges) {
             if (deck.post == qcAirBlockId) {
                 continue;
             }
-            const std::shared_ptr<QcChunk> chunk = generator.generate(deck.at.chunk());
+            const QcChunkPos pos = deck.at.chunk();
+            std::shared_ptr<QcChunk> &chunk = chunks[{pos.x, pos.z}];
+            if (!chunk) {
+                chunk = generator.generate(pos);
+            }
             const auto at = [&](int y) { return chunk->block(deck.at.localX(), y, deck.at.localZ()); };
             int y = deck.at.y - 1;
             while (y > 0 && at(y) == deck.post) {
@@ -311,30 +369,16 @@ private:
 private slots:
     void sameSeedSameRivers()
     {
-        const QcTerrainGenerator first(m_content, 42);
+        const QcTerrainGenerator &first = generatorFor(42);
         const QcTerrainGenerator again(m_content, 42);
-        const QList<std::pair<int, int>> rivers = riverColumns(first, 6, 512);
-        QVERIFY(rivers.size() == 6);
-        for (const auto [x, z] : rivers) {
-            const QcRiverField::Sample one = first.riverAt(x, z);
-            const QcRiverField::Sample two = again.riverAt(x, z);
-            QCOMPARE(one.distance, two.distance);
-            QCOMPARE(one.halfWidth, two.halfWidth);
-            const QcChunkPos pos = QcBlockPos{x, 0, z}.chunk();
-            const std::shared_ptr<QcChunk> a = first.generate(pos);
-            const std::shared_ptr<QcChunk> b = again.generate(pos);
-            for (int y = 0; y < QcWorld::worldHeight; ++y) {
-                QCOMPARE(a->block(x - pos.x * QcWorld::chunkSize, y, z - pos.z * QcWorld::chunkSize),
-                         b->block(x - pos.x * QcWorld::chunkSize, y, z - pos.z * QcWorld::chunkSize));
-            }
-        }
+        compareRivers(first, again, 6);
     }
 
     // The river field tells where the water is (for later stages such as deltas): river columns lie
     // inside the channel's width, and their water stands at the sea level over a solid bed.
     void riverColumnsHoldWaterAtTheSeaLevel()
     {
-        const QcTerrainGenerator generator(m_content, 7);
+        const QcTerrainGenerator &generator = generatorFor(7);
         const QList<std::pair<int, int>> rivers = riverColumns(generator, 24, 256);
         QVERIFY(rivers.size() >= 16);
         for (const auto [x, z] : rivers) {
@@ -358,7 +402,7 @@ private slots:
     void noWaterBesideAir()
     {
         for (const qint64 seed : {qint64{42}, qint64{1234}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 8, 384);
             QVERIFY2(rivers.size() >= 6, qPrintable(u"seed %1"_s.arg(seed)));
             for (const auto [x, z] : rivers) {
@@ -375,7 +419,7 @@ private slots:
     {
         int frozen = 0;
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 60, 128);
             for (const auto [x, z] : rivers) {
                 if (generator.biomeName(generator.column(x, z).biome) != u"qtcraft:frozen_river"_s) {
@@ -414,7 +458,8 @@ private slots:
         // 782953143 and 614800303: failed on earlier bridge placements.
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1059853484}, qint64{555555}, qint64{888888888},
                                   qint64{298323796}, qint64{20261017}, qint64{782953143}, qint64{614800303}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const auto release = releaseOneOff(seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             QSet<qint64> seen;
             // Villages lie a region (384 blocks, 24 chunks) apart: every sixth chunk finds each.
             for (int cz = -256; cz < 256; cz += 6) {
@@ -484,7 +529,8 @@ private slots:
         // wide, joined only at corners, and three blocks wide still broke on the survey grid.
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
                                   qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, m_randomSeed}) {
-            const QcTerrainGenerator generator(m_content, seed);
+            const auto release = releaseOneOff(seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
             const Window window = survey(generator, 1536, 2);
             climates.dryLand += window.dryLand;
             climates.dryRiver += window.dryRiver;
@@ -515,6 +561,20 @@ private slots:
         const double humid = static_cast<double>(climates.humidRiver) / static_cast<double>(std::max<qint64>(1, climates.humidLand));
         qInfo("all seeds: dry %.4f of %lld, humid %.4f of %lld", dry, climates.dryLand, humid, climates.humidLand);
         QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
+    }
+
+    // The generators the tests shared, with all they have cached by now, still give the rivers of
+    // a fresh generator of their seed.
+    void sharedGeneratorsMatchFreshOnes()
+    {
+        for (const auto &[seed, shared] : m_generators) {
+            const QcTerrainGenerator fresh(m_content, seed);
+            compareRivers(*shared, fresh, 3);
+            if (QTest::currentTestFailed()) {
+                qInfo("seed %lld", static_cast<long long>(seed));
+                return;
+            }
+        }
     }
 };
 

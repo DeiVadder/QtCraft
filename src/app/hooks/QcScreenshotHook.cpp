@@ -17,11 +17,13 @@
 
 using namespace Qt::StringLiterals;
 
-QcScreenshotHook::QcScreenshotHook(QQuickWindow *window, QString filePath, int frameCount, QObject *parent)
+QcScreenshotHook::QcScreenshotHook(QQuickWindow *window, QString filePath, int frameCount, Checks checks, QObject *parent)
     : QObject(parent)
     , m_window(window)
     , m_filePath(std::move(filePath))
+    , m_frameCount(frameCount)
     , m_remainingFrames(frameCount)
+    , m_checks(checks)
 {
     connect(window, &QQuickWindow::frameSwapped, this, &QcScreenshotHook::onFrameSwapped, Qt::QueuedConnection);
 }
@@ -38,10 +40,9 @@ QcScreenshotHook *QcScreenshotHook::createFromEnvironment(QQuickWindow *window, 
     if (!ok || frames <= 0) {
         frames = defaultFrameCount;
     }
-    auto *hook = new QcScreenshotHook(window, filePath, frames, parent);
-    hook->m_checkLayout = qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1;
-    hook->m_logUiStats = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
-    hook->m_checkAccessibility = qEnvironmentVariableIntValue("QTCRAFT_ACCESSIBILITY_CHECK") == 1;
+    const Checks checks{qEnvironmentVariableIntValue("QTCRAFT_LAYOUT_CHECK") == 1, qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1,
+                        qEnvironmentVariableIntValue("QTCRAFT_ACCESSIBILITY_CHECK") == 1, qEnvironmentVariableIntValue("QTCRAFT_CHECK_PAD_STEPS") == 1};
+    auto *hook = new QcScreenshotHook(window, filePath, frames, checks, parent);
     hook->m_loggedItems = qEnvironmentVariable("QTCRAFT_LOG_ITEMS").split(u',', Qt::SkipEmptyParts);
     return hook;
 }
@@ -87,13 +88,13 @@ void QcScreenshotHook::onFrameSwapped()
     }
 
     m_done = true;
-    if (m_checkLayout) {
+    if (checks().layout) {
         logLayoutCheck();
     }
-    if (m_logUiStats) {
+    if (checks().uiStats) {
         logUiStats();
     }
-    if (m_checkAccessibility) {
+    if (checks().accessibility) {
         logAccessibilityCheck();
     }
     logItems();
@@ -106,6 +107,20 @@ void QcScreenshotHook::onFrameSwapped()
 
     qCInfo(lcScreenshot) << "Saved screenshot to" << m_filePath;
     QTimer::singleShot(0, qApp, [] { QCoreApplication::quit(); });
+}
+
+void QcScreenshotHook::checkPadStep() const
+{
+    // After the picture the window is closing; its checks already ran.
+    if (!checks().padSteps || m_done || !m_window) {
+        return;
+    }
+    if (checks().layout) {
+        logLayoutCheck();
+    }
+    if (checks().accessibility) {
+        logAccessibilityCheck();
+    }
 }
 
 bool QcScreenshotHook::waitingForScreens()

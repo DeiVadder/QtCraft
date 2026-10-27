@@ -68,7 +68,7 @@ qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTr
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_mirror SOURCES client/test_block_mirror.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_prediction SOURCES client/test_block_prediction.cpp QcPredictionFixture.h QcSessionMeshes.h
-    LIBRARIES qc_server qc_worlds qc_clientcore)
+    LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 150)
 qc_add_test(test_block_prediction_measure SOURCES client/test_block_prediction_measure.cpp QcPredictionFixture.h QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)

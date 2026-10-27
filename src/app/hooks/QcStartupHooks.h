@@ -116,6 +116,8 @@ private:
     // Holds the screenshot until the matching releaseScreenshot().
     void holdScreenshot() const;
     void releaseScreenshot() const;
+    // The screenshot hook of the run (setScreenshotHook()); null without one.
+    [[nodiscard]] QcScreenshotHook *screenshotHook() const;
 
     Screens m_screens;
     const QcSessionParts &m_parts;

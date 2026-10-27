@@ -23,9 +23,23 @@ qc_add_test(test_giant_trees SOURCES world/test_giant_trees.cpp LIBRARIES qc_ser
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 600)
 qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_flower_valley SOURCES world/test_flower_valley.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 1680)
-qc_add_test(test_rivers SOURCES world/test_rivers.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 2310)
-qc_add_test(test_river_deltas SOURCES world/test_river_deltas.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 3090)
+# The terrain tests spend most of their time in the noise, which Clang/GCC debug and sanitizer
+# builds optimise (decision E-900); MSVC debug builds do not and keep the limits from before. The
+# limits are twice the parallel TSan times measured before E-900 (812, 826 and 446 s): TSan was not
+# measured again yet.
+if(MSVC)
+    set(qc_flower_valley_timeout 1680)
+    set(qc_rivers_timeout 2310)
+    set(qc_river_deltas_timeout 3090)
+else()
+    set(qc_flower_valley_timeout 900)
+    set(qc_rivers_timeout 1650)
+    set(qc_river_deltas_timeout 1680)
+endif()
+qc_add_test(test_flower_valley SOURCES world/test_flower_valley.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_flower_valley_timeout})
+qc_add_test(test_rivers SOURCES world/test_rivers.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_rivers_timeout})
+qc_add_test(test_river_deltas SOURCES world/test_river_deltas.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen
+    TIMEOUT ${qc_river_deltas_timeout})
 qc_add_test(test_cold_edges SOURCES world/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 600)
 qc_add_test(test_climate_order SOURCES world/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 720)
 qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)

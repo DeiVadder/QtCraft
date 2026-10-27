@@ -155,6 +155,10 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
     // "@<ms> pad:<step>" lines play a virtual pad instead (decision E-583).
     if (QcScriptedPad::wanted(options.overlays)) {
         auto *pad = new QcScriptedPad(*game.gamepadUi(), &game);
+        // Checks after each step see the screen as settled as the screenshot does (decision E-900).
+        if (screenshot && screenshot->checks().padSteps) {
+            pad->setReportFrames(screenshot->frameCount());
+        }
         game.useScriptedGamepad(pad->source());
         game.startup()->setScriptedPad(pad);
     }
