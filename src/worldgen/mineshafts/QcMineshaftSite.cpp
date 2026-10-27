@@ -1,8 +1,11 @@
 #include "worldgen/mineshafts/QcMineshaftSite.h"
 
 #include "worldgen/dungeons/QcDungeonGenerator.h"
+#include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
+#include "worldgen/villages/QcVillagePlan.h"
 
+#include <algorithm>
 #include <cmath>
 
 namespace {
@@ -80,6 +83,17 @@ bool QcMineshaftSite::clearOfDungeons(QcBlockPos low, QcBlockPos high) const
         return high.x + 1 >= box.low.x && low.x - 1 <= box.high.x && high.y + 1 >= box.low.y && low.y - 1 <= box.high.y
                && high.z + 1 >= box.low.z && low.z - 1 <= box.high.z;
     });
+}
+
+bool QcMineshaftSite::awayFromSettlements(int x, int z, int margin) const
+{
+    const QcChunkPos chunk = QcBlockPos{x, 0, z}.chunk();
+    const std::shared_ptr<const QcVillagePlan> village = m_terrain.villageFor(chunk);
+    if (village && village->covers(x, z, margin)) {
+        return false;
+    }
+    const QList<QcSurfacePlanner::Rect> structures = m_terrain.surfaceStructures().footprintsNear(chunk, margin);
+    return std::ranges::none_of(structures, [x, z, margin](QcSurfacePlanner::Rect footprint) { return footprint.intersects({x, z, x, z}, margin); });
 }
 
 QcMineshaftSite::Verdict QcMineshaftSite::node(const QcMineshaftPlan::Node &node)

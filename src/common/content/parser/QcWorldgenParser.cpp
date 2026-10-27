@@ -391,6 +391,7 @@ public:
 
 private:
     void parseMineshaftNames();
+    void parseEntranceKinds();
 
     const QJsonObject &m_json;
     QcJsonFieldReader &m_reader;
@@ -411,6 +412,24 @@ void MineshaftReader::parseMineshaftNames()
     m_shafts.mob = m_reader.name(u"mob"_s, m_namespace);
     m_shafts.cart = m_reader.name(u"cart"_s, m_namespace);
     m_shafts.lootTable = m_reader.name(u"lootTable"_s, m_namespace);
+}
+
+void MineshaftReader::parseEntranceKinds()
+{
+    m_reader.nestedObject(u"entranceKinds"_s, [this](const QJsonObject &kinds, QcJsonFieldReader &nested) {
+        for (auto it = kinds.begin(); it != kinds.end(); ++it) {
+            if (it.key() != u"ladder"_s && it.key() != u"incline"_s) {
+                nested.fail(u"unknown entrance kind '%1' (known: ladder, incline)"_s.arg(it.key()));
+                return;
+            }
+        }
+        constexpr int most = QcMineshaftSettings::maxEntranceWeight;
+        m_shafts.ladderWeight = nested.integer(u"ladder"_s, 0, 0, most);
+        m_shafts.inclineWeight = nested.integer(u"incline"_s, 0, 0, most);
+        if (nested.ok() && m_shafts.ladderWeight + m_shafts.inclineWeight == 0) {
+            nested.fail(u"needs a weight above 0 for 'ladder' or 'incline'"_s);
+        }
+    });
 }
 
 QcMineshaftSettings MineshaftReader::read()
@@ -447,6 +466,7 @@ QcMineshaftSettings MineshaftReader::read()
     m_shafts.roomChance = m_reader.number(u"roomChance"_s, m_shafts.roomChance, 0.0, 1.0);
     m_shafts.maxRooms = m_reader.integer(u"maxRooms"_s, m_shafts.maxRooms, 0, 16);
     parseMineshaftNames();
+    parseEntranceKinds();
     const QJsonObject biomes = m_json.value(u"entranceBiomes"_s).toObject();
     for (auto it = biomes.begin(); it != biomes.end(); ++it) {
         const double chance = it.value().toDouble(-1.0);

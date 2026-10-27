@@ -44,6 +44,7 @@ QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings
         const QString name = QString::fromLatin1(sideNames[side]);
         blocks.lights[side] = state(settings.light + u"[attach="_s + name + u']');
         blocks.ladders[side] = state(settings.ladder + u"[attach="_s + name + u']');
+        blocks.railsUp[side] = state(settings.rail + u"[facing="_s + name + u",shape=ascending]"_s);
     }
     if (!resolved) {
         return {std::nullopt, warnings};

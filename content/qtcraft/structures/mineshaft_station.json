@@ -14,141 +14,142 @@
         "H": "ladder[attach=west]",
         "B": "iron_bars",
         "X": "spawner",
-        ".": "air"
+        ".": "air",
+        "a": "rail[facing=east,shape=ascending]"
     },
     "layers": [
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS......SSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSS.L..L.SSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSSSSSSSSSPPPPPPSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH.L....L..SSSSSS.....L..L.B.c....S",
-            "SeeeeeeeeeeSSSSSS.eeeeeeeeeB...X.cS",
-            "S..L....L..SSSSSS.....L..L.B....c.S",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.L....L..SSSSSS.....L..L.B.c....SSSSSSSS",
+            "SeeeeeeeeeeSSSSSS.eeeeeeeeeB...X.cSSSSSSSS",
+            "S..L....L..SSSSSS.....L..L.B....c.SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH.L....L..SSSSS......L..L.B....c.S",
-            "S..........SSSSS...........B......S",
-            "S..L....L..SSSSS......L..L.Bc.c...S",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.L....L..SSSSS......L..L.B....c.SSSSSSSS",
+            "S..........SSSSS...........B......SSSSSSSS",
+            "S..L....L..SSSSS......L..L.Bc.c...SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH.P....Pc.SSSS.......P..P.B..c..cS",
-            "S..Pw...P..SSSS.......P..P.B.c....S",
-            "S..P..c.P..SSSS.......P.cP.B...c..S",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH.P....Pc.SSSS.......P..P.B..c..cSSSSSSSS",
+            "S..Pw...P..SSSS.......P..P.B.c....SSSSSSSS",
+            "S..P..c.P..SSSS.......P.cP.B...c..SSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SHSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SHSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SHSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SHSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SSSSSSSSSSSS....SSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH....L........SSSSSSSSSSSSSSSSSSSS",
-            "S..............SSSSSSSSSSSSSSSSSSSS",
-            "S.....L........SSSSSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....L........SSSSSSSSSSSSSSSSSSSS..SSSSS",
+            "S..............SSSSSSSSSSSSSSSSSSSS.aSSSSS",
+            "S.....L........SSSSSSSSSSSSSSSSSSSS..SSSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH....L.......SSSSSSSSSSSSSSSSSSSSS",
-            "S.............SSSSSSSSSSSSSSSSSSSSS",
-            "S.....L.......SSSSSSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....L.......SSSSSSSSSSSSSSSSSSSSS...SSSS",
+            "S.............SSSSSSSSSSSSSSSSSSSSS..aSSSS",
+            "S.....L.......SSSSSSSSSSSSSSSSSSSSS...SSSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SH....P...c..SSSSSSSSSSSSSSSSSSSSSS",
-            "S.....Pw.....SSSSSSSSSSSSSSSSSSSSSS",
-            "S..c..P......SSSSSSSSSSSSSSSSSSSSSS",
-            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGS"
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "SH....P...c..SSSSSSSSSSSSSSSSSSSSSS....SSS",
+            "S.....Pw.....SSSSSSSSSSSSSSSSSSSSSS...aSSS",
+            "S..c..P......SSSSSSSSSSSSSSSSSSSSSS....SSS",
+            "SGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGSGGGGGGS"
         ],
         [
-            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "PHPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
-            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS",
+            "PHPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS..LSS",
+            "PPPSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS..aSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS..LSS",
+            "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
         ],
         [
-            "L L                                ",
-            "PH                                 ",
-            "L L                                ",
-            "                                   ",
-            "                                   "
+            "L L                                       ",
+            "PH                                   ..L  ",
+            "L L                                  ...  ",
+            "                                     ..L  ",
+            "                                          "
         ],
         [
-            "L L                                ",
-            "PH                                 ",
-            "L L                                ",
-            "                                   ",
-            "                                   "
+            "L L                                       ",
+            "PH                                    .L  ",
+            "L L                                   ..  ",
+            "                                      .L  ",
+            "                                          "
         ],
         [
-            "L L                                ",
-            "                                   ",
-            "L L                                ",
-            "                                   ",
-            "                                   "
+            "L L                                       ",
+            "                                       P  ",
+            "L L                                    P  ",
+            "                                       P  ",
+            "                                          "
         ],
         [
-            "PPP                                ",
-            "PPP                                ",
-            "PPP                                ",
-            "                                   ",
-            "                                   "
+            "PPP                                       ",
+            "PPP                                       ",
+            "PPP                                       ",
+            "                                          ",
+            "                                          "
         ]
     ],
     "minecarts": [
@@ -231,6 +232,14 @@
                 4.5
             ],
             "text": "mob.qtcraft.cave_spider"
+        },
+        {
+            "at": [
+                38.5,
+                18.6,
+                4.5
+            ],
+            "text": "structure.qtcraft.mineshaft_station.incline"
         }
     ]
 }

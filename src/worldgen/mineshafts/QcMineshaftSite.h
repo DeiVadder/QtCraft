@@ -31,6 +31,9 @@ public:
     Verdict corridor(const QcMineshaftPlan::Corridor &corridor);
     // A box of cells (inclusive corners) clear of every dungeon nearby.
     bool clearOfDungeons(QcBlockPos low, QcBlockPos high) const;
+    // No village lies within `margin` blocks of the column, nor a surface structure or the ground
+    // blended around it (decision E-889): where an entrance may come up.
+    bool awayFromSettlements(int x, int z, int margin) const;
 
 private:
     // At least `groundCover` blocks of ground above the open cells up to `top` (exclusive) at a column.
@@ -46,6 +49,7 @@ private:
 
     const QcTerrainGenerator &m_terrain;
     const QcMineshaftSettings &m_settings;
+    // NOLINT(qc-member-access): the cache of column(), which is its only user (lookup and fill).
     QHash<qint64, QcTerrainColumn> m_columns;
     QList<Box> m_dungeons;
 };

@@ -516,16 +516,20 @@ private slots:
         QVERIFY2(withEntrance.size() * 100 >= m_plans.size() * 15, qPrintable(u"%1 of %2"_s.arg(withEntrance.size()).arg(m_plans.size())));
         for (const Built &built : std::as_const(m_built)) {
             if (built.plan->entrance) {
-                QVERIFY(walk(*built.plan, built.chunks).contains(built.plan->entrance->top.offset(0, 2, 0)));
+                QVERIFY(walk(*built.plan, built.chunks).contains(built.plan->entrance->out));
             }
         }
 
         // Every entrance, built after the trees, cacti and pools of its chunks: a ladder from the
         // room's floor to two cells above the ground with a solid wall behind it, the headframe's
-        // posts, its box free of anything else, and a way out onto the ground beside it.
+        // posts, its box free of anything else, and a way out onto the ground beside it. Inclined
+        // tunnels (decision E-895) are walked in test_mineshaft_inclines.
         for (const auto &plan : std::as_const(withEntrance)) {
             const QcBlockPos top = plan->entrance->top;
             QCOMPARE(top.y, m_terrain->groundTop(top.x, top.z, m_terrain->column(top.x, top.z)));
+            if (plan->entrance->kind != QcMineshaftPlan::Entrance::Kind::Ladder) {
+                continue;
+            }
             QList<QcChunkPos> positions;
             for (int i = 0; i < 25; ++i) {
                 if (const QcChunkPos pos = top.offset(i % 5 - 2, 0, i / 5 - 2).chunk(); !positions.contains(pos)) {
@@ -649,6 +653,17 @@ private slots:
                 QVERIFY(!block(local(12 + a, 10 - a + dy, 2)).solid);
             }
         }
+        // The inclined entrance (decision E-895): from a chamber up one block per step with rails
+        // rising east, out onto the ground under a support.
+        for (int a = 0; a < 3; ++a) {
+            QVERIFY(solid(local(37 + a, 11 + a, 2)));
+            QVERIFY(block(local(37 + a, 12 + a, 2)).rail);
+            for (int dy = 1; dy < 3; ++dy) {
+                QVERIFY(!block(local(37 + a, 12 + a + dy, 2)).solid);
+            }
+        }
+        QVERIFY(solid(local(40, 14, 2)) && !block(local(40, 15, 2)).solid);
+        QCOMPARE(nameOf(local(39, 16, 1)), u"qtcraft:oak_log"_s);
         // The bridge: planks over the pit, pillars from its supports down to the ground layer.
         for (int x = 21; x <= 26; ++x) {
             QCOMPARE(nameOf(local(x, 4, 2)), u"qtcraft:oak_planks"_s);

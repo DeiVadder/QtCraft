@@ -25,6 +25,8 @@ struct Leg
 {
     int part = 0;
     QcVec3 centre;
+    // The horizontal segment carrying the leg to the body (a leg assembly), or -1.
+    int segment = -1;
 };
 
 bool standsOnGround(const QcMobPart &part, double ground)
@@ -52,6 +54,42 @@ bool isFootOf(const QcMobPart &part, const QcMobPart &leg)
     return touches(part, leg) && part.to.y - part.from.y <= footFlatness * (leg.to.y - leg.from.y);
 }
 
+// `part` lies along x, at least legSlenderness times as long as it is tall and deep.
+bool liesAcross(const QcMobPart &part)
+{
+    const double length = part.to.x - part.from.x;
+    return length > minLegHeight && length >= legSlenderness * std::max(part.to.y - part.from.y, part.to.z - part.from.z);
+}
+
+// `segment` is the upper part of the leg assembly of `leg`: it lies across on top of the leg, and
+// its outer end lies over the leg (a bar over two legs belongs to the outer one only).
+bool carries(const QcMobPart &segment, const QcMobPart &leg)
+{
+    const double legX = (leg.from.x + leg.to.x) * 0.5;
+    const double segmentX = (segment.from.x + segment.to.x) * 0.5;
+    const double outerEnd = segmentX > 0.0 ? segment.to.x : segment.from.x;
+    return liesAcross(segment) && touches(segment, leg) && segment.from.y >= leg.to.y - groundTolerance
+           && legX * segmentX > 0.0 && std::abs(legX) > std::abs(segmentX) && outerEnd >= leg.from.x - groundTolerance
+           && outerEnd <= leg.to.x + groundTolerance;
+}
+
+// The segment of the leg assembly of `leg`: a part that `carries` the leg and touches another part
+// (the body) besides legs and segments; -1 when the leg stands alone.
+int segmentOf(const QList<QcMobPart> &parts, const QList<int> &legParts, int leg)
+{
+    for (int index = 0; index < parts.size(); ++index) {
+        if (legParts.contains(index) || !carries(parts.at(index), parts.at(leg))) {
+            continue;
+        }
+        for (int body = 0; body < parts.size(); ++body) {
+            if (body != index && !legParts.contains(body) && !liesAcross(parts.at(body)) && touches(parts.at(body), parts.at(index))) {
+                return index;
+            }
+        }
+    }
+    return -1;
+}
+
 // The lowest level of the model.
 double groundOf(const QList<QcMobPart> &parts)
 {
@@ -68,8 +106,16 @@ QList<Leg> legsOf(const QList<QcMobPart> &parts, double ground)
     for (int index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
         if (isLeg(part, ground)) {
-            legs.append({index, (part.from + part.to) * 0.5});
+            legs.append({index, (part.from + part.to) * 0.5, -1});
         }
+    }
+
+    QList<int> legParts;
+    for (const Leg &leg : legs) {
+        legParts.append(leg.part);
+    }
+    for (Leg &leg : legs) {
+        leg.segment = segmentOf(parts, legParts, leg.part);
     }
     return legs;
 }
@@ -89,13 +135,21 @@ double phaseOf(const Leg &leg, const QList<Leg> &legs)
 }
 
 // The widest swing at which two neighbouring legs of a side, turning towards each other, keep a
-// tenth of the gap between them at their feet.
+// tenth of the gap between them at their feet; leg assemblies turn at most QcBoxLegs::maxLegYaw
+// (their feet move along the side, so the gap does not bound them).
 double maxSwingOf(const QList<Leg> &legs, const QList<QcMobPart> &parts)
 {
     constexpr double keptGap = 0.9;
     double widest = QcAnimator::maxLegSwing;
     for (const Leg &front : legs) {
+        if (front.segment >= 0) {
+            widest = std::min(widest, QcBoxLegs::maxLegYaw);
+            continue;
+        }
         for (const Leg &hind : legs) {
+            if (hind.segment >= 0) {
+                continue;
+            }
             const QcMobPart &a = parts.at(front.part);
             const QcMobPart &b = parts.at(hind.part);
             if ((front.centre.x < 0.0) != (hind.centre.x < 0.0) || b.from.z < a.to.z) {
@@ -112,12 +166,27 @@ double maxSwingOf(const QList<Leg> &legs, const QList<QcMobPart> &parts)
     return widest;
 }
 
+// The turn of a leg assembly around the joint at the inner end of its `segment`. A turn by a
+// positive angle moves a foot on the left side (-x) forward and one on the right side back, so the
+// side factor of `phase` (from phaseOf, 1 for a foot moving forward) cancels out: the assemblies
+// alternate along a side, and the first legs of both sides move in opposite directions.
+QcBoxLegs::Swing assemblySwing(const QcMobPart &segment, double phase)
+{
+    const bool left = segment.to.x <= 0.0;
+    const QcVec3 joint{left ? segment.to.x : segment.from.x, (segment.from.y + segment.to.y) * 0.5, (segment.from.z + segment.to.z) * 0.5};
+    return {joint, left ? phase : -phase, QcBoxLegs::Axis::Yaw};
+}
+
 } // namespace
 
 QcVec3 QcBoxLegs::Swing::apply(const QcVec3 &local, double degrees) const
 {
     if (phase == 0.0 || degrees == 0.0) {
         return local;
+    }
+    if (axis == Axis::Yaw) {
+        const QcEntityMesher::Rotate turn(0.0, 0.0, degrees * phase);
+        return hip + turn(local - hip);
     }
     const QcEntityMesher::Rotate turn(degrees * phase, 0.0);
     return hip + turn(local - hip);
@@ -135,8 +204,14 @@ QcBoxLegs QcBoxLegs::of(const QList<QcMobPart> &parts)
     result.m_swings.resize(parts.size());
     for (const Leg &leg : legs) {
         const QcMobPart &part = parts.at(leg.part);
-        result.m_swings[leg.part] = {{leg.centre.x, part.to.y, leg.centre.z}, phaseOf(leg, legs)};
         result.m_length += (part.to.y - part.from.y) / static_cast<double>(legs.size());
+        if (leg.segment < 0) {
+            result.m_swings[leg.part] = {{leg.centre.x, part.to.y, leg.centre.z}, phaseOf(leg, legs), Axis::Pitch};
+            continue;
+        }
+        const Swing turn = assemblySwing(parts.at(leg.segment), phaseOf(leg, legs));
+        result.m_swings[leg.part] = turn;
+        result.m_swings[leg.segment] = turn;
     }
 
     result.m_maxSwing = maxSwingOf(legs, parts);

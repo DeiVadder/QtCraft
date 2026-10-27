@@ -28,6 +28,7 @@ target_sources(qc_worldgen PRIVATE
     mineshafts/QcMineshaftDetails.h mineshafts/QcMineshaftDetails.cpp
     mineshafts/QcMineshaftFrame.h
     mineshafts/QcMineshaftGenerator.h mineshafts/QcMineshaftGenerator.cpp
+    mineshafts/QcMineshaftIncline.h mineshafts/QcMineshaftIncline.cpp
     mineshafts/QcMineshaftNetwork.h mineshafts/QcMineshaftNetwork.cpp
     mineshafts/QcMineshaftPlan.h
     mineshafts/QcMineshaftPlanner.h mineshafts/QcMineshaftPlanner.cpp

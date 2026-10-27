@@ -81,6 +81,12 @@ struct QcMineshaftSettings
     // `entranceChance`, or the chance of the biome at the shaft.
     double entranceChance = 0.3;
     QList<BiomeChance> entranceBiomes;
+    // The kind of a surface entrance, drawn by weight per mine shaft (`"entranceKinds"`, decision
+    // E-895): a ladder shaft with a headframe, or an inclined tunnel (steps four cells high with
+    // supports, rails with `railChance`) from a side of the central room up to the ground. When the
+    // drawn kind finds no place, the other one (with a weight above 0) is tried.
+    int ladderWeight = 1;
+    int inclineWeight = 0;
     // Rooms from structures with a `"mineshaft"` weight at dead ends: at most `maxRooms`, each dead
     // end with `roomChance`.
     double roomChance = 0.3;
@@ -92,6 +98,7 @@ struct QcMineshaftSettings
     static constexpr int maxLevelCount = 6;
     // Rooms from structures fit into a lattice cell beside their corridor.
     static constexpr int maxRoomFootprint = 7;
+    static constexpr int maxEntranceWeight = 100;
 
     // The lattice spacing: crossings are this many blocks apart.
     int spacing() const { return levelSpacing + 3; }

@@ -106,6 +106,10 @@
             "taiga": 0.5,
             "desert": 0.5
         },
+        "entranceKinds": {
+            "ladder": 1,
+            "incline": 1
+        },
         "roomChance": 0.3,
         "maxRooms": 3
     },

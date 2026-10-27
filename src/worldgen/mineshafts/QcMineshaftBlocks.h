@@ -20,6 +20,8 @@ struct QcMineshaftBlocks
     // Straight rails along north-south and along east-west.
     QcBlockId railNorthSouth = qcAirBlockId;
     QcBlockId railEastWest = qcAirBlockId;
+    // Rails rising towards the side (an inclined entrance's steps, decision E-895).
+    std::array<QcBlockId, 4> railsUp{};
     QcBlockId cobweb = qcAirBlockId;
     QcBlockId seal = qcAirBlockId;
     QcBlockId spawner = qcAirBlockId;

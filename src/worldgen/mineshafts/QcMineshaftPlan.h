@@ -78,17 +78,30 @@ struct QcMineshaftPlan
     };
 
     // The way up to the surface (QcMineshaftAccess): a ladder shaft from the central room through
-    // the ground under a headframe. The terrain generator builds it after its trees, cacti and
-    // surface pools (QcMineshaftBuilder::buildEntrance), so none of them blocks it.
+    // the ground under a headframe, or an inclined tunnel from a side of the central room up to the
+    // ground (decision E-895). The terrain generator builds it after its trees, cacti and surface
+    // pools (QcMineshaftBuilder::buildEntrance), so none of them blocks it.
     struct Entrance
     {
-        // The shaft's top cell, in the ground's top block.
+        enum class Kind : quint8 {
+            Ladder,
+            Incline,
+        };
+
+        Kind kind = Kind::Ladder;
+        // Ladder: the shaft's top cell, in the ground's top block. Incline: the ground's top block
+        // in front of the tunnel's mouth. The box of 3 x 3 x 3 cells above it is cleared, and the
+        // leaves and cacti of the 5 x 5 ring around that box.
         QcBlockPos top;
-        // The shaft's open cells, from above the central room to two cells above `top`.
+        // The open cell at the top of the way up, from which one steps onto the ground: two above
+        // `top` for the ladder, the last feet cell of the tunnel's middle lane for an incline.
+        QcBlockPos out;
+        // The open cells: the ladder shaft from above the central room to two cells above `top`, or
+        // the tunnel.
         QList<QcBlockPos> shaft;
-        // Cells around the shaft that become planks where they are not solid.
+        // Cells around the shaft (under the tunnel's steps) that become planks where they are not solid.
         QList<QcBlockPos> lining;
-        // The ladder from the room's floor up and the headframe.
+        // The ladder from the room's floor up and the headframe, or the tunnel's supports and rails.
         QList<Placed> blocks;
     };
 
@@ -139,6 +152,9 @@ struct QcMineshaftPlan
             add(placed.at);
         }
         if (entrance) {
+            // The cleared box over `top` and the ring of foliage around it (QcMineshaftBuilder::buildEntrance).
+            add(entrance->top.offset(-2, 0, -2));
+            add(entrance->top.offset(2, 0, 2));
             for (const QcMineshaftPlan::Placed &placed : std::as_const(entrance->blocks)) {
                 add(placed.at);
             }
