@@ -72,6 +72,7 @@ qc_add_test(test_block_prediction SOURCES client/test_block_prediction.cpp QcPre
 qc_add_test(test_block_prediction_measure SOURCES client/test_block_prediction_measure.cpp QcPredictionFixture.h QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_moving_lights SOURCES client/test_moving_lights.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES client/test_entity_culling.cpp LIBRARIES qc_clientcore)
@@ -197,6 +198,7 @@ qt_add_shaders(test_post_process "test_post_process_shaders"
         ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_down.frag
         ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_up.frag
         ${PROJECT_SOURCE_DIR}/src/app/shaders/composite.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/occlusion.frag
 )
 qt_add_shaders(test_post_process "test_post_process_prefilter_shaders"
     BASE ${PROJECT_SOURCE_DIR}/src/app

@@ -39,6 +39,38 @@ int QcRenderOptions::bloomLevels() const
     return 0;
 }
 
+int QcRenderOptions::occlusionSamples() const
+{
+    if (!realistic()) {
+        return 0;
+    }
+    switch (quality) {
+    case Quality::Low:
+        return 0;
+    case Quality::Medium:
+        return mediumOcclusionSamples;
+    case Quality::High:
+        return highOcclusionSamples;
+    }
+    return 0;
+}
+
+int QcRenderOptions::movingLights() const
+{
+    if (!realistic()) {
+        return 0;
+    }
+    switch (quality) {
+    case Quality::Low:
+        return lowMovingLights;
+    case Quality::Medium:
+        return mediumMovingLights;
+    case Quality::High:
+        return maxMovingLights;
+    }
+    return 0;
+}
+
 QString QcRenderOptions::modeName(Mode mode)
 {
     return QString::fromLatin1(modeNames[static_cast<std::size_t>(mode)]);

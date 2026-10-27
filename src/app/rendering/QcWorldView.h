@@ -3,6 +3,7 @@
 #include "app/rendering/QcRenderSample.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/debug/QcDebugLines.h"
+#include "clientcore/light/QcMovingLights.h"
 #include "clientcore/light/QcSky.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/meshing/QcChunkMesh.h"
@@ -64,6 +65,9 @@ public:
         // How far the camera is under the open sky (1) or deep in a cave (0), eased; the height fog
         // of the realistic mode fades with it, so caves stay clear.
         float outdoors = 1.0f;
+        // Torches in hands, fireflies (decision E-902): drawn by the realistic mode only, at most
+        // QcRenderOptions::movingLights() of them; world positions.
+        QList<QcMovingLight> movingLights;
         // Outlined boxes of the targeted block in world space; empty for none.
         QList<QcAabb> selection;
         std::shared_ptr<const QcEntityMesh> entityMesh;
@@ -111,6 +115,9 @@ public:
     void setAnisotropicSamples(int samples);
     // Render mode, quality and exposure (decision E-899).
     void setRenderOptions(QcRenderOptions options);
+    [[nodiscard]] const QcRenderOptions &renderOptions() const { return m_frame.render; }
+    // The moving lights of this frame (FrameInput::movingLights).
+    void setMovingLights(QList<QcMovingLight> lights);
     // How far the camera is under the open sky, 0..1 (FrameInput::outdoors).
     void setOutdoors(float outdoors);
     // Debug visualisations for this frame (decision E-225), relative to `origin`; null or empty

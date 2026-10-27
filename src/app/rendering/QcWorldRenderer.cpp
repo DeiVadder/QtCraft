@@ -100,7 +100,7 @@ void QcWorldRenderer::dropPass()
 void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *updates)
 {
     const bool wanted = m_frame.render.realistic();
-    const bool realistic = wanted && m_post.prepare(m_device.rhi, outputSize, m_frame.render.bloomLevels(), renderTarget(), updates);
+    const bool realistic = wanted && m_post.prepare(m_device.rhi, outputSize, m_frame.render, renderTarget(), updates);
     if (wanted && !realistic && !m_warnedRealistic) {
         qCWarning(lcRenderer) << "World renderer: the realistic mode cannot be drawn on this GPU; drawing the classic one";
         m_warnedRealistic = true;
@@ -256,6 +256,14 @@ void QcWorldRenderer::uploadFrameUniforms(QRhiResourceUpdateBatch *updates, cons
     // Light sources and lava beyond white in the HDR scene of the realistic mode, exactly 1 in the
     // classic one (decision E-899).
     uniforms.animation[1] = plan().glowGain();
+    // Moving lights only in the realistic mode, also when it was asked for but the classic one draws
+    // (decision E-902).
+    const int lightCount = plan().postProcessed() ? m_frame.render.movingLights() : 0;
+    const QcPackedLights lights = QcMovingLights::pack(m_frame.movingLights, m_frame.camera.position, lightCount);
+    uniforms.animation[2] = static_cast<float>(lights.count);
+    for (std::size_t i = 0; i < lights.lights.size(); ++i) {
+        std::ranges::copy(lights.lights[i], uniforms.lights[i]);
+    }
 
     updates->updateDynamicBuffer(m_device.frameUniforms.get(), 0, sizeof(FrameUniforms), &uniforms);
 }
@@ -542,13 +550,13 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
             continue;
         }
 
-        // The bloom reads the finished scene, the output's composite reads the bloom.
+        // The occlusion and the bloom read the finished scene, the output's composite reads them.
         if (group.passes.contains(QcRenderPass::PostProcess)) {
             if (updates) {
                 commandBuffer->resourceUpdate(updates);
                 updates = nullptr;
             }
-            m_post.drawBloom(commandBuffer);
+            m_post.drawEffects(commandBuffer);
         }
         // The uploads of the frame go with the first render pass.
         QRhiRenderTarget *const target = group.target == QcRenderTarget::Scene ? m_post.sceneTarget() : renderTarget();

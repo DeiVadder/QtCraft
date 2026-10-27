@@ -1,5 +1,7 @@
 #pragma once
 
+#include "clientcore/settings/QcRenderOptions.h"
+
 #include <QLoggingCategory>
 #include <QString>
 #include <rhi/qrhi.h>
@@ -30,13 +32,17 @@ struct FrameUniforms
     // Animated textures (decision E-878): x: the time in ticks, wrapped where every animation of
     // the atlas starts over (QcTextureAtlas::animationCycleTicks); y: the gain of light sources and
     // lava in block.vert (1 in the classic mode, glowGain in the realistic one, decision E-899);
-    // z, w unused.
+    // z: the number of moving lights in `lights` (0 in the classic mode, decision E-902); w unused.
     float animation[4];
     // xyz: the camera's offset from the render anchor (QcDrawOrigins::follow, decision E-883), which
     // the block and entity shaders subtract from their draws' origins; w unused.
     float drawCamera[4];
+    // The moving lights of the realistic mode (decision E-902), the first animation[2] of them:
+    // xyz relative to the camera, w the level (0..15) plus 16 times the colour
+    // (QcMovingLight::Colour).
+    float lights[QcRenderOptions::maxMovingLights][4];
 };
-static_assert(sizeof(FrameUniforms) == 176);
+static_assert(sizeof(FrameUniforms) == 432);
 
 // Light the shaders never go below (caves without sky light).
 inline constexpr float minimumLight = 0.08f;

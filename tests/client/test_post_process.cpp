@@ -8,7 +8,8 @@
 
 // The GPU resources of the realistic mode (decision E-899) on QRhi's Null backend: the scene target
 // follows the output's size, the bloom follows the quality and halves only as far as the size
-// allows, release() leaves nothing on the GPU, and a refused request is not tried again every frame.
+// allows, the ambient occlusion (decision E-902) follows the quality and the size, release()
+// leaves nothing on the GPU, and a refused request is not tried again every frame.
 // The post-processing shaders are baked into the test (tests/client/tests.cmake).
 class TestPostProcess : public QObject
 {
@@ -22,6 +23,8 @@ class TestPostProcess : public QObject
         std::unique_ptr<QRhiRenderPassDescriptor> pass;
         std::unique_ptr<QRhiTextureRenderTarget> target;
     };
+
+    using Quality = QcRenderOptions::Quality;
 
     std::unique_ptr<QRhi> m_rhi;
 
@@ -42,10 +45,11 @@ class TestPostProcess : public QObject
     }
 
     // One prepare() with a batch of the frame, released again (nothing is drawn).
-    bool prepare(QcPostProcess &post, QSize size, int bloomLevels, QRhiRenderTarget *output) const
+    bool prepare(QcPostProcess &post, QSize size, QcRenderOptions::Quality quality, QRhiRenderTarget *output) const
     {
         QRhiResourceUpdateBatch *updates = m_rhi->nextResourceUpdateBatch();
-        const bool ready = post.prepare(m_rhi.get(), size, bloomLevels, output, updates);
+        const QcRenderOptions options{.mode = QcRenderOptions::Mode::Realistic, .quality = quality};
+        const bool ready = post.prepare(m_rhi.get(), size, options, output, updates);
         updates->release();
         return ready;
     }
@@ -63,24 +67,49 @@ private slots:
         const std::unique_ptr<Output> output = makeOutput({640, 400});
         QVERIFY(output);
         QcPostProcess post;
-        QVERIFY(prepare(post, {640, 400}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {640, 400}, Quality::Medium, output->target.get()));
         QVERIFY(post.blooms());
         QCOMPARE(post.sceneTarget()->pixelSize(), QSize(640, 400));
         QRhiRenderPassDescriptor *const scenePass = post.sceneTarget()->renderPassDescriptor();
 
-        QVERIFY(prepare(post, {640, 400}, QcRenderOptions::highBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {640, 400}, Quality::High, output->target.get()));
         QVERIFY(post.blooms());
-        QVERIFY(prepare(post, {640, 400}, 0, output->target.get()));
+        QVERIFY(prepare(post, {640, 400}, Quality::Low, output->target.get()));
         QVERIFY(!post.blooms());
         QVERIFY(post.sceneTarget());
-        QVERIFY(prepare(post, {640, 400}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {640, 400}, Quality::Medium, output->target.get()));
         QVERIFY(post.blooms());
 
         // A new size makes new textures; the pass descriptor stays, so the world's pipelines fit.
-        QVERIFY(prepare(post, {320, 200}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {320, 200}, Quality::Medium, output->target.get()));
         QCOMPARE(post.sceneTarget()->pixelSize(), QSize(320, 200));
         QCOMPARE(post.sceneTarget()->renderPassDescriptor(), scenePass);
         QVERIFY(post.blooms());
+    }
+
+    // Low draws without ambient occlusion, Medium and High with it (the samples differ in the
+    // uniforms only); a new size makes a new occlusion texture at half of it.
+    void occlusionFollowsTheQualityAndTheSize()
+    {
+        const std::unique_ptr<Output> output = makeOutput({640, 400});
+        QVERIFY(output);
+        QcPostProcess post;
+        QVERIFY(prepare(post, {640, 400}, Quality::Low, output->target.get()));
+        QVERIFY(!post.occludes());
+        QVERIFY(prepare(post, {640, 400}, Quality::Medium, output->target.get()));
+        QVERIFY(post.occludes());
+        QVERIFY(prepare(post, {640, 400}, Quality::High, output->target.get()));
+        QVERIFY(post.occludes());
+        QVERIFY(prepare(post, {640, 400}, Quality::Low, output->target.get()));
+        QVERIFY(!post.occludes());
+        QVERIFY(post.sceneTarget());
+        QVERIFY(prepare(post, {7, 3}, Quality::Medium, output->target.get()));
+        QVERIFY(post.occludes());
+        QVERIFY(prepare(post, {1, 1}, Quality::High, output->target.get()));
+        QVERIFY(post.occludes());
+        post.release();
+        QVERIFY(!post.holdsResources());
+        QVERIFY(!post.occludes());
     }
 
     // An output one pixel wide cannot be halved: the realistic mode draws without bloom; four by
@@ -90,11 +119,11 @@ private slots:
         const std::unique_ptr<Output> output = makeOutput({1, 7});
         QVERIFY(output);
         QcPostProcess post;
-        QVERIFY(prepare(post, {1, 7}, QcRenderOptions::highBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {1, 7}, Quality::High, output->target.get()));
         QVERIFY(!post.blooms());
-        QVERIFY(prepare(post, {7, 1}, QcRenderOptions::highBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {7, 1}, Quality::High, output->target.get()));
         QVERIFY(!post.blooms());
-        QVERIFY(prepare(post, {4, 4}, QcRenderOptions::highBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {4, 4}, Quality::High, output->target.get()));
         QVERIFY(post.blooms());
     }
 
@@ -105,13 +134,13 @@ private slots:
         QVERIFY(output);
         QcPostProcess post;
         QVERIFY(!post.holdsResources());
-        QVERIFY(prepare(post, {64, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {64, 64}, Quality::Medium, output->target.get()));
         QVERIFY(post.holdsResources());
         post.release();
         QVERIFY(!post.holdsResources());
         QVERIFY(!post.sceneTarget());
         QVERIFY(!post.blooms());
-        QVERIFY(prepare(post, {64, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {64, 64}, Quality::Medium, output->target.get()));
         QVERIFY(post.blooms());
     }
 
@@ -122,12 +151,12 @@ private slots:
         const std::unique_ptr<Output> output = makeOutput({64, 64});
         QVERIFY(output);
         QcPostProcess post;
-        QVERIFY(prepare(post, {64, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
-        QVERIFY(!prepare(post, {0, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {64, 64}, Quality::Medium, output->target.get()));
+        QVERIFY(!prepare(post, {0, 64}, Quality::Medium, output->target.get()));
         QVERIFY(!post.holdsResources());
-        QVERIFY(!prepare(post, {0, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(!prepare(post, {0, 64}, Quality::Medium, output->target.get()));
         QVERIFY(!post.holdsResources());
-        QVERIFY(prepare(post, {64, 64}, QcRenderOptions::mediumBloomLevels, output->target.get()));
+        QVERIFY(prepare(post, {64, 64}, Quality::Medium, output->target.get()));
         post.reset();
         QVERIFY(!post.holdsResources());
     }

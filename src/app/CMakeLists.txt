@@ -102,6 +102,7 @@ target_sources(qc_app_core PRIVATE
     preview/QcPreviewSource.h preview/QcPreviewSource.cpp
 )
 target_sources(qc_app_core PRIVATE
+    rendering/QcAmbientOcclusion.h rendering/QcAmbientOcclusion.cpp
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
     rendering/QcBloomChain.h rendering/QcBloomChain.cpp
     rendering/QcBufferWrite.h
@@ -398,6 +399,7 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_down.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/bloom_up.frag
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/composite.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/occlusion.frag
 )
 # The first halving of the bloom reads the HDR scene and keeps what exceeds the threshold (decision E-899).
 qt_add_shaders(qtcraft "qtcraft_bloom_prefilter_shaders"

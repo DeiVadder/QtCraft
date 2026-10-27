@@ -27,7 +27,32 @@ layout(std140, binding = 0) uniform Frame {
     vec4 animation;
     // xyz: the camera relative to the render anchor (QcDrawOrigins::follow)
     vec4 drawCamera;
+    // The moving lights of the realistic mode (decision E-902), the first animation.z of them: xyz
+    // relative to the camera, w the level (0..15) plus 16 times the colour (0 warm, 1 glow).
+    vec4 lights[16];
 } frame;
+
+// The moving lights (decision E-902), as QcMovingLights::brightness: one level less per block of
+// distance from `p` (relative to the camera), a level of 15 is full brightness; the brightest one
+// by colour wins, like block light. Nothing in the classic mode (no lights).
+const vec3 warmLight = vec3(1.0, 0.86, 0.66);
+const vec3 glowLight = vec3(0.78, 1.0, 0.42);
+
+vec3 movingLight(vec3 p)
+{
+    vec3 sum = vec3(0.0);
+    int count = int(frame.animation.z + 0.5);
+    for (int i = 0; i < 16; ++i) {
+        if (i >= count)
+            break;
+        vec4 light = frame.lights[i];
+        float colour = floor(light.w / 16.0);
+        float level = light.w - 16.0 * colour;
+        float brightness = clamp((level - length(light.xyz - p)) / 15.0, 0.0, 1.0);
+        sum = max(sum, brightness * (colour > 0.5 ? glowLight : warmLight));
+    }
+    return sum;
+}
 
 void main()
 {
@@ -38,6 +63,9 @@ void main()
     vLight = shade * max(vec3(sky), blockLight * vec3(1.0, 0.86, 0.66));
     vTint = tint;
     vec3 relative = position + origin.xyz - frame.drawCamera.xyz;
+    // Torches in hands and fireflies nearby (realistic mode only).
+    if (frame.animation.z > 0.5)
+        vLight = max(vLight, shade * movingLight(relative));
     vDistance = length(relative - frame.cameraPosition.xyz);
     vec4 clip = frame.viewProjection * vec4(relative, 1.0);
     // Squeeze the depth into the front 5 % of the range so the hand is drawn over the world.

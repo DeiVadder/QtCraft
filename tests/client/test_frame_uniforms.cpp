@@ -91,6 +91,7 @@ private slots:
         QCOMPARE(offsetOf(*block, "atlas"), static_cast<int>(offsetof(FrameUniforms, atlas)));
         QCOMPARE(offsetOf(*block, "animation"), static_cast<int>(offsetof(FrameUniforms, animation)));
         QCOMPARE(offsetOf(*block, "drawCamera"), static_cast<int>(offsetof(FrameUniforms, drawCamera)));
+        QCOMPARE(offsetOf(*block, "lights"), static_cast<int>(offsetof(FrameUniforms, lights)));
     }
 
     void stagesOfAPipelineDeclareTheSameBlock_data()

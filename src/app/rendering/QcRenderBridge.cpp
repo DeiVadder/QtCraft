@@ -3,6 +3,7 @@
 #include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcRenderOrigin.h"
+#include "clientcore/light/QcMovingLights.h"
 #include "clientcore/light/QcSky.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
@@ -69,6 +70,18 @@ void QcRenderBridge::updateHand(double alpha, const QcVec3 &eye, QcCameraMode mo
     // A spectator has no hand (decision E-730).
     const bool shown = mode == QcCameraMode::FirstPerson && !m_handHidden && m_parts.session->gameMode().rules().tangible;
     m_parts.view->setHandMesh(shown ? m_entities.buildHand(alpha, eye) : nullptr);
+}
+
+void QcRenderBridge::updateMovingLights(double alpha, const QcVec3 &eye)
+{
+    // Only the realistic mode draws them (decision E-902): the classic one gathers nothing.
+    const int count = m_parts.view->renderOptions().movingLights();
+    if (count == 0) {
+        m_parts.view->setMovingLights({});
+        return;
+    }
+    const QList<QcMovingLight> candidates = QcMovingLights::gather(*m_parts.session, alpha, eye);
+    m_parts.view->setMovingLights(QcMovingLights::select(candidates, m_parts.view->camera().position, count));
 }
 
 void QcRenderBridge::updateSky(double alpha)

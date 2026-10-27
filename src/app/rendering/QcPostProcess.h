@@ -1,6 +1,8 @@
 #pragma once
 
+#include "app/rendering/QcAmbientOcclusion.h"
 #include "app/rendering/QcBloomChain.h"
+#include "clientcore/settings/QcRenderOptions.h"
 
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -8,11 +10,13 @@
 
 #include <memory>
 #include <optional>
+#include <utility>
 
 // The post-processing of the realistic mode (decision E-899): the scene target the world is drawn
 // into (an HDR colour texture, RGBA16F where the GPU renders to it, and a depth texture the
-// composite reads), the bloom chain over it, and the composite pass into the output: height fog,
-// bloom, exposure and tonemapping. Render thread only; owns its GPU resources.
+// composite reads), the ambient occlusion (decision E-902) and the bloom chain over it, and the
+// composite pass into the output: ambient occlusion, height fog, bloom, exposure and tonemapping.
+// Render thread only; owns its GPU resources.
 class QcPostProcess
 {
 public:
@@ -48,21 +52,32 @@ public:
         float exposure = 1.0f;
     };
 
-    // The scene target of `size`, its bloom chain with `bloomLevels` halvings (0: none; none either
-    // without an HDR format) and the composite pipeline for `output`; textures are made again only
-    // when the size changes. Uploads go into `updates` only when everything was made. False when
+    // The scene target of `size`, its bloom chain with the halvings of `options` (none without an
+    // HDR format), its ambient occlusion with the samples of `options` and the composite pipeline
+    // for `output`; textures are made again only when the size changes. A refused bloom or
+    // occlusion leaves the composite without it. Uploads go into `updates` only when everything was made. False when
     // the GPU refused a part: everything is released, and the same request (QRhi, size, output pass
     // and sample count) is refused again without a new try until reset().
-    bool prepare(QRhi *rhi, QSize size, int bloomLevels, QRhiRenderTarget *output, QRhiResourceUpdateBatch *updates);
+    bool prepare(QRhi *rhi, QSize size, QcRenderOptions options, QRhiRenderTarget *output, QRhiResourceUpdateBatch *updates);
     // What the steps before post-processing draw into; null before prepare() succeeded.
     [[nodiscard]] QRhiRenderTarget *sceneTarget() const { return m_gpu.sceneTarget.get(); }
     // Whether the composite adds a bloom.
     [[nodiscard]] bool blooms() const { return m_gpu.boundGeneration != 0; }
+    // Whether the composite darkens with an ambient occlusion.
+    [[nodiscard]] bool occludes() const { return m_gpu.boundOcclusion != 0; }
     // Whether any GPU resource is held (none in the classic mode).
-    [[nodiscard]] bool holdsResources() const { return m_gpu.uniforms || m_gpu.sceneColour || m_gpu.bloom.result(); }
+    [[nodiscard]] bool holdsResources() const
+    {
+        return m_gpu.uniforms || m_gpu.sceneColour || m_gpu.bloom.result() || m_gpu.occlusion.result();
+    }
     void uploadComposite(QRhiResourceUpdateBatch *updates, const Composite &composite) const;
-    // The bloom chain's passes; after the scene's pass and before the output's.
-    void drawBloom(QRhiCommandBuffer *commandBuffer) const { m_gpu.bloom.draw(commandBuffer); }
+    // The passes of the ambient occlusion and the bloom chain; after the scene's pass and before the
+    // output's.
+    void drawEffects(QRhiCommandBuffer *commandBuffer) const
+    {
+        m_gpu.occlusion.draw(commandBuffer);
+        m_gpu.bloom.draw(commandBuffer);
+    }
     // Fills the output with the finished picture; inside the output's pass.
     void drawComposite(QRhiCommandBuffer *commandBuffer) const;
     // Drops the GPU resources (the classic mode draws), remembering a refused request.
@@ -90,17 +105,22 @@ private:
         bool depthZeroToOne = true;
         // The bloom generation the composite binds (QcBloomChain::generation(); 0: no bloom).
         quint64 boundGeneration = 0;
+        // The occlusion generation the composite binds (QcAmbientOcclusion::generation(); 0: none).
+        quint64 boundOcclusion = 0;
         int outputSampleCount = 0;
         std::unique_ptr<QRhiBuffer> uniforms;
         std::unique_ptr<QRhiSampler> linear;
         std::unique_ptr<QRhiSampler> nearest;
         // Black, bound as the bloom when there is none.
         std::unique_ptr<QRhiTexture> noBloom;
+        // White, bound as the occlusion when there is none.
+        std::unique_ptr<QRhiTexture> noOcclusion;
         std::unique_ptr<QRhiTexture> sceneColour;
         std::unique_ptr<QRhiTexture> sceneDepth;
         std::unique_ptr<QRhiRenderPassDescriptor> scenePass;
         std::unique_ptr<QRhiTextureRenderTarget> sceneTarget;
         QcBloomChain bloom;
+        QcAmbientOcclusion occlusion;
         // The output pass the composite pipeline was built for.
         std::unique_ptr<QRhiRenderPassDescriptor> outputPass;
         std::unique_ptr<QRhiShaderResourceBindings> bindings;
@@ -108,14 +128,18 @@ private:
     };
 
     // Everything prepare() needs, its uploads into `own`.
-    bool build(QRhi *rhi, QSize size, int bloomLevels, QRhiRenderTarget *output, QRhiResourceUpdateBatch *own);
+    bool build(QRhi *rhi, QSize size, QcRenderOptions options, QRhiRenderTarget *output, QRhiResourceUpdateBatch *own);
+    // The bloom and the occlusion of `options` over the current scene, each one the GPU refuses
+    // left out: the generations the composite binds (0: none).
+    [[nodiscard]] std::pair<quint64, quint64> prepareEffects(QRhi *rhi, QcRenderOptions options, QRhiResourceUpdateBatch *own);
     // Uniform buffer, samplers and the black texture.
     bool createShared(QRhi *rhi, QRhiResourceUpdateBatch *own);
     bool createScene(QRhi *rhi, QSize size);
     // The scene target in `colour` with a depth texture of `depth`.
     bool createSceneTarget(QRhi *rhi, QSize size, QRhiTexture::Format colour, QRhiTexture::Format depth);
-    // The composite's bindings for the current scene and `bloom` (null: the black texture).
-    bool bindComposite(QRhi *rhi, QRhiTexture *bloom);
+    // The composite's bindings for the current scene, bloom and occlusion (the black and the white
+    // texture where there is none).
+    bool bindComposite(QRhi *rhi);
     bool createCompositePipeline(QRhi *rhi, QRhiRenderTarget *output);
 
     // NOLINT(qc-member-access): made and changed only inside prepare(), released as a whole by release().

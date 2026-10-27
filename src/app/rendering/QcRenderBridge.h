@@ -42,6 +42,9 @@ public:
     void updateEntities(double alpha, QcCameraMode mode);
     // The first-person arm with the held item; hidden in the other camera modes and for a spectator.
     void updateHand(double alpha, const QcVec3 &eye, QcCameraMode mode);
+    // After placeCamera: the moving lights of the realistic mode (held torches, fireflies; decision
+    // E-902), the local player's held light below `eye`; none in the classic mode.
+    void updateMovingLights(double alpha, const QcVec3 &eye);
     // After placeCamera: the sky of the time of day under the weather, a lightning flash and the
     // flash of explosions nearby; below the world it darkens with the camera height. With it how
     // far the camera is under the open sky, for the height fog (QcWorldView::setOutdoors).

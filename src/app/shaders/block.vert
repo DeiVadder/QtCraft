@@ -21,6 +21,8 @@ layout(location = 4) out vec3 vPosition;
 // picture has blended into it (0: only vTexCoord), the same at every vertex of a face.
 layout(location = 5) out vec2 vNextTexCoord;
 layout(location = 6) out float vBlend;
+// Face shading and ambient occlusion of the vertex, for the moving lights of block.frag.
+layout(location = 7) out float vShade;
 
 layout(std140, binding = 0) uniform Frame {
     // The projection of the camera's rotation: positions are relative to the camera (decision E-883).
@@ -39,6 +41,7 @@ layout(std140, binding = 0) uniform Frame {
     vec4 animation;
     // xyz: the camera relative to the render anchor (QcDrawOrigins::follow)
     vec4 drawCamera;
+    vec4 lights[16];
 } frame;
 
 // One texel per atlas cell (QcTextureAtlas::animationMap): at the cell of an animated texture's
@@ -142,6 +145,7 @@ void main()
         vLight *= frame.animation.y;
     // Both offsets from the anchor are small floats: the difference is exact to a few hundredths of a
     // millimetre near the camera.
+    vShade = light.x;
     vec3 relative = position + origin.xyz - frame.drawCamera.xyz;
     vDistance = length(relative - frame.cameraPosition.xyz);
     vPosition = relative;

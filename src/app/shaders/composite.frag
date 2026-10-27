@@ -22,13 +22,17 @@ layout(std140, binding = 0) uniform Post {
     // x: exposure, y: bloom strength, z: 1 when the depth buffer holds the clip depth 0..1
     vec4 tone;
     // xy: one pixel of the output in texture coordinates, z: the distance from the camera where the
-    // height fog begins
+    // height fog begins, w: 1 when `occlusion` holds an ambient occlusion (else a white texel)
     vec4 size;
+    // xy: one texel of the ambient occlusion (half the output's size) in texture coordinates
+    vec4 occlusionTexel;
 } post;
 
 layout(binding = 1) uniform sampler2D scene;
 layout(binding = 2) uniform sampler2D depth;
 layout(binding = 3) uniform sampler2D bloom;
+// The ambient occlusion at half size (decision E-902; occlusion.frag), 1 where open.
+layout(binding = 4) uniform sampler2D occlusion;
 
 const int fogSteps = 8;
 // Below the base the fog thins out again over this many blocks, so caves and sea floors far
@@ -81,14 +85,32 @@ vec3 tonemap(vec3 x)
     return mix(huePreserving, perChannel, 0.5);
 }
 
+// The ambient occlusion around `uv`, blurred: four filtered lookups between the half-sized texels
+// average 4 x 4 of them, which hides the turn of the samples from pixel to pixel.
+float ambientOcclusion(vec2 uv)
+{
+    if (post.size.w < 0.5)
+        return 1.0;
+    vec2 t = post.occlusionTexel.xy;
+    float sum = texture(occlusion, uv + vec2(-t.x, -t.y)).r + texture(occlusion, uv + vec2(t.x, -t.y)).r
+        + texture(occlusion, uv + vec2(-t.x, t.y)).r + texture(occlusion, uv + vec2(t.x, t.y)).r;
+    return sum * 0.25;
+}
+
 void main()
 {
     vec2 uv = gl_FragCoord.xy * post.size.xy;
     vec3 color = pow(max(texture(scene, uv).rgb, vec3(0.0)), vec3(2.2));
+    float d = texture(depth, uv).r;
+    // The occlusion darkens the light from around, not what shines itself: light sources and lava
+    // (above 1 in the HDR scene) keep their brightness, and the sky (depth 1) takes none of the
+    // blurred occlusion of the ground next to it.
+    float shining = smoothstep(1.0, 2.0, max(color.r, max(color.g, color.b)));
+    float ao = d >= 1.0 ? 1.0 : ambientOcclusion(uv);
+    color *= mix(ao, 1.0, shining);
 
     // The pixel's point relative to the camera from its depth; the sky (depth 1) lies on the far
     // plane, beyond the farthest fog distance.
-    float d = texture(depth, uv).r;
     float z = post.tone.z > 0.5 ? d : d * 2.0 - 1.0;
     vec4 point = post.inverseViewProjection * vec4(vNdc, z, 1.0);
     vec3 relative = point.xyz / point.w;

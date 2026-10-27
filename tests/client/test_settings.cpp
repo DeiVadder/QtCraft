@@ -411,13 +411,19 @@ private slots:
         QcRenderOptions options;
         QCOMPARE(options.mode, QcRenderOptions::Mode::Classic);
         QCOMPARE(options.bloomLevels(), 0);
+        QCOMPARE(options.occlusionSamples(), 0);
         options.mode = QcRenderOptions::Mode::Realistic;
         QCOMPARE(options.bloomLevels(), QcRenderOptions::mediumBloomLevels);
+        QCOMPARE(options.occlusionSamples(), QcRenderOptions::mediumOcclusionSamples);
         options.quality = QcRenderOptions::Quality::Low;
         QCOMPARE(options.bloomLevels(), 0);
+        // Low has no ambient occlusion (decision E-902).
+        QCOMPARE(options.occlusionSamples(), 0);
         options.quality = QcRenderOptions::Quality::High;
         QCOMPARE(options.bloomLevels(), QcRenderOptions::highBloomLevels);
+        QCOMPARE(options.occlusionSamples(), QcRenderOptions::highOcclusionSamples);
         QVERIFY(QcRenderOptions::highBloomLevels > QcRenderOptions::mediumBloomLevels);
+        QVERIFY(QcRenderOptions::highOcclusionSamples > QcRenderOptions::mediumOcclusionSamples);
 
         for (const auto mode : {QcRenderOptions::Mode::Classic, QcRenderOptions::Mode::Realistic}) {
             QCOMPARE(QcRenderOptions::modeFromName(QcRenderOptions::modeName(mode)), mode);

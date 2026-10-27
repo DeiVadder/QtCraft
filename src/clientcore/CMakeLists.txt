@@ -67,6 +67,7 @@ target_sources(qc_clientcore PRIVATE
     light/QcChunkLight.h
     light/QcEntityLight.h
     light/QcLightProbe.h light/QcLightProbe.cpp
+    light/QcMovingLights.h light/QcMovingLights.cpp
     light/QcSectionLight.h light/QcSectionLight.cpp
     light/QcSky.h light/QcSky.cpp
 )

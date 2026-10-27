@@ -10,6 +10,8 @@ layout(location = 4) in vec3 vPosition;
 // Animated textures (decision E-878): the next frame and the share of it, the same over a face.
 layout(location = 5) in vec2 vNextTexCoord;
 layout(location = 6) in float vBlend;
+// Face shading and ambient occlusion of the vertex (block.vert).
+layout(location = 7) in float vShade;
 
 layout(location = 0) out vec4 fragColor;
 
@@ -26,9 +28,36 @@ layout(std140, binding = 0) uniform Frame {
     // Unused here, declared as in block.vert: the stages of a pipeline declare the identical block
     // (QRhi's GL backend makes it a struct uniform that must match across stages; test_frame_uniforms).
     vec4 drawCamera;
+    // The moving lights of the realistic mode (decision E-902), the first animation.z of them: xyz
+    // relative to the camera, w the level (0..15) plus 16 times the colour (0 warm, 1 glow).
+    vec4 lights[16];
 } frame;
 
 layout(binding = 1) uniform sampler2D atlas;
+
+// The moving lights (decision E-902), as QcMovingLights::brightness: one level less per block,
+// counted from the cell in front of the surface at `p` (relative to the camera) facing `n`, as
+// block light reaches a face from the air in front of it; a light more than a block behind the
+// surface's plane does not reach it. The brightest one by colour wins, like block light.
+const vec3 warmLight = vec3(1.0, 0.86, 0.66);
+const vec3 glowLight = vec3(0.78, 1.0, 0.42);
+
+vec3 movingLight(vec3 p, vec3 n, int count)
+{
+    vec3 sum = vec3(0.0);
+    vec3 front = p + 0.5 * n;
+    for (int i = 0; i < 16; ++i) {
+        if (i >= count)
+            break;
+        vec4 light = frame.lights[i];
+        float colour = floor(light.w / 16.0);
+        float level = light.w - 16.0 * colour;
+        float facing = clamp(dot(n, light.xyz - p) + 1.0, 0.0, 1.0);
+        float brightness = clamp((level - length(light.xyz - front)) / 15.0, 0.0, 1.0) * facing;
+        sum = max(sum, brightness * (colour > 0.5 ? glowLight : warmLight));
+    }
+    return sum;
+}
 
 // Upper bound of the sample loop (frame.atlas.w is at most this): a constant bound the compiler
 // can unroll.
@@ -126,7 +155,18 @@ void main()
     if (texel.a < 0.1)
         discard;
 #endif
-    vec3 lit = texel.rgb * vLight;
+    vec3 light = vLight;
+    // Torches in hands and fireflies (realistic mode only): the surface's normal from the
+    // derivatives of its position, turned towards the camera (every drawn face is seen from its
+    // front; crossed planes from either side).
+    int movingCount = int(frame.animation.z + 0.5);
+    vec3 across = cross(stepX, stepY);
+    if (movingCount > 0 && dot(across, across) > 1e-30) {
+        vec3 n = normalize(across);
+        n = dot(n, vPosition) > 0.0 ? -n : n;
+        light = max(light, vShade * movingLight(vPosition, n, movingCount));
+    }
+    vec3 lit = texel.rgb * light;
     float fog = clamp((vDistance - frame.params.x) / max(frame.params.y - frame.params.x, 0.001), 0.0, 1.0);
 #ifdef QC_OPAQUE
     // Solid blocks (block_solid.frag.qsb, no discard: the GPU rejects hidden fragments before

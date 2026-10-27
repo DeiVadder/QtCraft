@@ -145,6 +145,14 @@ void QcWorldView::setRenderOptions(QcRenderOptions options)
     }
 }
 
+void QcWorldView::setMovingLights(QList<QcMovingLight> lights)
+{
+    if (m_frame.movingLights != lights) {
+        m_frame.movingLights = std::move(lights);
+        update();
+    }
+}
+
 void QcWorldView::setOutdoors(float outdoors)
 {
     if (m_frame.outdoors != outdoors) {

@@ -2281,62 +2281,70 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="178"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="179"/>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="180"/>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="223"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="224"/>
         <source>%1×</source>
         <translation>%1×</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="190"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="191"/>
         <source>Render mode</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="191"/>
-        <source>Realistic adds valley fog, glow and richer light; it costs more GPU time</source>
-        <translation>Realistisch bringt Dunst in Tälern, Leuchten und reicheres Licht; das kostet mehr Grafikleistung</translation>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="192"/>
+        <source>Realistic adds valley fog, glow, soft shade and light from held torches; it costs more GPU time</source>
+        <translation>Realistisch bringt Dunst in Tälern, Leuchten, sanften Schatten und Licht von gehaltenen Fackeln; das kostet mehr Grafikleistung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="193"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="204"/>
+        <source>Low without glow and soft shade, High with the widest glow and the most moving lights</source>
+        <translation>Niedrig ohne Leuchten und sanften Schatten, Hoch mit dem weitesten Leuchten und den meisten bewegten Lichtern</translation>
+    </message>
+    <message>
+        <source>Realistic adds valley fog, glow and richer light; it costs more GPU time</source>
+        <translation type="vanished">Realistisch bringt Dunst in Tälern, Leuchten und reicheres Licht; das kostet mehr Grafikleistung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="194"/>
         <source>Classic</source>
         <translation>Klassisch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="194"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="195"/>
         <source>Realistic</source>
         <translation>Realistisch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="202"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="203"/>
         <source>Realistic quality</source>
         <translation>Realistische Qualität</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="203"/>
         <source>Low without glow, High with the widest glow</source>
-        <translation>Niedrig ohne Leuchten, Hoch mit dem weitesten Leuchten</translation>
+        <translation type="vanished">Niedrig ohne Leuchten, Hoch mit dem weitesten Leuchten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="206"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="207"/>
         <source>Low</source>
         <translation>Niedrig</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="207"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="208"/>
         <source>Medium</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="208"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="209"/>
         <source>High</source>
         <translation>Hoch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="216"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="217"/>
         <source>Exposure</source>
         <translation>Belichtung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="217"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="218"/>
         <source>Brightness of the realistic mode</source>
         <translation>Helligkeit des realistischen Modus</translation>
     </message>

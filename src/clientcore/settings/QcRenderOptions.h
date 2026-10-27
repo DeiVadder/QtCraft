@@ -14,8 +14,10 @@ struct QcRenderOptions
     // Classic: the picture of the game as it always was, straight into the window. Realistic: the
     // world into an HDR picture first, with height fog, bloom and tonemapping on the way to the window.
     enum class Mode { Classic, Realistic };
-    // What the realistic mode spends on effects: Low without bloom, Medium with a bloom of
-    // mediumBloomLevels, High of highBloomLevels (wider); later stages add their effects by quality.
+    // What the realistic mode spends on effects: Low without bloom and ambient occlusion and with
+    // the fewest moving lights, Medium with a bloom of mediumBloomLevels, ambient occlusion of
+    // mediumOcclusionSamples and mediumMovingLights, High with the wider bloom, more samples and
+    // lights; later stages add their effects by quality.
     enum class Quality { Low, Medium, High };
 
     static constexpr double defaultExposure = 1.0;
@@ -23,6 +25,14 @@ struct QcRenderOptions
     static constexpr double maxExposure = 2.0;
     static constexpr int mediumBloomLevels = 5;
     static constexpr int highBloomLevels = 7;
+    // Samples per pixel of the screen-space ambient occlusion (decision E-902).
+    static constexpr int mediumOcclusionSamples = 8;
+    static constexpr int highOcclusionSamples = 16;
+    // Moving lights (held torches, fireflies) the shaders take per frame (decision E-902); the
+    // frame uniforms hold room for maxMovingLights.
+    static constexpr int lowMovingLights = 4;
+    static constexpr int mediumMovingLights = 8;
+    static constexpr int maxMovingLights = 16;
 
     Mode mode = Mode::Classic;
     Quality quality = Quality::Medium;
@@ -32,6 +42,10 @@ struct QcRenderOptions
     bool realistic() const { return mode == Mode::Realistic; }
     // The halvings of the bloom chain, 0 for none (the classic mode and quality Low).
     int bloomLevels() const;
+    // Samples per pixel of the ambient occlusion, 0 for none (the classic mode and quality Low).
+    int occlusionSamples() const;
+    // The most moving lights drawn, 0 in the classic mode (decision E-902).
+    int movingLights() const;
 
     // "classic", "realistic"; "low", "medium", "high".
     static QString modeName(Mode mode);

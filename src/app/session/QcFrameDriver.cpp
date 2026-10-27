@@ -123,6 +123,7 @@ void QcFrameDriver::onFrame()
     entityTime.start();
     m_targets.render.updateEntities(alpha, mode);
     m_targets.render.updateHand(alpha, eye, mode);
+    m_targets.render.updateMovingLights(alpha, eye);
     const qint64 entityNs = entityTime.nsecsElapsed();
     const QList<QcRenderSample> renderSamples = m_targets.hud.debug()->recordFrame(entityNs, previewNs, m_targets.benchmark.isRunning());
     m_targets.benchmark.recordGuiFrame(m_targets.hud.debug()->lastGuiCpuMs(), entityNs, previewNs, renderSamples);

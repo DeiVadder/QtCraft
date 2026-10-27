@@ -19,6 +19,7 @@ layout(std140, binding = 0) uniform Frame {
     vec4 atlas;
     vec4 animation;
     vec4 drawCamera;
+    vec4 lights[16];
 } frame;
 
 layout(binding = 1) uniform sampler2D atlas;
