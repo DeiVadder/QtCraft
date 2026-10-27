@@ -3,6 +3,7 @@
 #include "common/diagnostics/QcCrashHandler.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcInProcessTransport.h"
+#include "network/QcTcpTransport.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerConfig.h"
@@ -288,6 +289,10 @@ QcStatus QcLocalServerHost::shutdown()
             // Both die in the server thread they live in, the listener first.
             m_network.reset();
             server.reset();
+            // The clients' sockets are still in their goodbye (the reason of the Disconnect); the
+            // thread would cut them off when it ends (decision E-904). This runs a nested event loop
+            // in the server thread for at most 1 s; server and listener are gone by then.
+            QcTcpTransport::finishLingering();
         },
         Qt::BlockingQueuedConnection);
 

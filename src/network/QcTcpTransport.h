@@ -6,8 +6,6 @@
 
 #include <QElapsedTimer>
 
-#include <memory>
-
 class QTcpSocket;
 class QTimer;
 
@@ -32,9 +30,12 @@ public:
         int keepAliveMs = 5'000;
         // The connection counts as lost when nothing arrived for this long.
         int idleTimeoutMs = 30'000;
-        // How long a destroyed transport's socket still sends queued frames (a reason of a
-        // Disconnect) in the background before it is cut off; nothing waits for it.
-        int lingerMs = 200;
+        // How long the goodbye of a closed or destroyed transport may take (decision E-904): its
+        // socket sends the queued frames (a reason of a Disconnect) and the end in the background
+        // and closes once the peer closed too, at the latest after this time; nothing waits for it.
+        // The listener of a network game uses longer (QcNetworkConfig): its players' links may be
+        // slow.
+        int lingerMs = 500;
     };
 
     // Takes over a connected socket.
@@ -51,13 +52,20 @@ public:
     // True over TLS: Qt's OpenSSL backend keeps the socket's TLS state in an object of its own
     // that stays in the thread the socket was made in (decision E-872).
     bool keepsItsThread() const override;
+    void peerSaidGoodbye() override { m_peerLeft = true; }
 
     // Runs the calling thread's event loop until the sockets lingering in it (destroyed transports
-    // still sending their last frames) are closed, at most their linger time; for a thread that is
-    // about to end, which would otherwise cut them off at once. Returns at once in a thread without.
+    // still in their goodbye, QcTcpGoodbye) are closed, at most 1 s, and ends the rest; for a thread
+    // that is about to end, which would otherwise cut them off at once. Returns at once in a thread
+    // without.
     static void finishLingering();
 
 private:
+    const Limits &limits() const { return m_limits; }
+    QcFrameReader &reader() { return m_reader; }
+    void setOpen(bool open) { m_open = open; }
+    void setCloseReason(const QString &reason) { m_closeReason = reason; }
+    bool peerLeft() const { return m_peerLeft; }
     void onReadyRead();
     void onDisconnected();
     void onTimer();
@@ -65,9 +73,6 @@ private:
     void fail(const QString &reason);
     // Emits closed() once, from the event loop.
     void announceClosed();
-    // Takes `owned` over: it closes after its queued bytes left and deletes itself, at the latest
-    // after `lingerMs` or when its thread ends (deleteLater, since nobody owns it any more).
-    static void lingerAndDelete(std::unique_ptr<QTcpSocket> owned, int lingerMs);
 
     QTcpSocket *m_socket = nullptr;
     QTimer *m_timer = nullptr;
@@ -79,4 +84,6 @@ private:
     QString m_closeReason;
     bool m_open = true;
     bool m_closedAnnounced = false;
+    // The peer's Disconnect arrived (peerSaidGoodbye()).
+    bool m_peerLeft = false;
 };

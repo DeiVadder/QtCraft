@@ -8,6 +8,7 @@ target_sources(qc_network PRIVATE
     QcServerAddress.h QcServerAddress.cpp
     QcSocketErrors.h QcSocketErrors.cpp
     QcTcpConnector.h QcTcpConnector.cpp
+    QcTcpGoodbye.h QcTcpGoodbye.cpp
     QcTcpTransport.h QcTcpTransport.cpp
 )
 # TLS (decision E-872): the server's own certificate and the listener, through OpenSSL

@@ -1,20 +1,17 @@
 #include "network/QcTcpTransport.h"
 
 #include "network/QcSocketErrors.h"
+#include "network/QcTcpGoodbye.h"
 
 #include <QCoreApplication>
-#include <QDeadlineTimer>
-#include <QEventLoop>
 #include <QHostAddress>
-#include <QPointer>
 #include <QSslSocket>
 #include <QTcpSocket>
-#include <QThread>
 #include <QTimer>
 
 #include <algorithm>
+#include <memory>
 #include <utility>
-#include <vector>
 
 using namespace Qt::StringLiterals;
 
@@ -26,11 +23,6 @@ QString addressText(const QTcpSocket &socket)
     const QString host = address.protocol() == QAbstractSocket::IPv6Protocol ? u"[%1]"_s.arg(address.toString()) : address.toString();
     return u"%1:%2"_s.arg(host).arg(socket.peerPort());
 }
-
-// The sockets lingering in this thread when it is not the application's (finishLingering()).
-thread_local std::vector<QPointer<QTcpSocket>> t_lingering;
-// The longest linger time of those sockets.
-thread_local int t_lingerMs = 0;
 
 } // namespace
 
@@ -49,7 +41,7 @@ QcTcpTransport::QcTcpTransport(QTcpSocket *socket, const Limits &limits, QObject
     connect(m_socket, &QTcpSocket::disconnected, this, &QcTcpTransport::onDisconnected);
     connect(m_socket, &QTcpSocket::errorOccurred, this, [this](QAbstractSocket::SocketError error) {
         // The peer closing its end is the normal end of a connection, not an error.
-        if (error != QAbstractSocket::RemoteHostClosedError && m_open) {
+        if (error != QAbstractSocket::RemoteHostClosedError && isOpen()) {
             fail(QcSocketErrors::describe(m_socket->error(), m_socket->errorString()));
         }
     });
@@ -72,60 +64,14 @@ QcTcpTransport::~QcTcpTransport()
     m_socket->disconnect(this);
     // The socket is a child so it follows the transport into another thread; here it leaves it.
     m_socket->setParent(nullptr);
-    lingerAndDelete(std::unique_ptr<QTcpSocket>(std::exchange(m_socket, nullptr)), m_limits.lingerMs);
-}
-
-void QcTcpTransport::lingerAndDelete(std::unique_ptr<QTcpSocket> owned, int lingerMs)
-{
-    // Frames sent just before (the reason of a Disconnect) may still wait in the socket's buffer.
-    // They get lingerMs to leave without anybody waiting for them: the socket deletes itself once
-    // it is disconnected, or is cut off after that time.
-    // Whatever the system takes now goes out even if the program ends right after (a stopping
-    // server); flush() never blocks.
-    owned->flush();
-    if (owned->state() == QAbstractSocket::ConnectedState) {
-        owned->disconnectFromHost();
-    }
-    if (owned->state() == QAbstractSocket::UnconnectedState) {
-        return;
-    }
-
-    // From here on the socket deletes itself.
-    QTcpSocket *socket = owned.release();
-
-    QObject::connect(socket, &QAbstractSocket::disconnected, socket, &QObject::deleteLater);
-    QTimer::singleShot(lingerMs, socket, [socket] {
-        socket->abort();
-        socket->deleteLater();
-    });
-    // Nothing is left behind when the socket's thread ends first (the server thread, the program).
-    if (QCoreApplication *application = QCoreApplication::instance(); application && socket->thread() == application->thread()) {
-        socket->setParent(application);
-    } else {
-        QObject::connect(socket->thread(), &QThread::finished, socket, &QObject::deleteLater, Qt::DirectConnection);
-        std::erase_if(t_lingering, [](const QPointer<QTcpSocket> &lingering) { return lingering.isNull(); });
-        t_lingering.emplace_back(socket);
-        t_lingerMs = std::max(t_lingerMs, lingerMs);
-    }
+    // Frames sent just before (the reason of a Disconnect) may still wait in the socket's buffer;
+    // the goodbye sends them and the end in the background, nothing waits for it (decision E-904).
+    QcTcpGoodbye::release(std::unique_ptr<QTcpSocket>(std::exchange(m_socket, nullptr)), limits().lingerMs, peerLeft());
 }
 
 void QcTcpTransport::finishLingering()
 {
-    const auto open = [] {
-        return std::ranges::any_of(t_lingering, [](const QPointer<QTcpSocket> &socket) {
-            return socket && socket->state() != QAbstractSocket::UnconnectedState;
-        });
-    };
-    // Every lingering socket is cut off after its linger time (lingerAndDelete), so this ends; the
-    // deadline only guards against a socket that never reports it.
-    const QDeadlineTimer deadline(t_lingerMs + 100);
-    while (open() && !deadline.hasExpired()) {
-        QEventLoop loop;
-        QTimer::singleShot(10, &loop, &QEventLoop::quit);
-        loop.exec();
-    }
-    t_lingering.clear();
-    t_lingerMs = 0;
+    QcTcpGoodbye::finishLingering();
 }
 
 bool QcTcpTransport::keepsItsThread() const
@@ -135,28 +81,28 @@ bool QcTcpTransport::keepsItsThread() const
 
 void QcTcpTransport::sendFrame(const QByteArray &frame)
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return;
     }
 
     m_socket->write(QcFrameReader::header(frame.size()));
     m_socket->write(frame);
     m_lastSent.restart();
-    if (pendingBytes() > m_limits.maxPendingBytes) {
+    if (pendingBytes() > limits().maxPendingBytes) {
         fail(QCoreApplication::translate("QcNetwork", "The connection is too slow"));
     }
 }
 
 void QcTcpTransport::close()
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return;
     }
 
-    // Queued frames still go out; the socket closes once they are written.
-    m_open = false;
+    // Queued frames still go out, then the end (decision E-904).
+    setOpen(false);
     m_timer->stop();
-    m_socket->disconnectFromHost();
+    QcTcpGoodbye::begin(*m_socket, limits().lingerMs, peerLeft());
     announceClosed();
 }
 
@@ -171,19 +117,19 @@ qint64 QcTcpTransport::pendingBytes() const
 
 void QcTcpTransport::onReadyRead()
 {
-    if (!m_open) {
+    if (!isOpen()) {
         m_socket->readAll();
         return;
     }
 
     m_lastReceived.restart();
-    if (!m_reader.append(m_socket->readAll())) {
+    if (!reader().append(m_socket->readAll())) {
         fail(QCoreApplication::translate("QcNetwork", "The other side sent a frame that is too large"));
         return;
     }
 
-    while (m_open) {
-        std::optional<QByteArray> frame = m_reader.next();
+    while (isOpen()) {
+        std::optional<QByteArray> frame = reader().next();
         if (!frame) {
             break;
         }
@@ -194,7 +140,7 @@ void QcTcpTransport::onReadyRead()
     }
 
     // A frame too large behind others of the same read is only seen while handing them out.
-    if (m_reader.failed()) {
+    if (reader().failed()) {
         fail(QCoreApplication::translate("QcNetwork", "The other side sent a frame that is too large"));
     }
 }
@@ -202,40 +148,40 @@ void QcTcpTransport::onReadyRead()
 void QcTcpTransport::onDisconnected()
 {
     // The last frames of the peer (a Disconnect with its reason) count before the end.
-    if (m_open && m_socket->bytesAvailable() > 0) {
+    if (isOpen() && m_socket->bytesAvailable() > 0) {
         onReadyRead();
     }
-    if (m_open && m_closeReason.isEmpty()) {
-        m_closeReason = QCoreApplication::translate("QcNetwork", "The other side closed the connection");
+    if (isOpen() && closeReason().isEmpty()) {
+        setCloseReason(QCoreApplication::translate("QcNetwork", "The other side closed the connection"));
     }
-    m_open = false;
+    setOpen(false);
     m_timer->stop();
     announceClosed();
 }
 
 void QcTcpTransport::onTimer()
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return;
     }
 
-    if (m_lastReceived.hasExpired(m_limits.idleTimeoutMs)) {
+    if (m_lastReceived.hasExpired(limits().idleTimeoutMs)) {
         fail(QCoreApplication::translate("QcNetwork", "The connection timed out"));
         return;
     }
-    if (m_lastSent.hasExpired(m_limits.keepAliveMs)) {
+    if (m_lastSent.hasExpired(limits().keepAliveMs)) {
         sendFrame({});
     }
 }
 
 void QcTcpTransport::fail(const QString &reason)
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return;
     }
 
-    m_closeReason = reason;
-    m_open = false;
+    setCloseReason(reason);
+    setOpen(false);
     m_timer->stop();
     m_socket->abort();
     announceClosed();

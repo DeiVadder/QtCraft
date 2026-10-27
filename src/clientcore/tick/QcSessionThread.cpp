@@ -29,7 +29,7 @@ QcSessionThread::~QcSessionThread()
     }
 
     // A TCP socket closed in the thread may still send its last frames (the reason of a
-    // Disconnect); the thread waits for them, at most a transport's linger time.
+    // Disconnect); the thread waits for them, at most 1 s.
     run([] { QcTcpTransport::finishLingering(); });
     m_thread->quit();
     m_thread->wait();

@@ -19,7 +19,7 @@ QcConnection::~QcConnection() = default;
 
 void QcConnection::send(const QcMessage &message)
 {
-    if (m_transport->isOpen()) {
+    if (m_transport->isOpen() && !m_peerLeft) {
         const QByteArray frame = QcProtocol::encode(message);
         m_sent.fetch_add(static_cast<quint64>(frame.size()), std::memory_order_relaxed);
         m_transport->sendFrame(frame);
@@ -55,6 +55,10 @@ void QcConnection::onFrame(const QByteArray &frame)
         qCWarning(lcConnection) << "Closing connection after protocol error:" << m_lastError;
         m_transport->close();
         return;
+    }
+    if (std::holds_alternative<QcMsg::Disconnect>(*message)) {
+        m_peerLeft = true;
+        m_transport->peerSaidGoodbye();
     }
     m_handler(std::move(*message));
 }

@@ -30,6 +30,8 @@ struct QcNetworkConfig
     // 0 picks a free port (tests).
     quint16 port = 25600;
     QcConnectionLimits connections;
-    // Clients send only small messages; a frame beyond this ends their connection.
-    QcTcpTransport::Limits transport{.maxIncomingFrameBytes = qint64{256} * 1024};
+    // Clients send only small messages; a frame beyond this ends their connection. A player's link
+    // may be slow (home upload): the goodbye with a Disconnect's reason gets 2.5 s once the system
+    // sent it (decision E-904).
+    QcTcpTransport::Limits transport{.maxIncomingFrameBytes = qint64{256} * 1024, .lingerMs = 2'500};
 };

@@ -1,18 +1,37 @@
+#include "common/protocol/QcConnection.h"
 #include "common/protocol/QcFrameReader.h"
+#include "common/protocol/QcInProcessTransport.h"
 #include "network/QcTcpConnector.h"
 #include "network/QcTcpTransport.h"
 #include "network/tls/QcTlsBackend.h"
 #include "network/tls/QcTlsListener.h"
 #include "QcTestTls.h"
 
+#include <QDeadlineTimer>
 #include <QElapsedTimer>
 #include <QPointer>
 #include <QSignalSpy>
+#include <QSslSocket>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTest>
 
+#include <array>
 #include <memory>
+
+#ifdef Q_OS_WIN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#include <cerrno>
+#include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -31,6 +50,96 @@ struct Receiver
 
     QList<QByteArray> frames;
     int closed = 0;
+};
+
+// A peer on the system's own socket calls: unlike QTcpSocket (which reports a reset like an end)
+// it tells a clean end (the other side's FIN) from a reset (decision E-904).
+class NativePeer
+{
+public:
+    enum class Read { Nothing, Data, End, Reset };
+
+    explicit NativePeer(quint16 port)
+        : m_socket(::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP))
+    {
+        sockaddr_in address{};
+        address.sin_family = AF_INET;
+        address.sin_port = htons(port);
+        address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+        // The socket API takes every address family through sockaddr.
+        m_connected = ::connect(m_socket, reinterpret_cast<const sockaddr *>(&address), sizeof(address)) == 0; // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+#ifdef Q_OS_WIN
+        u_long nonBlocking = 1;
+        ::ioctlsocket(m_socket, FIONBIO, &nonBlocking);
+#else
+#ifdef SO_NOSIGPIPE
+        const int on = 1;
+        ::setsockopt(m_socket, SOL_SOCKET, SO_NOSIGPIPE, &on, sizeof(on));
+#endif
+        ::fcntl(m_socket, F_SETFL, ::fcntl(m_socket, F_GETFL) | O_NONBLOCK);
+#endif
+    }
+    ~NativePeer() { close(); }
+    Q_DISABLE_COPY_MOVE(NativePeer)
+
+    bool isConnected() const { return m_connected; }
+
+    // Sends without blocking; what the system does not take is dropped (a closed or reset socket).
+    void send(const QByteArray &bytes) const
+    {
+#ifdef Q_OS_WIN
+        ::send(m_socket, bytes.constData(), static_cast<int>(bytes.size()), 0);
+#elif defined(MSG_NOSIGNAL)
+        ::send(m_socket, bytes.constData(), static_cast<size_t>(bytes.size()), MSG_NOSIGNAL);
+#else
+        ::send(m_socket, bytes.constData(), static_cast<size_t>(bytes.size()), 0);
+#endif
+    }
+
+    // Reads what arrived (kept in received()) and tells what the read saw.
+    Read read()
+    {
+        std::array<char, 4096> buffer{};
+#ifdef Q_OS_WIN
+        const int n = ::recv(m_socket, buffer.data(), static_cast<int>(buffer.size()), 0);
+        const bool wouldBlock = n < 0 && WSAGetLastError() == WSAEWOULDBLOCK;
+#else
+        const auto n = ::recv(m_socket, buffer.data(), buffer.size(), 0);
+        const bool wouldBlock = n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK);
+#endif
+        if (n > 0) {
+            m_received.append(buffer.data(), n);
+            return Read::Data;
+        }
+        if (n == 0) {
+            return Read::End;
+        }
+        return wouldBlock ? Read::Nothing : Read::Reset;
+    }
+
+    const QByteArray &received() const { return m_received; }
+
+    void close()
+    {
+        if (!m_closed) {
+            m_closed = true;
+#ifdef Q_OS_WIN
+            ::closesocket(m_socket);
+#else
+            ::close(m_socket);
+#endif
+        }
+    }
+
+private:
+#ifdef Q_OS_WIN
+    SOCKET m_socket = INVALID_SOCKET;
+#else
+    int m_socket = -1;
+#endif
+    QByteArray m_received;
+    bool m_connected = false;
+    bool m_closed = false;
 };
 
 } // namespace
@@ -183,6 +292,163 @@ private slots:
         client->sendFrame("late");
     }
 
+    // The goodbye (decision E-904): a peer that goes on sending, like a client with its input of
+    // every tick, still reads the last frame and then a clean end. Closing at once would answer
+    // that input with a reset, which makes a Windows peer throw away the frame it had not read.
+    void aPeerThatKeepsSendingReadsTheGoodbyeAndACleanEnd()
+    {
+        QVERIFY(m_listener.listen(QHostAddress::LocalHost, 0));
+        NativePeer peer(m_listener.serverPort());
+        QVERIFY(peer.isConnected());
+        QVERIFY(m_listener.waitForNewConnection(timeoutMs));
+        QPointer<QTcpSocket> socket(m_listener.nextPendingConnection());
+        auto transport = std::make_unique<QcTcpTransport>(socket.data(), QcTcpTransport::Limits{.lingerMs = 5'000});
+        const QByteArray keepAlive = QcFrameReader::header(0);
+        // Input is on its way when the transport says goodbye.
+        peer.send(keepAlive.repeated(16));
+        const QByteArray reason("The server stopped");
+        transport->sendFrame(reason);
+        transport.reset();
+
+        // The peer sends on for a while before it reads (input already on its way).
+        QElapsedTimer sending;
+        sending.start();
+        while (!sending.hasExpired(100)) {
+            peer.send(keepAlive);
+            QTest::qWait(2);
+        }
+        NativePeer::Read last = NativePeer::Read::Nothing;
+        const QDeadlineTimer deadline(timeoutMs);
+        while ((last == NativePeer::Read::Nothing || last == NativePeer::Read::Data) && !deadline.hasExpired()) {
+            QTest::qWait(1);
+            last = peer.read();
+        }
+        QCOMPARE(peer.received(), QcFrameReader::header(reason.size()) + reason);
+        QCOMPARE(last, NativePeer::Read::End);
+
+        // The goodbye ends when the peer closes too, long before the linger time.
+        QVERIFY(!socket.isNull());
+        QElapsedTimer closing;
+        closing.start();
+        peer.close();
+        QTRY_VERIFY_WITH_TIMEOUT(socket.isNull(), timeoutMs);
+        QVERIFY2(closing.elapsed() < 2'000, qPrintable(QString::number(closing.elapsed())));
+    }
+
+    // Over TLS the goodbye waits until the last frame is encrypted and handed to the system; the
+    // peer reads it and its close ends the goodbye, long before the end of the server's side would
+    // come (decision E-904).
+    void aTlsPeerReadsTheGoodbyeAndACleanEnd()
+    {
+        if constexpr (!QcTlsBackend::enabled) {
+            QSKIP("built without TLS (QC_TLS=OFF)");
+        }
+        QcTlsListener listener(QcTestTls::credentials());
+        QVERIFY(listener.listen(QHostAddress::LocalHost, 0));
+        QSslSocket peer;
+        peer.setPeerVerifyMode(QSslSocket::VerifyNone);
+        QByteArray received;
+        QStringList errors;
+        connect(&peer, &QIODevice::readyRead, this, [&] { received += peer.readAll(); });
+        connect(&peer, &QAbstractSocket::errorOccurred, this, [&](QAbstractSocket::SocketError error) {
+            if (error != QAbstractSocket::RemoteHostClosedError) {
+                errors.append(peer.errorString());
+            }
+        });
+        peer.connectToHostEncrypted(u"127.0.0.1"_s, listener.serverPort());
+        QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+        QPointer<QTcpSocket> socket(listener.nextPendingConnection());
+        QcTlsListener::startEncryption(socket.data());
+        auto transport = std::make_unique<QcTcpTransport>(socket.data(), QcTcpTransport::Limits{.lingerMs = 5'000});
+        QTRY_VERIFY_WITH_TIMEOUT(peer.isEncrypted(), timeoutMs);
+
+        const QByteArray keepAlive = QcFrameReader::header(0);
+        peer.write(keepAlive.repeated(16));
+        const QByteArray reason("The server stopped");
+        transport->sendFrame(reason);
+        QElapsedTimer closing;
+        closing.start();
+        transport.reset();
+        // The peer sends until the frame is there, then closes like a client after a Disconnect.
+        const QByteArray expected = QcFrameReader::header(reason.size()) + reason;
+        const QDeadlineTimer deadline(timeoutMs);
+        while (received.size() < expected.size() && peer.state() == QAbstractSocket::ConnectedState && !deadline.hasExpired()) {
+            peer.write(keepAlive);
+            QTest::qWait(2);
+        }
+        QCOMPARE(received, expected);
+        peer.disconnectFromHost();
+        QVERIFY2(errors.isEmpty(), qPrintable(errors.join(u"; "_s)));
+        QTRY_VERIFY_WITH_TIMEOUT(socket.isNull(), timeoutMs);
+        QVERIFY2(closing.elapsed() < 2'000, qPrintable(QString::number(closing.elapsed())));
+    }
+
+    // A TLS peer that does not close by itself gets the end when the linger time ran out, behind the
+    // frame it read before; when the peer left first, the end goes out at once (decision E-904).
+    void aSilentTlsPeerGetsTheEndAfterTheLingerTime()
+    {
+        if constexpr (!QcTlsBackend::enabled) {
+            QSKIP("built without TLS (QC_TLS=OFF)");
+        }
+        QcTlsListener listener(QcTestTls::credentials());
+        QVERIFY(listener.listen(QHostAddress::LocalHost, 0));
+        for (const bool peerLeft : {false, true}) {
+            QSslSocket peer;
+            peer.setPeerVerifyMode(QSslSocket::VerifyNone);
+            QByteArray received;
+            connect(&peer, &QIODevice::readyRead, this, [&] { received += peer.readAll(); });
+            peer.connectToHostEncrypted(u"127.0.0.1"_s, listener.serverPort());
+            QTRY_VERIFY_WITH_TIMEOUT(listener.hasPendingConnections(), timeoutMs);
+            QPointer<QTcpSocket> socket(listener.nextPendingConnection());
+            QcTlsListener::startEncryption(socket.data());
+            const int lingerMs = peerLeft ? 5'000 : 1'000;
+            auto transport = std::make_unique<QcTcpTransport>(socket.data(), QcTcpTransport::Limits{.lingerMs = lingerMs});
+            QTRY_VERIFY_WITH_TIMEOUT(peer.isEncrypted(), timeoutMs);
+
+            // A side whose peer left first sends nothing more, only its end.
+            const QByteArray frame = peerLeft ? QByteArray() : QByteArray("Kicked");
+            if (peerLeft) {
+                transport->peerSaidGoodbye();
+            } else {
+                transport->sendFrame(frame);
+            }
+            QElapsedTimer closing;
+            closing.start();
+            transport.reset();
+            QTRY_COMPARE_WITH_TIMEOUT(peer.state(), QAbstractSocket::UnconnectedState, timeoutMs);
+            const qint64 elapsed = closing.elapsed();
+            if (peerLeft) {
+                QVERIFY2(elapsed < 2'000, qPrintable(QString::number(elapsed)));
+                QVERIFY(received.isEmpty());
+            } else {
+                QVERIFY2(elapsed >= 900, qPrintable(QString::number(elapsed)));
+                QCOMPARE(received, QcFrameReader::header(frame.size()) + frame);
+            }
+            QTRY_VERIFY_WITH_TIMEOUT(socket.isNull(), timeoutMs);
+        }
+    }
+
+    // After the other end's Disconnect a connection sends nothing more (decision E-904).
+    void aConnectionIsSilentAfterTheGoodbye()
+    {
+        auto [atServer, atClient] = QcInProcessTransport::createPair();
+        int arrived = 0;
+        QcConnection server(std::move(atServer), QcProtocol::Peer::Client, [&arrived](QcMessage &&) { ++arrived; });
+        QcConnection client(std::move(atClient), QcProtocol::Peer::Server, [](QcMessage &&) {});
+        client.send(QcMsg::ChatInput{u"before"_s});
+        QTRY_COMPARE_WITH_TIMEOUT(arrived, 1, timeoutMs);
+
+        server.send(QcMsg::Disconnect{u"The server stopped"_s, {}, {}});
+        const quint64 goodbyeBytes = server.traffic().sent;
+        QVERIFY(goodbyeBytes > 0);
+        QTRY_COMPARE_WITH_TIMEOUT(client.traffic().received, goodbyeBytes, timeoutMs);
+        const quint64 sent = client.traffic().sent;
+        client.send(QcMsg::ChatInput{u"after"_s});
+        QCOMPARE(client.traffic().sent, sent);
+        QTest::qWait(20);
+        QCOMPARE(arrived, 1);
+    }
+
     void destroyingWithAStuckPeerDoesNotWait()
     {
         auto [accepted, raw] = rawPair();
@@ -198,13 +464,8 @@ private slots:
         QElapsedTimer timer;
         timer.start();
         transport.reset();
-        // The old destructor waited the whole linger time (200 ms) in the server's tick.
+        // Destroying the transport never waits for the goodbye (the server's tick goes on).
         QVERIFY2(timer.elapsed() < 100, qPrintable(QString::number(timer.elapsed())));
-#ifdef Q_OS_WIN
-        if (socket.isNull()) {
-            QSKIP("Windows took the whole frame into the socket's send buffer (loopback): nothing stayed to linger for");
-        }
-#endif
         QVERIFY(!socket.isNull());
 
         // The socket goes after the linger time and the peer sees the end.

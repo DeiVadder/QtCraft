@@ -27,6 +27,9 @@ public:
     // Whether the transport must stay in the thread it was made in (moveToThread() would break it;
     // a TLS socket, decision E-872). Whoever wants it in another thread makes it there.
     virtual bool keepsItsThread() const { return false; }
+    // The other end said goodbye (its Disconnect arrived): this end may close at once and send its
+    // end without waiting for the other's (decision E-904).
+    virtual void peerSaidGoodbye() {}
 
 signals:
     void frameReceived(const QByteArray &frame);

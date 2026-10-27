@@ -19,7 +19,8 @@ struct QcTraffic
 };
 
 // Message-level view of a transport: encodes outgoing messages, decodes incoming frames and closes
-// the link on undecodable input.
+// the link on undecodable input. Sends nothing more once the other end said goodbye (a Disconnect):
+// it is closing, and data arriving at a closed socket would reset the connection (decision E-904).
 class QcConnection : public QObject
 {
     Q_OBJECT
@@ -54,6 +55,8 @@ private:
     QcProtocol::Peer m_remote;
     Handler m_handler;
     QString m_lastError;
+    // The other end sent a Disconnect.
+    bool m_peerLeft = false;
     std::atomic<quint64> m_sent{0};
     std::atomic<quint64> m_received{0};
 };
