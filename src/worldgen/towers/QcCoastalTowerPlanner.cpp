@@ -17,13 +17,11 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // Purposes of the random values.
-enum Purpose : int {
-    Chance = 1,
-    KindPick,
-    Order,
-    Turn,
-    Priority,
-};
+constexpr int Chance = 1;
+constexpr int KindPick = 2;
+constexpr int Order = 3;
+constexpr int Turn = 4;
+constexpr int Priority = 5;
 
 // Layers of ground under a footprint's columns that must not be cave.
 constexpr int solidLayers = 3;

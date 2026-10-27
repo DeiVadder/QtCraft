@@ -77,7 +77,7 @@ void QcSessionLink::command(QcSessionCommand &&command)
     }
 
     if (!m_thread) {
-        m_core->apply(std::move(command));
+        m_core->apply(command);
         return;
     }
 
@@ -149,7 +149,7 @@ void QcSessionLink::drainEvents()
 void QcSessionLink::drainCommands()
 {
     // In the core's thread.
-    for (QcSessionCommand &command : m_commands.takeAll()) {
-        m_core->apply(std::move(command));
+    for (const QcSessionCommand &command : m_commands.takeAll()) {
+        m_core->apply(command);
     }
 }

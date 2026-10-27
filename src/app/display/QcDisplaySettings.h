@@ -52,6 +52,7 @@ public:
     // Reads the stored options; `keys` names the fullscreen key.
     explicit QcDisplaySettings(const QcKeyControls &keys, QObject *parent = nullptr);
     ~QcDisplaySettings() override;
+    Q_DISABLE_COPY_MOVE(QcDisplaySettings)
 
     // Shows `window` (not made yet) with the stored VSync, in the stored mode on the stored screen,
     // and limits its frames from now on.

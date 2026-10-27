@@ -60,6 +60,7 @@ public:
     // Ticks on `thread`, where `transport` was made (a TLS connection, decisions E-560, E-872).
     QcClientSession(std::unique_ptr<QcSessionThread> thread, std::unique_ptr<QcTransport> transport, QString playerName);
     ~QcClientSession() override;
+    Q_DISABLE_COPY_MOVE(QcClientSession)
 
     using TickMode = QcSessionTickMode;
 
@@ -250,7 +251,7 @@ signals:
 private:
     // Gives the parts that talk to the server their way out (both constructors).
     void connectParts();
-    void handleMessage(QcMessage &&message);
+    void handleMessage(const QcMessage &message);
     // Message groups; each returns false for messages outside its group.
     bool handleConnectionMessage(const QcMessage &message);
     // The world mirror's messages (QcWorldMirror): reports what they changed.
@@ -266,7 +267,7 @@ private:
     void closeWithError(const QString &reason);
     void setState(State state);
     // One event of the tick core, in the core's order.
-    void onEvent(QcSessionEvent &&event);
+    void onEvent(const QcSessionEvent &event);
     // A tick of the core: the parts tick, the player as predicted; on foot (or flying) the stride,
     // landing and step sounds, riding the seat of the cart.
     void onTicked(const QcSessionEvent::Ticked &event);

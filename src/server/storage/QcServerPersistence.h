@@ -31,6 +31,7 @@ class QcServerPersistence
 public:
     QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcChunkLoading &loading);
     ~QcServerPersistence();
+    Q_DISABLE_COPY_MOVE(QcServerPersistence)
 
     // Name of the lock file in the world directory, held while the world is open (decision E-093).
     static constexpr QStringView lockFileName = u"session.lock";

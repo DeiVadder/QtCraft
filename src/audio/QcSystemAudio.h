@@ -24,6 +24,7 @@ public:
 
     explicit QcSystemAudio(QObject *parent = nullptr);
     ~QcSystemAudio() override;
+    Q_DISABLE_COPY_MOVE(QcSystemAudio)
 
     [[nodiscard]] QList<Device> outputs() const override;
     [[nodiscard]] QByteArray defaultOutput() const override;

@@ -181,7 +181,7 @@ private:
     // in sections where both it and the neighbour `across` there have one level each and the
     // neighbour's is at least as bright (nothing flows either way).
     template<Channel C, typename Visit>
-    static void visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, const Column &across, Visit &&visit);
+    static void visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, const Column &across, const Visit &visit);
     // Queues the lit border cells of a leaving column on its side `towards` that may have lit the
     // neighbour `across` there as seeds of the removal (m_seeds of the channel).
     template<Channel C>

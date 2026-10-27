@@ -46,6 +46,7 @@ public:
     // `playing` says whether the game shows the running world (QcGameController::Phase::Playing).
     QcFrameDriver(QcSessionParts &parts, const Targets &targets, std::function<bool()> playing);
     ~QcFrameDriver();
+    Q_DISABLE_COPY_MOVE(QcFrameDriver)
 
     // A session starts: the clock since the last tick starts (it may not have run before).
     void startTickClock();

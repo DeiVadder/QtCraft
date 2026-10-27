@@ -47,6 +47,7 @@ public:
 
     explicit QcGamepadControls(QObject *parent = nullptr);
     ~QcGamepadControls() override;
+    Q_DISABLE_COPY_MOVE(QcGamepadControls)
 
     // Damage of this many health points or more vibrates at full strength (decision E-615).
     static constexpr double fullRumbleDamage = 8.0;

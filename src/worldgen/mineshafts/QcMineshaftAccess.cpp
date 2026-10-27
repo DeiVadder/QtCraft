@@ -9,12 +9,10 @@
 namespace {
 
 // Purposes of the random values.
-enum Purpose : int {
-    RoomChance = 1,
-    RoomPick,
-    Entrance,
-    EntranceKind,
-};
+constexpr int RoomChance = 1;
+constexpr int RoomPick = 2;
+constexpr int Entrance = 3;
+constexpr int EntranceKind = 4;
 
 // The side the ladder of the entrance hangs on: west, against the central room's wall.
 constexpr int ladderSide = 3;

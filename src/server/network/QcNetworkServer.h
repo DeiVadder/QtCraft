@@ -22,6 +22,7 @@ class QcNetworkServer : public QObject
 public:
     QcNetworkServer(QcServer &server, QcNetworkConfig config, QObject *parent = nullptr);
     ~QcNetworkServer() override;
+    Q_DISABLE_COPY_MOVE(QcNetworkServer)
 
     // Starts listening; the port in use (the configured one, or a free one for port 0).
     [[nodiscard]] QcResult<quint16> listen();

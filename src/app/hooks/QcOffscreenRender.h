@@ -29,6 +29,7 @@ public:
     // The offscreen window takes the main window's size, colour and screen (device pixel ratio).
     explicit QcOffscreenRender(QQuickWindow &mainWindow, QObject *parent = nullptr);
     ~QcOffscreenRender() override;
+    Q_DISABLE_COPY_MOVE(QcOffscreenRender)
 
     // QTCRAFT_OFFSCREEN=1, or a platform without native windows (QT_QPA_PLATFORM=offscreen).
     static bool requested();

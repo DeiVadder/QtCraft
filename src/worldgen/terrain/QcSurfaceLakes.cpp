@@ -11,16 +11,14 @@
 
 namespace {
 
-// Purposes of the random values.
-enum Purpose : int {
-    Chance = 1,
-    ChunkX,
-    ChunkZ,
-    Centre,
-    Shape,
-    Level,
-    Edge,
-};
+// Purposes of the random values. The values are part of the world seed (same seed, same world) and
+// never change; 4 is unused.
+constexpr int Chance = 1;
+constexpr int ChunkX = 2;
+constexpr int ChunkZ = 3;
+constexpr int Shape = 5;
+constexpr int Level = 6;
+constexpr int Edge = 7;
 
 // Squares whose plans are kept at most; beyond, the cache starts over.
 constexpr qsizetype cacheCapacity = 4096;

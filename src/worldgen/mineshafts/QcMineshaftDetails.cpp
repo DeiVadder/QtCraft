@@ -7,17 +7,15 @@
 namespace {
 
 // Purposes of the random values.
-enum Purpose : int {
-    SpawnerCount = 1,
-    SpawnerCorridor,
-    Rails,
-    Cart,
-    CartPlace,
-    Light,
-    UpperWeb,
-    LowerWeb,
-    SpawnerWeb,
-};
+constexpr int SpawnerCount = 1;
+constexpr int SpawnerCorridor = 2;
+constexpr int Rails = 3;
+constexpr int Cart = 4;
+constexpr int CartPlace = 5;
+constexpr int Light = 6;
+constexpr int UpperWeb = 7;
+constexpr int LowerWeb = 8;
+constexpr int SpawnerWeb = 9;
 
 // Share of the cells beside a spawner that get a cobweb, and of those in the middle lane above it.
 constexpr double spawnerWebChance = 0.45;

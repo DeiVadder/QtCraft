@@ -22,6 +22,7 @@ class QcTcpConnector : public QObject
 public:
     explicit QcTcpConnector(QObject *parent = nullptr);
     ~QcTcpConnector() override;
+    Q_DISABLE_COPY_MOVE(QcTcpConnector)
 
     void connectTo(const QcServerAddress &address, int timeoutMs = 10'000, const QcTcpTransport::Limits &limits = {});
     void abort();

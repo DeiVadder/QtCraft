@@ -38,6 +38,7 @@ public:
     QcPreviewSource(const QcSessionParts &parts, const QcWorldLibraryController &library, const QcCharacterSettings &character,
                     const QcTexturePackController &texturePacks, QObject *parent = nullptr);
     ~QcPreviewSource() override;
+    Q_DISABLE_COPY_MOVE(QcPreviewSource)
 
     // The running world's content and atlas (QcGameController once the content arrived).
     void useWorld(std::shared_ptr<const QcContentRegistry> content, std::shared_ptr<const QcTextureAtlas> atlas);

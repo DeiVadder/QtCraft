@@ -14,16 +14,14 @@ namespace {
 
 // Purposes of the random values; the network, the access and the details count their own from
 // these bases.
-enum Purpose : int {
-    Chance = 1,
-    Levels,
-    CentreX,
-    CentreZ,
-    CentreY,
-    NetworkBase = 100,
-    AccessBase = 200,
-    DetailsBase = 300,
-};
+constexpr int Chance = 1;
+constexpr int Levels = 2;
+constexpr int CentreX = 3;
+constexpr int CentreZ = 4;
+constexpr int CentreY = 5;
+constexpr int NetworkBase = 100;
+constexpr int AccessBase = 200;
+constexpr int DetailsBase = 300;
 
 } // namespace
 

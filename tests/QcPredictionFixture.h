@@ -36,6 +36,7 @@ public:
             std::ignore = m_host->shutdown();
         }
     }
+    Q_DISABLE_COPY_MOVE(QcPredictionFixture)
 
     QcLocalServerHost &host() { return *m_host; }
 

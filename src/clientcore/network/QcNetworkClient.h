@@ -54,6 +54,7 @@ public:
 
     explicit QcNetworkClient(QObject *parent = nullptr);
     ~QcNetworkClient() override;
+    Q_DISABLE_COPY_MOVE(QcNetworkClient)
 
     void join(const Request &request);
     void cancel();

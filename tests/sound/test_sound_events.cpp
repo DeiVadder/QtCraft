@@ -20,7 +20,7 @@ class SoundClient
 {
 public:
     explicit SoundClient(std::unique_ptr<QcTransport> transport)
-        : connection(std::move(transport), QcProtocol::Peer::Server, [this](QcMessage &&message) { received(std::move(message)); })
+        : connection(std::move(transport), QcProtocol::Peer::Server, [this](const QcMessage &message) { received(message); })
     {
     }
 
@@ -31,7 +31,7 @@ public:
         connection.send(QcMsg::Hello{QcProtocol::version, name, {}, {}});
     }
 
-    void received(QcMessage &&message)
+    void received(const QcMessage &message)
     {
         if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
             connection.send(QcTestLogin::answer(*challenge, {key, {}, std::nullopt, 0}));

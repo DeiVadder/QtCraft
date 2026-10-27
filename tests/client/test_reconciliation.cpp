@@ -19,7 +19,7 @@ class FakeServer
 public:
     explicit FakeServer(std::unique_ptr<QcTransport> transport)
         : m_content(std::make_shared<QcContentRegistry>(qcMakeTestContent()))
-        , m_connection(std::move(transport), QcProtocol::Peer::Client, [this](QcMessage &&message) { onMessage(std::move(message)); })
+        , m_connection(std::move(transport), QcProtocol::Peer::Client, [this](const QcMessage &message) { onMessage(message); })
     {
     }
 
@@ -36,7 +36,7 @@ public:
     QList<QcAppearance> appearances;
 
 private:
-    void onMessage(QcMessage &&message)
+    void onMessage(const QcMessage &message)
     {
         if (const auto *hello = std::get_if<QcMsg::Hello>(&message)) {
             helloAppearance = hello->appearance;

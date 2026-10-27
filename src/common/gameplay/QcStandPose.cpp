@@ -6,7 +6,11 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-enum Flag : quint8 { Arms = 1, BasePlate = 2, Small = 4, ShowName = 8 };
+// The bits of the saved and sent pose flags.
+constexpr quint8 Arms = 1;
+constexpr quint8 BasePlate = 2;
+constexpr quint8 Small = 4;
+constexpr quint8 ShowName = 8;
 
 } // namespace
 

@@ -52,6 +52,7 @@ public:
     QcGameInput(Screens screens, const QcSessionParts &parts, QcSettingsController &settings, QcAudioEngine *audio,
                 QObject *parent = nullptr);
     ~QcGameInput() override;
+    Q_DISABLE_COPY_MOVE(QcGameInput)
 
     bool mouseCaptured() const { return m_capture.captured(); }
     double flySpeed() const;

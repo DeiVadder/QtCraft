@@ -41,6 +41,7 @@ public:
     // Stops the core: the commands given before still reach it (a Disconnect still goes out). The
     // connection closes in the core's thread, which ends after its socket's last frames left.
     ~QcSessionLink() override;
+    Q_DISABLE_COPY_MOVE(QcSessionLink)
 
     // Whether timer-driven sessions tick on a thread of their own: unless QTCRAFT_SESSION_THREAD=0.
     static bool threadWanted();

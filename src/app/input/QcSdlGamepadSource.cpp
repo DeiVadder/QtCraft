@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -143,7 +144,8 @@ bool QcSdlGamepadSource::rumble(int id, float strength, int durationMs)
 void QcSdlGamepadSource::openNewPads()
 {
     int count = 0;
-    SDL_JoystickID *ids = SDL_GetGamepads(&count);
+    // SDL allocates the list; it goes back to SDL_free.
+    const std::unique_ptr<SDL_JoystickID[], decltype(&SDL_free)> ids{SDL_GetGamepads(&count), &SDL_free};
     QSet<quint32> present;
     for (int i = 0; ids && i < count; ++i) {
         present.insert(ids[i]);
@@ -166,7 +168,6 @@ void QcSdlGamepadSource::openNewPads()
         qCInfo(lcGamepad) << "Gamepad connected:" << info.name << QcGamepadNames::type(info.type) << info.guid;
         m_open.insert(ids[i], OpenPad{.id = addPad(info), .gamepad = gamepad});
     }
-    SDL_free(ids);
     m_failed.intersect(present);
 }
 

@@ -26,13 +26,11 @@ constexpr quint32 rainPerAge = 3;
 constexpr quint32 rainDivisor = 100;
 
 // What the dice decide, so that no two decisions of a step share a number.
-enum Salt : quint32 {
-    BurnSalt = 10,
-    BecomesFireSalt = 20,
-    CatchSalt = 30,
-    ChildAgeSalt = 40,
-    RainSalt = 70,
-};
+constexpr quint32 BurnSalt = 10;
+constexpr quint32 BecomesFireSalt = 20;
+constexpr quint32 CatchSalt = 30;
+constexpr quint32 ChildAgeSalt = 40;
+constexpr quint32 RainSalt = 70;
 
 } // namespace
 

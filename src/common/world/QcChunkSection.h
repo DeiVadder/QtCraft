@@ -57,7 +57,7 @@ public:
     // Calls `visit(pos)` for every cell whose block is `wanted`, with the section's lowest corner at
     // `corner` in the world.
     template<typename Wanted, typename Visit>
-    void forEachCell(QcBlockPos corner, Wanted &&wanted, Visit &&visit) const
+    void forEachCell(QcBlockPos corner, const Wanted &wanted, const Visit &visit) const
     {
         if (isUniform() && !wanted(m_palette.constFirst())) {
             return;
@@ -73,7 +73,7 @@ public:
     // of index(); one run of all cells for a uniform section. Compares whole
     // words while a run lasts, so long runs cost one comparison per word (the chunk encoder).
     template<typename Visit>
-    void forEachRun(Visit &&visit) const
+    void forEachRun(const Visit &visit) const
     {
         if (isUniform()) {
             visit(QcWorld::blocksPerSection, quint16{0});

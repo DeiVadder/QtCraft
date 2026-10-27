@@ -34,6 +34,7 @@ class QcHeadlessGame : public QObject
 public:
     explicit QcHeadlessGame(QObject *parent = nullptr);
     ~QcHeadlessGame() override;
+    Q_DISABLE_COPY_MOVE(QcHeadlessGame)
 
     // Parses the command line and starts; returns false (after printing the reason) on bad options.
     bool start(const QStringList &arguments);

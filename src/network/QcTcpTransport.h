@@ -40,6 +40,7 @@ public:
     // Takes over a connected socket.
     QcTcpTransport(QTcpSocket *socket, const Limits &limits, QObject *parent = nullptr);
     ~QcTcpTransport() override;
+    Q_DISABLE_COPY_MOVE(QcTcpTransport)
 
     void sendFrame(const QByteArray &frame) override;
     void close() override;

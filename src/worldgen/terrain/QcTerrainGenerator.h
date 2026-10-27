@@ -47,6 +47,7 @@ public:
     // optional blocks (empty names) fall back silently.
     QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed);
     ~QcTerrainGenerator() override;
+    Q_DISABLE_COPY_MOVE(QcTerrainGenerator)
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;

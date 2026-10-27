@@ -28,6 +28,21 @@ Checks: >
   cppcoreguidelines-pro-type-const-cast,
   cppcoreguidelines-pro-type-reinterpret-cast,
   cppcoreguidelines-pro-type-static-cast-downcast,
+  cppcoreguidelines-pro-type-union-access,
+  cppcoreguidelines-pro-type-vararg,
+  cppcoreguidelines-avoid-goto,
+  cppcoreguidelines-no-malloc,
+  cppcoreguidelines-macro-usage,
+  cppcoreguidelines-special-member-functions,
+  cppcoreguidelines-virtual-class-destructor,
+  cppcoreguidelines-init-variables,
+  cppcoreguidelines-prefer-member-initializer,
+  cppcoreguidelines-missing-std-forward,
+  cppcoreguidelines-rvalue-reference-param-not-moved,
+  cppcoreguidelines-misleading-capture-default-by-value,
+  cppcoreguidelines-avoid-non-const-global-variables,
+  cppcoreguidelines-interfaces-global-init,
+  cppcoreguidelines-use-enum-class,
   readability-function-size,
   readability-function-cognitive-complexity
 WarningsAsErrors: ''
@@ -40,3 +55,21 @@ CheckOptions:
   readability-function-size.NestingThreshold: 4
   readability-function-cognitive-complexity.Threshold: 25
   readability-function-cognitive-complexity.IgnoreMacros: true
+# C++ Core Guidelines checks of package 50.2 (decision E-897): what each option allows and why.
+# A class whose only special member is `virtual ~X() = default` (an interface) needs no other four.
+  cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor: true
+# Deleted copy operations (Q_DISABLE_COPY) leave no implicit move operations to declare.
+  cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted: true
+# Moving a member out of an rvalue parameter (a transport out of a connect outcome) is a move.
+  cppcoreguidelines-rvalue-reference-param-not-moved.AllowPartialMove: true
+# A callback that ignores its message names no parameter and so has nothing to move.
+  cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams: true
+# File-local state (anonymous namespace or static) is not reachable from other files: a mutex-guarded
+# cache, an atomic counter, state a signal handler reads (it must stay at namespace scope to be
+# async-signal-safe). A function-local static would be the same state in other syntax. New
+# file-local mutable state must be atomic, mutex-guarded or thread_local (clazy and TSan back this).
+  cppcoreguidelines-avoid-non-const-global-variables.AllowInternalLinkage: true
+# An unscoped enum inside a class is scoped by the class: model roles (Qt::UserRole + n, compared
+# with int in data() and roleNames()) and Q_ENUM values that QML reads as Class.Value.
+  cppcoreguidelines-use-enum-class.IgnoreUnscopedEnumsInClasses: true
+

@@ -169,7 +169,7 @@ struct QcMineshaftPlan
     }
     // Calls `visit` with every cell the plan opens: nodes, corridors and the entrance's shaft.
     template<typename Visit>
-    void forEachOpenCell(Visit &&visit) const
+    void forEachOpenCell(const Visit &visit) const
     {
         for (const Node &node : nodes) {
             forEachCell(node, visit);

@@ -56,14 +56,12 @@ namespace {
 // long as before. The components a save keeps without knowing them never go on the wire.
 constexpr qint32 stackDataFlag = 0x4000'0000;
 
-enum StackBits : quint8 {
-    MapIdBit = 1,
-    ContentsBit = 2,
-    NameBit = 4,
-    EnchantmentsBit = 8,
-    PriorWorkBit = 16,
-    KnownBits = MapIdBit | ContentsBit | NameBit | EnchantmentsBit | PriorWorkBit,
-};
+constexpr quint8 MapIdBit = 1;
+constexpr quint8 ContentsBit = 2;
+constexpr quint8 NameBit = 4;
+constexpr quint8 EnchantmentsBit = 8;
+constexpr quint8 PriorWorkBit = 16;
+constexpr quint8 KnownBits = MapIdBit | ContentsBit | NameBit | EnchantmentsBit | PriorWorkBit;
 
 // The component bits of `data` on the wire; 0 for none.
 quint8 bitsOf(const QcItemData &data)

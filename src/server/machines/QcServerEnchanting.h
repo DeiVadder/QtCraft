@@ -24,6 +24,7 @@ public:
     // The closer registered with QcBlockScreens refers to this object.
     QcServerEnchanting(const QcServerEnchanting &) = delete;
     QcServerEnchanting &operator=(const QcServerEnchanting &) = delete;
+    ~QcServerEnchanting() = default;
 
     // Opens the screen of the table at `pos`; false when it is no enchanting table. Any other screen
     // closes; the same table again keeps its slots.

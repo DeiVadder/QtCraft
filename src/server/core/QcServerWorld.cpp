@@ -138,6 +138,7 @@ void QcServerWorld::insert(QcChunkPos pos, const std::shared_ptr<QcChunk> &chunk
     m_newlyLoaded.append(pos);
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-rvalue-reference-param-not-moved): the arrival handler (Arrival &) moves the kept parts out of it.
 void QcServerWorld::admit(Arrival &&arrival)
 {
     const QcChunkPos pos = arrival.pos;

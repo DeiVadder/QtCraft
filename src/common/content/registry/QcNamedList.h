@@ -64,7 +64,7 @@ public:
     {
         Definition &definition = m_items[index];
         const QString name = definition.name;
-        change(definition);
+        std::forward<Change>(change)(definition);
         if (definition.name != name) {
             qCWarning(lcRegistry, "Renaming '%s' to '%s' in place is refused; register it under the new name instead", qPrintable(name),
                       qPrintable(definition.name));
@@ -74,7 +74,7 @@ public:
 
     // update() for every definition in order.
     template<typename Change>
-    void updateAll(Change &&change)
+    void updateAll(const Change &change)
     {
         for (qsizetype index = 0; index < m_items.size(); ++index) {
             update(index, change);

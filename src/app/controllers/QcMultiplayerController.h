@@ -55,6 +55,7 @@ public:
     QcMultiplayerController(QcSessionParts &parts, const QcWorldStarter &worlds, const QcSettingsController &settings,
                             const QcWorldLibraryController &library, QObject *parent = nullptr);
     ~QcMultiplayerController() override;
+    Q_DISABLE_COPY_MOVE(QcMultiplayerController)
 
     bool joining() const;
     QcNetworkClient::Stage joinStage() const;

@@ -18,6 +18,7 @@ class QcSignalWatcher : public QObject
 public:
     explicit QcSignalWatcher(QObject *parent = nullptr);
     ~QcSignalWatcher() override;
+    Q_DISABLE_COPY_MOVE(QcSignalWatcher)
 
     // Whether the handlers are installed (false when another watcher exists or the system refused).
     bool isWatching() const { return m_watching; }

@@ -38,6 +38,7 @@ public:
     QcLocalServerHost(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
                       std::unique_ptr<QcWorldGenerator> generator, QObject *parent = nullptr);
     ~QcLocalServerHost() override;
+    Q_DISABLE_COPY_MOVE(QcLocalServerHost)
 
     // Empty when the world opened; otherwise the reason, and the host serves no clients.
     QString startError() const { return m_startError; }

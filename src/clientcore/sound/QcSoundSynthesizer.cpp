@@ -63,11 +63,11 @@ class BandPass
 {
 public:
     BandPass(double centre, double resonance, int sampleRate)
+        : m_damping(1.0 / std::max(resonance, QcSoundDefinition::minResonance))
     {
         // The form needs the centre below Nyquist; content may name up to 20 kHz.
         const double limited = std::min(centre, 0.45 * sampleRate);
         const double g = std::tan(std::numbers::pi * limited / sampleRate);
-        m_damping = 1.0 / std::max(resonance, QcSoundDefinition::minResonance);
         m_a1 = 1.0 / (1.0 + g * (g + m_damping));
         m_a2 = g * m_a1;
         m_a3 = g * m_a2;

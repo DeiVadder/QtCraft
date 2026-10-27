@@ -31,6 +31,7 @@ public:
     QcConnection(std::unique_ptr<QcTransport> transport, QcProtocol::Peer remote, Handler handler,
                  QObject *parent = nullptr);
     ~QcConnection() override;
+    Q_DISABLE_COPY_MOVE(QcConnection)
 
     void send(const QcMessage &message);
     void close();

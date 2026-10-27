@@ -40,6 +40,7 @@ public:
     explicit QcAudioOutput(QObject *parent = nullptr);
     explicit QcAudioOutput(std::unique_ptr<QcAudioPlatform> platform, QObject *parent = nullptr);
     ~QcAudioOutput() override;
+    Q_DISABLE_COPY_MOVE(QcAudioOutput)
 
     // Opens the default output device and follows device changes from now on. Returns false and
     // keeps silent when there is none or it cannot be opened (until a usable device appears); the

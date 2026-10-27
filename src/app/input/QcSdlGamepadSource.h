@@ -25,6 +25,7 @@ public:
     // Polls once constructed, when SDL starts (main thread only).
     explicit QcSdlGamepadSource(int activeIntervalMs = 8, QObject *parent = nullptr);
     ~QcSdlGamepadSource() override;
+    Q_DISABLE_COPY_MOVE(QcSdlGamepadSource)
 
     QString backendName() const override;
     bool isAvailable() const override { return m_available; }

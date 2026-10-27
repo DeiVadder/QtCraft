@@ -40,6 +40,7 @@ public:
     // The parts keep references into it (QcEntities to the clients, QcSpawnPoint to the world).
     QcServerState(const QcServerState &) = delete;
     QcServerState &operator=(const QcServerState &) = delete;
+    ~QcServerState() = default;
 
     bool isLoadedAt(QcBlockPos pos) const;
     const QcItemDefinition *heldItem(const QcServerClient &client) const;

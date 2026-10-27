@@ -20,7 +20,7 @@ class QcRawClient : public QcRawWorldRecord
 {
 public:
     explicit QcRawClient(std::unique_ptr<QcTransport> transport)
-        : connection(std::move(transport), QcProtocol::Peer::Server, [this](QcMessage &&message) { received(std::move(message)); })
+        : connection(std::move(transport), QcProtocol::Peer::Server, [this](const QcMessage &message) { received(message); })
     {
     }
 
@@ -39,7 +39,7 @@ public:
         return QcTestLogin::answer(offer, {key, password, packs, viewDistance});
     }
 
-    void received(QcMessage &&message)
+    void received(const QcMessage &message)
     {
         ++messageCount;
         if (!receivedPlayer(message) && !receivedScreen(message) && !workstations.receivedWorkstation(message) && !receivedBlocks(message) && !receivedAdmin(message)) {

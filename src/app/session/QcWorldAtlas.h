@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QtGlobal>
+
 #include <memory>
 
 class QcBlockRenderTable;
@@ -31,6 +33,7 @@ public:
 
     QcWorldAtlas(QcSessionParts &parts, const Targets &targets);
     ~QcWorldAtlas();
+    Q_DISABLE_COPY_MOVE(QcWorldAtlas)
 
     // The content of the session arrived: builds the atlas of the active texture packs for it and
     // draws the world with it.

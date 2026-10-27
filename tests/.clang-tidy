@@ -1,8 +1,9 @@
 # QFETCH declares mutable locals, QTest classes must stay visible to moc, "private slots:" after
 # "private:" is not redundant for moc, results are checked with QVERIFY before use (which the
-# optional-access check cannot see), and moc mis-parses some raw string literals.
+# optional-access check cannot see), moc mis-parses some raw string literals, and QTest::addRow names
+# data rows printf-style (a C vararg API without a replacement; decision E-897).
 InheritParentConfig: true
-Checks: '-misc-const-correctness,-misc-use-internal-linkage,-readability-redundant-access-specifiers,-bugprone-unchecked-optional-access,-modernize-raw-string-literal'
+Checks: '-misc-const-correctness,-misc-use-internal-linkage,-readability-redundant-access-specifiers,-bugprone-unchecked-optional-access,-modernize-raw-string-literal,-cppcoreguidelines-pro-type-vararg'
 # The QtTest macros (QVERIFY, QCOMPARE, QTRY_*) expand to do/while, if and loop statements that add up
 # to five nesting levels the written test does not have; nesting in tests is limited through the
 # cognitive complexity, which ignores macros.

@@ -29,6 +29,7 @@ public:
 
     QcAudioSinkHost();
     ~QcAudioSinkHost() override;
+    Q_DISABLE_COPY_MOVE(QcAudioSinkHost)
 
     // Starts a sink on `device` that pulls `render`; on an error nothing stays open. Call on the
     // host's thread.

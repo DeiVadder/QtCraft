@@ -124,7 +124,9 @@ struct VirtualJoystick
         joystick = nullptr;
     }
 
+    VirtualJoystick() = default;
     ~VirtualJoystick() { detach(); }
+    Q_DISABLE_COPY_MOVE(VirtualJoystick)
 };
 
 // The pad of `source` with this name, or nullopt.

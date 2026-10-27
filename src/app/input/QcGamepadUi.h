@@ -52,6 +52,7 @@ public:
 
     QcGamepadUi(QcGamepadControls &world, Gate gate, QObject *parent = nullptr);
     ~QcGamepadUi() override;
+    Q_DISABLE_COPY_MOVE(QcGamepadUi)
 
     void setSource(QcGamepadSource *source);
     void setWindow(QQuickWindow *window);

@@ -10,9 +10,6 @@
 #include "server/mobs/QcServerCreatures.h"
 #define QC_HAS_CROWDS 1
 #endif
-#if __has_include("server/mobs/QcCreatureBodies.h")
-#define QC_HAS_BODY_PUSH 1
-#endif
 #if __has_include("QcMobCramming.h")
 #include "server/mobs/QcMobCramming.h"
 #define QC_HAS_CRAMMING 1
@@ -215,7 +212,7 @@ private slots:
     // asks for his push (the grid is built once per tick).
     void playersInACrowd()
     {
-#if defined(QC_HAS_BODY_PUSH)
+#if __has_include("server/mobs/QcCreatureBodies.h")
         auto world = flat();
         auto mobs = makeMobs();
         const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);

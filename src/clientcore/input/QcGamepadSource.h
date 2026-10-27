@@ -21,6 +21,7 @@ class QcGamepadSource : public QObject
 public:
     explicit QcGamepadSource(QObject *parent = nullptr);
     ~QcGamepadSource() override;
+    Q_DISABLE_COPY_MOVE(QcGamepadSource)
 
     // A short name of the backend for logs and debug screens ("sdl3", "virtual").
     virtual QString backendName() const = 0;

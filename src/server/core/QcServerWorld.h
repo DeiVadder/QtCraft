@@ -50,6 +50,7 @@ public:
     QcServerWorld(std::shared_ptr<const QcContentRegistry> content, std::unique_ptr<QcWorldGenerator> generator);
     // Its villages ask it which chunks are loaded.
     Q_DISABLE_COPY_MOVE(QcServerWorld)
+    ~QcServerWorld() override = default;
 
     [[nodiscard]] std::optional<QcBlockId> blockAt(QcBlockPos pos) const override;
     const QcContentRegistry &content() const override { return *m_content; }

@@ -75,6 +75,7 @@ public:
     QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistry> content,
              std::unique_ptr<QcWorldGenerator> generator, QObject *parent = nullptr);
     ~QcServer() override;
+    Q_DISABLE_COPY_MOVE(QcServer)
 
     // Opens or creates the world directory given in the config (no-op without one). Must succeed
     // before start(); fails with a readable message for damaged or mismatching saves.
@@ -195,7 +196,7 @@ signals:
 private:
     using Client = QcServerClient;
 
-    void handleMessage(Client &client, QcMessage &&message);
+    void handleMessage(Client &client, const QcMessage &message);
     // Pays the message's token (decision E-091); false when it is dropped.
     bool withinRateLimit(Client &client, const QcMessage &message);
     // Sends the true block of a dropped StartMining or FinishMining back, so a client that predicted
@@ -307,9 +308,9 @@ private:
     QTimer *m_tickTimer = nullptr;
     // Players' time (QcServerClock::playerTimeNs) of the latest autosave.
     qint64 m_lastAutosaveNs = 0;
-    static constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
-    // The first registration is written with the next tick.
-    qint64 m_lastIdentityFlushNs = -identityFlushIntervalNs;
+    // Players' time of the latest flush of the identities; none yet: the first registration is
+    // written with the next tick.
+    std::optional<qint64> m_lastIdentityFlushNs;
     quint64 m_autosaves = 0;
     QcServerDebug m_debug;
     QcServerSystems m_systems;

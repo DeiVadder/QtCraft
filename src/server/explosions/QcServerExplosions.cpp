@@ -15,10 +15,8 @@
 namespace {
 
 // What the dice of lighting decide.
-enum Salt : quint32 {
-    HopSalt = 130,
-    ChainSalt = 140,
-};
+constexpr quint32 HopSalt = 130;
+constexpr quint32 ChainSalt = 140;
 
 constexpr quint32 hopSteps = 360;
 

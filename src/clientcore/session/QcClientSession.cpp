@@ -19,7 +19,7 @@ using namespace Qt::StringLiterals;
 QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent)
     : QObject(parent)
     , m_playerName(std::move(playerName))
-    , m_link(std::make_unique<QcSessionLink>(std::move(transport), [this](QcSessionEvent &&event) { onEvent(std::move(event)); }))
+    , m_link(std::make_unique<QcSessionLink>(std::move(transport), [this](const QcSessionEvent &event) { onEvent(event); }))
 {
     connectParts();
 }
@@ -27,7 +27,7 @@ QcClientSession::QcClientSession(std::unique_ptr<QcTransport> transport, QString
 QcClientSession::QcClientSession(std::unique_ptr<QcSessionThread> thread, std::unique_ptr<QcTransport> transport, QString playerName)
     : m_playerName(std::move(playerName))
     , m_link(std::make_unique<QcSessionLink>(std::move(thread), std::move(transport),
-                                             [this](QcSessionEvent &&event) { onEvent(std::move(event)); }))
+                                             [this](const QcSessionEvent &event) { onEvent(event); }))
 {
     connectParts();
 }
@@ -114,10 +114,10 @@ void QcClientSession::setState(State state)
     emit stateChanged(state);
 }
 
-void QcClientSession::onEvent(QcSessionEvent &&event)
+void QcClientSession::onEvent(const QcSessionEvent &event)
 {
-    if (auto *received = std::get_if<QcSessionEvent::Received>(&event.what)) {
-        handleMessage(std::move(received->message));
+    if (const auto *received = std::get_if<QcSessionEvent::Received>(&event.what)) {
+        handleMessage(received->message);
     } else if (const auto *ticked = std::get_if<QcSessionEvent::Ticked>(&event.what)) {
         onTicked(*ticked);
     } else if (const auto *reconciled = std::get_if<QcSessionEvent::Reconciled>(&event.what)) {
@@ -139,7 +139,7 @@ void QcClientSession::onClosed(const QString &error)
     emit disconnected(m_disconnectReason);
 }
 
-void QcClientSession::handleMessage(QcMessage &&message)
+void QcClientSession::handleMessage(const QcMessage &message)
 {
     if (m_state == State::Disconnected) {
         return;

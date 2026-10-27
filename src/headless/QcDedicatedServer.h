@@ -37,6 +37,7 @@ public:
     QcDedicatedServer(std::shared_ptr<const QcContentRegistry> content, QList<QcPackFingerprint> packs, QObject *parent = nullptr);
     // Stops the server, which saves the world.
     ~QcDedicatedServer() override;
+    Q_DISABLE_COPY_MOVE(QcDedicatedServer)
 
     [[nodiscard]] QcStatus start(const Options &options);
 

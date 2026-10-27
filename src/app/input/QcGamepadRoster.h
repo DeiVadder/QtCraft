@@ -37,6 +37,7 @@ class QcGamepadRoster : public QObject
 public:
     explicit QcGamepadRoster(QObject *parent = nullptr);
     ~QcGamepadRoster() override;
+    Q_DISABLE_COPY_MOVE(QcGamepadRoster)
 
     void setSource(QcGamepadSource *source);
 

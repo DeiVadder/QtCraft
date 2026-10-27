@@ -44,6 +44,7 @@ public:
     QcSessionCore(std::unique_ptr<QcTransport> transport, Sink sink);
     // Shuts down (shutdown()) if that did not happen yet.
     ~QcSessionCore() override;
+    Q_DISABLE_COPY_MOVE(QcSessionCore)
 
     // Takes the connection's transport, in the core's thread; once, before Start, when the core was
     // made without one (a TLS transport made in the core's thread, decision E-872).
@@ -56,7 +57,7 @@ public:
     bool transportKeepsItsThread() const;
     // Replaces the steady clock (tests); before Start.
     void setClock(Clock clock) { m_now = std::move(clock); }
-    void apply(QcSessionCommand &&command);
+    void apply(const QcSessionCommand &command);
     // One tick of the local player; false while the world does not play yet or after the close.
     bool tick();
     // Runs the ticks due on the clock (QcTickPacer::take) and returns how many ran; the timer calls

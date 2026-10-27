@@ -36,7 +36,7 @@ struct QcClientEntity
     double health = 0.0;
     // Client ticks left for the hurt flash.
     int hurtTicks = 0;
-    // Players: their look; all creatures: head pitch, QcMsg::EntityFlag bits and the held item.
+    // Players: their look; all creatures: head pitch, entity flag bits (QcMsg::Swing …) and the held item.
     QcAppearance appearance;
     float pitch = 0.0f;
     float previousPitch = 0.0f;

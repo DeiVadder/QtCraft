@@ -22,6 +22,7 @@ public:
     // The closer registered with QcBlockScreens refers to this object.
     QcServerStonecutter(const QcServerStonecutter &) = delete;
     QcServerStonecutter &operator=(const QcServerStonecutter &) = delete;
+    ~QcServerStonecutter() = default;
 
     // Opens the screen of the stonecutter at `pos` for the player; false when it is no stonecutter.
     // The input of a screen open elsewhere goes back first; an open machine, chest, cart or trade closes.

@@ -49,6 +49,7 @@ QcResult<QcTlsKey> QcTlsKey::generate()
         return qcError(tls.error());
     }
     QcTlsKey key;
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg): OpenSSL names the curve of an EC key through its vararg keygen.
     key.m_key = std::shared_ptr<EVP_PKEY>(EVP_PKEY_Q_keygen(nullptr, nullptr, "EC", "P-256"), EVP_PKEY_free);
     if (!key.m_key) {
         return qcError(QCoreApplication::translate("QcNetwork", "The server's key cannot be made: %1").arg(lastError()));

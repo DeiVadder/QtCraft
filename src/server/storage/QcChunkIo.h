@@ -70,6 +70,7 @@ public:
 
     QcChunkIo(QString directory, std::shared_ptr<const QcContentRegistry> content);
     ~QcChunkIo();
+    Q_DISABLE_COPY_MOVE(QcChunkIo)
 
     // Opens the store (before any request; see QcChunkStore::open) and returns what it holds.
     [[nodiscard]] QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> open();

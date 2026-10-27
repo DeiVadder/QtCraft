@@ -37,6 +37,7 @@ public:
 
     explicit QcAudioEngine(QObject *parent = nullptr);
     ~QcAudioEngine() override;
+    Q_DISABLE_COPY_MOVE(QcAudioEngine)
 
     // Opens the output device; with `enabled` false no device is touched and the game is silent.
     void start(bool enabled);

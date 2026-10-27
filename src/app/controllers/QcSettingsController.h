@@ -78,6 +78,7 @@ public:
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
                          QObject *parent = nullptr);
     ~QcSettingsController() override;
+    Q_DISABLE_COPY_MOVE(QcSettingsController)
 
     static QString settingsPath();
     // Language stored in the settings ("" = system).

@@ -23,7 +23,6 @@
 #include <unistd.h>
 #if __has_include(<execinfo.h>)
 #include <execinfo.h>
-#define QC_HAS_BACKTRACE 1
 #endif
 #if defined(Q_OS_LINUX)
 #include <sys/syscall.h>
@@ -133,7 +132,7 @@ void writeReport(int fd, int signal, const siginfo_t *info)
         writeText(fd, reason);
     }
     writeText(fd, "\nbacktrace:\n");
-#if defined(QC_HAS_BACKTRACE)
+#if __has_include(<execinfo.h>)
     std::array<void *, maxFrames> frames{};
     const int count = backtrace(frames.data(), maxFrames);
     backtrace_symbols_fd(frames.data(), count, fd);
@@ -144,6 +143,7 @@ void writeReport(int fd, int signal, const siginfo_t *info)
 
 void writeCrash(int signal, const siginfo_t *info)
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg): POSIX open() takes the mode as a vararg and is async-signal-safe.
     const int fd = open(g_reportPath.data(), O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0644);
     if (fd >= 0) {
         writeReport(fd, signal, info);
@@ -216,7 +216,7 @@ bool installPlatform(const Setup &setup)
     }
     copyInto(g_reportPath, path);
     copyInto(g_header, setup.header);
-#if defined(QC_HAS_BACKTRACE)
+#if __has_include(<execinfo.h>)
     // The first call may load libraries: not in the signal handler.
     std::array<void *, 4> warmUp{};
     backtrace(warmUp.data(), static_cast<int>(warmUp.size()));

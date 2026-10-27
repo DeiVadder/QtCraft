@@ -28,7 +28,12 @@ constexpr int caveLattice = 4;
 constexpr int latticeColumns = QcWorld::chunkSize / caveLattice + 1;
 constexpr int latticeRows = QcWorld::worldHeight / caveLattice + 1;
 
-enum CaveField { TunnelA, TunnelB, Cavern, TunnelWidth, CaveFieldCount };
+// The cave fields, as indices into the field arrays.
+constexpr int TunnelA = 0;
+constexpr int TunnelB = 1;
+constexpr int Cavern = 2;
+constexpr int TunnelWidth = 3;
+constexpr int CaveFieldCount = 4;
 static_assert(CaveFieldCount == 4, "carves() takes four cave fields");
 
 double trilinear(const std::array<double, 8> &corners, double fx, double fy, double fz)

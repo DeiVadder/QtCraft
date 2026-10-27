@@ -104,6 +104,7 @@ public:
 
     explicit QcGameController(QObject *parent = nullptr);
     ~QcGameController() override;
+    Q_DISABLE_COPY_MOVE(QcGameController)
 
     QcWorldView *view() const { return m_parts.view; }
     void setView(QcWorldView *view);

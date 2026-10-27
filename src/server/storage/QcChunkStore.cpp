@@ -60,6 +60,7 @@ const KindFiles &filesOf(QcChunkStore::Kind kind)
 void syncDirectory(const QString &directory)
 {
 #ifdef Q_OS_UNIX
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg): POSIX open() is declared with a vararg mode; a folder has no Qt handle to fsync.
     const int fd = ::open(QFile::encodeName(directory).constData(), O_RDONLY | O_DIRECTORY);
     if (fd >= 0) {
         ::fsync(fd);

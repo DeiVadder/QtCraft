@@ -13,10 +13,8 @@
 namespace {
 
 // What the dice decide, so that no two decisions on a cell share a number.
-enum Salt : quint32 {
-    DropSalt = 110,
-    FireSalt = 120,
-};
+constexpr quint32 DropSalt = 110;
+constexpr quint32 FireSalt = 120;
 
 constexpr quint32 dropDice = 1000;
 // One in this many broken cells of a blast with fire catches.

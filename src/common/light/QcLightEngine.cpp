@@ -267,7 +267,7 @@ void QcLightEngine::relight(Cell cell, int lostFrom, int lostTo, int gainFrom, i
 }
 
 template<QcLightEngine::Channel C, typename Visit>
-void QcLightEngine::visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, const Column &across, Visit &&visit)
+void QcLightEngine::visitLitBorder(const Column &column, QcChunkPos pos, QcBlockFace towards, const Column &across, const Visit &visit)
 {
     const QcFaceOffset offset = qcFaceOffset(towards);
     const int lx = offset.dx > 0 ? last : 0;

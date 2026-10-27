@@ -54,7 +54,7 @@ bool QcSessionCore::transportKeepsItsThread() const
     return m_connection && m_connection->transport().keepsItsThread();
 }
 
-void QcSessionCore::apply(QcSessionCommand &&command)
+void QcSessionCore::apply(const QcSessionCommand &command)
 {
     if (command.isMirrored()) {
         ++m_mirroredApplied;

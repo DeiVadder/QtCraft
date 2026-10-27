@@ -34,6 +34,7 @@ public:
 
     explicit QcMenuNavigator(QObject *parent = nullptr);
     ~QcMenuNavigator() override;
+    Q_DISABLE_COPY_MOVE(QcMenuNavigator)
 
     void setWindow(QQuickWindow *window);
     QQuickWindow *window() const { return m_window; }

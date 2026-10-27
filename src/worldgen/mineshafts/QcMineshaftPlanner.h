@@ -7,6 +7,8 @@
 #include "worldgen/mineshafts/QcMineshaftDetails.h"
 #include "worldgen/mineshafts/QcMineshaftPlan.h"
 
+#include <QtGlobal>
+
 #include <memory>
 #include <optional>
 
@@ -27,6 +29,7 @@ public:
     // Unresolvable blocks switch mine shafts off with a warning (warnings()).
     QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
     ~QcMineshaftPlanner();
+    Q_DISABLE_COPY_MOVE(QcMineshaftPlanner)
 
     bool enabled() const { return m_enabled; }
     const QcMineshaftSettings &settings() const { return m_settings; }

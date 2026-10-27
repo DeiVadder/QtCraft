@@ -21,30 +21,28 @@ namespace QcMsg {
 
 // Movement and action states of an entity, as bits of EntitySpawn/EntityMove::flags. The client
 // animates from them.
-enum EntityFlag : quint16 {
-    // A swing of the right arm started this tick (mining, attacking, using).
-    Swing = 1,
-    OnGround = 2,
-    InWater = 4,
-    Sneaking = 8,
-    Sprinting = 16,
-    // A young animal (decision E-293): drawn at QcMsg::youngScale of its size.
-    Young = 32,
-    // An animal in love after feeding: hearts above it.
-    InLove = 64,
-    // A player sitting in a minecart (decision E-382).
-    Riding = 128,
-    // On fire (decision E-393): flames around the body.
-    Burning = 256,
-    // The pose of a creature (QcPose, decision E-423): lying on its back (a villager in its bed,
-    // decision E-411) or sitting; neither for standing.
-    Lying = 512,
-    Sitting = 1024,
-    // A player drawing a bow (decision E-425): arms raised to aim in the third person.
-    Drawing = 2048,
-    // A projectile stuck in a block: it no longer turns with its flight.
-    Stuck = 4096,
-};
+// A swing of the right arm started this tick (mining, attacking, using).
+inline constexpr quint16 Swing = 1;
+inline constexpr quint16 OnGround = 2;
+inline constexpr quint16 InWater = 4;
+inline constexpr quint16 Sneaking = 8;
+inline constexpr quint16 Sprinting = 16;
+// A young animal (decision E-293): drawn at QcMsg::youngScale of its size.
+inline constexpr quint16 Young = 32;
+// An animal in love after feeding: hearts above it.
+inline constexpr quint16 InLove = 64;
+// A player sitting in a minecart (decision E-382).
+inline constexpr quint16 Riding = 128;
+// On fire (decision E-393): flames around the body.
+inline constexpr quint16 Burning = 256;
+// The pose of a creature (QcPose, decision E-423): lying on its back (a villager in its bed,
+// decision E-411) or sitting; neither for standing.
+inline constexpr quint16 Lying = 512;
+inline constexpr quint16 Sitting = 1024;
+// A player drawing a bow (decision E-425): arms raised to aim in the third person.
+inline constexpr quint16 Drawing = 2048;
+// A projectile stuck in a block: it no longer turns with its flight.
+inline constexpr quint16 Stuck = 4096;
 
 // The pose bits of a creature's flags, and the pose they carry.
 inline quint16 poseFlags(QcPose pose)
@@ -75,7 +73,7 @@ struct EntitySpawn
     // Players: their chosen look; villagers: the look the server gives them (decision E-411); armour
     // stands: only its cape counts (decision E-239).
     QcAppearance appearance;
-    // View pitch in degrees, EntityFlag bits and the item in the right hand.
+    // View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
     float pitch = 0.0f;
     quint16 flags = 0;
     QcItemId held = qcNoItem;

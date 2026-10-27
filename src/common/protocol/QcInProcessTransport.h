@@ -2,6 +2,8 @@
 
 #include "common/protocol/QcTransport.h"
 
+#include <QtGlobal>
+
 #include <memory>
 #include <utility>
 
@@ -13,6 +15,7 @@ class QcInProcessTransport : public QcTransport
 
 public:
     ~QcInProcessTransport() override;
+    Q_DISABLE_COPY_MOVE(QcInProcessTransport)
 
     // Creates two connected ends without parents; move each to its thread before use.
     static std::pair<std::unique_ptr<QcInProcessTransport>, std::unique_ptr<QcInProcessTransport>> createPair();

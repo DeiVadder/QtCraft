@@ -45,6 +45,7 @@ public:
 
     explicit QcGamepadMenuInput(QObject *parent = nullptr);
     ~QcGamepadMenuInput() override;
+    Q_DISABLE_COPY_MOVE(QcGamepadMenuInput)
 
     // The pads to follow (nullptr: none); the source must outlive this object or be set to another.
     void setSource(QcGamepadSource *source);

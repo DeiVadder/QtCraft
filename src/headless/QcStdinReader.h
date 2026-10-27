@@ -16,6 +16,7 @@ class QcStdinReader : public QObject
 public:
     explicit QcStdinReader(QObject *parent = nullptr);
     ~QcStdinReader() override;
+    Q_DISABLE_COPY_MOVE(QcStdinReader)
 
     void start();
 

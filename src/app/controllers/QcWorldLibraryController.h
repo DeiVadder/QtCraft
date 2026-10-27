@@ -26,6 +26,7 @@ class QcWorldLibraryController : public QObject
 public:
     explicit QcWorldLibraryController(QObject *parent = nullptr);
     ~QcWorldLibraryController() override;
+    Q_DISABLE_COPY_MOVE(QcWorldLibraryController)
 
     QVariantList worlds() const { return m_worlds; }
     QVariantList mods() const { return m_mods; }

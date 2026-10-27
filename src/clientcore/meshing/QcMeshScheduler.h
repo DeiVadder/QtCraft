@@ -67,6 +67,7 @@ public:
 
     explicit QcMeshScheduler(QObject *parent = nullptr);
     ~QcMeshScheduler() override;
+    Q_DISABLE_COPY_MOVE(QcMeshScheduler)
 
     void setRenderTable(std::shared_ptr<const QcBlockRenderTable> table);
     void setFocus(const QcVec3 &position) { m_focus = position; }

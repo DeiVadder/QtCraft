@@ -25,6 +25,9 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// New identities are written at most this often (decision E-273).
+constexpr qint64 identityFlushIntervalNs = 1'000'000'000;
+
 // Keeps the local player's wish to pause (decision E-877) and returns true. A network client's wish
 // never pauses the server: it is dropped (false), and the log says so once per connection.
 bool notePauseRequest(QcServerClient &client, bool paused)
@@ -187,7 +190,9 @@ QcStatus QcServer::save()
 void QcServer::flushIdentitiesWhenDue()
 {
     // New identities are written at most once a second, not with every login (decision E-273).
-    if (m_state.identities().hasUnsavedChanges() && m_state.clock().playerTimeNs() - m_lastIdentityFlushNs >= identityFlushIntervalNs) {
+    const qint64 now = m_state.clock().playerTimeNs();
+    const bool due = !m_lastIdentityFlushNs || now - *m_lastIdentityFlushNs >= identityFlushIntervalNs;
+    if (m_state.identities().hasUnsavedChanges() && due) {
         flushIdentities();
     }
 }
@@ -238,7 +243,7 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
     client->login.connected.start();
     Client *raw = client.get();
     client->connection = std::make_unique<QcConnection>(std::move(transport), QcProtocol::Peer::Client,
-                                                        [this, raw](QcMessage &&message) { handleMessage(*raw, std::move(message)); });
+                                                        [this, raw](const QcMessage &message) { handleMessage(*raw, message); });
     connect(client->connection.get(), &QcConnection::closed, this, [raw] { raw->state = Client::State::Closed; });
 
     m_state.clientList().push_back(std::move(client));
@@ -247,7 +252,7 @@ void QcServer::addClient(std::unique_ptr<QcTransport> transport, ClientOrigin or
     updatePause();
 }
 
-void QcServer::handleMessage(Client &client, QcMessage &&message)
+void QcServer::handleMessage(Client &client, const QcMessage &message)
 {
     const QcTickPhaseTimer::MessageScope timed(m_phases);
     if (client.state == Client::State::Closed) {

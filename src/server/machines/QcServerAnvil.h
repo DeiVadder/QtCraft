@@ -25,6 +25,7 @@ public:
     // The closer registered with QcBlockScreens refers to this object.
     QcServerAnvil(const QcServerAnvil &) = delete;
     QcServerAnvil &operator=(const QcServerAnvil &) = delete;
+    ~QcServerAnvil() = default;
 
     // Opens the screen of the anvil at `pos`; false when it is no anvil. Any other screen closes;
     // the same anvil again keeps its slots.

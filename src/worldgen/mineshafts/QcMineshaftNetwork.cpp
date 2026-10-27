@@ -17,18 +17,16 @@ bool besideRoom(QcMineshaftNetwork::Point a, QcMineshaftNetwork::Point b)
 constexpr std::array<std::pair<int, int>, 4> directions{{{0, -1}, {1, 0}, {0, 1}, {-1, 0}}};
 
 // Purposes of the random values.
-enum Purpose : int {
-    GrowNode = 1,
-    GrowDirection,
-    GrowLoop,
-    NodeCount,
-    StairsNode,
-    StairsDirection,
-    ExtraStairs,
-    ExtraNode,
-    ExtraDirection,
-    GrowRun,
-};
+constexpr int GrowNode = 1;
+constexpr int GrowDirection = 2;
+constexpr int GrowLoop = 3;
+constexpr int NodeCount = 4;
+constexpr int StairsNode = 5;
+constexpr int StairsDirection = 6;
+constexpr int ExtraStairs = 7;
+constexpr int ExtraNode = 8;
+constexpr int ExtraDirection = 9;
+constexpr int GrowRun = 10;
 
 } // namespace
 

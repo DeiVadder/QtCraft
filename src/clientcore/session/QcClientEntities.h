@@ -58,7 +58,7 @@ public:
     void restartClock() { m_clock.restart(); }
     // Passes a step sound to `cue` for every creature that walked a stride.
     template<typename Cue>
-    void stepSounds(const QcClientWorld &world, Cue &&cue);
+    void stepSounds(const QcClientWorld &world, const Cue &cue);
 
 private:
     void applyMove(const QcMsg::EntityMove &move, double serverMs);
@@ -74,7 +74,7 @@ private:
 };
 
 template<typename Cue>
-void QcClientEntities::stepSounds(const QcClientWorld &world, Cue &&cue)
+void QcClientEntities::stepSounds(const QcClientWorld &world, const Cue &cue)
 {
     // Other creatures' steps, from how far they moved; items, carts and riders do not step.
     for (QcClientEntity &entity : m_entities) {

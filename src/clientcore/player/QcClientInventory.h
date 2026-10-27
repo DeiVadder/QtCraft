@@ -37,6 +37,7 @@ public:
     // The default clock refers to this object.
     QcClientInventory(const QcClientInventory &) = delete;
     QcClientInventory &operator=(const QcClientInventory &) = delete;
+    ~QcClientInventory() = default;
 
     const QcInventory &inventory() const { return m_inventory; }
     const QcEquipment &equipment() const { return m_equipment; }

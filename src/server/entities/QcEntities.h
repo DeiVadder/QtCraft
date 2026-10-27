@@ -71,18 +71,18 @@ public:
     // sliding blocks, items, armour stands, minecarts, experience orbs, projectiles, lit explosives, frames and paintings; each kind in the order of its table. `visit` takes a
     // QcEntity and must not add or remove entities.
     template<typename Visit>
-    void forEach(Visit &&visit)
+    void forEach(const Visit &visit)
     {
         visitAll(*this, visit);
     }
     template<typename Visit>
-    void forEach(Visit &&visit) const
+    void forEach(const Visit &visit) const
     {
         visitAll(*this, visit);
     }
     // The same for the bodies only: every kind but sliding blocks, which only show a move.
     template<typename Visit>
-    void forEachBody(Visit &&visit)
+    void forEachBody(const Visit &visit)
     {
         visitAll(*this, [&visit](auto &entity) {
             if (entity.kind != QcEntityKind::MovingBlock) {
@@ -91,7 +91,7 @@ public:
         });
     }
     template<typename Visit>
-    void forEachBody(Visit &&visit) const
+    void forEachBody(const Visit &visit) const
     {
         visitAll(*this, [&visit](const auto &entity) {
             if (entity.kind != QcEntityKind::MovingBlock) {
@@ -139,7 +139,7 @@ private:
     static bool isPresent(const QcServerClient &client) { return client.hasBody(); }
 
     template<typename Self, typename Visit>
-    static void visitAll(Self &self, Visit &&visit)
+    static void visitAll(Self &self, const Visit &visit)
     {
         constexpr bool readOnly = std::is_const_v<Self>;
         const auto each = [&visit](auto &list) {

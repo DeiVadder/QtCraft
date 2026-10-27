@@ -12,11 +12,9 @@
 namespace {
 
 // What the dice of a block update with `sparks` decide.
-enum Salt : quint32 {
-    SparkSalt = 50,
-    CellSalt = 60,
-    LightningSalt = 80,
-};
+constexpr quint32 SparkSalt = 50;
+constexpr quint32 CellSalt = 60;
+constexpr quint32 LightningSalt = 80;
 
 } // namespace
 

@@ -169,7 +169,7 @@ private slots:
     {
         auto host = makeHost(m_content);
         QStringList reasons;
-        QcConnection connection(host->connectClient(), QcProtocol::Peer::Server, [&reasons](QcMessage &&message) {
+        QcConnection connection(host->connectClient(), QcProtocol::Peer::Server, [&reasons](const QcMessage &message) {
             if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
                 reasons.append(disconnect->reason);
             }
@@ -217,7 +217,7 @@ private slots:
         // chat limit (bursts of 20) arrives complete, as the benchmark scenarios need it.
         auto host = makeHost(m_content);
         int healed = 0;
-        QcConnection connection(host->connectClient(), QcProtocol::Peer::Server, [&healed](QcMessage &&message) {
+        QcConnection connection(host->connectClient(), QcProtocol::Peer::Server, [&healed](const QcMessage &message) {
             if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message); chat && chat->key == u"Healed"_s) {
                 ++healed;
             }

@@ -123,7 +123,7 @@ public:
 
     // Chunks of the square made by `column` (called per column) and loaded.
     template<typename Column>
-    void fill(Column &&column)
+    void fill(const Column &column)
     {
         for (int cx = first; cx < first + span; ++cx) {
             for (int cz = first; cz < first + span; ++cz) {

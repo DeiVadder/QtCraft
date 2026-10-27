@@ -40,6 +40,7 @@ public:
     // `modsDirectory` gives the folder of the installed mods ("" for none) when packs are listed.
     explicit QcTexturePackController(std::function<QString()> modsDirectory, QObject *parent = nullptr);
     ~QcTexturePackController() override;
+    Q_DISABLE_COPY_MOVE(QcTexturePackController)
 
     void setPreviewProvider(QcTexturePackPreviewProvider *provider) { m_previewProvider = provider; }
 
