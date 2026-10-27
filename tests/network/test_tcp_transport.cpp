@@ -200,6 +200,11 @@ private slots:
         transport.reset();
         // The old destructor waited the whole linger time (200 ms) in the server's tick.
         QVERIFY2(timer.elapsed() < 100, qPrintable(QString::number(timer.elapsed())));
+#ifdef Q_OS_WIN
+        if (socket.isNull()) {
+            QSKIP("Windows took the whole frame into the socket's send buffer (loopback): nothing stayed to linger for");
+        }
+#endif
         QVERIFY(!socket.isNull());
 
         // The socket goes after the linger time and the peer sees the end.

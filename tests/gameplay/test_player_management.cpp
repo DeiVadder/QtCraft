@@ -1,17 +1,18 @@
 #include "common/auth/QcProfileValidation.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
+#include "QcUnreadableFile.h"
 #include "server/commands/QcAccessList.h"
 
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTest>
 
 #include <algorithm>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
@@ -205,10 +206,12 @@ private slots:
             QVERIFY(file.open(QIODevice::WriteOnly));
             file.write("{\"format\": 2, \"bans\": [");
         }
-        // Unreadable: neither read nor copied.
-        QVERIFY(QFile::setPermissions(path, QFileDevice::WriteOwner));
+        // Unreadable: neither read nor copied. On Windows QcUnreadableFile holds the file open without
+        // sharing, so writing it fails as well; the refused save below is the server's own choice
+        // on macOS and Linux and also the lock's on Windows.
+        std::optional<QcUnreadableFile> unreadable(std::in_place, path);
+        QVERIFY(unreadable->isValid());
         join(savedWorld(directory));
-        const auto restore = qScopeGuard([&path] { QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner); });
         QVERIFY(!QFile::exists(path + u".damaged"_s));
         QVERIFY(std::ranges::any_of(m_client->chatKeys, [](const QcMsg::ChatMessage &line) {
             return line.key.startsWith(u"access.json is damaged and could not be copied aside"_s);
@@ -216,7 +219,7 @@ private slots:
 
         chat(u"/whitelist add Friend"_s);
         QVERIFY2(lastLine().startsWith(u"The change applies but could not be saved: "_s), qPrintable(lastLine()));
-        QVERIFY(QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner));
+        unreadable.reset();
         QFile file(path);
         QVERIFY(file.open(QIODevice::ReadOnly));
         QCOMPARE(file.readAll(), QByteArray("{\"format\": 2, \"bans\": ["));

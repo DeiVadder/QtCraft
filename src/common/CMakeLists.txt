@@ -3,6 +3,7 @@ qt_add_library(qc_common ${QC_LIBRARY_TYPE})
 # scripts/check-cmake-lists.py checks the lists).
 target_sources(qc_common PRIVATE
     auth/QcLoginCrypto.h auth/QcLoginCrypto.cpp
+    auth/QcOwnerOnlyAccess.h auth/QcOwnerOnlyAccess.cpp
     auth/QcPlayerKey.h auth/QcPlayerKey.cpp
     auth/QcProfileValidation.h auth/QcProfileValidation.cpp
     auth/QcSecretFile.h auth/QcSecretFile.cpp
@@ -307,6 +308,13 @@ target_sources(qc_common PRIVATE
     world/QcWorldLabel.h world/QcWorldLabel.cpp
 )
 qc_configure_target(qc_common)
+# Movement as alike as the compilers allow (decision E-901): no fused multiply-add contraction in
+# the physics, so a server on one platform and a client predicting on another round alike in
+# practice (std::sin, std::cos and std::hypot still come from each platform's library; the server
+# decides). Every source in physics/.
+get_target_property(qc_common_sources qc_common SOURCES)
+list(FILTER qc_common_sources INCLUDE REGEX "^physics/.*\\.cpp$")
+set_source_files_properties(${qc_common_sources} PROPERTIES COMPILE_OPTIONS "${QC_NO_FP_CONTRACT}")
 # Includes name the header by its path below src/ ("common/blockrules/QcRails.h", decision E-418):
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_common PUBLIC ${PROJECT_SOURCE_DIR}/src)

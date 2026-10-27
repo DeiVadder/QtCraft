@@ -1,3 +1,4 @@
+#include "common/auth/QcSecretFile.h"
 #include "network/tls/QcDer.h"
 #include "network/tls/QcTlsBackend.h"
 #include "network/tls/QcTlsCredentials.h"
@@ -259,10 +260,14 @@ private slots:
         QCOMPARE(second->privateKey.toPem(), first->privateKey.toPem());
 
         const QString keyPath = directory.filePath(QString::fromLatin1(QcTlsCredentials::keyFileName));
+        QVERIFY(!QcSecretFile::othersMayRead(keyPath));
+#ifndef Q_OS_WIN
+        // Windows has no group and other bits: the access list is checked above.
         QCOMPARE(QFile::permissions(keyPath) & (QFileDevice::ReadGroup | QFileDevice::ReadOther), QFileDevice::Permissions{});
         // A key readable by others still loads, with a warning.
         QVERIFY(QFile::setPermissions(keyPath, QFile::permissions(keyPath) | QFileDevice::ReadGroup | QFileDevice::ReadOther));
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"server key .* is readable by other users"_s));
+#endif
         QVERIFY(QcTlsCredentials::loadOrCreate(directory.path()));
 
         QFile key(keyPath);

@@ -330,6 +330,12 @@ against a determined attacker.
   from.
 - **Whoever has `server-key.pem` is the server** for every player who pinned it. Keep the data folder
   to yourself; a copied key lets someone impersonate the server.
+- **Windows: keep the data folder inside your user profile** (the default under `%APPDATA%`, or a
+  folder below `C:\Users\<you>`), not in the root of a drive such as `C:\` or `D:\`. Secret files
+  (`server-key.pem`, `identities.json`, `server.json`, the player key, `known-servers.json`) get an
+  owner-only access list right after they are written; until then, and on drives without access lists
+  (FAT, many USB sticks; the program then warns), they have the access list of their folder, and the
+  root of a drive lets every user of the computer read (decision E-901).
 - **A hostile server** learns what a player sends it: the identity for that server (the client
   sends it whenever the challenge says the name is not known yet), chat and actions. It cannot learn
   the identity for another server unless it presents that server's salt (see below).

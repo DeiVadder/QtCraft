@@ -316,6 +316,7 @@ target_sources(qc_server PRIVATE
     tick/QcTickScheduler.h tick/QcTickScheduler.cpp
     tick/QcTickStats.h tick/QcTickStats.cpp
     tick/QcTickSystems.h tick/QcTickSystems.cpp
+    tick/QcTimerResolution.h tick/QcTimerResolution.cpp
 )
 target_sources(qc_server PRIVATE
     villages/QcServerTrading.h villages/QcServerTrading.cpp
@@ -344,3 +345,7 @@ qc_configure_target(qc_server)
 # src/ is the only include directory a library passes on.
 target_include_directories(qc_server PUBLIC ${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(qc_server PUBLIC qc_base_content qc_common qc_worldgen qc_network Qt::Core Qt::Concurrent)
+if(WIN32)
+    # timeBeginPeriod (QcTimerResolution).
+    target_link_libraries(qc_server PRIVATE winmm)
+endif()

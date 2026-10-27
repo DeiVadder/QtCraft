@@ -34,7 +34,7 @@ QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 enti
 
     QList<QcRenderSample> samples;
     if (m_depth == Depth::Full) {
-        const qint64 threadCpuNs = QcThreadCpuClock::fineGrained() ? QcThreadCpuClock::nowNs() : -1;
+        const qint64 threadCpuNs = QcThreadCpuClock::frameNowNs();
         m_lastGuiCpuMs = threadCpuNs >= 0 && m_lastThreadCpuNs >= 0 ? static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6 : -1.0;
         m_lastThreadCpuNs = threadCpuNs;
         if (view) {

@@ -143,7 +143,10 @@ private slots:
         settings.operators = {u"Ann"_s};
         const QString path = m_data.filePath(u"server.json"_s);
         QVERIFY(settings.write(path).has_value());
+#ifndef Q_OS_WIN
+        // Windows has no group and other bits: Qt reports only the read-only attribute there.
         QCOMPARE(QFile(path).permissions() & QFileDevice::ReadOther, QFileDevice::Permissions());
+#endif
         const QcResult<QcServerSettings> read = QcServerSettings::read(path);
         QVERIFY(read.has_value());
         QCOMPARE(read->toJson(), settings.toJson());

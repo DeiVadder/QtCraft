@@ -23,4 +23,8 @@ public:
         return true;
 #endif
     }
+
+    // nowNs() where fineGrained(), otherwise -1: the reading for per-frame measurements. Defined
+    // out of line so callers do not test a value the compiler already knows (MSVC C4127).
+    static qint64 frameNowNs();
 };

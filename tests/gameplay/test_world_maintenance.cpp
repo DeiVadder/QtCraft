@@ -1,4 +1,5 @@
 #include "QcServerTestFixture.h"
+#include "QcUnreadableFile.h"
 #include "server/commands/QcWorldBackup.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
@@ -304,9 +305,11 @@ private slots:
             QVERIFY(file.open(QIODevice::WriteOnly));
             file.write("private");
         }
-        QVERIFY(QFile::setPermissions(unreadable, QFileDevice::WriteOwner));
-        backup(u"/backup"_s);
-        QFile::setPermissions(unreadable, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+        {
+            const QcUnreadableFile locked(unreadable);
+            QVERIFY(locked.isValid());
+            backup(u"/backup"_s);
+        }
         QCOMPARE(lastLine(), u"Backup failed: Cannot copy notes.txt, the incomplete backup was removed"_s);
         QCOMPARE(QDir(config.backupDirectory).entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden), QStringList());
 

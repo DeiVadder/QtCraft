@@ -13,6 +13,8 @@
 #include <QScopeGuard>
 #include <QTemporaryDir>
 
+#include <optional>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -71,6 +73,10 @@ private:
 
     // The terrain of the server start() started (owned by the server).
     VillageTerrain *m_terrain = nullptr;
+    // The world folder of a test that saves, kept until the next one replaces it: the test restarts
+    // the server in it (cleanup() in between), and Windows refuses to delete files the server of
+    // the test still holds open when the test function returns.
+    std::optional<QTemporaryDir> m_directory;
 
     int villagerType() const { return *m_content->mobIndex(u"qtcraft:villager"_s); }
 
@@ -631,7 +637,7 @@ private slots:
 
     void villagersAreSavedWithTheirHomeAndWork()
     {
-        QTemporaryDir directory;
+        const QTemporaryDir &directory = m_directory.emplace();
         QcServerConfig config;
         config.worldDirectory = directory.path();
         start(0.1, config);
@@ -665,7 +671,7 @@ private slots:
     // one has, and every bed is claimed by a villager in the world.
     void persistentIdsStayUniqueAfterACrash()
     {
-        QTemporaryDir directory;
+        const QTemporaryDir &directory = m_directory.emplace();
         QcServerConfig config;
         config.worldDirectory = directory.path();
         start(0.1, config);
@@ -718,7 +724,7 @@ private slots:
             m_unloadChunks = false;
             m_viewDistance = 1;
         });
-        QTemporaryDir directory;
+        const QTemporaryDir &directory = m_directory.emplace();
         QcServerConfig config;
         config.worldDirectory = directory.path();
         start(0.7, config, 24);

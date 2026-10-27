@@ -22,7 +22,13 @@ QcTickScheduler::Clock QcTickScheduler::steadyClock()
 
 void QcTickScheduler::start()
 {
+    m_timerResolution.emplace();
     m_nextDueNs = m_clock() + m_intervalNs;
+}
+
+void QcTickScheduler::stop()
+{
+    m_timerResolution.reset();
 }
 
 void QcTickScheduler::setRate(double ticksPerSecond)

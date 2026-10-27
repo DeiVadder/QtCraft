@@ -61,6 +61,7 @@ qsizetype legAt(const QList<QcMobPart> &parts, const QcBoxLegs &legs, double x, 
         }
     }
     qFatal("No leg at %f %f", x, z);
+    Q_UNREACHABLE_RETURN(-1); // MSVC does not treat qFatal as ending the function (C4715)
 }
 
 qsizetype movingParts(const QcBoxLegs &legs)

@@ -3,6 +3,7 @@
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 
+#include <QDir>
 #include <QFile>
 #include <QTemporaryDir>
 #include <QTest>
@@ -321,10 +322,21 @@ private slots:
         join(config);
         const QString regions = dir.filePath(u"regions"_s);
         QVERIFY(QDir().mkpath(regions));
+#ifdef Q_OS_WIN
+        // Windows has no folder write right in Qt (only the read-only attribute, which folders
+        // ignore): a folder in the place of the region file stops the save instead.
+        const QString blocker = regionFile(dir.path(), m_feet.offset(1, 0, 0));
+        QVERIFY(QDir().mkpath(blocker));
+#else
         QVERIFY(QFile::setPermissions(regions, QFile::ReadOwner | QFile::ExeOwner));
+#endif
         QVERIFY(m_server->world().setBlock(m_feet.offset(1, 0, 0), id("qtcraft:glass")));
         QVERIFY(!m_server->save().has_value());
+#ifdef Q_OS_WIN
+        QVERIFY(QDir(blocker).removeRecursively());
+#else
         QVERIFY(QFile::setPermissions(regions, QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner));
+#endif
         QVERIFY(m_server->save().has_value());
         QVERIFY(QFile::exists(regionFile(dir.path(), m_feet.offset(1, 0, 0))));
     }

@@ -254,4 +254,7 @@ set_source_files_properties(
     textures/QcTextureSynthesizer.cpp textures/QcTextureCraftPatterns.cpp textures/QcTextureFarmPatterns.cpp
     textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
     textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
-    PROPERTIES COMPILE_OPTIONS "$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-ffp-contract=off>")
+    # Block icons as well: the projection and the depth of their faces, from the render table's
+    # quads (decision E-901).
+    icons/QcBlockIcon.cpp meshing/QcBlockRenderTable.cpp
+    PROPERTIES COMPILE_OPTIONS "${QC_NO_FP_CONTRACT}")

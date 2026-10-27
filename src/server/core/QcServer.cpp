@@ -207,6 +207,7 @@ void QcServer::flushIdentities()
 QcStatus QcServer::stop()
 {
     m_tickTimer->stop();
+    m_ticks.stop();
     if (const std::optional<QString> lag = m_lag.flush()) {
         qCInfo(lcLag).noquote() << *lag;
     }

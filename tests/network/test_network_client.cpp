@@ -255,7 +255,10 @@ private slots:
         QcKnownServers known(knownFile);
         QVERIFY(known.load());
         QCOMPARE(known.check(address, fingerprint), QcKnownServers::Trust::Known);
+#ifndef Q_OS_WIN
+        // Windows has no group and other bits: Qt reports only the read-only attribute there.
         QCOMPARE(QFile::permissions(knownFile) & (QFileDevice::ReadGroup | QFileDevice::ReadOther), QFileDevice::Permissions{});
+#endif
 
         // The same address with a new certificate (a man in the middle would show his own).
         const QcResult<QcTlsCredentials> other = QcTlsCredentials::generate();

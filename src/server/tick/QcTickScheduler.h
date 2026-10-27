@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/tick/QcTickStats.h"
+#include "server/tick/QcTimerResolution.h"
 
 #include <QList>
 #include <QtGlobal>
@@ -39,8 +40,10 @@ public:
 
     static Clock steadyClock();
 
-    // The first tick is due one interval from now.
+    // The first tick is due one interval from now. From start() to stop() the system's timers run
+    // to the millisecond (QcTimerResolution, Windows).
     void start();
+    void stop();
     // Runs the due ticks (see the class comment) and returns the nanoseconds until the next one is
     // due (0 when it already is).
     qint64 runDue(const std::function<void()> &tick);
@@ -95,6 +98,7 @@ private:
     void noteTickStart(qint64 started);
 
     Clock m_clock;
+    std::optional<QcTimerResolution> m_timerResolution;
     qint64 m_intervalNs = intervalNs;
     quint64 m_sprintRemaining = 0;
     quint64 m_sprintDone = 0;

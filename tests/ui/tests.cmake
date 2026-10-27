@@ -171,7 +171,14 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
 endif()
 # The menu's multiplayer page with a refused join (nobody listens on port 1), and a world opened
 # to the network on this computer only with the open-to-LAN screen and the player list, load
-# without QML errors or binding loops.
+# without QML errors or binding loops. English texts whatever the system language (the expected
+# line is the English one; Windows takes the language of the user's account). 300 frames on
+# Windows: it reports a refused connection only after about 2 s (it repeats the refused connect).
+if(WIN32)
+    set(qc_multiplayer_menu_frames 300)
+else()
+    set(qc_multiplayer_menu_frames 60)
+endif()
 if(NOT QC_SANITIZERS)
     add_test(NAME app_offscreen_multiplayer_menu_qml
         COMMAND ${CMAKE_COMMAND}
@@ -182,7 +189,7 @@ if(NOT QC_SANITIZERS)
             "-DFORBIDDEN_ERROR=qrc:[^\n]*(Error|Binding loop|Unable to assign|is not a type|Cannot read|Unable to)"
             -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
     set_tests_properties(app_offscreen_multiplayer_menu_qml PROPERTIES TIMEOUT 120
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_multiplayer_menu_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=60")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_multiplayer_menu_qml;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-multiplayer.png;QTCRAFT_SCREENSHOT_FRAMES=${qc_multiplayer_menu_frames}")
     add_test(NAME app_offscreen_open_to_lan_qml
         COMMAND ${CMAKE_COMMAND}
             "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--host-lan;0;--overlay;@1000 lan;--overlay;@2000 ;--overlay;@2500 players;--no-mods;--no-audio"

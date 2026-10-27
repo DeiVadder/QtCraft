@@ -23,6 +23,16 @@ else()
 endif()
 
 add_library(qc_project_options INTERFACE)
+# Compile option for sources that must round alike on every compiler and CPU (no fused multiply-add
+# contraction; decisions E-300, E-901): Clang and GCC need -ffp-contract=off, clang-cl the same
+# through /clang:. MSVC (cl, Visual Studio 2022) contracts only with /fp:contract, so nothing.
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(QC_NO_FP_CONTRACT "")
+elseif(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    set(QC_NO_FP_CONTRACT "/clang:-ffp-contract=off")
+else()
+    set(QC_NO_FP_CONTRACT "-ffp-contract=off")
+endif()
 # C++23 for every own target (a compile feature, so CMake picks the flag for the compiler).
 target_compile_features(qc_project_options INTERFACE cxx_std_23)
 

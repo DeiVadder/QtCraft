@@ -154,8 +154,15 @@ private slots:
         QCOMPARE(players.first().toObject().value(u"name"_s).toString(), u"Ann"_s);
         const QByteArray stored = QByteArray::fromBase64(players.first().toObject().value(u"identity"_s).toString().toLatin1());
         QCOMPARE(stored, QcLoginCrypto::identity(key('a'), m_identitiesSalt));
-        QVERIFY(!QFile(directory.filePath(u"identities.json"_s)).readAll().contains(key('a').toBase64()));
-        QCOMPARE(QFile(directory.filePath(u"identities.json"_s)).permissions() & QFileDevice::ReadOther, QFileDevice::Permissions());
+        QFile identities(directory.filePath(u"identities.json"_s));
+        QVERIFY(identities.open(QIODevice::ReadOnly));
+        QVERIFY(!identities.readAll().contains(key('a').toBase64()));
+#ifndef Q_OS_WIN
+        // Windows has no group and other bits: Qt reports only the read-only attribute there, and
+        // the world folder in the user's profile keeps the file private.
+        QCOMPARE(identities.permissions() & QFileDevice::ReadOther, QFileDevice::Permissions());
+#endif
+        identities.close();
 
         // After a restart as well.
         cleanup();

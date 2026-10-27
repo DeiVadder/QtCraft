@@ -56,15 +56,24 @@ void QcServer::waitUntilDue() const
 {
     // The timer fired up to timerLeadNs early. A sleep ends 0.1-0.5 ms late, the event loop's
     // timers 1-3 ms; the last fraction of a millisecond is waited out actively.
-    constexpr qint64 activeWaitNs = 200'000;
     const qint64 untilDue = m_ticks.untilDueNs();
     if (untilDue <= 0 || untilDue > QcTickScheduler::timerLeadNs) {
         return;
     }
 
+#ifdef Q_OS_WIN
+    // Windows sleeps in whole milliseconds at best (QcTimerResolution) and often one more: sleep
+    // 1 ms at a time while more than 1.5 ms remain, then wait the rest out actively (decision E-901).
+    constexpr qint64 activeWaitNs = 1'500'000;
+    while (m_ticks.untilDueNs() > activeWaitNs) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+#else
+    constexpr qint64 activeWaitNs = 200'000;
     if (untilDue > activeWaitNs) {
         std::this_thread::sleep_for(std::chrono::nanoseconds(untilDue - activeWaitNs));
     }
+#endif
     while (m_ticks.untilDueNs() > 0) {
         std::this_thread::yield();
     }

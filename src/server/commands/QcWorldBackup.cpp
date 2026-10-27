@@ -1,5 +1,6 @@
 #include "server/commands/QcWorldBackup.h"
 
+#include "server/core/QcServerLogging.h"
 #include "server/storage/QcServerPersistence.h"
 
 #include <QDir>
@@ -101,11 +102,38 @@ QString freeTarget(const QDir &root, const QString &base)
 #endif
 }
 
-// Copies every listed file below `from` into `to` (made first), with hard links where `link`; the
+// Marks a folder hidden or shown again. The leading dot of the staging and incomplete names hides
+// them on macOS and Linux; Windows needs the attribute (decision E-901). The error names the
+// Windows error code.
+[[nodiscard]] QcStatus setHidden(const QString &folder, bool hidden)
+{
+#ifdef Q_OS_WIN
+    const QString native = QDir::toNativeSeparators(folder);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): QString stores UTF-16, which is wchar_t on Windows
+    const auto *path = reinterpret_cast<const wchar_t *>(native.utf16());
+    const DWORD attributes = GetFileAttributesW(path);
+    const DWORD wanted = hidden ? (attributes | FILE_ATTRIBUTE_HIDDEN) : (attributes & ~DWORD{FILE_ATTRIBUTE_HIDDEN});
+    if (attributes == INVALID_FILE_ATTRIBUTES || !SetFileAttributesW(path, wanted)) {
+        return qcError(u"Windows error %1"_s.arg(GetLastError()));
+    }
+#else
+    Q_UNUSED(folder);
+    Q_UNUSED(hidden);
+#endif
+    return {};
+}
+
+// Copies every listed file below `from` into `to` (made first, hidden), with hard links where `link`; the
 // file that could not be copied, std::nullopt when all were.
 [[nodiscard]] std::optional<QString> copyFiles(const QString &from, const QString &to, const QStringList &files, bool link)
 {
     const QDir source(from);
+    if (QDir().mkpath(to)) {
+        if (const QcStatus hidden = setHidden(to, true); !hidden) {
+            // Visible while it is copied: harmless, the name still marks it unfinished.
+            qCDebug(lcCommands).noquote() << u"%1 stays visible: %2"_s.arg(QDir::toNativeSeparators(to), hidden.error());
+        }
+    }
     for (const QString &file : files) {
         const QString destination = QDir(to).filePath(file);
         const bool made = QDir().mkpath(QFileInfo(destination).absolutePath())
@@ -167,6 +195,10 @@ bool isValidLabel(const QString &label)
     // Hard links where the file system has them (the first file tells), copies otherwise.
     snapshot.linked = !listing->files.isEmpty() && QDir().mkpath(QFileInfo(QDir(snapshot.staging).filePath(listing->files.first())).absolutePath())
                       && hardLink(QDir(worldDirectory).filePath(listing->files.first()), QDir(snapshot.staging).filePath(listing->files.first()));
+    if (const QcStatus hidden = setHidden(snapshot.staging, true); !hidden) {
+        // Visible while it is copied: harmless, the name still marks it unfinished.
+        qCDebug(lcCommands).noquote() << u"%1 stays visible: %2"_s.arg(QDir::toNativeSeparators(snapshot.staging), hidden.error());
+    }
     QStringList rest = listing->files;
     if (snapshot.linked) {
         rest.removeFirst();
@@ -192,6 +224,12 @@ bool isValidLabel(const QString &label)
         problem = u"Cannot move the copied files from %1 to %2, the incomplete backup was removed"_s.arg(snapshot.staging, incomplete);
     }
     QDir(snapshot.staging).removeRecursively();
+    if (problem.isEmpty()) {
+        // Still hidden, the finished backup would not show in Explorer; it is complete all the same.
+        if (const QcStatus shown = setHidden(incomplete, false); !shown) {
+            qCWarning(lcCommands).noquote() << u"The backup %1 stays hidden: %2"_s.arg(QDir::toNativeSeparators(snapshot.target), shown.error());
+        }
+    }
     if (problem.isEmpty() && !QDir().rename(incomplete, snapshot.target)) {
         problem = u"Cannot rename the backup to %1"_s.arg(snapshot.target);
     }

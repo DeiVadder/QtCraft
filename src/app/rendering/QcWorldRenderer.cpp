@@ -191,7 +191,7 @@ void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
         return;
     }
 
-    const qint64 threadCpuNs = QcThreadCpuClock::fineGrained() ? QcThreadCpuClock::nowNs() : -1;
+    const qint64 threadCpuNs = QcThreadCpuClock::frameNowNs();
     if (threadCpuNs >= 0 && m_lastThreadCpuNs >= 0) {
         m_sample.renderThreadCpuMs = static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6;
     }

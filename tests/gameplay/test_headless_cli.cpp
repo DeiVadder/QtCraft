@@ -10,6 +10,8 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <optional>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -32,6 +34,17 @@ bool copyDirectory(const QString &from, const QString &to)
     return true;
 }
 
+// Ends a dedicated server: SIGTERM where there is one; Windows sends a program without a window
+// nothing it reacts to, so the process is killed there (the tests check nothing after the stop).
+void stopServer(QProcess &server)
+{
+#ifdef Q_OS_WIN
+    server.kill();
+#else
+    server.terminate();
+#endif
+}
+
 } // namespace
 
 // Drives the qtcraft-headless executable interactively: every response must arrive while stdin is
@@ -42,6 +55,9 @@ class TestHeadlessCli : public QObject
 
 private:
     QProcess m_process;
+    // The data folder of the running program: removed in cleanup() after the program ended, since
+    // Windows refuses to delete files a running process still holds open.
+    std::optional<QTemporaryDir> m_data;
 
     QJsonObject ask(const QByteArray &line)
     {
@@ -69,6 +85,7 @@ private slots:
             m_process.closeWriteChannel();
             QVERIFY(m_process.waitForFinished(timeoutMs));
         }
+        m_data.reset();
     }
 
     void loadsModsFromTheModsDirectory()
@@ -184,7 +201,7 @@ private slots:
 
     void worldCommandsCreateSaveAndReload()
     {
-        QTemporaryDir data;
+        const QTemporaryDir &data = m_data.emplace();
         m_process.closeWriteChannel();
         QVERIFY(m_process.waitForFinished(timeoutMs));
         m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});
@@ -228,7 +245,7 @@ private slots:
     {
         // The control interface runs console lines with the console's rights (decision E-247); the
         // backup lands next to the folder of worlds and opens like the world.
-        QTemporaryDir data;
+        const QTemporaryDir &data = m_data.emplace();
         m_process.closeWriteChannel();
         QVERIFY(m_process.waitForFinished(timeoutMs));
         m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});
@@ -330,7 +347,7 @@ private slots:
         const QString port = listening.match(output).captured(1);
         QVERIFY2(!port.isEmpty(), qPrintable(output));
         if (output.contains(u"Connections are NOT encrypted"_s)) {
-            server.terminate();
+            stopServer(server);
             QVERIFY(server.waitForFinished(timeoutMs));
             QSKIP("built without TLS (QC_TLS=OFF)");
         }
@@ -353,13 +370,13 @@ private slots:
 
         m_process.closeWriteChannel();
         QVERIFY(m_process.waitForFinished(answerTimeoutMs));
-        server.terminate();
+        stopServer(server);
         QVERIFY(server.waitForFinished(timeoutMs));
     }
 
     void showcaseWorldsAndTour()
     {
-        QTemporaryDir data;
+        const QTemporaryDir &data = m_data.emplace();
         m_process.closeWriteChannel();
         QVERIFY(m_process.waitForFinished(timeoutMs));
         m_process.setArguments({u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"90"_s, u"--data-dir"_s, data.path()});

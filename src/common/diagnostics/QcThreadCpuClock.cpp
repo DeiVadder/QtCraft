@@ -34,3 +34,8 @@ qint64 QcThreadCpuClock::nowNs()
     return -1;
 #endif
 }
+
+qint64 QcThreadCpuClock::frameNowNs()
+{
+    return fineGrained() ? nowNs() : -1;
+}
