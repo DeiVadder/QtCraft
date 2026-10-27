@@ -5,6 +5,7 @@
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/light/QcMovingLights.h"
 #include "clientcore/light/QcSky.h"
+#include "clientcore/light/QcWaterLook.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcExplosionEffects.h"
 #include "common/physics/QcPhysics.h"
@@ -99,6 +100,8 @@ void QcRenderBridge::updateSky(double alpha)
     // height fog of the realistic mode in caves.
     const float cave = session.sounds().ambience().cave;
     m_parts.view->setOutdoors(std::clamp(1.0f - 2.0f * cave, 0.0f, 1.0f));
+    // The realistic mode tints the view under water (decision E-906).
+    m_parts.view->setUnderwater(session.world() && QcWaterLook::eyeUnderWater(*session.world(), eye));
 }
 
 void QcRenderBridge::updateAnimations(double frameSeconds)

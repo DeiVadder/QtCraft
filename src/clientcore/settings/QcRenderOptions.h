@@ -45,6 +45,20 @@ struct QcRenderOptions
         friend bool operator==(const Shadows &, const Shadows &) = default;
     };
     static constexpr int maxShadowCascades = 3;
+    // The water of the realistic mode (decision E-906): wave octaves of the surface's normals, how
+    // far the refraction bends the picture behind it (0: straight through), the steps of the
+    // screen-space reflections (0: sky and sun only) and the strength of the caustics on the
+    // ground under shallow water (0: none). All zero in the classic mode, whose water is drawn as
+    // it always was.
+    struct Water
+    {
+        int waveOctaves = 0;
+        float refraction = 0.0f;
+        int reflectionSteps = 0;
+        float caustics = 0.0f;
+        bool drawn() const { return waveOctaves > 0; }
+        friend bool operator==(const Water &, const Water &) = default;
+    };
 
     Mode mode = Mode::Classic;
     Quality quality = Quality::Medium;
@@ -61,6 +75,9 @@ struct QcRenderOptions
     // The sun's shadows of the quality (Low one small cascade, Medium two, High three and the widest
     // filter); no cascades in the classic mode.
     Shadows shadows() const;
+    // The water of the quality (Low waves, Fresnel, sky and sun; Medium also refraction and
+    // caustics; High also screen-space reflections); nothing in the classic mode.
+    Water water() const;
 
     // "classic", "realistic"; "low", "medium", "high".
     static QString modeName(Mode mode);

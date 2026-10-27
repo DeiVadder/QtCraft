@@ -122,9 +122,11 @@ target_sources(qc_app_core PRIVATE
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
     rendering/QcShadowMap.h rendering/QcShadowMap.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
+    rendering/QcWaterSurface.h rendering/QcWaterSurface.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldRendererResources.h rendering/QcWorldRendererResources.cpp
     rendering/QcWorldRendererShadows.cpp
+    rendering/QcWorldRendererWater.cpp
     rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
 target_sources(qc_app_core PRIVATE
@@ -405,6 +407,8 @@ qt_add_shaders(qtcraft "qtcraft_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow_entity.vert
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shadow.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/water.frag
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/water_behind.frag
 )
 # The first halving of the bloom reads the HDR scene and keeps what exceeds the threshold (decision E-899).
 qt_add_shaders(qtcraft "qtcraft_bloom_prefilter_shaders"
@@ -475,6 +479,16 @@ qt_add_shaders(qtcraft "qtcraft_block_solid_shadow_shaders"
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders/block.frag
     OUTPUTS
         shaders/block_solid_shadow.frag.qsb
+)
+# the water (decision E-906),
+qt_add_shaders(qtcraft "qtcraft_water_shadow_shaders"
+    BASE ${CMAKE_CURRENT_SOURCE_DIR}
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders/water.frag
+    OUTPUTS
+        shaders/water_shadow.frag.qsb
 )
 # and entities with the hand; their vertex shaders hand the parts of the light on (the classic ones
 # stay as they are).

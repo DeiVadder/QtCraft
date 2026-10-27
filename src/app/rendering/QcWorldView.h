@@ -65,6 +65,10 @@ public:
         // How far the camera is under the open sky (1) or deep in a cave (0), eased; the height fog
         // of the realistic mode fades with it, so caves stay clear.
         float outdoors = 1.0f;
+        // The water of the realistic mode (decision E-906): whether the camera is under water, and
+        // the waves' time in seconds (QcWaterLook::waveSeconds, held with the animation tick).
+        bool underwater = false;
+        float waterSeconds = 0.0f;
         // Torches in hands, fireflies (decision E-902): drawn by the realistic mode only, at most
         // QcRenderOptions::movingLights() of them; world positions.
         QList<QcMovingLight> movingLights;
@@ -120,6 +124,8 @@ public:
     void setMovingLights(QList<QcMovingLight> lights);
     // How far the camera is under the open sky, 0..1 (FrameInput::outdoors).
     void setOutdoors(float outdoors);
+    // Whether the camera is under water (FrameInput::underwater).
+    void setUnderwater(bool underwater);
     // Debug visualisations for this frame (decision E-225), relative to `origin`; null or empty
     // draws none.
     void setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> lines, const QcVec3 &origin);

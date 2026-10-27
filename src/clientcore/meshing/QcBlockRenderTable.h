@@ -106,6 +106,10 @@ public:
     // How far the surface of a full liquid lies below the top of its cell.
     static constexpr float liquidSurfaceDrop = 0.125f;
 
+    // The height of the surface of the liquid `id` in its cell when no liquid lies on top
+    // (Entry::liquidHeight); 1 for anything that is not a liquid.
+    [[nodiscard]] static float liquidHeight(const QcContentRegistry &content, QcBlockId id);
+
     QcBlockRenderTable() = default;
     QcBlockRenderTable(const QcContentRegistry &content, const QcTextureAtlas &atlas);
 

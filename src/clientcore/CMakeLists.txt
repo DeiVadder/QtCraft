@@ -71,6 +71,7 @@ target_sources(qc_clientcore PRIVATE
     light/QcSectionLight.h light/QcSectionLight.cpp
     light/QcShadowCascades.h light/QcShadowCascades.cpp
     light/QcSky.h light/QcSky.cpp
+    light/QcWaterLook.h light/QcWaterLook.cpp
 )
 target_sources(qc_clientcore PRIVATE
     maps/QcClientMaps.h maps/QcClientMaps.cpp

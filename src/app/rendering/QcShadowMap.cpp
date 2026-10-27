@@ -111,6 +111,7 @@ bool QcShadowMap::prepare(QRhi *rhi, QcRenderOptions::Shadows shadows)
         setRefused(request);
         return false;
     }
+    ++m_generation;
     return true;
 }
 
@@ -264,13 +265,20 @@ QRhiShaderResourceBindings *QcShadowMap::receiverBindings(const QcWorldDeviceRes
     return m_gpu.receiverBindings.get();
 }
 
+QList<QRhiShaderResourceBinding> QcShadowMap::receiverEntries() const
+{
+    if (!ready()) {
+        return {};
+    }
+    constexpr auto fragment = QRhiShaderResourceBinding::FragmentStage;
+    return {QRhiShaderResourceBinding::uniformBuffer(3, fragment, m_gpu.receiverUniforms.get()),
+            QRhiShaderResourceBinding::sampledTexture(4, fragment, m_gpu.map.get(), m_gpu.compare.get())};
+}
+
 QRhiShaderResourceBindings *QcShadowMap::framedMapBindings(const QcWorldDeviceResources &device)
 {
     if (!m_gpu.framedMapBindings && ready() && device.framedMaps.bindings()) {
-        constexpr auto fragment = QRhiShaderResourceBinding::FragmentStage;
-        m_gpu.framedMapBindings = device.framedMaps.bindingsWith(
-            m_gpu.rhi, {QRhiShaderResourceBinding::uniformBuffer(3, fragment, m_gpu.receiverUniforms.get()),
-                        QRhiShaderResourceBinding::sampledTexture(4, fragment, m_gpu.map.get(), m_gpu.compare.get())});
+        m_gpu.framedMapBindings = device.framedMaps.bindingsWith(m_gpu.rhi, receiverEntries());
     }
     return m_gpu.framedMapBindings.get();
 }

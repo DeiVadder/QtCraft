@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
+#include "clientcore/light/QcWaterLook.h"
 
 #include <QImage>
 
@@ -31,8 +32,12 @@ struct CompositeUniforms
     float size[4];
     // xy: one texel of the ambient occlusion in texture coordinates.
     float occlusionTexel[4];
+    // rgb: the water's colour under water (display values), w: 1 when the camera is under water.
+    float water[4];
+    // rgb: how much light the water takes per block (QcWaterLook::extinction).
+    float waterExtinction[4];
 };
-static_assert(sizeof(CompositeUniforms) == 160);
+static_assert(sizeof(CompositeUniforms) == 192);
 
 // The first of `formats` the GPU renders to, if any.
 std::optional<QRhiTexture::Format> supported(QRhi *rhi, std::initializer_list<QRhiTexture::Format> formats)
@@ -173,8 +178,10 @@ bool QcPostProcess::createSceneTarget(QRhi *rhi, QSize size, QRhiTexture::Format
 {
     // The target before the textures it refers to; the pass descriptor stays while the format does,
     // so the pipelines built for it stay valid over a resize.
+    m_gpu.sceneContinued.reset();
     m_gpu.sceneTarget.reset();
     if (colour != m_gpu.sceneFormat) {
+        m_gpu.continuedPass.reset();
         m_gpu.scenePass.reset();
     }
     m_gpu.sceneFormat = colour;
@@ -194,13 +201,29 @@ bool QcPostProcess::createSceneTarget(QRhi *rhi, QSize size, QRhiTexture::Format
         m_gpu.scenePass.reset(m_gpu.sceneTarget->newCompatibleRenderPassDescriptor());
     }
     m_gpu.sceneTarget->setRenderPassDescriptor(m_gpu.scenePass.get());
-    if (!m_gpu.sceneTarget->create()) {
+    if (!m_gpu.sceneTarget->create() || !createContinuedTarget(rhi, description)) {
+        m_gpu.sceneContinued.reset();
         m_gpu.sceneTarget.reset();
         m_gpu.sceneColour.reset();
         m_gpu.sceneDepth.reset();
         return false;
     }
+    ++m_sceneGeneration;
     return true;
+}
+
+bool QcPostProcess::createContinuedTarget(QRhi *rhi, const QRhiTextureRenderTargetDescription &description)
+{
+    // Loads colour and depth instead of clearing them; the pipelines built for the scene's pass draw
+    // into it: the passes differ only in their load operations, which the Vulkan specification
+    // leaves out of compatibility (QRhi's isCompatible() may still say no there).
+    m_gpu.sceneContinued.reset(rhi->newTextureRenderTarget(
+        description, QRhiTextureRenderTarget::PreserveColorContents | QRhiTextureRenderTarget::PreserveDepthStencilContents));
+    if (!m_gpu.continuedPass) {
+        m_gpu.continuedPass.reset(m_gpu.sceneContinued->newCompatibleRenderPassDescriptor());
+    }
+    m_gpu.sceneContinued->setRenderPassDescriptor(m_gpu.continuedPass.get());
+    return m_gpu.sceneContinued->create();
 }
 
 bool QcPostProcess::bindComposite(QRhi *rhi)
@@ -276,6 +299,11 @@ void QcPostProcess::uploadComposite(QRhiResourceUpdateBatch *updates, const Comp
         uniforms.occlusionTexel[1] = 1.0f / static_cast<float>(occlusion->pixelSize().height());
         m_gpu.occlusion.upload(updates, composite.viewProjection);
     }
+    uniforms.water[0] = composite.waterColour.x();
+    uniforms.water[1] = composite.waterColour.y();
+    uniforms.water[2] = composite.waterColour.z();
+    uniforms.water[3] = composite.underwater ? 1.0f : 0.0f;
+    std::ranges::copy(QcWaterLook::extinction, uniforms.waterExtinction);
     updates->updateDynamicBuffer(m_gpu.uniforms.get(), 0, sizeof(CompositeUniforms), &uniforms);
 }
 

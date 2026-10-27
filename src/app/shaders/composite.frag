@@ -26,6 +26,10 @@ layout(std140, binding = 0) uniform Post {
     vec4 size;
     // xy: one texel of the ambient occlusion (half the output's size) in texture coordinates
     vec4 occlusionTexel;
+    // rgb: the water's colour (display values), w: 1 when the camera is under water (decision E-906)
+    vec4 water;
+    // rgb: how much light the water takes per block (linear)
+    vec4 waterExtinction;
 } post;
 
 layout(binding = 1) uniform sampler2D scene;
@@ -116,10 +120,17 @@ void main()
     vec3 relative = point.xyz / point.w;
     float dist = length(relative);
     vec3 dir = relative / max(dist, 1e-4);
-    float amount = heightFog(dir, min(dist, post.fog.w));
-    vec3 fog = pow(post.fogColor.rgb, vec3(2.2));
-    fog *= 1.0 + post.sun.w * pow(max(dot(dir, post.sun.xyz), 0.0), 8.0);
-    color = mix(color, fog, amount);
+    if (post.water.w > 0.5) {
+        // Under water the water takes the place of the height fog: each colour fades by its own
+        // extinction over the distance (red first), towards the water's colour.
+        vec3 through = exp(-post.waterExtinction.rgb * min(dist, post.fog.w));
+        color = color * through + pow(post.water.rgb, vec3(2.2)) * (1.0 - through);
+    } else {
+        float amount = heightFog(dir, min(dist, post.fog.w));
+        vec3 fog = pow(post.fogColor.rgb, vec3(2.2));
+        fog *= 1.0 + post.sun.w * pow(max(dot(dir, post.sun.xyz), 0.0), 8.0);
+        color = mix(color, fog, amount);
+    }
 
     color += texture(bloom, uv).rgb * post.tone.y;
     if (any(isnan(color)) || any(isinf(color)))

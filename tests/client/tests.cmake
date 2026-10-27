@@ -75,6 +75,8 @@ qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientco
 # The pure parts of the sun shadows (decision E-903): cascades, light axes, texel snapping, light.
 qc_add_test(test_shadow_cascades SOURCES client/test_shadow_cascades.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_moving_lights SOURCES client/test_moving_lights.cpp LIBRARIES qc_base_content qc_clientcore)
+# The pure parts of the realistic water (decision E-906): eye under water, wrapped time and camera, Water block.
+qc_add_test(test_water_look SOURCES client/test_water_look.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES client/test_entity_culling.cpp LIBRARIES qc_clientcore)
@@ -243,6 +245,29 @@ qt_add_shaders(test_shadow_map "test_shadow_map_solid_shaders"
         ${PROJECT_SOURCE_DIR}/src/app/shaders/shadow.frag
     OUTPUTS
         shaders/shadow_solid.frag.qsb
+)
+# The water of the realistic mode (decision E-906) on QRhi's Null backend, with its shaders baked
+# into the test.
+qc_add_test(test_water_surface SOURCES client/test_water_surface.cpp LIBRARIES qc_app_core)
+qt_add_shaders(test_water_surface "test_water_surface_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/post.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/composite.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/water_behind.frag
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/water.frag
+)
+qt_add_shaders(test_water_surface "test_water_surface_receiver_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/block.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/water.frag
+    OUTPUTS
+        shaders/block_shadow.vert.qsb
+        shaders/water_shadow.frag.qsb
 )
 # The ranges of the section arena's pages (decision E-820): first fit, merging of freed neighbours.
 qc_add_test(test_range_allocator SOURCES client/test_range_allocator.cpp LIBRARIES qc_app_core)

@@ -87,6 +87,22 @@ QcRenderOptions::Shadows QcRenderOptions::shadows() const
     return {};
 }
 
+QcRenderOptions::Water QcRenderOptions::water() const
+{
+    if (!realistic()) {
+        return {};
+    }
+    switch (quality) {
+    case Quality::Low:
+        return {.waveOctaves = 2, .refraction = 0.0f, .reflectionSteps = 0, .caustics = 0.0f};
+    case Quality::Medium:
+        return {.waveOctaves = 3, .refraction = 1.0f, .reflectionSteps = 0, .caustics = 1.0f};
+    case Quality::High:
+        return {.waveOctaves = 4, .refraction = 1.0f, .reflectionSteps = 24, .caustics = 1.0f};
+    }
+    return {};
+}
+
 QString QcRenderOptions::modeName(Mode mode)
 {
     return QString::fromLatin1(modeNames[static_cast<std::size_t>(mode)]);

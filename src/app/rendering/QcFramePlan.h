@@ -16,6 +16,13 @@ enum class QcRenderPass {
     Opaque,
     // Creatures, players and dropped items.
     Entities,
+    // The translucent faces the water may lie in front of (the sections with water, all of them
+    // while the eye is under water), drawn into the scene before its copy so the water shows them
+    // (realistic mode, decision E-906); the translucent step draws them again over the water.
+    TranslucentBehindWater,
+    // Copies what the steps before drew (colour and distance) for the water to look through
+    // (realistic mode, decision E-906); the steps after it draw on over the same scene.
+    Refraction,
     // The water lists of the sections with their own pipeline; without this step the translucent
     // step draws them, sorted together with the other translucent faces.
     Water,
@@ -37,6 +44,10 @@ enum class QcRenderTarget {
     ShadowMap,
     // An offscreen picture that post-processing reads (HDR in the realistic mode).
     Scene,
+    // The copy of the scene the water looks through (decision E-906).
+    Refraction,
+    // The scene again after the copy, keeping what the steps before drew.
+    SceneContinued,
     // The item's own render target, shown on screen.
     Output,
 };
@@ -60,13 +71,16 @@ struct QcFramePlan
 
     // The realistic mode (stage 45, decision E-899): the sun's shadow map first (decision E-903),
     // then the steps of the classic mode into the HDR scene picture, then post-processing (height
-    // fog, bloom, tonemapping) into the output.
+    // fog, bloom, tonemapping) into the output. The water has its own step (decision E-906): after
+    // the opaque world, the entities and the translucent faces the water may cover a copy of the
+    // scene, which the water looks through, then the water before the other translucent faces.
     static QcFramePlan realistic()
     {
-        QcFramePlan plan = classic();
-        plan.passes.prepend(QcRenderPass::Shadow);
-        plan.passes.append(QcRenderPass::PostProcess);
-        return plan;
+        return {{QcRenderPass::Shadow, QcRenderPass::Sky, QcRenderPass::Opaque, QcRenderPass::Entities,
+                 QcRenderPass::TranslucentBehindWater, QcRenderPass::Refraction,
+                 QcRenderPass::Water, QcRenderPass::Translucent, QcRenderPass::Weather, QcRenderPass::Overlay,
+                 QcRenderPass::PostProcess},
+                false};
     }
 
     // The plan of the render `mode`; QTCRAFT_SECTION_LIGHT=1 also uploads the per-cell light of the
@@ -96,15 +110,20 @@ struct QcFramePlan
     // Whether the translucent step draws the water lists too.
     bool waterWithTranslucent() const { return !contains(QcRenderPass::Water); }
 
+    // The target of `pass`; the steps after a Refraction step draw on over the scene they copied.
     QcRenderTarget targetOf(QcRenderPass pass) const
     {
         if (pass == QcRenderPass::Shadow) {
             return QcRenderTarget::ShadowMap;
         }
+        if (pass == QcRenderPass::Refraction) {
+            return QcRenderTarget::Refraction;
+        }
         if (pass == QcRenderPass::PostProcess || !contains(QcRenderPass::PostProcess)) {
             return QcRenderTarget::Output;
         }
-        return QcRenderTarget::Scene;
+        const qsizetype copy = passes.indexOf(QcRenderPass::Refraction);
+        return copy >= 0 && passes.indexOf(pass) > copy ? QcRenderTarget::SceneContinued : QcRenderTarget::Scene;
     }
 
     struct Group

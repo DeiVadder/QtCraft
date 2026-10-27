@@ -50,6 +50,10 @@ public:
         // How much brighter the fog is towards the sun.
         float sunGlow = 0.0f;
         float exposure = 1.0f;
+        // Under water (decision E-906) the water's colour (display values) takes the place of the
+        // height fog, thickening by QcWaterLook::extinction per block.
+        bool underwater = false;
+        QVector3D waterColour;
     };
 
     // The scene target of `size`, its bloom chain with the halvings of `options` (none without an
@@ -61,6 +65,19 @@ public:
     bool prepare(QRhi *rhi, QSize size, QcRenderOptions options, QRhiRenderTarget *output, QRhiResourceUpdateBatch *updates);
     // What the steps before post-processing draw into; null before prepare() succeeded.
     [[nodiscard]] QRhiRenderTarget *sceneTarget() const { return m_gpu.sceneTarget.get(); }
+    // The same textures again, keeping what was drawn (the steps after the water's copy of the
+    // scene, decision E-906). Its pass differs from sceneTarget()'s only in loading instead of
+    // clearing: the pipelines built for the scene draw into it (compatible by the Vulkan
+    // specification; QRhi's isCompatible() may still answer false on Vulkan, load against clear).
+    [[nodiscard]] QRhiRenderTarget *sceneContinuedTarget() const { return m_gpu.sceneContinued.get(); }
+    // The scene's colour and depth textures and the colour's format; null before prepare() succeeded.
+    [[nodiscard]] QRhiTexture *sceneColour() const { return m_gpu.sceneColour.get(); }
+    [[nodiscard]] QRhiTexture *sceneDepth() const { return m_gpu.sceneDepth.get(); }
+    [[nodiscard]] QRhiTexture::Format sceneFormat() const { return m_gpu.sceneFormat; }
+    // Changes whenever the scene's textures are made anew (another size or format); 0 without them.
+    [[nodiscard]] quint64 sceneGeneration() const { return m_gpu.sceneColour ? m_sceneGeneration : 0; }
+    // Whether the depth texture holds the clip depth 0..1 (else -1..1 mapped to 0..1).
+    [[nodiscard]] bool depthZeroToOne() const { return m_gpu.depthZeroToOne; }
     // Whether the composite adds a bloom.
     [[nodiscard]] bool blooms() const { return m_gpu.boundGeneration != 0; }
     // Whether the composite darkens with an ambient occlusion.
@@ -119,6 +136,10 @@ private:
         std::unique_ptr<QRhiTexture> sceneDepth;
         std::unique_ptr<QRhiRenderPassDescriptor> scenePass;
         std::unique_ptr<QRhiTextureRenderTarget> sceneTarget;
+        // The scene's textures with their contents kept (decision E-906), with a pass of its own
+        // that loads instead of clearing.
+        std::unique_ptr<QRhiRenderPassDescriptor> continuedPass;
+        std::unique_ptr<QRhiTextureRenderTarget> sceneContinued;
         QcBloomChain bloom;
         QcAmbientOcclusion occlusion;
         // The output pass the composite pipeline was built for.
@@ -137,6 +158,8 @@ private:
     bool createScene(QRhi *rhi, QSize size);
     // The scene target in `colour` with a depth texture of `depth`.
     bool createSceneTarget(QRhi *rhi, QSize size, QRhiTexture::Format colour, QRhiTexture::Format depth);
+    // The target over the same attachments that keeps their contents (sceneContinuedTarget()).
+    bool createContinuedTarget(QRhi *rhi, const QRhiTextureRenderTargetDescription &description);
     // The composite's bindings for the current scene, bloom and occlusion (the black and the white
     // texture where there is none).
     bool bindComposite(QRhi *rhi);
@@ -145,4 +168,6 @@ private:
     // NOLINT(qc-member-access): made and changed only inside prepare(), released as a whole by release().
     Resources m_gpu;
     std::optional<Request> m_refused;
+    // Counts the scene's textures made (sceneGeneration()).
+    quint64 m_sceneGeneration = 0;
 };

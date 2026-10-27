@@ -3,6 +3,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/camera/QcFrustum.h"
+#include "clientcore/light/QcWaterLook.h"
 #include "common/core/QcDowncast.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/diagnostics/QcThreadCpuClock.h"
@@ -75,6 +76,9 @@ void QcWorldRenderer::replaceDevice()
     setPlan(m_classicPlan);
     // The pass group refers to the shadow map's bindings and the scene target: dropped before them.
     dropPass();
+    // The water refers to the scene of the post-processing, the shadow map and the atlas.
+    m_waterDraw.reset();
+    m_water.reset();
     m_post.reset();
     m_shadows.reset();
     m_baseVertex = rhi()->isFeatureSupported(QRhi::BaseVertex);
@@ -120,7 +124,10 @@ void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *upda
     // stays remembered); the pipelines that read them went with the pass group above.
     if (realistic) {
         prepareShadows();
+        prepareWater();
     } else {
+        m_waterDraw.reset();
+        m_water.release();
         m_post.release();
         m_shadows.release();
     }
@@ -147,6 +154,8 @@ QcPostProcess::Composite QcWorldRenderer::composite(const QMatrix4x4 &viewProjec
     composite.sunDirection = sky.sunDirection;
     composite.sunGlow = QcPostProcess::fogSunGlow * static_cast<float>(std::clamp(sky.daylight, 0.0, 1.0));
     composite.exposure = static_cast<float>(m_frame.render.exposure);
+    composite.underwater = m_frame.underwater;
+    composite.waterColour = QcWaterLook::underwaterColour(sky.daylight);
     return composite;
 }
 
@@ -204,6 +213,8 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
     // The pipelines with the atlas bindings go before the bindings and the texture they refer to.
     if (m_device.atlasOutdated(m_frame.atlasVersion)) {
         m_pass.releaseAtlasPipelines();
+        m_waterDraw.reset();
+        m_water.releaseAtlas();
         m_shadows.releaseAtlasBindings();
         m_device.replaceAtlas(m_frame.atlas, m_frame.animationMap, m_frame.atlasVersion, updates);
     }
@@ -213,6 +224,12 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
         // The realistic mode's pipelines receive the sun shadows while there is a map (decision E-903).
         QRhiShaderResourceBindings *const receivers = plan().postProcessed() ? m_shadows.receiverBindings(m_device) : nullptr;
         m_pass.createAtlasPipelines(m_device.rhi, drawTarget(), receivers ? receivers : m_device.atlasBindings(), receivers != nullptr);
+    }
+    // The water's pipeline before the passes (decision E-906), with the shadow receivers' entries
+    // while the other pipelines receive the shadows.
+    m_waterDraw.reset();
+    if (plan().postProcessed() && m_water.ready()) {
+        m_waterDraw = m_water.pipeline(m_device, m_pass.shadowReceivers ? &m_shadows : nullptr, m_post.sceneContinuedTarget());
     }
     if (!m_pass.outlinePipelineTried) {
         m_pass.createOutlinePipeline(m_device.rhi, drawTarget(), m_device.outlineBindings.get());
@@ -390,6 +407,9 @@ QRhiGraphicsPipeline *QcWorldRenderer::waterPipelineInTranslucent() const
 
 void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view)
 {
+    if (!view.water) {
+        return;
+    }
     const QcDrawOrigins &origins = m_meshStore.origins();
     QList<std::pair<float, VisibleSection>> &water = m_sorted;
     water.clear();
@@ -400,7 +420,12 @@ void QcWorldRenderer::drawWater(QRhiCommandBuffer *commandBuffer, const FrameVie
     }
     std::ranges::sort(water, std::ranges::greater{}, &std::pair<float, VisibleSection>::first);
 
-    usePipeline(commandBuffer, m_pass.waterPipeline.get());
+    // The realistic water with its own bindings (decision E-906), else the plain one.
+    if (m_waterDraw && fitsLayout(m_waterDraw->pipeline, m_waterDraw->bindings)) {
+        usePipeline(commandBuffer, m_waterDraw->pipeline, m_waterDraw->bindings);
+    } else {
+        usePipeline(commandBuffer, m_pass.waterPipeline.get());
+    }
     for (const auto &[distance, section] : std::as_const(water)) {
         drawBuffers(commandBuffer, section.mesh->water, section.origin);
     }
@@ -434,6 +459,7 @@ const QcWorldRenderer::FrameView &QcWorldRenderer::cull(const QMatrix4x4 &viewPr
     const QcFrustum::Planes planes = QcFrustum::planes(viewProjection);
     FrameView &view = m_view;
     view.visible.clear();
+    view.water = false;
     view.belowWorld = m_frame.camera.position.y < 0.0;
     view.camera = drawCamera;
     // The entity meshes and the hand are built around a block near the camera: their entries change
@@ -456,6 +482,7 @@ const QcWorldRenderer::FrameView &QcWorldRenderer::cull(const QMatrix4x4 &viewPr
         const QVector3D corner = origins.at(mesh.drawOrigin).toVector3D() - drawCamera;
         if (QcFrustum::intersectsBox(planes, corner + mesh.boundsMin, corner + mesh.boundsMax)) {
             m_paged.emplace_back(mesh.slot.page, &mesh);
+            view.water = view.water || mesh.water.indexCount > 0;
         }
     }
     // By page, so the opaque pass binds each page once (decision E-820); the passes sorted by
@@ -530,6 +557,9 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
     case QcRenderPass::Translucent:
         drawTranslucent(commandBuffer, view);
         break;
+    case QcRenderPass::TranslucentBehindWater:
+        drawTranslucentBehindWater(commandBuffer, view);
+        break;
     case QcRenderPass::Weather:
         m_sample.drawCalls += m_pass.precipitationRenderer.draw(commandBuffer) ? 1 : 0;
         break;
@@ -542,7 +572,9 @@ void QcWorldRenderer::drawPass(QRhiCommandBuffer *commandBuffer, QcRenderPass pa
         ++m_sample.drawCalls;
         break;
     case QcRenderPass::Shadow:
-        // Drawn by drawShadowMap() into the shadow map's own target (drawPlan).
+    case QcRenderPass::Refraction:
+        // Drawn into their own targets by drawPlan(): drawShadowMap() into the shadow map,
+        // QcWaterSurface::drawCopy() into the water's copy of the scene.
         break;
     }
 }
@@ -563,6 +595,14 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
             continue;
         }
 
+        // The copy of the scene the water looks through (decision E-906), in a pass of its own.
+        if (group.target == QcRenderTarget::Refraction) {
+            if (ready && view.water) {
+                m_water.drawCopy(commandBuffer);
+            }
+            continue;
+        }
+
         // The occlusion and the bloom read the finished scene, the output's composite reads them.
         if (group.passes.contains(QcRenderPass::PostProcess)) {
             if (updates) {
@@ -572,8 +612,7 @@ void QcWorldRenderer::drawPlan(QRhiCommandBuffer *commandBuffer, QRhiResourceUpd
             m_post.drawEffects(commandBuffer);
         }
         // The uploads of the frame go with the first render pass.
-        QRhiRenderTarget *const target = group.target == QcRenderTarget::Scene ? m_post.sceneTarget() : renderTarget();
-        commandBuffer->beginPass(target, QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
+        commandBuffer->beginPass(targetOf(group.target), QColor::fromRgbF(horizon.x(), horizon.y(), horizon.z()), {1.0f, 0}, updates);
         updates = nullptr;
         if (ready) {
             commandBuffer->setViewport(QRhiViewport(0, 0, static_cast<float>(outputSize.width()), static_cast<float>(outputSize.height())));
@@ -616,6 +655,7 @@ void QcWorldRenderer::render(QRhiCommandBuffer *commandBuffer)
     uploadFrameUniforms(updates, viewProjection, drawCamera, outputSize);
     if (plan().postProcessed()) {
         uploadShadows(updates, drawCamera);
+        uploadWater(updates, viewProjection);
     }
     QRhiRenderTarget *const target = drawTarget();
     m_pass.debugLineRenderer.prepare(m_device.rhi, target, updates, m_device.frameUniforms.get(),

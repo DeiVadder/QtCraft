@@ -16,6 +16,8 @@ void QcWorldRenderer::prepareShadows()
     // The pipelines that receive the shadows are built with the bindings of the old map.
     if (m_shadows.replaces(m_device.rhi, wanted)) {
         m_pass.releaseAtlasPipelines();
+        m_waterDraw.reset();
+        m_water.releaseAtlas();
     }
     const bool ready = m_shadows.prepare(m_device.rhi, wanted);
     // Pipelines built for the other case (shadows came or went) are built again.

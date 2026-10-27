@@ -347,6 +347,14 @@ bool QcBlockRenderTable::hides(const Entry &self, SideRect rect, QcBlockFace fac
     return std::ranges::any_of(covers, [rect](SideRect cover) { return cover.contains(rect); });
 }
 
+float QcBlockRenderTable::liquidHeight(const QcContentRegistry &content, QcBlockId id)
+{
+    if (!content.isValidBlock(id) || !content.block(id).liquid) {
+        return 1.0f;
+    }
+    return liquidHeightOf(content, id, content.block(id));
+}
+
 QcBlockRenderTable::QcBlockRenderTable(const QcContentRegistry &content, const QcTextureAtlas &atlas)
     : m_lightTable(std::make_shared<const QcLightTable>(content))
 {

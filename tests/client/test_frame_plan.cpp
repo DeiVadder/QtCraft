@@ -48,21 +48,37 @@ private slots:
     }
 
     // The realistic mode (decision E-899) draws the sun's shadow map (decision E-903), the classic
-    // steps into the scene and post-processes it into the output: three GPU render passes; the
-    // setting picks the plan.
+    // steps into the scene with the water in a step of its own after a copy of the scene (decision
+    // E-906), and post-processes it into the output: five GPU render passes; the setting picks the
+    // plan.
     void realisticDrawsTheClassicStepsIntoTheScene()
     {
         const QcFramePlan plan = QcFramePlan::realistic();
         QVERIFY(plan.visitsTargetsOnce());
+        QVERIFY(!plan.waterWithTranslucent());
         const QList<QcFramePlan::Group> groups = plan.groups();
-        QCOMPARE(groups.size(), 3);
+        QCOMPARE(groups.size(), 5);
         QCOMPARE(groups[0].target, QcRenderTarget::ShadowMap);
         QCOMPARE(groups[0].passes, QList<QcRenderPass>{QcRenderPass::Shadow});
         QCOMPARE(groups[1].target, QcRenderTarget::Scene);
-        QCOMPARE(groups[1].passes, QcFramePlan::classic().passes);
-        QCOMPARE(groups[2].target, QcRenderTarget::Output);
-        QCOMPARE(groups[2].passes, QList<QcRenderPass>{QcRenderPass::PostProcess});
+        const QList<QcRenderPass> beforeWater = {QcRenderPass::Sky, QcRenderPass::Opaque, QcRenderPass::Entities,
+                                                 QcRenderPass::TranslucentBehindWater};
+        QCOMPARE(groups[1].passes, beforeWater);
+        QCOMPARE(groups[2].target, QcRenderTarget::Refraction);
+        QCOMPARE(groups[2].passes, QList<QcRenderPass>{QcRenderPass::Refraction});
+        QCOMPARE(groups[3].target, QcRenderTarget::SceneContinued);
+        const QList<QcRenderPass> afterCopy = {QcRenderPass::Water, QcRenderPass::Translucent, QcRenderPass::Weather, QcRenderPass::Overlay};
+        QCOMPARE(groups[3].passes, afterCopy);
+        QCOMPARE(groups[4].target, QcRenderTarget::Output);
+        QCOMPARE(groups[4].passes, QList<QcRenderPass>{QcRenderPass::PostProcess});
         QVERIFY(!QcFramePlan::classic().contains(QcRenderPass::Shadow));
+        QVERIFY(!QcFramePlan::classic().contains(QcRenderPass::Refraction));
+
+        // Without the copy the same steps stay in one pass of the scene.
+        QcFramePlan withoutCopy = plan;
+        withoutCopy.passes.removeAll(QcRenderPass::Refraction);
+        QCOMPARE(withoutCopy.targetOf(QcRenderPass::Translucent), QcRenderTarget::Scene);
+        QCOMPARE(withoutCopy.groups().size(), 3);
 
         // Light sources, lava and the sun shine beyond white only in the post-processed plan; the
         // classic factors leave the picture exactly as it was.

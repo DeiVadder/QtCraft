@@ -63,6 +63,9 @@ public:
     [[nodiscard]] int resolution() const { return m_gpu.shadows.resolution; }
     // The depth format of the map (D16 where the GPU has it).
     [[nodiscard]] QRhiTexture::Format format() const { return m_gpu.format; }
+    // Changes whenever the map and its buffers are made anew (another QRhi, cascade count or
+    // resolution); 0 without them. Bindings made from receiverEntries() compare it.
+    [[nodiscard]] quint64 generation() const { return ready() ? m_generation : 0; }
 
     // Fits the cascades to `frame` and uploads them for the casters and the receivers.
     void upload(QRhiResourceUpdateBatch *updates, const Frame &frame);
@@ -81,6 +84,10 @@ public:
     // first use for the device's atlas. Null without an atlas; a refused one releases everything
     // like a refused prepare().
     [[nodiscard]] QRhiShaderResourceBindings *receiverBindings(const QcWorldDeviceResources &device);
+    // The receivers' entries of those bindings (the uniform buffer at 3, the map at 4), for other
+    // bindings with the receivers' layout (the water's, decision E-906); empty before prepare()
+    // succeeded.
+    [[nodiscard]] QList<QRhiShaderResourceBinding> receiverEntries() const;
     // The framed maps' bindings (QcFramedMapTexture) with the receivers' layout, so the entity
     // pipeline built with receiverBindings() draws them too (decision E-896); made on first use,
     // null before the framed-map texture exists or when the GPU refused them.
@@ -142,4 +149,6 @@ private:
     std::optional<Request> m_refused;
     std::array<QMatrix4x4, QcRenderOptions::maxShadowCascades> m_casterMatrices{};
     bool m_casts = false;
+    // Counts the maps made (generation()).
+    quint64 m_generation = 0;
 };

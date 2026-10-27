@@ -5,6 +5,7 @@
 #include "app/rendering/QcPostProcess.h"
 #include "app/rendering/QcRenderSample.h"
 #include "app/rendering/QcShadowMap.h"
+#include "app/rendering/QcWaterSurface.h"
 #include "app/rendering/QcWorldRendererResources.h"
 #include "app/rendering/QcWorldView.h"
 
@@ -12,6 +13,7 @@
 #include <rhi/qrhi.h>
 
 #include <functional>
+#include <optional>
 #include <utility>
 #include <vector>
 
@@ -51,6 +53,8 @@ private:
         bool belowWorld = false;
         // The camera's offset from the render anchor (QcDrawOrigins::follow).
         QVector3D camera;
+        // Whether a section in view has water: without, the water's copy and steps are left out.
+        bool water = false;
     };
 
     // Both groups and the mesh store for the new rhi(), the pass group first.
@@ -66,6 +70,12 @@ private:
     void prepareShadows();
     // The cascades of this frame for the casters and the receivers.
     void uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D drawCamera);
+    // The water of the realistic mode (decision E-906): the copy of the scene and the water's
+    // pipeline for this frame (m_waterDraw), else the plain water pipeline draws it.
+    void prepareWater();
+    void uploadWater(QRhiResourceUpdateBatch *updates, const QMatrix4x4 &viewProjection) const;
+    // The render target of a group of steps.
+    [[nodiscard]] QRhiRenderTarget *targetOf(QcRenderTarget target) const;
     // The shadow step: every cascade into its tile of the map, in a render pass of its own that
     // takes the frame's `updates`.
     void drawShadowMap(QRhiCommandBuffer *commandBuffer, QRhiResourceUpdateBatch *updates);
@@ -100,6 +110,9 @@ private:
     void drawTranslucent(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     // The water lists alone, back to front, with the water pipeline (a plan with a Water step).
     void drawWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
+    // The translucent lists the water may cover, back to front, before the water's copy (decision
+    // E-906): those of the sections with water, all of them while the eye is under water.
+    void drawTranslucentBehindWater(QRhiCommandBuffer *commandBuffer, const FrameView &view);
     void drawOutlineAndHand(QRhiCommandBuffer *commandBuffer);
     // Sets the pipeline with its shader resources (the pipeline's own without `resources`) and
     // forgets the bound vertex input.
@@ -158,6 +171,11 @@ private:
     // The sun's shadow map of the realistic mode (decision E-903).
     // NOLINT(qc-member-access): an owned part like m_post; its own methods change it, the renderer only calls them.
     QcShadowMap m_shadows;
+    // The copy of the scene and the water's pipeline of the realistic mode (decision E-906), and
+    // what this frame draws the water with (none: m_pass.waterPipeline).
+    // NOLINT(qc-member-access): an owned part like m_post; its own methods change it, the renderer only calls them.
+    QcWaterSurface m_water;
+    std::optional<QcWaterSurface::Draw> m_waterDraw;
 
     // The sections on the GPU and the meshes queued for them, with the draw origins.
     QcGpuMeshStore m_meshStore;

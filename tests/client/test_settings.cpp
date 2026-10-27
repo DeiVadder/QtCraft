@@ -459,6 +459,30 @@ private slots:
         QCOMPARE(previous.cascades, QcRenderOptions::maxShadowCascades);
     }
 
+    void renderOptionsAndTheirWater()
+    {
+        QcRenderOptions options;
+        QVERIFY(!options.water().drawn());
+        QCOMPARE(options.water(), QcRenderOptions::Water{});
+        options.mode = QcRenderOptions::Mode::Realistic;
+        options.quality = QcRenderOptions::Quality::Low;
+        const QcRenderOptions::Water low = options.water();
+        QVERIFY(low.drawn());
+        QCOMPARE(low.refraction, 0.0f);
+        QCOMPARE(low.reflectionSteps, 0);
+        QCOMPARE(low.caustics, 0.0f);
+        options.quality = QcRenderOptions::Quality::Medium;
+        const QcRenderOptions::Water medium = options.water();
+        QVERIFY(medium.waveOctaves > low.waveOctaves);
+        QVERIFY(medium.refraction > 0.0f);
+        QVERIFY(medium.caustics > 0.0f);
+        QCOMPARE(medium.reflectionSteps, 0);
+        options.quality = QcRenderOptions::Quality::High;
+        const QcRenderOptions::Water high = options.water();
+        QVERIFY(high.waveOctaves > medium.waveOctaves);
+        QVERIFY(high.reflectionSteps > 0);
+    }
+
     void clampHelpers()
     {
         QCOMPARE(QcGameSettings::clampViewDistance(0), QcGameSettings::minViewDistance);

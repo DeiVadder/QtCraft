@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcWorldRenderer.h"
+#include "clientcore/light/QcWaterLook.h"
 
 #include <algorithm>
 #include <cmath>
@@ -57,6 +58,7 @@ void QcWorldView::setAnimationTime(double ticks)
     // Wrapped in double, so the float the shader gets stays exact however long the game runs.
     const double time = std::fmod(std::max(0.0, m_fixedAnimationTicks.value_or(ticks)), static_cast<double>(m_animationCycleTicks));
     m_frame.animationTicks = static_cast<float>(time);
+    m_frame.waterSeconds = QcWaterLook::waveSeconds(m_fixedAnimationTicks.value_or(ticks));
 }
 
 void QcWorldView::submitMesh(quint64 key, std::shared_ptr<const QcChunkMesh> mesh)
@@ -157,6 +159,14 @@ void QcWorldView::setOutdoors(float outdoors)
 {
     if (m_frame.outdoors != outdoors) {
         m_frame.outdoors = outdoors;
+        update();
+    }
+}
+
+void QcWorldView::setUnderwater(bool underwater)
+{
+    if (m_frame.underwater != underwater) {
+        m_frame.underwater = underwater;
         update();
     }
 }
