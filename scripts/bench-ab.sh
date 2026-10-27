@@ -15,8 +15,8 @@
 #   Each ":<VAR>=<value>" after the app sets a variable of scripts/bench-common.sh for the runs of
 #   that label only, e.g. hd64=<app>:TEXTURE_PACKS=builtin:qtcraft_hd_64 (one build under several
 #   labels, each with other texture packs). <VAR> is one of TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE,
-#   DEBUG_DISPLAY, PREVIEW_ACTIVE, EXPLORE_STEP and RUN_SECONDS (the seconds of this label's runs;
-#   anything else, also in lower case, is refused); a new variable starts at ":" followed by its name
+#   DEBUG_DISPLAY, RENDER_MODE, RENDER_QUALITY, PREVIEW_ACTIVE, EXPLORE_STEP and RUN_SECONDS (the
+#   seconds of this label's runs; anything else, also in lower case, is refused); a new variable starts at ":" followed by its name
 #   and "=", so values may contain ":" (pack ids) but no blanks and no ";".
 #   --check only validates the arguments and prints "<label> <app> settings=<...>" per build and
 #   "rounds=<min>-<max> adaptive=<0|1> seconds=<s> scenarios=<...>" (no lock, no runs;
@@ -166,7 +166,7 @@ else
     KEYS=${KEYS:-"frame_p99_ms gpu_avg_ms render_cpu_avg_ms gui_cpu_avg_ms tick_avg_ms peak_rss_mb"}
 fi
 [ -n "$SCENARIO_LIST" ] || usage
-VARIABLES="TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE, DEBUG_DISPLAY, PREVIEW_ACTIVE, EXPLORE_STEP or RUN_SECONDS"
+VARIABLES="TEXTURE_PACKS, PACK_SWITCH, WORLD_TYPE, DEBUG_DISPLAY, RENDER_MODE, RENDER_QUALITY, PREVIEW_ACTIVE, EXPLORE_STEP or RUN_SECONDS"
 
 # Splits a build argument ($1): sets label, app and settings (the ":<VAR>=<value>" parts without
 # the ":", one per line).
@@ -207,7 +207,7 @@ for build in "$@"; do
     while IFS= read -r setting; do
         [ -n "$setting" ] || continue
         case "${setting%%=*}" in
-        TEXTURE_PACKS | PACK_SWITCH | WORLD_TYPE | DEBUG_DISPLAY | PREVIEW_ACTIVE | EXPLORE_STEP | RUN_SECONDS) ;;
+        TEXTURE_PACKS | PACK_SWITCH | WORLD_TYPE | DEBUG_DISPLAY | RENDER_MODE | RENDER_QUALITY | PREVIEW_ACTIVE | EXPLORE_STEP | RUN_SECONDS) ;;
         *) echo "unknown variable for label $label: '${setting%%=*}' ($VARIABLES)" >&2 && usage ;;
         esac
         case "${setting#*=}" in

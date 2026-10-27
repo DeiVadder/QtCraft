@@ -762,6 +762,17 @@ run_game() {
     if [ -n "${DEBUG_DISPLAY:-}" ]; then
         printf '[debug]\nlevel=%s\n' "$DEBUG_DISPLAY" >>"$data/settings.ini"
     fi
+    # RENDER_MODE=classic|realistic and RENDER_QUALITY=low|medium|high: render mode and quality of
+    # the realistic mode (decision E-899; default: the game's default, classic and medium).
+    if [ -n "${RENDER_MODE:-}${RENDER_QUALITY:-}" ]; then
+        printf '[render]\n' >>"$data/settings.ini"
+        if [ -n "${RENDER_MODE:-}" ]; then
+            printf 'mode=%s\n' "$RENDER_MODE" >>"$data/settings.ini"
+        fi
+        if [ -n "${RENDER_QUALITY:-}" ]; then
+            printf 'quality=%s\n' "$RENDER_QUALITY" >>"$data/settings.ini"
+        fi
+    fi
     if [ "$SCENE_ARMOUR" = walk ]; then
         printf '[character]\ncape=qtcraft:green_cape\n' >>"$data/settings.ini"
     fi
