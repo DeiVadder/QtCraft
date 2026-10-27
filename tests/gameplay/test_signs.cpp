@@ -105,7 +105,7 @@ private slots:
         placeOnFloor(sign, 0.0f);
         m_client->signTexts.clear();
 
-        const Lines written{u"  Welcome\u0007 home  "_s, u"x"_s.repeated(40), u"‮evil"_s, u"Last"_s};
+        const Lines written{u"  Welcome\u0007 home  "_s, u"x"_s.repeated(40), u"\u202Eevil"_s, u"Last"_s};
         send(QcMsg::EditSign{sign, written});
         ticks(1);
         const Lines expected{u"Welcome home"_s, u"x"_s.repeated(15), u"evil"_s, u"Last"_s};

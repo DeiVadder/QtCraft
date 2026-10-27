@@ -21,11 +21,15 @@ std::array<char, 1024> g_reason{};
 std::atomic<int> g_logHandle{-1};
 std::atomic<bool> g_installed{false};
 
+// Without exceptions (_HAS_EXCEPTIONS=0) the MSVC library makes std::set_terminate a no-op and
+// std::terminate a plain abort(): on Windows the report says "exception: abort" without a reason.
+#ifndef Q_OS_WIN
 [[noreturn]] void onTerminate()
 {
     QcCrashHandler::setReason("std::terminate called");
     std::abort();
 }
+#endif
 
 // Recurses until the stack is used up; the volatile buffer keeps every frame and the addition after
 // the call keeps it from becoming a loop.
@@ -97,7 +101,9 @@ bool install(const Setup &setup)
         qCInfo(lcDiagnostics, "Crash reports are off in a sanitizer build");
         return false;
     }
+#ifndef Q_OS_WIN
     std::set_terminate(onTerminate);
+#endif
     if (!installPlatform(setup)) {
         qCWarning(lcDiagnostics).noquote() << u"Cannot install the crash handler for %1"_s.arg(setup.reportPath);
         return false;
@@ -111,8 +117,10 @@ void prepareThread()
     if (!g_installed.load()) {
         return;
     }
-    // Global on macOS and Linux; MSVC keeps the terminate handler per thread.
+#ifndef Q_OS_WIN
+    // The handler is global on macOS and Linux; setting it again on each thread costs nothing.
     std::set_terminate(onTerminate);
+#endif
     preparePlatformThread();
 }
 

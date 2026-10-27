@@ -45,11 +45,11 @@ public:
         }
     }
 
-    QList<QcMsg::SoundEvent> soundsNamed(const QString &key) const
+    QList<QcMsg::SoundEvent> soundsNamed(const QString &soundKey) const
     {
         QList<QcMsg::SoundEvent> matching;
         for (const QcMsg::SoundEvent &sound : sounds) {
-            if (sound.key == key) {
+            if (sound.key == soundKey) {
                 matching.append(sound);
             }
         }

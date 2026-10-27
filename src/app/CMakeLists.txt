@@ -59,7 +59,6 @@ target_sources(qc_app_core PRIVATE
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
     hooks/QcScriptedPad.h hooks/QcScriptedPad.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
-    hooks/QcThreadCpuClock.h hooks/QcThreadCpuClock.cpp
 )
 target_sources(qc_app_core PRIVATE
     input/QcFocusCandidates.h input/QcFocusCandidates.cpp

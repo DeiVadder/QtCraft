@@ -17,7 +17,9 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#ifndef Q_OS_WIN
 #include <csignal>
+#endif
 
 using namespace Qt::StringLiterals;
 
@@ -246,6 +248,11 @@ private slots:
         QVERIFY(!QFile::exists(playerFile));
 
         // The process runs on without standard input until SIGTERM, which saves everything.
+#ifdef Q_OS_WIN
+        // QProcess::terminate posts WM_CLOSE, which a console program never receives; a console
+        // event reaches only processes that share the test's console.
+        QSKIP("Windows has no SIGTERM for a child process; the stop on a console event is not tested here");
+#endif
         QTest::qWait(300);
         QCOMPARE(m_process.state(), QProcess::Running);
         m_process.terminate();
@@ -261,9 +268,14 @@ private slots:
 
     void sigintSavesToo()
     {
+#ifdef Q_OS_WIN
+        QSKIP("Windows has no SIGINT for a child process (QcSignalWatcher listens to console events there)");
+#endif
         const quint16 port = startServer({});
         QVERIFY(port != 0);
+#ifndef Q_OS_WIN
         ::kill(static_cast<pid_t>(m_process.processId()), SIGINT);
+#endif
         const QString output = finish();
         QCOMPARE(m_process.exitCode(), 0);
         QVERIFY2(output.contains(u"Stopping (SIGINT)"_s) && output.contains(u"World saved"_s), qPrintable(output));

@@ -1,10 +1,10 @@
 #include "app/rendering/QcWorldRenderer.h"
 
 #include "app/debug/QcAppLogging.h"
-#include "app/hooks/QcThreadCpuClock.h"
 #include "app/rendering/QcRenderPipelines.h"
 #include "clientcore/camera/QcFrustum.h"
 #include "common/core/QcDowncast.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 
 #include <QColor>
 #include <QElapsedTimer>
@@ -134,7 +134,7 @@ void QcWorldRenderer::startSample(QRhiCommandBuffer *commandBuffer)
         return;
     }
 
-    const qint64 threadCpuNs = QcThreadCpuClock::nowNs();
+    const qint64 threadCpuNs = QcThreadCpuClock::fineGrained() ? QcThreadCpuClock::nowNs() : -1;
     if (threadCpuNs >= 0 && m_lastThreadCpuNs >= 0) {
         m_sample.renderThreadCpuMs = static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6;
     }

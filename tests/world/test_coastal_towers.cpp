@@ -1,3 +1,4 @@
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "QcTestUtil.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
@@ -9,7 +10,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -166,9 +166,9 @@ private:
         const QcSurfaceStructures &surface = terrain.surfaceStructures();
         for (qsizetype kind = 0; kind < surface.planner().kinds().size(); ++kind) {
             const QcSurfacePlanner::Kind &rule = surface.planner().kinds()[kind];
-            const int regions = reach / rule.rule.spacing + 1;
-            for (int rz = -regions; rz <= regions; ++rz) {
-                for (int rx = -regions; rx <= regions; ++rx) {
+            const int ruleRegions = reach / rule.rule.spacing + 1;
+            for (int rz = -ruleRegions; rz <= ruleRegions; ++rz) {
+                for (int rx = -ruleRegions; rx <= ruleRegions; ++rx) {
                     if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(static_cast<int>(kind), rx, rz)) {
                         structures.append(QcCoastalTowerPlan::footprintOf(*copy));
                         ++copies[rule.name];
@@ -441,14 +441,11 @@ private slots:
         settings.coastalTowers.enabled = false;
         without->worldgen().setTerrainSettings(settings);
         const auto seconds = [](const QcTerrainGenerator &terrain, const QList<QcChunkPos> &chunks) {
-            timespec start{};
-            timespec end{};
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
+            const qint64 start = QcThreadCpuClock::nowNs();
             for (const QcChunkPos &pos : chunks) {
                 terrain.generate(pos);
             }
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(QcThreadCpuClock::nowNs() - start) / 1e9;
         };
         const QcTerrainGenerator with(m_content, seed);
         const QcTerrainGenerator plain(without, seed);

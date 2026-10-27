@@ -21,11 +21,20 @@ foreach(test app_unknown_world_type_fails app_flat_layers_need_flat_world_fails)
 endforeach()
 # Offscreen rendering (E-229): the platform without windows shows the main menu and the error screen
 # without crashing, and a scripted run draws the world without a shown window.
+# The menu is drawn through a QRhi, not Qt Quick's software renderer: Metal on macOS (set by
+# QcOffscreenRender::prepare), Qt's default backend elsewhere (Direct3D 11 on Windows).
+if(APPLE)
+    set(qc_offscreen_backend "Metal")
+elseif(WIN32)
+    set(qc_offscreen_backend "D3D11|D3D12")
+else()
+    set(qc_offscreen_backend "OpenGL|Vulkan")
+endif()
 add_test(NAME app_offscreen_platform_menu_screenshot
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=Rendering offscreen with Metal"
+        "-DEXPECTED_ERROR=Rendering offscreen with (${qc_offscreen_backend})"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-menu.png
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 add_test(NAME app_offscreen_platform_error_screen_fails
@@ -117,8 +126,9 @@ add_test(NAME app_offscreen_without_screenshot_refused
 set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT 60
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_without_screenshot_refused")
 # QML load test of the character screen in the real game, offscreen (decision E-240). Not under
-# sanitizers: the whole game with its render thread is too slow there for the time limit.
-if(NOT QC_SANITIZERS)
+# sanitizers: the whole game with its render thread is too slow there for the time limit. Not on Windows:
+# the layout checks are POSIX shell scripts (sh is no Windows program).
+if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 300 COST 40)
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
@@ -304,10 +314,18 @@ add_test(NAME app_offscreen_view_hidden_keeps_sections
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT 120
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_view_hidden_keeps_sections;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-view-hidden.png;QTCRAFT_SCREENSHOT_FRAMES=30")
-# "Manage server" in every section, German and English, small and medium window (decision E-863).
-if(NOT QC_SANITIZERS)
+# "Manage server" in every section, German and English, small and medium window (decision E-863). A POSIX shell script,
+# not on Windows.
+if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
     set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 1920 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
+endif()
+# qtcraft is a GUI program on Windows (WIN32_EXECUTABLE): without a console, Qt sends its messages to
+# the debugger (OutputDebugString) instead of standard error, and the checks above would see none.
+if(WIN32)
+    get_property(qc_ui_tests DIRECTORY PROPERTY TESTS)
+    list(FILTER qc_ui_tests INCLUDE REGEX "^(app_|test_character_screen_qml$)")
+    set_property(TEST ${qc_ui_tests} APPEND PROPERTY ENVIRONMENT "QT_FORCE_STDERR_LOGGING=1")
 endif()

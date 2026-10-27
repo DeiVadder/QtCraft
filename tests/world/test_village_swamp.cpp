@@ -393,7 +393,7 @@ private slots:
 
     void theWetlandBlendsIntoTheTerrain_data()
     {
-        QTest::addColumn<qint64>("seed");
+        QTest::addColumn<qint64>("worldSeed");
         QTest::addColumn<int>("regionX");
         QTest::addColumn<int>("regionZ");
         QTest::newRow("rings 14") << seed << 0 << 0;
@@ -405,13 +405,13 @@ private slots:
 
     void theWetlandBlendsIntoTheTerrain()
     {
-        QFETCH(qint64, seed);
+        QFETCH(qint64, worldSeed);
         QFETCH(int, regionX);
         QFETCH(int, regionZ);
-        const QcTerrainGenerator other(m_content, seed);
-        const QcTerrainGenerator &generator = seed == TestVillageSwamp::seed ? m_generator : other;
-        const std::shared_ptr<const QcVillagePlan> beside = seed == TestVillageSwamp::seed ? nullptr : generator.villages().regionPlan(regionX, regionZ);
-        QVERIFY(seed == TestVillageSwamp::seed || (beside && beside->style == u"qtcraft:swamp"_s));
+        const QcTerrainGenerator other(m_content, worldSeed);
+        const QcTerrainGenerator &generator = worldSeed == seed ? m_generator : other;
+        const std::shared_ptr<const QcVillagePlan> beside = worldSeed == seed ? nullptr : generator.villages().regionPlan(regionX, regionZ);
+        QVERIFY(worldSeed == seed || (beside && beside->style == u"qtcraft:swamp"_s));
         const QList<std::shared_ptr<const QcVillagePlan>> plans = beside ? QList{beside} : swampPlans();
         const QcWetlandShaper &shaper = generator.villages().wetland();
         int shaped = 0;

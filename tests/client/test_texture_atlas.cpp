@@ -687,14 +687,14 @@ private slots:
         const QcTexturePackLibrary::LoadedStack loaded = QcTexturePackLibrary::loadStack(ids, entries);
         QVERIFY(loaded.missing.isEmpty());
         const QcTexturePackStack &stack = loaded.stack;
-        for (const QcTexturePackRef &loaded : stack) {
+        for (const QcTexturePackRef &pack : stack) {
             QStringList problems;
-            for (const QcTexturePackProblem &problem : loaded->problems) {
+            for (const QcTexturePackProblem &problem : pack->problems) {
                 problems.append(problem.englishText());
             }
-            QVERIFY2(problems.isEmpty(), qPrintable(loaded->id + u": "_s + problems.join(u"; "_s)));
-            QVERIFY(!loaded->preview.isNull());
-            QVERIFY(!loaded->manifest.license.isEmpty());
+            QVERIFY2(problems.isEmpty(), qPrintable(pack->id + u": "_s + problems.join(u"; "_s)));
+            QVERIFY(!pack->preview.isNull());
+            QVERIFY(!pack->manifest.license.isEmpty());
         }
 
         // The image example pack: plain 32 x 32 PNG files of the base game's textures, no specs.

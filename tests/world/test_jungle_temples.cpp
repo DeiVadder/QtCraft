@@ -1,4 +1,5 @@
 #include "common/core/QcIntMath.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "QcTestUtil.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -6,7 +7,6 @@
 #include <QTest>
 
 #include <algorithm>
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -114,9 +114,7 @@ private:
 
     static double threadSeconds()
     {
-        timespec now{};
-        clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-        return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
+        return static_cast<double>(QcThreadCpuClock::nowNs()) / 1e9;
     }
 
     // The content without the surface rules of the two kinds (for the measurement).

@@ -584,10 +584,10 @@ private slots:
         // Colours and hair come from the seed, from the style's lists; an unknown style dresses
         // like the default look.
         QSet<quint32> skins;
-        for (quint32 seed = 0; seed < 64; ++seed) {
+        for (quint32 lookSeed = 0; lookSeed < 64; ++lookSeed) {
             QcVillagerRecord unemployed;
             unemployed.profession = u"qtcraft:unemployed"_s;
-            unemployed.look = seed * 0x01010101u;
+            unemployed.look = lookSeed * 0x01010101u;
             unemployed.style = u"qtcraft:taiga"_s;
             const QcAppearance taiga = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), unemployed);
             QCOMPARE(taiga.outfit, u"qtcraft:villager_coat"_s);

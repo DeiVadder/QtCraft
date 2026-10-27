@@ -1,12 +1,11 @@
 #include "common/content/parser/QcContentParser.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "QcTestUtil.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QJsonDocument>
 #include <QTest>
-
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -284,14 +283,11 @@ private slots:
         settings.mineshafts.inclineWeight = 0;
         laddersOnly->worldgen().setTerrainSettings(settings);
         const auto seconds = [](const QcTerrainGenerator &terrain, int offsetX, int offsetZ) {
-            timespec start{};
-            timespec end{};
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
+            const qint64 start = QcThreadCpuClock::nowNs();
             for (int i = 0; i < 64; ++i) {
                 terrain.generate({offsetX + i % 8, offsetZ + i / 8});
             }
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(QcThreadCpuClock::nowNs() - start) / 1e9;
         };
         const QcTerrainGenerator with(m_content, 382);
         const QcTerrainGenerator without(laddersOnly, 382);

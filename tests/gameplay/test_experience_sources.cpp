@@ -72,8 +72,8 @@ private:
         const QcBlockPos pos = openFurnace();
         chat(u"/give raw_iron %1"_s.arg(count));
         chat(u"/give coal 2"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:coal")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:coal")), fuelSlot);
         for (int i = 0; i < 20 * 12 * count && m_server->blockEntities().machine(pos)->stacks[2].count < count; ++i) {
             ticks(1);
         }
@@ -191,7 +191,7 @@ private slots:
         QCOMPARE(gathered(), 0);
 
         // Taking one ingot releases all of it: two points, a third with a chance of a tenth.
-        move(output, 20, 1);
+        move(outputSlot, 20, 1);
         QCOMPARE(machine->experience, 0.0);
         QVERIFY(gathered() >= 2 && gathered() <= 3);
     }
@@ -202,7 +202,7 @@ private slots:
         join();
         const QcBlockPos pos = smeltIron(2);
         QVERIFY(std::abs(m_server->blockEntities().machine(pos)->experience - 1.4) < 1e-9);
-        send(QcMsg::QuickMoveItem{output});
+        send(QcMsg::QuickMoveItem{outputSlot});
         QVERIFY(m_server->blockEntities().machine(pos)->stacks[2].isEmpty());
         QCOMPARE(m_server->blockEntities().machine(pos)->experience, 0.0);
         QVERIFY(gathered() >= 1 && gathered() <= 2);
@@ -219,7 +219,7 @@ private slots:
         QVERIFY(m_server->world().setBlock(below, id("qtcraft:signal_hopper")));
         const auto furnace = [&] { return m_server->blockEntities().machine(pos); };
         // The spare coal out, so the furnace goes cold when the burning one is used up.
-        move(fuel, 21);
+        move(fuelSlot, 21);
         QVERIFY(furnace()->stacks[1].isEmpty());
         for (int i = 0; i < 20 * 120 && !furnace()->isCold(); ++i) {
             ticks(1);
@@ -236,13 +236,13 @@ private slots:
         send(QcMsg::UseItem{pos, QcBlockFace::West});
         chat(u"/give raw_iron 1"_s);
         chat(u"/give coal 1"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:coal")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:coal")), fuelSlot);
         for (int i = 0; i < 20 * 15 && furnace()->stacks[2].isEmpty(); ++i) {
             ticks(1);
         }
         QVERIFY(std::abs(furnace()->experience - 2.1) < 1e-9);
-        move(output, 20);
+        move(outputSlot, 20);
         QCOMPARE(furnace()->experience, 0.0);
         QVERIFY(gathered() >= 2 && gathered() <= 3);
     }

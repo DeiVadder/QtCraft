@@ -270,6 +270,10 @@ private slots:
 
     void linksOutOfThePackAreNotFollowed()
     {
+#ifdef Q_OS_WIN
+        // Symbolic links need developer mode or administrator rights there.
+        QSKIP("QFile::link makes a shortcut (.lnk) on Windows, not a symbolic link");
+#endif
         QTemporaryDir outside;
         QVERIFY(writeFile(outside.filePath(u"secret.png"_s), png(filled(32, 32, Qt::red))));
         QVERIFY(writeFile(outside.filePath(u"space/stone.png"_s), png(filled(32, 32, Qt::red))));
@@ -398,6 +402,10 @@ private slots:
     // folder, a linked texturepacks folder of a mod and a linked preview are not followed.
     void linkedFoldersAndPreviewsAreNotFollowed()
     {
+#ifdef Q_OS_WIN
+        // Symbolic links need developer mode or administrator rights there.
+        QSKIP("QFile::link makes a shortcut (.lnk) on Windows, not a symbolic link");
+#endif
         QTemporaryDir outside;
         QVERIFY(writeFile(outside.filePath(u"textures/qtcraft/stone.png"_s), png(filled(32, 32, Qt::red))));
         QVERIFY(writeFile(outside.filePath(u"preview.png"_s), png(filled(64, 32, Qt::red))));

@@ -272,7 +272,8 @@ private slots:
         QVERIFY(m_process.waitForFinished(timeoutMs));
         QCOMPARE(m_process.exitCode(), 0);
 
-        const QString output = QString::fromUtf8(m_process.readAllStandardOutput());
+        // The C runtime of Windows writes standard output in text mode, with \r\n line ends.
+        const QString output = QString::fromUtf8(m_process.readAllStandardOutput()).replace(u"\r\n"_s, u"\n"_s);
         QVERIFY(output.startsWith(u"QtCraft server console"_s));
         QVERIFY(output.contains(u"\n0 players online: \n"_s));
         QVERIFY(output.contains(u"\nThe whitelist is on\n"_s));

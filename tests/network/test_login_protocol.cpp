@@ -228,7 +228,11 @@ private slots:
         QVERIFY(first.has_value());
         QCOMPARE(first->size(), QcLoginCrypto::keyBytes);
         QCOMPARE(QcPlayerKey::loadOrCreate(path), first);
+#ifndef Q_OS_WIN
+        // Windows has no group and other bits: Qt reports only the read-only attribute there, and
+        // the folder of the user's profile keeps the key private.
         QCOMPARE(QFile(path).permissions() & (QFileDevice::ReadGroup | QFileDevice::ReadOther), QFileDevice::Permissions());
+#endif
 
         // Another installation gets another key.
         QVERIFY(QcPlayerKey::loadOrCreate(directory.filePath(u"other.key"_s)) != first);

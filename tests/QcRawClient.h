@@ -34,9 +34,9 @@ public:
         connection.send(QcMsg::Hello{version, name, look, QStringLiteral("QcRawClient")});
     }
 
-    QcMsg::LoginResponse answer(const QcMsg::LoginChallenge &challenge) const
+    QcMsg::LoginResponse answer(const QcMsg::LoginChallenge &offer) const
     {
-        return QcTestLogin::answer(challenge, {key, password, packs, viewDistance});
+        return QcTestLogin::answer(offer, {key, password, packs, viewDistance});
     }
 
     void received(QcMessage &&message)
@@ -50,10 +50,10 @@ public:
     // The login, the own player, chat, sounds and the end of the connection; false for another message.
     bool receivedPlayer(const QcMessage &message)
     {
-        if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
-            this->challenge = *challenge;
+        if (const auto *offer = std::get_if<QcMsg::LoginChallenge>(&message)) {
+            challenge = *offer;
             if (answerChallenge) {
-                connection.send(answer(*challenge));
+                connection.send(answer(*offer));
             }
         } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
             playerList = players->players;
@@ -73,16 +73,16 @@ public:
         } else if (const auto *chat = std::get_if<QcMsg::ChatMessage>(&message)) {
             chatLines.append(chat->text);
             chatKeys.append(*chat);
-        } else if (const auto *health = std::get_if<QcMsg::PlayerHealth>(&message)) {
+        } else if (const auto *healthState = std::get_if<QcMsg::PlayerHealth>(&message)) {
             ++healthMessages;
-            this->health = health->health;
-            dead = health->dead;
-            burning = health->burning;
-            effects = health->effects;
-        } else if (const auto *food = std::get_if<QcMsg::PlayerFood>(&message)) {
-            this->food = food->food;
-        } else if (const auto *experience = std::get_if<QcMsg::PlayerExperience>(&message)) {
-            this->experience = *experience;
+            health = healthState->health;
+            dead = healthState->dead;
+            burning = healthState->burning;
+            effects = healthState->effects;
+        } else if (const auto *foodState = std::get_if<QcMsg::PlayerFood>(&message)) {
+            food = foodState->food;
+        } else if (const auto *experienceState = std::get_if<QcMsg::PlayerExperience>(&message)) {
+            experience = *experienceState;
         } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
             gameMode = mode->mode;
             adventure = mode->adventure;
@@ -114,9 +114,9 @@ public:
             machineCategory = machine->category;
             machineName = machine->name;
             machineClosed = false;
-        } else if (const auto *machine = std::get_if<QcMsg::MachineState>(&message)) {
-            machineStacks = machine->stacks;
-            machineBurn = machine->burn;
+        } else if (const auto *machineState = std::get_if<QcMsg::MachineState>(&message)) {
+            machineStacks = machineState->stacks;
+            machineBurn = machineState->burn;
         } else if (std::holds_alternative<QcMsg::CloseMachine>(message)) {
             openMachine.reset();
             machineClosed = true;

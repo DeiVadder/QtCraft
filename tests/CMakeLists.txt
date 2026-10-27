@@ -102,7 +102,9 @@ set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_S
 set_tests_properties(test_english_plurals PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/translations/qtcraft_de.ts;${PROJECT_SOURCE_DIR}/translations/qtcraft_en.ts")
 set_tests_properties(test_gamepad_sdl PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/build-sdl.sh;${PROJECT_SOURCE_DIR}/3rdparty/sdl3-tag.txt;${PROJECT_SOURCE_DIR}/cmake/QcGamepad.cmake")
-set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+if(NOT WIN32)
+    set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+endif()
 
 # Tests whose result depends on wall time or machine load: label `timing`, run by scripts/verify.sh
 # in a phase of their own with few jobs on a quiet machine (decision E-550).

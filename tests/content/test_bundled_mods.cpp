@@ -104,9 +104,12 @@ private slots:
         QVERIFY(stagingFolders(mods).isEmpty());
 
         // Readable for everyone like a folder the player creates, not owner-only like a temporary one.
+        // Not on Windows: it has no group and other bits, Qt reports only the read-only attribute.
+#ifndef Q_OS_WIN
         const QFileDevice::Permissions rights = QFileInfo(mods).permissions();
         QVERIFY(rights.testFlag(QFileDevice::ReadOther) && rights.testFlag(QFileDevice::ExeOther));
         QVERIFY(rights.testFlag(QFileDevice::ReadGroup) && !rights.testFlag(QFileDevice::WriteOther));
+#endif
 
         // Listed but switched off: the base game alone loads.
         QCOMPARE(QcModLoader::disabledMods(mods), QStringList{u"rubies"_s});
@@ -147,6 +150,10 @@ private slots:
 
     void onlyRealModFoldersAreCopied()
     {
+#ifdef Q_OS_WIN
+        // Symbolic links need developer mode or administrator rights there.
+        QSKIP("QFile::link makes a shortcut (.lnk) on Windows, not a symbolic link");
+#endif
         QTemporaryDir dir;
         const QString source = dir.filePath(u"bundle"_s);
         writeText(source + u"/one/pack.json"_s, R"({"id": "one", "name": "One", "version": "1.0.0"})");

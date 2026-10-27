@@ -184,7 +184,7 @@ private slots:
         QVERIFY(m_server->blockEntities().machine(pos));
         // Machine slots mean nothing before a machine is open.
         chat(u"/give raw_iron 3"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
         QCOMPARE(countOf(item("qtcraft:raw_iron")), 3);
 
         send(QcMsg::UseItem{pos, QcBlockFace::West});
@@ -194,14 +194,14 @@ private slots:
         chat(u"/give coal 1"_s);
         chat(u"/give dirt 2"_s);
         // Dirt is no fuel, and nothing goes into the output.
-        move(slotOf(item("qtcraft:dirt")), fuel);
+        move(slotOf(item("qtcraft:dirt")), fuelSlot);
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
-        move(slotOf(item("qtcraft:raw_iron")), output);
+        move(slotOf(item("qtcraft:raw_iron")), outputSlot);
         QCOMPARE(countOf(item("qtcraft:raw_iron")), 3);
         QVERIFY(m_client->machineStacks[2].isEmpty());
 
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:coal")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:coal")), fuelSlot);
         QCOMPARE(countOf(item("qtcraft:raw_iron")), 0);
         // Raw iron takes 10 s (content/qtcraft/smelting/iron_ingot.json); one coal burns 80 s.
         ticks(10 * static_cast<int>(QcPhysics::tickRate) + 5);
@@ -211,20 +211,20 @@ private slots:
         QVERIFY(m_client->machineBurn > 0.8f && m_client->machineBurn < 0.9f);
 
         // Swapping the output with a stack would put that stack into the output: refused.
-        move(output, slotOf(item("qtcraft:dirt")));
+        move(outputSlot, slotOf(item("qtcraft:dirt")));
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
         QCOMPARE(m_client->machineStacks[2].item, item("qtcraft:iron_ingot"));
         // Taking it into an empty slot works.
-        move(output, 20);
+        move(outputSlot, 20);
         QCOMPARE(countOf(item("qtcraft:iron_ingot")), 1);
         QVERIFY(m_client->machineStacks[2].isEmpty());
 
         // After closing, the machine slots are invalid again.
         send(QcMsg::CloseMachine{});
         QVERIFY(!m_server->blockEntities().machine(pos)->stacks[0].isEmpty());
-        move(input, 21);
+        move(inputSlot, 21);
         QCOMPARE(countOf(item("qtcraft:raw_iron")), 0);
-        move(slotOf(item("qtcraft:dirt")), fuel);
+        move(slotOf(item("qtcraft:dirt")), fuelSlot);
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
     }
 
@@ -237,8 +237,8 @@ private slots:
         chat(u"/give raw_iron 2"_s);
         chat(u"/give lava_bucket 1"_s);
         chat(u"/give dirt 3"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:lava_bucket")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:lava_bucket")), fuelSlot);
         QCOMPARE(countOf(item("qtcraft:lava_bucket")), 0);
         ticks(10 * static_cast<int>(QcPhysics::tickRate) + 5);
 
@@ -247,7 +247,7 @@ private slots:
         QCOMPARE(m_client->machineStacks[2], (QcItemStack{item("qtcraft:iron_ingot"), 1, 0}));
 
         // Taking the output and moving inventory items still works.
-        move(output, 20);
+        move(outputSlot, 20);
         QCOMPARE(countOf(item("qtcraft:iron_ingot")), 1);
         QVERIFY(m_client->machineStacks[2].isEmpty());
 
@@ -256,19 +256,19 @@ private slots:
         QCOMPARE(m_client->stacks[25], (QcItemStack{item("qtcraft:dirt"), 3, 0}));
 
         chat(u"/give raw_iron 1"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
         QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:raw_iron"), 2, 0}));
 
         // Non-fuel cannot be put next to the bucket or swapped in for it.
-        move(25, fuel);
+        move(25, fuelSlot);
         QCOMPARE(m_client->stacks[25], (QcItemStack{item("qtcraft:dirt"), 3, 0}));
         QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
 
         // The bucket can be taken out, but not put back.
-        move(fuel, 26);
+        move(fuelSlot, 26);
         QCOMPARE(m_client->stacks[26], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
         QVERIFY(m_client->machineStacks[1].isEmpty());
-        move(26, fuel);
+        move(26, fuelSlot);
         QCOMPARE(m_client->stacks[26], (QcItemStack{item("qtcraft:bucket"), 1, 0}));
         QVERIFY(m_client->machineStacks[1].isEmpty());
     }
@@ -322,8 +322,8 @@ private slots:
         chat(u"/give raw_iron 3"_s);
         chat(u"/give coal 2"_s);
         chat(u"/give wooden_pickaxe"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:coal")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:coal")), fuelSlot);
         send(QcMsg::SelectHotbarSlot{slotOf(item("qtcraft:wooden_pickaxe"))});
 
         // Hardness 3.5 x 1.5 s / wooden pickaxe speed 2 = 2.6 s; one coal lights meanwhile.
@@ -352,8 +352,8 @@ private slots:
         const QcBlockPos pos = openFurnace();
         chat(u"/give raw_iron 3"_s);
         chat(u"/give coal 2"_s);
-        move(slotOf(item("qtcraft:raw_iron")), input);
-        move(slotOf(item("qtcraft:coal")), fuel);
+        move(slotOf(item("qtcraft:raw_iron")), inputSlot);
+        move(slotOf(item("qtcraft:coal")), fuelSlot);
         const QcBlockEntities::Machine before = *m_server->blockEntities().machine(pos);
         QCOMPARE(before.stacks[1].count, 1);
         QVERIFY(before.burnRemaining > 0.0);

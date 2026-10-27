@@ -53,8 +53,8 @@ private:
         QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings);
         QSet<quint32> before;
-        for (const QcCreature &creature : m_server->entities().creatures().mobs()) {
-            before.insert(creature.id);
+        for (const QcCreature &present : m_server->entities().creatures().mobs()) {
+            before.insert(present.id);
         }
         if (!back.has_value() || !QcEntityRecords::apply(*back, m_server->entities()).isEmpty()) {
             return nullptr;

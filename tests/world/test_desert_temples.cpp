@@ -1,4 +1,5 @@
 #include "common/core/QcIntMath.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "QcTestUtil.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -7,7 +8,6 @@
 #include <QTest>
 
 #include <algorithm>
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -277,14 +277,11 @@ private slots:
     {
         const auto without = contentWith(0.0, false);
         const auto seconds = [](const QcTerrainGenerator &terrain, const QList<QcChunkPos> &chunks) {
-            timespec start{};
-            timespec end{};
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
+            const qint64 start = QcThreadCpuClock::nowNs();
             for (const QcChunkPos &pos : chunks) {
                 terrain.generate(pos);
             }
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(QcThreadCpuClock::nowNs() - start) / 1e9;
         };
 
         // The chunks of the temples, fresh generators interleaved (plans made afresh).

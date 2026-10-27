@@ -472,9 +472,9 @@ private slots:
 
         // b0 fills the English table almost up (500 entries stay free next to the base game's); b1 and
         // b3 each tip it over, b2 and b4 are harmless, b5 depends on b3.
-        const QcResult<QcBaseContent::Loaded> base = QcTestUtil::baseContent();
-        QVERIFY(base.has_value());
-        const int baseEntries = static_cast<int>(base->registry->translations().count(u"en"_s));
+        const QcResult<QcBaseContent::Loaded> baseGame = QcTestUtil::baseContent();
+        QVERIFY(baseGame.has_value());
+        const int baseEntries = static_cast<int>(baseGame->registry->translations().count(u"en"_s));
 
         writeJson(dir.filePath(u"b0/pack.json"_s), {{u"id"_s, u"b0"_s}, {u"version"_s, u"1"_s}});
         writeJson(dir.filePath(u"b0/lang/en.json"_s), words(0, static_cast<int>(QcStreamLimits::maxDefinitions) - baseEntries - 500));

@@ -88,7 +88,7 @@ private slots:
         QCOMPARE(m_client->openMachineEntity, id);
         QCOMPARE(cart(id).rider, 0u);
         QCOMPARE(m_client->machineStacks.size(), 27);
-        move(slotOf(item("qtcraft:cobblestone")), input);
+        move(slotOf(item("qtcraft:cobblestone")), inputSlot);
         idle(1);
         QCOMPARE(cart(id).stacks[0], (QcItemStack{item("qtcraft:cobblestone"), 10, 0}));
         QCOMPARE(m_client->machineStacks[0].count, 10);
@@ -121,7 +121,7 @@ private slots:
         send(QcMsg::UseItem{m_feet.offset(2, 0, 0), QcBlockFace::Up});
         const quint32 id = m_server->carts().all().constFirst().id;
         send(QcMsg::UseEntity{id});
-        move(slotOf(item("qtcraft:cobblestone")), input);
+        move(slotOf(item("qtcraft:cobblestone")), inputSlot);
         idle(1);
         QCOMPARE(cart(id).stacks[0].count, 10);
 
@@ -144,8 +144,8 @@ private slots:
         QVERIFY(bob->machineClosed);
         QCOMPARE(droppedCount(item("qtcraft:cobblestone")), 10);
         QCOMPARE(droppedCount(item("qtcraft:chest_minecart")), 1);
-        bob->connection.send(QcMsg::MoveInventoryItem{input, 0, 0});
-        move(input, 0);
+        bob->connection.send(QcMsg::MoveInventoryItem{inputSlot, 0, 0});
+        move(inputSlot, 0);
         QcTestUtil::pump();
         idle(1);
         QCOMPARE(countOf(item("qtcraft:cobblestone")), 0);

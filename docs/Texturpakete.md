@@ -40,7 +40,7 @@ my_pack/
       ruby.png                     textures of mods work the same way
 ```
 
-The texture name is `<folder below textures>:<file name without extension>`. The names are those of the content: the `name` of each file in `content/qtcraft/textures/*.json` (and in a mod's `textures/`). `qtcraft-headless --export-textures <dir>` writes all of them as a ready pack (see below). Only lower-case letters, digits, `_`, `-` and `.` are allowed in file names, and the suffix must be lower-case `.png` or `.json`; sub-folders below the namespace folder, links (also a linked `textures` folder) and other file types are reported and not read; hidden files are ignored.
+The texture name is `<folder below textures>:<file name without extension>`. The names are those of the content: the `name` of each file in `content/qtcraft/textures/*.json` (and in a mod's `textures/`). `qtcraft-headless --export-textures <dir>` writes all of them as a ready pack (see below). Only lower-case letters, digits, `_`, `-` and `.` are allowed in file names, and the suffix must be lower-case `.png` or `.json`; sub-folders below the namespace folder, links (also a linked `textures` folder) and other file types are reported and not read; hidden files are ignored, and a name starting with a dot counts as hidden on every platform (Windows included, where the dot hides nothing; decision E-898).
 
 ## Manifest `texturepack.json`
 

@@ -1,3 +1,4 @@
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "common/physics/QcPhysics.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
@@ -11,7 +12,6 @@
 #include <QThread>
 
 #include <atomic>
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -113,9 +113,7 @@ private:
 
 double threadSeconds()
 {
-    timespec now{};
-    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-    return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
+    return static_cast<double>(QcThreadCpuClock::nowNs()) / 1e9;
 }
 
 } // namespace

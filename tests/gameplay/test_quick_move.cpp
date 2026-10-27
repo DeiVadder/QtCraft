@@ -47,17 +47,17 @@ private slots:
 
         QcQuickMove::Situation chest;
         chest.containerSlots = 27;
-        QCOMPARE(targets(3, chest), range(input, 27));
-        QCOMPARE(targets(input + 26, chest), range(0, 36));
+        QCOMPARE(targets(3, chest), range(inputSlot, 27));
+        QCOMPARE(targets(inputSlot + 26, chest), range(0, 36));
 
         QcQuickMove::Situation furnace;
         furnace.machineOpen = true;
         QVERIFY(targets(3, furnace).isEmpty());
         furnace.fuel = true;
-        QCOMPARE(targets(3, furnace), QList<int>{fuel});
+        QCOMPARE(targets(3, furnace), QList<int>{fuelSlot});
         furnace.smeltable = true;
-        QCOMPARE(targets(3, furnace), (QList<int>{input, fuel}));
-        QCOMPARE(targets(input + 2, furnace), range(0, 36));
+        QCOMPARE(targets(3, furnace), (QList<int>{inputSlot, fuelSlot}));
+        QCOMPARE(targets(inputSlot + 2, furnace), range(0, 36));
         QVERIFY(targets(-1, inventory).isEmpty());
     }
 
@@ -103,7 +103,7 @@ private slots:
 
         // An empty slot, a slot out of range or of a block that is not open changes nothing.
         quickMove(30);
-        quickMove(input);
+        quickMove(inputSlot);
         QCOMPARE(countOf(item("qtcraft:dirt")), 10);
     }
 
@@ -145,7 +145,7 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:dirt")), 2);
 
         // And back out into the inventory.
-        quickMove(fuel);
+        quickMove(fuelSlot);
         QCOMPARE(countOf(item("qtcraft:coal")), 1);
         QVERIFY(m_client->machineStacks[1].isEmpty());
     }
@@ -167,7 +167,7 @@ private slots:
         QCOMPARE(m_client->machineStacks[0], (QcItemStack{item("qtcraft:stone"), 64, 0}));
         QCOMPARE(m_client->machineStacks[1], (QcItemStack{item("qtcraft:stone"), 6, 0}));
 
-        quickMove(input + 1);
+        quickMove(inputSlot + 1);
         QCOMPARE(countOf(item("qtcraft:stone")), 6);
         QVERIFY(m_client->machineStacks[1].isEmpty());
     }

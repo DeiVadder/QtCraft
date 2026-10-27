@@ -13,16 +13,16 @@ struct QcRawWorkstations
     {
         if (const auto *cutter = std::get_if<QcMsg::OpenStonecutter>(&message)) {
             stonecutter = cutter->pos;
-        } else if (const auto *cutter = std::get_if<QcMsg::StonecutterState>(&message)) {
-            stonecutterState = *cutter;
+        } else if (const auto *cutterState = std::get_if<QcMsg::StonecutterState>(&message)) {
+            stonecutterState = *cutterState;
         } else if (std::holds_alternative<QcMsg::CloseStonecutter>(message)) {
             stonecutter.reset();
             stonecutterState = {};
             stonecutterClosed = true;
         } else if (const auto *table = std::get_if<QcMsg::OpenEnchanting>(&message)) {
             enchanting = table->pos;
-        } else if (const auto *table = std::get_if<QcMsg::EnchantingState>(&message)) {
-            enchantingState = *table;
+        } else if (const auto *tableState = std::get_if<QcMsg::EnchantingState>(&message)) {
+            enchantingState = *tableState;
         } else if (std::holds_alternative<QcMsg::CloseEnchanting>(message)) {
             enchanting.reset();
             enchantingState = {};

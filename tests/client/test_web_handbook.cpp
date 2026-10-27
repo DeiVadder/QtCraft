@@ -188,8 +188,20 @@ private slots:
         const QImage stored = QImage(dataFile(u"icons.png"_s)).convertToFormat(QImage::Format_ARGB32);
         QVERIFY(!fresh.isNull());
         QCOMPARE(stored.size(), fresh.size());
+        static constexpr int tolerance = 2;
         const int difference = largestDifference(stored, fresh);
-        QVERIFY2(difference <= 2, qPrintable(u"web/handbook/data/icons.png differs from a fresh export by up to %1 per channel"_s.arg(difference)));
+        if (difference > tolerance && qEnvironmentVariableIsSet("QTCRAFT_DATA_DIR")) {
+            // The fresh sheet beside the test's data, to compare with the stored one; a failure to
+            // write it is only reported, the comparison below fails the test.
+            const QDir data(qEnvironmentVariable("QTCRAFT_DATA_DIR"));
+            const QString path = data.filePath(u"icons-fresh.png"_s);
+            if (data.mkpath(u"."_s) && fresh.save(path)) {
+                qWarning().noquote() << u"Fresh icon sheet written to"_s << QDir::toNativeSeparators(path);
+            } else {
+                qWarning().noquote() << u"Cannot write the fresh icon sheet to"_s << QDir::toNativeSeparators(path);
+            }
+        }
+        QVERIFY2(difference <= tolerance, qPrintable(u"web/handbook/data/icons.png differs from a fresh export by up to %1 per channel"_s.arg(difference)));
     }
 
     void everyShownIconIsOnTheSheet()

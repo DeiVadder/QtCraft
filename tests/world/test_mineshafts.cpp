@@ -1,3 +1,4 @@
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "QcTestUtil.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftNetwork.h"
@@ -7,8 +8,6 @@
 #include <QQueue>
 #include <QSet>
 #include <QTest>
-
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -688,14 +687,11 @@ private slots:
         settings.mineshafts.enabled = false;
         without->worldgen().setTerrainSettings(settings);
         const auto seconds = [](const QcTerrainGenerator &terrain, const QList<QcChunkPos> &chunks) {
-            timespec start{};
-            timespec end{};
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &start);
+            const qint64 start = QcThreadCpuClock::nowNs();
             for (const QcChunkPos &pos : chunks) {
                 terrain.generate(pos);
             }
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &end);
-            return static_cast<double>(end.tv_sec - start.tv_sec) + static_cast<double>(end.tv_nsec - start.tv_nsec) / 1e9;
+            return static_cast<double>(QcThreadCpuClock::nowNs() - start) / 1e9;
         };
         const auto area = [](int offsetX, int offsetZ) {
             QList<QcChunkPos> chunks;

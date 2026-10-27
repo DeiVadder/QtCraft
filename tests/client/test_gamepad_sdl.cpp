@@ -210,6 +210,10 @@ private slots:
         if (qEnvironmentVariableIsSet("QC_SDL_CACHE")) {
             QSKIP("QC_SDL_CACHE is set: the cache of this build may differ from the test's");
         }
+#ifdef Q_OS_WIN
+        // The configure step runs the script through Git Bash (QC_SDL_SHELL); the test asks it through sh.
+        QSKIP("scripts/build-sdl.sh needs a POSIX shell");
+#endif
 
         const QString configuredDir = QDir::cleanPath(QStringLiteral(QTCRAFT_SDL3_DIR));
         const QString sdlArch = QStringLiteral(QTCRAFT_SDL_ARCH);

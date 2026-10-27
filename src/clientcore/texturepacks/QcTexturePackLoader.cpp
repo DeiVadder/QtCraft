@@ -63,7 +63,9 @@ struct Entries
 };
 
 // Up to `limit` entries of a folder, sorted by name; the folder is read lazily, so a folder with
-// millions of entries costs no more than `limit` of them. Hidden entries are not listed.
+// millions of entries costs no more than `limit` of them. Hidden entries are not listed: those with
+// the hidden attribute and, on every platform, those whose name starts with a dot (on Windows a
+// dot does not hide a file, and macOS leaves ._ files on foreign file systems).
 [[nodiscard]] Entries entriesOf(const QString &path, qsizetype limit)
 {
     Entries entries;
@@ -74,6 +76,9 @@ struct Entries
             break;
         }
         iterator.next();
+        if (iterator.fileName().startsWith(u'.')) {
+            continue;
+        }
         entries.list.append(iterator.fileInfo());
     }
     std::ranges::sort(entries.list, {}, [](const QFileInfo &entry) { return entry.fileName(); });

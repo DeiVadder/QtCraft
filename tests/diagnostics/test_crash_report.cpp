@@ -91,7 +91,9 @@ private slots:
         QTest::newRow("segv") << u"segv"_s << u"exception: 0xc0000005"_s << QString();
         QTest::newRow("abort") << u"abort"_s << u"exception: abort"_s << QString();
         QTest::newRow("fatal") << u"fatal"_s << u"exception: fatal message"_s << u"reason: crash test"_s;
-        QTest::newRow("terminate") << u"terminate"_s << u"exception: abort"_s << u"reason: std::terminate called"_s;
+        // Without exceptions (_HAS_EXCEPTIONS=0) the MSVC library makes std::terminate a plain
+        // abort() and std::set_terminate a no-op, so no handler can name the reason.
+        QTest::newRow("terminate") << u"terminate"_s << u"exception: abort"_s << QString();
         QTest::newRow("trap") << u"trap"_s << u"exception: 0x80000003"_s << QString();
 #else
         QTest::newRow("segv") << u"segv"_s << u"signal: 11 SIGSEGV"_s << QString();

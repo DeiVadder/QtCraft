@@ -91,6 +91,10 @@ private slots:
 
     void refusesToFollowLinks()
     {
+#ifdef Q_OS_WIN
+        // Symbolic links need developer mode or administrator rights there.
+        QSKIP("QFile::link makes a shortcut (.lnk) on Windows, not a symbolic link");
+#endif
         QTemporaryDir base;
         const QString root = QDir(base.path()).filePath(u"worlds"_s);
         const QString target = QDir(base.path()).filePath(u"precious"_s);

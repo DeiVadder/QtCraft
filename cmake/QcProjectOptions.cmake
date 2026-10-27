@@ -40,6 +40,18 @@ else()
         -fno-exceptions)
 endif()
 
+# Name hiding as MSVC reports it (C4456-C4459, decision E-898): Clang checks it only with -Wshadow,
+# which -Wall -Wextra leave out. QC_WSHADOW=ON turns the matching Clang warnings on (as errors like
+# every other warning), so a Mac build finds what the next Windows build would refuse.
+# Not reported by MSVC and therefore left out: a field hiding one of a base class (-Wshadow-field) and
+# a lambda parameter hiding a local the lambda does not capture (-Wshadow-uncaptured-local).
+option(QC_WSHADOW "Clang: report names that hide a local, parameter, member or global (MSVC C4456-C4459)" OFF)
+if(QC_WSHADOW AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(qc_project_options INTERFACE -Wshadow-all -Wno-shadow-field -Wno-shadow-uncaptured-local)
+elseif(QC_WSHADOW AND NOT MSVC)
+    message(WARNING "QC_WSHADOW needs Clang (-Wshadow-all); ignored for ${CMAKE_CXX_COMPILER_ID}")
+endif()
+
 target_compile_definitions(qc_project_options INTERFACE
     QT_NO_CAST_FROM_ASCII
     QT_NO_CAST_TO_ASCII

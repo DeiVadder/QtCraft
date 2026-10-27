@@ -207,8 +207,8 @@ private slots:
             {u"a:b"_s, {}, 1.0f, 0.2f},
             {u"a:b"_s, {}, 1.0f, 5.0f},
         };
-        for (const QcMsg::SoundEvent &event : bad) {
-            QVERIFY2(!QcProtocol::decode(QcProtocol::encode(event), QcProtocol::Peer::Server).has_value(), qPrintable(event.key.left(20)));
+        for (const QcMsg::SoundEvent &refused : bad) {
+            QVERIFY2(!QcProtocol::decode(QcProtocol::encode(refused), QcProtocol::Peer::Server).has_value(), qPrintable(refused.key.left(20)));
         }
 
         // Only the server sends sounds.

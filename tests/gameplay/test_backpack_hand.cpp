@@ -348,11 +348,11 @@ private slots:
         const QcBlockPos furnace = openFurnace();
         // A chest is fuel; a backpack is none, even with contents.
         player().inventory.setSlot(0, packed({stackOf("qtcraft:oak_planks", 1)}));
-        move(0, fuel);
+        move(0, fuelSlot);
         QVERIFY(m_server->blockEntities().machine(furnace)->stacks[QcBlockEntities::Machine::fuelSlot].isEmpty());
-        move(0, input);
+        move(0, inputSlot);
         player().inventory.setSlot(1, stackOf("qtcraft:coal", 4));
-        move(1, fuel);
+        move(1, fuelSlot);
         ticks(100);
         QCOMPARE(m_server->blockEntities().machine(furnace)->stacks[QcBlockEntities::Machine::inputSlot], packed({stackOf("qtcraft:oak_planks", 1)}));
         QVERIFY(m_server->blockEntities().machine(furnace)->stacks[QcBlockEntities::Machine::outputSlot].isEmpty());

@@ -274,7 +274,7 @@ protected:
 
     void move(int from, int to, int count = 0) { send(QcMsg::MoveInventoryItem{from, to, count}); }
 
-    static constexpr int input = QcMsg::MoveInventoryItem::machineInputSlot;
-    static constexpr int fuel = QcMsg::MoveInventoryItem::machineFuelSlot;
-    static constexpr int output = QcMsg::MoveInventoryItem::machineOutputSlot;
+    static constexpr int inputSlot = QcMsg::MoveInventoryItem::machineInputSlot;
+    static constexpr int fuelSlot = QcMsg::MoveInventoryItem::machineFuelSlot;
+    static constexpr int outputSlot = QcMsg::MoveInventoryItem::machineOutputSlot;
 };

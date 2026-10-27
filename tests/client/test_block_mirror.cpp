@@ -191,16 +191,16 @@ private slots:
     {
         QcBlockMirror mirror = loadedMirror();
         const QcItemDefinition &dirtItem = m_content->item(*m_content->itemId(u"qtcraft:dirt"_s));
-        const QcBlockPos ground{3, TestBlockMirror::ground, 4};
-        const QcBlockRules::Aim aim{ground, QcBlockFace::Up, {0.5, 1.0, 0.5}, 0.0F, 30.0F};
-        const QcVec3 eye{3.5, TestBlockMirror::ground + 2.6, 7.5};
+        const QcBlockPos support{3, ground, 4};
+        const QcBlockRules::Aim aim{support, QcBlockFace::Up, {0.5, 1.0, 0.5}, 0.0F, 30.0F};
+        const QcVec3 eye{3.5, ground + 2.6, 7.5};
         const QList<QcMsg::BlockUpdate> placed = QcBlockForecast::placing(*mirror.world(), dirtItem, aim, eye, {});
         QCOMPARE(placed.size(), 1);
-        QCOMPARE(placed.first().pos, ground.offset(0, 1, 0));
+        QCOMPARE(placed.first().pos, support.offset(0, 1, 0));
         QCOMPARE(placed.first().block, m_dirt);
 
         // Not into a body, not out of reach, nothing for an item that does more than place.
-        const QcAabb body{{3.2, ground.y + 1.0, 4.2}, {3.8, ground.y + 2.8, 4.8}};
+        const QcAabb body{{3.2, support.y + 1.0, 4.2}, {3.8, support.y + 2.8, 4.8}};
         QVERIFY(QcBlockForecast::placing(*mirror.world(), dirtItem, aim, eye, {body}).isEmpty());
         QVERIFY(QcBlockForecast::placing(*mirror.world(), dirtItem, aim, eye + QcVec3{0.0, 0.0, 9.0}, {}).isEmpty());
         const QcItemDefinition &bucket = m_content->item(*m_content->itemId(u"qtcraft:water_bucket"_s));
@@ -211,7 +211,7 @@ private slots:
         const QcItemDefinition &doorItem = m_content->item(*m_content->itemId(u"qtcraft:oak_door"_s));
         const QList<QcMsg::BlockUpdate> door = QcBlockForecast::placing(*mirror.world(), doorItem, aim, eye, {});
         QCOMPARE(door.size(), 2);
-        QCOMPARE(door[1].pos, ground.offset(0, 2, 0));
+        QCOMPARE(door[1].pos, support.offset(0, 2, 0));
         QCOMPARE(m_content->property(door[1].block, u"half"_s), u"top"_s);
     }
 };

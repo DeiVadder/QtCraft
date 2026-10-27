@@ -45,9 +45,9 @@ struct QcRawWorldRecord
             timeSpeed = time->speed;
         } else if (const auto *pause = std::get_if<QcMsg::ServerPause>(&message)) {
             pauses.append(pause->paused);
-        } else if (const auto *weather = std::get_if<QcMsg::Weather>(&message)) {
+        } else if (const auto *weatherState = std::get_if<QcMsg::Weather>(&message)) {
             ++weatherMessages;
-            this->weather = *weather;
+            weather = *weatherState;
         } else if (const auto *ack = std::get_if<QcMsg::BlockAck>(&message)) {
             blockAcks.append({ack->sequence, items.size()});
         } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {

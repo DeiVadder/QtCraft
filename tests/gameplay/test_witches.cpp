@@ -1,5 +1,6 @@
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/parser/QcProjectileParser.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
@@ -9,8 +10,6 @@
 
 #include <QJsonDocument>
 #include <QTest>
-
-#include <ctime>
 
 using namespace Qt::StringLiterals;
 
@@ -275,9 +274,7 @@ private slots:
         // Thread time per tick of an arena with a player and nothing, ten skeletons or ten witches
         // (throwing, splashing, drinking): the witch costs about what an archer costs.
         const auto threadSeconds = [] {
-            timespec now{};
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &now);
-            return static_cast<double>(now.tv_sec) + static_cast<double>(now.tv_nsec) / 1e9;
+            return static_cast<double>(QcThreadCpuClock::nowNs()) / 1e9;
         };
         const auto perTick = [&](const char *kind) {
             joinArena();

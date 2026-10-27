@@ -177,6 +177,7 @@ target_sources(qc_common PRIVATE
     diagnostics/QcMessageLog.h diagnostics/QcMessageLog.cpp
     diagnostics/QcRoundTripStats.h diagnostics/QcRoundTripStats.cpp
     diagnostics/QcSignalDefault.h
+    diagnostics/QcThreadCpuClock.h diagnostics/QcThreadCpuClock.cpp
 )
 target_sources(qc_common PRIVATE
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp

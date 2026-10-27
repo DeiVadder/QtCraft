@@ -287,7 +287,7 @@ private slots:
         QCOMPARE(recorder.minutes().first().tickMaxMs, 40.0f);
         QCOMPARE(recorder.minutes().first().timeMs, 59'000);
 
-        for (int second = 0; second < QcAdminStatusRecorder::secondsKept; ++second) {
+        for (int filler = 0; filler < QcAdminStatusRecorder::secondsKept; ++filler) {
             recorder.sample({}, 1.0);
         }
         QCOMPARE(recorder.seconds().size(), QcAdminStatusRecorder::secondsKept);

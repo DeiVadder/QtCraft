@@ -1,7 +1,7 @@
 #include "app/hooks/QcFrameMonitor.h"
 
-#include "app/hooks/QcThreadCpuClock.h"
 #include "app/rendering/QcWorldView.h"
+#include "common/diagnostics/QcThreadCpuClock.h"
 
 #include <algorithm>
 #include <array>
@@ -34,7 +34,7 @@ QList<QcRenderSample> QcFrameMonitor::recordFrame(QcWorldView *view, qint64 enti
 
     QList<QcRenderSample> samples;
     if (m_depth == Depth::Full) {
-        const qint64 threadCpuNs = QcThreadCpuClock::nowNs();
+        const qint64 threadCpuNs = QcThreadCpuClock::fineGrained() ? QcThreadCpuClock::nowNs() : -1;
         m_lastGuiCpuMs = threadCpuNs >= 0 && m_lastThreadCpuNs >= 0 ? static_cast<double>(threadCpuNs - m_lastThreadCpuNs) / 1e6 : -1.0;
         m_lastThreadCpuNs = threadCpuNs;
         if (view) {
