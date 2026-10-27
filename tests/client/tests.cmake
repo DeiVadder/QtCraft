@@ -51,6 +51,8 @@ qc_add_test(test_screen_choice SOURCES client/test_screen_choice.cpp LIBRARIES q
 qc_add_test(test_render_culling SOURCES client/test_render_culling.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_camera_relative SOURCES client/test_camera_relative.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_draw_origins SOURCES client/test_draw_origins.cpp LIBRARIES qc_app_core)
+# The framed maps' bindings have the layout of the entity pipeline's atlas bindings (E-896).
+qc_add_test(test_framed_map_texture SOURCES client/test_framed_map_texture.cpp LIBRARIES qc_app_core)
 qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)

@@ -1,8 +1,9 @@
 #include "app/rendering/QcFramedMapTexture.h"
 
 #include "app/debug/QcAppLogging.h"
+#include "app/rendering/QcAtlasTexture.h"
 
-bool QcFramedMapTexture::create(QRhi *rhi, QRhiBuffer *frameUniforms)
+bool QcFramedMapTexture::create(QRhi *rhi, QRhiResourceUpdateBatch *updates, QRhiBuffer *frameUniforms)
 {
     m_tried = true;
     const int side = QcFramedMapAtlas::side;
@@ -15,11 +16,20 @@ bool QcFramedMapTexture::create(QRhi *rhi, QRhiBuffer *frameUniforms)
     m_sampler.reset(rhi->newSampler(QRhiSampler::Nearest, QRhiSampler::Nearest, QRhiSampler::None, QRhiSampler::ClampToEdge,
                                     QRhiSampler::ClampToEdge));
     m_sampler->create();
+    // Binding 2 as in the atlas bindings (QcWorldDeviceResources::atlasBindings), with an animation
+    // map that moves nothing: the entity pipeline is built with those and needs their layout.
+    m_stillAnimation = QcAtlasTexture::createAnimationMap(rhi, QImage(), updates);
+    if (!m_stillAnimation) {
+        m_texture.reset();
+        return false;
+    }
+    m_stillSampler = QcAtlasTexture::createAnimationMapSampler(rhi);
     m_bindings.reset(rhi->newShaderResourceBindings());
     m_bindings->setBindings({
         QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage,
                                                  frameUniforms),
         QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, m_texture.get(), m_sampler.get()),
+        QRhiShaderResourceBinding::sampledTexture(2, QRhiShaderResourceBinding::VertexStage, m_stillAnimation.get(), m_stillSampler.get()),
     });
     m_bindings->create();
     m_uploaded = QList<quint64>(QcFramedMapAtlas::tileCount, 0);
@@ -29,7 +39,7 @@ bool QcFramedMapTexture::create(QRhi *rhi, QRhiBuffer *frameUniforms)
 quint32 QcFramedMapTexture::upload(QRhi *rhi, QRhiResourceUpdateBatch *updates, const QList<QcFramedMapAtlas::Tile> &tiles,
                                    QRhiBuffer *frameUniforms)
 {
-    if (!m_texture && (m_tried || !create(rhi, frameUniforms))) {
+    if (!m_texture && (m_tried || !create(rhi, updates, frameUniforms))) {
         return 0;
     }
 

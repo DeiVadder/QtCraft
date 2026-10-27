@@ -20,6 +20,26 @@ using QcRenderPipelines::FrameUniforms;
 using QcRenderPipelines::minimumLight;
 using QcRenderPipelines::skyLightFloor;
 
+namespace {
+
+// Whether `pipeline` may draw with `bindings`: QRhi wants the layout the pipeline was built with
+// (bindings, types and stages). With another one Metal binds the vertex buffers to other slots, and
+// the draw reads garbage (decision E-896); such a draw is left out, with one warning.
+bool fitsLayout(const QRhiGraphicsPipeline *pipeline, const QRhiShaderResourceBindings *bindings)
+{
+    if (pipeline->shaderResourceBindings()->isLayoutCompatible(bindings)) {
+        return true;
+    }
+    static bool warned = false;
+    if (!warned) {
+        warned = true;
+        qCWarning(lcRenderer) << "World renderer: bindings without the layout of their pipeline; the draw is left out";
+    }
+    return false;
+}
+
+} // namespace
+
 void QcWorldRenderer::initialize(QRhiCommandBuffer *commandBuffer)
 {
     Q_UNUSED(commandBuffer);
@@ -409,9 +429,12 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
         usePipeline(commandBuffer, m_pass.entityPipeline.get());
         drawBuffers(commandBuffer, m_device.entityBuffers.list(), m_entityOrigin);
     }
-    // The maps in item frames: the same pipeline with the framed-map texture (decision E-809).
-    if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && m_device.framedMaps.bindings()) {
-        usePipeline(commandBuffer, m_pass.entityPipeline.get(), m_device.framedMaps.bindings());
+    // The maps in item frames: the same pipeline with the framed-map texture (decision E-809), whose
+    // bindings must have the pipeline's layout (decision E-896).
+    QRhiShaderResourceBindings *const framedMaps = m_device.framedMaps.bindings();
+    if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && framedMaps
+        && fitsLayout(m_pass.entityPipeline.get(), framedMaps)) {
+        usePipeline(commandBuffer, m_pass.entityPipeline.get(), framedMaps);
         drawBuffers(commandBuffer, m_device.framedMapBuffers.list(), m_framedMapOrigin);
     }
 }
