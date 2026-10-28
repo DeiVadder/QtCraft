@@ -2866,3 +2866,11 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Messung:** `test_material_memory` (`QTCRAFT_MATERIAL_MEASURE=<Paket>`, Metal offscreen) und die App offscreen (Debug, showcase, realistisch, `builtin:qtcraft_hd_64`, rund 100 s, Spitzen-RSS der `HEALTH`-Zeile), Debug-Build unter Last paralleler Verify-Läufe.
 - **Ursache:** Karten 2 × Farb-Atlas (HD64 60,3 MiB, HD128 242 MiB) als CPU-Kopie für die ganze Welt, dazu der Upload in einem Zug (Staging HD64 +61 MiB, HD128 +244 MiB RSS).
 - **Vorher → nachher:** App Mittel 490–501 → 418–419 MiB Spitze (Niedrig 371–378; Aufschlag +120 → +45 MiB); Upload-Staging HD64 +61 → +6 … 14, HD128 +244 → +11 … 18 MiB; synchroner Atlas-Bau beim Betreten (Mittel) 1,7–3,3 s → 0,56–1,3 s (Debug), die Karten folgen im Hintergrund. GUI-A/B (Release, Fenster) steht aus.
+
+## Paket 45.4b (Material-Karten ohne bleibende CPU-Kopie, Upload in Streifen; E-912), Fenster-A/B (2026-10-28)
+
+- **Stände:** `base-*` = `c85a0ca~1` (45.4 ohne 45.4b), `fix-*` = `c85a0ca` (45.4b), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=60`, Rechner ruhig. Labels: realistisch Mittel ohne Paket; realistisch Hoch mit `builtin:qtcraft_hd_64`; dazu `base-low-hd64` (realistisch Niedrig, keine Karten) als Bezug.
+- **Spitzenspeicher mit HD64 auf Hoch (vorher → nachher):** stand 574 → 558, sprint 597 → 582, showcase 517 → 455, crowd 580 → 567 MiB. Gegenüber Niedrig (ohne Karten: 507/530/401/516 MiB) kosten die Karten jetzt +51 … +54 MiB statt +64 … +116 MiB; die Spitze in showcase ist weg.
+- **Ohne Paket (Mittel):** Speicher −0,3 … −1,0 %, GPU −6 … +7 %, Render-CPU +1 … +8 % – Rauschen.
+- **GPU und Render-CPU mit HD64 auf Hoch:** gegen vorher −7 … +7 % bzw. −4 … +9 %, innerhalb der Streuung; Bildzeit unverändert (Mittel 120 Hz, p99 10,1–10,4 ms).
+- **Bewertung:** Ziel erreicht – der Mehrspeicher der Karten liegt bei der Größe der Karten selbst (HD64: 60 MiB laut E-912) und hat keine Spitzen mehr; keine Kosten auf GPU oder CPU.
