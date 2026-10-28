@@ -455,9 +455,12 @@ private slots:
         // 1059853484: a diagonal bridge with low dry bank beside its deck; 555555 and 888888888: roads
         // that turned on a bridge (no longer: bridges run straight); 298323796: failed on the old check;
         // 20261017: a bridge over a river and the low water beside it in another biome.
-        // 782953143 and 614800303: failed on earlier bridge placements.
+        // 782953143 and 614800303: failed on earlier bridge placements. 1086708103: the brush of a
+        // road on land took a river column beside it as a road on the bed, and the middle line of
+        // a diagonal bridge crossing it later found the cell taken (decision E-907).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1059853484}, qint64{555555}, qint64{888888888},
-                                  qint64{298323796}, qint64{20261017}, qint64{782953143}, qint64{614800303}, m_randomSeed}) {
+                                  qint64{298323796}, qint64{20261017}, qint64{782953143}, qint64{614800303}, qint64{1086708103},
+                                  m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             QSet<qint64> seen;
@@ -527,8 +530,11 @@ private slots:
         // closed pieces were left out (decision E-851): large rings and arcs ending on land at both
         // ends. 1360590162 (random) had 14 %: a long river whose gorge stretch was water a block
         // wide, joined only at corners, and three blocks wide still broke on the survey grid.
+        // 1299031228 (random) had 13 %: a ring of some 2000 blocks whose only outlet was a puddle a
+        // block deep beside it; such a puddle is no outlet now (decision E-907).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
-                                  qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, m_randomSeed}) {
+                                  qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, qint64{1299031228},
+                                  m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             const Window window = survey(generator, 1536, 2);

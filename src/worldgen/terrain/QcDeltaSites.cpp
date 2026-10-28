@@ -96,6 +96,9 @@ constexpr double openSeaTo = -0.17;
 constexpr double wideFrom = 4.0;
 constexpr double wideTo = 4.6;
 
+// The cells around a cell, ring by ring in a fixed order (the first ring, then the second).
+constexpr std::array<std::pair<qint32, qint32>, 24> rings{{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}, {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2}, {-2, -1}, {2, -1}, {-2, 0}, {2, 0}, {-2, 1}, {2, 1}, {-2, 2}, {-1, 2}, {0, 2}, {1, 2}, {2, 2}}};
+
 // Which search a thread remembers: the sites (each instance its own) and the cell.
 struct SiteKey
 {
@@ -113,6 +116,30 @@ struct SiteKeyHash
         const quint64 cell = (static_cast<quint64>(static_cast<quint32>(key.cellX)) << 32) | static_cast<quint32>(key.cellZ);
         return static_cast<std::size_t>(qcMixSeed(key.sites ^ cell, 3));
     }
+};
+
+// The last values a thread found per key, at most maxRemembered (beyond, it starts over).
+template<typename Value>
+class Remembered
+{
+public:
+    // The remembered value of `key`, else the one `find` gives (remembered from now on).
+    template<typename Find>
+    [[nodiscard]] Value get(SiteKey key, Find find)
+    {
+        if (const auto found = m_values.find(key); found != m_values.end()) {
+            return found->second;
+        }
+        if (m_values.size() >= maxRemembered) {
+            m_values.clear();
+        }
+        Value value = find();
+        m_values.emplace(key, value);
+        return value;
+    }
+
+private:
+    std::unordered_map<SiteKey, Value, SiteKeyHash> m_values;
 };
 
 } // namespace
@@ -148,23 +175,16 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::siteNear(double x, doubl
     // gaps in a fan). Each is a pure function of the sites and the cells, so the order of
     // generation does not matter.
     const SiteKey key{m_instance, static_cast<qint32>(std::floor(x / siteCell)), static_cast<qint32>(std::floor(z / siteCell))};
-    thread_local std::unordered_map<SiteKey, std::shared_ptr<const Site>, SiteKeyHash> remembered;
-    if (const auto found = remembered.find(key); found != remembered.end()) {
-        return found->second;
-    }
-    if (remembered.size() >= maxRemembered) {
-        remembered.clear();
-    }
-    std::shared_ptr<const Site> site = cellSite(key.cellX, key.cellZ, land);
-    site = site ? site : ringSite(key.cellX, key.cellZ, land);
-    remembered.emplace(key, site);
-    return site;
+    thread_local Remembered<std::shared_ptr<const Site>> remembered;
+    return remembered.get(key, [&] {
+        const std::shared_ptr<const Site> site = cellSite(key.cellX, key.cellZ, land);
+        return site ? site : ringSite(key.cellX, key.cellZ, land);
+    });
 }
 
 std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::ringSite(qint32 cellX, qint32 cellZ, const Land &land) const
 {
-    // Ring by ring, in a fixed order: the nearest cell with a delta (the first ring, then the second).
-    static constexpr std::array<std::pair<qint32, qint32>, 24> rings{{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}, {-2, -2}, {-1, -2}, {0, -2}, {1, -2}, {2, -2}, {-2, -1}, {2, -1}, {-2, 0}, {2, 0}, {-2, 1}, {2, 1}, {-2, 2}, {-1, 2}, {0, 2}, {1, 2}, {2, 2}}};
+    // Ring by ring, in a fixed order: the nearest cell with a delta.
     for (const auto [dx, dz] : rings) {
         if (std::shared_ptr<const Site> site = cellSite(cellX + dx, cellZ + dz, land)) {
             return site;
@@ -175,19 +195,39 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::ringSite(qint32 cellX, q
 
 std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::cellSite(qint32 cellX, qint32 cellZ, const Land &land) const
 {
+    // The cell's own search, if the cells at its apex find the same delta.
+    thread_local Remembered<std::shared_ptr<const Site>> anchoredSites;
+    return anchoredSites.get({m_instance, cellX, cellZ}, [&] {
+        const std::shared_ptr<const Site> site = searchedSite(cellX, cellZ, land);
+        return site && anchored(*site, land) ? site : nullptr;
+    });
+}
+
+std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::searchedSite(qint32 cellX, qint32 cellZ, const Land &land) const
+{
     // Every point of a cell searches from its middle.
-    const SiteKey key{m_instance, cellX, cellZ};
-    thread_local std::unordered_map<SiteKey, std::shared_ptr<const Site>, SiteKeyHash> searched;
-    if (const auto found = searched.find(key); found != searched.end()) {
-        return found->second;
-    }
-    if (searched.size() >= maxRemembered) {
-        searched.clear();
-    }
-    const std::optional<Site> found = search((cellX + 0.5) * siteCell, (cellZ + 0.5) * siteCell, land);
-    const std::shared_ptr<const Site> site = found ? std::make_shared<const Site>(*found) : nullptr;
-    searched.emplace(key, site);
-    return site;
+    thread_local Remembered<std::shared_ptr<const Site>> searched;
+    return searched.get({m_instance, cellX, cellZ}, [&] {
+        const std::optional<Site> found = search((cellX + 0.5) * siteCell, (cellZ + 0.5) * siteCell, land);
+        return found ? std::make_shared<const Site>(*found) : std::shared_ptr<const Site>{};
+    });
+}
+
+bool QcDeltaSites::anchored(const Site &site, const Land &land) const
+{
+    // The search of the apex's cell or of a cell in the two rings around it finds the same mouth:
+    // the river enters the fan there, and the arms leave it. Where a delta's verdict is marginal,
+    // small differences of the mouth turn it on and off from cell to cell, and a few cells beside
+    // the river found it alone: a patch of fan beside the river, cut off from it and the sea
+    // (decision E-907). Reads only the cells' own searches, never their anchoring.
+    const auto cellOf = [](double at) { return static_cast<qint32>(std::floor(at / siteCell)); };
+    const qint32 apexX = cellOf(site.apexX);
+    const qint32 apexZ = cellOf(site.apexZ);
+    const auto sameMouth = [&](qint32 dx, qint32 dz) {
+        const std::shared_ptr<const Site> other = searchedSite(apexX + dx, apexZ + dz, land);
+        return other && std::hypot(other->mouthX - site.mouthX, other->mouthZ - site.mouthZ) <= agree;
+    };
+    return sameMouth(0, 0) || std::ranges::any_of(rings, [&](std::pair<qint32, qint32> ring) { return sameMouth(ring.first, ring.second); });
 }
 
 std::optional<QcDeltaSites::Reach> QcDeltaSites::reachFrom(double x, double z, const Land &land, double within) const

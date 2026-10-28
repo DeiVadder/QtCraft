@@ -1,3 +1,4 @@
+#include "common/core/QcIntMath.h"
 #include "common/world/QcChunk.h"
 #include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
@@ -37,10 +38,14 @@ private:
     // The random seed of this run besides the fixed ones (decision E-846): QC_TEST_SEED if set.
     const qint64 m_randomSeed = QcTestUtil::randomSeed();
 
-    // Fixed seeds first; 510556236 has a window with almost no lakes (E-846, E-856).
-    static constexpr std::array<qint64, 4> fixedSeeds{7, 42, 1234, 510556236};
+    // Fixed seeds first; 510556236 has a window with almost no lakes (E-846, E-856), 1380505090 the
+    // most found (103 lakes, three quarters of its window flat land of the lakes' biomes; E-907).
+    static constexpr std::array<qint64, 5> fixedSeeds{7, 42, 1234, 510556236, 1380505090};
 
-    std::array<qint64, 5> seeds() const { return {fixedSeeds[0], fixedSeeds[1], fixedSeeds[2], fixedSeeds[3], m_randomSeed}; }
+    std::array<qint64, 6> seeds() const
+    {
+        return {fixedSeeds[0], fixedSeeds[1], fixedSeeds[2], fixedSeeds[3], fixedSeeds[4], m_randomSeed};
+    }
 
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
@@ -189,11 +194,15 @@ private:
 
 private slots:
     // About one lake per 200 chunks over many worlds, and lakes of neighbouring squares apart. One
-    // window of 80 x 80 chunks holds anywhere from none to 63 lakes (ocean, unsuited biomes), so
-    // the rate is checked over the fixed seeds only (deterministic); every window, the random one
-    // too, at most one lake per 100 chunks.
+    // window of 80 x 80 chunks holds anywhere from none to 103 lakes: the lakes go to flat dry land
+    // of their biomes, and a square of 6 x 6 chunks there nearly always finds a place in its 8
+    // tries, so a window's count follows how much of it is such land (decision E-907). The rate
+    // is checked over the fixed seeds only (deterministic); every window, the random one too,
+    // holds at most one lake per square.
     void lakesAreRareAndApart()
     {
+        const auto lake = std::ranges::find(m_content->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
+        QVERIFY(lake != m_content->worldgen().features().end());
         int chunks = 0;
         int lakes = 0;
         int nearest = 1 << 20;
@@ -203,9 +212,18 @@ private slots:
             if (!found.lakes.isEmpty()) {
                 // A place to look at a lake (screenshots, debugging).
                 const Site &first = found.lakes.first();
-                qInfo("seed %lld: first lake in chunk %d,%d, level %d", seed, first.chunk.x, first.chunk.z, first.level);
+                qInfo("seed %lld: %lld lakes, first in chunk %d,%d, level %d", seed, static_cast<qint64>(found.lakes.size()), first.chunk.x,
+                      first.chunk.z, first.level);
             }
-            QVERIFY2(found.lakes.size() * 100 <= found.chunks, qPrintable(u"seed %1: %2 lakes"_s.arg(seed).arg(found.lakes.size())));
+            QSet<std::pair<int, int>> squares;
+            for (const Site &site : found.lakes) {
+                const std::pair<int, int> square{qcFloorDiv(site.chunk.x, lake->region), qcFloorDiv(site.chunk.z, lake->region)};
+                QVERIFY2(!squares.contains(square), qPrintable(u"seed %1: two lakes in one square"_s.arg(seed)));
+                squares.insert(square);
+            }
+            // Loosely above the densest window measured (103 lakes in 6400 chunks, one per 62, on
+            // 40 seeds; decision E-907): a window of flat dry land of the lakes' biomes.
+            QVERIFY2(found.lakes.size() * 50 <= found.chunks, qPrintable(u"seed %1: %2 lakes"_s.arg(seed).arg(found.lakes.size())));
             if (std::ranges::find(fixedSeeds, seed) != fixedSeeds.end()) {
                 chunks += found.chunks;
                 lakes += static_cast<int>(found.lakes.size());
@@ -223,8 +241,6 @@ private slots:
         qInfo("%d lava lakes in %d chunks: one per %.0f chunks; nearest two %d chunks apart", lakes, chunks, perLake, nearest);
         QVERIFY2(perLake >= 130.0 && perLake <= 400.0, qPrintable(QString::number(perLake)));
         // The tried chunks of two squares keep `spacing` chunks between them.
-        const auto lake = std::ranges::find(m_content->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
-        QVERIFY(lake != m_content->worldgen().features().end());
         QVERIFY2(nearest >= lake->spacing + 1, qPrintable(QString::number(nearest)));
     }
 

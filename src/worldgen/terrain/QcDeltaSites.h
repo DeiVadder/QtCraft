@@ -83,6 +83,10 @@ private:
     // The delta of the nearest cell around (cellX, cellZ) that has one, within a few rings.
     [[nodiscard]] std::shared_ptr<const Site> ringSite(qint32 cellX, qint32 cellZ, const Land &land) const;
     [[nodiscard]] std::shared_ptr<const Site> cellSite(qint32 cellX, qint32 cellZ, const Land &land) const;
+    // The cell's own search, remembered per thread, before anchored().
+    [[nodiscard]] std::shared_ptr<const Site> searchedSite(qint32 cellX, qint32 cellZ, const Land &land) const;
+    // Whether the cells at the site's apex find the same mouth.
+    [[nodiscard]] bool anchored(const Site &site, const Land &land) const;
     // The search from the middle of a cell.
     [[nodiscard]] std::optional<Site> search(double x, double z, const Land &land) const;
     // How much of a delta the mouth (mouthX, mouthZ), reached as `coast`, allows (0..1): flat land,

@@ -104,8 +104,9 @@ public:
     // The continent value of a column (below about -0.15 the sea; river deltas read it, decision
     // E-850).
     [[nodiscard]] double continentAt(int x, int z) const;
-    // The climate at a column whose ground lies above the sea level before rivers cut it (the
-    // river pieces, decision E-851); std::nullopt in the sea and lakes.
+    // The climate at a column whose ground lies above the sea level before rivers cut it, or at
+    // most a block under it (the river pieces, decisions E-851 and E-907); std::nullopt in the sea
+    // and lakes at least two blocks deep.
     [[nodiscard]] std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const;
     // The biome a climate point belongs to (the heaviest after the rarity gate), as the terrain picks
     // it; tests check the layout of the biomes in climate space with it (decision E-824).

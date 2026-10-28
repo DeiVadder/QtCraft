@@ -88,9 +88,17 @@ void QcVillageDraft::addRoadCell(const QcTerrainGenerator &terrain, std::pair<in
         return;
     }
 
-    roadCells.insert(cellKey(x, z));
     const QcTerrainColumn column = terrain.column(x, z);
-    if (!style->overWater && style->bridge.deck != qcAirBlockId && column.height < terrain.seaLevel() && level && level->bridge) {
+    const bool water = column.height < terrain.seaLevel();
+    // A cell of the brush beside a middle line on land that lies in water stays water: no road on
+    // the bed with air cut above it, and the cell is left for a bridge whose middle line crosses
+    // it later (decision E-907).
+    if (!style->overWater && water && !(level && level->bridge)) {
+        return;
+    }
+
+    roadCells.insert(cellKey(x, z));
+    if (!style->overWater && style->bridge.deck != qcAirBlockId && water && level && level->bridge) {
         // A bridge over a river (decision E-841): a deck one block above the water, posts on a grid.
         const bool post = x % bridgePostSpacing == 0 && z % bridgePostSpacing == 0;
         plan.bridges.append({{x, level->y, z}, style->bridge.deck, post ? style->bridge.post : qcAirBlockId});

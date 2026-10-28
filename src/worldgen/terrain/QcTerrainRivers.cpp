@@ -59,8 +59,9 @@ QcRiverField::Sample QcTerrainGenerator::riverAt(int x, int z) const
 
 std::optional<QcTerrainClimate::Point> QcTerrainGenerator::dryClimateAt(int x, int z) const
 {
+    // A puddle one block deep is no outlet: a river crossing it ends on land beside it (decision E-907).
     const Ground ground = groundAt(x, z);
-    return ground.height >= seaLevel() ? std::optional(ground.climate) : std::nullopt;
+    return ground.height >= seaLevel() - 1 ? std::optional(ground.climate) : std::nullopt;
 }
 
 bool QcTerrainGenerator::isRiverBiome(int biome) const

@@ -259,7 +259,9 @@ private slots:
         int sunk = 0;
         // Road cells on the blended ground around the temple that do not lie at its top.
         int roadsOff = 0;
-        for (const qint64 seed : {qint64{51}, qint64{10}, qint64{1234}, m_randomSeed}) {
+        // 961302756 and 691287566: the blended ground lowered onto a cave's roof, and the road cut
+        // into the ground lay in the cave, unbuilt, under the ground left above it (decision E-907).
+        for (const qint64 seed : {qint64{51}, qint64{10}, qint64{1234}, qint64{961302756}, qint64{691287566}, m_randomSeed}) {
             const QcTerrainGenerator terrain(content, seed);
             for (int rz = -4; rz <= 4; ++rz) {
                 for (int rx = -4; rx <= 4; ++rx) {

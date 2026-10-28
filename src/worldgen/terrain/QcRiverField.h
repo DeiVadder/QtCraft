@@ -30,8 +30,8 @@ public:
         // The continent value at a column (below about -0.15 the sea).
         [[nodiscard]] virtual double continentAt(int x, int z) const = 0;
         [[nodiscard]] virtual QcTerrainClimate::Point climateAt(int x, int z) const = 0;
-        // The climate at a column whose ground (before rivers cut it) lies above the sea level;
-        // std::nullopt in the sea, lakes and other ground under the sea level.
+        // The climate at a column whose ground (before rivers cut it) lies above the sea level or at
+        // most a block under it; std::nullopt in the sea, lakes and other ground deeper under it.
         [[nodiscard]] virtual std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const = 0;
     };
 

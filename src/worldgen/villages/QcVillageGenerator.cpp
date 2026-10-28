@@ -264,9 +264,12 @@ void QcVillageGenerator::buildRoads(QcChunk &chunk, const QList<QcBlockPos> &cel
         const int lx = cell.localX();
         const int lz = cell.localZ();
         // A cell levelled to the road's middle line lies one block above the ground (the path fills
-        // up to it) or one below (the ground above is cut away).
+        // up to it) or one below (the ground above is cut away). A cut cell in a cave just under the
+        // ground (the blended ground around a centre can lower the ground onto a cave's roof) gets
+        // its path too: it closes the cave's top instead of leaving the ground above the road.
         const bool raised = !isGround(chunk.block(lx, cell.y, lz)) && isGround(chunk.block(lx, cell.y - 1, lz));
-        if (!isGround(chunk.block(lx, cell.y, lz)) && !raised) {
+        const bool cut = isGround(chunk.block(lx, cell.y + 1, lz));
+        if (!isGround(chunk.block(lx, cell.y, lz)) && !raised && !cut) {
             continue;
         }
         chunk.setBlock(lx, cell.y, lz, path);
