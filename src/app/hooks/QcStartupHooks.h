@@ -2,6 +2,7 @@
 
 #include "common/physics/QcPlayerInput.h"
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <QPointer>
 #include <QString>
@@ -135,6 +136,9 @@ private:
     QPointer<QcScreenshotHook> m_screenshotHook;
     QcScriptedPad *m_scriptedPad = nullptr;
     bool m_screenshotReleased = false;
+    // Since the first frame that waited for the world to load, and when it last logged that.
+    QElapsedTimer m_screenshotWait; // NOLINT(qc-member-access): a log timer of the screenshot gate, no state worth a setter
+    qint64 m_screenshotWaitLogged = 0; // NOLINT(qc-member-access): when the gate's timer last logged, only there
     // The menu's screenshot is held until the menu has scheduled its steps.
     bool m_menuHold = false;
 };

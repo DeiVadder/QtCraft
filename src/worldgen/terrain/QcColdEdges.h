@@ -18,9 +18,11 @@ public:
     // Blocks a column's ground biome may lie away (0: every column keeps its own).
     int groundBlend() const { return m_settings.groundBlend; }
 
-    // The top water layer of a column with this climate temperature freezes; `river`: the water of
-    // a river channel, which freezes only at the lower riverTemperature.
-    [[nodiscard]] bool freezes(double temperature, bool river, int x, int z) const;
+    // The top water layer of a column with this climate temperature freezes. `riverShare` (0 to 1)
+    // moves the threshold from temperature towards the lower riverTemperature: 1 in a river channel,
+    // falling off in the still water along a river's line (decision E-914), so the threshold has no
+    // step where a river meets a lake or the sea.
+    [[nodiscard]] bool freezes(double temperature, double riverShare, int x, int z) const;
 
     // The column, at most groundBlend() blocks away along each axis, whose biome lends a column at
     // x, z its ground blocks: a smooth noise with a little per-column scatter, so the biomes'

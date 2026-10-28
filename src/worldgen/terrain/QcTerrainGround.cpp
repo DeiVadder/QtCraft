@@ -1,10 +1,41 @@
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include "worldgen/terrain/QcTerrainMath.h"
+
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 
 // The ground and the ice of a column at the edges of cold biomes (decision E-858): which biome's
 // ground it takes and whether its water freezes.
+
+namespace {
+
+// Blocks beyond a river's half width over which still water along its line goes from the river's
+// freezing threshold to its own (decision E-914).
+constexpr double riverFreezeRamp = 10.0;
+
+} // namespace
+
+double QcTerrainGenerator::riverFreezeShare(const Column &column) const
+{
+    if (isRiverBiome(column.biome)) {
+        return 1.0;
+    }
+    if (column.riverHalfWidth <= 0.0 || column.riverDistance >= QcRiverField::reach) {
+        return 0.0;
+    }
+    // A river runs on through shallow still water (its line and bed go on there): the water along
+    // it freezes like the river and gives way to the still water's threshold across the ramp, as
+    // the river fades out (dry land, the end of a ring: its half width goes to 0) and towards the
+    // depth where the river no longer reaches the ground. All three fall smoothly, so the threshold
+    // has no step along a line.
+    const double across = 1.0 - QcTerrainMath::smoothstep(column.riverHalfWidth, column.riverHalfWidth + riverFreezeRamp, column.riverDistance);
+    const double presence = QcTerrainMath::smoothstep(0.0, QcRiverField::narrowestHalfWidth, column.riverHalfWidth);
+    const bool exact = std::lround(column.exactHeight) == column.height;
+    const double depth = seaLevel() - (exact ? column.exactHeight : static_cast<double>(column.height));
+    return across * presence * (1.0 - QcTerrainMath::smoothstep(QcRiverField::deepestBed, QcRiverField::reachDown, depth));
+}
 
 std::optional<std::pair<int, int>> QcTerrainGenerator::groundSource(int x, int z, const Column &column) const
 {
@@ -53,7 +84,7 @@ QcBlockId QcTerrainGenerator::frozenWaterAt(int x, int z, const Column &column) 
     if (!m_coldEdges.byTemperature()) {
         return biome.frozenWater;
     }
-    return m_coldEdges.freezes(column.temperature, isRiverBiome(column.biome), x, z) ? biome.frozenWater : m_definitions.water;
+    return m_coldEdges.freezes(column.temperature, riverFreezeShare(column), x, z) ? biome.frozenWater : m_definitions.water;
 }
 
 QcBlockId QcTerrainGenerator::surfaceBlockAt(int x, int z) const

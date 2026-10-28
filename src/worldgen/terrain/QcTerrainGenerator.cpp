@@ -306,6 +306,7 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
     const bool nearBorder = m_coldEdges.groundBlend() > 0 && blended.runnerUpWeight >= nearBorderWeight * blended.bestWeight;
     result.groundBiome = nearBorder ? Column::unresolvedGround : -1;
     result.height = std::clamp(static_cast<int>(std::lround(height)), 4, QcWorld::worldHeight - 8);
+    result.exactHeight = height;
     // Overhangs fade out towards the coast and never reach down to the sea level, so no hollow
     // lies next to or under water.
     const double overhangAmplitude = std::min(blended.overhang * result.landFactor, static_cast<double>(result.height - seaLevel() - 3));

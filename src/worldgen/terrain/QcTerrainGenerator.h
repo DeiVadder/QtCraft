@@ -134,6 +134,9 @@ public:
     // freezing by temperature ice where the column is cold enough, else the biome's frozenWater;
     // with a `frozenDepth` only where the water is that shallow (decision E-850).
     [[nodiscard]] QcBlockId frozenWaterAt(int x, int z, const Column &column) const;
+    // How far the freezing of a column's water follows a river's lower threshold (0 to 1,
+    // QcColdEdges::freezes): 1 in a river channel, falling off in still water along a river.
+    [[nodiscard]] double riverFreezeShare(const Column &column) const;
     // Top block of the unmodified terrain at a column (before caves and features).
     QcBlockId surfaceBlockAt(int x, int z) const;
     // Top block of a column whose ground is moved to `height` (its top block one below; the blend

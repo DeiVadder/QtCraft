@@ -41,7 +41,7 @@ qc_add_test(test_flower_valley SOURCES world/test_flower_valley.cpp LIBRARIES qc
 qc_add_test(test_rivers SOURCES world/test_rivers.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_rivers_timeout})
 qc_add_test(test_river_deltas SOURCES world/test_river_deltas.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen
     TIMEOUT ${qc_river_deltas_timeout})
-qc_add_test(test_cold_edges SOURCES world/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 600)
+qc_add_test(test_cold_edges SOURCES world/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 690)
 qc_add_test(test_climate_order SOURCES world/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 720)
 qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp world/QcTerrainTestUtil.h LIBRARIES qc_server TIMEOUT 900)

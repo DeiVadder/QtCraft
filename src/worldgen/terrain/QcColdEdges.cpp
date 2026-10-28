@@ -24,9 +24,9 @@ QcColdEdges::QcColdEdges(const QcTerrainDefinitions::ColdEdges &settings, quint6
 {
 }
 
-bool QcColdEdges::freezes(double temperature, bool river, int x, int z) const
+bool QcColdEdges::freezes(double temperature, double riverShare, int x, int z) const
 {
-    const double threshold = river ? m_settings.riverTemperature : m_settings.temperature;
+    const double threshold = m_settings.temperature + (m_settings.riverTemperature - m_settings.temperature) * std::clamp(riverShare, 0.0, 1.0);
     // Far from the threshold the noise cannot decide anything.
     if (temperature >= threshold + m_settings.ragged * 2.0) {
         return false;

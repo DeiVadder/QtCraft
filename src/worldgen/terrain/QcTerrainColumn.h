@@ -7,6 +7,9 @@ struct QcTerrainColumn
 {
     // Height of the terrain surface: the top solid block is at height - 1.
     int height = 0;
+    // The height before rounding, as column() computed it; where something moved the column since
+    // (it no longer rounds to `height`), `height` counts.
+    double exactHeight = 0.0;
     int biome = 0;
     // Marks a column near a biome border whose ground biome is not looked up yet
     // (QcTerrainGenerator::withGround() does).

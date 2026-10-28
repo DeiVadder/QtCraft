@@ -47,6 +47,9 @@ namespace {
     return static_cast<qsizetype>(std::max<qint64>(0, high - low + 1));
 }
 
+// While a screenshot waits for the world, how often it logs what it waits for.
+constexpr qint64 screenshotWaitLogMs = 10000;
+
 } // namespace
 
 QcStartupHooks::QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent)
@@ -102,6 +105,7 @@ void QcStartupHooks::setScreenshotHook(QcScreenshotHook *hook)
 {
     m_screenshotHook = hook;
     m_screenshotReleased = false;
+    m_screenshotWait.invalidate();
     if (hook) {
         hook->hold();
     }
@@ -474,6 +478,10 @@ void QcStartupHooks::machineOpened()
 
 void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
 {
+    if (!screenshotHook() || m_screenshotReleased || !playing) {
+        return;
+    }
+
     // The server streams the view distance (plus a ring) it granted in Welcome; a network server
     // may grant less than the settings ask for.
     const int streamed = m_parts.session->welcome().viewDistance > 0 ? m_parts.session->welcome().viewDistance : viewDistance + 1;
@@ -481,10 +489,25 @@ void QcStartupHooks::releaseScreenshotWhenLoaded(int viewDistance, bool playing)
     const QcVec3 &feet = m_parts.session->playerMotion().position;
     const QcChunkPos centre = QcBlockPos{static_cast<int>(std::floor(feet.x)), 0, static_cast<int>(std::floor(feet.z))}.chunk();
     const qsizetype expected = chunksInsideWorld(centre.x, streamed) * chunksInsideWorld(centre.z, streamed);
-    const bool allChunksArrived = m_parts.session->world()->chunkCount() >= expected;
-    if (screenshotHook() && !m_screenshotReleased && playing && allChunksArrived && m_parts.meshes->dirtyCount() == 0
-        && m_parts.meshes->jobsInFlight() == 0) {
+    const qsizetype arrived = m_parts.session->world()->chunkCount();
+    const qsizetype dirty = m_parts.meshes->dirtyCount();
+    const qsizetype jobs = m_parts.meshes->jobsInFlight();
+    if (!m_screenshotWait.isValid()) {
+        m_screenshotWait.start();
+        m_screenshotWaitLogged = 0;
+    }
+    if (arrived >= expected && dirty == 0 && jobs == 0) {
         m_screenshotReleased = true;
+        qCInfo(lcScreenshot) << "World ready for the screenshot after" << m_screenshotWait.elapsed() << "ms;" << screenshotHook()->frameCount()
+                             << "frames to go";
         screenshotHook()->release();
+        return;
+    }
+
+    // A slow or stuck picture says what it waits for (decision E-915).
+    if (m_screenshotWait.elapsed() - m_screenshotWaitLogged >= screenshotWaitLogMs) {
+        m_screenshotWaitLogged = m_screenshotWait.elapsed();
+        qCInfo(lcScreenshot).nospace() << "Screenshot waits for the world: chunks " << arrived << " of " << expected << ", sections to mesh " << dirty
+                                       << ", mesh jobs " << jobs;
     }
 }

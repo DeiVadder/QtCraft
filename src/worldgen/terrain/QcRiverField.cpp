@@ -24,7 +24,7 @@ constexpr double typicalSlope = 0.0016;
 constexpr double cutoff = 1.5 * typicalSlope * QcRiverField::reach;
 // Half the width of the water: between these numbers of blocks, on a scale of about widthScale.
 constexpr double widthScale = 380.0;
-constexpr double narrowest = 2.5;
+constexpr double narrowest = QcRiverField::narrowestHalfWidth;
 constexpr double widest = 7.5;
 // Depth of the water at the middle line: base plus a share of the half width.
 constexpr double baseDepth = 1.2;
@@ -75,9 +75,6 @@ constexpr double closedTo = 0.15;
 constexpr double topWalk = 40.0;
 constexpr double topStep = 2.0;
 
-// A river never changes ground deeper than this under the sea level (its deepest bed, 1.2 + 0.45 *
-// 7.5 blocks, plus the smooth seam of the carving).
-constexpr double reachDown = 8.0;
 // Dry columns this many blocks beyond a river's water and at most one block above it are its bank.
 constexpr double bankWidth = 3.0;
 

@@ -20,6 +20,13 @@ public:
     static constexpr double far = 1.0e9;
     // Beyond this many blocks from its middle line a river changes nothing.
     static constexpr double reach = 44.0;
+    // A river never changes ground deeper than this under the sea level (its deepest bed, 1.2 + 0.45 *
+    // 7.5 blocks, plus the smooth seam of the carving).
+    static constexpr double reachDown = 8.0;
+    // Half the width of the narrowest full river (before gorges, dry land and ends narrow it further).
+    static constexpr double narrowestHalfWidth = 2.5;
+    // The deepest bed a river carves under the sea level.
+    static constexpr double deepestBed = 1.2 + 0.45 * 7.5;
 
     // The terrain's maps that the river pieces (QcRiverPieces) and deltas (QcDeltaSites) read
     // (QcTerrainGenerator).

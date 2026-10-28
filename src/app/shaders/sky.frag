@@ -104,7 +104,9 @@ vec3 addMoon(vec3 color, vec3 dir)
     float craters = 0.82 + 0.18 * noise2(local * 3.0 + 7.0, cloudCells);
     vec3 moon = mix(vec3(0.07, 0.08, 0.11), vec3(0.96, 0.95, 0.88) * craters, lit);
     float edge = 1.0 - smoothstep(0.9, 1.0, r2);
-    return mix(color, moon, edge * mix(0.35, 1.0, lit));
+    // The dark side covers the stars at night; against a bright sky it is not seen (params.x: star
+    // visibility), otherwise a half moon at dusk shows as a flat lit oval over a dark one.
+    return mix(color, moon, edge * mix(0.35 * sky.params.x, 1.0, lit));
 }
 
 vec3 addClouds(vec3 color, vec3 dir)
