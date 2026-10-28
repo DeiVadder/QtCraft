@@ -37,6 +37,9 @@ public:
         // The camera's offset from the render anchor (QcDrawOrigins::follow), for the casters.
         QVector3D drawCamera;
         QcShadowLight light;
+        // The receivers' material block (decision E-908): bound, highlights of the moving lights,
+        // relief and highlight strength.
+        std::array<float, 4> material{};
     };
     // The pipelines and bindings of the shadow step: solid faces, cut-out faces and entities.
     struct Casters
@@ -80,10 +83,11 @@ public:
     [[nodiscard]] QRhiCommandBuffer::DynamicOffset casterOffset(int index) const;
 
     // The bindings of the atlas pipelines with the shadows (QcWorldDeviceResources::atlasBindings
-    // plus the receivers' uniform buffer at 3 and the map with a comparing sampler at 4), made on
-    // first use for the device's atlas. Null without an atlas; a refused one releases everything
-    // like a refused prepare().
-    [[nodiscard]] QRhiShaderResourceBindings *receiverBindings(const QcWorldDeviceResources &device);
+    // plus the receivers' uniform buffer at 3, the map with a comparing sampler at 4 and the
+    // `materials` maps at 5 and 6, QcMaterialTextures::entries), made on first use for the device's
+    // atlas. Null without an atlas; a refused one releases everything like a refused prepare().
+    [[nodiscard]] QRhiShaderResourceBindings *receiverBindings(const QcWorldDeviceResources &device,
+                                                               const QList<QRhiShaderResourceBinding> &materials);
     // The receivers' entries of those bindings (the uniform buffer at 3, the map at 4), for other
     // bindings with the receivers' layout (the water's, decision E-906); empty before prepare()
     // succeeded.
@@ -91,7 +95,8 @@ public:
     // The framed maps' bindings (QcFramedMapTexture) with the receivers' layout, so the entity
     // pipeline built with receiverBindings() draws them too (decision E-896); made on first use,
     // null before the framed-map texture exists or when the GPU refused them.
-    [[nodiscard]] QRhiShaderResourceBindings *framedMapBindings(const QcWorldDeviceResources &device);
+    [[nodiscard]] QRhiShaderResourceBindings *framedMapBindings(const QcWorldDeviceResources &device,
+                                                                const QList<QRhiShaderResourceBinding> &materials);
     // The casters' pipelines and bindings for the device's atlas, made on first use; nothing when
     // the GPU refused them (tried once per atlas).
     [[nodiscard]] std::optional<Casters> casters(const QcWorldDeviceResources &device);

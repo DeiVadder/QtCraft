@@ -175,7 +175,7 @@ private slots:
         QCOMPARE(shadowed->bindings->bindingCount(), 7);
         QVERIFY(shadowed->pipeline->shaderResourceBindings()->isLayoutCompatible(shadowed->bindings));
         // The receivers' layout plus the water's two: not the plain water's, nor the receivers'.
-        QRhiShaderResourceBindings *receivers = shadows.receiverBindings(resources);
+        QRhiShaderResourceBindings *receivers = shadows.receiverBindings(resources, {});
         QVERIFY(receivers);
         QVERIFY(!shadowed->bindings->isLayoutCompatible(receivers));
         for (qsizetype i = 0; i < receivers->bindingCount(); ++i) {

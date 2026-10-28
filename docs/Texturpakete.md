@@ -77,6 +77,37 @@ One PNG per texture, exactly `resolution`×`resolution` pixels, RGBA. Fully tran
 
 **Animation** (decision E-878): a vertical strip of frames (`resolution` wide, a multiple of it high, at most 32 frames, the first at the top) animates. The frames are shown at the frame time of the game's own texture when that one is animated (fire, lava, water: `frameTime` and `interpolate` of its definition), otherwise for 2 ticks (100 ms) each without blending; a strip of one frame keeps an animated texture still. `--export-textures` writes animated textures as such strips, a good start for your own frames. A procedural spec animates with the same fields as the content (`frames`, `frameTime`, `interpolate`, see below).
 
+## Material maps (realistic mode)
+
+The realistic render mode (Settings → Graphics → Quality, quality Medium or High) gives blocks relief, gloss, metal and light of their own from two **material maps** per texture (decision E-908). They follow the **labPBR** conventions of the reference game's shader packs, so maps made for those packs work after renaming the files:
+
+| File | Channel | Meaning |
+|------|---------|---------|
+| `<name>_n.png` (normal map) | red, green | Tangent-space normal: x to the right, y **up in the picture** (OpenGL convention, green up; a DirectX map needs its green channel inverted), mapped from −1..1 to 0..255; z follows from them |
+| | blue | Ambient occlusion of the material (255: none) |
+| | alpha | Height (read, not used yet) |
+| `<name>_s.png` (specular map) | red | Perceptual smoothness (0 rough … 255 mirror-like); roughness = (1 − smoothness)² |
+| | green | 0–229: reflectance F0 × 255 of a non-metal (10 ≈ 0.04 for most surfaces); 230–237: the metals iron, gold, aluminium, chrome, copper, lead, platinum, silver; 255: a metal coloured by the texture |
+| | blue | Porosity 0–64 (read, not used yet); 65–255 (subsurface scattering in labPBR) are ignored |
+| | alpha | Emission 0–254 (light of its own, in the HDR picture); **255 means no emission** |
+
+Both files sit next to the texture (`textures/qtcraft/stone_n.png`, `textures/qtcraft/stone_s.png`) and have the pack's resolution; only their first frame is used, also for animated textures. The suffixes `_n` and `_s` are reserved: a file `stone_n.png` is always the normal map of `stone`, never a texture of its own (when the game or a mod has a texture of that name, the log says so). Maps are read only while the realistic mode draws them (switching it reads the packs again), after all colour textures and with their own limits (4096 map files, 192 MiB, see below), so they never push a colour texture out; they are kept at most 128×128, reduced by averaging each channel on its own. A texture without maps (or with only one of them) gets **flat** defaults for what is missing: no relief, smoothness 0, F0 0.04, no light. The game's own textures, the textures of mods and the specs of packs are procedural: their maps are painted from the colour picture (darker texels are lower; ores, metals, glass, ice and the bright texels of light sources follow rules by pattern and name). A procedural definition can set its material with a `"material"` object:
+
+```json
+"material": { "smoothness": 0.8, "reflectance": 10, "metal": "gold", "bump": 0.5, "porosity": 0.2, "emission": 1.0, "emissionTexels": 0.3 }
+```
+
+| Field | Effect |
+|-------|--------|
+| `smoothness` (0–1) | Gloss of the whole texture |
+| `reflectance` (0–229) | F0 × 255 of a non-metal |
+| `metal` | `iron`, `gold`, `aluminium`, `chrome`, `copper`, `lead`, `platinum`, `silver`, `albedo` or `none` |
+| `bump` (0–4) | Strength of the relief from the brightness (0: flat) |
+| `porosity` (0–1) | Stored for wet surfaces |
+| `emission` (0–1), `emissionTexels` (0–1) | Light of its own on the brightest share of the texels |
+
+The maps are at most 128×128 per texture (a 256× pack gets 128× maps) and are built and uploaded only while the realistic mode draws them: in the classic mode and on quality Low they take no memory. With the base game they take as much as the colour atlas twice (16×: 1.4 MiB, 64×: 23 MiB, 128×: 94 MiB).
+
 ## Procedural textures
 
 A `.json` file uses the same format as `content/*/textures/*.json` (`pattern`, `primary`, `secondary`, `variation`, `seed`, `bitmap`/`palette` for emblems; the pattern list is in `docs/Architektur.md`, section Content). It is painted at the pack's resolution. Above 16× the 16×16 pattern is enlarged with an edge-aware pixel-art filter and gets detail that only the higher resolution can show (decision E-299); each pattern has its own amounts, a definition can change them:

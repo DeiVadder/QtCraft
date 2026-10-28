@@ -53,6 +53,12 @@ void QcWorldView::setAtlas(const QList<QImage> &levels, const QImage &animationM
     update();
 }
 
+void QcWorldView::setMaterials(std::shared_ptr<const QcMaterialAtlas> materials)
+{
+    m_frame.materials = std::move(materials);
+    update();
+}
+
 void QcWorldView::setAnimationTime(double ticks)
 {
     // Wrapped in double, so the float the shader gets stays exact however long the game runs.

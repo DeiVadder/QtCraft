@@ -45,6 +45,9 @@ layout(std140, binding = 3) uniform Shadow {
     vec4 shadowTint;
     vec4 texel;
     vec4 fade;
+    // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
+    // highlights, z the strength of the relief, w of the highlights and reflections.
+    vec4 material;
 } shadow;
 
 layout(binding = 4) uniform sampler2DShadow shadowMap;

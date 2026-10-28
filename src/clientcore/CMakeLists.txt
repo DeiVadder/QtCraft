@@ -79,6 +79,13 @@ target_sources(qc_clientcore PRIVATE
     maps/QcMapColors.h maps/QcMapColors.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    materials/QcMaterialAtlas.h materials/QcMaterialAtlas.cpp
+    materials/QcMaterialMips.h materials/QcMaterialMips.cpp
+    materials/QcMaterialParams.h materials/QcMaterialParams.cpp
+    materials/QcMaterialRules.h materials/QcMaterialRules.cpp
+    materials/QcMaterialSynthesizer.h materials/QcMaterialSynthesizer.cpp
+)
+target_sources(qc_clientcore PRIVATE
     meshing/QcAnimator.h meshing/QcAnimator.cpp
     meshing/QcArmourLook.h meshing/QcArmourLook.cpp
     meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
@@ -258,4 +265,6 @@ set_source_files_properties(
     # Block icons as well: the projection and the depth of their faces, from the render table's
     # quads (decision E-901).
     icons/QcBlockIcon.cpp meshing/QcBlockRenderTable.cpp
+    # The material maps as well (decision E-908).
+    materials/QcMaterialSynthesizer.cpp materials/QcMaterialMips.cpp
     PROPERTIES COMPILE_OPTIONS "${QC_NO_FP_CONTRACT}")

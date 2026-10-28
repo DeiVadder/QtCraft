@@ -47,6 +47,8 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     // The game controller follows settingsChanged (the pad's profiles apply at once).
     connect(m_gamepad, &QcGamepadOptions::changed, this, &QcSettingsController::settingsChanged);
     connect(m_rendering, &QcRenderSettings::changed, this, &QcSettingsController::settingsChanged);
+    // The atlas carries material maps only while the realistic mode draws them (decision E-908).
+    connect(m_rendering, &QcRenderSettings::changed, this, [this] { m_texturePacks->setMaterials(m_rendering->options().materials().maps); });
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
     connect(m_texturePacks, &QcTexturePackController::selectionChanged, this, &QcSettingsController::saveSettings);
 }

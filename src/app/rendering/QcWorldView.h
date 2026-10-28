@@ -24,6 +24,8 @@
 #include <optional>
 #include <utility>
 
+class QcMaterialAtlas;
+
 // Qt Quick item that renders the voxel world with QRhi.
 // All setters are called on the GUI thread. QcWorldRenderer::synchronize() runs on the render thread
 // while Qt Quick blocks the GUI thread: it copies the FrameInput snapshot and takes the queued mesh
@@ -54,6 +56,9 @@ public:
         // and the animation time in ticks, wrapped where every animation starts over.
         QImage animationMap;
         float animationTicks = 0.0f;
+        // The atlas's material maps (decision E-908), null without them; the renderer uploads them
+        // while the realistic mode draws them and knows a new set by its address.
+        std::shared_ptr<const QcMaterialAtlas> materials;
         // Sky dome, fog colour and the daylight factor of the shaders.
         QcSkyState sky = QcSky::at(QcDayCycle::startTime);
         float fogStart = 80.0f;
@@ -97,6 +102,8 @@ public:
     // (QcTextureAtlas::animationMap) and the ticks after which they all start over
     // (QcTextureAtlas::animationCycleTicks).
     void setAtlas(const QList<QImage> &levels, const QImage &animationMap = {}, int animationCycleTicks = 1);
+    // The material maps of the atlas set last (QcTextureAtlas::materials), null without them.
+    void setMaterials(std::shared_ptr<const QcMaterialAtlas> materials);
     // The time of the animated textures in ticks (decision E-878), QcAnimationClock::ticks(); the
     // test hook QTCRAFT_ANIMATION_TICK holds it at a fixed tick.
     void setAnimationTime(double ticks);

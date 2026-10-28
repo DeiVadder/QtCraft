@@ -483,6 +483,22 @@ private slots:
         QVERIFY(high.reflectionSteps > 0);
     }
 
+    // The material maps (decision E-908): none in the classic mode and on Low, the maps on Medium,
+    // also the moving lights' highlights on High.
+    void renderOptionsAndTheirMaterials()
+    {
+        QcRenderOptions options;
+        options.quality = QcRenderOptions::Quality::High;
+        QCOMPARE(options.materials(), QcRenderOptions::Materials{});
+        options.mode = QcRenderOptions::Mode::Realistic;
+        options.quality = QcRenderOptions::Quality::Low;
+        QCOMPARE(options.materials(), QcRenderOptions::Materials{});
+        options.quality = QcRenderOptions::Quality::Medium;
+        QCOMPARE(options.materials(), (QcRenderOptions::Materials{.maps = true, .lightHighlights = false}));
+        options.quality = QcRenderOptions::Quality::High;
+        QCOMPARE(options.materials(), (QcRenderOptions::Materials{.maps = true, .lightHighlights = true}));
+    }
+
     void clampHelpers()
     {
         QCOMPARE(QcGameSettings::clampViewDistance(0), QcGameSettings::minViewDistance);

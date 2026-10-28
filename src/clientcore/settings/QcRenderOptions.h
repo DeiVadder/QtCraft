@@ -60,6 +60,17 @@ struct QcRenderOptions
         friend bool operator==(const Water &, const Water &) = default;
     };
 
+    // The material maps of the realistic mode (decision E-908): relief from the normal maps,
+    // smoothness, metal and reflectance for the sun's highlight and the sky's reflection, light of
+    // its own (`maps`); with `lightHighlights` the moving lights also make highlights. Nothing in the
+    // classic mode and on quality Low, which draw flat surfaces.
+    struct Materials
+    {
+        bool maps = false;
+        bool lightHighlights = false;
+        friend bool operator==(const Materials &, const Materials &) = default;
+    };
+
     Mode mode = Mode::Classic;
     Quality quality = Quality::Medium;
     // Brightness of the realistic mode before tonemapping (1: the classic brightness of the mid tones).
@@ -78,6 +89,9 @@ struct QcRenderOptions
     // The water of the quality (Low waves, Fresnel, sky and sun; Medium also refraction and
     // caustics; High also screen-space reflections); nothing in the classic mode.
     Water water() const;
+    // The material maps of the quality (Medium the maps, High also the moving lights' highlights);
+    // none in the classic mode and on Low.
+    Materials materials() const;
 
     // "classic", "realistic"; "low", "medium", "high".
     static QString modeName(Mode mode);

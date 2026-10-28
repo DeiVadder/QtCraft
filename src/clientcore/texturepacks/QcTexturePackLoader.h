@@ -32,6 +32,13 @@ struct Limits
     int maxStoredResolution = 256;
     // Vertical strips of animation frames (decision E-878): at most this many frames.
     int maxFrames = QcTextureAnimation::maxFrames;
+    // The labPBR material maps `<name>_n.png`, `<name>_s.png` (decision E-908): read only when the
+    // realistic mode draws them, after the colour textures and with their own file limit and
+    // budget, so they never push a colour texture out; stored at most mapResolution wide.
+    bool materialMaps = false;
+    int maxMapFiles = 4096;
+    qint64 mapMemoryBudget = qint64{192} * 1024 * 1024;
+    int mapResolution = 128;
 };
 
 // A checked PNG texture: the first frame at the pack's resolution and how many frames the file had,

@@ -103,6 +103,14 @@ QcRenderOptions::Water QcRenderOptions::water() const
     return {};
 }
 
+QcRenderOptions::Materials QcRenderOptions::materials() const
+{
+    if (!realistic() || quality == Quality::Low) {
+        return {};
+    }
+    return {.maps = true, .lightHighlights = quality == Quality::High};
+}
+
 QString QcRenderOptions::modeName(Mode mode)
 {
     return QString::fromLatin1(modeNames[static_cast<std::size_t>(mode)]);

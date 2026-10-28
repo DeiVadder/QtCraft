@@ -1,5 +1,7 @@
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 
+#include "clientcore/materials/QcMaterialMips.h"
+
 #include "clientcore/textures/QcProceduralTexture.h"
 #include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentNames.h"
@@ -137,8 +139,10 @@ struct Listing
             listing.problems.append({relative, QT_TRANSLATE_NOOP("QcTexturePack", "Expected a namespace folder such as textures/qtcraft")});
             continue;
         }
-        // Twice the file limit: room for reporting wrong files without reading an endless folder.
-        const Listing space = listNamespace(folder, std::max<qsizetype>(0, 2 * static_cast<qsizetype>(limits.maxFiles) - listing.files.size()));
+        // Twice the file limits (textures, and maps when they are read): room for reporting wrong files without reading an
+        // endless folder.
+        const Listing space =
+            listNamespace(folder, std::max<qsizetype>(0, (2 * static_cast<qsizetype>(limits.maxFiles + (limits.materialMaps ? limits.maxMapFiles : 0))) - listing.files.size()));
         listing.files.append(space.files);
         listing.problems.append(space.problems);
     }
@@ -187,11 +191,16 @@ public:
 private:
     // Adds one texture file to the pack, or a problem.
     void addTexture(const TextureFile &file);
+    // Adds one material map (QcTexturePack::materialMapOf), or a problem.
+    void addMap(const TextureFile &file);
+    // The colour textures, then (with Limits::materialMaps) the maps, each within its file limit.
+    void addFiles(const QList<TextureFile> &files);
     // At most maxProblems problems and one line for the rest.
     void capProblems();
 
     const Limits &m_limits;
     QcTexturePack m_pack;
+    qint64 m_mapBytes = 0;
 };
 
 void PackLoader::addTexture(const TextureFile &file)
@@ -227,6 +236,68 @@ void PackLoader::addTexture(const TextureFile &file)
     }
 }
 
+void PackLoader::addMap(const TextureFile &file)
+{
+    // Read at the pack's resolution (QImage's smooth scaling would mix the channels where alpha,
+    // height or light, is low), then box-filtered down to the stored size.
+    Limits unscaled = m_limits;
+    unscaled.maxStoredResolution = std::max(m_limits.maxStoredResolution, m_pack.manifest.resolution);
+    const std::expected<QByteArray, Problem> bytes = readFile(file.path, file.relative, m_limits.maxImageFileBytes);
+    std::expected<Image, Problem> image = bytes ? readImage(*bytes, m_pack.manifest.resolution, unscaled) : std::unexpected(bytes.error());
+    if (!image) {
+        image.error().file = file.relative;
+        m_pack.problems.append(image.error());
+        return;
+    }
+
+    const std::optional<QcTexturePack::MapKind> found = QcTexturePack::materialMapOf(file.key);
+    if (!found) {
+        return;
+    }
+    const QcTexturePack::MapKind kind = *found;
+    const int size = std::min(m_pack.manifest.resolution, m_limits.mapResolution);
+    const QImage map = kind == QcTexturePack::MapKind::Normal ? QcMaterialMips::normalAt(image->image, size)
+                                                              : QcMaterialMips::specularAt(image->image, size);
+    if (m_mapBytes + map.sizeInBytes() > m_limits.mapMemoryBudget) {
+        m_pack.problems.append({file.relative, QT_TRANSLATE_NOOP("QcTexturePack", "Skipped: the pack's material maps exceed the memory budget of %1 MiB"),
+                                {QString::number(m_limits.mapMemoryBudget / (qint64{1024} * 1024))}});
+        return;
+    }
+    m_mapBytes += map.sizeInBytes();
+    // The first frame of a strip for every frame of the texture `<name>`.
+    (kind == QcTexturePack::MapKind::Normal ? m_pack.normalMaps : m_pack.specularMaps).insert(file.key.chopped(2), map);
+}
+
+void PackLoader::addFiles(const QList<TextureFile> &files)
+{
+    QList<TextureFile> colour;
+    QList<TextureFile> maps;
+    for (const TextureFile &file : files) {
+        (file.image && QcTexturePack::materialMapOf(file.key) ? maps : colour).append(file);
+    }
+    if (colour.size() > m_limits.maxFiles) {
+        m_pack.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 texture files; the rest was skipped"),
+                                {QString::number(m_limits.maxFiles)}});
+        colour.resize(m_limits.maxFiles);
+    }
+    for (const TextureFile &file : std::as_const(colour)) {
+        addTexture(file);
+    }
+
+    // Without the realistic mode's maps they are not read at all (the classic mode holds none).
+    if (!m_limits.materialMaps) {
+        return;
+    }
+    if (maps.size() > m_limits.maxMapFiles) {
+        m_pack.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 material maps; the rest was skipped"),
+                                {QString::number(m_limits.maxMapFiles)}});
+        maps.resize(m_limits.maxMapFiles);
+    }
+    for (const TextureFile &file : std::as_const(maps)) {
+        addMap(file);
+    }
+}
+
 void PackLoader::capProblems()
 {
     QcTexturePackProblems &problems = m_pack.problems;
@@ -253,14 +324,7 @@ std::expected<QcTexturePack, QcTexturePackProblem> PackLoader::load(const QStrin
 
     Listing listing = listTextures(directory, m_limits);
     m_pack.problems = std::move(listing.problems);
-    if (listing.files.size() > m_limits.maxFiles) {
-        m_pack.problems.append({u"textures"_s, QT_TRANSLATE_NOOP("QcTexturePack", "More than %1 texture files; the rest was skipped"),
-                                {QString::number(m_limits.maxFiles)}});
-        listing.files.resize(m_limits.maxFiles);
-    }
-    for (const TextureFile &file : std::as_const(listing.files)) {
-        addTexture(file);
-    }
+    addFiles(listing.files);
 
     std::expected<QImage, Problem> preview = readPreview(directory, m_pack.manifest, m_limits);
     if (preview) {

@@ -18,6 +18,8 @@ qc_add_test(test_held_item_name SOURCES client/test_held_item_name.cpp LIBRARIES
 qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_base_content qc_app_core)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
+# The material maps of the realistic mode (decision E-908): generator, mip levels, rules, packs.
+qc_add_test(test_material_maps SOURCES client/test_material_maps.cpp LIBRARIES qc_base_content qc_clientcore TIMEOUT 300)
 # Animated textures (decision E-878): frames by time, definitions, pack strips, frames in the atlas.
 qc_add_test(test_texture_animation SOURCES client/test_texture_animation.cpp LIBRARIES qc_base_content qc_clientcore)
 # block.vert's frame choice in float32 with reciprocal division, and the animation clock (E-878).
@@ -212,6 +214,20 @@ qt_add_shaders(test_post_process "test_post_process_prefilter_shaders"
         ${PROJECT_SOURCE_DIR}/src/app/shaders/bloom_down.frag
     OUTPUTS
         shaders/bloom_prefilter.frag.qsb
+)
+# The material maps on the GPU (decision E-908) on QRhi's Null backend, with the receiver shaders
+# baked into the test.
+qc_add_test(test_material_textures SOURCES client/test_material_textures.cpp LIBRARIES qc_app_core qc_base_content)
+qt_add_shaders(test_material_textures "test_material_textures_receiver_shaders"
+    BASE ${PROJECT_SOURCE_DIR}/src/app
+    PREFIX "/"
+    DEFINES QC_SHADOWS=1
+    FILES
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.vert
+        ${PROJECT_SOURCE_DIR}/src/app/shaders/entity.frag
+    OUTPUTS
+        shaders/entity_shadow.vert.qsb
+        shaders/entity_shadow.frag.qsb
 )
 # The sun's shadow map of the realistic mode (decision E-903) on QRhi's Null backend, with the
 # caster shaders baked into the test.

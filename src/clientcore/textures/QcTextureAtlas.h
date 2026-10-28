@@ -11,6 +11,10 @@
 #include <QList>
 #include <QRectF>
 
+#include <memory>
+
+class QcMaterialAtlas;
+
 struct QcTextureAtlasOptions
 {
     // Largest texture edge the GPU takes (QRhi::TextureSizeMax; 8192 until the renderer knows).
@@ -22,6 +26,9 @@ struct QcTextureAtlasOptions
     int maxTileSize = 256;
     // Threads that draw the tiles; 0: half the cores, at most 8.
     int threads = 0;
+    // Also build the material maps (QcMaterialAtlas, decision E-908): only while the realistic
+    // mode draws them, so the classic mode holds no maps.
+    bool materials = false;
 };
 
 // All content textures in one image with its mip levels (decision E-300). Each texture comes from
@@ -35,6 +42,15 @@ public:
     static constexpr auto missingTextureName = "qtcraft:missing";
 
     using Options = QcTextureAtlasOptions;
+    // Where the tile at an index of the layout came from (decision E-908): the index of its
+    // definition in the content's textures (-1 for the placeholder and the tiles the game draws
+    // itself) and the id of the pack that gave it ("" for the content). Later frames of an
+    // animation name their texture's definition too.
+    struct TileSource
+    {
+        qsizetype definition = -1;
+        QString pack;
+    };
 
     static QcTextureAtlas build(const QcContentRegistry &content, const QcTexturePackStack &packs = {}, const Options &options = {});
 
@@ -78,6 +94,12 @@ public:
     int animationCycleTicks() const;
     static constexpr int maxCycleTicks = 1 << 20;
 
+    // The layout of the tiles (also of the material maps) and where each tile came from.
+    const QcAtlasLayout &layout() const { return m_layout; }
+    const QList<TileSource> &tileSources() const { return m_tileSources; }
+    // The material maps when built with Options::materials, else null.
+    const std::shared_ptr<const QcMaterialAtlas> &materials() const { return m_materials; }
+
     // Content problems (English, for the log).
     QStringList problems() const { return m_problems; }
     // For the player: the atlas uses a lower resolution than the packs asked for.
@@ -119,7 +141,11 @@ private:
     // One problem per texture with a transparent texel that a block of the opaque layer uses: it
     // is drawn without alpha test (decision E-756).
     QStringList transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const;
+    // One problem per face texture of a block that the atlas does not have.
+    QStringList unknownTextures(const QcContentRegistry &content) const;
 
+    QList<TileSource> m_tileSources;
+    std::shared_ptr<const QcMaterialAtlas> m_materials;
     QStringList m_problems;
     QcTexturePackProblems m_notices;
     QHash<QString, int> m_sources;

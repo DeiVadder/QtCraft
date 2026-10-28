@@ -10,6 +10,7 @@
 #include <QString>
 
 #include <memory>
+#include <optional>
 
 // A loaded texture pack (decision E-297): its manifest and the textures it brings, keyed by the
 // content's texture name ("qtcraft:stone"). Images are checked and decoded at load time and never
@@ -33,6 +34,11 @@ struct QcTexturePack
     // The frames after the first of the images that are vertical strips of animation frames
     // (decision E-878), at the size of their first frame.
     QHash<QString, QList<QImage>> laterFrames;
+    // The labPBR material maps of the realistic mode (decision E-908) by the texture they belong to:
+    // `<name>_n.png` (normal, occlusion, height) and `<name>_s.png` (smoothness, reflectance or
+    // metal, porosity, emission), at the pack's resolution.
+    QHash<QString, QImage> normalMaps;
+    QHash<QString, QImage> specularMaps;
     // Procedural definitions (the fields of content/*/textures/*.json).
     QHash<QString, QJsonObject> specs;
     // Optional preview from the manifest's "preview".
@@ -40,6 +46,20 @@ struct QcTexturePack
     QcTexturePackProblems problems;
     // Bytes of all decoded images (checked against the memory budget while loading).
     qint64 decodedBytes = 0;
+
+    enum class MapKind { Normal, Specular };
+    // Whether the image key ("qtcraft:stone_n") names a material map: the suffixes `_n` and `_s`
+    // are reserved for them.
+    static std::optional<MapKind> materialMapOf(const QString &key)
+    {
+        if (key.endsWith(QLatin1StringView("_n"))) {
+            return MapKind::Normal;
+        }
+        if (key.endsWith(QLatin1StringView("_s"))) {
+            return MapKind::Specular;
+        }
+        return std::nullopt;
+    }
 
     bool provides(const QString &key) const { return images.contains(key) || specs.contains(key); }
 };

@@ -65,6 +65,10 @@ public:
     std::shared_ptr<const QcTextureAtlas> enterWorld(std::shared_ptr<const QcContentRegistry> content);
     // The world ended: its content is let go and no atlas of it is handed out any more.
     void leaveWorld();
+    // Whether the world's atlas also carries the material maps of the realistic mode (decision
+    // E-908); a change builds the atlas of a running world again in the background.
+    void setMaterials(bool materials);
+    [[nodiscard]] bool materials() const { return m_materials; }
 
     QVariantList packs() const;
     QString status() const { return m_status; }
@@ -119,6 +123,7 @@ private:
     quint64 m_generation = 1;
     // A change arrived while a build was running: build again when it ends.
     bool m_buildAgain = false;
+    bool m_materials = false;
     // A build runs on the worker; its result has not been taken yet.
     bool m_building = false;
     QString m_status;

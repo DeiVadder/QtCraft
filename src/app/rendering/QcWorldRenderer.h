@@ -2,6 +2,7 @@
 
 #include "app/rendering/QcFramePlan.h"
 #include "app/rendering/QcGpuMeshStore.h"
+#include "app/rendering/QcMaterialTextures.h"
 #include "app/rendering/QcPostProcess.h"
 #include "app/rendering/QcRenderSample.h"
 #include "app/rendering/QcShadowMap.h"
@@ -68,6 +69,9 @@ private:
     // The sun shadows of the realistic mode's quality (decision E-903); the atlas pipelines are
     // released whenever they no longer fit them (another map, receivers with or without shadows).
     void prepareShadows();
+    // The material maps for the receivers (decision E-908): the pipelines and bindings that refer to
+    // other textures are released first.
+    void prepareMaterials(QRhiResourceUpdateBatch *updates);
     // The cascades of this frame for the casters and the receivers.
     void uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D drawCamera);
     // The water of the realistic mode (decision E-906): the copy of the scene and the water's
@@ -168,6 +172,10 @@ private:
     // The scene target, bloom and composite of the realistic mode (decision E-899).
     // NOLINT(qc-member-access): an owned part like m_pass; its own methods change it, the renderer only calls them.
     QcPostProcess m_post;
+    // The material maps of the realistic mode (decision E-908), declared before the shadow map
+    // whose receivers' bindings refer to them.
+    // NOLINT(qc-member-access): an owned part like m_post; its own methods change it, the renderer only calls them.
+    QcMaterialTextures m_materials;
     // The sun's shadow map of the realistic mode (decision E-903).
     // NOLINT(qc-member-access): an owned part like m_post; its own methods change it, the renderer only calls them.
     QcShadowMap m_shadows;

@@ -70,13 +70,13 @@ QList<Entry> scan(const QList<Root> &roots)
     return entries;
 }
 
-LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries)
+LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries, const QcTexturePackLoader::Limits &limits)
 {
     LoadedStack loaded;
     for (const QString &id : ids) {
         const auto entry = std::ranges::find(entries, id, &Entry::id);
         std::expected<QcTexturePack, QcTexturePackProblem> pack = entry != entries.end()
-                                                                     ? QcTexturePackLoader::load(entry->directory, id, entry->origin)
+                                                                     ? QcTexturePackLoader::load(entry->directory, id, entry->origin, limits)
                                                                      : std::unexpected(QcTexturePackProblem{});
         if (!pack) {
             loaded.missing.append(id);

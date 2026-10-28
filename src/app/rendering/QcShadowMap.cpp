@@ -33,8 +33,11 @@ struct ReceiverUniforms
     float texel[4];
     // x, y: where the shadows begin and end to fade out (blocks from the camera).
     float fade[4];
+    // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
+    // highlights, z the strength of the relief, w of the highlights and reflections.
+    float material[4];
 };
-static_assert(sizeof(ReceiverUniforms) == 320);
+static_assert(sizeof(ReceiverUniforms) == 336);
 
 // std140 layout of the Caster block of shadow.vert and shadow_entity.vert.
 struct CasterUniforms
@@ -221,6 +224,10 @@ void QcShadowMap::upload(QRhiResourceUpdateBatch *updates, const Frame &frame)
     receivers.texel[3] = static_cast<float>(m_gpu.shadows.filterTaps);
     receivers.fade[0] = fadeStart * m_gpu.shadows.distance;
     receivers.fade[1] = m_gpu.shadows.distance;
+    // Checked here, not in the shader (fast GPU maths may drop isnan): a value that is not finite is 0.
+    for (std::size_t i = 0; i < frame.material.size(); ++i) {
+        receivers.material[i] = std::isfinite(frame.material[i]) ? frame.material[i] : 0.0f;
+    }
     updates->updateDynamicBuffer(m_gpu.receiverUniforms.get(), 0, sizeof(ReceiverUniforms), &receivers);
     setCasts(strength > 0.0f);
 }
@@ -235,7 +242,7 @@ QRhiCommandBuffer::DynamicOffset QcShadowMap::casterOffset(int index) const
     return {0, static_cast<quint32>(index) * m_gpu.casterStride};
 }
 
-QRhiShaderResourceBindings *QcShadowMap::receiverBindings(const QcWorldDeviceResources &device)
+QRhiShaderResourceBindings *QcShadowMap::receiverBindings(const QcWorldDeviceResources &device, const QList<QRhiShaderResourceBinding> &materials)
 {
     if (m_gpu.receiverBindings) {
         return m_gpu.receiverBindings.get();
@@ -246,15 +253,17 @@ QRhiShaderResourceBindings *QcShadowMap::receiverBindings(const QcWorldDeviceRes
 
     constexpr auto vertexAndFragment = QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage;
     constexpr auto fragment = QRhiShaderResourceBinding::FragmentStage;
-    m_gpu.receiverBindings.reset(m_gpu.rhi->newShaderResourceBindings());
-    m_gpu.receiverBindings->setBindings({
+    QList<QRhiShaderResourceBinding> entries{
         QRhiShaderResourceBinding::uniformBuffer(0, vertexAndFragment, device.frameUniforms.get()),
         QRhiShaderResourceBinding::sampledTexture(1, fragment, device.atlasTexture.get(), device.atlasSampler.get()),
         QRhiShaderResourceBinding::sampledTexture(2, QRhiShaderResourceBinding::VertexStage, device.animationTexture.get(),
                                                   device.animationSampler.get()),
         QRhiShaderResourceBinding::uniformBuffer(3, fragment, m_gpu.receiverUniforms.get()),
         QRhiShaderResourceBinding::sampledTexture(4, fragment, m_gpu.map.get(), m_gpu.compare.get()),
-    });
+    };
+    entries.append(materials);
+    m_gpu.receiverBindings.reset(m_gpu.rhi->newShaderResourceBindings());
+    m_gpu.receiverBindings->setBindings(entries.cbegin(), entries.cend());
     if (!m_gpu.receiverBindings->create()) {
         qCWarning(lcRenderer) << "Sun shadows: the GPU refused the receivers' bindings; the realistic mode draws without them";
         const Request request{m_gpu.rhi, m_gpu.shadows};
@@ -275,10 +284,10 @@ QList<QRhiShaderResourceBinding> QcShadowMap::receiverEntries() const
             QRhiShaderResourceBinding::sampledTexture(4, fragment, m_gpu.map.get(), m_gpu.compare.get())};
 }
 
-QRhiShaderResourceBindings *QcShadowMap::framedMapBindings(const QcWorldDeviceResources &device)
+QRhiShaderResourceBindings *QcShadowMap::framedMapBindings(const QcWorldDeviceResources &device, const QList<QRhiShaderResourceBinding> &materials)
 {
     if (!m_gpu.framedMapBindings && ready() && device.framedMaps.bindings()) {
-        m_gpu.framedMapBindings = device.framedMaps.bindingsWith(m_gpu.rhi, receiverEntries());
+        m_gpu.framedMapBindings = device.framedMaps.bindingsWith(m_gpu.rhi, receiverEntries() + materials);
     }
     return m_gpu.framedMapBindings.get();
 }

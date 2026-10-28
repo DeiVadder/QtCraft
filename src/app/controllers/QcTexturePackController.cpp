@@ -98,6 +98,21 @@ void QcTexturePackController::leaveWorld()
     m_content.reset();
 }
 
+void QcTexturePackController::setMaterials(bool materials)
+{
+    // The same value again changes nothing.
+    if (materials == m_materials) {
+        return;
+    }
+    m_materials = materials;
+    // Packs are read again with or without their material maps (QcTexturePackLoader::Limits).
+    m_loaded.clear();
+    if (m_content) {
+        ++m_generation;
+        startBuild();
+    }
+}
+
 QString QcTexturePackController::userDirectory() const
 {
     return QcTexturePackLibrary::userDirectory();
@@ -170,6 +185,7 @@ QcTextureStackBuild::Request QcTexturePackController::request() const
     request.previews = m_previews;
     request.content = m_content;
     request.options.maxExtent = QcGpuLimits::maxTextureSize();
+    request.options.materials = materials();
     return request;
 }
 

@@ -19,11 +19,24 @@ void QcWorldRenderer::prepareShadows()
         m_waterDraw.reset();
         m_water.releaseAtlas();
     }
-    const bool ready = m_shadows.prepare(m_device.rhi, wanted);
+    // The receivers also read the material maps (decision E-908): without even their flat textures
+    // the pipelines are built without receiving.
+    const bool ready = m_shadows.prepare(m_device.rhi, wanted) && m_materials.usable(m_device.rhi);
     // Pipelines built for the other case (shadows came or went) are built again.
     if (m_pass.atlasPipelinesTried && m_pass.shadowReceivers != ready) {
         m_pass.releaseAtlasPipelines();
     }
+}
+
+void QcWorldRenderer::prepareMaterials(QRhiResourceUpdateBatch *updates)
+{
+    const bool wanted = m_frame.render.materials().maps;
+    // The pipelines with the receivers' bindings and the bindings go before the textures they refer to.
+    if (m_materials.replaces(m_device.rhi, m_frame.materials, wanted)) {
+        m_pass.releaseAtlasPipelines();
+        m_shadows.releaseAtlasBindings();
+    }
+    m_materials.prepare(m_device.rhi, m_frame.materials, wanted, updates);
 }
 
 void QcWorldRenderer::uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D drawCamera)
@@ -31,7 +44,10 @@ void QcWorldRenderer::uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D 
     if (!m_shadows.ready()) {
         return;
     }
-    const QcShadowMap::Frame frame{m_frame.camera.position, m_frame.camera.forward(), drawCamera, QcShadowCascades::light(m_frame.sky)};
+    const QcRenderOptions::Materials materials = m_frame.render.materials();
+    const bool maps = materials.maps && m_materials.hasMaps();
+    const QcShadowMap::Frame frame{m_frame.camera.position, m_frame.camera.forward(), drawCamera, QcShadowCascades::light(m_frame.sky),
+                                   {maps ? 1.0f : 0.0f, maps && materials.lightHighlights ? 1.0f : 0.0f, 1.0f, 1.0f}};
     m_shadows.upload(updates, frame);
 }
 

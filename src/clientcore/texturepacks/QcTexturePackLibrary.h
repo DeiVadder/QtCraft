@@ -1,6 +1,7 @@
 #pragma once
 
 #include "clientcore/texturepacks/QcTexturePack.h"
+#include "clientcore/texturepacks/QcTexturePackLoader.h"
 
 #include <QList>
 #include <QString>
@@ -50,8 +51,8 @@ struct LoadedStack
 
 // The packs with the given ids in that order (the first has the highest priority), loaded from the
 // scanned entries; ids without an entry or whose manifest is invalid are left out and listed in
-// `missing`.
-[[nodiscard]] LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries);
+// `missing`; `limits` for every pack (with or without material maps).
+[[nodiscard]] LoadedStack loadStack(const QStringList &ids, const QList<Entry> &entries, const QcTexturePackLoader::Limits &limits = {});
 
 // The active ids after switching `id` on (it goes on top, with the highest priority) or off.
 QStringList withActive(QStringList active, const QString &id, bool on);

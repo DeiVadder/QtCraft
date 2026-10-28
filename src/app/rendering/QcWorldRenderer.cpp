@@ -81,6 +81,7 @@ void QcWorldRenderer::replaceDevice()
     m_water.reset();
     m_post.reset();
     m_shadows.reset();
+    m_materials.reset();
     m_baseVertex = rhi()->isFeatureSupported(QRhi::BaseVertex);
     // Test hook QTCRAFT_NO_BASE_INSTANCE=1: the path of GPUs without base instances (decision E-883)
     // on one that has them, for comparison screenshots.
@@ -130,6 +131,7 @@ void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *upda
         m_water.release();
         m_post.release();
         m_shadows.release();
+        m_materials.release();
     }
 }
 
@@ -218,11 +220,16 @@ void QcWorldRenderer::prepareResources(QRhiResourceUpdateBatch *updates)
         m_shadows.releaseAtlasBindings();
         m_device.replaceAtlas(m_frame.atlas, m_frame.animationMap, m_frame.atlasVersion, updates);
     }
+    if (plan().postProcessed()) {
+        prepareMaterials(updates);
+    }
     // Without an atlas texture (the GPU refused even the placeholder) the world is not drawn; a
     // refused pipeline is tried again only with a new atlas or pass group.
     if (m_device.hasAtlas() && !m_pass.atlasPipelinesTried) {
         // The realistic mode's pipelines receive the sun shadows while there is a map (decision E-903).
-        QRhiShaderResourceBindings *const receivers = plan().postProcessed() ? m_shadows.receiverBindings(m_device) : nullptr;
+        const QList<QRhiShaderResourceBinding> materials = m_materials.entries();
+        QRhiShaderResourceBindings *const receivers =
+            plan().postProcessed() && !materials.isEmpty() ? m_shadows.receiverBindings(m_device, materials) : nullptr;
         m_pass.createAtlasPipelines(m_device.rhi, drawTarget(), receivers ? receivers : m_device.atlasBindings(), receivers != nullptr);
     }
     // The water's pipeline before the passes (decision E-906), with the shadow receivers' entries
@@ -531,7 +538,7 @@ void QcWorldRenderer::drawEntities(QRhiCommandBuffer *commandBuffer)
     // bindings must have the pipeline's layout (decision E-896): with the receivers' bindings when
     // the pipeline receives the sun shadows (decision E-903).
     QRhiShaderResourceBindings *const framedMaps =
-        m_pass.shadowReceivers ? m_shadows.framedMapBindings(m_device) : m_device.framedMaps.bindings();
+        m_pass.shadowReceivers ? m_shadows.framedMapBindings(m_device, m_materials.entries()) : m_device.framedMaps.bindings();
     if (m_device.framedMapBuffers.indexCount > 0 && m_pass.entityPipeline && framedMaps
         && fitsLayout(m_pass.entityPipeline.get(), framedMaps)) {
         usePipeline(commandBuffer, m_pass.entityPipeline.get(), framedMaps);

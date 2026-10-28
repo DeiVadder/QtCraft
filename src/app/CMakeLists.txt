@@ -112,6 +112,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
+    rendering/QcMaterialTextures.h rendering/QcMaterialTextures.cpp
     rendering/QcPostProcess.h rendering/QcPostProcess.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
     rendering/QcRangeAllocator.h rendering/QcRangeAllocator.cpp

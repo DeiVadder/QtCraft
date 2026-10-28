@@ -62,6 +62,7 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
     const qint64 iconsNs = timer.nsecsElapsed() - iconsStart;
     if (m_parts.view) {
         m_parts.view->setAtlas(atlas->levels(), atlas->animationMap(), atlas->animationCycleTicks());
+        m_parts.view->setMaterials(atlas->materials());
     }
     const qint64 totalNs = timer.nsecsElapsed();
     qCInfo(lcGame).noquote() << u"Texture atlas applied in %1 ms (item icons %2 ms)"_s.arg(static_cast<double>(totalNs) / 1e6, 0, 'f', 1)

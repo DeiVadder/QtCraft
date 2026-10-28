@@ -1,5 +1,6 @@
 #include "clientcore/textures/QcTextureAtlas.h"
 
+#include "clientcore/materials/QcMaterialAtlas.h"
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/texturepacks/QcTextureSources.h"
 #include "clientcore/textures/QcAlphaCoverage.h"
@@ -178,6 +179,7 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
     level.fill(Qt::transparent);
     layout.place(level, 0, missingTile(atlas.m_tileSize));
     atlas.m_uvs.insert(QString::fromLatin1(missingTextureName), layout.uv(0));
+    atlas.m_tileSources.append(TileSource{});
 
     const std::vector<Tile> tiles = drawTiles(definitions, packs, atlas.m_tileSize, options.threads);
 
@@ -192,6 +194,7 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         }
         layout.place(level, index, resolved->image);
         atlas.m_uvs.insert(definition.name, layout.uv(index));
+        atlas.m_tileSources.append({i, resolved->pack});
         if (animations[i].animated()) {
             pending.append({definition.name, index, animations[i], QList<QImage>{resolved->image} + resolved->laterFrames});
         }
@@ -203,6 +206,7 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         QcAlphaCoverage::fillTransparentColour(tile);
         layout.place(level, index, tile);
         atlas.m_uvs.insert(name, layout.uv(index));
+        atlas.m_tileSources.append(TileSource{});
         ++index;
     }
     index = atlas.placeLaterFrames(level, pending, index);
@@ -215,15 +219,14 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
         atlas.m_levels.append(std::move(smaller));
     }
 
-    for (const QcBlockDefinition &block : content.blocks()) {
-        for (const QString &texture : block.faceTextures) {
-            if (!texture.isEmpty() && !atlas.m_uvs.contains(texture)) {
-                atlas.m_problems.append(u"Block %1 uses unknown texture %2"_s.arg(block.name, texture));
-            }
-        }
-    }
+    atlas.m_problems.append(atlas.unknownTextures(content));
     atlas.m_problems.append(atlas.transparentTexelsOfOpaqueBlocks(content));
     atlas.m_problems.removeDuplicates();
+    if (options.materials) {
+        atlas.m_materials = std::make_shared<const QcMaterialAtlas>(QcMaterialAtlas::build(atlas, content, packs));
+        const QList<QString> names = atlas.m_uvs.keys();
+        atlas.m_problems.append(QcMaterialAtlas::clashes(QSet<QString>(names.cbegin(), names.cend()), packs));
+    }
     return atlas;
 }
 
@@ -235,6 +238,8 @@ qsizetype QcTextureAtlas::placeLaterFrames(QImage &level, const QList<PendingFra
         const qsizetype later = next;
         for (int frame = 1; frame < texture.animation.frames; ++frame) {
             m_layout.place(level, next, texture.frames[std::min<qsizetype>(frame, texture.frames.size() - 1)]);
+            // A later frame's maps come from the same source as its first frame's.
+            m_tileSources.append(m_tileSources.value(texture.first));
             ++next;
         }
         // The shader reads the tile index in two bytes (block.vert): further on, the texture stays
@@ -276,6 +281,19 @@ int QcTextureAtlas::animationCycleTicks() const
         }
     }
     return static_cast<int>(cycle);
+}
+
+QStringList QcTextureAtlas::unknownTextures(const QcContentRegistry &content) const
+{
+    QStringList problems;
+    for (const QcBlockDefinition &block : content.blocks()) {
+        for (const QString &texture : block.faceTextures) {
+            if (!texture.isEmpty() && !m_uvs.contains(texture)) {
+                problems.append(u"Block %1 uses unknown texture %2"_s.arg(block.name, texture));
+            }
+        }
+    }
+    return problems;
 }
 
 QStringList QcTextureAtlas::transparentTexelsOfOpaqueBlocks(const QcContentRegistry &content) const

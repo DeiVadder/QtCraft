@@ -106,12 +106,12 @@ private slots:
         QVERIFY(resources.hasAtlas());
 
         QcShadowMap shadows;
-        QVERIFY(!shadows.receiverBindings(resources));
+        QVERIFY(!shadows.receiverBindings(resources, {}));
         QVERIFY(!shadows.casters(resources));
         QVERIFY(shadows.prepare(m_rhi.get(), shadowsOf(Quality::Medium)));
-        QRhiShaderResourceBindings *receivers = shadows.receiverBindings(resources);
+        QRhiShaderResourceBindings *receivers = shadows.receiverBindings(resources, {});
         QVERIFY(receivers);
-        QCOMPARE(shadows.receiverBindings(resources), receivers);
+        QCOMPARE(shadows.receiverBindings(resources, {}), receivers);
         // The atlas bindings and two more: another layout than the classic pipelines'.
         QCOMPARE(std::distance(receivers->cbeginBindings(), receivers->cendBindings()), 5);
         QVERIFY(!receivers->isLayoutCompatible(resources.atlasBindings()));
@@ -122,7 +122,7 @@ private slots:
         // A new atlas: what referred to the old one goes, and is made again for the new one.
         shadows.releaseAtlasBindings();
         resources.replaceAtlas({}, {}, 2, updates);
-        QVERIFY(shadows.receiverBindings(resources));
+        QVERIFY(shadows.receiverBindings(resources, {}));
         QVERIFY(shadows.casters(resources));
 
         shadows.upload(updates, noon());
@@ -149,7 +149,7 @@ private slots:
         QcWorldDeviceResources resources = device(updates);
         QcShadowMap shadows;
         QVERIFY(shadows.prepare(m_rhi.get(), shadowsOf(Quality::Medium)));
-        QVERIFY(!shadows.framedMapBindings(resources));
+        QVERIFY(!shadows.framedMapBindings(resources, {}));
         QImage map(QcMapData::size, QcMapData::size, QImage::Format_RGBA8888);
         map.fill(Qt::darkGreen);
         QList<QcFramedMapAtlas::Tile> tiles(QcFramedMapAtlas::tileCount);
@@ -170,10 +170,10 @@ private slots:
         };
 
         const std::unique_ptr<QRhiGraphicsPipeline> classic = entityPipeline(resources.atlasBindings(), QString());
-        const std::unique_ptr<QRhiGraphicsPipeline> receiving = entityPipeline(shadows.receiverBindings(resources), u"_shadow"_s);
+        const std::unique_ptr<QRhiGraphicsPipeline> receiving = entityPipeline(shadows.receiverBindings(resources, {}), u"_shadow"_s);
         QVERIFY(classic && receiving);
         QRhiShaderResourceBindings *const framed = resources.framedMaps.bindings();
-        QRhiShaderResourceBindings *const framedReceiving = shadows.framedMapBindings(resources);
+        QRhiShaderResourceBindings *const framedReceiving = shadows.framedMapBindings(resources, {});
         QVERIFY(framed && framedReceiving);
         QVERIFY(classic->shaderResourceBindings()->isLayoutCompatible(framed));
         QVERIFY(receiving->shaderResourceBindings()->isLayoutCompatible(framedReceiving));
@@ -182,7 +182,7 @@ private slots:
 
         // Released with the other bindings that refer to the map.
         shadows.releaseAtlasBindings();
-        QVERIFY(shadows.framedMapBindings(resources));
+        QVERIFY(shadows.framedMapBindings(resources, {}));
         updates->release();
         QCOMPARE(m_rhi->endOffscreenFrame(), QRhi::FrameOpSuccess);
     }

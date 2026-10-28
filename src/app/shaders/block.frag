@@ -84,6 +84,9 @@ layout(std140, binding = 3) uniform Shadow {
     vec4 texel;
     // x, y: the distance from the camera where the shadows begin and end to fade out.
     vec4 fade;
+    // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
+    // highlights, z the strength of the relief, w of the highlights and reflections.
+    vec4 material;
 } shadow;
 
 layout(binding = 4) uniform sampler2DShadow shadowMap;
@@ -157,6 +160,7 @@ vec3 shadowedLight(vec4 parts, vec3 colour)
     vec3 sky = max(parts.y * colour, vec3(parts.z));
     return parts.x * max(sky, parts.w * warmLight);
 }
+
 #endif
 
 // Upper bound of the sample loop (frame.atlas.w is at most this): a constant bound the compiler
@@ -239,6 +243,165 @@ vec4 sampleAtlas(vec2 uv, vec2 dx, vec2 dy, float worldStep, float alphaBias)
     return calmCutout(sum / float(count), uv, lod, alphaBias, lastLevel);
 }
 
+#ifdef QC_SHADOWS
+// The material maps (decision E-908), labPBR-encoded like the texture packs' (QcMaterialSynthesizer):
+// normal map xy the tangent-space normal (y up in the picture), z the material's occlusion;
+// specular map r the perceptual smoothness, g F0 * 255 or a metal code, b porosity, a emission.
+// Declared and first read after the atlas and the shadow map (SPIRV-Cross numbers the textures
+// for Metal in the order the source first reads them): every receiver's shader then has the shadow
+// map at texture 0 and the atlas at 1 like entity.frag, and these after them (decision E-903).
+layout(binding = 5) uniform sampler2D normalMap;
+layout(binding = 6) uniform sampler2D specularMap;
+
+// `x` normalised, `fallback` for a zero vector (normalize() of it is NaN).
+vec3 safeNormalize(vec3 x, vec3 fallback)
+{
+    float square = dot(x, x);
+    return square > 1e-12 ? x * inversesqrt(square) : fallback;
+}
+
+struct Surface
+{
+    vec3 normal;
+    float occlusion;
+    float roughness;
+    vec3 f0;
+    float metal;
+    float emission;
+};
+
+// F0 of labPBR's hardcoded metals 230..237 (iron, gold, aluminium, chrome, copper, lead, platinum,
+// silver); 255 takes the texture's colour.
+vec3 metalF0(float code, vec3 albedo)
+{
+    if (code > 254.5)
+        return albedo;
+    const vec3 metals[8] = vec3[8](vec3(0.56, 0.57, 0.58), vec3(1.0, 0.71, 0.29), vec3(0.91, 0.92, 0.92), vec3(0.55, 0.56, 0.55),
+                                   vec3(0.95, 0.64, 0.54), vec3(0.63, 0.63, 0.64), vec3(0.67, 0.64, 0.58), vec3(0.95, 0.93, 0.88));
+    return metals[clamp(int(code - 229.5), 0, 7)];
+}
+
+// The surface at `uv` facing `n` (the face's normal, towards the camera) with the atlas
+// coordinates' derivatives `dx`, `dy` and the position's `stepX`, `stepY`: the normal from the
+// map in the frame the derivatives give (no tangents in the vertex), at the level of the pixel's
+// footprint, never past the last level whose tiles do not mix.
+Surface surfaceAt(vec2 uv, vec2 dx, vec2 dy, vec3 stepX, vec3 stepY, vec3 n, vec3 albedo)
+{
+    // The maps' tiles are at most 128 pixels (QcMaterialAtlas::maxTileSize): 160 per cell.
+    float cellPixels = min(frame.atlas.z, 160.0);
+    vec2 pixels = frame.atlas.xy * cellPixels;
+    float footprint = max(length(dx * pixels), length(dy * pixels));
+    // 10 pixels per cell at the last level whose tiles do not mix (lastCellPixels below).
+    float lod = clamp(log2(max(footprint, 1.0)), 0.0, log2(max(cellPixels / 10.0, 1.0)));
+    vec4 normalTexel = textureLod(normalMap, uv, lod);
+    vec4 specularTexel = textureLod(specularMap, uv, lod);
+
+    Surface surface;
+    vec2 xy = (normalTexel.xy * 2.0 - 1.0) * shadow.material.z;
+    vec3 tangentNormal = vec3(xy, sqrt(max(1.0 - dot(xy, xy), 0.0)));
+    vec3 across = cross(stepY, n);
+    vec3 along = cross(n, stepX);
+    // The frame carries the sign of dot(n, stepX x stepY): it flips with the backend's y direction of
+    // the framebuffer and on back faces (glass, ice), so it is turned back into n's handedness.
+    float handedness = dot(n, cross(stepX, stepY)) < 0.0 ? -1.0 : 1.0;
+    vec3 t = (across * dx.x + along * dy.x) * handedness;
+    vec3 b = (across * dx.y + along * dy.y) * handedness;
+    float scale = inversesqrt(max(max(dot(t, t), dot(b, b)), 1e-20));
+    // Atlas rows run down the picture, the map's y up it.
+    surface.normal = safeNormalize(t * scale * tangentNormal.x - b * scale * tangentNormal.y + n * tangentNormal.z, n);
+    surface.occlusion = normalTexel.z;
+    float smoothness = specularTexel.r;
+    surface.roughness = max((1.0 - smoothness) * (1.0 - smoothness), 0.06);
+    float code = specularTexel.g * 255.0;
+    surface.metal = code > 229.5 ? 1.0 : 0.0;
+    surface.f0 = code > 229.5 ? metalF0(code, albedo) : vec3(code / 255.0);
+    // 0 is no light in the atlas (QcMaterialSynthesizer::packEmission).
+    surface.emission = specularTexel.a;
+    return surface;
+}
+
+// GGX highlight of a light from `l` seen from `v` on `surface`, times the cosine at the surface,
+// with Schlick's Fresnel and a matching visibility term.
+vec3 highlight(Surface surface, vec3 l, vec3 v)
+{
+    vec3 h = safeNormalize(l + v, surface.normal);
+    float nl = max(dot(surface.normal, l), 0.0);
+    float nv = max(dot(surface.normal, v), 1e-3);
+    float nh = max(dot(surface.normal, h), 0.0);
+    float a2 = surface.roughness * surface.roughness;
+    float d = a2 / (3.14159265 * pow(nh * nh * (a2 - 1.0) + 1.0, 2.0));
+    float k = 0.5 * surface.roughness;
+    float visibility = 0.25 / ((nl * (1.0 - k) + k) * (nv * (1.0 - k) + k));
+    vec3 fresnel = surface.f0 + (1.0 - surface.f0) * pow(clamp(1.0 - dot(h, v), 0.0, 1.0), 5.0);
+    return min(d * visibility, 12.0) * fresnel * nl;
+}
+
+// How the relief turns a light from `l` on `surface` compared with the flat face `n`: brighter
+// where it faces the light, darker where it turns away.
+float relief(Surface surface, vec3 n, vec3 l)
+{
+    return clamp(1.0 + 1.5 * (dot(surface.normal, l) - dot(n, l)), 0.7, 1.3);
+}
+
+// The light of a surface with its material: the sky light coloured by the sun's shadow (as
+// skyColour(), with the relief towards the sun), the sky's fill and the block light brighter on
+// the parts of the relief that face up, the material's occlusion over all of it.
+vec3 materialLight(Surface surface, vec3 n, float sunLit, vec4 parts)
+{
+    vec3 colour = vec3(1.0);
+    float strength = shadow.toLight.w;
+    if (strength > 0.0) {
+        vec3 lit = shadow.litTint.rgb * sunLit * relief(surface, n, shadow.toLight.xyz);
+        vec3 shaded = mix(shadow.shadowTint.rgb * shadow.litTint.w, lit, min(sunLit, 1.0));
+        colour = mix(vec3(1.0), max(shaded, lit), strength);
+    }
+    float fill = clamp(1.0 + 0.5 * (surface.normal.y - n.y), 0.8, 1.2);
+    vec3 sky = max(parts.y * colour * fill, vec3(parts.z));
+    return parts.x * surface.occlusion * max(sky, parts.w * fill * warmLight);
+}
+
+// The highlights and reflections of `surface`: the sun's or moon's highlight where it is lit, the
+// sky in the surface's reflection (its horizon colour, as much as the sky reaches the surface),
+// the block light's reflection on metals in the dark, and with lightHighlights the moving lights'.
+vec3 materialShine(Surface surface, vec3 p, float sunLit, vec4 parts, int movingCount)
+{
+    vec3 v = safeNormalize(-p, surface.normal);
+    vec3 shine = vec3(0.0);
+    if (shadow.toLight.w > 0.0)
+        shine += highlight(surface, shadow.toLight.xyz, v) * shadow.litTint.rgb * shadow.toLight.w * sunLit;
+    float nv = max(dot(surface.normal, v), 0.0);
+    float smoothness = 1.0 - sqrt(surface.roughness);
+    vec3 grazing = max(vec3(smoothness), surface.f0);
+    vec3 fresnel = surface.f0 + (grazing - surface.f0) * pow(clamp(1.0 - nv, 0.0, 1.0), 5.0);
+    // The sky's light around the surface: its horizon colour lifted towards white (the sun-lit
+    // world around reflects too), as much as the sky reaches the surface; block light in the dark.
+    vec3 environment = max((0.5 * frame.fogColor.rgb + 0.5) * parts.y, warmLight * parts.w * 0.6) * surface.occlusion;
+    shine += fresnel * environment * smoothness * smoothness;
+    if (shadow.material.y > 0.5) {
+        for (int i = 0; i < 16; ++i) {
+            if (i >= movingCount)
+                break;
+            vec4 light = frame.lights[i];
+            float colour = floor(light.w / 16.0);
+            float level = light.w - 16.0 * colour;
+            vec3 toLight = light.xyz - p;
+            float brightness = clamp((level - length(toLight)) / 15.0, 0.0, 1.0);
+            shine += highlight(surface, safeNormalize(toLight, surface.normal), v) * brightness * (colour > 0.5 ? glowLight : warmLight);
+        }
+    }
+    return shine * shadow.material.w;
+}
+
+// The share of the sun's light reaching `p` on a face `n`: facing it and outside the shadow.
+float sunLight(vec3 p, vec3 n, float distance)
+{
+    if (shadow.toLight.w <= 0.0)
+        return 0.0;
+    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.toLight.xyz)) : 1.0;
+    return facing > 0.0 ? facing * sunVisibility(p, n, distance) : 0.0;
+}
+#endif
+
 void main()
 {
     // Derivatives before any branch that depends on the pixel. The next frame of a blended face is
@@ -256,22 +419,47 @@ void main()
         discard;
 #endif
     vec3 light = vLight;
+    int movingCount = int(frame.animation.z + 0.5);
 #ifdef QC_SHADOWS
-    // Without shadows (no light above the horizon, overcast) the light of the vertex as without them.
-    if (shadow.toLight.w > 0.0)
+    // With the material maps (decision E-908; faces with a normal, not crossed plants): relief,
+    // occlusion, highlights, reflections and light of its own. The shadow map is read first.
+    bool material = shadow.material.x > 0.5 && dot(vNormal, vNormal) > 0.5;
+    Surface surface;
+    float sunLit = 0.0;
+    if (material) {
+        sunLit = sunLight(vPosition, vNormal, vDistance);
+        surface = surfaceAt(vTexCoord, dx, dy, stepX, stepY, vNormal, texel.rgb);
+        light = materialLight(surface, vNormal, sunLit, vLightParts);
+    } else if (shadow.toLight.w > 0.0) {
+        // Without shadows (no light above the horizon, overcast) the light of the vertex as without them.
         light = shadowedLight(vLightParts, skyColour(vPosition, vNormal, vDistance));
+    }
 #endif
     // Torches in hands and fireflies (realistic mode only): the surface's normal from the
     // derivatives of its position, turned towards the camera (every drawn face is seen from its
     // front; crossed planes from either side).
-    int movingCount = int(frame.animation.z + 0.5);
     vec3 across = cross(stepX, stepY);
     if (movingCount > 0 && dot(across, across) > 1e-30) {
         vec3 n = normalize(across);
         n = dot(n, vPosition) > 0.0 ? -n : n;
-        light = max(light, vShade * movingLight(vPosition, n, movingCount));
+#ifdef QC_SHADOWS
+        if (material) {
+            vec3 moving = vShade * movingLight(vPosition, n, movingCount);
+            light = max(light, moving * surface.occlusion * clamp(1.0 + 1.5 * dot(surface.normal - n, safeNormalize(-vPosition, n)), 0.7, 1.3));
+        } else
+#endif
+            light = max(light, vShade * movingLight(vPosition, n, movingCount));
     }
     vec3 lit = texel.rgb * light;
+#ifdef QC_SHADOWS
+    if (material) {
+        // Metals keep a little of their colour as diffuse light, so they do not go black where
+        // nothing bright is reflected (no reflection probes); dielectrics lose what they reflect.
+        lit *= mix(vec3(1.0), vec3(0.5), surface.metal);
+        lit += materialShine(surface, vPosition, sunLit, vLightParts, movingCount);
+        lit += texel.rgb * surface.emission * frame.animation.y;
+    }
+#endif
     float fog = clamp((vDistance - frame.params.x) / max(frame.params.y - frame.params.x, 0.001), 0.0, 1.0);
 #ifdef QC_OPAQUE
     // Solid blocks (block_solid.frag.qsb, no discard: the GPU rejects hidden fragments before

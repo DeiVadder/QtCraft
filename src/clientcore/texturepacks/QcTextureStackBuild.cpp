@@ -21,7 +21,10 @@ namespace {
             toLoad.append(id);
         }
     }
-    QcTexturePackLibrary::LoadedStack fresh = QcTexturePackLibrary::loadStack(toLoad, entries);
+    // The material maps only while the atlas carries them (decision E-908).
+    QcTexturePackLoader::Limits limits;
+    limits.materialMaps = request.options.materials;
+    QcTexturePackLibrary::LoadedStack fresh = QcTexturePackLibrary::loadStack(toLoad, entries, limits);
 
     QcTexturePackStack stack;
     for (const QString &id : request.ids) {
