@@ -83,6 +83,11 @@ public:
     // textures: uv()).
     QcTextureAnimation animation(const QString &textureName) const;
     QRectF frameUv(const QString &textureName, int frame) const;
+    // The UV rectangle a texture shows `ticks` into its animation: the frame the block shader picks
+    // at that time (QcTextureAnimation::frameAt), without blending into the next one; uv() for
+    // still textures. Entity meshes, built on the CPU every frame, pick their frames this way, so
+    // flames on a burning body flicker like fire blocks (decision E-919).
+    [[nodiscard]] QRectF uvAt(const QString &textureName, double ticks) const;
     // Ticks after which every animation of the atlas starts over (the least common multiple of
     // their loops): the time handed to the shader wraps there, so the float it gets keeps 1/8 tick
     // at most. Capped at maxCycleTicks (2^20 ticks, about 14.5 h): a larger multiple (loops of

@@ -60,7 +60,7 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
 void QcRenderBridge::updateEntities(double alpha, QcCameraMode mode)
 {
     // Without an atlas the view keeps the last entity mesh it was given.
-    if (std::shared_ptr<QcEntityMesh> mesh = m_entities.buildEntities(alpha, mode)) {
+    if (std::shared_ptr<QcEntityMesh> mesh = m_entities.buildEntities(alpha, mode, m_parts.view->animationTicks())) {
         m_parts.view->setEntityMesh(std::move(mesh));
         m_parts.view->setFramedMaps(m_entities.framedMaps(), m_entities.framedMapTiles());
     }
@@ -70,7 +70,7 @@ void QcRenderBridge::updateHand(double alpha, const QcVec3 &eye, QcCameraMode mo
 {
     // A spectator has no hand (decision E-730).
     const bool shown = mode == QcCameraMode::FirstPerson && !m_handHidden && m_parts.session->gameMode().rules().tangible;
-    m_parts.view->setHandMesh(shown ? m_entities.buildHand(alpha, eye) : nullptr);
+    m_parts.view->setHandMesh(shown ? m_entities.buildHand(alpha, eye, m_parts.view->animationTicks()) : nullptr);
 }
 
 void QcRenderBridge::updateMovingLights(double alpha, const QcVec3 &eye)

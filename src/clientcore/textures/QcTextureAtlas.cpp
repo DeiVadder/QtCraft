@@ -270,6 +270,20 @@ QRectF QcTextureAtlas::frameUv(const QString &textureName, int frame) const
     return m_layout.uv(it->later + frame % it->animation.frames - 1);
 }
 
+QRectF QcTextureAtlas::uvAt(const QString &textureName, double ticks) const
+{
+    // Most entity textures are still: one lookup more than uv(), none without animations.
+    if (m_animated.isEmpty()) {
+        return uv(textureName);
+    }
+    const auto it = m_animated.constFind(textureName);
+    if (it == m_animated.constEnd()) {
+        return uv(textureName);
+    }
+    const int frame = it->animation.frameAt(ticks).index;
+    return frame == 0 ? uv(textureName) : m_layout.uv(it->later + frame - 1);
+}
+
 int QcTextureAtlas::animationCycleTicks() const
 {
     qint64 cycle = 1;

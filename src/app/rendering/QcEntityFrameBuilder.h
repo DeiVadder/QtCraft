@@ -59,15 +59,18 @@ public:
     // The metres walked that `--pose walk:<metres>` fixes; nullopt for other poses.
     std::optional<double> forcedWalk() const;
     // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an
-    // atlas. The maps in item frames go into a mesh of their own (framedMaps()).
-    [[nodiscard]] std::shared_ptr<QcEntityMesh> buildEntities(double alpha, QcCameraMode mode);
+    // atlas. The maps in item frames go into a mesh of their own (framedMaps()). Animated textures
+    // (flames on burning bodies) show their frame at `animationTicks` (QcWorldView::animationTicks,
+    // decision E-919), in step with the blocks.
+    [[nodiscard]] std::shared_ptr<QcEntityMesh> buildEntities(double alpha, QcCameraMode mode, double animationTicks);
     // The maps in item frames of the last buildEntities, drawn with the framed-map texture
     // (decision E-809); null before the first.
     [[nodiscard]] std::shared_ptr<QcEntityMesh> framedMaps() const { return m_framedMapMesh; }
     // The tiles of the framed-map texture the framed maps' coordinates point into.
     [[nodiscard]] std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> framedMapTiles() const { return m_framedMaps.tiles(); }
     // The first-person arm with the held item at `eye`; null without an atlas or while dead.
-    [[nodiscard]] std::shared_ptr<QcEntityMesh> buildHand(double alpha, const QcVec3 &eye) const;
+    // Animated textures show their frame at `animationTicks`, as in buildEntities.
+    [[nodiscard]] std::shared_ptr<QcEntityMesh> buildHand(double alpha, const QcVec3 &eye, double animationTicks) const;
 
 private:
     // A lit explosive flashes every this many ticks and swells in its last ticks (decision E-604).

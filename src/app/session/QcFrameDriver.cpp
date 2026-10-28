@@ -119,6 +119,9 @@ void QcFrameDriver::onFrame()
     const QcCameraMode mode = m_parts.session->isDead() ? QcCameraMode::FirstPerson : m_parts.session->cameraMode();
     m_targets.render.placeCamera(eye, mode, frameSeconds, alpha);
 
+    // The animation time first: the entities pick the frames of their animated textures at it.
+    m_targets.render.updateAnimations(frameSeconds);
+
     QElapsedTimer entityTime;
     entityTime.start();
     m_targets.render.updateEntities(alpha, mode);
@@ -128,7 +131,6 @@ void QcFrameDriver::onFrame()
     const QList<QcRenderSample> renderSamples = m_targets.hud.debug()->recordFrame(entityNs, previewNs, m_targets.benchmark.isRunning());
     m_targets.benchmark.recordGuiFrame(m_targets.hud.debug()->lastGuiCpuMs(), entityNs, previewNs, renderSamples);
     m_targets.render.updateSky(alpha);
-    m_targets.render.updateAnimations(frameSeconds);
     m_targets.render.updateWeather(eye, frameSeconds);
     m_targets.hud.updateTimeOfDay(alpha);
     m_targets.hud.updateDial(alpha);

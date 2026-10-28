@@ -222,8 +222,10 @@ double QcPlayerHealth::throughArmour(QcServerClient &client, double amount)
 void QcPlayerHealth::afterMove(QcServerClient &client, bool wasOnGround, bool wasInWater, double previousY)
 {
     // Falls are measured from their highest point, including the position before the first
-    // airborne tick; water, ladders, cobwebs and flying break a fall.
-    if (client.motion.inWater || wasInWater || client.motion.climbing || client.motion.slowed || client.motion.flying) {
+    // airborne tick; water (also with only the feet in it, decision E-918), ladders, cobwebs and
+    // flying break a fall.
+    const bool wading = QcPhysics::feetInLiquid(m_state.world(), client.motion.position);
+    if (client.motion.inWater || wasInWater || wading || client.motion.climbing || client.motion.slowed || client.motion.flying) {
         client.fallPeak = client.motion.position.y;
     } else if (!client.motion.onGround) {
         client.fallPeak = wasOnGround ? std::max(previousY, client.motion.position.y)

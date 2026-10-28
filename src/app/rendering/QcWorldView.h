@@ -109,6 +109,9 @@ public:
     // The time of the animated textures in ticks (decision E-878), QcAnimationClock::ticks(); the
     // test hook QTCRAFT_ANIMATION_TICK holds it at a fixed tick.
     void setAnimationTime(double ticks);
+    // The animation time of the last setAnimationTime as the block shader gets it (wrapped, or the
+    // tick the test hook holds): entity meshes pick their frames at it (decision E-919).
+    [[nodiscard]] double animationTicks() const { return m_frame.animationTicks; }
     void submitMesh(quint64 key, std::shared_ptr<const QcChunkMesh> mesh);
     void removeMesh(quint64 key);
     void clearMeshes();

@@ -364,6 +364,29 @@ private slots:
         }
     }
 
+    // Entity meshes (flames on a burning body, decision E-919) show the frame the block shader picks
+    // at the same time: frame by frame time, over the loop's end, still textures unchanged.
+    void entitiesPickTheFrameOfTheBlocks()
+    {
+        QcContentRegistry content;
+        content.assets().registerTexture({u"t:grey"_s, still("#808080"), {}});
+        content.assets().registerTexture({u"t:flash"_s, {}, png(strip({Qt::red, Qt::green, Qt::blue}, 16))});
+        const QcTextureAtlas atlas = QcTextureAtlas::build(content, {}, singleThread());
+        const QcTextureAnimation flash = atlas.animation(u"t:flash"_s);
+        QCOMPARE(flash.frameTicks, 2);
+
+        for (const double ticks : {0.0, 1.9, 2.0, 3.5, 4.0, 5.99, 6.0, 9.0, 1000.25}) {
+            const int frame = flash.frameAt(ticks).index;
+            QCOMPARE(atlas.uvAt(u"t:flash"_s, ticks), atlas.frameUv(u"t:flash"_s, frame));
+            QCOMPARE(atlas.uvAt(u"t:grey"_s, ticks), atlas.uv(u"t:grey"_s));
+        }
+        QCOMPARE(atlas.uvAt(u"t:flash"_s, 2.0), atlas.frameUv(u"t:flash"_s, 1));
+        QCOMPARE(atlas.uvAt(u"t:flash"_s, 4.5), atlas.frameUv(u"t:flash"_s, 2));
+        QCOMPARE(atlas.uvAt(u"t:flash"_s, 6.0), atlas.uv(u"t:flash"_s));
+        QVERIFY(atlas.uvAt(u"t:flash"_s, 2.0) != atlas.uvAt(u"t:flash"_s, 0.0));
+        QCOMPARE(atlas.uvAt(u"t:missing"_s, 3.0), atlas.uv(u"t:missing"_s));
+    }
+
     // The map the block shader reads (block.vert) leads from the first frame's cell to the others:
     // frames, frame time and interpolation at that cell, the index of the second frame's tile, and
     // the later frames row by row after it.

@@ -17,6 +17,33 @@ void run(QcEntityMotion &motion, const QcPlayerInput &input, const QcBlockAccess
     }
 }
 
+// A pool of `liquid` west of x = 3 with its surface at y = 63 (cells up to 62) over a stone floor
+// at `floorY`, and a stone bank from x = 3 eastwards whose top lies `bankHeight` blocks above the
+// liquid's top cell.
+QcTestWorld shore(const QcContentRegistry &content, QcBlockId liquid, int floorY, int bankHeight)
+{
+    QcTestWorld world(content);
+    world.fillBox({-6, floorY, -3}, {8, floorY, 3}, stone);
+    world.fillBox({-6, floorY + 1, -3}, {2, 62, 3}, liquid);
+    world.fillBox({3, floorY + 1, -3}, {8, 61 + bankHeight, 3}, stone);
+    return world;
+}
+
+// Swims east at the bank, holding forward and jump, for at most `ticks`; the motion afterwards.
+QcEntityMotion swimToBank(const QcBlockAccess &world, const QcVec3 &start, int ticks)
+{
+    QcEntityMotion motion;
+    motion.position = start;
+    QcPlayerInput east;
+    east.yaw = 90.0f;
+    east.forward = 1.0f;
+    east.jump = true;
+    for (int i = 0; i < ticks && !(motion.onGround && motion.position.x > 3.3); ++i) {
+        motion.stepPlayer(east, world, dt, QcMovement::Walk);
+    }
+    return motion;
+}
+
 } // namespace
 
 class TestPhysics : public QObject
@@ -261,6 +288,101 @@ private slots:
         const double before = motion.position.y;
         run(motion, swim, world, 20);
         QVERIFY(motion.position.y > before + 1.0);
+    }
+
+    // The water exit (decision E-918): a swimmer at a bank one block above the water's top cell,
+    // holding forward and jump, climbs out within a few seconds, from deep water, from the floor of
+    // shallow water and from lava; a bank two blocks high stays out of reach.
+    void climbsOutOfLiquidOntoABankOneBlockHigh()
+    {
+        const QcTestWorld deep = shore(m_content, water, 50, 1);
+        const QcEntityMotion fromDeep = swimToBank(deep, {0.5, 58.0, 0.5}, 100);
+        QVERIFY2(fromDeep.onGround && fromDeep.position.y == 63.0 && fromDeep.position.x > 3.3,
+                 qPrintable(QStringLiteral("%1 %2").arg(fromDeep.position.x).arg(fromDeep.position.y)));
+        QVERIFY(!fromDeep.inWater);
+
+        // Standing on the floor of water one block deep (no swimming needed to reach the bank).
+        const QcTestWorld shallow = shore(m_content, water, 61, 1);
+        const QcEntityMotion fromShallow = swimToBank(shallow, {1.5, 62.0, 0.5}, 60);
+        QVERIFY2(fromShallow.onGround && fromShallow.position.y == 63.0 && fromShallow.position.x > 3.3,
+                 qPrintable(QStringLiteral("%1 %2").arg(fromShallow.position.x).arg(fromShallow.position.y)));
+
+        // Lava slows every movement (factor 0.45 like the content's lava), the exit still works.
+        QcContentRegistry content = qcMakeTestContent();
+        QcBlockDefinition lava;
+        lava.name = QStringLiteral("test:lava");
+        lava.solid = false;
+        lava.opaque = false;
+        lava.liquid = true;
+        lava.replaceable = true;
+        lava.flow.movementFactor = 0.45;
+        lava.fire.setsAlightSeconds = 15;
+        const QcResult<QcBlockId> lavaId = content.registerBlock(lava);
+        QVERIFY(lavaId.has_value());
+        const QcTestWorld lavaPool = shore(content, *lavaId, 55, 1);
+        const QcEntityMotion fromLava = swimToBank(lavaPool, {0.5, 58.0, 0.5}, 200);
+        QVERIFY2(fromLava.onGround && fromLava.position.y == 63.0 && fromLava.position.x > 3.3,
+                 qPrintable(QStringLiteral("%1 %2").arg(fromLava.position.x).arg(fromLava.position.y)));
+
+        // Two blocks above the water: no way out by swimming (as in the reference game).
+        const QcTestWorld high = shore(m_content, water, 50, 2);
+        const QcEntityMotion atHigh = swimToBank(high, {0.5, 58.0, 0.5}, 200);
+        QVERIFY2(atHigh.position.x < 3.0 && atHigh.position.y < 64.0,
+                 qPrintable(QStringLiteral("%1 %2").arg(atHigh.position.x).arg(atHigh.position.y)));
+    }
+
+    void fallingIntoTheWaterBesideABankLandsInIt()
+    {
+        // A body falling into the top water cell beside the bank, forward held into it, is not
+        // thrown out (decision E-918): from every height between 6 and 9 m (1/32 m apart, so some
+        // tick ends with the feet in the top part of the cell) it sinks into the water.
+        const QcTestWorld world = shore(m_content, water, 50, 1);
+        QcPlayerInput east;
+        east.yaw = 90.0f;
+        for (int step = 0; step < 96; ++step) {
+            QcEntityMotion motion;
+            motion.position = {2.69, 69.0 + step / 32.0, 0.5};
+            double lowest = motion.position.y;
+            bool rose = false;
+            for (int tick = 0; tick < 40 && lowest > 61.0; ++tick) {
+                // Forward only below the bank's top: in the air it would carry the body onto it.
+                east.forward = motion.position.y < 63.0 ? 1.0f : 0.0f;
+                motion.stepPlayer(east, world, dt, QcMovement::Walk);
+                lowest = std::min(lowest, motion.position.y);
+                rose = rose || motion.velocity.y > 0.0;
+            }
+            QVERIFY2(lowest < 62.0 && !rose, qPrintable(QStringLiteral("start %1: lowest %2").arg(69.0 + step / 32.0).arg(lowest)));
+        }
+    }
+
+    void noBouncingAtABankTwoBlocksHigh()
+    {
+        // The way out must be free 0.6 m above the body: at a high bank the swimmer bobs at the
+        // surface as in open water, never lifted (feet at most 0.76 above the cell's floor).
+        const QcTestWorld high = shore(m_content, water, 50, 2);
+        QcEntityMotion motion;
+        motion.position = {0.5, 58.0, 0.5};
+        QcPlayerInput east;
+        east.yaw = 90.0f;
+        east.forward = 1.0f;
+        east.jump = true;
+        double highest = motion.position.y;
+        for (int tick = 0; tick < 200; ++tick) {
+            motion.stepPlayer(east, high, dt, QcMovement::Walk);
+            highest = std::max(highest, motion.position.y);
+        }
+        QVERIFY2(highest < 62.8, qPrintable(QString::number(highest)));
+    }
+
+    void wadingWithoutABankDoesNotLift()
+    {
+        // Bobbing at the surface in open water, swimming forward, nothing lifts the body.
+        QcTestWorld world(m_content);
+        world.fillBox({-20, 50, -3}, {20, 50, 3}, stone);
+        world.fillBox({-20, 51, -3}, {20, 62, 3}, water);
+        QcEntityMotion motion = swimToBank(world, {-15.5, 60.0, 0.5}, 100);
+        QVERIFY2(motion.position.y < 63.0, qPrintable(QString::number(motion.position.y)));
+        QVERIFY(motion.velocity.y < QcPhysics::liquidExitSpeed - 1.0);
     }
 };
 

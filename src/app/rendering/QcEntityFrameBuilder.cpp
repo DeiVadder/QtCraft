@@ -518,7 +518,7 @@ QcVec3 QcEntityFrameBuilder::meshOrigin() const
     return QcRenderOrigin::blockNear(m_parts.view ? m_parts.view->camera().position : m_parts.session->playerMotion().position);
 }
 
-std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, QcCameraMode mode)
+std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, QcCameraMode mode, double animationTicks)
 {
     if (!m_atlas) {
         return nullptr;
@@ -530,7 +530,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     mesh->vertices.reserve(m_entityMeshSize.first);
     mesh->indices.reserve(m_entityMeshSize.second);
     const QcClientSession &session = *m_parts.session;
-    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
+    const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
     const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration};
     m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
     if (m_mapColoursStale) {
@@ -609,7 +609,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildFramedMaps(const Entity
     return mesh;
 }
 
-std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, const QcVec3 &eye) const
+std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, const QcVec3 &eye, double animationTicks) const
 {
     const QcClientSession &session = *m_parts.session;
     if (!m_atlas || session.isDead()) {
@@ -624,7 +624,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
 
     auto mesh = std::make_shared<QcEntityMesh>();
     mesh->origin = QcRenderOrigin::blockNear(eye);
-    const QcEntityMesher::UvLookup uv = [this](const QString &texture) { return m_atlas->uv(texture); };
+    const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
     QcHandTimers timers = session.handTimers(alpha);

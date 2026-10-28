@@ -266,6 +266,45 @@ private slots:
         QCOMPARE(m_client->motion.position.y, double(m_feet.y));
     }
 
+    // A fall into water beside a wall, forward held into it, lands in the water without damage at
+    // every height: the water exit does not throw a falling body out, and feet in water break a
+    // fall (decision E-918).
+    void fallsIntoWaterBesideAWallDoNotHurt()
+    {
+        join();
+        const QcBlockPos hole = m_feet.offset(1, 0, 0);
+        for (int dy = 0; dy <= 14; ++dy) {
+            for (int dx = -1; dx <= 0; ++dx) {
+                m_server->world().setBlock(hole.offset(dx, dy, 0), qcAirBlockId);
+            }
+        }
+        for (int dy = -3; dy <= -1; ++dy) {
+            m_server->world().setBlock(hole.offset(0, dy, 0), id("qtcraft:water"));
+        }
+        m_server->world().setBlock(hole.offset(0, -4, 0), id("qtcraft:stone"));
+        // The bank east of the hole is the stage's grass, its top level with the water's surface.
+        QCOMPARE(m_server->world().blockAt(hole.offset(1, -1, 0)), std::optional<QcBlockId>(id("qtcraft:grass_block")));
+
+        quint32 sequence = 1;
+        for (int step = 0; step < 48; ++step) {
+            const double height = 6.0 + step * 0.0625;
+            chat(u"/tp %1 %2 %3"_s.arg(hole.x + 0.4).arg(hole.y + height).arg(hole.z + 0.5));
+            for (int tick = 0; tick < 30; ++tick) {
+                QcPlayerInput east;
+                east.sequence = sequence++;
+                east.yaw = 90.0f;
+                // Forward only from just above the surface on: in the air it would carry the body
+                // past the hole onto the bank.
+                east.forward = m_client->motion.position.y < hole.y + 1.0 ? 1.0f : 0.0f;
+                m_client->connection.send(QcMsg::PlayerInput{east});
+                QcTestUtil::pump();
+                ticks(1);
+            }
+            QVERIFY2(m_client->health == QcServer::playerMaxHealth, qPrintable(u"height %1: health %2"_s.arg(height).arg(m_client->health)));
+            QVERIFY2(m_client->motion.position.y < hole.y, qPrintable(u"height %1: y %2"_s.arg(height).arg(m_client->motion.position.y)));
+        }
+    }
+
     void eatingRestoresFoodOnlyWhenHungry()
     {
         join();

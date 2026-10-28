@@ -31,6 +31,11 @@ inline constexpr double waterGravity = 6.0;
 inline constexpr double waterSinkSpeed = 2.0;
 inline constexpr double swimUpSpeed = 3.0;
 inline constexpr double swimUpAcceleration = 18.0;
+// Leaving a liquid at its shore (decision E-918): a player whose feet are still in the liquid but
+// whose body is above it (QcEntityMotion::inWater false) and who walks into a wall is lifted with
+// this speed, enough to step out onto a bank one block above the liquid's cell, not onto a higher
+// one. The same rule in water and lava, on server and client.
+inline constexpr double liquidExitSpeed = 7.0;
 
 // Creative flight (decision E-284): horizontal speed, with sprint, and the speed up and down with
 // jump and sneak; the velocity eases towards them like on the ground, without gravity.
@@ -85,6 +90,10 @@ bool clingsToWall(const QcBlockAccess &world, const QcAabb &box);
 bool isLiquidAt(const QcBlockAccess &world, QcBlockPos pos);
 // Whether `pos` holds water: a liquid that sets nothing alight (not lava).
 bool isWaterAt(const QcBlockAccess &world, QcBlockPos pos);
+// Whether the feet at `feet` stand in a liquid (the cell a hand's width above them), also while the
+// body is above the surface (QcEntityMotion::inWater false): such a body climbs out at a bank and
+// lands softly (decision E-918).
+[[nodiscard]] bool feetInLiquid(const QcBlockAccess &world, const QcVec3 &feet);
 // Movement factor of the liquid at `pos` (lava is slow), 1 outside liquids.
 double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos);
 // Smallest movement factor of the blocks a box overlaps (cobwebs), 1 without any.

@@ -263,6 +263,11 @@ bool isWaterAt(const QcBlockAccess &world, QcBlockPos pos)
     return block && content.isValidBlock(*block) && content.block(*block).isWater();
 }
 
+bool feetInLiquid(const QcBlockAccess &world, const QcVec3 &feet)
+{
+    return isLiquidAt(world, blockContaining(feet + QcVec3{0.0, 0.1, 0.0}));
+}
+
 double liquidFactorAt(const QcBlockAccess &world, QcBlockPos pos)
 {
     const std::optional<QcBlockId> block = world.blockAt(pos);
@@ -317,6 +322,29 @@ bool pushesIntoWall(const QcEntityMotion &motion, const QcVec3 &wish, BodySize s
 {
     const MoveResult probe = moveBox(boxAt(motion.position, size.width, size.height), {wish.x * 0.05, 0.0, wish.z * 0.05}, world);
     return probe.blockedX || probe.blockedZ;
+}
+
+// The fastest a body may sink and still climb out at a bank: a swimmer never sinks faster than
+// waterSinkSpeed, a body falling into the liquid does and lands in it instead (decision E-918).
+constexpr double exitSinkLimit = 4.0;
+// How far above the body the way out must be free, as in the reference game.
+constexpr double exitClearance = 0.6;
+
+// Whether a player with its body above a liquid but its feet still in it (bobbing at the surface)
+// walks into the bank: then it climbs out (decision E-918). Swimming up alone ends a hand's width
+// above the surface, too low for a bank level with the liquid's cell. Not while falling in, and
+// not at a bank higher than the lift reaches (the body raised by exitClearance and moved towards
+// the wish must be free of blocks), so a swimmer does not bounce at a high wall.
+[[nodiscard]] bool wadesAgainstBank(const QcEntityMotion &motion, const QcVec3 &wish, const QcBlockAccess &world)
+{
+    if (motion.inWater || wish.length() <= 0.0 || motion.velocity.y < -exitSinkLimit) {
+        return false;
+    }
+    if (!feetInLiquid(world, motion.position) || !pushesIntoWall(motion, wish, {playerWidth, playerHeight}, world)) {
+        return false;
+    }
+    const QcAabb raised = boxAt(motion.position + QcVec3{wish.x * 0.05, exitClearance, wish.z * 0.05}, playerWidth, playerHeight);
+    return !overlapsBlocks(world, raised);
 }
 
 // A low lift for a step under a low ceiling: from a dirt path or farmland (a sixteenth lower) up
@@ -535,6 +563,9 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
         speed = sprintSpeed;
     }
     speed *= std::clamp(static_cast<double>(input.speedFactor), 0.0, 4.0);
+    if (wadesAgainstBank(*this, wish, world)) {
+        velocity.y = std::max(velocity.y, liquidExitSpeed);
+    }
 
     step({.wish = wish, .speed = speed, .jump = input.jump, .hold = input.sneak, .push = input.push}, {playerWidth, playerHeight}, world, dt);
 }
