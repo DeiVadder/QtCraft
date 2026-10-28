@@ -103,6 +103,7 @@ set_tests_properties(test_english_plurals PROPERTIES REQUIRED_FILES "${PROJECT_S
 set_tests_properties(test_gamepad_sdl PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/build-sdl.sh;${PROJECT_SOURCE_DIR}/3rdparty/sdl3-tag.txt;${PROJECT_SOURCE_DIR}/cmake/QcGamepad.cmake")
 if(NOT WIN32)
+    set_tests_properties(script_verify_timing_phase PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/quiet-lock.sh;${PROJECT_SOURCE_DIR}/scripts/verify-summary.sh")
     set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()
 

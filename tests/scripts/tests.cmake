@@ -18,6 +18,12 @@ if(NOT WIN32)
     add_test(NAME script_verify_tests_selection
         COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_tests_selection.py ${PROJECT_SOURCE_DIR}/scripts/verify-tests.py)
     set_tests_properties(script_verify_tests_selection PROPERTIES TIMEOUT 60)
+    # The timing phase and the end of a verify.sh run (decisions E-550, E-890, E-913) with a fake load
+    # and stubbed ctest and python3: deferral under load, the full-run stamp and its second part, the
+    # commands and the final line; runs no build and no ctest.
+    add_test(NAME script_verify_timing_phase
+        COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_timing_phase.sh ${PROJECT_SOURCE_DIR}/scripts/verify-phases.sh)
+    set_tests_properties(script_verify_timing_phase PROPERTIES TIMEOUT 60)
     # Samples of the getter/setter check (rule in CLAUDE.md, decision E-891) held in memory; reads no source
     # file below src/, only the check and the helper scripts it imports (REQUIRED_FILES in tests/CMakeLists.txt).
     add_test(NAME script_check_member_access

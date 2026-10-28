@@ -58,8 +58,9 @@ class Fixture:
                         "properties": {}} for name in ("test_a", "test_b")}
         module.load_tests = lambda build_dir: tests
 
-    def select(self):
-        """The test names the selection prints; a passing run of them is recorded afterwards."""
+    def select(self, deferred=()):
+        """The test names the selection prints; a passing run of them is recorded afterwards, except
+        the deferred ones, whose stamps the record drops (deferred timing tests, E-913)."""
         arguments = argparse.Namespace(build_dir=self.build_dir, changed=True, regex="", label="",
                                        broad_label="")
         output = io.StringIO()
@@ -67,14 +68,14 @@ class Fixture:
             self.module.select(arguments)
         regex = output.getvalue().strip()
         names = sorted(regex[2:-2].replace("\\", "").split("|")) if regex else []
-        self.record(names)
+        self.record([name for name in names if name not in deferred], deferred)
         return names
 
-    def record(self, names):
+    def record(self, names, forget=()):
         junit = os.path.join(self.build_dir, "junit.xml")
         cases = "".join(f'<testcase name="{name}" status="run"/>' for name in names)
         write(junit, f"<testsuite>{cases}</testsuite>")
-        arguments = argparse.Namespace(build_dir=self.build_dir, junit=[junit])
+        arguments = argparse.Namespace(build_dir=self.build_dir, junit=[junit], forget=list(forget))
         with contextlib.redirect_stderr(io.StringIO()):
             self.module.record(arguments)
 
@@ -141,6 +142,13 @@ def run_cases(fixture):
     fixture.module.write_json(stamps_path, stamps)
     results.append(check("old stamp format counts as changed once", fixture.select(), ["test_b"]))
     results.append(check("and then not again", fixture.select(), []))
+
+    # A deferred timing test loses its stamp: unchanged inputs select it again (E-913).
+    write(os.path.join(root, "content", "blocks.json"), '{"deferred": 1}\n')
+    results.append(check("all selected, test_b deferred", fixture.select(deferred=("test_b",)),
+                         ["test_a", "test_b"]))
+    results.append(check("deferred test selected again", fixture.select(), ["test_b"]))
+    results.append(check("and then not again after it passed", fixture.select(), []))
     return all(results)
 
 

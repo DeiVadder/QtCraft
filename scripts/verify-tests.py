@@ -27,8 +27,10 @@ again next time. Without a stamp file every test runs.
           reasons on stderr. Without --changed it only writes the pending fingerprints.
   record  copies the pending fingerprints of the tests the JUnit reports show as passed (and of
           the adopted tests, see below) into the stamp file. --junit may be given once per ctest
-          phase (verify.sh runs the `timing` tests after the rest, decision E-550); a test that
-          did not run (a deferred timing test) keeps its old stamp and is selected again.
+          phase (verify.sh runs the `timing` tests after the rest, decision E-550). --forget
+          drops the stamps of the named tests (deferred timing tests, decision E-913), so the
+          next --changed run selects them even when their inputs did not change; any other test
+          that did not run keeps its old stamp.
 
 --broad-label <l> (the TSan step of --tsan-concurrent --changed, decision E-412) widens the
 selection beyond the label without running every test under TSan: tests with label <l> are
@@ -42,6 +44,7 @@ next relink selects them. That keeps the first run in a fresh build directory at
 Usage: scripts/verify-tests.py select --build-dir <dir> [--changed] [--regex <re>] [--label <l>]
                                       [--broad-label <l>]
        scripts/verify-tests.py record --build-dir <dir> --junit <report.xml> [--junit <report.xml>]
+                                      [--forget <test> ...]
 """
 
 import argparse
@@ -488,10 +491,13 @@ def record(arguments):
     adopted = pending.get("adopted", [])
     for name in passed + adopted:
         known[name] = pending["tests"][name]
+    forgotten = [name for name in arguments.forget if known.pop(name, None) is not None]
     if passed or adopted:
         stamps["data_files"] = pending["data_files"]
+    if passed or adopted or forgotten:
         write_json(stamps_path, stamps)
-    print(f"verify: recorded {len(passed)} passed and {len(adopted)} adopted test(s) in {STAMPS}", file=sys.stderr)
+    print(f"verify: recorded {len(passed)} passed and {len(adopted)} adopted test(s) in {STAMPS}"
+          + (f", dropped the stamps of {len(forgotten)} deferred test(s)" if forgotten else ""), file=sys.stderr)
 
 
 def main():
@@ -503,6 +509,7 @@ def main():
     parser.add_argument("--label", default="")
     parser.add_argument("--broad-label", default="")
     parser.add_argument("--junit", action="append", default=[])
+    parser.add_argument("--forget", nargs="+", default=[])
     arguments = parser.parse_args()
     if arguments.command == "select":
         select(arguments)

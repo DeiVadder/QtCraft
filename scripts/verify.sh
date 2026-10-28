@@ -42,11 +42,17 @@
 # of cores minus two. It runs in two phases (decision E-550, scripts/verify-phases.sh): first every
 # test except those labelled `timing` (tests/timing.cmake), then the timing tests with
 # QC_TIMING_JOBS jobs (default 2) once the 1-min load average is below QC_QUIET_LOAD (default the
-# number of cores; at most QC_QUIET_WAIT seconds of waiting, default 600, then they run anyway).
+# number of cores; at most QC_QUIET_WAIT seconds of waiting, default 600). A machine that stays loud
+# defers them (E-913): not run, stamps dropped, listed in the summary with one command per preset
+# that runs them later, the step stays green; loud is sticky for the run (later steps wait only
+# QC_QUIET_RECHECK seconds, default 60), and a load above twice the limit takes no quiet lock.
+# A full run names deferred debug timing tests in .verify-full-shared (`deferred-debug:` line), and
+# the second part runs just those against the existing build/debug; QC_TIMING_UNDER_LOAD=1 measures
+# anyway.
 # The timing phase holds the quiet lock ~/.cache/qtcraft/quiet.lock (scripts/quiet-lock.sh); while
 # another run holds it, every configure, build, test and analysis step waits first (at most
 # QC_QUIET_PAUSE_MAX seconds, default 2700). Agents call scripts/wait-quiet.sh before a bare build.
-# --defer-timing: skips the timing phase and names the skipped tests; they keep their old stamps, so
+# --defer-timing: skips the timing phase and names the skipped tests; their stamps are dropped, so
 #                    a later --changed run selects them. For agents working in parallel; the
 #                    central run before the merge runs them. The script runs at normal priority; work beside it (the next stage in its own
 # worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
@@ -107,6 +113,7 @@ if [ -n "${QC_BUILD_JOBS:-}" ]; then
     BUILD_JOBS_ARGS="--parallel $QC_BUILD_JOBS"
 fi
 . "$PROJECT_DIR/scripts/verify-phases.sh"
+. "$PROJECT_DIR/scripts/verify-summary.sh"
 
 usage() {
     echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
@@ -227,6 +234,7 @@ echo "== ctest runs with $TEST_JOBS parallel jobs (QC_TEST_JOBS), timing tests w
 
 failures=""
 timings=""
+debug_deferred_names=""
 limit_warnings=""
 total_start=$(date +%s)
 
@@ -238,15 +246,21 @@ clean_commit() {
     echo "$commit $(git hash-object CMakeUserPresets.json 2>/dev/null || echo none)"
 }
 # One part of a two-part full run skips the steps without a sanitizer when an earlier full run
-# passed them on this same clean commit (decision E-890).
+# passed them on this same clean commit (decision E-890); debug timing tests that run deferred
+# (E-913) it runs alone, without a build.
 FULL_STAMP="$PROJECT_DIR/build/debug/.verify-full-shared"
 START_COMMIT=$(clean_commit)
 SKIP_SHARED=0
+SHARED_DEFERRED=""
 if [ "$MODE" = full ] && [ "$SANITIZERS_GIVEN" -eq 1 ] && [ -z "$TEST_REGEX" ] && [ -n "$START_COMMIT" ] &&
-    [ "$(cat "$FULL_STAMP" 2>/dev/null)" = "$START_COMMIT" ]; then
+    [ "$(full_stamp_key "$FULL_STAMP")" = "$START_COMMIT" ]; then
     SKIP_SHARED=1
+    SHARED_DEFERRED=$(full_stamp_deferred "$FULL_STAMP")
     echo "== commit $START_COMMIT already passed the steps without a sanitizer in an earlier full run ($FULL_STAMP):"
     echo "   skipping the debug build and tests, the release build, the static analysis and the debug smoke run"
+    if [ -n "$SHARED_DEFERRED" ]; then
+        echo "   except the debug timing tests it deferred, which run now: $SHARED_DEFERRED"
+    fi
 fi
 
 step() {
@@ -319,8 +333,10 @@ run_tests() {
     run_main_phase "$preset" "$junit" "$@"
     status=$?
     run_timing_phase "$preset" "$junit_timing" "$@" || status=1
-    python3 scripts/verify-tests.py record --build-dir "build/$preset" --junit "$junit" --junit "$junit_timing"
+    # Deferred timing tests lose their stamp, so the next --changed run selects them (E-913).
+    record_tests "$preset" "$junit" "$junit_timing"
     if [ "$preset" = debug ]; then
+        debug_deferred_names=$phase_deferred
         check_limits "$junit" "$junit_timing"
     fi
     return $status
@@ -387,9 +403,7 @@ slot_broker_changed() {
 if [ "$MODE" = full ] || slot_broker_changed; then
     step "check-slot-broker" python3 scripts/tests/test_qc_slot.py
 fi
-if [ "$SKIP_SHARED" -eq 0 ]; then
-    build_and_test debug
-fi
+run_debug_step
 for preset in $SANITIZERS; do
     build_and_test "$preset"
 done
@@ -440,7 +454,9 @@ fi
 
 echo "== timings ($MODE)$timings"
 if [ -n "$deferred_timing" ]; then
-    echo "== timing tests deferred (--defer-timing; not run, not stamped, the next --changed run selects them)$deferred_timing"
+    echo "== timing tests deferred (not run, stamps dropped, the next --changed run selects them)$deferred_timing"
+    echo "   run them later on a quiet machine, each only in the preset that deferred it:"
+    deferred_timing_commands
 fi
 if [ -n "$limit_warnings" ]; then
     echo "== test limits too tight for TSan (warning only; set TIMEOUT/COST in tests/CMakeLists.txt or lighten the test)$limit_warnings"
@@ -448,7 +464,8 @@ fi
 printf '%-24s %6ss\n' "total" "$(($(date +%s) - total_start))"
 
 # A full run that passed every step without a sanitizer on a clean, unchanged commit stamps it for
-# the other part of a two-part full run (E-890).
+# the other part of a two-part full run (E-890), naming the debug timing tests it deferred (E-913);
+# the second part rewrites it after running them.
 shared_failed=0
 for name in $failures; do
     case "$name" in
@@ -456,28 +473,13 @@ for name in $failures; do
     *) shared_failed=1 ;;
     esac
 done
-if [ "$MODE" = full ] && [ "$SKIP_SHARED" -eq 0 ] && [ "$shared_failed" -eq 0 ] && [ -z "$TEST_REGEX" ] &&
+if [ "$MODE" = full ] && [ "$shared_failed" -eq 0 ] && [ -z "$TEST_REGEX" ] &&
     [ -n "$START_COMMIT" ] && [ "$(clean_commit)" = "$START_COMMIT" ]; then
-    echo "$START_COMMIT" >"$FULL_STAMP"
+    write_full_stamp "$FULL_STAMP" "$START_COMMIT" "$debug_deferred_names"
 fi
 
 if [ -n "$failures" ]; then
     echo "FAILED:$failures"
     exit 1
 fi
-selected=""
-if [ "$CHANGED" -eq 1 ]; then
-    selected=", changed tests only"
-fi
-if [ -n "$deferred_timing" ]; then
-    selected="$selected, timing tests deferred"
-fi
-if [ -n "$TSAN_LABEL" ] && [ "$CHANGED" -eq 1 ]; then
-    echo "ALL GREEN (quick$selected; TSan on label $TSAN_LABEL and changed tests)"
-elif [ -n "$TSAN_LABEL" ]; then
-    echo "ALL GREEN (quick, TSan on label $TSAN_LABEL$selected)"
-elif [ "$MODE" = quick ]; then
-    echo "ALL GREEN (quick$selected)"
-else
-    echo "ALL GREEN (screenshot: $SCREENSHOT)"
-fi
+all_green_line
