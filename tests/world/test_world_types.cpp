@@ -231,8 +231,8 @@ private slots:
 
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        QVERIFY(library.create(u"Flat"_s, 1, {.generator = u"flat"_s, .options = *flatOptions, .gameMode = QcGameMode::Survival}));
-        QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .gameMode = QcGameMode::Survival}));
+        QVERIFY(library.create(u"Flat"_s, 1, {.generator = u"flat"_s, .options = *flatOptions, .worldOptions = {}, .gameMode = QcGameMode::Survival}));
+        QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .worldOptions = {}, .gameMode = QcGameMode::Survival}));
 
         // Then an update or a mod changes those defaults.
         const std::shared_ptr<QcContentRegistry> changed = QcTestUtil::baseContent()->registry;
@@ -263,7 +263,7 @@ private slots:
     {
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, {.generator = u"flat"_s, .options = u"bedrock,grass_block"_s, .gameMode = QcGameMode::Survival});
+        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, {.generator = u"flat"_s, .options = u"bedrock,grass_block"_s, .worldOptions = {}, .gameMode = QcGameMode::Survival});
         QVERIFY(entry);
         const QcWorldLibrary::Entry listed = library.list().constFirst();
         QCOMPARE(listed.info.generator, u"flat"_s);

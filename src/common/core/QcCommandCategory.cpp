@@ -24,7 +24,9 @@ QLatin1StringView id(QcCommandCategory category)
 
 std::optional<QcCommandCategory> fromId(QStringView word)
 {
-    const auto found = std::ranges::find_if(all(), [word](QcCommandCategory category) { return word.compare(id(category), Qt::CaseInsensitive) == 0; });
+    // QLatin1StringView::compare(QStringView) is defined in <QLatin1StringView>; QStringView::compare(QLatin1StringView)
+    // is only declared there and defined inline in <QString>, which left an undefined symbol in static release builds.
+    const auto found = std::ranges::find_if(all(), [word](QcCommandCategory category) { return id(category).compare(word, Qt::CaseInsensitive) == 0; });
     return found != all().end() ? std::optional(*found) : std::nullopt;
 }
 
