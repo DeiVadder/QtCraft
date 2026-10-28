@@ -89,7 +89,8 @@ private slots:
 
             // The projection works on small numbers: the same point on screen as the exact one.
             const QVector3D onScreen = viewProjection.map(relative);
-            const QVector3D exactOnScreen = viewProjection.map(QVector3D(static_cast<float>(exact.x), static_cast<float>(exact.y), static_cast<float>(exact.z)));
+            const QVector3D exactFloat(static_cast<float>(exact.x), static_cast<float>(exact.y), static_cast<float>(exact.z));
+            const QVector3D exactOnScreen = viewProjection.map(exactFloat);
             QVERIFY((onScreen - exactOnScreen).length() < 1e-4f);
         }
     }
@@ -120,6 +121,79 @@ private slots:
         QVERIFY(visible({1'000'000'000, 64, -1'000'000'000 - 64}));
         QVERIFY(!visible({1'000'000'000, 64, -1'000'000'000 + 64}));
         QVERIFY(!visible({1'000'000'000 + 512, 64, -1'000'000'000 - 64}));
+    }
+
+    // Decision E-910: a camera exactly on a whole block (here also on a section border, so the two
+    // faces left and right of the centre belong to different sections and entries) shows no seam
+    // in the middle of the picture. The anchor is a whole block (blockNear, floor()), placed at the
+    // camera or left behind by up to anchorReach as QcDrawOrigins::follow keeps it: a whole-number
+    // camera gives a whole-number drawCamera, and every term is exact in a float. So the edge the
+    // faces share, in the vertical plane through the eye, comes out the same from both sections,
+    // exactly in the centre column (x = 0 after the projection), and a camera a hair before the
+    // whole block (anchor one block lower by floor()) moves every vertex only by that hair.
+    // Scope: this guards the precision of QcRenderOrigin::entry and blockNear; that block.vert adds
+    // in the order local + entry - drawCamera (shaderRelative) is a requirement it does not see.
+    void wholeBlockCameraLeavesNoSeamInTheMiddle_data()
+    {
+        QTest::addColumn<double>("far");
+        QTest::addColumn<float>("pitch");
+        // Whether the anchor stayed behind (127, 3, -100 blocks away, within its reach) instead of
+        // having just been placed at the camera.
+        QTest::addColumn<bool>("anchorBehind");
+        for (const double far : {0.0, 1024.0, 1048576.0, 1e9}) {
+            for (const float pitch : {-30.0f, 0.0f, 25.0f}) {
+                const QByteArray name = QByteArray::number(far, 'g', 7);
+                const int degrees = static_cast<int>(pitch);
+                QTest::addRow("%s pitch %d, anchor at the camera", name.constData(), degrees) << far << pitch << false;
+                QTest::addRow("%s pitch %d, anchor behind", name.constData(), degrees) << far << pitch << true;
+            }
+        }
+    }
+
+    void wholeBlockCameraLeavesNoSeamInTheMiddle()
+    {
+        QFETCH(double, far);
+        QFETCH(float, pitch);
+        QFETCH(bool, anchorBehind);
+        // The camera on the border of two sections at x, looking north (-z) along the border.
+        QcCamera camera;
+        camera.position = {far, 71.0, -far};
+        camera.yaw = 0.0f;
+        camera.pitch = pitch;
+        const QMatrix4x4 viewProjection = camera.projectionMatrix(16.0f / 10.0f, 512.0f) * camera.viewRotation();
+        const QcVec3 placedAt = anchorBehind ? camera.position - QcVec3{127.0, 3.0, -100.0} : camera.position;
+        const QcVec3 anchor = QcRenderOrigin::blockNear(placedAt);
+        QVERIFY(!QcRenderOrigin::outOfReach(anchor, camera.position));
+        const QVector3D drawCamera = QcRenderOrigin::entry(camera.position, anchor).toVector3D();
+        const QVector3D expectedDrawCamera = anchorBehind ? QVector3D(127.0f, 3.0f, -100.0f) : QVector3D();
+        QCOMPARE(drawCamera, expectedDrawCamera);
+
+        // The sections west and east of the border, and a point of their shared edge: x 16 in the
+        // western section, x 0 in the eastern one, several blocks below and ahead of the camera.
+        const int border = static_cast<int>(far);
+        const int sectionZ = sectionCorner(-far - 40.0);
+        const QcBlockPos west{border - 16, 64, sectionZ};
+        const QcBlockPos east{border, 64, sectionZ};
+        const QVector4D westEntry = QcRenderOrigin::entry(QcRenderOrigin::toVec3(west), anchor);
+        const QVector4D eastEntry = QcRenderOrigin::entry(QcRenderOrigin::toVec3(east), anchor);
+        for (const float along : {0.0f, 3.0f, 7.5f, 15.0f, 16.0f}) {
+            const QVector3D fromWest = shaderRelative({16.0f, 2.0f, along}, westEntry, drawCamera);
+            const QVector3D fromEast = shaderRelative({0.0f, 2.0f, along}, eastEntry, drawCamera);
+            QCOMPARE(fromWest, fromEast);
+            QCOMPARE(fromWest.x(), 0.0f);
+            QCOMPARE((viewProjection * QVector4D(fromWest, 1.0f)).x(), 0.0f);
+        }
+
+        // A hair before the whole block, floor() puts a freshly placed anchor a block lower: the
+        // vertices move by the hair only.
+        const QcVec3 before = camera.position - QcVec3{1e-6, 1e-6, 1e-6};
+        const QcVec3 lowerAnchor = QcRenderOrigin::blockNear(before);
+        QVERIFY((lowerAnchor == camera.position - QcVec3{1.0, 1.0, 1.0}));
+        const QVector3D drawBefore = QcRenderOrigin::entry(before, lowerAnchor).toVector3D();
+        const QVector4D eastBefore = QcRenderOrigin::entry(QcRenderOrigin::toVec3(east), lowerAnchor);
+        const QVector3D local(0.0f, 2.0f, 7.5f);
+        const QVector3D moved = shaderRelative(local, eastBefore, drawBefore) - shaderRelative(local, eastEntry, drawCamera);
+        QVERIFY2(moved.length() < 1e-4f, qPrintable(QString::number(moved.length())));
     }
 
     void anchorFollowsOnlyBeyondItsReach()
