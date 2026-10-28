@@ -2844,3 +2844,11 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Klassisch gegen vorher:** GPU +3 … +6 % (stand +6,2 %, sprint +4,6 %, showcase +3,3 %, crowd −1,2 %), Render-CPU −0,3 … +4,8 %, Speicher ±0,7 % – unter der 10-%-Schwelle (größere Uniform-Puffer, ein Plan-Wechsel je Bild).
 - **Realistisch Mittel / Hoch (GPU je Bild):** stand 3,89 / 3,79 ms, sprint 3,88 / 3,73, showcase 3,03 / 3,45, crowd 4,23 / 4,14 (klassisch 0,74–2,29 ms); Render-CPU +0,3 … +0,9 ms (Hoch mehr: Schatten-Kaskaden), Speicher +1 … +2 %. Hoch kostet auf der GPU kaum mehr als Mittel; der Mehraufwand gegenüber klassisch liegt vor allem in den Vollbild-Durchgängen (HDR-Szene, Bloom, SSAO, Komposition).
 - **Bewertung:** kein Rückschritt im klassischen Modus; der realistische Modus kostet 2–3 ms GPU je Bild und bleibt auf diesem Mac weit unter dem Bildbudget. Für schwächere GPUs ist „Niedrig“ vorgesehen (nicht gemessen).
+
+## Paket 45.3 (Wasser im realistischen Modus: Szenen-Kopie, Brechung, Tiefe, Spiegelung; E-906), Fenster-A/B (2026-10-28)
+
+- **Stände:** `base-med`/`base-high` = `3006994` (vor 45.3, realistisch Mittel/Hoch), `water-med`/`water-high`/`classic` = `264d05d` (mit 45.3; Release statisch). `scripts/bench-ab.sh`, `@core` und `@liquids`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=15`. Verglichen wird jeweils dieselbe Qualitätsstufe vorher/nachher.
+- **Bildzeit:** p99 10,2–12,8 ms in allen Szenarien, Mittel 120 Hz gehalten; Abweichungen zwischen vorher und nachher innerhalb der Streuung (flat-liquids Mittel +8 % bei 31 % Streuung, liquid-fill Hoch +9 % bei 41 % Streuung).
+- **GPU, Wasser gegen vorher (gleiche Stufe):** ohne viel Wasser im Bild (stand, sprint, crowd, liquids) −5 … +4 %, also Rauschen. Mit Wasserflächen im Bild: liquid-fill Mittel 2,96 → 3,12 ms (+5 %), Hoch 3,03 → 3,32 ms (+10 %, Streuung 18 %); showcase Hoch 3,32 → 3,40 ms (+2 %); flat-liquids Hoch 3,10 → 3,14 ms (+1 %). Mehraufwand: Kopie der Szene (RGBA16F) und der zusätzliche Szenen-Durchgang hinter dem Wasser.
+- **Render-CPU und Speicher:** Render-CPU gegen dieselbe Stufe ±5 % (Streuung 15–40 %); Speicher +0,0 … +0,8 %.
+- **Bewertung:** kein Rückschritt über der 10-%-Schwelle außer liquid-fill Hoch auf der GPU (+0,3 ms, innerhalb der Streuung, absolut weit unter dem Budget). Klassisch unverändert (GPU 0,8–2,4 ms).
