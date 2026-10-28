@@ -42,5 +42,9 @@
     "%n of 5 signal bars": [
         "%n of 5 signal bars",
         "%n of 5 signal bars"
+    ],
+    "%n option(s) changed.": [
+        "%n option changed.",
+        "%n options changed."
     ]
 }

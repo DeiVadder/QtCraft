@@ -97,6 +97,7 @@ QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint
     entry.info.keepInventory = setup.keepInventory;
     entry.info.generator = setup.generator;
     entry.info.generatorOptions = setup.options;
+    entry.info.worldOptions = setup.worldOptions;
     entry.info.defaultGameMode = setup.gameMode;
     entry.info.setupDone = false;
     entry.info.created = QDateTime::currentDateTimeUtc();

@@ -5,6 +5,7 @@
 #include "common/protocol/QcLoginSettings.h"
 #include "server/core/QcServerLimits.h"
 
+#include <QJsonObject>
 #include <QString>
 #include <QStringList>
 
@@ -18,6 +19,10 @@ struct QcServerConfig
     // Generator type of the world (QcWorldGenerators); a saved world must have been made with it.
     QString generator = QStringLiteral("terrain");
     QString generatorOptions;
+    // The world generation options of the world (decision E-917, QcWorldInfo::worldOptions); a saved
+    // world must have been made with them. The generator and the server already run on content with
+    // them set (QcWorldOptions::apply).
+    QJsonObject worldOptions;
     // Radius in chunks streamed around each player; network clients may ask for less, never more.
     int viewDistance = 8;
     // Upper bound of chunks sent per client and tick, keeps ticks short while a client catches up.

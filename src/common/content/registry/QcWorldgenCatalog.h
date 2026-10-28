@@ -3,12 +3,14 @@
 #include "common/content/definitions/QcShowcaseDefinition.h"
 #include "common/content/definitions/QcStructureDefinition.h"
 #include "common/content/definitions/QcWorldgenDefinitions.h"
+#include "common/content/definitions/QcWorldOptionDefinitions.h"
 #include "common/content/definitions/QcWorldTypeDefinitions.h"
 #include "common/content/registry/QcNamedList.h"
 
 // What the world generators build from (part of QcContentRegistry, server side only, not
 // synchronised): biomes, features, ores and the terrain settings, the structures and the settings of
-// the showcase, flat and void world types. Definitions are replaced by name, settings by a later pack.
+// the showcase, flat and void world types, and the options a world may set on them (decision E-917).
+// Definitions are replaced by name, settings by a later pack.
 class QcWorldgenCatalog
 {
 public:
@@ -35,7 +37,20 @@ public:
     void setVoidWorld(QcVoidDefinition empty) { m_voidWorld = std::move(empty); }
     const QcVoidDefinition &voidWorld() const { return m_voidWorld; }
 
+    // The world generation options (decision E-917), in the order of the packs and their files.
+    void addWorldOptions(const QcWorldOptionSet &set);
+    const QList<QcWorldOptionGroup> &worldOptionGroups() const { return m_optionGroups.items(); }
+    const QList<QcWorldOptionDefinition> &worldOptions() const { return optionList().items(); }
+    const QcWorldOptionDefinition *worldOption(const QString &name) const { return optionList().find(name); }
+    const QList<QcWorldPreset> &worldPresets() const { return presetList().items(); }
+    const QcWorldPreset *worldPreset(const QString &name) const { return presetList().find(name); }
+
 private:
+    const QcNamedList<QcWorldOptionDefinition> &optionList() const { return m_options; }
+    void setOption(const QcWorldOptionDefinition &option) { m_options.set(option); }
+    const QcNamedList<QcWorldPreset> &presetList() const { return m_presets; }
+    void setPreset(const QcWorldPreset &preset) { m_presets.set(preset); }
+
     QcNamedList<QcBiomeDefinition> m_biomes;
     QcNamedList<QcFeatureDefinition> m_features;
     QcNamedList<QcOreDefinition> m_ores;
@@ -44,4 +59,20 @@ private:
     QcShowcaseDefinition m_showcase;
     QcFlatDefinition m_flatWorld;
     QcVoidDefinition m_voidWorld;
+    QcNamedList<QcWorldOptionGroup> m_optionGroups;
+    QcNamedList<QcWorldOptionDefinition> m_options;
+    QcNamedList<QcWorldPreset> m_presets;
 };
+
+inline void QcWorldgenCatalog::addWorldOptions(const QcWorldOptionSet &set)
+{
+    for (const QcWorldOptionGroup &group : set.groups) {
+        m_optionGroups.set(group);
+    }
+    for (const QcWorldOptionDefinition &option : set.options) {
+        setOption(option);
+    }
+    for (const QcWorldPreset &preset : set.presets) {
+        setPreset(preset);
+    }
+}

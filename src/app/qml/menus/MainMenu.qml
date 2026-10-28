@@ -17,6 +17,7 @@ Rectangle {
     enum Page {
         Home,
         NewWorld,
+        WorldOptions,
         Multiplayer,
         Character,
         Mods
@@ -54,7 +55,9 @@ Rectangle {
     }
     // Keys the text fields and buttons leave; Tab moves the focus, Esc goes back to the start page.
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && menu.leavesPage())
+        if (event.key === Qt.Key_Escape && menu.page === MainMenu.WorldOptions)
+            menu.backToNewWorld();
+        else if (event.key === Qt.Key_Escape && menu.leavesPage())
             menu.navigate(() => menu.showHome());
         else if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen
                  && !menu.game.multiplayer.joining)
@@ -118,6 +121,12 @@ Rectangle {
             sidebar.focusEntry(MenuSidebar.Settings);
     }
 
+    // Back from the world options to the new world's form, which keeps what was typed.
+    function backToNewWorld() {
+        page = MainMenu.NewWorld;
+        newWorldPage.focusOptions();
+    }
+
     function showHome() {
         page = MainMenu.Home;
         forceActiveFocus();
@@ -129,7 +138,10 @@ Rectangle {
         if (command !== "back" || !leavesPage())
             return false;
 
-        navigate(() => showHome());
+        if (page === MainMenu.WorldOptions)
+            backToNewWorld();
+        else
+            navigate(() => showHome());
         return true;
     }
 
@@ -232,6 +244,17 @@ Rectangle {
             game: menu.game
             onOpenRequested: menu.page = MainMenu.NewWorld
             onBackRequested: menu.showHome()
+            onOptionsRequested: worldOptionsPage.open()
+        }
+
+        WorldOptionsPage {
+            id: worldOptionsPage
+
+            objectName: "worldOptionsPage"
+            game: menu.game
+            onOpenRequested: menu.page = MainMenu.WorldOptions
+            onBackRequested: menu.backToNewWorld()
+            onCreateRequested: newWorldPage.create()
         }
 
         MultiplayerPage {

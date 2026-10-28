@@ -72,6 +72,17 @@
     </message>
 </context>
 <context>
+    <name>NewWorldPage</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="61"/>
+        <source>%n option(s) changed.</source>
+        <translation>
+            <numerusform>%n option changed.</numerusform>
+            <numerusform>%n options changed.</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
         <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="60"/>

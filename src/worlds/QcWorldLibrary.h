@@ -13,6 +13,8 @@ struct QcNewWorld
     // World generator type (QcWorldGenerators) and its options (the layers of a flat world).
     QString generator = QString::fromLatin1(QcWorldInfo::defaultGenerator);
     QString options;
+    // World generation options of a terrain world (decision E-917, QcWorldOptions::valuesToStore).
+    QJsonObject worldOptions;
     // Game mode of players who join for the first time (decision E-282).
     QcGameMode gameMode = QcGameMode::Survival;
 };

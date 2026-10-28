@@ -4,10 +4,12 @@
 #include "common/diagnostics/QcDiagnosticsBundle.h"
 #include "common/diagnostics/QcHealthLog.h"
 #include "common/diagnostics/QcMessageLog.h"
+#include "headless/QcHeadlessOptions.h"
 #include "headless/QcServerConsole.h"
 #include "headless/QcSignalWatcher.h"
 #include "network/tls/QcTlsCredentials.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcWorldLibrary.h"
 
@@ -60,15 +62,18 @@ QcStatus QcDedicatedServer::start(const Options &options)
         return qcError(config.error());
     }
 
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config->generator, m_content, config->seed, config->generatorOptions);
+    // The generator and the server see the content with the world's options set (decision E-917).
+    const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, config->generator, config->worldOptions);
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config->generator, applied.content, config->seed, config->generatorOptions);
     if (!generator) {
         return qcError(u"Unknown world type '%1'"_s.arg(config->generator));
     }
-    for (const QString &warning : generator->warnings()) {
+    const QStringList warnings = applied.warnings + generator->warnings();
+    for (const QString &warning : warnings) {
         std::println(stderr, "world generation warning: {}", warning.toStdString());
     }
 
-    m_host = std::make_unique<QcLocalServerHost>(*config, m_content, std::move(generator));
+    m_host = std::make_unique<QcLocalServerHost>(*config, applied.content, std::move(generator));
     if (!m_host->startError().isEmpty()) {
         const QString error = m_host->startError();
         m_host.reset();
@@ -133,9 +138,14 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
         if (!stored) {
             return qcError(stored.error());
         }
+        const QcResult<QJsonObject> worldOptions = QcHeadlessOptions::worldOptionsOf(settings.worldOptions, settings.worldType, *m_content);
+        if (!worldOptions) {
+            return qcError(u"Invalid world options: "_s + worldOptions.error());
+        }
         const qint64 seed = settings.seed.value_or(static_cast<qint64>(QRandomGenerator::global()->generate64() >> 1));
         const QcWorldLibrary::NewWorld setup{.generator = settings.worldType,
                                              .options = *stored,
+                                             .worldOptions = *worldOptions,
                                              .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival)};
         const QcResult<QcWorldLibrary::Entry> created = library.create(settings.world, seed, setup);
         if (!created) {
@@ -150,6 +160,7 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
     config.seed = entry.info.seed;
     config.generator = entry.info.generator;
     config.generatorOptions = entry.info.generatorOptions;
+    config.worldOptions = entry.info.worldOptions;
     config.worldDirectory = entry.directory;
     config.contentPacks = m_packs;
     return config;

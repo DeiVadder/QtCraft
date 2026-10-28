@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/parser/QcHangingParser.h"
+#include "worldgen/generators/QcWorldOptions.h"
 
 #include <algorithm>
 
@@ -220,6 +221,8 @@ QStringList check(const QcContentRegistry &content)
             warnings.append(QcHangingParser::checkTextures(definition.name, *definition.hangs, content.assets()));
         }
     }
+    // Options on unknown targets or subjects, presets with unknown options (decision E-917).
+    warnings.append(QcWorldOptions::check(content));
     return warnings;
 }
 

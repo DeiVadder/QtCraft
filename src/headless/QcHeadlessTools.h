@@ -23,6 +23,10 @@ void exitSoon(int code);
 // the game); false when the base game cannot be loaded.
 bool exportIcon(const QString &path);
 
+// Whether the command line asks for a world generation tool (--world-stats, --slice-map,
+// --biome-map, --map), which draws a terrain world.
+[[nodiscard]] bool wantsWorldTool(const QCommandLineParser &parser, const QcHeadlessOptions::Options &options);
+
 // Runs the tool the command line asks for with `content` and `config` (seed, generator); false when
 // it asks for none. Builds the world generator first and prints its warnings in any case.
 bool run(const QCommandLineParser &parser, const QcHeadlessOptions::Options &options, const QcServerConfig &config,

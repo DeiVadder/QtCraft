@@ -20,14 +20,20 @@ public:
         double rarity = 0.0;
     };
 
-    // `withRarity`: some biome is rare; otherwise the rarity map is not computed.
-    QcTerrainClimate(quint64 seed, bool withRarity);
+    // `withRarity`: some biome is rare; otherwise the rarity map is not computed. `biomeScale`
+    // stretches the temperature, humidity, ruggedness and rarity maps (QcTerrainSettings::biomeScale);
+    // at 1 every point is exactly as without it.
+    QcTerrainClimate(quint64 seed, bool withRarity, double biomeScale = 1.0);
 
     // `warpedX`, `warpedZ`: the column bent by the terrain's large-scale warp, shared with the coasts.
     [[nodiscard]] Point at(int x, int z, double warpedX, double warpedZ) const;
 
 private:
     bool m_withRarity = false;
+    double m_temperatureScale = 0.0;
+    double m_humidityScale = 0.0;
+    double m_ruggednessScale = 0.0;
+    double m_rarityScale = 0.0;
     QcNoise m_temperatureNoise;
     QcNoise m_humidityNoise;
     QcNoise m_ruggednessNoise;

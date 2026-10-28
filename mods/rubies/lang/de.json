@@ -12,5 +12,7 @@
     "item.rubies.molten_ruby_bucket": "Eimer mit geschmolzenem Rubin",
     "block.rubies.ruby_rose": "Rubinrose",
     "block.rubies.ruby_sand": "Rubinsand",
-    "structure.rubies.ruby_shrine": "Rubinschrein"
+    "structure.rubies.ruby_shrine": "Rubinschrein",
+    "world_option.rubies.ruby_amount": "Rubinmenge",
+    "world_option.rubies.ruby_amount.help": "Adern von Rubinerz im Vergleich zur üblichen Zahl."
 }

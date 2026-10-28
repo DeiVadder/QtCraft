@@ -10,6 +10,7 @@
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcWorldLibrary.h"
 
@@ -46,6 +47,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_audio(std::make_unique<QcAudioEngine>())
     , m_library(std::make_unique<QcWorldLibraryController>())
     , m_settings(std::make_unique<QcSettingsController>(m_parts, *m_library, m_audio.get()))
+    , m_worldOptions(std::make_unique<QcWorldOptionsController>(*m_library, [this] { return m_settings->contentLanguage(); }))
     , m_worlds(*m_library, *m_settings)
     , m_player(std::make_unique<QcPlayerController>(m_parts, *m_settings))
     , m_trade(std::make_unique<QcTradeController>(m_parts, *m_settings))
@@ -255,6 +257,7 @@ void QcGameController::setLanguage(const QString &language)
     // Key and action names are translated.
     m_settings->keys()->retranslate();
     m_handbook->refreshIfOpen();
+    m_worldOptions->retranslate();
 }
 
 void QcGameController::startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator,
@@ -285,9 +288,20 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
         return;
     }
 
+    // Every option is stored, the defaults as they are now included (decision E-917).
+    const QJsonObject given = world.generator == QLatin1StringView(QcWorldGenerators::terrain)
+                                  ? QJsonObject::fromVariantMap(setup.value(u"worldOptions"_s).toMap())
+                                  : QJsonObject{};
+    const QcResult<QJsonObject> worldOptions = QcWorldOptions::valuesToStore(world.generator, given, m_library->content());
+    if (!worldOptions) {
+        setPhase(Phase::Error, tr("Cannot create the world: %1").arg(worldOptions.error()));
+        return;
+    }
+
     const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
     const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
     world.options = *stored;
+    world.worldOptions = *worldOptions;
     const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), world);
     if (!entry) {
         setPhase(Phase::Error, tr("Cannot create the world: %1").arg(entry.error()));
@@ -339,6 +353,8 @@ void QcGameController::startWorld(const QString &directory, const QcWorldInfo &w
         qCWarning(lcGame) << "Saving the previous world failed:" << saved.error();
     }
     m_worldDirectory = directory;
+    // The world plays with its own content; the menu's options load theirs again with the next form.
+    m_worldOptions->release();
     setOverlay(Overlay::None);
     setPhase(Phase::Loading, tr("Loading content..."));
 

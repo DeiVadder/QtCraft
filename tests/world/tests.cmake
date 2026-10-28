@@ -67,6 +67,10 @@ qc_add_test(test_terrain_measure SOURCES world/test_terrain_measure.cpp LIBRARIE
 qc_add_test(test_village_measure SOURCES world/test_village_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
 qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
+# World generation options (decision E-917); reads the example mod's sources (REQUIRED_FILES at the
+# end of tests/CMakeLists.txt).
+qc_add_test(test_world_options SOURCES world/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 330)
+target_compile_definitions(test_world_options PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_showcase_stations SOURCES world/test_showcase_stations.cpp world/QcShowcaseTestUtil.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp world/QcShowcaseTestUtil.h QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 300)
 qc_add_test(test_block_light SOURCES world/test_block_light.cpp QcTestWorld.h LIBRARIES qc_common)

@@ -4,6 +4,7 @@
     "icon": "water_bucket",
     "sections": [
         "time",
+        "options",
         "liquids",
         "ice",
         "mineshafts",

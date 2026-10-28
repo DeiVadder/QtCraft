@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/core/QcResult.h"
 #include "common/diagnostics/QcDiagnosticsOptions.h"
 #include "server/core/QcServerConfig.h"
 #include "server/network/QcServerSettings.h"
@@ -7,6 +8,7 @@
 
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QJsonObject>
 #include <QStringList>
 
 #include <optional>
@@ -58,6 +60,10 @@ struct Options
     QCommandLineOption generatorOptions{u"generator-options"_s,
                                         u"Options of --generator: the layers of a flat world ('bedrock,3*dirt,grass_block') or the platform of a void world ('platform=glass,radius=4,y=40')."_s,
                                         u"options"_s};
+    QCommandLineOption worldOptions{u"world-options"_s,
+                                    u"World generation options of a terrain world it starts or creates (also with --server, and for --map, "
+                                    u"--biome-map, --slice-map and --world-stats): 'preset=more_villages,village_spacing=256,caves=off'."_s,
+                                    u"options"_s};
     QCommandLineOption gameMode{u"game-mode"_s,
                                 u"Game mode of players who join for the first time: survival, creative, adventure or spectator (with --server it overrides "
                                 u"server.json and is the default of a world it creates)."_s,
@@ -126,7 +132,7 @@ struct Options
         parser.addOptions({exportTextures, textureResolution, texturePacks, textureKeys, textureName, atlasStats});
         parser.addOptions({handbook, language, handbookWeb});
         parser.addOptions({stats, statsRadius, biomeMap, slice, spawn, tour});
-        parser.addOptions({seed, world, generator, generatorOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
+        parser.addOptions({seed, world, generator, generatorOptions, worldOptions, gameMode, view, script, console, noEofStop, time, map, mapRadius, mapCentre, data, mods,
                            noMods, statsLog});
         parser.addOptions({server, serverConfig, port, bind, maxPlayers, password, motd});
         parser.addOptions({join, playerName});
@@ -147,6 +153,9 @@ struct RunConfig
 
 // Seed, world name, view distance, spawn column, game mode and the time limit; nullopt on a bad value.
 [[nodiscard]] std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Options &options);
+// The world generation options of --world-options for a world of `type` (decision E-917): every
+// option, the named ones as given; without the option none (the content's values).
+[[nodiscard]] QcResult<QJsonObject> worldOptionsOf(const QString &text, const QString &type, const QcContentRegistry &content);
 // The data directory: --data-dir, else QcDataRoot.
 QString dataDirectory(const QCommandLineParser &parser, const Options &options);
 // The base game with the mods of --mods-dir, else of the data directory's mods folder (none with

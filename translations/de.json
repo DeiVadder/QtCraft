@@ -1345,6 +1345,22 @@
         "%n von 5 Signalbalken",
         "%n von 5 Signalbalken"
     ],
+    "Every option at its default.": "Alle Optionen auf Standard.",
+    "Preset: %1": "Voreinstellung: %1",
+    "World generation": "Weltgenerierung",
+    "Villages, biomes, caves …": "Dörfer, Biome, Höhlen …",
+    "More world options …": "Weitere Weltoptionen …",
+    "%1 blocks": "%1 Blöcke",
+    "More world options": "Weitere Weltoptionen",
+    "Every option as the game sets it.": "Alle Optionen so, wie das Spiel sie setzt.",
+    "Options of your own; choose a preset to start again from it.": "Eigene Werte; wähle eine Voreinstellung, um von ihr neu zu beginnen.",
+    "Custom": "Eigene",
+    "Back to the new world": "Zurück zur neuen Welt",
+    "Restore defaults": "Standard wiederherstellen",
+    "%n option(s) changed.": [
+        "%n Option geändert.",
+        "%n Optionen geändert."
+    ],
     "Items and health": "Gegenstände und Gesundheit",
     "Building": "Bauen",
     "World and rules": "Welt und Regeln",
@@ -1393,5 +1409,6 @@
     "Dungeon": "Verlies",
     "Coastal tower": "Küstenturm",
     "Skipped: the pack's material maps exceed the memory budget of %1 MiB": "Übersprungen: Die Material-Karten des Pakets überschreiten das Speicherbudget von %1 MiB",
-    "More than %1 material maps; the rest was skipped": "Mehr als %1 Material-Karten; der Rest wurde übersprungen"
+    "More than %1 material maps; the rest was skipped": "Mehr als %1 Material-Karten; der Rest wurde übersprungen",
+    "Preset": "Voreinstellung"
 }

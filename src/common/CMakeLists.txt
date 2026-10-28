@@ -66,6 +66,7 @@ target_sources(qc_common PRIVATE
     content/definitions/QcVillagerDefinitions.h
     content/definitions/QcWeatherDefinition.h
     content/definitions/QcWorldgenDefinitions.h
+    content/definitions/QcWorldOptionDefinitions.h
     content/definitions/QcWorldTypeDefinitions.h
 )
 target_sources(qc_common PRIVATE
@@ -110,6 +111,7 @@ target_sources(qc_common PRIVATE
     content/parser/QcVillagerParser.h content/parser/QcVillagerParser.cpp
     content/parser/QcWeatherParser.h content/parser/QcWeatherParser.cpp
     content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
+    content/parser/QcWorldOptionParser.h content/parser/QcWorldOptionParser.cpp
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
 )
 target_sources(qc_common PRIVATE

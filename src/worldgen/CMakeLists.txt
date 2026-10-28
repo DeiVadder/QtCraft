@@ -20,6 +20,8 @@ target_sources(qc_worldgen PRIVATE
     generators/QcWorldGenerator.h
     generators/QcWorldGenerators.h generators/QcWorldGenerators.cpp
     generators/QcWorldgenLogging.h generators/QcWorldgenLogging.cpp
+    generators/QcWorldOptions.h generators/QcWorldOptions.cpp
+    generators/QcWorldOptionTargets.h generators/QcWorldOptionTargets.cpp
     generators/QcWorldSetup.h
 )
 target_sources(qc_worldgen PRIVATE

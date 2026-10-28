@@ -12,5 +12,7 @@
     "item.rubies.molten_ruby_bucket": "Bucket of molten ruby",
     "block.rubies.ruby_rose": "Ruby rose",
     "block.rubies.ruby_sand": "Ruby sand",
-    "structure.rubies.ruby_shrine": "Ruby shrine"
+    "structure.rubies.ruby_shrine": "Ruby shrine",
+    "world_option.rubies.ruby_amount": "Ruby amount",
+    "world_option.rubies.ruby_amount.help": "Veins of ruby ore against the usual number."
 }

@@ -64,6 +64,7 @@ check() {
 world="--play --world-type flat --view-distance 2"
 check menu
 check newworld --overlay "@300 open:newWorldPage"
+check worldoptions --overlay "@300 open:worldOptionsPage"
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
 check character --overlay "@300 open:menuCharacterScreen"

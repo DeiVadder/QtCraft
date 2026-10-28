@@ -68,7 +68,7 @@ QcTerrainGenerator::QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> 
     , m_definitions(*m_content, static_cast<quint64>(seed))
     , m_caves(static_cast<quint64>(seed), m_content->worldgen().terrainSettings(), m_definitions)
     , m_pools(m_content, m_definitions)
-    , m_climate(static_cast<quint64>(seed), m_definitions.anyRare)
+    , m_climate(static_cast<quint64>(seed), m_definitions.anyRare, m_content->worldgen().terrainSettings().biomeScale)
     , m_rivers(static_cast<quint64>(seed))
     , m_riverPieces(m_rivers)
     , m_deltas(static_cast<quint64>(seed), m_rivers, m_definitions.seaLevel, m_definitions.deltaShare)

@@ -9,7 +9,7 @@ using QcTerrainMath::smoothstep;
 
 namespace {
 
-// Horizontal scales of the climate maps in blocks.
+// Horizontal scales of the climate maps in blocks, at the biome scale 1 (decision E-917).
 constexpr double temperatureScale = 1900.0;
 constexpr double humidityScale = 1600.0;
 constexpr double ruggednessScale = 1500.0;
@@ -33,8 +33,12 @@ constexpr double rarityHigh = 0.18;
 
 } // namespace
 
-QcTerrainClimate::QcTerrainClimate(quint64 seed, bool withRarity)
+QcTerrainClimate::QcTerrainClimate(quint64 seed, bool withRarity, double biomeScale)
     : m_withRarity(withRarity)
+    , m_temperatureScale(temperatureScale * biomeScale)
+    , m_humidityScale(humidityScale * biomeScale)
+    , m_ruggednessScale(ruggednessScale * biomeScale)
+    , m_rarityScale(rarityScale * biomeScale)
     , m_temperatureNoise(qcMixSeed(seed, 3))
     , m_humidityNoise(qcMixSeed(seed, 4))
     , m_ruggednessNoise(qcMixSeed(seed, 8))
@@ -52,17 +56,17 @@ QcTerrainClimate::Point QcTerrainClimate::at(int x, int z, double warpedX, doubl
     const double frayedZ = warpedZ + climateFray * (climateZ - warpedZ);
     Point point;
     point.temperature = std::clamp(
-        0.5 + climateContrast * m_temperatureNoise.fractal2(frayedX / temperatureScale, frayedZ / temperatureScale, 3), 0.0, 1.0);
+        0.5 + climateContrast * m_temperatureNoise.fractal2(frayedX / m_temperatureScale, frayedZ / m_temperatureScale, 3), 0.0, 1.0);
     point.humidity =
-        std::clamp(0.5 + climateContrast * m_humidityNoise.fractal2(frayedX / humidityScale, frayedZ / humidityScale, 3), 0.0, 1.0);
+        std::clamp(0.5 + climateContrast * m_humidityNoise.fractal2(frayedX / m_humidityScale, frayedZ / m_humidityScale, 3), 0.0, 1.0);
     point.ruggedness = std::clamp(
-        1.0 - ruggednessSharpness * std::abs(m_ruggednessNoise.fractal2(climateX / ruggednessScale, climateZ / ruggednessScale, 3)),
+        1.0 - ruggednessSharpness * std::abs(m_ruggednessNoise.fractal2(climateX / m_ruggednessScale, climateZ / m_ruggednessScale, 3)),
         0.0, 1.0);
 
     // Rarity: spots where the noise peaks, bent by the climate warp like the other maps, so rare
     // biomes have frayed borders too.
     if (m_withRarity) {
-        point.rarity = smoothstep(rarityLow, rarityHigh, m_rarityNoise.fractal2(climateX / rarityScale, climateZ / rarityScale, 2));
+        point.rarity = smoothstep(rarityLow, rarityHigh, m_rarityNoise.fractal2(climateX / m_rarityScale, climateZ / m_rarityScale, 2));
     }
     return point;
 }

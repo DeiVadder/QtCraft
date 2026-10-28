@@ -14,6 +14,7 @@
 #include "app/controllers/QcStonecutterController.h"
 #include "app/controllers/QcTradeController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/controllers/QcWorldOptionsController.h"
 #include "app/controllers/QcWorldPause.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
@@ -73,6 +74,8 @@ class QcGameController : public QObject
     Q_PROPERTY(bool persistent READ persistent NOTIFY phaseChanged FINAL)
     Q_PROPERTY(QcSettingsController *settings READ settings CONSTANT FINAL)
     Q_PROPERTY(QcWorldLibraryController *library READ library CONSTANT FINAL)
+    // The world generation options of the menu's new world (decision E-917).
+    Q_PROPERTY(QcWorldOptionsController *worldOptions READ worldOptions CONSTANT FINAL)
     Q_PROPERTY(QcPlayerController *player READ player CONSTANT FINAL)
     Q_PROPERTY(QcTradeController *trade READ trade CONSTANT FINAL)
     // The editor of a sign (decision E-766).
@@ -126,6 +129,7 @@ public:
 
     QcSettingsController *settings() const { return m_settings.get(); }
     QcWorldLibraryController *library() const { return m_library.get(); }
+    QcWorldOptionsController *worldOptions() const { return m_worldOptions.get(); }
     QcPlayerController *player() const { return m_player.get(); }
     QcTradeController *trade() const { return m_trade.get(); }
     QcSignController *sign() const { return m_sign.get(); }
@@ -155,8 +159,9 @@ public:
     Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
                                        const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
     // Creates a saved world in the library and starts it. `setup` holds "worldType" (terrain, flat,
-    // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory"
-    // and "gameMode" ("survival", "creative"; decision E-282); missing keys keep the defaults.
+    // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory",
+    // "gameMode" ("survival", "creative"; decision E-282) and "worldOptions" of a terrain world (option
+    // -> value, decision E-917; missing options get their defaults); missing keys keep the defaults.
     Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // The layers a flat world gets by default (shown in the menu).
     Q_INVOKABLE QString defaultFlatLayers();
@@ -223,6 +228,7 @@ private:
     std::unique_ptr<QcAudioEngine> m_audio;
     std::unique_ptr<QcWorldLibraryController> m_library;
     std::unique_ptr<QcSettingsController> m_settings;
+    std::unique_ptr<QcWorldOptionsController> m_worldOptions;
     QcWorldStarter m_worlds;
     std::unique_ptr<QcPlayerController> m_player;
     std::unique_ptr<QcTradeController> m_trade;

@@ -16,6 +16,8 @@ SettingRow {
     property alias currentIndex: box.currentIndex
     property alias count: box.count
     readonly property alias currentValue: box.currentValue
+    // The text shown for the choice (by default the chosen entry's).
+    property alias displayText: box.displayText
 
     signal activated(int index)
 

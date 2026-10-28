@@ -9,6 +9,8 @@
 #include "headless/QcSoundExporter.h"
 #include "headless/QcTextureTools.h"
 #include "headless/QcWorldStats.h"
+#include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -222,6 +224,11 @@ bool exportIcon(const QString &path)
     return true;
 }
 
+bool wantsWorldTool(const QCommandLineParser &parser, const Options &options)
+{
+    return parser.isSet(options.stats) || parser.isSet(options.slice) || parser.isSet(options.biomeMap) || parser.isSet(options.map);
+}
+
 bool run(const QCommandLineParser &parser, const Options &options, const QcServerConfig &config,
          const std::shared_ptr<const QcContentRegistry> &content)
 {
@@ -229,11 +236,14 @@ bool run(const QCommandLineParser &parser, const Options &options, const QcServe
         return true;
     }
 
-    const QcTerrainGenerator generator(content, config.seed);
-    for (const QString &warning : generator.warnings()) {
+    // The maps and numbers show the world with the options of --world-options (decision E-917).
+    const QcWorldOptions::Applied applied = QcWorldOptions::apply(content, QString::fromLatin1(QcWorldGenerators::terrain), config.worldOptions);
+    const QcTerrainGenerator generator(applied.content, config.seed);
+    const QStringList warnings = applied.warnings + generator.warnings();
+    for (const QString &warning : warnings) {
         printError(u"world generation warning: "_s + warning);
     }
-    return runWorldTool(parser, options, generator, *content);
+    return runWorldTool(parser, options, generator, *applied.content);
 }
 
 } // namespace QcHeadlessTools

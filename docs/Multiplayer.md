@@ -29,6 +29,7 @@ QTCRAFT_SERVER_PASSWORD=secret qtcraft-headless --server --console
 | `password` | `--password`, `QTCRAFT_SERVER_PASSWORD` | empty (none) | Server password; the option shows in the process list, prefer the file or the variable |
 | `world` | `--world` | World | Folder below `<data>/worlds`; created when missing |
 | `seed`, `worldType` | `--seed`, `--generator` | random, terrain | For a new world only |
+| `worldOptions` | `--world-options` | empty (the defaults) | World generation options of a new terrain world (E-917), e.g. `preset=more_villages,caves=off`; for a new world only, the world keeps them |
 | `viewDistance` | `--view-distance` | 8 | Chunks streamed at most; clients may ask for fewer |
 | `loginTimeoutSeconds` | – | 10 | A login must be done within this time |
 | `pauseWhenEmptySeconds` | – | 60 | Seconds without anyone connected before the server pauses (0: never; E-877) |

@@ -35,6 +35,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
+    controllers/QcWorldOptionsController.h controllers/QcWorldOptionsController.cpp
     controllers/QcWorldPause.h controllers/QcWorldPause.cpp
 )
 target_sources(qc_app_core PRIVATE
@@ -290,6 +291,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml
         qml/menus/WorldTile.qml
         qml/settings/AdvancedPage.qml

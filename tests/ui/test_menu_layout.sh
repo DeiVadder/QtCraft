@@ -41,6 +41,7 @@ check() {
 
 check menu
 check newworld --overlay "@300 open:newWorldPage"
+check worldoptions --overlay "@300 open:worldOptionsPage"
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
 check character --overlay "@300 open:menuCharacterScreen"
@@ -48,6 +49,7 @@ check multiplayer --overlay multiplayer
 # The main menu and its screens in German (decision E-852), first start without a world.
 check menu-de --language de
 check newworld-de --language de --overlay "@300 open:newWorldPage"
+check worldoptions-de --language de --overlay "@300 open:worldOptionsPage"
 check mods-de --language de --overlay "@300 open:modsScreen"
 check character-de --language de --overlay "@300 open:menuCharacterScreen"
 check multiplayer-de --language de --overlay multiplayer

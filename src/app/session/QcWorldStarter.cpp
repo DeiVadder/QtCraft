@@ -5,6 +5,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "common/world/QcWorldInfo.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 #include "worlds/QcLocalServerHost.h"
 #include "worlds/QcModLoader.h"
 
@@ -72,15 +73,18 @@ QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &cont
         return std::unexpected(Refusal{tr("Cannot start the world: %1").arg(checked.error()), checked.error()});
     }
 
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, content, world.seed, world.generatorOptions);
+    // The generator and the server see the content with the world's options set (decision E-917).
+    const QcWorldOptions::Applied applied = QcWorldOptions::apply(content, world.generator, world.worldOptions);
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, applied.content, world.seed, world.generatorOptions);
     if (!generator) {
         return std::unexpected(Refusal{tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator), std::nullopt});
     }
 
-    for (const QString &warning : generator->warnings()) {
+    const QStringList warnings = applied.warnings + generator->warnings();
+    for (const QString &warning : warnings) {
         qCWarning(lcGame) << "World generation:" << warning;
     }
-    auto server = std::make_unique<QcLocalServerHost>(start, content, std::move(generator));
+    auto server = std::make_unique<QcLocalServerHost>(start, applied.content, std::move(generator));
     if (!server->startError().isEmpty()) {
         return std::unexpected(Refusal{tr("Cannot load the world: %1").arg(startError(*server, directory)), std::nullopt});
     }

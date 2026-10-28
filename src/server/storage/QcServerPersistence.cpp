@@ -22,6 +22,33 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// A world option value as a message shows it: the number or true/false, "none" when it is missing.
+QString optionText(const QJsonValue &value)
+{
+    if (value.isUndefined()) {
+        return u"none"_s;
+    }
+    return value.toVariant().toString();
+}
+
+// Why the world's options `stored` are not the `given` ones: the first option (by name) that differs,
+// with both values.
+QString optionsDifference(const QJsonObject &stored, const QJsonObject &given)
+{
+    QStringList names = stored.keys() + given.keys();
+    std::ranges::sort(names);
+    for (const QString &name : std::as_const(names)) {
+        if (stored.value(name) != given.value(name)) {
+            return u"The world was made with the world option '%1' = %2, not %3"_s.arg(name, optionText(stored.value(name)), optionText(given.value(name)));
+        }
+    }
+    return u"The world was made with other world generation options than given"_s;
+}
+
+} // namespace
+
 QcServerPersistence::QcServerPersistence(QcServerState &state, QcServerBlocks &blocks, QcBlockUpdateQueue &updates, QcChunkLoading &loading)
     : m_state(state)
     , m_blocks(blocks)
@@ -44,6 +71,7 @@ QcStatus QcServerPersistence::open()
     m_state.info().defaultGameMode = m_state.config().defaultGameMode.value_or(QcGameMode::Survival);
     m_state.info().generator = m_state.config().generator;
     m_state.info().generatorOptions = m_state.config().generatorOptions;
+    m_state.info().worldOptions = m_state.config().worldOptions;
     m_state.info().setupDone = false;
 
     if (m_state.config().worldDirectory.isEmpty()) {
@@ -208,6 +236,9 @@ QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storag
     }
     if (info->generatorOptions != m_state.config().generatorOptions) {
         return qcError(u"The world was made with the options '%1', not '%2'"_s.arg(info->generatorOptions, m_state.config().generatorOptions));
+    }
+    if (info->worldOptions != m_state.config().worldOptions) {
+        return qcError(optionsDifference(info->worldOptions, m_state.config().worldOptions));
     }
 
     m_state.info() = *info;

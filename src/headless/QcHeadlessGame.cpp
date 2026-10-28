@@ -20,6 +20,7 @@
 #include "headless/QcSignalWatcher.h"
 #include "headless/QcStdinReader.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 #include "worlds/QcContentFingerprint.h"
 #include "worlds/QcHandbookRules.h"
 #include "worlds/QcLocalServerHost.h"
@@ -111,7 +112,7 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"Invalid numeric option or world type"_s);
         return false;
     }
-    const QcServerConfig &config = run->server;
+    QcServerConfig config = run->server;
     const int timeLimit = run->timeLimit;
     const std::optional<QcModLoader::Result> loaded = QcHeadlessOptions::loadContent(parser, options);
     if (!loaded) {
@@ -129,6 +130,14 @@ bool QcHeadlessGame::start(const QStringList &arguments)
         printError(u"Invalid --generator-options: "_s + checked.error());
         return false;
     }
+    // The world tools draw terrain worlds whatever --generator says.
+    const QString optionsType = QcHeadlessTools::wantsWorldTool(parser, options) ? QString::fromLatin1(QcWorldGenerators::terrain) : config.generator;
+    const QcResult<QJsonObject> worldOptions = QcHeadlessOptions::worldOptionsOf(parser.value(options.worldOptions), optionsType, *shared);
+    if (!worldOptions) {
+        printError(u"Invalid --world-options: "_s + worldOptions.error());
+        return false;
+    }
+    config.worldOptions = *worldOptions;
     if (QcHeadlessTools::run(parser, options, config, shared)) {
         return true;
     }
@@ -366,16 +375,19 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 
 QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 {
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, m_content, config.seed, config.generatorOptions);
+    // The generator and the server see the content with the world's options set (decision E-917).
+    const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, config.generator, config.worldOptions);
+    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, applied.content, config.seed, config.generatorOptions);
     if (!generator) {
         return qcError(u"Unknown world type '%1'"_s.arg(config.generator));
     }
-    for (const QString &warning : generator->warnings()) {
+    const QStringList warnings = applied.warnings + generator->warnings();
+    for (const QString &warning : warnings) {
         printError(u"world generation warning: "_s + warning);
     }
 
     // The current world keeps running when the new one cannot be opened.
-    auto server = std::make_unique<QcLocalServerHost>(config, m_content, std::move(generator));
+    auto server = std::make_unique<QcLocalServerHost>(config, applied.content, std::move(generator));
     if (!server->startError().isEmpty()) {
         return qcError(server->startError());
     }
@@ -504,7 +516,15 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
     if (!mode) {
         return qcError(u"'gameMode' must be survival, creative, adventure or spectator"_s);
     }
-    const QcWorldLibrary::NewWorld setup{.generator = generator, .options = *options, .gameMode = *mode};
+    const QJsonValue given = request.value(u"worldOptions"_s);
+    if (!given.isUndefined() && !given.isObject()) {
+        return qcError(u"'worldOptions' must be an object of option names and values"_s);
+    }
+    const QcResult<QJsonObject> worldOptions = QcWorldOptions::valuesToStore(generator, given.toObject(), *m_content);
+    if (!worldOptions) {
+        return qcError(worldOptions.error());
+    }
+    const QcWorldLibrary::NewWorld setup{.generator = generator, .options = *options, .worldOptions = *worldOptions, .gameMode = *mode};
     const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, setup);
     if (!entry) {
         return qcError(entry.error());
@@ -515,6 +535,7 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
     config.seed = entry->info.seed;
     config.generator = entry->info.generator;
     config.generatorOptions = entry->info.generatorOptions;
+    config.worldOptions = entry->info.worldOptions;
     config.worldDirectory = entry->directory;
     return WorldChoice{std::move(config), entry->folder};
 }
@@ -536,6 +557,7 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::listedWorld(const QJsonObj
     config.seed = it->info.seed;
     config.generator = it->info.generator;
     config.generatorOptions = it->info.generatorOptions;
+    config.worldOptions = it->info.worldOptions;
     config.worldDirectory = it->directory;
     return WorldChoice{std::move(config), folder};
 }

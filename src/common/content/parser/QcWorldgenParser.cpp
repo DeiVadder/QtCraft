@@ -512,6 +512,7 @@ QcMineshaftSettings MineshaftReader::read()
     settings.deltas = reader.boolean(u"deltas"_s, false);
     settings.deltaShare = reader.number(u"deltaShare"_s, settings.deltaShare, 0.0, 1.0);
     settings.deltaBiome = reader.name(u"deltaBiome"_s, packNamespace);
+    settings.biomeScale = reader.number(u"biomeScale"_s, settings.biomeScale, QcTerrainSettings::minBiomeScale, QcTerrainSettings::maxBiomeScale);
     reader.nestedObject(u"dungeons"_s, [&settings, &packNamespace](const QJsonObject &object, QcJsonFieldReader &nested) {
         settings.dungeons = parseDungeons(object, nested, packNamespace);
     });

@@ -1,0 +1,25 @@
+{
+    "groups": [
+        { "name": "terrain" },
+        { "name": "villages" },
+        { "name": "structures" },
+        { "name": "resources" }
+    ],
+    "options": [
+        { "name": "biome_size", "group": "terrain", "target": "terrain.biomeScale", "unit": "factor", "min": 0.5, "max": 4, "step": 0.25 },
+        { "name": "caves", "group": "terrain", "target": "terrain.caves" },
+        { "name": "rivers", "group": "terrain", "target": "terrain.rivers" },
+        { "name": "village_spacing", "group": "villages", "target": "villages.spacing", "unit": "blocks", "min": 192, "max": 1024, "step": 32 },
+        { "name": "village_chance", "group": "villages", "target": "villages.chance", "unit": "percent", "min": 0, "max": 1, "step": 0.05 },
+        { "name": "dungeons", "group": "structures", "target": "dungeons.chance", "unit": "percent", "min": 0, "max": 1, "step": 0.05 },
+        { "name": "mineshafts", "group": "structures", "target": "mineshafts.chance", "unit": "percent", "min": 0, "max": 1, "step": 0.05 },
+        { "name": "coastal_towers", "group": "structures", "target": "coastalTowers.chance", "unit": "percent", "min": 0, "max": 1, "step": 0.05 },
+        { "name": "ore_amount", "group": "resources", "target": "ores.amount", "unit": "factor", "min": 0, "max": 3, "step": 0.25 }
+    ],
+    "presets": [
+        { "name": "more_villages", "values": { "village_spacing": 256, "village_chance": 0.9 } },
+        { "name": "large_biomes", "values": { "biome_size": 2 } },
+        { "name": "rich_ores", "values": { "ore_amount": 2 } },
+        { "name": "wilderness", "values": { "village_chance": 0, "dungeons": 0, "mineshafts": 0, "coastal_towers": 0 } }
+    ]
+}

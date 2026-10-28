@@ -62,6 +62,7 @@ set_tests_properties(test_scenarios test_mods test_signal_network test_server_li
 set_tests_properties(test_shadewalkers test_jungle_temples test_temple_entrances PROPERTIES COST 60)
 set_tests_properties(test_shadewalker_rules PROPERTIES COST 80)
 set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
+set_tests_properties(test_world_options PROPERTIES COST 25)
 set_tests_properties(test_mobs test_weather_effects test_block_light_engine test_dungeons test_mineshafts test_mineshaft_inclines test_lava_lakes PROPERTIES COST 80)
 set_tests_properties(test_world_details test_spawners test_desert_temples test_showcase_stations test_showcase_world test_surface_ruins PROPERTIES COST 70)
 set_tests_properties(test_coastal_towers test_monster_spawning PROPERTIES COST 90)
@@ -98,6 +99,7 @@ set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
+set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
 set_tests_properties(test_english_plurals PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/translations/qtcraft_de.ts;${PROJECT_SOURCE_DIR}/translations/qtcraft_en.ts")
 set_tests_properties(test_gamepad_sdl PROPERTIES

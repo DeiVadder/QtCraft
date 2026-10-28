@@ -234,6 +234,11 @@ struct QcTerrainSettings
     double deltaShare = 1.0;
     // The delta biome of land biomes that name none (decision E-850); empty: the first delta biome.
     QString deltaBiome;
+    // Size of the biomes against the content's (decision E-917): the climate maps stretch by this
+    // factor, so 2 makes biomes and mountain chains about twice as wide; the coasts stay.
+    double biomeScale = 1.0;
+    static constexpr double minBiomeScale = 0.25;
+    static constexpr double maxBiomeScale = 8.0;
     // Biome whose vegetation bone meal grows where the world generator names no biome (flat,
     // showcase and void worlds; decision E-814); empty: none there.
     QString vegetationBiome;

@@ -2,6 +2,7 @@
 
 #include "common/content/definitions/QcTextureAnimation.h"
 #include "common/content/parser/QcContentParser.h"
+#include "common/content/parser/QcWorldOptionParser.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/protocol/QcStreamLimits.h"
 
@@ -500,6 +501,10 @@ void PackReader::loadWorldgenSettings()
     }
     if (auto empty = readSettingsFile(u"worldgen/void.json"_s, QcContentParser::parseVoid)) {
         m_registry.worldgen().setVoidWorld(std::move(*empty));
+    }
+    // Each pack adds its options; one of the same name replaces an earlier pack's (decision E-917).
+    if (auto options = readSettingsFile(u"worldgen/options.json"_s, QcWorldOptionParser::parseOptionSet)) {
+        m_registry.worldgen().addWorldOptions(*options);
     }
 }
 

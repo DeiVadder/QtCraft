@@ -106,6 +106,11 @@ QString invalid(const QString &key)
         }
         *value = *read;
     }
+    const std::optional<QString> worldOptions = readText(json, u"worldOptions"_s, QcServerSettings::maxWorldOptionsLength, settings.worldOptions);
+    if (!worldOptions) {
+        return qcError(invalid(u"worldOptions"_s));
+    }
+    settings.worldOptions = *worldOptions;
     return settings;
 }
 
@@ -204,6 +209,7 @@ QJsonObject QcServerSettings::toJson() const
             {u"world"_s, world},
             {u"seed"_s, seed ? QString::number(*seed) : QString()},
             {u"worldType"_s, worldType},
+            {u"worldOptions"_s, worldOptions},
             {u"viewDistance"_s, viewDistance},
             {u"loginTimeoutSeconds"_s, loginTimeoutSeconds},
             {u"pauseWhenEmptySeconds"_s, pauseWhenEmptySeconds},

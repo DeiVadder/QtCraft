@@ -17,7 +17,7 @@
 // been released). What each format changed is recorded in docs/Entscheidungen.md.
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 17;
+    static constexpr int formatVersion = 18;
     static constexpr int oldestFormatVersion = 16;
     static constexpr auto defaultGenerator = "terrain";
 
@@ -57,6 +57,10 @@ struct QcWorldInfo
     // its one-time setup has run.
     QString generator = QString::fromLatin1(defaultGenerator);
     QString generatorOptions;
+    // The world generation options of a terrain world (decision E-917, QcWorldOptions), stored in
+    // full when the world is created: option name -> number or true/false. Empty for worlds without
+    // them, which generate with the content's values alone.
+    QJsonObject worldOptions;
     bool setupDone = true;
     // Game mode of players who join the world for the first time (decision E-282), chosen when the
     // world is created; worlds without the key are survival worlds.

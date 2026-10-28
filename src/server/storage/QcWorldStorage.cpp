@@ -4,6 +4,7 @@
 #include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 
 #include <QDir>
 #include <QFile>
@@ -93,6 +94,17 @@ QcAdventureRules adventureOf(const QJsonValue &value, const QString &path)
     return std::move(read.rules);
 }
 
+// "generator" of world.json: the type, its options, the world generation options (only when the
+// world has them, decision E-917) and whether the setup has run.
+QJsonObject generatorJson(const QcWorldInfo &info)
+{
+    QJsonObject generator{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}};
+    if (!info.worldOptions.isEmpty()) {
+        generator.insert(u"worldOptions"_s, info.worldOptions);
+    }
+    return generator;
+}
+
 } // namespace
 
 QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
@@ -129,6 +141,7 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.generator = generator.value(u"type"_s).toString();
     info.setupDone = generator.value(u"setupDone"_s).toBool(true);
     info.generatorOptions = generator.value(u"options"_s).toString();
+    info.worldOptions = generator.value(u"worldOptions"_s).toObject();
     // A mode this version does not know (a newer one) plays as survival and keeps its name.
     const QString gameMode = json.value(u"defaultGameMode"_s).toString();
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);
@@ -151,7 +164,8 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
         }
     }
 
-    if (!seedOk || !idOk || info.nextCreatureId == 0 || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength) {
+    if (!seedOk || !idOk || info.nextCreatureId == 0 || info.name.isEmpty() || info.generator.isEmpty() || info.generator.size() > 64 || info.generatorOptions.size() > QcWorldGenerators::maxOptionsLength
+        || info.worldOptions.size() > QcWorldOptions::maxValues) {
         return qcError(u"%1 is damaged: missing name, seed, next creature id or generator"_s.arg(path));
     }
     return info;
@@ -176,7 +190,7 @@ QByteArray QcWorldStorage::infoBytes(const QcWorldInfo &info)
                            {u"nextCreatureId"_s, QString::number(info.nextCreatureId)},
                            {u"nextMapId"_s, static_cast<qint64>(info.nextMapId)},
                            {u"defaultGameMode"_s, info.unknownGameMode.isEmpty() ? QString(QcGameModes::name(info.defaultGameMode)) : info.unknownGameMode},
-                           {u"generator"_s, QJsonObject{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}}},
+                           {u"generator"_s, generatorJson(info)},
                            {u"gameRules"_s, QJsonObject{{u"keepInventory"_s, info.keepInventory},
                                                         {u"daylightCycle"_s, info.daylightCycle},
                                                         {u"mobSpawning"_s, info.mobSpawning},

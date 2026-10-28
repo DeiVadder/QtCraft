@@ -6,8 +6,10 @@ import QtQuick.Layouts
 import QtCraft
 
 // The main menu's page for a new world (variant C, decision E-852): name, type with its seed or
-// layers, game mode and the rule on keeping the inventory, in groups that scroll as a whole; "‹ Back"
-// and "Create and play" stay in the footer. Esc and the pad's B go back (MainMenu).
+// layers, the world generation of a normal world (its preset or changes, and the way to "More world
+// options", decision E-917), game mode and the rule on keeping the inventory, in groups that scroll
+// as a whole; "‹ Back" and "Create and play" stay in the footer. Esc and the pad's B go back
+// (MainMenu).
 ColumnLayout {
     id: page
 
@@ -21,6 +23,8 @@ ColumnLayout {
 
     signal openRequested
     signal backRequested
+    // "More world options …": the page of the world generation options (WorldOptionsPage).
+    signal optionsRequested
 
     // Shows the form with its defaults, the name chosen for typing over it.
     function open() {
@@ -30,6 +34,7 @@ ColumnLayout {
         flatLayers.text = "";
         gameMode.currentIndex = startGameMode;
         keepInventory.checked = true;
+        page.game.worldOptions.reset();
         form.contentY = 0;
         openRequested();
         worldName.forceActiveFocus(Qt.TabFocusReason);
@@ -42,8 +47,23 @@ ColumnLayout {
             keepInventory: keepInventory.checked,
             worldType: worldType.currentValue,
             layers: worldType.currentValue === "flat" ? flatLayers.text : "",
-            gameMode: gameMode.currentValue
+            gameMode: gameMode.currentValue,
+            worldOptions: page.game.worldOptions.values
         });
+    }
+
+    // What the world generation options say in a line: their preset, or how many differ.
+    function optionsSummary(): string {
+        const options = page.game.worldOptions;
+        if (options.changedCount === 0)
+            return qsTr("Every option at its default.");
+        const preset = options.presets.find(each => each.name === options.preset);
+        return preset ? qsTr("Preset: %1").arg(preset.title) : qsTr("%n option(s) changed.", "", options.changedCount);
+    }
+
+    // Back from the options: the button that opened them has the focus again.
+    function focusOptions() {
+        moreOptions.forceActiveFocus(Qt.TabFocusReason);
     }
 
     spacing: 0
@@ -114,6 +134,27 @@ ColumnLayout {
                     Accessible.name: qsTr("Layers from the bottom up")
                     placeholderText: visible ? page.game.defaultFlatLayers() : ""
                     onAccepted: page.create()
+                }
+            }
+        }
+
+        SettingGroup {
+            visible: worldType.currentValue === "terrain"
+            title: qsTr("World generation")
+
+            SettingRow {
+                label: qsTr("Villages, biomes, caves …")
+                help: page.optionsSummary()
+
+                GameButton {
+                    id: moreOptions
+
+                    objectName: "moreWorldOptions"
+                    text: qsTr("More world options …")
+                    onClicked: page.optionsRequested()
+                }
+                Item {
+                    Layout.fillWidth: true
                 }
             }
         }

@@ -29,11 +29,14 @@ struct QcServerSettings
     QString bindAddress;
     int maxPlayers = 8;
     QString password;
-    // Folder of the world below <data>/worlds; made with `seed` (none: a random one) and
-    // `worldType` when missing.
+    // Folder of the world below <data>/worlds; made with `seed` (none: a random one), `worldType`
+    // and the world generation options `worldOptions` (decision E-917, as on the command line:
+    // "preset=more_villages,caves=off"; empty: the defaults) when missing.
     QString world = QStringLiteral("World");
     std::optional<qint64> seed;
     QString worldType = QStringLiteral("terrain");
+    QString worldOptions;
+    static constexpr qsizetype maxWorldOptionsLength = 2048;
     int viewDistance = 8;
     int loginTimeoutSeconds = 10;
     // Seconds without anyone connected before the server stops ticking (decision E-877); 0 never.

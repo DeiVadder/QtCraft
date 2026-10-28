@@ -2,6 +2,7 @@
 
 #include "common/core/QcDataRoot.h"
 #include "worldgen/generators/QcWorldGenerators.h"
+#include "worldgen/generators/QcWorldOptions.h"
 
 #include <QDir>
 #include <QFile>
@@ -60,6 +61,18 @@ std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Opti
     return valid ? std::optional<RunConfig>(std::move(run)) : std::nullopt;
 }
 
+QcResult<QJsonObject> worldOptionsOf(const QString &text, const QString &type, const QcContentRegistry &content)
+{
+    if (text.isEmpty()) {
+        return QJsonObject{};
+    }
+    const QcResult<QJsonObject> given = QcWorldOptions::parseText(text, content);
+    if (!given) {
+        return qcError(given.error());
+    }
+    return QcWorldOptions::valuesToStore(type, *given, content);
+}
+
 QString dataDirectory(const QCommandLineParser &parser, const Options &options)
 {
     return parser.isSet(options.data) ? parser.value(options.data) : QcDataRoot::path();
@@ -114,6 +127,7 @@ namespace {
     settings.motd = text(options.motd, settings.motd);
     settings.world = text(options.world, settings.world);
     settings.worldType = text(options.generator, settings.worldType);
+    settings.worldOptions = text(options.worldOptions, settings.worldOptions);
     if (parser.isSet(options.gameMode)) {
         settings.defaultGameMode = QcGameModes::parse(parser.value(options.gameMode));
         ok = ok && settings.defaultGameMode.has_value();

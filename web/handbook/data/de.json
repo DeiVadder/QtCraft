@@ -96899,6 +96899,14 @@
                     ],
                     "recipes": [
                     ],
+                    "text": "Wenn du eine normale Welt erstellst, legt „Weitere Weltoptionen …“ fest, wie sie entsteht: die Größe der Biome, Höhlen und Flüsse an oder aus, wie weit Dörfer auseinanderliegen und wie oft ein Gebiet eines bekommt, die Chancen auf Verliese, Minenschächte und Küstentürme und die Erzmenge. Eine Voreinstellung wie „Mehr Dörfer“, „Große Biome“, „Reich an Erzen“ oder „Wildnis“ setzt mehrere auf einmal; Mods können eigene Optionen mitbringen. Eine Welt behält ihre Optionen für immer: Sie lassen sich später nicht ändern, und derselbe Seed mit denselben Optionen ergibt immer dieselbe Welt. Ein dedizierter Server nimmt sie aus --world-options, wenn er seine Welt erstellt.",
+                    "title": "Weltoptionen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
                     "text": "Wasser und Lava fließen aus ihren Quellen; ein Eimer nimmt eine Quelle auf und gießt sie anderswo aus. Wo Lava auf Wasser trifft, wird sie zu Obsidian oder Bruchstein. Lava erhellt ihre Umgebung, verbrennt Items und verletzt.",
                     "title": "Wasser und Lava"
                 },

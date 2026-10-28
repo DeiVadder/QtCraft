@@ -641,6 +641,10 @@ Monsters share one cap: the world holds at most 70 of them for every 289 loaded 
 
 A full day lasts 600 s. The world is generated from its seed while you explore it; only what you change is saved.
 
+**World options**
+
+When you create a normal world, “More world options …” sets how it is made: the size of the biomes, caves and rivers on or off, how far apart villages lie and how often an area gets one, the chances of dungeons, mine shafts and coastal towers, and the amount of ore. A preset like “More villages”, “Large biomes”, “Rich in ores” or “Wilderness” sets several at once; mods can bring options of their own. A world keeps its options for good: they cannot be changed later, and the same seed with the same options always makes the same world. A dedicated server takes them from --world-options when it creates its world.
+
 **Water and lava**
 
 Water and lava flow from their sources; a bucket takes a source and pours it elsewhere. Where lava meets water it hardens into obsidian or cobblestone. Lava lights its surroundings, burns items and hurts.
