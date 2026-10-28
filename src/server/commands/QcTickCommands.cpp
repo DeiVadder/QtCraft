@@ -38,7 +38,7 @@ QcTickCommands::QcTickCommands(QcServerState &state, Parts parts)
 
 void QcTickCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"tick"_s, .minArguments = 1, .usage = usage,
+    registry.addBuiltIn({.name = u"tick"_s, .category = QcCommandCategory::World, .minArguments = 1, .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Freezes the world or steps it, changes the tick rate (1 to 100 per second) or runs "
                                                           "ticks as fast as possible; players keep moving."),

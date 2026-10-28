@@ -9,7 +9,8 @@ class QcContentRegistry;
 
 // Completion of a command line for the admin channel's command picker (decision E-848): the
 // command names of the catalogue for the first word, then what the parameter at the cursor takes
-// by its usage (QcCommandSyntax): the choices, the names of the players, or the blocks, items and
+// by its usage (QcCommandSyntax): the choices, the names of the players, the structures or biomes
+// the server names with the command (decision E-911), or the blocks, items and
 // creatures of the content. Pure: everything it offers comes from its arguments.
 namespace QcAdminCompletion {
 

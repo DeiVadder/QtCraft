@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/core/QcCommandCategory.h"
 #include "common/core/QcResult.h"
 #include "server/commands/QcCommandSource.h"
 
@@ -33,6 +34,8 @@ struct QcCommandSpec
 {
     // Every field has an initializer, so designated initializers may leave any out.
     QString name = {};
+    // The group /help lists it under (decision E-911).
+    QcCommandCategory category = QcCommandCategory::Other;
     QStringList aliases = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
     QcPermission permission = QcPermission::Operator;
     // Runs only for players (it acts on the player or around him); the console gets a refusal.
@@ -42,6 +45,11 @@ struct QcCommandSpec
     const char *usage = nullptr;
     const char *description = nullptr;
     QcCommandHandler run = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
+    // The words a placeholder takes that the content and the world decide, not the usage (the
+    // structures of /locate, the biomes of /locatebiome; decision E-911): /help <command> names them
+    // in `namesLine` (a key with %1), the admin channel's catalogue sends them for completion.
+    std::function<QStringList()> names = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
+    const char *namesLine = nullptr;
 };
 
 // All commands of a server, by name and alias. The game's commands register here like any later

@@ -5,6 +5,7 @@
 #include "server/commands/QcChatLog.h"
 #include "server/commands/QcCheatCommands.h"
 #include "server/commands/QcChunkCommands.h"
+#include "server/commands/QcCommandHelp.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcEffectCommands.h"
 #include "server/commands/QcExperienceCommands.h"
@@ -76,9 +77,6 @@ private:
     void runMacro(const QcCommandSource &source, const QcCommandMacroDefinition &macro, const QStringList &args);
     bool permitted(const QcCommandSource &source, QcPermission needed, const QString &name) const;
     void addBuiltIns();
-    // /help lists and explains only what the source may run.
-    void help(const QcCommandContext &context) const;
-    static bool mayRun(const QcCommandSource &source, const QcCommandMacroDefinition &macro);
     void broadcast(const QcServerClient &client, const QString &text);
     // /say: a line to everyone as the server.
     void say(const QcCommandContext &context);
@@ -103,4 +101,6 @@ private:
     QcEffectCommands m_effects;
     QcMobCommands m_mobs;
     QcLimitCommands m_limits;
+    // /help lists and explains only what the source may run.
+    QcCommandHelp m_help;
 };

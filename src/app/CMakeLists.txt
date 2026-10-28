@@ -5,6 +5,7 @@
 qt_add_library(qc_app_core ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (scripts/check-cmake-lists.py).
 target_sources(qc_app_core PRIVATE
+    admin/QcAdminCommandList.h admin/QcAdminCommandList.cpp
     admin/QcAdminController.h admin/QcAdminController.cpp
     admin/QcAdminLineModel.h admin/QcAdminLineModel.cpp
     admin/QcAdminSettingNames.h admin/QcAdminSettingNames.cpp
@@ -184,6 +185,7 @@ qt_add_qml_module(qc_app_core
         qml/Main.qml
         qml/admin/AdminActionDialog.qml
         qml/admin/AdminChatPage.qml
+        qml/admin/AdminCommandIndex.qml
         qml/admin/AdminCommandsPage.qml
         qml/admin/AdminLineList.qml
         qml/admin/AdminListsPage.qml

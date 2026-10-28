@@ -57,7 +57,7 @@ QcWeatherCommands::QcWeatherCommands(QcServerState &state, QcServerWeather &weat
 void QcWeatherCommands::addTo(QcCommandRegistry &registry)
 {
     // Everyone may ask for the weather; changing it checks for an operator.
-    registry.addBuiltIn({.name = u"weather"_s, .permission = QcPermission::Player,
+    registry.addBuiltIn({.name = u"weather"_s, .category = QcCommandCategory::World, .permission = QcPermission::Player,
                          .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows the weather; operators set it, for a number of seconds or as long as it would last."),
                          .run = [this](const QcCommandContext &context) { weather(context); }});

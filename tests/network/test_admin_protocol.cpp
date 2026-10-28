@@ -1,3 +1,4 @@
+#include "common/core/QcCommandCategory.h"
 #include "common/core/QcCommandSyntax.h"
 #include "common/diagnostics/QcMessageLog.h"
 #include "common/protocol/QcProtocol.h"
@@ -176,8 +177,14 @@ private slots:
         QCOMPARE(log.lines.first().level, QcMsg::AdminLogLine::Level::Warning);
 
         const QcMsg::AdminCatalogue catalogue =
-            roundTrip(QcMsg::AdminCatalogue{{{u"tp"_s, {u"teleport"_s}, 1, true, false, u"Usage: /tp <player>"_s, u"Teleports."_s}}});
+            roundTrip(QcMsg::AdminCatalogue{{{u"tp"_s, {u"teleport"_s}, 1, true, false, u"Usage: /tp <player>"_s, u"Teleports."_s, 1, {}},
+                                             {u"locate"_s, {}, 1, true, false, u"Usage: /locate <structure>"_s, u"Finds."_s,
+                                              static_cast<quint8>(QcCommandCategory::Finding), {u"village"_s, u"mineshaft"_s}}}});
         QCOMPARE(catalogue.commands.first().aliases, QStringList{u"teleport"_s});
+        // The group and the names of a command (decision E-911).
+        QCOMPARE(catalogue.commands.first().category, quint8(1));
+        QCOMPARE(catalogue.commands.last().category, static_cast<quint8>(QcCommandCategory::Finding));
+        QCOMPARE(catalogue.commands.last().names, (QStringList{u"village"_s, u"mineshaft"_s}));
 
         const QcMsg::AdminResult result = roundTrip(QcMsg::AdminResult{3, true, {{u"World saved"_s, u"World saved"_s, {}}}});
         QCOMPARE(result.lines.size(), 1);
@@ -198,6 +205,12 @@ private slots:
         QcMsg::AdminStatus broken;
         broken.sample.tickMeanMs = std::numeric_limits<float>::quiet_NaN();
         QVERIFY(!decoded(broken, QcProtocol::Peer::Server));
+        // A group beyond the last and too many names fail the catalogue.
+        QVERIFY(!decoded(QcMsg::AdminCatalogue{{{u"x"_s, {}, 0, false, false, u"u"_s, u"d"_s, static_cast<quint8>(QcCommandCategories::count), {}}}},
+                         QcProtocol::Peer::Server));
+        QVERIFY(!decoded(QcMsg::AdminCatalogue{{{u"x"_s, {}, 0, false, false, u"u"_s, u"d"_s, 0,
+                                                 QStringList(QcMsg::AdminLimits::maxNames + 1, u"n"_s)}}},
+                         QcProtocol::Peer::Server));
         QcMsg::AdminSettings inverted;
         inverted.rules.append({u"x"_s, {}, {}, QcMsg::AdminSettings::Type::Integer, 10, 1, 0, 0});
         QVERIFY(!decoded(inverted, QcProtocol::Peer::Server));
@@ -229,8 +242,13 @@ private slots:
         QCOMPARE(gamerule[1].parameters[0].name, u"spawnChunkRadius"_s);
         QCOMPARE(gamerule[1].parameters[1].range, (std::pair<qint64, qint64>{0, 16}));
 
-        const QList<QcCommandSyntax::Form> locate = QcCommandSyntax::forms(u"Usage: /locate village|<structure>"_s);
-        QCOMPARE(locate[0].parameters[0].choices, QStringList{u"village"_s});
+        const QList<QcCommandSyntax::Form> village = QcCommandSyntax::forms(u"Usage: /locate village|<structure>"_s);
+        QCOMPARE(village[0].parameters[0].choices, QStringList{u"village"_s});
+        // Structures and biomes are words the server names (decision E-911).
+        const QList<QcCommandSyntax::Form> locate = QcCommandSyntax::forms(u"Usage: /locate <structure>"_s);
+        QCOMPARE(shape(locate[0]), QStringList{u"structure:required:named"_s});
+        const QList<QcCommandSyntax::Form> biome = QcCommandSyntax::forms(u"Usage: /locatebiome <biome>"_s);
+        QCOMPARE(shape(biome[0]), QStringList{u"biome:required:named"_s});
 
         const QList<QcCommandSyntax::Form> kick = QcCommandSyntax::forms(u"Usage: /kick <player> [reason]"_s);
         QCOMPARE(shape(kick[0]), (QStringList{u"player:required:player"_s, u"reason:optional:text"_s}));

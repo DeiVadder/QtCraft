@@ -105,6 +105,7 @@ void QcAdminController::connectAdmin()
     connect(admin, &QcClientAdmin::chatReceived, this, &QcAdminController::showChat);
     connect(admin, &QcClientAdmin::logReceived, this, &QcAdminController::showLog);
     connect(admin, &QcClientAdmin::catalogueChanged, this, [this] {
+        m_commands.setCatalogue(m_admin->catalogue());
         ++m_catalogueRevision;
         emit catalogueChanged();
     });

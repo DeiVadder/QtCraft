@@ -1,6 +1,7 @@
 #include "server/commands/QcVillageCommands.h"
 
 #include "common/content/registry/QcContentNames.h"
+#include "common/protocol/QcChatText.h"
 #include "server/commands/QcCommandArguments.h"
 #include "server/core/QcServerState.h"
 #include "server/villages/QcVillagerBehaviour.h"
@@ -20,15 +21,17 @@ QcVillageCommands::QcVillageCommands(QcServerState &state)
 
 void QcVillageCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"locate"_s, .needsPlayer = true, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village|<structure>"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Finds the nearest village or surface structure."),
-                         .run = [this](const QcCommandContext &context) { locate(context); }});
-    registry.addBuiltIn({.name = u"village"_s,
+    registry.addBuiltIn({.name = u"locate"_s, .category = QcCommandCategory::Finding, .needsPlayer = true, .minArguments = 1,
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate <structure>"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Finds the nearest village, structure, mine shaft or dungeon."),
+                         .run = [this](const QcCommandContext &context) { locate(context); },
+                         .names = [this] { return m_state.world().generator().locatableNames(); },
+                         .namesLine = QT_TRANSLATE_NOOP("QcServerMessages", "Structures of this world: %1")});
+    registry.addBuiltIn({.name = u"village"_s, .category = QcCommandCategory::Finding,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /village [<x> <z>]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows the state of the nearest village as JSON."),
                          .run = [this](const QcCommandContext &context) { village(context); }});
-    registry.addBuiltIn({.name = u"profession"_s, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"profession"_s, .category = QcCommandCategory::Creatures, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /profession <profession> [level]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Gives the nearest villager a profession and trading level."),
                          .run = [this](const QcCommandContext &context) { profession(context); }});
@@ -90,11 +93,14 @@ void QcVillageCommands::locate(const QcCommandContext &context)
 {
     const std::optional<QcBlockPos> origin = context.source.origin();
     if (context.args.size() != 1 || !origin) {
-        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate village|<structure>"));
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locate <structure>"));
         return;
     }
-    if (context.args[0] != u"village"_s) {
-        locateStructure(context, *origin);
+    const QString word = context.args[0].toLower();
+    if (word != u"village"_s) {
+        if (!locatePlace(context, word, *origin)) {
+            locateStructure(context, *origin);
+        }
         return;
     }
 
@@ -104,23 +110,53 @@ void QcVillageCommands::locate(const QcCommandContext &context)
         return;
     }
     const QcBlockPos centre = found->village.centre;
-    const int distance = static_cast<int>(std::lround(std::hypot(static_cast<double>(centre.x - origin->x), static_cast<double>(centre.z - origin->z))));
+    const int distance = static_cast<int>(std::lround(QcPlaceSearch::distance(centre, *origin)));
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Village (%1, %2) at %3 %4 %5, %6 blocks away"),
                   {found->village.style, found->plan->layout, QString::number(centre.x), QString::number(centre.y), QString::number(centre.z),
                    QString::number(distance)});
 }
 
+bool QcVillageCommands::locatePlace(const QcCommandContext &context, const QString &kind, QcBlockPos origin)
+{
+    const auto place = std::ranges::find(placeKinds, QStringView(kind), &PlaceKind::word);
+    if (place == placeKinds.end()) {
+        return false;
+    }
+    // The kind's name as an argument the client translates (decision E-911).
+    const QString name = QString::fromUtf8(place->name);
+    const QString nameKey = QcChatText::messageKey(place->name);
+    const QcLocateResult result = m_state.world().generator().locate(kind, origin, searchRadius);
+    if (!result.place) {
+        context.source.send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1: nothing found within %2 blocks"),
+                                                {name, QString::number(result.searched)}, {nameKey, QString()}));
+        return true;
+    }
+
+    const QcBlockPos at = result.place->at;
+    const int distance = static_cast<int>(std::lround(QcPlaceSearch::distance(at, origin)));
+    context.source.send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3 %4, %5 blocks away"),
+                                            {name, QString::number(at.x), QString::number(at.y), QString::number(at.z), QString::number(distance)},
+                                            {nameKey, QString(), QString(), QString(), QString()}));
+    if (result.place->entrance) {
+        const QcBlockPos entrance = *result.place->entrance;
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Its way in from the surface at %1 %2 %3"),
+                      {QString::number(entrance.x), QString::number(entrance.y), QString::number(entrance.z)});
+    }
+    return true;
+}
+
 void QcVillageCommands::locateStructure(const QcCommandContext &context, QcBlockPos origin)
 {
     // A structure the generator places by itself (decision E-590): its floor's middle.
-    const QString name = QcContentNames::qualify(context.args[0], u"qtcraft"_s);
+    const QString name = QcContentNames::qualify(context.args[0].toLower(), u"qtcraft"_s);
     const std::optional<QcStructurePlacement> found = m_state.world().generator().nearestStructure(name, origin, searchRadius);
     if (!found) {
         context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "No structure %1 within %2 blocks"), {name, QString::number(searchRadius)});
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "/help locate names the structures of this world"));
         return;
     }
     const QcBlockPos middle = found->toWorld(QcBlockPos{found->structure().sizeX() / 2, found->structure().groundLayer + 1, found->structure().sizeZ() / 2});
-    const int distance = static_cast<int>(std::lround(std::hypot(static_cast<double>(middle.x - origin.x), static_cast<double>(middle.z - origin.z))));
+    const int distance = static_cast<int>(std::lround(QcPlaceSearch::distance(middle, origin)));
     context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "%1 at %2 %3 %4, %5 blocks away"),
                   {name, QString::number(middle.x), QString::number(middle.y), QString::number(middle.z), QString::number(distance)});
 }

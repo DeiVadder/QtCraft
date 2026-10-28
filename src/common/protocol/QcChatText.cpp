@@ -50,6 +50,11 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments, const 
     return line;
 }
 
+QString messageKey(const char *key)
+{
+    return QString(messageKeyPrefix) + QString::fromUtf8(key);
+}
+
 QcMsg::Disconnect disconnect(const char *key, const QStringList &arguments)
 {
     const QcMsg::ChatMessage line = message(key, arguments);
@@ -78,9 +83,15 @@ QString display(const QcMsg::ChatMessage &message, const std::function<QString(c
     }
 
     QStringList arguments = message.arguments;
-    const qsizetype keyed = contentText ? std::min(arguments.size(), message.contentKeys.size()) : 0;
+    const qsizetype keyed = std::min(arguments.size(), message.contentKeys.size());
     for (qsizetype i = 0; i < keyed; ++i) {
-        const QString text = message.contentKeys[i].isEmpty() ? QString() : contentText(message.contentKeys[i]);
+        const QString &key = message.contentKeys[i];
+        QString text;
+        if (key.startsWith(messageKeyPrefix)) {
+            text = QCoreApplication::translate(context, key.mid(messageKeyPrefix.size()).toUtf8().constData());
+        } else if (contentText && !key.isEmpty()) {
+            text = contentText(key);
+        }
         if (!text.isEmpty()) {
             arguments[i] = text;
         }

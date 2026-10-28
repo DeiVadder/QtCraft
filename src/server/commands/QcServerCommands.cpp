@@ -56,6 +56,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_effects(state)
     , m_mobs(state)
     , m_limits(state)
+    , m_help(m_registry, state.content())
 {
     addBuiltIns();
     m_cheats.addTo(m_registry);
@@ -75,19 +76,20 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
 
 void QcServerCommands::addBuiltIns()
 {
-    m_registry.addBuiltIn({.name = u"help"_s, .permission = QcPermission::Player,
-                           .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /help [command]"),
-                           .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lists the commands you may use, or explains one."),
-                           .run = [this](const QcCommandContext &context) { help(context); }});
-    m_registry.addBuiltIn({.name = u"confirm"_s, .permission = QcPermission::Player,
+    m_registry.addBuiltIn({.name = u"help"_s, .category = QcCommandCategory::General, .permission = QcPermission::Player,
+                           .usage = QT_TRANSLATE_NOOP("QcServerMessages",
+                                                      "Usage: /help [command], /help <general|players|items|creatures|building|world|finding|server|other> [page]"),
+                           .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lists the commands you may use by group, or explains one."),
+                           .run = [this](const QcCommandContext &context) { m_help.run(context); }});
+    m_registry.addBuiltIn({.name = u"confirm"_s, .category = QcCommandCategory::General, .permission = QcPermission::Player,
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /confirm"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Runs the destructive command you started last."),
                            .run = [this](const QcCommandContext &context) { m_pending.confirm(context.source, m_state.clock().playerTimeNs()); }});
-    m_registry.addBuiltIn({.name = u"cancel"_s, .permission = QcPermission::Player,
+    m_registry.addBuiltIn({.name = u"cancel"_s, .category = QcCommandCategory::General, .permission = QcPermission::Player,
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /cancel"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops the command waiting for /confirm."),
                            .run = [this](const QcCommandContext &context) { m_pending.cancel(context.source); }});
-    m_registry.addBuiltIn({.name = u"say"_s, .minArguments = 1,
+    m_registry.addBuiltIn({.name = u"say"_s, .category = QcCommandCategory::General, .minArguments = 1,
                            .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /say <message>"),
                            .description = QT_TRANSLATE_NOOP("QcServerMessages", "Sends a chat line to everyone as the server."),
                            .run = [this](const QcCommandContext &context) { say(context); }});
@@ -202,42 +204,4 @@ void QcServerCommands::runMacro(const QcCommandSource &source, const QcCommandMa
     for (const QString &line : macro.lines) {
         execute(source, substitute(line, args).left(256), 1);
     }
-}
-
-bool QcServerCommands::mayRun(const QcCommandSource &source, const QcCommandMacroDefinition &macro)
-{
-    return source.may(macro.operatorOnly ? QcPermission::Operator : QcPermission::Player);
-}
-
-void QcServerCommands::help(const QcCommandContext &context) const
-{
-    const QcCommandSource &source = context.source;
-    if (!context.args.isEmpty()) {
-        const QString name = context.args[0].startsWith(u'/') ? context.args[0].mid(1).toLower() : context.args[0].toLower();
-        if (const QcCommandSpec *spec = m_registry.find(name)) {
-            source.reply(spec->usage);
-            source.reply(spec->description);
-        } else if (const QcCommandMacroDefinition *macro = m_state.content().commandMacro(name); macro && mayRun(source, *macro)) {
-            source.replyPlain(macro->usage);
-            source.replyPlain(macro->description);
-        } else {
-            source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown command: %1"), {context.args[0]});
-        }
-        return;
-    }
-
-    QStringList names;
-    const QList<const QcCommandSpec *> commands = m_registry.commands();
-    for (const QcCommandSpec *spec : commands) {
-        if (source.may(spec->permission) && (source.player() || !spec->needsPlayer)) {
-            names.append(u'/' + spec->name);
-        }
-    }
-    for (const QcCommandMacroDefinition &macro : m_state.content().commandMacros()) {
-        if (!m_registry.find(macro.name) && mayRun(source, macro)) {
-            names.append(u'/' + macro.name);
-        }
-    }
-    source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Commands: %1"), {names.join(u", "_s)});
-    source.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Type /help <command> for its usage"));
 }

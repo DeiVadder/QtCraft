@@ -50,8 +50,9 @@ QStringList namesStarting(const List &definitions, const QString &typed)
     return names;
 }
 
-// The words the parameter takes that start with `typed`.
-QStringList candidates(const QcCommandSyntax::Parameter &parameter, const QString &typed, const Sources &sources)
+// The words the parameter takes that start with `typed`; `names` are the words the server names
+// for the command (structures, biomes).
+QStringList candidates(const QcCommandSyntax::Parameter &parameter, const QString &typed, const Sources &sources, const QStringList &names)
 {
     QStringList out;
     if (parameter.kind == Kind::Literal) {
@@ -60,6 +61,8 @@ QStringList candidates(const QcCommandSyntax::Parameter &parameter, const QStrin
     out.append(parameter.choices);
     if (parameter.type == Type::Player) {
         out.append(sources.players);
+    } else if (parameter.type == Type::Named) {
+        out.append(names);
     } else if (sources.content && parameter.type == Type::Block) {
         out.append(namesStarting(sources.content->blocks(), typed));
     } else if (sources.content && parameter.type == Type::Item) {
@@ -108,7 +111,7 @@ QStringList complete(const QString &line, const Sources &sources, qsizetype limi
         const QList<QcCommandSyntax::Parameter> next = found ? QcCommandSyntax::next(QcCommandSyntax::forms(found->usage), parts.words)
                                                              : QList<QcCommandSyntax::Parameter>{};
         for (const QcCommandSyntax::Parameter &parameter : next) {
-            words.append(candidates(parameter, parts.typed, sources));
+            words.append(candidates(parameter, parts.typed, sources, found->names));
         }
         prefix = (u"/%1 %2"_s.arg(parts.command, parts.words.join(u' '))).trimmed() + u' ';
     }

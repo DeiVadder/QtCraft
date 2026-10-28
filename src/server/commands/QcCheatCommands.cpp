@@ -107,25 +107,25 @@ void QcCheatCommands::addTo(QcCommandRegistry &registry)
 
 void QcCheatCommands::addItemCommands(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"give"_s, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"give"_s, .category = QcCommandCategory::Items, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /give <item> [count]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Puts items into your inventory."),
                          .run = [this](const QcCommandContext &context) { give(context); }});
-    registry.addBuiltIn({.name = u"spawnitem"_s, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"spawnitem"_s, .category = QcCommandCategory::Items, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /spawnitem <item> [count]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops up to 64 items two metres ahead of you."),
                          .run = [this](const QcCommandContext &context) { spawnItem(context); }});
-    registry.addBuiltIn({.name = u"summon"_s, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"summon"_s, .category = QcCommandCategory::Creatures, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature> [count] [noai], /summon <minecart|chest_minecart|hopper_minecart> [count] or /summon armor_stand [property=value …]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures, minecarts or an armour stand in front of you."),
                          .run = [this](const QcCommandContext &context) { summon(context); }});
-    registry.addBuiltIn({.name = u"equip"_s, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"equip"_s, .category = QcCommandCategory::Items, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /equip <armour|set|clear>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Puts on armour; replaced pieces go into your inventory."),
                          .run = [this](const QcCommandContext &context) {
                              m_standCommands.equip(context.player(), withName(u"/equip"_s, context.args));
                          }});
-    registry.addBuiltIn({.name = u"armorstand"_s, .needsPlayer = true,
+    registry.addBuiltIn({.name = u"armorstand"_s, .category = QcCommandCategory::Creatures, .needsPlayer = true,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /armorstand <nearest|looking|id> <property> [values]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Poses and dresses an armour stand; 'info' lists its properties."),
                          .run = [this](const QcCommandContext &context) {
@@ -135,24 +135,24 @@ void QcCheatCommands::addItemCommands(QcCommandRegistry &registry)
 
 void QcCheatCommands::addPlayerCommands(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"kill"_s, .needsPlayer = true,
+    registry.addBuiltIn({.name = u"kill"_s, .category = QcCommandCategory::Items, .needsPlayer = true,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /kill"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Kills you."),
                          .run = [this](const QcCommandContext &context) { kill(context); }});
-    registry.addBuiltIn({.name = u"heal"_s, .needsPlayer = true,
+    registry.addBuiltIn({.name = u"heal"_s, .category = QcCommandCategory::Items, .needsPlayer = true,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /heal"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Restores your health."),
                          .run = [this](const QcCommandContext &context) { heal(context); }});
-    registry.addBuiltIn({.name = u"feed"_s, .needsPlayer = true,
+    registry.addBuiltIn({.name = u"feed"_s, .category = QcCommandCategory::Items, .needsPlayer = true,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /feed [food points]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Sets your food points (full without a number)."),
                          .run = [this](const QcCommandContext &context) { feed(context); }});
     // Everyone may ask for their own mode; changing it checks for an operator.
-    registry.addBuiltIn({.name = u"gamemode"_s, .permission = QcPermission::Player,
+    registry.addBuiltIn({.name = u"gamemode"_s, .category = QcCommandCategory::Players, .permission = QcPermission::Player,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /gamemode [survival|creative|adventure|spectator] [player]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows your game mode or sets it for you or another player."),
                          .run = [this](const QcCommandContext &context) { gamemode(context); }});
-    registry.addBuiltIn({.name = u"defaultgamemode"_s,
+    registry.addBuiltIn({.name = u"defaultgamemode"_s, .category = QcCommandCategory::Players,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /defaultgamemode [survival|creative|adventure|spectator]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or sets the game mode of players who join for the first time."),
                          .run = [this](const QcCommandContext &context) { defaultGamemode(context); }});
@@ -160,18 +160,21 @@ void QcCheatCommands::addPlayerCommands(QcCommandRegistry &registry)
 
 void QcCheatCommands::addWorldCommands(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"time"_s,
+    registry.addBuiltIn({.name = u"time"_s, .category = QcCommandCategory::World,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /time set <day|night|seconds> or /time add <seconds>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or changes the time of day (a day lasts 600 s)."),
                          .run = [this](const QcCommandContext &context) { time(context); }});
-    registry.addBuiltIn({.name = u"gamerule"_s, .permission = QcPermission::Player, .minArguments = 1,
+    registry.addBuiltIn({.name = u"gamerule"_s, .category = QcCommandCategory::World, .permission = QcPermission::Player, .minArguments = 1,
                          .usage = gameruleUsage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows a game rule; operators change it."),
                          .run = [this](const QcCommandContext &context) { gamerule(context); }});
-    registry.addBuiltIn({.name = u"locatebiome"_s, .permission = QcPermission::Player, .needsPlayer = true, .minArguments = 1,
+    registry.addBuiltIn({.name = u"locatebiome"_s, .category = QcCommandCategory::Finding, .permission = QcPermission::Player,
+                         .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /locatebiome <biome>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Finds the nearest place of a biome."),
-                         .run = [this](const QcCommandContext &context) { locateBiome(context); }});
+                         .run = [this](const QcCommandContext &context) { locateBiome(context); },
+                         .names = [this] { return biomeNames(); },
+                         .namesLine = QT_TRANSLATE_NOOP("QcServerMessages", "Biomes: %1")});
 }
 
 void QcCheatCommands::give(const QcCommandContext &context)
@@ -513,6 +516,15 @@ void QcCheatCommands::defaultGamemode(const QcCommandContext &context)
     m_state.info().unknownGameMode.clear();
     m_state.config().defaultGameMode.reset();
     context.reply(newPlayersStart(*mode));
+}
+
+QStringList QcCheatCommands::biomeNames() const
+{
+    QStringList names;
+    for (const QcBiomeDefinition &biome : m_state.content().worldgen().biomes()) {
+        names.append(biome.name.startsWith(u"qtcraft:"_s) ? biome.name.mid(8) : biome.name);
+    }
+    return names;
 }
 
 void QcCheatCommands::locateBiome(const QcCommandContext &context)

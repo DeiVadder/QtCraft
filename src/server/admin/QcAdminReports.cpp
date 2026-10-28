@@ -6,6 +6,7 @@
 #include "common/protocol/QcProtocol.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcGameRules.h"
+#include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 #include "server/tick/QcTickPhaseTimer.h"
 #include "server/tick/QcTickScheduler.h"
@@ -79,13 +80,21 @@ QcMsg::AdminCatalogue QcAdminReports::catalogue() const
     QcMsg::AdminCatalogue report;
     const QList<const QcCommandSpec *> commands = m_registry.commands();
     for (const QcCommandSpec *spec : commands) {
+        QStringList names = spec->names ? spec->names() : QStringList();
+        if (std::cmp_greater(names.size(), Limits::maxNames)) {
+            if (!m_namesCut.contains(spec->name)) {
+                m_namesCut.insert(spec->name);
+                qCWarning(lcAdmin).noquote() << u"Command catalogue: /%1 has %2 names, sending the first %3"_s.arg(spec->name).arg(names.size()).arg(Limits::maxNames);
+            }
+            names = names.mid(0, Limits::maxNames);
+        }
         report.commands.append({spec->name, spec->aliases.mid(0, Limits::maxAliases), static_cast<quint8>(spec->permission), spec->needsPlayer, false,
-                                QString::fromUtf8(spec->usage), QString::fromUtf8(spec->description)});
+                                QString::fromUtf8(spec->usage), QString::fromUtf8(spec->description), static_cast<quint8>(spec->category), names});
     }
     for (const QcCommandMacroDefinition &macro : m_state.content().commandMacros()) {
         if (!m_registry.find(macro.name) && std::cmp_less(report.commands.size(), Limits::maxCommands)) {
             report.commands.append({macro.name, {}, static_cast<quint8>(macro.operatorOnly ? QcPermission::Operator : QcPermission::Player), false, true,
-                                    macro.usage, macro.description});
+                                    macro.usage, macro.description, static_cast<quint8>(QcCommandCategory::Other), {}});
         }
     }
     return report;

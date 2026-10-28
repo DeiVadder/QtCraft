@@ -2,6 +2,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
+#include "server/commands/QcCommandHelp.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcPendingCommands.h"
 
@@ -55,6 +56,14 @@ private:
 
     QcBlockPos east(int dx) const { return m_feet.offset(dx, 0, 0); }
 
+    // The chat lines a command brings.
+    QStringList replies(const QString &line)
+    {
+        const qsizetype before = m_client->chatLines.size();
+        chat(line);
+        return m_client->chatLines.mid(before);
+    }
+
 private slots:
     void init()
     {
@@ -92,11 +101,12 @@ private slots:
         QCOMPARE(m_client->chatKeys.constLast().key, u"%1 is true"_s);
         QCOMPARE(m_client->chatKeys.constLast().arguments, QStringList{u"keepInventory"_s});
 
-        // /help lists only what the player may use.
-        chat(u"/help"_s);
-        const QString help = m_client->chatLines.at(m_client->chatLines.size() - 2);
-        QVERIFY(help.contains(u"/list"_s) && help.contains(u"/help"_s) && help.contains(u"/confirm"_s));
+        // /help lists only what the player may use, by group (decision E-911).
+        const QString help = replies(u"/help"_s).join(u'\n');
+        QVERIFY(help.contains(u"/list"_s) && help.contains(u"/help"_s) && help.contains(u"/confirm"_s) && help.contains(u"/locatebiome"_s));
         QVERIFY(!help.contains(u"/give"_s) && !help.contains(u"/ban"_s) && !help.contains(u"/stop"_s));
+        QVERIFY(!help.contains(u"Building (/help building)"_s));
+        QCOMPARE(replies(u"/help building"_s), QStringList{u"No commands of this group for you"_s});
     }
 
     void theLocalPlayerIsAlwaysAnOperator()
@@ -178,7 +188,45 @@ private slots:
         chat(u"/tp"_s);
         QVERIFY(lastLine().startsWith(u"Usage: /tp"_s));
         chat(u"/help nothing"_s);
-        QCOMPARE(lastLine(), u"Unknown command: nothing"_s);
+        QCOMPARE(lastLine(), u"Unknown command or group: nothing (/help lists them)"_s);
+    }
+
+    // /help (decision E-911): one line per group, then each group in pages of eight commands with
+    // their descriptions, which the client translates.
+    void helpListsGroupsAndPages()
+    {
+        join();
+        const QStringList overview = replies(u"/help"_s);
+        QCOMPARE(overview.constFirst(), u"General (/help general): /cancel, /confirm, /help, /list, /say"_s);
+        QVERIFY(overview.contains(u"Building (/help building): /clear, /fill, /regenerate, /setblock"_s));
+        QVERIFY(overview.contains(u"Finding places (/help finding): /locate, /locatebiome, /village"_s));
+        // The eight groups of the game's commands (none from the content) and the hint.
+        QCOMPARE(overview.size(), 9);
+        QVERIFY(overview.constLast().startsWith(u"/help <group> [page]"_s));
+
+        const qsizetype players = std::ranges::count(m_server->commands().registry().commands(), QcCommandCategory::Players, &QcCommandSpec::category);
+        QCOMPARE(players, 11);
+        const QStringList first = replies(u"/help players"_s);
+        QCOMPARE(first.constFirst(), u"Player commands, page 1 of 2:"_s);
+        QCOMPARE(first.size(), 1 + QcCommandHelp::pageSize + 1);
+        QCOMPARE(first[1], u"/adventure: "_s + QString::fromUtf8(m_server->commands().registry().find(u"adventure"_s)->description));
+        QCOMPARE(first.constLast(), u"More with /help players 2"_s);
+        // A description is sent as a message of its own, so the client shows it translated.
+        const QcMsg::ChatMessage ban = m_client->chatKeys.at(m_client->chatKeys.size() - QcCommandHelp::pageSize);
+        QCOMPARE(ban.key, u"/%1: %2"_s);
+        QCOMPARE(ban.arguments.constFirst(), u"ban"_s);
+        QCOMPARE(ban.contentKeys.constLast(), u"tr:"_s + QString::fromUtf8(m_server->commands().registry().find(u"ban"_s)->description));
+
+        const QStringList second = replies(u"/help PLAYERS 2"_s);
+        QCOMPARE(second.constFirst(), u"Player commands, page 2 of 2:"_s);
+        QCOMPARE(second.size(), 1 + 3);
+        QVERIFY(second.constLast().startsWith(u"/whitelist: "_s));
+        QCOMPARE(replies(u"/help players 3"_s), QStringList{u"/help players has pages 1 to 2"_s});
+        QCOMPARE(replies(u"/help players x"_s), QStringList{u"/help players has pages 1 to 2"_s});
+        // A leading slash means the command, not the group.
+        QCOMPARE(replies(u"/help /players"_s), QStringList{u"Unknown command or group: /players (/help lists them)"_s});
+        // The console runs no player commands: /locate is not listed for it.
+        QVERIFY(!console(u"help finding"_s).join(u'\n').contains(u"/locate:"_s));
     }
 
     void everyCommandHasUsageAndDescription()
@@ -189,6 +237,8 @@ private slots:
         for (const QcCommandSpec *spec : commands) {
             QVERIFY2(QString::fromUtf8(spec->usage).startsWith(u"Usage: /"_s + spec->name), spec->usage);
             QVERIFY(qstrlen(spec->description) >= 8);
+            // Every command of the game names its group (decision E-911).
+            QVERIFY2(spec->category != QcCommandCategory::Other, qPrintable(spec->name));
         }
     }
 
@@ -468,10 +518,16 @@ private slots:
         join(notOperator());
         // Help shows only the macros the caller may run.
         chat(u"/help wipe"_s);
-        QCOMPARE(lastLine(), u"Unknown command: wipe"_s);
-        chat(u"/help"_s);
-        QVERIFY(!m_client->chatLines.at(m_client->chatLines.size() - 2).contains(u"/wipe"_s));
-        QVERIFY(m_client->chatLines.at(m_client->chatLines.size() - 2).contains(u"/kit"_s));
+        QCOMPARE(lastLine(), u"Unknown command or group: wipe (/help lists them)"_s);
+        // Nor does it explain built-in commands the caller may not run (decision E-911).
+        chat(u"/help locate"_s);
+        QCOMPARE(lastLine(), u"Unknown command or group: locate (/help lists them)"_s);
+        chat(u"/help list"_s);
+        QCOMPARE(m_client->chatLines.at(m_client->chatLines.size() - 2), u"Usage: /list"_s);
+        const QStringList help = replies(u"/help"_s);
+        QVERIFY(!help.join(u'\n').contains(u"/wipe"_s));
+        QVERIFY(help.contains(u"More commands (/help other): /kit, /nested"_s));
+        QCOMPARE(replies(u"/help other"_s), (QStringList{u"More commands, page 1 of 1:"_s, u"/kit: Starter kit."_s, u"/nested: "_s}));
         // Every line is checked for the caller: a player cannot give himself items through a macro.
         chat(u"/kit dirt 5"_s);
         QCOMPARE(lastLine(), u"Only operators can use /give"_s);

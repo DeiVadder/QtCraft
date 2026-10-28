@@ -23,6 +23,11 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments = {});
 // A keyed line whose arguments may stand for content texts (QcMsg::ChatMessage::contentKeys,
 // decision E-873): `contentKeys` as long as `arguments`, empty entries for plain arguments.
 QcMsg::ChatMessage message(const char *key, const QStringList &arguments, const QStringList &contentKeys);
+// The entry of QcMsg::ChatMessage::contentKeys for an argument that is itself a server message
+// (`key` marked with QT_TRANSLATE_NOOP in `context`, the argument its English text): the client
+// shows it translated (decision E-911; /help's lines of a command and its description).
+inline constexpr QLatin1StringView messageKeyPrefix{"tr:"};
+QString messageKey(const char *key);
 // An untranslated line (player chat, warnings from files).
 QcMsg::ChatMessage plain(const QString &text);
 // The text to show: the translated key with its arguments, or the plain text.

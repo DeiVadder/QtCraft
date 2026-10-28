@@ -54,7 +54,7 @@ QcLimitCommands::QcLimitCommands(QcServerState &state)
 
 void QcLimitCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"limits"_s,
+    registry.addBuiltIn({.name = u"limits"_s, .category = QcCommandCategory::World,
                          .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Shows the simulation limits of the server (server.json or world.json, \"limits\"), "

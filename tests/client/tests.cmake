@@ -131,6 +131,8 @@ set_tests_properties(test_gamepad_screens_scaled PROPERTIES TIMEOUT 120
 # The settings' controls: Ctrl+Tab (Meta on a Mac) and the pad's shoulders switch the category,
 # Enter switches, the arrow keys choose segments (decision E-845).
 qc_add_test(test_setting_controls SOURCES client/test_setting_controls.cpp LIBRARIES qc_app_qml)
+# The command list of "Manage server": Tab reaches every row and scrolls it into view (E-911).
+qc_add_test(test_admin_command_index SOURCES client/test_admin_command_index.cpp LIBRARIES qc_app_qml)
 # Dialogs that need an answer are modal for the whole window (E-852).
 qc_add_test(test_modal_dialog SOURCES client/test_modal_dialog.cpp LIBRARIES qc_app_qml)
 # A shown tooltip has a size and its text, its lines wrap at Ui.size.tooltip (E-874).

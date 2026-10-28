@@ -422,8 +422,37 @@ private slots:
         join({}, std::make_unique<QcTerrainGenerator>(m_content, 51));
         const QString temple = answer(u"/locate desert_temple"_s);
         QVERIFY2(temple.startsWith(u"qtcraft:desert_temple at "_s) && temple.endsWith(u" blocks away"_s), qPrintable(temple));
-        const QString nothing = answer(u"/locate no_such_structure"_s);
-        QVERIFY2(nothing.startsWith(u"No structure qtcraft:no_such_structure within"_s), qPrintable(nothing));
+        m_client->chatLines.clear();
+        chat(u"/locate no_such_structure"_s);
+        ticks(2);
+        QCOMPARE(m_client->chatLines.size(), 2);
+        QVERIFY2(m_client->chatLines.constFirst().startsWith(u"No structure qtcraft:no_such_structure within"_s), qPrintable(m_client->chatLines.constFirst()));
+        QCOMPARE(m_client->chatLines.constLast(), u"/help locate names the structures of this world"_s);
+    }
+
+    // /locate finds mine shafts with their way in and dungeons (decision E-911), /help locate
+    // names what the world has.
+    void locateFindsPlacesUnderground()
+    {
+        join({}, std::make_unique<QcTerrainGenerator>(m_content, 51));
+        m_client->chatLines.clear();
+        chat(u"/locate mineshaft"_s);
+        ticks(2);
+        QVERIFY(!m_client->chatLines.isEmpty());
+        QVERIFY2(m_client->chatLines.constFirst().startsWith(u"Mine shaft at "_s) && m_client->chatLines.constFirst().endsWith(u" blocks away"_s),
+                 qPrintable(m_client->chatLines.constFirst()));
+        if (m_client->chatLines.size() > 1) {
+            QVERIFY(m_client->chatLines.constLast().startsWith(u"Its way in from the surface at "_s));
+        }
+        const QString dungeon = answer(u"/locate Dungeon"_s);
+        QVERIFY2(dungeon.startsWith(u"Dungeon at "_s), qPrintable(dungeon));
+        // The kind is an argument the client translates.
+        QCOMPARE(m_client->chatKeys.constLast().contentKeys.constFirst(), u"tr:Dungeon"_s);
+
+        const QString names = answer(u"/help locate"_s);
+        QVERIFY2(names.startsWith(u"Structures of this world: village, mineshaft, dungeon, coastal_tower, "_s), qPrintable(names));
+        QVERIFY(names.contains(u"desert_temple"_s) && names.contains(u"witch_hut"_s));
+        QVERIFY(answer(u"/help locatebiome"_s).startsWith(u"Biomes: "_s));
     }
 
     void plannedVillagesAreFoundBeforeTheyAreBuilt()

@@ -41,23 +41,23 @@ QcPlayerCommands::QcPlayerCommands(QcServerState &state, QcPendingCommands &pend
 
 void QcPlayerCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"list"_s, .permission = QcPermission::Player,
+    registry.addBuiltIn({.name = u"list"_s, .category = QcCommandCategory::General, .permission = QcPermission::Player,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /list"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lists the players online."),
                          .run = [this](const QcCommandContext &context) { list(context); }});
-    registry.addBuiltIn({.name = u"kick"_s, .minArguments = 1,
+    registry.addBuiltIn({.name = u"kick"_s, .category = QcCommandCategory::Players, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /kick <player> [reason]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Disconnects a player; he may join again."),
                          .run = [this](const QcCommandContext &context) { kick(context); }});
-    registry.addBuiltIn({.name = u"ban"_s, .minArguments = 1,
+    registry.addBuiltIn({.name = u"ban"_s, .category = QcCommandCategory::Players, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /ban <player> [reason]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Keeps a player name out of this world and disconnects him."),
                          .run = [this](const QcCommandContext &context) { ban(context); }});
-    registry.addBuiltIn({.name = u"unban"_s, .aliases = {u"pardon"_s}, .minArguments = 1,
+    registry.addBuiltIn({.name = u"unban"_s, .category = QcCommandCategory::Players, .aliases = {u"pardon"_s}, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /unban <player>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lets a banned player join again."),
                          .run = [this](const QcCommandContext &context) { unban(context); }});
-    registry.addBuiltIn({.name = u"tp"_s, .aliases = {u"teleport"_s}, .minArguments = 1,
+    registry.addBuiltIn({.name = u"tp"_s, .category = QcCommandCategory::Players, .aliases = {u"teleport"_s}, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /tp <x> <y> <z>, /tp <player>, /tp <player> <x> <y> <z> or /tp <player> <target player>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Moves you or a player to a position or to another player."),
                          .run = [this](const QcCommandContext &context) { teleport(context); }});
@@ -66,20 +66,20 @@ void QcPlayerCommands::addTo(QcCommandRegistry &registry)
 
 void QcPlayerCommands::addListCommands(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"banlist"_s,
+    registry.addBuiltIn({.name = u"banlist"_s, .category = QcCommandCategory::Players,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /banlist"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Lists the banned names with their reasons."),
                          .run = [this](const QcCommandContext &context) { banList(context); }});
-    registry.addBuiltIn({.name = u"whitelist"_s, .minArguments = 1,
+    registry.addBuiltIn({.name = u"whitelist"_s, .category = QcCommandCategory::Players, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /whitelist <on|off|list|add <player>|remove <player>>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "With the whitelist on, only listed players and operators may join."),
                          .run = [this](const QcCommandContext &context) { whitelist(context); }});
-    registry.addBuiltIn({.name = u"op"_s,
+    registry.addBuiltIn({.name = u"op"_s, .category = QcCommandCategory::Players,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /op [player]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Makes a player an operator, or lists the operators."),
                          .run = [this](const QcCommandContext &context) { op(context, true); }});
-    registry.addBuiltIn({.name = u"deop"_s, .minArguments = 1,
+    registry.addBuiltIn({.name = u"deop"_s, .category = QcCommandCategory::Players, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /deop <player>"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Takes the operator rights from a player."),
                          .run = [this](const QcCommandContext &context) { op(context, false); }});

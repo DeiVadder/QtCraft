@@ -25,7 +25,7 @@ QcChunkCommands::QcChunkCommands(QcServerState &state)
 
 void QcChunkCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"forceload"_s, .minArguments = 1, .usage = usage,
+    registry.addBuiltIn({.name = u"forceload"_s, .category = QcCommandCategory::World, .minArguments = 1, .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Keeps chunks loaded although no player is near (by block coordinates of a "
                                                           "chunk or the corners of an area), lets them go again or lists them."),

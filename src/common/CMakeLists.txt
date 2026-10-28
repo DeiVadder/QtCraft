@@ -145,6 +145,7 @@ target_sources(qc_common PRIVATE
     core/QcBlockFace.h
     core/QcBlockPos.h core/QcBlockPos.cpp
     core/QcChunkPos.h core/QcChunkPos.cpp
+    core/QcCommandCategory.h core/QcCommandCategory.cpp
     core/QcCommandSyntax.h core/QcCommandSyntax.cpp
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp

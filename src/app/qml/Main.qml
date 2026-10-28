@@ -69,6 +69,8 @@ ApplicationWindow {
 
     // The photo mode's key hides it with the crosshair and every overlay (decision E-692).
     Hud {
+        id: hud
+
         anchors.fill: parent
         visible: game.phase === GameController.Phase.Playing && !game.player.dead && !game.photo.hudHidden
         game: game
@@ -207,6 +209,8 @@ ApplicationWindow {
         id: chat
 
         anchors.fill: parent
+        // Same frame as the HUD (both fill the window): the /help hint stays clear of the hotbar.
+        statusArea: hud.visible ? hud.statusArea : Qt.rect(width, height, 0, 0)
         visible: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Chat
         game: game
     }

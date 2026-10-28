@@ -43,27 +43,27 @@ QcWorldCommands::QcWorldCommands(QcServerState &state, QcPendingCommands &pendin
 
 void QcWorldCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"save"_s,
+    registry.addBuiltIn({.name = u"save"_s, .category = QcCommandCategory::Server,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /save"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Saves the world now."),
                          .run = [this](const QcCommandContext &context) { save(context); }});
-    registry.addBuiltIn({.name = u"backup"_s,
+    registry.addBuiltIn({.name = u"backup"_s, .category = QcCommandCategory::Server,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /backup [label]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Saves the world and copies its folder into the backups folder, named with date and time."),
                          .run = [this](const QcCommandContext &context) { backup(context); }});
-    registry.addBuiltIn({.name = u"worldinfo"_s,
+    registry.addBuiltIn({.name = u"worldinfo"_s, .category = QcCommandCategory::Server,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /worldinfo"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows chunks, entities, tick times and memory of the server."),
                          .run = [this](const QcCommandContext &context) { worldInfo(context); }});
-    registry.addBuiltIn({.name = u"remove"_s, .minArguments = 1,
+    registry.addBuiltIn({.name = u"remove"_s, .category = QcCommandCategory::Creatures, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages",
                                                     "Usage: /remove <mobs|hostile|animals|ambient|items|stands|all|<creature>|item:<item>> [radius|world]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Removes entities around you (32 m unless given, at most 256 m) or in the whole loaded world; "
                                                           "'all' means creatures and items."),
                          .run = [this](const QcCommandContext &context) { remove(context); }});
-    registry.addBuiltIn({.name = u"stop"_s, .permission = QcPermission::Console,
+    registry.addBuiltIn({.name = u"stop"_s, .category = QcCommandCategory::Server, .permission = QcPermission::Console,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /stop"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Saves the world and stops the server."),
                          .run = [this](const QcCommandContext &context) {

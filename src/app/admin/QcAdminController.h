@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/admin/QcAdminCommandList.h"
 #include "app/admin/QcAdminLineModel.h"
 #include "app/admin/QcAdminSettingsDraft.h"
 #include "clientcore/admin/QcClientAdmin.h"
@@ -57,6 +58,8 @@ class QcAdminController : public QObject
     Q_PROPERTY(int labelLength READ labelLength CONSTANT FINAL)
     // Counts the command tables received: bindings over complete() and help() read it to follow.
     Q_PROPERTY(int catalogueRevision READ catalogueRevision NOTIFY catalogueChanged FINAL)
+    // The server's commands, searchable (decision E-911).
+    Q_PROPERTY(QcAdminCommandList *commands READ commands CONSTANT FINAL)
     Q_PROPERTY(QVariantList players READ players NOTIFY playersChanged FINAL)
     Q_PROPERTY(QcAdminLineModel *chat READ chat CONSTANT FINAL)
     Q_PROPERTY(QcAdminLineModel *log READ log CONSTANT FINAL)
@@ -111,6 +114,7 @@ public:
     static int reasonLength();
     static int labelLength();
     int catalogueRevision() const { return m_catalogueRevision; }
+    QcAdminCommandList *commands() { return &m_commands; }
     QVariantList players() const { return m_players; }
     QcAdminLineModel *chat() { return &m_chat; }
     QcAdminLineModel *log() { return &m_log; }
@@ -222,6 +226,7 @@ private:
     // The newest point and the number of points the charts were built from; -1 to build anew.
     std::pair<qint64, qsizetype> m_chartsBuilt{-1, 0};
     int m_catalogueRevision = 0;
+    QcAdminCommandList m_commands;
     QString m_ownName;
     QcAdminSettingsDraft m_draft;
     // Values of the draft saved since the last notice, and the refusals among them.

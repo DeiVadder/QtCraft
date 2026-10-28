@@ -25,7 +25,7 @@ QcEffectCommands::QcEffectCommands(QcServerState &state)
 
 void QcEffectCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"effect"_s,
+    registry.addBuiltIn({.name = u"effect"_s, .category = QcCommandCategory::Items,
                          .minArguments = 2,
                          .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Gives a player a status effect or takes effects away."),

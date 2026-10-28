@@ -785,7 +785,7 @@ The lists belong to the world and apply to every player in adventure mode. Explo
 
 **Using commands**
 
-Open the chat with T (or /) and type a command starting with `/`. `/help` lists the commands you may use, `/help <command>` shows how to use one. `~` stands for your position in coordinates (`~2` is two blocks further). A server without a window (`qtcraft-headless --console`) reads the same commands from its console, there without the leading `/`; every command is written to the server log with who ran it.
+Open the chat with T (or /) and type a command starting with `/`. `/help` lists the commands you may use by group (general, players, items, creatures, building, world, finding, server, other), `/help <group> [page]` describes the commands of a group page by page, `/help <command>` shows how to use one and, for `/locate` and `/locatebiome`, which structures and biomes this world has. In “Manage server” the Commands page lists every command with its description and a search field; clicking one puts it into the command line. `~` stands for your position in coordinates (`~2` is two blocks further). A server without a window (`qtcraft-headless --console`) reads the same commands from its console, there without the leading `/`; every command is written to the server log with who ran it.
 
 **Operators and confirmations**
 
@@ -795,7 +795,7 @@ Most commands are for **operators**. In single player you are always an operator
 
 - `/list`: who is online
 - `/locatebiome <biome>`: where the nearest place of a biome is
-- `/locate village`: where the nearest village is (operators); `/village [<x> <z>]`: its state as JSON, with beds and workstations
+- `/locate <structure>`: where the nearest village (`village`), mine shaft (`mineshaft`, with its way in from the surface), dungeon (`dungeon`), coastal tower (`coastal_tower`) or surface structure (`desert_temple`, `witch_hut` …) is (operators; `/help locate` names them all); `/village [<x> <z>]`: its state as JSON, with beds and workstations
 - `/kick <player> [reason]`: disconnect a player (he may come back)
 - `/ban <player> [reason]`, `/unban <player>`, `/banlist`: keep a name out of this world
 - `/whitelist on|off|list|add <player>|remove <player>`: with the whitelist on, only listed players and operators join; a ban holds for operators too

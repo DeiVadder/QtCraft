@@ -65,6 +65,8 @@ private:
     void setGamemode(const QcCommandContext &context, QcServerClient &target, QcGameMode mode);
     void defaultGamemode(const QcCommandContext &context);
     void locateBiome(const QcCommandContext &context);
+    // The biomes /locatebiome takes, the base game's without "qtcraft:" (decision E-911).
+    QStringList biomeNames() const;
     // Offset along z of the first column of `name` on the line at `dx` of the square ring `radius`.
     [[nodiscard]] std::optional<int> findBiomeAlong(QcBlockPos feet, int radius, int dx, const QString &name) const;
 

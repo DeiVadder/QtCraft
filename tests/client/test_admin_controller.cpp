@@ -1,6 +1,8 @@
+#include "app/admin/QcAdminCommandList.h"
 #include "app/admin/QcAdminController.h"
 #include "app/admin/QcAdminLineModel.h"
 #include "app/admin/QcAdminViews.h"
+#include "common/core/QcCommandCategory.h"
 
 #include <QSignalSpy>
 #include <QTest>
@@ -66,8 +68,16 @@ class TestAdminController : public QObject
     static QcMsg::AdminCatalogue catalogue()
     {
         QcMsg::AdminCatalogue table;
-        table.commands.append({u"time"_s, {}, 1, false, false, u"Usage: /time set <day|night>"_s, u"Sets the time."_s});
-        table.commands.append({u"tp"_s, {u"teleport"_s}, 1, true, false, u"Usage: /tp <player>"_s, u"Teleports."_s});
+        table.commands.append({u"time"_s, {}, 1, false, false, u"Usage: /time set <day|night>"_s, u"Sets the time."_s,
+                               static_cast<quint8>(QcCommandCategory::World), {}});
+        table.commands.append({u"tp"_s, {u"teleport"_s}, 1, true, false, u"Usage: /tp <player>"_s, u"Teleports."_s,
+                               static_cast<quint8>(QcCommandCategory::Players), {}});
+        table.commands.append({u"locate"_s, {}, 1, true, false, u"Usage: /locate <structure>"_s, u"Finds the nearest structure."_s,
+                               static_cast<quint8>(QcCommandCategory::Finding), {u"village"_s, u"mineshaft"_s, u"dungeon"_s, u"desert_temple"_s}});
+        table.commands.append({u"help"_s, {}, 0, false, false, u"Usage: /help [command]"_s, u"Lists the commands."_s,
+                               static_cast<quint8>(QcCommandCategory::General), {}});
+        table.commands.append({u"warp"_s, {}, 0, false, true, u"/warp <place>"_s, u"Jumps to a place."_s,
+                               static_cast<quint8>(QcCommandCategory::Other), {}});
         return table;
     }
 
@@ -203,6 +213,52 @@ private slots:
         QCOMPARE(help.value(u"next"_s).toString(), u"<player>"_s);
         QVERIFY(m_controller->help(u"/nonsense"_s).isEmpty());
         QCOMPARE(m_controller->help(u"/time set "_s).value(u"next"_s).toString(), u"day|night"_s);
+    }
+
+    // The words of a structure come from the command's names (decision E-911).
+    void structuresCompleteFromTheServersNames()
+    {
+        QVERIFY(m_admin->receive(catalogue()));
+        QCOMPARE(m_controller->complete(u"/locate "_s),
+                 (QStringList{u"/locate desert_temple"_s, u"/locate dungeon"_s, u"/locate mineshaft"_s, u"/locate village"_s}));
+        QCOMPARE(m_controller->complete(u"/locate mi"_s), QStringList{u"/locate mineshaft"_s});
+        QCOMPARE(m_controller->help(u"/locate "_s).value(u"next"_s).toString(), u"<structure>"_s);
+    }
+
+    // The command list (decision E-911): by group, then name; the filter searches names, aliases,
+    // texts and groups.
+    void theCommandListIsGroupedAndSearchable()
+    {
+        QcAdminCommandList *list = m_controller->commands();
+        QCOMPARE(list->count(), 0);
+        QVERIFY(m_admin->receive(catalogue()));
+        QCOMPARE(list->total(), 5);
+        QStringList order;
+        for (const QcAdminCommandList::Entry &entry : list->shown()) {
+            order.append(entry.name);
+        }
+        QCOMPARE(order, (QStringList{u"help"_s, u"tp"_s, u"time"_s, u"locate"_s, u"warp"_s}));
+        QCOMPARE(list->data(list->index(0), QcAdminCommandList::GroupRole).toString(), u"General"_s);
+        QCOMPARE(list->data(list->index(3), QcAdminCommandList::DescriptionRole).toString(), u"Finds the nearest structure."_s);
+        QCOMPARE(list->data(list->index(4), QcAdminCommandList::GroupRole).toString(), u"More commands"_s);
+        QCOMPARE(list->data(list->index(4), QcAdminCommandList::OperatorRole).toBool(), false);
+
+        QSignalSpy counted(list, &QcAdminCommandList::countChanged);
+        list->setFilter(u"TELEPORT"_s);
+        QCOMPARE(list->count(), 1);
+        QCOMPARE(list->shown().first().name, u"tp"_s);
+        QCOMPARE(counted.size(), 1);
+        list->setFilter(u"/loc"_s);
+        QCOMPARE(list->shown().first().name, u"locate"_s);
+        list->setFilter(u"finding"_s);
+        QCOMPARE(list->count(), 1);
+        list->setFilter(u"nothing like this"_s);
+        QCOMPARE(list->count(), 0);
+        // The same filter again changes nothing.
+        list->setFilter(u"nothing like this"_s);
+        QCOMPARE(counted.size(), 4);
+        list->setFilter({});
+        QCOMPARE(list->count(), 5);
     }
 
     void reportsBecomeValues()

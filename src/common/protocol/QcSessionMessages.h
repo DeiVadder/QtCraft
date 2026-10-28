@@ -84,7 +84,8 @@ struct ChatMessage
     // Per argument the content translation key it stands for (decision E-873; the kind of the
     // creature that killed a player): the client shows the key's text in its content language and
     // the argument (English) where it knows none. Empty, or as long as `arguments` (empty entries
-    // for plain arguments).
+    // for plain arguments). An entry with QcChatText::messageKeyPrefix names a server message
+    // instead, which the client translates (decision E-911).
     QStringList contentKeys = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 

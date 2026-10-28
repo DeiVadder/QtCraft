@@ -3,6 +3,7 @@
 #include "common/world/QcChunk.h"
 #include "common/world/QcWorldLabel.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
+#include "worldgen/generators/QcLocatedPlace.h"
 #include "worldgen/generators/QcStructureSites.h"
 #include "worldgen/generators/QcWorldSetup.h"
 #include "worldgen/structures/QcStructurePlacement.h"
@@ -97,6 +98,20 @@ public:
         Q_UNUSED(from);
         Q_UNUSED(reach);
         return std::nullopt;
+    }
+    // The words /locate takes for this generator (decision E-911): "village", the kinds of places
+    // locate() finds ("mineshaft", "dungeon", "coastal_tower") and the structures it places by
+    // itself (nearestStructure(), the base game's without "qtcraft:"); empty for generators without
+    // any.
+    virtual QStringList locatableNames() const { return {}; }
+    // The place of kind `kind` ("mineshaft", "dungeon", "coastal_tower") nearest to `from` within
+    // about `reach` blocks, if any, and how far the search looked (it may stop short of `reach`
+    // within its budget of planned regions); no place for other words.
+    [[nodiscard]] virtual QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const
+    {
+        Q_UNUSED(kind);
+        Q_UNUSED(from);
+        return {std::nullopt, reach};
     }
     // Labels floating in a chunk (decision E-222); the server sends them with the chunk.
     virtual QList<QcWorldLabel> labelsIn(QcChunkPos pos) const

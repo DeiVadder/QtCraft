@@ -3,6 +3,7 @@
 
 #include "common/protocol/QcProtocolCodec.h"
 
+#include "common/core/QcCommandCategory.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <algorithm>
@@ -249,6 +250,8 @@ void encode(QDataStream &stream, const QcMsg::AdminCatalogue &m)
         stream << command.permission << command.needsPlayer << command.macro;
         writeText(stream, command.usage, Limits::maxLongText);
         writeText(stream, command.description, Limits::maxLongText);
+        stream << command.category;
+        writeTexts(stream, command.names);
     }
 }
 
@@ -395,7 +398,9 @@ void encode(QDataStream &stream, const QcMsg::AdminLog &m)
         stream >> command.permission >> command.needsPlayer >> command.macro;
         command.usage = readText(stream, Limits::maxLongText);
         command.description = readText(stream, Limits::maxLongText);
-        if (command.permission > 2) {
+        stream >> command.category;
+        command.names = readTexts(stream, Limits::maxNames);
+        if (command.permission > 2 || !QcCommandCategories::fromWire(command.category)) {
             stream.setStatus(QDataStream::ReadCorruptData);
         }
         m.commands.append(command);

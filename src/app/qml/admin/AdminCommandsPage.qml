@@ -5,10 +5,11 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// Commands in "Manage server" (decision E-863): a command line with completion from the server's
-// command table, the players and the content (Tab takes the first suggestion, the suggestions are
-// buttons for the mouse and the pad), help for the command and its next parameter, and the output
-// of the commands run.
+// Commands in "Manage server" (decisions E-863, E-911): on the left every command of the server,
+// searchable and by group (AdminCommandIndex; clicking one puts it into the line); on the right a
+// command line with completion from the server's command table, the players and the content (Tab
+// takes the first suggestion, the suggestions are buttons for the mouse and the pad), help for the
+// command and its next parameter, and the output of the commands run.
 ColumnLayout {
     id: page
 
@@ -49,78 +50,102 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
-        spacing: Ui.space.s
+        Layout.fillHeight: true
+        spacing: Ui.space.l
 
-        GameTextField {
-            id: commandField
-
-            objectName: "adminCommandField"
+        // Two parts of five for the list, three for the line and its output.
+        AdminCommandIndex {
             Layout.fillWidth: true
-            maximumLength: page.admin.textLength
-            placeholderText: qsTr("/command, Tab completes")
-            Accessible.name: qsTr("Command line")
-            onAccepted: page.run()
-            Keys.onTabPressed: event => {
-                if (page.suggestions.length > 0 && page.suggestions[0].trim() !== text.trim())
-                    page.take(page.suggestions[0]);
-                else
-                    event.accepted = false;
-            }
+            Layout.fillHeight: true
+            Layout.preferredWidth: 0
+            Layout.horizontalStretchFactor: 2
+            commands: page.admin.commands
+            onPicked: line => page.take(line)
         }
-        GameButton {
-            objectName: "adminCommandRun"
-            kind: GameButton.Primary
-            text: qsTr("Run")
-            enabled: commandField.text.trim().length > 0
-            onClicked: page.run()
-        }
-    }
 
-    Flow {
-        Layout.fillWidth: true
-        visible: page.suggestions.length > 0
-        spacing: Ui.space.xs
-
-        Repeater {
-            model: page.suggestions
-
-            delegate: GameButton {
-                required property string modelData
-
-                kind: GameButton.Quiet
-                text: modelData
-                Accessible.name: qsTr("Complete to %1").arg(modelData)
-                onClicked: page.take(modelData)
-            }
-        }
-    }
-
-    Hint {
-        Layout.fillWidth: true
-        visible: page.help.command !== undefined
-        text: page.help.command === undefined ? ""
-            : (page.help.next.length > 0 ? qsTr("%1\n%2\nNext: %3") : qsTr("%1\n%2"))
-                .arg(page.help.usage).arg(page.help.description).arg(page.help.next)
-    }
-
-    AdminLineList {
-        title: qsTr("Command output")
-        lines: page.admin.output
-        emptyText: qsTr("Commands you run and the server's answers show here.")
-    }
-
-    RowLayout {
-        Layout.fillWidth: true
-
-        Item {
+        ColumnLayout {
             Layout.fillWidth: true
-        }
-        GameButton {
-            objectName: "adminClearOutput"
-            kind: GameButton.Quiet
-            text: qsTr("Clear output")
-            enabled: page.admin.output.count > 0
-            onClicked: page.admin.clearOutput()
+            Layout.fillHeight: true
+            Layout.preferredWidth: 0
+            Layout.horizontalStretchFactor: 3
+            spacing: Ui.space.m
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Ui.space.s
+
+                GameTextField {
+                    id: commandField
+
+                    objectName: "adminCommandField"
+                    Layout.fillWidth: true
+                    maximumLength: page.admin.textLength
+                    placeholderText: qsTr("/command, Tab completes")
+                    Accessible.name: qsTr("Command line")
+                    onAccepted: page.run()
+                    Keys.onTabPressed: event => {
+                        if (page.suggestions.length > 0 && page.suggestions[0].trim() !== text.trim())
+                            page.take(page.suggestions[0]);
+                        else
+                            event.accepted = false;
+                    }
+                }
+                GameButton {
+                    objectName: "adminCommandRun"
+                    kind: GameButton.Primary
+                    text: qsTr("Run")
+                    enabled: commandField.text.trim().length > 0
+                    onClicked: page.run()
+                }
+            }
+
+            Flow {
+                Layout.fillWidth: true
+                visible: page.suggestions.length > 0
+                spacing: Ui.space.xs
+
+                Repeater {
+                    model: page.suggestions
+
+                    delegate: GameButton {
+                        required property string modelData
+
+                        kind: GameButton.Quiet
+                        text: modelData
+                        Accessible.name: qsTr("Complete to %1").arg(modelData)
+                        onClicked: page.take(modelData)
+                    }
+                }
+            }
+
+            Hint {
+                Layout.fillWidth: true
+                visible: page.help.command !== undefined
+                text: page.help.command === undefined ? ""
+                    : (page.help.next.length > 0 ? qsTr("%1\n%2\nNext: %3") : qsTr("%1\n%2"))
+                        .arg(page.help.usage).arg(page.help.description).arg(page.help.next)
+            }
+
+            AdminLineList {
+                title: qsTr("Command output")
+                lines: page.admin.output
+                emptyText: qsTr("Commands you run and the server's answers show here.")
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+
+                Item {
+                    Layout.fillWidth: true
+                }
+                GameButton {
+                    objectName: "adminClearOutput"
+                    kind: GameButton.Quiet
+                    text: qsTr("Clear output")
+                    enabled: page.admin.output.count > 0
+                    onClicked: page.admin.clearOutput()
+                }
+            }
         }
     }
 }

@@ -23,6 +23,8 @@ public:
     QcMsg::AdminStatus status(const QcMsg::AdminSample &sample, quint64 uptimeMs) const;
     // Everyone playing; `pings` holds the latest round trip by entity id.
     QcMsg::AdminPlayers players(const QHash<quint32, qint32> &pings) const;
+    // Every command with its group and names (at most AdminLimits::maxNames, logged once per
+    // command when cut).
     QcMsg::AdminCatalogue catalogue() const;
     QcMsg::AdminLists lists() const;
     QcMsg::AdminSettings settings() const;
@@ -48,4 +50,7 @@ private:
     const QcCommandRegistry &m_registry;
     const QcTickPhaseTimer &m_phases;
     const QcTickScheduler &m_ticks;
+    // Commands whose names catalogue() cut to AdminLimits::maxNames and said so in the log (once
+    // each, the catalogue is sent on every request).
+    mutable QSet<QString> m_namesCut;
 };

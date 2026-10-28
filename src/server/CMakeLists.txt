@@ -49,6 +49,7 @@ target_sources(qc_server PRIVATE
     commands/QcChunkCommands.h commands/QcChunkCommands.cpp
     commands/QcChunkRegeneration.h commands/QcChunkRegeneration.cpp
     commands/QcCommandArguments.h commands/QcCommandArguments.cpp
+    commands/QcCommandHelp.h commands/QcCommandHelp.cpp
     commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
     commands/QcCommandSource.h commands/QcCommandSource.cpp
     commands/QcEffectCommands.h commands/QcEffectCommands.cpp

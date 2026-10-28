@@ -29,6 +29,8 @@ inline constexpr quint32 maxPlayers = 1024;
 inline constexpr quint32 maxEntries = 4096;
 inline constexpr quint32 maxCommands = 1024;
 inline constexpr quint32 maxAliases = 8;
+// The words a command's placeholder takes beyond its usage (structures, biomes; decision E-911).
+inline constexpr quint32 maxNames = 256;
 inline constexpr quint32 maxSettings = 512;
 // The status history: ten minutes at one point per second, a day at one point per minute.
 inline constexpr quint32 maxHistory = 2048;
@@ -211,6 +213,10 @@ struct AdminCatalogue
         bool macro = false;
         QString usage;
         QString description;
+        // QcCommandCategory (decision E-911).
+        quint8 category = 0;
+        // What its <structure> or <biome> takes in this world (QcCommandSpec::names).
+        QStringList names;
     };
     QList<Command> commands;
 };

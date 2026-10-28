@@ -110,7 +110,10 @@ Rectangle {
         ColumnLayout {
             id: actionColumn
 
+            // A layout fills its width by default: without actions it would halve the texts' room.
+            Layout.fillWidth: false
             Layout.alignment: Qt.AlignTop
+            visible: children.length > 0
             spacing: Ui.space.xs
         }
     }

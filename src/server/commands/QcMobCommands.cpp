@@ -25,7 +25,7 @@ QcMobCommands::QcMobCommands(QcServerState &state)
 
 void QcMobCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"mob"_s,
+    registry.addBuiltIn({.name = u"mob"_s, .category = QcCommandCategory::Creatures,
                          .needsPlayer = true,
                          .minArguments = 3,
                          .usage = usage,

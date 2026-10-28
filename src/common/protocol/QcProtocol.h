@@ -25,8 +25,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // (decision E-879), 77 map centres and debug goals over the whole technical bound of the world
 // (decision E-883), 78 the rune seed of the enchanting screen (EnchantingState::runeSeed, decision
 // E-884), 79 whether a block is a bed in the content (decision E-885), 80 the latency probes
-// (LatencyProbe, LatencyEcho) and the round trip of each player in the PlayerList (decision E-886).
-inline constexpr quint32 version = 80;
+// (LatencyProbe, LatencyEcho) and the round trip of each player in the PlayerList (decision E-886),
+// 81 the group and the names of each command in the AdminCatalogue (decision E-911).
+inline constexpr quint32 version = 81;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

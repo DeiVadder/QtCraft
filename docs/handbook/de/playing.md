@@ -785,7 +785,7 @@ Die Listen gehören zur Welt und gelten für jeden Spieler im Abenteuermodus. Ex
 
 **Befehle eingeben**
 
-Öffne den Chat mit T (oder /) und gib einen Befehl mit `/` am Anfang ein. `/help` listet die Befehle, die du verwenden darfst, `/help <Befehl>` zeigt, wie einer geht. `~` steht in Koordinaten für deine Position (`~2` ist zwei Blöcke weiter). Ein Server ohne Fenster (`qtcraft-headless --console`) liest dieselben Befehle in seiner Konsole, dort ohne `/` am Anfang; jeder Befehl landet mit seinem Absender im Server-Log.
+Öffne den Chat mit T (oder /) und gib einen Befehl mit `/` am Anfang ein. `/help` listet die Befehle, die du verwenden darfst, nach Gruppen (general, players, items, creatures, building, world, finding, server, other), `/help <Gruppe> [Seite]` beschreibt die Befehle einer Gruppe seitenweise, `/help <Befehl>` zeigt, wie einer geht, und für `/locate` und `/locatebiome`, welche Bauwerke und Biome diese Welt hat. In „Server verwalten“ listet die Seite Befehle jeden Befehl mit Beschreibung und einem Suchfeld; ein Klick setzt ihn in die Befehlszeile. `~` steht in Koordinaten für deine Position (`~2` ist zwei Blöcke weiter). Ein Server ohne Fenster (`qtcraft-headless --console`) liest dieselben Befehle in seiner Konsole, dort ohne `/` am Anfang; jeder Befehl landet mit seinem Absender im Server-Log.
 
 **Operatoren und Bestätigungen**
 
@@ -795,7 +795,7 @@ Die meisten Befehle sind für **Operatoren**. Im Einzelspieler bist du immer Ope
 
 - `/list`: wer online ist
 - `/locatebiome <Biom>`: wo der nächste Ort eines Bioms liegt
-- `/locate village`: wo das nächste Dorf ist (Operatoren); `/village [<x> <z>]`: sein Zustand als JSON, mit Betten und Arbeitsplätzen
+- `/locate <Bauwerk>`: wo das nächste Dorf (`village`), der nächste Minenschacht (`mineshaft`, mit seinem Weg von der Oberfläche hinein), das nächste Verlies (`dungeon`), der nächste Küstenturm (`coastal_tower`) oder das nächste Bauwerk der Oberfläche (`desert_temple`, `witch_hut` …) liegt (Operatoren; `/help locate` nennt alle); `/village [<x> <z>]`: sein Zustand als JSON, mit Betten und Arbeitsplätzen
 - `/kick <Spieler> [Grund]`: einen Spieler trennen (er darf wiederkommen)
 - `/ban <Spieler> [Grund]`, `/unban <Spieler>`, `/banlist`: einen Namen aus dieser Welt aussperren
 - `/whitelist on|off|list|add <Spieler>|remove <Spieler>`: mit eingeschalteter Whitelist kommen nur gelistete Spieler und Operatoren herein; eine Sperre gilt auch für Operatoren

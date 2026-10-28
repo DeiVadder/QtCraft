@@ -441,6 +441,24 @@ private slots:
         QCoreApplication::removeTranslator(&german);
     }
 
+    // An argument that is itself a server message is shown translated (decision E-911, /help's
+    // lines of a command and its description); without a translation it stays English.
+    void messageArgumentsAreTranslated()
+    {
+        const QcMsg::ChatMessage line =
+            QcChatText::message("/%1: %2", {u"heal"_s, u"Healed"_s}, {QString(), QcChatText::messageKey("Healed")});
+        QCOMPARE(line.contentKeys.constLast(), u"tr:Healed"_s);
+        QCOMPARE(line.text, u"/heal: Healed"_s);
+        QCOMPARE(QcChatText::display(line), u"/heal: Healed"_s);
+
+        GermanServerTexts german;
+        QVERIFY(QCoreApplication::installTranslator(&german));
+        QCOMPARE(QcChatText::display(line), u"/heal: Geheilt"_s);
+        // The content lookup is not asked for a message key.
+        QCOMPARE(QcChatText::display(line, [](const QString &key) -> QString { return u"content "_s + key; }), u"/heal: Geheilt"_s);
+        QCoreApplication::removeTranslator(&german);
+    }
+
     void craftingMessagesRoundTrip()
     {
         const QcMsg::MoveInventoryItem move = roundTrip(QcMsg::MoveInventoryItem{3, 40, 7});

@@ -43,20 +43,20 @@ QcBlockCommands::QcBlockCommands(QcServerState &state, QcServerBlocks &blocks, Q
 
 void QcBlockCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"setblock"_s, .minArguments = 4,
+    registry.addBuiltIn({.name = u"setblock"_s, .category = QcCommandCategory::Building, .minArguments = 4,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /setblock <x> <y> <z> <block>[states] [creature]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Sets one block; ~ means your position, air breaks the block. A spawner takes the creature it brings forth."),
                          .run = [this](const QcCommandContext &context) { setBlock(context); }});
-    registry.addBuiltIn({.name = u"fill"_s, .minArguments = 7,
+    registry.addBuiltIn({.name = u"fill"_s, .category = QcCommandCategory::Building, .minArguments = 7,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /fill <x1> <y1> <z1> <x2> <y2> <z2> <block> [replace <block>]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Fills a box with a block, or replaces only one kind of block in it."),
                          .run = [this](const QcCommandContext &context) { fill(context, false); }});
-    registry.addBuiltIn({.name = u"clear"_s, .minArguments = 6,
+    registry.addBuiltIn({.name = u"clear"_s, .category = QcCommandCategory::Building, .minArguments = 6,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /clear <x1> <y1> <z1> <x2> <y2> <z2> [block]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Turns a box (or only one kind of block in it) into air."),
                          .run = [this](const QcCommandContext &context) { fill(context, true); }});
-    registry.addBuiltIn({.name = u"regenerate"_s,
+    registry.addBuiltIn({.name = u"regenerate"_s, .category = QcCommandCategory::Building,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /regenerate [<x> <z> [<x2> <z2>]]"),
                          .description = QT_TRANSLATE_NOOP("QcServerMessages",
                                                           "Generates chunks again as the world type makes them; their changes are lost."),

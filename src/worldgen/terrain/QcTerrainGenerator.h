@@ -82,6 +82,11 @@ public:
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
+    // Villages, mine shafts, dungeons, coastal towers and the surface structures (decision E-911).
+    QStringList locatableNames() const override;
+    // Mine shafts by their central room and entrance, dungeons by their room's middle, coastal
+    // towers by their doorstep (QcTerrainLocate.cpp).
+    [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
 
     // Shape and biome of a column. Near a biome border its ground biome is left `unresolvedGround`
     // (a second climate evaluation): withGround() or QcTerrainColumnGrid look it up.

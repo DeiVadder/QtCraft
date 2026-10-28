@@ -30,7 +30,7 @@ QcAdventureCommands::QcAdventureCommands(QcServerState &state, QcServerGameModes
 
 void QcAdventureCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"adventure"_s,
+    registry.addBuiltIn({.name = u"adventure"_s, .category = QcCommandCategory::Players,
                          .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Shows or changes what players in adventure mode may break and place on."),
                          .run = [this](const QcCommandContext &context) { adventure(context); }});

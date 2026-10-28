@@ -13,6 +13,7 @@ target_sources(qc_worldgen PRIVATE
     generators/QcChunkFurnishing.h
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h
+    generators/QcLocatedPlace.h
     generators/QcStructureSites.h
     generators/QcTestTerrainGenerator.h generators/QcTestTerrainGenerator.cpp
     generators/QcVoidGenerator.h generators/QcVoidGenerator.cpp
@@ -77,6 +78,7 @@ target_sources(qc_worldgen PRIVATE
     terrain/QcTerrainDefinitions.h terrain/QcTerrainDefinitions.cpp
     terrain/QcTerrainGenerator.h terrain/QcTerrainGenerator.cpp
     terrain/QcTerrainGround.cpp
+    terrain/QcTerrainLocate.cpp
     terrain/QcTerrainMath.h
     terrain/QcTerrainRivers.cpp
     terrain/QcTerrainSpawn.cpp

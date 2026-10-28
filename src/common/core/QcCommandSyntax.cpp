@@ -58,6 +58,9 @@ Type typeOf(const QString &name)
     if (lower == u"block"_s || lower == u"item"_s || lower == u"creature"_s) {
         return lower == u"block"_s ? Type::Block : lower == u"item"_s ? Type::Item : Type::Creature;
     }
+    if (lower == u"structure"_s || lower == u"biome"_s) {
+        return Type::Named;
+    }
     return Type::Word;
 }
 
@@ -224,7 +227,7 @@ QList<Parameter> next(const QList<Form> &forms, const QStringList &words)
 
 QLatin1StringView typeName(Parameter::Type type)
 {
-    static constexpr std::array<const char *, 9> names{"word", "text", "player", "integer", "coordinate", "block", "item", "creature", "choice"};
+    static constexpr std::array<const char *, 10> names{"word", "text", "player", "integer", "coordinate", "block", "item", "creature", "choice", "named"};
     return QLatin1StringView(names[static_cast<std::size_t>(type)]);
 }
 

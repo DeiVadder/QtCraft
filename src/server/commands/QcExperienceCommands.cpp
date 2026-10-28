@@ -25,7 +25,7 @@ QcExperienceCommands::QcExperienceCommands(QcServerState &state)
 
 void QcExperienceCommands::addTo(QcCommandRegistry &registry)
 {
-    registry.addBuiltIn({.name = u"xp"_s, .aliases = {u"experience"_s},
+    registry.addBuiltIn({.name = u"xp"_s, .category = QcCommandCategory::Items, .aliases = {u"experience"_s},
                          .minArguments = 2,
                          .usage = usage,
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Adds to, sets or shows the experience of a player, in points or levels."),

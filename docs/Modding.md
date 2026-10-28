@@ -679,9 +679,9 @@ Mods cannot run code, so they add commands as **macros** (decision E-248): `comm
 - `permission`: `player` (everyone may call it) or `operator` (default).
 - `run`: 1 to 16 command lines starting with `/`, at most 256 characters each. `$1` … `$9` are the words after the macro's name, `$*` all of them; called with fewer words than the highest `$n`, the macro answers with its `usage`.
 - Every line runs as the player (or console) who called the macro and is checked for him again: in the example a player without operator rights gets "Only operators can use /give". A macro never grants rights. Macros cannot call other macros.
-- `usage` and `description` are shown by `/help` as they are (not translated).
+- `usage` and `description` are shown by `/help` as they are (not translated); `/help` lists macros in the group `other` (`/help other`).
 
-Code that is compiled into the game (not mods) adds real commands through the registry: `QcServer::commands().add(QcCommandSpec{...})` with a name, aliases, the permission (`QcPermission::Player`, `Operator`, `Console`), whether it needs a player, the minimum number of words, usage and description (English texts marked with `QT_TRANSLATE_NOOP("QcServerMessages", …)`) and a handler that receives a `QcCommandContext` (source, words, whole line). Taken names are refused. See `src/server/commands/QcCommandRegistry.h` and the command groups next to it.
+Code that is compiled into the game (not mods) adds real commands through the registry: `QcServer::commands().add(QcCommandSpec{...})` with a name, the group `/help` lists it under (`category`, a `QcCommandCategory`; without one it lands in `other`), aliases, the permission (`QcPermission::Player`, `Operator`, `Console`), whether it needs a player, the minimum number of words, usage and description (English texts marked with `QT_TRANSLATE_NOOP("QcServerMessages", …)`) and a handler that receives a `QcCommandContext` (source, words, whole line); optionally `names`, a function giving the words a `<structure>` or `<biome>` placeholder takes in this world, which `/help <command>` shows in `namesLine` and the command picker of "Manage server" offers. Taken names are refused. See `src/server/commands/QcCommandRegistry.h` and the command groups next to it.
 
 ### Replacing existing content
 

@@ -12,15 +12,17 @@
 // with parameter help and completion. The usage texts of the commands follow one notation: forms
 // separated by ", /", " or /" or " | ", plain words as literals, <name> required, [name] optional,
 // <a|b|c> a choice, nested groups as in "[<x> <z> [<x2> <z2>]]". The type of a parameter follows
-// from its name (player, x/y/z, count, block, item, creature, reason ...). Texts that do not follow
+// from its name (player, x/y/z, count, block, item, creature, structure, biome, reason ...). Texts that do not follow
 // the notation give one form of plain words; nothing fails.
 namespace QcCommandSyntax {
 
 struct Parameter
 {
     enum class Kind : quint8 { Literal, Required, Optional };
-    // Text takes the rest of the line (a reason, a label); Word any single word.
-    enum class Type : quint8 { Word, Text, Player, Integer, Coordinate, Block, Item, Creature, Choice };
+    // Text takes the rest of the line (a reason, a label); Word any single word; Named a word the
+    // server names with its command (a structure, a biome; QcMsg::AdminCatalogue::Command::names,
+    // decision E-911).
+    enum class Type : quint8 { Word, Text, Player, Integer, Coordinate, Block, Item, Creature, Choice, Named };
 
     // The literal word, or the placeholder's name as the usage writes it.
     QString name;
