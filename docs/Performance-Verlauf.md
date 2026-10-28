@@ -2874,3 +2874,11 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Ohne Paket (Mittel):** Speicher −0,3 … −1,0 %, GPU −6 … +7 %, Render-CPU +1 … +8 % – Rauschen.
 - **GPU und Render-CPU mit HD64 auf Hoch:** gegen vorher −7 … +7 % bzw. −4 … +9 %, innerhalb der Streuung; Bildzeit unverändert (Mittel 120 Hz, p99 10,1–10,4 ms).
 - **Bewertung:** Ziel erreicht – der Mehrspeicher der Karten liegt bei der Größe der Karten selbst (HD64: 60 MiB laut E-912) und hat keine Spitzen mehr; keine Kosten auf GPU oder CPU.
+
+## Paket 79.20 (Pfadsuche kennt die Breite der Wesen; E-909), Headless-A/B `@server` (2026-10-28)
+
+- **Stände:** `base` = `9c1c1a7~1`, `width` = `9c1c1a7`, Release, `scripts/bench-headless.sh` (Standard `@server`, 60 Spielsekunden, adaptiv 3–6 Runden), ruhiger Rechner.
+- **Tick Ø:** crowd 0,196 → 0,204 ms (+4 %), sonst −2 … +3,5 % (Rauschen).
+- **Tick p99:** crowd 0,293 → 0,351 ms (+20 %, Streuung 12 %), Signal-Stationen +4 … +12 % bei 2–32 % Streuung, übrige ±3 %.
+- **Speicher:** −3 … +0,7 %.
+- **Bewertung:** Im Wesen-lastigen crowd kostet die breitere Pfadsuche im p99 rund 0,06 ms je Tick – absolut winzig (Budget 50 ms), im Mittel +4 %. Hingenommen; die Debug-Messung des Pakets (geschlossen +2 %) passt dazu.
