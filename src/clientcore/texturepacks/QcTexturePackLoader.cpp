@@ -286,6 +286,7 @@ void PackLoader::addFiles(const QList<TextureFile> &files)
 
     // Without the realistic mode's maps they are not read at all (the classic mode holds none).
     if (!m_limits.materialMaps) {
+        m_pack.unreadMaps = maps.size();
         return;
     }
     if (maps.size() > m_limits.maxMapFiles) {

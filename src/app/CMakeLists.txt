@@ -123,6 +123,7 @@ target_sources(qc_app_core PRIVATE
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
     rendering/QcShadowMap.h rendering/QcShadowMap.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
+    rendering/QcTextureStream.h rendering/QcTextureStream.cpp
     rendering/QcWaterSurface.h rendering/QcWaterSurface.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldRendererResources.h rendering/QcWorldRendererResources.cpp

@@ -11,10 +11,6 @@
 #include <QList>
 #include <QRectF>
 
-#include <memory>
-
-class QcMaterialAtlas;
-
 struct QcTextureAtlasOptions
 {
     // Largest texture edge the GPU takes (QRhi::TextureSizeMax; 8192 until the renderer knows).
@@ -26,8 +22,9 @@ struct QcTextureAtlasOptions
     int maxTileSize = 256;
     // Threads that draw the tiles; 0: half the cores, at most 8.
     int threads = 0;
-    // Also build the material maps (QcMaterialAtlas, decision E-908): only while the realistic
-    // mode draws them, so the classic mode holds no maps.
+    // The material maps (QcMaterialAtlas, decision E-908) are built for this atlas: the packs'
+    // map files are checked against the texture names (problems()). The maps themselves are built
+    // apart from the atlas (QcTextureStackBuild) and never kept with it (decision E-912).
     bool materials = false;
 };
 
@@ -97,8 +94,6 @@ public:
     // The layout of the tiles (also of the material maps) and where each tile came from.
     const QcAtlasLayout &layout() const { return m_layout; }
     const QList<TileSource> &tileSources() const { return m_tileSources; }
-    // The material maps when built with Options::materials, else null.
-    const std::shared_ptr<const QcMaterialAtlas> &materials() const { return m_materials; }
 
     // Content problems (English, for the log).
     QStringList problems() const { return m_problems; }
@@ -145,7 +140,6 @@ private:
     QStringList unknownTextures(const QcContentRegistry &content) const;
 
     QList<TileSource> m_tileSources;
-    std::shared_ptr<const QcMaterialAtlas> m_materials;
     QStringList m_problems;
     QcTexturePackProblems m_notices;
     QHash<QString, int> m_sources;

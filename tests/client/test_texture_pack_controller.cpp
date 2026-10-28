@@ -1,4 +1,5 @@
 #include "app/controllers/QcTexturePackController.h"
+#include "clientcore/materials/QcMaterialAtlas.h"
 #include "clientcore/texturepacks/QcTexturePackLibrary.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
@@ -185,6 +186,155 @@ private slots:
         QCOMPARE(centre(*atlas), QColor(Qt::yellow));
     }
 
+    // The material maps (decision E-912) come after the world's atlas from the background, with the
+    // same atlas; switched off they go at once, switched on only they are built again, and a set the
+    // GPU lost is built again; no new colour atlas for any of it.
+    void materialMapsFollowTheAtlasOfTheWorld()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.setMaterials(true);
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        const std::shared_ptr<const QcTextureAtlas> atlas = controller.enterWorld(content());
+        QCOMPARE(built.size(), 0);
+        QTRY_COMPARE(built.size(), 1);
+        QCOMPARE(atlasOf(built, 0), atlas);
+        const std::shared_ptr<const QcMaterialAtlas> first = mapsOf(built, 0);
+        QVERIFY(first);
+
+        controller.setMaterials(false);
+        QCOMPARE(built.size(), 2);
+        QCOMPARE(atlasOf(built, 1), atlas);
+        QVERIFY(!mapsOf(built, 1));
+
+        controller.setMaterials(true);
+        QTRY_COMPARE(built.size(), 3);
+        QCOMPARE(atlasOf(built, 2), atlas);
+        QVERIFY(mapsOf(built, 2) && mapsOf(built, 2)->serial() != first->serial());
+
+        controller.rebuildMaterials();
+        QTRY_COMPARE(built.size(), 4);
+        QCOMPARE(atlasOf(built, 3), atlas);
+        QVERIFY(mapsOf(built, 3));
+        QTRY_VERIFY(!controller.busy());
+    }
+
+    // A world entered while a build of the last world runs (decision E-912): the old result is
+    // dropped, and the maps of the new atlas follow once it ends.
+    void enteringAWorldDuringABuildBringsItsMaps()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.setMaterials(true);
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        controller.enterWorld(content());
+        QTRY_VERIFY(!controller.busy());
+
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        controller.setActive(u"user:cold"_s, true);
+        QVERIFY(controller.busy());
+        const std::shared_ptr<const QcTextureAtlas> other = controller.enterWorld(content(u"t:green"_s));
+        QTRY_COMPARE(built.size(), 1);
+        QCOMPARE(atlasOf(built, 0), other);
+        QVERIFY(mapsOf(built, 0));
+        QTRY_VERIFY(!controller.busy());
+        QTest::qWait(20);
+        QCOMPARE(built.size(), 1);
+    }
+
+    // A whole atlas asked for while the maps of one wait for a running build wins (buildAgain): one
+    // result with a new atlas and its maps, none with the maps of the old atlas.
+    void aWholeAtlasBeatsWaitingMaps()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.setMaterials(true);
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        controller.enterWorld(content());
+        QTRY_VERIFY(!controller.busy());
+
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        controller.setActive(u"user:cold"_s, true);
+        // The maps of this atlas wait for the running build; then the selection changes.
+        const std::shared_ptr<const QcTextureAtlas> entered = controller.enterWorld(content(u"t:green"_s));
+        controller.setActive(u"user:cold"_s, false);
+        QTRY_COMPARE(built.size(), 1);
+        QVERIFY(atlasOf(built, 0) != entered);
+        QVERIFY(atlasOf(built, 0)->contains(u"t:green"_s));
+        QCOMPARE(centre(*atlasOf(built, 0)), QColor(Qt::yellow));
+        QVERIFY(mapsOf(built, 0));
+        QTRY_VERIFY(!controller.busy());
+        QTest::qWait(20);
+        QCOMPARE(built.size(), 1);
+    }
+
+    // The maps still being built when the world ends are dropped.
+    void leavingTheWorldDropsItsMaps()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.setMaterials(true);
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        controller.enterWorld(content());
+        QVERIFY(controller.busy());
+        controller.leaveWorld();
+        QTRY_VERIFY(!controller.busy());
+        QTest::qWait(20);
+        QCOMPARE(built.size(), 0);
+    }
+
+    // A lost set reported while a build runs starts no build of its own: the running one brings maps.
+    void rebuildingTheMapsWaitsForARunningBuild()
+    {
+        QcTexturePackController controller([] { return QString(); });
+        controller.setMaterials(true);
+        controller.loadSelection({u"user:warm"_s});
+        QTRY_VERIFY(!controller.busy());
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        const std::shared_ptr<const QcTextureAtlas> atlas = controller.enterWorld(content());
+        QVERIFY(controller.busy());
+        const quint64 generation = controller.generation();
+        controller.rebuildMaterials();
+        QCOMPARE(controller.generation(), generation);
+        QTRY_COMPARE(built.size(), 1);
+        QCOMPARE(atlasOf(built, 0), atlas);
+        QVERIFY(mapsOf(built, 0));
+        QTRY_VERIFY(!controller.busy());
+        QTest::qWait(20);
+        QCOMPARE(built.size(), 1);
+    }
+
+    // A pack with map files is read again when the maps are switched on or off, and the whole
+    // atlas is built with it (decision E-912).
+    void packMapsAreReadWhenWanted()
+    {
+        QVERIFY(writePack(u"mapped"_s, 16, Qt::gray));
+        QImage normal(16, 16, QImage::Format_RGBA8888);
+        normal.fill(QColor(128, 128, 255));
+        QVERIFY(normal.save(QDir(QcTexturePackLibrary::userDirectory()).filePath(u"mapped/textures/t/red_n.png"_s)));
+        QcTexturePackController controller([] { return QString(); });
+        controller.loadSelection({u"user:mapped"_s});
+        QTRY_VERIFY(!controller.busy());
+        const std::shared_ptr<const QcTextureAtlas> atlas = controller.enterWorld(content());
+        QCOMPARE(controller.stack().front()->unreadMaps, 1);
+
+        QSignalSpy built(&controller, &QcTexturePackController::atlasBuilt);
+        controller.setMaterials(true);
+        QTRY_COMPARE(built.size(), 1);
+        QVERIFY(atlasOf(built, 0) != atlas);
+        QVERIFY(mapsOf(built, 0));
+        QVERIFY(controller.stack().front()->holdsMaps());
+
+        controller.setMaterials(false);
+        QTRY_COMPARE(built.size(), 2);
+        QVERIFY(atlasOf(built, 1) != atlasOf(built, 0));
+        QVERIFY(!mapsOf(built, 1));
+        QVERIFY(!controller.stack().front()->holdsMaps());
+        QTRY_VERIFY(!controller.busy());
+    }
+
     // At most 16 active packs: switching on one more drops the last and says so.
     void theSeventeenthPackDropsTheLast()
     {
@@ -217,6 +367,15 @@ private slots:
     }
 
 private:
+    static std::shared_ptr<const QcTextureAtlas> atlasOf(const QSignalSpy &built, qsizetype index)
+    {
+        return built.at(index).at(0).value<std::shared_ptr<const QcTextureAtlas>>();
+    }
+    static std::shared_ptr<const QcMaterialAtlas> mapsOf(const QSignalSpy &built, qsizetype index)
+    {
+        return built.at(index).at(1).value<std::shared_ptr<const QcMaterialAtlas>>();
+    }
+
     QTemporaryDir m_data;
 };
 

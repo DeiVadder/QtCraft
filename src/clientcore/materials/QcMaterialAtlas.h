@@ -17,7 +17,8 @@ class QcTextureAtlas;
 // 128x maps). Each texture's maps come from where its colour came from: a pack's PNG brings its
 // `<name>_n.png` and `<name>_s.png` (flat without them), a procedural texture (the game's, a mod's,
 // a pack's spec, a procedural pack) gets maps painted from its colour (QcMaterialRules), everything
-// else flat maps. Immutable once built; shared between threads like the colour atlas.
+// else flat maps. Immutable once built and handed from the worker that builds it to the renderer,
+// which lets it go once the maps are on the GPU; never kept with the colour atlas (decision E-912).
 class QcMaterialAtlas
 {
 public:

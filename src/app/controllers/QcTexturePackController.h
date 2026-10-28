@@ -10,8 +10,11 @@
 
 #include <functional>
 #include <memory>
+#include <optional>
+#include <utility>
 
 class QcContentRegistry;
+class QcMaterialAtlas;
 class QcTextureAtlas;
 class QcTexturePackPreviewProvider;
 class QcWorkerPool;
@@ -61,14 +64,21 @@ public:
     // The loaded active packs, the highest priority first.
     const QcTexturePackStack &stack() const { return m_stack; }
     // A world's content arrived: its atlas, built now with the active packs (a build still running
-    // is not waited for, its result is dropped); later changes rebuild it in the background.
+    // is not waited for, its result is dropped); later changes rebuild it in the background. The
+    // material maps follow from a background build too (atlasBuilt() with the same atlas, decision
+    // E-912), so the world does not wait for them.
     std::shared_ptr<const QcTextureAtlas> enterWorld(std::shared_ptr<const QcContentRegistry> content);
     // The world ended: its content is let go and no atlas of it is handed out any more.
     void leaveWorld();
-    // Whether the world's atlas also carries the material maps of the realistic mode (decision
-    // E-908); a change builds the atlas of a running world again in the background.
+    // Whether the world's atlas gets the material maps of the realistic mode (decision E-908). A
+    // change in a running world builds only the maps of the current atlas in the background, or
+    // lets them go at once (atlasBuilt() with the same atlas); the whole atlas is built again only
+    // when a pack's map files must be read or its maps let go (decision E-912).
     void setMaterials(bool materials);
     [[nodiscard]] bool materials() const { return m_materials; }
+    // The GPU lost the maps (a new renderer or device; the renderer keeps no copy of them): builds
+    // the maps of the current atlas again in the background.
+    void rebuildMaterials();
 
     QVariantList packs() const;
     QString status() const { return m_status; }
@@ -91,19 +101,31 @@ signals:
     void selectionChanged();
     // The packs of the new selection are loaded (the menu redraws its icons and previews).
     void stackChanged();
-    // A new atlas of the world's content for the current selection.
-    void atlasBuilt(std::shared_ptr<const QcTextureAtlas> atlas);
+    // A new atlas of the world's content for the current selection, or new material maps of the
+    // same atlas, with its maps (null without them). The maps are handed on, never kept here.
+    void atlasBuilt(std::shared_ptr<const QcTextureAtlas> atlas, std::shared_ptr<const QcMaterialAtlas> materials);
 
 private:
     void select(const QStringList &ids);
     // Makes `ids` (cleaned) the active packs and starts their build; false when nothing changed.
     bool activate(const QStringList &ids);
-    void startBuild();
+    // Builds in the background: the whole atlas, or with `colour` only the material maps of it.
+    void startBuild(const std::shared_ptr<const QcTextureAtlas> &colour = {});
     void onBuilt();
     void apply(const QcTextureStackBuild::Result &result);
     void updatePreviews();
     void describe(const QcTextureAtlas &atlas, qint64 milliseconds);
-    QcTextureStackBuild::Request request() const;
+    QcTextureStackBuild::Request request(const std::shared_ptr<const QcTextureAtlas> &colour = {}) const;
+    // The world's current atlas (null without a world).
+    [[nodiscard]] const std::shared_ptr<const QcTextureAtlas> &atlas() const { return m_atlas; }
+    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_atlas = std::move(atlas); }
+    // The world's content (null without a world).
+    [[nodiscard]] const std::shared_ptr<const QcContentRegistry> &content() const { return m_content; }
+    void setContent(std::shared_ptr<const QcContentRegistry> content) { m_content = std::move(content); }
+    void setGeneration(quint64 generation) { m_generation = generation; }
+    void setBuilding(bool building) { m_building = building; }
+    [[nodiscard]] const std::optional<std::shared_ptr<const QcTextureAtlas>> &buildAgain() const { return m_buildAgain; }
+    void setBuildAgain(std::optional<std::shared_ptr<const QcTextureAtlas>> again) { m_buildAgain = std::move(again); }
 
     std::function<QString()> m_modsDirectory;
     QcTexturePackPreviewProvider *m_previewProvider = nullptr;
@@ -121,8 +143,10 @@ private:
     // with a queued call (ThreadSanitizer cannot see the synchronisation inside QtCore, E-297).
     QcMailbox<QcTextureStackBuild::Result> m_builtResults;
     quint64 m_generation = 1;
-    // A change arrived while a build was running: build again when it ends.
-    bool m_buildAgain = false;
+    // A change arrived while a build was running: build again when it ends; null the whole atlas,
+    // else only the maps of that atlas.
+    std::optional<std::shared_ptr<const QcTextureAtlas>> m_buildAgain;
+    std::shared_ptr<const QcTextureAtlas> m_atlas;
     bool m_materials = false;
     // A build runs on the worker; its result has not been taken yet.
     bool m_building = false;

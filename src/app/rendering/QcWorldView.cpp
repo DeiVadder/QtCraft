@@ -3,6 +3,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcWorldRenderer.h"
 #include "clientcore/light/QcWaterLook.h"
+#include "clientcore/materials/QcMaterialAtlas.h"
 
 #include <algorithm>
 #include <cmath>
@@ -30,6 +31,12 @@ QQuickRhiItemRenderer *QcWorldView::createRenderer()
     return new QcWorldRenderer;
 }
 
+void QcWorldView::materialsLostOnDevice()
+{
+    qCInfo(lcRenderer) << "World view: the GPU lost the material maps, building them again";
+    QMetaObject::invokeMethod(this, &QcWorldView::materialsLost, Qt::QueuedConnection);
+}
+
 void QcWorldView::meshesLostOnDevice()
 {
     if (!m_meshKeys.isEmpty()) {
@@ -55,7 +62,8 @@ void QcWorldView::setAtlas(const QList<QImage> &levels, const QImage &animationM
 
 void QcWorldView::setMaterials(std::shared_ptr<const QcMaterialAtlas> materials)
 {
-    m_frame.materials = std::move(materials);
+    m_frame.materials = materials ? materials->serial() : 0;
+    m_pendingMaterials = std::move(materials);
     update();
 }
 

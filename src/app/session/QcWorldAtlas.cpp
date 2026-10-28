@@ -32,13 +32,19 @@ void QcWorldAtlas::enterWorld()
         qCWarning(lcGame) << "Texture:" << problem;
     }
 
-    m_atlas.reset();
+    setAtlas(nullptr);
     apply(atlas);
 }
 
-void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
+void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas, std::shared_ptr<const QcMaterialAtlas> materials)
 {
     if (!m_parts.session || !m_parts.session->content() || !atlas) {
+        return;
+    }
+    if (atlas == this->atlas()) {
+        if (m_parts.view) {
+            m_parts.view->setMaterials(std::move(materials));
+        }
         return;
     }
 
@@ -49,11 +55,11 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
     const QcContentRegistry &content = *m_parts.session->content();
     // The UVs depend only on the list of textures (E-300): a new pack only needs the new image, the
     // meshes stay; a different layout (other content) needs a new render table and new meshes.
-    if (!m_atlas || !m_renderTable || !atlas->sameLayout(*m_atlas)) {
+    if (!this->atlas() || !m_renderTable || !atlas->sameLayout(*this->atlas())) {
         m_renderTable = std::make_shared<const QcBlockRenderTable>(content, *atlas);
         m_parts.meshes->setRenderTable(m_renderTable);
     }
-    m_atlas = atlas;
+    setAtlas(atlas);
     m_targets.render.setAtlas(atlas, m_renderTable);
     m_targets.preview.useWorld(m_parts.session->content(), atlas);
     const qint64 iconsStart = timer.nsecsElapsed();
@@ -62,7 +68,7 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
     const qint64 iconsNs = timer.nsecsElapsed() - iconsStart;
     if (m_parts.view) {
         m_parts.view->setAtlas(atlas->levels(), atlas->animationMap(), atlas->animationCycleTicks());
-        m_parts.view->setMaterials(atlas->materials());
+        m_parts.view->setMaterials(std::move(materials));
     }
     const qint64 totalNs = timer.nsecsElapsed();
     qCInfo(lcGame).noquote() << u"Texture atlas applied in %1 ms (item icons %2 ms)"_s.arg(static_cast<double>(totalNs) / 1e6, 0, 'f', 1)
@@ -72,7 +78,7 @@ void QcWorldAtlas::apply(const std::shared_ptr<const QcTextureAtlas> &atlas)
 void QcWorldAtlas::leaveWorld()
 {
     m_targets.texturePacks.leaveWorld();
-    m_atlas.reset();
+    setAtlas(nullptr);
     m_renderTable.reset();
     m_targets.render.setAtlas(nullptr, nullptr);
 }

@@ -97,7 +97,9 @@ QcGameController::QcGameController(QObject *parent)
     // Texture packs switched in the settings (decision E-301): the world gets the new atlas, the
     // menu draws its icons and previews again.
     connect(m_settings->texturePacks(), &QcTexturePackController::atlasBuilt, this,
-            [this](const std::shared_ptr<const QcTextureAtlas> &atlas) { m_worldAtlas.apply(atlas); });
+            [this](const std::shared_ptr<const QcTextureAtlas> &atlas, const std::shared_ptr<const QcMaterialAtlas> &materials) {
+                m_worldAtlas.apply(atlas, materials);
+            });
     connect(m_settings->texturePacks(), &QcTexturePackController::stackChanged, this, [this] {
         if (!m_parts.session) {
             m_icons.invalidate();
@@ -161,6 +163,8 @@ void QcGameController::setView(QcWorldView *view)
                 m_parts.meshes->remeshAll();
             }
         });
+        // The renderer keeps no copy of the material maps it uploaded (decision E-912).
+        connect(m_parts.view, &QcWorldView::materialsLost, m_settings->texturePacks(), &QcTexturePackController::rebuildMaterials);
     }
     emit viewChanged();
 }

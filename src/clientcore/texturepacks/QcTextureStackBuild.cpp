@@ -100,10 +100,17 @@ Result run(const Request &request)
     result.previews = previewsOf(result.entries, request.previews);
     result.loadMs = timer.restart();
 
-    if (request.content) {
-        result.atlas = std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*request.content, result.stack, request.options));
-        result.buildMs = timer.elapsed();
+    if (!request.content) {
+        return result;
     }
+    result.atlas = request.colour ? request.colour
+                                  : std::make_shared<const QcTextureAtlas>(QcTextureAtlas::build(*request.content, result.stack, request.options));
+    const qint64 colourMs = timer.restart();
+    if (request.options.materials && !request.colourOnly) {
+        result.materials = std::make_shared<const QcMaterialAtlas>(QcMaterialAtlas::build(*result.atlas, *request.content, result.stack));
+        result.materialsMs = timer.elapsed();
+    }
+    result.buildMs = colourMs + result.materialsMs;
     return result;
 }
 

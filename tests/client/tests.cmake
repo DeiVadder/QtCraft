@@ -215,6 +215,8 @@ qt_add_shaders(test_post_process "test_post_process_prefilter_shaders"
     OUTPUTS
         shaders/bloom_prefilter.frag.qsb
 )
+# The memory of the material maps (decision E-912): measured with QTCRAFT_MATERIAL_MEASURE=<pack id>.
+qc_add_test(test_material_memory SOURCES client/test_material_memory.cpp LIBRARIES qc_app_core qc_base_content)
 # The material maps on the GPU (decision E-908) on QRhi's Null backend, with the receiver shaders
 # baked into the test.
 qc_add_test(test_material_textures SOURCES client/test_material_textures.cpp LIBRARIES qc_app_core qc_base_content)

@@ -56,9 +56,9 @@ public:
         // and the animation time in ticks, wrapped where every animation starts over.
         QImage animationMap;
         float animationTicks = 0.0f;
-        // The atlas's material maps (decision E-908), null without them; the renderer uploads them
-        // while the realistic mode draws them and knows a new set by its address.
-        std::shared_ptr<const QcMaterialAtlas> materials;
+        // The QcMaterialAtlas::serial of the atlas's material maps (decision E-908), 0 without them.
+        // Their pixels are handed to the renderer once, not copied with the frame (decision E-912).
+        quint64 materials = 0;
         // Sky dome, fog colour and the daylight factor of the shaders.
         QcSkyState sky = QcSky::at(QcDayCycle::startTime);
         float fogStart = 80.0f;
@@ -102,7 +102,9 @@ public:
     // (QcTextureAtlas::animationMap) and the ticks after which they all start over
     // (QcTextureAtlas::animationCycleTicks).
     void setAtlas(const QList<QImage> &levels, const QImage &animationMap = {}, int animationCycleTicks = 1);
-    // The material maps of the atlas set last (QcTextureAtlas::materials), null without them.
+    // The material maps of the atlas set last (QcTextureStackBuild::Result::materials), null
+    // without them. Handed over to the renderer, which lets them go once they are on the GPU
+    // (decision E-912).
     void setMaterials(std::shared_ptr<const QcMaterialAtlas> materials);
     // The time of the animated textures in ticks (decision E-878), QcAnimationClock::ticks(); the
     // test hook QTCRAFT_ANIMATION_TICK holds it at a fixed tick.
@@ -151,6 +153,10 @@ signals:
     // the owner of the meshes submits all of them again (QcMeshScheduler::remeshAll). Emitted on
     // the GUI thread.
     void meshesLost();
+    // The material maps handed to the renderer are no longer on the GPU (a new renderer or a new
+    // QRhi) and it keeps no copy: the owner builds them again (QcTexturePackController::
+    // rebuildMaterials). Emitted on the GUI thread.
+    void materialsLost();
 
 private:
     // Called by Qt Quick on the render thread; Qt Quick owns the returned renderer and deletes it
@@ -162,6 +168,8 @@ private:
     // Render thread, GUI thread blocked: queues meshesLost() for the GUI thread, when sections were
     // submitted.
     void meshesLostOnDevice();
+    // Render thread, GUI thread blocked: queues materialsLost() for the GUI thread.
+    void materialsLostOnDevice();
 
     FrameInput m_frame;
     int m_animationCycleTicks = 1;
@@ -170,6 +178,8 @@ private:
     // Handed over, not copied: the renderer takes the updates and keeps the list's capacity.
     QList<MeshUpdate> m_pendingMeshUpdates;
     bool m_clearAllMeshes = false;
+    // The material maps set last, until the renderer takes them (decision E-912).
+    std::shared_ptr<const QcMaterialAtlas> m_pendingMaterials;
     QSet<quint64> m_meshKeys;
     // Renderers created so far: a later one starts without the sections of the earlier.
     int m_renderers = 0;

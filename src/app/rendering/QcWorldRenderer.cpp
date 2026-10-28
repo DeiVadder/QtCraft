@@ -122,7 +122,9 @@ void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *upda
     }
 
     // The classic mode holds no post-processing and no shadow map on the GPU (a refused request
-    // stays remembered); the pipelines that read them went with the pass group above.
+    // stays remembered); the pipelines that read them went with the pass group above. The material
+    // maps stay while the classic plan only stands in for a wanted realistic one (decision E-912):
+    // building them again takes seconds.
     if (realistic) {
         prepareShadows();
         prepareWater();
@@ -131,7 +133,7 @@ void QcWorldRenderer::choosePlan(QSize outputSize, QRhiResourceUpdateBatch *upda
         m_water.release();
         m_post.release();
         m_shadows.release();
-        m_materials.release();
+        m_materials.standBy(wanted);
     }
 }
 
@@ -181,6 +183,13 @@ void QcWorldRenderer::synchronize(QQuickRhiItem *item)
     if (m_meshesLost) {
         view->meshesLostOnDevice();
         m_meshesLost = false;
+    }
+    // The maps' pixels are handed over once; the renderer lets them go after their upload. A lost
+    // set is reported only while the realistic plan is drawn (the last frame's): without it nothing
+    // would upload the maps built again.
+    m_materials.offer(m_frame.materials, std::exchange(view->m_pendingMaterials, {}));
+    if (m_materials.takeLost(m_frame.render.materials().maps && plan().postProcessed())) {
+        view->materialsLostOnDevice();
     }
 
     // Handed over: the view takes the samples, the renderer starts an empty list.

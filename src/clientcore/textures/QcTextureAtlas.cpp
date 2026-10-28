@@ -223,7 +223,6 @@ QcTextureAtlas QcTextureAtlas::build(const QcContentRegistry &content, const QcT
     atlas.m_problems.append(atlas.transparentTexelsOfOpaqueBlocks(content));
     atlas.m_problems.removeDuplicates();
     if (options.materials) {
-        atlas.m_materials = std::make_shared<const QcMaterialAtlas>(QcMaterialAtlas::build(atlas, content, packs));
         const QList<QString> names = atlas.m_uvs.keys();
         atlas.m_problems.append(QcMaterialAtlas::clashes(QSet<QString>(names.cbegin(), names.cend()), packs));
     }

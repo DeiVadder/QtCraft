@@ -2860,3 +2860,9 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Render-CPU:** gegen dieselbe Stufe ±8 % bei 10–48 % Streuung, kein klarer Effekt.
 - **Speicher (Spitze):** Basisspiel +3 … +7 MiB (+1 … +2 %). Mit 64er-Paket +60 MiB in stand/sprint/crowd (+12 %) und +120 MiB in showcase (401 → 521 MiB, +30 %) – mehr als die 23 MiB der beiden Karten-Atlanten; vermutlich Zwischenbilder beim Bau der Karten (Quellbilder, Mip-Ketten, Upload), nicht untersucht (offen in E-908).
 - **Bewertung:** GPU unter der 10-%-Schwelle außer showcase mit HD-Paket auf Hoch (+10 %, absolut 0,4 ms, weit im Budget). Der Spitzenspeicher mit HD-Paketen im realistischen Modus liegt über der Schwelle; im klassischen Modus und auf Niedrig entsteht er nicht. Unter der Abwesenheits-Freigabe des Menschen hingenommen, Nachuntersuchung als 45.4b eingetragen.
+
+## Paket 45.4b (Spitzenspeicher der Material-Karten; E-912), ohne Fenster (2026-10-28)
+
+- **Messung:** `test_material_memory` (`QTCRAFT_MATERIAL_MEASURE=<Paket>`, Metal offscreen) und die App offscreen (Debug, showcase, realistisch, `builtin:qtcraft_hd_64`, rund 100 s, Spitzen-RSS der `HEALTH`-Zeile), Debug-Build unter Last paralleler Verify-Läufe.
+- **Ursache:** Karten 2 × Farb-Atlas (HD64 60,3 MiB, HD128 242 MiB) als CPU-Kopie für die ganze Welt, dazu der Upload in einem Zug (Staging HD64 +61 MiB, HD128 +244 MiB RSS).
+- **Vorher → nachher:** App Mittel 490–501 → 418–419 MiB Spitze (Niedrig 371–378; Aufschlag +120 → +45 MiB); Upload-Staging HD64 +61 → +6 … 14, HD128 +244 → +11 … 18 MiB; synchroner Atlas-Bau beim Betreten (Mittel) 1,7–3,3 s → 0,56–1,3 s (Debug), die Karten folgen im Hintergrund. GUI-A/B (Release, Fenster) steht aus.

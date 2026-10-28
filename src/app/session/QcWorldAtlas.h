@@ -3,10 +3,12 @@
 #include <QtGlobal>
 
 #include <memory>
+#include <utility>
 
 class QcBlockRenderTable;
 class QcHeldMap;
 class QcItemIcons;
+class QcMaterialAtlas;
 class QcPreviewSource;
 class QcRenderBridge;
 class QcTexturePackController;
@@ -38,13 +40,19 @@ public:
     // The content of the session arrived: builds the atlas of the active texture packs for it and
     // draws the world with it.
     void enterWorld();
-    // Draws the world, the item icons, the character previews and maps with `atlas`.
-    void apply(const std::shared_ptr<const QcTextureAtlas> &atlas);
+    // Draws the world, the item icons, the character previews and maps with `atlas`, the realistic
+    // mode with its `materials` (null without them). Only the maps change for the atlas drawn
+    // already; they are handed to the world view, not kept (decision E-912).
+    void apply(const std::shared_ptr<const QcTextureAtlas> &atlas, std::shared_ptr<const QcMaterialAtlas> materials = {});
     // The world's atlas and render table go (decision E-301); a build for it still running is
     // dropped.
     void leaveWorld();
 
 private:
+    // The atlas the world is drawn with (null without a world).
+    [[nodiscard]] const std::shared_ptr<const QcTextureAtlas> &atlas() const { return m_atlas; }
+    void setAtlas(std::shared_ptr<const QcTextureAtlas> atlas) { m_atlas = std::move(atlas); }
+
     QcSessionParts &m_parts;
     Targets m_targets;
     std::shared_ptr<const QcTextureAtlas> m_atlas;

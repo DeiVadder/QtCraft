@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clientcore/materials/QcMaterialAtlas.h"
 #include "clientcore/texturepacks/QcTexturePack.h"
 #include "clientcore/texturepacks/QcTexturePackLibrary.h"
 #include "clientcore/textures/QcTextureAtlas.h"
@@ -44,7 +45,13 @@ struct Request
     QHash<QString, Preview> previews;
     // Null: only load the packs (in the menu, before a world has content).
     std::shared_ptr<const QcContentRegistry> content;
+    // With options.materials the packs are read with their material maps and the maps are built
+    // (Result::materials), unless `colourOnly` (the maps follow in a run of their own, so the world
+    // starts without waiting for them); with `colour` set only the maps of that atlas are built
+    // (decision E-912).
     QcTextureAtlas::Options options;
+    bool colourOnly = false;
+    std::shared_ptr<const QcTextureAtlas> colour;
     qint64 memoryBudget = stackMemoryBudget;
 };
 
@@ -60,8 +67,13 @@ struct Result
     // Previews by pack folder (unchanged ones taken over from the request).
     QHash<QString, Preview> previews;
     std::shared_ptr<const QcTextureAtlas> atlas;
+    // The atlas's material maps, handed on apart from it: whoever uploads them lets them go
+    // (decision E-912). Null without options.materials or with colourOnly.
+    std::shared_ptr<const QcMaterialAtlas> materials;
     qint64 loadMs = 0;
+    // The colour atlas and the maps together; the maps alone in materialsMs.
     qint64 buildMs = 0;
+    qint64 materialsMs = 0;
 };
 
 Result run(const Request &request);

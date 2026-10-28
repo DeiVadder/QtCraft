@@ -31,12 +31,13 @@ void QcWorldRenderer::prepareShadows()
 void QcWorldRenderer::prepareMaterials(QRhiResourceUpdateBatch *updates)
 {
     const bool wanted = m_frame.render.materials().maps;
+    m_materials.setAtlasCell(static_cast<int>(m_device.atlasCellPixels));
     // The pipelines with the receivers' bindings and the bindings go before the textures they refer to.
-    if (m_materials.replaces(m_device.rhi, m_frame.materials, wanted)) {
+    if (m_materials.replaces(m_device.rhi, wanted)) {
         m_pass.releaseAtlasPipelines();
         m_shadows.releaseAtlasBindings();
     }
-    m_materials.prepare(m_device.rhi, m_frame.materials, wanted, updates);
+    m_materials.prepare(m_device.rhi, wanted, updates);
 }
 
 void QcWorldRenderer::uploadShadows(QRhiResourceUpdateBatch *updates, QVector3D drawCamera)

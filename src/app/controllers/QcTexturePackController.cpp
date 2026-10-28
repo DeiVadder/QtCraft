@@ -2,6 +2,7 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
+#include "clientcore/materials/QcMaterialAtlas.h"
 #include "clientcore/settings/QcGameSettings.h"
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/textures/QcGpuLimits.h"
@@ -11,6 +12,9 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QUrl>
+
+#include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -74,7 +78,7 @@ void QcTexturePackController::loadSelection(const QStringList &ids)
 void QcTexturePackController::refresh()
 {
     // Packs changed on disk are read again; a build still running is out of date.
-    ++m_generation;
+    setGeneration(generation() + 1);
     m_rescan = true;
     m_loaded.clear();
     startBuild();
@@ -82,20 +86,29 @@ void QcTexturePackController::refresh()
 
 std::shared_ptr<const QcTextureAtlas> QcTexturePackController::enterWorld(std::shared_ptr<const QcContentRegistry> content)
 {
-    ++m_generation;
-    m_buildAgain = false;
-    m_content = std::move(content);
-    const QcTextureStackBuild::Result result = QcTextureStackBuild::run(request());
+    setGeneration(generation() + 1);
+    setBuildAgain(std::nullopt);
+    setContent(std::move(content));
+    // The maps follow in the background (decision E-912): the world starts without waiting for them,
+    // and the colour atlas's intermediate images are gone before the maps are painted.
+    QcTextureStackBuild::Request now = request();
+    now.colourOnly = true;
+    const QcTextureStackBuild::Result result = QcTextureStackBuild::run(now);
     apply(result);
     describe(*result.atlas, result.loadMs + result.buildMs);
+    setAtlas(result.atlas);
+    if (materials()) {
+        startBuild(result.atlas);
+    }
     return result.atlas;
 }
 
 void QcTexturePackController::leaveWorld()
 {
-    ++m_generation;
-    m_buildAgain = false;
-    m_content.reset();
+    setGeneration(generation() + 1);
+    setBuildAgain(std::nullopt);
+    setContent(nullptr);
+    setAtlas(nullptr);
 }
 
 void QcTexturePackController::setMaterials(bool materials)
@@ -105,12 +118,37 @@ void QcTexturePackController::setMaterials(bool materials)
         return;
     }
     m_materials = materials;
-    // Packs are read again with or without their material maps (QcTexturePackLoader::Limits).
-    m_loaded.clear();
-    if (m_content) {
-        ++m_generation;
-        startBuild();
+    // A pack whose map files must be read now, or whose maps must go, is read again
+    // (QcTexturePackLoader::Limits) and the whole atlas built with it; otherwise only the maps
+    // change (decision E-912).
+    const bool reread = std::ranges::any_of(m_stack, [materials](const QcTexturePackRef &pack) {
+        return materials ? pack->unreadMaps > 0 : pack->holdsMaps();
+    });
+    if (reread) {
+        m_loaded.clear();
     }
+    if (!content()) {
+        return;
+    }
+    setGeneration(generation() + 1);
+    if (reread || busy() || !atlas()) {
+        startBuild();
+    } else if (materials) {
+        startBuild(atlas());
+    } else {
+        emit atlasBuilt(atlas(), nullptr);
+    }
+}
+
+void QcTexturePackController::rebuildMaterials()
+{
+    // A running build of the current generation brings maps of its own.
+    if (!content() || !materials() || !atlas() || busy()) {
+        return;
+    }
+    qCInfo(lcTextures) << "Material maps: lost on the GPU, built again";
+    setGeneration(generation() + 1);
+    startBuild(atlas());
 }
 
 QString QcTexturePackController::userDirectory() const
@@ -165,17 +203,17 @@ bool QcTexturePackController::activate(const QStringList &ids)
             m_selectionNotices.append(tr("At most %1 texture packs can be active; %2 was switched off").arg(QcGameSettings::maxTexturePacks).arg(id));
         }
     }
-    ++m_generation;
+    setGeneration(generation() + 1);
     m_active = clean;
     emit packsChanged();
     startBuild();
     return true;
 }
 
-QcTextureStackBuild::Request QcTexturePackController::request() const
+QcTextureStackBuild::Request QcTexturePackController::request(const std::shared_ptr<const QcTextureAtlas> &colour) const
 {
     QcTextureStackBuild::Request request;
-    request.generation = m_generation;
+    request.generation = generation();
     request.ids = m_active;
     if (m_rescan) {
         request.rescan = QcTexturePackLibrary::roots(m_modsDirectory ? m_modsDirectory() : QString());
@@ -183,25 +221,28 @@ QcTextureStackBuild::Request QcTexturePackController::request() const
     request.entries = m_entries;
     request.loaded = m_loaded;
     request.previews = m_previews;
-    request.content = m_content;
+    request.content = content();
     request.options.maxExtent = QcGpuLimits::maxTextureSize();
     request.options.materials = materials();
+    request.colour = colour;
     return request;
 }
 
-void QcTexturePackController::startBuild()
+void QcTexturePackController::startBuild(const std::shared_ptr<const QcTextureAtlas> &colour)
 {
-    if (m_building) {
-        m_buildAgain = true;
+    if (busy()) {
+        // The whole atlas wins over the maps of one: either asked for means the whole one.
+        const bool whole = !colour || (buildAgain() && !*buildAgain());
+        setBuildAgain(whole ? std::shared_ptr<const QcTextureAtlas>{} : colour);
         emit statusChanged();
         return;
     }
 
-    m_building = true;
+    setBuilding(true);
     if (!m_atlasWorker) {
         m_atlasWorker = std::make_unique<QcWorkerPool>(1);
     }
-    m_atlasWorker->submit([this, request = request()] {
+    m_atlasWorker->submit([this, request = request(colour)] {
         if (m_builtResults.push(QcTextureStackBuild::run(request))) {
             QMetaObject::invokeMethod(this, &QcTexturePackController::onBuilt, Qt::QueuedConnection);
         }
@@ -217,23 +258,31 @@ void QcTexturePackController::onBuilt()
         return;
     }
     const QcTextureStackBuild::Result result = std::move(results.back());
-    m_building = false;
-    if (m_buildAgain) {
-        m_buildAgain = false;
-        startBuild();
+    setBuilding(false);
+    if (const std::optional<std::shared_ptr<const QcTextureAtlas>> again = buildAgain()) {
+        setBuildAgain(std::nullopt);
+        startBuild(*again);
     }
     // A result of an older generation (another selection, Reload, another world or none) is
     // dropped: applying it would undo the later change.
-    if (result.generation != m_generation) {
+    if (result.generation != generation()) {
         emit statusChanged();
         return;
     }
 
     apply(result);
-    if (result.atlas && m_content) {
-        describe(*result.atlas, result.loadMs + result.buildMs);
-        emit atlasBuilt(result.atlas);
+    if (!result.atlas || !content()) {
+        return;
     }
+    if (result.atlas != atlas()) {
+        describe(*result.atlas, result.loadMs + result.buildMs);
+        setAtlas(result.atlas);
+    }
+    if (result.materials) {
+        qCInfo(lcTextures).noquote() << u"Material maps: %1 MiB, %2 ms"_s.arg(static_cast<double>(result.materials->bytes()) / (1024.0 * 1024.0), 0, 'f', 1)
+                                            .arg(result.materialsMs);
+    }
+    emit atlasBuilt(result.atlas, result.materials);
 }
 
 void QcTexturePackController::apply(const QcTextureStackBuild::Result &result)

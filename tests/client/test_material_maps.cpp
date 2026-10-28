@@ -183,8 +183,7 @@ private slots:
         QcTextureAtlas::Options options;
         options.materials = true;
         const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, {}, options);
-        QVERIFY(atlas.materials());
-        const QcMaterialAtlas &maps = *atlas.materials();
+        const QcMaterialAtlas maps = QcMaterialAtlas::build(atlas, *content->registry, {});
         QCOMPARE(maps.normalLevels().size(), atlas.levels().size());
         QCOMPARE(maps.normalLevels().front().size(), atlas.image().size());
         QCOMPARE(maps.specularLevels().back().size(), atlas.levels().back().size());
@@ -209,9 +208,6 @@ private slots:
             }
         }
         QVERIFY(glowing);
-
-        // Without the option the atlas carries no maps (the classic mode).
-        QVERIFY(!QcTextureAtlas::build(*content->registry).materials());
     }
 
     void packImagesBringTheirMapsOrFlatOnes()
@@ -239,6 +235,9 @@ private slots:
         const auto withoutMaps = QcTexturePackLoader::load(directory.path(), u"user:maps"_s, QcTexturePack::Origin::User);
         QVERIFY(withoutMaps);
         QVERIFY(withoutMaps->normalMaps.isEmpty());
+        // ... but counts them: the pack is read again when the maps are wanted (decision E-912).
+        QCOMPARE(withoutMaps->unreadMaps, 2);
+        QVERIFY(!withoutMaps->holdsMaps());
         QVERIFY(withoutMaps->images.contains(u"qtcraft:stone"_s));
         QcTexturePackLoader::Limits limits;
         limits.materialMaps = true;
@@ -248,12 +247,15 @@ private slots:
         QVERIFY(!loaded->images.contains(u"qtcraft:stone_n"_s));
         QCOMPARE(loaded->normalMaps.value(u"qtcraft:stone"_s).pixelColor(0, 0), QColor(200, 60, 240));
         QCOMPARE(loaded->specularMaps.value(u"qtcraft:stone"_s).pixelColor(0, 0), QColor(180, 231, 0));
+        QVERIFY(loaded->holdsMaps());
+        QCOMPARE(loaded->unreadMaps, 0);
 
         const auto content = QcTestUtil::baseContent();
         QcTextureAtlas::Options options;
         options.materials = true;
-        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, {std::make_shared<const QcTexturePack>(*loaded)}, options);
-        const QcMaterialAtlas &maps = *atlas.materials();
+        const QcTexturePackStack packs{std::make_shared<const QcTexturePack>(*loaded)};
+        const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, packs, options);
+        const QcMaterialAtlas maps = QcMaterialAtlas::build(atlas, *content->registry, packs);
         QCOMPARE(maps.tile(maps.normalLevels(), atlas.uv(u"qtcraft:stone"_s)).pixelColor(3, 3), QColor(200, 60, 240));
         // labPBR's 255 (no light) is 0 in the atlas.
         QCOMPARE(maps.tile(maps.specularLevels(), atlas.uv(u"qtcraft:stone"_s)).pixelColor(3, 3), QColor(180, 231, 0, 0));
@@ -276,8 +278,9 @@ private slots:
         options.maxExtent = 16384;
         const QcTextureAtlas atlas = QcTextureAtlas::build(*content->registry, {pack}, options);
         QCOMPARE(atlas.tileSize(), 256);
-        QCOMPARE(atlas.materials()->tileSize(), QcMaterialAtlas::maxTileSize);
-        QCOMPARE(atlas.materials()->normalLevels().front().width() * 2, atlas.image().width());
+        const QcMaterialAtlas maps = QcMaterialAtlas::build(atlas, *content->registry, {pack});
+        QCOMPARE(maps.tileSize(), QcMaterialAtlas::maxTileSize);
+        QCOMPARE(maps.normalLevels().front().width() * 2, atlas.image().width());
     }
 
     // Maps come after the colour textures with their own limit: a pack full of maps keeps all its

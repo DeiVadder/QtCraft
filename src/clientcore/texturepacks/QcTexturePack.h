@@ -39,6 +39,9 @@ struct QcTexturePack
     // metal, porosity, emission), at the pack's resolution.
     QHash<QString, QImage> normalMaps;
     QHash<QString, QImage> specularMaps;
+    // Material map files the pack has that were not read (loaded without the maps): the pack must
+    // be read again when the maps are wanted (decision E-912).
+    qsizetype unreadMaps = 0;
     // Procedural definitions (the fields of content/*/textures/*.json).
     QHash<QString, QJsonObject> specs;
     // Optional preview from the manifest's "preview".
@@ -62,6 +65,8 @@ struct QcTexturePack
     }
 
     bool provides(const QString &key) const { return images.contains(key) || specs.contains(key); }
+    // Whether the pack holds material maps read from its files.
+    bool holdsMaps() const { return !normalMaps.isEmpty() || !specularMaps.isEmpty(); }
 };
 
 using QcTexturePackRef = std::shared_ptr<const QcTexturePack>;
