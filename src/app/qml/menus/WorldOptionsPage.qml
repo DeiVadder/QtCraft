@@ -99,6 +99,12 @@ ColumnLayout {
             }
         }
 
+        // The map follows every change below (decision E-921).
+        MapPreviewGroup {
+            flickable: form
+            preview: page.options.preview
+        }
+
         Repeater {
             model: page.options.groups
 

@@ -89,6 +89,7 @@ target_sources(qc_app_core PRIVATE
     models/QcUiScaling.h models/QcUiScaling.cpp
     models/QcUiTheme.h
     models/QcWorldLabelModel.h models/QcWorldLabelModel.cpp
+    models/QcWorldMapImageProvider.h models/QcWorldMapImageProvider.cpp
 )
 target_sources(qc_app_core PRIVATE
     multiplayer/QcLanAddresses.h multiplayer/QcLanAddresses.cpp
@@ -102,6 +103,10 @@ target_sources(qc_app_core PRIVATE
     preview/QcCharacterPreviewRenderer.h preview/QcCharacterPreviewRenderer.cpp
     preview/QcPreviewAtlasCache.h preview/QcPreviewAtlasCache.cpp
     preview/QcPreviewSource.h preview/QcPreviewSource.cpp
+    preview/QcWorldMapPainter.h preview/QcWorldMapPainter.cpp
+    preview/QcWorldMapPreview.h preview/QcWorldMapPreview.cpp
+    preview/QcWorldMapTexts.h preview/QcWorldMapTexts.cpp
+    preview/QcWorldMapWork.h preview/QcWorldMapWork.cpp
 )
 target_sources(qc_app_core PRIVATE
     rendering/QcAmbientOcclusion.h rendering/QcAmbientOcclusion.cpp
@@ -283,6 +288,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/MainMenu.qml
+        qml/menus/MapPreviewGroup.qml
         qml/menus/MenuSidebar.qml
         qml/menus/MessageScreen.qml
         qml/menus/ModsPage.qml

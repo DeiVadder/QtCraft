@@ -1,5 +1,6 @@
 {
     "name": "taiga",
+    "mapColour": "#2c5a62",
     "deltaBiome": "frozen_delta",
     "temperature": 0.15,
     "humidity": 0.73,

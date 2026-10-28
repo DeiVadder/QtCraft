@@ -1,5 +1,6 @@
 {
     "name": "tundra",
+    "mapColour": "#eef2f3",
     "deltaBiome": "frozen_delta",
     "temperature": 0.05,
     "humidity": 0.3,

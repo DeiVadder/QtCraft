@@ -33,7 +33,7 @@ set(qc_concurrency_tests
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
-    test_block_prediction test_block_prediction_measure test_session_audio)
+    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -59,7 +59,7 @@ set_tests_properties(test_light_engine PROPERTIES COST 150)
 set_tests_properties(test_weather test_fire PROPERTIES COST 140)
 set_tests_properties(test_tick_control test_terrain_liquids PROPERTIES COST 70)
 set_tests_properties(test_scenarios test_mods test_signal_network test_server_light PROPERTIES COST 80)
-set_tests_properties(test_shadewalkers test_jungle_temples test_temple_entrances PROPERTIES COST 60)
+set_tests_properties(test_shadewalkers test_jungle_temples test_temple_entrances test_world_map_preview PROPERTIES COST 60)
 set_tests_properties(test_shadewalker_rules PROPERTIES COST 80)
 set_tests_properties(test_village_swamp test_village_fields test_village_layouts PROPERTIES COST 40)
 set_tests_properties(test_world_options PROPERTIES COST 25)

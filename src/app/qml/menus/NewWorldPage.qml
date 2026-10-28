@@ -7,7 +7,7 @@ import QtCraft
 
 // The main menu's page for a new world (variant C, decision E-852): name, type with its seed or
 // layers, the world generation of a normal world (its preset or changes, and the way to "More world
-// options", decision E-917), game mode and the rule on keeping the inventory, in groups that scroll
+// options", decision E-917) and its map preview (decision E-921), game mode and the rule on keeping the inventory, in groups that scroll
 // as a whole; "‹ Back" and "Create and play" stay in the footer. Esc and the pad's B go back
 // (MainMenu).
 ColumnLayout {
@@ -20,6 +20,11 @@ ColumnLayout {
     // QTCRAFT_MENU_WORLD_TYPE and QTCRAFT_MENU_GAME_MODE set them).
     property int startWorldType: 0
     property int startGameMode: 0
+    // The seed of a world whose seed field stays empty, drawn when the form opens, so that the map
+    // preview shows the world that will be created (decision E-921).
+    property string randomSeed: ""
+    // A normal world: it has world options and a map preview.
+    readonly property bool terrain: worldType.currentValue === "terrain"
 
     signal openRequested
     signal backRequested
@@ -31,6 +36,7 @@ ColumnLayout {
         worldName.text = qsTr("New World");
         worldType.currentIndex = startWorldType;
         seed.text = "";
+        drawSeed();
         flatLayers.text = "";
         gameMode.currentIndex = startGameMode;
         keepInventory.checked = true;
@@ -41,9 +47,19 @@ ColumnLayout {
         worldName.selectAll();
     }
 
-    function create() {
+    // A new random seed for an empty seed field.
+    function drawSeed() {
+        randomSeed = String(Math.floor(Math.random() * 2147483647));
+    }
+
+    // The seed the world gets: the field's text, else the random one.
+    function worldSeed(): string {
         const seedText = seed.text.trim();
-        page.game.createWorld(worldName.text, seedText.length > 0 ? seedText : String(Math.floor(Math.random() * 2147483647)), {
+        return seedText.length > 0 ? seedText : randomSeed;
+    }
+
+    function create() {
+        page.game.createWorld(worldName.text, page.worldSeed(), {
             keepInventory: keepInventory.checked,
             worldType: worldType.currentValue,
             layers: worldType.currentValue === "flat" ? flatLayers.text : "",
@@ -67,6 +83,12 @@ ColumnLayout {
     }
 
     spacing: 0
+
+    Binding {
+        target: page.game.worldOptions.preview
+        property: "seedText"
+        value: page.worldSeed()
+    }
 
     SettingsPage {
         id: form
@@ -110,13 +132,14 @@ ColumnLayout {
                 ]
             }
             SettingRow {
-                visible: worldType.currentValue === "terrain"
+                visible: page.terrain
                 label: qsTr("Seed")
                 help: qsTr("A number or a text; empty for a random one.")
 
                 GameTextField {
                     id: seed
 
+                    objectName: "worldSeed"
                     Layout.fillWidth: true
                     Accessible.name: qsTr("Seed")
                     onAccepted: page.create()
@@ -139,7 +162,7 @@ ColumnLayout {
         }
 
         SettingGroup {
-            visible: worldType.currentValue === "terrain"
+            visible: page.terrain
             title: qsTr("World generation")
 
             SettingRow {
@@ -157,6 +180,14 @@ ColumnLayout {
                     Layout.fillWidth: true
                 }
             }
+        }
+
+        MapPreviewGroup {
+            visible: page.terrain
+            flickable: form
+            preview: page.game.worldOptions.preview
+            randomSeed: seed.text.trim().length === 0
+            onAnotherSeedRequested: page.drawSeed()
         }
 
         SettingGroup {

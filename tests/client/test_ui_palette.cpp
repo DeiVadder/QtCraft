@@ -119,8 +119,8 @@ bool assignsOwnNumber(const QString &code)
 {
     // Properties whose numbers are no sizes: ranges and values (also of a validator), stacking,
     // counts (lines, characters, grid columns and spans, a chart's values), stretch factors,
-    // decimals of a shown value, a chart's limit line, frame rates, and times in milliseconds.
-    static const QSet<QString> notSizes = {u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"bottom"_s, u"top"_s,
+    // decimals of a shown value, a chart's limit line, frame rates, times in milliseconds and angles.
+    static const QSet<QString> notSizes = {u"rotation"_s, u"stepSize"_s, u"from"_s, u"to"_s, u"value"_s, u"bottom"_s, u"top"_s,
                                            u"opacity"_s, u"z"_s, u"maximumLineCount"_s, u"maximumLength"_s,
                                            u"columns"_s, u"rows"_s, u"columnSpan"_s, u"rowSpan"_s,
                                            u"horizontalStretchFactor"_s, u"verticalStretchFactor"_s, u"model"_s,

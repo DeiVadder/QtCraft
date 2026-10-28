@@ -1,5 +1,6 @@
 {
     "name": "river",
+    "mapColour": "#6cc6ff",
     "river": true,
     "temperature": 0.5,
     "humidity": 0.5,

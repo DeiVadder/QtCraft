@@ -31,6 +31,7 @@ QcWorldOptionsController::QcWorldOptionsController(QcWorldLibraryController &lib
     : QObject(parent)
     , m_library(library)
     , m_language(std::move(language))
+    , m_preview(std::make_unique<QcWorldMapPreview>(m_language))
 {
     // Mods switched: the next form takes the options of the new content.
     connect(&m_library, &QcWorldLibraryController::contentReset, this, &QcWorldOptionsController::release);
@@ -126,6 +127,7 @@ void QcWorldOptionsController::retranslate()
     for (const QcWorldPreset &preset : content()->worldgen().worldPresets()) {
         m_presets.append(QVariantMap{{u"name"_s, preset.name}, {u"title"_s, text(preset.translationKey)}, {u"help"_s, text(preset.translationKey + u".help"_s)}});
     }
+    preview()->retranslate();
     emit optionsChanged();
 }
 
@@ -150,6 +152,7 @@ void QcWorldOptionsController::setContent(std::shared_ptr<const QcContentRegistr
 {
     m_options = content ? QcWorldOptions::optionsOf(*content) : QList<QcWorldOptions::Option>{};
     m_content = std::move(content);
+    preview()->setWorld(this->content(), chosen());
 }
 
 void QcWorldOptionsController::setChosen(const QJsonObject &values)
@@ -159,6 +162,7 @@ void QcWorldOptionsController::setChosen(const QJsonObject &values)
         return;
     }
     m_values = values;
+    preview()->setWorld(content(), chosen());
     emit valuesChanged();
 }
 

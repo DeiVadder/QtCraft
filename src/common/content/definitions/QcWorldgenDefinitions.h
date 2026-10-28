@@ -12,6 +12,8 @@
 #include <QList>
 #include <QString>
 
+#include <optional>
+
 struct QcFeaturePlacement
 {
     QString feature;
@@ -43,6 +45,9 @@ struct QcBiomeDefinition
     // Translation key of the handbook's text about it ("<translation>.description" unless set); a
     // missing text leaves only the facts. Server side only.
     QString descriptionKey;
+    // The biome's colour on the map preview of a new world (decision E-921), 0xRRGGBB; without one
+    // the preview spreads hues over the biomes.
+    std::optional<quint32> mapColour;
     // Climate point in [0, 1]; each column takes the biome closest to its local climate.
     double temperature = 0.5;
     double humidity = 0.5;

@@ -1,5 +1,6 @@
 {
     "name": "desert",
+    "mapColour": "#ead593",
     "temperature": 0.94,
     "humidity": 0.15,
     "spread": 0.03,

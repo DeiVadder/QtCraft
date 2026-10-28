@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app/preview/QcWorldMapPreview.h"
 #include "worldgen/generators/QcWorldOptions.h"
 
 #include <QJsonObject>
@@ -35,6 +36,8 @@ class QcWorldOptionsController : public QObject
     Q_PROPERTY(QString preset READ preset NOTIFY valuesChanged FINAL)
     // How many options differ from their defaults.
     Q_PROPERTY(int changedCount READ changedCount NOTIFY valuesChanged FINAL)
+    // The map preview of the world these options make (decision E-921).
+    Q_PROPERTY(QcWorldMapPreview *preview READ preview CONSTANT FINAL)
 
 public:
     // How a number reads: as it is, in blocks, in percent of 0..1, or as a factor.
@@ -51,6 +54,7 @@ public:
     QVariantMap values() const { return chosen().toVariantMap(); }
     QString preset() const;
     int changedCount() const;
+    QcWorldMapPreview *preview() const { return m_preview.get(); }
 
     // Takes the options of the current content (base game and enabled mods), each at its default.
     Q_INVOKABLE void reset();
@@ -90,4 +94,6 @@ private:
     QVariantList m_groups;
     QVariantList m_presets;
     QJsonObject m_values;
+    // Follows the content and the values.
+    std::unique_ptr<QcWorldMapPreview> m_preview;
 };

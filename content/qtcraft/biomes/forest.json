@@ -1,5 +1,6 @@
 {
     "name": "forest",
+    "mapColour": "#3f7f2a",
     "temperature": 0.44,
     "humidity": 0.73,
     "baseHeight": 71,

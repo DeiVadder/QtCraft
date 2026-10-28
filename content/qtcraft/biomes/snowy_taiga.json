@@ -1,5 +1,6 @@
 {
     "name": "snowy_taiga",
+    "mapColour": "#5f8f8c",
     "deltaBiome": "frozen_delta",
     "temperature": 0.08,
     "humidity": 0.7,

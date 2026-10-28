@@ -1,5 +1,6 @@
 {
     "name": "birch_forest",
+    "mapColour": "#8fc79a",
     "temperature": 0.42,
     "humidity": 0.6,
     "baseHeight": 71,

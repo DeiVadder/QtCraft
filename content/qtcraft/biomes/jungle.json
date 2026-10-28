@@ -1,5 +1,6 @@
 {
     "name": "jungle",
+    "mapColour": "#0fae5e",
     "deltaBiome": "lush_delta",
     "temperature": 1.0,
     "humidity": 0.58,

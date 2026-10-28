@@ -43,6 +43,9 @@ public:
     static QString dataRoot();
     // <data root>/worlds
     static QString defaultRoot();
+    // The seed of a new world from the menu's text: a number as it is, any other text hashed (FNV-1a,
+    // stable across runs and platforms, unlike qHash). The map preview takes the same seed.
+    [[nodiscard]] static qint64 seedFromText(const QString &text);
 
     const QString &root() const { return m_root; }
     // Newest first by last played time.

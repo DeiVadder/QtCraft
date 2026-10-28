@@ -1,5 +1,6 @@
 {
     "name": "swamp",
+    "mapColour": "#5a6338",
     "deltaBiome": "lush_delta",
     "temperature": 0.94,
     "humidity": 0.88,

@@ -1,5 +1,6 @@
 {
     "name": "delta",
+    "mapColour": "#a9a06e",
     "delta": true,
     "temperature": 0.5,
     "humidity": 0.7,

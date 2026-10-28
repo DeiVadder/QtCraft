@@ -1,5 +1,6 @@
 {
     "name": "frozen_delta",
+    "mapColour": "#d2c8d4",
     "delta": true,
     "temperature": 0.05,
     "humidity": 0.6,

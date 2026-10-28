@@ -55,14 +55,14 @@ namespace QcMapRenderer {
 
 QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &content, Area area)
 {
-    const int size = 2 * area.radius / area.blocksPerPixel;
+    const int size = 2 * area.radius / area.blocksPerCell;
     QImage image(size, size, QImage::Format_RGB32);
     QHash<QcBlockId, QColor> colours;
 
     for (int py = 0; py < size; ++py) {
         for (int px = 0; px < size; ++px) {
-            const int x = area.centreX - area.radius + px * area.blocksPerPixel;
-            const int z = area.centreZ - area.radius + py * area.blocksPerPixel;
+            const int x = area.centreX - area.radius + px * area.blocksPerCell;
+            const int z = area.centreZ - area.radius + py * area.blocksPerCell;
             const QcBlockId surface = generator.surfaceBlockAt(x, z);
             if (!colours.contains(surface)) {
                 colours.insert(surface, blockColour(content, surface));
@@ -76,26 +76,29 @@ QImage render(const QcTerrainGenerator &generator, const QcContentRegistry &cont
 
 QImage renderBiomes(const QcTerrainGenerator &generator, Area area)
 {
-    const int size = 2 * area.radius / area.blocksPerPixel;
-    QImage image(size, size, QImage::Format_RGB32);
+    // Without a cancel check the sampling always finishes.
+    const std::optional<QcBiomeMap> sampled = QcBiomeMap::sample(generator, area);
+    if (!sampled) {
+        return {};
+    }
+    const QcBiomeMap &map = *sampled;
+    QImage image(map.size(), map.size(), QImage::Format_RGB32);
 
-    for (int py = 0; py < size; ++py) {
-        for (int px = 0; px < size; ++px) {
-            const int x = area.centreX - area.radius + px * area.blocksPerPixel;
-            const int z = area.centreZ - area.radius + py * area.blocksPerPixel;
-            const QcTerrainGenerator::Column column = generator.column(x, z);
+    for (int py = 0; py < map.size(); ++py) {
+        for (int px = 0; px < map.size(); ++px) {
+            const QcBiomeMap::Cell &cell = map.cell(px, py);
             // River biomes (decision E-840) in a lighter blue than the sea and the lakes.
-            if (generator.isRiverBiome(column.biome)) {
+            if (cell.water == QcBiomeMap::Water::River) {
                 image.setPixelColor(px, py, QColor(70, 140, 235));
                 continue;
             }
-            if (column.height <= generator.seaLevel()) {
+            if (cell.water == QcBiomeMap::Water::Sea) {
                 image.setPixelColor(px, py, QColor(20, 30, 60));
                 continue;
             }
             // Evenly spread hues; brighter with height.
-            const float light = std::clamp(0.45f + static_cast<float>(column.height - generator.seaLevel()) * 0.008f, 0.4f, 0.95f);
-            image.setPixelColor(px, py, QColor::fromHsvF(std::fmod(static_cast<float>(column.biome) * 0.381966f, 1.0f), 0.65f, light));
+            const float light = std::clamp(0.45f + static_cast<float>(cell.height - generator.seaLevel()) * 0.008f, 0.4f, 0.95f);
+            image.setPixelColor(px, py, QColor::fromHsvF(std::fmod(static_cast<float>(cell.biome) * 0.381966f, 1.0f), 0.65f, light));
         }
     }
 

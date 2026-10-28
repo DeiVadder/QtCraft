@@ -7,6 +7,7 @@
 #include "app/models/QcMapImageProvider.h"
 #include "app/models/QcPixelArtProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
+#include "app/models/QcWorldMapImageProvider.h"
 #include "app/startup/QcAppLanguage.h"
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"
@@ -36,16 +37,19 @@ struct ImageProviders
     QcItemIconProvider *icons = nullptr;
     QcTexturePackPreviewProvider *texturePackPreviews = nullptr;
     QcMapImageProvider *maps = nullptr;
+    QcWorldMapImageProvider *worldMap = nullptr;
 };
 
-// Adds every image provider of the game to `engine`: item icons, texture pack previews, maps and
-// the pixel art of the workbench screens (decision E-884, which needs nothing afterwards).
+// Adds every image provider of the game to `engine`: item icons, texture pack previews, maps, the
+// map preview of a new world and the pixel art of the workbench screens (decision E-884, which
+// needs nothing afterwards).
 ImageProviders addImageProviders(QQmlApplicationEngine &engine)
 {
-    const ImageProviders providers{new QcItemIconProvider, new QcTexturePackPreviewProvider, new QcMapImageProvider};
+    const ImageProviders providers{new QcItemIconProvider, new QcTexturePackPreviewProvider, new QcMapImageProvider, new QcWorldMapImageProvider};
     engine.addImageProvider(QString::fromLatin1(QcItemIconProvider::providerId), providers.icons);
     engine.addImageProvider(QString::fromLatin1(QcTexturePackPreviewProvider::providerId), providers.texturePackPreviews);
     engine.addImageProvider(QString::fromLatin1(QcMapImageProvider::providerId), providers.maps);
+    engine.addImageProvider(QString::fromLatin1(QcWorldMapImageProvider::providerId), providers.worldMap);
     engine.addImageProvider(QString::fromLatin1(QcPixelArtProvider::providerId), new QcPixelArtProvider);
     return providers;
 }
@@ -110,6 +114,7 @@ int main(int argc, char *argv[])
     game->settings()->diagnostics()->setSession(diagnostics);
     game->setIconProvider(providers.icons);
     game->setMapProvider(providers.maps);
+    game->worldOptions()->preview()->setProvider(providers.worldMap);
     game->settings()->texturePacks()->setPreviewProvider(providers.texturePackPreviews);
     QcAppStartup::loadSettings(*game);
     QcAppLanguage::followSettings(*game, engine, translator, contentLanguage);

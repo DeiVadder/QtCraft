@@ -1,5 +1,6 @@
 {
     "name": "plains",
+    "mapColour": "#a3cc6a",
     "temperature": 0.52,
     "humidity": 0.3,
     "baseHeight": 68,

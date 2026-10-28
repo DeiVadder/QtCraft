@@ -238,6 +238,7 @@ namespace QcWorldgenParser {
     biome.translationKey = reader.string(
         u"translation"_s, u"biome.%1.%2"_s.arg(biome.name.left(biome.name.indexOf(u':')), QcContentFields::localPart(biome.name)));
     biome.descriptionKey = reader.string(u"description"_s, biome.translationKey + u".description"_s);
+    biome.mapColour = reader.colour(u"mapColour"_s);
 
     biome.temperature = reader.number(u"temperature"_s, 0.5, 0.0, 1.0);
     biome.humidity = reader.number(u"humidity"_s, 0.5, 0.0, 1.0);

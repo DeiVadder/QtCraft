@@ -192,6 +192,13 @@ Rectangle {
         }
     }
 
+    // The map preview of a new world computes only while its pages show a normal world.
+    Binding {
+        target: menu.game.worldOptions.preview
+        property: "active"
+        value: menu.visible && newWorldPage.terrain && (menu.page === MainMenu.NewWorld || menu.page === MainMenu.WorldOptions)
+    }
+
     MenuSidebar {
         id: sidebar
 

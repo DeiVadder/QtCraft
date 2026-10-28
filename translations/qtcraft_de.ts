@@ -3200,9 +3200,105 @@ Als Nächstes: %3</translation>
         <translation type="vanished">„%1“ endgültig löschen? Das lässt sich nicht rückgängig machen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MainMenu.qml" line="292"/>
+        <location filename="../src/app/qml/menus/MainMenu.qml" line="299"/>
         <source>‹ Main menu</source>
         <translation>‹ Hauptmenü</translation>
+    </message>
+</context>
+<context>
+    <name>MapPreviewGroup</name>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="30"/>
+        <source>&lt; 1 %</source>
+        <translation>&lt; 1 %</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="30"/>
+        <source>%1 %</source>
+        <translation>%1 %</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="42"/>
+        <source>Map preview</source>
+        <translation>Kartenvorschau</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="108"/>
+        <source>Map of the new world, %1 by %1 blocks</source>
+        <translation>Karte der neuen Welt, %1 mal %1 Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="191"/>
+        <source>Drawing the map …</source>
+        <translation>Karte wird gezeichnet …</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="202"/>
+        <source>Refining …</source>
+        <translation>Wird verfeinert …</translation>
+    </message>
+    <message>
+        <source>Village</source>
+        <translation type="vanished">Dorf</translation>
+    </message>
+    <message>
+        <source>Structure</source>
+        <translation type="vanished">Bauwerk</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="330"/>
+        <source>Villages and structures</source>
+        <translation>Dörfer und Bauwerke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="358"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="370"/>
+        <source>Villages and structures only inside the frame (%1 × %1 blocks).</source>
+        <translation>Dörfer und Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke).</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="388"/>
+        <source>Zoom out</source>
+        <translation>Verkleinern</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="395"/>
+        <source>Zoom in</source>
+        <translation>Vergrößern</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="400"/>
+        <source>Centre</source>
+        <translation>Mitte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="401"/>
+        <source>Centre the map on the world&apos;s middle</source>
+        <translation>Karte auf die Weltmitte setzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="406"/>
+        <source>%1 × %1 blocks</source>
+        <translation>%1 × %1 Blöcke</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="414"/>
+        <source>Another seed</source>
+        <translation>Anderer Seed</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="423"/>
+        <source>Show villages and structures</source>
+        <translation>Dörfer und Bauwerke zeigen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="424"/>
+        <source>Off by default, so the map keeps them a surprise.</source>
+        <translation>Standardmäßig aus, damit die Karte sie nicht verrät.</translation>
     </message>
 </context>
 <context>
@@ -3567,23 +3663,23 @@ Als Nächstes: %3</translation>
 <context>
     <name>NewWorldPage</name>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="31"/>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="90"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="36"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="112"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="59"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="75"/>
         <source>Every option at its default.</source>
         <translation>Alle Optionen auf Standard.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="61"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="77"/>
         <source>Preset: %1</source>
         <translation>Voreinstellung: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="61"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="77"/>
         <source>%n option(s) changed.</source>
         <translation>
             <numerusform>%n Option geändert.</numerusform>
@@ -3591,173 +3687,173 @@ Als Nächstes: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="77"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="99"/>
         <source>New world</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="80"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="102"/>
         <source>World</source>
         <translation>Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="83"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="105"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="89"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="111"/>
         <source>World name</source>
         <translation>Name der Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="98"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="120"/>
         <source>World type</source>
         <translation>Welttyp</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="99"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="121"/>
         <source>The same layers everywhere, no caves or trees, no creatures of their own accord.</source>
         <translation>Überall dieselben Schichten, keine Höhlen oder Bäume, keine Wesen von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="100"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="122"/>
         <source>Nothing but a small platform; noon, no creatures of their own accord.</source>
         <translation>Nur eine kleine Plattform; Mittag, keine Wesen von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="101"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="123"/>
         <source>A flat world with every block, creature and item on show, at noon.</source>
         <translation>Eine flache Welt, in der alle Blöcke, Wesen und Gegenstände zu sehen sind, zur Mittagszeit.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="102"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="124"/>
         <source>Hills, mountains, caves, oceans and biomes.</source>
         <translation>Hügel, Gebirge, Höhlen, Meere und Biome.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="106"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="128"/>
         <source>Normal</source>
         <translation>Normal</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="107"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="129"/>
         <source>Flat</source>
         <translation>Flach</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="108"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="130"/>
         <source>Void</source>
         <translation>Leere</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="109"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="131"/>
         <source>Showcase</source>
         <translation>Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="114"/>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="121"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="136"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="144"/>
         <source>Seed</source>
         <translation>Seed</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="115"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="137"/>
         <source>A number or a text; empty for a random one.</source>
         <translation>Eine Zahl oder ein Text; leer für einen zufälligen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="127"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="150"/>
         <source>Layers</source>
         <translation>Schichten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="128"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="151"/>
         <source>From the bottom up; empty for the default.</source>
         <translation>Von unten nach oben; leer für die Vorgabe.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="134"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="157"/>
         <source>Layers from the bottom up</source>
         <translation>Schichten von unten nach oben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="143"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="166"/>
         <source>World generation</source>
         <translation>Weltgenerierung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="146"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="169"/>
         <source>Villages, biomes, caves …</source>
         <translation>Dörfer, Biome, Höhlen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="153"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="176"/>
         <source>More world options …</source>
         <translation>Weitere Weltoptionen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="163"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="194"/>
         <source>Rules</source>
         <translation>Regeln</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="169"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="200"/>
         <source>Game mode</source>
         <translation>Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="171"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="202"/>
         <source>Every block and item without limit, flying, instant breaking, no damage or hunger.</source>
         <translation>Alle Blöcke und Gegenstände ohne Grenze, Fliegen, sofortiges Abbauen, kein Schaden und kein Hunger.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="173"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="204"/>
         <source>Survival for prepared maps: blocks break and items are placed only where /adventure allows it.</source>
         <translation>Überleben für vorbereitete Karten: Blöcke brechen und Gegenstände lassen sich nur setzen, wo /adventure es erlaubt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="175"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="206"/>
         <source>Fly through blocks and look around, unseen; nothing can be touched.</source>
         <translation>Durch Blöcke fliegen und sich umsehen, ungesehen; nichts lässt sich berühren.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="176"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="207"/>
         <source>Gather, craft and survive: health, hunger and creatures count.</source>
         <translation>Sammeln, herstellen und überleben: Gesundheit, Hunger und Wesen zählen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="180"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="211"/>
         <source>Survival</source>
         <translation>Überleben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="181"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="212"/>
         <source>Creative</source>
         <translation>Kreativ</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="182"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="213"/>
         <source>Adventure</source>
         <translation>Abenteuer</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="183"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="214"/>
         <source>Spectator</source>
         <translation>Zuschauer</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="191"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="222"/>
         <source>Keep inventory on death</source>
         <translation>Inventar beim Tod behalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="209"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="240"/>
         <source>‹ Back</source>
         <translation>‹ Zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="210"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="241"/>
         <source>Back to the start page</source>
         <translation>Zurück zur Startseite</translation>
     </message>
@@ -3766,7 +3862,7 @@ Als Nächstes: %3</translation>
         <translation type="obsolete">Hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="220"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="251"/>
         <source>Create and play</source>
         <translation>Erstellen und spielen</translation>
     </message>
@@ -5011,15 +5107,15 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="302"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="247"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="282"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="277"/>
         <location filename="../src/app/controllers/QcGameController.cpp" line="287"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="297"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="307"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5028,22 +5124,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="326"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="326"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="359"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="339"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="384"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -5088,12 +5184,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="369"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="490"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="470"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -8464,6 +8560,46 @@ Jetzt: %2</translation>
     </message>
 </context>
 <context>
+    <name>QcWorldMapPreview</name>
+    <message>
+        <source>Village</source>
+        <translation type="vanished">Dorf</translation>
+    </message>
+    <message>
+        <source>Sea and lakes</source>
+        <translation type="vanished">Meer und Seen</translation>
+    </message>
+    <message>
+        <source>Frozen sea and lakes</source>
+        <translation type="vanished">Zugefrorenes Meer und Seen</translation>
+    </message>
+</context>
+<context>
+    <name>QcWorldMapTexts</name>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="43"/>
+        <source>Village</source>
+        <translation>Dorf</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="61"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="84"/>
+        <source>Sea and lakes</source>
+        <translation>Meer und Seen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="64"/>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="87"/>
+        <source>Frozen sea and lakes</source>
+        <translation>Zugefrorenes Meer und Seen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/preview/QcWorldMapTexts.cpp" line="99"/>
+        <source>%1, x %2, z %3</source>
+        <translation>%1, x %2, z %3</translation>
+    </message>
+</context>
+<context>
     <name>QcWorldStarter</name>
     <message>
         <location filename="../src/app/session/QcWorldStarter.cpp" line="27"/>
@@ -9117,22 +9253,22 @@ Jetzt: %2</translation>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="164"/>
+        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="170"/>
         <source>‹ Back</source>
         <translation>‹ Zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="165"/>
+        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="171"/>
         <source>Back to the new world</source>
         <translation>Zurück zur neuen Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="171"/>
+        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="177"/>
         <source>Restore defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="180"/>
+        <location filename="../src/app/qml/menus/WorldOptionsPage.qml" line="186"/>
         <source>Create and play</source>
         <translation>Erstellen und spielen</translation>
     </message>

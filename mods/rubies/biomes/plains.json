@@ -1,5 +1,6 @@
 {
     "name": "qtcraft:plains",
+    "mapColour": "#a3cc6a",
     "temperature": 0.55,
     "humidity": 0.4,
     "baseHeight": 67,

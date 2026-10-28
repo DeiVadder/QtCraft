@@ -1,5 +1,6 @@
 {
     "name": "lush_delta",
+    "mapColour": "#3fa89a",
     "delta": true,
     "temperature": 0.9,
     "humidity": 0.85,

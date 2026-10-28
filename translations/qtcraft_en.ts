@@ -74,7 +74,7 @@
 <context>
     <name>NewWorldPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="61"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="77"/>
         <source>%n option(s) changed.</source>
         <translation>
             <numerusform>%n option changed.</numerusform>

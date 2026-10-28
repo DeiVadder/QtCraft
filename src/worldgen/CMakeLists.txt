@@ -10,6 +10,7 @@ target_sources(qc_worldgen PRIVATE
     dungeons/QcDungeonPlanner.h dungeons/QcDungeonPlanner.cpp
 )
 target_sources(qc_worldgen PRIVATE
+    generators/QcBiomeMap.h generators/QcBiomeMap.cpp
     generators/QcChunkFurnishing.h
     generators/QcFlatGenerator.h generators/QcFlatGenerator.cpp
     generators/QcGuardSite.h

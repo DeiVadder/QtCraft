@@ -82,3 +82,18 @@ QString QcJsonFieldReader::name(const QString &key, const QString &packNamespace
     }
     return qualified;
 }
+
+std::optional<quint32> QcJsonFieldReader::colour(const QString &key)
+{
+    const QString text = string(key);
+    if (text.isEmpty()) {
+        return std::nullopt;
+    }
+    bool ok = text.size() == 7 && text.startsWith(u'#');
+    const quint32 rgb = ok ? QStringView(text).mid(1).toUInt(&ok, 16) : 0;
+    if (!ok) {
+        fail(u"'%1' must be a colour like \"#4e9331\""_s.arg(key));
+        return std::nullopt;
+    }
+    return rgb;
+}

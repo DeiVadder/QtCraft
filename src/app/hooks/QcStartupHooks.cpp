@@ -27,6 +27,21 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// The items named `objectName` in the item tree below `item`: delegates of a Repeater hang in it
+// by their parent item only, so QObject::findChildren() misses them.
+[[nodiscard]] QList<QObject *> namedItems(const QQuickItem *item, const QString &objectName)
+{
+    QList<QObject *> found;
+    const QList<QQuickItem *> children = item->childItems();
+    for (QQuickItem *child : children) {
+        if (child->objectName() == objectName) {
+            found.append(child);
+        }
+        found.append(namedItems(child, objectName));
+    }
+    return found;
+}
+
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
 [[nodiscard]] std::optional<int> delayOf(const QString &line, qsizetype space)
 {
@@ -224,9 +239,9 @@ void QcStartupHooks::scheduleOverlaySteps()
 
         holdScreenshot();
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
-            // Pointer, popup and pad steps work in the main menu as well, the others need a world.
+            // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
             if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
-                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s)) {
+                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -444,8 +459,9 @@ QObject *QcStartupHooks::shownControl(const QString &objectName, bool parentShow
         return nullptr;
     }
 
-    const QList<QObject *> controls = window->contentItem()->findChildren<QObject *>(objectName);
-    for (QObject *control : controls) {
+    QList<QObject *> controls = window->contentItem()->findChildren<QObject *>(objectName);
+    controls.append(namedItems(window->contentItem(), objectName));
+    for (QObject *control : std::as_const(controls)) {
         auto *item = qobject_cast<QQuickItem *>(control);
         if (!parentShown) {
             if (item && item->isVisible()) {

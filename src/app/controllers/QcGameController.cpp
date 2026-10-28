@@ -21,26 +21,6 @@
 
 using namespace Qt::StringLiterals;
 
-namespace {
-
-// Stable across runs and platforms, unlike qHash.
-qint64 seedFromText(const QString &text)
-{
-    bool ok = false;
-    const qint64 number = text.trimmed().toLongLong(&ok);
-    if (ok) {
-        return number;
-    }
-    quint64 hash = 14695981039346656037ull;
-    for (const QChar c : text) {
-        hash ^= c.unicode();
-        hash *= 1099511628211ull;
-    }
-    return static_cast<qint64>(hash);
-}
-
-} // namespace
-
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
     , m_screens(m_parts)
@@ -265,7 +245,7 @@ void QcGameController::startSingleplayer(const QString &worldName, const QString
 {
     QcWorldInfo world;
     world.name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
-    world.seed = seedFromText(seedText);
+    world.seed = QcWorldLibrary::seedFromText(seedText);
     world.generator = generator;
     world.generatorOptions = options.trimmed();
     world.defaultGameMode = QcGameModes::parse(gameMode).value_or(QcGameMode::Survival);
@@ -302,7 +282,7 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
     const QString name = worldName.trimmed().isEmpty() ? tr("New World") : worldName.trimmed();
     world.options = *stored;
     world.worldOptions = *worldOptions;
-    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, seedFromText(seedText), world);
+    const QcResult<QcWorldLibrary::Entry> entry = library.create(name, QcWorldLibrary::seedFromText(seedText), world);
     if (!entry) {
         setPhase(Phase::Error, tr("Cannot create the world: %1").arg(entry.error()));
         return;

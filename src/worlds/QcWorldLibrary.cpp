@@ -45,6 +45,21 @@ QString QcWorldLibrary::defaultRoot()
     return QDir(dataRoot()).filePath(u"worlds"_s);
 }
 
+qint64 QcWorldLibrary::seedFromText(const QString &text)
+{
+    bool ok = false;
+    const qint64 number = text.trimmed().toLongLong(&ok);
+    if (ok) {
+        return number;
+    }
+    quint64 hash = 14695981039346656037ull;
+    for (const QChar c : text) {
+        hash ^= c.unicode();
+        hash *= 1099511628211ull;
+    }
+    return static_cast<qint64>(hash);
+}
+
 QString QcWorldLibrary::directoryOf(const QString &folder) const
 {
     return QDir(m_root).filePath(folder);

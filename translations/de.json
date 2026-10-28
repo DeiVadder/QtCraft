@@ -1,4 +1,5 @@
 {
+    "%1, x %2, z %3": "%1, x %2, z %3",
     "QtCraft": "QtCraft",
     "QtCraft renderer spike": "QtCraft-Renderer-Spike",
     "Chat or /command (e.g. /help), Enter to send, Esc to cancel": "Chat oder /Befehl (z. B. /help), Enter sendet, Esc bricht ab",
@@ -1413,5 +1414,24 @@
     "Coastal tower": "Küstenturm",
     "Skipped: the pack's material maps exceed the memory budget of %1 MiB": "Übersprungen: Die Material-Karten des Pakets überschreiten das Speicherbudget von %1 MiB",
     "More than %1 material maps; the rest was skipped": "Mehr als %1 Material-Karten; der Rest wurde übersprungen",
-    "Preset": "Voreinstellung"
+    "Preset": "Voreinstellung",
+    "Map preview": "Kartenvorschau",
+    "Map of the new world, %1 by %1 blocks": "Karte der neuen Welt, %1 mal %1 Blöcke",
+    "Drawing the map …": "Karte wird gezeichnet …",
+    "Refining …": "Wird verfeinert …",
+    "Village": "Dorf",
+    "Structure": "Bauwerk",
+    "Zoom out": "Verkleinern",
+    "Zoom in": "Vergrößern",
+    "Centre": "Mitte",
+    "Centre the map on the world's middle": "Karte auf die Weltmitte setzen",
+    "%1 × %1 blocks": "%1 × %1 Blöcke",
+    "Another seed": "Anderer Seed",
+    "Show villages and structures": "Dörfer und Bauwerke zeigen",
+    "Off by default, so the map keeps them a surprise.": "Standardmäßig aus, damit die Karte sie nicht verrät.",
+    "< 1 %": "< 1 %",
+    "Frozen sea and lakes": "Zugefrorenes Meer und Seen",
+    "Sea and lakes": "Meer und Seen",
+    "Villages and structures": "Dörfer und Bauwerke",
+    "Villages and structures only inside the frame (%1 × %1 blocks).": "Dörfer und Bauwerke nur innerhalb des Rahmens (%1 × %1 Blöcke)."
 }

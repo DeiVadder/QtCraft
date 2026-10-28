@@ -12,6 +12,11 @@ SettingRow {
 
     signal toggled
 
+    // Switches it as a click would (also the test hook "click:<objectName>").
+    function click() {
+        toggle.click();
+    }
+
     GameSwitch {
         id: toggle
 

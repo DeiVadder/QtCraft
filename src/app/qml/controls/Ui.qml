@@ -98,6 +98,8 @@ QtObject {
         property real lines
         // The widest a tooltip's text runs before it wraps (ThemedToolTip).
         property real tooltip
+        // The square of the map preview of a new world (MapPreviewGroup).
+        property real map
         // The workbench screens (decision E-884): screen pixels per pixel of their pixel art (runes,
         // book, symbols; whole pixels keep it blocky) and an enchanting offer's field.
         property real artPixel
@@ -184,6 +186,7 @@ QtObject {
         chart: ui.px(64)
         lines: ui.px(200)
         tooltip: ui.px(360)
+        map: ui.px(280)
         artPixel: Math.max(1, ui.px(2))
         offerWidth: ui.px(320)
         offerHeight: ui.px(40)

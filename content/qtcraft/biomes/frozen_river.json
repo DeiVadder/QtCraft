@@ -1,5 +1,6 @@
 {
     "name": "frozen_river",
+    "mapColour": "#9fc4e0",
     "river": true,
     "temperature": 0.05,
     "humidity": 0.5,

@@ -1,5 +1,6 @@
 {
     "name": "flower_valley",
+    "mapColour": "#d58ac8",
     "temperature": 0.55,
     "humidity": 0.61,
     "rarity": 1.0,

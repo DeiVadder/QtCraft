@@ -4,6 +4,8 @@
 #include <QJsonValue>
 #include <QString>
 
+#include <optional>
+
 // Reads typed fields of one untrusted JSON object. The first problem is kept as `error`, prefixed
 // with `context`; later reads return their fallback and add nothing.
 struct QcJsonFieldReader
@@ -23,6 +25,8 @@ struct QcJsonFieldReader
     int integer(const QString &key, int fallback, int low, int high);
     // A content name; unqualified names get `packNamespace`.
     QString name(const QString &key, const QString &packNamespace, const QString &fallback = {});
+    // A colour written as "#rrggbb", as 0xRRGGBB; none without the key (and after a failure).
+    [[nodiscard]] std::optional<quint32> colour(const QString &key);
 
     // Reads the optional object at `key` with a nested reader (context "<context> <key>") and adopts
     // its error. `read` is called as read(const QJsonObject &object, QcJsonFieldReader &nested).
