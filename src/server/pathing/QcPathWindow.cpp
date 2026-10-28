@@ -56,7 +56,7 @@ quint8 QcPathWindow::cell(QcBlockPos pos)
     const std::size_t at = static_cast<std::size_t>(index);
     if (m_cellStamp[at] != m_generation) {
         m_cellStamp[at] = m_generation;
-        m_cells[at] = QcPathDirectCells(*m_world, *m_table).cell(pos);
+        m_cells[at] = direct().cell(pos);
     }
     return m_cells[at];
 }

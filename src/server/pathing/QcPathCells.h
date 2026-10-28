@@ -17,6 +17,7 @@ struct QcPathOpening
     float to = 1.0f;
 
     float middle() const { return (from + to) / 2.0f; }
+    float width() const { return to - from; }
     // The stretch free in both: where they do not overlap, the empty stretch between their inner
     // edges (its middle lies as far from both panels as can be).
     QcPathOpening within(QcPathOpening other) const { return {std::max(from, other.from), std::min(to, other.to)}; }
@@ -31,10 +32,24 @@ struct QcPathGap
     std::optional<QcPathOpening> z;
 
     bool narrows() const { return x || z; }
+    // The narrowest opening of the narrowed axes (1 without any): a body wider than it does not
+    // fit through the cell (decision E-909).
+    float narrowest() const { return std::min(x ? x->width() : 1.0f, z ? z->width() : 1.0f); }
+    // Whether a panel covers the side of the cell towards `dx`, `dz` (one of them 1 or -1, the other
+    // 0): a body does not cross that side of the cell (the leaf of a free-standing open door).
+    bool coversSide(int dx, int dz) const
+    {
+        const std::optional<QcPathOpening> &opening = dx != 0 ? x : z;
+        const int towards = dx != 0 ? dx : dz;
+        return opening && (towards < 0 ? opening->from > sideEdge : opening->to < 1.0f - sideEdge);
+    }
     // Both gaps at once (a body in two cells): the openings within each other along each axis.
     QcPathGap within(const QcPathGap &other) const { return {both(x, other.x), both(z, other.z)}; }
 
 private:
+    // An opening reaching this close to a side of the cell reaches it.
+    static constexpr float sideEdge = 1e-4f;
+
     static std::optional<QcPathOpening> both(std::optional<QcPathOpening> a, std::optional<QcPathOpening> b)
     {
         return a && b ? a->within(*b) : a ? a : b;
@@ -81,6 +96,10 @@ enum class Kind : quint8 {
 inline constexpr quint8 hurtsFlag = 0x10;
 inline constexpr quint8 slowsFlag = 0x20;
 inline constexpr quint8 slipperyFlag = 0x40;
+// An open cell can have a panel (an open door's leaf, an open trapdoor, decision E-909): its gap
+// (QcPathCellTable::gap) says how wide a body may be and which sides it does not cross. The flag
+// shares its bit with the height of low blocks, which open cells do not have.
+inline constexpr quint8 panelFlag = 0x80;
 inline constexpr quint8 kindMask = 0x0f;
 // The height of a low block's top in eighths of a block, minus one (0: a carpet, 3: a slab).
 inline constexpr int liftShift = 6;
@@ -89,6 +108,8 @@ inline Kind kindOf(quint8 cell) { return Kind(cell & kindMask); }
 // How high a body stands on the low block of the cell (rounded up to an eighth); 0 for other kinds.
 inline double liftOf(quint8 cell) { return kindOf(cell) == Kind::Low ? static_cast<double>((cell >> liftShift) + 1) / 8.0 : 0.0; }
 inline quint8 make(Kind kind, quint8 flags = 0) { return static_cast<quint8>(static_cast<quint8>(kind) | flags); }
+// Whether the cell is open with a panel in it.
+inline bool hasPanel(quint8 cell) { return (cell & panelFlag) != 0 && kindOf(cell) == Kind::Open; }
 
 // The cell of one block state.
 quint8 classify(const QcContentRegistry &content, QcBlockId id);

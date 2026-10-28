@@ -287,25 +287,40 @@ std::optional<QcVec3> QcVillageGolems::placeNear(const QcVec3 &around, int type,
     return std::nullopt;
 }
 
+bool QcVillageGolems::opaqueFloor(QcBlockPos column, const Context &context) const
+{
+    // A block in the feet's cell (a slab) is the floor, else the one below.
+    for (const QcBlockPos cell : {column, column.offset(0, -1, 0)}) {
+        const std::optional<QcBlockId> block = context.world.blockAt(cell);
+        if (!block) {
+            return false;
+        }
+        if (!m_content->state(*block).collision.isEmpty()) {
+            return m_content->block(*block).renderLayer == QcRenderLayer::Opaque;
+        }
+    }
+    return false;
+}
+
 std::optional<QcVec3> QcVillageGolems::standsAt(QcBlockPos feet, int type, const Context &context) const
 {
     const QcMobDefinition &definition = m_content->mobs()[type];
+    const QcPathRules rules = QcPathRules::of(definition);
     const QcPathDirectCells cells(context.world, context.cells);
-    const QcPathStand stand = QcPathTerrain::standAt(cells, feet, QcPathRules::of(definition));
+    const QcPathStand stand = QcPathTerrain::standAt(cells, feet, rules);
     if (!stand.ok || stand.water || stand.hurts) {
         return std::nullopt;
     }
 
-    // Not on glass, panes, leaves or ice: only on a floor of the opaque render layer (a block the
-    // feet stand in when they are lifted, a slab, else the one below).
-    const QcBlockPos floor = stand.lift() > 0.0 ? feet : feet.offset(0, -1, 0);
-    const std::optional<QcBlockId> floorBlock = context.world.blockAt(floor);
-    if (!floorBlock || m_content->block(*floorBlock).renderLayer != QcRenderLayer::Opaque) {
+    // Not on glass, panes, leaves or ice: under every column of the body (a golem's feet cell is the
+    // corner of four, decision E-909) a floor of the opaque render layer.
+    const bool floored = QcPathTerrain::everyColumn(feet, rules, [&](QcBlockPos column) { return opaqueFloor(column, context); });
+    if (!floored) {
         return std::nullopt;
     }
 
-    // The whole body is clear, not only the column of its feet (a golem is wider than a block).
-    const QcVec3 at{feet.x + 0.5, feet.y + stand.lift(), feet.z + 0.5};
+    // The whole body is clear in the middle of its columns.
+    const QcVec3 at = QcPathTerrain::pointOf(feet, rules) + QcVec3{0.0, stand.lift(), 0.0};
     const QcPhysics::BodySize body{definition.width, definition.height};
     if (QcBodyFit::overlapsBlocks(context.world, at, body, QcBodyFit::Unloaded::Blocked)) {
         return std::nullopt;

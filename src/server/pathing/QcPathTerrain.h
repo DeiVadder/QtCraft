@@ -1,8 +1,10 @@
 #pragma once
 
+#include "common/core/QcVec3.h"
 #include "common/world/QcBlockAccess.h"
 #include "server/pathing/QcPathCells.h"
 
+#include <algorithm>
 #include <cmath>
 
 struct QcMobDefinition;
@@ -45,7 +47,18 @@ struct QcPathRules
     // decision E-460).
     bool avoidsWater : 1 = false;
 
+    // A body keeps at least this far from the panel beside it in an open door or trapdoor (decision
+    // E-909): the steering lines it up within as much (QcOpeningSteering::laneTolerance).
+    static constexpr double panelClearance = 0.05;
+
     static QcPathRules of(const QcMobDefinition &definition);
+
+    // Cells the body covers along each horizontal axis (decision E-909): one for a body at most a
+    // block wide, two for spiders and golems. Its feet cell is the corner cell of its lowest x and z,
+    // it walks along the middle of its cells (QcPathTerrain::pointOf).
+    int footprint() const { return width <= 1.0f ? 1 : static_cast<int>(std::ceil(width - 1e-4f)); }
+    // Whether the body fits through an opening `opening` wide beside a panel.
+    bool fitsThrough(float opening) const { return width + 2.0 * panelClearance <= opening + 1e-6; }
 };
 static_assert(sizeof(QcPathRules) == 16, "QcPathRules passes by value");
 
@@ -59,15 +72,25 @@ struct QcPathStand
     bool hurts = false;
     bool slippery = false;
     bool slows = false;
+    // A cell of the body has a panel (an open door or trapdoor, decision E-909; bodies at most a
+    // block wide): steps from and to it check that they do not go through it.
+    bool panel = false;
     // Height of the feet above the cell's bottom.
     double height = 0.0;
 
     double lift() const { return height; }
 };
 
-// Standing and passing on the cells of a source with `quint8 cell(QcBlockPos)` (the cached window
-// of QcPathGrid, or the world directly through QcPathDirectCells).
+// Standing and passing on the cells of a source with `quint8 cell(QcBlockPos)` and
+// `QcPathGap gap(QcBlockPos)` (the cached window of QcPathWindow, or the world directly through
+// QcPathDirectCells).
 namespace QcPathTerrain {
+
+// The feet cell of a body standing at `position` (decision E-909): the cell containing it, for a
+// body wider than a block the corner cell of its columns (QcPathRules::footprint).
+QcBlockPos nodeOf(const QcVec3 &position, QcPathRules rules);
+// The point a body with its feet cell at `node` walks to: the middle of its columns at the cell's bottom.
+QcVec3 pointOf(QcBlockPos node, QcPathRules rules);
 
 // The kind of a cell to a creature: a ladder is open like air to one that does not climb.
 inline QcPathCell::Kind kindOf(quint8 cell, QcPathRules rules)
@@ -101,13 +124,17 @@ bool climbsAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 }
 
 // Whether a body part may be in the cell: open, water, a door the creature opens; the feet also on a
-// low block. A cell above a fence is blocked by the fence's box.
+// low block. A cell above a fence is blocked by the fence's box. An open door or trapdoor only if
+// the body fits through beside its panel (decision E-909): cows, sheep, slimes and wider ones do not.
 template<typename Cells>
-bool passable(Cells &cells, QcBlockPos pos, QcPathRules rules, bool feet)
+bool passableCell(Cells &cells, QcBlockPos pos, quint8 cell, QcPathRules rules, bool feet)
 {
-    const QcPathCell::Kind kind = QcPathCell::kindOf(cells.cell(pos));
-    switch (kind) {
+    switch (QcPathCell::kindOf(cell)) {
     case QcPathCell::Kind::Open:
+        if ((cell & QcPathCell::panelFlag) != 0 && !rules.fitsThrough(cells.gap(pos).narrowest())) {
+            return false;
+        }
+        break;
     case QcPathCell::Kind::Water:
     case QcPathCell::Kind::Ladder:
         break;
@@ -127,23 +154,73 @@ bool passable(Cells &cells, QcBlockPos pos, QcPathRules rules, bool feet)
     return !feet || QcPathCell::kindOf(cells.cell(pos.offset(0, -1, 0))) != QcPathCell::Kind::Tall;
 }
 
+template<typename Cells>
+bool passable(Cells &cells, QcBlockPos pos, QcPathRules rules, bool feet)
+{
+    return passableCell(cells, pos, cells.cell(pos), rules, feet);
+}
+
+// The cells of the body above the feet cell up to the top of a body standing `lift` high: whether
+// they are free (`clear`) and whether one of them has a panel.
+struct QcPathAbove
+{
+    bool clear = true;
+    bool panel = false;
+};
+
+template<typename Cells>
+QcPathAbove aboveFeet(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
+{
+    QcPathAbove above;
+    const int top = static_cast<int>(std::ceil(lift + rules.height - 1e-6)) - 1;
+    for (int up = 1; up <= top && above.clear; ++up) {
+        const QcBlockPos pos = feet.offset(0, up, 0);
+        const quint8 cell = cells.cell(pos);
+        above.clear = passableCell(cells, pos, cell, rules, false);
+        above.panel = above.panel || QcPathCell::hasPanel(cell);
+    }
+    return above;
+}
+
 // Cells of the body above the feet cell are free up to the top of a body standing `lift` high.
 template<typename Cells>
 bool clearAbove(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
 {
-    const int top = static_cast<int>(std::ceil(lift + rules.height - 1e-6)) - 1;
-    for (int up = 1; up <= top; ++up) {
-        if (!passable(cells, feet.offset(0, up, 0), rules, false)) {
-            return false;
+    return aboveFeet(cells, feet, lift, rules).clear;
+}
+
+// Whether `test` holds for every column of the body standing with its feet cell at `feet`
+// (QcPathRules::footprint), given the cell of each column at the feet's level.
+template<typename Test>
+bool everyColumn(QcBlockPos feet, QcPathRules rules, const Test &test)
+{
+    if (rules.width <= 1.0f) {
+        return test(feet);
+    }
+    const int cells = rules.footprint();
+    for (int dx = 0; dx < cells; ++dx) {
+        for (int dz = 0; dz < cells; ++dz) {
+            if (!test(feet.offset(dx, 0, dz))) {
+                return false;
+            }
         }
     }
     return true;
 }
 
-// Whether the creature can stand with its feet in `feet`: a floor below (or a low block in the
-// cell on something that carries it, the surface of water or a ladder it holds on to) and room for the body.
+// Room for the body standing `lift` high with its feet cell at `feet`: in every column the feet's
+// cell and the cells above it up to the body's top (a body wider than a block fills four columns).
 template<typename Cells>
-QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
+bool bodyRoom(Cells &cells, QcBlockPos feet, double lift, QcPathRules rules)
+{
+    return everyColumn(feet, rules, [&](QcBlockPos column) { return passable(cells, column, rules, true) && clearAbove(cells, column, lift, rules); });
+}
+
+// The floor of the column of `feet` for a body standing in its cell (a floor below, a low block in
+// the cell on something that carries it, the surface of water or a ladder it holds on to), without
+// looking at the room for the body; not ok without one.
+template<typename Cells>
+QcPathStand floorAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 {
     QcPathStand stand;
     const quint8 here = cells.cell(feet);
@@ -177,24 +254,41 @@ QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
     }
 
     stand.slows = (here & QcPathCell::slowsFlag) != 0;
-    stand.ok = clearAbove(cells, feet, stand.lift(), rules);
+    stand.panel = QcPathCell::hasPanel(here);
+    stand.ok = true;
     return stand;
 }
 
-// Water at least two blocks deep from `cell` down: a fall of any height into it is safe.
+// Whether the creature can stand with its feet cell at `feet`: a floor (floorAt) and room for the
+// body. A body wider than a block (decision E-909) stands on the highest floor of its columns (it
+// overhangs the others, as in the physics) and needs room in all of them.
 template<typename Cells>
-bool deepWater(Cells &cells, QcBlockPos cell)
+QcPathStand standAt(Cells &cells, QcBlockPos feet, QcPathRules rules)
 {
-    return QcPathCell::kindOf(cells.cell(cell)) == QcPathCell::Kind::Water
-           && QcPathCell::kindOf(cells.cell(cell.offset(0, -1, 0))) == QcPathCell::Kind::Water;
-}
+    if (rules.width <= 1.0f) {
+        QcPathStand stand = floorAt(cells, feet, rules);
+        if (stand.ok) {
+            const QcPathAbove above = aboveFeet(cells, feet, stand.lift(), rules);
+            stand.ok = above.clear;
+            stand.panel = stand.panel || above.panel;
+        }
+        return stand;
+    }
 
-// Whether a body that falls `drop` blocks into `landing`, a cell it can stand in, lands safely: at
-// most QcPathRules::maxDrop, or into deep water (QcPathRules::divesIntoWater).
-template<typename Cells>
-bool safeLanding(Cells &cells, QcBlockPos landing, int drop, QcPathRules rules)
-{
-    return drop <= rules.maxDrop || (rules.divesIntoWater && deepWater(cells, landing));
+    QcPathStand stand;
+    const int columns = rules.footprint();
+    for (int dx = 0; dx < columns; ++dx) {
+        for (int dz = 0; dz < columns; ++dz) {
+            const QcPathStand floor = floorAt(cells, feet.offset(dx, 0, dz), rules);
+            if (floor.ok && (!stand.ok || floor.height > stand.height)) {
+                stand = floor;
+            }
+        }
+    }
+    // A wide body never stands beside a panel (passable refuses the cell).
+    stand.panel = false;
+    stand.ok = stand.ok && bodyRoom(cells, feet, stand.lift(), rules);
+    return stand;
 }
 
 } // namespace QcPathTerrain
@@ -210,6 +304,8 @@ public:
     }
 
     quint8 cell(QcBlockPos pos) const;
+    // The gap of an open door or trapdoor in the cell (QcPathCell::hasPanel).
+    QcPathGap gap(QcBlockPos pos) const;
 
 private:
     const QcBlockAccess &m_world;

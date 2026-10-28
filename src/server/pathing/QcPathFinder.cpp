@@ -1,5 +1,7 @@
 #include "server/pathing/QcPathFinder.h"
 
+#include "server/pathing/QcPathSteps.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -65,8 +67,11 @@ bool sameLevelAs(QcPathStand a, QcPathStand b)
 
 bool isThere(QcBlockPos at, const QcPathRequest &request)
 {
-    return std::abs(at.x - request.goal.x) <= request.closeEnough && std::abs(at.z - request.goal.z) <= request.closeEnough
-           && std::abs(at.y - request.goal.y) <= 1;
+    const auto near = [&request](int cell, int goal) {
+        const int ahead = goal - cell;
+        return ahead >= -request.closeEnough && ahead <= request.bodyCells - 1 + request.closeEnough;
+    };
+    return near(at.x, request.goal.x) && near(at.z, request.goal.z) && std::abs(at.y - request.goal.y) <= 1;
 }
 
 } // namespace
@@ -86,34 +91,50 @@ std::optional<QcBlockPos> QcPathFinder::startCell(QcBlockPos feet, QcPathRules r
     return std::nullopt;
 }
 
+bool QcPathFinder::stepClear(QcBlockPos at, QcPathStand here, QcBlockPos to, QcPathStand there, QcPathRules rules)
+{
+    // Up from the start: room above its column up to the jump's height, and a panel the body could
+    // cross there (decision E-909).
+    const double rise = to.y + there.lift() - (at.y + here.lift());
+    const QcPathTerrain::QcPathAbove jump = rise > 0.0 ? QcPathTerrain::roomAbove(m_window, at, rise + here.lift(), rules) : QcPathTerrain::QcPathAbove{};
+    if (!jump.clear) {
+        return false;
+    }
+    const bool panels = here.panel || there.panel || jump.panel;
+    return !panels || !QcPathTerrain::crossesPanel(m_window, at, to, std::max(here.lift(), there.lift()), rules);
+}
+
 std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathStand here, QcBlockPos side,
                                                          QcPathRules rules)
 {
-    const double level = at.y + here.lift();
-
     // Level, or half a block up or down (slabs); a ladder's cell beside is entered at its foot.
     const QcPathStand beside = QcPathTerrain::standAt(m_window, side, rules);
     if (beside.ok) {
-        const double rise = side.y + beside.lift() - level;
-        if (rise > 0.0 && !QcPathTerrain::clearAbove(m_window, at, rise + here.lift(), rules)) {
+        if (!stepClear(at, here, side, beside, rules)) {
             return std::nullopt;
         }
         return Move{side, 1.0f + standCost(beside, rules)};
     }
 
     // Up a block: only with room above the current cell for the jump.
-    const QcPathStand above = QcPathTerrain::standAt(m_window, side.offset(0, 1, 0), rules);
+    const QcBlockPos up = side.offset(0, 1, 0);
+    const QcPathStand above = QcPathTerrain::standAt(m_window, up, rules);
     if (above.ok) {
-        const double rise = side.y + 1 + above.lift() - level;
-        if (rise > QcPathRules::climbHeight + 1e-6 || !QcPathTerrain::clearAbove(m_window, at, rise + here.lift(), rules)) {
+        const double rise = up.y + above.lift() - (at.y + here.lift());
+        if (rise > QcPathRules::climbHeight + 1e-6 || !stepClear(at, here, up, above, rules)) {
             return std::nullopt;
         }
-        return Move{side.offset(0, 1, 0), 1.0f + climbCost + standCost(above, rules)};
+        return Move{up, 1.0f + climbCost + standCost(above, rules)};
     }
+    return dropFrom(at, here, side, rules);
+}
 
-    // Down: the body passes the edge at its height, then falls to the first floor below (deeper
-    // than QcPathRules::maxDrop only into deep water).
-    if (!QcPathTerrain::passable(m_window, side, rules, true) || !QcPathTerrain::clearAbove(m_window, side, here.lift(), rules)) {
+std::optional<QcPathFinder::Move> QcPathFinder::dropFrom(QcBlockPos at, QcPathStand here, QcBlockPos side, QcPathRules rules)
+{
+    // The body passes the edge at its height, then falls to the first floor below (deeper than
+    // QcPathRules::maxDrop only into deep water).
+    const QcPathTerrain::QcPathAbove edge = QcPathTerrain::roomAt(m_window, side, here.lift(), rules);
+    if (!edge.clear || ((here.panel || edge.panel) && QcPathTerrain::crossesPanel(m_window, at, side, here.lift(), rules))) {
         return std::nullopt;
     }
     for (int drop = 1; drop <= std::max(static_cast<int>(rules.maxDrop), QcPathRules::waterDrop); ++drop) {
@@ -125,7 +146,7 @@ std::optional<QcPathFinder::Move> QcPathFinder::sideStep(QcBlockPos at, QcPathSt
             }
             return Move{landing, 1.0f + dropCostPerBlock * static_cast<float>(drop) + standCost(stand, rules)};
         }
-        if (!QcPathTerrain::passable(m_window, landing, rules, false)) {
+        if (!QcPathTerrain::fallsThrough(m_window, landing, rules)) {
             return std::nullopt;
         }
     }
@@ -137,6 +158,7 @@ QcPathFinder::Moves QcPathFinder::expand(QcBlockPos at, QcPathRules rules)
     const QcPathStand here = QcPathTerrain::standAt(m_window, at, rules);
     Moves moves;
     float sideCost = 0.0f;
+    // Sides on the same level without a panel (diagonals pass between two of them).
     std::array<bool, 4> flat{};
     for (std::size_t i = 0; i < sides.size(); ++i) {
         const QcBlockPos side = at.offset(sides[i][0], 0, sides[i][1]);
@@ -146,22 +168,24 @@ QcPathFinder::Moves QcPathFinder::expand(QcBlockPos at, QcPathRules rules)
             continue;
         }
         moves.add(*move);
-        flat[i] = move->to == side && sameLevelAs(QcPathTerrain::standAt(m_window, side, rules), here);
+        const QcPathStand beside = QcPathTerrain::standAt(m_window, side, rules);
+        flat[i] = move->to == side && sameLevelAs(beside, here) && !beside.panel;
     }
 
     for (const Move climb : climbs(at, rules)) {
         moves.add(climb);
     }
 
-    // Diagonals only between two free sides on the same level: no cutting corners.
+    // Diagonals only between two free sides on the same level: no cutting corners, nor through a
+    // cell with a panel (decision E-909).
     for (std::size_t a = 0; a < 2; ++a) {
         for (std::size_t b = 2; b < 4; ++b) {
-            if (!flat[a] || !flat[b]) {
+            if (!flat[a] || !flat[b] || here.panel) {
                 continue;
             }
             const QcBlockPos corner = at.offset(sides[a][0], 0, sides[b][1]);
             const QcPathStand stand = QcPathTerrain::standAt(m_window, corner, rules);
-            if (stand.ok && sameLevelAs(stand, here)) {
+            if (stand.ok && sameLevelAs(stand, here) && !stand.panel) {
                 moves.add(Move{corner, diagonalCost + standCost(stand, rules)});
             }
         }
@@ -174,13 +198,13 @@ QcPathFinder::Moves QcPathFinder::expand(QcBlockPos at, QcPathRules rules)
 QcPathFinder::Moves QcPathFinder::climbs(QcBlockPos at, QcPathRules rules)
 {
     Moves moves;
-    if (!QcPathTerrain::climbsAt(m_window, at, rules)) {
+    if (!QcPathTerrain::bodyClimbs(m_window, at, rules)) {
         return moves;
     }
 
     // The top of a ladder or a wall is left sideways (sideStep, a step up of a block).
     const QcBlockPos up = at.offset(0, 1, 0);
-    if (QcPathTerrain::climbsAt(m_window, up, rules) && QcPathTerrain::standAt(m_window, up, rules).ok) {
+    if (QcPathTerrain::bodyClimbs(m_window, up, rules) && QcPathTerrain::standAt(m_window, up, rules).ok) {
         moves.add(Move{up, 1.0f + climbCost});
     }
     const QcBlockPos down = at.offset(0, -1, 0);

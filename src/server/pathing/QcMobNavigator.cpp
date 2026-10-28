@@ -2,6 +2,7 @@
 
 #include "server/pathing/QcOpeningSteering.h"
 #include "server/pathing/QcPathPlanner.h"
+#include "server/pathing/QcPathSteps.h"
 
 #include <algorithm>
 #include <cmath>
@@ -25,6 +26,8 @@ constexpr double jumpDistance = 1.3;
 constexpr double floorSink = 0.2;
 // How far ahead safeStep looks for ground.
 constexpr double stepLookAhead = 0.7;
+// How far around the leading edge of a body wider than a block safeStep looks.
+constexpr double edgeReach = 0.05;
 
 double horizontalDistance(const QcVec3 &a, const QcVec3 &b)
 {
@@ -253,23 +256,34 @@ bool pathClear(const QcMobPath &path, bool all, const QcPathGround &ground)
 
 bool safeStep(const QcCreature &mob, const QcVec3 &direction, const QcPathGround &ground)
 {
-    const QcBlockPos feet = QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.01, 0.0});
     const QcVec3 flat{direction.x, 0.0, direction.z};
     if (flat.length() < 1e-6) {
         return true;
     }
-    const QcBlockPos ahead = QcPhysics::blockContaining(mob.motion.position + flat.normalized() * stepLookAhead + QcVec3{0.0, 0.01, 0.0});
+    // A body wider than a block (decision E-909): the column its leading edge moves into, as a
+    // place for one column of the body (it overhangs the others).
+    QcPathRules rules = ground.rules;
+    QcVec3 from = mob.motion.position;
+    QcVec3 to = mob.motion.position + flat.normalized() * stepLookAhead;
+    if (rules.footprint() > 1) {
+        const double half = static_cast<double>(rules.width) / 2.0;
+        from = mob.motion.position + flat.normalized() * (half - edgeReach);
+        to = mob.motion.position + flat.normalized() * (half + edgeReach);
+        rules.width = 1.0f;
+    }
+    const QcBlockPos feet = QcPhysics::blockContaining(from + QcVec3{0.0, 0.01, 0.0});
+    const QcBlockPos ahead = QcPhysics::blockContaining(to + QcVec3{0.0, 0.01, 0.0});
     if (ahead.x == feet.x && ahead.z == feet.z) {
         return true;
     }
 
     QcPathDirectCells direct(ground.world, ground.cells);
-    for (int dy = 1; dy >= -std::max(static_cast<int>(ground.rules.maxDrop), QcPathRules::waterDrop); --dy) {
+    for (int dy = 1; dy >= -std::max(static_cast<int>(rules.maxDrop), QcPathRules::waterDrop); --dy) {
         const QcBlockPos cell = ahead.offset(0, dy, 0);
-        if (QcPathTerrain::standAt(direct, cell, ground.rules).ok) {
-            return QcPathTerrain::safeLanding(direct, cell, -dy, ground.rules);
+        if (QcPathTerrain::standAt(direct, cell, rules).ok) {
+            return QcPathTerrain::safeLanding(direct, cell, -dy, rules);
         }
-        if (dy < 0 && !QcPathTerrain::passable(direct, cell, ground.rules, false)) {
+        if (dy < 0 && !QcPathTerrain::passable(direct, cell, rules, false)) {
             return false;
         }
     }

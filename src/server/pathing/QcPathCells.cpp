@@ -116,10 +116,11 @@ quint8 classify(const QcContentRegistry &content, QcBlockId id)
         return hurts ? make(Kind::Danger, flags) : make(Kind::Water, flags);
     }
 
-    // Doors, gates and trapdoors (blocks with an `open` state): open ones let bodies through.
+    // Doors, gates and trapdoors (blocks with an `open` state): open ones let bodies through, beside
+    // their panel (decision E-909) if they have one.
     const bool opens = block.property(u"open"_s) != nullptr;
     if (isOpen(content, id)) {
-        return make(Kind::Open, flags);
+        return make(Kind::Open, gapOf(content, id).narrows() ? static_cast<quint8>(flags | panelFlag) : flags);
     }
     if (state.collision.isEmpty()) {
         return make(hurts ? Kind::Danger : Kind::Open, flags);

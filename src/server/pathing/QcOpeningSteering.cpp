@@ -1,12 +1,17 @@
 #include "server/pathing/QcOpeningSteering.h"
 
 #include "server/entities/QcCreature.h"
+#include "server/pathing/QcPathSteps.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdlib>
 
 namespace QcOpeningSteering {
+
+// A body planned through a door (QcPathRules::fitsThrough) keeps clear of the panel while lined up.
+static_assert(QcPathRules::panelClearance >= laneTolerance);
 
 namespace {
 
@@ -98,6 +103,30 @@ QcPathGap keptGap(const QcMobPath &path, std::size_t index, QcPathGap gap, const
     return gap;
 }
 
+// Whether the path goes straight up or down at waypoint `index` (from the one before it or to the one after it).
+bool vertical(const QcMobPath &path, std::size_t index)
+{
+    const QcBlockPos cell = path.cells[index];
+    return std::ranges::any_of(std::array{index - 1, index + 1}, [&](std::size_t other) {
+        return other < path.cells.size() && path.cells[other].x == cell.x && path.cells[other].z == cell.z;
+    });
+}
+
+// The middle of the body's columns at waypoint `index` (decision E-909): the middle of its cell, of
+// four cells for a body wider than a block, and on the way up or down a wall or along it (held only
+// by clinging) towards the wall.
+QcVec3 middleOf(const QcMobPath &path, std::size_t index, const QcPathGround &ground)
+{
+    const QcBlockPos cell = path.cells[index];
+    if (ground.rules.climbsWalls && ground.rules.footprint() > 1) {
+        const QcPathDirectCells cells(ground.world, ground.cells);
+        if (vertical(path, index) || QcPathTerrain::clingsOnly(cells, cell, ground.rules)) {
+            return QcPathTerrain::climbPoint(cells, cell, ground.rules);
+        }
+    }
+    return QcPathTerrain::pointOf(cell, ground.rules);
+}
+
 // Waypoints before the next one whose doors the body may still overlap, and after it.
 constexpr std::size_t behind = 2;
 constexpr std::size_t ahead = 1;
@@ -127,8 +156,9 @@ Point waypointPoint(const QcMobPath &path, std::size_t index, const QcPathGround
     const QcBlockPos cell = path.cells[index];
     const QcPathGap own = throughGap(path, index, ground);
     const QcPathGap gap = keptGap(path, index, own, ground);
-    const QcVec3 at{cell.x + (gap.x ? static_cast<double>(gap.x->middle()) : 0.5), static_cast<double>(cell.y),
-                    cell.z + (gap.z ? static_cast<double>(gap.z->middle()) : 0.5)};
+    const QcVec3 middle = middleOf(path, index, ground);
+    const QcVec3 at{gap.x ? cell.x + static_cast<double>(gap.x->middle()) : middle.x, static_cast<double>(cell.y),
+                    gap.z ? cell.z + static_cast<double>(gap.z->middle()) : middle.z};
     return {at, gap, gap.x && !own.x, gap.z && !own.z};
 }
 

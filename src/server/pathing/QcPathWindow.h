@@ -26,6 +26,9 @@ public:
     QcBlockPos positionOf(int index) const;
     // The cell (QcPathCell), read from the world on first use.
     quint8 cell(QcBlockPos pos);
+    // The gap of an open door or trapdoor in the cell, straight from the world (only cells with a
+    // panel, QcPathCell::hasPanel, ask for it; few enough not to cache).
+    QcPathGap gap(QcBlockPos pos) const { return direct().gap(pos); }
 
     // A* state of a node of this search.
     bool visited(int index) const { return m_nodeStamp[static_cast<std::size_t>(index)] == m_generation; }
@@ -36,6 +39,9 @@ public:
     void close(int index) { m_closed[static_cast<std::size_t>(index)] = 1; }
 
 private:
+    // The world of this search, read without the cache.
+    QcPathDirectCells direct() const { return {*m_world, *m_table}; }
+
     const QcBlockAccess *m_world = nullptr;
     const QcPathCellTable *m_table = nullptr;
     QcBlockPos m_origin;

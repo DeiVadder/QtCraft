@@ -18,6 +18,9 @@ struct QcPathRequest
     // Nodes the search may expand at most, and waypoints the path keeps at most.
     int maxNodes = 512;
     int maxLength = 64;
+    // Columns of the body along each axis (QcPathRules::footprint): a feet cell counts as at the
+    // goal when the body's columns (from it up to this many cells on) hold the goal's cell.
+    int bodyCells = 1;
 };
 
 // A path as feet cells after the start, in order.
@@ -41,7 +44,8 @@ struct QcPathResult
 // distance, a little for climbing and dropping, much for water (a walker), magma floors and cobwebs,
 // a little beside walls, so paths keep to open cells, and more beside fire and lava. The
 // heuristic is weighted (1.25): paths are at most a quarter longer than the shortest, for far fewer
-// nodes.
+// nodes. The body's width counts (decision E-909): no step through the side of a cell a panel
+// covers, no diagonal beside a panel, and a body wider than a block moves its four columns.
 class QcPathFinder
 {
 public:
@@ -84,6 +88,11 @@ private:
     // The moves from a node.
     [[nodiscard]] Moves expand(QcBlockPos at, QcPathRules rules);
     std::optional<Move> sideStep(QcBlockPos at, QcPathStand here, QcBlockPos side, QcPathRules rules);
+    // Whether a step from `at` to `to` (a place `there` beside it, level or up) has room for the jump
+    // and goes through no panel.
+    bool stepClear(QcBlockPos at, QcPathStand here, QcBlockPos to, QcPathStand there, QcPathRules rules);
+    // Off the edge into `side` and down to the first floor.
+    std::optional<Move> dropFrom(QcBlockPos at, QcPathStand here, QcBlockPos side, QcPathRules rules);
     // Up and down a ladder the feet are on: to the ladder cell above, to the cell below (Moves is an
     // inline buffer, returning it allocates nothing).
     [[nodiscard]] Moves climbs(QcBlockPos at, QcPathRules rules);

@@ -90,10 +90,13 @@ void QcPathPlanner::serve(const QcBlockAccess &world, std::span<QcCreature> mobs
             break;
         }
 
+        // A body wider than a block searches from the corner cell of its columns and gets there with
+        // any feet cell whose columns hold the goal's cell (decision E-909).
         const QcBlockPos goal = QcPhysics::blockContaining(mob.path.goal);
-        const QcPathRequest request{QcPhysics::blockContaining(mob.motion.position + QcVec3{0.0, 0.1, 0.0}), goal,
-                                    mob.path.closeEnough, nodes, m_pathLength};
-        const QcPathResult result = m_finder.find(world, m_cells, rulesOf(mob), request);
+        const QcPathRules rules = rulesOf(mob);
+        const QcPathRequest request{QcPathTerrain::nodeOf(mob.motion.position + QcVec3{0.0, 0.1, 0.0}, rules), goal,
+                                    mob.path.closeEnough, nodes, m_pathLength, rules.footprint()};
+        const QcPathResult result = m_finder.find(world, m_cells, rules, request);
         apply(mob, result, goal);
         m_queue.pop_front();
 

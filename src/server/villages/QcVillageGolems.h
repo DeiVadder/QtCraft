@@ -114,6 +114,9 @@ private:
     // The feet of a golem of `type` in `feet`: on dry, opaque ground that does not hurt, the whole
     // body clear of blocks.
     std::optional<QcVec3> standsAt(QcBlockPos feet, int type, const Context &context) const;
+    // Whether the column's floor (a block in the cell with collision, else the one below) is of the
+    // opaque render layer.
+    bool opaqueFloor(QcBlockPos column, const Context &context) const;
 
     std::shared_ptr<const QcContentRegistry> m_content;
     mutable bool m_missingLogged = false;

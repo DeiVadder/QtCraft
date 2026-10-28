@@ -233,6 +233,7 @@ target_sources(qc_server PRIVATE
     pathing/QcPathFinder.h pathing/QcPathFinder.cpp
     pathing/QcPathGround.h
     pathing/QcPathPlanner.h pathing/QcPathPlanner.cpp
+    pathing/QcPathSteps.h
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
 )

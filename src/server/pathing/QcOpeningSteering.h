@@ -42,7 +42,8 @@ struct Target
 
 // The gap of the cells a body of the creature's height fills standing in `cell`.
 QcPathGap gapAt(QcBlockPos cell, const QcPathGround &ground);
-// The point of a waypoint: the middle of its cell, moved to the middle of the opening along the
+// The point of a waypoint: the middle of its cell (of the body's columns, QcPathTerrain::pointOf, and
+// for a wide wall climber going up or down at the wall, QcPathTerrain::climbPoint), moved to the middle of the opening along the
 // axes the gap it keeps to narrows (`gap`: the gap of its cell where the path goes through along the
 // panel, else across the line of the path that of the waypoint just before or after it in line);
 // for a waypoint right before or after a door (narrowed only by its neighbour in line), the axes
