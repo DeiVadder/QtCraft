@@ -94,8 +94,8 @@ struct PlayerView
     // fights a foe anew (decision E-480).
     quint64 hurtTick = 0;
     quint64 struckTick = 0;
-    // Rides a minecart: the cart meets the creatures (decision E-382), the player's body does not
-    // push them (decision E-882).
+    // Rides a minecart or drives a boat: the vehicle meets the creatures (decisions E-382, E-920),
+    // the player's body does not push them (decision E-882).
     bool seated = false;
 };
 

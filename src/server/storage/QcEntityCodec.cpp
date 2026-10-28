@@ -9,6 +9,7 @@
 #include "server/blocks/QcFallingBlockManager.h"
 #include "server/gameplay/QcArmourStandManager.h"
 #include "server/items/QcExperienceOrbManager.h"
+#include "server/storage/QcBoatCodec.h"
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcCreatureComponents.h"
 #include "server/storage/QcHangingCodec.h"
@@ -651,7 +652,12 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     writeCartsAndOrbs(stream, record, content);
     writeProjectiles(stream, record, content);
     stream << static_cast<quint8>(record.populated ? 1 : 0);
+    // Boats follow the frames and paintings, whose count is written then even when there are none.
+    if (record.hangings.isEmpty() && !record.boats.isEmpty()) {
+        stream << quint32{0};
+    }
     QcHangingCodec::write(stream, record.hangings, content);
+    QcBoatCodec::write(stream, record.boats);
     return blob;
 }
 
@@ -668,10 +674,13 @@ QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content
     stream >> populated;
     std::optional<QList<QcEntityRecord::Ordered<QcHangingEntity>>> hangings =
         read && stream.status() == QDataStream::Ok ? QcHangingCodec::read(stream, chunk, content, warnings) : std::nullopt;
-    if (!hangings || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
+    std::optional<QList<QcEntityRecord::Ordered<QcBoat>>> boats =
+        hangings && stream.status() == QDataStream::Ok ? QcBoatCodec::read(stream, chunk, content, warnings) : std::nullopt;
+    if (!boats || stream.status() != QDataStream::Ok || !stream.atEnd() || populated > 1) {
         return qcError(u"damaged entities of chunk %1, %2"_s.arg(chunk.x).arg(chunk.z));
     }
     record.hangings = std::move(*hangings);
+    record.boats = std::move(*boats);
     record.populated = populated == 1;
     return record;
 }

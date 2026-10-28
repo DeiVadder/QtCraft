@@ -4,10 +4,12 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/maps/QcMapColors.h"
+#include "clientcore/meshing/QcBoatModel.h"
 #include "clientcore/meshing/QcEnchantingMesher.h"
 #include "clientcore/meshing/QcEntityCulling.h"
 #include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/meshing/QcHangingMesher.h"
+#include "clientcore/meshing/QcMeshRotation.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/meshing/QcProjectileMesher.h"
 #include "clientcore/meshing/QcTetherMesher.h"
@@ -211,6 +213,13 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     }
 
     QcEntityPose pose = creaturePose(entity, frame.alpha);
+    if (const auto seat = m_boatSeats.constFind(entity.id); seat != m_boatSeats.constEnd()) {
+        // On a boat's driver seat, facing the boat's way with the hands on the paddles.
+        const QcBoatRiders::Seated seated = QcBoatRiders::seated(pose, *seat, placement.yaw);
+        pose = seated.pose;
+        placement.position = seated.feet;
+        placement.yaw = seated.yaw;
+    }
     QcEntityMesher::ModelLook look;
     if (creature && creature->villager) {
         // Villagers wear the look the server gave them (decision E-411).
@@ -451,11 +460,19 @@ void QcEntityFrameBuilder::appendCartLoad(QcEntityMesh &mesh, const QcClientEnti
 void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame)
 {
     const QcClientSession &session = *m_parts.session;
-    const QcVec3 feet = lerp(session.prediction().previousMotion().position, session.playerMotion().position, frame.alpha);
     const QcItemStack &selected = session.inventory().selectedStack();
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, session.inventoryMirror().equipment(), playerLook(m_settings.character()->appearance()));
-    const QcEntityPose pose = localPose(frame.alpha);
+    QcEntityPose pose = localPose(frame.alpha);
+    QcVec3 feet = lerp(session.prediction().previousMotion().position, session.playerMotion().position, frame.alpha);
+    double yaw = static_cast<double>(session.intent().yaw);
+    if (const std::optional<QcBoatRiders::Drawn> boat = ownBoat(session.prediction().riding().vehicle(), frame.alpha, frame.seconds)) {
+        // Driving: on the seat of the boat as drawn, facing its way, the head following the view.
+        const QcBoatRiders::Seated seated = QcBoatRiders::seated(pose, QcBoatRiders::seatIn(session.prediction().riding().vehicle(), *boat), yaw);
+        pose = seated.pose;
+        feet = seated.feet;
+        yaw = seated.yaw;
+    }
 
     QcAnimator::BodyPose body = QcAnimator::animateBody(pose, frame.seconds);
     if (dressed.look.cape) {
@@ -469,9 +486,44 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeSway = cape.sway;
     }
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
-                                {feet, static_cast<double>(session.intent().yaw), entityLight(frame.world, feet), false}, frame.uv);
+                                {feet, yaw, entityLight(frame.world, feet), false}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
+    }
+}
+
+std::optional<QcBoatRiders::Drawn> QcEntityFrameBuilder::ownBoat(quint32 boatId, double alpha, double seconds) const
+{
+    // The own boat where the prediction has it (decision E-920), its paddles rowing while the keys
+    // paddle or turn.
+    const QcPrediction &prediction = m_parts.session->prediction();
+    if (!prediction.riding().drivesBoat() || prediction.riding().vehicle() != boatId || !prediction.boat() || !prediction.previousBoat()) {
+        return std::nullopt;
+    }
+    const QcBoatState &now = *prediction.boat();
+    const QcBoatState &before = *prediction.previousBoat();
+    QcBoatRiders::Drawn boat{lerp(before.motion.position, now.motion.position, alpha), lerpYaw(before.yaw, now.yaw, alpha), -1.0};
+    if (now.motion.inWater) {
+        boat.position.y += QcBoatModel::bob(seconds, boatId);
+    }
+    const QcPlayerInput &intent = m_parts.session->intent();
+    boat.rowPhase = QcBoatModel::rowPhase(seconds, intent.forward != 0.0f || intent.strafe != 0.0f);
+    return boat;
+}
+
+void QcEntityFrameBuilder::appendBoat(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const
+{
+    // The others as the mirror shows them, the own one where the prediction has it.
+    const QcBoatRiders::Drawn boat = ownBoat(entity.id, frame.alpha, frame.seconds).value_or(QcBoatRiders::drawn(entity, frame.alpha, frame.seconds));
+    const QString planks = QcBoatModel::planksOf(frame.content, entity.item.item);
+    const QcEntityLight light = entityLight(frame.world, boat.position);
+    QcEntityMesher::appendParts(mesh, QcBoatModel::parts(planks), {boat.position, boat.yaw, light, entity.hurtTicks > 0}, frame.uv);
+
+    const QcEntityMesher::Turn turn(boat.yaw);
+    const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(boat.rowPhase);
+    for (const int side : {1, -1}) {
+        const auto place = [&](const QcVec3 &corner) { return boat.position + turn(QcBoatModel::partPoint(side, paddle, corner)); };
+        QcEntityMesher::appendPlacedParts(mesh, QcBoatModel::paddleParts(planks, side), place, light, frame.uv);
     }
 }
 
@@ -502,6 +554,8 @@ void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity
         QcEntityMesher::appendParts(mesh, QcEntityMesher::minecartParts(),
                                     {position, lerpYaw(entity.previousYaw, entity.yaw, alpha), entityLight(frame.world, position), false}, uv);
         appendCartLoad(mesh, entity, frame, position);
+    } else if (entity.isBoat()) {
+        appendBoat(mesh, entity, frame);
     } else if (entity.isBlockEntity()) {
         appendBlockEntity(mesh, entity, frame);
     } else if (entity.isHanging()) {
@@ -533,6 +587,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     const QcEntityMesher::UvLookup uv = [this, animationTicks](const QString &texture) { return m_atlas->uvAt(texture, animationTicks); };
     const EntityFrame frame{*session.content(), *session.world(), uv, alpha, session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration};
     m_capes.beginFrame(capeFrameSeconds(), frame.seconds);
+    m_boatSeats = QcBoatRiders::seats(session.entities(), alpha, frame.seconds);
     if (m_mapColoursStale) {
         m_framedMaps.setColours(QcMapColors::ofAtlas(frame.content, *m_atlas));
         m_mapColoursStale = false;

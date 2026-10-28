@@ -1,0 +1,30 @@
+{
+    "name": "birch_boat",
+    "pattern": "icon",
+    "primary": "#d2bd88",
+    "variation": 0.0,
+    "seed": 3302,
+    "palette": {
+        "B": "#d2bd88",
+        "D": "#a99366",
+        "P": "#6b4a2a"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "",
+        "  P          P",
+        "   P        P",
+        "    P      P",
+        "D    P    P    D",
+        "DD    P  P    DD",
+        "DBBBBBBBBBBBBBBD",
+        "DBBBBBBBBBBBBBBD",
+        " DBBBBBBBBBBBBD",
+        "  DDDDDDDDDDDD",
+        "   DDDDDDDDDD",
+        "",
+        ""
+    ]
+}

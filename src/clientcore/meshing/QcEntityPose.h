@@ -17,6 +17,11 @@ struct QcEntityPose
     bool flying = false;
     // Sitting in a minecart (decision E-382): the legs point forward.
     bool riding = false;
+    // Driving a boat (decision E-920): sitting low with the thighs level, the hands on the paddle
+    // grips; `rowPhase` is the moment of the stroke (QcBoatModel::rowPhase), negative while the
+    // paddles rest. The figure faces the boat's way, the head the view.
+    bool inBoat = false;
+    double rowPhase = -1.0;
     // How the body holds itself (decision E-423): lying on its back (a villager in its bed, decision
     // E-411) or sitting with the legs forward.
     QcPose body = QcPose::Standing;

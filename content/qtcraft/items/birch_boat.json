@@ -1,0 +1,7 @@
+{
+    "name": "birch_boat",
+    "texture": "birch_boat",
+    "maxStack": 1,
+    "boatBlock": "birch_planks",
+    "fuelSeconds": 60
+}

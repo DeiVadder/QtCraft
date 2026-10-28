@@ -106,6 +106,7 @@ private:
     void parseContents();
     void parseLabels();
     void parseCarts();
+    void parseBoats();
     void parseSpawnersAndLoot();
     void parseSigns();
     void parseHangings();
@@ -339,6 +340,24 @@ void StructureReader::parseCarts()
     }
 }
 
+// "boats": {"at": [x, y, z], "item": "oak_boat", "yaw": 90} (decision E-920); the feet of the boat
+// at a point inside the structure.
+void StructureReader::parseBoats()
+{
+    const QJsonArray entries = extraArray(m_json, u"boats"_s, m_reader);
+    for (const auto &entry : entries) {
+        const QJsonObject object = entry.toObject();
+        const std::optional<QcVec3> at = readPoint(object.value(u"at"_s), m_structure);
+        const QString item = QcContentNames::qualify(object.value(u"item"_s).toString(), m_namespace);
+        const double yaw = object.value(u"yaw"_s).toDouble(0.0);
+        if (!at || item.isEmpty() || !std::isfinite(yaw)) {
+            m_reader.fail(u"'boats' entries need 'at' inside the structure, an 'item' and a 'yaw'"_s);
+            return;
+        }
+        m_structure.boats.append({*at, item, static_cast<float>(yaw)});
+    }
+}
+
 // "spawners": {"at": [x, y, z], "mob": "zombie", "confined": true}; "loot": {"at": [x, y, z], "table":
 // "dungeon_chest"} (decisions E-520, E-521).
 void StructureReader::parseSpawnersAndLoot()
@@ -498,6 +517,7 @@ void StructureReader::parseExtras()
     m_structure.updates += parseCells(m_json, u"updates"_s, m_structure, m_reader);
     m_structure.growing += parseCells(m_json, u"growing"_s, m_structure, m_reader);
     parseCarts();
+    parseBoats();
     parseSpawnersAndLoot();
     parseSigns();
     parseHangings();

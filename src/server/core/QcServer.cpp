@@ -78,13 +78,13 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_kitchen(m_state, m_sounds, m_blocks, m_inventory, m_health)
     , m_workstations(m_state, m_sounds, m_inventory, m_screens, m_blocks)
     , m_explosions(m_state, m_blocks, m_sounds, m_fire, m_health)
-    , m_minecarts(m_state, m_sounds, m_inventory, m_screens)
-    , m_gameModes(m_state, m_inventory, m_crafting, m_minecarts)
+    , m_vehicles(m_state, m_sounds, m_inventory, m_screens)
+    , m_gameModes(m_state, m_inventory, m_crafting, m_vehicles)
     , m_stands(m_state, m_sounds, m_inventory)
     , m_animals(m_state, m_sounds, m_inventory)
     , m_plants(m_state, m_sounds, m_blocks, m_inventory)
     , m_golems(m_state, m_sounds, m_blocks, m_inventory)
-    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_minecarts, m_animals, m_plants, m_health, m_circuits,
+    , m_interaction(m_state, {m_sounds, m_blocks, m_inventory, m_crafting, m_screens, m_stands, m_vehicles.minecarts(), m_vehicles.boats(), m_animals, m_plants, m_health, m_circuits,
                               m_ignition, m_golems, m_kitchen, m_workstations})
     , m_items(m_state, m_sounds, m_inventory)
     , m_experience(m_state, m_sounds)
@@ -102,7 +102,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_chunkStreaming(m_state, m_chunkLoading)
     , m_persistence(m_state, m_blocks, m_blockUpdates, m_chunkLoading)
     , m_commands(m_state, {m_blocks, m_blockUpdates,
-                           {m_inventory, m_health, m_stands, m_gameModes, m_minecarts, [this](double seconds) { setWorldTime(seconds); }},
+                           {m_inventory, m_health, m_stands, m_gameModes, m_vehicles.minecarts(), m_vehicles.boats(), [this](double seconds) { setWorldTime(seconds); }},
                            {m_phases, m_ticks, [this] { return save(); }, [this] { emit stopRequested(); }},
                            {m_ticks, m_tickControl, m_phases, [this] { sendTimeToAll(); }},
                            m_weather})
@@ -114,7 +114,7 @@ QcServer::QcServer(QcServerConfig config, std::shared_ptr<const QcContentRegistr
     , m_admin(m_state, m_commands, m_phases, m_ticks)
     , m_tickTimer(new QTimer(this))
     , m_debug(m_state, m_blockUpdates, m_chunkLoading, m_phases, m_ticks)
-    , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_minecarts, m_experience, m_projectiles, m_circuits,
+    , m_systems{m_fire, m_ignition, m_burning, m_health, m_weather, m_lightning, m_snowfall, m_vehicles.minecarts(), m_vehicles.boats(), m_experience, m_projectiles, m_circuits,
                 m_explosions, m_interaction}
 {
     static_assert(QcTickScheduler::intervalNs == static_cast<qint64>(QcPhysics::tickDuration * 1e9));
@@ -377,12 +377,12 @@ bool QcServer::handlePlayerMessage(Client &client, const QcMessage &message)
     } else if (const auto *use = std::get_if<QcMsg::UseItem>(&message)) {
         m_interaction.useItem(client, *use);
     } else if (const auto *attack = std::get_if<QcMsg::AttackEntity>(&message)) {
-        if (!m_stands.hit(client, attack->id) && !m_minecarts.hit(client, attack->id)
+        if (!m_stands.hit(client, attack->id) && !m_vehicles.hit(client, attack->id)
             && !QcServerHanging(m_state, m_sounds, m_inventory).hit(client, attack->id)) {
             m_combat.attack(client, attack->id);
         }
     } else if (const auto *useEntity = std::get_if<QcMsg::UseEntity>(&message)) {
-        if (!QcNameTags::use(m_state, client, useEntity->id) && !m_stands.use(client, useEntity->id) && !m_minecarts.use(client, useEntity->id)
+        if (!QcNameTags::use(m_state, client, useEntity->id) && !m_stands.use(client, useEntity->id) && !m_vehicles.use(client, useEntity->id)
             && !QcServerHanging(m_state, m_sounds, m_inventory).use(client, useEntity->id) && !m_trading.open(client, useEntity->id)) {
             m_interaction.useEntity(client, useEntity->id);
         }
@@ -557,8 +557,9 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     // The speed follows the player's effects as the server knows them, never the client's word.
     input.speedFactor = static_cast<float>(client.effects.speedFactor(m_state.content()));
 
-    // A rider does not move: the cart carries the player (decision E-382).
-    if (m_minecarts.steer(client, input)) {
+    // A rider does not move: the cart carries the player (decision E-382); a driver's input moves the
+    // boat (decision E-920).
+    if (m_vehicles.steer(client, input)) {
         client.input.lastSequence = input.sequence;
         client.stateDirty = true;
         return;

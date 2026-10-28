@@ -1,6 +1,7 @@
 #include "clientcore/player/QcPrediction.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/world/QcBoatBody.h"
 
 #include <algorithm>
 #include <cmath>
@@ -25,7 +26,14 @@ QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcM
     input.flying = flying;
     input.push = push;
     m_previousMotion = m_motion;
-    if (!m_riding.isRiding()) {
+    if (m_riding.drivesBoat() && boat()) {
+        // The same step the server makes with this input (QcServerBoats::steer).
+        QcBoatState stepped = *boat();
+        setPreviousBoat(stepped);
+        stepped.step(QcBoatControls::of(input), world);
+        setBoat(stepped);
+        m_motion = seatedIn(stepped);
+    } else if (!m_riding.isRiding()) {
         m_motion.stepPlayer(input, world, QcPhysics::tickDuration, movement);
     }
 
@@ -50,8 +58,14 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
     m_pendingInputs.removeIf([&state](const QcPlayerInput &input) { return input.sequence <= state.lastInputSequence; });
     // A rider sits in the cart as the mirror shows it; getting in or out is a placement by the
     // server, not a correction (decision E-382).
-    const bool gotInOrOut = m_riding.noteVehicle(state.vehicle);
+    const bool gotInOrOut = m_riding.noteVehicle(state.vehicle, state.boat.has_value());
     const Reconciled result = placed ? Reconciled::Placed : Reconciled::Applied;
+    if (state.boat) {
+        reconcileBoat(*state.boat, world, placed || gotInOrOut);
+        return result;
+    }
+    setBoat(std::nullopt);
+    setPreviousBoat(std::nullopt);
     if (m_riding.isRiding()) {
         m_lastCorrection = 0.0;
         return result;
@@ -67,6 +81,38 @@ QcPrediction::Reconciled QcPrediction::reconcile(const QcMsg::PlayerState &state
     m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
     m_motion = replayed;
     return result;
+}
+
+QcEntityMotion QcPrediction::seatedIn(const QcBoatState &boat)
+{
+    QcEntityMotion motion;
+    motion.position = QcBoatBody::driverSeat(boat.motion.position, boat.yaw);
+    motion.velocity = boat.motion.velocity;
+    motion.onGround = true;
+    return motion;
+}
+
+void QcPrediction::reconcileBoat(const QcBoatState &boat, const QcBlockAccess *world, bool placedOrMoved)
+{
+    QcBoatState replayed = boat;
+    if (world) {
+        for (const QcPlayerInput &input : std::as_const(m_pendingInputs)) {
+            replayed.step(QcBoatControls::of(input), *world);
+        }
+    }
+    // Getting in is a placement by the server; afterwards the boat moves where it was predicted.
+    const std::optional<QcBoatState> &predicted = this->boat();
+    const bool placed = placedOrMoved || !predicted;
+    m_lastCorrection = 0.0;
+    if (!placed && predicted) {
+        m_lastCorrection = (replayed.motion.position - predicted->motion.position).length();
+    }
+    m_largestCorrection = std::max(m_largestCorrection, m_lastCorrection);
+    if (placed) {
+        setPreviousBoat(replayed);
+    }
+    setBoat(replayed);
+    m_motion = seatedIn(replayed);
 }
 
 void QcPrediction::followCart(const QcClientEntities &entities)
@@ -88,10 +134,10 @@ void QcPrediction::mirror(const QcPrediction &core, bool current)
     const float speedFactor = m_intent.speedFactor;
     m_intent = intent;
     m_intent.speedFactor = speedFactor;
-    if (m_riding.isRiding()) {
+    if (m_riding.ridesCart()) {
         m_motion = motion;
         m_previousMotion = previous;
-    } else if (wasRiding) {
+    } else if (wasRiding && !m_riding.drivesBoat()) {
         // Got out: the core's motion before is where the player got in, the own one the seat.
         m_previousMotion = previous;
     }

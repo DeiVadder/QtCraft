@@ -3,20 +3,20 @@
 #include "common/gameplay/QcArmour.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/core/QcServerVehicles.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerCrafting.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/gameplay/QcSpectatorRules.h"
-#include "server/minecarts/QcServerMinecarts.h"
 
 #include <algorithm>
 #include <utility>
 
-QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting, QcServerMinecarts &minecarts)
+QcServerGameModes::QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting, QcServerVehicles &vehicles)
     : m_state(state)
     , m_inventory(inventory)
     , m_crafting(crafting)
-    , m_minecarts(minecarts)
+    , m_vehicles(vehicles)
 {
 }
 
@@ -47,8 +47,8 @@ bool QcServerGameModes::setMode(QcServerClient &client, QcGameMode mode)
         comeOutOfBlocks(client);
     }
     if (!client.rules().tangible) {
-        // A spectator rides nothing (decision E-730).
-        m_minecarts.leave(client);
+        // A spectator rides nothing (decision E-730): he gets out where a rider gets out.
+        m_vehicles.leave(client);
     }
     // The new rules may end a flight; the client hears it with the next state. The others see a
     // spectator vanish or come back with the next sync, and the list marks him (decision E-730).

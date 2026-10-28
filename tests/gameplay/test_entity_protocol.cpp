@@ -119,7 +119,7 @@ private slots:
         orb.health = 37.0;
         QCOMPARE(roundTrip(orb).kind, QcEntityKind::ExperienceOrb);
         QCOMPARE(roundTrip(orb).health, 37.0);
-        QCOMPARE(QcProtocol::version, 81u);
+        QCOMPARE(QcProtocol::version, 82u);
     }
 
     void blockEntitiesCarryTheirBlock()
@@ -166,6 +166,40 @@ private slots:
         QcMsg::EntityMoves moves{{move}, 5};
         QCOMPARE(roundTrip(moves).moves.constFirst().flags, quint8(QcMsg::Riding));
         QCOMPARE(int(QcMsg::Riding), 128);
+    }
+
+    void boatsAndDriversRoundTrip()
+    {
+        // A boat is kind 11 (protocol 82, decision E-920): its spawn carries its item (the wood).
+        QcMsg::EntitySpawn boat{21, QcEntityKind::Boat, QString(), {3.5, 62.8, -7.5}, 135.0f, 0.0, {7, 1, 0}, {}, 0.0f, QcMsg::InWater, qcNoItem};
+        QCOMPARE(quint8(QcEntityKind::Boat), quint8(11));
+        const QcMsg::EntitySpawn boatCopy = roundTrip(boat);
+        QCOMPARE(boatCopy.kind, QcEntityKind::Boat);
+        QCOMPARE(boatCopy.position, boat.position);
+        QCOMPARE(boatCopy.yaw, 135.0f);
+        QCOMPARE(boatCopy.item.item, QcItemId{7});
+        QCOMPARE(boatCopy.flags, quint16(QcMsg::InWater));
+        QCOMPARE(QcEntityKinds::name(QcEntityKind::Boat), QLatin1StringView("boat"));
+        QCOMPARE(QcEntityKinds::fromValue(11), std::optional(QcEntityKind::Boat));
+        QCOMPARE(QcEntityKinds::fromValue(12), std::nullopt);
+
+        // A driver's state carries the boat's state for his prediction, exactly.
+        QcMsg::PlayerState state;
+        state.lastInputSequence = 77;
+        state.vehicle = 21;
+        QcBoatState driven;
+        driven.motion.position = {3.5, 62.815, -7.5};
+        driven.motion.velocity = {1.25, -0.03125, 6.5};
+        driven.motion.inWater = true;
+        driven.yaw = 271.25f;
+        driven.spin = -8.5f;
+        state.boat = driven;
+        const QcMsg::PlayerState stateCopy = roundTrip(state);
+        QCOMPARE(stateCopy.vehicle, 21u);
+        QVERIFY(stateCopy.boat.has_value());
+        QCOMPARE(*stateCopy.boat, driven);
+        state.boat.reset();
+        QVERIFY(!roundTrip(state).boat.has_value());
     }
 };
 

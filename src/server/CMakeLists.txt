@@ -28,6 +28,11 @@ target_sources(qc_server PRIVATE
     blocks/QcServerFire.h blocks/QcServerFire.cpp
 )
 target_sources(qc_server PRIVATE
+    boats/QcBoatManager.h boats/QcBoatManager.cpp
+    boats/QcBoxGrid.h boats/QcBoxGrid.cpp
+    boats/QcServerBoats.h boats/QcServerBoats.cpp
+)
+target_sources(qc_server PRIVATE
     chunks/QcBlockIndex.h chunks/QcBlockIndex.cpp
     chunks/QcChunkGroups.h chunks/QcChunkGroups.cpp
     chunks/QcChunkLinks.h chunks/QcChunkLinks.cpp
@@ -83,11 +88,13 @@ target_sources(qc_server PRIVATE
     core/QcServerState.h core/QcServerState.cpp
     core/QcServerSystems.h
     core/QcServerTick.cpp
+    core/QcServerVehicles.h core/QcServerVehicles.cpp
     core/QcServerWorld.h core/QcServerWorld.cpp
     core/QcSpawnPoint.h core/QcSpawnPoint.cpp
 )
 target_sources(qc_server PRIVATE
     entities/QcArmourStand.h
+    entities/QcBoat.h
     entities/QcComponent.h
     entities/QcCreature.h
     entities/QcEntities.h entities/QcEntities.cpp
@@ -289,6 +296,7 @@ target_sources(qc_server PRIVATE
     storage/QcBlockEntityCodec.h storage/QcBlockEntityCodec.cpp
     storage/QcBlockEntityRecord.h
     storage/QcBlockEntityRecords.h storage/QcBlockEntityRecords.cpp
+    storage/QcBoatCodec.h storage/QcBoatCodec.cpp
     storage/QcChunkCodec.h storage/QcChunkCodec.cpp
     storage/QcChunkIo.h storage/QcChunkIo.cpp
     storage/QcChunkStore.h storage/QcChunkStore.cpp

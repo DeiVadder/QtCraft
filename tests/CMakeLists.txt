@@ -29,7 +29,7 @@ set(qc_concurrency_tests
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause
     test_message_log test_crash_report
     test_creative_client test_adventure_client test_backpack_control test_void_client test_ice_client test_push_client test_multiplayer_bots test_creative_bots test_signal_bots
-    test_minecart_bots test_machine_bots test_headless_cli scenario_headless_walk_and_jump
+    test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
@@ -43,7 +43,7 @@ set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 set_tests_properties(test_multiplayer_bots PROPERTIES PROCESSORS 4)
 # Tests that depend on wall time or load (test_tick_scheduler, test_interpolation and others) run in
 # a phase of their own after the rest instead of RUN_SERIAL: tests/timing.cmake (E-550).
-set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots PROPERTIES PROCESSORS 3)
+set_tests_properties(test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES PROCESSORS 3)
 set_tests_properties(test_dedicated_server test_server_log test_headless_cli PROPERTIES PROCESSORS 2)
 # Timeouts guard against hangs, not speed: every limit is at least twice the time of the test in a
 # parallel TSan run (E-380, E-410). The slowest runs are those where ctest starts the longest tests
@@ -83,7 +83,7 @@ set_tests_properties(test_survival_scenario test_void_client test_machine_bots t
 # with a smaller factor. A new test that mostly waits belongs here.
 set_property(TEST test_interpolation test_latency test_creative_client test_adventure_client test_void_client test_ice_client test_push_client
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
-    test_minecart_bots test_machine_bots test_session_tick test_session_thread app_offscreen_pad_inventory
+    test_minecart_bots test_machine_bots test_boat_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
     app_offscreen_pad_settings app_offscreen_pad_lazy_menu APPEND PROPERTY LABELS realtime)
 
@@ -92,7 +92,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 # tests that read sources compare against the folder. Runtime data (content, translations, mods,
 # test data) selects every test anyway.
 set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
-    test_signal_bots test_minecart_bots test_machine_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
+    test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
 set_tests_properties(scenario_headless_admin_channel PROPERTIES
     REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/admin-channel.jsonl")
 set_tests_properties(test_ui_palette PROPERTIES

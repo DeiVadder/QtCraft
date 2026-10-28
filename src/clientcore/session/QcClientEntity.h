@@ -21,8 +21,8 @@ struct QcClientEntity
     int creatureType = 0;
     // The block of a falling block; air otherwise.
     QcBlockId block = qcAirBlockId;
-    // The stack of a dropped item, the item of a minecart (what it carries) or a projectile (its
-    // look); empty otherwise.
+    // The stack of a dropped item, the item of a minecart (what it carries), a boat (what it is built
+    // of) or a projectile (its look); empty otherwise.
     QcItemStack item;
     QString name;
     // Where the entity is shown at the end of the current client tick and at its start; frames
@@ -71,6 +71,8 @@ struct QcClientEntity
     bool isBlockEntity() const { return isFallingBlock() || isMovingBlock() || isPrimedExplosive(); }
     bool isArmourStand() const { return kind == QcEntityKind::ArmourStand; }
     bool isMinecart() const { return kind == QcEntityKind::Minecart; }
+    // A boat (decision E-920): `item` is its boat item, which names what it is built of.
+    bool isBoat() const { return kind == QcEntityKind::Boat; }
     bool isExperienceOrb() const { return kind == QcEntityKind::ExperienceOrb; }
     bool isProjectile() const { return kind == QcEntityKind::Projectile; }
     // An item frame or a painting: targeted by its thin box (QcHanging::box), never moves.

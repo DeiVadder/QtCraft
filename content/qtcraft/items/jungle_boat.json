@@ -1,0 +1,7 @@
+{
+    "name": "jungle_boat",
+    "texture": "jungle_boat",
+    "maxStack": 1,
+    "boatBlock": "jungle_planks",
+    "fuelSeconds": 60
+}

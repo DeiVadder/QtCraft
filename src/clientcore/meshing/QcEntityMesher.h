@@ -233,6 +233,10 @@ using PlaceFunction = std::function<QcVec3(const QcVec3 &local)>;
 // centred on the origin, any other item as a flat sprite standing on it.
 void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv);
 
+// Static boxes in any orientation, each corner placed by `place` (a paddle turning in its oarlock,
+// decision E-920).
+void appendPlacedParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv);
+
 // A falling block (0.98 m) or the block a cart carries: the block's look (ItemLook with `cube`).
 void appendBlock(QcEntityMesh &mesh, const ItemLook &look, const BlockPlacement &placement, QcEntityLight light, const UvLookup &uv);
 // A falling or sliding block drawn with the quads of its state (QcBlockRenderTable::drawnQuads,

@@ -172,12 +172,22 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
         if (!definition.cartBlock.isEmpty() && !content.blockId(definition.cartBlock)) {
             warnings.append(u"item %1: carries unknown block '%2'"_s.arg(definition.name, definition.cartBlock));
         }
+        // A boat of a block nothing defines is drawn without texture (decision E-920).
+        if (definition.placesBoat() && !content.blockId(definition.boatBlock)) {
+            warnings.append(u"item %1: builds a boat of unknown block '%2'"_s.arg(definition.name, definition.boatBlock));
+        }
     }
     for (const QcStructureDefinition &structure : content.worldgen().structures()) {
         for (const QcStructureDefinition::Cart &cart : structure.minecarts) {
             const std::optional<QcItemId> item = content.itemId(cart.item);
             if (!item || !content.item(*item).placesCart) {
                 warnings.append(u"structure %1: '%2' is no minecart"_s.arg(structure.name, cart.item));
+            }
+        }
+        for (const QcStructureDefinition::Boat &boat : structure.boats) {
+            const std::optional<QcItemId> item = content.itemId(boat.item);
+            if (!item || !content.item(*item).placesBoat()) {
+                warnings.append(u"structure %1: '%2' is no boat"_s.arg(structure.name, boat.item));
             }
         }
     }

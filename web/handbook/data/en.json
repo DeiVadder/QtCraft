@@ -10,6 +10,7 @@
                 "chapter:qtcraft:smelting",
                 "chapter:qtcraft:hunger",
                 "chapter:qtcraft:farming",
+                "chapter:qtcraft:boats",
                 "chapter:qtcraft:signal",
                 "chapter:qtcraft:rails",
                 "chapter:qtcraft:health",
@@ -482,6 +483,7 @@
             "entries": [
                 "item:qtcraft:armor_stand",
                 "item:qtcraft:arrow",
+                "item:qtcraft:birch_boat",
                 "item:qtcraft:black_dye",
                 "item:qtcraft:blue_dye",
                 "item:qtcraft:bone",
@@ -524,6 +526,7 @@
                 "item:qtcraft:iron_ingot",
                 "item:qtcraft:iron_nugget",
                 "item:qtcraft:item_frame",
+                "item:qtcraft:jungle_boat",
                 "item:qtcraft:lapis_lazuli",
                 "item:qtcraft:lava_bucket",
                 "item:qtcraft:leather",
@@ -539,6 +542,7 @@
                 "item:qtcraft:chest_minecart",
                 "item:qtcraft:hopper_minecart",
                 "item:qtcraft:name_tag",
+                "item:qtcraft:oak_boat",
                 "item:qtcraft:orange_dye",
                 "item:qtcraft:painting",
                 "item:qtcraft:paper",
@@ -559,6 +563,7 @@
                 "item:qtcraft:spider_eye",
                 "item:qtcraft:harming_splash_potion",
                 "item:qtcraft:poison_splash_potion",
+                "item:qtcraft:spruce_boat",
                 "item:qtcraft:stick",
                 "item:qtcraft:string",
                 "item:qtcraft:sugar",
@@ -8186,6 +8191,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:bed",
                             "text": "Bed"
+                        },
+                        {
+                            "icon": "qtcraft:birch_boat",
+                            "note": "",
+                            "target": "item:qtcraft:birch_boat",
+                            "text": "Birch Boat"
                         },
                         {
                             "icon": "qtcraft:birch_button",
@@ -40793,6 +40804,12 @@
                             "text": "Green bed"
                         },
                         {
+                            "icon": "qtcraft:jungle_boat",
+                            "note": "",
+                            "target": "item:qtcraft:jungle_boat",
+                            "text": "Jungle Boat"
+                        },
+                        {
                             "icon": "qtcraft:jungle_button",
                             "note": "",
                             "target": "block:qtcraft:jungle_button",
@@ -57886,6 +57903,12 @@
                             "note": "Any planks",
                             "target": "block:qtcraft:note_block",
                             "text": "Note Block"
+                        },
+                        {
+                            "icon": "qtcraft:oak_boat",
+                            "note": "",
+                            "target": "item:qtcraft:oak_boat",
+                            "text": "Oak Boat"
                         },
                         {
                             "icon": "qtcraft:oak_button",
@@ -80597,6 +80620,12 @@
                             "text": "Signal Piston"
                         },
                         {
+                            "icon": "qtcraft:spruce_boat",
+                            "note": "",
+                            "target": "item:qtcraft:spruce_boat",
+                            "text": "Spruce Boat"
+                        },
+                        {
                             "icon": "qtcraft:spruce_button",
                             "note": "",
                             "target": "block:qtcraft:spruce_button",
@@ -94120,6 +94149,84 @@
             "text": "",
             "title": "Getting started"
         },
+        "chapter:qtcraft:boats": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Boats",
+            "facts": [
+            ],
+            "icon": "qtcraft:oak_boat",
+            "id": "chapter:qtcraft:boats",
+            "name": "qtcraft:boats",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Five planks of one kind of wood make a boat of that wood, laid out like a bowl. Use the boat on water to set it down on the surface, pointing the way you look; on the ground it goes on top of the block. One hit breaks a boat and it drops itself (not in creative mode). Boats float, rise to the surface when they are under water and fall where there is no water below them. A boat burns in a furnace like other wooden things.",
+                    "title": "Building and placing a boat"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Use a boat to get in and sneak to get out: you step onto the bank beside it, or onto the boat where there is no bank. The forward key paddles, the back key brakes and paddles slowly backwards, left and right turn the boat. A boat keeps its speed and its turn for a while when you let go and glides on, up to about eight blocks a second on water. On land it barely crawls, but on ice it slides faster than on any water. A boat never climbs a bank or a waterfall: it stops against blocks and falls down waterfalls. Your client moves your boat at once, so driving feels direct also on a distant server.",
+                    "title": "Driving"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "A boat has a seat in front for one creature. A creature that touches a boat with a free seat climbs in and sits there until the boat is broken. This way you take animals across water, or trap a monster. Fish, flying creatures and creatures wider than a boat stay out. Walking into an empty boat pushes it; boats push each other apart.",
+                    "title": "Creatures in boats"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:oak_boat",
+                            "note": "",
+                            "target": "item:qtcraft:oak_boat",
+                            "text": "Oak Boat"
+                        },
+                        {
+                            "icon": "qtcraft:birch_boat",
+                            "note": "",
+                            "target": "item:qtcraft:birch_boat",
+                            "text": "Birch Boat"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_boat",
+                            "note": "",
+                            "target": "item:qtcraft:spruce_boat",
+                            "text": "Spruce Boat"
+                        },
+                        {
+                            "icon": "qtcraft:jungle_boat",
+                            "note": "",
+                            "target": "item:qtcraft:jungle_boat",
+                            "text": "Jungle Boat"
+                        },
+                        {
+                            "icon": "qtcraft:packed_ice",
+                            "note": "",
+                            "target": "block:qtcraft:packed_ice",
+                            "text": "Packed ice"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Boats"
+        },
         "chapter:qtcraft:building": {
             "category": "playing",
             "categoryTitle": "Playing",
@@ -99590,6 +99697,106 @@
             ],
             "text": "A potato baked in a furnace; as filling as bread.",
             "title": "Baked potato"
+        },
+        "item:qtcraft:birch_boat": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Birch Boat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:birch_boat"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "60 s"
+                }
+            ],
+            "icon": "qtcraft:birch_boat",
+            "id": "item:qtcraft:birch_boat",
+            "name": "qtcraft:birch_boat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                },
+                                {
+                                    "icon": "qtcraft:birch_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:birch_planks",
+                                    "text": "Birch planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:birch_boat",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:birch_boat",
+                                "note": "",
+                                "target": "item:qtcraft:birch_boat",
+                                "text": "Birch Boat"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.",
+            "title": "Birch Boat"
         },
         "item:qtcraft:black_dye": {
             "category": "items",
@@ -111615,6 +111822,106 @@
             "text": "Hang it on any face of a solid block, also on the floor or the ceiling. Right click with an item puts one in; right click again turns it an eighth further. A hit takes the item out, the next hit takes the frame down. A Signal Comparator behind the block reads the turn (1 to 8) while the frame holds an item. The frame falls off when its block goes.",
             "title": "Item frame"
         },
+        "item:qtcraft:jungle_boat": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Jungle Boat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:jungle_boat"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "60 s"
+                }
+            ],
+            "icon": "qtcraft:jungle_boat",
+            "id": "item:qtcraft:jungle_boat",
+            "name": "qtcraft:jungle_boat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:jungle_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:jungle_planks",
+                                    "text": "Jungle planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:jungle_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:jungle_planks",
+                                    "text": "Jungle planks"
+                                },
+                                {
+                                    "icon": "qtcraft:jungle_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:jungle_planks",
+                                    "text": "Jungle planks"
+                                },
+                                {
+                                    "icon": "qtcraft:jungle_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:jungle_planks",
+                                    "text": "Jungle planks"
+                                },
+                                {
+                                    "icon": "qtcraft:jungle_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:jungle_planks",
+                                    "text": "Jungle planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:jungle_boat",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:jungle_boat",
+                                "note": "",
+                                "target": "item:qtcraft:jungle_boat",
+                                "text": "Jungle Boat"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.",
+            "title": "Jungle Boat"
+        },
         "item:qtcraft:lapis_lazuli": {
             "category": "items",
             "categoryTitle": "Items",
@@ -113580,6 +113887,106 @@
             ],
             "text": "Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from villagers. Give it a name at an anvil, then use it on a creature: the name shows above it, and a named creature never despawns. A named sand golem no longer guards its cellar: it stays in the world for good, and the cellar gets a new guardian.",
             "title": "Name Tag"
+        },
+        "item:qtcraft:oak_boat": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Oak Boat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:oak_boat"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "60 s"
+                }
+            ],
+            "icon": "qtcraft:oak_boat",
+            "id": "item:qtcraft:oak_boat",
+            "name": "qtcraft:oak_boat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                },
+                                {
+                                    "icon": "qtcraft:oak_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:oak_planks",
+                                    "text": "Oak planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:oak_boat",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:oak_boat",
+                                "note": "",
+                                "target": "item:qtcraft:oak_boat",
+                                "text": "Oak Boat"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.",
+            "title": "Oak Boat"
         },
         "item:qtcraft:orange_dye": {
             "category": "items",
@@ -116430,6 +116837,106 @@
             ],
             "text": "Spiders sometimes drop one. Its picture marks poison next to the hearts.",
             "title": "Spider eye"
+        },
+        "item:qtcraft:spruce_boat": {
+            "category": "items",
+            "categoryTitle": "Items",
+            "englishTitle": "Spruce Boat",
+            "facts": [
+                {
+                    "label": "ID",
+                    "links": [
+                    ],
+                    "value": "qtcraft:spruce_boat"
+                },
+                {
+                    "label": "Stack size",
+                    "links": [
+                    ],
+                    "value": "1"
+                },
+                {
+                    "label": "Burns as fuel",
+                    "links": [
+                        {
+                            "icon": "",
+                            "note": "",
+                            "target": "table:fuels",
+                            "text": "Fuels"
+                        }
+                    ],
+                    "value": "60 s"
+                }
+            ],
+            "icon": "qtcraft:spruce_boat",
+            "id": "item:qtcraft:spruce_boat",
+            "name": "qtcraft:spruce_boat",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                        {
+                            "cells": [
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                null,
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                },
+                                {
+                                    "icon": "qtcraft:spruce_planks",
+                                    "note": "",
+                                    "target": "block:qtcraft:spruce_planks",
+                                    "text": "Spruce planks"
+                                }
+                            ],
+                            "count": 1,
+                            "height": 2,
+                            "kind": "crafting",
+                            "machines": [
+                            ],
+                            "name": "qtcraft:spruce_boat",
+                            "needsTable": true,
+                            "note": "Crafting table (3 × 3)",
+                            "result": {
+                                "icon": "qtcraft:spruce_boat",
+                                "note": "",
+                                "target": "item:qtcraft:spruce_boat",
+                                "text": "Spruce Boat"
+                            },
+                            "seconds": 0,
+                            "shapeless": false,
+                            "width": 3
+                        }
+                    ],
+                    "text": "",
+                    "title": "How to make it"
+                }
+            ],
+            "text": "Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.",
+            "title": "Spruce Boat"
         },
         "item:qtcraft:stick": {
             "category": "items",
@@ -128046,6 +128553,30 @@
                             "note": "80 s",
                             "target": "item:qtcraft:coal",
                             "text": "Coal"
+                        },
+                        {
+                            "icon": "qtcraft:birch_boat",
+                            "note": "60 s",
+                            "target": "item:qtcraft:birch_boat",
+                            "text": "Birch Boat"
+                        },
+                        {
+                            "icon": "qtcraft:jungle_boat",
+                            "note": "60 s",
+                            "target": "item:qtcraft:jungle_boat",
+                            "text": "Jungle Boat"
+                        },
+                        {
+                            "icon": "qtcraft:oak_boat",
+                            "note": "60 s",
+                            "target": "item:qtcraft:oak_boat",
+                            "text": "Oak Boat"
+                        },
+                        {
+                            "icon": "qtcraft:spruce_boat",
+                            "note": "60 s",
+                            "target": "item:qtcraft:spruce_boat",
+                            "text": "Spruce Boat"
                         },
                         {
                             "icon": "qtcraft:barrel",

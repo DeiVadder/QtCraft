@@ -312,6 +312,14 @@ void QcPlayerCommands::moveTo(QcServerClient &player, const QcVec3 &position)
     // Loaded at once so the player does not fall through a missing chunk; the client takes the new
     // position from the next PlayerState like after a respawn.
     m_state.world().loadChunk(QcChunkStreaming::chunkOf(position));
+    // A rider or driver is teleported out of his minecart or boat (decisions E-383, E-920).
+    if (QcMinecart *cart = m_state.entities().minecarts().ridden(player.id)) {
+        cart->rider = 0;
+        cart->rest.reset();
+    }
+    if (QcBoat *boat = m_state.entities().boats().drivenBy(player.id)) {
+        boat->driver = 0;
+    }
     player.motion.position = position;
     player.motion.velocity = {};
     player.previousPosition.reset();

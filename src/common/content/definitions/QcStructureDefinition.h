@@ -92,6 +92,15 @@ struct QcStructureDefinition
         QString item;
     };
 
+    // A boat (decision E-920) with its feet at `at` (a point, like a creature's), of the boat item
+    // `item`, pointing to `yaw` degrees (0: north).
+    struct Boat
+    {
+        QcVec3 at;
+        QString item;
+        float yaw = 0.0f;
+    };
+
     // A monster spawner of the structure (decision E-520): the creature it brings forth and whether
     // its creatures stay put; given to the server with the chunk (QcChunkFurnishing).
     struct Spawner
@@ -248,6 +257,8 @@ struct QcStructureDefinition
     QList<QcBlockPos> growing;
     // Minecarts standing on rails when the world is made (decision E-382).
     QList<Cart> minecarts;
+    // Boats lying on water or ground when the world is made (decision E-920).
+    QList<Boat> boats;
     QList<Spawner> spawners;
     QList<Loot> loot;
     QList<Sign> signs;

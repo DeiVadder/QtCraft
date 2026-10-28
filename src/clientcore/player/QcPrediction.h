@@ -1,11 +1,14 @@
 #pragma once
 
 #include "clientcore/player/QcClientRiding.h"
+#include "common/physics/QcBoatMotion.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/physics/QcPlayerInput.h"
 #include "common/protocol/QcMessages.h"
 
 #include <QList>
+
+#include <optional>
 
 class QcBlockAccess;
 class QcClientEntities;
@@ -13,8 +16,10 @@ class QcClientEntities;
 // Prediction of the local player: the movement intent, the inputs the server has not acknowledged
 // yet, the predicted motion one tick ago and now, and the reconciliation with the authoritative
 // state (corrections, decision E-257). While the player rides a minecart nothing is predicted, the
-// player follows the cart (QcClientRiding, decision E-382). Plain data without Qt objects or
-// signals: it reads the world and the entity mirror only during predict() and reconcile().
+// player follows the cart (QcClientRiding, decision E-382). While he drives a boat the boat is
+// predicted by the shared boat physics (QcBoatState, decision E-920) from the server's state of it
+// and the player sits on its seat. Plain data without Qt objects or signals: it reads the world and
+// the entity mirror only during predict() and reconcile().
 class QcPrediction
 {
 public:
@@ -45,15 +50,19 @@ public:
     double largestCorrection() const { return m_largestCorrection; }
     void resetCorrections() { m_largestCorrection = 0.0; }
     bool hasServerState() const { return m_hasServerState; }
-    // The minecart the player rides.
+    // The minecart the player rides or the boat he drives.
     const QcClientRiding &riding() const { return m_riding; }
+    // The predicted boat the player drives after the latest tick and one tick earlier; none when
+    // he drives none.
+    const std::optional<QcBoatState> &boat() const { return m_boat; }
+    const std::optional<QcBoatState> &previousBoat() const { return m_previousBoat; }
 
     // Predicts one tick from the intent: on foot or flying (with `flying` as the wish sent and
     // `movement` from the game mode) through the shared physics, pushed by the creatures with `push`
     // (QcPushBodies, decision E-882; kept with the input, so a replay pushes alike: after a
     // correction the replayed steps keep the pushes of the places predicted before, not of the
-    // corrected ones, and the next correction takes up the difference); riding the motion stays
-    // (followCart moves it). Returns the input to send; it carries the next sequence number and is
+    // corrected ones, and the next correction takes up the difference); riding a cart the motion
+    // stays (followCart moves it); driving a boat the input steps the boat and the player sits in it. Returns the input to send; it carries the next sequence number and is
     // kept until acknowledged.
     QcPlayerInput predict(const QcBlockAccess &world, bool flying, QcMovement movement, const QcVec3 &push = {});
     // The factor of the player's status effects on his speed (slowness, decision E-838), as the
@@ -72,6 +81,13 @@ public:
     Reconciled reconcile(const QcMsg::PlayerState &state, const QcBlockAccess *world, QcMovement movement);
 
 private:
+    // The motion of the driver on the seat of `boat`.
+    [[nodiscard]] static QcEntityMotion seatedIn(const QcBoatState &boat);
+    void setBoat(const std::optional<QcBoatState> &boat) { m_boat = boat; }
+    void setPreviousBoat(const std::optional<QcBoatState> &boat) { m_previousBoat = boat; }
+    // Applies a state that names a boat: its state replayed with the pending inputs.
+    void reconcileBoat(const QcBoatState &boat, const QcBlockAccess *world, bool placedOrMoved);
+
     QcPlayerInput m_intent;
     quint32 m_nextSequence = 1;
     QList<QcPlayerInput> m_pendingInputs;
@@ -82,4 +98,6 @@ private:
     double m_largestCorrection = 0.0;
     quint32 m_lastAcknowledged = 0;
     QcClientRiding m_riding;
+    std::optional<QcBoatState> m_boat;
+    std::optional<QcBoatState> m_previousBoat;
 };

@@ -23,7 +23,7 @@ constexpr const char *plantsGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Plants"
 constexpr const char *chunksGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Chunks");
 constexpr const char *villagesGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Villages");
 
-constexpr std::array<QcServerLimits::Field, 71> table{{
+constexpr std::array<QcServerLimits::Field, 72> table{{
     {"signalBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Dust work per tick"), 256, qint64{1} << 22, &QcServerLimits::signalBudget, signalGroup},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcServerLimits", "share of the signal budget kept for due scheduled ticks"), 0, 90,
      &QcServerLimits::signalScheduleReservePercent, signalGroup},
@@ -81,6 +81,7 @@ constexpr std::array<QcServerLimits::Field, 71> table{{
     {"leafPendingChecks", QT_TRANSLATE_NOOP("QcServerLimits", "leaf checks waiting"), 256, 1 << 20, &QcServerLimits::leafPendingChecks, plantsGroup},
     {"maxArmourStands", QT_TRANSLATE_NOOP("QcServerLimits", "armour stands in the world"), 16, 65536, &QcServerLimits::maxArmourStands, objectsGroup},
     {"maxMinecarts", QT_TRANSLATE_NOOP("QcServerLimits", "minecarts in the world"), 16, 65536, &QcServerLimits::maxMinecarts, objectsGroup},
+    {"maxBoats", QT_TRANSLATE_NOOP("QcServerLimits", "boats in the world"), 16, 65536, &QcServerLimits::maxBoats, objectsGroup},
     {"maxHangings", QT_TRANSLATE_NOOP("QcServerLimits", "item frames and paintings in the world"), 16, 65536, &QcServerLimits::maxHangings, objectsGroup},
     {"movingBlocksShown", QT_TRANSLATE_NOOP("QcServerLimits", "blocks shown sliding behind pistons"), 16, 65536, &QcServerLimits::movingBlocksShown, objectsGroup},
     {"chunkGroupLimit", QT_TRANSLATE_NOOP("QcServerLimits", "chunks a group of connected circuits may span before it waits at its edge"), 1, 1024, &QcServerLimits::chunkGroupLimit, chunksGroup},

@@ -10,6 +10,7 @@
 #include "common/gameplay/QcGameMode.h"
 #include "common/gameplay/QcItemStack.h"
 #include "common/gameplay/QcStatusEffects.h"
+#include "common/physics/QcBoatMotion.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/physics/QcPlayerInput.h"
 
@@ -26,12 +27,15 @@ struct PlayerInput
 
 // Server -> client: authoritative state of the receiving player. `vehicle` is the minecart the
 // player rides (entity id, 0 for none, decision E-382): while it is set the server moves the player
-// with the cart and the client shows the player where it shows the cart, without predicting.
+// with the cart and the client shows the player where it shows the cart, without predicting. It
+// names the boat the player drives as well (decision E-920); then `boat` is its state after the
+// acknowledged input, which the client's prediction of the boat starts from.
 struct PlayerState
 {
     quint32 lastInputSequence = 0;
     QcEntityMotion motion;
     quint32 vehicle = 0;
+    std::optional<QcBoatState> boat = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 struct SelectHotbarSlot

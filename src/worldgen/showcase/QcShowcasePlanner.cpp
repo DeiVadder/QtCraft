@@ -271,6 +271,9 @@ void QcShowcasePlanner::addPlacement(QcStructurePlacement placement)
     for (const QcStructureDefinition::Cart &cart : structure.minecarts) {
         m_plan.setup.minecarts.append({placement.toWorld(cart.at), cart.item});
     }
+    for (const QcStructureDefinition::Boat &boat : structure.boats) {
+        m_plan.setup.boats.append({placement.toWorld(boat.at), boat.item, boat.yaw + 90.0f * static_cast<float>(placement.turns())});
+    }
     for (const QcBlockPos &pos : structure.growing) {
         m_plan.setup.growing.append(placement.toWorld(pos));
     }

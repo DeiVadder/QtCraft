@@ -245,6 +245,7 @@ target_sources(qc_common PRIVATE
     maps/QcMapPixel.h
 )
 target_sources(qc_common PRIVATE
+    physics/QcBoatMotion.h physics/QcBoatMotion.cpp
     physics/QcBodyFit.h physics/QcBodyFit.cpp
     physics/QcBodyGrid.h physics/QcBodyGrid.cpp
     physics/QcBodyPush.h physics/QcBodyPush.cpp
@@ -294,6 +295,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     world/QcBlockAccess.h
+    world/QcBoatBody.h
     world/QcChunk.h world/QcChunk.cpp
     world/QcChunkSection.h world/QcChunkSection.cpp
     world/QcDamagedFile.h

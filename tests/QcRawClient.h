@@ -64,6 +64,7 @@ public:
             motion = state->motion;
             acknowledged = state->lastInputSequence;
             vehicle = state->vehicle;
+            boat = state->boat;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
             viewDistanceGranted = welcome->viewDistance;
@@ -191,9 +192,11 @@ public:
     quint32 entityId = 0;
     qint32 viewDistanceGranted = -1;
     QcEntityMotion motion;
-    // The latest input the server acknowledged and the minecart ridden (PlayerState).
+    // The latest input the server acknowledged, the minecart ridden or boat driven and the boat's
+    // state (PlayerState).
     quint32 acknowledged = 0;
     quint32 vehicle = 0;
+    std::optional<QcBoatState> boat;
     // Messages received in all.
     int messageCount = 0;
     // Keys of all sounds heard, oldest first.

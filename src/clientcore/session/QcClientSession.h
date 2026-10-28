@@ -280,6 +280,8 @@ private:
     void refreshTarget();
     // Applies what a hand action did to the arm and the screens; false when it did nothing.
     bool apply(QcHandActions::HandEffect effect);
+    // The splash and paddle strokes of the boat the player drives.
+    void rowingSounds();
     void cue(QcSoundCue cue);
     // Sends a request of a part (inventory, hand) over the connection.
     void sendToServer(const QcMessage &message);

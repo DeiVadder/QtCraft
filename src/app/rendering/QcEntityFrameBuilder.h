@@ -2,6 +2,7 @@
 
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
+#include "clientcore/meshing/QcBoatRiders.h"
 #include "clientcore/meshing/QcCapeTracker.h"
 #include "clientcore/meshing/QcEntityCulling.h"
 #include "clientcore/meshing/QcEntityMesher.h"
@@ -28,7 +29,7 @@ class QcTextureAtlas;
 struct QcSessionParts;
 
 // Builds the entity meshes of one frame from the running session: creatures, armour stands, carts
-// with their load, drops, projectiles, flames, lit explosives and the puffs of explosions, the local
+// with their load, boats, drops, projectiles, flames, lit explosives and the puffs of explosions, the local
 // player seen from outside and the
 // first-person arm, with their capes and the light they stand in. Hands nothing to the view; that
 // is QcRenderBridge's part. Lives in the GUI thread.
@@ -112,6 +113,11 @@ private:
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
     // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
     static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);
+    // A boat of planks of its wood with its paddles, bobbing while it floats (decision E-920).
+    void appendBoat(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame) const;
+    // The boat `boatId` as drawn when the local player drives it (from the prediction); none for
+    // any other boat.
+    [[nodiscard]] std::optional<QcBoatRiders::Drawn> ownBoat(quint32 boatId, double alpha, double seconds) const;
     // The block a container or hopper cart carries, inside the cart standing at `position`.
     void appendCartLoad(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, const QcVec3 &position) const;
     // An armour stand in its pose with what it wears and holds (decision E-238).
@@ -141,6 +147,8 @@ private:
     QString m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
+    // The other players on boats' driver seats this frame, by player id (QcBoatRiders::seats).
+    QHash<quint32, QcBoatRiders::Seat> m_boatSeats;
     // The legs of the box creatures (decision E-888), found once per model.
     QcBoxLegsCache m_legs;
     // Text quads of the signs, rebuilt only when a sign changes (decision E-766).

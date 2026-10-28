@@ -137,7 +137,8 @@ void QcMobBehaviour::update(qsizetype index, QcCreature &mob, const QcMobBrain::
     QcMobSteering::provoke(mob, definition, *context.players);
     mob.calm = QcMobSteering::calm(mob, definition, context.worldTime);
     limitFall(mob, definition);
-    if (mob.noAi) {
+    // A creature in a boat sits there like one without a mind (decision E-920): the boat moves it.
+    if (mob.noAi || mob.vehicle != 0) {
         ++m_tiers.idle;
         withoutMind(index, mob, definition, context.world);
         return;
@@ -210,8 +211,8 @@ QcPhysics::Steering QcMobBehaviour::adjusted(const QcCreature &mob, const QcMobD
 void QcMobBehaviour::withoutMind(qsizetype index, QcCreature &mob, const QcMobDefinition &definition, const QcServerWorld &world)
 {
     // A flyer hovers where it is, and a creature lying or sitting stays so, as its brain would leave
-    // it while it rests.
-    if (definition.flying || mob.pose != QcPose::Standing) {
+    // it while it rests; one in a boat sits on its seat (decision E-920).
+    if (definition.flying || mob.pose != QcPose::Standing || mob.vehicle != 0) {
         return;
     }
 

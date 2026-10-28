@@ -136,6 +136,11 @@ struct QcItemDefinition
     // container cart with the block's slots, a Signal Hopper a hopper cart; empty for a plain cart.
     // Reaches the client, which draws the block in the cart and names the cart's screen.
     QString cartBlock;
+    // Used on water or on the top of a block, places a boat built of this block (its planks,
+    // decision E-920) that drops this item again; empty for items that place no boat. Reaches the
+    // client, which aims the item at water and draws the boat with the block's side texture.
+    QString boatBlock;
+    bool placesBoat() const { return !boatBlock.isEmpty(); }
     // Used on a block with `tillsInto` (grass, dirt), turns it into that block (a hoe making farmland,
     // decision E-290). Server side only.
     bool tills = false;

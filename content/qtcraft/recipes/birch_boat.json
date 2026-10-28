@@ -1,0 +1,14 @@
+{
+    "name": "birch_boat",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "birch_planks"
+    },
+    "result": {
+        "item": "birch_boat"
+    }
+}

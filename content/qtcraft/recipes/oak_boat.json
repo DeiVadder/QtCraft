@@ -1,0 +1,14 @@
+{
+    "name": "oak_boat",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "oak_planks"
+    },
+    "result": {
+        "item": "oak_boat"
+    }
+}

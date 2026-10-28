@@ -91,6 +91,8 @@ private:
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
     void runOverlayStep(const QString &step);
     // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
+    // `hold:<action>` / `release:<action>`: holds down or lets go of the key of a key action.
+    void holdKey(const QString &actionId, bool held) const;
     void pressKey(const QString &actionId) const;
     // `view:hide` / `view:show`: hides or shows the world view as the phase binding does; a hide
     // waits for meshed sections, a show for the hide before it (`attemptsLeft` retries).

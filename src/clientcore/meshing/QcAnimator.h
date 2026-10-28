@@ -44,6 +44,9 @@ struct BodyPose
     // On the back around a point just above the feet, the limbs straight, the head on the pillow;
     // only the breath (`idle`) moves the arms.
     void lieOnBack(double idle);
+    // Driving a boat (decision E-920): the thighs level and forward, the arms reaching to the grips
+    // of the paddles at the moment `rowPhase` of a stroke (negative: resting paddles).
+    void rowBoat(double rowPhase);
     // Aiming a bow (decision E-425): the left arm holds it out along the view, the right one pulls
     // the string back towards the face.
     void aimBow(const QcEntityPose &pose);
@@ -67,6 +70,10 @@ struct HandPose
     double reach = 0.0;
     double punch = 0.0;
 };
+
+// The right shoulder of the humanoid figure (its arm's pivot) above its feet; the left one mirrored.
+// The rowing arms reach from there to the paddle grips.
+inline constexpr QcVec3 driverShoulder{0.35, 1.3, 0.0};
 
 // Share of a mining or attack swing at which the arm is highest and lowest.
 inline constexpr double swingTop = 0.2;

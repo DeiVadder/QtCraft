@@ -2,6 +2,7 @@
 
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/physics/QcBoatMotion.h"
 
 #include <algorithm>
 #include <cmath>
@@ -211,6 +212,9 @@ void spin(Shape &shape, int sixteenths)
         cover.clear();
     }
 }
+
+// The boats float on the drawn surface (decision E-920).
+static_assert(static_cast<double>(QcBlockRenderTable::liquidSurfaceDrop) == QcBoatMotion::liquidSurfaceDrop);
 
 // Height of a liquid's surface: falls with the flow level; sources and falling liquid are nearly full.
 float liquidHeightOf(const QcContentRegistry &content, QcBlockId id, const QcBlockDefinition &block)

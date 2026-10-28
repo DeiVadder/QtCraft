@@ -11,7 +11,7 @@
 class QcContentRegistry;
 class QcServerCrafting;
 class QcServerInventory;
-class QcServerMinecarts;
+class QcServerVehicles;
 struct QcServerClient;
 class QcServerState;
 
@@ -21,7 +21,7 @@ class QcServerState;
 class QcServerGameModes
 {
 public:
-    QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting, QcServerMinecarts &minecarts);
+    QcServerGameModes(QcServerState &state, QcServerInventory &inventory, QcServerCrafting &crafting, QcServerVehicles &vehicles);
 
     // The mode of a player who joins the world for the first time: the server's setting
     // (server.json, an unsaved world) or else the world's default.
@@ -69,5 +69,5 @@ private:
     QcServerState &m_state;
     QcServerInventory &m_inventory;
     QcServerCrafting &m_crafting;
-    QcServerMinecarts &m_minecarts;
+    QcServerVehicles &m_vehicles;
 };

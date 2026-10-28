@@ -8,6 +8,7 @@
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcPhysics.h"
+#include "common/world/QcBoatBody.h"
 #include "common/world/QcMinecartBody.h"
 
 #include <QJsonArray>
@@ -96,10 +97,10 @@ QJsonObject entityJson(const QcContentRegistry *content, const QcClientEntity &e
                 {u"distance"_s, distance}};
     }
 
-    if (entity.isMinecart()) {
+    if (entity.isMinecart() || entity.isBoat()) {
         const bool known = content && content->isValidItem(entity.item.item);
         return {{u"id"_s, static_cast<qint64>(entity.id)},
-                {u"type"_s, u"minecart"_s},
+                {u"type"_s, entity.isBoat() ? u"boat"_s : u"minecart"_s},
                 {u"item"_s, known ? content->item(entity.item.item).name : QString()},
                 {u"yaw"_s, entity.yaw},
                 {u"position"_s, QcControlReports::vectorJson(entity.position)},
@@ -196,7 +197,10 @@ bool QcControlEntityCommands::turnToEntity(const QJsonObject &request)
 
     const auto content = session().content();
     const QcMobDefinition *creature = it->creature(*content);
-    const double height = it->isMinecart() ? QcMinecartBody::height : creature ? creature->height : QcPhysics::playerHeight;
+    const double height = it->isMinecart() ? QcMinecartBody::height
+                          : it->isBoat()   ? QcBoatBody::height
+                          : creature       ? creature->height
+                                           : QcPhysics::playerHeight;
 
     QcControlAim::lookAtPoint(session(), it->position + QcVec3{0.0, height * 0.5, 0.0});
     return true;
@@ -323,7 +327,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
                                  return false;
                              }
                              if (session().hand().targetEntity() != std::optional<quint32>(wanted) || !session().useItem()) {
-                                 m_context.setActiveError(u"Minecart is not in reach or not in sight"_s);
+                                 m_context.setActiveError(u"Minecart or boat is not in reach or not in sight"_s);
                                  return true;
                              }
                              sent = true;
@@ -334,7 +338,7 @@ void QcControlEntityCommands::ride(const QJsonObject &request)
                              return true;
                          }
                          if (session().tickCount() >= startTick + 20) {
-                             m_context.setActiveError(u"The server did not let the player in (another rider, or no minecart)"_s);
+                             m_context.setActiveError(u"The server did not let the player in (another rider, or no minecart or boat)"_s);
                              return true;
                          }
                          return false;
@@ -345,7 +349,7 @@ void QcControlEntityCommands::leave(const QJsonObject &request)
 {
     // Sneak until the server lets the player out of the cart.
     if (!session().prediction().riding().isRiding()) {
-        m_context.fail(request, u"The player rides no minecart"_s);
+        m_context.fail(request, u"The player rides no minecart or boat"_s);
         return;
     }
 
@@ -362,7 +366,7 @@ void QcControlEntityCommands::leave(const QJsonObject &request)
                          released.sneak = false;
                          session().setIntent(released);
                          if (!out) {
-                             m_context.setActiveError(u"The player is still in the minecart"_s);
+                             m_context.setActiveError(u"The player is still in the minecart or boat"_s);
                          }
                          return true;
                      }});

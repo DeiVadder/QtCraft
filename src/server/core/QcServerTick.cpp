@@ -235,7 +235,8 @@ void QcServer::addSimulationSystems()
     });
     m_tickSystems.add(FallingBlocks, simulating, [this] { m_fallingBlocks.tick(); });
     m_tickSystems.add(Explosions, simulating, [this] { m_explosions.tick(); });
-    m_tickSystems.add(Minecarts, simulating, [this] { m_minecarts.tick(); });
+    // Boats move in the phase of the minecarts (decision E-920).
+    m_tickSystems.add(Minecarts, simulating, [this] { m_vehicles.tick(); });
     m_tickSystems.add(Machines, simulating, [this] {
         m_machines.tick();
         m_kitchen.tick();
@@ -358,7 +359,7 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
     }
 
     if (client.stateDirty) {
-        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion, m_minecarts.vehicleOf(client)});
+        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion, m_vehicles.vehicleOf(client), m_vehicles.boatOf(client)});
         client.stateDirty = false;
     }
 }
@@ -391,8 +392,8 @@ void QcServer::removeClosedClients()
             m_state.notePlayerListChanged();
             m_crafting.returnCraftingGrid(*client);
             m_workstations.leave(*client);
-            // A rider gets out first, so he is saved standing beside the cart.
-            m_minecarts.leave(*client);
+            // A rider gets out first, so he is saved standing beside the cart or the boat.
+            m_vehicles.leave(*client);
             m_commands.playerLeft(client->id);
             QcServerMaps(m_state, m_inventory).forget(*client);
             leaving = true;

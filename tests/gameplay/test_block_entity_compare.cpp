@@ -138,6 +138,8 @@ private:
             return -9;
         case QcEntityKind::Hanging:
             return -10;
+        case QcEntityKind::Boat:
+            return -11;
         }
         return 0;
     }

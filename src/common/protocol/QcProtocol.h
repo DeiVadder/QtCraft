@@ -26,8 +26,10 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // (decision E-883), 78 the rune seed of the enchanting screen (EnchantingState::runeSeed, decision
 // E-884), 79 whether a block is a bed in the content (decision E-885), 80 the latency probes
 // (LatencyProbe, LatencyEcho) and the round trip of each player in the PlayerList (decision E-886),
-// 81 the group and the names of each command in the AdminCatalogue (decision E-911).
-inline constexpr quint32 version = 81;
+// 81 the group and the names of each command in the AdminCatalogue (decision E-911), 82 boats: the
+// entity kind Boat, the boat item's `boatBlock` in the content and the driven boat's state in
+// PlayerState, the Rowing bit of a boat whose driver paddles (decision E-920).
+inline constexpr quint32 version = 82;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

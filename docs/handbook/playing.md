@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Getting started](#chapter-qtcraft-basics) · [Controls](#chapter-qtcraft-controls) · [Mining](#chapter-qtcraft-mining) · [Building](#chapter-qtcraft-building) · [Crafting](#chapter-qtcraft-crafting) · [Furnace and fuel](#chapter-qtcraft-smelting) · [Food and hunger](#chapter-qtcraft-hunger) · [Farming](#chapter-qtcraft-farming) · [Boats](#chapter-qtcraft-boats) · [Signal Dust](#chapter-qtcraft-signal) · [Rails and Minecarts](#chapter-qtcraft-rails) · [Health and damage](#chapter-qtcraft-health) · [Fire](#chapter-qtcraft-fire) · [Weather](#chapter-qtcraft-weather) · [Villages](#chapter-qtcraft-villages) · [Villagers](#chapter-qtcraft-villagers) · [Trading](#chapter-qtcraft-trading) · [Archery](#chapter-qtcraft-archery) · [Explosives](#chapter-qtcraft-explosives) · [Death and respawn](#chapter-qtcraft-death) · [Experience](#chapter-qtcraft-experience) · [Creatures](#chapter-qtcraft-creatures) · [The world](#chapter-qtcraft-world) · [Maps](#chapter-qtcraft-maps) · [Backpack](#chapter-qtcraft-backpack) · [Creative mode](#chapter-qtcraft-creative) · [Spectator mode](#chapter-qtcraft-spectator) · [Adventure mode](#chapter-qtcraft-adventure) · [Game rules](#chapter-qtcraft-rules) · [Commands](#chapter-qtcraft-commands) · [Multiplayer](#chapter-qtcraft-multiplayer) · [Texture packs](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -232,6 +232,24 @@ Bread from three wheat, baked potatoes from the furnace, pumpkin pie from a pump
 **See also**
 
 [Wooden hoe](tools.md#item-qtcraft-wooden_hoe), [Farmland](blocks.md#block-qtcraft-farmland), [Wheat seeds](items.md#item-qtcraft-wheat_seeds), [Wheat crop](blocks.md#block-qtcraft-wheat_crop), [Carrot](food.md#item-qtcraft-carrot), [Potato](food.md#item-qtcraft-potato), [Pumpkin stem](blocks.md#block-qtcraft-pumpkin_stem), [Melon stem](blocks.md#block-qtcraft-melon_stem), [Bone meal](items.md#item-qtcraft-bone_meal), [Bread](food.md#item-qtcraft-bread), [Pig](creatures.md#mob-qtcraft-pig), [Sheep](creatures.md#mob-qtcraft-sheep)
+
+### <a id="chapter-qtcraft-boats"></a>Boats
+
+**Building and placing a boat**
+
+Five planks of one kind of wood make a boat of that wood, laid out like a bowl. Use the boat on water to set it down on the surface, pointing the way you look; on the ground it goes on top of the block. One hit breaks a boat and it drops itself (not in creative mode). Boats float, rise to the surface when they are under water and fall where there is no water below them. A boat burns in a furnace like other wooden things.
+
+**Driving**
+
+Use a boat to get in and sneak to get out: you step onto the bank beside it, or onto the boat where there is no bank. The forward key paddles, the back key brakes and paddles slowly backwards, left and right turn the boat. A boat keeps its speed and its turn for a while when you let go and glides on, up to about eight blocks a second on water. On land it barely crawls, but on ice it slides faster than on any water. A boat never climbs a bank or a waterfall: it stops against blocks and falls down waterfalls. Your client moves your boat at once, so driving feels direct also on a distant server.
+
+**Creatures in boats**
+
+A boat has a seat in front for one creature. A creature that touches a boat with a free seat climbs in and sits there until the boat is broken. This way you take animals across water, or trap a monster. Fish, flying creatures and creatures wider than a boat stay out. Walking into an empty boat pushes it; boats push each other apart.
+
+**See also**
+
+[Oak Boat](items.md#item-qtcraft-oak_boat), [Birch Boat](items.md#item-qtcraft-birch_boat), [Spruce Boat](items.md#item-qtcraft-spruce_boat), [Jungle Boat](items.md#item-qtcraft-jungle_boat), [Packed ice](blocks.md#block-qtcraft-packed_ice)
 
 ### <a id="chapter-qtcraft-signal"></a>Signal Dust
 

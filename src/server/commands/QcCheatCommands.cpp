@@ -4,6 +4,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "common/world/QcDayCycle.h"
+#include "server/boats/QcServerBoats.h"
 #include "server/commands/QcCommandArguments.h"
 #include "server/commands/QcGameRules.h"
 #include "server/commands/QcMobCommands.h"
@@ -116,8 +117,8 @@ void QcCheatCommands::addItemCommands(QcCommandRegistry &registry)
                          .description = QT_TRANSLATE_NOOP("QcServerMessages", "Drops up to 64 items two metres ahead of you."),
                          .run = [this](const QcCommandContext &context) { spawnItem(context); }});
     registry.addBuiltIn({.name = u"summon"_s, .category = QcCommandCategory::Creatures, .needsPlayer = true, .minArguments = 1,
-                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature> [count] [noai], /summon <minecart|chest_minecart|hopper_minecart> [count] or /summon armor_stand [property=value …]"),
-                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures, minecarts or an armour stand in front of you."),
+                         .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /summon <creature> [count] [noai], /summon <minecart|chest_minecart|hopper_minecart|oak_boat|…> [count] or /summon armor_stand [property=value …]"),
+                         .description = QT_TRANSLATE_NOOP("QcServerMessages", "Summons creatures, minecarts, boats or an armour stand in front of you."),
                          .run = [this](const QcCommandContext &context) { summon(context); }});
     registry.addBuiltIn({.name = u"equip"_s, .category = QcCommandCategory::Items, .needsPlayer = true, .minArguments = 1,
                          .usage = QT_TRANSLATE_NOOP("QcServerMessages", "Usage: /equip <armour|set|clear>"),
@@ -214,7 +215,7 @@ void QcCheatCommands::spawnItem(const QcCommandContext &context)
 void QcCheatCommands::summon(const QcCommandContext &context)
 {
     QcServerClient &player = context.player();
-    if (m_standCommands.summon(player, withName(u"/summon"_s, context.args)) || summonCarts(context)) {
+    if (m_standCommands.summon(player, withName(u"/summon"_s, context.args)) || summonCarts(context) || summonBoats(context)) {
         return;
     }
 
@@ -285,6 +286,42 @@ bool QcCheatCommands::summonCarts(const QcCommandContext &context)
         if (!m_parts.minecarts.summon(name, wanted, player.yaw)) {
             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many minecarts in the world (at most %1)"),
                           {QString::number(m_state.entities().minecarts().limit())});
+            break;
+        }
+        ++summoned;
+    }
+
+    if (summoned > 0) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Summoned %1 x %2"), {QString::number(summoned), name});
+    }
+    return true;
+}
+
+bool QcCheatCommands::summonBoats(const QcCommandContext &context)
+{
+    const QString name = qualified(context.args[0]);
+    const std::optional<QcItemId> item = m_state.content().itemId(name);
+    if (!item || !m_state.content().item(*item).placesBoat()) {
+        return false;
+    }
+
+    const std::optional<int> count = QcCommandArguments::count(context.args, 1, 1, 1, 16);
+    if (!count) {
+        context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Unknown mob or invalid count: %1"), {context.text});
+        return true;
+    }
+
+    // Three metres in front of the player, one behind the other along the view, pointing where he
+    // looks; each floats where there is water and falls otherwise.
+    const QcServerClient &player = context.player();
+    const double yaw = qDegreesToRadians(static_cast<double>(player.yaw));
+    const QcVec3 along{std::sin(yaw), 0.0, -std::cos(yaw)};
+    int summoned = 0;
+    for (int i = 0; i < *count; ++i) {
+        const QcVec3 wanted = player.motion.position + along * (3.0 + 1.5 * i) + QcVec3{0.0, 0.1, 0.0};
+        if (!m_parts.boats.summon(name, wanted, player.yaw)) {
+            context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Too many boats in the world (at most %1)"),
+                          {QString::number(m_state.entities().boats().limit())});
             break;
         }
         ++summoned;

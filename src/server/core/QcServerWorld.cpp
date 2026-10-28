@@ -178,6 +178,7 @@ std::optional<QcBlockId> QcServerWorld::blockAt(QcBlockPos pos) const
 
 void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
 {
+    noteChange(pos);
     m_marks.noteChunk(pos, chunk);
     m_hoppers.noteChunk(pos, chunk);
     m_links.noteChunk(chunk);
@@ -194,8 +195,14 @@ void QcServerWorld::noteSections(QcChunkPos pos, const QcChunk &chunk)
     m_spawners.noteChunk(pos, chunk, m_marks.sectionsOf(pos, QcBlockTrait::Spawner));
 }
 
+void QcServerWorld::noteChange(QcChunkPos pos)
+{
+    m_lastChange.insert(pos, ++m_blockChanges);
+}
+
 void QcServerWorld::forgetSections(QcChunkPos pos)
 {
+    m_lastChange.remove(pos);
     m_marks.forgetChunk(pos);
     m_hoppers.forgetChunk(pos);
     m_links.forgetChunk(pos);
@@ -337,6 +344,7 @@ bool QcServerWorld::setBlock(QcBlockPos pos, QcBlockId block)
     }
 
     m_saves.noteChanged(pos.chunk());
+    noteChange(pos.chunk());
     return true;
 }
 

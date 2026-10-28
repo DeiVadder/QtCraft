@@ -81,6 +81,7 @@ public:
     QList<QcBlockPos> updates;
     QList<QcBlockPos> growing;
     QList<QcStructureDefinition::Cart> minecarts;
+    QList<QcStructureDefinition::Boat> boats;
     QList<QcStructureDefinition::Spawner> spawners;
     QList<QcStructureDefinition::Loot> loot;
     QList<QcStructureDefinition::Sign> signs;

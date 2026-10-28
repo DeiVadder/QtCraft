@@ -2,6 +2,7 @@
 
 #include "common/core/QcChunkPos.h"
 #include "server/entities/QcArmourStand.h"
+#include "server/entities/QcBoat.h"
 #include "server/entities/QcExperienceOrb.h"
 #include "server/entities/QcFallingBlock.h"
 #include "server/entities/QcHangingEntity.h"
@@ -53,6 +54,8 @@ struct QcEntityRecord
     QList<Ordered<QcProjectile>> projectiles;
     // Item frames and paintings; the id is not saved (decision E-793).
     QList<Ordered<QcHangingEntity>> hangings;
+    // Boats with their motion and item; the id and the riders are not saved (decision E-920).
+    QList<Ordered<QcBoat>> boats;
     // The chunk got its group of animals already (decision E-086); kept with the chunk.
     bool populated = false;
 
@@ -60,7 +63,8 @@ struct QcEntityRecord
     bool isEmpty() const
     {
         return creatures.isEmpty() && items.isEmpty() && fallingBlocks.isEmpty() && stands.isEmpty() && minecarts.isEmpty()
-               && orbs.isEmpty() && projectiles.isEmpty() && hangings.isEmpty();
+               && orbs.isEmpty() && projectiles.isEmpty() && hangings.isEmpty()
+               && boats.isEmpty();
     }
 };
 

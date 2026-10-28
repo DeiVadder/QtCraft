@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
+**QtCraft:** [Armour stand](#item-qtcraft-armor_stand) · [Arrow](#item-qtcraft-arrow) · [Birch Boat](#item-qtcraft-birch_boat) · [Black dye](#item-qtcraft-black_dye) · [Blue dye](#item-qtcraft-blue_dye) · [Bone](#item-qtcraft-bone) · [Bone meal](#item-qtcraft-bone_meal) · [Book](#item-qtcraft-book) · [Bow](#item-qtcraft-bow) · [Bowl](#item-qtcraft-bowl) · [Brick](#item-qtcraft-brick) · [Brown dye](#item-qtcraft-brown_dye) · [Bucket](#item-qtcraft-bucket) · [Bucket of cod](#item-qtcraft-cod_bucket) · [Bucket of salmon](#item-qtcraft-salmon_bucket) · [Charcoal](#item-qtcraft-charcoal) · [Clay ball](#item-qtcraft-clay_ball) · [Clock](#item-qtcraft-clock) · [Coal](#item-qtcraft-coal) · [Coal chunk](#item-qtcraft-coal_chunk) · [Compass](#item-qtcraft-compass) · [Copper ingot](#item-qtcraft-copper_ingot) · [Copper nugget](#item-qtcraft-copper_nugget) · [Cyan dye](#item-qtcraft-cyan_dye) · [Diamond](#item-qtcraft-diamond) · [Egg](#item-qtcraft-egg) · [Emerald](#item-qtcraft-emerald) · [Empty Map](#item-qtcraft-map) · [Enchanted Book](#item-qtcraft-enchanted_book) · [Feather](#item-qtcraft-feather) · [Fired lamp shell](#item-qtcraft-fired_lamp_shell) · [Firefly in a bottle](#item-qtcraft-firefly_bottle) · [Fishing bobber](#item-qtcraft-fishing_bobber) · [Fishing rod](#item-qtcraft-fishing_rod) · [Flint](#item-qtcraft-flint) · [Flint and steel](#item-qtcraft-flint_and_steel) · [Glass bottle](#item-qtcraft-glass_bottle) · [Gold ingot](#item-qtcraft-gold_ingot) · [Gold nugget](#item-qtcraft-gold_nugget) · [Gray dye](#item-qtcraft-gray_dye) · [Green dye](#item-qtcraft-green_dye) · [Gunpowder](#item-qtcraft-gunpowder) · [Iron ingot](#item-qtcraft-iron_ingot) · [Iron nugget](#item-qtcraft-iron_nugget) · [Item frame](#item-qtcraft-item_frame) · [Jungle Boat](#item-qtcraft-jungle_boat) · [Lapis lazuli](#item-qtcraft-lapis_lazuli) · [Lava bucket](#item-qtcraft-lava_bucket) · [Leather](#item-qtcraft-leather) · [Leather scrap](#item-qtcraft-leather_scrap) · [Light blue dye](#item-qtcraft-light_blue_dye) · [Light gray dye](#item-qtcraft-light_gray_dye) · [Lime dye](#item-qtcraft-lime_dye) · [Magenta dye](#item-qtcraft-magenta_dye) · [Map](#item-qtcraft-filled_map) · [Melon seeds](#item-qtcraft-melon_seeds) · [Milk bucket](#item-qtcraft-milk_bucket) · [Minecart](#item-qtcraft-minecart) · [Minecart with Chest](#item-qtcraft-chest_minecart) · [Minecart with Signal Hopper](#item-qtcraft-hopper_minecart) · [Name Tag](#item-qtcraft-name_tag) · [Oak Boat](#item-qtcraft-oak_boat) · [Orange dye](#item-qtcraft-orange_dye) · [Painting](#item-qtcraft-painting) · [Paper](#item-qtcraft-paper) · [Pink dye](#item-qtcraft-pink_dye) · [Potion of healing](#item-qtcraft-healing_potion) · [Pumpkin seeds](#item-qtcraft-pumpkin_seeds) · [Purple dye](#item-qtcraft-purple_dye) · [Raw copper](#item-qtcraft-raw_copper) · [Raw gold](#item-qtcraft-raw_gold) · [Raw iron](#item-qtcraft-raw_iron) · [Red dye](#item-qtcraft-red_dye) · [Shade Pearl](#item-qtcraft-shade_pearl) · [Shears](#item-qtcraft-shears) · [Signal Dust chunk](#item-qtcraft-signal_dust_chunk) · [Slimeball](#item-qtcraft-slimeball) · [Snowball](#item-qtcraft-snowball) · [Spark gel](#item-qtcraft-spark_gel) · [Spider eye](#item-qtcraft-spider_eye) · [Splash potion of harming](#item-qtcraft-harming_splash_potion) · [Splash potion of poison](#item-qtcraft-poison_splash_potion) · [Spruce Boat](#item-qtcraft-spruce_boat) · [Stick](#item-qtcraft-stick) · [String](#item-qtcraft-string) · [Sugar](#item-qtcraft-sugar) · [Unfired lamp shell](#item-qtcraft-unfired_lamp_shell) · [Water bottle](#item-qtcraft-water_bottle) · [Water bucket](#item-qtcraft-water_bucket) · [Wheat](#item-qtcraft-wheat) · [Wheat seeds](#item-qtcraft-wheat_seeds) · [White dye](#item-qtcraft-white_dye) · [Yellow dye](#item-qtcraft-yellow_dye)
 
 ## QtCraft
 
@@ -48,6 +48,25 @@ Shot from a bow. Its damage grows with its speed; armour takes part of it. Arrow
 **Dropped by**
 
 [Skeleton](creatures.md#mob-qtcraft-skeleton) (50 %), [Stray](creatures.md#mob-qtcraft-stray) (50 %)
+
+### <a id="item-qtcraft-birch_boat"></a>Birch Boat
+
+Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.
+
+| | |
+|---|---|
+| ID | `qtcraft:birch_boat` |
+| Stack size | 1 |
+| Burns as fuel | 60 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Birch planks](blocks.md#block-qtcraft-birch_planks) | · | [Birch planks](blocks.md#block-qtcraft-birch_planks) | [Birch Boat](#item-qtcraft-birch_boat) |
+| [Birch planks](blocks.md#block-qtcraft-birch_planks) | [Birch planks](blocks.md#block-qtcraft-birch_planks) | [Birch planks](blocks.md#block-qtcraft-birch_planks) |  |
 
 ### <a id="item-qtcraft-black_dye"></a>Black dye
 
@@ -1115,6 +1134,25 @@ Hang it on any face of a solid block, also on the floor or the ceiling. Right cl
 | [Stick](#item-qtcraft-stick) | [Leather](#item-qtcraft-leather) | [Stick](#item-qtcraft-stick) |  |
 | [Stick](#item-qtcraft-stick) | [Stick](#item-qtcraft-stick) | [Stick](#item-qtcraft-stick) |  |
 
+### <a id="item-qtcraft-jungle_boat"></a>Jungle Boat
+
+Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.
+
+| | |
+|---|---|
+| ID | `qtcraft:jungle_boat` |
+| Stack size | 1 |
+| Burns as fuel | 60 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | · | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle Boat](#item-qtcraft-jungle_boat) |
+| [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) | [Jungle planks](blocks.md#block-qtcraft-jungle_planks) |  |
+
 ### <a id="item-qtcraft-lapis_lazuli"></a>Lapis lazuli
 
 A blue stone from deep ores. It makes blue dye; traders and enchanting will want it.
@@ -1407,6 +1445,25 @@ Cannot be crafted; found in dungeon, mineshaft and temple chests or bought from 
 |---|---|
 | ID | `qtcraft:name_tag` |
 | Stack size | 64 |
+
+### <a id="item-qtcraft-oak_boat"></a>Oak Boat
+
+Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.
+
+| | |
+|---|---|
+| ID | `qtcraft:oak_boat` |
+| Stack size | 1 |
+| Burns as fuel | 60 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Oak planks](blocks.md#block-qtcraft-oak_planks) | · | [Oak planks](blocks.md#block-qtcraft-oak_planks) | [Oak Boat](#item-qtcraft-oak_boat) |
+| [Oak planks](blocks.md#block-qtcraft-oak_planks) | [Oak planks](blocks.md#block-qtcraft-oak_planks) | [Oak planks](blocks.md#block-qtcraft-oak_planks) |  |
 
 ### <a id="item-qtcraft-orange_dye"></a>Orange dye
 
@@ -1833,6 +1890,25 @@ A witch's bottle. It bursts where it lands and poisons everything living within 
 |---|---|
 | ID | `qtcraft:poison_splash_potion` |
 | Stack size | 1 |
+
+### <a id="item-qtcraft-spruce_boat"></a>Spruce Boat
+
+Set it down on water (or on the ground) and get in with a use; sneak to get out. The forward key paddles, left and right turn it; it keeps gliding when you let go. It crawls on land and races on ice. It carries a creature too: one it bumps into climbs in. One hit breaks it.
+
+| | |
+|---|---|
+| ID | `qtcraft:spruce_boat` |
+| Stack size | 1 |
+| Burns as fuel | 60 s: [Fuels](tables.md#table-fuels) |
+
+**How to make it**
+
+*Crafting table (3 × 3)*
+
+| 1 | 2 | 3 | → |
+|---|---|---|---|
+| [Spruce planks](blocks.md#block-qtcraft-spruce_planks) | · | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) | [Spruce Boat](#item-qtcraft-spruce_boat) |
+| [Spruce planks](blocks.md#block-qtcraft-spruce_planks) | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) | [Spruce planks](blocks.md#block-qtcraft-spruce_planks) |  |
 
 ### <a id="item-qtcraft-stick"></a>Stick
 

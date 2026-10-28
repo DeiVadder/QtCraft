@@ -5,6 +5,7 @@
 #include "common/core/QcSectionKey.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPose.h"
+#include "common/world/QcBoatBody.h"
 #include "common/world/QcMinecartBody.h"
 
 #include <array>
@@ -29,6 +30,9 @@ std::pair<double, double> bodySize(const QcClientEntity &entity, const QcContent
     }
     if (entity.isMinecart()) {
         return {QcMinecartBody::width, QcMinecartBody::height};
+    }
+    if (entity.isBoat()) {
+        return {QcBoatBody::width, QcBoatBody::height};
     }
     if (const QcMobDefinition *creature = entity.creature(content)) {
         return {creature->width, creature->height};

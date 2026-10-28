@@ -1,0 +1,7 @@
+{
+    "name": "oak_boat",
+    "texture": "oak_boat",
+    "maxStack": 1,
+    "boatBlock": "oak_planks",
+    "fuelSeconds": 60
+}

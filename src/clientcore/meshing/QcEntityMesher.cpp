@@ -620,6 +620,13 @@ void appendPlacedItem(QcEntityMesh &mesh, const ItemLook &look, const PlaceFunct
     emitItem(mesh, look, place, light, uv);
 }
 
+void appendPlacedParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const PlaceFunction &place, QcEntityLight light, const UvLookup &uv)
+{
+    for (const QcMobPart &part : parts) {
+        emitBox(mesh, {part.from, part.to}, place, {uv(part.texture), white, light});
+    }
+}
+
 void appendHand(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::HandPose &hand, const HandView &view, const UvLookup &uv)
 {
     const double y = qDegreesToRadians(view.yaw);

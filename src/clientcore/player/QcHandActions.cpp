@@ -10,6 +10,7 @@
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
+#include "common/world/QcBoatBody.h"
 #include "common/world/QcMinecartBody.h"
 
 #include <QtMath>
@@ -24,6 +25,9 @@ QcAabb targetBoxOf(const QcContentRegistry &content, const QcClientEntity &entit
 {
     if (entity.isMinecart()) {
         return QcPhysics::boxAt(entity.position, QcMinecartBody::width, QcMinecartBody::height);
+    }
+    if (entity.isBoat()) {
+        return QcPhysics::boxAt(entity.position, QcBoatBody::width, QcBoatBody::height);
     }
     if (entity.isHanging()) {
         return entity.hanging.box();
@@ -50,14 +54,14 @@ bool usesOnCreature(const QcContentRegistry &content, const QcClientEntity &enti
     return creature && QcClientLauncher::usesOnCreature(*creature, item);
 }
 
-// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, an item
-// frame or painting (decision E-790), a
+// Whether the entity takes every use, also with an empty hand: an armour stand, a minecart, a boat
+// (decision E-920), an item frame or painting (decision E-790), a
 // villager (its trading screen, decision E-414) and a tameable creature (taming, sitting, healing,
 // its collar; decision E-480), the last two not while sneaking.
 bool takesEveryUse(const QcContentRegistry &content, const QcClientEntity &entity, bool sneaking)
 {
     const QcMobDefinition *creature = entity.creature(content);
-    return entity.isArmourStand() || entity.isMinecart() || entity.isHanging() || (creature && (creature->villager || creature->tameable) && !sneaking);
+    return entity.isArmourStand() || entity.isMinecart() || entity.isBoat() || entity.isHanging() || (creature && (creature->villager || creature->tameable) && !sneaking);
 }
 
 // Whether using `block` (none: no block aimed at) reacts instead of acting on it: machines, chests,
@@ -76,15 +80,15 @@ bool takesFood(const QcBlockDefinition *block, bool sneaking)
     return block && !sneaking && (block->bites.isEdible() || block->campfire.cooks());
 }
 
-// Whether the held item aims at liquids too: buckets and bottles take from them, a lily pad lies on
-// them (decision E-774).
+// Whether the held item aims at liquids too: buckets and bottles take from them, a lily pad and a
+// boat lie on them (decisions E-774, E-920).
 bool aimsAtLiquids(const QcContentRegistry &content, const QcItemDefinition *held)
 {
     if (!held) {
         return false;
     }
     const std::optional<QcBlockId> placed = held->placesBlock.isEmpty() ? std::nullopt : content.blockId(held->placesBlock);
-    return held->scoops || held->bottles || (placed && content.block(*placed).floats);
+    return held->scoops || held->bottles || held->placesBoat() || (placed && content.block(*placed).floats);
 }
 
 } // namespace

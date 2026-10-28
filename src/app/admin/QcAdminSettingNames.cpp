@@ -32,7 +32,7 @@ constexpr std::array<Name, 13> ruleNames{{
     {"explosionBlockDamage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Explosions damage blocks")},
 }};
 
-constexpr std::array<Name, 71> limitNames{{
+constexpr std::array<Name, 72> limitNames{{
     {"signalBudget", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per tick")},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Reserve for scheduled signal ticks")},
     {"signalWorkPerChange", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per block change")},
@@ -83,6 +83,7 @@ constexpr std::array<Name, 71> limitNames{{
     {"leafPendingChecks", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Waiting leaf checks")},
     {"maxArmourStands", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Armour stands")},
     {"maxMinecarts", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Minecarts")},
+    {"maxBoats", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Boats")},
     {"maxHangings", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Item frames and paintings")},
     {"movingBlocksShown", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Sliding blocks shown")},
     {"chunkGroupLimit", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Chunks per circuit group")},

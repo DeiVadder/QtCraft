@@ -273,6 +273,10 @@ void ItemReader::parseBaseFields()
     if (!m_item.cartBlock.isEmpty() && !m_item.placesCart) {
         m_reader.fail(u"only an item that places a minecart has a 'cartBlock'"_s);
     }
+    m_item.boatBlock = m_reader.name(u"boatBlock"_s, m_namespace);
+    if (m_item.placesBoat() && (m_item.placesStand || m_item.placesCart)) {
+        m_reader.fail(u"an item places either a boat, an armour stand or a minecart"_s);
+    }
 }
 
 void ItemReader::applyStackRules()
@@ -320,8 +324,8 @@ QcResult<QcItemDefinition> ItemReader::read()
         m_item.hangs = QcHangingParser::parseHanging(object, m_namespace, nested);
     });
     m_item.hold = QcHoldParser::holdOf(m_reader);
-    if (m_item.hangs && (m_item.placesStand || m_item.placesCart || !m_item.placesBlock.isEmpty())) {
-        m_reader.fail(u"an item that hangs places no block, stand or minecart"_s);
+    if (m_item.hangs && (m_item.placesStand || m_item.placesCart || m_item.placesBoat() || !m_item.placesBlock.isEmpty())) {
+        m_reader.fail(u"an item that hangs places no block, stand, minecart or boat"_s);
     }
 
     parseProjectileUses();

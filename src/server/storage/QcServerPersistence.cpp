@@ -4,6 +4,7 @@
 #include "common/world/QcDayCycle.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/blocks/QcServerBlocks.h"
+#include "server/boats/QcServerBoats.h"
 #include "server/chunks/QcChunkLoading.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
@@ -340,6 +341,12 @@ QcChunkStore::WholeFile QcServerPersistence::playerFile(const QcWorldStorage &st
     // rider is not saved with the cart (decision E-383).
     if (const QcMinecart *cart = m_state.entities().minecarts().ridden(client.id)) {
         player.motion.position = QcServerMinecarts::exitSpot(m_state.world(), *cart);
+        player.motion.velocity = {};
+        player.motion.onGround = false;
+    }
+    // A driver likewise, beside his boat (decision E-920).
+    if (const QcBoat *boat = m_state.entities().boats().drivenBy(client.id)) {
+        player.motion.position = QcServerBoats::exitSpot(m_state.world(), *boat);
         player.motion.velocity = {};
         player.motion.onGround = false;
     }

@@ -1,0 +1,14 @@
+{
+    "name": "jungle_boat",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "jungle_planks"
+    },
+    "result": {
+        "item": "jungle_boat"
+    }
+}

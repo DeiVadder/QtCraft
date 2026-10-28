@@ -1,8 +1,10 @@
 #include "clientcore/meshing/QcAnimator.h"
 
+#include "clientcore/meshing/QcBoatModel.h"
 #include "clientcore/meshing/QcHandSwing.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/world/QcBoatBody.h"
 
 #include <QtMath>
 
@@ -118,7 +120,9 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
     const double idle = std::sin(time * 1.7) * 3.0;
     BodyPose result = movingLimbs(pose, time, stride, amplitude, idle);
 
-    if (pose.riding || pose.body == QcPose::Sitting) {
+    if (pose.inBoat) {
+        result.rowBoat(pose.rowPhase);
+    } else if (pose.riding || pose.body == QcPose::Sitting) {
         // Sitting: the legs forward and a little apart, the arms resting.
         result.bone(QcBoneRole::RightLeg) = {80.0, 8.0};
         result.bone(QcBoneRole::LeftLeg) = {80.0, -8.0};
@@ -212,6 +216,25 @@ HandPose animateHand(const QcEntityPose &pose, double time, const QcHandTimers &
         hand.pitch += 10.0;
     }
     return hand;
+}
+
+void BodyPose::rowBoat(double rowPhase)
+{
+    // The thighs level and forward, a little apart (QcBoatBody: the hips just above the floor).
+    bone(QcBoneRole::RightLeg) = {90.0, 4.0};
+    bone(QcBoneRole::LeftLeg) = {90.0, -4.0};
+
+    // Each arm points from its shoulder to the grip of its paddle, in the boat's frame (the figure
+    // faces the boat's way, its feet on the driver's seat).
+    const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(rowPhase);
+    const QcVec3 figure{0.0, QcBoatBody::floor + QcBoatBody::seatHeight - QcBoatBody::hipHeight, -QcBoatBody::driverAlong};
+    for (const int side : {1, -1}) {
+        const QcVec3 shoulder = figure + QcVec3{side * driverShoulder.x, driverShoulder.y, 0.0};
+        const QcVec3 reach = QcBoatModel::gripOf(side, paddle) - shoulder;
+        const double pitch = qRadiansToDegrees(std::atan2(-reach.z, -reach.y));
+        const double roll = qRadiansToDegrees(std::atan2(reach.x, std::hypot(reach.y, reach.z)));
+        bone(side > 0 ? QcBoneRole::RightArm : QcBoneRole::LeftArm) = {pitch, roll};
+    }
 }
 
 void BodyPose::lieOnBack(double idle)

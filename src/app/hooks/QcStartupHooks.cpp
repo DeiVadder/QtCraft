@@ -252,6 +252,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         m_screens.input.setPlayerListHeld(true);
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
+    } else if (step.startsWith(u"hold:"_s) || step.startsWith(u"release:"_s)) {
+        holdKey(step.section(u':', 1), step.startsWith(u"hold:"_s));
     } else if (step == u"view:hide"_s || step == u"view:show"_s) {
         showView(step == u"view:show"_s, viewAttempts);
     } else if (step == u"fly"_s) {
@@ -273,8 +275,25 @@ void QcStartupHooks::pressKey(const QString &actionId) const
         qCWarning(lcGame) << "--overlay key:" << actionId << ": no such key action";
         return;
     }
+    // The use key once, on what the player aims at (getting into a boat for a screenshot); the
+    // world actions do not cover it.
+    if (*action == QcKeyBindings::Action::Use) {
+        m_parts.session->useItem();
+        return;
+    }
     // As if its key were pressed in the world.
     m_screens.input.worldAction(*action, true);
+}
+
+void QcStartupHooks::holdKey(const QString &actionId, bool held) const
+{
+    const std::optional<QcKeyBindings::Action> action = QcKeyBindings::actionFromId(actionId);
+    if (!action) {
+        qCWarning(lcGame) << "--overlay hold:/release:" << actionId << ": no such key action";
+        return;
+    }
+    // Held like a pressed key until a later release: step (paddling a boat for a screenshot).
+    m_screens.input.holdAction(*action, held);
 }
 
 void QcStartupHooks::showView(bool shown, int attemptsLeft)

@@ -36,6 +36,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_hangings.setLimit(static_cast<qsizetype>(limits.maxHangings));
     m_moving.setMaxMoving(static_cast<qsizetype>(limits.movingBlocksShown));
     m_carts.setLimit(static_cast<qsizetype>(limits.maxMinecarts));
+    boats().setLimit(static_cast<qsizetype>(limits.maxBoats));
     m_orbs.setLimit(static_cast<qsizetype>(limits.experienceOrbs));
     m_projectiles.setLimit(static_cast<qsizetype>(limits.projectiles));
     m_projectiles.setPerChunk(static_cast<qsizetype>(limits.projectilesPerChunk));
@@ -79,6 +80,7 @@ QSet<QcChunkPos> QcEntities::settle(const ChunkLoadedFunction &isLoaded, quint64
     settleList(m_carts.editableAll());
     settleList(m_orbs.editableOrbs());
     settleList(m_projectiles.editableAll());
+    settleList(boats().editableAll());
     return strays;
 }
 
@@ -108,6 +110,8 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
         return QcArmourStandManager::bodyOf(entity.as<QcArmourStand>());
     case QcEntityKind::Minecart:
         return QcMinecartManager::bodyOf(entity.as<QcMinecart>());
+    case QcEntityKind::Boat:
+        return QcBoatManager::bodyOf(entity.as<QcBoat>());
     case QcEntityKind::ExperienceOrb:
         return QcPhysics::boxAt(feet, QcExperienceOrbManager::size, QcExperienceOrbManager::size);
     case QcEntityKind::Projectile: {
@@ -127,7 +131,7 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
 
 void QcEntities::displace(QcEntity &entity, const QcVec3 &delta) const
 {
-    if (entity.kind == QcEntityKind::Player && m_carts.ridden(entity.id)) {
+    if (entity.kind == QcEntityKind::Player && (m_carts.ridden(entity.id) || boats().drivenBy(entity.id))) {
         return;
     }
 

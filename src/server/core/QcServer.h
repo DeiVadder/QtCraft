@@ -17,6 +17,7 @@
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/core/QcServerSystems.h"
+#include "server/core/QcServerVehicles.h"
 #include "server/explosions/QcServerExplosions.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
@@ -37,7 +38,6 @@
 #include "server/machines/QcServerKitchen.h"
 #include "server/machines/QcServerMachines.h"
 #include "server/machines/QcServerWorkstations.h"
-#include "server/minecarts/QcServerMinecarts.h"
 #include "server/mobs/QcServerAnimals.h"
 #include "server/mobs/QcServerCreatures.h"
 #include "server/plants/QcServerPlants.h"
@@ -276,7 +276,8 @@ private:
     QcServerWorkstations m_workstations;
     QcServerExplosions m_explosions;
     // Before the game modes, which take a spectator out of his cart.
-    QcServerMinecarts m_minecarts;
+    // NOLINT(qc-member-access): a subsystem of the server like the other value members (m_stands, m_combat, …), never replaced; no state of its own to guard.
+    QcServerVehicles m_vehicles;
     QcServerGameModes m_gameModes;
     QcServerStands m_stands;
     QcServerAnimals m_animals;

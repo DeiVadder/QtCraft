@@ -364,6 +364,20 @@ bool QcGameInput::worldFocused() const
     return worldInput() && m_parts.window && (m_scriptedPad || m_parts.window->isActive());
 }
 
+void QcGameInput::holdAction(QcKeyBindings::Action action, bool held)
+{
+    const QList<int> keys = m_settings.keys()->bindings().keys(action);
+    if (keys.isEmpty()) {
+        qCWarning(lcInput) << "Holding a key action without a key:" << QcKeyBindings::id(action);
+        return;
+    }
+    if (held) {
+        m_keysDown.insert(keys.constFirst());
+    } else {
+        m_keysDown.remove(keys.constFirst());
+    }
+}
+
 bool QcGameInput::keyDown(QcKeyBindings::Action action) const
 {
     return std::ranges::any_of(m_settings.keys()->bindings().keys(action), [this](int key) { return m_keysDown.contains(key); });

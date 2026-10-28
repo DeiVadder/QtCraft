@@ -4,6 +4,7 @@
 #include "server/villages/QcVillagerLooks.h"
 
 #include <algorithm>
+#include <cmath>
 
 namespace {
 
@@ -78,6 +79,26 @@ QcMsg::EntityMove playerMove(QcMsg::EntityMove now, const QcServerClient &player
     return now;
 }
 
+// One of the item that placed a cart or boat; empty for an item the content does not know.
+QcItemStack vehicleItem(const QcContentRegistry &content, const QString &name)
+{
+    const std::optional<QcItemId> item = content.itemId(name);
+    return item ? QcItemStack{*item, 1, 0} : QcItemStack();
+}
+
+// Whether the boat's driver paddles (decision E-920).
+bool paddled(const QcBoat &boat)
+{
+    return boat.driver != 0 && boat.rowing;
+}
+
+// What stands in the count of a boat: its yaw in tenths of a degree and whether its driver paddles,
+// so a turn on the spot and the paddles starting or stopping each send a move.
+int boatCount(const QcBoat &boat)
+{
+    return static_cast<int>(std::lround(boat.yaw * 10.0f)) * 2 + (paddled(boat) ? 1 : 0);
+}
+
 } // namespace
 
 QcEntitySync::QcEntitySync(QcServerState &state)
@@ -108,11 +129,16 @@ QcMsg::EntityMove QcEntitySync::seen(const QcEntity &entity) const
     }
     case QcEntityKind::Player: {
         const auto &player = entity.as<QcServerClient>();
-        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id));
+        now = playerMove(now, player, m_state.entities().minecarts().ridden(player.id) || m_state.entities().boats().drivenBy(player.id));
         break;
     }
     case QcEntityKind::Minecart:
         now.yaw = entity.yaw;
+        break;
+    case QcEntityKind::Boat:
+        // Floating it bobs on the client (decision E-920).
+        now.yaw = entity.yaw;
+        now.flags = static_cast<quint16>((entity.motion.inWater ? QcMsg::InWater : 0) | (paddled(entity.as<QcBoat>()) ? QcMsg::Rowing : 0));
         break;
     case QcEntityKind::MovingBlock:
         now.position = QcMovingBlocks::positionAt(entity.as<QcMovingBlock>(), m_state.clock().tick());
@@ -204,9 +230,11 @@ QcMsg::EntitySpawn QcEntitySync::spawnOf(const QcEntity &entity, const QcMsg::En
     }
     case QcEntityKind::Minecart:
         // The cart's item tells what it carries (QcItemDefinition::cartBlock).
-        if (const std::optional<QcItemId> item = m_state.content().itemId(entity.as<QcMinecart>().item)) {
-            spawn.item = {*item, 1, 0};
-        }
+        spawn.item = vehicleItem(m_state.content(), entity.as<QcMinecart>().item);
+        break;
+    case QcEntityKind::Boat:
+        // The boat's item tells what it is built of (QcItemDefinition::boatBlock).
+        spawn.item = vehicleItem(m_state.content(), entity.as<QcBoat>().item);
         break;
     }
     return spawn;
@@ -235,6 +263,7 @@ void QcEntitySync::Pass::consider(const QcEntity &entity)
     const bool projectile = entity.kind == QcEntityKind::Projectile;
     const int count = orb ? entity.as<QcExperienceOrb>().value
                       : item ? entity.as<QcItemEntity>().stack.count
+                      : entity.kind == QcEntityKind::Boat ? boatCount(entity.as<QcBoat>())
                              : projectile && entity.as<QcProjectile>().stuck ? 1 : 0;
     const auto known = client.view.known.find(entity.id);
     if (known == client.view.known.end()) {
@@ -274,6 +303,19 @@ void QcEntitySync::Pass::update(const QcEntity &entity, const QcMsg::EntityMove 
         // A cart standing still sends nothing.
         if (const std::optional<QcServerClient::SentEntity> moved = QcEntitySync::changedMove(*known.entry, now, cartMoveThreshold)) {
             *known.entry = *moved;
+            moves.moves.append(now);
+        }
+        break;
+    case QcEntityKind::Boat:
+        // A boat lying still sends nothing; one that turns on the spot sends its turn (its yaw in
+        // tenths of a degree stands in the count).
+        if (const std::optional<QcServerClient::SentEntity> moved = QcEntitySync::changedMove(*known.entry, now, cartMoveThreshold)) {
+            *known.entry = *moved;
+            known.entry->count = count;
+            moves.moves.append(now);
+        } else if (known.entry->count != count) {
+            known.entry->count = count;
+            known.entry->moving = true;
             moves.moves.append(now);
         }
         break;

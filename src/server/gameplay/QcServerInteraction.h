@@ -10,6 +10,7 @@ class QcFireIgnition;
 class QcPlayerHealth;
 class QcServerAnimals;
 class QcServerBlocks;
+class QcServerBoats;
 class QcServerCircuits;
 class QcServerCrafting;
 class QcServerGolems;
@@ -43,6 +44,7 @@ public:
         QcBlockScreens &screens;
         QcServerStands &stands;
         QcServerMinecarts &minecarts;
+        QcServerBoats &boats;
         QcServerAnimals &animals;
         QcServerPlants &plants;
         QcPlayerHealth &health;

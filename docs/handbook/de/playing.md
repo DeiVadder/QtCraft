@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -232,6 +232,24 @@ Brot aus drei Weizen, Ofenkartoffeln aus dem Ofen, Kürbiskuchen aus Kürbis, Zu
 **Siehe auch**
 
 [Holzhacke](tools.md#item-qtcraft-wooden_hoe), [Ackerboden](blocks.md#block-qtcraft-farmland), [Weizenkörner](items.md#item-qtcraft-wheat_seeds), [Weizenpflanze](blocks.md#block-qtcraft-wheat_crop), [Karotte](food.md#item-qtcraft-carrot), [Kartoffel](food.md#item-qtcraft-potato), [Kürbisstängel](blocks.md#block-qtcraft-pumpkin_stem), [Melonenstängel](blocks.md#block-qtcraft-melon_stem), [Knochenmehl](items.md#item-qtcraft-bone_meal), [Brot](food.md#item-qtcraft-bread), [Schwein](creatures.md#mob-qtcraft-pig), [Schaf](creatures.md#mob-qtcraft-sheep)
+
+### <a id="chapter-qtcraft-boats"></a>Boote
+
+**Boote bauen und setzen**
+
+Fünf Bretter einer Holzart ergeben ein Boot dieses Holzes, ausgelegt wie eine Schale. Benutze das Boot auf Wasser, um es auf die Oberfläche zu setzen, in deine Blickrichtung; auf dem Boden kommt es oben auf den Block. Ein Schlag zerbricht ein Boot, und es lässt sich selbst fallen (nicht im Kreativmodus). Boote schwimmen, steigen unter Wasser an die Oberfläche und fallen, wo unter ihnen kein Wasser ist. Ein Boot brennt im Ofen wie andere Dinge aus Holz.
+
+**Fahren**
+
+Benutze ein Boot, um einzusteigen, und schleiche, um auszusteigen: Du trittst ans Ufer daneben, oder aufs Boot, wo kein Ufer ist. Die Vorwärtstaste paddelt, die Rückwärtstaste bremst und paddelt langsam zurück, links und rechts lenken das Boot. Ein Boot behält Fahrt und Drehung eine Weile, wenn du loslässt, und gleitet weiter, auf Wasser bis etwa acht Blöcke in der Sekunde. An Land kriecht es nur, auf Eis aber gleitet es schneller als auf jedem Wasser. Ein Boot klettert nie ein Ufer oder einen Wasserfall hinauf: Es hält an Blöcken an und fällt Wasserfälle hinunter. Dein Client bewegt dein Boot sofort, so fühlt sich das Fahren auch auf einem fernen Server direkt an.
+
+**Wesen im Boot**
+
+Ein Boot hat vorn einen Platz für ein Wesen. Ein Wesen, das ein Boot mit freiem Platz berührt, steigt ein und sitzt dort, bis das Boot zerbricht. So bringst du Tiere übers Wasser oder fängst ein Monster. Fische, fliegende Wesen und Wesen, die breiter als ein Boot sind, bleiben draußen. Läufst du gegen ein leeres Boot, schiebst du es; Boote schieben sich gegenseitig auseinander.
+
+**Siehe auch**
+
+[Eichenboot](items.md#item-qtcraft-oak_boat), [Birkenboot](items.md#item-qtcraft-birch_boat), [Fichtenboot](items.md#item-qtcraft-spruce_boat), [Tropenholzboot](items.md#item-qtcraft-jungle_boat), [Packeis](blocks.md#block-qtcraft-packed_ice)
 
 ### <a id="chapter-qtcraft-signal"></a>Signalstaub
 

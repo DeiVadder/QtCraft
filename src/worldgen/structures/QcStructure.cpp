@@ -118,6 +118,7 @@ QcStructure::Loaded QcStructure::fromDefinition(const QcStructureDefinition &def
     structure.growing = definition.growing;
     structure.adventure = definition.adventure;
     structure.minecarts = definition.minecarts;
+    structure.boats = definition.boats;
     structure.spawners = definition.spawners;
     structure.loot = definition.loot;
     structure.signs = definition.signs;

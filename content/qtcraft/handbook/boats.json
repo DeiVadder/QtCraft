@@ -1,0 +1,17 @@
+{
+    "name": "boats",
+    "order": 77,
+    "icon": "oak_boat",
+    "sections": [
+        "placing",
+        "driving",
+        "passengers"
+    ],
+    "related": [
+        "oak_boat",
+        "birch_boat",
+        "spruce_boat",
+        "jungle_boat",
+        "packed_ice"
+    ]
+}

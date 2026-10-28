@@ -9,7 +9,8 @@
 
 // The entities of one chunk as a blob of its region file (entities/r.<x>.<z>.qen; decisions E-366,
 // E-373, E-420): persistent creatures, dropped items and waiting drops, falling blocks and lit explosives, armour stands,
-// minecarts (E-382), experience orbs (E-398), projectiles (E-425), and whether the chunk already got its animals. Items,
+// minecarts (E-382), experience orbs (E-398), projectiles (E-425), and whether the chunk already got its animals,
+// then item frames and paintings (E-793) and boats (E-920). Items,
 // blocks, creatures, armour and capes are stored by name.
 //
 // Every entry is a header (type name, position, velocity, yaw, order, persistent id) and a list of
@@ -75,6 +76,8 @@ enum class Component : quint16 {
     Family = 20,
     // The name a name tag gave a creature (version 1, decision E-866).
     Name = 21,
+    // Feet, velocity and yaw of a boat (version 1, decision E-920; QcBoatCodec).
+    Boat = 22,
 };
 
 QByteArray encode(const QcEntityRecord &record, const QcContentRegistry &content);

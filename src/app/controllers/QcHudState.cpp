@@ -49,6 +49,9 @@ QcHudState::EntityTarget QcHudState::entityTarget(const QcContentRegistry &conte
     if (entity.isMinecart()) {
         return {itemName(content, entity.item.item, u"item.qtcraft.minecart"_s, language), {}};
     }
+    if (entity.isBoat()) {
+        return {itemName(content, entity.item.item, u"item.qtcraft.oak_boat"_s, language), {}};
+    }
     if (entity.isHanging()) {
         const bool painting = entity.hanging.type == QcHangingType::Painting;
         const QString own = itemName(content, entity.held, painting ? u"item.qtcraft.painting"_s : u"item.qtcraft.item_frame"_s, language);

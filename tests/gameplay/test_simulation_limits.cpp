@@ -114,7 +114,7 @@ private slots:
             keys.insert(QLatin1StringView(field.key));
             QVERIFY(limits.*(field.value) >= field.low && limits.*(field.value) <= field.high);
         }
-        QCOMPARE(keys.size(), qsizetype(71));
+        QCOMPARE(keys.size(), qsizetype(72));
         const QcServerLimits::Read defaults = QcServerLimits::fromJson({}, u"server.json"_s);
         QCOMPARE(defaults.limits, limits);
         QVERIFY(defaults.warnings.isEmpty());

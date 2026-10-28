@@ -39,7 +39,7 @@ public:
     QHash<QcChunkPos, QcEntityRecord> take() { return std::move(m_records); }
 
 private:
-    // Adds the stands, minecarts, experience orbs, projectiles, frames and paintings `wanted` accepts to their records;
+    // Adds the stands, minecarts, experience orbs, projectiles, frames and paintings and boats `wanted` accepts to their records;
     // transient projectiles (fishing bobbers, decision E-503) are never saved.
     template<typename Wanted>
     void addObjects(const QcEntities &entities, Wanted wanted);
@@ -81,6 +81,11 @@ void RecordCollector::addObjects(const QcEntities &entities, Wanted wanted)
     for (const QcHangingEntity &hanging : entities.hangings().all()) {
         if (const QcChunkPos chunk = QcEntities::chunkOf(hanging); wanted(chunk)) {
             recordOf(chunk).hangings.append({hanging, hanging.id});
+        }
+    }
+    for (const QcBoat &boat : entities.boats().all()) {
+        if (const QcChunkPos chunk = QcEntities::chunkOf(boat); wanted(chunk)) {
+            recordOf(chunk).boats.append({boat, boat.id});
         }
     }
 }
@@ -129,6 +134,32 @@ QHash<QcChunkPos, QcEntityRecord> collect(const QcEntities &entities)
     return collector.take();
 }
 
+namespace {
+
+// The creatures in the boats `gone` takes out of the world get out first; one in the neighbouring
+// chunk (the seat lies ahead of the boat) stays and stands up again (decision E-920).
+template<typename Gone>
+void releasePassengersOf(QcEntities &entities, Gone gone)
+{
+    QSet<quint32> leaving;
+    for (const QcBoat &boat : entities.boats().all()) {
+        if (boat.passenger != 0 && gone(boat)) {
+            leaving.insert(boat.id);
+        }
+    }
+    if (leaving.isEmpty()) {
+        return;
+    }
+    for (QcCreature &creature : entities.creatures().editableMobs()) {
+        if (leaving.contains(creature.vehicle)) {
+            creature.vehicle = 0;
+            creature.pose = QcPose::Standing;
+        }
+    }
+}
+
+} // namespace
+
 QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkPos> &chunks)
 {
     const auto in = [&chunks](QcChunkPos chunk) { return chunks.contains(chunk); };
@@ -145,11 +176,28 @@ QHash<QcChunkPos, QcEntityRecord> take(QcEntities &entities, const QSet<QcChunkP
     entities.stands().editableStands().removeIf(gone);
     entities.hangings().removeIf(gone);
     entities.minecarts().editableAll().removeIf(gone);
+    releasePassengersOf(entities, gone);
+    entities.boats().editableAll().removeIf(gone);
     entities.orbs().editableOrbs().removeIf(gone);
     entities.projectiles().editableAll().removeIf(gone);
     entities.movingBlocks().editableAll().removeIf(gone);
     return records;
 }
+
+namespace {
+
+// Gives the boats of a record new ids and adds them (decision E-920); returns how many were left
+// out at the limit.
+qsizetype adoptBoats(const QList<QcBoat> &saved, QcEntities &entities)
+{
+    QList<QcBoat> boats = saved;
+    for (QcBoat &boat : boats) {
+        boat.id = entities.newId();
+    }
+    return entities.boats().adopt(boats);
+}
+
+} // namespace
 
 QStringList apply(const QcEntityRecord &record, QcEntities &entities)
 {
@@ -190,6 +238,9 @@ QStringList apply(const QcEntityRecord &record, QcEntities &entities)
     }
     if (const qsizetype dropped = entities.hangings().adopt(hangings); dropped > 0) {
         warnings.append(u"%1 item frames and paintings beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.hangings().limit()));
+    }
+    if (const qsizetype dropped = adoptBoats(inOrder(record.boats), entities); dropped > 0) {
+        warnings.append(u"%1 boats beyond the limit of %2 were left out"_s.arg(dropped).arg(entities.boats().limit()));
     }
     if (const qsizetype merged = entities.orbs().adopt(inOrder(record.orbs), newId); merged > 0) {
         warnings.append(u"%1 experience orbs beyond the limit of %2 joined the nearest orb"_s.arg(merged).arg(entities.orbs().limit()));

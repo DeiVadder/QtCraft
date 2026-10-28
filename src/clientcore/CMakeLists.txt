@@ -90,6 +90,8 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcArmourLook.h meshing/QcArmourLook.cpp
     meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
     meshing/QcBlockVertex.h
+    meshing/QcBoatModel.h meshing/QcBoatModel.cpp
+    meshing/QcBoatRiders.h meshing/QcBoatRiders.cpp
     meshing/QcBoxLegs.h meshing/QcBoxLegs.cpp
     meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
     meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp

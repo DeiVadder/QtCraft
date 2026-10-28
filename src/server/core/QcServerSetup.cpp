@@ -243,6 +243,26 @@ void placeMinecart(QcServerState &state, const QcWorldSetup::Cart &setup)
     }
 }
 
+// A boat of the setup where the structure put its feet (decision E-920); it settles on the water or
+// the ground in its first ticks.
+void placeBoat(QcServerState &state, const QcWorldSetup::Boat &setup)
+{
+    const std::optional<QcItemId> item = state.content().itemId(setup.item);
+    if (!item || !state.content().item(*item).placesBoat()) {
+        qCWarning(lcServer) << "World setup: no boat item for a boat at" << setup.at.x << setup.at.y << setup.at.z << setup.item;
+        return;
+    }
+
+    QcBoat boat;
+    boat.id = state.entities().newId();
+    boat.item = state.content().item(*item).name;
+    boat.motion.position = setup.at;
+    boat.yaw = qcWrappedYaw(setup.yaw);
+    if (!state.entities().boats().add(boat)) {
+        qCWarning(lcServer) << "World setup: too many boats";
+    }
+}
+
 // Contents at a rail with a container cart go into the cart (decision E-386); true when they did.
 bool fillCart(QcServerState &state, const QcWorldSetup::Contents &contents)
 {
@@ -319,6 +339,9 @@ void apply(QcServerState &state, QcBlockUpdateQueue &updates, const QcWorldSetup
 
     for (const QcWorldSetup::Cart &cart : setup.minecarts) {
         placeMinecart(state, cart);
+    }
+    for (const QcWorldSetup::Boat &boat : setup.boats) {
+        placeBoat(state, boat);
     }
     for (const QcWorldSetup::Contents &contents : setup.contents) {
         if (!fillCart(state, contents)) {

@@ -3,10 +3,11 @@
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcMinecartBody.h"
 
-bool QcClientRiding::noteVehicle(quint32 vehicle)
+bool QcClientRiding::noteVehicle(quint32 vehicle, bool boat)
 {
     const bool changed = vehicle != m_vehicle;
     m_vehicle = vehicle;
+    m_driving = vehicle != 0 && boat;
     return changed;
 }
 

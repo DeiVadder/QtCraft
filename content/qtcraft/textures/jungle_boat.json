@@ -1,0 +1,30 @@
+{
+    "name": "jungle_boat",
+    "pattern": "icon",
+    "primary": "#a0734f",
+    "variation": 0.0,
+    "seed": 3304,
+    "palette": {
+        "B": "#a0734f",
+        "D": "#7d5638",
+        "P": "#6b4a2a"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "",
+        "  P          P",
+        "   P        P",
+        "    P      P",
+        "D    P    P    D",
+        "DD    P  P    DD",
+        "DBBBBBBBBBBBBBBD",
+        "DBBBBBBBBBBBBBBD",
+        " DBBBBBBBBBBBBD",
+        "  DDDDDDDDDDDD",
+        "   DDDDDDDDDD",
+        "",
+        ""
+    ]
+}

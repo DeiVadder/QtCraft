@@ -75,6 +75,9 @@ public:
     int radialSlot() const { return m_radial.highlighted(); }
     // Keys held as if pressed (benchmark walk).
     void holdKeys(QSet<int> keys) { m_keysDown = std::move(keys); }
+    // Holds down or lets go of the first key bound to `action` as if pressed (screenshot scripts:
+    // paddling a boat, decision E-920).
+    void holdAction(QcKeyBindings::Action action, bool held);
     // Mouse motion since the last frame; taken every frame, so motion from a frame without a world
     // never turns the view later.
     QPointF takeMouseDelta();

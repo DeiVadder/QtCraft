@@ -1,0 +1,30 @@
+{
+    "name": "oak_boat",
+    "pattern": "icon",
+    "primary": "#a8844e",
+    "variation": 0.0,
+    "seed": 3301,
+    "palette": {
+        "B": "#a8844e",
+        "D": "#7d6038",
+        "P": "#6b4a2a"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "",
+        "  P          P",
+        "   P        P",
+        "    P      P",
+        "D    P    P    D",
+        "DD    P  P    DD",
+        "DBBBBBBBBBBBBBBD",
+        "DBBBBBBBBBBBBBBD",
+        " DBBBBBBBBBBBBD",
+        "  DDDDDDDDDDDD",
+        "   DDDDDDDDDD",
+        "",
+        ""
+    ]
+}

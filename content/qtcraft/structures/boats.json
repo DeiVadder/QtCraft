@@ -1,0 +1,146 @@
+{
+    "name": "boats",
+    "showcase": {
+        "order": 112
+    },
+    "palette": {
+        "G": "grass_block",
+        "s": "sand",
+        "W": "water",
+        "O": "oak_planks",
+        "I": "packed_ice",
+        "C": "chest[facing=north]"
+    },
+    "layers": [
+        [
+            "GGGGGGGGGGGGGGGGG",
+            "GsssssssssssssssG",
+            "GsWWWWWWWWWWWWWsG",
+            "GsWWWWWWWWWWWWWsG",
+            "GsWWWWWWWWWWWWWsG",
+            "GsWWWWWWWWWWWWWsG",
+            "GsWWWWWWWWWWWWWsG",
+            "GsWWWWWWWWWWWWWsG",
+            "GssssssOOOOOssssG",
+            "GIIIIIIIIIIIIIIIG",
+            "GIIIIIIIIIIIIIIIG",
+            "GGGGGGGGGGGGGGGGG"
+        ],
+        [
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "                 ",
+            "        C        "
+        ]
+    ],
+    "boats": [
+        {
+            "at": [
+                4.5,
+                0.82,
+                4.5
+            ],
+            "item": "oak_boat",
+            "yaw": 90
+        },
+        {
+            "at": [
+                11.5,
+                0.82,
+                5.5
+            ],
+            "item": "birch_boat",
+            "yaw": 270
+        },
+        {
+            "at": [
+                4.5,
+                1.0,
+                9.5
+            ],
+            "item": "spruce_boat",
+            "yaw": 90
+        },
+        {
+            "at": [
+                13.5,
+                1.0,
+                1.5
+            ],
+            "item": "jungle_boat",
+            "yaw": 0
+        }
+    ],
+    "mobs": [
+        {
+            "mob": "pig",
+            "at": [
+                10.6,
+                1.0,
+                5.5
+            ],
+            "confined": true
+        }
+    ],
+    "contents": [
+        {
+            "at": [
+                8,
+                1,
+                11
+            ],
+            "items": [
+                {
+                    "item": "oak_boat"
+                },
+                {
+                    "item": "birch_boat"
+                },
+                {
+                    "item": "spruce_boat"
+                },
+                {
+                    "item": "jungle_boat"
+                },
+                {
+                    "item": "oak_planks",
+                    "count": 10
+                }
+            ]
+        }
+    ],
+    "labels": [
+        {
+            "at": [
+                8.5,
+                3.2,
+                6.0
+            ],
+            "text": "structure.qtcraft.boats"
+        },
+        {
+            "at": [
+                11.5,
+                2.4,
+                5.5
+            ],
+            "text": "structure.qtcraft.boats.passenger"
+        },
+        {
+            "at": [
+                4.5,
+                2.4,
+                9.5
+            ],
+            "text": "structure.qtcraft.boats.ice"
+        }
+    ]
+}

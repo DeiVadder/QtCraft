@@ -117,6 +117,9 @@ struct QcCreature : QcEntity
     // and knocked back and takes damage. Set by structure data (`"noAi": true`), /summon … noai and
     // /mob … noai; saved with it (QcEntityCodec::Component::NoAi).
     bool noAi = false;
+    // The boat it sits in (decision E-920; entity id, 0 for none): it neither thinks nor moves, the
+    // boat puts it on its seat every tick. Not saved: a creature saved on its seat gets in again.
+    quint32 vehicle = 0;
     // Game ticks until it may teleport again (QcTeleportDefinition::cooldownSeconds); not saved.
     int teleportCooldown = 0;
     // Where it teleported from since the creatures' last tick: QcCreatureTraits plays the sounds and

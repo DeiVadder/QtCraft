@@ -27,6 +27,7 @@
 
 #include <atomic>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <vector>
 #include <utility>
@@ -150,6 +151,13 @@ public:
     qsizetype loadedChunkCount() const { return m_chunks.size(); }
     // Changes whenever a chunk enters or leaves the world (QcEntities::settle).
     quint64 loadedEpoch() const { return m_loadedEpoch; }
+    // Counts the block changes of the world (decision E-920): every changed block and every chunk
+    // that entered the world or was generated again.
+    quint64 blockChanges() const { return m_blockChanges; }
+    // The count of blockChanges() when a block of the chunk last changed or the chunk entered the
+    // world; the largest count there is for a chunk that is not loaded. A resting boat compares it
+    // with the count when it came to rest instead of reading its blocks every tick.
+    quint64 lastChangeIn(QcChunkPos pos) const { return m_lastChange.value(pos, std::numeric_limits<quint64>::max()); }
     // Chunks that became loaded (generated, loaded synchronously or read from a save) since the last call.
     QList<QcChunkPos> takeNewlyLoaded() { return std::exchange(m_newlyLoaded, {}); }
     QList<QcChunkPos> loadedChunks() const { return m_chunks.keys(); }
@@ -174,6 +182,8 @@ private:
     // Records the marked sections, the hoppers, the links, the block entities and the fires of a chunk
     // that entered the world.
     void noteSections(QcChunkPos pos, const QcChunk &chunk);
+    // A block of the chunk changed or the chunk entered the world (lastChangeIn).
+    void noteChange(QcChunkPos pos);
     // Forgets what was derived from a chunk that left the world or is generated again.
     void forgetSections(QcChunkPos pos);
     // `light`: the chunk's own light prepared in the background (null: computed here).
@@ -203,6 +213,9 @@ private:
     QcChunkSaveState m_saves;
     QList<QcChunkPos> m_newlyLoaded;
     quint64 m_loadedEpoch = 0;
+    quint64 m_blockChanges = 0;
+    // NOLINT(qc-member-access): the change clock's table, set only by noteChange, dropped for a chunk that leaves (forgetSections), read only by lastChangeIn.
+    QHash<QcChunkPos, quint64> m_lastChange;
     ArrivalHandler m_onArrival;
     GroupLoader m_loadGroup;
     QcMailbox<Arrival> m_generated;

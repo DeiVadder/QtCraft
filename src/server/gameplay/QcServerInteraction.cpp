@@ -13,6 +13,7 @@
 #include "server/blocks/QcFireIgnition.h"
 #include "server/blocks/QcOpeners.h"
 #include "server/blocks/QcServerBlocks.h"
+#include "server/boats/QcServerBoats.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -148,7 +149,7 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.strip(client, message.target, held)
                           || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
     if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)
-        || QcServerHanging(m_state, m_parts.sounds, m_parts.inventory).place(client, message)) {
+        || m_parts.boats.place(client, message) || QcServerHanging(m_state, m_parts.sounds, m_parts.inventory).place(client, message)) {
         return;
     }
     placeHeld(client, message, held);

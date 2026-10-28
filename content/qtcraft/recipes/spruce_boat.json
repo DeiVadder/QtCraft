@@ -1,0 +1,14 @@
+{
+    "name": "spruce_boat",
+    "type": "shaped",
+    "pattern": [
+        "# #",
+        "###"
+    ],
+    "key": {
+        "#": "spruce_planks"
+    },
+    "result": {
+        "item": "spruce_boat"
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "name": "spruce_boat",
+    "pattern": "icon",
+    "primary": "#7a5a35",
+    "variation": 0.0,
+    "seed": 3303,
+    "palette": {
+        "B": "#7a5a35",
+        "D": "#55401f",
+        "P": "#6b4a2a"
+    },
+    "bitmap": [
+        "",
+        "",
+        "",
+        "",
+        "  P          P",
+        "   P        P",
+        "    P      P",
+        "D    P    P    D",
+        "DD    P  P    DD",
+        "DBBBBBBBBBBBBBBD",
+        "DBBBBBBBBBBBBBBD",
+        " DBBBBBBBBBBBBD",
+        "  DDDDDDDDDDDD",
+        "   DDDDDDDDDD",
+        "",
+        ""
+    ]
+}

@@ -23,7 +23,10 @@ void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
 {
     stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying
-           << m.vehicle;
+           << m.vehicle << m.boat.has_value();
+    if (const std::optional<QcBoatState> &boat = m.boat) {
+        stream << boat->motion.position << boat->motion.velocity << boat->motion.onGround << boat->motion.inWater << boat->yaw << boat->spin;
+    }
 }
 
 void encode(QDataStream &stream, QcMsg::SelectHotbarSlot m)
@@ -135,10 +138,19 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerState>, QDataStream &stream)
 {
     QcMsg::PlayerState m;
+    bool driving = false;
     stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying
-        >> m.vehicle;
+        >> m.vehicle >> driving;
     if (!isFinite(m.motion.position) || !isFinite(m.motion.velocity)) {
         return qcError(u"Non-finite player state"_s);
+    }
+    if (driving) {
+        QcBoatState boat;
+        stream >> boat.motion.position >> boat.motion.velocity >> boat.motion.onGround >> boat.motion.inWater >> boat.yaw >> boat.spin;
+        if (!isFinite(boat.motion.position) || !isFinite(boat.motion.velocity) || !std::isfinite(boat.yaw) || !std::isfinite(boat.spin)) {
+            return qcError(u"Non-finite boat state"_s);
+        }
+        m.boat = boat;
     }
     return m;
 }

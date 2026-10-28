@@ -90,6 +90,8 @@ private:
             return u"primed"_s;
         case QcEntityKind::Hanging:
             return u"hanging"_s;
+        case QcEntityKind::Boat:
+            return u"boat"_s;
         case QcEntityKind::Creature:
             break;
         }

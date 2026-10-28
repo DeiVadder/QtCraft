@@ -34,6 +34,7 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
     case QcEntityKind::Player:
     case QcEntityKind::ArmourStand:
     case QcEntityKind::Minecart:
+    case QcEntityKind::Boat:
         return true;
     case QcEntityKind::ExperienceOrb:
         return spawn.health > 0.0;
@@ -67,12 +68,12 @@ QcHanging hangingOf(const QcMsg::EntitySpawn &spawn)
     return spawn.kind == QcEntityKind::Hanging ? spawn.hanging : QcHanging();
 }
 
-// Items, projectiles (their look), minecarts (what the cart carries, decision E-386) and frames
-// (what they hold, decision E-790) show a stack.
+// Items, projectiles (their look), minecarts (what the cart carries, decision E-386), boats (what
+// they are built of, decision E-920) and frames (what they hold, decision E-790) show a stack.
 bool showsStack(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)
 {
     return spawn.kind == QcEntityKind::Item || spawn.kind == QcEntityKind::Projectile || spawn.kind == QcEntityKind::Hanging
-           || (spawn.kind == QcEntityKind::Minecart && content && content->isValidItem(spawn.item.item));
+           || ((spawn.kind == QcEntityKind::Minecart || spawn.kind == QcEntityKind::Boat) && content && content->isValidItem(spawn.item.item));
 }
 
 QcClientEntity entityFromSpawn(const QcMsg::EntitySpawn &spawn, const QcContentRegistry *content)

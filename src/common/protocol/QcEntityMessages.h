@@ -27,6 +27,9 @@ inline constexpr quint16 OnGround = 2;
 inline constexpr quint16 InWater = 4;
 inline constexpr quint16 Sneaking = 8;
 inline constexpr quint16 Sprinting = 16;
+// On a boat the sprint bit tells that its driver paddles: his latest input pressed a key that
+// paddles or turns (decision E-920); the paddles row.
+inline constexpr quint16 Rowing = Sprinting;
 // A young animal (decision E-293): drawn at QcMsg::youngScale of its size.
 inline constexpr quint16 Young = 32;
 // An animal in love after feeding: hearts above it.

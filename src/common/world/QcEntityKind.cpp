@@ -35,6 +35,8 @@ QLatin1StringView name(QcEntityKind kind)
         return QLatin1StringView("primed explosive");
     case QcEntityKind::Hanging:
         return QLatin1StringView("hanging");
+    case QcEntityKind::Boat:
+        return QLatin1StringView("boat");
     }
     return QLatin1StringView("unknown");
 }

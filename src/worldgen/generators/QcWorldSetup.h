@@ -10,7 +10,7 @@
 
 // What a world generator puts into a new world once, when the world is created (decision E-221):
 // the world's rules and what its structures bring along, in world coordinates: creatures, contents
-// of chests and machines, minecarts, block updates to run (liquids flow, sand falls) and saplings that grow.
+// of chests and machines, minecarts, boats, block updates to run (liquids flow, sand falls) and saplings that grow.
 // The server applies it before the first player joins and records that in world.json.
 struct QcWorldSetup
 {
@@ -18,6 +18,7 @@ struct QcWorldSetup
     using Stand = QcStructureDefinition::Stand;
     using Contents = QcStructureDefinition::Contents;
     using Cart = QcStructureDefinition::Cart;
+    using Boat = QcStructureDefinition::Boat;
     using Sign = QcStructureDefinition::Sign;
     using Hanging = QcStructureDefinition::Hanging;
 
@@ -41,6 +42,8 @@ struct QcWorldSetup
     QList<QcBlockPos> growing;
     // Minecarts on rails (decisions E-382, E-386).
     QList<Cart> minecarts;
+    // Boats (decision E-920).
+    QList<Boat> boats;
     // Text on signs (decision E-766).
     QList<Sign> signs;
     // Item frames and paintings (decision E-797).

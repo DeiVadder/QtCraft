@@ -363,8 +363,10 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
         return;
     }
 
-    if (m_prediction.riding().isRiding()) {
+    if (m_prediction.riding().ridesCart()) {
         m_prediction.followCart(m_entities);
+    } else if (m_prediction.riding().drivesBoat()) {
+        rowingSounds();
     } else {
         const QcEntityMotion &motion = m_prediction.motion();
         const QcEntityMotion &previous = m_prediction.previousMotion();
@@ -380,6 +382,21 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
         apply(m_hand.tickUse(*m_worldMirror.world(), *m_worldMirror.content()));
     }
     emit ticked();
+}
+
+void QcClientSession::rowingSounds()
+{
+    // The driver hears the boat splash down and the strokes of the paddle on the water (decision
+    // E-920); on land it makes no steps.
+    const std::optional<QcBoatState> &boat = m_prediction.boat();
+    const std::optional<QcBoatState> &before = m_prediction.previousBoat();
+    if (!boat || !before || !boat->motion.inWater) {
+        return;
+    }
+    const QList<QcSoundCue> strokes = m_sounds.local().update(before->motion, boat->motion, false, *m_worldMirror.world());
+    for (const QcSoundCue &stroke : strokes) {
+        cue(stroke);
+    }
 }
 
 void QcClientSession::cue(QcSoundCue cue)
