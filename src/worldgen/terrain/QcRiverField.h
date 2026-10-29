@@ -119,8 +119,9 @@ public:
 
     // The middle lines in coordinates bent by the meander, for following a river along them
     // (QcRiverPieces): the river noise there (its zero line is the middle line), the column a
-    // bent point lies at (within about a quarter block) and how strongly the river runs on its middle
-    // line there (0..1: the climate's strengthAt() and the fading of small rings, as at()).
+    // bent point lies at (within about a quarter block) and how much of the river the fading of
+    // small rings leaves on its middle line there (0..1; times the climate's strengthAt() it is how
+    // strongly the river runs there, as at()).
     [[nodiscard]] double value(double bentX, double bentZ) const;
     struct Point
     {
@@ -128,7 +129,7 @@ public:
         double z = 0.0;
     };
     [[nodiscard]] Point unbent(double bentX, double bentZ) const;
-    [[nodiscard]] double strengthOnLine(double bentX, double bentZ, const QcTerrainClimate::Point &climate) const;
+    [[nodiscard]] double ringsLeaveOnLine(double bentX, double bentZ) const;
 
 private:
     // The meander's bend at a column: how many blocks its coordinates move.

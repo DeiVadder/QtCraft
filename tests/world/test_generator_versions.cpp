@@ -5,9 +5,11 @@
 #include "world/QcChunkChecksum.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
+#include "worldgen/terrain/QcRiverField.h"
 #include "worldgen/terrain/QcSurfaceLakes.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include <QCryptographicHash>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -16,6 +18,7 @@
 #include <QTest>
 
 #include <array>
+#include <cmath>
 
 using namespace Qt::StringLiterals;
 
@@ -27,7 +30,10 @@ using namespace Qt::StringLiterals;
 // data), dungeon, mine shaft (with the chunks around it and its way up), coastal tower and of every
 // surface structure /locate knows (all chunks under it), the nearest columns of rivers, deltas,
 // frozen rivers, swamps, deserts and snowy land (a coarse biome search) and of a lake inland: their
-// blocks by state name, furnishing and biomes. The seeds and options are fixed (no seed drawn per run
+// blocks by state name, furnishing and biomes. The worlds with version 1's default options also have
+// a checksum of their rivers ("<world> rivers"): the distance to a built river of each column on a
+// coarse grid, which shows which pieces of rivers are built (decisions E-851, E-935); few of them
+// lie in the hashed chunks. The seeds and options are fixed (no seed drawn per run
 // as in decision E-846, and version 1's stored values rather than today's defaults): the test
 // compares with recorded values.
 //
@@ -62,6 +68,7 @@ struct Coverage
     QSet<QString> biomes;
     QSet<QString> blocks;
     qint64 caveCells = 0;
+    qint64 riverColumns = 0;
 };
 
 const QString terrain = QString::fromLatin1(QcWorldGenerators::terrain);
@@ -81,6 +88,9 @@ constexpr int biomeStep = 48;
 constexpr int wideBiomeReach = 3072;
 constexpr int wideBiomeStep = 64;
 constexpr int lakeRings = 24;
+// The rivers are hashed on a grid of riverStep blocks within riverReach of the origin.
+constexpr int riverReach = 1536;
+constexpr int riverStep = 16;
 // The places /locate finds that are no placed structure.
 const QStringList places{u"village"_s, u"dungeon"_s, u"mineshaft"_s, u"coastal_tower"_s};
 // The biomes looked for; one column of each set nearest to the origin.
@@ -94,6 +104,32 @@ const QList<QStringList> wantedBiomes{{u"qtcraft:river"_s},
 QString platform()
 {
     return QSysInfo::kernelType() + u'-' + QSysInfo::buildCpuArchitecture();
+}
+
+// The checksum of a terrain world's rivers and how many of its columns lie near one.
+struct Rivers
+{
+    QString checksum;
+    qint64 columns = 0;
+};
+
+// The distance to the nearest built river (whole blocks, -1 beyond its reach) of each column on the
+// river grid: a closed piece (decision E-851) leaves its columns far from every river.
+Rivers riversOf(const QcTerrainGenerator &generator)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    Rivers rivers;
+    for (int z = -riverReach; z < riverReach; z += riverStep) {
+        for (int x = -riverReach; x < riverReach; x += riverStep) {
+            const double distance = generator.column(x, z).riverDistance;
+            const qint32 near = distance < QcRiverField::reach ? static_cast<qint32>(std::lround(distance)) : -1;
+            rivers.columns += near >= 0 ? 1 : 0;
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): raw bytes of a trivially copyable value for the hash
+            hash.addData(QByteArrayView(reinterpret_cast<const char *>(&near), sizeof near));
+        }
+    }
+    rivers.checksum = QString::fromLatin1(hash.result().toHex());
+    return rivers;
 }
 
 // The column of each set of `wanted` biomes nearest to the origin on a grid of `step` blocks within
@@ -332,6 +368,11 @@ private:
             }
             Sampler sampler(*generator, *applied.content, coverage, world.explore);
             checksums.insert(world.name, sampler.checksum());
+            if (const auto *terrainGenerator = dynamic_cast<const QcTerrainGenerator *>(generator.get()); terrainGenerator && world.explore) {
+                const Rivers rivers = riversOf(*terrainGenerator);
+                checksums.insert(world.name + u" rivers"_s, rivers.checksum);
+                coverage.riverColumns += rivers.columns;
+            }
         }
         return {checksums, coverage};
     }
@@ -446,7 +487,7 @@ private slots:
 
 private:
     // The terrain worlds found every kind /locate knows, a lake, and hashed rivers, deltas, ice or
-    // snow, ores, leaves and caves.
+    // snow, ores, leaves and caves, and columns near rivers.
     void checkCoverage(const Coverage &coverage) const
     {
         const QcTerrainGenerator generator(m_content, 42);
@@ -465,6 +506,7 @@ private:
             QVERIFY2(seen(part), qPrintable(part.toString()));
         }
         QVERIFY(coverage.caveCells > 0);
+        QVERIFY(coverage.riverColumns > 0);
     }
 };
 

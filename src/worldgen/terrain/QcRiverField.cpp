@@ -202,10 +202,9 @@ double QcRiverField::valueAt(int x, int z) const
     return value(x + bend.x, z + bend.z);
 }
 
-double QcRiverField::strengthOnLine(double bentX, double bentZ, const QcTerrainClimate::Point &climate) const
+double QcRiverField::ringsLeaveOnLine(double bentX, double bentZ) const
 {
-    const double strength = strengthAt(climate);
-    return strength > 0.0 ? strength * ringsLeave(shapeAt(bentX, bentZ, value(bentX, bentZ))) : 0.0;
+    return ringsLeave(shapeAt(bentX, bentZ, value(bentX, bentZ)));
 }
 
 double QcRiverField::ringsLeave(const Shape &shape) const

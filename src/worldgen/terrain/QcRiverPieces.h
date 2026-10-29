@@ -30,8 +30,12 @@ public:
     // Whether the river of `sample` (a column within its reach, QcRiverField::at()) reaches the
     // sea or runs on for more than `longest` blocks.
     [[nodiscard]] bool leadsOn(const QcRiverField::Sample &sample, const QcRiverField::Land &land) const;
+    // The answers are found from the middle of cells of this many blocks (bent coordinates; a
+    // column of a river finds the cell of the nearest point of its middle line, Sample::lineX/lineZ).
+    static constexpr double cellSize = 32.0;
+    // The answer for the cell (`cellX`, `cellZ`) of cellSize blocks, remembered per thread.
+    [[nodiscard]] bool cellLeadsOn(qint32 cellX, qint32 cellZ, const QcRiverField::Land &land) const;
 
-private:
     // How a walk along the middle line ended: in the sea, where the river runs dry, back at its
     // start, after the walk's length, or off the line (the steps did not settle on it).
     enum class End : quint8 { Sea, Dry, Round, Far, Lost };
@@ -40,6 +44,12 @@ private:
         End end = End::Far;
         double length = 0.0;
     };
+    // The walk the answer of a point near a middle line (bent coordinates) reads way `side` (1 or
+    // -1 times the line's direction there), started as for a cell (at the first crossing ahead) and
+    // given `longest` blocks; none where no walk starts (the river stays). For tests (E-935).
+    [[nodiscard]] std::optional<Walk> walkFrom(QcRiverField::Point near, double side, const QcRiverField::Land &land) const;
+
+private:
     // The middle line's point near `near` (bent coordinates, at most `reach` blocks away),
     // with the unit direction along the line (the noise's gradient turned by a right angle); none
     // where the steps do not settle.
@@ -54,7 +64,8 @@ private:
     // towardsZ).
     [[nodiscard]] OnLine along(QcRiverField::Point at, double towardsX, double towardsZ) const;
     // Where the middle line crosses lines of the lattice between two of its points a march step
-    // apart, in the order from `from` to `to` (one that does not settle is left out).
+    // apart, in the order from `from` to `to` (one that does not settle is left out, and so is one
+    // at or behind `from`: it was passed before).
     struct Crossings
     {
         std::array<QcRiverField::Point, 2> at;
@@ -64,14 +75,52 @@ private:
     // The middle line's crossing with the lattice line x = `line` (`acrossX`) or z = `line` near
     // `guess`.
     [[nodiscard]] std::optional<QcRiverField::Point> crossingOn(bool acrossX, double line, QcRiverField::Point guess) const;
-    // Walks along the middle line from `from` (its direction times `side`, 1 or -1) for at most
-    // `budget` blocks.
-    [[nodiscard]] Walk walk(const OnLine &from, double side, double budget, const QcRiverField::Land &land) const;
-    // Whether the river at a point of its middle line (bent coordinates) ends there: in the sea or
-    // where it runs dry.
-    [[nodiscard]] End endAt(QcRiverField::Point at, const QcRiverField::Land &land) const;
-    // The answer for the middle of a cell, remembered per thread.
-    [[nodiscard]] bool cellLeadsOn(qint32 cellX, qint32 cellZ, const QcRiverField::Land &land) const;
+    // A crossing a walk passed: where, and how strongly the climate lets rivers run there
+    // (QcRiverField::strengthAt(), 0 in the sea).
+    struct Passed
+    {
+        QcRiverField::Point at;
+        double strength = 0.0;
+    };
+    // What a walk sees at a crossing (bent coordinates): whether the river ends there (in the sea
+    // or where it runs dry) and the crossing with its climate's strength.
+    struct Seen
+    {
+        End end = End::Far;
+        Passed passed;
+    };
+    [[nodiscard]] Seen seenAt(QcRiverField::Point at, const QcRiverField::Land &land) const;
+    // Where the river runs dry on its middle line between two crossings passed one after the
+    // other, if it does: the same points are read whichever way a walk passes them.
+    [[nodiscard]] std::optional<QcRiverField::Point> dryBetween(const Passed &one, const Passed &other) const;
+    // The crossings a walk has passed so far: its first one (back there, it went round a loop) and
+    // the last one.
+    struct Trail
+    {
+        std::optional<QcRiverField::Point> first;
+        std::optional<Passed> last;
+    };
+    // What passing a crossing `length` blocks along a walk gives: the walk's end there, or the
+    // crossing passed (neither where it is the last one found again).
+    struct Passing
+    {
+        std::optional<Walk> ended;
+        std::optional<Passed> passed;
+    };
+    [[nodiscard]] Passing pass(const Trail &trail, QcRiverField::Point at, double length, const QcRiverField::Land &land) const;
+    // Walks along the middle line from `from` (in its direction) for at most `budget` blocks, having
+    // passed `trail` already.
+    [[nodiscard]] Walk walk(const OnLine &from, double budget, Trail trail, const QcRiverField::Land &land) const;
+    // Where both walks of a point near a middle line start: the first crossing ahead of the
+    // point's point of the line (direction as there) and what is seen at it; none off the line.
+    struct Start
+    {
+        OnLine at;
+        Seen seen;
+    };
+    [[nodiscard]] std::optional<Start> startNear(QcRiverField::Point near, const QcRiverField::Land &land) const;
+    // The walk from `start` way `side` for at most `budget` blocks.
+    [[nodiscard]] Walk walkFrom(const Start &start, double side, double budget, const QcRiverField::Land &land) const;
     // The answer followed from a point near a middle line.
     [[nodiscard]] bool follow(QcRiverField::Point from, const QcRiverField::Land &land) const;
 

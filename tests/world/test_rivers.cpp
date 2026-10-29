@@ -5,6 +5,7 @@
 #include "common/world/QcChunk.h"
 #include "QcTestUtil.h"
 #include "world/QcWaterTestUtil.h"
+#include "worldgen/terrain/QcRiverPieces.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcVillagePlan.h"
 
@@ -12,6 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QMap>
+#include <QPoint>
 #include <QRandomGenerator>
 #include <QScopeGuard>
 #include <QSet>
@@ -22,6 +24,8 @@
 #include <cmath>
 #include <map>
 #include <memory>
+#include <set>
+#include <tuple>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -160,6 +164,99 @@ QList<std::pair<int, int>> riverColumns(const QcTerrainGenerator &generator, int
         }
     }
     return found;
+}
+
+// The terrain's maps as the river pieces read them (the generator's own adapter is private).
+class GeneratorLand final : public QcRiverField::Land
+{
+public:
+    explicit GeneratorLand(const QcTerrainGenerator &generator)
+        : m_generator(generator)
+    {
+    }
+
+    [[nodiscard]] double continentAt(int x, int z) const override { return m_generator.continentAt(x, z); }
+    [[nodiscard]] QcTerrainClimate::Point climateAt(int x, int z) const override { return m_generator.climateAt(x, z); }
+    [[nodiscard]] std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const override { return m_generator.dryClimateAt(x, z); }
+
+private:
+    const QcTerrainGenerator &m_generator;
+};
+
+// The river pieces of a seed beside its generator, asked directly (decision E-935): the same field
+// and answers as the terrain's own.
+struct Pieces
+{
+    Pieces(const QcTerrainGenerator &generator, qint64 seed)
+        : land(generator)
+        , field(static_cast<quint64>(seed))
+        , pieces(field)
+    {
+    }
+
+    [[nodiscard]] bool leadsOn(QPoint cell) const { return pieces.cellLeadsOn(cell.x(), cell.y(), land); }
+    // The walk of a cell's answer way `side`, from the cell's middle.
+    [[nodiscard]] std::optional<QcRiverPieces::Walk> walk(QPoint cell, double side) const
+    {
+        return pieces.walkFrom({(cell.x() + 0.5) * QcRiverPieces::cellSize, (cell.y() + 0.5) * QcRiverPieces::cellSize}, side, land);
+    }
+    // Whether the river ends (in the sea, dry or off the line) within a cell's width of the cell's
+    // walks: the end of a piece lies in or right beside the cell.
+    [[nodiscard]] bool endsAt(QPoint cell) const
+    {
+        return std::ranges::any_of(std::array{1.0, -1.0}, [&](double side) {
+            const std::optional<QcRiverPieces::Walk> walked = walk(cell, side);
+            return walked && walked->end != QcRiverPieces::End::Far && walked->end != QcRiverPieces::End::Round && walked->length < QcRiverPieces::cellSize;
+        });
+    }
+
+    GeneratorLand land;
+    QcRiverField field;
+    QcRiverPieces pieces;
+};
+
+using CellPair = std::pair<QPoint, QPoint>;
+
+struct CellOrder
+{
+    bool operator()(CellPair a, CellPair b) const
+    {
+        return std::tuple(a.first.x(), a.first.y(), a.second.x(), a.second.y()) < std::tuple(b.first.x(), b.first.y(), b.second.x(), b.second.y());
+    }
+};
+
+// Neighbouring cells of the river pieces along a river (built or not) within the square of
+// `reach` blocks around `centre`: cells of the river field's channel columns 4 blocks apart where
+// the river runs with a strength over 0.4. A river ends dry where the strength on its middle line
+// falls under 0.3 (decision E-851): cells around such an end lie on both sides of it.
+std::set<CellPair, CellOrder> cellPairs(const QcTerrainGenerator &generator, const Pieces &pieces, QPoint centre, int reach)
+{
+    constexpr int step = 4;
+    const int cells = 2 * reach / step;
+    QList<std::optional<QPoint>> grid(static_cast<qsizetype>(cells) * cells);
+    for (int j = 0; j < cells; ++j) {
+        for (int i = 0; i < cells; ++i) {
+            const int x = centre.x() - reach + i * step;
+            const int z = centre.y() - reach + j * step;
+            const QcRiverField::Sample sample = pieces.field.at(x, z, generator.climateAt(x, z));
+            if (sample.inChannel() && sample.strength > 0.4) {
+                const auto cell = [](double at) { return static_cast<int>(std::floor(at / QcRiverPieces::cellSize)); };
+                grid[static_cast<qsizetype>(j) * cells + i] = QPoint(cell(sample.lineX), cell(sample.lineZ));
+            }
+        }
+    }
+    std::set<CellPair, CellOrder> pairs;
+    for (int j = 0; j + 1 < cells; ++j) {
+        for (int i = 0; i + 1 < cells; ++i) {
+            const std::optional<QPoint> &here = grid[static_cast<qsizetype>(j) * cells + i];
+            for (const std::optional<QPoint> &next : {grid[static_cast<qsizetype>(j) * cells + i + 1], grid[static_cast<qsizetype>(j + 1) * cells + i]}) {
+                if (here && next && *here != *next) {
+                    pairs.insert(std::tuple(here->x(), here->y()) < std::tuple(next->x(), next->y()) ? CellPair{*here, *next} : CellPair{*next, *here});
+                }
+            }
+        }
+    }
+    return pairs;
 }
 
 } // namespace
@@ -548,9 +645,13 @@ private slots:
         // block deep beside it; such a puddle is no outlet now (decision E-907). 147349187 (random)
         // had 11 %: a river whose middle line branched at a saddle of the noise; walks from its
         // points went either way there and its pieces were built in turns (decision E-926).
+        // 1244505982 (random) had 9.7 %: near a corner of the lattice the walks took two crossings
+        // in the wrong order, saw a loop and left a bend of a river into a lake unbuilt; 178613796
+        // (random) had 8.3 %: a river dried out over 14 blocks at a tight bend between two
+        // crossings, the walks stepped over the gap to the sea (decision E-935).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
                                   qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, qint64{1299031228},
-                                  qint64{147349187}, m_randomSeed}) {
+                                  qint64{147349187}, qint64{1244505982}, qint64{178613796}, m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             const Window window = survey(generator, 1536, 2);
@@ -568,8 +669,9 @@ private slots:
                   seed, share, dry, window.dryLand, humid, window.humidLand, outlets.joined, outlets.leaving, outlets.closed, closed);
             QVERIFY2(share > 0.012 && share < 0.04, qPrintable(QString::number(share)));
             // Closed: river bodies that neither reach other water nor leave the window. Pieces that end
-            // on land at both ends are not built (decision E-851): 0.0–0.7 % on eleven seeds. Before
-            // E-851: 0.3–14 %, rings and arcs ending on land.
+            // on land at both ends are not built (decision E-851): 0.0–0.5 % on the fixed seeds, at
+            // most 1.8 % on 150 random seeds (decision E-935). Before E-851: 0.3–14 %, rings and arcs
+            // ending on land.
             QVERIFY2(closed < 0.08, qPrintable(QString::number(closed)));
             // Deserts have no rivers (decision E-840): under a humidity of 0.05 the river field has
             // no strength.
@@ -583,6 +685,61 @@ private slots:
         const double humid = static_cast<double>(climates.humidRiver) / static_cast<double>(std::max<qint64>(1, climates.humidLand));
         qInfo("all seeds: dry %.4f of %lld, humid %.4f of %lld", dry, climates.dryLand, humid, climates.humidLand);
         QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
+    }
+
+    // Neighbouring cells along a river give the same answer (decisions E-851, E-926, E-935), except
+    // where a piece ends in one of them (each cell decides from its own middle there), and
+    // no walk sees a loop shorter than the smallest ring a river runs round (the fading of rings
+    // leaves none with a half axis under 90 blocks, E-840): around the bend into a lake of
+    // 1244505982 and the dry stretch at a tight bend of 178613796.
+    void piecesAgreeAlongRivers()
+    {
+        for (const auto &[seed, centre] : {std::pair{qint64{1244505982}, QPoint(200, -800)}, std::pair{qint64{178613796}, QPoint(-200, -700)}}) {
+            const auto release = releaseOneOff(seed);
+            const QcTerrainGenerator &generator = generatorFor(seed);
+            const Pieces pieces(generator, seed);
+            const std::set<CellPair, CellOrder> pairs = cellPairs(generator, pieces, centre, 512);
+            QVERIFY2(pairs.size() > 50, qPrintable(QString::number(pairs.size())));
+            std::set<std::pair<int, int>> cells;
+            int differ = 0;
+            int atEnds = 0;
+            for (const auto &[one, other] : pairs) {
+                cells.insert({one.x(), one.y()});
+                cells.insert({other.x(), other.y()});
+                if (pieces.leadsOn(one) == pieces.leadsOn(other)) {
+                    continue;
+                }
+                const bool atEnd = pieces.endsAt(one) || pieces.endsAt(other);
+                atEnds += atEnd ? 1 : 0;
+                differ += atEnd ? 0 : 1;
+                qInfo("seed %lld: cells %d %d and %d %d differ%s", seed, one.x(), one.y(), other.x(), other.y(), atEnd ? " at the end of a piece" : "");
+            }
+            qInfo("seed %lld: %zu neighbouring cells, %d differ at ends of pieces, %d elsewhere", seed, pairs.size(), atEnds, differ);
+            QCOMPARE(differ, 0);
+            for (const auto &[x, z] : cells) {
+                for (const double side : {1.0, -1.0}) {
+                    const std::optional<QcRiverPieces::Walk> walk = pieces.walk({x, z}, side);
+                    QVERIFY2(!walk || walk->end != QcRiverPieces::End::Round || walk->length > 4.0 * 90.0,
+                             qPrintable(u"seed %1, cell %2 %3: loop of %4"_s.arg(seed).arg(x).arg(z).arg(walk ? walk->length : 0.0)));
+                }
+            }
+        }
+    }
+
+    // The two places of decision E-935: the bend of 1244505982 before the lake leads on (its walk
+    // saw a loop at a lattice corner), and the river of 178613796 behind its dry stretch does not
+    // (its walks stepped over the stretch to the sea) while the stub beyond it reaches the sea.
+    void piecesAtTheFoundPlaces()
+    {
+        {
+            const auto release = releaseOneOff(1244505982);
+            const Pieces pieces(generatorFor(1244505982), 1244505982);
+            QVERIFY(pieces.leadsOn({-7, -23}));
+        }
+        const auto release = releaseOneOff(178613796);
+        const Pieces pieces(generatorFor(178613796), 178613796);
+        QVERIFY(!pieces.leadsOn({-16, -23}));
+        QVERIFY(pieces.leadsOn({-19, -24}));
     }
 
     // The generators the tests shared, with all they have cached by now, still give the rivers of
