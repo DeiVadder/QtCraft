@@ -7,8 +7,8 @@ import QtCraft
 
 // The graphics page of the settings (decision E-845): the display options first (window mode and
 // screen, VSync and the frame rate limits for playing and for menus, a paused game and a window in
-// the background; decision E-835), then the world (view distance, field of view and its widening
-// while sprinting) and the quality (texture filtering, decision E-721; the render mode with the
+// the background; decision E-835), then the world (view distance, field of view), movement and
+// comfort (the view widening while sprinting, camera shake) and the quality (texture filtering, decision E-721; the render mode with the
 // quality and exposure of the realistic mode, decision E-899). Every change is stored at once; VSync
 // takes effect at the next start, the view distance at the next world start.
 SettingsPage {
@@ -140,6 +140,11 @@ SettingsPage {
             valueText: qsTr("%1°").arg(Math.round(value))
             onMoved: page.game.settings.fieldOfView = value
         }
+    }
+
+    // What moves the view besides the player (ES-4 of docs/Menue-Pruefung.md).
+    SettingGroup {
+        title: qsTr("Movement and comfort")
 
         // How much the view widens while sprinting (0 % keeps it still).
         SettingSlider {

@@ -1508,5 +1508,20 @@
     ],
     "Drawing the map": "Karte wird gezeichnet",
     "%1 % drawn": "%1 % gezeichnet",
-    "Default: %1": "Standard: %1"
+    "Default: %1": "Standard: %1",
+    "You host the world": "Du stellst die Welt bereit",
+    "Action": "Aktion",
+    "Key": "Taste",
+    "Second key": "Zweite Taste",
+    "Movement and comfort": "Bewegung und Komfort",
+    "Effective: %1 % (limited by the window size)": "Wirksam: %1 % (begrenzt durch die Fenstergröße)",
+    "Effective: %1 % (limited by the window size), HUD %2 %": "Wirksam: %1 % (begrenzt durch die Fenstergröße), Anzeige im Spiel %2 %",
+    "Effective: %1 % (grows with large windows)": "Wirksam: %1 % (wächst mit großen Fenstern)",
+    "no measurement yet": "noch keine Messung",
+    "No measurement yet": "Noch keine Messung",
+    "delete": "löschen",
+    "space": "Leerzeichen",
+    "cursor": "Cursor",
+    "done": "fertig",
+    "Hosts the world": "Stellt die Welt bereit"
 }

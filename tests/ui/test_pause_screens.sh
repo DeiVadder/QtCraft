@@ -30,7 +30,7 @@ run() {
     size=$3
     shift 3
     QTCRAFT_WINDOW_SIZE=$size QTCRAFT_LAYOUT_CHECK=1 QTCRAFT_OFFSCREEN=1 QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$dir" \
-        QTCRAFT_LOG_ITEMS=worldCard,hearts,hotbar,saveWorldButton,openToLanButton,manageServerButton,leaveGameButton \
+        QTCRAFT_LOG_ITEMS=worldCard,hearts,hotbar,saveWorldButton,openToLanButton,manageServerButton,leaveGameButton,deleteWorldMessage \
         QTCRAFT_SCREENSHOT="$DATA/$name.png" QTCRAFT_SCREENSHOT_FRAMES=40 \
         perl -e 'alarm shift; exec @ARGV or die' 120 "$APP" --no-audio --no-mods --screen builtin --background --language de "$@" \
         >"$DATA/$name.log" 2>&1
@@ -130,6 +130,16 @@ for size in 1280x720 2560x1440; do
         card_above_status "saved-death-$size"
     fi
 done
+
+# The question before deleting a world, opened by its hook in the main menu: without a world of its
+# own it asks about the one played last (decision E-931).
+if run delete-world "$(fresh delete)" 1280x720 --overlay "@300 open:deleteWorldDialog"; then
+    if ! item delete-world deleteWorldMessage | grep -q '„Flach“'; then
+        echo "delete-world: the question does not name the saved world:"
+        item delete-world deleteWorldMessage
+        failed=1
+    fi
+fi
 
 # A joined server without operator rights: no save, LAN or manage server, the way out disconnects.
 joined="$DATA/joined"

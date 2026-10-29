@@ -108,12 +108,13 @@ Item {
                         Label {
                             visible: playerRow.modelData.operator
                             text: qsTr("Operator")
-                            color: Theme.warning
+                            color: Theme.textSecondary
                             font.pixelSize: Ui.hudPx(12)
                         }
 
                         Label {
-                            text: playerRow.modelData.latencyMs < 0 ? qsTr("? ms") : qsTr("%1 ms").arg(playerRow.modelData.latencyText)
+                            // No round trip measured (the host plays in the server's process): "–".
+                            text: playerRow.modelData.latencyMs < 0 ? "–" : qsTr("%1 ms").arg(playerRow.modelData.latencyText)
                             color: Theme.textSecondary
                             font.pixelSize: Ui.hudPx(12)
                             horizontalAlignment: Text.AlignRight

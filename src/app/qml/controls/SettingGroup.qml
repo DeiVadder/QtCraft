@@ -4,12 +4,14 @@ import QtQuick.Layouts
 import QtCraft
 
 // A named group of settings (decision E-845, docs/UI-Leitfaden.md 6.2): the heading in gold, the
-// rows below on a raised card. Pages with more than five settings split them into groups, the
+// rows below on a raised card, with an optional help line between them for what concerns the whole
+// group (how to use a table). Pages with more than five settings split them into groups, the
 // common ones first.
 ColumnLayout {
     id: group
 
     property alias title: heading.text
+    property alias help: helpLabel.text
     default property alias rows: card.data
 
     Layout.fillWidth: true
@@ -24,6 +26,17 @@ ColumnLayout {
         color: Theme.heading
         Accessible.role: Accessible.Heading
         Accessible.name: text
+    }
+
+    Label {
+        id: helpLabel
+
+        Layout.fillWidth: true
+        Layout.topMargin: -Ui.space.xs
+        visible: text.length > 0
+        font.pixelSize: Ui.type.help
+        color: Theme.textMuted
+        wrapMode: Text.Wrap
     }
 
     Rectangle {

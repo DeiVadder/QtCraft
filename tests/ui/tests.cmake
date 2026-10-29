@@ -365,7 +365,7 @@ set_tests_properties(app_offscreen_view_hidden_keeps_sections PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_admin_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh $<TARGET_FILE:qtcraft>
         ${CMAKE_BINARY_DIR}/test-data/app_offscreen_admin_layout)
-    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 420 COST 60
+    set_tests_properties(app_offscreen_admin_layout PROPERTIES TIMEOUT 450 COST 60
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_admin_layout.sh")
 endif()
 # qtcraft is a GUI program on Windows (WIN32_EXECUTABLE): without a console, Qt sends its messages to

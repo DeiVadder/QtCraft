@@ -504,7 +504,9 @@ ApplicationWindow {
             sourceComponent: OnScreenKeyboard {
                 areaWidth: root.width
                 areaHeight: root.height
-                buttonTexts: root.controller.gamepad.pads.texts
+                game: root.controller
+                // The UI language picks the letters' layout, also after a switch at runtime.
+                language: root.controller.settings.contentLanguage
             }
         }
     }

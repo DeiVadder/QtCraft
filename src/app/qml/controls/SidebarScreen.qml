@@ -89,7 +89,8 @@ FocusScope {
     // (docs/UI-Leitfaden.md 10). A page shown for the first time is laid out on the next frame (the
     // pad passes over items without a size): until its first item has one the page holds the focus
     // (the pad may meanwhile show its focus where it starts), then that item takes it, while the
-    // focus is still on this screen. Without one the focus stays on the page.
+    // focus is still on this screen. A page with nothing to focus (the players with only the host)
+    // gives it to its entry in the side bar, never to the back entry.
     function focusPage() {
         const first = shownPage ? firstTabItem(shownPage) : null;
         pendingFirst = null;
@@ -98,8 +99,24 @@ FocusScope {
             return;
         }
 
+        const entry = first ? null : currentNavEntry();
+        if (entry) {
+            entry.forceActiveFocus(Qt.TabFocusReason);
+            return;
+        }
+
         shownPage?.forceActiveFocus(Qt.TabFocusReason);
         pendingFirst = first;
+    }
+
+    // The chosen entry of the side bar's category list, null without one.
+    function currentNavEntry(): Item {
+        for (let index = 0; index < entryColumn.children.length; ++index) {
+            const child = entryColumn.children[index];
+            if (child instanceof NavList)
+                return (child as NavList).currentEntry();
+        }
+        return null;
     }
 
     // Whether `item` lies on the shown page.

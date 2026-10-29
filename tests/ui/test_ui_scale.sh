@@ -187,4 +187,14 @@ if ! grep -q 'padKeyboard: q' "$DATA/pad-keyboard.log"; then
     echo "pad-keyboard: the on-screen keyboard did not open or type"
     failed=1
 fi
+# In German the keyboard is QWERTZ (CT-2 of docs/Menue-Pruefung.md): five keys right of q is z.
+# shellcheck disable=SC2086
+check pad-keyboard-de $world --language de --overlay chat --overlay "@0 pad:south" --overlay "@0 pad:south" \
+    --overlay "@0 pad:dpadRight" --overlay "@0 pad:dpadRight" --overlay "@0 pad:dpadRight" --overlay "@0 pad:dpadRight" \
+    --overlay "@0 pad:dpadRight" --overlay "@0 pad:south"
+if ! grep -q 'padKeyboard: qz$' "$DATA/pad-keyboard-de.log"; then
+    echo "pad-keyboard-de: the German keyboard did not type q and z (QWERTZ):"
+    grep 'padKeyboard' "$DATA/pad-keyboard-de.log"
+    failed=1
+fi
 exit $failed

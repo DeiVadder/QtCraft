@@ -63,6 +63,15 @@ void QcAdminController::sessionStarted(QcClientSession *session)
     follow(&session->admin(), [session] { return session->content(); });
 }
 
+bool QcAdminController::isOwnName(const QString &name) const
+{
+    // Without a session there is no own name (playerName() would make "Player" of it).
+    if (m_ownName.isEmpty()) {
+        return false;
+    }
+    return QcProfileValidation::playerName(name).toCaseFolded() == QcProfileValidation::playerName(m_ownName).toCaseFolded();
+}
+
 void QcAdminController::follow(QcClientAdmin *admin, ContentSource content)
 {
     close();

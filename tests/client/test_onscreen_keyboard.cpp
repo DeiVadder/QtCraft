@@ -155,6 +155,32 @@ private slots:
         QVERIFY(!preview.contains(u"secret"_s));
         QCOMPARE(preview, item(u"password"_s)->property("displayText").toString());
     }
+
+    // German swaps y and z (QWERTZ, CT-2 of docs/Menue-Pruefung.md), also when the language
+    // changes while the keyboard is open; the keys still type their letter.
+    void germanLayoutSwapsYAndZ()
+    {
+        const auto letterAt = [this](int row, int column) {
+            return keyboard()->property("rows").toList().at(row).toList().at(column).toString();
+        };
+        // The letter row with y or z in the middle and the row below it, at its start.
+        constexpr int letterRow = 1;
+        constexpr int middleKey = 5;
+        constexpr int lowerRow = 3;
+        QCOMPARE(letterAt(letterRow, middleKey), u"yY"_s);
+        QCOMPARE(letterAt(lowerRow, 0), u"zZ"_s);
+
+        openFor(u"address"_s);
+        keyboard()->setProperty("language", u"de"_s);
+        QCOMPARE(letterAt(letterRow, middleKey), u"zZ"_s);
+        QCOMPARE(letterAt(lowerRow, 0), u"yY"_s);
+        type(u"Zyz"_s);
+        QCOMPARE(text(u"address"_s), u"Zyz"_s);
+
+        keyboard()->setProperty("language", u"en"_s);
+        QCOMPARE(letterAt(letterRow, middleKey), u"yY"_s);
+        QVERIFY(item(u"key_y"_s)->mapToScene({}).y() < item(u"key_z"_s)->mapToScene({}).y());
+    }
 };
 
 QTEST_MAIN(TestOnScreenKeyboard)

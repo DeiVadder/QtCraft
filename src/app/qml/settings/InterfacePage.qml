@@ -2,7 +2,8 @@ import QtQuick
 import QtCraft
 
 // The interface page of the settings (decision E-845): language and interface size first (what a
-// player looks for in the first minutes), then the view and what the screen shows of the world.
+// player looks for in the first minutes), then the view: the camera, what the screen shows of the
+// world and the pause when the window loses its focus.
 SettingsPage {
     id: page
 
@@ -47,11 +48,14 @@ SettingsPage {
 
             objectName: "uiScaleBox"
             label: qsTr("Interface size")
+            // What the window allows (E-725): the effective size, and the HUD's where it differs.
             help: UiScaling.scale < UiScaling.requested
-                  ? qsTr("Screens show at %1 % in this window; the HUD at %2 %. A larger window shows them larger.")
-                        .arg(Math.round(UiScaling.scale * 100)).arg(Math.round(UiScaling.hudScale * 100))
+                  ? (Math.round(UiScaling.hudScale * 100) === Math.round(UiScaling.scale * 100)
+                     ? qsTr("Effective: %1 % (limited by the window size)").arg(Math.round(UiScaling.scale * 100))
+                     : qsTr("Effective: %1 % (limited by the window size), HUD %2 %")
+                           .arg(Math.round(UiScaling.scale * 100)).arg(Math.round(UiScaling.hudScale * 100)))
                   : currentIndex >= 0 && Math.round(UiScaling.scale * 100) !== model[currentIndex].percent
-                    ? qsTr("Now %1 % (grows with large windows)").arg(Math.round(UiScaling.scale * 100)) : ""
+                    ? qsTr("Effective: %1 % (grows with large windows)").arg(Math.round(UiScaling.scale * 100)) : ""
             textRole: "text"
             valueRole: "value"
             model: [
@@ -98,10 +102,6 @@ SettingsPage {
             checked: page.game.settings.photoHidesHand
             onToggled: page.game.settings.photoHidesHand = checked
         }
-    }
-
-    SettingGroup {
-        title: qsTr("Pause")
 
         SettingSwitch {
             label: qsTr("Pause when the window loses focus")

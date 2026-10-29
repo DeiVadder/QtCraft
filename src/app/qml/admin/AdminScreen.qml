@@ -88,6 +88,7 @@ SidebarScreen {
             id: nav
 
             objectName: "adminNav"
+            entryName: "adminSection"
             Layout.fillWidth: true
             model: [qsTr("Overview"), qsTr("Players"), qsTr("Chat"), qsTr("Commands"), qsTr("Lists"), qsTr("Game rules"),
                 qsTr("Log"), qsTr("Server")]

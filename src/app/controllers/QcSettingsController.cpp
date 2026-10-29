@@ -283,3 +283,13 @@ void QcSettingsController::setTextureFiltering(TextureFiltering filtering)
     m_textureFiltering = filtering;
     emit settingsChanged();
 }
+
+void QcSettingsController::setContentLanguage(const QString &language)
+{
+    // The same language again (a switch to the system language that is already shown) stays silent.
+    if (m_contentLanguage == language) {
+        return;
+    }
+    m_contentLanguage = language;
+    emit contentLanguageChanged();
+}

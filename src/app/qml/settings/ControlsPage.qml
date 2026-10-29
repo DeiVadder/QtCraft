@@ -98,19 +98,40 @@ SettingsPage {
 
     SettingGroup {
         title: qsTr("Keys")
+        help: qsTr("Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.")
 
-        Label {
+        // What the last change did ("… moved to …"): above the table, and scrolled into view.
+        Hint {
+            id: messageHint
+
+            Layout.fillWidth: true
+            visible: page.message.length > 0
+            kind: Hint.Warning
+            text: page.message
+        }
+
+        // The columns of the table: the action, its key and a second key (ES-7 of
+        // docs/Menue-Pruefung.md).
+        RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: Ui.space.xs
-            text: qsTr("Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.")
-            font.pixelSize: Ui.type.help
-            color: Theme.textMuted
-            wrapMode: Text.Wrap
+            spacing: Ui.space.s
 
-            // Takes the next key while a slot waits for one. It takes the shortcuts too (Esc would close the
-            // settings otherwise), so every key reaches it.
+            Label {
+                Layout.fillWidth: true
+                text: qsTr("Action")
+                font.pixelSize: Ui.type.help
+                font.bold: true
+                color: Theme.textSecondary
+            }
+
+            // Takes the next key while a slot waits for one. It takes the shortcuts too (Esc
+            // would close the settings otherwise), so every key reaches it.
             Item {
                 id: keyCapture
+
+                // No room of its own beside the column heads.
+                Layout.preferredWidth: 0
 
                 // The fullscreen key leaves it alone while it waits (QcDisplaySettings).
                 objectName: "keyCapture"
@@ -134,16 +155,22 @@ SettingsPage {
                         page.bindCaptured(event.key);
                 }
             }
-        }
-
-        // What the last change did ("… moved to …"): above the table, and scrolled into view.
-        Hint {
-            id: messageHint
-
-            Layout.fillWidth: true
-            visible: page.message.length > 0
-            kind: Hint.Warning
-            text: page.message
+            Label {
+                Layout.preferredWidth: Ui.size.keyButton
+                text: qsTr("Key")
+                font.pixelSize: Ui.type.help
+                font.bold: true
+                color: Theme.textSecondary
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Label {
+                Layout.preferredWidth: Ui.size.keyButton
+                text: qsTr("Second key")
+                font.pixelSize: Ui.type.help
+                font.bold: true
+                color: Theme.textSecondary
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
 
         Repeater {

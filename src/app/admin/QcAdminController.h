@@ -131,6 +131,9 @@ public:
     Notice noticeKind() const { return m_noticeKind; }
 
     // The screen opened: follows status, chat and log and asks for the commands, lists and settings.
+    // Whether `name` is the operator's own (cleaned and case-folded as the server's access lists
+    // compare names): his own row and the question before taking his own rights.
+    Q_INVOKABLE bool isOwnName(const QString &name) const;
     Q_INVOKABLE void open();
     // The screen closed: follows nothing any more.
     Q_INVOKABLE void close();

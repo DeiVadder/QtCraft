@@ -47,6 +47,7 @@ ColumnLayout {
             anchors.fill: parent
             anchors.margins: Ui.space.s
             clip: true
+            // Compact rows stand closer than other lists of rows (UI-Leitfaden 6.9).
             spacing: Ui.space.xs
             boundsBehavior: Flickable.StopAtBounds
             Accessible.role: Accessible.List
@@ -94,6 +95,8 @@ ColumnLayout {
                 width: ListView.view.width - Ui.space.l
                 interactive: true
                 focusable: true
+                // About forty commands: one line each, the description whole with the focus.
+                compact: true
                 title: "/" + model.name
                 subtitle: model.description
                 Accessible.role: Accessible.Button
@@ -103,6 +106,11 @@ ColumnLayout {
                 Keys.onBacktabPressed: event => event.accepted = list.focusRow(row.index - 1)
                 Keys.onDownPressed: event => event.accepted = list.focusRow(row.index + 1)
                 Keys.onUpPressed: event => event.accepted = list.focusRow(row.index - 1)
+                // The focused row grows (its description whole): it stays in view.
+                onHeightChanged: {
+                    if (activeFocus)
+                        list.positionViewAtIndex(row.index, ListView.Contain);
+                }
                 // A row reached otherwise (the pad, a click) scrolls into view as well.
                 onActiveFocusChanged: {
                     if (activeFocus) {

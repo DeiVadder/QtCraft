@@ -11,9 +11,17 @@ import QtCraft
 // shift (digits their symbols, letters their capitals); the keys cover addresses with a port and
 // IPv6 ("[::1]:25565"), umlauts and ß. The pad moves over the keys like over any screen; besides,
 // west deletes, north types a space, the shoulders move the cursor and start finishes (the field's
-// accepted(), e.g. the chat line sends). Back closes it and keeps what was typed.
+// accepted(), e.g. the chat line sends). Back closes it and keeps what was typed. The letters follow
+// the UI language's keyboard (QWERTZ in German, QWERTY otherwise); the pad's buttons below are
+// drawn as on every screen (PadHintRow).
 Popup {
     id: keyboard
+
+    // Where y and z sit.
+    enum KeyLayout {
+        Qwerty,
+        Qwertz
+    }
 
     // The text field typed into (a TextField, TextInput or TextEdit); null once it is destroyed.
     property Item target
@@ -25,17 +33,25 @@ Popup {
     // The window's size, where the keyboard sits at the bottom.
     required property real areaWidth
     required property real areaHeight
-    // The pad's buttons in running text (GameController.gamepad.pads.texts, decision E-612).
-    property var buttonTexts: ({ west: "X", north: "Y", leftShoulder: "LB", rightShoulder: "RB", start: "Menu", east: "B" })
+    // The game for the pad's symbols below the keys; without one (a test) the hints are left out.
+    property GameController game
+    // The UI language ("en", "de"; GameSettings.contentLanguage, which follows a switch at runtime).
+    property string language
+    readonly property int keyLayout: language === "de" ? OnScreenKeyboard.KeyLayout.Qwertz : OnScreenKeyboard.KeyLayout.Qwerty
 
     // Each key: its character and the one under shift.
-    readonly property var rows: [
-        ["1!", "2@", "3#", "4$", "5%", "6^", "7&", "8*", "9(", "0)", "-_", "=+"],
-        ["qQ", "wW", "eE", "rR", "tT", "yY", "uU", "iI", "oO", "pP", "[{", "]}"],
-        ["aA", "sS", "dD", "fF", "gG", "hH", "jJ", "kK", "lL", ":;", "@'", "äÄ"],
-        ["zZ", "xX", "cC", "vV", "bB", "nN", "mM", ",<", ".:", "/?", "öÖ", "üÜ"],
-        ["ßẞ", "#~", "\\|", "\"`", "<>", "!?"],
-    ]
+    readonly property var rows: {
+        const qwertz = keyLayout === OnScreenKeyboard.KeyLayout.Qwertz;
+        const upper = qwertz ? "zZ" : "yY";
+        const lower = qwertz ? "yY" : "zZ";
+        return [
+            ["1!", "2@", "3#", "4$", "5%", "6^", "7&", "8*", "9(", "0)", "-_", "=+"],
+            ["qQ", "wW", "eE", "rR", "tT", upper, "uU", "iI", "oO", "pP", "[{", "]}"],
+            ["aA", "sS", "dD", "fF", "gG", "hH", "jJ", "kK", "lL", ":;", "@'", "äÄ"],
+            [lower, "xX", "cC", "vV", "bB", "nN", "mM", ",<", ".:", "/?", "öÖ", "üÜ"],
+            ["ßẞ", "#~", "\\|", "\"`", "<>", "!?"],
+        ];
+    }
 
     function openFor(field: Item) {
         target = field;
@@ -141,29 +157,29 @@ Popup {
             }
         }
 
+        // Counted, not the rows themselves: another layout relabels the keys in place.
         Repeater {
-            model: keyboard.rows
+            model: keyboard.rows.length
 
             RowLayout {
                 id: keyRow
 
-                required property var modelData
                 required property int index
 
                 Layout.alignment: Qt.AlignHCenter
                 spacing: Ui.px(4)
 
                 Repeater {
-                    model: keyRow.modelData
+                    model: keyboard.rows[keyRow.index].length
 
                     Button {
                         id: keyButton
 
-                        required property string modelData
                         required property int index
-                        readonly property string character: keyboard.shifted ? modelData.charAt(1) : modelData.charAt(0)
+                        readonly property string pair: keyboard.rows[keyRow.index][index]
+                        readonly property string character: keyboard.shifted ? pair.charAt(1) : pair.charAt(0)
 
-                        objectName: "key_" + modelData.charAt(0)
+                        objectName: "key_" + pair.charAt(0)
                         Layout.preferredWidth: Ui.px(46)
                         text: character
                         // A sign alone names nothing for a screen reader: "Key -".
@@ -211,12 +227,21 @@ Popup {
             }
         }
 
-        Label {
+        Loader {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("%1: delete  %2: space  %3/%4: cursor  %5: done  %6: close").arg(keyboard.buttonTexts.west).arg(keyboard.buttonTexts.north)
-                      .arg(keyboard.buttonTexts.leftShoulder).arg(keyboard.buttonTexts.rightShoulder).arg(keyboard.buttonTexts.start).arg(keyboard.buttonTexts.east)
-            color: Theme.textMuted
-            font.pixelSize: Ui.px(12)
+            active: keyboard.game !== null
+
+            sourceComponent: PadHintRow {
+                game: keyboard.game
+                fontSize: Ui.type.help
+                entries: [
+                    { input: "west", text: qsTr("delete") },
+                    { input: "north", text: qsTr("space") },
+                    { inputs: ["leftShoulder", "rightShoulder"], text: qsTr("cursor") },
+                    { input: "start", text: qsTr("done") },
+                    { input: "east", text: qsTr("close") }
+                ]
+            }
         }
     }
 }

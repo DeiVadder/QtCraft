@@ -6,8 +6,10 @@ import QtCraft
 // A small line chart of a value over time (decision E-863, docs/UI-Leitfaden.md 6.12): the title
 // and the latest value with its unit above, the line on the raised surface below with the top of
 // its scale at the upper left, the newest value at the right. An optional limit (the ticks a
-// second the server aims at, a tick's time) is a line of its own. DebugGraph draws both in the scene graph (no canvas); the
-// scale rounds the highest value up to 1, 2 or 5 times a power of ten.
+// second the server aims at, a tick's time) is a line of its own. DebugGraph draws both in the
+// scene graph (no canvas); the scale rounds the highest value up to 1, 2 or 5 times a power of
+// ten. Until the first measurement (`measured` false) the value is "–" and the field says so
+// instead of drawing a line of zeros (decision E-931).
 ColumnLayout {
     id: chart
 
@@ -19,6 +21,8 @@ ColumnLayout {
     property int capacity: 600
     // Drawn as a line of its own; 0 for none.
     property real limit: 0
+    // False until the first value came: the chart shows "–" and a placeholder.
+    property bool measured: true
     // The scale reaches at least this far (a flat line of zeros still has a scale).
     property real minimumScale: 1
     readonly property real scaleTop: niceScale(Math.max(minimumScale, limit, highest(values)))
@@ -42,7 +46,7 @@ ColumnLayout {
 
     spacing: Ui.space.xs
     Accessible.role: Accessible.Chart
-    Accessible.name: qsTr("%1: %2").arg(title).arg(valueText)
+    Accessible.name: qsTr("%1: %2").arg(title).arg(measured ? valueText : qsTr("no measurement yet"))
 
     RowLayout {
         Layout.fillWidth: true
@@ -56,7 +60,7 @@ ColumnLayout {
             elide: Text.ElideRight
         }
         Label {
-            text: chart.valueText
+            text: chart.measured ? chart.valueText : "–"
             font.pixelSize: Ui.type.body
             font.bold: true
             color: Theme.text
@@ -69,9 +73,11 @@ ColumnLayout {
         radius: Ui.radius
         color: Theme.panelRaised
         border.width: Ui.size.line
-        border.color: Theme.graphFrame
+        // Quieter than the line: the frame only bounds the field.
+        border.color: Theme.separator
 
         DebugGraph {
+            visible: chart.measured
             anchors.fill: parent
             anchors.margins: Ui.space.xs
             values: chart.values
@@ -82,6 +88,14 @@ ColumnLayout {
             limitColor: Theme.graphLimit
         }
         Label {
+            anchors.centerIn: parent
+            visible: !chart.measured
+            text: qsTr("No measurement yet")
+            font.pixelSize: Ui.type.help
+            color: Theme.textMuted
+        }
+        Label {
+            visible: chart.measured
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.margins: Ui.space.xs

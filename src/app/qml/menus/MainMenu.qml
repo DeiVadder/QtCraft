@@ -328,7 +328,20 @@ Rectangle {
         id: deleteDialog
 
         objectName: "deleteWorldDialog"
+        // Opened without a world (the test hook "open:deleteWorldDialog"): it asks about the
+        // world played last, the first of the list.
+        onAboutToShow: {
+            const worlds = menu.game.library.worlds;
+            if (deleteDialog.folder.length === 0 && worlds.length > 0) {
+                deleteDialog.folder = worlds[0].folder;
+                deleteDialog.worldName = worlds[0].name;
+            }
+        }
         onAccepted: menu.game.library.deleteWorld(deleteDialog.folder)
-        onClosed: menu.subScreenClosed()
+        onClosed: {
+            deleteDialog.folder = "";
+            deleteDialog.worldName = "";
+            menu.subScreenClosed();
+        }
     }
 }

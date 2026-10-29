@@ -19,6 +19,9 @@ ColumnLayout {
     property int currentIndex
     // A short muted text at the right of each category (the handbook's counts); empty for none.
     property list<string> notes
+    // Names the entries "<entryName><index>" for the test hooks ("click:adminSection1"); the
+    // entries stay unnamed without it (the pad's focus is then logged as "NavButton:<text>").
+    property string entryName
 
     // An entry took the focus (a list in a Flickable scrolls it into view).
     signal entryFocused(Item entry)
@@ -29,6 +32,11 @@ ColumnLayout {
     // Moves the focus to the item before or after `item` in the focus chain.
     function moveFocus(item: Item, forward: bool) {
         item.nextItemInFocusChain(forward)?.forceActiveFocus(Qt.TabFocusReason);
+    }
+
+    // The entry of the chosen category, null for none.
+    function currentEntry(): Item {
+        return entryRepeater.itemAt(currentIndex);
     }
 
     // The category after (step 1) or before (step -1) the current one, wrapping around.
@@ -68,6 +76,8 @@ ColumnLayout {
     }
 
     Repeater {
+        id: entryRepeater
+
         model: nav.model
 
         delegate: NavButton {
@@ -76,6 +86,7 @@ ColumnLayout {
             required property string modelData
             required property int index
 
+            objectName: nav.entryName.length > 0 ? nav.entryName + index : ""
             page: true
             checked: index === nav.currentIndex
             text: modelData

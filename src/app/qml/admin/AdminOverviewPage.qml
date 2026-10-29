@@ -15,8 +15,12 @@ SettingsPage {
     readonly property var status: admin.status
     readonly property var charts: admin.charts
     readonly property int capacity: admin.chartCapacity
+    // No status came yet: every value shows "–" instead of a zero (AD-5 of docs/Menue-Pruefung.md).
+    readonly property bool measured: Object.keys(status).length > 0
 
     function number(value: var, decimals: int): string {
+        if (!measured)
+            return "–";
         return Number(value ?? 0).toLocaleString(Qt.locale(), "f", decimals);
     }
 
@@ -27,6 +31,8 @@ SettingsPage {
 
     // A duration in milliseconds as days, hours and minutes.
     function duration(ms: var): string {
+        if (!measured)
+            return "–";
         const minutes = Math.floor((ms ?? 0) / 60000);
         const days = Math.floor(minutes / 1440);
         const hours = Math.floor(minutes / 60) % 24;
@@ -39,7 +45,7 @@ SettingsPage {
 
     Label {
         Layout.fillWidth: true
-        visible: Object.keys(page.status).length === 0
+        visible: !page.measured
         text: qsTr("Waiting for the server's status …")
         font.pixelSize: Ui.type.body
         color: Theme.textMuted
@@ -69,6 +75,7 @@ SettingsPage {
                 valueText: page.number(page.status.tps, 1)
                 values: page.charts.tps ?? []
                 capacity: page.capacity
+                measured: page.measured
                 limit: page.admin.ticksPerSecond
             }
             LineChart {
@@ -78,6 +85,7 @@ SettingsPage {
                 valueText: qsTr("%1 ms (mean %2)").arg(page.number(page.status.tickP99, 1)).arg(page.number(page.status.tickMean, 1))
                 values: page.charts.tickP99 ?? []
                 capacity: page.capacity
+                measured: page.measured
                 limit: page.admin.tickBudgetMs
             }
             LineChart {
@@ -87,6 +95,7 @@ SettingsPage {
                 valueText: page.number(page.status.players, 0)
                 values: page.charts.players ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
             LineChart {
                 Layout.fillWidth: true
@@ -95,6 +104,7 @@ SettingsPage {
                 valueText: page.number(page.status.chunks, 0)
                 values: page.charts.chunks ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
             LineChart {
                 Layout.fillWidth: true
@@ -103,6 +113,7 @@ SettingsPage {
                 valueText: page.number(page.status.entities, 0)
                 values: page.charts.entities ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
             LineChart {
                 Layout.fillWidth: true
@@ -111,6 +122,7 @@ SettingsPage {
                 valueText: qsTr("%1 MB").arg(page.number(page.status.memory, 0))
                 values: page.charts.memory ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
             LineChart {
                 Layout.fillWidth: true
@@ -119,6 +131,7 @@ SettingsPage {
                 valueText: qsTr("%1 KB/s").arg(page.number(page.status.sent, 1))
                 values: page.charts.sent ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
             LineChart {
                 Layout.fillWidth: true
@@ -127,6 +140,7 @@ SettingsPage {
                 valueText: qsTr("%1 KB/s").arg(page.number(page.status.received, 1))
                 values: page.charts.received ?? []
                 capacity: page.capacity
+                measured: page.measured
             }
         }
     }
@@ -157,13 +171,13 @@ SettingsPage {
 
         Repeater {
             model: [
-                { label: qsTr("World"), value: page.status.world ?? "" },
-                { label: qsTr("Version"), value: qsTr("%1 (protocol %2)").arg(page.status.version ?? "").arg(page.status.protocol ?? 0) },
+                { label: qsTr("World"), value: page.status.world ?? "–" },
+                { label: qsTr("Version"), value: page.measured ? qsTr("%1 (protocol %2)").arg(page.status.version ?? "").arg(page.status.protocol ?? 0) : "–" },
                 { label: qsTr("Running for"), value: page.duration(page.status.uptimeMs) },
-                { label: qsTr("Peak memory"), value: qsTr("%1 MB").arg(page.number(page.status.peakMemory, 0)) },
+                { label: qsTr("Peak memory"), value: page.measured ? qsTr("%1 MB").arg(page.number(page.status.peakMemory, 0)) : "–" },
                 { label: qsTr("Skipped ticks"), value: page.number(page.status.skipped, 0) },
-                { label: qsTr("Seed"), value: page.status.seed ?? "" },
-                { label: qsTr("Generator"), value: page.status.generator ?? "" }
+                { label: qsTr("Seed"), value: page.status.seed ?? "–" },
+                { label: qsTr("Generator"), value: page.status.generator ?? "–" }
             ]
 
             delegate: SettingRow {

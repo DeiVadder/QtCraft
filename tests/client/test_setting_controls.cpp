@@ -67,6 +67,25 @@ ApplicationWindow {
                 objectName: "check"
                 text: "Check"
             }
+            // Room for both segments, and too little room (they shrink to their own texts).
+            Segments {
+                objectName: "wideSegments"
+                model: [{ text: "Info", value: 0 }, { text: "Warnings and errors", value: 1 }]
+            }
+            Item {
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 30
+
+                Segments {
+                    objectName: "narrowSegments"
+                    anchors.fill: parent
+                    model: [{ text: "Info", value: 0 }, { text: "Warnings and errors", value: 1 }]
+                }
+            }
+            SettingGroup {
+                title: "Group"
+                help: "Help for the whole group"
+            }
         }
     }
 }
@@ -78,7 +97,8 @@ ApplicationWindow {
 // Ctrl+Tab and Ctrl+Shift+Tab switch the category, on a Mac with the Control key Qt reports as
 // Meta, also while a control inside has the focus, and the pad's shoulders do the same through the
 // screen's gamepadCommand(); Enter switches switches and check boxes as Space does; the arrow keys
-// choose the segment beside the chosen one and stop at the ends.
+// choose the segment beside the chosen one and stop at the ends. Segments are equally wide with
+// room and shrink towards their own texts without; a group shows its help below its heading.
 class TestSettingControls : public QObject
 {
     Q_OBJECT
@@ -223,6 +243,26 @@ private slots:
         QTest::keyClick(m_window, Qt::Key_Left);
         QCOMPARE(choice->property("currentValue").toString(), u"b"_s);
         QCOMPARE(category(), 0);
+    }
+
+    void segmentsAreEquallyWideWithRoom()
+    {
+        const auto widthOf = [this](const QString &segments, const QString &text) {
+            return button(named(segments), text)->width();
+        };
+        QTRY_VERIFY(widthOf(u"wideSegments"_s, u"Info"_s) > 0);
+        // Equal up to the rounding of the row's width to whole pixels.
+        QVERIFY(qAbs(widthOf(u"wideSegments"_s, u"Info"_s) - widthOf(u"wideSegments"_s, u"Warnings and errors"_s)) <= 1);
+        QVERIFY(widthOf(u"narrowSegments"_s, u"Info"_s) < widthOf(u"narrowSegments"_s, u"Warnings and errors"_s));
+    }
+
+    void groupShowsItsHelp()
+    {
+        QQuickItem *help = find(m_window->contentItem(),
+                                [](QQuickItem *item) { return item->property("text").toString() == u"Help for the whole group"_s; });
+        QVERIFY(help);
+        QVERIFY(help->isVisible());
+        QVERIFY(help->height() > 0);
     }
 };
 

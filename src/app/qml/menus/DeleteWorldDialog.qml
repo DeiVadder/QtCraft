@@ -27,6 +27,7 @@ ModalDialog {
     }
 
     Label {
+        objectName: "deleteWorldMessage"
         width: dialog.availableWidth
         wrapMode: Text.Wrap
         textFormat: Text.PlainText

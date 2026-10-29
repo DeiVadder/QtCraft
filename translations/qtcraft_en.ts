@@ -4,7 +4,7 @@
 <context>
     <name>AdminPlayersPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="30"/>
+        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="40"/>
         <source>Playing now (%n)</source>
         <translation>
             <numerusform>Playing now (%n)</numerusform>
@@ -115,7 +115,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="133"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="134"/>
         <source>%n of 5 signal bars</source>
         <translation>
             <numerusform>%n of 5 signal bars</numerusform>
@@ -126,7 +126,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="510"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="519"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -134,7 +134,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="512"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="521"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>

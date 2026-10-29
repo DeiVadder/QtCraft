@@ -21,7 +21,7 @@ ModalDialog {
 
     // Takes the operator rights of `name`; the player's own only after asking (managing ends then).
     function takeRights(admin: AdminController, name: string) {
-        if (name.toLowerCase() !== admin.ownName.toLowerCase()) {
+        if (!admin.isOwnName(name)) {
             admin.deop(name);
             return;
         }

@@ -46,6 +46,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(bool cameraShake READ cameraShake WRITE setCameraShake NOTIFY settingsChanged FINAL)
     // "" follows the system language; otherwise a locale name such as "de".
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
+    // The language the UI shows now ("en", "de"), also after a switch at runtime.
+    Q_PROPERTY(QString contentLanguage READ contentLanguage NOTIFY contentLanguageChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
     Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
     // Size of the HUD and the screens (decision E-725): UiScaling.Step.Percent75 … Percent200, relative to the window (E-875).
@@ -138,11 +140,12 @@ public:
 
     // Language used for content names (block and item labels).
     QString contentLanguage() const { return m_contentLanguage; }
-    void setContentLanguage(const QString &language) { m_contentLanguage = language; }
+    void setContentLanguage(const QString &language);
 
 signals:
     void settingsChanged();
     void viewDistanceChanged();
+    void contentLanguageChanged();
     // The application installs the translator for `language` ("" = system) and retranslates.
     void languageChangeRequested(const QString &language);
 

@@ -113,6 +113,23 @@ private slots:
         QCOMPARE(changed.count(), 1);
     }
 
+    // The UI language shown now notifies QML (the on-screen keyboard's layout follows a switch at
+    // runtime); the same language again stays silent.
+    void contentLanguageNotifies()
+    {
+        QcSessionParts parts;
+        QcAudioEngine audio;
+        QcWorldLibraryController library;
+        QcSettingsController settings(parts, library, &audio);
+        QSignalSpy changed(&settings, &QcSettingsController::contentLanguageChanged);
+
+        settings.setContentLanguage(u"de"_s);
+        QCOMPARE(settings.property("contentLanguage").toString(), u"de"_s);
+        QCOMPARE(changed.count(), 1);
+        settings.setContentLanguage(u"de"_s);
+        QCOMPARE(changed.count(), 1);
+    }
+
     // The camera mode is an enumeration property; unknown values and out-of-range numbers warn.
     void cameraModeIsAnEnum()
     {

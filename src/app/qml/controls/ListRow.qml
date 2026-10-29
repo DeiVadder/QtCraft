@@ -7,7 +7,9 @@ import QtCraft
 // texture packs. A picture on the left (optional), the title in bold and a subtitle, further lines
 // below them, and the row's actions on the right. Texts are plain (names and descriptions come from
 // files and the network). An interactive row answers clicks and double clicks as a whole; a
-// focusable one also takes the focus and is clicked with Enter, Space and the pad's A.
+// focusable one also takes the focus and is clicked with Enter, Space and the pad's A. A compact
+// row (long lists such as the server's commands) puts the subtitle beside the title, cut off, and
+// shows it whole below the title while the row has the focus.
 Rectangle {
     id: row
 
@@ -25,6 +27,8 @@ Rectangle {
     // and down move to the row before or after (past the ends the focus moves on as usual); -1 for
     // the pad's usual moves.
     property int listIndex: -1
+    // Title and subtitle on one line, the subtitle whole only with the focus.
+    property bool compact: false
 
     signal clicked
     signal doubleClicked
@@ -116,21 +120,38 @@ Rectangle {
             Layout.alignment: Qt.AlignTop
             spacing: Ui.space.xs
 
-            Label {
-                id: titleLabel
-
+            RowLayout {
                 Layout.fillWidth: true
-                textFormat: Text.PlainText
-                font.pixelSize: Ui.type.body
-                font.bold: true
-                color: Theme.text
-                elide: Text.ElideRight
+                spacing: Ui.space.m
+
+                Label {
+                    id: titleLabel
+
+                    // Compact: as wide as the name, the subtitle takes the rest.
+                    Layout.fillWidth: !row.compact
+                    Layout.alignment: Qt.AlignBaseline
+                    textFormat: Text.PlainText
+                    font.pixelSize: Ui.type.body
+                    font.bold: true
+                    color: Theme.text
+                    elide: Text.ElideRight
+                }
+                Label {
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignBaseline
+                    visible: row.compact && !row.activeFocus
+                    text: subtitleLabel.text
+                    textFormat: Text.PlainText
+                    font.pixelSize: Ui.type.help
+                    color: Theme.textSecondary
+                    elide: Text.ElideRight
+                }
             }
             Label {
                 id: subtitleLabel
 
                 Layout.fillWidth: true
-                visible: text.length > 0
+                visible: text.length > 0 && (!row.compact || row.activeFocus)
                 textFormat: Text.PlainText
                 font.pixelSize: Ui.type.help
                 color: Theme.textSecondary
