@@ -26,7 +26,7 @@ class QcWorldOptionsController : public QObject
     QML_NAMED_ELEMENT(WorldOptionsController)
     QML_UNCREATABLE("Provided by GameController.worldOptions")
     // The groups in content order: maps with name, title and options, each option a map with name,
-    // label, help, isSwitch, from, to, stepSize and unit (Unit).
+    // label, help, isSwitch, from, to, stepSize, defaultValue (the slider marks it) and unit (Unit).
     Q_PROPERTY(QVariantList groups READ groups NOTIFY optionsChanged FINAL)
     // The presets: maps with name, title and help.
     Q_PROPERTY(QVariantList presets READ presets NOTIFY optionsChanged FINAL)

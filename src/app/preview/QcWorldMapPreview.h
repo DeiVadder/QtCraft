@@ -40,6 +40,10 @@ class QcWorldMapPreview : public QObject
     Q_PROPERTY(QString source READ source NOTIFY imageChanged FINAL)
     Q_PROPERTY(Stage stage READ stage NOTIFY imageChanged FINAL)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged FINAL)
+    // How far the running build is, 0 to 1 (decision E-930): the share of its passes (coarse,
+    // fine and, with the sites, the sites) that have arrived. 0 from the moment a change makes a
+    // new build until its coarse map arrives, also while an older image is still shown.
+    Q_PROPERTY(double progress READ progress NOTIFY progressChanged FINAL)
     // The view: half its width in blocks and its centre.
     Q_PROPERTY(int radius READ radius NOTIFY viewChanged FINAL)
     Q_PROPERTY(int centreX READ centreX NOTIFY viewChanged FINAL)
@@ -95,6 +99,7 @@ public:
     QString source() const;
     Stage stage() const { return m_stage; }
     bool busy() const { return m_busy; }
+    double progress() const { return passCount() > 0 ? static_cast<double>(m_passesDone) / passCount() : 0.0; }
     int radius() const { return view().radius; }
     int centreX() const { return view().centreX; }
     int centreZ() const { return view().centreZ; }
@@ -143,6 +148,7 @@ signals:
     void showSitesChanged();
     void imageChanged();
     void busyChanged();
+    void progressChanged();
     void viewChanged();
     void sitesChanged();
 
@@ -183,6 +189,9 @@ private:
     const QcBiomeMap::Area &view() const { return m_view; }
     void setView(QcBiomeMap::Area view);
     void setBusy(bool busy);
+    // The passes of the running build that have arrived, of how many it has.
+    int passCount() const { return m_passCount; }
+    void setPasses(int done, int count);
     // A change: the running build stops now, a new one starts once changes settle.
     void requestUpdate();
     // Starts a build for the current inputs (dropping the running one).
@@ -202,6 +211,8 @@ private:
     QcBiomeMap::Area m_view{0, 0, defaultRadius, 1};
     Stage m_stage = Stage::Empty;
     bool m_busy = false;
+    int m_passesDone = 0;
+    int m_passCount = 0;
     QImage m_image;
     // The last coarse or fine result, for the legend in another language.
     QcWorldMapResult m_shown;

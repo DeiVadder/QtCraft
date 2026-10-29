@@ -6,24 +6,28 @@ import QtQuick.Layouts
 import QtCraft
 
 // The map preview of a new world (decision E-921): the biomes, heights, sea and rivers the seed and
-// the world options make, from the world's own generator, with a legend of the biomes on it. The
-// map fills the height of the page's view and grows to the right, the legend beside it (below it
-// where the page is narrow). Drag or the arrow keys move the view, the wheel, "+" and "−" zoom;
-// villages and structures show only with their switch, so the map does not give them away, and
-// then every kind has its own marker and a check box in the legend. Used on "New world" and "More
-// world options"; GameController.worldOptions.preview computes it.
+// the world options make, from the world's own generator, with a legend of the biomes on it. On
+// "World options" the map fills the height of the page's view and grows to the right, the legend
+// beside it (below it where the page is narrow). Drag or the arrow keys move the view, the wheel,
+// "+" and "−" zoom; villages and structures show only with their switch, so the map does not give
+// them away, and then every kind has its own marker and a check box in the legend. On "New world"
+// it is `compact` (decision E-930): a small map without zoom or villages and the most common
+// biomes below it. A thin bar shows how far the drawing is. GameController.worldOptions.preview
+// computes it.
 SettingGroup {
     id: group
 
     required property WorldMapPreview preview
-    // The seed field is empty: the map shows the random seed the world will get, and another one
-    // can be drawn.
-    property bool randomSeed: false
+    // The small map of "New world": no zoom, no villages, the most common biomes only.
+    property bool compact: false
+    // The villages and structures switch (not on the compact map): the page that shows the map
+    // turns WorldMapPreview.showSites on only while it is shown and this is on (MainMenu).
+    property bool sitesWanted: false
+    // The markers and their legend show (never on the compact map).
+    readonly property bool sitesShown: !compact && preview.showSites
     // The page's view: the map takes its height, less the rows below it, and the page scrolls to
     // the map when it gets the keyboard's focus.
     property Flickable flickable: null
-
-    signal anotherSeedRequested
 
     // A legend entry's share as the legend shows it ("34 %", "< 1 %").
     function shareText(percent: int): string {
@@ -75,8 +79,8 @@ SettingGroup {
         // The legend beside the map while the page is wide enough for both.
         readonly property bool beside: width >= 2 * legendWidth + columnSpacing
         readonly property real widthForMap: beside ? width - legendWidth - columnSpacing : width
-        readonly property real heightForMap: (group.flickable ? group.flickable.height : 0) - controls.implicitHeight - sitesSwitch.implicitHeight - focusInfo.implicitHeight - 5 * Ui.space.l
-        readonly property real mapSide: Math.max(Ui.size.map, Math.min(widthForMap, heightForMap))
+        readonly property real heightForMap: (group.flickable ? group.flickable.height : 0) - controls.implicitHeight - sitesSwitch.implicitHeight - focusInfo.implicitHeight - Ui.size.track - 6 * Ui.space.l
+        readonly property real mapSide: group.compact ? Ui.size.map : Math.max(Ui.size.map, Math.min(widthForMap, heightForMap))
 
         Layout.fillWidth: true
         Layout.topMargin: Ui.space.s
@@ -101,11 +105,12 @@ SettingGroup {
                 Layout.preferredHeight: body.mapSide
                 color: Theme.field
                 clip: true
-                activeFocusOnTab: true
+                activeFocusOnTab: !group.compact
                 onActiveFocusChanged: if (activeFocus)
                     group.scrollIntoView()
                 Accessible.role: Accessible.Graphic
                 Accessible.name: qsTr("Map of the new world, %1 by %1 blocks").arg(2 * group.preview.radius)
+                Accessible.focusable: !group.compact
                 Keys.onLeftPressed: group.preview.pan(-0.25, 0)
                 Keys.onRightPressed: group.preview.pan(0.25, 0)
                 Keys.onUpPressed: group.preview.pan(0, -0.25)
@@ -143,7 +148,7 @@ SettingGroup {
                     // The square searched for villages and structures, when the view is larger.
                     Rectangle {
                         objectName: "worldMapSitesArea"
-                        visible: group.preview.showSites && group.preview.radius > group.preview.sitesRadius
+                        visible: group.sitesShown && group.preview.radius > group.preview.sitesRadius
                         anchors.centerIn: parent
                         width: parent.width * group.preview.sitesRadius / group.preview.radius
                         height: width
@@ -156,7 +161,7 @@ SettingGroup {
                     // Kept inside the map at its edges; faded while newer sites are planned; the kind's
                     // name on hover.
                     Repeater {
-                        model: group.preview.sites
+                        model: group.sitesShown ? group.preview.sites : []
 
                         delegate: SiteMarker {
                             id: site
@@ -210,6 +215,7 @@ SettingGroup {
                 DragHandler {
                     id: drag
 
+                    enabled: !group.compact
                     target: null
                     onActiveChanged: {
                         if (active)
@@ -220,6 +226,7 @@ SettingGroup {
                 }
 
                 WheelHandler {
+                    enabled: !group.compact
                     onWheel: event => {
                         if (event.angleDelta.y > 0)
                             group.preview.zoomIn();
@@ -270,11 +277,17 @@ SettingGroup {
                 }
             }
 
+            MapProgress {
+                Layout.preferredWidth: body.mapSide
+                preview: group.preview
+            }
+
             // What the centre of the map is, for the keyboard and the pad (no pointer there).
             Label {
                 id: focusInfo
 
                 objectName: "worldMapFocusInfo"
+                visible: !group.compact
                 Layout.preferredWidth: body.mapSide
                 opacity: frame.activeFocus ? 1 : 0
                 text: group.preview.centreText
@@ -291,8 +304,11 @@ SettingGroup {
             Layout.alignment: Qt.AlignTop
             spacing: Ui.space.xs
 
+            // The compact legend lists the six most common biomes and counts the others in one line.
             Repeater {
-                model: group.preview.legend
+                id: biomeRows
+
+                model: group.compact ? group.preview.legend.slice(0, 6) : group.preview.legend
 
                 delegate: RowLayout {
                     required property var modelData
@@ -323,10 +339,20 @@ SettingGroup {
                 }
             }
 
+            // The compact legend's rest.
+            Label {
+                objectName: "worldMapMoreBiomes"
+                Layout.leftMargin: Ui.size.icon + Ui.space.s
+                visible: group.compact && group.preview.legend.length > biomeRows.count
+                text: qsTr("+ %n more", "", group.preview.legend.length - biomeRows.count)
+                color: Theme.textMuted
+                font.pixelSize: Ui.type.help
+            }
+
             // The kinds of villages and structures on the map, each shown or hidden by its box.
             Label {
                 Layout.topMargin: Ui.space.s
-                visible: group.preview.showSites && group.preview.siteLegend.length > 0
+                visible: group.sitesShown && group.preview.siteLegend.length > 0
                 text: qsTr("Villages and structures")
                 color: Theme.heading
                 font.pixelSize: Ui.type.help
@@ -334,7 +360,7 @@ SettingGroup {
             }
 
             Repeater {
-                model: group.preview.showSites ? group.preview.siteLegend : []
+                model: group.sitesShown ? group.preview.siteLegend : []
 
                 delegate: RowLayout {
                     id: kind
@@ -366,7 +392,7 @@ SettingGroup {
 
             Label {
                 Layout.fillWidth: true
-                visible: group.preview.showSites && group.preview.radius > group.preview.sitesRadius
+                visible: group.sitesShown && group.preview.radius > group.preview.sitesRadius
                 text: qsTr("Villages and structures only inside the frame (%1 × %1 blocks).").arg(2 * group.preview.sitesRadius)
                 color: Theme.textMuted
                 font.pixelSize: Ui.type.help
@@ -378,6 +404,7 @@ SettingGroup {
     RowLayout {
         id: controls
 
+        visible: !group.compact
         Layout.fillWidth: true
         Layout.topMargin: Ui.space.xs
         spacing: Ui.space.s
@@ -408,21 +435,19 @@ SettingGroup {
             font.pixelSize: Ui.type.help
             elide: Text.ElideRight
         }
-        GameButton {
-            objectName: "worldMapAnotherSeed"
-            visible: group.randomSeed
-            text: qsTr("Another seed")
-            onClicked: group.anotherSeedRequested()
-        }
     }
 
     SettingSwitch {
         id: sitesSwitch
 
         objectName: "worldMapSites"
+        visible: !group.compact
         label: qsTr("Show villages and structures")
         help: qsTr("Off by default, so the map keeps them a surprise.")
-        checked: group.preview.showSites
-        onToggled: group.preview.showSites = checked
+        checked: group.sitesWanted
+        onToggled: group.sitesWanted = checked
     }
+
+    // The page turned the villages off (a new form): the switch follows.
+    onSitesWantedChanged: sitesSwitch.checked = sitesWanted
 }

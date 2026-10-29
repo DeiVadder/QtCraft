@@ -134,8 +134,13 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
-        $<TARGET_FILE:qtcraft-headless>)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 1230 COST 310)
+        $<TARGET_FILE:qtcraft-headless> layout)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 600 COST 37)
+    # The pad in the main menu at the same size: the settings' pages, back entries and Y (decision
+    # E-925), the handbook, the character's draft, saved worlds and "New world" (decision E-930).
+    add_test(NAME app_offscreen_menu_pad COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
+        $<TARGET_FILE:qtcraft-headless> pad)
+    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 660 COST 43)
     # The pause menu's buttons in a saved world and on a joined server, the pause and death cards
     # above the HUD's status rows at 200 % and 225 %, and the sign typed on the pad's keyboard
     # (decision E-928). It waits for the world and a dedicated server in real time: label realtime

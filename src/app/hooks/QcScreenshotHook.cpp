@@ -170,9 +170,14 @@ void QcScreenshotHook::logItems() const
             continue;
         }
         const QRectF rect = item->mapRectToScene(QRectF(0.0, 0.0, item->width(), item->height()));
-        // A control's text, where it has one (a button's), for checks of what a screen offers.
+        // A control's text, where it has one (a button's), for checks of what a screen offers; a
+        // text field also what it shows when empty (the seed of a new world, decision E-930).
         const QVariant text = item->property("text");
-        const QString textPart = text.isValid() ? u" text \"%1\""_s.arg(text.toString()) : QString();
+        const QVariant placeholder = item->property("placeholderText");
+        QString textPart = text.isValid() ? u" text \"%1\""_s.arg(text.toString()) : QString();
+        if (placeholder.isValid()) {
+            textPart += u" placeholder \"%1\""_s.arg(placeholder.toString());
+        }
         qCInfo(lcScreenshot).noquote() << u"Item %1: x %2 y %3 width %4 height %5 in the window %6x%7 visible %8%9"_s.arg(name)
                                               .arg(rect.x())
                                               .arg(rect.y())

@@ -489,7 +489,7 @@ A structure (`structures/<name>.json`, decision E-219) is a building made of blo
 
 ### World options (stage 55)
 
-`worldgen/options.json` (decision E-917) lists what a player may set under "More world options …" when creating a normal (terrain) world, and what `qtcraft-headless --world-options` and the control interface's `worldCreate` take. Every pack adds its entries; an entry with the name of an earlier pack's replaces it. Names without a namespace get the pack's.
+`worldgen/options.json` (decision E-917) lists what a player may set under "World options" (button "Customise …") when creating a normal (terrain) world, and what `qtcraft-headless --world-options` and the control interface's `worldCreate` take. Every pack adds its entries; an entry with the name of an earlier pack's replaces it. Names without a namespace get the pack's.
 
 ```json
 {

@@ -21,8 +21,10 @@ class QQuickWindow;
 // every shown control without an accessible name or role (QcAccessibilityCheck) and a summary line
 // "Accessibility check: <n> controls without a name" (decision E-725). With
 // QTCRAFT_LOG_ITEMS=<objectName>,... it logs "Item <name>: x <x> y <y> width <w> height <h> in the
-// window <w>x<h> visible <yes|no>[ text "<text>"]" for each named item, in window coordinates
-// (decision E-875; the text where the item has one), or "Item <name>: not found". The picture waits for shown screens that are still being made (LazyScreen). With
+// window <w>x<h> visible <yes|no>[ text "<text>"][ placeholder "<placeholder>"]" for each named
+// item, in window coordinates (decision E-875; the text where the item has one, the placeholder of a
+// text field, decision E-930), or "Item <name>: not found". The picture waits for shown screens that
+// are still being made (LazyScreen). With
 // QTCRAFT_CHECK_PAD_STEPS=1 the layout and accessibility checks (as far as enabled) also run after
 // each reported step of the scripted pad (checkPadStep()), so one run checks every screen a pad
 // script walks through, not only the last one; the pad then reports a step only after as many

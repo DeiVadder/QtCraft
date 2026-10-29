@@ -43,6 +43,33 @@ private slots:
         QCOMPARE(options.changedCount(), 0);
     }
 
+    // Every slider gets its default to mark on the track (decision E-930): the value a reset sets.
+    void everyNumberOptionNamesItsDefault()
+    {
+        Fixture fixture;
+        QcWorldOptionsController &options = fixture.options;
+        options.reset();
+        int numbers = 0;
+        const QVariantList groups = options.groups();
+        for (const QVariant &group : groups) {
+            const QVariantList entries = group.toMap().value(u"options"_s).toList();
+            for (const QVariant &entry : entries) {
+                const QVariantMap option = entry.toMap();
+                if (option.value(u"isSwitch"_s).toBool()) {
+                    continue;
+                }
+                const QString name = option.value(u"name"_s).toString();
+                QVERIFY2(option.contains(u"defaultValue"_s), qPrintable(name));
+                QCOMPARE(option.value(u"defaultValue"_s).toDouble(), options.values().value(name).toDouble());
+                QVERIFY(option.value(u"defaultValue"_s).toDouble() >= option.value(u"from"_s).toDouble());
+                QVERIFY(option.value(u"defaultValue"_s).toDouble() <= option.value(u"to"_s).toDouble());
+                ++numbers;
+            }
+        }
+        QVERIFY(numbers >= 5);
+        QCOMPARE(options.values().value(u"qtcraft:village_spacing"_s).toDouble(), 384.0);
+    }
+
     void numbersSnapToTheOptionsGrid()
     {
         Fixture fixture;

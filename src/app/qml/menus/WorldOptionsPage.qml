@@ -5,8 +5,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// "More world options" of the new world (decision E-917): a preset, then the options of the base
-// game and the enabled mods in their groups, sliders for numbers and switches for on and off. The
+// "World options" of the new world (decisions E-917, E-930): a preset, the full map preview, then
+// the options of the base game and the enabled mods in their groups, sliders for numbers (their
+// default marked on the track) and switches for on and off. The
 // values belong to the new world's form (GameController.worldOptions): they hold when the page goes
 // back to the form and count when the world is created. "‹ Back" (and Esc, the pad's B) returns to
 // the form, "Restore defaults" sets every option to its default, "Create and play" creates the world
@@ -16,6 +17,8 @@ ColumnLayout {
 
     required property GameController game
     readonly property WorldOptionsController options: game.worldOptions
+    // The map's villages and structures switch; MainMenu turns them on while this page shows.
+    property alias sitesWanted: fullMap.sitesWanted
 
     signal openRequested
     signal backRequested
@@ -77,7 +80,7 @@ ColumnLayout {
         objectName: "worldOptionsForm"
         Layout.fillWidth: true
         Layout.fillHeight: true
-        title: qsTr("More world options")
+        title: qsTr("World options")
 
         SettingGroup {
             title: qsTr("World generation")
@@ -101,6 +104,8 @@ ColumnLayout {
 
         // The map follows every change below (decision E-921).
         MapPreviewGroup {
+            id: fullMap
+
             flickable: form
             preview: page.options.preview
         }
@@ -135,6 +140,8 @@ ColumnLayout {
                             from: option.modelData.from
                             to: option.modelData.to
                             stepSize: option.modelData.stepSize
+                            defaultValue: option.modelData.isSwitch ? NaN : option.modelData.defaultValue
+                            defaultText: option.modelData.isSwitch ? "" : page.valueText(option.modelData.unit, option.modelData.defaultValue)
                             snapMode: Slider.SnapAlways
                             value: option.modelData.isSwitch ? 0 : (option.value ?? option.modelData.from)
                             valueText: page.valueText(option.modelData.unit, value)

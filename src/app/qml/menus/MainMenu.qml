@@ -124,7 +124,7 @@ Rectangle {
     // Back from the world options to the new world's form, which keeps what was typed.
     function backToNewWorld() {
         page = MainMenu.NewWorld;
-        newWorldPage.focusOptions();
+        newWorldPage.backFromOptions();
     }
 
     function showHome() {
@@ -198,6 +198,13 @@ Rectangle {
         property: "active"
         value: menu.visible && newWorldPage.terrain && (menu.page === MainMenu.NewWorld || menu.page === MainMenu.WorldOptions)
     }
+    // Villages and structures only on the world options' full map with its switch on, never for
+    // the small map of "New world" (decision E-930).
+    Binding {
+        target: menu.game.worldOptions.preview
+        property: "showSites"
+        value: menu.page === MainMenu.WorldOptions && worldOptionsPage.sitesWanted
+    }
 
     MenuSidebar {
         id: sidebar
@@ -249,7 +256,11 @@ Rectangle {
 
             objectName: "newWorldPage"
             game: menu.game
-            onOpenRequested: menu.page = MainMenu.NewWorld
+            onOpenRequested: {
+                // A new form keeps its villages a surprise again.
+                worldOptionsPage.sitesWanted = false;
+                menu.page = MainMenu.NewWorld;
+            }
             onBackRequested: menu.showHome()
             onOptionsRequested: worldOptionsPage.open()
         }

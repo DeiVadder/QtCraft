@@ -19,6 +19,8 @@ namespace {
 
 // The view's centre stays this far from the world's origin (far inside the world's edge).
 constexpr int maxCentre = 1 << 24;
+// The passes that draw the map: coarse and fine (the sites come after them).
+constexpr int mapPasses = 2;
 
 // The shapes of QcWorldMapPreview::MarkerShape.
 constexpr qsizetype markerShapes = 4;
@@ -200,6 +202,15 @@ void QcWorldMapPreview::setBusy(bool busy)
     }
 }
 
+void QcWorldMapPreview::setPasses(int done, int count)
+{
+    if (done != m_passesDone || count != m_passCount) {
+        m_passesDone = done;
+        m_passCount = count;
+        emit progressChanged();
+    }
+}
+
 void QcWorldMapPreview::requestUpdate()
 {
     if (!active() || !content()) {
@@ -209,6 +220,7 @@ void QcWorldMapPreview::requestUpdate()
     // the map does not jump back to an older view or seed while the changes go on.
     newBuild();
     setBusy(true);
+    setPasses(0, mapPasses + (showSites() ? 1 : 0));
     m_settle.start();
 }
 
@@ -232,6 +244,9 @@ void QcWorldMapPreview::start(QcWorldMapRequest::Passes passes)
         setPassMilliseconds(QcWorldMapResult::Pass::Fine, -1);
     }
     setBusy(true);
+    // Only the sites: the map's passes are there already.
+    const int sitesPass = showSites() ? 1 : 0;
+    setPasses(passes == QcWorldMapRequest::Passes::All ? 0 : mapPasses, mapPasses + sitesPass);
 
     const QcWorldMapRequest request{content(), values(), QcWorldLibrary::seedFromText(m_seedText), view(), showSites(), passes};
     pool().submit([this, worker = m_worker, request, build, hook = m_resultHook] {
@@ -278,6 +293,7 @@ void QcWorldMapPreview::apply(QcWorldMapResult result)
     }
 
     setPassMilliseconds(result.pass, result.milliseconds);
+    setPasses(static_cast<int>(result.pass) + 1, passCount());
     if (result.pass == QcWorldMapResult::Pass::Sites) {
         // The switch was turned off while they were planned.
         if (showSites()) {
@@ -407,6 +423,7 @@ void QcWorldMapPreview::clear()
 {
     stopAndForget();
     setBusy(false);
+    setPasses(0, 0);
     setStage(Stage::Empty);
     setImage({});
     setShown({});

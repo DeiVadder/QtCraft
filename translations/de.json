@@ -1353,10 +1353,7 @@
     "Every option at its default.": "Alle Optionen auf Standard.",
     "Preset: %1": "Voreinstellung: %1",
     "World generation": "Weltgenerierung",
-    "Villages, biomes, caves …": "Dörfer, Biome, Höhlen …",
-    "More world options …": "Weitere Weltoptionen …",
     "%1 blocks": "%1 Blöcke",
-    "More world options": "Weitere Weltoptionen",
     "Every option as the game sets it.": "Alle Optionen so, wie das Spiel sie setzt.",
     "Options of your own; choose a preset to start again from it.": "Eigene Werte; wähle eine Voreinstellung, um von ihr neu zu beginnen.",
     "Custom": "Eigene",
@@ -1446,7 +1443,6 @@
     "Centre": "Mitte",
     "Centre the map on the world's middle": "Karte auf die Weltmitte setzen",
     "%1 × %1 blocks": "%1 × %1 Blöcke",
-    "Another seed": "Anderer Seed",
     "Show villages and structures": "Dörfer und Bauwerke zeigen",
     "Off by default, so the map keeps them a surprise.": "Standardmäßig aus, damit die Karte sie nicht verrät.",
     "< 1 %": "< 1 %",
@@ -1499,5 +1495,18 @@
     "%1 has made %n more advancements": [
         "%1 hat %n weiteren Fortschritt erzielt",
         "%1 hat %n weitere Fortschritte erzielt"
-    ]
+    ],
+    "Roll": "Zufällig",
+    "Random seed": "Zufälliger Seed",
+    "Draws a new random seed.": "Zieht einen neuen zufälligen Seed.",
+    "World options": "Weltoptionen",
+    "Customise …": "Anpassen …",
+    "Customise the world options": "Weltoptionen anpassen",
+    "+ %n more": [
+        "+ %n weiteres",
+        "+ %n weitere"
+    ],
+    "Drawing the map": "Karte wird gezeichnet",
+    "%1 % drawn": "%1 % gezeichnet",
+    "Default: %1": "Standard: %1"
 }

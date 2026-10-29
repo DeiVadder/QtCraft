@@ -28,8 +28,8 @@ failed=0
 check() {
     name=$1
     shift
-    QTCRAFT_WINDOW_SIZE=$SIZE QTCRAFT_LAYOUT_CHECK=1 QTCRAFT_ACCESSIBILITY_CHECK=1 QTCRAFT_MENU_WORLD_TYPE=flat \
-        QTCRAFT_OFFSCREEN=1 QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$DATA" QTCRAFT_SCREENSHOT="$SHOTS/ui-$SCALE-$name.png" QTCRAFT_SCREENSHOT_FRAMES=40 \
+    QTCRAFT_WINDOW_SIZE=$SIZE QTCRAFT_LAYOUT_CHECK=1 QTCRAFT_ACCESSIBILITY_CHECK=1 QTCRAFT_MENU_WORLD_TYPE=${MENU_WORLD_TYPE:-flat} \
+        QTCRAFT_LOG_ITEMS=${LOG_ITEMS:-} QTCRAFT_OFFSCREEN=1 QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$DATA" QTCRAFT_SCREENSHOT="$SHOTS/ui-$SCALE-$name.png" QTCRAFT_SCREENSHOT_FRAMES=40 \
         perl -e 'alarm shift; exec @ARGV or die' 90 "$APP" --no-audio --no-mods --screen builtin --background "$@" >"$DATA/$name.log" 2>&1
     status=$?
 
@@ -65,6 +65,40 @@ world="--play --world-type flat --view-distance 2"
 check menu
 check newworld --overlay "@300 open:newWorldPage"
 check worldoptions --overlay "@300 open:worldOptionsPage"
+# "New world" of a normal world (draft D.3 A, decision E-930): the game mode stands in the page's
+# view without scrolling (its bottom above the form's), the map stands in its own column right of
+# it, and the pad walks the form in reading order: name, type, seed, the die, game mode, keeping the
+# inventory, the world options, then down to "Create and play"; the world options page with its
+# full map and sliders fits as well.
+MENU_WORLD_TYPE=terrain
+LOG_ITEMS=newWorldForm,gameModeChoice,newWorldMap
+check newworld-terrain --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+LOG_ITEMS=
+# item_bottom <run> <name>: the bottom edge of a logged item in the window.
+item_bottom() {
+    grep "Item $2: x" "$DATA/$1.log" | tail -1 | awk '{ for (i = 1; i < NF; i++) { if ($i == "y") y = $(i + 1); if ($i == "height") h = $(i + 1) } } END { print y + h }'
+}
+form_bottom=$(item_bottom newworld-terrain newWorldForm)
+mode_bottom=$(item_bottom newworld-terrain gameModeChoice)
+mode_right=$(grep "Item gameModeChoice: x" "$DATA/newworld-terrain.log" | tail -1 | awk '{ for (i = 1; i < NF; i++) { if ($i == "x") x = $(i + 1); if ($i == "width") w = $(i + 1) } } END { print x + w }')
+map_left=$(grep "Item newWorldMap: x" "$DATA/newworld-terrain.log" | tail -1 | awk '{ for (i = 1; i < NF; i++) if ($i == "x") x = $(i + 1) } END { print x }')
+if ! awk -v map="$map_left" -v mode="$mode_right" 'BEGIN { exit !(map != "" && map >= mode) }'; then
+    echo "newworld-terrain: the map ($map_left) is not in a column right of the form ($mode_right)"
+    failed=1
+fi
+if ! awk -v mode="$mode_bottom" -v form="$form_bottom" 'BEGIN { exit !(mode > 0 && mode <= form) }'; then
+    echo "newworld-terrain: the game mode (bottom $mode_bottom) is not in the form's view (bottom $form_bottom) without scrolling"
+    failed=1
+fi
+order=$(grep 'padFocus' "$DATA/newworld-terrain.log" | sed 's/^padFocus: //' | tr '\n' ' ')
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: moreWorldOptions createWorldButton " ]; then
+    echo "newworld-terrain: the pad's focus does not walk the form in reading order: $order"
+    failed=1
+fi
+check worldoptions-terrain --overlay "@300 open:worldOptionsPage"
+MENU_WORLD_TYPE=
 check settings --overlay "@300 open:menuSettingsScreen"
 check mods --overlay "@300 open:modsScreen"
 check character --overlay "@300 open:menuCharacterScreen"

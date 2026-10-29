@@ -83,9 +83,20 @@
     </message>
 </context>
 <context>
+    <name>MapPreviewGroup</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="347"/>
+        <source>+ %n more</source>
+        <translation>
+            <numerusform>+ %n more</numerusform>
+            <numerusform>+ %n more</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>NewWorldPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="77"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="84"/>
         <source>%n option(s) changed.</source>
         <translation>
             <numerusform>%n option changed.</numerusform>

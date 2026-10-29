@@ -109,6 +109,11 @@ void QcWorldOptionsController::retranslate()
             if (option.definition->group != group.name) {
                 continue;
             }
+            // QcWorldOptions::check drops such options when the mods load; the slider would mark nothing.
+            if (!option.isSwitch() && (option.defaultValue < option.definition->min || option.defaultValue > option.definition->max)) {
+                qCWarning(lcGame, "World option %s: default %g outside %g to %g, the slider marks no default", qPrintable(option.definition->name),
+                          option.defaultValue, option.definition->min, option.definition->max);
+            }
             options.append(QVariantMap{{u"name"_s, option.definition->name},
                                        {u"label"_s, text(option.definition->translationKey)},
                                        {u"help"_s, text(option.definition->translationKey + u".help"_s)},
@@ -116,6 +121,7 @@ void QcWorldOptionsController::retranslate()
                                        {u"from"_s, option.definition->min},
                                        {u"to"_s, option.definition->max},
                                        {u"stepSize"_s, option.definition->step},
+                                       {u"defaultValue"_s, option.defaultValue},
                                        {u"unit"_s, QVariant::fromValue(unitOf(option.definition->unit))}});
         }
         if (!options.isEmpty()) {

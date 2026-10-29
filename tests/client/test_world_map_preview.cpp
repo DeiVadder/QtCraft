@@ -247,6 +247,40 @@ private slots:
         QVERIFY(!preview.sites().isEmpty());
     }
 
+    // The progress is the running build's (decision E-930), not the shown image's: a change sets it
+    // to 0 while the old map still shows, each pass adds its share, the sites alone start after
+    // the map's two passes.
+    void progressFollowsTheRunningBuild()
+    {
+        Fixture fixture;
+        QcWorldMapPreview &preview = *fixture.options.preview();
+        fixture.options.reset();
+        preview.setSeedText(u"1"_s);
+        preview.setActive(true);
+        QTRY_VERIFY_WITH_TIMEOUT(!preview.busy() && preview.stage() == QcWorldMapPreview::Stage::Fine, 60000);
+        QCOMPARE(preview.progress(), 1.0);
+
+        QList<double> seen;
+        connect(&preview, &QcWorldMapPreview::progressChanged, &preview, [&] { seen.append(preview.progress()); });
+        preview.setSeedText(u"2"_s);
+        QVERIFY(preview.busy());
+        QCOMPARE(preview.stage(), QcWorldMapPreview::Stage::Fine);
+        QCOMPARE(preview.progress(), 0.0);
+        QTRY_VERIFY_WITH_TIMEOUT(!preview.busy(), 60000);
+        QCOMPARE(seen, (QList<double>{0.0, 0.5, 1.0}));
+
+        seen.clear();
+        preview.setShowSites(true);
+        QVERIFY(preview.busy());
+        QCOMPARE(preview.progress(), 2.0 / 3.0);
+        QTRY_VERIFY_WITH_TIMEOUT(!preview.busy(), 120000);
+        QCOMPARE(preview.progress(), 1.0);
+
+        preview.setActive(false);
+        fixture.options.release();
+        QCOMPARE(preview.progress(), 0.0);
+    }
+
     // Released (a world starts) or hidden, the preview lets go of the menu's content: its worker
     // drops the generator and the content copy it was made from.
     void releaseLetsGoOfTheContent()

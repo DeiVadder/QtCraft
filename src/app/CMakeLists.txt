@@ -296,6 +296,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/LeaveGameButton.qml
         qml/menus/MainMenu.qml
         qml/menus/MapPreviewGroup.qml
+        qml/menus/MapProgress.qml
         qml/menus/MenuSidebar.qml
         qml/menus/MessageScreen.qml
         qml/menus/ModsPage.qml
