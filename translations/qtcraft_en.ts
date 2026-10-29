@@ -143,6 +143,17 @@
     </message>
 </context>
 <context>
+    <name>QcServerMessages</name>
+    <message numerus="yes">
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="145"/>
+        <source>%1 has made %n more advancements</source>
+        <translation>
+            <numerusform>%1 has made %n more advancement</numerusform>
+            <numerusform>%1 has made %n more advancements</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>SettingsScreen</name>
     <message numerus="yes">
         <source>%n chunk(s)</source>

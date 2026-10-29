@@ -44,7 +44,7 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("inventory", event.key)) {
+        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("inventory", event.key) && !event.isAutoRepeat)) {
             screen.game.overlay = GameController.Overlay.None;
         } else if (screen.game.settings.keys.matches("handbook", event.key)) {
             screen.game.handbook.open(screen.hoveredItem);

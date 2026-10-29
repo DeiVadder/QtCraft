@@ -85,7 +85,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
-    app_offscreen_pad_settings app_offscreen_pad_lazy_menu APPEND PROPERTY LABELS realtime)
+    app_offscreen_pad_settings app_offscreen_pad_lazy_menu app_offscreen_advancements_return APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;

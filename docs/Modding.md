@@ -686,7 +686,7 @@ The base game's currency is the emerald (ore deep in the stone in small veins, i
 
 ### Advancements (stage 67)
 
-The adventure guide (decision E-923) leads players from step to step: each advancement waits for game events, the server tracks per player which of its criteria are met and saves them in the player file, and the client shows a short toast when one is reached (the tree view follows in stage 67.2). `advancements/iron.json` of the base game:
+The adventure guide (decision E-923) leads players from step to step: each advancement waits for game events, the server tracks per player which of its criteria are met and saves them in the player file, and the client shows a short toast when one is reached and the tree view (key J, decision E-924) shows all of them; criteria named after an item or a creature of the pack show its name there. `advancements/iron.json` of the base game:
 
 ```json
 {
@@ -701,7 +701,7 @@ The adventure guide (decision E-923) leads players from step to step: each advan
 
 - `name`: the id (namespaced like other content). `parent`: the advancement it hangs below in the tree; none makes a root. A parent no pack has, or parents that form a loop, make the advancement a root with a warning.
 - `icon` (required): an item. `title` and `description`: translation keys, default `advancement.<namespace>.<name>` and `<title>.description`; fill them in `lang/`.
-- `frame`: `task` (default), `goal` or `challenge`; the toast says "Advancement made!", "Goal reached!" or "Challenge complete!". `hidden`: true keeps it out of the tree until reached (67.2).
+- `frame`: `task` (default), `goal` or `challenge`; the toast says "Advancement made!", "Goal reached!" or "Challenge complete!". `hidden`: true keeps it and the advancements below it out of the tree until it or one below it is reached (decision E-924). `announce` (default true): false keeps it out of the chat of the other players (the toast still shows).
 - `handbook`: the handbook entry it leads to, `chapter:<name>`, `item:<name>`, `block:<name>`, `mob:<name>` or `biome:<name>`; an entry the handbook does not have is a warning.
 - `criteria`: 1 to 32 named criteria, each a `trigger` and optional `conditions` (only the fields the trigger knows; others leave the file out with a warning). Item and block conditions take a name or `#<tag>` of items (a block matches by its item's tags).
 

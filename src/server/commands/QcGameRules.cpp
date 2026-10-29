@@ -17,10 +17,12 @@ constexpr const char *blocks = QT_TRANSLATE_NOOP("QcGameRules", "Blocks");
 // keepInventory; daylightCycle and mobSpawning (decision E-221); randomTicks (E-295);
 // quasiConnectivity (E-338); fireSpread (E-392); weatherCycle (E-395); mobGriefing (E-460);
 // explosionBlockDamage (E-603); spawnChunkRadius (E-377); maxEntityCramming (E-401); the
-// invulnerability ticks (E-429).
-constexpr std::array<Rule, 13> rules{{
+// invulnerability ticks (E-429); announceAdvancements (E-924).
+constexpr std::array<Rule, 14> rules{{
     {u"keepInventory", players, QT_TRANSLATE_NOOP("QcGameRules", "Players keep their inventory when they die."), &QcWorldInfo::keepInventory,
      nullptr, 1, 1},
+    {u"announceAdvancements", players, QT_TRANSLATE_NOOP("QcGameRules", "Other players read in the chat when someone reaches an advancement."),
+     &QcWorldInfo::announceAdvancements, nullptr, 1, 1},
     {u"playerInvulnerabilityTicks", players, QT_TRANSLATE_NOOP("QcGameRules", "Ticks a player stays invulnerable after a hurt (0: every hit counts)."),
      nullptr, &QcWorldInfo::playerInvulnerabilityTicks, QcWorldInfo::maxInvulnerabilityTicks, QcWorldInfo::defaultInvulnerabilityTicks},
     {u"daylightCycle", world, QT_TRANSLATE_NOOP("QcGameRules", "The time of day runs."), &QcWorldInfo::daylightCycle, nullptr, 1, 1},

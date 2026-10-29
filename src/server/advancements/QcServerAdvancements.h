@@ -18,11 +18,15 @@ class QcServerState;
 // comparisons and nothing scans the world. The inventory criteria are checked when the inventory is
 // sent (inventoryChanged), the location criteria in tick() for each player once per
 // locationInterval ticks and only after he moved to another block. tick() also sends the clients
-// what changed: the whole progress once after joining, then deltas.
+// what changed: the whole progress once after joining, then deltas. A newly reached advancement is
+// announced to the other players in the chat (decision E-924) when the advancement and the game
+// rule announceAdvancements allow it, at most announcementsPerTick lines per player and tick; the
+// rest of that tick (/advancement grant … everything) becomes one line "… has made N more".
 class QcServerAdvancements
 {
 public:
     static constexpr quint64 locationInterval = 20;
+    static constexpr int announcementsPerTick = 5;
 
     explicit QcServerAdvancements(QcServerState &state);
 
@@ -55,6 +59,11 @@ private:
     // Meets the criterion `ref` for `client` and notes the change for the client.
     void meet(QcServerClient &client, Ref ref);
     void noteChange(QcServerClient &client, const QString &advancement, bool wasDone);
+    // Tells the other players in the chat that `client` reached `advancement` (decision E-924), or
+    // counts it for the folded line once this tick's lines are used up.
+    void tellOthers(QcServerClient &client, const QcAdvancementDefinition &advancement) const;
+    // Sends the folded line of `client`'s tick, if any, and starts the count of the next tick.
+    void endAnnouncements(QcServerClient &client) const;
     // Drops the met criteria of `advancement` it no longer has (a mod changed it) before more are
     // met, so they never fill its room of QcAdvancementDefinition::maxCriteria.
     static void forgetUnknownCriteria(QcServerClient &client, const QcAdvancementDefinition &advancement);

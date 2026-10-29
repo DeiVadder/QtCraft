@@ -15,6 +15,8 @@
 #include "common/core/QcWorldConstants.h"
 
 #include <QCoreApplication>
+#include <QKeyEvent>
+#include <QKeySequence>
 #include <QMouseEvent>
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -267,6 +269,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         m_screens.input.setPlayerListHeld(true);
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
+    } else if (step.startsWith(u"press:"_s)) {
+        pressWindowKey(step.mid(6));
     } else if (step.startsWith(u"hold:"_s) || step.startsWith(u"release:"_s)) {
         holdKey(step.section(u':', 1), step.startsWith(u"hold:"_s));
     } else if (step == u"view:hide"_s || step == u"view:show"_s) {
@@ -298,6 +302,28 @@ void QcStartupHooks::pressKey(const QString &actionId) const
     }
     // As if its key were pressed in the world.
     m_screens.input.worldAction(*action, true);
+}
+
+void QcStartupHooks::pressWindowKey(const QString &name) const
+{
+    const QKeySequence sequence = QKeySequence::fromString(name);
+    // The world reads its keys at the game's window, the screens get them where their items are
+    // (offscreen runs move them into another window).
+    QQuickWindow *window = m_screens.input.worldInput() ? m_parts.window.data() : (m_parts.view ? m_parts.view->window() : nullptr);
+    if (sequence.isEmpty() || !window) {
+        qCWarning(lcGame) << "--overlay press:" << name << ": no such key or no window";
+        return;
+    }
+
+    const QKeyCombination key = sequence[0];
+    // A letter types itself into a text field, as on the keyboard.
+    const QString text = name.size() == 1 ? name.toLower() : QString();
+    QKeyEvent press(QEvent::KeyPress, key.key(), key.keyboardModifiers(), text);
+    QKeyEvent release(QEvent::KeyRelease, key.key(), key.keyboardModifiers(), text);
+    QCoreApplication::sendEvent(window, &press);
+    QCoreApplication::sendEvent(window, &release);
+    const QString overlay = QcScreenState::overlayName(m_screens.state.overlay());
+    qCInfo(lcGame).noquote() << u"--overlay press:%1: overlay %2"_s.arg(name, overlay.isEmpty() ? u"none"_s : overlay);
 }
 
 void QcStartupHooks::holdKey(const QString &actionId, bool held) const

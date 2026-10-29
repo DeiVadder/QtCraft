@@ -268,7 +268,31 @@ add_test(NAME app_offscreen_pad_lazy_menu
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-foreach(pad inventory radial keyboard menu playstation settings lazy_menu)
+# The advancement tree (decision E-924): the pad walks along the tree, right to the nearest child,
+# down in the column, left back to the parent. The steps run one after another (QcScriptedPad), no
+# wall clock; the first press only shows the focus.
+add_test(NAME app_offscreen_pad_advancements
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;advancements;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadRight;--overlay;@0 pad:dpadDown;--overlay;@0 pad:dpadLeft"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=padFocus: advancement_qtcraft_adventure[^\n]*\n.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*padFocus: advancement_qtcraft_village[^\n]*\n.*padFocus: advancement_qtcraft_adventure"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-advancements.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# Closing the advancement tree (decision E-924) with real key presses (--overlay "@<ms> press:<key>"):
+# J opens and closes it from the world; opened from the pause menu, Esc leads back there; J does
+# nothing to the screens while the chat line is open (it types into it).
+add_test(NAME app_offscreen_advancements_return
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@500 press:J;--overlay;@1000 press:J;--overlay;@1500 pause;--overlay;@2000 click:advancementsButton;--overlay;@2500 press:Escape;--overlay;@3000 chat;--overlay;@3500 press:J"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:J: overlay advancements[^\n]*\n.*press:J: overlay none[^\n]*\n.*press:Escape: overlay pause[^\n]*\n.*press:J: overlay chat"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-advancements-return.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_advancements_return PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_advancements_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-advancements-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+foreach(pad inventory radial keyboard menu playstation settings lazy_menu advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
     set(frames 90)

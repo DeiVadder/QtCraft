@@ -46,6 +46,9 @@ public:
     // Scrolls the list or page around the focus (else the scope's first one) by `pixels`; a focus
     // in that list that is no longer shown whole moves to the nearest row that is.
     void scroll(float pixels);
+    // The same sideways (the right stick's x, decision E-924): positive pixels to the right. A list
+    // that snaps to its rows stays as it is; pages without room to the sides as well.
+    void scrollSideways(float pixels);
     // The next scope lookup walks the window's items again.
     void invalidateScope() { m_scopeValid = false; }
 
@@ -76,6 +79,9 @@ private:
     void move(const QQuickItem *scope, QQuickItem *current, QcSpatialNavigation::Direction direction);
     // Left or right on a horizontal slider or a spin box: changes its value; whether it was one.
     bool adjust(QQuickItem *item, QcSpatialNavigation::Direction direction);
+    // The list or page the right stick scrolls: the one around the focus inside the scope, else the
+    // scope's first shown one; nullptr without a scope.
+    QQuickItem *scrolledFlickable();
     // A focus in `flickable` that is not shown whole moves to the nearest candidate there that is.
     void keepFocusInView(const QQuickItem *flickable);
     void focus(QQuickItem *item);

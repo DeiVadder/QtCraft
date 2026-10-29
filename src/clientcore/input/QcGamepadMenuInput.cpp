@@ -21,10 +21,16 @@ constexpr std::array<std::pair<QcGamepadButton, Command>, 7> buttonCommands{{
     {QcGamepadButton::RightShoulder, Command::TabNext},
 }};
 
-float scrollAxis(const QcGamepadState &raw)
+// The right stick scrolls: its y up and down, its x sideways (a wide page such as the advancement tree).
+float scrollAxis(const QcGamepadState &raw, QcGamepadAxis axis = QcGamepadAxis::RightY)
 {
-    const float value = raw.axis(QcGamepadAxis::RightY);
+    const float value = raw.axis(axis);
     return std::abs(value) > QcGamepadMenuInput::scrollDeadZone ? value : 0.0f;
+}
+
+bool scrolls(const QcGamepadState &raw)
+{
+    return scrollAxis(raw) != 0.0f || scrollAxis(raw, QcGamepadAxis::RightX) != 0.0f;
 }
 
 } // namespace
@@ -151,7 +157,7 @@ void QcGamepadMenuInput::closeGate()
 bool QcGamepadMenuInput::neutral() const
 {
     for (const QcGamepadState &state : std::as_const(m_states)) {
-        if (direction(state) || scrollAxis(state) != 0.0f) {
+        if (direction(state) || scrolls(state)) {
             return false;
         }
     }
@@ -175,11 +181,17 @@ void QcGamepadMenuInput::advance(qint64 nowMs)
     }
 
     float scroll = 0.0f;
+    float sideways = 0.0f;
     for (const QcGamepadState &state : std::as_const(m_states)) {
         scroll += scrollAxis(state);
+        sideways += scrollAxis(state, QcGamepadAxis::RightX);
     }
+    const float seconds = static_cast<float>(std::min<qint64>(elapsedMs, 100)) / 1000.0f;
     if (scroll != 0.0f) {
-        emit scrolled(scroll * scrollSpeed * static_cast<float>(std::min<qint64>(elapsedMs, 100)) / 1000.0f);
+        emit scrolled(scroll * scrollSpeed * seconds);
+    }
+    if (sideways != 0.0f) {
+        emit scrolledSideways(sideways * scrollSpeed * seconds);
     }
 }
 
@@ -187,7 +199,7 @@ void QcGamepadMenuInput::updateTimer()
 {
     bool scrolling = false;
     for (const QcGamepadState &state : std::as_const(m_states)) {
-        scrolling = scrolling || scrollAxis(state) != 0.0f;
+        scrolling = scrolling || scrolls(state);
     }
 
     const bool needed = !m_waitForNeutral && (m_held.has_value() || scrolling);

@@ -52,6 +52,12 @@ QcGamepadUi::QcGamepadUi(QcGamepadControls &world, Gate gate, QObject *parent)
             updateFocus();
         }
     });
+    connect(&m_menu, &QcGamepadMenuInput::scrolledSideways, this, [this](float pixels) {
+        if (screensTakeInput()) {
+            m_navigator.scrollSideways(pixels);
+            updateFocus();
+        }
+    });
     connect(&m_world, &QcGamepadControls::radialChanged, this, &QcGamepadUi::radialChanged);
     connect(&m_world, &QcGamepadControls::profileChanged, this, &QcGamepadUi::actionsChanged);
     connect(&m_navigator, &QcMenuNavigator::keyboardRequested, this, &QcGamepadUi::keyboardRequested);

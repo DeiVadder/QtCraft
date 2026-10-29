@@ -268,6 +268,7 @@ QcResult<QcAdvancementDefinition> parseAdvancement(const QJsonObject &json, cons
         reader.fail(u"unknown 'frame' '%1'"_s.arg(frame));
     }
     advancement.hidden = reader.boolean(u"hidden"_s, false);
+    advancement.announce = reader.boolean(u"announce"_s, true);
     advancement.criteria = parseCriteria(packNamespace, reader);
     advancement.requirements = parseRequirements(advancement.criteria, reader);
     if (advancement.icon.isEmpty()) {

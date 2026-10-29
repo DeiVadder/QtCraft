@@ -1,13 +1,40 @@
 #include "server/advancements/QcServerAdvancements.h"
 
 #include "common/physics/QcPhysics.h"
+#include "common/protocol/QcChatText.h"
 #include "server/advancements/QcAdvancementMatch.h"
 #include "server/core/QcServerClient.h"
 #include "server/core/QcServerState.h"
 
 namespace {
 
+using namespace Qt::StringLiterals;
+
 using Progress = QcMsg::AdvancementProgress;
+
+// The chat line by the frame, as the toast words it; %1 is the player, %2 the advancement's title.
+const char *announcementKey(QcAdvancementFrame frame)
+{
+    switch (frame) {
+    case QcAdvancementFrame::Goal:
+        return QT_TRANSLATE_NOOP("QcServerMessages", "%1 has reached the goal [%2]");
+    case QcAdvancementFrame::Challenge:
+        return QT_TRANSLATE_NOOP("QcServerMessages", "%1 has completed the challenge [%2]");
+    case QcAdvancementFrame::Task:
+        break;
+    }
+    return QT_TRANSLATE_NOOP("QcServerMessages", "%1 has made the advancement [%2]");
+}
+
+// Sends `line` to the playing clients other than `client`.
+void sendToOthers(const QcServerState &state, const QcServerClient &client, const QcMsg::ChatMessage &line)
+{
+    for (const auto &other : state.clients()) {
+        if (other.get() != &client && other->state == QcServerClient::State::Playing) {
+            other->connection->send(line);
+        }
+    }
+}
 
 Progress::Entry entryOf(const QcAdvancementDefinition &advancement, const QcAdvancementProgress &progress, bool announce)
 {
@@ -101,6 +128,35 @@ void QcServerAdvancements::noteChange(QcServerClient &client, const QString &adv
     const QcAdvancementDefinition *definition = m_state.content().advancements().find(advancement);
     const bool announce = !wasDone && definition && client.advancements.progress.isDone(*definition);
     client.advancements.unsent[advancement] = client.advancements.unsent.value(advancement) || announce;
+    if (announce) {
+        tellOthers(client, *definition);
+    }
+}
+
+void QcServerAdvancements::tellOthers(QcServerClient &client, const QcAdvancementDefinition &advancement) const
+{
+    if (!advancement.announce || !m_state.info().announceAdvancements) {
+        return;
+    }
+    if (client.advancements.announced >= announcementsPerTick) {
+        ++client.advancements.folded;
+        return;
+    }
+
+    // The title travels as its content key: every client shows it in its own content language.
+    ++client.advancements.announced;
+    const QString title = m_state.content().translations().translate(advancement.titleKey, u"en"_s);
+    sendToOthers(m_state, client, QcChatText::message(announcementKey(advancement.frame), {client.name, title}, {QString(), advancement.titleKey}));
+}
+
+void QcServerAdvancements::endAnnouncements(QcServerClient &client) const
+{
+    if (client.advancements.folded > 0) {
+        sendToOthers(m_state, client, QcChatText::counted(QT_TRANSLATE_N_NOOP("QcServerMessages", "%1 has made %n more advancements"),
+                                                 client.advancements.folded, {client.name}));
+    }
+    client.advancements.announced = 0;
+    client.advancements.folded = 0;
 }
 
 bool QcServerAdvancements::grant(QcServerClient &client, const QString &advancement)
@@ -178,6 +234,7 @@ void QcServerAdvancements::tick()
 {
     const quint64 tick = m_state.clock().tick();
     for (const auto &client : m_state.clients()) {
+        endAnnouncements(*client);
         if (client->state != QcServerClient::State::Playing) {
             continue;
         }

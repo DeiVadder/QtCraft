@@ -99,6 +99,7 @@ QString QcKeyLabels::movementAction(QcKeyBindings::Action action)
     case A::Command:
     case A::CameraView:
     case A::Handbook:
+    case A::Advancements:
     case A::DebugOverlay:
     case A::DebugOptions:
     case A::Labels:
@@ -165,6 +166,7 @@ QString QcKeyLabels::handAction(QcKeyBindings::Action action)
     case A::Command:
     case A::CameraView:
     case A::Handbook:
+    case A::Advancements:
     case A::DebugOverlay:
     case A::DebugOptions:
     case A::Labels:
@@ -195,6 +197,8 @@ QString QcKeyLabels::screenAction(QcKeyBindings::Action action)
         return tr("Camera view");
     case A::Handbook:
         return tr("Handbook");
+    case A::Advancements:
+        return tr("Advancements");
     case A::DebugOverlay:
         return tr("Debug display (off, compact, full)");
     case A::DebugOptions:

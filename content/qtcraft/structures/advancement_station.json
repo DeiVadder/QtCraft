@@ -1,0 +1,28 @@
+{
+    "name": "advancement_station",
+    "showcase": {
+        "order": 113
+    },
+    "palette": {
+        "P": "polished_stone",
+        "T": "crafting_table",
+        "C": "chest[facing=south]"
+    },
+    "layers": [
+        ["PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"],
+        ["PPPPPPP", "  T C  ", "       ", "       ", "       "],
+        ["PPPPPPP", "       ", "       ", "       ", "       "]
+    ],
+    "contents": [
+        {"at": [4, 1, 1], "items": [{"item": "oak_log", "count": 8}, {"item": "cobblestone", "count": 8}, {"item": "stick", "count": 4}]}
+    ],
+    "labels": [
+        {"at": [3.5, 3.6, 1.2], "text": "structure.qtcraft.advancement_station.open"},
+        {"at": [2.5, 2.5, 1.5], "text": "structure.qtcraft.advancement_station.first"},
+        {"at": [4.5, 2.5, 1.5], "text": "structure.qtcraft.advancement_station.chest"},
+        {"at": [1.0, 3.3, 1.2], "text": "structure.qtcraft.advancement_station.frame"}
+    ],
+    "hangings": [
+        {"at": [1, 2, 1], "face": "south", "item": "item_frame", "held": "oak_log", "rotation": 0}
+    ]
+}

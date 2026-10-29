@@ -135,7 +135,7 @@ SidebarScreen {
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || screen.game.settings.keys.matches("handbook", event.key)) {
+        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("handbook", event.key) && !event.isAutoRepeat)) {
             screen.close();
         } else if (event.key === Qt.Key_Backspace || (event.key === Qt.Key_Left && (event.modifiers & Qt.AltModifier))) {
             screen.back();

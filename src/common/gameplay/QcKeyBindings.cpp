@@ -43,6 +43,8 @@ constexpr std::array<ActionRow, QcKeyBindings::actionCount> actionRows{{
     {A::Command, u"command", Qt::Key_Slash, 0},
     {A::CameraView, u"cameraView", Qt::Key_V, Qt::Key_F5},
     {A::Handbook, u"handbook", Qt::Key_H, Qt::Key_F1},
+    // J for journal: L, the role model's key, shows the labels in the world (decision E-924).
+    {A::Advancements, u"advancements", Qt::Key_J, 0},
     {A::DebugOverlay, u"debugOverlay", Qt::Key_I, Qt::Key_F3},
     {A::DebugOptions, u"debugOptions", Qt::Key_O, Qt::Key_F4},
     {A::Labels, u"labels", Qt::Key_L, 0},

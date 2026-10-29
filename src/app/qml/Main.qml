@@ -22,6 +22,9 @@ ApplicationWindow {
     // it. Kept here rather than read when the handbook opens: the screens it covers hide at the same
     // moment (and lose the focus) in no fixed order.
     property Item focusBeforeHandbook: null
+    // Where the advancements lead back to: the pause menu when they opened from it, else the world.
+    property int advancementsReturn: GameController.Overlay.None
+    property int lastOverlay: GameController.Overlay.None
 
     onActiveFocusItemChanged: {
         if (!game.handbook.isOpen && activeFocusItem)
@@ -192,6 +195,29 @@ ApplicationWindow {
         }
     }
 
+    // The tree of the adventure guide (decision E-924).
+    LazyScreen {
+        anchors.fill: parent
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Advancements
+
+        screen: AdvancementsScreen {
+            game: root.controller
+            onCloseRequested: root.controller.overlay = root.advancementsReturn
+        }
+    }
+
+    Connections {
+        target: game
+
+        function onOverlayChanged() {
+            if (game.overlay === GameController.Overlay.Advancements)
+                root.advancementsReturn = root.lastOverlay === GameController.Overlay.Pause ? GameController.Overlay.Pause : GameController.Overlay.None;
+            root.lastOverlay = game.overlay;
+        }
+    }
+
     // While the player list key is held; over the world and the HUD, under the screens.
     LazyScreen {
         anchors.fill: parent
@@ -322,7 +348,9 @@ ApplicationWindow {
         anchors.rightMargin: Ui.hudPx(8)
         anchors.topMargin: Ui.hudPx(40)
         active: false
+        // Not over the advancement tree, which shows the same and would lose its close button.
         visible: ((item as AdvancementToast)?.showing ?? false) && !game.photo.hudHidden && !game.photo.capturing
+                 && game.overlay !== GameController.Overlay.Advancements
 
         sourceComponent: AdvancementToast {}
     }

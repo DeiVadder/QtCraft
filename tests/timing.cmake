@@ -34,6 +34,8 @@
 #   app_offscreen_pad_playstation, app_offscreen_pad_settings, app_offscreen_pad_lazy_menu
 #                            the game with a scripted pad: its steps start at wall-clock times of the
 #                            startup script (after the world loaded); each waits for rendered frames
+#   app_offscreen_advancements_return
+#                            key presses at wall-clock times of the startup script, one screen apart
 #   test_gamepad_scenarios   the creative double tap is timed on the wall clock (E-541)
 #   test_session_tick, test_session_thread
 #                            the session core ticks on its own thread against real time (E-560)
@@ -49,6 +51,6 @@ set(qc_timing_tests
     test_multiplayer_bots test_creative_bots test_signal_bots test_minecart_bots test_machine_bots test_boat_bots
     test_shadewalker_rules test_golem_measure test_taming test_minecart_momentum test_signal_showcase
     app_offscreen_pad_inventory app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu
-    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu test_gamepad_scenarios test_session_tick test_session_thread
+    app_offscreen_pad_playstation app_offscreen_pad_settings app_offscreen_pad_lazy_menu app_offscreen_advancements_return test_gamepad_scenarios test_session_tick test_session_thread
     test_block_prediction test_block_prediction_measure test_audio_output)
 set_property(TEST ${qc_timing_tests} APPEND PROPERTY LABELS timing)

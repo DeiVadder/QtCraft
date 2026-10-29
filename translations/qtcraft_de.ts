@@ -910,6 +910,92 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>AdvancementDetails</name>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="25"/>
+        <source>Goal</source>
+        <translation>Ziel</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="27"/>
+        <source>Challenge</source>
+        <translation>Herausforderung</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="29"/>
+        <source>Task</source>
+        <translation>Aufgabe</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="35"/>
+        <source>Reached</source>
+        <translation>Erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="37"/>
+        <source>%1 reached</source>
+        <translation>%1 erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="38"/>
+        <source>Not reached yet</source>
+        <translation>Noch nicht erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="49"/>
+        <source>Point at an advancement or move the focus to it to see what it asks for.</source>
+        <translation>Zeige auf einen Fortschritt oder bewege den Fokus dorthin, um zu sehen, was er verlangt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="101"/>
+        <source>%1 · %2</source>
+        <translation>%1 · %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="120"/>
+        <source>Criteria</source>
+        <translation>Kriterien</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="140"/>
+        <source>%1: met</source>
+        <translation>%1: erfüllt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="140"/>
+        <source>%1: not met</source>
+        <translation>%1: nicht erfüllt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementDetails.qml" line="149"/>
+        <source>Open in the handbook</source>
+        <translation>Im Handbuch öffnen</translation>
+    </message>
+</context>
+<context>
+    <name>AdvancementNode</name>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementNode.qml" line="36"/>
+        <source>reached</source>
+        <translation>erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementNode.qml" line="37"/>
+        <source>%1 reached</source>
+        <translation>%1 erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementNode.qml" line="37"/>
+        <source>not reached yet</source>
+        <translation>noch nicht erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementNode.qml" line="46"/>
+        <source>%1, %2</source>
+        <translation>%1, %2</translation>
+    </message>
+</context>
+<context>
     <name>AdvancementToast</name>
     <message numerus="yes">
         <location filename="../src/app/qml/hud/AdvancementToast.qml" line="58"/>
@@ -923,6 +1009,34 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/qml/hud/AdvancementToast.qml" line="59"/>
         <source>Advancements made!</source>
         <translation>Fortschritte erzielt!</translation>
+    </message>
+</context>
+<context>
+    <name>AdvancementsScreen</name>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementsScreen.qml" line="231"/>
+        <source>Advancements</source>
+        <translation>Fortschritte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementsScreen.qml" line="242"/>
+        <source>%1 of %2 reached</source>
+        <translation>%1 von %2 erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementsScreen.qml" line="250"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementsScreen.qml" line="251"/>
+        <source>Esc</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/advancements/AdvancementsScreen.qml" line="259"/>
+        <source>Tree</source>
+        <translation>Baum</translation>
     </message>
 </context>
 <context>
@@ -2992,17 +3106,17 @@ Als Nächstes: %3</translation>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="266"/>
+        <location filename="../src/app/qml/Main.qml" line="292"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="266"/>
+        <location filename="../src/app/qml/Main.qml" line="292"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="402"/>
+        <location filename="../src/app/qml/Main.qml" line="430"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -3011,12 +3125,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="420"/>
+        <location filename="../src/app/qml/Main.qml" line="448"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="425"/>
+        <location filename="../src/app/qml/Main.qml" line="453"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -4051,17 +4165,22 @@ Als Nächstes: %3</translation>
         <translation>Server verwalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="123"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="124"/>
+        <source>Advancements</source>
+        <translation>Fortschritte</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="163"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
         <source>‹ Back to game</source>
         <translation>‹ Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="163"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
@@ -4070,17 +4189,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Handbuch (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="131"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="140"/>
         <source>Disconnect</source>
         <translation>Verbindung trennen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="141"/>
         <source>Save and quit to menu</source>
         <translation>Speichern und zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="141"/>
         <source>Quit to menu</source>
         <translation>Zum Menü</translation>
     </message>
@@ -4273,421 +4392,426 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="21"/>
+        <source>Announce advancements</source>
+        <translation>Fortschritte ankündigen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="22"/>
         <source>Player protection after a hit</source>
         <translation>Schutz der Spieler nach einem Treffer</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="22"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="23"/>
         <source>Day and night</source>
         <translation>Tag und Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="23"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="24"/>
         <source>Changing weather</source>
         <translation>Wetterwechsel</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="24"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="25"/>
         <source>Loaded area around the spawn</source>
         <translation>Geladener Bereich um den Startpunkt</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="25"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="26"/>
         <source>Creatures spawn</source>
         <translation>Wesen erscheinen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="26"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="27"/>
         <source>Creatures change blocks</source>
         <translation>Wesen verändern Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="27"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="28"/>
         <source>Crowding damage</source>
         <translation>Schaden durch Gedränge</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="28"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="29"/>
         <source>Creature protection after a hit</source>
         <translation>Schutz der Wesen nach einem Treffer</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="29"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="30"/>
         <source>Random ticks</source>
         <translation>Zufallsticks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="30"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="31"/>
         <source>Fire spreads</source>
         <translation>Feuer breitet sich aus</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="31"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="32"/>
         <source>Pistons powered from above</source>
         <translation>Kolben von oben versorgt</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="32"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="33"/>
         <source>Explosions damage blocks</source>
         <translation>Explosionen beschädigen Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="36"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="37"/>
         <source>Signal work per tick</source>
         <translation>Signalarbeit je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="37"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="38"/>
         <source>Reserve for scheduled signal ticks</source>
         <translation>Reserve für geplante Signalticks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="38"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="39"/>
         <source>Signal work per block change</source>
         <translation>Signalarbeit je Blockänderung</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="39"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="40"/>
         <source>Smallest circuit step</source>
         <translation>Kleinster Schaltschritt</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="40"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="41"/>
         <source>Waiting changes near circuits</source>
         <translation>Wartende Änderungen an Schaltungen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="41"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="42"/>
         <source>Hoppers per tick</source>
         <translation>Trichter je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="42"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="43"/>
         <source>Hopper rest</source>
         <translation>Pause der Trichter</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="43"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="44"/>
         <source>Summoned creatures</source>
         <translation>Beschworene Wesen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="44"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="45"/>
         <source>Creatures from spawners</source>
         <translation>Wesen aus Spawnern</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="45"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="46"/>
         <source>Guardians of structures</source>
         <translation>Wächter von Bauwerken</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="46"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="47"/>
         <source>Containers</source>
         <translation>Behälter</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="47"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="48"/>
         <source>Machines</source>
         <translation>Maschinen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="48"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="49"/>
         <source>Growing saplings</source>
         <translation>Wachsende Setzlinge</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="49"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="50"/>
         <source>Block updates per tick</source>
         <translation>Blockaktualisierungen je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="50"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="51"/>
         <source>Block updates waiting for chunks</source>
         <translation>Auf Chunks wartende Blockaktualisierungen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="51"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="52"/>
         <source>Block updates from commands</source>
         <translation>Blockaktualisierungen aus Befehlen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="52"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="53"/>
         <source>Saved block updates</source>
         <translation>Gespeicherte Blockaktualisierungen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="53"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="54"/>
         <source>Liquid steps per tick</source>
         <translation>Flüssigkeitsschritte je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="54"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="55"/>
         <source>Planned liquid steps</source>
         <translation>Geplante Flüssigkeitsschritte</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="55"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="56"/>
         <source>Fire steps per tick</source>
         <translation>Feuerschritte je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="56"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="57"/>
         <source>Fires per chunk</source>
         <translation>Feuer je Chunk</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="57"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="58"/>
         <source>Fires</source>
         <translation>Feuer</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="58"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="59"/>
         <source>Fire spread distance</source>
         <translation>Ausbreitung des Feuers</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="59"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="60"/>
         <source>Falling blocks</source>
         <translation>Fallende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="60"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="61"/>
         <source>Active dropped items</source>
         <translation>Aktive fallen gelassene Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="61"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="62"/>
         <source>Waiting dropped items</source>
         <translation>Wartende fallen gelassene Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="62"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="63"/>
         <source>Dropped items</source>
         <translation>Fallen gelassene Gegenstände</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="63"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="64"/>
         <source>Experience orbs</source>
         <translation>Erfahrungskugeln</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="64"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="65"/>
         <source>Projectiles</source>
         <translation>Geschosse</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="65"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="66"/>
         <source>Projectiles per chunk</source>
         <translation>Geschosse je Chunk</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="66"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="67"/>
         <source>Lit explosives</source>
         <translation>Gezündete Sprengstoffe</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="67"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="68"/>
         <source>Explosions per tick</source>
         <translation>Explosionen je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="68"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="69"/>
         <source>Blocks per explosion</source>
         <translation>Blöcke je Explosion</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="69"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="70"/>
         <source>Explosion blocks per tick</source>
         <translation>Explosionsblöcke je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="70"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="71"/>
         <source>Monsters per 289 chunks</source>
         <translation>Monster je 289 Chunks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="71"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="72"/>
         <source>Passive creatures per player</source>
         <translation>Friedliche Wesen je Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="72"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="73"/>
         <source>Ambient creatures per player</source>
         <translation>Umgebungswesen je Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="73"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="74"/>
         <source>Path search per tick</source>
         <translation>Wegsuche je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="74"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="75"/>
         <source>Path search per search</source>
         <translation>Wegsuche je Suche</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="75"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="76"/>
         <source>Path length</source>
         <translation>Weglänge</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="76"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="77"/>
         <source>Crowd that thinks slower</source>
         <translation>Gedränge mit langsamerem Denken</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="77"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="78"/>
         <source>Crowd without AI</source>
         <translation>Gedränge ohne KI</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="78"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="79"/>
         <source>Animals that still breed</source>
         <translation>Tiere, die sich noch vermehren</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="79"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="80"/>
         <source>Bred animals per kind</source>
         <translation>Gezüchtete Tiere je Art</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="80"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="81"/>
         <source>Random ticks per section</source>
         <translation>Zufallsticks je Abschnitt</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="81"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="82"/>
         <source>Leaf decay per tick</source>
         <translation>Laubzerfall je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="82"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="83"/>
         <source>Leaf checks per tick</source>
         <translation>Laubprüfungen je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="83"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="84"/>
         <source>Waiting leaf checks</source>
         <translation>Wartende Laubprüfungen</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="84"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="85"/>
         <source>Armour stands</source>
         <translation>Rüstungsständer</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="85"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="86"/>
         <source>Minecarts</source>
         <translation>Loren</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="86"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="87"/>
         <source>Boats</source>
         <translation>Boote</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="87"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="88"/>
         <source>Item frames and paintings</source>
         <translation>Rahmen und Bilder</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="88"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="89"/>
         <source>Sliding blocks shown</source>
         <translation>Gezeigte gleitende Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="89"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="90"/>
         <source>Chunks per circuit group</source>
         <translation>Chunks je Schaltungsgruppe</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="90"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="91"/>
         <source>Chunk unloads per tick</source>
         <translation>Entladene Chunks je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="91"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="92"/>
         <source>Unsaved chunks in memory</source>
         <translation>Ungespeicherte Chunks im Speicher</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="92"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="93"/>
         <source>Chunks loaded for circuits per tick</source>
         <translation>Für Schaltungen geladene Chunks je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="93"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="94"/>
         <source>Chunks loaded for circuits</source>
         <translation>Für Schaltungen geladene Chunks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="94"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="95"/>
         <source>Time a circuit chunk stays loaded</source>
         <translation>Ladedauer eines Schaltungs-Chunks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="95"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="96"/>
         <source>Force-loaded chunks</source>
         <translation>Dauerhaft geladene Chunks</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="96"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="97"/>
         <source>Chunk loaders per player</source>
         <translation>Chunklader je Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="97"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="98"/>
         <source>Chunk loaders</source>
         <translation>Chunklader</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="98"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="99"/>
         <source>Villages</source>
         <translation>Dörfer</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="99"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="100"/>
         <source>Beds per village</source>
         <translation>Betten je Dorf</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="100"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="101"/>
         <source>Workstations per village</source>
         <translation>Arbeitsplätze je Dorf</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="101"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="102"/>
         <source>Water creatures per player</source>
         <translation>Wasserwesen je Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="102"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="103"/>
         <source>Villagers per village</source>
         <translation>Dorfbewohner je Dorf</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="103"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="104"/>
         <source>Villagers</source>
         <translation>Dorfbewohner</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="104"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="105"/>
         <source>Villager decisions per tick</source>
         <translation>Entscheidungen der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="105"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="106"/>
         <source>Villager route legs per tick</source>
         <translation>Wegabschnitte der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="106"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="107"/>
         <source>Villager harvests per tick</source>
         <translation>Ernten der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="107"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="108"/>
         <source>Iron golems</source>
         <translation>Eisengolems</translation>
     </message>
@@ -5137,20 +5261,20 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="263"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="307"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="308"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="282"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="283"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="292"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="302"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="312"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="293"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="313"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5159,22 +5283,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="332"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="332"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="365"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="389"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="390"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -5219,12 +5343,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="374"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="375"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="495"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="496"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -5258,61 +5382,66 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/server/commands/QcGameRules.cpp" line="24"/>
+        <source>Other players read in the chat when someone reaches an advancement.</source>
+        <translation>Andere Spieler lesen im Chat, wenn jemand einen Fortschritt erreicht.</translation>
+    </message>
+    <message>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="26"/>
         <source>Ticks a player stays invulnerable after a hurt (0: every hit counts).</source>
         <translation>Ticks, die ein Spieler nach einem Treffer unverwundbar bleibt (0: jeder Treffer zählt).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="26"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="28"/>
         <source>The time of day runs.</source>
         <translation>Die Tageszeit läuft.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="27"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="29"/>
         <source>The weather changes by itself.</source>
         <translation>Das Wetter ändert sich von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="28"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="30"/>
         <source>Chunks around the spawn that stay loaded (0: none, 1: the spawn chunk, 2: 3 x 3 …).</source>
         <translation>Chunks um den Spawn, die geladen bleiben (0: keine, 1: der Spawn-Chunk, 2: 3 × 3 …).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="30"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="32"/>
         <source>Creatures spawn by themselves.</source>
         <translation>Wesen erscheinen von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="31"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="33"/>
         <source>Creatures change blocks (shadewalkers take and place blocks).</source>
         <translation>Wesen verändern Blöcke (Schattenwandler nehmen und setzen Blöcke).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="33"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="35"/>
         <source>Creatures in one block cell beyond which they take damage (0: never).</source>
         <translation>Wesen in einer Blockzelle, ab denen sie Schaden nehmen (0: nie).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="36"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="38"/>
         <source>Ticks a creature stays invulnerable after a hurt (0: every hit counts).</source>
         <translation>Ticks, die ein Wesen nach einem Treffer unverwundbar bleibt (0: jeder Treffer zählt).</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="38"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="40"/>
         <source>Blocks get random ticks: plants and crops grow, soil changes.</source>
         <translation>Blöcke bekommen Zufallsticks: Pflanzen und Feldfrüchte wachsen, Boden verändert sich.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="40"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="42"/>
         <source>Fire spreads to flammable blocks and burns them away.</source>
         <translation>Feuer breitet sich auf brennbare Blöcke aus und verbrennt sie.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="42"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="44"/>
         <source>Pistons are also powered through the block above them.</source>
         <translation>Kolben werden auch über den Block über ihnen angetrieben.</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcGameRules.cpp" line="44"/>
+        <location filename="../src/server/commands/QcGameRules.cpp" line="46"/>
         <source>Explosions break, light and blow away blocks.</source>
         <translation>Explosionen zerstören, entzünden und schleudern Blöcke.</translation>
     </message>
@@ -5677,57 +5806,62 @@ Als Nächstes: %3</translation>
         <translation>Nach rechts drehen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="132"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="133"/>
         <source>Mine, attack</source>
         <translation>Abbauen, angreifen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="134"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="135"/>
         <source>Place, use, eat</source>
         <translation>Setzen, benutzen, essen</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="136"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="137"/>
         <source>Pick block (also middle mouse button)</source>
         <translation>Block wählen (auch mittlere Maustaste)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="138"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="139"/>
         <source>Throw item (with %1: stack)</source>
         <translation>Item werfen (mit %1: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="189"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="191"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="191"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="193"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="193"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="195"/>
         <source>Command</source>
         <translation>Befehl</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="195"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="197"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="197"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="199"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="199"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="201"/>
+        <source>Advancements</source>
+        <translation>Fortschritte</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="203"/>
         <source>Debug display (off, compact, full)</source>
         <translation>Debug-Anzeige (aus, kompakt, voll)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="201"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="205"/>
         <source>Debug options</source>
         <translation>Debug-Optionen</translation>
     </message>
@@ -5736,42 +5870,42 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Bildrate und Position</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="203"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="207"/>
         <source>Labels in the world</source>
         <translation>Beschriftungen in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="205"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="209"/>
         <source>Player list (hold)</source>
         <translation>Spielerliste (halten)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="207"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="211"/>
         <source>Radial menu of the hotbar (hold, choose with the mouse)</source>
         <translation>Radialmenü der Schnellleiste (halten, mit der Maus wählen)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="209"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="213"/>
         <source>Hide HUD (photo mode)</source>
         <translation>Anzeige ausblenden (Fotomodus)</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="211"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="215"/>
         <source>Screenshot</source>
         <translation>Bildschirmfoto</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="213"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="217"/>
         <source>Fullscreen on and off</source>
         <translation>Vollbild ein und aus</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="215"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="219"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="149"/>
+        <location filename="../src/clientcore/settings/QcKeyLabels.cpp" line="150"/>
         <source>Hotbar slot %1</source>
         <translation>Schnellleiste, Feld %1</translation>
     </message>
@@ -6615,6 +6749,11 @@ Jetzt: %2</translation>
         <translation>Überlebensinventar wiederhergestellt: Dein Kreativinventar bleibt für das nächste Mal im Kreativmodus erhalten</translation>
     </message>
     <message>
+        <location filename="../src/server/commands/QcCheatCommands.cpp" line="83"/>
+        <source>Usage: /gamerule &lt;keepInventory|announceAdvancements|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]</source>
+        <translation>Verwendung: /gamerule &lt;keepInventory|announceAdvancements|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]</translation>
+    </message>
+    <message>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="120"/>
         <source>Usage: /summon &lt;creature&gt; [count] [noai], /summon &lt;minecart|chest_minecart|hopper_minecart|oak_boat|…&gt; [count] or /summon armor_stand [property=value …]</source>
         <translation>Verwendung: /summon &lt;Wesen&gt; [Anzahl] [noai], /summon &lt;minecart|chest_minecart|hopper_minecart|oak_boat|…&gt; [Anzahl] oder /summon armor_stand [Eigenschaft=Wert …]</translation>
@@ -6938,9 +7077,8 @@ Jetzt: %2</translation>
         <translation>Neue Spieler beginnen im Zuschauermodus</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcCheatCommands.cpp" line="83"/>
         <source>Usage: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]</source>
-        <translation>Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]</translation>
+        <translation type="vanished">Verwendung: /gamerule &lt;keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage&gt; [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]</translation>
     </message>
     <message>
         <source>Usage: /summon &lt;creature&gt; [count] [noai], /summon &lt;minecart|chest_minecart|hopper_minecart&gt; [count] or /summon armor_stand [property=value …]</source>
@@ -8436,6 +8574,29 @@ Jetzt: %2</translation>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="323"/>
         <source>Too many boats in the world (at most %1)</source>
         <translation>Zu viele Boote in der Welt (höchstens %1)</translation>
+    </message>
+    <message>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="20"/>
+        <source>%1 has reached the goal [%2]</source>
+        <translation>%1 hat das Ziel [%2] erreicht</translation>
+    </message>
+    <message>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="22"/>
+        <source>%1 has completed the challenge [%2]</source>
+        <translation>%1 hat die Herausforderung [%2] gemeistert</translation>
+    </message>
+    <message>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="26"/>
+        <source>%1 has made the advancement [%2]</source>
+        <translation>%1 hat den Fortschritt [%2] erzielt</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="145"/>
+        <source>%1 has made %n more advancements</source>
+        <translation>
+            <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>
+            <numerusform>%1 hat %n weitere Fortschritte erzielt</numerusform>
+        </translation>
     </message>
 </context>
 <context>

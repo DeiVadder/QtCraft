@@ -110,6 +110,15 @@ check chat $world --overlay chat
 check handbook $world --handbook block:qtcraft:furnace
 # shellcheck disable=SC2086
 check death $world --chat "/kill"
+# The advancement tree (decision E-924) and the details of a challenge beside it.
+# shellcheck disable=SC2086
+check advancements $world --overlay advancements \
+    --overlay "@0 focus:advancement_qtcraft_diamond_armour"
+if ! grep -q 'Advancement check: 0 overlapping advancements' "$DATA/advancements.log" || grep -q 'no such control' "$DATA/advancements.log"; then
+    echo "advancements: advancements overlap or the tree did not show:"
+    grep -E 'Advancements overlap|Advancement check' "$DATA/advancements.log"
+    failed=1
+fi
 # The pad on the scaled inventory (decision E-583): its focus moves between the slots and the ring
 # is drawn around them. The inventory opens with the world; the steps are queued at once and run in
 # order, each after the one before is reported (QcScriptedPad), so none waits for the wall clock.

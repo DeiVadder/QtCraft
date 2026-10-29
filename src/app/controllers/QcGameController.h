@@ -19,6 +19,7 @@
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
+#include "app/models/QcAdvancementTreeModel.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
@@ -86,6 +87,8 @@ class QcGameController : public QObject
     Q_PROPERTY(QcEnchantingController *enchanting READ enchanting CONSTANT FINAL)
     // The anvil's screen (decision E-866).
     Q_PROPERTY(QcAnvilController *anvil READ anvil CONSTANT FINAL)
+    // The tree of the adventure guide (decision E-924).
+    Q_PROPERTY(QcAdvancementTreeModel *advancements READ advancements CONSTANT FINAL)
     Q_PROPERTY(QcHudState *hud READ hud CONSTANT FINAL)
     Q_PROPERTY(QcHandbookController *handbook READ handbook CONSTANT FINAL)
     Q_PROPERTY(QcGameInput *input READ input CONSTANT FINAL)
@@ -136,6 +139,7 @@ public:
     QcStonecutterController *stonecutter() const { return m_stonecutter.get(); }
     QcEnchantingController *enchanting() const { return m_enchanting.get(); }
     QcAnvilController *anvil() const { return m_anvil.get(); }
+    QcAdvancementTreeModel *advancements() const { return m_advancements.get(); }
     QcHudState *hud() const { return m_hud.get(); }
     QcHandbookController *handbook() const { return m_handbook.get(); }
     QcGameInput *input() const { return m_input.get(); }
@@ -237,6 +241,7 @@ private:
     std::unique_ptr<QcStonecutterController> m_stonecutter;
     std::unique_ptr<QcEnchantingController> m_enchanting;
     std::unique_ptr<QcAnvilController> m_anvil;
+    std::unique_ptr<QcAdvancementTreeModel> m_advancements;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcPhotoMode> m_photo;
     std::unique_ptr<QcHandbookController> m_handbook;

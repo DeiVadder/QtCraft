@@ -94,6 +94,9 @@ private:
     // `hold:<action>` / `release:<action>`: holds down or lets go of the key of a key action.
     void holdKey(const QString &actionId, bool held) const;
     void pressKey(const QString &actionId) const;
+    // Presses and lets go of the key `name` (QKeySequence text, "J", "Escape") as the keyboard would:
+    // to the world while it takes the input, else to the shown screen; logs the overlay after it.
+    void pressWindowKey(const QString &name) const;
     // `view:hide` / `view:show`: hides or shows the world view as the phase binding does; a hide
     // waits for meshed sections, a show for the hide before it (`attemptsLeft` retries).
     void showView(bool shown, int attemptsLeft);

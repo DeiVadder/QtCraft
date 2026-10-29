@@ -19,12 +19,17 @@ public:
     // that the shown chat lines (the item named "hudChat") overlap; empty without a shown HUD or
     // without chat lines.
     static QStringList chatOverlaps(const QQuickItem &root);
+    // One line per pair of advancements (items named "advancement_<name>") in the shown tree (the
+    // item named "advancementTree", decision E-924) whose rectangles overlap; empty without it.
+    static QStringList advancementOverlaps(const QQuickItem &root);
 
 private:
     // `item` and the items below it that reach outside `bounds` (clipping items hide what is below them).
     [[nodiscard]] static QStringList outside(const QQuickItem &item, const QRectF &bounds);
     static QList<const QQuickItem *> statusRows(const QQuickItem &hud);
     static const QQuickItem *findItem(const QQuickItem &root, const QString &name);
+    // The shown items below `root` whose object name starts with `prefix`, in tree order.
+    static QList<const QQuickItem *> itemsNamed(const QQuickItem &root, const QString &prefix);
     static bool shown(const QQuickItem &item);
     static QString describe(const QQuickItem &item, const QRectF &rect);
 };

@@ -52,6 +52,9 @@ struct QcWorldInfo
     // Game rule: explosions break, light and blow away blocks (decision E-603); off, they still hurt
     // and push bodies but leave every block as it is, lit explosives included.
     bool explosionBlockDamage = true;
+    // Game rule: the other players read in the chat when someone reaches an advancement (decision
+    // E-924); off, only the toast of the player himself shows it.
+    bool announceAdvancements = true;
     // The weather and its course (world.json "weather"; a world without it begins with a clear spell).
     QcWeatherState weather;
     // World generator type (QcWorldGenerators), its options (the layers of a flat world) and whether

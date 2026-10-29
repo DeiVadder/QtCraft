@@ -50,5 +50,9 @@
     "+%n more": [
         "+%n more",
         "+%n more"
+    ],
+    "%1 has made %n more advancements": [
+        "%1 has made %n more advancement",
+        "%1 has made %n more advancements"
     ]
 }

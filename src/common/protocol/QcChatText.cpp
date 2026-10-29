@@ -4,6 +4,8 @@
 
 #include <algorithm>
 
+using namespace Qt::StringLiterals;
+
 namespace QcChatText {
 
 QString format(QStringView pattern, const QStringList &arguments)
@@ -48,6 +50,14 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments, const 
     QcMsg::ChatMessage line = message(key, arguments);
     line.contentKeys = contentKeys;
     return line;
+}
+
+QcMsg::ChatMessage counted(const char *key, int count, const QStringList &arguments)
+{
+    const QString keyText = QString::fromUtf8(key);
+    QString text = format(keyText, arguments);
+    text.replace(u"%n"_s, QString::number(count));
+    return {text, keyText, arguments + QStringList{QString::number(count)}};
 }
 
 QString messageKey(const char *key)
@@ -96,8 +106,11 @@ QString display(const QcMsg::ChatMessage &message, const std::function<QString(c
             arguments[i] = text;
         }
     }
-    // Without a translation (or for a key this version does not know) the key is the English text.
-    const QString translated = QCoreApplication::translate(context, message.key.toUtf8().constData());
+    // Without a translation (or for a key this version does not know) the key is the English text;
+    // a key with %n has its count as the last argument (counted()), translate() fills it in.
+    const QByteArray key = message.key.toUtf8();
+    const int count = message.key.contains(u"%n"_s) && !arguments.isEmpty() ? arguments.constLast().toInt() : -1;
+    const QString translated = QCoreApplication::translate(context, key.constData(), nullptr, count);
     return format(translated, arguments);
 }
 

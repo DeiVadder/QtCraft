@@ -38,6 +38,7 @@ ApplicationWindow {
         property string lastClick
         property bool takeTabs: false
         property int extraSlots: 0
+        property bool sideways: false
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Escape)
                 escapes++;
@@ -114,6 +115,33 @@ ApplicationWindow {
             }
         }
 
+        // A wide row that scrolls sideways and a strip that snaps to its cells (sideways only).
+        Flickable {
+            objectName: "wide"
+            x: 20; y: 400; width: 400; height: 60
+            visible: screen.sideways
+            clip: true
+            contentWidth: wideRow.width
+            Row {
+                id: wideRow
+                spacing: 10
+                Repeater {
+                    model: 20
+                    Button { required property int index; objectName: "wide" + index; width: 80; text: "W" + index }
+                }
+            }
+        }
+        ListView {
+            objectName: "strip"
+            x: 450; y: 400; width: 400; height: 60
+            visible: screen.sideways
+            orientation: ListView.Horizontal
+            snapMode: ListView.SnapToItem
+            clip: true
+            model: 20
+            delegate: ItemDelegate { required property int index; objectName: "strip" + index; width: 80; height: 60; text: "S" + index }
+        }
+
         TabBar {
             objectName: "tabs"
             x: 500; y: 20; width: 300
@@ -175,6 +203,19 @@ private:
     bool m_screensOpen = true;
 
     QQuickItem *item(const QString &name) const { return m_window->findChild<QQuickItem *>(name); }
+
+    // An item below `root` by its items (a Repeater's delegates outside a view have no QObject parent).
+    static QQuickItem *itemBelow(QQuickItem *root, const QString &name)
+    {
+        const QList<QQuickItem *> children = root->childItems();
+        for (QQuickItem *child : children) {
+            QQuickItem *found = child->objectName() == name ? child : itemBelow(child, name);
+            if (found) {
+                return found;
+            }
+        }
+        return nullptr;
+    }
     QObject *screen() const { return item(u"screen"_s); }
     QString focus() const { return m_ui->focusDescription(); }
 
@@ -417,6 +458,52 @@ private slots:
         const QRectF shown = QcFocusCandidates::sceneRect(list);
         QVERIFY(m_ui->focusShown());
         QVERIFY(shown.contains(m_ui->focusRect()));
+    }
+
+    // The right stick's x scrolls sideways by the rules of its y: the page around the focus, else the
+    // scope's first one, with the focus kept in view; a list that snaps and a page without room to
+    // the sides stay as they are.
+    void sidewaysScrollingFollowsTheVerticalRules()
+    {
+        screen()->setProperty("sideways", true);
+        click(QcGamepadButton::DpadDown);
+        const auto pushRight = [this] {
+            m_source.setAxis(m_pad, QcGamepadAxis::RightX, 1.0f);
+            const qint64 start = m_ui->menuInput().now();
+            for (int step = 1; step <= 4; ++step) {
+                m_ui->menuInput().advance(start + static_cast<qint64>(step) * 100);
+            }
+            m_source.setAxis(m_pad, QcGamepadAxis::RightX, 0.0f);
+            QCoreApplication::processEvents();
+        };
+
+        QQuickItem *wide = item(u"wide"_s);
+        QVERIFY(wide && itemBelow(wide, u"wide0"_s));
+        itemBelow(wide, u"wide0"_s)->forceActiveFocus(Qt::TabFocusReason);
+        QCOMPARE(focus(), u"wide0"_s);
+        pushRight();
+        QVERIFY(wide->property("contentX").toDouble() > 300.0);
+        QVERIFY2(focus() != u"wide0"_s && focus().startsWith(u"wide"_s), qPrintable(focus()));
+        QVERIFY(QcFocusCandidates::wholeInView(m_window->activeFocusItem()));
+
+        // The focus outside any page: the scope's first one moves.
+        wide->setProperty("contentX", 0.0);
+        item(u"first"_s)->forceActiveFocus(Qt::TabFocusReason);
+        pushRight();
+        QVERIFY(wide->property("contentX").toDouble() > 300.0);
+        QCOMPARE(focus(), u"first"_s);
+
+        // A strip that snaps keeps its place; a list without room to the sides as well.
+        QQuickItem *strip = item(u"strip"_s);
+        QTRY_VERIFY(itemBelow(strip, u"strip0"_s));
+        itemBelow(strip, u"strip0"_s)->forceActiveFocus(Qt::TabFocusReason);
+        pushRight();
+        QCOMPARE(strip->property("contentX").toDouble(), 0.0);
+        QQuickItem *list = item(u"list"_s);
+        QVERIFY(itemBelow(list, u"row0"_s));
+        itemBelow(list, u"row0"_s)->forceActiveFocus(Qt::TabFocusReason);
+        pushRight();
+        QCOMPARE(list->property("contentX").toDouble(), 0.0);
     }
 
     // The game's own return of the captured mouse to the window's centre and a mouse that hardly

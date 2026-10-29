@@ -23,6 +23,10 @@ QcMsg::ChatMessage message(const char *key, const QStringList &arguments = {});
 // A keyed line whose arguments may stand for content texts (QcMsg::ChatMessage::contentKeys,
 // decision E-873): `contentKeys` as long as `arguments`, empty entries for plain arguments.
 QcMsg::ChatMessage message(const char *key, const QStringList &arguments, const QStringList &contentKeys);
+// A keyed line with a count: `key` (marked with QT_TRANSLATE_N_NOOP in `context`) has %n for
+// `count` besides its %1.. arguments; the count travels as the last argument, and the client picks
+// the plural form of its language.
+QcMsg::ChatMessage counted(const char *key, int count, const QStringList &arguments = {});
 // The entry of QcMsg::ChatMessage::contentKeys for an argument that is itself a server message
 // (`key` marked with QT_TRANSLATE_NOOP in `context`, the argument its English text): the client
 // shows it translated (decision E-911; /help's lines of a command and its description).

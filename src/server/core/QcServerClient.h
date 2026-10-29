@@ -317,14 +317,17 @@ struct QcServerClient : QcEntity
     Fishing fishing;
     // The adventure guide (QcServerAdvancements, decision E-923; `progress` is saved): the met
     // criteria, the advancements whose change the client has not heard of yet (with whether to
-    // announce them), whether it got the whole progress since joining, and the block where the
-    // location criteria were last checked.
+    // announce them), whether it got the whole progress since joining, the block where the
+    // location criteria were last checked, and the chat lines about his reached ones this tick
+    // (decision E-924): those sent and those beyond the limit, folded into one line at its end.
     struct Advancements
     {
         QcAdvancementProgress progress;
         QHash<QString, bool> unsent;
         bool synced = false;
         std::optional<QcBlockPos> checkedAt;
+        int announced = 0;
+        int folded = 0;
     };
     Advancements advancements;
 };

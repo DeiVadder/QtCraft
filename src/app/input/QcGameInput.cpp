@@ -444,6 +444,9 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
     case A::Handbook:
         emit handbookRequested();
         return true;
+    case A::Advancements:
+        m_screens.state.setOverlay(QcScreenState::Overlay::Advancements);
+        return true;
     case A::CameraView: {
         // Cycles first person, behind, front; the choice is kept in the settings.
         const QcCameraMode next = QcViewCamera::next(m_parts.session->cameraMode());

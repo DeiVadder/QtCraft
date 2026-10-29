@@ -6,6 +6,8 @@ qc_add_test(test_texture_synthesizer SOURCES client/test_texture_synthesizer.cpp
 # Creature textures (decision E-880): the cow's patches, opaque body textures of every creature.
 qc_add_test(test_mob_textures SOURCES client/test_mob_textures.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_dials SOURCES client/test_dials.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_advancement_tree SOURCES client/test_advancement_tree.cpp LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_advancement_tree_model SOURCES client/test_advancement_tree_model.cpp LIBRARIES qc_app_core qc_worlds)
 # Maps on the client (decisions E-801, E-802): the cache, the colours from the atlas, the image.
 qc_add_test(test_client_maps SOURCES client/test_client_maps.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_framed_maps SOURCES client/test_framed_maps.cpp LIBRARIES qc_base_content qc_clientcore)

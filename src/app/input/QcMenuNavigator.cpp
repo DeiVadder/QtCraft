@@ -417,20 +417,34 @@ void QcMenuNavigator::sendKey(int key)
     m_sending = false;
 }
 
-void QcMenuNavigator::scroll(float pixels)
+QQuickItem *QcMenuNavigator::scrolledFlickable()
 {
     invalidateScope();
     QQuickItem *scope = m_window ? currentScope() : nullptr;
-    if (!scope || pixels == 0.0f) {
-        return;
+    if (!scope) {
+        return nullptr;
     }
 
     QQuickItem *flickable = ancestorInheriting(focusItem(), "QQuickFlickable", scope);
-    if (!flickable) {
-        flickable = findShown(scope, "QQuickFlickable");
-    }
+    return flickable ? flickable : findShown(scope, "QQuickFlickable");
+}
+
+void QcMenuNavigator::scroll(float pixels)
+{
+    QQuickItem *flickable = pixels != 0.0f ? scrolledFlickable() : nullptr;
     if (flickable) {
         scrollBy(flickable, static_cast<double>(pixels), true);
+        keepFocusInView(flickable);
+    }
+}
+
+void QcMenuNavigator::scrollSideways(float pixels)
+{
+    QQuickItem *flickable = pixels != 0.0f ? scrolledFlickable() : nullptr;
+    // A list that snaps to its rows moves row by row (its own keys), never to a place between.
+    const bool snaps = flickable && flickable->inherits("QQuickItemView") && flickable->property("snapMode").toInt() != 0;
+    if (flickable && !snaps) {
+        scrollBy(flickable, static_cast<double>(pixels), false);
         keepFocusInView(flickable);
     }
 }

@@ -105,6 +105,12 @@ QtObject {
         property real artPixel
         property real offerWidth
         property real offerHeight
+        // The advancement tree (decision E-924): a node's square, the steps from one column and one
+        // row to the next (the room for the lines between them), and the details beside the tree.
+        property real advancementNode
+        property real advancementColumn
+        property real advancementRow
+        property real advancementDetails
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -190,6 +196,10 @@ QtObject {
         artPixel: Math.max(1, ui.px(2))
         offerWidth: ui.px(320)
         offerHeight: ui.px(40)
+        advancementNode: ui.px(44)
+        advancementColumn: ui.px(80)
+        advancementRow: ui.px(56)
+        advancementDetails: ui.px(270)
         handbookEntries: ui.px(220)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)

@@ -73,7 +73,7 @@ struct QcAdvancementCriterion
 
 // An advancement of the adventure guide (advancements/<name>.json, decision E-923): its place in the
 // tree (`parent`, empty for a root), how it shows (icon item, title and description keys, frame,
-// hidden until reached), the handbook entry it leads to ("chapter:<name>", "item:<name>",
+// hidden until reached, announced in the chat), the handbook entry it leads to ("chapter:<name>", "item:<name>",
 // "block:<name>", "mob:<name>", "biome:<name>"), its criteria and which of them it needs:
 // `requirements` holds groups, every group must have one met criterion. A mod replaces an
 // advancement by name or switches it off with `"disabled": true`. The content sync sends everything
@@ -91,6 +91,9 @@ struct QcAdvancementDefinition
     QString handbook;
     QcAdvancementFrame frame = QcAdvancementFrame::Task;
     bool hidden = false;
+    // Whether the other players read in the chat that someone reached it (decision E-924; the
+    // server's game rule announceAdvancements must allow it too). Only the server uses it.
+    bool announce = true;
     bool disabled = false;
     QList<QcAdvancementCriterion> criteria;
     QList<QStringList> requirements;

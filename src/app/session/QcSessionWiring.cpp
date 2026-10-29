@@ -9,6 +9,7 @@
 #include "app/controllers/QcTradeController.h"
 #include "app/debug/QcDebugHud.h"
 #include "app/hooks/QcStartupHooks.h"
+#include "app/models/QcAdvancementTreeModel.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldAtlas.h"
 #include "audio/QcAudioEngine.h"
@@ -71,6 +72,7 @@ void QcSessionWiring::connectPlayer()
     connect(session, &QcClientSession::gameModeChanged, player, &QcPlayerController::gameModeChanged);
     connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::actionRefused);
     connect(session, &QcClientSession::advancementReached, &m_targets.player, &QcPlayerController::announceAdvancement);
+    connect(session, &QcClientSession::advancementsChanged, &m_targets.advancements, &QcAdvancementTreeModel::update);
     connect(session, &QcClientSession::gameModeChanged, this, [this, session] { m_targets.screens.gameModeChanged(session->gameMode().rules()); });
     connect(session, &QcClientSession::machineOpened, this, &QcSessionWiring::onMachineOpened);
     connect(session, &QcClientSession::machineChanged, player, &QcPlayerController::updateMachine);

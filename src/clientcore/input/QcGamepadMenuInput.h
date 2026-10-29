@@ -64,6 +64,8 @@ signals:
     void command(QcGamepadMenuInput::Command command);
     // The right stick scrolls by `pixels` (positive: down) since the last advance.
     void scrolled(float pixels);
+    // The right stick sideways: pixels to scroll a wide page to the right (negative: left).
+    void scrolledSideways(float pixels);
 
 private:
     void onStateChanged(int id);

@@ -126,6 +126,7 @@ target_sources(qc_clientcore PRIVATE
     network/QcNetworkClient.h network/QcNetworkClient.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    player/QcAdvancementTree.h player/QcAdvancementTree.cpp
     player/QcBlockForecast.h player/QcBlockForecast.cpp
     player/QcClientAdvancements.h player/QcClientAdvancements.cpp
     player/QcClientGameMode.h player/QcClientGameMode.cpp
@@ -140,6 +141,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcPrediction.h player/QcPrediction.cpp
     player/QcPushBodies.h player/QcPushBodies.cpp
     player/QcSprintLatch.h player/QcSprintLatch.cpp
+    player/QcTidyTreeLayout.h player/QcTidyTreeLayout.cpp
 )
 target_sources(qc_clientcore PRIVATE
     preview/QcFramePacer.h preview/QcFramePacer.cpp

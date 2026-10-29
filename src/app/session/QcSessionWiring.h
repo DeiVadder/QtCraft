@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QString>
 
+class QcAdvancementTreeModel;
 class QcAudioEngine;
 class QcHudState;
 class QcPlayerController;
@@ -39,6 +40,7 @@ public:
         QcStonecutterController &stonecutter;
         QcEnchantingController &enchanting;
         QcAnvilController &anvil;
+        QcAdvancementTreeModel &advancements;
         QcScreenState &screens;
         QcStartupHooks &startup;
         QcWorldAtlas &atlas;

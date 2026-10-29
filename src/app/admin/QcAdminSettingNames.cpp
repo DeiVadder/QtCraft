@@ -16,8 +16,9 @@ struct Name
 };
 
 // The game rules (QcGameRules) and the server limits (QcServerLimits) of this version.
-constexpr std::array<Name, 13> ruleNames{{
+constexpr std::array<Name, 14> ruleNames{{
     {"keepInventory", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Keep inventory")},
+    {"announceAdvancements", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Announce advancements")},
     {"playerInvulnerabilityTicks", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Player protection after a hit")},
     {"daylightCycle", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Day and night")},
     {"weatherCycle", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Changing weather")},

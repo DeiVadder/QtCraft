@@ -118,6 +118,15 @@ Rectangle {
         }
 
         GameButton {
+            objectName: "advancementsButton"
+            Layout.fillWidth: true
+            large: true
+            text: qsTr("Advancements")
+            keyHint: menu.game.settings.keys.labels.advancements
+            onClicked: menu.game.overlay = GameController.Overlay.Advancements
+        }
+
+        GameButton {
             Layout.fillWidth: true
             large: true
             text: qsTr("Handbook")

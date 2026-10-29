@@ -7,6 +7,8 @@
 
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -222,6 +224,36 @@ private slots:
         file.close();
         QCOMPARE(storage.readInfo()->keepInventory, true);
         QCOMPARE(storage.readInfo()->randomTicks, true);
+    }
+
+    // The rule of decision E-924: kept off when saved off, on for a world.json whose rules do not name it.
+    void announceAdvancementsRoundTripsAndDefaultsToOn()
+    {
+        QTemporaryDir dir;
+        const QcTestWorldFiles storage(dir.path(), registryWith({}));
+        QcWorldInfo info;
+        info.name = u"Rules"_s;
+        info.announceAdvancements = false;
+        QVERIFY(storage.writeInfo(info).has_value());
+        QCOMPARE(storage.readInfo()->announceAdvancements, false);
+        info.announceAdvancements = true;
+        QVERIFY(storage.writeInfo(info).has_value());
+        QCOMPARE(storage.readInfo()->announceAdvancements, true);
+
+        info.announceAdvancements = false;
+        QVERIFY(storage.writeInfo(info).has_value());
+        QFile file(dir.filePath(u"world.json"_s));
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QJsonObject json = QJsonDocument::fromJson(file.readAll()).object();
+        file.close();
+        QJsonObject rules = json.value(u"gameRules"_s).toObject();
+        QVERIFY(rules.contains(u"announceAdvancements"_s));
+        rules.remove(u"announceAdvancements"_s);
+        json.insert(u"gameRules"_s, rules);
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        file.write(QJsonDocument(json).toJson());
+        file.close();
+        QCOMPARE(storage.readInfo()->announceAdvancements, true);
     }
 
     void implausiblePlayerDataIsRejected_data()

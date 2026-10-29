@@ -68,6 +68,42 @@ QStringList QcLayoutCheck::chatOverlaps(const QQuickItem &root)
     return found;
 }
 
+QStringList QcLayoutCheck::advancementOverlaps(const QQuickItem &root)
+{
+    const QQuickItem *tree = findItem(root, u"advancementTree"_s);
+    if (!tree || !shown(*tree)) {
+        return {};
+    }
+
+    const QList<const QQuickItem *> nodes = itemsNamed(*tree, u"advancement_"_s);
+    QList<QRectF> rects;
+    for (const QQuickItem *node : nodes) {
+        rects.append(node->mapRectToScene(QRectF(0.0, 0.0, node->width(), node->height())));
+    }
+    QStringList found;
+    for (qsizetype first = 0; first < nodes.size(); ++first) {
+        for (qsizetype second = first + 1; second < nodes.size(); ++second) {
+            if (rects[first].adjusted(tolerance, tolerance, -tolerance, -tolerance).intersects(rects[second])) {
+                found.append(describe(*nodes[first], rects[first]) + u" and "_s + describe(*nodes[second], rects[second]));
+            }
+        }
+    }
+    return found;
+}
+
+QList<const QQuickItem *> QcLayoutCheck::itemsNamed(const QQuickItem &root, const QString &prefix)
+{
+    QList<const QQuickItem *> found;
+    const QList<QQuickItem *> children = root.childItems();
+    for (const QQuickItem *child : children) {
+        if (child->objectName().startsWith(prefix) && shown(*child)) {
+            found.append(child);
+        }
+        found += itemsNamed(*child, prefix);
+    }
+    return found;
+}
+
 QList<const QQuickItem *> QcLayoutCheck::statusRows(const QQuickItem &hud)
 {
     QList<const QQuickItem *> rows;

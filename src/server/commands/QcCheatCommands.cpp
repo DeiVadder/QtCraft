@@ -82,7 +82,7 @@ constexpr const char *survivalInventoryHint =
 // The usage of /gamerule, also the reply to an unknown rule or a wrong value.
 constexpr const char *gameruleUsage = QT_TRANSLATE_NOOP(
     "QcServerMessages",
-    "Usage: /gamerule <keepInventory|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
+    "Usage: /gamerule <keepInventory|announceAdvancements|daylightCycle|mobSpawning|randomTicks|fireSpread|quasiConnectivity|weatherCycle|mobGriefing|explosionBlockDamage> [true|false] | spawnChunkRadius [0-16] | maxEntityCramming [0-4096] | playerInvulnerabilityTicks [0-200] | mobInvulnerabilityTicks [0-200]");
 
 // The words as QcStandCommands reads them: the command first.
 QStringList withName(const QString &name, const QStringList &args)

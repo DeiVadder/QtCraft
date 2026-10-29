@@ -41,6 +41,8 @@ public:
         Command,
         CameraView,
         Handbook,
+        // The tree of the adventure guide (decision E-924).
+        Advancements,
         DebugOverlay,
         // The debug options: visualisations switched one by one (decision E-225).
         DebugOptions,

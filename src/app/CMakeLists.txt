@@ -74,6 +74,7 @@ target_sources(qc_app_core PRIVATE
     input/QcRelativeMouse.h
 )
 target_sources(qc_app_core PRIVATE
+    models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     models/QcEnchantmentTexts.h models/QcEnchantmentTexts.cpp
@@ -202,6 +203,9 @@ qt_add_qml_module(qc_app_core
         qml/admin/AdminServerPage.qml
         qml/admin/AdminSettingRow.qml
         qml/admin/AdminSettingsPage.qml
+        qml/advancements/AdvancementDetails.qml
+        qml/advancements/AdvancementNode.qml
+        qml/advancements/AdvancementsScreen.qml
         qml/character/CharacterEditor.qml
         qml/character/CharacterPresets.qml
         qml/character/CharacterPreviewHost.qml

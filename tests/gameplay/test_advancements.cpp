@@ -1,3 +1,4 @@
+#include "common/protocol/QcChatText.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 #include "server/advancements/QcAdvancementMatch.h"
@@ -5,6 +6,7 @@
 #include "server/storage/QcPlayerStorage.h"
 #include "server/storage/QcSaveFile.h"
 
+#include <QScopeGuard>
 #include <QTemporaryDir>
 
 using namespace Qt::StringLiterals;
@@ -24,6 +26,18 @@ private:
     {
         const QcAdvancementDefinition *definition = m_content->advancements().find(QString::fromLatin1(name));
         return definition && player().advancements.progress.isDone(*definition);
+    }
+
+    // A second player on the server, playing.
+    std::unique_ptr<RawClient> joinOther()
+    {
+        auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
+        m_server->addClient(std::move(serverEnd), m_origin);
+        auto other = std::make_unique<RawClient>(std::move(clientEnd));
+        other->hello(u"Other"_s);
+        QcTestUtil::pump();
+        ticks(2);
+        return other;
     }
 
     // The entries the client got after the snapshot, in order.
@@ -311,6 +325,79 @@ private slots:
         // The client heard of each change: the grant announced, the revoke not.
         ticks(1);
         QVERIFY(std::ranges::any_of(deltas(), [](const auto &entry) { return entry.advancement == u"qtcraft:iron"_s && !entry.done; }));
+    }
+
+    // The other players read it in the chat (decision E-924), with the title as a content key and the
+    // wording by the frame; the player himself has the toast. Neither an advancement with
+    // "announce": false nor the game rule announceAdvancements off says anything.
+    void reachingOneIsAnnouncedToTheOthers()
+    {
+        cleanup();
+        auto content = std::make_shared<QcContentRegistry>(*QcTestUtil::loadContent());
+        QcAdvancementDefinition quiet = *content->advancements().find(u"qtcraft:map"_s);
+        quiet.announce = false;
+        content->advancements().add(quiet);
+        m_content = content;
+        const auto restore = qScopeGuard([this] { m_content = QcTestUtil::loadContent(); });
+        join();
+        const std::unique_ptr<RawClient> second = joinOther();
+        RawClient &other = *second;
+        const auto announcements = [&other] {
+            return std::ranges::count_if(other.chatKeys, [](const QcMsg::ChatMessage &line) { return line.key.endsWith(u"[%2]"_s); });
+        };
+
+        chat(u"/give oak_log"_s);
+        ticks(1);
+        QCOMPARE(announcements(), 1);
+        const QcMsg::ChatMessage &line = other.chatKeys.constLast();
+        QCOMPARE(line.key, u"%1 has made the advancement [%2]"_s);
+        QCOMPARE(line.arguments, (QStringList{u"Raw"_s, u"Adventure Guide"_s}));
+        QCOMPARE(line.contentKeys, (QStringList{QString(), u"advancement.qtcraft.adventure"_s}));
+        QVERIFY(std::ranges::none_of(m_client->chatKeys, [](const QcMsg::ChatMessage &own) { return own.key.contains(u"has made"_s); }));
+
+        chat(u"/advancement grant Raw diamonds"_s);
+        QCOMPARE(other.chatKeys.constLast().key, u"%1 has reached the goal [%2]"_s);
+        chat(u"/advancement grant Raw diamond_armour"_s);
+        QCOMPARE(other.chatKeys.constLast().key, u"%1 has completed the challenge [%2]"_s);
+        QCOMPARE(announcements(), 3);
+
+        chat(u"/advancement grant Raw map"_s);
+        QCOMPARE(announcements(), 3);
+        chat(u"/gamerule announceAdvancements false"_s);
+        chat(u"/advancement grant Raw iron"_s);
+        QVERIFY(done("qtcraft:iron"));
+        QCOMPARE(announcements(), 3);
+    }
+
+    // /advancement grant … everything: at most announcementsPerTick lines, the rest folded into one
+    // with its count and the plural; after a revoke, reaching one again is announced again.
+    void aFloodOfReachedOnesFoldsIntoOneLine()
+    {
+        const std::unique_ptr<RawClient> other = joinOther();
+        const auto lines = [&other] {
+            return std::ranges::count_if(other->chatKeys, [](const QcMsg::ChatMessage &line) { return line.key.endsWith(u"[%2]"_s) || line.key.contains(u"%n more"_s); });
+        };
+        const qsizetype announced = std::ranges::count_if(m_content->advancements().items(), [](const auto &advancement) { return advancement.announce; });
+        QVERIFY(announced > QcServerAdvancements::announcementsPerTick + 1);
+
+        chat(u"/advancement grant Raw everything"_s);
+        ticks(1);
+        QCOMPARE(lines(), QcServerAdvancements::announcementsPerTick + 1);
+        const QcMsg::ChatMessage &folded = other->chatKeys.constLast();
+        const qsizetype rest = announced - QcServerAdvancements::announcementsPerTick;
+        QCOMPARE(folded.key, u"%1 has made %n more advancements"_s);
+        QCOMPARE(folded.arguments, (QStringList{u"Raw"_s, QString::number(rest)}));
+        QCOMPARE(folded.text, u"Raw has made %1 more advancements"_s.arg(rest));
+        QCOMPARE(QcChatText::display(folded), folded.text);
+        ticks(2);
+        QCOMPARE(lines(), QcServerAdvancements::announcementsPerTick + 1);
+
+        chat(u"/advancement revoke Raw everything"_s);
+        ticks(1);
+        chat(u"/advancement grant Raw iron"_s);
+        ticks(1);
+        QCOMPARE(lines(), QcServerAdvancements::announcementsPerTick + 2);
+        QVERIFY(other->chatKeys.constLast().key.endsWith(u"[%2]"_s));
     }
 
     void commandsNeedAnOperator()

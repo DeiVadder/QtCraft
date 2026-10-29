@@ -35,8 +35,8 @@ public:
     // page, the debug options or the texture packs), the character screen, open to LAN, the chat
     // line, the editor of a sign (decision E-766), the stonecutter (decision E-785) or the settings
     // at the display options (decision E-835), the audio page or the interface page (decision E-845),
-    // or "Manage server" (decision E-863). Settings opens the graphics page, which begins with the
-    // display options; Debug opens the advanced page.
+    // "Manage server" (decision E-863) or the tree of the adventure guide (decision E-924). Settings
+    // opens the graphics page, which begins with the display options; Debug opens the advanced page.
     enum class Overlay {
         None,
         Inventory,
@@ -61,6 +61,7 @@ public:
         Admin,
         Enchanting,
         Anvil,
+        Advancements,
     };
     Q_ENUM(Overlay)
 
@@ -69,10 +70,11 @@ public:
     // The name of an overlay on the command line (--overlay): "" for none, else "inventory",
     // "creative", "furnace", "chest", "trade", "pause", "settings", "controls", "gamepad", "debug",
     // "texturepacks", "character", "lan", "chat", "sign", "stonecutter", "display", "audio",
-    // "interface", "admin", "enchanting" or "anvil".
+    // "interface", "admin", "enchanting", "anvil" or "advancements".
     static QString overlayName(Overlay overlay);
-    // The pause menu and the screens it opens (settings, character, LAN, manage server): the world waits behind
-    // them, and the window draws at the background frame rate (decision E-835).
+    // The pause menu and the screens it opens (settings, character, LAN, manage server) and the
+    // advancements (decision E-924): the world waits behind them, and the window draws at the
+    // background frame rate (decision E-835).
     static bool isMenu(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 

@@ -15,6 +15,7 @@ void QcWorldInfo::readGameRules(const QJsonObject &rules)
     weatherCycle = rules.value(u"weatherCycle"_s).toBool(true);
     mobGriefing = rules.value(u"mobGriefing"_s).toBool(true);
     explosionBlockDamage = rules.value(u"explosionBlockDamage"_s).toBool(true);
+    announceAdvancements = rules.value(u"announceAdvancements"_s).toBool(true);
     spawnChunkRadius = std::clamp(rules.value(u"spawnChunkRadius"_s).toInt(0), 0, maxSpawnChunkRadius);
     maxEntityCramming = std::clamp(rules.value(u"maxEntityCramming"_s).toInt(24), 0, maxEntityCrammingLimit);
     playerInvulnerabilityTicks = std::clamp(rules.value(u"playerInvulnerabilityTicks"_s).toInt(defaultInvulnerabilityTicks), 0,
