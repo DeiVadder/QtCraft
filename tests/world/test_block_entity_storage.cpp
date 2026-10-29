@@ -417,7 +417,7 @@ private slots:
         config.seed = 7;
         config.worldDirectory = dir.path();
         {
-            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 7, config.generatorOptions));
+            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 7, config.generatorOptions, QcGeneratorVersion::current));
             const QcStatus opened = server.openWorld();
             QVERIFY(!opened.has_value());
             QVERIFY(server.worldTooOld());

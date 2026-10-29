@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "worldgen/generators/QcWorldGenerator.h"
 
 #include <QString>
@@ -32,8 +33,11 @@ inline constexpr qsizetype maxOptionsLength = 4096;
 // (the flat preset, the void platform), so that later changes of those defaults by mods or updates
 // do not change existing worlds.
 [[nodiscard]] QcResult<QString> optionsToStore(const QString &type, const QString &options, const QcContentRegistry &content);
-// A generator of `type`; nullptr for unknown types. What it could not resolve is in its warnings().
-std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
-                                         const QString &options = {});
+// A generator of `type` that generates as world generator version `version` does (decision E-922,
+// QcGeneratorVersion; a world passes its own, QcWorldInfo::generatorVersion); nullptr for unknown
+// types and versions. The showcase always generates with the current code, whatever the version.
+// What the generator could not resolve is in its warnings().
+std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed, const QString &options,
+                                         int version);
 
 } // namespace QcWorldGenerators

@@ -69,8 +69,8 @@ private slots:
         QVERIFY(QcWorldGenerators::isKnown(u"terrain"_s));
         QVERIFY(QcWorldGenerators::isKnown(u"flat"_s) && QcWorldGenerators::isKnown(u"void"_s));
         QVERIFY(!QcWorldGenerators::isKnown(u"spiral"_s));
-        QVERIFY(dynamic_cast<QcShowcaseGenerator *>(QcWorldGenerators::create(u"showcase"_s, m_content, 1).get()));
-        QVERIFY(!QcWorldGenerators::create(u"spiral"_s, m_content, 1));
+        QVERIFY(dynamic_cast<QcShowcaseGenerator *>(QcWorldGenerators::create(u"showcase"_s, m_content, 1, {}, QcGeneratorVersion::current).get()));
+        QVERIFY(!QcWorldGenerators::create(u"spiral"_s, m_content, 1, {}, QcGeneratorVersion::current));
     }
 
     void groundIsFlatOutsideTheAreas()
@@ -91,7 +91,7 @@ private slots:
 
     void isDeterministicAndIgnoresTheSeed()
     {
-        const auto other = QcWorldGenerators::create(u"showcase"_s, m_content, 987654321);
+        const auto other = QcWorldGenerators::create(u"showcase"_s, m_content, 987654321, {}, QcGeneratorVersion::current);
         for (auto it = m_chunks.constBegin(); it != m_chunks.constEnd(); ++it) {
             const std::shared_ptr<QcChunk> again = other->generate(it.key());
             for (int y = 60; y < 90; ++y) {

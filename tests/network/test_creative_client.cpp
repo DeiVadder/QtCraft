@@ -49,7 +49,7 @@ private:
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
         config.defaultGameMode = mode;
         config.worldDirectory = worldDirectory;
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(m_host->startError().isEmpty());
         connectSession(delayMs, jitterMs);
         QTRY_VERIFY_WITH_TIMEOUT(m_session->playerMotion().onGround, timeoutMs);

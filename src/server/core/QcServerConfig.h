@@ -3,6 +3,7 @@
 #include "common/gameplay/QcGameMode.h"
 #include "common/protocol/QcLoginMessages.h"
 #include "common/protocol/QcLoginSettings.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "server/core/QcServerLimits.h"
 
 #include <QJsonObject>
@@ -23,6 +24,9 @@ struct QcServerConfig
     // world must have been made with them. The generator and the server already run on content with
     // them set (QcWorldOptions::apply).
     QJsonObject worldOptions;
+    // The version of the world generator (decision E-922, QcWorldInfo::generatorVersion); a saved
+    // world must have been made with it, a new one keeps it.
+    int generatorVersion = QcGeneratorVersion::current;
     // Radius in chunks streamed around each player; network clients may ask for less, never more.
     int viewDistance = 8;
     // Upper bound of chunks sent per client and tick, keeps ticks short while a client catches up.

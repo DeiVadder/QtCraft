@@ -60,7 +60,7 @@ private:
         config.generator = type;
         config.generatorOptions = options;
         config.viewDistance = 1;
-        QcServer server(config, m_content, QcWorldGenerators::create(type, m_content, 0, options));
+        QcServer server(config, m_content, QcWorldGenerators::create(type, m_content, 0, options, QcGeneratorVersion::current));
         if (!server.openWorld()) {
             return {};
         }
@@ -122,8 +122,8 @@ private slots:
 
     void flatWorldIsTheSameEverywhere()
     {
-        const auto generator = QcWorldGenerators::create(u"flat"_s, m_content, 1, u"bedrock,3*dirt,grass_block"_s);
-        const auto again = QcWorldGenerators::create(u"flat"_s, m_content, 99, u"bedrock,3*dirt,grass_block"_s);
+        const auto generator = QcWorldGenerators::create(u"flat"_s, m_content, 1, u"bedrock,3*dirt,grass_block"_s, QcGeneratorVersion::current);
+        const auto again = QcWorldGenerators::create(u"flat"_s, m_content, 99, u"bedrock,3*dirt,grass_block"_s, QcGeneratorVersion::current);
         const std::shared_ptr<QcChunk> origin = generator->generate({0, 0});
         QCOMPARE(nonAirBlocks(*origin), 5 * QcWorld::chunkSize * QcWorld::chunkSize);
         QCOMPARE(origin->highestNonAir(7, 7), 4);
@@ -145,7 +145,7 @@ private slots:
 
     void voidWorldIsEmptyButThePlatform()
     {
-        const auto generator = QcWorldGenerators::create(u"void"_s, m_content, 5);
+        const auto generator = QcWorldGenerators::create(u"void"_s, m_content, 5, {}, QcGeneratorVersion::current);
         // A 5 x 5 platform of stone at y 63 around the origin, split over four chunks.
         int platform = 0;
         for (const QcChunkPos pos : {QcChunkPos{0, 0}, QcChunkPos{-1, 0}, QcChunkPos{0, -1}, QcChunkPos{-1, -1}}) {
@@ -197,7 +197,7 @@ private slots:
         for (const QString &bad : {u"stone"_s, u"platform=nothing"_s, u"radius=17"_s, u"y=0"_s, u"height=3"_s, u"radius=x"_s}) {
             QVERIFY2(!QcWorldGenerators::checkOptions(u"void"_s, bad, *m_content), qPrintable(bad));
         }
-        const auto platform = QcWorldGenerators::create(u"void"_s, m_content, 0, u"platform=glass,radius=1,y=20"_s);
+        const auto platform = QcWorldGenerators::create(u"void"_s, m_content, 0, u"platform=glass,radius=1,y=20"_s, QcGeneratorVersion::current);
         QCOMPARE(nonAirBlocks(*platform->generate({0, 0})), 4);
         QCOMPARE(platform->generate({0, 0})->block(1, 20, 1), id("qtcraft:glass"));
         QCOMPARE(platform->spawnPoint(), (QcBlockPos{0, 21, 0}));
@@ -231,8 +231,8 @@ private slots:
 
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        QVERIFY(library.create(u"Flat"_s, 1, {.generator = u"flat"_s, .options = *flatOptions, .worldOptions = {}, .gameMode = QcGameMode::Survival}));
-        QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .worldOptions = {}, .gameMode = QcGameMode::Survival}));
+        QVERIFY(library.create(u"Flat"_s, 1, {.generator = u"flat"_s, .options = *flatOptions, .worldOptions = {}, .generatorVersion = QcGeneratorVersion::current, .gameMode = QcGameMode::Survival}));
+        QVERIFY(library.create(u"Void"_s, 1, {.generator = u"void"_s, .options = *voidOptions, .worldOptions = {}, .generatorVersion = QcGeneratorVersion::current, .gameMode = QcGameMode::Survival}));
 
         // Then an update or a mod changes those defaults.
         const std::shared_ptr<QcContentRegistry> changed = QcTestUtil::baseContent()->registry;
@@ -248,12 +248,12 @@ private slots:
             config.seed = entry.info.seed;
             config.generator = entry.info.generator;
             config.generatorOptions = entry.info.generatorOptions;
-            std::shared_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions);
+            std::shared_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions, QcGeneratorVersion::current);
             const std::shared_ptr<QcChunk> origin = generator->generate({0, 0});
             QCOMPARE(origin->highestNonAir(0, 0), 63);
             QCOMPARE(origin->block(0, 63, 0), id(entry.info.generator == u"flat"_s ? "qtcraft:grass_block" : "qtcraft:stone"));
 
-            QcServer server(config, changed, QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions));
+            QcServer server(config, changed, QcWorldGenerators::create(config.generator, changed, config.seed, config.generatorOptions, QcGeneratorVersion::current));
             QVERIFY(server.openWorld());
             QVERIFY(server.stop());
         }
@@ -263,7 +263,7 @@ private slots:
     {
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, {.generator = u"flat"_s, .options = u"bedrock,grass_block"_s, .worldOptions = {}, .gameMode = QcGameMode::Survival});
+        const QcResult<QcWorldLibrary::Entry> entry = library.create(u"Flat"_s, 3, {.generator = u"flat"_s, .options = u"bedrock,grass_block"_s, .worldOptions = {}, .generatorVersion = QcGeneratorVersion::current, .gameMode = QcGameMode::Survival});
         QVERIFY(entry);
         const QcWorldLibrary::Entry listed = library.list().constFirst();
         QCOMPARE(listed.info.generator, u"flat"_s);
@@ -275,7 +275,7 @@ private slots:
         config.generator = u"flat"_s;
         config.generatorOptions = u"bedrock,grass_block"_s;
         {
-            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions));
+            QcServer server(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions, QcGeneratorVersion::current));
             QVERIFY(server.openWorld());
             server.tick();
             QVERIFY(!server.mobs().naturalSpawning());
@@ -284,7 +284,7 @@ private slots:
 
         // Other layers are another world.
         config.generatorOptions = u"bedrock,sand"_s;
-        QcServer other(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions));
+        QcServer other(config, m_content, QcWorldGenerators::create(u"flat"_s, m_content, 3, config.generatorOptions, QcGeneratorVersion::current));
         QVERIFY(!other.openWorld());
     }
 };

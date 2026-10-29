@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/world/QcGeneratorVersion.h"
 #include "worldgen/generators/QcBiomeMap.h"
 
 #include <QImage>
@@ -13,7 +14,8 @@ class QcContentRegistry;
 class QcTerrainGenerator;
 
 // What the map preview of a new world is computed from (decision E-921): the menu's content, the
-// world generation options as the form holds them, the seed, the square shown, whether villages
+// world generation options as the form holds them, the seed, the generator version the world will
+// have (decision E-922; the current one while the menu offers no choice), the square shown, whether villages
 // and structures are wanted and whether the map itself is (not when only the sites of the map
 // already shown are asked for).
 struct QcWorldMapRequest
@@ -26,12 +28,13 @@ struct QcWorldMapRequest
     QcBiomeMap::Area area;
     bool sites = false;
     Passes passes = Passes::All;
+    int generatorVersion = QcGeneratorVersion::current;
 
     bool operator==(const QcWorldMapRequest &) const = default;
     // Whether `other` describes the same world (only the view differs).
     [[nodiscard]] bool sameWorld(const QcWorldMapRequest &other) const
     {
-        return content == other.content && values == other.values && seed == other.seed;
+        return content == other.content && values == other.values && seed == other.seed && generatorVersion == other.generatorVersion;
     }
 };
 

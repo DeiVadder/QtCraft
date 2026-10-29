@@ -70,7 +70,10 @@ qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_base_cont
 qc_add_test(test_world_types SOURCES world/test_world_types.cpp QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
 # World generation options (decision E-917); reads the example mod's sources (REQUIRED_FILES at the
 # end of tests/CMakeLists.txt).
-qc_add_test(test_world_options SOURCES world/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 330)
+qc_add_test(test_world_options SOURCES world/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 480)
+qc_add_test(test_generator_versions SOURCES world/test_generator_versions.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 300)
+target_compile_definitions(test_generator_versions PRIVATE QTCRAFT_GENERATOR_REFERENCE="${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
+qc_add_test(test_generator_version_worlds SOURCES world/test_generator_version_worlds.cpp LIBRARIES qc_server qc_worlds)
 target_compile_definitions(test_world_options PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
 qc_add_test(test_showcase_stations SOURCES world/test_showcase_stations.cpp world/QcShowcaseTestUtil.h QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp world/QcShowcaseTestUtil.h QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 300)

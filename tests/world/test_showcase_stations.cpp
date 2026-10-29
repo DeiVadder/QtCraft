@@ -188,7 +188,7 @@ private slots:
         QCOMPARE(sites.size(), 2);
         const QcBlockPos middle = station->toWorld(QcBlockPos{13, 0, 16});
         config.spawnColumn = std::array<int, 2>{middle.x, middle.z + 20};
-        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0, {}, QcGeneratorVersion::current));
         QVERIFY(server.openWorld());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);
@@ -230,7 +230,7 @@ private slots:
         QVERIFY(temple != generator->plan().placements.end() && hut != generator->plan().placements.end());
         const QcBlockPos middle = temple->toWorld(QcBlockPos{6, 0, 7});
         config.spawnColumn = std::array<int, 2>{middle.x, middle.z + 12};
-        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0, {}, QcGeneratorVersion::current));
         QVERIFY(server.openWorld());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);

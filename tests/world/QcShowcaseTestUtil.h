@@ -21,7 +21,7 @@ inline std::unique_ptr<QcServer> makeServer(const std::shared_ptr<const QcConten
     config.viewDistance = 1;
     config.autosaveSeconds = 0;
     config.keepChunksLoaded = true;
-    return std::make_unique<QcServer>(config, content, QcWorldGenerators::create(generator, content, seed));
+    return std::make_unique<QcServer>(config, content, QcWorldGenerators::create(generator, content, seed, {}, QcGeneratorVersion::current));
 }
 
 } // namespace QcShowcaseTestUtil

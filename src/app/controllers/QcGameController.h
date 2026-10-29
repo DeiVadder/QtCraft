@@ -161,7 +161,8 @@ public:
     // Creates a saved world in the library and starts it. `setup` holds "worldType" (terrain, flat,
     // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory",
     // "gameMode" ("survival", "creative"; decision E-282) and "worldOptions" of a terrain world (option
-    // -> value, decision E-917; missing options get their defaults); missing keys keep the defaults.
+    // -> value, decision E-917; missing options get their defaults) and "generatorVersion" (decision
+    // E-922; default: the current one); missing keys keep the defaults.
     Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // The layers a flat world gets by default (shown in the menu).
     Q_INVOKABLE QString defaultFlatLayers();

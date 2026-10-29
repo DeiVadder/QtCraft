@@ -301,6 +301,7 @@ target_sources(qc_common PRIVATE
     world/QcDamagedFile.h
     world/QcDayCycle.h world/QcDayCycle.cpp
     world/QcEntityKind.h world/QcEntityKind.cpp
+    world/QcGeneratorVersion.h
     world/QcLightPassage.h
     world/QcLightVolume.h world/QcLightVolume.cpp
     world/QcMinecartBody.h

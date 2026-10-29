@@ -100,6 +100,7 @@ set_tests_properties(test_ui_palette PROPERTIES
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
+set_tests_properties(test_generator_versions PROPERTIES REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
 set_tests_properties(test_server_messages PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/server")
 set_tests_properties(test_english_plurals PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/translations/qtcraft_de.ts;${PROJECT_SOURCE_DIR}/translations/qtcraft_en.ts")
 set_tests_properties(test_gamepad_sdl PROPERTIES

@@ -34,7 +34,7 @@ private:
         config.viewDistance = 1;
         config.autosaveSeconds = 0;
         config.keepChunksLoaded = true;
-        return std::make_unique<QcServer>(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        return std::make_unique<QcServer>(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0, {}, QcGeneratorVersion::current));
     }
 
     // Loads the chunks of the box and one ring around it.

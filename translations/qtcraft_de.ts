@@ -5107,15 +5107,20 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="247"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="282"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="263"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="307"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="267"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="277"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="287"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="282"/>
+        <source>Cannot create the world: the game has no world generator version %1</source>
+        <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="292"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="302"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="312"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5124,22 +5129,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="306"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="331"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="339"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="389"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -5184,12 +5189,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="374"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="470"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="495"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -7285,22 +7290,22 @@ Jetzt: %2</translation>
         <translation>%1 × %2 gegeben</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="234"/>
+        <location filename="../src/server/core/QcServer.cpp" line="233"/>
         <source>The server stopped</source>
         <translation>Der Server wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="493"/>
+        <location filename="../src/server/core/QcServer.cpp" line="491"/>
         <source>Expected Hello</source>
         <translation>Anmeldung erwartet</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="524"/>
+        <location filename="../src/server/core/QcServer.cpp" line="522"/>
         <source>The host stopped sharing the world</source>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="301"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="298"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -7325,7 +7330,7 @@ Jetzt: %2</translation>
         <translation>... und %1 weitere Warnungen im Log</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="316"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="313"/>
         <source>Autosave failed: %1</source>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
@@ -7810,7 +7815,7 @@ Jetzt: %2</translation>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServer.cpp" line="275"/>
+        <location filename="../src/server/core/QcServer.cpp" line="274"/>
         <location filename="../src/server/login/QcServerLogin.cpp" line="96"/>
         <source>Unexpected login message</source>
         <translation>Unerwartete Anmeldenachricht</translation>
@@ -8324,7 +8329,7 @@ Jetzt: %2</translation>
         <translation>Küstenturm</translation>
     </message>
     <message>
-        <location filename="../src/server/boats/QcServerBoats.cpp" line="145"/>
+        <location filename="../src/server/boats/QcServerBoats.cpp" line="146"/>
         <location filename="../src/server/commands/QcCheatCommands.cpp" line="323"/>
         <source>Too many boats in the world (at most %1)</source>
         <translation>Zu viele Boote in der Welt (höchstens %1)</translation>
@@ -8632,22 +8637,27 @@ Jetzt: %2</translation>
         <translation>Die Welt kann nicht gestartet werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="80"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="79"/>
+        <source>Cannot load the world: it was made by world generator version %1, which this game does not have</source>
+        <translation>Die Welt kann nicht geladen werden: Sie wurde mit der Weltgenerator-Version %1 erzeugt, die dieses Spiel nicht hat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="89"/>
         <source>Cannot load the world: it was made by the unknown world type &apos;%1&apos;</source>
         <translation>Die Welt kann nicht geladen werden: Sie stammt vom unbekannten Welttyp „%1“</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="89"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="98"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="100"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="109"/>
         <source>It is already open in another QtCraft window or process. Close it there first.</source>
         <translation>Sie ist bereits in einem anderen QtCraft-Fenster oder -Prozess geöffnet. Schließe sie dort zuerst.</translation>
     </message>
     <message>
-        <location filename="../src/app/session/QcWorldStarter.cpp" line="103"/>
+        <location filename="../src/app/session/QcWorldStarter.cpp" line="112"/>
         <source>It was saved by an older development version of QtCraft and cannot be opened.</source>
         <translation>Sie wurde mit einer älteren Entwicklungsversion von QtCraft gespeichert und kann nicht geöffnet werden.</translation>
     </message>

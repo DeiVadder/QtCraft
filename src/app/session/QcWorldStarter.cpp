@@ -73,9 +73,18 @@ QcWorldStarter::startServer(const std::shared_ptr<const QcContentRegistry> &cont
         return std::unexpected(Refusal{tr("Cannot start the world: %1").arg(checked.error()), checked.error()});
     }
 
-    // The generator and the server see the content with the world's options set (decision E-917).
+    // A saved world names a version this game has (QcWorldStorage::readInfo); this is for the others.
+    if (!QcGeneratorVersion::isKnown(world.generatorVersion)) {
+        return std::unexpected(
+            Refusal{tr("Cannot load the world: it was made by world generator version %1, which this game does not have").arg(world.generatorVersion),
+                    std::nullopt});
+    }
+
+    // The generator and the server see the content with the world's options set (decision E-917),
+    // the generator as of the world's version (decision E-922).
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(content, world.generator, world.worldOptions);
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(world.generator, applied.content, world.seed, world.generatorOptions);
+    std::unique_ptr<QcWorldGenerator> generator =
+        QcWorldGenerators::create(world.generator, applied.content, world.seed, world.generatorOptions, world.generatorVersion);
     if (!generator) {
         return std::unexpected(Refusal{tr("Cannot load the world: it was made by the unknown world type '%1'").arg(world.generator), std::nullopt});
     }

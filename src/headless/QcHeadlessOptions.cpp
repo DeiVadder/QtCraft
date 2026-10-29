@@ -47,6 +47,14 @@ std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Opti
         modeOk = config.defaultGameMode.has_value();
     }
 
+    bool versionOk = true;
+    if (parser.isSet(options.generatorVersion)) {
+        // 0 is the current version, as in server.json.
+        const int version = parser.value(options.generatorVersion).toInt(&versionOk);
+        config.generatorVersion = version == 0 ? QcGeneratorVersion::current : version;
+        versionOk = versionOk && QcGeneratorVersion::isKnown(config.generatorVersion);
+    }
+
     bool spawnOk = true;
     if (parser.isSet(options.spawn)) {
         const QStringList parts = parser.value(options.spawn).split(u',');
@@ -57,7 +65,8 @@ std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Opti
         }
         spawnOk = xOk && zOk;
     }
-    const bool valid = seedOk && viewOk && timeOk && run.timeLimit > 0 && spawnOk && modeOk && QcWorldGenerators::isKnown(config.generator);
+    const bool valid =
+        seedOk && viewOk && timeOk && run.timeLimit > 0 && spawnOk && modeOk && versionOk && QcWorldGenerators::isKnown(config.generator);
     return valid ? std::optional<RunConfig>(std::move(run)) : std::nullopt;
 }
 
@@ -71,6 +80,16 @@ QcResult<QJsonObject> worldOptionsOf(const QString &text, const QString &type, c
         return qcError(given.error());
     }
     return QcWorldOptions::valuesToStore(type, *given, content);
+}
+
+QString generatorRefusal(const QString &type, int version)
+{
+    if (!QcGeneratorVersion::isKnown(version)) {
+        return u"Unknown world generator version %1 (this game generates versions %2 to %3)"_s.arg(version)
+            .arg(QcGeneratorVersion::oldest)
+            .arg(QcGeneratorVersion::current);
+    }
+    return u"Unknown world type '%1'"_s.arg(type);
 }
 
 QString dataDirectory(const QCommandLineParser &parser, const Options &options)
@@ -119,6 +138,8 @@ namespace {
     settings.port = static_cast<quint16>(number(options.port, 0, 65535, settings.port));
     settings.maxPlayers = number(options.maxPlayers, 1, QcServerSettings::maxPlayersLimit, settings.maxPlayers);
     settings.viewDistance = number(options.view, 1, QcServerSettings::maxViewDistance, settings.viewDistance);
+    settings.generatorVersion = number(options.generatorVersion, 0, QcGeneratorVersion::current, settings.generatorVersion);
+    ok = ok && (settings.generatorVersion == 0 || QcGeneratorVersion::isKnown(settings.generatorVersion));
     const auto text = [&parser](const QCommandLineOption &option, const QString &fallback) {
         return parser.isSet(option) ? parser.value(option) : fallback;
     };

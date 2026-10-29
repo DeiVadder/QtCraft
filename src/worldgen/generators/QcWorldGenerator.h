@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/world/QcChunk.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "common/world/QcWorldLabel.h"
 #include "worldgen/generators/QcChunkFurnishing.h"
 #include "worldgen/generators/QcLocatedPlace.h"
@@ -122,8 +123,16 @@ public:
     // What could not be resolved when the generator was made (unknown blocks or structures, replaced
     // by fallbacks or left out); its creator reports it.
     const QStringList &warnings() const { return m_warnings; }
+    // The world generator version it generates as (decision E-922, QcGeneratorVersion); set by
+    // QcWorldGenerators::create, the current one for generators made directly. The server opens a
+    // world only with a generator of the world's version.
+    [[nodiscard]] int version() const { return m_version; }
+    void setVersion(int version) { m_version = version; }
 
 protected:
     // Filled by the constructors of the generators.
     QStringList m_warnings;
+
+private:
+    int m_version = QcGeneratorVersion::current;
 };

@@ -13,6 +13,7 @@
 #include "server/storage/QcChunkIo.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcSaveFile.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>
 #include <QFile>
@@ -24,6 +25,13 @@
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// The generator version a world of `config` is generated as (decision E-922): the configured one,
+// for the showcase always the current one (it is not versioned).
+int versionOf(const QcServerConfig &config)
+{
+    return config.generator == QLatin1StringView(QcWorldGenerators::showcase) ? QcGeneratorVersion::current : config.generatorVersion;
+}
 
 // A world option value as a message shows it: the number or true/false, "none" when it is missing.
 QString optionText(const QJsonValue &value)
@@ -66,6 +74,11 @@ QcServerPersistence::~QcServerPersistence()
 
 QcStatus QcServerPersistence::open()
 {
+    // The world is generated as its version or not at all (decision E-922).
+    if (const int generates = m_state.world().generator().version(); generates != versionOf(m_state.config())) {
+        return qcError(u"The world generator generates as version %1, not as the world's version %2"_s.arg(generates).arg(versionOf(m_state.config())));
+    }
+
     // New worlds, saved or not, start in the morning; their generator's setup is still to run.
     m_state.info().worldTime = QcDayCycle::startTime;
     m_state.info().keepInventory = m_state.config().keepInventory;
@@ -73,6 +86,7 @@ QcStatus QcServerPersistence::open()
     m_state.info().generator = m_state.config().generator;
     m_state.info().generatorOptions = m_state.config().generatorOptions;
     m_state.info().worldOptions = m_state.config().worldOptions;
+    m_state.info().generatorVersion = versionOf(m_state.config());
     m_state.info().setupDone = false;
 
     if (m_state.config().worldDirectory.isEmpty()) {
@@ -234,6 +248,9 @@ QcResult<QStringList> QcServerPersistence::readInfo(const QcWorldStorage &storag
     }
     if (info->generator != m_state.config().generator) {
         return qcError(u"The world was made by the generator '%1', not '%2'"_s.arg(info->generator, m_state.config().generator));
+    }
+    if (info->generatorVersion != versionOf(m_state.config())) {
+        return qcError(u"The world was made by world generator version %1, not %2"_s.arg(info->generatorVersion).arg(versionOf(m_state.config())));
     }
     if (info->generatorOptions != m_state.config().generatorOptions) {
         return qcError(u"The world was made with the options '%1', not '%2'"_s.arg(info->generatorOptions, m_state.config().generatorOptions));

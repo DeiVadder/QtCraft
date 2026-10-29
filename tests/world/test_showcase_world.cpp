@@ -257,7 +257,7 @@ private slots:
     {
         QTemporaryDir directory;
         const QcWorldLibrary library(directory.path());
-        const QcResult<QcWorldLibrary::Entry> showcase = library.create(u"Show"_s, 0, {.generator = u"showcase"_s, .options = {}, .worldOptions = {}, .gameMode = QcGameMode::Survival});
+        const QcResult<QcWorldLibrary::Entry> showcase = library.create(u"Show"_s, 0, {.generator = u"showcase"_s, .options = {}, .worldOptions = {}, .generatorVersion = QcGeneratorVersion::current, .gameMode = QcGameMode::Survival});
         const QcResult<QcWorldLibrary::Entry> terrain = library.create(u"Plain"_s, 5);
         QVERIFY(showcase && terrain);
         QCOMPARE(showcase->info.generator, u"showcase"_s);
@@ -328,7 +328,7 @@ private slots:
         // In the middle of the area: the whole row of enclosures lies within the view distance, wherever
         // the area falls on the chunk grid.
         config.spawnColumn = std::array<int, 2>{creatures.origin.x + creatures.sizeX / 2, creatures.origin.z + creatures.sizeZ + 2};
-        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        QcServer server(config, m_content, QcWorldGenerators::create(u"showcase"_s, m_content, 0, {}, QcGeneratorVersion::current));
         QVERIFY(server.openWorld());
 
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
@@ -391,7 +391,7 @@ private slots:
         config.generator = u"showcase"_s;
         config.viewDistance = 1;
         config.spawnColumn = std::array<int, 2>{static_cast<int>(std::floor(planned->position.x)), static_cast<int>(std::floor(planned->position.z)) + 3};
-        QcServer server(config, content, QcWorldGenerators::create(u"showcase"_s, content, 0));
+        QcServer server(config, content, QcWorldGenerators::create(u"showcase"_s, content, 0, {}, QcGeneratorVersion::current));
         QVERIFY(server.openWorld());
         auto [serverEnd, clientEnd] = QcInProcessTransport::createPair();
         server.addClient(std::move(serverEnd), QcServer::ClientOrigin::Local);

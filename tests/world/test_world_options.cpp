@@ -30,7 +30,7 @@ const QList<QcChunkPos> sampleChunks{{0, 0}, {1, 0}, {0, 1}, {-1, -1}, {37, -12}
 std::unique_ptr<QcWorldGenerator> generatorOf(const std::shared_ptr<const QcContentRegistry> &content, qint64 seed, const QJsonObject &values)
 {
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(content, terrain, values);
-    return QcWorldGenerators::create(terrain, applied.content, seed);
+    return QcWorldGenerators::create(terrain, applied.content, seed, {}, QcGeneratorVersion::current);
 }
 
 bool sameChunk(const QcChunk &a, const QcChunk &b)
@@ -254,7 +254,7 @@ private slots:
     void theDefaultsReproduceTodaysWorlds()
     {
         for (const qint64 seed : std::as_const(m_seeds)) {
-            const auto plain = QcWorldGenerators::create(terrain, m_content, seed);
+            const auto plain = QcWorldGenerators::create(terrain, m_content, seed, {}, QcGeneratorVersion::current);
             QVERIFY(QcWorldOptions::apply(m_content, terrain, {}).content == m_content);
             const auto defaults = generatorOf(m_content, seed, QcWorldOptions::defaults(*m_content));
             QVERIFY2(sameWorld(*plain, *defaults), qPrintable(u"seed %1"_s.arg(seed)));
@@ -265,7 +265,7 @@ private slots:
         }
 
         // The comparison sees a change of a single option far away.
-        const auto plain = QcWorldGenerators::create(terrain, m_content, 1);
+        const auto plain = QcWorldGenerators::create(terrain, m_content, 1, {}, QcGeneratorVersion::current);
         QVERIFY(!compareLargeArea(*plain, *generatorOf(m_content, 1, valuesWith({{u"qtcraft:biome_size"_s, 1.25}}))).difference.isEmpty());
         QVERIFY(!compareLargeArea(*plain, *generatorOf(m_content, 1, valuesWith({{u"qtcraft:dungeons"_s, 0.3}}))).difference.isEmpty());
     }
@@ -486,13 +486,13 @@ private slots:
         config.worldOptions = values;
         const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, terrain, values);
         {
-            QcServer server(config, applied.content, QcWorldGenerators::create(terrain, applied.content, 5));
+            QcServer server(config, applied.content, QcWorldGenerators::create(terrain, applied.content, 5, {}, QcGeneratorVersion::current));
             QVERIFY(server.openWorld());
             QVERIFY(server.stop());
         }
         // Opened with other options, the world refuses.
         config.worldOptions = valuesWith({{u"qtcraft:village_spacing"_s, 512.0}});
-        QcServer other(config, m_content, QcWorldGenerators::create(terrain, m_content, 5));
+        QcServer other(config, m_content, QcWorldGenerators::create(terrain, m_content, 5, {}, QcGeneratorVersion::current));
         const QcStatus refused = other.openWorld();
         QVERIFY(!refused);
         // The refusal names the first option that differs, with both values.
@@ -522,7 +522,7 @@ private slots:
         QcServerConfig config;
         config.worldDirectory = created->directory;
         config.seed = 9;
-        QcServer server(config, m_content, QcWorldGenerators::create(terrain, m_content, 9));
+        QcServer server(config, m_content, QcWorldGenerators::create(terrain, m_content, 9, {}, QcGeneratorVersion::current));
         QVERIFY(server.openWorld());
         QVERIFY(server.stop());
     }

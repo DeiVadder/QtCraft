@@ -276,7 +276,7 @@ private slots:
         // dropping the player into the void at every respawn (decision E-288).
         QFETCH(QString, options);
         QFETCH(QString, ground);
-        join({}, QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::empty), m_content, 1, options));
+        join({}, QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::empty), m_content, 1, options, QcGeneratorVersion::current));
         QCOMPARE(m_feet.y, 41);
 
         // The fixture's stage and the placed block are cleared: the respawn places it again.
@@ -428,7 +428,7 @@ private slots:
         // A flat world on a gravel bottom layer: one broken block starts a collapse of the whole
         // layer in the loaded chunks. It spreads over many ticks within the falling-block limit,
         // every block falls down to the void limit (none vanishes earlier), and it ends.
-        join({}, QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::flat), m_content, 1, u"gravel,grass_block"_s));
+        join({}, QcWorldGenerators::create(QString::fromLatin1(QcWorldGenerators::flat), m_content, 1, u"gravel,grass_block"_s, QcGeneratorVersion::current));
         const QcBlockId gravel = id("qtcraft:gravel");
         const auto gravelLeft = [this, gravel] {
             int count = 0;

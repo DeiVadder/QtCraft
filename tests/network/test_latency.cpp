@@ -46,7 +46,7 @@ private:
         config.viewDistance = 2;
         config.seed = 1;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(m_host->startError().isEmpty());
         // A negative delay connects without the delaying link, like single player.
         std::unique_ptr<QcTransport> transport = m_host->connectClient();

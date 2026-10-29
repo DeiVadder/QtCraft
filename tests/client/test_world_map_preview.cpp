@@ -78,7 +78,7 @@ private slots:
         const QcResult<QJsonObject> stored = QcWorldOptions::valuesToStore(terrain, values, *m_content);
         QVERIFY(stored);
         const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, terrain, *stored);
-        const std::unique_ptr<QcWorldGenerator> world = QcWorldGenerators::create(terrain, applied.content, seed);
+        const std::unique_ptr<QcWorldGenerator> world = QcWorldGenerators::create(terrain, applied.content, seed, {}, QcGeneratorVersion::current);
         const auto &generator = *qcDowncast<const QcTerrainGenerator>(world.get());
 
         // Chunks keep no biome: the biome is compared with the world's own generator (made on the

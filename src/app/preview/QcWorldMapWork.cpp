@@ -50,9 +50,13 @@ std::shared_ptr<const QcTerrainGenerator> QcWorldMapWorker::generatorFor(const Q
         return nullptr;
     }
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(request.content, terrain, *stored);
-    // The world's own factory (55.2 adds the generator version there); a terrain world gets a
-    // QcTerrainGenerator.
-    const std::shared_ptr<const QcWorldGenerator> created = QcWorldGenerators::create(terrain, applied.content, request.seed);
+    // The world's own factory, as the version the world will have (decision E-922); a terrain world
+    // gets a QcTerrainGenerator.
+    const std::shared_ptr<const QcWorldGenerator> created = QcWorldGenerators::create(terrain, applied.content, request.seed, {}, request.generatorVersion);
+    if (!created) {
+        qCWarning(lcPreview, "Map preview: no world generator version %d", request.generatorVersion);
+        return nullptr;
+    }
     return std::shared_ptr<const QcTerrainGenerator>(created, qcDowncast<const QcTerrainGenerator>(created.get()));
 }
 

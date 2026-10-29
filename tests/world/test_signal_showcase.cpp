@@ -154,7 +154,7 @@ private slots:
         config.worldDirectory = m_directory.path();
         config.autosaveSeconds = 0;
         m_viewDistance = 3;
-        join(config, QcWorldGenerators::create(u"showcase"_s, m_content, 0));
+        join(config, QcWorldGenerators::create(u"showcase"_s, m_content, 0, {}, QcGeneratorVersion::current));
         m_plan = QcShowcaseGenerator(m_content).plan();
     }
 

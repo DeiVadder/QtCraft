@@ -62,11 +62,13 @@ QcStatus QcDedicatedServer::start(const Options &options)
         return qcError(config.error());
     }
 
-    // The generator and the server see the content with the world's options set (decision E-917).
+    // The generator and the server see the content with the world's options set (decision E-917),
+    // the generator as of the world's version (decision E-922).
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, config->generator, config->worldOptions);
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config->generator, applied.content, config->seed, config->generatorOptions);
+    std::unique_ptr<QcWorldGenerator> generator =
+        QcWorldGenerators::create(config->generator, applied.content, config->seed, config->generatorOptions, config->generatorVersion);
     if (!generator) {
-        return qcError(u"Unknown world type '%1'"_s.arg(config->generator));
+        return qcError(QcHeadlessOptions::generatorRefusal(config->generator, config->generatorVersion));
     }
     const QStringList warnings = applied.warnings + generator->warnings();
     for (const QString &warning : warnings) {
@@ -146,6 +148,7 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
         const QcWorldLibrary::NewWorld setup{.generator = settings.worldType,
                                              .options = *stored,
                                              .worldOptions = *worldOptions,
+                                             .generatorVersion = settings.newWorldGeneratorVersion(),
                                              .gameMode = settings.defaultGameMode.value_or(QcGameMode::Survival)};
         const QcResult<QcWorldLibrary::Entry> created = library.create(settings.world, seed, setup);
         if (!created) {
@@ -161,6 +164,7 @@ QcResult<QcServerConfig> QcDedicatedServer::worldConfig(const Options &options) 
     config.generator = entry.info.generator;
     config.generatorOptions = entry.info.generatorOptions;
     config.worldOptions = entry.info.worldOptions;
+    config.generatorVersion = entry.info.generatorVersion;
     config.worldDirectory = entry.directory;
     config.contentPacks = m_packs;
     return config;

@@ -81,13 +81,14 @@ QString invalid(const QString &key)
         int high;
         int *value;
     };
-    const std::array<Range, 7> ranges{{{u"port"_s, 0, 65535, &port},
+    const std::array<Range, 8> ranges{{{u"port"_s, 0, 65535, &port},
                                        {u"maxPlayers"_s, 1, QcServerSettings::maxPlayersLimit, &settings.maxPlayers},
                                        {u"viewDistance"_s, 1, QcServerSettings::maxViewDistance, &settings.viewDistance},
                                        {u"loginTimeoutSeconds"_s, 1, 600, &settings.loginTimeoutSeconds},
                                        {u"pauseWhenEmptySeconds"_s, 0, QcServerSettings::maxPauseWhenEmptySeconds, &settings.pauseWhenEmptySeconds},
                                        {u"connectionBurst"_s, 1, 1000, &settings.connectionBurst},
-                                       {u"maxConnectionsPerAddress"_s, 1, 1000, &settings.maxConnectionsPerAddress}}};
+                                       {u"maxConnectionsPerAddress"_s, 1, 1000, &settings.maxConnectionsPerAddress},
+                                       {u"generatorVersion"_s, 0, QcGeneratorVersion::current, &settings.generatorVersion}}};
     for (const Range &range : ranges) {
         const std::optional<int> read = readInt(json, range.key, range.low, range.high, *range.value);
         if (!read) {
@@ -96,6 +97,11 @@ QString invalid(const QString &key)
         *range.value = *read;
     }
     settings.port = static_cast<quint16>(port);
+    // 0 is the current version; below the oldest the game no longer has it.
+    if (settings.generatorVersion != 0 && !QcGeneratorVersion::isKnown(settings.generatorVersion)) {
+        return qcError(u"server.json: \"generatorVersion\" must be 0 (the current one) or from %1 to %2"_s.arg(QcGeneratorVersion::oldest)
+                           .arg(QcGeneratorVersion::current));
+    }
 
     for (const auto &[key, value] : {std::pair{u"serverName"_s, &settings.serverName}, std::pair{u"motd"_s, &settings.motd},
                                      std::pair{u"bindAddress"_s, &settings.bindAddress}, std::pair{u"password"_s, &settings.password},
@@ -210,6 +216,7 @@ QJsonObject QcServerSettings::toJson() const
             {u"seed"_s, seed ? QString::number(*seed) : QString()},
             {u"worldType"_s, worldType},
             {u"worldOptions"_s, worldOptions},
+            {u"generatorVersion"_s, generatorVersion},
             {u"viewDistance"_s, viewDistance},
             {u"loginTimeoutSeconds"_s, loginTimeoutSeconds},
             {u"pauseWhenEmptySeconds"_s, pauseWhenEmptySeconds},

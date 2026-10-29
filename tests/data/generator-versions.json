@@ -1,0 +1,21 @@
+{
+    "note": "Checksums of test_generator_versions per generator version and platform (decision E-922). Platforms in 'unrecorded' may skip outside CI until their values are recorded (Linux and Windows: from the CI log or the Windows VM checks collected at the end).",
+    "unrecorded": [
+        "linux-x86_64",
+        "winnt-x86_64"
+    ],
+    "versions": {
+        "1": {
+            "darwin-arm64": {
+                "flat default": "fb1a8b4460722c1f581a813643d8fcbd5a6d34803131ad2ea092a6c8fb081fe2",
+                "flat layers": "441ea296180b3a61f53f8bba2d6cf95f2a031a503ed86aefcf4ebad10fc57b77",
+                "terrain 20261017": "9139d5887d7658324acf1662536130cdde4f007cab0badd41812a2a88f072c38",
+                "terrain 42": "bacbd287db08eb845b5d402b26b754270b97413f868fa5f5c47aedf54fdf02d2",
+                "terrain 42 changed options": "7e67880fa64587b77a4140f28c15cd9e0594b8b23bdb4934b183bb1df897c68f",
+                "terrain 7": "374a6b723eb14659f61b6500a0845f4c5e06e74c3333d0615a203e67656aa110",
+                "terrain 7 wilderness": "9fe32a812868232652f69c68622a466321659f08aa2d10d9bdfdc966842f320f",
+                "void default": "d404acce2c3a6ccb86fd1a4c622f22acbd0ffc481c42fbc56e8310f507c3bece"
+            }
+        }
+    }
+}

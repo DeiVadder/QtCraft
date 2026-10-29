@@ -54,6 +54,21 @@ using QcHeadlessTools::exitSoon;
     return {{u"ok"_s, false}, {u"error"_s, error}};
 }
 
+// The generator version of `worldCreate` (decision E-922): "generatorVersion", else `fallback`
+// (--generator-version or the current one).
+[[nodiscard]] QcResult<int> generatorVersionOf(const QJsonObject &request, int fallback)
+{
+    const QJsonValue given = request.value(u"generatorVersion"_s);
+    if (given.isUndefined()) {
+        return fallback;
+    }
+    const int version = given.toInt(0);
+    if (!given.isDouble() || given.toDouble() != version || !QcGeneratorVersion::isKnown(version)) {
+        return qcError(u"'generatorVersion' must be a whole number from %1 to %2"_s.arg(QcGeneratorVersion::oldest).arg(QcGeneratorVersion::current));
+    }
+    return version;
+}
+
 } // namespace
 
 QcHeadlessGame::QcHeadlessGame(QObject *parent)
@@ -375,11 +390,13 @@ QcStatus QcHeadlessGame::startWorld(const QcServerConfig &config)
 
 QcStatus QcHeadlessGame::openWorld(const QcServerConfig &config)
 {
-    // The generator and the server see the content with the world's options set (decision E-917).
+    // The generator and the server see the content with the world's options set (decision E-917),
+    // the generator as of the world's version (decision E-922).
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(m_content, config.generator, config.worldOptions);
-    std::unique_ptr<QcWorldGenerator> generator = QcWorldGenerators::create(config.generator, applied.content, config.seed, config.generatorOptions);
+    std::unique_ptr<QcWorldGenerator> generator =
+        QcWorldGenerators::create(config.generator, applied.content, config.seed, config.generatorOptions, config.generatorVersion);
     if (!generator) {
-        return qcError(u"Unknown world type '%1'"_s.arg(config.generator));
+        return qcError(QcHeadlessOptions::generatorRefusal(config.generator, config.generatorVersion));
     }
     const QStringList warnings = applied.warnings + generator->warnings();
     for (const QString &warning : warnings) {
@@ -524,7 +541,12 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
     if (!worldOptions) {
         return qcError(worldOptions.error());
     }
-    const QcWorldLibrary::NewWorld setup{.generator = generator, .options = *options, .worldOptions = *worldOptions, .gameMode = *mode};
+    const QcResult<int> version = generatorVersionOf(request, m_baseConfig.generatorVersion);
+    if (!version) {
+        return qcError(version.error());
+    }
+    const QcWorldLibrary::NewWorld setup{
+        .generator = generator, .options = *options, .worldOptions = *worldOptions, .generatorVersion = *version, .gameMode = *mode};
     const QcResult<QcWorldLibrary::Entry> entry = m_library->create(request.value(u"name"_s).toString(u"World"_s), seed, setup);
     if (!entry) {
         return qcError(entry.error());
@@ -536,6 +558,7 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::createdWorld(const QJsonOb
     config.generator = entry->info.generator;
     config.generatorOptions = entry->info.generatorOptions;
     config.worldOptions = entry->info.worldOptions;
+    config.generatorVersion = entry->info.generatorVersion;
     config.worldDirectory = entry->directory;
     return WorldChoice{std::move(config), entry->folder};
 }
@@ -558,6 +581,7 @@ QcResult<QcHeadlessGame::WorldChoice> QcHeadlessGame::listedWorld(const QJsonObj
     config.generator = it->info.generator;
     config.generatorOptions = it->info.generatorOptions;
     config.worldOptions = it->info.worldOptions;
+    config.generatorVersion = it->info.generatorVersion;
     config.worldDirectory = it->directory;
     return WorldChoice{std::move(config), folder};
 }

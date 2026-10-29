@@ -367,7 +367,7 @@ private slots:
         QcServerConfig config;
         config.viewDistance = 2;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        QcLocalServerHost host(config, content, QcWorldGenerators::create(config.generator, content, 1));
+        QcLocalServerHost host(config, content, QcWorldGenerators::create(config.generator, content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(host.startError().isEmpty());
 
         QcClientSession walker(host.connectClient(), u"Walker"_s);

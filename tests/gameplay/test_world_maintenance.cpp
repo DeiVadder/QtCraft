@@ -55,7 +55,7 @@ private:
         return config;
     }
 
-    std::unique_ptr<QcWorldGenerator> generatorOf(const QString &type) const { return QcWorldGenerators::create(type, m_content, 7); }
+    std::unique_ptr<QcWorldGenerator> generatorOf(const QString &type) const { return QcWorldGenerators::create(type, m_content, 7, {}, QcGeneratorVersion::current); }
 
 private slots:
     void cleanup()

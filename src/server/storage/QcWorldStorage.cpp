@@ -1,6 +1,7 @@
 #include "server/storage/QcWorldStorage.h"
 
 #include "common/protocol/QcStreamLimits.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "server/core/QcServerLogging.h"
 #include "server/storage/QcSaveFile.h"
 #include "worldgen/generators/QcWorldGenerators.h"
@@ -94,15 +95,55 @@ QcAdventureRules adventureOf(const QJsonValue &value, const QString &path)
     return std::move(read.rules);
 }
 
-// "generator" of world.json: the type, its options, the world generation options (only when the
-// world has them, decision E-917) and whether the setup has run.
+bool isShowcase(const QString &type)
+{
+    return type == QLatin1StringView(QcWorldGenerators::showcase);
+}
+
+// "generator" of world.json: the type, the generator version (decision E-922; not for the
+// showcase, which always generates with the current code), its options, the world generation options
+// (only when the world has them, decision E-917) and whether the setup has run.
 QJsonObject generatorJson(const QcWorldInfo &info)
 {
     QJsonObject generator{{u"type"_s, info.generator}, {u"options"_s, info.generatorOptions}, {u"setupDone"_s, info.setupDone}};
+    if (!isShowcase(info.generator)) {
+        generator.insert(u"version"_s, info.generatorVersion);
+    }
     if (!info.worldOptions.isEmpty()) {
         generator.insert(u"worldOptions"_s, info.worldOptions);
     }
     return generator;
+}
+
+// The generator version of world.json's "generator" (decision E-922): worlds without one are of
+// QcGeneratorVersion::unversioned, a showcase world is always of the current one; a version this game does not generate (a newer game's, or one
+// it no longer has) is refused with the reason, a number that is none is damage.
+QcResult<int> generatorVersionOf(const QJsonObject &generator, const QString &path)
+{
+    if (isShowcase(generator.value(u"type"_s).toString())) {
+        return QcGeneratorVersion::current;
+    }
+    const QJsonValue value = generator.value(u"version"_s);
+    if (value.isUndefined()) {
+        return QcGeneratorVersion::unversioned;
+    }
+    const double number = value.toDouble(-1.0);
+    if (!value.isDouble() || number != std::floor(number) || number < 1.0 || number > QcGeneratorVersion::maxStored) {
+        return qcError(u"%1 is damaged: the generator version is no whole number from 1 to %2"_s.arg(path).arg(QcGeneratorVersion::maxStored));
+    }
+    const int version = static_cast<int>(number);
+    if (version > QcGeneratorVersion::current) {
+        return qcError(u"%1 was made by a newer game with world generator version %2; this game generates versions %3 to %4"_s.arg(path)
+                           .arg(version)
+                           .arg(QcGeneratorVersion::oldest)
+                           .arg(QcGeneratorVersion::current));
+    }
+    if (version < QcGeneratorVersion::oldest) {
+        return qcError(u"%1 was made with world generator version %2, which this game no longer has (oldest: %3)"_s.arg(path)
+                           .arg(version)
+                           .arg(QcGeneratorVersion::oldest));
+    }
+    return version;
 }
 
 } // namespace
@@ -142,6 +183,11 @@ QcResult<QcWorldInfo> QcWorldStorage::readInfo() const
     info.setupDone = generator.value(u"setupDone"_s).toBool(true);
     info.generatorOptions = generator.value(u"options"_s).toString();
     info.worldOptions = generator.value(u"worldOptions"_s).toObject();
+    const QcResult<int> generatorVersion = generatorVersionOf(generator, path);
+    if (!generatorVersion) {
+        return qcError(generatorVersion.error());
+    }
+    info.generatorVersion = *generatorVersion;
     // A mode this version does not know (a newer one) plays as survival and keeps its name.
     const QString gameMode = json.value(u"defaultGameMode"_s).toString();
     const std::optional<QcGameMode> knownMode = QcGameModes::parse(gameMode);

@@ -113,6 +113,7 @@ QcResult<QcWorldLibrary::Entry> QcWorldLibrary::create(const QString &name, qint
     entry.info.generator = setup.generator;
     entry.info.generatorOptions = setup.options;
     entry.info.worldOptions = setup.worldOptions;
+    entry.info.generatorVersion = setup.generatorVersion;
     entry.info.defaultGameMode = setup.gameMode;
     entry.info.setupDone = false;
     entry.info.created = QDateTime::currentDateTimeUtc();

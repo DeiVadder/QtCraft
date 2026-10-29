@@ -68,7 +68,7 @@ private:
         config.viewDistance = 2;
         config.seed = 1;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(m_host->startError().isEmpty());
 
         auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), delayMs, jitterMs, static_cast<quint32>(delayMs * 13 + jitterMs));

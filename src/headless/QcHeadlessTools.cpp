@@ -237,8 +237,10 @@ bool run(const QCommandLineParser &parser, const Options &options, const QcServe
     }
 
     // The maps and numbers show the world with the options of --world-options (decision E-917).
+    // They generate as --generator-version (decision E-922, checked by readConfig).
     const QcWorldOptions::Applied applied = QcWorldOptions::apply(content, QString::fromLatin1(QcWorldGenerators::terrain), config.worldOptions);
-    const QcTerrainGenerator generator(applied.content, config.seed);
+    QcTerrainGenerator generator(applied.content, config.seed);
+    generator.setVersion(config.generatorVersion);
     const QStringList warnings = applied.warnings + generator.warnings();
     for (const QString &warning : warnings) {
         printError(u"world generation warning: "_s + warning);

@@ -38,7 +38,7 @@ private:
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
         config.defaultGameMode = QcGameMode::Adventure;
         config.operators = {u"Player"_s};
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(m_host->startError().isEmpty());
 
         auto link = std::make_unique<QcLatencyTransport>(m_host->connectClient(), 50, 25, 1234u);

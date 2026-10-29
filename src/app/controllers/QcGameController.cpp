@@ -21,6 +21,22 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// The "generatorVersion" of a new world's setup (decision E-922): a whole number the game has; none
+// for anything else. Without the key the current version.
+std::optional<int> generatorVersionOf(const QVariantMap &setup)
+{
+    const QVariant given = setup.value(u"generatorVersion"_s, QcGeneratorVersion::current);
+    const bool whole = given.typeId() == QMetaType::Int || given.typeId() == QMetaType::LongLong;
+    if (!whole || !QcGeneratorVersion::isKnown(given.toInt())) {
+        return std::nullopt;
+    }
+    return given.toInt();
+}
+
+} // namespace
+
 QcGameController::QcGameController(QObject *parent)
     : QObject(parent)
     , m_screens(m_parts)
@@ -258,6 +274,15 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
     world.keepInventory = setup.value(u"keepInventory"_s, true).toBool();
     world.generator = setup.value(u"worldType"_s, world.generator).toString();
     world.gameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+    // The menu offers no choice while the game has a single generator version (decision E-922).
+    const std::optional<int> version = generatorVersionOf(setup);
+    if (!version) {
+        qCWarning(lcGame) << "createWorld: refused the world generator version" << setup.value(u"generatorVersion"_s)
+                          << "(a whole number the game has is needed)";
+        setPhase(Phase::Error, tr("Cannot create the world: the game has no world generator version %1").arg(setup.value(u"generatorVersion"_s).toString()));
+        return;
+    }
+    world.generatorVersion = *version;
 
     // Wrong layers of a flat world are refused before anything is created; the world keeps the
     // defaults of its type as they are now.

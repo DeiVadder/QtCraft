@@ -37,6 +37,9 @@ struct QcServerSettings
     QString worldType = QStringLiteral("terrain");
     QString worldOptions;
     static constexpr qsizetype maxWorldOptionsLength = 2048;
+    // The world generator version of a world the server creates (decision E-922); 0, the default:
+    // the current one. A saved world keeps its own.
+    int generatorVersion = 0;
     int viewDistance = 8;
     int loginTimeoutSeconds = 10;
     // Seconds without anyone connected before the server stops ticking (decision E-877); 0 never.
@@ -66,6 +69,8 @@ struct QcServerSettings
 
     // The listener's address: the bind address, or Any.
     [[nodiscard]] QcResult<QHostAddress> address() const;
+    // The generator version a new world gets: `generatorVersion`, or the current one for 0.
+    [[nodiscard]] int newWorldGeneratorVersion() const { return generatorVersion == 0 ? QcGeneratorVersion::current : generatorVersion; }
     // The values that concern the game server and the listener (the world comes from elsewhere).
     [[nodiscard]] QcServerConfig serverConfig() const;
     QcNetworkConfig networkConfig() const;

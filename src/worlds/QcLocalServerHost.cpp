@@ -29,6 +29,7 @@ namespace {
     config.generator = start.world.generator;
     config.generatorOptions = start.world.generatorOptions;
     config.worldOptions = start.world.worldOptions;
+    config.generatorVersion = start.world.generatorVersion;
     config.worldDirectory = start.directory;
     // One extra ring: sections are meshed only once their neighbours are known.
     config.viewDistance = start.viewDistance + 1;

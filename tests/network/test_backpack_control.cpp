@@ -46,7 +46,7 @@ private slots:
         config.seed = 1;
         config.generator = QString::fromLatin1(QcWorldGenerators::flat);
         config.operators = {u"Player"_s};
-        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1));
+        m_host = std::make_unique<QcLocalServerHost>(config, m_content, QcWorldGenerators::create(config.generator, m_content, 1, {}, QcGeneratorVersion::current));
         QVERIFY(m_host->startError().isEmpty());
         m_session = std::make_unique<QcClientSession>(m_host->connectClient(), u"Player"_s);
         m_session->start();

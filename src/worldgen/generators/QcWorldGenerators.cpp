@@ -7,6 +7,30 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// A generator of `type`; nullptr for unknown types.
+std::unique_ptr<QcWorldGenerator> makeGenerator(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
+                                                const QString &options)
+{
+    using namespace QcWorldGenerators;
+    if (type == QLatin1StringView(terrain)) {
+        return std::make_unique<QcTerrainGenerator>(std::move(content), seed);
+    }
+    if (type == QLatin1StringView(flat)) {
+        return std::make_unique<QcFlatGenerator>(std::move(content), options);
+    }
+    if (type == QLatin1StringView(empty)) {
+        return std::make_unique<QcVoidGenerator>(std::move(content), options);
+    }
+    if (type == QLatin1StringView(showcase)) {
+        return std::make_unique<QcShowcaseGenerator>(std::move(content));
+    }
+    return nullptr;
+}
+
+} // namespace
+
 namespace QcWorldGenerators {
 
 QStringList types()
@@ -62,21 +86,18 @@ bool isKnown(const QString &type)
 }
 
 std::unique_ptr<QcWorldGenerator> create(const QString &type, std::shared_ptr<const QcContentRegistry> content, qint64 seed,
-                                         const QString &options)
+                                         const QString &options, int version)
 {
-    if (type == QLatin1StringView(terrain)) {
-        return std::make_unique<QcTerrainGenerator>(std::move(content), seed);
+    if (!QcGeneratorVersion::isKnown(version)) {
+        return nullptr;
     }
-    if (type == QLatin1StringView(flat)) {
-        return std::make_unique<QcFlatGenerator>(std::move(content), options);
+    std::unique_ptr<QcWorldGenerator> generator = makeGenerator(type, std::move(content), seed, options);
+    // Every version so far generates with the same code (decision E-922): a version that changes
+    // the output branches on version() where it does. The showcase is always the current one.
+    if (generator) {
+        generator->setVersion(type == QLatin1StringView(showcase) ? QcGeneratorVersion::current : version);
     }
-    if (type == QLatin1StringView(empty)) {
-        return std::make_unique<QcVoidGenerator>(std::move(content), options);
-    }
-    if (type == QLatin1StringView(showcase)) {
-        return std::make_unique<QcShowcaseGenerator>(std::move(content));
-    }
-    return nullptr;
+    return generator;
 }
 
 } // namespace QcWorldGenerators

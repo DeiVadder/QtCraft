@@ -4,6 +4,7 @@
 #include "common/core/QcChunkPos.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcGameMode.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "common/world/QcPlacedChunkLoader.h"
 #include "common/world/QcWeather.h"
 
@@ -17,7 +18,7 @@
 // been released). What each format changed is recorded in docs/Entscheidungen.md.
 struct QcWorldInfo
 {
-    static constexpr int formatVersion = 18;
+    static constexpr int formatVersion = 19;
     static constexpr int oldestFormatVersion = 16;
     static constexpr auto defaultGenerator = "terrain";
 
@@ -61,6 +62,9 @@ struct QcWorldInfo
     // full when the world is created: option name -> number or true/false. Empty for worlds without
     // them, which generate with the content's values alone.
     QJsonObject worldOptions;
+    // The version of the world generator the world is generated with for good (decision E-922,
+    // QcGeneratorVersion); worlds saved without one have QcGeneratorVersion::unversioned.
+    int generatorVersion = QcGeneratorVersion::current;
     bool setupDone = true;
     // Game mode of players who join the world for the first time (decision E-282), chosen when the
     // world is created; worlds without the key are survival worlds.

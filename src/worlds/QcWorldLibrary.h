@@ -15,6 +15,8 @@ struct QcNewWorld
     QString options;
     // World generation options of a terrain world (decision E-917, QcWorldOptions::valuesToStore).
     QJsonObject worldOptions;
+    // The version of the world generator the world is generated with for good (decision E-922).
+    int generatorVersion = QcGeneratorVersion::current;
     // Game mode of players who join for the first time (decision E-282).
     QcGameMode gameMode = QcGameMode::Survival;
 };
