@@ -1,5 +1,9 @@
 #include "clientcore/session/QcClientSignEditor.h"
 
+#include "clientcore/debug/QcClientLogging.h"
+
+using namespace Qt::StringLiterals;
+
 bool QcClientSignEditor::handle(const QcMessage &message)
 {
     const auto *open = std::get_if<QcMsg::OpenSignEditor>(&message);
@@ -7,23 +11,33 @@ bool QcClientSignEditor::handle(const QcMessage &message)
         return false;
     }
 
-    m_open = true;
     m_pos = open->pos;
-    m_lines = open->lines;
+    setOpen(true);
+    setLines(open->lines);
     emit opened();
     return true;
 }
 
 bool QcClientSignEditor::write(const QcSignText::Lines &lines)
 {
-    if (!m_open) {
+    if (!isOpen()) {
         return false;
     }
 
-    m_open = false;
-    if (m_send) {
-        m_send(QcMsg::EditSign{m_pos, lines});
+    setOpen(false);
+    // One line per edit, for tests and bug reports (the server cleans and may refuse them).
+    qCInfo(lcSession).noquote() << u"Sign at %1 %2 %3: sending \"%4\""_s.arg(pos().x).arg(pos().y).arg(pos().z).arg(QStringList(lines.begin(), lines.end()).join(u'|'));
+    if (messageSender()) {
+        messageSender()(QcMsg::EditSign{pos(), lines});
     }
     emit closed();
     return true;
+}
+
+void QcClientSignEditor::setLines(const QcSignText::Lines &lines)
+{
+    // Only the open editor has lines to edit; a late edit after closing changes nothing.
+    if (isOpen()) {
+        m_lines = lines;
+    }
 }

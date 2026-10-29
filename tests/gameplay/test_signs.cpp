@@ -1,6 +1,7 @@
 #include "clientcore/meshing/QcSignTextCache.h"
 #include "clientcore/meshing/QcSignTextMesher.h"
 #include "clientcore/session/QcChunkExtras.h"
+#include "clientcore/session/QcClientSignEditor.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcPlayerUseFixture.h"
 #include "server/storage/QcBlockEntityCodec.h"
@@ -130,6 +131,32 @@ private slots:
         QCOMPARE(*textAt(sign), (Lines{u"New"_s}));
     }
 
+    // A player who dies with the editor open loses what he typed (decision E-928): the client
+    // sends the draft as the screen closes, the server refuses edits from the dead and sends the
+    // sign's true text back.
+    void deathLosesTheTypedText()
+    {
+        join();
+        hold(u"oak_sign"_s);
+        const QcBlockPos sign = m_feet.offset(0, 0, -2);
+        placeOnFloor(sign, 0.0f);
+        send(QcMsg::EditSign{sign, Lines{u"Before"_s}});
+        ticks(1);
+        send(QcMsg::UseItem{sign, QcBlockFace::South});
+        QCOMPARE(m_client->signEditors.last().lines, (Lines{u"Before"_s}));
+        m_client->signTexts.clear();
+
+        chat(u"/kill"_s);
+        ticks(2);
+        send(QcMsg::EditSign{sign, Lines{u"Typed"_s}});
+        ticks(1);
+        QVERIFY(textAt(sign));
+        QCOMPARE(*textAt(sign), (Lines{u"Before"_s}));
+        QVERIFY(!m_client->signTexts.isEmpty());
+        QCOMPARE(m_client->signTexts.last().pos, sign);
+        QCOMPARE(m_client->signTexts.last().lines, (Lines{u"Before"_s}));
+    }
+
     void refusesOtherBlocksDistantSignsAndFloods()
     {
         join();
@@ -231,6 +258,34 @@ private slots:
         extras.chunkArrived(text.pos.chunk());
         QVERIFY(extras.signs().isEmpty());
         QVERIFY(extras.signGeneration() > generation);
+    }
+
+    // The editor keeps the lines as they are typed (docs/UI-Leitfaden.md 5, pattern 1): closing it
+    // in any way sends them; edits while no editor is open change nothing.
+    void editorSendsTheLinesAsTyped()
+    {
+        QcClientSignEditor editor;
+        QList<QcMessage> sent;
+        editor.setMessageSender([&sent](const QcMessage &message) { sent.append(message); });
+        editor.setLines(Lines{u"ignored"_s});
+        QVERIFY(editor.lines()[0].isEmpty());
+
+        QVERIFY(editor.handle(QcMessage(QcMsg::OpenSignEditor{{3, 64, -2}, Lines{u"old"_s, u"text"_s}})));
+        QVERIFY(editor.isOpen());
+        QCOMPARE(editor.lines()[0], u"old"_s);
+        editor.setLines(Lines{u"new"_s, u"text"_s});
+        QVERIFY(editor.write(editor.lines()));
+        QVERIFY(!editor.isOpen());
+        QCOMPARE(sent.size(), 1);
+        QVERIFY(std::holds_alternative<QcMsg::EditSign>(sent[0]));
+        QCOMPARE(std::get<QcMsg::EditSign>(sent[0]).lines[0], u"new"_s);
+        QCOMPARE(std::get<QcMsg::EditSign>(sent[0]).pos, (QcBlockPos{3, 64, -2}));
+
+        // Closed: a late edit is dropped and nothing more is sent.
+        editor.setLines(Lines{u"late"_s});
+        QCOMPARE(editor.lines()[0], u"new"_s);
+        QVERIFY(!editor.write(editor.lines()));
+        QCOMPARE(sent.size(), 1);
     }
 
     void textQuadsAreKeptUntilTheSignChanges()

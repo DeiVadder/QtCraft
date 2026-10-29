@@ -7,6 +7,9 @@ Rectangle {
     id: menu
 
     required property GameController game
+    // The height at the bottom the HUD's status rows take behind the menu (Main.qml); the card stays
+    // above them.
+    property real statusReserved: 0
 
     color: Theme.scrim
     focus: visible
@@ -33,113 +36,164 @@ Rectangle {
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
-    ColumnLayout {
-        anchors.centerIn: parent
-        // Hidden while one of its screens is open: it would show around a small one. The handbook
-        // covers it as well (and keeps Tab).
+    // Which buttons of the world's group show: save (a saved world), open to LAN (not in a network
+    // game), manage server (operators only, decision E-863).
+    readonly property bool showSave: menu.game.persistent
+    readonly property bool showLan: !menu.game.multiplayer.networkGame
+    readonly property bool showAdmin: menu.game.admin.operatorRights
+    readonly property list<bool> worldButtons: [menu.showSave, menu.showLan, menu.showAdmin]
+
+    // The columns button `index` of the world's group takes: the last one shown of an odd number
+    // fills the row, so no gap stays beside it.
+    function worldButtonSpan(index: int): int {
+        const shown = menu.worldButtons.filter(flag => flag).length;
+        return menu.worldButtons[index] && shown % 2 === 1 && menu.worldButtons.lastIndexOf(true) === index ? 2 : 1;
+    }
+
+    // A button of a group: two side by side, as wide as each other, and as tall as the others. Both
+    // columns grow from the same basis of 0, so the layout shares the width evenly instead of by
+    // the length of the texts.
+    component GroupButton: GameButton {
+        Layout.fillWidth: true
+        Layout.preferredWidth: 0
+        large: true
+    }
+
+    // Draft D.1 A of docs/Menue-Pruefung.md: a card on ScreenFrame, the buttons in groups apart by
+    // Ui.space.xl: continue (primary) · the screens of the game (settings, handbook, character,
+    // advancements) · the world (save, open to LAN, manage server) · set apart below a line, the
+    // way out. Hidden while one of its screens is open: it would show around a small one. The
+    // handbook and the advancements cover it as well (and keep Tab).
+    WorldCard {
+        id: card
+
         visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible && !adminScreen.visible
                  && !menu.game.handbook.isOpen
-        width: Math.min(parent.width - 2 * Ui.space.l, Ui.screen.column)
-        spacing: Ui.space.s
+        // Clear of the HUD's status rows behind it (decision E-927) and of the pad's hints.
+        reservedBottom: Math.max(menu.statusReserved, menu.game.gamepad.focusShown ? Ui.size.padHints : 0)
 
-        Label {
-            Layout.alignment: Qt.AlignHCenter
-            // The world runs on while others play in it (decision E-877).
-            text: menu.game.pause.hint === WorldPause.None ? qsTr("Game paused") : qsTr("Game menu")
-            color: Theme.text
-            Layout.bottomMargin: menu.game.pause.hint === WorldPause.None ? Ui.space.s : 0
-            font.pixelSize: Ui.type.title
-            font.bold: true
-        }
-
-        Label {
+        ColumnLayout {
             Layout.fillWidth: true
-            Layout.bottomMargin: Ui.space.s
-            visible: menu.game.pause.hint !== WorldPause.None
-            text: menu.game.pause.hint === WorldPause.OthersConnected
-                  ? qsTr("The game keeps running: other players are connected.")
-                  : menu.game.pause.hint === WorldPause.Pending
-                    ? qsTr("The game pauses as soon as the world around you has loaded.")
-                    : qsTr("The game keeps running on the server.")
-            color: Theme.textMuted
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-        }
+            spacing: Ui.space.xs
 
-        GameButton {
-            Layout.fillWidth: true
-            kind: GameButton.Primary
-            large: true
-            text: qsTr("Back to game")
-            onClicked: menu.game.overlay = GameController.Overlay.None
-        }
+            Label {
+                Layout.fillWidth: true
+                // The world runs on while others play in it (decision E-877).
+                text: menu.game.pause.hint === WorldPause.None ? qsTr("Game paused") : qsTr("Game menu")
+                color: Theme.text
+                font.pixelSize: Ui.type.title
+                font.bold: true
+                Accessible.role: Accessible.Heading
+                Accessible.name: text
+            }
 
-        GameButton {
-            Layout.fillWidth: true
-            large: true
-            visible: menu.game.persistent
-            text: qsTr("Save world")
-            onClicked: {
-                menu.game.saveWorld();
-                menu.game.overlay = GameController.Overlay.None;
+            Label {
+                Layout.fillWidth: true
+                visible: menu.game.pause.hint !== WorldPause.None
+                text: menu.game.pause.hint === WorldPause.OthersConnected
+                      ? qsTr("The game keeps running: other players are connected.")
+                      : menu.game.pause.hint === WorldPause.Pending
+                        ? qsTr("The game pauses as soon as the world around you has loaded.")
+                        : qsTr("The game keeps running on the server.")
+                color: Theme.textMuted
+                font.pixelSize: Ui.type.help
+                wrapMode: Text.WordWrap
             }
         }
 
         GameButton {
+            objectName: "continueGameButton"
             Layout.fillWidth: true
+            kind: GameButton.Primary
             large: true
-            text: qsTr("Settings")
-            onClicked: menu.game.overlay = GameController.Overlay.Settings
+            text: qsTr("Continue")
+            keyHint: menu.game.gamepad.active ? menu.game.gamepad.pads.texts.east : qsTr("Esc")
+            onClicked: menu.game.overlay = GameController.Overlay.None
         }
 
-        GameButton {
+        GridLayout {
             Layout.fillWidth: true
-            large: true
-            text: qsTr("Character")
-            onClicked: menu.game.overlay = GameController.Overlay.Character
+            columns: 2
+            columnSpacing: Ui.space.s
+            rowSpacing: Ui.space.s
+
+            GroupButton {
+                objectName: "pauseSettingsButton"
+                text: qsTr("Settings")
+                onClicked: menu.game.overlay = GameController.Overlay.Settings
+            }
+
+            GroupButton {
+                objectName: "pauseHandbookButton"
+                text: qsTr("Handbook")
+                keyHint: menu.game.settings.keys.labels.handbook
+                onClicked: menu.game.handbook.open("")
+            }
+
+            GroupButton {
+                objectName: "pauseCharacterButton"
+                text: qsTr("Character")
+                onClicked: menu.game.overlay = GameController.Overlay.Character
+            }
+
+            GroupButton {
+                objectName: "advancementsButton"
+                text: qsTr("Advancements")
+                keyHint: menu.game.settings.keys.labels.advancements
+                onClicked: menu.game.overlay = GameController.Overlay.Advancements
+            }
         }
 
-        GameButton {
+        GridLayout {
             Layout.fillWidth: true
-            large: true
-            visible: !menu.game.multiplayer.networkGame
-            text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
-            onClicked: menu.game.overlay = GameController.Overlay.Lan
+            visible: menu.worldButtons.some(shown => shown)
+            columns: 2
+            columnSpacing: Ui.space.s
+            rowSpacing: Ui.space.s
+
+            GroupButton {
+                objectName: "saveWorldButton"
+                visible: menu.showSave
+                Layout.columnSpan: menu.worldButtonSpan(0)
+                text: qsTr("Save world")
+                onClicked: {
+                    menu.game.saveWorld();
+                    menu.game.overlay = GameController.Overlay.None;
+                }
+            }
+
+            GroupButton {
+                objectName: "openToLanButton"
+                visible: menu.showLan
+                Layout.columnSpan: menu.worldButtonSpan(1)
+                text: menu.game.multiplayer.lanPort > 0 ? qsTr("Open on port %1").arg(menu.game.multiplayer.lanPort) : qsTr("Open to LAN")
+                onClicked: menu.game.overlay = GameController.Overlay.Lan
+            }
+
+            // Only for operators (decision E-863): the server tells each player whether he is one.
+            GroupButton {
+                objectName: "manageServerButton"
+                visible: menu.showAdmin
+                Layout.columnSpan: menu.worldButtonSpan(2)
+                text: qsTr("Manage server")
+                onClicked: menu.game.overlay = GameController.Overlay.Admin
+            }
         }
 
-        // Only for operators (decision E-863): the server tells each player whether he is one.
-        GameButton {
-            objectName: "manageServerButton"
+        ColumnLayout {
             Layout.fillWidth: true
-            large: true
-            visible: menu.game.admin.operatorRights
-            text: qsTr("Manage server")
-            onClicked: menu.game.overlay = GameController.Overlay.Admin
-        }
+            spacing: Ui.space.xl
 
-        GameButton {
-            objectName: "advancementsButton"
-            Layout.fillWidth: true
-            large: true
-            text: qsTr("Advancements")
-            keyHint: menu.game.settings.keys.labels.advancements
-            onClicked: menu.game.overlay = GameController.Overlay.Advancements
-        }
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: Ui.size.line
+                color: Theme.separator
+            }
 
-        GameButton {
-            Layout.fillWidth: true
-            large: true
-            text: qsTr("Handbook")
-            keyHint: menu.game.settings.keys.labels.handbook
-            onClicked: menu.game.handbook.open("")
-        }
-
-        GameButton {
-            Layout.fillWidth: true
-            large: true
-            text: menu.game.multiplayer.networkGame ? qsTr("Disconnect")
-                  : menu.game.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu")
-            onClicked: menu.game.leaveGame()
+            LeaveGameButton {
+                Layout.fillWidth: true
+                game: menu.game
+            }
         }
     }
 

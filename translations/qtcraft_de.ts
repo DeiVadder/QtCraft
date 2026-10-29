@@ -1682,24 +1682,23 @@ Als Nächstes: %3</translation>
 <context>
     <name>DeathScreen</name>
     <message>
-        <location filename="../src/app/qml/menus/DeathScreen.qml" line="23"/>
+        <location filename="../src/app/qml/menus/DeathScreen.qml" line="34"/>
         <source>You died</source>
         <translation>Du bist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DeathScreen.qml" line="31"/>
+        <location filename="../src/app/qml/menus/DeathScreen.qml" line="44"/>
         <source>Your inventory is kept.</source>
         <translation>Dein Inventar bleibt erhalten.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DeathScreen.qml" line="37"/>
+        <location filename="../src/app/qml/menus/DeathScreen.qml" line="60"/>
         <source>Respawn</source>
         <translation>Wiederbeleben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DeathScreen.qml" line="44"/>
         <source>Quit to menu</source>
-        <translation>Zum Menü</translation>
+        <translation type="vanished">Zum Menü</translation>
     </message>
 </context>
 <context>
@@ -1881,22 +1880,22 @@ Als Nächstes: %3</translation>
 <context>
     <name>DisconnectScreen</name>
     <message>
-        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="31"/>
+        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="42"/>
         <source>Disconnected from the server</source>
         <translation>Verbindung zum Server getrennt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="31"/>
+        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="42"/>
         <source>The game ended</source>
         <translation>Das Spiel wurde beendet</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="54"/>
+        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="78"/>
         <source>Join again</source>
         <translation>Erneut beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="62"/>
+        <location filename="../src/app/qml/menus/DisconnectScreen.qml" line="69"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
@@ -2769,62 +2768,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="539"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="555"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="542"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="558"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="544"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="560"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="567"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="584"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="568"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="585"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="569"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="586"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="570"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="587"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="572"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="589"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="573"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="590"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="574"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="591"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="575"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="592"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="576"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="593"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -3146,6 +3145,24 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>LeaveGameButton</name>
+    <message>
+        <location filename="../src/app/qml/menus/LeaveGameButton.qml" line="12"/>
+        <source>Disconnect</source>
+        <translation>Verbindung trennen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LeaveGameButton.qml" line="12"/>
+        <source>Save and quit to menu</source>
+        <translation>Speichern und zum Menü</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LeaveGameButton.qml" line="12"/>
+        <source>Quit to menu</source>
+        <translation>Zum Menü</translation>
+    </message>
+</context>
+<context>
     <name>LineChart</name>
     <message>
         <location filename="../src/app/qml/controls/LineChart.qml" line="45"/>
@@ -3161,17 +3178,17 @@ Als Nächstes: %3</translation>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="292"/>
+        <location filename="../src/app/qml/Main.qml" line="297"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="292"/>
+        <location filename="../src/app/qml/Main.qml" line="297"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="430"/>
+        <location filename="../src/app/qml/Main.qml" line="436"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -3180,12 +3197,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="448"/>
+        <location filename="../src/app/qml/Main.qml" line="454"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="453"/>
+        <location filename="../src/app/qml/Main.qml" line="459"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -3527,7 +3544,7 @@ Als Nächstes: %3</translation>
 <context>
     <name>MessageScreen</name>
     <message>
-        <location filename="../src/app/qml/menus/MessageScreen.qml" line="11"/>
+        <location filename="../src/app/qml/menus/MessageScreen.qml" line="14"/>
         <source>Back to menu</source>
         <translation>Zurück zum Menü</translation>
     </message>
@@ -4164,82 +4181,91 @@ Als Nächstes: %3</translation>
 <context>
     <name>PauseMenu</name>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="48"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="82"/>
         <source>Game paused</source>
         <translation>Spiel pausiert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="48"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="82"/>
         <source>Game menu</source>
         <translation>Spielmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="60"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="94"/>
         <source>The game keeps running: other players are connected.</source>
         <translation>Das Spiel läuft weiter: andere Spieler sind verbunden.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="62"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="96"/>
         <source>The game pauses as soon as the world around you has loaded.</source>
         <translation>Das Spiel hält an, sobald die Welt um dich geladen ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="63"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="97"/>
         <source>The game keeps running on the server.</source>
         <translation>Das Spiel läuft auf dem Server weiter.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="73"/>
         <source>Back to game</source>
-        <translation>Zurück zum Spiel</translation>
+        <translation type="vanished">Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="81"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="158"/>
         <source>Save world</source>
         <translation>Welt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="91"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="122"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="98"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="109"/>
+        <source>Continue</source>
+        <translation>Weiterspielen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="110"/>
+        <source>Esc</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="135"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="106"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="169"/>
         <source>Open on port %1</source>
         <translation>Offen auf Port %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="106"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="169"/>
         <source>Open to LAN</source>
         <translation>Im LAN öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="116"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="178"/>
         <source>Manage server</source>
         <translation>Server verwalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="124"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="141"/>
         <source>Advancements</source>
         <translation>Fortschritte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="132"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="128"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="226"/>
         <source>‹ Back to game</source>
         <translation>‹ Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="226"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
@@ -4248,19 +4274,16 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Handbuch (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="140"/>
         <source>Disconnect</source>
-        <translation>Verbindung trennen</translation>
+        <translation type="vanished">Verbindung trennen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="141"/>
         <source>Save and quit to menu</source>
-        <translation>Speichern und zum Menü</translation>
+        <translation type="vanished">Speichern und zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="141"/>
         <source>Quit to menu</source>
-        <translation>Zum Menü</translation>
+        <translation type="vanished">Zum Menü</translation>
     </message>
 </context>
 <context>
@@ -5320,20 +5343,20 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="264"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="308"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="278"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="322"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="283"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="297"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="293"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="303"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="313"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="307"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="317"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="327"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5342,22 +5365,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="332"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="346"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="332"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="346"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="365"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="379"/>
         <source>Loading content...</source>
         <translation>Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="390"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="404"/>
         <source>Loading the world...</source>
         <translation>Lade die Welt...</translation>
     </message>
@@ -5402,12 +5425,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="375"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="389"/>
         <source>Generating world...</source>
         <translation>Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="496"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="510"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -9024,6 +9047,19 @@ Jetzt: %2</translation>
     </message>
 </context>
 <context>
+    <name>ScreenHeader</name>
+    <message>
+        <location filename="../src/app/qml/controls/ScreenHeader.qml" line="16"/>
+        <source>Esc</source>
+        <translation>Esc</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/controls/ScreenHeader.qml" line="39"/>
+        <source>Close</source>
+        <translation>Schließen</translation>
+    </message>
+</context>
+<context>
     <name>Segments</name>
     <message>
         <location filename="../src/app/qml/controls/Segments.qml" line="52"/>
@@ -9228,29 +9264,40 @@ Jetzt: %2</translation>
 <context>
     <name>SignEditor</name>
     <message>
-        <location filename="../src/app/qml/hud/SignEditor.qml" line="57"/>
+        <location filename="../src/app/qml/hud/SignEditor.qml" line="70"/>
         <source>Edit sign</source>
         <translation>Schild beschriften</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/SignEditor.qml" line="86"/>
+        <source>Esc</source>
+        <translation type="vanished">Esc</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/hud/SignEditor.qml" line="100"/>
         <source>Line %1 of the sign</source>
         <translation>Zeile %1 des Schilds</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/SignEditor.qml" line="104"/>
+        <location filename="../src/app/qml/hud/SignEditor.qml" line="126"/>
+        <source>The text holds at once; %1 on the keyboard goes to the next line.</source>
+        <translation>Der Text gilt sofort; %1 auf der Tastatur springt zur nächsten Zeile.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/hud/SignEditor.qml" line="127"/>
+        <source>The text holds at once; Enter goes to the next line.</source>
+        <translation>Der Text gilt sofort; Enter springt zur nächsten Zeile.</translation>
+    </message>
+    <message>
         <source>%1 on the keyboard goes to the next line</source>
-        <translation>%1 auf der Tastatur springt zur nächsten Zeile</translation>
+        <translation type="vanished">%1 auf der Tastatur springt zur nächsten Zeile</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/SignEditor.qml" line="105"/>
         <source>Enter goes to the next line, Esc is done</source>
-        <translation>Enter springt zur nächsten Zeile, Esc beendet</translation>
+        <translation type="vanished">Enter springt zur nächsten Zeile, Esc beendet</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/SignEditor.qml" line="111"/>
         <source>Done</source>
-        <translation>Fertig</translation>
+        <translation type="vanished">Fertig</translation>
     </message>
 </context>
 <context>

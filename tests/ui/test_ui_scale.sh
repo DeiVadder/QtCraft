@@ -110,6 +110,22 @@ check chat $world --overlay chat
 check handbook $world --handbook block:qtcraft:furnace
 # shellcheck disable=SC2086
 check death $world --chat "/kill"
+# The sign's editor on ScreenFrame with its head (stage 76.2-d) and the message screen of the
+# --overlay message: hook, here without a world.
+# shellcheck disable=SC2086
+check sign $world --overlay sign
+check message --overlay "message:The world could not be loaded: its level.dat is damaged and no backup was found."
+# The pause menu's card (draft D.1 A) on the pad, in German: the focus starts on "Continue" and
+# moves down into the grid and across it.
+# shellcheck disable=SC2086
+check pad-pause $world --language de --overlay pause --overlay "@0 pad:dpadDown" --overlay "@0 pad:dpadDown" \
+    --overlay "@0 pad:dpadRight"
+if [ "$(grep -o 'padFocus: [A-Za-z]*' "$DATA/pad-pause.log" | sed 's/padFocus: //' | tr '\n' ' ')" != \
+    "continueGameButton pauseSettingsButton pauseHandbookButton " ]; then
+    echo "pad-pause: the pad's focus did not move through the pause menu as expected:"
+    grep 'padFocus' "$DATA/pad-pause.log"
+    failed=1
+fi
 # The advancement tree (decision E-924) and the details of a challenge beside it.
 # shellcheck disable=SC2086
 check advancements $world --overlay advancements \

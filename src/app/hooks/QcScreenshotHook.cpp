@@ -170,13 +170,17 @@ void QcScreenshotHook::logItems() const
             continue;
         }
         const QRectF rect = item->mapRectToScene(QRectF(0.0, 0.0, item->width(), item->height()));
-        qCInfo(lcScreenshot).noquote() << u"Item %1: x %2 y %3 width %4 height %5 in the window %6x%7"_s.arg(name)
+        // A control's text, where it has one (a button's), for checks of what a screen offers.
+        const QVariant text = item->property("text");
+        const QString textPart = text.isValid() ? u" text \"%1\""_s.arg(text.toString()) : QString();
+        qCInfo(lcScreenshot).noquote() << u"Item %1: x %2 y %3 width %4 height %5 in the window %6x%7 visible %8%9"_s.arg(name)
                                               .arg(rect.x())
                                               .arg(rect.y())
                                               .arg(rect.width())
                                               .arg(rect.height())
                                               .arg(content->width())
-                                              .arg(content->height());
+                                              .arg(content->height())
+                                              .arg(item->isVisible() ? u"yes"_s : u"no"_s, textPart);
     }
 }
 

@@ -136,6 +136,14 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless>)
     set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 1230 COST 310)
+    # The pause menu's buttons in a saved world and on a joined server, the pause and death cards
+    # above the HUD's status rows at 200 % and 225 %, and the sign typed on the pad's keyboard
+    # (decision E-928). It waits for the world and a dedicated server in real time: label realtime
+    # and properties here (sanitizer builds and Windows have no such test).
+    add_test(NAME app_offscreen_pause_screens COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_pause_screens.sh $<TARGET_FILE:qtcraft>
+        $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_pause_screens)
+    set_tests_properties(app_offscreen_pause_screens PROPERTIES TIMEOUT 900 COST 60 PROCESSORS 2 LABELS realtime
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_pause_screens.sh")
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900;
     # behind screens, full-screen screens, the handbook and the chat line only the parts decision
@@ -154,7 +162,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         add_test(NAME app_offscreen_ui_scale_${scale} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> ${scale}
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_${scale})
         # Properties here, not at the end of tests/CMakeLists.txt: sanitizer builds have no such test.
-        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1260 COST 80
+        set_tests_properties(app_offscreen_ui_scale_${scale} PROPERTIES TIMEOUT 1500 COST 100
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()
     # The same screens at 100 % in the windows of large monitors at 100 % display scaling (decision
@@ -166,7 +174,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         list(GET parts 1 expect)
         add_test(NAME app_offscreen_ui_scale_100_${size} COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh $<TARGET_FILE:qtcraft> 100
             ${CMAKE_BINARY_DIR}/test-data/app_offscreen_ui_scale_100_${size})
-        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 1800 COST 100
+        set_tests_properties(app_offscreen_ui_scale_100_${size} PROPERTIES TIMEOUT 1980 COST 130
             ENVIRONMENT "QC_UI_SIZE=${size};QC_UI_EXPECT=${expect}"
             REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_ui_scale.sh")
     endforeach()

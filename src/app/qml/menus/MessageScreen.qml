@@ -3,6 +3,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
+// A message over the whole window while a world loads or after it could not start (Main.qml,
+// GameController.statusText), on ScreenFrame like every screen; "Back to menu" or "Cancel" below it
+// when there is a way back. --overlay message:<text> shows one for screenshots.
 Rectangle {
     id: screen
 
@@ -21,28 +24,39 @@ Rectangle {
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
-    ColumnLayout {
+    ScreenFrame {
         anchors.centerIn: parent
-        width: Math.min(parent.width - Ui.px(32), Ui.px(520))
-        spacing: Ui.px(16)
+        width: Math.min(parent.width - 2 * Ui.screen.margin, Ui.screen.s)
+        height: column.implicitHeight + 2 * Ui.space.xl
 
-        Label {
-            id: message
+        ColumnLayout {
+            id: column
 
-            Layout.fillWidth: true
-            // The text may hold a server's reason.
-            textFormat: Text.PlainText
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.Wrap
-            color: Theme.text
-            font.pixelSize: Ui.px(22)
-        }
+            anchors.fill: parent
+            anchors.margins: Ui.space.xl
+            spacing: Ui.space.xl
 
-        Button {
-            Layout.alignment: Qt.AlignHCenter
-            visible: screen.showBackButton
-            text: screen.backText
-            onClicked: screen.backRequested()
+            Label {
+                id: message
+
+                objectName: "messageText"
+                Layout.fillWidth: true
+                // The text may hold a server's reason.
+                textFormat: Text.PlainText
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.Wrap
+                color: Theme.text
+                font.pixelSize: Ui.type.section
+            }
+
+            GameButton {
+                objectName: "messageBackButton"
+                Layout.fillWidth: true
+                large: true
+                visible: screen.showBackButton
+                text: screen.backText
+                onClicked: screen.backRequested()
+            }
         }
     }
 }

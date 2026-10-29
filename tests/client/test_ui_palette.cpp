@@ -420,22 +420,22 @@ private slots:
     }
 
     // The shared controls, the settings, the main menu with its pages and screens (world list, new
-    // world, multiplayer, LAN, mods), the character screen, the handbook's screen with its list and
-    // "Manage server" (decision E-863) take every gap, margin, size, radius and font size from the named steps of Ui (decisions
-    // E-845, E-852), so they change in one place. Ui.qml itself holds the values. Still open
-    // (stage 76.2): the handbook's page, recipes and links, the inventories, the HUD, and the
-    // death, disconnect and message screens.
+    // world, multiplayer, LAN, mods), the pause menu, the death, disconnect and message screens
+    // (stage 76.2-d), the sign's editor, the character screen, the handbook's screen with its list
+    // and "Manage server" (decision E-863) take every gap, margin, size, radius and font size from
+    // the named steps of Ui (decisions E-845, E-852), so they change in one place. Ui.qml itself
+    // holds the values. Still open (stage 76.2): the handbook's page, recipes and links, the
+    // inventories and the rest of the HUD.
     void menusUseOnlyTheSizeSteps()
     {
-        static const QStringList stillOpen = {u"/DeathScreen.qml"_s, u"/DisconnectScreen.qml"_s, u"/MessageScreen.qml"_s,
-                                          u"/HandbookPage.qml"_s, u"/HandbookRecipe.qml"_s, u"/HandbookLink.qml"_s};
+        static const QStringList stillOpen = {u"/HandbookPage.qml"_s, u"/HandbookRecipe.qml"_s, u"/HandbookLink.qml"_s};
         QStringList problems;
         int checked = 0;
         const QStringList files = qmlFiles();
         for (const QString &path : files) {
             const bool folder = path.contains(u"/controls/"_s) || path.contains(u"/settings/"_s) || path.contains(u"/menus/"_s)
                                 || path.contains(u"/character/"_s) || path.contains(u"/handbook/"_s)
-                                || path.contains(u"/admin/"_s) || isWorkbench(path);
+                                || path.contains(u"/admin/"_s) || path.endsWith(u"/hud/SignEditor.qml"_s) || isWorkbench(path);
             const bool covered = folder &&std::ranges::none_of(stillOpen, [&path](const QString &name) { return path.endsWith(name); });
             // Ui.qml holds the values; an item slot is sized at the HUD's or the screen's factor
             // (ItemSlot.px), in the HUD and on the screens alike.
@@ -445,7 +445,7 @@ private slots:
             ++checked;
             problems += ownSizes(path);
         }
-        QVERIFY(checked >= 50);
+        QVERIFY(checked >= 54);
         QVERIFY2(problems.isEmpty(), qPrintable(u"use a step of Ui (Ui.space, Ui.size, Ui.screen, Ui.type, Ui.radius):\n"_s + problems.join(u'\n')));
 
         // The check finds what it looks for.

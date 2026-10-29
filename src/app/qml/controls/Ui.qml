@@ -111,6 +111,8 @@ QtObject {
         property real advancementColumn
         property real advancementRow
         property real advancementDetails
+        // The wooden frame of the sign's board (SignEditor).
+        property real signBorder
     }
 
     // Widths of screens: dialogs, forms and lists, settings with their category list; the margin
@@ -200,6 +202,7 @@ QtObject {
         advancementColumn: ui.px(80)
         advancementRow: ui.px(56)
         advancementDetails: ui.px(270)
+        signBorder: ui.px(4)
         handbookEntries: ui.px(220)
         handbookRow: ui.px(36)
         handbookHeading: ui.px(30)

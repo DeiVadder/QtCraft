@@ -176,6 +176,7 @@ qc_add_test(test_world_options_controller SOURCES client/test_world_options_cont
 # The map preview of a new world: same map, same as the generated chunks, cancelled by a change (E-921).
 qc_add_test(test_world_map_preview SOURCES client/test_world_map_preview.cpp LIBRARIES qc_base_content qc_app_core qc_worlds TIMEOUT 630)
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
+qc_add_test(test_sign_controller SOURCES client/test_sign_controller.cpp QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
 qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server TIMEOUT 150)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)

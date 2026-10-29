@@ -50,7 +50,8 @@ public:
     // handbook, "@<ms> pick:<row>" picks up the stack of an inventory model row in the open screen,
     // "@<ms> hover:<x>,<y>" moves the pointer there, e.g. to show a tooltip, "@<ms> open:<objectName>"
     // opens the list of that combo box or that popup, dialog or menu page, "@<ms> click:<objectName>"
-    // clicks that button).
+    // clicks that button, "message:<text>" shows the message screen with that text, as after a
+    // world that could not start, in the main menu as in a world).
     void setStartupScript(QStringList chatLines, const QStringList &overlays);
     // --handbook: opened once the world plays (at once without --play).
     void setStartupHandbook(const QString &target) { m_startupHandbook = target; }

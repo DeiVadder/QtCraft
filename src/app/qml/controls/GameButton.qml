@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
 import QtCraft
 
 // The button of every game screen (decision E-845, docs/UI-Leitfaden.md 6.1). Primary (Qt green,
@@ -57,11 +56,22 @@ Button {
     Keys.onReturnPressed: click()
     Keys.onEnterPressed: click()
 
-    contentItem: RowLayout {
-        spacing: Ui.space.s
+    // The text stays in the middle of the button; a key plate sits at its right edge, and the text
+    // keeps the plate's room on both sides, so a plate does not push it aside (Menue-Pruefung PA-4).
+    contentItem: Item {
+        readonly property real plateRoom: plate.visible ? plate.implicitWidth + Ui.space.s : 0
+
+        implicitWidth: label.implicitWidth + 2 * plateRoom
+        implicitHeight: Math.max(label.implicitHeight, plate.visible ? plate.implicitHeight : 0)
 
         Label {
-            Layout.fillWidth: true
+            id: label
+
+            anchors.fill: parent
+            // The room on the left only while the text still fits beside it; a long plate (a remapped
+            // key such as "Page Down") lets the text move left rather than elide.
+            anchors.leftMargin: Math.min(parent.plateRoom, Math.max(0, parent.width - implicitWidth - parent.plateRoom))
+            anchors.rightMargin: parent.plateRoom
             text: control.text
             font: control.font
             color: control.greyed ? Theme.textDisabled
@@ -72,6 +82,10 @@ Button {
             elide: Text.ElideRight
         }
         KeyBadge {
+            id: plate
+
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
             visible: control.keyHint.length > 0
             text: control.keyHint
         }

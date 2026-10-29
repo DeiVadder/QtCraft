@@ -61,3 +61,19 @@ void QcSignController::write(const QStringList &lines)
     m_parts.session->signEditor().write(QcSignText::cleaned(written, lineCount(), lineLength()));
     m_screens.setOverlay(QcScreenState::Overlay::None);
 }
+
+void QcSignController::edit(int line, const QString &text)
+{
+    if (!m_parts.session || !m_parts.session->signEditor().isOpen()) {
+        qCWarning(lcGame) << "Ignoring sign line" << line << ": no sign editor is open";
+        return;
+    }
+    if (line < 0 || line >= lineCount()) {
+        qCWarning(lcGame) << "Ignoring sign line" << line << ": the sign has" << lineCount() << "lines";
+        return;
+    }
+
+    QcSignText::Lines lines = m_parts.session->signEditor().lines();
+    lines[static_cast<std::size_t>(line)] = text.left(lineLength());
+    m_parts.session->signEditor().setLines(lines);
+}

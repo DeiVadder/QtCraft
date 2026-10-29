@@ -5,7 +5,7 @@ import QtCraft
 
 // The game ended without the player leaving (decision E-261): the server stopped, kicked or
 // refused the player, or the connection broke. Shows why; back to the menu or, in a network game,
-// join the same server again.
+// join the same server again. A card on ScreenFrame with the buttons of the death screen.
 Rectangle {
     id: screen
 
@@ -20,48 +20,67 @@ Rectangle {
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
 
-    ColumnLayout {
+    ScreenFrame {
         anchors.centerIn: parent
-        width: Math.min(parent.width - Ui.px(32), Ui.px(560))
-        spacing: Ui.px(16)
+        anchors.verticalCenterOffset: screen.game.gamepad.focusShown ? -Ui.size.padHints / 2 : 0
+        width: Math.min(parent.width - 2 * Ui.screen.margin, Ui.screen.s)
+        height: column.implicitHeight + 2 * Ui.space.xl
 
-        Label {
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            text: screen.game.multiplayer.networkGame ? qsTr("Disconnected from the server") : qsTr("The game ended")
-            color: Theme.text
-            font.pixelSize: Ui.px(30)
-            font.bold: true
-            wrapMode: Text.Wrap
-        }
+        ColumnLayout {
+            id: column
 
-        Label {
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            textFormat: Text.PlainText
-            text: screen.game.statusText
-            color: Theme.textSecondary
-            font.pixelSize: Ui.px(18)
-            wrapMode: Text.Wrap
-        }
+            anchors.fill: parent
+            anchors.margins: Ui.space.xl
+            spacing: Ui.space.xl
 
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            spacing: Ui.px(12)
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: Ui.space.xs
 
-            Button {
-                visible: screen.game.multiplayer.networkGame && screen.game.multiplayer.lastAddress.length > 0
-                text: qsTr("Join again")
-                onClicked: {
-                    screen.game.leaveGame();
-                    screen.game.multiplayer.joinAgain();
+                Label {
+                    Layout.fillWidth: true
+                    text: screen.game.multiplayer.networkGame ? qsTr("Disconnected from the server") : qsTr("The game ended")
+                    color: Theme.text
+                    font.pixelSize: Ui.type.title
+                    font.bold: true
+                    wrapMode: Text.Wrap
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
+                }
+
+                Label {
+                    Layout.fillWidth: true
+                    textFormat: Text.PlainText
+                    text: screen.game.statusText
+                    color: Theme.textSecondary
+                    wrapMode: Text.Wrap
                 }
             }
 
-            Button {
-                text: qsTr("Back to menu")
-                highlighted: true
-                onClicked: screen.game.leaveGame()
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: Ui.space.s
+
+                GameButton {
+                    objectName: "disconnectBackButton"
+                    Layout.fillWidth: true
+                    kind: GameButton.Primary
+                    large: true
+                    text: qsTr("Back to menu")
+                    onClicked: screen.game.leaveGame()
+                }
+
+                GameButton {
+                    objectName: "joinAgainButton"
+                    Layout.fillWidth: true
+                    large: true
+                    visible: screen.game.multiplayer.networkGame && screen.game.multiplayer.lastAddress.length > 0
+                    text: qsTr("Join again")
+                    onClicked: {
+                        screen.game.leaveGame();
+                        screen.game.multiplayer.joinAgain();
+                    }
+                }
             }
         }
     }

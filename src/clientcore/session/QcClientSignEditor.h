@@ -17,13 +17,20 @@ class QcClientSignEditor : public QObject
 public:
     using Sender = std::function<void(const QcMessage &)>;
 
-    void setSender(Sender sender) { m_send = std::move(sender); }
+    // How the editor sends to the server (the session's connection); a different name than
+    // QObject::sender().
+    void setMessageSender(Sender sender) { m_messageSender = std::move(sender); }
+    const Sender &messageSender() const { return m_messageSender; }
     // Takes over OpenSignEditor; false for other messages.
     bool handle(const QcMessage &message);
 
     bool isOpen() const { return m_open; }
     QcBlockPos pos() const { return m_pos; }
     const QcSignText::Lines &lines() const { return m_lines; }
+    // The lines as the player types them (pattern 1 of docs/UI-Leitfaden.md 5: the text holds at
+    // once); closing the editor sends them (the server refuses them from a dead player, so on death
+    // the typed text is lost). Ignored while no editor is open.
+    void setLines(const QcSignText::Lines &lines);
     // Sends `lines` for the open sign and closes the editor; false when none is open.
     bool write(const QcSignText::Lines &lines);
 
@@ -32,7 +39,9 @@ signals:
     void closed();
 
 private:
-    Sender m_send;
+    void setOpen(bool open) { m_open = open; }
+
+    Sender m_messageSender;
     bool m_open = false;
     QcBlockPos m_pos;
     QcSignText::Lines m_lines;

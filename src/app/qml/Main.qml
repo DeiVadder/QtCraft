@@ -195,6 +195,7 @@ ApplicationWindow {
 
         screen: PauseMenu {
             game: root.controller
+            statusReserved: hud.visible ? hud.height - hud.statusArea.y : 0
         }
     }
 
@@ -263,6 +264,7 @@ ApplicationWindow {
 
         screen: DeathScreen {
             game: root.controller
+            statusReserved: hud.visible ? hud.height - hud.statusArea.y : 0
         }
     }
 

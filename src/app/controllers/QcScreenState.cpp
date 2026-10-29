@@ -225,7 +225,9 @@ void QcScreenState::closeSessionScreens() const
     if (m_overlay != Overlay::Anvil) {
         m_parts.session->anvil().close();
     }
-    // A sign editor closed another way than by its Done button keeps the sign's text.
+    // A sign editor closed another way (another screen) sends the lines as typed so far
+    // (QcSignController::edit; the server cleans them). On death the typed text is lost: the
+    // server refuses edits from dead players and sends the sign's text back.
     QcClientSignEditor &sign = m_parts.session->signEditor();
     if (m_overlay != Overlay::Sign && sign.isOpen()) {
         sign.write(sign.lines());

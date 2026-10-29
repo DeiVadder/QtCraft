@@ -99,6 +99,9 @@ void QcStartupHooks::setStartupScript(QStringList chatLines, const QStringList &
     for (const QString &overlay : overlays) {
         if (overlay.startsWith(u'@')) {
             m_startupOverlaySteps.append(overlay);
+        } else if (overlay.startsWith(u"message:"_s)) {
+            // A step at once, so it shows in the main menu as well as in a world.
+            m_startupOverlaySteps.append(u"@0 "_s + overlay);
         } else if (m_startupOverlay.isEmpty()) {
             m_startupOverlay = overlay;
         }
@@ -243,7 +246,8 @@ void QcStartupHooks::scheduleOverlaySteps()
         QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
             // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
             if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
-                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)) {
+                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)
+                || overlay.startsWith(u"message:"_s)) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -263,6 +267,9 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         runOnLoadedScreen(step, 0);
     } else if (step.startsWith(u"hover:"_s)) {
         hoverAt(QStringView(step).mid(6));
+    } else if (step.startsWith(u"message:"_s)) {
+        // The message screen as after a world that could not start, with its way back.
+        m_screens.state.setPhase(QcScreenState::Phase::Error, step.mid(8));
     } else if (step == u"handbook"_s) {
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {

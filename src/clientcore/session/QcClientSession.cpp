@@ -39,7 +39,7 @@ void QcClientSession::connectParts()
     m_gameMode.setWishListener([this](bool wanted) { m_link->command({QcSessionCommand::SetFlight{wanted}}); });
     m_debug.setSender(send);
     m_trading.setSender(send);
-    m_signEditor.setSender(send);
+    m_signEditor.setMessageSender(send);
     m_stonecutter.setSender(send);
     m_enchanting.setSender(send);
     m_anvil.setSender(send);

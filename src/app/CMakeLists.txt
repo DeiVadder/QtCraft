@@ -228,6 +228,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/NavButton.qml
         qml/controls/NavList.qml
         qml/controls/ScreenFrame.qml
+        qml/controls/ScreenHeader.qml
         qml/controls/Segments.qml
         qml/controls/SettingCheck.qml
         qml/controls/SettingChoice.qml
@@ -292,6 +293,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/DisconnectScreen.qml
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
+        qml/menus/LeaveGameButton.qml
         qml/menus/MainMenu.qml
         qml/menus/MapPreviewGroup.qml
         qml/menus/MenuSidebar.qml
@@ -302,6 +304,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/menus/WorldCard.qml
         qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml
         qml/menus/WorldTile.qml

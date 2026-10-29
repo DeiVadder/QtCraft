@@ -16,7 +16,7 @@ Alle Werte stehen an genau **einer** Stelle im Code; Seiten und Bausteine schrei
 | Radius | `Ui.qml` | `Ui.radius` |
 | Schriftgrößen | `Ui.qml`, `type` | `Ui.type.title`, `.section`, `.group`, `.body`, `.help` |
 
-Werte in `Ui.qml` sind für 100 % in 1024 × 640 geschrieben und laufen durch `Ui.px()` (E-725), stehen also schon in der Größe des Spielers bereit. Eine neue Farbe ist eine neue Rolle in `QcUiPalette` (Enum `Role`, Tabelle, Q_PROPERTY in `QcUiTheme.h`) und bekommt ihr Text-Hintergrund-Paar in `textPairs()`; ein neuer Abstand oder eine neue Größe kommt als benannter Wert nach `Ui.qml`. `test_ui_palette` prüft: keine Farbe außerhalb der Palette in irgendeiner QML-Datei (`screensUseOnlyThePalette`), keine eigene Größe in den Bausteinen (`src/app/qml/controls`), den Einstellungen, dem Hauptmenü mit seinen Seiten und Bildschirmen und dem Pausenmenü (`src/app/qml/menus` außer Tod, Trennung und Meldung) und im Charakter-Bildschirm (`menusUseOnlyTheSizeSteps`: kein Zahlwert in `px()`/`hudPx()` oder `Qt.size()` und keine Zahl über 1 in einer Eigenschaft oder Deklaration, außer Faktoren wie `2 * Ui.space.l` und Eigenschaften ohne Größe wie `from`, `to`, `value`, `stepSize`, `opacity`, `z`, `model`, Zählungen (`columns`, `columnSpan`, `maximumLength`, `maximumLineCount`), Grenzen eines Validators, Bildraten, Zeiten in ms; `ItemSlot` nimmt den Faktor des HUD oder des Bildschirms und ist ausgenommen; Handbuch, Inventare, HUD, Tod, Trennung und Meldung kommen mit 76.2 dazu).
+Werte in `Ui.qml` sind für 100 % in 1024 × 640 geschrieben und laufen durch `Ui.px()` (E-725), stehen also schon in der Größe des Spielers bereit. Eine neue Farbe ist eine neue Rolle in `QcUiPalette` (Enum `Role`, Tabelle, Q_PROPERTY in `QcUiTheme.h`) und bekommt ihr Text-Hintergrund-Paar in `textPairs()`; ein neuer Abstand oder eine neue Größe kommt als benannter Wert nach `Ui.qml`. `test_ui_palette` prüft: keine Farbe außerhalb der Palette in irgendeiner QML-Datei (`screensUseOnlyThePalette`), keine eigene Größe in den Bausteinen (`src/app/qml/controls`), den Einstellungen, dem Hauptmenü mit seinen Seiten und Bildschirmen und dem Pausenmenü, Tod, Trennung und Meldung (`src/app/qml/menus`), dem Schild (`hud/SignEditor.qml`) und im Charakter-Bildschirm (`menusUseOnlyTheSizeSteps`: kein Zahlwert in `px()`/`hudPx()` oder `Qt.size()` und keine Zahl über 1 in einer Eigenschaft oder Deklaration, außer Faktoren wie `2 * Ui.space.l` und Eigenschaften ohne Größe wie `from`, `to`, `value`, `stepSize`, `opacity`, `z`, `model`, Zählungen (`columns`, `columnSpan`, `maximumLength`, `maximumLineCount`), Grenzen eines Validators, Bildraten, Zeiten in ms; `ItemSlot` nimmt den Faktor des HUD oder des Bildschirms und ist ausgenommen; Handbuch-Seite, Inventare und das übrige HUD kommen mit 76.2 dazu).
 
 ## 1 Grundsätze
 
@@ -125,7 +125,7 @@ Systemschrift. **Pixelschrift nur für das Logo (Entscheidung 5):** „Pixelify 
 
 Jeder Bildschirm hat dieselben vier Teile:
 
-1. **Kopf:** Titel links (Stufe „Titel“), rechts „Schließen (Esc)“ bzw. das B-Symbol des Pads. Bei Unterseiten links „‹ Zurück“. Einstellungen und Handbuch haben keinen Kopf: Titel und Rückweg stehen in der Seitenleiste (8b).
+1. **Kopf:** Titel links (Stufe „Titel“), rechts „Schließen“ mit der Taste als Schild (`KeyBadge`: „Esc“, mit Pad das B-Symbol), klickbar; kein „×“, kein „Fertig“ (Baustein `ScreenHeader`, Regel für alle Bildschirme über der Welt, Menue-Pruefung E.0 Nr. 1). Bei Unterseiten links „‹ Zurück“. Pausenmenü und Tod haben keinen „Schließen“-Knopf: „Weiterspielen“ (mit dem Schild „Esc“/B) bzw. „Wiederbeleben“ sind ihr Weg zurück (8e). Einstellungen und Handbuch haben keinen Kopf: Titel und Rückweg stehen in der Seitenleiste (8b).
 2. **Navigation** (nur bei mehreren Seiten): Seitenleiste links (Entscheidung 2), bei Einstellungen und Handbuch eine Ebene tiefer in derselben Seitenleiste (8b).
 3. **Inhalt:** scrollt als Ganzes (`ThemedScrollBar`), Kopf und Fuß bleiben stehen. Gruppen untereinander, Abstand `xl`.
 4. **Fuß:** Aktionen rechtsbündig, die primäre ganz rechts; seitenbezogene Aktionen („Standard wiederherstellen“, „Ordner öffnen“) links. Darunter, wenn ein Pad benutzt wird, die Pad-Hinweise (`PadHints`).
@@ -136,7 +136,7 @@ Regeln:
   1. **Sofort wirksam, ohne Bestätigungsknopf:** jede Änderung gilt sofort (Einstellungen; Zurücksetzen je Wert), der Bildschirm schließt mit dem Rückweg-Eintrag der Seitenleiste („‹ Hauptmenü“, „‹ Pausenmenü“, 8b) bzw. Esc/B. Ausnahme: Anzeigemodus und Monitor (74.3) – nach dem Wechsel 10 s Rückfrage „Beibehalten?“ mit Rückfall.
   2. **Bearbeiten, dann Speichern oder Verwerfen:** die Seite bearbeitet einen Entwurf (die Vorschau zeigt ihn sofort), „Speichern“ (primär, nur aktiv, wenn der Entwurf vom Gespeicherten abweicht) und „Verwerfen“; solange etwas ungespeichert ist, steht „Ungespeicherte Änderungen“ sichtbar da. Wer die Seite mit Änderungen verlässt (Esc/B, anderer Eintrag der Seitenleiste, „Zurück“, „Schließen“, Weltstart), wird gefragt: Speichern / Verwerfen / Weiter bearbeiten (Baustein `UnsavedChangesDialog`, Fokus und sichere Wahl „Weiter bearbeiten“). Beispiel: Charakter (Seite im Hauptmenü und Bildschirm im Spiel).
 
-  **Nie** ein einzelnes „Fertig“/„OK“, das Änderungen ohnehin übernimmt. Offen nach diesem Muster: das Schild (`SignEditor`, „Fertig“ übernimmt den Text, Esc ebenso; gehört zum HUD, Etappe 76.2). Die Bildschirmtastatur des Pads behält „Fertig“: es beendet die Eingabe in ein Feld, kein Bildschirm.
+  **Nie** ein einzelnes „Fertig“/„OK“, das Änderungen ohnehin übernimmt. Das Schild (`SignEditor`, 76.2-d) folgt Muster 1: jede Zeile gilt beim Tippen (`GameController.sign.edit`), „Schließen“, Esc, Enter in der letzten Zeile und jedes andere Schließen (anderer Bildschirm) senden den Text; beim Tod geht der getippte Text verloren, der Server lehnt Änderungen toter Spieler ab. Die Bildschirmtastatur des Pads behält „Fertig“: es beendet die Eingabe in ein Feld, kein Bildschirm.
 - Wirkt eine Einstellung erst später („ab dem nächsten Weltstart“, „ab dem nächsten Start“), steht das als Hilfetext **an der Einstellung**, nicht als Fußnote am Seitenende.
 - Leere Listen zeigen einen Satz, was hineinkommt, und die Aktion, die es ändert („Noch keine Welten. [Neue Welt]“).
 - Pfade (Log-Ordner, Texturpakete, Mods) nicht als langer Fließtext; Schaltfläche „Ordner öffnen“ und daneben oder darunter der Pfad als auswählbarer Text, der an jeder Stelle umbricht (Tooltips sind Zusatz, nie die einzige Stelle).
@@ -156,7 +156,7 @@ QML-Komponenten in `src/app/qml/controls/`. Jede setzt `Accessible.name`/`role`,
 - Primary: `accent`, fett; höchstens **eine** pro Bildschirm (die wahrscheinlichste nächste Aktion: „Weiterspielen“, „Beitreten“, „Speichern“, „Zurück zum Spiel“).
 - Secondary: `button`. Destructive: `danger`, nur wenn danach eine Rückfrage kommt oder es unumkehrbar ist. Quiet: nur Text (z. B. „‹ Zurück“, „Mehr …“).
 - Fase: 1 px `bevelLight` oben/links, 2 px `bevelDark` unten/rechts; gedrückt umgekehrt (blockiger Look). Fokus: 2 px `focusRing` außen.
-- Text immer ein Verb oder Ziel („Welt erstellen“, „Ordner öffnen“, „Speichern und zum Menü“); Tastenkürzel als kleines Schild rechts im Knopf (`KeyBadge`), nicht in Klammern im Text.
+- Text immer ein Verb oder Ziel („Welt erstellen“, „Ordner öffnen“, „Speichern und zum Menü“); Tastenkürzel als kleines Schild rechts im Knopf (`KeyBadge`), nicht in Klammern im Text. Der Text bleibt dabei in der Mitte des Knopfes: das Schild sitzt am rechten Rand, der Text hält seinen Platz auf beiden Seiten frei (76.2-d, PA-4).
 
 ### 6.2 `SettingGroup`
 Überschrift (Stufe „Gruppe“, `heading`), darunter die Zeilen auf `panelRaised` mit Innenabstand `l`. Einklappen (`collapsible`, „▸ Erweitert“) ist vorgesehen, aber noch nicht gebaut: keine Seite braucht es bisher.
@@ -254,6 +254,18 @@ Was vom HUD hinter einem Bildschirm bleibt, entscheidet nur `GameController.hudS
 - **Vollbild-Bildschirme** (Einstellungen, Server verwalten, Fortschritte, Handbuch – auch über einem anderen Bildschirm): das ganze HUD aus. Ein neuer Bildschirm mit fast deckendem Paneel über die ganze Fläche kommt in `QcScreenState::isFullScreen`.
 - **Chatzeile:** alles bleibt außer dem Welt-Hinweis unter der Eingabe.
 - Geprüft von `test_hud_layout.sh` (Zeile „HUD parts shown“ des Layout-Checks, 100 und 200 %).
+
+## 8e Pausenmenü, Tod, Trennung, Meldung (76.2-d, Entwurf D.1 A)
+
+Umgesetzt in `src/app/qml/menus/` (`PauseMenu`, `DeathScreen`, `DisconnectScreen`, `MessageScreen`, gemeinsam `LeaveGameButton`).
+
+- **Eine Karte** (`WorldCard`, Fläche `ScreenFrame`), Breite `Ui.screen.s`, Innenrand `xl`, über der abgedunkelten Welt (`scrim`, beim Tod `deathScrim`), mittig im Raum **über den Statuszeilen des HUD** (Schnellleiste, Herzen; sie bleiben hinter Pause und Tod sichtbar, 8d) bzw. über den Pad-Hinweisen. Ist die Karte höher als dieser Raum (200 % im Fenster 1280 × 720, 225 %), scrollt ihr Inhalt in der Karte; das Element mit dem Fokus (Tab, Pad) wird hineingescrollt.
+- **Kopf ohne „Schließen“:** Titel links (Stufe „Titel“), darunter bei Bedarf eine Zeile in `textMuted`/„Hilfe“ (warum die Welt weiterläuft; „Dein Inventar bleibt erhalten.“).
+- **Pausenmenü in Gruppen, Abstand `xl`:** „Weiterspielen“ (primär, Schild „Esc“ bzw. B, Pad-Fokus startet dort) · die Bildschirme des Spiels in zwei Spalten (Einstellungen, Handbuch, Charakter, Fortschritte) · die Welt (Welt speichern, Im LAN öffnen, Server verwalten; nur die zutreffenden, ein einzelner letzter Knopf füllt die Zeile) · unter einer Trennlinie (`separator`) abgesetzt der Weg hinaus. Knöpfe `buttonLarge`, in einer Gruppe Abstand `s`, zwei nebeneinander gleich breit.
+- **Weg hinaus überall gleich** (`LeaveGameButton`, sekundär, volle Breite): „Speichern und zum Menü“ (gespeicherte Welt), „Zum Menü“ (nicht gespeichert), „Verbindung trennen“ (Netzwerkspiel).
+- **Tod:** dieselbe Karte, „Wiederbeleben“ primär und der Weg hinaus sekundär, beide so breit wie die Knöpfe des Pausenmenüs; Esc/B tun nichts.
+- **Trennung:** „Zurück zum Menü“ primär, „Erneut beitreten“ (Netzwerkspiel) sekundär darunter. **Meldung** (Laden, Fehler): der Text in Stufe „Abschnitt“, darunter „Zurück zum Menü“ bzw. „Abbrechen“. Aufnahmen mit `--overlay message:<text>`.
+- Tests: `test_ui_scale.sh` (Pause, Tod, Schild, Meldung bei 100 % und 200 %, Pad-Fokus im Pausenmenü), `test_pause_screens.sh` (Knöpfe in gespeicherter Welt und als Gast ohne Operator-Rechte, Karten über den Statuszeilen bei 200 % und 225 %, Schild über die Bildschirmtastatur), `test_ui_palette` (`menusUseOnlyTheSizeSteps`).
 
 ## 9 Mindestgröße, Skalierung, Scrollen
 
