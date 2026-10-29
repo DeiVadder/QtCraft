@@ -94,9 +94,19 @@ Ebene-2-Netz (ZeroTier, OpenVPN mit TAP) bringt daher keinen Vorteil.
 ## 3. Windows-Paket bauen (Spielleitung)
 
 Das Spiel für die Windows-PCs ist eine eigenständige ZIP-Datei (Paket 74.4): entpacken,
-`qtcraft.exe` starten; kein Installer, keine Administratorrechte. Gebaut wird es in der
-Parallels-VM (Windows 11 ARM64) als x64-Cross-Build (`vcvarsall arm64_amd64`, Qt 6.8
-`msvc2022_64`, SDL3 statisch für Gamepads):
+`qtcraft.exe` starten; kein Installer, keine Administratorrechte.
+
+**Für die Spieler nur aus dem CI (E-932, E-934):** GitHub → Actions → Release → „Run workflow“
+auf `dev` (optional mit der Serveradresse für `README-Windows.txt`), danach das Artefakt
+`QtCraft-Windows-x64` herunterladen und die darin liegende `QtCraft-<version>-Windows-x64.zip`
+weitergeben; `QtCraft-Windows-x64-pdb` behält die Spielleitung für Absturzberichte. Gebaut gegen
+Open-Source-Qt 6.8.3 mit demselben Skript wie unten (`package-windows.ps1 -Ci`); Einzelheiten in
+[Building.md](Building.md#playtest-builds).
+
+Für eigene Tests (nicht zur Weitergabe) baut es die Parallels-VM (Windows 11
+ARM64) als x64-Cross-Build (`vcvarsall arm64_amd64`, Qt 6.8 `msvc2022_64`, SDL3 statisch für
+Gamepads); diese Pakete heißen ohne `-OpenSourceQt` `…-Windows-x64-local-only.zip` und tragen
+`NOT-FOR-DISTRIBUTION.txt` (E-932):
 
 ```sh
 scripts/vm-package-windows.sh            # Stand von dev
@@ -112,7 +122,7 @@ QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere L
   `C:\Qt-Projekte\Claude\QtCraft\src` (der Build stempelt so den echten Commit; der Build-Ordner
   `src\build\release` und `CMakeUserPresets.json` bleiben, der Build ist inkrementell), baut
   `qtcraft` und `qtcraft-headless` mit den Jobs, die der Slot-Broker zuteilt (höchstens 4), und legt
-  beide ZIPs nach `deploy/` im Haupt-Checkout: `QtCraft-<version>-<commit>-Windows-x64.zip` (Spiel)
+  beide ZIPs nach `deploy/` im Haupt-Checkout: `QtCraft-<version>-<commit>-Windows-x64-local-only.zip` (Spiel)
   und `…-pdb.zip` (PDB-Dateien für die Speicherabbilder, nicht an die Spieler). In der VM bleibt in
   `dist` nur das neueste Paket; `package.lock` verhindert zwei Läufe zugleich.
 - Inhalt: beide Programme, `windeployqt --release --force-openssl --no-compiler-runtime
@@ -125,9 +135,11 @@ QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere L
   `THIRD_PARTY.md`, `CREDITS.md`, `licenses\` (Qt: `Qt-LGPL-3.0.txt`, `Qt-GPL-3.0.txt` und
   `Qt-NOTICE.txt` mit Version und Quellort; SDL3, HIDAPI, SDL-libm, `OpenSSL-LICENSE.txt`,
   Pixelify Sans) und eine deutsche `README-Windows.txt` (Zulassen,
-  Start, SmartScreen und Intelligente App-Steuerung, LAN-Adresse, Protokolle). Das x64-Kit hat nur
-  das Windows-Media-Backend: weder FFmpeg noch `opengl32sw.dll` (Mesa) sind im Paket; die Prüfung
-  schlägt an, falls sie auftauchen (dann gehören ihre Lizenztexte dazu).
+  Start, SmartScreen und Intelligente App-Steuerung, LAN-Adresse, Protokolle). Kein
+  `opengl32sw.dll` (Mesa). Das x64-Kit der VM hat nur das Windows-Media-Backend; das Qt des CI
+  bringt in der Regel das FFmpeg-Backend mit, dann liegen `licenses\FFmpeg-LGPL-2.1.txt` und ein
+  Absatz in `Qt-NOTICE.txt` dabei (die Prüfung verlangt beides, sobald FFmpeg-Dateien im Paket
+  sind), dazu Qts SBOM-Dateien in `licenses\Qt-SBOM`, wo das Qt sie hat.
 - Prüfungen: Build mit dem Kit `-QtDir` (`Qt6_DIR`) und mit Gamepads (`QC_GAMEPAD=ON`, SDL3 aus
   `SDL3_DIR`; ohne nur mit `-NoGamepad`); jede exe/dll importiert nur DLLs aus dem Paket,
   Windows-Komponenten aus `System32` (Produktname mit „Windows“; VC++-Laufzeit nie von dort) oder

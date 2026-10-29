@@ -40,12 +40,25 @@
         {
             "name": "ci-deploy", "inherits": "ci",
             "cacheVariables": { "CMAKE_BUILD_TYPE": "Release", "CMAKE_OSX_ARCHITECTURES": "arm64;x86_64" }
+        },
+        {
+            "name": "ci-release", "inherits": "ci",
+            "description": "GitHub Actions, Windows package: Release (the optimisation of the macOS package) with PDB files for the minidumps (/Zi, /DEBUG with /OPT:REF,ICF), MSVC even with Strawberry Perl's MinGW on PATH",
+            "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release", "CMAKE_C_COMPILER": "cl", "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "ProgramDatabase",
+                "CMAKE_EXE_LINKER_FLAGS_RELEASE": "/DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF",
+                "CMAKE_SHARED_LINKER_FLAGS_RELEASE": "/DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF",
+                "CMAKE_MODULE_LINKER_FLAGS_RELEASE": "/DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
+            }
         }
     ],
     "buildPresets": [
         { "name": "qc-build", "hidden": true, "jobs": 16 },
         { "name": "ci-debug", "configurePreset": "ci-debug" },
-        { "name": "ci-deploy", "configurePreset": "ci-deploy" }
+        { "name": "ci-deploy", "configurePreset": "ci-deploy" },
+        { "name": "ci-release", "configurePreset": "ci-release" }
     ],
     "testPresets": [
         {

@@ -28,8 +28,8 @@ Einzelspieler
 Im Hauptmenü eine neue Welt erstellen und spielen. Der Server läuft dabei im selben Programm,
 ohne Netz; die Windows-Firewall fragt nicht.
 
-Mehrspieler im LAN (Server auf dem Mac)
----------------------------------------
+Mehrspieler (Server beitreten)
+------------------------------
 Hauptmenü → „Mehrspieler“ → Serveradresse eintragen:
 
     @SERVER@
@@ -72,6 +72,25 @@ Weiteres
 - Der Ordner mods enthält das Beispiel-Mod „rubies“; es wird beim ersten Start ausgeschaltet in
   den Datenordner übernommen.
 - Lizenzen: LICENSE (GPL 3, das Spiel), THIRD_PARTY.md, CREDITS.md und der Ordner licenses (Qt unter
-  der LGPL 3 mit Qt-NOTICE.txt, SDL3, HIDAPI, SDL-libm, OpenSSL, Schrift Pixelify Sans).
+  der LGPL 3 mit Qt-NOTICE.txt, FFmpeg unter der LGPL 2.1, sofern enthalten, SDL3, HIDAPI, SDL-libm,
+  OpenSSL, Schrift Pixelify Sans).
 - libssl-3-x64.dll und libcrypto-3-x64.dll neben qtcraft.exe sind OpenSSL (Apache License 2.0):
   damit verschlüsselt das Spiel die Verbindungen im Mehrspieler (TLS). Nicht löschen.
+
+English (short)
+---------------
+QtCraft @VERSION@ for Windows 10/11 (x64), commit @COMMIT@.
+- Unpack the whole zip file (right click, "Extract All"), then start qtcraft.exe. No installation and
+  no administrator rights are needed. Before unpacking, you may tick "Unblock" in the zip file's
+  Properties so that Windows asks less often.
+- The program is not signed: on the first start Windows SmartScreen shows "Windows protected your
+  PC"; click "More info", then "Run anyway". Smart App Control (Windows 11) blocks unsigned programs
+  entirely.
+- Single player: create a world in the main menu. Multiplayer: Main menu, "Multiplayer", enter the
+  server address (@SERVER@); game and server must be the same version and commit.
+- Logs, crash reports and diagnostics: %APPDATA%\QtCraft\QtCraft (Settings, Debug, "Open log
+  folder" or "Collect diagnostics").
+- qtcraft-headless.exe is the dedicated server ("qtcraft-headless.exe --help").
+- Licences: LICENSE (GPL 3, the game), THIRD_PARTY.md, CREDITS.md and the folder licenses (Qt under
+  the LGPL 3 with Qt-NOTICE.txt, FFmpeg under the LGPL 2.1 where included, SDL3, HIDAPI, SDL libm,
+  OpenSSL, Pixelify Sans). libssl-3-x64.dll and libcrypto-3-x64.dll are OpenSSL (TLS for multiplayer).

@@ -1,19 +1,30 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Release packages for a version tag (v0.2.0 and so on): runs the tests, builds the universal macOS
-# app with scripts/release.sh against open-source Qt and uploads the .zip and .dmg to a draft
-# release. The runner cannot start the game; a human tries the package, then publishes the draft.
-# Running the workflow again for the same tag replaces its draft.
+# Release packages, always against open-source Qt (decisions E-932, E-934):
+#   - macOS: runs the tests, builds the universal app with scripts/release.sh (.zip and .dmg)
+#   - Windows x64: builds and checks QtCraft-<version>-Windows-x64.zip (and its -pdb.zip) with
+#     scripts/windows/package-windows.ps1 -Ci
+# A version tag (v0.2.0 and so on) uploads all packages to a draft release; the runners cannot start
+# the game, a human tries the packages, then publishes the draft. Running the workflow again for the
+# same tag replaces its draft. Started by hand (workflow_dispatch, any branch) it builds the same
+# packages as workflow artifacts only, without a release: these are the playtest builds
+# (docs/Building.md, "Playtest builds").
 name: Release
 
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      playtest_server:
+        description: Server address for README-Windows.txt (empty = "the address the game master names")
+        required: false
+        default: ''
 
+# Read-only by default; only the release job writes (the draft release).
 permissions:
-  contents: write
+  contents: read
 
 env:
   QT_VERSION: 6.8.3
@@ -30,7 +41,7 @@ jobs:
           submodules: true
 
       - name: Version matches the tag
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           version=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
           if [ "v$version" != "$GITHUB_REF_NAME" ]; then
@@ -55,7 +66,6 @@ jobs:
       # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
       # follows the tag and the build script (whose CONFIG_VERSION names the build options).
       - name: SDL3 cache
-        if: runner.os != 'Windows'
         uses: actions/cache@v4
         with:
           path: ~/.cache/qtcraft/sdl3
@@ -86,32 +96,224 @@ jobs:
             deploy/*.zip
             deploy/*.dmg
 
+  windows:
+    name: Windows x64 package
+    runs-on: windows-2025
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # x64 compiler, linker, dumpbin and VCToolsRedistDir (the app-local VC++ runtime); the
+      # Developer Command Prompt also brings the CMake and Ninja of Visual Studio.
+      - name: MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Qt ${{ env.QT_VERSION }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          arch: win64_msvc2022_64
+          modules: ${{ env.QT_MODULES }}
+          cache: true
+
+      # SDL3 (E-540) and OpenSSL (E-872) are built in their own steps into their caches below
+      # ~/.cache/qtcraft, and each entry is saved right after it is built, so a later failure (the
+      # package checks) does not throw the work away. The configure step then finds both. The SDL3
+      # key differs from ci.yml's: that job builds the entry with the debug C runtime of its Debug
+      # build, this one the release entry.
+      - name: SDL3 cache (restore)
+        id: sdl3-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/qtcraft/sdl3
+          key: sdl3-release-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
+
+      - name: SDL3
+        if: steps.sdl3-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: bash scripts/build-sdl.sh
+
+      - name: SDL3 cache (save)
+        if: steps.sdl3-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/qtcraft/sdl3
+          key: ${{ steps.sdl3-cache.outputs.cache-primary-key }}
+
+      - name: OpenSSL cache (restore)
+        id: openssl-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/qtcraft/openssl
+          key: openssl-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/openssl-version.txt', 'scripts/windows/build-openssl.ps1') }}
+
+      # Building OpenSSL needs a Windows Perl ($^O MSWin32, Strawberry Perl) and NASM; the image's
+      # Strawberry Perl is used when it is there, otherwise both come from Chocolatey, and jom
+      # (Chocolatey) builds in parallel. Perl goes in front of PATH (no other perl may win), NASM
+      # behind it (Strawberry's c\bin holds a MinGW toolchain that must not shadow MSVC).
+      - name: OpenSSL
+        if: steps.openssl-cache.outputs.cache-hit != 'true'
+        run: |
+          if (-not (Test-Path C:\Strawberry\perl\bin\perl.exe)) {
+            choco install strawberryperl -y --no-progress
+          }
+          $perlDir = 'C:\Strawberry\perl\bin'
+          $nasmDir = 'C:\Strawberry\c\bin'
+          if (-not (Test-Path (Join-Path $nasmDir 'nasm.exe'))) {
+            choco install nasm -y --no-progress
+            $nasmDir = 'C:\Program Files\NASM'
+          }
+          if (-not (Get-Command jom.exe -ErrorAction SilentlyContinue)) {
+            choco install jom -y --no-progress
+            if ($LASTEXITCODE -ne 0) { Write-Output "::warning::jom not installed, OpenSSL builds with nmake" }
+          }
+          $env:PATH = "$perlDir;$env:PATH;$nasmDir;C:\ProgramData\chocolatey\bin"
+          $system = & perl.exe -e 'print $^O'
+          if ($system -ne 'MSWin32') { throw "perl on PATH is built for '$system', OpenSSL needs a Windows Perl" }
+          $env:QC_BUILD_JOBS = $env:NUMBER_OF_PROCESSORS
+          pwsh -NoProfile -File scripts\windows\build-openssl.ps1 -Arch x64
+          exit $LASTEXITCODE
+
+      - name: OpenSSL cache (save)
+        if: steps.openssl-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/qtcraft/openssl
+          key: ${{ steps.openssl-cache.outputs.cache-primary-key }}
+
+      # For the first runs: what the Qt kit and the image bring (multimedia backends, FFmpeg DLLs,
+      # tools). Never fails.
+      - name: Diagnostics
+        continue-on-error: true
+        run: |
+          Write-Output "== $env:QT_ROOT_DIR\plugins\multimedia"
+          Get-ChildItem "$env:QT_ROOT_DIR\plugins\multimedia" -ErrorAction SilentlyContinue | ForEach-Object Name
+          Write-Output "== $env:QT_ROOT_DIR\bin\av*.dll, sw*.dll"
+          Get-ChildItem "$env:QT_ROOT_DIR\bin" -Include av*.dll, sw*.dll -Recurse -ErrorAction SilentlyContinue | ForEach-Object Name
+          foreach ($tool in 'perl.exe', 'nasm.exe', 'jom.exe', 'cl.exe', 'cmake.exe', 'ninja.exe') {
+            $found = Get-Command $tool -ErrorAction SilentlyContinue
+            Write-Output ("{0,-10} {1}" -f $tool, $(if ($found) { "$($found.Source) $($found.Version)" } else { 'not on PATH' }))
+          }
+          foreach ($dir in 'C:\Strawberry\perl\bin\perl.exe', 'C:\Strawberry\c\bin\nasm.exe', 'C:\ProgramData\chocolatey\bin\jom.exe') {
+            Write-Output ("{0} {1}" -f $dir, (Test-Path $dir))
+          }
+          foreach ($dll in 'mfplat.dll', 'mf.dll', 'mfreadwrite.dll') {
+            Write-Output ("System32\{0} {1}" -f $dll, (Test-Path "$env:SystemRoot\System32\$dll"))
+          }
+
+      # Windows Server may lack Media Foundation, which Qt Multimedia's plugins import. Try to add
+      # the feature; package-windows.ps1 -Ci accepts exactly these imports when they stay missing
+      # and says so in its log.
+      - name: Media Foundation
+        continue-on-error: true
+        run: |
+          $dlls = 'mfplat.dll', 'mf.dll', 'mfreadwrite.dll'
+          $missing = @($dlls | Where-Object { -not (Test-Path "$env:SystemRoot\System32\$_") })
+          if ($missing.Count -eq 0) { Write-Output "Media Foundation present"; exit 0 }
+          Write-Output "Media Foundation missing ($($missing -join ', ')): Install-WindowsFeature Server-Media-Foundation"
+          Install-WindowsFeature Server-Media-Foundation | Format-List | Out-String | Write-Output
+          $missing = @($dlls | Where-Object { -not (Test-Path "$env:SystemRoot\System32\$_") })
+          Write-Output "still missing after the install: $(if ($missing.Count) { $missing -join ', ' } else { 'none' })"
+
+      # Release build (preset ci-release: Release with PDB files), windeployqt, licence texts and the
+      # checks of the script, among them a dedicated server of the unpacked copy with TLS and a bot
+      # that joins it. The tests run in the macOS job; on Windows they are still experimental (ci.yml).
+      # -OpenSourceQt: aqtinstall installs the open-source Qt; only such packages are passed on
+      # (E-932). Without it the package would be -local-only and the uploads below would find nothing.
+      - name: Package
+        env:
+          QC_PLAYTEST_SERVER: ${{ inputs.playtest_server }}
+        run: |
+          $arguments = @('-Ci', '-OpenSourceQt', '-Jobs', $env:NUMBER_OF_PROCESSORS)
+          if ($env:QC_PLAYTEST_SERVER) { $arguments += @('-Server', $env:QC_PLAYTEST_SERVER) }
+          pwsh -NoProfile -File scripts\windows\package-windows.ps1 @arguments
+          exit $LASTEXITCODE
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QtCraft-Windows-x64
+          path: deploy/QtCraft-*-Windows-x64.zip
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QtCraft-Windows-x64-pdb
+          path: deploy/QtCraft-*-Windows-x64-pdb.zip
+          if-no-files-found: error
+
+      # The OpenSSL build log stays in its scratch folder of the cache root when the build fails.
+      - name: Collect logs
+        if: failure()
+        run: |
+          $logs = New-Item -ItemType Directory -Force build\failure-logs
+          Get-ChildItem "$env:USERPROFILE\.cache\qtcraft\openssl" -Directory -Filter '.build-*' -ErrorAction SilentlyContinue |
+            ForEach-Object { Copy-Item -ErrorAction SilentlyContinue (Join-Path $_.FullName 'build.log') (Join-Path $logs "openssl-$($_.Name).log") }
+          Copy-Item -ErrorAction SilentlyContinue build\ci-release\CMakeFiles\CMakeConfigureLog.yaml $logs
+
+      - name: Package logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-logs-Windows
+          path: |
+            build/package-work/**/*.txt
+            build/package-work/**/*.log
+            build/failure-logs/
+          retention-days: 14
+
+  release:
+    name: Draft release
+    # Only a pushed tag makes a release; a run started by hand never does.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: [macos, windows]
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: QtCraft-*
+          path: packages
+          merge-multiple: true
+
       - name: Draft release
-        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           cat > "$RUNNER_TEMP/notes.md" <<EOF
           QtCraft ${GITHUB_REF_NAME#v}.
 
-          Checked on the build machine: tests, bundle contents, signature, universal binaries and a
-          start of the dedicated server. The game itself was not started there.
+          Checked on the build machines: tests (macOS), package contents, licence texts, signature and
+          universal binaries (macOS), imported DLLs (Windows) and a start of the dedicated server, on
+          Windows with TLS and a bot that joins it. The game itself was not started there.
 
-          macOS (Apple silicon and Intel, macOS 13.3 or newer). The app is not notarized: open it the
-          first time with right click, Open, or allow it under System Settings, Privacy & Security.
+          macOS (Apple silicon and Intel, macOS 13.3 or newer): QtCraft-*-macOS.zip or .dmg. The app is
+          not notarized: open it the first time with right click, Open, or allow it under System
+          Settings, Privacy & Security.
+
+          Windows 10 or 11, x64: QtCraft-${GITHUB_REF_NAME#v}-Windows-x64.zip. Unpack it completely and
+          start qtcraft.exe; README-Windows.txt explains the SmartScreen warning (the program is not
+          signed). The -pdb.zip holds the debug symbols for crash reports and is not needed to play.
 
           QtCraft is licensed under GPL-3.0-or-later. The packages contain Qt ${QT_VERSION}, used under
           the GNU LGPL version 3, and the FFmpeg libraries of Qt Multimedia (GNU LGPL version 2.1 or
-          later); the licence texts and a notice are in QtCraft.app/Contents/Resources/licenses.
+          later); the licence texts and a notice are in QtCraft.app/Contents/Resources/licenses (macOS)
+          and in the folder licenses of the Windows package.
           Corresponding source:
           - Qt ${QT_VERSION}: https://download.qt.io/archive/qt/${QT_VERSION%.*}/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz
-          - FFmpeg: the tag named in coin/provisioning/common/unix/install-ffmpeg.sh of the repository
-            qt/qt5 at the tag v${QT_VERSION} (n7.1 for Qt 6.8.3),
+          - FFmpeg: the tag named in coin/provisioning/common/unix/install-ffmpeg.sh (Windows:
+            common/windows/install-ffmpeg.ps1) of the repository qt/qt5 at the tag v${QT_VERSION} (n7.1 for Qt 6.8.3),
             https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.tar.gz; the build options are in that script.
           The maintainers also send these sources on request.
           EOF
           if [ "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft 2>/dev/null)" = "true" ]; then
             gh release delete "$GITHUB_REF_NAME" --yes
           fi
-          gh release create "$GITHUB_REF_NAME" deploy/*.zip deploy/*.dmg --draft --verify-tag \
+          gh release create "$GITHUB_REF_NAME" packages/* --draft --verify-tag \
             --title "QtCraft ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/notes.md"

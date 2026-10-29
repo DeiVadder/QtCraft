@@ -1,28 +1,40 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Windows x64 package (stage 74.4): builds qtcraft and qtcraft-headless from a git ref of the Mac
-# repository in the Parallels ARM64 VM (cross build ARM64 host -> x64 target, vcvarsall
-# arm64_amd64), assembles a standalone folder with windeployqt, the app-local VC++ runtime, the
-# OpenSSL DLLs, the example mods and the licence texts, checks it and packs
-#   QtCraft-<version>-<shortsha>-Windows-x64.zip       (the game, unzip and start qtcraft.exe)
-#   QtCraft-<version>-<shortsha>-Windows-x64-pdb.zip   (PDB files for the minidumps, E-834)
-# into <Root>\dist. Without -OpenSourceQt (the Qt kit is not declared as open-source Qt) or with
-# commercial licence files next to the Qt installation (<QtDir>\..\..\Licenses, licenseInfo.txt),
-# the package is for local tests only (decision E-932): both names end in -local-only, the package
-# carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL instead of Qt's LGPL texts.
+# Windows x64 package (stage 74.4, CI mode 39.1c): builds qtcraft and qtcraft-headless, assembles
+# a standalone folder with windeployqt, the app-local VC++ runtime, the OpenSSL DLLs, the example
+# mods and the licence texts, checks it and packs
+#   <name>.zip       (the game, unzip and start qtcraft.exe)
+#   <name>-pdb.zip   (PDB files for the minidumps, E-834)
+# Two ways to run it:
+#   - in the Parallels ARM64 VM (default): a git ref of the Mac repository, cross build ARM64 host
+#     -> x64 target (vcvarsall arm64_amd64), preset "release" of CMakeUserPresets.json, into
+#     <Root>\dist, <name> = QtCraft-<version>-<shortsha>-Windows-x64
+#   - -Ci (the release workflow on GitHub, decision E-934): the checkout this script lies in, the
+#     MSVC x64 environment already imported (ilammy/msvc-dev-cmd), Qt from QT_ROOT_DIR
+#     (install-qt-action), preset "ci-release", into <checkout>\deploy,
+#     <name> = QtCraft-<version>-Windows-x64; SDL3 and OpenSSL come from their default caches
+#     below %USERPROFILE%\.cache\qtcraft (restored by actions/cache)
+# Without -OpenSourceQt (the Qt kit is not declared as open-source Qt; only the release workflow
+# passes it) or with commercial licence files next to the Qt installation (<QtDir>\..\..\Licenses,
+# licenseInfo.txt), the package is for local tests only (decision E-932): both names end in
+# -local-only, the package carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL
+# instead of Qt's LGPL texts.
 #
 # Checks (any failure makes the script exit with 1):
 #   - the build used the Qt kit -QtDir (Qt6_DIR in CMakeCache.txt) and has gamepad support
 #     (QC_GAMEPAD=ON with SDL3 linked statically; -NoGamepad accepts a build without it)
 #   - every exe/dll in the package imports only DLLs of the package, Windows components in
 #     System32 or API sets (dumpbin /dependents, including delay-load imports); a VC++ runtime DLL
-#     (vcruntime, msvcp, concrt, vcomp, vccorlib) must come from the package, never from System32
+#     (vcruntime, msvcp, concrt, vcomp, vccorlib) must come from the package, never from System32;
+#     with -Ci only, imports of the Media Foundation DLLs (mfplat, mf, mfreadwrite) that a Windows
+#     Server runner lacks are accepted with a log line
 #   - all DLLs of Microsoft.VC143.CRT, the Qt platform and multimedia plugins, QML modules, example
 #     mod, the OpenSSL DLLs (libssl-3-x64.dll, libcrypto-3-x64.dll of the pinned version, E-872)
-#     and the licence texts (game, Qt under the LGPL 3, SDL3, HIDAPI, SDL libm, OpenSSL, Pixelify
-#     Sans) are present; Qt's OpenSSL backend plugin (tls\qopensslbackend.dll) is there; no
-#     software OpenGL (opengl32sw.dll) and no FFmpeg files without a notice
+#     and the licence texts (game, Qt under the LGPL 3 with its notice, SDL3, HIDAPI, SDL libm,
+#     OpenSSL, Pixelify Sans) are present; Qt's OpenSSL backend plugin (tls\qopensslbackend.dll) is
+#     there; no software OpenGL (opengl32sw.dll); FFmpeg (Qt Multimedia's FFmpeg backend of the
+#     installer kits) only with its LGPL 2.1 text and a paragraph in the Qt notice
 #   - a copy unpacked from the zip, started with a PATH without Qt: qtcraft-headless --help, a
 #     dedicated server (--server --console --port 0 --bind 127.0.0.1, own data directory) that
 #     reports "Listening on port", TLS through the bundled OpenSSL of the pinned version and its
@@ -42,9 +54,11 @@
 #       [-Root C:\Qt-Projekte\Claude\QtCraft] [-Repo //Mac/Home/Qt-Projekte/Privat/Claude/QtCraft]
 #       [-QtDir C:\Qt\6.8.3\msvc2022_64] [-Server 192.168.0.201:25600] [-NoFetch] [-NoGamepad]
 #       [-GuiCheck] [-OpenSourceQt]
+# In the release workflow: pwsh -File scripts\windows\package-windows.ps1 -Ci -OpenSourceQt [-Jobs 4]
+#   [-Server <text>]
 #   -OpenSourceQt  declares -QtDir an open-source Qt (packages for others, E-932)
-#   -Server  the LAN address of the playtest server, written into README-Windows.txt
-# One run at a time: <Root>\package.lock is held open while the script runs.
+#   -Server  the address of the playtest server, written into README-Windows.txt
+# One run at a time: <Root>\package.lock is held open while the script runs (-Ci: <checkout>\build).
 #
 # OpenSSL (decision E-872) comes from the cache entry scripts\windows\build-openssl.ps1 builds into
 # <Root>\openssl during the configure step (once per version); windeployqt deploys only Qt's TLS
@@ -61,14 +75,30 @@ param(
     [switch]$NoFetch,
     [switch]$NoGamepad,
     [switch]$GuiCheck,
-    [switch]$OpenSourceQt
+    [switch]$OpenSourceQt,
+    [switch]$Ci
 )
 
 $ErrorActionPreference = "Continue"
+$Preset = "release"
 $Source = Join-Path $Root "src"
-$BuildDir = Join-Path $Source "build\release"
 $Dist = Join-Path $Root "dist"
+if ($Ci) {
+    # The checkout this script belongs to; Qt from install-qt-action unless -QtDir names one.
+    $Preset = "ci-release"
+    $Source = Split-Path (Split-Path $PSScriptRoot)
+    $Root = Join-Path $Source "build"
+    $Dist = Join-Path $Source "deploy"
+    if (-not $PSBoundParameters.ContainsKey("QtDir")) { $QtDir = $env:QT_ROOT_DIR }
+    # The VM's default is the LAN address of the playtest server at home; a public package names none.
+    if (-not $PSBoundParameters.ContainsKey("Server") -or -not $Server) { $Server = "(die Adresse, die die Spielleitung nennt / the address your host names)" }
+}
+$BuildDir = Join-Path $Source "build\$Preset"
 $Work = Join-Path $Root "package-work"
+# Media Foundation DLLs that Qt Multimedia imports; Windows Server lacks them without its feature.
+$MediaFoundationDlls = @("mfplat.dll", "mf.dll", "mfreadwrite.dll")
+# Windows' own bsdtar writes zip files (-a); a tar of Git for Windows on PATH would not.
+$Tar = Join-Path $env:SystemRoot "System32\tar.exe"
 $script:Failures = @()
 
 function Abort([string]$message) {
@@ -129,6 +159,17 @@ function Import-VcVars {
     $env:PATH = "C:\Qt\Tools\CMake\bin;C:\Qt\Tools\Ninja;$env:PATH"
 }
 
+# The MSVC environment of the workflow (ilammy/msvc-dev-cmd) must target x64 and name the
+# redistributable files (VCToolsRedistDir, for the app-local VC++ runtime).
+function Assert-CiEnvironment {
+    if ($env:VSCMD_ARG_TGT_ARCH -ne "x64" -or -not (Get-Command cl.exe -ErrorAction SilentlyContinue)) {
+        Abort "-Ci needs the MSVC x64 environment (VSCMD_ARG_TGT_ARCH is '$env:VSCMD_ARG_TGT_ARCH')"
+    }
+    if (-not $QtDir -or -not (Test-Path (Join-Path $QtDir "bin\windeployqt.exe"))) {
+        Abort "-Ci: no Qt kit with windeployqt in '$QtDir' (QT_ROOT_DIR of install-qt-action, or -QtDir)"
+    }
+}
+
 function Update-Source {
     if (-not (Test-Path (Join-Path $Source ".git"))) {
         New-Item -ItemType Directory -Force $Source | Out-Null
@@ -164,6 +205,12 @@ function Test-Imports([string]$package) {
             if (Test-Path (Join-Path $package $import)) { continue }
             $inSystem = Join-Path $system $import
             if ((Test-Path $inSystem) -and (Test-WindowsComponent $inSystem)) { continue }
+            if ($Ci -and ($MediaFoundationDlls -contains $import.ToLowerInvariant()) -and -not (Test-Path $inSystem)) {
+                # Windows Server without the Media Foundation feature (the CI runner); every desktop
+                # Windows 10/11 has these DLLs. Only these imports, only with -Ci.
+                Write-Output "note $($binary.FullName.Substring($package.Length + 1)) imports $import, which this Windows (no Media Foundation) lacks: accepted in -Ci mode only"
+                continue
+            }
             Problem "$($binary.FullName.Substring($package.Length + 1)) imports $import (neither in the package nor a Windows component in System32)"
             $bad++
         }
@@ -327,21 +374,29 @@ function Test-Game([string]$copy) {
     }
 }
 
-Write-Output "== source $Ref from $Repo"
+if ($Ci) {
+    Write-Output "== source: this checkout ($Source)"
+} else {
+    Write-Output "== source $Ref from $Repo"
+}
 New-Item -ItemType Directory -Force $Root | Out-Null
 try {
     $script:Lock = [System.IO.File]::Open((Join-Path $Root "package.lock"), "OpenOrCreate", "ReadWrite", "None")
 } catch {
     Abort "another packaging run holds $Root\package.lock"
 }
-Import-VcVars
+if ($Ci) {
+    Assert-CiEnvironment
+} else {
+    Import-VcVars
+}
 if (-not $env:VCToolsRedistDir) {
     Abort "VCToolsRedistDir is not set (vcvarsall without the redistributable files?)"
 }
-if (-not $NoFetch) {
+if (-not $Ci -and -not $NoFetch) {
     Update-Source
 }
-if (-not (Test-Path (Join-Path $Source "CMakeUserPresets.json"))) {
+if (-not $Ci -and -not (Test-Path (Join-Path $Source "CMakeUserPresets.json"))) {
     Abort "$Source\CMakeUserPresets.json is missing (preset 'release' with the x64 kit, docs/Building.md, section Windows)"
 }
 $commit = (git -C $Source rev-parse --short=7 HEAD).Trim()
@@ -351,6 +406,10 @@ if ($cmakeLists -notmatch 'project\(QtCraft VERSION ([0-9.]+)') {
 }
 $version = $Matches[1]
 $name = "QtCraft-$version-$commit-Windows-x64"
+if ($Ci) {
+    # The release names the version only; README-Windows.txt and the log headers name the commit.
+    $name = "QtCraft-$version-Windows-x64"
+}
 # Local tests only unless the Qt kit is declared open source and has no commercial licence files.
 $qtRoot = Split-Path (Split-Path $QtDir)
 $commercialQt = [bool](Get-ChildItem -ErrorAction SilentlyContinue (Join-Path $qtRoot "Licenses") |
@@ -364,19 +423,21 @@ if ($localOnly) {
     Write-Output "WARNING: local-only package: not for distribution; packages for others come from the release"
     Write-Output "WARNING: workflow with open-source Qt (-OpenSourceQt, decision E-932)."
 }
-Write-Output "== $name (Qt $QtDir, $Jobs jobs)"
+Write-Output "== $name (Qt $QtDir, preset $Preset, $Jobs jobs)"
 
 Write-Output "== configure and build"
 Push-Location $Source
-$env:QC_SDL_CACHE = (Join-Path $Root "sdl3").Replace("\", "/")
-# OpenSSL's cache entry lives next to the SDL3 one in <Root>, outside the source checkout, so it
-# survives every fetch; the configure step builds it once per version and options
-# (scripts\windows\build-openssl.ps1, with the jobs of this run).
-$env:QC_OPENSSL_CACHE = Join-Path $Root "openssl"
+if (-not $Ci) {
+    $env:QC_SDL_CACHE = (Join-Path $Root "sdl3").Replace("\", "/")
+    # OpenSSL's cache entry lives next to the SDL3 one in <Root>, outside the source checkout, so it
+    # survives every fetch; the configure step builds it once per version and options
+    # (scripts\windows\build-openssl.ps1, with the jobs of this run).
+    $env:QC_OPENSSL_CACHE = Join-Path $Root "openssl"
+}
 $env:QC_BUILD_JOBS = "$Jobs"
 $prefix = $QtDir.Replace("\", "/")
-Invoke-Checked "configure" "cmake" @("--preset", "release", "-DCMAKE_PREFIX_PATH=$prefix")
-Invoke-Checked "build" "cmake" @("--build", "--preset", "release", "--target", "qtcraft", "qtcraft-headless", "-j", "$Jobs")
+Invoke-Checked "configure" "cmake" @("--preset", $Preset, "-DCMAKE_PREFIX_PATH=$prefix")
+Invoke-Checked "build" "cmake" @("--build", "--preset", $Preset, "--target", "qtcraft", "qtcraft-headless", "-j", "$Jobs")
 Pop-Location
 $cache = Get-Content (Join-Path $BuildDir "CMakeCache.txt")
 function Get-CacheValue([string]$key) {
@@ -445,26 +506,74 @@ foreach ($file in @("LICENSE", "THIRD_PARTY.md", "CREDITS.md")) {
 Copy-Required (Join-Path $Source "src\app\fonts\OFL.txt") (Join-Path $licenses "PixelifySans-OFL.txt")
 Copy-Required (Join-Path $openssl "LICENSE.txt") (Join-Path $licenses "OpenSSL-LICENSE.txt")
 $qtVersion = "$(& (Join-Path $QtDir "bin\qtpaths.exe") --query QT_VERSION)".Trim()
+if ($qtVersion -notmatch '^6\.') {
+    Abort "cannot read the Qt version from $QtDir\bin\qtpaths.exe"
+}
 $qtSeries = $qtVersion.Substring(0, $qtVersion.LastIndexOf('.'))
+# Qt Multimedia's FFmpeg libraries (the FFmpeg backend of the installer and CI kits; a kit built from
+# the sources may have only Windows Media) are under the LGPL 2.1 or later: their text and a
+# paragraph of the notice, only when they are there. The FFmpeg tag Qt builds from is named in Qt's
+# provisioning script, as in scripts/release.sh. $ffmpeg (detection) includes Qt's FFmpeg backend
+# plugin; the notice names only the FFmpeg libraries ($ffmpegLibraries, av*/sw*): the plugin is
+# Qt's own code under the LGPL 3.
+$ffmpeg = @(Get-ChildItem -Recurse -File $package -Include "ffmpegmediaplugin.dll", "av*.dll", "swscale*.dll", "swresample*.dll" | ForEach-Object { $_.Name } | Sort-Object -Unique)
+$ffmpegLibraries = @($ffmpeg | Where-Object { $_ -match '^(av|sw)' })
+$ffmpegFiles = "The FFmpeg libraries in this package ($($ffmpegLibraries -join ', ')) are"
+if ($ffmpegLibraries.Count -eq 0) {
+    $ffmpegFiles = "FFmpeg, linked into Qt's plugin multimedia\ffmpegmediaplugin.dll, is"
+}
+$ffmpegScript = "coin/provisioning/common/windows/install-ffmpeg.ps1 of the repository qt/qt5 at the tag v$qtVersion"
+$ffmpegTag = "the FFmpeg tag named in $ffmpegScript"
+$ffmpegUrlTag = "<tag>"
+if ($qtVersion -eq "6.8.3") {
+    $ffmpegTag = "FFmpeg n7.1 (named in $ffmpegScript)"
+    $ffmpegUrlTag = "n7.1"
+}
+if ($ffmpeg.Count -gt 0) {
+    Copy-Required (Join-Path $Source "licenses-third-party\LGPL-2.1-or-later.txt") (Join-Path $licenses "FFmpeg-LGPL-2.1.txt")
+}
 if (-not $localOnly) {
-    # Qt is used under the LGPL 3 (THIRD_PARTY.md): its text, the GPL 3 it builds on, and a notice
-    # with the exact source (decision E-932).
-    $qtLicenses = Join-Path (Split-Path $QtDir) "Src\qtbase\LICENSES"
-    Copy-Required (Join-Path $qtLicenses "LGPL-3.0-only.txt") (Join-Path $licenses "Qt-LGPL-3.0.txt")
-    Copy-Required (Join-Path $qtLicenses "GPL-3.0-only.txt") (Join-Path $licenses "Qt-GPL-3.0.txt")
+    # Qt is used under the LGPL 3 (THIRD_PARTY.md): its text, the GPL 3 it builds on (the game's own
+    # LICENSE), and a notice with the exact source (decision E-932). The texts come from the
+    # repository, as in scripts/release.sh: the CI kits of install-qt-action have no Qt sources.
+    Copy-Required (Join-Path $Source "licenses-third-party\LGPL-3.0-only.txt") (Join-Path $licenses "Qt-LGPL-3.0.txt")
+    Copy-Required (Join-Path $Source "LICENSE") (Join-Path $licenses "Qt-GPL-3.0.txt")
     $qtNotice = @(
         "Qt $qtVersion",
         "",
         "This package contains the libraries, plugins and QML modules of Qt $qtVersion (The Qt Company Ltd.",
-        "and other contributors) as separate, unmodified DLL files next to qtcraft.exe. They are used under",
-        "the GNU Lesser General Public License version 3 (Qt-LGPL-3.0.txt, which builds on Qt-GPL-3.0.txt);",
-        "you may replace them with your own build of the same Qt version.",
-        "",
-        "Corresponding source code of Qt ${qtVersion}:",
-        "https://download.qt.io/archive/qt/$qtSeries/$qtVersion/single/qt-everywhere-src-$qtVersion.zip",
-        "(the same folder also has a .tar.xz and md5sums.txt); the QtCraft maintainers also send it on request.",
-        "Qt Multimedia is built with the Windows Media backend only (no FFmpeg); no software OpenGL is included."
+        "and other contributors) as separate, unmodified DLL files next to qtcraft.exe and in its plugin and",
+        "qml folders. They are used under the GNU Lesser General Public License version 3 (Qt-LGPL-3.0.txt,",
+        "which builds on Qt-GPL-3.0.txt); you may replace them with your own build of the same Qt version.",
+        "Qt contains code of other projects (for example libpng, libjpeg, PCRE2, HarfBuzz, double-conversion,",
+        "TinyCBOR); their licences and notices are listed in the software bills of materials in the folder",
+        "Qt-SBOM, where present, and in the Qt documentation (`"Licenses Used in Qt`").",
+        ""
     )
+    if ($ffmpeg.Count -gt 0) {
+        $qtNotice += @(
+            "Qt Multimedia plays sound through FFmpeg (Qt's backend plugin multimedia\ffmpegmediaplugin.dll).",
+            "$ffmpegFiles the unmodified LGPL build that comes with Qt $qtVersion;",
+            "FFmpeg is licensed under the GNU Lesser General Public License version 2.1 or later",
+            "(FFmpeg-LGPL-2.1.txt). You may replace them with your own build of the same FFmpeg version.",
+            ""
+        )
+    } else {
+        $qtNotice += @("Qt Multimedia is built with the Windows Media backend only (no FFmpeg).", "")
+    }
+    $qtNotice += @(
+        "Corresponding source code:",
+        "- Qt ${qtVersion}: https://download.qt.io/archive/qt/$qtSeries/$qtVersion/single/qt-everywhere-src-$qtVersion.tar.xz",
+        "  (the same folder also has a .zip and md5sums.txt)."
+    )
+    if ($ffmpeg.Count -gt 0) {
+        $qtNotice += @(
+            "- FFmpeg: $ffmpegTag,",
+            "  https://github.com/FFmpeg/FFmpeg/archive/refs/tags/$ffmpegUrlTag.tar.gz (also from ffmpeg.org); the build",
+            "  options are in that script."
+        )
+    }
+    $qtNotice += @("The QtCraft maintainers also send these sources on request. No software OpenGL is included.")
 } else {
     $qtNotice = @(
         "Qt $qtVersion (local tests only: not declared as open-source Qt)",
@@ -474,11 +583,26 @@ if (-not $localOnly) {
         "this package; do not distribute it (NOT-FOR-DISTRIBUTION.txt). Packages for others come from the",
         "release workflow, built against open-source Qt."
     )
+    if ($ffmpeg.Count -gt 0) {
+        $qtNotice += @(
+            "",
+            "$ffmpegFiles licensed under the GNU Lesser",
+            "General Public License version 2.1 or later (FFmpeg-LGPL-2.1.txt); source: $ffmpegTag."
+        )
+    }
     [System.IO.File]::WriteAllLines((Join-Path $package "NOT-FOR-DISTRIBUTION.txt"), @(
         "This QtCraft package was built with a Qt that is not declared as open-source Qt ($QtDir), for local tests only.",
         "Do not pass it on: packages for others come from the release workflow with open-source Qt."))
 }
 [System.IO.File]::WriteAllLines((Join-Path $licenses "Qt-NOTICE.txt"), $qtNotice)
+# Qt's software bills of materials for the modules in the package, when the Qt installation has them.
+foreach ($module in @("qtbase", "qtdeclarative", "qtmultimedia", "qtimageformats", "qtsvg")) {
+    $sbom = Join-Path $QtDir "sbom\$module-$qtVersion.spdx"
+    if (Test-Path $sbom) {
+        New-Item -ItemType Directory -Force (Join-Path $licenses "Qt-SBOM") | Out-Null
+        Copy-Required $sbom (Join-Path $licenses "Qt-SBOM")
+    }
+}
 $sdl = $null
 if ($gamepad -eq "ON") {
     # SDL3_DIR is <prefix>/cmake of the SDL3 cache entry the build linked (scripts/build-sdl.sh).
@@ -493,6 +617,14 @@ $readme = $readme.Replace("`r`n", "`n").Replace("`n", "`r`n")
 [System.IO.File]::WriteAllText((Join-Path $package "README-Windows.txt"), $readme, (New-Object System.Text.UTF8Encoding $true))
 
 Write-Output "== checks"
+if ($Ci) {
+    $missingMf = @($MediaFoundationDlls | Where-Object { -not (Test-Path (Join-Path $env:SystemRoot "System32\$_")) })
+    if ($missingMf.Count -gt 0) {
+        Write-Output "note Media Foundation is missing on this Windows ($($missingMf -join ', ')): imports of exactly these DLLs are accepted (-Ci)"
+    } else {
+        Ok "Media Foundation present (mfplat.dll, mf.dll, mfreadwrite.dll)"
+    }
+}
 $required = @("qtcraft.exe", "qtcraft-headless.exe", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
     "platforms\qwindows.dll", "multimedia\windowsmediaplugin.dll", "qml\QtQuick\Controls", "qml\QtQuick\Layouts",
     "mods\rubies\pack.json", "LICENSE", "THIRD_PARTY.md", "CREDITS.md", "README-Windows.txt", "licenses\PixelifySans-OFL.txt",
@@ -515,9 +647,14 @@ foreach ($dll in $opensslDlls) {
     if ("$fileVersion" -eq $opensslVersion) { Ok "$dll is OpenSSL $fileVersion" } else { Problem "$dll is OpenSSL '$fileVersion', 3rdparty\openssl-version.txt wants $opensslVersion" }
 }
 if (Test-Path (Join-Path $package "opengl32sw.dll")) { Problem "the package contains opengl32sw.dll (Mesa, needs its notice)" } else { Ok "no software OpenGL (opengl32sw.dll)" }
-# The x64 kit has only the Windows Media backend; an FFmpeg backend would need its LGPL 2.1 notice.
-$ffmpeg = @(Get-ChildItem -Recurse -File $package -Include "ffmpegmediaplugin.dll", "av*.dll", "swscale*.dll", "swresample*.dll" | ForEach-Object { $_.Name })
-if ($ffmpeg.Count -gt 0) { Problem "the package contains FFmpeg files without a notice: $($ffmpeg -join ', ')" } else { Ok "no FFmpeg backend or libraries" }
+# FFmpeg (the installer kits' backend) only with its LGPL 2.1 text and the paragraph of the notice.
+if ($ffmpeg.Count -eq 0) {
+    Ok "no FFmpeg backend or libraries"
+} elseif ((Test-Path (Join-Path $licenses "FFmpeg-LGPL-2.1.txt")) -and (Select-String -Quiet -Path (Join-Path $licenses "Qt-NOTICE.txt") -Pattern "FFmpeg-LGPL-2.1.txt")) {
+    Ok "FFmpeg files ($($ffmpeg -join ', ')) with licenses\FFmpeg-LGPL-2.1.txt and the paragraph in Qt-NOTICE.txt"
+} else {
+    Problem "the package contains FFmpeg files without their notice: $($ffmpeg -join ', ')"
+}
 if ($gamepad -eq "ON") {
     if (Get-ChildItem -Recurse -File $package -Filter "*SDL*.dll") { Problem "the package contains an SDL library" } else { Ok "SDL3 linked statically from $sdl (no SDL library)" }
     foreach ($licence in @("SDL3-LICENSE.txt", "HIDAPI-LICENSE.txt", "SDL3-LIBM-NOTICE.txt")) {
@@ -533,15 +670,15 @@ if ("$machine" -match "x64") { Ok "qtcraft.exe is x64" } else { Problem "qtcraft
 Test-Imports $package
 
 Write-Output "== zip"
-& tar -a -c -f "$package.zip" -C $Dist $name
+& $Tar -a -c -f "$package.zip" -C $Dist $name
 if ($LASTEXITCODE -ne 0) { Abort "zip failed" }
-& tar -a -c -f "$pdbs.zip" -C $Dist "$name-pdb"
+& $Tar -a -c -f "$pdbs.zip" -C $Dist "$name-pdb"
 if ($LASTEXITCODE -ne 0) { Abort "pdb zip failed" }
 
 Write-Output "== start a copy unpacked from the zip"
 $copyRoot = Join-Path $Work "copy"
 New-Item -ItemType Directory -Force $copyRoot | Out-Null
-& tar -x -f "$package.zip" -C $copyRoot
+& $Tar -x -f "$package.zip" -C $copyRoot
 if ($LASTEXITCODE -ne 0) { Abort "cannot unpack $package.zip" }
 $copy = Join-Path $copyRoot $name
 Test-Server $copy

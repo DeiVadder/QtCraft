@@ -16,7 +16,7 @@ cmake --preset release
 cmake --build --preset release
 ```
 
-Presets: `debug`, `release` (RelWithDebInfo), `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer), `profile` and `deploy` (used by the scripts below); `ci-debug` and `ci-deploy` are the CI's presets (Qt from `QT_ROOT_DIR`). Build directories are `build/<preset>`. All own targets are compiled with warnings as errors and without exceptions.
+Presets: `debug`, `release` (RelWithDebInfo), `asan` (Address + UndefinedBehavior sanitizers), `tsan` (Thread sanitizer), `profile` and `deploy` (used by the scripts below); `ci-debug`, `ci-deploy` and `ci-release` are the CI's presets (Qt from `QT_ROOT_DIR`; `ci-release` only on Windows, for the Windows package: Release with PDB files). Build directories are `build/<preset>`. All own targets are compiled with warnings as errors and without exceptions.
 
 The presets `debug`, `asan` and `tsan` build the project libraries as shared libraries (`QC_SHARED_LIBS`, decision E-890), so the several hundred test programs load one copy of each library instead of linking their own: on this machine a debug tree takes about 40 GB, an ASan tree about 31 GB and a TSan tree about 26 GB. The sanitizer presets compile with line tables only (`-gline-tables-only`). `release`, `deploy`, `profile`, the CI presets and every Windows build stay static. A program that loads the QML module `QtCraft` links `qc_app_qml`.
 
@@ -164,10 +164,19 @@ Useful hooks: `--play [--seed N] [--world NAME]`, `--world-type terrain|flat|voi
 
 ## Continuous integration
 
-GitHub Actions (`.github/workflows/`), all against open-source Qt 6.8.3 installed by `install-qt-action` (presets `ci-debug` and `ci-deploy`, Qt from `QT_ROOT_DIR`):
+GitHub Actions (`.github/workflows/`), all against open-source Qt 6.8.3 installed by `install-qt-action` (presets `ci-debug`, `ci-deploy` and `ci-release`, Qt from `QT_ROOT_DIR`):
 
 - **CI** – every push to `dev` or `main` and every pull request: Debug build and all tests on macOS. Linux and Windows jobs are set up too, as experimental jobs whose failures do not fail the run (not run yet).
 - **Pages** – `web/` (the web handbook) from `main`.
-- **Release** – a tag `v<version>` matching `project(QtCraft VERSION …)`: the tests, then `scripts/release.sh` without the starts of the game (try the package once before publishing), the `.zip` and `.dmg` go to a draft release that a maintainer publishes.
+- **Release** – a tag `v<version>` matching `project(QtCraft VERSION …)`: on macOS the tests, then `scripts/release.sh` without the starts of the game; on Windows (`windows-2025`, x64) `scripts/windows/package-windows.ps1 -Ci` (preset `ci-release`, Release like the macOS package, with PDB files; SDL3 and OpenSSL in their own steps, each cached as soon as it is built; `windeployqt`, app-local VC++ runtime, OpenSSL, licence texts and the checks of the script, among them a dedicated server of the unpacked copy with TLS and a bot that joins it; the Windows tests stay in the experimental CI job). The macOS `.zip` and `.dmg` and `QtCraft-<version>-Windows-x64.zip` with its `-pdb.zip` go to a draft release that a maintainer publishes after trying the packages once. Started by hand, the same workflow builds the packages without a release (next section).
 
-The workflows have not run on GitHub yet; the first run is part of the publication (stage 39).
+The workflows have not run on GitHub yet; the first run is part of the publication (stage 39). The Windows job of the release workflow is untested until then (decision E-934).
+
+### Playtest builds
+
+Packages for others – playtest builds as well as releases – come only from the release workflow, built against open-source Qt 6.8.3 (decision E-932). Packages from `scripts/release.sh` or `scripts/vm-package-windows.sh` on a local machine are for local tests only (`…-local-only`, with `NOT-FOR-DISTRIBUTION.txt`; see “Who may pass a package on” above); the Windows job of the workflow runs `package-windows.ps1 -Ci -OpenSourceQt` (decision E-934).
+
+1. On GitHub: Actions → Release → Run workflow, choose the branch (normally `dev`) and, optionally, the server address that `README-Windows.txt` names (empty: “the address the game master names”). Or from a terminal: `gh workflow run release.yml --ref dev -f playtest_server='[2001:db8::1]:25600'`.
+2. Wait for the run (macOS and Windows jobs, roughly 30–60 minutes; the first Windows run also builds OpenSSL and SDL3 into the Actions cache). A run started by hand creates no release.
+3. Download the artifacts on the run's page (or `gh run download <run-id> -n QtCraft-Windows-x64`): `QtCraft-Windows-x64` holds `QtCraft-<version>-Windows-x64.zip` (GitHub wraps every artifact in one more zip: unpack the download once, pass on the inner zip), `QtCraft-Windows-x64-pdb` the PDB files for crash dumps (keep them, do not pass them on), `QtCraft-macOS` the macOS `.zip` and `.dmg`. Artifacts expire after 90 days.
+4. The game version and commit are in `README-Windows.txt` and in the log headers; the playtest server must be built from the same commit.
