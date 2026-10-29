@@ -188,7 +188,7 @@ qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFix
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)
-target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_CONTROLS_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/controls")
+target_compile_definitions(test_lazy_screen PRIVATE QTCRAFT_QML_FRAMES_DIR="${PROJECT_SOURCE_DIR}/src/app/qml/frames")
 # The graph of the debug display lives in the app; its scene graph nodes need no window.
 qc_add_test(test_graph_item SOURCES client/test_graph_item.cpp LIBRARIES qc_app_core)
 # The baked shader variants of the game (decision E-332): read from the game's build tree.

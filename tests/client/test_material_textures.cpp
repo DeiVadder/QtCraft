@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/rendering/QcMaterialTextures.h"
+#include "app/realistic/QcMaterialTextures.h"
+#include "app/realistic/QcShadowMap.h"
 #include "app/rendering/QcRenderPipelines.h"
-#include "app/rendering/QcShadowMap.h"
 #include "app/rendering/QcWorldRendererResources.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/materials/QcMaterialAtlas.h"

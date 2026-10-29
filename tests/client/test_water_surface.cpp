@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/rendering/QcPostProcess.h"
-#include "app/rendering/QcShadowMap.h"
-#include "app/rendering/QcWaterSurface.h"
+#include "app/realistic/QcPostProcess.h"
+#include "app/realistic/QcShadowMap.h"
+#include "app/realistic/QcWaterSurface.h"
 #include "app/rendering/QcWorldRendererResources.h"
 #include "clientcore/settings/QcRenderOptions.h"
 #include "common/core/QcDowncast.h"

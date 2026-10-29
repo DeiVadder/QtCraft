@@ -102,7 +102,7 @@ set_tests_properties(scenario_headless_admin_channel PROPERTIES
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
 set_tests_properties(test_content_pack PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/common/content/loader/QcContentPackLoader.cpp")
-set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
+set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/frames/LazyScreen.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")
 set_tests_properties(test_generator_versions PROPERTIES REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")

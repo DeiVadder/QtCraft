@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "app/rendering/QcAmbientOcclusion.h"
-#include "app/rendering/QcBloomChain.h"
+#include "app/realistic/QcAmbientOcclusion.h"
+#include "app/realistic/QcBloomChain.h"
 #include "clientcore/settings/QcRenderOptions.h"
 
 #include <QMatrix4x4>

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/rendering/QcBloomChain.h"
+#include "app/realistic/QcBloomChain.h"
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcRenderPipelines.h"

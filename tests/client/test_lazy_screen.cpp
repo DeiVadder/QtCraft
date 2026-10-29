@@ -38,7 +38,7 @@ private:
                                "}\n"_s.arg(keepAliveMs)
                                    .arg(asynchronous ? u"true"_s : u"false"_s)
                                    .toUtf8();
-        component.setData(qml, QUrl::fromLocalFile(QStringLiteral(QTCRAFT_QML_CONTROLS_DIR "/Test.qml")));
+        component.setData(qml, QUrl::fromLocalFile(QStringLiteral(QTCRAFT_QML_FRAMES_DIR "/Test.qml")));
         m_root.reset(component.create());
         if (!m_root) {
             qWarning().noquote() << component.errorString();

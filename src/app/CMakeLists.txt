@@ -113,9 +113,15 @@ target_sources(qc_app_core PRIVATE
     preview/QcWorldMapWork.h preview/QcWorldMapWork.cpp
 )
 target_sources(qc_app_core PRIVATE
-    rendering/QcAmbientOcclusion.h rendering/QcAmbientOcclusion.cpp
+    realistic/QcAmbientOcclusion.h realistic/QcAmbientOcclusion.cpp
+    realistic/QcBloomChain.h realistic/QcBloomChain.cpp
+    realistic/QcMaterialTextures.h realistic/QcMaterialTextures.cpp
+    realistic/QcPostProcess.h realistic/QcPostProcess.cpp
+    realistic/QcShadowMap.h realistic/QcShadowMap.cpp
+    realistic/QcWaterSurface.h realistic/QcWaterSurface.cpp
+)
+target_sources(qc_app_core PRIVATE
     rendering/QcAtlasTexture.h rendering/QcAtlasTexture.cpp
-    rendering/QcBloomChain.h rendering/QcBloomChain.cpp
     rendering/QcBufferWrite.h
     rendering/QcDebugLineRenderer.h rendering/QcDebugLineRenderer.cpp
     rendering/QcDrawOrigins.h rendering/QcDrawOrigins.cpp
@@ -123,8 +129,6 @@ target_sources(qc_app_core PRIVATE
     rendering/QcFramedMapTexture.h rendering/QcFramedMapTexture.cpp
     rendering/QcFramePlan.h
     rendering/QcGpuMeshStore.h rendering/QcGpuMeshStore.cpp
-    rendering/QcMaterialTextures.h rendering/QcMaterialTextures.cpp
-    rendering/QcPostProcess.h rendering/QcPostProcess.cpp
     rendering/QcPrecipitationRenderer.h rendering/QcPrecipitationRenderer.cpp
     rendering/QcRangeAllocator.h rendering/QcRangeAllocator.cpp
     rendering/QcRenderBridge.h rendering/QcRenderBridge.cpp
@@ -132,10 +136,8 @@ target_sources(qc_app_core PRIVATE
     rendering/QcRenderSample.h
     rendering/QcSectionArena.h rendering/QcSectionArena.cpp
     rendering/QcSectionLightPool.h rendering/QcSectionLightPool.cpp
-    rendering/QcShadowMap.h rendering/QcShadowMap.cpp
     rendering/QcSkyRenderer.h rendering/QcSkyRenderer.cpp
     rendering/QcTextureStream.h rendering/QcTextureStream.cpp
-    rendering/QcWaterSurface.h rendering/QcWaterSurface.cpp
     rendering/QcWorldRenderer.h rendering/QcWorldRenderer.cpp
     rendering/QcWorldRendererResources.h rendering/QcWorldRendererResources.cpp
     rendering/QcWorldRendererShadows.cpp
@@ -224,30 +226,23 @@ qt_add_qml_module(qc_app_core
         qml/controls/Hint.qml
         qml/controls/ItemSlot.qml
         qml/controls/KeyBadge.qml
-        qml/controls/LazyScreen.qml
         qml/controls/LineChart.qml
         qml/controls/ListRow.qml
-        qml/controls/ModalDialog.qml
-        qml/controls/NavButton.qml
-        qml/controls/NavList.qml
-        qml/controls/ScreenFrame.qml
-        qml/controls/ScreenHeader.qml
         qml/controls/Segments.qml
-        qml/controls/SettingCheck.qml
-        qml/controls/SettingChoice.qml
-        qml/controls/SettingDropdown.qml
-        qml/controls/SettingGroup.qml
-        qml/controls/SettingRow.qml
-        qml/controls/SettingSlider.qml
-        qml/controls/SettingSwitch.qml
-        qml/controls/SideBar.qml
-        qml/controls/SidebarScreen.qml
         qml/controls/ThemedComboBox.qml
         qml/controls/ThemedScrollBar.qml
         qml/controls/ThemedToolTip.qml
         qml/controls/Ui.qml
-        qml/controls/UnsavedChangesDialog.qml
         qml/controls/WindowFont.qml
+        qml/frames/LazyScreen.qml
+        qml/frames/ModalDialog.qml
+        qml/frames/NavButton.qml
+        qml/frames/NavList.qml
+        qml/frames/ScreenFrame.qml
+        qml/frames/ScreenHeader.qml
+        qml/frames/SideBar.qml
+        qml/frames/SidebarScreen.qml
+        qml/frames/UnsavedChangesDialog.qml
         qml/gamepad/FocusRing.qml
         qml/gamepad/HotbarRadial.qml
         qml/gamepad/OnScreenKeyboard.qml
@@ -321,6 +316,13 @@ qt_add_qml_module(qc_app_core
         qml/settings/GamepadValues.qml
         qml/settings/GraphicsPage.qml
         qml/settings/InterfacePage.qml
+        qml/settings/SettingCheck.qml
+        qml/settings/SettingChoice.qml
+        qml/settings/SettingDropdown.qml
+        qml/settings/SettingGroup.qml
+        qml/settings/SettingRow.qml
+        qml/settings/SettingSlider.qml
+        qml/settings/SettingSwitch.qml
         qml/settings/SettingsPage.qml
         qml/settings/SettingsScreen.qml
         qml/settings/TexturePackRow.qml

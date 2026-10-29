@@ -9171,12 +9171,12 @@ Jetzt: %2</translation>
 <context>
     <name>ScreenHeader</name>
     <message>
-        <location filename="../src/app/qml/controls/ScreenHeader.qml" line="19"/>
+        <location filename="../src/app/qml/frames/ScreenHeader.qml" line="19"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/controls/ScreenHeader.qml" line="42"/>
+        <location filename="../src/app/qml/frames/ScreenHeader.qml" line="42"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
@@ -9199,7 +9199,7 @@ Jetzt: %2</translation>
 <context>
     <name>SettingSlider</name>
     <message>
-        <location filename="../src/app/qml/controls/SettingSlider.qml" line="42"/>
+        <location filename="../src/app/qml/settings/SettingSlider.qml" line="42"/>
         <source>Default: %1</source>
         <translation>Standard: %1</translation>
     </message>
@@ -9690,27 +9690,27 @@ Jetzt: %2</translation>
 <context>
     <name>UnsavedChangesDialog</name>
     <message>
-        <location filename="../src/app/qml/controls/UnsavedChangesDialog.qml" line="48"/>
+        <location filename="../src/app/qml/frames/UnsavedChangesDialog.qml" line="48"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/controls/UnsavedChangesDialog.qml" line="59"/>
+        <location filename="../src/app/qml/frames/UnsavedChangesDialog.qml" line="59"/>
         <source>Save your changes before you leave, or discard them?</source>
         <translation>Möchtest du deine Änderungen speichern oder verwerfen, bevor du gehst?</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/controls/UnsavedChangesDialog.qml" line="74"/>
+        <location filename="../src/app/qml/frames/UnsavedChangesDialog.qml" line="74"/>
         <source>Discard</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/controls/UnsavedChangesDialog.qml" line="82"/>
+        <location filename="../src/app/qml/frames/UnsavedChangesDialog.qml" line="82"/>
         <source>Keep editing</source>
         <translation>Weiter bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/controls/UnsavedChangesDialog.qml" line="92"/>
+        <location filename="../src/app/qml/frames/UnsavedChangesDialog.qml" line="92"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
