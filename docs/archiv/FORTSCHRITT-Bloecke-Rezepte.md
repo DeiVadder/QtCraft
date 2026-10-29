@@ -65,7 +65,7 @@ Legende: `[ ]` offen, `[~]` angefangen, `[x]` erledigt (mit Commit).
 - [x] C7 Betonpulver (fällt) → Beton bei Wasserkontakt (Nachbar-Reaktion für feste Blöcke).
 
 ### D. Abschluss
-- [x] D1 Handbuch-Texte, Handbuch-Export neu, Screenshots (`docs/screenshots/br-*.png`).
+- [x] D1 Handbuch-Texte, Handbuch-Export neu, Screenshots (`docs/screenshots/br-*.jpg`).
 - [x] D2 Tests ergänzen (Rezepte, Reaktion Beton, Bewegung Schlamm/Netz, Kontaktschaden Magma).
 - [x] D3 Voller `scripts/verify.sh`, Performance-Check, unabhängige Prüfung, Bericht an den Menschen. **Kein Merge.**
 
@@ -113,6 +113,6 @@ Legende: `[ ]` offen, `[~]` angefangen, `[x]` erledigt (mit Commit).
 
 - 2026-10-09: 3e4cf7e neue Textur-Muster (`QcTextureCraftPatterns`, Hilfen in `QcTexturePaint.h`). 205ad32 Seeds nach Namen (E-214). 311ce2b Daten Stufe 1 (B1–B13 außer Pilzsuppen-Rückgabe, die Code braucht): rund 110 neue Blöcke, 30 Items, 150 Rezepte; Tests angepasst (`test_content_pack`, `test_building`, `test_world_details`, `test_handbook`), Handbuch-Export neu. Daten wurden mit einem Python-Skript erzeugt (nicht eingecheckt); maßgeblich sind die JSON-Dateien. Ungeprüft: Aussehen der neuen Texturen im Spiel (Screenshots folgen in D1).
 - 2026-10-10: e23a73f Stufe 2 (Netz, Schlamm, Magma, Wasserflasche, Beton, Suppenschüssel; Protokoll 16 wegen neuer Blockfelder im Content-Sync). Danach neuer Test `test_new_blocks` (14 Fälle: Physik Schlamm/Netz, Beton am und im Wasser, Magma, Flasche, Suppe, Rezeptketten, 16 Farben), Schlamm-Sprungkraft 0,93, Landung von Pulver im Wasser (E-217). `verify.sh --quick` grün (55 Tests).
-- 2026-10-10: Sichtprüfung per Spiel-Screenshots (`docs/screenshots/br-colours.png`, `br-blocks.png`; erzeugt mit `--chat "@<ms> /setblock …"`-Folgen): Farben, Lampen, Pflanzen, Netz, Magma passen; gefärbtes Glas war zu blass ⇒ eigenes Muster `stained_glass` (Alpha 120). Offen in D1: Item-Icons im Inventar ansehen.
+- 2026-10-10: Sichtprüfung per Spiel-Screenshots (`docs/screenshots/br-colours.jpg`, `br-blocks.jpg`; erzeugt mit `--chat "@<ms> /setblock …"`-Folgen): Farben, Lampen, Pflanzen, Netz, Magma passen; gefärbtes Glas war zu blass ⇒ eigenes Muster `stained_glass` (Alpha 120). Offen in D1: Item-Icons im Inventar ansehen.
 
 - 2026-10-09: Worktree und Branch angelegt, Plan geschrieben.

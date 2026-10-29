@@ -1,10 +1,17 @@
 #!/bin/sh
 # Pre-push hook: the fast structure checks of the working tree before anything leaves the machine
-# (one to two seconds): the target_sources blocks of the CMake lists (scripts/check-cmake-lists.py),
-# include paths and layers (scripts/fix-includes.py --check, decisions E-418/E-419) and the file and
-# function length limits in code lines (scripts/check-file-length.sh, scripts/check-function-length.py,
-# E-760). Enabled by scripts/ensure-user-presets.sh through
-# `git config core.hooksPath tools/githooks`; skip once with `git push --no-verify`.
+# (one to two seconds):
+#   - the target_sources blocks of the CMake lists (scripts/check-cmake-lists.py);
+#   - include paths and layers (scripts/fix-includes.py --check, decisions E-418/E-419);
+#   - the file and function length limits in code lines (scripts/check-file-length.sh,
+#     scripts/check-function-length.py, E-760);
+#   - no file over 2 MB in what the push sends (scripts/check-large-files.sh --push with the
+#     hook's ref lines from stdin, E-933).
+# Enabled by scripts/ensure-user-presets.sh through `git config core.hooksPath tools/githooks`;
+# skip once with `git push --no-verify`.
+
+# The refs being pushed, one "<local ref> <local sha> <remote ref> <remote sha>" per line.
+push_lines=$(cat)
 
 PROJECT_DIR=$(git rev-parse --show-toplevel) || exit 1
 cd "$PROJECT_DIR" || exit 1
@@ -24,6 +31,7 @@ run_check "CMake source lists" python3 scripts/check-cmake-lists.py
 run_check "includes and layers" python3 scripts/fix-includes.py --check
 run_check "file length" scripts/check-file-length.sh
 run_check "function length" python3 scripts/check-function-length.py
+run_check "large files" sh -c 'printf "%s\n" "$1" | scripts/check-large-files.sh --push' sh "$push_lines"
 
 if [ "$status" -ne 0 ]; then
     echo "pre-push: structure checks failed, push aborted (git push --no-verify skips them)" >&2

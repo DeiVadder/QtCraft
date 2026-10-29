@@ -1,8 +1,9 @@
 #!/bin/sh
-# Regenerates every checked-in export of the base game's handbook after a content change:
-# docs/handbook (English Markdown), docs/handbook/de (German Markdown) and web/handbook/data (the
-# web handbook: every language, icon sheet, colours). test_handbook and test_web_handbook compare
-# them with a fresh export and fail until this has run.
+# Regenerates the exports of the base game's handbook after a content change: docs/handbook (English
+# Markdown) and docs/handbook/de (German Markdown), both checked in and compared with a fresh export
+# by test_handbook, and web/handbook/data (the web handbook: every language, icon sheet, colours)
+# for a local preview of web/handbook. That data is not in git: the Pages workflow writes it the
+# same way before it publishes web/, and test_web_handbook checks the exporter.
 #
 # Usage: scripts/export-handbook.sh [build dir]   (default build/debug; qtcraft-headless must be built)
 

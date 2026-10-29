@@ -39,8 +39,9 @@
 #                    records the tests that passed, so a run without --changed also renews the stamps.
 # Every mode first checks the source lists of the CMake files (scripts/check-cmake-lists.py, E-417)
 # and that every project include names its header by its path below src/ or tests/ and keeps the
-# layers of src/ (scripts/fix-includes.py --check, E-418, E-419), and that every logging category is
-# defined once (scripts/check-logging.py, E-680).
+# layers of src/ (scripts/fix-includes.py --check, E-418, E-419), that every logging category is
+# defined once (scripts/check-logging.py, E-680) and that no tracked file is over 2 MB unless allowed
+# (scripts/check-large-files.sh, E-933).
 # After the debug test step every mode compares each test's time with its TIMEOUT and COST and
 # warns about limits that would be too tight under TSan (scripts/verify-limits.py, E-412); the
 # warnings are repeated at the end and do not fail the run.
@@ -460,6 +461,9 @@ step "check-includes" sh -c "python3 scripts/fix-includes.py --self-test && pyth
 # Logging categories each defined once, no logging without a category in src/ (decision E-680);
 # every mode, before the build.
 step "check-logging" sh -c "python3 scripts/check-logging.py --self-test && python3 scripts/check-logging.py"
+# No tracked or staged file over 2 MB outside scripts/large-files-allowed.txt (decision E-933); every
+# mode, before the build.
+step "check-large-files" scripts/check-large-files.sh
 # Samples of the function length check (E-760); the check itself runs in the static analysis.
 step "check-function-length" python3 scripts/check-function-length.py --self-test
 # Slot broker tests (E-781, about 15 s, own temporary broker each): in the full run, and in the quick

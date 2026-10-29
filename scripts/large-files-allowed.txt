@@ -1,0 +1,9 @@
+# Tracked files that may be larger than 2 MB (scripts/check-large-files.sh, decision E-933).
+# One path per line, relative to the repository root.
+
+# The decision log grows with every decision; only its index is read (CLAUDE.md).
+docs/Entscheidungen.md
+
+# Benchmark scenes of stage 28 that document pixel artefacts (docs/Performance-Verlauf.md): PNG on purpose.
+docs/screenshots/28-bench-far-fix-64.png
+docs/screenshots/28-bench-forest-fix-64.png

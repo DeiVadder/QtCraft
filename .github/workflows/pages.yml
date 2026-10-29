@@ -1,12 +1,13 @@
-# The web handbook on GitHub Pages: publishes web/ as it is. The data in web/handbook/data is
-# committed (qtcraft-headless --export-handbook-web) and kept current by test_web_handbook, so this
-# job needs no build. Needs Settings, Pages, Source "GitHub Actions" once.
+# The web handbook on GitHub Pages: publishes web/. Its data (web/handbook/data) is not in git: the
+# first job builds qtcraft-headless with the steps of ci.yml (macOS, without gamepads and TLS, which
+# the export does not use), writes it with --export-handbook-web, as scripts/export-handbook.sh
+# does locally, and uploads web/ as the Pages artifact; the second job deploys it. Runs on every
+# push to main, since the data follows the content and the code. Needs Settings, Pages, Source "GitHub Actions" once.
 name: Pages
 
 on:
   push:
     branches: [main]
-    paths: ['web/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 
 permissions:
@@ -18,14 +19,39 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # The same Qt as ci.yml.
+  QT_VERSION: 6.8.3
+  QT_MODULES: qtmultimedia qtshadertools
+
 jobs:
-  deploy:
-    runs-on: ubuntu-24.04
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  export:
+    runs-on: macos-15
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Ninja
+        run: brew install ninja
+
+      - name: Qt ${{ env.QT_VERSION }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          modules: ${{ env.QT_MODULES }}
+          cache: true
+
+      - name: Build qtcraft-headless
+        run: |
+          cmake --preset ci-debug -DQC_GAMEPAD=OFF -DQC_TLS=OFF
+          cmake --build --preset ci-debug --target qtcraft-headless
+
+      - name: Export the handbook data
+        run: build/ci-debug/src/headless/qtcraft-headless --no-mods --export-handbook-web web/handbook/data
 
       - uses: actions/configure-pages@v5
 
@@ -33,5 +59,13 @@ jobs:
         with:
           path: web
 
+  deploy:
+    needs: export
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4

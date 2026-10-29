@@ -13,7 +13,7 @@ scripts/verify.sh --tsan-concurrent --changed           # also when you touch th
 
 Before a change is merged, the full `scripts/verify.sh` runs once (all tests under ASan/UBSan and TSan, release build, static analysis, smoke screenshots). New tests use port 0, keep their files in a temporary directory or their own data directory, and poll for conditions instead of sleeping for fixed times.
 
-Changed content or handbook texts: run `scripts/export-handbook.sh` and commit the regenerated `docs/handbook` and `web/handbook/data`. New user-interface texts: see “Texte und Übersetzungen” in [CLAUDE.md](CLAUDE.md).
+Changed content or handbook texts: run `scripts/export-handbook.sh` and commit the regenerated `docs/handbook` (`web/handbook/data` is not committed; the Pages workflow writes it). New user-interface texts: see “Texte und Übersetzungen” in [CLAUDE.md](CLAUDE.md).
 
 ## Branches and review
 

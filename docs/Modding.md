@@ -781,7 +781,7 @@ A saved world remembers the packs it was played with (`world.json`, `packs`). Op
 | Structure | `ruby_shrine`: a demo of the showcase world (ruby block on a stone frame with roses and lanterns) |
 | Translations | English and German, including handbook texts (`lang/*.handbook.json`) |
 
-Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory, the ruby recipe on offer). `tests/content/test_mods.cpp` loads it, checks every part and crafts with its recipes; `tests/gameplay/test_headless_cli.cpp` starts `qtcraft-headless --mods-dir mods`.
+Screenshot: `docs/screenshots/07-mod-items.jpg` (all mod items in the inventory, the ruby recipe on offer). `tests/content/test_mods.cpp` loads it, checks every part and crafts with its recipes; `tests/gameplay/test_headless_cli.cpp` starts `qtcraft-headless --mods-dir mods`.
 
 ## Boundary between core and mods
 

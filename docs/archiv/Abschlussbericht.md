@@ -91,19 +91,19 @@ scripts/verify.sh                                                         # alle
 | Datei | Inhalt |
 |-------|--------|
 | `01-renderer-spike.png` | Renderer-Spike (Alpha-Test, transluzentes Wasser) |
-| `02-first-world.png` | erste generierte Welt |
-| `03-birch-forest-lighting.png`, `03-desert.png`, `03-tundra.png`, `03-map-seed-12345.png` | Biome, Licht, Übersichtskarte |
-| `04-hud-hotbar.png`, `04-inventory.png` | HUD und Inventar |
-| `05-night-zombie.png` | Nacht mit Zombie |
-| `06-crafting.png` | Crafting im Inventar |
-| `07-mod-items.png` | Items der Beispiel-Mod im Spiel |
-| `08-main-menu-de.png`, `08-settings-de.png`, `08-day-view-distance-8.png` | Hauptmenü und Einstellungen auf Deutsch, Tagansicht bei Sichtweite 8 |
-| `10-first-person-sword.png`, `10-first-person-block.png` | Ich-Perspektive mit Arm und gehaltenem Schwert bzw. Block |
-| `10-third-person-front.png`, `10-third-person-behind.png` | Dritte Person von vorne und hinten |
-| `10-animation-walk.png`, `10-animation-swing.png`, `10-animation-swim.png` | Animationen Gehen, Schlagen (mit Spitzhacke), Schwimmen (Test-Hook `--pose`) |
-| `10-zombies.png` | Zombies mit Skelettmodell und vorgestreckten Armen |
+| `02-first-world.jpg` | erste generierte Welt |
+| `03-birch-forest-lighting.jpg`, `03-desert.jpg`, `03-tundra.jpg`, `03-map-seed-12345.png` | Biome, Licht, Übersichtskarte |
+| `04-hud-hotbar.jpg`, `04-inventory.jpg` | HUD und Inventar |
+| `05-night-zombie.jpg` | Nacht mit Zombie |
+| `06-crafting.jpg` | Crafting im Inventar |
+| `07-mod-items.jpg` | Items der Beispiel-Mod im Spiel |
+| `08-main-menu-de.png`, `08-settings-de.png`, `08-day-view-distance-8.jpg` | Hauptmenü und Einstellungen auf Deutsch, Tagansicht bei Sichtweite 8 |
+| `10-first-person-sword.jpg`, `10-first-person-block.jpg` | Ich-Perspektive mit Arm und gehaltenem Schwert bzw. Block |
+| `10-third-person-front.jpg`, `10-third-person-behind.jpg` | Dritte Person von vorne und hinten |
+| `10-animation-walk.jpg`, `10-animation-swing.jpg`, `10-animation-swim.jpg` | Animationen Gehen, Schlagen (mit Spitzhacke), Schwimmen (Test-Hook `--pose`) |
+| `10-zombies.jpg` | Zombies mit Skelettmodell und vorgestreckten Armen |
 | `10-character-screen-de.png` | Charakter-Bildschirm |
-| `09-items-and-saplings.png` | Gedroppte Items (Würfel, Sprites, Stapel) und zwei gesetzte Setzlinge |
+| `09-items-and-saplings.jpg` | Gedroppte Items (Würfel, Sprites, Stapel) und zwei gesetzte Setzlinge |
 
 ## Bekannte Mängel
 

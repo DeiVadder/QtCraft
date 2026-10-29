@@ -16,30 +16,17 @@
 #include <QJsonDocument>
 #include <QJSEngine>
 #include <QJsonObject>
+#include <QProcess>
 #include <QSet>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <algorithm>
-#include <cstdlib>
-
 #include <memory>
 
 using namespace Qt::StringLiterals;
 
 namespace {
-
-// web/handbook/data is `qtcraft-headless --no-mods --export-handbook-web web/handbook/data`;
-// regenerate it when a comparison with it fails.
-QString dataFile(const QString &name)
-{
-    return QDir(QStringLiteral(QTCRAFT_SOURCE_DIR)).filePath(u"web/handbook/data/"_s + name);
-}
-
-QByteArray readData(const QString &name)
-{
-    QFile file(dataFile(name));
-    return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
-}
 
 QcHandbook build(const QcContentRegistry &content, const QString &language)
 {
@@ -51,21 +38,6 @@ QByteArray readSource(const QString &path)
 {
     QFile file(QDir(QStringLiteral(QTCRAFT_SOURCE_DIR)).filePath(path));
     return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
-}
-
-// The largest difference of one colour channel between two images of the same size.
-int largestDifference(const QImage &a, const QImage &b)
-{
-    int largest = 0;
-    for (int y = 0; y < a.height(); ++y) {
-        for (int x = 0; x < a.width(); ++x) {
-            const QRgb p = a.pixel(x, y);
-            const QRgb q = b.pixel(x, y);
-            largest = std::max({largest, std::abs(qRed(p) - qRed(q)), std::abs(qGreen(p) - qGreen(q)), std::abs(qBlue(p) - qBlue(q)),
-                                std::abs(qAlpha(p) - qAlpha(q))});
-        }
-    }
-    return largest;
 }
 
 // Queries for the search comparison: the first word and the start of every title in both
@@ -131,31 +103,97 @@ class TestWebHandbook : public QObject
 
 private:
     std::shared_ptr<const QcContentRegistry> m_content;
+    // What qtcraft-headless --export-handbook-web wrote in initTestCase, in <m_export>/data.
+    // web/handbook/data is not in git: the Pages workflow writes it the same way before it
+    // publishes web/.
+    QTemporaryDir m_export;
+
+    QString dataFile(const QString &name) const { return m_export.filePath(u"data/"_s + name); }
+
+    QByteArray readData(const QString &name) const
+    {
+        QFile file(dataFile(name));
+        return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+    }
 
 private slots:
+    // Runs the exporter as the Pages workflow does; every test below reads what it wrote.
     void initTestCase()
     {
         QcResult<QcBaseContent::Loaded> loaded = QcTestUtil::baseContent();
         QVERIFY(loaded);
         m_content = loaded->registry;
+
+        QVERIFY(m_export.isValid());
+        QProcess exporter;
+        exporter.setProgram(QStringLiteral(QTCRAFT_HEADLESS_PATH));
+        exporter.setArguments({u"--no-mods"_s, u"--export-handbook-web"_s, dataFile({})});
+        exporter.setProcessChannelMode(QProcess::MergedChannels);
+        exporter.start();
+        static constexpr int exportTimeoutMs = 240'000;
+        QVERIFY2(exporter.waitForFinished(exportTimeoutMs), "the exporter did not finish");
+        const QByteArray output = exporter.readAll();
+        QVERIFY2(exporter.exitStatus() == QProcess::NormalExit && exporter.exitCode() == 0, output.constData());
     }
 
-    void dataMatchesRepository_data()
+    void exportWritesEveryFile()
+    {
+        QStringList written = QDir(dataFile({})).entryList(QDir::Files);
+        written.sort();
+        QCOMPARE(written, (QStringList{u"de.json"_s, u"en.json"_s, u"icons.json"_s, u"icons.png"_s, u"languages.json"_s, u"theme.css"_s}));
+    }
+
+    // The keys web/handbook/handbook.js reads from each file.
+    void exportedDataHasTheKeysThePageReads()
+    {
+        const QJsonObject languages = QJsonDocument::fromJson(readData(u"languages.json"_s)).object();
+        const QList<QJsonValue> list = items(languages, u"languages"_s);
+        QCOMPARE(list.size(), 2);
+        for (const QJsonValue &language : list) {
+            QVERIFY(language.toObject().contains(u"id"_s) && language.toObject().contains(u"name"_s));
+        }
+
+        const QJsonObject icons = QJsonDocument::fromJson(readData(u"icons.json"_s)).object();
+        QVERIFY(icons.value(u"columns"_s).toInt() > 0);
+        QVERIFY(icons.value(u"icons"_s).isObject());
+        QVERIFY(icons.value(u"size"_s).toInt() > 0);
+
+        const QJsonObject book = QJsonDocument::fromJson(readData(u"en.json"_s)).object();
+        QVERIFY(!items(book, u"packs"_s).isEmpty());
+        const QList<QJsonValue> categories = items(book, u"categories"_s);
+        QVERIFY(!categories.isEmpty());
+        for (const QJsonValue &category : categories) {
+            for (const QString &key : {u"id"_s, u"title"_s, u"entries"_s}) {
+                QVERIFY2(category.toObject().contains(key), qPrintable(key));
+            }
+        }
+        const QJsonObject entries = book.value(u"entries"_s).toObject();
+        QVERIFY(!entries.isEmpty());
+        static const QStringList entryKeys{u"title"_s,    u"category"_s, u"categoryTitle"_s, u"pack"_s, u"packName"_s,
+                                           u"facts"_s,    u"sections"_s, u"text"_s,          u"icon"_s};
+        for (auto it = entries.begin(); it != entries.end(); ++it) {
+            for (const QString &key : entryKeys) {
+                QVERIFY2(it.value().toObject().contains(key), qPrintable(u"%1 has no %2"_s.arg(it.key(), key)));
+            }
+        }
+    }
+
+    void exportedDataMatchesTheHandbook_data()
     {
         QTest::addColumn<QString>("language");
         QTest::newRow("en") << u"en"_s;
         QTest::newRow("de") << u"de"_s;
     }
 
-    void dataMatchesRepository()
+    void exportedDataMatchesTheHandbook()
     {
         QFETCH(QString, language);
         const QcHandbookWeb::File file = QcHandbookWeb::data(build(*m_content, language));
         QCOMPARE(file.name, language + u".json"_s);
-        QVERIFY2(readData(file.name) == file.content, qPrintable(u"%1 differs from a fresh export"_s.arg(dataFile(file.name))));
+        QVERIFY2(readData(file.name) == file.content, qPrintable(u"%1 differs from the handbook built here"_s.arg(file.name)));
     }
 
-    void languagesAndThemeMatchRepository()
+    void exportedLanguagesAndThemeAreComplete()
     {
         QStringList languages = m_content->translations().languages();
         languages.sort();
@@ -171,10 +209,9 @@ private slots:
         QCOMPARE(readData(theme.name), theme.content);
     }
 
-    // Pixels, not PNG bytes: another Qt or zlib may compress the same sheet differently. The data
-    // may come from another Qt 6.8 release than CI's 6.8.3; a difference of 2 per channel allows for
-    // rounding in another patch release, a wrong or moved icon differs far more.
-    void iconSheetMatchesRepository()
+    // Pixels, not PNG bytes: the same sheet may be compressed differently. The exporter and this
+    // test draw with the same build, so every pixel matches.
+    void exportedIconSheetMatchesTheIcons()
     {
         const QcTextureAtlas atlas = QcTextureAtlas::build(*m_content);
         const QcBlockRenderTable table(*m_content, atlas);
@@ -185,23 +222,10 @@ private slots:
         QCOMPARE(readData(u"icons.json"_s), files[1].content);
 
         const QImage fresh = QImage::fromData(files[0].content, "PNG").convertToFormat(QImage::Format_ARGB32);
-        const QImage stored = QImage(dataFile(u"icons.png"_s)).convertToFormat(QImage::Format_ARGB32);
+        const QImage exported = QImage(dataFile(u"icons.png"_s)).convertToFormat(QImage::Format_ARGB32);
         QVERIFY(!fresh.isNull());
-        QCOMPARE(stored.size(), fresh.size());
-        static constexpr int tolerance = 2;
-        const int difference = largestDifference(stored, fresh);
-        if (difference > tolerance && qEnvironmentVariableIsSet("QTCRAFT_DATA_DIR")) {
-            // The fresh sheet beside the test's data, to compare with the stored one; a failure to
-            // write it is only reported, the comparison below fails the test.
-            const QDir data(qEnvironmentVariable("QTCRAFT_DATA_DIR"));
-            const QString path = data.filePath(u"icons-fresh.png"_s);
-            if (data.mkpath(u"."_s) && fresh.save(path)) {
-                qWarning().noquote() << u"Fresh icon sheet written to"_s << QDir::toNativeSeparators(path);
-            } else {
-                qWarning().noquote() << u"Cannot write the fresh icon sheet to"_s << QDir::toNativeSeparators(path);
-            }
-        }
-        QVERIFY2(difference <= tolerance, qPrintable(u"web/handbook/data/icons.png differs from a fresh export by up to %1 per channel"_s.arg(difference)));
+        QCOMPARE(exported.size(), fresh.size());
+        QVERIFY2(exported == fresh, "the exported icon sheet differs from the icons drawn here");
     }
 
     void everyShownIconIsOnTheSheet()

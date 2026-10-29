@@ -220,7 +220,7 @@ The game connects to `host`, `host:port`, `1.2.3.4:port` or `[ipv6]:port` (the p
   a refusal stays visible), `--overlay lan`, `--overlay players`, and `QTCRAFT_LAN_BIND=127.0.0.1`
   to open a world on this computer only (it then lists only that address). Screenshots:
   `docs/screenshots/25-multiplayer-menu.png`, `25-join-refused-de.png`, `25-open-to-lan.png`,
-  `25-player-list.png`, `25-disconnected-de.png`.
+  `25-player-list.jpg`, `25-disconnected-de.png`.
 - **Known limits:** the host of an opened world plays as "Player" (the name of single-player
   worlds, whose player file hangs on it); no server discovery in the LAN, the host reads out an
   address. The content compared at a join is read once and kept until the mods are switched or

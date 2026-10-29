@@ -7,7 +7,7 @@ A voxel sandbox game in the spirit of Minecraft, written from scratch in C++23 w
 | | |
 |---|---|
 | ![A river through a mountain gorge](docs/screenshots/69-mountain-gorge.jpg) | ![A river delta from above](docs/screenshots/70-delta-lush.jpg) |
-| ![Signal rails and container carts](docs/screenshots/32-rails-signal.png) | ![The enchanting table](docs/screenshots/41-3-enchanting-after.png) |
+| ![Signal rails and container carts](docs/screenshots/32-rails-signal.jpg) | ![The enchanting table](docs/screenshots/41-3-enchanting-after.jpg) |
 
 ## Features
 

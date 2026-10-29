@@ -33,7 +33,7 @@ set(qc_concurrency_tests
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
     test_explore_measure test_scenario_measure test_server_light test_session_tick test_session_thread test_section_snapshots
-    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview)
+    test_block_prediction test_block_prediction_measure test_session_audio test_world_map_preview test_web_handbook)
 set_tests_properties(${qc_concurrency_tests} PROPERTIES LABELS concurrency)
 
 # Parallel runs (`ctest -j`, decision E-380): every test has its own data directory, ports are
@@ -93,6 +93,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
 # test data) selects every test anyway.
 set_tests_properties(test_headless_cli test_dedicated_server test_server_log test_crash_report test_multiplayer_bots test_creative_bots
     test_signal_bots test_minecart_bots test_machine_bots test_boat_bots PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>")
+set_tests_properties(test_web_handbook PROPERTIES REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${PROJECT_SOURCE_DIR}/web/handbook/search.js")
 set_tests_properties(scenario_headless_admin_channel PROPERTIES
     REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/admin-channel.jsonl")
 set_tests_properties(test_ui_palette PROPERTIES

@@ -26,3 +26,7 @@ deploy/
 # Python caches
 __pycache__/
 *.pyc
+
+# The web handbook's data: written by scripts/export-handbook.sh (local preview) and by the Pages
+# workflow before it publishes web/ (qtcraft-headless --export-handbook-web)
+/web/handbook/data/

@@ -45,4 +45,13 @@ if(NOT WIN32)
     add_test(NAME script_check_member_access
         COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_member_access.py ${PROJECT_SOURCE_DIR}/scripts/check-member-access.py)
     set_tests_properties(script_check_member_access PROPERTIES TIMEOUT 60)
+    # The large file check of the index, a commit and a push (decision E-933) in a throwaway git
+    # repository with a bare remote, run from a pre-push hook like tools/githooks/pre-push.
+    add_test(NAME script_check_large_files
+        COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_large_files.sh ${PROJECT_SOURCE_DIR}/scripts/check-large-files.sh)
+    set_tests_properties(script_check_large_files PROPERTIES TIMEOUT 60)
+    # Samples of the image reference check of the docs (brace sets, … and <name> placeholders,
+    # wildcards; decision E-933), held in memory.
+    add_test(NAME script_check_doc_images COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-doc-images.py --self-test)
+    set_tests_properties(script_check_doc_images PROPERTIES TIMEOUT 60)
 endif()
