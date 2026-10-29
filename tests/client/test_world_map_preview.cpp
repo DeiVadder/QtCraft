@@ -115,13 +115,13 @@ private slots:
                     ice.add(top.endsWith(u"ice"_s) == cell.frozen);
                 }
                 if (cell.water == QcBiomeMap::Water::Land) {
-                    int top = cell.height + groundSlack;
-                    while (top > cell.height - groundSlack && !isGround(blockAt(top))) {
-                        --top;
+                    int groundTop = cell.height + groundSlack;
+                    while (groundTop > cell.height - groundSlack && !isGround(blockAt(groundTop))) {
+                        --groundTop;
                     }
                     Agreement &exact = generator.column(blockX, blockZ).overhang < 1.0 ? exactPlainGround : exactOverhangGround;
-                    exact.add(std::abs(top + 1 - cell.height) <= 1);
-                    ground.add(std::abs(top + 1 - cell.height) <= groundSlack / 2);
+                    exact.add(std::abs(groundTop + 1 - cell.height) <= 1);
+                    ground.add(std::abs(groundTop + 1 - cell.height) <= groundSlack / 2);
                 }
             }
         }
