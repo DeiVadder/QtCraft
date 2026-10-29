@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/blockrules/QcBlockRules.h"
-#include "common/content/parser/QcVillagerParser.h"
+#include "common/content/villages/QcVillagerParser.h"
 #include "common/world/QcDayCycle.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServerWorld.h"

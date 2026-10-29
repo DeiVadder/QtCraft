@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "common/core/QcBlockFace.h"
 #include "server/entities/QcCreature.h"
 

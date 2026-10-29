@@ -6,7 +6,7 @@
 // Protocol messages about the player: movement, health, food, appearance, inventory and crafting.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcEquipment.h"

@@ -4,7 +4,7 @@
 #include "server/signal/QcServerCircuits.h"
 
 #include "common/blockrules/QcBlockRules.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcOpeners.h"
 #include "server/blocks/QcServerBlocks.h"

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/registry/QcAnvilSwaps.h"
+#include "common/content/items/QcAnvilSwaps.h"
 #include "common/gameplay/QcAnvil.h"
 #include "gameplay/QcEnchantingFixture.h"
 #include "QcTestUtil.h"

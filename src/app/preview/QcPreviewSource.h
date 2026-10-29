@@ -4,8 +4,8 @@
 #pragma once
 
 #include "clientcore/preview/QcPreviewHook.h"
-#include "common/content/definitions/QcAppearance.h"
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcMailbox.h"
 #include "common/gameplay/QcEquipment.h"
 

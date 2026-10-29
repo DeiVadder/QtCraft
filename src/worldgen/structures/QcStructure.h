@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcStructureDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/core/QcResult.h"
 
 #include <QHash>

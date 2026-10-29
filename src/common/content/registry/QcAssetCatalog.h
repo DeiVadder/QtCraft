@@ -3,11 +3,11 @@
 
 #pragma once
 
-#include "common/content/definitions/QcAppearanceDefinition.h"
-#include "common/content/definitions/QcModelDefinition.h"
-#include "common/content/definitions/QcSoundDefinition.h"
-#include "common/content/definitions/QcTextureDefinition.h"
+#include "common/content/blocks/QcTextureDefinition.h"
+#include "common/content/mobs/QcAppearanceDefinition.h"
+#include "common/content/mobs/QcModelDefinition.h"
 #include "common/content/registry/QcNamedList.h"
+#include "common/content/registry/QcSoundDefinition.h"
 
 // What the client draws and plays (part of QcContentRegistry, synchronised with the content):
 // textures, skeleton models, appearances (outfits, hair styles) and sounds, each replaced by name.

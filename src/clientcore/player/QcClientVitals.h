@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/protocol/QcMessages.h"
 
 // What the server last told the player about himself (QcClientSession::vitals): health and whether

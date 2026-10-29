@@ -4,7 +4,7 @@
 #include "server/signal/QcDispenserActions.h"
 
 #include "common/blockrules/QcBlockRules.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcServerAnimals.h"

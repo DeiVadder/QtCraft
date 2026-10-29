@@ -4,7 +4,7 @@
 #include "server/villages/QcVillagerLooks.h"
 
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcVillagerOutfits.h"
+#include "common/content/villages/QcVillagerOutfits.h"
 #include "server/villages/QcVillager.h"
 
 namespace {

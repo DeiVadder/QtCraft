@@ -3,7 +3,7 @@
 
 #include "server/pathing/QcPathTerrain.h"
 
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "server/pathing/QcPathSteps.h"

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcPackReference.h"
+#include "common/content/registry/QcPackReference.h"
 #include "common/core/QcChunkPos.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcGameMode.h"

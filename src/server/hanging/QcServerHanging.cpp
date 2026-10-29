@@ -3,7 +3,7 @@
 
 #include "server/hanging/QcServerHanging.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
 #include "server/core/QcServerSounds.h"

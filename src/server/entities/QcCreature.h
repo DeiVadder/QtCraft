@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPose.h"

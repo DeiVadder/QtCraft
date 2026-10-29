@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/gameplay/QcAdventureRules.h"
 #include "common/gameplay/QcGameMode.h"

@@ -9,7 +9,7 @@
 #include "clientcore/player/QcPrediction.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "clientcore/session/QcClientWorld.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"

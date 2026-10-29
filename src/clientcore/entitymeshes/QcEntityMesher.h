@@ -12,11 +12,11 @@
 #include "clientcore/light/QcEntityLight.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/session/QcClientEntity.h"
-#include "common/content/definitions/QcAppearance.h"
-#include "common/content/definitions/QcAppearanceDefinition.h"
-#include "common/content/definitions/QcHoldDisplay.h"
-#include "common/content/definitions/QcMobDefinition.h"
-#include "common/content/definitions/QcModelDefinition.h"
+#include "common/content/items/QcHoldDisplay.h"
+#include "common/content/mobs/QcAppearance.h"
+#include "common/content/mobs/QcAppearanceDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
+#include "common/content/mobs/QcModelDefinition.h"
 
 #include <QRectF>
 

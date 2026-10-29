@@ -6,8 +6,8 @@
 #include "clientcore/materials/QcMaterialMips.h"
 
 #include "clientcore/textures/QcProceduralTexture.h"
-#include "common/content/parser/QcContentParser.h"
 #include "common/content/registry/QcContentNames.h"
+#include "common/content/registry/QcContentParser.h"
 
 #include <QBuffer>
 #include <QDir>

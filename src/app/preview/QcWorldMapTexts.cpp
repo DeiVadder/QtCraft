@@ -5,8 +5,8 @@
 
 #include "app/preview/QcWorldMapPainter.h"
 #include "app/preview/QcWorldMapWork.h"
-#include "common/content/definitions/QcStructureDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcStructureDefinition.h"
 
 #include <QColor>
 

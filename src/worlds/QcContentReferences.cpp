@@ -3,8 +3,8 @@
 
 #include "worlds/QcContentReferences.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
-#include "common/content/parser/QcHangingParser.h"
+#include "common/content/blockbehaviour/QcHangingParser.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "worldgen/generators/QcWorldOptions.h"
 
 #include <algorithm>

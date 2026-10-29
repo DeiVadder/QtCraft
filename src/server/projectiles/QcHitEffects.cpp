@@ -3,7 +3,7 @@
 
 #include "server/projectiles/QcHitEffects.h"
 
-#include "common/content/definitions/QcProjectileDefinition.h"
+#include "common/content/items/QcProjectileDefinition.h"
 #include "common/physics/QcPhysics.h"
 
 #include <cmath>

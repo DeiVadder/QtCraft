@@ -4,7 +4,7 @@
 #pragma once
 
 #include "clientcore/sound/QcSoundCue.h"
-#include "common/content/definitions/QcSoundDefinition.h"
+#include "common/content/registry/QcSoundDefinition.h"
 #include "common/core/QcVec3.h"
 
 // Loudness and stereo position of a sound at a world position, heard from a listener's ears.

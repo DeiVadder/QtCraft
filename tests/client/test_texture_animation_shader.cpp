@@ -7,7 +7,7 @@
 // atlas width from 1 to 128 columns lands in its own cell, and every frame of every animation is
 // picked as QcTextureAnimation::frameAt picks it. Also the clock that drives the time.
 #include "clientcore/textures/QcAnimationClock.h"
-#include "common/content/definitions/QcTextureAnimation.h"
+#include "common/content/blocks/QcTextureAnimation.h"
 
 #include <QTest>
 

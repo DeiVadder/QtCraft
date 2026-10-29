@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcItemStack.h"
 

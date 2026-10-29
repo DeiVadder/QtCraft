@@ -3,7 +3,7 @@
 
 #include "common/physics/QcBodyPush.h"
 
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "common/physics/QcPhysics.h"
 
 #include <cmath>

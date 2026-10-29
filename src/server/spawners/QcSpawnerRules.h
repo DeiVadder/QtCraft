@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcSpawnerDefinition.h"
+#include "common/content/blockbehaviour/QcSpawnerDefinition.h"
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcMessages.h"
 #include "server/spawners/QcSpawners.h"

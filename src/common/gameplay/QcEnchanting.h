@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcEnchantmentDefinition.h"
+#include "common/content/items/QcEnchantmentDefinition.h"
 #include "common/gameplay/QcItemStack.h"
 
 #include <QStringList>

@@ -3,7 +3,7 @@
 
 #include "clientcore/weather/QcClientWeather.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 
 #include <algorithm>

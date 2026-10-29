@@ -3,7 +3,7 @@
 
 #include "clientcore/entitymeshes/QcSignTextCache.h"
 #include "clientcore/session/QcChunkExtras.h"
-#include "common/content/parser/QcStructureParser.h"
+#include "common/content/worldgen/QcStructureParser.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcPlayerUseFixture.h"
 #include "server/storage/QcBlockEntityCodec.h"

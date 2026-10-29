@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clientcore/session/QcClientLauncher.h"
-#include "common/content/parser/QcContentParser.h"
-#include "common/content/parser/QcProjectileParser.h"
+#include "common/content/items/QcProjectileParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "QcServerTestFixture.h"
 #include "server/gameplay/QcPlayerHealth.h"

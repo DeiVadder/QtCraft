@@ -4,7 +4,7 @@
 #pragma once
 
 #include "clientcore/texturepacks/QcTexturePack.h"
-#include "common/content/definitions/QcTextureAnimation.h"
+#include "common/content/blocks/QcTextureAnimation.h"
 
 #include <QByteArray>
 #include <QImage>

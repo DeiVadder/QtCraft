@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/parser/QcWorldOptionParser.h"
+#include "common/content/worldgen/QcWorldOptionParser.h"
 #include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldStorage.h"

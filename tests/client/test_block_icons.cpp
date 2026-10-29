@@ -6,7 +6,7 @@
 #include "clientcore/icons/QcItemIconSet.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/registry/QcBlockSerializer.h"
+#include "common/content/blocks/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "QcTestUtil.h"
 

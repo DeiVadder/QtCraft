@@ -18,136 +18,146 @@ target_sources(qc_common PRIVATE
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
 )
 target_sources(qc_common PRIVATE
-    content/definitions/QcAdvancementDefinition.h
-    content/definitions/QcAnvilSwap.h
-    content/definitions/QcAppearance.h
-    content/definitions/QcAppearanceDefinition.h
-    content/definitions/QcArmourDefinition.h
-    content/definitions/QcBlastDefinition.h
-    content/definitions/QcBlockDefinition.h
-    content/definitions/QcBlockProperty.h
-    content/definitions/QcCoastalTowerDefinition.h
-    content/definitions/QcCommandMacroDefinition.h
-    content/definitions/QcCookingDefinitions.h
-    content/definitions/QcDungeonDefinition.h
-    content/definitions/QcEffectDefinition.h
-    content/definitions/QcEnchantmentDefinition.h
-    content/definitions/QcExperienceDrop.h
-    content/definitions/QcFarmingDefinitions.h
-    content/definitions/QcFireDefinition.h
-    content/definitions/QcHangingDefinition.h
-    content/definitions/QcHitEffect.h
-    content/definitions/QcHoldDisplay.h content/definitions/QcHoldDisplay.cpp
-    content/definitions/QcItemDefinition.h content/definitions/QcItemDefinition.cpp
-    content/definitions/QcLiquidDefinition.h
-    content/definitions/QcLiquidReaction.h
-    content/definitions/QcLootTableDefinition.h
-    content/definitions/QcMachineDefinition.h
-    content/definitions/QcMaterialDefinition.h
-    content/definitions/QcMineshaftDefinition.h
-    content/definitions/QcMobDefinition.h
-    content/definitions/QcMobTraits.h
-    content/definitions/QcModelDefinition.h
-    content/definitions/QcPackReference.h
-    content/definitions/QcPartFamily.h
-    content/definitions/QcProjectileDefinition.h
-    content/definitions/QcRecipeDefinition.h content/definitions/QcRecipeDefinition.cpp
-    content/definitions/QcShapeCondition.h
-    content/definitions/QcShapeDefinition.h
-    content/definitions/QcShapePart.h
-    content/definitions/QcShowcaseDefinition.h
-    content/definitions/QcSignalDefinition.h
-    content/definitions/QcSmeltingRecipe.h
-    content/definitions/QcSoundDefinition.h content/definitions/QcSoundDefinition.cpp
-    content/definitions/QcSoundKeys.h content/definitions/QcSoundKeys.cpp
-    content/definitions/QcSpawnerDefinition.h
-    content/definitions/QcStructureDefinition.h
-    content/definitions/QcTextureAnimation.h content/definitions/QcTextureAnimation.cpp
-    content/definitions/QcTextureDefinition.h
-    content/definitions/QcTradeDefinitions.h
-    content/definitions/QcVegetationDefinition.h
-    content/definitions/QcVillageDefinitions.h
-    content/definitions/QcVillagerDefinitions.h
-    content/definitions/QcWeatherDefinition.h
-    content/definitions/QcWorldgenDefinitions.h
-    content/definitions/QcWorldOptionDefinitions.h
-    content/definitions/QcWorldTypeDefinitions.h
+    content/blockbehaviour/QcBlastDefinition.h
+    content/blockbehaviour/QcBlastParser.h content/blockbehaviour/QcBlastParser.cpp
+    content/blockbehaviour/QcFireDefinition.h
+    content/blockbehaviour/QcHangingDefinition.h
+    content/blockbehaviour/QcHangingParser.h content/blockbehaviour/QcHangingParser.cpp
+    content/blockbehaviour/QcLiquidDefinition.h
+    content/blockbehaviour/QcLiquidParser.h content/blockbehaviour/QcLiquidParser.cpp
+    content/blockbehaviour/QcLiquidReaction.h
+    content/blockbehaviour/QcRailParser.h content/blockbehaviour/QcRailParser.cpp
+    content/blockbehaviour/QcSignalDefinition.h
+    content/blockbehaviour/QcSignalLinks.h content/blockbehaviour/QcSignalLinks.cpp
+    content/blockbehaviour/QcSignalParser.h content/blockbehaviour/QcSignalParser.cpp
+    content/blockbehaviour/QcSpawnerContent.h content/blockbehaviour/QcSpawnerContent.cpp
+    content/blockbehaviour/QcSpawnerDefinition.h
+)
+target_sources(qc_common PRIVATE
+    content/blocks/QcBlockDefinition.h
+    content/blocks/QcBlockParser.h content/blocks/QcBlockParser.cpp
+    content/blocks/QcBlockProperty.h
+    content/blocks/QcBlockSerializer.h content/blocks/QcBlockSerializer.cpp
+    content/blocks/QcBlockState.h
+    content/blocks/QcBlockStateTable.h content/blocks/QcBlockStateTable.cpp
+    content/blocks/QcBlockTextureParser.h content/blocks/QcBlockTextureParser.cpp
+    content/blocks/QcMaterialDefinition.h
+    content/blocks/QcMaterialParser.h content/blocks/QcMaterialParser.cpp
+    content/blocks/QcPartFamily.h
+    content/blocks/QcPartGenerator.h content/blocks/QcPartGenerator.cpp
+    content/blocks/QcShapeCondition.h
+    content/blocks/QcShapeDefinition.h
+    content/blocks/QcShapeParser.h content/blocks/QcShapeParser.cpp
+    content/blocks/QcShapePart.h
+    content/blocks/QcTextureAnimation.h content/blocks/QcTextureAnimation.cpp
+    content/blocks/QcTextureDefinition.h
+)
+target_sources(qc_common PRIVATE
+    content/items/QcAnvilSwap.h
+    content/items/QcAnvilSwaps.h content/items/QcAnvilSwaps.cpp
+    content/items/QcArmourDefinition.h
+    content/items/QcArmourParser.h content/items/QcArmourParser.cpp
+    content/items/QcArmourSerializer.h content/items/QcArmourSerializer.cpp
+    content/items/QcEffectDefinition.h
+    content/items/QcEffectParser.h content/items/QcEffectParser.cpp
+    content/items/QcEnchantmentDefinition.h
+    content/items/QcEnchantmentParser.h content/items/QcEnchantmentParser.cpp
+    content/items/QcEnchantmentSerializer.h content/items/QcEnchantmentSerializer.cpp
+    content/items/QcExperienceDrop.h
+    content/items/QcHitEffect.h
+    content/items/QcHoldDisplay.h content/items/QcHoldDisplay.cpp
+    content/items/QcHoldParser.h content/items/QcHoldParser.cpp
+    content/items/QcHoldSerializer.h content/items/QcHoldSerializer.cpp
+    content/items/QcItemDefinition.h content/items/QcItemDefinition.cpp
+    content/items/QcItemParser.h content/items/QcItemParser.cpp
+    content/items/QcItemSerializer.h content/items/QcItemSerializer.cpp
+    content/items/QcProjectileDefinition.h
+    content/items/QcProjectileParser.h content/items/QcProjectileParser.cpp
 )
 target_sources(qc_common PRIVATE
     content/loader/QcContentPackLoader.h content/loader/QcContentPackLoader.cpp
 )
 target_sources(qc_common PRIVATE
-    content/parser/QcAdvancementParser.h content/parser/QcAdvancementParser.cpp
-    content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
-    content/parser/QcBlastParser.h content/parser/QcBlastParser.cpp
-    content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
-    content/parser/QcBlockTextureParser.h content/parser/QcBlockTextureParser.cpp
-    content/parser/QcCoastalTowerParser.h content/parser/QcCoastalTowerParser.cpp
-    content/parser/QcCommandMacroParser.h content/parser/QcCommandMacroParser.cpp
-    content/parser/QcContentFields.h content/parser/QcContentFields.cpp
-    content/parser/QcContentParser.h content/parser/QcContentParser.cpp
-    content/parser/QcCookingParser.h content/parser/QcCookingParser.cpp
-    content/parser/QcEffectParser.h content/parser/QcEffectParser.cpp
-    content/parser/QcEnchantmentParser.h content/parser/QcEnchantmentParser.cpp
-    content/parser/QcFarmingParser.h content/parser/QcFarmingParser.cpp
-    content/parser/QcHangingParser.h content/parser/QcHangingParser.cpp
-    content/parser/QcHoldParser.h content/parser/QcHoldParser.cpp
-    content/parser/QcItemParser.h content/parser/QcItemParser.cpp
-    content/parser/QcJsonFieldReader.h content/parser/QcJsonFieldReader.cpp
-    content/parser/QcLiquidParser.h content/parser/QcLiquidParser.cpp
-    content/parser/QcLootTableParser.h content/parser/QcLootTableParser.cpp
-    content/parser/QcMaterialParser.h content/parser/QcMaterialParser.cpp
-    content/parser/QcMobParser.h content/parser/QcMobParser.cpp
-    content/parser/QcMobReader.h content/parser/QcMobReader.cpp content/parser/QcMobReaderTraits.cpp
-    content/parser/QcProjectileParser.h content/parser/QcProjectileParser.cpp
-    content/parser/QcRailParser.h content/parser/QcRailParser.cpp
-    content/parser/QcRecipeParser.h content/parser/QcRecipeParser.cpp
-    content/parser/QcShapeParser.h content/parser/QcShapeParser.cpp
-    content/parser/QcShowcaseParser.h content/parser/QcShowcaseParser.cpp
-    content/parser/QcSignalParser.h content/parser/QcSignalParser.cpp
-    content/parser/QcSoundParser.h content/parser/QcSoundParser.cpp
-    content/parser/QcStructureParser.h content/parser/QcStructureParser.cpp
-    content/parser/QcStructureSiteParser.h content/parser/QcStructureSiteParser.cpp
-    content/parser/QcStructureVariationParser.h content/parser/QcStructureVariationParser.cpp
-    content/parser/QcTradeParser.h content/parser/QcTradeParser.cpp
-    content/parser/QcVegetationParser.h content/parser/QcVegetationParser.cpp
-    content/parser/QcVillageLayoutParser.h content/parser/QcVillageLayoutParser.cpp
-    content/parser/QcVillageParser.h content/parser/QcVillageParser.cpp
-    content/parser/QcVillagerParser.h content/parser/QcVillagerParser.cpp
-    content/parser/QcWeatherParser.h content/parser/QcWeatherParser.cpp
-    content/parser/QcWorldgenParser.h content/parser/QcWorldgenParser.cpp
-    content/parser/QcWorldOptionParser.h content/parser/QcWorldOptionParser.cpp
-    content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
+    content/mobs/QcAppearance.h
+    content/mobs/QcAppearanceDefinition.h
+    content/mobs/QcMobDefinition.h
+    content/mobs/QcMobParser.h content/mobs/QcMobParser.cpp
+    content/mobs/QcMobReader.h content/mobs/QcMobReader.cpp content/mobs/QcMobReaderTraits.cpp
+    content/mobs/QcMobSerializer.h content/mobs/QcMobSerializer.cpp
+    content/mobs/QcMobTraits.h
+    content/mobs/QcMobTraitsContent.h content/mobs/QcMobTraitsContent.cpp
+    content/mobs/QcModelDefinition.h
+    content/mobs/QcSpawnWeights.h content/mobs/QcSpawnWeights.cpp
+)
+target_sources(qc_common PRIVATE
+    content/recipes/QcCookingDefinitions.h
+    content/recipes/QcCookingParser.h content/recipes/QcCookingParser.cpp
+    content/recipes/QcFarmingDefinitions.h
+    content/recipes/QcFarmingParser.h content/recipes/QcFarmingParser.cpp
+    content/recipes/QcLootTableDefinition.h
+    content/recipes/QcLootTableParser.h content/recipes/QcLootTableParser.cpp
+    content/recipes/QcLootTables.h content/recipes/QcLootTables.cpp
+    content/recipes/QcMachineDefinition.h
+    content/recipes/QcRecipeDefinition.h content/recipes/QcRecipeDefinition.cpp
+    content/recipes/QcRecipeParser.h content/recipes/QcRecipeParser.cpp
+    content/recipes/QcSmeltingRecipe.h
+    content/recipes/QcStonecutting.h content/recipes/QcStonecutting.cpp
 )
 target_sources(qc_common PRIVATE
     content/registry/QcAdvancementCatalog.h content/registry/QcAdvancementCatalog.cpp
+    content/registry/QcAdvancementDefinition.h
+    content/registry/QcAdvancementParser.h content/registry/QcAdvancementParser.cpp
     content/registry/QcAdvancementSerializer.h content/registry/QcAdvancementSerializer.cpp
-    content/registry/QcAnvilSwaps.h content/registry/QcAnvilSwaps.cpp
-    content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp
     content/registry/QcAssetCatalog.h
-    content/registry/QcBlockSerializer.h content/registry/QcBlockSerializer.cpp
-    content/registry/QcBlockState.h
-    content/registry/QcBlockStateTable.h content/registry/QcBlockStateTable.cpp
+    content/registry/QcCommandMacroDefinition.h
+    content/registry/QcCommandMacroParser.h content/registry/QcCommandMacroParser.cpp
+    content/registry/QcContentFields.h content/registry/QcContentFields.cpp
     content/registry/QcContentNames.h content/registry/QcContentNames.cpp
+    content/registry/QcContentParser.h content/registry/QcContentParser.cpp
     content/registry/QcContentRegistry.h content/registry/QcContentRegistry.cpp
     content/registry/QcContentSerializer.h content/registry/QcContentSerializer.cpp
-    content/registry/QcEnchantmentSerializer.h content/registry/QcEnchantmentSerializer.cpp
-    content/registry/QcHoldSerializer.h content/registry/QcHoldSerializer.cpp
-    content/registry/QcItemSerializer.h content/registry/QcItemSerializer.cpp
-    content/registry/QcLootTables.h content/registry/QcLootTables.cpp
-    content/registry/QcMobSerializer.h content/registry/QcMobSerializer.cpp
-    content/registry/QcMobTraitsContent.h content/registry/QcMobTraitsContent.cpp
+    content/registry/QcJsonFieldReader.h content/registry/QcJsonFieldReader.cpp
     content/registry/QcNamedList.h
-    content/registry/QcPartGenerator.h content/registry/QcPartGenerator.cpp
-    content/registry/QcSignalLinks.h content/registry/QcSignalLinks.cpp
-    content/registry/QcSpawnerContent.h content/registry/QcSpawnerContent.cpp
-    content/registry/QcSpawnWeights.h content/registry/QcSpawnWeights.cpp
-    content/registry/QcStonecutting.h content/registry/QcStonecutting.cpp
+    content/registry/QcPackReference.h
+    content/registry/QcSoundDefinition.h content/registry/QcSoundDefinition.cpp
+    content/registry/QcSoundKeys.h content/registry/QcSoundKeys.cpp
+    content/registry/QcSoundParser.h content/registry/QcSoundParser.cpp
     content/registry/QcTranslations.h content/registry/QcTranslations.cpp
-    content/registry/QcVillageCatalog.h content/registry/QcVillageCatalog.cpp
-    content/registry/QcVillageContent.h content/registry/QcVillageContent.cpp
-    content/registry/QcVillagerOutfits.h content/registry/QcVillagerOutfits.cpp
-    content/registry/QcWorldgenCatalog.h
+)
+target_sources(qc_common PRIVATE
+    content/villages/QcTradeDefinitions.h
+    content/villages/QcTradeParser.h content/villages/QcTradeParser.cpp
+    content/villages/QcVillageCatalog.h content/villages/QcVillageCatalog.cpp
+    content/villages/QcVillageContent.h content/villages/QcVillageContent.cpp
+    content/villages/QcVillageDefinitions.h
+    content/villages/QcVillageLayoutParser.h content/villages/QcVillageLayoutParser.cpp
+    content/villages/QcVillageParser.h content/villages/QcVillageParser.cpp
+    content/villages/QcVillagerDefinitions.h
+    content/villages/QcVillagerOutfits.h content/villages/QcVillagerOutfits.cpp
+    content/villages/QcVillagerParser.h content/villages/QcVillagerParser.cpp
+)
+target_sources(qc_common PRIVATE
+    content/worldgen/QcCoastalTowerDefinition.h
+    content/worldgen/QcCoastalTowerParser.h content/worldgen/QcCoastalTowerParser.cpp
+    content/worldgen/QcDungeonDefinition.h
+    content/worldgen/QcMineshaftDefinition.h
+    content/worldgen/QcShowcaseDefinition.h
+    content/worldgen/QcShowcaseParser.h content/worldgen/QcShowcaseParser.cpp
+    content/worldgen/QcStructureDefinition.h
+    content/worldgen/QcStructureParser.h content/worldgen/QcStructureParser.cpp
+    content/worldgen/QcStructureSiteParser.h content/worldgen/QcStructureSiteParser.cpp
+    content/worldgen/QcStructureVariationParser.h content/worldgen/QcStructureVariationParser.cpp
+    content/worldgen/QcVegetationDefinition.h
+    content/worldgen/QcVegetationParser.h content/worldgen/QcVegetationParser.cpp
+    content/worldgen/QcWeatherDefinition.h
+    content/worldgen/QcWeatherParser.h content/worldgen/QcWeatherParser.cpp
+    content/worldgen/QcWorldgenCatalog.h
+    content/worldgen/QcWorldgenDefinitions.h
+    content/worldgen/QcWorldgenParser.h content/worldgen/QcWorldgenParser.cpp
+    content/worldgen/QcWorldOptionDefinitions.h
+    content/worldgen/QcWorldOptionParser.h content/worldgen/QcWorldOptionParser.cpp
+    content/worldgen/QcWorldTypeDefinitions.h
+    content/worldgen/QcWorldTypeParser.h content/worldgen/QcWorldTypeParser.cpp
 )
 target_sources(qc_common PRIVATE
     core/QcAabb.h

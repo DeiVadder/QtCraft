@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcMineshaftDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "worldgen/mineshafts/QcMineshaftAccess.h"
 #include "worldgen/mineshafts/QcMineshaftBlocks.h"
 #include "worldgen/mineshafts/QcMineshaftDetails.h"

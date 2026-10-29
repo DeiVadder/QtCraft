@@ -5,7 +5,7 @@
 
 #include "clientcore/session/QcClientLogin.h"
 #include "clientcore/tick/QcSessionTickMode.h"
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcMailbox.h"
 #include "common/protocol/QcSessionMessages.h"
 #include "network/QcServerAddress.h"

@@ -6,7 +6,7 @@
 #include "clientcore/texturepacks/QcTexturePack.h"
 #include "clientcore/texturepacks/QcTexturePackProblem.h"
 #include "clientcore/textures/QcAtlasLayout.h"
-#include "common/content/definitions/QcTextureAnimation.h"
+#include "common/content/blocks/QcTextureAnimation.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QHash>

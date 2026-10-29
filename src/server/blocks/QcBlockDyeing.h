@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcBlockPos.h"
 
 class QcServerBlocks;

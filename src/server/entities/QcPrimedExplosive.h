@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "server/entities/QcEntity.h"
 
 // A lit explosive counting down to its explosion (decision E-601); QcPrimedExplosives moves it like

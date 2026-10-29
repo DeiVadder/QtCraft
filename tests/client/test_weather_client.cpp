@@ -6,7 +6,7 @@
 #include "clientcore/weather/QcClientWeather.h"
 #include "clientcore/weather/QcDropPool.h"
 #include "clientcore/weather/QcPrecipitationField.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/world/QcDayCycle.h"
 #include "QcTestWorld.h"

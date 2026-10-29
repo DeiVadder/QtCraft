@@ -6,7 +6,7 @@
 // Protocol messages about the world: chunks, block changes, mining, using items on blocks and sounds.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 #include "common/world/QcChunk.h"

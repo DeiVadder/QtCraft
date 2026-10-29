@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/parser/QcContentParser.h"
-#include "common/content/registry/QcArmourSerializer.h"
+#include "common/content/items/QcArmourSerializer.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcArmour.h"

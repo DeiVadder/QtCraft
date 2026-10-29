@@ -3,18 +3,18 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 
-#include "common/content/registry/QcMobTraitsContent.h"
-#include "common/content/registry/QcSpawnerContent.h"
-#include "common/content/registry/QcSpawnWeights.h"
-#include "common/content/registry/QcVillageContent.h"
-#include "common/content/registry/QcVillagerOutfits.h"
+#include "common/content/blockbehaviour/QcSpawnerContent.h"
+#include "common/content/mobs/QcMobTraitsContent.h"
+#include "common/content/mobs/QcSpawnWeights.h"
+#include "common/content/villages/QcVillageContent.h"
+#include "common/content/villages/QcVillagerOutfits.h"
 
-#include "common/content/registry/QcAnvilSwaps.h"
+#include "common/content/blockbehaviour/QcSignalLinks.h"
+#include "common/content/blocks/QcPartGenerator.h"
+#include "common/content/items/QcAnvilSwaps.h"
+#include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentSerializer.h"
-#include "common/content/registry/QcPartGenerator.h"
-#include "common/content/registry/QcSignalLinks.h"
-#include "common/content/registry/QcStonecutting.h"
 
 #include <algorithm>
 

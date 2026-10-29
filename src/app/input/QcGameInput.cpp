@@ -11,7 +11,7 @@
 #include "audio/QcAudioEngine.h"
 #include "clientcore/camera/QcMouseLook.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/core/QcDowncast.h"
 
 #include <QCoreApplication>

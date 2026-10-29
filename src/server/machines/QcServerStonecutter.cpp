@@ -3,8 +3,8 @@
 
 #include "server/machines/QcServerStonecutter.h"
 
+#include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcStonecutting.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"

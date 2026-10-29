@@ -3,7 +3,7 @@
 
 #include "common/handbook/builder/QcHandbookCreaturePages.h"
 
-#include "common/content/registry/QcSpawnWeights.h"
+#include "common/content/mobs/QcSpawnWeights.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/handbook/builder/QcHandbookContext.h"
 #include "common/handbook/builder/QcHandbookText.h"

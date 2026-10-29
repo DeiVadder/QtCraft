@@ -3,8 +3,8 @@
 
 #include "common/gameplay/QcAdventureRules.h"
 
-#include "common/content/definitions/QcBlockDefinition.h"
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <QJsonArray>

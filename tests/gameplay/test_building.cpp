@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/blockrules/QcBlockRules.h"
-#include "common/content/parser/QcContentParser.h"
-#include "common/content/registry/QcPartGenerator.h"
+#include "common/content/blocks/QcPartGenerator.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"

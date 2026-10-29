@@ -7,9 +7,9 @@
 #include "clientcore/textures/QcAtlasLayout.h"
 #include "clientcore/textures/QcProceduralTexture.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/definitions/QcTextureAnimation.h"
+#include "common/content/blocks/QcTextureAnimation.h"
 #include "common/content/loader/QcContentPackLoader.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "QcTestUtil.h"
 

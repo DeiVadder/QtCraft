@@ -3,7 +3,7 @@
 
 #include "common/gameplay/QcStatusEffects.h"
 
-#include "common/content/definitions/QcEffectDefinition.h"
+#include "common/content/items/QcEffectDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>

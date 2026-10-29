@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
-#include "common/content/definitions/QcMineshaftDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcMineshaftDefinition.h"
 
 #include <QStringList>
 

@@ -4,7 +4,7 @@
 #include "server/gameplay/QcServerInteraction.h"
 
 #include "common/blockrules/QcBlockRules.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/gameplay/QcSwingSpeed.h"

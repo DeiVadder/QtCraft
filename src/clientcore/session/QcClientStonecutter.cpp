@@ -3,7 +3,7 @@
 
 #include "clientcore/session/QcClientStonecutter.h"
 
-#include "common/content/registry/QcStonecutting.h"
+#include "common/content/recipes/QcStonecutting.h"
 
 bool QcClientStonecutter::handle(const QcMessage &message)
 {

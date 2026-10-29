@@ -3,7 +3,7 @@
 
 #include "server/explosions/QcExplosionRays.h"
 
-#include "common/content/definitions/QcBlastDefinition.h"
+#include "common/content/blockbehaviour/QcBlastDefinition.h"
 #include "common/physics/QcPhysics.h"
 #include "server/explosions/QcBlastField.h"
 

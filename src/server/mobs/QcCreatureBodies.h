@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "common/physics/QcBodyGrid.h"
 #include "server/entities/QcCreature.h"
 

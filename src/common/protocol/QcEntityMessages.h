@@ -7,8 +7,8 @@
 // blocks, armour stands and minecarts.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "common/content/definitions/QcAppearance.h"
-#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcHanging.h"

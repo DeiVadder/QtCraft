@@ -3,8 +3,8 @@
 
 #include "worlds/QcHandbookRules.h"
 
-#include "common/content/definitions/QcWeatherDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcWeatherDefinition.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcInventory.h"

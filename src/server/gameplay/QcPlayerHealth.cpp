@@ -3,7 +3,7 @@
 
 #include "server/gameplay/QcPlayerHealth.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcEnchanting.h"

@@ -8,7 +8,7 @@
 #include "clientcore/control/QcControlReports.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/content/parser/QcAdvancementParser.h"
+#include "common/content/registry/QcAdvancementParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QJsonArray>

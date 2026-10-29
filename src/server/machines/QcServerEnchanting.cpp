@@ -3,8 +3,8 @@
 
 #include "server/machines/QcServerEnchanting.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"

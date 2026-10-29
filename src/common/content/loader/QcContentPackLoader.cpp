@@ -3,10 +3,10 @@
 
 #include "common/content/loader/QcContentPackLoader.h"
 
-#include "common/content/definitions/QcTextureAnimation.h"
-#include "common/content/parser/QcContentParser.h"
-#include "common/content/parser/QcWorldOptionParser.h"
+#include "common/content/blocks/QcTextureAnimation.h"
 #include "common/content/registry/QcContentNames.h"
+#include "common/content/registry/QcContentParser.h"
+#include "common/content/worldgen/QcWorldOptionParser.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <QDir>

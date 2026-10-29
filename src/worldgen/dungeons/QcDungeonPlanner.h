@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcDungeonDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcDungeonDefinition.h"
 #include "worldgen/dungeons/QcDungeonPlan.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 

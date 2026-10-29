@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
-#include "common/content/definitions/QcWorldgenDefinitions.h"
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/worldgen/QcWorldgenDefinitions.h"
 #include "common/core/QcBlockPos.h"
 
 #include <array>

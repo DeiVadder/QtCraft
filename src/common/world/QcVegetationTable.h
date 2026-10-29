@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
-#include "common/content/definitions/QcVegetationDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/worldgen/QcVegetationDefinition.h"
 
 #include <QList>
 #include <QSet>

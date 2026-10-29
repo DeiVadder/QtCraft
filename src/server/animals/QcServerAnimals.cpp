@@ -3,7 +3,7 @@
 
 #include "server/animals/QcServerAnimals.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 #include "server/animals/QcMobLaying.h"
 #include "server/core/QcServerSounds.h"

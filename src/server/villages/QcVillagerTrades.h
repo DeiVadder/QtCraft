@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcTradeDefinitions.h"
+#include "common/content/villages/QcTradeDefinitions.h"
 #include "common/gameplay/QcItemStack.h"
 #include "server/villages/QcVillager.h"
 

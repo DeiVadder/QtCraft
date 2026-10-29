@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcItemDefinition.h"
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcMessages.h"
 

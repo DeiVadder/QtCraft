@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcProjectileDefinition.h"
+#include "common/content/items/QcProjectileDefinition.h"
 #include "common/core/QcAabb.h"
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"

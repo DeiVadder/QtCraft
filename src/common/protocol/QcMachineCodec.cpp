@@ -5,7 +5,7 @@
 
 #include "common/protocol/QcProtocolCodec.h"
 
-#include "common/content/registry/QcStonecutting.h"
+#include "common/content/recipes/QcStonecutting.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcStreamLimits.h"
 

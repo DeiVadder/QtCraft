@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/loader/QcBaseContent.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "QcTestUtil.h"
 #include "worlds/QcModLoader.h"
 

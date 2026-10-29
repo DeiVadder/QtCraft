@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcCoastalTowerDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/worldgen/QcCoastalTowerDefinition.h"
 #include "worldgen/terrain/QcTerrainColumn.h"
 #include "worldgen/towers/QcCoastalTowerPlan.h"
 

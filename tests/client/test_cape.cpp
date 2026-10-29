@@ -9,7 +9,7 @@
 #include "clientcore/textures/QcTextureEmblem.h"
 #include "clientcore/textures/QcTextureSynthesizer.h"
 #include "common/content/loader/QcBaseContent.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/physics/QcPhysics.h"
 

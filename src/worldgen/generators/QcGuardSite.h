@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcStructureDefinition.h"
+#include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 #include "worldgen/terrain/QcNoise.h"

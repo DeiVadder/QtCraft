@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcBlockDefinition.h"
+#include "common/content/blocks/QcBlockDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "server/blocks/QcFireRules.h"
 #include "server/core/QcServerLimits.h"

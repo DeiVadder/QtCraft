@@ -7,12 +7,12 @@
 
 #include "clientcore/entitymeshes/QcHeldItemMesher.h"
 #include "clientcore/figures/QcFigureLook.h"
+#include "common/content/items/QcHoldParser.h"
+#include "common/content/items/QcHoldSerializer.h"
+#include "common/content/items/QcItemParser.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
-#include "common/content/parser/QcHoldParser.h"
-#include "common/content/parser/QcItemParser.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcHoldSerializer.h"
 
 #include <QBuffer>
 #include <QDir>

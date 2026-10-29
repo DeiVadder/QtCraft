@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clientcore/session/QcClientTrading.h"
-#include "common/content/parser/QcTradeParser.h"
+#include "common/content/villages/QcTradeParser.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/world/QcDayCycle.h"
 #include "QcTestUtil.h"

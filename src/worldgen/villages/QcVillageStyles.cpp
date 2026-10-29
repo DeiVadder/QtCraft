@@ -3,7 +3,7 @@
 
 #include "worldgen/villages/QcVillageStyles.h"
 
-#include "common/content/parser/QcVillageLayoutParser.h"
+#include "common/content/villages/QcVillageLayoutParser.h"
 #include "worldgen/villages/QcVillageFields.h"
 #include "worldgen/villages/QcVillagePlanner.h"
 

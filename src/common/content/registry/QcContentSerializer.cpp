@@ -3,13 +3,13 @@
 
 #include "common/content/registry/QcContentSerializer.h"
 
+#include "common/content/blocks/QcBlockSerializer.h"
+#include "common/content/items/QcEnchantmentSerializer.h"
+#include "common/content/items/QcHoldSerializer.h"
+#include "common/content/items/QcItemSerializer.h"
+#include "common/content/mobs/QcMobSerializer.h"
 #include "common/content/registry/QcAdvancementSerializer.h"
-#include "common/content/registry/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcEnchantmentSerializer.h"
-#include "common/content/registry/QcHoldSerializer.h"
-#include "common/content/registry/QcItemSerializer.h"
-#include "common/content/registry/QcMobSerializer.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <QJsonDocument>

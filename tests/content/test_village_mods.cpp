@@ -8,7 +8,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcVillagerOutfits.h"
+#include "common/content/villages/QcVillagerOutfits.h"
 
 #include <QDir>
 #include <QFile>

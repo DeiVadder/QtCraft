@@ -3,7 +3,7 @@
 
 #include "common/world/QcWeather.h"
 
-#include "common/content/definitions/QcWorldgenDefinitions.h"
+#include "common/content/worldgen/QcWorldgenDefinitions.h"
 
 #include <algorithm>
 

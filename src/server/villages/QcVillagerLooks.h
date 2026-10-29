@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 
 class QcContentRegistry;
 struct QcVillagerRecord;

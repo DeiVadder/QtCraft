@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/world/QcVegetationTable.h"
 #include "QcServerTestFixture.h"
 #include "server/plants/QcVegetationSpread.h"

@@ -3,8 +3,8 @@
 
 #include "server/gameplay/QcServerInventory.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
-#include "common/content/registry/QcStonecutting.h"
+#include "common/content/recipes/QcStonecutting.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcPortableContainers.h"

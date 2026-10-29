@@ -3,7 +3,7 @@
 
 #include "server/commands/QcEffectCommands.h"
 
-#include "common/content/definitions/QcEffectDefinition.h"
+#include "common/content/items/QcEffectDefinition.h"
 #include "common/physics/QcPhysics.h"
 #include "server/commands/QcCommandArguments.h"
 #include "server/core/QcServerClient.h"

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcAdvancementDefinition.h"
+#include "common/content/registry/QcAdvancementDefinition.h"
 
 #include <QByteArray>
 #include <QHash>

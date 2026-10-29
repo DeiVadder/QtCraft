@@ -9,7 +9,7 @@
 #include "clientcore/settings/QcGamepadSettings.h"
 #include "clientcore/settings/QcRenderOptions.h"
 #include "clientcore/settings/QcUiScale.h"
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcKeyBindings.h"
 

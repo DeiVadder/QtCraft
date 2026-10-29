@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
 #include "QcTestUtil.h"

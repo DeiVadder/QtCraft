@@ -4,7 +4,7 @@
 #include "audio/QcAudioEngine.h"
 #include "audio/QcAudioOutput.h"
 #include "audio/QcSystemAudio.h"
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "QcTestUtil.h"
 
 #include <QSignalSpy>

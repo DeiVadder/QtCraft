@@ -5,7 +5,7 @@
 
 #include "clientcore/figures/QcEntityPose.h"
 #include "clientcore/player/QcHandTimers.h"
-#include "common/content/definitions/QcModelDefinition.h"
+#include "common/content/mobs/QcModelDefinition.h"
 #include "common/core/QcVec3.h"
 
 #include <array>

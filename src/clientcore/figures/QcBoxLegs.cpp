@@ -5,7 +5,7 @@
 
 #include "clientcore/entitymeshes/QcMeshRotation.h"
 #include "clientcore/figures/QcAnimator.h"
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 
 #include <QtMath>
 

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcMineshaftDefinition.h"
+#include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "worldgen/mineshafts/QcMineshaftNetwork.h"
 #include "worldgen/mineshafts/QcMineshaftPlan.h"
 #include "worldgen/terrain/QcTerrainColumn.h"

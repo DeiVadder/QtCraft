@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcVillagerDefinitions.h"
+#include "common/content/villages/QcVillagerDefinitions.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcVec3.h"
 #include "server/pathing/QcMobLegs.h"

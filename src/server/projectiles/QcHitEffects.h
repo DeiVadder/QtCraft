@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcHitEffect.h"
+#include "common/content/items/QcHitEffect.h"
 #include "common/gameplay/QcStatusEffects.h"
 
 #include <QHash>

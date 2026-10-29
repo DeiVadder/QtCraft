@@ -6,7 +6,7 @@
 // Protocol messages of the connection and session: handshake, content, chat and world time.
 // Part of the QcMessage variant (QcMessages.h).
 
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QString>

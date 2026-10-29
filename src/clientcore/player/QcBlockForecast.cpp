@@ -3,7 +3,7 @@
 
 #include "clientcore/player/QcBlockForecast.h"
 
-#include "common/content/definitions/QcItemDefinition.h"
+#include "common/content/items/QcItemDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcRaycast.h"
 

@@ -1,0 +1,16 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+#include "common/content/blocks/QcBlockDefinition.h"
+#include "common/core/QcResult.h"
+
+#include <QJsonObject>
+
+// Parses block definitions of content packs.
+namespace QcBlockParser {
+
+[[nodiscard]] QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
+
+} // namespace QcBlockParser

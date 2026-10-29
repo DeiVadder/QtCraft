@@ -3,8 +3,8 @@
 
 #include "clientcore/sound/QcLocalSounds.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/content/registry/QcSoundKeys.h"
 
 #include <algorithm>
 #include <cmath>

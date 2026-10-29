@@ -3,7 +3,7 @@
 
 #include "server/explosions/QcServerExplosions.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcFireRules.h"
 #include "server/core/QcServerSounds.h"

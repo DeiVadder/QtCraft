@@ -3,7 +3,7 @@
 
 #include "server/core/QcServerSounds.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "server/core/QcServerState.h"
 #include "server/tick/QcTickScheduler.h"
 

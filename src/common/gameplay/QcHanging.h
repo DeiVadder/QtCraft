@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcHangingDefinition.h"
+#include "common/content/blockbehaviour/QcHangingDefinition.h"
 #include "common/core/QcAabb.h"
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcBlockPos.h"

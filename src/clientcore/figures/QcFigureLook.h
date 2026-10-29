@@ -4,7 +4,7 @@
 #pragma once
 
 #include "clientcore/entitymeshes/QcEntityMesher.h"
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcStandPose.h"
 

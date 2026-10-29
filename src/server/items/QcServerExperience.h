@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcExperienceDrop.h"
+#include "common/content/items/QcExperienceDrop.h"
 #include "common/core/QcVec3.h"
 
 #include <QtGlobal>

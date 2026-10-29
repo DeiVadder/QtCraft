@@ -3,7 +3,7 @@
 
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEnchantingAura.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcEnchantingTable.h"

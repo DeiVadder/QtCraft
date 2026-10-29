@@ -3,7 +3,7 @@
 
 #include "server/mobbrains/QcMobHover.h"
 
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "server/entities/QcCreature.h"
 
 #include <algorithm>

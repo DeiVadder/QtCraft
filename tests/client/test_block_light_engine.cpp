@@ -3,7 +3,7 @@
 
 #include "clientcore/light/QcBlockLightEngine.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/core/QcSectionKey.h"
 #include "common/world/QcLightVolume.h"
 #include "QcTestUtil.h"

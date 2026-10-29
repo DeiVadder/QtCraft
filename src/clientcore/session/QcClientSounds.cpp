@@ -3,7 +3,7 @@
 
 #include "clientcore/session/QcClientSounds.h"
 
-#include "common/content/definitions/QcSoundKeys.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
 
 std::optional<QcSoundCue> QcClientSounds::record(QcSoundCue cue, quint64 tick)

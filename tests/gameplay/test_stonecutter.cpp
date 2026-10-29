@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clientcore/session/QcClientStonecutter.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/recipes/QcStonecutting.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
-#include "common/content/registry/QcStonecutting.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcPlayerUseFixture.h"
 #include "QcTestUtil.h"

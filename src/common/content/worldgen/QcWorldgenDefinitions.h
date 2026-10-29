@@ -1,0 +1,261 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+#pragma once
+
+// World-generation content: biomes, terrain features, ore veins and global terrain settings.
+// Plain data structs grouped in one header because they are only meaningful together; block and
+// feature references are content names resolved by the generator.
+
+#include "common/content/worldgen/QcCoastalTowerDefinition.h"
+#include "common/content/worldgen/QcDungeonDefinition.h"
+#include "common/content/worldgen/QcMineshaftDefinition.h"
+#include "common/content/worldgen/QcVegetationDefinition.h"
+
+#include <QList>
+#include <QString>
+
+#include <optional>
+
+struct QcFeaturePlacement
+{
+    QString feature;
+    // Probability per surface column.
+    double density = 0.0;
+};
+
+// A block covering a share of some ground (the beds of rivers, decision E-840).
+struct QcBlockShare
+{
+    QString block;
+    // Share of the columns in [0, 1], in patches of a few blocks.
+    double share = 0.0;
+};
+
+// The weight a biome gives a monster kind instead of the kind's own (decision E-838): the husk's
+// desert takes most of the zombies' share.
+struct QcSpawnWeight
+{
+    QString mob;
+    // 0 takes the kind out of the biome's list.
+    double weight = 0.0;
+};
+
+struct QcBiomeDefinition
+{
+    QString name;
+    QString translationKey;
+    // Translation key of the handbook's text about it ("<translation>.description" unless set); a
+    // missing text leaves only the facts. Server side only.
+    QString descriptionKey;
+    // The biome's colour on the map preview of a new world (decision E-921), 0xRRGGBB; without one
+    // the preview spreads hues over the biomes.
+    std::optional<quint32> mapColour;
+    // Climate point in [0, 1]; each column takes the biome closest to its local climate.
+    double temperature = 0.5;
+    double humidity = 0.5;
+    // Third climate coordinate in [0, 1]: how rugged the land is. The world's ruggedness is low
+    // almost everywhere and high along chains, so a biome with a high value forms mountain ranges
+    // across all climates. Counts twice as much as temperature and humidity.
+    double ruggedness = 0.2;
+    // How rare the biome is, in [0, 1] (decision E-821); 0 for an ordinary biome. The world's rarity
+    // is 0 almost everywhere and rises to 1 in scattered spots. A biome with a rarity takes part in
+    // the climate choice only inside those spots (its weight is scaled by the world's rarity against
+    // its own, so it is exactly 0 elsewhere) and there wins where its temperature, humidity and
+    // ruggedness fit best (so a temperate rare biome never replaces a desert).
+    double rarity = 0.0;
+    // How far the biome reaches beyond the midpoint to its neighbours in climate space (decision
+    // E-824): subtracted from its squared climate distance, so its share grows while its borders
+    // stay straight and it keeps the same neighbours; 0 for an ordinary biome.
+    double spread = 0.0;
+    // Surface height in blocks for land in this biome.
+    double baseHeight = 68.0;
+    double heightVariation = 6.0;
+    // Share of the variation in [0, 1] that comes from sharp ridges instead of rolling hills.
+    double ridges = 0.0;
+    // Overhangs: a 3D noise of this many blocks reshapes the ground around the surface (ledges,
+    // arches, overhanging cliffs); 0 keeps plain columns.
+    int overhang = 0;
+    // Height of terrace steps in blocks (0: none). Where a slowly changing mask allows it, the land
+    // rises in flat steps with cliffs between them.
+    int terraceHeight = 0;
+    // Surface block where the ground drops at least `steepSlope` blocks to a neighbour (rock on
+    // cliffs); empty keeps the normal surface.
+    QString steepBlock;
+    int steepSlope = 3;
+    QString surfaceBlock;
+    QString subsurfaceBlock;
+    int subsurfaceDepth = 3;
+    QString underwaterBlock;
+    // Patches of other blocks among `underwaterBlock` (gravel and clay in river beds, decision
+    // E-840); their shares add up to at most 1.
+    QList<QcBlockShare> underwaterPatches;
+    // Patches of other blocks among `surfaceBlock` on the land of a delta biome (mud and grass on
+    // the islands, decision E-850); shares as above. Other biomes ignore them.
+    QList<QcBlockShare> surfacePatches;
+    QString beachBlock;
+    // Water surface block in cold biomes (e.g. ice); empty keeps water.
+    QString frozenWaterBlock;
+    // Only water at most this many blocks deep freezes (ice along the banks of a cold delta, decision
+    // E-850); 0: all water of the biome.
+    int frozenDepth = 0;
+    // Surface above this height uses `snowBlock` (0 disables).
+    int snowLine = 0;
+    QString snowBlock;
+    // Villages may be built here (decision E-403), in the style that names the biome or else the
+    // fallback style. Server side only.
+    bool villages = false;
+    // A river biome (decision E-840): the climate never chooses it; the water of a river channel
+    // takes the river biome of the land biome it runs through. Its climate point only sets the
+    // weather.
+    bool river = false;
+    // The river biome of the rivers through this land biome (decision E-840; frozen rivers in cold
+    // biomes); empty: the terrain's `riverBiome`.
+    QString riverBiome;
+    // A delta biome (decision E-850): the climate never chooses it; the arms and islands of a river
+    // delta take the delta biome of the land biome around them.
+    bool delta = false;
+    // The delta biome of the deltas in this land biome (decision E-850); empty: the terrain's
+    // `deltaBiome`.
+    QString deltaBiome;
+    // Monster kinds weighted differently here than by their spawn rules (`monsters`, decision
+    // E-838; QcSpawnWeights). Server side only.
+    QList<QcSpawnWeight> monsterWeights;
+    QList<QcFeaturePlacement> features;
+    // Grass and flowers (decision E-814): placed after the listed features, used by bone meal.
+    QcVegetationDefinition vegetation;
+};
+
+struct QcFeatureDefinition
+{
+    // Plant: a single block (`trunkBlock`, given as "block") on the ground. Pool: a liquid
+    // (`trunkBlock`, given as "block") filling the bottom of a cave; pools are tried in every chunk
+    // and are not listed by biomes.
+    enum class Type { Tree, Column, Plant, Pool };
+
+    QString name;
+    Type type = Type::Tree;
+    QString trunkBlock;
+    QString leavesBlock;
+    int minHeight = 4;
+    int maxHeight = 6;
+    // Crown of trees (QcTreeShape::Crown): "round", "cone", "bush", or the giant trees on a 2×2 trunk
+    // "giant_cone" and "giant_round" (decision E-822).
+    QString shape = QStringLiteral("round");
+    // Vines hung on the trunk and lowest leaves of trees (a block with the state `attach`); empty for
+    // none.
+    QString vinesBlock;
+    // Blocks the feature may stand on; empty allows any solid block.
+    QList<QString> groundBlocks;
+    // Only on ground at sea level with water right next to it (sugar cane on a shore).
+    bool nearWater = false;
+    // Plants only: on the surface of the water of columns under the sea level, standing on the top
+    // water block (lily pads in swamps, decision E-774); `ground` names the water.
+    bool onWater = false;
+    // Size in blocks of the patches the feature grows in (flower meadows, groves); 0 scatters it
+    // evenly. The average density stays the same.
+    int patchSize = 0;
+    // Pools: `attempts` tries per chunk, each taken with `chance`, at a cave floor between minY and
+    // maxY; a basin of up to `radius` blocks is sunk `depth` blocks into the floor.
+    int minY = 8;
+    int maxY = 40;
+    int attempts = 1;
+    double chance = 0.0;
+    int radius = 3;
+    int depth = 2;
+    // Pools on the surface of dry land instead of cave floors (lava lakes, decision E-856); minY/maxY
+    // do not apply. A surface pool is a lake: one per square of `region` chunks at most, `attempts`
+    // chunks of the square tried in turn and the first fitting site taken, with `chance` per square;
+    // the tried chunks keep `spacing` chunks from the next square's. `radius` is the basin's reach
+    // from its centre, `depth` the liquid's; liquid next to air or soil turns the soil to `rim`.
+    bool surface = false;
+    int region = 1;
+    int spacing = 0;
+    QString rimBlock;
+    // Biomes a pool may lie in; empty for all.
+    QList<QString> biomes;
+};
+
+struct QcOreDefinition
+{
+    QString name;
+    QString block;
+    QString replaces;
+    int minY = 1;
+    int maxY = 64;
+    int veinsPerChunk = 8;
+    int veinSize = 6;
+    // Biomes a vein may lie in (the biome of the column where it starts); empty for all (decision
+    // E-453: infested stone only in the mountains).
+    QList<QString> biomes;
+};
+
+// Soft edges of cold biomes (decision E-858): the top water layer freezes by the temperature of its
+// column with a noise instead of by biome, rivers only further into the cold, and the ground blocks
+// of a column come from the biome a few blocks away in a jittered direction, so they mix over the
+// border. Without `freezing` in terrain.json the biomes' `frozenWater` freezes all their water.
+struct QcColdEdgeSettings
+{
+    // The block still water freezes to where its biome names none; empty: freezing by biome.
+    QString iceBlock;
+    // Still water (lakes, sea) freezes below this temperature, river water below `riverTemperature`.
+    double temperature = 0.0;
+    double riverTemperature = 0.0;
+    // Amplitude of the noise added to the temperature: the ice's edge frays by about this much.
+    double ragged = 0.0;
+    // Columns take their ground blocks from the biome up to this many blocks away; 0: their own.
+    int groundBlend = 0;
+
+    static constexpr int maxGroundBlend = 8;
+};
+
+struct QcTerrainSettings
+{
+    int seaLevel = 62;
+    QString stoneBlock;
+    QString waterBlock;
+    QString bedrockBlock;
+    bool caves = true;
+    // Larger values make the spaghetti tunnels wider (threshold on two noise fields).
+    double caveTunnelWidth = 0.075;
+    // Lower values make the open caverns larger (threshold on one noise field).
+    double caveCavernThreshold = 0.58;
+    // Cave air at or below this height is filled with `caveLiquid` (lava lakes deep down); an empty
+    // block name keeps the caves dry.
+    QString caveLiquidBlock;
+    int caveLiquidLevel = 10;
+    // Caves break through the ground only where an entrance noise allows it; elsewhere this many
+    // blocks of rock stay above them.
+    int caveRoof = 4;
+    // Share of the land, about, where caves may open to the surface.
+    double caveEntrances = 0.04;
+    // Bedrock: the bottom layer is solid, the layers above it get thinner up to this many layers.
+    int bedrockLayers = 3;
+    // Rivers (decision E-840): winding channels down to the sea level through the land.
+    bool rivers = false;
+    // The river biome of land biomes that name none (decision E-840); empty: the first river biome.
+    QString riverBiome;
+    // River deltas (decision E-850): where wide rivers run through flat land into the sea; need
+    // `rivers`.
+    bool deltas = false;
+    // The share of the wide river mouths that get a delta (0..1; decision E-850): deltas are rare.
+    double deltaShare = 1.0;
+    // The delta biome of land biomes that name none (decision E-850); empty: the first delta biome.
+    QString deltaBiome;
+    // Size of the biomes against the content's (decision E-917): the climate maps stretch by this
+    // factor, so 2 makes biomes and mountain chains about twice as wide; the coasts stay.
+    double biomeScale = 1.0;
+    static constexpr double minBiomeScale = 0.25;
+    static constexpr double maxBiomeScale = 8.0;
+    // Biome whose vegetation bone meal grows where the world generator names no biome (flat,
+    // showcase and void worlds; decision E-814); empty: none there.
+    QString vegetationBiome;
+    // Dungeons with spawners and corridors to caves (decision E-522).
+    QcDungeonSettings dungeons;
+    // Mine shafts with levels, staircases, bridges and surface entrances (decision E-570).
+    QcMineshaftSettings mineshafts;
+    // Towers on the coasts with a trapped chest at the top (decision E-605).
+    QcCoastalTowerSettings coastalTowers;
+    // Freezing by temperature and mixed ground at biome borders (decision E-858).
+    QcColdEdgeSettings coldEdges;
+};

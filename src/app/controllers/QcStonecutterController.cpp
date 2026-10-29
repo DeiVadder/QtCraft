@@ -8,8 +8,8 @@
 #include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcStonecutting.h"
 
 using namespace Qt::StringLiterals;
 

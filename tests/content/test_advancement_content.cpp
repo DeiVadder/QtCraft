@@ -7,7 +7,7 @@
 
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
-#include "common/content/parser/QcAdvancementParser.h"
+#include "common/content/registry/QcAdvancementParser.h"
 #include "common/content/registry/QcAdvancementSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcContentSerializer.h"

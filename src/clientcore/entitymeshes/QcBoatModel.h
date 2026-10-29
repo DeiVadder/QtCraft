@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "common/content/definitions/QcMobDefinition.h"
+#include "common/content/mobs/QcMobDefinition.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcVec3.h"
 

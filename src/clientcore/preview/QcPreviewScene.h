@@ -7,7 +7,7 @@
 #include "clientcore/entitymeshes/QcEntityMesher.h"
 #include "clientcore/figures/QcCapeSwing.h"
 #include "clientcore/figures/QcEntityPose.h"
-#include "common/content/definitions/QcAppearance.h"
+#include "common/content/mobs/QcAppearance.h"
 #include "common/gameplay/QcEquipment.h"
 
 class QcContentRegistry;

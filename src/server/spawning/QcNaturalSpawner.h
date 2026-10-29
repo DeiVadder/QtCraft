@@ -3,8 +3,8 @@
 
 #pragma once
 
+#include "common/content/mobs/QcSpawnWeights.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "common/content/registry/QcSpawnWeights.h"
 #include "common/core/QcChunkPos.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerLimits.h"

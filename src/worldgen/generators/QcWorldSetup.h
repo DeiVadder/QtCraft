@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "common/content/definitions/QcStructureDefinition.h"
-#include "common/content/definitions/QcWorldTypeDefinitions.h"
+#include "common/content/worldgen/QcStructureDefinition.h"
+#include "common/content/worldgen/QcWorldTypeDefinitions.h"
 
 #include <QList>
 #include <QString>

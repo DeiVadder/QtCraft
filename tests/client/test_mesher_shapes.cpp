@@ -3,7 +3,7 @@
 
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "common/content/parser/QcContentParser.h"
+#include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcLightPassage.h"
 #include "common/world/QcLightVolume.h"
