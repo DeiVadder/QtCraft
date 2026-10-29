@@ -150,6 +150,7 @@ void QcScreenshotHook::logLayoutCheck() const
         qCWarning(lcScreenshot).noquote() << "Chat lines overlap:" << row;
     }
     qCInfo(lcScreenshot).noquote() << u"HUD check: chat lines overlap %1 status rows"_s.arg(overlaps.size());
+    qCInfo(lcScreenshot).noquote() << u"HUD parts shown: %1"_s.arg(QcLayoutCheck::hudPartsShown(*content));
 
     const QStringList advancements = QcLayoutCheck::advancementOverlaps(*content);
     for (const QString &pair : advancements) {

@@ -3,6 +3,9 @@
 #include <QQmlListReference>
 #include <QQuickItem>
 
+#include <array>
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -66,6 +69,24 @@ QStringList QcLayoutCheck::chatOverlaps(const QQuickItem &root)
         }
     }
     return found;
+}
+
+QString QcLayoutCheck::hudPartsShown(const QQuickItem &root)
+{
+    static constexpr std::array<std::pair<QStringView, QStringView>, 6> parts{{
+        {u"chat", u"hudChat"},
+        {u"hint", u"hudHint"},
+        {u"target", u"hudTarget"},
+        {u"crosshair", u"hudCrosshair"},
+        {u"hotbar", u"hotbar"},
+        {u"hearts", u"hearts"},
+    }};
+    QStringList found;
+    for (const auto &[label, name] : parts) {
+        const QQuickItem *item = findItem(root, name.toString());
+        found.append(u"%1 %2"_s.arg(label).arg(item && shown(*item) ? 1 : 0));
+    }
+    return found.join(u' ');
 }
 
 QStringList QcLayoutCheck::advancementOverlaps(const QQuickItem &root)

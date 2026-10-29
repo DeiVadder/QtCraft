@@ -137,9 +137,11 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
         $<TARGET_FILE:qtcraft-headless>)
     set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 1230 COST 310)
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
-    # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
+    # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900;
+    # behind screens, full-screen screens, the handbook and the chat line only the parts decision
+    # E-927 keeps show, and closing brings them back (1280 x 720 at 100 and 200 %).
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 240)
+    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 900 COST 55)
     # The main menu fills windows up to 3440 x 1440 (a large monitor in fullscreen, decision E-875):
     # Auto lets the page grow with the window, and it stands centred beside the side bar.
     add_test(NAME app_offscreen_window_fill COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh $<TARGET_FILE:qtcraft>

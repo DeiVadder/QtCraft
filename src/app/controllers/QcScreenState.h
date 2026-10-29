@@ -64,6 +64,14 @@ public:
         Advancements,
     };
     Q_ENUM(Overlay)
+    // How much of the HUD shows behind the screens (GameController.HudShown in QML, decision
+    // E-927), from least to most: nothing behind a full-screen screen (the settings, "Manage
+    // server", the advancements, the handbook); the status rows (hotbar, experience, hearts, food,
+    // armour, time of day, effects) behind a screen over the world (inventories, machines, the
+    // pause menu, the character screen, LAN, the sign) and the death screen; everything but the world hint while the
+    // chat line is open; everything in the world.
+    enum class HudShown { Nothing, StatusRows, AllButHint, All };
+    Q_ENUM(HudShown)
 
     explicit QcScreenState(const QcSessionParts &parts, QObject *parent = nullptr);
 
@@ -76,6 +84,12 @@ public:
     // advancements (decision E-924): the world waits behind them, and the window draws at the
     // background frame rate (decision E-835).
     static bool isMenu(Overlay overlay);
+    // The full-screen screens (decision E-927): the settings at any page, "Manage server" and the
+    // advancements cover the world and the HUD completely, as the handbook does.
+    static bool isFullScreen(Overlay overlay);
+    // How much of the HUD shows with `overlay` open, the handbook open or not and the player dead
+    // (the death screen) or not (decision E-927).
+    static HudShown hudShown(Overlay overlay, bool handbookOpen, bool dead);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
     Phase phase() const { return m_phase; }

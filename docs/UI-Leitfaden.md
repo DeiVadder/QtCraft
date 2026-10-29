@@ -246,6 +246,15 @@ Mensch 2026-10-22, wie die Systemeinstellungen von macOS: **eine** Seitenleiste,
 
 Umgesetzt in `src/app/qml/admin/` (`AdminScreen` und je Abschnitt eine Seite). Pausenmenü → „Server verwalten“ (nur für Operatoren) führt eine Ebene tiefer wie die Einstellungen (8b), Rückweg „‹ Pausenmenü“. Abschnitte: Übersicht (Diagramme 6.12), Spieler, Chat, Befehle, Listen, Spielregeln, Log, Server. Muster: Listen und Spieleraktionen gelten sofort (Muster 1), Spielregeln und Grenzen sind ein Entwurf mit „Speichern“/„Verwerfen“ (Muster 2), Rauswerfen, Sperren und Stoppen fragen modal (`AdminActionDialog`, Fokus auf „Abbrechen“, die Aktion destruktiv und nach sich selbst benannt). Antworten und Ablehnungen des Servers stehen als `Hint` über dem Abschnitt. Die Spielregeln zeigen den übersetzten Namen (`QcAdminSettingNames`) als Bezeichnung, den Schlüssel als Schild (`badge`) darunter und Beschreibung, Bereich und Standard als Hilfe; der Entwurf liegt im Controller und überdauert das Schließen (Leiste „ungespeichert“). Die eigenen Operator-Rechte zu entziehen fragt modal. Listen von Zeilen (Chat, Log, Ausgabe) liegen eingelassen auf `field` und scrollen für sich, die Eingabezeile steht darunter; Warnungen und Fehler mit Farbe und Zeichen („!“, „×“). Layout-Test: `tests/ui/test_admin_layout.sh`.
 
+## 8d HUD hinter Bildschirmen (E-927)
+
+Was vom HUD hinter einem Bildschirm bleibt, entscheidet nur `GameController.hudShown` (`QcScreenState::hudShown`); kein Bildschirm blendet HUD-Teile selbst aus.
+
+- **Jeder Bildschirm über der Welt** (Inventare, Maschinen, Pausenmenü, Charakter, LAN, Schild) **und der Todesbildschirm**: Chat-Zeilen, Welt-Hinweis, Blockname, Fadenkreuz, Karte in der Hand, Name eines neu gewählten Items (der eigene Name des Stapels an der Schnellleiste bleibt), Beschriftungen in der Welt (Showcase-Namen, Lichtwerte) und die Fortschritts-Mitteilung aus; Schnellleiste, Erfahrung, Herzen, Hunger, Rüstung, Tageszeit und Effekte bleiben (wie im Vorbild die Schnellleiste hinter dem Inventar).
+- **Vollbild-Bildschirme** (Einstellungen, Server verwalten, Fortschritte, Handbuch – auch über einem anderen Bildschirm): das ganze HUD aus. Ein neuer Bildschirm mit fast deckendem Paneel über die ganze Fläche kommt in `QcScreenState::isFullScreen`.
+- **Chatzeile:** alles bleibt außer dem Welt-Hinweis unter der Eingabe.
+- Geprüft von `test_hud_layout.sh` (Zeile „HUD parts shown“ des Layout-Checks, 100 und 200 %).
+
 ## 9 Mindestgröße, Skalierung, Scrollen
 
 - Jede Seite muss bei **1024 × 640** und **200 %** (begrenzt auf das, was passt, E-725) ohne abgeschnittene Elemente auskommen; der Inhalt scrollt, Kopf und Fuß nicht.

@@ -70,12 +70,15 @@ ApplicationWindow {
         visible: game.phase === GameController.Phase.Playing || game.phase === GameController.Phase.Loading
     }
 
-    // The photo mode's key hides it with the crosshair and every overlay (decision E-692).
+    // The photo mode's key hides it with the crosshair and every overlay (decision E-692); nothing
+    // of it shows behind a full-screen screen (decision E-927), the rest hides by GameController.hudShown
+    // (behind the death screen only the status rows stay).
     Hud {
         id: hud
 
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && !game.player.dead && !game.photo.hudHidden
+        visible: game.phase === GameController.Phase.Playing && !game.photo.hudHidden
+                 && game.hudShown !== GameController.HudShown.Nothing
         game: game
     }
 
@@ -348,9 +351,10 @@ ApplicationWindow {
         anchors.rightMargin: Ui.hudPx(8)
         anchors.topMargin: Ui.hudPx(40)
         active: false
-        // Not over the advancement tree, which shows the same and would lose its close button.
+        // A notice for playing in the world (decision E-927): not over the panels of a screen (nor
+        // over the advancement tree, which shows the same and would lose its close button).
         visible: ((item as AdvancementToast)?.showing ?? false) && !game.photo.hudHidden && !game.photo.capturing
-                 && game.overlay !== GameController.Overlay.Advancements
+                 && (game.hudShown === GameController.HudShown.All || game.hudShown === GameController.HudShown.AllButHint)
 
         sourceComponent: AdvancementToast {}
     }

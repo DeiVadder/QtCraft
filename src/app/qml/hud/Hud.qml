@@ -17,6 +17,12 @@ Item {
     readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y)
     // The status rows, the hotbar and the hint below it: world labels fade out before they reach it.
     readonly property rect statusArea: Qt.rect(hotbar.x, statusTop, hotbar.width, height - statusTop)
+    // What shows behind the open screen (decision E-927, GameController.hudShown): the crosshair,
+    // the name of the block in view, the name of a newly selected item, the world labels and the
+    // chat lines only while the view is free (no screen, or the chat line); the world hint only without any screen. Main.qml hides the whole HUD behind
+    // a full-screen screen.
+    readonly property bool viewShown: hud.game.hudShown === GameController.HudShown.All || hud.game.hudShown === GameController.HudShown.AllButHint
+    readonly property bool hintShown: hud.game.hudShown === GameController.HudShown.All
 
     objectName: "hud"
 
@@ -62,7 +68,7 @@ Item {
 
     WorldLabels {
         anchors.fill: parent
-        visible: hud.game.settings.showLabels
+        visible: hud.game.settings.showLabels && hud.viewShown
         labels: hud.game.hud.labels
         hudArea: hud.statusArea
     }
@@ -70,7 +76,7 @@ Item {
     // Light values around the target (debug options).
     WorldLabels {
         anchors.fill: parent
-        visible: hud.game.settings.debug.lightValues
+        visible: hud.game.settings.debug.lightValues && hud.viewShown
         labels: hud.game.hud.debug.lightLabels
         hudArea: hud.statusArea
     }
@@ -84,7 +90,7 @@ Item {
     // screen is open (only the chat line leaves the view free).
     MapInHand {
         heldMap: hud.game.hud.heldMap
-        visible: heldMap.held && (hud.game.overlay === GameController.Overlay.None || hud.game.overlay === GameController.Overlay.Chat)
+        visible: heldMap.held && hud.viewShown
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
     }
@@ -92,7 +98,9 @@ Item {
     Item {
         id: crosshair
 
+        objectName: "hudCrosshair"
         anchors.centerIn: parent
+        visible: hud.viewShown
         width: Ui.hudPx(18)
         height: Ui.hudPx(18)
 
@@ -132,11 +140,13 @@ Item {
         }
     }
 
+    // The name of the block in view.
     HudLabel {
+        objectName: "hudTarget"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: Ui.hudPx(12)
-        visible: text.length > 0
+        visible: text.length > 0 && hud.viewShown
         text: hud.game.hud.targetLabel
         font.pixelSize: Ui.hudPx(16)
     }
@@ -151,6 +161,7 @@ Item {
         id: chatArea
 
         objectName: "hudChat"
+        visible: hud.viewShown
         x: Ui.hudPx(12)
         width: Math.min(hud.width - 2 * x, Ui.hudPx(480))
         height: Math.min(chat.height, Math.max(0, hud.statusTop - Ui.hudPx(6) - Ui.hudPx(12)))
@@ -446,6 +457,7 @@ Item {
     Row {
         id: hotbar
 
+        objectName: "hotbar"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: hint.top
         anchors.bottomMargin: Ui.hudPx(8)
@@ -506,6 +518,8 @@ Item {
     // the highest status row above the hotbar (armour, hearts or the hotbar itself in creative mode).
     HeldItemName {
         inventory: hud.game.player.inventory
+        // Its own fade, and only while the view is free (decision E-927).
+        visible: opacity > 0 && hud.viewShown
         anchors.horizontalCenter: hotbar.horizontalCenter
         y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y) - height - Ui.hudPx(4)
     }
@@ -523,6 +537,7 @@ Item {
 
         readonly property var keys: hud.game.settings.keys.labels
 
+        objectName: "hudHint"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
         anchors.bottomMargin: Ui.hudPx(6)
@@ -531,8 +546,9 @@ Item {
         wrapMode: Text.Wrap
         horizontalAlignment: Text.AlignHCenter
         // The pad's hints of a screen take this place (PadHints); the pad's world hints lie over it
-        // (padHint), so the rows above keep their place.
-        visible: !hud.game.gamepad.focusShown
+        // (padHint), so the rows above keep their place. Hidden, it keeps its height: the hotbar
+        // stays where it is.
+        visible: !hud.game.gamepad.focusShown && hud.hintShown
         opacity: hud.game.gamepad.active ? 0 : 1
         font.pixelSize: Ui.hudPx(13)
         text: hud.game.input.mouseCaptured && hud.game.player.spectator
@@ -554,6 +570,7 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: hint.verticalCenter
         active: hud.game.gamepad.active && !hud.game.gamepad.focusShown
+        visible: hud.hintShown
         // Ten buttons in one row: at a large HUD scale the row shrinks to the window's width.
         scale: Math.min(1, (hud.width - Ui.hudPx(16)) / Math.max(1, width))
 

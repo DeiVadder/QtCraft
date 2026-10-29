@@ -117,6 +117,9 @@ QcGameController::QcGameController(QObject *parent)
     connect(&m_screens, &QcScreenState::statusChanged, this, &QcGameController::statusChanged);
     connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
+    connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::updateHudShown);
+    connect(m_handbook.get(), &QcHandbookController::openChanged, this, &QcGameController::updateHudShown);
+    connect(m_player.get(), &QcPlayerController::healthChanged, this, &QcGameController::updateHudShown);
     connect(this, &QcGameController::sessionStarted, m_multiplayer.get(), &QcMultiplayerController::sessionStarted);
     connect(this, &QcGameController::sessionStarted, m_admin.get(), &QcAdminController::sessionStarted);
     connect(this, &QcGameController::sessionStarted, m_pause.get(), &QcWorldPause::sessionStarted);
@@ -129,6 +132,17 @@ QcGameController::QcGameController(QObject *parent)
     connect(&m_wiring, &QcSessionWiring::playing, this, [this] { setPhase(Phase::Playing); });
     connect(&m_wiring, &QcSessionWiring::disconnected, &m_screens, &QcScreenState::sessionDisconnected);
     connect(&m_wiring, &QcSessionWiring::ticked, this, [this] { m_frame.restartTickClock(); });
+}
+
+void QcGameController::updateHudShown()
+{
+    const QcScreenState::HudShown shown = QcScreenState::hudShown(m_screens.overlay(), m_handbook->isOpen(), m_player->dead());
+    if (shown == hudShown()) {
+        return;
+    }
+
+    m_hudShown = shown;
+    emit hudShownChanged();
 }
 
 QcGameController::~QcGameController()

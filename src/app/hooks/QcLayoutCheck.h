@@ -19,6 +19,11 @@ public:
     // that the shown chat lines (the item named "hudChat") overlap; empty without a shown HUD or
     // without chat lines.
     static QStringList chatOverlaps(const QQuickItem &root);
+    // Which parts of the HUD show (decision E-927), as "chat 1 hint 0 target 1 crosshair 1 hotbar 1
+    // hearts 1": the chat lines ("hudChat"), the world hint ("hudHint"), the name of the block in
+    // view ("hudTarget"), the crosshair ("hudCrosshair"), the hotbar ("hotbar") and the hearts
+    // ("hearts"); 0 for a part that is missing or hidden (by itself or with the HUD).
+    static QString hudPartsShown(const QQuickItem &root);
     // One line per pair of advancements (items named "advancement_<name>") in the shown tree (the
     // item named "advancementTree", decision E-924) whose rectangles overlap; empty without it.
     static QStringList advancementOverlaps(const QQuickItem &root);

@@ -83,6 +83,59 @@ bool QcScreenState::isMenu(Overlay overlay)
     }
 }
 
+bool QcScreenState::isFullScreen(Overlay overlay)
+{
+    switch (overlay) {
+    case Overlay::Settings:
+    case Overlay::Display:
+    case Overlay::Audio:
+    case Overlay::Interface:
+    case Overlay::Controls:
+    case Overlay::Gamepad:
+    case Overlay::Debug:
+    case Overlay::TexturePacks:
+    case Overlay::Admin:
+    case Overlay::Advancements:
+        return true;
+    // No default: a new overlay must be placed here (-Wswitch).
+    case Overlay::None:
+    case Overlay::Inventory:
+    case Overlay::Creative:
+    case Overlay::Furnace:
+    case Overlay::Chest:
+    case Overlay::Trade:
+    case Overlay::Pause:
+    case Overlay::Character:
+    case Overlay::Lan:
+    case Overlay::Chat:
+    case Overlay::Sign:
+    case Overlay::Stonecutter:
+    case Overlay::Enchanting:
+    case Overlay::Anvil:
+        return false;
+    }
+    return false;
+}
+
+QcScreenState::HudShown QcScreenState::hudShown(Overlay overlay, bool handbookOpen, bool dead)
+{
+    if (handbookOpen || isFullScreen(overlay)) {
+        return HudShown::Nothing;
+    }
+    // Behind the death screen the status rows stay, as in the reference.
+    if (dead) {
+        return HudShown::StatusRows;
+    }
+    if (overlay == Overlay::None) {
+        return HudShown::All;
+    }
+    // The chat line leaves the view free; only the world hint would lie under its input line.
+    if (overlay == Overlay::Chat) {
+        return HudShown::AllButHint;
+    }
+    return HudShown::StatusRows;
+}
+
 std::optional<QcScreenState::Overlay> QcScreenState::overlayFromName(QStringView name)
 {
     for (std::size_t index = 0; index < overlayNames.size(); ++index) {

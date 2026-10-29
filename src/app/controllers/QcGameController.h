@@ -66,6 +66,9 @@ class QcGameController : public QObject
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
     // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // How much of the HUD shows behind the open screens and the handbook (GameController.HudShown,
+    // decision E-927): the one place that hides parts of the HUD behind screens.
+    Q_PROPERTY(QcScreenState::HudShown hudShown READ hudShown NOTIFY hudShownChanged FINAL)
     // How long a closed screen stays loaded (LazyScreen.keepAliveMs, decision E-691).
     Q_PROPERTY(int screenKeepAliveMs READ screenKeepAliveMs CONSTANT FINAL)
     // LazyScreen logs the time each screen takes to make (QTCRAFT_UI_STATS=1, decision E-690).
@@ -122,6 +125,7 @@ public:
     using Overlay = QcScreenState::Overlay;
     Overlay overlay() const { return m_screens.overlay(); }
     void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
+    QcScreenState::HudShown hudShown() const { return m_hudShown; }
     int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
     bool logScreenCreation() const { return m_screens.logScreenCreation(); }
     QString chatStart() const { return m_screens.chatStart(); }
@@ -203,9 +207,12 @@ signals:
     // An unsaved world (startSingleplayer) was not started: its options do not suit its type.
     void worldRefused(const QString &reason);
     void overlayChanged();
+    void hudShownChanged();
 
 private:
     void setPhase(Phase phase, const QString &status = {}) { m_screens.setPhase(phase, status); }
+    // Follows the overlay and the handbook; hudShownChanged only when the level changes.
+    void updateHudShown();
     void attachWindow(QQuickWindow *window);
     // Ends the session and the server; returns the result of the final save.
     [[nodiscard]] QcStatus stopSession();
@@ -260,4 +267,6 @@ private:
     QcSessionWiring m_wiring;
     QcFrameDriver m_frame;
     QString m_worldDirectory;
+    // Nothing is open at the start: the whole HUD (decision E-927).
+    QcScreenState::HudShown m_hudShown = QcScreenState::HudShown::All;
 };

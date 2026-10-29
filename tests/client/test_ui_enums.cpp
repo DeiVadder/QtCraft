@@ -64,6 +64,36 @@ private slots:
         }
     }
 
+    // How much of the HUD shows behind the screens (decision E-927): all of it in the world, all but
+    // the world hint with the chat line, the status rows behind a screen over the world and the
+    // death screen, nothing behind a full-screen screen or the handbook.
+    void hudShownBehindScreens()
+    {
+        using O = QcScreenState::Overlay;
+        using H = QcScreenState::HudShown;
+        const QList<O> world{O::None};
+        const QList<O> chat{O::Chat};
+        const QList<O> overWorld{O::Inventory, O::Creative, O::Furnace, O::Chest,       O::Trade,      O::Pause, O::Character,
+                                 O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil};
+        const QList<O> fullScreen{O::Settings, O::Display, O::Audio,        O::Interface, O::Controls,
+                                  O::Gamepad,  O::Debug,   O::TexturePacks, O::Admin,     O::Advancements};
+        // Every overlay is in exactly one list: a new one needs a decision here and in isFullScreen.
+        const QMetaEnum overlays = QMetaEnum::fromType<O>();
+        for (int index = 0; index < overlays.keyCount(); ++index) {
+            const auto overlay = static_cast<O>(overlays.value(index));
+            const int lists = world.count(overlay) + chat.count(overlay) + overWorld.count(overlay) + fullScreen.count(overlay);
+            QVERIFY2(lists == 1, overlays.key(index));
+            QCOMPARE(QcScreenState::isFullScreen(overlay), fullScreen.contains(overlay));
+            const H expected = world.contains(overlay) ? H::All : chat.contains(overlay) ? H::AllButHint : overWorld.contains(overlay) ? H::StatusRows : H::Nothing;
+            QCOMPARE(QcScreenState::hudShown(overlay, false, false), expected);
+            // The handbook covers everything, from the world and from any screen, dead or alive.
+            QCOMPARE(QcScreenState::hudShown(overlay, true, false), H::Nothing);
+            QCOMPARE(QcScreenState::hudShown(overlay, true, true), H::Nothing);
+            // Behind the death screen the status rows stay; a full-screen screen still covers all.
+            QCOMPARE(QcScreenState::hudShown(overlay, false, true), fullScreen.contains(overlay) ? H::Nothing : H::StatusRows);
+        }
+    }
+
     // An overlay value outside the enumeration (QML passes ints) is refused with a warning; the
     // same overlay again changes nothing and stays silent.
     void overlaySetterRefusesUnknownValues()
