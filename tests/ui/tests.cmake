@@ -277,12 +277,14 @@ add_test(NAME app_offscreen_pad_settings
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 # Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691): the pause
-# menu made again on its second opening takes the pad's focus like the first time.
+# menu made again on its second opening takes the pad's focus like the first time. The pause card
+# (decision E-928) starts on "Continue" both times, not on the remembered "Settings", and Down
+# reaches "Settings" again.
 add_test(NAME app_offscreen_pad_lazy_menu
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 pad:start;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:start;--overlay;@2500 pad:start;--overlay;@3000 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: GameButton:[^\n]*\n.*padFocus: GameButton:[^\n]*\n.*padFocus: \n.*padFocus: GameButton:[^\n]*\n.*padFocus: GameButton:"
+        "-DEXPECTED_ERROR=padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n.*padFocus: \n.*padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
