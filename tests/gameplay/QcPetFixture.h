@@ -5,8 +5,8 @@
 
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
-#include "server/mobs/QcPetCare.h"
-#include "server/mobs/QcPetOwners.h"
+#include "server/animals/QcPetCare.h"
+#include "server/animals/QcPetOwners.h"
 
 #include <cmath>
 

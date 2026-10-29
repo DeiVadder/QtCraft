@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "server/mobs/QcCreatureBrains.h"
+#include "server/mobbrains/QcCreatureBrains.h"
 
 // The brain of guardians (QcMobDefinition::Ai::Guardian, decision E-594; the sand golem): a mix of
 // the reference's iron golem and its guardians. It keeps to the zone it guards (QcCreature::guards)

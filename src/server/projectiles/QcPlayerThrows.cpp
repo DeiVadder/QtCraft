@@ -6,7 +6,7 @@
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcServerInventory.h"
-#include "server/mobs/QcArcherBrain.h"
+#include "server/mobbrains/QcArcherBrain.h"
 #include "server/projectiles/QcServerProjectiles.h"
 
 #include <cmath>

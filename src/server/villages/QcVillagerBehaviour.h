@@ -5,7 +5,7 @@
 
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
-#include "server/mobs/QcMobBrain.h"
+#include "server/mobbrains/QcMobBrain.h"
 #include "server/pathing/QcDoorPassage.h"
 #include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathTerrain.h"

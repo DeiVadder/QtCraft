@@ -6,7 +6,7 @@
 #include "common/content/registry/QcMobTraitsContent.h"
 #include "gameplay/QcPetFixture.h"
 #include "QcTestUtil.h"
-#include "server/mobs/QcTameBrain.h"
+#include "server/mobbrains/QcTameBrain.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcEntityRecords.h"
 

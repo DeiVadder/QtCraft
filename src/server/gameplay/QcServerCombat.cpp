@@ -6,6 +6,7 @@
 #include "common/gameplay/QcEnchanting.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
+#include "server/animals/QcPetOwners.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -13,7 +14,6 @@
 #include "server/gameplay/QcToolWear.h"
 #include "server/golems/QcGolemGrudges.h"
 #include "server/items/QcServerExperience.h"
-#include "server/mobs/QcPetOwners.h"
 
 QcServerCombat::QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)

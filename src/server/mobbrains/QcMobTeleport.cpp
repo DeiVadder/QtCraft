@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcMobTeleport.h"
+#include "server/mobbrains/QcMobTeleport.h"
 
 #include "common/content/definitions/QcMobDefinition.h"
 #include "common/physics/QcPhysics.h"

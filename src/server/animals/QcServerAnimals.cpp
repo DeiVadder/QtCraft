@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcServerAnimals.h"
+#include "server/animals/QcServerAnimals.h"
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcMobLaying.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerInventory.h"
 #include "server/items/QcServerExperience.h"
-#include "server/mobs/QcMobLaying.h"
 
 QcServerAnimals::QcServerAnimals(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory)
     : m_state(state)

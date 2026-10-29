@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "server/commands/QcAccessList.h"
 #include "server/commands/QcCommandRegistry.h"
+#include "server/login/QcAccessList.h"
 
 #include <QString>
 

@@ -5,7 +5,7 @@
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 #include "QcTestWorld.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 
 #include <QElapsedTimer>
 

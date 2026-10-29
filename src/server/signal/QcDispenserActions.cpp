@@ -7,11 +7,11 @@
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcServerAnimals.h"
 #include "server/blocks/QcLiquidFlow.h"
 #include "server/blocks/QcServerBlocks.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
-#include "server/mobs/QcServerAnimals.h"
 #include "server/signal/QcSignalTable.h"
 #include "worldgen/terrain/QcNoise.h"
 

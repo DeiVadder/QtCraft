@@ -6,6 +6,8 @@
 #include "common/blockrules/QcRails.h"
 #include "common/gameplay/QcAnvil.h"
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcMobFamilies.h"
+#include "server/animals/QcPetCare.h"
 #include "server/blocks/QcBlockUpdateQueue.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
@@ -14,8 +16,6 @@
 #include "server/hanging/QcServerHanging.h"
 #include "server/maps/QcMapSurvey.h"
 #include "server/minecarts/QcMinecartMotion.h"
-#include "server/mobs/QcMobFamilies.h"
-#include "server/mobs/QcPetCare.h"
 
 
 #include <algorithm>

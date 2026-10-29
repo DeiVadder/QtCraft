@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "server/mobs/QcCreatureBrains.h"
+#include "server/mobbrains/QcCreatureBrains.h"
 
 struct QcGazeDefinition;
 

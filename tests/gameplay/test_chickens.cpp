@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "QcServerTestFixture.h"
-#include "server/mobs/QcMobLaying.h"
+#include "server/animals/QcMobLaying.h"
 #include "server/projectiles/QcHitEffects.h"
 #include "server/storage/QcEntityCodec.h"
 

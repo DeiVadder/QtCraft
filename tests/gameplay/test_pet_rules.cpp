@@ -3,7 +3,7 @@
 
 #include "gameplay/QcPetFixture.h"
 #include "QcTestUtil.h"
-#include "server/mobs/QcMobFear.h"
+#include "server/mobbrains/QcMobFear.h"
 #include "server/projectiles/QcServerProjectiles.h"
 
 #include <QElapsedTimer>

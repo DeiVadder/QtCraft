@@ -3,8 +3,8 @@
 
 #include "common/world/QcDayCycle.h"
 #include "QcTestUtil.h"
+#include "server/animals/QcMobBreeding.h"
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobBreeding.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathPlanner.h"

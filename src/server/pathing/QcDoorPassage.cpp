@@ -5,7 +5,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "server/entities/QcCreature.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 
 #include <cmath>
 

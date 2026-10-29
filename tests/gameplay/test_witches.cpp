@@ -8,8 +8,8 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "server/gameplay/QcServerEffects.h"
-#include "server/mobs/QcArcherBrain.h"
-#include "server/mobs/QcArcherState.h"
+#include "server/mobbrains/QcArcherBrain.h"
+#include "server/mobbrains/QcArcherState.h"
 
 #include <QJsonDocument>
 #include <QTest>

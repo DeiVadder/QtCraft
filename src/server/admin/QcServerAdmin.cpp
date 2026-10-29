@@ -6,11 +6,11 @@
 #include "common/core/QcProcessMemory.h"
 #include "common/diagnostics/QcMessageLog.h"
 #include "common/protocol/QcChatText.h"
-#include "server/commands/QcAccessList.h"
+#include "server/backup/QcWorldBackup.h"
 #include "server/commands/QcServerCommands.h"
-#include "server/commands/QcWorldBackup.h"
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
+#include "server/login/QcAccessList.h"
 
 #include <QDateTime>
 #include <QRegularExpression>

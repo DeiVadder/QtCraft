@@ -5,7 +5,7 @@
 
 #include "server/core/QcServerWorld.h"
 #include "server/gameplay/QcLineOfSight.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/villages/QcVillage.h"
 
 #include <algorithm>

@@ -5,7 +5,7 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/villages/QcServerVillagers.h"
 #include "server/villages/QcVillagerHomes.h"
 #include "server/weather/QcWeatherCycle.h"

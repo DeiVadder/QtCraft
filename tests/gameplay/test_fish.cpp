@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "QcServerTestFixture.h"
-#include "server/mobs/QcFishSwimming.h"
+#include "server/mobbrains/QcFishSwimming.h"
 #include "server/mobs/QcMobCrowd.h"
 #include "server/spawning/QcNaturalSpawner.h"
 

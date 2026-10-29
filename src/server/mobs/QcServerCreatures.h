@@ -3,12 +3,12 @@
 
 #pragma once
 
+#include "server/animals/QcMobFamilies.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"
 #include "server/mobs/QcCreatureTraits.h"
 #include "server/mobs/QcInfestation.h"
 #include "server/mobs/QcMobDrinking.h"
-#include "server/mobs/QcMobFamilies.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "server/villages/QcServerVillagers.h"

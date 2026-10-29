@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcTameBrain.h"
+#include "server/mobbrains/QcTameBrain.h"
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "server/core/QcServerWorld.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcSafeSpot.h"
-#include "server/mobs/QcMobSteering.h"
-#include "server/mobs/QcMobTeleport.h"
+#include "server/mobbrains/QcMobSteering.h"
+#include "server/mobbrains/QcMobTeleport.h"
 #include "server/pathing/QcMobNavigator.h"
 
 #include <algorithm>

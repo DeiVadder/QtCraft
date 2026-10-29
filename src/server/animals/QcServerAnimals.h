@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/core/QcAabb.h"
-#include "server/mobs/QcMobBreeding.h"
-#include "server/mobs/QcPetCare.h"
+#include "server/animals/QcMobBreeding.h"
+#include "server/animals/QcPetCare.h"
 
 class QcServerInventory;
 class QcServerSounds;

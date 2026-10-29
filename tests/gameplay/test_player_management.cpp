@@ -5,7 +5,7 @@
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
 #include "QcUnreadableFile.h"
-#include "server/commands/QcAccessList.h"
+#include "server/login/QcAccessList.h"
 
 #include <QFile>
 #include <QJsonArray>

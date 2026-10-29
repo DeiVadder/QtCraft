@@ -13,8 +13,8 @@
 #include "server/entities/QcHurtWindow.h"
 #include "server/golems/QcGolemState.h"
 #include "server/guardians/QcGuardPost.h"
-#include "server/mobs/QcArcherState.h"
-#include "server/mobs/QcTameState.h"
+#include "server/mobbrains/QcArcherState.h"
+#include "server/mobbrains/QcTameState.h"
 #include "server/pathing/QcMobPath.h"
 #include "server/villages/QcVillager.h"
 

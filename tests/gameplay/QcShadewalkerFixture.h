@@ -6,7 +6,7 @@
 #include "common/world/QcDayCycle.h"
 #include "QcServerTestFixture.h"
 #include "QcTestWorld.h"
-#include "server/mobs/QcNeutralBrain.h"
+#include "server/mobbrains/QcNeutralBrain.h"
 
 #include <cmath>
 #include <functional>

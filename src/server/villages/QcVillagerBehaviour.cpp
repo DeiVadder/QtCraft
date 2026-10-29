@@ -5,7 +5,7 @@
 
 #include "common/world/QcDayCycle.h"
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "worldgen/villages/QcVillagePlan.h"
 

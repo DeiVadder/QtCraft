@@ -11,6 +11,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcPlayerInput.h"
 #include "common/protocol/QcChatText.h"
+#include "server/animals/QcServerAnimals.h"
 #include "server/blockentities/QcServerSigns.h"
 #include "server/blocks/QcBlockDyeing.h"
 #include "server/blocks/QcFireIgnition.h"
@@ -32,7 +33,6 @@
 #include "server/machines/QcServerKitchen.h"
 #include "server/machines/QcServerWorkstations.h"
 #include "server/minecarts/QcServerMinecarts.h"
-#include "server/mobs/QcServerAnimals.h"
 #include "server/plants/QcServerPlants.h"
 #include "server/signal/QcServerCircuits.h"
 

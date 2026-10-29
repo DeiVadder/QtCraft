@@ -5,6 +5,8 @@
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcPetOwners.h"
+#include "server/animals/QcServerAnimals.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
@@ -12,8 +14,6 @@
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInventory.h"
-#include "server/mobs/QcPetOwners.h"
-#include "server/mobs/QcServerAnimals.h"
 
 #include <algorithm>
 

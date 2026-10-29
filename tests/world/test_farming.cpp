@@ -3,8 +3,8 @@
 
 #include "common/content/parser/QcContentParser.h"
 #include "QcTestUtil.h"
+#include "server/animals/QcMobBreeding.h"
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobBreeding.h"
 #include "server/plants/QcCropGrowth.h"
 #include "server/plants/QcPlantGrowth.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"

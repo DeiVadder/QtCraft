@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcMobLaying.h"
+#include "server/animals/QcMobLaying.h"
 
 QList<QcMobLaying::Laid> QcMobLaying::tick(const QcContentRegistry &content, QList<QcCreature> &mobs, QRandomGenerator &random, double dt)
 {

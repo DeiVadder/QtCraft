@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcMobFamilies.h"
+#include "server/animals/QcMobFamilies.h"
 
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"

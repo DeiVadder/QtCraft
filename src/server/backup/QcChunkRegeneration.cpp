@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/commands/QcChunkRegeneration.h"
+#include "server/backup/QcChunkRegeneration.h"
 
 #include "common/physics/QcPhysics.h"
 #include "server/blocks/QcBlockUpdateQueue.h"

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "server/mobs/QcCreatureBrains.h"
+#include "server/mobbrains/QcCreatureBrains.h"
 
 // The brain of golems (QcMobDefinition::Ai::Golem, decision E-471): an iron golem guards the
 // villagers. It hunts the nearest hostile creature it sees within its sight range and strikes it in

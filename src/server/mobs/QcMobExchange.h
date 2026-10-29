@@ -10,7 +10,7 @@
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "server/entities/QcEntityComponent.h"
-#include "server/mobs/QcTameState.h"
+#include "server/mobbrains/QcTameState.h"
 #include "server/villages/QcVillager.h"
 
 #include <QList>

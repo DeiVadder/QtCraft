@@ -7,8 +7,8 @@
 #include "common/auth/QcProfileValidation.h"
 #include "common/auth/QcSecretFile.h"
 #include "common/protocol/QcLoginMessages.h"
-#include "server/commands/QcAccessList.h"
 #include "server/core/QcServerLogging.h"
+#include "server/login/QcAccessList.h"
 #include "server/storage/QcSaveFile.h"
 
 #include <QDir>

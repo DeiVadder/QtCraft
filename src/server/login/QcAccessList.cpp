@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/commands/QcAccessList.h"
+#include "server/login/QcAccessList.h"
 
 #include "common/auth/QcProfileValidation.h"
 #include "common/protocol/QcChatText.h"

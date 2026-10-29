@@ -5,6 +5,7 @@
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/world/QcDayCycle.h"
+#include "server/animals/QcServerAnimals.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
@@ -12,8 +13,7 @@
 #include "server/gameplay/QcServerInventory.h"
 #include "server/items/QcServerExperience.h"
 #include "server/machines/QcBlockScreens.h"
-#include "server/mobs/QcMobSteering.h"
-#include "server/mobs/QcServerAnimals.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/villages/QcVillagerBehaviour.h"
 
 #include <algorithm>

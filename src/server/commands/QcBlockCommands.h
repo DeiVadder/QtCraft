@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/content/definitions/QcBlockDefinition.h"
-#include "server/commands/QcChunkRegeneration.h"
+#include "server/backup/QcChunkRegeneration.h"
 #include "server/commands/QcCommandRegistry.h"
 
 #include <QString>

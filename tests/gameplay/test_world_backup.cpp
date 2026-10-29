@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "QcServerTestFixture.h"
-#include "server/commands/QcWorldBackup.h"
+#include "server/backup/QcWorldBackup.h"
 
 #include <QDir>
 #include <QFile>

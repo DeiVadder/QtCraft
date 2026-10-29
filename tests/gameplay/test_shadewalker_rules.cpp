@@ -4,7 +4,7 @@
 #include "gameplay/QcShadewalkerFixture.h"
 #include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/projectiles/QcProjectileFlight.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcEntityRecords.h"

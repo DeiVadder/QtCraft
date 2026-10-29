@@ -8308,17 +8308,17 @@ Jetzt: %2</translation>
         <translation>Die Anmeldung hat zu lange gedauert</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="378"/>
+        <location filename="../src/server/login/QcAccessList.cpp" line="378"/>
         <source>You are banned from this world</source>
         <translation>Du bist in dieser Welt gesperrt</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="379"/>
+        <location filename="../src/server/login/QcAccessList.cpp" line="379"/>
         <source>You are banned from this world: %1</source>
         <translation>Du bist in dieser Welt gesperrt: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcAccessList.cpp" line="382"/>
+        <location filename="../src/server/login/QcAccessList.cpp" line="382"/>
         <source>You are not on the whitelist of this world</source>
         <translation>Du stehst nicht auf der Whitelist dieser Welt</translation>
     </message>

@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcFishSwimming.h"
+#include "server/mobbrains/QcFishSwimming.h"
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 
 #include <algorithm>
 #include <cmath>

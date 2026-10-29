@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "server/mobs/QcMobBrain.h"
+#include "server/mobbrains/QcMobBrain.h"
 #include "server/pathing/QcMobNavigator.h"
 
 #include <QRandomGenerator>

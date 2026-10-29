@@ -7,12 +7,26 @@ qt_add_library(qc_server ${QC_LIBRARY_TYPE})
 target_sources(qc_server PRIVATE
     admin/QcAdminReports.h admin/QcAdminReports.cpp
     admin/QcAdminStatusRecorder.h admin/QcAdminStatusRecorder.cpp
+    admin/QcChatLog.h admin/QcChatLog.cpp
     admin/QcServerAdmin.h admin/QcServerAdmin.cpp
 )
 target_sources(qc_server PRIVATE
     advancements/QcAdvancementEvent.h
     advancements/QcAdvancementMatch.h advancements/QcAdvancementMatch.cpp
     advancements/QcServerAdvancements.h advancements/QcServerAdvancements.cpp
+)
+target_sources(qc_server PRIVATE
+    animals/QcMobBreeding.h animals/QcMobBreeding.cpp
+    animals/QcMobFamilies.h animals/QcMobFamilies.cpp
+    animals/QcMobLaying.h animals/QcMobLaying.cpp
+    animals/QcPetCare.h animals/QcPetCare.cpp
+    animals/QcPetOwners.h animals/QcPetOwners.cpp
+    animals/QcServerAnimals.h animals/QcServerAnimals.cpp
+)
+target_sources(qc_server PRIVATE
+    backup/QcBackupRunner.h backup/QcBackupRunner.cpp
+    backup/QcChunkRegeneration.h backup/QcChunkRegeneration.cpp
+    backup/QcWorldBackup.h backup/QcWorldBackup.cpp
 )
 target_sources(qc_server PRIVATE
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
@@ -53,15 +67,11 @@ target_sources(qc_server PRIVATE
     chunks/QcSignalChunks.h chunks/QcSignalChunks.cpp
 )
 target_sources(qc_server PRIVATE
-    commands/QcAccessList.h commands/QcAccessList.cpp
     commands/QcAdvancementCommands.h commands/QcAdvancementCommands.cpp
     commands/QcAdventureCommands.h commands/QcAdventureCommands.cpp
-    commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp
-    commands/QcChatLog.h commands/QcChatLog.cpp
     commands/QcCheatCommands.h commands/QcCheatCommands.cpp
     commands/QcChunkCommands.h commands/QcChunkCommands.cpp
-    commands/QcChunkRegeneration.h commands/QcChunkRegeneration.cpp
     commands/QcCommandArguments.h commands/QcCommandArguments.cpp
     commands/QcCommandHelp.h commands/QcCommandHelp.cpp
     commands/QcCommandRegistry.h commands/QcCommandRegistry.cpp
@@ -79,7 +89,6 @@ target_sources(qc_server PRIVATE
     commands/QcTickCommands.h commands/QcTickCommands.cpp
     commands/QcVillageCommands.h commands/QcVillageCommands.cpp
     commands/QcWeatherCommands.h commands/QcWeatherCommands.cpp
-    commands/QcWorldBackup.h commands/QcWorldBackup.cpp
     commands/QcWorldCommands.h commands/QcWorldCommands.cpp
 )
 target_sources(qc_server PRIVATE
@@ -172,6 +181,7 @@ target_sources(qc_server PRIVATE
     items/QcServerItems.h items/QcServerItems.cpp
 )
 target_sources(qc_server PRIVATE
+    login/QcAccessList.h login/QcAccessList.cpp
     login/QcIdentityStore.h login/QcIdentityStore.cpp
     login/QcPlayerJoin.h login/QcPlayerJoin.cpp
     login/QcServerLogin.h login/QcServerLogin.cpp
@@ -204,36 +214,32 @@ target_sources(qc_server PRIVATE
     minecarts/QcServerMinecarts.h minecarts/QcServerMinecarts.cpp
 )
 target_sources(qc_server PRIVATE
-    mobs/QcArcherBrain.h mobs/QcArcherBrain.cpp
-    mobs/QcArcherState.h
+    mobbrains/QcArcherBrain.h mobbrains/QcArcherBrain.cpp
+    mobbrains/QcArcherState.h
+    mobbrains/QcCreatureBrains.h mobbrains/QcCreatureBrains.cpp
+    mobbrains/QcFishSwimming.h mobbrains/QcFishSwimming.cpp
+    mobbrains/QcMobBrain.h
+    mobbrains/QcMobFear.h mobbrains/QcMobFear.cpp
+    mobbrains/QcMobHover.h mobbrains/QcMobHover.cpp
+    mobbrains/QcMobSteering.h mobbrains/QcMobSteering.cpp
+    mobbrains/QcMobTeleport.h mobbrains/QcMobTeleport.cpp
+    mobbrains/QcNeutralBrain.h mobbrains/QcNeutralBrain.cpp
+    mobbrains/QcTameBrain.h mobbrains/QcTameBrain.cpp
+    mobbrains/QcTameState.h
+)
+target_sources(qc_server PRIVATE
     mobs/QcCreatureBodies.h mobs/QcCreatureBodies.cpp
-    mobs/QcCreatureBrains.h mobs/QcCreatureBrains.cpp
     mobs/QcCreatureTraits.h mobs/QcCreatureTraits.cpp
-    mobs/QcFishSwimming.h mobs/QcFishSwimming.cpp
     mobs/QcInfestation.h mobs/QcInfestation.cpp
     mobs/QcMobBehaviour.h mobs/QcMobBehaviour.cpp
-    mobs/QcMobBrain.h
-    mobs/QcMobBreeding.h mobs/QcMobBreeding.cpp
     mobs/QcMobCramming.h mobs/QcMobCramming.cpp
     mobs/QcMobCrowd.h mobs/QcMobCrowd.cpp
     mobs/QcMobDrinking.h mobs/QcMobDrinking.cpp
     mobs/QcMobExchange.h
-    mobs/QcMobFamilies.h mobs/QcMobFamilies.cpp
-    mobs/QcMobFear.h mobs/QcMobFear.cpp
-    mobs/QcMobHover.h mobs/QcMobHover.cpp
-    mobs/QcMobLaying.h mobs/QcMobLaying.cpp
     mobs/QcMobManager.h mobs/QcMobManager.cpp
-    mobs/QcMobSteering.h mobs/QcMobSteering.cpp
-    mobs/QcMobTeleport.h mobs/QcMobTeleport.cpp
     mobs/QcMobUpkeep.h mobs/QcMobUpkeep.cpp
     mobs/QcNameTags.h mobs/QcNameTags.cpp
-    mobs/QcNeutralBrain.h mobs/QcNeutralBrain.cpp
-    mobs/QcPetCare.h mobs/QcPetCare.cpp
-    mobs/QcPetOwners.h mobs/QcPetOwners.cpp
-    mobs/QcServerAnimals.h mobs/QcServerAnimals.cpp
     mobs/QcServerCreatures.h mobs/QcServerCreatures.cpp
-    mobs/QcTameBrain.h mobs/QcTameBrain.cpp
-    mobs/QcTameState.h
 )
 target_sources(qc_server PRIVATE
     network/QcConnectionLimiter.h network/QcConnectionLimiter.cpp

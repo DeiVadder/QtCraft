@@ -4,7 +4,7 @@
 #include "server/guardians/QcGuardianBrain.h"
 
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/pathing/QcMobNavigator.h"
 
 #include <algorithm>

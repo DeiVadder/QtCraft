@@ -1,17 +1,17 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcPetCare.h"
+#include "server/animals/QcPetCare.h"
 
 #include "common/content/definitions/QcSoundKeys.h"
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcPetOwners.h"
+#include "server/animals/QcServerAnimals.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcLineOfSight.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerInventory.h"
-#include "server/mobs/QcPetOwners.h"
-#include "server/mobs/QcServerAnimals.h"
 
 #include <algorithm>
 

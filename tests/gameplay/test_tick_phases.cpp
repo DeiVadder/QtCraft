@@ -4,7 +4,7 @@
 #include "common/core/QcPhaseWindow.h"
 #include "QcServerTestFixture.h"
 #include "QcTestUtil.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/tick/QcTickPhaseTimer.h"
 
 #include <QElapsedTimer>

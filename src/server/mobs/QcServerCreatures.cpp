@@ -4,13 +4,13 @@
 #include "server/mobs/QcServerCreatures.h"
 
 #include "common/physics/QcPhysics.h"
+#include "server/animals/QcPetOwners.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerEffects.h"
 #include "server/mobs/QcMobCramming.h"
-#include "server/mobs/QcPetOwners.h"
 #include "server/projectiles/QcProjectileFlight.h"
 
 #include <cmath>

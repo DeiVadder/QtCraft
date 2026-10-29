@@ -4,8 +4,8 @@
 #include "server/mobs/QcMobBehaviour.h"
 
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobHover.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobHover.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/mobs/QcMobUpkeep.h"
 #include "server/pathing/QcMobNavigator.h"
 

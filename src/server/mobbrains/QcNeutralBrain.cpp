@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcNeutralBrain.h"
+#include "server/mobbrains/QcNeutralBrain.h"
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerWorld.h"
 #include "server/gameplay/QcLineOfSight.h"
-#include "server/mobs/QcMobSteering.h"
-#include "server/mobs/QcMobTeleport.h"
+#include "server/mobbrains/QcMobSteering.h"
+#include "server/mobbrains/QcMobTeleport.h"
 
 #include <algorithm>
 #include <cmath>

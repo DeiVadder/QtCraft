@@ -3,10 +3,10 @@
 
 #pragma once
 
+#include "server/admin/QcChatLog.h"
 #include "server/commands/QcAdvancementCommands.h"
 #include "server/commands/QcAdventureCommands.h"
 #include "server/commands/QcBlockCommands.h"
-#include "server/commands/QcChatLog.h"
 #include "server/commands/QcCheatCommands.h"
 #include "server/commands/QcChunkCommands.h"
 #include "server/commands/QcCommandHelp.h"

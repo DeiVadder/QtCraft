@@ -3,7 +3,7 @@
 
 #include "QcServerTestFixture.h"
 #include "QcUnreadableFile.h"
-#include "server/commands/QcWorldBackup.h"
+#include "server/backup/QcWorldBackup.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QDir>

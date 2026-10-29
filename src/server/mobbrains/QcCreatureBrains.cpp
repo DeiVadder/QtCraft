@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "server/mobs/QcCreatureBrains.h"
+#include "server/mobbrains/QcCreatureBrains.h"
 
 #include "server/core/QcServerWorld.h"
-#include "server/mobs/QcMobFear.h"
-#include "server/mobs/QcMobSteering.h"
+#include "server/mobbrains/QcMobFear.h"
+#include "server/mobbrains/QcMobSteering.h"
 #include "server/pathing/QcMobNavigator.h"
 
 #include <algorithm>
