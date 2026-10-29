@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
 
 // What the renderer learned about the GPU, for code that prepares textures in other threads

@@ -4,7 +4,7 @@
 <context>
     <name>AdminPlayersPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="40"/>
+        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="50"/>
         <source>Playing now (%n)</source>
         <translation>
             <numerusform>Playing now (%n)</numerusform>
@@ -15,7 +15,7 @@
 <context>
     <name>AdvancementToast</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/AdvancementToast.qml" line="58"/>
+        <location filename="../src/app/qml/hud/AdvancementToast.qml" line="61"/>
         <source>+%n more</source>
         <translation>
             <numerusform>+%n more</numerusform>
@@ -26,7 +26,7 @@
 <context>
     <name>AnvilScreen</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="28"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="31"/>
         <source>Too expensive (%n level(s))</source>
         <translation>
             <numerusform>Too expensive (%n level)</numerusform>
@@ -34,7 +34,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="29"/>
+        <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="32"/>
         <source>Cost: %n level(s)</source>
         <translation>
             <numerusform>Cost: %n level</numerusform>
@@ -45,7 +45,7 @@
 <context>
     <name>EnchantingOffer</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="27"/>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="30"/>
         <source>Level %1, %n lapis: %2</source>
         <translation>
             <numerusform>Level %1, %n lapis: %2</numerusform>
@@ -53,7 +53,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="28"/>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="31"/>
         <source>Level %1, %n lapis, %2 of %3 letters readable</source>
         <translation>
             <numerusform>Level %1, %n lapis, %2 of %3 letters readable</numerusform>
@@ -74,7 +74,7 @@
 <context>
     <name>GraphicsPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="130"/>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="133"/>
         <source>%n chunk(s)</source>
         <translation>
             <numerusform>%n chunk</numerusform>
@@ -85,7 +85,7 @@
 <context>
     <name>MapPreviewGroup</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="347"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="350"/>
         <source>+ %n more</source>
         <translation>
             <numerusform>+ %n more</numerusform>
@@ -96,7 +96,7 @@
 <context>
     <name>NewWorldPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="84"/>
+        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="87"/>
         <source>%n option(s) changed.</source>
         <translation>
             <numerusform>%n option changed.</numerusform>
@@ -107,7 +107,7 @@
 <context>
     <name>PlayerListOverlay</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="60"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="63"/>
         <source>%n player(s) online</source>
         <translation>
             <numerusform>%n player online</numerusform>
@@ -115,7 +115,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="134"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="137"/>
         <source>%n of 5 signal bars</source>
         <translation>
             <numerusform>%n of 5 signal bars</numerusform>
@@ -126,7 +126,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="519"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="522"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -134,7 +134,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="521"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="524"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>
@@ -145,7 +145,7 @@
 <context>
     <name>QcInventoryModel</name>
     <message numerus="yes">
-        <location filename="../src/app/models/QcInventoryModel.cpp" line="180"/>
+        <location filename="../src/app/models/QcInventoryModel.cpp" line="183"/>
         <source>and %n more</source>
         <translation>
             <numerusform>and %n more</numerusform>
@@ -156,7 +156,7 @@
 <context>
     <name>QcServerMessages</name>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="155"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="158"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 has made %n more advancement</numerusform>
@@ -177,7 +177,7 @@
 <context>
     <name>TexturePackRow</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/TexturePackRow.qml" line="95"/>
+        <location filename="../src/app/qml/settings/TexturePackRow.qml" line="98"/>
         <source>%n file(s) skipped or changed:</source>
         <translation>
             <numerusform>%n file skipped or changed:</numerusform>

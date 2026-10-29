@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks scripts/check-member-access.py (rule "Getter und Setter für mehrfach benutzte Member", E-891) on
 in-memory samples: counted places, skipped constructors and accessors, plain data structs, opt-out markers.
 Reads no project file. Usage: test_check_member_access.py <path of check-member-access.py>

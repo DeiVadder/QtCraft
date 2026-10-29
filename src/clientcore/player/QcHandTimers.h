@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
 
 // Progress of the own player's hand animations in one frame (QcClientSession::handTimers): switching

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "gameplay/QcBoatFixture.h"
 #include "server/storage/QcEntityRecords.h"
 

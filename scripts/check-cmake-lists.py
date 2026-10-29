@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks the source lists of the CMake files under src/ (decision E-417).
 
 Every target lists its sources in one `target_sources(<target> PRIVATE ...)` block per folder (the

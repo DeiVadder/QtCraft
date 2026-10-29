@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks the test selection of scripts/verify-tests.py (decision E-405) in a throwaway git repository.
 
 The selection compares file contents, not modification times: touching a file or switching to

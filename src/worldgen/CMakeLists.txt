@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # World generation (decision E-418): terrain, structures, villages and the showcase as pure
 # functions of the seed and the content; depends on qc_common only, so the generation tests do not
 # link the server.

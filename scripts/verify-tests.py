@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Test selection for scripts/verify.sh --changed (decision E-405).
 
 A test is selected when one of its inputs changed since the test last passed in this build

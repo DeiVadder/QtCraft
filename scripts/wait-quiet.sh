@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Waits until no timing phase and no benchmark holds the machine (decision E-550): returns once
 # neither the quiet lock ~/.cache/qtcraft/quiet.lock (held by another live process; a stale one is
 # removed) nor the benchmark lock ~/.cache/qtcraft/bench.lock (held by a live bench script) exists.

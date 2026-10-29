@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks the logging categories of src/ (decision E-680).
 
 Every logging category is declared in the logging header of its library and defined once in the

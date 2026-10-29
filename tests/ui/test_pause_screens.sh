@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The pause menu, the death screen and the sign in the real game (decision E-928), offscreen:
 # - the pause menu's buttons in a saved single-player world (save, open to LAN and manage server
 #   shown, the last one fills its row; the way out saves) and on a joined server without operator

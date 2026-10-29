@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "clientcore/control/QcControlMovementCommands.h"
 
 #include "clientcore/control/QcControlAim.h"

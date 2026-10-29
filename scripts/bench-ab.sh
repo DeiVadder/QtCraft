@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Interleaved A/B benchmark of several builds (method: docs/Performance-Verlauf.md and
 # docs/Performance.md). Per round and scenario every build runs once, so the builds are measured at
 # nearly the same moment. The order rotates per round: round r starts with build (r - 1) mod n of the

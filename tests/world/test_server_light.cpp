@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcLightVolume.h"
 #include "QcTestUtil.h"

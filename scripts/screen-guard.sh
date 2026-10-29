@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Shared by the scripts that start the real game (sourced, not run). A window that macOS does not
 # show (display asleep, screen locked, window covered) renders no frames, so benchmarks and window
 # runs of such a moment are worthless. These helpers keep the display awake while the calling

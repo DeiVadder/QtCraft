@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Shared by bench.sh, bench-ab.sh, bench-headless.sh, profile.sh and perf-check.sh (sourced, not
 # run). Defines the benchmark scenarios (scene_of: world, spawn, look and chat lines, the same for
 # the game and for the headless measurement) and how one run of the game is started (run_game).

@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The decision of the adaptive rounds (scripts/bench-adaptive.sh, decision E-388) on canned result
 # files: a scenario runs further rounds when a key's difference to the first label lies within the
 # band around the threshold or a label's spread is high; only the latest series counts.

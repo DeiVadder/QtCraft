@@ -27,6 +27,19 @@ deploy/
 __pycache__/
 *.pyc
 
+# Keys, certificates and local secrets never go into the repository (test keys are made at run time)
+*.p12
+*.pfx
+*.pem
+*.key
+*.mobileprovision
+.env
+.env.*
+
+# Qt Creator and editor leftovers
+*.autosave
+.qmlls.ini
+
 # The web handbook's data: written by scripts/export-handbook.sh (local preview) and by the Pages
 # workflow before it publishes web/ (qtcraft-headless --export-handbook-web)
 /web/handbook/data/

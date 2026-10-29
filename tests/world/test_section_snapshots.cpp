@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Chunk snapshots read on worker threads while the owner keeps writing (decision E-844): the
 // owner copies the chunk before each write (as QcClientWorld and QcServerWorld do), so the packed
 // indices a reader holds never change, also across a repack to a wider index width.

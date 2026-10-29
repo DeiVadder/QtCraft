@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Item icons in QML's pixmap cache (decision E-650): after new icons (texture pack switch, other
 // content) an image of an item shows the new icon, also one created after the switch with the same
 // item and size, and an icon asked for before the content arrived does not stay empty.

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/diagnostics/QcHealthSample.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "QcServerTestFixture.h"

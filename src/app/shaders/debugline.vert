@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // One corner of a line drawn as a screen-aligned quad of lineWidth pixels: the quad's two ends are

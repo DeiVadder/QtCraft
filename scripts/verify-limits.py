@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Limit check after the debug test step of scripts/verify.sh (decision E-412).
 
 Compares the debug time of every test in the JUnit report of ctest with its TIMEOUT and COST

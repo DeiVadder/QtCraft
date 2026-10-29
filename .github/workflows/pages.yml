@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The web handbook on GitHub Pages: publishes web/. Its data (web/handbook/data) is not in git: the
 # first job builds qtcraft-headless with the steps of ci.yml (macOS, without gamepads and TLS, which
 # the export does not use), writes it with --export-handbook-web, as scripts/export-handbook.sh

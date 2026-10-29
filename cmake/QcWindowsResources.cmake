@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Windows resources of the executables (decision E-875): the procedural application icon
 # cmake/windows/QtCraft.ico (written by `qtcraft-headless --export-icon cmake/windows/QtCraft.ico`;
 # test_app_icon checks it against the textures) for Explorer, the taskbar and the title bar, and

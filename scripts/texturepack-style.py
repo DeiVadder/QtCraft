@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Hand-tunes an exported image texture pack into the "Storybook 32x" example pack (decision E-303).
 
 Usage: scripts/texturepack-style.py <exported pack dir> <output pack dir>

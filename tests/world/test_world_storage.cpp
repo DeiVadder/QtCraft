@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/core/QcCrc32.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
@@ -183,10 +186,10 @@ private slots:
         player.inventory.setSlot(0, {*content->itemId(u"a:stone"_s), 42, 0});
         player.inventory.setSlot(20, {*content->itemId(u"mod:gem"_s), 3, 0});
         player.inventory.setSelectedHotbarSlot(4);
-        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Jonas"_s, player).has_value());
+        QVERIFY(QcTestWorldFiles(dir.path(), content).writePlayer(u"Robin"_s, player).has_value());
 
         const auto withoutMod = registryWith({u"a:stone"_s});
-        const auto read = QcTestWorldFiles(dir.path(), withoutMod).readPlayer(u"Jonas"_s);
+        const auto read = QcTestWorldFiles(dir.path(), withoutMod).readPlayer(u"Robin"_s);
         QVERIFY2(read.has_value(), qcErrorText(read).constData());
         QVERIFY(read->player.has_value());
         const QcPlayerData &loaded = *read->player;

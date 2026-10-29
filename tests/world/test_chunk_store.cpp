@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/core/QcCrc32.h"
 #include "QcTestUtil.h"
 #include "server/storage/QcBlockEntityCodec.h"

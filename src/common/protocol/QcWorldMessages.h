@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
 
 // Protocol messages about the world: chunks, block changes, mining, using items on blocks and sounds.

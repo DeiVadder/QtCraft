@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Gamepad support through SDL3 (decision E-540). SDL3 comes from the submodule 3rdparty/SDL at the
 # tag of 3rdparty/sdl3-tag.txt, built once by scripts/build-sdl.sh into a cache shared by every
 # preset and worktree (~/.cache/qtcraft/sdl3/<tag>-<arch>-<config>, "universal" for arm64;x86_64).

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Base game content, embedded as a Qt resource under :/content/qtcraft. It is loaded through the same
 # content-pack loader as mods.
 file(GLOB_RECURSE QC_BASE_CONTENT_FILES CONFIGURE_DEPENDS

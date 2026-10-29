@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/world/QcChunk.h"
 
 void QcChunk::setBlock(int x, int y, int z, QcBlockId block)

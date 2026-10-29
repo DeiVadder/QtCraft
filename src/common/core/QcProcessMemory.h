@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #pragma once
 
 // Memory of the running process in MiB (debug display, statistics log, health line, benchmark); 0

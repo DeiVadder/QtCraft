@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Runs COMMAND (a ;-list) and fails unless it exits with EXPECTED_EXIT_CODE and, if given, prints
 # EXPECTED_OUTPUT (standard output) and EXPECTED_ERROR (standard error), prints nothing matching
 # FORBIDDEN_ERROR (standard error) and writes EXPECTED_FILE (removed first) of at least

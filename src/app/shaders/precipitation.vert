@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // One corner of a raindrop's streak or a snowflake's dot (decision E-397), drawn instanced: the

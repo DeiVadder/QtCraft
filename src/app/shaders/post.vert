@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // One triangle covering the target (decision E-899): the post-processing passes of the realistic

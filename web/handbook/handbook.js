@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The handbook screen of the game (HandbookScreen.qml) as a web page: categories on the left, the
 // entries of a category (or the search results) in the middle and the open page on the right.
 // Links and recipe cells open other pages; the address (#<language>/<entry id>) can be shared and

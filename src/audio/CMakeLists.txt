@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Audio output of the graphical client (Qt Multimedia). Mixing and synthesis live in qc_clientcore,
 # which stays free of audio devices so that tests can use them anywhere.
 qt_add_library(qc_audio ${QC_LIBRARY_TYPE})

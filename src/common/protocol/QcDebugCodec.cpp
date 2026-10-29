@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the debug messages (QcDebugMessages.h): the subscription and the server's statistics.
 
 #include "common/protocol/QcProtocolCodec.h"

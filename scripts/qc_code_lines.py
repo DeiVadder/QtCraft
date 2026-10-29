@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Code lines of C++, Objective-C++ and QML sources: the unit of the size limits (E-760).
 
 A code line is a line with at least one character outside a comment: blank lines, `//` lines and lines inside

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/content/parser/QcMobParser.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/content/registry/QcMobTraitsContent.h"

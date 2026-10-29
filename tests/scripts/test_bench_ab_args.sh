@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Argument checks of scripts/bench-ab.sh (--check: no lock, no runs): settings per label, values
 # with ":" (pack ids), and refused variables and values (decision E-332); optional rounds and
 # seconds, adaptive rounds, scenario groups and the headless form (decision E-388).

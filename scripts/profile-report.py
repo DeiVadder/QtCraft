@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Summarises an xctrace Time Profiler export (time-profile table as XML) or a qmlprofiler trace.
 
 Usage:

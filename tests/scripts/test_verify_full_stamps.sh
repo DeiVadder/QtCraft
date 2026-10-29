@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The stamps and selections of the full verify (scripts/verify-full-select.sh, decision E-929),
 # calling its real functions with stubbed python3, ctest, git and clang-tidy:
 #   - finish_full_run: the commit becomes the last green full verify only once both sanitizers

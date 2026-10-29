@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Builds OpenSSL once and installs it into a cache shared by every preset and every worktree
 # (decision E-872): <cache>/<version>-<arch>-<config>, where <cache> is $QC_OPENSSL_CACHE or
 # ~/.cache/qtcraft/openssl, <version> the first field of 3rdparty/openssl-version.txt, <arch>

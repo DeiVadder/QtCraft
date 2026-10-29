@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Tests of the slot broker scripts/qc-slot.py (decision E-781).
 
 Every test runs its own broker in a temporary slot directory (QC_SLOT_DIR and HOME point there), with

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The advancements of the content (decision E-923): parsing and validation, mods adding,
 // replacing and switching off advancements by name, the requirement groups, the base tree, the
 // content sync, the saved progress and the protocol message with its bounds.

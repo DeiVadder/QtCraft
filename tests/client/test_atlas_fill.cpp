@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "clientcore/icons/QcBlockIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/meshing/QcFigureLook.h"

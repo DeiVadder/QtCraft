@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "server/chunks/QcChunkLinks.h"
 
 #include "server/signal/QcSignalTable.h"

@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # UI scale and accessibility test (decision E-725): the real game renders every screen offscreen in
 # a 1280 x 720 window at the scale given (settings.ini "uiScale": 100 or 200; 200 is limited to
 # what fits, 112.5 % for the screens and 200 % for the HUD). The layout check (QTCRAFT_LAYOUT_CHECK)

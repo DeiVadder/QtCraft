@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The long exploration flight of the benchmarks (scenario "explore", stage 31.3) without a window:
 # qtcraft-headless with its bot in creative mode flies east at 20 m/s at y 200 (a teleport of 5 m
 # every 5 ticks) and puts a 3 x 3 glass platform at y 70 below itself every 20 ticks, so every chunk

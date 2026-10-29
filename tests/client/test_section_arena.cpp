@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The pages of the section arena (decision E-820) on QRhi's Null backend, so the page logic runs on
 // every platform: slots share a page, a released range is reused exactly after the frames in flight
 // and one more, a section larger than a page gets its own, a full index part rolls the vertex range

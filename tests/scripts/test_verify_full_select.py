@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks the file selection of the static analysis in the full verify (scripts/verify-full-select.py,
 decision E-929) in a throwaway git repository with a fake stamp commit: a changed source selects
 itself, a changed header itself and its direct includers (not src/server/QcFar.cpp, which reaches it

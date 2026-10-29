@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Gameplay on the server: commands, mobs, villagers, machines, signals, carts, weather, fire, measurements.
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.

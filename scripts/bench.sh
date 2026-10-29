@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Per-stage performance check: runs fixed scenarios several times in the release build at view
 # distance 8 and prints the median of each value. Not part of ctest; never run it in parallel with
 # builds or tests, the machine load would distort the numbers.

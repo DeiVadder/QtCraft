@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The two ctest phases of a verify test step (sourced by scripts/verify.sh, not run; decision
 # E-550). Phase 1 runs every selected test except those labelled `timing` with QC_TEST_JOBS jobs;
 # phase 2 runs the selected `timing` tests (tests/timing.cmake) with QC_TIMING_JOBS jobs (default

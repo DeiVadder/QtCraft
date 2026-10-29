@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/core/QcLogging.h"
 
 Q_LOGGING_CATEGORY(lcConnection, "qtcraft.connection")

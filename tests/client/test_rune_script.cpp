@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The enchanting table's runes (decision E-884): the glyphs, how the screen writes a clue with them
 // as the bookshelves grow, the pixel art the screens draw, and the book and runes in the world.
 #include "app/models/QcPixelArtProvider.h"

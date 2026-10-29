@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // The last pass of the realistic mode (decision E-899): the HDR scene made linear, the height fog

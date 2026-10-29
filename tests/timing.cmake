@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Timing tests (decision E-550): tests whose result depends on wall time or on the load of the
 # machine, not only on the code. They measure how punctually timers fire, compare elapsed wall time
 # with a bound, wait in real time for other processes or links with latency, or are heavy enough

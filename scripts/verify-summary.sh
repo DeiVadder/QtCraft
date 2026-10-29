@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The stamp of a two-part full run and the end of a verify run (sourced by scripts/verify.sh, not
 # run): the stamp lets the second part skip the steps without a sanitizer (decision E-890) except
 # the debug timing tests the first part deferred; the commands that run deferred timing tests later

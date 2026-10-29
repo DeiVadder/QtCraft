@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the sign messages (QcSignMessages.h, decision E-766): a position and four lines, each
 // at most QcSignText::maxLineUnits UTF-16 units on the wire; SignText adds the colour of the text
 // (decision E-830), at most QcSignText::maxColorUnits.

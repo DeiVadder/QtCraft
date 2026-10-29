@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Stage verification with two modes.
 #   --full (default): debug build + tests, ASan/UBSan and TSan builds + tests, release build, static analysis
 #                     and time-limited smoke runs of the real game with screenshots (rendered offscreen;
@@ -458,6 +461,9 @@ step "check-cmake-lists" sh -c "python3 scripts/check-cmake-lists.py --self-test
 # Includes with the header's path below its include root and within the layers of src/ (decision
 # E-418, E-419); every mode, before the build.
 step "check-includes" sh -c "python3 scripts/fix-includes.py --self-test && python3 scripts/fix-includes.py --check"
+# SPDX header (licence and copyright) in every source of the project (decision E-932); every mode,
+# before the build.
+step "check-spdx" sh -c "python3 scripts/add-spdx.py --self-test && python3 scripts/add-spdx.py --check"
 # Logging categories each defined once, no logging without a category in src/ (decision E-680);
 # every mode, before the build.
 step "check-logging" sh -c "python3 scripts/check-logging.py --self-test && python3 scripts/check-logging.py"

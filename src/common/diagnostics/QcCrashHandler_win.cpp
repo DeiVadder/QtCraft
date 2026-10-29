@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The crash handler of Windows (decision E-834): an unhandled-exception filter that writes a
 // minidump (dbghelp) and a text report with the exception, its module and offset, the thread and
 // the return addresses of the stack; abort(), fatal Qt messages, pure virtual calls and invalid

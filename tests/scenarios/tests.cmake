@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Scripted runs of qtcraft-headless (tests/scenarios/*.jsonl).
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.

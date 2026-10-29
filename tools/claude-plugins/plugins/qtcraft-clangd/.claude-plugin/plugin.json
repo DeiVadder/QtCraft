@@ -1,6 +1,6 @@
 {
     "name": "qtcraft-clangd",
     "version": "1.0.0",
-    "author": { "name": "Jonas Hilk" },
+    "author": { "name": "the QtCraft authors" },
     "description": "clangd as the LSP tool of Claude Code for QtCraft (compile database: build/debug, see .clangd)"
 }

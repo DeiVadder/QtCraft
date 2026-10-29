@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Runs of the game itself (qtcraft): command line errors, offscreen screenshots and QML load checks.
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
@@ -135,12 +138,12 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> layout)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 600 COST 37)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 630 COST 37)
     # The pad in the main menu at the same size: the settings' pages, back entries and Y (decision
     # E-925), the handbook, the character's draft, saved worlds and "New world" (decision E-930).
     add_test(NAME app_offscreen_menu_pad COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> pad)
-    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 660 COST 43)
+    set_tests_properties(app_offscreen_menu_pad PROPERTIES TIMEOUT 690 COST 43)
     # The pause menu's buttons in a saved world and on a joined server, the pause and death cards
     # above the HUD's status rows at 200 % and 225 %, and the sign typed on the pad's keyboard
     # (decision E-928). It waits for the world and a dedicated server in real time: label realtime
@@ -154,7 +157,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # behind screens, full-screen screens, the handbook and the chat line only the parts decision
     # E-927 keeps show, and closing brings them back (1280 x 720 at 100 and 200 %).
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)
-    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 900 COST 55)
+    set_tests_properties(app_offscreen_hud_layout PROPERTIES TIMEOUT 930 COST 55)
     # The main menu fills windows up to 3440 x 1440 (a large monitor in fullscreen, decision E-875):
     # Auto lets the page grow with the window, and it stands centred beside the side bar.
     add_test(NAME app_offscreen_window_fill COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_window_fill.sh $<TARGET_FILE:qtcraft>

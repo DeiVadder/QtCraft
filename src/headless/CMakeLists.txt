@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 qt_add_executable(qtcraft-headless
     main.cpp
     QcDedicatedServer.h QcDedicatedServer.cpp

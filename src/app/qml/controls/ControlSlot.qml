@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import QtQuick.Layouts
 
 // The column of a SettingRow's controls (decision E-845): while the row dims, its controls do not

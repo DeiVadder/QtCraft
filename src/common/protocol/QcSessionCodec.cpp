@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the session messages (QcSessionMessages.h): handshake, content, chat and world time.
 
 #include "common/protocol/QcProtocolCodec.h"

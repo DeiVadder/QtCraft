@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # TLS in multiplayer through OpenSSL (decision E-872). The game uses Qt's "openssl" TLS backend on
 # every platform. macOS and Windows ship their own OpenSSL: the version of
 # 3rdparty/openssl-version.txt, built once into a cache shared by every preset and checkout, by

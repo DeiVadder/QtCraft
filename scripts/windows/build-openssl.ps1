@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Builds OpenSSL once for Windows with MSVC and installs it into a cache shared by every preset and
 # every checkout (decision E-872), the counterpart of scripts/build-openssl.sh:
 # <cache>\<version>-<arch>-<config>, where <cache> is $env:QC_OPENSSL_CACHE or

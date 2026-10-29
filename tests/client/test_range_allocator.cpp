@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The ranges of a section page (QcRangeAllocator, decision E-820): first fit from the lowest free
 // range, and freed ranges merge with free neighbours so a page can take a large section again.
 

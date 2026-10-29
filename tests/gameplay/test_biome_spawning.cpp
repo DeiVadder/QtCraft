@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/content/parser/QcMobReader.h"
 #include "common/content/parser/QcWorldgenParser.h"
 #include "common/content/registry/QcSpawnWeights.h"

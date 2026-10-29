@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # QFETCH declares mutable locals, QTest classes must stay visible to moc, "private slots:" after
 # "private:" is not redundant for moc, results are checked with QVERIFY before use (which the
 # optional-access check cannot see), moc mis-parses some raw string literals, and QTest::addRow names

@@ -27,3 +27,4 @@ Third-party packs added later are listed here with the attribution their licence
 | fdlibm maths routines (in SDL3) | Sun Microsystems (SunPro) | permissive notice | SDL's maths functions (see `THIRD_PARTY.md`) |
 | OpenSSL 3 | The OpenSSL Project Authors | Apache-2.0 | TLS in multiplayer and the server's key, shipped as shared libraries (see `THIRD_PARTY.md`) |
 | Qt 6 | The Qt Company and the Qt contributors | LGPL-3.0 | Everything else, shipped as shared libraries |
+| FFmpeg (with Qt Multimedia, macOS) | The FFmpeg developers | LGPL-2.1-or-later | Sound output on macOS, shipped as shared libraries (see `THIRD_PARTY.md`) |

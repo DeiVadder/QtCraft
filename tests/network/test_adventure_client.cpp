@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
 #include "QcLatencyTransport.h"

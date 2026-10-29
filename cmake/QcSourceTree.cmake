@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Source groups that mirror the folder structure, so that IDEs reading the CMake file API
 # (Qt Creator, VS Code CMake Tools, Xcode, Visual Studio) show a target's sources in their
 # folders instead of the flat default groups "Source Files" and "Header Files" (decision E-640).

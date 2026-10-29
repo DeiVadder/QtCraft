@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "clientcore/meshing/QcCapeTracker.h"
 
 void QcCapeTracker::beginFrame(double seconds, double time)

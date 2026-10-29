@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Layout test of the HUD while playing: the real game renders a flat world offscreen with armour
 # worn (hearts, food, level and armour rows over the hotbar) and several chat lines, one of them
 # far wider than the window, at the smallest window (1024 x 640) and at 1400 x 900 (larger windows are limited to the screen). The layout

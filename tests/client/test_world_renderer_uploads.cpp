@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The world renderer uploads each section once per frame (decision E-413): a section submitted,
 // replaced or removed several times between two frames goes up with its latest mesh only. A second
 // update of the same section in one resource update batch would release the buffers the first one

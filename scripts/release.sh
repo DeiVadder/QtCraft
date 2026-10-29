@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Release pipeline (macOS): builds the game in its own Release build directory (preset "deploy",
 # build/deploy), assembles a standalone deploy/QtCraft.app with macdeployqt (Qt frameworks, QML
 # modules, platform, image format and multimedia plugins with the FFmpeg libraries), adds the
@@ -17,6 +20,9 @@
 #   - with TLS (QC_TLS, decision E-872): the bundled OpenSSL (libssl.3.dylib, libcrypto.3.dylib) is
 #     in Contents/Frameworks for both architectures, Qt's OpenSSL backend in PlugIns/tls, and the
 #     bundle carries OpenSSL's licence text (Apache 2.0)
+#   - the bundle carries the game's LICENSE, THIRD_PARTY.md and CREDITS.md, the licence of Pixelify
+#     Sans, FFmpeg's LGPL 2.1 text, a Qt notice and, with open-source Qt, Qt's LGPL 3 and GPL 3 texts
+#     (Contents/Resources/licenses); a local-only package carries NOT-FOR-DISTRIBUTION.txt
 #   - the dedicated server of a copy starts (--server --port 0 --bind 127.0.0.1, temporary data
 #     directory), reports the certificate fingerprint (with TLS) and "Listening on port", loads
 #     only libraries from the copy or the system
@@ -36,7 +42,9 @@
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
 #                                       preset "deploy"; QTCRAFT_RELEASE_GUI=0 skips the starts of
 #                                       the game and keeps the static and dedicated-server checks,
-#                                       for machines without a display such as GitHub Actions)
+#                                       for machines without a display such as GitHub Actions;
+#                                       QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 declares QT_DIR an
+#                                       open-source Qt, without it the package is local-only)
 
 set -u
 
@@ -56,7 +64,8 @@ VERSION=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
 # CFBundleVersion: UTC build time as year.monthday.hourminute (e.g. 2026.1009.1130). It grows with
 # every build on any branch; a commit count would shrink after a squash merge.
 BUILD_NUMBER=$(date -u +%Y.%m%d.%H%M)
-PACKAGE="$DEPLOY_DIR/QtCraft-$VERSION-macOS"
+PACKAGE_BASE="$DEPLOY_DIR/QtCraft-$VERSION-macOS"
+PACKAGE=$PACKAGE_BASE
 TMP_ROOT=${QTCRAFT_RELEASE_TMP:-${TMPDIR:-/tmp}}
 mkdir -p "$TMP_ROOT" || exit 2
 WORK=$(mktemp -d "$TMP_ROOT/qtcraft-release.XXXXXX") || exit 2
@@ -96,6 +105,35 @@ macho_files() {
 echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 [ -x "$QT_DIR/bin/macdeployqt" ] || abort "macdeployqt not found in $QT_DIR/bin"
 
+# Packages for others come only from the release workflow, built against open-source Qt (decision
+# E-932). A package is for local tests only unless QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 says that QT_DIR
+# is an open-source Qt (.github/workflows/release.yml sets it): its name ends in -local-only, the
+# bundle carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL. Commercial licence files
+# next to the Qt installation (the online installer puts them there, e.g.
+# <Qt>/Licenses or <Qt>/licenseInfo.txt) keep it local-only even then.
+OPEN_SOURCE_QT=${QTCRAFT_RELEASE_OPEN_SOURCE_QT:-0}
+case "$OPEN_SOURCE_QT" in
+0 | 1) ;;
+*) abort "QTCRAFT_RELEASE_OPEN_SOURCE_QT must be 0 or 1, not '$OPEN_SOURCE_QT'" ;;
+esac
+qt_root=$(cd "$QT_DIR/../.." 2>/dev/null && pwd)
+COMMERCIAL_QT=0
+if [ -n "$qt_root" ] && { ls "$qt_root/Licenses" 2>/dev/null | grep -qi -e enterprise -e commercial ||
+    grep -qi -e 'License type \[Enterprise' -e 'commercial' "$qt_root/licenseInfo.txt" 2>/dev/null; }; then
+    COMMERCIAL_QT=1
+    echo "WARNING: $qt_root holds commercial Qt licence files."
+fi
+LOCAL_ONLY=1
+if [ "$OPEN_SOURCE_QT" = 1 ] && [ "$COMMERCIAL_QT" -eq 0 ]; then
+    LOCAL_ONLY=0
+fi
+if [ "$LOCAL_ONLY" -eq 1 ]; then
+    PACKAGE="$PACKAGE-local-only"
+    [ "$OPEN_SOURCE_QT" = 1 ] && echo "WARNING: QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 is ignored for a Qt with commercial licence files."
+    echo "WARNING: local-only package: not for distribution; packages for others come from the release"
+    echo "WARNING: workflow with open-source Qt (QTCRAFT_RELEASE_OPEN_SOURCE_QT=1, decision E-932)."
+fi
+
 echo "== build (preset $PRESET, $BUILD_DIR)"
 "$PROJECT_DIR/scripts/ensure-user-presets.sh" || abort "CMakeUserPresets.json missing and not created"
 # The universal SDL3 for gamepads comes from its own cache entry, built once (decision E-540).
@@ -119,7 +157,7 @@ limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless 
 echo "== assemble $APP"
 mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"
 # Only the results of earlier runs of this script are replaced.
-rm -rf "$APP" "$PACKAGE.zip" "$PACKAGE.dmg"
+rm -rf "$APP" "$PACKAGE_BASE.zip" "$PACKAGE_BASE.dmg" "$PACKAGE_BASE-local-only.zip" "$PACKAGE_BASE-local-only.dmg"
 ditto "$BUILD_DIR/src/app/qtcraft.app" "$APP" || abort "cannot copy the app bundle"
 # The dedicated server runs from the bundle on the game's frameworks (docs/Multiplayer.md).
 SERVER="$APP/Contents/MacOS/qtcraft-headless"
@@ -162,6 +200,80 @@ fi
 mkdir -p "$APP/Contents/Resources/licenses" &&
     cp "$PROJECT_DIR/src/app/fonts/OFL.txt" "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ||
     abort "cannot copy the licence text of Pixelify Sans"
+# The game's own licence and the lists of third-party parts, next to the licence texts.
+for file in LICENSE THIRD_PARTY.md CREDITS.md; do
+    cp "$PROJECT_DIR/$file" "$APP/Contents/Resources/licenses/QtCraft-$file" || abort "cannot copy $file"
+done
+# Qt Multimedia's FFmpeg libraries are under the LGPL 2.1 or later; Qt (frameworks, plugins, QML
+# modules) is used under the LGPL 3, which builds on the GPL 3, when it is an open-source Qt
+# (THIRD_PARTY.md). The LGPL texts come from licenses-third-party/ in the repository; the notice
+# names the versions and where their exact sources are (decision E-932).
+LICENSES="$APP/Contents/Resources/licenses"
+cp "$PROJECT_DIR/licenses-third-party/LGPL-2.1-or-later.txt" "$LICENSES/FFmpeg-LGPL-2.1.txt" ||
+    abort "cannot copy the licence text of FFmpeg"
+QT_VERSION=$("$QT_DIR/bin/qtpaths" --query QT_VERSION 2>/dev/null)
+[ -n "$QT_VERSION" ] || abort "cannot read the Qt version from $QT_DIR/bin/qtpaths"
+QT_SERIES=${QT_VERSION%.*}
+FFMPEG_LIBRARIES=$(cd "$APP/Contents/Frameworks" && ls libav*.dylib libsw*.dylib 2>/dev/null | tr '\n' ' ')
+# The FFmpeg tag Qt builds from is named in Qt's provisioning script (n7.1 for Qt 6.8.3).
+FFMPEG_SCRIPT="coin/provisioning/common/unix/install-ffmpeg.sh of the repository qt/qt5 at the tag v$QT_VERSION"
+case "$QT_VERSION" in
+6.8.3) FFMPEG_TAG="FFmpeg n7.1 (named in $FFMPEG_SCRIPT)" FFMPEG_URL_TAG=n7.1 ;;
+*) FFMPEG_TAG="the FFmpeg tag named in $FFMPEG_SCRIPT" FFMPEG_URL_TAG="<tag>" ;;
+esac
+if [ "$LOCAL_ONLY" -eq 0 ]; then
+    cp "$PROJECT_DIR/licenses-third-party/LGPL-3.0-only.txt" "$LICENSES/Qt-LGPL-3.0.txt" &&
+        cp "$PROJECT_DIR/LICENSE" "$LICENSES/Qt-GPL-3.0.txt" ||
+        abort "cannot copy the licence texts of Qt"
+    cat >"$LICENSES/Qt-NOTICE.txt" <<EOF || abort "cannot write the Qt notice"
+Qt $QT_VERSION
+
+This bundle contains the frameworks, plugins and QML modules of Qt $QT_VERSION (The Qt Company Ltd.
+and other contributors) as separate, unmodified files in Contents/Frameworks, Contents/PlugIns and
+Contents/Resources/qml. They are used under the GNU Lesser General Public License version 3
+(Qt-LGPL-3.0.txt, which builds on Qt-GPL-3.0.txt); you may replace them with your own build of the
+same Qt version. Note that macdeployqt rewrote their install names to @rpath and the bundle is
+signed: after replacing a framework, sign the bundle again (codesign --force --deep -s - QtCraft.app).
+Qt contains code of other projects (for example libpng, libjpeg, PCRE2, HarfBuzz, double-conversion,
+TinyCBOR); their licences and notices are listed in the software bills of materials in the folder
+Qt-SBOM, where present, and in the Qt documentation ("Licenses Used in Qt").
+
+Qt Multimedia plays sound through FFmpeg. The FFmpeg libraries in Contents/Frameworks
+($FFMPEG_LIBRARIES) are the unmodified LGPL build that comes with Qt $QT_VERSION; FFmpeg is
+licensed under the GNU Lesser General Public License version 2.1 or later (FFmpeg-LGPL-2.1.txt).
+You may replace them with your own build of the same FFmpeg version (sign again as above).
+
+Corresponding source code:
+- Qt $QT_VERSION: https://download.qt.io/archive/qt/$QT_SERIES/$QT_VERSION/single/qt-everywhere-src-$QT_VERSION.tar.xz
+  (the same folder also has a .zip and md5sums.txt).
+- FFmpeg: $FFMPEG_TAG,
+  https://github.com/FFmpeg/FFmpeg/archive/refs/tags/$FFMPEG_URL_TAG.tar.gz (also from ffmpeg.org); the build
+  options are in that script.
+The QtCraft maintainers also send these sources on request.
+EOF
+else
+    cat >"$LICENSES/Qt-NOTICE.txt" <<EOF || abort "cannot write the Qt notice"
+Qt $QT_VERSION (local tests only: not declared as open-source Qt)
+
+This bundle was built for local tests with the Qt installation $QT_DIR, which is not declared as
+open-source Qt. Its Qt frameworks, plugins and QML modules are not passed on under the GNU LGPL by
+this bundle; do not distribute it (NOT-FOR-DISTRIBUTION.txt). Packages for others come from the
+release workflow, built against open-source Qt.
+
+The FFmpeg libraries in Contents/Frameworks ($FFMPEG_LIBRARIES) are licensed under the GNU Lesser
+General Public License version 2.1 or later (FFmpeg-LGPL-2.1.txt); source: $FFMPEG_TAG.
+EOF
+    printf '%s\n' "This QtCraft bundle was built with a Qt that is not declared as open-source Qt ($QT_DIR), for local tests only." \
+        "Do not pass it on: packages for others come from the release workflow with open-source Qt." \
+        >"$APP/Contents/Resources/NOT-FOR-DISTRIBUTION.txt" || abort "cannot write the local-only notice"
+fi
+# Qt's software bills of materials for the modules in the bundle, when the Qt installation has them.
+for module in qtbase qtdeclarative qtmultimedia qtimageformats qtsvg; do
+    sbom="$QT_DIR/sbom/$module-$QT_VERSION.spdx"
+    [ -f "$sbom" ] || continue
+    mkdir -p "$APP/Contents/Resources/licenses/Qt-SBOM" && cp "$sbom" "$APP/Contents/Resources/licenses/Qt-SBOM/" ||
+        abort "cannot copy $sbom"
+done
 
 echo "== ad-hoc signature (inside out)"
 # Loose libraries and plugins first, then each framework as a whole, then the app.
@@ -250,7 +362,17 @@ if [ "$GAMEPAD" = ON ]; then
 else
     ok "built without gamepad support (QC_GAMEPAD=$GAMEPAD), no SDL checks"
 fi
-[ -s "$APP/Contents/Resources/licenses/PixelifySans-OFL.txt" ] && ok "contains PixelifySans-OFL.txt" || problem "missing PixelifySans-OFL.txt"
+if [ "$LOCAL_ONLY" -eq 0 ]; then
+    QT_TEXTS="Qt-LGPL-3.0.txt Qt-GPL-3.0.txt"
+else
+    QT_TEXTS=""
+    [ -s "$APP/Contents/Resources/NOT-FOR-DISTRIBUTION.txt" ] && ok "local-only: contains NOT-FOR-DISTRIBUTION.txt" ||
+        problem "missing NOT-FOR-DISTRIBUTION.txt"
+fi
+for licence in PixelifySans-OFL.txt QtCraft-LICENSE QtCraft-THIRD_PARTY.md QtCraft-CREDITS.md $QT_TEXTS \
+    Qt-NOTICE.txt FFmpeg-LGPL-2.1.txt; do
+    [ -s "$APP/Contents/Resources/licenses/$licence" ] && ok "contains $licence" || problem "missing $licence"
+done
 
 # OpenSSL comes as two libraries next to the Qt frameworks; Qt's backend opens libssl by name and
 # finds it loaded by the executables (QcTlsBackend). Both halves, like the executables.

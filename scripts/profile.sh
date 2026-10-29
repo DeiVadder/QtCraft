@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Deep profiling of the game (extends scripts/bench.sh). Builds the RelWithDebInfo profiling build
 # (preset "profile", build/profile, QML debugging enabled for qmlprofiler) and starts short,
 # time-limited benchmark runs that quit by themselves. Raw data goes to a temporary directory
@@ -42,7 +45,8 @@ RECORD_LIMIT=$((SECONDS_PER_RUN + 60))
 case "$TOOL" in
 breakdown | time | alloc | leaks | metal | sample | qml | sg | visualize) ;;
 *)
-    sed -n '2,26p' "$0"
+    # The leading comment block, without the SPDX header.
+    awk 'NR > 1 && !/^#/ && !/^$/ { exit } NR > 1 && !/SPDX-/' "$0" | sed '/^$/d'
     exit 2
     ;;
 esac

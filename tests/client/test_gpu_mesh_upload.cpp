@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Section buffers written directly into the MTLBuffer (decision E-813): a section mesh uploaded
 // through QcGpuMeshStore on an offscreen Metal QRhi holds on the GPU exactly what QcPackedMesh packs,
 // at its slot in a page of the section arena shared with other sections (decision E-820). Skipped

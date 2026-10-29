@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Regenerates the exports of the base game's handbook after a content change: docs/handbook (English
 # Markdown) and docs/handbook/de (German Markdown), both checked in and compared with a fresh export
 # by test_handbook, and web/handbook/data (the web handbook: every language, icon sheet, colours)

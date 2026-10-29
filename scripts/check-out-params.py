@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Lists output parameters in src/ (rule "Keine Ausgabeparameter" in CLAUDE.md, human 2026-10-19; E-694).
 
 Kinds, found by pattern (a heuristic, not a parser):

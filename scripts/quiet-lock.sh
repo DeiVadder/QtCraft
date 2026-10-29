@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The quiet lock ~/.cache/qtcraft/quiet.lock (sourced by scripts/verify-phases.sh and
 # scripts/wait-quiet.sh, not run; decision E-550). A verify run holds it during the timing phase of
 # a test step (waiting for a quiet machine, then the `timing` tests); while another live process

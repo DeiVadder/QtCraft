@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the admin channel (QcAdminMessages.h, decision E-848). Every count and text is
 // bounded (QcMsg::AdminLimits); a decoder that finds more fails the message.
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
 #include "QcPlayerUseFixture.h"

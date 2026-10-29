@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // The copy of the scene the water of the realistic mode looks through (decision E-906): the

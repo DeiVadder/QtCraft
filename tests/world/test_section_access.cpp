@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Micro-benchmarks of QcChunkSection's hot paths (decision E-844): reading every cell (mesher,
 // light, server scans), writing cells, copy on write, filling a fresh section as the generator
 // does, forEachCell and compact() of a written copy, for palettes of 8, 40 and 300 entries (4-,

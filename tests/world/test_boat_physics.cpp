@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/physics/QcBoatMotion.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcBoatBody.h"

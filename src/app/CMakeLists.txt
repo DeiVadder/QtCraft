@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The game's C++ side as a library (decision E-417; shared with QC_SHARED_LIBS, E-890): controllers,
 # models, rendering, input, hooks and the multiplayer screens, used by the game and by the tests. It
 # is the backing target of the QML module QtCraft as well, because qmltyperegistrar registers only

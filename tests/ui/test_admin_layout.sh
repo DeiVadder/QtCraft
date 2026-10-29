@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Layout test of "Manage server" (decision E-863): the real game plays a flat world offscreen (its
 # player is the host, so an operator) and opens the screen (--overlay admin); the pad's right
 # shoulder walks to each section. In the smallest window (1024 x 640) and in 1280 x 800, in German

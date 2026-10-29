@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 qt_add_library(qc_clientcore ${QC_LIBRARY_TYPE})
 # Sources per folder, sorted, each header next to its sources (decision E-417;
 # scripts/check-cmake-lists.py checks the lists).

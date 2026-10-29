@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payload of the advancement message (QcAdvancementMessages.h, decision E-923): at most
 // AdvancementProgress::maxEntries entries, each with at most maxCriteria criterion names; every
 // name at most maxNameLength UTF-16 units. Anything beyond fails the message.

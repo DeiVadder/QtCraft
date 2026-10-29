@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the world messages (QcWorldMessages.h): chunks, block changes, mining, using items on
 // blocks, sounds and the weather.
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Animated textures (decision E-878): frame selection by time, the definitions' fields, the frames
 // of procedural patterns, texture pack and mod strips, and the frames' tiles in the atlas.
 #include "clientcore/texturepacks/QcTextureSources.h"

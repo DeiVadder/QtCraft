@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "server/chunks/QcChunkLoading.h"
 
 #include "server/blocks/QcBlockUpdateQueue.h"

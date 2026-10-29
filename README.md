@@ -76,6 +76,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for building, testing, the branch and rev
 
 ## Licence
 
-QtCraft – code, textures, sounds and music – is licensed under the GNU General Public License version 3 or later (GPL-3.0-or-later), see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md). The release packages contain Qt, used under the GNU LGPL version 3, SDL3 for gamepads (zlib licence, statically linked) and OpenSSL 3 for TLS in multiplayer (Apache License 2.0, shared libraries). The logo uses the pixel font Pixelify Sans (SIL Open Font License 1.1). See [THIRD_PARTY.md](THIRD_PARTY.md).
+QtCraft – code, textures, sounds and music – is licensed under the GNU General Public License version 3 or later (GPL-3.0-or-later), see [LICENSE](LICENSE) and [CREDITS.md](CREDITS.md). The release packages contain Qt, used under the GNU LGPL version 3 (on macOS with the FFmpeg libraries of Qt Multimedia, GNU LGPL version 2.1 or later), SDL3 for gamepads (zlib licence, statically linked) and OpenSSL 3 for TLS in multiplayer (Apache License 2.0, shared libraries). The logo uses the pixel font Pixelify Sans (SIL Open Font License 1.1). See [THIRD_PARTY.md](THIRD_PARTY.md).
 
 QtCraft contains no Minecraft code or assets and is not affiliated with Mojang or Microsoft; comparisons with Minecraft are descriptive only. The wiring material is called Signal Dust. Qt is a registered trademark of The Qt Company Ltd. and its subsidiaries.

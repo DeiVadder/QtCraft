@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """File selection of the static analysis in the full verify (decision E-929).
 
 The full verify analyses with clang-tidy, clazy and qmllint only the sources that changed since the

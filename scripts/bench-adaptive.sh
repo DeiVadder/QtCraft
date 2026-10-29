@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Evaluates the latest series of a result file of scripts/bench-ab.sh or scripts/bench-headless.sh:
 # per scenario and key the mean of each label, its spread and the difference to the first label, and
 # whether the scenario needs more rounds (adaptive rounds, decision E-388). Reads only; runs nothing.

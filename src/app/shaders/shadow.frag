@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #version 440
 
 // The shadow map holds depth only (decision E-903). Cut-out faces (leaves, plants) and entities

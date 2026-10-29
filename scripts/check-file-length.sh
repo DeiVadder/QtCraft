@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Checks the file length limits of C++ and QML sources in code lines (E-760): sources, Objective-C++ and
 # QML 600, headers 220 (also those of the tests), test sources 750. Blank lines and comments (doc
 # comments included) do not count; the counting is scripts/qc_code_lines.py. A file may opt out only with a line "NOLINT(qc-file-length): <reason>".

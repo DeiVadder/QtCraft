@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 cmake_minimum_required(VERSION 3.25)
 
 # Oldest macOS the app runs on, also LSMinimumSystemVersion: Qt 6.8 needs 12, the floating-point

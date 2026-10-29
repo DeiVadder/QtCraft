@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Lists `m_` members used in more than two places without going through a getter or setter (rule "Getter und
 Setter für mehrfach benutzte Member" in CLAUDE.md, human 2026-10-26; E-891).
 

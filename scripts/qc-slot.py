@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Slot broker for builds, verify runs and benchmarks of several agents on one machine (decision E-781).
 
 A small daemon hands out slots per kind of work and blocks the caller until its slot is granted, so

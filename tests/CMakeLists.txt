@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Tests are grouped by topic in subfolders (E-089); the shared fixtures stay in this folder and are
 # included by their path below it ("QcServerTestFixture.h", "world/QcVillageTestUtil.h"; decision
 # E-418), the code by its path below src/ through the libraries. Each

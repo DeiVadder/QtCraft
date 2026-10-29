@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Sourced by the scripts that build a third-party library once into a shared cache entry
 # (scripts/build-sdl.sh, scripts/build-openssl.sh; decisions E-540, E-872): one build per entry at a
 # time, parallel configure steps (presets, worktrees) wait. Not a program of its own.

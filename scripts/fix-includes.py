@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Keeps the project includes and source paths in step with where the files are (decision E-418).
 
 Every project include names its header by its path below an include root: `src/` for the code

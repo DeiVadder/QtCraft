@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # QML load test of the character screen (decision E-240): the real game opens the screen
 # offscreen with a cape in the look and takes a screenshot; any QML warning or error (for example
 # a broken binding of the cape list) fails the test. A second run saves a change with the pad and

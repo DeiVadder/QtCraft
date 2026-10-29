@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Interleaved A/B measurement of the server side of benchmark scenarios, without a window and without
 # real time (decision E-388): server tick mean, p99 and maximum, the tick phases, the server's
 # creatures, items, falling blocks, block entities and chunks, and the memory of the measuring process

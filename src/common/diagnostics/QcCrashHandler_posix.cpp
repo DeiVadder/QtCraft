@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The crash handler of macOS and Linux (decision E-834): a signal handler on its own stack that
 // writes the report with async-signal-safe calls only (open, write, close, nanosleep,
 // backtrace_symbols_fd) from buffers filled at install time, then raises the signal again with the

@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Refuses tracked files over 2 MB (decision E-933): screenshots belong in docs/screenshots as JPEG,
 # generated data (such as web/handbook/data) is not committed. A file that must be larger is listed
 # in scripts/large-files-allowed.txt (one path per line, # starts a comment).

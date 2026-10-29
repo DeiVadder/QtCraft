@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Central compiler policy for every QtCraft-owned target (libraries, app, tests).
 # Qt headers come in through imported targets and are therefore SYSTEM includes.
 

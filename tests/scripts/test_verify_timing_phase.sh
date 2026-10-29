@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The timing phase of scripts/verify-phases.sh and the end of a run in scripts/verify-summary.sh
 # (decisions E-550, E-890, E-913) with a fake load (QC_TEST_MACHINE_LOAD), stubbed ctest, python3
 # and sleep, and the quiet lock in a temporary HOME: a machine that stays loud defers the timing

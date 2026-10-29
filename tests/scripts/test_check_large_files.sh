@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The large file check (scripts/check-large-files.sh, decision E-933) in a throwaway git repository
 # with a bare remote; the pushes run the check from a pre-push hook as tools/githooks/pre-push does:
 #   - index and --rev: a file over 2 MB fails, an allowed one passes; --rev without a value and an

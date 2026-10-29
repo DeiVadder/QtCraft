@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # ThreadSanitizer suppressions.
 #
 # QtCore is not instrumented, so TSan cannot see the synchronisation inside Qt's event queue. The

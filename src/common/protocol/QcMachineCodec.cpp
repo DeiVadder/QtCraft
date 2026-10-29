@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the machine messages (QcMachineMessages.h): furnace, chest and stonecutter screens.
 
 #include "common/protocol/QcProtocolCodec.h"

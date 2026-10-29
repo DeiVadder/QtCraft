@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Named groups of benchmark scenarios (sourced by bench-ab.sh, bench-headless.sh and bench.sh; no side
 # effects). SCENARIOS="@core,@signal flat-crowd" picks scenarios by group and by name, separated by
 # blanks or commas (decision E-388). Which group fits which kind of change: docs/Performance.md,

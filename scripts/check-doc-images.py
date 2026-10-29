@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Finds image references in the tracked Markdown files that name no image in docs/screenshots.
 
 A reference is a name ending in .png or .jpg, as written in the docs: plain

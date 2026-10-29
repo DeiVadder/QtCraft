@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Screenshots of the same showcase scenes with each shipped texture pack (stage 28, decision E-303):
 # the game's 16 x 16 textures, QtCraft HD at 32x and 64x and the image pack Storybook, plus the
 # settings page. Rendered offscreen (no window, decision E-229), silent, with a temporary data folder

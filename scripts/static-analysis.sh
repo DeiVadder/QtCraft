@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Runs the size limits checks (file and function length), the warning-only checks of output parameters and
 # member access, clang-tidy, clazy and qmllint over the project (or over the given files).
 # Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]

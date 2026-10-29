@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Release packages for a version tag (v0.2.0 and so on): runs the tests, builds the universal macOS
 # app with scripts/release.sh against open-source Qt and uploads the .zip and .dmg to a draft
 # release. The runner cannot start the game; a human tries the package, then publishes the draft.
@@ -72,6 +75,8 @@ jobs:
           QTCRAFT_RELEASE_PRESET: ci-deploy
           QTCRAFT_RELEASE_GUI: '0'
           QTCRAFT_RELEASE_TMP: ${{ runner.temp }}
+          # aqtinstall installs the open-source Qt; only such packages are passed on (E-932).
+          QTCRAFT_RELEASE_OPEN_SOURCE_QT: '1'
         run: QT_DIR="$QT_ROOT_DIR" scripts/release.sh
 
       - uses: actions/upload-artifact@v4
@@ -96,8 +101,14 @@ jobs:
           first time with right click, Open, or allow it under System Settings, Privacy & Security.
 
           QtCraft is licensed under GPL-3.0-or-later. The packages contain Qt ${QT_VERSION}, used under
-          the GNU LGPL version 3; its source is available from the Qt Project (download.qt.io).
-          Qt Multimedia brings FFmpeg libraries, also under the LGPL.
+          the GNU LGPL version 3, and the FFmpeg libraries of Qt Multimedia (GNU LGPL version 2.1 or
+          later); the licence texts and a notice are in QtCraft.app/Contents/Resources/licenses.
+          Corresponding source:
+          - Qt ${QT_VERSION}: https://download.qt.io/archive/qt/${QT_VERSION%.*}/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz
+          - FFmpeg: the tag named in coin/provisioning/common/unix/install-ffmpeg.sh of the repository
+            qt/qt5 at the tag v${QT_VERSION} (n7.1 for Qt 6.8.3),
+            https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.tar.gz; the build options are in that script.
+          The maintainers also send these sources on request.
           EOF
           if [ "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft 2>/dev/null)" = "true" ]; then
             gh release delete "$GITHUB_REF_NAME" --yes

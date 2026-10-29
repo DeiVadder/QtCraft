@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcQuickMove.h"

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Checks the function length limit in code lines (E-760): a function body may hold at most 60 code lines.
 
 Code lines as in scripts/qc_code_lines.py: blank lines and comments (doc comments included) do not count, so

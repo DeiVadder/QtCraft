@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The traits of creatures that teleport, carry blocks and are provoked by a look (decision E-460):
 // "gaze", "teleport", "carries" and "waterDamage"; of companions (decision E-480): "tameable", "shy",
 // "packRange", "frightens" and "scaredOfCats"; of water creatures and milking (decisions E-500, E-502):

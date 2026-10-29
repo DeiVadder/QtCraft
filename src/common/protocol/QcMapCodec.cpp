@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payload of the map messages (QcMapMessages.h, decision E-802): the pixels as little-endian 16-bit
 // values, compressed with qCompress when that saves bytes; every field is checked against the map's
 // limits before the client keeps it.

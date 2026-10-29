@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/world/QcChunk.h"
 #include "QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # World and mod management of a process that runs worlds (decision E-705): starting the local
 # server, the worlds and the data folder on disk, mods and their comparison with a server, the rule
 # values of the handbook. The layer between the simulation (qc_server, linked privately: no header

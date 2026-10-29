@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Performance regression check with fixed, generous limits (see docs/Performance.md, "Ziele").
 # Builds the release preset, runs stand, sprint and crowd once each at view distance 8 and fails
 # if a value exceeds its limit. The limits are three to ten times the measured values, so the load

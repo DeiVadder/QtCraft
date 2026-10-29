@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import QtQuick
 
 // A screen that exists only while it is shown and for a while after (decision E-691): a Loader

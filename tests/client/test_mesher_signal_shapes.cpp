@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Shapes of signal blocks with the base content (decision E-874): extended piston heads are closed
 // and drawn with opaque texels, and the arrow on the top of repeaters and comparators points
 // towards their output for every facing.

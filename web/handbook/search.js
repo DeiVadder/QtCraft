@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The search of the handbook, as QcHandbook::search: every word of the query in the titles (this
 // language and English) or the name, else in the texts; best matches first, at most 50. Without the
 // page around it, so test_web_handbook runs it in QJSEngine against the C++ search.

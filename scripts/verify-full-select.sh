@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The slimmer full verify (sourced by scripts/verify.sh, not run; decision E-929).
 # The last fully green full verify stands in build/.verify-full-last: line 1 the key of
 # clean_commit (commit and hash of the local presets CMakeUserPresets.json), line 2

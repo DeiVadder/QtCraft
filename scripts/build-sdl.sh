@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Builds the SDL3 submodule (3rdparty/SDL) once and installs it into a cache shared by every preset
 # and every worktree (decision E-540): <cache>/<tag>-<arch>-<config>, where <cache> is $QC_SDL_CACHE
 # or ~/.cache/qtcraft/sdl3, <tag> the line of 3rdparty/sdl3-tag.txt, <arch> the machine (`uname -m`),

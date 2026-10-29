@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Regenerates the files of the built-in texture packs in content/texturepacks (stage 28, E-303):
 # the preview images of the procedural "QtCraft HD" packs and the whole image pack "Storybook 32x"
 # (exported from the procedural textures at 32 x 32, then hand-tuned by texturepack-style.py).

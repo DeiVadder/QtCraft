@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Windows x64 package from the Mac (stage 74.4): copies scripts/windows/package-windows.ps1 and the
 # README template into the Parallels VM, runs it there over SSH for a git ref of this repository
 # (the VM fetches the ref through the Parallels share \\Mac\Home, so only committed states are
@@ -6,12 +9,15 @@
 # deploy/ of the main checkout (gitignored). The VM must be running; this script never starts or
 # stops it. Build and checks are described in package-windows.ps1; the build is registered with the
 # slot broker (kind build) and runs in the VM with the granted jobs, at most 4 (the VM's cores).
+# Without -OpenSourceQt its packages are for local tests only (names ending in
+# -local-only, NOT-FOR-DISTRIBUTION.txt in the package; decision E-932). Packages for others come
+# from the release workflow with open-source Qt; -- -OpenSourceQt declares an open-source kit.
 #
 # Usage: scripts/vm-package-windows.sh [ref] [-- extra arguments for package-windows.ps1]
 #   ref                  branch or tag of this repository (default dev); a commit hash does not
 #                        work (git upload-pack serves only refs): for an older commit create a tag
 #                        or branch first (git tag playtest-<sha> <sha>)
-#   QC_VM_HOST           SSH target (default: jonashilk@<IP of the running VM from prlctl list -a>;
+#   QC_VM_HOST           SSH target (default: $USER@<IP of the running VM from prlctl list -a>;
 #                        10.211.55.6 only where prlctl is not installed)
 #   QC_VM_KEY            SSH key (default ~/.ssh/id_ed25519_parallels_vm)
 #   QC_VM_ROOT           build folder in the VM (default C:\Qt-Projekte\Claude\QtCraft)
@@ -68,7 +74,7 @@ if [ -z "${QC_VM_HOST:-}" ]; then
         case "$line" in
         *" running "*) ;;
         *)
-            echo "the VM \"Jonas Windows 11\" is not running (prlctl list -a); start it first" >&2
+            echo "the Windows 11 VM is not running (prlctl list -a); start it first" >&2
             exit 2
             ;;
         esac
@@ -79,7 +85,7 @@ if [ -z "${QC_VM_HOST:-}" ]; then
     else
         ip=10.211.55.6
     fi
-    QC_VM_HOST="jonashilk@$ip"
+    QC_VM_HOST="${USER}@$ip"
 fi
 
 echo "== $REF = $(git -C "$PROJECT_DIR" rev-parse --short=7 "$REF"), VM $QC_VM_HOST, $ROOT"
@@ -111,4 +117,7 @@ for file in "$remote" "${remote%.zip}-pdb.zip"; do
     scp -q -i "$KEY" "$QC_VM_HOST:$file" "$MAIN_DIR/deploy/" || exit 1
     echo "copied $MAIN_DIR/deploy/$(basename "$file")"
 done
+case "$zip" in
+*-local-only.zip) echo "WARNING: local-only package (Qt not declared as open source): for your own tests, not for distribution" ;;
+esac
 rm -f "$LOG"

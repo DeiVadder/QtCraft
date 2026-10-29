@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # The main menu fills large windows (decision E-875): the real game renders the menu offscreen in
 # windows of 1280 x 720 up to 3840 x 2160 (large monitors in fullscreen at 100 % display scaling),
 # and the screenshot hook logs the geometry of the side bar and of the page column

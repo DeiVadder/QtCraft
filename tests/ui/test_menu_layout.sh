@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Layout test of the main menu in the smallest window (1024 x 640, Main.qml's minimum size): the
 # real game renders the menu offscreen, alone and with each of its screens open, and the layout
 # check (QTCRAFT_LAYOUT_CHECK) lists every shown item that reaches outside the window, such as a

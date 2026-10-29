@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Writes the code map for agents and people new to the code (not part of the build):
 
   docs/Code-Karte.md          every class, struct and enum of src/ with the first sentence of the
@@ -74,6 +77,8 @@ def leading_comment(path, marker):
     block = []
     for line in lines:
         stripped = line.strip()
+        if "SPDX-" in stripped and not block:
+            continue  # the licence header (scripts/add-spdx.py) is no description
         if stripped.startswith(marker) and not stripped.startswith("#!"):
             block.append(stripped[len(marker):].lstrip("/#").strip())
         elif block:

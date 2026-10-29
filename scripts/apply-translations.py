@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """Fills a Qt .ts file from a JSON dictionary {"source text": "translation"}; plural messages
 (%n) take a list with one text per numerus form.
 

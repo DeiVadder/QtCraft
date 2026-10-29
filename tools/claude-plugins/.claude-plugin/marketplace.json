@@ -1,6 +1,6 @@
 {
     "name": "qtcraft-tools",
-    "owner": { "name": "Jonas Hilk" },
+    "owner": { "name": "the QtCraft authors" },
     "description": "Project plugins of QtCraft for Claude Code",
     "plugins": [
         {

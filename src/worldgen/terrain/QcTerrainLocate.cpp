@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // What /locate finds of the terrain generator (decision E-911): villages, mine shafts, dungeons,
 // coastal towers and the surface structures.
 

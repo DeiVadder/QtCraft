@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Payloads of the trading messages (QcTradeMessages.h, decision E-414).
 
 #include "common/protocol/QcProtocolCodec.h"

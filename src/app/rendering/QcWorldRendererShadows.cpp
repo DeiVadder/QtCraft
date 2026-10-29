@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The sun shadows of QcWorldRenderer (decision E-903): the shadow map's resources follow the
 // quality, the cascades follow the camera, and the shadow step draws the opaque and cut-out lists of
 // the sections and the entities into each cascade's tile.

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The parts of the enchanting screen in QML (decision E-884): an offer is taken by a click and by
 // Enter with the keyboard focus (shown by the focus outline), an unusable one by neither; a screen
 // reader hears how many letters are readable and why an offer cannot be taken; the level takes the

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The water of QcWorldRenderer in the realistic mode (decision E-906): the copy of the scene follows
 // the post-processing's scene, the water's uniforms follow the sky, the camera and the quality, and
 // the steps after the copy draw on over the scene.

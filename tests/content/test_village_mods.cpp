@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Village data that mods extend (decision E-421): professions in their own files, villager species
 // named by the creature kind, styles extended in pack order, residents, formatVersion and the
 // files of the earlier format refused with where their content went.

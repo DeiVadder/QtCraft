@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // Chunk encoding of the protocol (QcProtocol::writeChunk/readChunk), shared with persistence:
 // per section a palette plus run-length encoded indices (decision E-016).
 

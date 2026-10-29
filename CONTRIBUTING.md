@@ -30,12 +30,18 @@ Changed content or handbook texts: run `scripts/export-handbook.sh` and commit t
 - A member variable used in more than two places gets a getter and a setter, and every use except the constructor and the accessors goes through them.
 - A fixed set of values is an enum (`Q_ENUM` for QML), not a string. Setters that reject a value log a warning with the value and the reason.
 - Includes name the path from `src/` (`#include "common/blockrules/QcRails.h"`); the layers of `src/` are checked by `scripts/fix-includes.py --check`.
+- Every source file starts with the SPDX header (`SPDX-FileCopyrightText: 2026 the QtCraft authors` and `SPDX-License-Identifier: GPL-3.0-or-later`); `python3 scripts/add-spdx.py <file>` adds it, `scripts/verify.sh` and the pre-push hook check it.
 - Comments describe the current state, not the history. Larger design choices are recorded in `docs/Entscheidungen.md`.
 
 ## Content and naming
 
 - The wiring material is **Signal Dust**, not “Redstone”. Comparisons with Minecraft are descriptive only.
+- No Mojang names for anything the player sees (blocks, items, creatures, places, texts): the game uses its own names, for example the Shadewalker. Code comments and design notes may name the role model to describe a behaviour.
 - No Minecraft (Mojang) code, textures, sounds or other assets. Textures, sounds and music are made by the project itself; third-party assets need a free licence and an entry in `docs/ASSETS.md` and `CREDITS.md`.
+
+## Licence of contributions
+
+QtCraft is licensed under the GNU General Public License version 3 or later (`LICENSE`). By submitting a change you agree that it is licensed under the same terms, and you confirm that you have the right to do so. Third-party code, fonts or assets need a GPL-compatible licence and an entry in `THIRD_PARTY.md` (code, fonts) or `docs/ASSETS.md` and `CREDITS.md` (assets); their licence texts go into `LICENSES/` (licences of files in the repository) or `licenses-third-party/` (texts only the release packages need) unless the component brings its own.
 
 ## Commit messages
 

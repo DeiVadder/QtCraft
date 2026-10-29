@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "server/chunks/QcChunkStreaming.h"
 
 #include "server/blockentities/QcServerSigns.h"

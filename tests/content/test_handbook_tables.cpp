@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"

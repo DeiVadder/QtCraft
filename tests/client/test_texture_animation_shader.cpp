@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // The frame choice of block.vert (decision E-878) ported to float32 the way GPUs may compute it:
 // a / b as a * rcp(b) (Metal fast math, Direct3D), with a reciprocal that is correctly rounded or
 // one unit in the last place off, with and without fused multiply-add. Every tile index of every

@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Makes sure the checkout has CMakeUserPresets.json: the visible presets (debug, release, profile, ...)
 # with the Qt and Ninja paths of this machine, not in git (decision E-417). When the file is missing
 # (a new worktree, a fresh clone), it copies the one of the main checkout if that has one, otherwise

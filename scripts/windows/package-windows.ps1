@@ -1,10 +1,16 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Windows x64 package (stage 74.4): builds qtcraft and qtcraft-headless from a git ref of the Mac
 # repository in the Parallels ARM64 VM (cross build ARM64 host -> x64 target, vcvarsall
 # arm64_amd64), assembles a standalone folder with windeployqt, the app-local VC++ runtime, the
 # OpenSSL DLLs, the example mods and the licence texts, checks it and packs
 #   QtCraft-<version>-<shortsha>-Windows-x64.zip       (the game, unzip and start qtcraft.exe)
 #   QtCraft-<version>-<shortsha>-Windows-x64-pdb.zip   (PDB files for the minidumps, E-834)
-# into <Root>\dist.
+# into <Root>\dist. Without -OpenSourceQt (the Qt kit is not declared as open-source Qt) or with
+# commercial licence files next to the Qt installation (<QtDir>\..\..\Licenses, licenseInfo.txt),
+# the package is for local tests only (decision E-932): both names end in -local-only, the package
+# carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL instead of Qt's LGPL texts.
 #
 # Checks (any failure makes the script exit with 1):
 #   - the build used the Qt kit -QtDir (Qt6_DIR in CMakeCache.txt) and has gamepad support
@@ -35,7 +41,8 @@
 #   powershell -NoProfile -ExecutionPolicy Bypass -File package-windows.ps1 [-Ref dev] [-Jobs 4]
 #       [-Root C:\Qt-Projekte\Claude\QtCraft] [-Repo //Mac/Home/Qt-Projekte/Privat/Claude/QtCraft]
 #       [-QtDir C:\Qt\6.8.3\msvc2022_64] [-Server 192.168.0.201:25600] [-NoFetch] [-NoGamepad]
-#       [-GuiCheck]
+#       [-GuiCheck] [-OpenSourceQt]
+#   -OpenSourceQt  declares -QtDir an open-source Qt (packages for others, E-932)
 #   -Server  the LAN address of the playtest server, written into README-Windows.txt
 # One run at a time: <Root>\package.lock is held open while the script runs.
 #
@@ -53,7 +60,8 @@ param(
     [string]$Server = "192.168.0.201:25600",
     [switch]$NoFetch,
     [switch]$NoGamepad,
-    [switch]$GuiCheck
+    [switch]$GuiCheck,
+    [switch]$OpenSourceQt
 )
 
 $ErrorActionPreference = "Continue"
@@ -343,6 +351,19 @@ if ($cmakeLists -notmatch 'project\(QtCraft VERSION ([0-9.]+)') {
 }
 $version = $Matches[1]
 $name = "QtCraft-$version-$commit-Windows-x64"
+# Local tests only unless the Qt kit is declared open source and has no commercial licence files.
+$qtRoot = Split-Path (Split-Path $QtDir)
+$commercialQt = [bool](Get-ChildItem -ErrorAction SilentlyContinue (Join-Path $qtRoot "Licenses") |
+    Where-Object { $_.Name -match "enterprise|commercial" })
+$licenseInfo = Join-Path $qtRoot "licenseInfo.txt"
+if ((Test-Path $licenseInfo) -and (Select-String -Quiet -Pattern "Enterprise|commercial" $licenseInfo)) { $commercialQt = $true }
+if ($commercialQt) { Write-Output "WARNING: $qtRoot holds commercial Qt licence files." }
+$localOnly = $commercialQt -or -not $OpenSourceQt
+if ($localOnly) {
+    $name = "$name-local-only"
+    Write-Output "WARNING: local-only package: not for distribution; packages for others come from the release"
+    Write-Output "WARNING: workflow with open-source Qt (-OpenSourceQt, decision E-932)."
+}
 Write-Output "== $name (Qt $QtDir, $Jobs jobs)"
 
 Write-Output "== configure and build"
@@ -423,24 +444,40 @@ foreach ($file in @("LICENSE", "THIRD_PARTY.md", "CREDITS.md")) {
 }
 Copy-Required (Join-Path $Source "src\app\fonts\OFL.txt") (Join-Path $licenses "PixelifySans-OFL.txt")
 Copy-Required (Join-Path $openssl "LICENSE.txt") (Join-Path $licenses "OpenSSL-LICENSE.txt")
-# Qt is used under the LGPL 3 (THIRD_PARTY.md): its text, the GPL 3 it builds on, and a notice.
-$qtLicenses = Join-Path (Split-Path $QtDir) "Src\qtbase\LICENSES"
-Copy-Required (Join-Path $qtLicenses "LGPL-3.0-only.txt") (Join-Path $licenses "Qt-LGPL-3.0.txt")
-Copy-Required (Join-Path $qtLicenses "GPL-3.0-only.txt") (Join-Path $licenses "Qt-GPL-3.0.txt")
 $qtVersion = "$(& (Join-Path $QtDir "bin\qtpaths.exe") --query QT_VERSION)".Trim()
 $qtSeries = $qtVersion.Substring(0, $qtVersion.LastIndexOf('.'))
-$qtNotice = @(
-    "Qt $qtVersion",
-    "",
-    "This package contains the libraries, plugins and QML modules of Qt $qtVersion (The Qt Company Ltd.",
-    "and other contributors) as separate, unmodified DLL files next to qtcraft.exe. They are used under",
-    "the GNU Lesser General Public License version 3 (Qt-LGPL-3.0.txt, which builds on Qt-GPL-3.0.txt);",
-    "you may replace them with your own build of the same Qt version.",
-    "",
-    "Source code of Qt ${qtVersion}: from the QtCraft maintainers on request (the Qt 6.8 sources are",
-    "also published by the Qt Project, download.qt.io, folder official_releases/qt/$qtSeries).",
-    "Qt Multimedia is built with the Windows Media backend only (no FFmpeg); no software OpenGL is included."
-)
+if (-not $localOnly) {
+    # Qt is used under the LGPL 3 (THIRD_PARTY.md): its text, the GPL 3 it builds on, and a notice
+    # with the exact source (decision E-932).
+    $qtLicenses = Join-Path (Split-Path $QtDir) "Src\qtbase\LICENSES"
+    Copy-Required (Join-Path $qtLicenses "LGPL-3.0-only.txt") (Join-Path $licenses "Qt-LGPL-3.0.txt")
+    Copy-Required (Join-Path $qtLicenses "GPL-3.0-only.txt") (Join-Path $licenses "Qt-GPL-3.0.txt")
+    $qtNotice = @(
+        "Qt $qtVersion",
+        "",
+        "This package contains the libraries, plugins and QML modules of Qt $qtVersion (The Qt Company Ltd.",
+        "and other contributors) as separate, unmodified DLL files next to qtcraft.exe. They are used under",
+        "the GNU Lesser General Public License version 3 (Qt-LGPL-3.0.txt, which builds on Qt-GPL-3.0.txt);",
+        "you may replace them with your own build of the same Qt version.",
+        "",
+        "Corresponding source code of Qt ${qtVersion}:",
+        "https://download.qt.io/archive/qt/$qtSeries/$qtVersion/single/qt-everywhere-src-$qtVersion.zip",
+        "(the same folder also has a .tar.xz and md5sums.txt); the QtCraft maintainers also send it on request.",
+        "Qt Multimedia is built with the Windows Media backend only (no FFmpeg); no software OpenGL is included."
+    )
+} else {
+    $qtNotice = @(
+        "Qt $qtVersion (local tests only: not declared as open-source Qt)",
+        "",
+        "This package was built for local tests with the Qt kit $QtDir, which is not declared as",
+        "open-source Qt. Its Qt DLLs, plugins and QML modules are not passed on under the GNU LGPL by",
+        "this package; do not distribute it (NOT-FOR-DISTRIBUTION.txt). Packages for others come from the",
+        "release workflow, built against open-source Qt."
+    )
+    [System.IO.File]::WriteAllLines((Join-Path $package "NOT-FOR-DISTRIBUTION.txt"), @(
+        "This QtCraft package was built with a Qt that is not declared as open-source Qt ($QtDir), for local tests only.",
+        "Do not pass it on: packages for others come from the release workflow with open-source Qt."))
+}
 [System.IO.File]::WriteAllLines((Join-Path $licenses "Qt-NOTICE.txt"), $qtNotice)
 $sdl = $null
 if ($gamepad -eq "ON") {
@@ -459,8 +496,13 @@ Write-Output "== checks"
 $required = @("qtcraft.exe", "qtcraft-headless.exe", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
     "platforms\qwindows.dll", "multimedia\windowsmediaplugin.dll", "qml\QtQuick\Controls", "qml\QtQuick\Layouts",
     "mods\rubies\pack.json", "LICENSE", "THIRD_PARTY.md", "CREDITS.md", "README-Windows.txt", "licenses\PixelifySans-OFL.txt",
-    "licenses\Qt-LGPL-3.0.txt", "licenses\Qt-GPL-3.0.txt", "licenses\Qt-NOTICE.txt", "licenses\OpenSSL-LICENSE.txt",
+    "licenses\Qt-NOTICE.txt", "licenses\OpenSSL-LICENSE.txt",
     "tls\qopensslbackend.dll") + $crtDlls + $opensslDlls
+if ($localOnly) {
+    $required += @("NOT-FOR-DISTRIBUTION.txt")
+} else {
+    $required += @("licenses\Qt-LGPL-3.0.txt", "licenses\Qt-GPL-3.0.txt")
+}
 foreach ($part in $required) {
     if (Test-Path (Join-Path $package $part)) { Ok "contains $part" } else { Problem "missing $part" }
 }

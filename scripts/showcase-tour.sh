@@ -1,4 +1,7 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Screenshot tour through the showcase world (stage 21, decision E-220): one screenshot from every
 # lookout and one close by for every area, from fixed camera positions that the world's plan gives
 # (qtcraft-headless --showcase-tour), plus the light demo at night. The same content gives the same

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Network transport (decision E-251): TCP framing, connecting and server addresses. Common layer:
 # used by the server's listener and by clients.
 qt_add_library(qc_network ${QC_LIBRARY_TYPE})

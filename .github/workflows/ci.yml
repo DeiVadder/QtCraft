@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Build and test on every push to dev/main and on every pull request.
 # macOS is the supported platform: build, all tests, failures block. Linux and Windows are built and
 # tested as well, but are not ported yet (Metal-only offscreen rendering, untested input and

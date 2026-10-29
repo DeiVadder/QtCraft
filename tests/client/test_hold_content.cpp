@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 // How items are held, from the content (decision E-831): category defaults in held.json, the
 // `hold` of items and blocks, the swing placement, their checks, the content sync and a mod that
 // moves an item.
