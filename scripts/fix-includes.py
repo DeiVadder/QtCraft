@@ -266,15 +266,17 @@ SELF_TEST_GOOD = [
 ]
 
 
-# A CMake text in tests/CMakeLists.txt naming a moved file (the real tests/world/QcVillageTestUtil.h)
-# in code and in comments, and the text the rewrite should give.
+# A CMake text in tests/CMakeLists.txt naming a moved file in code and in comments, and the text
+# the rewrite should give. The file is made up (SELF_TEST_INDEX stands for the project's index), so
+# the sample does not depend on where the real files are.
+SELF_TEST_INDEX = {"QcSampleTestUtil.h": "tests/topic/QcSampleTestUtil.h"}
 SELF_TEST_CMAKE = (
-    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/old/QcVillageTestUtil.h old/QcVillageTestUtil.h)\n"
-    "#[[ old/QcVillageTestUtil.h\n  old/QcVillageTestUtil.h ]] set(b old/QcVillageTestUtil.h) # old/QcVillageTestUtil.h\n"
-    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcVillageTestUtil.h ]=]\n",
-    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/world/QcVillageTestUtil.h world/QcVillageTestUtil.h)\n"
-    "#[[ old/QcVillageTestUtil.h\n  old/QcVillageTestUtil.h ]] set(b world/QcVillageTestUtil.h) # old/QcVillageTestUtil.h\n"
-    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcVillageTestUtil.h ]=]\n",
+    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/old/QcSampleTestUtil.h old/QcSampleTestUtil.h)\n"
+    "#[[ old/QcSampleTestUtil.h\n  old/QcSampleTestUtil.h ]] set(b old/QcSampleTestUtil.h) # old/QcSampleTestUtil.h\n"
+    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcSampleTestUtil.h ]=]\n",
+    "set(a ${CMAKE_CURRENT_SOURCE_DIR}/topic/QcSampleTestUtil.h topic/QcSampleTestUtil.h)\n"
+    "#[[ old/QcSampleTestUtil.h\n  old/QcSampleTestUtil.h ]] set(b topic/QcSampleTestUtil.h) # old/QcSampleTestUtil.h\n"
+    "#[=[ ${PROJECT_SOURCE_DIR}/old/QcSampleTestUtil.h ]=]\n",
 )
 
 
@@ -282,7 +284,7 @@ def self_test():
     """Runs the layer check on the bad samples and the good ones and the CMake rewrite on its
     sample; 0 when they find and give exactly what they should."""
     failures = []
-    rewritten = rewrite_cmake("tests/CMakeLists.txt", SELF_TEST_CMAKE[0], index_files())
+    rewritten = rewrite_cmake("tests/CMakeLists.txt", SELF_TEST_CMAKE[0], SELF_TEST_INDEX)
     if rewritten != SELF_TEST_CMAKE[1]:
         failures.append(f"CMake rewrite gave:\n{rewritten}")
     for relative, text, expected in SELF_TEST_CASES:

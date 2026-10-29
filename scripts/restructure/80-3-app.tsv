@@ -1,0 +1,35 @@
+# Move list of package 80.3 (docs/Neugliederung-Plan.md, appendix A): qc_app_core: app/rendering -> rendering, realistic; app/qml/controls -> controls, frames, settings.
+# Run: scripts/move-classes.py [--dry-run] scripts/restructure/80-3-app.tsv
+# Format: <old path><TAB><new path>; 'topic<TAB><folder><TAB><text>' heads a new tests.cmake;
+# 'accept<TAB><text>' marks the warnings containing the text as known (scripts/move-classes.py).
+# Known follow-up of 80.3 (plan, section 3): test_lazy_screen takes LazyScreen.qml from the folder
+# QTCRAFT_QML_CONTROLS_DIR names; point the definition (and Test.qml) at qml/frames by hand.
+accept	QTCRAFT_QML_CONTROLS_DIR
+src/app/qml/controls/LazyScreen.qml	src/app/qml/frames/LazyScreen.qml
+src/app/qml/controls/ModalDialog.qml	src/app/qml/frames/ModalDialog.qml
+src/app/qml/controls/NavButton.qml	src/app/qml/frames/NavButton.qml
+src/app/qml/controls/NavList.qml	src/app/qml/frames/NavList.qml
+src/app/qml/controls/ScreenFrame.qml	src/app/qml/frames/ScreenFrame.qml
+src/app/qml/controls/ScreenHeader.qml	src/app/qml/frames/ScreenHeader.qml
+src/app/qml/controls/SideBar.qml	src/app/qml/frames/SideBar.qml
+src/app/qml/controls/SidebarScreen.qml	src/app/qml/frames/SidebarScreen.qml
+src/app/qml/controls/UnsavedChangesDialog.qml	src/app/qml/frames/UnsavedChangesDialog.qml
+src/app/qml/controls/SettingCheck.qml	src/app/qml/settings/SettingCheck.qml
+src/app/qml/controls/SettingChoice.qml	src/app/qml/settings/SettingChoice.qml
+src/app/qml/controls/SettingDropdown.qml	src/app/qml/settings/SettingDropdown.qml
+src/app/qml/controls/SettingGroup.qml	src/app/qml/settings/SettingGroup.qml
+src/app/qml/controls/SettingRow.qml	src/app/qml/settings/SettingRow.qml
+src/app/qml/controls/SettingSlider.qml	src/app/qml/settings/SettingSlider.qml
+src/app/qml/controls/SettingSwitch.qml	src/app/qml/settings/SettingSwitch.qml
+src/app/rendering/QcAmbientOcclusion.cpp	src/app/realistic/QcAmbientOcclusion.cpp
+src/app/rendering/QcAmbientOcclusion.h	src/app/realistic/QcAmbientOcclusion.h
+src/app/rendering/QcBloomChain.cpp	src/app/realistic/QcBloomChain.cpp
+src/app/rendering/QcBloomChain.h	src/app/realistic/QcBloomChain.h
+src/app/rendering/QcMaterialTextures.cpp	src/app/realistic/QcMaterialTextures.cpp
+src/app/rendering/QcMaterialTextures.h	src/app/realistic/QcMaterialTextures.h
+src/app/rendering/QcPostProcess.cpp	src/app/realistic/QcPostProcess.cpp
+src/app/rendering/QcPostProcess.h	src/app/realistic/QcPostProcess.h
+src/app/rendering/QcShadowMap.cpp	src/app/realistic/QcShadowMap.cpp
+src/app/rendering/QcShadowMap.h	src/app/realistic/QcShadowMap.h
+src/app/rendering/QcWaterSurface.cpp	src/app/realistic/QcWaterSurface.cpp
+src/app/rendering/QcWaterSurface.h	src/app/realistic/QcWaterSurface.h

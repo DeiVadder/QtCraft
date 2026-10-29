@@ -1,0 +1,29 @@
+# Move list of package 80.7a (docs/Neugliederung-Plan.md, appendix B): the shared test headers of tests/ -> tests/fixtures.
+# Run: scripts/move-classes.py [--dry-run] scripts/restructure/80-7a-fixtures.tsv
+# Format: <old path><TAB><new path>; 'topic<TAB><folder><TAB><text>' heads a new tests.cmake;
+# 'accept<TAB><text>' marks the warnings containing the text as known (scripts/move-classes.py).
+tests/QcBlockEntityDump.h	tests/fixtures/QcBlockEntityDump.h
+tests/QcBotProcess.h	tests/fixtures/QcBotProcess.h
+tests/QcCircuitFixture.h	tests/fixtures/QcCircuitFixture.h
+tests/QcDumpDiff.h	tests/fixtures/QcDumpDiff.h
+tests/QcLatencyTransport.h	tests/fixtures/QcLatencyTransport.h
+tests/QcMachineFixture.h	tests/fixtures/QcMachineFixture.h
+tests/QcPlayerUseFixture.h	tests/fixtures/QcPlayerUseFixture.h
+tests/QcPredictionFixture.h	tests/fixtures/QcPredictionFixture.h
+tests/QcRailFixture.h	tests/fixtures/QcRailFixture.h
+tests/QcRawClient.h	tests/fixtures/QcRawClient.h
+tests/QcRawWorkstations.h	tests/fixtures/QcRawWorkstations.h
+tests/QcRawWorldRecord.h	tests/fixtures/QcRawWorldRecord.h
+tests/QcRecordingTransport.h	tests/fixtures/QcRecordingTransport.h
+tests/QcServerTestFixture.h	tests/fixtures/QcServerTestFixture.h
+tests/QcSessionMeshes.h	tests/fixtures/QcSessionMeshes.h
+tests/QcStoredWorld.h	tests/fixtures/QcStoredWorld.h
+tests/QcTestLogin.h	tests/fixtures/QcTestLogin.h
+tests/QcTestMachines.h	tests/fixtures/QcTestMachines.h
+tests/QcTestProtocol.h	tests/fixtures/QcTestProtocol.h
+tests/QcTestTls.h	tests/fixtures/QcTestTls.h
+tests/QcTestUtil.h	tests/fixtures/QcTestUtil.h
+tests/QcTestWorld.h	tests/fixtures/QcTestWorld.h
+tests/QcTestWorldFiles.h	tests/fixtures/QcTestWorldFiles.h
+tests/QcUnreadableFile.h	tests/fixtures/QcUnreadableFile.h
+tests/QcWorldMesh.h	tests/fixtures/QcWorldMesh.h

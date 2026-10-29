@@ -53,6 +53,11 @@ if(NOT WIN32)
     add_test(NAME script_check_large_files
         COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_large_files.sh ${PROJECT_SOURCE_DIR}/scripts/check-large-files.sh)
     set_tests_properties(script_check_large_files PROPERTIES TIMEOUT 60)
+    # The move tool of the folder restructuring (package 80.2) in a throwaway git repository: blocks,
+    # includes, QML_FILES, translations, test statements, include() lines, warnings and bad lists.
+    add_test(NAME script_move_classes
+        COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_move_classes.py ${PROJECT_SOURCE_DIR}/scripts/move-classes.py)
+    set_tests_properties(script_move_classes PROPERTIES TIMEOUT 60)
     # Samples of the image reference check of the docs (brace sets, … and <name> placeholders,
     # wildcards; decision E-933), held in memory.
     add_test(NAME script_check_doc_images COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-doc-images.py --self-test)

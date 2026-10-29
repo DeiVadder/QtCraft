@@ -1,0 +1,50 @@
+# Move list of package 80.4 (docs/Neugliederung-Plan.md, appendix A): qc_clientcore: clientcore/meshing -> meshing, entitymeshes, figures.
+# Run: scripts/move-classes.py [--dry-run] scripts/restructure/80-4-clientcore.tsv
+# Format: <old path><TAB><new path>; 'topic<TAB><folder><TAB><text>' heads a new tests.cmake;
+# 'accept<TAB><text>' marks the warnings containing the text as known (scripts/move-classes.py).
+src/clientcore/meshing/QcBoatModel.cpp	src/clientcore/entitymeshes/QcBoatModel.cpp
+src/clientcore/meshing/QcBoatModel.h	src/clientcore/entitymeshes/QcBoatModel.h
+src/clientcore/meshing/QcBoatRiders.cpp	src/clientcore/entitymeshes/QcBoatRiders.cpp
+src/clientcore/meshing/QcBoatRiders.h	src/clientcore/entitymeshes/QcBoatRiders.h
+src/clientcore/meshing/QcEnchantingMesher.cpp	src/clientcore/entitymeshes/QcEnchantingMesher.cpp
+src/clientcore/meshing/QcEnchantingMesher.h	src/clientcore/entitymeshes/QcEnchantingMesher.h
+src/clientcore/meshing/QcEntityCulling.cpp	src/clientcore/entitymeshes/QcEntityCulling.cpp
+src/clientcore/meshing/QcEntityCulling.h	src/clientcore/entitymeshes/QcEntityCulling.h
+src/clientcore/meshing/QcEntityMesh.h	src/clientcore/entitymeshes/QcEntityMesh.h
+src/clientcore/meshing/QcEntityMesher.cpp	src/clientcore/entitymeshes/QcEntityMesher.cpp
+src/clientcore/meshing/QcEntityMesher.h	src/clientcore/entitymeshes/QcEntityMesher.h
+src/clientcore/meshing/QcEntityVertex.h	src/clientcore/entitymeshes/QcEntityVertex.h
+src/clientcore/meshing/QcHangingMesher.cpp	src/clientcore/entitymeshes/QcHangingMesher.cpp
+src/clientcore/meshing/QcHangingMesher.h	src/clientcore/entitymeshes/QcHangingMesher.h
+src/clientcore/meshing/QcHeldItemMesher.cpp	src/clientcore/entitymeshes/QcHeldItemMesher.cpp
+src/clientcore/meshing/QcHeldItemMesher.h	src/clientcore/entitymeshes/QcHeldItemMesher.h
+src/clientcore/meshing/QcMeshRotation.h	src/clientcore/entitymeshes/QcMeshRotation.h
+src/clientcore/meshing/QcProjectileMesher.cpp	src/clientcore/entitymeshes/QcProjectileMesher.cpp
+src/clientcore/meshing/QcProjectileMesher.h	src/clientcore/entitymeshes/QcProjectileMesher.h
+src/clientcore/meshing/QcSignTextCache.cpp	src/clientcore/entitymeshes/QcSignTextCache.cpp
+src/clientcore/meshing/QcSignTextCache.h	src/clientcore/entitymeshes/QcSignTextCache.h
+src/clientcore/meshing/QcSignTextMesher.cpp	src/clientcore/entitymeshes/QcSignTextMesher.cpp
+src/clientcore/meshing/QcSignTextMesher.h	src/clientcore/entitymeshes/QcSignTextMesher.h
+src/clientcore/meshing/QcSpriteShape.cpp	src/clientcore/entitymeshes/QcSpriteShape.cpp
+src/clientcore/meshing/QcSpriteShape.h	src/clientcore/entitymeshes/QcSpriteShape.h
+src/clientcore/meshing/QcSpriteShapes.cpp	src/clientcore/entitymeshes/QcSpriteShapes.cpp
+src/clientcore/meshing/QcSpriteShapes.h	src/clientcore/entitymeshes/QcSpriteShapes.h
+src/clientcore/meshing/QcTetherMesher.cpp	src/clientcore/entitymeshes/QcTetherMesher.cpp
+src/clientcore/meshing/QcTetherMesher.h	src/clientcore/entitymeshes/QcTetherMesher.h
+src/clientcore/meshing/QcTethers.cpp	src/clientcore/entitymeshes/QcTethers.cpp
+src/clientcore/meshing/QcTethers.h	src/clientcore/entitymeshes/QcTethers.h
+src/clientcore/meshing/QcAnimator.cpp	src/clientcore/figures/QcAnimator.cpp
+src/clientcore/meshing/QcAnimator.h	src/clientcore/figures/QcAnimator.h
+src/clientcore/meshing/QcArmourLook.cpp	src/clientcore/figures/QcArmourLook.cpp
+src/clientcore/meshing/QcArmourLook.h	src/clientcore/figures/QcArmourLook.h
+src/clientcore/meshing/QcBoxLegs.cpp	src/clientcore/figures/QcBoxLegs.cpp
+src/clientcore/meshing/QcBoxLegs.h	src/clientcore/figures/QcBoxLegs.h
+src/clientcore/meshing/QcCapeSwing.cpp	src/clientcore/figures/QcCapeSwing.cpp
+src/clientcore/meshing/QcCapeSwing.h	src/clientcore/figures/QcCapeSwing.h
+src/clientcore/meshing/QcCapeTracker.cpp	src/clientcore/figures/QcCapeTracker.cpp
+src/clientcore/meshing/QcCapeTracker.h	src/clientcore/figures/QcCapeTracker.h
+src/clientcore/meshing/QcEntityPose.h	src/clientcore/figures/QcEntityPose.h
+src/clientcore/meshing/QcFigureLook.cpp	src/clientcore/figures/QcFigureLook.cpp
+src/clientcore/meshing/QcFigureLook.h	src/clientcore/figures/QcFigureLook.h
+src/clientcore/meshing/QcHandSwing.cpp	src/clientcore/figures/QcHandSwing.cpp
+src/clientcore/meshing/QcHandSwing.h	src/clientcore/figures/QcHandSwing.h

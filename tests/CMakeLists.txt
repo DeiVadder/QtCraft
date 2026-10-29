@@ -116,6 +116,7 @@ if(NOT WIN32)
     if(TEST script_verify_full_stamps_dash)
         set_tests_properties(script_verify_full_stamps_dash PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/verify-summary.sh")
     endif()
+    set_tests_properties(script_move_classes PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/fix-includes.py;${PROJECT_SOURCE_DIR}/scripts/check-cmake-lists.py")
     set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()
 

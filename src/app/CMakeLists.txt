@@ -330,12 +330,25 @@ qt_add_qml_module(qc_app_core
         fonts/OFL.txt
         fonts/PixelifySans.ttf
 )
-# qmltyperegistrar includes the headers of the QML types by file name only (QTBUG-93443): only its
-# generated file sees the folders of those headers, the code includes by path below src/ (E-418).
+# qmltyperegistrar includes the headers of the QML types by file name only, each behind
+# `#if __has_include(<QcName.h>)` (QTBUG-93443): a header it cannot find is skipped without a word,
+# and the build breaks only when no other included header declares the type (the admin types were
+# found that way through QcGameController.h). So its generated file sees every folder of the
+# library's headers, derived from the sources above; the code includes by path below src/ (E-418).
+# Only target_sources calls before this point count: a header added to qc_app_core further down
+# needs its folder here by hand, or its block moved above.
+get_target_property(qc_app_core_sources qc_app_core SOURCES)
+set(qc_app_core_header_dirs "")
+foreach(qc_source IN LISTS qc_app_core_sources)
+    if(qc_source MATCHES "^[a-z][^$]*[.]h$")
+        get_filename_component(qc_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/${qc_source}" DIRECTORY)
+        list(APPEND qc_app_core_header_dirs "${qc_source_dir}")
+    endif()
+endforeach()
+list(REMOVE_DUPLICATES qc_app_core_header_dirs)
 set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qc_app_core_qmltyperegistrations.cpp
     TARGET_DIRECTORY qc_app_core
-    PROPERTIES INCLUDE_DIRECTORIES
-        "${CMAKE_CURRENT_SOURCE_DIR}/controllers;${CMAKE_CURRENT_SOURCE_DIR}/debug;${CMAKE_CURRENT_SOURCE_DIR}/display;${CMAKE_CURRENT_SOURCE_DIR}/input;${CMAKE_CURRENT_SOURCE_DIR}/models;${CMAKE_CURRENT_SOURCE_DIR}/multiplayer;${CMAKE_CURRENT_SOURCE_DIR}/preview;${CMAKE_CURRENT_SOURCE_DIR}/rendering")
+    PROPERTIES INCLUDE_DIRECTORIES "${qc_app_core_header_dirs}")
 
 # The QML module QtCraft for a program that loads it. A static backing library needs the module's
 # static plugin, which registers the types at start. A shared one registers them itself when it is

@@ -1,0 +1,47 @@
+# Move list of package 80.5 (docs/Neugliederung-Plan.md, appendix A): qc_server: server/mobs -> mobs, mobbrains, animals; server/commands -> commands, backup, login, admin.
+# Run: scripts/move-classes.py [--dry-run] scripts/restructure/80-5-server.tsv
+# Format: <old path><TAB><new path>; 'topic<TAB><folder><TAB><text>' heads a new tests.cmake;
+# 'accept<TAB><text>' marks the warnings containing the text as known (scripts/move-classes.py).
+src/server/commands/QcChatLog.cpp	src/server/admin/QcChatLog.cpp
+src/server/commands/QcChatLog.h	src/server/admin/QcChatLog.h
+src/server/mobs/QcMobBreeding.cpp	src/server/animals/QcMobBreeding.cpp
+src/server/mobs/QcMobBreeding.h	src/server/animals/QcMobBreeding.h
+src/server/mobs/QcMobFamilies.cpp	src/server/animals/QcMobFamilies.cpp
+src/server/mobs/QcMobFamilies.h	src/server/animals/QcMobFamilies.h
+src/server/mobs/QcMobLaying.cpp	src/server/animals/QcMobLaying.cpp
+src/server/mobs/QcMobLaying.h	src/server/animals/QcMobLaying.h
+src/server/mobs/QcPetCare.cpp	src/server/animals/QcPetCare.cpp
+src/server/mobs/QcPetCare.h	src/server/animals/QcPetCare.h
+src/server/mobs/QcPetOwners.cpp	src/server/animals/QcPetOwners.cpp
+src/server/mobs/QcPetOwners.h	src/server/animals/QcPetOwners.h
+src/server/mobs/QcServerAnimals.cpp	src/server/animals/QcServerAnimals.cpp
+src/server/mobs/QcServerAnimals.h	src/server/animals/QcServerAnimals.h
+src/server/commands/QcBackupRunner.cpp	src/server/backup/QcBackupRunner.cpp
+src/server/commands/QcBackupRunner.h	src/server/backup/QcBackupRunner.h
+src/server/commands/QcChunkRegeneration.cpp	src/server/backup/QcChunkRegeneration.cpp
+src/server/commands/QcChunkRegeneration.h	src/server/backup/QcChunkRegeneration.h
+src/server/commands/QcWorldBackup.cpp	src/server/backup/QcWorldBackup.cpp
+src/server/commands/QcWorldBackup.h	src/server/backup/QcWorldBackup.h
+src/server/commands/QcAccessList.cpp	src/server/login/QcAccessList.cpp
+src/server/commands/QcAccessList.h	src/server/login/QcAccessList.h
+src/server/mobs/QcArcherBrain.cpp	src/server/mobbrains/QcArcherBrain.cpp
+src/server/mobs/QcArcherBrain.h	src/server/mobbrains/QcArcherBrain.h
+src/server/mobs/QcArcherState.h	src/server/mobbrains/QcArcherState.h
+src/server/mobs/QcCreatureBrains.cpp	src/server/mobbrains/QcCreatureBrains.cpp
+src/server/mobs/QcCreatureBrains.h	src/server/mobbrains/QcCreatureBrains.h
+src/server/mobs/QcFishSwimming.cpp	src/server/mobbrains/QcFishSwimming.cpp
+src/server/mobs/QcFishSwimming.h	src/server/mobbrains/QcFishSwimming.h
+src/server/mobs/QcMobBrain.h	src/server/mobbrains/QcMobBrain.h
+src/server/mobs/QcMobFear.cpp	src/server/mobbrains/QcMobFear.cpp
+src/server/mobs/QcMobFear.h	src/server/mobbrains/QcMobFear.h
+src/server/mobs/QcMobHover.cpp	src/server/mobbrains/QcMobHover.cpp
+src/server/mobs/QcMobHover.h	src/server/mobbrains/QcMobHover.h
+src/server/mobs/QcMobSteering.cpp	src/server/mobbrains/QcMobSteering.cpp
+src/server/mobs/QcMobSteering.h	src/server/mobbrains/QcMobSteering.h
+src/server/mobs/QcMobTeleport.cpp	src/server/mobbrains/QcMobTeleport.cpp
+src/server/mobs/QcMobTeleport.h	src/server/mobbrains/QcMobTeleport.h
+src/server/mobs/QcNeutralBrain.cpp	src/server/mobbrains/QcNeutralBrain.cpp
+src/server/mobs/QcNeutralBrain.h	src/server/mobbrains/QcNeutralBrain.h
+src/server/mobs/QcTameBrain.cpp	src/server/mobbrains/QcTameBrain.cpp
+src/server/mobs/QcTameBrain.h	src/server/mobbrains/QcTameBrain.h
+src/server/mobs/QcTameState.h	src/server/mobbrains/QcTameState.h

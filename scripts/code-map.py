@@ -11,7 +11,12 @@
 
 Both files are generated and not in git (merge conflicts between branches); CLAUDE.md says when
 to run this. Takes about a second.
-Usage: scripts/code-map.py [--check]   (--check: exit 1 when a file would change, write nothing)
+Usage: scripts/code-map.py [--check | --layout]
+  --check   exit 1 when a file would change, write nothing
+  --layout  print the table "Source layout" of docs/Architektur.md with the current folders and
+            their numbers of files (C++, Objective-C++, QML); the content column comes from the
+            table in the document where a row names exactly that folder, else it says the folder is
+            not described there
 """
 
 import os
@@ -194,7 +199,29 @@ def format_decision(decision):
     return f"- [{decision['id']}](Entscheidungen.md:{decision['line']}) {decision['title']}" + (f" — {names}{more}" if names else "")
 
 
+LAYOUT_ROW = re.compile(r"^\| `([^`]+)` \| [^|]* \| (.*) \|$")
+LAYOUT_SUFFIXES = (".h", ".cpp", ".mm", ".qml")
+
+
+def layout():
+    """The table "Source layout" of docs/Architektur.md for the folders of src/ and tests/ as they are."""
+    with open(os.path.join(ROOT, "docs", "Architektur.md"), encoding="utf-8") as f:
+        known = {m.group(1): m.group(2) for m in map(LAYOUT_ROW.match, f.read().split("\n")) if m}
+    out = ["| Folder | Files | Content |", "|--------|------:|---------|"]
+    for top in ("src", "tests"):
+        for directory, files in walk(os.path.join(ROOT, top), LAYOUT_SUFFIXES).items():
+            folder = rel(directory)
+            if folder.startswith("src/app/shaders"):
+                continue
+            content = known.get(folder, "(not described in docs/Architektur.md)")
+            out.append(f"| `{folder}` | {len(files)} | {content} |")
+    return "\n".join(out) + "\n"
+
+
 def main():
+    if "--layout" in sys.argv[1:]:
+        sys.stdout.write(layout())
+        return 0
     check = "--check" in sys.argv[1:]
     stale = []
     for path, text in ((CODE_MAP, code_map()), (DECISION_INDEX, decision_index())):
