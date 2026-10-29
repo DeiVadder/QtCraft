@@ -39,7 +39,7 @@ ColumnLayout {
         spacing: Ui.space.m
 
         Label {
-            text: qsTr("Mods")
+            text: qsTr("Mods & packs")
             font.pixelSize: Ui.type.title
             font.bold: true
             color: Theme.text

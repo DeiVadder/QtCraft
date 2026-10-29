@@ -82,8 +82,10 @@ SettingsPage {
             label: qsTr("Mouse sensitivity")
             from: 0.02
             to: 1.0
+            stepSize: 0.01
             value: page.game.settings.mouseSensitivity
-            valueText: value.toLocaleString(Qt.locale(), "f", 2)
+            // In percent of the fastest setting (docs/UI-Leitfaden.md 6.4).
+            valueText: qsTr("%1 %").arg(Math.round(value * 100))
             onMoved: page.game.settings.mouseSensitivity = value
         }
 

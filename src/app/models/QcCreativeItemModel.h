@@ -37,8 +37,9 @@ public:
     void setCategory(int category);
     QString query() const { return m_query; }
     void setQuery(const QString &query);
-    // The tab names in the UI language.
-    static QStringList categoryNames();
+    // The tab names: the handbook's category names where the handbook has the category (blocks,
+    // building parts, tools and armour, food), else the UI's own names.
+    QStringList categoryNames() const;
     int count() const { return static_cast<int>(m_shown.size()); }
 
 signals:
@@ -49,9 +50,16 @@ signals:
 
 private:
     void refilter();
+    const QcContentRegistry *content() const { return m_content.get(); }
+    void setContent(std::shared_ptr<const QcContentRegistry> content) { m_content = std::move(content); }
+    const QcCreativeCatalog &catalog() const { return m_catalog; }
+    void setCatalog(QcCreativeCatalog catalog) { m_catalog = std::move(catalog); }
+    const QList<const QcCreativeCatalog::Entry *> &shown() const { return m_shown; }
+    void setShown(QList<const QcCreativeCatalog::Entry *> shown) { m_shown = std::move(shown); }
 
     std::shared_ptr<const QcContentRegistry> m_content;
     QcCreativeCatalog m_catalog;
+    QString m_language;
     QcCreativeCatalog::Category m_category = QcCreativeCatalog::Category::All;
     QString m_query;
     QList<const QcCreativeCatalog::Entry *> m_shown;

@@ -4,7 +4,7 @@ import QtCraft
 
 // Saving, backups and stopping in "Manage server" (decision E-863). Stopping asks first (AdminActionDialog,
 // modal) and is offered only on a server of its own: a world played here ends
-// with "Save and quit to menu" in the pause menu.
+// with the pause menu's last button ("Save and quit to menu", "Quit to menu" for a world that is not saved).
 SettingsPage {
     id: page
 
@@ -13,6 +13,8 @@ SettingsPage {
     required property AdminActionDialog dialog
     // The server is a server of its own (else this game hosts the world).
     property bool remote: false
+    // The world played here is saved (GameController.persistent): the pause menu's last button saves it.
+    property bool persistent: true
 
     title: qsTr("Server")
 
@@ -74,7 +76,8 @@ SettingsPage {
         Hint {
             Layout.fillWidth: true
             visible: !page.remote
-            text: qsTr("This game hosts the world. To end it, use “Save and quit to menu” in the pause menu.")
+            text: qsTr("This game hosts the world. To end it, use “%1” in the pause menu.")
+                  .arg(page.persistent ? qsTr("Save and quit to menu") : qsTr("Quit to menu"))
         }
     }
 }

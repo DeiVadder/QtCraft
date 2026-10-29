@@ -21,17 +21,17 @@ QcCreativeItemModel::QcCreativeItemModel(QObject *parent)
 
 int QcCreativeItemModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : static_cast<int>(m_shown.size());
+    return parent.isValid() ? 0 : static_cast<int>(shown().size());
 }
 
 QVariant QcCreativeItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_shown.size() || !m_content) {
+    if (!index.isValid() || index.row() >= shown().size() || !content()) {
         return {};
     }
 
-    const QcCreativeCatalog::Entry &entry = *m_shown[index.row()];
-    const QcItemDefinition &item = m_content->item(entry.item);
+    const QcCreativeCatalog::Entry &entry = *shown()[index.row()];
+    const QcItemDefinition &item = content()->item(entry.item);
     switch (role) {
     case ItemNameRole:
         return item.name;
@@ -54,9 +54,10 @@ QHash<int, QByteArray> QcCreativeItemModel::roleNames() const
 void QcCreativeItemModel::setContent(std::shared_ptr<const QcContentRegistry> content, const QString &language)
 {
     beginResetModel();
-    m_content = std::move(content);
-    m_catalog = m_content ? QcCreativeCatalog(*m_content, language) : QcCreativeCatalog();
-    m_shown = m_catalog.filter(m_category, m_query);
+    setContent(std::move(content));
+    m_language = language;
+    setCatalog(this->content() ? QcCreativeCatalog(*this->content(), language) : QcCreativeCatalog());
+    setShown(catalog().filter(m_category, m_query));
     endResetModel();
     emit categoryNamesChanged();
     emit countChanged();
@@ -86,13 +87,28 @@ void QcCreativeItemModel::setQuery(const QString &query)
 void QcCreativeItemModel::refilter()
 {
     beginResetModel();
-    m_shown = m_catalog.filter(m_category, m_query);
+    setShown(catalog().filter(m_category, m_query));
     endResetModel();
     emit countChanged();
 }
 
-QStringList QcCreativeItemModel::categoryNames()
+QStringList QcCreativeItemModel::categoryNames() const
 {
+    // The handbook's name of a category (content text "handbook.category.<key>"), else `fallback`.
+    const auto handbookName = [this](const QString &key, const QString &fallback) {
+        const QString text = u"handbook.category."_s + key;
+        if (!content() || !content()->translations().has(text, QString::fromLatin1(QcTranslations::fallbackLanguage))) {
+            return fallback;
+        }
+        return content()->translations().translate(text, m_language);
+    };
+
     // In the order of QcCreativeCatalog::Category.
-    return {tr("All"), tr("Blocks"), tr("Building parts"), tr("Signal Dust"), tr("Tools and armour"), tr("Food"), tr("Other items")};
+    return {tr("All"),
+            handbookName(u"blocks"_s, tr("Blocks")),
+            handbookName(u"parts"_s, tr("Building parts")),
+            tr("Signal Dust"),
+            handbookName(u"tools"_s, tr("Tools and armour")),
+            handbookName(u"food"_s, tr("Food")),
+            tr("Other items")};
 }

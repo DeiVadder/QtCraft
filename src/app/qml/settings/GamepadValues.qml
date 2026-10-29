@@ -41,15 +41,15 @@ ColumnLayout {
         onMoved: values.options.deadZone = value
     }
 
-    // Above 1 the sticks are finer near the centre.
+    // 1 is linear, above it the sticks are finer near the centre, below it quicker.
     SettingSlider {
         label: qsTr("Response curve")
-        help: qsTr("Above 1 the sticks are finer near the centre")
+        help: qsTr("Linear at 1, higher values are finer near the centre")
         from: 0.5
         to: 3
         stepSize: 0.1
         value: values.options.curve
-        valueText: value.toLocaleString(Qt.locale(), "f", 1)
+        valueText: Math.abs(value - 1) < stepSize / 2 ? qsTr("linear") : value.toLocaleString(Qt.locale(), "f", 1)
         onMoved: values.options.curve = value
     }
 

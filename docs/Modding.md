@@ -67,7 +67,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `sounds/` | sound | Synthesis parameters; see below. |
 | `textures/` | texture | `*.json` procedural textures or `*.png` files (at most 128 × 128, scaled to the atlas tile size), named by file name. A PNG of 1 : N, a vertical strip of N square frames (16 × 64: four frames; at most 128 wide and 32 frames, so also taller than 128), animates at 2 ticks per frame (decision E-878); a longer strip is left out with a warning. |
 | `lang/` | language | `en.json`, `de.json`, …: translation key → text. The language is the file name; a suffix `.handbook` is left out, so `de.handbook.json` adds German texts as well (other dots stay part of the language). |
-| `handbook/` | handbook chapter | A chapter of the handbook's "Playing" category; see below. |
+| `handbook/` | handbook chapter | A chapter of the handbook's "Basics" category; see below. |
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `trades/` | set of offers of a profession | What villagers of a profession buy and sell (stage 37.2c); see "Trading". |
 | `commands/` | command macro | A chat and console command made of other commands; see below. |

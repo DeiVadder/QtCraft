@@ -1,4 +1,4 @@
-# Spielen
+# Grundlagen
 
 [Zurück zum Inhalt](index.md)
 
@@ -503,7 +503,7 @@ Ein Wesen lebt in Dörfern mit `"villager": "<Einstellungen>"`, das die Datei se
 
 **Das Handelsfenster**
 
-Benutze einen Dorfbewohner mit Beruf, um sein Handelsfenster zu öffnen. Links stehen seine Angebote: was du zahlst, was du bekommst und wie oft er es noch verkauft, bevor er seine Waren auffüllt. Wähle ein Angebot, dann zeigen große Felder Preis und Ergebnis; ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie dein Inventar bezahlt (höchstens 64-mal). Der Preis kommt aus deinem Inventar; was nicht hineinpasst, fällt dir vor die Füße. Solange das Fenster offen ist, steht der Dorfbewohner still und schaut dich an, und nur du kannst mit ihm handeln. Das Fenster schließt, wenn du weggehst, ein Monster näherkommt oder jemand den Dorfbewohner schlägt (er läuft nach Hause); nachts im Bett handeln Dorfbewohner nicht. Dorfbewohner ohne Beruf schauen dich nur an.
+Benutze einen Dorfbewohner mit Beruf, um sein Handelsfenster zu öffnen. Links stehen seine Angebote: was du zahlst, was du bekommst und wie oft er es noch verkauft, bevor er seine Waren auffüllt. Wähle ein Angebot, dann zeigen große Felder Preis und Ergebnis; ein Klick auf das Ergebnis handelt einmal, Umschalt-Klick so oft, wie dein Inventar bezahlt (höchstens 64-mal). Der Preis kommt aus deinem Inventar; was nicht hineinpasst, fällt dir vor die Füße. Solange das Fenster offen ist, steht der Dorfbewohner still und schaut dich an, und nur du kannst mit ihm handeln. Das Fenster schließt, wenn du weggehst, ein Monster näherkommt oder jemand den Dorfbewohner schlägt (er läuft nach Hause); nachts im Bett handeln Dorfbewohner nicht. Dorfbewohner ohne Beruf schauen dich nur an.
 
 **Stufen und Erfahrung**
 

@@ -647,8 +647,12 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
+        <source>Game rules</source>
+        <translation>Spielregeln</translation>
+    </message>
+    <message>
         <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <translation type="vanished">Einstellungen</translation>
     </message>
     <message>
         <location filename="../src/app/qml/admin/AdminScreen.qml" line="93"/>
@@ -679,90 +683,104 @@ Als Nächstes: %3</translation>
 <context>
     <name>AdminServerPage</name>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="17"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="19"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="20"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="22"/>
         <source>Saving</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="23"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="25"/>
         <source>Save the world</source>
         <translation>Welt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="24"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="26"/>
         <source>Writes every changed chunk and player now; the server also saves by itself.</source>
         <translation>Schreibt jetzt alle geänderten Chunks und Spieler; der Server speichert auch von selbst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="28"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="30"/>
         <source>Save now</source>
         <translation>Jetzt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="33"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="35"/>
         <source>Make a backup</source>
         <translation>Sicherung anlegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="34"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="36"/>
         <source>A copy of the world in the backups folder. The name is one word; empty uses the date.</source>
         <translation>Eine Kopie der Welt im Ordner der Sicherungen. Der Name ist ein Wort; leer nimmt das Datum.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="43"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="45"/>
         <source>Name (optional)</source>
         <translation>Name (optional)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="44"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="46"/>
         <source>Name of the backup</source>
         <translation>Name der Sicherung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="48"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="50"/>
         <source>Back up</source>
         <translation>Sichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="58"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="60"/>
         <source>Stopping</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="62"/>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="69"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="64"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="71"/>
         <source>Stop the server</source>
         <translation>Server stoppen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="63"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="65"/>
         <source>Saves the world and ends the server for everyone, you included.</source>
         <translation>Speichert die Welt und beendet den Server für alle, auch für dich.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="68"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="70"/>
         <source>Stop …</source>
         <translation>Stoppen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="70"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="72"/>
         <source>Everyone on the server is disconnected, you included. The server saves the world and ends; it starts again only where it runs.</source>
         <translation>Alle auf dem Server werden getrennt, auch du. Der Server speichert die Welt und endet; starten lässt er sich nur dort, wo er läuft.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="71"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="73"/>
         <source>Stop server</source>
         <translation>Server stoppen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="77"/>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="79"/>
+        <source>This game hosts the world. To end it, use “%1” in the pause menu.</source>
+        <translation>Dieses Spiel stellt die Welt bereit. Zum Beenden „%1“ im Pausenmenü wählen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="80"/>
+        <source>Save and quit to menu</source>
+        <translation>Speichern und zum Menü</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/admin/AdminServerPage.qml" line="80"/>
+        <source>Quit to menu</source>
+        <translation>Zum Menü</translation>
+    </message>
+    <message>
         <source>This game hosts the world. To end it, use “Save and quit to menu” in the pause menu.</source>
-        <translation>Dieses Spiel stellt die Welt bereit. Zum Beenden „Speichern und zum Menü“ im Pausenmenü wählen.</translation>
+        <translation type="vanished">Dieses Spiel stellt die Welt bereit. Zum Beenden „Speichern und zum Menü“ im Pausenmenü wählen.</translation>
     </message>
 </context>
 <context>
@@ -773,37 +791,36 @@ Als Nächstes: %3</translation>
         <translation>%1 (geändert)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="22"/>
         <source>Key: %1</source>
-        <translation>Schlüssel: %1</translation>
+        <translation type="vanished">Schlüssel: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="24"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="26"/>
         <source>%1 Default: %2.</source>
         <translation>%1 Standard: %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="24"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="26"/>
         <source>on</source>
         <translation>an</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="24"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="26"/>
         <source>off</source>
         <translation>aus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="25"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="27"/>
         <source>%1 From %2 to %3, default %4.</source>
         <translation>%1 Von %2 bis %3, Standard %4.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="71"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="73"/>
         <source>Default</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="73"/>
+        <location filename="../src/app/qml/admin/AdminSettingRow.qml" line="75"/>
         <source>Set %1 to its default</source>
         <translation>%1 auf den Standard setzen</translation>
     </message>
@@ -811,9 +828,8 @@ Als Nächstes: %3</translation>
 <context>
     <name>AdminSettingsPage</name>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="40"/>
         <source>Game rules and limits</source>
-        <translation>Spielregeln und Grenzen</translation>
+        <translation type="vanished">Spielregeln und Grenzen</translation>
     </message>
     <message>
         <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="44"/>
@@ -821,9 +837,22 @@ Als Nächstes: %3</translation>
         <translation>Gespeicherte Grenzen kommen in die server.json des Servers und gelten sofort.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="45"/>
         <source>Rules and limits apply at once and are kept with the world when it saves.</source>
-        <translation>Regeln und Grenzen gelten sofort und bleiben mit dem nächsten Speichern bei der Welt.</translation>
+        <translation type="vanished">Regeln und Grenzen gelten sofort und bleiben mit dem nächsten Speichern bei der Welt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="40"/>
+        <source>Game rules</source>
+        <translation>Spielregeln</translation>
+    </message>
+    <message>
+        <source>Saved changes apply to all players at once and stay with the world.</source>
+        <translation type="vanished">Gespeicherte Änderungen gelten sofort für alle Spieler und bleiben bei der Welt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="45"/>
+        <source>Saved changes apply to all players at once; the world keeps them when it saves.</source>
+        <translation>Gespeicherte Änderungen gelten sofort für alle Spieler; die Welt behält sie, sobald sie gespeichert wird.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/admin/AdminSettingsPage.qml" line="76"/>
@@ -905,8 +934,12 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/AdvancedPage.qml" line="66"/>
+        <source>%1 opens these options in the world.</source>
+        <translation>%1 öffnet diese Optionen in der Welt.</translation>
+    </message>
+    <message>
         <source>%1 opens these options in the world. Measured values also go to the log with --stats &lt;ms&gt;.</source>
-        <translation>%1 öffnet diese Optionen in der Welt. Mit --stats &lt;ms&gt; gehen die Messwerte auch ins Log.</translation>
+        <translation type="vanished">%1 öffnet diese Optionen in der Welt. Mit --stats &lt;ms&gt; gehen die Messwerte auch ins Log.</translation>
     </message>
 </context>
 <context>
@@ -1085,12 +1118,12 @@ Als Nächstes: %3</translation>
     <message>
         <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="163"/>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
-        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). %1: aufnehmen und ablegen. %2: einen ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
+        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). %1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel hinüberschieben. %4 schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="165"/>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, a Signal Dust chunk to swap a stack of decoupled Signal blocks with the ordinary ones, or type a new name. Forge puts the result into the left slot (with chunks left, forging again swaps it back). Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
-        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). Linksklick: aufnehmen und ablegen. Rechtsklick: einen ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
+        <translation>Lege einen Gegenstand in den linken Platz und sein Material oder einen zweiten Gegenstand derselben Art in den rechten, um ihn zu reparieren und Verzauberungen zu vereinen, ein Signalstaubstück, um einen Stapel entkoppelter Signalblöcke mit den gewöhnlichen zu tauschen, oder gib einen neuen Namen ein. „Schmieden“ legt das Ergebnis in den linken Platz (sind noch Stücke übrig, tauscht erneutes Schmieden zurück). Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>Put an item into the left slot and its material or a second item of the same kind into the right one to repair it and merge enchantments, or type a new name. Forge puts the result into the left slot. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.</source>
@@ -1428,7 +1461,7 @@ Als Nächstes: %3</translation>
     <message>
         <location filename="../src/app/qml/inventory/ChestScreen.qml" line="65"/>
         <source>%1: pick up and put down. %2: put down one. %3: move the stack between the backpack and the hotbar. %4 closes.</source>
-        <translation>%1: aufnehmen und ablegen. %2: eines ablegen. %3: den Stapel zwischen Rucksack und Schnellleiste verschieben. %4 schließt.</translation>
+        <translation>%1: aufnehmen und ablegen. %2: eins ablegen. %3: den Stapel zwischen Rucksack und Schnellleiste verschieben. %4 schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/ChestScreen.qml" line="68"/>
@@ -1438,7 +1471,7 @@ Als Nächstes: %3</translation>
     <message>
         <location filename="../src/app/qml/inventory/ChestScreen.qml" line="67"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between the backpack and the hotbar. %1 or Esc closes.</source>
-        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. Umschalt-Klick: den Stapel zwischen Rucksack und Schnellleiste verschieben. %1 oder Esc schließt.</translation>
+        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel zwischen Rucksack und Schnellleiste verschieben. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>A: pick up and put down. X: put down one. Y: move the stack between this block and the inventory. B closes. Breaking the block drops its contents.</source>
@@ -1504,12 +1537,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>ControlsPage</name>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="103"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="105"/>
         <source>Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.</source>
         <translation>Klicke auf eine Taste und drücke die neue. Esc bricht ab, die Rücktaste entfernt die Taste. Eine Taste, die eine andere Aktion nutzt, wird getauscht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="98"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="100"/>
         <source>Keys</source>
         <translation>Tasten</translation>
     </message>
@@ -1529,42 +1562,47 @@ Als Nächstes: %3</translation>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="91"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="88"/>
+        <source>%1 %</source>
+        <translation>%1 %</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="93"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="178"/>
         <source>Press a key …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="178"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="180"/>
         <source>%1, %2: %3</source>
         <translation>%1, %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="179"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="181"/>
         <source>primary key</source>
         <translation>erste Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="179"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="181"/>
         <source>secondary key</source>
         <translation>zweite Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="180"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="182"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="189"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="191"/>
         <source>On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).</source>
         <translation>Auf einem Mac erreichen F1–F12 das Spiel nur mit gedrückter fn-Taste oder wenn in den Systemeinstellungen (Tastatur) „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ eingeschaltet ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="198"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="200"/>
         <source>Reset to defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
@@ -2034,11 +2072,11 @@ Als Nächstes: %3</translation>
     <message>
         <location filename="../src/app/qml/inventory/FurnaceScreen.qml" line="147"/>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.</source>
-        <translation>Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. Umschalt-Klick: den Stapel hinüberlegen. %1 oder Esc schließt.</translation>
+        <translation>Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberschieben. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. %1 or Esc closes.</source>
-        <translation type="vanished">Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eines ablegen. %1 oder Esc schließt.</translation>
+        <translation type="vanished">Oben kommt hinein, was geschmolzen werden soll, unten der Brennstoff. Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>
@@ -2243,8 +2281,17 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GamepadValues.qml" line="47"/>
+        <source>Linear at 1, higher values are finer near the centre</source>
+        <translation>Linear bei 1, höhere Werte reagieren in der Mitte feiner</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GamepadValues.qml" line="52"/>
+        <source>linear</source>
+        <translation>linear</translation>
+    </message>
+    <message>
         <source>Above 1 the sticks are finer near the centre</source>
-        <translation>Über 1 reagieren die Sticks in der Mitte feiner</translation>
+        <translation type="vanished">Über 1 reagieren die Sticks in der Mitte feiner</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GamepadValues.qml" line="57"/>
@@ -2358,9 +2405,13 @@ Als Nächstes: %3</translation>
         <translation>In Menüs und im Hintergrund</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="104"/>
         <source>Behind the pause menu, in character previews and while another window has the focus</source>
-        <translation>Hinter dem Pausenmenü, in Charaktervorschauen und solange ein anderes Fenster den Fokus hat</translation>
+        <translation type="vanished">Hinter dem Pausenmenü, in Charaktervorschauen und solange ein anderes Fenster den Fokus hat</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/GraphicsPage.qml" line="104"/>
+        <source>Behind the pause menu and while another window has the focus</source>
+        <translation>Hinter dem Pausenmenü und solange ein anderes Fenster den Fokus hat</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="115"/>
@@ -2465,8 +2516,12 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/settings/GraphicsPage.qml" line="204"/>
+        <source>Higher shows more glow, finer shadows and more moving lights</source>
+        <translation>Höher zeigt mehr Leuchten, feinere Schatten und mehr bewegte Lichter</translation>
+    </message>
+    <message>
         <source>Low without glow and soft shade and with short shadows, High with the widest glow, the finest shadows and the most moving lights</source>
-        <translation>Niedrig ohne Leuchten und sanften Schatten und mit kurzen Schatten, Hoch mit dem weitesten Leuchten, den feinsten Schatten und den meisten bewegten Lichtern</translation>
+        <translation type="vanished">Niedrig ohne Leuchten und sanften Schatten und mit kurzen Schatten, Hoch mit dem weitesten Leuchten, den feinsten Schatten und den meisten bewegten Lichtern</translation>
     </message>
     <message>
         <source>Realistic adds valley fog, glow, soft shade and light from held torches; it costs more GPU time</source>
@@ -2928,7 +2983,7 @@ Als Nächstes: %3</translation>
     <message>
         <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="153"/>
         <source>Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across (on the result: craft as many as possible). %1 or Esc closes.</source>
-        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberlegen (auf dem Ergebnis: so oft wie möglich herstellen). %1 oder Esc schließt.</translation>
+        <translation>Linksklick: aufnehmen und ablegen. Rechtsklick: eins ablegen. Umschalt-Klick: den Stapel hinüberschieben (auf dem Ergebnis: so viele wie möglich herstellen). %1 oder Esc schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/InventoryScreen.qml" line="164"/>
@@ -3480,7 +3535,6 @@ Als Nächstes: %3</translation>
 <context>
     <name>ModsPage</name>
     <message>
-        <location filename="../src/app/qml/menus/ModsPage.qml" line="42"/>
         <location filename="../src/app/qml/menus/ModsPage.qml" line="90"/>
         <source>Mods</source>
         <translation>Mods</translation>
@@ -3489,6 +3543,11 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/qml/menus/ModsPage.qml" line="55"/>
         <source>Changes take effect when a world is started. Mods are loaded from this folder:</source>
         <translation>Änderungen wirken beim nächsten Weltstart. Mods werden aus diesem Ordner geladen:</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/ModsPage.qml" line="42"/>
+        <source>Mods &amp; packs</source>
+        <translation>Mods &amp; Pakete</translation>
     </message>
     <message>
         <location filename="../src/app/qml/menus/ModsPage.qml" line="56"/>
@@ -3657,13 +3716,13 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="188"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="195"/>
         <source>Only needed if the server has one.</source>
         <translation>Nur nötig, wenn der Server eines hat.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="195"/>
         <source>Only needed if the server has one. Passwords are never saved; the game connects directly to the address, encrypted.</source>
-        <translation>Nur nötig, wenn der Server eins hat. Passwörter werden nie gespeichert; das Spiel verbindet sich direkt und verschlüsselt mit der Adresse.</translation>
+        <translation type="vanished">Nur nötig, wenn der Server eins hat. Passwörter werden nie gespeichert; das Spiel verbindet sich direkt und verschlüsselt mit der Adresse.</translation>
     </message>
     <message>
         <source>Only needed if the server has one. Passwords are never saved; the game connects directly to the address, without encryption.</source>
@@ -4878,37 +4937,37 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcCreativeItemModel</name>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="107"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="108"/>
         <source>Blocks</source>
         <translation>Blöcke</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="109"/>
         <source>Building parts</source>
         <translation>Bauteile</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="111"/>
         <source>Tools and armour</source>
-        <translation>Werkzeug und Rüstung</translation>
+        <translation>Werkzeuge und Rüstung</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="112"/>
         <source>Food</source>
         <translation>Nahrung</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="113"/>
         <source>Other items</source>
         <translation>Sonstiges</translation>
     </message>
     <message>
-        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="97"/>
+        <location filename="../src/app/models/QcCreativeItemModel.cpp" line="110"/>
         <source>Signal Dust</source>
         <translation>Signalstaub</translation>
     </message>
@@ -8591,7 +8650,7 @@ Jetzt: %2</translation>
         <translation>%1 hat den Fortschritt [%2] erzielt</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="145"/>
+        <location filename="../src/server/advancements/QcServerAdvancements.cpp" line="155"/>
         <source>%1 has made %n more advancements</source>
         <translation>
             <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>
@@ -9230,12 +9289,12 @@ Jetzt: %2</translation>
     <message>
         <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="148"/>
         <source>Put stone into the left slot and choose a result. %1: pick up and put down, also the output. %2: put down one. %3: move the stack across or take all outputs. %4 closes.</source>
-        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. %1: aufnehmen und ablegen, auch die Ausgabe. %2: eines ablegen. %3: Stapel hinüberschieben oder alle Ausgaben nehmen. %4 schließt.</translation>
+        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. %1: aufnehmen und ablegen, auch die Ausgabe. %2: eins ablegen. %3: Stapel hinüberschieben oder alle Ausgaben nehmen. %4 schließt.</translation>
     </message>
     <message>
         <location filename="../src/app/qml/inventory/StonecutterScreen.qml" line="150"/>
         <source>Put stone into the left slot and choose a result. Left click: pick up and put down, also the output. Right click: put down one. Shift-click: move the stack across or take all outputs. %1 or Esc closes.</source>
-        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. Linksklick: aufnehmen und ablegen, auch die Ausgabe. Rechtsklick: eines ablegen. Umschalt-Klick: Stapel hinüberschieben oder alle Ausgaben nehmen. %1 oder Esc schließt.</translation>
+        <translation>Lege Stein in den linken Platz und wähle ein Ergebnis. Linksklick: aufnehmen und ablegen, auch die Ausgabe. Rechtsklick: eins ablegen. Umschalt-Klick: Stapel hinüberschieben oder alle Ausgaben nehmen. %1 oder Esc schließt.</translation>
     </message>
     <message>
         <source>Choose a stone on the left. %1 on a result cuts one block, %2 cuts all of them. %3 closes.</source>
@@ -9448,7 +9507,7 @@ Jetzt: %2</translation>
     <message>
         <location filename="../src/app/qml/inventory/TradeScreen.qml" line="239"/>
         <source>Choose an offer on the left. Click the result to trade once, shift-click to trade as often as you can pay. The villager restocks at its workstation. %1 or Esc closes.</source>
-        <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Shift-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
+        <translation>Wähle links ein Angebot. Ein Klick auf das Ergebnis handelt einmal, Umschalt-Klick so oft, wie du bezahlen kannst. Der Dorfbewohner füllt seine Waren an seinem Arbeitsplatz auf. %1 oder Esc schließt.</translation>
     </message>
 </context>
 <context>

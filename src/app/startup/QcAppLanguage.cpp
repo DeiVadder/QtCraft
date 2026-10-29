@@ -26,6 +26,10 @@ QString QcAppLanguage::uiLanguage(const QcAppOptions &options)
 QString QcAppLanguage::install(QTranslator &translator, const QString &name)
 {
     const QLocale locale = name.isEmpty() ? QLocale::system() : QLocale(name);
+    // Numbers, dates and times in the UI follow the chosen language (Qt.locale(), QLocale()), not the
+    // system's: a German UI on an English system shows "1,00×". Files, settings and commands stay
+    // locale-independent (QString::number/toDouble, JSON and QSettings use the C locale).
+    QLocale::setDefault(locale);
     QCoreApplication::removeTranslator(&translator);
     if (translator.load(locale, u"qtcraft"_s, u"_"_s, u":/i18n"_s)) {
         QCoreApplication::installTranslator(&translator);

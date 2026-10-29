@@ -1,4 +1,4 @@
-# Playing
+# Basics
 
 [Back to the contents](index.md)
 

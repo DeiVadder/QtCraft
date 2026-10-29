@@ -18,6 +18,8 @@ qc_add_test(test_map_hud SOURCES client/test_map_hud.cpp LIBRARIES qc_app_core)
 # When the HUD names the selected item over the hotbar (decision E-885).
 qc_add_test(test_held_item_name SOURCES client/test_held_item_name.cpp LIBRARIES qc_app_core)
 qc_add_test(test_backpack_screen SOURCES client/test_backpack_screen.cpp LIBRARIES qc_base_content qc_app_core)
+# The creative tabs take the handbook's category names (76.2-b).
+qc_add_test(test_creative_tabs SOURCES client/test_creative_tabs.cpp LIBRARIES qc_base_content qc_app_core)
 qc_add_test(test_texture_packs SOURCES client/test_texture_packs.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_texture_atlas SOURCES client/test_texture_atlas.cpp LIBRARIES qc_base_content qc_clientcore Qt::Concurrent)
 # The material maps of the realistic mode (decision E-908): generator, mip levels, rules, packs.

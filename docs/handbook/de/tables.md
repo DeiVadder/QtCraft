@@ -46,7 +46,7 @@ Ein Block, der ein Werkzeug braucht, lässt seine Beute nur fallen, wenn er mit 
 
 ### <a id="table-armour"></a>Rüstung
 
-Rüstung trägt man in vier Feldern neben der Figur im Inventar: hineinziehen, mit Shift anklicken oder mit ihr in der Hand rechtsklicken. Jeder Rüstungspunkt nimmt 4 % von Schlägen der Wesen und vom Brennen in Lava und Magma, bis 20 Punkte (80 %); Stürze und Hunger gehen durch. Jeder solche Treffer nutzt jedes getragene Teil um ein Viertel des Schadens ab (mindestens 1); ein Teil bricht, wenn seine Haltbarkeit verbraucht ist. Zwei abgenutzte Teile derselben Art im Handwerksraster ergeben eines mit beiden Haltbarkeiten und 5 % dazu.
+Rüstung trägt man in vier Feldern neben der Figur im Inventar: hineinziehen, per Umschalt-Klick oder mit ihr in der Hand rechtsklicken. Jeder Rüstungspunkt nimmt 4 % von Schlägen der Wesen und vom Brennen in Lava und Magma, bis 20 Punkte (80 %); Stürze und Hunger gehen durch. Jeder solche Treffer nutzt jedes getragene Teil um ein Viertel des Schadens ab (mindestens 1); ein Teil bricht, wenn seine Haltbarkeit verbraucht ist. Zwei abgenutzte Teile derselben Art im Handwerksraster ergeben eines mit beiden Haltbarkeiten und 5 % dazu.
 
 **Diamantrüstung**
 

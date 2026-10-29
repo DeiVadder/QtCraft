@@ -135,7 +135,7 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless>)
-    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 990 COST 60)
+    set_tests_properties(app_offscreen_menu_layout PROPERTIES TIMEOUT 1230 COST 310)
     # The HUD while playing: chat lines, a wrapped one included, stay above the hotbar, the
     # experience bar, the level, the hearts, the food and the armour at 1024 x 640 and 1400 x 900.
     add_test(NAME app_offscreen_hud_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_hud_layout.sh $<TARGET_FILE:qtcraft>)

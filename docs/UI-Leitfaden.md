@@ -156,7 +156,7 @@ QML-Komponenten in `src/app/qml/controls/`. Jede setzt `Accessible.name`/`role`,
 - Primary: `accent`, fett; höchstens **eine** pro Bildschirm (die wahrscheinlichste nächste Aktion: „Weiterspielen“, „Beitreten“, „Speichern“, „Zurück zum Spiel“).
 - Secondary: `button`. Destructive: `danger`, nur wenn danach eine Rückfrage kommt oder es unumkehrbar ist. Quiet: nur Text (z. B. „‹ Zurück“, „Mehr …“).
 - Fase: 1 px `bevelLight` oben/links, 2 px `bevelDark` unten/rechts; gedrückt umgekehrt (blockiger Look). Fokus: 2 px `focusRing` außen.
-- Text immer ein Verb oder Ziel („Welt erstellen“, „Ordner öffnen“, „Zum Menü“); Tastenkürzel als kleines Schild rechts im Knopf (`KeyBadge`), nicht in Klammern im Text.
+- Text immer ein Verb oder Ziel („Welt erstellen“, „Ordner öffnen“, „Speichern und zum Menü“); Tastenkürzel als kleines Schild rechts im Knopf (`KeyBadge`), nicht in Klammern im Text.
 
 ### 6.2 `SettingGroup`
 Überschrift (Stufe „Gruppe“, `heading`), darunter die Zeilen auf `panelRaised` mit Innenabstand `l`. Einklappen (`collapsible`, „▸ Erweitert“) ist vorgesehen, aber noch nicht gebaut: keine Seite braucht es bisher.
@@ -165,7 +165,7 @@ QML-Komponenten in `src/app/qml/controls/`. Jede setzt `Accessible.name`/`role`,
 Zeile mit `label`, optional `help` (eine Zeile, `textMuted`, unter dem Label, darf umbrechen), optional `badge` (z. B. „nach einem Neustart“), optional `key` (Taste als `KeyBadge` neben dem Label), rechts das Steuerelement. Zeilenhöhe ≥ 40. Fokusziel ist das Steuerelement der Zeile; Links/Rechts verstellen einen Regler (Gamepad und Pfeiltasten), A/Enter öffnet Listen und schaltet Schalter. `enabled: false` dimmt die Zeile und nennt im Hilfetext den Grund („Nur mit VSync aus“); Knöpfe und Schalter einer gedimmten Zeile dimmen sich nicht noch einmal. `dimmed` dimmt die Zeile, ohne sie zu sperren (die Lautstärken, solange stumm geschaltet ist).
 
 ### 6.4 `SettingSlider`
-Regler mit Wert rechts in fester Breite, Einheit im Wert („12 Chunks“, „70°“, „80 %“). Feste Stufen mit `snapMode`. Gefüllter Teil `accent`, Spur `track`, Griff eckig (Block). Für Zahlen ohne Bedeutung (Empfindlichkeit 0,15) besser Prozent oder benannte Endpunkte („langsam … schnell“).
+Regler mit Wert rechts in fester Breite, Einheit im Wert („12 Chunks“, „70°“, „80 %“). Feste Stufen mit `snapMode`. Gefüllter Teil `accent`, Spur `track`, Griff eckig (Block). Für Zahlen ohne Bedeutung Prozent (Mausempfindlichkeit: Anteil am höchsten Wert) oder ein benannter Wert („linear“ bei der Kennlinie des Pads).
 
 ### 6.5 `SettingSwitch`
 Ein-/Aus-Einstellungen sind **Schalter** (`Switch`), nicht Kästchen; die Beschriftung steht links wie bei allen Zeilen. Kästchen (`SettingCheck`) nur in Mehrfachauswahlen innerhalb einer Gruppe (z. B. Debug-Visualisierungen) und in Formularen („Inventar beim Tod behalten“). Leertaste und Enter schalten Schalter und Kästchen. (Entscheidung 6)
@@ -216,7 +216,7 @@ Kategorien (Seitenleiste), in dieser Reihenfolge; in jeder Kategorie die Gruppen
 6. **Texturpakete.**
 7. **Erweitert:** Debug-Anzeige und Visualisierungen, Protokoll und Absturzberichte.
 
-Jede heutige Einstellung hat damit genau einen Platz; neue Einstellungen (41, 45, 55, 67) werden einer Kategorie und Gruppe zugeordnet, bevor sie gebaut werden. Welt- und Serveroptionen (55) gehören **nicht** in die Einstellungen, sondern zur Welt („Neue Welt“ → „Weitere Optionen“, Pause → „Welt-Optionen“).
+Jede heutige Einstellung hat damit genau einen Platz; neue Einstellungen (41, 45, 55, 67) werden einer Kategorie und Gruppe zugeordnet, bevor sie gebaut werden. Welt- und Serveroptionen (55) gehören **nicht** in die Einstellungen, sondern zur Welt („Neue Welt“ → „Weitere Optionen“, im Spiel Pause → „Server verwalten“ → „Spielregeln“, 8c).
 
 Ein „Schnell“-Bereich ist nicht nötig, wenn die erste Kategorie Grafik → Anzeige ist und die Seitenleiste alles in einem Schritt erreicht.
 
@@ -244,7 +244,7 @@ Mensch 2026-10-22, wie die Systemeinstellungen von macOS: **eine** Seitenleiste,
 
 ## 8c Server verwalten (E-863)
 
-Umgesetzt in `src/app/qml/admin/` (`AdminScreen` und je Abschnitt eine Seite). Pausenmenü → „Server verwalten“ (nur für Operatoren) führt eine Ebene tiefer wie die Einstellungen (8b), Rückweg „‹ Pausenmenü“. Abschnitte: Übersicht (Diagramme 6.12), Spieler, Chat, Befehle, Listen, Einstellungen, Log, Server. Muster: Listen und Spieleraktionen gelten sofort (Muster 1), Spielregeln und Grenzen sind ein Entwurf mit „Speichern“/„Verwerfen“ (Muster 2), Rauswerfen, Sperren und Stoppen fragen modal (`AdminActionDialog`, Fokus auf „Abbrechen“, die Aktion destruktiv und nach sich selbst benannt). Antworten und Ablehnungen des Servers stehen als `Hint` über dem Abschnitt. Einstellungen zeigen den übersetzten Namen (`QcAdminSettingNames`) als Bezeichnung und den Schlüssel in der Hilfezeile; der Entwurf liegt im Controller und überdauert das Schließen (Leiste „ungespeichert“). Die eigenen Operator-Rechte zu entziehen fragt modal. Listen von Zeilen (Chat, Log, Ausgabe) liegen eingelassen auf `field` und scrollen für sich, die Eingabezeile steht darunter; Warnungen und Fehler mit Farbe und Zeichen („!“, „×“). Layout-Test: `tests/ui/test_admin_layout.sh`.
+Umgesetzt in `src/app/qml/admin/` (`AdminScreen` und je Abschnitt eine Seite). Pausenmenü → „Server verwalten“ (nur für Operatoren) führt eine Ebene tiefer wie die Einstellungen (8b), Rückweg „‹ Pausenmenü“. Abschnitte: Übersicht (Diagramme 6.12), Spieler, Chat, Befehle, Listen, Spielregeln, Log, Server. Muster: Listen und Spieleraktionen gelten sofort (Muster 1), Spielregeln und Grenzen sind ein Entwurf mit „Speichern“/„Verwerfen“ (Muster 2), Rauswerfen, Sperren und Stoppen fragen modal (`AdminActionDialog`, Fokus auf „Abbrechen“, die Aktion destruktiv und nach sich selbst benannt). Antworten und Ablehnungen des Servers stehen als `Hint` über dem Abschnitt. Die Spielregeln zeigen den übersetzten Namen (`QcAdminSettingNames`) als Bezeichnung, den Schlüssel als Schild (`badge`) darunter und Beschreibung, Bereich und Standard als Hilfe; der Entwurf liegt im Controller und überdauert das Schließen (Leiste „ungespeichert“). Die eigenen Operator-Rechte zu entziehen fragt modal. Listen von Zeilen (Chat, Log, Ausgabe) liegen eingelassen auf `field` und scrollen für sich, die Eingabezeile steht darunter; Warnungen und Fehler mit Farbe und Zeichen („!“, „×“). Layout-Test: `tests/ui/test_admin_layout.sh`.
 
 ## 9 Mindestgröße, Skalierung, Scrollen
 

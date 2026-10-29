@@ -192,7 +192,7 @@ ColumnLayout {
                 }
 
                 HelpLine {
-                    text: qsTr("Only needed if the server has one. Passwords are never saved; the game connects directly to the address, encrypted.")
+                    text: qsTr("Only needed if the server has one.")
                 }
 
                 GameButton {

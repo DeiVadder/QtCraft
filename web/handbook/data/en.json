@@ -37,7 +37,7 @@
                 "chapter:qtcraft:texture_packs"
             ],
             "id": "playing",
-            "title": "Playing"
+            "title": "Basics"
         },
         {
             "entries": [
@@ -93890,7 +93890,7 @@
         },
         "chapter:qtcraft:advancements": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Adventure guide",
             "facts": [
             ],
@@ -93956,7 +93956,7 @@
         },
         "chapter:qtcraft:adventure": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Adventure mode",
             "facts": [
             ],
@@ -93988,7 +93988,7 @@
         },
         "chapter:qtcraft:archery": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Archery",
             "facts": [
             ],
@@ -94080,7 +94080,7 @@
         },
         "chapter:qtcraft:backpack": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Backpack",
             "facts": [
             ],
@@ -94146,7 +94146,7 @@
         },
         "chapter:qtcraft:basics": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Getting started",
             "facts": [
             ],
@@ -94218,7 +94218,7 @@
         },
         "chapter:qtcraft:boats": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Boats",
             "facts": [
             ],
@@ -94296,7 +94296,7 @@
         },
         "chapter:qtcraft:building": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Building",
             "facts": [
             ],
@@ -94436,7 +94436,7 @@
         },
         "chapter:qtcraft:commands": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Commands",
             "facts": [
             ],
@@ -94508,7 +94508,7 @@
         },
         "chapter:qtcraft:controls": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Controls",
             "facts": [
             ],
@@ -94588,7 +94588,7 @@
         },
         "chapter:qtcraft:crafting": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Crafting",
             "facts": [
             ],
@@ -94660,7 +94660,7 @@
         },
         "chapter:qtcraft:creative": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Creative mode",
             "facts": [
             ],
@@ -94730,7 +94730,7 @@
         },
         "chapter:qtcraft:creatures": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Creatures",
             "facts": [
             ],
@@ -95016,7 +95016,7 @@
         },
         "chapter:qtcraft:death": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Death and respawn",
             "facts": [
             ],
@@ -95056,7 +95056,7 @@
         },
         "chapter:qtcraft:experience": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Experience",
             "facts": [
             ],
@@ -95124,7 +95124,7 @@
         },
         "chapter:qtcraft:explosives": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Explosives",
             "facts": [
             ],
@@ -95224,7 +95224,7 @@
         },
         "chapter:qtcraft:farming": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Farming",
             "facts": [
             ],
@@ -95376,7 +95376,7 @@
         },
         "chapter:qtcraft:fire": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Fire",
             "facts": [
             ],
@@ -95506,7 +95506,7 @@
         },
         "chapter:qtcraft:health": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Health and damage",
             "facts": [
             ],
@@ -95578,7 +95578,7 @@
         },
         "chapter:qtcraft:hunger": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Food and hunger",
             "facts": [
             ],
@@ -95650,7 +95650,7 @@
         },
         "chapter:qtcraft:maps": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Maps",
             "facts": [
             ],
@@ -95706,7 +95706,7 @@
         },
         "chapter:qtcraft:mining": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Mining",
             "facts": [
             ],
@@ -95808,7 +95808,7 @@
         },
         "chapter:qtcraft:multiplayer": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Multiplayer",
             "facts": [
             ],
@@ -95864,7 +95864,7 @@
         },
         "chapter:qtcraft:rails": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Rails and Minecarts",
             "facts": [
             ],
@@ -95998,7 +95998,7 @@
         },
         "chapter:qtcraft:rules": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Game rules",
             "facts": [
             ],
@@ -96022,7 +96022,7 @@
         },
         "chapter:qtcraft:signal": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Signal Dust",
             "facts": [
             ],
@@ -96314,7 +96314,7 @@
         },
         "chapter:qtcraft:smelting": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Furnace and fuel",
             "facts": [
             ],
@@ -96430,7 +96430,7 @@
         },
         "chapter:qtcraft:spectator": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Spectator mode",
             "facts": [
             ],
@@ -96470,7 +96470,7 @@
         },
         "chapter:qtcraft:texture_packs": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Texture packs",
             "facts": [
             ],
@@ -96518,7 +96518,7 @@
         },
         "chapter:qtcraft:trading": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Trading",
             "facts": [
             ],
@@ -96648,7 +96648,7 @@
         },
         "chapter:qtcraft:villagers": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Villagers",
             "facts": [
             ],
@@ -96814,7 +96814,7 @@
         },
         "chapter:qtcraft:villages": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Villages",
             "facts": [
             ],
@@ -96956,7 +96956,7 @@
         },
         "chapter:qtcraft:weather": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "Weather",
             "facts": [
             ],
@@ -97050,7 +97050,7 @@
         },
         "chapter:qtcraft:world": {
             "category": "playing",
-            "categoryTitle": "Playing",
+            "categoryTitle": "Basics",
             "englishTitle": "The world",
             "facts": [
             ],

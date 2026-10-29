@@ -37,12 +37,12 @@ ColumnLayout {
     SettingsPage {
         Layout.fillWidth: true
         Layout.fillHeight: true
-        title: qsTr("Game rules and limits")
+        title: qsTr("Game rules")
 
         Hint {
             Layout.fillWidth: true
             text: page.admin.limitsFromServer ? qsTr("Saved limits go to the server's server.json and apply at once.")
-                                              : qsTr("Rules and limits apply at once and are kept with the world when it saves.")
+                                              : qsTr("Saved changes apply to all players at once; the world keeps them when it saves.")
         }
 
         Repeater {

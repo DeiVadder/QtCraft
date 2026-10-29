@@ -3,8 +3,8 @@ import QtQuick.Layouts
 import QtCraft
 
 // One game rule or server limit on the settings page of "Manage server" (decision E-863): its
-// translated name, then the key (the name /gamerule and /limits take), the translated description,
-// range and default in the player's language; a switch for on/off rules, a number field otherwise
+// translated name, the key (the name /gamerule and /limits take) as a plate under it, the translated
+// description, range and default in the player's language; a switch for on/off rules, a number field otherwise
 // (any 64-bit value, checked by the controller), and "Default" to set it back. The value is the
 // controller's draft (AdminSettingsPage).
 SettingRow {
@@ -19,11 +19,13 @@ SettingRow {
     property bool invalid: false
 
     label: changed ? qsTr("%1 (changed)").arg(modelData.name) : modelData.name
-    help: (modelData.named ? qsTr("Key: %1").arg(modelData.key) + "\n" : "")
-          + (modelData.boolean
-             ? qsTr("%1 Default: %2.").arg(modelData.description).arg(modelData.defaultValue !== 0 ? qsTr("on") : qsTr("off"))
-             : qsTr("%1 From %2 to %3, default %4.").arg(modelData.description).arg(modelData.lowText).arg(modelData.highText)
-               .arg(modelData.defaultText))
+    // The key /gamerule and /limits take, as a plate under the name (a setting without a translated
+    // name shows the key as its name already).
+    badge: modelData.named ? modelData.key : ""
+    help: modelData.boolean
+          ? qsTr("%1 Default: %2.").arg(modelData.description).arg(modelData.defaultValue !== 0 ? qsTr("on") : qsTr("off"))
+          : qsTr("%1 From %2 to %3, default %4.").arg(modelData.description).arg(modelData.lowText).arg(modelData.highText)
+            .arg(modelData.defaultText)
 
     GameSwitch {
         id: toggle

@@ -101,7 +101,7 @@ SettingsPage {
 
             objectName: "backgroundFrameLimitBox"
             label: qsTr("In menus and in the background")
-            help: qsTr("Behind the pause menu, in character previews and while another window has the focus")
+            help: qsTr("Behind the pause menu and while another window has the focus")
             textRole: "text"
             valueRole: "value"
             model: page.limitModel
@@ -201,7 +201,7 @@ SettingsPage {
         SettingChoice {
             objectName: "renderQualityChoice"
             label: qsTr("Realistic quality")
-            help: qsTr("Low without glow and soft shade and with short shadows, High with the widest glow, the finest shadows and the most moving lights")
+            help: qsTr("Higher shows more glow, finer shadows and more moving lights")
             enabled: page.rendering.mode === RenderSettings.Mode.Realistic
             model: [
                 { text: qsTr("Low"), value: RenderSettings.Quality.Low },
@@ -221,7 +221,7 @@ SettingsPage {
             to: page.rendering.maxExposure
             stepSize: 0.05
             value: page.rendering.exposure
-            valueText: qsTr("%1×").arg(value.toFixed(2))
+            valueText: qsTr("%1×").arg(value.toLocaleString(Qt.locale(), "f", 2))
             onMoved: page.rendering.exposure = value
         }
     }

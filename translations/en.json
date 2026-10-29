@@ -51,6 +51,10 @@
         "+%n more",
         "+%n more"
     ],
+    "Playing now (%n)": [
+        "Playing now (%n)",
+        "Playing now (%n)"
+    ],
     "%1 has made %n more advancements": [
         "%1 has made %n more advancement",
         "%1 has made %n more advancements"

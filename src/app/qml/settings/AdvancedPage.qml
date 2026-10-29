@@ -63,7 +63,7 @@ SettingsPage {
         Hint {
             Layout.fillWidth: true
             Layout.bottomMargin: Ui.space.xs
-            text: qsTr("%1 opens these options in the world. Measured values also go to the log with --stats <ms>.")
+            text: qsTr("%1 opens these options in the world.")
                       .arg(page.game.settings.keys.labels.debugOptions)
         }
     }

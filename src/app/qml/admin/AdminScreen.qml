@@ -6,10 +6,10 @@ import QtCraft
 
 // "Manage server" (decision E-863, stage 77.2): an operator's view of the server over the admin
 // channel, one level down from the pause menu (SidebarScreen, docs/UI-Leitfaden.md 8b). The side
-// bar has the back entry and the sections overview, players, chat, commands, lists, settings, log
+// bar has the back entry and the sections overview, players, chat, commands, lists, game rules, log
 // and server; the chosen one shows on the right. The screen follows the server's status, chat and
 // log only while it is open. Answers and refusals show as a notice above the section. Kicking,
-// banning and stopping ask first in a modal dialog; leaving the settings with unsaved changes asks
+// banning and stopping ask first in a modal dialog; leaving the game rules with unsaved changes asks
 // whether to save them. The back entry, Esc and the pad's B close it; the pad's shoulders and
 // Ctrl+Tab switch the section.
 SidebarScreen {
@@ -43,7 +43,7 @@ SidebarScreen {
         focusPage();
     }
 
-    // Closes at once; leave() asks first about unsaved settings.
+    // Closes at once; leave() asks first about unsaved game rules.
     // An unsaved draft stays with the controller and shows again on the next open.
     function close() {
         if (!visible)
@@ -89,15 +89,15 @@ SidebarScreen {
 
             objectName: "adminNav"
             Layout.fillWidth: true
-            model: [qsTr("Overview"), qsTr("Players"), qsTr("Chat"), qsTr("Commands"), qsTr("Lists"), qsTr("Settings"),
+            model: [qsTr("Overview"), qsTr("Players"), qsTr("Chat"), qsTr("Commands"), qsTr("Lists"), qsTr("Game rules"),
                 qsTr("Log"), qsTr("Server")]
             notes: ["", String(screen.admin.players.length), "", "", "", screen.admin.dirty ? qsTr("unsaved") : "", "", ""]
-            // The focus goes onto the new section, unless leaving the settings asks first.
+            // The focus goes onto the new section, unless leaving the game rules asks first.
             onSwitched: {
                 if (!unsavedDialog.visible)
                     screen.focusPage();
             }
-            // Leaving the settings with unsaved changes asks first; the side bar keeps them until then.
+            // Leaving the game rules with unsaved changes asks first; the side bar keeps them until then.
             onCurrentIndexChanged: {
                 if (currentIndex === screen.section)
                     return;
@@ -178,6 +178,7 @@ SidebarScreen {
                 admin: screen.admin
                 dialog: actionDialog
                 remote: screen.game.multiplayer.networkGame
+                persistent: screen.game.persistent
             }
         }
     }
