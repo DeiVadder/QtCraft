@@ -258,7 +258,7 @@ Wird in jedem Chunk versucht, unabhängig vom Biom.
 | ID | `qtcraft:lava_lake` |
 | Art | See an der Oberfläche von trockenem Land |
 | Blöcke | [Lava](liquids.md#block-qtcraft-lava), [Stein](blocks.md#block-qtcraft-stone) |
-| Häufigkeit | höchstens einer je 6 × 6 Chunks, Chance 100 %; 8 Stellen versucht |
+| Häufigkeit | höchstens einer je 12 × 12 Chunks, Chance 50 %; 8 Stellen versucht |
 | Größe | Radius bis 5, 3 tief |
 
 **In Biomen**

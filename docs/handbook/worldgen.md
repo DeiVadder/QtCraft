@@ -261,7 +261,7 @@
 | ID | `qtcraft:lava_lake` |
 | Kind | lake on the surface of dry land |
 | Blocks | [Lava](liquids.md#block-qtcraft-lava), [Stone](blocks.md#block-qtcraft-stone) |
-| Chance | at most one per 6 × 6 chunks, with 100 % chance; 8 sites tried |
+| Chance | at most one per 12 × 12 chunks, with 50 % chance; 8 sites tried |
 | Size | radius up to 5, 3 deep |
 
 **In biomes**

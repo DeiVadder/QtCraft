@@ -6,19 +6,21 @@
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
+#include <QHash>
 #include <QSet>
 #include <QTest>
 
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <ranges>
 
 using namespace Qt::StringLiterals;
 
-// Lava lakes on the surface (decision E-856): about one per 200 chunks, kept apart, each an
-// irregular basin inside its chunk whose lava lies 1–2 blocks below the ground around it, walled in
-// by stone where it would touch air or soil, with no grass or plants right at its rim. Fixed seeds
-// plus one random seed per run (decision E-846).
+// Lava lakes on the surface (decisions E-856, E-936): rare (at most one per 288 chunks of fitting
+// land), kept apart, each an irregular basin inside its chunk whose lava lies 1–2 blocks below the
+// ground around it, walled in by stone where it would touch air or soil, with no grass or plants
+// right at its rim. Fixed seeds plus one random seed per run (decision E-846).
 namespace {
 
 using Site = QcSurfaceLakes::Site;
@@ -40,9 +42,10 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     // The random seed of this run besides the fixed ones (decision E-846): QC_TEST_SEED if set.
     const qint64 m_randomSeed = QcTestUtil::randomSeed();
+    QHash<qint64, Survey> m_surveys;
 
-    // Fixed seeds first; 510556236 has a window with almost no lakes (E-846, E-856), 1380505090 the
-    // most found (103 lakes, three quarters of its window flat land of the lakes' biomes; E-907).
+    // Fixed seeds first; 510556236 has a window with few lakes (E-846, E-856), 1380505090 the most
+    // found (19 lakes, three quarters of its window flat land of the lakes' biomes; E-907, E-936).
     static constexpr std::array<qint64, 5> fixedSeeds{7, 42, 1234, 510556236, 1380505090};
 
     std::array<qint64, 6> seeds() const
@@ -53,7 +56,7 @@ private:
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
     // The lakes of the chunks within `reach` of the origin; the window starts at a seeded offset.
-    static Survey survey(const QcTerrainGenerator &generator, qint64 seed, int reach)
+    static Survey surveyAround(const QcTerrainGenerator &generator, qint64 seed, int reach)
     {
         Survey result;
         const int offsetX = static_cast<int>(seed % 97) * 10 - 480;
@@ -67,6 +70,16 @@ private:
             }
         }
         return result;
+    }
+
+    // The lakes of the window of 120 x 120 chunks of a seed, surveyed once for all test functions
+    // (the plans depend only on the seed).
+    const Survey &survey(const QcTerrainGenerator &generator, qint64 seed)
+    {
+        if (!m_surveys.contains(seed)) {
+            m_surveys.insert(seed, surveyAround(generator, seed, 60));
+        }
+        return m_surveys[seed];
     }
 
     // The highest block that is neither air nor a plant at a column of the chunk.
@@ -195,13 +208,47 @@ private:
         return lowest;
     }
 
+    // How many lakes the windows of 16 x 16 chunks (about what a player sees around himself) that
+    // hold any lake hold.
+    struct Crowding
+    {
+        // Windows holding at least one lake, at least three, and the most in one.
+        int windows = 0;
+        int crowded = 0;
+        int most = 0;
+    };
+
+    static Crowding crowding(const QList<Site> &lakes)
+    {
+        constexpr int size = 16;
+        Crowding result;
+        if (lakes.isEmpty()) {
+            return result;
+        }
+        const auto [minX, maxX] = std::ranges::minmax(lakes | std::views::transform([](const Site &site) { return site.chunk.x; }));
+        const auto [minZ, maxZ] = std::ranges::minmax(lakes | std::views::transform([](const Site &site) { return site.chunk.z; }));
+        for (int z0 = minZ - size + 1; z0 <= maxZ; ++z0) {
+            for (int x0 = minX - size + 1; x0 <= maxX; ++x0) {
+                const auto inside = [&](const Site &site) {
+                    return site.chunk.x >= x0 && site.chunk.x < x0 + size && site.chunk.z >= z0 && site.chunk.z < z0 + size;
+                };
+                const int count = static_cast<int>(std::ranges::count_if(lakes, inside));
+                result.windows += count >= 1;
+                result.crowded += count >= 3;
+                result.most = std::max(result.most, count);
+            }
+        }
+        return result;
+    }
+
 private slots:
-    // About one lake per 200 chunks over many worlds, and lakes of neighbouring squares apart. One
-    // window of 80 x 80 chunks holds anywhere from none to 103 lakes: the lakes go to flat dry land
-    // of their biomes, and a square of 6 x 6 chunks there nearly always finds a place in its 8
-    // tries, so a window's count follows how much of it is such land (decision E-907). The rate
-    // is checked over the fixed seeds only (deterministic); every window, the random one too,
-    // holds at most one lake per square.
+    // At most one lake per 288 chunks of flat dry land of the lakes' biomes (every other square of
+    // 12 x 12 chunks; decision E-936), about one per 1400 chunks of whole worlds, and lakes of
+    // neighbouring squares apart. A window of 120 x 120 chunks holds anywhere from a few to about
+    // twenty lakes: the lakes go to such land, and a square there often finds a place in its 8
+    // tries, so a window's count follows how much of it is such land (decision E-907). The rate is
+    // checked over the fixed seeds only (deterministic); every window, the random one too, holds at
+    // most one lake per square and at most 4 in 16 x 16 chunks.
     void lakesAreRareAndApart()
     {
         const auto lake = std::ranges::find(m_content->worldgen().features(), u"qtcraft:lava_lake"_s, &QcFeatureDefinition::name);
@@ -209,9 +256,12 @@ private slots:
         int chunks = 0;
         int lakes = 0;
         int nearest = 1 << 20;
+        int densest = 0;
+        int windows = 0;
+        int crowded = 0;
         for (const qint64 seed : seeds()) {
             const QcTerrainGenerator generator(m_content, seed);
-            const Survey found = survey(generator, seed, 40);
+            const Survey &found = survey(generator, seed);
             if (!found.lakes.isEmpty()) {
                 // A place to look at a lake (screenshots, debugging).
                 const Site &first = found.lakes.first();
@@ -224,12 +274,18 @@ private slots:
                 QVERIFY2(!squares.contains(square), qPrintable(u"seed %1: two lakes in one square"_s.arg(seed)));
                 squares.insert(square);
             }
-            // Loosely above the densest window measured (103 lakes in 6400 chunks, one per 62, on
-            // 40 seeds; decision E-907): a window of flat dry land of the lakes' biomes.
-            QVERIFY2(found.lakes.size() * 50 <= found.chunks, qPrintable(u"seed %1: %2 lakes"_s.arg(seed).arg(found.lakes.size())));
+            // A window of 16 x 16 chunks touches the tried chunks of at most 2 x 2 squares.
+            const Crowding crowd = crowding(found.lakes);
+            QVERIFY2(crowd.most <= 4, qPrintable(u"seed %1: %2 lakes in 16 x 16 chunks"_s.arg(seed).arg(crowd.most)));
+            densest = std::max(densest, crowd.most);
+            // Loosely above the densest window measured (21 lakes in 14400 chunks, one per 686;
+            // decision E-936): a window of flat dry land of the lakes' biomes.
+            QVERIFY2(found.lakes.size() * 400 <= found.chunks, qPrintable(u"seed %1: %2 lakes"_s.arg(seed).arg(found.lakes.size())));
             if (std::ranges::find(fixedSeeds, seed) != fixedSeeds.end()) {
                 chunks += found.chunks;
                 lakes += static_cast<int>(found.lakes.size());
+                windows += crowd.windows;
+                crowded += crowd.crowded;
             }
             for (qsizetype i = 0; i < found.lakes.size(); ++i) {
                 for (qsizetype j = i + 1; j < found.lakes.size(); ++j) {
@@ -241,8 +297,16 @@ private slots:
         }
 
         const double perLake = lakes > 0 ? static_cast<double>(chunks) / lakes : 0.0;
-        qInfo("%d lava lakes in %d chunks: one per %.0f chunks; nearest two %d chunks apart", lakes, chunks, perLake, nearest);
-        QVERIFY2(perLake >= 130.0 && perLake <= 400.0, qPrintable(QString::number(perLake)));
+        const double crowdedShare = windows > 0 ? static_cast<double>(crowded) / windows : 0.0;
+        qInfo("%d lava lakes in %d chunks: one per %.0f chunks; nearest two %d chunks apart; at most %d in 16 x 16 chunks, "
+              "3 or more in %.1f %% of those with a lake",
+              lakes, chunks, perLake, nearest, densest, 100.0 * crowdedShare);
+        // Measured one per 1412 chunks (one per 216 with squares of 6 x 6 chunks and every square
+        // planning; decision E-936).
+        QVERIFY2(perLake >= 800.0 && perLake <= 3000.0, qPrintable(QString::number(perLake)));
+        // A player sees one lake around himself, now and then two: measured 3 or more in 2.1 % of
+        // the windows with a lake on the fixed seeds (44 % before on 15 seeds; decision E-936).
+        QVERIFY2(crowdedShare <= 0.05, qPrintable(QString::number(crowdedShare)));
         // The tried chunks of two squares keep `spacing` chunks between them.
         QVERIFY2(nearest >= lake->spacing + 1, qPrintable(QString::number(nearest)));
     }
@@ -255,7 +319,7 @@ private slots:
         int checked = 0;
         for (const qint64 seed : seeds()) {
             const QcTerrainGenerator generator(m_content, seed);
-            const Survey found = survey(generator, seed, 24);
+            const Survey &found = survey(generator, seed);
             for (qsizetype i = 0; i < std::min<qsizetype>(found.lakes.size(), 4); ++i) {
                 const Site &site = found.lakes[i];
                 const std::shared_ptr<QcChunk> chunk = generator.generate(site.chunk);
@@ -286,7 +350,7 @@ private slots:
         int two = 0;
         for (const qint64 seed : seeds()) {
             const QcTerrainGenerator generator(m_content, seed);
-            const Survey found = survey(generator, seed, 40);
+            const Survey &found = survey(generator, seed);
             for (const Site &site : found.lakes) {
                 const int lowest = lowestGroundAround(generator, site);
                 const int below = lowest - site.level;
