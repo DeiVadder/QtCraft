@@ -1,5 +1,7 @@
 # Neugliederung der Ordner – Bestandsaufnahme und Plan (Paket 80.1)
 
+**Umgesetzt (2026-10-29):** 80.2 `2355518` (Werkzeug), 80.3 `5573270` (app), 80.4 `a7f7120` (clientcore), 80.5 `54bfc6f` (server), 80.6 `d1c15a9` (common/content), 80.7a `5796ec3` (tests/fixtures), 80.7b `358ab4c` (Test-Themenordner), 80.8 Abschluss (Doku, E-938). Die geltenden Regeln stehen in E-418 und E-938, der aktuelle Stand je Ordner in `docs/Architektur.md`, „Source layout“; dieser Bericht bleibt als Stand vor der Umsetzung (Zahlen, Pfade und Fragen von 80.1).
+
 Stand: `dev` 73f8fe6 (2026-10-29). Bericht zur Entscheidung des Menschen; es wird kein Code verschoben. Grundlage: E-418/E-419 (Ordner mit etwa 5–25 Klassen, Include-Wurzeln `src/` und `tests/`, Schichten), E-417 (`target_sources`-Blöcke je Ordner, `tests/<thema>/tests.cmake`), E-890 (Shared Libraries im Debug). Der Plan hängt nur an Pfaden, nicht an Dateiinhalten (39.1 setzt gerade SPDX-Köpfe).
 
 **Zählweise:** „Klassen“ = Header (eine Klasse mit ihren `.cpp`-Teilen zählt einmal, wie in `FORTSCHRITT.md`); bei Tests die `.cpp` (ein Test je Datei) plus Hilfs-Header (`h`); QML-Ordner nach `.qml`. Fett = über 25.
@@ -72,7 +74,7 @@ Der Ordner heißt `servercore`, nicht `server`, damit kein Ordner unter `tests/`
 
 **Was sich an der CMake-Verdrahtung ändert:** je neuem Ordner ein `tests.cmake` (Kopfkommentar wie heute) und eine `include()`-Zeile in `tests/CMakeLists.txt`; die `qc_add_test`-Zeilen ziehen in der bisherigen Reihenfolge in die Datei ihres neuen Ordners, ihre Pfade schreibt `fix-includes.py` um. Testnamen, Build-Ordner, Datenordner, Labels, `COST`, `REQUIRED_FILES` und `qc_concurrency_tests` bleiben. `tests/fixtures` bekommt kein `tests.cmake` (nur Header). Jede Änderung an `*.cmake` wählt bei `--changed` ohnehin alle Tests.
 
-**Zu beachten:** `test_lazy_screen` lädt eine `Test.qml` aus `QTCRAFT_QML_CONTROLS_DIR` (`tests/client/tests.cmake`, ein Ordner-Pfad, den `fix-includes.py` nicht umschreibt) und braucht `LazyScreen.qml` daneben; zieht `LazyScreen` nach `qml/frames`, muss die Definition mit. `test_mob_crowd_measure` prüft `__has_include("server/mobs/QcCreatureBodies.h")` (bleibt in `server/mobs`); `__has_include` schreibt das Skript ebenfalls nicht um.
+**Zu beachten:** `test_lazy_screen` lädt eine `Test.qml` aus `QTCRAFT_QML_CONTROLS_DIR` (`tests/client/tests.cmake`, ein Ordner-Pfad, den `fix-includes.py` nicht umschreibt) und braucht `LazyScreen.qml` daneben; zieht `LazyScreen` nach `qml/frames`, muss die Definition mit. `test_mob_crowd_measure` prüft `__has_include("server/mobs/QcCreatureBodies.h")` (bleibt in `server/mobs`); `__has_include` schreibt das Skript ebenfalls nicht um. *(Umgesetzt in 80.3: die Definition heißt jetzt `QTCRAFT_QML_FRAMES_DIR` und zeigt auf `qml/frames`, seit 80.7b in `tests/controls/tests.cmake`.)*
 
 ## 4. Reihenfolge der Umsetzung (80.2 ff.)
 
