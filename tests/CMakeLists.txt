@@ -3,17 +3,37 @@
 
 # Tests are grouped by topic in subfolders (E-089); the fixtures shared by several topics live in
 # fixtures/, and every test header is included by its path below this folder
-# ("fixtures/QcServerTestFixture.h", "world/QcVillageTestUtil.h"; decision E-418), the code by
+# ("fixtures/QcServerTestFixture.h", "villages/QcVillageTestUtil.h"; decision E-418), the code by
 # its path below src/ through the libraries. Each topic folder lists its tests in tests.cmake
 # (decision E-417), included here so that every test keeps this folder as its source and build
 # directory and the properties below reach all of them.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/world/tests.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/client/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/terrain/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/structures/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/storage/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/showcase/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/textures/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/controls/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/screens/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/session/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/meshing/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/rendering/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/input/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/content/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/diagnostics/tests.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/gameplay/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/items/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/protocol/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/player/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/servercore/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/machines/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/mobs/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/creatures/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/environment/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/villages/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/signal/tests.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/vehicles/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/network/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/sound/tests.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/ui/tests.cmake)

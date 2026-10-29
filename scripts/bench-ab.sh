@@ -360,7 +360,7 @@ EOF
     return 0
 }
 
-# The server side of one scenario without a window and without real time (tests/gameplay/
+# The server side of one scenario without a window and without real time (tests/scenarios/
 # test_scenario_measure.cpp, decision E-388): the scene of scripts/bench-common.sh, <seconds> of game
 # time after 3 s of warm-up. Scenarios that move the player or need the game's own benchmark actions
 # (walk, sprint, liquids) or a screen (inventory, furnace, handbook) have no headless form; light

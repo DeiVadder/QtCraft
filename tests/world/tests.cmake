@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# World: coordinates, chunks, physics, light, terrain and structure generation, villages, storage.
+# World basics: coordinates, chunks and sections, physics, block light, liquids, plant growth, blocks.
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
@@ -13,89 +13,12 @@ qc_add_test(test_physics SOURCES world/test_physics.cpp fixtures/QcTestWorld.h L
 qc_add_test(test_boat_physics SOURCES world/test_boat_physics.cpp fixtures/QcTestUtil.h fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_common)
 qc_add_test(test_body_push SOURCES world/test_body_push.cpp fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_common)
 qc_add_test(test_flight SOURCES world/test_flight.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
-qc_add_test(test_noise SOURCES world/test_noise.cpp LIBRARIES qc_worldgen)
-qc_add_test(test_dungeons SOURCES world/test_dungeons.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 480)
-qc_add_test(test_locate_places SOURCES world/test_locate_places.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
-qc_add_test(test_mineshaft_inclines SOURCES world/test_mineshaft_inclines.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)
-qc_add_test(test_mineshafts SOURCES world/test_mineshafts.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 660)
-qc_add_test(test_coastal_towers SOURCES world/test_coastal_towers.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)
-qc_add_test(test_desert_temples SOURCES world/test_desert_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
-qc_add_test(test_jungle_temples SOURCES world/test_jungle_temples.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
-qc_add_test(test_temple_entrances SOURCES world/test_temple_entrances.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
-qc_add_test(test_surface_ruins SOURCES world/test_surface_ruins.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 600)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_giant_trees SOURCES world/test_giant_trees.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_farming SOURCES world/test_farming.cpp LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_server_light SOURCES world/test_server_light.cpp LIBRARIES qc_server TIMEOUT 600)
-qc_add_test(test_biome_distribution SOURCES world/test_biome_distribution.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-# The terrain tests spend most of their time in the noise, which Clang/GCC debug and sanitizer
-# builds optimise (decision E-900); MSVC debug builds do not and keep the limits from before. The
-# limits are twice the parallel TSan times measured before E-900 (812, 826 and 446 s): TSan was not
-# measured again yet.
-if(MSVC)
-    set(qc_flower_valley_timeout 1680)
-    set(qc_rivers_timeout 2310)
-    set(qc_river_deltas_timeout 3090)
-else()
-    set(qc_flower_valley_timeout 900)
-    set(qc_rivers_timeout 1650)
-    set(qc_river_deltas_timeout 1680)
-endif()
-qc_add_test(test_flower_valley SOURCES world/test_flower_valley.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_flower_valley_timeout})
-qc_add_test(test_rivers SOURCES world/test_rivers.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_rivers_timeout})
-qc_add_test(test_river_deltas SOURCES world/test_river_deltas.cpp world/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen
-    TIMEOUT ${qc_river_deltas_timeout})
-qc_add_test(test_cold_edges SOURCES world/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 690)
-qc_add_test(test_climate_order SOURCES world/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 720)
-qc_add_test(test_spawn_ground SOURCES world/test_spawn_ground.cpp fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_terrain_generator SOURCES world/test_terrain_generator.cpp world/QcTerrainTestUtil.h LIBRARIES qc_server TIMEOUT 900)
-qc_add_test(test_lava_lakes SOURCES world/test_lava_lakes.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 600)
-qc_add_test(test_terrain_liquids SOURCES world/test_terrain_liquids.cpp world/QcTerrainTestUtil.h LIBRARIES qc_server TIMEOUT 900)
-qc_add_test(test_world_storage SOURCES world/test_world_storage.cpp LIBRARIES qc_server)
-qc_add_test(test_persistence SOURCES world/test_persistence.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_interaction SOURCES world/test_interaction.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
-qc_add_test(test_world_library SOURCES world/test_world_library.cpp LIBRARIES qc_worlds)
-target_compile_definitions(test_world_library PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
-qc_add_test(test_structures SOURCES world/test_structures.cpp LIBRARIES qc_base_content qc_worldgen)
-qc_add_test(test_village_generation SOURCES world/test_village_generation.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen)
-qc_add_test(test_village_plan_cache SOURCES world/test_village_plan_cache.cpp world/QcVillageTestUtil.h LIBRARIES qc_server)
-qc_add_test(test_village_variety SOURCES world/test_village_variety.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_fields SOURCES world/test_village_fields.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_layouts SOURCES world/test_village_layouts.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_bounds SOURCES world/test_village_bounds.cpp world/QcVillageTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_plan_hash SOURCES world/test_village_plan_hash.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_village_swamp SOURCES world/test_village_swamp.cpp world/QcVillageTestUtil.h LIBRARIES qc_server TIMEOUT 360)
-# Headless measurement of terrain generation (stage 69); QTCRAFT_TERRAIN_MEASURE=1 in a Release build for the recorded times.
-qc_add_test(test_terrain_measure SOURCES world/test_terrain_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-# Headless measurement of village generation (stage 37.2); QTCRAFT_VILLAGE_MEASURE=1 for the recorded sizes.
-qc_add_test(test_village_measure SOURCES world/test_village_measure.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_showcase SOURCES world/test_showcase.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 300)
-qc_add_test(test_world_types SOURCES world/test_world_types.cpp fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
-# World generation options (decision E-917); reads the example mod's sources (REQUIRED_FILES at the
-# end of tests/CMakeLists.txt).
-qc_add_test(test_world_options SOURCES world/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 480)
-qc_add_test(test_generator_versions SOURCES world/test_generator_versions.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 300)
-target_compile_definitions(test_generator_versions PRIVATE QTCRAFT_GENERATOR_REFERENCE="${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
-qc_add_test(test_generator_version_worlds SOURCES world/test_generator_version_worlds.cpp LIBRARIES qc_server qc_worlds)
-target_compile_definitions(test_world_options PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
-qc_add_test(test_showcase_stations SOURCES world/test_showcase_stations.cpp world/QcShowcaseTestUtil.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_showcase_world SOURCES world/test_showcase_world.cpp world/QcShowcaseTestUtil.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 300)
 qc_add_test(test_block_light SOURCES world/test_block_light.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_light_engine SOURCES world/test_light_engine.cpp LIBRARIES qc_common TIMEOUT 900)
 qc_add_test(test_liquids SOURCES world/test_liquids.cpp fixtures/QcTestWorld.h LIBRARIES qc_server)
-qc_add_test(test_signal_showcase SOURCES world/test_signal_showcase.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 240)
-qc_add_test(test_block_entity_components SOURCES world/test_block_entity_components.cpp fixtures/QcServerTestFixture.h fixtures/QcStoredWorld.h LIBRARIES qc_server)
-qc_add_test(test_block_entity_storage SOURCES world/test_block_entity_storage.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
-target_compile_definitions(test_block_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-1")
-qc_add_test(test_entity_storage SOURCES world/test_entity_storage.cpp LIBRARIES qc_server qc_worlds TIMEOUT 300)
-qc_add_test(test_entity_components SOURCES world/test_entity_components.cpp LIBRARIES qc_server)
-qc_add_test(test_chunk_store SOURCES world/test_chunk_store.cpp LIBRARIES qc_server)
-target_compile_definitions(test_entity_storage PRIVATE QTCRAFT_OLD_WORLD="${CMAKE_CURRENT_SOURCE_DIR}/data/world-before-31-2")
-qc_add_test(test_vegetation SOURCES world/test_vegetation.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_world_details SOURCES world/test_world_details.cpp fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 450)
 qc_add_test(test_new_blocks SOURCES world/test_new_blocks.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_ores_metals SOURCES world/test_ores_metals.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_building_shapes SOURCES world/test_building_shapes.cpp fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_building_variants SOURCES world/test_building_variants.cpp fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_kitchen_blocks SOURCES world/test_kitchen_blocks.cpp fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
-qc_add_test(test_showcase_griefing SOURCES world/test_showcase_griefing.cpp LIBRARIES qc_server TIMEOUT 300)

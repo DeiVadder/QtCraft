@@ -131,7 +131,36 @@ Inside each library folder the classes live in thematic subfolders (E-089, E-418
 | `src/app/qml` | 1 + 132 | The QML module `QtCraft` (one module in `qc_app_core`, E-670): `Main.qml` at the top, the other files by topic in `admin/` (server administration screen), `advancements/`, `character/`, `controls/` (building blocks: buttons, switches, fields, slots, hints, chart, themed combo box, scroll bar and tooltip, the sizes singleton `Ui`), `frames/` (frames of screens and dialogs and their navigation: `ScreenFrame`, `ScreenHeader`, `SideBar`, `SidebarScreen`, `NavList`, `NavButton`, `ModalDialog`, `UnsavedChangesDialog`, the lazily loaded screen `LazyScreen`, E-691), `gamepad/` (focus ring, radial menu, on-screen keyboard, pad hints), `handbook/`, `hud/`, `inventory/` (slot screens), `menus/` (main, pause, multiplayer, mods, message screens) and `settings/` (settings pages and their rows and groups `Setting*`) |
 | `src/app/shaders` | 13 | The QRhi shaders (shader resources) |
 | `src/audio`, `src/headless` | 9, 30 | Small single-purpose targets, kept flat |
-| `tests/{content,world,gameplay,client,network,sound}` | 14, 36, 78, 40, 14, 5 | Test programs by topic, each with its list `tests.cmake` (E-417); `tests/{ui,scenarios,scripts}` hold the runs of `qtcraft`, of scenario scripts and of the benchmark scripts. The shared fixtures (`QcTestWorld.h`, `QcServerTestFixture.h`, `QcRawClient.h`, `QcTestUtil.h` and the other headers used by several topics) live in `tests/fixtures` and are included by their path below `tests/` (`"fixtures/QcTestWorld.h"`); `tests/world/QcVillageFixture` builds hand-made villages of a style on flat ground for the villager tests (E-424), `tests/world/QcVillageTestUtil.h` helps the generation tests |
+| `tests/content` | 19 | Content: definitions, packs, mods, crafting, handbook and translations |
+| `tests/controls` | 14 | User interface in general: building blocks, settings, scale, colours, enums |
+| `tests/creatures` | 16 | Spawning and taming: spawning, spawners, golems, animals, pets |
+| `tests/diagnostics` | 3 | Diagnostics of a playtest (E-834): log files, health and lag lines, crash reports |
+| `tests/environment` | 8 | World events: explosions, fire, weather, the void, slippery ground |
+| `tests/fixtures` | 25 | The shared fixtures (`QcTestWorld.h`, `QcServerTestFixture.h`, `QcRawClient.h`, `QcTestUtil.h` and the other headers used by several topics), included by their path below `tests/` (`"fixtures/QcTestWorld.h"`); no `tests.cmake` |
+| `tests/input` | 12 | Input: gamepad, key bindings, mouse, camera |
+| `tests/items` | 14 | Items and blocks in the game: item data, building, farming, signs, frames, maps |
+| `tests/machines` | 16 | Machines and containers: furnaces, hoppers, anvil, enchanting, stonecutter, backpack, crafting |
+| `tests/meshing` | 18 | Meshing of chunks and entities, figures |
+| `tests/mobs` | 23 | Creatures: behaviour, paths, crowds, bodies, single kinds |
+| `tests/network` | 24 | Multiplayer: login, TCP, network games, admin channel, latency and bot processes (E-251 to E-270); `QcAdminTestFixture.h` |
+| `tests/player` | 17 | Player: game modes, health, hunger, effects, experience, death, armour, combat, projectiles, fishing, advancements |
+| `tests/protocol` | 9 | Protocol, codecs and transports |
+| `tests/rendering` | 22 | Rendering on the GPU: frame plan, buffers, arena, light, shadows, post-processing, sky, shaders |
+| `tests/scenarios` | 7 | Scripted runs of `qtcraft-headless` (`*.jsonl`) and the C++ scenario tests and headless measurements (`test_scenarios`, `test_scenario_measure`, `test_explore_measure`, `test_headless_cli`) |
+| `tests/screens` | 19 | Controllers and models of the screens: admin, advancements, character, chat, inventory, maps, worlds |
+| `tests/servercore` | 21 | Server core: commands, player management, tick, limits, chunks, input validation, backups |
+| `tests/session` | 18 | Client session: tick, prediction, reconciliation, interpolation, light, weather, maps, the session's sound |
+| `tests/showcase` | 6 | The showcase world |
+| `tests/signal` | 17 | Signal dust: circuits, pistons, hoppers, readers, traps, note block |
+| `tests/sound` | 8 | Sound: synthesis, mixer, world sounds and the audio output |
+| `tests/storage` | 10 | Saving: chunk store, world files, world library, block and entity data |
+| `tests/structures` | 12 | Structures of the generation: temples, dungeons, mineshafts, towers, ruins, buildings |
+| `tests/terrain` | 21 | Terrain: noise, climate, biomes, rivers, liquids, vegetation, ores, generator versions, world types |
+| `tests/textures` | 13 | Textures, atlas, texture packs, icons |
+| `tests/vehicles` | 10 | Minecarts, rails and boats |
+| `tests/villages` | 24 | Villages: generation (qc_worldgen) and village life, trading (qc_server); `QcVillageFixture` builds hand-made villages of a style on flat ground for the villager tests (E-424), `QcVillageTestUtil.h` helps the generation tests |
+| `tests/world` | 17 | World basics: coordinates, chunks and sections, physics, block light, liquids, plant growth, interaction with blocks |
+| `tests/{ui,scripts}` | – | The runs of `qtcraft` and of the project scripts (verify, benchmarks, checks, restructuring); each topic folder lists its tests in `tests.cmake` (E-417) |
 
 Every class has its own header and source, except the thematic message headers and small header-only types; no function body has more than 60 code lines and no source file more than 600 (headers 220, also in the tests; test sources 750), counting code lines without comments and blank lines (E-088, E-760). The larger subsystems are split into collaborating classes:
 

@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Scripted runs of qtcraft-headless (tests/scenarios/*.jsonl).
+# Scripted runs of qtcraft-headless (tests/scenarios/*.jsonl), the C++ scenario tests and measurements.
 # Included by tests/CMakeLists.txt (decision E-417): paths are relative to tests/, and the test
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
@@ -48,3 +48,16 @@ add_test(NAME scenario_headless_admin_channel
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(scenario_headless_admin_channel PROPERTIES TIMEOUT 90
     ENVIRONMENT "QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/scenario_headless_admin_channel")
+qc_add_test(test_client_server SOURCES scenarios/test_client_server.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
+qc_add_test(test_scenarios SOURCES scenarios/test_scenarios.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 750)
+# A virtual gamepad steering the player through the control interface (decision E-541); the client
+# ticks by hand, only the flight case and the waits for the server run in real time (label realtime).
+qc_add_test(test_gamepad_scenarios SOURCES scenarios/test_gamepad_scenarios.cpp LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_headless_cli SOURCES scenarios/test_headless_cli.cpp TIMEOUT 800)
+target_compile_definitions(test_headless_cli PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>"
+                                                    QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
+add_dependencies(test_headless_cli qtcraft-headless)
+qc_add_test(test_survival_scenario SOURCES scenarios/test_survival_scenario.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 300)
+qc_add_test(test_explore_measure SOURCES scenarios/test_explore_measure.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)
+# The server side of a benchmark scenario without a window (scripts/bench-headless.sh, decision E-388).
+qc_add_test(test_scenario_measure SOURCES scenarios/test_scenario_measure.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 600)

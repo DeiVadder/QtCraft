@@ -8,7 +8,7 @@
 // after an update fit those made before. A version promises the output of the base game's generator
 // code together with the base game's worldgen data at that version (terrain, flat and void worlds;
 // the showcase is a demonstration world that always generates with the current code); what mods add
-// on top is the player's choice. tests/world/test_generator_versions checks every version against
+// on top is the player's choice. tests/terrain/test_generator_versions checks every version against
 // recorded checksums of generated chunks; a change of the generator's output needs a new version
 // (checklist in docs/Entscheidungen.md, E-922).
 namespace QcGeneratorVersion {
