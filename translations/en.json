@@ -46,5 +46,9 @@
     "%n option(s) changed.": [
         "%n option changed.",
         "%n options changed."
+    ],
+    "+%n more": [
+        "+%n more",
+        "+%n more"
     ]
 }

@@ -1,0 +1,15 @@
+{
+    "name": "deep_down",
+    "parent": "stone_age",
+    "icon": "iron_ore",
+    "frame": "task",
+    "handbook": "chapter:mining",
+    "criteria": {
+        "deep": {
+            "trigger": "location",
+            "conditions": {
+                "maxY": 16
+            }
+        }
+    }
+}

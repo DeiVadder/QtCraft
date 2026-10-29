@@ -1,0 +1,40 @@
+{
+    "name": "farming",
+    "parent": "crafting_table",
+    "icon": "wooden_hoe",
+    "frame": "task",
+    "handbook": "chapter:farming",
+    "criteria": {
+        "wooden_hoe": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "item": "wooden_hoe"
+            }
+        },
+        "stone_hoe": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "item": "stone_hoe"
+            }
+        },
+        "iron_hoe": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "item": "iron_hoe"
+            }
+        },
+        "golden_hoe": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "item": "golden_hoe"
+            }
+        },
+        "diamond_hoe": {
+            "trigger": "item_used_on_block",
+            "conditions": {
+                "item": "diamond_hoe"
+            }
+        }
+    },
+    "requirements": "any"
+}

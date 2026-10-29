@@ -1,0 +1,12 @@
+{
+    "name": "tame",
+    "parent": "breeding",
+    "icon": "bone",
+    "frame": "goal",
+    "handbook": "chapter:creatures",
+    "criteria": {
+        "tamed": {
+            "trigger": "entity_tamed"
+        }
+    }
+}

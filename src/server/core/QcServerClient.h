@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcAppearance.h"
+#include "common/gameplay/QcAdvancementProgress.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
@@ -314,4 +315,16 @@ struct QcServerClient : QcEntity
         int biteTicks = 0;
     };
     Fishing fishing;
+    // The adventure guide (QcServerAdvancements, decision E-923; `progress` is saved): the met
+    // criteria, the advancements whose change the client has not heard of yet (with whether to
+    // announce them), whether it got the whole progress since joining, and the block where the
+    // location criteria were last checked.
+    struct Advancements
+    {
+        QcAdvancementProgress progress;
+        QHash<QString, bool> unsent;
+        bool synced = false;
+        std::optional<QcBlockPos> checkedAt;
+    };
+    Advancements advancements;
 };

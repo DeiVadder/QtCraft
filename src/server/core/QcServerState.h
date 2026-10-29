@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "server/advancements/QcServerAdvancements.h"
 #include "server/blocks/QcLiquidFlow.h"
 #include "server/commands/QcAccessList.h"
 #include "server/commands/QcPermission.h"
@@ -97,6 +98,8 @@ public:
     // The maps of the world by map id (decision E-799).
     QcMapStore &maps() { return m_maps; }
     const QcMapStore &maps() const { return m_maps; }
+    // The adventure guide (decision E-923): the gameplay reports events to it.
+    QcServerAdvancements &advancements() { return m_advancements; }
     QRandomGenerator &random() { return m_random; }
     // Separate from random() so that sounds never change drops or spawns.
     QRandomGenerator &soundRandom() { return m_soundRandom; }
@@ -140,4 +143,6 @@ private:
     bool m_latencyChanged = false;
     // Players' time when the list last went out.
     qint64 m_playerListNs = 0;
+    // Last: it reads the content and the clients through this state.
+    QcServerAdvancements m_advancements{*this};
 };

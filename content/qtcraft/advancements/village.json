@@ -1,0 +1,15 @@
+{
+    "name": "village",
+    "parent": "adventure",
+    "icon": "emerald",
+    "frame": "task",
+    "handbook": "chapter:villages",
+    "criteria": {
+        "village": {
+            "trigger": "location",
+            "conditions": {
+                "structure": "village"
+            }
+        }
+    }
+}

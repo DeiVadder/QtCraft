@@ -1,0 +1,15 @@
+{
+    "name": "torch",
+    "parent": "wooden_pickaxe",
+    "icon": "torch",
+    "frame": "task",
+    "handbook": "block:torch",
+    "criteria": {
+        "torch": {
+            "trigger": "block_placed",
+            "conditions": {
+                "block": "torch"
+            }
+        }
+    }
+}

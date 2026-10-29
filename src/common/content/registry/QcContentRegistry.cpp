@@ -470,6 +470,7 @@ QStringList QcContentRegistry::finish()
     warnings.append(resolveProjectiles());
     warnings.append(QcVillageContent::resolveStyles(*this));
     warnings.append(QcVillagerOutfits::generate(*this));
+    warnings.append(m_advancements.resolve(*this));
     return warnings;
 }
 

@@ -156,7 +156,7 @@ QStringList QcContentPackLoader::contentFiles(const QString &directory)
     const QDir root(directory);
     QStringList files;
     for (const char *folder :
-         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "loot"}) {
+         {"textures", "shapes", "parts", "materials", "blocks", "items", "recipes", "smelting", "stonecutting", "mobs", "models", "appearance", "biomes", "features", "ores", "lang", "sounds", "handbook", "structures", "commands", "villages", "trades", "professions", "villagers", "projectiles", "effects", "enchantments", "loot", "advancements"}) {
         files += filesIn(root.filePath(QString::fromLatin1(folder)), u"*.json"_s);
     }
 
@@ -477,6 +477,8 @@ void PackReader::loadLaterDefinitions()
                     [this](QcEnchantmentDefinition enchantment) { m_registry.registerEnchantment(std::move(enchantment)); });
     loadDefinitions(u"loot"_s, QcContentParser::parseLootTable,
                     [this](QcLootTableDefinition table) { m_registry.lootTables().add(std::move(table)); });
+    loadDefinitions(u"advancements"_s, QcContentParser::parseAdvancement,
+                    [this](QcAdvancementDefinition advancement) { m_registry.advancements().add(std::move(advancement)); });
     loadDefinitions(u"commands"_s, QcContentParser::parseCommandMacro,
                     [this](QcCommandMacroDefinition macro) { m_registry.registerCommandMacro(std::move(macro)); });
 }

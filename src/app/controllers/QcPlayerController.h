@@ -7,6 +7,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariantList>
+#include <QVariantMap>
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QcSettingsController;
@@ -91,6 +92,10 @@ public:
     bool spectator() const;
     QcCreativeItemModel *creativeItems() const { return m_creativeItems; }
 
+    // The local player reached `advancement` just now (QcClientSession::advancementReached): emits
+    // advancementReached with what the toast shows.
+    void announceAdvancement(const QString &advancement);
+
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
     // Rows of QcInventoryModel; count 0 moves the whole stack.
     Q_INVOKABLE void moveItem(int from, int to, int count = 0) const;
@@ -126,6 +131,9 @@ signals:
     // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
     // every QcClientSession::refusalReportTicks; the HUD shows a short notice.
     void actionRefused();
+    // An advancement was reached (decision E-923): {name, title, description, icon, heading, special}
+    // with the texts translated; `special` for goals and challenges, which the toast sets apart.
+    void advancementReached(const QVariantMap &advancement);
 
 private:
     void updateCraftableRecipes();

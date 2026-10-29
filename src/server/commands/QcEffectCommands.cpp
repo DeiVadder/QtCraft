@@ -68,7 +68,7 @@ void QcEffectCommands::give(const QcCommandContext &context, const QList<QcServe
 
     for (QcServerClient *player : targets) {
         const QcStatusEffect effect{name, *level, *seconds * static_cast<int>(QcPhysics::tickRate)};
-        if (QcServerEffects::givePlayer(m_state.content(), *player, effect)) {
+        if (QcServerEffects::givePlayer(m_state, *player, effect)) {
             context.reply(QT_TRANSLATE_NOOP("QcServerMessages", "Gave %1 level %2 for %3 s to %4"),
                           {name, QString::number(*level), QString::number(*seconds), player->name});
         } else {

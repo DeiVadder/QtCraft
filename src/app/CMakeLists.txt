@@ -252,6 +252,7 @@ qt_add_qml_module(qc_app_core
         qml/handbook/HandbookPage.qml
         qml/handbook/HandbookRecipe.qml
         qml/handbook/HandbookScreen.qml
+        qml/hud/AdvancementToast.qml
         qml/hud/ChatOverlay.qml
         qml/hud/DebugOverlay.qml
         qml/hud/DialDisplay.qml

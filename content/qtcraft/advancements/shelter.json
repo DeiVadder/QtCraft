@@ -1,0 +1,15 @@
+{
+    "name": "shelter",
+    "parent": "crafting_table",
+    "icon": "bed",
+    "frame": "task",
+    "handbook": "block:bed",
+    "criteria": {
+        "bed": {
+            "trigger": "block_placed",
+            "conditions": {
+                "block": "#beds"
+            }
+        }
+    }
+}

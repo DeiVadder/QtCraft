@@ -1,0 +1,15 @@
+{
+    "name": "advancements",
+    "order": 12,
+    "icon": "oak_log",
+    "sections": [
+        "guide",
+        "toast",
+        "commands"
+    ],
+    "related": [
+        "crafting_table",
+        "iron_ingot",
+        "diamond"
+    ]
+}

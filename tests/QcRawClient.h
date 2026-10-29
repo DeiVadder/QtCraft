@@ -166,6 +166,8 @@ public:
             campfires.insert(campfire->pos, campfire->items);
         } else if (const auto *map = std::get_if<QcMsg::MapUpdate>(&message)) {
             mapUpdates.append(*map);
+        } else if (const auto *progress = std::get_if<QcMsg::AdvancementProgress>(&message)) {
+            advancements.append(*progress);
         } else {
             return false;
         }
@@ -221,6 +223,8 @@ public:
     QList<QcMsg::OpenSignEditor> signEditors;
     // Map updates (decision E-802), oldest first.
     QList<QcMsg::MapUpdate> mapUpdates;
+    // Advancement messages (decision E-923), oldest first.
+    QList<QcMsg::AdvancementProgress> advancements;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;

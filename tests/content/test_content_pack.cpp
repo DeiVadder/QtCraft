@@ -7,7 +7,9 @@
 #include "QcTestUtil.h"
 
 #include <QBuffer>
+#include <QDir>
 #include <QFile>
+#include <QRegularExpression>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -29,6 +31,33 @@ class TestContentPack : public QObject
     Q_OBJECT
 
 private slots:
+    // Every definition folder the loader reads counts for the pack's size and fingerprint
+    // (contentFiles): the folders are read from the loader's source, so a new folder cannot be
+    // forgotten there.
+    void contentFilesCoverEveryDefinitionFolder()
+    {
+        QFile source(QStringLiteral(QTCRAFT_SOURCE_DIR "/src/common/content/loader/QcContentPackLoader.cpp"));
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        const QString code = QString::fromUtf8(source.readAll());
+        static const QRegularExpression folderOf(uR"re(loadDefinitions\(u"([a-z]+)"_s)re"_s);
+        QStringList folders;
+        for (QRegularExpressionMatchIterator it = folderOf.globalMatch(code); it.hasNext();) {
+            folders.append(it.next().captured(1));
+        }
+        QVERIFY(folders.size() >= 20);
+        QVERIFY(folders.contains(u"enchantments"_s));
+
+        QTemporaryDir dir;
+        for (const QString &folder : std::as_const(folders)) {
+            QVERIFY(QDir(dir.path()).mkpath(folder));
+            writeFile(QDir(dir.path()).filePath(folder + u"/x.json"_s), "{}");
+        }
+        const QStringList files = QcContentPackLoader::contentFiles(dir.path());
+        for (const QString &folder : std::as_const(folders)) {
+            QVERIFY2(files.contains(QDir(dir.path()).filePath(folder + u"/x.json"_s)), qPrintable(folder));
+        }
+    }
+
     void baseContentLoadsCleanly()
     {
         const QcResult<QcBaseContent::Loaded> loaded = QcBaseContent::load();

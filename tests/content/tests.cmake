@@ -4,6 +4,7 @@
 
 qc_add_test(test_content SOURCES content/test_content.cpp LIBRARIES qc_common)
 qc_add_test(test_content_pack SOURCES content/test_content_pack.cpp LIBRARIES qc_base_content qc_clientcore)
+target_compile_definitions(test_content_pack PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_village_mods SOURCES content/test_village_mods.cpp LIBRARIES qc_base_content)
 qc_add_test(test_creative_catalog SOURCES content/test_creative_catalog.cpp LIBRARIES qc_base_content)
 qc_add_test(test_crafting SOURCES content/test_crafting.cpp LIBRARIES qc_common)
@@ -28,3 +29,4 @@ qc_add_test(test_server_messages SOURCES content/test_server_messages.cpp LIBRAR
 target_compile_definitions(test_server_messages PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 qc_add_test(test_english_plurals SOURCES content/test_english_plurals.cpp LIBRARIES Qt::Core)
 target_compile_definitions(test_english_plurals PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
+qc_add_test(test_advancement_content SOURCES content/test_advancement_content.cpp LIBRARIES qc_base_content)

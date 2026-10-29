@@ -13,6 +13,7 @@
 #include "common/content/definitions/QcRecipeDefinition.h"
 #include "common/content/definitions/QcSmeltingRecipe.h"
 #include "common/content/definitions/QcWeatherDefinition.h"
+#include "common/content/registry/QcAdvancementCatalog.h"
 #include "common/content/registry/QcAssetCatalog.h"
 #include "common/content/registry/QcBlockStateTable.h"
 #include "common/content/registry/QcLootTables.h"
@@ -171,6 +172,10 @@ public:
     void registerEnchantment(QcEnchantmentDefinition enchantment) { m_enchantments.set(std::move(enchantment)); }
     const QList<QcEnchantmentDefinition> &enchantments() const { return m_enchantments.items(); }
     const QcEnchantmentDefinition *enchantment(const QString &name) const { return m_enchantments.find(name); }
+    // Advancements of the adventure guide (decision E-923), replaced or switched off by name; they
+    // reach the client without the triggers of their criteria.
+    QcAdvancementCatalog &advancements() { return m_advancements; }
+    const QcAdvancementCatalog &advancements() const { return m_advancements; }
     // Loot tables of generated chests (decision E-521, server side only), replaced by name.
     QcLootTables &lootTables() { return m_lootTables; }
     const QcLootTables &lootTables() const { return m_lootTables; }
@@ -223,6 +228,7 @@ private:
     QcNamedList<QcEffectDefinition> m_effects;
     QcNamedList<QcEnchantmentDefinition> m_enchantments;
     QcLootTables m_lootTables;
+    QcAdvancementCatalog m_advancements;
     QcNamedList<QcHandbookChapter> m_handbookChapters;
     QList<QcPackReference> m_packs;
     QcNamedList<QcPartFamily> m_partFamilies;

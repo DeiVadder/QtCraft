@@ -1,0 +1,15 @@
+{
+    "name": "iron_pickaxe",
+    "parent": "iron",
+    "icon": "iron_pickaxe",
+    "frame": "task",
+    "handbook": "item:iron_pickaxe",
+    "criteria": {
+        "pickaxe": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "iron_pickaxe"
+            }
+        }
+    }
+}

@@ -5,6 +5,7 @@
 #include "clientcore/control/QcControlReports.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/content/parser/QcAdvancementParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <QJsonArray>
@@ -54,6 +55,7 @@ QcControlSessionCommands::QcControlSessionCommands(QcControlContext &context)
 void QcControlSessionCommands::registerCommands(QcControlCommandTable &table)
 {
     table.add(u"status"_s, [this](const QJsonObject &request) { status(request); });
+    table.add(u"advancements"_s, [this](const QJsonObject &request) { advancements(request); });
     table.add(u"view"_s, [this](const QJsonObject &request) { view(request); });
     table.add(u"respawn"_s, [this](const QJsonObject &request) { respawn(request); });
     table.add(u"chat"_s, [this](const QJsonObject &request) { chat(request); });
@@ -165,6 +167,31 @@ void QcControlSessionCommands::mods(const QJsonObject &request)
     }
 
     m_context.finish(request, {{u"packs"_s, packs}});
+}
+
+void QcControlSessionCommands::advancements(const QJsonObject &request)
+{
+    QJsonArray list;
+    int reached = 0;
+    if (const auto content = session().content()) {
+        const QcClientAdvancements &progress = session().advancements();
+        for (const QcAdvancementDefinition &advancement : content->advancements().items()) {
+            QStringList met = progress.progress().criteria(advancement.name).values();
+            met.sort();
+            const bool done = progress.isDone(advancement.name);
+            reached += done ? 1 : 0;
+            list.append(QJsonObject{{u"name"_s, advancement.name},
+                                    {u"parent"_s, advancement.parent},
+                                    {u"icon"_s, advancement.icon},
+                                    {u"frame"_s, QcAdvancementParser::frameName(advancement.frame)},
+                                    {u"hidden"_s, advancement.hidden},
+                                    {u"handbook"_s, advancement.handbook},
+                                    {u"done"_s, done},
+                                    {u"criteria"_s, static_cast<int>(advancement.criteria.size())},
+                                    {u"met"_s, QJsonArray::fromStringList(met)}});
+        }
+    }
+    m_context.finish(request, {{u"advancements"_s, list}, {u"reached"_s, reached}});
 }
 
 void QcControlSessionCommands::debug(const QJsonObject &request)

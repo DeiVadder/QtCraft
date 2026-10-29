@@ -22,9 +22,10 @@ namespace {
 // Version 6: position and motion, view, health, inventory, food, armour, game mode, flight, the
 // kept inventory of the other mode, the experience (level and points, decision E-398) and the status
 // effects (decision E-450); version 7 adds the enchantment seed (decision E-864), version 8 the rune
-// seed (decision E-884). Version 5 is read without effects, 5 and 6 without seeds, 7 without rune
+// seed (decision E-884), version 9 the advancements (decision E-923; QcAdvancementProgress::bytes as
+// one byte array, so a later format of it is skipped as a whole). Version 5 is read without effects, 5 and 6 without seeds, 7 without rune
 // seed; files of older development versions are refused (decision E-356).
-constexpr quint16 playerVersion = 8;
+constexpr quint16 playerVersion = 9;
 constexpr quint16 oldestReadVersion = 5;
 constexpr QByteArrayView playerMagic("QCPL");
 
@@ -98,6 +99,17 @@ public:
         }
         if (version >= 8) {
             m_stream >> player.runeSeed;
+        }
+        if (version >= 9) {
+            QByteArray advancements;
+            m_stream >> advancements;
+            // Damaged advancements cost the progress, not the player (decision E-923).
+            std::optional<QcAdvancementProgress> progress = QcAdvancementProgress::fromBytes(advancements);
+            if (progress) {
+                player.advancements = std::move(*progress);
+            } else {
+                m_warnings.add(u"%1: the advancements are damaged; the player starts the adventure guide again"_s.arg(m_path));
+            }
         }
         return player;
     }
@@ -253,7 +265,7 @@ QByteArray QcPlayerStorage::bytes(const QcPlayerData &player) const
     writeEquipment(stream, player.keptEquipment);
     stream << static_cast<qint32>(player.experience.level()) << static_cast<qint32>(player.experience.points());
     QcStatusEffects::write(stream, player.effects);
-    stream << player.enchantSeed << player.runeSeed;
+    stream << player.enchantSeed << player.runeSeed << player.advancements.bytes();
     return QcSaveFile::bytes(playerMagic, payload, playerVersion);
 }
 

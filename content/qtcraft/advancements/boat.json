@@ -1,0 +1,15 @@
+{
+    "name": "boat",
+    "parent": "crafting_table",
+    "icon": "oak_boat",
+    "frame": "task",
+    "handbook": "chapter:boats",
+    "criteria": {
+        "ride": {
+            "trigger": "ride_vehicle",
+            "conditions": {
+                "vehicle": "boat"
+            }
+        }
+    }
+}

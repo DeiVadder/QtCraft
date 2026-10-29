@@ -1,0 +1,15 @@
+{
+    "name": "crafting_table",
+    "parent": "adventure",
+    "icon": "crafting_table",
+    "frame": "task",
+    "handbook": "chapter:crafting",
+    "criteria": {
+        "table": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "crafting_table"
+            }
+        }
+    }
+}

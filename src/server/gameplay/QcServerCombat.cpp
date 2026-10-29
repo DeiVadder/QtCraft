@@ -100,6 +100,12 @@ bool QcServerCombat::hurtCreature(QcServerState &state, QcServerSounds &sounds, 
         if (!young && blow.attacker != 0) {
             QcServerExperience::drop(state, QcServerExperience::roll(state, definition.experience), lootPosition);
         }
+        for (const auto &client : state.clients()) {
+            if (blow.attacker != 0 && client->id == blow.attacker) {
+                state.advancements().trigger(*client, {.trigger = QcAdvancementTrigger::EntityKilled, .entity = definition.name});
+                break;
+            }
+        }
     }
     return take != QcHurtWindow::Take::Ignored;
 }

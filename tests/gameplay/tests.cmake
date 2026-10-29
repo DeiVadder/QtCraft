@@ -182,3 +182,4 @@ qc_add_test(test_signal_readers SOURCES gameplay/test_signal_readers.cpp QcMachi
 qc_add_test(test_world_backup SOURCES gameplay/test_world_backup.cpp QcServerTestFixture.h QcRawClient.h QcTestLogin.h LIBRARIES qc_server)
 qc_add_test(test_invulnerability SOURCES gameplay/test_invulnerability.cpp QcServerTestFixture.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
 qc_add_test(test_creature_minds SOURCES gameplay/test_creature_minds.cpp gameplay/QcShadewalkerFixture.h QcServerTestFixture.h QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_advancements SOURCES gameplay/test_advancements.cpp QcServerTestFixture.h LIBRARIES qc_server qc_base_content TIMEOUT 300)

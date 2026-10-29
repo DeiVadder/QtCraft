@@ -71,6 +71,7 @@ All files are optional. Names without a namespace get the pack id (`ruby` in pac
 | `biomes/`, `features/`, `ores/` | world-generation entry | Used by the server's terrain generator. |
 | `trades/` | set of offers of a profession | What villagers of a profession buy and sell (stage 37.2c); see "Trading". |
 | `commands/` | command macro | A chat and console command made of other commands; see below. |
+| `advancements/` | advancement | A step of the adventure guide: place in the tree, icon, texts, handbook link, criteria; add, replace or switch off by name; see below. |
 | `worldgen/terrain.json` | – | Global terrain settings (replaces the earlier one). |
 | `structures/` | structure | Buildings from block layers with creatures, armour stands, contents, labels; a `showcase` entry makes it a demo of the showcase world; see below. |
 | `villages/` | village style | The pieces, roads, lamp posts and block swaps of the villages of some biomes (E-403); see Villages below. |
@@ -683,6 +684,50 @@ A trades file (`trades/<name>.json`) lists offers of one profession:
 
 The base game's currency is the emerald (ore deep in the stone in small veins, item, block). `/profession <profession> [level]` (operators) gives the nearest villager a profession and level, e.g. to try a mod's offers on a summoned villager.
 
+### Advancements (stage 67)
+
+The adventure guide (decision E-923) leads players from step to step: each advancement waits for game events, the server tracks per player which of its criteria are met and saves them in the player file, and the client shows a short toast when one is reached (the tree view follows in stage 67.2). `advancements/iron.json` of the base game:
+
+```json
+{
+    "name": "iron",
+    "parent": "furnace",
+    "icon": "iron_ingot",
+    "frame": "task",
+    "handbook": "item:iron_ingot",
+    "criteria": { "iron": { "trigger": "item_smelted", "conditions": { "item": "iron_ingot" } } }
+}
+```
+
+- `name`: the id (namespaced like other content). `parent`: the advancement it hangs below in the tree; none makes a root. A parent no pack has, or parents that form a loop, make the advancement a root with a warning.
+- `icon` (required): an item. `title` and `description`: translation keys, default `advancement.<namespace>.<name>` and `<title>.description`; fill them in `lang/`.
+- `frame`: `task` (default), `goal` or `challenge`; the toast says "Advancement made!", "Goal reached!" or "Challenge complete!". `hidden`: true keeps it out of the tree until reached (67.2).
+- `handbook`: the handbook entry it leads to, `chapter:<name>`, `item:<name>`, `block:<name>`, `mob:<name>` or `biome:<name>`; an entry the handbook does not have is a warning.
+- `criteria`: 1 to 32 named criteria, each a `trigger` and optional `conditions` (only the fields the trigger knows; others leave the file out with a warning). Item and block conditions take a name or `#<tag>` of items (a block matches by its item's tags).
+
+| Trigger | Fires when | Conditions |
+|---------|-----------|------------|
+| `item_obtained` | the inventory holds the items (checked whenever the inventory changes) | `item`, `count` (default 1) |
+| `block_placed`, `block_broken` | the player places or mines a block | `block` |
+| `item_crafted` | a crafting result is taken or the recipe book crafts | `item` |
+| `item_smelted` | the output of a furnace-like machine is taken | `item` |
+| `entity_killed` | the player kills a creature (blow or own arrow) | `entity` |
+| `entity_bred` | two animals have young; the nearest player within 16 blocks counts | `entity` |
+| `entity_tamed` | the player tames an animal | `entity` |
+| `location` | the player stands there (checked once a second after moving to another block) | `biome`, `structure` (`"village"`), `minY`, `maxY` |
+| `item_used_on_block` | a held item did something to a block (hoe, bone meal, bucket, flint and steel, axe, dye …) | `item`, `block` |
+| `item_used_on_entity` | a held item did something to a creature (name tag, feeding, milking, catching) | `item`, `entity` |
+| `ride_vehicle` | the player gets into a vehicle | `vehicle` (`minecart` or `boat`) |
+| `villager_trade` | a trade completes | `item` (what the player got) |
+| `item_enchanted` | the enchanting table enchants an item | `item` |
+| `effect_gained` | a status effect is given to the player | `effect` |
+| `level_reached` | the experience level reaches at least the value | `level` |
+| `impossible` | never; only `/advancement grant` | – |
+
+- `requirements`: `"all"` (default, every criterion), `"any"` (one is enough) or a list of groups such as `[["a", "b"], ["c"]]`: every group needs one met criterion.
+- **Replacing and switching off:** a file with the name of an earlier advancement replaces it whole. `{"name": "qtcraft:furnace", "disabled": true}` switches it off; its children then hang below its parent, so the tree stays connected.
+- Progress of advancements the content no longer has (a removed mod) stays in the player file and counts again when the mod comes back. `/advancement grant|revoke <player> <name|everything>` and `/advancement query <player> [name]` are for operators.
+
 ### Commands (stage 24)
 
 Mods cannot run code, so they add commands as **macros** (decision E-248): `commands/kit.json`
@@ -740,7 +785,7 @@ Screenshot: `docs/screenshots/07-mod-items.png` (all mod items in the inventory,
 
 ## Boundary between core and mods
 
-Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, structures, village styles and settings, showcase settings, textures, sounds and translations; depend on other mods.
+Mods **can**: add and replace blocks (with states, shapes and light), shapes, building-part families and materials (and exclude materials from parts), items with tags, recipes, smelting recipes, fuels, machine blocks with their own categories, mobs, biomes, features, ores, terrain settings, structures, village styles and settings, showcase settings, advancements, textures, sounds and translations; depend on other mods.
 
 Mods **cannot**: run code, add new kinds of behaviour (a new AI, a new block mechanic, new UI: every machine uses the furnace logic and screen, every storage block the chest screen, state rules are the fixed ones above), change the protocol, the save format or the rules the server enforces, or read and write files outside their own pack directory. Everything a mod provides goes through `QcContentPackLoader` (the only code that reads pack files) into `QcContentRegistry`; the rest of the game only sees the registry. The server sends the registry to clients, so clients never read mod files themselves.
 

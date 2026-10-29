@@ -1,0 +1,15 @@
+{
+    "name": "mountain_top",
+    "parent": "adventure",
+    "icon": "stone",
+    "frame": "task",
+    "handbook": "chapter:world",
+    "criteria": {
+        "high": {
+            "trigger": "location",
+            "conditions": {
+                "minY": 160
+            }
+        }
+    }
+}

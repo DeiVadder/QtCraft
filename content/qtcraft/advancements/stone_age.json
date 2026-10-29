@@ -1,0 +1,15 @@
+{
+    "name": "stone_age",
+    "parent": "wooden_pickaxe",
+    "icon": "cobblestone",
+    "frame": "task",
+    "handbook": "block:cobblestone",
+    "criteria": {
+        "stone": {
+            "trigger": "block_broken",
+            "conditions": {
+                "block": "stone"
+            }
+        }
+    }
+}

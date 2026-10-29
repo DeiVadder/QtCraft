@@ -1,0 +1,15 @@
+{
+    "name": "level_thirty",
+    "parent": "enchanter",
+    "icon": "enchanted_book",
+    "frame": "challenge",
+    "handbook": "chapter:experience",
+    "criteria": {
+        "level": {
+            "trigger": "level_reached",
+            "conditions": {
+                "level": 30
+            }
+        }
+    }
+}

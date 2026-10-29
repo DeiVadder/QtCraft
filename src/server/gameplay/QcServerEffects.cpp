@@ -43,6 +43,15 @@ bool QcServerEffects::givePlayer(const QcContentRegistry &content, QcServerClien
     return !client.dead && content.effect(effect.name) && client.effects.give(effect);
 }
 
+bool QcServerEffects::givePlayer(QcServerState &state, QcServerClient &client, const QcStatusEffect &effect)
+{
+    if (!givePlayer(state.content(), client, effect)) {
+        return false;
+    }
+    state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::EffectGained, .effect = effect.name});
+    return true;
+}
+
 void QcServerEffects::tickPlayer(QcServerClient &client)
 {
     if (client.dead) {

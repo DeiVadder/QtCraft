@@ -15,6 +15,7 @@ target_sources(qc_common PRIVATE
     blockrules/QcStairShapes.h blockrules/QcStairShapes.cpp
 )
 target_sources(qc_common PRIVATE
+    content/definitions/QcAdvancementDefinition.h
     content/definitions/QcAnvilSwap.h
     content/definitions/QcAppearance.h
     content/definitions/QcAppearanceDefinition.h
@@ -73,6 +74,7 @@ target_sources(qc_common PRIVATE
     content/loader/QcContentPackLoader.h content/loader/QcContentPackLoader.cpp
 )
 target_sources(qc_common PRIVATE
+    content/parser/QcAdvancementParser.h content/parser/QcAdvancementParser.cpp
     content/parser/QcArmourParser.h content/parser/QcArmourParser.cpp
     content/parser/QcBlastParser.h content/parser/QcBlastParser.cpp
     content/parser/QcBlockParser.h content/parser/QcBlockParser.cpp
@@ -115,6 +117,8 @@ target_sources(qc_common PRIVATE
     content/parser/QcWorldTypeParser.h content/parser/QcWorldTypeParser.cpp
 )
 target_sources(qc_common PRIVATE
+    content/registry/QcAdvancementCatalog.h content/registry/QcAdvancementCatalog.cpp
+    content/registry/QcAdvancementSerializer.h content/registry/QcAdvancementSerializer.cpp
     content/registry/QcAnvilSwaps.h content/registry/QcAnvilSwaps.cpp
     content/registry/QcArmourSerializer.h content/registry/QcArmourSerializer.cpp
     content/registry/QcAssetCatalog.h
@@ -184,6 +188,7 @@ target_sources(qc_common PRIVATE
     diagnostics/QcThreadCpuClock.h diagnostics/QcThreadCpuClock.cpp
 )
 target_sources(qc_common PRIVATE
+    gameplay/QcAdvancementProgress.h gameplay/QcAdvancementProgress.cpp
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
     gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
@@ -260,6 +265,8 @@ target_sources(qc_common PRIVATE
     protocol/QcAdminCodec.cpp
     protocol/QcAdminMessages.h
     protocol/QcAdminSamples.h protocol/QcAdminSamples.cpp
+    protocol/QcAdvancementCodec.cpp
+    protocol/QcAdvancementMessages.h
     protocol/QcChatText.h protocol/QcChatText.cpp
     protocol/QcChunkCodec.cpp
     protocol/QcConnection.h protocol/QcConnection.cpp

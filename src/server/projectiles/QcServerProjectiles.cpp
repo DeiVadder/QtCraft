@@ -224,7 +224,7 @@ void QcServerProjectiles::hitPlayer(QcServerClient &client, const QcHitEffects::
     // The status effects when the hit counts: it took, or, without damage, it would have taken.
     if ((impact.damage > 0.0 ? dealt : take) != QcHurtWindow::Take::Ignored) {
         for (const QcStatusEffect &effect : impact.effects) {
-            QcServerEffects::givePlayer(m_state.content(), client, effect);
+            QcServerEffects::givePlayer(m_state, client, effect);
         }
     }
     // A hit without damage sends no health by itself; the client still has to see the fire.
@@ -291,7 +291,7 @@ void QcServerProjectiles::splashPlayers(const QcProjectile &projectile, const Qc
             continue;
         }
         for (const QcStatusEffect &effect : impact.effects) {
-            QcServerEffects::givePlayer(m_state.content(), *client, effect);
+            QcServerEffects::givePlayer(m_state, *client, effect);
         }
     }
 }

@@ -53,6 +53,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     , m_weather(state, parts.weather)
     , m_villages(state)
     , m_experience(state)
+    , m_advancements(state)
     , m_effects(state)
     , m_mobs(state)
     , m_limits(state)
@@ -68,6 +69,7 @@ QcServerCommands::QcServerCommands(QcServerState &state, Parts parts)
     m_weather.addTo(m_registry);
     m_villages.addTo(m_registry);
     m_experience.addTo(m_registry);
+    m_advancements.addTo(m_registry);
     m_effects.addTo(m_registry);
     m_mobs.addTo(m_registry);
     m_adventure.addTo(m_registry);

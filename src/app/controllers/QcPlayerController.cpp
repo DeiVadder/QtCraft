@@ -342,3 +342,26 @@ void QcPlayerController::updateMachine()
     updateInventory();
     emit machineChanged();
 }
+
+void QcPlayerController::announceAdvancement(const QString &advancement)
+{
+    const auto content = m_parts.session ? m_parts.session->content() : nullptr;
+    const QcAdvancementDefinition *definition = content ? content->advancements().find(advancement) : nullptr;
+    if (!definition) {
+        return;
+    }
+
+    const QString language = m_settings.contentLanguage();
+    QString heading = tr("Advancement made!");
+    if (definition->frame == QcAdvancementFrame::Goal) {
+        heading = tr("Goal reached!");
+    } else if (definition->frame == QcAdvancementFrame::Challenge) {
+        heading = tr("Challenge complete!");
+    }
+    emit advancementReached(QVariantMap{{u"name"_s, advancement},
+                                        {u"title"_s, content->translations().translate(definition->titleKey, language)},
+                                        {u"description"_s, content->translations().translate(definition->descriptionKey, language)},
+                                        {u"icon"_s, QcItemIconUrls::url(definition->icon)},
+                                        {u"heading"_s, heading},
+                                        {u"special"_s, definition->frame != QcAdvancementFrame::Task}});
+}

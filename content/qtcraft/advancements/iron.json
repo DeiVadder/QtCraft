@@ -1,0 +1,15 @@
+{
+    "name": "iron",
+    "parent": "furnace",
+    "icon": "iron_ingot",
+    "frame": "task",
+    "handbook": "item:iron_ingot",
+    "criteria": {
+        "iron": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "iron_ingot"
+            }
+        }
+    }
+}

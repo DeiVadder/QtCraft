@@ -1,0 +1,12 @@
+{
+    "name": "breeding",
+    "parent": "farming",
+    "icon": "wheat",
+    "frame": "task",
+    "handbook": "chapter:creatures",
+    "criteria": {
+        "bred": {
+            "trigger": "entity_bred"
+        }
+    }
+}

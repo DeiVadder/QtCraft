@@ -1,0 +1,15 @@
+{
+    "name": "stone_tools",
+    "parent": "stone_age",
+    "icon": "stone_pickaxe",
+    "frame": "task",
+    "handbook": "item:stone_pickaxe",
+    "criteria": {
+        "pickaxe": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "stone_pickaxe"
+            }
+        }
+    }
+}

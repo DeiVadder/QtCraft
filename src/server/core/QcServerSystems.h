@@ -9,6 +9,7 @@ class QcServerExperience;
 class QcServerExplosions;
 class QcServerFire;
 class QcServerInteraction;
+class QcServerAdvancements;
 class QcServerBoats;
 class QcServerMinecarts;
 class QcServerProjectiles;
@@ -46,4 +47,6 @@ struct QcServerSystems
     QcServerExplosions &explosions;
     // Mining, using items and entities, and the swings while mining (decision E-881).
     QcServerInteraction &interaction;
+    // The adventure guide (decision E-923).
+    QcServerAdvancements &advancements;
 };

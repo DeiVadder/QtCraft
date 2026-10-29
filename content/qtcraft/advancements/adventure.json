@@ -1,0 +1,14 @@
+{
+    "name": "adventure",
+    "icon": "oak_log",
+    "frame": "task",
+    "handbook": "chapter:advancements",
+    "criteria": {
+        "log": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "#logs"
+            }
+        }
+    }
+}

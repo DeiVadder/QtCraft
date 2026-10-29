@@ -180,6 +180,7 @@ bool QcServerBoats::use(QcServerClient &client, quint32 id)
     boat->rest.reset();
     client.mining.pos.reset();
     seatDriver(client, *boat);
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::RideVehicle, .vehicle = u"boat"_s});
     return true;
 }
 

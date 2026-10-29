@@ -1,0 +1,12 @@
+{
+    "name": "trade",
+    "parent": "village",
+    "icon": "emerald",
+    "frame": "task",
+    "handbook": "chapter:trading",
+    "criteria": {
+        "trade": {
+            "trigger": "villager_trade"
+        }
+    }
+}

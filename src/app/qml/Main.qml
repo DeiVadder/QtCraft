@@ -311,6 +311,42 @@ ApplicationWindow {
         }
     }
 
+    // A reached advancement (decision E-923) at the top right, below the time of day it would cover
+    // (a status effect under it is covered for the toast's few seconds); made for the first one,
+    // hidden with the HUD and while a screenshot is taken.
+    Loader {
+        id: advancementToast
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: Ui.hudPx(8)
+        anchors.topMargin: Ui.hudPx(40)
+        active: false
+        visible: ((item as AdvancementToast)?.showing ?? false) && !game.photo.hudHidden && !game.photo.capturing
+
+        sourceComponent: AdvancementToast {}
+    }
+
+    Connections {
+        target: game.player
+
+        function onAdvancementReached(advancement: var) {
+            advancementToast.active = true;
+            (advancementToast.item as AdvancementToast).add(advancement);
+        }
+    }
+
+    // Leaving the world (or losing it) forgets the advancements still waiting for their toast.
+    Connections {
+        target: game
+
+        function onPhaseChanged() {
+            if (game.phase !== GameController.Phase.Playing) {
+                (advancementToast.item as AdvancementToast)?.clear();
+            }
+        }
+    }
+
     // The notices at the top, one under the other; both hide while a screenshot is taken, the pad's
     // with the HUD (decisions E-613, E-692).
     Column {

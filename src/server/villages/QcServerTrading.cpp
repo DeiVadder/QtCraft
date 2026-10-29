@@ -137,6 +137,7 @@ void QcServerTrading::trade(QcServerClient &client, QcMsg::Trade message)
     }
 
     hand(client, *villager, offer, traded);
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::VillagerTrade, .item = m_state.content().item(offer.result.item).name});
     const QcMobDefinition &definition = m_state.content().mobs()[villager->type];
     if (villager->villager->level > levelBefore) {
         trades(*villager).sync(*villager->villager);

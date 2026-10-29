@@ -73,6 +73,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
         // Creative mode: every block breaks at once, without drops or wear (decision E-282).
         disarmCutWire();
         m_parts.blocks.breakBlock(pos, false);
+        m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
         return;
     }
 
@@ -91,6 +92,7 @@ void QcServerInteraction::finishMining(QcServerClient &client, QcBlockPos pos)
     // Drops fall into the world as items (decision E-028).
     disarmCutWire();
     m_parts.blocks.breakBlock(pos, QcMining::canHarvest(definition, held));
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockBroken, .block = definition.name});
     client.hunger.exhaust(QcHunger::mineBlock);
 
     if (held && held->durability > 0) {
@@ -132,12 +134,10 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
         return;
     }
 
+    const std::optional<QcBlockId> clicked = m_state.world().blockAt(message.target);
     if (held && (held->scoops || held->bottles)) {
-        if (!(held->bottles ? fillBottle(client, message.target) : scoopLiquid(client, message.target))) {
-            if (const std::optional<QcBlockId> block = m_state.world().blockAt(message.target)) {
-                client.connection->send(QcMsg::BlockUpdate{message.target, *block});
-            }
-            m_parts.inventory.send(client);
+        if (takeLiquid(client, message.target, *held)) {
+            noteUse(client, held, clicked);
         }
         return;
     }
@@ -148,7 +148,11 @@ void QcServerInteraction::useItem(QcServerClient &client, const QcMsg::UseItem &
                           || m_parts.plants.carve(client, message.target, message.face, held)
                           || m_parts.plants.strip(client, message.target, held)
                           || QcBlockDyeing(m_state, m_parts.blocks, m_parts.sounds, m_parts.inventory).dye(client, message.target, held);
-    if (reshaped || m_parts.ignition.use(client, message) || m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)
+    if (reshaped || m_parts.ignition.use(client, message)) {
+        noteUse(client, held, clicked);
+        return;
+    }
+    if (m_parts.stands.place(client, message) || m_parts.minecarts.place(client, message)
         || m_parts.boats.place(client, message) || QcServerHanging(m_state, m_parts.sounds, m_parts.inventory).place(client, message)) {
         return;
     }
@@ -340,6 +344,7 @@ void QcServerInteraction::applyPlacement(QcServerClient &client, const QcItemDef
     // loader belongs to the player who placed it.
     m_state.world().loaders().setOwner(target, client.name);
     m_parts.sounds.playBlock(placedDefinition, QcBlockSoundAction::Place, target);
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::BlockPlaced, .block = placedDefinition.name});
     // A placed sign asks for its text (decision E-766).
     QcServerSigns(m_state).openEditor(client, target);
     // A golem's head on its body brings it to life (decision E-471).
@@ -409,6 +414,43 @@ bool QcServerInteraction::fillBottle(QcServerClient &client, QcBlockPos pos)
     return true;
 }
 
+bool QcServerInteraction::takeLiquid(QcServerClient &client, QcBlockPos target, const QcItemDefinition &held)
+{
+    if (held.bottles ? fillBottle(client, target) : scoopLiquid(client, target)) {
+        return true;
+    }
+    if (const std::optional<QcBlockId> block = m_state.world().blockAt(target)) {
+        client.connection->send(QcMsg::BlockUpdate{target, *block});
+    }
+    m_parts.inventory.send(client);
+    return false;
+}
+
+void QcServerInteraction::noteUse(QcServerClient &client, const QcItemDefinition *held, std::optional<QcBlockId> clicked)
+{
+    if (held && clicked) {
+        const QcAdvancementEvent event{.trigger = QcAdvancementTrigger::ItemUsedOnBlock, .item = held->name, .block = m_state.content().block(*clicked).name};
+        m_state.advancements().trigger(client, event);
+    }
+}
+
+QcServerInteraction::UseOnEntity QcServerInteraction::useOnEntity(const QcServerClient &client, quint32 entityId) const
+{
+    const QcCreature *mob = m_state.entities().creatures().find(entityId);
+    const QcItemDefinition *held = m_state.heldItem(client);
+    if (!mob || !held || mob->type < 0 || mob->type >= m_state.content().mobs().size()) {
+        return {};
+    }
+    return {held->name, m_state.content().mobs()[mob->type].name};
+}
+
+void QcServerInteraction::noteUse(QcServerClient &client, const UseOnEntity &use)
+{
+    if (!use.item.isEmpty()) {
+        m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemUsedOnEntity, .item = use.item, .entity = use.entity});
+    }
+}
+
 void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
 {
     client.swung = true;
@@ -416,18 +458,27 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
     if (m_parts.animals.tend(client, entityId)) {
         return;
     }
+    const UseOnEntity use = useOnEntity(client, entityId);
     // A cow takes the bucket before anything else is done with it (decision E-500).
     if (m_parts.animals.milk(client, entityId)) {
+        noteUse(client, use);
         return;
     }
     // Food the animal eats is never eaten by the player instead, even when the animal refuses it now.
-    if (m_parts.animals.feed(client, entityId) != QcServerAnimals::Feeding::NotItsFood) {
+    if (const QcServerAnimals::Feeding feeding = m_parts.animals.feed(client, entityId); feeding != QcServerAnimals::Feeding::NotItsFood) {
+        if (feeding == QcServerAnimals::Feeding::Fed) {
+            noteUse(client, use);
+        }
         return;
     }
 
     const QcCreature *mob = m_state.entities().creatures().find(entityId);
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (!mob || !held || m_parts.golems.repair(client, entityId, held)) {
+    if (mob && held && m_parts.golems.repair(client, entityId, held)) {
+        noteUse(client, use);
+        return;
+    }
+    if (!mob || !held) {
         return;
     }
 
@@ -442,6 +493,7 @@ void QcServerInteraction::useEntity(QcServerClient &client, quint32 entityId)
         return;
     }
 
+    noteUse(client, use);
     m_state.entities().creatures().remove(entityId);
     m_parts.sounds.play(definition.catchSound, centre);
     m_parts.inventory.exchangeHeld(client, definition.catchItem);

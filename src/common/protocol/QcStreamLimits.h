@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QDataStream>
+#include <QStringList>
 
 #include <optional>
 
@@ -30,6 +31,33 @@ inline constexpr quint32 maxTranslations = 1u << 18;
         return std::nullopt;
     }
     return count;
+}
+
+// Reads a list written as a QStringList (count, then the strings) without trusting the count:
+// QDataStream's own QStringList operator reserves whatever count the stream announces. The list, or
+// std::nullopt when the stream fails, the count is above `maxCount` or a string is longer than
+// `maxLength` (the stream is then set to ReadCorruptData).
+[[nodiscard]] inline std::optional<QStringList> readBoundedStrings(QDataStream &stream, quint32 maxCount, qsizetype maxLength)
+{
+    const std::optional<quint32> count = readCount(stream, maxCount);
+    if (!count) {
+        return std::nullopt;
+    }
+
+    QStringList strings;
+    for (quint32 i = 0; i < *count; ++i) {
+        QString text;
+        stream >> text;
+        if (stream.status() != QDataStream::Ok) {
+            return std::nullopt;
+        }
+        if (text.size() > maxLength) {
+            stream.setStatus(QDataStream::ReadCorruptData);
+            return std::nullopt;
+        }
+        strings.append(text);
+    }
+    return strings;
 }
 
 } // namespace QcStreamLimits

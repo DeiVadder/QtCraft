@@ -28,8 +28,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
 // (LatencyProbe, LatencyEcho) and the round trip of each player in the PlayerList (decision E-886),
 // 81 the group and the names of each command in the AdminCatalogue (decision E-911), 82 boats: the
 // entity kind Boat, the boat item's `boatBlock` in the content and the driven boat's state in
-// PlayerState, the Rowing bit of a boat whose driver paddles (decision E-920).
-inline constexpr quint32 version = 82;
+// PlayerState, the Rowing bit of a boat whose driver paddles (decision E-920), 83 the advancements:
+// their definitions in the content and the player's progress (AdvancementProgress, decision E-923).
+inline constexpr quint32 version = 83;
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 
 enum class Peer { Client, Server };

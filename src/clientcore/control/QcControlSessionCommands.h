@@ -7,7 +7,7 @@ class QcControlCommandTable;
 class QcControlContext;
 
 // Control commands about the player and the session: status, view mode, respawn, chat, sounds, loaded
-// packs, the debug data, the players on the server and the own look.
+// packs, the advancements, the debug data, the players on the server and the own look.
 class QcControlSessionCommands
 {
 public:
@@ -30,6 +30,8 @@ private:
     void appearance(const QJsonObject &request);
     void sounds(const QJsonObject &request);
     void mods(const QJsonObject &request);
+    // The advancements of the content with the local player's progress (decision E-923).
+    void advancements(const QJsonObject &request);
     // The debug display's data as JSON (decision E-225); subscribes to the server's part first.
     void debug(const QJsonObject &request);
     // The round trip to the server as the client measures it (decision E-886).

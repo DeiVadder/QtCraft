@@ -4,6 +4,7 @@
 // variant whose alternative index is the wire type tag. New messages are appended at the end.
 
 #include "common/protocol/QcAdminMessages.h"
+#include "common/protocol/QcAdvancementMessages.h"
 #include "common/protocol/QcDebugMessages.h"
 #include "common/protocol/QcEntityMessages.h"
 #include "common/protocol/QcLoginMessages.h"
@@ -40,4 +41,5 @@ using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync,
                                QcMsg::AdminLists, QcMsg::AdminSettings, QcMsg::AdminLog, QcMsg::BlockAck,
                                QcMsg::OpenEnchanting, QcMsg::EnchantingState, QcMsg::ChooseEnchantment, QcMsg::CloseEnchanting,
                                QcMsg::OpenAnvil, QcMsg::AnvilState, QcMsg::RenameAnvil, QcMsg::ForgeAnvil, QcMsg::CloseAnvil,
-                               QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho>;
+                               QcMsg::PauseRequest, QcMsg::ServerPause, QcMsg::LatencyProbe, QcMsg::LatencyEcho,
+                               QcMsg::AdvancementProgress>;

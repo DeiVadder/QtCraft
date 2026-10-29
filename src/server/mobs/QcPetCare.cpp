@@ -53,6 +53,7 @@ bool QcPetCare::use(QcServerClient &client, quint32 mobId)
     consume(client);
     if (m_state.random().generateDouble() < definition.tameable->chance) {
         tame(m_state.entities(), m_state.content(), *mob, QcPetOwners::keyOf(client));
+        m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::EntityTamed, .entity = definition.name});
         m_sounds.play(m_state.content().mobs()[mob->type].ambientSound, centre);
     }
     return true;
@@ -65,6 +66,7 @@ bool QcPetCare::tend(QcServerClient &client, QcCreature &mob, const QcMobDefinit
     // Anyone may feed a hurt pet.
     if (held && rules.healItems.contains(held->name) && mob.health < definition.maxHealth) {
         mob.health = std::min(definition.maxHealth, mob.health + rules.healAmount);
+        noteUse(client, *held, definition);
         consume(client);
         m_sounds.play(QString::fromLatin1(QcSoundKeys::playerEat), centre, 0.6f);
         return true;
@@ -77,6 +79,7 @@ bool QcPetCare::tend(QcServerClient &client, QcCreature &mob, const QcMobDefinit
     const std::optional<quint32> color = held ? rules.collarColor(held->name) : std::nullopt;
     if (color && *color != mob.tame->collar) {
         mob.tame->collar = *color;
+        noteUse(client, *held, definition);
         consume(client);
         m_state.entities().markStale(mob.id);
         return true;
@@ -90,6 +93,11 @@ bool QcPetCare::tend(QcServerClient &client, QcCreature &mob, const QcMobDefinit
     mob.pose = mob.tame->sitting ? QcPose::Sitting : QcPose::Standing;
     mob.path.clear();
     return true;
+}
+
+void QcPetCare::noteUse(QcServerClient &client, const QcItemDefinition &held, const QcMobDefinition &definition)
+{
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemUsedOnEntity, .item = held.name, .entity = definition.name});
 }
 
 void QcPetCare::tame(QcEntities &entities, const QcContentRegistry &content, QcCreature &mob, const QString &owner)

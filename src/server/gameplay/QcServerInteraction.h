@@ -65,6 +65,21 @@ public:
     void swingWhileMining();
 
 private:
+    // The held item and the creature kind of a use on a creature, read before the use changes them,
+    // for the adventure guide (decision E-923); empty when either is missing.
+    struct UseOnEntity
+    {
+        QString item;
+        QString entity;
+    };
+    UseOnEntity useOnEntity(const QcServerClient &client, quint32 entityId) const;
+    // Fills a bottle or scoops with a bucket at `target`; a refusal sends the block and the
+    // inventory again (the client may have predicted it). Whether it happened.
+    bool takeLiquid(QcServerClient &client, QcBlockPos target, const QcItemDefinition &held);
+    // Reports a use that did something to the adventure guide: on a creature, or of `held` on the
+    // block `clicked` (read before the use changed it).
+    void noteUse(QcServerClient &client, const UseOnEntity &use);
+    void noteUse(QcServerClient &client, const QcItemDefinition *held, std::optional<QcBlockId> clicked);
     // Whether the player's mode lets the held item do `action` to the block at `pos` (adventure
     // allow-lists, decision E-735); false where no block is loaded.
     bool permits(const QcServerClient &client, QcAdventureRules::Action action, QcBlockPos pos) const;

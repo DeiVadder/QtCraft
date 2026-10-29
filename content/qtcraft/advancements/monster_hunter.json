@@ -1,0 +1,70 @@
+{
+    "name": "monster_hunter",
+    "parent": "crafting_table",
+    "icon": "stone_sword",
+    "frame": "task",
+    "handbook": "chapter:creatures",
+    "criteria": {
+        "zombie": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "zombie"
+            }
+        },
+        "skeleton": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "skeleton"
+            }
+        },
+        "spider": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "spider"
+            }
+        },
+        "cave_spider": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "cave_spider"
+            }
+        },
+        "husk": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "husk"
+            }
+        },
+        "stray": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "stray"
+            }
+        },
+        "drowned": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "drowned"
+            }
+        },
+        "witch": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "witch"
+            }
+        },
+        "slime": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "slime"
+            }
+        },
+        "silverfish": {
+            "trigger": "entity_killed",
+            "conditions": {
+                "entity": "silverfish"
+            }
+        }
+    },
+    "requirements": "any"
+}

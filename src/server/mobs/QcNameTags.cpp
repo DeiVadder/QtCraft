@@ -27,6 +27,7 @@ bool use(QcServerState &state, QcServerClient &client, quint32 id)
     }
 
     mob->name = held.name();
+    state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemUsedOnEntity, .item = state.content().item(held.item).name, .entity = definition.name});
     // A named creature stays (QcCreature::persistent): never despawns, saved with its chunk. It is
     // no longer kept only for its block, so putting the block down keeps it (QcCreatureTraits::letGo).
     mob->keptForBlock = false;

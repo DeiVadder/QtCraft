@@ -30,6 +30,9 @@ public:
 
 private:
     bool tend(QcServerClient &client, QcCreature &mob, const QcMobDefinition &definition, const QcItemDefinition *held);
+    // Healing and dyeing the collar count for the adventure guide as a use on the creature; taming
+    // counts as taming only (decision E-923).
+    void noteUse(QcServerClient &client, const QcItemDefinition &held, const QcMobDefinition &definition);
     // Uses up one of the held item (not in creative mode) and tells the client.
     void consume(QcServerClient &client);
 

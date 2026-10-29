@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/content/definitions/QcTextureDefinition.h"
+#include "common/content/parser/QcAdvancementParser.h"
 #include "common/content/parser/QcBlockParser.h"
 #include "common/content/parser/QcCommandMacroParser.h"
 #include "common/content/parser/QcEffectParser.h"
@@ -36,6 +37,7 @@ using QcBlockParser::parseBlock;
 using QcCommandMacroParser::parseCommandMacro;
 using QcEffectParser::parseEffect;
 using QcEnchantmentParser::parseEnchantment;
+using QcAdvancementParser::parseAdvancement;
 using QcLootTableParser::parseLootTable;
 using QcShapeParser::parseShape;
 using QcMaterialParser::parsePartFamily;

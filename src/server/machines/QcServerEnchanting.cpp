@@ -167,6 +167,7 @@ void QcServerEnchanting::choose(QcServerClient &client, QcMsg::ChooseEnchantment
         [[maybe_unused]] const bool paid = client.experience.spendLevels(price);
         table.lapis = table.lapis.count > price ? table.lapis.withCount(table.lapis.count - price) : QcItemStack();
     }
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemEnchanted, .item = m_state.content().item(enchanted->item).name});
     // A book becomes an enchanted book (decision E-873).
     table.item = *enchanted;
     table.item.item = QcEnchantingTable::enchantedItem(m_state.content(), enchanted->item);

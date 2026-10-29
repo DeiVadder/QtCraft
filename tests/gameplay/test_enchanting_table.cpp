@@ -243,9 +243,17 @@ private slots:
         player.experience = QcExperience(7, 0);
         player.enchantSeed = 1234;
         player.runeSeed = 99;
-        const QcResult<QcSaveFile::Payload> current = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 8);
-        QVERIFY(current.has_value());
-        QCOMPARE(current->version, 8);
+        const QcResult<QcSaveFile::Payload> newest = QcSaveFile::parse(storage.bytes(player), u"p"_s, "QCPL", 9);
+        QVERIFY(newest.has_value());
+        QCOMPARE(newest->version, 9);
+        // Version 8 is the same without the advancements at the end (a byte array, decision E-923).
+        const auto advancementsSize = static_cast<qsizetype>(sizeof(quint32)) + player.advancements.bytes().size();
+        const QcSaveFile::Payload eight{newest->bytes.chopped(advancementsSize), 8};
+        const QcSaveFile::Payload *current = &eight;
+        const QcPlayerStorage::Result eightRead = storage.parse(u"Eight"_s, QcSaveFile::bytes("QCPL", eight.bytes, 8));
+        QVERIFY(eightRead.has_value() && eightRead->player.has_value());
+        QCOMPARE(eightRead->player->runeSeed, 99u);
+        QVERIFY(eightRead->player->advancements.isEmpty());
         const auto seedSize = static_cast<qsizetype>(sizeof(quint32));
 
         // Version 7 is the same without the rune seed at the end (decision E-884), version 6 without

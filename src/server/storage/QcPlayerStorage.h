@@ -2,6 +2,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
+#include "common/gameplay/QcAdvancementProgress.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcGameMode.h"
@@ -41,11 +42,14 @@ struct QcPlayerData
     quint32 runeSeed = 0;
     // Status effects (decision E-450).
     QList<QcStatusEffect> effects;
+    // The met criteria of the adventure guide (decision E-923), unknown advancements included; empty
+    // in files before version 9.
+    QcAdvancementProgress advancements;
 };
 
 // The player files of a world directory (players/<name>-<hash>.qcp, decision E-093): position,
 // view, inventory and armour, health and food, the game mode with the kept inventory of the other
-// mode, the experience. Items are stored by name; unknown items are dropped with a warning.
+// mode, the experience, the advancements. Items are stored by name; unknown items are dropped with a warning.
 class QcPlayerStorage
 {
 public:

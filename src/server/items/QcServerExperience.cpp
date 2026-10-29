@@ -58,6 +58,10 @@ void QcServerExperience::sendChanges()
         }
 
         const QcExperience &experience = client->experience;
+        // Every source of levels (orbs, commands, trades) ends here once per step (decision E-923).
+        if (!client->sentExperience || client->sentExperience->level() < experience.level()) {
+            m_state.advancements().trigger(*client, {.trigger = QcAdvancementTrigger::LevelReached, .level = experience.level()});
+        }
         client->sentExperience = experience;
         client->connection->send(QcMsg::PlayerExperience{experience.level(), experience.points(), QcExperience::pointsForNext(experience.level())});
     }

@@ -205,21 +205,21 @@ private slots:
         QVERIFY(overview.constLast().startsWith(u"/help <group> [page]"_s));
 
         const qsizetype players = std::ranges::count(m_server->commands().registry().commands(), QcCommandCategory::Players, &QcCommandSpec::category);
-        QCOMPARE(players, 11);
+        QCOMPARE(players, 12);
         const QStringList first = replies(u"/help players"_s);
         QCOMPARE(first.constFirst(), u"Player commands, page 1 of 2:"_s);
         QCOMPARE(first.size(), 1 + QcCommandHelp::pageSize + 1);
-        QCOMPARE(first[1], u"/adventure: "_s + QString::fromUtf8(m_server->commands().registry().find(u"adventure"_s)->description));
+        QCOMPARE(first[1], u"/advancement: "_s + QString::fromUtf8(m_server->commands().registry().find(u"advancement"_s)->description));
         QCOMPARE(first.constLast(), u"More with /help players 2"_s);
         // A description is sent as a message of its own, so the client shows it translated.
-        const QcMsg::ChatMessage ban = m_client->chatKeys.at(m_client->chatKeys.size() - QcCommandHelp::pageSize);
+        const QcMsg::ChatMessage ban = m_client->chatKeys.at(m_client->chatKeys.size() - QcCommandHelp::pageSize + 1);
         QCOMPARE(ban.key, u"/%1: %2"_s);
         QCOMPARE(ban.arguments.constFirst(), u"ban"_s);
         QCOMPARE(ban.contentKeys.constLast(), u"tr:"_s + QString::fromUtf8(m_server->commands().registry().find(u"ban"_s)->description));
 
         const QStringList second = replies(u"/help PLAYERS 2"_s);
         QCOMPARE(second.constFirst(), u"Player commands, page 2 of 2:"_s);
-        QCOMPARE(second.size(), 1 + 3);
+        QCOMPARE(second.size(), 1 + 4);
         QVERIFY(second.constLast().startsWith(u"/whitelist: "_s));
         QCOMPARE(replies(u"/help players 3"_s), QStringList{u"/help players has pages 1 to 2"_s});
         QCOMPARE(replies(u"/help players x"_s), QStringList{u"/help players has pages 1 to 2"_s});

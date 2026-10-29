@@ -7,6 +7,11 @@ target_sources(qc_server PRIVATE
     admin/QcServerAdmin.h admin/QcServerAdmin.cpp
 )
 target_sources(qc_server PRIVATE
+    advancements/QcAdvancementEvent.h
+    advancements/QcAdvancementMatch.h advancements/QcAdvancementMatch.cpp
+    advancements/QcServerAdvancements.h advancements/QcServerAdvancements.cpp
+)
+target_sources(qc_server PRIVATE
     blockentities/QcBlockEntities.h blockentities/QcBlockEntities.cpp
     blockentities/QcBlockEntityChecks.h blockentities/QcBlockEntityChecks.cpp
     blockentities/QcBlockEntityExtras.h blockentities/QcBlockEntityExtras.cpp
@@ -46,6 +51,7 @@ target_sources(qc_server PRIVATE
 )
 target_sources(qc_server PRIVATE
     commands/QcAccessList.h commands/QcAccessList.cpp
+    commands/QcAdvancementCommands.h commands/QcAdvancementCommands.cpp
     commands/QcAdventureCommands.h commands/QcAdventureCommands.cpp
     commands/QcBackupRunner.h commands/QcBackupRunner.cpp
     commands/QcBlockCommands.h commands/QcBlockCommands.cpp

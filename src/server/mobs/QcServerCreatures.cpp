@@ -130,7 +130,7 @@ void QcServerCreatures::strike(QcServerClient &client, const QcMobManager::Playe
         return;
     }
     for (const QcStatusEffect &effect : m_state.content().mobs()[hit.mobType].blowEffects) {
-        QcServerEffects::givePlayer(m_state.content(), client, effect);
+        QcServerEffects::givePlayer(m_state, client, effect);
     }
 }
 

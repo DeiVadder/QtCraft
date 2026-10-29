@@ -124,6 +124,7 @@ QcServerCrafting::CraftOutcome QcServerCrafting::craftOnce(QcServerClient &clien
 
     client.inventory = result;
     takeOneOfEachCell(client);
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemCrafted, .item = definition.resultItem});
     return CraftOutcome::Crafted;
 }
 
@@ -273,6 +274,7 @@ void QcServerCrafting::craftRecipe(QcServerClient &client, const QcMsg::CraftRec
     }
 
     if (crafted > 0) {
+        m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemCrafted, .item = recipe.resultItem});
         client.connection->send(QcChatText::message(QT_TRANSLATE_NOOP("QcServerMessages", "Crafted %1 x %2"),
                                                     {QString::number(crafted * recipe.resultCount), recipe.resultItem}));
     } else {

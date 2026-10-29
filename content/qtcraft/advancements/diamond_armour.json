@@ -1,0 +1,34 @@
+{
+    "name": "diamond_armour",
+    "parent": "diamonds",
+    "icon": "diamond_chestplate",
+    "frame": "challenge",
+    "handbook": "chapter:health",
+    "criteria": {
+        "diamond_helmet": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "diamond_helmet"
+            }
+        },
+        "diamond_chestplate": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "diamond_chestplate"
+            }
+        },
+        "diamond_leggings": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "diamond_leggings"
+            }
+        },
+        "diamond_boots": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "diamond_boots"
+            }
+        }
+    },
+    "requirements": "all"
+}

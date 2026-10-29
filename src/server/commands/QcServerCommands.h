@@ -1,5 +1,6 @@
 #pragma once
 
+#include "server/commands/QcAdvancementCommands.h"
 #include "server/commands/QcAdventureCommands.h"
 #include "server/commands/QcBlockCommands.h"
 #include "server/commands/QcChatLog.h"
@@ -98,6 +99,7 @@ private:
     QcWeatherCommands m_weather;
     QcVillageCommands m_villages;
     QcExperienceCommands m_experience;
+    QcAdvancementCommands m_advancements;
     QcEffectCommands m_effects;
     QcMobCommands m_mobs;
     QcLimitCommands m_limits;

@@ -28,7 +28,7 @@ set(qc_concurrency_tests
     test_terrain_generator test_village_generation test_village_plan_cache test_village_variety test_village_fields test_village_layouts test_village_swamp test_world_backup test_world_maintenance test_audio_output
     test_tcp_transport test_network_client test_network_game test_dedicated_server test_server_log test_latency test_pause_keepalive test_world_pause
     test_message_log test_crash_report
-    test_creative_client test_adventure_client test_backpack_control test_void_client test_ice_client test_push_client test_multiplayer_bots test_creative_bots test_signal_bots
+    test_creative_client test_adventure_client test_advancement_client test_backpack_control test_void_client test_ice_client test_push_client test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_headless_cli scenario_headless_walk_and_jump
     scenario_headless_unknown_command_fails scenario_headless_failure_then_quit test_client_admin scenario_headless_admin_channel
     app_offscreen_world_screenshot app_offscreen_view_hidden_keeps_sections test_chunk_store test_chunk_unloading test_chunk_tools
@@ -97,6 +97,7 @@ set_tests_properties(scenario_headless_admin_channel PROPERTIES
     REQUIRED_FILES "$<TARGET_FILE:qtcraft-headless>;${CMAKE_CURRENT_SOURCE_DIR}/scenarios/admin-channel.jsonl")
 set_tests_properties(test_ui_palette PROPERTIES
     REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml;${PROJECT_SOURCE_DIR}/src/app/models/QcUiTheme.h")
+set_tests_properties(test_content_pack PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/common/content/loader/QcContentPackLoader.cpp")
 set_tests_properties(test_lazy_screen PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/src/app/qml/controls/LazyScreen.qml")
 set_tests_properties(test_app_icon PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/cmake/windows/QtCraft.ico")
 set_tests_properties(test_world_options PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/mods/rubies/pack.json")

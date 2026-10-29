@@ -127,6 +127,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     player/QcBlockForecast.h player/QcBlockForecast.cpp
+    player/QcClientAdvancements.h player/QcClientAdvancements.cpp
     player/QcClientGameMode.h player/QcClientGameMode.cpp
     player/QcClientInventory.h player/QcClientInventory.cpp
     player/QcClientRiding.h player/QcClientRiding.cpp

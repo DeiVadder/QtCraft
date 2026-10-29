@@ -1,0 +1,15 @@
+{
+    "name": "map",
+    "parent": "iron",
+    "icon": "map",
+    "frame": "task",
+    "handbook": "chapter:maps",
+    "criteria": {
+        "map": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "map"
+            }
+        }
+    }
+}

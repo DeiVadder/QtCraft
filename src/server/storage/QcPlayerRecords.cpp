@@ -47,6 +47,7 @@ Record of(const QcServerClient &client, const QcContentRegistry &content)
     player.enchantSeed = client.enchantSeed;
     player.runeSeed = client.runeSeed;
     player.effects = client.effects.all();
+    player.advancements = client.advancements.progress;
     return record;
 }
 
@@ -67,6 +68,7 @@ void restore(QcServerClient &client, const QcPlayerData &player)
     client.enchantSeed = player.enchantSeed;
     client.runeSeed = player.runeSeed;
     client.effects.restore(player.effects);
+    client.advancements.progress = player.advancements;
     QcServerGameModes::applyRules(client);
 }
 

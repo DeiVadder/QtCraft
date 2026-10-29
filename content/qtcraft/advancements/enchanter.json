@@ -1,0 +1,12 @@
+{
+    "name": "enchanter",
+    "parent": "diamonds",
+    "icon": "enchanting_table",
+    "frame": "goal",
+    "handbook": "chapter:experience",
+    "criteria": {
+        "enchant": {
+            "trigger": "item_enchanted"
+        }
+    }
+}

@@ -73,6 +73,7 @@ void QcServerInventory::send(QcServerClient &client)
     state.craftingResult = QcServerCrafting::resultOf(m_state, client).value_or(QcItemStack());
 
     client.connection->send(state);
+    m_state.advancements().inventoryChanged(client);
     if (client.screen.stonecutter) {
         client.connection->send(QcMsg::StonecutterState{client.screen.stonecutter->input, client.screen.stonecutter->recipe});
     }
@@ -156,12 +157,14 @@ void QcServerInventory::applyOpenSlots(QcServerClient &client, const OpenSlots &
         // A player taking from the output gets the experience the machine gathered (decision E-398).
         const auto countOf = [](const QcItemStack &stack) { return stack.isEmpty() ? 0 : stack.count; };
         const bool tookOutput = countOf(open.combined.stacks[machineSlot + QcMachineRules::outputSlot]) < countOf(open.machine->stacks[QcMachineRules::outputSlot]);
+        const QcItemStack output = open.machine->stacks[QcMachineRules::outputSlot];
         for (int slot = 0; slot < QcMachineRules::slotCount; ++slot) {
             open.machine->stacks[static_cast<std::size_t>(slot)] = open.combined.stacks[machineSlot + slot];
         }
         if (tookOutput) {
             const int points = QcServerExperience::takeWhole(m_state, std::exchange(open.machine->experience, 0.0));
             QcServerExperience::drop(m_state, points, client.motion.position + QcVec3{0.0, 0.5, 0.0});
+            m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::ItemSmelted, .item = m_state.content().item(output.item).name});
         }
     }
 

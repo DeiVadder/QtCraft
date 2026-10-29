@@ -1,0 +1,15 @@
+{
+    "name": "diamonds",
+    "parent": "iron_pickaxe",
+    "icon": "diamond",
+    "frame": "goal",
+    "handbook": "item:diamond",
+    "criteria": {
+        "diamond": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "diamond"
+            }
+        }
+    }
+}

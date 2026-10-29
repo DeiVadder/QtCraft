@@ -276,6 +276,9 @@ void QcServer::addClientSystems()
         m_state.entities().forgetDeaths();
     });
 
+    // Location criteria of the adventure guide and its news to the players (decision E-923).
+    m_tickSystems.add(ClientSync, When::Always, [this] { m_state.advancements().tick(); });
+
     // The admin channel's status, chat and log for the operators who follow them (decision E-848).
     m_tickSystems.add(ClientSync, When::Always, [this] { m_admin.update(); });
 

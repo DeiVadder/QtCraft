@@ -3,6 +3,7 @@
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/player/QcClientAdvancements.h"
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientInventory.h"
 #include "clientcore/player/QcClientVitals.h"
@@ -202,6 +203,8 @@ public:
     // Health, food and experience as the server last reported them.
     const QcClientVitals &vitals() const { return m_vitals; }
     bool isDead() const { return m_vitals.isDead(); }
+    // The progress in the adventure guide as the server last reported it (decision E-923).
+    const QcClientAdvancements &advancements() const { return m_advancements; }
 
     // The server's debug data: what is asked for and what arrived (QcClientDebugSubscription).
     QcClientDebugSubscription &debug() { return m_debug; }
@@ -232,6 +235,9 @@ signals:
     void healthChanged();
     void foodChanged();
     void experienceChanged();
+    void advancementsChanged();
+    // The server announced that the local player reached `advancement` just now (the toast).
+    void advancementReached(const QString &advancement);
     void machineOpened();
     // Contents or progress of the open machine changed.
     void machineChanged();
@@ -331,6 +337,7 @@ private:
     bool m_appearancePending = false;
     QcCameraMode m_cameraMode = QcCameraMode::FirstPerson;
     QcClientVitals m_vitals;
+    QcClientAdvancements m_advancements;
     QcClientDebugSubscription m_debug;
     QcClientAdmin m_admin;
     QcClientSounds m_sounds;

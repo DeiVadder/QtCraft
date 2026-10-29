@@ -2,7 +2,7 @@
 
 [Zurück zum Inhalt](index.md)
 
-**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
+**QtCraft:** [Erste Schritte](#chapter-qtcraft-basics) · [Abenteuer-Leitfaden](#chapter-qtcraft-advancements) · [Steuerung](#chapter-qtcraft-controls) · [Abbauen](#chapter-qtcraft-mining) · [Bauen](#chapter-qtcraft-building) · [Herstellen](#chapter-qtcraft-crafting) · [Ofen und Brennstoff](#chapter-qtcraft-smelting) · [Nahrung und Hunger](#chapter-qtcraft-hunger) · [Landwirtschaft](#chapter-qtcraft-farming) · [Boote](#chapter-qtcraft-boats) · [Signalstaub](#chapter-qtcraft-signal) · [Schienen und Loren](#chapter-qtcraft-rails) · [Gesundheit und Schaden](#chapter-qtcraft-health) · [Feuer](#chapter-qtcraft-fire) · [Wetter](#chapter-qtcraft-weather) · [Dörfer](#chapter-qtcraft-villages) · [Dorfbewohner](#chapter-qtcraft-villagers) · [Handel](#chapter-qtcraft-trading) · [Bogenschießen](#chapter-qtcraft-archery) · [Sprengstoff](#chapter-qtcraft-explosives) · [Tod und Wiederbeleben](#chapter-qtcraft-death) · [Erfahrung](#chapter-qtcraft-experience) · [Wesen](#chapter-qtcraft-creatures) · [Die Welt](#chapter-qtcraft-world) · [Karten](#chapter-qtcraft-maps) · [Rucksack](#chapter-qtcraft-backpack) · [Kreativmodus](#chapter-qtcraft-creative) · [Zuschauermodus](#chapter-qtcraft-spectator) · [Abenteuermodus](#chapter-qtcraft-adventure) · [Spielregeln](#chapter-qtcraft-rules) · [Befehle](#chapter-qtcraft-commands) · [Mehrspieler](#chapter-qtcraft-multiplayer) · [Texturpakete](#chapter-qtcraft-texture_packs)
 
 ## QtCraft
 
@@ -27,6 +27,24 @@ Drücke jederzeit H / F1. Jeder Block, jedes Item, jedes Wesen und jedes Biom ha
 **Siehe auch**
 
 [Eichenstamm](blocks.md#block-qtcraft-oak_log), [Werkbank](blocks.md#block-qtcraft-crafting_table), [Holzspitzhacke](tools.md#item-qtcraft-wooden_pickaxe), [Fackel](blocks.md#block-qtcraft-torch)
+
+### <a id="chapter-qtcraft-advancements"></a>Abenteuer-Leitfaden
+
+**Dein nächster Schritt**
+
+Der Abenteuer-Leitfaden ist ein Baum von Fortschritten, der dich vom ersten Holzstamm über Werkzeuge, Unterschlupf, Eisen und Ackerbau zu Dörfern, Verzauberung und Diamanten führt. Jeder Fortschritt sagt, was zu tun ist, und verweist auf die Seite des Handbuchs, die es erklärt. Der Server merkt sich, was du erreicht hast, und speichert es mit deinem Spieler, auch im Mehrspielermodus.
+
+**Einen Fortschritt erreichen**
+
+Erreichst du einen Fortschritt, gleitet oben rechts ein kleiner Hinweis herein: „Fortschritt erzielt!“ für einen gewöhnlichen Schritt, „Ziel erreicht!“ für ein Ziel und „Herausforderung gemeistert!“ für eine Herausforderung. Ein Bildschirm mit dem ganzen Baum ist geplant.
+
+**Der Befehl /advancement**
+
+Operatoren vergeben Fortschritte mit /advancement grant <Spieler> <Fortschritt> und nehmen sie mit /advancement revoke <Spieler> <Fortschritt> zurück (everything für alle) und sehen mit /advancement query <Spieler> [Fortschritt], was ein Spieler erreicht hat.
+
+**Siehe auch**
+
+[Werkbank](blocks.md#block-qtcraft-crafting_table), [Eisenbarren](items.md#item-qtcraft-iron_ingot), [Diamant](items.md#item-qtcraft-diamond)
 
 ### <a id="chapter-qtcraft-controls"></a>Steuerung
 

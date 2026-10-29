@@ -1,0 +1,15 @@
+{
+    "name": "archery",
+    "parent": "monster_hunter",
+    "icon": "bow",
+    "frame": "task",
+    "handbook": "chapter:archery",
+    "criteria": {
+        "bow": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "bow"
+            }
+        }
+    }
+}

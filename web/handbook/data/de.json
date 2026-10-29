@@ -3,6 +3,7 @@
         {
             "entries": [
                 "chapter:qtcraft:basics",
+                "chapter:qtcraft:advancements",
                 "chapter:qtcraft:controls",
                 "chapter:qtcraft:mining",
                 "chapter:qtcraft:building",
@@ -93886,6 +93887,72 @@
             ],
             "text": "Eine dünne Schicht Wolle, die einen Block darunter braucht.",
             "title": "Gelber Teppich"
+        },
+        "chapter:qtcraft:advancements": {
+            "category": "playing",
+            "categoryTitle": "Spielen",
+            "englishTitle": "Adventure guide",
+            "facts": [
+            ],
+            "icon": "qtcraft:oak_log",
+            "id": "chapter:qtcraft:advancements",
+            "name": "qtcraft:advancements",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Der Abenteuer-Leitfaden ist ein Baum von Fortschritten, der dich vom ersten Holzstamm über Werkzeuge, Unterschlupf, Eisen und Ackerbau zu Dörfern, Verzauberung und Diamanten führt. Jeder Fortschritt sagt, was zu tun ist, und verweist auf die Seite des Handbuchs, die es erklärt. Der Server merkt sich, was du erreicht hast, und speichert es mit deinem Spieler, auch im Mehrspielermodus.",
+                    "title": "Dein nächster Schritt"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Erreichst du einen Fortschritt, gleitet oben rechts ein kleiner Hinweis herein: „Fortschritt erzielt!“ für einen gewöhnlichen Schritt, „Ziel erreicht!“ für ein Ziel und „Herausforderung gemeistert!“ für eine Herausforderung. Ein Bildschirm mit dem ganzen Baum ist geplant.",
+                    "title": "Einen Fortschritt erreichen"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Operatoren vergeben Fortschritte mit /advancement grant <Spieler> <Fortschritt> und nehmen sie mit /advancement revoke <Spieler> <Fortschritt> zurück (everything für alle) und sehen mit /advancement query <Spieler> [Fortschritt], was ein Spieler erreicht hat.",
+                    "title": "Der Befehl /advancement"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:crafting_table",
+                            "note": "",
+                            "target": "block:qtcraft:crafting_table",
+                            "text": "Werkbank"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Eisenbarren"
+                        },
+                        {
+                            "icon": "qtcraft:diamond",
+                            "note": "",
+                            "target": "item:qtcraft:diamond",
+                            "text": "Diamant"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "Siehe auch"
+                }
+            ],
+            "text": "",
+            "title": "Abenteuer-Leitfaden"
         },
         "chapter:qtcraft:adventure": {
             "category": "playing",

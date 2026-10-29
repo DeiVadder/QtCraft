@@ -260,6 +260,12 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
         }));
     } else if (const QcClientVitals::Change change = m_vitals.apply(message); change != QcClientVitals::Change::None) {
         onVitalsChanged(change);
+    } else if (const auto *progress = std::get_if<QcMsg::AdvancementProgress>(&message)) {
+        const QStringList reached = m_advancements.apply(*progress, m_worldMirror.content().get());
+        emit advancementsChanged();
+        for (const QString &advancement : reached) {
+            emit advancementReached(advancement);
+        }
     } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
         m_gameMode.setMode(mode->mode);
         m_gameMode.setAdventure(mode->adventure);

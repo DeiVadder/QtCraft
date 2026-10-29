@@ -133,6 +133,22 @@ void QcServerAnimals::release(QcServerState &state, const QcItemDefinition &item
     }
 }
 
+void QcServerAnimals::creditBreeding(const QcMobBreeding::Birth &birth)
+{
+    QcServerClient *breeder = nullptr;
+    double nearest = breedingCreditReach;
+    for (const auto &client : m_state.clients()) {
+        const double distance = (client->motion.position - birth.position).length();
+        if (client->hasBody() && distance <= nearest) {
+            nearest = distance;
+            breeder = client.get();
+        }
+    }
+    if (breeder) {
+        m_state.advancements().trigger(*breeder, {.trigger = QcAdvancementTrigger::EntityBred, .entity = m_state.content().mobs()[birth.type].name});
+    }
+}
+
 void QcServerAnimals::tick()
 {
     m_breeding.setLimits(m_state.config().limits.breedingCrowd, m_state.config().limits.bredPerKind);
@@ -147,6 +163,7 @@ void QcServerAnimals::tick()
         m_sounds.play(m_state.content().mobs()[birth.type].ambientSound, birth.position);
         // The parents' reward, as in the reference (decision E-398).
         QcServerExperience::drop(m_state, QcServerExperience::roll(m_state, m_state.content().mobs()[birth.type].breeding.experience), birth.position);
+        creditBreeding(birth);
     }
 
     layEggs();

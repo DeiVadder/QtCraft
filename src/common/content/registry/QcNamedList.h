@@ -6,6 +6,7 @@
 #include <QList>
 #include <QString>
 
+#include <algorithm>
 #include <optional>
 #include <utility>
 
@@ -43,6 +44,14 @@ public:
         }
     }
 
+    // Keeps the first `count` definitions and forgets the later ones.
+    void truncate(qsizetype count)
+    {
+        for (qsizetype index = count; index < m_items.size(); ++index) {
+            m_index.remove(m_items[index].name);
+        }
+        m_items.resize(std::min(count, m_items.size()));
+    }
     [[nodiscard]] std::optional<qsizetype> indexOf(const QString &name) const
     {
         const auto it = m_index.constFind(name);

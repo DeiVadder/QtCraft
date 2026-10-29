@@ -1,0 +1,34 @@
+{
+    "name": "iron_armour",
+    "parent": "iron",
+    "icon": "iron_chestplate",
+    "frame": "task",
+    "handbook": "chapter:health",
+    "criteria": {
+        "iron_helmet": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "iron_helmet"
+            }
+        },
+        "iron_chestplate": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "iron_chestplate"
+            }
+        },
+        "iron_leggings": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "iron_leggings"
+            }
+        },
+        "iron_boots": {
+            "trigger": "item_obtained",
+            "conditions": {
+                "item": "iron_boots"
+            }
+        }
+    },
+    "requirements": "any"
+}

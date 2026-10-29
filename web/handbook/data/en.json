@@ -3,6 +3,7 @@
         {
             "entries": [
                 "chapter:qtcraft:basics",
+                "chapter:qtcraft:advancements",
                 "chapter:qtcraft:controls",
                 "chapter:qtcraft:mining",
                 "chapter:qtcraft:building",
@@ -93886,6 +93887,72 @@
             ],
             "text": "A thin layer of wool that needs a block below.",
             "title": "Yellow carpet"
+        },
+        "chapter:qtcraft:advancements": {
+            "category": "playing",
+            "categoryTitle": "Playing",
+            "englishTitle": "Adventure guide",
+            "facts": [
+            ],
+            "icon": "qtcraft:oak_log",
+            "id": "chapter:qtcraft:advancements",
+            "name": "qtcraft:advancements",
+            "pack": "qtcraft",
+            "packName": "QtCraft",
+            "sections": [
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "The adventure guide is a tree of advancements that leads you from your first log of wood through tools, shelter, iron and farming to villages, enchanting and diamonds. Each advancement says what to do and links to the page of the handbook that explains it. The server notes what you have reached and keeps it with your player, also in multiplayer.",
+                    "title": "Your next step"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "When you reach an advancement a small notice slides in at the top right: \"Advancement made!\" for an ordinary step, \"Goal reached!\" for a goal and \"Challenge complete!\" for a challenge. A screen with the whole tree is planned.",
+                    "title": "Reaching an advancement"
+                },
+                {
+                    "links": [
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "Operators grant or take back advancements with /advancement grant <player> <advancement> and /advancement revoke <player> <advancement> (everything for all of them) and see what a player has reached with /advancement query <player> [advancement].",
+                    "title": "The /advancement command"
+                },
+                {
+                    "links": [
+                        {
+                            "icon": "qtcraft:crafting_table",
+                            "note": "",
+                            "target": "block:qtcraft:crafting_table",
+                            "text": "Crafting table"
+                        },
+                        {
+                            "icon": "qtcraft:iron_ingot",
+                            "note": "",
+                            "target": "item:qtcraft:iron_ingot",
+                            "text": "Iron ingot"
+                        },
+                        {
+                            "icon": "qtcraft:diamond",
+                            "note": "",
+                            "target": "item:qtcraft:diamond",
+                            "text": "Diamond"
+                        }
+                    ],
+                    "recipes": [
+                    ],
+                    "text": "",
+                    "title": "See also"
+                }
+            ],
+            "text": "",
+            "title": "Adventure guide"
         },
         "chapter:qtcraft:adventure": {
             "category": "playing",

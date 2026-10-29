@@ -34,6 +34,8 @@ public:
     static bool giveCreature(const QcContentRegistry &content, QcMobManager &creatures, quint32 creature, const QcStatusEffect &effect);
     // Gives a living player an effect of a known kind; false when nothing changed.
     static bool givePlayer(const QcContentRegistry &content, QcServerClient &client, const QcStatusEffect &effect);
+    // The same, and a given effect counts for the adventure guide (decision E-923).
+    static bool givePlayer(QcServerState &state, QcServerClient &client, const QcStatusEffect &effect);
 
 private:
     void tickPlayer(QcServerClient &client);

@@ -1,0 +1,15 @@
+{
+    "name": "wooden_pickaxe",
+    "parent": "crafting_table",
+    "icon": "wooden_pickaxe",
+    "frame": "task",
+    "handbook": "chapter:mining",
+    "criteria": {
+        "pickaxe": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "wooden_pickaxe"
+            }
+        }
+    }
+}

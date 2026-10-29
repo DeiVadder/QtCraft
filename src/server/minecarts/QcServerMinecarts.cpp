@@ -168,6 +168,7 @@ bool QcServerMinecarts::use(QcServerClient &client, quint32 id)
     cart->rest.reset();
     client.mining.pos.reset();
     seat(client, *cart);
+    m_state.advancements().trigger(client, {.trigger = QcAdvancementTrigger::RideVehicle, .vehicle = u"minecart"_s});
     return true;
 }
 

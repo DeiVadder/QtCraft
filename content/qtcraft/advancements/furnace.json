@@ -1,0 +1,15 @@
+{
+    "name": "furnace",
+    "parent": "stone_age",
+    "icon": "furnace",
+    "frame": "task",
+    "handbook": "chapter:smelting",
+    "criteria": {
+        "furnace": {
+            "trigger": "item_crafted",
+            "conditions": {
+                "item": "furnace"
+            }
+        }
+    }
+}

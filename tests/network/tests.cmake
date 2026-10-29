@@ -58,3 +58,4 @@ qc_add_test(test_admin_channel SOURCES network/test_admin_channel.cpp network/Qc
 qc_add_test(test_admin_settings SOURCES network/test_admin_settings.cpp network/QcAdminTestFixture.h QcServerTestFixture.h QcRawClient.h
             LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_client_admin SOURCES network/test_client_admin.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
+qc_add_test(test_advancement_client SOURCES network/test_advancement_client.cpp LIBRARIES qc_server qc_worlds qc_clientcore qc_base_content TIMEOUT 180)

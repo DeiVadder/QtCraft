@@ -13,6 +13,17 @@
     </message>
 </context>
 <context>
+    <name>AdvancementToast</name>
+    <message numerus="yes">
+        <location filename="../src/app/qml/hud/AdvancementToast.qml" line="58"/>
+        <source>+%n more</source>
+        <translation>
+            <numerusform>+%n more</numerusform>
+            <numerusform>+%n more</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>AnvilScreen</name>
     <message numerus="yes">
         <location filename="../src/app/qml/inventory/AnvilScreen.qml" line="28"/>

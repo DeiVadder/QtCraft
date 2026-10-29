@@ -53,6 +53,10 @@ public:
 private:
     // What creatures lay in this tick (QcMobLaying, decision E-452), dropped as items.
     void layEggs();
+    // The adventure guide's breeding (decision E-923): the nearest player within breedingCreditReach
+    // of the birth counts as the breeder (the game does not note who fed the parents).
+    void creditBreeding(const QcMobBreeding::Birth &birth);
+    static constexpr double breedingCreditReach = 16.0;
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

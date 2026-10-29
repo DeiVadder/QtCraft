@@ -1,0 +1,52 @@
+{
+    "name": "cooked_food",
+    "parent": "furnace",
+    "icon": "cooked_beef",
+    "frame": "task",
+    "handbook": "chapter:hunger",
+    "criteria": {
+        "cooked_beef": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_beef"
+            }
+        },
+        "cooked_porkchop": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_porkchop"
+            }
+        },
+        "cooked_chicken": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_chicken"
+            }
+        },
+        "cooked_mutton": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_mutton"
+            }
+        },
+        "cooked_cod": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_cod"
+            }
+        },
+        "cooked_salmon": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "cooked_salmon"
+            }
+        },
+        "baked_potato": {
+            "trigger": "item_smelted",
+            "conditions": {
+                "item": "baked_potato"
+            }
+        }
+    },
+    "requirements": "any"
+}
