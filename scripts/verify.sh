@@ -1,8 +1,18 @@
 #!/bin/sh
 # Stage verification with two modes.
 #   --full (default): debug build + tests, ASan/UBSan and TSan builds + tests, release build, static analysis
-#                     of the whole project and time-limited smoke runs of the real game with screenshots
-#                     (rendered offscreen; QTCRAFT_SHOT_MODE=window takes the real window).
+#                     and time-limited smoke runs of the real game with screenshots (rendered offscreen;
+#                     QTCRAFT_SHOT_MODE=window takes the real window). Only at milestones (before a
+#                     release or a playtest build). Against the last fully green full verify
+#                     (build/.verify-full-last) TSan runs only the tests labelled `concurrency`
+#                     and those whose inputs changed since they last passed a full-verify TSan step,
+#                     and clang-tidy, clazy and qmllint only the files changed since that commit plus
+#                     the direct includers of changed headers; ASan runs every test, the size checks
+#                     cover every file (decision E-929, scripts/verify-full-select.sh). --all-tsan
+#                     (QC_FULL_TSAN_ALL=1) and --full-analysis (QC_FULL_ANALYSIS=1) take everything;
+#                     --release (the release milestone) implies both; --dry-run prints both
+#                     selections and stops; --seed-green <commit> records a commit that passed a
+#                     full verify before E-929 and stops. The summary names the selections.
 #   --quick:          debug build, debug tests (optionally only those matching --tests) and static analysis
 #                     of the files changed against dev (committed on this branch or not yet committed).
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
@@ -16,7 +26,7 @@
 #                    --defer-timing belongs to the quick levels and is refused with --full.
 # --tsan-concurrent: --quick plus a TSan build that runs only the tests labelled `concurrency`
 #                    (tests/CMakeLists.txt, about a third of the TSan time); the level for work during
-#                    a stage. Before the merge the full run checks every test under TSan. With
+#                    a stage. With
 #                    --changed its TSan step also runs every other test whose own inputs changed
 #                    (relinked, or a new or edited test file on the branch); a change of runtime data
 #                    alone selects only the label there (decision E-412).
@@ -54,8 +64,9 @@
 # QC_QUIET_PAUSE_MAX seconds, default 2700). Agents call scripts/wait-quiet.sh before a bare build.
 # --defer-timing: skips the timing phase and names the skipped tests; their stamps are dropped, so
 #                    a later --changed run selects them. For agents working in parallel; the
-#                    central run before the merge runs them. The script runs at normal priority; work beside it (the next stage in its own
-# worktree) builds with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
+#                    central run before the merge runs them.
+# The script runs at normal priority; work beside it (the next package in its own worktree) builds
+# with `nice -n 10` and runs no tests. It refuses to start while the benchmark lock
 # ~/.cache/qtcraft/bench.lock is held by a live process.
 # Slot broker (scripts/qc-slot.py, decision E-781): unless QC_SLOT=0 or the run already holds a heavy
 # or bench slot (QC_SLOT_ID with QC_SLOT_KIND tsan, asan, verify or bench), the script runs itself
@@ -66,7 +77,8 @@
 # within the budget) and gets QC_BUILD_JOBS and QC_TEST_JOBS from it (an own value only lowers them).
 # QC_SLOT_TIMEOUT bounds the wait (seconds, default none). Without a reachable broker it goes on with
 # the lock files as before.
-# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]
+# Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan]
+#                          [--all-tsan] [--full-analysis] [--release] [--dry-run] [--seed-green <commit>] [screenshot.png]
 
 set -u
 
@@ -98,6 +110,10 @@ SANITIZERS_GIVEN=0
 SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
 BASE_BRANCH=${QC_VERIFY_BASE:-dev}
 BENCH_LOCK="$HOME/.cache/qtcraft/bench.lock"
+FULL_STAMP="$PROJECT_DIR/build/debug/.verify-full-shared"
+FULL_ONLY_GIVEN=0
+DRY_RUN=0
+SEED_COMMIT=""
 
 cores=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)
 TEST_JOBS=${QC_TEST_JOBS:-$((cores - 2))}
@@ -114,9 +130,11 @@ if [ -n "${QC_BUILD_JOBS:-}" ]; then
 fi
 . "$PROJECT_DIR/scripts/verify-phases.sh"
 . "$PROJECT_DIR/scripts/verify-summary.sh"
+. "$PROJECT_DIR/scripts/verify-full-select.sh"
 
 usage() {
-    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan] [screenshot.png]" >&2
+    echo "usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan]" >&2
+    echo "                         [--all-tsan] [--full-analysis] [--release] [--dry-run] [--seed-green <commit>] [screenshot.png]" >&2
     exit 2
 }
 
@@ -140,6 +158,29 @@ while [ $# -gt 0 ]; do
         ;;
     --defer-timing)
         DEFER_TIMING=1
+        ;;
+    --all-tsan)
+        FULL_TSAN_ALL=1
+        FULL_ONLY_GIVEN=1
+        ;;
+    --full-analysis)
+        FULL_ANALYSIS=1
+        FULL_ONLY_GIVEN=1
+        ;;
+    --dry-run)
+        DRY_RUN=1
+        FULL_ONLY_GIVEN=1
+        ;;
+    --release)
+        FULL_TSAN_ALL=1
+        FULL_ANALYSIS=1
+        FULL_ONLY_GIVEN=1
+        ;;
+    --seed-green)
+        [ $# -ge 2 ] || usage
+        SEED_COMMIT=$2
+        FULL_ONLY_GIVEN=1
+        shift
         ;;
     --tests)
         [ $# -ge 2 ] || usage
@@ -178,7 +219,7 @@ if [ "$DEFER_TIMING" -eq 1 ] && [ "$MODE" = full ] && [ "$CHANGED" -eq 0 ]; then
     usage
 fi
 
-# --changed belongs to the levels during a stage; the full run before the merge runs every test.
+# --changed belongs to the levels during a stage; the full run makes its own selections (E-929).
 if [ "$CHANGED" -eq 1 ]; then
     case "$MODE_GIVEN" in
     *full*) usage ;;
@@ -188,6 +229,19 @@ fi
 
 if [ "$MODE" = quick ] && [ "$SANITIZERS_GIVEN" -eq 0 ]; then
     SANITIZERS=""
+fi
+
+# The selections of the full run (E-929) belong to it alone; the dry run needs no slot.
+if [ "$FULL_ONLY_GIVEN" -eq 1 ] && [ "$MODE" != full ]; then
+    usage
+fi
+if [ -n "$SEED_COMMIT" ]; then
+    seed_full_green "$SEED_COMMIT"
+    exit $?
+fi
+if [ "$DRY_RUN" -eq 1 ]; then
+    full_dry_run
+    exit $?
 fi
 
 # Under the slot broker: runs this script once more as the command of a slot (exit code 211 of the
@@ -247,11 +301,12 @@ clean_commit() {
 }
 # One part of a two-part full run skips the steps without a sanitizer when an earlier full run
 # passed them on this same clean commit (decision E-890); debug timing tests that run deferred
-# (E-913) it runs alone, without a build.
-FULL_STAMP="$PROJECT_DIR/build/debug/.verify-full-shared"
+# (E-913) it runs alone, without a build. The sanitizers that passed on it before count towards the
+# stamp of a fully green commit (E-929).
 START_COMMIT=$(clean_commit)
 SKIP_SHARED=0
 SHARED_DEFERRED=""
+read_shared_passed
 if [ "$MODE" = full ] && [ "$SANITIZERS_GIVEN" -eq 1 ] && [ -z "$TEST_REGEX" ] && [ -n "$START_COMMIT" ] &&
     [ "$(full_stamp_key "$FULL_STAMP")" = "$START_COMMIT" ]; then
     SKIP_SHARED=1
@@ -263,18 +318,20 @@ if [ "$MODE" = full ] && [ "$SANITIZERS_GIVEN" -eq 1 ] && [ -z "$TEST_REGEX" ] &
     fi
 fi
 
+# The step name has a variable of its own: sh has no local variables, and the commands of a step
+# (the timing phase's loops over test names) may use `name`.
 step() {
-    name=$1
+    step_name=$1
     shift
-    echo "== $name"
+    echo "== $step_name"
     started=$(date +%s)
     if ! "$@"; then
-        failures="$failures $name"
+        failures="$failures $step_name"
     fi
     seconds=$(($(date +%s) - started))
-    echo "-- $name: ${seconds}s"
+    echo "-- $step_name: ${seconds}s"
     timings="$timings
-$(printf '%-24s %6ss' "$name" "$seconds")"
+$(printf '%-24s %6ss' "$step_name" "$seconds")"
 }
 
 limited() {
@@ -307,6 +364,11 @@ run_tests() {
     # machine that is busy beside the run. The positional parameters collect the ctest filters.
     set --
     rm -f "build/$preset/.verify-test-pending.json"
+    # The TSan step of a full run renews the stamps of its own selection as well (E-929).
+    record_also=""
+    if [ "$MODE" = full ] && [ "$preset" = tsan ]; then
+        record_also=$FULL_TSAN_STAMPS
+    fi
 
     selection=""
     if [ "$CHANGED" -eq 1 ] && selection=$(select_changed "$preset" "$label"); then
@@ -315,8 +377,16 @@ run_tests() {
             return 0
         fi
         set -- "$@" -R "$selection"
+    elif [ -n "$record_also" ] && full_tsan_select; then
+        note_tsan_selection "$(regex_count "$full_selection")"
+        if [ -z "$full_selection" ]; then
+            echo "no TSan test selected for the full run: 0 tests run"
+            return 0
+        fi
+        set -- "$@" -R "$full_selection"
     else
         [ "$CHANGED" -eq 1 ] && echo "test selection failed, running every test" >&2
+        [ -n "$record_also" ] && note_tsan_selection "" "$full_reason"
         python3 scripts/verify-tests.py select --build-dir "build/$preset"
         if [ -n "$TEST_REGEX" ]; then
             set -- "$@" -R "$TEST_REGEX"
@@ -335,6 +405,7 @@ run_tests() {
     run_timing_phase "$preset" "$junit_timing" "$@" || status=1
     # Deferred timing tests lose their stamp, so the next --changed run selects them (E-913).
     record_tests "$preset" "$junit" "$junit_timing"
+    record_also=""
     if [ "$preset" = debug ]; then
         debug_deferred_names=$phase_deferred
         check_limits "$junit" "$junit_timing"
@@ -420,7 +491,7 @@ else
         step "build-release" limited 1200 cmake --build --preset release $BUILD_JOBS_ARGS
 
         quiet_pause "static-analysis"
-        step "static-analysis" scripts/static-analysis.sh "$PROJECT_DIR/build/debug"
+        step "static-analysis" full_static_analysis
     fi
 
     # Smoke runs render offscreen (E-229); QTCRAFT_SHOT_MODE=window takes the real window, which
@@ -463,20 +534,8 @@ if [ -n "$limit_warnings" ]; then
 fi
 printf '%-24s %6ss\n' "total" "$(($(date +%s) - total_start))"
 
-# A full run that passed every step without a sanitizer on a clean, unchanged commit stamps it for
-# the other part of a two-part full run (E-890), naming the debug timing tests it deferred (E-913);
-# the second part rewrites it after running them.
-shared_failed=0
-for name in $failures; do
-    case "$name" in
-    *-asan | *-tsan) ;;
-    *) shared_failed=1 ;;
-    esac
-done
-if [ "$MODE" = full ] && [ "$shared_failed" -eq 0 ] && [ -z "$TEST_REGEX" ] &&
-    [ -n "$START_COMMIT" ] && [ "$(clean_commit)" = "$START_COMMIT" ]; then
-    write_full_stamp "$FULL_STAMP" "$START_COMMIT" "$debug_deferred_names"
-fi
+# The stamps of a full run and its selections (E-890, E-913, E-929; scripts/verify-full-select.sh).
+finish_full_run
 
 if [ -n "$failures" ]; then
     echo "FAILED:$failures"

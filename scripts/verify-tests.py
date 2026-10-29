@@ -41,10 +41,21 @@ test. A change of runtime data alone does not select them. Tests without a stamp
 a change are adopted: they do not run, and their current fingerprints become their stamps, so the
 next relink selects them. That keeps the first run in a fresh build directory at the label.
 
+--full-label <l> (the TSan step of the full verify, decision E-929) selects every test with label
+<l> and every other test whose own inputs, command line, ENVIRONMENT or LABELS changed since it
+last passed (or that has no stamp), and every test when tests/tsan.supp or CMakePresets.json
+changed; a change of other runtime data alone does not select it, as with --broad-label. The full verify keeps
+these stamps apart from the ones of --changed (--stamps <file name> for select, --also-stamps
+<file name> for record), so only a TSan step of a full verify renews them.
+--stamps <file name> reads (select) or writes (record) that stamp file in the build directory
+instead of .verify-test-stamps.json; --also-stamps copies the passed tests into a second one.
+--no-pending (select) writes no pending fingerprints: a dry run that records nothing afterwards.
+
 Usage: scripts/verify-tests.py select --build-dir <dir> [--changed] [--regex <re>] [--label <l>]
-                                      [--broad-label <l>]
+                                      [--broad-label <l> | --full-label <l>] [--stamps <file>]
+                                      [--no-pending]
        scripts/verify-tests.py record --build-dir <dir> --junit <report.xml> [--junit <report.xml>]
-                                      [--forget <test> ...]
+                                      [--forget <test> ...] [--stamps <file>] [--also-stamps <file>]
 """
 
 import argparse
@@ -69,6 +80,12 @@ RUNTIME_DATA = [
     "tests/ui", "tests/expect_exit_code.cmake", "tests/tsan.supp", "docs/handbook",
     "web/handbook", "cmake", "CMakePresets.json", "CMakeUserPresets.json", "CMakeLists.txt",
 ]
+# Runtime data that changes how TSan reports for every test (suppressions, sanitizer options of the
+# presets): a change selects every test in the TSan step of a full verify (--full-label, E-929),
+# where runtime data alone selects nothing otherwise.
+TSAN_SETUP = ["tests/tsan.supp", "CMakePresets.json"]
+# Test properties that change how a test runs without changing its inputs.
+RUN_PROPERTIES = ["ENVIRONMENT", "LABELS"]
 # Directories searched for further CMake files (CMakeLists.txt, the test lists tests/*/tests.cmake)
 # and shader folders.
 NESTED_DATA_ROOTS = ["src", "tests"]
@@ -356,6 +373,24 @@ def broad_reason(name, test, current, stamp, context):
     return None
 
 
+def full_reason(name, test, current, stamp, label):
+    """Reason to run a test in the TSan step of a full verify (E-929), or None: the label always,
+    every other test when it has no stamp, its own inputs, its command line or run properties
+    changed, or the TSan setup (suppressions, presets) changed; runtime data alone selects nothing.
+    A stamp of an older format without these fields counts as changed."""
+    if has_label(test, label):
+        return f"label {label}"
+    if stamp is None:
+        return "no stamp of a full verify"
+    if stamp.get("tsan_setup") != current["tsan_setup"]:
+        return "TSan setup changed (tests/tsan.supp, CMakePresets.json) since its last full verify"
+    if stamp.get("inputs") != current["inputs"]:
+        return "relinked or inputs changed since its last full verify"
+    if stamp.get("run") != current["run"]:
+        return "command line, ENVIRONMENT or LABELS changed since its last full verify"
+    return None
+
+
 def read_json(path, default):
     try:
         with open(path, encoding="utf-8") as file:
@@ -371,13 +406,23 @@ def write_json(path, value):
     os.replace(temporary, path)
 
 
+def run_digest(test):
+    """One hash over a test's command line and the properties that change how it runs."""
+    properties = {key: test["properties"].get(key) for key in RUN_PROPERTIES}
+    text = json.dumps([test["command"], properties], sort_keys=True)
+    return hashlib.sha1(text.encode()).hexdigest()
+
+
 def fingerprints(tests, build_dir, data_digest, hasher):
-    """Current fingerprint of every test: the content of its inputs and the runtime data digest."""
+    """Current fingerprint of every test: the content of its inputs, the runtime data digest, its
+    command line and run properties, and the TSan setup (the last two for --full-label, E-929)."""
     result = {}
     libraries = ProjectLibraries(build_dir)
+    setup = digest(snapshot([os.path.join(ROOT, path) for path in TSAN_SETUP], hasher))
     for name, test in tests.items():
         inputs = snapshot(test_inputs(test, build_dir, libraries), hasher)
-        result[name] = {"inputs": digest(inputs), "data": data_digest}
+        result[name] = {"inputs": digest(inputs), "data": data_digest, "run": run_digest(test),
+                        "tsan_setup": setup}
     return result
 
 
@@ -430,11 +475,14 @@ def select(arguments):
     current = fingerprints(tests, build_dir, digest(data_now), hasher)
     hasher.save()
     pending = {"tests": current, "data_files": data_now}
-    write_json(os.path.join(build_dir, PENDING), pending)
+    write_pending = not getattr(arguments, "no_pending", False)
+    if write_pending:
+        write_json(os.path.join(build_dir, PENDING), pending)
     if not arguments.changed:
         return
 
-    stamps = read_json(os.path.join(build_dir, STAMPS), {})
+    stamps = read_json(os.path.join(build_dir, getattr(arguments, "stamps", "") or STAMPS), {})
+    full_label = getattr(arguments, "full_label", "")
     known = stamps.get("tests", {})
     considered = [name for name, test in tests.items()
                   if matches(name, test, arguments.regex, arguments.label)]
@@ -444,7 +492,9 @@ def select(arguments):
     if arguments.broad_label:
         context = (arguments.broad_label, branch_test_names(), adopted)
     for name in sorted(considered):
-        if context:
+        if full_label:
+            why = full_reason(name, tests[name], current[name], known.get(name), full_label)
+        elif context:
             why = broad_reason(name, tests[name], current[name], known.get(name), context)
         else:
             why = reason(current[name], known.get(name))
@@ -452,7 +502,7 @@ def select(arguments):
             selected.append((name, why))
 
     report(selected, considered, stamps, data_now, bool(arguments.broad_label))
-    if adopted:
+    if adopted and write_pending:
         pending["adopted"] = adopted
         write_json(os.path.join(build_dir, PENDING), pending)
         print(f"verify --changed: {len(adopted)} test(s) outside label {arguments.broad_label} without a stamp "
@@ -483,21 +533,34 @@ def record(arguments):
         return
 
     os.remove(os.path.join(build_dir, PENDING))
-    stamps_path = os.path.join(build_dir, STAMPS)
-    stamps = read_json(stamps_path, {})
-    known = stamps.setdefault("tests", {})
     reports = [name for junit in arguments.junit for name in passed_tests(junit)]
     passed = [name for name in reports if name in pending["tests"]]
     adopted = pending.get("adopted", [])
-    for name in passed + adopted:
+    write_stamps(build_dir, getattr(arguments, "stamps", "") or STAMPS, pending, passed + adopted, arguments.forget)
+    print(f"verify: recorded {len(passed)} passed and {len(adopted)} adopted test(s) in "
+          f"{getattr(arguments, 'stamps', '') or STAMPS}", file=sys.stderr)
+    also = getattr(arguments, "also_stamps", "")
+    if also:
+        # Adopted tests did not run: only the passed ones get a stamp of the full verify.
+        write_stamps(build_dir, also, pending, passed, arguments.forget)
+        print(f"verify: recorded {len(passed)} passed test(s) in {also}", file=sys.stderr)
+
+
+def write_stamps(build_dir, file_name, pending, names, forget):
+    """Copies the pending fingerprints of the named tests into a stamp file and drops the stamps of
+    the forgotten ones (deferred timing tests, E-913)."""
+    stamps_path = os.path.join(build_dir, file_name)
+    stamps = read_json(stamps_path, {})
+    known = stamps.setdefault("tests", {})
+    for name in names:
         known[name] = pending["tests"][name]
-    forgotten = [name for name in arguments.forget if known.pop(name, None) is not None]
-    if passed or adopted:
+    forgotten = [name for name in forget if known.pop(name, None) is not None]
+    if names:
         stamps["data_files"] = pending["data_files"]
-    if passed or adopted or forgotten:
+    if names or forgotten:
         write_json(stamps_path, stamps)
-    print(f"verify: recorded {len(passed)} passed and {len(adopted)} adopted test(s) in {STAMPS}"
-          + (f", dropped the stamps of {len(forgotten)} deferred test(s)" if forgotten else ""), file=sys.stderr)
+    if forgotten:
+        print(f"verify: dropped the stamps of {len(forgotten)} deferred test(s) in {file_name}", file=sys.stderr)
 
 
 def main():
@@ -508,6 +571,10 @@ def main():
     parser.add_argument("--regex", default="")
     parser.add_argument("--label", default="")
     parser.add_argument("--broad-label", default="")
+    parser.add_argument("--full-label", default="")
+    parser.add_argument("--stamps", default="")
+    parser.add_argument("--also-stamps", default="")
+    parser.add_argument("--no-pending", action="store_true")
     parser.add_argument("--junit", action="append", default=[])
     parser.add_argument("--forget", nargs="+", default=[])
     arguments = parser.parse_args()

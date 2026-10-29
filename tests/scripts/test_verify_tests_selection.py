@@ -18,6 +18,8 @@ import subprocess
 import sys
 import tempfile
 
+FULL_STAMPS = ".verify-full-tsan-stamps.json"
+
 
 def load_module(path):
     spec = importlib.util.spec_from_file_location("verify_tests", path)
@@ -56,26 +58,35 @@ class Fixture:
         module.ROOT = root
         tests = {name: {"command": ["sh", os.path.join(root, "scripts", f"{name[-1]}.sh")],
                         "properties": {}} for name in ("test_a", "test_b")}
+        # test_c reads scripts/c.sh and carries the label of the full verify's TSan step (E-929).
+        write(os.path.join(root, "scripts", "c.sh"), "echo c\n")
+        tests["test_c"] = {"command": ["sh", os.path.join(root, "scripts", "c.sh")],
+                           "properties": {"LABELS": ["concurrency"]}}
+        write(os.path.join(root, "tests", "tsan.supp"), "race:none\n")
+        self.tests = tests
         module.load_tests = lambda build_dir: tests
 
-    def select(self, deferred=()):
+    def select(self, deferred=(), full=False):
         """The test names the selection prints; a passing run of them is recorded afterwards, except
-        the deferred ones, whose stamps the record drops (deferred timing tests, E-913)."""
+        the deferred ones, whose stamps the record drops (deferred timing tests, E-913). `full`
+        selects as the TSan step of a full verify (E-929) and records into both stamp files."""
         arguments = argparse.Namespace(build_dir=self.build_dir, changed=True, regex="", label="",
-                                       broad_label="")
+                                       broad_label="", full_label="concurrency" if full else "",
+                                       stamps=FULL_STAMPS if full else "", no_pending=False)
         output = io.StringIO()
         with contextlib.redirect_stdout(output), contextlib.redirect_stderr(io.StringIO()):
             self.module.select(arguments)
         regex = output.getvalue().strip()
         names = sorted(regex[2:-2].replace("\\", "").split("|")) if regex else []
-        self.record([name for name in names if name not in deferred], deferred)
+        self.record([name for name in names if name not in deferred], deferred, FULL_STAMPS if full else "")
         return names
 
-    def record(self, names, forget=()):
+    def record(self, names, forget=(), also=""):
         junit = os.path.join(self.build_dir, "junit.xml")
         cases = "".join(f'<testcase name="{name}" status="run"/>' for name in names)
         write(junit, f"<testsuite>{cases}</testsuite>")
-        arguments = argparse.Namespace(build_dir=self.build_dir, junit=[junit], forget=list(forget))
+        arguments = argparse.Namespace(build_dir=self.build_dir, junit=[junit], forget=list(forget),
+                                       stamps="", also_stamps=also)
         with contextlib.redirect_stderr(io.StringIO()):
             self.module.record(arguments)
 
@@ -116,7 +127,7 @@ def check_macho(module, root):
 def run_cases(fixture):
     root = fixture.root
     script_a = os.path.join(root, "scripts", "a.sh")
-    results = [check("first run without stamps", fixture.select(), ["test_a", "test_b"]),
+    results = [check("first run without stamps", fixture.select(), ["test_a", "test_b", "test_c"]),
                check("unchanged", fixture.select(), [])]
 
     stat = os.stat(script_a)
@@ -134,7 +145,7 @@ def run_cases(fixture):
     results.append(check("content of a.sh changed", fixture.select(), ["test_a"]))
 
     write(os.path.join(root, "content", "blocks.json"), '{"changed": 1}\n')
-    results.append(check("runtime data changed", fixture.select(), ["test_a", "test_b"]))
+    results.append(check("runtime data changed", fixture.select(), ["test_a", "test_b", "test_c"]))
 
     stamps_path = os.path.join(fixture.build_dir, fixture.module.STAMPS)
     stamps = fixture.module.read_json(stamps_path, {})
@@ -146,9 +157,49 @@ def run_cases(fixture):
     # A deferred timing test loses its stamp: unchanged inputs select it again (E-913).
     write(os.path.join(root, "content", "blocks.json"), '{"deferred": 1}\n')
     results.append(check("all selected, test_b deferred", fixture.select(deferred=("test_b",)),
-                         ["test_a", "test_b"]))
+                         ["test_a", "test_b", "test_c"]))
     results.append(check("deferred test selected again", fixture.select(), ["test_b"]))
     results.append(check("and then not again after it passed", fixture.select(), []))
+    return all(results) and run_full_cases(fixture)
+
+
+def run_full_cases(fixture):
+    """The TSan step of a full verify (E-929): label always, others by their own inputs since they
+    last passed such a step; runtime data alone selects nothing; --changed runs leave its stamps."""
+    root = fixture.root
+    full_path = os.path.join(fixture.build_dir, FULL_STAMPS)
+    results = [check("full: no stamps of a full verify, all", fixture.select(full=True),
+                     ["test_a", "test_b", "test_c"]),
+               check("full: unchanged, only the label", fixture.select(full=True), ["test_c"])]
+
+    write(os.path.join(root, "content", "blocks.json"), '{"full": 1}\n')
+    results.append(check("full: runtime data alone, only the label", fixture.select(full=True), ["test_c"]))
+
+    write(os.path.join(root, "scripts", "a.sh"), "echo full\n")
+    before = fixture.module.read_json(full_path, {})
+    # test_c passed the full step with the new runtime data, which renewed its ordinary stamp too.
+    results.append(check("--changed after a change", fixture.select(), ["test_a", "test_b"]))
+    results.append(check("--changed leaves the full stamps", fixture.module.read_json(full_path, {}) == before, True))
+    results.append(check("full: changed inputs since the last full step", fixture.select(full=True),
+                         ["test_a", "test_c"]))
+    results.append(check("full: and then only the label", fixture.select(full=True), ["test_c"]))
+
+    write(os.path.join(root, "tests", "tsan.supp"), "race:other\n")
+    results.append(check("full: TSan suppressions changed, all", fixture.select(full=True),
+                         ["test_a", "test_b", "test_c"]))
+    fixture.tests["test_b"]["properties"]["ENVIRONMENT"] = ["QC_X=1"]
+    results.append(check("full: ENVIRONMENT of test_b changed", fixture.select(full=True), ["test_b", "test_c"]))
+    fixture.tests["test_a"]["command"] = fixture.tests["test_a"]["command"] + ["--fast"]
+    results.append(check("full: command line of test_a changed", fixture.select(full=True), ["test_a", "test_c"]))
+    results.append(check("full: and then only the label again", fixture.select(full=True), ["test_c"]))
+
+    # A deferred test loses its stamp in both files (record --forget with --also-stamps).
+    fixture.module.write_json(full_path, {})
+    results.append(check("full: test_b deferred", fixture.select(deferred=("test_b",), full=True),
+                         ["test_a", "test_b", "test_c"]))
+    full_stamps = fixture.module.read_json(full_path, {}).get("tests", {})
+    results.append(check("full: deferred test has no full stamp", sorted(full_stamps), ["test_a", "test_c"]))
+    results.append(check("full: deferred test selected again", fixture.select(full=True), ["test_b", "test_c"]))
     return all(results)
 
 

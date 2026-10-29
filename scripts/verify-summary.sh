@@ -8,7 +8,8 @@
 
 # The stamp: line 1 the clean commit and the hash of the local presets (clean_commit in verify.sh),
 # then `deferred-debug: <names>` when the run deferred debug timing tests; the second part runs
-# those against the existing build/debug.
+# those against the existing build/debug. `passed-sanitizers: <names>` lists the sanitizers that
+# passed on that commit so far, in this or an earlier part (decision E-929).
 full_stamp_key() {
     head -n 1 "$1" 2>/dev/null
 }
@@ -17,12 +18,20 @@ full_stamp_deferred() {
     sed -n 's/^deferred-debug: //p' "$1" 2>/dev/null
 }
 
-# Arguments: stamp file, commit key, deferred debug timing tests (may be empty).
+full_stamp_sanitizers() {
+    sed -n 's/^passed-sanitizers: //p' "$1" 2>/dev/null
+}
+
+# Arguments: stamp file, commit key, deferred debug timing tests (may be empty), passed sanitizers
+# (may be empty or left out).
 write_full_stamp() {
     {
         echo "$2"
         if [ -n "$3" ]; then
             echo "deferred-debug: $3"
+        fi
+        if [ -n "${4:-}" ]; then
+            echo "passed-sanitizers: $4"
         fi
     } >"$1"
 }

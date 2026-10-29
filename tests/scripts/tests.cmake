@@ -24,6 +24,22 @@ if(NOT WIN32)
     add_test(NAME script_verify_timing_phase
         COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_timing_phase.sh ${PROJECT_SOURCE_DIR}/scripts/verify-phases.sh)
     set_tests_properties(script_verify_timing_phase PROPERTIES TIMEOUT 60)
+    # The slimmer full verify (decision E-929): the static analysis selection against a fake stamp
+    # commit in a throwaway git repository, and the stamps of a fully green commit and both selections
+    # with stubbed python3, ctest and git; runs no build, no ctest and no analysis.
+    add_test(NAME script_verify_full_select
+        COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_full_select.py ${PROJECT_SOURCE_DIR}/scripts/verify-full-select.py)
+    set_tests_properties(script_verify_full_select PROPERTIES TIMEOUT 60)
+    add_test(NAME script_verify_full_stamps
+        COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_full_stamps.sh ${PROJECT_SOURCE_DIR}/scripts/verify-full-select.sh)
+    set_tests_properties(script_verify_full_stamps PROPERTIES TIMEOUT 60)
+    # The same under dash (the POSIX shell of Linux distributions), when it is installed.
+    find_program(QC_DASH dash)
+    if(QC_DASH)
+        add_test(NAME script_verify_full_stamps_dash
+            COMMAND ${QC_DASH} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_verify_full_stamps.sh ${PROJECT_SOURCE_DIR}/scripts/verify-full-select.sh)
+        set_tests_properties(script_verify_full_stamps_dash PROPERTIES TIMEOUT 60)
+    endif()
     # Samples of the getter/setter check (rule in CLAUDE.md, decision E-891) held in memory; reads no source
     # file below src/, only the check and the helper scripts it imports (REQUIRED_FILES in tests/CMakeLists.txt).
     add_test(NAME script_check_member_access

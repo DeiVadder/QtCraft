@@ -1,13 +1,20 @@
 #!/bin/sh
 # Runs the size limits checks (file and function length), the warning-only checks of output parameters and
 # member access, clang-tidy, clazy and qmllint over the project (or over the given files).
-# Usage: scripts/static-analysis.sh [build-dir] [file ...]
+# Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
+# --cheap-all (the full verify, decision E-929): the size limits and the warning-only checks run over the
+# whole tree, clang-tidy, clazy and qmllint only over the given files (none given: none of them run).
 # Every tool run is time-limited; the script exits non-zero when any tool reports findings.
 
 set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+CHEAP_ALL=0
+if [ "${1:-}" = --cheap-all ]; then
+    CHEAP_ALL=1
+    shift
+fi
 BUILD_DIR=${1:-"$PROJECT_DIR/build/debug"}
 [ $# -gt 0 ] && shift
 
@@ -33,7 +40,7 @@ if [ ! -f "$BUILD_DIR/compile_commands.json" ]; then
 fi
 
 SELECTED=0
-if [ $# -gt 0 ]; then
+if [ $# -gt 0 ] || [ "$CHEAP_ALL" -eq 1 ]; then
     SELECTED=1
     LENGTH_FILES=$(printf '%s\n' "$@" | grep -E '\.(cpp|h|qml|mm)$')
     QML_FILES=$(printf '%s\n' "$@" | grep -E '\.qml$')
@@ -50,12 +57,19 @@ else
     QML_FILES=""
     FILES=$(cd "$PROJECT_DIR" && { git ls-files 'src/*.cpp' 'tests/*.cpp'; git ls-files --others --exclude-standard 'src/*.cpp' 'tests/*.cpp'; } | sort -u | sed "s|^|$PROJECT_DIR/|")
 fi
+# The cheap checks see a selection only without --cheap-all.
+CHEAP_SELECTED=$SELECTED
+if [ "$CHEAP_ALL" -eq 1 ]; then
+    CHEAP_SELECTED=0
+fi
 
 status=0
 
 echo "== file length"
 # The limits live in scripts/check-file-length.sh; a selection without C++ or QML files checks none.
-if [ "$SELECTED" -eq 0 ] || [ -n "$LENGTH_FILES" ]; then
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    "$PROJECT_DIR/scripts/check-file-length.sh" || status=1
+elif [ -n "$LENGTH_FILES" ]; then
     # shellcheck disable=SC2086
     "$PROJECT_DIR/scripts/check-file-length.sh" $LENGTH_FILES || status=1
 fi
@@ -63,7 +77,7 @@ fi
 echo "== function length"
 # Code lines per function body (E-760), scripts/check-function-length.py; QML files are not checked.
 FUNCTION_FILES=$(printf '%s\n' $LENGTH_FILES | grep -E '\.(cpp|h|mm)$')
-if [ "$SELECTED" -eq 0 ]; then
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
     python3 "$PROJECT_DIR/scripts/check-function-length.py" || status=1
 elif [ -n "$FUNCTION_FILES" ]; then
     # shellcheck disable=SC2086
@@ -71,7 +85,7 @@ elif [ -n "$FUNCTION_FILES" ]; then
 fi
 
 # Output parameters (rule in CLAUDE.md): counts only, never a finding that fails the run.
-if [ "$SELECTED" -eq 0 ]; then
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
     echo "== output parameters (warning only)"
     python3 "$PROJECT_DIR/scripts/check-out-params.py" | tail -n 1
 fi
@@ -79,7 +93,7 @@ fi
 # Members used in more than two places without getter/setter (rule in CLAUDE.md, E-891): warning only.
 # The whole tree prints the counts, a selection lists the findings of the classes in the given files.
 echo "== member access (warning only)"
-if [ "$SELECTED" -eq 0 ]; then
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
     python3 "$PROJECT_DIR/scripts/check-member-access.py" | tail -n 1
 elif [ -n "$FUNCTION_FILES" ]; then
     # shellcheck disable=SC2086

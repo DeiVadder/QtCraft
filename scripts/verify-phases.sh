@@ -26,6 +26,7 @@ QUIET_WAIT=${QC_QUIET_WAIT:-600}
 QUIET_RECHECK=${QC_QUIET_RECHECK:-60}
 TIMING_UNDER_LOAD=${QC_TIMING_UNDER_LOAD:-0}
 deferred_timing=""
+record_also=""
 deferred_names_debug=""
 deferred_names_asan=""
 deferred_names_tsan=""
@@ -176,11 +177,12 @@ run_timing_phase() {
 }
 
 # Records the passed tests of a step in build/<preset> and drops the stamps of the timing tests the
-# step deferred (E-913). Arguments: preset, JUnit report, optional second JUnit report.
+# step deferred (E-913); with `record_also` set (the TSan step of a full run, E-929) also into that
+# stamp file. Arguments: preset, JUnit report, optional second JUnit report.
 record_tests() {
     # shellcheck disable=SC2086
     python3 scripts/verify-tests.py record --build-dir "build/$1" --junit "$2" ${3:+--junit "$3"} \
-        ${phase_deferred:+--forget $phase_deferred}
+        ${phase_deferred:+--forget $phase_deferred} ${record_also:+--also-stamps "$record_also"}
 }
 
 # Part two of a two-part full run (E-890) when part one deferred debug timing tests: only those,
