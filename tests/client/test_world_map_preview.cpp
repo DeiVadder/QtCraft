@@ -19,6 +19,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <algorithm>
 #include <atomic>
 
 using namespace Qt::StringLiterals;
@@ -57,6 +58,10 @@ private slots:
         QTest::addColumn<double>("biomeSize");
         QTest::newRow("seed 1") << qint64{1} << 1.0;
         QTest::newRow("seed 20251028, small biomes") << qint64{20251028} << 0.5;
+        // 82413031 and 102758670: windows almost all of mountains, whose overhangs move the ground
+        // (decision E-926).
+        QTest::newRow("seed 82413031, mountains") << qint64{82413031} << 1.0;
+        QTest::newRow("seed 102758670, mountains") << qint64{102758670} << 1.0;
         QTest::newRow("random seed") << QcTestUtil::randomSeed() << 1.0;
     }
 
@@ -87,7 +92,8 @@ private slots:
         Agreement water;
         Agreement ice;
         Agreement ground;
-        Agreement exactGround;
+        Agreement exactPlainGround;
+        Agreement exactOverhangGround;
         for (int z = 0; z < map->size(); ++z) {
             for (int x = 0; x < map->size(); ++x) {
                 const int blockX = asked.area.blockX(x);
@@ -110,7 +116,8 @@ private slots:
                     while (top > cell.height - groundSlack && !isGround(blockAt(top))) {
                         --top;
                     }
-                    exactGround.add(std::abs(top + 1 - cell.height) <= 1);
+                    Agreement &exact = generator.column(blockX, blockZ).overhang < 1.0 ? exactPlainGround : exactOverhangGround;
+                    exact.add(std::abs(top + 1 - cell.height) <= 1);
                     ground.add(std::abs(top + 1 - cell.height) <= groundSlack / 2);
                 }
             }
@@ -118,13 +125,25 @@ private slots:
         // Lakes on the surface, wetlands and caves at the sea level change a few columns after the
         // terrain (QcSurfaceLakes, QcWetlandShaper, QcCaveCarver); the map shows the terrain. Its
         // height is the column's before the shaping of mountains (overhangs, cliffs), which moves
-        // the ground there by up to about 5 blocks; elsewhere it is the ground to a block.
-        qInfo("water agrees in %s, ice in %s, the height of the land to a block in %s, to %d blocks in %s cells", qPrintable(water.text()),
-              qPrintable(ice.text()), qPrintable(exactGround.text()), groundSlack / 2, qPrintable(ground.text()));
+        // the ground there by up to about 5 blocks: only about 60 % of the columns with overhangs
+        // match to a block (51 % on the worst of 84 seeds), so they count to 6 blocks and to a
+        // block only loosely. Columns without overhangs matched to a block in 99.4 % (96.7 % on
+        // the worst seed; decision E-926).
+        qInfo("water agrees in %s, ice in %s, the height to a block of land without overhangs in %s, with overhangs in %s, "
+              "of all land to %d blocks in %s cells",
+              qPrintable(water.text()), qPrintable(ice.text()), qPrintable(exactPlainGround.text()), qPrintable(exactOverhangGround.text()),
+              groundSlack / 2, qPrintable(ground.text()));
         QVERIFY2(water.atLeast(97), qPrintable(water.text()));
         QVERIFY2(ice.atLeast(97), qPrintable(ice.text()));
-        QVERIFY2(exactGround.atLeast(65), qPrintable(exactGround.text()));
         QVERIFY2(ground.atLeast(97), qPrintable(ground.text()));
+        // A share is checked only on enough cells; without overhangs at most 5 % of them (at least
+        // one) may miss.
+        if (exactPlainGround.cells >= minCompared) {
+            QVERIFY2(exactPlainGround.misses() <= std::max(1, exactPlainGround.cells * 5 / 100), qPrintable(exactPlainGround.text()));
+        }
+        if (exactOverhangGround.cells >= minCompared) {
+            QVERIFY2(exactOverhangGround.atLeast(40), qPrintable(exactOverhangGround.text()));
+        }
     }
 
     // The worker stops between rows as soon as it is told: nothing more is handed over.
@@ -461,6 +480,8 @@ private:
     }
     // How far above and below the map's height the test looks for the top of the ground.
     static constexpr int groundSlack = 12;
+    // The fewest cells of a kind whose share of matching heights is checked.
+    static constexpr int minCompared = 50;
 
     // How many of the compared cells agree.
     struct Agreement
@@ -474,6 +495,7 @@ private:
             ++cells;
         }
         [[nodiscard]] bool atLeast(int percent) const { return agreeing * 100 >= cells * percent; }
+        [[nodiscard]] int misses() const { return cells - agreeing; }
         [[nodiscard]] QString text() const { return u"%1 of %2"_s.arg(agreeing).arg(cells); }
     };
 

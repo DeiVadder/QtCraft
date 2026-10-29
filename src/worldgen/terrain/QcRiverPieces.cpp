@@ -13,7 +13,13 @@ namespace {
 // the middle line bends only gently: round radii of a hundred blocks and more) and looks at the
 // river where the line crosses a line of a lattice of `lattice` blocks: the same points from
 // wherever a walk starts, so every walk along a piece sees the same ends (a lake or a dry stretch
-// shorter than the lattice is seen by all walks or by none).
+// shorter than the lattice is seen by all walks or by none). A step starts from the last crossing
+// passed, so walks heading the same way along a line step through the same points from their first
+// crossing on (from the second where two crossings lie close together): where the middle line
+// branches (a saddle of the noise at zero), they go the same way or lose the line at the same
+// point (decision E-926). Not made to agree: a walk starting within one lattice gap before the
+// saddle (it reaches it before a shared crossing), and walks coming from different arms of the
+// branching.
 constexpr double marchStep = 12.0;
 constexpr double lattice = 24.0;
 // Back within this many blocks of its first crossing, a walk has gone round a loop.
@@ -123,6 +129,7 @@ QcRiverPieces::Walk QcRiverPieces::walk(const OnLine &from, double side, double 
             return {End::Lost, walked.length};
         }
         const Crossings crossed = crossings(here.at, next->at);
+        std::optional<QcRiverField::Point> passed;
         for (int i = 0; i < crossed.count; ++i) {
             const QcRiverField::Point at = crossed.at[static_cast<std::size_t>(i)];
             // The length up to the crossing the walk ends at, not to the end of the step.
@@ -136,12 +143,16 @@ QcRiverPieces::Walk QcRiverPieces::walk(const OnLine &from, double side, double 
             }
             first = first ? first : at;
             last = at;
+            passed = at;
             if (const End end = endAt(at, land); end != End::Far) {
                 return {end, length};
             }
         }
-        walked.length += std::hypot(next->at.x - here.at.x, next->at.z - here.at.z);
-        here = along(next->at, here.alongX, here.alongZ);
+        // The next step starts from the last crossing passed: from there on the walks along the
+        // line this way step through the same points, wherever they started (decision E-926).
+        const QcRiverField::Point to = passed ? *passed : next->at;
+        walked.length += std::hypot(to.x - here.at.x, to.z - here.at.z);
+        here = along(to, here.alongX, here.alongZ);
     }
     return walked;
 }

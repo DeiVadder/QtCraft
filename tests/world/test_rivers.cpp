@@ -259,9 +259,15 @@ private:
         return bridges;
     }
 
+    // The longest crossing of a bridge in cells (QcRoadLayer::maxBridge).
+    static constexpr int maxCrossing = 24;
+
     // A bridge crosses a river from dry land to dry land (decision E-841): some of the water under
     // its decks is a river's (the rest may be other water beside it, not a lake or the sea alone),
     // and the first cell past its decks each way is no water and no low bank under the sea level.
+    // A low bank level with the water next to the decks (no deck: the road lies on it) belongs to
+    // the crossing, as the village takes the whole stretch of water and low bank as one bridge of
+    // at most maxCrossing cells (QcRoadLayer::wetStretch, decision E-926).
     static void checkCrossing(const QcTerrainGenerator &generator, const QcVillagePlan &plan, const Bridge &bridge)
     {
         QSet<std::pair<int, int>> decks;
@@ -272,11 +278,15 @@ private:
         for (const int sign : {1, -1}) {
             int x = bridge.at.x;
             int z = bridge.at.z;
-            while (decks.contains({x, z})) {
+            int cells = 0;
+            while (cells <= maxCrossing && (decks.contains({x, z}) || generator.column(x, z).height == generator.seaLevel())) {
                 river = river || generator.isRiverBiome(generator.column(x, z).biome);
                 x += sign * bridge.along.first;
                 z += sign * bridge.along.second;
+                ++cells;
             }
+            const QString runsOn = u"bridge at %1 %2: decks and low bank run on past %3 cells"_s.arg(bridge.at.x).arg(bridge.at.z).arg(maxCrossing);
+            QVERIFY2(cells <= maxCrossing, qPrintable(runsOn));
             QVERIFY2(generator.column(x, z).height >= generator.seaLevel(),
                      qPrintable(u"bridge at %1 %2 ends in water at %3 %4"_s.arg(bridge.at.x).arg(bridge.at.z).arg(x).arg(z)));
         }
@@ -457,10 +467,11 @@ private slots:
         // 20261017: a bridge over a river and the low water beside it in another biome.
         // 782953143 and 614800303: failed on earlier bridge placements. 1086708103: the brush of a
         // road on land took a river column beside it as a road on the bed, and the middle line of
-        // a diagonal bridge crossing it later found the cell taken (decision E-907).
+        // a diagonal bridge crossing it later found the cell taken (decision E-907). 1174505428: a
+        // bridge over a pond, a low bank and then the river (decision E-926).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1059853484}, qint64{555555}, qint64{888888888},
                                   qint64{298323796}, qint64{20261017}, qint64{782953143}, qint64{614800303}, qint64{1086708103},
-                                  m_randomSeed}) {
+                                  qint64{1174505428}, m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             QSet<qint64> seen;
@@ -531,10 +542,12 @@ private slots:
         // ends. 1360590162 (random) had 14 %: a long river whose gorge stretch was water a block
         // wide, joined only at corners, and three blocks wide still broke on the survey grid.
         // 1299031228 (random) had 13 %: a ring of some 2000 blocks whose only outlet was a puddle a
-        // block deep beside it; such a puddle is no outlet now (decision E-907).
+        // block deep beside it; such a puddle is no outlet now (decision E-907). 147349187 (random)
+        // had 11 %: a river whose middle line branched at a saddle of the noise; walks from its
+        // points went either way there and its pieces were built in turns (decision E-926).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
                                   qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, qint64{1299031228},
-                                  m_randomSeed}) {
+                                  qint64{147349187}, m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             const Window window = survey(generator, 1536, 2);
