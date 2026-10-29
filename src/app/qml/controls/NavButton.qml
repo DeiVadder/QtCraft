@@ -16,6 +16,10 @@ AbstractButton {
     property string note: ""
     // A category of pages (read as a tab) rather than an action.
     property bool page: false
+    // A back entry (docs/UI-Leitfaden.md 10, decision E-925): the pad's focus never starts here and
+    // never comes by moving down; it comes by moving up from within its own group (the first
+    // category below it) or by moving left (QcMenuNavigator). B goes back anyway.
+    property bool padLeftOnly: false
 
     Layout.fillWidth: true
     // Kept off the window's edge, so the focus outline and the pad's ring stay inside it.

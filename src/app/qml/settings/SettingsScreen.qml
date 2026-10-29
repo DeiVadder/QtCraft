@@ -59,19 +59,7 @@ SidebarScreen {
         controlsPage.clear();
         visible = true;
         forceActiveFocus();
-        focusFirstSetting();
-    }
-
-    // The first item of the shown page that takes the focus, as Tab would reach it.
-    function focusFirstSetting() {
-        const page = pages.children[pages.currentIndex];
-        const first = page ? page.nextItemInFocusChain(true) : null;
-        for (let item = first; item; item = item.parent) {
-            if (item === page) {
-                first.forceActiveFocus(Qt.TabFocusReason);
-                return;
-            }
-        }
+        focusPage();
     }
 
     function close() {
@@ -84,21 +72,57 @@ SidebarScreen {
         closed();
     }
 
-    // The pad's shoulders switch the category, its B closes the screen (QcMenuNavigator asks the
-    // items above the focus).
+    // The pad's shoulders switch the category, its B closes the screen, its Y resets a page that
+    // has defaults to go back to after a second Y (QcMenuNavigator asks the items above the focus).
+    // Any other command cancels a reset that waits for its second Y.
     function gamepadCommand(command: string): bool {
+        if (command !== "tertiary")
+            cancelReset();
         if (command === "back") {
             close();
             return true;
         }
+        if (command === "tertiary" && resettable) {
+            padReset();
+            return true;
+        }
         return nav.takeCommand(command);
+    }
+
+    // The pad's Y: the first asks, the second resets the page; the focus goes to the page's reset
+    // button (scrolled into view) and the notice says what the reset did (decision E-925).
+    function padReset() {
+        const page = shownPage as SettingsPage;
+        if (!confirmReset()) {
+            showNotice(qsTr("Press %1 again to reset this page to its defaults.").arg(game.gamepad.pads.texts.north));
+            return;
+        }
+
+        page.resetRequested(true);
+        if (page.resetButton) {
+            page.resetButton.forceActiveFocus(Qt.TabFocusReason);
+            // Once a rebuilt key table is laid out.
+            Qt.callLater(() => page.reveal(page.resetButton));
+        }
+        showNotice(page.message);
     }
 
     anchors.fill: parent
     visible: false
     title: qsTr("Settings")
     bottomRoom: game.gamepad.focusShown ? Ui.size.padHints : 0
+    shownPage: pages.children[pages.currentIndex] ?? null
+    resettable: (shownPage as SettingsPage)?.resettable ?? false
     onBackRequested: close()
+    // The mouse or the keyboard took over: a reset waiting for its second Y is off.
+    Connections {
+        target: screen.game.gamepad
+
+        function onActiveChanged() {
+            if (!screen.game.gamepad.active)
+                screen.cancelReset();
+        }
+    }
     // Keys the controls leave end here; Esc closes the screen, Tab moves the focus (Ctrl+Tab and
     // Ctrl+Shift+Tab switch the category: shortcuts of the NavList).
     Keys.onPressed: event => {
@@ -113,6 +137,7 @@ SidebarScreen {
 
             objectName: "settingsNav"
             Layout.fillWidth: true
+            onSwitched: screen.focusPage()
             model: [qsTr("Graphics"), qsTr("Audio"), qsTr("Controls"), qsTr("Controller"), qsTr("Interface"),
                 qsTr("Texture packs"), qsTr("Advanced")]
         },

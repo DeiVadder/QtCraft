@@ -255,6 +255,8 @@ Umgesetzt in `src/app/qml/admin/` (`AdminScreen` und je Abschnitt eine Seite). P
 ## 10 Gamepad und Tastatur
 
 - Fokusreihenfolge = Lesereihenfolge: Kopf → Navigation → Inhalt von oben nach unten → Fuß. Der Fokus startet auf der primären Aktion (Dialoge) bzw. der ersten Einstellung (Einstellungen).
+- Seitenleisten-Bildschirme (`SidebarScreen`: Einstellungen, Handbuch, Server verwalten): beim Öffnen und nach jedem LB/RB steht der Fokus auf dem ersten Element der Seite (`focusPage()`). Rückweg-Eintrag (`NavButton.padLeftOnly`): Pad: B, oder Hoch von der ersten Kategorie (auch Links); nie Startpunkt, nie mit Runter (E-925). Die Pad-Hinweise zeigen „LB RB Kategorie“ nur dort, „Y zurücksetzen“ nur auf Seiten mit Standardwerten (`SettingsPage.resettable`, heute Steuerung und Controller); Y fragt einmal nach („Y erneut: zurücksetzen“, 3 s).
+- Listen wie die Weltliste: die Zeile ist das Fokusziel, Hoch/Runter wandern Zeile für Zeile, Rechts erreicht ihre Knöpfe, A spielt.
 - A/Enter = auswählen, B/Esc = zurück/schließen, LB/RB = Kategorie wechseln, Links/Rechts = Wert ändern, Y = auf Standard zurücksetzen (mit Hinweis in den Pad-Hinweisen).
 - Fokus immer mit `FocusRing` (`focusRing`, 2 px, außerhalb des Elements), nie nur über eine Farbänderung.
 - Kein Element, das nur mit der Maus geht (Ziehen, Hover-Menüs); Tooltips sind Zusatz, nie die einzige Erklärung.

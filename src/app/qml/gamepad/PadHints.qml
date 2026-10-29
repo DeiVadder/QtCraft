@@ -3,8 +3,11 @@ import QtQuick.Controls
 import QtCraft
 
 // The pad's buttons on the screens (decisions E-583, E-612), at the bottom edge while the pad leads
-// and a screen has its focus: slot screens pick up and put down, the others select and go back. The
-// buttons are drawn as the pad in use labels them.
+// and a screen has its focus: slot screens pick up and put down, the others select and go back; a
+// screen with categories in its side bar (SidebarScreen) adds the shoulders, and one whose page can
+// go back to its defaults the Y, asking for a second Y once the first came (docs/UI-Leitfaden.md
+// 10, decision E-925). The buttons are drawn as the pad in use
+// labels them.
 Rectangle {
     id: hints
 
@@ -18,6 +21,14 @@ Rectangle {
                                        && game.phase === GameController.Phase.Playing && !game.handbook.isOpen
     // The focus is in an open popup (a prompt, a list): the shoulders switch no tabs there.
     readonly property bool inPopup: game.gamepad.focusLayer !== null
+    // The screen with a side bar of categories around the focus, null for none.
+    readonly property SidebarScreen sidebarScreen: {
+        for (let item = Window.activeFocusItem; item; item = item.parent) {
+            if (item instanceof SidebarScreen)
+                return item as SidebarScreen;
+        }
+        return null;
+    }
 
     anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
@@ -44,10 +55,11 @@ Rectangle {
             { input: "east", text: qsTr("back") }
         ] : [
             { input: "south", text: qsTr("select") },
-            { input: "east", text: qsTr("back") },
-            { input: "leftShoulder", text: "" },
-            { input: "rightShoulder", text: qsTr("tabs") },
-            { input: "rightStickMove", text: qsTr("scroll") }
-        ]
+            { input: "east", text: qsTr("back") }
+        ].concat(hints.sidebarScreen ? [{ inputs: ["leftShoulder", "rightShoulder"], text: qsTr("category") }] : [],
+                 !hints.sidebarScreen?.resettable ? []
+                 : hints.sidebarScreen.resetArmed ? [{ input: "north", text: qsTr("again: reset to default"), name: "padHintResetAgain" }]
+                 : [{ input: "north", text: qsTr("reset to default"), name: "padHintReset" }],
+                 [{ input: "rightStickMove", text: qsTr("scroll") }])
     }
 }

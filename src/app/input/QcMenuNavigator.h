@@ -22,6 +22,9 @@
 // item of the scope may take a command first with a QML function `gamepadCommand(name)` returning
 // true (names: up, down, left, right, confirm, back, secondary, tertiary, start, tabPrevious,
 // tabNext); the nearest one above the focus is asked. Start does what back does unless taken.
+// An item with the QML property `padLeftOnly` set (a side bar's back entry) is never where the focus
+// starts; it is reached by moving left, or up from within its own group (the first category below
+// it), never down (docs/UI-Leitfaden.md 10, decision E-925).
 // The scope (QcFocusCandidates::scope, a walk over the window's items) is kept between calls: each
 // command looks it up again, and so does focusItem() after invalidateScope() (the focus changed, or
 // the owner's regular refresh).
@@ -49,8 +52,10 @@ public:
     // The focused item when it is a candidate of the current scope, else nullptr.
     QQuickItem *focusItem() const;
     // Without a focused candidate, focuses where the focus starts: the one focused last in this
-    // scope, else a highlighted (default) button, else the top left.
+    // scope, else a highlighted (default) button, else the top left (never a `padLeftOnly` item).
     void focusStart();
+    // Moves the pointer over the focused candidate, so the hover follows a focus that QML moved.
+    void hoverFocus();
     // Input made by the navigator is being sent (it is not the mouse's or the keyboard's).
     bool sending() const { return m_sending; }
 

@@ -19,7 +19,6 @@ SettingsPage {
     readonly property GamepadOptions options: game.settings.gamepad
     // The action waiting for a button ("" while none does) and what the last change moved.
     property string captureAction
-    property string message
 
     // The profiles to choose from: all controllers, the connected ones, then the stored ones.
     readonly property var profileChoices: {
@@ -53,6 +52,14 @@ SettingsPage {
     }
 
     title: qsTr("Controller")
+    // The pad's Y does what "Reset buttons" does.
+    resettable: options.editable
+    resetButton: resetButtonsButton
+    onResetRequested: {
+        cancelCapture();
+        options.resetBindings();
+        message = qsTr("The buttons are back to their defaults.");
+    }
 
     onVisibleChanged: {
         if (visible && game)
@@ -176,13 +183,12 @@ SettingsPage {
             spacing: Ui.space.s
 
             GameButton {
+                id: resetButtonsButton
+
+                objectName: "resetButtonsButton"
                 text: qsTr("Reset buttons")
                 enabled: page.options.editable
-                onClicked: {
-                    page.cancelCapture();
-                    page.options.resetBindings();
-                    page.message = qsTr("The buttons are back to their defaults.");
-                }
+                onClicked: page.resetRequested(false)
             }
             GameButton {
                 text: qsTr("Reset everything")

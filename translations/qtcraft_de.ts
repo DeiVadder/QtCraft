@@ -611,67 +611,67 @@ Als Nächstes: %3</translation>
 <context>
     <name>AdminScreen</name>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="87"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="75"/>
         <source>Manage server</source>
         <translation>Server verwalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="88"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="76"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Overview</source>
         <translation>Übersicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Players</source>
         <translation>Spieler</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Commands</source>
         <translation>Befehle</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Lists</source>
         <translation>Listen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="103"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="92"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="104"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="93"/>
         <source>Log</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="104"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="93"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="105"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="94"/>
         <source>unsaved</source>
         <translation>ungespeichert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="144"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="139"/>
         <source>Hide</source>
         <translation>Ausblenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/admin/AdminScreen.qml" line="145"/>
+        <location filename="../src/app/qml/admin/AdminScreen.qml" line="140"/>
         <source>Hide the notice</source>
         <translation>Hinweis ausblenden</translation>
     </message>
@@ -1390,72 +1390,72 @@ Als Nächstes: %3</translation>
 <context>
     <name>ControlsPage</name>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="100"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="103"/>
         <source>Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.</source>
         <translation>Klicke auf eine Taste und drücke die neue. Esc bricht ab, die Rücktaste entfernt die Taste. Eine Taste, die eine andere Aktion nutzt, wird getauscht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="95"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="98"/>
         <source>Keys</source>
         <translation>Tasten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="73"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="66"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="76"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="79"/>
         <source>Mouse</source>
         <translation>Maus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="79"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="82"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="88"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="91"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="173"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="176"/>
         <source>Press a key …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="175"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="178"/>
         <source>%1, %2: %3</source>
         <translation>%1, %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="179"/>
         <source>primary key</source>
         <translation>erste Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="179"/>
         <source>secondary key</source>
         <translation>zweite Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="177"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="180"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="186"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="189"/>
         <source>On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).</source>
         <translation>Auf einem Mac erreichen F1–F12 das Spiel nur mit gedrückter fn-Taste oder wenn in den Systemeinstellungen (Tastatur) „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ eingeschaltet ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="192"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="198"/>
         <source>Reset to defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="196"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="73"/>
         <source>All keys are back to their defaults.</source>
         <translation>Alle Tasten sind wieder auf dem Standard.</translation>
     </message>
@@ -1961,88 +1961,88 @@ Als Nächstes: %3</translation>
 <context>
     <name>GamepadPage</name>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="26"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="25"/>
         <source>All controllers</source>
         <translation>Alle Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="37"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="36"/>
         <source>%1 (not connected)</source>
         <translation>%1 (nicht angeschlossen)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="55"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="54"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="80"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="87"/>
         <source>Profile</source>
         <translation>Profil</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="86"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="93"/>
         <source>Settings for</source>
         <translation>Einstellungen für</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="88"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="95"/>
         <source>This controller model has its own settings.</source>
         <translation>Dieses Controller-Modell hat eigene Einstellungen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="89"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="96"/>
         <source>This controller uses the settings for all controllers.</source>
         <translation>Dieser Controller nutzt die Einstellungen für alle Controller.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="90"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="97"/>
         <source>Over USB and over Bluetooth a controller counts as two models.</source>
         <translation>Über USB und über Bluetooth zählt ein Controller als zwei Modelle.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="104"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="111"/>
         <source>Use the shared settings</source>
         <translation>Gemeinsame Einstellungen nutzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="130"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="137"/>
         <source>Sticks and triggers</source>
         <translation>Sticks und Trigger</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="142"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="149"/>
         <source>Radial menu only</source>
         <translation>Nur Radialmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="143"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="150"/>
         <source>The hotbar shows just the slot in the hand</source>
         <translation>Die Schnellleiste zeigt nur das Feld in der Hand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="169"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="176"/>
         <source>Connect a controller to change its buttons.</source>
         <translation>Schließe einen Controller an, um seine Tasten zu ändern.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="99"/>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="104"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="106"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="111"/>
         <source>Own settings</source>
         <translation>Eigene Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="123"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="130"/>
         <source>No controller connected. Xbox, PlayStation and Switch Pro controllers and most others work over USB or Bluetooth.</source>
         <translation>Kein Controller angeschlossen. Xbox-, PlayStation- und Switch-Pro-Controller und die meisten anderen funktionieren über USB oder Bluetooth.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="124"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="131"/>
         <source>Connected: %1. The controller you press a button on is used.</source>
         <translation>Angeschlossen: %1. Es gilt der Controller, auf dem du eine Taste drückst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="125"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="132"/>
         <source>%1 (in use)</source>
         <translation>%1 (in Benutzung)</translation>
     </message>
@@ -2051,7 +2051,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Nur Radialmenü: Die Schnellleiste zeigt nur das Feld in der Hand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="138"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="145"/>
         <source>Buttons</source>
         <translation>Tasten</translation>
     </message>
@@ -2068,27 +2068,27 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Ändern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="170"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="177"/>
         <source>The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).</source>
         <translation>Die Trigger bauen ab und benutzen; in Menüs behalten die Tasten ihre Plätze (unten bestätigt, rechts geht zurück).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="179"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="189"/>
         <source>Reset buttons</source>
         <translation>Tasten zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="184"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="61"/>
         <source>The buttons are back to their defaults.</source>
         <translation>Die Tasten sind wieder wie zu Beginn belegt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="188"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="194"/>
         <source>Reset everything</source>
         <translation>Alles zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="193"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="199"/>
         <source>All values and buttons are back to their defaults.</source>
         <translation>Alle Werte und Tasten sind wieder wie zu Beginn.</translation>
     </message>
@@ -2435,42 +2435,42 @@ Als Nächstes: %3</translation>
 <context>
     <name>HandbookScreen</name>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="85"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="94"/>
         <source>‹ Back</source>
         <translation>‹ Zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="80"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="89"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="83"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="92"/>
         <source>‹ Main menu</source>
         <translation>‹ Hauptmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="84"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="93"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="85"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="94"/>
         <source>‹ Back to game</source>
         <translation>‹ Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="145"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="154"/>
         <source>Search the handbook</source>
         <translation>Im Handbuch suchen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="146"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="155"/>
         <source>Search …</source>
         <translation>Suchen …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="215"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="226"/>
         <source>‹ Previous page</source>
         <translation>‹ Vorherige Seite</translation>
     </message>
@@ -2487,17 +2487,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Kategorien</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="239"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="250"/>
         <source>Entries</source>
         <translation>Einträge</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="266"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="277"/>
         <source>Nothing found.</source>
         <translation>Nichts gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="221"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="232"/>
         <source>%1 on a name or an item opens its page. %2 closes.</source>
         <translation>%1 auf einem Namen oder Item öffnet seine Seite. %2 schließt.</translation>
     </message>
@@ -2506,7 +2506,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">A auf einem Namen oder Item öffnet seine Seite. B schließt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="222"/>
+        <location filename="../src/app/qml/handbook/HandbookScreen.qml" line="233"/>
         <source>Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.</source>
         <translation>Klicke auf einen Namen oder ein Item, um seine Seite zu öffnen. Rücktaste geht zurück, Esc oder %1 schließt.</translation>
     </message>
@@ -3931,47 +3931,61 @@ Als Nächstes: %3</translation>
         <translation type="vanished">A: auswählen  B: zurück  LB/RB: Reiter  Rechter Stick: scrollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="37"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="48"/>
         <source>take/put down</source>
         <translation>nehmen/ablegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="38"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="49"/>
         <source>one item</source>
         <translation>ein Item</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="39"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="50"/>
         <source>quick move</source>
         <translation>schnell verschieben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="40"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="51"/>
         <source>close</source>
         <translation>schließen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="41"/>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="50"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="52"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="63"/>
         <source>scroll</source>
         <translation>scrollen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="43"/>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="46"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="54"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="57"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="44"/>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="47"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="55"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="58"/>
         <source>back</source>
         <translation>zurück</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/gamepad/PadHints.qml" line="49"/>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="59"/>
+        <source>category</source>
+        <translation>Kategorie</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="61"/>
+        <source>again: reset to default</source>
+        <translation>erneut: zurücksetzen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/gamepad/PadHints.qml" line="62"/>
+        <source>reset to default</source>
+        <translation>zurücksetzen</translation>
+    </message>
+    <message>
         <source>tabs</source>
-        <translation>Reiter</translation>
+        <translation type="vanished">Reiter</translation>
     </message>
 </context>
 <context>
@@ -8807,7 +8821,7 @@ Jetzt: %2</translation>
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="99"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="112"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
@@ -8816,7 +8830,7 @@ Jetzt: %2</translation>
         <translation type="vanished">Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
@@ -8872,32 +8886,37 @@ Jetzt: %2</translation>
         <translation type="vanished">Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="97"/>
+        <source>Press %1 again to reset this page to its defaults.</source>
+        <translation>%1 erneut drücken, um diese Seite auf die Standardwerte zurückzusetzen.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
         <source>Graphics</source>
         <translation>Grafik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="116"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="141"/>
         <source>Interface</source>
         <translation>Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="117"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="142"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="117"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="142"/>
         <source>Advanced</source>
         <translation>Erweitert</translation>
     </message>
@@ -9375,22 +9394,22 @@ Jetzt: %2</translation>
 <context>
     <name>WorldRow</name>
     <message>
-        <location filename="../src/app/qml/menus/WorldRow.qml" line="51"/>
+        <location filename="../src/app/qml/menus/WorldRow.qml" line="62"/>
         <source>Play</source>
         <translation>Spielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldRow.qml" line="52"/>
+        <location filename="../src/app/qml/menus/WorldRow.qml" line="63"/>
         <source>Play %1</source>
         <translation>%1 spielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldRow.qml" line="58"/>
+        <location filename="../src/app/qml/menus/WorldRow.qml" line="69"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/WorldRow.qml" line="59"/>
+        <location filename="../src/app/qml/menus/WorldRow.qml" line="70"/>
         <source>Delete %1</source>
         <translation>%1 löschen</translation>
     </message>

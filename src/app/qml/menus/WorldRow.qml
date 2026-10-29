@@ -5,29 +5,40 @@ import QtCraft
 
 // One saved world in the main menu's list (decision E-852): its tile, name and summary (when it was
 // played, its type and mode), or why it cannot be opened, with Play and Delete on the right; a
-// double click plays it too.
+// double click plays it too. The row takes the focus itself (Tab, the pad): Enter and the pad's A
+// play it, the pad's up and down walk the list row by row, right reaches its buttons (HM-6 of
+// docs/Menue-Pruefung.md).
 ListRow {
     id: row
 
     // An entry of GameController.library.worlds.
     required property var modelData
+    // The row's place in the list.
+    required property int index
     // What the subtitle says about the world (WorldTexts.summary).
     property string summary
 
     signal playRequested(string folder)
     signal deleteRequested(string folder, string name)
 
+    // Plays the world unless it cannot be opened.
+    function play() {
+        if (row.modelData.error.length === 0)
+            row.playRequested(row.modelData.folder);
+    }
+
+    objectName: "worldRow" + index
     interactive: true
+    focusable: true
+    listIndex: index
     title: modelData.name
     subtitle: modelData.error.length > 0 ? "" : summary
     Accessible.role: Accessible.ListItem
     Accessible.name: modelData.name
 
-    // A double click plays the world, as Play does.
-    onDoubleClicked: {
-        if (row.modelData.error.length === 0)
-            row.playRequested(row.modelData.folder);
-    }
+    // A double click and Enter play the world, as Play does (a single click does not).
+    onDoubleClicked: play()
+    onActivated: play()
 
     leading: WorldTile {
         implicitWidth: Ui.size.thumbnailSmall

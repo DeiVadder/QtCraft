@@ -286,7 +286,15 @@ void QcGamepadUi::onActiveFocusChanged()
 {
     m_navigator.invalidateScope();
     updateFocus();
-    if (!m_active || m_navigator.focusItem()) {
+    if (!m_active) {
+        return;
+    }
+    // A focus that QML moved (a page's first setting) takes the pointer's hover along, as the
+    // navigator's own moves do.
+    if (m_navigator.focusItem()) {
+        if (!m_navigator.sending()) {
+            m_navigator.hoverFocus();
+        }
         return;
     }
 

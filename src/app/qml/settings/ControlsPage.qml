@@ -17,7 +17,6 @@ SettingsPage {
     // The slot waiting for a key press: action id and slot (0 primary, 1 secondary).
     property string captureAction
     property int captureSlot: -1
-    property string message
     // A modifier pressed while capturing; it is bound when released without another key, so
     // Shift+7 binds the character it types ("/" on a German keyboard).
     property int pendingModifier: 0
@@ -38,14 +37,8 @@ SettingsPage {
 
     // Scrolls the page so the message above the key table is in view (once laid out).
     function revealMessage() {
-        if (message.length === 0)
-            return;
-
-        const top = messageHint.mapToItem(contentItem, 0, 0).y;
-        if (top < contentY)
-            contentY = Math.max(0, top - Ui.space.s);
-        else if (top + messageHint.height > contentY + height)
-            contentY = Math.min(contentHeight - height, top + messageHint.height - height + Ui.space.s);
+        if (message.length > 0)
+            reveal(messageHint);
     }
 
     function startCapture(action, slot) {
@@ -71,6 +64,16 @@ SettingsPage {
     }
 
     title: qsTr("Controls")
+    resettable: true
+    resetButton: resetKeysButton
+    // From the pad the focus stays on the reset button and the screen shows the message.
+    onResetRequested: byPad => {
+        cancelCapture();
+        keys.reset();
+        message = qsTr("All keys are back to their defaults.");
+        if (!byPad)
+            Qt.callLater(revealMessage);
+    }
 
     SettingGroup {
         title: qsTr("Mouse")
@@ -187,15 +190,13 @@ SettingsPage {
         }
 
         GameButton {
+            id: resetKeysButton
+
+            objectName: "resetKeysButton"
             Layout.topMargin: Ui.space.xs
             Layout.bottomMargin: Ui.space.xs
             text: qsTr("Reset to defaults")
-            onClicked: {
-                page.cancelCapture();
-                page.keys.reset();
-                page.message = qsTr("All keys are back to their defaults.");
-                Qt.callLater(page.revealMessage);
-            }
+            onClicked: page.resetRequested(false)
         }
     }
 }

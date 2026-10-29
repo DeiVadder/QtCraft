@@ -40,7 +40,7 @@ SidebarScreen {
         visible = true;
         admin.open();
         forceActiveFocus();
-        focusFirst();
+        focusPage();
     }
 
     // Closes at once; leave() asks first about unsaved settings.
@@ -60,18 +60,6 @@ SidebarScreen {
             close();
     }
 
-    // The first item of the shown section that takes the focus, as Tab would reach it.
-    function focusFirst() {
-        const page = pages.children[pages.currentIndex];
-        const first = page ? page.nextItemInFocusChain(true) : null;
-        for (let item = first; item; item = item.parent) {
-            if (item === page) {
-                first.forceActiveFocus(Qt.TabFocusReason);
-                return;
-            }
-        }
-    }
-
     // The pad's shoulders switch the section, its B leaves the screen.
     function gamepadCommand(command: string): bool {
         if (command === "back") {
@@ -87,6 +75,7 @@ SidebarScreen {
     title: qsTr("Manage server")
     backText: qsTr("‹ Pause menu")
     bottomRoom: game.gamepad.focusShown ? Ui.size.padHints : 0
+    shownPage: pages.children[pages.currentIndex] ?? null
     onBackRequested: leave()
     Keys.onPressed: event => {
         if (event.key === Qt.Key_Escape)
@@ -103,6 +92,11 @@ SidebarScreen {
             model: [qsTr("Overview"), qsTr("Players"), qsTr("Chat"), qsTr("Commands"), qsTr("Lists"), qsTr("Settings"),
                 qsTr("Log"), qsTr("Server")]
             notes: ["", String(screen.admin.players.length), "", "", "", screen.admin.dirty ? qsTr("unsaved") : "", "", ""]
+            // The focus goes onto the new section, unless leaving the settings asks first.
+            onSwitched: {
+                if (!unsavedDialog.visible)
+                    screen.focusPage();
+            }
             // Leaving the settings with unsaved changes asks first; the side bar keeps them until then.
             onCurrentIndexChanged: {
                 if (currentIndex === screen.section)
@@ -113,6 +107,7 @@ SidebarScreen {
                     unsavedDialog.ask(() => {
                         screen.section = target;
                         nav.currentIndex = target;
+                        screen.focusPage();
                     });
                 } else {
                     screen.section = target;

@@ -57,10 +57,12 @@ check() {
 
 # sections <name> <size> [options]: the screen walked through all its sections. The status of the
 # server comes once a second of the server's time: the first pad step waits for two of them. The
-# window without a screen has no focus of its own; the first press (up) shows the pad's focus (the
-# overview), the first shoulder press after it only reaches the side bar, and each further one
-# shows the next section (players, chat, commands, lists, settings, log, server). Each step is
-# checked once it is reported, the server section again before the screenshot.
+# screen opens with the focus on the overview's first control; the first press (up) shows the
+# pad's focus there, the first shoulder press after it does not switch yet, and each further one
+# shows the next section (players, chat, commands, lists, settings, log, server) with the focus on
+# its first control (or, without one, where the pad's focus starts), never on the back entry (AD-1
+# of docs/Menue-Pruefung.md). Each step is checked once it is reported, the server section again
+# before the screenshot.
 sections() {
     name=$1
     size=$2
@@ -72,6 +74,11 @@ sections() {
         presses=$((presses - 1))
     done
     check "$name" "$size" 10 "$@"
+    if grep 'padFocus' "$DATA/$name.log" | grep -q 'padFocus: sidebarBack'; then
+        echo "$name: the pad's focus reached the back entry:"
+        grep 'padFocus' "$DATA/$name.log"
+        failed=1
+    fi
 }
 
 sections de-1024 1024x640 --language de

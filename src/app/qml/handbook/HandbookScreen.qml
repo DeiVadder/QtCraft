@@ -58,6 +58,15 @@ SidebarScreen {
         game.handbook.close();
     }
 
+    // The first entry of the shown category takes the focus (after LB/RB, docs/UI-Leitfaden.md 10);
+    // the list makes its rows for the new category first.
+    function focusFirstEntry() {
+        entryList.forceLayout();
+        entryList.positionViewAtBeginning();
+        const index = listed.findIndex(row => row.id !== undefined);
+        entryList.itemAtIndex(index)?.forceActiveFocus(Qt.TabFocusReason);
+    }
+
     // Marks the shown category in the bar; none while search results show.
     function markCategory() {
         nav.currentIndex = searching ? -1 : categories.findIndex(entry => entry.id === category);
@@ -191,6 +200,8 @@ SidebarScreen {
                 model: screen.categories.map(entry => entry.title)
                 notes: screen.categories.map(entry => String(entry.count))
                 onEntryFocused: entry => categoryView.reveal(entry)
+                // The shoulders and Ctrl+Tab put the focus on the category's first entry.
+                onSwitched: screen.focusFirstEntry()
                 // A category chosen in the bar (click, Ctrl+Tab, shoulders) ends a search.
                 onCurrentIndexChanged: {
                     if (currentIndex < 0 || currentIndex >= screen.categories.length)

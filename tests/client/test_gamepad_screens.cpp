@@ -158,7 +158,8 @@ ApplicationWindow {
 // (scrolling it), skips hidden and disabled items, clicks with A, right-clicks with X and
 // shift-clicks with Y, goes back with Escape, switches tabs, asks the screen's gamepadCommand()
 // first, opens the keyboard for text fields, stays inside an open popup, and the ring follows the
-// focus only while the pad was used last; without the pad in use none of it runs per frame.
+// focus only while the pad was used last; without the pad in use none of it runs per frame. A back
+// entry (padLeftOnly) is reached only by left or by up from within its group.
 class TestGamepadScreens : public QObject
 {
     Q_OBJECT
@@ -242,6 +243,35 @@ private slots:
         move(QcGamepadButton::DpadDown);
         QCOMPARE(focus(), u"openPopup"_s);
         move(QcGamepadButton::DpadUp, 5);
+        QCOMPARE(focus(), u"first"_s);
+    }
+
+    // An item marked padLeftOnly (a side bar's back entry, docs/UI-Leitfaden.md 10, decision E-925)
+    // is skipped by down, reached by up from within its own group and by left, and never where the
+    // focus starts again, not even as the focus remembered last.
+    void leftOnlyItemIsReachedOnlyByUpInItsGroupOrLeft()
+    {
+        item(u"last"_s)->setProperty("padLeftOnly", true);
+        click(QcGamepadButton::DpadDown);
+        QCOMPARE(focus(), u"middle"_s);
+
+        move(QcGamepadButton::DpadDown);
+        QCOMPARE(focus(), u"name"_s);
+        move(QcGamepadButton::DpadUp);
+        QCOMPARE(focus(), u"last"_s);
+
+        item(u"screen"_s)->forceActiveFocus();
+        QTRY_VERIFY(!focus().isEmpty());
+        QVERIFY(focus() != u"last"_s);
+        m_ui->navigator().focusStart();
+        QVERIFY(focus() != u"last"_s);
+
+        move(QcGamepadButton::DpadUp, 3);
+        QCOMPARE(focus(), u"first"_s);
+        move(QcGamepadButton::DpadRight);
+        QCOMPARE(focus(), u"cell0"_s);
+        item(u"first"_s)->setProperty("padLeftOnly", true);
+        move(QcGamepadButton::DpadLeft);
         QCOMPARE(focus(), u"first"_s);
     }
 

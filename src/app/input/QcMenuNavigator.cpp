@@ -43,6 +43,19 @@ std::optional<Direction> directionOf(QcGamepadMenuInput::Command command)
     }
 }
 
+// Whether `item` is a back entry (its QML property padLeftOnly): never where the focus starts, and
+// reached only by moving left, or up from within its own group (the first category below it).
+bool leftOnly(const QQuickItem *item)
+{
+    return item->property("padLeftOnly").toBool();
+}
+
+// Whether a move from `current` in `direction` may end on the back entry `item`.
+bool reachesLeftOnly(const QQuickItem *item, const QQuickItem *current, Direction direction)
+{
+    return direction == Direction::Left || (direction == Direction::Up && QcFocusCandidates::contains(item->parentItem(), current));
+}
+
 // Calls `object`'s QML function gamepadCommand(name) when it has one; whether it took the command.
 bool callHandler(QObject *object, const QString &name)
 {
@@ -228,13 +241,14 @@ void QcMenuNavigator::focusInScope(const QQuickItem *scope)
         return;
     }
 
-    const QList<QQuickItem *> candidates = QcFocusCandidates::candidates(scope);
-    if (QQuickItem *remembered = m_lastFocus.value(scope); remembered && candidates.contains(remembered)) {
+    QList<QQuickItem *> candidates = QcFocusCandidates::candidates(scope);
+    if (QQuickItem *remembered = m_lastFocus.value(scope); remembered && candidates.contains(remembered) && !leftOnly(remembered)) {
         focus(remembered);
         return;
     }
 
-    // A screen's default button (highlighted) first, else the top left.
+    // A screen's default button (highlighted) first, else the top left; never a back entry.
+    candidates.removeIf(leftOnly);
     const auto highlighted = std::ranges::find_if(candidates, [](const QQuickItem *item) { return item->property("highlighted").toBool(); });
     if (highlighted != candidates.end()) {
         focus(*highlighted);
@@ -242,7 +256,7 @@ void QcMenuNavigator::focusInScope(const QQuickItem *scope)
     }
 
     QList<QRectF> rects;
-    for (const QQuickItem *item : candidates) {
+    for (const QQuickItem *item : std::as_const(candidates)) {
         rects.append(QcFocusCandidates::sceneRect(item));
     }
     if (const std::optional<qsizetype> start = QcSpatialNavigation::first(rects)) {
@@ -258,13 +272,21 @@ void QcMenuNavigator::focusStart()
     }
 }
 
+void QcMenuNavigator::hoverFocus()
+{
+    if (QQuickItem *item = focusItem()) {
+        hover(item);
+    }
+}
+
 void QcMenuNavigator::move(const QQuickItem *scope, QQuickItem *current, Direction direction)
 {
     // Rows scrolled out of view are reached only from within their list, which scrolls to them.
     const QQuickItem *list = QcFocusCandidates::flickableAround(current);
     QList<QQuickItem *> candidates = QcFocusCandidates::candidates(scope);
-    candidates.removeIf([current, list](const QQuickItem *item) {
-        return item == current || (!QcFocusCandidates::inView(item) && (!list || QcFocusCandidates::flickableAround(item) != list));
+    candidates.removeIf([current, list, direction](const QQuickItem *item) {
+        return item == current || (leftOnly(item) && !reachesLeftOnly(item, current, direction))
+               || (!QcFocusCandidates::inView(item) && (!list || QcFocusCandidates::flickableAround(item) != list));
     });
     QList<QRectF> rects;
     for (const QQuickItem *item : std::as_const(candidates)) {

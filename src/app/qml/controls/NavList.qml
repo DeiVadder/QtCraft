@@ -22,6 +22,9 @@ ColumnLayout {
 
     // An entry took the focus (a list in a Flickable scrolls it into view).
     signal entryFocused(Item entry)
+    // Ctrl+Tab or the pad's shoulders switched the category (the screen moves the focus onto the
+    // new page, docs/UI-Leitfaden.md 10).
+    signal switched
 
     // Moves the focus to the item before or after `item` in the focus chain.
     function moveFocus(item: Item, forward: bool) {
@@ -30,8 +33,11 @@ ColumnLayout {
 
     // The category after (step 1) or before (step -1) the current one, wrapping around.
     function next(step: int) {
-        if (model.length > 0)
-            currentIndex = (currentIndex + step + model.length) % model.length;
+        if (model.length === 0)
+            return;
+
+        currentIndex = (currentIndex + step + model.length) % model.length;
+        switched();
     }
 
     // The pad's shoulders (gamepadCommand "tabNext", "tabPrevious") switch the category: true if

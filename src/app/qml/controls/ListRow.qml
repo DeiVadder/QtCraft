@@ -21,9 +21,16 @@ Rectangle {
     property bool interactive: false
     // The row itself takes the focus (Tab, the pad): Enter, Space and the pad's A click it.
     property bool focusable: false
+    // The row's place in its ListView, for a list walked row by row: on the row itself the pad's up
+    // and down move to the row before or after (past the ends the focus moves on as usual); -1 for
+    // the pad's usual moves.
+    property int listIndex: -1
 
     signal clicked
     signal doubleClicked
+    // Chosen from the keyboard (Enter, Space), after clicked(): a row that a single click does not
+    // act on (a world, played by a double click) acts here.
+    signal activated
 
     Layout.fillWidth: true
     implicitHeight: layout.implicitHeight + 2 * Ui.space.s
@@ -37,7 +44,37 @@ Rectangle {
     // Clicks the row from the keyboard; true (the key is taken).
     function click(): bool {
         clicked();
+        activated();
         return true;
+    }
+
+    // The row at `index` of the list, focused and scrolled into view; whether there is one.
+    function focusRow(index: int): bool {
+        const list = row.ListView.view;
+        if (!list || index < 0 || index >= list.count)
+            return false;
+
+        list.positionViewAtIndex(index, ListView.Contain);
+        const target = list.itemAtIndex(index);
+        target?.forceActiveFocus(Qt.TabFocusReason);
+        return target !== null;
+    }
+
+    // The pad on the row itself (not on its actions): A clicks it as Enter does, up and down walk a
+    // list row by row (listIndex).
+    function gamepadCommand(command: string): bool {
+        if (!focusable || Window.activeFocusItem !== row)
+            return false;
+
+        if (command === "confirm")
+            return click();
+        if (listIndex < 0)
+            return false;
+        if (command === "down")
+            return focusRow(listIndex + 1);
+        if (command === "up")
+            return focusRow(listIndex - 1);
+        return false;
     }
 
     FocusOutline {

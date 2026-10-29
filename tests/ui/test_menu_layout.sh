@@ -67,6 +67,53 @@ if [ "$(last_focus settings-back-de)" != menuEntry5 ]; then
     grep 'padFocus' "$DATA/settings-back-de.log"
     failed=1
 fi
+# The pad's A and Y on the first focus of the settings stay in the settings (ES-1): A acts on the
+# first setting, Y resets only a page with defaults (the graphics page has none).
+check settings-stay-de --language de --overlay "@300 open:menuSettingsScreen" --overlay "@600 pad:dpadUp" \
+    --overlay "@900 pad:north" --overlay "@1200 pad:south"
+if grep 'padFocus' "$DATA/settings-stay-de.log" | grep -qE 'padFocus: (sidebarBack|menuEntry|$)'; then
+    echo "settings-stay-de: the pad's A or Y left the settings:"
+    grep 'padFocus' "$DATA/settings-stay-de.log"
+    failed=1
+fi
+# The pad's Y resets a page with defaults only after a second Y (decision E-925): on the controls
+# page (two right shoulders on) one Y keeps a changed key and shows the question in the hints, two
+# reset it; B then closes and stores the settings. The graphics page has no Y hint.
+reset_run() {
+    name=$1
+    shift
+    printf '[debug]\nlevel=off\n[audio]\nmuted=true\n[keys]\nforward=I\n' >"$DATA/settings.ini"
+    check "$name" --language de --overlay "@300 open:menuSettingsScreen" --overlay "@600 pad:dpadUp" \
+        --overlay "@600 pad:rightShoulder" --overlay "@600 pad:rightShoulder" "$@" --overlay "@600 pad:east"
+}
+reset_run settings-y-once-de --overlay "@600 pad:north" --overlay "@600 text:padHintResetAgain=again"
+if ! grep -q '^forward=I$' "$DATA/settings.ini" || grep -q 'padHintResetAgain.*no such control' "$DATA/settings-y-once-de.log"; then
+    echo "settings-y-once-de: one Y reset the keys or showed no question:"
+    grep -E 'padFocus|no such control|^forward=' "$DATA/settings-y-once-de.log" "$DATA/settings.ini"
+    failed=1
+fi
+reset_run settings-y-twice-de --overlay "@600 text:padHintReset=reset" --overlay "@600 pad:north" --overlay "@600 pad:north"
+if ! grep -q '^forward=W$' "$DATA/settings.ini" || grep -q 'no such control' "$DATA/settings-y-twice-de.log"; then
+    echo "settings-y-twice-de: Y Y did not reset the keys, or the controls page showed no Y hint:"
+    grep -E 'padFocus|no such control|^forward=' "$DATA/settings-y-twice-de.log" "$DATA/settings.ini"
+    failed=1
+fi
+printf '[debug]\nlevel=off\n[audio]\nmuted=true\n' >"$DATA/settings.ini"
+check settings-no-y-de --language de --overlay "@300 open:menuSettingsScreen" --overlay "@600 pad:dpadUp" \
+    --overlay "@600 text:padHintReset=reset"
+if ! grep -q 'padHintReset.*no such control' "$DATA/settings-no-y-de.log"; then
+    echo "settings-no-y-de: the graphics page shows a Y hint:"
+    grep 'padHintReset' "$DATA/settings-no-y-de.log"
+    failed=1
+fi
+# In the handbook the pad's right shoulder puts the focus on the first entry of the next category.
+check handbook-pad-de --language de --handbook block:qtcraft:furnace --overlay "@600 pad:dpadUp" \
+    --overlay "@600 pad:rightShoulder"
+if ! last_focus handbook-pad-de | grep -q '^HandbookEntryRow:'; then
+    echo "handbook-pad-de: after the right shoulder the focus is not on an entry:"
+    grep 'padFocus' "$DATA/handbook-pad-de.log"
+    failed=1
+fi
 # Back from the texture packs opened on the mods page, "Texture packs …" has the focus again.
 check mods-back-de --language de --overlay "@300 open:modsScreen" --overlay "@600 click:texturePacksLink" \
     --overlay "@900 pad:dpadUp" --overlay "@1200 pad:east"
@@ -134,17 +181,34 @@ if ! perl -e 'alarm shift; exec @ARGV or die' 60 "$HEADLESS" --data-dir "$DATA" 
     tail -5 "$DATA/worlds.log"
     failed=1
 fi
-check menu-world-de --language de --overlay "@300 pad:dpadDown"
+# Down from there reaches "New world …" and then walks the list of worlds row by row (HM-6 of
+# docs/Menue-Pruefung.md), not along the rows' buttons; right from a row reaches its Play.
+check menu-world-de --language de --overlay "@300 pad:dpadDown" --overlay "@300 pad:dpadDown" --overlay "@300 pad:dpadDown" \
+    --overlay "@300 pad:dpadDown" --overlay "@300 pad:dpadRight"
 if ! grep -q 'padFocus: continueButton' "$DATA/menu-world-de.log"; then
     echo "menu-world-de: the start page offers no world to continue:"
     grep 'padFocus' "$DATA/menu-world-de.log"
+    failed=1
+elif [ "$(grep 'padFocus' "$DATA/menu-world-de.log" | tail -4 | tr '\n' ' ')" != \
+    "padFocus: newWorldButton padFocus: worldRow0 padFocus: worldRow1 padFocus: GameButton:Spielen " ]; then
+    echo "menu-world-de: down does not walk the list of worlds row by row, or right misses Play:"
+    grep 'padFocus' "$DATA/menu-world-de.log"
+    failed=1
+fi
+# The pad's A on a row plays its world.
+check world-play-de --language de --overlay "@300 pad:dpadDown" --overlay "@300 pad:dpadDown" --overlay "@300 pad:dpadDown" \
+    --overlay "@300 pad:south"
+if ! grep -q 'Opened world' "$DATA/world-play-de.log"; then
+    echo "world-play-de: A on the world's row did not play it:"
+    grep 'padFocus' "$DATA/world-play-de.log"
     failed=1
 fi
 
 # settings_page <name> <presses>: the settings in German (its texts are longer) at the page the
 # pad's right shoulder reaches after <presses> presses; the steps run after the screen opened. The
-# window without a screen has no focus of its own: the first press (up) shows the pad's focus on
-# the first setting, as the pad's first press does, and the shoulders then go to the settings.
+# screen opens with the focus on the first setting; the first press (up) shows the pad's focus
+# there and does not move it onto the back entry (guide 10, ES-1 of docs/Menue-Pruefung.md). After
+# each shoulder press the focus is on the new page, never in the side bar.
 settings_page() {
     page=$1
     presses=$2
@@ -154,6 +218,11 @@ settings_page() {
         presses=$((presses - 1))
     done
     check "settings-de-$page" "$@"
+    if grep 'padFocus' "$DATA/settings-de-$page.log" | grep -qE 'padFocus: (sidebarBack|NavButton:|$)'; then
+        echo "settings-de-$page: the pad's focus left the page (back entry, side bar or none):"
+        grep 'padFocus' "$DATA/settings-de-$page.log"
+        failed=1
+    fi
 }
 settings_page graphics 0
 settings_page audio 1
