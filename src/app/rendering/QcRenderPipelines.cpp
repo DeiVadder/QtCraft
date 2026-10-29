@@ -5,8 +5,8 @@
 
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcDrawOrigins.h"
+#include "clientcore/entitymeshes/QcEntityVertex.h"
 #include "clientcore/meshing/QcBlockVertex.h"
-#include "clientcore/meshing/QcEntityVertex.h"
 
 #include <QFile>
 

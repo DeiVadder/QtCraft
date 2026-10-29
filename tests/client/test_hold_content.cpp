@@ -5,8 +5,8 @@
 // `hold` of items and blocks, the swing placement, their checks, the content sync and a mod that
 // moves an item.
 
-#include "clientcore/meshing/QcFigureLook.h"
-#include "clientcore/meshing/QcHeldItemMesher.h"
+#include "clientcore/entitymeshes/QcHeldItemMesher.h"
+#include "clientcore/figures/QcFigureLook.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/content/parser/QcHoldParser.h"

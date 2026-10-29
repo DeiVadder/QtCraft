@@ -3,9 +3,9 @@
 
 #include "clientcore/icons/QcItemIconSet.h"
 
+#include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/icons/QcBlockIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
-#include "clientcore/meshing/QcFigureLook.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
 

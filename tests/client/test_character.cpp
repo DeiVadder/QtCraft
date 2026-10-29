@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clientcore/camera/QcViewCamera.h"
-#include "clientcore/meshing/QcAnimator.h"
-#include "clientcore/meshing/QcEntityMesher.h"
+#include "clientcore/entitymeshes/QcEntityMesher.h"
+#include "clientcore/figures/QcAnimator.h"
 #include "common/physics/QcPhysics.h"
 #include "QcTestWorld.h"
 

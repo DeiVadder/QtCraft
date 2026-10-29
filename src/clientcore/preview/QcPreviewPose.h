@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "clientcore/meshing/QcCapeSwing.h"
-#include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/figures/QcCapeSwing.h"
+#include "clientcore/figures/QcEntityPose.h"
 #include "clientcore/preview/QcPreviewCamera.h"
 
 #include <QString>

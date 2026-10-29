@@ -5,7 +5,7 @@
 
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
-#include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/figures/QcEntityPose.h"
 #include "clientcore/player/QcClientAdvancements.h"
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientInventory.h"

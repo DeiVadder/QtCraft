@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcSignTextCache.h"
-#include "clientcore/meshing/QcSignTextMesher.h"
+#include "clientcore/entitymeshes/QcSignTextCache.h"
+#include "clientcore/entitymeshes/QcSignTextMesher.h"
 #include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientSignEditor.h"
 #include "common/protocol/QcProtocol.h"

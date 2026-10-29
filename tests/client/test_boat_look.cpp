@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcAnimator.h"
-#include "clientcore/meshing/QcBoatModel.h"
-#include "clientcore/meshing/QcBoatRiders.h"
+#include "clientcore/entitymeshes/QcBoatModel.h"
+#include "clientcore/entitymeshes/QcBoatRiders.h"
+#include "clientcore/figures/QcAnimator.h"
 #include "common/physics/QcBoatMotion.h"
 #include "common/protocol/QcEntityMessages.h"
 #include "common/world/QcBoatBody.h"

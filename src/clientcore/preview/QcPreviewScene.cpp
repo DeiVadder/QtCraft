@@ -3,7 +3,7 @@
 
 #include "clientcore/preview/QcPreviewScene.h"
 
-#include "clientcore/meshing/QcFigureLook.h"
+#include "clientcore/figures/QcFigureLook.h"
 #include "common/content/registry/QcContentRegistry.h"
 
 namespace QcPreviewScene {

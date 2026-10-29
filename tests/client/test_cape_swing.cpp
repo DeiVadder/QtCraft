@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcCapeSwing.h"
-#include "clientcore/meshing/QcCapeTracker.h"
+#include "clientcore/figures/QcCapeSwing.h"
+#include "clientcore/figures/QcCapeTracker.h"
 #include "common/physics/QcPhysics.h"
 
 #include <QTest>

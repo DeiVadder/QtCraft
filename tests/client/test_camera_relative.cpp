@@ -4,8 +4,8 @@
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/camera/QcFrustum.h"
 #include "clientcore/camera/QcRenderOrigin.h"
-#include "clientcore/meshing/QcEnchantingMesher.h"
-#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/entitymeshes/QcEnchantingMesher.h"
+#include "clientcore/entitymeshes/QcEntityMesh.h"
 
 #include <QTest>
 

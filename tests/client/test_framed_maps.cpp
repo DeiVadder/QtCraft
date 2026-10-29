@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "clientcore/entitymeshes/QcHangingMesher.h"
 #include "clientcore/maps/QcClientMaps.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/maps/QcMapColors.h"
-#include "clientcore/meshing/QcHangingMesher.h"
 #include "common/maps/QcMapPixel.h"
 #include "QcTestUtil.h"
 

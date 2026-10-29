@@ -5,7 +5,7 @@
 
 #include "app/rendering/QcDrawOrigins.h"
 #include "clientcore/camera/QcCamera.h"
-#include "clientcore/meshing/QcEntityMesh.h"
+#include "clientcore/entitymeshes/QcEntityMesh.h"
 
 #include <QImage>
 #include <QQuickRhiItemRenderer>

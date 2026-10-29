@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcAnimator.h"
-#include "clientcore/meshing/QcEntityMesher.h"
-#include "clientcore/meshing/QcFigureLook.h"
-#include "clientcore/meshing/QcHandSwing.h"
-#include "clientcore/meshing/QcHeldItemMesher.h"
-#include "clientcore/meshing/QcSpriteShape.h"
+#include "clientcore/entitymeshes/QcEntityMesher.h"
+#include "clientcore/entitymeshes/QcHeldItemMesher.h"
+#include "clientcore/entitymeshes/QcSpriteShape.h"
+#include "clientcore/figures/QcAnimator.h"
+#include "clientcore/figures/QcFigureLook.h"
+#include "clientcore/figures/QcHandSwing.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
 

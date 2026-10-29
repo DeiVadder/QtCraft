@@ -46,6 +46,35 @@ target_sources(qc_clientcore PRIVATE
     debug/QcStatsLog.h debug/QcStatsLog.cpp
 )
 target_sources(qc_clientcore PRIVATE
+    entitymeshes/QcBoatModel.h entitymeshes/QcBoatModel.cpp
+    entitymeshes/QcBoatRiders.h entitymeshes/QcBoatRiders.cpp
+    entitymeshes/QcEnchantingMesher.h entitymeshes/QcEnchantingMesher.cpp
+    entitymeshes/QcEntityCulling.h entitymeshes/QcEntityCulling.cpp
+    entitymeshes/QcEntityMesh.h
+    entitymeshes/QcEntityMesher.h entitymeshes/QcEntityMesher.cpp
+    entitymeshes/QcEntityVertex.h
+    entitymeshes/QcHangingMesher.h entitymeshes/QcHangingMesher.cpp
+    entitymeshes/QcHeldItemMesher.h entitymeshes/QcHeldItemMesher.cpp
+    entitymeshes/QcMeshRotation.h
+    entitymeshes/QcProjectileMesher.h entitymeshes/QcProjectileMesher.cpp
+    entitymeshes/QcSignTextCache.h entitymeshes/QcSignTextCache.cpp
+    entitymeshes/QcSignTextMesher.h entitymeshes/QcSignTextMesher.cpp
+    entitymeshes/QcSpriteShape.h entitymeshes/QcSpriteShape.cpp
+    entitymeshes/QcSpriteShapes.h entitymeshes/QcSpriteShapes.cpp
+    entitymeshes/QcTetherMesher.h entitymeshes/QcTetherMesher.cpp
+    entitymeshes/QcTethers.h entitymeshes/QcTethers.cpp
+)
+target_sources(qc_clientcore PRIVATE
+    figures/QcAnimator.h figures/QcAnimator.cpp
+    figures/QcArmourLook.h figures/QcArmourLook.cpp
+    figures/QcBoxLegs.h figures/QcBoxLegs.cpp
+    figures/QcCapeSwing.h figures/QcCapeSwing.cpp
+    figures/QcCapeTracker.h figures/QcCapeTracker.cpp
+    figures/QcEntityPose.h
+    figures/QcFigureLook.h figures/QcFigureLook.cpp
+    figures/QcHandSwing.h figures/QcHandSwing.cpp
+)
+target_sources(qc_clientcore PRIVATE
     icons/QcAppIcon.h icons/QcAppIcon.cpp
     icons/QcBlockIcon.h icons/QcBlockIcon.cpp
     icons/QcItemIconSet.h icons/QcItemIconSet.cpp
@@ -89,40 +118,15 @@ target_sources(qc_clientcore PRIVATE
     materials/QcMaterialSynthesizer.h materials/QcMaterialSynthesizer.cpp
 )
 target_sources(qc_clientcore PRIVATE
-    meshing/QcAnimator.h meshing/QcAnimator.cpp
-    meshing/QcArmourLook.h meshing/QcArmourLook.cpp
     meshing/QcBlockRenderTable.h meshing/QcBlockRenderTable.cpp
     meshing/QcBlockVertex.h
-    meshing/QcBoatModel.h meshing/QcBoatModel.cpp
-    meshing/QcBoatRiders.h meshing/QcBoatRiders.cpp
-    meshing/QcBoxLegs.h meshing/QcBoxLegs.cpp
-    meshing/QcCapeSwing.h meshing/QcCapeSwing.cpp
-    meshing/QcCapeTracker.h meshing/QcCapeTracker.cpp
     meshing/QcChunkMesh.h
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
-    meshing/QcEnchantingMesher.h meshing/QcEnchantingMesher.cpp
-    meshing/QcEntityCulling.h meshing/QcEntityCulling.cpp
-    meshing/QcEntityMesh.h
-    meshing/QcEntityMesher.h meshing/QcEntityMesher.cpp
-    meshing/QcEntityPose.h
-    meshing/QcEntityVertex.h
-    meshing/QcFigureLook.h meshing/QcFigureLook.cpp
-    meshing/QcHandSwing.h meshing/QcHandSwing.cpp
-    meshing/QcHangingMesher.h meshing/QcHangingMesher.cpp
-    meshing/QcHeldItemMesher.h meshing/QcHeldItemMesher.cpp
     meshing/QcIndexPacking.h
     meshing/QcLiquidSurface.h meshing/QcLiquidSurface.cpp
     meshing/QcMeshNeighbourhood.h
-    meshing/QcMeshRotation.h
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
-    meshing/QcProjectileMesher.h meshing/QcProjectileMesher.cpp
-    meshing/QcSignTextCache.h meshing/QcSignTextCache.cpp
-    meshing/QcSignTextMesher.h meshing/QcSignTextMesher.cpp
-    meshing/QcSpriteShape.h meshing/QcSpriteShape.cpp
-    meshing/QcSpriteShapes.h meshing/QcSpriteShapes.cpp
-    meshing/QcTetherMesher.h meshing/QcTetherMesher.cpp
-    meshing/QcTethers.h meshing/QcTethers.cpp
 )
 target_sources(qc_clientcore PRIVATE
     network/QcKnownServers.h network/QcKnownServers.cpp

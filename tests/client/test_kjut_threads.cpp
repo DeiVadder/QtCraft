@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcTetherMesher.h"
-#include "clientcore/meshing/QcTethers.h"
+#include "clientcore/entitymeshes/QcTetherMesher.h"
+#include "clientcore/entitymeshes/QcTethers.h"
 #include "clientcore/session/QcClientEntity.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "QcTestUtil.h"

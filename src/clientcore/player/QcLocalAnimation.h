@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "clientcore/meshing/QcEntityPose.h"
-#include "clientcore/meshing/QcHandSwing.h"
+#include "clientcore/figures/QcEntityPose.h"
+#include "clientcore/figures/QcHandSwing.h"
 #include "clientcore/player/QcHandTimers.h"
 #include "clientcore/session/QcClientEntities.h"
 #include "common/content/registry/QcContentRegistry.h"

@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "clientcore/meshing/QcAnimator.h"
-#include "clientcore/meshing/QcHandSwing.h"
+#include "clientcore/figures/QcAnimator.h"
+#include "clientcore/figures/QcHandSwing.h"
 #include "clientcore/player/QcLocalAnimation.h"
 #include "clientcore/player/QcPrediction.h"
 #include "common/gameplay/QcSwingSpeed.h"

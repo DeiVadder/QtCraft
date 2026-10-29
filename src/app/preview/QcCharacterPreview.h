@@ -5,8 +5,8 @@
 
 #include "app/preview/QcPreviewSource.h"
 #include "clientcore/camera/QcCamera.h"
-#include "clientcore/meshing/QcEntityMesh.h"
-#include "clientcore/meshing/QcSpriteShapes.h"
+#include "clientcore/entitymeshes/QcEntityMesh.h"
+#include "clientcore/entitymeshes/QcSpriteShapes.h"
 #include "clientcore/preview/QcPreviewActivity.h"
 #include "clientcore/preview/QcPreviewCamera.h"
 #include "clientcore/preview/QcPreviewPacer.h"

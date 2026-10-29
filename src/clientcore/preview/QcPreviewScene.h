@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include "clientcore/meshing/QcCapeSwing.h"
-#include "clientcore/meshing/QcEntityMesh.h"
-#include "clientcore/meshing/QcEntityMesher.h"
-#include "clientcore/meshing/QcEntityPose.h"
+#include "clientcore/entitymeshes/QcEntityMesh.h"
+#include "clientcore/entitymeshes/QcEntityMesher.h"
+#include "clientcore/figures/QcCapeSwing.h"
+#include "clientcore/figures/QcEntityPose.h"
 #include "common/content/definitions/QcAppearance.h"
 #include "common/gameplay/QcEquipment.h"
 
