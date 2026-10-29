@@ -3,7 +3,7 @@
 
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcLightVolume.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 

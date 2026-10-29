@@ -3,8 +3,8 @@
 
 #include "common/gameplay/QcArmour.h"
 #include "common/protocol/QcProtocolCodec.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/gameplay/QcServerStands.h"
 #include "server/storage/QcEntityCodec.h"

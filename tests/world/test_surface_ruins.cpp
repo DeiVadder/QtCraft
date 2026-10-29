@@ -3,7 +3,7 @@
 
 #include "common/core/QcIntMath.h"
 #include "common/diagnostics/QcThreadCpuClock.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

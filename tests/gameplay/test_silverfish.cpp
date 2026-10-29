@@ -3,7 +3,7 @@
 
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/mobs/QcInfestation.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 

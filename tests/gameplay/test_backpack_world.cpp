@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/core/QcWorldConstants.h"
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/explosions/QcServerExplosions.h"
 #include "server/signal/QcMovingBlocks.h"
 

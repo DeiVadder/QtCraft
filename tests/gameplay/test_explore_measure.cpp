@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 
 #include "common/core/QcTickPhase.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>

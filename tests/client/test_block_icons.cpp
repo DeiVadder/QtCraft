@@ -8,7 +8,7 @@
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/blocks/QcBlockSerializer.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QSet>
 #include <QTemporaryDir>

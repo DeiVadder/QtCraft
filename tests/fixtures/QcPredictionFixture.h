@@ -5,7 +5,7 @@
 
 #include "clientcore/control/QcControlAim.h"
 #include "clientcore/session/QcClientSession.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worlds/QcLocalServerHost.h"

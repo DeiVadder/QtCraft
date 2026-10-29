@@ -7,7 +7,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/gameplay/QcCrafting.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QBuffer>
 #include <QDir>

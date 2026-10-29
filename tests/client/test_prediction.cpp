@@ -5,7 +5,7 @@
 #include "clientcore/session/QcClientEntities.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

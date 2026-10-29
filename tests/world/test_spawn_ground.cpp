@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcRawClient.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRawClient.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 

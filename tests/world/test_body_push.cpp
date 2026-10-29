@@ -4,8 +4,8 @@
 #include "common/physics/QcBodyGrid.h"
 #include "common/physics/QcBodyPush.h"
 #include "common/physics/QcPhysics.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QRandomGenerator>
 #include <QTest>

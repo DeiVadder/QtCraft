@@ -5,9 +5,9 @@
 
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcTransport.h"
-#include "QcRawWorkstations.h"
-#include "QcRawWorldRecord.h"
-#include "QcTestLogin.h"
+#include "fixtures/QcRawWorkstations.h"
+#include "fixtures/QcRawWorldRecord.h"
+#include "fixtures/QcTestLogin.h"
 
 #include <QHash>
 #include <QSet>

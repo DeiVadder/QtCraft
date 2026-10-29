@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcShadewalkerFixture.h"
-#include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/mobbrains/QcMobSteering.h"
 #include "server/projectiles/QcProjectileFlight.h"

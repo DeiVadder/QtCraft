@@ -3,7 +3,7 @@
 
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcBodyFit.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 

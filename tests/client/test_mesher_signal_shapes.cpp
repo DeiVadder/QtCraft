@@ -7,8 +7,8 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
-#include "QcWorldMesh.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcWorldMesh.h"
 
 #include <QTest>
 

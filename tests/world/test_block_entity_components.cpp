@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcServerTestFixture.h"
-#include "QcStoredWorld.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcStoredWorld.h"
 #include "server/signal/QcCircuitState.h"
 #include "server/signal/QcHopperQueue.h"
 #include "server/storage/QcBlockEntityRecords.h"

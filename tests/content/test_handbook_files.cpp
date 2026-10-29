@@ -3,7 +3,7 @@
 
 #include "common/content/loader/QcContentPackLoader.h"
 #include "common/content/registry/QcContentParser.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDir>
 #include <QFile>

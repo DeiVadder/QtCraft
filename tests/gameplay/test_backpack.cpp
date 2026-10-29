@@ -5,8 +5,8 @@
 #include "common/gameplay/QcMining.h"
 #include "common/gameplay/QcPortableContainers.h"
 #include "common/physics/QcPhysics.h"
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTemporaryDir>
 

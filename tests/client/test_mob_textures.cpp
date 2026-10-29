@@ -6,7 +6,7 @@
 #include "clientcore/textures/QcTextureSynthesizer.h"
 #include "common/content/loader/QcBaseContent.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QSet>
 #include <QTest>

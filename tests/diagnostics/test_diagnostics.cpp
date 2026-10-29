@@ -12,7 +12,7 @@
 #include "common/diagnostics/QcLogWriter.h"
 #include "common/diagnostics/QcRoundTripStats.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestProtocol.h"
+#include "fixtures/QcTestProtocol.h"
 #include "server/tick/QcLagReport.h"
 
 #include <QFile>

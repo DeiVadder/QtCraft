@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 
 #include <QRegularExpression>
 

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/backup/QcWorldBackup.h"
 
 #include <QDir>

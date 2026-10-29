@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/gameplay/QcAnvil.h"
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcEnchantingFixture.h"
-#include "QcTestUtil.h"
 #include "server/mobs/QcMobManager.h"
 
 #include <QTemporaryDir>

@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/auth/QcProfileValidation.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
-#include "QcUnreadableFile.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcUnreadableFile.h"
 #include "server/login/QcAccessList.h"
 
 #include <QFile>

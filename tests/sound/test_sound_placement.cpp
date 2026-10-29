@@ -8,7 +8,7 @@
 #include "clientcore/sound/QcSoundSpatial.h"
 #include "clientcore/sound/QcSoundSynthesizer.h"
 #include "common/content/registry/QcSoundKeys.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

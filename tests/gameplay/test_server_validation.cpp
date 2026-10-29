@@ -5,8 +5,8 @@
 #include "common/core/QcNameText.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/gameplay/QcHunger.h"
 
 #include <QTest>

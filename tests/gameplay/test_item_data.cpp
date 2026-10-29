@@ -4,7 +4,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcSlotList.h"
 #include "common/protocol/QcProtocolCodec.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcItemDataCodec.h"

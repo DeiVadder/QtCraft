@@ -5,8 +5,8 @@
 
 #include "common/physics/QcBoatMotion.h"
 #include "common/world/QcBoatBody.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/boats/QcServerBoats.h"
 #include "server/entities/QcEntityChecks.h"
 

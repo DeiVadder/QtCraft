@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/villages/QcVillagePopulation.h"
 #include "server/villages/QcVillagerHomes.h"
 #include "server/villages/QcVillages.h"

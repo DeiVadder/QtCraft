@@ -3,8 +3,8 @@
 
 #include "common/protocol/QcInProcessTransport.h"
 #include "common/world/QcMinecartBody.h"
-#include "QcRailFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRailFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerClient.h"
 
 #include <QElapsedTimer>

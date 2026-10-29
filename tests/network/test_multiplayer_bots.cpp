@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcBotProcess.h"
+#include "fixtures/QcBotProcess.h"
 #include "server/storage/QcWorldStorage.h"
 
 #include <QDateTime>

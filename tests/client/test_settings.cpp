@@ -4,7 +4,7 @@
 #include "clientcore/settings/QcCharacterPresets.h"
 #include "clientcore/settings/QcGameSettings.h"
 #include "common/core/QcNameText.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QCoreApplication>
 #include <QFile>

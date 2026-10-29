@@ -4,11 +4,11 @@
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcFrameReader.h"
 #include "common/protocol/QcInProcessTransport.h"
+#include "fixtures/QcTestTls.h"
 #include "network/QcTcpConnector.h"
 #include "network/QcTcpTransport.h"
 #include "network/tls/QcTlsBackend.h"
 #include "network/tls/QcTlsListener.h"
-#include "QcTestTls.h"
 
 #include <QDeadlineTimer>
 #include <QElapsedTimer>

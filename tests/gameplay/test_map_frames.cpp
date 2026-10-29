@@ -3,8 +3,8 @@
 
 #include "common/maps/QcMapPixel.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/entities/QcEntities.h"
 #include "server/maps/QcMapStore.h"
 #include "server/maps/QcServerMaps.h"

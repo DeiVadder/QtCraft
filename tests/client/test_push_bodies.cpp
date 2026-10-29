@@ -3,7 +3,7 @@
 
 #include "clientcore/player/QcPushBodies.h"
 #include "common/physics/QcBodyPush.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

@@ -4,7 +4,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcSlotList.h"
 #include "common/maps/QcMapPixel.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/maps/QcMapPending.h"
 #include "server/maps/QcMapSaveCodec.h"
 #include "server/maps/QcMapStore.h"

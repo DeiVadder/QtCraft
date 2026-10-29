@@ -3,7 +3,7 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>

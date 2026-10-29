@@ -5,7 +5,7 @@
 #include "clientcore/session/QcClientMachineScreen.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

@@ -3,7 +3,7 @@
 
 #include "clientcore/player/QcAdvancementTree.h"
 #include "clientcore/player/QcTidyTreeLayout.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QRandomGenerator>
 #include <QTest>

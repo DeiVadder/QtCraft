@@ -5,7 +5,7 @@
 #include "audio/QcAudioEngine.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worlds/QcLocalServerHost.h"

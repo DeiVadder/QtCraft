@@ -4,7 +4,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcSpawnGround.h"
 #include "common/world/QcDayCycle.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/mobs/QcMobUpkeep.h"

@@ -3,7 +3,7 @@
 
 #include "clientcore/player/QcBlockForecast.h"
 #include "clientcore/session/QcBlockMirror.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

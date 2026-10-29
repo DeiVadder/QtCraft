@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerSystems.h"
 #include "server/projectiles/QcPlayerFishing.h"
 #include "server/storage/QcEntityRecords.h"

@@ -3,8 +3,8 @@
 
 #include "common/gameplay/QcAnvil.h"
 #include "common/protocol/QcProtocol.h"
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcEnchantingFixture.h"
-#include "QcTestUtil.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/storage/QcEntityCodec.h"

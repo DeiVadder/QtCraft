@@ -3,7 +3,7 @@
 
 #include "common/diagnostics/QcHealthSample.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 
 #include <QTemporaryDir>
 #include <QTest>

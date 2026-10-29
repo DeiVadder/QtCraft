@@ -3,7 +3,7 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/golems/QcGolemGrudges.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/villages/QcVillage.h"

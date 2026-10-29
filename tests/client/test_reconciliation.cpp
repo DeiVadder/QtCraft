@@ -5,7 +5,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

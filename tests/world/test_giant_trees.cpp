@@ -3,8 +3,8 @@
 
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcChunk.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/plants/QcPlantManager.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/terrain/QcTreeShape.h"

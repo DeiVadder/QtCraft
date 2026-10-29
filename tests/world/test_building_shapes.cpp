@@ -4,7 +4,7 @@
 #include "common/blockrules/QcBlockRules.h"
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcMining.h"
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 
 #include <QTest>
 

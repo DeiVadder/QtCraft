@@ -10,7 +10,7 @@
 #include "common/gameplay/QcRepair.h"
 #include "common/gameplay/QcStandPose.h"
 #include "common/protocol/QcMessages.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/gameplay/QcStandProperties.h"
 
 #include <QJsonDocument>

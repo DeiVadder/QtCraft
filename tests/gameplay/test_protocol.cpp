@@ -4,7 +4,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QCoreApplication>
 #include <QDataStream>

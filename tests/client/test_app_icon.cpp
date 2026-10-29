@@ -4,7 +4,7 @@
 #include "clientcore/icons/QcAppIcon.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/loader/QcBaseContent.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QBuffer>
 #include <QFile>

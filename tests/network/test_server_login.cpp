@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/auth/QcLoginCrypto.h"
-#include "QcServerTestFixture.h"
-#include "QcTestProtocol.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestProtocol.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/login/QcIdentityStore.h"
 
 #include <QFile>

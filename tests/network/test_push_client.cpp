@@ -3,8 +3,8 @@
 
 #include "clientcore/session/QcClientSession.h"
 #include "common/physics/QcPhysics.h"
-#include "QcLatencyTransport.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcLatencyTransport.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcLocalServerHost.h"

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/world/QcMinecartBody.h"
-#include "QcRailFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRailFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/minecarts/QcMinecartCollisions.h"
 
 #include <algorithm>

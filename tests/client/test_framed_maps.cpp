@@ -6,7 +6,7 @@
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/maps/QcMapColors.h"
 #include "common/maps/QcMapPixel.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

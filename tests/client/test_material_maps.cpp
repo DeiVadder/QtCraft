@@ -8,7 +8,7 @@
 #include "clientcore/texturepacks/QcTexturePackLoader.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDir>
 #include <QFile>

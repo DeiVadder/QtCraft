@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "QcStoredWorld.h"
+#include "fixtures/QcStoredWorld.h"
 #include "server/storage/QcWorldStorage.h"
 
 #include <QDir>

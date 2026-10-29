@@ -5,7 +5,7 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/protocol/QcChatText.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcLocalServerHost.h"

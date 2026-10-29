@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/protocol/QcEntityMessages.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcDoorPassage.h"

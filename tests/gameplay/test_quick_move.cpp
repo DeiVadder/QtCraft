@@ -5,7 +5,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcQuickMove.h"
 #include "common/gameplay/QcSlotList.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 
 #include <QTest>
 

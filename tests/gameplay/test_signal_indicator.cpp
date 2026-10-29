@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/world/QcLightVolume.h"
-#include "QcPlayerUseFixture.h"
+#include "fixtures/QcPlayerUseFixture.h"
 
 using namespace Qt::StringLiterals;
 

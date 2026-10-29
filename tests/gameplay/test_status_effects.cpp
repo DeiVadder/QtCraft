@@ -3,7 +3,7 @@
 
 #include "common/gameplay/QcSwingSpeed.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/core/QcServerSystems.h"
 #include "server/gameplay/QcServerEffects.h"
 #include "server/gameplay/QcServerInteraction.h"

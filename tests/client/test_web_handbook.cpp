@@ -10,7 +10,7 @@
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookWeb.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worlds/QcHandbookRules.h"
 
 #include <QDir>

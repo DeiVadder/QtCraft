@@ -10,7 +10,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
 #include "common/core/QcDowncast.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

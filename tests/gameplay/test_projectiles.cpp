@@ -3,8 +3,8 @@
 
 #include "clientcore/session/QcClientLauncher.h"
 #include "common/gameplay/QcArmour.h"
-#include "QcServerTestFixture.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/projectiles/QcPlayerLaunchers.h"
 #include "server/storage/QcEntityCodec.h"
 #include "server/storage/QcEntityRecords.h"

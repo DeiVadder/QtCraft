@@ -3,8 +3,8 @@
 
 #include "common/content/registry/QcCommandMacroParser.h"
 #include "common/core/QcWorldConstants.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/commands/QcCommandHelp.h"
 #include "server/commands/QcCommandRegistry.h"
 #include "server/commands/QcPendingCommands.h"

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/core/QcIntMath.h"
-#include "QcBlockEntityDump.h"
-#include "QcMachineFixture.h"
+#include "fixtures/QcBlockEntityDump.h"
+#include "fixtures/QcMachineFixture.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/storage/QcSaveFile.h"

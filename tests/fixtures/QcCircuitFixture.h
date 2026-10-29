@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/structures/QcStateRotation.h"
 
 #include <QTest>

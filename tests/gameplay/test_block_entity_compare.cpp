@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcBlockEntityDump.h"
-#include "QcDumpDiff.h"
-#include "QcMachineFixture.h"
-#include "QcStoredWorld.h"
+#include "fixtures/QcBlockEntityDump.h"
+#include "fixtures/QcDumpDiff.h"
+#include "fixtures/QcMachineFixture.h"
+#include "fixtures/QcStoredWorld.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 

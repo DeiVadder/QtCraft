@@ -4,7 +4,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/registry/QcContentSerializer.h"
 #include "common/gameplay/QcCreativeCatalog.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDataStream>
 #include <QSet>

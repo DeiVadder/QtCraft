@@ -4,7 +4,7 @@
 #include "clientcore/control/QcControlInterface.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/protocol/QcTransport.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worlds/QcLocalServerHost.h"

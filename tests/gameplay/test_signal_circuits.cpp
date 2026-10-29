@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/world/QcLightVolume.h"
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/signal/QcCircuitComponents.h"
 
 #include <QTemporaryDir>

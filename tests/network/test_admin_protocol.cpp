@@ -5,7 +5,7 @@
 #include "common/core/QcCommandSyntax.h"
 #include "common/diagnostics/QcMessageLog.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDataStream>
 #include <QLoggingCategory>

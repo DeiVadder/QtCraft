@@ -6,7 +6,7 @@
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcRaycast.h"
 #include "common/protocol/QcTransport.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 #include "worlds/QcLocalServerHost.h"

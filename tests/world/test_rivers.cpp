@@ -3,7 +3,7 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/world/QcChunk.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "world/QcWaterTestUtil.h"
 #include "worldgen/terrain/QcRiverPieces.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

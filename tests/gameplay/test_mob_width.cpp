@@ -3,8 +3,8 @@
 
 #include "common/physics/QcBodyFit.h"
 #include "common/physics/QcPhysics.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/pathing/QcMobNavigator.h"
 #include "server/pathing/QcPathFinder.h"
 #include "server/pathing/QcPathPlanner.h"

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/animals/QcPetCare.h"
 #include "server/animals/QcPetOwners.h"
 

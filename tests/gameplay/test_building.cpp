@@ -9,8 +9,8 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcRawClient.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRawClient.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 

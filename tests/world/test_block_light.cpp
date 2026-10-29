@@ -3,7 +3,7 @@
 
 #include "common/core/QcBlockPos.h"
 #include "common/world/QcLightVolume.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

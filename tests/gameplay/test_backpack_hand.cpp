@@ -5,8 +5,8 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcPortableContainers.h"
 #include "common/gameplay/QcRepair.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 
 using namespace Qt::StringLiterals;

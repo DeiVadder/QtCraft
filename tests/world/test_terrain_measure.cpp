@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/world/QcChunk.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>

@@ -3,7 +3,7 @@
 
 #include "app/models/QcCreativeItemModel.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QSignalSpy>
 #include <QTest>

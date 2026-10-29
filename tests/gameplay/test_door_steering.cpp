@@ -3,7 +3,7 @@
 
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/pathing/QcPathCells.h"

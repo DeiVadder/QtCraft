@@ -3,8 +3,8 @@
 
 #include "common/content/loader/QcBaseContent.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcRawClient.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRawClient.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 #include "worldgen/generators/QcVoidGenerator.h"

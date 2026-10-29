@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 #include "server/signal/QcServerHoppers.h"
 
 // Signal machines on a running server: containers filled as a player or the world's

@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 #include "worldgen/terrain/QcNoise.h"
 

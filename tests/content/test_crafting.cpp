@@ -5,7 +5,7 @@
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcSlotList.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QJsonDocument>
 #include <QTest>

@@ -6,8 +6,8 @@
 #include "common/gameplay/QcAnvil.h"
 #include "common/gameplay/QcEnchanting.h"
 #include "common/gameplay/QcEnchantingTable.h"
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcEnchantingFixture.h"
-#include "QcTestUtil.h"
 
 #include <QJsonDocument>
 

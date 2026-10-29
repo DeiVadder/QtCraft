@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcRailFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcRailFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <algorithm>
 #include <cmath>

@@ -3,7 +3,7 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/world/QcVegetationTable.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/plants/QcVegetationSpread.h"
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

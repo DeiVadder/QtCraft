@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestTls.h"
+#include "fixtures/QcTestUtil.h"
 #include "network/QcTcpConnector.h"
 #include "network/tls/QcTlsBackend.h"
-#include "QcServerTestFixture.h"
-#include "QcTestTls.h"
-#include "QcTestUtil.h"
 #include "server/network/QcConnectionLimiter.h"
 #include "server/network/QcNetworkServer.h"
 #include "server/storage/QcWorldStorage.h"

@@ -4,11 +4,11 @@
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcConnection.h"
 #include "common/protocol/QcInProcessTransport.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 
-#include "QcTestLogin.h"
+#include "fixtures/QcTestLogin.h"
 
 #include <QTest>
 

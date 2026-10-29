@@ -3,8 +3,8 @@
 
 #include "common/diagnostics/QcThreadCpuClock.h"
 #include "common/physics/QcPhysics.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/explosions/QcServerExplosions.h"
 #include "server/guardians/QcCrumbling.h"
 #include "server/guardians/QcGuardians.h"

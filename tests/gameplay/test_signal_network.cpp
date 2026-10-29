@@ -3,8 +3,8 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/content/loader/QcBaseContent.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/signal/QcDustNetwork.h"
 #include "worldgen/structures/QcStateRotation.h"
 

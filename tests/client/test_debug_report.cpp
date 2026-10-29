@@ -11,8 +11,8 @@
 #include "clientcore/session/QcServerDebugMirror.h"
 #include "common/core/QcSectionKey.h"
 #include "common/core/QcWorldConstants.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QJsonArray>
 #include <QSignalSpy>

@@ -5,7 +5,7 @@
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcStreamLimits.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worlds/QcModLoader.h"
 
 #include <QDataStream>

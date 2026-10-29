@@ -5,7 +5,7 @@
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcSaveFile.h"

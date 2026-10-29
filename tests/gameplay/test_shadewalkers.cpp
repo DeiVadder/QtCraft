@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/registry/QcContentParser.h"
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcShadewalkerFixture.h"
-#include "QcTestUtil.h"
 #include "server/gameplay/QcSafeSpot.h"
 #include "server/mobbrains/QcMobSteering.h"
 #include "server/mobbrains/QcNeutralBrain.h"

@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "fixtures/QcRawClient.h"
+#include "fixtures/QcTestUtil.h"
 #include "network/QcTcpTransport.h"
-#include "QcRawClient.h"
-#include "QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"
 

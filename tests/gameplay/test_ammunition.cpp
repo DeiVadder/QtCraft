@@ -5,7 +5,7 @@
 #include "common/content/items/QcProjectileParser.h"
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/registry/QcContentSerializer.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/gameplay/QcPlayerHealth.h"
 #include "server/projectiles/QcHitEffects.h"
 #include "server/projectiles/QcPlayerLaunchers.h"

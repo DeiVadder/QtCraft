@@ -3,7 +3,7 @@
 
 #include "common/core/QcMailbox.h"
 #include "common/core/QcWorkerPool.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "world/QcTerrainTestUtil.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"

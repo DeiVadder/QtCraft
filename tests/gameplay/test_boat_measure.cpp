@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcBoatMotion.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/boats/QcServerBoats.h"
 #include "server/entities/QcEntityChecks.h"
 

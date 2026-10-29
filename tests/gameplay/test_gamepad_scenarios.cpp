@@ -7,7 +7,7 @@
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcInventory.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "server/storage/QcPlayerStorage.h"
 #include "worldgen/generators/QcTestTerrainGenerator.h"

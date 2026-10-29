@@ -3,9 +3,9 @@
 
 #include "clientcore/session/QcSnapshotBuffer.h"
 #include "common/gameplay/QcExperience.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTemporaryDir>
 

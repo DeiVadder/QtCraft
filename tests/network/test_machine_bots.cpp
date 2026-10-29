@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcPhysics.h"
-#include "QcBotProcess.h"
+#include "fixtures/QcBotProcess.h"
 
 #include <QJsonArray>
 #include <QRegularExpression>

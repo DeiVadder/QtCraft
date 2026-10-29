@@ -3,7 +3,7 @@
 
 #include "common/gameplay/QcCrafting.h"
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/animals/QcMobFamilies.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobbrains/QcMobHover.h"

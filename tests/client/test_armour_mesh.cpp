@@ -7,7 +7,7 @@
 #include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/preview/QcPreviewScene.h"
 #include "clientcore/session/QcClientEntities.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 
@@ -349,5 +349,5 @@ private slots:
 };
 
 QTEST_GUILESS_MAIN(TestArmourMesh)
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "test_armour_mesh.moc"

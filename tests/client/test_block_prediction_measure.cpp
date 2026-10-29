@@ -3,8 +3,8 @@
 
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "QcPredictionFixture.h"
-#include "QcSessionMeshes.h"
+#include "fixtures/QcPredictionFixture.h"
+#include "fixtures/QcSessionMeshes.h"
 
 #include <QElapsedTimer>
 #include <QTest>

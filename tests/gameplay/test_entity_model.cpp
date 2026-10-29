@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcMachineFixture.h"
+#include "fixtures/QcMachineFixture.h"
 #include "server/entities/QcEntities.h"
 #include "server/entities/QcEntityChecks.h"
 

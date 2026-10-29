@@ -3,7 +3,7 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/diagnostics/QcThreadCpuClock.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 

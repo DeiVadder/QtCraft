@@ -3,7 +3,7 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/gameplay/QcCrafting.h"
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 #include "server/core/QcContactDamage.h"
 #include "server/machines/QcMachineRules.h"
 #include "server/signal/QcComparatorReadings.h"

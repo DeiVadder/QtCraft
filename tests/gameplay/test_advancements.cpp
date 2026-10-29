@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/protocol/QcChatText.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/advancements/QcAdvancementMatch.h"
 #include "server/storage/QcPlayerRecords.h"
 #include "server/storage/QcPlayerStorage.h"

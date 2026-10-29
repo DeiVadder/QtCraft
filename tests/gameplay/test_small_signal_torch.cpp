@@ -3,8 +3,8 @@
 
 #include "common/gameplay/QcCrafting.h"
 #include "common/world/QcLightVolume.h"
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 using namespace Qt::StringLiterals;
 

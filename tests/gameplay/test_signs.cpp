@@ -6,7 +6,7 @@
 #include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientSignEditor.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcPlayerUseFixture.h"
+#include "fixtures/QcPlayerUseFixture.h"
 #include "server/storage/QcBlockEntityCodec.h"
 
 using namespace Qt::StringLiterals;

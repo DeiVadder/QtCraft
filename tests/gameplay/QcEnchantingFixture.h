@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "QcPlayerUseFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcPlayerUseFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <cstdlib>
 #include <utility>

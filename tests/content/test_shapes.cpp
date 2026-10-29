@@ -4,7 +4,7 @@
 #include "common/content/registry/QcContentParser.h"
 #include "common/physics/QcPhysics.h"
 #include "common/physics/QcRaycast.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>

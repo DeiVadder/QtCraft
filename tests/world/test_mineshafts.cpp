@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/diagnostics/QcThreadCpuClock.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/mineshafts/QcMineshaftNetwork.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"

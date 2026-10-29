@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/core/QcCrc32.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcChunkCodec.h"
 #include "server/storage/QcChunkIo.h"

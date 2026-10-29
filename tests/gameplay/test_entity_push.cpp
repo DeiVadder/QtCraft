@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcBodyPush.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 
 #include <QTest>
 

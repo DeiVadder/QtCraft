@@ -43,15 +43,15 @@ qc_add_test(test_pack_switch_hitch SOURCES client/test_pack_switch_hitch.cpp LIB
 qc_add_test(test_camera SOURCES client/test_camera.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES client/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_sky SOURCES client/test_sky.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_weather_client SOURCES client/test_weather_client.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 # The prediction of the local player on its own (decision E-530): reconciliation, pending inputs, riding.
 # The client session's tick thread (decision E-560): pacer and core on a fake clock, long frames of
 # the session's thread (real time), order of commands, ending sessions, the fallback without a thread.
-qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_session_tick SOURCES client/test_session_tick.cpp fixtures/QcRecordingTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 # The session on its tick thread against a server: wish to fly after landing, server stop and kick,
 # death and respawn, riding, the same walk as with the timer in the session's thread.
-qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp QcRecordingTransport.h QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
-qc_add_test(test_prediction SOURCES client/test_prediction.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_session_thread SOURCES client/test_session_thread.cpp fixtures/QcRecordingTransport.h fixtures/QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_prediction SOURCES client/test_prediction.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_push_bodies SOURCES client/test_push_bodies.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_ui_palette SOURCES client/test_ui_palette.cpp LIBRARIES qc_clientcore)
 target_compile_definitions(test_ui_palette PRIVATE QTCRAFT_QML_DIR="${PROJECT_SOURCE_DIR}/src/app/qml"
@@ -62,8 +62,8 @@ qc_add_test(test_camera_relative SOURCES client/test_camera_relative.cpp LIBRARI
 qc_add_test(test_draw_origins SOURCES client/test_draw_origins.cpp LIBRARIES qc_app_core)
 # The framed maps' bindings have the layout of the entity pipeline's atlas bindings (E-896).
 qc_add_test(test_framed_map_texture SOURCES client/test_framed_map_texture.cpp LIBRARIES qc_app_core)
-qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp QcTestWorld.h LIBRARIES qc_clientcore)
-qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_label_projector SOURCES client/test_label_projector.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_debug_report SOURCES client/test_debug_report.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_app_icon SOURCES client/test_app_icon.cpp LIBRARIES qc_base_content qc_clientcore)
 target_compile_definitions(test_app_icon PRIVATE QTCRAFT_SOURCE_DIR="${PROJECT_SOURCE_DIR}")
 # Runs qtcraft-headless --export-handbook-web into a temporary directory and checks what it wrote
@@ -76,13 +76,13 @@ qc_add_test(test_mesher SOURCES client/test_mesher.cpp LIBRARIES qc_clientcore)
 # The corner heights of a liquid's surface (decision E-885).
 qc_add_test(test_liquid_surface SOURCES client/test_liquid_surface.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_packed_mesh SOURCES client/test_packed_mesh.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_reconciliation SOURCES client/test_reconciliation.cpp QcTestWorld.h LIBRARIES qc_clientcore)
-qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
+qc_add_test(test_reconciliation SOURCES client/test_reconciliation.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_interpolation SOURCES client/test_interpolation.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_mesh_scheduler SOURCES client/test_mesh_scheduler.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_block_mirror SOURCES client/test_block_mirror.cpp LIBRARIES qc_base_content qc_clientcore)
-qc_add_test(test_block_prediction SOURCES client/test_block_prediction.cpp QcPredictionFixture.h QcSessionMeshes.h
+qc_add_test(test_block_prediction SOURCES client/test_block_prediction.cpp fixtures/QcPredictionFixture.h fixtures/QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 150)
-qc_add_test(test_block_prediction_measure SOURCES client/test_block_prediction_measure.cpp QcPredictionFixture.h QcSessionMeshes.h
+qc_add_test(test_block_prediction_measure SOURCES client/test_block_prediction_measure.cpp fixtures/QcPredictionFixture.h fixtures/QcSessionMeshes.h
     LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_settings SOURCES client/test_settings.cpp LIBRARIES qc_clientcore)
 # The pure parts of the sun shadows (decision E-903): cascades, light axes, texel snapping, light.
@@ -90,7 +90,7 @@ qc_add_test(test_shadow_cascades SOURCES client/test_shadow_cascades.cpp LIBRARI
 qc_add_test(test_moving_lights SOURCES client/test_moving_lights.cpp LIBRARIES qc_base_content qc_clientcore)
 # The pure parts of the realistic water (decision E-906): eye under water, wrapped time and camera, Water block.
 qc_add_test(test_water_look SOURCES client/test_water_look.cpp LIBRARIES qc_clientcore)
-qc_add_test(test_character SOURCES client/test_character.cpp QcTestWorld.h LIBRARIES qc_clientcore)
+qc_add_test(test_character SOURCES client/test_character.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_armour_mesh SOURCES client/test_armour_mesh.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_entity_culling SOURCES client/test_entity_culling.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_hand_swing SOURCES client/test_hand_swing.cpp LIBRARIES qc_clientcore)
@@ -102,9 +102,9 @@ qc_add_test(test_cape SOURCES client/test_cape.cpp LIBRARIES qc_base_content qc_
 qc_add_test(test_cape_swing SOURCES client/test_cape_swing.cpp LIBRARIES qc_clientcore)
 # The walk and the eyes of creatures built from boxes (decision E-888).
 qc_add_test(test_box_legs SOURCES client/test_box_legs.cpp LIBRARIES qc_base_content qc_clientcore)
-qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp QcWorldMesh.h LIBRARIES qc_clientcore)
+qc_add_test(test_mesher_shapes SOURCES client/test_mesher_shapes.cpp fixtures/QcWorldMesh.h LIBRARIES qc_clientcore)
 # Piston heads and diode tops of the base content (decision E-874).
-qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp QcWorldMesh.h LIBRARIES qc_base_content qc_clientcore)
+qc_add_test(test_mesher_signal_shapes SOURCES client/test_mesher_signal_shapes.cpp fixtures/QcWorldMesh.h LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_block_light_engine SOURCES client/test_block_light_engine.cpp LIBRARIES qc_clientcore TIMEOUT 500)
 # Headless measurement of the section meshes (stage 33.2); QTCRAFT_MESH_MEASURE=full for the recorded sizes.
 qc_add_test(test_mesh_measure SOURCES client/test_mesh_measure.cpp LIBRARIES qc_base_content qc_worldgen qc_clientcore TIMEOUT 300)
@@ -183,8 +183,8 @@ qc_add_test(test_world_options_controller SOURCES client/test_world_options_cont
 # The map preview of a new world: same map, same as the generated chunks, cancelled by a change (E-921).
 qc_add_test(test_world_map_preview SOURCES client/test_world_map_preview.cpp LIBRARIES qc_base_content qc_app_core qc_worlds TIMEOUT 630)
 # The pause menu pauses a world hosted in the game, the handbook from play does not (E-877).
-qc_add_test(test_sign_controller SOURCES client/test_sign_controller.cpp QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
-qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp QcServerTestFixture.h QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server TIMEOUT 150)
+qc_add_test(test_sign_controller SOURCES client/test_sign_controller.cpp fixtures/QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
+qc_add_test(test_world_pause SOURCES client/test_world_pause.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server TIMEOUT 150)
 # The UI scale: steps, Auto, the limit of the window, UiScaling and Ui.px() in QML (E-725).
 qc_add_test(test_ui_scale SOURCES client/test_ui_scale.cpp LIBRARIES qc_app_qml TIMEOUT 150)
 qc_add_test(test_lazy_screen SOURCES client/test_lazy_screen.cpp LIBRARIES Qt::Quick)

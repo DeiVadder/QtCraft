@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/loader/QcBaseContent.h"
-#include "QcStoredWorld.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcStoredWorld.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcComponentFrames.h"
 #include "server/storage/QcEntityCodec.h"

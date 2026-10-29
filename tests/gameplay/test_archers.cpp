@@ -3,8 +3,8 @@
 
 #include "common/content/registry/QcContentParser.h"
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/gameplay/QcBodyBurning.h"
 #include "server/mobbrains/QcArcherBrain.h"
 #include "server/mobbrains/QcMobSteering.h"

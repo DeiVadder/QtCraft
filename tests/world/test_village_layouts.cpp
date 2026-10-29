@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/villages/QcVillageLayoutParser.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "world/QcVillageTestUtil.h"
 
 #include <QHash>

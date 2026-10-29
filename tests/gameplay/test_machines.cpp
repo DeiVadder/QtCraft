@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcPhysics.h"
-#include "QcTestMachines.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestMachines.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

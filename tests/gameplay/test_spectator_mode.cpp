@@ -4,8 +4,8 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcTransport.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/gameplay/QcSpectatorRules.h"
 
 #include <QTemporaryDir>

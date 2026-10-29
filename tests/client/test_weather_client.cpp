@@ -9,7 +9,7 @@
 #include "common/content/registry/QcSoundKeys.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/world/QcDayCycle.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QElapsedTimer>
 #include <QTest>

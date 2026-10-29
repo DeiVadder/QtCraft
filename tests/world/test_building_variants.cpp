@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/gameplay/QcCrafting.h"
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 
 #include <QTest>
 

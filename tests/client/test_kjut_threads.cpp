@@ -5,7 +5,7 @@
 #include "clientcore/entitymeshes/QcTethers.h"
 #include "clientcore/session/QcClientEntity.h"
 #include "common/content/registry/QcContentSerializer.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

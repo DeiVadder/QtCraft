@@ -4,7 +4,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcProtocolCodec.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDataStream>
 #include <QRegularExpression>

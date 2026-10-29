@@ -3,7 +3,7 @@
 
 #include "common/core/QcWorldConstants.h"
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/gameplay/QcServerEffects.h"
 
 #include <QTest>

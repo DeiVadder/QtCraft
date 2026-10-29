@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/pathing/QcPathPlanner.h"
 #include "server/spawning/QcNaturalSpawner.h"
 #include "server/villages/QcVillages.h"

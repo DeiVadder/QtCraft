@@ -3,7 +3,7 @@
 
 #include "clientcore/session/QcClientLauncher.h"
 #include "common/content/registry/QcContentSerializer.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "server/gameplay/QcServerEffects.h"
 
 using namespace Qt::StringLiterals;

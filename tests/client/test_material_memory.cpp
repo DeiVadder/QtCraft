@@ -7,7 +7,7 @@
 #include "clientcore/texturepacks/QcTextureStackBuild.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/core/QcProcessMemory.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QElapsedTimer>
 #include <QTest>

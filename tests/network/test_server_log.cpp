@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/diagnostics/QcLogFiles.h"
+#include "fixtures/QcRawClient.h"
 #include "network/QcTcpConnector.h"
-#include "QcRawClient.h"
 
 #include <QDir>
 #include <QFile>

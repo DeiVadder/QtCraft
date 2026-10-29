@@ -3,7 +3,7 @@
 
 #include "clientcore/sound/QcAmbience.h"
 #include "clientcore/sound/QcLocalSounds.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

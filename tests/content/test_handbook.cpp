@@ -6,7 +6,7 @@
 #include "common/handbook/builder/QcHandbookBuilder.h"
 #include "common/handbook/QcHandbookJson.h"
 #include "common/handbook/QcHandbookMarkdown.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worlds/QcHandbookRules.h"
 #include "worlds/QcModLoader.h"
 

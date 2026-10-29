@@ -14,7 +14,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/core/QcCrc32.h"
 #include "common/physics/QcPhysics.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QDataStream>
 #include <QIODevice>

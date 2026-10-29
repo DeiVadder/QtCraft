@@ -4,7 +4,7 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcGameMode.h"
 #include "common/physics/QcPhysics.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

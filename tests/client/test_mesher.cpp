@@ -4,7 +4,7 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcWorldMesh.h"
+#include "fixtures/QcWorldMesh.h"
 
 #include <QMap>
 #include <QTest>

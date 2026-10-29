@@ -3,8 +3,8 @@
 
 #include "common/blockrules/QcRails.h"
 #include "common/physics/QcPhysics.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/showcase/QcShowcaseGenerator.h"
 

@@ -5,7 +5,7 @@
 #include "clientcore/session/QcChunkExtras.h"
 #include "common/content/worldgen/QcStructureParser.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcPlayerUseFixture.h"
+#include "fixtures/QcPlayerUseFixture.h"
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcSaveFile.h"
 

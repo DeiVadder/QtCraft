@@ -5,7 +5,7 @@
 #include "audio/QcAudioOutput.h"
 #include "audio/QcSystemAudio.h"
 #include "common/content/registry/QcSoundKeys.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QSignalSpy>
 #include <QTest>

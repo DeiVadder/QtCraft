@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <memory>

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/registry/QcContentSerializer.h"
-#include "QcMachineFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcMachineFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 using namespace Qt::StringLiterals;
 

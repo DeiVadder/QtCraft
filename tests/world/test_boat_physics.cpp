@@ -4,8 +4,8 @@
 #include "common/physics/QcBoatMotion.h"
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcBoatBody.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

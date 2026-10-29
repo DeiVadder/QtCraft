@@ -3,8 +3,8 @@
 
 #include "common/content/items/QcAnvilSwaps.h"
 #include "common/gameplay/QcAnvil.h"
+#include "fixtures/QcTestUtil.h"
 #include "gameplay/QcEnchantingFixture.h"
-#include "QcTestUtil.h"
 
 #include <array>
 

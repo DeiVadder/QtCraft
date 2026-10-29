@@ -13,7 +13,7 @@
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcSnapshotClock.h"
 #include "clientcore/textures/QcAnimationClock.h"
-#include "QcServerTestFixture.h"
+#include "fixtures/QcServerTestFixture.h"
 #include "worlds/QcLocalServerHost.h"
 
 #include <QSignalSpy>

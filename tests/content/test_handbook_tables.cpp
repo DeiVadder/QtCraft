@@ -4,7 +4,7 @@
 #include "common/content/loader/QcBaseContent.h"
 #include "common/gameplay/QcKeyBindings.h"
 #include "common/handbook/builder/QcHandbookBuilder.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/signal/QcCircuitComponents.h"
 #include "worlds/QcHandbookRules.h"
 

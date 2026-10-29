@@ -3,8 +3,8 @@
 
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/gameplay/QcServerCombat.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcWorldGenerators.h"

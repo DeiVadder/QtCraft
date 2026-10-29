@@ -11,7 +11,7 @@
 #include "clientcore/textures/QcAtlasLayout.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QImage>
 #include <QLoggingCategory>

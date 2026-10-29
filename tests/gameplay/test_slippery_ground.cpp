@@ -3,8 +3,8 @@
 
 #include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
-#include "QcTestUtil.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/core/QcServerWorld.h"
 #include "server/items/QcItemEntityManager.h"
 #include "server/mobs/QcMobManager.h"

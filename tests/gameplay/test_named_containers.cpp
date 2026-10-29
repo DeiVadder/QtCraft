@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "clientcore/session/QcClientMachineScreen.h"
-#include "QcPlayerUseFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcPlayerUseFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/storage/QcBlockEntityCodec.h"
 #include "server/storage/QcLoadWarnings.h"
 

@@ -3,7 +3,7 @@
 
 #include "common/protocol/QcProtocol.h"
 #include "common/protocol/QcStreamLimits.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

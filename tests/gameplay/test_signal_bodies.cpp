@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcPhysics.h"
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 #include "server/gameplay/QcEnvironmentDamage.h"
 #include "server/gameplay/QcServerCombat.h"
 

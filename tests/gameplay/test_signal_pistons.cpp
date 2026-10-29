@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/signal/QcMovingBlocks.h"
 
 #include <QTemporaryDir>

@@ -5,7 +5,7 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "clientcore/meshing/QcIndexPacking.h"
 #include "clientcore/textures/QcTextureAtlas.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QElapsedTimer>

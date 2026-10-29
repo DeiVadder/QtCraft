@@ -5,8 +5,8 @@
 
 #include "common/blockrules/QcBlockRules.h"
 #include "common/blockrules/QcRails.h"
-#include "QcCircuitFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcCircuitFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/entities/QcEntityChecks.h"
 #include "server/minecarts/QcMinecartMotion.h"
 

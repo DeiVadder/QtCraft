@@ -5,7 +5,7 @@
 #include "common/content/villages/QcTradeParser.h"
 #include "common/protocol/QcProtocol.h"
 #include "common/world/QcDayCycle.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/storage/QcVillagerCodec.h"
 #include "server/villages/QcVillagerTrades.h"
 

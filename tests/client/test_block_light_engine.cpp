@@ -6,7 +6,7 @@
 #include "common/content/registry/QcContentParser.h"
 #include "common/core/QcSectionKey.h"
 #include "common/world/QcLightVolume.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QJsonDocument>
 #include <QRandomGenerator>

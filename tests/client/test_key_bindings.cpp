@@ -5,7 +5,7 @@
 #include "clientcore/settings/QcKeyControls.h"
 #include "clientcore/settings/QcKeyLabels.h"
 #include "common/gameplay/QcKeyBindings.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QFile>
 #include <QSet>

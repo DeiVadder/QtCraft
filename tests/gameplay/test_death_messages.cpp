@@ -3,8 +3,8 @@
 
 #include "common/protocol/QcChatText.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcPlayerUseFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcPlayerUseFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/mobs/QcMobManager.h"
 #include "server/projectiles/QcProjectileManager.h"
 

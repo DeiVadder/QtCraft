@@ -4,7 +4,7 @@
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcRaycast.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

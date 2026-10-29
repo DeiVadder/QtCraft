@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/physics/QcPhysics.h"
-#include "QcMachineFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcMachineFixture.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/blockentities/QcBlockEntityChecks.h"
 
 #include "worldgen/generators/QcTestTerrainGenerator.h"

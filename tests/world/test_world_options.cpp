@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/worldgen/QcWorldOptionParser.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServer.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worldgen/generators/QcWorldGenerators.h"

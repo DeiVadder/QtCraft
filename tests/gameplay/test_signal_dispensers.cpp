@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "QcMachineFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcMachineFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 using namespace Qt::StringLiterals;
 

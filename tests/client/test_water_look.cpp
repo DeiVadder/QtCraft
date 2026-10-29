@@ -3,7 +3,7 @@
 
 #include "clientcore/light/QcWaterLook.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcTestWorld.h"
 
 #include <QTest>
 

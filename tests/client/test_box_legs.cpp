@@ -5,7 +5,7 @@
 #include "clientcore/figures/QcAnimator.h"
 #include "clientcore/figures/QcBoxLegs.h"
 #include "common/content/registry/QcContentRegistry.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QTest>
 

@@ -3,7 +3,7 @@
 
 #include "common/core/QcIntMath.h"
 #include "common/world/QcChunk.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
 #include <QHash>

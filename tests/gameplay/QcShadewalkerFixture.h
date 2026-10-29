@@ -4,8 +4,8 @@
 #pragma once
 
 #include "common/world/QcDayCycle.h"
-#include "QcServerTestFixture.h"
-#include "QcTestWorld.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestWorld.h"
 #include "server/mobbrains/QcNeutralBrain.h"
 
 #include <cmath>

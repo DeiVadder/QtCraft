@@ -7,7 +7,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/world/QcLightPassage.h"
 #include "common/world/QcLightVolume.h"
-#include "QcWorldMesh.h"
+#include "fixtures/QcWorldMesh.h"
 
 #include <QJsonDocument>
 #include <QTest>

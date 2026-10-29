@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/registry/QcContentParser.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/chunks/QcSectionMarks.h"
 #include "server/core/QcServer.h"
 #include "server/core/QcServerWorld.h"

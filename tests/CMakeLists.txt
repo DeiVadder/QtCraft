@@ -1,11 +1,12 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Tests are grouped by topic in subfolders (E-089); the shared fixtures stay in this folder and are
-# included by their path below it ("QcServerTestFixture.h", "world/QcVillageTestUtil.h"; decision
-# E-418), the code by its path below src/ through the libraries. Each
-# topic folder lists its tests in tests.cmake (decision E-417), included here so that every test
-# keeps this folder as its source and build directory and the properties below reach all of them.
+# Tests are grouped by topic in subfolders (E-089); the fixtures shared by several topics live in
+# fixtures/, and every test header is included by its path below this folder
+# ("fixtures/QcServerTestFixture.h", "world/QcVillageTestUtil.h"; decision E-418), the code by
+# its path below src/ through the libraries. Each topic folder lists its tests in tests.cmake
+# (decision E-417), included here so that every test keeps this folder as its source and build
+# directory and the properties below reach all of them.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/world/tests.cmake)

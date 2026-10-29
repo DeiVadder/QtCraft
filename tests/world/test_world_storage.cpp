@@ -5,8 +5,8 @@
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcProtocol.h"
-#include "QcTestUtil.h"
-#include "QcTestWorldFiles.h"
+#include "fixtures/QcTestUtil.h"
+#include "fixtures/QcTestWorldFiles.h"
 
 #include <QDir>
 #include <QFile>

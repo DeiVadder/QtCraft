@@ -3,7 +3,7 @@
 
 #include "clientcore/control/QcControlReports.h"
 #include "clientcore/session/QcClientSession.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcTestUtil.h"
 #include "server/core/QcServerConfig.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcLocalServerHost.h"

@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/loader/QcBaseContent.h"
+#include "fixtures/QcRawClient.h"
 #include "network/QcTcpConnector.h"
-#include "QcRawClient.h"
 #include "server/network/QcServerSettings.h"
 #include "server/storage/QcWorldStorage.h"
 #include "worlds/QcContentFingerprint.h"

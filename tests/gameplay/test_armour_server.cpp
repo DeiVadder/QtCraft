@@ -4,8 +4,8 @@
 #include "common/content/registry/QcSoundKeys.h"
 #include "common/core/QcCrc32.h"
 #include "common/gameplay/QcArmour.h"
-#include "QcServerTestFixture.h"
-#include "QcTestUtil.h"
+#include "fixtures/QcServerTestFixture.h"
+#include "fixtures/QcTestUtil.h"
 
 #include <QFile>
 #include <QTemporaryDir>

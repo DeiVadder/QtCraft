@@ -6,7 +6,7 @@
 #include "common/gameplay/QcCrafting.h"
 #include "common/gameplay/QcMining.h"
 #include "common/physics/QcPhysics.h"
-#include "QcCircuitFixture.h"
+#include "fixtures/QcCircuitFixture.h"
 
 #include <QTest>
 
