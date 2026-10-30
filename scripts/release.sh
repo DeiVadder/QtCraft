@@ -329,7 +329,7 @@ while IFS= read -r binary; do
     otool -l "$binary" | awk '/cmd LC_RPATH/ { getline; getline; print $2 }' >"$WORK/rpaths.txt"
     while IFS= read -r rpath; do
         case "$rpath" in
-        @executable_path/* | @loader_path/*) ;;
+        @executable_path | @loader_path | @executable_path/* | @loader_path/*) ;;
         *)
             problem "$binary has rpath $rpath"
             bad_links=$((bad_links + 1))

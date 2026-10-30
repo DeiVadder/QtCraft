@@ -296,6 +296,12 @@ function Start-Copy([string]$exe, [string]$arguments, [hashtable]$environment) {
     $info.WorkingDirectory = Split-Path $exe
     # A PATH without Qt or the build tools: only the copy and Windows.
     $info.EnvironmentVariables["PATH"] = "$env:SystemRoot\System32;$env:SystemRoot"
+    # Only the copy's own plugins and QML modules (a Qt installation may have set these).
+    $info.EnvironmentVariables.Remove("QT_PLUGIN_PATH")
+    $info.EnvironmentVariables.Remove("QML2_IMPORT_PATH")
+    # Qt writes a process without a console window to the debugger output instead of stderr; the
+    # checks read stderr (on the CI runners the copies have no console).
+    $info.EnvironmentVariables["QT_FORCE_STDERR_LOGGING"] = "1"
     foreach ($key in $environment.Keys) {
         $info.EnvironmentVariables[$key] = $environment[$key]
     }
