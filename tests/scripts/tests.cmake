@@ -48,6 +48,12 @@ if(NOT WIN32)
     add_test(NAME script_check_member_access
         COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/scripts/test_check_member_access.py ${PROJECT_SOURCE_DIR}/scripts/check-member-access.py)
     set_tests_properties(script_check_member_access PROPERTIES TIMEOUT 60)
+    # Samples of the duplicate finder (clones, blocks repeated back to back, table rows, markers) and of the
+    # QML heuristics (decision E-942), held in memory.
+    add_test(NAME script_check_duplicates COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-duplicates.py --self-test)
+    set_tests_properties(script_check_duplicates PROPERTIES TIMEOUT 60)
+    add_test(NAME script_check_qml COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-qml.py --self-test)
+    set_tests_properties(script_check_qml PROPERTIES TIMEOUT 60)
     # The large file check of the index, a commit and a push (decision E-933) in a throwaway git
     # repository with a bare remote, run from a pre-push hook like tools/githooks/pre-push.
     add_test(NAME script_check_large_files

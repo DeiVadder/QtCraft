@@ -2,9 +2,10 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Runs the size limits checks (file and function length), the warning-only checks of output parameters and
-# member access, the API documentation check of the documented folders (comments, qdoc), clang-tidy,
-# clazy and qmllint over the project (or over the given files).
+# Runs the size limits checks (file and function length), the warning-only checks of output parameters,
+# member access, repeated code and the QML heuristics (E-942), the API documentation check of the
+# documented folders (comments, qdoc), clang-tidy, clazy and qmllint over the project (or over the given
+# files).
 # Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # --cheap-all (the full verify, decision E-929): the size limits and the warning-only checks run over the
@@ -102,6 +103,33 @@ if [ "$CHEAP_SELECTED" -eq 0 ]; then
 elif [ -n "$FUNCTION_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-member-access.py" $FUNCTION_FILES
+fi
+
+# Repeated code (clones and blocks repeated back to back in C++ and QML) and the QML heuristics (long
+# functions, Connections writing the root's state, enum lists, ids named like properties, unread object
+# names, raw sizes), decision E-942: warning only, a NOLINT marker without a reason fails. The whole tree
+# prints the counts, a selection lists the findings that touch the given files.
+echo "== duplicates (warning only)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicates.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$LENGTH_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-duplicates.py" $LENGTH_FILES || status=1
+fi
+echo "== QML heuristics (warning only)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-qml.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$QML_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-qml.py" $QML_FILES || status=1
 fi
 
 # QDoc comments of the fully documented folders (scripts/doc-folders.txt, decision E-939). The comment
