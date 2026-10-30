@@ -361,7 +361,7 @@ void QcDispenserActions::exchange(const Shot &shot, const QString &name, QcInven
         return;
     }
     QList<int> cells(stacks.size());
-    std::ranges::iota(cells, 0);
+    std::iota(cells.begin(), cells.end(), 0);
     const int slot = access.slotFor(shot.dispenser, stacks, cells, result);
     if (slot >= 0) {
         // slotFor() chose a slot of this dispenser, so it exists.

@@ -32,7 +32,7 @@ bool fillsUnitCell(const QList<QcAabb> &boxes)
 QList<int> allSlots(qsizetype count)
 {
     QList<int> cells(count);
-    std::ranges::iota(cells, 0);
+    std::iota(cells.begin(), cells.end(), 0);
     return cells;
 }
 

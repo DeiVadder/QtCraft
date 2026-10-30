@@ -154,6 +154,10 @@ if [ "$(uname -s)" = Darwin ]; then
     [ -n "$EXPLICIT_ARCH" ] && set -- "$@" "-DCMAKE_OSX_ARCHITECTURES=$EXPLICIT_ARCH"
 fi
 
+# Only the joystick part is built, but on Linux SDL still asks for X11 or Wayland unless it is told
+# that this is a console build.
+[ "$(uname -s)" = Linux ] && set -- "$@" -DSDL_UNIX_CONSOLE_BUILD=ON
+
 echo "build-sdl: building SDL3 $TAG ($ARCH, $CONFIG_VERSION) into $PREFIX (once)" >&2
 cmake "$@" >"$WORK/configure.log" 2>&1 || { cat "$WORK/configure.log" >&2; exit 1; }
 cmake --build "$WORK/build" --parallel "$JOBS" >"$WORK/build.log" 2>&1 || { tail -50 "$WORK/build.log" >&2; exit 1; }

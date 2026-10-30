@@ -113,7 +113,7 @@ bool QcMinecartHoppers::unloadInto(QcMinecart &cart, QcBlockPos hopper, QcInvent
 
     const QList<QcItemStack> room = access.slotsAt(hopper);
     QList<int> cells(room.size());
-    std::ranges::iota(cells, 0);
+    std::iota(cells.begin(), cells.end(), 0);
     for (QcItemStack &stack : cart.stacks) {
         const QcItemStack unit = stack.withCount(1);
         const int slot = stack.isEmpty() ? -1 : access.slotFor(hopper, room, cells, unit);

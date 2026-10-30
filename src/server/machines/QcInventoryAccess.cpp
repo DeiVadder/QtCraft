@@ -66,7 +66,7 @@ QList<int> QcInventoryAccess::slotsIn(QcBlockPos pos, QcBlockFace face) const
     }
 
     QList<int> cells(slotsAt(pos).size());
-    std::ranges::iota(cells, 0);
+    std::iota(cells.begin(), cells.end(), 0);
     return cells;
 }
 
@@ -79,7 +79,7 @@ QList<int> QcInventoryAccess::slotsOut(QcBlockPos pos, QcBlockFace face) const
     }
 
     QList<int> cells(slotsAt(pos).size());
-    std::ranges::iota(cells, 0);
+    std::iota(cells.begin(), cells.end(), 0);
     return cells;
 }
 

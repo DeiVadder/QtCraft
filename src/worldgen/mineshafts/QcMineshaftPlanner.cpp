@@ -44,7 +44,7 @@ QcMineshaftPlanner::QcMineshaftPlanner(const QcTerrainGenerator &terrain, const 
 
     m_blocks = std::move(*blocks.blocks);
     for (const QcMineshaftSettings::BiomeChance &entry : std::as_const(m_settings.entranceBiomes)) {
-        if (!std::ranges::contains(content.worldgen().biomes(), entry.biome, &QcBiomeDefinition::name)) {
+        if (!(std::ranges::count(content.worldgen().biomes(), entry.biome, &QcBiomeDefinition::name) > 0)) {
             m_warnings.append(u"mineshafts: 'entranceBiomes' names unknown biome '%1'"_s.arg(entry.biome));
         }
     }

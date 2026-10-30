@@ -93,7 +93,9 @@ if(NOT _qc_openssl_prefix)
     find_program(_qc_nice nice)
     set(_qc_nice_command "")
     if(WIN32)
-        find_program(QC_OPENSSL_POWERSHELL NAMES powershell pwsh)
+        # PowerShell 7 first: Windows PowerShell started from it (CI runners) may fail to load
+        # its own modules through the inherited PSModulePath.
+        find_program(QC_OPENSSL_POWERSHELL NAMES pwsh powershell)
         set(_qc_openssl_command "${QC_OPENSSL_POWERSHELL}" -NoProfile -ExecutionPolicy Bypass -File "${_qc_openssl_script}" -Arch ${_qc_openssl_arch})
         set(_qc_openssl_print ${_qc_openssl_command} -PrintPrefix)
     else()

@@ -106,7 +106,15 @@ New-Item -ItemType Directory -Force $Work | Out-Null
 $System32 = Join-Path $env:SystemRoot "System32"
 $Tarball = Join-Path $CacheRoot "src\openssl-$Version.tar.gz"
 $Url = "https://github.com/openssl/openssl/releases/download/openssl-$Version/openssl-$Version.tar.gz"
-function Get-Sha256([string]$file) { (Get-FileHash -Algorithm SHA256 $file).Hash.ToLowerInvariant() }
+# Through .NET rather than Get-FileHash: Windows PowerShell started from another PowerShell (as on
+# the CI runners) may not load the module that provides that cmdlet.
+function Get-Sha256([string]$file) {
+    $stream = [System.IO.File]::OpenRead($file)
+    try {
+        $sha = [System.Security.Cryptography.SHA256]::Create()
+        try { -join ($sha.ComputeHash($stream) | ForEach-Object { $_.ToString("x2") }) } finally { $sha.Dispose() }
+    } finally { $stream.Dispose() }
+}
 if (-not (Test-Path $Tarball) -or ((Get-Sha256 $Tarball) -ne $Sha256)) {
     Say "downloading $Url"
     $download = Join-Path $Work "download.tar.gz"

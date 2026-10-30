@@ -115,7 +115,7 @@ void writeOreAmount(QcContentRegistry &content, const QString &, double value)
 std::optional<double> readOneOre(const QcContentRegistry &content, const QString &subject)
 {
     const QList<QcOreDefinition> &ores = content.worldgen().ores();
-    return std::ranges::contains(ores, subject, &QcOreDefinition::name) ? std::optional<double>(1.0) : std::nullopt;
+    return (std::ranges::count(ores, subject, &QcOreDefinition::name) > 0) ? std::optional<double>(1.0) : std::nullopt;
 }
 
 void writeOneOre(QcContentRegistry &content, const QString &subject, double value)

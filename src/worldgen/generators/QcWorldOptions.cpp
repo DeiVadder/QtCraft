@@ -30,7 +30,7 @@ constexpr auto baseNamespace = "qtcraft";
         return std::unexpected(target->needsSubject ? u"target '%1' needs a 'subject'"_s.arg(definition.target)
                                                     : u"target '%1' takes no 'subject'"_s.arg(definition.target));
     }
-    if (!std::ranges::contains(content.worldgen().worldOptionGroups(), definition.group, &QcWorldOptionGroup::name)) {
+    if (!(std::ranges::count(content.worldgen().worldOptionGroups(), definition.group, &QcWorldOptionGroup::name) > 0)) {
         return std::unexpected(u"unknown group '%1'"_s.arg(definition.group));
     }
     const std::optional<double> current = target->read(content, definition.subject);

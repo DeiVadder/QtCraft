@@ -6,6 +6,8 @@
 #include "server/signal/QcMovingBlocks.h"
 
 #include <QTemporaryDir>
+#include <algorithm>
+#include <ranges>
 
 using namespace Qt::StringLiterals;
 
@@ -205,8 +207,9 @@ private slots:
         QVERIFY(!m_server->movingBlocks().isMovingTo(headCell));
         ticks(QcMovingBlocks::moveTicks + 1);
         QVERIFY(isBlock(5, 0, 11, "air"));
-        const auto last = std::ranges::find_last_if(m_client->blockUpdates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
-        QVERIFY(last.empty() || last.front().block == qcAirBlockId);
+        const auto newestFirst = std::views::reverse(m_client->blockUpdates);
+        const auto last = std::ranges::find_if(newestFirst, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
+        QVERIFY(last == newestFirst.end() || last->block == qcAirBlockId);
     }
 
     void aStickyRetractionEmptiesTheHeadBeforeThePull()
@@ -231,9 +234,10 @@ private slots:
         QVERIFY(emptied != updates.end());
         QCOMPARE(emptied->block, qcAirBlockId);
         ticks(QcMovingBlocks::moveTicks + 1);
-        const auto last = std::ranges::find_last_if(m_client->blockUpdates, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
-        QVERIFY(!last.empty());
-        QCOMPARE(last.front().block, *m_server->world().blockAt(headCell));
+        const auto newestFirst = std::views::reverse(m_client->blockUpdates);
+        const auto last = std::ranges::find_if(newestFirst, [&](QcMsg::BlockUpdate update) { return update.pos == headCell; });
+        QVERIFY(last != newestFirst.end());
+        QCOMPARE(last->block, *m_server->world().blockAt(headCell));
     }
 
     void immovableBlocksStopAndSmallOnesBreak()
@@ -369,9 +373,10 @@ private slots:
         QVERIFY(!m_server->blockEntities().container(arrived));
         QVERIFY(!isBlock(7, 0, 8, "chest"));
         // The client got the cell as it is now, not the chest.
-        const auto last = std::ranges::find_last_if(m_client->blockUpdates, [arrived](QcMsg::BlockUpdate update) { return update.pos == arrived; });
-        QVERIFY(!last.empty());
-        QCOMPARE(last.front().block, *m_server->world().blockAt(arrived));
+        const auto newestFirst = std::views::reverse(m_client->blockUpdates);
+        const auto last = std::ranges::find_if(newestFirst, [arrived](QcMsg::BlockUpdate update) { return update.pos == arrived; });
+        QVERIFY(last != newestFirst.end());
+        QCOMPARE(last->block, *m_server->world().blockAt(arrived));
     }
 
     void zeroTickPulseSpitsTheBlock_data()

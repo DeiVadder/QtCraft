@@ -202,7 +202,7 @@ bool mayReplace(const Params &params, QcBlockId existing, QcBlockId block, bool 
     if (!onlyIntoAir || existing == qcAirBlockId) {
         return true;
     }
-    return std::ranges::contains(params.vines, existing) && !std::ranges::contains(params.vines, block);
+    return (std::ranges::count(params.vines, existing) > 0) && !(std::ranges::count(params.vines, block) > 0);
 }
 
 void buildInChunk(QcChunk &chunk, const Params &params, QcBlockPos base, double random, quint64 seed)

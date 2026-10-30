@@ -56,7 +56,7 @@ std::optional<QString> QcLagReport::flush()
 QString QcLagReport::line(const QcTickPhaseTimer::Durations &phases, qint64 tickNs) const
 {
     std::array<int, QcTickPhases::inTick> order{};
-    std::ranges::iota(order, 0);
+    std::iota(order.begin(), order.end(), 0);
     std::ranges::stable_sort(order, std::greater{}, [&phases](int phase) { return phases[static_cast<std::size_t>(phase)]; });
 
     QStringList parts;
