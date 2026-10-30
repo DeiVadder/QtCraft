@@ -139,6 +139,8 @@ if(NOT WIN32)
     endif()
     set_tests_properties(script_move_classes PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/fix-includes.py;${PROJECT_SOURCE_DIR}/scripts/check-cmake-lists.py")
     set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+    set_tests_properties(script_convert_doc_comments script_api_docs_stage PROPERTIES REQUIRED_FILES
+        "${PROJECT_SOURCE_DIR}/scripts/qc_doc_comments.py;${PROJECT_SOURCE_DIR}/scripts/qc_doc_format.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()
 
 # Tests whose result depends on wall time or machine load: label `timing`, run by scripts/verify.sh

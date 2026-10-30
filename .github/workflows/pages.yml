@@ -1,11 +1,14 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# The web handbook on GitHub Pages: publishes web/. Its data (web/handbook/data) is not in git: the
-# first job builds qtcraft-headless with the steps of ci.yml (macOS, without gamepads and TLS, which
-# the export does not use), writes it with --export-handbook-web, as scripts/export-handbook.sh
-# does locally, and uploads web/ as the Pages artifact; the second job deploys it. Runs on every
-# push to main, since the data follows the content and the code. Needs Settings, Pages, Source "GitHub Actions" once.
+# The web handbook and the API reference on GitHub Pages: publishes web/ (start page web/index.html,
+# /handbook/, /api/). Neither the handbook's data (web/handbook/data) nor the API reference (web/api)
+# is in git: the first job builds qtcraft-headless with the steps of ci.yml (macOS, without gamepads
+# and TLS, which the export does not use), writes the data with --export-handbook-web, as
+# scripts/export-handbook.sh does locally, generates the API reference with QDoc from the same
+# configuration (scripts/api-docs.py, decision E-939), and uploads web/ as the Pages artifact; the
+# second job deploys it. Runs on every push to main, since both follow the content and the code.
+# Needs Settings, Pages, Source "GitHub Actions" once.
 name: Pages
 
 on:
@@ -55,6 +58,23 @@ jobs:
 
       - name: Export the handbook data
         run: build/ci-debug/src/headless/qtcraft-headless --no-mods --export-handbook-web web/handbook/data
+
+      # Qt's documentation index files, only for links from the API reference to Qt's own docs
+      # (doc.qt.io); without them the reference has no such links but is complete otherwise.
+      - name: Qt documentation index files
+        continue-on-error: true
+        run: |
+          python3 -m pip install --quiet aqtinstall
+          python3 -m aqt install-doc mac ${{ env.QT_VERSION }} --outputdir "$RUNNER_TEMP/qt-docs" \
+            --archives qtcore qtgui qtnetwork qtconcurrent qtqml qtqmlmodels qtquick qtquickcontrols qtmultimedia qttestlib qtdoc
+          echo "QC_QT_DOCS=$RUNNER_TEMP/qt-docs/Docs/Qt-${{ env.QT_VERSION }}" >> "$GITHUB_ENV"
+
+      # qdoc comes with the Qt tools of the Qt installation ($QT_ROOT_DIR/bin, set by install-qt-action).
+      - name: API reference
+        run: |
+          test -x "$QT_ROOT_DIR/bin/qdoc" || { echo "no qdoc in $QT_ROOT_DIR/bin"; exit 1; }
+          python3 scripts/api-docs.py --qdoc "$QT_ROOT_DIR/bin/qdoc" \
+            --compile-commands build/ci-debug/compile_commands.json --out web/api
 
       - uses: actions/configure-pages@v5
 

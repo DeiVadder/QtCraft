@@ -21,54 +21,67 @@
 #include <array>
 #include <memory>
 
-// Everything the graphical client hears: sound cues placed around the listener, UI sounds, the
-// four ambience loops and the background music. Lives in the GUI thread; rendering the sound bank
-// and music pieces happens on worker threads, so no frame ever waits for synthesis.
+/*! \brief Everything the graphical client hears: sound cues placed around the listener, UI sounds,
+    the four ambience loops and the background music.
+
+    Lives in the GUI thread; rendering the sound bank and music pieces happens on worker threads, so
+    no frame ever waits for synthesis. */
 class QcAudioEngine : public QObject
 {
     Q_OBJECT
 
 public:
-    // Pause between music pieces, and before the first one, in seconds.
+    /*! Pause between music pieces, and before the first one, in seconds. \qcshared */
     static constexpr int minMusicPause = 60;
     static constexpr int maxMusicPause = 180;
     static constexpr int firstMusicDelay = 15;
-    // Quieter voices are not worth a mixer voice.
+    /*! Quieter voices are not worth a mixer voice. */
     static constexpr float audibleGain = 0.002f;
-    // Level of the music relative to its bus volume.
+    /*! Level of the music relative to its bus volume. */
     static constexpr float musicGain = 0.6f;
 
+    /*! A silent engine, child of \a parent; start() opens the output. */
     explicit QcAudioEngine(QObject *parent = nullptr);
     ~QcAudioEngine() override;
     Q_DISABLE_COPY_MOVE(QcAudioEngine)
 
-    // Opens the output device; with `enabled` false no device is touched and the game is silent.
+    /*! Opens the output device; with \a enabled false no device is touched and the game is
+        silent. */
     void start(bool enabled);
+    /*! Returns whether an output device plays. */
     bool isActive() const { return m_output.isActive(); }
+    /*! Returns the output (device, mixer). */
     QcAudioOutput &output() { return m_output; }
 
-    // Renders the content's sounds in the background; until that is done cues are skipped.
+    /*! Renders the sounds of \a content in the background; until that is done cues are skipped. */
     void setContent(std::shared_ptr<const QcContentRegistry> content);
+    /*! Returns the content of the sounds, null before setContent(). */
     const QcContentRegistry *content() const { return m_content.get(); }
+    /*! Returns whether the sound bank of the content is rendered (bankReady()). */
     bool isBankReady() const { return m_bank != nullptr; }
+    /*! Sets the volumes of the buses, each from 0 to 1: \a master over all, \a effects, \a music
+        and \a ambient; \a muted silences everything. */
     void setVolumes(double master, double effects, double music, double ambient, bool muted);
 
-    // A cue heard by `listener`; its voice follows the listener until it ends (moveListener).
+    /*! Plays \a cue as \a listener hears it; its voice follows the listener until it ends
+        (moveListener). */
     void play(const QcSoundCue &cue, const QcSoundSpatial::Listener &listener);
-    // Places the playing positional voices anew for where the listener is now (every tick).
+    /*! Places the playing positional voices anew for where \a listener is now (every tick). */
     void moveListener(const QcSoundSpatial::Listener &listener);
-    // Where moveListener() placed the listener last (also while the output is inactive).
+    /*! Returns where moveListener() placed the listener last (also while the output is
+        inactive). */
     const QcSoundSpatial::Listener &listener() const { return m_listener; }
-    // A sound without a position (menu clicks).
+    /*! Plays the sound \a key without a position (menu clicks). */
     void playUi(const QString &key);
-    // Levels of the ambience loops; a loop starts with its first audible level.
+    /*! Sets the \a levels of the ambience loops; a loop starts with its first audible level. */
     void setAmbience(QcAmbience::Levels levels);
-    // Background music plays while enabled (in a world), with pauses between pieces.
+    /*! Background music plays while \a enabled (in a world), with pauses between pieces. */
     void setMusicEnabled(bool enabled);
-    // Stops ambience, music and effects (leaving a world).
+    /*! Stops ambience, music and effects (leaving a world). */
     void stopWorldSounds();
 
 signals:
+    /*! The sound bank of the content is rendered; cues play from now on. */
     void bankReady();
 
 private:

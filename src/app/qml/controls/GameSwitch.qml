@@ -5,13 +5,15 @@ import QtQuick
 import QtQuick.Controls
 import QtCraft
 
-// The game's on/off switch (decision E-845): a blocky knob on a sunken track, the track in the
-// accent while on. Settings show it through SettingSwitch; lists (texture packs, mods) use it in
-// their rows. Needs an Accessible.name from its user.
+/*! \brief The game's on/off switch (decision E-845): a blocky knob on a sunken track, the track in
+    the accent while on.
+
+    Settings show it through SettingSwitch; lists (texture packs, mods) use it in their rows. Needs
+    an Accessible.name from its user. */
 Switch {
     id: toggle
 
-    // A change by the player: toggled() follows it as after a click.
+    /*! A change by the player: toggled() follows it as after a click. */
     function flip() {
         toggle.toggle();
         toggle.toggled();

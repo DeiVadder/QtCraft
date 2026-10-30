@@ -13,18 +13,20 @@ class QAudioDevice;
 class QMediaDevices;
 class QcAudioSinkHost;
 
-// The system's audio through Qt Multimedia: devices from QMediaDevices, and the sink on an audio
-// thread of its own (QcAudioSinkHost), so a stalled GUI thread does not interrupt the sound. Lives
-// in the GUI thread; open() and close() wait for the audio thread.
+/*! \brief The system's audio through Qt Multimedia: devices from QMediaDevices, and the sink on an
+    audio thread of its own (QcAudioSinkHost), so a stalled GUI thread does not interrupt the sound.
+
+    Lives in the GUI thread; open() and close() wait for the audio thread. */
 class QcSystemAudio : public QcAudioPlatform
 {
     Q_OBJECT
 
 public:
-    // Audio the sink keeps buffered: short enough for direct feedback, long enough to ride out a
-    // slow frame.
+    /*! Audio the sink keeps buffered: short enough for direct feedback, long enough to ride out a
+        slow frame. */
     static constexpr int bufferMilliseconds = 80;
 
+    /*! The system's audio, child of \a parent; the audio thread starts with the first sink. */
     explicit QcSystemAudio(QObject *parent = nullptr);
     ~QcSystemAudio() override;
     Q_DISABLE_COPY_MOVE(QcSystemAudio)

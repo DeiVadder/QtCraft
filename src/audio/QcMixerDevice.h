@@ -8,17 +8,27 @@
 #include <functional>
 #include <span>
 
-// Read-only device an audio sink pulls from: every read renders fresh interleaved stereo audio
-// through `render` (a view of `frames` frames, valid until the next call), converted to the sink's
-// sample format. It never runs dry.
+/*! \brief Read-only device an audio sink pulls from: every read renders fresh interleaved stereo
+    audio through \c {render} (a view of \c {frames} frames, valid until the next call), converted
+    to the sink's sample format.
+
+    It never runs dry. */
 class QcMixerDevice : public QIODevice
 {
     Q_OBJECT
 
 public:
-    enum class Format { Float, Int16 };
+    /*! The sample formats of a sink. */
+    enum class Format {
+        /*! 32-bit float. */
+        Float,
+        /*! 16-bit signed integer. */
+        Int16
+    };
+    /*! Renders the next frames (interleaved stereo) for the device. */
     using Render = std::function<std::span<const float>(int frames)>;
 
+    /*! A device that renders through \a render and converts to \a format, child of \a parent. */
     QcMixerDevice(Render render, Format format, QObject *parent = nullptr);
 
     bool isSequential() const override { return true; }

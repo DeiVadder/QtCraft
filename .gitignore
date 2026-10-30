@@ -43,3 +43,6 @@ __pycache__/
 # The web handbook's data: written by scripts/export-handbook.sh (local preview) and by the Pages
 # workflow before it publishes web/ (qtcraft-headless --export-handbook-web)
 /web/handbook/data/
+# The API reference: written by the Pages workflow before it publishes web/ (scripts/api-docs.py
+# --out web/api); locally it goes to build/<preset>/docs/api (target docs)
+/web/api/

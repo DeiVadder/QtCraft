@@ -12,36 +12,39 @@
 class QTcpSocket;
 class QTimer;
 
-// A transport over TCP (decision E-251): frames with a length prefix (QcFrameReader), a keep-alive
-// frame when nothing was sent for a while, a timeout when nothing arrives, and a bound for the
-// bytes waiting to be sent, beyond which a peer counts as too slow and is cut off. Lives in the
-// thread of its socket (server thread, the client's session tick thread or GUI thread). The socket
-// may be a QSslSocket (decision E-872): frames written before its handshake ends wait and go out
-// encrypted. A transport over TLS never changes threads (keepsItsThread()).
+/*! \brief A transport over TCP (decision E-251): frames with a length prefix (QcFrameReader), a
+    keep-alive frame when nothing was sent for a while, a timeout when nothing arrives, and a bound
+    for the bytes waiting to be sent, beyond which a peer counts as too slow and is cut off.
+
+    Lives in the thread of its socket (server thread, the client's session tick thread or GUI
+    thread). The socket may be a QSslSocket (decision E-872): frames written before its handshake
+    ends wait and go out encrypted. A transport over TLS never changes threads (keepsItsThread()).
+*/
 class QcTcpTransport : public QcTransport
 {
     Q_OBJECT
 
 public:
+    /*! \brief The bounds of a transport; the defaults suit a client's link to its server. */
     struct Limits
     {
-        // Frames of the peer larger than this break the connection.
+        /*! Frames of the peer larger than this break the connection. */
         qint64 maxIncomingFrameBytes = QcProtocol::maxFrameBytes;
-        // Bytes waiting to be sent beyond this cut a slow peer off.
+        /*! Bytes waiting to be sent beyond this cut a slow peer off. */
         qint64 maxPendingBytes = qint64{64} * 1024 * 1024;
-        // A keep-alive frame goes out when nothing was sent for this long.
+        /*! A keep-alive frame goes out when nothing was sent for this long. */
         int keepAliveMs = 5'000;
-        // The connection counts as lost when nothing arrived for this long.
+        /*! The connection counts as lost when nothing arrived for this long. */
         int idleTimeoutMs = 30'000;
-        // How long the goodbye of a closed or destroyed transport may take (decision E-904): its
-        // socket sends the queued frames (a reason of a Disconnect) and the end in the background
-        // and closes once the peer closed too, at the latest after this time; nothing waits for it.
-        // The listener of a network game uses longer (QcNetworkConfig): its players' links may be
-        // slow.
+        /*! How long the goodbye of a closed or destroyed transport may take (decision E-904):
+            its socket sends the queued frames (a reason of a Disconnect) and the end in the
+            background and closes once the peer closed too, at the latest after this time;
+            nothing waits for it. The listener of a network game uses longer (QcNetworkConfig):
+            its players' links may be slow. */
         int lingerMs = 500;
     };
 
-    // Takes over a connected socket.
+    /*! Takes over the connected \a socket with \a limits, as a child of \a parent. */
     QcTcpTransport(QTcpSocket *socket, const Limits &limits, QObject *parent = nullptr);
     ~QcTcpTransport() override;
     Q_DISABLE_COPY_MOVE(QcTcpTransport)
@@ -52,15 +55,15 @@ public:
     QString peerAddress() const override { return m_peerAddress; }
     qint64 pendingBytes() const override;
     QString closeReason() const override { return m_closeReason; }
-    // True over TLS: Qt's OpenSSL backend keeps the socket's TLS state in an object of its own
-    // that stays in the thread the socket was made in (decision E-872).
+    /*! Returns true over TLS: Qt's OpenSSL backend keeps the socket's TLS state in an object of
+        its own that stays in the thread the socket was made in (decision E-872). */
     bool keepsItsThread() const override;
     void peerSaidGoodbye() override { m_peerLeft = true; }
 
-    // Runs the calling thread's event loop until the sockets lingering in it (destroyed transports
-    // still in their goodbye, QcTcpGoodbye) are closed, at most 1 s, and ends the rest; for a thread
-    // that is about to end, which would otherwise cut them off at once. Returns at once in a thread
-    // without.
+    /*! Runs the calling thread's event loop until the sockets lingering in it (destroyed
+        transports still in their goodbye, QcTcpGoodbye) are closed, at most 1 s, and ends the
+        rest; for a thread that is about to end, which would otherwise cut them off at once.
+        Returns at once in a thread without. */
     static void finishLingering();
 
 private:

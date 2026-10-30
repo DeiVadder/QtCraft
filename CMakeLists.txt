@@ -28,6 +28,7 @@ include(QcProjectOptions)
 include(QcGamepad)
 include(QcTls)
 include(QcWindowsResources)
+include(QcDocs)
 
 enable_testing()
 

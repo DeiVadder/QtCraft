@@ -4,9 +4,9 @@
 
 """Adds or checks the SPDX header (licence and copyright) of the project's own source files.
 
-Every C++, Objective-C++, QML, JavaScript, shader, CMake, Python, shell, PowerShell, workflow, CSS and
-HTML file of the project starts with two comment lines, right after a byte order mark, a shebang or
-an HTML doctype:
+Every C++, Objective-C++, QML, JavaScript, shader, CMake, Python, shell, PowerShell, workflow, CSS,
+HTML and QDoc (.qdoc, .qdocconf in docs/qdoc) file of the project starts with two comment lines, right
+after a byte order mark, a shebang or an HTML doctype:
     // SPDX-FileCopyrightText: 2026 the QtCraft authors
     // SPDX-License-Identifier: GPL-3.0-or-later
 exactly so, in the comment style of the file, followed by a blank line. Only files tracked by git
@@ -36,14 +36,14 @@ LICENSE = f"SPDX-License-Identifier: {LICENSE_ID}"
 BOM = "\ufeff"
 # Comment style per file extension: (line start, line end).
 STYLES = {
-    **dict.fromkeys(("cpp", "h", "mm", "qml", "js", "frag", "vert", "glsl", "comp"), ("// ", "")),
-    **dict.fromkeys(("py", "sh", "ps1", "cmake", "yml", "yaml", "supp"), ("# ", "")),
+    **dict.fromkeys(("cpp", "h", "mm", "qml", "js", "frag", "vert", "glsl", "comp", "qdoc"), ("// ", "")),
+    **dict.fromkeys(("py", "sh", "ps1", "cmake", "yml", "yaml", "supp", "qdocconf"), ("# ", "")),
     "css": ("/* ", " */"),
     "html": ("<!-- ", " -->"),
 }
 # Files without a matching extension that are still sources, by name (anywhere in the tree).
 NAMED_STYLES = {"CMakeLists.txt": ("# ", ""), ".clang-tidy": ("# ", ""), "pre-push": ("# ", "")}
-TOP_FOLDERS = ("src/", "tests/", "scripts/", "tools/", "cmake/", "web/", ".github/workflows/")
+TOP_FOLDERS = ("src/", "tests/", "scripts/", "tools/", "cmake/", "web/", ".github/workflows/", "docs/qdoc/")
 EXCLUDED_FOLDERS = ("3rdparty/", "tests/data/", "web/handbook/data/")
 # Lines at the top of a file searched for a misplaced or foreign SPDX header.
 SEARCH_LINES = 12

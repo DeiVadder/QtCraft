@@ -1,0 +1,83 @@
+// SPDX-FileCopyrightText: 2026 the QtCraft authors
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+// One \module per library (decision E-939); scripts/api-docs.py adds \inmodule to every type from
+// the folder of its header; qdoc lists the namespaces and classes of each module on its page.
+
+/*!
+    \module qc_common
+    \title qc_common
+    \brief Shared by client and server: coordinates, chunks, content registry, physics, protocol.
+
+    Uses no other library of the project.
+*/
+
+/*!
+    \module qc_network
+    \title qc_network
+    \brief TCP and TLS transport of the protocol frames.
+
+    Uses \l {qc_common}.
+*/
+
+/*!
+    \module qc_worldgen
+    \title qc_worldgen
+    \brief World generation: generators, terrain, structures, villages, the showcase world.
+
+    Uses \l {qc_common}.
+*/
+
+/*!
+    \module qc_server
+    \title qc_server
+    \brief The authoritative server: tick, world, chunks, mobs, plants, commands, saving.
+
+    Uses \l {qc_common}, \l {qc_network} and \l {qc_worldgen}.
+*/
+
+/*!
+    \module qc_worlds
+    \title qc_worlds
+    \brief Running worlds in the game's own process: local server, world library, mods.
+
+    Its sources use \l {qc_server}; its headers show no server type to the app.
+*/
+
+/*!
+    \module qc_clientcore
+    \title qc_clientcore
+    \brief The client without GUI: session, prediction, meshing, light, camera, textures.
+
+    Uses \l {qc_common} and \l {qc_network}; never a server header.
+*/
+
+/*!
+    \module qc_audio
+    \title qc_audio
+    \brief Sound output of the graphical client.
+
+    Uses \l {qc_common} and \l {qc_clientcore}.
+*/
+
+/*!
+    \module qc_app_core
+    \title qc_app_core
+    \brief The Qt Quick client: controllers for QML, rendering, input, test hooks.
+
+    Uses every library except \l {qc_server} (and \l {qtcraft_headless}).
+*/
+
+/*!
+    \module qtcraft_headless
+    \title qtcraft_headless
+    \brief The program qtcraft-headless: dedicated server, bots, control interface.
+
+    May use every library.
+*/
+
+/*!
+    \qmlmodule QtCraft
+    \title QtCraft QML Types
+    \brief Screens, HUD and controls of the game (QML module \c QtCraft).
+*/

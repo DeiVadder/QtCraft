@@ -23,6 +23,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import qc_doc_comments  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CODE_MAP = os.path.join(ROOT, "docs", "Code-Karte.md")
 DECISION_INDEX = os.path.join(ROOT, "docs", "Entscheidungen-Index.md")
@@ -31,7 +34,6 @@ DECISION_INDEX = os.path.join(ROOT, "docs", "Entscheidungen-Index.md")
 DECLARATION = re.compile(
     r"^(?:template\s*<[^>]*>\s*)?(?:(class|struct|enum class|enum)\s+(\w+)\b(?!\s*;)"
     r"|(namespace)\s+(Qc\w+)\s*\{|(using)\s+(Qc\w+)\s*=)")
-SENTENCE_END = re.compile(r"(?<=[.!?])\s")
 MAX_SUMMARY = 160
 
 
@@ -39,22 +41,32 @@ def first_sentence(lines):
     text = " ".join(" ".join(lines).split())
     if not text:
         return ""
-    # "e.g." and "i.e." do not end a sentence.
-    match = next((m for m in SENTENCE_END.finditer(text) if not text[: m.start()].endswith(("e.g.", "i.e."))), None)
-    sentence = text[: match.start()] if match else text
+    # Not after "e.g.", "i.e." or two dots, only before a capital letter (scripts/qc_doc_comments.py).
+    sentence = qc_doc_comments.first_sentence(text)
     if len(sentence) > MAX_SUMMARY:
         sentence = sentence[: MAX_SUMMARY - 1].rstrip() + "…"
     return sentence
 
 
+QDOC_MARKUP = re.compile(r"\\(?:brief|e|b|l|li)\s+|\\(?:list|endlist)\b(?:\s+\d)?")
+
+
+def plain(line):
+    """A comment line without QDoc markup (`\\brief`, lists, doubled backslashes); `\\a x` and `\\c {x}`
+    become `x` in backticks, as the `//` comments write it."""
+    line = line.replace("\\unicode {0x2A}", "*").replace("}\\c {", "")
+    line = re.sub(r"\\c\s*\{([^}]*)\}", r"`\1`", line)
+    line = re.sub(r"\\[ac]\s+([\w:.()~]+)", r"`\1`", line)
+    return qc_doc_comments.without_markers(QDOC_MARKUP.sub("", line)).replace("\\\\", "\\").strip()
+
+
 def comment_above(lines, index):
-    """The block of // comment lines directly above line `index` (blank lines end it)."""
-    block = []
-    i = index - 1
-    while i >= 0 and lines[i].lstrip().startswith("//"):
-        block.insert(0, lines[i].lstrip()[2:].lstrip("/").strip())
-        i -= 1
-    return block
+    """The text of the // or /*! comment block directly above line `index` (blank lines end it;
+    NOLINT and clang-format marker lines in between are skipped), without QDoc markup."""
+    comment = qc_doc_comments.comment_above(lines, index)
+    if comment is None or comment.style not in ("line", "qdoc") or qc_doc_comments.is_license(comment):
+        return []
+    return [plain(line) for line in comment.lines]
 
 
 def header_entries(path):
@@ -69,7 +81,7 @@ def header_entries(path):
         if kind == "namespace" and any(entry[0] == name for entry in entries):
             continue
         # The comment of a template stands above its template line.
-        start = i - 1 if i > 0 and lines[i - 1].lstrip().startswith("template") else i
+        start = i - 1 if i > 0 and re.match(r"\s*template\s*<", lines[i - 1]) else i
         entries.append((name, kind, i + 1, first_sentence(comment_above(lines, start))))
     return entries
 
@@ -80,8 +92,16 @@ def leading_comment(path, marker):
         lines = f.read().splitlines()
     skipped = ("#!", "#pragma", "#include", "import ", "pragma ")
     block = []
+    in_qdoc = False
     for line in lines:
         stripped = line.strip()
+        if marker == "//" and (stripped.startswith("/*!") or in_qdoc):
+            # A QDoc comment (E-939): its lines up to */.
+            in_qdoc = not stripped.endswith("*/")
+            block.append(plain(stripped.removeprefix("/*!").removesuffix("*/")))
+            if not in_qdoc:
+                break
+            continue
         if "SPDX-" in stripped and not block:
             continue  # the licence header (scripts/add-spdx.py) is no description
         if stripped.startswith(marker) and not stripped.startswith("#!"):

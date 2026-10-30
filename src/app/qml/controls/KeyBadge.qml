@@ -5,11 +5,14 @@ import QtQuick
 import QtQuick.Controls
 import QtCraft
 
-// A key or pad button as a small plate next to a label or in a button (decision E-845): "H" next
-// to "Handbook" instead of "Handbook (H)". Read with the label it belongs to.
+/*! \brief A key or pad button as a small plate next to a label or in a button (decision E-845): "H"
+    next to "Handbook" instead of "Handbook (H)".
+
+    Read with the label it belongs to. */
 Rectangle {
     id: badge
 
+    /*! The key's name on the plate ("H", "Esc"). */
     property alias text: label.text
 
     implicitWidth: Math.max(Ui.size.badge, label.implicitWidth + 2 * Ui.space.xs)

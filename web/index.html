@@ -2,14 +2,31 @@
 <!-- SPDX-FileCopyrightText: 2026 the QtCraft authors -->
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
-<!-- Start of the GitHub Pages site: the web handbook. -->
+<!-- Start of the GitHub Pages site: links to the web handbook and the API reference (decision E-939). -->
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=handbook/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>QtCraft</title>
+    <style>
+        :root { --bg: #ffffff; --fg: #1d2125; --muted: #5b6570; --link: #2a7a2e; --card: #f3f5f7; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #16191c; --fg: #dfe3e7; --muted: #9aa4ad; --link: #7cc87f; --card: #20252a; }
+        }
+        body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+        main { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
+        h1 { font-size: 34px; margin: 0 0 8px; }
+        p { color: var(--muted); margin: 0 0 32px; }
+        a.card { display: block; padding: 18px 20px; margin-bottom: 14px; border-radius: 6px; background: var(--card); color: var(--fg); text-decoration: none; }
+        a.card strong { display: block; color: var(--link); font-size: 20px; }
+    </style>
 </head>
 <body>
-    <p><a href="handbook/">QtCraft Handbook</a></p>
+    <main>
+        <h1>QtCraft</h1>
+        <p>A voxel sandbox game built with Qt.</p>
+        <a class="card" href="handbook/"><strong>Handbook</strong>How to play: blocks, items, recipes, creatures and the world.</a>
+        <a class="card" href="api/"><strong>API reference</strong>The C++ libraries and QML types of the game, generated from the sources.</a>
+    </main>
 </body>
 </html>

@@ -1,0 +1,57 @@
+/* SPDX-FileCopyrightText: 2026 the QtCraft authors */
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+/* The QtCraft API reference (QDoc output, decision E-939): plain and readable, light and dark. */
+:root {
+    --bg: #ffffff;
+    --fg: #1d2125;
+    --muted: #5b6570;
+    --link: #2a7a2e;
+    --rule: #d8dde2;
+    --code-bg: #f3f5f7;
+    --head-bg: #24302a;
+    --head-fg: #e8f2ea;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #16191c;
+        --fg: #dfe3e7;
+        --muted: #9aa4ad;
+        --link: #7cc87f;
+        --rule: #2f363c;
+        --code-bg: #20252a;
+        --head-bg: #0f1412;
+        --head-fg: #d5e8d8;
+    }
+}
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+header.site {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+    padding: 12px 16px;
+    background: var(--head-bg);
+}
+header.site a { color: var(--head-fg); font-weight: 600; text-decoration: none; }
+main { max-width: 980px; margin: 0 auto; padding: 8px 16px 32px; overflow-wrap: anywhere; }
+footer.site { max-width: 980px; margin: 0 auto; padding: 16px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--rule); }
+a { color: var(--link); }
+h1 { font-size: 30px; margin-top: 24px; }
+h2 { font-size: 22px; border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin-top: 32px; }
+h3 { font-size: 17px; margin-top: 24px; }
+h3.fn, h3.flags { font-family: ui-monospace, Menlo, Consolas, monospace; font-weight: 600; background: var(--code-bg); padding: 6px 8px; border-radius: 4px; }
+code, pre, .cpp, .qml { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; }
+pre { background: var(--code-bg); padding: 10px 12px; border-radius: 4px; overflow-x: auto; }
+table { border-collapse: collapse; margin: 12px 0; max-width: 100%; display: block; overflow-x: auto; }
+td, th { border: 1px solid var(--rule); padding: 6px 10px; vertical-align: top; text-align: left; }
+th { background: var(--code-bg); }
+table.alignedsummary td, table.propsummary td, table.annotated td { border: none; padding: 2px 8px; }
+.sidebar, .toc { display: none; }
+ul.breadcrumb, .navigationbar { list-style: none; padding: 0; margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+ul.breadcrumb li { display: inline; }
+ul.breadcrumb li + li::before { content: " › "; }

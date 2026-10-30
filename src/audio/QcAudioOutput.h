@@ -20,53 +20,62 @@
 #include <optional>
 #include <span>
 
-// Plays the mixer through the default audio output of a QcAudioPlatform (the system's,
-// QcSystemAudio, unless a test passes another). The sink pulls the mixer on the audio thread, so
-// every access to the mixer goes through withMixer(). Without a usable device the output stays
-// inactive and the game is silent. From start() on it follows the system's devices (QcAudioRoute):
-// a new default output, the current one going away or a first device appearing moves the sound to
-// the default output, keeping the mixer with its voices when the new device takes the mixer's
-// rate. A sink that fails while playing (a device invalidated by a format or profile change, which
-// keeps the same default device) is opened again after retryDelay, at most maxRetries times in a
-// row.
+/*! \brief Plays the mixer through the default audio output of a QcAudioPlatform (the system's,
+    QcSystemAudio, unless a test passes another).
+
+    The sink pulls the mixer on the audio thread, so every access to the mixer goes through
+    withMixer(). Without a usable device the output stays inactive and the game is silent. From
+    start() on it follows the system's devices (QcAudioRoute): a new default output, the current one
+    going away or a first device appearing moves the sound to the default output, keeping the mixer
+    with its voices when the new device takes the mixer's rate. A sink that fails while playing (a
+    device invalidated by a format or profile change, which keeps the same default device) is opened
+    again after retryDelay, at most maxRetries times in a row. */
 class QcAudioOutput : public QObject
 {
     Q_OBJECT
 
 public:
-    // Attempts to open the output again after a sink error before giving up until the devices
-    // change; a sink that played for stableMilliseconds before it failed starts a new series.
+    /*! Attempts to open the output again after a sink error before giving up until the devices
+        change. */
     static constexpr int maxRetries = 4;
+    /*! The pause before opening the output again after a sink error. */
     static constexpr std::chrono::milliseconds retryDelay{500};
+    /*! A sink that played this long before it failed starts a new series of retries. */
     static constexpr qint64 stableMilliseconds = 5000;
 
+    /*! An output on the system's audio (QcSystemAudio), child of \a parent. */
     explicit QcAudioOutput(QObject *parent = nullptr);
+    /*! An output on \a platform (tests pass a fake one), child of \a parent. */
     explicit QcAudioOutput(std::unique_ptr<QcAudioPlatform> platform, QObject *parent = nullptr);
     ~QcAudioOutput() override;
     Q_DISABLE_COPY_MOVE(QcAudioOutput)
 
-    // Opens the default output device and follows device changes from now on. Returns false and
-    // keeps silent when there is none or it cannot be opened (until a usable device appears); the
-    // reason is in error() and logged.
+    /*! Opens the default output device and follows device changes from now on. Returns false and
+        keeps silent when there is none or it cannot be opened (until a usable device appears); the
+        reason is in error() and logged. */
     [[nodiscard]] bool start();
-    // Closes the device and stops following device changes.
+    /*! Closes the device and stops following device changes. */
     void stop();
+    /*! Returns whether a device plays. */
     bool isActive() const { return !m_deviceId.isEmpty(); }
+    /*! Returns why the last start or switch of the device failed; empty after a success. */
     QString error() const { return m_error; }
+    /*! Returns the rate of the mixer in frames per second. */
     int sampleRate() const;
-    // Id of the device playing now; empty while none is open.
+    /*! Returns the id of the device playing now; empty while none is open. */
     QByteArray deviceId() const { return m_deviceId; }
-    // The pause before opening the output again after a sink error (tests shorten it).
+    /*! Sets the pause before opening the output again after a sink error to \a delay (tests
+        shorten it). */
     void setRetryDelay(std::chrono::milliseconds delay) { m_retryTimer.setInterval(delay); }
 
-    // Runs `change` with the mixer locked against the audio thread.
+    /*! Runs \a change with the mixer locked against the audio thread. */
     void withMixer(const std::function<void(QcAudioMixer &)> &change);
-    // Stereo frames rendered so far; readable from any thread.
+    /*! Returns the stereo frames rendered so far; readable from any thread. */
     qint64 framesRendered() const { return m_framesRendered.load(); }
 
 signals:
-    // The mixer was replaced by a silent one at a new rate (the first device opened, or one that
-    // does not take the old rate): sounds rendered for the old rate should be rendered again.
+    /*! The mixer was replaced by a silent one at a new rate (the first device opened, or one that
+        does not take the old rate): sounds rendered for the old rate should be rendered again. */
     void mixerReset();
 
 private:

@@ -137,6 +137,8 @@ printf '%s\n' '{"cmd":"waitUntilReady"}' '{"cmd":"move","forward":1,"ticks":40}'
 
 All commands are described in [Steuerschnittstelle.md](Steuerschnittstelle.md). `qtcraft-headless --server` runs a dedicated server ([Multiplayer.md](Multiplayer.md)); `--console` runs a server console: every line of stdin is a server command (`help`, `op`, `whitelist`, `backup`, `tick`, `stop`, …; see the handbook chapter Commands). `qtcraft-headless --export-sounds DIR` writes every sound of the content (and one music piece) as WAV files. `qtcraft-headless --export-handbook DIR [--language de]` writes the base game's handbook as Markdown (add `--mods-dir DIR` to include mods); the base game's handbook is in [handbook/](handbook/index.md) (German: [handbook/de/](handbook/de/index.md)), and `scripts/export-handbook.sh` regenerates it and the data of the web handbook (`web/handbook`); tests keep both in sync with the content.
 
+The API reference (C++ libraries and QML types, decision E-939) is generated with QDoc from the `/*! … */` comments in the headers and QML files: `cmake --build --preset debug --target docs` writes `build/debug/docs/api/index.html` and lists qdoc's warnings, with their places in `src/`, in `build/debug/docs/qdoc-warnings.txt`. The target exists when CMake finds `qdoc` (from the Qt in use, or `-DQC_QDOC=<path>`); links to Qt's own types need Qt's documentation index files (`-DQC_QT_DOCS=<Docs/Qt-version>`, found next to the Qt installation by default). `scripts/convert-doc-comments.py` turns `//` comments into QDoc comments and lists what is still undocumented (`--check`).
+
 ## Tests and checks
 
 ```sh
@@ -167,7 +169,7 @@ Useful hooks: `--play [--seed N] [--world NAME]`, `--world-type terrain|flat|voi
 GitHub Actions (`.github/workflows/`), all against open-source Qt 6.8.3 installed by `install-qt-action` (presets `ci-debug`, `ci-deploy` and `ci-release`, Qt from `QT_ROOT_DIR`):
 
 - **CI** – every push to `dev` or `main` and every pull request: Debug build and all tests on macOS. Linux and Windows jobs are set up too, as experimental jobs whose failures do not fail the run (not run yet).
-- **Pages** – `web/` (the web handbook) from `main`.
+- **Pages** – `web/` from `main`: a start page, the web handbook (`/handbook/`) and the API reference (`/api/`, generated with the `qdoc` of that Qt; decision E-939).
 - **Release** – a tag `v<version>` matching `project(QtCraft VERSION …)`: on macOS the tests, then `scripts/release.sh` without the starts of the game; on Windows (`windows-2025`, x64) `scripts/windows/package-windows.ps1 -Ci` (preset `ci-release`, Release like the macOS package, with PDB files; SDL3 and OpenSSL in their own steps, each cached as soon as it is built; `windeployqt`, app-local VC++ runtime, OpenSSL, licence texts and the checks of the script, among them a dedicated server of the unpacked copy with TLS and a bot that joins it; the Windows tests stay in the experimental CI job). The macOS `.zip` and `.dmg` and `QtCraft-<version>-Windows-x64.zip` with its `-pdb.zip` go to a draft release that a maintainer publishes after trying the packages once. Started by hand, the same workflow builds the packages without a release (next section).
 
 The workflows have not run on GitHub yet; the first run is part of the publication (stage 39). The Windows job of the release workflow is untested until then (decision E-934).

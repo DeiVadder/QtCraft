@@ -6,20 +6,26 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// A note about a group or a page (decision E-845, docs/UI-Leitfaden.md 6.8): a box with a bar on
-// the left in the colour of its kind. Warnings and errors carry a symbol as well (!, ×), so colour
-// is never the only sign. The text is plain (it may hold paths and names from files).
+/*! \brief A note about a group or a page (decision E-845, docs/UI-Leitfaden.md 6.8): a box with a
+    bar on the left in the colour of its kind.
+
+    Warnings and errors carry a symbol as well (!, ×), so colour is never the only sign. The text is
+    plain (it may hold paths and names from files). */
 Rectangle {
     id: hint
 
+    /*! The kinds of note: \c Info, \c Warning and \c Error. */
     enum Kind {
         Info,
         Warning,
         Error
     }
 
+    /*! The kind of note, one of Hint.Kind; it sets the colour and the symbol. */
     property int kind: Hint.Info
+    /*! The text of the note, shown as plain text. */
     property alias text: label.text
+    /*! The colour of the bar and the symbol, from the kind. */
     readonly property color barColor: kind === Hint.Error ? Theme.error : kind === Hint.Warning ? Theme.warning : Theme.link
 
     implicitWidth: row.implicitWidth + 2 * Ui.space.m

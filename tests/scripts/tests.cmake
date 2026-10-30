@@ -62,4 +62,12 @@ if(NOT WIN32)
     # wildcards; decision E-933), held in memory.
     add_test(NAME script_check_doc_images COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-doc-images.py --self-test)
     set_tests_properties(script_check_doc_images PROPERTIES TIMEOUT 60)
+    # The QDoc tools of the API reference (decision E-939) on samples held in memory: the conversion
+    # of // comments (brief, \a and \c, lists, comment markers in the text, idempotence, --check) and
+    # the topic commands the staging derives from the declarations (\fn signatures, shared \variable,
+    # \value lines, \reimp, QML types). Neither runs qdoc.
+    add_test(NAME script_convert_doc_comments COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/convert-doc-comments.py --self-test)
+    set_tests_properties(script_convert_doc_comments PROPERTIES TIMEOUT 60)
+    add_test(NAME script_api_docs_stage COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/api-docs.py --self-test)
+    set_tests_properties(script_api_docs_stage PROPERTIES TIMEOUT 60)
 endif()
