@@ -16,8 +16,9 @@
 #     <name> = QtCraft-<version>-Windows-x64; SDL3 and OpenSSL come from their default caches
 #     below %USERPROFILE%\.cache\qtcraft (restored by actions/cache)
 # Without -OpenSourceQt (the Qt kit is not declared as open-source Qt; only the release workflow
-# passes it) or with commercial licence files next to the Qt installation (<QtDir>\..\..\Licenses,
-# licenseInfo.txt), the package is for local tests only (decision E-932): both names end in
+# passes it) or when the Qt installation holds commercial licence files (<QtDir>\..\..\Licenses,
+# licenseInfo.txt; whoever builds with a commercially licensed Qt keeps getting working packages,
+# but only for their own use), the package is for local tests only (decision E-932): both names end in
 # -local-only, the package carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL
 # instead of Qt's LGPL texts.
 #
@@ -52,7 +53,7 @@
 # Usage (in the VM, normally through scripts/vm-package-windows.sh on the Mac):
 #   powershell -NoProfile -ExecutionPolicy Bypass -File package-windows.ps1 [-Ref dev] [-Jobs 4]
 #       [-Root C:\Qt-Projekte\Claude\QtCraft] [-Repo //Mac/Home/Qt-Projekte/Privat/Claude/QtCraft]
-#       [-QtDir C:\Qt\6.8.3\msvc2022_64] [-Server 192.168.0.201:25600] [-NoFetch] [-NoGamepad]
+#       [-QtDir C:\Qt\<version>\msvc2022_64] [-Server 192.168.0.201:25600] [-NoFetch] [-NoGamepad]
 #       [-GuiCheck] [-OpenSourceQt]
 # In the release workflow: pwsh -File scripts\windows\package-windows.ps1 -Ci -OpenSourceQt [-Jobs 4]
 #   [-Server <text>]
@@ -69,7 +70,7 @@ param(
     [int]$Jobs = 4,
     [string]$Root = "C:\Qt-Projekte\Claude\QtCraft",
     [string]$Repo = "//Mac/Home/Qt-Projekte/Privat/Claude/QtCraft",
-    [string]$QtDir = "C:\Qt\6.8.3\msvc2022_64",
+    [string]$QtDir = "",
     [string]$VcVars = "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat",
     [string]$Server = "192.168.0.201:25600",
     [switch]$NoFetch,
@@ -92,6 +93,13 @@ if ($Ci) {
     if (-not $PSBoundParameters.ContainsKey("QtDir")) { $QtDir = $env:QT_ROOT_DIR }
     # The VM's default is the LAN address of the playtest server at home; a public package names none.
     if (-not $PSBoundParameters.ContainsKey("Server") -or -not $Server) { $Server = "(die Adresse, die die Spielleitung nennt / the address your host names)" }
+}
+if (-not $Ci -and -not $QtDir) {
+    # Default: the newest Qt 6.8 kit for MSVC x64 below C:\Qt (any Qt 6.8 release works).
+    $QtDir = "C:\Qt\6.8\msvc2022_64"
+    $kit = Get-ChildItem -Directory -ErrorAction SilentlyContinue "C:\Qt" | Where-Object { $_.Name -match '^6\.8\.\d+$' } |
+        Sort-Object { [version]$_.Name } | Select-Object -Last 1
+    if ($kit) { $QtDir = Join-Path $kit.FullName "msvc2022_64" }
 }
 $BuildDir = Join-Path $Source "build\$Preset"
 $Work = Join-Path $Root "package-work"

@@ -6,14 +6,14 @@
 # README template into the Parallels VM, runs it there over SSH for a git ref of this repository
 # (the VM fetches the ref through the Parallels share \\Mac\Home, so only committed states are
 # packaged) and copies the resulting QtCraft-<version>-<sha>-Windows-x64-local-only.zip and its
-# -pdb.zip into deploy/ of the main checkout (gitignored). These
-# packages are for own tests only and carry NOT-FOR-DISTRIBUTION.txt; packages for others come from
-# the release workflow (decisions E-932, E-934). The VM must be running; this script never starts or
+# -pdb.zip into deploy/ of the main checkout (gitignored). These packages are for own tests only and
+# carry NOT-FOR-DISTRIBUTION.txt; packages for others come from the release workflow (decisions
+# E-932, E-934). The VM must be running; this script never starts or
 # stops it. Build and checks are described in package-windows.ps1; the build is registered with the
 # slot broker (kind build) and runs in the VM with the granted jobs, at most 4 (the VM's cores).
-# Without -OpenSourceQt its packages are for local tests only (names ending in
-# -local-only, NOT-FOR-DISTRIBUTION.txt in the package; decision E-932). Packages for others come
-# from the release workflow with open-source Qt; -- -OpenSourceQt declares an open-source kit.
+# Without -OpenSourceQt its packages are for local tests only (names ending in -local-only,
+# NOT-FOR-DISTRIBUTION.txt in the package; decision E-932). Packages for others come from the
+# release workflow with open-source Qt; -- -OpenSourceQt declares an open-source kit.
 #
 # Usage: scripts/vm-package-windows.sh [ref] [-- extra arguments for package-windows.ps1]
 #   ref                  branch or tag of this repository (default dev); a commit hash does not

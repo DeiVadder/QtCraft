@@ -37,7 +37,7 @@ SCENARIO=${2:-stand}
 SECONDS_PER_RUN=${3:-15}
 VIEW=${4:-8}
 APP=${PROFILE_APP:-"$PROJECT_DIR/build/profile/src/app/qtcraft.app/Contents/MacOS/qtcraft"}
-QT_BIN="$HOME/Qt/6.8.3/macos/bin"
+QT_BIN=${QT_BIN:-"$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)/bin"}
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-profile.XXXXXX") || exit 2
 # Recording ends with the run; the limit only guards against a run that does not quit.
 RECORD_LIMIT=$((SECONDS_PER_RUN + 60))

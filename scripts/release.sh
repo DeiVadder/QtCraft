@@ -38,7 +38,7 @@
 # focus, no captured mouse, sound muted. Temporary data lives in a directory below
 # QTCRAFT_RELEASE_TMP (default: $TMPDIR) and is removed when all checks pass.
 #
-# Usage: scripts/release.sh            (QT_DIR overrides ~/Qt/6.8.3/macos; QTCRAFT_RELEASE_DMG=0
+# Usage: scripts/release.sh            (QT_DIR overrides the newest ~/Qt/6.8.*/macos; QTCRAFT_RELEASE_DMG=0
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
 #                                       preset "deploy"; QTCRAFT_RELEASE_GUI=0 skips the starts of
 #                                       the game and keeps the static and dedicated-server checks,
@@ -50,7 +50,7 @@ set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
-QT_DIR=${QT_DIR:-"$HOME/Qt/6.8.3/macos"}
+QT_DIR=${QT_DIR:-$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)}
 PRESET=${QTCRAFT_RELEASE_PRESET:-deploy}
 GUI_RUNS=${QTCRAFT_RELEASE_GUI:-1}
 case "$GUI_RUNS" in
@@ -108,9 +108,10 @@ echo "== QtCraft $VERSION (build $BUILD_NUMBER), Qt from $QT_DIR"
 # Packages for others come only from the release workflow, built against open-source Qt (decision
 # E-932). A package is for local tests only unless QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 says that QT_DIR
 # is an open-source Qt (.github/workflows/release.yml sets it): its name ends in -local-only, the
-# bundle carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL. Commercial licence files
-# next to the Qt installation (the online installer puts them there, e.g.
-# <Qt>/Licenses or <Qt>/licenseInfo.txt) keep it local-only even then.
+# bundle carries NOT-FOR-DISTRIBUTION.txt and a Qt notice without the LGPL. A Qt installation with
+# commercial licence files (the online installer puts them into <Qt>/Licenses or <Qt>/licenseInfo.txt)
+# keeps it local-only even then: whoever builds with a commercially licensed Qt still gets a working
+# package, but only for their own use.
 OPEN_SOURCE_QT=${QTCRAFT_RELEASE_OPEN_SOURCE_QT:-0}
 case "$OPEN_SOURCE_QT" in
 0 | 1) ;;
