@@ -15,29 +15,33 @@ class QcChunk;
 class QcTerrainGenerator;
 struct QcVillagePlan;
 
-// Giant trees on a 2×2 trunk (decision E-822): each cell of QcTerrainDefinitions::giantCell blocks
-// (aligned with the chunks) holds at most one, with the chance of the biome at a random spot in it,
-// on dry, level ground the tree may stand on and that no cave opened. Decided from the columns
-// alone, so every chunk a crown reaches into sees the same trees. Thread-safe (only reads).
+/*! \brief Giant trees on a 2×2 trunk (decision E-822): each cell of QcTerrainDefinitions::giantCell
+    blocks (aligned with the chunks) holds at most one, with the chance of the biome at a random
+    spot in it, on dry, level ground the tree may stand on and that no cave opened.
+
+    Decided from the columns alone, so every chunk a crown reaches into sees the same trees.
+    Thread-safe (only reads). */
 class QcGiantTreePlacer
 {
 public:
+    /*! \brief One giant tree: where it stands and which feature it is. */
     struct Giant
     {
-        // The north-west trunk block.
+        /*! The north-west trunk block. */
         QcBlockPos base;
-        // Index into QcTerrainDefinitions::features.
+        /*! Index into QcTerrainDefinitions::features. */
         int feature = 0;
     };
-    // How far a giant reaches sideways from its base, at most.
+    /*! How far a giant reaches sideways from its base, at most. */
     static constexpr int maxReach = 5;
 
     QcGiantTreePlacer(const QcTerrainGenerator &generator, const QcTerrainDefinitions &definitions, quint64 seed);
 
-    // The giants whose crowns may reach into the chunk at `pos` (villages and structures not checked).
+    /*! Returns the giants whose crowns may reach into the chunk at \a pos (villages and
+        structures not checked). */
     [[nodiscard]] QList<Giant> giantsNear(QcChunkPos pos) const;
-    // Builds the giants reaching into `chunk`, none near `village` (may be null) or a surface
-    // structure or coastal tower.
+    /*! Builds the giants reaching into \a chunk, none near \a village (may be null) or a surface
+        structure or coastal tower. */
     void build(QcChunk &chunk, const QcVillagePlan *village) const;
 
 private:

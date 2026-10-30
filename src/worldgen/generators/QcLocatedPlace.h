@@ -14,36 +14,43 @@
 #include <optional>
 #include <tuple>
 
-// A place /locate finds that is not a placed structure (decision E-911): the central room of a mine
-// shaft, the room of a dungeon, the door of a coastal tower; for a mine shaft also where its way up
-// comes out on the ground.
+/*! \brief A place /locate finds that is not a placed structure (decision E-911): the central
+    room of a mine shaft, the room of a dungeon, the door of a coastal tower; for a mine shaft
+    also where its way up comes out on the ground. */
 struct QcLocatedPlace
 {
+    /*! The position of the place. */
     QcBlockPos at;
+    /*! Where a mine shaft's way up comes out on the ground; none for other places. */
     std::optional<QcBlockPos> entrance;
 
     bool operator==(const QcLocatedPlace &) const = default;
 };
 
-// What a search for places gives (decision E-911): the place found, if any, and how far the search
-// looked: every region within `searched` blocks was asked. A search that ran out of its budget of
-// regions looked less far than it was asked to; a place it found beyond `searched` is the nearest of
-// the regions it asked.
+/*! \brief What a search for places gives (decision E-911): the place found, if any, and how far the
+    search looked: every region within \c {searched} blocks was asked.
+
+    A search that ran out of its budget of regions looked less far than it was asked to; a place
+    it found beyond \c {searched} is the nearest of the regions it asked. */
 struct QcLocateResult
 {
+    /*! The place found; none when the search found none. */
     std::optional<QcLocatedPlace> place;
+    /*! How far the search looked in blocks. */
     int searched = 0;
 };
 
+/*! \brief Helpers for searching places region by region (decision E-911). */
 namespace QcPlaceSearch {
 
-// The horizontal distance between two cells.
+/*! Returns the horizontal distance (x and z) between \a a and \a b. */
 inline double distance(QcBlockPos a, QcBlockPos b)
 {
     return std::hypot(static_cast<double>(a.x - b.x), static_cast<double>(a.z - b.z));
 }
 
-// The horizontal distance from `from` to the nearest column of region (regionX, regionZ).
+/*! Returns the horizontal distance from \a from to the nearest column of region (\a regionX,
+    \a regionZ), with regions of \a regionSize blocks. */
 inline double regionDistance(QcBlockPos from, int regionX, int regionZ, int regionSize)
 {
     const auto axis = [regionSize](int value, int region) {
@@ -53,12 +60,13 @@ inline double regionDistance(QcBlockPos from, int regionX, int regionZ, int regi
     return std::hypot(static_cast<double>(axis(from.x, regionX)), static_cast<double>(axis(from.z, regionZ)));
 }
 
-// The place nearest to `from` within `reach` blocks of the places regions of `regionSize` blocks
-// hold, at most one each and inside it (`placeOf(regionX, regionZ)` gives it,
-// std::optional<QcLocatedPlace>): regions are asked nearest first, and the search ends at the first
-// region farther away than the best place so far, so planning a region (which may be costly, a
-// mine shaft's) happens for a few regions only. At most `maxRegions` regions are asked: a miss
-// would otherwise plan every region within reach on the caller's thread (the tick for /locate).
+/*! Returns the place nearest to \a from within \a reach blocks of the places regions of
+    \a regionSize blocks hold, at most one each and inside it (\a placeOf gives it as
+    \c {placeOf(regionX, regionZ)}, std::optional<QcLocatedPlace>): regions are asked nearest
+    first, and the search ends at the first region farther away than the best place so far, so
+    planning a region (which may be costly, a mine shaft's) happens for a few regions only. At
+    most \a maxRegions regions are asked: a miss would otherwise plan every region within reach
+    on the caller's thread (the tick for /locate). */
 template<typename PlaceOf>
 [[nodiscard]] QcLocateResult nearestInRegions(QcBlockPos from, int reach, int regionSize, qsizetype maxRegions, const PlaceOf &placeOf)
 {

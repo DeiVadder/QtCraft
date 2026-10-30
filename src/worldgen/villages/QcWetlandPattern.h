@@ -8,29 +8,35 @@
 
 #include <array>
 
-// The surface of a wetland (decision E-661): irregular pools of water where a seeded noise lies
-// below the quantile of the style's water share, the deepest part of them a block deeper, a band of
-// the bottom block (mud) around them, grass between. Under pieces and boardwalks the ground is mud
-// (no pools), so posts stand on it. A pure function of the seed, the plan and the column, so every
-// chunk sees the same pattern in any order. Thread-safe.
+/*! \brief The surface of a wetland (decision E-661): irregular pools of water where a seeded noise
+    lies below the quantile of the style's water share, the deepest part of them a block deeper, a
+    band of the bottom block (mud) around them, grass between.
+
+    Under pieces and boardwalks the ground is mud (no pools), so posts stand on it. A pure
+    function of the seed, the plan and the column, so every chunk sees the same pattern in any
+    order. Thread-safe. */
 class QcWetlandPattern
 {
 public:
+    /*! \brief What covers a column of the flat wetland. */
     enum class Cover
     {
-        Grass,
-        Mud,
-        Water,
-        DeepWater,
+        Grass,     // Grass between the pools.
+        Mud,       // The bottom block: around the pools, under pieces and boardwalks.
+        Water,     // A pool.
+        DeepWater, // The deepest part of a pool, a block deeper.
     };
 
+    /*! Seeds the pool noise and the plant draws from \a seed. */
     explicit QcWetlandPattern(quint64 seed);
 
-    // What covers the flat wetland at the column.
+    /*! Returns what covers the flat \a wetland at the column \a x, \a z. */
     [[nodiscard]] Cover coverAt(const QcVillagePlan::Wetland &wetland, int x, int z) const;
-    // Whether the column's plant (if the style has one) grows there, a pure function of the column.
+    /*! Returns whether the plant of \a settings (if the style has one) grows at the column \a x,
+        \a z by its chance, a pure function of the column. */
     [[nodiscard]] bool plantAt(const QcVillageStyle::Wetland &settings, int x, int z) const;
-    // Whether the floating plant (if the style has one) lies on the water of a pool column.
+    /*! Returns whether the floating plant of \a settings (if the style has one) lies on the
+        water of the pool column \a x, \a z by its chance. */
     [[nodiscard]] bool floatingPlantAt(const QcVillageStyle::Wetland &settings, int x, int z) const;
 
 private:

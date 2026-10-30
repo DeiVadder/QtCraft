@@ -13,25 +13,28 @@
 #include <memory>
 #include <optional>
 
-// Where the river deltas lie (decision E-850): from a point on a river, down the river to where it
-// meets the coast (its mouth) and up the river to the apex of the fan, and whether that mouth gets
-// a delta at all (a wide river through flat land straight into the open sea, and the chance). Every
-// column of a delta reaches the same mouth, so a delta is decided and shaped alike for all of them.
-// Deterministic per seed and thread-safe; the sites are remembered per thread by cells of a few
-// blocks along the rivers.
+/*! \brief Where the river deltas lie (decision E-850): from a point on a river, down the river to
+    where it meets the coast (its mouth) and up the river to the apex of the fan, and whether that
+    mouth gets a delta at all (a wide river through flat land straight into the open sea, and the
+    chance).
+
+    Every column of a delta reaches the same mouth, so a delta is decided and shaped alike for
+    all of them. Deterministic per seed and thread-safe; the sites are remembered per thread by
+    cells of a few blocks along the rivers. */
 class QcDeltaSites
 {
 public:
-    // The terrain's maps a delta reads (QcTerrainGenerator).
+    /*! The terrain's maps a delta reads (QcTerrainGenerator). */
     using Land = QcRiverField::Land;
 
-    // A delta: the mouth of its river (on the coast) and the apex of its fan (on the river, about
-    // a fan's length up from the mouth), the unit direction from the apex to the mouth and their
-    // distance, how fast the continent rises towards the land at the mouth (per block), how much
-    // of a delta the mouth allows (0..1), half the width of the river there and the delta's own
-    // random numbers (0..1, the shape of its network of arms; smooth in the mouth, so every column
-    // of the delta reads the same ones).
+    /*! The number of random traits of a delta (Site::traits). */
     static constexpr int traitCount = 64;
+    /*! \brief A delta: the mouth of its river (on the coast) and the apex of its fan (on the
+        river, about a fan's length up from the mouth), the unit direction from the apex to the
+        mouth and their distance, how fast the continent rises towards the land at the mouth (per
+        block), how much of a delta the mouth allows (0..1), half the width of the river there
+        and the delta's own random numbers (0..1, the shape of its network of arms; smooth in the
+        mouth, so every column of the delta reads the same ones). \qcfields */
     struct Site
     {
         double mouthX = 0.0;
@@ -47,20 +50,22 @@ public:
         std::array<double, traitCount> traits{};
     };
 
-    // The continent value of the coast where a delta's river meets the sea.
+    /*! The continent value of the coast where a delta's river meets the sea. */
     static constexpr double coastContinent = -0.14;
-    // A fan reaches this many blocks up the river from the mouth.
+    /*! A fan reaches this many blocks up the river from the mouth. */
     static constexpr double fanLength = 110.0;
-    // The sites are searched from the middle of cells of this many blocks: every column of a cell
-    // has the same site.
+    /*! The sites are searched from the middle of cells of this many blocks: every column of a
+        cell has the same site. */
     static constexpr double siteCell = 8.0;
 
-    // `rivers` must outlive the sites (the terrain generator owns both); `share`: the share of the
-    // wide river mouths that get a delta (0..1; 1 every one).
+    /*! Seeds the delta chance from \a seed. \a rivers must outlive the sites (the terrain
+        generator owns both); \a share: the share of the wide river mouths that get a delta
+        (0..1; 1 every one). */
     QcDeltaSites(quint64 seed, const QcRiverField &rivers, double share);
 
-    // The delta of the river near (x, z) (found from the middle of its cell of 8 blocks), null for
-    // none; shared with the thread's memory of the sites (a site is too large to copy per column).
+    /*! Returns the delta of the river near (\a x, \a z) on \a land (found from the middle of its
+        cell of 8 blocks, or else from a cell around it), null for none; shared with the thread's
+        memory of the sites (a site is too large to copy per column). */
     [[nodiscard]] std::shared_ptr<const Site> siteNear(double x, double z, const Land &land) const;
 
 private:

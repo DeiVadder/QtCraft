@@ -13,39 +13,56 @@
 class QcContentRegistry;
 class QcTerrainGenerator;
 
-// Lays one road of a village (decision E-408, E-419): its runs in eight directions, bending where
-// its street plan says and winding with the terrain, crossing rivers on bridges (decision E-841), cut
-// short at other water, steep steps, pieces and the village's radius, recorded cell by cell in the
-// draft; over water the boardwalk's stairs down to land at its end. Deterministic and thread-safe (const).
+/*! \brief Lays one road of a village (decision E-408, E-419): its runs in eight directions, bending
+    where its street plan says and winding with the terrain, crossing rivers on bridges (decision
+    E-841), cut short at other water, steep steps, pieces and the village's radius, recorded cell by
+    cell in the draft; over water the boardwalk's stairs down to land at its end.
+
+    Deterministic and thread-safe (const). */
 class QcRoadLayer
 {
 public:
+    /*! One straight run of a laid road. */
     using Road = QcVillageDraft::Road;
 
-    // A road to lay: from (x, z) `length` cells in `direction` (an index into
-    // QcVillageDraft::directions), turning by `bends` (distance along it, eighths of a turn; positive
-    // clockwise), winding with the terrain, cut short at water, steep steps, pieces and the radius.
+    /*! \brief A road to lay: from (x, z) \c {length} cells in \c {direction} (an index into
+        QcVillageDraft::directions), turning by \c {bends} (distance along it, eighths of a turn;
+        positive clockwise), winding with the terrain, cut short at water, steep steps, pieces
+        and the radius. */
     struct Arm
     {
+        /*! The x and z of the first cell. \qcshared */
         int x = 0;
         int z = 0;
+        /*! The first direction, an index into QcVillageDraft::directions. */
         int direction = 0;
+        /*! The cells to lay (a bridge at the end goes on to the far bank). */
         int length = 0;
+        /*! Pieces start this far along the road; before it pieces do not end the road, and a road
+            laid no further than this is dropped. */
         int firstSlot = 0;
+        /*! A side road (QcVillageDraft::Road::branch of its runs). */
         bool branch = false;
+        /*! The bends: distance along the road and turn in eighths of a turn (positive
+            clockwise). */
         QList<std::pair<int, int>> bends;
+        /*! Whether the road turns by an eighth towards flatter ground every few cells. */
         bool winding = false;
-        // Laid only in full, without a road end (a ring back to its first cell, a plaza's spoke).
+        /*! Laid only in full, without a road end (a ring back to its first cell, a plaza's
+            spoke). */
         bool closed = false;
+        /*! Sides that take pieces (QcVillageDraft::Road::sides of its runs). */
         int sides = 3;
     };
 
     QcRoadLayer(const QcTerrainGenerator &terrain, const QcContentRegistry &content);
 
-    // Lays an arm: its runs, recorded with their cells; empty when nothing past its first slot is
-    // left (or a closed arm is cut).
+    /*! Lays \a arm in \a draft and returns its runs, recorded with their cells (over water with
+        the stairs at its end, unless closed); empty when nothing past its first slot is left (or
+        a closed arm is cut). */
     QList<Road> layArm(QcVillageDraft &draft, const Arm &arm) const;
-    // The runs layArm() would lay, without recording them.
+    /*! Returns the runs layArm() would lay for \a arm in \a draft, without recording them (the
+        winding still draws from the draft's sequence). */
     QList<Road> walkArm(QcVillageDraft &draft, const Arm &arm) const;
 
 private:

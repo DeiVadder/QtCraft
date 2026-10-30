@@ -17,36 +17,49 @@
 
 class QcTerrainGenerator;
 
-// Plans the dungeon of a region (decision E-522) from the seed and the terrain noise: whether the
-// region has one (`chance`), a place for its room deep below the ground where caves take little of
-// it, the spawner's kind by weight, the chests against the walls, and the corridors to caves within
-// `reach` (one per side at most, straight or with one bend, the shortest first, at most
-// `corridors`), with their lining and lights. Thread-safe: plan() only reads immutable state.
+/*! \brief Plans the dungeon of a region (decision E-522) from the seed and the terrain noise:
+    whether the region has one (\c {chance}), a place for its room deep below the ground where caves
+    take little of it, the spawner's kind by weight, the chests against the walls, and the corridors
+    to caves within \c {reach} (one per side at most, straight or with one bend, the shortest first,
+    at most \c {corridors}), with their lining and lights.
+
+    Thread-safe: plan() only reads immutable state. */
 class QcDungeonPlanner
 {
 public:
-    // The blocks a plan places, resolved once; chests and lights by the side they face or hang on
-    // (north, east, south, west).
+    /*! \brief The blocks a plan places, resolved once; chests and lights by the side they face
+        or hang on (north, east, south, west). */
     struct Blocks
     {
+        /*! The wall block of the room and the corridors' lining. */
         QcBlockId wall = qcAirBlockId;
+        /*! The mossy wall block that replaces some wall blocks. */
         QcBlockId moss = qcAirBlockId;
+        /*! The spawner block. */
         QcBlockId spawner = qcAirBlockId;
+        /*! The chest facing north, east, south and west. */
         std::array<QcBlockId, 4> chests{};
+        /*! The light attached on the north, east, south and west. */
         std::array<QcBlockId, 4> lights{};
     };
 
-    // Unresolvable blocks switch dungeons off with a warning (warnings()).
+    /*! Plans with the dungeon settings of \a content over the noise of \a terrain, seeded from
+        \a seed. Unresolvable blocks switch dungeons off with a warning (warnings()). */
     QcDungeonPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
+    /*! Returns the problems found while resolving the settings' blocks. */
     const QStringList &warnings() const { return m_warnings; }
 
+    /*! Returns whether dungeons are planned: enabled in the settings, every block known and at
+        least one creature for the spawner. */
     bool enabled() const { return m_enabled; }
+    /*! Returns the dungeon settings of the content. */
     const QcDungeonSettings &settings() const { return m_settings; }
+    /*! Returns the resolved blocks a plan places. */
     const Blocks &blocks() const { return m_blocks; }
-    // How far beyond its region a dungeon may reach (room, corridors and lining).
+    /*! Returns how far beyond its region a dungeon may reach (room, corridors and lining). */
     int reach() const { return m_settings.maxSize + m_settings.maxLength + 2; }
-    // The region's dungeon; null without one.
+    /*! Returns the dungeon of the region \a regionX, \a regionZ; null without one. */
     [[nodiscard]] std::shared_ptr<const QcDungeonPlan> plan(int regionX, int regionZ) const;
 
 private:

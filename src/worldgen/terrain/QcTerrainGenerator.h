@@ -35,19 +35,23 @@ class QcSurfaceStructures;
 class QcTerrainColumnGrid;
 class QcVillageGenerator;
 
-// Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature, humidity,
-// ruggedness and rarity, with bent borders), rolling hills, ridged mountain ranges, terraces and rocky
-// cliffs, winding rivers down to the sea level, connected cave tunnels and caverns, ore veins,
-// liquid pools sunk into cave floors and features (trees, cacti, plants in patches). All blocks
-// come from the registry's biome, feature, ore and terrain definitions. Deterministic per seed and
-// thread-safe: generate() only reads immutable state.
+/*! \brief Data-driven terrain: continents and oceans, biomes chosen by a climate map (temperature,
+    humidity, ruggedness and rarity, with bent borders), rolling hills, ridged mountain ranges,
+    terraces and rocky cliffs, winding rivers down to the sea level, connected cave tunnels and
+    caverns, ore veins, liquid pools sunk into cave floors and features (trees, cacti, plants in
+    patches).
+
+    All blocks come from the registry's biome, feature, ore and terrain definitions.
+    Deterministic per seed and thread-safe: generate() only reads immutable state. */
 class QcTerrainGenerator : public QcWorldGenerator
 {
 public:
+    /*! The shape and biome of one terrain column. */
     using Column = QcTerrainColumn;
 
-    // Unresolvable references are replaced by sensible fallbacks with a warning (warnings()); omitted
-    // optional blocks (empty names) fall back silently.
+    /*! Builds the terrain of the world \a seed from the definitions in \a content.
+        Unresolvable references are replaced by sensible fallbacks with a warning (warnings());
+        omitted optional blocks (empty names) fall back silently. */
     QcTerrainGenerator(std::shared_ptr<const QcContentRegistry> content, qint64 seed);
     ~QcTerrainGenerator() override;
     Q_DISABLE_COPY_MOVE(QcTerrainGenerator)
@@ -58,102 +62,130 @@ public:
     bool isNaturalGround(QcBlockId block) const override { return m_definitions.naturalGround.contains(block); }
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> nearestVillage(QcBlockPos from, int reach) const override;
+    /*! Returns the villages of the terrain. */
     const QcVillageGenerator &villages() const { return *m_villages; }
-    // Dungeons (decision E-522) and mine shafts (decision E-570): their loot, spawner kinds and
-    // carts, and the plans for tools and tests.
+    /*! Returns what the dungeons (decision E-522) and mine shafts (decision E-570) put into the
+        chunk at \a pos: their loot, spawner kinds and carts, and the plans for tools and tests. */
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override;
+    /*! Returns the dungeons (decision E-522). */
     const QcDungeonGenerator &dungeons() const { return *m_dungeons; }
+    /*! Returns the mine shafts (decision E-570). */
     const QcMineshaftGenerator &mineshafts() const { return *m_mineshafts; }
-    // Structures it places by itself (decision E-590): the desert temple.
+    /*! Returns the structures it places by itself (decision E-590): the desert temple. */
     const QcSurfaceStructures &surfaceStructures() const { return *m_surface; }
-    // Coastal towers (decision E-605): their chests' loot, and the plans for tools and tests.
+    /*! Returns the coastal towers (decision E-605): their chests' loot, and the plans for tools
+        and tests. */
     const QcCoastalTowerGenerator &coastalTowers() const { return *m_coastalTowers; }
-    // Patches of one kind of grass or flower (decision E-814), for tests.
+    /*! Returns the patches of one kind of grass or flower (decision E-814), for tests. */
     const QcVegetationPatchPlacer &vegetationPatches() const { return *m_vegetationPatches; }
+    /*! Returns the giant trees on a 2×2 trunk (decision E-822). */
     const QcGiantTreePlacer &giantTrees() const { return *m_giantTrees; }
-    // The footprints of surface structures, coastal towers and surface lakes within `margin` columns
-    // of the chunk at `pos`: no trees grow there. With `plantsOnBlend` the blended ground of kinds
-    // with `blendVegetation` is left out but for the ring beside their walls (the generator's trees
-    // and plants stand on the ground as built; giant trees are planned on the terrain and keep off).
+    /*! Returns the footprints of surface structures, coastal towers and surface lakes within
+        \a margin columns of the chunk at \a pos: no trees grow there. With \a plantsOnBlend the
+        blended ground of kinds with \c {blendVegetation} is left out but for the ring beside
+        their walls (the generator's trees and plants stand on the ground as built; giant trees
+        are planned on the terrain and keep off). */
     [[nodiscard]] QList<QcSurfacePlanner::Rect> structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
-    // Surface lakes (decision E-856): the lake of a chunk, none in or near a village or near a
-    // surface structure or coastal tower.
+    /*! Returns the surface lakes (decision E-856). */
     const QcSurfaceLakes &lakes() const { return *m_lakes; }
+    /*! Returns the lake of the chunk at \a pos; none in or near a village, near a surface
+        structure or coastal tower, or near a mine shaft's entrance. */
     [[nodiscard]] std::optional<QcSurfaceLakes::Site> lakeIn(QcChunkPos pos) const;
-    // Whether a mine shaft's entrance lies within `featureMargin` of a footprint (world) near the chunk.
+    /*! Returns whether the entrance of a mine shaft touching the chunk at \a pos lies within
+        \c {featureMargin} of \a footprint (world). */
     [[nodiscard]] bool mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const;
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
-    // Villages, mine shafts, dungeons, coastal towers and the surface structures (decision E-911).
+    /*! Villages, mine shafts, dungeons, coastal towers and the surface structures (decision
+        E-911). */
     QStringList locatableNames() const override;
-    // Mine shafts by their central room and entrance, dungeons by their room's middle, coastal
-    // towers by their doorstep (QcTerrainLocate.cpp).
+    /*! Returns the mine shaft, dungeon or coastal tower of \a kind nearest to \a from within
+        about \a reach blocks (as QcWorldGenerator::locate(); no place for other kinds): mine
+        shafts by their central room and entrance, dungeons by their room's middle, coastal
+        towers by their doorstep (QcTerrainLocate.cpp). */
     [[nodiscard]] QcLocateResult locate(QStringView kind, QcBlockPos from, int reach) const override;
 
-    // Shape and biome of a column. Near a biome border its ground biome is left `unresolvedGround`
-    // (a second climate evaluation): withGround() or QcTerrainColumnGrid look it up.
+    /*! Returns the shape and biome of the column \a x, \a z. Near a biome border its ground
+        biome is left \c {unresolvedGround} (a second climate evaluation): withGround() or
+        QcTerrainColumnGrid look it up. */
     Column column(int x, int z) const;
-    // The column with its ground biome looked up (decision E-858).
+    /*! Returns \a column at \a x, \a z with its ground biome looked up (decision E-858). */
     [[nodiscard]] Column withGround(int x, int z, Column column) const;
-    // The column whose land biome decides the ground of an unresolved column: the jittered one of
-    // QcColdEdges::groundOffset(); none for a looked-up column.
+    /*! Returns the column whose land biome decides the ground of the unresolved \a column at
+        \a x, \a z: the jittered one of QcColdEdges::groundOffset(); none for a looked-up
+        column. */
     [[nodiscard]] std::optional<std::pair<int, int>> groundSource(int x, int z, const Column &column) const;
-    // The ground biome of a column when the land biome at its ground source is `land` (for a river
-    // channel the river biome of that land); -1 for its own.
+    /*! Returns the ground biome of \a column when the land biome at its ground source is \a land
+        (for a river channel the river biome of that land); -1 for its own. */
     [[nodiscard]] int groundBiomeFor(const Column &column, int land) const;
-    // The land biome of the climate at a column.
+    /*! Returns the land biome of the climate at the column \a x, \a z. */
     [[nodiscard]] int landBiomeAt(int x, int z) const;
-    // The world's rarity at a column in [0, 1] (decision E-821): 0 outside the spots where rare
-    // biomes may appear, and everywhere when no biome is rare.
+    /*! Returns the world's rarity at the column \a x, \a z in [0, 1] (decision E-821): 0 outside
+        the spots where rare biomes may appear, and everywhere when no biome is rare. */
     [[nodiscard]] double rarityAt(int x, int z) const { return climateAt(x, z).rarity; }
-    // The climate point of a column (decisions E-014, E-821, E-824), for tests and tools.
+    /*! Returns the climate point of the column \a x, \a z (decisions E-014, E-821, E-824), for
+        tests and tools. */
     [[nodiscard]] QcTerrainClimate::Point climateAt(int x, int z) const;
-    // The continent value of a column (below about -0.15 the sea; river deltas read it, decision
-    // E-850).
+    /*! Returns the continent value of the column \a x, \a z (below about -0.15 the sea; river
+        deltas read it, decision E-850). */
     [[nodiscard]] double continentAt(int x, int z) const;
-    // The climate at a column whose ground lies above the sea level before rivers cut it, or at
-    // most a block under it (the river pieces, decisions E-851 and E-907); std::nullopt in the sea
-    // and lakes at least two blocks deep.
+    /*! Returns the climate at the column \a x, \a z if its ground lies above the sea level
+        before rivers cut it, or at most a block under it (the river pieces, decisions E-851 and
+        E-907); std::nullopt in the sea and lakes at least two blocks deep. */
     [[nodiscard]] std::optional<QcTerrainClimate::Point> dryClimateAt(int x, int z) const;
-    // The biome a climate point belongs to (the heaviest after the rarity gate), as the terrain picks
-    // it; tests check the layout of the biomes in climate space with it (decision E-824).
+    /*! Returns the biome the point \a climate belongs to (the heaviest after the rarity gate),
+        as the terrain picks it; tests check the layout of the biomes in climate space with it
+        (decision E-824). */
     [[nodiscard]] int biomeForClimate(const QcTerrainClimate::Point &climate) const;
-    // The river near a column (decision E-840): distance to its middle line, width and depth there,
-    // for tools, tests and the river deltas; `far` away without rivers and where the ground before
-    // the river lies more than 8 blocks under the sea level (the sea, deep lakes), as in
-    // column(). Costs a column(); column() itself gives the distance and the half width.
+    /*! Returns the river near the column \a x, \a z (decision E-840): distance to its middle
+        line, width and depth there, for tools, tests and the river deltas; \c {far} away without
+        rivers and where the ground before the river lies more than 8 blocks under the sea level
+        (the sea, deep lakes), as in column(). Costs a column(); column() itself gives the
+        distance and the half width. */
     [[nodiscard]] QcRiverField::Sample riverAt(int x, int z) const;
-    // Whether a biome is a river biome (the water of river channels, decision E-840).
+    /*! Returns whether \a biome is a river biome (the water of river channels, decision E-840). */
     [[nodiscard]] bool isRiverBiome(int biome) const;
-    // Whether a biome is a delta biome (the arms and islands of a river delta, decision E-850).
+    /*! Returns whether \a biome is a delta biome (the arms and islands of a river delta, decision
+        E-850). */
     [[nodiscard]] bool isDeltaBiome(int biome) const;
-    // Whether any column of a footprint (world, corners inclusive) lies in a river delta (decision
-    // E-850): every column is read, since an arm narrower than the samples of a placement may cross
-    // it between them. Only near a delta: away from the band along the coasts it reads the
-    // continent on a grid of a few blocks, near it the remembered delta of each cell of sites.
+    /*! Returns whether any column of \a footprint (world, corners inclusive) lies in a river
+        delta (decision E-850): every column is read, since an arm narrower than the samples of a
+        placement may cross it between them. Only near a delta: away from the band along the
+        coasts it reads the continent on a grid of a few blocks, near it the remembered delta of
+        each cell of sites. */
     [[nodiscard]] bool touchesDelta(QcSurfacePlanner::Rect footprint) const;
-    // The block of the top water layer of a column under the sea level (decision E-858): with
-    // freezing by temperature ice where the column is cold enough, else the biome's frozenWater;
-    // with a `frozenDepth` only where the water is that shallow (decision E-850).
+    /*! Returns the block of the top water layer of \a column at \a x, \a z under the sea level
+        (decision E-858): the biome's frozenWater, with freezing by temperature only where the
+        column is cold enough (else water); with a \c {frozenDepth} only where the water is that
+        shallow (decision E-850). */
     [[nodiscard]] QcBlockId frozenWaterAt(int x, int z, const Column &column) const;
-    // How far the freezing of a column's water follows a river's lower threshold (0 to 1,
-    // QcColdEdges::freezes): 1 in a river channel, falling off in still water along a river.
+    /*! Returns how far the freezing of the water of \a column follows a river's lower threshold
+        (0 to 1, QcColdEdges::freezes): 1 in a river channel, falling off in still water along a
+        river. */
     [[nodiscard]] double riverFreezeShare(const Column &column) const;
-    // Top block of the unmodified terrain at a column (before caves and features).
+    /*! Returns the top block of the unmodified terrain at the column \a x, \a z (before caves
+        and features). */
     QcBlockId surfaceBlockAt(int x, int z) const;
-    // Top block of a column whose ground is moved to `height` (its top block one below; the blend
-    // around a surface structure, decision E-889): the block the features of the column check.
+    /*! Returns the top block of the column \a x, \a z with its ground moved to \a height (its
+        top block one below; the blend around a surface structure, decision E-889): the block the
+        features of the column check. */
     QcBlockId surfaceBlockAt(int x, int z, int height) const;
+    /*! Returns the name of the biome at \a index; empty for an index out of range. */
     QString biomeName(int index) const;
-    // Highest solid block of the unmodified terrain at a column (overhangs included, caves not).
+    /*! Returns the highest solid block of the unmodified terrain in \a column at \a x, \a z
+        (overhangs included, caves not). */
     int groundTop(int x, int z, const Column &column) const;
-    // True where a cave carves the terrain (independent of the surface).
+    /*! Returns \c true where a cave carves the block \a x, \a y, \a z (the column computed
+        anew). */
     bool isCave(int x, int y, int z) const;
-    // The same with the terrain column at x, z known already.
+    /*! Returns the same for \a x, \a y, \a z with the terrain \a column at \a x, \a z known
+        already. */
     bool isCave(int x, int y, int z, const Column &column) const;
+    /*! Returns the sea level: the sea is filled with water up to the block below it (the water
+        surface, \c {seaLevel() - 1}), the first air above the sea. */
     int seaLevel() const { return m_definitions.seaLevel; }
-    // The block the sea and lakes are filled with.
+    /*! Returns the block the sea and lakes are filled with. */
     QcBlockId waterBlock() const { return m_definitions.water; }
 
 private:

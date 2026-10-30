@@ -13,20 +13,27 @@ struct QcTerrainDefinitions;
 struct QcTerrainSettings;
 class QcTerrainColumnGrid;
 
-// Connected cave systems: spaghetti tunnels of varying width and caverns with pillars, evaluated on
-// a coarse lattice and interpolated. Caves stay below a rock roof except in entrance patches and
-// hold lava lakes deep down.
+/*! \brief Connected cave systems: spaghetti tunnels of varying width and caverns with pillars,
+    evaluated on a coarse lattice and interpolated.
+
+    Caves stay below a rock roof except in entrance patches and hold lava lakes deep down. */
 class QcCaveCarver
 {
 public:
     QcCaveCarver(quint64 seed, const QcTerrainSettings &terrain, const QcTerrainDefinitions &definitions);
 
+    /*! Returns whether caves are carved at all (the terrain setting \c caves). */
     bool enabled() const { return m_enabled; }
-    // Highest block caves may remove in a column: below a rock roof except at entrances, and below
-    // a thicker lid under water.
+    /*! Returns the highest block caves may remove in \a column at \a x, \a z: below a rock roof
+        except at entrances, and six blocks below the surface in columns at or below sea level + 1,
+        so water does not pour into caves. */
     int top(const QcTerrainColumn &column, int x, int z) const;
-    // True where a cave carves the terrain; `column` is the terrain column at x, z.
+    /*! Returns \c true where a cave carves the block at \a x, \a y, \a z; \a column is the
+        terrain column at \a x, \a z. Always \c false when caves are disabled. */
     bool isCave(int x, int y, int z, const QcTerrainColumn &column) const;
+    /*! Carves the caves into \a chunk, whose terrain \a columns give each column's cave top:
+        carved blocks become air, or the cave liquid at and below the liquid level; bedrock
+        stays. */
     void carve(QcChunk &chunk, const QcTerrainColumnGrid &columns) const;
 
 private:

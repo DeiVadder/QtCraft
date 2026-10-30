@@ -11,33 +11,43 @@
 
 #include <functional>
 
-// Furnishes the corridors of a laid out mine shaft (decision E-570): spawners in the middle of
-// corridors without rails, against a wall off any support (a spawner in the middle lane beside a
-// support would close the corridor: the beam leaves no room to jump onto it), thick with cobwebs
-// around; rails along other corridors, some with a chest
-// minecart; supports (posts and a beam) and, under bridges, their pillars; lights on the beams away
-// from every spawn area; cobwebs in the upper corners and a few lower down. Nothing goes into a
-// room from a structure.
+/*! \brief Furnishes the corridors of a laid out mine shaft (decision E-570): spawners in the middle
+    of corridors without rails, against a wall off any support (a spawner in the middle lane beside
+    a support would close the corridor: the beam leaves no room to jump onto it), thick with cobwebs
+    around; rails along other corridors, some with a chest minecart; supports (posts and a beam)
+    and, under bridges, their pillars; lights on the beams away from every spawn area; cobwebs in
+    the upper corners and a few lower down.
+
+    Nothing goes into a room from a structure. */
 class QcMineshaftDetails
 {
 public:
-    // A random value in [0, 1) for a purpose and an index.
+    /*! A random value in [0, 1) for a purpose and an index. */
     using Random = std::function<double(int, int)>;
 
-    // `carts`: whether the content has the cart item (QcSpawnerContent warns otherwise).
+    /*! Furnishes with the blocks \a blocks and the chances and kinds of \a settings. \a carts:
+        whether the content has the cart item (QcSpawnerContent warns otherwise). */
     QcMineshaftDetails(const QcMineshaftSettings &settings, const QcMineshaftBlocks &blocks, bool carts);
 
-    // What the details add to a laid out plan (QcMineshaftPlan blocks, spawners, carts, pillars).
+    /*! \brief What the details add to a laid out plan (QcMineshaftPlan blocks, spawners, carts,
+        pillars). */
     struct Furnishing
     {
+        /*! The blocks placed: spawners, rails, supports, lights and cobwebs. */
         QList<QcMineshaftPlan::Placed> blocks;
+        /*! The spawners with their spawn areas. */
         QList<QcMineshaftPlan::Spawner> spawners;
+        /*! The rail cells that get a chest minecart. */
         QList<QcBlockPos> carts;
+        /*! The cells below bridge floors (bridge nodes' centres and supports' posts) from which a
+            pillar goes down where they are open. */
         QList<QcBlockPos> pillars;
-        // Indices of the corridors with rails (QcMineshaftPlan::Corridor::rails).
+        /*! Indices of the corridors with rails (QcMineshaftPlan::Corridor::rails). */
         QList<int> railed;
     };
 
+    /*! Returns the furnishing of the laid out \a plan, with the chances drawn from \a random:
+        spawners first, then rails, supports, lights and cobwebs. */
     [[nodiscard]] Furnishing furnish(const QcMineshaftPlan &plan, const Random &random) const;
 
 private:

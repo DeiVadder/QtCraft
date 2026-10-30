@@ -13,21 +13,24 @@
 
 #include <algorithm>
 
-// The footprint of a placed structure over the whole height of the world in which the natural
-// monster spawns bring forth only its kinds (decision E-871, the spawn overrides of the original
-// game's structures: the witch hut and its witches). Like guardian zones it comes from the plans
-// alone and needs no saving.
+/*! \brief The footprint of a placed structure over the whole height of the world in which the
+    natural monster spawns bring forth only its kinds (decision E-871, the spawn overrides of the
+    original game's structures: the witch hut and its witches).
+
+    Like guardian zones it comes from the plans alone and needs no saving. */
 struct QcSpawnArea
 {
-    // The footprint in world cells, both corners inside; y spans the world.
+    /*! The lowest and the highest corner of the footprint in world cells, both inside; y spans
+        the world. \qcshared */
     QcBlockPos min;
     QcBlockPos max;
-    // The structure's `monsters` (names).
+    /*! The structure's \c {monsters} (names). */
     QStringList monsters;
 
+    /*! Returns whether the column \a x, \a z lies in the footprint. */
     bool containsColumn(int x, int z) const { return x >= min.x && z >= min.z && x <= max.x && z <= max.z; }
 
-    // The spawn area of a placed copy of a structure, if it has one.
+    /*! Returns the spawn area of \a placement, a placed copy of a structure, if it has one. */
     static std::optional<QcSpawnArea> of(const QcStructurePlacement &placement)
     {
         const std::optional<QcStructureDefinition::SpawnArea> &rule = placement.structure().spawnArea;
@@ -41,14 +44,17 @@ struct QcSpawnArea
     }
 };
 
-// What the placed structures near a place bring forth by themselves (QcWorldGenerator::structureSitesNear):
-// their guardian zones (decision E-591) and their spawn areas (decision E-871).
+/*! \brief What the placed structures near a place bring forth by themselves
+    (QcWorldGenerator::structureSitesNear): their guardian zones (decision E-591) and their spawn
+    areas (decision E-871). */
 struct QcStructureSites
 {
+    /*! The guardian zones. */
     QList<QcGuardSite> guards;
+    /*! The spawn areas. */
     QList<QcSpawnArea> spawnAreas;
 
-    // The sites of a placed copy of a structure.
+    /*! Returns the sites of \a placement, a placed copy of a structure. */
     static QcStructureSites of(const QcStructurePlacement &placement)
     {
         QcStructureSites sites{QcGuardSite::of(placement), {}};
@@ -58,7 +64,7 @@ struct QcStructureSites
         return sites;
     }
 
-    // Adds the sites of `other`.
+    /*! Adds the sites of \a other. */
     void add(const QcStructureSites &other)
     {
         guards.append(other.guards);

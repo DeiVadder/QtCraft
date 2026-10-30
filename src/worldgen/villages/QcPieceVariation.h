@@ -13,46 +13,59 @@
 #include <memory>
 #include <optional>
 
-// A village blueprint with its variation resolved (decision E-404): the structure as it is, each
-// choice's options as palette overrides and creature swaps, and the optional parts. Builds the
-// structure of one placed copy from a selection the planner draws from the seed. Immutable after
-// resolving, so the generator's threads share it.
+/*! \brief A village blueprint with its variation resolved (decision E-404): the structure as it is,
+    each choice's options as palette overrides and creature swaps, and the optional parts.
+
+    Builds the structure of one placed copy from a selection the planner draws from the seed.
+    Immutable after resolving, so the generator's threads share it. */
 class QcPieceVariation
 {
 public:
-    // The option taken of every choice and whether each part is built.
+    /*! \brief The option taken of every choice and whether each part is built. */
     struct Selection
     {
+        /*! The index of the option taken, one per choice. */
         QList<int> options;
+        /*! Whether each part is built, one per part. */
         QList<bool> parts;
     };
 
-    // `definition` already carries the style's palette swaps. Unknown blocks of the structure fail;
-    // an option naming an unknown block keeps that palette entry with a warning (warnings()).
-    // A failure carries the warnings of the palette entries before the unknown block.
+    /*! The result of resolve(): the variation, or the failure of the structure. */
     using Resolved = std::expected<QcPieceVariation, QcStructure::Failure>;
 
+    /*! Returns \a definition resolved against the blocks of \a content; \a definition already
+        carries the style's palette swaps. Unknown blocks of the structure fail; an option naming
+        an unknown block keeps that palette entry with a warning (warnings()). A failure carries
+        the warnings of the palette entries before the unknown block. */
     [[nodiscard]] static Resolved resolve(const QcStructureDefinition &definition, const QcContentRegistry &content);
-    // The warnings of a resolution, whether it succeeded or not (callers report them before the outcome).
+    /*! Returns the warnings of the resolution \a resolved, whether it succeeded or not (callers
+        report them before the outcome). */
     [[nodiscard]] static const QStringList &warningsOf(const Resolved &resolved)
     {
         return resolved ? resolved->warnings() : resolved.error().warnings;
     }
 
-    // What resolving kept at a default or left out (unknown states, unknown blocks of options).
+    /*! Returns what resolving kept at a default or left out (unknown states, unknown blocks of
+        options). */
     const QStringList &warnings() const { return m_warnings; }
 
-    // The structure without parts and with every palette entry as written.
+    /*! Returns the structure without parts and with every palette entry as written. */
     const std::shared_ptr<const QcStructure> &base() const { return m_base; }
+    /*! Returns whether the blueprint has choices or parts. */
     bool varies() const { return !m_choices.isEmpty() || !m_parts.isEmpty(); }
-    // How many options each choice has, and the parts' chances.
+    /*! Returns how many options each choice has. */
     [[nodiscard]] QList<int> optionCounts() const;
+    /*! Returns the chance of each part. */
     [[nodiscard]] QList<double> partChances() const;
-    // A selection from `random` (values in [0, 1)): one draw per choice, then one per part.
+    /*! Returns a selection from \a random (values in [0, 1)): one draw per choice, then one per
+        part. */
     [[nodiscard]] Selection choose(const std::function<double()> &random) const;
-    // Every part built and the first option of every choice (the showcase shows this one).
+    /*! Returns the selection with every part built and the first option of every choice (the
+        showcase shows this one). */
     [[nodiscard]] Selection everything() const;
-    // The structure of a selection; the base itself when nothing varies.
+    /*! Returns the structure of \a selection: options swap palette entries and creatures,
+        parts built overwrite their cells, connections follow the built copy; the base itself when
+        nothing varies. */
     [[nodiscard]] std::shared_ptr<const QcStructure> build(const Selection &selection) const;
 
 private:

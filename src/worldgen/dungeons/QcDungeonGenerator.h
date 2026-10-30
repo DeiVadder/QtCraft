@@ -13,23 +13,30 @@
 #include <memory>
 #include <vector>
 
-// Builds the dungeons of the terrain generator into its chunks (decision E-522): each chunk writes
-// its own cells of every dungeon whose plan touches it (QcDungeonPlanner, plans cached by region),
-// in any order with the same result. The room is a shell of wall and moss blocks around air; the
-// corridors' lining replaces only what is not rock (cave air, liquids, earth), then the corridors are
-// carved (liquid beside them sealed with wall) and the spawner, chests and lights placed. The chests' loot and the spawner's kind come
-// with furnishingIn(). Thread-safe.
+/*! \brief Builds the dungeons of the terrain generator into its chunks (decision E-522): each chunk
+    writes its own cells of every dungeon whose plan touches it (QcDungeonPlanner, plans cached by
+    region), in any order with the same result.
+
+    The room is a shell of wall and moss blocks around air; the corridors' lining replaces only
+    what is not rock (cave air, liquids, earth), then the corridors are carved (liquid beside
+    them sealed with wall) and the spawner, chests and lights placed. The chests' loot and the
+    spawner's kind come with furnishingIn(). Thread-safe. */
 class QcDungeonGenerator
 {
 public:
     QcDungeonGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
+    /*! Returns the planner whose dungeons this generator builds. */
     const QcDungeonPlanner &planner() const { return m_planner; }
-    // The region's plan, planned once (null without a dungeon).
+    /*! Returns the plan of the region \a regionX, \a regionZ, planned once (null without a
+        dungeon). */
     [[nodiscard]] std::shared_ptr<const QcDungeonPlan> planOf(int regionX, int regionZ) const;
-    // The dungeons whose cells may lie in the chunk.
+    /*! Returns the dungeons whose cells may lie in the chunk \a pos. */
     QList<std::shared_ptr<const QcDungeonPlan>> plansTouching(QcChunkPos pos) const;
+    /*! Writes the cells of the dungeons touching \a chunk into it. */
     void build(QcChunk &chunk) const;
+    /*! Returns the spawners (with their creature) and the chests (with the loot table and a
+        seed) of the dungeons in the chunk \a pos. */
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
 
 private:

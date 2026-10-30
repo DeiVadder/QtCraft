@@ -7,20 +7,22 @@
 
 #include <array>
 
-// The arms of a river delta (decision E-850): a network that branches from the river at the fan's
-// apex two or three levels deep towards the sea, with a few side arms that leave an arm and join it
-// again around an island. Every arm meanders, varies in width and grows narrower and shallower
-// towards the sea; whether an arm is there, where it branches, how far it strays and how it bends
-// come from the delta's traits, so every column of a delta sees the same network. Arms are given in
-// the fan's frame: along it (0 at the apex, 1 at the mouth) and across it in blocks.
+/*! \brief The arms of a river delta (decision E-850): a network that branches from the river at the
+    fan's apex two or three levels deep towards the sea, with a few side arms that leave an arm and
+    join it again around an island.
+
+    Every arm meanders, varies in width and grows narrower and shallower towards the sea; whether
+    an arm is there, where it branches, how far it strays and how it bends come from the delta's
+    traits, so every column of a delta sees the same network. Arms are given in the fan's frame:
+    along it (0 at the apex, 1 at the mouth) and across it in blocks. */
 class QcDeltaArms
 {
 public:
     explicit QcDeltaArms(const QcDeltaSites::Site &site);
 
-    // The ground of the arms at `along`, `lateral` blocks across the fan where its half width is
-    // `halfWidth`: under the arms down to their beds, rising over their banks; `edge` is the height
-    // of the banks at the water line.
+    /*! Returns the ground of the arms at \a along, \a lateral blocks across the fan where its
+        half width is \a halfWidth: under the arms down to their beds, rising over their banks;
+        \a edge is the height of the banks at the water line. */
     [[nodiscard]] double channelAt(double along, double lateral, double halfWidth, double edge) const;
 
 private:

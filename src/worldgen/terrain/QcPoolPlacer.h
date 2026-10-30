@@ -13,15 +13,21 @@
 #include <memory>
 #include <optional>
 
-// Liquid pools sunk into cave floors. Pools stay inside their chunk and never flow anywhere; pools
-// with `surface` are lakes (QcSurfaceLakes).
+/*! \brief Liquid pools sunk into cave floors.
+
+    Pools stay inside their chunk and never flow anywhere; pools with \c {surface} are lakes
+    (QcSurfaceLakes). */
 class QcPoolPlacer
 {
 public:
+    /*! A pool definition of the terrain. */
     using Pool = QcTerrainDefinitions::Pool;
 
     QcPoolPlacer(std::shared_ptr<const QcContentRegistry> content, const QcTerrainDefinitions &definitions);
 
+    /*! Sinks the cave pools (those without \c {surface}) into the cave floors of \a chunk: per
+        pool up to its attempts, each by its chance, at a random column off the chunk's edge and a
+        start height between the pool's minY and maxY. */
     void placeInCaves(QcChunk &chunk) const;
 
 private:

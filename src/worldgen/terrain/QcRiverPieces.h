@@ -10,43 +10,58 @@
 #include <array>
 #include <optional>
 
-// Whether a river leads anywhere (decision E-851): the middle line of a river is followed both
-// ways from a point on it until it reaches the sea, runs dry (a desert, the fading ring of a small
-// hill of the noise) or comes back round to the point. A piece that ends on land at both ends or
-// runs round in a loop, all of it within `longest` blocks, is closed: the terrain does not build
-// it. Longer pieces count as open, whichever point they are followed from, so every column of a
-// piece gets the same answer. Deterministic per seed and thread-safe; the answers are remembered
-// per thread by cells of 32 blocks along the rivers.
+/*! \brief Whether a river leads anywhere (decision E-851): the middle line of a river is followed
+    both ways from a point on it until it reaches the sea, runs dry (a desert, the fading ring of a
+    small hill of the noise) or comes back round to the point.
+
+    A piece that ends on land at both ends or runs round in a loop, all of it within \c {longest}
+    blocks, is closed: the terrain does not build it. Longer pieces count as open, whichever
+    point they are followed from, so every column of a piece gets the same answer. Deterministic
+    per seed and thread-safe; the answers are remembered per thread by cells of 32 blocks along
+    the rivers. */
 class QcRiverPieces
 {
 public:
-    // A piece that ends on land at both ends within this many blocks along its middle line is
-    // closed (the window of the river tests is 3072 blocks wide).
+    /*! A piece that ends on land at both ends within this many blocks along its middle line is
+        closed (the window of the river tests is 3072 blocks wide). */
     static constexpr double longest = 2400.0;
 
-    // `rivers` must outlive the pieces (the terrain generator owns both).
+    /*! \a rivers must outlive the pieces (the terrain generator owns both). */
     explicit QcRiverPieces(const QcRiverField &rivers);
 
-    // Whether the river of `sample` (a column within its reach, QcRiverField::at()) reaches the
-    // sea or runs on for more than `longest` blocks.
+    /*! Returns whether the river of \a sample (a column within its reach, QcRiverField::at())
+        reaches the sea or runs on for more than \c {longest} blocks; \a land gives the terrain's
+        maps. */
     [[nodiscard]] bool leadsOn(const QcRiverField::Sample &sample, const QcRiverField::Land &land) const;
-    // The answers are found from the middle of cells of this many blocks (bent coordinates; a
-    // column of a river finds the cell of the nearest point of its middle line, Sample::lineX/lineZ).
+    /*! The answers are found from the middle of cells of this many blocks (bent coordinates; a
+        column of a river finds the cell of the nearest point of its middle line,
+        Sample::lineX/lineZ). */
     static constexpr double cellSize = 32.0;
-    // The answer for the cell (`cellX`, `cellZ`) of cellSize blocks, remembered per thread.
+    /*! Returns the answer for the cell (\a cellX, \a cellZ) of cellSize blocks on \a land,
+        remembered per thread. */
     [[nodiscard]] bool cellLeadsOn(qint32 cellX, qint32 cellZ, const QcRiverField::Land &land) const;
 
-    // How a walk along the middle line ended: in the sea, where the river runs dry, back at its
-    // start, after the walk's length, or off the line (the steps did not settle on it).
-    enum class End : quint8 { Sea, Dry, Round, Far, Lost };
+    /*! \brief How a walk along the middle line ended: in the sea, where the river runs dry, back
+        at its start, after the walk's length, or off the line (the steps did not settle on it). */
+    enum class End : quint8 {
+        Sea, // At a crossing whose ground is not dry land (the sea, a lake).
+        Dry, // Where the river runs dry.
+        Round, // Back at its first crossing: a loop.
+        Far, // After the walk's length, nothing ended.
+        Lost // Off the line.
+    };
+    /*! \brief One walk along a middle line. */
     struct Walk
     {
+        /*! How the walk ended. */
         End end = End::Far;
+        /*! Blocks walked along the middle line (bent coordinates) up to the end. */
         double length = 0.0;
     };
-    // The walk the answer of a point near a middle line (bent coordinates) reads way `side` (1 or
-    // -1 times the line's direction there), started as for a cell (at the first crossing ahead) and
-    // given `longest` blocks; none where no walk starts (the river stays). For tests (E-935).
+    /*! Returns the walk the answer of a point near a middle line (bent coordinates) reads way
+        \a side (1 or -1 times the line's direction there), started as for a cell (at the first
+        crossing ahead) and given \c {longest} blocks; none where no walk starts (the river
+        stays). \a near is the point, \a land the terrain's maps. For tests (E-935). */
     [[nodiscard]] std::optional<Walk> walkFrom(QcRiverField::Point near, double side, const QcRiverField::Land &land) const;
 
 private:

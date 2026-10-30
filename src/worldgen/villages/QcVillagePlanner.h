@@ -13,26 +13,34 @@
 
 class QcTerrainGenerator;
 
-// Lays out the village of one region (decision E-403) from the seed and the terrain noise: a chance
-// per region, a centre on flat land of a biome with villages, roads after one of the style's street
-// plans (decision E-408: cross, street, T, L, plaza, tree; roads stop at water and steep steps and
-// may wind with the terrain) with side roads, pieces of the biome's style on both sides of the
-// roads facing them, lamps along stretches without houses. It chooses the region's centre and
-// passes the village's draft (QcVillageDraft) in a fixed order to the road network planner
-// (QcRoadNetworkPlanner), the piece placer (QcPiecePlacer) and the planners over water
-// (QcBoardwalkPlanner, QcJettyPlanner) (decision E-419). Deterministic and thread-safe (const).
+/*! \brief Lays out the village of one region (decision E-403) from the seed and the terrain noise:
+    a chance per region, a centre on flat land of a biome with villages, roads after one of the
+    style's street plans (decision E-408: cross, street, T, L, plaza, tree; roads stop at water and
+    steep steps and may wind with the terrain) with side roads, pieces of the biome's style on both
+    sides of the roads facing them, lamps along stretches without houses.
+
+    It chooses the region's centre and passes the village's draft (QcVillageDraft) in a fixed
+    order to the road network planner (QcRoadNetworkPlanner), the piece placer (QcPiecePlacer)
+    and the planners over water (QcBoardwalkPlanner, QcJettyPlanner) (decision E-419).
+    Deterministic and thread-safe (const). */
 class QcVillagePlanner
 {
 public:
+    /*! Plans villages over \a terrain with the village settings of \a content and \a styles,
+        its draw sequences seeded from \a seed. */
     QcVillagePlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcVillageStyles &styles, quint64 seed);
 
-    // Edge of a region in blocks, a multiple of the chunk size.
+    /*! Returns the edge of a region in blocks, a multiple of the chunk size. */
     int spacing() const { return m_spacing; }
+    /*! Returns the edge of a region in blocks for \a settings: their \c {spacing} rounded down
+        to whole chunks, at least 8 chunks. */
     static int spacingOf(const QcVillageSettings &settings);
-    // Blocks every village keeps free between its radius and the edge of its region, at least 8:
-    // a wetland reaching further would end in a straight line there (QcVillageStyles fits it).
+    /*! Returns the blocks every village of \a settings keeps free between its radius and the
+        edge of its region, at least 8: a wetland reaching further would end in a straight line
+        there (QcVillageStyles fits it). */
     static int freeMargin(const QcVillageSettings &settings);
-    // The village of a region; null when the region has none.
+    /*! Returns the village of region \a regionX, \a regionZ; null when the region has none (by
+        chance, no style, no fitting centre or no room for the centre piece). */
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> plan(int regionX, int regionZ) const;
 
 private:

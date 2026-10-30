@@ -13,25 +13,34 @@
 
 #include <memory>
 
-// Builds the mine shafts of the terrain generator into its chunks (decision E-570): each chunk writes
-// its own cells of the mine shaft of every region it overlaps (a mine shaft stays inside its region;
-// QcMineshaftPlanner, plans cached by region, QcMineshaftBuilder), in any order with the same
-// result. The spawners' kind, the chest minecarts with their loot and what rooms from structures
-// bring along come with furnishingIn(). Thread-safe.
+/*! \brief Builds the mine shafts of the terrain generator into its chunks (decision E-570): each
+    chunk writes its own cells of the mine shaft of every region it overlaps (a mine shaft stays
+    inside its region; QcMineshaftPlanner, plans cached by region, QcMineshaftBuilder), in any order
+    with the same result.
+
+    The spawners' kind, the chest minecarts with their loot and what rooms from structures bring
+    along come with furnishingIn(). Thread-safe. */
 class QcMineshaftGenerator
 {
 public:
     QcMineshaftGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
+    /*! Returns the planner whose mine shafts this generator builds. */
     const QcMineshaftPlanner &planner() const { return m_planner; }
-    // The region's plan, planned once (null without a mine shaft).
+    /*! Returns the plan of the region \a regionX, \a regionZ, planned once (null without a mine
+        shaft). */
     [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> planOf(int regionX, int regionZ) const;
-    // The mine shafts whose cells may lie in the chunk.
+    /*! Returns the mine shafts whose cells may lie in the chunk \a pos. */
     QList<std::shared_ptr<const QcMineshaftPlan>> plansTouching(QcChunkPos pos) const;
+    /*! Writes the cells of the mine shafts touching \a chunk into it, without their entrances
+        (QcMineshaftBuilder::build). */
     void build(QcChunk &chunk) const;
-    // The surface entrances in the chunk, after the terrain's features and surface pools.
+    /*! Writes the surface entrances into \a chunk, after the terrain's features and surface
+        pools. */
     void buildEntrances(QcChunk &chunk) const;
-    // The chunk's spawners, carts and room contents.
+    /*! Returns the spawners (with the settings' creature), the chest minecarts (with the loot
+        table and a seed) and what the rooms from structures bring along (chests, spawners and
+        minecarts) in the chunk \a pos. */
     [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
 
 private:

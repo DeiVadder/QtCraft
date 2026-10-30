@@ -18,28 +18,39 @@
 class QcMineshaftSite;
 class QcTerrainGenerator;
 
-// The ways into a mine shaft besides its corridors (decision E-570): rooms from structures with a
-// `"mineshaft"` weight at dead ends (turned so their door faces the corridor), and the surface
-// entrance: a ladder shaft from a corner of the central room up through the ground, lined with
-// planks where it passes something open, under a headframe of posts and a plank roof, or an
-// inclined tunnel (QcMineshaftIncline, decision E-895), the kind drawn by `entranceKinds`. An
-// entrance is made with the chance of the biome at the shaft; a ladder shaft where the ground's top
-// lies above the sea, the ground around lies level with it (under the headframe within one block,
-// around it at most one higher), no cave opens there and no village is around.
+/*! \brief The ways into a mine shaft besides its corridors (decision E-570): rooms from structures
+    with a \c {"mineshaft"} weight at dead ends (turned so their door faces the corridor), and the
+    surface entrance: a ladder shaft from a corner of the central room up through the ground, lined
+    with planks where it passes something open, under a headframe of posts and a plank roof, or an
+    inclined tunnel (QcMineshaftIncline, decision E-895), the kind drawn by \c {entranceKinds}.
+
+    An entrance is made with the chance of the biome at the shaft; a ladder shaft where the
+    ground's top lies above the sea, the ground around lies level with it (under the headframe
+    within one block, around it at most one higher), no cave opens there and no village is
+    around. */
 class QcMineshaftAccess
 {
 public:
+    /*! A random value in [0, 1) for a purpose and an index. */
     using Random = std::function<double(int, int)>;
 
     QcMineshaftAccess(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcMineshaftSettings &settings,
                       const QcMineshaftBlocks &blocks);
 
-    // Room structures that fit, with their weights.
+    /*! Returns the number of room structures that fit. */
     qsizetype roomKinds() const { return roomList().size(); }
-    // Rooms at the dead ends of the laid out plan, at most `maxRooms`.
+    /*! Returns the rooms at the dead ends of the laid out \a plan, at most \c {maxRooms}: at
+        each node other than the central room joined by one level corridor of \a network, with
+        \c {roomChance} drawn from \a random, where no pillar of another level passes and a
+        structure drawn by weight fits in the ground (\a site). */
     [[nodiscard]] QList<QcMineshaftPlan::Room> roomsOf(const QcMineshaftPlan &plan, const QcMineshaftNetwork &network, QcMineshaftSite &site,
                                                        const Random &random) const;
-    // The surface entrance of the central room, where one may come up.
+    /*! Returns the surface entrance of \a plan, where one may come up (std::nullopt
+        otherwise): with the entrance chance of the biome at the central room's north west
+        corner, the kind drawn by weight from \a random first and the other where the first
+        finds no place. The ladder shaft rises from that corner of the room (\a frame), the
+        incline through a side of the room or of a dead end of the top level; \a site checks the
+        ground. */
     [[nodiscard]] std::optional<QcMineshaftPlan::Entrance> entranceOf(const QcMineshaftPlan &plan, QcMineshaftSite &site, const QcMineshaftFrame &frame,
                                                                      const Random &random) const;
 

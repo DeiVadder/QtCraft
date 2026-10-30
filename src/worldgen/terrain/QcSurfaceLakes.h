@@ -19,21 +19,26 @@
 class QcTerrainColumnGrid;
 class QcTerrainGenerator;
 
-// Lakes of liquid on the surface of dry land: the pools with `surface` (lava lakes, decision E-856),
-// like the reference game since 1.18. One per square of `region` chunks at most: with `chance`, up
-// to `attempts` chunks of the square are tried in turn (never within `spacing` chunks of the next
-// square) and the first fitting site taken. A site is planned from the terrain columns alone (never
-// from generated chunks), so neighbouring chunks keep their trees off it alike: an irregular basin
-// of a few overlapping ellipses inside its chunk, on level ground of an allowed biome away from
-// water, its liquid 1–2 blocks below the lowest ground around it. Thread-safe; plans are cached by
-// square.
+/*! \brief Lakes of liquid on the surface of dry land: the pools with \c {surface} (lava lakes,
+    decision E-856), like the reference game since 1.18.
+
+    One per square of \c {region} chunks at most: with \c {chance}, up to \c {attempts} chunks of
+    the square are tried in turn (never within \c {spacing} chunks of the next square) and the
+    first fitting site taken. A site is planned from the terrain columns alone (never from
+    generated chunks), so neighbouring chunks keep their trees off it alike: an irregular basin
+    of a few overlapping ellipses inside its chunk, on level ground of an allowed biome away from
+    water, its liquid 1–2 blocks below the lowest ground around it. Thread-safe; plans are cached
+    by square. */
 class QcSurfaceLakes
 {
 public:
+    /*! A pool definition of the terrain. */
     using Pool = QcTerrainDefinitions::Pool;
+    /*! A rectangle of world columns. */
     using Rect = QcSurfacePlanner::Rect;
 
-    // One ellipse of a basin: its centre (world), half axes and the liquid's depth at the centre.
+    /*! \brief One ellipse of a basin: its centre (world), half axes and the liquid's depth at
+        the centre. \qcfields */
     struct Blob
     {
         double x = 0.0;
@@ -42,27 +47,34 @@ public:
         double radiusZ = 1.0;
         double depth = 1.0;
     };
+    /*! \brief One planned lake: its pool, chunk, liquid level, basin and footprint. */
     struct Site
     {
-        // Index into the definitions' pools.
+        /*! Index into the definitions' pools. */
         int pool = 0;
+        /*! The chunk the lake lies in. */
         QcChunkPos chunk;
-        // The height of the liquid's top layer.
+        /*! The height of the liquid's top layer. */
         int level = 0;
+        /*! The overlapping ellipses of the basin. */
         QVarLengthArray<Blob, 6> blobs;
-        // The basin's columns and two more around them (world): no trees grow near it.
+        /*! The basin's columns and two more around them (world): no trees grow near it. */
         Rect footprint;
     };
 
-    // `terrain` must outlive the lakes (the terrain generator owns them).
+    /*! Reads the pools from \a definitions; \a content tells which blocks are solid or liquid.
+        \a terrain must outlive the lakes (the terrain generator owns them). */
     QcSurfaceLakes(const QcTerrainGenerator &terrain, const QcTerrainDefinitions &definitions, std::shared_ptr<const QcContentRegistry> content);
 
-    // The lake planned in the chunk, before villages and structures are asked.
+    /*! Returns the lake planned in the chunk at \a pos, before villages and structures are
+        asked. */
     [[nodiscard]] std::optional<Site> siteIn(QcChunkPos pos) const;
-    // The liquid's depth at a column of the site's basin (world), 0 outside it.
+    /*! Returns the liquid's depth at the column \a x, \a z (world) of the basin of \a site, 0
+        outside it. */
     [[nodiscard]] int depthAt(const Site &site, int x, int z) const;
-    // Writes the lake into its chunk: the basin dug out above the level, liquid below it, `rim`
-    // where the liquid would touch air or soil, rock and no plants on the ground around it.
+    /*! Writes the lake \a site into its \a chunk, whose terrain \a columns give the ground: the
+        basin dug out above the level, liquid below it, \c {rim} where the liquid would touch air
+        or soil, rock and no plants on the ground around it. */
     void carve(QcChunk &chunk, const Site &site, const QcTerrainColumnGrid &columns) const;
 
 private:

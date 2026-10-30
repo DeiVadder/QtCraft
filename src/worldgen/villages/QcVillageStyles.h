@@ -15,54 +15,73 @@
 #include <memory>
 #include <optional>
 
-// One spot of a piece the village state lists (decision E-403): a bed (its head) or a workstation,
-// in the piece's local cells.
+/*! \brief One spot of a piece the village state lists (decision E-403): a bed (its head) or a
+    workstation, in the piece's local cells. */
 struct QcVillageSpot
 {
+    /*! The cell, in the piece's local cells (in world coordinates in QcVillagePlan). */
     QcBlockPos at;
-    // Empty for a bed, else the kind of work (QcVillageSettings::workstations).
+    /*! Empty for a bed, else the kind of work (QcVillageSettings::workstations). */
     QString kind;
 };
 
-// A style resolved against the registry: its pieces as structures with the style's palette applied.
+/*! \brief A style resolved against the registry: its pieces as structures with the style's
+    palette applied. */
 struct QcVillageStyle
 {
-    // One blueprint of a kind of building, with its variation (decision E-404).
+    /*! \brief One blueprint of a kind of building, with its variation (decision E-404). */
     struct Blueprint
     {
+        /*! The structure with its choices and parts. */
         QcPieceVariation variation;
+        /*! The relative chance against the other blueprints of the kind. */
         int weight = 1;
-        // Beds and workstations inside the structure as written, in local cells.
+        /*! Beds and workstations inside the structure as written, in local cells. */
         QList<QcVillageSpot> spots;
-        // The meeting point block (QcVillageSettings::bell) inside it, if any.
+        /*! The meeting point block (QcVillageSettings::bell) inside it, if any. */
         std::optional<QcBlockPos> bell;
-        // Crop cells in it or its parts: the style's crops are planted there (decision E-406).
+        /*! Crop cells in it or its parts: the style's crops are planted there (decision E-406). */
         bool fields = false;
 
+        /*! Returns the structure as written, without parts (QcPieceVariation::base()). */
         const std::shared_ptr<const QcStructure> &structure() const { return variation.base(); }
     };
 
-    // A kind of building (QcVillagePiece) with its blueprints and rules.
+    /*! \brief A kind of building (QcVillagePiece) with its blueprints and rules. */
     struct Piece
     {
+        /*! The blueprints, one chosen by weight per building. */
         QList<Blueprint> blueprints;
+        /*! The relative chance against the other kinds of the style. */
         int weight = 1;
+        /*! At most this many in one village; 0: no limit (a kind with rules: at least one). */
         int max = 0;
+        /*! Rule: the chance per village that the kind is built (for the rare centre: that it
+            stands instead of the centre). */
         double chance = 1.0;
+        /*! Rule: built only in villages whose roads are at least this many blocks long together. */
         int minRoadLength = 0;
+        /*! Rule: built only beside a road end with water at most this many blocks ahead; 0: no
+            water rule. */
         int water = 0;
-        // The jetty of a piece with a water rule (QcVillageJetty).
+        /*! The jetty of a piece with a water rule (QcVillageJetty): its deck and post blocks
+            (through the style's palette), its odd width and how many cells it reaches out over
+            the water. \qcshared */
         QcBlockId deck = qcAirBlockId;
         QcBlockId post = qcAirBlockId;
         int jettyWidth = 1;
         int jettyOver = 4;
 
+        /*! Returns whether the kind has a rule: a chance below 1, a minimum road length or a
+            water rule. */
         bool hasRules() const { return chance < 1.0 || minRoadLength > 0 || water > 0; }
-        // The first blueprint (the centre and the lamp have just one).
+        /*! Returns the first blueprint (the centre and the lamp have just one). */
         const Blueprint &first() const { return blueprints.front(); }
     };
 
-    // A road surface (QcVillageRoad); `step` is air for none.
+    /*! \brief A road surface (QcVillageRoad): \c {block} goes into the ground's top block,
+        \c {step} is the slab where the road steps up a block (air: none), \c {weight} the
+        relative chance among the surfaces of its rank. \qcfields */
     struct Road
     {
         QcBlockId block = qcAirBlockId;
@@ -70,36 +89,52 @@ struct QcVillageStyle
         int weight = 1;
     };
 
-    // A crop of the fields (QcVillageCrop): its states in the order of its stages, the last ripe.
+    /*! \brief A crop of the fields (QcVillageCrop): its states in the order of its stages, the
+        last ripe (\c {stages}), and its relative chance among the style's crops (\c {weight}).
+        \qcfields */
     struct Crop
     {
         QList<QcBlockId> stages;
         int weight = 1;
     };
 
-    // The posts and stairs of a style over water (QcVillageStilts, decision E-407).
+    /*! \brief The posts and stairs of a style over water (QcVillageStilts, decision E-407). */
     struct Stilts
     {
+        /*! The block of the posts under pieces, boardwalks and stairs. */
         QcBlockId post = qcAirBlockId;
-        // The stairs block's state facing north; turned per stair.
+        /*! The stairs block's state facing north; turned per stair. */
         QcBlockId stair = qcAirBlockId;
+        /*! Floors and boardwalks lie this many blocks above the water surface. */
         int height = 3;
+        /*! Posts stand every this many cells. */
         int spacing = 3;
+        /*! The ground lies at most this many blocks below the water surface where a piece or
+            boardwalk stands. */
         int maxDepth = 5;
+        /*! At least this share of the samples around a centre lies under water
+            (QcBoardwalkPlanner::wetAround()). */
         double water = 0.25;
     };
 
-    // The ground a style over water shapes (QcVillageWetland); `bottom` air: none.
+    /*! \brief The ground a style over water shapes (QcVillageWetland); \c {bottom} air: none. */
     struct Wetland
     {
+        /*! The block of the pools' bottoms, the mud and raised ground. */
         QcBlockId bottom = qcAirBlockId;
+        /*! Pools lie this many blocks below the water surface (their deepest part a block
+            more). */
         int depth = 1;
+        /*! How far the wetland reaches from the pieces and boardwalks in blocks: \c {margin}, up
+            to \c {fray} more where noise bends its edge, and \c {blend} over which the ground
+            returns to the terrain; reach() is their sum. \qcshared */
         int margin = 4;
         int fray = 3;
         int blend = 4;
-        // The pools on the wetland (decision E-661): their share of the open ground, the band of
-        // `bottom` around them, the noise scale in blocks, the plant beside them (air: none) and its
-        // chance per column, and the plant on the water of the pools (air: none) with its chance.
+        /*! The pools on the wetland (decision E-661): their share of the open ground, the band
+            of \c {bottom} around them, the noise scale in blocks, the plant beside them (air:
+            none) and its chance per column, and the plant on the water of the pools (air: none)
+            with its chance. \qcshared */
         double water = 0.4;
         int mudBand = 2;
         double scale = 8.0;
@@ -108,67 +143,86 @@ struct QcVillageStyle
         QcBlockId floatingPlant = qcAirBlockId;
         double floatingPlantChance = 0.0;
 
-        // Columns farther than this from the pieces and boardwalks keep their terrain.
+        /*! Returns the distance from the pieces and boardwalks beyond which columns keep their
+            terrain. */
         int reach() const { return margin + fray + blend; }
     };
 
-    // A bridge carries a road of a style on land over a river (decision E-841): the deck one block
-    // above the water and the posts under it, oak planks and logs through the style's palette; air:
-    // no bridges.
+    /*! \brief A bridge carries a road of a style on land over a river (decision E-841): the deck
+        one block above the water (\c {deck}) and the posts under it (\c {post}), oak planks and
+        logs through the style's palette; air: no bridges. \qcfields */
     struct Bridge
     {
         QcBlockId deck = qcAirBlockId;
         QcBlockId post = qcAirBlockId;
     };
 
+    /*! The style's name. */
     QString name;
-    // Pieces and roads stand over water on stilts (decision E-407): floors and boardwalks at one
-    // height above the water surface instead of on the ground.
+    /*! Pieces and roads stand over water on stilts (decision E-407): floors and boardwalks at
+        one height above the water surface instead of on the ground. */
     bool overWater = false;
+    /*! Over water: the posts and stairs. */
     Stilts stilts;
+    /*! Over water: the ground the village shapes around itself (\c {bottom} air: none). */
     Wetland wetland;
+    /*! The centre piece, one blueprint. */
     Piece centre;
-    // Taken instead of the centre with its `chance` (decision E-592); no blueprints: none.
+    /*! Taken instead of the centre with its \c {chance} (decision E-592); no blueprints: none. */
     Piece rareCentre;
-    // No blueprints: no lamps.
+    /*! No blueprints: no lamps. */
     Piece lamp;
+    /*! The kinds of buildings. */
     QList<Piece> pieces;
-    // Never empty.
+    /*! The surfaces of the roads from the centre and of the side roads; never empty.
+        \qcshared */
     QList<Road> roads;
     QList<Road> branchRoads;
-    // Empty: the pieces keep their crops as written.
+    /*! Empty: the pieces keep their crops as written. */
     QList<Crop> crops;
-    // Street plans by weight (decision E-408), never empty; over water without diagonals and winding.
+    /*! Street plans by weight (decision E-408), never empty; over water without diagonals and
+        winding. */
     QList<QcVillageLayout> layouts;
+    /*! The block that fills the ground below the pieces. */
     QcBlockId foundation = qcAirBlockId;
+    /*! On land: the bridges over rivers. */
     Bridge bridge;
 };
 
-// The village styles of the content (decision E-403), resolved once per world generator: which
-// style a biome builds in, with every piece's structure, palette swaps, beds and workstations.
-// Immutable after construction, so the generator's threads share it.
+/*! \brief The village styles of the content (decision E-403), resolved once per world generator:
+    which style a biome builds in, with every piece's structure, palette swaps, beds and
+    workstations.
+
+    Immutable after construction, so the generator's threads share it. */
 class QcVillageStyles
 {
 public:
-    // Styles with an unknown structure or block are left out with a warning (warnings()).
+    /*! Resolves the village styles of \a content. Styles with an unknown structure or block are
+        left out with a warning (warnings()). */
     explicit QcVillageStyles(const QcContentRegistry &content);
 
-    // What resolving the styles left out or changed.
+    /*! Returns what resolving the styles left out or changed. */
     const QStringList &warnings() const { return m_warnings; }
 
+    /*! Returns whether no style resolved. */
     bool isEmpty() const { return m_styles.isEmpty(); }
-    // The style of a biome: the one that names it, else the fallback; null for biomes without
-    // villages or when no style fits.
+    /*! Returns the style of \a biome: the one that names it, else the fallback; null for biomes
+        without villages or when no style fits. */
     const QcVillageStyle *forBiome(const QcBiomeDefinition &biome) const;
+    /*! Returns the style called \a name; null when there is none. */
     const QcVillageStyle *named(const QString &name) const;
+    /*! Returns the block states the village counts. */
     const QcVillageBlocks &blocks() const { return m_blocks; }
 
-    // The beds and workstations of a structure, and its meeting point block (the bell) if it has one.
+    /*! \brief The beds and workstations of a structure (\c {spots}), and its meeting point
+        block (the \c {bell}) if it has one. \qcfields */
     struct Spots
     {
         QList<QcVillageSpot> spots;
         std::optional<QcBlockPos> bell;
     };
+    /*! Returns the spots of \a structure, in its local cells (the last bell found if it has
+        several). */
     [[nodiscard]] Spots spotsOf(const QcStructure &structure) const;
 
 private:

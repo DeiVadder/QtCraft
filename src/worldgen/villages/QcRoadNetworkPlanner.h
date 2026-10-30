@@ -11,21 +11,26 @@
 #include <optional>
 #include <utility>
 
-// The street plan of a village (decision E-408, E-419): the style's layout by weight with its main
-// direction and winding, then its roads (cross, street, T, L, plaza with a ring, tree) from the
-// centre or the ring, and the side roads off them, laid by QcRoadLayer. Deterministic and
-// thread-safe (const).
+/*! \brief The street plan of a village (decision E-408, E-419): the style's layout by weight with
+    its main direction and winding, then its roads (cross, street, T, L, plaza with a ring, tree)
+    from the centre or the ring, and the side roads off them, laid by QcRoadLayer.
+
+    Deterministic and thread-safe (const). */
 class QcRoadNetworkPlanner
 {
 public:
+    /*! One straight run of a laid road. */
     using Road = QcVillageDraft::Road;
 
     QcRoadNetworkPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content);
 
-    // The street plan of the style by weight, its main direction and whether its roads wind,
-    // drawn from the layout sequence (QcVillageDraft::setLayout takes it).
+    /*! Returns the street plan of the style of \a draft by weight, its main direction and
+        whether its roads wind, drawn from the draft's layout sequence (QcVillageDraft::setLayout
+        takes it). */
     [[nodiscard]] static QcVillageDraft::Layout chooseLayout(QcVillageDraft &draft);
-    // Lays the roads of the street plan around the centre piece; the laid runs in order.
+    /*! Lays the roads of the street plan of \a draft around the centre piece, then the side
+        roads off them; a plaza whose ring cannot be laid becomes a cross. Returns the laid runs
+        in order. */
     [[nodiscard]] QList<Road> layRoads(QcVillageDraft &draft) const;
 
 private:

@@ -9,13 +9,16 @@
 
 #include <memory>
 
-// World generator of the showcase world (generator type "showcase", decisions E-220 and E-221): flat
-// ground and the structures of a QcShowcasePlan, labels by chunk and the one-time setup (noon that
-// stands still, no creatures spawning by themselves, the creatures and contents of the areas). The
-// seed is ignored: the world depends only on the content. Thread-safe like every generator.
+/*! \brief World generator of the showcase world (generator type "showcase", decisions E-220 and
+    E-221): flat ground and the structures of a QcShowcasePlan, labels by chunk and the one-time
+    setup (noon that stands still, no creatures spawning by themselves, the creatures and contents
+    of the areas).
+
+    The seed is ignored: the world depends only on the content. Thread-safe like every generator. */
 class QcShowcaseGenerator : public QcWorldGenerator
 {
 public:
+    /*! Plans the showcase world of \a content (QcShowcasePlanner). */
     explicit QcShowcaseGenerator(std::shared_ptr<const QcContentRegistry> content);
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
@@ -27,9 +30,10 @@ public:
     QcChunkFurnishing furnishingIn(QcChunkPos pos) const override { return m_plan.furnishingByChunk.value(pos); }
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
 
-    // The row of the village area whose buildings and road reach into the chunk (the rows lie
-    // further apart than a chunk).
+    /*! Returns the row of the village area whose buildings and road reach into the chunk \a pos
+        (the rows lie further apart than a chunk). */
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> villageFor(QcChunkPos pos) const override;
+    /*! Returns the layout the world is generated from. */
     const QcShowcasePlan &plan() const { return m_plan; }
 
 private:

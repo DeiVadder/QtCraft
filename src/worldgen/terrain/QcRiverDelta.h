@@ -11,64 +11,75 @@
 
 #include <optional>
 
-// The deltas of the rivers (decision E-850): where a wide river runs through flat land into the
-// sea, it spreads into a fan of arms between low islands of sand and mud, with ponds on them and
-// shallow banks reaching out under the sea. The fan opens from its apex on the river towards the
-// mouth on the coast (QcDeltaSites); its arms are a network that branches two or three levels deep
-// from the river (QcDeltaArms), and the fan lies in a low basin that rises gently into the land
-// around it. Deterministic per seed and thread-safe.
+/*! \brief The deltas of the rivers (decision E-850): where a wide river runs through flat land into
+    the sea, it spreads into a fan of arms between low islands of sand and mud, with ponds on them
+    and shallow banks reaching out under the sea.
+
+    The fan opens from its apex on the river towards the mouth on the coast (QcDeltaSites); its
+    arms are a network that branches two or three levels deep from the river (QcDeltaArms), and
+    the fan lies in a low basin that rises gently into the land around it. Deterministic per seed
+    and thread-safe. */
 class QcRiverDelta
 {
 public:
+    /*! The terrain's maps a delta reads (QcTerrainGenerator). */
     using Land = QcDeltaSites::Land;
 
-    // `rivers` must outlive the delta (the terrain generator owns both); `share`: the share of the
-    // wide river mouths that get a delta (0..1).
+    /*! Builds the delta's noises from \a seed; \a seaLevel is the terrain's. \a rivers must
+        outlive the delta (the terrain generator owns both); \a share: the share of the wide river
+        mouths that get a delta (0..1). */
     QcRiverDelta(quint64 seed, const QcRiverField &rivers, int seaLevel, double share);
 
-    // Whether a column with this continent value (the terrain's, before the coast's smoothstep) can
-    // lie in a delta at all: a band along the coasts, widened by `pad` on both sides for a value
-    // read a few blocks away. Free; every other test costs noise.
+    /*! Returns whether a column with the value \a continent (the terrain's, before the coast's
+        smoothstep) can lie in a delta at all: a band along the coasts, widened by \a pad on both
+        sides for a value read a few blocks away. Free; every other test costs noise. */
     [[nodiscard]] static bool mayReach(double continent, double pad = 0.0);
-    // Whether the cell of sites (QcDeltaSites::siteCell blocks) of a column has a delta that allows
-    // any: a column of a cell without one never lies in a delta (its shape() has no weight). The
-    // site is remembered per thread, so reading it again for the columns costs nothing.
+    /*! Returns whether the cell of sites (QcDeltaSites::siteCell blocks) of the column \a x,
+        \a z has a delta on \a land that allows any: a column of a cell without one never lies in
+        a delta (its shape() has no weight). The site is remembered per thread, so reading it
+        again for the columns costs nothing. */
     [[nodiscard]] bool hasSiteAt(int x, int z, const Land &land) const;
 
-    // A column that may lie in the fan of a delta, before its delta is known (that costs readings
-    // of the continent, the climate and the river, remembered per cell): its continent value and
-    // how much of a delta the band along the coasts allows (0..1).
+    /*! \brief A column that may lie in the fan of a delta, before its delta is known (that costs
+        readings of the continent, the climate and the river, remembered per cell): its continent
+        value and how much of a delta the band along the coasts allows (0..1). */
     struct Fan
     {
+        /*! The column. \qcshared */
         int x = 0;
         int z = 0;
+        /*! The column's continent value. */
         double continent = 0.0;
+        /*! How much of a delta the band along the coasts allows at the column (0..1). */
         double allowed = 0.0;
     };
-    // The fan at a column with the continent value `continent` and the river noise `riverValue`
-    // (QcRiverField::Sample::value, `far` where the river field was not asked); std::nullopt where
-    // no delta can lie. Free: reads no noise.
+    /*! Returns the fan at the column \a x, \a z with the continent value \a continent and the
+        river noise \a riverValue (QcRiverField::Sample::value, \c {far} where the river field
+        was not asked); std::nullopt where no delta can lie. Free: reads no noise. */
     [[nodiscard]] std::optional<Fan> fanAt(int x, int z, double continent, double riverValue) const;
 
-    // The delta at a column: how much of it there is (0..1, blended over the fan's edges), how much
-    // of that is the delta proper (its land and arms, not the banks sunk under the sea further out;
-    // the delta's biome where it outweighs the rest) and the height of the ground (unrounded, the
-    // first air above it) blended from the column's own: the arms down to a few blocks under the
-    // sea level, the islands just above it, under the sea further out.
+    /*! \brief The delta at a column: how much of it there is (0..1, blended over the fan's
+        edges), how much of that is the delta proper (its land and arms, not the banks sunk under
+        the sea further out; the delta's biome where it outweighs the rest) and the height of the
+        ground (unrounded, the first air above it) blended from the column's own: the arms down
+        to a few blocks under the sea level, the islands just above it, under the sea further
+        out. \qcfields */
     struct Shape
     {
         double weight = 0.0;
         double core = 0.0;
         double height = 0.0;
     };
-    // The column's own ground before the delta: its height and whether a river put water there
-    // (the delta never fills a river's channel, so the river always reaches its arms).
+    /*! \brief The column's own ground before the delta: its height and whether a river put water
+        there (the delta never fills a river's channel, so the river always reaches its arms).
+        \qcfields */
     struct Ground
     {
         double height = 0.0;
         bool river = false;
     };
-    // The delta at the column of `fan`, by the delta of the river near its cell.
+    /*! Returns the delta at the column of \a fan over its own ground \a own, by the delta of the
+        river near its cell on \a land; all zero outside a delta's fan. */
     [[nodiscard]] Shape shape(const Fan &fan, const Land &land, Ground own) const;
 
 private:

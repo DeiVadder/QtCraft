@@ -8,8 +8,12 @@
 
 #include <memory>
 
-// Small rolling-hills terrain with a lake, used until the biome generator exists and as a cheap,
-// predictable world for tests. Uses the base blocks qtcraft:stone, dirt, grass_block, sand, water.
+/*! \brief Small rolling-hills terrain with water below the sea level, a cheap, predictable world
+    for tests.
+
+    The seed plays no part.
+
+    Uses the base blocks qtcraft:stone, dirt, grass_block, sand, water. */
 class QcTestTerrainGenerator : public QcWorldGenerator
 {
 public:
@@ -18,7 +22,7 @@ public:
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;
 
-    // Terrain height (top solid block + 1) at a world column.
+    /*! Returns the terrain height (top solid block + 1) at the world column \a x, \a z. */
     static int surfaceHeight(int x, int z);
 
 private:

@@ -14,29 +14,39 @@
 class QcContentRegistry;
 class QcTerrainGenerator;
 
-// The buildings of a village (decision E-403, E-404, E-419): the centre piece facing the main road,
-// the kinds with rules where their rules hold (a kind with a water rule beside a road end with its
-// jetty), pieces of the style by weight on both sides of the roads facing them (beside diagonal
-// roads with a forecourt to the road), their doorsteps, and lamps along the roads. Deterministic
-// and thread-safe (const).
+/*! \brief The buildings of a village (decision E-403, E-404, E-419): the centre piece facing the
+    main road, the kinds with rules where their rules hold (a kind with a water rule beside a road
+    end with its jetty), pieces of the style by weight on both sides of the roads facing them
+    (beside diagonal roads with a forecourt to the road), their doorsteps, and lamps along the
+    roads.
+
+    Deterministic and thread-safe (const). */
 class QcPiecePlacer
 {
 public:
+    /*! A road of the draft, along which pieces and lamps are placed. */
     using Road = QcVillageDraft::Road;
 
-    // Pieces of one village at most (the centre and lamps not counted).
+    /*! Pieces of one village at most (the centre and lamps not counted). */
     static constexpr int maxPieces = 28;
 
     QcPiecePlacer(const QcTerrainGenerator &terrain, const QcContentRegistry &content, const QcVillageStyles &styles);
 
-    // The centre piece (the style's rare centre with its chance, decision E-592), its door towards
-    // the main road; none where the ground does not fit.
+    /*! Adds the centre piece to \a draft (the style's rare centre with its chance, decision
+        E-592, else or where the rare one does not fit the usual centre), its door towards the
+        main road; none where the ground does not fit. */
     void placeCentre(QcVillageDraft &draft) const;
-    // The kinds with rules (decision E-404, E-408) whose rules hold, each up to its maximum (at least one).
+    /*! Adds to \a draft the kinds with rules (decision E-404, E-408) whose chance is drawn and
+        whose minimum road length the village reaches, each up to its maximum (at least one) while
+        a spot fits: beside a road end of \a roads with water ahead for a kind with a water rule,
+        else on a random spot along one of \a roads. */
     void placeRulePieces(QcVillageDraft &draft, const QList<Road> &roads) const;
-    // Pieces by weight along both sides of the road, until none is left to place.
+    /*! Adds pieces by weight to \a draft along the sides of \a road that take pieces, until
+        none is left to place or the village has maxPieces. */
     void placeAlong(QcVillageDraft &draft, const Road &road) const;
-    // Lamps every lampSpacing blocks along the whole road, sides taking turns.
+    /*! Adds the style's lamp to \a draft every \c {lampSpacing} blocks (village settings) along
+        the whole \a road, sides taking turns, just beside the road where the spot is free and
+        flat. */
     void placeLamps(QcVillageDraft &draft, const Road &road) const;
 
 private:

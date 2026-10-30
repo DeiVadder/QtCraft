@@ -13,31 +13,40 @@
 #include <memory>
 #include <vector>
 
-// Builds the coastal towers of the terrain generator into its chunks (decision E-605): each chunk
-// writes its own cells of the tower of every region it overlaps (a tower stays inside its region;
-// QcCoastalTowerPlanner, plans cached by region), in any order with the same result. Under the
-// footprint the foundation block fills everything that is not ground from below the floor down to
-// the ground (at most `maxFoundation` blocks); above the floor the footprint is cleared (trees,
-// plants) up to a few blocks over the structure, which is then written; no trees, plants or surface
-// pools grow near a tower (footprintsNear()), so none is cut or left floating. The chests' loot and
-// spawners of the structure come with furnishingIn(). Thread-safe.
+/*! \brief Builds the coastal towers of the terrain generator into its chunks (decision E-605): each
+    chunk writes its own cells of the tower of every region it overlaps (a tower stays inside its
+    region; QcCoastalTowerPlanner, plans cached by region), in any order with the same result.
+
+    Under the footprint the foundation block fills everything that is not ground from below the
+    floor down to the ground (at most \c {maxFoundation} blocks); above the floor the footprint
+    is cleared (trees, plants) up to a few blocks over the structure, which is then written; no
+    trees, plants or surface pools grow near a tower (footprintsNear()), so none is cut or left
+    floating. The chests' loot and spawners of the structure come with furnishingIn().
+    Thread-safe. */
 class QcCoastalTowerGenerator
 {
 public:
     QcCoastalTowerGenerator(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
+    /*! Returns the planner whose towers this generator builds. */
     const QcCoastalTowerPlanner &planner() const { return m_planner; }
-    // The region's tower, planned once (null without one): the planner's, unless a neighbouring
-    // region's of higher priority stands closer than `minDistance` (decision E-857).
+    /*! Returns the tower of the region \a regionX, \a regionZ, planned once (null without one):
+        the planner's, unless a neighbouring region's of higher priority stands closer than
+        \c {minDistance} (decision E-857). */
     [[nodiscard]] std::shared_ptr<const QcCoastalTowerPlan> planOf(int regionX, int regionZ) const;
-    // The towers whose cells may lie in the chunk.
+    /*! Returns the towers whose cells may lie in the chunk \a pos (their footprint or the
+        doorstep beside it). */
     QList<std::shared_ptr<const QcCoastalTowerPlan>> plansTouching(QcChunkPos pos) const;
-    // The footprints of the towers within `margin` columns of the chunk: the terrain generator
-    // places no features and no surface pools there, like near surface structures.
+    /*! Returns the footprints of the towers within \a margin columns of the chunk \a pos: the
+        terrain generator places no features and no surface pools there, like near surface
+        structures. */
     QList<QcCoastalTowerPlan::Footprint> footprintsNear(QcChunkPos pos, int margin) const;
-    // Builds after the terrain's features and surface pools, before the villages.
+    /*! Writes the cells of the towers touching \a chunk into it, with their foundations, cleared
+        columns and the opening in front of the door. Builds after the terrain's features and
+        surface pools, before the villages. */
     void build(QcChunk &chunk) const;
-    // The chunk's chests and spawners of the towers' structures.
+    /*! Returns the chests (with their loot tables and seeds) and spawners of the towers'
+        structures in the chunk \a pos. */
     [[nodiscard]] QcChunkFurnishing furnishingIn(QcChunkPos pos) const;
 
 private:

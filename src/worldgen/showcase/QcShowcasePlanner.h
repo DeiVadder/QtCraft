@@ -8,25 +8,30 @@
 
 #include <QStringList>
 
-// Lays out the showcase world from the content (decision E-220), the same for every seed: north of
-// the spawn the demos from structure data, the trees, the creatures, a podium area per block
-// category and the items, in rows from west to east; each area gets a title and a lookout in front
-// of its south west corner, which is also a tour stop. Blocks, creatures and items of mods appear
-// without any extra data.
+/*! \brief Lays out the showcase world from the content (decision E-220), the same for every seed:
+    north of the spawn the demos from structure data, the trees, the creatures, a podium area per
+    block category and the items, in rows from west to east; each area gets a title and a lookout in
+    front of its south west corner, which is also a tour stop.
+
+    Blocks, creatures and items of mods appear without any extra data. */
 class QcShowcasePlanner
 {
 public:
-    // Distance between areas in a row and between rows.
+    /*! Distance between areas in a row. */
     static constexpr int areaGap = 6;
+    /*! Distance between rows. */
     static constexpr int rowGap = 7;
-    // West edge of the first area and south edge of the first row.
+    /*! West edge of the first area. */
     static constexpr int firstAreaX = 6;
+    /*! South edge of the first row. */
     static constexpr int firstRowFront = -6;
 
+    /*! Prepares the layout of the showcase world of \a content. */
     explicit QcShowcasePlanner(const QcContentRegistry &content);
 
+    /*! Returns the finished layout. */
     QcShowcasePlan build();
-    // What the planner left out (unknown structures, labels beyond a chunk's limit).
+    /*! Returns what the planner left out (unknown structures, labels beyond a chunk's limit). */
     const QStringList &warnings() const { return m_warnings; }
 
 private:

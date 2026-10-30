@@ -7,21 +7,28 @@
 #include "worldgen/mineshafts/QcMineshaftBlocks.h"
 #include "worldgen/mineshafts/QcMineshaftPlan.h"
 
-// Writes the cells of a mine shaft that lie in one chunk (decision E-570), the same in any order of
-// the chunks: reads only the chunk's own blocks before the mine shaft. In this order: pillars under
-// open floors of bridges (posts down to the ground, at most `maxPillar`), planks for open floors,
-// the open cells, liquid beside them and sand or gravel above them turned into `seal` (generated
-// liquids stay still, and nothing falls in once a neighbour changes), rooms from
-// structures, then supports, rails, cobwebs, lights and spawners. The entrance comes in a pass of
-// its own after the terrain's trees, cacti and surface pools (buildEntrance).
+/*! \brief Writes the cells of a mine shaft that lie in one chunk (decision E-570), the same in any
+    order of the chunks: reads only the chunk's own blocks before the mine shaft.
+
+    In this order: pillars under open floors of bridges (posts down to the ground, at most
+    \c {maxPillar}), planks for open floors, the open cells, liquid beside them and sand or
+    gravel above them turned into \c {seal} (generated liquids stay still, and nothing falls in
+    once a neighbour changes), rooms from structures, then supports, rails, cobwebs, lights and
+    spawners. The entrance comes in a pass of its own after the terrain's trees, cacti and
+    surface pools (buildEntrance). */
 class QcMineshaftBuilder
 {
 public:
     QcMineshaftBuilder(const QcMineshaftBlocks &blocks, int maxPillar);
 
+    /*! Writes the cells of \a plan that lie in \a chunk, in the order above (without the
+        entrance). */
     void build(QcChunk &chunk, const QcMineshaftPlan &plan) const;
-    // Empties the headframe's box (three by three, three high above the ground's top) and the shaft,
-    // seals liquid beside them, lines the shaft where it is open, then the ladder and the headframe.
+    /*! Writes the cells of \a entrance that lie in \a chunk: empties the box of three by three
+        cells, three high, above its \c {top} and the leaves and cacti of the ring around it, and
+        the shaft (the ladder shaft or the tunnel); seals liquid beside them and sand or gravel
+        above them; lines the shaft with planks where it is open, then places the entrance's
+        blocks (the ladder and the headframe, or the tunnel's supports and rails). */
     void buildEntrance(QcChunk &chunk, const QcMineshaftPlan::Entrance &entrance) const;
 
 private:

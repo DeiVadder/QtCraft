@@ -13,28 +13,36 @@
 
 struct QcVillagePlan;
 
-// The village plans of the regions planned last (decision E-416), shared by the generation threads
-// and the server thread. When it is full it lets go of the region used least recently; a plan that
-// someone else still holds (QcVillages keeps the plans of the villages with loaded chunks) is found
-// again through a weak reference instead of being planned anew. Regions without a village are cached
-// as null plans. Thread-safe.
+/*! \brief The village plans of the regions planned last (decision E-416), shared by the generation
+    threads and the server thread.
+
+    When it is full it lets go of the region used least recently; a plan that someone else still
+    holds (QcVillages keeps the plans of the villages with loaded chunks) is found again through
+    a weak reference instead of being planned anew. Regions without a village are cached as null
+    plans. Thread-safe. */
 class QcVillagePlanCache
 {
 public:
+    /*! Plans the village of a region; null when the region has none. */
     using Planner = std::function<std::shared_ptr<const QcVillagePlan>(int regionX, int regionZ)>;
 
+    /*! Keeps the plans of at most \a capacity regions. */
     explicit QcVillagePlanCache(qsizetype capacity);
 
-    // The region's plan: cached, held elsewhere, or planned with `planner` outside the lock (two
-    // threads planning the same region at once both plan it; the first one stored is kept).
+    /*! Returns the plan of region \a regionX, \a regionZ: cached, held elsewhere, or planned
+        with \a planner outside the lock (two threads planning the same region at once both plan
+        it; the first one stored is kept). */
     [[nodiscard]] std::shared_ptr<const QcVillagePlan> plan(int regionX, int regionZ, const Planner &planner) const;
-    // The region's plan when it is cached or held elsewhere (a null plan: no village); std::nullopt
-    // when it is not planned yet. Never plans.
+    /*! Returns the plan of region \a regionX, \a regionZ when it is cached or held elsewhere (a
+        null plan: no village); std::nullopt when it is not planned yet. Never plans. */
     [[nodiscard]] std::optional<std::shared_ptr<const QcVillagePlan>> planned(int regionX, int regionZ) const;
 
+    /*! Returns how many regions the cache keeps at most. */
     qsizetype capacity() const { return m_capacity; }
+    /*! Returns how many regions the cache keeps now (not counting plans only held elsewhere). */
     qsizetype size() const;
-    // Regions planned so far (tests count how often a region is planned again).
+    /*! Returns how often a region was planned so far, repeats included (tests count how often a
+        region is planned again). */
     quint64 planned() const { return m_planned.load(std::memory_order_relaxed); }
 
 private:

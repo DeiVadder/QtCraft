@@ -15,39 +15,50 @@
 
 class QcTerrainGenerator;
 
-// Plans the coastal tower of a region (decision E-605) from the seed and the terrain noise: whether
-// the region has one (`chance`), which structure by weight, and a site on land at the coast. Sites
-// are the columns of a grid over the region whose ground lies at a tower's height, tried in a random
-// order: the ground under the whole footprint lies at that height without caves and level enough,
-// the door opens onto ground at most one block below or above the floor, the open sea lies within
-// `coastDistance` blocks, and no village, mine shaft entrance or surface structure
-// (QcSurfaceStructures) lies within `clearance` blocks. The tower stays inside its region.
-// Thread-safe: plan() only reads immutable state.
+/*! \brief Plans the coastal tower of a region (decision E-605) from the seed and the terrain noise:
+    whether the region has one (\c {chance}), which structure by weight, and a site on land at the
+    coast.
+
+    Sites are the columns of a grid over the region whose ground lies at a tower's height, tried
+    in a random order: the ground under the whole footprint lies at that height without caves and
+    level enough, the door opens onto ground at most one block below or above the floor, the open
+    sea lies within \c {coastDistance} blocks, and no village, mine shaft entrance or surface
+    structure (QcSurfaceStructures) lies within \c {clearance} blocks. The tower stays inside its
+    region. Thread-safe: plan() only reads immutable state. */
 class QcCoastalTowerPlanner
 {
 public:
+    /*! Columns covered by a tower. */
     using Footprint = QcCoastalTowerPlan::Footprint;
 
-    // Unresolvable structures or blocks are left out with a warning (warnings()); without a
-    // structure or the foundation block, towers are off.
+    /*! Plans with the settings of \a content (\c {coastalTowers}) over the noise of \a terrain,
+        seeded from \a seed. Unresolvable structures or blocks are left out with a warning
+        (warnings()); without a structure or the foundation block, towers are off. */
     QcCoastalTowerPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
 
+    /*! Returns the problems found while resolving the settings' structures and blocks. */
     const QStringList &warnings() const { return m_warnings; }
 
+    /*! Returns whether towers are planned: enabled in the settings with a known foundation
+        block and at least one structure that fits the region. */
     bool enabled() const { return m_enabled; }
+    /*! Returns the coastal tower settings of the content. */
     const QcCoastalTowerSettings &settings() const { return m_settings; }
+    /*! Returns the block state that fills the ground under a tower. */
     QcBlockId foundation() const { return m_foundation; }
-    // The region's tower before the spacing to the neighbouring regions' (QcCoastalTowerGenerator
-    // applies `minDistance`); null without one.
+    /*! Returns the tower of the region \a regionX, \a regionZ before the spacing to the
+        neighbouring regions' (QcCoastalTowerGenerator applies \c {minDistance}); null without
+        one. */
     [[nodiscard]] std::shared_ptr<const QcCoastalTowerPlan> plan(int regionX, int regionZ) const;
-    // The region's rank when two towers come closer than `minDistance` (decision E-857): the one of
-    // the region with the higher priority stays.
+    /*! Returns the rank of the region \a regionX, \a regionZ when two towers come closer than
+        \c {minDistance} (decision E-857): the one of the region with the higher priority stays. */
     [[nodiscard]] double priority(int regionX, int regionZ) const;
-    // Whether the column belongs to the open sea: land factor below one half, the ground at least
-    // `oceanDepth` blocks below the water's surface.
+    /*! Returns whether the column \a x, \a z belongs to the open sea: land factor below one
+        half, the ground at least \c {oceanDepth} blocks below the water's surface. */
     bool isOcean(int x, int z) const;
-    // The ground's top at the column where it lies at a tower's height (from sea level up to
-    // `maxRise` above it, no overhang, no cave at the top).
+    /*! Returns the ground's top at the column \a x, \a z where it lies at a tower's height (from
+        sea level up to \c {maxRise} above it, no overhang, no cave at the top, not in a river
+        delta's biome); std::nullopt elsewhere. */
     [[nodiscard]] std::optional<int> coastTop(int x, int z) const;
 
 private:

@@ -20,25 +20,32 @@ class QcMineshaftNetwork;
 class QcMineshaftSite;
 class QcTerrainGenerator;
 
-// Plans the mine shaft of a region (decision E-570) from the seed and the terrain noise: whether
-// the region has one (`chance`), how many levels, a place for the central room deep enough with a
-// solid floor, the lattice network grown level by level (QcMineshaftNetwork, judged by
-// QcMineshaftSite), laid out as nodes and corridors (QcMineshaftFrame), then rooms from structures
-// and the surface entrance (QcMineshaftAccess) and the corridors' details (QcMineshaftDetails).
-// Thread-safe: plan() only reads immutable state.
+/*! \brief Plans the mine shaft of a region (decision E-570) from the seed and the terrain noise:
+    whether the region has one (\c {chance}), how many levels, a place for the central room deep
+    enough with a solid floor, the lattice network grown level by level (QcMineshaftNetwork, judged
+    by QcMineshaftSite), laid out as nodes and corridors (QcMineshaftFrame), then rooms from
+    structures and the surface entrance (QcMineshaftAccess) and the corridors' details
+    (QcMineshaftDetails).
+
+    Thread-safe: plan() only reads immutable state. */
 class QcMineshaftPlanner
 {
 public:
-    // Unresolvable blocks switch mine shafts off with a warning (warnings()).
+    /*! Plans with the mine shaft settings of \a content over the noise of \a terrain, seeded
+        from \a seed. Unresolvable blocks switch mine shafts off with a warning (warnings()). */
     QcMineshaftPlanner(const QcTerrainGenerator &terrain, const QcContentRegistry &content, quint64 seed);
     ~QcMineshaftPlanner();
     Q_DISABLE_COPY_MOVE(QcMineshaftPlanner)
 
+    /*! Returns whether mine shafts are planned: enabled in the settings and every block known. */
     bool enabled() const { return m_enabled; }
+    /*! Returns the mine shaft settings of the content. */
     const QcMineshaftSettings &settings() const { return m_settings; }
+    /*! Returns the problems found in the settings (unknown blocks, unknown entrance biomes). */
     const QStringList &warnings() const { return m_warnings; }
+    /*! Returns the resolved blocks. */
     const QcMineshaftBlocks &blocks() const { return m_blocks; }
-    // The region's mine shaft; null without one.
+    /*! Returns the mine shaft of the region \a regionX, \a regionZ; null without one. */
     [[nodiscard]] std::shared_ptr<const QcMineshaftPlan> plan(int regionX, int regionZ) const;
 
 private:

@@ -12,26 +12,29 @@
 
 #include <algorithm>
 
-// A zone of a placed structure whose guardians come back by themselves (decision E-591): the
-// desert temple's cellar and its sand golem. The world generator names the zones near a place
-// (QcWorldGenerator::structureSitesNear) from its plans alone, so they need no saving; the server keeps
-// their cooldowns while it runs (QcGuardians).
+/*! \brief A zone of a placed structure whose guardians come back by themselves (decision E-591):
+    the desert temple's cellar and its sand golem.
+
+    The world generator names the zones near a place (QcWorldGenerator::structureSitesNear) from
+    its plans alone, so they need no saving; the server keeps their cooldowns while it runs
+    (QcGuardians). */
 struct QcGuardSite
 {
-    // The same for the same zone in every session: from its corner and its creature's name.
+    /*! The same for the same zone in every session: from its corner and its creature's name. */
     quint64 id = 0;
-    // The zone in world cells, both corners inside.
+    /*! The lowest and the highest corner of the zone in world cells, both inside. \qcshared */
     QcBlockPos min;
     QcBlockPos max;
-    // The structure's rule with `from` and `to` as written (local).
+    /*! The structure's rule with \c {from} and \c {to} as written (local). */
     QcStructureDefinition::Guardian rule;
 
+    /*! Returns whether \a pos lies in the zone. */
     bool contains(QcBlockPos pos) const
     {
         return pos.x >= min.x && pos.y >= min.y && pos.z >= min.z && pos.x <= max.x && pos.y <= max.y && pos.z <= max.z;
     }
 
-    // The guardian zones of a placed copy of a structure.
+    /*! Returns the guardian zones of \a placement, a placed copy of a structure. */
     static QList<QcGuardSite> of(const QcStructurePlacement &placement)
     {
         QList<QcGuardSite> sites;

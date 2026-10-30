@@ -9,22 +9,24 @@
 
 #include <memory>
 
-// World generator of the void world type (decision E-223): air everywhere except a square platform
-// around the spawn (worldgen/void.json: block, radius, height; radius 0 leaves it out), so that
-// measurements see only what a scenario builds. Its rules (noon standing still, no creatures of
-// their own accord by default) are set up once. Deterministic, seed ignored. A world stores its
-// platform as generator options, "platform=qtcraft:stone,radius=2,y=63", so that changed defaults
-// do not change it.
+/*! \brief World generator of the void world type (decision E-223): air everywhere except a square
+    platform around the spawn (worldgen/void.json: block, radius, height; radius 0 leaves it out),
+    so that measurements see only what a scenario builds.
+
+    Its rules (noon standing still, no creatures of their own accord by default) are set up once.
+    Deterministic, seed ignored. A world stores its platform as generator options,
+    "platform=qtcraft:stone,radius=2,y=63", so that changed defaults do not change it. */
 class QcVoidGenerator : public QcWorldGenerator
 {
 public:
-    // The content's settings with those `options` name; an error for unknown keys or blocks and
-    // values out of range.
+    /*! Returns the settings of \a content with those \a options name; an error for unknown keys
+        or blocks and values out of range. */
     [[nodiscard]] static QcResult<QcVoidDefinition> parseOptions(const QString &options, const QcContentRegistry &content);
-    // The options naming all of `settings`' platform.
+    /*! Returns the options naming the whole platform of \a settings. */
     static QString optionsOf(const QcVoidDefinition &settings);
 
-    // Invalid `options` fall back to the content's settings with a warning; empty takes them.
+    /*! Sets up the platform from \a options and the blocks and settings of \a content. Invalid
+        \a options fall back to the content's settings with a warning; empty takes them. */
     explicit QcVoidGenerator(std::shared_ptr<const QcContentRegistry> content, const QString &options = {});
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
