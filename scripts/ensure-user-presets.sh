@@ -29,6 +29,9 @@ fi
 # Build folders on another disk (a setting of this machine, not in git): when
 # ~/.config/qtcraft/build-root names a folder, the checkout's build/ becomes a link to
 # <that folder>/<checkout folder name>/build, so every script and preset keeps using build/<preset>.
+# The visible presets of CMakeUserPresets.json then name that real folder as their binaryDir
+# (<folder>/${sourceDirName}/build/${presetName}); moc writes relative include paths, which only
+# resolve from the real folder, not through the link.
 # A missing disk stops here instead of building into a dangling link. Removing a worktree leaves
 # its folder there; delete <root>/<worktree name> with it.
 BUILD_ROOT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/qtcraft/build-root"

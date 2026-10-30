@@ -105,15 +105,7 @@ jobs:
           path: ~/.cache/qtcraft/sdl3
           key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
 
-      # Tag pushes do not run the CI workflow; the release runs the same tests first.
-      - name: Build (Debug, for the tests)
-        run: |
-          cmake --preset ci-debug
-          cmake --build --preset ci-debug
-
-      - name: Test
-        run: ctest --preset ci-debug --timeout 600
-
+      # No tests here: they run locally (scripts/verify.sh --release before a tag); the hosted runners would need hours.
       # The runner has no display for the game's starts; the bundle, signature, universal-binary
       # and dedicated-server checks run.
       - name: Package
