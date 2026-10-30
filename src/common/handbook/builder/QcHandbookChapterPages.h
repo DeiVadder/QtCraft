@@ -9,10 +9,11 @@
 
 struct QcHandbookContext;
 
-// Handbook chapters about playing (category "playing"), in content order: their sections with rule
-// and key placeholders filled, and links to related content.
+/*! \brief Handbook chapters about playing (category "playing"), in content order: their sections
+    with rule and key placeholders filled, and links to related content. */
 namespace QcHandbookChapterPages {
 
+/*! Returns the pages, built with the shared parts of \a context. */
 QList<QcHandbookEntry> build(const QcHandbookContext &context);
 
 } // namespace QcHandbookChapterPages

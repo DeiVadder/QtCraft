@@ -14,8 +14,10 @@
 
 class QThread;
 
-// Fixed set of worker threads executing queued jobs in FIFO order. Jobs are handed over through
-// std::mutex/std::condition_variable so ThreadSanitizer can follow the data (see QcMailbox).
+/*! \brief Fixed set of worker threads executing queued jobs in FIFO order.
+
+    Jobs are handed over through std::mutex/std::condition_variable so ThreadSanitizer can follow
+    the data (see QcMailbox). */
 class QcWorkerPool
 {
 public:
@@ -25,13 +27,15 @@ public:
     QcWorkerPool(const QcWorkerPool &) = delete;
     QcWorkerPool &operator=(const QcWorkerPool &) = delete;
 
+    /*! Puts \a job at the end of the queue. */
     void submit(std::function<void()> job);
-    // Puts the job before every job that has not started yet.
+    /*! Puts \a job before every job that has not started yet. */
     void submitFirst(std::function<void()> job);
-    // Blocks until the queue is empty and no job is running.
+    /*! Blocks until the queue is empty and no job is running. */
     void waitForIdle();
-    // Drops the jobs that have not started yet and returns how many; running jobs go on.
+    /*! Drops the jobs that have not started yet and returns how many; running jobs go on. */
     qsizetype discardQueued();
+    /*! Returns the number of worker threads. */
     int threadCount() const { return static_cast<int>(m_threads.size()); }
 
 private:

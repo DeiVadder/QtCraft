@@ -9,23 +9,27 @@
 
 #include <vector>
 
-// Bodies sorted into columns of one block (decision E-882), so that the push on one body
-// (QcBodyPush::between) looks only at the bodies in the columns within reach of it instead of at all
-// of them: building costs a sort of the bodies, a look-up a binary search per column around the
-// body. Keeps its storage when cleared and sorts in place, so a grid built anew every tick allocates
-// nothing once it held as many bodies.
+/*! \brief Bodies sorted into columns of one block (decision E-882), so that the push on one body
+    (QcBodyPush::between) looks only at the bodies in the columns within reach of it instead of at
+    all of them: building costs a sort of the bodies, a look-up a binary search per column around
+    the body.
+
+    Keeps its storage when cleared and sorts in place, so a grid built anew every tick allocates
+    nothing once it held as many bodies. */
 class QcBodyGrid
 {
 public:
-    // Forgets all bodies.
+    /*! Forgets all bodies. */
     void clear();
+    /*! Adds \a body. */
     void add(const QcBodyPush::Body &body);
-    // Sorts the bodies into their columns: after the last add(), before sum().
+    /*! Sorts the bodies into their columns: after the last add(), before sum(). */
     void finish();
+    /*! Returns the number of bodies added. */
     qsizetype size() const { return static_cast<qsizetype>(m_entries.size()); }
 
-    // The sum of the pushes of the bodies on `self` (QcBodyPush::between); `self` itself must not be
-    // in the grid.
+    /*! Returns the sum of the pushes of the bodies on \a self (QcBodyPush::between); \a self
+        itself must not be in the grid. */
     [[nodiscard]] QcVec3 sum(const QcBodyPush::Body &self) const;
 
 private:

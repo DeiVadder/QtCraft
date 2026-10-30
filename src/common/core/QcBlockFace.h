@@ -7,14 +7,32 @@
 
 #include <array>
 
-// Six axis-aligned block faces. The order is part of the content format (face texture arrays).
-enum class QcBlockFace : quint8 { East, West, Up, Down, South, North };
+/*! \brief Six axis-aligned block faces.
 
+    The order is part of the content format (face texture arrays). */
+enum class QcBlockFace : quint8 {
+    /*! +X */
+    East,
+    /*! -X */
+    West,
+    /*! +Y */
+    Up,
+    /*! -Y */
+    Down,
+    /*! +Z */
+    South,
+    /*! -Z */
+    North
+};
+
+/*! The number of faces. */
 inline constexpr int qcBlockFaceCount = 6;
 
+/*! All faces in the order of the enum. */
 inline constexpr std::array<QcBlockFace, qcBlockFaceCount> qcAllBlockFaces = {
     QcBlockFace::East, QcBlockFace::West, QcBlockFace::Up, QcBlockFace::Down, QcBlockFace::South, QcBlockFace::North};
 
+/*! \brief The step from a block to its neighbour across one face, in blocks. \qcfields */
 struct QcFaceOffset
 {
     int dx = 0;
@@ -22,7 +40,7 @@ struct QcFaceOffset
     int dz = 0;
 };
 
-// East = +X, Up = +Y, South = +Z.
+/*! Returns the step across \a face: East = +X, Up = +Y, South = +Z. */
 constexpr QcFaceOffset qcFaceOffset(QcBlockFace face)
 {
     switch (face) {
@@ -42,6 +60,7 @@ constexpr QcFaceOffset qcFaceOffset(QcBlockFace face)
     return {};
 }
 
+/*! Returns the block next to \a pos across \a face. */
 constexpr QcBlockPos qcNeighbour(QcBlockPos pos, QcBlockFace face)
 {
     const QcFaceOffset offset = qcFaceOffset(face);

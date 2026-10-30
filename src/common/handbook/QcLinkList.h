@@ -9,21 +9,23 @@
 #include <QList>
 #include <QString>
 
-// The links of a handbook section, one per target: a link to a target that is already there adds its
-// note to that one.
+/*! \brief The links of a handbook section, one per target: a link to a target that is already
+    there adds its note to that one. */
 class QcLinkList
 {
 public:
+    /*! A link to an entry. */
     using Link = QcHandbookEntry::Link;
 
-    // Appends `link` unless one to the same target exists; that one gets the note added. Links
-    // without a target are always appended.
+    /*! Appends \a link unless one to the same target exists; that one gets the note added. Links
+        without a target are always appended. */
     void addUnique(Link link);
 
+    /*! Returns whether the list holds no link. */
     bool isEmpty() const { return m_links.isEmpty(); }
-    // The links in the order they were added.
+    /*! Returns the links in the order they were added. */
     const QList<Link> &links() const { return m_links; }
-    // The links sorted by text (as compared by the search), then by target.
+    /*! Returns the links sorted by text (as compared by the search), then by target. */
     [[nodiscard]] QList<Link> sorted() const;
 
 private:

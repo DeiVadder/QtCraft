@@ -9,34 +9,45 @@
 class QcBlockAccess;
 struct QcPlayerInput;
 
+/* QcPhysics is documented in QcPhysics.h. */
 namespace QcPhysics {
 struct BodySize;
 struct MoveResult;
 struct Steering;
 } // namespace QcPhysics
 
-// Kinematic state of an entity. Position is the centre of the bottom face (feet). The steps are
-// the shared physics of server and client (QcPhysics.cpp).
+/*! \brief Kinematic state of an entity.
+
+    Position is the centre of the bottom face (feet). The steps are the shared physics of server
+    and client (QcPhysics.cpp). */
 struct QcEntityMotion
 {
+    /*! The feet: the centre of the bottom face. */
     QcVec3 position;
+    /*! Velocity in m/s. */
     QcVec3 velocity;
+    /*! Standing on the ground after the last step. */
     bool onGround = false;
+    /*! In a liquid, as the caller judged it before step(); stepPlayer() sets it itself from the
+        cell 0.4 m above the feet. For a boat: it floats (QcBoatState). */
     bool inWater = false;
-    // Inside a climbable block (ladder) during the last step.
+    /*! Inside a climbable block (ladder) during the last step. */
     bool climbing = false;
-    // Inside a block that slows bodies (cobweb) during the last step; breaks a fall like a ladder.
+    /*! Inside a block that slows bodies (cobweb) during the last step; breaks a fall like a
+        ladder. */
     bool slowed = false;
-    // Flying in creative mode (decision E-284): no gravity, up and down with jump and sneak; ends on
-    // landing. Only players fly this way; a spectator always flies (decision E-730).
+    /*! Flying in creative mode (decision E-284): no gravity, up and down with jump and sneak;
+        ends on landing. Only players fly this way; a spectator always flies (decision E-730). */
     bool flying = false;
 
-    // Advances any entity by one tick. The caller updates inWater before the call. Returns the move,
-    // whose blocked axes a walking creature reads (QcMobBehaviour); other bodies ignore it.
+    /*! Advances any entity by one tick of \a dt seconds as \a steering wishes, a body of \a size
+        among the blocks of \a world. The caller updates inWater before the call. Returns the
+        move, whose blocked axes a walking creature reads (QcMobBehaviour); other bodies ignore
+        it. */
     QcPhysics::MoveResult step(const QcPhysics::Steering &steering, QcPhysics::BodySize size, const QcBlockAccess &world, double dt);
-    // Advances a player by one tick of `dt` seconds. `movement` comes from the player's game mode
-    // (QcGameModes::Rules::movement): on foot a wish to fly is ignored and a flight ends; NoClip
-    // flies through blocks whatever the wish.
+    /*! Advances a player by one tick of \a dt seconds with \a input among the blocks of \a world.
+        \a movement comes from the player's game mode (QcGameModes::Rules::movement): on foot a wish
+        to fly is ignored and a flight ends; NoClip flies through blocks whatever the wish. */
     void stepPlayer(const QcPlayerInput &input, const QcBlockAccess &world, double dt, QcMovement movement);
 
     bool operator==(const QcEntityMotion &) const = default;

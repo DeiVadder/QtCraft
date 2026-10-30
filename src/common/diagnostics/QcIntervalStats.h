@@ -7,20 +7,26 @@
 
 #include <optional>
 
-// Mean and maximum of durations within one interval of the health line (decision E-834).
+/*! \brief Mean and maximum of durations within one interval of the health line (decision E-834). */
 struct QcIntervalTiming
 {
+    /*! The mean duration. */
     double meanMs = 0.0;
+    /*! The longest duration. */
     double maxMs = 0.0;
+    /*! The number of durations. */
     quint64 count = 0;
 };
 
-// Collects durations until take() hands out their mean and maximum and starts anew. One thread.
+/*! \brief Collects durations until take() hands out their mean and maximum and starts anew.
+
+    One thread. */
 class QcIntervalStats
 {
 public:
+    /*! Adds a duration of \a ms milliseconds. */
     void add(double ms);
-    // The interval so far; std::nullopt when nothing was added.
+    /*! Returns the interval so far; std::nullopt when nothing was added. */
     std::optional<QcIntervalTiming> take();
 
 private:

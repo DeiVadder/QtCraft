@@ -13,18 +13,20 @@
 
 struct QcHandbookContext;
 
-// Handbook pages that gather content from all over: the item tags (category "tags", by tag name)
-// followed by the tables of fuels, tools, armour and machine recipes (category "tables", in that
-// order; the block tables of QcHandbookBlockTables follow them).
+/*! \brief Handbook pages that gather content from all over: the item tags (category "tags", by
+    tag name) followed by the tables of fuels, tools, armour and machine recipes (category
+    "tables", in that order; the block tables of QcHandbookBlockTables follow them). */
 namespace QcHandbookOverviewPages {
 
+/*! Returns the pages, built with the shared parts of \a context. */
 QList<QcHandbookEntry> build(const QcHandbookContext &context);
 
-// An empty table page "table:<name>" of the base pack: title and text from the labels
-// "table.<name>" and "table.<name>Text", the icon of `iconItem`.
+/*! Returns an empty table page "table:<name>" (\a name) of the base pack: title and text from
+    the labels "table.<name>" and "table.<name>Text" of \a context, the icon of \a iconItem. */
 QcHandbookEntry tablePage(const QcHandbookContext &context, const QString &name, const QString &iconItem);
 
-// Links ordered by their key (ascending unless `descending`), then by text as the search compares it.
+/*! Returns the links of \a keyed ordered by their key (ascending unless \a descending), then by
+    text as the search compares it. */
 template<typename Key>
 QList<QcHandbookEntry::Link> orderedLinks(QList<std::pair<Key, QcHandbookEntry::Link>> keyed, bool descending = false)
 {

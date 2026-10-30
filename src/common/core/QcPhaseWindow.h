@@ -9,30 +9,37 @@
 #include <span>
 #include <vector>
 
-// Mean and maximum of a few series of times (milliseconds) over the latest samples, for the debug
-// display (decision E-225): one sample per server tick or per frame, each with one value per series.
-// The memory is taken once in the constructor; adding a sample neither allocates nor scans, the
-// mean keeps running sums and the maximum is looked up when asked for. Not thread-safe.
+/*! \brief Mean and maximum of a few series of times (milliseconds) over the latest samples, for the
+    debug display (decision E-225): one sample per server tick or per frame, each with one value per
+    series.
+
+    The memory is taken once in the constructor; adding a sample neither allocates nor scans, the
+    mean keeps running sums and the maximum is looked up when asked for. Not thread-safe. */
 class QcPhaseWindow
 {
 public:
     QcPhaseWindow(int series, int capacity);
 
+    /*! Returns the number of series. */
     int seriesCount() const { return m_series; }
+    /*! Returns the most samples held. */
     int capacity() const { return m_capacity; }
-    // Samples held, at most the capacity.
+    /*! Samples held, at most the capacity. */
     int size() const { return m_size; }
 
-    // One sample; `values` must hold one value per series (missing ones count as 0, extra ones are
-    // ignored). The oldest sample leaves once the window is full.
+    /*! One sample; \a values must hold one value per series (missing ones count as 0, extra ones
+        are ignored). The oldest sample leaves once the window is full. */
     void add(std::span<const float> values);
+    /*! Drops all samples. */
     void clear();
 
+    /*! Returns the mean of \a series over the samples held; 0 without samples. */
     double mean(int series) const;
+    /*! Returns the maximum of \a series over the samples held; 0 without samples. */
     double max(int series) const;
-    // The newest value of a series; 0 without samples.
+    /*! Returns the newest value of \a series; 0 without samples. */
     float latest(int series) const;
-    // Up to `count` values of a series, oldest first (graphs).
+    /*! Returns up to \a count values of \a series, oldest first (graphs). */
     QList<float> history(int series, int count) const;
 
 private:

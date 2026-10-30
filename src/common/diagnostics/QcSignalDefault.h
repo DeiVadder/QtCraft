@@ -7,6 +7,7 @@
 
 #include <csignal>
 
+/*! The type of a plain signal handler, as signal() takes it. */
 using QcSignalHandler = void (*)(int);
 
 // SIG_DFL as a typed handler. glibc defines SIG_DFL as a C-style cast, which GCC reports with
@@ -16,6 +17,7 @@ using QcSignalHandler = void (*)(int);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
+/*! Returns SIG_DFL, the default disposition of a signal, as a typed handler. */
 inline QcSignalHandler qcDefaultSignalHandler()
 {
     return SIG_DFL;

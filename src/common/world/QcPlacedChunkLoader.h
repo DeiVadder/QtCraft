@@ -7,12 +7,13 @@
 
 #include <QString>
 
-// A chunk loader block of a world (decision E-377): where it stands and who placed it
-// (QcChunkLoaders::Loader on the server).
+/*! \brief A chunk loader block of a world (decision E-377): where it stands and who placed it
+    (QcChunkLoaders::Loader on the server). */
 struct QcPlacedChunkLoader
 {
+    /*! Where it stands. */
     QcBlockPos pos;
-    // The player who placed it; empty for commands and structures.
+    /*! The player who placed it; empty for commands and structures. */
     QString owner;
 
     bool operator==(const QcPlacedChunkLoader &) const = default;

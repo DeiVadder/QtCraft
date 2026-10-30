@@ -9,10 +9,11 @@
 
 struct QcHandbookContext;
 
-// Handbook pages of the items without a block page (categories "items", "tools" and "food"), in
-// content order.
+/*! \brief Handbook pages of the items without a block page (categories "items", "tools" and
+    "food"), in content order. */
 namespace QcHandbookItemPages {
 
+/*! Returns the pages, built with the shared parts of \a context. */
 QList<QcHandbookEntry> build(const QcHandbookContext &context);
 
 } // namespace QcHandbookItemPages

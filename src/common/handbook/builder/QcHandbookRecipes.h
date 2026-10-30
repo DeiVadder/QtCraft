@@ -12,22 +12,27 @@ class QcHandbookIndex;
 class QcHandbookLinks;
 class QcHandbookText;
 
-// Recipes as shown in the handbook, and the sections every item page has about how the item is
-// made and what it is used for.
+/*! \brief Recipes as shown in the handbook, and the sections every item page has about how the
+    item is made and what it is used for. */
 class QcHandbookRecipes
 {
 public:
+    /*! A recipe as a page shows it. */
     using Recipe = QcHandbookEntry::Recipe;
 
     QcHandbookRecipes(const QcContentRegistry &content, const QcHandbookText &text, const QcHandbookLinks &links,
                       const QcHandbookIndex &index);
 
+    /*! Returns the crafting \a recipe as a page shows it. */
     Recipe craftingRecipe(const QcRecipeDefinition &recipe) const;
+    /*! Returns the smelting \a recipe as a page shows it, with the machines that process it. */
     Recipe machineRecipe(const QcSmeltingRecipe &recipe) const;
-    // Whether a machine taking `kinds` smelts its input by `recipe`: it takes the recipe's kind and no
-    // earlier recipe of the category for the same input (QcMachineRules::recipeFor).
+    /*! Returns whether a machine taking \a kinds smelts its input by \a recipe: it takes the
+        recipe's kind and no earlier recipe of the category for the same input
+        (QcMachineRules::recipeFor). */
     [[nodiscard]] bool usedBy(const QStringList &kinds, const QcSmeltingRecipe &recipe) const;
-    // Crafting, smelting, uses in recipes, drops and catching of `item`, as far as there are any.
+    /*! Returns the sections about crafting, smelting, uses in recipes, drops and catching of
+        \a item, as far as there are any. */
     [[nodiscard]] QList<QcHandbookEntry::Section> itemSections(const QString &item) const;
 
 private:

@@ -3,9 +3,6 @@
 
 #pragma once
 
-// Protocol messages. Plain data structs in thematic headers; together they form the QcMessage
-// variant whose alternative index is the wire type tag. New messages are appended at the end.
-
 #include "common/protocol/QcAdminMessages.h"
 #include "common/protocol/QcAdvancementMessages.h"
 #include "common/protocol/QcDebugMessages.h"
@@ -21,6 +18,9 @@
 
 #include <variant>
 
+/*! Every protocol message: plain data structs in thematic headers, together the alternatives of
+    this variant, whose alternative index is the wire type tag. New messages are appended at the
+    end. */
 using QcMessage = std::variant<QcMsg::Hello, QcMsg::Welcome, QcMsg::ContentSync, QcMsg::ChunkData, QcMsg::ChunkUnload,
                                QcMsg::BlockUpdate, QcMsg::PlayerInput, QcMsg::PlayerState, QcMsg::Disconnect,
                                QcMsg::StartMining, QcMsg::CancelMining, QcMsg::FinishMining, QcMsg::UseItem,

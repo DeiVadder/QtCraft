@@ -5,17 +5,21 @@
 
 #include "common/core/QcBlockFace.h"
 
-// How light passes block states whose shape is not a full cube (decision E-104): such a state of a
-// light-dimming block lets light into its cell (opacity 0) but not across the faces its shape covers
-// completely. A bottom slab is lit from above and the sides but keeps the sky from the cell below; a
-// stair passes light through its open quarter. Faces are bits per QcBlockFace.
+/*! \brief How light passes block states whose shape is not a full cube (decision E-104): such a
+    state of a light-dimming block lets light into its cell (opacity 0) but not across the faces its
+    shape covers completely.
+
+    A bottom slab is lit from above and the sides but keeps the sky from the cell below; a stair
+    passes light through its open quarter. Faces are bits per QcBlockFace. */
 namespace QcLightPassage {
 
+/*! Returns the bit of \a face. */
 constexpr quint8 bit(QcBlockFace face)
 {
     return static_cast<quint8>(1u << static_cast<unsigned>(face));
 }
 
+/*! Returns the face opposite \a face. */
 constexpr QcBlockFace opposite(QcBlockFace face)
 {
     switch (face) {
@@ -35,17 +39,27 @@ constexpr QcBlockFace opposite(QcBlockFace face)
     return face;
 }
 
-// Whether light leaves a cell whose state blocks the faces `fromBlocked` across `face` into the
-// neighbour whose state blocks `toBlocked`.
+/*! Returns whether light leaves a cell whose state blocks the faces \a fromBlocked across
+    \a face into the neighbour whose state blocks \a toBlocked. */
 constexpr bool crosses(quint8 fromBlocked, quint8 toBlocked, QcBlockFace face)
 {
     return (fromBlocked & bit(face)) == 0 && (toBlocked & bit(opposite(face))) == 0;
 }
 
-// What a cell does to sky light coming straight down: nothing, keeps it out of the cell itself
-// (dimming full cubes, covered top face), or lets it in but not further down (covered bottom face).
-enum class SkyStop { None, Cell, Below };
+/*! \brief What a cell does to sky light coming straight down: nothing, keeps it out of the cell
+    itself (dimming full cubes, covered top face), or lets it in but not further down (covered
+    bottom face). */
+enum class SkyStop {
+    /*! Lets it pass. */
+    None,
+    /*! Keeps it out of the cell. */
+    Cell,
+    /*! Lets it into the cell, not further down. */
+    Below
+};
 
+/*! Returns what a cell of \a opacity whose state blocks the faces \a blockedFaces does to sky
+    light coming straight down. */
 constexpr SkyStop skyStop(int opacity, quint8 blockedFaces)
 {
     if (opacity > 0 || (blockedFaces & bit(QcBlockFace::Up)) != 0) {
@@ -54,8 +68,9 @@ constexpr SkyStop skyStop(int opacity, quint8 blockedFaces)
     return (blockedFaces & bit(QcBlockFace::Down)) != 0 ? SkyStop::Below : SkyStop::None;
 }
 
-// Highest cell of a column that sky light coming straight down does not reach (cells above it are
-// fully lit) when the cell `y` stops it as `stop`; -1 (keep looking further down) for SkyStop::None.
+/*! Returns the highest cell of a column that sky light coming straight down does not reach
+    (cells above it are fully lit) when the cell \a y stops it as \a stop; -1 (keep looking
+    further down) for SkyStop::None. */
 constexpr int skyTop(SkyStop stop, int y)
 {
     switch (stop) {

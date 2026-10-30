@@ -9,10 +9,11 @@
 
 struct QcHandbookContext;
 
-// Handbook pages of the creatures (category "creatures"), in content order: behaviour, spawning
-// and drops.
+/*! \brief Handbook pages of the creatures (category "creatures"), in content order: behaviour,
+    spawning and drops. */
 namespace QcHandbookCreaturePages {
 
+/*! Returns the pages, built with the shared parts of \a context. */
 QList<QcHandbookEntry> build(const QcHandbookContext &context);
 
 } // namespace QcHandbookCreaturePages

@@ -10,8 +10,10 @@
 #include <memory>
 #include <utility>
 
-// One end of an in-process link. Frames go into the peer's inbox under a mutex and the peer is
-// woken through its event loop, so both ends may live in different threads (server and GUI).
+/*! \brief One end of an in-process link.
+
+    Frames go into the peer's inbox under a mutex and the peer is woken through its event loop,
+    so both ends may live in different threads (server and GUI). */
 class QcInProcessTransport : public QcTransport
 {
     Q_OBJECT
@@ -20,7 +22,7 @@ public:
     ~QcInProcessTransport() override;
     Q_DISABLE_COPY_MOVE(QcInProcessTransport)
 
-    // Creates two connected ends without parents; move each to its thread before use.
+    /*! Creates two connected ends without parents; move each to its thread before use. */
     static std::pair<std::unique_ptr<QcInProcessTransport>, std::unique_ptr<QcInProcessTransport>> createPair();
 
     void sendFrame(const QByteArray &frame) override;

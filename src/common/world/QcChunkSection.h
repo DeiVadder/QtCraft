@@ -11,18 +11,22 @@
 
 #include <span>
 
-// 16x16x16 blocks stored as a palette plus per-block palette indices. A section with a single
-// block type stores no index array, so empty (all-air) sections cost almost nothing. The indices
-// are packed into 16-bit words with as many bits as the palette needs (decision E-844): 4 bits for
-// up to 16 entries, 8 bits for up to 256, 16 bits beyond; compact() and assign() also pick 1 or 2
-// bits for palettes of 2 or 4 entries. A growing palette widens the indices (repacking all cells
-// once); compact() narrows them again. The words are an implicitly shared QList, so a copy of a
-// section (a chunk snapshot for mesher and light) shares them until one side writes.
+/*! \brief 16x16x16 blocks stored as a palette plus per-block palette indices.
+
+    A section with a single block type stores no index array, so empty (all-air) sections cost
+    almost nothing. The indices are packed into 16-bit words with as many bits as the palette
+    needs (decision E-844): 4 bits for up to 16 entries, 8 bits for up to 256, 16 bits beyond;
+    compact() and assign() also pick 1 or 2 bits for palettes of 2 or 4 entries. A growing
+    palette widens the indices (repacking all cells once); compact() narrows them again. The
+    words are an implicitly shared QList, so a copy of a section (a chunk snapshot for mesher and
+    light) shares them until one side writes. */
 class QcChunkSection
 {
 public:
+    /*! Returns the index of the cell (\a x, \a y, \a z): x fastest, then z, then y. */
     static constexpr int index(int x, int y, int z) { return (y * QcWorld::chunkSize + z) * QcWorld::chunkSize + x; }
 
+    /*! Returns the block of the cell (\a x, \a y, \a z), each in 0..15. */
     QcBlockId block(int x, int y, int z) const
     {
         Q_ASSERT(x >= 0 && x < QcWorld::chunkSize && y >= 0 && y < QcWorld::sectionHeight && z >= 0
@@ -32,33 +36,38 @@ public:
         }
         return m_palette.at(packedIndex(index(x, y, z)));
     }
+    /*! Sets the cell (\a x, \a y, \a z) to \a block, adding it to the palette when needed. */
     void setBlock(int x, int y, int z, QcBlockId block);
+    /*! Sets every cell to \a block (uniform storage). */
     void fill(QcBlockId block);
 
+    /*! Returns whether every cell holds the one palette entry (no indices stored). */
     bool isUniform() const { return m_words.isEmpty(); }
+    /*! Returns whether every cell is air. */
     bool isEmpty() const { return isUniform() && m_palette.constFirst() == qcAirBlockId; }
 
+    /*! Returns the palette; the first entry in a uniform section. */
     const QList<QcBlockId> &palette() const { return m_palette; }
-    // Palette index of the cell `cell` (in the order of index()); 0 in a uniform section.
+    /*! Palette index of the cell \a cell (in the order of index()); 0 in a uniform section. */
     quint16 paletteIndex(int cell) const
     {
         Q_ASSERT(cell >= 0 && cell < QcWorld::blocksPerSection);
         return isUniform() ? quint16{0} : packedIndex(cell);
     }
-    // Bits per stored palette index: 0 for a uniform section, else 1, 2, 4, 8 or 16.
+    /*! Bits per stored palette index: 0 for a uniform section, else 1, 2, 4, 8 or 16. */
     int bitsPerIndex() const { return isUniform() ? 0 : 16 >> m_entriesPerWordLog2; }
-    // The palette indices of all cells in the order of index() (empty for a uniform section), for
-    // encoders and tests; the section itself keeps them packed.
+    /*! Returns the palette indices of all cells in the order of index() (empty for a uniform
+        section), for encoders and tests; the section itself keeps them packed. */
     QList<quint16> unpackedIndices() const;
-    // Bytes the palette and the indices hold on the heap (their capacity; shared copies count in
-    // full for each holder), for memory statistics.
+    /*! Bytes the palette and the indices hold on the heap (their capacity; shared copies count
+        in full for each holder), for memory statistics. */
     qsizetype heapBytes() const
     {
         return m_palette.capacity() * static_cast<qsizetype>(sizeof(QcBlockId)) + m_words.capacity() * static_cast<qsizetype>(sizeof(quint16));
     }
 
-    // Calls `visit(pos)` for every cell whose block is `wanted`, with the section's lowest corner at
-    // `corner` in the world.
+    /*! Calls \c {visit(pos)} (\a visit) for every cell whose block the predicate \a wanted
+        accepts, with the section's lowest corner at \a corner in the world. */
     template<typename Wanted, typename Visit>
     void forEachCell(QcBlockPos corner, const Wanted &wanted, const Visit &visit) const
     {
@@ -72,9 +81,10 @@ public:
             }
         }
     }
-    // Calls `visit(length, paletteIndex)` for each maximal run of equal palette indices in the order
-    // of index(); one run of all cells for a uniform section. Compares whole
-    // words while a run lasts, so long runs cost one comparison per word (the chunk encoder).
+    /*! Calls \c {visit(length, paletteIndex)} (\a visit) for each maximal run of equal palette
+        indices in the order of index(); one run of all cells for a uniform section. Compares
+        whole words while a run lasts, so long runs cost one comparison per word (the chunk
+        encoder). */
     template<typename Visit>
     void forEachRun(const Visit &visit) const
     {
@@ -105,15 +115,17 @@ public:
         }
         visit(QcWorld::blocksPerSection - start, current);
     }
-    // Replaces the content; returns false when the data is inconsistent (wrong size, index out of palette).
+    /*! Replaces the content with \a palette and one index per cell, \a indices (may be empty for a
+        palette of one entry). Returns false when the data is inconsistent (wrong size, index out of
+        palette). */
     bool assign(QList<QcBlockId> palette, const QList<quint16> &indices);
-    // Replaces the palette's entries by `palette` of the same size, keeping every cell's index (a
-    // translation of block ids); returns false for a palette of another size.
+    /*! Replaces the palette's entries by \a palette of the same size, keeping every cell's index
+        (a translation of block ids); returns false for a palette of another size. */
     bool replacePalette(QList<QcBlockId> palette);
-    // Drops unused palette entries, merges entries of the same block (keeping the first), packs the
-    // indices as narrow as the palette allows and collapses to uniform storage when possible. The
-    // remaining entries keep their order. Returns at once for a section not written since the last
-    // compact().
+    /*! Drops unused palette entries, merges entries of the same block (keeping the first), packs
+        the indices as narrow as the palette allows and collapses to uniform storage when
+        possible. The remaining entries keep their order. Returns at once for a section not
+        written since the last compact(). */
     void compact();
 
 private:

@@ -17,29 +17,39 @@
 class QcHandbookLinks;
 class QcHandbookText;
 
-// Reverse lookups over the content for the handbook pages, all in content order: recipes by result
-// and ingredient, smelting by result and input, what drops an item, where a block occurs, which
-// creatures spawn on it, machines by category and parts by base block.
+/*! \brief Reverse lookups over the content for the handbook pages, all in content order: recipes
+    by result and ingredient, smelting by result and input, what drops an item, where a block
+    occurs, which creatures spawn on it, machines by category and parts by base block. */
 class QcHandbookIndex
 {
 public:
+    /*! A link to an entry. */
     using Link = QcHandbookEntry::Link;
-    // A recipe index with the tag the item fits through (empty when named directly).
+    /*! A recipe index with the tag the item fits through (empty when named directly). */
     using IngredientUse = std::pair<qsizetype, QString>;
 
-    // Reports recipes with tags no item has to `text`.
+    /*! Builds the lookups over \a content, with the titles and links of \a links. Reports recipes
+        with tags no item has to \a text. */
     QcHandbookIndex(const QcContentRegistry &content, QcHandbookText &text, const QcHandbookLinks &links);
 
+    /*! Returns the indices of the crafting recipes that make \a item. */
     QList<qsizetype> recipesByResult(const QString &item) const { return m_recipesByResult.value(item); }
+    /*! Returns the crafting recipes that take \a item, by name or through a tag. */
     QList<IngredientUse> recipesByIngredient(const QString &item) const { return m_recipesByIngredient.value(item); }
+    /*! Returns the indices of the smelting recipes that make \a item. */
     QList<qsizetype> smeltingByResult(const QString &item) const { return m_smeltingByResult.value(item); }
+    /*! Returns the indices of the smelting recipes that take \a item. */
     QList<qsizetype> smeltingByInput(const QString &item) const { return m_smeltingByInput.value(item); }
+    /*! Returns links to the blocks and creatures that drop \a item, with the drop as note. */
     QList<Link> droppedBy(const QString &item) const { return m_droppedBy.value(item).links(); }
-    // Biomes, ore veins and pools a block occurs in.
+    /*! Returns links to the biomes, ore veins and pools \a block occurs in. */
     QList<Link> foundIn(const QString &block) const { return m_foundIn.value(block).links(); }
+    /*! Returns links to the creatures that spawn on \a block. */
     QList<Link> spawnersOn(const QString &block) const { return m_spawnersOn.value(block).links(); }
-    // Indices into the content's blocks: the machines and campfires that work on a recipe category.
+    /*! Returns indices into the content's blocks: the machines and campfires that work on the
+        recipe \a category. */
     QList<qsizetype> machinesByCategory(const QString &category) const { return m_machinesByCategory.value(category); }
+    /*! Returns the building parts made of the material whose base block is \a block. */
     QStringList partsByBase(const QString &block) const { return m_partsByBase.value(block); }
 
 private:

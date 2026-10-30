@@ -118,7 +118,7 @@ def out_of_line_name(item):
     (`inline void QcA::f(int x) {…}`) defines, or None for other items."""
     if item.kind != "function":
         return None
-    match = re.search(r"((?:\w+::)+)(~?\w+)\s*\(", item.text.split("(", 1)[0] + "(")
+    match = re.search(r"((?:\w+::)+)(~?\w+|operator[^\w\s(]+)\s*\(", item.text.split("(", 1)[0] + "(")
     if not match:
         return None
     return tuple(item.scope + match.group(1).rstrip(":").split("::")), match.group(2)
@@ -392,10 +392,16 @@ struct QcPlain
     int b = 0;
     /*! Adds \\a x. */
     void add(int x);
+    /*! Returns whether \\a other holds the same. */
+    bool operator==(const QcPlain &other) const;
 };
 inline void QcPlain::add(int x)
 {
     a += x;
+}
+inline bool QcPlain::operator==(const QcPlain &other) const
+{
+    return a == other.a && b == other.b;
 }
 /*! \\brief Hidden. \\internal */
 class QcHidden

@@ -10,16 +10,19 @@
 
 #include <compare>
 
-// Horizontal position of a chunk column, in chunks.
+/*! \brief Horizontal position of a chunk column, in chunks. */
 struct QcChunkPos
 {
+    /*! East (+) and west (-), in chunks. */
     int x = 0;
+    /*! South (+) and north (-), in chunks. */
     int z = 0;
 
     auto operator<=>(const QcChunkPos &) const = default;
 
-    // Whether the chunk lies within the technical bound of the world (QcWorld::maxHorizontalChunk,
-    // decision E-883); the server loads, generates and saves no chunk beyond it.
+    /*! Returns whether the chunk lies within the technical bound of the world
+        (QcWorld::maxHorizontalChunk, decision E-883); the server loads, generates and saves no
+        chunk beyond it. */
     constexpr bool isInsideWorld() const
     {
         return x >= -QcWorld::maxHorizontalChunk && x <= QcWorld::maxHorizontalChunk && z >= -QcWorld::maxHorizontalChunk
@@ -29,7 +32,8 @@ struct QcChunkPos
 
 Q_DECLARE_TYPEINFO(QcChunkPos, Q_PRIMITIVE_TYPE);
 
+/*! Returns the hash of \a pos for QHash, mixed with \a seed. */
 size_t qHash(QcChunkPos pos, size_t seed = 0) noexcept;
 
-// Chebyshev distance in chunks, used for view-distance rings.
+/*! Returns the Chebyshev distance between \a a and \a b in chunks, used for view-distance rings. */
 int qcChunkDistance(QcChunkPos a, QcChunkPos b);

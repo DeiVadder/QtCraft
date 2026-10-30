@@ -20,123 +20,155 @@
 #include <QList>
 #include <QString>
 
+/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 // Movement and action states of an entity, as bits of EntitySpawn/EntityMove::flags. The client
 // animates from them.
-// A swing of the right arm started this tick (mining, attacking, using).
+
+/*! Flag bit: a swing of the right arm started this tick (mining, attacking, using). */
 inline constexpr quint16 Swing = 1;
+/*! Flag bit: the entity stands on the ground. */
 inline constexpr quint16 OnGround = 2;
+/*! Flag bit: the entity is in a liquid. */
 inline constexpr quint16 InWater = 4;
+/*! Flag bit: the entity sneaks. */
 inline constexpr quint16 Sneaking = 8;
+/*! Flag bit: the entity sprints. */
 inline constexpr quint16 Sprinting = 16;
-// On a boat the sprint bit tells that its driver paddles: his latest input pressed a key that
-// paddles or turns (decision E-920); the paddles row.
+/*! On a boat the sprint bit tells that its driver paddles: his latest input pressed a key that
+    paddles or turns (decision E-920); the paddles row. */
 inline constexpr quint16 Rowing = Sprinting;
-// A young animal (decision E-293): drawn at QcMsg::youngScale of its size.
+/*! A young animal (decision E-293): drawn at QcMsg::youngScale of its size. */
 inline constexpr quint16 Young = 32;
-// An animal in love after feeding: hearts above it.
+/*! An animal in love after feeding: hearts above it. */
 inline constexpr quint16 InLove = 64;
-// A player sitting in a minecart (decision E-382).
+/*! A player sitting in a minecart (decision E-382). */
 inline constexpr quint16 Riding = 128;
-// On fire (decision E-393): flames around the body.
+/*! On fire (decision E-393): flames around the body. */
 inline constexpr quint16 Burning = 256;
-// The pose of a creature (QcPose, decision E-423): lying on its back (a villager in its bed,
-// decision E-411) or sitting; neither for standing.
+/*! The pose of a creature (QcPose, decision E-423): lying on its back (a villager in its bed,
+    decision E-411) or sitting; neither for standing. \qcshared */
 inline constexpr quint16 Lying = 512;
 inline constexpr quint16 Sitting = 1024;
-// A player drawing a bow (decision E-425): arms raised to aim in the third person.
+/*! A player drawing a bow (decision E-425): arms raised to aim in the third person. */
 inline constexpr quint16 Drawing = 2048;
-// A projectile stuck in a block: it no longer turns with its flight.
+/*! A projectile stuck in a block: it no longer turns with its flight. */
 inline constexpr quint16 Stuck = 4096;
 
-// The pose bits of a creature's flags, and the pose they carry.
+/*! Returns the flag bits of \a pose: Lying, Sitting or none for standing. */
 inline quint16 poseFlags(QcPose pose)
 {
     return pose == QcPose::Lying ? static_cast<quint16>(Lying) : pose == QcPose::Sitting ? static_cast<quint16>(Sitting) : quint16{0};
 }
+/*! Returns the pose the bits of \a flags carry; standing without Lying or Sitting. */
 inline QcPose poseOf(quint16 flags)
 {
     return (flags & Lying) != 0 ? QcPose::Lying : (flags & Sitting) != 0 ? QcPose::Sitting : QcPose::Standing;
 }
 
+/*! The size of a young animal relative to a grown one. */
 inline constexpr double youngScale = 0.5;
 
-// Server -> client: an entity came into view, with its kind (decision E-365); a creature also names
-// its type, an index into the content's mobs. Sent again for a known id when an item stack's count,
-// a player's look or armour or a stand changes.
+/*! \brief Server -> client: an entity came into view, with its kind (decision E-365); a creature
+    also names its type, an index into the content's mobs.
+
+    Sent again for a known id when an item stack's count, a player's look or armour or a stand
+    changes. */
 struct EntitySpawn
 {
+    /*! The entity's id. */
     quint32 id = 0;
+    /*! The entity's kind. */
     QcEntityKind kind = QcEntityKind::Player;
+    /*! Players: their name; armour stands and creatures: their custom name (empty for none). */
     QString name;
+    /*! The entity's position. */
     QcVec3 position;
+    /*! Horizontal view angle in degrees. */
     float yaw = 0.0f;
-    // Players and creatures: their health; experience orbs: their value (decision E-398).
+    /*! Players and creatures: their health; experience orbs: their value (decision E-398);
+        primed explosives: the ticks of their fuse left (decision E-604). */
     double health = 0.0;
-    // The stack of an item entity; projectiles: the item they look like (an arrow); empty for the other kinds.
+    /*! The stack of an item entity; projectiles: the item they look like (an arrow); empty for
+        the other kinds. */
     QcItemStack item;
-    // Players: their chosen look; villagers: the look the server gives them (decision E-411); armour
-    // stands: only its cape counts (decision E-239).
+    /*! Players: their chosen look; villagers: the look the server gives them (decision E-411);
+        armour stands: only its cape counts (decision E-239). */
     QcAppearance appearance;
-    // View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
+    /*! View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
+        \qcshared */
     float pitch = 0.0f;
     quint16 flags = 0;
     QcItemId held = qcNoItem;
-    // The block of a falling or moving block entity; air otherwise.
+    /*! The block of a falling or moving block entity; air otherwise. */
     QcBlockId block = qcAirBlockId;
-    // Players and armour stands: what they wear, so others draw it (decision E-234); empty for the rest.
+    /*! Players and armour stands: what they wear, so others draw it (decision E-234); empty for
+        the rest. */
     QcEquipment equipment{};
-    // Armour stands only: pose and what they show.
+    /*! Armour stands only: pose and what they show. */
     QcStandPose stand{};
-    // Creatures only: index into the content's mobs (at most QcStreamLimits::maxDefinitions).
+    /*! Creatures only: index into the content's mobs (at most QcStreamLimits::maxDefinitions). */
     qint32 creatureType = 0;
-    // Item frames and paintings only (decision E-790): where they hang and what they show; `held`
-    // names their own item (the client finds a painting's motifs there), `item` is the stack a
-    // frame holds.
+    /*! Item frames and paintings only (decision E-790): where they hang and what they show;
+        \c {held} names their own item (the client finds a painting's motifs there), \c {item} is
+        the stack a frame holds. */
     QcHanging hanging{};
 };
 
+/*! \brief The state of one entity in EntityMoves; the fields as in EntitySpawn. */
 struct EntityMove
 {
+    /*! The entity's id. */
     quint32 id = 0;
+    /*! The entity's position. */
     QcVec3 position;
+    /*! Horizontal view angle in degrees. */
     float yaw = 0.0f;
+    /*! As EntitySpawn::health. */
     double health = 0.0;
-    // Set in the tick the entity took damage (for a hurt flash).
+    /*! Set in the tick the entity took damage (for a hurt flash). */
     bool hurt = false;
+    /*! View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
+        \qcshared */
     float pitch = 0.0f;
     quint16 flags = 0;
     QcItemId held = qcNoItem;
 };
 
-// Server -> client: positions of all visible entities that changed this tick, with the server's
-// time of the tick (players' time, QcServerClock::playerTimeNs, in ms) for the client's
-// interpolation buffer (decision E-271).
+/*! \brief Server -> client: positions of all visible entities that changed this tick, with the
+    server's time of the tick (players' time, QcServerClock::playerTimeNs, in ms) for the
+    client's interpolation buffer (decision E-271). */
 struct EntityMoves
 {
+    /*! The entities that changed. */
     QList<EntityMove> moves;
+    /*! The server's time of the tick in milliseconds (see the struct). */
     qint64 timeMs = 0;
 };
 
+/*! \brief Server -> client: the entity \c {id} left the player's view or died. */
 struct EntityRemove
 {
+    /*! The entity's id. */
     quint32 id = 0;
-    // The entity died (the client plays the death animation) rather than left the view.
+    /*! The entity died (the client plays the death animation) rather than left the view. */
     bool died = false;
 };
 
-// Client -> server: hit an entity with the held item.
+/*! \brief Client -> server: hit an entity with the held item. */
 struct AttackEntity
 {
+    /*! The entity's id. */
     quint32 id = 0;
 };
 
-// Client -> server: use the held item on a creature (catch a firefly with an empty bottle) or on
-// an armour stand (put on or take off armour or the held item; the server picks the body part from
-// the player's view).
+/*! \brief Client -> server: use the held item on a creature (catch a firefly with an empty
+    bottle) or on an armour stand (put on or take off armour or the held item; the server picks
+    the body part from the player's view). */
 struct UseEntity
 {
+    /*! The entity's id. */
     quint32 id = 0;
 };
 

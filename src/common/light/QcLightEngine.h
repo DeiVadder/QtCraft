@@ -18,46 +18,62 @@
 #include <unordered_map>
 #include <vector>
 
-// Block and sky light of all loaded chunks per section, kept up to date incrementally (decisions
-// E-049 and E-389); the server and the client use the same engine.
-//
-// Block light shines from the blocks that give off light. Sky light shines with 15 into every cell
-// above the highest cell of its column that keeps sky light coming straight down out
-// (QcLightPassage::skyStop) and spreads from there like block light. Every step into a cell costs
-// max(1, opacity) levels, opacity 15 stops light, no step crosses a face a partial shape covers, and
-// unloaded chunks are dark walls. The result of each channel is the unique fixpoint "brightest
-// source minus cheapest path", so it equals one full flood fill of the loaded chunks, whatever the
-// order of the changes: a new chunk floods its own sources and the light flowing in over its
-// borders; a changed block clears the light that depended on it (breadth-first removal) and refills
-// the cleared cells from their lit boundary and from sources; an unloaded chunk takes away the
-// light that came from it.
-//
-// Levels are kept as nibbles per section; a section whose cells all have the same level (all dark,
-// or all lit by the open sky) holds no cells. Not thread-safe: one thread uses it.
+/*! \brief Block and sky light of all loaded chunks per section, kept up to date incrementally
+    (decisions E-049 and E-389); the server and the client use the same engine.
+
+    Block light shines from the blocks that give off light. Sky light shines with 15 into every cell
+    above the highest cell of its column that keeps sky light coming straight down out
+    (QcLightPassage::skyStop) and spreads from there like block light. Every step into a cell costs
+    max(1, opacity) levels, opacity 15 stops light, no step crosses a face a partial shape covers,
+    and unloaded chunks are dark walls. The result of each channel is the unique fixpoint "brightest
+    source minus cheapest path", so it equals one full flood fill of the loaded chunks, whatever the
+    order of the changes: a new chunk floods its own sources and the light flowing in over its
+    borders; a changed block clears the light that depended on it (breadth-first removal) and
+    refills the cleared cells from their lit boundary and from sources; an unloaded chunk takes away
+    the light that came from it.
+
+    Levels are kept as nibbles per section; a section whose cells all have the same level (all
+    dark, or all lit by the open sky) holds no cells. Not thread-safe: one thread uses it. */
 class QcLightEngine
 {
 public:
-    enum class Channel : quint8 { Block = 0, Sky = 1 };
+    /*! The two kinds of light. */
+    enum class Channel : quint8 {
+        /*! Light of the blocks that give off light. */
+        Block = 0,
+        /*! Light of the sky. */
+        Sky = 1
+    };
+    /*! The number of channels. */
     static constexpr int channelCount = 2;
+    /*! The highest level. */
     static constexpr int maxLevel = QcLightTable::maxLevel;
 
+    /*! \brief What the engine keeps. */
     struct Options
     {
-        // Without sky light only block light is kept (the client's mesher computes sky light itself).
+        /*! Without sky light only block light is kept (the client's mesher computes sky light
+            itself). */
         bool sky = true;
-        // Remembers the sections whose levels were written, for takeTouched().
+        /*! Remembers the sections whose levels were written, for takeTouched(). */
         bool trackChanges = false;
     };
+    /*! \brief A section of a chunk. */
     struct SectionRef
     {
+        /*! The chunk. */
         QcChunkPos chunk;
+        /*! The section's index in it. */
         int section = 0;
     };
-    // Sections that hold cells and the bytes they take, per channel.
+    /*! \brief Sections that hold cells and the bytes they take, per channel. */
     struct Memory
     {
+        /*! Chunks held. */
         qsizetype columns = 0;
+        /*! Sections that hold cells, per channel. */
         std::array<qsizetype, channelCount> sections{};
+        /*! The bytes of the chunks' records and of those sections' cells. */
         qsizetype bytes = 0;
     };
 
@@ -67,45 +83,61 @@ public:
 
     QcLightEngine(std::shared_ptr<const QcLightTable> table, Options options);
 
-    // Thread-safe (reads only the table): the light of `chunk` alone, for addChunk().
+    /*! Thread-safe (reads only the table): the light of \a chunk alone, for addChunk(). */
     std::shared_ptr<Prepared> prepare(const QcChunk &chunk) const;
 
-    // The engine keeps a snapshot of the chunk.
+    /*! The engine keeps a snapshot of the chunk. */
     void addChunk(std::shared_ptr<const QcChunk> chunk);
-    // The caller keeps `chunk` alive and in place until it hands over another copy (changeBlock,
-    // rebind) or removes it.
+    /*! The caller keeps \a chunk alive and in place until it hands over another copy
+        (changeBlock, rebind) or removes it. */
     void addChunk(const QcChunk &chunk);
-    // As above with the light prepare() computed for the same blocks (null or another chunk's:
-    // computed here).
+    /*! As above with the light prepare() computed for the same blocks (null or another chunk's:
+        computed here). */
     void addChunk(const QcChunk &chunk, const std::shared_ptr<Prepared> &prepared);
+    /*! Removes the chunk at \a pos and the light that came from it. */
     void removeChunk(QcChunkPos pos);
-    // `chunk` holds the blocks of the chunk at `pos` after the change (same ownership rules as
-    // addChunk); the block before the change is read from the snapshot kept so far.
+    /*! \a chunk holds the blocks of the chunk at \a pos after the change (same ownership rules
+        as addChunk); the block before the change is read from the snapshot kept so far. */
     void changeBlock(QcBlockPos pos, std::shared_ptr<const QcChunk> chunk);
-    // The block at `pos` was `before` and `chunk` (changed in place or a new copy) holds the new one.
+    /*! The block at \a pos was \a before and \a chunk (changed in place or a new copy) holds the
+        new one. */
     void changeBlock(QcBlockPos pos, QcBlockId before, const QcChunk &chunk);
-    // The chunk's blocks moved to another, equal copy (copy on write); its light stays.
+    /*! The blocks of \a chunk moved to another, equal copy (copy on write); its light stays. */
     void rebind(const QcChunk &chunk);
 
+    /*! Returns the table of the blocks' light properties. */
     const QcLightTable &table() const { return *m_table; }
+    /*! Returns the shared table. */
     const std::shared_ptr<const QcLightTable> &sharedTable() const { return m_table; }
+    /*! Returns whether the engine keeps sky light (Options::sky). */
     bool hasSky() const { return m_options.sky; }
+    /*! Returns whether the chunk at \a pos is held. */
     bool hasChunk(QcChunkPos pos) const { return m_columns.contains(pos); }
-    // Current level; 0 in unloaded chunks and without the channel. Above the world the sky is 15.
+    /*! Returns the current level of \a channel at \a pos; 0 in unloaded chunks and without the
+        channel. Above the world the sky is 15. */
     int level(Channel channel, QcBlockPos pos) const;
+    /*! Returns the block light at \a pos. */
     int blockLight(QcBlockPos pos) const { return level(Channel::Block, pos); }
+    /*! Returns the sky light at \a pos. */
     int skyLight(QcBlockPos pos) const { return level(Channel::Sky, pos); }
-    // The cells of a section; null when they all have the level uniformLevel() (or it is not loaded).
+    /*! Returns the cells of section \a index of the chunk at \a pos in \a channel; null when they
+        all have the level uniformLevel() (or it is not loaded). */
     const QcLightNibbles *section(Channel channel, QcChunkPos pos, int index) const;
+    /*! Returns the level of every cell of section \a index of the chunk at \a pos in \a channel
+        while it holds no cells; 0 for a chunk that is not held. */
     int uniformLevel(Channel channel, QcChunkPos pos, int index) const;
-    // Lets a section whose cells all have the same level go without cells.
+    /*! Lets section \a index of the chunk at \a pos in \a channel go without cells when they all
+        have the same level. */
     void compact(Channel channel, QcChunkPos pos, int index);
-    // Sections whose levels were written since the last call (Options::trackChanges).
+    /*! Returns the sections of \a channel whose levels were written since the last call
+        (Options::trackChanges). */
     QList<SectionRef> takeTouched(Channel channel);
-    // Highest cell of a column that sky light coming straight down does not reach (-1: none).
+    /*! Returns the highest cell of the block column \a column that sky light coming straight down
+        does not reach (-1: none; QcWorld::worldHeight in a chunk that is not held). */
     int skyTop(QcBlockPos column) const;
-    // Cells visited by the propagation steps so far (work measure for benchmarks).
+    /*! Cells visited by the propagation steps so far (work measure for benchmarks). */
     quint64 visitedCells() const { return m_visited; }
+    /*! Returns the memory the levels take. */
     Memory memory() const;
 
 private:
@@ -228,6 +260,13 @@ private:
     Column *m_cached = nullptr;
 };
 
+/*! \brief The light of one chunk computed on its own (its neighbours dark walls), on any thread.
+
+    Adding the chunk with it (QcLightEngine::addChunk) leaves only the light across its borders
+    to the engine's thread.
+    \class QcLightEngine::Prepared
+    \inmodule qc_common
+    \inheaderfile common/light/QcLightEngine.h */
 class QcLightEngine::Prepared
 {
 private:

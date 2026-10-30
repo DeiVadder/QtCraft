@@ -5,22 +5,26 @@
 
 #include "common/core/QcChunkPos.h"
 
-// Packs a chunk section address into a single integer key for render-side maps: 28 bits each for
-// the chunk's x and z (two's complement; chunks reach ±QcWorld::maxHorizontalChunk, which needs 27,
-// decision E-883), 8 bits for the section index.
+/*! Returns the key of section \a sectionIndex of the chunk at \a pos: packs the address into a
+    single integer for render-side maps, 28 bits each for the chunk's x and z (two's complement;
+    chunks reach ±QcWorld::maxHorizontalChunk, which needs 27, decision E-883), 8 bits for the
+    section index. */
 constexpr quint64 qcSectionKey(QcChunkPos pos, int sectionIndex)
 {
     return (static_cast<quint64>(static_cast<quint32>(pos.x) & 0xFFFFFFFu) << 36) | (static_cast<quint64>(static_cast<quint32>(pos.z) & 0xFFFFFFFu) << 8)
            | static_cast<quint64>(sectionIndex & 0xFF);
 }
 
-// The section address a key of qcSectionKey() stands for.
+/*! \brief The section address a key of qcSectionKey() stands for. */
 struct QcSectionAddress
 {
+    /*! The chunk. */
     QcChunkPos chunk;
+    /*! The section's index in the chunk. */
     int sectionIndex = 0;
 };
 
+/*! Returns the section address \a key stands for (the inverse of qcSectionKey()). */
 constexpr QcSectionAddress qcSectionFromKey(quint64 key)
 {
     // Sign-extends a 28-bit field.

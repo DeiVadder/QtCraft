@@ -10,50 +10,63 @@
 
 #include <optional>
 
+/*! \brief The block a ray hit (QcRaycast::cast). */
 struct QcRaycastHit
 {
+    /*! The block hit. */
     QcBlockPos block;
-    // Face through which the ray entered the block; the block placed against it goes to its neighbour.
+    /*! Face through which the ray entered the block; the block placed against it goes to its
+        neighbour. */
     QcBlockFace face = QcBlockFace::Up;
+    /*! Distance along the ray to the hit. */
     double distance = 0.0;
-    // Where the ray meets the block's box, in world space.
+    /*! Where the ray meets the block's box, in world space. */
     QcVec3 point;
 };
 
-// Voxel traversal (Amanatides & Woo) along a ray, tested against the boxes of each block state:
-// the drawn boxes of every block that is neither air nor liquid nor invisible, or the collision
-// boxes only (including the part of a fence above its own cell). Unloaded chunks stop the ray
-// without a hit.
+/*! \brief Voxel traversal (Amanatides & Woo) along a ray, tested against the boxes of each block
+    state: the drawn boxes of every block that is neither air nor liquid nor invisible, or the
+    collision boxes only (including the part of a fence above its own cell).
+
+    Unloaded chunks stop the ray without a hit. */
 namespace QcRaycast {
 
+/*! What a ray hits. */
 enum class Targets : quint8 {
-    // What the player can point at (also plants and torches).
+    /*! What the player can point at (also plants and torches). */
     Visible,
-    // What bodies collide with.
+    /*! What bodies collide with. */
     Solid,
-    // Visible blocks and liquids (an empty bucket takes a liquid).
+    /*! Visible blocks and liquids (an empty bucket takes a liquid). */
     VisibleAndLiquids,
 };
 
+/*! How far a player reaches, in metres from the eye. */
 inline constexpr double playerReach = 5.0;
-// Slack of the server's reach check beyond playerReach (network jitter, a turn while clicking).
+/*! Slack of the server's reach check beyond playerReach (network jitter, a turn while clicking). */
 inline constexpr double reachTolerance = 1.0;
 
-// Whether a block may be used from the eye: its centre within playerReach plus reachTolerance. The
-// server checks every use with it, the client asks it before it counts a block as reacting to a use.
+/*! Returns whether the block at \a pos may be used from \a eye: its centre within playerReach plus
+    reachTolerance. The server checks every use with it, the client asks it before it counts a
+    block as reacting to a use. */
 [[nodiscard]] inline bool isWithinReach(const QcVec3 &eye, QcBlockPos pos)
 {
     const QcVec3 centre{pos.x + 0.5, pos.y + 0.5, pos.z + 0.5};
     return (centre - eye).length() <= playerReach + reachTolerance;
 }
 
-// Distance along a normalised ray to a box, or std::nullopt when it misses within maxDistance.
+/*! Returns the distance along the ray from \a origin along the normalised \a direction to \a box,
+    or std::nullopt when it misses within \a maxDistance. */
 [[nodiscard]] std::optional<double> intersectBox(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box, double maxDistance);
-// Like intersectBox, also telling the face through which the ray enters (the face it starts in for
-// rays from inside the box: the one it leaves through is not useful, so it reports `insideFace`).
+/*! Returns as intersectBox() (\a origin, \a direction, \a box, \a maxDistance), also telling the
+    face through which the ray enters (the face it starts in for rays from inside the box: the
+    one it leaves through is not useful, so it reports \a insideFace). */
 [[nodiscard]] std::optional<std::pair<double, QcBlockFace>> intersectBoxFace(const QcVec3 &origin, const QcVec3 &direction, const QcAabb &box,
                                                                double maxDistance, QcBlockFace insideFace);
 
+/*! Returns the first block of \a world that the ray from \a origin along \a direction (it need
+    not be normalised) hits within \a maxDistance, testing the boxes \a targets names; nothing
+    when it hits none or reaches an unloaded chunk. */
 [[nodiscard]] std::optional<QcRaycastHit> cast(const QcBlockAccess &world, const QcVec3 &origin, const QcVec3 &direction, double maxDistance,
                                  Targets targets = Targets::Visible);
 

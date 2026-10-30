@@ -8,7 +8,7 @@
 
 #include <array>
 
-// Column of QcWorld::sectionCount sections at one chunk position.
+/*! \brief Column of QcWorld::sectionCount sections at one chunk position. */
 class QcChunk
 {
 public:
@@ -17,9 +17,11 @@ public:
     {
     }
 
+    /*! Returns the chunk's position. */
     QcChunkPos pos() const { return m_pos; }
 
-    // Local x/z in [0, chunkSize), y in [0, worldHeight). Outside the height range reads air.
+    /*! Returns the block at local \a x and \a z in [0, chunkSize) and \a y in [0, worldHeight).
+        Outside the height range reads air. */
     QcBlockId block(int x, int y, int z) const
     {
         if (y < 0 || y >= QcWorld::worldHeight) {
@@ -27,12 +29,15 @@ public:
         }
         return m_sections[static_cast<std::size_t>(y / QcWorld::sectionHeight)].block(x, y % QcWorld::sectionHeight, z);
     }
+    /*! Sets the block at local \a x, \a y and \a z to \a block. */
     void setBlock(int x, int y, int z, QcBlockId block);
 
+    /*! Returns section \a index (0 at the bottom). */
     const QcChunkSection &section(int index) const { return m_sections[static_cast<std::size_t>(index)]; }
+    /*! Returns section \a index (0 at the bottom) to change it. */
     QcChunkSection &section(int index) { return m_sections[static_cast<std::size_t>(index)]; }
 
-    // Highest y whose block is not air, or -1 for an empty column at (x, z).
+    /*! Returns the highest y whose block is not air, or -1 for an empty column at (\a x, \a z). */
     int highestNonAir(int x, int z) const;
 
 private:
