@@ -10,6 +10,7 @@
 # second job deploys it. Runs on every push to main, since both follow the content and the code.
 # Needs Settings, Pages, Source "GitHub Actions" once.
 name: Pages
+# (registered on the default branch by touching this file after the first push)
 
 on:
   push:

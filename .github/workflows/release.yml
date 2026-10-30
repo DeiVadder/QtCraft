@@ -12,6 +12,7 @@
 # artifacts only, without a release: these are the playtest builds (docs/Building.md, "Playtest
 # builds").
 name: Release
+# (registered on the default branch by touching this file after the first push)
 
 on:
   push:
