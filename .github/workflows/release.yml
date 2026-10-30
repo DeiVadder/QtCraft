@@ -36,7 +36,8 @@ jobs:
   macos:
     name: macOS package
     runs-on: macos-26
-    timeout-minutes: 90
+    # Tests in Debug plus a universal Release build; ccache makes later runs much faster.
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,8 +56,29 @@ jobs:
         with:
           xcode-version: "26.6"
 
-      - name: Ninja
-        run: brew install ninja
+      - name: Ninja and ccache
+        run: brew install ninja ccache
+
+      - name: ccache directory
+        run: |
+          {
+            echo "CCACHE_DIR=${{ runner.temp }}/ccache"
+            echo "CCACHE_MAXSIZE=5G"
+            echo "CCACHE_BASEDIR=${{ github.workspace }}"
+          } >> "$GITHUB_ENV"
+
+      - name: ccache cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ccache-release-macos-${{ github.sha }}
+          restore-keys: ccache-release-macos-
+
+      - name: OpenSSL cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/openssl
+          key: openssl-${{ runner.os }}-universal-${{ hashFiles('3rdparty/openssl-version.txt', 'scripts/build-openssl.sh') }}
 
       - name: Qt ${{ env.QT_VERSION }}
         uses: jurplel/install-qt-action@v4
@@ -111,7 +133,7 @@ jobs:
   windows:
     name: Windows x64 package
     runs-on: windows-2025
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:

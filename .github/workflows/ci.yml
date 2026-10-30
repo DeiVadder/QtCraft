@@ -30,7 +30,8 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
-    timeout-minutes: 90
+    # The first run builds everything (about 1.5 h on the macOS runner); later runs reuse ccache.
+    timeout-minutes: 180
     strategy:
       fail-fast: false
       matrix:
@@ -61,13 +62,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build gcc-14 g++-14 libgl1-mesa-dev libvulkan-dev \
-            libxkbcommon-dev libxkbcommon-x11-0 libfontconfig1 libegl1 libpulse0
+            libxkbcommon-dev libxkbcommon-x11-0 libfontconfig1 libegl1 libpulse0 ccache
           echo "CC=gcc-14" >> "$GITHUB_ENV"
           echo "CXX=g++-14" >> "$GITHUB_ENV"
 
-      - name: Ninja (macOS)
+      - name: Ninja and ccache (macOS)
         if: runner.os == 'macOS'
-        run: brew install ninja
+        run: brew install ninja ccache
 
       - name: MSVC environment (Windows)
         if: runner.os == 'Windows'
@@ -100,6 +101,31 @@ jobs:
         with:
           path: ~/.cache/qtcraft/sdl3
           key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
+
+      # Compiler cache across runs (QC_CCACHE uses ccache when it is found; Windows has it from
+      # Strawberry Perl). One entry per OS, refreshed by every run.
+      - name: ccache directory
+        shell: bash
+        run: |
+          {
+            echo "CCACHE_DIR=${{ runner.temp }}/ccache"
+            echo "CCACHE_MAXSIZE=3G"
+            echo "CCACHE_BASEDIR=${{ github.workspace }}"
+          } >> "$GITHUB_ENV"
+
+      - name: ccache cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ccache-ci-${{ runner.os }}-${{ github.sha }}
+          restore-keys: ccache-ci-${{ runner.os }}-
+
+      # OpenSSL is built once into ~/.cache/qtcraft/openssl (decision E-872).
+      - name: OpenSSL cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/openssl
+          key: openssl-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/openssl-version.txt', 'scripts/build-openssl.sh', 'scripts/windows/build-openssl.ps1') }}
 
       # Linux and Windows are experimental: warnings stay warnings there, so one run lists all of
       # them (the release workflow builds Windows with warnings as errors).
