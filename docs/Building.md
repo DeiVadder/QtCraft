@@ -6,6 +6,8 @@ How to build, package, test and measure QtCraft. Playing: [Playing.md](Playing.m
 
 CMake 3.25+, Ninja, a C++23 compiler with a recent standard library (on macOS Xcode 26.6 or newer, which the CI also uses; older Xcode lacks parts of the C++23 library such as `std::ranges::contains`; MSVC 2022 on Windows) and Qt 6.8 (any Qt 6.8 release; the releases are built with 6.8.3) with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. Git (the SDL submodule `3rdparty/SDL`) and Python 3 (`scripts/*.py`). For encrypted multiplayer the configure step builds OpenSSL once, which needs `curl` and `perl` (see below).
 
+Qt 6.8.3 with Xcode 26 (macOS 26 SDK) fails to link with `framework 'AGL' not found`: Qt 6.8.3 still names the old AGL framework, which nothing needs and the new SDK no longer has (later 6.8 releases dropped it). The CI removes it from Qt's OpenGL wrapper after installing Qt; by hand: `sed -i '' -e 's/\${__opengl_agl_fw_path}//g' -e '/find_library(WrapOpenGL_AGL/d' <Qt>/lib/cmake/Qt6/FindWrapOpenGL.cmake`.
+
 ## Presets
 
 The local presets (`debug`, `release`, `deploy`, `profile`, `asan`, `tsan`) live in `CMakeUserPresets.json`, which is not in git: copy `CMakeUserPresets.example.json` to it and set the Qt and Ninja paths of your machine in its hidden preset `local` (the example uses `~/Qt/6.8.3/macos`; any Qt 6.8 release works). `scripts/ensure-user-presets.sh` creates the file when it is missing (a copy of the main checkout's file in a worktree, otherwise of the example) and switches on the git hooks of `tools/githooks`; every script that calls `cmake --preset` runs it first.

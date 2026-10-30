@@ -188,7 +188,7 @@ std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::siteNear(double x, doubl
 std::shared_ptr<const QcDeltaSites::Site> QcDeltaSites::ringSite(qint32 cellX, qint32 cellZ, const Land &land) const
 {
     // Ring by ring, in a fixed order: the nearest cell with a delta.
-    for (const auto [dx, dz] : rings) {
+    for (const auto &[dx, dz] : rings) {
         if (std::shared_ptr<const Site> site = cellSite(cellX + dx, cellZ + dz, land)) {
             return site;
         }

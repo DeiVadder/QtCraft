@@ -445,7 +445,7 @@ private slots:
         QVERIFY2(first.size() >= 5 && afterLoading.size() >= 5, qPrintable(u"%1 %2"_s.arg(first.size()).arg(afterLoading.size())));
         QVERIFY(!std::ranges::equal(afterLoading, first));
         int compared = 0;
-        for (const auto [tick, pos] : afterLoading.asKeyValueRange()) {
+        for (const auto &[tick, pos] : afterLoading.asKeyValueRange()) {
             if (tick <= continuous.lastKey()) {
                 QCOMPARE(continuous.value(tick, QcBlockPos{0, -1, 0}), pos);
                 ++compared;

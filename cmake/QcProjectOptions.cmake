@@ -39,18 +39,28 @@ endif()
 # C++23 for every own target (a compile feature, so CMake picks the flag for the compiler).
 target_compile_features(qc_project_options INTERFACE cxx_std_23)
 
+# Warnings are errors. The experimental Linux job of the CI turns this off to see every warning of a
+# compiler the project is not built with day to day in one run, instead of one file at a time.
+option(QC_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+
 if(MSVC)
     # The default /EHsc of CMake would only be overridden by /EHs-c- with warning D9025 per file.
     string(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     # C4702 (unreachable code) comes from the optimizer inside Qt's inline code once exceptions are
     # off; /external:W0 does not reach it, and Clang/GCC have no such warning in -Wall -Wextra.
-    target_compile_options(qc_project_options INTERFACE /W4 /WX /EHs-c- /permissive- /wd4702)
+    target_compile_options(qc_project_options INTERFACE /W4 /EHs-c- /permissive- /wd4702)
+    if(QC_WARNINGS_AS_ERRORS)
+        target_compile_options(qc_project_options INTERFACE /WX)
+    endif()
     target_compile_definitions(qc_project_options INTERFACE _HAS_EXCEPTIONS=0)
 else()
     # -Wold-style-cast: casts only as named casts (ES.49, E-865); MSVC has no such warning.
     target_compile_options(qc_project_options INTERFACE
-        -Wall -Wextra -Wpedantic -Wold-style-cast -Werror
+        -Wall -Wextra -Wpedantic -Wold-style-cast
         -fno-exceptions)
+    if(QC_WARNINGS_AS_ERRORS)
+        target_compile_options(qc_project_options INTERFACE -Werror)
+    endif()
 endif()
 
 # Name hiding as MSVC reports it (C4456-C4459, decision E-898): Clang checks it only with -Wshadow,

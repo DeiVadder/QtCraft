@@ -105,7 +105,7 @@ void QcWorldMapWorker::run(const QcWorldMapRequest &request, quint64 build, cons
     const auto passes = request.passes == QcWorldMapRequest::Passes::All
                             ? std::vector{std::pair{QcWorldMapResult::Pass::Coarse, coarseCells}, std::pair{QcWorldMapResult::Pass::Fine, fineCells}}
                             : std::vector<std::pair<QcWorldMapResult::Pass, int>>{};
-    for (const auto [pass, cells] : passes) {
+    for (const auto &[pass, cells] : passes) {
         const std::optional<QcBiomeMap> map = QcBiomeMap::sample(*terrain, withCells(request.area, cells), cancelled);
         if (!map) {
             return;

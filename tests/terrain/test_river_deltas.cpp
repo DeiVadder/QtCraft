@@ -64,7 +64,7 @@ Delta floodDelta(const QList<int> &biome, QList<bool> &seen, qsizetype start, in
         ++delta.points;
         sumI += i;
         sumJ += j;
-        for (const auto [di, dj] : sides) {
+        for (const auto &[di, dj] : sides) {
             const int ni = i + di;
             const int nj = j + dj;
             const qsizetype next = static_cast<qsizetype>(nj) * cells + ni;
@@ -153,7 +153,7 @@ Waters watersAround(const QcTerrainGenerator &generator, const Delta &delta, int
         const qsizetype cell = stack.takeLast();
         const int i = static_cast<int>(cell % cells);
         const int j = static_cast<int>(cell / cells);
-        for (const auto [di, dj] : std::array<std::pair<int, int>, 4>{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}}) {
+        for (const auto &[di, dj] : std::array<std::pair<int, int>, 4>{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}}) {
             const qsizetype next = static_cast<qsizetype>(j + dj) * cells + (i + di);
             if (i + di >= 0 && j + dj >= 0 && i + di < cells && j + dj < cells && !seen[next] && water(next)) {
                 seen[next] = true;
@@ -334,7 +334,7 @@ private slots:
             const QcTerrainGenerator &generator = generatorOf(m_content, seed);
             const QList<Delta> deltas = deltasOf(seed, 2);
             for (const Delta &delta : deltas) {
-                for (const auto [dx, dz] : std::array<std::pair<int, int>, 3>{{{0, 0}, {-40, 24}, {32, -40}}}) {
+                for (const auto &[dx, dz] : std::array<std::pair<int, int>, 3>{{{0, 0}, {-40, 24}, {32, -40}}}) {
                     const QcChunkPos centre = QcBlockPos{delta.x + dx, 0, delta.z + dz}.chunk();
                     const QStringList open = QcWaterTestUtil::openWater(generator, QcWaterTestUtil::ChunkArea(generator, centre), centre);
                     QVERIFY2(open.isEmpty(), qPrintable(u"seed %1: water beside air at "_s.arg(seed) + open.mid(0, 5).join(u", "_s)));

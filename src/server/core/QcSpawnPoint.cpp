@@ -92,7 +92,7 @@ std::optional<QcBlockPos> QcSpawnPoint::naturalGroundOnRing(QcBlockPos column, i
     // Each side of the square ring is walked once (corners twice, which is harmless).
     for (int i = -radius; i <= radius; ++i) {
         const std::pair<int, int> sides[] = {{i, -radius}, {i, radius}, {-radius, i}, {radius, i}};
-        for (const auto [dx, dz] : sides) {
+        for (const auto &[dx, dz] : sides) {
             if (const std::optional<QcBlockPos> ground = naturalGroundAt(column.x + dx, column.z + dz)) {
                 return ground;
             }

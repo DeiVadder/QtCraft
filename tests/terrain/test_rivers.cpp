@@ -316,7 +316,7 @@ private:
     {
         const QList<std::pair<int, int>> rivers = riverColumns(first, count, 512);
         QCOMPARE(rivers.size(), static_cast<qsizetype>(count));
-        for (const auto [x, z] : rivers) {
+        for (const auto &[x, z] : rivers) {
             const QcRiverField::Sample one = first.riverAt(x, z);
             const QcRiverField::Sample two = again.riverAt(x, z);
             QCOMPARE(one.distance, two.distance);
@@ -491,7 +491,7 @@ private slots:
         const QcTerrainGenerator &generator = generatorFor(7);
         const QList<std::pair<int, int>> rivers = riverColumns(generator, 24, 256);
         QVERIFY(rivers.size() >= 16);
-        for (const auto [x, z] : rivers) {
+        for (const auto &[x, z] : rivers) {
             const QcTerrainColumn column = generator.column(x, z);
             const QcRiverField::Sample river = generator.riverAt(x, z);
             QVERIFY2(river.distance < river.halfWidth + 1.0,
@@ -515,7 +515,7 @@ private slots:
             const QcTerrainGenerator &generator = generatorFor(seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 8, 384);
             QVERIFY2(rivers.size() >= 6, qPrintable(u"seed %1"_s.arg(seed)));
-            for (const auto [x, z] : rivers) {
+            for (const auto &[x, z] : rivers) {
                 const QcChunkPos centre = QcBlockPos{x, 0, z}.chunk();
                 const QStringList open = QcWaterTestUtil::openWater(generator, QcWaterTestUtil::ChunkArea(generator, centre), centre);
                 QVERIFY2(open.isEmpty(), qPrintable(u"water beside air at "_s + open.mid(0, 5).join(u", "_s)));
@@ -531,7 +531,7 @@ private slots:
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}}) {
             const QcTerrainGenerator &generator = generatorFor(seed);
             const QList<std::pair<int, int>> rivers = riverColumns(generator, 60, 128);
-            for (const auto [x, z] : rivers) {
+            for (const auto &[x, z] : rivers) {
                 if (generator.biomeName(generator.column(x, z).biome) != u"qtcraft:frozen_river"_s) {
                     continue;
                 }

@@ -91,7 +91,7 @@ void QcDeltaArms::addFirstLevel(double split, double riverWidth)
     const double right = firstOffset + firstOffsetSpread * nextTrait();
     const double middle = middleOffset * (2.0 * nextTrait() - 1.0);
     const double withMiddle = smoothstep(0.4, 0.6, nextTrait());
-    for (const auto [side, share] : {std::pair{left, 1.0}, std::pair{right, 1.0}, std::pair{middle, withMiddle}}) {
+    for (const auto &[side, share] : {std::pair{left, 1.0}, std::pair{right, 1.0}, std::pair{middle, withMiddle}}) {
         const double width = firstWidth * riverWidth * share;
         const int arm = add({.parent = 0, .start = split, .ramp = 0.25 + 0.15 * nextTrait(), .offset = side, .width = width});
         // Every arm takes its traits whether it is there or not: the order of the traits never
