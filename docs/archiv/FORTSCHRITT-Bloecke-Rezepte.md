@@ -6,7 +6,7 @@ Wiederaufnahme-Dokument für diesen Nebenstrang. Ein frischer Agent (auch unter 
 
 ## Rahmen
 
-- **Branch:** `feature/blocks-recipes`, Worktree `.claude/worktrees/blocks-recipes`, abgezweigt von `dev` 25c9fd3 (nach Etappe 19b) am 2026-10-09.
+- **Branch:** `feature/blocks-recipes`, Worktree `.claude/worktrees/blocks-recipes`, abgezweigt von `dev` d41bb29 (nach Etappe 19b) am 2026-10-09.
 - **Parallel:** Auf `feature/20-polish` (+ `20a/20b/20c`) arbeitet ein anderer Agent an Etappe 20. Konflikte möglichst klein halten: nur Inhalt (`content/qtcraft`), Sprachdateien, Handbuch-Export und eng begrenzte C++-Stellen anfassen.
 - **Merge:** **Nicht selbst nach `dev` mergen.** Branch fertigstellen, verifizieren, berichten; der Mensch entscheidet über den Merge (wegen der parallelen Etappe 20).
 - **Entscheidungsnummern:** In diesem Strang **E-200 ff.**, damit sie nicht mit dem Hauptstrang (zuletzt E-089) kollidieren; beim Merge ggf. umnummerieren. Neue Entscheidungen hier unten im Abschnitt „Entscheidungen“ notieren und beim Abschluss nach `docs/Entscheidungen.md` übernehmen.

@@ -1,6 +1,6 @@
 # Menü-Prüfung (Paket 76.1)
 
-Stand 2026-10-28, `dev` 27cd7ea (nach 55.1b Kartenvorschau, 79.13 Befehlsliste, 79.25 Boot). Prüfung aller Menüs und Bildschirme gegen den [UI-Leitfaden](UI-Leitfaden.md); Grundlage für die Umsetzung in 76.2. Der Bericht ändert keinen Code.
+Stand 2026-10-28, `dev` 3de6ba0 (nach 55.1b Kartenvorschau, 79.13 Befehlsliste, 79.25 Boot). Prüfung aller Menüs und Bildschirme gegen den [UI-Leitfaden](UI-Leitfaden.md); Grundlage für die Umsetzung in 76.2. Der Bericht ändert keinen Code.
 
 ## 0 Methode
 
