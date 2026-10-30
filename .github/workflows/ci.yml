@@ -62,6 +62,14 @@ jobs:
         with:
           xcode-version: "26.6"
 
+      # The Debug test programs fill the runner's disk (the job was stopped near the end of the
+      # build twice): remove preinstalled SDKs the build does not use.
+      - name: Free disk space (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
       - name: Packages (Linux)
         if: runner.os == 'Linux'
         run: |
