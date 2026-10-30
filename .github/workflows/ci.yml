@@ -143,9 +143,14 @@ jobs:
           key: openssl-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/openssl-version.txt', 'scripts/build-openssl.sh', 'scripts/windows/build-openssl.ps1') }}
 
       # Linux and Windows are experimental: warnings stay warnings there, so one run lists all of
-      # them (the release workflow builds Windows with warnings as errors).
+      # them (the release workflow builds Windows with warnings as errors). On Linux at most two
+      # links run at once: the runner has 16 GB, and parallel links of the test programs with debug
+      # information exhausted it (the runner was shut down).
       - name: Configure
-        run: cmake --preset ci-debug ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
+        run: >-
+          cmake --preset ci-debug
+          ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
+          ${{ runner.os == 'Linux' && '-DCMAKE_JOB_POOLS=link=2 -DCMAKE_JOB_POOL_LINK=link' || '' }}
 
       # Experimental jobs keep going after a failed file (-k 0), so one run shows every error.
       # Below the job's limit, so the cache is still saved when the build runs out of time.
