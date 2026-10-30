@@ -7,6 +7,7 @@
 # (a new worktree, a fresh clone), it copies the one of the main checkout if that has one, otherwise
 # CMakeUserPresets.example.json. Every script that calls `cmake --preset` runs this first; in a new
 # worktree run it (or any of those scripts) before a plain `cmake --preset`.
+# With ~/.config/qtcraft/build-root it puts build/ on another disk (see below).
 # It also enables the project's git hooks (tools/githooks: pre-push structure checks) through
 # core.hooksPath, unless that is already set to something else.
 # Usage: scripts/ensure-user-presets.sh   (exit code 0: the file exists, 2: it could not be created)
@@ -23,6 +24,30 @@ if [ -z "$HOOKS_PATH" ] && [ -d "$PROJECT_DIR/tools/githooks" ]; then
         echo "note: enabled the project git hooks (git config core.hooksPath tools/githooks)" >&2
 elif [ -n "$HOOKS_PATH" ] && [ "$HOOKS_PATH" != tools/githooks ]; then
     echo "note: core.hooksPath is $HOOKS_PATH, the project hooks in tools/githooks stay off" >&2
+fi
+
+# Build folders on another disk (a setting of this machine, not in git): when
+# ~/.config/qtcraft/build-root names a folder, the checkout's build/ becomes a link to
+# <that folder>/<checkout folder name>/build, so every script and preset keeps using build/<preset>.
+# A missing disk stops here instead of building into a dangling link. Removing a worktree leaves
+# its folder there; delete <root>/<worktree name> with it.
+BUILD_ROOT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/qtcraft/build-root"
+if [ -f "$BUILD_ROOT_FILE" ]; then
+    BUILD_ROOT=$(sed -n '1s/[[:space:]]*$//p' "$BUILD_ROOT_FILE")
+    LINK="$PROJECT_DIR/build"
+    if [ -n "$BUILD_ROOT" ] && [ ! -d "$BUILD_ROOT" ]; then
+        echo "error: the build root $BUILD_ROOT ($BUILD_ROOT_FILE) is not there (disk not connected?)" >&2
+        exit 2
+    fi
+    if [ -n "$BUILD_ROOT" ] && [ -L "$LINK" ] && [ ! -d "$LINK" ]; then
+        echo "error: build/ links to a missing folder ($(readlink "$LINK"))" >&2
+        exit 2
+    fi
+    if [ -n "$BUILD_ROOT" ] && [ ! -e "$LINK" ] && [ ! -L "$LINK" ]; then
+        DEST="$BUILD_ROOT/$(basename "$PROJECT_DIR")/build"
+        mkdir -p "$DEST" && ln -s "$DEST" "$LINK" || exit 2
+        echo "note: build/ links to $DEST ($BUILD_ROOT_FILE)" >&2
+    fi
 fi
 
 [ -f "$TARGET" ] && exit 0

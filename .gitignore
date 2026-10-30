@@ -1,5 +1,7 @@
 # Build output
 /build*/
+# build/ as a link to another disk (scripts/ensure-user-presets.sh, ~/.config/qtcraft/build-root)
+/build
 /out/
 CMakeLists.txt.user*
 CMakeUserPresets.json
