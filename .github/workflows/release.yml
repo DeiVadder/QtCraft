@@ -65,6 +65,16 @@ jobs:
           modules: ${{ env.QT_MODULES }}
           cache: true
 
+      # Qt 6.8.3 still links the AGL framework, which the macOS 26 SDK no longer has (later 6.8
+      # releases dropped it): take it out of Qt's OpenGL wrapper before configuring.
+      - name: Qt without AGL (macOS 26 SDK)
+        run: |
+          f="$QT_ROOT_DIR/lib/cmake/Qt6/FindWrapOpenGL.cmake"
+          if [ -f "$f" ]; then
+            sed -i '' -e 's/\${__opengl_agl_fw_path}//g' -e '/find_library(WrapOpenGL_AGL/d' "$f"
+            if grep -q 'opengl_agl_fw_path}' "$f"; then echo "AGL still linked in $f"; exit 1; fi
+          fi
+
       # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
       # follows the tag and the build script (whose CONFIG_VERSION names the build options).
       - name: SDL3 cache

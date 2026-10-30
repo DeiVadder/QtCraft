@@ -52,6 +52,16 @@ jobs:
           modules: ${{ env.QT_MODULES }}
           cache: true
 
+      # Qt 6.8.3 still links the AGL framework, which the macOS 26 SDK no longer has (later 6.8
+      # releases dropped it): take it out of Qt's OpenGL wrapper before configuring.
+      - name: Qt without AGL (macOS 26 SDK)
+        run: |
+          f="$QT_ROOT_DIR/lib/cmake/Qt6/FindWrapOpenGL.cmake"
+          if [ -f "$f" ]; then
+            sed -i '' -e 's/\${__opengl_agl_fw_path}//g' -e '/find_library(WrapOpenGL_AGL/d' "$f"
+            if grep -q 'opengl_agl_fw_path}' "$f"; then echo "AGL still linked in $f"; exit 1; fi
+          fi
+
       - name: Build qtcraft-headless
         run: |
           cmake --preset ci-debug -DQC_GAMEPAD=OFF -DQC_TLS=OFF
