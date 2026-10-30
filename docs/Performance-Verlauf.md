@@ -16,9 +16,9 @@ Schwelle: Verschlechtert sich ein Wert um mehr als 10 % gegenüber der letzten M
 
 | Etappe | Szenario | Frame Ø ms | Frame p99 ms | Tick Ø ms | Tick max ms | Speicher MB | Entities | Differenz zur Vorgängerin | Bemerkung |
 |--------|----------|-----------:|-------------:|----------:|------------:|------------:|---------:|---------------------------|-----------|
-| 10 (Baseline, `dev` 75c335d) | stand | 8,35 | 8,98 | 0,18 | 1,48 | 275 | 14 | – | Baseline vor Etappe 11 |
-| 10 (Baseline, `dev` 75c335d) | sprint | 8,35 | 10,35 | 0,17 | 1,51 | 344 | 8 | – | |
-| 10 (Baseline, `dev` 75c335d) | crowd | 8,39 | 10,06 | 0,26 | 1,10 | 279 | 80 | – | |
+| 10 (Baseline, `dev` 46553dc) | stand | 8,35 | 8,98 | 0,18 | 1,48 | 275 | 14 | – | Baseline vor Etappe 11 |
+| 10 (Baseline, `dev` 46553dc) | sprint | 8,35 | 10,35 | 0,17 | 1,51 | 344 | 8 | – | |
+| 10 (Baseline, `dev` 46553dc) | crowd | 8,39 | 10,06 | 0,26 | 1,10 | 279 | 80 | – | |
 | 11 (`feature/11-furnace` 46912c7), Lauf 1 | stand | 8,36 | 9,39 | 0,14 | 0,41 | 290 | 14 | Speicher +5 % | |
 | 11, Lauf 1 | sprint | 8,39 | 9,92 | 0,19 | 2,52 | 359 | 8 | Tick Ø +12 %, Speicher +4 % | Tick Ø über der Schwelle, daher A/B-Messung (unten) |
 | 11, Lauf 1 | crowd | 8,40 | 10,24 | 0,26 | 2,06 | 295 | 80 | Speicher +6 % | |
@@ -30,7 +30,7 @@ Schwelle: Verschlechtert sich ein Wert um mehr als 10 % gegenüber der letzten M
 | 10 (Wiederholung) | crowd | 8,36 | 9,31 | 0,48 | 2,83 | 280 | 80 | | |
 
 **Bewertung Etappe 11:** Die Server-Tick-Zeiten schwanken zwischen Messreihen derselben Version um bis zu 80 % (Baseline: Crowd-Tick Ø 0,26 ms, in der Wiederholung 0,48 ms), weil sie im Bereich von Zehntel-Millisekunden liegen und vom Takt des Rechners abhängen. Die Etappe-11-Werte liegen innerhalb der Spannweite der Baseline; die Frame-Zeiten (Ø und p99) sind unverändert. Wiederholbar ist nur der höhere Spitzenspeicher (+13 bis +15 MB, rund 5 %, neue Texturen, Maschinen- und Rezepttabellen), unter der Schwelle von 10 %. Kein tiefes Profiling nötig. Folgerung für künftige Messungen: Tick-Zeiten nur im A/B-Vergleich (Vorgänger-Stand direkt davor oder danach messen) bewerten.
-| 11 (`dev` e4a2d80, A/B-Basis) | stand | 8,37 | 9,32 | 0,23 | 0,74 | 291 | 14 | – | gleiche Messreihe wie Etappe 12 |
+| 11 (`dev` b44284d, A/B-Basis) | stand | 8,37 | 9,32 | 0,23 | 0,74 | 291 | 14 | – | gleiche Messreihe wie Etappe 12 |
 | 11 (A/B-Basis) | sprint | 8,35 | 9,44 | 0,28 | 2,00 | 359 | 8 | – | |
 | 11 (A/B-Basis) | crowd | 8,37 | 10,36 | 0,40 | 3,04 | 295 | 80 | – | |
 | 12 (`feature/12-sound`, Wiederholung) | stand | 8,34 | 10,26 | 0,18 | 0,76 | 311 | 14 | p99 +10 %, Speicher +7 % | erster Lauf direkt nach dem Build: p99 15,87 (zwei Läufe mit Hängern), nicht reproduzierbar |
@@ -43,10 +43,10 @@ Schwelle: Verschlechtert sich ein Wert um mehr als 10 % gegenüber der letzten M
 
 | Etappe | Szenario | Frame Ø ms | Frame p99 ms | Tick Ø ms | Tick max ms | Speicher MB | Entities | Differenz zur Vorgängerin | Bemerkung |
 |--------|----------|-----------:|-------------:|----------:|------------:|------------:|---------:|---------------------------|-----------|
-| 13 vor den Korrekturen (4c1b9c5), verschränkt | stand | – | – | 0,27 (Basis 0,20) | – | 360 (Basis 307) | 14 | Tick Ø +35 %, Speicher +17 % | Mittel aus 3 Runden, Basis `dev` f740647 |
+| 13 vor den Korrekturen (4c1b9c5), verschränkt | stand | – | – | 0,27 (Basis 0,20) | – | 360 (Basis 307) | 14 | Tick Ø +35 %, Speicher +17 % | Mittel aus 3 Runden, Basis `dev` 6883831 |
 | 13 vor den Korrekturen | sprint | – | – | 0,30 (Basis 0,23) | 5,5 (Basis 2,3) | 437 (Basis 381) | 8 | Tick Ø +30 %, Speicher +15 % | Frame-Zeiten unverändert |
 | 13 vor den Korrekturen | crowd | – | – | 0,53 (Basis 0,36) | – | 365 (Basis 313) | 80 | Tick Ø +45 %, Speicher +17 % | |
-| 12 (`dev` f740647, A/B-Basis) | stand | 8,36 | 9,17 | 0,099 | 0,37 | 310 | 14 | – | gleiche Messreihe wie Etappe 13, Mittel aus 3 Runden |
+| 12 (`dev` 6883831, A/B-Basis) | stand | 8,36 | 9,17 | 0,099 | 0,37 | 310 | 14 | – | gleiche Messreihe wie Etappe 13, Mittel aus 3 Runden |
 | 12 (A/B-Basis) | sprint | 8,36 | 9,14 | 0,117 | 1,75 | 378 | 8 | – | |
 | 12 (A/B-Basis) | crowd | 8,36 | 9,27 | 0,205 | 0,89 | 312 | 80 | – | |
 | 13 (`feature/13-parts-light` c2c2cb2) | stand | 8,36 | 9,20 | 0,111 | 0,54 | 307 | 14 | Tick Ø +0,012 ms, Speicher −1 % | Tick in der Streuung (Basis 0,093–0,111, Etappe 13 0,103–0,120) |
@@ -68,7 +68,7 @@ Schwelle: Verschlechtert sich ein Wert um mehr als 10 % gegenüber der letzten M
 
 **Bewertung:** Pro Lauf werden 85 % weniger Sektionen neu vernetzt (674 statt 4374; eine Fackel ändert das Himmelslicht nicht, also entfällt die Säule, und nur Sektionen mit geändertem Blocklicht werden markiert), der Rückstau sinkt von 54 auf 10, die schlechteste Zeit bis zum Bild von 42–50 auf 25 ms (rund drei Frames; der Mittelwert hängt am Frame-Takt, an dem die Ergebnisse abgeholt werden). Ein Licht-Job kostet im Mittel 0,2 ms auf dem Licht-Thread. Frame-Zeiten (p99 9,7–10,4 gegen 10,1–10,4 ms) und Speicher (−2 %) ohne Verschlechterung. Profil (`sample`, 10 s eines 30-s-Laufs `light`): Hauptthread in 6643 Proben zu 95 % wartend, `QcMeshScheduler::pump` 3 Proben, kein Lichtcode im GUI-Thread; Licht-Thread 7 Proben (0,1 %), Mesh-Worker je unter 0,5 %. Der einzige lange Frame des profilierten Laufs (643 ms) ist das Anhalten des Prozesses durch `sample` selbst; in den sechs Läufen ohne Profiler gab es keinen Frame über 100 ms.
 
-**Etappe 13 nach den Verifikationsbefunden, verschränkt gegen `dev` (f740647):** Stand 9f02fd9 (inkrementelles Blocklicht, Stufen hochlaufen, priorisierte Update-Warteschlangen, Formbudget), Release, je Runde 20 s, Basis und Etappe 13 abwechselnd; stand 10 Runden, crowd 6, sprint 3 (Mittelwerte).
+**Etappe 13 nach den Verifikationsbefunden, verschränkt gegen `dev` (6883831):** Stand 9f02fd9 (inkrementelles Blocklicht, Stufen hochlaufen, priorisierte Update-Warteschlangen, Formbudget), Release, je Runde 20 s, Basis und Etappe 13 abwechselnd; stand 10 Runden, crowd 6, sprint 3 (Mittelwerte).
 
 | Szenario | Frame p99 ms (Basis → 13) | Tick Ø ms (Basis → 13) | Speicher MB (Basis → 13) | Bemerkung |
 |----------|---------------------------|------------------------|--------------------------|-----------|
@@ -80,13 +80,13 @@ Schwelle: Verschlechtert sich ein Wert um mehr als 10 % gegenüber der letzten M
 
 **Etappe 14 (`feature/14-liquids-details`):** Neues Szenario `liquids` in `scripts/bench.sh` (`SCENARIOS="liquids"` misst nur dieses): Der Spieler steht auf einer geräumten Steinfläche (37 × 37), zweimal pro Sekunde erscheint 4 m über ihr auf einem Ring (8 m) eine Wasser- oder Lavaquelle oder verschwindet wieder; die Fläche wird also dauernd geflutet und läuft leer (Flüssigkeits-Schritte im Server-Tick, Neuvernetzung der Flüssigkeitsoberflächen, Blocklicht der Lava). Ein kurzer Probelauf im Debug-Build (8 s, kein Messwert für den Verlauf) lief durch: Frame Ø 8,3 ms, p99 10,1 ms, Tick Ø 0,69 ms, schlechtester Tick 2,7 ms, 1482 neu vernetzte Sektionen, Rückstau höchstens 94. Die verschränkte Messung gegen `dev` steht unten.
 
-**Etappe 14, erste verschränkte Messung (d66f074 gegen `dev` 22afb87, je 3 Runden à 20 s, Release, Ton stumm, Mittel [Spanne]):** crowd Tick Ø 0,349 → 0,399 ms (+14 %), schlechtester Tick 1,06 → 2,17 ms; sprint Tick Ø 0,240 → 0,277 ms (+15 %, Spannen ohne Überlappung); stand p99 9,43 → 10,33 ms (+9,5 %, alle drei Läufe der Etappe 14 bei 10,31–10,34 ms); Spitzenspeicher +13 bis +15 MB (+4 bis +5 %). Damit lagen Tick-Werte über der Schwelle.
+**Etappe 14, erste verschränkte Messung (d66f074 gegen `dev` 3e8cd1b, je 3 Runden à 20 s, Release, Ton stumm, Mittel [Spanne]):** crowd Tick Ø 0,349 → 0,399 ms (+14 %), schlechtester Tick 1,06 → 2,17 ms; sprint Tick Ø 0,240 → 0,277 ms (+15 %, Spannen ohne Überlappung); stand p99 9,43 → 10,33 ms (+9,5 %, alle drei Läufe der Etappe 14 bei 10,31–10,34 ms); Spitzenspeicher +13 bis +15 MB (+4 bis +5 %). Damit lagen Tick-Werte über der Schwelle.
 
 Eingrenzung: (1) Zeitmessung pro Phase des Server-Ticks (vorübergehend eingebaute Zähler, Mittel und Maximum pro Phase, Basis, Etappe 14 vor und nach den Korrekturen abwechselnd): neu und nennenswert war nur `applyContactDamage` (Lava-Schaden) mit 14–15 µs pro Tick im Szenario crowd und 5–7 µs in stand/sprint – je Wesen, Item und Spieler eine Hash-Suche nach dem Chunk und das Lesen der Paletten, also vor allem Cache-Fehlzugriffe. Der Flüssigkeits-Terminplan und die fallenden Blöcke kosteten im Leerlauf je 1,2–1,6 µs. (2) Im Szenario sprint war `streamChunks` der Unterschied (Basis 88 µs, Etappe 14 101–121 µs pro Tick): Etappe 14 läuft im Szenario weiter (Ende bei 78/−79 statt 75/−19, rund 111 statt 77 m, weil der Spieler nach E-061 im Sprung keine Stufe mehr steigt und an anderer Stelle hängen bleibt) und schickt dadurch rund 25 % mehr Chunks; das Kodieren eines Chunks kostete 47–60 µs, fast alles in `QDataStream`-Aufrufen pro Lauf-Wert. (3) `sample` des Server-Threads (55 s, crowd) zeigt keine neue heiße Funktion; `QcMobManager::tick` und `think` sind gleich teuer wie in der Basis. (4) Stand-p99: `sample` von Haupt- und Render-Thread zeigt keinen neuen Etappe-14-Code pro Frame; gezählt werden gleich viele sichtbare Sektionen (272, gleiche Zahl an Draw-Calls), aber 12 % mehr Dreiecks-Indizes (726 000 statt 650 000, die neue Vegetation als Kreuzformen), also mehr GPU-Arbeit, nicht mehr CPU-Arbeit.
 
 Korrekturen (je Commit, Werte aus der Phasenmessung, Etappe 14 vorher → nachher): Kontaktschaden nur noch dort, wo ein Chunk-Abschnitt laut einer Bitmaske überhaupt Blöcke mit Kontaktschaden enthält, ohne solche Abschnitte gar nicht (crowd 14,3–15,1 → 0,6 µs, stand 5,1 → 0,6 µs, sprint 5,7–7,3 → 0,5 µs pro Tick); dabei behoben, dass ein in Lava sterbendes Wesen aus der Liste fiel, während sie durchlaufen wurde. Flüssigkeiten und fallende Blöcke kehren ohne fällige Arbeit sofort zurück (1,2–1,6 → 0,2–0,5 µs). Die Randprüfung stiller Quellen beim Laden eines Chunks entscheidet einmal pro Zustandspaar statt pro Randzelle (`handleLoadedChunks` im Sprint 3,4–3,7 → 2,3–2,4 µs, Basis 2,0–2,4). Die Läufe einer Sektion werden als ein Block Rohdaten geschrieben und gelesen, mit unveränderten Bytes (Kodieren eines Chunks 47–60 → 22–26 µs; das hebt die zusätzlichen Chunks des Sprint-Szenarios auf). Im Render-Thread nimmt das Sortieren der durchscheinenden Ebene nur noch Sektionen mit durchscheinenden Flächen. Neuvernetzung bei Flüssigkeiten: Eine Änderung der Lichtdurchlässigkeit (Luft ↔ Wasser) markierte alle Sektionen der 3 × 3 Chunks vom Boden bis eine Sektion über der Änderung; jetzt nur die Sektionen, deren Lichtvolumen (16 Blöcke darüber und darunter, wie im Mesher) die geänderte Zelle oder die Zellen zwischen altem und neuem höchstem lichtdämpfendem Block der Säule enthält (E-062); ein Test vergleicht nach vielen Änderungen jede Sektion mit einer frisch vernetzten.
 
-**Etappe 14 nach den Korrekturen, verschränkt gegen `dev` (22afb87):** Stand ba90146, Release, je Runde 20 s, Basis und Etappe 14 abwechselnd, Ton stumm, Mittel [Spanne]; crowd zweimal je 3 Runden, light 3 Runden gegen dieselbe Basis, liquids 3 Runden gegen Etappe 14 vor den Korrekturen (d66f074; `dev` hat das Szenario nicht).
+**Etappe 14 nach den Korrekturen, verschränkt gegen `dev` (3e8cd1b):** Stand ba90146, Release, je Runde 20 s, Basis und Etappe 14 abwechselnd, Ton stumm, Mittel [Spanne]; crowd zweimal je 3 Runden, light 3 Runden gegen dieselbe Basis, liquids 3 Runden gegen Etappe 14 vor den Korrekturen (d66f074; `dev` hat das Szenario nicht).
 
 | Szenario | Frame Ø ms (Basis → 14) | Frame p99 ms (Basis → 14) | Tick Ø ms (Basis → 14) | Tick max ms (Basis → 14) | Speicher MB (Basis → 14) | Bemerkung |
 |----------|-------------------------|---------------------------|------------------------|--------------------------|--------------------------|-----------|
@@ -103,7 +103,7 @@ Korrekturen (je Commit, Werte aus der Phasenmessung, Etappe 14 vorher → nachhe
 
 **Bewertung Etappe 14:** Nach den Korrekturen liegt kein Wert mehr über der Schwelle von 10 %. Server-Tick: stand +4 %, sprint −3 %, crowd +9 % in der ersten und −1 % in der zweiten Reihe (zusammen +4 %, Spannen überlappen); eine Phasenmessung über drei weitere Crowd-Runden zeigt die Wesen-Logik gleich teuer wie in der Basis. Die schlechtesten Ticks schwanken in beiden Ständen zwischen etwa 0,8 und 2,5 ms (Sprint bis 6,6 ms beim Chunk-Streaming) und zeigen keinen wiederholbaren Anstieg. Frame p99 liegt bei beiden Ständen bei 10,2–10,3 ms; der Unterschied der ersten Messung (Basis 9,4 ms) war die bekannte Zweiteilung von p99 (9,1 bzw. 10,3 ms je nach Messzeitpunkt, siehe Etappe 12), die in dieser Reihe auch die Basis traf. Die Vegetation erhöht die Zahl der gezeichneten Dreiecke um rund 12 % bei gleicher Zahl von Draw-Calls (GPU-Last, gewollt). Wiederholbar ist der Spitzenspeicher +12 bis +15 MB (+4 bis +5 %, 44 neue Texturen samt Mod, Vegetation in den Vertexpuffern, Flüssigkeits- und Mob-Daten), unter der Schwelle. Im Szenario liquids vernetzt der Client 42 % weniger Sektionen neu, der Rückstau sinkt von 84 auf 55 und die Zeit von der Änderung bis zum Bild von 15,2 auf 10,3 ms im Mittel und von 43,9 auf 28,9 ms im schlechtesten Fall; der Tick (Flüssigkeits-Schritte) bleibt in der Streuung der Vorher-Läufe. Rest und Abhilfen sind in E-062 festgehalten.
 
-**Etappe 15 (Spielhandbuch), verschränkt gegen `dev` 5a648c0, je 3 Runden (Mittel [Spanne]):**
+**Etappe 15 (Spielhandbuch), verschränkt gegen `dev` 67eafcc, je 3 Runden (Mittel [Spanne]):**
 
 | Szenario | Frame p99 ms (Basis → 15) | Tick Ø ms | Tick max ms | Speicher MB |
 |----------|---------------------------|-----------|-------------|-------------|
@@ -117,7 +117,7 @@ Korrekturen (je Commit, Werte aus der Phasenmessung, Etappe 14 vorher → nachhe
 
 Seit Etappe 12 werden Werte nur verschränkt verglichen: Ein Skript startet für jedes Szenario abwechselnd die Basis und den neuen Stand (Runde 1: Basis stand, neu stand, Basis sprint, neu sprint …; dann Runde 2 usw.), je Lauf 15–20 s nach 3 s Aufwärmen, Ton gemischt, aber stumm, nach 30 s Ruhe zu Beginn; ausgewertet werden Mittel und Spanne pro Stand. Grund: Frame p99 pendelt je nach Messzeitpunkt zwischen etwa 9,1 und 10,3 ms (Display-Takt, Systemlast), Tick-Zeiten um bis zu ±80 % zwischen Messreihen desselben Stands; nur abwechselnd gemessene Werte sind vergleichbar. Beide Stände werden als RelWithDebInfo außerhalb des Repos gebaut (Basis aus `git archive` bzw. einem temporären Worktree). Die Szenarien kommen seit Etappe 16 aus `scripts/bench-common.sh` (`run_game`), das Bench-, Profil- und Perf-Check-Skript gemeinsam nutzen. Seit Etappe 16 laufen alle Skriptläufe auf dem eingebauten Display und im Hintergrund (`QTCRAFT_SCREEN=builtin`, `QTCRAFT_BACKGROUND=1`, E-068 ff., README); ältere Stände, die diese Haken nicht kennen, bekommen sie für den Vergleich nachgerüstet, sonst öffnet das Fenster unter dem Mauszeiger, unter Umständen auf einem externen 60-Hz-Monitor, und die Frame-Abstände sind nicht vergleichbar. Neue Werte seit Etappe 16: GUI-/Render-CPU und GPU pro Frame (unabhängig von VSync), Entity-Vernetzung, Sektionspuffer.
 
-**Etappe 16 (Profiling und Optimierung), verschränkt gegen `dev` 6d9cdd1 (beide mit den Haken für Bildschirm und Hintergrund nachgerüstet), Endstand f1663f6 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:**
+**Etappe 16 (Profiling und Optimierung), verschränkt gegen `dev` 17f59f3 (beide mit den Haken für Bildschirm und Hintergrund nachgerüstet), Endstand f1663f6 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:**
 
 | Szenario | Frame Ø ms (Basis → 16) | Frame p99 ms | Tick Ø ms | Tick max ms | Speicher MB | Bemerkung |
 |----------|-------------------------|--------------|-----------|-------------|-------------|-----------|
@@ -127,9 +127,9 @@ Seit Etappe 12 werden Werte nur verschränkt verglichen: Ein Skript startet für
 | light | 8,46 → 8,45 | 13,5 → 13,4 | 0,186 → 0,154 | 1,26 → 1,83 | 326 → 300 (−8 %) | Änderung bis Bild 9,5 → 9,4 ms, Rückstau 10 → 10 |
 | liquids | 8,60 → 8,59 | 15,2 → 14,6 | 0,179 → 0,169 | 1,17 → 1,10 | 334 → 308 (−8 %) | Änderung bis Bild 10,7 → 10,3 ms, Rückstau 40 → 39 |
 
-**Bewertung Etappe 16:** Keine Verschlechterung der Frame-Werte; p99 ist bei beiden Ständen gleich hoch, weil während der Messreihe am Rechner gearbeitet wurde (Fenster im Hintergrund; ruhig: 9,9–10,3 ms, siehe Perf-Check in `docs/Performance.md`), und beim Endstand im Mittel um 0,1–1,1 ms niedriger. Spitzenspeicher −8 bis −10 % (kompakte Block-Eckpunkte, E-069). Server-Tick: stand −12 %, light −17 %, liquids −6 %, sprint +23 % und crowd +21 %; der Server- und Common-Code ist bis auf den Handbuch-Builder unverändert (`git diff 6d9cdd1 -- src/server src/common`), im Gedränge liegen die Runden 2 und 3 nur 4–8 % über der Basis (die Basis-Runde 1 mit 0,168 ms ist der Ausreißer), und in der Vorher-Nachher-Messreihe gegen 562ecc8 schwankt derselbe Wert zwischen −24 % und +34 % je Szenario und Sichtweite bei identischem Server-Code. Das ist die bekannte Streuung der Tick-Zeit (abhängig davon, welchem Kern und Takt das System den Server-Thread gibt), keine Regression; ein tiefes Profiling unveränderten Codes ist nicht angezeigt. Die vollständige Aufteilung der Frame-Kosten vorher/nachher (alle Szenarien, 8/12/16 Chunks) steht in `docs/Performance.md`.
+**Bewertung Etappe 16:** Keine Verschlechterung der Frame-Werte; p99 ist bei beiden Ständen gleich hoch, weil während der Messreihe am Rechner gearbeitet wurde (Fenster im Hintergrund; ruhig: 9,9–10,3 ms, siehe Perf-Check in `docs/Performance.md`), und beim Endstand im Mittel um 0,1–1,1 ms niedriger. Spitzenspeicher −8 bis −10 % (kompakte Block-Eckpunkte, E-069). Server-Tick: stand −12 %, light −17 %, liquids −6 %, sprint +23 % und crowd +21 %; der Server- und Common-Code ist bis auf den Handbuch-Builder unverändert (`git diff 17f59f3 -- src/server src/common`), im Gedränge liegen die Runden 2 und 3 nur 4–8 % über der Basis (die Basis-Runde 1 mit 0,168 ms ist der Ausreißer), und in der Vorher-Nachher-Messreihe gegen 562ecc8 schwankt derselbe Wert zwischen −24 % und +34 % je Szenario und Sichtweite bei identischem Server-Code. Das ist die bekannte Streuung der Tick-Zeit (abhängig davon, welchem Kern und Takt das System den Server-Thread gibt), keine Regression; ein tiefes Profiling unveränderten Codes ist nicht angezeigt. Die vollständige Aufteilung der Frame-Kosten vorher/nachher (alle Szenarien, 8/12/16 Chunks) steht in `docs/Performance.md`.
 
-**Etappe 19 (Aufteilen zu großer Dateien), verschränkt gegen `dev` f06740a, Stand d44e3b0 im Release-Build, je 3 Runden à 20 s (stand 7 Runden), 8 Chunks, Mittel [Spanne]:** Die Aufteilung berührt heiße Pfade (Mesher, Blocklicht, Physik, Raycast, Weltgenerierung, Frame-Schritt), daher verschränkt gemessen.
+**Etappe 19 (Aufteilen zu großer Dateien), verschränkt gegen `dev` 3f678fd, Stand d44e3b0 im Release-Build, je 3 Runden à 20 s (stand 7 Runden), 8 Chunks, Mittel [Spanne]:** Die Aufteilung berührt heiße Pfade (Mesher, Blocklicht, Physik, Raycast, Weltgenerierung, Frame-Schritt), daher verschränkt gemessen.
 
 | Szenario | Frame Ø ms (Basis → 19) | Frame p99 ms | Tick Ø ms | Speicher MB | Bemerkung |
 |----------|-------------------------|--------------|-----------|-------------|-----------|
@@ -137,9 +137,9 @@ Seit Etappe 12 werden Werte nur verschränkt verglichen: Ein Skript startet für
 | sprint | 8,36 → 8,34 | 12,04 [10,3–15,5] → 10,31 | 0,610 [0,38–0,83] → 0,621 [0,48–0,78] | 446 → 444 | ein Hänger im ersten Basislauf |
 | crowd | 8,46 → 8,34 | 15,81 [10,0–27,1] → 10,26 | 0,955 [0,78–1,14] → 0,802 [0,52–0,95] | 374 → 373 | ein Hänger im zweiten Basislauf |
 
-**Bewertung Etappe 19:** Keine Verschlechterung über der Schwelle; Frame-Zeiten und Speicher gleich, Tick-Unterschiede liegen innerhalb der Streuung beider Stände. Einzelmessungen der Agenten (Release, alt gegen neu): Meshing 10,93 → 10,86 s, Blocklicht 134,8 → 135,5 ms, Mischer 272,5 → 273,1 ms, Weltgenerierung 0,87 → 0,58 ms pro Chunk (Ausgabe bit-gleich), Raycast 72 → 70 ms, `stepEntity` 443 → 442 ms. Nachtrag (Etappe 20): Beide Stände dieser Messung enthielten schon die Weltgenerierungs-Politur (f06740a); der Sprung gegenüber Etappe 16 (GPU ×1,9, Tick ×2, Speicher +23 %) kommt vollständig aus ihr und ist gewollt (Bisektion siehe Etappe 20).
+**Bewertung Etappe 19:** Keine Verschlechterung über der Schwelle; Frame-Zeiten und Speicher gleich, Tick-Unterschiede liegen innerhalb der Streuung beider Stände. Einzelmessungen der Agenten (Release, alt gegen neu): Meshing 10,93 → 10,86 s, Blocklicht 134,8 → 135,5 ms, Mischer 272,5 → 273,1 ms, Weltgenerierung 0,87 → 0,58 ms pro Chunk (Ausgabe bit-gleich), Raycast 72 → 70 ms, `stepEntity` 443 → 442 ms. Nachtrag (Etappe 20): Beide Stände dieser Messung enthielten schon die Weltgenerierungs-Politur (3f678fd); der Sprung gegenüber Etappe 16 (GPU ×1,9, Tick ×2, Speicher +23 %) kommt vollständig aus ihr und ist gewollt (Bisektion siehe Etappe 20).
 
-**Etappe 20 (Feinschliff, Multiplayer-Voraussetzungen, Sollzeit-Takt), verschränkt gegen `tickbase` (13ee464: `dev` d41bb29 plus Messung der Takt-Verspätung, noch alter periodischer Timer) und `dev` d41bb29, Endstand e53827f im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Systemlast (1-min-Mittel) 1,9–3,9; in 10 der 45 Läufe lief die Aktivitätsanzeige (≈ 25–30 % CPU), in 6 Läufen Safari (bis 100 %, über alle drei Stände verteilt).
+**Etappe 20 (Feinschliff, Multiplayer-Voraussetzungen, Sollzeit-Takt), verschränkt gegen `tickbase` (13ee464: `dev` 40d02bc plus Messung der Takt-Verspätung, noch alter periodischer Timer) und `dev` 40d02bc, Endstand e53827f im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Systemlast (1-min-Mittel) 1,9–3,9; in 10 der 45 Läufe lief die Aktivitätsanzeige (≈ 25–30 % CPU), in 6 Läufen Safari (bis 100 %, über alle drei Stände verteilt).
 
 | Szenario | Tick Ø ms (tickbase → 20) | Verspätung Ø / p99 ms (tickbase → 20) | GPU Ø ms (dev → 20) | Dreiecke (dev → 20) | Speicher MB (dev → 20) | Frame p99 ms (dev → 20) |
 |----------|---------------------------|----------------------------------------|---------------------|---------------------|------------------------|-------------------------|
@@ -156,9 +156,9 @@ Ausgangslage (verschränkte Messung der Hauptsitzung vor den Korrekturen, gleich
 - **Takt-Verspätung (Messfehler und echte Verspätung):** Ein Versuchsprogramm (Qt 6.8, eigener Thread, 200 Ticks) zeigt, dass die Timer der Ereignisschleife unter macOS 1–3 ms nach der angeforderten Zeit auslösen: periodischer `PreciseTimer` Ø 2,0–2,3 ms, einmaliger Timer auf die aufgerundete Restzeit Ø 2,2 ms, abgerundet Ø 1,1–1,2 ms, `QChronoTimer` mit Nanosekunden Ø 2,1 ms. Der alte periodische Timer war also ebenso spät; seine Messung legte das Raster auf das erste (schon späte) Auslösen und zeigte nur die Schwankung. Korrektur (E-090): Timer 3 ms vor dem Sollzeitpunkt, Schlaf bis 0,2 ms davor, Rest aktiv; Server-Thread mit hoher Priorität. Ergebnis gegen das wahre Raster: Ø 0,14–0,26 ms, p99 0,60–0,93 ms in allen Szenarien (Ziel stand: Ø ≤ 0,3, p99 ≤ 1,5 ms). Die schlechteste Verspätung einzelner Läufe (bis 8–13 ms, einmal 35 ms im Szenario liquids) bleibt Ausreißer (Nachrichtenverarbeitung zwischen zwei Ticks, Systemlast); kein Tick wurde übersprungen.
 - **Tick-Kosten:** Phasenmessung im Tick (vorübergehende Zähler, stand): Pflanzenwachstum (E-102) 0,50 ms pro Tick, weil es in jedem Tick die Paletten aller rund 4600 geladenen Abschnitte las; übrige Phasen wie in tickbase (Wesen 0,42–0,50 ms, Clients 0,09 ms, Entladen 0,09 ms). Blockupdates und Flüssigkeiten (mit der Abgrundsuche) liegen je unter 0,005 ms; Ratenbegrenzung und Sichtlinie laufen nur bei eingehenden Nachrichten, nicht im Tick. Korrektur: Abschnitts-Masken für wachsende Pflanzen wie beim Kontaktschaden (`QcSectionMarks`), Wachstum 0,50 → 0,02–0,03 ms. Danach liegt der Tick in stand, crowd und liquids 4–7 % unter, in sprint 6 % über tickbase. light lag in der Reihe 17 % darüber (Spannen ohne Überlappung); eine Wiederholung bei ruhigem System (3 Runden, beide Stände mit Phasenzählern) ergab 0,706 [0,68–0,75] → 0,748 [0,73–0,77] ms (+6 %), in den Phasen ist nur das verbliebene Wachstum neu (0,02–0,03 ms, Zuckerrohr an Gewässern in der Nähe), die Wesen-Logik liegt in der Streuung. Kein Wert über der Schwelle.
 - **GPU und Speicher:** Die Zahl der gezeichneten Dreiecke wächst durch die neue Biomverteilung (E-101, häufigere Gebirge) um 10 % (stand, crowd, light, liquids) bzw. 48 % (sprint: der Lauf endet zwischen Bergen, 393 statt 335 sichtbare Sektionen). Eine verschränkte Messung mit abgeschaltetem Himmel (2 Runden) zeigt für den Himmels-Shader (E-095) höchstens 0,08 ms (stand 1,57 → 1,49 ms ohne Himmel, sprint und crowd innerhalb der Streuung); eine Umstellung auf „nur wo leer“ lohnt nicht. Die Mehrkosten in sprint sind Gelände. Der Spitzenspeicher in sprint (+76 MB) entsteht mit derselben Änderung der Weltgenerierung (26e6548 gegen seinen Vorgänger 5ff4423: 442 → 518 MB, Dreiecke 383 000 → 568 000; Code sonst gleich): `vmmap` nach 23 s zeigt Grafiktreiber-Speicher (IOAccelerator, resident) 115 → 214 MB bei fast gleichen Sektionspuffern (102 → 106 MB) und kleinerem Heap (231 → 220 MB); vermutlich hält der Metal-Treiber die Puffer ersetzter Sektionen (mehr und größere Sektionsnetze auf der Bergstrecke) zurück. Gewollt (Gelände), ein späterer Sektionspuffer-Pool könnte das begrenzen.
-- **Sprung von Etappe 16 zu `dev` (Bisektion, Release, je 2 Runden stand und sprint verschränkt, Last 2,5–6,6):** Etappe 16 (8bd79dd), 17 (ce7da60), 18 (16d2906) liegen gleich (stand GPU 0,77–0,78 ms, Tick 0,115–0,121 ms, Speicher 298–302 MB, 227 000 Dreiecke); der Sprung kommt vollständig mit der Weltgenerierungs-Politur f06740a: stand GPU 0,77 → 1,48 ms, Dreiecke 227 000 → 423 000 (+86 %), sichtbare Sektionen 272 → 319, Sektionen 972 → 1254, Sektionspuffer 43,6 → 92,1 MB, Speicher 302 → 371 MB, Tick 0,117 → 0,246 ms; sprint GPU 0,90 → 1,41 ms, Speicher 355 → 442 MB, Tick 0,143 → 0,290 ms. Etappe 19 (b2bf0b7) und 19b (`dev` d41bb29) ändern daran nichts. Ursachen und Bewertung: mehr Gelände pro Sektion (Höhlen, Höhleneingänge, Überhänge, abwechslungsreicheres Relief, mehr Vegetation; E-085) erklärt GPU und Speicher; der Tick wächst durch die dauerhaften Tiere (E-086: 10 % der Chunks bekommen eine Gruppe, die geladen nicht ruht), `sample` des Server-Threads in stand: Wesen-Logik und `moveBox` 23 → 59 Proben, der Client sieht 24 statt 14 Wesen. Beides ist gewolltes Verhalten der Politur und wird nicht geändert; Frame-Zeiten bleiben im Budget (p99 9,5–10,3 ms).
+- **Sprung von Etappe 16 zu `dev` (Bisektion, Release, je 2 Runden stand und sprint verschränkt, Last 2,5–6,6):** Etappe 16 (a196563), 17 (c5fe5d7), 18 (82e801a) liegen gleich (stand GPU 0,77–0,78 ms, Tick 0,115–0,121 ms, Speicher 298–302 MB, 227 000 Dreiecke); der Sprung kommt vollständig mit der Weltgenerierungs-Politur 3f678fd: stand GPU 0,77 → 1,48 ms, Dreiecke 227 000 → 423 000 (+86 %), sichtbare Sektionen 272 → 319, Sektionen 972 → 1254, Sektionspuffer 43,6 → 92,1 MB, Speicher 302 → 371 MB, Tick 0,117 → 0,246 ms; sprint GPU 0,90 → 1,41 ms, Speicher 355 → 442 MB, Tick 0,143 → 0,290 ms. Etappe 19 (f0fece8) und 19b (`dev` 40d02bc) ändern daran nichts. Ursachen und Bewertung: mehr Gelände pro Sektion (Höhlen, Höhleneingänge, Überhänge, abwechslungsreicheres Relief, mehr Vegetation; E-085) erklärt GPU und Speicher; der Tick wächst durch die dauerhaften Tiere (E-086: 10 % der Chunks bekommen eine Gruppe, die geladen nicht ruht), `sample` des Server-Threads in stand: Wesen-Logik und `moveBox` 23 → 59 Proben, der Client sieht 24 statt 14 Wesen. Beides ist gewolltes Verhalten der Politur und wird nicht geändert; Frame-Zeiten bleiben im Budget (p99 9,5–10,3 ms).
 
-- **Nachtrag (nach der Block-Erweiterung): Chat-Ratenbegrenzung verfälschte light.** Die Chat-Grenze (E-091, 2 pro Sekunde, Stoß 20) galt in Etappe 20 auch für den lokalen Spieler und verwarf Befehle der Szenarien: light 19–21 der rund 90 Fackel-Befehle pro Lauf (nach etwa 10 s jeden zweiten), crowd einen der 28 Startbefehle. tickbase hatte keine Grenze; der Vergleich tickbase → Etappe 20 in light maß Etappe 20 also mit kleinerer Last (46–50 statt 78 Lichtjobs, 371 statt 625 neu vernetzte Sektionen). Seit dem Nachtrag zu E-091 ist der lokale Spieler vom Chat-Eimer ausgenommen. Nachmessung (Release, light, 3 Runden à 20 s, verschränkt tickbase 13ee464 → Etappe 20 ef921b8 → Etappe 20 mit nachgerüsteter Ausnahme (Diff von `src/server` aus f885c22), Last 3,8–5,7, kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet):
+- **Nachtrag (nach der Block-Erweiterung): Chat-Ratenbegrenzung verfälschte light.** Die Chat-Grenze (E-091, 2 pro Sekunde, Stoß 20) galt in Etappe 20 auch für den lokalen Spieler und verwarf Befehle der Szenarien: light 19–21 der rund 90 Fackel-Befehle pro Lauf (nach etwa 10 s jeden zweiten), crowd einen der 28 Startbefehle. tickbase hatte keine Grenze; der Vergleich tickbase → Etappe 20 in light maß Etappe 20 also mit kleinerer Last (46–50 statt 78 Lichtjobs, 371 statt 625 neu vernetzte Sektionen). Seit dem Nachtrag zu E-091 ist der lokale Spieler vom Chat-Eimer ausgenommen. Nachmessung (Release, light, 3 Runden à 20 s, verschränkt tickbase 13ee464 → Etappe 20 4e5f1d2 → Etappe 20 mit nachgerüsteter Ausnahme (Diff von `src/server` aus f885c22), Last 3,8–5,7, kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet):
 
 | Stand | verworfen | Lichtjobs | Sektionen | Tick Ø ms | Tick max ms | GPU Ø ms | GUI-CPU ms | `change_mesh` Ø / max ms | Lichtjob ms |
 |-------|-----------|-----------|-----------|-----------|-------------|----------|------------|---------------------------|-------------|
@@ -168,7 +168,7 @@ Ausgangslage (verschränkte Messung der Hauptsitzung vor den Korrekturen, gleich
 
   **Bewertung:** Mit voller Last liegt der Tick von Etappe 20 in light im Mittel 7 % über tickbase, im Median 10 % (ohne den Ausreißer der dritten tickbase-Runde, 0,572 ms, +11 %); die Spannen überlappen. Die volle Last kostet in Etappe 20 rund +0,02 ms Tick (+3,5 %), im Stand der Block-Erweiterung +0,05 ms (+11 %, siehe dort). Die Bewertung „kein Wert über der Schwelle“ hält für light damit nur knapp: Etappe 20 liegt an der Schwelle, nicht klar darüber, und der Vorsprung war durch die verworfenen Befehle um etwa 3–4 Prozentpunkte geschönt. GPU, GUI-CPU, Lichtjobs und die schlechteste Zeit bis zum Bild (25,3 gegen 25,3 ms) sind gleich; das höhere Mittel von `change_mesh` (+29 %) liegt in der Streuung dieses Werts (im Szenario glass schwankt er zwischen zwei gleichen Ständen um 30 %, siehe Block-Erweiterung). Steigt der Tick in light in einer späteren Etappe weiter, ist er mit Phasenzählern wie in Etappe 20 einzugrenzen.
 
-**Block-Erweiterung (nach Etappe 20), verschränkt gegen Etappe 20 (ef921b8) mit dem Stand a5bd0ea (`dev`: Etappe 20 plus Block- und Rezept-Erweiterung, E-200 bis E-217) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** neues Szenario **glass** (nachts auf geräumtem Holzboden zwischen Wänden aus Scheiben, Glas, Laub und Eis mit acht Lampen; zweimal pro Sekunde erscheinen oder verschwinden Reihen von Lichtquellen und 3 × 3-Flächen durchsichtiger Blöcke) und **glass-full** (dasselbe mit gefärbtem Glas und Scheiben, Eisengitter, Glühwürmchenglas, Laternen, kleinen Fackeln und Netzen; nur der neue Stand). Systemlast (1-min-Mittel) 1,0–5,7; Safari lief zeitweise mit 100 % CPU, in diesen Phasen wurde nicht gemessen (kein Lauf als belastet markiert).
+**Block-Erweiterung (nach Etappe 20), verschränkt gegen Etappe 20 (4e5f1d2) mit dem Stand 624bce3 (`dev`: Etappe 20 plus Block- und Rezept-Erweiterung, E-200 bis E-217) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** neues Szenario **glass** (nachts auf geräumtem Holzboden zwischen Wänden aus Scheiben, Glas, Laub und Eis mit acht Lampen; zweimal pro Sekunde erscheinen oder verschwinden Reihen von Lichtquellen und 3 × 3-Flächen durchsichtiger Blöcke) und **glass-full** (dasselbe mit gefärbtem Glas und Scheiben, Eisengitter, Glühwürmchenglas, Laternen, kleinen Fackeln und Netzen; nur der neue Stand). Systemlast (1-min-Mittel) 1,0–5,7; Safari lief zeitweise mit 100 % CPU, in diesen Phasen wurde nicht gemessen (kein Lauf als belastet markiert).
 
 | Szenario | Frame p99 ms | GUI-CPU ms | Render-CPU ms | GPU Ø ms | Dreiecke / Draw-Calls | Tick Ø ms | Speicher MB |
 |----------|--------------|------------|---------------|----------|-----------------------|-----------|-------------|
@@ -182,7 +182,7 @@ Ausgangslage (verschränkte Messung der Hauptsitzung vor den Korrekturen, gleich
 
 Blockänderungen bis zur sichtbaren Sektion (`change_mesh` Ø / max ms), Rückstau und Lichtjobs (base → neu): light 11,5 / 22,4 → 11,6 / 20,4, Rückstau 10 → 11, Lichtjob 0,36 → 0,39 ms; liquids 15,6 / 51,0 → 15,5 / 44,2, Rückstau 54 → 40, Lichtjob 0,041 → 0,051 ms; glass 14,4 / 32,7 → 11,1 / 27,5, Rückstau 27 → 27, Lichtjob 0,112 → 0,100 ms (99 → 96 Jobs); glass-full 10,6 / 22,2, Rückstau 27, Lichtjob 0,105 ms. Die Verspätung des Takts liegt in allen Szenarien bei Ø 0,10–0,20 ms; kein Tick wurde übersprungen.
 
-**Kontrollmessung mit gleichem Gelände:** Die geräumten Szenarien sind entgegen der Erwartung nicht direkt vergleichbar: Mit den Seeds nach Namen (E-214) und den neuen Features (Blumen, Farn, toter Busch, Schlamm am Sumpfufer, Netze, Magma) stehen Bäume anders, und der Spawn verschiebt sich (Seed 42: −23,5 / 70 / −15,5 → −23,5 / 71 / −23,5). Hinter der geräumten Fläche sieht der alte Stand eine Baumkrone nah vor der Kamera, der neue Himmel, Wiese und einen Hang (Screenshots verglichen). Deshalb ein dritter Build `ctrl`: Code und Inhalt von a5bd0ea, aber Weltgenerierung wie ef921b8 (E-214 zurückgenommen, Biome, `sugar_cane`/`tall_grass` und die neuen Features und Erze entfernt). Gelände, Spawn und Dreiecke sind damit gleich wie im alten Stand (Abweichung < 0,02 %). Verschränkt base → ctrl, 3 Runden, light und glass 6, liquids 10 Runden, Last 1,2–5,0 (der Rechner lief in dieser Reihe mit etwa halb so hohen CPU-Zeiten wie in der Hauptreihe, Vergleiche gelten nur innerhalb einer Reihe):
+**Kontrollmessung mit gleichem Gelände:** Die geräumten Szenarien sind entgegen der Erwartung nicht direkt vergleichbar: Mit den Seeds nach Namen (E-214) und den neuen Features (Blumen, Farn, toter Busch, Schlamm am Sumpfufer, Netze, Magma) stehen Bäume anders, und der Spawn verschiebt sich (Seed 42: −23,5 / 70 / −15,5 → −23,5 / 71 / −23,5). Hinter der geräumten Fläche sieht der alte Stand eine Baumkrone nah vor der Kamera, der neue Himmel, Wiese und einen Hang (Screenshots verglichen). Deshalb ein dritter Build `ctrl`: Code und Inhalt von 624bce3, aber Weltgenerierung wie 4e5f1d2 (E-214 zurückgenommen, Biome, `sugar_cane`/`tall_grass` und die neuen Features und Erze entfernt). Gelände, Spawn und Dreiecke sind damit gleich wie im alten Stand (Abweichung < 0,02 %). Verschränkt base → ctrl, 3 Runden, light und glass 6, liquids 10 Runden, Last 1,2–5,0 (der Rechner lief in dieser Reihe mit etwa halb so hohen CPU-Zeiten wie in der Hauptreihe, Vergleiche gelten nur innerhalb einer Reihe):
 
 | Szenario | GUI-CPU ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Speicher MB | Frame p99 ms |
 |----------|------------|---------------|----------|-----------|-------------|--------------|
@@ -213,9 +213,9 @@ In der Kontrollreihe: light `change_mesh` 9,2 / 18,6 → 7,9 / 16,3 ms, Lichtjob
 
 tickbase in derselben Reihe (light, altes Gelände): Tick 0,392 [0,34–0,43] ms, GPU 1,27 ms, 79 Lichtjobs, 630 Sektionen.
 
-**Bewertung des Nachtrags:** Die volle Last von light kostet im Stand der Block-Erweiterung +0,05 ms Tick (+11 %, Spannen berühren sich) und rund 60 % mehr Neuvernetzung (736 statt 461 Sektionen, so viele wie in tickbase); GPU, GUI- und Render-CPU, Lichtjob und schlechteste Zeit bis zum Bild bleiben gleich. Im Kontrollszenario glass (gleiche Last in beiden Ständen, die Ausnahme ändert dort nichts) steigt der Tick in derselben Reihe um 6 % und `change_mesh` Ø um 33 %, max um 55 %; diese Werte streuen also so stark, und für light ist nur der Teil über glass (+5 % Tick) der Last zuzuschreiben. crowd bekommt seinen fehlenden Startbefehl: 84 statt 75 Wesen in der Messung, GUI-CPU +16 % und Render-CPU +12 % (Entity-Vernetzung und -Zeichnen der zusätzlichen Wesen), Tick +5 %, GPU gleich. Frame p99 bleibt in allen Szenarien bei 9,9–10,3 ms. Gegen tickbase liegt der Tick in light mit voller Last 38 % höher; das enthält das neue Gelände von Etappe 20 und der Block-Erweiterung (E-101, E-214, siehe oben) und ist nicht der Code allein; der direkte Vergleich von Etappe 20 mit tickbase bei gleicher Last steht im Nachtrag zu Etappe 20. Die bisherigen A/B-Vergleiche (Etappe 20 → Block-Erweiterung) bleiben gültig, weil beide Stände gleich betroffen waren; Stände von Etappe 20 bis 54322eb erzeugen in light und crowd weniger Last; für künftige A/B-Vergleiche mit ihnen wird die Ausnahme nachgerüstet (wie hier für ef921b8, Diff von `src/server`).
+**Bewertung des Nachtrags:** Die volle Last von light kostet im Stand der Block-Erweiterung +0,05 ms Tick (+11 %, Spannen berühren sich) und rund 60 % mehr Neuvernetzung (736 statt 461 Sektionen, so viele wie in tickbase); GPU, GUI- und Render-CPU, Lichtjob und schlechteste Zeit bis zum Bild bleiben gleich. Im Kontrollszenario glass (gleiche Last in beiden Ständen, die Ausnahme ändert dort nichts) steigt der Tick in derselben Reihe um 6 % und `change_mesh` Ø um 33 %, max um 55 %; diese Werte streuen also so stark, und für light ist nur der Teil über glass (+5 % Tick) der Last zuzuschreiben. crowd bekommt seinen fehlenden Startbefehl: 84 statt 75 Wesen in der Messung, GUI-CPU +16 % und Render-CPU +12 % (Entity-Vernetzung und -Zeichnen der zusätzlichen Wesen), Tick +5 %, GPU gleich. Frame p99 bleibt in allen Szenarien bei 9,9–10,3 ms. Gegen tickbase liegt der Tick in light mit voller Last 38 % höher; das enthält das neue Gelände von Etappe 20 und der Block-Erweiterung (E-101, E-214, siehe oben) und ist nicht der Code allein; der direkte Vergleich von Etappe 20 mit tickbase bei gleicher Last steht im Nachtrag zu Etappe 20. Die bisherigen A/B-Vergleiche (Etappe 20 → Block-Erweiterung) bleiben gültig, weil beide Stände gleich betroffen waren; Stände von Etappe 20 bis 54322eb erzeugen in light und crowd weniger Last; für künftige A/B-Vergleiche mit ihnen wird die Ausnahme nachgerüstet (wie hier für 4e5f1d2, Diff von `src/server`).
 
-**Etappe 21 (Showcase-, Flach- und Leere-Welt, Protokoll-Codec nach Themen, Beschriftungen, Weltinfo Format 2), verschränkt gegen `dev` efa4684 mit dem Stand 0a118c5 (Etappe 21 plus die beiden Korrekturen unten) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Das Gelände der normalen Welt ist unverändert (Dreiecke, Sektionen und Sektionspuffer gleich bis auf ±3 Dreiecke), die Werte sind also direkt vergleichbar. Last (1-min-Mittel) 1,7–4,8, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
+**Etappe 21 (Showcase-, Flach- und Leere-Welt, Protokoll-Codec nach Themen, Beschriftungen, Weltinfo Format 2), verschränkt gegen `dev` 39ebd0c mit dem Stand 0a118c5 (Etappe 21 plus die beiden Korrekturen unten) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Das Gelände der normalen Welt ist unverändert (Dreiecke, Sektionen und Sektionspuffer gleich bis auf ±3 Dreiecke), die Werte sind also direkt vergleichbar. Last (1-min-Mittel) 1,7–4,8, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
 
 Zwei Befunde vor der Messung:
 
@@ -252,7 +252,7 @@ Beschriftungen in showcase (verschränkt, 3 Runden, `showLabels` an → aus): GU
 - **showcase:** Die Wesen der Gehege (ein dauerhaftes Wesen jeder Art, im Grundspiel sechs, alle in Sichtweite des Spielers) kosten den Server-Tick kaum: 0,23 ms gegen 0,40 ms in flat-crowd mit 80 Wesen; weit unter 1 ms, eine Ruhe-Regel für Gehege-Wesen ist nicht nötig. Die Beschriftungen (bis 48 Sichtstrahlen, QML-Texte) kosten 0,03 ms GUI-CPU pro Frame (+11 % gegenüber ausgeschaltet), Render-CPU und GPU gleich. GPU 0,80 ms bei 64 000 Dreiecken und 139 Draw-Calls (viel Glas, Teilformen, durchscheinende Flüssigkeitsbecken) liegt unter dem normalen Gelände (1,6–2,1 ms).
 - **Frame p99 der neuen Szenarien:** In den ersten Runden 10,2–10,4 ms wie im Gelände; ab der zweiten Runde der ersten Baseline-Reihe lag p99 bei allen Szenarien bei 15,4–16,4 ms (Frame Ø 8,4–8,9 ms statt 8,33 ms, einzelne verpasste Display-Takte), auch in einem Kontroll-Lauf von stand im normalen Gelände (15,4 und 15,7 ms) direkt danach, während der WindowServer mit 45 % CPU lief (Bedienung des Rechners, kein Fremdprozess über der Grenze). Das ist der Zustand des Systems, nicht der Szenarien; p99 dieser Referenzwerte ist deshalb nur verschränkt zu vergleichen.
 
-**Etappe 21b (Debug-Anzeige in Stufen, Phasen-Zähler, Offscreen-Screenshots), verschränkt gegen `dev` 75f317e mit dem Stand 1bb9726 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Je Szenario und Runde drei Läufe: Basis (mit ihrer Vorgabe, der Debug-Zeile), neuer Stand mit `DEBUG_DISPLAY=off` und mit `compact` (Vorgabe im normalen Spiel). Im Benchmark misst der Frame-Monitor in beiden Stufen voll; kompakt unterscheidet sich von aus also nur durch Text und Frame-Abstand der Zeile, der Server-Pfad ist gleich (kompakt abonniert nichts, E-225). Die Phasen-Runden laufen in jedem Tick, auch bei ausgeschalteter Anzeige. Gelände, Wesen und Dreiecke gleich (in einem sprint-Lauf von „aus“ 21 statt 23 Wesen, Spawn-Zufall). Last (1-min-Mittel) 1,9–4,8, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet. Angaben: Basis → aus / kompakt, Prozent gegen die Basis.
+**Etappe 21b (Debug-Anzeige in Stufen, Phasen-Zähler, Offscreen-Screenshots), verschränkt gegen `dev` 246c6e2 mit dem Stand 1bb9726 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Je Szenario und Runde drei Läufe: Basis (mit ihrer Vorgabe, der Debug-Zeile), neuer Stand mit `DEBUG_DISPLAY=off` und mit `compact` (Vorgabe im normalen Spiel). Im Benchmark misst der Frame-Monitor in beiden Stufen voll; kompakt unterscheidet sich von aus also nur durch Text und Frame-Abstand der Zeile, der Server-Pfad ist gleich (kompakt abonniert nichts, E-225). Die Phasen-Runden laufen in jedem Tick, auch bei ausgeschalteter Anzeige. Gelände, Wesen und Dreiecke gleich (in einem sprint-Lauf von „aus“ 21 statt 23 Wesen, Spawn-Zufall). Last (1-min-Mittel) 1,9–4,8, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet. Angaben: Basis → aus / kompakt, Prozent gegen die Basis.
 
 | Szenario | Frame p99 ms | GUI-CPU Ø ms | GUI-CPU p99 ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
 |----------|--------------|--------------|----------------|---------------|----------|-----------|-------------|-------------|
@@ -276,7 +276,7 @@ Phasen (neuer Stand, Mittel aller Läufe, ms pro Tick): Wesen 0,41–0,73 in den
 - **Tick max über der Schwelle (stand +11 %, light +15 % mit aus; crowd +18 % mit kompakt):** einzelne schlechteste Ticks, jeweils in der Phase Wesen, Spannen überlappen, die jeweils andere Stufe liegt bei +1 % (stand), +9 % (light) und −10 % (crowd). Begründet in E-230 wie schon E-224, kein tieferes Profiling.
 - **Phasen in der BENCH-Zeile:** Seit Etappe 21b stehen die Zeitanteile des Server-Ticks in jeder BENCH-Zeile (`tick_<phase>_avg_ms`, `tick_<phase>_max_ms` für `players`, `saving`, `chunkLoading`, `blockUpdates`, `liquids`, `mobs`, `items`, `plants`, `fallingBlocks`, `machines`, `streaming`, `clientSync` und `messages`; E-225). Künftige A/B-Vergleiche grenzen Tick-Abweichungen damit direkt auf eine Phase ein; ältere Stände haben diese Schlüssel nicht, der Vergleich mit ihnen bleibt beim ganzen Tick.
 
-**Etappe 22 (Charakter-Vorschau, Protokoll 21 mit Rüstungsfeldern, Profilprüfung), verschränkt gegen `dev` db8e718 mit dem Stand 3cea050 (Etappe 22 plus Benchmark-Haken) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Skript- und Hintergrundläufe haben ein inaktives Fenster, in dem Vorschauen nur ein Standbild zeichnen (E-231). Für die Messung lässt `QTCRAFT_PREVIEW_ACTIVE=1` (`PREVIEW_ACTIVE=1` in `bench-common.sh`) sie wie im aktiven Fenster animiert laufen (30 Bilder pro Sekunde im Inventar); die BENCH-Zeile nennt dazu die Vernetzung der Vorschauen (`preview_mesh_avg_ms`, `preview_mesh_max_ms`). Im Szenario inventory läuft der neue Stand animiert („neu“) und als Standbild („still“), die Basis hat keine Vorschau. Gelände, Wesen und Dreiecke gleich (±25 Dreiecke im sprint). Last (1-min-Mittel) 2,0–5,1, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
+**Etappe 22 (Charakter-Vorschau, Protokoll 21 mit Rüstungsfeldern, Profilprüfung), verschränkt gegen `dev` 8a317eb mit dem Stand 3cea050 (Etappe 22 plus Benchmark-Haken) im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Skript- und Hintergrundläufe haben ein inaktives Fenster, in dem Vorschauen nur ein Standbild zeichnen (E-231). Für die Messung lässt `QTCRAFT_PREVIEW_ACTIVE=1` (`PREVIEW_ACTIVE=1` in `bench-common.sh`) sie wie im aktiven Fenster animiert laufen (30 Bilder pro Sekunde im Inventar); die BENCH-Zeile nennt dazu die Vernetzung der Vorschauen (`preview_mesh_avg_ms`, `preview_mesh_max_ms`). Im Szenario inventory läuft der neue Stand animiert („neu“) und als Standbild („still“), die Basis hat keine Vorschau. Gelände, Wesen und Dreiecke gleich (±25 Dreiecke im sprint). Last (1-min-Mittel) 2,0–5,1, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
 
 | Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Speicher MB |
 |----------|--------------|--------------|---------------|----------|-----------|-------------|-------------|
@@ -304,7 +304,7 @@ Wiederholung (light, showcase, flat-crowd, crowd, glass, inventory, 3 Runden dir
 - **Tick max über der Schwelle** (crowd +22 %, light +20 %, showcase +105 %, stand +17 % über die Reihen): einzelne schlechteste Ticks, jeweils in der Phase Wesen, Spannen überlappen; showcase hat in der Basis sehr kleine Werte (0,4–0,7 ms), ein einzelner Lauf mit 2,77 ms trägt den Anstieg, die Wiederholung liegt bei +18 %. Wie E-224 und E-230, begründet in E-233.
 - **Inventar mit animierter Vorschau über der Schwelle (GUI-CPU Ø +20 bis +25 %, p99 +36 %):** echte, gewollte Kosten des neuen Elements, wiederholbar, nur solange das Inventar im aktiven Fenster offen ist. Absolut +0,07–0,09 ms pro Frame (p99 +0,27 ms) bei einem Budget von 8,33 ms; GPU, Render-CPU und Frame p99 unverändert. Die Vernetzung der Figur erklärt nur ein Zehntel davon; der Rest fällt im GUI-Thread pro Vorschau-Bild an (rund 0,25 ms; vermutlich das zusätzliche Aufwachen der Ereignisschleife durch den eigenen 30-Hz-Timer und `update()` des `QQuickRhiItem`, nicht einzeln gemessen). Ein `sample` des GUI-Threads über 8 s (1-ms-Raster) findet keinen einzelnen Schwerpunkt. Begründet in E-233, keine Änderung.
 
-**Etappe 23 (Rüstung, Rüstungsständer, Umhang), verschränkt gegen `dev` fc5c47c mit dem Stand 012a718 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** inventory mit `PREVIEW_ACTIVE=1` (animierte Vorschau in beiden Ständen). Neu pro Frame sind die Anbauteile und der Umhang je Figur (in den alten Szenarien trägt niemand Rüstung oder Umhang; geprüft werden nur die Nachschläge pro Figur), die HUD-Rüstungsleiste (unsichtbar ohne Rüstung) und die Namen der Ständer bei den Beschriftungen; neu pro Tick die Schleife über die Ständer im Client-Abgleich und in der Kampf-Phase (ohne Ständer leer) sowie Minderung und Abnutzung bei Treffern. Gelände, Wesen und Dreiecke gleich, außer showcase (siehe unten). Last (1-min-Mittel) 2,3–4,6, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
+**Etappe 23 (Rüstung, Rüstungsständer, Umhang), verschränkt gegen `dev` 0f66af3 mit dem Stand 012a718 im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** inventory mit `PREVIEW_ACTIVE=1` (animierte Vorschau in beiden Ständen). Neu pro Frame sind die Anbauteile und der Umhang je Figur (in den alten Szenarien trägt niemand Rüstung oder Umhang; geprüft werden nur die Nachschläge pro Figur), die HUD-Rüstungsleiste (unsichtbar ohne Rüstung) und die Namen der Ständer bei den Beschriftungen; neu pro Tick die Schleife über die Ständer im Client-Abgleich und in der Kampf-Phase (ohne Ständer leer) sowie Minderung und Abnutzung bei Treffern. Gelände, Wesen und Dreiecke gleich, außer showcase (siehe unten). Last (1-min-Mittel) 2,3–4,6, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
 
 | Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Entity-Vernetzung ms | Speicher MB |
 |----------|--------------|--------------|---------------|----------|-----------|-------------|----------------------|-------------|
@@ -340,7 +340,7 @@ Wiederholung (stand, sprint, crowd, light, glass, 3 Runden direkt danach, Last 2
 - **showcase GUI-CPU +14 %, Entity-Vernetzung +78 %:** die neuen Ständer mit Rüstung im Bild (2 Figuren, +0,048 ms, also rund 24 µs pro Figur wie in armour-crowd) und eine andere Szene (+16 % Dreiecke); gewollter Inhalt, keine Regression.
 - **Gerüstete Figuren** kosten rund 18 µs GUI-CPU pro Figur (40 Ständer und 8 Gliederpuppen mit Umhang: +0,88 ms bei einem Budget von 8,33 ms) und skalieren mit ihrer Geometrie. Ein Zwischenspeichern der Netze ruhender Ständer (nur der Umhang schwingt) wäre der nächste Schritt, falls Welten mit vielen Ständern später stören. Begründet in E-242, keine Änderung am Code.
 
-**Etappe 24 (Server-Befehle, Operator-Rechte, `/tick`, Spielerzeit für Budgets, Grenzen und Autosave), verschränkt gegen `dev` efb069e mit dem Stand ffc8fcc im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Neu pro Tick sind die Spielerzeit (`QcTickScheduler::tickRealNs`, `playerTimeNs`), das pro Nanosekunde aufgefüllte Eingabe- und Ratenbudget und die Prüfung, ob Welt und Zeit an die Clients gehen (`clientSyncDue`); neu pro Chat-Zeile die Befehls-Registry mit Rechteprüfung und einer Log-Zeile pro Befehl (E-243); im Client die Aufteilung von `QcClientSession` (`QcClientMachineScreen`, `QcClientSounds`) und die Tagesgeschwindigkeit aus `WorldTime`. Das Szenario liquids schickt im neuen Stand nach dem großen `/fill` ein `/confirm` (E-245; die Basis antwortet darauf „Unknown command“); beide Stände füllen dieselbe Fläche (gleiche Dreiecke 472 900, 175 Lichtjobs, 1997 neu vernetzte Sektionen). Gelände, Wesen und Dreiecke gleich. Last (1-min-Mittel) 2,4–5,3, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
+**Etappe 24 (Server-Befehle, Operator-Rechte, `/tick`, Spielerzeit für Budgets, Grenzen und Autosave), verschränkt gegen `dev` ff4f963 mit dem Stand ffc8fcc im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Neu pro Tick sind die Spielerzeit (`QcTickScheduler::tickRealNs`, `playerTimeNs`), das pro Nanosekunde aufgefüllte Eingabe- und Ratenbudget und die Prüfung, ob Welt und Zeit an die Clients gehen (`clientSyncDue`); neu pro Chat-Zeile die Befehls-Registry mit Rechteprüfung und einer Log-Zeile pro Befehl (E-243); im Client die Aufteilung von `QcClientSession` (`QcClientMachineScreen`, `QcClientSounds`) und die Tagesgeschwindigkeit aus `WorldTime`. Das Szenario liquids schickt im neuen Stand nach dem großen `/fill` ein `/confirm` (E-245; die Basis antwortet darauf „Unknown command“); beide Stände füllen dieselbe Fläche (gleiche Dreiecke 472 900, 175 Lichtjobs, 1997 neu vernetzte Sektionen). Gelände, Wesen und Dreiecke gleich. Last (1-min-Mittel) 2,4–5,3, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet.
 
 | Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Phase Nachrichten Ø ms | Speicher MB |
 |----------|--------------|--------------|---------------|----------|-----------|-------------|------------------------|-------------|
@@ -365,7 +365,7 @@ Wiederholung (light, glass, stand, sprint, 3 Runden direkt danach, dazu der neue
 - **Speicher** −3 bis +4 MB, **Frame p99** 9,8–10,3 ms in beiden Ständen (armour-crowd +5 %: alle drei Läufe des neuen Stands bei 10,3 ms, die Zweiteilung 9,3 gegen 10,3 ms je Lauf).
 - **Werkzeugwerte von `/tick`** (Sprint-Durchsatz, Nachrichten an den Client im Sprint, Kosten von Rate 100) stehen in `docs/Performance.md` unter „Tick-Steuerung als Messwerkzeug“. Nebenbefund: Klänge gehen im Sprint ungedrosselt an den Client (rund 400 in 0,3 s im Gedränge), anders als Welt, Entities und Zeit (E-249); für die Leistung unerheblich, aber hörbar, falls der Ton nicht stumm ist.
 
-**Etappe 25 (Multiplayer: TCP-Transport, `QcNetworkServer`, Anmeldung, Protokoll 27 mit `EntityMoves.timeMs`, Interpolationspuffer, Spielerliste, Klartext-Beschriftungen, gebündelte Identitäten), verschränkt gegen `dev` aee2b6e mit dem Stand 680f7cb im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Neu pro Client-Tick (20 Hz) ist der Interpolationspuffer für jede fremde Figur (`QcSnapshotClock`, `QcSnapshotBuffer`, E-271); er ist auch im Einzelspieler eingeschaltet, crowd, flat-crowd und armour-crowd (80–128 Wesen) messen ihn also mit. Neu pro Server-Tick sind der Ablauf offener Anmeldungen, die Prüfung, ob `identities.json` fällig ist (E-273), die Abfrage laufender Sicherungen und die Spielerliste bei Änderungen (alles in der Phase Spieler); `QcNetworkServer` lauscht nur im Mehrspieler und läuft in den Szenarien nicht. Gelände, Wesen und Dreiecke gleich. Last (1-min-Mittel) 2,5–5,9, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet. Frame p99 lag in dieser Messung bei beiden Ständen meist bei 12–16 ms statt 10 ms (verpasste Display-Takte wie in Etappe 21b, ein Zustand des Systems, gleich für beide Stände).
+**Etappe 25 (Multiplayer: TCP-Transport, `QcNetworkServer`, Anmeldung, Protokoll 27 mit `EntityMoves.timeMs`, Interpolationspuffer, Spielerliste, Klartext-Beschriftungen, gebündelte Identitäten), verschränkt gegen `dev` 5384512 mit dem Stand 680f7cb im Release-Build, je 3 Runden à 20 s, 8 Chunks, Mittel [Spanne]:** Neu pro Client-Tick (20 Hz) ist der Interpolationspuffer für jede fremde Figur (`QcSnapshotClock`, `QcSnapshotBuffer`, E-271); er ist auch im Einzelspieler eingeschaltet, crowd, flat-crowd und armour-crowd (80–128 Wesen) messen ihn also mit. Neu pro Server-Tick sind der Ablauf offener Anmeldungen, die Prüfung, ob `identities.json` fällig ist (E-273), die Abfrage laufender Sicherungen und die Spielerliste bei Änderungen (alles in der Phase Spieler); `QcNetworkServer` lauscht nur im Mehrspieler und läuft in den Szenarien nicht. Gelände, Wesen und Dreiecke gleich. Last (1-min-Mittel) 2,5–5,9, vor jedem Lauf kein Fremdprozess ≥ 80 % CPU, kein Lauf belastet. Frame p99 lag in dieser Messung bei beiden Ständen meist bei 12–16 ms statt 10 ms (verpasste Display-Takte wie in Etappe 21b, ein Zustand des Systems, gleich für beide Stände).
 
 | Szenario | Frame p99 ms | GUI-CPU Ø ms | Render-CPU ms | GPU Ø ms | Tick Ø ms | Tick max ms | Phase Nachrichten Ø ms | Speicher MB |
 |----------|--------------|--------------|---------------|----------|-----------|-------------|------------------------|-------------|
@@ -401,21 +401,21 @@ Wiederholung (light, liquids, glass, 3 Runden direkt danach, Last 2,3–4,9, kei
 - **Tick max** light +45 % (Wiederholung −12 %), flat-crowd +19 %, liquids +17 % in der Wiederholung (dritte Reihe −4 %): einzelne schlechteste Ticks wie in E-250; dafür glass −29 %/−24 %.
 - **Keine Code-Änderung nötig**, begründet in E-278. Mehrspieler-Referenzwerte auch in `docs/Performance.md`.
 
-## Nachgeholte Messungen: `b04118d`, Etappe 26, Leere-Zone, Etappe 27 (2026-10-12)
+## Nachgeholte Messungen: `7677877`, Etappe 26, Leere-Zone, Etappe 27 (2026-10-12)
 
 Die vier Squash-Merges vom 2026-10-12 wurden ohne Benchmark nach `dev` übernommen (der Mensch arbeitete am Rechner) und hier nachgemessen, jeder Stand verschränkt gegen seinen Vorgänger. Neu dafür ist `scripts/bench-ab.sh`: Es misst beliebig viele Builds verschränkt (pro Runde und Szenario jeder Build einmal, in der angegebenen Reihenfolge), wartet zu Beginn bis zu 3 min auf einen ruhigen Rechner (1-min-Last ≤ 6, kein fremder Prozess ≥ 80 % CPU außer WindowServer) und schreibt pro Lauf Last und belastende Prozesse mit. Alle Stände als Release-Build (`RelWithDebInfo`, nur das Ziel `qtcraft`) aus `git archive` außerhalb des Repos, 8 Chunks, 20 s pro Lauf, Ton stumm, eingebautes Display im Hintergrund, Mittel [Spanne]. Während der Messreihen hielt diese Sitzung die Sperre `~/.cache/qtcraft/bench.lock` (Absprache mit der parallelen Etappe-28-Sitzung). Nachtrag nach dem Review: `bench-ab.sh` legt die Sperre inzwischen selbst an (Verzeichnis mit Besitzerdatei, entfernt am Ende auch bei Abbruch, wartet, solange ein anderer sie hält), rotiert die Reihenfolge der Builds pro Runde (Runde r beginnt mit Build (r − 1) mod n; Position und Reihenfolge stehen in jeder Ergebniszeile), wartet vor jedem Lauf bis zu 3 min auf Ruhe und schreibt Last und fremde Prozesse vor und nach jedem Lauf mit (fremd: ≥ 80 % CPU außer WindowServer und kernel_task, dazu jedes `qtcraft` einer anderen Sitzung); die Reihen 1 bis 5 unten entstanden noch mit fester Reihenfolge.
 
 **Reihen:**
 
-1. Hauptreihe: `70f8261` → `b04118d` → `ed9c8ef` → `8f9a7ab` → `a418550` in einer Runde nacheinander, 11 Szenarien (stand, sprint, crowd, light, liquids, glass, showcase, flat-crowd, flat-liquids, void-light, armour-crowd), 3 Runden, 165 Läufe. Last 2,3–5,6; in 10 Läufen lief Safari mit rund 100 % CPU (über alle Stände verteilt).
-2. Korrektur der Unterseite (`556e71c`, E-330) gegen `a418550` und `ed9c8ef`, 7 Szenarien, 3 Runden. Last 3,0–8,6; Runde 1 teils belastet (Builds und ein Test der anderen Sitzung).
+1. Hauptreihe: `75b25c0` → `7677877` → `9eecb13` → `a734af0` → `59b05ba` in einer Runde nacheinander, 11 Szenarien (stand, sprint, crowd, light, liquids, glass, showcase, flat-crowd, flat-liquids, void-light, armour-crowd), 3 Runden, 165 Läufe. Last 2,3–5,6; in 10 Läufen lief Safari mit rund 100 % CPU (über alle Stände verteilt).
+2. Korrektur der Unterseite (`556e71c`, E-330) gegen `59b05ba` und `9eecb13`, 7 Szenarien, 3 Runden. Last 3,0–8,6; Runde 1 teils belastet (Builds und ein Test der anderen Sitzung).
 3. Wiederholung der auffälligen Werte: alle fünf Stände plus `fd70a0b` (beide Korrekturen), 7 Szenarien, 3 Runden. Runde 1 stark belastet (Last bis 13,4, Builds der anderen Sitzung); bewertet wurden die Runden 2 und 3 (Last 2,6–4,2).
-4. Neue Szenarien: `gravel-collapse` (`ed9c8ef`, `8f9a7ab`, `a418550`, `fd70a0b`), `farm` und `farm-seeds` (`a418550`, `fd70a0b`), je 3 Runden. Last 2,7–4,8.
-5. Gegenprobe zur Reihenfolge: `fd70a0b` → `a418550` → `ed9c8ef` (umgekehrt), stand, sprint, crowd, glass, 4 Runden. Last 2,6–4,8.
+4. Neue Szenarien: `gravel-collapse` (`9eecb13`, `a734af0`, `59b05ba`, `fd70a0b`), `farm` und `farm-seeds` (`59b05ba`, `fd70a0b`), je 3 Runden. Last 2,7–4,8.
+5. Gegenprobe zur Reihenfolge: `fd70a0b` → `59b05ba` → `9eecb13` (umgekehrt), stand, sprint, crowd, glass, 4 Runden. Last 2,6–4,8.
 
 Frame p99 war in allen Reihen wie bekannt zweigeteilt (je Lauf ≈ 9,5–10,5 oder ≈ 14–16 ms, bei allen Ständen); einzelne p99-Unterschiede bis ±39 % in einer Reihe wechseln das Vorzeichen zwischen Paaren und Reihen und werden nicht als Regression gewertet.
 
-### `b04118d` gegen `70f8261` (Tooltips und Steuerpalette, Sprint-Sichtfeld, dedizierter Server im Bundle)
+### `7677877` gegen `75b25c0` (Tooltips und Steuerpalette, Sprint-Sichtfeld, dedizierter Server im Bundle)
 
 Reihe 1, Basis → neu:
 
@@ -433,9 +433,9 @@ Reihe 1, Basis → neu:
 | void-light | 12,59 → 11,84 (−6 %) | 0,293 → 0,339 (+16 %) | 0,758 → 0,762 (+1 %) | 0,588 → 0,575 (−2 %) | 0,129 → 0,157 (+22 %) | 0,367 → 0,933 (+154 %) | 220 → 222 (+1 %) |
 | armour-crowd | 12,10 → 11,86 (−2 %) | 1,45 → 1,59 (+10 %) | 0,776 → 0,804 (+4 %) | 1,08 → 1,14 (+6 %) | 0,361 → 0,343 (−5 %) | 1,67 → 1,76 (+5 %) | 283 → 276 (−3 %) |
 
-Der Server-Code ist unverändert (`git diff 70f8261 b04118d -- src/server src/common` leer). Neu pro Frame ist nur die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect::advance`, eine Exponentialfunktion). **Bewertung:** keine Regression. Tick Ø crowd +17 % und flat-liquids +13 % in Reihe 1, crowd in Reihe 3 −4 %, über beide Reihen +5 %. void-light Tick Ø liegt in beiden Reihen höher (+22 %, +16 %; 0,13 → 0,16 ms, gleichmäßig über die Phasen Streaming, Wesen und Pflanzen verteilt) bei identischem Server-Code: Kern- und Taktstreuung wie in E-250. GUI-CPU void-light +16 %/+13 % (+0,04 ms), in den übrigen zehn Szenarien −7 bis +5 % (über beide Reihen); das Sichtfeld kostet nichts Messbares.
+Der Server-Code ist unverändert (`git diff 75b25c0 7677877 -- src/server src/common` leer). Neu pro Frame ist nur die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect::advance`, eine Exponentialfunktion). **Bewertung:** keine Regression. Tick Ø crowd +17 % und flat-liquids +13 % in Reihe 1, crowd in Reihe 3 −4 %, über beide Reihen +5 %. void-light Tick Ø liegt in beiden Reihen höher (+22 %, +16 %; 0,13 → 0,16 ms, gleichmäßig über die Phasen Streaming, Wesen und Pflanzen verteilt) bei identischem Server-Code: Kern- und Taktstreuung wie in E-250. GUI-CPU void-light +16 %/+13 % (+0,04 ms), in den übrigen zehn Szenarien −7 bis +5 % (über beide Reihen); das Sichtfeld kostet nichts Messbares.
 
-### `ed9c8ef` gegen `b04118d` (Etappe 26: Kreativmodus, Flug, Katalog-Inventar, Pick Block)
+### `9eecb13` gegen `7677877` (Etappe 26: Kreativmodus, Flug, Katalog-Inventar, Pick Block)
 
 Reihe 1, Basis → neu:
 
@@ -455,7 +455,7 @@ Reihe 1, Basis → neu:
 
 **Bewertung:** keine Regression über der Schwelle. **Spitzenspeicher** in allen Szenarien wiederholbar +18 bis +23 MB (über beide Reihen +3 bis +9 %; armour-crowd in Reihe 1 +11 %, über beide Reihen +8 %): fester Mehrbedarf des Katalog-Inventars und der Kreativ-Oberfläche, unabhängig vom Szenario; unter der Schwelle, keine Änderung (falls spätere Etappen den Speicher weiter treiben, zuerst mit `profile.sh alloc` hier ansetzen). Tick Ø sprint +17 % in Reihe 1 und +12 % in Reihe 3, dabei steigen alle Phasen gemeinsam (Reihe 3: Wesen +12 %, Pflanzen +19 %, Streaming und Client-Abgleich ebenso), wie bei einem anderen Takt des Kerns (E-250); in den übrigen Szenarien liegt Tick Ø zwischen −13 und +14 % (flat-crowd +14 % in Reihe 1, −10 % in Reihe 3; stand −13 %/−11 %, crowd −1 %/−8 %). Tick max einzelner Szenarien +22 bis +139 % in einer Reihe (flat-crowd, flat-liquids), in anderen −52 bis −55 %: Ausreißer wie in E-224/E-230.
 
-### `8f9a7ab` gegen `ed9c8ef` (Leere-Zone, E-288)
+### `a734af0` gegen `9eecb13` (Leere-Zone, E-288)
 
 Reihe 1, Basis → neu:
 
@@ -484,9 +484,9 @@ Wie in E-288 angekündigt zeichnet der Mesher seit der Leere-Zone die Unterseite
 | flat-liquids | 289 → 578 | 88 → 159 / 89 → 160 | 45 100 → 81 400 (+81 %) | 8,0 → 16,0 |
 | armour-crowd | 289 → 578 | 88 → 159 / 89 → 160 | 64 400 → 100 800 (+56 %) | 8,0 → 16,0 |
 
-Das Frustum verwirft diese Sektionen nicht (sie liegen im Blickfeld unter dem Gelände), und eine Verdeckungsprüfung gibt es nicht. Folge: Render-CPU in der flachen Welt und im Showcase +12 bis +21 %, GPU +12 bis +17 %, in den normalen Welten Render-CPU +5 bis +13 %; das liegt über der Schwelle. **Behoben** in `556e71c` (E-330): Flächen zur Leere hin kommen in eigene Listen des Sektions-Netzes, der Renderer zeichnet sie nur bei einer Kamera unter y = 0 und lässt Sektionen ohne andere Flächen ganz aus. Nachmessung siehe unten. Tick Ø showcase +12 % (Reihe 1) betrifft keine Server-Änderung des Szenarios (Showcase hat keinen Kies und keine Leere-Zone im Tick); in Reihe 2 lag `8f9a7ab` nicht vor, die Stände danach liegen auf `ed9c8ef` (−8 %).
+Das Frustum verwirft diese Sektionen nicht (sie liegen im Blickfeld unter dem Gelände), und eine Verdeckungsprüfung gibt es nicht. Folge: Render-CPU in der flachen Welt und im Showcase +12 bis +21 %, GPU +12 bis +17 %, in den normalen Welten Render-CPU +5 bis +13 %; das liegt über der Schwelle. **Behoben** in `556e71c` (E-330): Flächen zur Leere hin kommen in eigene Listen des Sektions-Netzes, der Renderer zeichnet sie nur bei einer Kamera unter y = 0 und lässt Sektionen ohne andere Flächen ganz aus. Nachmessung siehe unten. Tick Ø showcase +12 % (Reihe 1) betrifft keine Server-Änderung des Szenarios (Showcase hat keinen Kies und keine Leere-Zone im Tick); in Reihe 2 lag `a734af0` nicht vor, die Stände danach liegen auf `9eecb13` (−8 %).
 
-### `a418550` gegen `8f9a7ab` (Etappe 27: Landwirtschaft, Zufallsticks, Items in Strömung, Zucht)
+### `59b05ba` gegen `a734af0` (Etappe 27: Landwirtschaft, Zufallsticks, Items in Strömung, Zucht)
 
 Reihe 1, Basis → neu:
 
@@ -504,11 +504,11 @@ Reihe 1, Basis → neu:
 | void-light | 11,74 → 13,13 (+12 %) | 0,342 → 0,348 (+2 %) | 0,740 → 0,729 (−1 %) | 0,573 → 0,582 (+2 %) | 0,139 → 0,139 (+0 %) | 0,944 → 0,769 (−19 %) | 239 → 241 (+1 %) |
 | armour-crowd | 9,71 → 10,46 (+8 %) | 1,47 → 1,56 (+6 %) | 0,891 → 0,887 (+0 %) | 1,21 → 1,21 (+0 %) | 0,320 → 0,342 (+7 %) | 1,39 → 1,05 (−25 %) | 316 → 318 (+0 %) |
 
-**Bewertung:** keine Regression über der Schwelle im ganzen Tick, in Frame-Werten und Speicher. Wiederholbar ist nur die Phase **Pflanzen** (+13 bis +65 %, absolut +1 bis +5 µs pro Tick, unter 1 % des Ticks): Seit Etappe 27 sortiert `QcPlantGrowth::tick` jeden Tick die Chunks mit wachsenden Sektionen (feste Reihenfolge für reproduzierbare Zufallsticks) und läuft `QcMobBreeding::tick` (in derselben Phase) dreimal über alle Wesen. Die Sortierung wird seit `fd70a0b` zwischengespeichert und nur nach Änderungen der Chunk-Menge neu gebildet (E-331); in Reihe 5 liegt die Phase damit −16 bis +10 % um `a418550` (Streuung der µs-Werte ±20 %), ein Gewinn ist nicht messbar, der Aufwand pro Tick aber weg. Die Zuchtschleife bleibt (einige Nanosekunden pro Wesen). glass Frame p99 +32 % in Reihe 1 ist die Zweiteilung (Reihe 3: −4 %, Reihe 5 gegen `fd70a0b`: −4 %).
+**Bewertung:** keine Regression über der Schwelle im ganzen Tick, in Frame-Werten und Speicher. Wiederholbar ist nur die Phase **Pflanzen** (+13 bis +65 %, absolut +1 bis +5 µs pro Tick, unter 1 % des Ticks): Seit Etappe 27 sortiert `QcPlantGrowth::tick` jeden Tick die Chunks mit wachsenden Sektionen (feste Reihenfolge für reproduzierbare Zufallsticks) und läuft `QcMobBreeding::tick` (in derselben Phase) dreimal über alle Wesen. Die Sortierung wird seit `fd70a0b` zwischengespeichert und nur nach Änderungen der Chunk-Menge neu gebildet (E-331); in Reihe 5 liegt die Phase damit −16 bis +10 % um `59b05ba` (Streuung der µs-Werte ±20 %), ein Gewinn ist nicht messbar, der Aufwand pro Tick aber weg. Die Zuchtschleife bleibt (einige Nanosekunden pro Wesen). glass Frame p99 +32 % in Reihe 1 ist die Zweiteilung (Reihe 3: −4 %, Reihe 5 gegen `fd70a0b`: −4 %).
 
 ### Nach den Korrekturen
 
-`556e71c` (Unterseite) gegen `a418550`, Reihe 2:
+`556e71c` (Unterseite) gegen `59b05ba`, Reihe 2:
 
 | Szenario | Dreiecke | Draw-Calls | Render-CPU ms | GPU Ø ms | Bemerkung |
 |----------|----------|-----------:|---------------|----------|-----------|
@@ -520,11 +520,11 @@ Reihe 1, Basis → neu:
 | flat-liquids | 81 436 → 45 084 (−45 %) | 160 → 89 | 1,22 → 1,12 (−8 %) | 0,640 → 0,595 (−7 %) | |
 | armour-crowd | 100 950 → 64 257 (−36 %) | 161 → 89 | 1,03 → 1,00 (−3 %) | 1,18 → 1,13 (−4 %) | |
 
-**Bedeutung der Zähler seit `556e71c`:** `visible_sections` zählt nur noch Sektionen, die gezeichnet werden: Eine Sektion, die nur Unterseite hat, kommt bei einer Kamera über y = 0 nicht in die Liste, auch wenn ihre Grenzen im Frustum liegen. Bis `a418550` zählten solche Sektionen mit (Leere-Zone: eine je Säule). `sections` (alle hochgeladenen Netze) und `section_mb` schließen die Sektionen mit nur Unterseite weiter ein. Vergleiche von `visible_sections` über `556e71c` hinweg mit `8f9a7ab` oder `a418550` messen also auch diese Umstellung; gegen `ed9c8ef` und ältere Stände ist die Bedeutung wieder dieselbe.
+**Bedeutung der Zähler seit `556e71c`:** `visible_sections` zählt nur noch Sektionen, die gezeichnet werden: Eine Sektion, die nur Unterseite hat, kommt bei einer Kamera über y = 0 nicht in die Liste, auch wenn ihre Grenzen im Frustum liegen. Bis `59b05ba` zählten solche Sektionen mit (Leere-Zone: eine je Säule). `sections` (alle hochgeladenen Netze) und `section_mb` schließen die Sektionen mit nur Unterseite weiter ein. Vergleiche von `visible_sections` über `556e71c` hinweg mit `a734af0` oder `59b05ba` messen also auch diese Umstellung; gegen `9eecb13` und ältere Stände ist die Bedeutung wieder dieselbe.
 
-Dreiecke und Draw-Calls liegen damit wieder auf dem Stand vor der Leere-Zone (`ed9c8ef`: flat 49 761 / 89, Showcase 74 484 / 146; normal +0,2 %, die Unterseite in Sektionen mit sichtbarem Gelände kostet keine eigenen Aufrufe mehr). Gegen `ed9c8ef` über die Reihen 2, 3 und 5: Render-CPU −11 bis +10 %, GPU −8 bis +7 %, ohne gleichgerichtete Abweichung. Geblieben ist der Sektionspuffer (normal +8 MB, flach +8 MB): Die Unterseiten liegen weiter auf der GPU, damit der Blick aus der Leere sofort stimmt; Spitzenspeicher +2 bis +3 % gegenüber `ed9c8ef`, unter der Schwelle. Sichtprüfung (Offscreen-Bild aus y = −10 nach oben, flache Welt, Kreativflug): `fd70a0b` und `a418550` pixelgleich (größte Abweichung 1/255), die Unterseite wird von unten also weiter gezeichnet.
+Dreiecke und Draw-Calls liegen damit wieder auf dem Stand vor der Leere-Zone (`9eecb13`: flat 49 761 / 89, Showcase 74 484 / 146; normal +0,2 %, die Unterseite in Sektionen mit sichtbarem Gelände kostet keine eigenen Aufrufe mehr). Gegen `9eecb13` über die Reihen 2, 3 und 5: Render-CPU −11 bis +10 %, GPU −8 bis +7 %, ohne gleichgerichtete Abweichung. Geblieben ist der Sektionspuffer (normal +8 MB, flach +8 MB): Die Unterseiten liegen weiter auf der GPU, damit der Blick aus der Leere sofort stimmt; Spitzenspeicher +2 bis +3 % gegenüber `9eecb13`, unter der Schwelle. Sichtprüfung (Offscreen-Bild aus y = −10 nach oben, flache Welt, Kreativflug): `fd70a0b` und `59b05ba` pixelgleich (größte Abweichung 1/255), die Unterseite wird von unten also weiter gezeichnet.
 
-**Reihenfolge-Effekt (Reihe 3 und 4):** Dort lag `fd70a0b` als letzter Build jeder Runde in allen Werten über `a418550`, auch in GUI-CPU, Wesen- und Items-Phase, deren Code die Korrekturen nicht berühren (crowd GUI-CPU +33 %, farm-seeds alle Tick-Phasen +21 bis +48 %). In Reihe 5 mit umgekehrter Reihenfolge liegen beide gleichauf (stand Render-CPU +5 %, sprint −8 %, crowd +6 %, glass −3 %; Tick Ø −8 / +14 / −7 / −4 %). Folgerung für künftige Reihen: Bei mehr als zwei Ständen die Reihenfolge in jeder Runde wechseln oder eine Gegenreihe mit umgekehrter Reihenfolge messen, bevor eine Abweichung des letzten Stands als Regression gilt.
+**Reihenfolge-Effekt (Reihe 3 und 4):** Dort lag `fd70a0b` als letzter Build jeder Runde in allen Werten über `59b05ba`, auch in GUI-CPU, Wesen- und Items-Phase, deren Code die Korrekturen nicht berühren (crowd GUI-CPU +33 %, farm-seeds alle Tick-Phasen +21 bis +48 %). In Reihe 5 mit umgekehrter Reihenfolge liegen beide gleichauf (stand Render-CPU +5 %, sprint −8 %, crowd +6 %, glass −3 %; Tick Ø −8 / +14 / −7 / −4 %). Folgerung für künftige Reihen: Bei mehr als zwei Ständen die Reihenfolge in jeder Runde wechseln oder eine Gegenreihe mit umgekehrter Reihenfolge messen, bevor eine Abweichung des letzten Stands als Regression gilt.
 
 ### Neue Szenarien (erste Referenzwerte, Release, 8 Chunks, Mittel [Spanne])
 
@@ -532,9 +532,9 @@ Dreiecke und Draw-Calls liegen damit wieder auf dem Stand vor der Leere-Zone (`e
 
 | Stand | Tick Ø ms | Tick max ms | fallende Blöcke Ø / max ms | Block-Updates Ø / max ms | neu vernetzte Sektionen | Rückstau max | Änderung bis Bild Ø / max ms | GUI-CPU ms | Speicher MB |
 |-------|----------:|------------:|---------------------------:|-------------------------:|------------------------:|-------------:|-----------------------------:|-----------:|------------:|
-| `ed9c8ef` (vor der Leere-Zone: kein Einsturz) | 0,163 | 1,06 | 0,0001 / 0,0007 | 0,0009 / 0,052 | 0 | 0 | – | 0,259 | 256 |
-| `8f9a7ab` | 1,46 [1,41–1,51] | 5,29 | 0,682 / 3,23 | 0,082 / 2,28 | 5261 | 486 | 15,7 / 73 | 2,29 | 313 |
-| `a418550` | 1,32 [1,08–1,47] | 5,00 | 0,614 / 2,63 | 0,066 / 1,60 | 5229 | 424 | 16,5 / 160 | 2,38 | 311 |
+| `9eecb13` (vor der Leere-Zone: kein Einsturz) | 0,163 | 1,06 | 0,0001 / 0,0007 | 0,0009 / 0,052 | 0 | 0 | – | 0,259 | 256 |
+| `a734af0` | 1,46 [1,41–1,51] | 5,29 | 0,682 / 3,23 | 0,082 / 2,28 | 5261 | 486 | 15,7 / 73 | 2,29 | 313 |
+| `59b05ba` | 1,32 [1,08–1,47] | 5,00 | 0,614 / 2,63 | 0,066 / 1,60 | 5229 | 424 | 16,5 / 160 | 2,38 | 311 |
 | `fd70a0b` | 1,35 [1,19–1,48] | 5,34 | 0,625 / 2,37 | 0,068 / 2,16 | 5272 | 438 | 17,2 / 117 | 2,32 | 316 |
 
 Der Einsturz kostet im Mittel rund 1,2 ms pro Tick (davon fallende Blöcke 0,6–0,7 ms) und höchstens gut 5 ms, ein Zehntel des Tick-Budgets; die Grenzen aus E-288 (1024 Updates pro Tick, 2048 fallende Blöcke) halten den schlechtesten Tick klein. Auf dem Client steigt die GUI-CPU auf 2,3 ms (Entity-Vernetzung der fallenden Blöcke), der Rückstau auf über 400 Sektionen, eine Änderung braucht im schlechtesten Fall bis 0,3 s bis zum Bild; Frame p99 bleibt bei 10 ms. Etappe 27 und die Korrekturen ändern daran nichts (Tick −10 %/+2 %, Spannen überlappen).
@@ -543,22 +543,22 @@ Der Einsturz kostet im Mittel rund 1,2 ms pro Tick (davon fallende Blöcke 0,6�
 
 | Szenario / Stand | Ticks | Tick Ø ms | Phase Pflanzen Ø / max ms | Phase Items Ø ms | neu vernetzte Sektionen | Änderung bis Bild Ø / max ms | Rückstau max | Frame p99 ms |
 |------------------|------:|----------:|--------------------------:|-----------------:|------------------------:|-----------------------------:|-------------:|-------------:|
-| farm / `a418550` | 11 780 | 0,036 | 0,012 / 0,53 | 0,0003 | 1939 | 20,3 / 57 | 100 | 11,5 |
+| farm / `59b05ba` | 11 780 | 0,036 | 0,012 / 0,53 | 0,0003 | 1939 | 20,3 / 57 | 100 | 11,5 |
 | farm / `fd70a0b` | 11 782 | 0,038 | 0,012 / 0,42 | 0,0003 | 1950 | 21,2 / 63 | 108 | 11,7 |
-| farm-seeds / `a418550` | 401 | 0,275 | 0,051 / 0,47 | 0,061 | 102 | 9,2 / 20 | 4 | 9,8 |
+| farm-seeds / `59b05ba` | 401 | 0,275 | 0,051 / 0,47 | 0,061 | 102 | 9,2 / 20 | 4 | 9,8 |
 | farm-seeds / `fd70a0b` | 401 | 0,334 | 0,066 / 0,58 | 0,078 | 102 | 9,6 / 18 | 4 | 10,5 |
 
-Im Sprint laufen rund 11 400 zusätzliche Ticks in 20 s (600 pro Sekunde in wenigen Millisekunden), die Tick-Werte sind daher Mittel über Sprint-Ticks: Ein Tick mit wachsendem Feld kostet in der Phase Pflanzen 12 µs, der teuerste 0,4–0,5 ms. Der Client vernetzt dabei rund 2000 Sektionen neu, eine Änderung erscheint im Mittel nach 20 ms, im schlechtesten Fall nach 60 ms, bei unverändertem Frame p99. Ruhende Saat (farm-seeds) kostet in der Phase Items rund 0,4–0,6 µs pro Stapel und Tick (Ruheprüfung jeden Tick, Suche nach freiem Boden in neun Zellen einmal pro Sekunde); die Zufallsticks auf dem Feld (63 × 63 = 3969 Zellen, davon 441 Wasserrinne und 3528 Ackerboden unter 3024 Weizen, 252 Stängeln und 252 freien Zellen) kosten 0,05–0,07 ms. Die Unterschiede `a418550` → `fd70a0b` in farm-seeds sind der Reihenfolge-Effekt oben (alle Phasen gemeinsam, auch unveränderte). Ein Probelauf mit Saat, die auch in die Wasserrinnen fiel, kam auf 0,17 ms in der Phase Items: Items im Wasser ruhen nie und werden jeden Tick bewegt (E-296); das Szenario legt die Saat deshalb neben die Rinnen.
+Im Sprint laufen rund 11 400 zusätzliche Ticks in 20 s (600 pro Sekunde in wenigen Millisekunden), die Tick-Werte sind daher Mittel über Sprint-Ticks: Ein Tick mit wachsendem Feld kostet in der Phase Pflanzen 12 µs, der teuerste 0,4–0,5 ms. Der Client vernetzt dabei rund 2000 Sektionen neu, eine Änderung erscheint im Mittel nach 20 ms, im schlechtesten Fall nach 60 ms, bei unverändertem Frame p99. Ruhende Saat (farm-seeds) kostet in der Phase Items rund 0,4–0,6 µs pro Stapel und Tick (Ruheprüfung jeden Tick, Suche nach freiem Boden in neun Zellen einmal pro Sekunde); die Zufallsticks auf dem Feld (63 × 63 = 3969 Zellen, davon 441 Wasserrinne und 3528 Ackerboden unter 3024 Weizen, 252 Stängeln und 252 freien Zellen) kosten 0,05–0,07 ms. Die Unterschiede `59b05ba` → `fd70a0b` in farm-seeds sind der Reihenfolge-Effekt oben (alle Phasen gemeinsam, auch unveränderte). Ein Probelauf mit Saat, die auch in die Wasserrinnen fiel, kam auf 0,17 ms in der Phase Items: Items im Wasser ruhen nie und werden jeden Tick bewegt (E-296); das Szenario legt die Saat deshalb neben die Rinnen.
 
-**Fazit (überarbeitet nach dem Review):** Einzige Regression über der Schwelle war die Unterseite der Welt aus der Leere-Zone (Render-CPU und GPU in flachen Welten und im Showcase +12 bis +21 %); behoben (E-330). Über 10 % lagen in den Reihen mit fester Reihenfolge außerdem void-light (`b04118d`: Tick Ø +22 %/+16 %, GUI-CPU +16 %/+13 %), sprint (`ed9c8ef`: Tick Ø +17 %/+12 %) und farm-seeds (`fd70a0b`: Pflanzen +29 %); diese Werte waren zunächst nur mit Kern- und Taktstreuung bzw. dem Reihenfolge-Effekt begründet, ohne Gegenprobe. Die Nachprüfung mit rotierender Reihenfolge und Tick-Phasen (unten) zeigt sie nicht wieder (+5 %, +4 %, +1 %); sie kamen aus der festen Reihenfolge. Wiederholbar sind: Spitzenspeicher +18 bis +23 MB durch Etappe 26 (unter der Schwelle), Phase Pflanzen +15 % (+2,5 µs) durch Etappe 27, mit `fd70a0b` behoben (E-331), und GPU sprint +15 % durch die Sichtfeld-Verbreiterung von `b04118d` (mehr Sektionen im Frustum, gewollt, E-331). 60 FPS bei 8 Chunks halten alle Stände in allen Szenarien (Frame Ø 8,3–8,8 ms).
+**Fazit (überarbeitet nach dem Review):** Einzige Regression über der Schwelle war die Unterseite der Welt aus der Leere-Zone (Render-CPU und GPU in flachen Welten und im Showcase +12 bis +21 %); behoben (E-330). Über 10 % lagen in den Reihen mit fester Reihenfolge außerdem void-light (`7677877`: Tick Ø +22 %/+16 %, GUI-CPU +16 %/+13 %), sprint (`9eecb13`: Tick Ø +17 %/+12 %) und farm-seeds (`fd70a0b`: Pflanzen +29 %); diese Werte waren zunächst nur mit Kern- und Taktstreuung bzw. dem Reihenfolge-Effekt begründet, ohne Gegenprobe. Die Nachprüfung mit rotierender Reihenfolge und Tick-Phasen (unten) zeigt sie nicht wieder (+5 %, +4 %, +1 %); sie kamen aus der festen Reihenfolge. Wiederholbar sind: Spitzenspeicher +18 bis +23 MB durch Etappe 26 (unter der Schwelle), Phase Pflanzen +15 % (+2,5 µs) durch Etappe 27, mit `fd70a0b` behoben (E-331), und GPU sprint +15 % durch die Sichtfeld-Verbreiterung von `7677877` (mehr Sektionen im Frustum, gewollt, E-331). 60 FPS bei 8 Chunks halten alle Stände in allen Szenarien (Frame Ø 8,3–8,8 ms).
 
 ### Nachprüfung nach dem Review (2026-10-12, rotierende Reihenfolge)
 
 Alle Reihen mit dem überarbeiteten `bench-ab.sh` (Reihenfolge rotiert pro Runde, Last und fremde Prozesse vor und nach jedem Lauf, Sperre vom Skript gehalten), Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`) aus `git archive`, 8 Chunks, 20 s pro Lauf, Mittel [Spanne]. Last vor und nach den Läufen 2,2–5,1; als belastet markiert (Safari, Teams, Mail oder ein Claude-Fenster ≥ 80 % CPU vor oder nach dem Lauf) sind 1 von 36, 5 von 54 und 2 von 24 Läufen, über die Stände verteilt; sie sind in den Mitteln enthalten, ohne sie ändert sich keine Aussage.
 
-**Reihe 6: `70f8261`, `b04118d`, `ed9c8ef`, void-light und sprint, 6 Runden (jeder Stand zweimal an jeder Stelle):**
+**Reihe 6: `75b25c0`, `7677877`, `9eecb13`, void-light und sprint, 6 Runden (jeder Stand zweimal an jeder Stelle):**
 
-| Szenario | Wert | `70f8261` | `b04118d` | `ed9c8ef` |
+| Szenario | Wert | `75b25c0` | `7677877` | `9eecb13` |
 |----------|------|----------:|----------:|----------:|
 | void-light | Tick Ø ms | 0,155 [0,119–0,230] | 0,163 [0,133–0,211] (+5 %) | 0,178 [0,136–0,213] (+9 %) |
 | void-light | GUI-CPU ms | 0,380 | 0,360 (−5 %) | 0,350 (−3 %) |
@@ -570,11 +570,11 @@ Alle Reihen mit dem überarbeiteten `bench-ab.sh` (Reihenfolge rotiert pro Runde
 | sprint | Render-CPU / GUI-CPU ms | 1,32 / 0,419 | 1,37 / 0,382 | 1,37 / 0,411 |
 | beide | Frame p99 ms | 10,4 / 10,2 | 10,5 / 10,0 | 11,1 / 10,1 |
 
-Prozente gegen die Spalte links. Die Abstände der Reihen 1 und 3 (void-light Tick +22/+16 %, GUI-CPU +16/+13 %; sprint Tick +17/+12 %) wiederholen sich nicht: void-light Tick +5 % bei völlig überlappenden Spannen (Server-Code identisch), GUI-CPU −5 %; sprint Tick `b04118d` → `ed9c8ef` +4 %, alle Phasen innerhalb von 9 µs. Tick-Phasen statt `profile.sh time`: Ohne wiederholbare Abweichung gibt es nichts einzugrenzen (Arbeitsauftrag §3: ohne Verschlechterung kein tiefes Profiling); die Phasen zeigen keinen Teil, der allein wächst. Neu sichtbar ist sprint GPU +15 % von `70f8261` zu `b04118d` mit 19 sichtbaren Sektionen und 4 % Dreiecken mehr in jeder Runde: die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect`), gewollt; Begründung in E-331. In Reihe 1 lag `70f8261` vorn und `b04118d` an zweiter Stelle, dort war der GPU-Abstand −3 %; die Sektionen wurden damals nicht verglichen.
+Prozente gegen die Spalte links. Die Abstände der Reihen 1 und 3 (void-light Tick +22/+16 %, GUI-CPU +16/+13 %; sprint Tick +17/+12 %) wiederholen sich nicht: void-light Tick +5 % bei völlig überlappenden Spannen (Server-Code identisch), GUI-CPU −5 %; sprint Tick `7677877` → `9eecb13` +4 %, alle Phasen innerhalb von 9 µs. Tick-Phasen statt `profile.sh time`: Ohne wiederholbare Abweichung gibt es nichts einzugrenzen (Arbeitsauftrag §3: ohne Verschlechterung kein tiefes Profiling); die Phasen zeigen keinen Teil, der allein wächst. Neu sichtbar ist sprint GPU +15 % von `75b25c0` zu `7677877` mit 19 sichtbaren Sektionen und 4 % Dreiecken mehr in jeder Runde: die Sichtfeld-Verbreiterung beim Sprinten (`QcFovEffect`), gewollt; Begründung in E-331. In Reihe 1 lag `75b25c0` vorn und `7677877` an zweiter Stelle, dort war der GPU-Abstand −3 %; die Sektionen wurden damals nicht verglichen.
 
-**Reihe 7: `8f9a7ab`, `a418550`, `fd70a0b`, farm-seeds, farm und stand, 6 Runden, `fd70a0b` in Runde 1 vorn:**
+**Reihe 7: `a734af0`, `59b05ba`, `fd70a0b`, farm-seeds, farm und stand, 6 Runden, `fd70a0b` in Runde 1 vorn:**
 
-| Szenario | Wert | `8f9a7ab` | `a418550` | `fd70a0b` |
+| Szenario | Wert | `a734af0` | `59b05ba` | `fd70a0b` |
 |----------|------|----------:|----------:|----------:|
 | farm-seeds | Tick Ø ms | – (kein Ackerbau) | 0,255 [0,195–0,391] | 0,257 [0,175–0,378] (+1 %) |
 | farm-seeds | Pflanzen / Items ms | – | 0,0477 / 0,0567 | 0,0481 / 0,0572 (+1 % / +1 %) |
@@ -583,9 +583,9 @@ Prozente gegen die Spalte links. Die Abstände der Reihen 1 und 3 (void-light Ti
 | stand | Tick Ø ms | 0,516 [0,375–0,764] | 0,476 [0,386–0,599] | 0,481 [0,369–0,542] |
 | stand | Pflanzen Ø ms | 0,0165 [0,0130–0,0231] | 0,0190 [0,0149–0,0254] (+15 %) | 0,0167 [0,0138–0,0188] (−12 %) |
 
-Die Abweichung `a418550` → `fd70a0b` in farm-seeds aus Reihe 4 (Pflanzen +29 %, Tick +21 %, `fd70a0b` immer zuletzt) war der Reihenfolge-Effekt: rotiert +1 %. Der Anstieg der Phase Pflanzen mit Etappe 27, auf dem E-331 aufbaut, ist dagegen echt: `a418550` liegt in stand in 5 von 6 Runden über `8f9a7ab` (+15 %, +2,5 µs); `fd70a0b` bringt die Phase auf den Stand vor Etappe 27 zurück (+1 % gegenüber `8f9a7ab`). `8f9a7ab` kennt Ackerboden und Weizen noch nicht; seine farm-Läufe sind keine Vergleichswerte.
+Die Abweichung `59b05ba` → `fd70a0b` in farm-seeds aus Reihe 4 (Pflanzen +29 %, Tick +21 %, `fd70a0b` immer zuletzt) war der Reihenfolge-Effekt: rotiert +1 %. Der Anstieg der Phase Pflanzen mit Etappe 27, auf dem E-331 aufbaut, ist dagegen echt: `59b05ba` liegt in stand in 5 von 6 Runden über `a734af0` (+15 %, +2,5 µs); `fd70a0b` bringt die Phase auf den Stand vor Etappe 27 zurück (+1 % gegenüber `a734af0`). `a734af0` kennt Ackerboden und Weizen noch nicht; seine farm-Läufe sind keine Vergleichswerte.
 
-**Reihe 8: zusammengeführter Stand gegen `dev` (Etappe 28, `f4afccf`), stand, flat-crowd, showcase, 4 Runden:** prüft, ob E-330 auf dem Renderer von Etappe 28 (Texturpakete, Mip-Stufen) hält. Der Zweig unterscheidet sich von `dev` nur in Renderer (Unterseiten-Puffer), Mesher (Listen) und `QcSectionMarks`/`QcPlantGrowth`.
+**Reihe 8: zusammengeführter Stand gegen `dev` (Etappe 28, `963ebdc`), stand, flat-crowd, showcase, 4 Runden:** prüft, ob E-330 auf dem Renderer von Etappe 28 (Texturpakete, Mip-Stufen) hält. Der Zweig unterscheidet sich von `dev` nur in Renderer (Unterseiten-Puffer), Mesher (Listen) und `QcSectionMarks`/`QcPlantGrowth`.
 
 | Szenario | Dreiecke | Draw-Calls | sichtbare Sektionen | Render-CPU ms | GPU Ø ms | GUI-CPU ms | Tick Ø ms | Frame p99 ms | Speicher MB |
 |----------|---------:|-----------:|--------------------:|--------------:|---------:|-----------:|----------:|-------------:|------------:|
@@ -617,7 +617,7 @@ Alle Reihen mit `scripts/bench-ab.sh` (Reihenfolge rotiert pro Runde), Release-B
 
 **Frame p99 ist in diesen Reihen zweigeteilt:** Ein Lauf liegt entweder bei 9,1–10,9 ms oder bei 14,7–16,6 ms (einzelne verpasste VSyncs über die ganze Laufzeit), je nach Zeitfenster und für alle Stände gleich; die Mittel hängen davon ab, wie viele Läufe eines Stands in die zweite Gruppe fallen. Ebenso wechseln GUI- und Render-CPU zwischen zwei Lagen (etwa 0,22–0,30 und 0,38–0,50 ms GUI-CPU im Showcase), Kern- und Taktwechsel des Systems; Abstände bis rund 20 % in diesen Werten sind daher nur mit mehreren Runden und Gegenprobe zu bewerten.
 
-#### Reihe A: Etappe 28 bei 16× gegen Etappe 27 (`a418550` → `f4afccf`, 4 Runden)
+#### Reihe A: Etappe 28 bei 16× gegen Etappe 27 (`59b05ba` → `963ebdc`, 4 Runden)
 
 16× hat seit Etappe 28 Mip-Stufen und einen Atlas von 380² Pixeln mit Rand (NPOT) statt 512² ohne Mip-Stufen.
 
@@ -631,7 +631,7 @@ Alle Reihen mit `scripts/bench-ab.sh` (Reihenfolge rotiert pro Runde), Release-B
 
 Dreiecke, Draw-Calls und sichtbare Sektionen sind in jedem Szenario gleich. **Bewertung:** keine Regression. GPU-Zeit unverändert (die Mip-Stufen sparen auf diesem Rechner keine messbare Bandbreite, kosten aber auch nichts), Speicher +4 bis +8 MB (+1 bis +2 %: Mip-Stufen, Pakete-Controller und Einstellungsseite), crowd p99 +9 % und Render-/GUI-CPU +6 % in den Spannen der Zweiteilung (p99 je Runde: 10,2/10,0, 15,9/16,0, 16,2/15,8, 9,6/15,2). 60 FPS weit gehalten.
 
-#### Reihe B: Auflösungen auf `dev` 49c3f52 (4 Runden, `TEXTURE_PACKS` je Name)
+#### Reihe B: Auflösungen auf `dev` 1f54cec (4 Runden, `TEXTURE_PACKS` je Name)
 
 | Szenario | Wert | keine (16×) | HD 32× | HD 64× | HD 128× |
 |----------|------|------------:|-------:|-------:|--------:|
@@ -676,17 +676,17 @@ Zum Vergleich der längste Frame ganzer 20-s-Läufe ohne Wechsel (Reihe B, stand
 
 Offscreen-Bilder derselben Szene (flache Welt, von einem Pfeiler in 16 m Höhe nach Norden: Reihen aus Eichenlaub, Fackeln, Mohn, Löwenzahn und hohem Gras in 12–112 m) und eines Waldrands (Seed 42, Spawn), `docs/screenshots/28-bench-*.png`:
 
-- `28-bench-far-27-16.png` (`a418550`, ohne Mip-Stufen): Ferne in Ordnung, Gras und Laub körnig.
-- `28-bench-far-28-16.png` (`49c3f52`): **Fehler.** Am Horizont bunte Streifen (Magenta, Gelb, Cyan), entferntes Laub und Pflanzen mit Magenta- und schwarzen Sprenkeln, hohes Gras ab etwa 20 m mit schwarzen Rändern; im Waldbild (`28-bench-forest-28-16.png`) rosa Pünktchen im fernen Gras. Dasselbe zeigten die Etappe-28-Bilder `28-landscape-*.png` (bunter Horizont).
+- `28-bench-far-27-16.png` (`59b05ba`, ohne Mip-Stufen): Ferne in Ordnung, Gras und Laub körnig.
+- `28-bench-far-28-16.png` (`1f54cec`): **Fehler.** Am Horizont bunte Streifen (Magenta, Gelb, Cyan), entferntes Laub und Pflanzen mit Magenta- und schwarzen Sprenkeln, hohes Gras ab etwa 20 m mit schwarzen Rändern; im Waldbild (`28-bench-forest-28-16.png`) rosa Pünktchen im fernen Gras. Dasselbe zeigten die Etappe-28-Bilder `28-landscape-*.png` (bunter Horizont).
 - `28-bench-far-fix-16.png`, `28-bench-far-fix-64.png`, `28-bench-forest-fix-16.png`, `28-bench-forest-fix-64.png` (`feature/bench-28`): Horizont ruhig, keine Sprenkel, keine dunklen Ränder. Laub wirkt in der Ferne nicht zu dicht (geschlossene Flächen wie ohne Mip-Stufen), Fackeln, Blumen und hohes Gras verschwinden auch in 112 m nicht; Blumen und Gras werden ab etwa 30 m etwas voller (Abdeckungserhalt hebt Alpha nur an, E-300), gewollt.
 
 Ursache und Korrektur siehe E-332: Die Block-Pipeline schrieb das Teil-Alpha der Mip-Stufen ins Bild, durchsichtige Texel waren schwarz. Jetzt schreiben undurchsichtige Blöcke und Wesen Alpha 1 (eigene Shader-Variante), durchsichtige Texel tragen die Farbe des nächsten gezeichneten. Ob das Fenster selbst die Streifen zeigte (macOS stellt die Ebene vermutlich undurchsichtig dar), ist nicht geprüft; Screenshots und durchsichtige Ziele zeigten sie sicher, die dunklen Ränder auch das Fenster. `28-*.png` sind mit dem korrigierten Stand neu erzeugt (`scripts/texturepack-shots.sh docs/screenshots build/release`).
 
 #### Reihe C: Korrektur gegen `dev` (4 Runden, 16× und 64×)
 
-Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `49c3f52`: GPU Ø showcase 0,579 → 0,788 ms (+36 %, in jeder Runde, mit 64× ebenso), stand +16 bis +22 % – eine Regression, daher ersetzt durch die Shader-Variante (`5c5a4d4`). Mit ihr:
+Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `1f54cec`: GPU Ø showcase 0,579 → 0,788 ms (+36 %, in jeder Runde, mit 64× ebenso), stand +16 bis +22 % – eine Regression, daher ersetzt durch die Shader-Variante (`5c5a4d4`). Mit ihr:
 
-| Szenario | Wert | `49c3f52` 16× | Korrektur 16× | `49c3f52` 64× | Korrektur 64× |
+| Szenario | Wert | `1f54cec` 16× | Korrektur 16× | `1f54cec` 64× | Korrektur 64× |
 |----------|------|-------------:|--------------:|--------------:|--------------:|
 | stand | FPS / p99 ms | 119,9 / 9,81 | 119,8 / 9,99 | 119,9 / 10,10 | 120,0 / 10,06 |
 | stand | GPU Ø ms | 1,421 | 1,520 (+7 %) | 1,352 | 1,477 (+9 %) |
@@ -695,7 +695,7 @@ Erster Ansatz (Farbschreibmaske ohne Alpha, Commit `fc5d1dc`) gegen `49c3f52`: G
 | crowd | GPU Ø ms | 1,970 | 1,959 (−1 %) | 1,544 | 1,788 (+16 %) * |
 | alle | Spitzenspeicher MB | 437 / 600 / 308 / 442 | 431 / 596 / 308 / 439 | 457 / 619 / 334 / 458 | 453 / 622 / 330 / 460 |
 
-\* crowd 64×: in allen acht Läufen 76 Wesen statt 84 (wie oben), GPU-Spannen 1,35–1,84 und 1,72–1,85 ms; die Korrektur lag in allen vier Runden darüber. Gegenprobe (Reihe D, 6 Runden, nur 64×, crowd und stand, `49c3f52` gegen `5c5a4d4` frisch aus `git archive`): crowd GPU Ø 1,870 → 1,830 ms (−2 %), GPU p99 2,41 → 2,41, Wesen am Ende in beiden Ständen 75–84 (die GPU-Zeit folgt der Zahl); stand GPU Ø 1,583 → 1,564 ms (−1 %), Render-CPU +3 %, GUI-CPU ±0. Keine Regression; die Zahl der Wesen am Ende von crowd schwankt auch mit 64× und auf beiden Ständen. GPU-Zeiten in stand und sprint streuen in dieser Reihe stark (stand 1,21–1,73 ms je Stand); die Abstände wechseln das Vorzeichen zwischen den Szenarien. Render- und GUI-CPU im Showcase lagen in Reihe C und der Reihe mit Schreibmaske für die Korrektur 13–25 % höher, in allen Thread-Werten gemeinsam (auch Weltrenderer und Uploads, deren Code unverändert ist). Gegenprobe mit 6 Runden (`49c3f52`, Build der Korrektur aus dem Worktree, derselbe Stand frisch aus `git archive`), showcase und stand: GUI-CPU +3 % / +9 % und +4 % / +6 %, Render-CPU +1 % / +3 % und +6 % / +7 %, GPU +0 bis +3 %, Runden mit wechselndem Vorzeichen: die zwei Lagen der CPU-Werte, keine Regression.
+\* crowd 64×: in allen acht Läufen 76 Wesen statt 84 (wie oben), GPU-Spannen 1,35–1,84 und 1,72–1,85 ms; die Korrektur lag in allen vier Runden darüber. Gegenprobe (Reihe D, 6 Runden, nur 64×, crowd und stand, `1f54cec` gegen `5c5a4d4` frisch aus `git archive`): crowd GPU Ø 1,870 → 1,830 ms (−2 %), GPU p99 2,41 → 2,41, Wesen am Ende in beiden Ständen 75–84 (die GPU-Zeit folgt der Zahl); stand GPU Ø 1,583 → 1,564 ms (−1 %), Render-CPU +3 %, GUI-CPU ±0. Keine Regression; die Zahl der Wesen am Ende von crowd schwankt auch mit 64× und auf beiden Ständen. GPU-Zeiten in stand und sprint streuen in dieser Reihe stark (stand 1,21–1,73 ms je Stand); die Abstände wechseln das Vorzeichen zwischen den Szenarien. Render- und GUI-CPU im Showcase lagen in Reihe C und der Reihe mit Schreibmaske für die Korrektur 13–25 % höher, in allen Thread-Werten gemeinsam (auch Weltrenderer und Uploads, deren Code unverändert ist). Gegenprobe mit 6 Runden (`1f54cec`, Build der Korrektur aus dem Worktree, derselbe Stand frisch aus `git archive`), showcase und stand: GUI-CPU +3 % / +9 % und +4 % / +6 %, Render-CPU +1 % / +3 % und +6 % / +7 %, GPU +0 bis +3 %, Runden mit wechselndem Vorzeichen: die zwei Lagen der CPU-Werte, keine Regression.
 
 **Fazit Etappe 28:** Gegen Etappe 27 keine Regression in Frame-Zeit, GPU, CPU-Zeiten oder Speicher über der Schwelle (Speicher +1 bis +2 %). Höhere Auflösungen kosten nur Speicher (64× +19 bis +23 MB, 128× +53 bis +70 MB) und beim Betreten der Welt Zeit für den Atlas (128× rund 0,1 s); 60 FPS bei 8 Chunks halten alle Auflösungen, 64× ohne Einschränkung. Ein Paketwechsel kostet zwei bis drei verpasste VSyncs, keinen Hänger. Der eigentliche Befund war optisch: Mip-Stufen mit Teil-Alpha und schwarzen durchsichtigen Texeln erzeugten Streifen am Horizont und dunkle Ränder an Pflanzen; behoben (E-332), die Korrektur kostet keine Frame-Zeit und beim Atlasbau 1–8 ms bis 128× (256× rund 30 ms). Offen: welche Wesen in crowd verschwinden, hängt vom Startzeitpunkt ab (unten); ob die Streifen auch im Fenster sichtbar waren.
 
@@ -792,9 +792,9 @@ Nach dem Review (Etappe 31.1, je drei Läufe verschränkt gegen `eef0382`, Mitte
 
 ## Etappe 31.1: gerenderte Messung (2026-10-14)
 
-Ausnahme von „Keine GUI-Benchmarks“ für diese Etappe (Mensch abwesend). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft` und `qtcraft-headless`) aus `git archive` unter `$TMPDIR`: `ee42e5f` (`dev` mit Etappe 30) gegen `8aa4346` (31.1 mit Review-Fixes). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, 8 Chunks, Mittel [Spanne]. Last vor und nach den Läufen 2,0–5,1; belastet markiert ist 1 von 128 Läufen der Hauptreihe (`systemstats` 87 % nach einem Lauf), ohne ihn ändert sich nichts. Zweimal kam während der Reihe Eingabe am Rechner an (23:48 und 00:47, HID-Leerlauf unter 60 s): Die Reihe wurde jeweils abgebrochen (die angebrochene erste Runde verworfen) und erst nach mehr als 10 min ohne Eingabe neu gestartet. Neue Szenarien in `scripts/bench-common.sh`: `showcase-<demo>` (Aussichtspunkt eines Demo-Bauwerks aus der Showcase-Tour des jeweiligen Builds), `liquid-fill`, `flight`, `showcase-flight`, `signal-stress`; `STATS=<ms>` schreibt die Debug-Daten als Zeitreihe ins Log.
+Ausnahme von „Keine GUI-Benchmarks“ für diese Etappe (Mensch abwesend). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft` und `qtcraft-headless`) aus `git archive` unter `$TMPDIR`: `fb07253` (`dev` mit Etappe 30) gegen `8aa4346` (31.1 mit Review-Fixes). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, 8 Chunks, Mittel [Spanne]. Last vor und nach den Läufen 2,0–5,1; belastet markiert ist 1 von 128 Läufen der Hauptreihe (`systemstats` 87 % nach einem Lauf), ohne ihn ändert sich nichts. Zweimal kam während der Reihe Eingabe am Rechner an (23:48 und 00:47, HID-Leerlauf unter 60 s): Die Reihe wurde jeweils abgebrochen (die angebrochene erste Runde verworfen) und erst nach mehr als 10 min ohne Eingabe neu gestartet. Neue Szenarien in `scripts/bench-common.sh`: `showcase-<demo>` (Aussichtspunkt eines Demo-Bauwerks aus der Showcase-Tour des jeweiligen Builds), `liquid-fill`, `flight`, `showcase-flight`, `signal-stress`; `STATS=<ms>` schreibt die Debug-Daten als Zeitreihe ins Log.
 
-### 31.1 gegen `ee42e5f`
+### 31.1 gegen `fb07253`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
 |---|---|---|---|---|---|---|---|---|---|
@@ -818,7 +818,7 @@ Ausnahme von „Keine GUI-Benchmarks“ für diese Etappe (Mensch abwesend). Rel
 
 - **Tick sprint +13 %, stand +8 %** (je 6 Runden): zweigipflig (sprint 0,39–0,46 ms oder 0,58–0,63 ms je Lauf; zwei Läufe des neuen Stands in der oberen Gruppe), gleichmäßig über alle Phasen verteilt, am stärksten in der Phase Wesen, deren Code 31.1 nicht ändert; mit 16 Chunks −15 %. Gegenprobe headless (Weltgenerator Gelände, Seed 42, Spawn, 8 Chunks, je 4 Läufe verschränkt, 600 Ticks): Tick 0,723 → 0,675 ms, Wesen 0,536 → 0,494 ms. Keine Regression.
 - **gravel-collapse Tick +8 %, fallende Blöcke +8 %** (Spannen fast ohne Überlappung): headless dieselbe Szene (je 3 Läufe, 400 Ticks): fallende Blöcke 0,945 / 1,191 / 0,936 gegen 0,962 / 0,940 / 0,978 ms, gleiche Zahl fallender Blöcke (2048 an der Grenze). Keine Regression.
-- **crowd GPU +10 %**: 31.1 ändert nichts am Zeichnen; `ee42e5f` selbst lag zwei Stunden später in der Reihe der nachgeholten Messungen bei 1,98 ms (unten). Streuung.
+- **crowd GPU +10 %**: 31.1 ändert nichts am Zeichnen; `fb07253` selbst lag zwei Stunden später in der Reihe der nachgeholten Messungen bei 1,98 ms (unten). Streuung.
 - **GUI-CPU showcase +14 %, signal_components +8 %**: zwei Lagen der GUI-CPU (0,25–0,29 oder 0,42–0,44 ms), der alte Stand hatte zwei Läufe in der unteren Lage; Mediane 0,424 → 0,425 ms.
 - **Signal-Phase an den Stationen (`showcase-signal_components` +15 %, `showcase-signal_farm` +35 %)**: in einer zweiten Reihe (4 weitere Runden nur dieser Szenarien) bestätigt, also wiederholbar; absolut +0,013 bzw. +0,027 ms je Tick. Eingegrenzt und begründet in **E-362**: headless dieselben Szenen +5 % bzw. ohne gerichteten Unterschied, im `sample`-Profil kein heißer Pfad aus 31.1; ein kleiner, gewollter Teil ist das Durchlaufen der ungenutzten generierten Öfen (Maschinen-Phase +2–3 µs, E-357).
 - **Tick max liquid-fill +61 %, signal_components ×2,5**: Einzelwerte (2,8–7,2 ms gegen 1,8–4,0 ms bzw. 0,5–2,8 ms), weit unter dem Tick von 50 ms, keine übersprungenen Ticks, Verspätung Ø gleich.
@@ -829,7 +829,7 @@ Ausnahme von „Keine GUI-Benchmarks“ für diese Etappe (Mensch abwesend). Rel
 
 Der Lauf landet in einer von zwei Lagen, bei beiden Ständen (Ursache nicht untersucht; die Befehle kommen in allen Läufen vollständig an, vermutlich der Zeitpunkt, zu dem die Takte relativ zueinander starten): „hoch“ mit rund 31 500 Licht-Aufträgen und 33 000 neu vernetzten Sektionen in 20 s, „niedrig“ mit 14 300 bzw. 26 500. Verglichen wird je Lage (6 Runden aus zwei Reihen, dazu 2 Runden mit STATS):
 
-| Wert | hoch: `ee42e5f` (5) → 31.1 (2) | niedrig: `ee42e5f` (3) → 31.1 (6) |
+| Wert | hoch: `fb07253` (5) → 31.1 (2) | niedrig: `fb07253` (3) → 31.1 (6) |
 |---|---|---|
 | FPS / Frame p99 ms | 118,4 / 14,6 → 117,8 / 15,9 | 120,0 / 9,67 → 120,0 / 9,87 |
 | GPU / Render-CPU / GUI-CPU ms | 0,685 / 1,06 / 0,445 → 0,683 / 1,05 / 0,433 | 0,648 / 0,993 / 0,484 → 0,644 / 0,995 / 0,504 |
@@ -871,7 +871,7 @@ Welten je Stand mit dessen `qtcraft-headless` über die Steuerschnittstelle geba
 | brennend, Gegenprobe (6, rotiert) | 132 → 149 | 151 → 154 | 7,9 [5,5–10,3] → 7,7 [5,8–11,3] | 7,6 [5,6–10,2] → 7,0 [5,9–7,9] | 1,9 → 1,0 | 0,32 → 0,28 |
 | kalt (3) | 150 → 132 | 153 → 153 | 5,9 [5,7–6,3] → 5,2 [4,1–6,5] | 7,5 [4,9–9,4] → 6,6 [3,3–9,3] | 1,3 → 1,0 | 0,33 → 0,31 |
 
-Das Speichern läuft im Tick (die Speicher-Phase ist der Tick-Stillstand: Tick max = Speichern + 0,1–0,3 ms). Die erste Reihe zeigte für die brennende Welt +65 %; die Gegenprobe mit 6 rotierten Runden wiederholt das nicht (−3 % / −8 %), headless 48 Speicherungen derselben Welt je Stand 8,79 → 8,95 ms (+2 %). Welche Dateien ein Speichern schreibt (headless, brennend): `ee42e5f` 7 Dateien (`containers.qce` und `machines.qce` der ganzen Welt, Wesen, Spieler, `world.json` u. a.), 31.1 9 Dateien (die 4 Regionen mit brennenden Öfen in Reichweite über `.next`-Zwischennamen, ohne die beiden Ganzwelt-Dateien); kalt: 7 → 5 Dateien (ein Speichern ohne Änderung an Block-Entities schreibt keine Block-Entity-Datei). Eine Variante, die die `.next`-Dateien ohne den eigenen Zwischenschritt von `QSaveFile` schreibt (ein Umbenennen weniger je Region), brachte nichts Messbares (Fenster 9,0 / 7,6 ms, headless 8,86 ms) und wurde verworfen. **Keine Regression**; Stillstand je Autosave 3–11 ms bei beiden Ständen, keine übersprungenen Ticks. Öffnen bis zum ersten Bild 128–168 ms bei beiden Ständen; das erste Speichern einer frisch gebauten Welt (headless, `worldSave` nach dem Bau, alle Regionen neu) 8,6–13,1 ms gegen 10,2–10,5 ms.
+Das Speichern läuft im Tick (die Speicher-Phase ist der Tick-Stillstand: Tick max = Speichern + 0,1–0,3 ms). Die erste Reihe zeigte für die brennende Welt +65 %; die Gegenprobe mit 6 rotierten Runden wiederholt das nicht (−3 % / −8 %), headless 48 Speicherungen derselben Welt je Stand 8,79 → 8,95 ms (+2 %). Welche Dateien ein Speichern schreibt (headless, brennend): `fb07253` 7 Dateien (`containers.qce` und `machines.qce` der ganzen Welt, Wesen, Spieler, `world.json` u. a.), 31.1 9 Dateien (die 4 Regionen mit brennenden Öfen in Reichweite über `.next`-Zwischennamen, ohne die beiden Ganzwelt-Dateien); kalt: 7 → 5 Dateien (ein Speichern ohne Änderung an Block-Entities schreibt keine Block-Entity-Datei). Eine Variante, die die `.next`-Dateien ohne den eigenen Zwischenschritt von `QSaveFile` schreibt (ein Umbenennen weniger je Region), brachte nichts Messbares (Fenster 9,0 / 7,6 ms, headless 8,86 ms) und wurde verworfen. **Keine Regression**; Stillstand je Autosave 3–11 ms bei beiden Ständen, keine übersprungenen Ticks. Öffnen bis zum ersten Bild 128–168 ms bei beiden Ständen; das erste Speichern einer frisch gebauten Welt (headless, `worldSave` nach dem Bau, alle Regionen neu) 8,6–13,1 ms gegen 10,2–10,5 ms.
 
 ### Flüssigkeiten (`placed()` mit schnellem Weg)
 
@@ -883,9 +883,9 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 
 ## Etappe 29.1: gerenderte Messung (nachgeholt 2026-10-14)
 
-`41cfea4` (Benchmark von Etappe 28, Vorgänger in `dev`) gegen `4806c1e` (29.1), in einer Reihe mit 29.2 und 30 (vier Stände, 4 rotierte Runden, Bedingungen wie oben). Die Showcase-Welt bekommt mit 29.1 die Signal-Stationen; `showcase` sieht dadurch eine andere Szene, `showcase-signal_components` gibt es erst ab 29.1 (Referenz).
+`ca4140b` (Benchmark von Etappe 28, Vorgänger in `dev`) gegen `e891c38` (29.1), in einer Reihe mit 29.2 und 30 (vier Stände, 4 rotierte Runden, Bedingungen wie oben). Die Showcase-Welt bekommt mit 29.1 die Signal-Stationen; `showcase` sieht dadurch eine andere Szene, `showcase-signal_components` gibt es erst ab 29.1 (Referenz).
 
-| Szenario | Wert | `41cfea4` | `4806c1e` (29.1) |
+| Szenario | Wert | `ca4140b` | `e891c38` (29.1) |
 |---|---|---:|---:|
 | showcase | FPS / p99 ms | 120 / 9,76 | 120 / 10,1 |
 | showcase | GPU / Render-CPU / GUI-CPU ms | 0,572 / 0,940 / 0,370 | 0,598 / 1,09 / 0,456 |
@@ -902,9 +902,9 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 
 ## Etappe 29.2: gerenderte Messung (nachgeholt 2026-10-14)
 
-`4806c1e` (29.1) gegen `afc9899` (29.2), dieselbe Reihe. Die Maschinen-Station (Trichter, Sortierer) und die Wasser-Farm gibt es erst ab 29.2 (Referenz).
+`e891c38` (29.1) gegen `352265f` (29.2), dieselbe Reihe. Die Maschinen-Station (Trichter, Sortierer) und die Wasser-Farm gibt es erst ab 29.2 (Referenz).
 
-| Szenario | Wert | `4806c1e` | `afc9899` (29.2) |
+| Szenario | Wert | `e891c38` | `352265f` (29.2) |
 |---|---|---:|---:|
 | showcase | FPS / p99 ms | 120 / 10,1 | 120 / 10,0 |
 | showcase | GPU / Render-CPU / GUI-CPU ms | 0,598 / 1,09 / 0,456 | 0,594 / 1,01 / 0,366 |
@@ -922,9 +922,9 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 
 ## Etappe 30: gerenderte Messung (nachgeholt 2026-10-14)
 
-`afc9899` (29.2) gegen `ee42e5f` (30), dieselbe Reihe. Vergleich mit älteren Ständen über `flat-crowd` (E-354); `crowd` mit den neuen Zahlen als Referenz.
+`352265f` (29.2) gegen `fb07253` (30), dieselbe Reihe. Vergleich mit älteren Ständen über `flat-crowd` (E-354); `crowd` mit den neuen Zahlen als Referenz.
 
-| Szenario | Wert | `41cfea4` | `4806c1e` | `afc9899` | `ee42e5f` (30) |
+| Szenario | Wert | `ca4140b` | `e891c38` | `352265f` | `fb07253` (30) |
 |---|---|---:|---:|---:|---:|
 | flat-crowd | FPS / p99 ms | 120 / 9,98 | 120 / 10,3 | 120 / 10,3 | 120 / 10,3 |
 | flat-crowd | GPU / Render-CPU / GUI-CPU ms | 0,780 / 0,691 / 0,605 | 0,785 / 0,674 / 0,600 | 0,774 / 0,691 / 0,630 | 0,776 / 0,732 / 0,653 |
@@ -940,9 +940,9 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 
 ## Etappe 31.2: headless Messung (2026-10-14)
 
-`bbd1eb4` (31.1) gegen `feature/31-2-entities`, Release, verschränkt. Keine gerenderte Messung (Vorgabe des Menschen für 31.2); was gerendert nachzuholen ist, steht in der Bewertung.
+`8efb027` (31.1) gegen `feature/31-2-entities`, Release, verschränkt. Keine gerenderte Messung (Vorgabe des Menschen für 31.2); was gerendert nachzuholen ist, steht in der Bewertung.
 
-| Messung | Wert | `bbd1eb4` (31.1) | 31.2 | Differenz |
+| Messung | Wert | `8efb027` (31.1) | 31.2 | Differenz |
 |---|---|---:|---:|---:|
 | `test_entity_measure` (1323 Entities, 5 Läufe) | Tick ms | 0,600 | 0,602 | +0,3 % |
 | | Phase Wesen / Items / Client-Sync ms | 0,478 / 0,094 / 0,021 | 0,471 / 0,092 / 0,020 | −1 / −2 / −5 % |
@@ -957,9 +957,9 @@ Im Fenster keine Regression über der Schwelle in Frame-Zeit, GPU, Render-/GUI-C
 
 ## Etappe 31.2: gerenderte Messung (2026-10-14)
 
-Nachgeholt mit Freigabe des Menschen („31.2 jetzt messen“, Mensch abwesend). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft` und `qtcraft-headless`) in zwei temporären Worktrees: `bbd1eb4` (31.1) gegen `0ec675a` (31.2); die späteren `dev`-Commits ändern nur Web-Handbuch, Item-Icons und Pläne, keinen gemessenen Pfad. `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, 8 Chunks, Mittel [Spanne]. Hauptreihe 6 Runden (crowd, flat-crowd, showcase, showcase-signal_farm, showcase-signal_components, gravel-collapse), Wiederholung 6 Runden für die drei Szenarien über der Schwelle, dritte Reihe 6 Runden nur flat-crowd. Last vor und nach den Läufen 2,3–6,4; belastet markiert sind 6 von 120 Läufen (Safari oder `contactsd` um 100 % nach dem Lauf, einmal Last 6,4), ohne sie ändert sich keine Aussage. Keine Eingabe am Rechner während der Reihen (HID-Leerlauf alle 15 s geprüft).
+Nachgeholt mit Freigabe des Menschen („31.2 jetzt messen“, Mensch abwesend). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft` und `qtcraft-headless`) in zwei temporären Worktrees: `8efb027` (31.1) gegen `d24f2b7` (31.2); die späteren `dev`-Commits ändern nur Web-Handbuch, Item-Icons und Pläne, keinen gemessenen Pfad. `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, 8 Chunks, Mittel [Spanne]. Hauptreihe 6 Runden (crowd, flat-crowd, showcase, showcase-signal_farm, showcase-signal_components, gravel-collapse), Wiederholung 6 Runden für die drei Szenarien über der Schwelle, dritte Reihe 6 Runden nur flat-crowd. Last vor und nach den Läufen 2,3–6,4; belastet markiert sind 6 von 120 Läufen (Safari oder `contactsd` um 100 % nach dem Lauf, einmal Last 6,4), ohne sie ändert sich keine Aussage. Keine Eingabe am Rechner während der Reihen (HID-Leerlauf alle 15 s geprüft).
 
-### 31.2 gegen `bbd1eb4`
+### 31.2 gegen `8efb027`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
 |---|---|---|---|---|---|---|---|---|---|
@@ -991,7 +991,7 @@ Im Fenster keine Regression in Frame-Zeit, GPU, Render-/GUI-CPU, Speicher oder E
 
 ## Etappe 43: Speicher der Übersetzungen (headless, 2026-10-14)
 
-Keine gerenderte Messung (Vorgabe „Keine GUI-Benchmarks“). `0c11c73` (`dev` `1a9b8af` plus Messtest) gegen `feature/43-translation-memory` (Grenze der Übersetzungen, E-371), Release (`RelWithDebInfo`), der alte Stand aus `git archive` unter `$TMPDIR`, Apple M4 Max, verschränkt (je Runde erst alt, dann neu), Last 2–5.
+Keine gerenderte Messung (Vorgabe „Keine GUI-Benchmarks“). `0c11c73` (`dev` `18e311c` plus Messtest) gegen `feature/43-translation-memory` (Grenze der Übersetzungen, E-371), Release (`RelWithDebInfo`), der alte Stand aus `git archive` unter `$TMPDIR`, Apple M4 Max, verschränkt (je Runde erst alt, dann neu), Last 2–5.
 
 **Methode (zum Wiederholen):**
 - `QTCRAFT_TRANSLATION_MEASURE=full build/release/tests/test_translation_measure <Fall>`, jeder Fall in einem eigenen Prozess (der Spitzenspeicher wächst nur). `baseGame`: Einträge je Sprache, Zahl der Teile, Ladezeit des Grundinhalts (`QcBaseContent::load`), Heap des Inhalts und einer tiefen Kopie aller Übersetzungstabellen (`malloc_zone_statistics`, Linux `mallinfo2`). `languageFiles`: Lesen und Parsen der Sprachdateien (Mittel über 20 Durchläufe). `modAtTheLimits`: ein Mod mit 34 Sprachen × 60 000 kürzesten Einträgen (16 Bytes je Eintrag in der Synchronisierung, knapp unter 32 MiB), `modBeyondTheLimits`: zwei Mods mit je 8 Dateien × 380 000 Einträgen (je knapp 32 MiB, zusammen fast die 64 MiB, die Mods lesen dürfen); jeweils Ladezeit (`QcModLoader::load`), Heap danach, Spitzenspeicher (`getrusage`) und `/usr/bin/time -l`. `largeLanguageFile`: Parsen einer Datei mit 380 000 Einträgen allein.
@@ -1017,11 +1017,11 @@ Keine gerenderte Messung (Vorgabe „Keine GUI-Benchmarks“). `0c11c73` (`dev` 
 
 ## Etappe 43: gerenderte Messung (2026-10-14)
 
-Etappen-Ende von Etappe 43 (Grenze der Übersetzungen, E-371), GUI-Benchmarks wieder erlaubt. Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`): `dev` `1a9b8af` in einem temporären Worktree gegen `feature/43-translation-memory` (`25b14b4`). Geändert ist nur das Laden des Inhalts (Prüfungen der Grenzen in Parser, Paket-Lader, Mod-Lader, Serialisierer); erwartet ist keine Änderung zur Laufzeit. `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, Mittel [Spanne]. Hauptreihe 6 Runden bei 8 Chunks (stand, sprint, showcase, crowd), Wiederholung 6 Runden für die drei Szenarien mit Werten über der Schwelle (stand, showcase, crowd), dazu sprint bei 16 Chunks 3 Runden für den offenen Speicher-Befund. Last vor und nach den Läufen 2,1–9,3; belastet markiert sind 3 von 90 Läufen (Safari 84–100 % nach zwei Läufen von 43, einmal Last 9,3 nach einem Lauf von `dev`, alle in der Hauptreihe), ohne sie ändert sich keine Aussage.
+Etappen-Ende von Etappe 43 (Grenze der Übersetzungen, E-371), GUI-Benchmarks wieder erlaubt. Release-Builds (`RelWithDebInfo`, Ziel `qtcraft`): `dev` `18e311c` in einem temporären Worktree gegen `feature/43-translation-memory` (`25b14b4`). Geändert ist nur das Laden des Inhalts (Prüfungen der Grenzen in Parser, Paket-Lader, Mod-Lader, Serialisierer); erwartet ist keine Änderung zur Laufzeit. `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 20 s je Lauf, Mittel [Spanne]. Hauptreihe 6 Runden bei 8 Chunks (stand, sprint, showcase, crowd), Wiederholung 6 Runden für die drei Szenarien mit Werten über der Schwelle (stand, showcase, crowd), dazu sprint bei 16 Chunks 3 Runden für den offenen Speicher-Befund. Last vor und nach den Läufen 2,1–9,3; belastet markiert sind 3 von 90 Läufen (Safari 84–100 % nach zwei Läufen von 43, einmal Last 9,3 nach einem Lauf von `dev`, alle in der Hauptreihe), ohne sie ändert sich keine Aussage.
 
 **Ladezeit:** Die BENCH-Zeile und das Log tragen keine Lade- oder Startzeit (nur Atlas: 2–3 ms Bau, 5,7–6,3 ms angewandt, bei beiden gleich). Die Ladezeit des Inhalts ist headless gemessen (oben: Grundinhalt 12,83 → 12,89 ms, +0,5 %).
 
-### 43 gegen `1a9b8af`
+### 43 gegen `18e311c`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
 |---|---|---|---|---|---|---|---|---|---|
@@ -1049,7 +1049,7 @@ Im Fenster keine Änderung durch die Grenze der Übersetzungen: alle Kennzahlen 
 
 ## Etappe 31.3: headless Messung (2026-10-15)
 
-`da33b56` (dev `a54a54a` plus E-372, also vor dem Entladen) gegen `feature/31-3-chunk-unloading`, Release, `qtcraft-headless` und `test_world_open_measure` als feste Binärdateien.
+`da33b56` (dev `699675f` plus E-372, also vor dem Entladen) gegen `feature/31-3-chunk-unloading`, Release, `qtcraft-headless` und `test_world_open_measure` als feste Binärdateien.
 
 **Langer Erkundungsflug** (`scripts/explore-headless.sh <app> 300 8 10000`: Bot im Creative-Modus fliegt mit 20 m/s auf y 200 nach Osten, setzt jede Sekunde eine 3 × 3-Glasfläche auf y 70, also wird jeder überflogene Chunk geändert; Sichtweite 8, Server und Bot in einem Prozess; je ein Lauf von rund 510 s Wanduhr, Werte alle 10 s):
 
@@ -1072,11 +1072,11 @@ Vorher blieb jeder geänderte Chunk bis zum Schließen der Welt geladen (und all
 
 ## Etappe 31.3: gerenderte Messung (2026-10-15)
 
-Pflicht-Benchmark am Etappen-Ende (Mensch zuerst abwesend, GUI-Messungen erlaubt). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_world_open_measure`): `dev` `a54a54a` in einem temporären Worktree (dazu nur der Messtest aus `1d5afde`) gegen `feature/31-3-chunk-unloading` (`9ffa0c4`). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: Hauptreihe 6 Runden à 20 s (stand, sprint, showcase, showcase-signal_farm, showcase-signal_components, crowd, 06:43–07:14), `explore` 6 Runden à 300 s mit `STATS=5000` (07:15–08:16), `showcase-flight` 6 Runden à 80 s (eine Runde um die Showcase-Welt) mit `STATS=1000`, sprint bei 16 Chunks 3 Runden, Wiederholung 6 Runden der Szenarien über der Schwelle (signal_farm, signal_components, showcase, sprint; 08:38–08:58). Last vor und nach den Läufen 2,0–7,2; belastet markiert 13 von 150 Läufen (Safari, Teams oder `suggestd` über 80 % nach dem Lauf, Last bis 7,2), ohne sie ändert sich keine Aussage. HID-Leerlauf alle 15 s protokolliert.
+Pflicht-Benchmark am Etappen-Ende (Mensch zuerst abwesend, GUI-Messungen erlaubt). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_world_open_measure`): `dev` `699675f` in einem temporären Worktree (dazu nur der Messtest aus `1d5afde`) gegen `feature/31-3-chunk-unloading` (`9ffa0c4`). `scripts/bench-ab.sh` mit rotierender Reihenfolge, echtes Fenster auf dem eingebauten Display im Hintergrund, Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: Hauptreihe 6 Runden à 20 s (stand, sprint, showcase, showcase-signal_farm, showcase-signal_components, crowd, 06:43–07:14), `explore` 6 Runden à 300 s mit `STATS=5000` (07:15–08:16), `showcase-flight` 6 Runden à 80 s (eine Runde um die Showcase-Welt) mit `STATS=1000`, sprint bei 16 Chunks 3 Runden, Wiederholung 6 Runden der Szenarien über der Schwelle (signal_farm, signal_components, showcase, sprint; 08:38–08:58). Last vor und nach den Läufen 2,0–7,2; belastet markiert 13 von 150 Läufen (Safari, Teams oder `suggestd` über 80 % nach dem Lauf, Last bis 7,2), ohne sie ändert sich keine Aussage. HID-Leerlauf alle 15 s protokolliert.
 
 **Externer Monitor und Mensch am Rechner:** Um 07:13:25 kam Eingabe an (der Mensch schloss nach eigener Angabe gegen 07:00–07:10 einen externen Monitor an; das Fenster blieb auf dem eingebauten Display). Genau in diesem Lauf (Hauptreihe, Runde 6, `showcase-signal_components` von `dev`, 07:13:26–07:13:46) fallen Render-CPU (0,73 statt 1,3 ms), GUI-CPU und Tick (0,22 statt 0,36–0,50 ms) aus der Reihe; er ist unten herausgenommen. Danach liegt bei beiden Ständen gelegentlich eine zweite, niedrigere Lage der Render-CPU (0,7 statt 1,3 ms) vor, frame Ø und GPU bleiben gleich. Ab 08:07 wurde der Rechner laufend benutzt: die sechste Runde von `explore`, die Reihen `showcase-flight` und sprint 16 Chunks und die ganze Wiederholung liefen mit Mensch am Rechner. Weil jede Runde beide Stände im Abstand von Sekunden misst, trifft das beide gleich; keine Aussage unten hängt allein an diesen Läufen (die Hauptreihe und fünf der sechs Erkundungsflüge liefen ohne Eingabe; Ausnahme: eine Eingabe um 07:53 in der vierten Runde von `explore`, ohne Auffälligkeit).
 
-### 31.3 gegen `a54a54a`
+### 31.3 gegen `699675f`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Tick Ø ms | Tick max ms | Spitzenspeicher MB | Phasen Ø ms |
 |---|---|---|---|---|---|---|---|---|---|
@@ -1107,7 +1107,7 @@ Der Server von `dev` hält jeden geänderten Chunk bis zum Schließen (am Ende 7
 
 **Weltöffnung einer großen Welt** (headless, `QTCRAFT_WORLD_OPEN_MEASURE=full build/release/tests/test_world_open_measure`, 41 × 41 = 1681 geänderte Chunks mit je zwei Tieren und einer gefüllten Truhe, je 3 Läufe verschränkt, Sperre von Hand gehalten):
 
-| | `a54a54a` | 31.3 |
+| | `699675f` | 31.3 |
 |---|---:|---:|
 | Öffnen | 78,5 / 78,2 / 81,9 ms (1681 Chunks geladen, +1,2 MB) | 2,3 / 2,6 / 2,8 ms (0 Chunks geladen, nur die Indizes, +0,1 MB) |
 | Öffnen bis der Spieler in geladenen Chunks steht | 6,2 / 6,4 / 6,2 ms | 7,2 / 7,7 / 7,9 ms (ein Tick, 3 × 3 Chunks gelesen) |
@@ -1159,7 +1159,7 @@ Profil (`sample`, signal_farm, je 30 s): `unloadUnneeded` 16 → 1 Proben bei 82
 
 ## Etappe 33.1: Licht auf dem Server, headless Messung (2026-10-15)
 
-Release (`RelWithDebInfo`): `dev` `2aba22c` in einem temporären Worktree gegen `feature/33-server-light`, ohne Fenster und ohne Echtzeit (E-388). Der Server hält jetzt Block- und Himmelslicht aller geladenen Chunks (E-389).
+Release (`RelWithDebInfo`): `dev` `335e4da` in einem temporären Worktree gegen `feature/33-server-light`, ohne Fenster und ohne Echtzeit (E-388). Der Server hält jetzt Block- und Himmelslicht aller geladenen Chunks (E-389).
 
 **Szenarien** (`scripts/bench-headless.sh`, 3 verschränkte Runden à 60 s Spielzeit, Mittel [Spanne]; `light` mit dem Fackelring des Spiel-Benchmarks als Chat-Zeilen, neu in dieser Etappe):
 
@@ -1214,11 +1214,11 @@ Innerhalb der Streuung der Messung davor (das Weglassen der Himmelslicht-Kopie i
 
 ## Etappe 33 gerendert (2026-10-15)
 
-Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`): `dev` `2aba22c` in einem temporären Worktree gegen `feature/33-server-light` (`3ec2476` plus das neue Szenario `frozen`, `01effba`). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server @light` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 19:22–19:25); im Fenster `@core @light frozen` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 19:25–19:48), `explore` 3 Runden à 75 s mit `STATS=5000`, sprint 2 Runden à 20 s bei 8 und bei 16 Chunks (19:49–20:00). Last 2–4, belastet markiert 10 von 90 Läufen der Hauptreihe und je einer in explore und sprint; ohne sie ändert sich keine Aussage. Wanduhr aller Messreihen samt Builds rund 40 min.
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`): `dev` `335e4da` in einem temporären Worktree gegen `feature/33-server-light` (`3ec2476` plus das neue Szenario `frozen`, `01effba`). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server @light` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 19:22–19:25); im Fenster `@core @light frozen` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 19:25–19:48), `explore` 3 Runden à 75 s mit `STATS=5000`, sprint 2 Runden à 20 s bei 8 und bei 16 Chunks (19:49–20:00). Last 2–4, belastet markiert 10 von 90 Läufen der Hauptreihe und je einer in explore und sprint; ohne sie ändert sich keine Aussage. Wanduhr aller Messreihen samt Builds rund 40 min.
 
 **Neues Szenario `frozen`** (`scripts/bench-common.sh`): Stehen am Tag auf dem gefrorenen Meer der Tundra (Seed 42, `--spawn -325,-300 --look 270,-15`), Eis über Wasser bis zum Horizont. Jeder Abschnitt mit Wasser unter Eis zeichnet seit E-390 zwei Listen (Wasser, Durchsichtiges). Ein `SCENE_SPAWN` gilt im Fenster jetzt in jeder Welt (vorher nur in der Showcase-Welt). Wasser mit Glas zeigen `showcase` (Glasgehege, Wasser in Glas) und `glass`/`glass-full` (Eis, kein Wasser). **Bild:** Offscreen-Screenshots von `frozen` in beiden Ständen unterscheiden sich in 135 von 3,7 Mio. Pixeln (Toleranz 3 %; Wolken, Hand), also gleich.
 
-### Fenster: 33 gegen `2aba22c`
+### Fenster: 33 gegen `335e4da`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|
@@ -1237,7 +1237,7 @@ Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, exter
 
 Sichtbare Abschnitte, Dreiecke und Sektionspuffer in jedem Szenario gleich (z. B. frozen 306 Abschnitte, 344 300 Dreiecke, 65,2 MB). `entity_problems` und `block_entity_problems` = 0, keine übersprungenen Ticks, Tick max höchstens 5,6 ms (explore).
 
-### Headless: 33 gegen `2aba22c` (Tick, Mittel über 3 bzw. 6 Runden)
+### Headless: 33 gegen `335e4da` (Tick, Mittel über 3 bzw. 6 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
 |---|---:|---:|---:|---|
@@ -1271,11 +1271,11 @@ Serverlicht und Renderer-Vorsorge ändern das Bild nicht und kosten im Fenster k
 
 ## Etappe 32 gerendert (nachgeholt, 2026-10-15)
 
-Nachgeholter Pflicht-Benchmark von Etappe 32 (Schienen und Loren, E-382 bis E-387; GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`) in temporären Worktrees: `e864317` (`dev` vor Etappe 32) gegen `ca50177` (Etappe 32), Skripte aus `dev` `3172f08`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server` plus `showcase-rails showcase-rails_signal` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 21:14–21:16); im Fenster `@core` plus dieselben zwei Stationen (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 21:17–21:30). Last 1,8–3,5, belastet markiert 2 von 54 Fensterläufen (je einer `stand`) und 1 von 72 headless (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 22 min.
+Nachgeholter Pflicht-Benchmark von Etappe 32 (Schienen und Loren, E-382 bis E-387; GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`, Ziele `qtcraft`, `qtcraft-headless`, `test_scenario_measure`) in temporären Worktrees: `49fb579` (`dev` vor Etappe 32) gegen `7a80a43` (Etappe 32), Skripte aus `dev` `acf73af`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server` plus `showcase-rails showcase-rails_signal` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 21:14–21:16); im Fenster `@core` plus dieselben zwei Stationen (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 21:17–21:30). Last 1,8–3,5, belastet markiert 2 von 54 Fensterläufen (je einer `stand`) und 1 von 72 headless (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 22 min.
 
-**Szenarien:** Die Stationen `rails` (Schleife mit Lore, Rampe, Kolben) und `rails_signal` (Antriebs-, Melde- und Aktivierungsschienen, Trichter- und Kistenlore) laufen über das allgemeine `showcase-<demo>` (Haltepunkt `demo-rails` bzw. `demo-rails_signal` der Showcase-Tour des Builds); `e864317` kennt sie nicht und misst sie nicht (nur Werte von 32). Kein neues Szenario in `scripts/bench-common.sh`: Loren entstehen nur aus dem Lorenitem auf einer Schiene oder aus `minecarts` einer Struktur; `/summon` kennt keine Loren und die Szenen kennen keine Item-Benutzung, also gibt es ohne Code-Änderung weder „viele Loren im Bild“ noch eine Fahrt mit Kamera. Dafür bräuchte es z. B. `/summon minecart` oder einen Benchmark-Hook für Fahrten (offen).
+**Szenarien:** Die Stationen `rails` (Schleife mit Lore, Rampe, Kolben) und `rails_signal` (Antriebs-, Melde- und Aktivierungsschienen, Trichter- und Kistenlore) laufen über das allgemeine `showcase-<demo>` (Haltepunkt `demo-rails` bzw. `demo-rails_signal` der Showcase-Tour des Builds); `49fb579` kennt sie nicht und misst sie nicht (nur Werte von 32). Kein neues Szenario in `scripts/bench-common.sh`: Loren entstehen nur aus dem Lorenitem auf einer Schiene oder aus `minecarts` einer Struktur; `/summon` kennt keine Loren und die Szenen kennen keine Item-Benutzung, also gibt es ohne Code-Änderung weder „viele Loren im Bild“ noch eine Fahrt mit Kamera. Dafür bräuchte es z. B. `/summon minecart` oder einen Benchmark-Hook für Fahrten (offen).
 
-### Fenster: 32 gegen `e864317`
+### Fenster: 32 gegen `49fb579`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|
@@ -1297,7 +1297,7 @@ Wesen und Entity-Vernetzung (Client, je Bild) und Lorenphase (Server):
 
 `entity_problems` und `block_entity_problems` = 0, keine übersprungenen Ticks, Tick max höchstens 5,7 ms (sprint).
 
-### Headless: 32 gegen `e864317` (Tick, Mittel über 3 bzw. 6 Runden)
+### Headless: 32 gegen `49fb579` (Tick, Mittel über 3 bzw. 6 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
 |---|---:|---:|---:|---|
@@ -1314,11 +1314,11 @@ Wesen und Entity-Vernetzung (Client, je Bild) und Lorenphase (Server):
 **Bewertung:**
 
 - **Bild, GPU und Render-CPU unverändert** (alle `@core`-Szenarien innerhalb von 3 %); die Bahnstationen selbst kosten nicht mehr als der übrige Showcase (GPU 0,66–0,68 ms, Render-CPU 1,33–1,34 ms).
-- **GUI-CPU `showcase` +33 % (+0,14 ms), in allen 6 Runden** (32: 0,533–0,565, `e864317` 0,383–0,445): die Loren der neuen Stationen sind im Bild (Wesen 4 → 10), und die Entity-Vernetzung steigt um denselben Betrag (0,065 → 0,198 ms je Bild). Rund 0,02 ms je Lore und Bild, etwa das Drei- bis Vierfache eines Tiers in `crowd` (0,006 ms je Wesen), vermutlich durch die Blockmodelle der Kisten- und Trichterlore. Neuer Inhalt im Bild, absolut klein (GUI-CPU 0,55 ms); kein Handlungsbedarf, Ansatz bei vielen Loren: Lorenmodelle zwischenspeichern und nur die Lage neu setzen.
+- **GUI-CPU `showcase` +33 % (+0,14 ms), in allen 6 Runden** (32: 0,533–0,565, `49fb579` 0,383–0,445): die Loren der neuen Stationen sind im Bild (Wesen 4 → 10), und die Entity-Vernetzung steigt um denselben Betrag (0,065 → 0,198 ms je Bild). Rund 0,02 ms je Lore und Bild, etwa das Drei- bis Vierfache eines Tiers in `crowd` (0,006 ms je Wesen), vermutlich durch die Blockmodelle der Kisten- und Trichterlore. Neuer Inhalt im Bild, absolut klein (GUI-CPU 0,55 ms); kein Handlungsbedarf, Ansatz bei vielen Loren: Lorenmodelle zwischenspeichern und nur die Lage neu setzen.
 - **Tick `showcase` im Fenster +11 % (+0,035 ms)**: die neue Phase Loren (0,030 ms) plus etwas Signal; vollständig zugeordnet, gewollt.
 - **Tick an den Signal-Stationen headless +10 bis +21 % (+0,002 bis +0,004 ms)**: Phase Loren (0,0019 ms, die Loren der benachbarten Bahnstationen sind geladen) und Signal +0,0006 bis +0,0008 ms (Antriebs- und Melderails der Bahnstationen in Reichweite). Die Szenen sind nicht mehr dieselben: Haltepunkte gleich, aber die Umgebung ist anders belegt (Server-Block-Entities 77/85 → 44, Bahnstationen nebenan). Absolut 0,004 ms je Tick von 50 ms; erklärt, keine Regression im eigentlichen Sinn.
 - **Phase Loren ohne Loren: headless 0,0007–0,0009 ms, im Fenster 0,014–0,018 ms** (stand, sprint, crowd). `QcServerMinecarts::tick` sammelt jeden Tick die Körper aller Wesen und Spieler (Lore anschieben) und ruft die Trichter-Loren auf, auch wenn es keine Lore gibt; ein früher Ausstieg ohne Loren spart das. Tick `stand` im Fenster +9 % (Runden überlappen: 0,62–0,70 gegen 0,67–0,76 ms) liegt zum Teil darin, der Rest ist Streuung; headless in den Szenen ohne Loren kein messbarer Unterschied.
-- **Frame p99 `sprint` +12 %**: GPU, Render- und GUI-CPU gleich, p99 zweigipflig (`e864317` 10,3–14,8, 32: 14,1–16,4 ms); in `stand` −4 %, in `showcase` −2 %. Streuung der verpassten VSyncs (bekannter Vorbehalt), keine Regression.
+- **Frame p99 `sprint` +12 %**: GPU, Render- und GUI-CPU gleich, p99 zweigipflig (`49fb579` 10,3–14,8, 32: 14,1–16,4 ms); in `stand` −4 %, in `showcase` −2 %. Streuung der verpassten VSyncs (bekannter Vorbehalt), keine Regression.
 - **Spitzen-RSS headless +0,9 bis +1,6 MB, im Fenster +0 bis +4 MB**: Inhalt und Code der Etappe (Loren, Schienen, Texturen).
 
 **Absolute Ziele (`docs/Performance.md`):** Bildrate 115–118 FPS (Ziel ≥ 60) und Frame-Kosten (8 Chunks höchstens 2,30 ms GPU in crowd, 1,94 ms Render-CPU in sprint) erfüllt. p99 ≤ 12,5 ms verfehlt (14,2–16,0 ms, externer Monitor; bekannter Vorbehalt wie in 31.3 und 33). Spitzenspeicher stand, showcase, crowd und die Bahnstationen 321–449 MB erfüllt; sprint 555 MB im 10-s-Lauf wie zuvor. Tick: kein Tick über 50 ms, keine übersprungenen Ticks.
@@ -1361,13 +1361,13 @@ Release (`RelWithDebInfo`), `SCENARIOS="forest-fire crowd" scripts/bench-headles
 
 ## Etappe 34 (Feuer)
 
-Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `dd98f13` in einem temporären Worktree gegen `feature/34-fire` `8fa475b`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @fire` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 22:52–22:55); im Fenster `@core` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 22:56–23:05) und `forest-fire` 3 Runden à 30 s (23:06–23:10). Last 1,5–4,0 im Fenster, belastet markiert 2 von 36 Läufen der `@core`-Reihe (je ein `sprint`), headless 1 von 60 (`explore`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 25 min.
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `66effda` in einem temporären Worktree gegen `feature/34-fire` `8fa475b`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @fire` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 22:52–22:55); im Fenster `@core` (`bench-ab.sh`, adaptiv 3 → 6 Runden à 10 s, 22:56–23:05) und `forest-fire` 3 Runden à 30 s (23:06–23:10). Last 1,5–4,0 im Fenster, belastet markiert 2 von 36 Läufen der `@core`-Reihe (je ein `sprint`), headless 1 von 60 (`explore`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 25 min.
 
 **`forest-fire` auf `dev`:** `dev` kennt weder den Feuerblock noch die Spielregel `fireSpread`; die Chat-Zeilen `/gamerule fireSpread` und `/setblock … fire` laufen ins Leere, die Szene ist derselbe Wald ohne Brand. Der Vergleich zeigt also die Kosten des Brandes gegenüber dem stehenden Wald.
 
 **Showcase verschoben:** Die neue Feuerstation steht in der ersten Reihe der Showcase-Welt; alle Stationen dahinter rücken (`signal_components` 17,−21 → 34,−21, `signal_machines` 134,−21 → 4,−38, `signal_farm` 4,−43 → 40,−38, Bahnstationen 26/46,−43 → 62/82,−38). Der Blick aus `showcase` (40,−19) und die Umgebung der Signal-Stationen sind darum nicht mehr dieselben Szenen (wie in Etappe 32).
 
-### Fenster: 34 gegen `dd98f13`
+### Fenster: 34 gegen `66effda`
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -1402,7 +1402,7 @@ Server-Phasen im Fenster (Ø ms): Loren ohne Loren (stand, sprint, crowd) 0,015�
 
 Keine übersprungenen Ticks, kein Tick über 3 ms.
 
-### Headless: 34 gegen `dd98f13` (Tick, Mittel über 3 bzw. 6 Runden)
+### Headless: 34 gegen `66effda` (Tick, Mittel über 3 bzw. 6 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
 |---|---:|---:|---:|---|
@@ -1463,11 +1463,11 @@ Client, `QTCRAFT_WEATHER_MEASURE=1 build/release/tests/test_weather_client measu
 
 ## Etappe 35 (Wetter)
 
-Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `fcebcdb` in einem temporären Worktree gegen `feature/35-weather` `75f1954`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @weather` (`bench-headless.sh`, adaptiv 3 → 6 Runden, 60 Spielsekunden, 01:32–01:35); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 01:36–01:49) und `@weather` (ebenso, 01:49–02:01). Last 3,0–6,0, belastet markiert 3 von 48 Läufen der `@core`-Reihe (stand), 1 von 48 der `@weather`-Reihe, headless 1 von 72 (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 32 min.
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, externer Monitor angeschlossen, Fenster auf dem eingebauten Display im Hintergrund). Release-Builds (`RelWithDebInfo`): `dev` `9995902` in einem temporären Worktree gegen `feature/35-weather` `75f1954`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel [Spanne]. Reihen: headless `@server @weather` (`bench-headless.sh`, adaptiv 3 → 6 Runden, 60 Spielsekunden, 01:32–01:35); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 01:36–01:49) und `@weather` (ebenso, 01:49–02:01). Last 3,0–6,0, belastet markiert 3 von 48 Läufen der `@core`-Reihe (stand), 1 von 48 der `@weather`-Reihe, headless 1 von 72 (`farm`); ohne sie ändert sich keine Aussage. Wanduhr samt Builds rund 32 min.
 
 **Wetter-Szenarien auf `dev`:** `dev` kennt `/weather` und `/gamerule weatherCycle` nicht (unbekannter Befehl), `/tick sprint 200` läuft trotzdem. `rain` und `thunderstorm` sind auf `dev` also `stand` bei klarem Wetter (gleicher Ort, gleicher Blick), `snow` die klare Tundra, `forest-fire-storm` der Waldbrand von `forest-fire` bei klarem Wetter. Der Vergleich zeigt die Kosten des Wetters, keine Regression.
 
-### Fenster: 35 gegen `fcebcdb` (`@core`, klares Wetter)
+### Fenster: 35 gegen `9995902` (`@core`, klares Wetter)
 
 | Szenario (Runden) | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Phase Wetter Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -1498,7 +1498,7 @@ Keine übersprungenen Ticks, Tick max höchstens 3,9 ms (crowd, beide Stände). 
 
 Keine übersprungenen Ticks, kein Tick über 3 ms. Die Teilchenzahl steht nicht in der BENCH-Zeile; nach `/tick sprint 200` herrscht volle Stärke, also das volle Budget von 3000 Teilchen (E-395), gezeichnet in einem Aufruf (Draw-Calls +1).
 
-### Headless: 35 gegen `fcebcdb` (Tick, Mittel über 3 bzw. 6 Runden)
+### Headless: 35 gegen `9995902` (Tick, Mittel über 3 bzw. 6 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
 |---|---:|---:|---:|---|
@@ -1548,11 +1548,11 @@ Release (`RelWithDebInfo`), `QTCRAFT_EXPERIENCE_MEASURE=full build/release/tests
 
 ## Etappe 36 (Erfahrung und Lapislazuli)
 
-Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `65b7753` in einem temporären Worktree gegen `feature/36-experience` `ffae444` (Nachbesserungen E-399 eingeschlossen). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` (`bench-headless.sh`, adaptiv, alle Szenarien nach 3 Runden fertig, 60 Spielsekunden, 03:46–03:48); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 03:49–04:02); das neue Szenario `orbs` headless (6 Runden, 20 Spielsekunden) und im Fenster (3 Runden à 10 s, 04:07–04:10). Last 2,3–9,5 (einmal 9,5 nach einem stand-Lauf), belastet markiert 7 von 48 Läufen der `@core`-Reihe, verteilt auf beide Stände; ohne sie ändert sich keine Aussage. Wanduhr samt Builds und Aufbau des Szenarios rund 30 min.
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `5f5bd28` in einem temporären Worktree gegen `feature/36-experience` `ffae444` (Nachbesserungen E-399 eingeschlossen). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` (`bench-headless.sh`, adaptiv, alle Szenarien nach 3 Runden fertig, 60 Spielsekunden, 03:46–03:48); im Fenster `@core` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 03:49–04:02); das neue Szenario `orbs` headless (6 Runden, 20 Spielsekunden) und im Fenster (3 Runden à 10 s, 04:07–04:10). Last 2,3–9,5 (einmal 9,5 nach einem stand-Lauf), belastet markiert 7 von 48 Läufen der `@core`-Reihe, verteilt auf beide Stände; ohne sie ändert sich keine Aussage. Wanduhr samt Builds und Aufbau des Szenarios rund 30 min.
 
 **Neues Szenario `orbs`** (`scripts/bench-common.sh`): flache Welt, 15 Reihen zu 20 Öfen im Abstand von 3 m nördlich des Spielers, je ein Trichter darüber (4 Eisenerz) und daneben (1 Kohle), der Spieler wirft die Stapel per `/tp` und `/spawnitem` darauf (rund 2100 Zeilen); `/tick sprint 1000` schmilzt, nach 2 s räumt `/fill` die Reihen: jeder Ofen gibt seine Erfahrung (4 × 0,7) als Kugel frei und verschüttet seine Barren. Rund 300 Kugeln in 3 m Abstand (keine verschmilzt) und 300 Items; der Spieler schaut von einem Block 14 m hoch darauf (keine Kugel im Umkreis von 8 m, alle ruhen) und steigt nach der halben Laufzeit in die Mitte des Felds hinab, die Kugeln im Umkreis fliegen zu ihm (eine je 2 Ticks). Auf `dev` läuft dieselbe Szene ohne Kugeln (der Ofen sammelt dort keine Erfahrung); der Vergleich zeigt also die Kosten der Kugeln. Ein erster Entwurf mit Trichterketten (ein Trichterband je Reihe) bewegte keine Items und wurde verworfen (nicht in git). Nachträglich untersucht (`test_hopper_lines`): Die Trichter sind nicht die Ursache. Gerade Linien, Kurven, Truhen in der Linie, Chunk-Grenzen, ein erst später geladener Ziel-Chunk und 15 Bänder mit zusammen 2310 Trichtern über 300 Öfen bewegen ein Item je 8 Ticks und Trichter, ohne Budget-Grenze (höchstens 75 handelnde je Tick) und ohne Verlust. Am Entwurf lag es: (1) Ein Item braucht 8 Ticks je Trichter, über ein Band von rund 150 Trichtern also rund 1200 Ticks (60 s Spielzeit), bevor am Ende etwas ankommt. (2) Ein Trichter unter dem Band zieht jedes Item, das über ihn läuft (der überholende Trichter ruht nach dem Empfang 8 Ticks, wie im Vorbild); ein Band über einer Reihe von Öfen füllt nur den ersten Ofen, die übrigen 19 der Reihe bekommen nichts. Ein Band zum Verteilen braucht gesperrte Trichter (Sortierer) oder einen eigenen Zweig je Ofen.
 
-### Fenster: 36 gegen `65b7753` (`@core`, 6 Runden à 10 s)
+### Fenster: 36 gegen `5f5bd28` (`@core`, 6 Runden à 10 s)
 
 | Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung ms | Tick Ø ms | Phase Items Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -1563,7 +1563,7 @@ Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenst
 
 Keine übersprungenen Ticks, Tick max höchstens 4,8 ms. GPU stand zweigipflig wie in den Etappen davor (Läufe 1,57–2,15 gegen 1,58–1,99 ms, Median 1,65 → 1,77 ms, +7 %); Tick Ø im Fenster mit Spannen von 40–70 % je Stand (Schlaf zwischen den Ticks), bewertet headless.
 
-### Headless: 36 gegen `65b7753` (`@server`, je 3 Runden)
+### Headless: 36 gegen `5f5bd28` (`@server`, je 3 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Spitzen-RSS MB | Phasen Ø ms |
 |---|---:|---:|---:|---|
@@ -1677,13 +1677,13 @@ Spannen über die drei Läufe höchstens ±4 %; die Fälle „gerade“ (ohne We
 
 ## Etappe 37.1 (Wegfindung und gestapelte Mobs)
 
-Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `0f17b92` in einem temporären Worktree gegen `feature/37-1-pathfinding` `b9a8733` (Nachbesserungen E-402 eingeschlossen; die Messung lief mit `4e50e00`, das nur das neue Szenario ergänzt). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` plus `flat-crowd` und `horde` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 06:46–06:48; farm-seeds, explore, signal_farm und flat-crowd 6 Runden, sonst 3); im Fenster `@core` plus `horde` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 06:48–07:07). Last 2,1–14,5, belastet markiert 10 von 60 Fensterläufen, verteilt auf beide Stände. Wanduhr samt Builds und Aufbau des Szenarios rund 25 min.
+Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenster auf dem eingebauten Display im Hintergrund, `--screen builtin`). Release-Builds (`RelWithDebInfo`): `dev` `3e032fb` in einem temporären Worktree gegen `feature/37-1-pathfinding` `b9a8733` (Nachbesserungen E-402 eingeschlossen; die Messung lief mit `4e50e00`, das nur das neue Szenario ergänzt). Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Mittel. Reihen: headless `@server` plus `flat-crowd` und `horde` (`bench-headless.sh`, adaptiv, 60 Spielsekunden, 06:46–06:48; farm-seeds, explore, signal_farm und flat-crowd 6 Runden, sonst 3); im Fenster `@core` plus `horde` (`bench-ab.sh`, adaptiv, alle Szenarien 6 Runden à 10 s, 06:48–07:07). Last 2,1–14,5, belastet markiert 10 von 60 Fensterläufen, verteilt auf beide Stände. Wanduhr samt Builds und Aufbau des Szenarios rund 25 min.
 
 **Neues Szenario `horde`** (`scripts/bench-common.sh`): Gelände von Seed 42 am Spawn, Tag; der Spieler steht auf einer Steinsäule von 4 Blöcken, 64 Zombies (die Grenze `summonLimit`) werden in vier Gruppen 14 m östlich, westlich, südlich und nördlich 8 m über der Säulenspitze gerufen (per `/tp` hin und zurück). Sie sehen den Spieler, suchen Wege durch die Hügel zur Säule, erreichen ihn nie (Teilwege, Zurückweichen) und drängen sich an ihrem Fuß (Schub, Sichtstrahlen). Auf `dev` laufen sie gerade auf den Spieler zu. Rund 140 Wesen samt natürlichen Tieren. Mehr als 64 gerufene Wesen gehen per Chat nicht (`summonLimit` steht nur in `world.json`/`server.json`); den Fall mit 200 und 1000 Zombies und die Farm-Zelle decken `test_mob_path_measure` und `test_mob_crowd_measure` ab (oben, 37.1a/b und Nachbesserungen; Knoten je Tick: hills 1000 rund 230, closed 1000 rund 2800 von 4096).
 
 **Showcase verschoben:** Die neue Station `path_station` verschiebt die Bereiche wieder; im Blick des Szenarios `showcase` stehen jetzt 14 statt 25 Entities beim Client (der Server hat 13 statt 10 Wesen: Zombie und zwei Schweine der Station), 158 statt 153 Draw-Calls. Die Werte von `showcase` sind darum nur eingeschränkt vergleichbar.
 
-### Fenster: 37.1 gegen `0f17b92` (`@core` und `horde`, 6 Runden à 10 s)
+### Fenster: 37.1 gegen `3e032fb` (`@core` und `horde`, 6 Runden à 10 s)
 
 | Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | Welt-Renderer ms | GUI-CPU ms | Entity-Vernetzung Ø / p99 ms | Tick Ø ms | Phase Wesen Ø ms | Spitzenspeicher MB | Draw-Calls |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -1695,7 +1695,7 @@ Pflicht-Benchmark am Etappen-Ende (GUI-Messungen vom Menschen freigegeben, Fenst
 
 Keine übersprungenen Ticks, Tick max höchstens 5,0 ms. Frame Ø 8,33–8,65 ms in allen Läufen.
 
-### Headless: 37.1 gegen `0f17b92` (Tick, Mittel über 3 bzw. 6 Runden)
+### Headless: 37.1 gegen `3e032fb` (Tick, Mittel über 3 bzw. 6 Runden)
 
 | Szenario | Tick Ø ms | Tick p99 ms | Tick max ms | Phase Wesen Ø / max ms | Wesen | Spitzen-RSS MB |
 |---|---:|---:|---:|---|---:|---:|
@@ -1795,7 +1795,7 @@ Messprogramm `test_village_measure` (Release, `QTCRAFT_VILLAGE_MEASURE=1`, ein T
 
 ## Etappe 37.2a (Dorf-Generierung) headless (2026-10-16)
 
-Etappenende 37.2a–a5 samt E-410 (ein durchlaufendes Signal hält seinen Chunk, `QcChunkLoading::holdPassingSignals`): Kandidat `a14fbbc` gegen `dev` (`9d3a9ff`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden, Runden `auto`; Rechner mit Last 3–5 anderer Sitzungen. Zur Ortung zusätzlich ein Stand nur mit E-410 (`dd19ef4`, `dev` plus die Fehlerbehebung) und ein Kandidat mit den wilden Karotten und Kartoffeln zurück in den Biomen. Kein Fensterlauf (der Mensch arbeitet am Rechner).
+Etappenende 37.2a–a5 samt E-410 (ein durchlaufendes Signal hält seinen Chunk, `QcChunkLoading::holdPassingSignals`): Kandidat `a14fbbc` gegen `dev` (`d612ab4`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden, Runden `auto`; Rechner mit Last 3–5 anderer Sitzungen. Zur Ortung zusätzlich ein Stand nur mit E-410 (`dd19ef4`, `dev` plus die Fehlerbehebung) und ein Kandidat mit den wilden Karotten und Kartoffeln zurück in den Biomen. Kein Fensterlauf (der Mensch arbeitet am Rechner).
 
 | Szenario | Tick Ø ms | Tick p99 ms | Tick max ms | auffällige Phase Ø ms | Wesen | Spitzen-RSS MB |
 |---|---:|---:|---:|---|---:|---:|
@@ -1840,7 +1840,7 @@ Nach den letzten Nachbesserungen (E-411 (8)–(12), (14): Türen nacheinander, S
 
 ### Etappenende 37.2b: A/B gegen `dev` (headless, 2026-10-16)
 
-Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur einmal hochladen; betrifft nur den Renderer, headless nicht messbar): Kandidat `deb1e72` gegen `dev` (`7cb4da6`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden. Erste Reihe `@server`, `horde` und `@light` mit Runden `auto`; zweite Reihe mit 6 festen Runden für die Szenen mit Wesen (crowd, horde, light, glass-full, explore, signal_farm). Rechner mit Last 3–5,5. Kein Fensterlauf (der Mensch arbeitet am Rechner). Werte: Mittel `dev` → Kandidat.
+Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur einmal hochladen; betrifft nur den Renderer, headless nicht messbar): Kandidat `deb1e72` gegen `dev` (`66ddedc`), beide Release, `scripts/bench-headless.sh` verschränkt, 60 Spielsekunden. Erste Reihe `@server`, `horde` und `@light` mit Runden `auto`; zweite Reihe mit 6 festen Runden für die Szenen mit Wesen (crowd, horde, light, glass-full, explore, signal_farm). Rechner mit Last 3–5,5. Kein Fensterlauf (der Mensch arbeitet am Rechner). Werte: Mittel `dev` → Kandidat.
 
 | Szenario | Tick Ø ms (1. / 2. Reihe) | Tick p99 ms | Tick max ms | Phase Wesen Ø ms (1. / 2. Reihe) | Wesen | Spitzen-RSS MB |
 |---|---|---|---|---|---:|---:|
@@ -1869,7 +1869,7 @@ Etappenende 37.2b (Dorfbewohner, E-411) samt E-413 (ein Abschnitt je Frame nur e
 
 ## Etappe 37.2c (Handel) headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `efe3684` gegen den Kandidaten nach den Nachbesserungen (E-414). Tick im Mittel: crowd 0,164 → 0,165 ms (+1 %), explore 0,195 → 0,200 ms (+3 %), farm 0,0070 → 0,0073 ms (+5 %, absolut 0,0003 ms), farm-seeds, gravel-collapse und die drei Signal-Stationen ±2 %; p99 −5 bis +5 %; Spitzenspeicher ±0,6 MB. Keine Regression; der Handel kostet nur, wenn gehandelt wird. Gerenderte Messung (Handelsfenster) nach Etappe 37.
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `449e095` gegen den Kandidaten nach den Nachbesserungen (E-414). Tick im Mittel: crowd 0,164 → 0,165 ms (+1 %), explore 0,195 → 0,200 ms (+3 %), farm 0,0070 → 0,0073 ms (+5 %, absolut 0,0003 ms), farm-seeds, gravel-collapse und die drei Signal-Stationen ±2 %; p99 −5 bis +5 %; Spitzenspeicher ±0,6 MB. Keine Regression; der Handel kostet nur, wenn gehandelt wird. Gerenderte Messung (Handelsfenster) nach Etappe 37.
 
 ## Etappe 37.3 (Vermehrung, Golem-Regel, Schneedorf) headless (2026-10-17)
 
@@ -1887,15 +1887,15 @@ Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, See
 
 ## Etappe 37.3 (Vermehrung, Golem-Regel, Schnee-Stil) headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `c5f7ad5` gegen den Kandidaten nach den Nachbesserungen (E-415). Tick im Mittel: crowd +0,2 %, explore +2,1 %, farm-seeds +2 %, gravel-collapse +0,6 %, Signal-Stationen −3,4 bis +0,9 %; p99 −4,6 bis +2,6 %; Spitzenspeicher ±0,8 MB. Keine Regression. Die Kosten der Vermehrung selbst stehen oben (`tenVillagesGrow`, unter 0,05 µs je Tick).
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `c11d2bf` gegen den Kandidaten nach den Nachbesserungen (E-415). Tick im Mittel: crowd +0,2 %, explore +2,1 %, farm-seeds +2 %, gravel-collapse +0,6 %, Signal-Stationen −3,4 bis +0,9 %; p99 −4,6 bis +2,6 %; Spitzenspeicher ±0,8 MB. Keine Regression. Die Kosten der Vermehrung selbst stehen oben (`tenVillagesGrow`, unter 0,05 µs je Tick).
 
 ## 37.R1 (Plan-Zwischenspeicher, Leben nach Abgleich) headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `6128d5f` gegen den Kandidaten (E-416). Tick im Mittel −1,2 bis +2,8 %, p99 −4,8 bis +5,1 %, Spitzenspeicher ±0,6 MB. Keine Regression. Ein Dorf neu zu planen kostet rund 3,3 ms (Debug); gehaltene Dörfer zahlen das nicht mehr (`test_village_plan_cache`).
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `0f96ce4` gegen den Kandidaten (E-416). Tick im Mittel −1,2 bis +2,8 %, p99 −4,8 bis +5,1 %, Spitzenspeicher ±0,6 MB. Keine Regression. Ein Dorf neu zu planen kostet rund 3,3 ms (Debug); gehaltene Dörfer zahlen das nicht mehr (`test_village_plan_cache`).
 
 ## 37.R2 (Entity-Komponenten, dauerhafte Ids) headless (2026-10-17)
 
-`QTCRAFT_ENTITY_MEASURE=full QTCRAFT_ENTITY_MEASURE_TICKS=20 build/release/tests/test_entity_measure` (RelWithDebInfo, Apple M4 Max; 289 Chunks mit je zwei Schweinen, vier Items und einem Ständer, 2034 Entities), `dev` `ec34d93` (A) gegen den Branch (B), 15 verschränkte Runden, Mediane in ms (E-420):
+`QTCRAFT_ENTITY_MEASURE=full QTCRAFT_ENTITY_MEASURE_TICKS=20 build/release/tests/test_entity_measure` (RelWithDebInfo, Apple M4 Max; 289 Chunks mit je zwei Schweinen, vier Items und einem Ständer, 2034 Entities), `dev` `88c0916` (A) gegen den Branch (B), 15 verschränkte Runden, Mediane in ms (E-420):
 
 | Stand von B | erstes Speichern | zweites Speichern | Öffnen | alle Chunks laden |
 |---|---|---|---|---|
@@ -1906,15 +1906,15 @@ Messprogramm `test_villager_measure` (Release, `QTCRAFT_VILLAGER_MEASURE=1`, See
 
 ## Dorf-Sektion (37) gerendert (2026-10-17)
 
-Gerenderter Benchmark der ganzen Dorf-Sektion (37.1 bis 37.R3, dazu 53) samt dem offenen Loren-Szenario aus Etappe 32; Fensterläufe vom Menschen am 2026-10-17 freigegeben, Fenster auf dem eingebauten Display im Hintergrund (`--screen builtin`, Standard von `run_game`). Release-Builds (`RelWithDebInfo`) in temporären Worktrees: `0f17b92` (Etappe 36, vor 37; alte Presets in `CMakePresets.json`) gegen `dev` `358fab3` (37.R3; `CMakeUserPresets.json` über `scripts/ensure-user-presets.sh`). Skripte und neue Szenarien aus `feature/bench-villages`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Runden `auto`, 10 s je Lauf; Mittel [Spanne]. Reihen (15:27–16:12, Wanduhr samt Builds 15:18–16:12, rund 55 min): Fenster `@core village village-night village-swamp minecarts horde` (alle 6 Runden, 27 min), `explore` 75 s mit `STATS=5000` (3 Runden), `VIEW=16` mit `sprint village` (3 Runden), Wiederholung `horde` (6 Runden); headless `@server` plus `stand horde village village-night village-swamp minecarts` (60 Spielsekunden, adaptiv). 8 von 108 Fensterläufen der Hauptreihe belastet markiert (Safari zeitweise 80 % CPU), auf beide Stände verteilt.
+Gerenderter Benchmark der ganzen Dorf-Sektion (37.1 bis 37.R3, dazu 53) samt dem offenen Loren-Szenario aus Etappe 32; Fensterläufe vom Menschen am 2026-10-17 freigegeben, Fenster auf dem eingebauten Display im Hintergrund (`--screen builtin`, Standard von `run_game`). Release-Builds (`RelWithDebInfo`) in temporären Worktrees: `3e032fb` (Etappe 36, vor 37; alte Presets in `CMakePresets.json`) gegen `dev` `5545227` (37.R3; `CMakeUserPresets.json` über `scripts/ensure-user-presets.sh`). Skripte und neue Szenarien aus `feature/bench-villages`. Verschränkt mit rotierender Reihenfolge (E-331), Ton stumm, 8 Chunks, Runden `auto`, 10 s je Lauf; Mittel [Spanne]. Reihen (15:27–16:12, Wanduhr samt Builds 15:18–16:12, rund 55 min): Fenster `@core village village-night village-swamp minecarts horde` (alle 6 Runden, 27 min), `explore` 75 s mit `STATS=5000` (3 Runden), `VIEW=16` mit `sprint village` (3 Runden), Wiederholung `horde` (6 Runden); headless `@server` plus `stand horde village village-night village-swamp minecarts` (60 Spielsekunden, adaptiv). 8 von 108 Fensterläufen der Hauptreihe belastet markiert (Safari zeitweise 80 % CPU), auf beide Stände verteilt.
 
 **Neue Szenarien** (`scripts/bench-common.sh`):
 
-- `village`: Seed 42, Tag (Arbeitszeit der Bewohner), Spieler auf einer Steinsäule von 12 Blöcken 45 m südlich des Ebenen-Dorfs nächst dem Spawn (Mitte 964, −634; `/village 964 -634` auf `358fab3`: `qtcraft:plains`), Blick nach Norden über das Dorf (`--spawn 964,-589 --look 0,-15`). `village-night`: dasselbe mit `/time set night` (Bewohner im Bett). `village-swamp`: 45 m südlich des Sumpf-Dorfs auf Stegen (Mitte 555, −214; `--spawn 555,-169`). `0f17b92` steht am selben Ort über Gelände ohne Dorf (Kostenreferenz).
+- `village`: Seed 42, Tag (Arbeitszeit der Bewohner), Spieler auf einer Steinsäule von 12 Blöcken 45 m südlich des Ebenen-Dorfs nächst dem Spawn (Mitte 964, −634; `/village 964 -634` auf `5545227`: `qtcraft:plains`), Blick nach Norden über das Dorf (`--spawn 964,-589 --look 0,-15`). `village-night`: dasselbe mit `/time set night` (Bewohner im Bett). `village-swamp`: 45 m südlich des Sumpf-Dorfs auf Stegen (Mitte 555, −214; `--spawn 555,-169`). `3e032fb` steht am selben Ort über Gelände ohne Dorf (Kostenreferenz).
 - `minecarts` (aus 32 offen): flache Welt, zwei quadratische Schleifen (32 × 25 m) aus Antriebsschienen mit einem eingeschalteten Hebel neben jeder Schiene, 64 Loren (`/summon minecart 16`, je eine Reihe auf Nord- und Südseite). Ein Stein in der Nordwest- und Südost-Ecke stößt die Lore daneben an (eine eingeschaltete Antriebsschiene startet eine stehende Lore von einem Block am Gleisende weg), sie schiebt ihre Reihe an, nach 1,5 s werden die Steine zu Schienen und schließen die Schleifen. Blick von einer Säule (10 m) westlich der Schleifen. Läuft auf beiden Ständen gleich (64 Entities beim Client, Phase Loren 0,23–0,26 ms im Fenster). **Mitfahren mit der Kamera** geht nicht: keine Szene setzt den Spieler in eine Lore (kein Befehl dafür, Benutzung von Entities gibt es in den Szenen nicht).
 - **Handelsfenster:** nicht gemessen. `--overlay` kennt `trade` nicht, und die Szenen haben keine Entity-Benutzung; das Handelsfenster öffnet nur die Steuerschnittstelle (`openTrade`), die das Fenster-Benchmark nicht nutzt.
 
-### Fenster: `358fab3` gegen `0f17b92` (8 Chunks, 6 Runden)
+### Fenster: `5545227` gegen `3e032fb` (8 Chunks, 6 Runden)
 
 | Szenario | FPS | Frame p99 ms | GPU Ø ms | Render-CPU ms | GUI-CPU ms | Entity-Vernetzung Ø ms | Draw-Calls | Tick Ø ms | Wesen (Client / Server) | Spitzenspeicher MB |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -1940,9 +1940,9 @@ Frame-Kosten-p99 (GPU) höchstens 2,92 ms; Spitzenspeicher +8 bis +13 MB in jede
 | sprint, 16 Chunks (3) | 9,35 → 9,29 | 3,33 → 3,41 | 2,42 → 2,33 | 0,284 → 0,292 | 1426 → 1426 | 0,732 → 0,855 / 3,4 → 3,3 | 1 232 → 1 244 |
 | village, 16 Chunks (3) | 9,27 → 11,4 ⁴ | 2,50 → 2,36 | 2,46 → 2,43 | 0,277 → 0,322 (+16 %) | 1423 → 1440 | 0,624 → 0,738 / 1,8 → 1,8 | 827 → 837 |
 
-⁴ ein Lauf mit 15,6 ms (verpasste VSyncs), die anderen 9,3 ms. Speicherkurve des Erkundungsflugs (`memoryMb` alle 5 s, 15 Punkte): beide Stände steigen bis rund 550–580 MB bei 50 s und fallen danach wieder auf 510–540 MB (Entladen wirkt); `358fab3` liegt je Punkt 0–16 MB höher. Explore-Server-Werte: Phase Chunk-Laden max 2,82 → 3,18 ms (+13 %, Dörfer am Flugweg, wie in 37.2a headless), Phase Wesen 0,356 → 0,420 ms.
+⁴ ein Lauf mit 15,6 ms (verpasste VSyncs), die anderen 9,3 ms. Speicherkurve des Erkundungsflugs (`memoryMb` alle 5 s, 15 Punkte): beide Stände steigen bis rund 550–580 MB bei 50 s und fallen danach wieder auf 510–540 MB (Entladen wirkt); `5545227` liegt je Punkt 0–16 MB höher. Explore-Server-Werte: Phase Chunk-Laden max 2,82 → 3,18 ms (+13 %, Dörfer am Flugweg, wie in 37.2a headless), Phase Wesen 0,356 → 0,420 ms.
 
-### Headless: `358fab3` gegen `0f17b92` (60 Spielsekunden)
+### Headless: `5545227` gegen `3e032fb` (60 Spielsekunden)
 
 | Szenario (Runden) | Tick Ø ms | Tick p99 ms | Tick max ms | Phase Wesen Ø ms | Wesen | Spitzen-RSS MB |
 |---|---|---|---|---|---|---|
@@ -1970,7 +1970,7 @@ Phase Loren headless 0,023 ms bei beiden Ständen (64 rollende Loren).
 
 ## 52.0a (`QcMobManager` aufgeteilt) headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `3f2b6e3` (A) gegen den Kandidaten `02939ef` (B, E-422). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `c9e8a63` (A) gegen den Kandidaten `02939ef` (B, E-422). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
 
 | Szenario | Tick Ø A → B | Tick p99 A → B | Wesen Ø A → B | Wesen |
 |---|---|---|---|---|
@@ -1987,7 +1987,7 @@ Phase Loren headless 0,023 ms bei beiden Ständen (64 rollende Loren).
 
 ## 52.0b (Fähigkeiten, KI und Haltung aus Daten) headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `3f2b6e3` (A) gegen den Kandidaten `ffd701d` (B, E-423). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `c9e8a63` (A) gegen den Kandidaten `ffd701d` (B, E-423). Mittel in ms (Tick Ø, Tick p99, Phase Wesen Ø):
 
 | Szenario | Tick Ø A → B | Tick p99 A → B | Wesen Ø A → B | Wesen |
 |---|---|---|---|---|
@@ -2021,7 +2021,7 @@ Release, Apple M-Serie, Ticks von Hand (keine Echtzeit), Stand `52.0c` (E-424).
 
 ## 52.0 nach den Nachbesserungen headless (2026-10-17)
 
-`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `3f2b6e3` gegen den Kandidaten nach den Nachbesserungen der Prüfung (E-422 bis E-424). Tick im Mittel −2,2 bis 0 %, p99 −8,4 bis +4,4 %, Spitzenspeicher ±0,5 MB. Keine Regression; der Umbau der Wesen-Architektur kostet nichts Messbares.
+`scripts/bench-headless.sh`, `@server`, 3 verschränkte Runden zu 60 Spielsekunden, Release, `dev` `c9e8a63` gegen den Kandidaten nach den Nachbesserungen der Prüfung (E-422 bis E-424). Tick im Mittel −2,2 bis 0 %, p99 −8,4 bis +4,4 %, Spitzenspeicher ±0,5 MB. Keine Regression; der Umbau der Wesen-Architektur kostet nichts Messbares.
 
 ## 52.1 (Geschosse, Bogen und Pfeile) headless (2026-10-17)
 
@@ -2064,7 +2064,7 @@ Release, Apple M-Serie, Ticks von Hand (keine Echtzeit), Stand `52.0c` (E-424).
 
 ## 52.1 (Geschosse, Skelette, Munition, 52.P, HUD) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `b4422d3` gegen den Kandidaten `feature/52-1-projectiles` (52.1a–c samt Nachbesserungen, dazu 52.P und HUD/Trichter), Fenster auf dem eingebauten Display, verschränkt, 10 s je Lauf, Mediane. Last: andere Sitzungen bauten zeitweise (clangd-Index bis 400 % CPU, Tests anderer Pakete); Läufe mit Fremdlast sind markiert und auf beide Stände verteilt.
+Release-Builds, `dev` `2d31a08` gegen den Kandidaten `feature/52-1-projectiles` (52.1a–c samt Nachbesserungen, dazu 52.P und HUD/Trichter), Fenster auf dem eingebauten Display, verschränkt, 10 s je Lauf, Mediane. Last: andere Sitzungen bauten zeitweise (clangd-Index bis 400 % CPU, Tests anderer Pakete); Läufe mit Fremdlast sind markiert und auf beide Stände verteilt.
 
 **Headless** (`@server`, 3 Runden, 60 Spielsekunden): crowd Tick 0,177 → 0,158 ms (−11 %, aber 107 statt 123 Wesen: die Zombies der Tag-Szene verbrennen seit 52.1b), gravel-collapse, farm-seeds, explore unverändert, farm 0,007 → 0,008 ms (Rauschen), Signal-Stationen 0 bis +5 % (ein Wesen mehr: Skelett-Gehege der Showcase), Speicher +0 bis +1,5 MB. Nachts (`SCENE_TIME=night`, 6 Runden): horde 0,181 → 0,182 ms, crowd 0,165 → 0,167 ms bei gleicher Wesenzahl.
 
@@ -2074,7 +2074,7 @@ Release-Builds, `dev` `b4422d3` gegen den Kandidaten `feature/52-1-projectiles` 
 
 ## Zweiter Zug: 37.R2b, 52.H, 54 gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `caaf3e8` (52.1) gegen den Zug `feature/37-r2b-block-entity-components` (Block-Entities als versionierte Tabellen, einstellbare Unverwundbarkeit, rutschige Blöcke und Loren-Schwung), verschränkt, Mediane. Ruhiger Desktop in der Nacht.
+Release-Builds, `dev` `c655887` (52.1) gegen den Zug `feature/37-r2b-block-entity-components` (Block-Entities als versionierte Tabellen, einstellbare Unverwundbarkeit, rutschige Blöcke und Loren-Schwung), verschränkt, Mediane. Ruhiger Desktop in der Nacht.
 
 **Headless** (`@server minecarts horde village`, 3 Runden, 60 Spielsekunden): Tick −9 bis 0 % in allen Szenarien (crowd 0,157 → 0,150, horde 0,140 → 0,128, village 0,084 → 0,083, minecarts 0,033 → 0,033 ms); Phase Loren in den Signal-Stationen 0,0021 → 0,0027 ms (Loren der neuen Station `ice_slide`); p99 ±10 % (absolut höchstens +0,04 ms); Spitzenspeicher −1 bis +2 %.
 
@@ -2093,7 +2093,7 @@ Release-Builds, `dev` `caaf3e8` (52.1) gegen den Zug `feature/37-r2b-block-entit
 
 ## 52.3 (Enderman, Enderperle) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `75e0424` gegen `feature/52-3-enderman` nach der Nachbesserung, verschränkt, Mediane; andere Pakete bauten zeitweise (Läufe markiert).
+Release-Builds, `dev` `83f3285` gegen `feature/52-3-enderman` nach der Nachbesserung, verschränkt, Mediane; andere Pakete bauten zeitweise (Läufe markiert).
 
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): Tick −1 bis +8 % (Signal-Stationen +1 Wesen: Enderman-Gehege der Showcase; village 59 → 67 Wesen bei +1 % Tick, Endermen in der Nacht-Spawnliste), p99 −5 bis +6 % (horde +19 %, absolut +0,08 ms bei gleicher Wesenzahl), Speicher ±1 %.
 
@@ -2113,7 +2113,7 @@ Release-Builds, `dev` `75e0424` gegen `feature/52-3-enderman` nach der Nachbesse
 
 ## 52.6 (Eisengolem, mit 52.3 zusammengeführt) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `83f8621` (52.3) gegen `feature/52-6-iron-golem` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
+Release-Builds, `dev` `17ed709` (52.3) gegen `feature/52-6-iron-golem` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
 
 **Headless** (`@server horde village village-night`, 3 Runden, 60 Spielsekunden): crowd, horde, village, village-night, explore, farm −5 bis +4 % bei gleicher Wesenzahl; Signal-Stationen +20 bis +26 % (0,040 → 0,049 ms) bei 22 statt 16 Wesen: Dorfbewohner, Zombie und Golems der neuen Stationen `golem_farm` und `golem_workshop`, etwa 1,5 µs je Wesen; Speicher 0 bis +3 %.
 
@@ -2132,7 +2132,7 @@ Release-Builds, `dev` `83f8621` (52.3) gegen `feature/52-6-iron-golem` nach Nach
 
 ## 52.2 (Status-Effekte, Spinnen, Hühner, Silberfische; mit dev zusammengeführt) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `01cbee4` (52.6) gegen `feature/52-2-spiders` nach dem Zusammenführen, verschränkt, Mediane.
+Release-Builds, `dev` `b1a0caa` (52.6) gegen `feature/52-2-spiders` nach dem Zusammenführen, verschränkt, Mediane.
 
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, explore −5 bis 0 %, gravel-collapse und Felder ±0 %; Signal-Stationen +26 bis +33 % (0,046 → 0,058 ms) bei 36 statt 22 Wesen: Spinnenhöhle, Silberfisch-Wand und Hühnerstall der Showcase, etwa 0,9 µs je Wesen; Speicher +1 bis +2 %.
 
@@ -2150,7 +2150,7 @@ Release-Builds, `dev` `01cbee4` (52.6) gegen `feature/52-2-spiders` nach dem Zus
 
 ## 52.5 (Zähmen, mit dev zusammengeführt) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `e14e8f2` (52.2) gegen `feature/52-5-taming` nach dem Zusammenführen, verschränkt, Mediane.
+Release-Builds, `dev` `bf98527` (52.2) gegen `feature/52-5-taming` nach dem Zusammenführen, verschränkt, Mediane.
 
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd, horde, village, gravel-collapse, Felder −2 bis +6 %; explore unverändert bei 65 statt 57 Wesen (Wölfe in Wäldern); Signal-Stationen +11 bis +18 % (0,063 → 0,071 ms) bei 45 statt 36 Wesen: Haustier-Ecke der Showcase, etwa 0,9 µs je Wesen; Speicher −1 bis +3 %.
 
@@ -2158,7 +2158,7 @@ Release-Builds, `dev` `e14e8f2` (52.2) gegen `feature/52-5-taming` nach dem Zusa
 
 ## 52.7 (Dorf-Spielweisen, Wegbudget-Anteil) headless, Debug-relativ (2026-10-18)
 
-Verschränkte A/B-Messung im Debug-Build, je zwei Runden, `nice -n 10`, Ticks von Hand: Basis `dev` `e14e8f2` (Haupt-Checkout) gegen `feature/52-7-village-gameplay`. Keine Release-Messung (paralleles Paket).
+Verschränkte A/B-Messung im Debug-Build, je zwei Runden, `nice -n 10`, Ticks von Hand: Basis `dev` `bf98527` (Haupt-Checkout) gegen `feature/52-7-village-gameplay`. Keine Release-Messung (paralleles Paket).
 
 **Langzeittest über 2 Spieltage** (`QTCRAFT_VILLAGE_SOAK_DAYS=2 test_village_soak`: vier Testdörfer, 39 Bewohner, 23 996 Ticks, 4 Kinder, alle 39 im Bett, Invarianten grün): Tick Ø Basis 0,612 / 0,608 ms, 52.7 0,617 / 0,610 ms; Wanduhr 14,6–14,8 s auf beiden Seiten. Umzug und Abgleich alle 100 Ticks kosten nichts Messbares.
 
@@ -2174,7 +2174,7 @@ Verschränkte A/B-Messung im Debug-Build, je zwei Runden, `nice -n 10`, Ticks vo
 
 ## 52.7 (Dorf-Spielweisen, mit dev zusammengeführt) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `0e17000` (52.5) gegen `feature/52-7-village-gameplay` nach dem Zusammenführen, verschränkt, Mediane.
+Release-Builds, `dev` `0a77b4a` (52.5) gegen `feature/52-7-village-gameplay` nach dem Zusammenführen, verschränkt, Mediane.
 
 **Headless** (`@server horde village village-night village-swamp`, 3 Runden, 60 Spielsekunden): Tick −2 bis +2 % in allen Szenarien bei gleicher Wesenzahl, p99 −7 bis +6 %, Speicher −2 bis +4 %. Siedlungen, Umzug, Ernte auf beliebigen Feldern und Aufsammeln von Essen kosten nichts Messbares.
 
@@ -2193,7 +2193,7 @@ Release-Builds, `dev` `0e17000` (52.5) gegen `feature/52-7-village-gameplay` nac
 
 ## 52.8 (confined und noAi je Wesen, Showcase mit mobGriefing) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `a36e9a3` (52.7) gegen `feature/52-8-confined-noai`, verschränkt, Mediane.
+Release-Builds, `dev` `b6ab79c` (52.7) gegen `feature/52-8-confined-noai`, verschränkt, Mediane.
 
 **Headless** (`@server village`, 3 Runden, 60 Spielsekunden): Tick −3 bis +3 % bei gleicher Wesenzahl, p99 −4 bis +8 %, Speicher ±1 %. Die gemeinsame Griefing-Prüfung kostet nichts Messbares.
 
@@ -2201,7 +2201,7 @@ Release-Builds, `dev` `a36e9a3` (52.7) gegen `feature/52-8-confined-noai`, versc
 
 ## 52.4 (Kühe, Fische, Angel; mit dev bis 52.8 zusammengeführt) gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `7b8b286` (52.8) gegen `feature/52-4-cows-fish` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
+Release-Builds, `dev` `ab2ee8a` (52.8) gegen `feature/52-4-cows-fish` nach Nachbesserung und Zusammenführung, verschränkt, Mediane.
 
 **Headless** (`@server horde village`, 3 Runden, 60 Spielsekunden): crowd +7 % (0,149 → 0,160 ms, gleiche Wesenzahl, unter der 10-%-Schwelle), horde, village, explore, Felder 0 bis +5 %; Signal-Stationen +20 bis +26 % (0,073 → 0,091 ms) bei 61 statt 45 Wesen: Kuhweide, Aquarium und Angelsteg der Showcase, etwa 1,1 µs je Wesen; Speicher 0 bis +4 %.
 
@@ -2209,7 +2209,7 @@ Release-Builds, `dev` `7b8b286` (52.8) gegen `feature/52-4-cows-fish` nach Nachb
 
 ## 40.1 (Gamepad-Backend) gerendert (2026-10-18)
 
-Release-Builds, `dev` `a03835b` gegen `feature/40-1-gamepad-backend`, `@core`, 8 Chunks, verschränkt, Mediane, ohne angeschlossenen Controller: GPU −3 bis +1 %, Bild Ø 8,33 ms, p99 9,4–9,9 ms (Ziel erfüllt), Speicher ±0 %; GUI- und Render-CPU streuen zwischen −19 und +11 % mit überlappenden Spannen. Das Abfragen ohne Controller alle 250 ms (E-540) kostet nichts Messbares.
+Release-Builds, `dev` `bf517e1` gegen `feature/40-1-gamepad-backend`, `@core`, 8 Chunks, verschränkt, Mediane, ohne angeschlossenen Controller: GPU −3 bis +1 %, Bild Ø 8,33 ms, p99 9,4–9,9 ms (Ziel erfüllt), Speicher ±0 %; GUI- und Render-CPU streuen zwischen −19 und +11 % mit überlappenden Spannen. Das Abfragen ohne Controller alle 250 ms (E-540) kostet nichts Messbares.
 
 ## 38.1 (Spawner, Verliese, Gänge) headless, Debug-relativ (2026-10-18)
 
@@ -2222,7 +2222,7 @@ Debug-Build, gleiche Maschine, im selben Prozess verschränkt, parallel laufende
 
 ## 38.1 (Spawner, Verliese, Gänge) Release, gerendert und headless (2026-10-18)
 
-Release-Builds, `dev` `9edd83f` (40.1) gegen `feature/38-1-spawners` `61f1692`, verschränkt, Mittelwerte.
+Release-Builds, `dev` `eb05382` (40.1) gegen `feature/38-1-spawners` `61f1692`, verschränkt, Mittelwerte.
 
 **Headless** (`@server` mit horde, 3 Runden, 60 Spielsekunden): crowd, horde, gravel-collapse, Felder und Signal-Stationen −1 bis +3 %; explore +7 % (0,191 → 0,205 ms, Streuung 2 %): die Verliese und Gänge der neu erzeugten Chunks, unter der 10-%-Schwelle; farm +10 % bei 0,007 ms (eine Zehntel-Mikrosekunde, Rundung). Speicher −2 bis +2 %.
 
@@ -2240,11 +2240,11 @@ Release-Builds, `dev` gegen `feature/46-1-client-structure`, verschränkt, Mitte
 
 ## 46.1e und 40.1b (Bildschirmzustand, Gamepad-Steuerung) gerendert (2026-10-18)
 
-Release-Builds, `dev` `cf9951f` (46.1) gegen `feature/46-1e-40-controls` nach den Review-Fixes, `@core`, 8 Chunks, 6 Runden, verschränkt, ohne angeschlossenen Controller. Bild Ø 8,34–8,37 ms bei beiden Ständen, p99-Median 9,3–10,4 ms bei beiden (Ziel erfüllt), die Mittelwerte von p99 (−6 bis +11 %) kommen von einzelnen Ausreißern (sprint 15,7 ms in einem Lauf); GPU −6 bis +1 %, Render- und GUI-CPU −12 bis +4 % mit Streuung bis 90 % (parallel arbeitende Agenten), Speicher ±0 %. Keine Regression.
+Release-Builds, `dev` `93d42fd` (46.1) gegen `feature/46-1e-40-controls` nach den Review-Fixes, `@core`, 8 Chunks, 6 Runden, verschränkt, ohne angeschlossenen Controller. Bild Ø 8,34–8,37 ms bei beiden Ständen, p99-Median 9,3–10,4 ms bei beiden (Ziel erfüllt), die Mittelwerte von p99 (−6 bis +11 %) kommen von einzelnen Ausreißern (sprint 15,7 ms in einem Lauf); GPU −6 bis +1 %, Render- und GUI-CPU −12 bis +4 % mit Streuung bis 90 % (parallel arbeitende Agenten), Speicher ±0 %. Keine Regression.
 
 ## 38.2 (Minenschächte) headless, Release (2026-10-18)
 
-Release-Builds, `dev` `ec675c4` gegen `feature/38-2-mineshafts` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Tick −1 bis +3 % in allen Szenarien, explore +2 % (0,213 → 0,217 ms; die Schächte werden im Generierungs-Thread geplant), p99 −2 bis +5 %, Speicher −1 bis +1 %. Keine Regression. Die Debug-Messung der Generierung (−4 % insgesamt, −13 % in den Chunks eines Schachts) steht in E-570.
+Release-Builds, `dev` `f16395f` gegen `feature/38-2-mineshafts` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Tick −1 bis +3 % in allen Szenarien, explore +2 % (0,213 → 0,217 ms; die Schächte werden im Generierungs-Thread geplant), p99 −2 bis +5 %, Speicher −1 bis +1 %. Keine Regression. Die Debug-Messung der Generierung (−4 % insgesamt, −13 % in den Chunks eines Schachts) steht in E-570.
 
 ## 46.2 (Session-Tick auf eigenem Thread) gerendert (2026-10-18)
 
@@ -2256,13 +2256,13 @@ Release-Builds, `feature/46-1e-40-controls` gegen `feature/46-2-session-thread` 
 
 ## 40.2 (Gamepad-Oberfläche) gerendert (2026-10-19)
 
-Release-Builds, `dev` `e91a006` (38.2) gegen `feature/40-2-gamepad-ui` nach der Nachbesserung (`113cfce`: Frame-Hook und Event-Filter nur bei aktivem Pad, Pad-QML per `Loader`), `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −2 bis +3 %, Render-CPU −2 bis +2 %, GPU −3 bis +1 %, Speicher −1 bis 0 %, gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen (10–16 ms). Keine Regression.
+Release-Builds, `dev` `d0663f0` (38.2) gegen `feature/40-2-gamepad-ui` nach der Nachbesserung (`113cfce`: Frame-Hook und Event-Filter nur bei aktivem Pad, Pad-QML per `Loader`), `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −2 bis +3 %, Render-CPU −2 bis +2 %, GPU −3 bis +1 %, Speicher −1 bis 0 %, gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen (10–16 ms). Keine Regression.
 
-Ein erster Lauf zeigte GUI-CPU in sprint +13 % und +8 MB: Der Basis-Build stammte aus `ec675c4` (vor 38.2), der Kandidat enthielt die Minenschächte, also eine andere Welt (mehr Sektionen und Upload, ein Wesen mehr). Vor einem A/B gegen `dev` den Release-Build von `dev` auf den Stand bringen, den der Kandidat eingemergt hat.
+Ein erster Lauf zeigte GUI-CPU in sprint +13 % und +8 MB: Der Basis-Build stammte aus `f16395f` (vor 38.2), der Kandidat enthielt die Minenschächte, also eine andere Welt (mehr Sektionen und Upload, ein Wesen mehr). Vor einem A/B gegen `dev` den Release-Build von `dev` auf den Stand bringen, den der Kandidat eingemergt hat.
 
 ## 40.3 (Gamepad-Einstellungen, Profile, Symbole) gerendert (2026-10-19)
 
-Release-Builds, `dev` `acfa789` (40.2) gegen `feature/40-3-gamepad-settings` nach der Nachbesserung, `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −4 bis +6 %, Render-CPU −2 bis +4 %, GPU −3 bis −1 %, Speicher +0 bis +1 % (6–7 MB), gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen. Keine Regression.
+Release-Builds, `dev` `ab864c3` (40.2) gegen `feature/40-3-gamepad-settings` nach der Nachbesserung, `@core`, 8 Chunks, 6 Runden, verschränkt, Mediane, ohne Controller. GUI-CPU −4 bis +6 %, Render-CPU −2 bis +4 %, GPU −3 bis −1 %, Speicher +0 bis +1 % (6–7 MB), gleiche Sektionszahl; p99 zweigipflig bei beiden Ständen. Keine Regression.
 
 ## 51.1 (Wüstentempel, Sandgolem) Debug, Thread-Zeit (2026-10-19)
 
@@ -2272,15 +2272,15 @@ Release-Builds, `dev` `acfa789` (40.2) gegen `feature/40-3-gamepad-settings` nac
 
 ## 51.1 (Wüstentempel, Sandgolem, Wächter-Zonen) headless, Release (2026-10-19)
 
-Release-Builds, `dev` `acfa789` gegen `feature/51-1-desert-temple` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, parallel bauende Agenten. Tick −8 bis +3 % in allen Szenarien, explore +3 % (0,218 ms), horde +5 % bei 17 % Streuung (p99 +13 % bei 28 % Streuung, Wächter-Prüfung nur über bereits geplante Regionen), Speicher −1 bis +2 %. Keine Regression. Fenster-Benchmark auf Wunsch des Menschen vorerst ausgesetzt (geschuldet: `@core`).
+Release-Builds, `dev` `ab864c3` gegen `feature/51-1-desert-temple` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, parallel bauende Agenten. Tick −8 bis +3 % in allen Szenarien, explore +3 % (0,218 ms), horde +5 % bei 17 % Streuung (p99 +13 % bei 28 % Streuung, Wächter-Prüfung nur über bereits geplante Regionen), Speicher −1 bis +2 %. Keine Regression. Fenster-Benchmark auf Wunsch des Menschen vorerst ausgesetzt (geschuldet: `@core`).
 
 ## 51.4 (Portal-Ruinen, Brunnen, Oasen) headless, Release (2026-10-19)
 
-Release-Builds, `dev` `6ccca5c` gegen `feature/51-4-ruins-oases` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, unter Last paralleler Agenten. Tick −5 bis +6 % (explore −5 %, signal_farm +6 % bei 19 % Streuung), Speicher 0 bis +2 %. Keine Regression. Fenster-Benchmark geschuldet (vom Menschen ausgesetzt).
+Release-Builds, `dev` `cb12e48` gegen `feature/51-4-ruins-oases` nach der Nachbesserung, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte, unter Last paralleler Agenten. Tick −5 bis +6 % (explore −5 %, signal_farm +6 % bei 19 % Streuung), Speicher 0 bis +2 %. Keine Regression. Fenster-Benchmark geschuldet (vom Menschen ausgesetzt).
 
 ## 51.3 (Dschungel, Dschungeltempel, Hexenhütte, Hexe) headless, Release (2026-10-19)
 
-Release-Builds, `dev` `9504d2b` gegen `feature/51-3-jungle-witch` nach Nachbesserung und Merge von 51.4, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. explore +13 % (0,210 → 0,238 ms, Streuung 3 %): Phase `streaming` +24 % (0,083 → 0,103 ms) und `chunkLoading` +15 %, bei gleicher Zahl geladener Chunks; das neue Dschungel-Biom ist dichter bewachsen (hohe Bäume, Blätter, Ranken), seine Chunks sind teurer zu senden und zu laden. Das ist Inhalt, kein Code-Rückschritt, und bleibt weit unter dem Tick-Budget. crowd und horde +6 % (Phase `mobs` +6 %, rund 0,008 ms): der Trink-Durchgang `QcMobDrinking` läuft über alle Wesen; Kandidat für einen Durchgang nur über Wesen mit `drinks`. Übrige Szenarien +1 bis +4 %, Speicher +1 bis +2 %. Fenster-Benchmark geschuldet.
+Release-Builds, `dev` `d71a4b1` gegen `feature/51-3-jungle-witch` nach Nachbesserung und Merge von 51.4, `@server` mit horde und explore, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. explore +13 % (0,210 → 0,238 ms, Streuung 3 %): Phase `streaming` +24 % (0,083 → 0,103 ms) und `chunkLoading` +15 %, bei gleicher Zahl geladener Chunks; das neue Dschungel-Biom ist dichter bewachsen (hohe Bäume, Blätter, Ranken), seine Chunks sind teurer zu senden und zu laden. Das ist Inhalt, kein Code-Rückschritt, und bleibt weit unter dem Tick-Budget. crowd und horde +6 % (Phase `mobs` +6 %, rund 0,008 ms): der Trink-Durchgang `QcMobDrinking` läuft über alle Wesen; Kandidat für einen Durchgang nur über Wesen mit `drinks`. Übrige Szenarien +1 bis +4 %, Speicher +1 bis +2 %. Fenster-Benchmark geschuldet.
 
 ## 51.2 (Sprengstoff, Explosionen) headless, Release (2026-10-19)
 
@@ -2288,15 +2288,15 @@ Release-Build `feature/51-2-explosives`, Rechner unter Last ~10, ohne Vergleichs
 
 ## 51.2 nach der Zusammenführung mit 51.1/51.3/51.4, headless, Release (2026-10-19)
 
-Release-Builds, `dev` `b510223` gegen `feature/51-2-explosives` nach dem Merge, `@server` mit horde, explore und explosive-chain, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Alle bestehenden Szenarien −4 bis +4 % (p99 −2 bis +4 %), keine Regression. explosive-chain (auf `dev` ohne Sprengstoff leer): Tick Ø 0,42 ms, p99 1,9 ms, weit unter dem Budget von 50 ms.
+Release-Builds, `dev` `2fd6ce7` gegen `feature/51-2-explosives` nach dem Merge, `@server` mit horde, explore und explosive-chain, 3 Runden, 60 Spielsekunden, verschränkt, Mittelwerte. Alle bestehenden Szenarien −4 bis +4 % (p99 −2 bis +4 %), keine Regression. explosive-chain (auf `dev` ohne Sprengstoff leer): Tick Ø 0,42 ms, p99 1,9 ms, weit unter dem Budget von 50 ms.
 
 ## 56e headless, Release (2026-10-19)
 
-`scripts/bench-headless.sh`, `@server` plus `horde` und `explore`, 3 Runden, 60 s Spielzeit, `dev` (`7d7a7f6`-Stand vor 56e) gegen den Kandidaten von 56e. Alle Szenarien innerhalb von ±4 % bei Tick-Mittel, p99 und Spitzenspeicher, bis auf `crowd` p99 +12 % bei 21 % Streuung; mit 6 Runden wiederholt `crowd` Mittel −0,1 %, p99 +2,6 %: Rauschen.
+`scripts/bench-headless.sh`, `@server` plus `horde` und `explore`, 3 Runden, 60 s Spielzeit, `dev` (`28e92b2`-Stand vor 56e) gegen den Kandidaten von 56e. Alle Szenarien innerhalb von ±4 % bei Tick-Mittel, p99 und Spitzenspeicher, bis auf `crowd` p99 +12 % bei 21 % Streuung; mit 6 Runden wiederholt `crowd` Mittel −0,1 %, p99 +2,6 %: Rauschen.
 
 ## Fenster: Etappe 51 und 56 nachgemessen, Release (2026-10-20)
 
-`scripts/bench-ab.sh`, `@core`, `@ui` und `explosive-chain`, 10 s je Lauf, adaptiv 6 Runden, rotierte Reihenfolge; Basis `pre51` = `0d5f096` (`dev` vor 51.1, zuletzt im Fenster gemessen mit 40.3 und 46.2), Kandidat `dev56` = `e1b0bad` (51.1–51.4, Feuchtgebiete, 56a–56e). Die Maschine war nicht ganz ruhig (clangd-Indizierung paralleler Agenten, Last bis 20 zu Beginn, danach 3–7; das Skript maß nach 180 s Wartezeit trotzdem).
+`scripts/bench-ab.sh`, `@core`, `@ui` und `explosive-chain`, 10 s je Lauf, adaptiv 6 Runden, rotierte Reihenfolge; Basis `pre51` = `5567623` (`dev` vor 51.1, zuletzt im Fenster gemessen mit 40.3 und 46.2), Kandidat `dev56` = `650a1cf` (51.1–51.4, Feuchtgebiete, 56a–56e). Die Maschine war nicht ganz ruhig (clangd-Indizierung paralleler Agenten, Last bis 20 zu Beginn, danach 3–7; das Skript maß nach 180 s Wartezeit trotzdem).
 
 | Szenario | Frame p99 | GPU Ø | Render-CPU Ø | GUI-CPU Ø | Tick Ø | Spitzenspeicher |
 |---|---|---|---|---|---|---|
@@ -2312,7 +2312,7 @@ Bewertung: keine Regression über der 10-%-Schwelle, die nicht in der Streuung l
 
 ## Fenster: Etappe 57, Release (2026-10-20)
 
-`scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, rotierte Reihenfolge; Basis `pre57` = `e1b0bad`, Kandidat `s57` = 57a–57d (Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden geteilt, Renderer-Ressourcen nach Lebensdauer und `FrameInput`). GPU Ø, Render-CPU Ø, GUI-CPU Ø, Tick Ø und Spitzenspeicher in allen vier Szenarien innerhalb von ±6 % (meist ±3 %); Frame p99 stand +11,7 % bei 55 % Streuung (die bekannte Zweiteilung je Lauf zwischen etwa 10 und 15 ms), sprint −8,5 %, showcase −9,7 %, crowd +0,4 %. Keine Regression. Headless (`@server`) für 57a und 57c je innerhalb von ±4 %.
+`scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, rotierte Reihenfolge; Basis `pre57` = `650a1cf`, Kandidat `s57` = 57a–57d (Tick-Systeme als Liste, Schicht `qc_worlds`, Fassaden geteilt, Renderer-Ressourcen nach Lebensdauer und `FrameInput`). GPU Ø, Render-CPU Ø, GUI-CPU Ø, Tick Ø und Spitzenspeicher in allen vier Szenarien innerhalb von ±6 % (meist ±3 %); Frame p99 stand +11,7 % bei 55 % Streuung (die bekannte Zweiteilung je Lauf zwischen etwa 10 und 15 ms), sprint −8,5 %, showcase −9,7 %, crowd +0,4 %. Keine Regression. Headless (`@server`) für 57a und 57c je innerhalb von ±4 %.
 
 ## Fenster: Paket 47.1b (Texturfilterung, fester und ausgeschnittener Durchgang getrennt), Release (2026-10-20)
 
@@ -2342,7 +2342,7 @@ Nachmessung nach der Korrektur der Sichtbarkeit (Abschnitte mit nur ausgeschnitt
 
 ## Etappe 62 (Block-Parität), Release (2026-10-21)
 
-Basis `pre` = `f51b73e` (vor 62.1, noch mit dem Shader von 47.1), `new` = `4dc2859` (62.1–62.4 mit 62.2a/b, 62.3b/c, dazu 47.1b und T1). Ruhige Maschine über den Slot-Broker (E-781).
+Basis `pre` = `275bb8c` (vor 62.1, noch mit dem Shader von 47.1), `new` = `77670b8` (62.1–62.4 mit 62.2a/b, 62.3b/c, dazu 47.1b und T1). Ruhige Maschine über den Slot-Broker (E-781).
 
 **Headless** (`scripts/bench-headless.sh`, @server, 60 Spielsekunden, adaptiv 3–6 Runden): Server-Tick Ø und p99 gleichauf (−1,6 … +2,5 %; farm +7 % bei 13 % Streuung), Spitzenspeicher +8,5 … +15 % (rund 5–12 MB; größere Inhaltstabellen: Treppen-Ecken, vertikale Stufen, Keramik, Betten, Rezepte).
 
@@ -2359,7 +2359,7 @@ GPU-Gewinn aus 47.1b (E-756). Render-CPU steigt um 0,3–0,6 ms, weil der getren
 
 ## Etappe 58 (Client-Speicher bei Sichtweite 16), Release (2026-10-21)
 
-Basis `base` = `dev` `4c83b55`, `new` = `feature/58-client-memory` (E-813). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, Stand nach vollständigem Laden und Vernetzen; `vmmap -summary`, `footprint`, `heap -s` mit `MallocStackLogging=lite`, Statistik-JSON; Werte in MB):
+Basis `base` = `dev` `824139f`, `new` = `feature/58-client-memory` (E-813). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, Stand nach vollständigem Laden und Vernetzen; `vmmap -summary`, `footprint`, `heap -s` mit `MallocStackLogging=lite`, Statistik-JSON; Werte in MB):
 
 | Sichtweite 16 | base | new |
 |---|---:|---:|
@@ -2391,7 +2391,7 @@ Die Abschnittsdaten liegen jetzt einmal im (CPU-sichtbaren) GPU-Speicher statt e
 
 ## Etappe 71 (Karten), Release (2026-10-21)
 
-Basis `pre` = `3087053` (nach Etappe 62), `new` = `4c83b55` (71.1 und 71.2, dazu 62.5 und T1b). Über den Slot-Broker auf ruhiger Maschine.
+Basis `pre` = `b4f98a3` (nach Etappe 62), `new` = `824139f` (71.1 und 71.2, dazu 62.5 und T1b). Über den Slot-Broker auf ruhiger Maschine.
 
 **Headless** (@server, 60 Spielsekunden): Tick Ø −1,5 … +1,9 % (farm 0,007 → 0,008 ms, Auflösung 1 µs), Spitzenspeicher −0,6 … +4,8 %.
 
@@ -2400,7 +2400,7 @@ Basis `pre` = `3087053` (nach Etappe 62), `new` = `4c83b55` (71.1 und 71.2, dazu
 
 ## 63 Vegetationskarte, headless, Release (2026-10-21)
 
-`scripts/bench-headless.sh`, `@server` (mit `explore`), 60 Spielsekunden, adaptiv 3–6 Runden, `dev` `5cb8fcb` (`pre`) gegen `feature/63-vegetation-map` (`new`). Mittelwerte der Runden, Differenz `new` zu `pre`:
+`scripts/bench-headless.sh`, `@server` (mit `explore`), 60 Spielsekunden, adaptiv 3–6 Runden, `dev` `c40ff2d` (`pre`) gegen `feature/63-vegetation-map` (`new`). Mittelwerte der Runden, Differenz `new` zu `pre`:
 
 | Szenario | Tick Ø ms pre → new | Tick p99 ms pre → new | Spitzenspeicher MB pre → new |
 |---|---:|---:|---:|
@@ -2417,7 +2417,7 @@ Alle Werte innerhalb von ±6 %, keine Regression. Die Vegetationsschichten und B
 
 ## Paket 47.1c (Abschnitts-Arena, Zeichnen mit Basis-Vertex), Release offscreen (2026-10-21)
 
-Basis `base` = `dev` `5cb8fcb`, `new` = `feature/47-1c-draw-batching` (E-820). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, 2400 Bilder, Statistik alle 3 s; Mittel der Fenster nach vollständigem Laden ohne das erste), je zwei Runden verschränkt (base/new abwechselnd) im Bench-Slot des Broker (ruhige Maschine). Offscreen nur Richtwerte; der Fenster-Benchmark (`bench-ab.sh @core`, dazu `stand sprint` mit `VIEW=16`) ist geschuldet.
+Basis `base` = `dev` `c40ff2d`, `new` = `feature/47-1c-draw-batching` (E-820). **Offscreen** (Screenshot-Lauf `QTCRAFT_OFFSCREEN=1`, `--play --seed 42`, Blick 0,0, 2400 Bilder, Statistik alle 3 s; Mittel der Fenster nach vollständigem Laden ohne das erste), je zwei Runden verschränkt (base/new abwechselnd) im Bench-Slot des Broker (ruhige Maschine). Offscreen nur Richtwerte; der Fenster-Benchmark (`bench-ab.sh @core`, dazu `stand sprint` mit `VIEW=16`) ist geschuldet.
 
 | | Sichtweite 8 base | 8 new | Sichtweite 16 base | 16 new |
 |---|---:|---:|---:|---:|
@@ -2442,7 +2442,7 @@ Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 3
 
 ## Etappe 65 (2×2-Bäume, Dschungelholz), headless, Release (2026-10-21)
 
-`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (6 gelaufen), `dev` `7d2b605` (`pre`) gegen `feature/65-big-trees` (`new`, E-822). Mittelwerte der Runden:
+`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (6 gelaufen), `dev` `f0d59de` (`pre`) gegen `feature/65-big-trees` (`new`, E-822). Mittelwerte der Runden:
 
 | Wert | pre | new |
 |---|---:|---:|
@@ -2455,12 +2455,12 @@ Profil (`sample`, Sichtweite 16): Proben in `QcWorldRenderer::render` 1009 → 3
 | `blockUpdates` Ø (ms) | 0,0003 | 0,0017 |
 | `items` Ø (ms) | 0,0003 | 0,0004 |
 
-Unter der 10-%-Schwelle. Mehr Blöcke je Chunk in Taiga und Dschungel (Riesen, dichtere Dschungelbäume, Ranken) kosten beim Übernehmen und Senden der Chunks; die Ranken prüfen beim Laden ihren Halt (`blockUpdates`). Eine erste Messung (gegen `dev` `bc140ce`) zeigte +6,9 % Tick und `items` 0,0003 → 0,0060 ms: bis zu 114 Ranken fielen als Items ab, weil eine Ranke an einem Laubplatz hing, den schon die Ranke eines anderen Baums belegte (das Laub wurde dort nicht gesetzt). Seitdem ersetzt Laub fremde Ranken (`QcTreeShape::buildInChunk`, `test_giant_trees::generatedVinesHoldOn`), und es fallen keine Items mehr ab.
+Unter der 10-%-Schwelle. Mehr Blöcke je Chunk in Taiga und Dschungel (Riesen, dichtere Dschungelbäume, Ranken) kosten beim Übernehmen und Senden der Chunks; die Ranken prüfen beim Laden ihren Halt (`blockUpdates`). Eine erste Messung (gegen `dev` `de2bcb3`) zeigte +6,9 % Tick und `items` 0,0003 → 0,0060 ms: bis zu 114 Ranken fielen als Items ab, weil eine Ranke an einem Laubplatz hing, den schon die Ranke eines anderen Baums belegte (das Laub wurde dort nicht gesetzt). Seitdem ersetzt Laub fremde Ranken (`QcTreeShape::buildInChunk`, `test_giant_trees::generatedVinesHoldOn`), und es fallen keine Items mehr ab.
 
 
 ## Etappe 66 (Klima-Ordnung, Übergangsbiome), headless, Release (2026-10-21)
 
-`scripts/bench-headless.sh`, `@server` (crowd, gravel-collapse, farm, farm-seeds, explore, drei Signal-Stationen der Showcase), 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, keine Szene nahe der Schwelle), `dev` `a1563d0` (`pre`) gegen `feature/66-climate-order` (`new`, E-824, E-825). Lastmittel während der Reihe 3,7–5,5. Mittelwerte der Runden:
+`scripts/bench-headless.sh`, `@server` (crowd, gravel-collapse, farm, farm-seeds, explore, drei Signal-Stationen der Showcase), 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, keine Szene nahe der Schwelle), `dev` `6138aaf` (`pre`) gegen `feature/66-climate-order` (`new`, E-824, E-825). Lastmittel während der Reihe 3,7–5,5. Mittelwerte der Runden:
 
 | Wert | pre | new |
 |---|---:|---:|
@@ -2476,7 +2476,7 @@ Die Menge in `crowd` hängt von der Welt ab: in der neuen Welt stehen dort 90 st
 
 ## Paket 68.1 (Daten je Item-Stapel), headless, Release (2026-10-21)
 
-`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `c668c5d`, `new` = Branch `feature/68-backpack` mit 24-Byte-Stapeln und Kennbit auf der Leitung (E-823); Median je Szenario:
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `37ea782`, `new` = Branch `feature/68-backpack` mit 24-Byte-Stapeln und Kennbit auf der Leitung (E-823); Median je Szenario:
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Spitzenspeicher (MB) |
 |---|---:|---|---|---|
@@ -2493,7 +2493,7 @@ Keine Tick-Regression über 10 %. Der Spitzenspeicher von gravel-collapse hing a
 
 ## Fenster-Benchmark 58–74.1 (2026-10-21)
 
-Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-Seiten), 63 (Vegetation), 64 (Blumental), 65 (Riesenbäume), 66 (Klima-Ordnung), 68.1/68.2 (Item-Daten, Rucksack), 47.3 (gehaltene Items, extrudierte Sprites je Bild) und 74.1 (Diagnose: Protokolldatei, Gesundheitszeile) gemeinsam nachgeholt. Basis `pre58` = `c9a93f1` (`dev` vor 58), Kandidat `dev` = `fa812c4`; beide Release (`--target qtcraft`) in eigenen Worktrees. `scripts/bench-ab.sh` über den Slot-Broker, 10 s je Lauf, adaptiv 3–6 Runden (alle Szenarien bei Sichtweite 8 liefen 6 Runden, bei 16 stand 3 und sprint 6), rotierte Reihenfolge; Lastmittel meist 3–6, 4 von 72 Läufen bei Sichtweite 8 als `loaded=1` markiert (auf beide Stände verteilt). Werte: Median der Runden.
+Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-Seiten), 63 (Vegetation), 64 (Blumental), 65 (Riesenbäume), 66 (Klima-Ordnung), 68.1/68.2 (Item-Daten, Rucksack), 47.3 (gehaltene Items, extrudierte Sprites je Bild) und 74.1 (Diagnose: Protokolldatei, Gesundheitszeile) gemeinsam nachgeholt. Basis `pre58` = `b0ba6f4` (`dev` vor 58), Kandidat `dev` = `be60878`; beide Release (`--target qtcraft`) in eigenen Worktrees. `scripts/bench-ab.sh` über den Slot-Broker, 10 s je Lauf, adaptiv 3–6 Runden (alle Szenarien bei Sichtweite 8 liefen 6 Runden, bei 16 stand 3 und sprint 6), rotierte Reihenfolge; Lastmittel meist 3–6, 4 von 72 Läufen bei Sichtweite 8 als `loaded=1` markiert (auf beide Stände verteilt). Werte: Median der Runden.
 
 **Vergleichbarkeit:** 63–66 ändern die Weltgenerierung, Seed 42 ergibt also in `stand`, `sprint`, `crowd` und `inventory` anderes Gelände (z. B. bei Sichtweite 8 `stand` 84 → 91 Wesen auf dem Server, 525 → 515 Tsd. Dreiecke; die Showcase-Welt hat in `dev` 7 % mehr Dreiecke, 47.3 hat ihren Rüstungsbereich geändert). Gleiches Gelände haben nur `flat-crowd` (flache Welt, 56 Wesen und 89 Zeichenaufrufe in beiden Ständen) und, bis auf die Showcase-Inhalte, `showcase`. `inventory` gibt dem Spieler eine Eisenspitzhacke in die Hand, zeigt also das extrudierte Sprite von 47.3 in der ersten Person. **Ein Szenario mit vielen Spielern, die Werkzeuge halten, gibt es nicht** (`crowd` hat Wesen und Items, `armour-crowd` Ständer ohne Gegenstand in der Hand); die Kosten von 47.3 je Figur in der dritten Person sind darum nicht gemessen (Lücke).
 
@@ -2517,7 +2517,7 @@ Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-S
 
 `worldRender` sinkt um 56–62 % (47.1c: Seiten statt Puffer je Abschnitt, `setVertexInput` nur noch je Seite), `section_mb` steigt um 4–22 % (Kapazität der Seiten, 47.1c, dazu das Gelände von 63–66).
 
-**Über +10 %:** GUI-CPU in stand, showcase, inventory (Sichtweite 8: +0,04–0,06 ms) und bei Sichtweite 16 (+0,08 bzw. +0,16 ms), sowie der Server-Tick der BENCH-Zeile (Sichtweite 8: stand +17 %, flat-crowd +12 %, inventory +11 %, alle bei 22–42 % Streuung; Sichtweite 16: 0,73 → 1,22 ms (+67 %) in stand und 0,79 → 1,28 ms (+63 %) in sprint, Streuung 3–15 %). Ursachen, aus einer zweiten Reihe mit den Zwischenständen `s47c` = `8bbd5e2` (58, 63, 47.1c), `s66` = `d7b2dc8` (dazu 64, 65, 68.1, 68.2, 66) und `s473` = `4433c74` (dazu 47.3), je 3 Runden:
+**Über +10 %:** GUI-CPU in stand, showcase, inventory (Sichtweite 8: +0,04–0,06 ms) und bei Sichtweite 16 (+0,08 bzw. +0,16 ms), sowie der Server-Tick der BENCH-Zeile (Sichtweite 8: stand +17 %, flat-crowd +12 %, inventory +11 %, alle bei 22–42 % Streuung; Sichtweite 16: 0,73 → 1,22 ms (+67 %) in stand und 0,79 → 1,28 ms (+63 %) in sprint, Streuung 3–15 %). Ursachen, aus einer zweiten Reihe mit den Zwischenständen `s47c` = `8cb50d4` (58, 63, 47.1c), `s66` = `cf5d871` (dazu 64, 65, 68.1, 68.2, 66) und `s473` = `679034b` (dazu 47.3), je 3 Runden:
 
 | Sichtweite 16, stand | pre58 | s47c | s66 | s473 | dev |
 |---|---:|---:|---:|---:|---:|
@@ -2540,7 +2540,7 @@ Die geschuldeten Fenster-Messungen von 58 (Client-Speicher), 47.1c (Abschnitts-S
 
 ## Paket Block-Indizes (E-844), Release, headless und offscreen (2026-10-22)
 
-Basis `base` = `dev` `37deec6`, `new` = `feature/block-indices` `45bdb99` (+ Aufräumen ohne Wirkung auf die Laufzeit); beide Release in eigenen Worktrees, alle Läufe über den Slot-Broker (Benchmarks exklusiv), verschränkt mit wechselnder Reihenfolge. Fensterläufe waren nicht erlaubt; der Fenster-Benchmark (`bench-ab.sh`, `stand sprint` bei `VIEW=16`) wird zentral nachgeholt.
+Basis `base` = `dev` `453ce82`, `new` = `feature/block-indices` `45bdb99` (+ Aufräumen ohne Wirkung auf die Laufzeit); beide Release in eigenen Worktrees, alle Läufe über den Slot-Broker (Benchmarks exklusiv), verschränkt mit wechselnder Reihenfolge. Fensterläufe waren nicht erlaubt; der Fenster-Benchmark (`bench-ab.sh`, `stand sprint` bei `VIEW=16`) wird zentral nachgeholt.
 
 **Client-Speicher bei Sichtweite 16** (offscreen: `QTCRAFT_OFFSCREEN=1`, Screenshot nach vollständigem Laden und Vernetzen, `--play --seed 42 --view-distance 16`, `QTCRAFT_STATS=1000`, `/usr/bin/time -l`; je 2 Läufe, Mittel; der Prozess enthält den lokalen Server):
 
@@ -2595,7 +2595,7 @@ Das Lesen wird vor allem schneller, weil `block()` jetzt inline ist (vorher ein 
 
 ## Paket 73.1 (Monster-Spawn nach dem Vorbild), headless, Release (2026-10-22)
 
-`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `c261aba` (eigener Worktree), `new` = Branch `feature/73-1-spawn` (E-836); Median je Szenario. Die erste Reihe zeigte crowd +19 % und explore +7 % im Tick; der Monster-Durchgang zählte dort jeden Tick die geladenen Chunks der 17 × 17-Gebiete (289 Abfragen `QcServerWorld::chunk`). Seitdem zählt `QcNaturalSpawner::currentMonsterCap` sie nur einmal je Sekunde oder wenn ein Spieler den Chunk wechselt; crowd und explore danach neu gemessen (6 Runden):
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `b3f5bad` (eigener Worktree), `new` = Branch `feature/73-1-spawn` (E-836); Median je Szenario. Die erste Reihe zeigte crowd +19 % und explore +7 % im Tick; der Monster-Durchgang zählte dort jeden Tick die geladenen Chunks der 17 × 17-Gebiete (289 Abfragen `QcServerWorld::chunk`). Seitdem zählt `QcNaturalSpawner::currentMonsterCap` sie nur einmal je Sekunde oder wenn ein Spieler den Chunk wechselt; crowd und explore danach neu gemessen (6 Runden):
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
 |---|---:|---|---|---|---|---|
@@ -2619,7 +2619,7 @@ Das Lesen wird vor allem schneller, weil `block()` jetzt inline ist (vorher ein 
 
 Die Obergrenze ist nach weniger als 10 s voll, tags wie nachts (Höhlen bleiben dunkel); 0,1 ms je Tick für 70 Monster bleiben weit unter dem Budget.
 
-**Nach den Review-Fixes** (2026-10-22, `pre` = `dev` `37deec6` aus `build/release` des Haupt-Checkouts, `new` = `feature/73-1-spawn` mit `dev` gemergt; `SCENARIOS="crowd explore"`, 6 Runden, verschränkt, Median). Eine erste Reihe mit sofortigem Neuzählen der Gebiete bei jeder Änderung von `QcServerWorld::loadedEpoch` ergab explore +4,3 % (Phase Wesen +0,011 ms): ein laufender Spieler lädt in den meisten Ticks Chunks. Seitdem zählt `currentMonsterCap` bei Chunkwechsel eines Spielers sofort, bei geladenen oder entladenen Chunks höchstens einmal je Sekunde und nur, wenn sich etwas geändert hat; `QcMonsterCap::loadedChunksOf` zählt ohne Mengen (ein Chunk zählt beim ersten Spieler, dessen Gebiet ihn enthält). Endstand:
+**Nach den Review-Fixes** (2026-10-22, `pre` = `dev` `453ce82` aus `build/release` des Haupt-Checkouts, `new` = `feature/73-1-spawn` mit `dev` gemergt; `SCENARIOS="crowd explore"`, 6 Runden, verschränkt, Median). Eine erste Reihe mit sofortigem Neuzählen der Gebiete bei jeder Änderung von `QcServerWorld::loadedEpoch` ergab explore +4,3 % (Phase Wesen +0,011 ms): ein laufender Spieler lädt in den meisten Ticks Chunks. Seitdem zählt `currentMonsterCap` bei Chunkwechsel eines Spielers sofort, bei geladenen oder entladenen Chunks höchstens einmal je Sekunde und nur, wenn sich etwas geändert hat; `QcMonsterCap::loadedChunksOf` zählt ohne Mengen (ein Chunk zählt beim ersten Spieler, dessen Gebiet ihn enthält). Endstand:
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
 |---|---:|---|---|---|---|---|
@@ -2630,7 +2630,7 @@ Die Obergrenze ist nach weniger als 10 s voll, tags wie nachts (Höhlen bleiben 
 
 ## Paket 73.3 (Kjut, Eltern-Kind-Monster), headless, Release (2026-10-22)
 
-`SCENARIOS="crowd explore" scripts/bench-headless.sh` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt und rotiert), `dev` = Haupt-Checkout `build/release` auf `88be840` (73.1), `kjut` = Branch `feature/73-3-kjut` (E-839); Median je Szenario. Kein Unterschied über der Streuung: der Familien-Durchgang (`QcMobFamilies::tick`) läuft einmal je Tick über die Wesen (nur Eltern mit `hurtThisTick`), das Hüpfen ersetzt nur die Steuerung. In explore spawnen mit dem Kjut im Monster-Pool etwas mehr Monster (65 → 72; andere Folge der Würfe), die Phase Wesen bleibt gleich.
+`SCENARIOS="crowd explore" scripts/bench-headless.sh` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt und rotiert), `dev` = Haupt-Checkout `build/release` auf `ba0dd16` (73.1), `kjut` = Branch `feature/73-3-kjut` (E-839); Median je Szenario. Kein Unterschied über der Streuung: der Familien-Durchgang (`QcMobFamilies::tick`) läuft einmal je Tick über die Wesen (nur Eltern mit `hurtThisTick`), das Hüpfen ersetzt nur die Steuerung. In explore spawnen mit dem Kjut im Monster-Pool etwas mehr Monster (65 → 72; andere Folge der Würfe), die Phase Wesen bleibt gleich.
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
 |---|---:|---|---|---|---|---|
@@ -2655,7 +2655,7 @@ Ein Schweber kostet weniger als die Hälfte eines Zombies (keine Schritt-Physik 
 
 ## Etappe 69 (Flüsse), headless, Release (2026-10-22)
 
-**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, neu in Etappe 69: `QcTerrainGenerator::generate` für 4 Seeds 1/7/42/1234 × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, dazu `column()` auf 192 × 192 Spalten je Feld; dieselbe Testdatei in einem Worktree auf `dev` `c261aba`; zwei Reihen abwechselnd, unter dem Slot-Broker exklusiv):
+**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, neu in Etappe 69: `QcTerrainGenerator::generate` für 4 Seeds 1/7/42/1234 × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, dazu `column()` auf 192 × 192 Spalten je Feld; dieselbe Testdatei in einem Worktree auf `dev` `b3f5bad`; zwei Reihen abwechselnd, unter dem Slot-Broker exklusiv):
 
 | Wert | dev | 69 |
 |---|---:|---:|
@@ -2664,7 +2664,7 @@ Ein Schweber kostet weniger als die Hälfte eines Zombies (keine Schritt-Physik 
 
 Die erste Fassung (Steigung des Flussfelds an den unverbogenen Koordinaten, also drei volle Auswertungen samt Mäanderfeld, `reach` 56, auch im Meer) kostete +11,5 % je Chunk und +37 % je Spalte. Die Steigung an den verbogenen Koordinaten (zwei Auswertungen des Mäanderfelds weniger), `reach` 44 und kein Flussfeld unter Grund tiefer als 8 Blöcke unter dem Meer brachten es unter die 10-%-Schwelle (E-840). Die Spalte bleibt +18 % teurer; sie zählt nur über die Chunks (Planung der Dörfer und Bauwerke läuft beim Erzeugen) und ist dort enthalten.
 
-**Server** (`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, nicht nahe der Schwelle), `dev` `c261aba` (`pre`) gegen `feature/69-rivers` (`new`); Lastmittel 2,4. Mittelwerte der Runden:
+**Server** (`scripts/bench-headless.sh`, `explore`, 60 Spielsekunden, adaptiv 3–6 Runden (3 gelaufen, nicht nahe der Schwelle), `dev` `b3f5bad` (`pre`) gegen `feature/69-rivers` (`new`); Lastmittel 2,4. Mittelwerte der Runden:
 
 | Wert | pre | new |
 |---|---:|---:|
@@ -2677,7 +2677,7 @@ Die erste Fassung (Steigung des Flussfelds an den unverbogenen Koordinaten, also
 
 Unter der 10-%-Schwelle. Die Phase Pflanzen wächst um 0,0025 ms: an den Ufern der Flüsse wächst Zuckerrohr (Zufallsticks); im Tick fällt das nicht ins Gewicht.
 
-**Nach dem Review** (2026-10-22, Ringe der Nulllinie ausblenden, E-840/E-842): `test_terrain_measure` legt jetzt für jede Runde einen neuen Generator an (die Suche nach der Spitze eines Rings merkt sich ihre Ergebnisse je Feld; mit demselben Generator rechneten Runde 2 und 3 mit dem Gemerkten und den Dorfplänen der ersten), daher höhere absolute Zahlen. Gemessen gegen `dev` `faa97bb` (dieselbe Testdatei), zwei Reihen abwechselnd, exklusiv unter dem Slot-Broker:
+**Nach dem Review** (2026-10-22, Ringe der Nulllinie ausblenden, E-840/E-842): `test_terrain_measure` legt jetzt für jede Runde einen neuen Generator an (die Suche nach der Spitze eines Rings merkt sich ihre Ergebnisse je Feld; mit demselben Generator rechneten Runde 2 und 3 mit dem Gemerkten und den Dorfplänen der ersten), daher höhere absolute Zahlen. Gemessen gegen `dev` `29b22c8` (dieselbe Testdatei), zwei Reihen abwechselnd, exklusiv unter dem Slot-Broker:
 
 | Wert | dev | 69 |
 |---|---:|---:|
@@ -2688,7 +2688,7 @@ Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suc
 
 ## Etappe 70 (Flussdelta, Flussstücke ohne Abfluss), headless, Release (2026-10-22)
 
-**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69/79: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; neu `deltaFields`: zwei Felder von 16 × 16 Chunks um ein Delta von Seed 7 und 42; dieselbe Testdatei in einem Worktree auf `dev` `b110622`; drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 1,4):
+**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69/79: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; neu `deltaFields`: zwei Felder von 16 × 16 Chunks um ein Delta von Seed 7 und 42; dieselbe Testdatei in einem Worktree auf `dev` `5973728`; drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 1,4):
 
 | Wert | dev | 70 |
 |---|---:|---:|
@@ -2696,9 +2696,9 @@ Zwischenstände (nur 69, alte Methode mit warmem Generator, `dev` 0,634 ms): Suc
 | µs je Spalte (`column`) | 0,471 / 0,470 / 0,468 | 0,516 / 0,514 / 0,512 (+9,4 %) |
 | ms je Chunk in den Delta-Feldern | 0,996 / 0,984 / 0,981 | 1,076 / 1,071 / 1,074 (+8,8 %) |
 
-Unter der 10-%-Schwelle (E-851). Verlauf: die erste Delta-Fassung (Steigung des Flussfelds je Kandidat in jeder Spalte, Band −0,38…0,3) kostete gegen `dev` `2b25516` +9,7 % je Chunk und +25 % je Spalte; mit der Zellen-Suche (Spalten lesen kein Rauschen, Band −0,32…0,18) +2,7 % und +8,8 % (eine Runde). Die Flussstücke ohne Abfluss (E-851) kamen danach dazu, unter Last relativ gemessen rund +2 % je Chunk. Nach dem Review (Länge bis zum endenden Gitterpunkt, nicht gelöste Gitterpunkte übersprungen, `unbent` bis auf eine Viertel-Block genau) nicht neu gemessen; die Änderungen betreffen nur seltene Pfade bzw. höchstens ein paar Mäander-Auswertungen je Gitterpunkt.
+Unter der 10-%-Schwelle (E-851). Verlauf: die erste Delta-Fassung (Steigung des Flussfelds je Kandidat in jeder Spalte, Band −0,38…0,3) kostete gegen `dev` `1c3eec4` +9,7 % je Chunk und +25 % je Spalte; mit der Zellen-Suche (Spalten lesen kein Rauschen, Band −0,32…0,18) +2,7 % und +8,8 % (eine Runde). Die Flussstücke ohne Abfluss (E-851) kamen danach dazu, unter Last relativ gemessen rund +2 % je Chunk. Nach dem Review (Länge bis zum endenden Gitterpunkt, nicht gelöste Gitterpunkte übersprungen, `unbent` bis auf eine Viertel-Block genau) nicht neu gemessen; die Änderungen betreffen nur seltene Pfade bzw. höchstens ein paar Mäander-Auswertungen je Gitterpunkt.
 
-**Nach der Überarbeitung der Deltas** (verzweigte Arme, Senke mit Rand, flache Ufer; 2026-10-22, `dev` `e8a709d` in einem eigenen Worktree, drei Runden abwechselnd, exklusiv über den Slot-Broker `--kind bench`):
+**Nach der Überarbeitung der Deltas** (verzweigte Arme, Senke mit Rand, flache Ufer; 2026-10-22, `dev` `5ae41ee` in einem eigenen Worktree, drei Runden abwechselnd, exklusiv über den Slot-Broker `--kind bench`):
 
 | Wert | dev | 70 |
 |---|---:|---:|
@@ -2725,7 +2725,7 @@ Mit Vorhersage bleibt die Zeit bis zum nächsten gepumpten Bild plus das Meshen 
 
 ## Etappe 79 (Weltgen-Dichte), headless, Release (2026-10-22)
 
-**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; `dev` `9505e7a` in einem eigenen Worktree gegen `feature/79-worldgen-density` (mit `dev` `4363be4` zusammengeführt, Inhalt ohne Weltgen-Änderung); drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 2,8):
+**Erzeugung der Chunks** (`QTCRAFT_TERRAIN_MEASURE=1 test_terrain_measure`, wie in Etappe 69: 4 Seeds × 3 Felder von 24 × 24 Chunks, je Feld die schnellste von 3 Runden, `column()` auf 192 × 192 Spalten je Feld; `dev` `fe2723a` in einem eigenen Worktree gegen `feature/79-worldgen-density` (mit `dev` `05d5237` zusammengeführt, Inhalt ohne Weltgen-Änderung); drei Runden abwechselnd, einmal unter dem Slot-Broker exklusiv (`--kind bench`), Lastmittel am Ende 2,8):
 
 | Wert | dev | 79 |
 |---|---:|---:|
@@ -2734,7 +2734,7 @@ Mit Vorhersage bleibt die Zeit bis zum nächsten gepumpten Bild plus das Meshen 
 
 Über der 10-%-Schwelle; danach optimiert (unten). Grund laut Abtastung (`sample` auf dem Messprogramm): `groundBiomeOf` nahm rund 35 % von `column()` (zweite Klima-Auswertung nahe Grenzen, die 5-%-Schranke lässt bei der vierten Potenz viele Spalten durch), und die Abstandsregel der Küstentürme plante für jede Region alle acht Nachbarregionen (Messfelder mit neuem Generator zahlen das voll).
 
-**Nach der Optimierung** (Boden-Biom aus dem Spalten-Raster des Chunks statt einer Klima-Auswertung in `column()`; Abstandsregel plant nur Nachbarn mit höherer Priorität, deren Region dem Turm näher als der Abstand kommt; gleiche Welt: Prüfsumme `TERRAIN checksum` vor und nach gleich). `dev` `1c51139` in einem neuen Worktree gegen den Branch, drei Runden abwechselnd, einmal exklusiv (`--kind bench`), Lastmittel am Ende 2,2:
+**Nach der Optimierung** (Boden-Biom aus dem Spalten-Raster des Chunks statt einer Klima-Auswertung in `column()`; Abstandsregel plant nur Nachbarn mit höherer Priorität, deren Region dem Turm näher als der Abstand kommt; gleiche Welt: Prüfsumme `TERRAIN checksum` vor und nach gleich). `dev` `c4b1d1c` in einem neuen Worktree gegen den Branch, drei Runden abwechselnd, einmal exklusiv (`--kind bench`), Lastmittel am Ende 2,2:
 
 | Wert | dev | 79 |
 |---|---:|---:|
@@ -2743,7 +2743,7 @@ Mit Vorhersage bleibt die Zeit bis zum nächsten gepumpten Bild plus das Meshen 
 
 ## Paket 73.2 (Monster-Listen der Biome), headless, Release (2026-10-22)
 
-`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `4890633` (eigener Worktree), `new` = Branch `feature/73-2-biomes` (E-838); Median je Szenario.
+`scripts/bench-headless.sh` (Standard `@server`, 60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `pre` = `dev` `9e8938e` (eigener Worktree), `new` = Branch `feature/73-2-biomes` (E-838); Median je Szenario.
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Phase Wesen Ø (ms) | Wesen | Spitzenspeicher (MB) |
 |---|---:|---|---|---|---|---|
@@ -2762,7 +2762,7 @@ Das Spawnen selbst kostet nichts Messbares (crowd, explore gleich; die Wahl aus 
 
 ## Fenster-A/B nach 73–79 (2026-10-22)
 
-**Ausgangsmessung** (Koordinator, `scripts/bench-ab.sh`, `@core`, adaptiv 3–6 Runden, 10 s, Release): `dev` `b110622` gegen die Basis `37deec6` (vor Block-Indizes E-844, 69 Flüsse, 73.1–73.3 Spawnen und Kjut, 76.0b/c Oberfläche, 77.1 Admin-Kanal, Eis/Schleim, 79). Mittel der Runden, Basis → `dev`:
+**Ausgangsmessung** (Koordinator, `scripts/bench-ab.sh`, `@core`, adaptiv 3–6 Runden, 10 s, Release): `dev` `5973728` gegen die Basis `453ce82` (vor Block-Indizes E-844, 69 Flüsse, 73.1–73.3 Spawnen und Kjut, 76.0b/c Oberfläche, 77.1 Admin-Kanal, Eis/Schleim, 79). Mittel der Runden, Basis → `dev`:
 
 | Szenario | GUI-CPU Ø (ms) | Tick Ø (ms) | Spitzenspeicher (MB) |
 |---|---|---|---|
@@ -2793,7 +2793,7 @@ GUI-CPU liegt wieder auf oder unter der Basis (stand −1 %, sprint −20 %, sho
 
 ## Paket 45.0 (kamera-relatives Rendering, E-883), Fenster-A/B (2026-10-24)
 
-`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` cd15d58, B = 45.0. Mediane:
+`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` 272967e, B = 45.0. Mediane:
 
 | Szenario | Bildzeit Ø | GPU Ø | Render-CPU Ø | Welt-Render Ø (CPU) | Upload | Zeichenaufrufe |
 |---|---|---|---|---|---|---|
@@ -2806,7 +2806,7 @@ Speicher gleich (±1 %). Die Bildzeit bleibt an 120 Hz gebunden; die Mehrkosten 
 
 ## Paket 45.0b (Render-Anker, nur geänderte Einträge hochladen, E-883), Fenster-A/B (2026-10-25)
 
-`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` e58549a (mit 45.0), B = 45.0b. Mediane:
+`scripts/bench-ab.sh` @core, 6 Runden je 10 s, verschränkt, Release; A = `dev` 70963c2 (mit 45.0), B = 45.0b. Mediane:
 
 | Szenario | Bildzeit Ø | GPU Ø | Render-CPU Ø | Welt-Render Ø (CPU) | Upload |
 |---|---|---|---|---|---|
@@ -2819,7 +2819,7 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Paket 79.12 (Signal-Parität, E-887), headless, Release (2026-10-25)
 
-`scripts/bench-headless.sh` mit `SCENARIOS=@signal` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `dev` = `0c324af` (exportierter Quellstand, eigener Release-Baum), `new` = Branch `feature/79-12-signal-parity`; Median je Szenario. Neu ist vor allem die BUD-Reichweite zwei Blöcke weit: jede Änderung einer Fackel oder eines Staubs schlägt 18 Zellen nach (Kolben, Spender, Werfer).
+`scripts/bench-headless.sh` mit `SCENARIOS=@signal` (60 s Spielzeit, adaptiv 3–6 Runden, verschränkt), `dev` = `feb084f` (exportierter Quellstand, eigener Release-Baum), `new` = Branch `feature/79-12-signal-parity`; Median je Szenario. Neu ist vor allem die BUD-Reichweite zwei Blöcke weit: jede Änderung einer Fackel oder eines Staubs schlägt 18 Zellen nach (Kolben, Spender, Werfer).
 
 | Szenario | Runden | Tick Ø (ms) | Tick p99 (ms) | Spitzenspeicher (MB) |
 |---|---:|---|---|---|
@@ -2833,13 +2833,13 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Pakete 79.14a/79.14b (Augen, Laufanimation, Tempel-Angleichung, große Minenschächte, E-888/E-889), Fenster-A/B (2026-10-26)
 
-- **Stände:** vorher `f9abe8d` (vor 79.14a), nachher `b96da8b` (mit 79.14a, 79.14b, 50.3, T1e, T2; Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, Sichtweite 8, eingebautes Display, Mensch nicht am Rechner.
+- **Stände:** vorher `2ef66a0` (vor 79.14a), nachher `554297a` (mit 79.14a, 79.14b, 50.3, T1e, T2; Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, adaptiv 3–6 Runden, Sichtweite 8, eingebautes Display, Mensch nicht am Rechner.
 - **Ergebnis:** Bildzeit im Mittel 8,3–8,4 ms in allen Szenarien (120 Hz), GPU, Render-CPU und Speicher ohne Änderung über 3 % (crowd GPU −4 … −12 %). Bildzeit p99: stand +3,2 %, sprint +0,6 %, showcase +1,4 %, crowd ±0 % (Nachmessung 10 Runden +6,9 % bei 37 % Streuung).
 - **Auffällig: GUI-CPU in crowd** +10,3 % (6 Runden, Streuung 34 %), Nachmessung mit 10 Runden +14,7 % (Streuung 38–47 %). Beide Male dieselbe Richtung, absolut 1,11 → 1,27 ms je Bild (+0,16 ms). Wahrscheinliche Ursache: Bein-Schwung je laufendem Wesen und die zusätzlichen Augen-Kästen beim Entity-Meshing auf dem GUI-Thread (die Beinerkennung ist je Modell zwischengespeichert). sprint +6,4 %, showcase −8,7 % (Rauschen). Über der 10-%-Schwelle, aber klein im Absoluten; offen für den Menschen: hinnehmen oder Profil der Entity-Mesh-Zeit in crowd.
 
 ## Pakete 45.1a, 45.1b, 45.2 (realistischer Render-Modus: HDR/Bloom/Nebel, SSAO/bewegtes Licht, Sonnenschatten; E-899, E-902, E-903), Fenster-A/B (2026-10-27)
 
-- **Stände:** `base` = `de80de4` (vor 45.1a), `classic`/`real-med`/`real-high` = `fb08e94` (mit 45.1a, 45.1b, 45.2, 79.19; Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8; Render-Modus je Label über die neuen Variablen `RENDER_MODE`/`RENDER_QUALITY`. `QUIET_WAIT=15`, weil die Windows-VM im Leerlauf 100–200 % CPU zieht (alle Labels gleich betroffen, verschränkt).
+- **Stände:** `base` = `dfbf751` (vor 45.1a), `classic`/`real-med`/`real-high` = `2dd2468` (mit 45.1a, 45.1b, 45.2, 79.19; Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8; Render-Modus je Label über die neuen Variablen `RENDER_MODE`/`RENDER_QUALITY`. `QUIET_WAIT=15`, weil die Windows-VM im Leerlauf 100–200 % CPU zieht (alle Labels gleich betroffen, verschränkt).
 - **Bildzeit:** im Mittel 8,34–8,38 ms in allen Szenarien und Labels (120 Hz gehalten), p99 10,2–11,4 ms; Ziel „60 FPS bei 8 Chunks auf Mittel“ klar erfüllt.
 - **Klassisch gegen vorher:** GPU +3 … +6 % (stand +6,2 %, sprint +4,6 %, showcase +3,3 %, crowd −1,2 %), Render-CPU −0,3 … +4,8 %, Speicher ±0,7 % – unter der 10-%-Schwelle (größere Uniform-Puffer, ein Plan-Wechsel je Bild).
 - **Realistisch Mittel / Hoch (GPU je Bild):** stand 3,89 / 3,79 ms, sprint 3,88 / 3,73, showcase 3,03 / 3,45, crowd 4,23 / 4,14 (klassisch 0,74–2,29 ms); Render-CPU +0,3 … +0,9 ms (Hoch mehr: Schatten-Kaskaden), Speicher +1 … +2 %. Hoch kostet auf der GPU kaum mehr als Mittel; der Mehraufwand gegenüber klassisch liegt vor allem in den Vollbild-Durchgängen (HDR-Szene, Bloom, SSAO, Komposition).
@@ -2847,7 +2847,7 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Paket 45.3 (Wasser im realistischen Modus: Szenen-Kopie, Brechung, Tiefe, Spiegelung; E-906), Fenster-A/B (2026-10-28)
 
-- **Stände:** `base-med`/`base-high` = `9a5ec7b` (vor 45.3, realistisch Mittel/Hoch), `water-med`/`water-high`/`classic` = `8018f10` (mit 45.3; Release statisch). `scripts/bench-ab.sh`, `@core` und `@liquids`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=15`. Verglichen wird jeweils dieselbe Qualitätsstufe vorher/nachher.
+- **Stände:** `base-med`/`base-high` = `c33481f` (vor 45.3, realistisch Mittel/Hoch), `water-med`/`water-high`/`classic` = `b73680c` (mit 45.3; Release statisch). `scripts/bench-ab.sh`, `@core` und `@liquids`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=15`. Verglichen wird jeweils dieselbe Qualitätsstufe vorher/nachher.
 - **Bildzeit:** p99 10,2–12,8 ms in allen Szenarien, Mittel 120 Hz gehalten; Abweichungen zwischen vorher und nachher innerhalb der Streuung (flat-liquids Mittel +8 % bei 31 % Streuung, liquid-fill Hoch +9 % bei 41 % Streuung).
 - **GPU, Wasser gegen vorher (gleiche Stufe):** ohne viel Wasser im Bild (stand, sprint, crowd, liquids) −5 … +4 %, also Rauschen. Mit Wasserflächen im Bild: liquid-fill Mittel 2,96 → 3,12 ms (+5 %), Hoch 3,03 → 3,32 ms (+10 %, Streuung 18 %); showcase Hoch 3,32 → 3,40 ms (+2 %); flat-liquids Hoch 3,10 → 3,14 ms (+1 %). Mehraufwand: Kopie der Szene (RGBA16F) und der zusätzliche Szenen-Durchgang hinter dem Wasser.
 - **Render-CPU und Speicher:** Render-CPU gegen dieselbe Stufe ±5 % (Streuung 15–40 %); Speicher +0,0 … +0,8 %.
@@ -2855,7 +2855,7 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Paket 45.4 (Material-Kanäle: Normal- und Specular-Karten im realistischen Modus; E-908), Fenster-A/B (2026-10-28)
 
-- **Stände:** `base-*` = `eca6e8b` (dev vor 45.4), `mat-*`/`classic` = `feature/45-4-materials` `5afdb19` (Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=15`; realistisch Mittel, Hoch und Hoch mit `builtin:qtcraft_hd_64`. Grundlast während der Messung um 6,5 (Windows-VM), alle Labels gleich betroffen; p99 dadurch höher als bei 45.3 (10–16 ms), Mittel weiter 120 Hz.
+- **Stände:** `base-*` = `0839965` (dev vor 45.4), `mat-*`/`classic` = `feature/45-4-materials` `5afdb19` (Release statisch). `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=15`; realistisch Mittel, Hoch und Hoch mit `builtin:qtcraft_hd_64`. Grundlast während der Messung um 6,5 (Windows-VM), alle Labels gleich betroffen; p99 dadurch höher als bei 45.3 (10–16 ms), Mittel weiter 120 Hz.
 - **GPU je Bild (vorher → nachher):** Mittel stand 3,99 → 3,88, sprint 4,03 → 4,00, showcase 3,49 → 3,45, crowd 4,27 → 4,32 ms (−3 … +1 %); Hoch stand/sprint/crowd ±1 %, showcase 3,82 → 4,02 ms (+5 %); Hoch mit 64er-Paket showcase 3,80 → 4,16 ms (+10 %), sonst ±1 %. Die zwei zusätzlichen Textur-Lesezugriffe und die Glanzlicht-Rechnung kosten also nur in Szenen mit viel naher Blockfläche messbar.
 - **Render-CPU:** gegen dieselbe Stufe ±8 % bei 10–48 % Streuung, kein klarer Effekt.
 - **Speicher (Spitze):** Basisspiel +3 … +7 MiB (+1 … +2 %). Mit 64er-Paket +60 MiB in stand/sprint/crowd (+12 %) und +120 MiB in showcase (401 → 521 MiB, +30 %) – mehr als die 23 MiB der beiden Karten-Atlanten; vermutlich Zwischenbilder beim Bau der Karten (Quellbilder, Mip-Ketten, Upload), nicht untersucht (offen in E-908).
@@ -2869,7 +2869,7 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Paket 45.4b (Material-Karten ohne bleibende CPU-Kopie, Upload in Streifen; E-912), Fenster-A/B (2026-10-28)
 
-- **Stände:** `base-*` = `d328a6b~1` (45.4 ohne 45.4b), `fix-*` = `d328a6b` (45.4b), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=60`, Rechner ruhig. Labels: realistisch Mittel ohne Paket; realistisch Hoch mit `builtin:qtcraft_hd_64`; dazu `base-low-hd64` (realistisch Niedrig, keine Karten) als Bezug.
+- **Stände:** `base-*` = `8933db7~1` (45.4 ohne 45.4b), `fix-*` = `8933db7` (45.4b), Release statisch. `scripts/bench-ab.sh`, `@core`, 10 s je Lauf, 6 Runden, Sicht 8, `QUIET_WAIT=60`, Rechner ruhig. Labels: realistisch Mittel ohne Paket; realistisch Hoch mit `builtin:qtcraft_hd_64`; dazu `base-low-hd64` (realistisch Niedrig, keine Karten) als Bezug.
 - **Spitzenspeicher mit HD64 auf Hoch (vorher → nachher):** stand 574 → 558, sprint 597 → 582, showcase 517 → 455, crowd 580 → 567 MiB. Gegenüber Niedrig (ohne Karten: 507/530/401/516 MiB) kosten die Karten jetzt +51 … +54 MiB statt +64 … +116 MiB; die Spitze in showcase ist weg.
 - **Ohne Paket (Mittel):** Speicher −0,3 … −1,0 %, GPU −6 … +7 %, Render-CPU +1 … +8 % – Rauschen.
 - **GPU und Render-CPU mit HD64 auf Hoch:** gegen vorher −7 … +7 % bzw. −4 … +9 %, innerhalb der Streuung; Bildzeit unverändert (Mittel 120 Hz, p99 10,1–10,4 ms).
@@ -2877,7 +2877,7 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 
 ## Paket 79.20 (Pfadsuche kennt die Breite der Wesen; E-909), Headless-A/B `@server` (2026-10-28)
 
-- **Stände:** `base` = `3b624a0~1`, `width` = `3b624a0`, Release, `scripts/bench-headless.sh` (Standard `@server`, 60 Spielsekunden, adaptiv 3–6 Runden), ruhiger Rechner.
+- **Stände:** `base` = `b2cbe33~1`, `width` = `b2cbe33`, Release, `scripts/bench-headless.sh` (Standard `@server`, 60 Spielsekunden, adaptiv 3–6 Runden), ruhiger Rechner.
 - **Tick Ø:** crowd 0,196 → 0,204 ms (+4 %), sonst −2 … +3,5 % (Rauschen).
 - **Tick p99:** crowd 0,293 → 0,351 ms (+20 %, Streuung 12 %), Signal-Stationen +4 … +12 % bei 2–32 % Streuung, übrige ±3 %.
 - **Speicher:** −3 … +0,7 %.

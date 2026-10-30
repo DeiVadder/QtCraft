@@ -1,8 +1,8 @@
 # Neugliederung der Ordner – Bestandsaufnahme und Plan (Paket 80.1)
 
-**Umgesetzt (2026-10-29):** 80.2 `1b88edf` (Werkzeug), 80.3 `f9d17a2` (app), 80.4 `e989131` (clientcore), 80.5 `a082970` (server), 80.6 `2048dfb` (common/content), 80.7a `7b25841` (tests/fixtures), 80.7b `a119315` (Test-Themenordner), 80.8 Abschluss (Doku, E-938). Die geltenden Regeln stehen in E-418 und E-938, der aktuelle Stand je Ordner in `docs/Architektur.md`, „Source layout“; dieser Bericht bleibt als Stand vor der Umsetzung (Zahlen, Pfade und Fragen von 80.1).
+**Umgesetzt (2026-10-29):** 80.2 `aae7766` (Werkzeug), 80.3 `f988ccb` (app), 80.4 `afe9146` (clientcore), 80.5 `f73bab7` (server), 80.6 `f787ed6` (common/content), 80.7a `713a405` (tests/fixtures), 80.7b `4be60c4` (Test-Themenordner), 80.8 Abschluss (Doku, E-938). Die geltenden Regeln stehen in E-418 und E-938, der aktuelle Stand je Ordner in `docs/Architektur.md`, „Source layout“; dieser Bericht bleibt als Stand vor der Umsetzung (Zahlen, Pfade und Fragen von 80.1).
 
-Stand: `dev` 492ca05 (2026-10-29). Bericht zur Entscheidung des Menschen; es wird kein Code verschoben. Grundlage: E-418/E-419 (Ordner mit etwa 5–25 Klassen, Include-Wurzeln `src/` und `tests/`, Schichten), E-417 (`target_sources`-Blöcke je Ordner, `tests/<thema>/tests.cmake`), E-890 (Shared Libraries im Debug). Der Plan hängt nur an Pfaden, nicht an Dateiinhalten (39.1 setzt gerade SPDX-Köpfe).
+Stand: `dev` 31dc025 (2026-10-29). Bericht zur Entscheidung des Menschen; es wird kein Code verschoben. Grundlage: E-418/E-419 (Ordner mit etwa 5–25 Klassen, Include-Wurzeln `src/` und `tests/`, Schichten), E-417 (`target_sources`-Blöcke je Ordner, `tests/<thema>/tests.cmake`), E-890 (Shared Libraries im Debug). Der Plan hängt nur an Pfaden, nicht an Dateiinhalten (39.1 setzt gerade SPDX-Köpfe).
 
 **Zählweise:** „Klassen“ = Header (eine Klasse mit ihren `.cpp`-Teilen zählt einmal, wie in `FORTSCHRITT.md`); bei Tests die `.cpp` (ein Test je Datei) plus Hilfs-Header (`h`); QML-Ordner nach `.qml`. Fett = über 25.
 

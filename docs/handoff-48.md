@@ -1,6 +1,6 @@
 # Handoff Etappe 48 (TLS im Mehrspieler)
 
-Branch `feature/48-tls`, abgezweigt von `dev` 29bc22a. Entscheidung **E-872** (`docs/Entscheidungen.md`)
+Branch `feature/48-tls`, abgezweigt von `dev` 8237211. Entscheidung **E-872** (`docs/Entscheidungen.md`)
 beschreibt den Stand vollständig; hier nur, was für die Fortsetzung zählt.
 
 ## 48.1 (macOS) – fertig

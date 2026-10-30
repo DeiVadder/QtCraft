@@ -111,7 +111,7 @@ Gamepads); diese Pakete heißen ohne `-OpenSourceQt` `…-Windows-x64-local-only
 ```sh
 scripts/vm-package-windows.sh            # Stand von dev
 scripts/vm-package-windows.sh feature/x  # anderer Branch oder Tag (kein Commit-Hash)
-git tag playtest-4e2f8f0 4e2f8f0 && scripts/vm-package-windows.sh playtest-4e2f8f0   # älterer Commit
+git tag playtest-0da2a4f 0da2a4f && scripts/vm-package-windows.sh playtest-0da2a4f   # älterer Commit
 scripts/vm-package-windows.sh dev -- -GuiCheck   # zusätzlich Spielstart mit Screenshot in der VM
 QC_PLAYTEST_SERVER=192.168.0.50:25600 scripts/vm-package-windows.sh   # andere LAN-Adresse im README
 ```
