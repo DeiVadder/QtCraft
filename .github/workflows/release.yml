@@ -116,6 +116,7 @@ jobs:
           QTCRAFT_RELEASE_PRESET: ci-deploy
           QTCRAFT_RELEASE_GUI: '0'
           QTCRAFT_RELEASE_BUILD_LIMIT: '9000'
+          QTCRAFT_RELEASE_PROGRESS: '1'
           # install-qt-action points these at the Qt installation; the package's own checks must
           # see only what the package brings.
           QT_PLUGIN_PATH: ''
