@@ -39,8 +39,8 @@ endif()
 # C++23 for every own target (a compile feature, so CMake picks the flag for the compiler).
 target_compile_features(qc_project_options INTERFACE cxx_std_23)
 
-# Warnings are errors. The experimental Linux job of the CI turns this off to see every warning of a
-# compiler the project is not built with day to day in one run, instead of one file at a time.
+# Warnings are errors. The experimental Linux and Windows jobs of the CI turn this off to see every
+# warning of a compiler the project is not built with day to day in one run, not one file at a time.
 option(QC_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
 if(MSVC)

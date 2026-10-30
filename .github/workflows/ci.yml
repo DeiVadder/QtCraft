@@ -101,9 +101,10 @@ jobs:
           path: ~/.cache/qtcraft/sdl3
           key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
 
-      # Linux is experimental: warnings stay warnings there, so one run lists all of them.
+      # Linux and Windows are experimental: warnings stay warnings there, so one run lists all of
+      # them (the release workflow builds Windows with warnings as errors).
       - name: Configure
-        run: cmake --preset ci-debug ${{ runner.os == 'Linux' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
+        run: cmake --preset ci-debug ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
 
       - name: Build
         run: cmake --build --preset ci-debug

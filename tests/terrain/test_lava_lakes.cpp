@@ -225,8 +225,18 @@ private:
         if (lakes.isEmpty()) {
             return result;
         }
-        const auto [minX, maxX] = std::ranges::minmax(lakes | std::views::transform([](const Site &site) { return site.chunk.x; }));
-        const auto [minZ, maxZ] = std::ranges::minmax(lakes | std::views::transform([](const Site &site) { return site.chunk.z; }));
+        // A plain loop: MSVC's ranges algorithms unwrap QList's iterators through their deprecated
+        // conversion to a pointer (C4996).
+        int minX = lakes.front().chunk.x;
+        int maxX = minX;
+        int minZ = lakes.front().chunk.z;
+        int maxZ = minZ;
+        for (const Site &site : lakes) {
+            minX = std::min(minX, site.chunk.x);
+            maxX = std::max(maxX, site.chunk.x);
+            minZ = std::min(minZ, site.chunk.z);
+            maxZ = std::max(maxZ, site.chunk.z);
+        }
         for (int z0 = minZ - size + 1; z0 <= maxZ; ++z0) {
             for (int x0 = minX - size + 1; x0 <= maxX; ++x0) {
                 const auto inside = [&](const Site &site) {
