@@ -57,7 +57,9 @@ QList<QcItemDrop> parseDrops(const QJsonValue &drops, const QString &packNamespa
         const QcItemDrop drop{dropReader.name(u"item"_s, packNamespace), dropReader.integer(u"count"_s, 1, 1, 64),
                               dropReader.number(u"chance"_s, 1.0, 0.0, 1.0)};
         if (!entry.isObject() || !dropReader.ok() || drop.item.isEmpty()) {
-            reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(dropReader);
+            reader.fail(u"drop needs an 'item'"_s);
             break;
         }
         result.append(drop);
@@ -473,7 +475,7 @@ void QcMobReader::parseExtraSpawns(const QJsonObject &spawn, QcJsonFieldReader &
 
         m_mob.extraSpawns.append(parseSpawnRule(entry.toObject(), ruleReader, m_mob.hostile, m_namespace));
         if (!ruleReader.ok()) {
-            spawnReader.fail(ruleReader.error);
+            spawnReader.adopt(ruleReader);
             break;
         }
     }

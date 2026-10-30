@@ -23,8 +23,8 @@ void writeOffer(QDataStream &stream, const QcMsg::TradeOffer &offer)
 // std::nullopt for an offer without costs or with more than TradeOffer::maxCosts, or with uses out of range.
 [[nodiscard]] std::optional<QcMsg::TradeOffer> readOffer(QDataStream &stream)
 {
-    std::optional<QList<QcItemStack>> costs = QcProtocolCodec::readStacks(stream);
-    if (!costs || costs->isEmpty() || costs->size() > QcMsg::TradeOffer::maxCosts) {
+    std::optional<QList<QcItemStack>> costs = QcProtocolCodec::readStacks(stream, QcMsg::TradeOffer::maxCosts);
+    if (!costs || costs->isEmpty()) {
         return std::nullopt;
     }
 

@@ -370,8 +370,9 @@ void StructureReader::parseSpawnersAndLoot()
         const QJsonObject object = entry.toObject();
         const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
         const QString mob = QcContentNames::qualify(object.value(u"mob"_s).toString(), m_namespace);
-        if (!cell || object.value(u"mob"_s).toString().isEmpty()) {
-            m_reader.fail(u"'spawners' entries need 'at' inside the structure and a 'mob'"_s);
+        // An invalid name qualifies to nothing.
+        if (!cell || mob.isEmpty()) {
+            m_reader.fail(u"'spawners' entries need 'at' inside the structure and a valid 'mob' name"_s);
             return;
         }
         m_structure.spawners.append({*cell, mob, object.value(u"confined"_s).toBool(false)});
@@ -380,11 +381,12 @@ void StructureReader::parseSpawnersAndLoot()
     for (const auto &entry : loot) {
         const QJsonObject object = entry.toObject();
         const std::optional<QcBlockPos> cell = readCell(object.value(u"at"_s), m_structure);
-        if (!cell || object.value(u"table"_s).toString().isEmpty()) {
-            m_reader.fail(u"'loot' entries need 'at' inside the structure and a 'table'"_s);
+        const QString table = QcContentNames::qualify(object.value(u"table"_s).toString(), m_namespace);
+        if (!cell || table.isEmpty()) {
+            m_reader.fail(u"'loot' entries need 'at' inside the structure and a valid 'table' name"_s);
             return;
         }
-        m_structure.loot.append({*cell, QcContentNames::qualify(object.value(u"table"_s).toString(), m_namespace)});
+        m_structure.loot.append({*cell, table});
     }
 }
 

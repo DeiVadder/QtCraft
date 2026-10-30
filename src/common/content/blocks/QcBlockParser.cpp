@@ -342,7 +342,9 @@ void BlockReader::readDrops()
                               dropReader.number(u"chance"_s, 1.0, 0.0, 1.0), QcShapeParser::parseConditions(dropJson, dropReader),
                               dropReader.integer(u"maxCount"_s, 0, 0, 64)};
         if (!dropReader.ok() || drop.item.isEmpty()) {
-            m_reader.fail(dropReader.ok() ? u"drop needs an 'item'"_s : dropReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            m_reader.adopt(dropReader);
+            m_reader.fail(u"drop needs an 'item'"_s);
             break;
         }
         // Conditions name states of the block itself (decision E-289).

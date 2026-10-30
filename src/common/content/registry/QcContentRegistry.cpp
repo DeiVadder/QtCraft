@@ -101,6 +101,9 @@ void QcContentRegistry::rebuildStates()
 QcStatus QcContentRegistry::registerShape(QcShapeDefinition shape)
 {
     const QString name = shape.name;
+    if (!QcContentNames::isValidQualified(name)) {
+        return qcError(u"Invalid shape name '%1'"_s.arg(name));
+    }
     if (shape.boxCount() > QcShapeDefinition::maxBoxes) {
         return qcError(u"Shape '%1': more than %2 boxes"_s.arg(name).arg(QcShapeDefinition::maxBoxes));
     }

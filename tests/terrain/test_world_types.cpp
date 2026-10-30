@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/loader/QcBaseContent.h"
+#include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "fixtures/QcRawClient.h"
 #include "fixtures/QcTestUtil.h"
@@ -11,6 +12,7 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcWorldLibrary.h"
 
+#include <QJsonObject>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -121,6 +123,15 @@ private slots:
             QCOMPARE(generator.warnings().size(), 1);
             QCOMPARE(generator.layers().size(), 64);
         }
+    }
+
+    void flatPresetNamesAreThePacks()
+    {
+        // Block names without a namespace are the pack's, as everywhere in its data.
+        const QcResult<QcFlatDefinition> flat = QcWorldTypeParser::parseFlat(QJsonObject{{u"preset"_s, u"bedrock, 3*stone,qtcraft:dirt"_s}}, u"mymod"_s);
+        QVERIFY(flat);
+        QCOMPARE(flat->preset, u"mymod:bedrock,3*mymod:stone,qtcraft:dirt"_s);
+        QVERIFY(!QcWorldTypeParser::parseFlat(QJsonObject{{u"preset"_s, u"bedrock,Not A Block"_s}}, u"mymod"_s));
     }
 
     void flatWorldIsTheSameEverywhere()

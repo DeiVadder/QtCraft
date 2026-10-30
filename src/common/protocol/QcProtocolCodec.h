@@ -49,8 +49,10 @@ QcItemStack readStack(QDataStream &stream);
 QcItemStack readFlatStack(QDataStream &stream);
 /*! Writes the number of \a stacks and then each stack to \a stream. */
 void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks);
-/*! Returns the stacks read from \a stream: at most 1024; std::nullopt for a larger count. */
-[[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream);
+/*! Returns the stacks read from \a stream: at most \a maxCount, the size of the list the
+    message carries (so that a message of stacks at their limits fits into a frame,
+    QcItemData::maxStacksInside); std::nullopt for a larger count. */
+[[nodiscard]] std::optional<QList<QcItemStack>> readStacks(QDataStream &stream, quint32 maxCount);
 /*! Writes the armour slots of \a equipment to \a stream: always QcEquipment::slotCount stacks,
     without a count. */
 void writeEquipment(QDataStream &stream, const QcEquipment &equipment);

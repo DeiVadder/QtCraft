@@ -139,8 +139,8 @@ struct QcTameDefinition
     QList<quint32> collarColors;
     QString collarDefault;
 
-    /*! Most dyes a collar may take. */
-    static constexpr int maxItems = 32;
+    /*! Most dyes a collar may take (\c {collarDyes}). */
+    static constexpr int maxCollarDyes = 32;
 
     /*! Returns the colour of the dye \a name, if the collar takes it. */
     std::optional<quint32> collarColor(const QString &name) const

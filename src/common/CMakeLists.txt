@@ -55,7 +55,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     content/items/QcAnvilSwap.h
     content/items/QcAnvilSwaps.h content/items/QcAnvilSwaps.cpp
-    content/items/QcArmourDefinition.h
+    content/items/QcArmourDefinition.h content/items/QcArmourDefinition.cpp
     content/items/QcArmourParser.h content/items/QcArmourParser.cpp
     content/items/QcArmourSerializer.h content/items/QcArmourSerializer.cpp
     content/items/QcEffectDefinition.h

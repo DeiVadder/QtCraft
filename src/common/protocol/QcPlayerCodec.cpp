@@ -187,13 +187,13 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::InventoryState>, QDataStream &stream)
 {
     QcMsg::InventoryState m;
-    std::optional<QList<QcItemStack>> stacks = readStacks(stream);
+    std::optional<QList<QcItemStack>> stacks = readStacks(stream, QcInventory::slotCount);
     if (!stacks) {
         return qcError(u"Corrupt inventory"_s);
     }
     m.stacks = std::move(*stacks);
     stream >> m.selected;
-    std::optional<QList<QcItemStack>> craftingGrid = readStacks(stream);
+    std::optional<QList<QcItemStack>> craftingGrid = readStacks(stream, QcMsg::InventoryState::craftingCells);
     if (!craftingGrid) {
         return qcError(u"Corrupt crafting grid"_s);
     }

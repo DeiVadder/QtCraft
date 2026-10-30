@@ -104,9 +104,7 @@ namespace QcSoundParser {
         QcJsonFieldReader layerReader{layerJson, reader.context + u" layer"_s, {}};
         const QcSoundLayer layer = parseLayer(layerReader);
 
-        if (!layerReader.ok()) {
-            reader.fail(layerReader.error);
-        }
+        reader.adopt(layerReader);
         sound.layers.append(layer);
     }
 

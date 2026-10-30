@@ -3,6 +3,7 @@
 
 #include "common/content/worldgen/QcWorldTypeParser.h"
 
+#include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcJsonFieldReader.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/world/QcDayCycle.h"
@@ -24,20 +25,40 @@ QcWorldTypeRules parseRules(const QJsonObject &json, QcJsonFieldReader &reader, 
     return rules;
 }
 
+// The layer list \a preset ("[count*]block" entries, QcFlatGenerator::parseLayers) with every
+// block name qualified by \a packNamespace; std::nullopt when a name is invalid.
+[[nodiscard]] std::optional<QString> qualifiedPreset(const QString &preset, const QString &packNamespace)
+{
+    QStringList entries;
+    const QStringList raws = preset.split(u',', Qt::SkipEmptyParts);
+    for (const QString &raw : raws) {
+        const QString entry = raw.trimmed();
+        const qsizetype star = entry.indexOf(u'*');
+        const QString name = QcContentNames::qualify(entry.mid(star + 1).trimmed(), packNamespace);
+        if (name.isEmpty()) {
+            return std::nullopt;
+        }
+        entries.append(star < 0 ? name : entry.left(star + 1) + name);
+    }
+    return entries.join(u',');
+}
+
 } // namespace
 
 namespace QcWorldTypeParser {
 
 [[nodiscard]] QcResult<QcFlatDefinition> parseFlat(const QJsonObject &json, const QString &packNamespace)
 {
-    Q_UNUSED(packNamespace);
     QcJsonFieldReader reader{json, u"flat world"_s, {}};
     QcFlatDefinition flat;
-    flat.preset = reader.string(u"preset"_s, flat.preset);
+    const QString preset = reader.string(u"preset"_s, flat.preset);
     flat.rules = parseRules(json, reader, flat.rules);
-    if (flat.preset.isEmpty() || flat.preset.size() > 4096) {
-        reader.fail(u"'preset' must be a layer list of at most 4096 characters"_s);
+    // Block names without a namespace are the pack's, as everywhere in its data.
+    const std::optional<QString> qualified = qualifiedPreset(preset, packNamespace);
+    if (preset.isEmpty() || preset.size() > 4096 || !qualified || qualified->size() > 4096) {
+        reader.fail(u"'preset' must be a layer list of at most 4096 characters with valid block names"_s);
     }
+    flat.preset = qualified.value_or(flat.preset);
     if (!reader.ok()) {
         return qcError(reader.error);
     }

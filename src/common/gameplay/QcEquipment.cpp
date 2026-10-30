@@ -18,31 +18,6 @@ QcEquipment QcEquipment::knownTo(const QcContentRegistry &content) const
     return known;
 }
 
-QString qcEquipmentSlotName(QcEquipmentSlot slot)
-{
-    switch (slot) {
-    case QcEquipmentSlot::Head:
-        return QStringLiteral("head");
-    case QcEquipmentSlot::Chest:
-        return QStringLiteral("chest");
-    case QcEquipmentSlot::Legs:
-        return QStringLiteral("legs");
-    case QcEquipmentSlot::Feet:
-        break;
-    }
-    return QStringLiteral("feet");
-}
-
-[[nodiscard]] std::optional<QcEquipmentSlot> qcEquipmentSlotFromName(const QString &name)
-{
-    for (const QcEquipmentSlot slot : {QcEquipmentSlot::Head, QcEquipmentSlot::Chest, QcEquipmentSlot::Legs, QcEquipmentSlot::Feet}) {
-        if (qcEquipmentSlotName(slot) == name) {
-            return slot;
-        }
-    }
-    return std::nullopt;
-}
-
 QList<QcEquipmentSlot> QcEquipment::wear(const QcContentRegistry &content, double damage, const std::function<bool(const QcItemStack &)> &keeps)
 {
     QList<QcEquipmentSlot> broken;

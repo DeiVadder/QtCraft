@@ -11,6 +11,7 @@
 #include "common/content/worldgen/QcDungeonDefinition.h"
 #include "common/content/worldgen/QcMineshaftDefinition.h"
 #include "common/content/worldgen/QcVegetationDefinition.h"
+#include "common/core/QcWorldConstants.h"
 
 #include <QList>
 #include <QString>
@@ -276,7 +277,7 @@ struct QcColdEdgeSettings
 struct QcTerrainSettings
 {
     /*! Water fills the columns up to just below this height (\c {"seaLevel"}). */
-    int seaLevel = 62;
+    int seaLevel = QcWorld::seaLevel;
     /*! The ground's block below the soil (\c {"stone"}, required). */
     QString stoneBlock;
     /*! The sea's block (\c {"water"}, required). */

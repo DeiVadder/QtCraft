@@ -153,10 +153,11 @@ public:
         and damage 12 bytes, map id 4, a name of maxNameLength characters 104, maxEnchantments
         enchantments of maxEnchantmentName characters 2128, and the component bits, counts and
         prior work), so the largest stack, with maxStacksInside stacks inside, takes about 146 KB.
-        These limits alone keep neither a list of QcProtocolCodec::readStacks' 1024 such stacks
-        (about 150 MB) nor a player's inventory with its 50 stacks (about 7 MB) below a frame
-        (QcProtocol::maxFrameBytes); stacks from clients carry no contents
-        (QcProtocolCodec::readFlatStack). */
+        Every list of stacks a message carries is bounded by its own size (QcProtocolCodec::
+        readStacks), so the largest message of such stacks stays below a frame
+        (QcProtocol::maxFrameBytes): a trade screen with its 96 stacks takes about 14 MB, a
+        player's inventory with its 50 stacks about 7 MB (test_item_data_limits). Stacks from
+        clients carry no contents (QcProtocolCodec::readFlatStack). */
     static constexpr int maxStacksInside = 64;
     /*! The most enchantments on one stack, the longest enchantment name and the highest level.
         \qcshared */

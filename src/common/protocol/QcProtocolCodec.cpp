@@ -227,9 +227,9 @@ void writeStacks(QDataStream &stream, const QList<QcItemStack> &stacks)
     }
 }
 
-std::optional<QList<QcItemStack>> readStacks(QDataStream &stream)
+std::optional<QList<QcItemStack>> readStacks(QDataStream &stream, quint32 maxCount)
 {
-    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, 1024);
+    const std::optional<quint32> countRead = QcStreamLimits::readCount(stream, maxCount);
     if (!countRead) {
         return std::nullopt;
     }

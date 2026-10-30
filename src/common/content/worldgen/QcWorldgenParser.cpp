@@ -161,7 +161,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         const QcFeaturePlacement placement{placementReader.name(u"feature"_s, packNamespace),
                                            placementReader.number(u"density"_s, 0.0, 0.0, 1.0)};
         if (!entry.isObject() || placement.feature.isEmpty() || !placementReader.ok()) {
-            reader.fail(placementReader.ok() ? u"feature entries need 'feature' and 'density'"_s : placementReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(placementReader);
+            reader.fail(u"feature entries need 'feature' and 'density'"_s);
             break;
         }
         placements.append(placement);
@@ -188,7 +190,9 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
         QcJsonFieldReader shareReader{shareJson, reader.context, {}};
         const QcBlockShare share{shareReader.name(u"block"_s, packNamespace), shareReader.number(u"share"_s, 0.0, 0.0, 1.0)};
         if (!entry.isObject() || share.block.isEmpty() || !shareJson.contains(u"share"_s) || !shareReader.ok()) {
-            reader.fail(shareReader.ok() ? u"'%1' entries need 'block' and 'share'"_s.arg(key) : shareReader.error);
+            // A problem inside the entry comes first; it names the place itself.
+            reader.adopt(shareReader);
+            reader.fail(u"'%1' entries need 'block' and 'share'"_s.arg(key));
             break;
         }
         total += share.share;

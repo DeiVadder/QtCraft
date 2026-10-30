@@ -229,6 +229,9 @@ private slots:
         const QcResult<QcSoundDefinition> sound = QcContentParser::parseSound(document.object(), u"mod"_s);
         QVERIFY(!sound.has_value());
         QVERIFY2(sound.error().contains(message), qPrintable(sound.error()));
+        // The place is named at most once: "sound 'mod:a' layer: ...", not "sound 'mod:a': sound
+        // 'mod:a' layer: ..." (without a name there is none).
+        QVERIFY2(sound.error().count(u"sound 'mod:a'"_s) <= 1, qPrintable(sound.error()));
     }
 
     void baseGameHasEverySoundItUses()

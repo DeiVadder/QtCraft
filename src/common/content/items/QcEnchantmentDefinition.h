@@ -37,6 +37,10 @@ struct QcEnchantmentDefinition
 {
     /*! The highest level an enchantment may have in its data and on an item. */
     static constexpr int maxLevelLimit = 10;
+    /*! The most item kinds (\c {items}) and conflicting enchantments (\c {conflicts}).
+        \qcshared */
+    static constexpr qsizetype maxItemKinds = 16;
+    static constexpr qsizetype maxConflicts = 64;
 
     /*! Qualified name (\c {"name"}, required, at most QcItemData::maxEnchantmentName
         characters). */
@@ -51,11 +55,12 @@ struct QcEnchantmentDefinition
     int maxLevel = 1;
     /*! Relative chance against the other candidates of an offer (1–1000). */
     int weight = 10;
-    /*! Item kinds it applies to (QcEnchanting::kindsOf), 1 to 16 of: a tool category ("pickaxe",
-        "axe", "shovel", "hoe", "shears"), "digger" (pickaxe, axe, shovel, hoe), "weapon",
-        "armour", "armour_head" … "armour_feet", "launcher" or "durable". */
+    /*! Item kinds it applies to (QcEnchanting::kindsOf), 1 to maxItemKinds of: a tool category
+        ("pickaxe", "axe", "shovel", "hoe", "shears"), "digger" (pickaxe, axe, shovel, hoe),
+        "weapon", "armour", "armour_head" … "armour_feet", "launcher" or "durable". */
     QStringList items;
-    /*! Enchantments that never come together with it (both ways). */
+    /*! Enchantments that never come together with it (both ways); at most maxConflicts names of
+        at most QcItemData::maxEnchantmentName characters. */
     QStringList conflicts;
     /*! Enchanting power level 1 needs at least (\c {"minPower"}, 1 to 100). */
     int minPower = 1;

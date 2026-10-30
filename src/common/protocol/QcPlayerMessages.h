@@ -107,11 +107,14 @@ struct QuickMoveItem
     slots. */
 struct InventoryState
 {
+    /*! The cells of the crafting grid; the decoder refuses more. */
+    static constexpr int craftingCells = 9;
+
     /*! The inventory slots (QcInventory::allSlots). */
     QList<QcItemStack> stacks;
     /*! The selected hotbar slot. */
     qint32 selected = 0;
-    /*! The nine cells of the crafting grid, row-major. */
+    /*! The craftingCells cells of the crafting grid, row-major. */
     QList<QcItemStack> craftingGrid;
     /*! The grid's size in use: 2 in the inventory, 3 at a crafting table. */
     qint32 craftingSize = 2;

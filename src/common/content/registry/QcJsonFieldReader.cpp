@@ -18,8 +18,8 @@ void QcJsonFieldReader::fail(const QString &message)
 
 void QcJsonFieldReader::adopt(const QcJsonFieldReader &nested)
 {
-    if (!nested.ok()) {
-        fail(nested.error);
+    if (ok() && !nested.ok()) {
+        error = nested.error;
     }
 }
 

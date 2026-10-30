@@ -6,6 +6,8 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/protocol/QcStreamLimits.h"
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -42,6 +44,14 @@ std::optional<QList<QStringList>> readRequirements(QDataStream &stream)
     return groups;
 }
 
+// Whether every group of \a groups lists 1 or more of \a criteria, as the parser makes them.
+bool groupsNameCriteria(const QList<QStringList> &groups, const QStringList &criteria)
+{
+    return std::ranges::all_of(groups, [&criteria](const QStringList &group) {
+        return !group.isEmpty() && std::ranges::all_of(group, [&criteria](const QString &name) { return criteria.contains(name); });
+    });
+}
+
 } // namespace
 
 namespace QcAdvancementSerializer {
@@ -76,7 +86,7 @@ QcStatus read(QDataStream &stream, QcContentRegistry &registry)
             >> advancement.handbook >> frame >> advancement.hidden;
         const std::optional<QStringList> criteria = QcStreamLimits::readBoundedStrings(stream, QcAdvancementDefinition::maxCriteria, maxCriterionLength);
         std::optional<QList<QStringList>> requirements = criteria ? readRequirements(stream) : std::nullopt;
-        if (stream.status() != QDataStream::Ok || !requirements || !plausible(advancement, frame)) {
+        if (stream.status() != QDataStream::Ok || !requirements || !groupsNameCriteria(*requirements, *criteria) || !plausible(advancement, frame)) {
             return qcError(u"Corrupt content: advancement %1"_s.arg(i));
         }
         advancement.frame = static_cast<QcAdvancementFrame>(frame);

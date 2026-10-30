@@ -55,7 +55,8 @@ public:
         state or light opacity, and when the state table or its box budget would overflow. */
     [[nodiscard]] QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
     /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Fails when the
-        shape has too many boxes or its blocks would exceed the state table's budget. */
+        name is not "namespace:path", the shape has too many boxes or its blocks would exceed the
+        state table's budget. */
     [[nodiscard]] QcStatus registerShape(QcShapeDefinition shape);
     /*! Returns the named shapes in registration order. */
     const QList<QcShapeDefinition> &shapes() const { return m_shapes; }

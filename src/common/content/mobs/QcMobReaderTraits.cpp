@@ -43,8 +43,8 @@ namespace {
     carry.takeChance = reader.number(u"takeChance"_s, carry.takeChance, 0.0, 1.0);
     carry.placeChance = reader.number(u"placeChance"_s, carry.placeChance, 0.0, 1.0);
     carry.reach = reader.integer(u"reach"_s, carry.reach, 1, 4);
-    if (reader.ok() && carry.blocks.isEmpty()) {
-        reader.fail(u"'blocks' names the blocks it carries"_s);
+    if (reader.ok() && (carry.blocks.isEmpty() || carry.blocks.size() > QcCarryDefinition::maxBlocks)) {
+        reader.fail(u"'blocks' names 1 to %1 blocks it carries"_s.arg(QcCarryDefinition::maxBlocks));
     }
     return carry;
 }
@@ -62,8 +62,8 @@ struct Collar
 {
     Collar collar;
     const QJsonObject dyes = json.value(u"dyes"_s).toObject();
-    if (dyes.isEmpty() || dyes.size() > QcTameDefinition::maxItems) {
-        reader.fail(u"'dyes' maps 1 to %1 dyes to colours"_s.arg(QcTameDefinition::maxItems));
+    if (dyes.isEmpty() || dyes.size() > QcTameDefinition::maxCollarDyes) {
+        reader.fail(u"'dyes' maps 1 to %1 dyes to colours"_s.arg(QcTameDefinition::maxCollarDyes));
         return collar;
     }
     for (auto it = dyes.begin(); it != dyes.end(); ++it) {

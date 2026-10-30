@@ -8,14 +8,12 @@
 #include "server/pathing/QcPathPlanner.h"
 #include "worldgen/generators/QcFlatGenerator.h"
 
-#if __has_include("QcMobCrowd.h")
+#if __has_include("server/mobs/QcMobCrowd.h")
 #include "server/mobs/QcMobBehaviour.h"
 #include "server/mobs/QcServerCreatures.h"
-#define QC_HAS_CROWDS 1
 #endif
-#if __has_include("QcMobCramming.h")
+#if __has_include("server/mobs/QcMobCramming.h")
 #include "server/mobs/QcMobCramming.h"
-#define QC_HAS_CRAMMING 1
 #endif
 
 #include <QElapsedTimer>
@@ -75,12 +73,12 @@ private:
     int cram(QcMobManager &mobs, quint64 tick) const
     {
         int died = 0;
-#if defined(QC_HAS_CRAMMING)
+#if __has_include("server/mobs/QcMobCramming.h")
         const QList<QcMobCramming::Hurt> hurt = QcMobCramming::apply(mobs, m_cramming, tick);
         for (const QcMobCramming::Hurt &one : hurt) {
             died += one.drops ? 1 : 0;
         }
-#elif defined(QC_HAS_CROWDS)
+#elif __has_include("server/mobs/QcMobCrowd.h")
         QHash<int, int> diedIn;
         const QList<QcMobCrowd::Crammed> crammed = mobs.crammed(m_cramming);
         for (const QcMobCrowd::Crammed &one : crammed) {
@@ -127,7 +125,7 @@ private:
     void report(const char *name, const QcMobManager &mobs, const Run &run) const
     {
         QString tiers = u"-"_s;
-#ifdef QC_HAS_CROWDS
+#if __has_include("server/mobs/QcMobCrowd.h")
         const QcMobBehaviour::TierCounts counts = mobs.behaviour().tiersLastTick();
         tiers = u"%1/%2/%3"_s.arg(counts.full).arg(counts.throttled).arg(counts.idle);
 #endif

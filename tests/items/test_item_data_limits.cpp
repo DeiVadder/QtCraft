@@ -14,8 +14,9 @@
 
 using namespace Qt::StringLiterals;
 
-// The limits of item data (decision E-823): stacks beyond them are never made, the largest stack
-// that keeps them fits into every message that carries stacks, and a client cannot send contents.
+// The limits of item data (decisions E-823, E-864, E-866): stacks beyond them are never made, the
+// largest stack that keeps them fits, as often as each message carries stacks, into a frame, and a
+// client cannot send contents.
 class TestItemDataLimits : public QObject
 {
     Q_OBJECT
@@ -26,11 +27,20 @@ class TestItemDataLimits : public QObject
 
     QcItemStack holding(QList<QcItemStack> contents) const { return QcItemStack{item("qtcraft:stick"), 1, 0}.withContents(std::move(contents)); }
 
-    // A stack with the largest data of its own: a map id and the longest name.
+    // A stack with the largest data of its own: a map id, the longest name, the most
+    // enchantments with the longest names and the most anvil uses.
     QcItemStack loaded() const
     {
         const QcItemStack plain{item("qtcraft:dirt"), 64, 0};
-        return plain.withMapId(0xFFFF'FFFFu).withName(QString(QcItemData::maxNameLength, QChar(0x00C4)));
+        QList<QcEnchantment> enchantments;
+        for (qsizetype i = 0; i < QcItemData::maxEnchantments; ++i) {
+            const QString name = u"%1:"_s.arg(i, 2, 10, QChar(u'0')) + QString(QcItemData::maxEnchantmentName - 3, QChar(0x00C4));
+            enchantments.append(QcEnchantment{name, QcItemData::maxEnchantmentLevel});
+        }
+        return plain.withMapId(0xFFFF'FFFFu)
+            .withName(QString(QcItemData::maxNameLength, QChar(0x00C4)))
+            .withEnchantments(enchantments)
+            .withPriorWork(QcItemData::maxPriorWork);
     }
 
     // The largest stack the limits allow, every stack in it loaded: its first slot nests
@@ -60,6 +70,17 @@ class TestItemDataLimits : public QObject
         QDataStream out(&bytes, QIODevice::WriteOnly);
         QcProtocolCodec::writeStack(out, stack);
         return bytes.size();
+    }
+
+    // Returns \a message read back from its frame, which must fit below QcProtocol::maxFrameBytes.
+    static QcResult<QcMessage> roundTrip(const QcMessage &message)
+    {
+        const QByteArray frame = QcProtocol::encode(message);
+        if (frame.size() > QcProtocol::maxFrameBytes) {
+            qWarning() << "frame of" << frame.size() << "bytes";
+            return qcError(u"frame too large"_s);
+        }
+        return QcProtocol::decode(frame, QcProtocol::Peer::Server);
     }
 
 private slots:
@@ -97,31 +118,54 @@ private slots:
         QCOMPARE(stack.itemData().depth(), QcItemData::maxDepth);
         QCOMPARE(stack.itemData().stacksInside(), QcItemData::maxStacksInside);
         const qsizetype size = wireSize(stack);
-        QVERIFY2(size < qsizetype(10) * 1024, qPrintable(QString::number(size)));
+        QVERIFY2(size < qsizetype(160) * 1024, qPrintable(QString::number(size)));
 
-        // A player's inventory full of them, with crafting grid, result and armour, stays below
-        // 1 MiB and comes back whole.
+        // A player's inventory full of them, with crafting grid, result and armour, fits into a
+        // frame and comes back whole.
         QcMsg::InventoryState state;
         state.stacks = QList<QcItemStack>(QcInventory::slotCount, stack);
-        state.craftingGrid = QList<QcItemStack>(9, stack);
+        state.craftingGrid = QList<QcItemStack>(QcMsg::InventoryState::craftingCells, stack);
         state.craftingSize = 3;
         state.craftingResult = stack;
         state.equipment.stacks.fill(stack);
-        const QByteArray frame = QcProtocol::encode(state);
-        QVERIFY2(frame.size() < qsizetype(1024) * 1024, qPrintable(QString::number(frame.size())));
-        const QcResult<QcMessage> read = QcProtocol::decode(frame, QcProtocol::Peer::Server);
+        const QcResult<QcMessage> read = roundTrip(state);
         QVERIFY(read);
         QCOMPARE(std::get<QcMsg::InventoryState>(*read).stacks.constLast(), stack);
 
-        // An entity with the stack and four armour stacks; the largest list a message may carry.
+        // An entity with the stack and four armour stacks.
         QcMsg::EntitySpawn spawn;
         spawn.kind = QcEntityKind::ArmourStand;
         spawn.item = stack;
         spawn.equipment.stacks.fill(stack);
-        const QByteArray spawnFrame = QcProtocol::encode(spawn);
-        QVERIFY(spawnFrame.size() < qsizetype(64) * 1024);
-        QVERIFY(QcProtocol::decode(spawnFrame, QcProtocol::Peer::Server));
-        QVERIFY(1024 * size < QcProtocol::maxFrameBytes / 2);
+        QVERIFY(roundTrip(spawn));
+
+        // The largest storage block.
+        QcMsg::MachineState chest;
+        chest.stacks = QList<QcItemStack>(QcMsg::MachineState::maxSlots, stack);
+        QVERIFY(roundTrip(chest));
+
+        // The largest trade screen, the longest list of stacks a message carries.
+        QcMsg::TradeState trades;
+        trades.offers = QList<QcMsg::TradeOffer>(QcMsg::TradeState::maxOffers,
+                                                 QcMsg::TradeOffer{QList<QcItemStack>(QcMsg::TradeOffer::maxCosts, stack), stack, 0, 1});
+        QVERIFY(roundTrip(trades));
+    }
+
+    void listsLongerThanTheirMessageAreRefused()
+    {
+        const QcItemStack dirt{item("qtcraft:dirt"), 1, 0};
+        QcMsg::InventoryState state;
+        state.stacks = QList<QcItemStack>(QcInventory::slotCount + 1, dirt);
+        state.craftingGrid = QList<QcItemStack>(QcMsg::InventoryState::craftingCells, dirt);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server));
+        state.stacks.removeLast();
+        QVERIFY(QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server));
+        state.craftingGrid.append(dirt);
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(state), QcProtocol::Peer::Server));
+
+        QcMsg::TradeState trades;
+        trades.offers = {QcMsg::TradeOffer{QList<QcItemStack>(QcMsg::TradeOffer::maxCosts + 1, dirt), dirt, 0, 1}};
+        QVERIFY(!QcProtocol::decode(QcProtocol::encode(trades), QcProtocol::Peer::Server));
     }
 
     void clientsCannotSendContents()
