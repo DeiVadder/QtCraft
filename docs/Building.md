@@ -4,7 +4,7 @@ How to build, package, test and measure QtCraft. Playing: [Playing.md](Playing.m
 
 ## Requirements
 
-CMake 3.25+, Ninja, a C++23 compiler (Apple Clang 21 tested on macOS, MSVC 2022 on Windows) and Qt 6.8 (any Qt 6.8 release; the releases are built with 6.8.3) with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. Git (the SDL submodule `3rdparty/SDL`) and Python 3 (`scripts/*.py`). For encrypted multiplayer the configure step builds OpenSSL once, which needs `curl` and `perl` (see below).
+CMake 3.25+, Ninja, a C++23 compiler with a recent standard library (on macOS Xcode 26.6 or newer, which the CI also uses; older Xcode lacks parts of the C++23 library such as `std::ranges::contains`; MSVC 2022 on Windows) and Qt 6.8 (any Qt 6.8 release; the releases are built with 6.8.3) with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. Git (the SDL submodule `3rdparty/SDL`) and Python 3 (`scripts/*.py`). For encrypted multiplayer the configure step builds OpenSSL once, which needs `curl` and `perl` (see below).
 
 ## Presets
 

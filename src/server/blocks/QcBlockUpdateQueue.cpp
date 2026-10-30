@@ -332,7 +332,7 @@ bool QcBlockUpdateQueue::stillSourceStays(BorderScan &scan, QcBlockId block, QcB
     if (neighbour && content.isValidBlock(*neighbour)) {
         const QcBlockDefinition &across = content.block(*neighbour);
         reacts = across.liquid && !content.isSameBlock(*neighbour, block)
-                 && (std::ranges::count(content.block(block).flow.reactions, across.name, &QcLiquidReaction::with) > 0);
+                 && std::ranges::contains(content.block(block).flow.reactions, across.name, &QcLiquidReaction::with);
     }
 
     const bool stays = QcLiquidFlow::isSource(content, block) && !reacts
