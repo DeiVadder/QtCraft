@@ -7,18 +7,21 @@
 
 #include <QList>
 
-// The latest chat lines everyone on the server saw (decision E-848): players' chat and /say, with
-// when and from whom, numbered in the order they came, for the admin channel's chat view.
+/*! \brief The latest chat lines everyone on the server saw (decision E-848): players' chat and
+    /say, with when and from whom, numbered in the order they came, for the admin channel's chat
+    view. */
 class QcChatLog
 {
 public:
+    /*! Lines kept at most; the oldest goes first. */
     static constexpr qsizetype limit = 200;
 
-    // `sender` is empty for lines of the server.
+    /*! Adds \a line from \a sender with the next number; \a sender is empty for lines of the
+        server. */
     void add(const QString &sender, const QcMsg::ChatMessage &line);
-    // The lines after the one numbered `after`, oldest first (at most `limit`).
+    /*! Returns the lines after the one numbered \a after, oldest first (at most \c {limit}). */
     QList<QcMsg::AdminChatLine> since(quint64 after) const;
-    // The number of the newest line; 0 before the first.
+    /*! Returns the number of the newest line; 0 before the first. */
     quint64 latest() const { return m_latest; }
 
 private:

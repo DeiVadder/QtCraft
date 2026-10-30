@@ -13,28 +13,33 @@ class QcTickPhaseTimer;
 class QcTickScheduler;
 class QcServerState;
 
-// /tick (decision E-249): freezing the world, single steps, the tick rate, sprints and a query.
-// Rate and freezing are not saved; a world always opens at 20 ticks per second, running.
+/*! \brief /tick (decision E-249): freezing the world, single steps, the tick rate, sprints and a
+    query.
+
+    Rate and freezing are not saved; a world always opens at 20 ticks per second, running. */
 class QcTickCommands
 {
 public:
-    // Most ticks of one sprint (12 hours of game time).
+    /*! Most ticks of one sprint (12 hours of game time). */
     static constexpr quint64 maxSprintTicks = 864'000;
 
+    /*! \brief The tick schedule, the freezing and the phase timer the commands act on.
+        \qcfields */
     struct Parts
     {
         QcTickScheduler &ticks;
         QcTickControl &control;
         const QcTickPhaseTimer &phases;
-        // The speed of the time of day changed: the clients get the time again.
+        /*! The speed of the time of day changed: the clients get the time again. */
         std::function<void()> timeChanged;
     };
 
     QcTickCommands(QcServerState &state, Parts parts);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
-    // Called by the server after its due ticks: reports a sprint that ended to the log and the
-    // operators online.
+    /*! Called by the server after its due ticks: reports a sprint that ended to the log and the
+        operators online. */
     void reportSprintEnd();
 
 private:

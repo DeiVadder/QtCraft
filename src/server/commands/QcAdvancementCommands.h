@@ -8,14 +8,18 @@
 struct QcServerClient;
 class QcServerState;
 
-// /advancement (decision E-923), for operators: grants or revokes an advancement of a player (every
-// criterion of it), or all of them with "everything", and shows what a player has reached. The client
-// hears of the change in the next tick (QcServerAdvancements::tick); a grant shows the toast.
+/*! \brief /advancement (decision E-923), for operators: grants or revokes an advancement of a
+    player (every criterion of it), or all of them with "everything", and shows what a player has
+    reached.
+
+    The client hears of the change in the next tick (QcServerAdvancements::tick); a grant shows
+    the toast. */
 class QcAdvancementCommands
 {
 public:
     explicit QcAdvancementCommands(QcServerState &state);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

@@ -15,39 +15,44 @@
 #include <optional>
 #include <type_traits>
 
-// The components of a saved entry (decision E-420): after the entry's header a count, then per
-// component `quint16 id, quint16 version, quint32 length, payload`. A reader skips what it does not
-// know by its length and keeps it (QcEntityComponent), so saving again loses nothing.
-//
-// Versions of a component only append fields: version n+1 is version n followed by new fields. A
-// reader of version n reads an older payload with defaults for the fields it lacks, and of a newer
-// one the fields it knows; the rest is kept as the component's tail and written back after them
-// under the newer version. A change that cannot be made by appending is a new component id.
-//
-// The tail goes back unchanged while the fields before it may have changed at runtime (a creature
-// lost health). So a newer field must never depend on the contents of older fields (no count of an
-// older list, no checksum, no value relative to an older one): such a field is a new component id.
+/*! \brief The components of a saved entry (decision E-420): after the entry's header a count, then
+    per component \c {quint16 id, quint16 version, quint32 length, payload}.
+
+    A reader skips what it does not know by its length and keeps it (QcEntityComponent), so saving
+    again loses nothing.
+
+    Versions of a component only append fields: version n+1 is version n followed by new fields. A
+    reader of version n reads an older payload with defaults for the fields it lacks, and of a newer
+    one the fields it knows; the rest is kept as the component's tail and written back after them
+    under the newer version. A change that cannot be made by appending is a new component id.
+
+    The tail goes back unchanged while the fields before it may have changed at runtime (a
+    creature lost health). So a newer field must never depend on the contents of older fields (no
+    count of an older list, no checksum, no value relative to an older one): such a field is a
+    new component id. */
 namespace QcComponentFrames {
 
-// Components of one entry at most; more is damaged data. Every version and every mod keeps this,
-// together with the two limits below that make it hold for what a version writes back.
+/*! Components of one entry at most; more is damaged data. Every version and every mod keeps
+    this, together with the two limits below that make it hold for what a version writes back. */
 inline constexpr quint32 maxComponents = 64;
-// Known components one kind writes at most, in any version (QcEntityCodec::Component).
+/*! Known components one kind writes at most, in any version (QcEntityCodec::Component). */
 inline constexpr quint32 maxKnown = 16;
-// Components of unknown ids one entry keeps at most; beyond that they are dropped with a warning,
-// so the kept ones and the known ones of any version always fit into maxComponents.
+/*! Components of unknown ids one entry keeps at most; beyond that they are dropped with a
+    warning, so the kept ones and the known ones of any version always fit into maxComponents. */
 inline constexpr quint32 maxKept = maxComponents - maxKnown;
-// Bytes of one component at most; a valid world never comes close.
+/*! Bytes of one component at most; a valid world never comes close. */
 inline constexpr quint32 maxLength = 1u << 20;
-// The ids of components (QcEntityCodec::Component) and of block-entity tables
-// (QcBlockEntityRecord::Table) from here on belong to mods, those below to the game (decision
-// E-440). Either kind of unknown id is kept as it is.
+/*! The ids of components (QcEntityCodec::Component) and of block-entity tables
+    (QcBlockEntityRecord::Table) from here on belong to mods, those below to the game (decision
+    E-440). Either kind of unknown id is kept as it is. */
 inline constexpr quint16 firstModId = 0x8000;
 
-// The fields of a known component of `version` read from a stream (`read(QDataStream &, quint16
-// version)`, or `read(QDataStream &, quint16 version, quint32 length)` for a reader that needs the
-// component's length; false for damaged data): a reference to a callable that outlives the read,
-// without the allocation of a std::function.
+/*! \brief Reads the fields of a known component of a version from a stream: a reference to a
+    callable that outlives the read, without the allocation of a std::function.
+
+    The callable is \c {read(QDataStream &, quint16 version)}, or
+    \c {read(QDataStream &, quint16 version, quint32 length)} for a reader that needs the
+    component's length; it returns \c false for damaged data. */
 class FieldReader
 {
 public:
@@ -66,6 +71,8 @@ public:
     {
     }
 
+    /*! Reads the fields of version \a version from \a stream; \a length is the component's
+        length. Returns \c false for damaged data. */
     bool operator()(QDataStream &stream, quint16 version, quint32 length) const { return m_call(m_read, stream, version, length); }
 
 private:
@@ -73,7 +80,7 @@ private:
     bool (*m_call)(const void *, QDataStream &, quint16, quint32);
 };
 
-// A component this version reads: its id, the version it writes and its reader.
+/*! \brief A component this version reads: its id, the version it writes and its reader. */
 struct Known
 {
     Known(quint16 knownId, quint16 knownVersion, FieldReader reader)
@@ -83,20 +90,27 @@ struct Known
     {
     }
 
+    /*! The component's id. */
     quint16 id;
+    /*! The version this version writes. */
     quint16 version;
+    /*! Reads its fields. */
     FieldReader read;
 };
 
-// Writes the components of one entry straight into the entry's stream: the known ones in the order
-// they are added, each followed by its kept tail, then the kept components of unknown ids. The count
-// and each length are written as placeholders and filled in when known (the stream's device seeks).
+/*! \brief Writes the components of one entry straight into the entry's stream: the known ones in
+    the order they are added, each followed by its kept tail, then the kept components of unknown
+    ids.
+
+    The count and each length are written as placeholders and filled in when known (the stream's
+    device seeks). */
 class Writer
 {
 public:
     Writer(QDataStream &stream, const QcEntityComponents &kept);
 
-    // Adds the known component `id` of `version` whose fields `write(QDataStream &)` writes.
+    /*! Adds the known component \a id of \a version whose fields \a write writes (called with
+        the stream). */
     template<typename Write>
     void add(quint16 id, quint16 version, Write write)
     {
@@ -108,7 +122,7 @@ public:
         }
         end(start);
     }
-    // Writes the kept components of unknown ids and the count.
+    /*! Writes the kept components of unknown ids and the count. */
     void finish();
 
 private:
@@ -124,34 +138,37 @@ private:
     quint16 m_count = 0;
 };
 
-// What read() keeps of one entry's components besides the known fields, and how many unknown
-// components it dropped beyond maxKept.
+/*! \brief What read() keeps of one entry's components besides the known fields, and how many
+    unknown components it dropped beyond maxKept. \qcfields */
 struct ReadComponents
 {
     QcEntityComponents kept;
     int dropped = 0;
 };
 
-// Reads the components of one entry from `stream`: those of an id in `known` with its reader, read in
-// place, the others kept as they are (beyond maxKept dropped and counted). Of a newer version of a
-// known component the bytes after the known fields are kept as its tail.
-// Nullopt for damaged data: more components or longer ones than allowed, a length beyond the data, an
-// id twice, version 0, a reader that fails or reads beyond its component, an older or the current
-// version that holds more than its fields. `lengthLimit` bounds one component (maxLength for entities;
-// the tables of a chunk's block entities allow more, QcBlockEntityCodec).
+/*! Reads the components of one entry from \a stream: those of an id in \a known with its reader,
+    read in place, the others kept as they are (beyond maxKept dropped and counted). Of a newer
+    version of a known component the bytes after the known fields are kept as its tail.
+    \a lengthLimit bounds one component (maxLength for entities; the tables of a chunk's block
+    entities allow more, QcBlockEntityCodec). Returns the kept components and the number dropped;
+    std::nullopt for damaged data: more components or longer ones than allowed, a length beyond
+    the data, an id twice, version 0, a reader that fails or reads beyond its component, an older
+    or the current version that holds more than its fields. */
 [[nodiscard]] std::optional<ReadComponents> read(QDataStream &stream, std::initializer_list<Known> known, quint32 lengthLimit = maxLength);
 
-// Overwrites the placeholder length at byte `at` of `stream` (which writes to a seekable device)
-// with `length`: in place in the bytes of a QBuffer, else by seeking there and back.
+/*! Overwrites the placeholder length at byte \a at of \a stream (which writes to a seekable
+    device) with \a length: in place in the bytes of a QBuffer, else by seeking there and back. */
 void patchLength(QDataStream &stream, qint64 at, quint32 length);
 
-// Reads the raw bytes of `length` that follow in `stream`, checked against the data left before
-// anything is allocated.
+/*! Reads the raw bytes of \a length that follow in \a stream, checked against the data left
+    before anything is allocated. Returns the bytes; std::nullopt when fewer are left or
+    \a length is negative. */
 [[nodiscard]] std::optional<QByteArray> readRaw(QDataStream &stream, qint64 length);
 
-// Reads a QString written by QDataStream (byte length, then UTF-16) after checking its length: a
-// damaged length of up to 4 GB is never allocated. std::nullopt for a text longer than `maxChars`
-// (the stream turns corrupt).
+/*! Reads from \a stream a QString written by QDataStream (byte length, then UTF-16) after
+    checking its length: a damaged length of up to 4 GB is never allocated. Returns the text;
+    std::nullopt for a damaged length or a text longer than \a maxChars (the stream
+    turns corrupt). */
 [[nodiscard]] std::optional<QString> readText(QDataStream &stream, qsizetype maxChars);
 
 } // namespace QcComponentFrames

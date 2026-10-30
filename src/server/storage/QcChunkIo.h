@@ -24,38 +24,49 @@
 #include <mutex>
 #include <optional>
 
-// Reading and writing the chunks of a world in the background (decision E-373), so the server tick
-// never waits for the disk: one thread owns the QcChunkStore and runs every request in the order it
-// was made, so a chunk read after it was handed over for writing gets what was handed over. Encoding
-// and decoding happen there too. The tick collects finished reads and saves (takeArrivals,
-// takeSaves). Without a directory the store keeps everything in memory.
+/*! \brief Reading and writing the chunks of a world in the background (decision E-373), so the
+    server tick never waits for the disk: one thread owns the QcChunkStore and runs every request in
+    the order it was made, so a chunk read after it was handed over for writing gets what was handed
+    over.
+
+    Encoding and decoding happen there too. The tick collects finished reads and saves
+    (takeArrivals, takeSaves). Without a directory the store keeps everything in memory. */
 class QcChunkIo
 {
 public:
-    // A chunk as read: its blocks (none: they were never changed, generate them), what was kept of its
-    // block entities and entities, and its circuit marks. `error`: the stored data is damaged; the
-    // chunk stays out of the world (decision E-373) and its data on disk is left alone.
+    /*! \brief A chunk as read: its blocks (none: they were never changed, generate them), what was
+        kept of its block entities and entities, and its circuit marks.
+
+        \c {error}: the stored data is damaged; the chunk stays out of the world (decision E-373)
+        and its data on disk is left alone. */
     struct Arrival
     {
+        /*! The chunk. */
         QcChunkPos pos;
-        // Which request of the chunk this answers (QcServerWorld drops answers to older ones).
+        /*! Which request of the chunk this answers (QcServerWorld drops answers to older ones). */
         quint64 request = 0;
+        /*! The blocks; null: never changed, generate them. */
         std::shared_ptr<QcChunk> blocks;
-        // The blocks were generated for this arrival, not read (the generator's plans for the chunk
-        // are made, QcFurnishing asks only then).
+        /*! The blocks were generated for this arrival, not read (the generator's plans for the
+            chunk are made, QcFurnishing asks only then). */
         bool generated = false;
+        /*! What was kept of its block entities and entities. \qcshared */
         QcBlockEntityRecord blockEntities;
         QcEntityRecord entities;
+        /*! Its circuit marks (QcChunkLinks). */
         quint16 marks = 0;
+        /*! The warnings of reading it. */
         QStringList warnings;
+        /*! Why its stored data is damaged; empty when it is not. */
         QString error;
-        // The chunk's own light, computed in the background (QcLightEngine::prepare; may be null).
+        /*! The chunk's own light, computed in the background (QcLightEngine::prepare; may be
+            null). */
         std::shared_ptr<QcLightEngine::Prepared> light;
     };
 
-    // What is kept of a chunk that leaves the world or is saved: its blocks when they changed since
-    // they were last handed over (none: what is stored stays), its block entities and entities (empty
-    // records remove what was stored) and its circuit marks.
+    /*! \brief What is kept of a chunk that leaves the world or is saved: its blocks when they
+        changed since they were last handed over (none: what is stored stays), its block entities
+        and entities (empty records remove what was stored) and its circuit marks. \qcfields */
     struct Departure
     {
         QcChunkPos pos;
@@ -65,6 +76,7 @@ public:
         quint16 marks = 0;
     };
 
+    /*! \brief A finished save: the id save() returned and whether it was written. \qcfields */
     struct SaveResult
     {
         quint64 id = 0;
@@ -75,39 +87,49 @@ public:
     ~QcChunkIo();
     Q_DISABLE_COPY_MOVE(QcChunkIo)
 
-    // Opens the store (before any request; see QcChunkStore::open) and returns what it holds.
+    /*! Opens the store (before any request; see QcChunkStore::open). Returns what it holds, or
+        the error. */
     [[nodiscard]] QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> open();
+    /*! Returns the file open() failed on; std::nullopt when it did not. */
     const std::optional<QcChunkStore::Damaged> &damaged() const { return m_store.damaged(); }
+    /*! Returns whether the chunks are written to a directory (else kept in memory). */
     bool hasDirectory() const { return !m_store.directory().isEmpty(); }
 
-    // Called on the I/O thread with every chunk read in the background that has blocks, before it is
-    // handed over (the world prepares its light). Set before the first read.
+    /*! Called on the I/O thread with every chunk read in the background that has blocks, before
+        it is handed over (the world prepares its light). Set before the first read. */
     using Preparation = std::function<void(Arrival &arrival)>;
+    /*! Sets \a prepare as the preparation of every chunk read in the background. */
     void setPreparation(Preparation prepare) { m_prepare = std::move(prepare); }
-    // Reads a chunk in the background; the result comes from takeArrivals(). A read goes before the
-    // writing work waiting in the queue unless the chunk itself is among it.
+    /*! Reads the chunk \a pos in the background for \a request; the result comes from
+        takeArrivals(). A read goes before the writing work waiting in the queue unless the chunk
+        itself is among it. */
     void read(QcChunkPos pos, quint64 request);
-    // Reads a chunk and waits for it (spawn, commands, tests); it goes before the waiting writing
-    // work unless the chunk is still being handed over, and waits only for itself.
+    /*! Reads the chunk \a pos and waits for it (spawn, commands, tests). Returns what was read;
+        it goes before the waiting writing work unless the chunk is still being handed over, and
+        waits only for itself. */
     Arrival readNow(QcChunkPos pos);
-    // A whole file of the world (a player file) as the latest save handed it over or as it is on
-    // disk; waits only for itself. Tick thread.
+    /*! Returns the whole file \a name of the world (a player file) as the latest save handed it
+        over or as it is on disk (none: no such file), or the error; waits only for itself. Tick
+        thread. */
     [[nodiscard]] QcResult<std::optional<QByteArray>> readFileNow(const QString &name);
-    // Hands over what is kept of a chunk; it is written with the next save.
+    /*! Hands over \a departure, what is kept of a chunk; it is written with the next save. */
     void keep(Departure departure);
-    // Hands over the chunks of a save and writes everything handed over so far with the whole files
-    // of the save (QcChunkStore::commit); the result comes from takeSaves() with the returned id.
+    /*! Hands over \a chunks of a save and writes everything handed over so far with \a files,
+        the whole files of the save (QcChunkStore::commit). Returns the id the result comes with
+        from takeSaves(). */
     quint64 save(QList<Departure> chunks, QList<QcChunkStore::WholeFile> files);
-    // Waits until every request so far is done.
+    /*! Waits until every request so far is done. */
     void waitForIdle();
-    // Chunks handed over and not yet written (as of the last finished request).
+    /*! Returns the chunks handed over and not yet written (as of the last finished request). */
     qsizetype pendingChunks() const;
 
+    /*! Returns the chunks read in the background since the last call; tick thread. */
     std::vector<Arrival> takeArrivals() { return m_arrivals.takeAll(); }
-    // Finished saves; tick thread.
+    /*! Returns the saves finished since the last call; tick thread. */
     std::vector<SaveResult> takeSaves();
-    // Test hook: the bytes a chunk's block entities may take (QcBlockEntityCodec::encodeWithin;
-    // QcRegionFile::maxBlobBytes otherwise). Set before the first request.
+    /*! Test hook: \a limit is the bytes a chunk's block entities may take
+        (QcBlockEntityCodec::encodeWithin; QcRegionFile::maxBlobBytes otherwise). Set before the
+        first request. */
     void setBlockEntityLimit(quint32 limit) { m_blockEntityLimit = limit; }
 private:
     // The chunk with the warnings of reading it.

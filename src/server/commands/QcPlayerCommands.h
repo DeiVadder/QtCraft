@@ -11,15 +11,18 @@
 class QcPendingCommands;
 class QcServerState;
 
-// Player management (decision E-244): the player list, kick, ban and unban, the whitelist,
-// operators and teleporting. The lists are QcAccessList, bound to the identity of a player when it
-// is known (decision E-253); the local player (the host of a single player world) cannot be
-// kicked, banned or lose his operator rights.
+/*! \brief Player management (decision E-244): the player list, kick, ban and unban, the whitelist,
+    operators and teleporting.
+
+    The lists are QcAccessList, bound to the identity of a player when it is known (decision
+    E-253); the local player (the host of a single player world) cannot be kicked, banned or lose
+    his operator rights. */
 class QcPlayerCommands
 {
 public:
     QcPlayerCommands(QcServerState &state, QcPendingCommands &pending);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

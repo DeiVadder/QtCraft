@@ -12,17 +12,22 @@ class QcChunkLoading;
 struct QcServerClient;
 class QcServerState;
 
-// Sends each client the chunks around it (nearest first, loading missing ones in the background
-// through QcChunkLoading, which also unloads the chunks no one needs any more).
+/*! \brief Sends each client the chunks around it (nearest first, loading missing ones in the
+    background through QcChunkLoading, which also unloads the chunks no one needs any more). */
 class QcChunkStreaming
 {
 public:
     QcChunkStreaming(QcServerState &state, QcChunkLoading &loading);
 
+    /*! Returns the chunk that holds \a position. */
     static QcChunkPos chunkOf(const QcVec3 &position);
 
+    /*! One tick for \a client: unloads the chunks it got that are now beyond its view (plus one
+        chunk), sends the loaded chunks of its view it has not got yet, nearest first and a few
+        per tick, and asks for the missing ones. */
     void stream(QcServerClient &client);
-    // Whether the client has every chunk of its view (a pause waits for it, decision E-877).
+    /*! Returns whether \a client has every chunk of its view (a pause waits for it, decision
+        E-877). */
     bool viewComplete(const QcServerClient &client) const;
 
 private:

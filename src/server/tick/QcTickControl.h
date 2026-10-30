@@ -7,28 +7,32 @@
 
 #include <algorithm>
 
-// Whether a tick simulates the world (decision E-249). A frozen world keeps ticking for the
-// players (their movement, chunks, entity and time messages, saving) but runs none of the
-// simulation: no time of day, block updates, liquids, creatures (spawning included), items,
-// plants, falling blocks, machines or hunger. /tick step lets a number of ticks simulate while
-// frozen. Not saved: a world always opens unfrozen.
+/*! \brief Whether a tick simulates the world (decision E-249).
+
+    A frozen world keeps ticking for the players (their movement, chunks, entity and time
+    messages, saving) but runs none of the simulation: no time of day, block updates, liquids,
+    creatures (spawning included), items, plants, falling blocks, machines or hunger. /tick step
+    lets a number of ticks simulate while frozen. Not saved: a world always opens unfrozen. */
 class QcTickControl
 {
 public:
-    // Most ticks one /tick step asks for (five minutes of game time).
+    /*! Most ticks one /tick step asks for (five minutes of game time). */
     static constexpr quint64 maxSteps = 6000;
 
+    /*! Returns whether the world is frozen. */
     bool frozen() const { return m_frozen; }
+    /*! Freezes the world or lets it run (\a frozen); pending steps are dropped. */
     void setFrozen(bool frozen)
     {
         m_frozen = frozen;
         m_steps = 0;
     }
-    // Adds ticks to simulate while frozen.
+    /*! Adds \a ticks to simulate while frozen (at most maxSteps pending). */
     void step(quint64 ticks) { m_steps = std::min(m_steps + ticks, maxSteps); }
+    /*! Returns the ticks still to simulate while frozen. */
     quint64 pendingSteps() const { return m_steps; }
 
-    // Whether the next tick simulates; takes one step while frozen.
+    /*! Returns whether the next tick simulates; takes one step while frozen. */
     bool simulateNext()
     {
         if (!m_frozen) {

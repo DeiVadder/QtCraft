@@ -12,15 +12,18 @@
 
 #include <optional>
 
-// Reads item stacks of one save file by name (written by QcSaveFile::writeStack) with their data
-// (QcItemDataCodec); an unknown item is dropped with one warning per name
-// (QcLoadWarnings::addOnce), counts and damage are clamped to what the item allows (a stack with
-// contents holds one item). Damaged data turns the stream corrupt (QDataStream::ReadCorruptData).
-// A filled map saved before E-823 with its map id in `damage` gets it as its map id.
+/*! \brief Reads item stacks of one save file by name (written by QcSaveFile::writeStack) with their
+    data (QcItemDataCodec); an unknown item is dropped with one warning per name
+    (QcLoadWarnings::addOnce), counts and damage are clamped to what the item allows (a stack with
+    contents holds one item).
+
+    Damaged data turns the stream corrupt (QDataStream::ReadCorruptData). A filled map saved
+    before E-823 with its map id in \c {damage} gets it as its map id. */
 class QcStackReader
 {
 public:
-    // A stack as saved, before it is fitted to what its item allows now.
+    /*! \brief A stack as saved, before it is fitted to what its item allows now: item, count,
+        damage and data. \qcfields */
     struct Saved
     {
         QcItemId item = qcNoItem;
@@ -31,14 +34,15 @@ public:
 
     QcStackReader(const QcContentRegistry &content, QString path, QcLoadWarnings &warnings);
 
-    // The stack of one slot; empty for an empty slot, an unknown item or damaged data.
+    /*! Returns the stack of one slot read from \a stream; empty for an empty slot, an unknown
+        item or damaged data. */
     QcItemStack read(QDataStream &stream);
-    // The data of a stack whose contents may nest `depth` levels (QcItemDataCodec); std::nullopt
-    // for damaged data. Unknown components are kept, those beyond QcComponentFrames::maxKept
-    // dropped with a warning.
+    /*! Returns the data of a stack read from \a stream whose contents may nest \a depth levels
+        (QcItemDataCodec); std::nullopt for damaged data. Unknown components are kept, those
+        beyond QcComponentFrames::maxKept dropped with a warning. */
     [[nodiscard]] std::optional<QcItemData> readData(QDataStream &stream, int depth);
-    // The saved stack of a known item within the item's limits (count, damage, a name's length; a
-    // filled map's id moved from its damage, see above).
+    /*! Returns the stack \a saved of a known item within the item's limits (count, damage, a name's
+        length; a filled map's id moved from its damage, see above). */
     [[nodiscard]] QcItemStack fitted(const Saved &saved) const;
 
 private:

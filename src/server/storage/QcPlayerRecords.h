@@ -7,22 +7,24 @@
 
 struct QcServerClient;
 
-// What is saved of a player and how it comes back (decision E-367): the state of a connected player
-// as a QcPlayerData for QcPlayerStorage, and a saved one put onto a player who joins again.
+/*! \brief What is saved of a player and how it comes back (decision E-367): the state of a
+    connected player as a QcPlayerData for QcPlayerStorage, and a saved one put onto a player who
+    joins again. */
 namespace QcPlayerRecords {
 
-// A player's saved state and the number of items of an open crafting grid that did not fit into
-// its inventory.
+/*! \brief A player's saved state and the number of items of an open crafting grid that did not
+    fit into its inventory. \qcfields */
 struct Record
 {
     QcPlayerData player;
     int lost = 0;
 };
 
-// The player's saved state. Items in an open crafting grid go into the inventory, as if the grid had
-// been closed.
+/*! Returns the saved state of \a client, items named after \a content. Items in an open crafting
+    grid go into the inventory, as if the grid had been closed. */
 [[nodiscard]] Record of(const QcServerClient &client, const QcContentRegistry &content);
-// Puts a saved state onto a player who joins again, with the rules of the saved game mode applied.
+/*! Puts the saved state \a player onto \a client, who joins again, with the rules of the saved
+    game mode applied. */
 void restore(QcServerClient &client, const QcPlayerData &player);
 
 } // namespace QcPlayerRecords

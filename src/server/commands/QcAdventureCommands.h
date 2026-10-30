@@ -11,15 +11,18 @@
 class QcServerGameModes;
 class QcServerState;
 
-// /adventure (decision E-735), for operators: shows and changes the world's allow-lists of
-// adventure mode, which item kinds may break which blocks (canBreak) and act on which blocks
-// (canPlaceOn). Items and blocks are checked against the content; "*" stands for every item and
-// the empty hand. Adventure players get the changed lists at once.
+/*! \brief /adventure (decision E-735), for operators: shows and changes the world's allow-lists of
+    adventure mode, which item kinds may break which blocks (canBreak) and act on which blocks
+    (canPlaceOn).
+
+    Items and blocks are checked against the content; "*" stands for every item and the empty
+    hand. Adventure players get the changed lists at once. */
 class QcAdventureCommands
 {
 public:
     QcAdventureCommands(QcServerState &state, QcServerGameModes &gameModes);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

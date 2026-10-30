@@ -132,7 +132,8 @@ def signature(item, scopes):
     head = SIGNATURE_DROPS.sub("", item.text).strip()
     head = re.sub(r"\s*(?:=\s*0|=\s*default|=\s*delete)\s*$", "", head)
     head = re.sub(r"\s+\b(?:override|final)\b", "", head)
-    head = re.sub(r"\s*->\s*", " -> ", head)
+    # A trailing return type (`auto f() -> int`), not the name `operator->`.
+    head = re.sub(r"(?<!operator)\s*->\s*", " -> ", head)
     if not item.scope:
         return head
     scope, clauses = scopes.qualified(item.scope)
@@ -612,6 +613,8 @@ def self_test():
         "{",
         "    /*! Adds \\a other. */",
         "    QcRect &operator+=(const QcRect &other);",
+        "    /*! Returns this. */",
+        "    QcRect *operator->();",
         "};",
         ""])
     staged = stage_header(header, "src/audio/QcSample.h")
@@ -622,7 +625,7 @@ def self_test():
               "\\fn QcSample::Limits QcSample::start(bool enabled, Kind kind = Kind::Small)",
               "\\fn bool QcSample::isSequential() const", "\\reimp", "\\fn void QcSample::ready()",
               "\\fn void free() \\n Explicit.", "Bounds in bytes.", "\\variable QcSample::Limits::first",
-              "\\fn QcRect &QcRect::operator+=(const QcRect &other)"]
+              "\\fn QcRect &QcRect::operator+=(const QcRect &other)", "\\fn QcRect *QcRect::operator->()"]
     failures = [w for w in wanted if w not in text.split("\n") and w not in text]
     for unwanted in ("Hidden.", "QcSample::Limits::other", "QcSample::Limits::second", "\\qcshared",
                      "\\headerfile"):

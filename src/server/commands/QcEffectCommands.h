@@ -8,16 +8,19 @@
 struct QcServerClient;
 class QcServerState;
 
-// /effect (decision E-450), for operators: gives a player a status effect for some seconds at a
-// level, or takes one or all away. The client hears of it with the next tick (QcServerEffects).
+/*! \brief /effect (decision E-450), for operators: gives a player a status effect for some seconds
+    at a level, or takes one or all away.
+
+    The client hears of it with the next tick (QcServerEffects). */
 class QcEffectCommands
 {
 public:
-    // Seconds and level of /effect give without them.
+    /*! Seconds and level of /effect give without them. */
     static constexpr int defaultSeconds = 30;
 
     explicit QcEffectCommands(QcServerState &state);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

@@ -31,14 +31,17 @@ struct QcCommandMacroDefinition;
 struct QcServerClient;
 class QcServerState;
 
-// The command layer of the server (decision E-243), shared by the chat of every player and the
-// server console: plain chat lines go to everyone, lines starting with '/' run a command of the
-// registry or a macro of the content (decision E-248) after the source's rights are checked. Every
-// command is logged with its source (category qtcraft.commands). /help, /confirm and /cancel are
-// built in.
+/*! \brief The command layer of the server (decision E-243), shared by the chat of every player and
+    the server console: plain chat lines go to everyone, lines starting with '/' run a command of
+    the registry or a macro of the content (decision E-248) after the source's rights are checked.
+
+    Every command is logged with its source (category qtcraft.commands). /help, /confirm and
+    /cancel are built in. */
 class QcServerCommands
 {
 public:
+    /*! \brief The parts of the server the commands act on, with those of the cheat, world and
+        tick commands. \qcfields */
     struct Parts
     {
         QcServerBlocks &blocks;
@@ -51,28 +54,32 @@ public:
 
     QcServerCommands(QcServerState &state, Parts parts);
 
-    // A chat line of a playing client (at most 256 characters).
+    /*! Handles the chat line \a text of the playing \a client (at most 256 characters). */
     void chat(QcServerClient &client, const QString &text);
-    // A line of the console; the leading '/' is optional. Replies go to `output`.
+    /*! Runs \a line of the console (cut to 256 characters); the leading '/' is optional. Replies
+        go to \a output. */
     void console(const QString &line, const QcCommandSource::Output &output);
-    // A command line of a player through the admin channel (decision E-848): checked and run like
-    // his chat command (the leading '/' is optional), the replies go to `output` instead of his chat.
-    // The line is not cut to the chat's 256 characters.
+    /*! Runs the command \a line of the player \a client through the admin channel (decision E-848):
+        checked and run like his chat command (the leading '/' is optional), the replies go to
+        \a output instead of his chat. The line is not cut to the chat's 256 characters. */
     void admin(QcServerClient &client, const QString &line, const QcCommandSource::Output &output);
-    // The chat lines everyone saw (players' chat and /say).
+    /*! Returns the chat lines everyone saw (players' chat and /say). */
     const QcChatLog &chatLog() const { return m_chatLog; }
-    // After the server's due ticks: reports a sprint that ended.
+    /*! After the server's due ticks: reports a sprint that ended. */
     void afterTicks() { m_ticks.reportSprintEnd(); }
-    // Every tick: reports a backup copied in the background (decision E-256).
+    /*! Every tick: reports a backup copied in the background (decision E-256). */
     void pollBackups() { m_world.pollBackup(); }
-    // Server stop: waits for a backup still being copied.
+    /*! Server stop: waits for a backup still being copied. */
     void waitForBackups() { m_world.waitForBackup(); }
+    /*! Returns the runner of background backups. */
     QcBackupRunner &backups() { return m_world.backups(); }
-    // A player left: his pending confirmation goes.
+    /*! The player \a entityId left: his pending confirmation goes. */
     void playerLeft(quint32 entityId) { m_pending.forget(entityId); }
 
+    /*! Returns the registry of the commands. */
     const QcCommandRegistry &registry() const { return m_registry; }
-    // For C++ extensions (docs/Modding.md): adds a command; fails for taken names.
+    /*! For C++ extensions (docs/Modding.md): adds the command \a spec. Returns an error for
+        taken or invalid names. */
     [[nodiscard]] QcStatus add(QcCommandSpec spec) { return m_registry.add(std::move(spec)); }
 
 private:

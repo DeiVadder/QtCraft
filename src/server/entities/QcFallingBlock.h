@@ -8,11 +8,11 @@
 
 #include <optional>
 
-// A block falling while nothing holds it (decision E-055, E-364); QcFallingBlockManager lets it fall
-// and land.
+/*! \brief A block falling while nothing holds it (decision E-055, E-364); QcFallingBlockManager
+    lets it fall and land. */
 struct QcFallingBlock : QcEntity
 {
-    // The kind of every entity of this type (QcEntity::as).
+    /*! The kind of every entity of this type (QcEntity::as). */
     static constexpr QcEntityKind entityKind = QcEntityKind::FallingBlock;
 
     QcFallingBlock()
@@ -20,9 +20,11 @@ struct QcFallingBlock : QcEntity
     {
     }
 
+    /*! The block that falls. */
     QcBlockId block = qcAirBlockId;
+    /*! Seconds it has fallen. */
     double age = 0.0;
-    // The height it started falling from (an anvil's landing damage, decision E-866); unknown for
-    // blocks read from a save, which then count as not having fallen.
+    /*! The height it started falling from (an anvil's landing damage, decision E-866); unknown
+        for blocks read from a save, which then count as not having fallen. */
     std::optional<double> startY;
 };

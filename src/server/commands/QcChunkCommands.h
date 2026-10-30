@@ -9,18 +9,20 @@
 
 class QcServerState;
 
-// Chunks kept loaded on purpose (decision E-377): /forceload add|remove|query, by block coordinates
-// (~ relative to the player) of one chunk or of the corners of an area. Forced chunks are kept in
-// world.json and count against the limit forcedChunks; they load and stay like chunks around a
-// player, with the groups of their circuits.
+/*! \brief Chunks kept loaded on purpose (decision E-377): /forceload add|remove|query, by block
+    coordinates (~ relative to the player) of one chunk or of the corners of an area.
+
+    Forced chunks are kept in world.json and count against the limit forcedChunks; they load and
+    stay like chunks around a player, with the groups of their circuits. */
 class QcChunkCommands
 {
 public:
-    // Chunks one /forceload adds or removes at most.
+    /*! Chunks one /forceload adds or removes at most. */
     static constexpr int maxArea = 256;
 
     explicit QcChunkCommands(QcServerState &state);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

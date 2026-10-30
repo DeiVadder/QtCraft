@@ -6,11 +6,11 @@
 #include "common/gameplay/QcItemStack.h"
 #include "server/entities/QcEntity.h"
 
-// A dropped item stack lying in the world (decision E-364); QcItemEntityManager moves, merges and
-// ages them.
+/*! \brief A dropped item stack lying in the world (decision E-364); QcItemEntityManager moves,
+    merges and ages them. */
 struct QcItemEntity : QcEntity
 {
-    // The kind of every entity of this type (QcEntity::as).
+    /*! The kind of every entity of this type (QcEntity::as). */
     static constexpr QcEntityKind entityKind = QcEntityKind::Item;
 
     QcItemEntity()
@@ -18,12 +18,15 @@ struct QcItemEntity : QcEntity
     {
     }
 
+    /*! The items. */
     QcItemStack stack;
+    /*! Seconds it has lain in a loaded chunk. */
     double age = 0.0;
+    /*! Seconds before it can be picked up. */
     double pickupDelay = 0.0;
-    // Lying still on the ground: skipped by physics until the block below changes.
+    /*! Lying still on the ground: skipped by physics until the block below changes. */
     bool resting = false;
-    // Beyond QcServerLimits::itemsAwake in a loaded chunk: frozen and not sent to clients, until
-    // older items go.
+    /*! Beyond QcServerLimits::itemsAwake in a loaded chunk: frozen and not sent to clients,
+        until older items go. */
     bool surplus = false;
 };

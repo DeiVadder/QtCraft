@@ -13,13 +13,17 @@ class QcServerPersistence;
 struct QcServerClient;
 class QcServerState;
 
-// A client the login admitted becomes a player (decision E-367): restored from his save (QcPlayerRecords)
-// or spawned at the spawn point in the world's default game mode, told everything a client needs to
-// play (Welcome, content, game mode, inventory, health, food, time, warnings about the world) and
-// given the chunks around him. A save that cannot be read ends the connection with the reason.
+/*! \brief A client the login admitted becomes a player (decision E-367): restored from his save
+    (QcPlayerRecords) or spawned at the spawn point in the world's default game mode, told
+    everything a client needs to play (Welcome, content, game mode, inventory, health, food, time,
+    warnings about the world) and given the chunks around him.
+
+    A save that cannot be read ends the connection with the reason. */
 class QcPlayerJoin
 {
 public:
+    /*! \brief The parts of the server a join uses: persistence, inventory, health, game modes,
+        chunk streaming and how to send the time. \qcfields */
     struct Parts
     {
         QcServerPersistence &persistence;
@@ -27,12 +31,14 @@ public:
         QcPlayerHealth &health;
         QcServerGameModes &gameModes;
         QcChunkStreaming &streaming;
-        // Sends the time of day (QcServer knows the tick rate).
+        /*! Sends the time of day (QcServer knows the tick rate). */
         std::function<void(QcServerClient &client)> sendTime;
     };
 
     QcPlayerJoin(QcServerState &state, Parts parts);
 
+    /*! Makes the admitted \a client a player: restores or spawns him and sends what he needs
+        to play. */
     void join(QcServerClient &client);
 
 private:

@@ -7,11 +7,12 @@
 #include "common/core/QcBlockPos.h"
 #include "server/entities/QcEntity.h"
 
-// A block sliding where a piston moved it, as the clients see it (decisions E-337, E-364): the
-// world holds the block at `to` already; the entity only shows the slide (QcMovingBlocks).
+/*! \brief A block sliding where a piston moved it, as the clients see it (decisions E-337,
+    E-364): the world holds the block at \c {to} already; the entity only shows the slide
+    (QcMovingBlocks). */
 struct QcMovingBlock : QcEntity
 {
-    // The kind of every entity of this type (QcEntity::as).
+    /*! The kind of every entity of this type (QcEntity::as). */
     static constexpr QcEntityKind entityKind = QcEntityKind::MovingBlock;
 
     QcMovingBlock()
@@ -19,8 +20,11 @@ struct QcMovingBlock : QcEntity
     {
     }
 
+    /*! The block that slides. */
     QcBlockId block = qcAirBlockId;
+    /*! The cell it slides from and the cell it slides to. \qcshared */
     QcBlockPos from;
     QcBlockPos to;
+    /*! The tick the slide began. */
     quint64 start = 0;
 };

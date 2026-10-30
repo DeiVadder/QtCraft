@@ -10,17 +10,20 @@
 
 class QcServerState;
 
-// /limits (decisions E-349, E-848): shows the simulation limits (QcServerLimits) and changes one,
-// within its range, or resets it to its default. The change applies at once. Where it is kept
-// follows from where the limits come from: a dedicated server writes it into the "limits" of its
-// server.json at once (QcServerConfig::settingsFile; the other keys of the file stay as they are),
-// a single-player world keeps it in world.json ("limits", only the keys an operator set), written
-// with the next save. The admin channel's settings change limits through this command.
+/*! \brief /limits (decisions E-349, E-848): shows the simulation limits (QcServerLimits) and
+    changes one, within its range, or resets it to its default.
+
+    The change applies at once. Where it is kept follows from where the limits come from: a
+    dedicated server writes it into the "limits" of its server.json at once
+    (QcServerConfig::settingsFile; the other keys of the file stay as they are), a single-player
+    world keeps it in world.json ("limits", only the keys an operator set), written with the next
+    save. The admin channel's settings change limits through this command. */
 class QcLimitCommands
 {
 public:
     explicit QcLimitCommands(QcServerState &state);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:

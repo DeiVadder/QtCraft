@@ -15,88 +15,111 @@
 #include <array>
 #include <optional>
 
-// The chunks of a world on disk (decision E-373): per kind (blocks, block entities, entities) one
-// indexed region file per region (QcRegionFile), read chunk by chunk when a chunk is needed. What is
-// handed over for writing waits in memory (`put`) until the next commit, which writes every changed
-// region and the world's other files of a save as one: all files first under a staging name, then a
-// journal naming them, then the renames, then the journal goes. A save that breaks off before the
-// journal leaves the previous save whole; one that breaks off after it is finished when the world
-// opens again (open()). Without a directory nothing is written and everything stays in memory.
-// Not thread-safe: QcChunkIo uses it from its one thread.
+/*! \brief The chunks of a world on disk (decision E-373): per kind (blocks, block entities,
+    entities) one indexed region file per region (QcRegionFile), read chunk by chunk when a chunk is
+    needed.
+
+    What is handed over for writing waits in memory (\c {put}) until the next commit, which
+    writes every changed region and the world's other files of a save as one: all files first
+    under a staging name, then a journal naming them, then the renames, then the journal goes. A
+    save that breaks off before the journal leaves the previous save whole; one that breaks off
+    after it is finished when the world opens again (open()). Without a directory nothing is
+    written and everything stays in memory. Not thread-safe: QcChunkIo uses it from its one
+    thread. */
 class QcChunkStore
 {
 public:
-    enum class Kind : quint8 { Blocks, BlockEntities, Entities };
+    /*! The kinds of data of a chunk, each in its own region files. */
+    enum class Kind : quint8 {
+        /*! The blocks (QcChunkCodec). */
+        Blocks,
+        /*! The block entities (QcBlockEntityCodec). */
+        BlockEntities,
+        /*! The entities (QcEntityCodec). */
+        Entities
+    };
+    /*! The number of kinds. */
     static constexpr int kindCount = 3;
 
-    // What is kept of a chunk, without reading it.
+    /*! \brief What is kept of a chunk, without reading it. */
     struct Stored
     {
-        // Bit (1 << kind) per kind with data.
+        /*! Bit (1 << kind) per kind with data. */
         quint8 kinds = 0;
-        // The circuit marks of the chunk (QcChunkLinks), kept with its block entities.
+        /*! The circuit marks of the chunk (QcChunkLinks), kept with its block entities. */
         quint16 marks = 0;
 
+        /*! Returns whether the chunk has data of \a kind. */
         bool has(Kind kind) const { return (kinds & (1u << static_cast<quint8>(kind))) != 0; }
     };
 
-    // The data of a chunk as stored; a kind without data is missing.
+    /*! \brief The data of a chunk as stored, per kind (a kind without data is missing), and its
+        circuit marks. \qcfields */
     struct Blobs
     {
         std::array<std::optional<QByteArray>, kindCount> data;
         quint16 marks = 0;
     };
 
-    // A whole file of the world written with a commit (world.json, blockupdates.qce); no content
-    // removes it.
+    /*! \brief A whole file of the world written with a commit (world.json, blockupdates.qce); no
+        content removes it. */
     struct WholeFile
     {
-        // Relative to the world directory.
+        /*! Relative to the world directory, and the content (none: remove the file).
+            \qcshared */
         QString name;
         std::optional<QByteArray> content;
     };
 
-    // Name of the journal of a save in the world directory.
+    /*! Name of the journal of a save in the world directory. */
     static constexpr QStringView journalName = u"save.journal";
 
     explicit QcChunkStore(QString directory);
 
+    /*! Returns the world directory; empty when everything stays in memory. */
     const QString &directory() const { return m_directory; }
+    /*! Returns the folder of the region files of \a kind ("regions", "blockentities",
+        "entities"). */
     static QString folderOf(Kind kind);
+    /*! Returns the file extension of the region files of \a kind ("qcr", "qcb", "qen"). */
     static QString extensionOf(Kind kind);
 
-    // Finishes a save the journal names, removes staged files of a save that broke off and reads the
-    // index of every region file. A damaged index or a file of an older version is an error naming
-    // the file (damagedFile()).
+    /*! Finishes a save the journal names, removes staged files of a save that broke off and
+        reads the index of every region file. A damaged index or a file of an older version is an
+        error naming the file (damaged()). */
     [[nodiscard]] QcStatus open();
-    // The kind and file (relative to the world directory) open() failed on; `journal`: the journal
-    // of a save that broke off cannot be finished (damaged, or a staged file is lost).
+    /*! \brief The kind and file (relative to the world directory) open() failed on;
+        \c {journal}: the journal of a save that broke off cannot be finished (damaged, or a
+        staged file is lost). \qcfields */
     struct Damaged
     {
         Kind kind = Kind::Blocks;
         QString file;
         bool journal = false;
     };
+    /*! Returns the file open() failed on; std::nullopt when it did not. */
     const std::optional<Damaged> &damaged() const { return m_damaged; }
 
-    // Every chunk with data, on disk or waiting to be written.
+    /*! Returns every chunk with data, on disk or waiting to be written. */
     QHash<QcChunkPos, Stored> catalog() const;
-    // The data of a chunk: what waits to be written, else what is on disk. A blob that fails its
-    // check is an error.
+    /*! Returns the data of \a chunk: what waits to be written, else what is on disk. A blob that
+        fails its check is an error. */
     [[nodiscard]] QcResult<Blobs> read(QcChunkPos chunk);
-    // Whether a kind of data of a chunk is on disk or waiting to be written.
+    /*! Returns whether data of \a kind of \a chunk is on disk or waiting to be written. */
     bool has(Kind kind, QcChunkPos chunk) const;
-    // Hands over the data of a kind of a chunk for the next commit (none: the chunk has no data of
-    // that kind any more). `marks` counts for block entities only.
+    /*! Hands over \a blob, the data of \a kind of \a chunk, for the next commit (none: the chunk
+        has no data of that kind any more). \a marks counts for block entities only. */
     void put(Kind kind, QcChunkPos chunk, std::optional<QByteArray> blob, quint16 marks = 0);
-    // Chunks with data waiting for the next commit.
+    /*! Returns the largest number of chunks of one kind with data waiting for the next commit
+        (not the number of distinct chunks). */
     qsizetype pendingChunks() const;
-    // Writes everything handed over and `files` as one save (see the class). On failure nothing
-    // handed over is lost, the files included: it waits for the next commit.
+    /*! Writes everything handed over and \a files as one save (see the class). On failure
+        nothing handed over is lost, the files included: it waits for the next commit. */
     [[nodiscard]] QcStatus commit(const QList<WholeFile> &files);
-    // A whole file as the next commit writes it (waiting) or as it is on disk; none: no such file.
+    /*! Returns the whole file \a name as the next commit writes it (waiting) or as it is on disk;
+        none: no such file. */
     [[nodiscard]] QcResult<std::optional<QByteArray>> readFile(const QString &name);
-    // Test hook: renames of a commit after this many fail (-1: none fail).
+    /*! Test hook: renames of a commit after \a count fail (-1: none fail). */
     void failRenamesAfter(int count) { m_renamesLeft = count; }
 
 private:

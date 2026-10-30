@@ -23,55 +23,74 @@
 
 #include <memory>
 
-// Reads and writes the files of one world directory besides its chunks: world.json, players
-// (players/<name>-<hash>.qcp) and pending neighbour updates (blockupdates.qce). The chunks (blocks,
-// block entities and entities in indexed region files) are QcChunkStore's; a save writes world.json
-// and blockupdates.qce together with the chunks through its journal (infoBytes, blockUpdatesBytes).
-// Blocks and items are stored by name, so content changes between sessions do not scramble a world.
-// Every binary file carries a magic number, a format version and a CRC; damaged files make loading
-// fail with a message instead of crashing.
+/*! \brief Reads and writes the files of one world directory besides its chunks: world.json, players
+    (players/<name>-<hash>.qcp) and pending neighbour updates (blockupdates.qce).
+
+    The chunks (blocks, block entities and entities in indexed region files) are QcChunkStore's;
+    a save writes world.json and blockupdates.qce together with the chunks through its journal
+    (infoBytes, blockUpdatesBytes). Blocks and items are stored by name, so content changes
+    between sessions do not scramble a world. Every binary file carries a magic number, a format
+    version and a CRC; damaged files make loading fail with a message instead of crashing. */
 class QcWorldStorage
 {
 public:
+    /*! The side of a region in chunks (QcRegionFile::regionSize). */
     static constexpr int regionSize = QcRegionFile::regionSize;
+    /*! The names of the world's whole files in its directory. \qcshared */
     static constexpr auto infoFileName = "world.json";
     static constexpr auto blockUpdatesFileName = "blockupdates.qce";
     static constexpr auto villagesFileName = "villages.json";
 
     QcWorldStorage(QString directory, std::shared_ptr<const QcContentRegistry> content);
 
+    /*! Returns the world directory. */
     const QString &directory() const { return m_directory; }
 
+    /*! Returns the world's info read from world.json, or the error. */
     [[nodiscard]] QcResult<QcWorldInfo> readInfo() const;
-    // The format version world.json names; 0 when it cannot be read.
+    /*! Returns the format version world.json names; 0 when it cannot be read. */
     int storedFormatVersion() const;
+    /*! Writes \a info to world.json (creating the directory). Returns an error when it cannot be
+        written. */
     [[nodiscard]] QcStatus writeInfo(const QcWorldInfo &info) const;
-    // The contents of world.json for `info`.
+    /*! Returns the contents of world.json for \a info. */
     static QByteArray infoBytes(const QcWorldInfo &info);
 
-    // Player files (QcPlayerStorage).
+    /*! Returns the file name of the player \a playerName (QcPlayerStorage::fileName). */
     static QString playerFileName(const QString &playerName) { return QcPlayerStorage::fileName(playerName); }
+    /*! Returns the player \a playerName read from his file (QcPlayerStorage::read). */
     [[nodiscard]] QcPlayerStorage::Result readPlayer(const QString &playerName) const { return m_players.read(playerName); }
+    /*! Writes \a player to the file of \a playerName (QcPlayerStorage::write). Returns an error
+        when it cannot be written. */
     [[nodiscard]] QcStatus writePlayer(const QString &playerName, const QcPlayerData &player) const { return m_players.write(playerName, player); }
+    /*! Returns the contents of the file of \a player (QcPlayerStorage::bytes). */
     QByteArray playerBytes(const QcPlayerData &player) const { return m_players.bytes(player); }
+    /*! Returns the player \a playerName read from the contents \a file of his file
+        (QcPlayerStorage::parse). */
     [[nodiscard]] QcPlayerStorage::Result parsePlayer(const QString &playerName, const std::optional<QByteArray> &file) const
     {
         return m_players.parse(playerName, file);
     }
 
-    // Positions waiting for a neighbour update (blockupdates.qce). Empty without error when nothing
-    // was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as an error.
+    /*! Positions waiting for a neighbour update (blockupdates.qce). Empty without error when
+        nothing was saved yet. At most maxStoredBlockUpdates are written; the rest is reported as
+        an error. */
     static constexpr quint32 maxStoredBlockUpdates = 4 * 1024 * 1024;
+    /*! Returns the positions waiting for a neighbour update (blockupdates.qce); empty without
+        error when nothing was saved yet. */
     [[nodiscard]] QcResult<QList<QcBlockPos>> readBlockUpdates() const;
-    // The contents of blockupdates.qce for `positions` (none: no file).
+    /*! Returns the contents of blockupdates.qce for \a positions (none: no file). */
     [[nodiscard]] static QcResult<std::optional<QByteArray>> blockUpdatesBytes(const QList<QcBlockPos> &positions);
 
-    // The villages of the world (villages.json, decision E-403); empty without error when none was
-    // saved yet; an error when the file cannot be read or is no JSON object. Entries that are not
-    // plausible are left out, spot lists cut to their limits (QcVillage::fromJson).
+    /*! Returns the villages of the world (villages.json, decision E-403); empty without error
+        when none was saved yet; an error when the file cannot be read or is no JSON object.
+        Entries that are not plausible are left out, spot lists cut to \a limits
+        (QcVillage::fromJson). */
     [[nodiscard]] QcResult<QList<QcVillage>> readVillages(const QcVillage::ReadLimits &limits) const;
+    /*! Returns the contents of villages.json for \a villages. */
     static QByteArray villagesBytes(const QList<QcVillage> &villages);
 
+    /*! Returns the region that holds \a chunk. */
     static QcChunkPos regionOf(QcChunkPos chunk) { return QcRegionFile::regionOf(chunk); }
 
 private:

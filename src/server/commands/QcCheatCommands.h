@@ -24,14 +24,17 @@ struct QcServerClient;
 struct QcWorldInfo;
 class QcServerState;
 
-// Commands that bend the rules for operators (decision E-243): items, creatures, health and food,
-// armour, stands, minecarts and boats, time, game rules, the game mode and finding biomes.
+/*! \brief Commands that bend the rules for operators (decision E-243): items, creatures, health
+    and food, armour, stands, minecarts and boats, time, game rules, the game mode and finding
+    biomes. */
 class QcCheatCommands
 {
 public:
-    // How far /locatebiome searches around the player (blocks).
+    /*! How far /locatebiome searches around the player (blocks). */
     static constexpr int biomeSearchRadius = 4096;
 
+    /*! \brief The parts of the server the commands act on, and how to set the time of day (in
+        seconds). \qcfields */
     struct Parts
     {
         QcServerInventory &inventory;
@@ -45,6 +48,7 @@ public:
 
     QcCheatCommands(QcServerState &state, Parts parts);
 
+    /*! Adds the commands of this group (see the class) to \a registry. */
     void addTo(QcCommandRegistry &registry);
 
 private:
