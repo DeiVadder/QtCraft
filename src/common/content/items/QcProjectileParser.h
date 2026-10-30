@@ -8,9 +8,13 @@
 
 #include <QJsonObject>
 
-// Parses a kind of projectile (projectiles/<name>.json, decision E-425). All input is untrusted.
+/*! \brief Parses a kind of projectile (projectiles/<name>.json, decision E-425).
+
+    All input is untrusted. */
 namespace QcProjectileParser {
 
+/*! Returns the projectile kind read from \a json, its names qualified with \a packNamespace,
+    or the first failure. */
 [[nodiscard]] QcResult<QcProjectileDefinition> parseProjectile(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcProjectileParser

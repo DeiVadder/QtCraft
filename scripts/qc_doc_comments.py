@@ -433,9 +433,12 @@ class Scanner:
         if pointer:
             # A pointer to a function (`int (*read)(int)`): a variable.
             return Item("variable", pointer.group(1), list(scope), access, section, line, last, head, comment)
-        literal = re.match(r"\(\s*[\"'0-9{-]", bare[paren:]) if paren > 0 else None
+        direct = paren > 0 and (equals < 0 or equals > paren)
+        literal = re.match(r"\(\s*[\"'0-9{-]", bare[paren:]) if direct else None
         if literal:
-            # Direct initialisation with a value (`QLatin1StringView key("x")`): a variable.
+            # Direct initialisation with a value (`QLatin1StringView key("x")`): a variable. With an
+            # `=` before the parenthesis (`QString x = QStringLiteral("y")`) it is copy
+            # initialisation, handled below.
             names = IDENTIFIER.findall(bare[:paren])
             return Item("variable", names[-1], list(scope), access, section, line, last, head, comment) if names else None
         if paren > 0 and (equals < 0 or equals > paren):

@@ -31,7 +31,9 @@ Usage: scripts/convert-doc-comments.py [--dry-run | --check [--skip-internal] | 
                its own); exit code 1 if any. Need no comment: constructors, destructors, overrides
                (the docs mark them as reimplementations), `= default`/`= delete`, the READ, WRITE,
                NOTIFY and RESET functions of a documented Q_PROPERTY, variables covered by a
-               \\qcshared comment, and the fields of a struct whose comment has \\qcfields.
+               \\qcshared comment, the fields of a struct whose comment has \\qcfields (also no
+               "shares the comment of X?" for them), and out-of-line definitions of members declared
+               in the same file (the declaration carries the comment).
   --skip-internal  with --check: leaves out everything in a type whose comment has \\internal
   --params     names, per documented function, the parameters its comment does not name with \\a
                (and how often each stands there as a plain word): a list to review
@@ -111,11 +113,27 @@ def is_reimplementation(item):
     return re.search(r"\b(override|final)\b", item.text) is not None
 
 
+def out_of_line_name(item):
+    """(scope, name) of the member that an out-of-line function definition
+    (`inline void QcA::f(int x) {…}`) defines, or None for other items."""
+    if item.kind != "function":
+        return None
+    match = re.search(r"((?:\w+::)+)(~?\w+)\s*\(", item.text.split("(", 1)[0] + "(")
+    if not match:
+        return None
+    return tuple(item.scope + match.group(1).rstrip(":").split("::")), match.group(2)
+
+
 def exempt_names(items):
     """(scope, name) of the functions and variables that need no comment: property accessors of a
-    documented property and the fields of a struct with \\qcfields."""
+    documented property, the fields of a struct with \\qcfields, and out-of-line definitions of
+    members declared in the same file (the declaration carries the comment)."""
     exempt = set()
+    declared = {(tuple(item.scope), item.name) for item in items if item.kind == "function"}
     for item in items:
+        defined = out_of_line_name(item)
+        if defined is not None and defined in declared:
+            exempt.add(id(item))
         if item.kind == "property" and item.comment is not None:
             exempt.update((tuple(item.scope), name) for name in item.accessors)
         if item.kind == "struct" and docs.has_marker(item.comment, "\\qcfields"):
@@ -124,8 +142,12 @@ def exempt_names(items):
     return exempt
 
 
+def is_exempt(item, exempt):
+    return (tuple(item.scope), item.name) in exempt or id(item) in exempt
+
+
 def needs_no_comment(item, exempt):
-    if (tuple(item.scope), item.name) in exempt:
+    if is_exempt(item, exempt):
         return True
     if item.kind == "function":
         name = item.name.lstrip("~")
@@ -158,7 +180,7 @@ def check_text(text, path, skip_internal=False):
             continue
         name = item.qualified()
         if item.comment is None or docs.is_license(item.comment):
-            if id(item) in shared:
+            if id(item) in shared and not is_exempt(item, exempt):
                 owner, confirmed = shared[id(item)]
                 if not confirmed:
                     findings.append((item.start + 1, f"{item.kind} {name}: no comment; shares the comment of "
@@ -365,8 +387,16 @@ struct QcRows
 /*! \\brief Plain fields. \\qcfields */
 struct QcPlain
 {
+    /*! The first field. */
     int a = 0;
+    int b = 0;
+    /*! Adds \\a x. */
+    void add(int x);
 };
+inline void QcPlain::add(int x)
+{
+    a += x;
+}
 /*! \\brief Hidden. \\internal */
 class QcHidden
 {
@@ -425,9 +455,10 @@ def self_test():
                                                                        ("function", "operator==", [])]:
         failures += 1
         print(f"operators: {[(item.kind, item.name, item.params) for item in operators]}")
-    values = "struct S {\n    static constexpr QLatin1StringView key(\"lapis\");\n    int (*read)(int x) = nullptr;\n};\n"
+    values = ("struct S {\n    static constexpr QLatin1StringView key(\"lapis\");\n    int (*read)(int x) = nullptr;\n"
+              "    QString outfit = QStringLiteral(\"plain\");\n};\n")
     kinds = [(item.kind, item.name) for item in docs.scan_header(values, "S.h") if item.scope]
-    if kinds != [("variable", "key"), ("variable", "read")]:
+    if kinds != [("variable", "key"), ("variable", "read"), ("variable", "outfit")]:
         failures += 1
         print(f"variables with parentheses: {kinds}")
     print("self-test: " + ("ok" if not failures else f"{failures} failure(s)"))

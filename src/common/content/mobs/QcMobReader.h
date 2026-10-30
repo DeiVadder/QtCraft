@@ -9,15 +9,18 @@
 
 #include <QJsonObject>
 
-// Reads one mob definition of a content pack: owns the definition being built and the reader of the
-// mob's JSON object. The parts run in a fixed order, later parts check fields that earlier parts read
-// (the AI checks `hostile`, the traits check the AI). The traits of creatures that teleport, carry
-// blocks, are tamed, swim or guard a zone are read in QcMobReaderTraits.cpp.
+/*! \brief Reads one mob definition of a content pack: owns the definition being built and the
+    reader of the mob's JSON object.
+
+    The parts run in a fixed order, later parts check fields that earlier parts read (the AI
+    checks \c {hostile}, the traits check the AI). The traits of creatures that teleport, carry
+    blocks, are tamed, swim or guard a zone are read in QcMobReaderTraits.cpp. */
 class QcMobReader
 {
 public:
     QcMobReader(const QJsonObject &json, const QString &packNamespace);
 
+    /*! Returns the mob definition read from the JSON object, or the first error found. */
     [[nodiscard]] QcResult<QcMobDefinition> read();
 
 private:

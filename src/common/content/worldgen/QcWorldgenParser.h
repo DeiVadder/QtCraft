@@ -8,12 +8,22 @@
 
 #include <QJsonObject>
 
-// Parses the world generation definitions of content packs: biomes, features, ores and terrain.
+/*! \brief Parses the world generation definitions of content packs: biomes, features, ores and
+    terrain. */
 namespace QcWorldgenParser {
 
+/*! Returns the biome read from \a json, or the first error. Names are qualified with
+    \a packNamespace. */
 [[nodiscard]] QcResult<QcBiomeDefinition> parseBiome(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the feature read from \a json, or the first error. Names are qualified with
+    \a packNamespace. */
 [[nodiscard]] QcResult<QcFeatureDefinition> parseFeature(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the ore read from \a json, or the first error. Names are qualified with
+    \a packNamespace. */
 [[nodiscard]] QcResult<QcOreDefinition> parseOre(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the terrain settings read from \a json (worldgen/terrain.json) with its dungeons,
+    mine shafts, coastal towers and freezing, or the first error. Names are qualified with
+    \a packNamespace. */
 [[nodiscard]] QcResult<QcTerrainSettings> parseTerrainSettings(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcWorldgenParser

@@ -8,13 +8,16 @@
 
 #include <QJsonObject>
 
-// Parses structures (structures/*.json, decision E-219).
+/*! \brief Parses structures (structures/\unicode {0x2A}.json, decision E-219). */
 namespace QcStructureParser {
 
+/*! Returns the structure read from \a json, or the first error. Names are qualified with
+    \a packNamespace. */
 [[nodiscard]] QcResult<QcStructureDefinition> parseStructure(const QJsonObject &json, const QString &packNamespace);
 
-// "torch[attach=north]" with the block name qualified ("qtcraft:torch[attach=north]"); empty for
-// invalid names.
+/*! Returns the block state \a text ("torch[attach=north]") with its block name qualified with
+    \a packNamespace ("qtcraft:torch[attach=north]"); empty for an invalid name or a missing
+    closing bracket. */
 QString qualifiedStateName(const QString &text, const QString &packNamespace);
 
 } // namespace QcStructureParser

@@ -7,10 +7,12 @@
 
 struct QcJsonFieldReader;
 
-// Parses the explosion fields of a block (decision E-600): "blastResistance" and "explosive".
+/*! \brief Parses the explosion fields of a block (decision E-600): "blastResistance" and
+    "explosive". */
 namespace QcBlastParser {
 
-// The explosion fields; `block` (read so far) decides whether the block may be explosive.
+/*! Returns the explosion fields read by \a reader, which also takes the failures; \a block (read
+    so far) decides whether the block may be explosive. */
 [[nodiscard]] QcBlastDefinition parseBlast(const QcBlockDefinition &block, QcJsonFieldReader &reader);
 
 } // namespace QcBlastParser

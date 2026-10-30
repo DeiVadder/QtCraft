@@ -7,26 +7,33 @@
 #include <QString>
 #include <QStringList>
 
-// Texts of the content by language and key (part of QcContentRegistry). Packs add or override
-// entries; a lookup falls back to English and finally to the key itself.
+/*! \brief Texts of the content by language and key (part of QcContentRegistry).
+
+    Packs add or override entries; a lookup falls back to English and finally to the key itself. */
 class QcTranslations
 {
 public:
+    /*! The language a lookup falls back to. */
     static constexpr auto fallbackLanguage = "en";
 
-    // Adds or overrides translations for one language.
+    /*! Adds the key-text pairs \a entries to \a language, overriding texts of the same key. */
     void add(const QString &language, const QHash<QString, QString> &entries);
 
+    /*! Returns the languages that have texts, in no particular order. */
     QStringList languages() const { return m_tables.keys(); }
+    /*! Returns the number of texts in \a language. */
     qsizetype count(const QString &language) const { return m_tables.value(language).size(); }
-    // Entries of all languages together (bounded by QcStreamLimits::maxTranslations, decision E-371).
+    /*! Returns the number of entries of all languages together (bounded by
+        QcStreamLimits::maxTranslations, decision E-371). */
     qsizetype total() const;
-    // Every key with a text in that language (no English fallback), sorted.
+    /*! Returns every key with a text in \a language (no English fallback), sorted. */
     QStringList keys(const QString &language) const;
-    // Falls back to English and finally to the key itself.
+    /*! Returns the text of \a key in \a language; falls back to English and finally to the key
+        itself. */
     QString translate(const QString &key, const QString &language) const;
+    /*! Returns whether \a language itself has a text for \a key (no fallback). */
     bool has(const QString &key, const QString &language) const;
-    // Texts per language, then per key (the content sync writes them as they are).
+    /*! Returns the texts per language, then per key (the content sync writes them as they are). */
     const QHash<QString, QHash<QString, QString>> &tables() const { return m_tables; }
 
 private:

@@ -9,21 +9,26 @@
 
 struct QcJsonFieldReader;
 
-// The textures of a block: one per face plus the named slots that shape parts use.
+/*! \brief The textures of a block: one per face plus the named slots that shape parts use. */
 struct QcBlockTextures
 {
+    /*! Texture name per face, indexed by QcBlockFace. */
     std::array<QString, qcBlockFaceCount> faces;
+    /*! Named slots as slot -> texture name. */
     QList<std::pair<QString, QString>> namedSlots;
 };
 
-// Parses the "textures" object of visible blocks ("all", "side", "top", "bottom", face names and
-// named "slots") and checks that every shape part names a known slot (decision E-765).
+/*! \brief Parses the "textures" object of visible blocks ("all", "side", "top", "bottom", face
+    names and named "slots") and checks that every shape part names a known slot (decision
+    E-765). */
 namespace QcBlockTextureParser {
 
-// The face textures and slots of the block JSON `blockJson`; failures go to `reader`.
+/*! Returns the face textures and slots of the block JSON \a blockJson, names qualified in
+    \a packNamespace; failures go to \a reader. */
 [[nodiscard]] QcBlockTextures parseTextures(const QJsonObject &blockJson, QcJsonFieldReader &reader, const QString &packNamespace);
 
-// Fails `reader` when a shape part of the visible `block` uses a slot the block does not define.
+/*! Fails \a reader when a shape part of the visible \a block uses a slot the block does not
+    define. */
 void checkPartTextures(const QcBlockDefinition &block, QcJsonFieldReader &reader);
 
 } // namespace QcBlockTextureParser

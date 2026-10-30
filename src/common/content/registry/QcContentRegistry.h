@@ -34,165 +34,242 @@
 
 #include <optional>
 
-// Central catalogue of all content (blocks, items, creatures, recipes, effects); assets, world
-// generation, villages and translations are catalogues of their own that it owns (decision E-715).
-// Base game and mods register through the same functions; a later registration with the same name
-// replaces the earlier one. Runtime block ids are block states (QcBlockStateTable) in registration
-// order; air is always id 0, and a block's name resolves to its default state.
+/*! \brief Central catalogue of all content (blocks, items, creatures, recipes, effects); assets,
+    world generation, villages and translations are catalogues of their own that it owns (decision
+    E-715).
+
+    Base game and mods register through the same functions; a later registration with the same
+    name replaces the earlier one. Runtime block ids are block states (QcBlockStateTable) in
+    registration order; air is always id 0, and a block's name resolves to its default state. */
 class QcContentRegistry
 {
 public:
+    /*! The name of the air block, the block with id 0. */
     static constexpr auto airName = "qtcraft:air";
 
     QcContentRegistry();
 
-    // Registers a new block or replaces the definition of an existing one; returns its default state.
-    // Replacing a block with a different number of states renumbers the states of later blocks.
+    /*! Registers the block \a definition or replaces the definition of an existing one of the same
+        name; returns its default state. Replacing a block with a different number of states
+        renumbers the states of later blocks. Fails for an invalid name, for air, for an invalid
+        state or light opacity, and when the state table or its box budget would overflow. */
     [[nodiscard]] QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
-    // Registers or replaces a named shape; blocks that refer to it pick it up.
-    // Fails when the shape has too many boxes or its blocks would exceed the state table's budget.
+    /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Fails when the
+        shape has too many boxes or its blocks would exceed the state table's budget. */
     [[nodiscard]] QcStatus registerShape(QcShapeDefinition shape);
+    /*! Returns the named shapes in registration order. */
     const QList<QcShapeDefinition> &shapes() const { return m_shapes; }
+    /*! Returns the shape named \a name, or null if there is none. */
     const QcShapeDefinition *shape(const QString &name) const;
-    // The shape a block uses: its named shape when registered, else its inline shape.
+    /*! Returns the shape \a block uses: its named shape when registered, else its inline shape. */
     const QcShapeDefinition &shapeOf(const QcBlockDefinition &block) const;
 
-    // Number of block definitions; runtime ids range over stateCount() states.
+    /*! Number of block definitions; runtime ids range over stateCount() states. */
     qsizetype blockCount() const { return m_blocks.size(); }
+    /*! Returns the number of block states, the range of runtime block ids. */
     qsizetype stateCount() const { return m_states.size(); }
+    /*! Returns whether \a id is a known block state. */
     bool isValidBlock(QcBlockId id) const { return static_cast<qsizetype>(id) < m_states.size(); }
-    // The definition of a block state. Precondition: isValidBlock(id).
+    /*! Returns the definition of the block state \a id. Precondition: isValidBlock(id). */
     const QcBlockDefinition &block(QcBlockId id) const;
+    /*! Returns the block and state index of the block state \a id. Precondition:
+        isValidBlock(id). */
     const QcBlockState &state(QcBlockId id) const;
-    // Default state of the named block.
+    /*! Returns the default state of the block named \a name; none for an unknown name. */
     [[nodiscard]] std::optional<QcBlockId> blockId(const QString &name) const;
-    // The fire a spark lights and burning bodies show: the first block with "fire": true
-    // (qtcraft:fire in the base game; decision E-392).
+    /*! Returns the fire a spark lights and burning bodies show: the first block with "fire":
+        true (qtcraft:fire in the base game; decision E-392). */
     [[nodiscard]] std::optional<QcBlockId> defaultFire() const;
+    /*! Returns the block definitions in registration order (air first). */
     const QList<QcBlockDefinition> &blocks() const { return m_blocks; }
+    /*! Returns the table of all block states. */
     const QcBlockStateTable &stateTable() const { return m_states; }
-    // Whether two states belong to the same block definition.
+    /*! Returns whether the states \a a and \a b belong to the same block definition. */
     bool isSameBlock(QcBlockId a, QcBlockId b) const { return state(a).type == state(b).type; }
-    // Value of a state property, empty when the block has no such property.
+    /*! Returns the value of \a property in the state \a id, empty when the block has no such
+        property. */
     QString property(QcBlockId id, const QString &property) const;
-    // The state with one property changed; `id` itself for unknown properties or values.
+    /*! Returns the state \a id with \a property set to \a value; \a id itself for unknown
+        properties or values. */
     QcBlockId withProperty(QcBlockId id, const QString &property, const QString &value) const;
-    // "name" or "name[a=x,b=y]" with every property, as stored in saves.
+    /*! Returns the name of the state \a id: "name" or "name[a=x,b=y]" with every property, as
+        stored in saves. */
     QString stateName(QcBlockId id) const;
-    // A parsed state name: the state (std::nullopt for an unknown block) and what was wrong with it.
+    /*! \brief A parsed state name: the state (std::nullopt for an unknown block) and what was
+        wrong with it. */
     struct ParsedState
     {
+        /*! The state; none for an unknown block. */
         std::optional<QcBlockId> id;
+        /*! What was wrong with the name, one text per problem. */
         QStringList problems;
     };
-    // Parses a state name. Unknown properties or values keep their defaults and are described in
-    // `problems`, as is a missing closing bracket.
+    /*! Returns the state named by \a text ("name" or "name[a=x,b=y]"). Unknown properties or
+        values keep their defaults and are described in \c {problems}, as is a missing closing
+        bracket. */
     [[nodiscard]] ParsedState parseState(const QString &text) const;
-    // The state of a state name, as parseState without the problems.
+    /*! Returns the state named by \a text, as parseState() without the problems. */
     [[nodiscard]] std::optional<QcBlockId> stateId(const QString &text) const { return parseState(text).id; }
 
-    // Registers a new item or replaces an existing one (keeping its id). Ids start at 1.
+    /*! Registers the item \a definition or replaces an existing one of the same name (keeping its
+        id) and returns its id. Ids start at 1. Fails for an invalid name or a maxStack outside
+        1..QcItemDefinition::maxStackLimit. */
     [[nodiscard]] QcResult<QcItemId> registerItem(QcItemDefinition definition);
-    // Gives every visible, non-liquid block without an item of the same name an item that places it.
+    /*! Gives every visible, non-liquid block that has an item (\c {hasItem}) but no item of the
+        same name yet an item that places it. */
     void createBlockItems();
-    // Completes the content after all packs: generates building parts (QcPartGenerator), then block
-    // items. Returns the generator's warnings.
+    /*! Completes the content after all packs: generates building parts (QcPartGenerator), takes
+        circuit blocks with broken links out of circuits, creates the block items and the
+        generated stonecutting recipes, and resolves what definitions name of each other (anvil
+        swaps, villagers, archers, held items, creature traits, spawners, projectiles, village
+        styles, outfits, advancements), leaving out or switching off what names nothing. Returns
+        the warnings. */
     QStringList finish();
 
-    // Building part families and materials (server side; their results are ordinary content).
+    /*! Registers or replaces the building part \a family (server side; the parts finish()
+        generates are ordinary content). */
     void registerPartFamily(QcPartFamily family);
+    /*! Registers or replaces the building \a material (server side; the parts finish() generates
+        are ordinary content). */
     void registerMaterial(QcMaterialDefinition material);
+    /*! Returns the building part families in registration order. */
     const QList<QcPartFamily> &partFamilies() const { return m_partFamilies.items(); }
+    /*! Returns the building materials in registration order. */
     const QList<QcMaterialDefinition> &materials() const { return m_materials.items(); }
+    /*! Returns the number of items. */
     qsizetype itemCount() const { return m_items.size(); }
+    /*! Returns whether \a id names a registered item (1..itemCount()). */
     bool isValidItem(QcItemId id) const { return id != qcNoItem && static_cast<qsizetype>(id) <= m_items.size(); }
-    // Precondition: isValidItem(id).
+    /*! Returns the definition of the item \a id. Precondition: isValidItem(id). */
     const QcItemDefinition &item(QcItemId id) const;
+    /*! Returns the id of the item named \a name; none for an unknown name. */
     [[nodiscard]] std::optional<QcItemId> itemId(const QString &name) const;
+    /*! Returns the item definitions in id order (the item with id 1 first). */
     const QList<QcItemDefinition> &items() const { return m_items; }
 
-    // Textures, skeleton models, appearances and sounds (QcAssetCatalog).
+    /*! Returns the textures, skeleton models, appearances and sounds (QcAssetCatalog). */
     QcAssetCatalog &assets() { return m_assets; }
+    /*! Returns the textures, skeleton models, appearances and sounds (QcAssetCatalog). */
     const QcAssetCatalog &assets() const { return m_assets; }
 
-    // Registers or replaces a mob type; mob type ids are indices into mobs().
+    /*! Registers or replaces the mob type \a definition; mob type ids are indices into mobs(). */
     void registerMob(QcMobDefinition definition);
+    /*! Returns the mob types in registration order. */
     const QList<QcMobDefinition> &mobs() const { return m_mobs.items(); }
+    /*! Returns the mob type id of the creature kind named \a name; none for an unknown name. */
     [[nodiscard]] std::optional<int> mobIndex(const QString &name) const;
 
+    /*! Registers or replaces the crafting recipe \a definition by name. */
     void registerRecipe(QcRecipeDefinition definition);
+    /*! Returns the crafting recipes in registration order. */
     const QList<QcRecipeDefinition> &recipes() const { return m_recipes.items(); }
+    /*! Returns the position in recipes() of the recipe named \a name; none for an unknown name. */
     [[nodiscard]] std::optional<qsizetype> recipeIndex(const QString &name) const;
 
-    // Smelting recipes, replaced by name like crafting recipes.
+    /*! Registers the smelting \a recipe, replacing one of the same name like crafting recipes. */
     void registerSmeltingRecipe(QcSmeltingRecipe recipe);
+    /*! Returns the smelting recipes in registration order. */
     const QList<QcSmeltingRecipe> &smeltingRecipes() const { return m_smeltingRecipes.items(); }
-    // The first recipe of `category` that takes `inputItem`, or null.
+    /*! Returns the first recipe of \a category that takes \a inputItem, or null. */
     const QcSmeltingRecipe *smeltingRecipe(const QString &category, const QString &inputItem) const;
-    // Stonecutting recipes (decision E-784), from data and generated for building parts
-    // (QcStonecutting), replaced by name.
+    /*! Registers the stonecutting \a recipe (decision E-784), from data or generated for building
+        parts (QcStonecutting), replacing one of the same name. */
     void registerStonecuttingRecipe(QcSmeltingRecipe recipe);
+    /*! Returns the stonecutting recipes in registration order. */
     const QList<QcSmeltingRecipe> &stonecuttingRecipes() const { return m_stonecuttingRecipes.items(); }
+    /*! Returns the position in stonecuttingRecipes() of the recipe named \a name; none for an
+        unknown name. */
     [[nodiscard]] std::optional<qsizetype> stonecuttingIndex(const QString &name) const;
 
-    // Handbook chapters about playing, replaced by name (server side only, not synchronised).
+    /*! Registers the handbook \a chapter about playing, replacing one of the same name (server
+        side only, not synchronised). */
     void registerHandbookChapter(QcHandbookChapter chapter);
+    /*! Returns the handbook chapters in registration order. */
     const QList<QcHandbookChapter> &handbookChapters() const { return m_handbookChapters.items(); }
-    // Command macros of the packs (server side only, not synchronised), replaced by name.
+    /*! Registers the command \a macro of a pack, replacing one of the same name (server side only,
+        not synchronised). */
     void registerCommandMacro(QcCommandMacroDefinition macro);
+    /*! Returns the command macros in registration order. */
     const QList<QcCommandMacroDefinition> &commandMacros() const { return m_commandMacros.items(); }
+    /*! Returns the command macro named \a name, or null if there is none. */
     const QcCommandMacroDefinition *commandMacro(const QString &name) const;
-    // What the weather does to the world (server side only); a later pack replaces it.
+    /*! Sets what the weather does to the world to \a weather (server side only); a later pack
+        replaces it. */
     void setWeather(QcWeatherDefinition weather) { m_weather = std::move(weather); }
+    /*! Returns what the weather does to the world. */
     const QcWeatherDefinition &weather() const { return m_weather; }
-    // How items are held by category (decision E-831); a later pack overrides the fields it sets.
-    // They reach the client.
+    /*! Merges \a later into how items are held by category (decision E-831); a later pack
+        overrides the fields it sets. They reach the client. */
     void mergeHoldDefaults(const QcHoldDefaults &later) { m_holdDefaults = m_holdDefaults.merged(later); }
+    /*! Returns how items are held by category. */
     const QcHoldDefaults &holdDefaults() const { return m_holdDefaults; }
 
-    // Biomes, features, ores, terrain, structures and world type settings (server side only).
+    /*! Returns the biomes, features, ores, terrain, structures and world type settings (server
+        side only). */
     QcWorldgenCatalog &worldgen() { return m_worldgen; }
+    /*! Returns the biomes, features, ores, terrain, structures and world type settings (server
+        side only). */
     const QcWorldgenCatalog &worldgen() const { return m_worldgen; }
-    // Village styles and settings, villager species, professions and their offers (server side only).
+    /*! Returns the village styles and settings, villager species, professions and their offers
+        (server side only). */
     QcVillageCatalog &villageCatalog() { return m_villages; }
+    /*! Returns the village styles and settings, villager species, professions and their offers
+        (server side only). */
     const QcVillageCatalog &villageCatalog() const { return m_villages; }
-    // The creature kind living in villages of `style` (its own or the settings'), when it is a
-    // villager (decision E-421).
+    /*! Returns the creature kind living in villages of \a style (its own or the settings'), when
+        it is a villager (decision E-421). */
     std::optional<int> villagerOfStyle(const QString &style) const;
-    // The settings of the creature kind `mobType` (QcMobDefinition::villagerSettings, by the index
-    // finish() keeps on the creature); empty settings for a kind without them.
+    /*! Returns the settings of the creature kind \a mobType (QcMobDefinition::villagerSettings,
+        by the index finish() keeps on the creature); empty settings for a kind without them. */
     const QcVillagerSettings &villagerSettingsOf(int mobType) const;
 
-    // Kinds of projectiles (decision E-425, server side only), replaced by name.
+    /*! Registers the \a projectile kind (decision E-425, server side only), replacing one of the
+        same name. */
     void registerProjectile(QcProjectileDefinition projectile);
+    /*! Returns the projectile kinds in registration order. */
     const QList<QcProjectileDefinition> &projectiles() const { return m_projectiles.items(); }
+    /*! Returns the projectile kind named \a name, or null if there is none. */
     const QcProjectileDefinition *projectile(const QString &name) const;
-    // Kinds of status effects (decision E-450), replaced by name; they reach the client.
+    /*! Registers the status \a effect kind (decision E-450), replacing one of the same name; they
+        reach the client. */
     void registerEffect(QcEffectDefinition effect);
+    /*! Returns the status effect kinds in registration order. */
     const QList<QcEffectDefinition> &effects() const { return m_effects.items(); }
+    /*! Returns the status effect kind named \a name, or null if there is none. */
     const QcEffectDefinition *effect(const QString &name) const;
-    // Enchantments (decision E-864), replaced by name; they reach the client.
+    /*! Registers the \a enchantment (decision E-864), replacing one of the same name; they reach
+        the client. */
     void registerEnchantment(QcEnchantmentDefinition enchantment) { m_enchantments.set(std::move(enchantment)); }
+    /*! Returns the enchantments in registration order. */
     const QList<QcEnchantmentDefinition> &enchantments() const { return m_enchantments.items(); }
+    /*! Returns the enchantment named \a name, or null if there is none. */
     const QcEnchantmentDefinition *enchantment(const QString &name) const { return m_enchantments.find(name); }
-    // Advancements of the adventure guide (decision E-923), replaced or switched off by name; they
-    // reach the client without the triggers of their criteria.
+    /*! Returns the advancements of the adventure guide (decision E-923), replaced or switched off
+        by name; they reach the client without the triggers of their criteria. */
     QcAdvancementCatalog &advancements() { return m_advancements; }
+    /*! Returns the advancements of the adventure guide (decision E-923). */
     const QcAdvancementCatalog &advancements() const { return m_advancements; }
-    // Loot tables of generated chests (decision E-521, server side only), replaced by name.
+    /*! Returns the loot tables of generated chests (decision E-521, server side only), replaced by
+        name. */
     QcLootTables &lootTables() { return m_lootTables; }
+    /*! Returns the loot tables of generated chests (decision E-521, server side only). */
     const QcLootTables &lootTables() const { return m_lootTables; }
 
-    // Packs in load order (base game first).
+    /*! Appends \a pack to the packs in load order (base game first). */
     void addPack(QcPackReference pack) { m_packs.append(std::move(pack)); }
+    /*! Returns the packs in load order (base game first). */
     const QList<QcPackReference> &packs() const { return m_packs; }
 
-    // Texts of the content by language (QcTranslations).
+    /*! Returns the texts of the content by language (QcTranslations). */
     QcTranslations &translations() { return m_translations; }
+    /*! Returns the texts of the content by language (QcTranslations). */
     const QcTranslations &translations() const { return m_translations; }
 
-    // Wire format used by the content sync message (QcContentSerializer).
+    /*! Writes the content to \a stream in the wire format of the content sync message
+        (QcContentSerializer::write()). */
     void writeTo(QDataStream &stream) const;
+    /*! Returns the content read from \a stream in the wire format of the content sync message
+        (QcContentSerializer::read()), or an error for a corrupt stream. */
     [[nodiscard]] static QcResult<QcContentRegistry> readFrom(QDataStream &stream);
 
 private:

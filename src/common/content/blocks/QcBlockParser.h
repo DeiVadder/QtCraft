@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses block definitions of content packs.
+/*! \brief Parses block definitions of content packs. */
 namespace QcBlockParser {
 
+/*! Returns the block definition read from \a json, names qualified in \a packNamespace, or the
+    first error found. */
 [[nodiscard]] QcResult<QcBlockDefinition> parseBlock(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcBlockParser

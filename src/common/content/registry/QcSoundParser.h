@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses synthesized sound definitions of content packs.
+/*! \brief Parses synthesized sound definitions of content packs. */
 namespace QcSoundParser {
 
+/*! Returns the sound described by \a json, with an unqualified name in \a packNamespace, or the
+    first problem found (including any QcSoundDefinition::problem()). */
 [[nodiscard]] QcResult<QcSoundDefinition> parseSound(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcSoundParser

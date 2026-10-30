@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses the showcase settings (worldgen/showcase.json, decision E-220).
+/*! \brief Parses the showcase settings (worldgen/showcase.json, decision E-220). */
 namespace QcShowcaseParser {
 
+/*! Returns the showcase settings read from \a json, or the first error. Block and structure
+    names are qualified with \a packNamespace. */
 [[nodiscard]] QcResult<QcShowcaseDefinition> parseShowcase(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcShowcaseParser

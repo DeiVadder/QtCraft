@@ -6,10 +6,13 @@
 #include <QString>
 #include <QStringList>
 
-// A part of a shape applies when every condition holds: the block's value of `property` is one of `values`.
+/*! \brief A part of a shape applies when every condition holds: the block's value of
+    \c {property} is one of \c {values}. */
 struct QcShapeCondition
 {
+    /*! Name of the block's state property. */
     QString property;
+    /*! Values of the property for which the condition holds. */
     QStringList values;
 
     bool operator==(const QcShapeCondition &) const = default;

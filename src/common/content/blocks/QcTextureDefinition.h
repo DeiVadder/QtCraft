@@ -7,12 +7,15 @@
 #include <QJsonObject>
 #include <QString>
 
-// Texture source as delivered by content packs. The server never decodes it; the client turns it into pixels.
+/*! \brief Texture source as delivered by content packs.
+
+    The server never decodes it; the client turns it into pixels. */
 struct QcTextureDefinition
 {
+    /*! Texture name that blocks and items refer to. */
     QString name;
-    // Procedural description (pattern, colours, seed), used when png is empty.
+    /*! Procedural description (pattern, colours, seed), used when png is empty. */
     QJsonObject procedural;
-    // Encoded PNG image supplied by a content pack.
+    /*! Encoded PNG image supplied by a content pack. */
     QByteArray png;
 };

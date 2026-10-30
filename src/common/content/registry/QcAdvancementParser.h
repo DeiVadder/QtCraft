@@ -8,16 +8,22 @@
 
 #include <QJsonObject>
 
-// Parses an advancement (advancements/<name>.json, decision E-923). All input is untrusted.
-// `{"name": …, "disabled": true}` alone switches off an advancement of an earlier pack.
+/*! \brief Parses an advancement (advancements/<name>.json, decision E-923).
+
+    All input is untrusted. \c {{"name": …, "disabled": true}} alone switches off an advancement
+    of an earlier pack. */
 namespace QcAdvancementParser {
 
+/*! Returns the advancement described by \a json, with unqualified names in \a packNamespace, or
+    the first problem found. */
 [[nodiscard]] QcResult<QcAdvancementDefinition> parseAdvancement(const QJsonObject &json, const QString &packNamespace);
 
-// The trigger named `text` ("item_obtained", "block_broken", …); none for an unknown name.
+/*! Returns the trigger named \a text ("item_obtained", "block_broken", …); none for an unknown
+    name. */
 [[nodiscard]] std::optional<QcAdvancementTrigger> triggerOf(const QString &text);
+/*! Returns the JSON name of \a trigger, the inverse of triggerOf(). */
 [[nodiscard]] QString triggerName(QcAdvancementTrigger trigger);
-// "task", "goal", "challenge".
+/*! Returns the JSON name of \a frame: "task", "goal" or "challenge". */
 [[nodiscard]] QString frameName(QcAdvancementFrame frame);
 
 } // namespace QcAdvancementParser

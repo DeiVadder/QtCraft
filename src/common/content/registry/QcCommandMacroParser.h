@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses command macros (commands/*.json, decision E-248).
+/*! \brief Parses command macros (commands/\unicode {0x2A}.json, decision E-248). */
 namespace QcCommandMacroParser {
 
+/*! Returns the macro described by \a json, or the first problem found. \a packNamespace is not
+    used: players type the bare name, and a later pack replaces an earlier macro of that name. */
 [[nodiscard]] QcResult<QcCommandMacroDefinition> parseCommandMacro(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcCommandMacroParser

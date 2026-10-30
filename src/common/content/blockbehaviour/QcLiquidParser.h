@@ -9,14 +9,16 @@
 
 struct QcJsonFieldReader;
 
-// Parses the "flow" object of a liquid block: how far and how fast it spreads,
-// whether it makes new sources, its bucket, bottle and sound, and its reactions with other liquids.
+/*! \brief Parses the "flow" object of a liquid block: how far and how fast it spreads, whether
+    it makes new sources, its bucket, bottle and sound, and its reactions with other liquids. */
 namespace QcLiquidParser {
 
-// The liquid of the "flow" object `flowJson`; problems go to `flowReader`.
+/*! Returns the liquid of the "flow" object \a flowJson, names qualified in \a packNamespace;
+    problems go to \a flowReader. */
 [[nodiscard]] QcLiquidDefinition parseFlow(const QJsonObject &flowJson, QcJsonFieldReader &flowReader, const QString &packNamespace);
-// The flow keeps its state in `level` ("0" source, then one value per block of distance) and
-// optionally `falling`; `block` (with its flow) must have them.
+/*! Checks the states of a flowing liquid: the flow keeps its state in \c {level} ("0" source,
+    then one value per block of distance, in order) and optionally \c {falling} (false, true);
+    \a block (with its flow) must have them. Problems go to \a flowReader. */
 void checkStates(const QcBlockDefinition &block, QcJsonFieldReader &flowReader);
 
 } // namespace QcLiquidParser

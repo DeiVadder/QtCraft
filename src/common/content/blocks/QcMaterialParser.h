@@ -9,18 +9,25 @@
 
 #include <QJsonObject>
 
-// Parses materials and the part families that turn them into building parts.
+/*! \brief Parses materials and the part families that turn them into building parts. */
 namespace QcMaterialParser {
 
+/*! Returns the part family read from \a json, names qualified in \a packNamespace, or the error;
+    its block and recipe templates are checked on a sample material. */
 [[nodiscard]] QcResult<QcPartFamily> parsePartFamily(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the material or exclusion entry read from \a json, names qualified in
+    \a packNamespace, or the error. */
 [[nodiscard]] QcResult<QcMaterialDefinition> parseMaterial(const QJsonObject &json, const QString &packNamespace);
-// The recipe file of a part: the family's recipe with "@" replaced by the base block and
-// "@<suffix>" by the material's part of that suffix.
+/*! Returns the recipe file of the part \a partName: the recipe of \a family with "@" replaced by
+    \a baseBlock and "@<suffix>" by the material's part of that suffix; the recipe is named
+    \a partName and makes it unless the template names a "result". */
 QJsonObject partRecipeJson(const QcPartFamily &family, const QString &baseBlock, const QString &partName);
-// The recipe files of the family's further recipes (moreRecipes) for one part, resolved the same way.
+/*! Returns the recipe files of the further recipes (moreRecipes) of \a family for the part
+    \a partName made from \a baseBlock, resolved the same way; each is named
+    "<partName>_<name>". */
 QList<QJsonObject> morePartRecipesJson(const QcPartFamily &family, const QString &baseBlock, const QString &partName);
-// The suffixes of other parts of the same material the family's recipes name ("@slab"); a part is
-// only made for materials that have them.
+/*! Returns the suffixes of other parts of the same material that the recipes of \a family name
+    ("@slab"); a part is only made for materials that have them. */
 [[nodiscard]] QStringList siblingSuffixes(const QcPartFamily &family);
 
 } // namespace QcMaterialParser

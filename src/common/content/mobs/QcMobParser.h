@@ -10,11 +10,17 @@
 
 #include <QJsonObject>
 
-// Parses mobs and the skeleton models and appearances that characters are drawn with.
+/*! \brief Parses mobs and the skeleton models and appearances that characters are drawn with. */
 namespace QcMobParser {
 
+/*! Returns the creature defined by \a json (a file in \c {mobs}), names qualified with
+    \a packNamespace, or the first error (QcMobReader). */
 [[nodiscard]] QcResult<QcMobDefinition> parseMob(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the skeleton model defined by \a json (a file in \c {models}), names qualified with
+    \a packNamespace, or the first error. */
 [[nodiscard]] QcResult<QcModelDefinition> parseModel(const QJsonObject &json, const QString &packNamespace);
+/*! Returns the outfit, hair style or cape defined by \a json (a file in \c {appearance}), names
+    qualified with \a packNamespace, or the first error. */
 [[nodiscard]] QcResult<QcAppearanceDefinition> parseAppearance(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcMobParser

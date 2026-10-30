@@ -13,13 +13,14 @@
 #include <optional>
 #include <utility>
 
-// Definitions of one kind in registration order, found by their `name`: registering a name again
-// replaces the earlier definition in its place, so a later pack overrides an earlier one.
+/*! \brief Definitions of one kind in registration order, found by their \c {name}: registering a
+    name again replaces the earlier definition in its place, so a later pack overrides an earlier
+    one. */
 template<typename Definition>
 class QcNamedList
 {
 public:
-    // Replaces the definition with the same name or appends.
+    /*! Replaces the definition with the same name as \a definition, or appends it. */
     void set(Definition definition)
     {
         const auto existing = m_index.constFind(definition.name);
@@ -32,7 +33,7 @@ public:
         m_items.append(std::move(definition));
     }
 
-    // Removes the definition `name`; the later ones move up.
+    /*! Removes the definition \a name; the later ones move up. */
     void remove(const QString &name)
     {
         const auto it = m_index.constFind(name);
@@ -47,7 +48,7 @@ public:
         }
     }
 
-    // Keeps the first `count` definitions and forgets the later ones.
+    /*! Keeps the first \a count definitions and forgets the later ones. */
     void truncate(qsizetype count)
     {
         for (qsizetype index = count; index < m_items.size(); ++index) {
@@ -55,22 +56,26 @@ public:
         }
         m_items.resize(std::min(count, m_items.size()));
     }
+    /*! Returns the position of the definition \a name in items(); none if there is none. */
     [[nodiscard]] std::optional<qsizetype> indexOf(const QString &name) const
     {
         const auto it = m_index.constFind(name);
         return it == m_index.constEnd() ? std::nullopt : std::optional<qsizetype>(*it);
     }
 
+    /*! Returns the definition \a name, or null if there is none. */
     [[nodiscard]] const Definition *find(const QString &name) const
     {
         const auto it = m_index.constFind(name);
         return it == m_index.constEnd() ? nullptr : &m_items[*it];
     }
 
+    /*! Returns the definitions in registration order. */
     [[nodiscard]] const QList<Definition> &items() const { return m_items; }
 
-    // Changes the definition at `index` with `change(Definition &)`. The name finds the definition,
-    // so it stays: a change of it is undone with a warning.
+    /*! Changes the definition at \a index by calling \a change with it
+        (\c {change(Definition &)}). The name finds the definition, so it stays: a change of it is
+        undone with a warning. */
     template<typename Change>
     void update(qsizetype index, Change &&change)
     {
@@ -84,7 +89,7 @@ public:
         }
     }
 
-    // update() for every definition in order.
+    /*! Calls update() with \a change for every definition in order. */
     template<typename Change>
     void updateAll(const Change &change)
     {

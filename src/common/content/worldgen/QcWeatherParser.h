@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses what the weather does to the world (weather.json of a pack, decision E-396).
+/*! \brief Parses what the weather does to the world (weather.json of a pack, decision E-396). */
 namespace QcWeatherParser {
 
+/*! Returns the weather definition read from \a json, or the first error; missing fields keep
+    their defaults. The snow layer block is qualified with \a packNamespace. */
 [[nodiscard]] QcResult<QcWeatherDefinition> parseWeather(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcWeatherParser

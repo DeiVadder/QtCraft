@@ -9,65 +9,82 @@
 
 #include <optional>
 
-// The options of the world generation a player sets when creating a world (decision E-917,
-// worldgen/options.json of each pack): each option sets one target of the generator's content
-// values (QcWorldOptionTargets: the village spacing, the ore amount, caves on or off …) for that
-// world, in place of the value the content gives. Server side only.
-
-// How a number option's value reads in the menu.
+/*! \brief How a number option's value reads in the menu. */
 enum class QcWorldOptionUnit {
-    // The number as it is.
+    /*! The number as it is. */
     Plain,
-    // A distance in blocks ("384 blocks").
+    /*! A distance in blocks ("384 blocks"). */
     Blocks,
-    // A share in 0..1, shown in percent ("65 %").
+    /*! A share in 0..1, shown in percent ("65 %"). */
     Percent,
-    // A factor on the content's amount ("1.5×").
+    /*! A factor on the content's amount ("1.5×"). */
     Factor,
 };
 
-// A heading the options of the menu are grouped under.
+/*! \brief A heading the options of the menu are grouped under. */
 struct QcWorldOptionGroup
 {
+    /*! Qualified name (\c {"name"}). */
     QString name;
+    /*! Key of the heading's text, made from the name with the prefix
+        \c {world_option_group} (QcContentFields::translationKey()). */
     QString translationKey;
 };
 
+/*! \brief One option of the world generation a player sets when creating a world (an entry of
+    \c {"options"} in worldgen/options.json of a pack, decision E-917).
+
+    The option sets one target of the generator's content values (QcWorldOptionTargets: the
+    village spacing, the ore amount, caves on or off …) for that world, in place of the value the
+    content gives. Server side only. */
 struct QcWorldOptionDefinition
 {
+    /*! Qualified name (\c {"name"}). */
     QString name;
-    // The label; "<translationKey>.help" is the help line below it.
+    /*! The label, made from the name with the prefix \c {world_option}
+        (QcContentFields::translationKey()); "<translationKey>.help" is the help line below it. */
     QString translationKey;
-    // The qualified name of its group (QcWorldOptionGroup).
+    /*! The qualified name of its group (QcWorldOptionGroup). */
     QString group;
-    // The generator value it sets (QcWorldOptionTargets) and, for targets about one definition, the
-    // qualified name of that definition (an ore).
+    /*! The generator value it sets (QcWorldOptionTargets) and, for targets about one definition,
+        the qualified name of that definition (an ore): \c {"target"} and \c {"subject"}.
+        \qcshared */
     QString target;
     QString subject;
+    /*! How the value reads in the menu (\c {"unit"}: plain, blocks, percent or factor). */
     QcWorldOptionUnit unit = QcWorldOptionUnit::Plain;
-    // The range of a number option and the step of its slider (0: any value); switches ignore them.
+    /*! The range of a number option and the step of its slider (0: any value); switches ignore
+        them. \qcshared */
     double min = 0.0;
     double max = 1.0;
     double step = 0.0;
-    // The value a new world starts with; missing: the target's value in the content (1 for factors),
-    // so that a world with every option at its default generates as the content alone would.
+    /*! The value a new world starts with; missing: the target's value in the content (1 for
+        factors), so that a world with every option at its default generates as the content alone
+        would. */
     std::optional<double> defaultValue;
 };
 
-// A named set of option values (more villages, large biomes): the other options keep their defaults.
+/*! \brief A named set of option values (more villages, large biomes): the other options keep
+    their defaults. */
 struct QcWorldPreset
 {
+    /*! Qualified name (\c {"name"}). */
     QString name;
+    /*! Key of the preset's label, made from the name with the prefix \c {world_preset}
+        (QcContentFields::translationKey()). */
     QString translationKey;
-    // Qualified option name -> value (switches: 0 or 1).
+    /*! Qualified option name -> value (switches: 0 or 1). */
     QMap<QString, double> values;
 };
 
-// What one pack's worldgen/options.json adds; a later pack replaces groups, options and presets of
-// the same name.
+/*! \brief What one pack's worldgen/options.json adds; a later pack replaces groups, options and
+    presets of the same name. */
 struct QcWorldOptionSet
 {
+    /*! The headings (\c {"groups"}). */
     QList<QcWorldOptionGroup> groups;
+    /*! The options (\c {"options"}). */
     QList<QcWorldOptionDefinition> options;
+    /*! The presets (\c {"presets"}). */
     QList<QcWorldPreset> presets;
 };

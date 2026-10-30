@@ -8,39 +8,47 @@
 
 #include <optional>
 
-// What an item hung on a block face becomes (decision E-790): an item frame, which holds one item
-// it shows turned in eighths, or a painting, which shows one of its item's motifs.
+/*! \brief What an item hung on a block face becomes (decision E-790): an item frame, which holds
+    one item it shows turned in eighths, or a painting, which shows one of its item's motifs. */
 enum class QcHangingType : quint8 {
-    ItemFrame,
-    Painting,
+    ItemFrame, // An item frame (\c {"type": "item_frame"}).
+    Painting, // A painting (\c {"type": "painting"}).
 };
 
+/*! Number of values of QcHangingType. */
 inline constexpr int qcHangingTypeCount = 2;
 
-// One picture a painting can show (decision E-791): its size in blocks and its texture. A texture
-// larger than one block is one procedural texture with `tiles` (QcContentParser::textureTiles),
-// drawn block by block from the tiles "<texture>_<column>_<row>" (column 0 at the left, row 0 at
-// the top as seen from the front).
+/*! \brief One picture a painting can show (decision E-791): its size in blocks and its texture.
+
+    A texture larger than one block is one procedural texture with \c {tiles}
+    (QcContentParser::textureTiles), drawn block by block from the tiles
+    "<texture>_<column>_<row>" (column 0 at the left, row 0 at the top as seen from the front). */
 struct QcPaintingMotif
 {
-    // Paintings are at most this many blocks wide and high.
+    /*! Paintings are at most this many blocks wide and high. */
     static constexpr int maxSide = 4;
 
+    /*! Name of the motif, unique within its item (\c {"name"}). */
     QString name;
+    /*! Texture of the motif (\c {"texture"}); with tiles for a motif larger than one block. */
     QString texture;
+    /*! Width in blocks (\c {"width"}, 1 to \c {maxSide}). */
     int width = 1;
+    /*! Height in blocks (\c {"height"}, 1 to \c {maxSide}). */
     int height = 1;
-    // The names of the block textures, row by row (nameTiles()); empty for a motif of one block.
+    /*! The names of the block textures, row by row (nameTiles()); empty for a motif of one
+        block. */
     QList<QString> tiles;
 
-    // The name of the block texture in `column` and `row` of the procedural `texture`.
+    /*! Returns the name of the block texture in \a column and \a row of the procedural
+        \a texture. */
     static QString tileName(const QString &texture, int column, int row)
     {
         return texture + QLatin1Char('_') + QString::number(column) + QLatin1Char('_') + QString::number(row);
     }
 
-    // Names the block textures once from the texture and the size; whoever makes a motif calls it
-    // (parser, item serializer), so drawing builds no names.
+    /*! Names the block textures once from the texture and the size; whoever makes a motif calls
+        it (parser, item serializer), so drawing builds no names. */
     void nameTiles()
     {
         tiles.clear();
@@ -54,23 +62,25 @@ struct QcPaintingMotif
         }
     }
 
-    // The texture of the block in `column` and `row`; the texture itself for a motif of one block.
+    /*! Returns the texture of the block in \a column and \a row; the texture itself for a motif
+        of one block. */
     const QString &tileTexture(int column, int row) const { return tiles.isEmpty() ? texture : tiles.at(static_cast<qsizetype>(row) * width + column); }
 
     bool operator==(const QcPaintingMotif &) const = default;
 };
 
-// The field "hangs" of an item (decision E-790): used on a block face, the item hangs an entity of
-// `type` there that drops the item again.
+/*! \brief The field "hangs" of an item (decision E-790): used on a block face, the item hangs an
+    entity of \c {type} there that drops the item again. */
 struct QcHangingDefinition
 {
-    // Motifs one painting item offers at most.
+    /*! Motifs one painting item offers at most. */
     static constexpr int maxMotifs = 64;
 
+    /*! What the item hangs (\c {"type"}: "item_frame" or "painting"). */
     QcHangingType type = QcHangingType::ItemFrame;
-    // Paintings only: the motifs to choose from on placement.
+    /*! Paintings only: the motifs to choose from on placement. */
     QList<QcPaintingMotif> motifs;
-    // Paintings only: the texture of its back and edges.
+    /*! Paintings only: the texture of its back and edges. */
     QString back;
 
     bool operator==(const QcHangingDefinition &) const = default;

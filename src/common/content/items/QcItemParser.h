@@ -8,9 +8,11 @@
 
 #include <QJsonObject>
 
-// Parses item definitions of content packs.
+/*! \brief Parses item definitions of content packs. */
 namespace QcItemParser {
 
+/*! Returns the item read from \a json, its names qualified with \a packNamespace, or the first
+    failure. */
 [[nodiscard]] QcResult<QcItemDefinition> parseItem(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcItemParser

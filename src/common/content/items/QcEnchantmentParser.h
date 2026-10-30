@@ -8,15 +8,20 @@
 
 #include <QJsonObject>
 
-// Parses an enchantment (enchantments/<name>.json, decision E-864). All input is untrusted.
+/*! \brief Parses an enchantment (enchantments/<name>.json, decision E-864).
+
+    All input is untrusted. */
 namespace QcEnchantmentParser {
 
+/*! Returns the enchantment read from \a json, its names qualified with \a packNamespace, or the
+    first failure. */
 [[nodiscard]] QcResult<QcEnchantmentDefinition> parseEnchantment(const QJsonObject &json, const QString &packNamespace);
 
-// The effect named `text` ("efficiency", "unbreaking", …); none for an unknown name.
+/*! Returns the effect named \a text ("efficiency", "unbreaking", …); none for an unknown name. */
 [[nodiscard]] std::optional<QcEnchantmentEffect> effectOf(const QString &text);
 
-// The item kinds an enchantment may name in `items` (QcEnchanting::kindsOf).
+/*! Returns whether \a kind is one of the item kinds an enchantment may name in \c {items}
+    (QcEnchanting::kindsOf). */
 [[nodiscard]] bool isItemKind(const QString &kind);
 
 } // namespace QcEnchantmentParser

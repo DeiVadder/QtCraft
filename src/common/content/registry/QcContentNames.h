@@ -5,12 +5,16 @@
 
 #include <QString>
 
-// Content names have the form "namespace:path" with lowercase letters, digits, '_', '-', '.' and '/'.
+/*! \brief Content names have the form "namespace:path" with lowercase letters, digits, '_', '-',
+    '.' and '/'. */
 namespace QcContentNames {
 
+/*! Returns whether \a part is a non-empty namespace or path of only the allowed characters. */
 bool isValidPart(const QString &part);
+/*! Returns whether \a name is "namespace:path" with two valid parts. */
 bool isValidQualified(const QString &name);
-// Adds `defaultNamespace` when `name` has none. Returns an empty string for invalid names.
+/*! Returns \a name with \a defaultNamespace added when it has none, or an empty string when the
+    result is not a valid qualified name. */
 QString qualify(const QString &name, const QString &defaultNamespace);
 
 } // namespace QcContentNames

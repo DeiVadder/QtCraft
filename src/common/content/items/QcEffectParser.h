@@ -8,9 +8,13 @@
 
 #include <QJsonObject>
 
-// Parses a kind of status effect (effects/<name>.json, decision E-450). All input is untrusted.
+/*! \brief Parses a kind of status effect (effects/<name>.json, decision E-450).
+
+    All input is untrusted. */
 namespace QcEffectParser {
 
+/*! Returns the effect read from \a json, its names qualified with \a packNamespace, or the
+    first failure. */
 [[nodiscard]] QcResult<QcEffectDefinition> parseEffect(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcEffectParser

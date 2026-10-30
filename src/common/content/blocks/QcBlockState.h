@@ -11,45 +11,55 @@
 
 #include <array>
 
-// Everything that depends on one concrete block state, derived from the block definition and its
-// shape. Boxes are block-local (0..1, collision up to 1.5 m high).
+/*! \brief Everything that depends on one concrete block state, derived from the block definition
+    and its shape.
+
+    Boxes are block-local (0..1, collision up to 1.5 m high). */
 struct QcBlockState
 {
-    // Index of the block definition and of the state among that block's states.
+    /*! Index of the block definition and of the state among that block's states. \qcshared */
     quint32 type = 0;
     quint32 index = 0;
+    /*! Drawn boxes of the state's shape parts, turned into place; the unit cube without a shape. */
     QList<QcAabb> boxes;
-    // Texture slot per box (parallel to `boxes`); empty means the face textures.
+    /*! Texture slot per box (parallel to \c {boxes}); empty means the face textures. */
     QList<QString> boxTextures;
-    // Whether a box's faces stretch the whole texture over themselves (parallel to `boxes`).
+    /*! Whether a box's faces stretch the whole texture over themselves (parallel to \c {boxes}). */
     QList<bool> boxStretch;
+    /*! Regions of crossed planes (plants), turned into place like \c {boxes}. */
     QList<QcAabb> crosses;
-    // Texture slot per cross (parallel to `crosses`); empty means the north face texture.
+    /*! Texture slot per cross (parallel to \c {crosses}); empty means the north face texture. */
     QList<QString> crossTextures;
+    /*! Collision boxes: the parts' own collision boxes where they have them, else their drawn
+        boxes; the unit cube without a shape; empty for blocks that are not solid. */
     QList<QcAabb> collision;
-    // Boxes pointed at instead of the drawn ones (QcShapePart::target); empty when no part has any.
+    /*! Boxes pointed at instead of the drawn ones (QcShapePart::target); empty when no part has
+        any. */
     QList<QcAabb> targets;
-    // The shape is exactly the unit cube.
+    /*! The shape is exactly the unit cube. */
     bool fullCube = true;
-    // Full cube of an opaque block: hides neighbour faces completely.
+    /*! Full cube of an opaque block: hides neighbour faces completely. */
     bool opaque = true;
-    // Light lost entering the cell; 0 for partial shapes, which block light at covered faces.
+    /*! Light lost entering the cell; 0 for partial shapes, which block light at covered faces. */
     int lightOpacity = 15;
-    // Faces light cannot cross (bits per QcBlockFace, see QcLightPassage).
+    /*! Faces light cannot cross (bits per QcBlockFace, see QcLightPassage). */
     quint8 lightBlockedFaces = 0;
-    // Whether the boxes cover the whole side of the cell, per QcBlockFace (supports torches).
+    /*! Whether the boxes cover the whole side of the cell, per QcBlockFace (supports torches). */
     std::array<bool, qcBlockFaceCount> fullFace{};
-    // Face of the definition whose texture shows on each world face (turned blocks such as furnaces).
+    /*! Face of the definition whose texture shows on each world face (turned blocks such as
+        furnaces). */
     std::array<QcBlockFace, qcBlockFaceCount> faceSource = qcAllBlockFaces;
-    // Quarter turns (0..3, clockwise as the face is seen) of the texture on each world face, for full
-    // cubes and the boxes of shapes alike: the top of a turned block (glazed terracotta, the arrow of
-    // a repeater) and the bark of a lying log run with the block (decisions E-751, E-874).
+    /*! Quarter turns (0..3, clockwise as the face is seen) of the texture on each world face,
+        for full cubes and the boxes of shapes alike: the top of a turned block (glazed
+        terracotta, the arrow of a repeater) and the bark of a lying log run with the block
+        (decisions E-751, E-874). */
     std::array<quint8, qcBlockFaceCount> faceUvTurns{};
-    // Sixteenths of a turn (0..3, clockwise seen from above) the drawn faces turn beyond the quarter
-    // turns of the boxes: the 16 directions of a standing sign (QcShapeDefinition::spin).
+    /*! Sixteenths of a turn (0..3, clockwise seen from above) the drawn faces turn beyond the
+        quarter turns of the boxes: the 16 directions of a standing sign
+        (QcShapeDefinition::spin). */
     quint8 fineTurns = 0;
 
-    // Boxes that can be pointed at: the drawn boxes and the regions of crossed planes, or the shape's
-    // own target boxes.
+    /*! Returns the boxes that can be pointed at: the drawn boxes and the regions of crossed
+        planes, or the shape's own target boxes. */
     QList<QcAabb> targetBoxes() const { return targets.isEmpty() ? boxes + crosses : targets; }
 };

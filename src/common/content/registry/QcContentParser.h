@@ -32,8 +32,10 @@
 #include <QHash>
 #include <QJsonObject>
 
-// Turns content-pack JSON documents into definitions. Unqualified names get the pack's namespace.
-// All input is untrusted: every field is type-checked and range-checked.
+/*! \brief Turns content-pack JSON documents into definitions.
+
+    Unqualified names get the pack's namespace. All input is untrusted: every field is
+    type-checked and range-checked. */
 namespace QcContentParser {
 
 using QcBlockParser::parseBlock;
@@ -71,12 +73,20 @@ using QcVillagerParser::parseProfession;
 using QcVillagerParser::parseVillagerSettings;
 using QcTradeParser::parseTradeSet;
 
+/*! Returns the procedural texture described by \a json, with an unqualified name in
+    \a packNamespace, or the first problem found. Only the fields the texture synthesizer reads
+    are kept. */
 [[nodiscard]] QcResult<QcTextureDefinition> parseProceduralTexture(const QJsonObject &json, const QString &packNamespace);
-// The tiles of a procedural texture larger than one block (decision E-791, "tiles": [width, height],
-// 1 to QcPaintingMotif::maxSide each): one texture per block named "<name>_<column>_<row>" with
-// its place as "tile": [column, row]; empty for a texture of one block.
+/*! Returns the tiles of \a texture when it is larger than one block (decision E-791, "tiles":
+    [width, height], 1 to QcPaintingMotif::maxSide each): one texture per block named
+    "<name>_<column>_<row>" with its place as "tile": [column, row]; empty for a texture of one
+    block. */
 [[nodiscard]] QList<QcTextureDefinition> textureTiles(const QcTextureDefinition &texture);
+/*! Returns the key-text pairs of the language file \a json, or an error when a value is no
+    string or the file holds more than QcStreamLimits::maxDefinitions entries. */
 [[nodiscard]] QcResult<QHash<QString, QString>> parseTranslations(const QJsonObject &json);
+/*! Returns the handbook chapter described by \a json, with unqualified names in
+    \a packNamespace, or the first problem found. */
 [[nodiscard]] QcResult<QcHandbookChapter> parseHandbookChapter(const QJsonObject &json, const QString &packNamespace);
 
 } // namespace QcContentParser
