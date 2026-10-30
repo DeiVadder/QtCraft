@@ -482,6 +482,9 @@ foreach ($exe in @("qtcraft", "qtcraft-headless")) {
 $windeployqt = Join-Path $QtDir "bin\windeployqt.exe"
 Invoke-Checked "windeployqt" $windeployqt @("--release", "--force-openssl", "--no-compiler-runtime", "--no-opengl-sw", "--qmldir", (Join-Path $Source "src\app\qml"),
     (Join-Path $package "qtcraft.exe"), (Join-Path $package "qtcraft-headless.exe"))
+# qt.conf pins Qt's paths to the folder of the programs: without it Qt also loads plugins from the
+# installation prefix built into Qt6Core.dll whenever that folder exists (as on the build machine).
+Set-Content -Path (Join-Path $package "qt.conf") -Value "[Paths]`r`nPrefix = .`r`nPlugins = .`r`n" -Encoding ascii
 # The runtime folder is named after the toolset (Microsoft.VC143.CRT for Visual Studio 2022,
 # a later number for newer ones); the newest one in the redistributable files is taken.
 $crt = Get-ChildItem -Directory -ErrorAction SilentlyContinue (Join-Path $env:VCToolsRedistDir "x64") -Filter "Microsoft.VC*.CRT" |
@@ -639,7 +642,7 @@ if ($Ci) {
         Ok "Media Foundation present (mfplat.dll, mf.dll, mfreadwrite.dll)"
     }
 }
-$required = @("qtcraft.exe", "qtcraft-headless.exe", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
+$required = @("qtcraft.exe", "qtcraft-headless.exe", "qt.conf", "Qt6Core.dll", "Qt6Quick.dll", "Qt6Multimedia.dll",
     "platforms\qwindows.dll", "multimedia\windowsmediaplugin.dll", "qml\QtQuick\Controls", "qml\QtQuick\Layouts",
     "mods\rubies\pack.json", "LICENSE", "THIRD_PARTY.md", "CREDITS.md", "README-Windows.txt", "licenses\PixelifySans-OFL.txt",
     "licenses\Qt-NOTICE.txt", "licenses\OpenSSL-LICENSE.txt",
