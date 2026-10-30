@@ -8,16 +8,23 @@
 #include <QString>
 #include <QStringList>
 
-// Outcome of one mod directory after discovery and loading.
+/*! \brief Outcome of one mod directory after discovery and loading. */
 struct QcModStatus
 {
-    enum class State { Loaded, Disabled, Failed };
+    /*! \brief Whether the mod was loaded. */
+    enum class State {
+        Loaded,   // Its content is part of the registry.
+        Disabled, // On the disabled list of the mods directory; not loaded.
+        Failed    // Could not be loaded; reason says why.
+    };
 
-    // `info.id` may be empty when the manifest could not be read; `info.directory` is always set.
+    /*! \c {info.id} may be empty when the manifest could not be read; \c {info.directory} is
+        always set. */
     QcContentPackInfo info;
+    /*! Whether the mod was loaded, switched off or failed. */
     State state = State::Failed;
-    // Why the mod was not loaded (Failed only).
+    /*! Why the mod was not loaded (Failed only). */
     QString reason;
-    // Entries of a loaded mod that were skipped.
+    /*! Entries of a loaded mod that were skipped. */
     QStringList warnings;
 };

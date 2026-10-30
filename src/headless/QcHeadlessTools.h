@@ -13,25 +13,29 @@
 
 class QcContentRegistry;
 
-// The one-shot tools of `qtcraft-headless` that start no world and exit when done: the app icon,
-// the sounds, the handbook (Markdown and web), texture packs and atlas statistics, the showcase tour
-// and the world generation tools (--world-stats, --slice-map, --biome-map, --map).
+/*! \brief The one-shot tools of \c {qtcraft-headless} that start no world and exit when done:
+    the app icon, the sounds, the handbook (Markdown and web), texture packs and atlas
+    statistics, the showcase tour and the world generation tools (--world-stats, --slice-map,
+    --biome-map, --map). */
 namespace QcHeadlessTools {
 
-// Ends the application with `code` once the event loop runs.
+/*! Ends the application with \a code once the event loop runs. */
 void exitSoon(int code);
 
-// --export-icon: writes the icon of the base game to `path`, a Windows .ico file when the path ends
-// in .ico, else a macOS .iconset directory (the icon must not depend on the mods of whoever builds
-// the game); false when the base game cannot be loaded.
+/*! --export-icon: writes the icon of the base game to \a path, a Windows .ico file when the path
+    ends in .ico, else a macOS .iconset directory (the icon must not depend on the mods of
+    whoever builds the game); returns false when the base game cannot be loaded. */
 bool exportIcon(const QString &path);
 
-// Whether the command line asks for a world generation tool (--world-stats, --slice-map,
-// --biome-map, --map), which draws a terrain world.
+/*! Returns whether the command line (\a options as \a parser read them) asks for a world
+    generation tool (--world-stats, --slice-map, --biome-map, --map); these draw a terrain
+    world. */
 [[nodiscard]] bool wantsWorldTool(const QCommandLineParser &parser, const QcHeadlessOptions::Options &options);
 
-// Runs the tool the command line asks for with `content` and `config` (seed, generator); false when
-// it asks for none. Builds the world generator first and prints its warnings in any case.
+/*! Runs the tool the command line (\a options as \a parser read them) asks for with \a content
+    and \a config (seed, world options, generator version); returns false when it asks for none. The
+    content tools come first; otherwise it builds the terrain generator, prints its warnings and
+    runs the world tool, if any. */
 bool run(const QCommandLineParser &parser, const QcHeadlessOptions::Options &options, const QcServerConfig &config,
          const std::shared_ptr<const QcContentRegistry> &content);
 

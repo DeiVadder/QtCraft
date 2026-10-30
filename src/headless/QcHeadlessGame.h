@@ -28,8 +28,10 @@ class QcLocalServerHost;
 class QcStatsLog;
 class QFile;
 
-// Server and control-interface client in one process without any window: the base of the
-// scenario tests and of external automation. Usage: see `qtcraft-headless --help`.
+/*! \brief Server and control-interface client in one process without any window: the base of the
+    scenario tests and of external automation.
+
+    Usage: see \c {qtcraft-headless --help}. */
 class QcHeadlessGame : public QObject
 {
     Q_OBJECT
@@ -39,7 +41,8 @@ public:
     ~QcHeadlessGame() override;
     Q_DISABLE_COPY_MOVE(QcHeadlessGame)
 
-    // Parses the command line and starts; returns false (after printing the reason) on bad options.
+    /*! Parses the command line \a arguments and starts; returns false (after printing the
+        reason) on bad options. */
     bool start(const QStringList &arguments);
 
 private:

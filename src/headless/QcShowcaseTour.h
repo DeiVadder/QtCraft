@@ -7,10 +7,13 @@
 
 struct QcShowcasePlan;
 
-// The camera stops of the showcase screenshot tour (scripts/showcase-tour.sh), one line each:
-// "<name> <x> <z> <yaw> <pitch>" (stand on top of column x, z and look along yaw and pitch).
+/*! \brief The camera stops of the showcase screenshot tour (scripts/showcase-tour.sh), one line
+    each: "<name> <x> <z> <yaw> <pitch>" (stand on top of column x, z and look along yaw and
+    pitch). */
 namespace QcShowcaseTour {
 
+/*! Returns one line per stop of the tour of \a plan, in its order (yaw and pitch with one
+    decimal). */
 QStringList lines(const QcShowcasePlan &plan);
 
 } // namespace QcShowcaseTour

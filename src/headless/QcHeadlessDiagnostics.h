@@ -12,14 +12,15 @@
 
 class QcDiagnosticsSession;
 
-// Logging, crash reports and diagnostics bundles of qtcraft-headless (decision E-834).
+/*! \brief Logging, crash reports and diagnostics bundles of qtcraft-headless (decision E-834). */
 namespace QcHeadlessDiagnostics {
 
-// The diagnostics of this run: a session log in <data>/logs with --server (or the file of
-// --log-file), crash reports always. nullptr after printing why when an option is bad.
+/*! Returns the diagnostics of this run: a session log in <data>/logs with --server (or the file
+    of --log-file), crash reports always, as \a parser read \a options. nullptr after printing why
+    when an option is bad. */
 std::unique_ptr<QcDiagnosticsSession> start(const QCommandLineParser &parser, const QcHeadlessOptions::Options &options);
-// Writes a diagnostics bundle of `dataDirectory` with the further `info` lines and prints its
-// folder; false after printing why it failed.
+/*! Writes a diagnostics bundle of \a dataDirectory with the further \a info lines and prints its
+    folder; returns false after printing why it failed. */
 bool writeBundle(const QString &dataDirectory, const QStringList &info);
 
 } // namespace QcHeadlessDiagnostics

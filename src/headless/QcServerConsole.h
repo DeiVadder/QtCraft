@@ -10,25 +10,28 @@
 
 class QcStdinReader;
 
-// The server console of qtcraft-headless --console (decision E-247), a step towards the dedicated
-// server: every line of standard input is a server command (the leading '/' is optional), its
-// replies go to standard output as English text. /stop or the end of the input ends the process
-// (the world is saved); a service without input (--no-eof-stop) keeps running at the end of the
-// input. The commands run in the server's thread; this object only hands lines over.
+/*! \brief The server console of qtcraft-headless --console (decision E-247), a step towards the
+    dedicated server: every line of standard input is a server command (the leading '/' is
+    optional), its replies go to standard output as English text. /stop or the end of the input ends
+    the process (the world is saved); a service without input (--no-eof-stop) keeps running at the
+    end of the input.
+
+    The commands run in the server's thread; this object only hands lines over. */
 class QcServerConsole : public QObject
 {
     Q_OBJECT
 
 public:
-    // Runs one console line and returns the replies (QcLocalServerHost::runConsoleCommand).
+    /*! Runs one console line and returns the replies (QcLocalServerHost::runConsoleCommand). */
     using Runner = std::function<QStringList(const QString &line)>;
 
     QcServerConsole(Runner runner, bool stopAtEndOfInput, QObject *parent = nullptr);
 
+    /*! Prints the console's greeting and starts reading standard input. */
     void start();
 
 signals:
-    // End of input (when it stops the server): the owner stops the server.
+    /*! End of input (when it stops the server): the owner stops the server. */
     void finished();
 
 private:

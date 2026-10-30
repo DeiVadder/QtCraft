@@ -16,16 +16,20 @@
 
 #include <optional>
 
-// The command line of qtcraft-headless and the steps every mode shares: the world options and
-// loading the content.
+/*! \brief The command line of qtcraft-headless and the steps every mode shares: the world
+    options and loading the content. */
 namespace QcHeadlessOptions {
 
 // The option texts below are string literals of this namespace only.
 using namespace Qt::StringLiterals;
 
+/*! Default of --time-limit, in seconds. */
 inline constexpr int defaultTimeLimitSeconds = 120;
 
-// The command line options of qtcraft-headless.
+/*! \brief The command line options of qtcraft-headless.
+
+    Each field is one option; its name, help text, value name and default stand in its
+    initializer. \qcfields */
 struct Options
 {
     QCommandLineOption seed{u"seed"_s, u"World seed."_s, u"number"_s, u"0"_s};
@@ -121,7 +125,7 @@ struct Options
                                     u"ids"_s};
     QCommandLineOption textureKeys{u"texture-keys"_s, u"Only these textures for --export-textures (comma-separated names)."_s, u"names"_s};
     QCommandLineOption textureName{u"texture-pack-name"_s, u"Name in the manifest written by --export-textures."_s, u"name"_s};
-    // --log-file, --no-log-file, --log-rules, --health-log, --full-dump (decision E-834).
+    /*! --log-file, --no-log-file, --log-rules, --health-log, --full-dump (decision E-834). */
     QcDiagnosticsOptions diagnostics;
     QCommandLineOption writeDiagnostics{u"write-diagnostics"_s,
                                         u"Write a diagnostics bundle (logs, crash reports, server.json and settings without passwords, mods and "
@@ -132,7 +136,7 @@ struct Options
                                   u"Build the texture atlas without packs and with every built-in texture pack, print size, memory and "
                                   u"build time, and exit."_s};
 
-    // In the order of the help text.
+    /*! Adds every option to \a parser, in the order of the help text. */
     void addTo(QCommandLineParser &parser) const
     {
         parser.addOptions({sounds, icon});
@@ -148,32 +152,42 @@ struct Options
     }
 };
 
+/*! Writes \a message as a line to standard error. */
 void printError(const QString &message);
+/*! Writes each of \a lines as a line to standard output. */
 void printLines(const QStringList &lines);
 
-// What a local or joining run starts with: the server's configuration and the time limit in seconds.
+/*! \brief What a local or joining run starts with: the server's configuration and the time limit
+    in seconds. */
 struct RunConfig
 {
+    /*! The configuration of the server, from the command line. */
     QcServerConfig server;
+    /*! The time limit in seconds (--time-limit). */
     int timeLimit = 0;
 };
 
-// Seed, world name, view distance, spawn column, game mode, generator version and the time limit;
-// nullopt on a bad value.
+/*! Returns seed, world name, generator and its options, view distance, spawn column, game mode,
+    generator version and the time limit as \a parser read them for \a options; std::nullopt on a
+    bad value. */
 [[nodiscard]] std::optional<RunConfig> readConfig(const QCommandLineParser &parser, const Options &options);
-// The world generation options of --world-options for a world of `type` (decision E-917): every
-// option, the named ones as given; without the option none (the content's values).
+/*! Returns the world generation options of --world-options (its value \a text) for a world of
+    \a type (decision E-917): every option, the named ones as given; without the option none (the
+    content's values). \a content knows the options; an error when an option is invalid. */
 [[nodiscard]] QcResult<QJsonObject> worldOptionsOf(const QString &text, const QString &type, const QcContentRegistry &content);
-// Why no generator could be made for a world of `type` and generator version `version`.
+/*! Returns why no generator could be made for a world of \a type and generator version
+    \a version. */
 [[nodiscard]] QString generatorRefusal(const QString &type, int version);
-// The data directory: --data-dir, else QcDataRoot.
+/*! Returns the data directory: --data-dir of \a options as \a parser read it, else QcDataRoot. */
 QString dataDirectory(const QCommandLineParser &parser, const Options &options);
-// The base game with the mods of --mods-dir, else of the data directory's mods folder (none with
-// --no-mods); std::nullopt (after printing the reason) when it cannot be loaded.
+/*! Returns the base game with the mods of --mods-dir (as \a parser read \a options), else of
+    the data directory's mods folder (none with --no-mods); std::nullopt (after printing the
+    reason) when it cannot be loaded. */
 [[nodiscard]] std::optional<QcModLoader::Result> loadContent(const QCommandLineParser &parser, const Options &options);
 
-// The settings of --server: the file (made with the defaults when the default file is missing),
-// then QTCRAFT_SERVER_PASSWORD, then the options; std::nullopt (after printing why) when invalid.
+/*! Returns the settings of --server: the file (made with the defaults when the default file is
+    missing), then QTCRAFT_SERVER_PASSWORD, then the \a options \a parser read; std::nullopt
+    (after printing why) when invalid. */
 [[nodiscard]] std::optional<QcServerSettings> serverSettings(const QCommandLineParser &parser, const Options &options);
 
 } // namespace QcHeadlessOptions
