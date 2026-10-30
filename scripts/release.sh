@@ -40,7 +40,8 @@
 #
 # Usage: scripts/release.sh            (QT_DIR overrides the newest ~/Qt/6.8.*/macos; QTCRAFT_RELEASE_DMG=0
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
-#                                       preset "deploy"; QTCRAFT_RELEASE_GUI=0 skips the starts of
+#                                       preset "deploy"; QTCRAFT_RELEASE_BUILD_LIMIT the build's
+#                                       seconds (1800); QTCRAFT_RELEASE_GUI=0 skips the starts of
 #                                       the game and keeps the static and dedicated-server checks,
 #                                       for machines without a display such as GitHub Actions;
 #                                       QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 declares QT_DIR an
@@ -52,6 +53,8 @@ PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
 QT_DIR=${QT_DIR:-$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)}
 PRESET=${QTCRAFT_RELEASE_PRESET:-deploy}
+# Seconds the build may take (the hosted CI runners need far longer than a development Mac).
+BUILD_LIMIT=${QTCRAFT_RELEASE_BUILD_LIMIT:-1800}
 GUI_RUNS=${QTCRAFT_RELEASE_GUI:-1}
 case "$GUI_RUNS" in
 0 | 1) ;;
@@ -152,8 +155,10 @@ limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" -DQC_CCAC
 # libraries must be static (QC_SHARED_LIBS is for debug and sanitizer trees only, E-890).
 grep -q '^QC_SHARED_LIBS:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" &&
     abort "build/$PRESET has QC_SHARED_LIBS=ON; a release needs static project libraries (reconfigure with -DQC_SHARED_LIBS=OFF)"
-limited 1800 cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1 ||
-    abort "build failed, see $WORK/build.log"
+if ! limited "$BUILD_LIMIT" cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1; then
+    tail -n 40 "$WORK/build.log"
+    abort "build failed or took longer than $BUILD_LIMIT s, see $WORK/build.log"
+fi
 
 echo "== assemble $APP"
 mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"

@@ -112,6 +112,11 @@ jobs:
         env:
           QTCRAFT_RELEASE_PRESET: ci-deploy
           QTCRAFT_RELEASE_GUI: '0'
+          QTCRAFT_RELEASE_BUILD_LIMIT: '9000'
+          # install-qt-action points these at the Qt installation; the package's own checks must
+          # see only what the package brings.
+          QT_PLUGIN_PATH: ''
+          QML2_IMPORT_PATH: ''
           QTCRAFT_RELEASE_TMP: ${{ runner.temp }}
           # aqtinstall installs the open-source Qt; only such packages are passed on (E-932).
           QTCRAFT_RELEASE_OPEN_SOURCE_QT: '1'
@@ -254,6 +259,9 @@ jobs:
       # (E-932). Without it the package would be -local-only and the uploads below would find nothing.
       - name: Package
         env:
+          # The package's checks must see only what it brings (install-qt-action sets these).
+          QT_PLUGIN_PATH: ''
+          QML2_IMPORT_PATH: ''
           QC_PLAYTEST_SERVER: ${{ inputs.playtest_server }}
         run: |
           $arguments = @('-Ci', '-OpenSourceQt', '-Jobs', $env:NUMBER_OF_PROCESSORS)
