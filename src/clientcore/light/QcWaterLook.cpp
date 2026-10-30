@@ -13,14 +13,14 @@
 namespace {
 
 // A float of `value`, 0 when it is not finite.
-float finite(double value)
+float finiteOrZero(double value)
 {
     return std::isfinite(value) ? static_cast<float>(value) : 0.0f;
 }
 
 std::array<float, 4> vec4(QVector3D v, double w)
 {
-    return {finite(v.x()), finite(v.y()), finite(v.z()), finite(w)};
+    return {finiteOrZero(v.x()), finiteOrZero(v.y()), finiteOrZero(v.z()), finiteOrZero(w)};
 }
 
 } // namespace
@@ -77,7 +77,7 @@ QcWaterUniforms QcWaterLook::uniforms(const QcWaterFrame &frame)
     QcWaterUniforms result;
     const QMatrix4x4 inverse = frame.viewProjection.inverted();
     for (std::size_t i = 0; i < result.inverseViewProjection.size(); ++i) {
-        result.inverseViewProjection[i] = finite(inverse.constData()[i]);
+        result.inverseViewProjection[i] = finiteOrZero(inverse.constData()[i]);
     }
 
     const QcSkyState &sky = frame.sky;
@@ -96,8 +96,8 @@ QcWaterUniforms QcWaterLook::uniforms(const QcWaterFrame &frame)
     const QcRenderOptions::Water &water = frame.water;
     const float width = frame.size.width() > 0 ? 1.0f / static_cast<float>(frame.size.width()) : 0.0f;
     const float height = frame.size.height() > 0 ? 1.0f / static_cast<float>(frame.size.height()) : 0.0f;
-    result.pixel = {width, height, static_cast<float>(water.waveOctaves), finite(water.refraction)};
-    result.effects = {static_cast<float>(water.reflectionSteps), finite(water.caustics), 0.0f, 0.0f};
+    result.pixel = {width, height, static_cast<float>(water.waveOctaves), finiteOrZero(water.refraction)};
+    result.effects = {static_cast<float>(water.reflectionSteps), finiteOrZero(water.caustics), 0.0f, 0.0f};
     result.extinction = {extinction[0], extinction[1], extinction[2], 0.0f};
     result.deep = vec4(underwaterColour(frame.sky.daylight), 0.0);
     return result;

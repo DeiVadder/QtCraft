@@ -132,8 +132,9 @@ jobs:
       - name: Configure
         run: cmake --preset ci-debug ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
 
+      # Experimental jobs keep going after a failed file (-k 0), so one run shows every error.
       - name: Build
-        run: cmake --build --preset ci-debug
+        run: cmake --build --preset ci-debug ${{ runner.os != 'macOS' && '-- -k 0' || '' }}
 
       - name: Test
         run: ctest --preset ci-debug --timeout 600
