@@ -70,11 +70,14 @@ jobs:
           echo "QC_QT_DOCS=$RUNNER_TEMP/qt-docs/Docs/Qt-${{ env.QT_VERSION }}" >> "$GITHUB_ENV"
 
       # qdoc comes with the Qt tools of the Qt installation ($QT_ROOT_DIR/bin, set by install-qt-action).
+      # The reference covers the whole tree; a qdoc warning in a fully documented folder
+      # (scripts/doc-folders.txt) fails the step, warnings elsewhere are not counted (E-939).
       - name: API reference
         run: |
           test -x "$QT_ROOT_DIR/bin/qdoc" || { echo "no qdoc in $QT_ROOT_DIR/bin"; exit 1; }
           python3 scripts/api-docs.py --qdoc "$QT_ROOT_DIR/bin/qdoc" \
-            --compile-commands build/ci-debug/compile_commands.json --out web/api
+            --compile-commands build/ci-debug/compile_commands.json --out web/api \
+            --documented --max-warnings 0
 
       - uses: actions/configure-pages@v5
 

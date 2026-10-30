@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# The folders whose API is fully documented with QDoc comments (decision E-939, stage 72). The checks
+# hold them at zero: `scripts/convert-doc-comments.py --check --documented` (static analysis of every
+# verify level) and `scripts/api-docs.py --documented --max-warnings 0` (qdoc: full analysis, a changed
+# header in one of these folders, and the Pages workflow). One path per line below the repository
+# root; the other libraries follow after the first release (packages 72.5-72.11).
+src/common
+src/worldgen
+src/network
+src/audio
+src/worlds
+src/headless

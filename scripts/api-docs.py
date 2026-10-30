@@ -31,7 +31,7 @@ output to <build>/docs/qdoc.log); the last line of the output gives their number
 stage 72: none).
 Usage: scripts/api-docs.py [--qdoc <qdoc>] [--compile-commands <file>] [--out <dir>]
                            [--indexes <dir>] [--max-warnings <n>] [--only <path prefix> ...]
-                           [--stage-only] [--self-test]
+                           [--documented] [--stage-only] [--self-test]
   --qdoc              the qdoc program (default: $QC_QDOC, else bin/qdoc of the Qt in
                       compile_commands.json, else qdoc on the PATH)
   --compile-commands  default build/debug/compile_commands.json
@@ -41,6 +41,7 @@ Usage: scripts/api-docs.py [--qdoc <qdoc>] [--compile-commands <file>] [--out <d
                       prefix (where the Qt installer and aqt put it); no links to Qt without it
   --max-warnings      exit code 1 when there are more warnings (counted after --only)
   --only              count and print only the warnings for files below these prefixes
+  --documented        adds the fully documented folders of scripts/doc-folders.txt to --only
   --stage-only        stage and write the configuration, do not run qdoc
   --self-test         stages samples in memory and fails on a wrong topic command
 """
@@ -499,6 +500,8 @@ def parse_arguments(argv):
         name = argv[index]
         if name in ("--stage-only", "--self-test"):
             arguments[name] = True
+        elif name == "--documented":
+            arguments["--only"] += docs.documented_folders()
         elif name == "--only":
             arguments["--only"].append(argv[index + 1])
             index += 1

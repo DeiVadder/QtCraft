@@ -23,6 +23,18 @@ from dataclasses import dataclass, field
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import qc_code_lines  # noqa: E402
 
+DOC_FOLDERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "doc-folders.txt")
+
+
+def documented_folders(text=None):
+    """The folders whose API is fully documented (scripts/doc-folders.txt, or `text` in its form):
+    paths below the repository root, one per line; blank lines and `#` comments are ignored."""
+    if text is None:
+        with open(DOC_FOLDERS_FILE, encoding="utf-8") as f:
+            text = f.read()
+    lines = (line.split("#", 1)[0].strip() for line in text.splitlines())
+    return [line.rstrip("/") for line in lines if line]
+
 TYPE_KINDS = ("class", "struct", "union", "namespace", "enum")
 DOCUMENTED_KINDS = TYPE_KINDS + ("function", "variable", "property", "typealias", "typedef")
 MARKER = re.compile(r"^\s*//\s*(NOLINT|clang-format)")

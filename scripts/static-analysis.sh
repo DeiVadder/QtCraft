@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Runs the size limits checks (file and function length), the warning-only checks of output parameters and
-# member access, clang-tidy, clazy and qmllint over the project (or over the given files).
+# member access, the API documentation check of the documented folders (comments, qdoc), clang-tidy,
+# clazy and qmllint over the project (or over the given files).
 # Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # --cheap-all (the full verify, decision E-929): the size limits and the warning-only checks run over the
@@ -101,6 +102,35 @@ if [ "$CHEAP_SELECTED" -eq 0 ]; then
 elif [ -n "$FUNCTION_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-member-access.py" $FUNCTION_FILES
+fi
+
+# QDoc comments of the fully documented folders (scripts/doc-folders.txt, decision E-939). The comment
+# check (about 1 s) always covers those whole folders; qdoc (about 40-70 s) runs on the whole tree and in
+# the full verify (--cheap-all), and for a selection only when it holds a header of one of those folders
+# (the comments live in the headers). Both fail on any finding or qdoc warning in those folders.
+echo "== API documentation (documented folders)"
+python3 "$PROJECT_DIR/scripts/convert-doc-comments.py" --check --documented || status=1
+DOC_FOLDERS=$(sed -e 's/#.*//' -e 's/[[:space:]]//g' -e '/^$/d' -e 's|/*$|/|' "$PROJECT_DIR/scripts/doc-folders.txt")
+DOC_HEADERS=$(for file in $LENGTH_FILES; do
+    relative=${file#"$PROJECT_DIR"/}
+    for folder in $DOC_FOLDERS; do
+        case "$relative" in
+        ("$folder"*.h) echo "$relative" ;;
+        esac
+    done
+done)
+if [ "$CHEAP_SELECTED" -eq 0 ] || [ -n "$DOC_HEADERS" ]; then
+    DOC_LOG=$(mktemp)
+    if run_limited python3 "$PROJECT_DIR/scripts/api-docs.py" --compile-commands "$BUILD_DIR/compile_commands.json" \
+        --documented --max-warnings 0 >"$DOC_LOG" 2>&1; then
+        tail -n 1 "$DOC_LOG"
+    else
+        cat "$DOC_LOG"
+        status=1
+    fi
+    rm -f "$DOC_LOG"
+else
+    echo "qdoc skipped: no header of a documented folder in the selection"
 fi
 
 for tool in "$CLANG_TIDY" "$CLAZY"; do

@@ -21,7 +21,7 @@ the same line (except that the docs read those of enumerators), comments inside 
 nested QML objects, and other `/* */` comments. Running it again changes nothing. A file whose code
 (everything outside comments, whitespace ignored) would change is left alone and named (exit code 1).
 Usage: scripts/convert-doc-comments.py [--dry-run | --check [--skip-internal] | --params [--apply]]
-                                       [--self-test] <file or folder> ...
+                                       [--self-test] [--documented] <file or folder> ...
   (no option)  converts the files in place and names them
   --dry-run    prints the changes as a unified diff, writes nothing
   --check      writes nothing; names every public item without a comment, every `//` comment still
@@ -42,6 +42,8 @@ Usage: scripts/convert-doc-comments.py [--dry-run | --check [--skip-internal] | 
                (and how often each stands there as a plain word): a list to review
   --apply      with --params: writes \\a for plain mentions of parameters whose name cannot be an
                English word (camelCase, digits, underscores); the rest stays a proposal
+  --documented adds the fully documented folders of scripts/doc-folders.txt to the paths (the gate
+               of the static analysis: `--check --documented`)
   --self-test  converts and checks samples in memory and fails on a wrong result
 Folders are searched for .h and .qml files.
 """
@@ -501,9 +503,24 @@ def self_test():
     if kinds != [("variable", "key"), ("variable", "read"), ("variable", "outfit")]:
         failures += 1
         print(f"variables with parentheses: {kinds}")
-    failures += self_test_scanner() + self_test_check()
+    failures += self_test_scanner() + self_test_check() + self_test_documented_folders()
     print("self-test: " + ("ok" if not failures else f"{failures} failure(s)"))
     return 1 if failures else 0
+
+
+def self_test_documented_folders():
+    """The form of scripts/doc-folders.txt, and that every folder the gate checks exists."""
+    failures = 0
+    found = docs.documented_folders("# licence\n\nsrc/a\n  src/b/  # note\n#src/c\n")
+    if found != ["src/a", "src/b"]:
+        failures += 1
+        print(f"documented folders: {found}")
+    folders = docs.documented_folders()
+    missing = [folder for folder in folders if not os.path.isdir(os.path.join(ROOT, folder))]
+    if not folders or missing:
+        failures += 1
+        print(f"scripts/doc-folders.txt: no folders or missing {missing}")
+    return failures
 
 
 # Brace initialisation with a call inside, alias templates, nested types defined outside the class.
@@ -613,6 +630,8 @@ def main(arguments):
     mode = "check" if "--check" in arguments else ("params" if "--params" in arguments
                                                    else ("dry-run" if "--dry-run" in arguments else "write"))
     paths = [a for a in arguments if not a.startswith("--")]
+    if "--documented" in arguments:
+        paths += [os.path.relpath(os.path.join(ROOT, folder)) for folder in docs.documented_folders()]
     missing = [path for path in paths if not os.path.exists(path)]
     if missing:
         print(f"no such file or folder: {', '.join(missing)}", file=sys.stderr)

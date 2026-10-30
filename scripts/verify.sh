@@ -18,6 +18,9 @@
 #                     full verify before E-929 and stops. The summary names the selections.
 #   --quick:          debug build, debug tests (optionally only those matching --tests) and static analysis
 #                     of the files changed against dev (committed on this branch or not yet committed).
+#                     Every static analysis checks the QDoc comments of the documented folders
+#                     (scripts/doc-folders.txt, E-939); qdoc runs in the full one and when a header in
+#                     those folders changed (scripts/static-analysis.sh).
 # --sanitizers asan|tsan limits --full to that sanitizer configuration, or adds it to --quick.
 #                    A full run in two parts (`--full --sanitizers asan`, then `--full --sanitizers
 #                    tsan`) does the debug build and tests, the release build, the static analysis
@@ -450,7 +453,9 @@ static_analysis_changed() {
     files=$(changed_files)
     if [ -z "$files" ]; then
         echo "no changed source files against $BASE_BRANCH"
-        return 0
+        # The API documentation gate of the documented folders still holds (E-939, about 1 s).
+        python3 scripts/convert-doc-comments.py --check --documented
+        return
     fi
     # shellcheck disable=SC2086
     scripts/static-analysis.sh "$PROJECT_DIR/build/debug" $files
