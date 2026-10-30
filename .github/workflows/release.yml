@@ -67,11 +67,13 @@ jobs:
             echo "CCACHE_BASEDIR=${{ github.workspace }}"
           } >> "$GITHUB_ENV"
 
-      - name: ccache cache
-        uses: actions/cache@v4
+      # Restored here, saved after the build even when it fails or is cancelled, so a long first
+      # build is not lost (actions/cache saves only after a successful job).
+      - name: ccache restore
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/ccache
-          key: ccache-release-macos-${{ github.sha }}
+          key: ccache-release-macos-${{ github.run_id }}
           restore-keys: ccache-release-macos-
 
       - name: OpenSSL cache
@@ -109,6 +111,7 @@ jobs:
       # The runner has no display for the game's starts; the bundle, signature, universal-binary
       # and dedicated-server checks run.
       - name: Package
+        timeout-minutes: 220
         env:
           QTCRAFT_RELEASE_PRESET: ci-deploy
           QTCRAFT_RELEASE_GUI: '0'
@@ -121,6 +124,13 @@ jobs:
           # aqtinstall installs the open-source Qt; only such packages are passed on (E-932).
           QTCRAFT_RELEASE_OPEN_SOURCE_QT: '1'
         run: QT_DIR="$QT_ROOT_DIR" scripts/release.sh
+
+      - name: ccache save
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ccache-release-macos-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v4
         with:

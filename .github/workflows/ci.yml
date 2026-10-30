@@ -118,11 +118,13 @@ jobs:
             echo "CCACHE_BASEDIR=${{ github.workspace }}"
           } >> "$GITHUB_ENV"
 
-      - name: ccache cache
-        uses: actions/cache@v4
+      # Restored here, saved after the build even when it fails or is cancelled, so a long first
+      # build is not lost (actions/cache saves only after a successful job).
+      - name: ccache restore
+        uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/ccache
-          key: ccache-ci-${{ runner.os }}-${{ github.sha }}
+          key: ccache-ci-${{ runner.os }}-${{ github.run_id }}
           restore-keys: ccache-ci-${{ runner.os }}-
 
       # OpenSSL is built once into ~/.cache/qtcraft/openssl (decision E-872).
@@ -138,8 +140,17 @@ jobs:
         run: cmake --preset ci-debug ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
 
       # Experimental jobs keep going after a failed file (-k 0), so one run shows every error.
+      # Below the job's limit, so the cache is still saved when the build runs out of time.
       - name: Build
+        timeout-minutes: 160
         run: cmake --build --preset ci-debug ${{ runner.os != 'macOS' && '-- -k 0' || '' }}
+
+      - name: ccache save
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/ccache
+          key: ccache-ci-${{ runner.os }}-${{ github.run_id }}
 
       # The tests run locally (scripts/verify.sh); on the hosted runners they take hours, so the CI
       # builds everything and tests only when started by hand with "tests".
