@@ -2,7 +2,8 @@
 <!-- SPDX-FileCopyrightText: 2026 the QtCraft authors -->
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 
-<!-- Start of the GitHub Pages site: links to the web handbook and the API reference (decision E-939). -->
+<!-- Start of the GitHub Pages site: links to the latest release, the web handbook, the API reference and
+     the repository (decisions E-939, E-940). -->
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -18,15 +19,20 @@
         h1 { font-size: 34px; margin: 0 0 8px; }
         p { color: var(--muted); margin: 0 0 32px; }
         a.card { display: block; padding: 18px 20px; margin-bottom: 14px; border-radius: 6px; background: var(--card); color: var(--fg); text-decoration: none; }
+        p.small { margin: 18px 0 0; font-size: 15px; }
+        p.small a { color: var(--link); }
         a.card strong { display: block; color: var(--link); font-size: 20px; }
     </style>
 </head>
 <body>
     <main>
         <h1>QtCraft</h1>
-        <p>A voxel sandbox game built with Qt.</p>
+        <p>A voxel sandbox game built with Qt: generated worlds, survival and creative, Signal Dust, villages, multiplayer and data-only mods.</p>
+        <a class="card" href="https://github.com/DeiVadder/QtCraft/releases/latest"><strong>Download</strong>The latest release: the macOS app (Apple silicon and Intel) and the Windows x64 zip.</a>
         <a class="card" href="handbook/"><strong>Handbook</strong>How to play: blocks, items, recipes, creatures and the world.</a>
-        <a class="card" href="api/"><strong>API reference</strong>The C++ libraries and QML types of the game, generated from the sources.</a>
+        <a class="card" href="api/"><strong>API reference</strong>The C++ libraries of the game, generated from the sources (more follow after 0.1.0).</a>
+        <a class="card" href="https://github.com/DeiVadder/QtCraft"><strong>Source code</strong>The repository on GitHub: building from source, modding, multiplayer and server hosting, contributing.</a>
+        <p class="small"><a href="https://github.com/DeiVadder/QtCraft/releases">All releases and release notes</a></p>
     </main>
 </body>
 </html>

@@ -1,6 +1,8 @@
 {
-    "note": "Checksums of test_generator_versions per generator version and platform (decision E-922). Platforms in 'unrecorded' may skip outside CI until their values are recorded (Linux: from the CI log; Windows: in the VM with MSVC 2022, winnt-arm64 native, winnt-x86_64 cross-built and run under emulation, or from the CI log). The Windows values were dropped when the river checksums were added (decision E-935); until then they equalled darwin-arm64.",
+    "note": "Checksums of test_generator_versions per generator version and platform (decision E-922). Version 1 is frozen since release 0.1.0 (QcGeneratorVersion::lastFrozen): its recorded values never change. A platform listed in 'unrecorded' skips (also in CI) and prints its values until they are recorded; a new platform may record values of a frozen version once (QC_RECORD_GENERATOR_REFERENCE=<version>, or copied from the CI log) and is then removed from 'unrecorded' (Linux: from the CI log; Windows: from the CI log, or in the VM with MSVC 2022, winnt-arm64 native, winnt-x86_64 cross-built and run under emulation). The Windows values were dropped when the river checksums were added (decision E-935); until then they equalled darwin-arm64.",
     "unrecorded": [
+        "darwin-x86_64",
+        "linux-arm64",
         "linux-x86_64",
         "winnt-arm64",
         "winnt-x86_64"

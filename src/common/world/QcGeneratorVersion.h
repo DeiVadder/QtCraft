@@ -23,8 +23,8 @@ inline constexpr int current = 1;
 /*! The newest frozen version, 0 for none: a version freezes when a release build ships it, and
     its output is kept for good from then on. A newer one is open: it may still change (its
     checksums are recorded anew) until a release ships it (decision E-922). Set to \c {current}
-    with each release. */
-inline constexpr int lastFrozen = 0;
+    with each release; release 0.1.0 froze version 1. */
+inline constexpr int lastFrozen = 1;
 /*! Highest number world.json may name (a newer game's version) before it counts as damaged. */
 inline constexpr int maxStored = 1000;
 

@@ -5,11 +5,12 @@
 #   - macOS: runs the tests, builds the universal app with scripts/release.sh (.zip and .dmg)
 #   - Windows x64: builds and checks QtCraft-<version>-Windows-x64.zip (and its -pdb.zip) with
 #     scripts/windows/package-windows.ps1 -Ci
-# A version tag (v0.2.0 and so on) uploads all packages to a draft release; the runners cannot start
-# the game, a human tries the packages, then publishes the draft. Running the workflow again for the
-# same tag replaces its draft. Started by hand (workflow_dispatch, any branch) it builds the same
-# packages as workflow artifacts only, without a release: these are the playtest builds
-# (docs/Building.md, "Playtest builds").
+# A version tag (v0.1.0 and so on) uploads all packages to a draft release, headed by the release
+# notes docs/release-notes/<version>.md; the runners cannot start the game, a human tries the
+# packages, then publishes the draft. Running the workflow again for the same tag replaces its
+# draft. Started by hand (workflow_dispatch, any branch) it builds the same packages as workflow
+# artifacts only, without a release: these are the playtest builds (docs/Building.md, "Playtest
+# builds").
 name: Release
 
 on:
@@ -275,6 +276,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
+      # Only the release notes of the version (docs/release-notes/<version>.md, written before the
+      # tag); they head the draft's text, followed by the downloads and licence notes below.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: docs/release-notes
+          sparse-checkout-cone-mode: false
+
       - uses: actions/download-artifact@v4
         with:
           pattern: QtCraft-*
@@ -286,16 +294,27 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          cat > "$RUNNER_TEMP/notes.md" <<EOF
-          QtCraft ${GITHUB_REF_NAME#v}.
-
+          # GitHub Pages names the site after the owner in lower case.
+          owner=$(printf '%s' "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')
+          pages="https://$owner.github.io/${GITHUB_REPOSITORY#*/}"
+          notes="docs/release-notes/${GITHUB_REF_NAME#v}.md"
+          if [ -f "$notes" ]; then
+            cat "$notes" > "$RUNNER_TEMP/notes.md"
+            printf '\n### Downloads and licences\n\n' >> "$RUNNER_TEMP/notes.md"
+          else
+            echo "::warning::$notes is missing; the draft has only the generated notes"
+            printf 'QtCraft %s. Handbook: %s/handbook/ (also in the game with H or F1); documentation: https://github.com/%s#readme\n\n' \
+              "${GITHUB_REF_NAME#v}" "$pages" "$GITHUB_REPOSITORY" > "$RUNNER_TEMP/notes.md"
+          fi
+          cat >> "$RUNNER_TEMP/notes.md" <<EOF
           Checked on the build machines: tests (macOS), package contents, licence texts, signature and
           universal binaries (macOS), imported DLLs (Windows) and a start of the dedicated server, on
           Windows with TLS and a bot that joins it. The game itself was not started there.
 
           macOS (Apple silicon and Intel, macOS 13.3 or newer): QtCraft-*-macOS.zip or .dmg. The app is
-          not notarized: open it the first time with right click, Open, or allow it under System
-          Settings, Privacy & Security.
+          not notarised, so macOS refuses its first start. On macOS 15 and later try to open it once,
+          then click Open Anyway under System Settings, Privacy & Security; on macOS 13 and 14
+          right-click (Control-click) the app in Finder, choose Open and confirm.
 
           Windows 10 or 11, x64: QtCraft-${GITHUB_REF_NAME#v}-Windows-x64.zip. Unpack it completely and
           start qtcraft.exe; README-Windows.txt explains the SmartScreen warning (the program is not
