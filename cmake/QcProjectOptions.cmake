@@ -48,7 +48,8 @@ if(MSVC)
     string(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     # C4702 (unreachable code) comes from the optimizer inside Qt's inline code once exceptions are
     # off; /external:W0 does not reach it, and Clang/GCC have no such warning in -Wall -Wextra.
-    target_compile_options(qc_project_options INTERFACE /W4 /EHs-c- /permissive- /wd4702)
+    # /bigobj: some test files of the Debug build hold more sections than the default object format allows (C1128).
+    target_compile_options(qc_project_options INTERFACE /W4 /EHs-c- /permissive- /wd4702 /bigobj)
     if(QC_WARNINGS_AS_ERRORS)
         target_compile_options(qc_project_options INTERFACE /WX)
     endif()
