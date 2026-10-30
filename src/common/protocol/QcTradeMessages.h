@@ -11,7 +11,6 @@
 #include <QList>
 #include <QString>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief One offer as the trading screen shows it: what the player pays (one or two stacks, the

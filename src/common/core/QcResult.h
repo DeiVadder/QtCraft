@@ -8,9 +8,7 @@
 #include <expected>
 
 /*! Result of an operation that can fail at a system boundary; the error is a human-readable
-    message.
-    \typealias QcResult
-    \relates <common/core/QcResult.h> */
+    message. */
 template<typename T>
 using QcResult = std::expected<T, QString>;
 

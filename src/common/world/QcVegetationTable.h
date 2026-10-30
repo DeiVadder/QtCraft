@@ -51,19 +51,13 @@ private:
     int m_totalWeight = 0;
 };
 
-/*! \brief A table and the block names of the layer that were left out.
-    \struct QcVegetationTable::Resolved
-    \inmodule qc_common
-    \inheaderfile common/world/QcVegetationTable.h */
+/*! \brief A table and the block names of the layer that were left out. */
 struct QcVegetationTable::Resolved
 {
-    /*! The table of the plants that were kept.
-        \variable QcVegetationTable::Resolved::table */
+    /*! The table of the plants that were kept. */
     QcVegetationTable table;
-    /*! Names the content does not know.
-        \variable QcVegetationTable::Resolved::unknown */
+    /*! Names the content does not know. */
     QStringList unknown;
-    /*! Names of solid or liquid blocks, which cannot grow as plants.
-        \variable QcVegetationTable::Resolved::notPlants */
+    /*! Names of solid or liquid blocks, which cannot grow as plants. */
     QStringList notPlants;
 };

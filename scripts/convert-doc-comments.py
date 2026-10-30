@@ -25,15 +25,18 @@ Usage: scripts/convert-doc-comments.py [--dry-run | --check [--skip-internal] | 
   (no option)  converts the files in place and names them
   --dry-run    prints the changes as a unified diff, writes nothing
   --check      writes nothing; names every public item without a comment, every `//` comment still
-               to convert, every enumerator of a documented enum without one, every QDoc comment line
-               longer than 100 characters, and every undocumented variable right below a documented
-               one ("shares the comment of X?": confirm with \\qcshared in that comment, or give it
-               its own); exit code 1 if any. Need no comment: constructors, destructors, overrides
-               (the docs mark them as reimplementations), `= default`/`= delete`, the READ, WRITE,
-               NOTIFY and RESET functions of a documented Q_PROPERTY, variables covered by a
-               \\qcshared comment, the fields of a struct whose comment has \\qcfields (also no
-               "shares the comment of X?" for them), and out-of-line definitions of members declared
-               in the same file (the declaration carries the comment).
+               to convert, every plain `/* */` comment where one is needed, every enumerator of a
+               documented enum without one, every QDoc comment line longer than 100 characters, and
+               every undocumented variable right below a documented one ("shares the comment of X?":
+               confirm with \\qcshared in that comment, or give it its own); exit code 1 if any.
+               Need no comment: constructors, destructors, overrides (the docs mark them as
+               reimplementations), `= default`/`= delete`, the READ, WRITE, NOTIFY and RESET
+               functions of a documented Q_PROPERTY, variables covered by a \\qcshared comment, the
+               fields of a struct whose comment has \\qcfields (also no "shares the comment of X?"
+               for them), out-of-line definitions of members declared in the same file (same name
+               and number of parameters, also operators and members of class templates; the
+               declaration carries the comment), and a namespace documented in any header below src/
+               (it is opened in many).
   --skip-internal  with --check: leaves out everything in a type whose comment has \\internal
   --params     names, per documented function, the parameters its comment does not name with \\a
                (and how often each stands there as a plain word): a list to review
@@ -113,15 +116,26 @@ def is_reimplementation(item):
     return re.search(r"\b(override|final)\b", item.text) is not None
 
 
+def arity(item):
+    """The number of parameters of a function item (`(void)` has none)."""
+    parameters = [p.strip() for p in docs.split_top_level(docs.parameter_list(item.text)) if p.strip()]
+    return 0 if parameters == ["void"] else len(parameters)
+
+
 def out_of_line_name(item):
-    """(scope, name) of the member that an out-of-line function definition
-    (`inline void QcA::f(int x) {…}`) defines, or None for other items."""
+    """(scope, name, number of parameters) of the member that an out-of-line function definition
+    defines (`inline void QcA::f(int x) {…}`, also `QcA::operator()`, `QcA::operator bool`, and
+    members of class templates, `QcList<T>::f`), or None for other items."""
     if item.kind != "function":
         return None
-    match = re.search(r"((?:\w+::)+)(~?\w+|operator[^\w\s(]+)\s*\(", item.text.split("(", 1)[0] + "(")
+    top = docs.top_level(item.text)
+    paren = docs.without_operator_symbols(top).find("(")
+    match = re.search(r"((?:\w+\s*::\s*)+)" + re.escape(item.name).replace("\\ ", "\\s+") + r"\s*$",
+                      top[:paren] if paren >= 0 else top)
     if not match:
         return None
-    return tuple(item.scope + match.group(1).rstrip(":").split("::")), match.group(2)
+    qualifier = re.sub(r"\s+", "", match.group(1)).rstrip(":").split("::")
+    return tuple(item.scope + qualifier), item.name, arity(item)
 
 
 def exempt_names(items):
@@ -129,7 +143,7 @@ def exempt_names(items):
     documented property, the fields of a struct with \\qcfields, and out-of-line definitions of
     members declared in the same file (the declaration carries the comment)."""
     exempt = set()
-    declared = {(tuple(item.scope), item.name) for item in items if item.kind == "function"}
+    declared = {(tuple(item.scope), item.name, arity(item)) for item in items if item.kind == "function"}
     for item in items:
         defined = out_of_line_name(item)
         if defined is not None and defined in declared:
@@ -161,8 +175,24 @@ def internal_scopes(items):
             if item.kind in docs.TYPE_KINDS and docs.has_marker(item.comment, "\\internal")]
 
 
-def check_text(text, path, skip_internal=False):
-    """Findings of --check: (line, message)."""
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def documented_namespaces(top=os.path.join(ROOT, "src")):
+    """The qualified names of the namespaces with a QDoc comment in any header below `top` (a
+    namespace opened in many headers is documented in one of them)."""
+    names = set()
+    for path in files_of([top]):
+        if path.endswith(".h"):
+            with open(path, encoding="utf-8") as f:
+                names.update(item.qualified() for item in docs.scan_header(f.read(), path)
+                             if item.kind == "namespace" and item.is_public() and item.comment is not None
+                             and item.comment.style == "qdoc")
+    return names
+
+
+def check_text(text, path, skip_internal=False, namespaces=frozenset()):
+    """Findings of --check: (line, message); `namespaces` are the namespaces documented elsewhere."""
     lines = text.split("\n")
     items = items_of(text, path)
     exempt = exempt_names(items)
@@ -174,11 +204,13 @@ def check_text(text, path, skip_internal=False):
             continue
         if item.kind not in docs.DOCUMENTED_KINDS and not item.kind.startswith("qml"):
             continue
-        if item.kind == "namespace" and not item.name:
+        if item.kind == "namespace" and (not item.name or (item.qualified() in namespaces and (
+                item.comment is None or item.comment.style != "qdoc"))):
             continue
         if any(item.scope[:len(scope)] == scope or item.scope + [item.name] == scope for scope in internal):
             continue
-        name = item.qualified()
+        defined = out_of_line_name(item)
+        name = "::".join(defined[0] + (defined[1],)) if defined else item.qualified()
         if item.comment is None or docs.is_license(item.comment):
             if id(item) in shared and not is_exempt(item, exempt):
                 owner, confirmed = shared[id(item)]
@@ -189,6 +221,8 @@ def check_text(text, path, skip_internal=False):
                 findings.append((item.start + 1, f"{item.kind} {name}: no comment"))
         elif item.comment.style == "line":
             findings.append((item.comment.start + 1, f"{item.kind} {name}: // comment to convert"))
+        elif item.comment.style == "block" and not needs_no_comment(item, exempt):
+            findings.append((item.comment.start + 1, f"{item.kind} {name}: plain /* comment: use /*! or //"))
         elif fmt.too_long(lines, item.comment):
             findings.append((item.comment.start + 1, f"{item.kind} {name}: comment line longer than {fmt.WIDTH}"))
         if item.kind == "enum" and item.comment is not None:
@@ -467,8 +501,110 @@ def self_test():
     if kinds != [("variable", "key"), ("variable", "read"), ("variable", "outfit")]:
         failures += 1
         print(f"variables with parentheses: {kinds}")
+    failures += self_test_scanner() + self_test_check()
     print("self-test: " + ("ok" if not failures else f"{failures} failure(s)"))
     return 1 if failures else 0
+
+
+# Brace initialisation with a call inside, alias templates, nested types defined outside the class.
+DECLARATIONS = """struct QcColors
+{
+    QColor c{QColor(1, 2, 3)};
+    QString n{QStringLiteral("a")};
+    QcFoo f{make()};
+};
+template<typename T>
+using QcResult = std::expected<T, QString>;
+class QcA
+{
+public:
+    struct Resolved;
+private:
+    struct Hidden;
+};
+struct QcA::Resolved
+{
+    int value = 0;
+};
+struct QcA::Hidden
+{
+    int secret = 0;
+};
+"""
+
+# Plain /* */ comments, namespaces documented elsewhere and out-of-line definitions.
+CHECKED = """#pragma once
+namespace QcMsg {
+/*! \\brief A message. */
+struct Ping
+{
+    /* Plain. */
+    int id = 0;
+};
+}
+/*! \\brief Calls. */
+class QcOp
+{
+public:
+    /*! Returns \\a x doubled. */
+    int operator()(int x) const;
+    /*! Returns whether it is valid. */
+    explicit operator bool() const;
+    /*! Takes \\a x. */
+    void take(int x);
+};
+inline int QcOp::operator()(int x) const
+{
+    return 2 * x;
+}
+inline QcOp::operator bool() const
+{
+    return true;
+}
+inline void QcOp::take(int x, int y)
+{
+}
+/*! \\brief A list. */
+template<typename T>
+class QcList
+{
+public:
+    /*! Adds \\a x. */
+    void add(T x);
+};
+template<typename T>
+void QcList<T>::add(T x)
+{
+}
+"""
+
+
+def self_test_scanner():
+    items = sorted(docs.scan_header(DECLARATIONS, "QcColors.h"), key=lambda item: item.start)
+    found = [(item.kind, item.qualified(), item.access) for item in items if item.kind in docs.DOCUMENTED_KINDS]
+    wanted = [("struct", "QcColors", ""), ("variable", "QcColors::c", "public"), ("variable", "QcColors::n", "public"),
+              ("variable", "QcColors::f", "public"), ("typealias", "QcResult", ""), ("class", "QcA", ""),
+              ("struct", "QcA::Resolved", "public"), ("variable", "QcA::Resolved::value", "public"),
+              ("struct", "QcA::Hidden", "private"), ("variable", "QcA::Hidden::secret", "private")]
+    if found != wanted:
+        print(f"scanner: {found}\n  instead of {wanted}")
+        return 1
+    return 0
+
+
+def self_test_check():
+    failures = 0
+    found = [message for _, message in sorted(check_text(CHECKED, "QcOp.h"))]
+    wanted = ["namespace QcMsg: no comment", "variable QcMsg::Ping::id: plain /* comment: use /*! or //",
+              "function QcOp::take: no comment"]
+    if found != wanted:
+        failures += 1
+        print(f"check: {found}\n  instead of {wanted}")
+    found = [message for _, message in sorted(check_text(CHECKED, "QcOp.h", namespaces={"QcMsg"}))]
+    if found != wanted[1:]:
+        failures += 1
+        print(f"check with QcMsg documented elsewhere: {found}\n  instead of {wanted[1:]}")
+    return failures
 
 
 def main(arguments):
@@ -485,11 +621,12 @@ def main(arguments):
         print(__doc__, file=sys.stderr)
         return 2
     findings = 0
+    namespaces = documented_namespaces() if mode == "check" else frozenset()
     for path in files_of(paths):
         with open(path, encoding="utf-8") as f:
             text = f.read()
         if mode == "check":
-            for line, message in check_text(text, path, "--skip-internal" in arguments):
+            for line, message in check_text(text, path, "--skip-internal" in arguments, namespaces):
                 print(f"{path}:{line}: {message}")
                 findings += 1
             continue

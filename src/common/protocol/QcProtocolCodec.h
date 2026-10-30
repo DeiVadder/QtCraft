@@ -64,8 +64,7 @@ QcEquipment readEquipment(QDataStream &stream);
 /*! Returns whether all three coordinates of \a value are finite. */
 bool isFinite(const QcVec3 &value);
 
-/*! The tag type that selects the decode() overload for the message type \c T.
-    \typealias QcProtocolCodec::Tag */
+/*! The tag type that selects the decode() overload for the message type \c T. */
 template<typename T>
 using Tag = std::type_identity<T>;
 

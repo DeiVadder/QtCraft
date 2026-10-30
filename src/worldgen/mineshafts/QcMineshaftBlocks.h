@@ -66,10 +66,7 @@ struct QcMineshaftBlocks
     bool isFoliage(QcBlockId block) const { return foliage[static_cast<std::size_t>(block)]; }
 };
 
-/*! \struct QcMineshaftBlocks::Resolved
-    \inmodule qc_worldgen
-    \inheaderfile worldgen/mineshafts/QcMineshaftBlocks.h
-    \brief The result of QcMineshaftBlocks::resolve(): the blocks, or none when a block is
+/*! \brief The result of QcMineshaftBlocks::resolve(): the blocks, or none when a block is
     unknown, and the warnings. \qcfields */
 struct QcMineshaftBlocks::Resolved
 {

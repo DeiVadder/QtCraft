@@ -20,7 +20,6 @@
 #include <QList>
 #include <QString>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 // Movement and action states of an entity, as bits of EntitySpawn/EntityMove::flags. The client

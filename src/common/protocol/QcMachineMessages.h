@@ -14,7 +14,6 @@
 
 #include <array>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client: the player opened the machine at \c {pos}, or with an empty category

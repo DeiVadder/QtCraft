@@ -20,7 +20,6 @@
 
 #include <array>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Bounds of the admin messages, checked by the decoders. */

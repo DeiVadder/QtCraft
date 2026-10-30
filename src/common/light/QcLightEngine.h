@@ -263,10 +263,7 @@ private:
 /*! \brief The light of one chunk computed on its own (its neighbours dark walls), on any thread.
 
     Adding the chunk with it (QcLightEngine::addChunk) leaves only the light across its borders
-    to the engine's thread.
-    \class QcLightEngine::Prepared
-    \inmodule qc_common
-    \inheaderfile common/light/QcLightEngine.h */
+    to the engine's thread. */
 class QcLightEngine::Prepared
 {
 private:

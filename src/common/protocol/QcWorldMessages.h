@@ -18,7 +18,6 @@
 #include <memory>
 #include <optional>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client: a whole chunk, sent when it comes into the player's view. */

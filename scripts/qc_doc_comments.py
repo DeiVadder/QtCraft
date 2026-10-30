@@ -26,9 +26,10 @@ import qc_code_lines  # noqa: E402
 TYPE_KINDS = ("class", "struct", "union", "namespace", "enum")
 DOCUMENTED_KINDS = TYPE_KINDS + ("function", "variable", "property", "typealias", "typedef")
 MARKER = re.compile(r"^\s*//\s*(NOLINT|clang-format)")
-TOPIC = re.compile(r"\\(fn|class|struct|union|enum|variable|property|typedef|typealias|namespace|macro|"
-                   r"headerfile|page|module|qmltype|qmlproperty|qmlsignal|qmlmethod|qmlmodule|group|"
-                   r"qmlvaluetype|qmlattachedproperty|qmlattachedsignal|qmlattachedmethod|externalpage)\b")
+TOPIC_NAMES = ("fn|class|struct|union|enum|variable|property|typedef|typealias|namespace|macro|headerfile|page|"
+               "module|qmltype|qmlproperty|qmlsignal|qmlmethod|qmlmodule|group|qmlvaluetype|qmlattachedproperty|"
+               "qmlattachedsignal|qmlattachedmethod|externalpage")
+TOPIC = re.compile(r"\\(" + TOPIC_NAMES + r")\b")
 ACCESS = re.compile(r"(public|protected|private)(\s+(?:slots|Q_SLOTS))?\s*:(?!:)|(signals|Q_SIGNALS)\s*:(?!:)")
 MACRO_LINE = re.compile(r"[A-Z][A-Z0-9_]*\b")
 IDENTIFIER = re.compile(r"[A-Za-z_]\w*")
@@ -204,6 +205,8 @@ class Scanner:
         for line in self.masked.split("\n"):
             self.line_starts.append(self.line_starts[-1] + len(line) + 1)
         self.items = []
+        # Access of the nested types declared in a class but defined outside it (`class Prepared;`).
+        self.forward_access = {}
 
     def line_of(self, position):
         low, high = 0, len(self.line_starts) - 1
@@ -362,8 +365,14 @@ class Scanner:
         line = self.line_of(start)
         last = self.line_of(max(start, (body[1] if body else head_end) - 1))
         item = self.classify(head, scope, access, section, line, last)
+        if item is not None and body is None and item.kind in TYPE_KINDS and item.scope:
+            self.forward_access[tuple(item.scope + [item.name])] = item.access
+        if item is not None and body is not None and item.kind in TYPE_KINDS and item.scope != scope:
+            # A nested type defined outside its class (`struct QcA::Resolved {…}`): the access of its
+            # declaration in the class.
+            item.access = self.forward_access.get(tuple(item.scope + [item.name]), "public")
         if item is not None and body is not None and item.kind in TYPE_KINDS:
-            inner_scope = scope + [item.name] if item.kind != "namespace" or item.name else scope
+            inner_scope = item.scope + [item.name] if item.kind != "namespace" or item.name else scope
             if item.kind == "enum":
                 item.enumerators = self.enumerators(body[0] + 1, body[1] - 1, line)
             elif item.kind == "namespace" or item.name == "":
@@ -407,18 +416,22 @@ class Scanner:
                 return Item("namespace", "", list(scope), access, section, line, last, head, None)
             rest = type_match.group(5).strip()
             rest = re.sub(r"\[\[[^\]]*\]\]|\balignas\s*\([^)]*\)|\b[A-Z][A-Z0-9_]*_EXPORT\b", "", rest).strip()
-            name_match = re.match(r"([\w:]*)", rest)
-            name = name_match.group(1) if name_match else ""
+            name_match = re.match(r"(\w+(?:\s*::\s*\w+)*)", rest)
+            name = re.sub(r"\s+", "", name_match.group(1)) if name_match else ""
             if kind == "namespace":
                 return Item("namespace", name, list(scope), "", section, line, last, head, comment)
             if not name:
                 return None
-            return Item(kind, name.split("::")[-1], list(scope), access, section, line, last, head, comment)
+            # A qualified name (`struct QcA::Resolved`) defines a nested type outside its class.
+            parts = name.split("::")
+            return Item(kind, parts[-1], list(scope) + parts[:-1], access, section, line, last, head, comment)
         if not head or head.startswith(("friend ", "using namespace", "static_assert", "template class",
                                         "extern template")):
             return None
-        if head.startswith("using "):
-            alias = re.match(r"using\s+(\w+)\s*=", head)
+        alias_head = re.sub(r"^template\s*", "", top_level(head)) if head.startswith("template") else head
+        if alias_head.startswith("using "):
+            # A type alias, also an alias template (`template<typename T> using QcResult = …`).
+            alias = re.match(r"using\s+(\w+)\s*=", alias_head)
             if not alias:
                 return None  # using-declaration (`using Base::Base;`)
             return Item("typealias", alias.group(1), list(scope), access, section, line, last, head, comment)
@@ -433,6 +446,11 @@ class Scanner:
         if pointer:
             # A pointer to a function (`int (*read)(int)`): a variable.
             return Item("variable", pointer.group(1), list(scope), access, section, line, last, head, comment)
+        brace = bare.find("{")
+        if 0 < brace < paren and (equals < 0 or equals > brace):
+            # Brace initialisation with a call inside (`QColor c{QColor(1, 2, 3)}`): a variable.
+            names = IDENTIFIER.findall(bare[:brace])
+            return Item("variable", names[-1], list(scope), access, section, line, last, head, comment) if names else None
         direct = paren > 0 and (equals < 0 or equals > paren)
         literal = re.match(r"\(\s*[\"'0-9{-]", bare[paren:]) if direct else None
         if literal:

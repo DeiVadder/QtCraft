@@ -666,6 +666,30 @@ def self_test():
     only_namespace = "/*! \\brief Tools. */\nnamespace QcTools {\n/*! Returns one. */\nint one();\n}\n"
     if "\\headerfile" in stage_header(only_namespace, "src/common/core/QcTools.h", set()).text():
         failures.append("namespace header: a \\headerfile page without any global declaration")
+    nested = "\n".join([
+        "/*! \\brief Resolves. */",
+        "class QcA",
+        "{",
+        "public:",
+        "    struct Resolved;",
+        "};",
+        "/*! \\brief The result. */",
+        "struct QcA::Resolved",
+        "{",
+        "    /*! The value. */",
+        "    int value = 0;",
+        "};",
+        "/*! A result. */",
+        "template<typename T>",
+        "using QcResult = std::expected<T, QString>;",
+        ""])
+    nested_text = stage_header(nested, "src/common/core/QcA.h", set()).text().split("\n")
+    for wanted_line in ("\\struct QcA::Resolved", "\\inheaderfile common/core/QcA.h", "\\variable QcA::Resolved::value",
+                        "\\typealias QcResult", "\\relates QcA"):
+        if wanted_line not in nested_text:
+            failures.append("nested type or alias template: missing " + wanted_line + "\n" + "\n".join(nested_text))
+    if any(line.startswith("\\variable QcResult") for line in nested_text):
+        failures.append("alias template staged as \\variable")
     qml = "import QtQuick\n/*! \\brief A plate. */\nRectangle {\n    /*! Its text. */\n    property string text\n}\n"
     qml_text = stage_qml(qml, "src/app/qml/Plate.qml").text()
     for wanted_line in ("    \\qmltype Plate", "    \\inqmlmodule QtCraft", "    /*! Its text. */"):

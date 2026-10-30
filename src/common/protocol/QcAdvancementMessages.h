@@ -7,7 +7,6 @@
 #include <QString>
 #include <QStringList>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client: the receiving player's progress in the adventure guide (decision

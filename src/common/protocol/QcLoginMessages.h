@@ -29,7 +29,6 @@ struct QcPackFingerprint
     friend bool operator==(const QcPackFingerprint &, const QcPackFingerprint &) = default;
 };
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client after Hello from a remote client: what the server needs for the login.

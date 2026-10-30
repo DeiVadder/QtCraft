@@ -11,12 +11,13 @@
 
 Both files are generated and not in git (merge conflicts between branches); CLAUDE.md says when
 to run this. Takes about a second.
-Usage: scripts/code-map.py [--check | --layout]
+Usage: scripts/code-map.py [--check | --layout | --self-test]
   --check   exit 1 when a file would change, write nothing
   --layout  print the table "Source layout" of docs/Architektur.md with the current folders and
             their numbers of files (C++, Objective-C++, QML); the content column comes from the
             table in the document where a row names exactly that folder, else it says the folder is
             not described there
+  --self-test  checks the entry of a sample header and fails on a wrong name or sentence
 """
 
 import os
@@ -30,9 +31,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CODE_MAP = os.path.join(ROOT, "docs", "Code-Karte.md")
 DECISION_INDEX = os.path.join(ROOT, "docs", "Entscheidungen-Index.md")
 
-# A declaration at namespace level that opens a body (forward declarations end with ';').
+# A declaration at namespace level that opens a body (forward declarations end with ';'); a nested
+# type defined outside its class keeps its qualified name (`QcA::Resolved`).
 DECLARATION = re.compile(
-    r"^(?:template\s*<[^>]*>\s*)?(?:(class|struct|enum class|enum)\s+(\w+)\b(?!\s*;)"
+    r"^(?:template\s*<[^>]*>\s*)?(?:(class|struct|enum class|enum)\s+(\w+(?:::\w+)*)\b(?!\s*;)"
     r"|(namespace)\s+(Qc\w+)\s*\{|(using)\s+(Qc\w+)\s*=)")
 MAX_SUMMARY = 160
 
@@ -48,6 +50,10 @@ def first_sentence(lines):
     return sentence
 
 
+# Lines of a QDoc comment that name its topic or context (`\struct QcA::Resolved`, `\inmodule x`):
+# no description.
+TOPIC_LINE = re.compile(r"^\s*\\(?:" + qc_doc_comments.TOPIC_NAMES +
+                        r"|inmodule|inheaderfile|relates|ingroup|inqmlmodule|nativetype)\b")
 QDOC_MARKUP = re.compile(r"\\(?:brief|e|b|l|li)\s+|\\(?:list|endlist)\b(?:\s+\d)?")
 
 
@@ -66,7 +72,7 @@ def comment_above(lines, index):
     comment = qc_doc_comments.comment_above(lines, index)
     if comment is None or comment.style not in ("line", "qdoc") or qc_doc_comments.is_license(comment):
         return []
-    return [plain(line) for line in comment.lines]
+    return [plain(line) for line in comment.lines if not TOPIC_LINE.match(line)]
 
 
 def header_entries(path):
@@ -238,7 +244,32 @@ def layout():
     return "\n".join(out) + "\n"
 
 
+SELF_TEST = """#pragma once
+/*! \\struct QcA::Resolved
+    \\inmodule qc_common
+    \\brief The result of QcA::resolve(). More. */
+struct QcA::Resolved
+{
+};
+"""
+
+
+def self_test():
+    """Names and sentences of a nested type defined outside its class with a topic command."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as directory:
+        path = os.path.join(directory, "QcA.h")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(SELF_TEST)
+        entries = header_entries(path)
+    wanted = [("QcA::Resolved", "struct", 5, "The result of QcA::resolve().")]
+    print("self-test: " + ("ok" if entries == wanted else f"{entries} instead of {wanted}"))
+    return 0 if entries == wanted else 1
+
+
 def main():
+    if "--self-test" in sys.argv[1:]:
+        return self_test()
     if "--layout" in sys.argv[1:]:
         sys.stdout.write(layout())
         return 0

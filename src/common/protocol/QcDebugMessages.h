@@ -14,7 +14,6 @@
 
 #include <array>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Client -> server: which debug data the client wants while its debug display, the control

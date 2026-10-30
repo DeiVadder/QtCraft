@@ -8,7 +8,6 @@
 #include "common/core/QcBlockPos.h"
 #include "common/world/QcSignText.h"
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client: the text on the sign at \c {pos}, sent after the ChunkData of its chunk

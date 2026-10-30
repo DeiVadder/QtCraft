@@ -11,7 +11,6 @@
 #include <QPoint>
 #include <QRect>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Server -> client: what is new of map \c {id} for a player holding it (decision E-802):

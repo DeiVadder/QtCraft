@@ -9,7 +9,6 @@
 class QcBlockAccess;
 struct QcPlayerInput;
 
-/* QcPhysics is documented in QcPhysics.h. */
 namespace QcPhysics {
 struct BodySize;
 struct MoveResult;

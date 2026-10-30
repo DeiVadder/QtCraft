@@ -115,16 +115,11 @@ private:
     std::array<Lists, actionCount> m_lists;
 };
 
-/*! \brief What QcAdventureRules::fromJson() read and what it left out.
-    \struct QcAdventureRules::Read
-    \inmodule qc_common
-    \inheaderfile common/gameplay/QcAdventureRules.h */
+/*! \brief What QcAdventureRules::fromJson() read and what it left out. */
 struct QcAdventureRules::Read
 {
-    /*! The lists read.
-        \variable QcAdventureRules::Read::rules */
+    /*! The lists read. */
     QcAdventureRules rules;
-    /*! One line per dropped entry with the reason.
-        \variable QcAdventureRules::Read::problems */
+    /*! One line per dropped entry with the reason. */
     QStringList problems;
 };

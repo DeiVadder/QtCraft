@@ -20,7 +20,6 @@
 #include <QList>
 #include <QString>
 
-/* QcMsg is documented in QcSessionMessages.h. */
 namespace QcMsg {
 
 /*! \brief Client -> server: one tick of movement intent. */
