@@ -30,7 +30,7 @@
 #     (vcruntime, msvcp, concrt, vcomp, vccorlib) must come from the package, never from System32;
 #     with -Ci only, imports of the Media Foundation DLLs (mfplat, mf, mfreadwrite) that a Windows
 #     Server runner lacks are accepted with a log line
-#   - all DLLs of Microsoft.VC143.CRT, the Qt platform and multimedia plugins, QML modules, example
+#   - all DLLs of the VC++ runtime folder (Microsoft.VC143.CRT or newer), the Qt platform and multimedia plugins, QML modules, example
 #     mod, the OpenSSL DLLs (libssl-3-x64.dll, libcrypto-3-x64.dll of the pinned version, E-872)
 #     and the licence texts (game, Qt under the LGPL 3 with its notice, SDL3, HIDAPI, SDL libm,
 #     OpenSSL, Pixelify Sans) are present; Qt's OpenSSL backend plugin (tls\qopensslbackend.dll) is
@@ -482,7 +482,13 @@ foreach ($exe in @("qtcraft", "qtcraft-headless")) {
 $windeployqt = Join-Path $QtDir "bin\windeployqt.exe"
 Invoke-Checked "windeployqt" $windeployqt @("--release", "--force-openssl", "--no-compiler-runtime", "--no-opengl-sw", "--qmldir", (Join-Path $Source "src\app\qml"),
     (Join-Path $package "qtcraft.exe"), (Join-Path $package "qtcraft-headless.exe"))
-$crt = Join-Path $env:VCToolsRedistDir "x64\Microsoft.VC143.CRT"
+# The runtime folder is named after the toolset (Microsoft.VC143.CRT for Visual Studio 2022,
+# a later number for newer ones); the newest one in the redistributable files is taken.
+$crt = Get-ChildItem -Directory -ErrorAction SilentlyContinue (Join-Path $env:VCToolsRedistDir "x64") -Filter "Microsoft.VC*.CRT" |
+    Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+if (-not $crt) {
+    Abort "no Microsoft.VC*.CRT folder in $(Join-Path $env:VCToolsRedistDir "x64")"
+}
 $crtDlls = @(Get-ChildItem -File $crt -Filter *.dll | ForEach-Object { $_.Name })
 if ($crtDlls.Count -eq 0) {
     Abort "no DLLs in $crt"
@@ -647,7 +653,7 @@ foreach ($part in $required) {
     if (Test-Path (Join-Path $package $part)) { Ok "contains $part" } else { Problem "missing $part" }
 }
 foreach ($dll in @("vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll")) {
-    if ($crtDlls -notcontains $dll) { Problem "Microsoft.VC143.CRT has no $dll" }
+    if ($crtDlls -notcontains $dll) { Problem "$(Split-Path -Leaf $crt) has no $dll" }
 }
 # The DLLs are the ones of the pinned version (OpenSSL writes its version into their resources).
 foreach ($dll in $opensslDlls) {
