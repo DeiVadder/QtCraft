@@ -54,6 +54,10 @@ if(NOT WIN32)
     set_tests_properties(script_check_duplicates PROPERTIES TIMEOUT 60)
     add_test(NAME script_check_qml COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-qml.py --self-test)
     set_tests_properties(script_check_qml PROPERTIES TIMEOUT 60)
+    # Samples of the checks of E-379 (decision E-948): the text rules in memory, the AST rules through
+    # clang-query on a sample file in a temporary folder (skipped without Homebrew LLVM).
+    add_test(NAME script_check_ast COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-ast.py --self-test)
+    set_tests_properties(script_check_ast PROPERTIES TIMEOUT 120)
     # The large file check of the index, a commit and a push (decision E-933) in a throwaway git
     # repository with a bare remote, run from a pre-push hook like tools/githooks/pre-push.
     add_test(NAME script_check_large_files

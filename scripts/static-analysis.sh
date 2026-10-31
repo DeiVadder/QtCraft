@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Runs the size limits checks (file and function length), the warning-only checks of output parameters,
-# member access, repeated code and the QML heuristics (E-942), the API documentation check of the
-# documented folders (comments, qdoc), clang-tidy, clazy and qmllint over the project (or over the given
-# files).
+# member access, repeated code, the QML heuristics (E-942) and the code style rules of E-379 (E-948), the
+# API documentation check of the documented folders (comments, qdoc), clang-tidy, clazy and qmllint over
+# the project (or over the given files).
 # Usage: scripts/static-analysis.sh [--cheap-all] [build-dir] [file ...]
 # Given files may be .cpp, .h and .qml: a header is analysed through its .cpp, QML files are linted one by one.
 # --cheap-all (the full verify, decision E-929): the size limits and the warning-only checks run over the
@@ -130,6 +130,42 @@ if [ "$CHEAP_SELECTED" -eq 0 ]; then
 elif [ -n "$QML_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-qml.py" $QML_FILES || status=1
+fi
+
+# Code style rules of E-379 (std::string, hand-written delete, lock types, mutexes without a named
+# hand-over), decision E-948: clang-query over the translation units (cached per unit in the build
+# directory). Warning only until the limits are set; a NOLINT marker without a reason or a unit clang-query
+# cannot process fails. The step has its own time limit (an uncached whole tree takes minutes), and a
+# timeout only warns. Jobs follow the slot broker's grant (QC_TEST_JOBS). Without Homebrew LLVM it is
+# skipped. The whole tree prints the counts, a selection lists the findings in the given files.
+echo "== AST checks (warning only)"
+CLANG_QUERY=${CLANG_QUERY:-/opt/homebrew/opt/llvm/bin/clang-query}
+export CLANG_QUERY
+AST_SOURCES=$(printf '%s\n' $LENGTH_FILES | grep -E '\.(cpp|h|mm)$')
+AST_JOBS=${QC_TEST_JOBS:-$JOBS}
+if [ ! -x "$CLANG_QUERY" ]; then
+    echo "AST checks skipped (no clang-query at $CLANG_QUERY)"
+elif [ "$CHEAP_SELECTED" -eq 0 ] || [ -n "$AST_SOURCES" ]; then
+    SAVED_TIME_LIMIT=$TIME_LIMIT
+    TIME_LIMIT=${AST_TIME_LIMIT:-1800}
+    if [ "$CHEAP_SELECTED" -eq 0 ]; then
+        CHECK_OUTPUT=$(run_limited python3 "$PROJECT_DIR/scripts/check-ast.py" --list \
+            --jobs "$AST_JOBS" --build-dir "$BUILD_DIR")
+        ast_status=$?
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+        printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+    else
+        # shellcheck disable=SC2086
+        run_limited python3 "$PROJECT_DIR/scripts/check-ast.py" --jobs "$AST_JOBS" \
+            --build-dir "$BUILD_DIR" $AST_SOURCES
+        ast_status=$?
+    fi
+    TIME_LIMIT=$SAVED_TIME_LIMIT
+    if [ "$ast_status" -eq 142 ]; then
+        echo "AST checks timed out after ${AST_TIME_LIMIT:-1800} s (warning only)"
+    elif [ "$ast_status" -ne 0 ]; then
+        status=1
+    fi
 fi
 
 # QDoc comments of the fully documented folders (scripts/doc-folders.txt, decision E-939). The comment
