@@ -19,8 +19,6 @@ ApplicationWindow {
     visible: false
     title: qsTr("QtCraft")
     color: Theme.menuBottom
-    // The game for the items made by loaders (their own `game` property hides the id there).
-    readonly property GameController controller: game
     // The item that had the focus before the handbook opened; the handbook gives the focus back to
     // it. Kept here rather than read when the handbook opens: the screens it covers hide at the same
     // moment (and lose the focus) in no fixed order.
@@ -30,7 +28,7 @@ ApplicationWindow {
     property int lastOverlay: GameController.Overlay.None
 
     onActiveFocusItemChanged: {
-        if (!game.handbook.isOpen && activeFocusItem)
+        if (!gameController.handbook.isOpen && activeFocusItem)
             focusBeforeHandbook = activeFocusItem;
     }
 
@@ -39,7 +37,7 @@ ApplicationWindow {
     Binding {
         target: UiScaling
         property: "setting"
-        value: game.settings.uiScale
+        value: gameController.settings.uiScale
     }
     Binding {
         target: UiScaling
@@ -49,9 +47,9 @@ ApplicationWindow {
     // The chat lines of the HUD all show while the chat line is open and fade while it is closed
     // (decision E-875).
     Binding {
-        target: game.hud.chat
+        target: gameController.hud.chat
         property: "open"
-        value: game.overlay === GameController.Overlay.Chat
+        value: gameController.overlay === GameController.Overlay.Chat
     }
     // Controls (buttons, boxes, labels, tooltips, popups) inherit the window's font.
     WindowFont {
@@ -59,18 +57,19 @@ ApplicationWindow {
     }
 
     GameController {
-        id: game
+        id: gameController
 
         objectName: "game"
         view: worldView
-        inputEnabled: game.phase === GameController.Phase.Playing
+        inputEnabled: gameController.phase === GameController.Phase.Playing
     }
 
     WorldView {
         id: worldView
 
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing || game.phase === GameController.Phase.Loading
+        visible: gameController.phase === GameController.Phase.Playing
+                 || gameController.phase === GameController.Phase.Loading
     }
 
     // The photo mode's key hides it with the crosshair and every overlay (decision E-692); nothing
@@ -80,9 +79,9 @@ ApplicationWindow {
         id: hud
 
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && !game.photo.hudHidden
-                 && game.hudShown !== GameController.HudShown.Nothing
-        game: game
+        visible: gameController.phase === GameController.Phase.Playing && !gameController.photo.hudHidden
+                 && gameController.hudShown !== GameController.HudShown.Nothing
+        game: gameController
     }
 
     // While its pad button or its key is held in the world, not with the HUD hidden (decisions E-581,
@@ -90,114 +89,124 @@ ApplicationWindow {
     // on), so without a pad they cost nothing.
     Loader {
         anchors.centerIn: parent
-        active: (game.gamepad.active || game.gamepad.radialOpen || game.input.radialOpen) && game.phase === GameController.Phase.Playing
-        visible: game.phase === GameController.Phase.Playing && (game.gamepad.radialOpen || game.input.radialOpen)
-                 && !game.photo.hudHidden
+        active: (gameController.gamepad.active || gameController.gamepad.radialOpen || gameController.input.radialOpen)
+                && gameController.phase === GameController.Phase.Playing
+        visible: gameController.phase === GameController.Phase.Playing
+                 && (gameController.gamepad.radialOpen || gameController.input.radialOpen)
+                 && !gameController.photo.hudHidden
 
         sourceComponent: HotbarRadial {
-            game: root.controller
+            game: gameController
         }
     }
 
     InventoryScreen {
         anchors.fill: parent
-        visible: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Inventory
-        game: game
+        visible: gameController.phase === GameController.Phase.Playing
+                 && gameController.overlay === GameController.Overlay.Inventory
+        game: gameController
     }
 
     // The other screens exist only while shown and for a while after (LazyScreen, decision E-691).
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Creative
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Creative
         // About 30 ms to make in Release (E-690): made with the creative world, not on the first E.
-        preload: game.phase === GameController.Phase.Playing && game.player.creative
+        preload: gameController.phase === GameController.Phase.Playing && gameController.player.creative
 
         screen: CreativeScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Furnace
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Furnace
 
         screen: FurnaceScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Chest
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Chest
 
         screen: ChestScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Trade
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Trade
 
         screen: TradeScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Stonecutter
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Stonecutter
 
         screen: StonecutterScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Enchanting
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Enchanting
 
         screen: EnchantingScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Anvil
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Anvil
 
         screen: AnvilScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
     // With its sub-screens: settings, character and open to LAN.
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
                && [GameController.Overlay.Pause, GameController.Overlay.Settings, GameController.Overlay.Display, GameController.Overlay.Audio,
                    GameController.Overlay.Interface, GameController.Overlay.Controls,
                    GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks,
-                   GameController.Overlay.Character, GameController.Overlay.Lan, GameController.Overlay.Admin].includes(game.overlay)
+                   GameController.Overlay.Character, GameController.Overlay.Lan, GameController.Overlay.Admin].includes(gameController.overlay)
 
         screen: PauseMenu {
-            game: root.controller
+            game: gameController
             statusReserved: hud.visible ? hud.height - hud.statusArea.y : 0
         }
     }
@@ -205,36 +214,38 @@ ApplicationWindow {
     // The tree of the adventure guide (decision E-924).
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Advancements
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Advancements
 
         screen: AdvancementsScreen {
-            game: root.controller
-            onCloseRequested: root.controller.overlay = root.advancementsReturn
+            game: gameController
+            onCloseRequested: gameController.overlay = root.advancementsReturn
         }
     }
 
     Connections {
-        target: game
+        target: gameController
 
         function onOverlayChanged() {
-            if (game.overlay === GameController.Overlay.Advancements)
+            if (gameController.overlay === GameController.Overlay.Advancements)
                 root.advancementsReturn = root.lastOverlay === GameController.Overlay.Pause ? GameController.Overlay.Pause : GameController.Overlay.None;
-            root.lastOverlay = game.overlay;
+            root.lastOverlay = gameController.overlay;
         }
     }
 
     // While the player list key is held; over the world and the HUD, under the screens.
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.None && game.input.playerListHeld
-               && !game.photo.hudHidden
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.None && gameController.input.playerListHeld
+               && !gameController.photo.hudHidden
 
         screen: PlayerListOverlay {
-            game: root.controller
+            game: gameController
         }
     }
 
@@ -244,29 +255,31 @@ ApplicationWindow {
         anchors.fill: parent
         // Same frame as the HUD (both fill the window): the /help hint stays clear of the hotbar.
         statusArea: hud.visible ? hud.statusArea : Qt.rect(width, height, 0, 0)
-        visible: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Chat
-        game: game
+        visible: gameController.phase === GameController.Phase.Playing
+                 && gameController.overlay === GameController.Overlay.Chat
+        game: gameController
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Sign
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing
+               && gameController.overlay === GameController.Overlay.Sign
 
         screen: SignEditor {
-            game: root.controller
+            game: gameController
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Playing && game.player.dead
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Playing && gameController.player.dead
 
         screen: DeathScreen {
-            game: root.controller
+            game: gameController
             statusReserved: hud.visible ? hud.height - hud.statusArea.y : 0
         }
     }
@@ -274,29 +287,29 @@ ApplicationWindow {
     // Only in the menu phase: in the world its objects are given back once the keep-alive time ran out.
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Menu
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Menu
         // Made at once (decision E-875): it is the first screen at start-up, where test hooks and
         // the pad act on it right away, and when a world closes nothing plays that a stall could cut.
         asynchronous: false
 
         screen: MainMenu {
-            game: root.controller
+            game: gameController
             onQuitRequested: Qt.quit()
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Error
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Error
 
         screen: MessageScreen {
-            text: root.controller.statusText
+            text: gameController.statusText
             showBackButton: true
-            onBackRequested: root.controller.leaveGame()
+            onBackRequested: gameController.leaveGame()
         }
     }
 
@@ -304,27 +317,27 @@ ApplicationWindow {
     // the GUI thread.
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Loading
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Loading
         asynchronous: false
 
         screen: LoadingScreen {
-            progress: root.controller.loading
+            progress: gameController.loading
             // Loading a network server's world can be cancelled.
-            canCancel: root.controller.multiplayer.networkGame
-            onCancelRequested: root.controller.leaveGame()
+            canCancel: gameController.multiplayer.networkGame
+            onCancelRequested: gameController.leaveGame()
         }
     }
 
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Disconnected
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.phase === GameController.Phase.Disconnected
 
         screen: DisconnectScreen {
-            game: root.controller
+            game: gameController
         }
     }
 
@@ -333,7 +346,7 @@ ApplicationWindow {
     LazyScreen {
         anchors.fill: parent
         keepAliveMs: 0
-        shown: game.starting
+        shown: gameController.starting
         asynchronous: false
 
         screen: StartScreen {}
@@ -342,12 +355,12 @@ ApplicationWindow {
     // Over everything else, so it opens from the menu, the world and every in-game screen.
     LazyScreen {
         anchors.fill: parent
-        keepAliveMs: root.controller.screenKeepAliveMs
-        logCreation: root.controller.logScreenCreation
-        shown: game.handbook.isOpen
+        keepAliveMs: gameController.screenKeepAliveMs
+        logCreation: gameController.logScreenCreation
+        shown: gameController.handbook.isOpen
 
         screen: HandbookScreen {
-            game: root.controller
+            game: gameController
             focusOutside: root.focusBeforeHandbook
         }
     }
@@ -358,14 +371,15 @@ ApplicationWindow {
         objectName: "padHintsLoader"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        active: game.gamepad.active
+        active: gameController.gamepad.active
         // In the world with the HUD hidden it hides with it; screens and the death screen keep their
         // hints.
-        visible: !game.photo.hudHidden || game.overlay !== GameController.Overlay.None || game.handbook.isOpen
-                 || game.player.dead
+        visible: !gameController.photo.hudHidden || gameController.overlay !== GameController.Overlay.None
+                 || gameController.handbook.isOpen
+                 || gameController.player.dead
 
         sourceComponent: PadHints {
-            game: root.controller
+            game: gameController
             // The chat line lies along the bottom edge.
             covered: ((keyboard.item as OnScreenKeyboard)?.visible ?? false) || chat.visible
         }
@@ -384,14 +398,15 @@ ApplicationWindow {
         active: false
         // A notice for playing in the world (decision E-927): not over the panels of a screen (nor
         // over the advancement tree, which shows the same and would lose its close button).
-        visible: ((item as AdvancementToast)?.showing ?? false) && !game.photo.hudHidden && !game.photo.capturing
-                 && (game.hudShown === GameController.HudShown.All || game.hudShown === GameController.HudShown.AllButHint)
+        visible: ((item as AdvancementToast)?.showing ?? false) && !gameController.photo.hudHidden
+                 && !gameController.photo.capturing
+                 && (gameController.hudShown === GameController.HudShown.All || gameController.hudShown === GameController.HudShown.AllButHint)
 
         sourceComponent: AdvancementToast {}
     }
 
     Connections {
-        target: game.player
+        target: gameController.player
 
         function onAdvancementReached(advancement: var) {
             advancementToast.active = true;
@@ -401,10 +416,10 @@ ApplicationWindow {
 
     // Leaving the world (or losing it) forgets the advancements still waiting for their toast.
     Connections {
-        target: game
+        target: gameController
 
         function onPhaseChanged() {
-            if (game.phase !== GameController.Phase.Playing) {
+            if (gameController.phase !== GameController.Phase.Playing) {
                 (advancementToast.item as AdvancementToast)?.clear();
             }
         }
@@ -417,7 +432,7 @@ ApplicationWindow {
         anchors.top: parent.top
         anchors.topMargin: Ui.px(48)
         spacing: Ui.px(8)
-        visible: !game.photo.capturing
+        visible: !gameController.photo.capturing
 
         // A pad connected, disconnected or took over; made for the first notice.
         Loader {
@@ -425,10 +440,10 @@ ApplicationWindow {
 
             anchors.horizontalCenter: parent.horizontalCenter
             active: false
-            visible: ((item as PadNotice)?.showing ?? false) && !game.photo.hudHidden
+            visible: ((item as PadNotice)?.showing ?? false) && !gameController.photo.hudHidden
 
             sourceComponent: PadNotice {
-                game: root.controller
+                game: gameController
             }
         }
 
@@ -449,7 +464,7 @@ ApplicationWindow {
 
             anchors.horizontalCenter: parent.horizontalCenter
             active: false
-            visible: ((item as PhotoNotice)?.showing ?? false) && !game.photo.hudHidden
+            visible: ((item as PhotoNotice)?.showing ?? false) && !gameController.photo.hudHidden
 
             sourceComponent: PhotoNotice {
                 labelName: "refusalNotice"
@@ -458,7 +473,7 @@ ApplicationWindow {
     }
 
     Connections {
-        target: game.player
+        target: gameController.player
 
         function onActionRefused() {
             refusalNotice.active = true;
@@ -472,20 +487,20 @@ ApplicationWindow {
         // The first hiding in a run says how to get the HUD back.
         property bool hudHintShown: false
 
-        target: game.photo
+        target: gameController.photo
 
         function onHudHiddenChanged() {
-            if (!game.photo.hudHidden || photoEvents.hudHintShown) {
+            if (!gameController.photo.hudHidden || photoEvents.hudHintShown) {
                 return;
             }
             photoEvents.hudHintShown = true;
             photoNotice.active = true;
-            (photoNotice.item as PhotoNotice).show(qsTr("HUD hidden – %1 to show").arg(game.settings.keys.labels.hideHud));
+            (photoNotice.item as PhotoNotice).show(qsTr("HUD hidden – %1 to show").arg(gameController.settings.keys.labels.hideHud));
         }
 
         function onScreenshotSaved() {
             photoNotice.active = true;
-            (photoNotice.item as PhotoNotice).show(qsTr("Screenshot saved: %1").arg(game.photo.lastScreenshot));
+            (photoNotice.item as PhotoNotice).show(qsTr("Screenshot saved: %1").arg(gameController.photo.lastScreenshot));
         }
 
         function onScreenshotFailed(reason: string) {
@@ -495,7 +510,7 @@ ApplicationWindow {
     }
 
     Connections {
-        target: game.gamepad.pads
+        target: gameController.gamepad.pads
 
         function onNoticeChanged() {
             padNotice.active = true;
@@ -510,10 +525,10 @@ ApplicationWindow {
         z: 1000
 
         Loader {
-            active: game.gamepad.active
+            active: gameController.gamepad.active
 
             sourceComponent: FocusRing {
-                game: root.controller
+                game: gameController
                 home: ringHome
             }
         }
@@ -533,15 +548,15 @@ ApplicationWindow {
             sourceComponent: OnScreenKeyboard {
                 areaWidth: root.width
                 areaHeight: root.height
-                game: root.controller
+                game: gameController
                 // The UI language picks the letters' layout, also after a switch at runtime.
-                language: root.controller.settings.contentLanguage
+                language: gameController.settings.contentLanguage
             }
         }
     }
 
     Connections {
-        target: game.gamepad
+        target: gameController.gamepad
 
         function onKeyboardRequested(field) {
             keyboard.active = true;
@@ -550,7 +565,7 @@ ApplicationWindow {
 
         // The keyboard or the mouse took over: the field is typed into directly.
         function onActiveChanged() {
-            if (!game.gamepad.active && keyboard.item)
+            if (!gameController.gamepad.active && keyboard.item)
                 (keyboard.item as OnScreenKeyboard).close();
         }
     }

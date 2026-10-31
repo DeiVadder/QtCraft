@@ -2,7 +2,6 @@
     "check-qml.py": {
         "connections-write": 2,
         "enum-list": 1,
-        "id-shadows-property": 1,
         "long-function": 12,
         "unread-object-name": 48
     },

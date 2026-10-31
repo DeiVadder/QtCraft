@@ -62,10 +62,9 @@ BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
          "on-property", "loader-item", "anchors-layout", "image-source-size")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
-# E-942); a NOLINT marker without a reason always fails. `id-shadows-property`, `enum-list` and
-# `connections-write` join once their findings in Main.qml are gone (79.46, 79.47, 79.49); until then the
-# ratchet keeps their counts from rising.
-GATING = {"raw-size"}
+# E-942); a NOLINT marker without a reason always fails. `enum-list` and `connections-write` join once
+# their findings in Main.qml are gone (79.47, 79.49); until then the ratchet keeps their counts from rising.
+GATING = {"raw-size", "id-shadows-property"}
 # Properties every Item has (QQuickItem and QObject): an id with one of these names hides the member in
 # every unqualified use inside the file (qmllint id-shadows-member), as `id: layer` hides `Item.layer`.
 ITEM_MEMBERS = {

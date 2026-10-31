@@ -87,6 +87,26 @@ card_above_status() {
     done
 }
 
+# step_ran_once <name>: the menu's steps did not run again once the world played (they run once per
+# program run, the second "@300 click:continueButton" found no such control on the pause menu).
+step_ran_once() {
+    if grep 'no such control' "$DATA/$1.log"; then
+        echo "$1: a step of the menu ran again in the world"
+        failed=1
+    fi
+}
+
+# world_step_once <name>: the world step "@1000 press:F13" ran once, after the world became playable
+# (the menu does not plan it, so it does not run on a session that is still loading).
+world_step_once() {
+    playable=$(grep -n 'World start: playable after' "$DATA/$1.log" | head -1 | cut -d: -f1)
+    pressed=$(grep -n 'overlay press:F13: overlay' "$DATA/$1.log" | cut -d: -f1)
+    if [ -z "$playable" ] || [ "$(echo "$pressed" | grep -c .)" -ne 1 ] || [ "$pressed" -lt "$playable" ]; then
+        echo "$1: the world step did not run once after the world became playable (playable line $playable, press lines $pressed)"
+        failed=1
+    fi
+}
+
 # A saved world, made by the headless bot; the menu continues it, the pause menu opens with it.
 saved="$DATA/saved"
 settings "$saved" 200
@@ -128,9 +148,13 @@ for size in 1280x720 2560x1440; do
             failed=1
         fi
         card_above_status $name
+        step_ran_once $name
     fi
-    if run "saved-death-$size" "$(fresh "death-$size")" $size --chat "/kill" --overlay "@300 click:continueButton"; then
+    if run "saved-death-$size" "$(fresh "death-$size")" $size --chat "/kill" --overlay "@300 click:continueButton" \
+        --overlay "@1000 press:F13"; then
         card_above_status "saved-death-$size"
+        step_ran_once "saved-death-$size"
+        world_step_once "saved-death-$size"
     fi
 done
 

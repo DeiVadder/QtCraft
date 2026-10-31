@@ -48,6 +48,14 @@ namespace {
     return found;
 }
 
+// Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
+[[nodiscard]] bool runsInMenu(const QString &step)
+{
+    return step.startsWith(u"open:"_s) || step.startsWith(u"click:"_s) || step.startsWith(u"hover:"_s)
+           || step.startsWith(u"pad:"_s) || step.startsWith(u"focus:"_s) || step.startsWith(u"text:"_s)
+           || step.startsWith(u"message:"_s) || step.startsWith(u"loading:"_s) || step == u"starting"_s;
+}
+
 // The delay of a line "@<ms> <rest>"; std::nullopt when the line has none.
 [[nodiscard]] std::optional<int> delayOf(const QString &line, qsizetype space)
 {
@@ -99,17 +107,18 @@ void QcStartupHooks::setStartupScript(QStringList chatLines, const QStringList &
 {
     m_startupChat = std::move(chatLines);
     m_startupOverlay.clear();
-    m_startupOverlaySteps.clear();
+    QList<OverlayStep> steps;
     for (const QString &overlay : overlays) {
         if (overlay.startsWith(u'@')) {
-            m_startupOverlaySteps.append(overlay);
+            steps.append({.line = overlay});
         } else if (overlay.startsWith(u"message:"_s) || overlay.startsWith(u"loading:"_s)) {
             // A step at once, so it shows in the main menu as well as in a world.
-            m_startupOverlaySteps.append(u"@0 "_s + overlay);
+            steps.append({.line = u"@0 "_s + overlay});
         } else if (m_startupOverlay.isEmpty()) {
             m_startupOverlay = overlay;
         }
     }
+    setStartupOverlaySteps(std::move(steps));
 }
 
 void QcStartupHooks::setScriptedPad(QcScriptedPad *pad)
@@ -163,7 +172,7 @@ void QcStartupHooks::releaseScreenshot() const
 void QcStartupHooks::menuShown()
 {
     // Each step holds the screenshot until it ran; then the menu's own hold ends.
-    scheduleOverlaySteps();
+    scheduleOverlaySteps(true);
     if (m_menuHold) {
         m_menuHold = false;
         m_screenshotReleased = true;
@@ -201,7 +210,7 @@ void QcStartupHooks::worldPlaying()
     setWorldPlayed(true);
     sendStartupChat();
     openStartupOverlay();
-    scheduleOverlaySteps();
+    scheduleOverlaySteps(false);
     m_benchmark->scheduleStart();
 }
 
@@ -262,9 +271,17 @@ void QcStartupHooks::openMachineInView()
     });
 }
 
-void QcStartupHooks::scheduleOverlaySteps()
+void QcStartupHooks::scheduleOverlaySteps(bool menuSteps)
 {
-    for (const QString &step : std::as_const(m_startupOverlaySteps)) {
+    const QList<OverlayStep> &steps = startupOverlaySteps();
+    for (qsizetype index = 0; index < steps.size(); ++index) {
+        const QString &step = steps.at(index).line;
+        // The menu plans only the steps it can run, so a world step waits for the world to play
+        // (and is not run on a session that is still loading).
+        if (steps.at(index).ran || (menuSteps && !runsInMenu(step.mid(step.indexOf(u' ') + 1)))) {
+            continue;
+        }
+
         const qsizetype space = step.indexOf(u' ');
         const std::optional<int> delayMs = delayOf(step, space);
         if (!delayMs) {
@@ -273,11 +290,12 @@ void QcStartupHooks::scheduleOverlaySteps()
         }
 
         holdScreenshot();
-        QTimer::singleShot(*delayMs, this, [this, overlay = step.mid(space + 1)] {
-            // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
-            if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
-                || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)
-                || overlay.startsWith(u"message:"_s) || overlay.startsWith(u"loading:"_s) || overlay == u"starting"_s) {
+        QTimer::singleShot(*delayMs, this, [this, index, overlay = step.mid(space + 1)] {
+            // The menu and the world may both have planned it; the first to run it with what it
+            // needs wins. The list is fixed once setStartupScript() ran, before any plan.
+            Q_ASSERT(index < startupOverlaySteps().size());
+            if (!startupOverlaySteps().at(index).ran && (m_parts.session || runsInMenu(overlay))) {
+                markOverlayStepRan(index);
                 runOverlayStep(overlay);
             }
             releaseScreenshot();

@@ -476,7 +476,7 @@ Item {
         keepAliveMs: root.keepAlive
         shown: game.overlay === GameController.Overlay.{name}
         screen: {name}Screen {{
-            game: root.controller
+            game: gameController
         }}
     }}
 """ for name in ("Chest", "Furnace", "Trade", "Anvil")) + "}\n"
@@ -496,7 +496,7 @@ Item {
         keepAliveMs: root.keepAlive
         logCreation: root.log
         shown: [GameController.Overlay.Pause, GameController.Overlay.Settings].includes(game.overlay)
-        screen: PauseMenu { game: root.controller }
+        screen: PauseMenu { game: gameController }
     }
     LazyScreen {
         anchors.fill: parent
@@ -504,7 +504,7 @@ Item {
         logCreation: root.log
         shown: game.phase === GameController.Phase.Playing && game.overlay === GameController.Overlay.Trade
         screen: TradeScreen {
-            game: root.controller
+            game: gameController
             onClosed: game.closeScreen()
         }
     }

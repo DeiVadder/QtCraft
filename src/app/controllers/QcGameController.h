@@ -54,10 +54,10 @@ class QcMapImageProvider;
 class QQuickWindow;
 struct QcWorldInfo;
 
-// The game for QML (GameController, `game` in Main.qml): runs a single-player session with its
-// in-process server, or a session of a network game, and shows its phase, status and in-game
-// screen. Settings, library, player,
-// HUD, handbook and input are sub-objects with their own QML properties; the render bridge hands
+// The game for QML (GameController, id `gameController` in Main.qml, `game` in the screens): runs a
+// single-player session with its in-process server, or a session of a network game, and shows its
+// phase, status and in-game screen. Settings, library, player, HUD, handbook and input are
+// sub-objects with their own QML properties; the render bridge hands
 // the world to the view every frame. Lives in the GUI thread and is created from QML.
 class QcGameController : public QObject
 {

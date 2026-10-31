@@ -6,6 +6,7 @@
 #include "common/physics/QcPlayerInput.h"
 
 #include <QElapsedTimer>
+#include <QList>
 #include <QObject>
 #include <QPointer>
 #include <QString>
@@ -13,6 +14,7 @@
 
 #include <array>
 #include <optional>
+#include <utility>
 
 class QcBenchmarkRun;
 class QcGameInput;
@@ -77,7 +79,8 @@ public:
     void worldStarting();
     // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.
     void worldStartEnded();
-    // Runs the script once per start: the world has just become playable.
+    // The world has just become playable: sends --chat and opens the plain --overlay screen once per
+    // world start, and plans the "@<ms>" steps that have not run yet (each runs once per program run).
     void worldPlaying();
     // --overlay furnace|chest: fills the machine that just opened from the hotbar.
     void machineOpened();
@@ -87,6 +90,17 @@ public:
     void releaseScreenshotWhenLoaded(int viewDistance, bool playing);
 
 private:
+    // One "@<ms> <step>" line of the script. It runs at most once per program run: the main menu
+    // plans the steps it can run (menuShown()), the world plans every step not yet run once it plays
+    // (worldPlaying()); --chat and the plain --overlay screen still run once per world start.
+    struct OverlayStep {
+        QString line;
+        bool ran = false;
+    };
+
+    const QList<OverlayStep> &startupOverlaySteps() const { return m_startupOverlaySteps; }
+    void setStartupOverlaySteps(QList<OverlayStep> steps) { m_startupOverlaySteps = std::move(steps); }
+    void markOverlayStepRan(qsizetype index) { m_startupOverlaySteps[index].ran = true; }
     bool startHold() const { return m_startHold; }
     void setStartHold(bool held) { m_startHold = held; }
     bool worldPlayed() const { return m_worldPlayed; }
@@ -103,7 +117,8 @@ private:
     void openStartupOverlay();
     // Uses the block in view once the startup commands have placed it.
     void openMachineInView();
-    void scheduleOverlaySteps();
+    // menuSteps: only the steps that run in the main menu (menuShown()), else every step not yet run.
+    void scheduleOverlaySteps(bool menuSteps);
     // One "@<ms> ..." step: open or close a screen, open the handbook, pick up a stack.
     void runOverlayStep(const QString &step);
     // "key:<action id>" ("key:hideHud", "key:screenshot"): the world action of that key.
@@ -153,7 +168,7 @@ private:
     QString m_forcedPose;
     QStringList m_startupChat;
     QString m_startupOverlay;
-    QStringList m_startupOverlaySteps;
+    QList<OverlayStep> m_startupOverlaySteps;
     QString m_startupHandbook;
     // --overlay furnace: the screenshot waits until the machine has opened and filled.
     bool m_fillMachineOnOpen = false;

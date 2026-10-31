@@ -114,6 +114,11 @@ for run in seed-empty seed-die; do
         grep -E 'Item worldSeed|no such control|Opened world' "$DATA/$run-de.log"
         failed=1
     fi
+    # The menu's steps run once per program run, not again once the new world plays.
+    if grep 'no such control' "$DATA/$run-de.log"; then
+        echo "$run-de: a step of the menu ran again in the world"
+        failed=1
+    fi
 done
 RUN_DATA=
 LOG_ITEMS=
