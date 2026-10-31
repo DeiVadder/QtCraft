@@ -52,7 +52,8 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: |
           version=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+          # A pre-release tag (v1.0.0-rc.1) carries the project version plus a suffix.
+          if [ "v$version" != "${GITHUB_REF_NAME%%-*}" ]; then
             echo "::error::Tag $GITHUB_REF_NAME does not match the project version $version in CMakeLists.txt"
             exit 1
           fi
@@ -430,6 +431,9 @@ jobs:
           owner=$(printf '%s' "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')
           pages="https://$owner.github.io/${GITHUB_REPOSITORY#*/}"
           notes="docs/release-notes/${GITHUB_REF_NAME#v}.md"
+          # The packages are named after the project version, without a pre-release suffix.
+          package_version=${GITHUB_REF_NAME#v}
+          package_version=${package_version%%-*}
           if [ -f "$notes" ]; then
             cat "$notes" > "$RUNNER_TEMP/notes.md"
             printf '\n### Downloads and licences\n\n' >> "$RUNNER_TEMP/notes.md"
@@ -449,15 +453,15 @@ jobs:
           then click Open Anyway under System Settings, Privacy & Security; on macOS 14
           right-click (Control-click) the app in Finder, choose Open and confirm.
 
-          Windows 10 or 11, x64: QtCraft-${GITHUB_REF_NAME#v}-Windows-x64.zip. Unpack it completely and
+          Windows 10 or 11, x64: QtCraft-${package_version}-Windows-x64.zip. Unpack it completely and
           start qtcraft.exe; README-Windows.txt explains the SmartScreen warning (the program is not
           signed). The -pdb.zip holds the debug symbols for crash reports and is not needed to play.
 
           Linux, x86_64 (glibc 2.39 or newer, e.g. Ubuntu 24.04, Debian 13, Fedora 40): one file,
-          QtCraft-${GITHUB_REF_NAME#v}-Linux-x86_64.AppImage. Make it executable (chmod +x) and start it;
+          QtCraft-${package_version}-Linux-x86_64.AppImage. Make it executable (chmod +x) and start it;
           the same file runs the dedicated server with --headless as the first argument. It needs
           OpenSSL 3 of the system and FUSE (or --appimage-extract-and-run);
-          QtCraft-${GITHUB_REF_NAME#v}-Linux-README.txt explains both.
+          QtCraft-${package_version}-Linux-README.txt explains both.
 
           QtCraft is licensed under GPL-3.0-or-later. The packages contain Qt ${QT_VERSION}, used under
           the GNU LGPL version 3, and the FFmpeg libraries of Qt Multimedia (GNU LGPL version 2.1 or
@@ -474,5 +478,11 @@ jobs:
           if [ "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft 2>/dev/null)" = "true" ]; then
             gh release delete "$GITHUB_REF_NAME" --yes
           fi
-          gh release create "$GITHUB_REF_NAME" packages/* --draft --verify-tag \
+          # A tag with a suffix (v1.0.0-rc.1) is a pre-release and never becomes the latest release.
+          case "$GITHUB_REF_NAME" in
+            *-*) kind="--prerelease --latest=false" ;;
+            *) kind="" ;;
+          esac
+          # shellcheck disable=SC2086
+          gh release create "$GITHUB_REF_NAME" packages/* --draft --verify-tag $kind \
             --title "QtCraft ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/notes.md"
