@@ -169,7 +169,7 @@ private slots:
         QVERIFY(index.open(QIODevice::ReadOnly));
         const QByteArray indexText = index.readAll();
         QVERIFY(indexText.startsWith("# QtCraft-Handbuch\n"));
-        QVERIFY(indexText.contains("**Inhaltspakete:** QtCraft 0.1.0\n"));
+        QVERIFY(indexText.contains("**Inhaltspakete:** QtCraft 1.0.0\n"));
         QVERIFY(QFile::exists(QDir(dir.path()).filePath(u"blocks.md"_s)));
     }
 

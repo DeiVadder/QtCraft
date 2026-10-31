@@ -66,7 +66,7 @@ private slots:
         // Three idle timeouts with the server's ticks running empty: both ends stay.
         QElapsedTimer waited;
         waited.start();
-        while (waited.elapsed() < 3 * limits.idleTimeoutMs) {
+        while (waited.elapsed() < qint64{3} * limits.idleTimeoutMs) {
             QcTestUtil::ticks(server, 1);
             QTest::qWait(20);
         }
