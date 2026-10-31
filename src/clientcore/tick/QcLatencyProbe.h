@@ -43,6 +43,7 @@ public:
     void reset();
 
 private:
+    // The session's tick thread hands the round trips to the readers of summary() on other threads.
     mutable std::mutex m_mutex;
     QElapsedTimer m_timer;
     Clock m_clock;

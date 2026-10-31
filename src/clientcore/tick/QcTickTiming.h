@@ -34,6 +34,7 @@ public:
     void reset();
 
 private:
+    // The session's tick thread hands the samples to readers on other threads under this mutex.
     mutable std::mutex m_mutex;
     std::vector<float> m_lateMs;
     qsizetype m_nextSample = 0;

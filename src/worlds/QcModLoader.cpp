@@ -21,6 +21,7 @@
 #include <QSet>
 
 #include <algorithm>
+#include <tuple>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -343,7 +344,8 @@ ModLoadState::Admission ModLoadState::admit(const QcModStatus &mod, const QcCont
     }
 
     result.content = std::make_shared<QcContentRegistry>(std::move(base));
-    result.content->finish();
+    // The base game's warnings went into the result when it was loaded (ModLoadState::baseWarnings).
+    std::ignore = result.content->finish();
     return result;
 }
 
@@ -530,7 +532,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
 
     result.content = std::make_shared<QcContentRegistry>(std::move(accepted));
     // Warnings of the parts were reported with the mod that caused them.
-    result.content->finish();
+    std::ignore = result.content->finish();
     // Safety net: read the final content back exactly like a client. The checks of ModLoadState::admit() should
     // make this pass; if not, the game starts with the base content alone rather than with content
     // clients refuse.

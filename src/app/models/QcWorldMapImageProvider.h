@@ -4,8 +4,9 @@
 #pragma once
 
 #include <QImage>
-#include <QMutex>
 #include <QQuickImageProvider>
+
+#include <mutex>
 
 // Serves the map preview of a new world to QML as image://worldmap/<revision> (decision E-921): the
 // revision only makes a new map a new URL, the provider always serves the latest image. The GUI
@@ -24,6 +25,7 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    QMutex m_mutex;
+    // The GUI thread hands the map to Qt Quick's image loader threads under this mutex.
+    std::mutex m_mutex;
     QImage m_image;
 };

@@ -72,13 +72,13 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::planOf(int pool, int regionX
 {
     const QPair<int, qint64> key{pool, (static_cast<qint64>(regionX) << 32) ^ static_cast<qint64>(static_cast<quint32>(regionZ))};
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
             return *it;
         }
     }
     const std::optional<Site> site = plan(pool, regionX, regionZ);
-    const QMutexLocker lock(&m_mutex);
+    const std::scoped_lock lock(m_mutex);
     if (m_plans.size() >= cacheCapacity) {
         m_plans.clear();
     }

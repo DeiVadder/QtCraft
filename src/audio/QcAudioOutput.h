@@ -97,6 +97,8 @@ private:
     [[nodiscard]] std::span<const float> render(int frames);
     void fail(const QString &reason);
 
+    // The GUI thread and the audio thread (QcAudioSinkHost) hand the mixer to each other under this
+    // mutex (withMixer()).
     mutable std::mutex m_mutex;
     QcAudioMixer m_mixer;
     std::atomic<qint64> m_framesRendered{0};

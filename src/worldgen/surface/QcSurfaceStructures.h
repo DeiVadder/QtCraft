@@ -11,9 +11,9 @@
 #include "worldgen/terrain/QcTerrainColumnGrid.h"
 
 #include <QHash>
-#include <QMutex>
 
 #include <memory>
+#include <mutex>
 #include <optional>
 
 class QcVillageGenerator;
@@ -130,7 +130,10 @@ private:
     QcSurfaceBlend m_blend;
     // Per block state: ground a foundation stops at (solid and not a liquid).
     std::vector<bool> m_ground;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools, the world map preview's worker) hands the plans to the others under this
+    // mutex.
+    mutable std::mutex m_mutex;
     // By kind and region (planKey).
     mutable QHash<PlanKey, std::shared_ptr<const QcStructurePlacement>> m_plans;
 };

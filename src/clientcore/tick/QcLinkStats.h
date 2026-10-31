@@ -42,6 +42,7 @@ private:
         qint64 atNs = 0;
     };
 
+    // The session's tick thread hands the statistics to the health line's thread under this mutex.
     mutable std::mutex m_mutex;
     std::array<Sent, remembered> m_sent{};
     std::size_t m_next = 0;

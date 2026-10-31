@@ -4,11 +4,11 @@
 #pragma once
 
 #include <QHash>
-#include <QMutex>
 
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <mutex>
 #include <optional>
 
 struct QcVillagePlan;
@@ -59,7 +59,10 @@ private:
     void evictOldestLocked() const;
 
     qsizetype m_capacity;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools, the world map preview's worker) hands the plans to the others under this
+    // mutex.
+    mutable std::mutex m_mutex;
     mutable QHash<qint64, Entry> m_entries;
     // Plans the cache let go of; found again while someone still holds them.
     mutable QHash<qint64, std::weak_ptr<const QcVillagePlan>> m_released;

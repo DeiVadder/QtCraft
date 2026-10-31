@@ -128,8 +128,10 @@ QcStatus QcContentRegistry::registerShape(QcShapeDefinition shape)
     }
 
     for (qsizetype type = 0; type < m_blocks.size(); ++type) {
-        if (m_blocks[type].shapeName == name) {
-            m_states.update(static_cast<quint32>(type), m_blocks[type], shapeOf(m_blocks[type]));
+        // Read through a const reference: a shared list is not copied for the comparison.
+        const QcBlockDefinition &definition = std::as_const(m_blocks)[type];
+        if (definition.shapeName == name) {
+            m_states.update(static_cast<quint32>(type), definition, shapeOf(definition));
         }
     }
 

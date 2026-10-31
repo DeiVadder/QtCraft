@@ -8,9 +8,9 @@
 #include "worldgen/generators/QcChunkFurnishing.h"
 
 #include <QHash>
-#include <QMutex>
 
 #include <memory>
+#include <mutex>
 #include <vector>
 
 /*! \brief Builds the dungeons of the terrain generator into its chunks (decision E-522): each chunk
@@ -52,6 +52,8 @@ private:
     // Per block state: rock that corridors keep as their wall (solid, opaque, mined with a pickaxe).
     std::vector<bool> m_rock;
     std::vector<bool> m_liquid;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools) hands the plans to the others under this mutex.
+    mutable std::mutex m_mutex;
     mutable QHash<qint64, std::shared_ptr<const QcDungeonPlan>> m_plans;
 };

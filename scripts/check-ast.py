@@ -26,7 +26,7 @@ Detach checks stay with clazy (static-analysis.sh), they are not repeated here.
 
 A finding is skipped when its line or the line above holds `// NOLINT(qc-<rule>): <reason>`; a marker of one of
 these rules without a reason (or without the colon) is listed itself as `unreasoned` and fails the run. Rules with a limit in LIMITS
-fail when their count exceeds it (none yet: every rule warns until package 50b brings it to 0).
+fail when their count exceeds it (every rule has the limit 0 since package 50b).
 
 Usage: scripts/check-ast.py [--list] [--changed] [--jobs N] [--build-dir DIR] [--no-cache] [file ...]
   --list       prints every finding, otherwise only the counts per rule
@@ -58,9 +58,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 CLANG_QUERY = os.environ.get("CLANG_QUERY", "/opt/homebrew/opt/llvm/bin/clang-query")
 RULES = ("std-string", "delete", "lock-type", "mutex-handover")
-# Highest count per rule before the run fails (exit code 1). Empty while the human sets the limits with
-# the counts in view (rows 50a/50b, E-948); after 50b every rule gets 0.
-LIMITS = {}
+# Highest count per rule before the run fails (exit code 1): 0 for every rule since package 50b (E-948).
+LIMITS = {rule: 0 for rule in RULES}
 NOLINT = re.compile(r"NOLINT\(qc-(" + "|".join(RULES) + r")\)(:?)(.*)")
 SOURCE = re.compile(r"\.(cpp|h|mm)$")
 GLOBAL_STATIC = re.compile(r"\bQ_GLOBAL_STATIC\s*\(\s*(QMutex|QRecursiveMutex|QReadWriteLock|std::\w*mutex)\b")

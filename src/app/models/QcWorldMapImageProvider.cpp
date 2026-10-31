@@ -3,7 +3,7 @@
 
 #include "app/models/QcWorldMapImageProvider.h"
 
-#include <QMutexLocker>
+#include <mutex>
 
 QcWorldMapImageProvider::QcWorldMapImageProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
@@ -12,7 +12,7 @@ QcWorldMapImageProvider::QcWorldMapImageProvider()
 
 void QcWorldMapImageProvider::setImage(const QImage &image)
 {
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     m_image = image;
 }
 
@@ -21,7 +21,7 @@ QImage QcWorldMapImageProvider::requestImage(const QString &id, QSize *size, con
     Q_UNUSED(id)
     QImage image;
     {
-        const QMutexLocker locker(&m_mutex);
+        const std::scoped_lock locker(m_mutex);
         image = m_image;
     }
     if (image.isNull()) {

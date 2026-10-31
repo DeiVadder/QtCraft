@@ -11,6 +11,7 @@
 
 struct QcStdinReader::Shared
 {
+    // The reading thread hands the lines to the receiver's thread under this mutex.
     std::mutex mutex;
     // Cleared by the reader's destructor; the thread then stops delivering.
     QcStdinReader *receiver = nullptr;

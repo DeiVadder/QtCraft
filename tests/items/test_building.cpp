@@ -344,7 +344,8 @@ private slots:
         registry.registerRecipe(*QcContentParser::parseRecipe(
             json("{\"name\":\"granite_steps\",\"pattern\":[\"#\"],\"key\":{\"#\":\"m:marble\"},\"result\":{\"item\":\"o:granite_steps\",\"count\":7}}"),
             u"o"_s));
-        registry.finish();
+        const QStringList warnings = registry.finish();
+        QVERIFY2(warnings.isEmpty(), qPrintable(warnings.join(u'\n')));
         QVERIFY(registry.blockId(u"o:marble_steps"_s));
         QVERIFY(!registry.blockId(u"o:marble_posts"_s));
         QVERIFY(registry.blockId(u"o:granite_posts"_s));

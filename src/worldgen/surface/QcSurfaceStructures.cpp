@@ -63,7 +63,7 @@ std::shared_ptr<const QcStructurePlacement> QcSurfaceStructures::planOf(int kind
 {
     const PlanKey key = planKey(kind, regionX, regionZ);
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         if (const auto it = m_plans.constFind(key); it != m_plans.cend()) {
             return *it;
         }
@@ -73,7 +73,7 @@ std::shared_ptr<const QcStructurePlacement> QcSurfaceStructures::planOf(int kind
     std::optional<QcStructurePlacement> placement = m_planner.plan(kind, regionX, regionZ, occupied);
     const std::shared_ptr<const QcStructurePlacement> plan =
         placement ? std::make_shared<const QcStructurePlacement>(std::move(*placement)) : nullptr;
-    const QMutexLocker lock(&m_mutex);
+    const std::scoped_lock lock(m_mutex);
     if (m_plans.size() >= cacheCapacity) {
         m_plans.clear();
     }
@@ -82,7 +82,7 @@ std::shared_ptr<const QcStructurePlacement> QcSurfaceStructures::planOf(int kind
 
 std::optional<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::plannedOf(int kind, int regionX, int regionZ) const
 {
-    const QMutexLocker lock(&m_mutex);
+    const std::scoped_lock lock(m_mutex);
     const auto it = m_plans.constFind(planKey(kind, regionX, regionZ));
     return it == m_plans.cend() ? std::nullopt : std::optional(*it);
 }

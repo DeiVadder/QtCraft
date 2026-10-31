@@ -6,6 +6,7 @@
 #include "clientcore/icons/QcAppIcon.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/loader/QcBaseContent.h"
+#include "common/core/QcConsole.h"
 #include "headless/QcHandbookExport.h"
 #include "headless/QcMapRenderer.h"
 #include "headless/QcShowcaseTour.h"
@@ -19,8 +20,6 @@
 
 #include <QCoreApplication>
 #include <QTimer>
-
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -105,8 +104,8 @@ void writeBiomeMap(const QcTerrainGenerator &generator, const QcContentRegistry 
         printError(u"Cannot write map"_s);
     }
     for (qsizetype i = 0; i < content.worldgen().biomes().size(); ++i) {
-        std::println("{} {} {}", i, generator.biomeName(static_cast<int>(i)).toStdString(),
-            biomeLegendPlace(generator, static_cast<int>(i), radius).toStdString());
+        QcConsole::printLine(u"%1 %2 %3"_s.arg(i).arg(generator.biomeName(static_cast<int>(i)),
+                                                    biomeLegendPlace(generator, static_cast<int>(i), radius)));
     }
     exitSoon(saved ? 0 : 1);
 }

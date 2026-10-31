@@ -77,11 +77,11 @@ void QcNetworkClient::inConnectorThread(const std::function<void()> &job)
 void QcNetworkClient::openConnection(quint64 attempt)
 {
     // In the connector's thread: the socket is made here and stays here.
-    m_connector = new QcTcpConnector;
-    connect(m_connector, &QcTcpConnector::connected, m_connector, [this, attempt] {
+    m_connector = std::make_unique<QcTcpConnector>();
+    connect(m_connector.get(), &QcTcpConnector::connected, m_connector.get(), [this, attempt] {
         report({attempt, m_connector->takeTransport(), m_connector->peerFingerprint(), {}});
     });
-    connect(m_connector, &QcTcpConnector::failed, m_connector, [this, attempt](const QString &reason) {
+    connect(m_connector.get(), &QcTcpConnector::failed, m_connector.get(), [this, attempt](const QString &reason) {
         report({attempt, nullptr, {}, reason});
     });
     m_connector->connectTo(m_request.address, m_request.connectTimeoutMs);
@@ -99,7 +99,7 @@ void QcNetworkClient::endAttempt(std::unique_ptr<QcTcpTransport> transport)
 {
     inConnectorThread([this, &transport] {
         transport.reset();
-        delete std::exchange(m_connector, nullptr);
+        m_connector.reset();
         std::ignore = m_outcomes.takeAll();
     });
     m_thread.reset();
@@ -179,7 +179,7 @@ void QcNetworkClient::onConnected(Outcome &&outcome)
     }
 
     // The connector is done; the transport stays in its thread, which the session ticks on.
-    inConnectorThread([this] { delete std::exchange(m_connector, nullptr); });
+    inConnectorThread([this] { m_connector.reset(); });
     if (m_thread) {
         m_session = std::make_unique<QcClientSession>(std::move(m_thread), std::move(outcome.transport), m_request.playerName);
     } else {

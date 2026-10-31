@@ -11,6 +11,8 @@
 
 struct QcInProcessTransport::Link
 {
+    // The threads of the two ends (server thread and session tick thread) hand frames over under
+    // this mutex.
     std::mutex mutex;
     std::array<QcInProcessTransport *, 2> ends{};
     std::array<std::vector<QByteArray>, 2> inboxes;

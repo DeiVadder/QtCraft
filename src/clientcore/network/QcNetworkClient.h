@@ -118,7 +118,7 @@ private:
     // The thread the session will tick on, from join() until the session takes it.
     std::unique_ptr<QcSessionThread> m_thread;
     // Made, used and deleted in m_thread when there is one, else in this thread.
-    QcTcpConnector *m_connector = nullptr;
+    std::unique_ptr<QcTcpConnector> m_connector;
     QcMailbox<Outcome> m_outcomes;
     // Counts the joins: an outcome of an earlier one is dropped.
     quint64 m_attempt = 0;

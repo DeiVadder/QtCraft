@@ -155,6 +155,8 @@ private:
     QcMailbox<Arrival> m_arrivals;
     QcMailbox<SaveResult> m_saves;
     quint64 m_nextSave = 1;
+    // The server's tick thread and the storage threads (m_pool) hand the fields below over under
+    // this mutex.
     mutable std::mutex m_mutex;
     qsizetype m_pendingChunks = 0;
     // Tick thread: whole files handed over with a save, by name, until a save as new or newer is

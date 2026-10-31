@@ -9,7 +9,6 @@
 #include "app/models/QcPixelArtProvider.h"
 #include "clientcore/settings/QcUiPalette.h"
 
-#include <QMutex>
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 #include <QQuickStyle>
@@ -18,6 +17,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <mutex>
 
 using namespace Qt::StringLiterals;
 
@@ -72,7 +72,7 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override
     {
         {
-            const QMutexLocker lock(&m_mutex);
+            const std::scoped_lock lock(m_mutex);
             m_requested.append(id);
         }
         return QcPixelArtProvider::requestImage(id, size, requestedSize);
@@ -80,12 +80,13 @@ public:
 
     static QStringList requested()
     {
-        const QMutexLocker lock(&m_mutex);
+        const std::scoped_lock lock(m_mutex);
         return m_requested;
     }
 
 private:
-    static inline QMutex m_mutex;
+    // QML's image loader threads hand the requested ids to the test's thread under this mutex.
+    static inline std::mutex m_mutex;
     static inline QStringList m_requested;
 };
 

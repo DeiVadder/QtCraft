@@ -3,6 +3,7 @@
 
 #include "headless/QcDedicatedServer.h"
 
+#include "common/core/QcConsole.h"
 #include "common/core/QcLogging.h"
 #include "common/diagnostics/QcDiagnosticsBundle.h"
 #include "common/diagnostics/QcHealthLog.h"
@@ -22,7 +23,6 @@
 #include <QTimer>
 
 #include <cstdio>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -31,7 +31,7 @@ namespace {
 // Lines for people and scripts watching the server; flushed at once (stdout may be a pipe).
 void say(const QString &line)
 {
-    std::println("{}", line.toStdString());
+    QcConsole::printLine(line);
     std::fflush(stdout);
     QcMessageLog::note("qtcraft.headless", line);
 }
@@ -52,7 +52,7 @@ QcDedicatedServer::~QcDedicatedServer()
     }
 
     if (const QcStatus stopped = m_host->shutdown(); !stopped) {
-        std::println(stderr, "Saving the world failed: {}", stopped.error().toStdString());
+        QcConsole::printErrorLine(u"Saving the world failed: "_s + stopped.error());
         return;
     }
     say(u"World saved, server stopped"_s);
@@ -75,7 +75,7 @@ QcStatus QcDedicatedServer::start(const Options &options)
     }
     const QStringList warnings = applied.warnings + generator->warnings();
     for (const QString &warning : warnings) {
-        std::println(stderr, "world generation warning: {}", warning.toStdString());
+        QcConsole::printErrorLine(u"world generation warning: "_s + warning);
     }
 
     m_host = std::make_unique<QcLocalServerHost>(*config, applied.content, std::move(generator));

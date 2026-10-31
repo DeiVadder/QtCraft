@@ -3,6 +3,7 @@
 
 #include "headless/QcHeadlessDiagnostics.h"
 
+#include "common/core/QcConsole.h"
 #include "common/diagnostics/QcDiagnosticsBundle.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
 
@@ -10,7 +11,6 @@
 #include <QDir>
 
 #include <cstdio>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -39,7 +39,7 @@ bool writeBundle(const QString &dataDirectory, const QStringList &info)
         QcHeadlessOptions::printError(u"Cannot write the diagnostics: "_s + written.error());
         return false;
     }
-    std::println("Diagnostics written to {}", QDir::toNativeSeparators(*written).toStdString());
+    QcConsole::printLine(u"Diagnostics written to "_s + QDir::toNativeSeparators(*written));
     std::fflush(stdout);
     return true;
 }

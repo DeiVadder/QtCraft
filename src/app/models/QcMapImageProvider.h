@@ -5,8 +5,9 @@
 
 #include <QHash>
 #include <QImage>
-#include <QMutex>
 #include <QQuickImageProvider>
+
+#include <mutex>
 
 // Serves the drawn maps to QML as image://maps/<map id>/<revision> (decision E-802): the revision
 // only makes a changed map a new URL, the provider always serves the latest image of the id. The
@@ -27,7 +28,8 @@ public:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize) override;
 
 private:
-    QMutex m_mutex;
+    // The GUI thread hands the map images to Qt Quick's image loader threads under this mutex.
+    std::mutex m_mutex;
     QHash<quint32, QImage> m_images;
     // Ids in the order they were last set, the oldest first.
     QList<quint32> m_order;

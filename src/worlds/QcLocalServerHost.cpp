@@ -150,6 +150,7 @@ QcHealthSample QcLocalServerHost::health()
         return {};
     }
 
+    // The server thread hands the sample to this thread under this mutex.
     std::mutex mutex;
     QcHealthSample result;
     { const std::scoped_lock lock(mutex); }

@@ -15,6 +15,7 @@
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"
 #include "app/startup/QcAppWindow.h"
+#include "common/core/QcConsole.h"
 #include "common/core/QcDataRoot.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
 
@@ -28,7 +29,6 @@
 #endif
 
 #include <memory>
-#include <print>
 
 using namespace Qt::StringLiterals;
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
         options.error = QcAppOptions::offscreenRunError();
     }
     if (!options.error.isEmpty()) {
-        std::println(stderr, "qtcraft: {}", options.error.toStdString());
+        QcConsole::printErrorLine(u"qtcraft: "_s + options.error);
         return 1;
     }
     // Logging and crash reports from here to the end of main() (decision E-834).
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     const QcResult<std::unique_ptr<QcOffscreenRender>> offscreenRender =
         QcAppWindow::startWindowOrOffscreen(*window, *game, options, offscreen);
     if (!offscreenRender) {
-        std::println(stderr, "qtcraft: {}", offscreenRender.error().toStdString());
+        QcConsole::printErrorLine(u"qtcraft: "_s + offscreenRender.error());
         return 1;
     }
 

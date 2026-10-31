@@ -9,11 +9,11 @@
 #include "worldgen/terrain/QcTerrainDefinitions.h"
 
 #include <QHash>
-#include <QMutex>
 #include <QSet>
 #include <QVarLengthArray>
 
 #include <array>
+#include <mutex>
 #include <optional>
 
 class QcTerrainColumnGrid;
@@ -121,6 +121,8 @@ private:
     QSet<QcBlockId> m_soil;
     QcBlockId m_stone = qcAirBlockId;
     int m_seaLevel = 62;
-    mutable QMutex m_mutex;
+    // Every thread that generates or plans with this generator (the server's generation pool,
+    // headless tools) hands the plans to the others under this mutex.
+    mutable std::mutex m_mutex;
     mutable QHash<QPair<int, qint64>, std::optional<Site>> m_plans;
 };

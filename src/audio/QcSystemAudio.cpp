@@ -65,6 +65,8 @@ auto callOnHostThread(QcAudioSinkHost *host, Work work)
     using Stored = std::conditional_t<std::is_void_v<Result>, bool, Result>;
     struct Call
     {
+        // The calling thread and the audio host's thread hand `work` and its result over under this
+        // mutex.
         std::mutex mutex;
         QcAudioSinkHost *host = nullptr;
         Work work;

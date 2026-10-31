@@ -56,7 +56,8 @@ private:
     std::unique_ptr<QRhiRenderBuffer> m_depthStencil;
     std::unique_ptr<QRhiTextureRenderTarget> m_target;
     std::unique_ptr<QRhiRenderPassDescriptor> m_renderPass;
-    QcWorldView *m_view = nullptr;
+    // Also a child of the window's content item: reset it before m_window, which would delete it too.
+    std::unique_ptr<QcWorldView> m_view;
 
     bool createTarget()
     {
@@ -105,7 +106,7 @@ private slots:
         }
         QVERIFY(createTarget());
 
-        m_view = new QcWorldView(m_window->contentItem());
+        m_view = std::make_unique<QcWorldView>(m_window->contentItem());
         m_view->setSize(QSizeF(64, 64));
         // Two frames: the view creates its texture and the renderer its resources.
         renderFrame();
@@ -114,7 +115,7 @@ private slots:
 
     void cleanupTestCase()
     {
-        delete m_view;
+        m_view.reset();
         m_window.reset();
         m_target.reset();
         m_renderPass.reset();

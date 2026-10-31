@@ -5,10 +5,9 @@
 
 #include "worldgen/villages/QcVillagePlan.h"
 
-#include <QMutexLocker>
-
 #include <algorithm>
 #include <iterator>
+#include <mutex>
 
 namespace {
 
@@ -26,7 +25,7 @@ QcVillagePlanCache::QcVillagePlanCache(qsizetype capacity)
 
 qsizetype QcVillagePlanCache::size() const
 {
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     return m_entries.size();
 }
 
@@ -34,7 +33,7 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanCache::plan(int regionX, int r
 {
     const qint64 key = regionKey(regionX, regionZ);
     {
-        const QMutexLocker locker(&m_mutex);
+        const std::scoped_lock locker(m_mutex);
         if (std::optional<std::shared_ptr<const QcVillagePlan>> found = findLocked(key)) {
             return *found;
         }
@@ -43,7 +42,7 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanCache::plan(int regionX, int r
     std::shared_ptr<const QcVillagePlan> plan = planner(regionX, regionZ);
     m_planned.fetch_add(1, std::memory_order_relaxed);
 
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     if (std::optional<std::shared_ptr<const QcVillagePlan>> found = findLocked(key)) {
         return *found;
     }
@@ -53,7 +52,7 @@ std::shared_ptr<const QcVillagePlan> QcVillagePlanCache::plan(int regionX, int r
 
 std::optional<std::shared_ptr<const QcVillagePlan>> QcVillagePlanCache::planned(int regionX, int regionZ) const
 {
-    const QMutexLocker locker(&m_mutex);
+    const std::scoped_lock locker(m_mutex);
     return findLocked(regionKey(regionX, regionZ));
 }
 

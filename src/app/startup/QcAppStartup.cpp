@@ -13,6 +13,7 @@
 #include "app/startup/QcAppOptions.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/debug/QcStatsLog.h"
+#include "common/core/QcConsole.h"
 #include "worlds/QcBundledMods.h"
 #include "worlds/QcModLoader.h"
 
@@ -149,7 +150,7 @@ void startNetworkRun(QcGameController &game, const QcAppOptions &options)
         QObject::connect(
             multiplayer, &QcMultiplayerController::joinFailed, qApp,
             [](const QString &reason) {
-                std::println(stderr, "qtcraft: cannot join: {}", reason.toStdString());
+                QcConsole::printErrorLine(u"qtcraft: cannot join: "_s + reason);
                 QCoreApplication::exit(1);
             },
             Qt::QueuedConnection);
@@ -210,7 +211,7 @@ void startScriptedRun(QcGameController &game, const QcAppOptions &options, QcScr
         QObject::connect(
             &game, &QcGameController::worldRefused, qApp,
             [](const QString &reason) {
-                std::println(stderr, "qtcraft: {}", reason.toStdString());
+                QcConsole::printErrorLine(u"qtcraft: "_s + reason);
                 QCoreApplication::exit(1);
             },
             Qt::QueuedConnection);

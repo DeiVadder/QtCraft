@@ -480,6 +480,7 @@ private slots:
     void poolDiscardsQueuedJobsButFinishesRunningOnes()
     {
         QcWorkerPool pool(1);
+        // The test's thread releases the pool's worker thread under this mutex.
         std::mutex mutex;
         std::condition_variable released;
         bool release = false;

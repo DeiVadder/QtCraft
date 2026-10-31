@@ -166,6 +166,7 @@ target_sources(qc_common PRIVATE
     core/QcChunkPos.h core/QcChunkPos.cpp
     core/QcCommandCategory.h core/QcCommandCategory.cpp
     core/QcCommandSyntax.h core/QcCommandSyntax.cpp
+    core/QcConsole.h core/QcConsole.cpp
     core/QcCrc32.h core/QcCrc32.cpp
     core/QcDataRoot.h core/QcDataRoot.cpp
     core/QcDowncast.h

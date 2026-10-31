@@ -3,6 +3,7 @@
 
 #include "headless/QcHeadlessOptions.h"
 
+#include "common/core/QcConsole.h"
 #include "common/core/QcDataRoot.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
@@ -11,22 +12,19 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include <cstdio>
-#include <print>
-
 using namespace Qt::StringLiterals;
 
 namespace QcHeadlessOptions {
 
 void printError(const QString &message)
 {
-    std::println(stderr, "{}", message.toStdString());
+    QcConsole::printErrorLine(message);
 }
 
 void printLines(const QStringList &lines)
 {
     for (const QString &line : lines) {
-        std::println("{}", line.toStdString());
+        QcConsole::printLine(line);
     }
 }
 

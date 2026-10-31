@@ -81,6 +81,7 @@ void syncDirectory(const QString &directory)
     std::error_code error;
     std::filesystem::rename(QFileInfo(from).filesystemFilePath(), QFileInfo(to).filesystemFilePath(), error);
     if (error) {
+        // NOLINT(qc-std-string): std::error_code::message() only returns a std::string.
         return qcError(u"Cannot replace %1: %2"_s.arg(to, QString::fromStdString(error.message())));
     }
     return {};

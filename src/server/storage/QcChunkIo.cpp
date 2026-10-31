@@ -148,6 +148,7 @@ void QcChunkIo::runAndWait(std::function<void()> job, bool first)
     // Waits for this job only, not for the writing work queued around it (review of 31.3).
     struct Done
     {
+        // The storage thread hands the end of the job to the waiting tick thread under this mutex.
         std::mutex mutex;
         std::condition_variable signal;
         bool done = false;

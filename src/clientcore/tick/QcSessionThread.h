@@ -44,6 +44,7 @@ private:
     std::unique_ptr<QThread> m_thread;
     // Lives in the thread: the receiver of the queued call of run().
     std::unique_ptr<QObject> m_context;
+    // The caller of run() and the session thread hand the job and its end over under this mutex.
     std::mutex m_mutex;
     std::condition_variable m_doneChanged;
     std::function<void()> m_job;

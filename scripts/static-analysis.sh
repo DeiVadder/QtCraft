@@ -117,7 +117,7 @@ echo "== duplicates (warning only)"
 if [ "$CHEAP_SELECTED" -eq 0 ]; then
     if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicates.py" --list); then
         status=1
-        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
     fi
     printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
 elif [ -n "$LENGTH_FILES" ]; then
@@ -128,7 +128,7 @@ echo "== QML heuristics (warning only)"
 if [ "$CHEAP_SELECTED" -eq 0 ]; then
     if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-qml.py" --list); then
         status=1
-        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
     fi
     printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
 elif [ -n "$QML_FILES" ]; then
@@ -138,11 +138,11 @@ fi
 
 # Code style rules of E-379 (std::string, hand-written delete, lock types, mutexes without a named
 # hand-over), decision E-948: clang-query over the translation units (cached per unit in the build
-# directory). Warning only until the limits are set; a NOLINT marker without a reason or a unit clang-query
-# cannot process fails. The step has its own time limit (an uncached whole tree takes minutes), and a
+# directory). Every finding fails since package 50b (limit 0 per rule), so does a NOLINT marker without
+# a reason or a unit clang-query cannot process. The step has its own time limit (an uncached whole tree takes minutes), and a
 # timeout only warns. Jobs follow the slot broker's grant (QC_TEST_JOBS). Without Homebrew LLVM it is
 # skipped. The whole tree prints the counts, a selection lists the findings in the given files.
-echo "== AST checks (warning only)"
+echo "== AST checks"
 CLANG_QUERY=${CLANG_QUERY:-/opt/homebrew/opt/llvm/bin/clang-query}
 export CLANG_QUERY
 AST_SOURCES=$(printf '%s\n' $LENGTH_FILES | grep -E '\.(cpp|h|mm)$')
@@ -156,7 +156,7 @@ elif [ "$CHEAP_SELECTED" -eq 0 ] || [ -n "$AST_SOURCES" ]; then
         CHECK_OUTPUT=$(run_limited python3 "$PROJECT_DIR/scripts/check-ast.py" --list \
             --jobs "$AST_JOBS" --build-dir "$BUILD_DIR")
         ast_status=$?
-        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason'
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
         printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
     else
         # shellcheck disable=SC2086
@@ -166,7 +166,7 @@ elif [ "$CHEAP_SELECTED" -eq 0 ] || [ -n "$AST_SOURCES" ]; then
     fi
     TIME_LIMIT=$SAVED_TIME_LIMIT
     if [ "$ast_status" -eq 142 ]; then
-        echo "AST checks timed out after ${AST_TIME_LIMIT:-1800} s (warning only)"
+        echo "AST checks timed out after ${AST_TIME_LIMIT:-1800} s (the timeout only warns)"
     elif [ "$ast_status" -ne 0 ]; then
         status=1
     fi

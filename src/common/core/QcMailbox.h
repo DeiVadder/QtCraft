@@ -33,6 +33,7 @@ public:
     }
 
 private:
+    // Producer threads hand values to the consumer's thread under this mutex.
     std::mutex m_mutex;
     std::vector<T> m_items;
 };

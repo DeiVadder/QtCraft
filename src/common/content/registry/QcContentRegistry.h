@@ -125,7 +125,7 @@ public:
         swaps, villagers, archers, held items, creature traits, spawners, projectiles, village
         styles, outfits, advancements), leaving out or switching off what names nothing. Returns
         the warnings. */
-    QStringList finish();
+    [[nodiscard]] QStringList finish();
 
     /*! Registers or replaces the building part \a family (server side; the parts finish()
         generates are ordinary content). */

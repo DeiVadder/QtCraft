@@ -11,10 +11,11 @@
 
 #include <QTest>
 
-#include <string>
 #include <tuple>
 #include <utility>
 #include <vector>
+
+using namespace Qt::StringLiterals;
 
 namespace {
 
@@ -46,24 +47,24 @@ private slots:
     void systemsRunInTheOrderTheyWereAdded()
     {
         using When = QcTickSystems::When;
-        std::string calls;
+        QString calls;
         QcTickSystems systems;
-        systems.add(QcTickPhase::Players, When::Always, [&calls] { calls += 'p'; });
-        systems.add(QcTickPhase::Liquids, When::Simulating, [&calls] { calls += 'l'; });
-        systems.add(QcTickPhase::ClientSync, When::Always, [&calls] { calls += 'c'; });
-        systems.add(QcTickPhase::Streaming, When::Always, [&calls] { calls += 's'; });
-        systems.add(QcTickPhase::ClientSync, When::Simulating, [&calls] { calls += 'C'; });
+        systems.add(QcTickPhase::Players, When::Always, [&calls] { calls += u'p'; });
+        systems.add(QcTickPhase::Liquids, When::Simulating, [&calls] { calls += u'l'; });
+        systems.add(QcTickPhase::ClientSync, When::Always, [&calls] { calls += u'c'; });
+        systems.add(QcTickPhase::Streaming, When::Always, [&calls] { calls += u's'; });
+        systems.add(QcTickPhase::ClientSync, When::Simulating, [&calls] { calls += u'C'; });
         QCOMPARE(systems.systems().size(), std::size_t(5));
 
         QcTickPhaseTimer timer(&fakeClock);
         timer.beginTick();
         systems.run(true, timer);
-        QCOMPARE(calls, std::string("plcsC"));
+        QCOMPARE(calls, u"plcsC"_s);
 
         // A tick that does not simulate leaves out the systems of the simulation only.
         calls.clear();
         systems.run(false, timer);
-        QCOMPARE(calls, std::string("pcs"));
+        QCOMPARE(calls, u"pcs"_s);
     }
 
     void eachSystemsTimeGoesToItsPhase()
