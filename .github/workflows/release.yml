@@ -33,6 +33,10 @@ permissions:
 env:
   QT_VERSION: 6.12.0
   QT_MODULES: qtmultimedia qtshadertools
+  # aqtinstall 3.3 (the newest release) does not know the per-architecture folders of the Windows
+  # repository since Qt 6.11 (qt6_6120/qt6_6120_msvc2022_64); its master branch does. Windows
+  # installs aqtinstall from this pinned commit until a release has the fix.
+  AQT_WINDOWS_SOURCE: git+https://github.com/miurahr/aqtinstall.git@076e1659807d0b362a3ed684d54c2e9c775eb9c7
   # FFmpeg that Qt Multimedia of this Qt ships (the tag in coin/provisioning/common/unix/
   # install-ffmpeg.sh of qt/qt5 at v$QT_VERSION); check it at every Qt update.
   FFMPEG_TAG: n9.0.1
@@ -160,6 +164,7 @@ jobs:
           arch: win64_msvc2022_64
           modules: ${{ env.QT_MODULES }}
           cache: true
+          aqtsource: ${{ env.AQT_WINDOWS_SOURCE }}
 
       # SDL3 (E-540) and OpenSSL (E-872) are built in their own steps into their caches below
       # ~/.cache/qtcraft, and each entry is saved right after it is built, so a later failure (the
