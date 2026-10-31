@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: 2026 the QtCraft authors
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-# Build and test on every push to dev/main and on every pull request.
-# macOS is the supported platform: build, all tests, failures block. Linux and Windows are built and
-# tested as well, but are not ported yet (Metal-only offscreen rendering, untested input and
-# packaging), so their failures are reported without failing the run.
+# Build the game and the server on every push to dev/main and on every pull request; a manual start
+# with "tests" also builds and runs the tests (they take hours on the hosted runners).
+# macOS is the supported platform: failures block. Linux and Windows are built (and tested) as well,
+# but are experimental, so their failures are reported without failing the run.
 name: CI
 
 on:
@@ -71,7 +71,9 @@ jobs:
       - name: Free disk space (Linux)
         if: runner.os == 'Linux'
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL \
+            /usr/local/share/boost /usr/share/swift /usr/local/.ghcup /opt/microsoft /opt/google \
+            /usr/local/share/powershell /usr/local/share/chromium /usr/lib/jvm
           df -h /
 
       - name: Packages (Linux)
@@ -140,12 +142,15 @@ jobs:
       # Linux and Windows are experimental: warnings stay warnings there, so one run lists all of
       # them (the release workflow builds Windows with warnings as errors). On Linux at most two
       # links run at once: the runner has 16 GB, and parallel links of the test programs with debug
-      # information exhausted it (the runner was shut down).
+      # information exhausted it (the runner was shut down). Linux also builds the project libraries
+      # as shared libraries like the local Debug preset (E-890): with ~400 statically linked test
+      # programs and their debug information the runner's disk ran full.
       - name: Configure
         run: >-
           cmake --preset ci-debug
           ${{ runner.os != 'macOS' && '-DQC_WARNINGS_AS_ERRORS=OFF' || '' }}
-          ${{ runner.os == 'Linux' && '-DCMAKE_JOB_POOLS=link=2 -DCMAKE_JOB_POOL_LINK=link' || '' }}
+          ${{ runner.os == 'Linux' && '-DCMAKE_JOB_POOLS=link=2 -DCMAKE_JOB_POOL_LINK=link -DQC_SHARED_LIBS=ON' || '' }}
+          -DQC_BUILD_TESTS=${{ (github.event_name == 'workflow_dispatch' && inputs.tests) && 'ON' || 'OFF' }}
 
       # Experimental jobs keep going after a failed file (-k 0), so one run shows every error.
       # Below the job's limit, so the cache is still saved when the build runs out of time.
@@ -161,7 +166,8 @@ jobs:
           key: ccache-ci-${{ runner.os }}-${{ github.run_id }}
 
       # The tests run locally (scripts/verify.sh); on the hosted runners they take hours, so the CI
-      # builds everything and tests only when started by hand with "tests".
+      # builds the game and the server and builds and runs the tests only when started by hand with
+      # "tests" (QC_BUILD_TESTS above).
       - name: Test
         if: github.event_name == 'workflow_dispatch' && inputs.tests
         # Linux without a display runs the tests under Xvfb (E-949); macOS and Windows run ctest as is.

@@ -55,7 +55,7 @@ jobs:
 
       - name: Build qtcraft-headless
         run: |
-          cmake --preset ci-debug -DQC_GAMEPAD=OFF -DQC_TLS=OFF
+          cmake --preset ci-debug -DQC_GAMEPAD=OFF -DQC_TLS=OFF -DQC_BUILD_TESTS=OFF
           cmake --build --preset ci-debug --target qtcraft-headless
 
       - name: Export the handbook data
