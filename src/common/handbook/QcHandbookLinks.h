@@ -33,9 +33,9 @@ public:
     /*! Returns \a links sorted by text (as compared by the search), then by target. */
     [[nodiscard]] static QList<Link> sortedLinks(QList<Link> links);
 
-    /*! Pack of the overviews: the first loaded pack (the base game). */
+    /*! Returns the pack of the overviews: the first loaded pack (the base game). */
     QString basePack() const;
-    /*! Tag (without '#') -> member items in content order. */
+    /*! Returns the tag (without '#') -> member items in content order. */
     const QMap<QString, QStringList> &tagMembers() const { return m_tagMembers; }
 
     /*! Returns whether the block \a name has an entry (it exists and is not invisible). */

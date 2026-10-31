@@ -26,79 +26,95 @@
 class QcChunk;
 class QcServerWorld;
 
-// Creatures that come by themselves (decision E-422): monsters every tick around the living players
-// by the original game's rules (decision E-836: QcSpawnLight, QcSpawnGround, QcMonsterCap; in the
-// spawn areas of structures only their kinds, decision E-871: QcSpawnAreas), the
-// other kinds every second up to four spawn attempts around each living player by time of day,
-// place, light and the data's spawn rules, within the caps per player; and the creatures of a chunk
-// seen for the first time: its group of persistent animals (decision E-086) and the creatures of the
-// village pieces in it (decision E-404). Part of QcMobManager, which owns the creatures; it draws from
-// the manager's random sequence, monsters from a sequence of their own.
+/*! \brief Creatures that come by themselves (decision E-422): monsters every tick around the living
+    players by the original game's rules (decision E-836: QcSpawnLight, QcSpawnGround, QcMonsterCap;
+    in the spawn areas of structures only their kinds, decision E-871: QcSpawnAreas), the other
+    kinds every second up to four spawn attempts around each living player by time of day, place,
+    light and the data's spawn rules, within the caps per player; and the creatures of a chunk seen
+    for the first time: its group of persistent animals (decision E-086) and the creatures of the
+    village pieces in it (decision E-404).
+
+    Part of QcMobManager, which owns the creatures; it draws from the manager's random sequence,
+    monsters from a sequence of their own. */
 class QcNaturalSpawner
 {
 public:
-    // Peaceful, ambient and water creatures appear this far from the player they spawn around.
+    /*! Peaceful, ambient and water creatures appear this far from the player they spawn around.
+        \qcshared */
     static constexpr double spawnRadiusMin = 20.0;
     static constexpr double spawnRadiusMax = 48.0;
-    // Monsters appear at least this far from every player and at most this far from the nearest
-    // (beyond it they would vanish at once, QcMobManager::despawnDistance).
+    /*! Monsters appear at least this far from every player and at most this far from the nearest
+        (beyond it they would vanish at once, QcMobManager::despawnDistance). \qcshared */
     static constexpr double monsterRadiusMin = 24.0;
     static constexpr double monsterRadiusMax = 128.0;
-    // Places tried for monsters around each living player in every tick, in its area of
-    // QcMonsterCap::areaChunks chunks.
+    /*! Places tried for monsters around each living player in every tick, in its area of
+        QcMonsterCap::areaChunks chunks. */
     static constexpr int monsterAttemptsPerTick = 2;
-    // Share of newly generated chunks that get a group of animals.
+    /*! Share of newly generated chunks that get a group of animals. */
     static constexpr double chunkAnimalChance = QcChunkSpawns::chunkAnimalChance;
-    // Animals spawn naturally around a player only while none is awake within this distance.
+    /*! Animals spawn naturally around a player only while none is awake within this distance. */
     static constexpr double animalSearchDistance = 128.0;
-    // Creatures spawning by themselves by default (QcServerLimits monstersPer289Chunks: monsters per
-    // QcMonsterCap::areaChunks loaded chunks around players; passiveCreaturesPerPlayer,
-    // ambientCreaturesPerPlayer: fireflies, around one player).
+    /*! Creatures spawning by themselves by default (QcServerLimits monstersPer289Chunks:
+        monsters per QcMonsterCap::areaChunks loaded chunks around players;
+        passiveCreaturesPerPlayer, ambientCreaturesPerPlayer: fireflies, around one player).
+        \qcshared */
     static constexpr int monsterCapPer289Chunks = static_cast<int>(QcServerLimits{}.monstersPer289Chunks);
     static constexpr int passiveCapPerPlayer = static_cast<int>(QcServerLimits{}.passiveCreaturesPerPlayer);
     static constexpr int ambientCapPerPlayer = static_cast<int>(QcServerLimits{}.ambientCreaturesPerPlayer);
-    // Blocks of rock above a cave floor for it to count as dark enough for cave spawns.
+    /*! Blocks of rock above a cave floor for it to count as dark enough for cave spawns. */
     static constexpr int caveDepth = 8;
 
-    // Whether creatures of the kind spawn as monsters (QcMonsterCap): hostile ones that walk or fly
-    // on land, not water or ambient creatures.
+    /*! Returns whether creatures of \a definition spawn as monsters (QcMonsterCap): hostile ones
+        that walk or fly on land, not water or ambient creatures. */
     static bool isMonster(const QcMobDefinition &definition) { return definition.isMonster(); }
 
-    // The time of day and how dark the sky is (QcSpawnLight::skyDarkening).
+    /*! \brief The time of day and how dark the sky is (QcSpawnLight::skyDarkening). */
     struct Sky
     {
+        /*! Whether it is night. */
         bool night = false;
+        /*! How dark the sky is. */
         int darkening = 0;
     };
 
+    /*! What the spawner knows about a player (QcMobExchange::PlayerView). */
     using PlayerView = QcMobManager::PlayerView;
+    /*! Gives the entity id of the next creature. */
     using NextId = std::function<quint32()>;
 
-    // `mobs` owns the creatures this adds and `random` is its sequence; both outlive the spawner.
+    /*! \a mobs owns the creatures this adds and \a random is its sequence; both outlive the
+        spawner. Kinds from \a content, chunk chances decided by the world \a seed. */
     QcNaturalSpawner(QcMobManager &mobs, std::shared_ptr<const QcContentRegistry> content, quint64 seed, QRandomGenerator &random);
 
-    // Monsters per QcMonsterCap::areaChunks loaded chunks around players, and the other kinds around
-    // one player at most.
+    /*! Sets the caps: \a hostile monsters per QcMonsterCap::areaChunks loaded chunks around
+        players, \a passive and \a ambient creatures around one player at most. */
     void setCaps(int hostile, int passive, int ambient);
-    // Water creatures spawning by themselves around one player at most (decision E-502).
+    /*! Sets the cap of water creatures spawning by themselves around one player to \a water
+        (decision E-502). */
     void setWaterCap(int water) { m_waterCap = water; }
-    // With natural spawning on: monsters around every living player, and once a second the other
-    // kinds.
+    /*! One tick of \a dt seconds in \a world under \a sky with natural spawning on: monsters
+        around every living one of \a players, and once a second the other kinds, with ids from
+        \a nextEntityId. */
     void tick(QcServerWorld &world, const QList<PlayerView> &players, Sky sky, double dt, const NextId &nextEntityId);
-    // The monster cap of this moment: the areas of the living players and the monsters in them.
+    /*! Returns the monster cap of this moment in \a world: the areas of the living ones of
+        \a players and the monsters in them. */
     QcMonsterCap monsterCap(const QcServerWorld &world, const QList<PlayerView> &players) const;
-    // The creatures of a chunk seen for the first time (QcChunkSpawns).
+    /*! Spawns the village creatures of the chunk at \a pos of \a world seen for the first time,
+        with ids from \a nextEntityId (QcChunkSpawns). */
     void spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos, const NextId &nextEntityId)
     {
         m_chunks.spawnVillageMobs(world, pos, nextEntityId);
     }
+    /*! Spawns the group of animals of the new chunk \a chunk at \a pos in \a world, with ids from
+        \a nextEntityId (QcNaturalSpawner::chunkAnimalChance). */
     void spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, const NextId &nextEntityId)
     {
         m_chunks.spawnChunkAnimals(world, pos, chunk, nextEntityId);
     }
-    // Whether the seed lets a mob with a `spawnChunkChance` below 1 spawn in this chunk (slime chunks).
+    /*! Returns whether the seed lets a mob of the kind \a type with a \c {spawnChunkChance}
+        below 1 spawn in the chunk at \a pos (slime chunks). */
     bool spawnsInChunk(int type, QcChunkPos pos) const;
-    // The spawn areas of structures around the players, as of the last monster pass.
+    /*! Returns the spawn areas of structures around the players, as of the last monster pass. */
     const QcSpawnAreas &spawnAreas() const { return m_areas; }
 
 private:

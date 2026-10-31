@@ -15,7 +15,7 @@ class QcContentRegistry;
 namespace QcMobTraitsContent {
 
 /*! \brief One trait of a creature checked against the content: what is left of it and the
-    warnings. */
+    warnings. \a Trait is the type of the trait. */
 template<typename Trait>
 struct Part
 {

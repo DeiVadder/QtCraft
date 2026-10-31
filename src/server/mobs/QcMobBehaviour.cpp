@@ -269,7 +269,7 @@ QcPhysics::Steering QcMobBehaviour::withCrowd(qsizetype index, const QcCreature 
         for (const QcBodyPush::Body &player : m_pushers) {
             players += QcBodyPush::between(body, player, QcBodyPush::creatureParting);
         }
-        // A walker goes around a player in its way rather than stalling in front of him; one that
+        // A walker goes around a player in its way rather than stalling in front of them; one that
         // chases a player or follows its owner presses in.
         const bool pressesIn = mob.chasing != 0 || (mob.tame && !mob.tame->sitting);
         push += pressesIn ? players : QcBodyPush::passing(players, steering.wish);

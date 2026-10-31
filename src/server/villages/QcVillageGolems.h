@@ -19,70 +19,90 @@ class QcVillages;
 struct QcVillage;
 struct QcVillageGolemSettings;
 
-// Villagers summon iron golems like in the reference game (decision E-470), checked every few
-// seconds by QcVillagePopulation. A villager wants a golem while it slept in its bed within
-// `sleptSeconds` (QcVillager::sleptAt). Villagers of one village (or, without a village, any) that
-// want one are grouped; one of them summons a golem when no golem of the kind stands within
-// `golemDistance` of it and either it panicked at a hostile creature lately (QcVillager::panickedAt)
-// with at least `minVillagers` wanting ones within `gatherDistance` (itself included), or at least
-// `gossipVillagers` wanting ones are there (gossip, with `gossipChance` per check). The golem
-// appears in the box of `spawnRadius` around it (vanilla's 16 × 13 × 16), at the highest place of a
-// drawn column where it stands on dry, opaque ground that does not hurt (not on glass, panes, leaves
-// or ice) with its whole body clear. A village summons at most once per `cooldownSeconds`
-// (QcVillage::lastGolem); villagers without a village keep that pause per chunk (not saved), so
-// several farms without a village may summon in one check. All golems stay below the world's limit
-// (QcServerLimits villageGolems, counted per golem kind: those every village counted last in its
-// area and those loaded outside villages, built ones included; golems in unloaded chunks outside
-// villages are not counted). The golem is the creature kind of the village style's
-// QcVillageGolemSettings::mob (decision E-421); while the content has no such kind the rule rests
-// (logged once). A golem belongs to the village whose area it stands in; nothing is claimed
-// (decision E-415).
+/*! \brief Villagers summon iron golems like in the reference game (decision E-470), checked every
+    few seconds by QcVillagePopulation.
+
+    A villager wants a golem while it slept in its bed within \c {sleptSeconds}
+    (QcVillager::sleptAt). Villagers of one village (or, without a village, any) that want one are
+    grouped; one of them summons a golem when no golem of the kind stands within \c {golemDistance}
+    of it and either it panicked at a hostile creature lately (QcVillager::panickedAt) with at least
+    \c {minVillagers} wanting ones within \c {gatherDistance} (itself included), or at least \c
+    {gossipVillagers} wanting ones are there (gossip, with \c {gossipChance} per check). The golem
+    appears in the box of \c {spawnRadius} around it (vanilla's 16 × 13 × 16), at the highest place
+    of a drawn column where it stands on dry, opaque ground that does not hurt (not on glass, panes,
+    leaves or ice) with its whole body clear. A village summons at most once per \c
+    {cooldownSeconds} (QcVillage::lastGolem); villagers without a village keep that pause per chunk
+    (not saved), so several farms without a village may summon in one check. All golems stay below
+    the world's limit (QcServerLimits villageGolems, counted per golem kind: those every village
+    counted last in its area and those loaded outside villages, built ones included; golems in
+    unloaded chunks outside villages are not counted). The golem is the creature kind of the village
+    style's QcVillageGolemSettings::mob (decision E-421); while the content has no such kind the
+    rule rests (logged once). A golem belongs to the village whose area it stands in; nothing is
+    claimed (decision E-415). */
 class QcVillageGolems
 {
 public:
-    // Columns tried for a golem's place around the summoning villager.
+    /*! Columns tried for a golem's place around the summoning villager. */
     static constexpr int placeAttempts = 10;
 
+    /*! \brief A golem the villagers summon. */
     struct Spawn
     {
-        // The summoning villagers' village (0: none) and the golem's kind and feet.
+        /*! The summoning villagers' village (0: none). */
         qint64 village = 0;
+        /*! The golem's creature kind. */
         int type = 0;
+        /*! Where the golem's feet are. */
         QcVec3 position;
     };
 
+    /*! \brief What a check reads. */
     struct Context
     {
+        /*! The world the golem's place is searched in. */
         QcServerWorld &world;
+        /*! The path cells of the blocks (a place to stand). */
         const QcPathCellTable &cells;
+        /*! The world time. */
         double worldTime = 0.0;
+        /*! The world seed (the places tried). */
         quint64 seed = 0;
-        // Golems in the world at most.
+        /*! Golems in the world at most. */
         qint64 worldLimit = 0;
     };
 
-    // Why a villager wants a golem now (one without a mind, QcCreature::noAi, wants none): it slept lately (Gossip), and panicked lately too (Panic).
-    enum class Want : quint8 { None, Gossip, Panic };
+    /*! \brief Why a villager wants a golem now (one without a mind, QcCreature::noAi, wants
+        none): it slept lately (Gossip), and panicked lately too (Panic). */
+    enum class Want : quint8 {
+        /*! It wants none. */
+        None,
+        /*! It slept lately. */
+        Gossip,
+        /*! It slept and panicked lately. */
+        Panic
+    };
 
     explicit QcVillageGolems(std::shared_ptr<const QcContentRegistry> content);
 
-    // The golems' creature kind in villages of `style` (QcVillageCatalog::golemOfStyle; the empty
-    // style: the settings' own); none while the content lacks it (logged the first time) or the
-    // style has no golems.
+    /*! Returns the golems' creature kind in villages of \a style (QcVillageCatalog::golemOfStyle;
+        the empty style: the settings' own); none while the content lacks it (logged the first time)
+        or the style has no golems. */
     std::optional<int> kind(const QString &style) const;
-    // Counts the golems of the loaded villages among `villages` (those whose claims were
-    // reconciled; villagers of other villages summon none) and returns the golems villagers summon
-    // now; the summoning villages' lastGolem is set.
+    /*! Counts the golems among \a mobs of the loaded villages among \a villages in the world of \a
+        context (those whose claims were reconciled; villagers of other villages summon none) and
+        returns the golems villagers summon now; the summoning villages' lastGolem is set. */
     QList<Spawn> check(const QList<QcCreature> &mobs, const QSet<qint64> &villages, const Context &context);
-    // Whether `villager` wants a golem at `worldTime`, and why.
+    /*! Returns whether \a villager wants a golem at \a worldTime by \a settings, and why. */
     static Want wants(const QcCreature &villager, const QcVillageGolemSettings &settings, double worldTime);
-    // Golems of kind `type` in the area of `village`.
+    /*! Returns the golems of kind \a type among \a mobs in the area of \a village. */
     static int golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, int type);
-    // A place around `around` where a golem of `type` stands: columns drawn (by `draw`) within
-    // `radius`, each tried from spawnHeight above `around` down to spawnHeight below it.
+    /*! Returns a place around \a around in the world of \a context where a golem of \a type
+        stands: columns drawn (by \a draw) within \a radius, each tried from spawnHeight above
+        \a around down to spawnHeight below it. */
     std::optional<QcVec3> placeNear(const QcVec3 &around, int type, int radius, const Context &context, quint64 draw) const;
-    // Golems of kind `type` in the world: outside villages those loaded, in each village those it
-    // counted last or those loaded in its area, whichever is more (QcVillages::golems).
+    /*! Returns the golems of kind \a type in the world: outside \a villages those loaded among
+        \a mobs, in each village those it counted last or those loaded in its area, whichever is
+        more (QcVillages::golems). */
     qint64 golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages) const;
 
 private:

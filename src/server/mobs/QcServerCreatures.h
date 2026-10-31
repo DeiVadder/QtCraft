@@ -18,35 +18,41 @@ class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
 
-// The creatures in the server tick (decision E-367): their behaviour and spawning (QcMobManager) with
-// what they need to know about the players, the blows they deal to players, their ambient sounds and
-// the damage of crammed cells (game rule maxEntityCramming, decision E-401), what villagers do to
-// the world (QcServerVillagers, decision E-411), what creatures with traits do (QcCreatureTraits,
-// decision E-460: blocks taken and placed, teleports), creatures hiding in blocks (QcInfestation,
-// decision E-453), monster spawners (QcSpawnerRules, decision E-520), the guardians of structure
-// zones (QcGuardians, decision E-591), creatures that crumble at water (QcCrumbling, decision
-// E-593), creatures that drink to heal (QcMobDrinking, decision E-623) and families of parents and
-// children (QcMobFamilies, decision E-839).
+/*! \brief The creatures in the server tick (decision E-367): their behaviour and spawning
+    (QcMobManager) with what they need to know about the players, the blows they deal to players,
+    their ambient sounds and the damage of crammed cells (game rule maxEntityCramming, decision
+    E-401), what villagers do to the world (QcServerVillagers, decision E-411), what creatures
+    with traits do (QcCreatureTraits, decision E-460: blocks taken and placed, teleports),
+    creatures hiding in blocks (QcInfestation, decision E-453), monster spawners (QcSpawnerRules,
+    decision E-520), the guardians of structure zones (QcGuardians, decision E-591), creatures
+    that crumble at water (QcCrumbling, decision E-593), creatures that drink to heal
+    (QcMobDrinking, decision E-623) and families of parents and children (QcMobFamilies, decision
+    E-839). */
 class QcServerCreatures
 {
 public:
-    // A creature with an ambient sound makes it on average this often (seconds).
+    /*! A creature with an ambient sound makes it on average this often (seconds). */
     static constexpr double ambientSeconds = 10.0;
-    // Hurt and death sounds of cramming per tick at most (a farm crams hundreds at once).
+    /*! Hurt and death sounds of cramming per tick at most (a farm crams hundreds at once). */
     static constexpr int crammingSoundsPerTick = 8;
-    // How long what a player fought counts for the player's pets (QcServerClient::Foes), in ticks.
+    /*! How long what a player fought counts for the player's pets (QcServerClient::Foes), in
+        ticks. */
     static constexpr quint64 foeTicks = 100;
 
     QcServerCreatures(QcServerState &state, QcServerSounds &sounds, QcPlayerHealth &health, QcServerBlocks &blocks);
 
+    /*! Runs the creatures' tick: their minds, then what they did to the world and the players. */
     void tick();
-    // Shows the clients the creatures that teleported since the creatures' tick (projectiles and
-    // burning make them teleport too) at their new place in this tick (QcCreatureTraits).
+    /*! Shows the clients the creatures that teleported since the creatures' tick (projectiles
+        and burning make them teleport too) at their new place in this tick (QcCreatureTraits). */
     void announceTeleports();
-    // Guardians of structure zones and creatures that crumble at water (decisions E-591, E-593).
+    /*! Returns the guardians of structure zones (decision E-591). */
     const QcGuardians &guardians() const { return m_guardians; }
+    /*! Returns the creatures that crumble at water. */
     const QcCrumbling &crumbling() const { return m_crumbling; }
+    /*! Returns the creatures that drink to heal. */
     const QcMobDrinking &drinking() const { return m_drinking; }
+    /*! Returns the families of parents and children. */
     const QcMobFamilies &families() const { return m_families; }
 
 private:

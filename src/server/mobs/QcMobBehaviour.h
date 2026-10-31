@@ -23,60 +23,76 @@
 #include <utility>
 #include <vector>
 
-// What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with the brain
-// of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the villagers'
-// QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain, QcGuardianBrain); flyers drift above the ground,
-// hoverers (QcMobHover) float after their brain's wish.
-// Walkers follow their paths (QcMobNavigator) with the shared physics and are pushed apart by their
-// crowd (QcMobCrowd), whose density also decides how much they think (QcMobCrowd::Tier); the path
-// searches of all of them share a budget per tick (QcPathPlanner).
+/*! \brief What the awake creatures of QcMobManager do each tick (decision E-400): each thinks with
+    the brain of its AI (QcMobDefinition::ai, decision E-423: QcPassiveBrain, QcHostileBrain, the
+    villagers' QcVillagerBehaviour, QcArcherBrain, QcNeutralBrain, QcGolemBrain, QcGuardianBrain);
+    flyers drift above the ground, hoverers (QcMobHover) float after their brain's wish.
+
+    Walkers follow their paths (QcMobNavigator) with the shared physics and are pushed apart by
+    their crowd (QcMobCrowd), whose density also decides how much they think (QcMobCrowd::Tier);
+    the path searches of all of them share a budget per tick (QcPathPlanner). */
 class QcMobBehaviour
 {
 public:
     QcMobBehaviour(std::shared_ptr<const QcContentRegistry> content, QRandomGenerator &random);
 
+    /*! Sets the budgets of the path searches: \a nodesPerTick and \a nodesPerSearch nodes, paths
+        of at most \a pathLength cells (QcPathPlanner::setLimits). */
     void setPathLimits(qint64 nodesPerTick, qint64 nodesPerSearch, qint64 pathLength);
+    /*! Returns the path searches of the creatures. */
     const QcPathPlanner &paths() const { return m_paths; }
-    // Thresholds of the AI tiers (QcServerLimits crowdThrottled, crowdIdle).
+    /*! Sets the thresholds of the AI tiers to \a throttled and \a idle (QcServerLimits
+        crowdThrottled, crowdIdle). */
     void setCrowdLimits(qint64 throttled, qint64 idle) { m_crowd.setThresholds(throttled, idle); }
-    // The crowds as the last tick counted them.
+    /*! Returns the crowds as the last tick counted them. */
     const QcMobCrowd &crowd() const { return m_crowd; }
-    // Creatures that thought fully, throttled and not at all in the last tick (tests, measurements).
+    /*! \brief Creatures that thought fully, throttled and not at all in the last tick (tests,
+        measurements). */
     struct TierCounts
     {
+        /*! Creatures that thought fully. */
         int full = 0;
+        /*! Creatures that thought throttled. */
         int throttled = 0;
+        /*! Creatures that did not think. */
         int idle = 0;
     };
+    /*! Returns the creatures per AI tier in the last tick. */
     TierCounts tiersLastTick() const { return m_tiers; }
 
-    // What villagers do (decision E-411).
+    /*! Returns what villagers do (decision E-411). */
     QcVillagerBehaviour &villagers() { return m_villagers; }
+    /*! Returns what villagers do, read-only. */
     const QcVillagerBehaviour &villagers() const { return m_villagers; }
-    // The brain of the creatures of kind `type`.
+    /*! Returns the brain of the creatures of kind \a type. */
     QcMobBrain &brainOf(int type) const { return *m_brains[static_cast<std::size_t>(type)]; }
 
-    // When a tick happens: the world's time and the tick's length in seconds.
+    /*! \brief When a tick happens: the world's time and the tick's length in seconds. */
     struct Clock
     {
+        /*! The world's time. */
         double worldTime = 0.0;
+        /*! The tick's length in seconds. */
         double dt = 0.0;
     };
 
-    // One tick of the awake creatures at the clock's world time: the waiting path searches, then each
-    // decides and moves. Returns the blows they dealt to players; their shots wait in takeLaunches.
+    /*! One tick of the awake creatures of \a mobs in \a world among \a players at the world time
+        of \a clock: the waiting path searches, then each decides and moves. Returns the blows
+        they dealt to players; their shots wait in takeLaunches. */
     QList<QcMobManager::PlayerHit> tick(std::span<QcCreature> mobs, QcServerWorld &world, const QList<QcMobManager::PlayerView> &players,
                                         Clock clock);
-    // The shots of the creatures since the last call (QcMobBrain::Context::launches, decision E-425).
+    /*! Returns the shots of the creatures since the last call (QcMobBrain::Context::launches,
+        decision E-425). */
     QList<QcProjectileManager::Launch> takeLaunches() { return std::exchange(m_launches, {}); }
-    // The blows of creatures at creatures since the last call (QcMobBrain::Context::creatureHits).
+    /*! Returns the blows of creatures at creatures since the last call
+        (QcMobBrain::Context::creatureHits). */
     QList<QcMobManager::CreatureHit> takeCreatureHits() { return std::exchange(m_creatureHits, {}); }
-    // The blocks the creatures took and put down since the last call (decision E-460).
+    /*! Returns the blocks the creatures took and put down since the last call (decision E-460). */
     QList<QcMobManager::BlockAction> takeBlockActions() { return std::exchange(m_blockActions, {}); }
-    // Game rule mobGriefing (QcMobBrain::Context::griefing).
+    /*! Sets the game rule mobGriefing to \a on (QcMobBrain::Context::griefing). */
     void setGriefing(bool on) { m_griefing = on; }
-    // A creature leaves the world for good (QcMobManager::Departure other than Unloaded): its brain
-    // lets go of what it held (a villager's open door).
+    /*! The creature \a mob leaves the world for good (QcMobManager::Departure other than
+        Unloaded): its brain lets go of what it held (a villager's open door). */
     void leave(const QcCreature &mob) const { brainOf(mob.type).leave(mob); }
 
 private:

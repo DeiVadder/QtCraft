@@ -46,8 +46,8 @@ public:
     /*! Notes a tick that took \a ms milliseconds (at most ticksKept between two samples are kept
         for the p99, all of them count for mean and maximum). */
     void noteTick(double ms);
-    /*! Ends the second that ran for \a seconds of real time: the sample of its ticks and
-        \a counts, kept in the history and returned. */
+    /*! Ends the second that ran for \a seconds of real time and returns the sample of its ticks
+        and \a counts, which is kept in the history. */
     QcMsg::AdminSample sample(const Counts &counts, double seconds);
 
     /*! Returns the samples of the last secondsKept seconds, oldest first. */

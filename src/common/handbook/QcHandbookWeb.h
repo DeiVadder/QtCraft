@@ -35,10 +35,11 @@ File data(const QcHandbook &handbook);
 /*! Returns languages.json for the languages \a ids: {"languages": [{"id", "name"}]} with each
     language's own name ("Deutsch"). */
 File languages(const QStringList &ids);
-/*! Item names whose icons the pages of \a handbook show (entries, links, recipe cells), sorted. */
+/*! Returns the item names whose icons the pages of \a handbook show (entries, links, recipe
+    cells), sorted. */
 QStringList icons(const QcHandbook &handbook);
 /*! Writes \a files into \a directory (created when missing); existing files of the same names
-    are replaced. */
+    are replaced. Returns an error when a file cannot be written. */
 [[nodiscard]] QcStatus write(const QList<File> &files, const QString &directory);
 
 } // namespace QcHandbookWeb

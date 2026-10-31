@@ -33,7 +33,7 @@ public:
     std::optional<QByteArray> next();
     /*! Returns whether a frame announced more than the limit; the stream is broken for good. */
     bool failed() const { return m_failed; }
-    /*! Bytes received but not yet handed out. */
+    /*! Returns the bytes received but not yet handed out. */
     qsizetype buffered() const { return m_buffer.size() - m_offset; }
 
 private:

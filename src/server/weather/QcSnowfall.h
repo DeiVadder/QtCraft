@@ -33,9 +33,9 @@ public:
 
     /*! One simulated tick. */
     void tick();
-    /*! Snow layers put down since the server started (tests, measurements). */
+    /*! Returns the snow layers put down since the server started (tests, measurements). */
     quint64 layers() const { return m_layers; }
-    /*! Columns looked at since the server started (tests, measurements). */
+    /*! Returns the columns looked at since the server started (tests, measurements). */
     quint64 columns() const { return m_columns; }
 
 private:

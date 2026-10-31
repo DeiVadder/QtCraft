@@ -52,8 +52,8 @@ public:
 
     explicit QcWorldLibrary(QString root);
 
-    /*! Base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's application
-        data location (tests, screenshots). */
+    /*! Returns the base directory for worlds and mods. QTCRAFT_DATA_DIR overrides the platform's
+        application data location (tests, screenshots). */
     static QString dataRoot();
     /*! Returns \c {<data root>/worlds}. */
     static QString defaultRoot();

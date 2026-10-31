@@ -116,7 +116,7 @@ struct QcVillageWetland
 };
 
 /*! \brief A range a village draws one value from, uniformly: \c {min} to \c {max}, both
-    included. \qcfields */
+    included, of the type \a Value. \qcfields */
 template<typename Value>
 struct QcVillageRange
 {

@@ -11,7 +11,7 @@
     behind. */
 namespace QcNameText {
 
-/*! Code points of \a text; an unpaired surrogate counts as one. */
+/*! Returns the code points of \a text; an unpaired surrogate counts as one. */
 qsizetype codePoints(QStringView text);
 
 /*! Returns the longest start of \a text that ends on a grapheme boundary and has at most

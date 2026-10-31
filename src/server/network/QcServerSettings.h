@@ -93,7 +93,8 @@ struct QcServerSettings
     [[nodiscard]] static QcResult<QcServerSettings> fromJson(const QJsonObject &json);
     /*! Returns the settings as the file's JSON, with every key. */
     QJsonObject toJson() const;
-    /*! Writes the file \a target (with every key, so it documents itself). */
+    /*! Writes the file \a target (with every key, so it documents itself); returns an error when
+        it cannot. */
     [[nodiscard]] QcStatus write(const QString &target) const;
 
     /*! Returns the listener's address: the bind address, or Any. */

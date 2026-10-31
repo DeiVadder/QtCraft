@@ -71,7 +71,7 @@ public:
     [[nodiscard]] QStringList items(Action action) const;
     /*! Returns whether no action has a list. */
     [[nodiscard]] bool isEmpty() const;
-    /*! Item kinds and blocks of both actions, counted against maxNames. */
+    /*! Returns the item kinds and blocks of both actions, counted against maxNames. */
     [[nodiscard]] int nameCount() const;
 
     /*! Adds \a blocks to the list of \a item for \a action. Returns false (nothing changed) when a

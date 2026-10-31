@@ -22,7 +22,8 @@ public:
     ~QcInProcessTransport() override;
     Q_DISABLE_COPY_MOVE(QcInProcessTransport)
 
-    /*! Creates two connected ends without parents; move each to its thread before use. */
+    /*! Creates and returns two connected ends without parents; move each to its thread before
+        use. */
     static std::pair<std::unique_ptr<QcInProcessTransport>, std::unique_ptr<QcInProcessTransport>> createPair();
 
     void sendFrame(const QByteArray &frame) override;

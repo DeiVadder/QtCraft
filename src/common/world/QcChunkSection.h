@@ -48,19 +48,21 @@ public:
 
     /*! Returns the palette; the first entry in a uniform section. */
     const QList<QcBlockId> &palette() const { return m_palette; }
-    /*! Palette index of the cell \a cell (in the order of index()); 0 in a uniform section. */
+    /*! Returns the palette index of the cell \a cell (in the order of index()); 0 in a uniform
+        section. */
     quint16 paletteIndex(int cell) const
     {
         Q_ASSERT(cell >= 0 && cell < QcWorld::blocksPerSection);
         return isUniform() ? quint16{0} : packedIndex(cell);
     }
-    /*! Bits per stored palette index: 0 for a uniform section, else 1, 2, 4, 8 or 16. */
+    /*! Returns the bits per stored palette index: 0 for a uniform section, else 1, 2, 4, 8 or
+        16. */
     int bitsPerIndex() const { return isUniform() ? 0 : 16 >> m_entriesPerWordLog2; }
     /*! Returns the palette indices of all cells in the order of index() (empty for a uniform
         section), for encoders and tests; the section itself keeps them packed. */
     QList<quint16> unpackedIndices() const;
-    /*! Bytes the palette and the indices hold on the heap (their capacity; shared copies count
-        in full for each holder), for memory statistics. */
+    /*! Returns the bytes the palette and the indices hold on the heap (their capacity; shared
+        copies count in full for each holder), for memory statistics. */
     qsizetype heapBytes() const
     {
         return m_palette.capacity() * static_cast<qsizetype>(sizeof(QcBlockId)) + m_words.capacity() * static_cast<qsizetype>(sizeof(quint16));

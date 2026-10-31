@@ -79,10 +79,10 @@ public:
     qint16 paletteIndex(int x, int y, int z) const { return m_cells[cellIndex(x, y, z)]; }
     /*! Returns the block states the cells refer to, in the order they were first set. */
     const QList<QcBlockId> &palette() const { return m_palette; }
-    /*! What fromDefinition() kept at a default (unknown state properties or values). */
+    /*! Returns what fromDefinition() kept at a default (unknown state properties or values). */
     const QStringList &warnings() const { return m_warnings; }
 
-    /*! Per cell of \a cells (indices into \a palette, cell order of
+    /*! Returns per cell of \a cells (indices into \a palette, cell order of
         QcStructureDefinition::cellIndex): whether the cell takes its connection properties from
         its neighbours, that is its palette entry names none of north, east, south, west and up
         (decision E-867). */

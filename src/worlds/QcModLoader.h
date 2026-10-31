@@ -61,7 +61,7 @@ public:
     /*! Returns \c {<data root>/mods} (see QcWorldLibrary::dataRoot()). */
     static QString defaultDirectory();
 
-    /*! Reads all manifests below \a modsDirectory and decides the load order without loading
+    /*! Reads all manifests below \a modsDirectory and returns them in load order without loading
         content. An empty or missing directory gives an empty list. */
     static QList<QcModStatus> discover(const QString &modsDirectory);
 
@@ -72,8 +72,8 @@ public:
     static QList<QcModStatus> resolve(const QList<QcContentPackInfo> &candidates, const QStringList &disabled,
                                       const QList<QcPackReference> &available);
 
-    /*! Base game plus every loadable mod. Fails only when the base game cannot be loaded; an
-        empty \a modsDirectory loads no mods. */
+    /*! Returns the base game plus every loadable mod. Fails only when the base game cannot be
+        loaded; an empty \a modsDirectory loads no mods. */
     [[nodiscard]] static Loaded load(const QString &modsDirectory);
 
     /*! Returns the ids on the disabled list in \c {mods.json} of \a modsDirectory; empty when the

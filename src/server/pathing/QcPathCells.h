@@ -13,40 +13,51 @@
 
 class QcContentRegistry;
 
-// A free stretch of a cell along one horizontal axis, in block units from the cell's corner.
+/*! \brief A free stretch of a cell along one horizontal axis, in block units from the cell's
+    corner. */
 struct QcPathOpening
 {
+    /*! Where it starts. */
     float from = 0.0f;
+    /*! Where it ends. */
     float to = 1.0f;
 
+    /*! Returns its middle. */
     float middle() const { return (from + to) / 2.0f; }
+    /*! Returns its width. */
     float width() const { return to - from; }
-    // The stretch free in both: where they do not overlap, the empty stretch between their inner
-    // edges (its middle lies as far from both panels as can be).
+    /*! Returns the stretch free in both this and \a other: where they do not overlap, the empty
+        stretch between their inner edges (its middle lies as far from both panels as can be). */
     QcPathOpening within(QcPathOpening other) const { return {std::max(from, other.from), std::min(to, other.to)}; }
 };
 
-// Where a body goes through the cell of an open door or trapdoor (decision E-905): per horizontal
-// axis, the free opening beside its panel; none along an axis that nothing narrows. A panel narrows
-// the axis across it: an open door's leaf standing along z narrows x.
+/*! \brief Where a body goes through the cell of an open door or trapdoor (decision E-905): per
+    horizontal axis, the free opening beside its panel; none along an axis that nothing narrows.
+
+    A panel narrows the axis across it: an open door's leaf standing along z narrows x. */
 struct QcPathGap
 {
+    /*! The opening along x, if a panel narrows it. */
     std::optional<QcPathOpening> x;
+    /*! The opening along z, if a panel narrows it. */
     std::optional<QcPathOpening> z;
 
+    /*! Returns whether a panel narrows an axis. */
     bool narrows() const { return x || z; }
-    // The narrowest opening of the narrowed axes (1 without any): a body wider than it does not
-    // fit through the cell (decision E-909).
+    /*! Returns the narrowest opening of the narrowed axes (1 without any): a body wider than it
+        does not fit through the cell (decision E-909). */
     float narrowest() const { return std::min(x ? x->width() : 1.0f, z ? z->width() : 1.0f); }
-    // Whether a panel covers the side of the cell towards `dx`, `dz` (one of them 1 or -1, the other
-    // 0): a body does not cross that side of the cell (the leaf of a free-standing open door).
+    /*! Returns whether a panel covers the side of the cell towards \a dx, \a dz (one of them 1
+        or -1, the other 0): a body does not cross that side of the cell (the leaf of a
+        free-standing open door). */
     bool coversSide(int dx, int dz) const
     {
         const std::optional<QcPathOpening> &opening = dx != 0 ? x : z;
         const int towards = dx != 0 ? dx : dz;
         return opening && (towards < 0 ? opening->from > sideEdge : opening->to < 1.0f - sideEdge);
     }
-    // Both gaps at once (a body in two cells): the openings within each other along each axis.
+    /*! Returns this gap and \a other at once (a body in two cells): the openings within each
+        other along each axis. */
     QcPathGap within(const QcPathGap &other) const { return {both(x, other.x), both(z, other.z)}; }
 
 private:
@@ -59,77 +70,86 @@ private:
     }
 };
 
-// What a block state is to a walking creature looking for a path (decisions E-400, E-402), one byte
-// per state, computed once from the content: the kind of cell, two flags and the height of a low
-// block (or, for a solid block, whether it is slippery). The path grid (QcPathGrid) reads only this table, never the block definitions.
+/*! \brief What a block state is to a walking creature looking for a path (decisions E-400, E-402),
+    one byte per state, computed once from the content: the kind of cell, two flags and the height
+    of a low block (or, for a solid block, whether it is slippery).
+
+    The path grid (QcPathGrid) reads only this table, never the block definitions. */
 namespace QcPathCell {
 
+/*! \brief What a body meets in a cell. */
 enum class Kind : quint8 {
-    // No collision box (air, plants, torches, open doors, gates and trapdoors).
+    /*! No collision box (air, plants, torches, open doors, gates and trapdoors). */
     Open,
-    // Collision only in the lower half (bottom slabs, carpets, snow layers, closed bottom
-    // trapdoors): a body stands in the cell, on top of it (liftOf).
+    /*! Collision only in the lower half (bottom slabs, carpets, snow layers, closed bottom
+        trapdoors): a body stands in the cell, on top of it (liftOf). */
     Low,
-    // Collision reaching into the upper half over most of the cell's ground (full blocks, stairs,
-    // closed top trapdoors): a floor, never passable.
+    /*! Collision reaching into the upper half over most of the cell's ground (full blocks,
+        stairs, closed top trapdoors): a floor, never passable. */
     Solid,
-    // Collision reaching into the cell above (fences, walls): neither passable nor a floor, and it
-    // also blocks the cell above.
+    /*! Collision reaching into the cell above (fences, walls): neither passable nor a floor, and
+        it also blocks the cell above. */
     Tall,
-    // A liquid without contact damage: passable, a floor at its surface, avoided by walkers.
+    /*! A liquid without contact damage: passable, a floor at its surface, avoided by walkers. */
     Water,
-    // A closed wooden door or gate: blocks, unless the creature opens doors (QcPathRules::opensDoors).
+    /*! A closed wooden door or gate: blocks, unless the creature opens doors
+        (QcPathRules::opensDoors). */
     ClosedDoor,
-    // Hurts on contact without being a floor (fire, lava): never entered.
+    /*! Hurts on contact without being a floor (fire, lava): never entered. */
     Danger,
-    // Not loaded or outside the world: never entered, never a floor.
+    /*! Not loaded or outside the world: never entered, never a floor. */
     Unknown,
-    // Collision over less than half of the cell's ground that leaves no room for a body (panes,
-    // iron bars, closed iron doors that only a signal opens): never passable, never a floor.
+    /*! Collision over less than half of the cell's ground that leaves no room for a body (panes,
+        iron bars, closed iron doors that only a signal opens): never passable, never a floor. */
     Wall,
-    // A ladder: its board at the side leaves room for a body, which holds on to it (a place to
-    // stand) and climbs up and down along it, if the creature climbs (QcPathRules::climbsLadders;
-    // otherwise it is open).
+    /*! A ladder: its board at the side leaves room for a body, which holds on to it (a place to
+        stand) and climbs up and down along it, if the creature climbs (QcPathRules::climbsLadders;
+        otherwise it is open). */
     Ladder,
 };
 
-// Flags beside the kind: the block hurts bodies touching it (a floor of magma), it slows bodies
-// inside (cobwebs). A solid block can also be slippery (ice, decision E-430): that flag shares its
-// bit with the height of low blocks, which solid ones do not have.
+/*! Flags beside the kind: the block hurts bodies touching it (a floor of magma), it slows bodies
+    inside (cobwebs). A solid block can also be slippery (ice, decision E-430): that flag shares
+    its bit with the height of low blocks, which solid ones do not have. \qcshared */
 inline constexpr quint8 hurtsFlag = 0x10;
 inline constexpr quint8 slowsFlag = 0x20;
 inline constexpr quint8 slipperyFlag = 0x40;
-// An open cell can have a panel (an open door's leaf, an open trapdoor, decision E-909): its gap
-// (QcPathCellTable::gap) says how wide a body may be and which sides it does not cross. The flag
-// shares its bit with the height of low blocks, which open cells do not have.
+/*! An open cell can have a panel (an open door's leaf, an open trapdoor, decision E-909): its
+    gap (QcPathCellTable::gap) says how wide a body may be and which sides it does not cross. The
+    flag shares its bit with the height of low blocks, which open cells do not have. */
 inline constexpr quint8 panelFlag = 0x80;
+/*! The bits of the kind. */
 inline constexpr quint8 kindMask = 0x0f;
-// The height of a low block's top in eighths of a block, minus one (0: a carpet, 3: a slab).
+/*! The height of a low block's top in eighths of a block, minus one (0: a carpet, 3: a slab). */
 inline constexpr int liftShift = 6;
 
+/*! Returns the kind of \a cell. */
 inline Kind kindOf(quint8 cell) { return Kind(cell & kindMask); }
-// How high a body stands on the low block of the cell (rounded up to an eighth); 0 for other kinds.
+/*! Returns how high a body stands on the low block of \a cell (rounded up to an eighth); 0 for
+    other kinds. */
 inline double liftOf(quint8 cell) { return kindOf(cell) == Kind::Low ? static_cast<double>((cell >> liftShift) + 1) / 8.0 : 0.0; }
+/*! Returns a cell of \a kind with \a flags. */
 inline quint8 make(Kind kind, quint8 flags = 0) { return static_cast<quint8>(static_cast<quint8>(kind) | flags); }
-// Whether the cell is open with a panel in it.
+/*! Returns whether \a cell is open with a panel in it. */
 inline bool hasPanel(quint8 cell) { return (cell & panelFlag) != 0 && kindOf(cell) == Kind::Open; }
 
-// The cell of one block state.
+/*! Returns the cell of the block state \a id of \a content. */
 quint8 classify(const QcContentRegistry &content, QcBlockId id);
-// The gap of one block state: open doors and trapdoors have one beside their panel, every other state none.
+/*! Returns the gap of the block state \a id of \a content: open doors and trapdoors have one
+    beside their panel, every other state none. */
 QcPathGap gapOf(const QcContentRegistry &content, QcBlockId id);
 
 } // namespace QcPathCell
 
-// The cells of every block state of a content, indexed by QcBlockId.
+/*! \brief The cells of every block state of a content, indexed by QcBlockId. */
 class QcPathCellTable
 {
 public:
     explicit QcPathCellTable(const QcContentRegistry &content);
 
-    // Unknown for ids outside the content.
+    /*! Returns the cell of the block state \a state; unknown for ids outside the content. */
     quint8 of(QcBlockId state) const { return state < m_cells.size() ? m_cells[state] : QcPathCell::make(QcPathCell::Kind::Unknown); }
-    // No gap for ids outside the content.
+    /*! Returns the gap of the block state \a state; no gap for ids outside the content. */
     QcPathGap gap(QcBlockId state) const { return state < m_gaps.size() ? m_gaps[state] : QcPathGap{}; }
 
 private:

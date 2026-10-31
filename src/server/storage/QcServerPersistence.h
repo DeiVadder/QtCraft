@@ -41,9 +41,10 @@ public:
         E-093). */
     static constexpr QStringView lockFileName = u"session.lock";
 
-    /*! Opens or creates the world directory given in the config (no-op without one). */
+    /*! Opens or creates the world directory given in the config (no-op without one); returns an
+        error when it cannot. */
     [[nodiscard]] QcStatus open();
-    /*! Writes everything and waits for it; the first error is returned (see QcServer::save).
+    /*! Writes everything and waits for it; returns the first error (see QcServer::save).
         No-op without storage. */
     [[nodiscard]] QcStatus save();
     /*! The same in the background (autosave, a player leaving): the tick does not wait for the
@@ -66,7 +67,8 @@ public:
     /*! Returns the player \a name as the latest save handed his file over or as it is on disk
         (never saved: no player); without storage a player who was never saved. */
     [[nodiscard]] QcPlayerStorage::Result readPlayer(const QString &name) const;
-    /*! Problems found while opening the world (missing mods, unknown blocks); it still opened. */
+    /*! Returns the problems found while opening the world (missing mods, unknown blocks); it
+        still opened. */
     const QStringList &openWarnings() const { return m_openWarnings; }
     /*! Logs \a warnings and keeps them for the players. */
     void noteWarnings(const QStringList &warnings);

@@ -13,14 +13,14 @@ namespace QcProcessMemory {
     ending in "Mb") and the BENCH line (keys ending in "_mb") uses this unit (decision E-813). */
 inline constexpr double bytesPerMb = 1024.0 * 1024.0;
 
-/*! Resident memory now. */
+/*! Returns the resident memory now. */
 double currentMb();
-/*! Highest resident memory so far. */
+/*! Returns the highest resident memory so far. */
 double peakMb();
-/*! Physical footprint now (macOS: what the Activity Monitor shows, with GPU memory the process
-    owns that is not mapped into it; elsewhere the resident memory). */
+/*! Returns the physical footprint now (macOS: what the Activity Monitor shows, with GPU memory
+    the process owns that is not mapped into it; elsewhere the resident memory). */
 double footprintMb();
-/*! Highest physical footprint so far (macOS; elsewhere the highest resident memory). */
+/*! Returns the highest physical footprint so far (macOS; elsewhere the highest resident memory). */
 double peakFootprintMb();
 
 } // namespace QcProcessMemory

@@ -34,7 +34,7 @@ struct QcTextureAnimation
 
     /*! Returns whether the texture has more than one frame. */
     bool animated() const { return frames > 1; }
-    /*! Ticks of one loop. */
+    /*! Returns the ticks of one loop. */
     int cycleTicks() const { return frames * frameTicks; }
 
     /*! \brief What is shown at a time: frame \c {index}, blended by \c {blend} (0..1) into frame

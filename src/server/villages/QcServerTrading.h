@@ -15,29 +15,35 @@ class QcServerState;
 struct QcCreature;
 struct QcServerClient;
 
-// Trading with villagers (decision E-414), server-authoritative. A player using a villager with a
-// profession opens its trading screen (QcMsg::TradeState): one trader per villager at a time, who
-// it stands facing while the screen is open. A trade pays the costs at their current price from
-// the inventory and gives the result (what does not fit is thrown, like from the other screens),
-// counts a use, gives the villager experience (a level reached adds offers) and drops the player's
-// experience as orbs. The screen closes when the villager flees (danger, a hit), dies, goes to bed
-// or sleeps, or the player dies, leaves, walks out of reach or opens a block's screen.
+/*! \brief Trading with villagers (decision E-414), server-authoritative.
+
+    A player using a villager with a profession opens its trading screen (QcMsg::TradeState): one
+    trader per villager at a time, who it stands facing while the screen is open. A trade pays
+    the costs at their current price from the inventory and gives the result (what does not fit
+    is thrown, like from the other screens), counts a use, gives the villager experience (a level
+    reached adds offers) and drops the player's experience as orbs. The screen closes when the
+    villager flees (danger, a hit), dies, goes to bed or sleeps, or the player dies, leaves,
+    walks out of reach or opens a block's screen. */
 class QcServerTrading
 {
 public:
-    // A repeated trade (shift-click) trades at most this often.
+    /*! A repeated trade (shift-click) trades at most this often. */
     static constexpr int maxRepeats = 64;
 
     QcServerTrading(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcBlockScreens &screens);
 
-    // The player used the creature `id`: a villager with offers opens its trading screen, one without
-    // turns to the player and speaks. False when it is no villager in reach (the use goes on).
+    /*! The player of \a client used the creature \a id: a villager with offers opens its trading
+        screen, one without turns to the player and speaks. Returns false when it is no villager
+        in reach (the use goes on). */
     bool open(QcServerClient &client, quint32 id);
+    /*! Carries out the trade \a message of the player of \a client with the villager whose
+        screen is open. */
     void trade(QcServerClient &client, QcMsg::Trade message);
-    // Ends the player's trade; `notify` tells the client (the server closed it).
+    /*! Ends the trade of the player of \a client; \a notify tells the client (the server closed
+        it). */
     void close(QcServerClient &client, bool notify);
-    // Once per tick: closes screens whose villager or player is gone, fled or out of reach, keeps
-    // the villagers facing their traders and sends what changed (a restock, a level).
+    /*! Once per tick: closes screens whose villager or player is gone, fled or out of reach,
+        keeps the villagers facing their traders and sends what changed (a restock, a level). */
     void update();
 
 private:

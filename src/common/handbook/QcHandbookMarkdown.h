@@ -33,7 +33,7 @@ QString fileName(const QString &category);
 /*! Returns the anchor of the entry \a entryId ("block-qtcraft-stone"). */
 QString anchor(const QString &entryId);
 /*! Writes files() of \a handbook into \a directory (created when missing); existing files of the
-    same names are replaced. */
+    same names are replaced. Returns an error when a file cannot be written. */
 [[nodiscard]] QcStatus write(const QcHandbook &handbook, const QString &directory);
 
 } // namespace QcHandbookMarkdown

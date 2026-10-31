@@ -16,39 +16,45 @@ class QcServerState;
 struct QcProjectile;
 struct QcServerClient;
 
-// Players fishing with a rod (decision E-503; QcItemDefinition::fishing, QcMsg::ThrowItem): the
-// first use casts the rod's bobber, a projectile that floats on water (QcProjectileDefinition::floats);
-// the second reels it in. While the bobber floats on water, a fish bites after a random wait
-// between the rod's minSeconds and maxSeconds (times rainFactor where it rains on the bobber); the
-// bite lasts biteSeconds, the bobber dips and splashes. Reeling in during the bite throws one entry
-// of the rod's loot table, drawn by weight, from the bobber to the player and wears the rod by one;
-// reeling in at any other time catches nothing. The bobber goes when the player reels in, dies,
-// leaves, selects another hotbar slot or item, or is more than the rod's maxDistance from it; it is
-// never saved (QcProjectile::transient), so a chunk that unloads takes it along.
+/*! \brief Players fishing with a rod (decision E-503; QcItemDefinition::fishing, QcMsg::ThrowItem):
+    the first use casts the rod's bobber, a projectile that floats on water
+    (QcProjectileDefinition::floats); the second reels it in.
+
+    While the bobber floats on water, a fish bites after a random wait between the rod's
+    minSeconds and maxSeconds (times rainFactor where it rains on the bobber); the bite lasts
+    biteSeconds, the bobber dips and splashes. Reeling in during the bite throws one entry of the
+    rod's loot table, drawn by weight, from the bobber to the player and wears the rod by one;
+    reeling in at any other time catches nothing. The bobber goes when the player reels in, dies,
+    leaves, selects another hotbar slot or item, or is more than the rod's maxDistance from it;
+    it is never saved (QcProjectile::transient), so a chunk that unloads takes it along. */
 class QcPlayerFishing
 {
 public:
-    // Ticks after a cast or a reel before the rod does anything again (as the throw cooldown).
+    /*! Ticks after a cast or a reel before the rod does anything again (as the throw cooldown). */
     static constexpr int useCooldownTicks = 5;
 
     QcPlayerFishing(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
-    // Where it rains, for the shorter wait; without it the wait never shortens.
+    /*! Sets \a rainsAt, which tells where it rains, for the shorter wait; without it the wait
+        never shortens. */
     void setRainCheck(std::function<bool(QcBlockPos)> rainsAt) { m_rainsAt = std::move(rainsAt); }
-    // Whether it rains on a bobber in the block `pos`.
+    /*! Returns whether it rains on a bobber in the block \a pos. */
     bool rainsAt(QcBlockPos pos) const;
 
-    // The use button with the selected item (QcMsg::ThrowItem): casts when the player has no bobber
-    // out, else reels in; the arm swings only then. False when the held item does not fish, within
-    // useCooldownTicks of the last cast or reel, or when the cast failed.
+    /*! The player of \a client used the use button with the selected item (QcMsg::ThrowItem):
+        casts when the player has no bobber out, else reels in; the arm swings only then. Returns
+        false when the held item does not fish, within useCooldownTicks of the last cast or reel,
+        or when the cast failed. */
     bool use(QcServerClient &client);
-    // One tick of every player's bobber: the wait, the bite, and the bobbers that go, also those
-    // nobody fishes with any more (their player left).
+    /*! One tick of every player's bobber: the wait, the bite, and the bobbers that go, also
+        those nobody fishes with any more (their player left). */
     void tick();
 
-    // The ticks of a wait drawn from `random` for `rod`, in rain when `raining` (at least one tick).
+    /*! Returns the ticks of a wait drawn from \a random for \a rod, in rain when \a raining (at
+        least one tick). */
     static int waitTicks(const QcFishingDefinition &rod, bool raining, QRandomGenerator &random);
-    // The loot entry `random` draws by weight; nullptr for an empty table.
+    /*! Returns the loot entry of \a rod that \a random draws by weight; nullptr for an empty
+        table. */
     static const QcFishingLoot *draw(const QcFishingDefinition &rod, QRandomGenerator &random);
 
 private:

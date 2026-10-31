@@ -57,7 +57,7 @@ public:
     qint64 pendingBytes() const;
     /*! Returns the link underneath (to move it to another thread together with the connection). */
     QcTransport &transport() const { return *m_transport; }
-    /*! Frame bytes so far; safe to read from any thread. */
+    /*! Returns the frame bytes so far; safe to read from any thread. */
     QcTraffic traffic() const { return {m_sent.load(std::memory_order_relaxed), m_received.load(std::memory_order_relaxed)}; }
 
 signals:

@@ -29,7 +29,7 @@
     saved. */
 struct QcEntityRecord
 {
-    /*! \brief An entry and the key of its place in its table. \qcfields */
+    /*! \brief An entry of the type \a Entry and the key of its place in its table. \qcfields */
     template<typename Entry>
     struct Ordered
     {

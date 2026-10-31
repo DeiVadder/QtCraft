@@ -19,38 +19,43 @@ struct QcAquaticDefinition;
 struct QcCreature;
 struct QcMobDefinition;
 
-// How water creatures move (fish, decision E-502), part of QcMobBehaviour: in water they wander in
-// three dimensions without gravity and keep to the water, steered towards their school (cohesion,
-// alignment and separation among the nearest creatures of their kind, `schooling`); out of water
-// they fall, flop about and count their dry ticks (QcCreature::dryTicks), which QcBodyBurning turns
-// into suffocation. The neighbours come from a grid of each kind built once a tick, its cells as
-// large as the kind's school radius, so a member looks into 27 cells; the grid keeps its storage
-// from tick to tick.
+/*! \brief How water creatures move (fish, decision E-502), part of QcMobBehaviour: in water they
+    wander in three dimensions without gravity and keep to the water, steered towards their school
+    (cohesion, alignment and separation among the nearest creatures of their kind, \c {schooling});
+    out of water they fall, flop about and count their dry ticks (QcCreature::dryTicks), which
+    QcBodyBurning turns into suffocation.
+
+    The neighbours come from a grid of each kind built once a tick, its cells as large as the
+    kind's school radius, so a member looks into 27 cells; the grid keeps its storage from tick
+    to tick. */
 class QcFishSwimming
 {
 public:
-    // Smallest side of a cell of the neighbour grid, in metres (the school radius may be 0).
+    /*! Smallest side of a cell of the neighbour grid, in metres (the school radius may be 0). */
     static constexpr double minCellSize = 1.0;
-    // Chance per tick that a fish on dry ground flops.
+    /*! Chance per tick that a fish on dry ground flops. */
     static constexpr double flopChance = 0.1;
-    // Seconds between new wandering directions, at least and at most.
+    /*! Seconds between new wandering directions, at least and at most. \qcshared */
     static constexpr double wanderMinSeconds = 1.0;
     static constexpr double wanderMaxSeconds = 4.0;
-    // Weight of its own wandering for a fish with a school around it.
+    /*! Weight of its own wandering for a fish with a school around it. */
     static constexpr double schoolWander = 0.4;
 
     explicit QcFishSwimming(QRandomGenerator &random);
 
-    // Files the awake water creatures of this tick into the neighbour grid.
+    /*! Files the awake water creatures of \a mobs (kinds from \a content) of this tick into the
+        neighbour grid. */
     void startTick(std::span<const QcCreature> mobs, const QcContentRegistry &content);
-    // One tick of the water creature `mobs[index]`.
+    /*! One tick of \a dt seconds of the water creature at \a index of \a mobs, of the kind
+        \a definition, in \a world. */
     void swim(qsizetype index, std::span<QcCreature> mobs, const QcMobDefinition &definition, const QcBlockAccess &world, double dt);
 
-    // The steering a school adds to one member at `position` moving with `velocity`: towards the
-    // centre of the `others` (cohesion), along their mean heading (alignment) and away from those
-    // closer than separationDistance (separation), each weighted by the definition. Pure.
+    /*! Returns the steering a school adds to one member at \a position moving with \c {velocity}:
+        towards the centre of the \a others (cohesion), along their mean heading (alignment) and
+        away from those closer than separationDistance (separation), each weighted by \a aquatic.
+        Pure. */
     static QcVec3 schooling(const QcVec3 &position, const QList<const QcCreature *> &others, const QcAquaticDefinition &aquatic);
-    // Whether the cell at `position` holds water (not lava).
+    /*! Returns whether the cell of \a world at \a position holds water (not lava). */
     static bool inWater(const QcBlockAccess &world, const QcVec3 &position);
 
 private:

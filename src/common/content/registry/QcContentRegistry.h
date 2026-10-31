@@ -54,9 +54,9 @@ public:
         renumbers the states of later blocks. Fails for an invalid name, for air, for an invalid
         state or light opacity, and when the state table or its box budget would overflow. */
     [[nodiscard]] QcResult<QcBlockId> registerBlock(QcBlockDefinition definition);
-    /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Fails when the
-        name is not "namespace:path", the shape has too many boxes or its blocks would exceed the
-        state table's budget. */
+    /*! Registers or replaces the named \a shape; blocks that refer to it pick it up. Returns an
+        error when the name is not "namespace:path", the shape has too many boxes or its blocks
+        would exceed the state table's budget. */
     [[nodiscard]] QcStatus registerShape(QcShapeDefinition shape);
     /*! Returns the named shapes in registration order. */
     const QList<QcShapeDefinition> &shapes() const { return m_shapes; }
@@ -65,7 +65,7 @@ public:
     /*! Returns the shape \a block uses: its named shape when registered, else its inline shape. */
     const QcShapeDefinition &shapeOf(const QcBlockDefinition &block) const;
 
-    /*! Number of block definitions; runtime ids range over stateCount() states. */
+    /*! Returns the number of block definitions; runtime ids range over stateCount() states. */
     qsizetype blockCount() const { return m_blocks.size(); }
     /*! Returns the number of block states, the range of runtime block ids. */
     qsizetype stateCount() const { return m_states.size(); }

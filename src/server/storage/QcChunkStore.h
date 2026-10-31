@@ -86,8 +86,8 @@ public:
     static QString extensionOf(Kind kind);
 
     /*! Finishes a save the journal names, removes staged files of a save that broke off and
-        reads the index of every region file. A damaged index or a file of an older version is an
-        error naming the file (damaged()). */
+        reads the index of every region file. Returns an error naming the file for a damaged index
+        or a file of an older version (damaged()). */
     [[nodiscard]] QcStatus open();
     /*! \brief The kind and file (relative to the world directory) open() failed on;
         \c {journal}: the journal of a save that broke off cannot be finished (damaged, or a
@@ -114,8 +114,9 @@ public:
     /*! Returns the largest number of chunks of one kind with data waiting for the next commit
         (not the number of distinct chunks). */
     qsizetype pendingChunks() const;
-    /*! Writes everything handed over and \a files as one save (see the class). On failure
-        nothing handed over is lost, the files included: it waits for the next commit. */
+    /*! Writes everything handed over and \a files as one save (see the class); returns an error
+        on failure. Then nothing handed over is lost, the files included: it waits for the next
+        commit. */
     [[nodiscard]] QcStatus commit(const QList<WholeFile> &files);
     /*! Returns the whole file \a name as the next commit writes it (waiting) or as it is on disk;
         none: no such file. */

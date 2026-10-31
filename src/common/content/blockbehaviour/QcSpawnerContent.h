@@ -13,9 +13,10 @@ struct QcMobDefinition;
     content is finished, and which creature kinds a spawner may bring forth at all. */
 namespace QcSpawnerContent {
 
-/*! Why creatures of \a mob never come from a spawner, empty when they may: villagers belong to a
-    village and are kept with the world, which a spawner's creatures are not; water creatures
-    (fish) need water, which a spawner's cells (room for the body, ground below) never are. */
+/*! Returns why creatures of \a mob never come from a spawner, empty when they may: villagers
+    belong to a village and are kept with the world, which a spawner's creatures are not; water
+    creatures (fish) need water, which a spawner's cells (room for the body, ground below) never
+    are. */
 QString refusal(const QcMobDefinition &mob);
 /*! Resolves the spawner references of \a content and returns the warnings: for unknown or
     refused kinds of the dungeons (those entries are dropped; without any left the dungeons are

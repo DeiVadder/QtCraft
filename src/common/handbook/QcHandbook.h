@@ -66,8 +66,8 @@ public:
 
     /*! Returns the language of the texts. */
     const QString &language() const { return m_language; }
-    /*! Packs in load order; entries of names without a loaded pack come last under their
-        namespace. */
+    /*! Returns the packs in load order; entries of names without a loaded pack come last under
+        their namespace. */
     const QList<Pack> &packs() const { return m_packs; }
     /*! Returns the categories. */
     const QList<Category> &categories() const { return m_categories; }
@@ -79,7 +79,7 @@ public:
     const Category *category(const QString &id) const;
     /*! Returns the display name of the pack \a id (its namespace when no such pack was loaded). */
     QString packName(const QString &id) const;
-    /*! Inconsistencies found while building (links to unknown entries, unknown rule
+    /*! Returns the inconsistencies found while building (links to unknown entries, unknown rule
         placeholders). */
     const QStringList &problems() const { return m_problems; }
     /*! Returns the translated text \a key of the handbook itself for exports ("title", "intro",

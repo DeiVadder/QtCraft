@@ -24,7 +24,7 @@ public:
     int seriesCount() const { return m_series; }
     /*! Returns the most samples held. */
     int capacity() const { return m_capacity; }
-    /*! Samples held, at most the capacity. */
+    /*! Returns the samples held, at most the capacity. */
     int size() const { return m_size; }
 
     /*! One sample; \a values must hold one value per series (missing ones count as 0, extra ones

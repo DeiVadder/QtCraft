@@ -13,32 +13,37 @@ class QcServerSounds;
 class QcServerState;
 struct QcCreature;
 
-// Creatures that crumble at a liquid's source (QcMobDefinition::crumbles, decision E-593; the sand
-// golem in water), every game tick after the creatures moved: an awake one whose body (grown by
-// `touch` sideways and below) reaches into a source block of its liquid is removed without loot or
-// experience, and its build stands where it stood: `body` at its feet, in the middle above them and
-// on both sides of the middle across its facing, `head` on the middle, facing where it looked. Each
-// block goes into an open cell (air, a replaceable block, flowing liquid; never a source) with the
-// usual block updates (sand falls, and falling sand may fill a source below: a farm keeps its water
-// out of the arms' way); a block without an open cell drops as an item there. A creature that may
-// not change the world (QcCreature::mayGrief: the game rule mobGriefing off, confined, no mind;
-// decision E-510) leaves its whole build as items. Games count what crumbled
-// (tests, measurements).
+/*! \brief Creatures that crumble at a liquid's source (QcMobDefinition::crumbles, decision E-593;
+    the sand golem in water), every game tick after the creatures moved: an awake one whose body
+    (grown by \c {touch} sideways and below) reaches into a source block of its liquid is removed
+    without loot or experience, and its build stands where it stood: \c {body} at its feet, in the
+    middle above them and on both sides of the middle across its facing, \c {head} on the middle,
+    facing where it looked.
+
+    Each block goes into an open cell (air, a replaceable block, flowing liquid; never a source)
+    with the usual block updates (sand falls, and falling sand may fill a source below: a farm
+    keeps its water out of the arms' way); a block without an open cell drops as an item there. A
+    creature that may not change the world (QcCreature::mayGrief: the game rule mobGriefing off,
+    confined, no mind; decision E-510) leaves its whole build as items. It counts what crumbled
+    (tests, measurements). */
 class QcCrumbling
 {
 public:
-    // How far beyond its body a creature feels a source: a source beside it or under its feet counts.
+    /*! How far beyond its body a creature feels a source: a source beside it or under its feet
+        counts. */
     static constexpr double touch = 0.05;
 
     QcCrumbling(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks);
 
+    /*! Lets the builds of the creatures that touch a source crumble (one tick). */
     void tick();
-    // Creatures that crumbled since the start.
+    /*! Returns the creatures that crumbled since the start. */
     int crumbled() const { return m_crumbled; }
-    // Whether the body of `mob` touches a source block of `liquid` (a block name).
+    /*! Returns whether the body of \a mob of the kind \a definition touches a source block of
+        \a liquid (a block name). */
     bool touchesSource(const QcCreature &mob, const QcMobDefinition &definition, const QString &liquid) const;
-    // The cells of a crumbled build at `feet`: feet, middle, the two arms, the head; the arms across
-    // the facing of `yaw` (degrees, 0 north).
+    /*! Returns the cells of a crumbled build at \a feet: feet, middle, the two arms, the head;
+        the arms across the facing of \a yaw (degrees, 0 north). */
     static QList<QcBlockPos> buildCells(QcBlockPos feet, double yaw);
 
 private:

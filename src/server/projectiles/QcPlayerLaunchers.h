@@ -17,34 +17,38 @@ struct QcItemDefinition;
 struct QcLauncherDefinition;
 struct QcServerClient;
 
-// Players drawing and shooting launchers (a bow, decision E-425). The server times the draw from
-// the press of the use button (QcMsg::DrawLauncher) to its release in ticks; the release shoots the
-// first ammunition of the inventory the launcher takes (decision E-427; in creative mode, when the
-// inventory has none, creativeProjectile, and nothing is used) at the launcher's speed times the
-// power of the draw. A shot uses one item of ammunition and wears the launcher by one, except in
-// creative mode. Without ammunition a draw does not begin outside creative mode. A draw lets go
-// without a shot when the client cancels it, the selected hotbar slot changes (also to another
-// launcher), the selected item is no launcher any more, the player dies or the power stays below
-// the launcher's minPower.
+/*! \brief Players drawing and shooting launchers (a bow, decision E-425).
+
+    The server times the draw from the press of the use button (QcMsg::DrawLauncher) to its
+    release in ticks; the release shoots the first ammunition of the inventory the launcher takes
+    (decision E-427; in creative mode, when the inventory has none, creativeProjectile, and
+    nothing is used) at the launcher's speed times the power of the draw. A shot uses one item of
+    ammunition and wears the launcher by one, except in creative mode. Without ammunition a draw
+    does not begin outside creative mode. A draw lets go without a shot when the client cancels
+    it, the selected hotbar slot changes (also to another launcher), the selected item is no
+    launcher any more, the player dies or the power stays below the launcher's minPower. */
 class QcPlayerLaunchers
 {
 public:
-    // How far ahead of the eyes a shot starts (m), so the shooter's box is behind it.
+    /*! How far ahead of the eyes a shot starts (m), so the shooter's box is behind it. */
     static constexpr double muzzle = 0.3;
 
     QcPlayerLaunchers(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory, QcServerProjectiles &projectiles);
 
-    // The use button pressed or released with the launcher, or the draw cancelled.
+    /*! The player of \a client pressed or released the use button with the launcher, or
+        cancelled the draw (\a action). */
     void draw(QcServerClient &client, QcMsg::DrawLauncher::Action action);
-    // Ends draws whose launcher left the hand.
+    /*! Ends draws whose launcher left the hand. */
     void tick();
 
-    // Shoots with the held launcher at `power`; false when nothing was shot (no launcher, no
-    // ammunition, power below its minimum, the projectile limit).
+    /*! The player of \a client shoots with the held launcher at \a power; returns false when
+        nothing was shot (no launcher, no ammunition, power below its minimum, the projectile
+        limit). */
     bool shoot(QcServerClient &client, double power);
 
-    // What creative mode shoots without ammunition: the projectile of the item of the first kind
-    // (in the content's order) the launcher takes; empty when it takes none.
+    /*! Returns what creative mode shoots with \a launcher without ammunition: the projectile of
+        the item of the first kind (in the order of \a content) the launcher takes; empty when it
+        takes none. */
     static QString creativeProjectile(const QcContentRegistry &content, const QcLauncherDefinition &launcher);
 
 private:

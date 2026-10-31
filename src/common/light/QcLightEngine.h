@@ -83,7 +83,7 @@ public:
 
     QcLightEngine(std::shared_ptr<const QcLightTable> table, Options options);
 
-    /*! Thread-safe (reads only the table): the light of \a chunk alone, for addChunk(). */
+    /*! Returns the light of \a chunk alone, for addChunk(); thread-safe (reads only the table). */
     std::shared_ptr<Prepared> prepare(const QcChunk &chunk) const;
 
     /*! The engine keeps a snapshot of the chunk. */
@@ -135,7 +135,7 @@ public:
     /*! Returns the highest cell of the block column \a column that sky light coming straight down
         does not reach (-1: none; QcWorld::worldHeight in a chunk that is not held). */
     int skyTop(QcBlockPos column) const;
-    /*! Cells visited by the propagation steps so far (work measure for benchmarks). */
+    /*! Returns the cells visited by the propagation steps so far (work measure for benchmarks). */
     quint64 visitedCells() const { return m_visited; }
     /*! Returns the memory the levels take. */
     Memory memory() const;

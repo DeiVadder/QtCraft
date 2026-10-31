@@ -73,7 +73,8 @@ TOPIC_COMMANDS = {"class": "class", "struct": "struct", "union": "union", "names
                   "typedef": "typedef"}
 SIGNATURE_DROPS = re.compile(r"\[\[[^\]]*\]\]|\b(?:Q_INVOKABLE|Q_SIGNAL|Q_SLOT|Q_REQUIRED_RESULT|virtual|static|"
                              r"explicit|inline|friend)\b\s*")
-WARNING = re.compile(r"^(.*?):(\d+): \(qdoc\) (warning|error): (.*)$")
+# qdoc of Qt 6.12 puts the project before the tool: `file:1: [QtCraft] (qdoc) warning: ...`.
+WARNING = re.compile(r"^(.*?):(\d+): (?:\[[^\]]*\] )?\(qdoc\) (warning|error): (.*)$")
 
 
 class Staged:
@@ -701,6 +702,9 @@ def self_test():
     for wanted_line in ("    \\qmltype Plate", "    \\inqmlmodule QtCraft", "    /*! Its text. */"):
         if wanted_line not in qml_text.split("\n"):
             failures.append("qml: missing " + wanted_line)
+    for raw in ("/s/a.qdoc:3: (qdoc) warning: Old form", "/s/a.qdoc:3: [QtCraft] (qdoc) warning: New form"):
+        if map_warnings(raw, {}) != [["/s/a.qdoc", 3, "warning: " + raw.rsplit(": ", 1)[1]]]:
+            failures.append("warning line not read: " + raw)
     for failure in failures:
         print("self-test: " + failure)
     if failures:

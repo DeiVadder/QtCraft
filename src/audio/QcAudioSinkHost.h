@@ -38,9 +38,9 @@ public:
     ~QcAudioSinkHost() override;
     Q_DISABLE_COPY_MOVE(QcAudioSinkHost)
 
-    /*! Starts a sink on \a device in \a format that pulls \a render with samples of
-        \a sampleFormat and keeps \a bufferMilliseconds of audio buffered; on an error nothing stays
-        open. Call on the host's thread. */
+    /*! Starts a sink on \a device in \a format that pulls \a render with samples of \a sampleFormat
+        and keeps \a bufferMilliseconds of audio buffered, and returns what was opened; on an error
+        nothing stays open. Call on the host's thread. */
     [[nodiscard]] Opened open(const QAudioDevice &device, const QAudioFormat &format, QcMixerDevice::Format sampleFormat,
                               const QcMixerDevice::Render &render, int bufferMilliseconds);
     /*! Stops the sink, if one plays. Call on the host's thread. */

@@ -84,9 +84,9 @@ public:
         most maxNameLength. */
     static bool isValidName(QStringView name);
 
-    /*! Adds the command \a spec. Fails for invalid names, a missing handler or texts, and names or
-        aliases that are taken.
-        Pointers from find() and commands() stay valid until the next add. */
+    /*! Adds the command \a spec. Returns an error for invalid names, a missing handler or texts,
+        and names or aliases that are taken. Pointers from find() and commands() stay valid until
+        the next add. */
     [[nodiscard]] QcStatus add(QcCommandSpec spec);
     /*! Adds \a spec, one of the game's own commands, whose names are known to be free: a failure
         is a programming error and only logged. */

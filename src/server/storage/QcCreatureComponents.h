@@ -28,7 +28,7 @@ struct Read
 };
 
 /*! Reads the components of a creature entry from \a stream onto \a mob (filled from the entry's
-    header, health at the type's full health); std::nullopt for damaged data. */
+    header, health at the type's full health) and returns them; std::nullopt for damaged data. */
 [[nodiscard]] std::optional<Read> read(QDataStream &stream, QcMobManager::Stored mob);
 
 /*! Adds the known components of \a mob, carried blocks by their name in \a content, to

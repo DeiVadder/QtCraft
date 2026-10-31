@@ -85,12 +85,13 @@ public:
     ~QcServer() override;
     Q_DISABLE_COPY_MOVE(QcServer)
 
-    /*! Opens or creates the world directory given in the config (no-op without one). Must
-        succeed before start(); fails with a readable message for damaged or mismatching saves. */
+    /*! Opens or creates the world directory given in the config (no-op without one). Must succeed
+        before start(); returns an error with a readable message for damaged or mismatching saves.
+    */
     [[nodiscard]] QcStatus openWorld();
     /*! Writes all players, world info, changed chunks, entities, machines, chests and pending
-        updates. A failing part does not keep the others from being written; the first error is
-        returned. No-op without a world directory. */
+        updates. A failing part does not keep the others from being written; returns the first
+        error. No-op without a world directory. */
     [[nodiscard]] QcStatus save();
     /*! Starts the tick loop: the first tick is due one interval from now. */
     void start();

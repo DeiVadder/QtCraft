@@ -97,8 +97,8 @@ public:
     QcStructureSites structureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructureSites> plannedStructureSitesNear(QcBlockPos from, int reach) const override;
     [[nodiscard]] std::optional<QcStructurePlacement> nearestStructure(const QString &name, QcBlockPos from, int reach) const override;
-    /*! Villages, mine shafts, dungeons, coastal towers and the surface structures (decision
-        E-911). */
+    /*! Returns the villages, mine shafts, dungeons, coastal towers and the surface structures
+        (decision E-911). */
     QStringList locatableNames() const override;
     /*! Returns the mine shaft, dungeon or coastal tower of \a kind nearest to \a from within
         about \a reach blocks (as QcWorldGenerator::locate(); no place for other kinds): mine

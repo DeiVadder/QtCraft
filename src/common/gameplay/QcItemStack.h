@@ -85,9 +85,9 @@ struct QcItemStack
     /*! Returns the same stack without the components a save kept for a newer version
         (QcItemData::kept). */
     [[nodiscard]] QcItemStack withoutKept() const;
-    /*! What clients need to draw the stack lying on the ground or in a frame (decision E-832):
-        item, count, damage, map id and name, without contents and kept components, so a dropped
-        backpack does not send what it holds to everyone near. */
+    /*! Returns what clients need to draw the stack lying on the ground or in a frame (decision
+        E-832): item, count, damage, map id and name, without contents and kept components, so a
+        dropped backpack does not send what it holds to everyone near. */
     [[nodiscard]] QcItemStack forDisplay() const;
     /*! Returns the order of \a a and \a b (negative, 0 or positive) in a total order of stacks
         (empty ones first) by item, damage, count and data, so that rules which go through stacks
@@ -106,11 +106,11 @@ struct QcItemStack
     const QList<QcItemStack> &contents() const;
     /*! Returns whether it holds stacks inside. */
     bool hasContents() const;
-    /*! A custom name (stage 41.2a); empty for none. */
+    /*! Returns a custom name (stage 41.2a); empty for none. */
     QString name() const;
     /*! Returns the enchantments it carries (decision E-864); empty for none. */
     const QList<QcEnchantment> &enchantments() const;
-    /*! How often it went through an anvil (decision E-866). */
+    /*! Returns how often it went through an anvil (decision E-866). */
     int priorWork() const;
     /*! Returns the data, or an empty one. */
     const QcItemData &itemData() const;
@@ -185,9 +185,10 @@ public:
     bool isEmpty() const { return mapId == 0 && contents.isEmpty() && name.isEmpty() && enchantments.isEmpty() && priorWork == 0 && kept.isEmpty(); }
     /*! Returns the same data with trailing empty slots of the contents left out. */
     [[nodiscard]] QcItemData normalized() const;
-    /*! How deep its contents nest: 0 without contents, 1 for contents without contents, …. */
+    /*! Returns how deep its contents nest: 0 without contents, 1 for contents without contents,
+        …. */
     [[nodiscard]] int depth() const;
-    /*! How many stacks its contents hold on all levels together, empty slots included. */
+    /*! Returns how many stacks its contents hold on all levels together, empty slots included. */
     [[nodiscard]] int stacksInside() const;
     /*! Returns whether it keeps the limits every reader checks: a name of at most maxNameLength
         characters, at most maxContents slots, maxDepth levels and maxStacksInside stacks (the

@@ -17,10 +17,10 @@ namespace QcContentFingerprint {
 inline constexpr qint64 maxPackBytes = qint64{256} * 1024 * 1024;
 inline constexpr int maxPackFiles = 20'000;
 
-/*! Lower-case hex of the first 16 bytes of SHA-256 over the files the content loader reads from
-    the pack in \a directory (also a Qt resource directory; QcContentPackLoader::contentFiles):
-    relative path, size and contents, in the order of the sorted paths. Other files (.DS_Store,
-    notes) do not count. */
+/*! Returns the lower-case hex of the first 16 bytes of SHA-256 over the files the content loader
+    reads from the pack in \a directory (also a Qt resource directory;
+    QcContentPackLoader::contentFiles): relative path, size and contents, in the order of the
+    sorted paths. Other files (.DS_Store, notes) do not count. */
 [[nodiscard]] QcResult<QString> hashOf(const QString &directory);
 /*! Returns the packs of \a content in load order: the base game and the loaded mods of \a mods
     (their directories); a pack that cannot be hashed gets an empty hash. */
