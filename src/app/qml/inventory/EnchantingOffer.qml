@@ -142,7 +142,7 @@ AbstractButton {
             text: offer.offerData.levelCost
             available: offer.enabled
             missing: !offer.enabled
-            onParchment: true
+            parchment: true
         }
     }
 }

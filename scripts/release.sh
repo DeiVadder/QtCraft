@@ -38,7 +38,8 @@
 # focus, no captured mouse, sound muted. Temporary data lives in a directory below
 # QTCRAFT_RELEASE_TMP (default: $TMPDIR) and is removed when all checks pass.
 #
-# Usage: scripts/release.sh            (QT_DIR overrides the newest ~/Qt/6.8.*/macos; QTCRAFT_RELEASE_DMG=0
+# Usage: scripts/release.sh            (QT_DIR overrides the Qt that build/<preset> was configured
+#                                       with, else the newest ~/Qt/6.*/macos; QTCRAFT_RELEASE_DMG=0
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
 #                                       preset "deploy"; QTCRAFT_RELEASE_BUILD_LIMIT the build's
 #                                       seconds (1800); QTCRAFT_RELEASE_PROGRESS=1 prints the build's
@@ -52,7 +53,6 @@ set -u
 
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
-QT_DIR=${QT_DIR:-$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)}
 PRESET=${QTCRAFT_RELEASE_PRESET:-deploy}
 # Seconds the build may take (the hosted CI runners need far longer than a development Mac).
 BUILD_LIMIT=${QTCRAFT_RELEASE_BUILD_LIMIT:-1800}
@@ -62,6 +62,11 @@ case "$GUI_RUNS" in
 *) echo "QTCRAFT_RELEASE_GUI must be 0 or 1, not '$GUI_RUNS'" >&2; exit 2 ;;
 esac
 BUILD_DIR="$PROJECT_DIR/build/$PRESET"
+# The Qt the release tree was configured with, else the newest installed Qt 6.
+if [ -z "${QT_DIR:-}" ]; then
+    QT_DIR=$(sed -n 's#^Qt6_DIR:PATH=\(.*\)/lib/cmake/Qt6$#\1#p' "$BUILD_DIR/CMakeCache.txt" 2>/dev/null)
+    [ -n "$QT_DIR" ] || QT_DIR=$(ls -d "$HOME"/Qt/6.*/macos 2>/dev/null | sort -V | tail -n 1)
+fi
 DEPLOY_DIR="$PROJECT_DIR/deploy"
 APP="$DEPLOY_DIR/QtCraft.app"
 VERSION=$(sed -n 's/^project(QtCraft VERSION \([0-9.]*\).*/\1/p' CMakeLists.txt)

@@ -26,7 +26,11 @@ BUILD_DIR=${1:-"$PROJECT_DIR/build/debug"}
 CREATOR_CLANG="$HOME/Qt/Qt Creator.app/Contents/Resources/libexec/clang/bin"
 CLANG_TIDY=${CLANG_TIDY:-"$CREATOR_CLANG/clang-tidy"}
 CLAZY=${CLAZY:-"$CREATOR_CLANG/clazy-standalone"}
-QMLLINT=${QMLLINT:-"$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)/bin/qmllint"}
+# The Qt the build tree was configured with (its qmllint reads that Qt's qmltypes), else the newest
+# installed Qt 6.
+QT_PREFIX=$(sed -n 's#^Qt6_DIR:PATH=\(.*\)/lib/cmake/Qt6$#\1#p' "$BUILD_DIR/CMakeCache.txt" 2>/dev/null)
+[ -n "$QT_PREFIX" ] || QT_PREFIX=$(ls -d "$HOME"/Qt/6.*/macos 2>/dev/null | sort -V | tail -n 1)
+QMLLINT=${QMLLINT:-"$QT_PREFIX/bin/qmllint"}
 SDK_PATH=$(xcrun --show-sdk-path)
 JOBS=${JOBS:-16}
 TIME_LIMIT=${TIME_LIMIT:-900}

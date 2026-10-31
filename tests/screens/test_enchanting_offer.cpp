@@ -191,7 +191,7 @@ private slots:
     void levelsTakeTheParchmentsTones()
     {
         const auto toneOf = [this](const QString &offer) {
-            const QQuickItem *badge = find(named(offer), [](QQuickItem *item) { return item->property("onParchment").isValid(); });
+            const QQuickItem *badge = find(named(offer), [](QQuickItem *item) { return item->property("parchment").isValid(); });
             return badge ? badge->property("tone").value<QColor>() : QColor();
         };
         QCOMPARE(toneOf(u"usable"_s), QcUiPalette::color(QcUiPalette::Role::LevelOnParchment));

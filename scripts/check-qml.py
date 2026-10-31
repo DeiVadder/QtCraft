@@ -23,6 +23,20 @@ Rules (name, what it finds):
                        outside `px()`/`hudPx()`/`scaled()` and not a factor (`2 * Ui.space.l`): sizes go through
                        `Ui.px`/`Ui.hudPx` (E-725). Not checked: `controls/Ui.qml` (it holds the values) and the
                        properties of a `Window`/`ApplicationWindow` (window sizes are not scaled)
+  on-property          a declared property named `on` + capital letter (`property bool onParchment`): an
+                       assignment `onParchment: true` reads like a signal handler (row 79.53, E-947)
+  loader-item          `<loader id>.item` dereferenced (`.x`, `[..]`, `(id.item as T).x`; `?.` is fine) without a
+                       check before it in the same block (the conditions of enclosing if/else/while/for bodies
+                       included) or line: `id.status`, `id.item &&`/`||`/`?`/`=== null`, `!id.item`,
+                       `if (... id.item)`, or for a synchronous Loader an `id.active = true` (the item is then
+                       made at once). Synchronous: no `asynchronous` binding other than `false` and no
+                       `id.asynchronous = ...` in the file. Only Loaders with an id in the same file; the
+                       unqualified `item.x` inside a Loader's own bindings and handlers is not checked
+  anchors-layout       an object with both `anchors` and `Layout.*` bindings: inside a layout the anchors fight
+                       the layout, outside one the `Layout.*` values do nothing
+  image-source-size    an `Image`, `AnimatedImage` or `BorderImage` without `sourceSize`, so the whole picture is
+                       decoded; not checked with `smooth: false` (pixel art: small sources drawn as they are, a
+                       sourceSize only resamples)
 A finding is skipped when its line or the line above holds `// NOLINT(qc-qml-<rule>): <reason>` (a marker
 without a reason is listed itself as `unreasoned`). Heuristic on comment-blanked text, not a QML parser.
 Gating rules (exit code 1 on a finding): those in GATING (none yet: every rule warns, the human sets the
@@ -42,7 +56,8 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
-RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size")
+RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
+         "on-property", "loader-item", "anchors-layout", "image-source-size")
 # Rules whose findings fail the run (exit code 1). All rules warn while the human sets the limits with the
 # findings in view (row 79.48, E-942); a NOLINT marker without a reason always fails.
 GATING = set()
@@ -75,6 +90,18 @@ SIZE_LINE = re.compile(r"^[ \t]*(?:(?:readonly|required|default)\s+)*(property\s
 NUMBER = re.compile(r"(?<![\w.])\d+(?:\.\d+)?(?![\w.])")
 SCALED_CALL = re.compile(r"\b(?:px|hudPx|scaled)\s*\(")
 WINDOW_TYPES = {"Window", "ApplicationWindow"}
+ON_NAME = re.compile(r"on[A-Z]")
+# Bindings of the new rules: at the start of a line or after `{`/`;` (`Loader { id: lazy; active: false }`).
+BINDING_START = r"(?:^|(?<=[{;]))[ \t]*"
+LOADER_ID = re.compile(BINDING_START + r"id\s*:\s*(\w+)", re.MULTILINE)
+ASYNCHRONOUS = re.compile(BINDING_START + r"asynchronous\s*:\s*(?!false\b)", re.MULTILINE)
+IMAGE_TYPES = {"Image", "AnimatedImage", "BorderImage"}
+ANCHORS = re.compile(BINDING_START + r"anchors\s*[.{]", re.MULTILINE)
+LAYOUT = re.compile(BINDING_START + r"Layout\s*[.{]", re.MULTILINE)
+SOURCE_SIZE = re.compile(BINDING_START + r"sourceSize\s*[.:{]", re.MULTILINE)
+# `smooth: false` draws pixel art at its own small size (icons of 16 px, the pixel-art pictures, maps): a
+# sourceSize would only resample it, so such an Image is no finding.
+PIXEL_ART = re.compile(BINDING_START + r"smooth\s*:\s*false\b", re.MULTILINE)
 # Controls the pad can focus and the test hooks click: their names are read at run time (the focus
 # description of QcGamepadUi, `click:<objectName>`), so an unread name there is no finding.
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
@@ -305,6 +332,101 @@ def raw_sizes(qml):
     return found
 
 
+def direct_bindings(qml, owner, pattern):
+    """Matches of pattern at the start of a line directly inside the object owner (type, open, close):
+    not in a nested object and not in a JavaScript block."""
+    return [match for match in pattern.finditer(qml.masked, owner[1], owner[2])
+            if qml.enclosing(match.start()) == owner and qml.in_object(match.start())]
+
+
+def handler_properties(qml):
+    found = []
+    for match in DECLARATION.finditer(qml.masked):
+        if ON_NAME.match(match.group(1)):
+            found.append((line_of(qml.masked, match.start()), "on-property",
+                          f"property {match.group(1)} reads like a signal handler; rename it"))
+    return found
+
+
+def loader_ids(qml):
+    """{id: synchronous} of the Loader objects of the file."""
+    loaders = {}
+    for owner in qml.objects:
+        if owner[0] != "Loader":
+            continue
+        ids = direct_bindings(qml, owner, LOADER_ID)
+        if ids:
+            name = ids[0].group(1)
+            assigned = re.search(rf"(?<![\w.]){re.escape(name)}\.asynchronous\s*=(?!=)", qml.masked)
+            loaders[name] = not direct_bindings(qml, owner, ASYNCHRONOUS) and not assigned
+    return loaders
+
+
+def control_body(qml, brace):
+    """True when the brace opens the body of an if, else, while or for (a block whose condition guards it)."""
+    before = qml.masked[:brace].rstrip()
+    if re.search(r"\belse$", before):
+        return True
+    if not before.endswith(")"):
+        return False
+    depth = 0
+    for index in range(len(before) - 1, -1, -1):
+        depth += {")": 1, "(": -1}.get(before[index], 0)
+        if depth == 0:
+            return bool(re.search(r"\b(?:if|while|for)\s*$", before[:index]))
+    return False
+
+
+def guard_context(qml, offset):
+    """The text before offset that can hold a check: the enclosing JavaScript block up to offset, where the
+    bodies of if/else/while/for count as part of the block around them (so their conditions are in it), or
+    the line up to offset for a binding directly in an object."""
+    inner = sorted((start for start, end in qml.pairs.items() if start < offset <= end), reverse=True)
+    start = next((brace for brace in inner if brace in qml.object_braces or not control_body(qml, brace)), 0)
+    if start in qml.object_braces:
+        start = qml.masked.rfind("\n", 0, offset) + 1
+    return qml.masked[start:offset]
+
+
+def unchecked_loader_items(qml):
+    found = []
+    for name, synchronous in loader_ids(qml).items():
+        escaped = re.escape(name)
+        guard = (rf"\b{escaped}\.status\b|\b{escaped}\.item\s*(?:&&|\|\||\?(?!\.)|[!=]==?\s*null)"
+                 rf"|!\s*{escaped}\.item\b|\b(?:if|while)\s*\([^;{{}}]*\b{escaped}\.item\s*\)")
+        if synchronous:
+            guard += rf"|\b{escaped}\.active\s*=\s*true\b"
+        use = re.compile(rf"(?<![\w.]){escaped}\.item\b(?:\s+as\s+[\w.]+\s*\))?\s*(?:\.|\[)")
+        for match in use.finditer(qml.masked):
+            if re.search(guard, guard_context(qml, match.start())):
+                continue
+            found.append((line_of(qml.masked, match.start()), "loader-item",
+                          f"{name}.item used without checking {name}.status or {name}.item; it is null "
+                          "until the Loader is ready"))
+    return found
+
+
+def anchors_with_layout(qml):
+    found = []
+    for owner in qml.objects:
+        anchors = direct_bindings(qml, owner, ANCHORS)
+        if anchors and direct_bindings(qml, owner, LAYOUT):
+            found.append((line_of(qml.masked, anchors[0].start()), "anchors-layout",
+                          f"{owner[0]} has anchors and Layout.* properties; a layout and anchors fight over "
+                          "the geometry"))
+    return found
+
+
+def images_without_source_size(qml):
+    found = []
+    for owner in qml.objects:
+        if owner[0] not in IMAGE_TYPES or direct_bindings(qml, owner, SOURCE_SIZE) or direct_bindings(qml, owner, PIXEL_ART):
+            continue
+        found.append((line_of(qml.masked, owner[1]), "image-source-size",
+                      f"{owner[0]} without sourceSize decodes the whole picture; set sourceSize"))
+    return found
+
+
 class Corpus:
     """The texts in which an object name counts as read: every file below READ_FOLDERS, indexed by word
     (a run of letters, digits, `_`, `:`, `.` and `-`) and by the parts of a word between `:` and `.`, so
@@ -355,7 +477,8 @@ def check_file(path, text, corpus, limit=15):
     """The findings of one QML file: (path, line, rule, message), markers applied."""
     qml = QmlFile(path, text)
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
-                + unread_object_names(qml, corpus) + raw_sizes(qml))
+                + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
+                + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml))
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -534,6 +657,76 @@ Item {
     got = check_file("src/app/qml/Quiet.qml", quiet, Corpus({"src/app/qml/Quiet.qml": quiet}), 3)
     if got:
         failures.append(f"comparison, JavaScript key, child property and control name are no findings: {got}")
+    qt_rules = """import QtQuick
+import QtQuick.Layouts
+Item {
+    property bool onParchment: false
+    property bool online: false
+    Loader { id: lazy; asynchronous: true }
+    Loader { id: eager; active: false }
+    width: lazy.item.width
+    height: lazy.item ? lazy.item.height : 0
+    readonly property Item shown: lazy.item as Item
+    function show() {
+        (lazy.item as Item).visible = true;
+        (lazy.item as Item)?.forceActiveFocus();
+        if (lazy.status === Loader.Ready)
+            lazy.item.opacity = 1;
+        eager.active = true;
+        eager.item.visible = true;
+    }
+    function reveal() {
+        lazy.active = true;
+        lazy.item.visible = true;
+    }
+    function braced() {
+        if (lazy.item) {
+            lazy.item.visible = true;
+        }
+        if (lazy.status === Loader.Ready) {
+            lazy.item.x = 1;
+        }
+    }
+    function logged() {
+        console.log(lazy.item);
+        lazy.item.y = 1;
+    }
+    Loader { id: flagged; asynchronous: root.slow }
+    Loader { id: switched; asynchronous: false }
+    Loader { id: plain }
+    function late() {
+        switched.asynchronous = true;
+        flagged.active = true;
+        flagged.item.visible = true;
+        switched.active = true;
+        switched.item.visible = true;
+        plain.active = true;
+        plain.item.visible = true;
+    }
+    Rectangle {
+        anchors.fill: parent
+        Layout.fillWidth: true
+    }
+    Rectangle {
+        anchors { left: parent.left }
+        Layout.preferredWidth: parent.width
+        Item { Layout.fillWidth: true }
+    }
+    Image { source: "photo.png" }
+    Image { source: "photo.png"; sourceSize.width: 64 }
+    Image { source: "icon.png"; smooth: false }
+    // NOLINT(qc-qml-image-source-size): sample exemption
+    Image { source: "small.png" }
+    BorderImage { source: "frame.png" }
+}
+"""
+    got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/QtRules.qml", qt_rules, Corpus({}), 30)]
+    expected = [(4, "on-property"), (8, "loader-item"), (12, "loader-item"), (21, "loader-item"),
+                (33, "loader-item"), (41, "loader-item"), (43, "loader-item"),
+                (48, "anchors-layout"), (52, "anchors-layout"), (56, "image-source-size"),
+                (61, "image-source-size")]
+    if got != expected:
+        failures.append(f"on-property, loader-item, anchors-layout and image-source-size: expected {expected}, got {got}")
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))

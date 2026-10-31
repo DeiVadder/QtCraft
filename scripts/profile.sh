@@ -37,7 +37,10 @@ SCENARIO=${2:-stand}
 SECONDS_PER_RUN=${3:-15}
 VIEW=${4:-8}
 APP=${PROFILE_APP:-"$PROJECT_DIR/build/profile/src/app/qtcraft.app/Contents/MacOS/qtcraft"}
-QT_BIN=${QT_BIN:-"$(ls -d "$HOME"/Qt/6.8.*/macos 2>/dev/null | sort -V | tail -n 1)/bin"}
+# The Qt the profile tree was configured with, else the newest installed Qt 6.
+QT_PREFIX=$(sed -n 's#^Qt6_DIR:PATH=\(.*\)/lib/cmake/Qt6$#\1#p' "$PROJECT_DIR/build/profile/CMakeCache.txt" 2>/dev/null)
+[ -n "$QT_PREFIX" ] || QT_PREFIX=$(ls -d "$HOME"/Qt/6.*/macos 2>/dev/null | sort -V | tail -n 1)
+QT_BIN=${QT_BIN:-"$QT_PREFIX/bin"}
 WORK=$(mktemp -d "${TMPDIR:-/tmp}/qtcraft-profile.XXXXXX") || exit 2
 # Recording ends with the run; the limit only guards against a run that does not quit.
 RECORD_LIMIT=$((SECONDS_PER_RUN + 60))
