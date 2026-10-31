@@ -5,6 +5,7 @@
 
 #include "common/core/QcChunkPos.h"
 #include "common/core/QcResult.h"
+#include "server/storage/QcGeneratedChunks.h"
 #include "server/storage/QcRegionFile.h"
 
 #include <QByteArray>
@@ -119,6 +120,15 @@ public:
     /*! Returns the whole file \a name as the next commit writes it (waiting) or as it is on disk;
         none: no such file. */
     [[nodiscard]] QcResult<std::optional<QByteArray>> readFile(const QString &name);
+    /*! Adds \a chunk to the index of generated chunks (QcGeneratedChunks), written with the next
+        commit that follows. */
+    void noteGenerated(QcChunkPos chunk) { m_generated.index.note(chunk); }
+    /*! Returns the index of generated chunks: what open() read, with what was noted since. */
+    const QcGeneratedChunks &generated() const { return m_generated.index; }
+    /*! Returns the file (relative to the directory) the next commit writes the index to. */
+    const QString &generatedFile() const { return m_generated.file; }
+    /*! Returns the warnings of the last open() for the player (a damaged or newer index). */
+    const QStringList &openWarnings() const { return m_generated.warnings; }
     /*! Test hook: renames of a commit after \a count fail (-1: none fail). */
     void failRenamesAfter(int count) { m_renamesLeft = count; }
 
@@ -140,12 +150,16 @@ private:
         quint32 headCrc = 0;
     };
 
+    // The renames a commit may still make before the test hook refuses one (-1: no limit).
+    int renamesLeft() const { return m_renamesLeft; }
     QString absolute(const QString &name) const;
     // The chunks with data of `kind`, with their marks.
     [[nodiscard]] QHash<QcChunkPos, quint16> chunksOf(Kind kind) const;
     [[nodiscard]] QcStatus finishJournal();
     void removeStaged() const;
     [[nodiscard]] QcStatus readIndexes();
+    void setGenerated(QcGeneratedChunks::Opened generated) { m_generated = std::move(generated); }
+    void markGeneratedSaved() { m_generated.index.setUnsaved(false); }
     // A region staged: its step (none when nothing changes) and its index after the commit.
     struct StagedRegion
     {
@@ -182,6 +196,8 @@ private:
     // Whole files of commits that failed, by name (the newest wins).
     QHash<QString, std::optional<QByteArray>> m_pendingFiles;
     std::optional<Damaged> m_damaged;
+    // The index of generated chunks, its file and the warnings of reading it.
+    QcGeneratedChunks::Opened m_generated;
     bool m_needsReopen = false;
     int m_renamesLeft = -1;
 };

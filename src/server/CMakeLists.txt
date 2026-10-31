@@ -320,6 +320,7 @@ target_sources(qc_server PRIVATE
     storage/QcEntityCodec.h storage/QcEntityCodec.cpp
     storage/QcEntityRecord.h
     storage/QcEntityRecords.h storage/QcEntityRecords.cpp
+    storage/QcGeneratedChunks.h storage/QcGeneratedChunks.cpp
     storage/QcHangingCodec.h storage/QcHangingCodec.cpp
     storage/QcItemDataCodec.h storage/QcItemDataCodec.cpp
     storage/QcLoadWarnings.h

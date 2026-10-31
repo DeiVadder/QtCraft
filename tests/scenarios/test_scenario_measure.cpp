@@ -11,6 +11,7 @@
 #include "server/tick/QcTickStats.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 
+#include <QDirIterator>
 #include <QElapsedTimer>
 #include <QFile>
 #include <QTemporaryDir>
@@ -43,7 +44,8 @@ using namespace Qt::StringLiterals;
 // Prints one line "BENCH key=value ..." with the keys of the rendered benchmark that the server
 // gives (tick_avg_ms, tick_worst_ms, tick_<phase>_avg_ms and _max_ms, server_mobs, ...) plus
 // tick_p99_ms, loaded_chunks, max_loaded_chunks, rss_mb and peak_rss_mb (the whole process: server,
-// the raw client and the test).
+// the raw client and the test), and after the run save_ms (a last save, until it is on disk) and
+// world_kb (the world folder then).
 class TestScenarioMeasure : public QcServerTestFixture
 {
     Q_OBJECT
@@ -300,6 +302,22 @@ private:
             .arg(phasePairs(ticks));
     }
 
+    // A last save of everything, timed until it is on disk, and the size of the world folder then.
+    QString savePairs(const QString &directory)
+    {
+        QElapsedTimer saving;
+        saving.start();
+        const bool saved = m_server->save().has_value();
+        m_server->waitForStorage();
+        const double saveMs = static_cast<double>(saving.nsecsElapsed()) / 1e6;
+        qint64 bytes = 0;
+        QDirIterator files(directory, QDir::Files, QDirIterator::Subdirectories);
+        while (files.hasNext()) {
+            bytes += files.nextFileInfo().size();
+        }
+        return u" save_ok=%1 save_ms=%2 world_kb=%3"_s.arg(saved ? 1 : 0).arg(saveMs, 0, 'f', 2).arg(bytes / 1024);
+    }
+
     // Runs the scene and returns its BENCH line.
     QString run(const Scene &scene)
     {
@@ -321,7 +339,7 @@ private:
             timedTick(scene);
         }
         m_server->waitForStorage();
-        const QString line = report(static_cast<double>(wall.elapsed()) / 1e3);
+        const QString line = report(static_cast<double>(wall.elapsed()) / 1e3) + savePairs(directory.path());
         m_client.reset();
         m_server.reset();
         return line;

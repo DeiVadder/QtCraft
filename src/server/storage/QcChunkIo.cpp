@@ -85,6 +85,8 @@ void QcChunkIo::store(const Departure &departure)
 {
     using Kind = QcChunkStore::Kind;
     const QcChunkPos pos = departure.pos;
+    // Every chunk handed over was in the world, generated or read (decision E-946).
+    m_store.noteGenerated(pos);
     if (departure.blocks) {
         m_store.put(Kind::Blocks, pos, QcChunkCodec::encode(*departure.blocks, *m_content));
     }

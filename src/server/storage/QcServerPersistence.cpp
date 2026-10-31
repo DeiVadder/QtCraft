@@ -163,6 +163,7 @@ QcStatus QcServerPersistence::openChunks(const QString &directory)
                                                                      : u"the changes of the chunks saved in it (they are generated anew)"_s;
         return qcError(u"%1; moving %2 out of the world folder opens the world without %3"_s.arg(catalog.error(), damaged->file, without));
     }
+    noteWarnings(m_io->openWarnings());
     m_state.world().setStorage(m_io.get(), std::move(*catalog));
     return {};
 }

@@ -92,6 +92,8 @@ public:
     [[nodiscard]] QcResult<QHash<QcChunkPos, QcChunkStore::Stored>> open();
     /*! Returns the file open() failed on; std::nullopt when it did not. */
     const std::optional<QcChunkStore::Damaged> &damaged() const { return m_store.damaged(); }
+    /*! Returns the warnings of open() for the player (QcChunkStore::openWarnings). */
+    const QStringList &openWarnings() const { return m_store.openWarnings(); }
     /*! Returns whether the chunks are written to a directory (else kept in memory). */
     bool hasDirectory() const { return !m_store.directory().isEmpty(); }
 
