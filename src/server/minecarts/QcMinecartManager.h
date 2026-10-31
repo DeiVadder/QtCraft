@@ -17,62 +17,78 @@
 
 class QcContentRegistry;
 
-// The minecarts of a world (decision E-382), the table of their kind in the entity register: adding,
-// finding and removing them within the world's limit, and their movement in a tick: the carts meet
-// each other and the living bodies (QcMinecartCollisions), then every awake cart moves on its own
-// (QcMinecartMotion), and none ends deeper in a cart it overlapped. A cart at rest on a level rail
-// (or held at the lower end of a slope) is not stepped until something moves it or its rail or the
-// cells beyond its ends change.
+/*! \brief The minecarts of a world (decision E-382), the table of their kind in the entity
+    register: adding, finding and removing them within the world's limit, and their movement in a
+    tick: the carts meet each other and the living bodies (QcMinecartCollisions), then every awake
+    cart moves on its own (QcMinecartMotion), and none ends deeper in a cart it overlapped.
+
+    A cart at rest on a level rail (or held at the lower end of a slope) is not stepped until
+    something moves it or its rail or the cells beyond its ends change. */
 class QcMinecartManager
 {
 public:
-    // Carts in the world by default (QcServerLimits::maxMinecarts).
+    /*! Carts in the world by default (QcServerLimits::maxMinecarts). */
     static constexpr int maxCarts = static_cast<int>(QcServerLimits{}.maxMinecarts);
 
-    // What a cart carries, from its item (QcItemDefinition::cartBlock, decision E-386).
+    /*! \brief What a cart carries, from its item (QcItemDefinition::cartBlock, decision E-386). */
     struct Load
     {
-        // The carried block; nothing for a plain cart.
+        /*! The carried block; nothing for a plain cart. */
         std::optional<QcBlockId> block;
-        // Slots of a container cart (its block's), 0 for none.
+        /*! Slots of a container cart (its block's), 0 for none. */
         int slotCount = 0;
-        // A hopper cart (its block is a Signal Hopper).
+        /*! A hopper cart (its block is a Signal Hopper). */
         bool hopper = false;
     };
 
     explicit QcMinecartManager(const QcContentRegistry &content);
 
+    /*! Returns the box of the body of \a cart. */
     static QcAabb bodyOf(const QcMinecart &cart);
 
+    /*! Returns every cart. */
     const QList<QcMinecart> &all() const { return m_carts; }
-    // For moving carts from outside (pistons, riders); never add or remove through it.
+    /*! Returns the carts for moving them from outside (pistons, riders); never add or remove
+        through it. */
     QList<QcMinecart> &editableAll() { return m_carts; }
+    /*! Returns the cart with entity \a id, or null when there is none. */
     QcMinecart *find(quint32 id);
+    /*! Returns the cart with entity \a id, or null when there is none. */
     const QcMinecart *find(quint32 id) const;
-    // The cart the player (entity id) rides; null for none.
+    /*! Returns the cart the \a player (entity id) rides; null for none. */
     QcMinecart *ridden(quint32 player);
+    /*! Returns the cart the \a player (entity id) rides; null for none. */
     const QcMinecart *ridden(quint32 player) const;
-    // False when the limit is reached.
+    /*! Adds \a cart. Returns \c false when the limit is reached. */
     bool add(const QcMinecart &cart);
+    /*! Removes the cart with entity \a id. Returns it, or nothing when there is none. */
     std::optional<QcMinecart> remove(quint32 id);
+    /*! Returns the number of carts the world may hold. */
     qsizetype limit() const { return m_maxCarts; }
+    /*! Sets the number of carts the world may hold to \a limit. */
     void setLimit(qsizetype limit) { m_maxCarts = limit; }
-    // Adds the carts of a chunk that came back (decision E-374); returns how many were left out at the limit.
+    /*! Adds the \a carts of a chunk that came back (decision E-374); returns how many were left out
+        at the limit. */
     qsizetype adopt(const QList<QcMinecart> &carts);
+    /*! Returns the rail tracks of the content's blocks. */
     const QcRails::Table &rails() const { return m_rails; }
+    /*! Returns what \a cart carries, from its item. */
     Load loadOf(const QcMinecart &cart) const { return m_loads.value(cart.item); }
-    // A cart of `item` with empty slots for what it carries (no id, no place yet).
+    /*! Returns a cart of \a item with empty slots for what it carries (no id, no place yet). */
     QcMinecart fromItem(const QString &item) const;
-    // Container carts whose feet lie in `cell` (a detector rail's or a hopper's pickup cell), by id.
+    /*! Returns the container carts whose feet lie in \a cell (a detector rail's or a hopper's
+        pickup cell), by id. */
     QList<const QcMinecart *> containersIn(QcBlockPos cell) const;
 
-    // Pushes between carts and from `bodies` (boxes of living bodies that ride no cart), then moves
-    // every awake cart by `dt` seconds. A cart on a powered activator rail stops pulling (hopper
-    // carts) and is noted for activated(); on an unpowered one it pulls again.
+    /*! Pushes between carts and from \a bodies (boxes of living bodies that ride no cart), then
+        moves every awake cart in \a world by \a dt seconds. A cart on a powered activator rail
+        stops pulling (hopper carts) and is noted for activated(); on an unpowered one it pulls
+        again. */
     void tick(const QcBlockAccess &world, const QList<QcAabb> &bodies, double dt);
-    // The carts (ids) that were on a powered activator rail in the latest tick (their riders get out).
+    /*! Returns the carts (ids) that were on a powered activator rail in the latest tick (their
+        riders get out). */
     const QList<quint32> &activated() const { return m_activated; }
-    // A tick without carts: nothing was activated.
+    /*! A tick without carts: nothing was activated. */
     void forgetTick() { m_activated.clear(); }
 
 private:

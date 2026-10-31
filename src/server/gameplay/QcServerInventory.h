@@ -21,54 +21,67 @@ class QcBlockScreens;
 class QcServerSounds;
 class QcServerState;
 
-// Inventories of the players: moving items between the inventory, the crafting grid, armour slots and
-// an open machine or chest or the input slot of the open stonecutter (decision E-785), throwing and
-// dropping items, armour worn and taken off. Crafting itself is QcServerCrafting's.
+/*! \brief Inventories of the players: moving items between the inventory, the crafting grid, armour
+    slots and an open machine or chest or the input slot of the open stonecutter (decision E-785),
+    throwing and dropping items, armour worn and taken off.
+
+    Crafting itself is QcServerCrafting's. */
 class QcServerInventory
 {
 public:
+    /*! The first slot numbers of the crafting grid, the open machine and the equipment in
+        QcMsg::MoveInventoryItem. \qcshared */
     static constexpr int craftingGridSlot = QcMsg::MoveInventoryItem::craftingGridSlot;
     static constexpr int machineSlot = QcMsg::MoveInventoryItem::machineInputSlot;
     static constexpr int equipmentSlot = QcMsg::MoveInventoryItem::equipmentSlot;
-    // Speed of items thrown by a player.
+    /*! Speed of items thrown by a player. */
     static constexpr double throwSpeed = 6.0;
 
     QcServerInventory(QcServerState &state, QcBlockScreens &screens, QcServerSounds &sounds);
 
-    // Sends the inventory, crafting grid and armour; with a stonecutter open also its slots.
+    /*! Sends \a client its inventory, crafting grid and armour; with a stonecutter open also its
+        slots. */
     void send(QcServerClient &client);
 
+    /*! Carries out \a move of \a client between slots. */
     void moveItem(QcServerClient &client, QcMsg::MoveInventoryItem move);
-    // Shift-click: moves the whole stack to where it belongs (QcQuickMove).
+    /*! Carries out the shift-click \a move of \a client: moves the whole stack to where it
+        belongs (QcQuickMove). */
     void quickMove(QcServerClient &client, QcMsg::QuickMoveItem move);
+    /*! Throws out what \a message of \a client asks for. */
     void dropItem(QcServerClient &client, QcMsg::DropItem message);
-    // Drops everything the player carries (death without keepInventory), the open stonecutter's
-    // input and the open enchanting table's slots included.
+    /*! Drops everything the player \a client carries (death without keepInventory), the open
+        stonecutter's input and the open enchanting table's slots included. */
     void dropAll(QcServerClient &client);
-    // Gives the open stonecutter's input and the open enchanting table's item and lapis (decision
-    // E-864) back to the player like the crafting grid's items (what
-    // does not fit is thrown; catalogue items that do not fit are gone); the screen stays open and
-    // nothing is sent.
+    /*! Gives the open stonecutter's input and the open enchanting table's item and lapis
+        (decision E-864) back to the player \a client like the crafting grid's items (what does
+        not fit is thrown; catalogue items that do not fit are gone); the screen stays open and
+        nothing is sent. */
     void returnScreenInputs(QcServerClient &client);
-    // Closes the screen of a backpack open in the hand (decision E-833), for the player too; no
-    // other screen. The item in the locked slot keeps its contents, nothing else is touched.
+    /*! Closes the screen of a backpack open in the hand of \a client (decision E-833), for the
+        player too; no other screen. The item in the locked slot keeps its contents, nothing else is
+        touched. */
     void closeHeldScreen(QcServerClient &client);
-    // Adds the stack to the inventory; what does not fit is thrown (sending is left to the caller).
+    /*! Adds \a stack to the inventory of \a client; what does not fit is thrown (sending is left
+        to the caller). */
     void giveOrThrow(QcServerClient &client, const QcItemStack &stack);
-    // Spawns the stack as an item entity thrown from the player's eyes along the view direction.
+    /*! Spawns \a stack as an item entity thrown from the eyes of \a client along the view
+        direction. */
     void throwFromPlayer(const QcServerClient &client, const QcItemStack &stack);
-    // Turns one item of the selected stack into `item` (filled bucket, firefly in a bottle); what
-    // does not fit into the inventory is thrown.
+    /*! Turns one item of the selected stack of \a client into \a item (filled bucket, firefly in
+        a bottle); what does not fit into the inventory is thrown. */
     void exchangeHeld(QcServerClient &client, const QString &item);
-    // Changes what the player wears (sending is left to the caller); others that see them get it
-    // with the next sync.
+    /*! Changes what the player \a client wears to \a equipment (sending is left to the caller);
+        others that see them get it with the next sync. */
     void setEquipment(QcServerClient &client, const QcEquipment &equipment);
-    // Right click with armour: puts the held piece on, the one worn there goes into the hand.
+    /*! Right click of \a client with armour: puts the held piece on, the one worn there goes
+        into the hand. */
     void equipHeld(QcServerClient &client);
-    // Takes over armour worn down by a hit (QcArmour::wear) and tells the player and those who see them.
+    /*! Takes over the \a equipment of \a client worn down by a hit (QcArmour::wear; \a broke: a
+        piece broke) and tells the player and those who see them. */
     void equipmentWorn(QcServerClient &client, const QcEquipment &equipment, bool broke);
-    // One use of the held tool (a hoe tilling, flint and steel lighting fire), except in creative
-    // mode; a tool used up breaks. Tells the player.
+    /*! Wears the held tool of \a client by one use (a hoe tilling, flint and steel lighting
+        fire), except in creative mode; a tool used up breaks. Tells the player. */
     void wearHeld(QcServerClient &client);
 
 private:

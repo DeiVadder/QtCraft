@@ -15,37 +15,42 @@
 #include <utility>
 #include <vector>
 
-// The burning fires of the loaded world and when each takes its next step (decision E-392): one
-// entry per fire block, ordered by due tick, so a tick only looks at the fires that are due and costs
-// the same in a world of any size. Kept in step with every block set (QcServerWorld::setBlock): a
-// fire block that goes away loses its entry, a fire block set without one (a command, a player, a
-// chunk whose entries were lost) waits in a list until QcServerFire adopts or puts it out. Entries
-// leave and come back with their chunk (decision E-374), with the ticks left to their step. A fire on
-// eternal ground (a block with "eternalFire") never ages and never spreads; it does not count toward
-// the caps per chunk and world (decision E-394).
+/*! \brief The burning fires of the loaded world and when each takes its next step (decision E-392):
+    one entry per fire block, ordered by due tick, so a tick only looks at the fires that are due
+    and costs the same in a world of any size.
+
+    Kept in step with every block set (QcServerWorld::setBlock): a fire block that goes away
+    loses its entry, a fire block set without one (a command, a player, a chunk whose entries
+    were lost) waits in a list until QcServerFire adopts or puts it out. Entries leave and come
+    back with their chunk (decision E-374), with the ticks left to their step. A fire on eternal
+    ground (a block with "eternalFire") never ages and never spreads; it does not count toward
+    the caps per chunk and world (decision E-394). */
 class QcFireQueue
 {
 public:
-    // Steps a fire lives at most; every fire but an eternal one is out after them. The chances of
-    // the rules take a third of the age, the reference game's age of 0 to 15 (it ages by one in
-    // about three steps there).
+    /*! Steps a fire lives at most; every fire but an eternal one is out after them. The chances
+        of the rules take a third of the age, the reference game's age of 0 to 15 (it ages by one
+        in about three steps there). */
     static constexpr int maxAge = 45;
 
+    /*! \brief A burning fire with an entry in the queue. */
     struct Fire
     {
+        /*! The position of the fire block. */
         QcBlockPos pos;
-        // Where the fire that lit it began (the spark); fire spreads only within a reach of it.
+        /*! Where the fire that lit it began (the spark); fire spreads only within a reach of it. */
         QcBlockPos origin;
-        // Steps taken; a new fire starts with the age of the fire that lit it.
+        /*! Steps taken; a new fire starts with the age of the fire that lit it. */
         quint8 age = 0;
+        /*! The tick of its next step. */
         quint64 due = 0;
-        // Whether it stands on eternal ground: it keeps no place in the caps. The queue keeps it in
-        // step with the block below (noteBlock, restore); add() takes it from the caller.
+        /*! Whether it stands on eternal ground: it keeps no place in the caps. The queue keeps
+            it in step with the block below (noteBlock, restore); add() takes it from the caller. */
         bool eternal = false;
     };
 
-    // A fire as a chunk keeps it while it is not loaded: ticks left to its next step instead of the
-    // tick it was due.
+    /*! \brief A fire as a chunk keeps it while it is not loaded: ticks left to its next step
+        instead of the tick it was due. The fields are those of Fire. \qcfields */
     struct Saved
     {
         QcBlockPos pos;
@@ -56,6 +61,8 @@ public:
         bool operator==(const Saved &) const = default;
     };
 
+    /*! \brief The caps of the fires: per chunk and in the whole world (QcServerLimits); fires on
+        eternal ground do not count. \qcfields */
     struct Limits
     {
         qsizetype perChunk = QcServerLimits{}.firesPerChunk;
@@ -63,67 +70,86 @@ public:
     };
 
     QcFireQueue() = default;
-    // Both indexed by block state id: which states are fire, and on which fire burns for ever.
+    /*! Both indexed by block state id: which states are fire, and on which fire burns for ever. */
     QcFireQueue(std::vector<bool> fire, std::vector<bool> eternalGround);
 
+    /*! Returns whether \a block is a fire state. */
     bool isFire(QcBlockId block) const { return static_cast<std::size_t>(block) < m_fire.size() && m_fire[static_cast<std::size_t>(block)]; }
+    /*! Returns whether fire burns for ever on \a block. */
     bool isEternalGround(QcBlockId block) const
     {
         return static_cast<std::size_t>(block) < m_eternalGround.size() && m_eternalGround[static_cast<std::size_t>(block)];
     }
+    /*! Sets the caps to \a limits. */
     void setLimits(Limits limits) { m_limits = limits; }
+    /*! Returns the caps. */
     const Limits &limits() const { return m_limits; }
 
-    // A block was set (QcServerWorld::setBlock). When the ground of a fire turns eternal, the fire
-    // leaves the caps; when it stops being eternal, the fire takes a place again or, without room,
-    // waits in takeRefused() to be put out.
+    /*! The block at \a pos was set from \a before to \a block (QcServerWorld::setBlock). When
+        the ground of a fire turns eternal, the fire leaves the caps; when it stops being
+        eternal, the fire takes a place again or, without room, waits in takeRefused() to be put
+        out. */
     void noteBlock(QcBlockPos pos, QcBlockId before, QcBlockId block);
-    // A chunk entered the world: its fire blocks without an entry wait for adoption. Only the
-    // sections in `sections` (bit n: section n, QcSectionMarks) are scanned.
+    /*! The \a chunk at \a pos entered the world: its fire blocks without an entry wait for
+        adoption. Only the sections in \a sections (bit n: section n, QcSectionMarks) are
+        scanned. */
     void noteChunk(QcChunkPos pos, const QcChunk &chunk, quint32 sections);
-    // Drops the entries and waiting fires of a chunk that left the world or was generated again.
+    /*! Drops the entries and waiting fires of the chunk at \a pos that left the world or was
+        generated again. */
     void forgetChunk(QcChunkPos pos);
 
-    // Whether one more fire fits into the chunk and the world (fires on eternal ground always fit).
+    /*! Returns whether one more fire fits into \a chunk and the world (fires on eternal ground
+        always fit). */
     bool hasRoom(QcChunkPos chunk) const;
-    // Plans the next step of a fire at `fire.due`; false when the position has an entry already.
+    /*! Plans the next step of \a fire at \c {fire.due}. Returns \c false when the position has
+        an entry already. */
     bool add(const Fire &fire);
-    // Drops the entry of a position whose block is no fire any more.
+    /*! Drops the entry of \a pos, whose block is no fire any more. */
     void drop(QcBlockPos pos);
+    /*! Returns whether \a pos has an entry. */
     bool contains(QcBlockPos pos) const { return m_fires.contains(pos); }
+    /*! Returns the entry of \a pos, if it has one. */
     std::optional<Fire> entry(QcBlockPos pos) const;
-    // Takes the fire due first if it is due at `now` out of the order of steps; it keeps its entry
-    // (and counts for the caps) until its block goes away or plan() gives it its next step.
+    /*! Returns the fire due first and takes it out of the order of steps if it is due at \a now; it
+        keeps its entry (and counts for the caps) until its block goes away or plan() gives it its
+        next step. */
     std::optional<Fire> takeDue(quint64 now);
-    // Plans the next step of a fire that has an entry at `fire.due`, with its new age; false without
-    // one. The entry keeps its own `eternal`.
+    /*! Plans the next step of \a fire, which has an entry, at \c {fire.due}, with its new age.
+        Returns \c false without an entry. The entry keeps its own \c {eternal}. */
     bool plan(const Fire &fire);
+    /*! Returns whether a fire is due at \a now. */
     bool hasDue(quint64 now) const { return !m_due.empty() && m_due.begin()->first.first <= now; }
+    /*! Returns the number of fires due at \a now. */
     qsizetype dueCount(quint64 now) const;
-    // Fire blocks set without an entry since the last call, sorted.
+    /*! Returns the fire blocks set without an entry since the last call, sorted. */
     QList<QcBlockPos> takeUnplanned();
-    // Fire blocks that lost their entry for want of room (a restored fire, a fire whose eternal
-    // ground went away) since the last call, sorted: QcServerFire puts them out. They are never
-    // adopted as new sparks, so a fire cannot come back with a new budget.
+    /*! Returns the fire blocks that lost their entry for want of room (a restored fire, a fire
+        whose eternal ground went away) since the last call, sorted: QcServerFire puts them out.
+        They are never adopted as new sparks, so a fire cannot come back with a new budget. */
     QList<QcBlockPos> takeRefused();
+    /*! Returns the number of fire blocks waiting in takeRefused(). */
     qsizetype refusedCount() const { return m_refused.size(); }
 
-    // The fires of a chunk as it keeps them, in the order of their steps; taken out of the queue or
-    // left in it (a save).
+    /*! Returns the fires of \a chunk as it keeps them, ticks left counted from \a now, in the
+        order of their steps, and takes them out of the queue. */
     QList<Saved> takeChunk(QcChunkPos chunk, quint64 now);
+    /*! Returns the fires of \a chunk as takeChunk() does, ticks left counted from \a now, but
+        leaves them in the queue (a save). */
     QList<Saved> savedOf(QcChunkPos chunk, quint64 now) const;
-    // Puts back the fires of a chunk that entered the world, their steps counted from `now`. Fires
-    // whose block is no fire any more are left out; those that find no room wait in takeRefused(); a
-    // fire block without an entry waits for adoption.
+    /*! Puts back the \a fires of \a chunk, which entered the world, their steps counted from
+        \a now. Fires whose block is no fire any more are left out; those that find no room wait
+        in takeRefused(); a fire block without an entry waits for adoption. */
     void restore(const QList<Saved> &fires, quint64 now, const QcChunk &chunk);
 
-    // Every fire with an entry, eternal ones included.
+    /*! Returns the number of fires with an entry, eternal ones included. */
     qsizetype size() const { return m_fires.size(); }
-    // The fires that count toward the caps: all but those on eternal ground.
+    /*! Returns the fires that count toward the caps: all but those on eternal ground. */
     qsizetype counted() const { return m_fires.size() - m_eternal; }
+    /*! Returns the number of fires in \a chunk that count toward the caps. */
     qsizetype countIn(QcChunkPos chunk) const { return m_perChunk.value(chunk); }
+    /*! Returns the number of fire blocks waiting in takeUnplanned(). */
     qsizetype unplannedCount() const { return m_unplanned.size(); }
-    // Every fire, sorted by position (tests, checks).
+    /*! Returns every fire, sorted by position (tests, checks). */
     QList<Fire> fires() const;
 
 private:

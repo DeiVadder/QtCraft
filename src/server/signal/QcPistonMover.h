@@ -16,29 +16,32 @@ class QcServerSounds;
 class QcSignalTable;
 class QcServerState;
 
-// Carries out piston plans (decision E-337). Blocks move in the world at once, nearest last, each
-// with its chest or furnace contents: the contents are re-keyed to the new cell before the block is
-// set there, so nothing is dropped, copied or lost, also across chunk borders and in a save made in
-// the middle of a move. Bodies in the cells the blocks and the head move into (every body of the
-// entity register QcEntities: players, creatures, items, falling blocks, armour stands) are pushed
-// out along the piston's direction by the server; players get their new position like any other
-// server correction. The clients see the blocks slide (QcMovingBlocks).
+/*! \brief Carries out piston plans (decision E-337).
+
+    Blocks move in the world at once, nearest last, each with its chest or furnace contents: the
+    contents are re-keyed to the new cell before the block is set there, so nothing is dropped,
+    copied or lost, also across chunk borders and in a save made in the middle of a move. Bodies
+    in the cells the blocks and the head move into (every body of the entity register QcEntities:
+    players, creatures, items, falling blocks, armour stands) are pushed out along the piston's
+    direction by the server; players get their new position like any other server correction. The
+    clients see the blocks slide (QcMovingBlocks). */
 class QcPistonMover
 {
 public:
-    // Room left between a pushed body and the block that pushed it.
+    /*! Room left between a pushed body and the block that pushed it. */
     static constexpr double pushGap = 0.01;
 
     QcPistonMover(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds, const QcSignalTable &table);
 
-    // Returns the work done: blocks moved or broken and bodies looked at.
+    /*! Carries out \a plan. Returns the work done: blocks moved or broken and bodies looked at. */
     qsizetype apply(const QcPistonPlan &plan);
-    // Moves the bodies the step's plans pushed: per body the pushes of all plans together (so the
-    // order of the plans does not matter), against what is solid after the moves; a body left
-    // inside a block goes to the nearest free cell (decision E-337).
+    /*! Moves the bodies the step's plans pushed: per body the pushes of all plans together (so
+        the order of the plans does not matter), against what is solid after the moves; a body
+        left inside a block goes to the nearest free cell (decision E-337). */
     void applyPushes();
 
-    // How far a body (world box) must move along `towards` to leave the cells; 0 when it touches none.
+    /*! Returns how far \a body (a world box) must move along \a towards to leave \a cells; 0
+        when it touches none. */
     static double pushDistance(const QcAabb &body, const QList<QcBlockPos> &cells, QcBlockFace towards);
 
 private:

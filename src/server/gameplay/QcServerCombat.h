@@ -13,43 +13,51 @@ class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
 
-// Players attacking creatures (decision E-367): reach and sight, the attack cooldown, the damage of
-// the held item and its wear, the creature's sounds and the loot it drops when it dies. Armour
-// stands take hits in QcServerStands.
+/*! \brief Players attacking creatures (decision E-367): reach and sight, the attack cooldown, the
+    damage of the held item and its wear, the creature's sounds and the loot it drops when it dies.
+
+    Armour stands take hits in QcServerStands. */
 class QcServerCombat
 {
 public:
-    // Melee reach of players, from the eyes to the target's centre.
+    /*! Melee reach of players, from the eyes to the target's centre. */
     static constexpr double attackReach = 4.0;
+    /*! Seconds a player waits between two attacks. */
     static constexpr double playerAttackCooldown = 0.4;
 
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
-    // A blow or a hit on a creature: from where, and the player who dealt it (only then it gives
-    // experience and provokes a neutral creature, decision E-460, and villages and golems remember
-    // them: QcGolemGrudges, decision E-471).
+    /*! \brief A blow or a hit on a creature: from where, and the player who dealt it (only then
+        it gives experience and provokes a neutral creature, decision E-460, and villages and
+        golems remember them: QcGolemGrudges, decision E-471). */
     struct Blow
     {
+        /*! Entity id of the creature hit. */
         quint32 creature = 0;
+        /*! The damage dealt. */
         double damage = 0.0;
+        /*! Where the blow came from. */
         QcVec3 from;
-        // Entity id of the player; 0 for none (a creature's blow or shot).
+        /*! Entity id of the player; 0 for none (a creature's blow or shot). */
         quint32 attacker = 0;
-        // Strength of the push away from `from`; 1 is a blow's (decision E-427).
+        /*! Strength of the push away from \c {from}; 1 is a blow's (decision E-427). */
         double knockback = 1.0;
-        // Times a blow's usual lift (a golem's throws upwards, decision E-471).
+        /*! Times a blow's usual lift (a golem's throws upwards, decision E-471). */
         double lift = 1.0;
     };
 
+    /*! Handles an attack of the player \a client on the entity \a entityId. */
     void attack(QcServerClient &client, quint32 entityId);
-    // Deals `blow` with the creature's sounds, its loot and experience when it dies; false when the
-    // creature was not hurt (unknown, or invulnerable for a moment after the last hit and the blow
-    // no stronger than the strongest of that moment, decision E-429).
+    /*! Deals \a blow in \a state with the creature's \a sounds, its loot and experience when it
+        dies. Returns \c false when the creature was not hurt (unknown, or invulnerable for a
+        moment after the last hit and the blow no stronger than the strongest of that moment,
+        decision E-429). */
     static bool hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow);
-    // Drops the loot of a creature that died at `position`, each drop by its chance (also burn
-    // deaths, QcBodyBurning).
+    /*! Drops the loot \a drops of a creature of \a state that died at \a position, each drop by
+        its chance (also burn deaths, QcBodyBurning). */
     static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position);
-    // Tells every player that the creature named `name` died (decision E-866); nothing for no name.
+    /*! Tells every player of \a state that the creature named \a name died (decision E-866);
+        nothing for no name. */
     static void tellNamedDeath(QcServerState &state, const QString &name);
 
 private:

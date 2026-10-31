@@ -17,36 +17,42 @@
 #include <functional>
 #include <memory>
 
-// Living plants on the server: leaves of trees decay when no trunk is near any more, and planted
-// saplings grow into the tree feature they name. Trunks and leaves are the blocks that the tree
-// features of the content use.
-//
-// Leaves are only checked after a trunk block nearby was removed, a few at a time and with a
-// short random delay, so felling a tree makes its crown fall apart gradually. Saplings grow only
-// while their chunk is loaded; their timers are block entities (QcBlockEntities::Sapling).
+/*! \brief Living plants on the server: leaves of trees decay when no trunk is near any more, and
+    planted saplings grow into the tree feature they name.
+
+    Trunks and leaves are the blocks that the tree features of the content use.
+
+    Leaves are only checked after a trunk block nearby was removed, a few at a time and with a
+    short random delay, so felling a tree makes its crown fall apart gradually. Saplings grow
+    only while their chunk is loaded; their timers are block entities (QcBlockEntities::Sapling). */
 class QcPlantManager
 {
 public:
-    // Leaves stay as long as a trunk block lies within this many blocks along every axis.
+    /*! Leaves stay as long as a trunk block lies within this many blocks along every axis. */
     static constexpr int leafReach = 4;
+    /*! Seconds a leaf without a trunk waits before it decays, drawn between these two.
+        \qcshared */
     static constexpr double minDecayDelay = 0.5;
     static constexpr double maxDecayDelay = 4.0;
-    // Leaves decaying and checked per tick and checks waiting at most, by default (QcServerLimits
-    // leafDecaysPerTick, leafChecksPerTick, leafPendingChecks).
+    /*! Leaves decaying and checked per tick and checks waiting at most, by default
+        (QcServerLimits leafDecaysPerTick, leafChecksPerTick); maxPendingChecks bounds the
+        checks waiting. \qcshared */
     static constexpr int maxDecaysPerTick = static_cast<int>(QcServerLimits{}.leafDecaysPerTick);
     static constexpr int maxChecksPerTick = static_cast<int>(QcServerLimits{}.leafChecksPerTick);
-    // Leaves next to unloaded chunks are checked again after this many seconds.
+    /*! Leaves next to unloaded chunks are checked again after this many seconds. */
     static constexpr double recheckSeconds = 5.0;
+    /*! Leaf checks waiting at most by default (QcServerLimits::leafPendingChecks). */
     static constexpr int maxPendingChecks = static_cast<int>(QcServerLimits{}.leafPendingChecks);
-    // A sapling without room to grow tries again after this many seconds.
+    /*! A sapling without room to grow tries again after this many seconds. */
     static constexpr double retrySeconds = 30.0;
 
-    // Sets a block and tells the clients; returns false when it could not be set.
+    /*! Sets a block and tells the clients; returns false when it could not be set. */
     using SetBlock = std::function<bool(QcBlockPos pos, QcBlockId block)>;
-    // Removes a block as if it broke by itself, dropping its items.
+    /*! Removes a block as if it broke by itself, dropping its items. */
     using BreakBlock = std::function<void(QcBlockPos pos)>;
+    /*! Whether the chunk of a position is loaded. */
     using LoadedFunction = std::function<bool(QcBlockPos pos)>;
-    // What a tick may ask of the world around the plants.
+    /*! \brief What a tick may ask of the world around the plants. \qcfields */
     struct Actions
     {
         LoadedFunction isLoaded;
@@ -56,21 +62,27 @@ public:
 
     QcPlantManager(std::shared_ptr<const QcContentRegistry> content, quint64 seed);
 
+    /*! Returns whether \a block is leaves. */
     bool isLeaves(QcBlockId block) const { return m_leaves.contains(block); }
+    /*! Returns whether \a block is a trunk block that holds leaves. */
     bool isTrunk(QcBlockId block) const { return m_trunks.contains(block); }
-    // Whether `sapling` may stand on `ground`; false for blocks that are not saplings.
+    /*! Returns whether \a sapling may stand on \a ground; false for blocks that are not
+        saplings. */
     bool canPlant(QcBlockId sapling, std::optional<QcBlockId> ground) const;
 
-    // Tell the manager that the block `previous` at `pos` was removed.
+    /*! Tells the manager that the block \a previous at \a pos of \a world was removed. */
     void blockRemoved(QcBlockPos pos, QcBlockId previous, const QcBlockAccess &world);
-    // Starts the growth timer of a sapling block just placed at `pos` (a random time of its
-    // definition) in `entities`.
+    /*! Starts the growth timer of the \a sapling block just placed at \a pos (a random time of its
+        definition) in \a entities. */
     void saplingPlaced(QcBlockEntities &entities, QcBlockPos pos, QcBlockId sapling);
 
-    // Decays leaves and grows the saplings of `entities` in the order they were planted.
+    /*! Decays leaves and grows the saplings of \a entities in the order they were planted, by
+        \a dt seconds in \a world, with \a actions. */
     void tick(const QcBlockAccess &world, QcBlockEntities &entities, double dt, const Actions &actions);
 
+    /*! Returns the number of leaf checks waiting. */
     qsizetype pendingCheckCount() const { return m_pending.size(); }
+    /*! Sets the leaf limits: \a decays and \a checks per tick and \a pending checks waiting. */
     void setLeafLimits(qint64 decays, qint64 checks, qint64 pending);
 
 private:

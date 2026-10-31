@@ -18,55 +18,73 @@
 
 class QcServerState;
 
-// Pending neighbour updates (connections, lost support, liquid flow) of the server, in a queue of
-// player actions and a queue of commands and their cascades. Updates of positions in chunks that are
-// not loaded wait for the chunk.
+/*! \brief Pending neighbour updates (connections, lost support, liquid flow) of the server, in a
+    queue of player actions and a queue of commands and their cascades.
+
+    Updates of positions in chunks that are not loaded wait for the chunk. */
 class QcBlockUpdateQueue
 {
 public:
-    // Updates waiting for their chunk to load at most; loading a chunk also re-checks every block on
-    // its borders that connects or hangs across them, so dropping beyond this loses nothing.
-    // Updates waiting for unloaded chunks by default (QcServerLimits::waitingBlockUpdates).
+    /*! Updates waiting for their chunk to load at most; loading a chunk also re-checks every
+        block on its borders that connects or hangs across them, so dropping beyond this loses
+        nothing. Updates waiting for unloaded chunks by default
+        (QcServerLimits::waitingBlockUpdates). */
     static constexpr qsizetype maxWaitingBlockUpdates = QcServerLimits{}.waitingBlockUpdates;
 
+    /*! \brief A pending neighbour update. */
     struct Update
     {
+        /*! The position to update. */
         QcBlockPos pos;
+        /*! It comes from the command queue. */
         bool fromCommand = false;
     };
 
     explicit QcBlockUpdateQueue(QcServerState &state);
 
-    // While set, new updates go to the command queue (a command runs or a command update cascades).
+    /*! Returns whether new updates go to the command queue (a command runs or a command update
+        cascades). */
     bool commandMode() const { return m_commandMode; }
+    /*! Sets command mode \a on or off. */
     void setCommandMode(bool on) { m_commandMode = on; }
 
+    /*! Queues an update of \a pos. */
     void queue(QcBlockPos pos);
-    // Queues the position itself (unless `self` is false) and its six neighbours.
+    /*! Queues \a pos itself (unless \a self is false) and its six neighbours. */
     void queueNeighbours(QcBlockPos pos, bool self);
-    // The next update to process, those of player actions first; counts it as processed.
+    /*! Returns the next update to process, those of player actions first; counts it as
+        processed. */
     std::optional<Update> takeNext();
-    // Remembers an update of `pos` until `chunk` loads.
+    /*! Remembers an update of \a pos until \a chunk loads. */
     void waitForChunk(QcChunkPos chunk, QcBlockPos pos);
-    // Re-queues waiting updates of chunks that loaded since the last tick and the blocks along their
-    // borders that connect or hang across them.
+    /*! Re-queues waiting updates of chunks that loaded since the last tick and the blocks along
+        their borders that connect or hang across them. */
     void handleLoadedChunks();
-    // Drops every pending and waiting update inside the chunk (it was generated again).
+    /*! Drops every pending and waiting update inside \a chunk (it was generated again). */
     void forgetChunk(QcChunkPos chunk);
-    // Takes every pending and waiting update inside these chunks (they leave the world, decision
-    // E-374), by chunk; they come back with their chunk.
+    /*! Returns every pending and waiting update inside \a chunks by chunk and takes them out
+        (they leave the world, decision E-374); they come back with their chunk. */
     QHash<QcChunkPos, QList<QcBlockPos>> takeChunks(const QSet<QcChunkPos> &chunks);
 
+    /*! Returns the pending updates of player actions in order. */
     QList<QcBlockPos> playerUpdates() const { return {m_playerUpdates.begin(), m_playerUpdates.end()}; }
+    /*! Returns the pending updates of commands in order. */
     QList<QcBlockPos> commandUpdates() const { return {m_commandUpdates.begin(), m_commandUpdates.end()}; }
+    /*! Returns the updates waiting for their chunk to load. */
     QList<QcBlockPos> waitingUpdates() const;
 
-    // Updates of loaded chunks waiting for the next ticks, of player actions and of commands.
+    /*! Returns the number of updates of loaded chunks waiting for the next ticks, of player
+        actions and of commands. */
     qsizetype pendingCount() const { return pendingPlayerCount() + pendingCommandCount(); }
+    /*! Returns the number of pending updates of player actions. */
     qsizetype pendingPlayerCount() const { return static_cast<qsizetype>(m_playerUpdates.size()); }
+    /*! Returns the number of pending updates of commands. */
     qsizetype pendingCommandCount() const { return static_cast<qsizetype>(m_commandUpdates.size()); }
+    /*! Returns the number of updates waiting for their chunk. */
     qsizetype waitingCount() const { return m_waitingCount; }
+    /*! Returns the updates processed since the server started. */
     quint64 processedCount() const { return m_processed; }
+    /*! Returns the waiting updates dropped beyond maxWaitingBlockUpdates. */
     quint64 droppedCount() const { return m_dropped; }
 
 private:

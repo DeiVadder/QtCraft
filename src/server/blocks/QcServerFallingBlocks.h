@@ -15,23 +15,27 @@ class QcServerBlocks;
 class QcServerSounds;
 class QcServerState;
 
-// Falling blocks in the server tick (decisions E-055, E-288): a block that loses its hold becomes a
-// falling-block entity (QcFallingBlockManager, a kind of the entity register) or, when too many fall,
-// drops straight to its resting cell; one that comes to rest becomes its block again (concrete powder
-// hardens in water) or breaks into items when the cell is taken or a body is in it. A block with
-// landing damage (an anvil, decision E-866) hurts the bodies in its cell and may wear on landing.
+/*! \brief Falling blocks in the server tick (decisions E-055, E-288): a block that loses its hold
+    becomes a falling-block entity (QcFallingBlockManager, a kind of the entity register) or, when
+    too many fall, drops straight to its resting cell; one that comes to rest becomes its block
+    again (concrete powder hardens in water) or breaks into items when the cell is taken or a body
+    is in it.
+
+    A block with landing damage (an anvil, decision E-866) hurts the bodies in its cell and may
+    wear on landing. */
 class QcServerFallingBlocks
 {
 public:
     QcServerFallingBlocks(QcServerState &state, QcServerSounds &sounds, QcBlockUpdateQueue &updates, QcServerBlocks &blocks,
                           QcPlayerHealth &health);
 
-    // Lets the block at `pos` fall: as an entity, or straight to its resting cell when too many fall.
-    // A block that would fall into the void or an unloaded chunk while too many fall waits.
+    /*! Lets \a block at \a pos fall: as an entity, or straight to its resting cell when too
+        many fall. A block that would fall into the void or an unloaded chunk while too many fall
+        waits. */
     void start(QcBlockPos pos, QcBlockId block);
-    // Queues the waiting falls again once there is room for falling blocks.
+    /*! Queues the waiting falls again once there is room for falling blocks. */
     void retryWaiting();
-    // Moves the falling blocks and puts those that came to rest.
+    /*! Moves the falling blocks and puts those that came to rest. */
     void tick();
 
 private:

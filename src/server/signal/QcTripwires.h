@@ -12,27 +12,33 @@
 
 #include <optional>
 
-// Tripwire hooks and the tripwire between them (decision E-782), as decisions of a circuit step on
-// the world before it. A hook hangs on the side of a block and its wire leaves it away from that
-// block; two hooks facing each other with nothing but tripwire between them (at most the hook's
-// `wireReach` cells) form a line: both hooks and every wire of it are `attached`, and both hooks are
-// `powered` while any wire of the line is. A wire is powered while something touches it and released
-// when nothing has for its `pulseTicks`. Breaking an attached wire that shears did not disarm sets
-// its hooks off for their `pulseTicks` before they see the broken line.
+/*! \brief Tripwire hooks and the tripwire between them (decision E-782), as decisions of a circuit
+    step on the world before it.
+
+    A hook hangs on the side of a block and its wire leaves it away from that block; two hooks
+    facing each other with nothing but tripwire between them (at most the hook's \c {wireReach}
+    cells) form a line: both hooks and every wire of it are \c {attached}, and both hooks are
+    \c {powered} while any wire of the line is. A wire is powered while something touches it and
+    released when nothing has for its \c {pulseTicks}. Breaking an attached wire that shears did
+    not disarm sets its hooks off for their \c {pulseTicks} before they see the broken line. */
 class QcTripwires
 {
 public:
-    // `touched`: the wires something touches in this tick; `schedule`: the scheduled ticks, where a
-    // hook set off by a torn wire waits for the end of its pulse.
+    /*! \a power: the view of the world; \a touched: the wires something touches in this tick;
+        \a schedule: the scheduled ticks, where a hook set off by a torn wire waits for the end
+        of its pulse. */
     QcTripwires(const QcSignalPower &power, const QSet<QcBlockPos> &touched, const QcSignalSchedule &schedule);
 
-    // A block changed at or next to the hook at `pos`: its line again.
+    /*! A block changed at or next to the hook at \a pos: its line again, into \a plan. */
     void reactHook(QcBlockPos pos, QcCircuitPlan &plan) const;
-    // A block changed at or next to the wire at `pos`: the lines of the hooks it lies between.
+    /*! A block changed at or next to the wire at \a pos: the lines of the hooks it lies between,
+        into \a plan. */
     void reactWire(QcBlockPos pos, QcCircuitPlan &plan) const;
-    // The scheduled tick of the wire `block` at `pos`: released unless something still touches it.
+    /*! The scheduled tick of the wire \a block at \a pos: released unless something still
+        touches it; the decisions go into \a plan. */
     void scheduledWire(QcBlockPos pos, QcBlockId block, QcCircuitPlan &plan) const;
-    // The hook or wire `before` at `pos` is gone: the lines it belonged to again.
+    /*! The hook or wire \a before at \a pos is gone: the lines it belonged to again, into
+        \a plan. */
     void removed(QcBlockPos pos, QcBlockId before, QcCircuitPlan &plan) const;
 
 private:

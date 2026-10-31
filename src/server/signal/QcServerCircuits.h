@@ -21,55 +21,64 @@ class QcServerBlocks;
 class QcServerSounds;
 class QcServerState;
 
-// The Signal Dust circuits of the server: the tick phase "signal" (decision E-335). Each tick it
-// presses plates, then looks at the block changes near circuits since the last step and at the
-// scheduled ticks that are due, in steps: a step decides everything on the world as it is
-// (dust networks in one pass, components, pistons) and applies it together; the changes it makes
-// are the next step. Steps run until the circuits are quiet or the tick's budget is used up; what
-// is left waits for the next tick, so a runaway circuit never stalls the server.
+/*! \brief The Signal Dust circuits of the server: the tick phase "signal" (decision E-335).
+
+    Each tick it presses plates, then looks at the block changes near circuits since the last
+    step and at the scheduled ticks that are due, in steps: a step decides everything on the
+    world as it is (dust networks in one pass, components, pistons) and applies it together; the
+    changes it makes are the next step. Steps run until the circuits are quiet or the tick's
+    budget is used up; what is left waits for the next tick, so a runaway circuit never stalls
+    the server. */
 class QcServerCircuits
 {
 public:
-    // The budget of work per tick (dust looked at, components evaluated, blocks pushed, bodies looked
-    // at), the share kept for due scheduled ticks, the work a change counts for and the least changes
-    // a step takes come from QcServerLimits (decision E-349). A step takes at most what is left
-    // (split in a fixed order of positions); a dust region or a piston's push in it can still cross
-    // it, nothing starts after that.
-    // A signal door that a body kept from moving tries again after this many ticks.
+    /*! The budget of work per tick (dust looked at, components evaluated, blocks pushed, bodies
+        looked at), the share kept for due scheduled ticks, the work a change counts for and the
+        least changes a step takes come from QcServerLimits (decision E-349). A step takes at
+        most what is left (split in a fixed order of positions); a dust region or a piston's push
+        in it can still cross it, nothing starts after that. A signal door that a body kept from
+        moving tries again after this many ticks. */
     static constexpr int openerRetryTicks = 10;
-    // Memories of torches, burnouts and extensions that ran out are dropped this often.
+    /*! Memories of torches, burnouts and extensions that ran out are dropped this often. */
     static constexpr int pruneIntervalTicks = 100;
 
     QcServerCircuits(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks);
 
+    /*! Runs the signal phase of one server tick. */
     void tick();
-    // A player uses the block at `pos`: a lever switches, a button is pressed, a repeater takes its
-    // next delay, a note block its next note (and plays it). False when it is no such block.
+    /*! A player uses the block at \a pos: a lever switches, a button is pressed, a repeater
+        takes its next delay, a note block its next note (and plays it). Returns \c false when it
+        is no such block. */
     bool use(QcBlockPos pos);
-    // A projectile hit the target block at `pos` with `power` (1..15, decision E-768); `stuck` for
-    // projectiles that stick (arrows), which hold it longer. A new hit replaces the strength and
-    // starts the time again. False when it is no target.
+    /*! A projectile hit the target block at \a pos with \a power (1..15, decision E-768);
+        \a stuck for projectiles that stick (arrows), which hold it longer. A new hit replaces
+        the strength and starts the time again. Returns \c false when it is no target. */
     bool hitTarget(QcBlockPos pos, int power, bool stuck);
-    // The strength of a hit at `point` (world space) on the face `face` of the block at `pos`: 15 in
-    // the middle, falling evenly to 1 at the edges (the larger distance along the face's two axes,
-    // as in the reference).
+    /*! Returns the strength of a hit at \a point (world space) on the face \a face of the block
+        at \a pos: 15 in the middle, falling evenly to 1 at the edges (the larger distance along
+        the face's two axes, as in the reference). */
     static int targetStrength(QcBlockPos pos, QcBlockFace face, const QcVec3 &point);
-    // Plays the note of the note block at `pos` (decision E-767): its instrument comes from the block
-    // below, its pitch from the state `note`; nothing sounds while a block lies on top or while the
-    // note budget (QcNoteBudget) holds the block back.
+    /*! Plays the note of the note block at \a pos (decision E-767): its instrument comes from
+        the block below, its pitch from the state \c {note}; nothing sounds while a block lies on
+        top or while the note budget (QcNoteBudget) holds the block back. */
     void playNote(QcBlockPos pos);
-    // Makes the circuits around `pos` look at it in the next step, as if it had just been placed
-    // (world setup, chunks generated again).
+    /*! Makes the circuits around \a pos look at it in the next step, as if it had just been
+        placed (world setup, chunks generated again). */
     void noteBlock(QcBlockPos pos);
 
+    /*! Returns the signal states of the content's blocks. */
     const QcSignalTable &table() const { return m_table; }
+    /*! Returns the Signal Hoppers. */
     const QcServerHoppers &hoppers() const { return m_hoppers; }
-    // How a dispenser puts armour on a player (the server's inventory part does it).
+    /*! Sets \a equip, how a dispenser puts armour on a player (the server's inventory part does
+        it). */
     void setEquipPlayer(QcDispenserActions::EquipPlayer equip) { m_dispensers.setEquipPlayer(std::move(equip)); }
+    /*! Sets \a ignite, how a dispenser lights fire with flint and steel. */
     void setIgnite(QcDispenserActions::Ignite ignite) { m_dispensers.setIgnite(std::move(ignite)); }
-    // How a powered igniter lights its explosive (QcServerExplosions::light, decision E-601).
+    /*! Sets \a light, how a powered igniter lights its explosive (QcServerExplosions::light,
+        decision E-601). */
     void setLight(QcDispenserActions::Ignite light) { m_light = std::move(light); }
-    // Work done in the latest tick (debug display).
+    /*! Returns the work done in the latest tick (debug display). */
     qsizetype lastTickWork() const { return m_lastWork; }
 
 private:

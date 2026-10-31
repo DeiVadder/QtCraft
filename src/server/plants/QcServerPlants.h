@@ -17,54 +17,59 @@ class QcServerSounds;
 struct QcServerClient;
 class QcServerState;
 
-// Plants in the server tick: growing saplings and decaying leaves (QcPlantManager), random ticks of
-// plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth), items that plant
-// themselves (despawning saplings, seeds lying on free soil; decision E-294), and players tilling
-// soil with a hoe (decision E-290), making paths with a shovel (decision E-406), bone meal on crops
-// and saplings (decision E-426) and carving pumpkins with shears (decision E-472).
+/*! \brief Plants in the server tick: growing saplings and decaying leaves (QcPlantManager),
+    random ticks of plants that grow upwards like sugar cane, of crops and soil (QcPlantGrowth),
+    items that plant themselves (despawning saplings, seeds lying on free soil; decision E-294),
+    and players tilling soil with a hoe (decision E-290), making paths with a shovel (decision
+    E-406), bone meal on crops and saplings (decision E-426) and carving pumpkins with shears
+    (decision E-472). */
 class QcServerPlants
 {
 public:
-    // Seeds (items placing a crop with `plantChance`) plant themselves once every this many ticks
-    // with that chance when they lie on soil with air above (decision E-294).
+    /*! Seeds (items placing a crop with \c {plantChance}) plant themselves once every this many
+        ticks with that chance when they lie on soil with air above (decision E-294). */
     static constexpr int seedCheckTicks = 20;
-    // Stages bone meal makes a crop grow, drawn evenly (the reference's 2 to 5).
+    /*! Stages bone meal makes a crop grow, drawn evenly (the reference's 2 to 5). \qcshared */
     static constexpr int fertilizeStagesMin = 2;
     static constexpr int fertilizeStagesMax = 5;
 
     QcServerPlants(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory);
 
-    // Growing saplings, decaying leaves and random ticks (unless the game rule randomTicks is off).
+    /*! Growing saplings, decaying leaves and random ticks (unless the game rule randomTicks is
+        off). */
     void tick();
-    // Items in the item phase of a tick: despawning saplings and, every seedCheckTicks, resting
-    // seeds plant themselves.
+    /*! Items in the item phase of a tick: \a despawned saplings and, every seedCheckTicks, resting
+        seeds plant themselves. */
     void plantItems(const QList<QcItemEntity> &despawned);
-    // Tills the clicked block when the held item `tills` and the block has `tillsInto`, on any face
-    // but the bottom, with air above, within reach. False when the click is no tilling (then other
-    // uses of the item may follow).
+    /*! Tills the block \a target that \a client clicked on \a face when the \a held item \c {tills}
+        and the block has \c {tillsInto}, on any face but the bottom, with air above, within reach.
+        Returns \c false when the click is no tilling (then other uses of the item may follow). */
     bool till(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
-    // Flattens the clicked block into a path when the held item `flattens` and the block has
-    // `flattensInto` (decision E-406): only on its top face, with air above, within reach. False when
-    // the click is no flattening.
+    /*! Flattens the block \a target that \a client clicked on \a face into a path when the \a held
+        item \c {flattens} and the block has \c {flattensInto} (decision E-406): only on its top
+        face, with air above, within reach. Returns \c false when the click is no flattening. */
     bool flatten(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
-    // Carves the clicked block when the held item `carves` (shears) and the block has `carvesInto` (a
-    // pumpkin, decision E-472): the carved block faces the clicked side (on the top or bottom: the
-    // player), its `carveDrop` falls out of the clicked face and the shears wear by one. False when
-    // the click is no carving.
+    /*! Carves the block \a target that \a client clicked on \a face when the \a held item
+        \c {carves} (shears) and the block has \c {carvesInto} (a pumpkin, decision E-472): the
+        carved block faces the clicked side (on the top or bottom: the player), its \c {carveDrop}
+        falls out of the clicked face and the shears wear by one. Returns \c false when the click is
+        no carving. */
     bool carve(QcServerClient &client, QcBlockPos target, QcBlockFace face, const QcItemDefinition *held);
-    // Strips the clicked block when the held item `strips` (an axe) and the block has `strippedInto`
-    // (a log, decision E-753): the new block keeps the state properties both have (the axis), drops
-    // nothing, and the axe wears by one. False when the click is no stripping.
+    /*! Strips the block \a target that \a client clicked when the \a held item \c {strips} (an
+        axe) and the block has \c {strippedInto} (a log, decision E-753): the new block keeps the
+        state properties both have (the axis), drops nothing, and the axe wears by one. Returns
+        \c false when the click is no stripping. */
     bool strip(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
-    // Bone meal (an item that `fertilizes`, decision E-426) on the clicked block within reach: a crop
-    // that is not ripe grows fertilizeStagesMin..Max stages at once, a sapling grows into its tree on
-    // the next tick with QcItemDefinition::fertilizeSaplingChance, a block that `growsVegetation`
-    // with air above grows the biome's grass and flowers around it (QcVegetationSpread, decision
-    // E-814); each takes one item (not in creative mode). False for other blocks (then other uses of
-    // the item may follow).
+    /*! Uses the \a held bone meal (an item that \c {fertilizes}, decision E-426) of \a client on
+        the clicked block \a target within reach: a crop that is not ripe grows
+        fertilizeStagesMin..Max stages at once, a sapling grows into its tree on the next tick
+        with QcItemDefinition::fertilizeSaplingChance, a block that \c {growsVegetation} with air
+        above grows the biome's grass and flowers around it (QcVegetationSpread, decision E-814);
+        each takes one item (not in creative mode). Returns \c false for other blocks (then other
+        uses of the item may follow). */
     bool fertilize(QcServerClient &client, QcBlockPos target, const QcItemDefinition *held);
-    // Grows the crop at `pos` by up to `stages` stages (not beyond ripe); false when it is no crop
-    // or ripe already.
+    /*! Grows the crop at \a pos by up to \a stages stages (not beyond ripe). Returns \c false
+        when it is no crop or ripe already. */
     bool growCrop(QcBlockPos pos, int stages);
 
 private:

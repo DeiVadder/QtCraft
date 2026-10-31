@@ -10,59 +10,68 @@
 
 #include <vector>
 
-// One-pass recalculation of Signal Dust (decision E-335). Dust is joined by links: flat to the dust
-// next to it, up the side of a block when nothing opaque lies on the lower dust, down the side of a
-// block that is not opaque; the signal only goes down such a link from dust on a conductor.
-// Strength falls by one per link, so a change can only reach dust within 15 links of where it
-// happened: that part of the network is the region recomputed, the dust just outside keeps its
-// strength and feeds the region like a source. The region's strengths come from
-// one breadth-first pass from the strongest inputs down (each dust and link looked at once), its
-// connections (dot, line, cross, slopes) in the same pass, and only dust whose state really changes
-// is reported. A long wire therefore costs the same as a short one, and the result does not depend
-// on where the wire lies, how it is turned or in which order its dust is visited.
+/*! \brief One-pass recalculation of Signal Dust (decision E-335).
+
+    Dust is joined by links: flat to the dust next to it, up the side of a block when nothing
+    opaque lies on the lower dust, down the side of a block that is not opaque; the signal only
+    goes down such a link from dust on a conductor. Strength falls by one per link, so a change
+    can only reach dust within 15 links of where it happened: that part of the network is the
+    region recomputed, the dust just outside keeps its strength and feeds the region like a
+    source. The region's strengths come from one breadth-first pass from the strongest inputs
+    down (each dust and link looked at once), its connections (dot, line, cross, slopes) in the
+    same pass, and only dust whose state really changes is reported. A long wire therefore costs
+    the same as a short one, and the result does not depend on where the wire lies, how it is
+    turned or in which order its dust is visited. */
 class QcDustNetwork
 {
 public:
-    // Dust per region at most; beyond, the rest of a pathological region keeps its old state.
+    /*! Dust per region at most; beyond, the rest of a pathological region keeps its old state. */
     static constexpr int maxNodes = 65536;
 
+    /*! \brief The new \c {state} of the dust at \c {pos}. \qcfields */
     struct Change
     {
         QcBlockPos pos;
         QcBlockId state = qcAirBlockId;
     };
 
+    /*! \brief What a recomputation found. */
     struct Result
     {
+        /*! The dust whose state changes. */
         QList<Change> changes;
-        // Dust looked at (the work done).
+        /*! Dust looked at (the work done). */
         qsizetype visited = 0;
-        // Parts of the region (dust linked to each other) that reach a chunk that is not loaded: they
-        // were not recomputed and wait for that chunk, with the seeds among them. Parts not linked to
-        // them are recomputed as usual (they could not change each other).
+        /*! \brief Parts of the region (dust linked to each other) that reach a chunk that is not
+            loaded: they were not recomputed and wait for that chunk, with the seeds among them.
+
+            Parts not linked to them are recomputed as usual (they could not change each other).
+            \c {chunk} is the chunk they wait for. \qcfields */
         struct Blocked
         {
             QcChunkPos chunk;
             QList<QcBlockPos> seeds;
         };
+        /*! The parts that wait for a chunk. */
         QList<Blocked> blocked;
     };
 
     explicit QcDustNetwork(const QcSignalPower &power);
 
-    // The sides the dust at `pos` shows: flat to dust and to sources and repeaters lined up with it,
-    // up to dust on the neighbouring block, down to dust beside a block that is not opaque; a single
-    // connection becomes a line through the dust.
+    /*! Returns the sides the dust at \a pos shows: flat to dust and to sources and repeaters
+        lined up with it, up to dust on the neighbouring block, down to dust beside a block that
+        is not opaque; a single connection becomes a line through the dust. */
     std::array<QcDustSide, 4> sidesOf(QcBlockPos pos) const;
-    // The dust the dust at `pos` is linked to.
+    /*! Returns the dust the dust at \a pos is linked to. */
     QList<QcBlockPos> links(QcBlockPos pos) const;
-    // Whether the dust at `from` gives its strength to the linked dust at `to`. A link down the side
-    // of a block only carries the signal down when the upper dust lies on a conductor; dust on glass
-    // or an upper slab passes it up a stair but not down (decision E-887, like the role model).
+    /*! Returns whether the dust at \a from gives its strength to the linked dust at \a to. A
+        link down the side of a block only carries the signal down when the upper dust lies on a
+        conductor; dust on glass or an upper slab passes it up a stair but not down (decision
+        E-887, like the role model). */
     bool feeds(QcBlockPos from, QcBlockPos to) const;
 
-    // Recomputes the dust within 15 links of the dust among `seeds` (other positions are ignored):
-    // the dust that changes and the parts that wait for a chunk.
+    /*! Recomputes the dust within 15 links of the dust among \a seeds (other positions are
+        ignored). Returns the dust that changes and the parts that wait for a chunk. */
     [[nodiscard]] Result recompute(const std::vector<QcBlockPos> &seeds) const;
 
 private:

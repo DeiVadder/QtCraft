@@ -27,17 +27,19 @@ struct QcServerWorkstations;
 struct QcServerClient;
 class QcServerState;
 
-// What players do to the world: mining blocks, using blocks and items (opening machines, toggling
-// doors, switching levers, tilling, carving, lighting fire, placing blocks and building golems from
-// them, scooping liquids) and using creatures (feeding, repairing golems, catching).
+/*! \brief What players do to the world: mining blocks, using blocks and items (opening machines,
+    toggling doors, switching levers, tilling, carving, lighting fire, placing blocks and
+    building golems from them, scooping liquids) and using creatures (feeding, repairing golems,
+    catching). */
 class QcServerInteraction
 {
 public:
-    // Ticks of slack (of 50 ms) when checking a client's claim that a block is broken (network
-    // jitter); at a slower tick rate the latest tick's real time counts as slack too, since the
-    // players' time only moves with the ticks (decision E-249).
+    /*! Ticks of slack (of 50 ms) when checking a client's claim that a block is broken (network
+        jitter); at a slower tick rate the latest tick's real time counts as slack too, since the
+        players' time only moves with the ticks (decision E-249). */
     static constexpr int miningToleranceTicks = 2;
 
+    /*! \brief The parts of the server an interaction may hand on to. \qcfields */
     struct Parts
     {
         QcServerSounds &sounds;
@@ -60,11 +62,14 @@ public:
 
     QcServerInteraction(QcServerState &state, const Parts &parts);
 
+    /*! Handles the claim of \a client that it broke the block at \a pos. */
     void finishMining(QcServerClient &client, QcBlockPos pos);
+    /*! Handles a use of the held item of \a client (\a message). */
     void useItem(QcServerClient &client, const QcMsg::UseItem &message);
+    /*! Handles a use of \a client on the entity \a entityId. */
     void useEntity(QcServerClient &client, quint32 entityId);
-    // While a player mines, the arm swings again every swing length (QcSwingSpeed of his status
-    // effects, decision E-881; simulated ticks only), in step with his own client's loop.
+    /*! While a player mines, the arm swings again every swing length (QcSwingSpeed of their status
+        effects, decision E-881; simulated ticks only), in step with their own client's loop. */
     void swingWhileMining();
 
 private:

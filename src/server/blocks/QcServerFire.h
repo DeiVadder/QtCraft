@@ -12,54 +12,65 @@ class QcServerBlocks;
 class QcServerSounds;
 class QcServerState;
 
-// Fire in the server tick (decision E-392). The fires due in QcFireQueue take a step each, at most
-// QcServerLimits::fireStepsPerTick (the rest waits for the next tick): a fire that can no longer
-// stand goes out, an eternal one (on a block with "eternalFire", outside the caps, decision E-394)
-// only waits for its next step; any
-// other fire ages by one and goes out at QcFireQueue::maxAge, or earlier without a flammable block
-// next to it. While fire spreads (game rule fireSpread and limit fireSpreadRadius above 0), a step
-// may burn away the flammable blocks next to the fire (they become fire or air) and light the air
-// around it next to flammable blocks; only in loaded chunks, within fireSpreadRadius of the spark
-// the fire came from, and while the chunk and the world have room for more fires. New fires start
-// with the age of the fire that lit them, so a line of fires ends after QcFireQueue::maxAge steps
-// whatever it finds. Rain (setRainCheck, decision E-396) puts out the fires it falls on, by a chance
-// per step, and no new fire catches where it falls.
+/*! \brief Fire in the server tick (decision E-392).
+
+    The fires due in QcFireQueue take a step each, at most QcServerLimits::fireStepsPerTick (the
+    rest waits for the next tick): a fire that can no longer stand goes out, an eternal one (on a
+    block with "eternalFire", outside the caps, decision E-394) only waits for its next step; any
+    other fire ages by one and goes out at QcFireQueue::maxAge, or earlier without a flammable
+    block next to it. While fire spreads (game rule fireSpread and limit fireSpreadRadius above
+    0), a step may burn away the flammable blocks next to the fire (they become fire or air) and
+    light the air around it next to flammable blocks; only in loaded chunks, within
+    fireSpreadRadius of the spark the fire came from, and while the chunk and the world have room
+    for more fires. New fires start with the age of the fire that lit them, so a line of fires
+    ends after QcFireQueue::maxAge steps whatever it finds. Rain (setRainCheck, decision E-396)
+    puts out the fires it falls on, by a chance per step, and no new fire catches where it falls. */
 class QcServerFire
 {
 public:
-    // Counts since the server started (tests, measurements).
+    /*! \brief Counts since the server started (tests, measurements). */
     struct Numbers
     {
+        /*! Steps fires took. */
         quint64 steps = 0;
+        /*! New fires lit. */
         quint64 lit = 0;
+        /*! Blocks burnt away. */
         quint64 burnt = 0;
+        /*! Fires that went out or were put out. */
         quint64 putOut = 0;
-        // New fires refused because their chunk or the world had no room.
+        /*! New fires refused because their chunk or the world had no room. */
         quint64 refused = 0;
-        // Fires put out by rain (also counted in putOut).
+        /*! Fires put out by rain (also counted in putOut). */
         quint64 rainedOut = 0;
     };
 
-    // Whether rain falls on a position (weather, decision E-396); in each step of a fire it falls on,
-    // rain puts the fire out with a chance that grows with the fire's age (eternal fires excepted).
+    /*! Whether rain falls on a position (weather, decision E-396); in each step of a fire it
+        falls on, rain puts the fire out with a chance that grows with the fire's age (eternal
+        fires excepted). */
     using RainCheck = std::function<bool(QcBlockPos pos)>;
-    // Lights the explosive at a position (QcServerExplosions::light); false when there is none.
+    /*! Lights the explosive at a position (QcServerExplosions::light); false when there is none. */
     using Light = std::function<bool(QcBlockPos pos)>;
 
     QcServerFire(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds);
 
-    // Adopts the fire blocks set without an entry, then runs the due steps within the budget.
+    /*! Adopts the fire blocks set without an entry, then runs the due steps within the budget. */
     void tick();
-    // Lights `fire` (the content's default fire when unset) at `pos` as a new spark: only in air of
-    // a loaded chunk where fire may stand and while there is room. For ignition sources.
+    /*! Lights \a fire (the content's default fire when unset) at \a pos as a new spark: only in
+        air of a loaded chunk where fire may stand and while there is room. For ignition sources.
+        Returns whether it lit. */
     bool ignite(QcBlockPos pos, std::optional<QcBlockId> fire = std::nullopt);
+    /*! Sets the \a check of where rain falls. */
     void setRainCheck(RainCheck check) { m_rainsOn = std::move(check); }
-    // A flammable explosive that a fire would burn away is lit instead.
+    /*! Sets \a light, which lights a flammable explosive that a fire would burn away instead. */
     void setLight(Light light) { m_light = std::move(light); }
 
-    // Whether fire spreads now: the game rule fireSpread and a fireSpreadRadius above 0.
+    /*! Returns whether fire spreads now: the game rule fireSpread and a fireSpreadRadius above
+        0. */
     bool spreads() const;
+    /*! Returns the counts since the server started. */
     const Numbers &numbers() const { return m_numbers; }
+    /*! Returns the fire traits of the content's block states. */
     const QcFireRules::Table &table() const { return m_table; }
 
 private:

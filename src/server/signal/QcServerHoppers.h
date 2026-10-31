@@ -16,25 +16,29 @@
 class QcSignalTable;
 class QcServerState;
 
-// The Signal Hoppers of the server (decision E-344), run at the end of the signal phase. Only awake
-// hoppers whose cooldown has ended and that no power locks act, in two simultaneous steps on the
-// world as it is: first every hopper pushes one item from its first slot that fits into the
-// container it faces, then every hopper pulls one item from the container above it or, when there
-// is none and the block above does not fill its cell with collision, one item entity (as much of
-// its stack as fits) lying in its bowl or the space above. A hopper that moved something rests
-// for the cooldown; one that found nothing sleeps until a block next to it changes, a container next
-// to it changes its contents or an item moves into its pickup area.
+/*! \brief The Signal Hoppers of the server (decision E-344), run at the end of the signal phase.
+
+    Only awake hoppers whose cooldown has ended and that no power locks act, in two simultaneous
+    steps on the world as it is: first every hopper pushes one item from its first slot that fits
+    into the container it faces, then every hopper pulls one item from the container above it or,
+    when there is none and the block above does not fill its cell with collision, one item entity
+    (as much of its stack as fits) lying in its bowl or the space above. A hopper that moved
+    something rests for the cooldown; one that found nothing sleeps until a block next to it
+    changes, a container next to it changes its contents or an item moves into its pickup area. */
 class QcServerHoppers
 {
 public:
-    // The pickup area starts at the bottom of the bowl (in the hopper's cell) and covers the cell above.
+    /*! The pickup area starts at the bottom of the bowl (in the hopper's cell) and covers the
+        cell above. */
     static constexpr double bowlHeight = 10.0 / 16.0;
-    // A hopper next to an unloaded chunk looks again after this many ticks.
+    /*! A hopper next to an unloaded chunk looks again after this many ticks. */
     static constexpr int unloadedRetryTicks = 20;
 
+    /*! \brief What the hoppers did in the latest tick. */
     struct Stats
     {
-        // Hoppers woken, acting, searching item entities and moving something in the latest tick.
+        /*! Hoppers woken, acting, searching item entities and moving something in the latest
+            tick. \qcshared */
         qsizetype woken = 0;
         qsizetype acting = 0;
         qsizetype searches = 0;
@@ -43,10 +47,12 @@ public:
 
     QcServerHoppers(QcServerState &state, const QcSignalTable &table);
 
+    /*! Runs the hopper steps of one server tick. */
     void tick();
+    /*! Returns what the hoppers did in the latest tick. */
     const Stats &lastTick() const { return m_stats; }
-    // Whether the collision of block state `block` fills its whole cell (then no item lies in the
-    // space above a hopper under it, and it does not search).
+    /*! Returns whether the collision of block state \a block fills its whole cell (then no item
+        lies in the space above a hopper under it, and it does not search). */
     bool fillsCell(QcBlockId block) const;
 
 private:

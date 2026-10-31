@@ -14,29 +14,29 @@ class QcServerWorld;
 struct QcServerClient;
 class QcServerState;
 
-// Cake and campfires in the server (decisions E-772, E-773).
-//
-// Using cake eats one bite of it when the player is hungry; the last bite removes it. Using a lit
-// campfire with an item it can cook puts one item on it (QcCampfires); a shovel or a bucket of a liquid
-// that does not burn puts it out (its block becomes `extinguishesInto`, the items on it drop), and an
-// unlit one is lit again by flint and steel, a dispenser or fire (light()). In the tick the items
-// cook for the campfire's time and drop beside it when done, and clients that have the chunk hear
-// what lies on each campfire (QcMsg::CampfireDisplay).
+/*! \brief Cake and campfires in the server (decisions E-772, E-773).
+
+    Using cake eats one bite of it when the player is hungry; the last bite removes it. Using a
+    lit campfire with an item it can cook puts one item on it (QcCampfires); a shovel or a bucket
+    of a liquid that does not burn puts it out (its block becomes \c {extinguishesInto}, the
+    items on it drop), and an unlit one is lit again by flint and steel, a dispenser or fire
+    (light()). In the tick the items cook for the campfire's time and drop beside it when done,
+    and clients that have the chunk hear what lies on each campfire (QcMsg::CampfireDisplay). */
 class QcServerKitchen
 {
 public:
     QcServerKitchen(QcServerState &state, QcServerSounds &sounds, QcServerBlocks &blocks, QcServerInventory &inventory,
                     QcPlayerHealth &health);
 
-    // A use of the held item on the block at `pos` (not sneaking, within reach): false when it is none
-    // of the uses above, so the item acts as usual.
+    /*! Handles a use of the held item of \a client on the block at \a pos (not sneaking, within
+        reach). Returns \c false when it is none of the uses above, so the item acts as usual. */
     bool use(QcServerClient &client, QcBlockPos pos);
-    // Lights the unlit campfire at `pos`; false when there is none.
+    /*! Lights the unlit campfire at \a pos. Returns \c false when there is none. */
     bool light(QcBlockPos pos);
-    // Cooks the items on the campfires and tells the clients what changed.
+    /*! Cooks the items on the campfires and tells the clients what changed. */
     void tick();
 
-    // What lies on the campfire at `pos`.
+    /*! Returns what lies on the campfire at \a pos of \a world. */
     [[nodiscard]] static QcMsg::CampfireDisplay displayOf(const QcServerWorld &world, QcBlockPos pos);
 
 private:

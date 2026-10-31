@@ -9,37 +9,44 @@
 #include <optional>
 #include <vector>
 
-// The rules of fire (decision E-392), shared by QcServerFire and the tests: where fire may stand,
-// how readily it catches on near flammable blocks and its deterministic dice.
+/*! \brief The rules of fire (decision E-392), shared by QcServerFire and the tests: where fire
+    may stand, how readily it catches on near flammable blocks and its deterministic dice. */
 namespace QcFireRules {
 
-// What fire needs to know about a block state, looked up once per content.
+/*! \brief What fire needs to know about a block state, looked up once per content. */
 struct Traits
 {
+    /*! The state is a fire block. */
     bool fire = false;
-    // Fire on top of it never goes out and never spreads.
+    /*! Fire on top of it never goes out and never spreads. */
     bool eternal = false;
-    // A solid block with a full top face: fire may stand on it without fuel next to it.
+    /*! A solid block with a full top face: fire may stand on it without fuel next to it. */
     bool solidTop = false;
+    /*! How readily fire near it catches on in the air next to it and how readily fire next to it
+        burns it away, 0 to 100 (QcFireDefinition). \qcshared */
     quint8 ignite = 0;
     quint8 burn = 0;
-    // Chance in 100 that a block update of it lights a flammable neighbourhood (lava, decision E-393).
+    /*! Chance in 100 that a block update of it lights a flammable neighbourhood (lava, decision
+        E-393). */
     quint8 sparks = 0;
 
+    /*! Returns whether fire can catch on or burn it. */
     bool flammable() const { return ignite > 0 || burn > 0; }
 };
 
+/*! \brief The Traits of every block state of a content, indexed by block state id. */
 class Table
 {
 public:
     explicit Table(const QcContentRegistry &content);
 
+    /*! Returns the traits of \a block; plain traits for an unknown id. */
     const Traits &of(QcBlockId block) const
     {
         static const Traits none;
         return static_cast<std::size_t>(block) < m_traits.size() ? m_traits[static_cast<std::size_t>(block)] : none;
     }
-    // The fire block a spark lights (QcContentRegistry::defaultFire).
+    /*! Returns the fire block a spark lights (QcContentRegistry::defaultFire). */
     std::optional<QcBlockId> defaultFire() const { return m_defaultFire; }
 
 private:
@@ -47,41 +54,51 @@ private:
     std::optional<QcBlockId> m_defaultFire;
 };
 
-// Ticks between two steps of a fire: 30 to 39, like the reference game.
+/*! Ticks between two steps of a fire: \c {minStepTicks} plus less than \c {stepTicksSpread},
+    30 to 39 like the reference game. \qcshared */
 inline constexpr int minStepTicks = 30;
 inline constexpr int stepTicksSpread = 10;
-// Steps a fire takes for one unit of the reference game's age (which grows by one in about three steps there).
+/*! Steps a fire takes for one unit of the reference game's age (which grows by one in about
+    three steps there). */
 inline constexpr int stepsPerChanceAge = 3;
-// A fire without a flammable block next to it goes out once older than this (the reference's 3).
+/*! A fire without a flammable block next to it goes out once older than this (the reference's
+    3). */
 inline constexpr int ageWithoutFuel = 3 * stepsPerChanceAge;
 
-// The reference game's age (0 to 15) that the chances take, of a fire's age in steps.
+/*! Returns the reference game's age (0 to 15) that the chances take, of a fire's \a age in
+    steps. */
 constexpr int chanceAge(int age)
 {
     return age / stepsPerChanceAge;
 }
 
-// Whether fire may stand at `pos`: a solid top face below or a flammable block next to it. Cells
-// in chunks that are not loaded count as neither.
+/*! Returns whether fire may stand at \a pos of \a world by the traits of \a table: a solid top
+    face below or a flammable block next to it. Cells in chunks that are not loaded count as
+    neither. */
 bool canStay(const QcBlockAccess &world, const Table &table, QcBlockPos pos);
-// Whether a loaded block next to `pos` is flammable.
+/*! Returns whether a loaded block of \a world next to \a pos is flammable by the traits of
+    \a table. */
 bool hasFuelNear(const QcBlockAccess &world, const Table &table, QcBlockPos pos);
-// The highest `ignite` of the loaded blocks next to `pos`; 0 when none of them burns.
+/*! Returns the highest \c {ignite} (of \a table) of the loaded blocks of \a world next to \a pos; 0
+    when none of them burns. */
 int igniteNear(const QcBlockAccess &world, const Table &table, QcBlockPos pos);
-// Whether `pos` lies within `reach` blocks of `origin` along every axis.
+/*! Returns whether \a pos lies within \a reach blocks of \a origin along every axis. */
 bool withinReach(QcBlockPos origin, QcBlockPos pos, int reach);
-// The dice of one step of a fire: drawn from the world's seed, the fire's position and its age, not
-// from the tick, so the same in every run, independent of the order fires take their steps in, and
-// the same after the fire's chunk was away for a while (decision E-374).
+/*! \brief The dice of one step of a fire: drawn from the world's seed, the fire's position and
+    its age, not from the tick, so the same in every run, independent of the order fires take
+    their steps in, and the same after the fire's chunk was away for a while (decision E-374). */
 struct Dice
 {
+    /*! The world's seed. */
     quint64 seed = 0;
+    /*! The position of the fire. */
     QcBlockPos fire;
+    /*! The fire's age in steps. */
     int age = 0;
 
-    // A number in [0, bound) for a decision (`salt`) about the cell `target`.
+    /*! Returns a number in [0, \a bound) for a decision (\a salt) about the cell \a target. */
     quint32 roll(QcBlockPos target, quint32 salt, quint32 bound) const;
-    // The tick of the fire's next step after a step at `now`.
+    /*! Returns the tick of the fire's next step after a step at \a now. */
     quint64 nextStep(quint64 now) const;
 };
 

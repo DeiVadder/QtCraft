@@ -7,20 +7,25 @@
 
 #include <QHash>
 
-// Which notes of note blocks may sound (decision E-767), so that a fast clock driving many note
-// blocks cannot flood the clients with sounds: a block plays at most once every minIntervalTicks
-// (several notes of one block in one tick become one), and all blocks together at most
-// maxPerTick notes a tick. A note over either limit is dropped (the block still changes state).
+/*! \brief Which notes of note blocks may sound (decision E-767), so that a fast clock driving many
+    note blocks cannot flood the clients with sounds: a block plays at most once every
+    minIntervalTicks (several notes of one block in one tick become one), and all blocks together at
+    most maxPerTick notes a tick.
+
+    A note over either limit is dropped (the block still changes state). */
 class QcNoteBudget
 {
 public:
+    /*! Ticks between two notes of one block at least. */
     static constexpr quint64 minIntervalTicks = 4;
+    /*! Notes of all blocks in a tick at most. */
     static constexpr int maxPerTick = 32;
 
-    // Whether the note block at `pos` may play in tick `tick`; counts it if so.
+    /*! Returns whether the note block at \a pos may play in tick \a tick; counts it if so. */
     [[nodiscard]] bool allow(QcBlockPos pos, quint64 tick);
 
-    // Blocks remembered (tests): those that played within the last minIntervalTicks.
+    /*! Returns the number of blocks remembered (tests): those that played within the last
+        minIntervalTicks. */
     [[nodiscard]] qsizetype remembered() const { return m_lastPlayed.size(); }
 
 private:

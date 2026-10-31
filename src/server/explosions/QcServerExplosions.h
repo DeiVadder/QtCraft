@@ -17,37 +17,48 @@ class QcServerFire;
 class QcServerSounds;
 class QcServerState;
 
-// Explosives and explosions in the server tick (decisions E-600 to E-604).
-// - An explosive block (QcBlastDefinition) is lit by flint and steel, a dispenser with it, fire
-//   burning it, signal power (QcSignalKind::Igniter) or another explosion: it leaves its cell and
-//   becomes a lit explosive (QcPrimedExplosive) that falls and counts its fuse down. Beyond the
-//   limit `primedExplosives` nothing is lit and the block stays.
-// - When the fuse runs out it explodes: at most `explosionsPerTick` per tick, the others wait with
-//   their fuse at 0 in the order of the table. A blast hurts and pushes the players and creatures
-//   that see it (QcBlastBodies) and, while the game rule explosionBlockDamage holds, breaks the cells
-//   its rays reach (QcExplosionRays, at most `explosionBlocks` of them, the nearest first), which
-//   QcBlastBlocks works through at most `explosionBlocksPerTick` per tick. Explosives among them are
-//   lit with a short fuse of their own (chainFuseMin to chainFuseMax ticks, by dice), so a chain of
-//   any size spreads over many ticks and no tick does more than its budgets allow.
-// - Every explosion is sent to the clients near it (QcMsg::Explosion: flash and smoke) with its sound.
+/*! \brief Explosives and explosions in the server tick (decisions E-600 to E-604).
+
+    \list
+    \li An explosive block (QcBlastDefinition) is lit by flint and steel, a dispenser with it, fire
+        burning it, signal power (QcSignalKind::Igniter) or another explosion: it leaves its cell
+        and becomes a lit explosive (QcPrimedExplosive) that falls and counts its fuse down. Beyond
+        the limit \c {primedExplosives} nothing is lit and the block stays.
+    \li When the fuse runs out it explodes: at most \c {explosionsPerTick} per tick, the others wait
+        with their fuse at 0 in the order of the table. A blast hurts and pushes the players and
+        creatures that see it (QcBlastBodies) and, while the game rule explosionBlockDamage holds,
+        breaks the cells its rays reach (QcExplosionRays, at most \c {explosionBlocks} of them, the
+        nearest first), which QcBlastBlocks works through at most \c {explosionBlocksPerTick} per
+        tick. Explosives among them are lit with a short fuse of their own (chainFuseMin to
+        chainFuseMax ticks, by dice), so a chain of any size spreads over many ticks and no tick
+        does more than its budgets allow.
+    \li Every explosion is sent to the clients near it (QcMsg::Explosion: flash and smoke) with its
+        sound.
+    \endlist */
 class QcServerExplosions
 {
 public:
+    /*! \brief Counts since the server started (tests, measurements). */
     struct Numbers
     {
+        /*! Explosives lit. */
         quint64 lit = 0;
-        // Explosives that were to be lit but the table was full.
+        /*! Explosives that were to be lit but the table was full. */
         quint64 refused = 0;
+        /*! Explosions set off. */
         quint64 explosions = 0;
-        // Explosions that had to wait a tick for a place among the explosions of a tick.
+        /*! Explosions that had to wait a tick for a place among the explosions of a tick. */
         quint64 waited = 0;
+        /*! Explosives a blast lit. */
         quint64 chained = 0;
+        /*! Players and creatures a blast hurt. \qcshared */
         quint64 playersHit = 0;
         quint64 creaturesHit = 0;
     };
 
-    // An explosion of `power` at `centre`; with `breaksBlocks` (the game rule, and for a creature
-    // also mobGriefing) it breaks blocks, with `fire` it lights fires among them.
+    /*! \brief An explosion of \c {power} at \c {centre}; with \c {breaksBlocks} (the game rule,
+        and for a creature also mobGriefing) it breaks blocks, with \c {fire} it lights fires
+        among them. \qcfields */
     struct Blast
     {
         QcVec3 centre;
@@ -56,25 +67,32 @@ public:
         bool fire = false;
     };
 
-    // Clients hear and see an explosion this far away.
+    /*! Clients hear and see an explosion this far away. */
     static constexpr double viewDistance = 96.0;
 
     QcServerExplosions(QcServerState &state, QcServerBlocks &blocks, QcServerSounds &sounds, QcServerFire &fire, QcPlayerHealth &health);
 
-    // Lights the explosive block at `pos` with its own fuse (or `fuse` ticks); false when the cell
-    // holds no explosive, its chunk is not loaded or the table of lit explosives is full.
+    /*! Lights the explosive block at \a pos with its own fuse (or \a fuse ticks). Returns
+        \c false when the cell holds no explosive, its chunk is not loaded or the table of lit
+        explosives is full. */
     bool light(QcBlockPos pos, std::optional<int> fuse = std::nullopt);
-    // Sets off a blast now (tests, commands and later creatures; lit explosives go through tick()).
+    /*! Sets off \a blast now (tests, commands and later creatures; lit explosives go through
+        tick()). */
     void explode(const Blast &blast);
-    // Counts the fuses down, sets off the due explosives and works through the waiting cells.
+    /*! Counts the fuses down, sets off the due explosives and works through the waiting cells. */
     void tick();
 
-    // Whether explosions break blocks now: the game rule explosionBlockDamage.
+    /*! Returns whether explosions break blocks now: the game rule explosionBlockDamage. */
     bool breaksBlocks() const;
+    /*! Returns whether \a block is an explosive. */
     bool isExplosive(QcBlockId block) const { return m_table.of(block).explosive; }
+    /*! Returns the blast traits of the block states. */
     const QcBlastTable &table() const { return m_table; }
+    /*! Returns the counts since the server started. */
     const Numbers &numbers() const { return m_numbers; }
+    /*! Returns the blocks blasts broke since the server started. */
     quint64 blocksBroken() const { return m_blocks.broken(); }
+    /*! Returns the cells waiting to be broken. */
     qsizetype waitingCells() const { return m_blocks.waiting(); }
 
 private:
