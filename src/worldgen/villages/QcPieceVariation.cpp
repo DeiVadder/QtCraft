@@ -75,7 +75,7 @@ QcPieceVariation::Option QcPieceVariation::resolveOption(const QcStructureDefini
 QList<int> QcPieceVariation::optionCounts() const
 {
     QList<int> counts;
-    for (const QList<Option> &options : m_choices) {
+    for (const QList<Option> &options : choices()) {
         counts.append(static_cast<int>(options.size()));
     }
     return counts;
@@ -84,7 +84,7 @@ QList<int> QcPieceVariation::optionCounts() const
 QList<double> QcPieceVariation::partChances() const
 {
     QList<double> chances;
-    for (const QcStructureDefinition::Part &part : m_parts) {
+    for (const QcStructureDefinition::Part &part : parts()) {
         chances.append(part.chance);
     }
     return chances;
@@ -93,10 +93,10 @@ QList<double> QcPieceVariation::partChances() const
 QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double()> &random) const
 {
     Selection selection;
-    for (const QList<Option> &options : m_choices) {
+    for (const QList<Option> &options : choices()) {
         selection.options.append(std::min(static_cast<int>(options.size()) - 1, static_cast<int>(random() * static_cast<double>(options.size()))));
     }
-    for (const QcStructureDefinition::Part &part : m_parts) {
+    for (const QcStructureDefinition::Part &part : parts()) {
         selection.parts.append(random() < part.chance);
     }
     return selection;
@@ -105,8 +105,8 @@ QcPieceVariation::Selection QcPieceVariation::choose(const std::function<double(
 QcPieceVariation::Selection QcPieceVariation::everything() const
 {
     Selection selection;
-    selection.options.fill(0, m_choices.size());
-    selection.parts.fill(true, m_parts.size());
+    selection.options.fill(0, choices().size());
+    selection.parts.fill(true, parts().size());
     return selection;
 }
 
@@ -118,21 +118,21 @@ std::shared_ptr<const QcStructure> QcPieceVariation::build(const Selection &sele
 
     QList<QcBlockId> states = m_states;
     QHash<QString, QString> mobSwaps;
-    for (qsizetype c = 0; c < m_choices.size() && c < selection.options.size(); ++c) {
-        const Option &option = m_choices[c][selection.options[c]];
+    for (qsizetype c = 0; c < choices().size() && c < selection.options.size(); ++c) {
+        const Option &option = choices()[c][selection.options[c]];
         for (const auto &[index, state] : option.states) {
             states[index] = state;
         }
         mobSwaps.insert(option.mobs);
     }
     QList<qint16> cells = m_cells;
-    for (qsizetype p = 0; p < m_parts.size() && p < selection.parts.size(); ++p) {
+    for (qsizetype p = 0; p < parts().size() && p < selection.parts.size(); ++p) {
         if (!selection.parts[p]) {
             continue;
         }
         for (qsizetype cell = 0; cell < cells.size(); ++cell) {
-            if (m_parts[p].cells[cell] != QcStructureDefinition::keep) {
-                cells[cell] = m_parts[p].cells[cell];
+            if (parts()[p].cells[cell] != QcStructureDefinition::keep) {
+                cells[cell] = parts()[p].cells[cell];
             }
         }
     }

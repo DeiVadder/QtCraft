@@ -95,6 +95,7 @@ target_sources(qc_server PRIVATE
     core/QcContactDamage.h core/QcContactDamage.cpp
     core/QcEntitySync.h core/QcEntitySync.cpp
     core/QcRateLimiter.h core/QcRateLimiter.cpp
+    core/QcSaveSchedule.h core/QcSaveSchedule.cpp
     core/QcServer.h core/QcServer.cpp
     core/QcServerClient.h
     core/QcServerConfig.h

@@ -54,14 +54,18 @@ public:
 
     QcServerCommands(QcServerState &state, Parts parts);
 
-    /*! Handles the chat line \a text of the playing \a client (at most 256 characters). */
+    /*! The most characters of a chat or console line; longer ones are cut. */
+    static constexpr qsizetype maxLineLength = 256;
+
+    /*! Handles the chat line \a text of the playing \a client, cut to maxLineLength characters.
+    */
     void chat(QcServerClient &client, const QString &text);
-    /*! Runs \a line of the console (cut to 256 characters); the leading '/' is optional. Replies
-        go to \a output. */
+    /*! Runs \a line of the console (cut to maxLineLength characters); the leading '/' is
+        optional. Replies go to \a output. */
     void console(const QString &line, const QcCommandSource::Output &output);
     /*! Runs the command \a line of the player \a client through the admin channel (decision E-848):
-        checked and run like his chat command (the leading '/' is optional), the replies go to
-        \a output instead of his chat. The line is not cut to the chat's 256 characters. */
+        checked and run like their chat command (the leading '/' is optional), the replies go to
+        \a output instead of their chat. The line is not cut to maxLineLength characters. */
     void admin(QcServerClient &client, const QString &line, const QcCommandSource::Output &output);
     /*! Returns the chat lines everyone saw (players' chat and /say). */
     const QcChatLog &chatLog() const { return m_chatLog; }

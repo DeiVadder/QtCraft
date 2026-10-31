@@ -82,8 +82,8 @@ QStringList parseNames(const QString &key, const QString &packNamespace, QcJsonF
     }
 
     const QJsonArray list = value.toArray();
-    if (!value.isArray() || list.size() > 64) {
-        reader.fail(u"'%1' must be an array of at most 64 names"_s.arg(key));
+    if (!value.isArray() || list.size() > maxNames) {
+        reader.fail(u"'%1' must be an array of at most %2 names"_s.arg(key).arg(maxNames));
         return {};
     }
 

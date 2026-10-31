@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/loader/QcBaseContent.h"
+#include "common/world/QcChunk.h"
 
 #include <QByteArray>
 #include <QCoreApplication>
@@ -64,6 +65,21 @@ inline qint64 randomSeed()
     const qint64 seed = ok ? fixed : static_cast<qint64>(QRandomGenerator::global()->generate() & 0x7fffffff);
     qInfo("random seed %lld (set QC_TEST_SEED to repeat)", seed);
     return seed;
+}
+
+// Whether chunks `a` and `b` hold the same block in every cell.
+inline bool sameBlocks(const QcChunk &a, const QcChunk &b)
+{
+    for (int y = 0; y < QcWorld::worldHeight; ++y) {
+        for (int z = 0; z < QcWorld::chunkSize; ++z) {
+            for (int x = 0; x < QcWorld::chunkSize; ++x) {
+                if (a.block(x, y, z) != b.block(x, y, z)) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 // Fails the running test case from a helper that has to hand back a value at once, such as a

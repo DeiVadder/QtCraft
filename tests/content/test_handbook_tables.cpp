@@ -214,7 +214,9 @@ private slots:
         // Only blocks that are no opaque full cubes, without building parts.
         const QList<Link> links = allLinks(*table);
         for (const Link &link : links) {
-            const QcBlockDefinition &listed = block(*m_base, link.target.mid(6));
+            // A named id, not a temporary: GCC's -Wdangling-reference would flag the call.
+            const QString id = link.target.mid(6);
+            const QcBlockDefinition &listed = block(*m_base, id);
             QVERIFY2(!listed.opaque && listed.partOf.isEmpty(), qPrintable(link.target));
         }
         QVERIFY(!blockLink(*solid, u"qtcraft:stone"_s));
@@ -260,7 +262,9 @@ private slots:
 
         double previous = QcBlastDefinition::unbreakable;
         for (const Link &link : resisting->links) {
-            const QcBlockDefinition &listed = block(*m_base, link.target.mid(6));
+            // A named id, not a temporary: GCC's -Wdangling-reference would flag the call.
+            const QString id = link.target.mid(6);
+            const QcBlockDefinition &listed = block(*m_base, id);
             const double resistance = listed.blast.effectiveResistance(listed.hardness, listed.liquid);
             QVERIFY2(resistance <= previous, qPrintable(link.target));
             previous = resistance;

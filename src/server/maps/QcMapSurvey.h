@@ -13,13 +13,16 @@
 class QcServerWorld;
 
 /*! \brief How a map is revealed (decision E-800), as in the reference: a player holding a map looks
-    at the pixels within revealRadius blocks of where it stands, one column of pixels in \c {sweep}
-    per tick, so a map fills in over a second while its holder walks and each tick costs little.
+    at the pixels within revealRadius blocks of where it stands, each tick at every sweep-th column
+    of pixels (another one each tick), so a map fills in over sweep ticks while its holder walks
+    and each tick costs little.
 
     A pixel shows the most common top block of the columns it covers (one column at scale 0;
-    blocks drawn nowhere, like the barrier, are looked through): land is shaded by the mean
-    height of its columns against the pixel north of it, water by its mean depth, both with a
-    fine checker pattern; pixels with a column in a chunk that is not loaded stay as they are. */
+    blocks drawn nowhere, like the barrier, are looked through; no block at all: blank). Land is
+    shaded by the mean height of its columns against the pixel north of it (flat when that one is
+    blank or not loaded), water by the mean liquid depth over the pixel's columns, both with a
+    fine checker pattern that deep water no longer shows; pixels with a column in a chunk that is
+    not loaded stay as they are. */
 namespace QcMapSurvey {
 
 /*! A holder looks at the pixels within this many blocks of where it stands. */

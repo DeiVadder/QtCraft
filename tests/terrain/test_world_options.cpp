@@ -36,24 +36,10 @@ std::unique_ptr<QcWorldGenerator> generatorOf(const std::shared_ptr<const QcCont
     return QcWorldGenerators::create(terrain, applied.content, seed, {}, QcGeneratorVersion::current);
 }
 
-bool sameChunk(const QcChunk &a, const QcChunk &b)
-{
-    for (int y = 0; y < QcWorld::worldHeight; ++y) {
-        for (int z = 0; z < QcWorld::chunkSize; ++z) {
-            for (int x = 0; x < QcWorld::chunkSize; ++x) {
-                if (a.block(x, y, z) != b.block(x, y, z)) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-}
-
 // Whether both generators make the same blocks in every sample chunk.
 bool sameWorld(const QcWorldGenerator &a, const QcWorldGenerator &b)
 {
-    return std::ranges::all_of(sampleChunks, [&](QcChunkPos pos) { return sameChunk(*a.generate(pos), *b.generate(pos)); });
+    return std::ranges::all_of(sampleChunks, [&](QcChunkPos pos) { return QcTestUtil::sameBlocks(*a.generate(pos), *b.generate(pos)); });
 }
 
 // The first difference of two terrain generators in data that spans far more than the sample

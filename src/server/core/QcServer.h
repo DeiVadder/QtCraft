@@ -3,9 +3,6 @@
 
 #pragma once
 
-// NOLINT(qc-file-length): 223 code lines only because each enumerator of ClientOrigin needs its
-// own line for its doc comment (E-939); split by responsibility when the class changes next.
-
 #include "common/diagnostics/QcHealthSample.h"
 #include "common/protocol/QcMessages.h"
 #include "server/admin/QcServerAdmin.h"
@@ -20,6 +17,7 @@
 #include "server/chunks/QcChunkStreaming.h"
 #include "server/commands/QcServerCommands.h"
 #include "server/core/QcEntitySync.h"
+#include "server/core/QcSaveSchedule.h"
 #include "server/core/QcServerDebug.h"
 #include "server/core/QcServerSounds.h"
 #include "server/core/QcServerState.h"
@@ -197,7 +195,7 @@ public:
     /*! Runs one simulation tick immediately (used by tests and by the tick timer). */
     void tick();
     /*! Returns the autosaves since the server started. */
-    quint64 autosaveCount() const { return m_autosaves; }
+    quint64 autosaveCount() const { return m_saving.autosaveCount(); }
     /*! Returns whether the tick loop pauses (decision E-877): tick() runs only the players'
         upkeep then. */
     const QcServerPause &pause() const { return m_pause; }
@@ -276,10 +274,6 @@ private:
     void sendTimeToAll();
     // Tells the operators of chunks found damaged (decision E-373).
     void reportDamagedChunks();
-    void autosave();
-    // Writes identities.json when players registered since the last write (decision E-273).
-    void flushIdentities();
-    void flushIdentitiesWhenDue();
     // Add the systems of the tick in their order (decision E-700), once, from the constructor: the
     // players, saving and chunks, the simulation of the world, the updates of the clients.
     void addUpkeepSystems();
@@ -353,6 +347,8 @@ private:
     QcChunkLoading m_chunkLoading;
     QcChunkStreaming m_chunkStreaming;
     QcServerPersistence m_persistence;
+    // NOLINT(qc-member-access): a subsystem object, never replaced; the subsystem members wait for the class split.
+    QcSaveSchedule m_saving;
     QcServerCommands m_commands;
     QcPlayerJoin m_join;
     QcServerLogin m_login;
@@ -361,12 +357,6 @@ private:
     // Single shot shortly before the next due tick, in the same event loop as the messages of the
     // clients.
     QTimer *m_tickTimer = nullptr;
-    // Players' time (QcServerClock::playerTimeNs) of the latest autosave.
-    qint64 m_lastAutosaveNs = 0;
-    // Players' time of the latest flush of the identities; none yet: the first registration is
-    // written with the next tick.
-    std::optional<qint64> m_lastIdentityFlushNs;
-    quint64 m_autosaves = 0;
     QcServerDebug m_debug;
     QcServerSystems m_systems;
 };

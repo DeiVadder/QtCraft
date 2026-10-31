@@ -40,16 +40,16 @@ using QcCommandHandler = std::function<void(const QcCommandContext &context)>;
 /*! \brief A command as the registry knows it (decision E-243).
 
     \c {usage} and \c {description} are English texts marked with
-    QT_TRANSLATE_NOOP("QcServerMessages", ...); /help shows them translated. */
+    QT_TRANSLATE_NOOP("QcServerMessages", ...); /help shows them translated. Every field has an
+    initializer, so designated initializers may leave any out. */
 struct QcCommandSpec
 {
-    /*! The command's name. Every field has an initializer, so designated initializers may leave
-        any out. */
+    /*! The command's name. */
     QString name = {};
     /*! The group /help lists it under (decision E-911). */
     QcCommandCategory category = QcCommandCategory::Other;
     /*! Other names that run the command. */
-    QStringList aliases = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
+    QStringList aliases = {}; // NOLINT(readability-redundant-member-init): see the comment on the struct
     /*! The right the command needs. */
     QcPermission permission = QcPermission::Operator;
     /*! Runs only for players (it acts on the player or around him); the console gets a refusal. */
@@ -61,12 +61,12 @@ struct QcCommandSpec
     /*! What the command does, one sentence. */
     const char *description = nullptr;
     /*! What runs the command. */
-    QcCommandHandler run = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
+    QcCommandHandler run = {}; // NOLINT(readability-redundant-member-init): see the comment on the struct
     /*! The words a placeholder takes that the content and the world decide, not the usage (the
         structures of /locate, the biomes of /locatebiome; decision E-911): /help <command> names
         them in \c {namesLine} (a key with %1), the admin channel's catalogue sends them for
         completion. \qcshared */
-    std::function<QStringList()> names = {}; // NOLINT(readability-redundant-member-init): see the comment on `name`
+    std::function<QStringList()> names = {}; // NOLINT(readability-redundant-member-init): see the comment on the struct
     const char *namesLine = nullptr;
 };
 

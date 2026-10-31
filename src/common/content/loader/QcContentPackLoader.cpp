@@ -7,6 +7,7 @@
 #include "common/content/registry/QcContentNames.h"
 #include "common/content/registry/QcContentParser.h"
 #include "common/content/worldgen/QcWorldOptionParser.h"
+#include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/protocol/QcStreamLimits.h"
 
 #include <QDir>
@@ -495,6 +496,12 @@ void PackReader::loadWorldgenSettings()
         m_registry.worldgen().setShowcase(std::move(*showcase));
     }
     if (auto flat = readSettingsFile(u"worldgen/flat.json"_s, QcContentParser::parseFlat)) {
+        // Names without a namespace are the pack's own: a mod writes "qtcraft:stone" for a base block.
+        if (const QString unknown = QcWorldTypeParser::unknownPresetBlock(flat->preset, m_registry); !unknown.isEmpty()) {
+            m_warnings.append(u"%1: 'preset' names the unknown block %2 (names without a namespace are the pack's own); the earlier preset stays"_s.arg(
+                m_root.filePath(u"worldgen/flat.json"_s), unknown));
+            flat->preset = m_registry.worldgen().flatWorld().preset;
+        }
         m_registry.worldgen().setFlatWorld(std::move(*flat));
     }
     // Read over the earlier packs' settings: a pack changes the fields it gives (decision E-421).

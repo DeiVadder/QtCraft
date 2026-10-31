@@ -193,7 +193,8 @@ public:
     // -> value, decision E-917; missing options get their defaults) and "generatorVersion" (decision
     // E-922; default: the current one); missing keys keep the defaults.
     Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
-    // The layers a flat world gets by default (shown in the menu).
+    // The layers a flat world gets by default, base-game blocks without their namespace (shown in
+    // the menu).
     Q_INVOKABLE QString defaultFlatLayers();
     Q_INVOKABLE void playWorld(const QString &folder);
     Q_INVOKABLE void saveWorld() const;

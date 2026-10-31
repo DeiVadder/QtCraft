@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "common/content/loader/QcBaseContent.h"
+#include "common/content/loader/QcContentPackLoader.h"
 #include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/protocol/QcInProcessTransport.h"
 #include "fixtures/QcRawClient.h"
@@ -12,6 +13,8 @@
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcWorldLibrary.h"
 
+#include <QDir>
+#include <QFile>
 #include <QJsonObject>
 #include <QTemporaryDir>
 #include <QTest>
@@ -31,20 +34,6 @@ int nonAirBlocks(const QcChunk &chunk)
         }
     }
     return count;
-}
-
-bool sameChunks(const QcChunk &a, const QcChunk &b)
-{
-    for (int y = 0; y < QcWorld::worldHeight; ++y) {
-        for (int z = 0; z < QcWorld::chunkSize; ++z) {
-            for (int x = 0; x < QcWorld::chunkSize; ++x) {
-                if (a.block(x, y, z) != b.block(x, y, z)) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
 }
 
 } // namespace
@@ -134,6 +123,38 @@ private slots:
         QVERIFY(!QcWorldTypeParser::parseFlat(QJsonObject{{u"preset"_s, u"bedrock,Not A Block"_s}}, u"mymod"_s));
     }
 
+    void flatPresetsShowBaseBlocksWithoutNamespace()
+    {
+        QCOMPARE(QcWorldTypeParser::shortPreset(u"qtcraft:bedrock, 59*qtcraft:stone,mymod:dirt"_s), u"bedrock,59*stone,mymod:dirt"_s);
+        QCOMPARE(QcWorldTypeParser::unknownPresetBlock(m_content->worldgen().flatWorld().preset, *m_content), QString());
+        QCOMPARE(QcWorldTypeParser::unknownPresetBlock(u"bedrock,2*mymod:stone"_s, *m_content), u"mymod:stone"_s);
+    }
+
+    // A mod's flat.json naming blocks it does not have (names without a namespace are the mod's own)
+    // is refused with a warning instead of making a world of stone.
+    void unknownFlatPresetBlocksWarn()
+    {
+        QTemporaryDir dir;
+        QVERIFY(QDir(dir.path()).mkpath(u"worldgen"_s));
+        QFile manifest(dir.filePath(u"pack.json"_s));
+        QVERIFY(manifest.open(QIODevice::WriteOnly));
+        manifest.write(R"({"id": "flatmod", "version": "1.0"})");
+        manifest.close();
+        QFile flat(dir.filePath(u"worldgen/flat.json"_s));
+        QVERIFY(flat.open(QIODevice::WriteOnly));
+        flat.write(R"({"preset": "bedrock,3*stone", "mobSpawning": true})");
+        flat.close();
+
+        QcContentRegistry registry;
+        const QString before = registry.worldgen().flatWorld().preset;
+        const QcResult<QcLoadedPack> loaded = QcContentPackLoader::load(dir.path(), registry);
+        QVERIFY(loaded);
+        QCOMPARE(loaded->warnings.size(), 1);
+        QVERIFY2(loaded->warnings[0].contains(u"unknown block flatmod:bedrock"_s), qPrintable(loaded->warnings[0]));
+        QCOMPARE(registry.worldgen().flatWorld().preset, before);
+        QVERIFY(registry.worldgen().flatWorld().rules.mobSpawning);
+    }
+
     void flatWorldIsTheSameEverywhere()
     {
         const auto generator = QcWorldGenerators::create(u"flat"_s, m_content, 1, u"bedrock,3*dirt,grass_block"_s, QcGeneratorVersion::current);
@@ -142,8 +163,8 @@ private slots:
         QCOMPARE(nonAirBlocks(*origin), 5 * QcWorld::chunkSize * QcWorld::chunkSize);
         QCOMPARE(origin->highestNonAir(7, 7), 4);
         for (const QcChunkPos pos : {QcChunkPos{0, 0}, QcChunkPos{-30, 17}, QcChunkPos{1000, -1000}}) {
-            QVERIFY(sameChunks(*generator->generate(pos), *origin));
-            QVERIFY(sameChunks(*again->generate(pos), *origin));
+            QVERIFY(QcTestUtil::sameBlocks(*generator->generate(pos), *origin));
+            QVERIFY(QcTestUtil::sameBlocks(*again->generate(pos), *origin));
         }
         QCOMPARE(generator->spawnPoint(), (QcBlockPos{0, 5, 0}));
         QVERIFY(generator->isNaturalGround(id("qtcraft:grass_block")));
@@ -238,7 +259,7 @@ private slots:
         const QcResult<QString> flatOptions = QcWorldGenerators::optionsToStore(u"flat"_s, {}, *m_content);
         const QcResult<QString> voidOptions = QcWorldGenerators::optionsToStore(u"void"_s, {}, *m_content);
         QVERIFY(flatOptions && voidOptions);
-        QCOMPARE(*flatOptions, m_content->worldgen().flatWorld().preset);
+        QCOMPARE(*flatOptions, u"bedrock,59*stone,3*dirt,grass_block"_s);
         QCOMPARE(*voidOptions, u"platform=qtcraft:stone,radius=2,y=63"_s);
         QCOMPARE(*QcWorldGenerators::optionsToStore(u"flat"_s, u"bedrock,sand"_s, *m_content), u"bedrock,sand"_s);
         QCOMPARE(*QcWorldGenerators::optionsToStore(u"terrain"_s, {}, *m_content), QString());

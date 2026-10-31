@@ -7,6 +7,7 @@
 #include "server/core/QcServerLogging.h"
 #include "server/core/QcServerState.h"
 
+#include <algorithm>
 
 using namespace Qt::StringLiterals;
 
@@ -40,6 +41,17 @@ QString substitute(const QString &line, const QStringList &args)
         ++i;
     }
     return result;
+}
+
+// The first QcServerCommands::maxLineLength characters of text, without a lone high surrogate at
+// the cut.
+QString cutLine(const QString &text)
+{
+    qsizetype length = std::min(text.size(), QcServerCommands::maxLineLength);
+    if (length < text.size() && length > 0 && text.at(length - 1).isHighSurrogate()) {
+        --length;
+    }
+    return text.left(length);
 }
 
 } // namespace
@@ -102,19 +114,21 @@ void QcServerCommands::addBuiltIns()
 
 void QcServerCommands::chat(QcServerClient &client, const QString &text)
 {
-    if (text.trimmed().isEmpty()) {
+    // Only the frame size bounds the line on the wire; this cut is the chat limit.
+    const QString line = cutLine(text);
+    if (line.trimmed().isEmpty()) {
         return;
     }
-    if (!text.trimmed().startsWith(u'/')) {
-        broadcast(client, text);
+    if (!line.trimmed().startsWith(u'/')) {
+        broadcast(client, line);
         return;
     }
-    execute(QcCommandSource(client, m_state.permissionOf(client)), text, 0);
+    execute(QcCommandSource(client, m_state.permissionOf(client)), line, 0);
 }
 
 void QcServerCommands::console(const QString &line, const QcCommandSource::Output &output)
 {
-    const QString trimmed = line.trimmed().left(256);
+    const QString trimmed = cutLine(line.trimmed());
     if (trimmed.isEmpty()) {
         return;
     }

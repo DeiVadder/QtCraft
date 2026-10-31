@@ -12,6 +12,7 @@
 #include "clientcore/input/QcGamepadSource.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/textures/QcTextureAtlas.h"
+#include "common/content/worldgen/QcWorldTypeParser.h"
 #include "common/core/QcBlockPos.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"
@@ -371,7 +372,7 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
 
 QString QcGameController::defaultFlatLayers()
 {
-    return m_library->content().worldgen().flatWorld().preset;
+    return QcWorldTypeParser::shortPreset(m_library->content().worldgen().flatWorld().preset);
 }
 
 void QcGameController::playWorld(const QString &folder)

@@ -97,7 +97,9 @@ QcResult<QcEnchantmentDefinition> parseEnchantment(const QJsonObject &json, cons
     enchantment.weight = reader.integer(u"weight"_s, enchantment.weight, 1, 1000);
     enchantment.items = parseItemKinds(reader);
     enchantment.conflicts = QcContentFields::parseNames(u"conflicts"_s, packNamespace, reader);
-    // parseNames allows QcEnchantmentDefinition::maxConflicts names; no enchantment has a longer name.
+    // parseNames allows as many names as an enchantment may conflict with; only their length is
+    // checked here.
+    static_assert(QcContentFields::maxNames <= QcEnchantmentDefinition::maxConflicts);
     if (std::ranges::any_of(enchantment.conflicts, [](const QString &name) { return name.size() > QcItemData::maxEnchantmentName; })) {
         reader.fail(u"'conflicts' names enchantments of at most %1 characters"_s.arg(QcItemData::maxEnchantmentName));
     }
