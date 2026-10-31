@@ -291,14 +291,29 @@ ApplicationWindow {
         anchors.fill: parent
         keepAliveMs: root.controller.screenKeepAliveMs
         logCreation: root.controller.logScreenCreation
-        shown: game.phase === GameController.Phase.Loading || game.phase === GameController.Phase.Error
+        shown: game.phase === GameController.Phase.Error
 
         screen: MessageScreen {
             text: root.controller.statusText
-            // Loading a network server's world can be cancelled.
-            showBackButton: root.controller.phase === GameController.Phase.Error || root.controller.multiplayer.networkGame
-            backText: root.controller.phase === GameController.Phase.Error ? qsTr("Back to menu") : qsTr("Cancel")
+            showBackButton: true
             onBackRequested: root.controller.leaveGame()
+        }
+    }
+
+    // Made within the click (decision E-943): it shows in the next frame, before the start blocks
+    // the GUI thread.
+    LazyScreen {
+        anchors.fill: parent
+        keepAliveMs: root.controller.screenKeepAliveMs
+        logCreation: root.controller.logScreenCreation
+        shown: game.phase === GameController.Phase.Loading
+        asynchronous: false
+
+        screen: LoadingScreen {
+            progress: root.controller.loading
+            // Loading a network server's world can be cancelled.
+            canCancel: root.controller.multiplayer.networkGame
+            onCancelRequested: root.controller.leaveGame()
         }
     }
 
@@ -311,6 +326,17 @@ ApplicationWindow {
         screen: DisconnectScreen {
             game: root.controller
         }
+    }
+
+    // The start screen (decision E-943): the window's first frames while the game loads its
+    // worlds, mods and content, over the menu made already.
+    LazyScreen {
+        anchors.fill: parent
+        keepAliveMs: 0
+        shown: game.starting
+        asynchronous: false
+
+        screen: StartScreen {}
     }
 
     // Over everything else, so it opens from the menu, the world and every in-game screen.

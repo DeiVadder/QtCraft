@@ -20,6 +20,26 @@
 
 using namespace Qt::StringLiterals;
 
+namespace {
+
+// The first item named `name` in the item tree below `item`: delegates of a Repeater hang in it by
+// their parent item only, so QObject::findChild() misses them.
+const QQuickItem *firstNamedItem(const QQuickItem *item, const QString &name)
+{
+    const QList<QQuickItem *> children = item->childItems();
+    for (const QQuickItem *child : children) {
+        if (child->objectName() == name) {
+            return child;
+        }
+        if (const QQuickItem *found = firstNamedItem(child, name)) {
+            return found;
+        }
+    }
+    return nullptr;
+}
+
+} // namespace
+
 QcScreenshotHook::QcScreenshotHook(QQuickWindow *window, QString filePath, int frameCount, Checks checks, QObject *parent)
     : QObject(parent)
     , m_window(window)
@@ -167,7 +187,10 @@ void QcScreenshotHook::logItems() const
     const QQuickItem *content = m_window->contentItem();
     for (const QString &name : m_loggedItems) {
         // The items keep their QObject parents when offscreen runs move them into another window.
-        const auto *item = m_window->findChild<QQuickItem *>(name);
+        const QQuickItem *item = m_window->findChild<QQuickItem *>(name);
+        if (!item) {
+            item = firstNamedItem(content, name);
+        }
         if (!item) {
             qCInfo(lcScreenshot).noquote() << u"Item %1: not found"_s.arg(name);
             continue;

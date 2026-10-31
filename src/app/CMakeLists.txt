@@ -145,7 +145,9 @@ target_sources(qc_app_core PRIVATE
     rendering/QcWorldView.h rendering/QcWorldView.cpp
 )
 target_sources(qc_app_core PRIVATE
+    session/QcAfterFrame.h session/QcAfterFrame.cpp
     session/QcFrameDriver.h session/QcFrameDriver.cpp
+    session/QcLoadingProgress.h session/QcLoadingProgress.cpp
     session/QcSessionAudio.h session/QcSessionAudio.cpp
     session/QcSessionParts.h
     session/QcSessionWiring.h session/QcSessionWiring.cpp
@@ -292,6 +294,10 @@ qt_add_qml_module(qc_app_core
         qml/menus/HomePage.qml
         qml/menus/LanScreen.qml
         qml/menus/LeaveGameButton.qml
+        qml/menus/LoadingBackdrop.qml
+        qml/menus/LoadingBar.qml
+        qml/menus/LoadingScreen.qml
+        qml/menus/LoadingStep.qml
         qml/menus/MainMenu.qml
         qml/menus/MapPreviewGroup.qml
         qml/menus/MapProgress.qml
@@ -303,6 +309,7 @@ qt_add_qml_module(qc_app_core
         qml/menus/PauseMenu.qml
         qml/menus/ProfileCard.qml
         qml/menus/RecentServerRow.qml
+        qml/menus/StartScreen.qml
         qml/menus/WorldCard.qml
         qml/menus/WorldOptionsPage.qml
         qml/menus/WorldRow.qml

@@ -95,6 +95,10 @@ public:
 
     qsizetype dirtyCount() const { return m_dirty.size(); }
     qsizetype jobsInFlight() const { return m_inFlight.size(); }
+    // The loaded chunk at `pos` has its light and no section waiting for or in a mesh job (the
+    // loading screen, decision E-943). A section whose side neighbour is missing is not marked, so
+    // the caller checks the neighbours.
+    [[nodiscard]] bool chunkMeshed(QcChunkPos pos) const;
     // Light jobs submitted or gathered and not yet back.
     int lightJobsPending() const { return m_lightJobsPending + (m_gathered.isEmpty() ? 0 : 1); }
     // Bytes of the block light sections handed to the mesher (memory statistics, decision E-813);

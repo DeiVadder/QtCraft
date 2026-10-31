@@ -11,6 +11,7 @@
 #include "app/hooks/QcScriptedPad.h"
 #include "app/input/QcGameInput.h"
 #include "app/rendering/QcWorldView.h"
+#include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
@@ -102,7 +103,7 @@ void QcStartupHooks::setStartupScript(QStringList chatLines, const QStringList &
     for (const QString &overlay : overlays) {
         if (overlay.startsWith(u'@')) {
             m_startupOverlaySteps.append(overlay);
-        } else if (overlay.startsWith(u"message:"_s)) {
+        } else if (overlay.startsWith(u"message:"_s) || overlay.startsWith(u"loading:"_s)) {
             // A step at once, so it shows in the main menu as well as in a world.
             m_startupOverlaySteps.append(u"@0 "_s + overlay);
         } else if (m_startupOverlay.isEmpty()) {
@@ -170,8 +171,34 @@ void QcStartupHooks::menuShown()
     }
 }
 
+void QcStartupHooks::worldStarting()
+{
+    setWorldPlayed(false);
+    // A start from the menu would otherwise be pictured on the loading screen.
+    if (startHold() || !screenshotHook()) {
+        return;
+    }
+    setStartHold(true);
+    holdScreenshot();
+}
+
+void QcStartupHooks::worldStartEnded()
+{
+    if (!startHold()) {
+        return;
+    }
+    setStartHold(false);
+    releaseScreenshot();
+}
+
 void QcStartupHooks::worldPlaying()
 {
+    worldStartEnded();
+    // The script runs once per start.
+    if (worldPlayed()) {
+        return;
+    }
+    setWorldPlayed(true);
     sendStartupChat();
     openStartupOverlay();
     scheduleOverlaySteps();
@@ -250,7 +277,7 @@ void QcStartupHooks::scheduleOverlaySteps()
             // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
             if (m_parts.session || overlay.startsWith(u"open:"_s) || overlay.startsWith(u"click:"_s) || overlay.startsWith(u"hover:"_s)
                 || overlay.startsWith(u"pad:"_s) || overlay.startsWith(u"focus:"_s) || overlay.startsWith(u"text:"_s)
-                || overlay.startsWith(u"message:"_s)) {
+                || overlay.startsWith(u"message:"_s) || overlay.startsWith(u"loading:"_s) || overlay == u"starting"_s) {
                 runOverlayStep(overlay);
             }
             releaseScreenshot();
@@ -273,6 +300,11 @@ void QcStartupHooks::runOverlayStep(const QString &step)
     } else if (step.startsWith(u"message:"_s)) {
         // The message screen as after a world that could not start, with its way back.
         m_screens.state.setPhase(QcScreenState::Phase::Error, step.mid(8));
+    } else if (step == u"starting"_s) {
+        // The start screen again, as while the program starts (decision E-943).
+        m_screens.state.setStarting(true);
+    } else if (step.startsWith(u"loading:"_s)) {
+        showLoading(QStringView(step).mid(8));
     } else if (step == u"handbook"_s) {
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {
@@ -428,6 +460,18 @@ bool QcStartupHooks::pickInOpenScreen(int row) const
         }
     }
     return false;
+}
+
+void QcStartupHooks::showLoading(QStringView spec) const
+{
+    const std::optional<QcLoadingProgress::Shown> shown = QcLoadingProgress::parseShow(spec);
+    if (!shown) {
+        qCWarning(lcStartup).noquote() << u"--overlay loading:%1: expected a stage (content, world, joining, chunks, meshes), then "
+                                          u"newworld, savedworld or network and three counts (arrived, meshed, needed; meshed <= arrived <= needed)"_s.arg(spec);
+        return;
+    }
+    m_screens.loading.show(*shown);
+    m_screens.state.setPhase(QcScreenState::Phase::Loading);
 }
 
 void QcStartupHooks::hoverAt(QStringView position) const

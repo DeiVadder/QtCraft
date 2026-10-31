@@ -55,7 +55,8 @@ public:
     void connectSession();
 
 signals:
-    // The session is in the world.
+    // The session is in the world (the server placed the player); the world becomes playable once
+    // its spawn area is meshed (QcLoadingProgress).
     void playing();
     // The session ended; `reason` is the translated reason from the server (E-094).
     void disconnected(const QString &reason);

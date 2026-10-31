@@ -134,6 +134,11 @@ set_tests_properties(app_offscreen_without_screenshot_refused PROPERTIES TIMEOUT
 if(NOT QC_SANITIZERS AND NOT WIN32)
     add_test(NAME test_character_screen_qml COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_character_screen_qml.sh $<TARGET_FILE:qtcraft>)
     set_tests_properties(test_character_screen_qml PROPERTIES TIMEOUT 300 COST 40)
+    # The loading and start screens at two scales, a refused hook and a real start (decision E-943).
+    add_test(NAME app_offscreen_loading_screen COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh $<TARGET_FILE:qtcraft>
+        $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_loading_screen)
+    set_tests_properties(app_offscreen_loading_screen PROPERTIES TIMEOUT 600 COST 40
+        REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh")
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
     add_test(NAME app_offscreen_menu_layout COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_menu_layout.sh $<TARGET_FILE:qtcraft>

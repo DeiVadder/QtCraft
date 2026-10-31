@@ -99,6 +99,9 @@ public:
     bool playing() const { return m_phase == Phase::Playing; }
     QString statusText() const { return m_statusText; }
     void setPhase(Phase phase, const QString &status = {});
+    // The program is still starting: the start screen covers the menu (decision E-943).
+    bool starting() const { return m_starting; }
+    void setStarting(bool starting);
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world.
@@ -146,6 +149,7 @@ public:
 signals:
     void phaseChanged();
     void statusChanged();
+    void startingChanged();
     void inputEnabledChanged();
     void overlayChanged();
     // Held keys and the latches built on them are to be forgotten (sent before anything else of a
@@ -163,6 +167,7 @@ private:
     const QcSessionParts &m_parts;
     Phase m_phase = Phase::Menu;
     QString m_statusText;
+    bool m_starting = true;
     bool m_inputEnabled = true;
     Overlay m_overlay = Overlay::None;
     int m_screenKeepAliveMs = 60000;

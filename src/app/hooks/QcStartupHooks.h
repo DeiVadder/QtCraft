@@ -16,6 +16,7 @@
 
 class QcBenchmarkRun;
 class QcGameInput;
+class QcLoadingProgress;
 class QcHandbookController;
 class QcScreenState;
 class QcScreenshotHook;
@@ -36,6 +37,8 @@ public:
         QcScreenState &state;
         QcHandbookController &handbook;
         QcGameInput &input;
+        // The loading screen's state (--overlay loading:..., decision E-943).
+        QcLoadingProgress &loading;
     };
 
     QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);
@@ -70,7 +73,11 @@ public:
 
     // Without --play: runs the "@<ms> open:", "click:", "hover:" and "pad:" steps in the main menu.
     void menuShown();
-    // Runs the script: the world has just become playable.
+    // A world start began (the loading screen shows): the screenshot waits until it plays or ends.
+    void worldStarting();
+    // The world start ended without a world (error, cancel, disconnect): the screenshot may follow.
+    void worldStartEnded();
+    // Runs the script once per start: the world has just become playable.
     void worldPlaying();
     // --overlay furnace|chest: fills the machine that just opened from the hotbar.
     void machineOpened();
@@ -80,6 +87,11 @@ public:
     void releaseScreenshotWhenLoaded(int viewDistance, bool playing);
 
 private:
+    bool startHold() const { return m_startHold; }
+    void setStartHold(bool held) { m_startHold = held; }
+    bool worldPlayed() const { return m_worldPlayed; }
+    void setWorldPlayed(bool played) { m_worldPlayed = played; }
+
     static constexpr int loadedScreenAttempts = 40;
     static constexpr int loadedScreenRetryMs = 50;
     // `view:hide` waits up to viewAttempts * viewRetryMs for the view to hold meshed sections,
@@ -112,6 +124,9 @@ private:
     // Each returns whether it found what it acts on.
     [[nodiscard]] bool pickInOpenScreen(int row) const;
     void hoverAt(QStringView position) const;
+    // "loading:<stage>[,<kind>[,<arrived>,<meshed>,<needed>]]": the loading screen in that state,
+    // without a start (QcLoadingProgress::parseShow; screenshots for the sign-off, decision E-943).
+    void showLoading(QStringView spec) const;
     // "text:<objectName>=<text>": types into a field (the search of the creative inventory).
     [[nodiscard]] bool setText(const QString &assignment) const;
     [[nodiscard]] bool openPopup(const QString &objectName) const;
@@ -150,4 +165,8 @@ private:
     qint64 m_screenshotWaitLogged = 0; // NOLINT(qc-member-access): when the gate's timer last logged, only there
     // The menu's screenshot is held until the menu has scheduled its steps.
     bool m_menuHold = false;
+    // The screenshot is held while a world start runs (worldStarting() to worldPlaying()).
+    bool m_startHold = false;
+    // worldPlaying() ran its script since the last worldStarting().
+    bool m_worldPlayed = false;
 };

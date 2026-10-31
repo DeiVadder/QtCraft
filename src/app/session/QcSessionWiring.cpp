@@ -153,7 +153,6 @@ void QcSessionWiring::onSessionState(QcClientSession::State state)
 {
     if (state == QcClientSession::State::Playing) {
         emit playing();
-        m_targets.startup.worldPlaying();
     } else if (state == QcClientSession::State::Disconnected) {
         emit disconnected(m_parts.session->disconnectReason());
     }

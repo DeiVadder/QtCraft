@@ -162,6 +162,15 @@ void QcScreenState::setPhase(Phase phase, const QString &status)
     }
 }
 
+void QcScreenState::setStarting(bool starting)
+{
+    if (starting == m_starting) {
+        return;
+    }
+    m_starting = starting;
+    emit startingChanged();
+}
+
 void QcScreenState::setInputEnabled(bool enabled)
 {
     if (m_inputEnabled == enabled) {

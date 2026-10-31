@@ -3222,6 +3222,100 @@ Als Nächstes: %3</translation>
     </message>
 </context>
 <context>
+    <name>LoadingBar</name>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingBar.qml" line="19"/>
+        <source>Loading</source>
+        <translation>Laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingBar.qml" line="20"/>
+        <source>%1 % done</source>
+        <translation>%1 % fertig</translation>
+    </message>
+</context>
+<context>
+    <name>LoadingScreen</name>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="38"/>
+        <source>%1 / %2</source>
+        <translation>%1 / %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="98"/>
+        <source>Joining the server</source>
+        <translation>Beitritt zum Server</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="98"/>
+        <source>Creating the world</source>
+        <translation>Welt wird erstellt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="98"/>
+        <source>Loading the world</source>
+        <translation>Welt wird geladen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="45"/>
+        <source>Loading the game content</source>
+        <translation>Spielinhalte laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="47"/>
+        <source>Opening the world</source>
+        <translation>Welt öffnen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="47"/>
+        <source>Setting up the world</source>
+        <translation>Welt einrichten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="49"/>
+        <source>Waiting for the server</source>
+        <translation>Auf den Server warten</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="49"/>
+        <source>Placing the player</source>
+        <translation>Spieler platzieren</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="51"/>
+        <source>Generating the terrain</source>
+        <translation>Gelände erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="51"/>
+        <source>Loading the terrain</source>
+        <translation>Gelände laden</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="53"/>
+        <source>Building the view</source>
+        <translation>Ansicht aufbauen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingScreen.qml" line="144"/>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>LoadingStep</name>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingStep.qml" line="26"/>
+        <source>%1: done</source>
+        <translation>%1: fertig</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qml/menus/LoadingStep.qml" line="26"/>
+        <source>%1: running</source>
+        <translation>%1: läuft</translation>
+    </message>
+</context>
+<context>
     <name>Main</name>
     <message>
         <location filename="../src/app/qml/Main.qml" line="20"/>
@@ -3229,17 +3323,15 @@ Als Nächstes: %3</translation>
         <translation>QtCraft</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="300"/>
         <source>Back to menu</source>
-        <translation>Zurück zum Menü</translation>
+        <translation type="vanished">Zurück zum Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="300"/>
         <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <translation type="vanished">Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="439"/>
+        <location filename="../src/app/qml/Main.qml" line="465"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
@@ -3248,12 +3340,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier mit diesem Gegenstand nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="457"/>
+        <location filename="../src/app/qml/Main.qml" line="483"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Main.qml" line="462"/>
+        <location filename="../src/app/qml/Main.qml" line="488"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -5465,20 +5557,20 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="281"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="325"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="315"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="359"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="300"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="334"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="310"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="320"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="330"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="344"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="354"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="364"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5487,24 +5579,22 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="383"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="349"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="383"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="382"/>
         <source>Loading content...</source>
-        <translation>Inhalte werden geladen …</translation>
+        <translation type="vanished">Inhalte werden geladen …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
         <source>Loading the world...</source>
-        <translation>Lade die Welt...</translation>
+        <translation type="vanished">Lade die Welt...</translation>
     </message>
     <message>
         <source>Cannot load game content: %1</source>
@@ -5547,12 +5637,11 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Verbindung getrennt: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="392"/>
         <source>Generating world...</source>
-        <translation>Welt wird erzeugt …</translation>
+        <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="513"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="587"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -8759,17 +8848,17 @@ Jetzt: %2</translation>
         <translation>Mehr mit /help %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.h" line="36"/>
+        <location filename="../src/server/commands/QcVillageCommands.h" line="41"/>
         <source>Mine shaft</source>
         <translation>Minenschacht</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.h" line="37"/>
+        <location filename="../src/server/commands/QcVillageCommands.h" line="42"/>
         <source>Dungeon</source>
         <translation>Verlies</translation>
     </message>
     <message>
-        <location filename="../src/server/commands/QcVillageCommands.h" line="38"/>
+        <location filename="../src/server/commands/QcVillageCommands.h" line="43"/>
         <source>Coastal tower</source>
         <translation>Küstenturm</translation>
     </message>
@@ -9428,6 +9517,14 @@ Jetzt: %2</translation>
     <message>
         <source>Done</source>
         <translation type="vanished">Fertig</translation>
+    </message>
+</context>
+<context>
+    <name>StartScreen</name>
+    <message>
+        <location filename="../src/app/qml/menus/StartScreen.qml" line="19"/>
+        <source>Starting QtCraft</source>
+        <translation>QtCraft startet</translation>
     </message>
 </context>
 <context>

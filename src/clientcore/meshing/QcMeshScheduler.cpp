@@ -155,6 +155,20 @@ void QcMeshScheduler::chunkLoaded(const QcClientWorld &world, QcChunkPos pos)
     submitLight([chunk = std::move(chunk)](QcBlockLightEngine &engine) { engine.addChunk(chunk); }, pos, {}, -1);
 }
 
+bool QcMeshScheduler::chunkMeshed(QcChunkPos pos) const
+{
+    if (!m_loadedChunks.contains(pos) || (m_lightEngine && !m_light.contains(pos))) {
+        return false;
+    }
+    for (int section = 0; section < QcWorld::sectionCount; ++section) {
+        const quint64 key = qcSectionKey(pos, section);
+        if (m_dirty.contains(key) || m_inFlight.contains(key)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 void QcMeshScheduler::chunkUnloaded(QcChunkPos pos)
 {
     // Gathered changes of the chunk go first, so the engine never sees them after the removal.

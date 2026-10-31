@@ -6,7 +6,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
-// A message over the whole window while a world loads or after it could not start (Main.qml,
+// A message over the whole window after a world could not start or save (Main.qml,
 // GameController.statusText), on ScreenFrame like every screen; "Back to menu" or "Cancel" below it
 // when there is a way back. --overlay message:<text> shows one for screenshots.
 Rectangle {

@@ -14,6 +14,7 @@
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
 #include "app/session/QcFrameDriver.h"
+#include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadControls.h"
@@ -60,6 +61,7 @@ private:
     std::unique_ptr<QcRenderBridge> m_render;
     std::unique_ptr<QcHudState> m_hud;
     std::unique_ptr<QcBenchmarkRun> m_benchmark;
+    QcLoadingProgress m_loading;
     std::unique_ptr<QcStartupHooks> m_startup;
     std::unique_ptr<QcFrameDriver> m_driver;
     std::unique_ptr<QQuickWindow> m_window;
@@ -100,7 +102,7 @@ private slots:
         m_render = std::make_unique<QcRenderBridge>(m_parts, *m_settings);
         m_hud = std::make_unique<QcHudState>(m_parts, *m_settings);
         m_benchmark = std::make_unique<QcBenchmarkRun>(*m_screens, m_parts, *m_input, *m_settings);
-        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input}, m_parts, m_benchmark.get());
+        m_startup = std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{*m_screens, *m_handbook, *m_input, m_loading}, m_parts, m_benchmark.get());
         m_driver = std::make_unique<QcFrameDriver>(m_parts,
                                                    QcFrameDriver::Targets{*m_settings, *m_input, m_gamepad, *m_preview, *m_render, *m_hud,
                                                                           *m_benchmark, *m_startup},
