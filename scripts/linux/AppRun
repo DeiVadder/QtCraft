@@ -1,0 +1,23 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 the QtCraft authors
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+# Entry point of the QtCraft AppImage (decision E-951): starts the game, or the dedicated server
+# qtcraft-headless when the first argument is --headless or the AppImage is called through a link
+# whose name starts with qtcraft-headless (the AppImage runtime passes that name in ARGV0).
+#
+#   ./QtCraft-<version>-Linux-x86_64.AppImage                       the game
+#   ./QtCraft-<version>-Linux-x86_64.AppImage --headless --server   the dedicated server
+#   ln -s QtCraft-<version>-Linux-x86_64.AppImage qtcraft-headless; ./qtcraft-headless --help
+#
+# Both programs share the Qt libraries of the AppImage; exec keeps the process id, so a service
+# manager that stops the AppImage stops the server.
+HERE=$(dirname "$(readlink -f "$0")")
+if [ "${1:-}" = --headless ]; then
+    shift
+    exec "$HERE/usr/bin/qtcraft-headless" "$@"
+fi
+case "$(basename "${ARGV0:-$0}")" in
+qtcraft-headless*) exec "$HERE/usr/bin/qtcraft-headless" "$@" ;;
+esac
+exec "$HERE/usr/bin/qtcraft" "$@"

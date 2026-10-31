@@ -5,6 +5,8 @@
 #   - macOS: runs the tests, builds the universal app with scripts/release.sh (.zip and .dmg)
 #   - Windows x64: builds and checks QtCraft-<version>-Windows-x64.zip (and its -pdb.zip) with
 #     scripts/windows/package-windows.ps1 -Ci
+#   - Linux x86_64: builds and checks QtCraft-<version>-Linux-x86_64.AppImage and its README with
+#     scripts/release-linux.sh (decision E-951)
 # A version tag (v0.1.0 and so on) uploads all packages to a draft release, headed by the release
 # notes docs/release-notes/<version>.md; the runners cannot start the game, a human tries the
 # packages, then publishes the draft. Running the workflow again for the same tag replaces its
@@ -306,11 +308,101 @@ jobs:
             build/failure-logs/
           retention-days: 14
 
+  linux:
+    name: Linux x86_64 package
+    # Ubuntu 24.04 sets the oldest glibc the AppImage runs on (2.39, README-Linux.txt).
+    runs-on: ubuntu-24.04
+    # An ARM64 AppImage (decision E-951; the script itself was tried on aarch64): run the job a
+    # second time on the ARM runner, e.g. with a matrix over these two, and upload both AppImages.
+    # runs-on: ubuntu-24.04-arm
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+
+      # Build tools, the development files the game links (GL, Vulkan headers, xkbcommon, OpenSSL 3
+      # of the system), the libraries Qt's xcb and Wayland plugins need (linuxdeploy bundles them
+      # unless they belong to the system), Xvfb, and ICU (its licence file stands in for Qt's ICU in
+      # the AppImage). No FUSE: the AppImages run with APPIMAGE_EXTRACT_AND_RUN (Package step).
+      - name: Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build gcc-14 g++-14 file libgl1-mesa-dev libvulkan-dev \
+            libxkbcommon-dev libxkbcommon-x11-0 libfontconfig1 libegl1 libpulse0 libssl-dev xvfb \
+            libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
+            libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libwayland-cursor0 libwayland-egl1 libicu74
+          echo "CC=gcc-14" >> "$GITHUB_ENV"
+          echo "CXX=g++-14" >> "$GITHUB_ENV"
+
+      - name: Qt ${{ env.QT_VERSION }}
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          modules: ${{ env.QT_MODULES }}
+          cache: true
+
+      - name: SDL3 cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/sdl3
+          key: sdl3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('3rdparty/sdl3-tag.txt', 'scripts/build-sdl.sh') }}
+
+      # linuxdeploy and its Qt plugin at the versions pinned in scripts/release-linux.sh.
+      - name: linuxdeploy cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/qtcraft/linuxdeploy
+          key: linuxdeploy-${{ runner.arch }}-${{ hashFiles('scripts/release-linux.sh') }}
+
+      # Release build, AppImage, licence texts and the checks of the script, among them the
+      # dedicated server of the AppImage with TLS and a bot that joins it. No tests here (they run
+      # locally before a tag), and the game is not started: the runner has no GPU (the script's
+      # Xvfb starts were tried on the development machine, E-951).
+      - name: Package
+        timeout-minutes: 170
+        env:
+          QTCRAFT_RELEASE_GUI: '0'
+          QTCRAFT_RELEASE_BUILD_LIMIT: '9000'
+          QTCRAFT_RELEASE_PROGRESS: '1'
+          QTCRAFT_RELEASE_TMP: ${{ runner.temp }}
+          # linuxdeploy's AppImages need libfuse2; unpacked they need nothing.
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+          QT_PLUGIN_PATH: ''
+          QML2_IMPORT_PATH: ''
+          # aqtinstall installs the open-source Qt; only such packages are passed on (E-932).
+          QTCRAFT_RELEASE_OPEN_SOURCE_QT: '1'
+        run: QT_DIR="$QT_ROOT_DIR" scripts/release-linux.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QtCraft-Linux-x86_64
+          path: |
+            deploy/QtCraft-*-Linux-x86_64.AppImage
+            deploy/QtCraft-*-Linux-README.txt
+          if-no-files-found: error
+
+      # The script keeps its logs in its scratch folder when a check fails.
+      - name: Package logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-logs-Linux
+          path: |
+            ${{ runner.temp }}/qtcraft-release-linux.*/*.log
+            ${{ runner.temp }}/qtcraft-release-linux.*/*.txt
+          retention-days: 14
+
   release:
     name: Draft release
     # Only a pushed tag makes a release; a run started by hand never does.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    needs: [macos, windows]
+    needs: [macos, windows, linux]
     permissions:
       contents: write
     runs-on: ubuntu-24.04
@@ -348,8 +440,9 @@ jobs:
           fi
           cat >> "$RUNNER_TEMP/notes.md" <<EOF
           Checked on the build machines: tests (macOS), package contents, licence texts, signature and
-          universal binaries (macOS), imported DLLs (Windows) and a start of the dedicated server, on
-          Windows with TLS and a bot that joins it. The game itself was not started there.
+          universal binaries (macOS), imported DLLs (Windows), linked libraries (Linux) and a start of
+          the dedicated server, on Windows and Linux with TLS and a bot that joins it. The game itself
+          was not started there.
 
           macOS (Apple silicon and Intel, macOS 14.4 or newer): QtCraft-*-macOS.zip or .dmg. The app is
           not notarised, so macOS refuses its first start. On macOS 15 and later try to open it once,
@@ -360,10 +453,17 @@ jobs:
           start qtcraft.exe; README-Windows.txt explains the SmartScreen warning (the program is not
           signed). The -pdb.zip holds the debug symbols for crash reports and is not needed to play.
 
+          Linux, x86_64 (glibc 2.39 or newer, e.g. Ubuntu 24.04, Debian 13, Fedora 40): one file,
+          QtCraft-${GITHUB_REF_NAME#v}-Linux-x86_64.AppImage. Make it executable (chmod +x) and start it;
+          the same file runs the dedicated server with --headless as the first argument. It needs
+          OpenSSL 3 of the system and FUSE (or --appimage-extract-and-run);
+          QtCraft-${GITHUB_REF_NAME#v}-Linux-README.txt explains both.
+
           QtCraft is licensed under GPL-3.0-or-later. The packages contain Qt ${QT_VERSION}, used under
           the GNU LGPL version 3, and the FFmpeg libraries of Qt Multimedia (GNU LGPL version 2.1 or
-          later); the licence texts and a notice are in QtCraft.app/Contents/Resources/licenses (macOS)
-          and in the folder licenses of the Windows package.
+          later); the licence texts and a notice are in QtCraft.app/Contents/Resources/licenses (macOS),
+          in the folder licenses of the Windows package and in usr/share/doc/qtcraft/licenses inside
+          the AppImage (--appimage-extract).
           Corresponding source:
           - Qt ${QT_VERSION}: https://download.qt.io/archive/qt/${QT_VERSION%.*}/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz
           - FFmpeg: the tag named in coin/provisioning/common/unix/install-ffmpeg.sh (Windows:
