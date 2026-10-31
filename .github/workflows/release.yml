@@ -29,8 +29,11 @@ permissions:
   contents: read
 
 env:
-  QT_VERSION: 6.8.3
+  QT_VERSION: 6.12.0
   QT_MODULES: qtmultimedia qtshadertools
+  # FFmpeg that Qt Multimedia of this Qt ships (the tag in coin/provisioning/common/unix/
+  # install-ffmpeg.sh of qt/qt5 at v$QT_VERSION); check it at every Qt update.
+  FFMPEG_TAG: n9.0.1
 
 jobs:
   macos:
@@ -89,15 +92,6 @@ jobs:
           modules: ${{ env.QT_MODULES }}
           cache: true
 
-      # Qt 6.8.3 still links the AGL framework, which the macOS 26 SDK no longer has (later 6.8
-      # releases dropped it): take it out of Qt's OpenGL wrapper before configuring.
-      - name: Qt without AGL (macOS 26 SDK)
-        run: |
-          f="$QT_ROOT_DIR/lib/cmake/Qt6/FindWrapOpenGL.cmake"
-          if [ -f "$f" ]; then
-            sed -i '' -e 's/\${__opengl_agl_fw_path}//g' -e '/find_library(WrapOpenGL_AGL/d' "$f"
-            if grep -q 'opengl_agl_fw_path}' "$f"; then echo "AGL still linked in $f"; exit 1; fi
-          fi
 
       # SDL3 for gamepads is built once into ~/.cache/qtcraft/sdl3 (decision E-540); the key
       # follows the tag and the build script (whose CONFIG_VERSION names the build options).
@@ -357,9 +351,9 @@ jobs:
           universal binaries (macOS), imported DLLs (Windows) and a start of the dedicated server, on
           Windows with TLS and a bot that joins it. The game itself was not started there.
 
-          macOS (Apple silicon and Intel, macOS 13.3 or newer): QtCraft-*-macOS.zip or .dmg. The app is
+          macOS (Apple silicon and Intel, macOS 14.4 or newer): QtCraft-*-macOS.zip or .dmg. The app is
           not notarised, so macOS refuses its first start. On macOS 15 and later try to open it once,
-          then click Open Anyway under System Settings, Privacy & Security; on macOS 13 and 14
+          then click Open Anyway under System Settings, Privacy & Security; on macOS 14
           right-click (Control-click) the app in Finder, choose Open and confirm.
 
           Windows 10 or 11, x64: QtCraft-${GITHUB_REF_NAME#v}-Windows-x64.zip. Unpack it completely and
@@ -373,8 +367,8 @@ jobs:
           Corresponding source:
           - Qt ${QT_VERSION}: https://download.qt.io/archive/qt/${QT_VERSION%.*}/${QT_VERSION}/single/qt-everywhere-src-${QT_VERSION}.tar.xz
           - FFmpeg: the tag named in coin/provisioning/common/unix/install-ffmpeg.sh (Windows:
-            common/windows/install-ffmpeg.ps1) of the repository qt/qt5 at the tag v${QT_VERSION} (n7.1 for Qt 6.8.3),
-            https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.tar.gz; the build options are in that script.
+            common/windows/install-ffmpeg.ps1) of the repository qt/qt5 at the tag v${QT_VERSION} (${FFMPEG_TAG} for Qt ${QT_VERSION}),
+            https://github.com/FFmpeg/FFmpeg/archive/refs/tags/${FFMPEG_TAG}.tar.gz; the build options are in that script.
           The maintainers also send these sources on request.
           EOF
           if [ "$(gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft 2>/dev/null)" = "true" ]; then

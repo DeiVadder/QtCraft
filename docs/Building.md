@@ -4,9 +4,7 @@ How to build, package, test and measure QtCraft. Playing: [Playing.md](Playing.m
 
 ## Requirements
 
-CMake 3.25+, Ninja, a C++23 compiler with a recent standard library (on macOS Xcode 26.6 or newer, which the CI also uses; older Xcode lacks parts of the C++23 library such as `std::ranges::contains`; MSVC 2022 on Windows) and Qt 6.8 (any Qt 6.8 release; the releases are built with 6.8.3) with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. Git (the SDL submodule `3rdparty/SDL`) and Python 3 (`scripts/*.py`). For encrypted multiplayer the configure step builds OpenSSL once, which needs `curl` and `perl` (see below).
-
-Qt 6.8.3 with Xcode 26 (macOS 26 SDK) fails to link with `framework 'AGL' not found`: Qt 6.8.3 still names the old AGL framework, which nothing needs and the new SDK no longer has (later 6.8 releases dropped it). The CI removes it from Qt's OpenGL wrapper after installing Qt; by hand: `sed -i '' -e 's/\${__opengl_agl_fw_path}//g' -e '/find_library(WrapOpenGL_AGL/d' <Qt>/lib/cmake/Qt6/FindWrapOpenGL.cmake`.
+CMake 3.25+, Ninja, a C++23 compiler with a recent standard library (on macOS Xcode 26.6 or newer, which the CI also uses; older Xcode lacks parts of the C++23 library such as `std::ranges::contains`; MSVC 2022 on Windows) and Qt 6.12 (the releases are built with the open-source Qt 6.12 release named by `QT_VERSION` in the workflows; the code also still builds with Qt 6.8) with Quick, QuickControls2, Multimedia, ShaderTools, LinguistTools and Test. Git (the SDL submodule `3rdparty/SDL`) and Python 3 (`scripts/*.py`). For encrypted multiplayer the configure step builds OpenSSL once, which needs `curl` and `perl` (see below).
 
 ## Presets
 
@@ -47,9 +45,9 @@ Linux is set up as an experimental CI job whose failures will not fail the run (
 
 ## Windows
 
-`qtcraft` and `qtcraft-headless` build natively on Windows 11 ARM64 with MSVC 2022 and Qt 6.8 (`msvc2022_arm64`), with and without gamepads (decision E-861), and as an x64 cross build inside an ARM64 VM (`vcvarsall arm64_amd64`, Qt 6.8 `msvc2022_64`). The x64 build is packaged as a standalone zip (below) and has been played on Windows PCs against a dedicated server on a Mac, including multiplayer over TLS. Not done yet: the tests under MSVC (with `/W4 /WX` many test programs do not build yet), an installer and code signing. A build machine needs the following.
+`qtcraft` and `qtcraft-headless` build natively on Windows 11 ARM64 with MSVC 2022 and Qt 6.12 (`msvc2022_arm64`), with and without gamepads (decision E-861), and as an x64 cross build inside an ARM64 VM (`vcvarsall arm64_amd64`, Qt 6.12 `msvc2022_64`). The x64 build is packaged as a standalone zip (below) and has been played on Windows PCs against a dedicated server on a Mac, including multiplayer over TLS. Not done yet: the tests under MSVC (with `/W4 /WX` many test programs do not build yet), an installer and code signing. A build machine needs the following.
 
-**Qt Online Installer, Qt 6.8 (any 6.8 release; the releases are built with 6.8.3):**
+**Qt Online Installer, Qt 6.12:**
 
 - **MSVC 2022 64-bit.** This is the x64 kit, used for x64 PCs. It is also the kit to choose inside an ARM64 Windows VM on Apple silicon when the game is meant for x64 PCs: MSVC cross-compiles for x64 and the x64 Qt tools run emulated.
 - **MSVC 2022 ARM64.** Only needed for a native ARM64 build, for example to play inside the VM. Since Qt 6.8 it brings its own ARM64 host tools (`moc`, `qsb`, `lrelease`).
@@ -83,7 +81,7 @@ The repository checks out every text file with LF (`.gitattributes`), also with 
             "name": "local",
             "hidden": true,
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/6.8.3/msvc2022_arm64",
+                "CMAKE_PREFIX_PATH": "C:/Qt/6.12.0/msvc2022_arm64",
                 "CMAKE_MAKE_PROGRAM": "C:/Qt/Tools/Ninja/ninja.exe",
                 "CMAKE_C_COMPILER": "cl",
                 "CMAKE_CXX_COMPILER": "cl"
@@ -116,13 +114,13 @@ cmake --build --preset release --target qtcraft qtcraft-headless
 scripts/release.sh
 ```
 
-One command builds a universal (Apple silicon and Intel) Release build in `build/deploy` and puts a standalone `deploy/QtCraft.app` next to `deploy/QtCraft-<version>-macOS.zip` and `.dmg` (the `deploy/` folder is not in git). The app runs by double click on any Mac with macOS 13.3 or later, without Qt, build directory or command line. Inside are the Qt frameworks, QML modules and plugins (platform, image formats, styles, multimedia with the FFmpeg backend), OpenSSL in `Contents/Frameworks` with its licence in `Contents/Resources/licenses`, the base content and translations (built into the program), the example mod, the icon, which the build draws from the game's own textures, and the dedicated server `QtCraft.app/Contents/MacOS/qtcraft-headless` (start it from Terminal, see [Multiplayer.md](Multiplayer.md)). Saves, settings and mods stay in `~/Library/Application Support/QtCraft/QtCraft`; on the first start the example mod is copied to its `mods` folder switched off.
+One command builds a universal (Apple silicon and Intel) Release build in `build/deploy` and puts a standalone `deploy/QtCraft.app` next to `deploy/QtCraft-<version>-macOS.zip` and `.dmg` (the `deploy/` folder is not in git). The app runs by double click on any Mac with macOS 14.4 or later, without Qt, build directory or command line. Inside are the Qt frameworks, QML modules and plugins (platform, image formats, styles, multimedia with the FFmpeg backend), OpenSSL in `Contents/Frameworks` with its licence in `Contents/Resources/licenses`, the base content and translations (built into the program), the example mod, the icon, which the build draws from the game's own textures, and the dedicated server `QtCraft.app/Contents/MacOS/qtcraft-headless` (start it from Terminal, see [Multiplayer.md](Multiplayer.md)). Saves, settings and mods stay in `~/Library/Application Support/QtCraft/QtCraft`; on the first start the example mod is copied to its `mods` folder switched off.
 
 Requirements: the build requirements above, Xcode command line tools (`codesign`, `otool`, `lipo`, `iconutil`, `hdiutil`) and `macdeployqt` from the Qt installation (`QT_DIR` overrides the default, the newest `~/Qt/6.8.*/macos`). The script checks its result and exits with 1 if any check fails: links and rpaths of every binary (`otool`), the required parts and Info.plist keys, the signature, that game and dedicated server are universal, OpenSSL and its licence, a start of the copy's dedicated server (listens on a free loopback port, stops with exit code 0 on SIGTERM), and starts of a copy of the game in a temporary folder (a world with screenshot and the list of loaded libraries, which must all come from the copy or the system, the audio output, the example mod and the German texts, a start through Launch Services like a double click, and on Macs with Rosetta a start of the Intel half). Every start opens the (muted) audio output and keeps its caches in the temporary folder. `CFBundleVersion` is the UTC build time (`2026.1009.1130`). The starts open on the built-in display in the background and are muted. `QTCRAFT_RELEASE_DMG=0` skips the disk image, `QTCRAFT_RELEASE_PRESET` builds with another preset than `deploy` and `QTCRAFT_RELEASE_GUI=0` skips the starts of the game (machines without a display, such as the release workflow). It takes a few minutes and is not part of `scripts/verify.sh`.
 
 The app is signed ad hoc only; what that means for the first start on another Mac is described in [Playing.md](Playing.md#starting-the-game).
 
-**Who may pass a package on (decision E-932):** packages for others – public releases and playtest builds – come only from the release workflow on GitHub, built against open-source Qt 6.8.3. A package is local-only unless the Qt is declared open source: `QTCRAFT_RELEASE_OPEN_SOURCE_QT=1` for `scripts/release.sh` (the release workflow sets it), `-OpenSourceQt` for `scripts/windows/package-windows.ps1`. If the Qt installation holds commercial licence files (`Licenses/*ENTERPRISE*` or `*COMMERCIAL*`, or `licenseInfo.txt`, two folders above the Qt kit), the package stays local-only even then, with a warning; building and playing with a commercially licensed Qt works as usual. A local-only package – every package built outside the release workflow – is for your own tests and is never passed on: its names end in `-local-only` (`QtCraft-<version>-macOS-local-only.zip`/`.dmg`, `QtCraft-<version>-<commit>-Windows-x64-local-only.zip`), it carries `NOT-FOR-DISTRIBUTION.txt` and a `Qt-NOTICE.txt` without the LGPL. Each run removes old packages of both names.
+**Who may pass a package on (decision E-932):** packages for others – public releases and playtest builds – come only from the release workflow on GitHub, built against open-source Qt 6.12. A package is local-only unless the Qt is declared open source: `QTCRAFT_RELEASE_OPEN_SOURCE_QT=1` for `scripts/release.sh` (the release workflow sets it), `-OpenSourceQt` for `scripts/windows/package-windows.ps1`. If the Qt installation holds commercial licence files (`Licenses/*ENTERPRISE*` or `*COMMERCIAL*`, or `licenseInfo.txt`, two folders above the Qt kit), the package stays local-only even then, with a warning; building and playing with a commercially licensed Qt works as usual. A local-only package – every package built outside the release workflow – is for your own tests and is never passed on: its names end in `-local-only` (`QtCraft-<version>-macOS-local-only.zip`/`.dmg`, `QtCraft-<version>-<commit>-Windows-x64-local-only.zip`), it carries `NOT-FOR-DISTRIBUTION.txt` and a `Qt-NOTICE.txt` without the LGPL. Each run removes old packages of both names.
 
 **Replacing Qt or FFmpeg in the macOS bundle (LGPL):** macdeployqt rewrites the install names of the frameworks and libraries to `@rpath`/`@executable_path`, and the bundle is signed. A replaced framework or FFmpeg library must keep its install name (`install_name_tool -id` if needed), and the bundle must be signed again: `codesign --force --deep -s - QtCraft.app`.
 
@@ -168,7 +166,7 @@ Useful hooks: `--play [--seed N] [--world NAME]`, `--world-type terrain|flat|voi
 
 ## Continuous integration
 
-GitHub Actions (`.github/workflows/`), all against open-source Qt 6.8.3 installed by `install-qt-action` (presets `ci-debug`, `ci-deploy` and `ci-release`, Qt from `QT_ROOT_DIR`):
+GitHub Actions (`.github/workflows/`), all against open-source Qt 6.12 (`QT_VERSION`) installed by `install-qt-action` (presets `ci-debug`, `ci-deploy` and `ci-release`, Qt from `QT_ROOT_DIR`):
 
 - **CI** – every push to `dev` or `main` and every pull request: Debug build and all tests on macOS. Linux and Windows jobs are set up too, as experimental jobs whose failures do not fail the run (not run yet).
 - **Pages** – `web/` from `main`: a start page, the web handbook (`/handbook/`) and the API reference (`/api/`, generated with the `qdoc` of that Qt; decision E-939).
@@ -189,7 +187,7 @@ Once, before the first public release: rewrite the commit e-mail of the history 
 
 ### Playtest builds
 
-Packages for others – playtest builds as well as releases – come only from the release workflow, built against open-source Qt 6.8.3 (decision E-932). Packages from `scripts/release.sh` or `scripts/vm-package-windows.sh` on a local machine are for local tests only (`…-local-only`, with `NOT-FOR-DISTRIBUTION.txt`; see “Who may pass a package on” above); the Windows job of the workflow runs `package-windows.ps1 -Ci -OpenSourceQt` (decision E-934).
+Packages for others – playtest builds as well as releases – come only from the release workflow, built against open-source Qt 6.12 (decision E-932). Packages from `scripts/release.sh` or `scripts/vm-package-windows.sh` on a local machine are for local tests only (`…-local-only`, with `NOT-FOR-DISTRIBUTION.txt`; see “Who may pass a package on” above); the Windows job of the workflow runs `package-windows.ps1 -Ci -OpenSourceQt` (decision E-934).
 
 1. On GitHub: Actions → Release → Run workflow, choose the branch (normally `dev`) and, optionally, the server address that `README-Windows.txt` names (empty: “the address the game master names”). Or from a terminal: `gh workflow run release.yml --ref dev -f playtest_server='[2001:db8::1]:25600'`.
 2. Wait for the run (macOS and Windows jobs, roughly 30–60 minutes; the first Windows run also builds OpenSSL and SDL3 into the Actions cache). A run started by hand creates no release.

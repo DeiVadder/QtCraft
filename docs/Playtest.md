@@ -100,7 +100,7 @@ Das Spiel für die Windows-PCs ist eine eigenständige ZIP-Datei (Paket 74.4): e
 auf `dev` (optional mit der Serveradresse für `README-Windows.txt`), danach das Artefakt
 `QtCraft-Windows-x64` herunterladen und die darin liegende `QtCraft-<version>-Windows-x64.zip`
 weitergeben; `QtCraft-Windows-x64-pdb` behält die Spielleitung für Absturzberichte. Gebaut gegen
-Open-Source-Qt 6.8.3 mit demselben Skript wie unten (`package-windows.ps1 -Ci`); Einzelheiten in
+Open-Source-Qt 6.12 mit demselben Skript wie unten (`package-windows.ps1 -Ci`); Einzelheiten in
 [Building.md](Building.md#playtest-builds).
 
 Für eigene Tests (nicht zur Weitergabe) baut es die Parallels-VM (Windows 11

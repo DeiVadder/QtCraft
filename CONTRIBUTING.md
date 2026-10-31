@@ -23,7 +23,7 @@ Changed content or handbook texts: run `scripts/export-handbook.sh` and commit t
 
 ## Code rules (summary)
 
-- C++23 and Qt 6.8. No exceptions (`-fno-exceptions`): errors go through `std::optional`, `std::expected` or `QcResult`. Warnings are errors.
+- C++23 and Qt 6.12. No exceptions (`-fno-exceptions`): errors go through `std::optional`, `std::expected` or `QcResult`. Warnings are errors.
 - Casts only as named casts (`static_cast`, `reinterpret_cast`, `const_cast`), never `T(x)` or `(T)x`, also for enums.
 - Size limits, counted in code lines without comments and blank lines: functions ≤ 60 lines (aim for 30) and ≤ 5 parameters; `.cpp`/`.qml` files ≤ 600 lines, headers ≤ 220, test sources ≤ 750. When a limit is reached, split by responsibility – never squeeze statements together.
 - No output parameters: prefer functions that return a value (or `std::optional`, a struct with named fields); if an object must change, make it a method of that object.

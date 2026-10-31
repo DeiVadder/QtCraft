@@ -95,9 +95,9 @@ if ($Ci) {
     if (-not $PSBoundParameters.ContainsKey("Server") -or -not $Server) { $Server = "(die Adresse, die die Spielleitung nennt / the address your host names)" }
 }
 if (-not $Ci -and -not $QtDir) {
-    # Default: the newest Qt 6.8 kit for MSVC x64 below C:\Qt (any Qt 6.8 release works).
+    # Default: the newest Qt 6.12 (else 6.8) kit for MSVC x64 below C:\Qt.
     $QtDir = "C:\Qt\6.8\msvc2022_64"
-    $kit = Get-ChildItem -Directory -ErrorAction SilentlyContinue "C:\Qt" | Where-Object { $_.Name -match '^6\.8\.\d+$' } |
+    $kit = Get-ChildItem -Directory -ErrorAction SilentlyContinue "C:\Qt" | Where-Object { $_.Name -match '^6\.(8|12)\.\d+$' } |
         Sort-Object { [version]$_.Name } | Select-Object -Last 1
     if ($kit) { $QtDir = Join-Path $kit.FullName "msvc2022_64" }
 }
@@ -551,6 +551,10 @@ $ffmpegUrlTag = "<tag>"
 if ($qtVersion -eq "6.8.3") {
     $ffmpegTag = "FFmpeg n7.1 (named in $ffmpegScript)"
     $ffmpegUrlTag = "n7.1"
+}
+if ($qtVersion -eq "6.12.0") {
+    $ffmpegTag = "FFmpeg n9.0.1 (named in $ffmpegScript)"
+    $ffmpegUrlTag = "n9.0.1"
 }
 if ($ffmpeg.Count -gt 0) {
     Copy-Required (Join-Path $Source "licenses-third-party\LGPL-2.1-or-later.txt") (Join-Path $licenses "FFmpeg-LGPL-2.1.txt")

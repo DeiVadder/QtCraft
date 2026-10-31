@@ -231,10 +231,11 @@ QT_VERSION=$("$QT_DIR/bin/qtpaths" --query QT_VERSION 2>/dev/null)
 [ -n "$QT_VERSION" ] || abort "cannot read the Qt version from $QT_DIR/bin/qtpaths"
 QT_SERIES=${QT_VERSION%.*}
 FFMPEG_LIBRARIES=$(cd "$APP/Contents/Frameworks" && ls libav*.dylib libsw*.dylib 2>/dev/null | tr '\n' ' ')
-# The FFmpeg tag Qt builds from is named in Qt's provisioning script (n7.1 for Qt 6.8.3).
+# The FFmpeg tag Qt builds from is named in Qt's provisioning script (checked for each Qt release the workflows use).
 FFMPEG_SCRIPT="coin/provisioning/common/unix/install-ffmpeg.sh of the repository qt/qt5 at the tag v$QT_VERSION"
 case "$QT_VERSION" in
 6.8.3) FFMPEG_TAG="FFmpeg n7.1 (named in $FFMPEG_SCRIPT)" FFMPEG_URL_TAG=n7.1 ;;
+6.12.0) FFMPEG_TAG="FFmpeg n9.0.1 (named in $FFMPEG_SCRIPT)" FFMPEG_URL_TAG=n9.0.1 ;;
 *) FFMPEG_TAG="the FFmpeg tag named in $FFMPEG_SCRIPT" FFMPEG_URL_TAG="<tag>" ;;
 esac
 if [ "$LOCAL_ONLY" -eq 0 ]; then

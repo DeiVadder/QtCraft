@@ -24,6 +24,16 @@ bool platformWithoutWindows()
 {
     return QGuiApplication::platformName() == u"offscreen"_s;
 }
+
+// The image upside down; QImage::flipped exists since Qt 6.9, QImage::mirrored is deprecated there.
+QImage flippedVertically(const QImage &image)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    return image.flipped(Qt::Vertical);
+#else
+    return image.mirrored();
+#endif
+}
 } // namespace
 
 QcOffscreenRender::QcOffscreenRender(QQuickWindow &mainWindow, QObject *parent)
@@ -174,7 +184,7 @@ void QcOffscreenRender::renderFrame(bool readBack)
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast): QImage reads the pixel bytes of the QByteArray as uchar
         const QImage image(reinterpret_cast<const uchar *>(result.data.constData()), result.pixelSize.width(), result.pixelSize.height(),
                            QImage::Format_RGBA8888_Premultiplied);
-        m_lastImage = (m_renderControl->rhi()->isYUpInFramebuffer() ? image.mirrored() : image).convertToFormat(QImage::Format_RGB32);
+        m_lastImage = (m_renderControl->rhi()->isYUpInFramebuffer() ? flippedVertically(image) : image).convertToFormat(QImage::Format_RGB32);
         m_lastImage.setDevicePixelRatio(m_window->devicePixelRatio());
     }
     emit m_window->frameSwapped();

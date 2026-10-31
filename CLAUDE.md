@@ -1,6 +1,6 @@
 # QtCraft – Einstieg für Agenten
 
-Voxel-Sandbox-Spiel mit Qt 6.8 (C++23, CMake/Ninja, QRhi/Metal, Qt Quick). Client und Server sind getrennt, auch im Einzelspieler (`QcLocalServerHost` im selben Prozess, TCP im Mehrspieler). Diese Datei wird in jede Sitzung geladen: Sie sagt, wo was steht, damit niemand den Code zum Orientieren lesen muss.
+Voxel-Sandbox-Spiel mit Qt 6.12 (C++23, CMake/Ninja, QRhi/Metal, Qt Quick). Client und Server sind getrennt, auch im Einzelspieler (`QcLocalServerHost` im selben Prozess, TCP im Mehrspieler). Diese Datei wird in jede Sitzung geladen: Sie sagt, wo was steht, damit niemand den Code zum Orientieren lesen muss.
 
 ## Lesereihenfolge
 
