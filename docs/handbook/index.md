@@ -2,7 +2,7 @@
 
 Everything the game contains, generated from the game's content data by `qtcraft-headless --export-handbook`. The same pages are in the game (H / F1).
 
-**Content packs:** QtCraft 0.1.0
+**Content packs:** QtCraft 1.0.0
 
 ## Contents
 

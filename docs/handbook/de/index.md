@@ -2,7 +2,7 @@
 
 Alles, was das Spiel enthält, erzeugt aus den Inhaltsdaten des Spiels mit `qtcraft-headless --export-handbook`. Dieselben Seiten gibt es im Spiel (H / F1).
 
-**Inhaltspakete:** QtCraft 0.1.0
+**Inhaltspakete:** QtCraft 1.0.0
 
 ## Inhalt
 

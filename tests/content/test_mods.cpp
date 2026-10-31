@@ -101,7 +101,7 @@ void copyExampleMod(const QString &target)
     }
 }
 
-const QList<QcPackReference> base{{u"qtcraft"_s, u"QtCraft"_s, u"0.1.0"_s}};
+const QList<QcPackReference> base{{u"qtcraft"_s, u"QtCraft"_s, u"1.0.0"_s}};
 
 } // namespace
 

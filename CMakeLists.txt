@@ -9,7 +9,7 @@ if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     set(CMAKE_OSX_DEPLOYMENT_TARGET 14.4)
 endif()
 
-project(QtCraft VERSION 0.1.0 DESCRIPTION "Voxel sandbox game built with Qt" LANGUAGES CXX)
+project(QtCraft VERSION 1.0.0 DESCRIPTION "Voxel sandbox game built with Qt" LANGUAGES CXX)
 if(APPLE)
     # The platform part of the mouse capture talks to AppKit.
     enable_language(OBJCXX)
