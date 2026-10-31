@@ -256,11 +256,13 @@ add_test(NAME app_offscreen_pad_keyboard
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-keyboard.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# The main menu on a first start: down to "Create a new world", left along the first-start links
+# (Character, Multiplayer, Handbook) into the side bar, down along its entries.
 add_test(NAME app_offscreen_pad_menu
     COMMAND ${CMAKE_COMMAND}
-        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadLeft;--overlay;@1300 pad:dpadDown"
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--no-audio;--overlay;@300 pad:dpadDown;--overlay;@800 pad:dpadLeft;--overlay;@1300 pad:dpadLeft;--overlay;@1800 pad:dpadLeft;--overlay;@2300 pad:dpadLeft;--overlay;@2800 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
-        "-DEXPECTED_ERROR=padFocus: firstWorldButton.*padFocus: menuEntry[0-9].*padFocus: menuEntry[0-9]"
+        "-DEXPECTED_ERROR=padFocus: firstWorldButton.*padFocus: GameButton:Character.*padFocus: GameButton:Multiplayer.*padFocus: GameButton:Handbook.*padFocus: menuEntry[0-9].*padFocus: menuEntry[0-9]"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-menu.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)

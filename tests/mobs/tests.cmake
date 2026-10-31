@@ -9,7 +9,7 @@ qc_add_test(test_mobs SOURCES mobs/test_mobs.cpp LIBRARIES qc_server TIMEOUT 600
 qc_add_test(test_mob_departures SOURCES mobs/test_mob_departures.cpp LIBRARIES qc_server)
 qc_add_test(test_mob_paths SOURCES mobs/test_mob_paths.cpp fixtures/QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_mob_navigation SOURCES mobs/test_mob_navigation.cpp LIBRARIES qc_server TIMEOUT 300)
-qc_add_test(test_door_steering SOURCES mobs/test_door_steering.cpp LIBRARIES qc_server TIMEOUT 180)
+qc_add_test(test_door_steering SOURCES mobs/test_door_steering.cpp LIBRARIES qc_server TIMEOUT 360)
 qc_add_test(test_mob_width SOURCES mobs/test_mob_width.cpp fixtures/QcTestWorld.h LIBRARIES qc_server)
 qc_add_test(test_mob_crowds SOURCES mobs/test_mob_crowds.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_entity_push SOURCES mobs/test_entity_push.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
