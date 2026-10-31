@@ -5,6 +5,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import QtCraft
 
 // Base of the screens with slots (inventory and crafting, chest, furnace): picking a stack up and
@@ -16,6 +17,13 @@ import QtCraft
 // belongs (decided by the server). A click outside the slots drops the picked-up stack back. In
 // creative mode (CreativeScreen) an item taken from the catalogue is carried instead: a click on a
 // slot puts it there (right click: one item), a click outside drops it.
+//
+// Every slot screen has the same frame (draft D.2 A of docs/Menue-Pruefung.md, stage 76.2-e): the
+// head with the title and "Close" with its key, the machine's part (the screen's own items) above
+// the inventory with its heading, which always stands in the same place, optional columns beside
+// them (recipes, offers, the creative catalogue), and a foot with the mouse's hints as key plates
+// and the way to the machine's page in the handbook. The pad's hints stand at the window's bottom
+// edge (PadHints) instead of the key plates.
 Rectangle {
     id: screen
 
@@ -30,13 +38,30 @@ Rectangle {
     property int outputSlot: -1
     // A slot that takes no clicks: the hotbar slot of a backpack opened from the hand (decision E-833).
     property int lockedSlot: -1
-    // The content the panel is drawn behind.
-    property Item panelContent
     // Where the picked-up stack is drawn while the mouse is outside the window: next to its slot.
     property point pickedFrom
     // The catalogue item carried in creative mode (its name, empty for none) and how many.
     property string carriedItem
     property int carriedCount
+
+    // The screen's title in its head.
+    property string title
+    // The entry "More in the handbook" opens (an item or block name); empty: no link.
+    property string handbookTarget
+    // The mouse's hints in the foot ({keys, text}, KeyHintRow); the usual three by default.
+    property var keyHints: [
+        { keys: [qsTr("Click")], text: qsTr("take, put down") },
+        { keys: [qsTr("Right click")], text: qsTr("one") },
+        { keys: [qsTr("Shift-click")], text: qsTr("move across") }
+    ]
+    // Only the hotbar below the machine (a backpack opened from the hand, decision E-833).
+    property bool hotbarOnly
+    // The creative catalogue and the inventory switch between each other in their heads.
+    property bool creativeSwitch
+    // The machine's part above the inventory and the columns before and after it.
+    default property alias machine: machineArea.data
+    property alias startColumn: startArea.data
+    property alias endColumn: endArea.data
 
     color: Theme.scrim
     focus: visible
@@ -105,13 +130,119 @@ Rectangle {
     }
 
     // Opaque panel so the crosshair and the world do not show through the slots.
-    Rectangle {
-        anchors.fill: screen.panelContent
-        anchors.margins: Ui.px(-20)
-        visible: screen.panelContent !== null
-        radius: Ui.px(6)
-        color: Theme.panel
-        border.color: Theme.panelBorder
+    ScreenFrame {
+        anchors.fill: frame
+        anchors.margins: -Ui.space.l
+    }
+
+    ColumnLayout {
+        id: frame
+
+        objectName: "slotFrame"
+        anchors.centerIn: parent
+        spacing: Ui.space.s
+
+        ScreenHeader {
+            Layout.fillWidth: true
+            title: screen.title
+            closeName: "slotScreenClose"
+            keyboardKey: screen.game.settings.keys.labels.inventory
+            padKey: screen.game.gamepad.active ? screen.game.gamepad.pads.texts.east : ""
+            onCloseRequested: screen.game.overlay = GameController.Overlay.None
+        }
+
+        Segments {
+            objectName: "creativeSwitch"
+            Layout.fillWidth: false
+            visible: screen.creativeSwitch && screen.game.player.creative
+            label: qsTr("Creative inventory")
+            model: [
+                { text: qsTr("Creative items"), value: GameController.Overlay.Creative },
+                { text: qsTr("Crafting and armour"), value: GameController.Overlay.Inventory }
+            ]
+            currentValue: screen.game.overlay
+            onActivated: value => screen.game.overlay = value
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: Ui.size.line
+            color: Theme.separator
+        }
+
+        RowLayout {
+            spacing: Ui.space.l
+
+            ColumnLayout {
+                id: startArea
+
+                Layout.alignment: Qt.AlignTop
+                Layout.fillHeight: true
+                visible: children.length > 0
+                spacing: Ui.space.s
+            }
+
+            ColumnLayout {
+                Layout.alignment: Qt.AlignTop
+                spacing: Ui.space.s
+
+                ColumnLayout {
+                    id: machineArea
+
+                    Layout.alignment: Qt.AlignHCenter
+                    spacing: Ui.space.m
+                }
+
+                Label {
+                    text: qsTr("Inventory")
+                    color: Theme.heading
+                    font.pixelSize: Ui.type.group
+                    font.bold: true
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
+                }
+
+                PlayerSlots {
+                    owner: screen
+                    hotbarOnly: screen.hotbarOnly
+                }
+            }
+
+            ColumnLayout {
+                id: endArea
+
+                Layout.alignment: Qt.AlignTop
+                Layout.fillHeight: true
+                visible: children.length > 0
+                spacing: Ui.space.s
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: Ui.size.line
+            color: Theme.separator
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Ui.space.l
+
+            // The pad's buttons stand at the window's bottom edge while it leads (PadHints).
+            KeyHintRow {
+                objectName: "slotKeyHints"
+                Layout.fillWidth: true
+                opacity: screen.game.gamepad.active ? 0 : 1
+                entries: screen.keyHints
+            }
+            GameButton {
+                objectName: "slotHandbookLink"
+                visible: screen.handbookTarget.length > 0
+                kind: GameButton.Quiet
+                text: qsTr("More in the handbook ›")
+                onClicked: screen.game.handbook.open(screen.handbookTarget)
+            }
+        }
     }
 
     HoverHandler {

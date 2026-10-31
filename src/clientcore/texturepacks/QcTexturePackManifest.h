@@ -6,6 +6,7 @@
 #include "clientcore/texturepacks/QcTexturePackProblem.h"
 
 #include <QByteArray>
+#include <QHash>
 #include <QList>
 #include <QString>
 
@@ -23,6 +24,7 @@ struct QcTexturePackManifest
     static constexpr int maxNameLength = 64;
     static constexpr int maxTextLength = 1000;
     static constexpr int maxCredits = 32;
+    static constexpr int maxDescriptions = 32;
 
     // Who made (part of) the pack, for packs with material of several authors.
     struct Credit
@@ -38,6 +40,10 @@ struct QcTexturePackManifest
     int format = formatVersion;
     QString name;
     QString description;
+    // The description in other languages, by language code ("de"; keys read in lower case up to
+    // "_" or "-"), from the optional object "descriptions"; the settings show the one of the
+    // game's language (TP-2 of docs/Menue-Pruefung.md).
+    QHash<QString, QString> descriptions;
     // Edge length of one texture in pixels: a power of two from 16 to 512.
     int resolution = minResolution;
     // Licence of the pack as a whole (e.g. "CC0-1.0", "CC-BY-4.0").
@@ -48,6 +54,9 @@ struct QcTexturePackManifest
     bool procedural = false;
     // Optional preview image in the pack folder: a plain file name ending in .png.
     QString preview;
+
+    // The description in `language` ("de"), the plain one without a text in that language.
+    QString descriptionIn(const QString &language) const { return descriptions.value(language, description); }
 
     // Checks every field; the first problem found is the error.
     static std::expected<QcTexturePackManifest, QcTexturePackProblem> parse(const QByteArray &bytes);

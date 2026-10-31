@@ -45,6 +45,7 @@ ItemDelegate {
                 Layout.fillWidth: true
                 text: entryRow.header ? entryRow.modelData.header : entryRow.modelData.title
                 color: entryRow.header ? Theme.heading : Theme.text
+                font.pixelSize: entryRow.header ? Ui.type.group : Ui.type.body
                 font.bold: entryRow.header
                 elide: Text.ElideRight
             }

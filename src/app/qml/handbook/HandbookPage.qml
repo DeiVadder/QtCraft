@@ -9,61 +9,71 @@ import QtQuick.Layouts
 import QtCraft
 
 // The open page of the handbook (HandbookScreen): icon, title, category and pack, the text, the
-// facts as a two-column table and the sections with their recipes and links; scrolls as a whole.
+// facts as a two-column table (the technical ones folded under "Technical") and the sections with
+// their recipes and links; scrolls as a whole.
 Flickable {
     id: view
 
     // The open page (QcHandbookModel::page()).
     property var page: ({})
 
+    readonly property var facts: page.facts || []
+    readonly property var technicalFacts: facts.filter(fact => fact.technical)
+    // The technical facts are unfolded; they fold again on the next page.
+    property bool technicalShown: false
+
     // A link or a recipe cell asks for the page `target`.
     signal linkActivated(string target)
 
     clip: true
     contentWidth: width
-    contentHeight: pageColumn.implicitHeight + Ui.px(20)
+    contentHeight: pageColumn.implicitHeight + Ui.space.xl
     boundsBehavior: Flickable.StopAtBounds
+    onPageChanged: technicalShown = false
 
     ScrollBar.vertical: ThemedScrollBar {}
 
     ColumnLayout {
         id: pageColumn
 
-        width: view.width - Ui.px(16)
-        spacing: Ui.px(12)
+        width: view.width - Ui.space.l
+        spacing: Ui.space.m
 
         RowLayout {
-            spacing: Ui.px(12)
+            spacing: Ui.space.m
 
             Rectangle {
-                Layout.preferredWidth: Ui.px(56)
-                Layout.preferredHeight: Ui.px(56)
+                Layout.preferredWidth: Ui.size.handbookPageIcon
+                Layout.preferredHeight: Ui.size.handbookPageIcon
                 visible: (view.page.icon || "").length > 0
                 color: Theme.panelRaised
-                radius: Ui.px(3)
+                radius: Ui.radius
 
                 Image {
                     anchors.fill: parent
-                    anchors.margins: Ui.px(6)
+                    anchors.margins: Ui.space.s
                     source: parent.visible ? ItemIcons.source(view.page.icon, ItemIcons.generation) : ""
-                    sourceSize: Qt.size(44, 44)
+                    sourceSize: Qt.size(width, height)
                     smooth: false
                 }
             }
 
             ColumnLayout {
-                spacing: Ui.px(2)
+                spacing: Ui.size.slotGap
 
                 Label {
                     text: view.page.title || ""
                     color: Theme.text
-                    font.pixelSize: Ui.px(26)
+                    font.pixelSize: Ui.type.title
                     font.bold: true
+                    Accessible.role: Accessible.Heading
+                    Accessible.name: text
                 }
 
                 Label {
                     text: (view.page.categoryTitle || "") + "  ·  " + (view.page.packName || "")
                     color: Theme.textMuted
+                    font.pixelSize: Ui.type.help
                 }
             }
         }
@@ -73,76 +83,37 @@ Flickable {
             visible: text.length > 0
             text: view.page.text || ""
             color: Theme.text
-            font.pixelSize: Ui.px(15)
+            font.pixelSize: Ui.type.body
             wrapMode: Text.Wrap
             textFormat: Text.MarkdownText
         }
 
-        // Facts as a two-column table.
-        Rectangle {
+        HandbookFacts {
+            objectName: "handbookFacts"
             Layout.fillWidth: true
-            visible: factRepeater.count > 0
-            implicitHeight: factColumn.implicitHeight + Ui.px(12)
-            color: Theme.rowHighlight
-            radius: Ui.px(4)
+            facts: view.facts.filter(fact => !fact.technical)
+            onLinkActivated: target => view.linkActivated(target)
+        }
 
-            ColumnLayout {
-                id: factColumn
+        // The id, states and sound of the page under "Technical", folded (HB-3 of
+        // docs/Menue-Pruefung.md).
+        GameButton {
+            objectName: "handbookTechnical"
+            visible: view.technicalFacts.length > 0
+            kind: GameButton.Quiet
+            text: (view.technicalShown ? "▾ " : "▸ ") + qsTr("Technical")
+            Accessible.name: qsTr("Technical")
+            Accessible.role: Accessible.CheckBox
+            Accessible.checked: view.technicalShown
+            onClicked: view.technicalShown = !view.technicalShown
+        }
 
-                x: Ui.px(8)
-                y: Ui.px(6)
-                width: parent.width - Ui.px(16)
-                spacing: Ui.px(4)
-
-                Repeater {
-                    id: factRepeater
-
-                    model: view.page.facts || []
-
-                    RowLayout {
-                        id: factRow
-
-                        required property var modelData
-
-                        Layout.fillWidth: true
-                        spacing: Ui.px(10)
-
-                        Label {
-                            Layout.preferredWidth: Ui.px(210)
-                            Layout.alignment: Qt.AlignTop
-                            topPadding: Ui.px(4)
-                            text: factRow.modelData.label
-                            color: Theme.textMuted
-                            wrapMode: Text.Wrap
-                        }
-
-                        Flow {
-                            Layout.fillWidth: true
-                            spacing: Ui.px(6)
-
-                            Label {
-                                visible: text.length > 0
-                                topPadding: Ui.px(4)
-                                width: Math.min(implicitWidth, parent.width)
-                                text: factRow.modelData.value
-                                color: Theme.text
-                                wrapMode: Text.Wrap
-                            }
-
-                            Repeater {
-                                model: factRow.modelData.links
-
-                                HandbookLink {
-                                    required property var modelData
-
-                                    link: modelData
-                                    onActivated: target => view.linkActivated(target)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        HandbookFacts {
+            objectName: "handbookTechnicalFacts"
+            Layout.fillWidth: true
+            visible: view.technicalShown && facts.length > 0
+            facts: view.technicalFacts
+            onLinkActivated: target => view.linkActivated(target)
         }
 
         Repeater {
@@ -154,13 +125,13 @@ Flickable {
                 required property var modelData
 
                 Layout.fillWidth: true
-                spacing: Ui.px(6)
+                spacing: Ui.space.s
 
                 Label {
                     visible: text.length > 0
                     text: sectionColumn.modelData.title
                     color: Theme.heading
-                    font.pixelSize: Ui.px(18)
+                    font.pixelSize: Ui.type.section
                     font.bold: true
                 }
 
@@ -169,7 +140,7 @@ Flickable {
                     visible: text.length > 0
                     text: sectionColumn.modelData.text
                     color: Theme.text
-                    font.pixelSize: Ui.px(15)
+                    font.pixelSize: Ui.type.body
                     wrapMode: Text.Wrap
                     textFormat: Text.MarkdownText
                 }
@@ -177,7 +148,7 @@ Flickable {
                 Flow {
                     Layout.fillWidth: true
                     visible: sectionColumn.modelData.recipes.length > 0
-                    spacing: Ui.px(18)
+                    spacing: Ui.space.l
 
                     Repeater {
                         model: sectionColumn.modelData.recipes
@@ -194,7 +165,7 @@ Flickable {
                 Flow {
                     Layout.fillWidth: true
                     visible: sectionColumn.modelData.links.length > 0
-                    spacing: Ui.px(6)
+                    spacing: Ui.space.s
 
                     Repeater {
                         model: sectionColumn.modelData.links

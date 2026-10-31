@@ -86,7 +86,6 @@ AbstractButton {
                 color: Theme.text
                 style: Text.Outline
                 styleColor: Theme.textOutline
-                font.family: Ui.pixelFont.name
                 font.pixelSize: Ui.type.body
             }
         }

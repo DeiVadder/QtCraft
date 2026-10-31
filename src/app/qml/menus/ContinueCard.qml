@@ -40,6 +40,7 @@ Rectangle {
         WorldTile {
             visible: card.world !== null
             name: card.world?.name ?? ""
+            typeBlock: card.world?.typeBlock ?? ""
         }
 
         ColumnLayout {

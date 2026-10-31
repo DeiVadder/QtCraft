@@ -4,11 +4,13 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import QtCraft
 
 // Texture packs (decision E-297): every pack found with its preview, resolution, licence and
-// problems; switches turn a pack on (it goes on top), arrows change the order of the active ones.
+// problems, the active ones on top in their order and the others below; switches turn a pack on (it
+// goes on top), arrows change the order of the active ones.
 // A change takes effect at once, a running world keeps drawing until the new atlas is ready. Pack
 // texts are data from files: never rich text (E-272).
 SettingsPage {
@@ -46,37 +48,61 @@ SettingsPage {
                 text: page.packs.notices[index]
             }
         }
+    }
 
-        RowLayout {
+    // The active packs on top in their order, the others below (TP-3 of docs/Menue-Pruefung.md).
+    Repeater {
+        model: [
+            { name: "texturePackList", title: qsTr("Active"), active: true },
+            { name: "inactiveTexturePacks", title: qsTr("Not active"), active: false }
+        ]
+
+        ColumnLayout {
+            id: group
+
+            required property var modelData
+            readonly property var listed: page.packs.packs.filter(pack => pack.active === modelData.active)
+
+            objectName: modelData.name
+            Layout.fillWidth: true
+            visible: listed.length > 0
             spacing: Ui.space.s
 
-            GameButton {
-                text: qsTr("Open texture pack folder")
-                onClicked: page.packs.openFolder()
-
-                ThemedToolTip {
-                    shown: parent.hovered
-                    text: page.packs.userDirectory
-                }
+            Label {
+                text: group.modelData.title
+                font.pixelSize: Ui.type.group
+                font.bold: true
+                color: Theme.heading
+                Accessible.role: Accessible.Heading
+                Accessible.name: text
             }
-            GameButton {
-                text: qsTr("Reload")
-                onClicked: page.packs.refresh()
+            Repeater {
+                model: group.listed
+
+                delegate: TexturePackRow {
+                    packs: page.packs
+                    activeCount: group.modelData.active ? group.listed.length : 0
+                }
             }
         }
     }
 
-    ColumnLayout {
-        objectName: "texturePackList"
-        Layout.fillWidth: true
+    // The page's actions below the list, on the left (TP-1 of docs/Menue-Pruefung.md).
+    RowLayout {
         spacing: Ui.space.s
 
-        Repeater {
-            model: page.packs.packs
+        GameButton {
+            text: qsTr("Open texture pack folder")
+            onClicked: page.packs.openFolder()
 
-            delegate: TexturePackRow {
-                packs: page.packs
+            ThemedToolTip {
+                shown: parent.hovered
+                text: page.packs.userDirectory
             }
+        }
+        GameButton {
+            text: qsTr("Reload")
+            onClicked: page.packs.refresh()
         }
     }
 }

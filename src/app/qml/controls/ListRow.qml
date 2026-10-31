@@ -32,6 +32,9 @@ Rectangle {
     property int listIndex: -1
     // Title and subtitle on one line, the subtitle whole only with the focus.
     property bool compact: false
+    // The actions stand in the middle of the row's height instead of at its top (a switch beside a
+    // tall row, TP-3 of docs/Menue-Pruefung.md).
+    property bool actionsCentered: false
 
     signal clicked
     signal doubleClicked
@@ -173,7 +176,7 @@ Rectangle {
 
             // A layout fills its width by default: without actions it would halve the texts' room.
             Layout.fillWidth: false
-            Layout.alignment: Qt.AlignTop
+            Layout.alignment: row.actionsCentered ? Qt.AlignVCenter : Qt.AlignTop
             visible: children.length > 0
             spacing: Ui.space.xs
         }

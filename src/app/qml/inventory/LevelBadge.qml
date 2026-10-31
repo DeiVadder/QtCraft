@@ -6,7 +6,7 @@ import QtQuick.Controls
 import QtCraft
 
 // Experience levels as the workbench screens show them (decision E-884): a spark and the number (or
-// a short text) in the pixel font; green when the player has the levels, red when they lack them
+// a short text); green when the player has the levels, red when they lack them
 // (`missing`), grey without the spark when nothing can be had. On the panel the text is outlined;
 // on parchment (`parchment`) it takes the parchment's own tones instead: dark green on the light
 // parchment of a usable offer, light red on the dark parchment of an unusable one.
@@ -48,7 +48,6 @@ Row {
         color: badge.tone
         style: badge.parchment ? Text.Normal : Text.Outline
         styleColor: Theme.textOutline
-        font.family: Ui.pixelFont.name
         font.pixelSize: Ui.type.section
         Accessible.ignored: true
     }

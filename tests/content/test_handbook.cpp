@@ -13,6 +13,7 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QHash>
 #include <QRegularExpression>
 #include <QSet>
 #include <QTest>
@@ -861,6 +862,25 @@ private slots:
         QVERIFY(cells[3].isNull());
         QCOMPARE(cells[4].toObject().value(u"target"_s).toString(), u"item:qtcraft:stick"_s);
         QCOMPARE(QcHandbookJson::categories(m_english).size(), 12);
+    }
+
+    // The id, the states and the sound are technical (folded on the game's screen, HB-3 of
+    // docs/Menue-Pruefung.md); the other facts are not.
+    void jsonMarksTheTechnicalFacts()
+    {
+        const QcHandbookEntry *log = m_english.entry(u"block:qtcraft:oak_log"_s);
+        QVERIFY(log);
+        QHash<QString, bool> technical;
+        const QJsonArray facts = QcHandbookJson::entry(m_english, *log).value(u"facts"_s).toArray();
+        for (const auto &value : facts) {
+            const QJsonObject object = value.toObject();
+            technical.insert(object.value(u"label"_s).toString(), object.value(u"technical"_s).toBool());
+        }
+        for (const QString &label : {u"ID"_s, u"States"_s, u"Sound"_s}) {
+            QVERIFY2(technical.value(label, false), qPrintable(label));
+        }
+        QVERIFY(technical.contains(u"Hardness"_s));
+        QVERIFY(!technical.value(u"Hardness"_s));
     }
 };
 

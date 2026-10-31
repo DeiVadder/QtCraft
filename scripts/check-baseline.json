@@ -3,10 +3,10 @@
         "connections-write": 2,
         "enum-list": 1,
         "long-function": 12,
-        "unread-object-name": 48
+        "unread-object-name": 37
     },
     "check-duplicates.py": {
-        "clone": 40,
+        "clone": 34,
         "near-repeat": 9,
         "repeat": 15
     }

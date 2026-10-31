@@ -228,6 +228,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/Hint.qml
         qml/controls/ItemSlot.qml
         qml/controls/KeyBadge.qml
+        qml/controls/KeyHintRow.qml
         qml/controls/LineChart.qml
         qml/controls/ListRow.qml
         qml/controls/Segments.qml
@@ -253,6 +254,7 @@ qt_add_qml_module(qc_app_core
         qml/gamepad/PadHints.qml
         qml/gamepad/PadNotice.qml
         qml/handbook/HandbookEntryRow.qml
+        qml/handbook/HandbookFacts.qml
         qml/handbook/HandbookLink.qml
         qml/handbook/HandbookPage.qml
         qml/handbook/HandbookRecipe.qml
@@ -285,7 +287,6 @@ qt_add_qml_module(qc_app_core
         qml/inventory/SlotScreen.qml
         qml/inventory/StonecutterScreen.qml
         qml/inventory/TradeScreen.qml
-        qml/inventory/WorkbenchTitle.qml
         qml/menus/CharacterPage.qml
         qml/menus/ContinueCard.qml
         qml/menus/DeathScreen.qml

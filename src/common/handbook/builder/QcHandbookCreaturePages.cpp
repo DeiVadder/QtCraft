@@ -397,7 +397,7 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.title = context.content.translations().translate(mob.translationKey, text.language());
     entry.icon = QcHandbookLinks::mobIcon(mob.name);
     entry.text = text.description(mob.descriptionKey, mob.name);
-    entry.facts.append({text.label(u"fact.id"_s), mob.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), mob.name, {}, true});
 
     entry.facts += bodyFacts(text, mob);
     entry.facts += spawnFacts(context, mob);

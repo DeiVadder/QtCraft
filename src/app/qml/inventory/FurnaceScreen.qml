@@ -17,113 +17,121 @@ SlotScreen {
     readonly property int fuelRow: 47
 
     outputSlot: 48
-    panelContent: content
+    title: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
+    handbookTarget: "qtcraft:furnace"
 
-    ColumnLayout {
-        id: content
+    // A slot's name beside it (IV-8 of docs/Menue-Pruefung.md).
+    component SlotName: Label {
+        color: Theme.textMuted
+        font.pixelSize: Ui.type.help
+    }
 
-        anchors.centerIn: parent
-        spacing: Ui.px(12)
+    RowLayout {
+        spacing: Ui.space.xl
 
-        Label {
-            textFormat: Text.PlainText
-            text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
-            color: Theme.text
-            font.pixelSize: Ui.px(24)
-            font.bold: true
-        }
+        GridLayout {
+            columns: 2
+            rowSpacing: Ui.space.s
+            columnSpacing: Ui.space.s
 
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            spacing: Ui.px(24)
-
-            ColumnLayout {
-                spacing: Ui.px(6)
-
-                Repeater {
-                    model: SlotRange {
-                        source: screen.game.player.inventory
-                        first: screen.inputRow
-                        count: 1
-                    }
-
-                    InventorySlot {
-                        owner: screen
-                        Layout.alignment: Qt.AlignHCenter
-                    }
+            SlotName {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                text: qsTr("To smelt")
+            }
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.inputRow
+                    count: 1
                 }
 
-                // The flame shrinks as the current fuel burns down.
-                Rectangle {
-                    objectName: "flame"
-                    Layout.alignment: Qt.AlignHCenter
-                    implicitWidth: Ui.px(26)
-                    implicitHeight: Ui.px(26)
-                    radius: Ui.px(4)
-                    color: Theme.slotBorder
+                InventorySlot {
+                    owner: screen
+                }
+            }
 
-                    Rectangle {
-                        anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        width: parent.width - Ui.px(6)
-                        height: (parent.height - Ui.px(4)) * screen.game.player.machineBurn
-                        radius: Ui.px(3)
-                        gradient: Gradient {
-                            GradientStop {
-                                position: 0
-                                color: Theme.flameCore
-                            }
-                            GradientStop {
-                                position: 1
-                                color: Theme.flame
-                            }
+            Item {
+                implicitWidth: 1
+            }
+            // The flame shrinks as the current fuel burns down.
+            Rectangle {
+                objectName: "flame"
+                Layout.alignment: Qt.AlignHCenter
+                implicitWidth: Ui.size.flame
+                implicitHeight: Ui.size.flame
+                radius: Ui.radius
+                color: Theme.slotBorder
+
+                Rectangle {
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width - 2 * Ui.space.xs
+                    height: (parent.height - Ui.space.xs) * screen.game.player.machineBurn
+                    radius: Ui.radius
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Theme.flameCore
+                        }
+                        GradientStop {
+                            position: 1
+                            color: Theme.flame
                         }
                     }
                 }
-
-                Repeater {
-                    model: SlotRange {
-                        source: screen.game.player.inventory
-                        first: screen.fuelRow
-                        count: 1
-                    }
-
-                    InventorySlot {
-                        owner: screen
-                        Layout.alignment: Qt.AlignHCenter
-                    }
-                }
             }
 
-            // The arrow fills while the current item is worked on.
-            Item {
-                objectName: "progressArrow"
-                implicitWidth: Ui.px(72)
-                implicitHeight: Ui.px(28)
+            SlotName {
+                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                text: qsTr("Fuel")
+            }
+            Repeater {
+                model: SlotRange {
+                    source: screen.game.player.inventory
+                    first: screen.fuelRow
+                    count: 1
+                }
+
+                InventorySlot {
+                    owner: screen
+                }
+            }
+        }
+
+        // The arrow fills while the current item is worked on.
+        Item {
+            objectName: "progressArrow"
+            implicitWidth: shaft.width + head.implicitWidth
+            implicitHeight: head.implicitHeight
+
+            Rectangle {
+                id: shaft
+
+                anchors.verticalCenter: parent.verticalCenter
+                width: Ui.size.progressArrow
+                height: Ui.space.s
+                color: Theme.slotBorder
 
                 Rectangle {
-                    id: shaft
-
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: Ui.px(52)
-                    height: Ui.px(10)
-                    color: Theme.slotBorder
-
-                    Rectangle {
-                        width: parent.width * screen.game.player.machineProgress
-                        height: parent.height
-                        color: Theme.text
-                    }
-                }
-
-                Label {
-                    anchors.left: shaft.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: "▶"
-                    color: screen.game.player.machineProgress > 0 ? Theme.text : Theme.textMuted
-                    font.pixelSize: Ui.px(20)
+                    width: parent.width * screen.game.player.machineProgress
+                    height: parent.height
+                    color: Theme.text
                 }
             }
+
+            Label {
+                id: head
+
+                anchors.left: shaft.right
+                anchors.verticalCenter: parent.verticalCenter
+                text: "▶"
+                color: screen.game.player.machineProgress > 0 ? Theme.text : Theme.textMuted
+                font.pixelSize: Ui.type.section
+            }
+        }
+
+        ColumnLayout {
+            spacing: Ui.space.xs
 
             Repeater {
                 model: SlotRange {
@@ -134,21 +142,13 @@ SlotScreen {
 
                 InventorySlot {
                     owner: screen
+                    Layout.alignment: Qt.AlignHCenter
                 }
             }
-        }
-
-        PlayerSlots {
-            owner: screen
-        }
-
-        Label {
-            Layout.maximumWidth: Ui.px(9 * 54)
-            wrapMode: Text.Wrap
-            text: screen.game.gamepad.active ? qsTr("Put something to smelt on top and fuel below. %1: pick up and put down. %2: put down one. %3: move the stack across. %4 closes.")
-                    .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                  : qsTr("Put something to smelt on top and fuel below. Left click: pick up and put down. Right click: put down one. Shift-click: move the stack across. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory)
-            color: Theme.textSecondary
+            SlotName {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Result")
+            }
         }
     }
 }

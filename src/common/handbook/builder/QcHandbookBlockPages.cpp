@@ -43,7 +43,9 @@ private:
     QString label(const QString &key) const { return m_text.label(key); }
     void addFact(const QString &key, const QString &value, const QList<Link> &links = {})
     {
-        m_entry.facts.append({label(u"fact."_s + key), value, links});
+        // The content id, the states and the sound are technical (folded on the game's screen).
+        const bool technical = key == u"id"_s || key == u"states"_s || key == u"sound"_s;
+        m_entry.facts.append({label(u"fact."_s + key), value, links, technical});
     }
     void addFlag(bool set, const QString &key)
     {

@@ -16,6 +16,7 @@
 #include <QQuickWindow>
 #include <QTimer>
 
+#include <algorithm>
 #include <utility>
 
 using namespace Qt::StringLiterals;
@@ -36,6 +37,21 @@ const QQuickItem *firstNamedItem(const QQuickItem *item, const QString &name)
         }
     }
     return nullptr;
+}
+
+// The item of that name to log: the first shown one, else the first at all. Screens that share a
+// frame (the machines' SlotScreen) carry the same names, and only the open one is shown.
+const QQuickItem *namedItem(const QQuickWindow &window, const QString &name)
+{
+    const QList<QQuickItem *> items = window.findChildren<QQuickItem *>(name);
+    const auto shown = std::ranges::find_if(items, [](const QQuickItem *item) { return item->isVisible(); });
+    if (shown != items.end()) {
+        return *shown;
+    }
+    if (!items.isEmpty()) {
+        return items.constFirst();
+    }
+    return firstNamedItem(window.contentItem(), name);
 }
 
 } // namespace
@@ -187,10 +203,7 @@ void QcScreenshotHook::logItems() const
     const QQuickItem *content = m_window->contentItem();
     for (const QString &name : m_loggedItems) {
         // The items keep their QObject parents when offscreen runs move them into another window.
-        const QQuickItem *item = m_window->findChild<QQuickItem *>(name);
-        if (!item) {
-            item = firstNamedItem(content, name);
-        }
+        const QQuickItem *item = namedItem(*m_window, name);
         if (!item) {
             qCInfo(lcScreenshot).noquote() << u"Item %1: not found"_s.arg(name);
             continue;

@@ -49,6 +49,7 @@ The texture name is `<folder below textures>:<file name without extension>`. The
     "format": 1,
     "name": "My pack",
     "description": "What makes it special.",
+    "descriptions": { "de": "Was es besonders macht." },
     "resolution": 32,
     "license": "CC-BY-4.0",
     "credits": [
@@ -64,6 +65,7 @@ The texture name is `<folder below textures>:<file name without extension>`. The
 | `format` | Always `1` |
 | `name` | Required, at most 64 characters |
 | `description` | Optional, at most 1000 characters |
+| `descriptions` | Optional: the description in other languages by language code (`"de"`; read in lower case up to `_` or `-`, so `"de_DE"` counts as `"de"`), at most 32 texts of at most 1000 characters; the settings show the one of the game's language, else `description` |
 | `resolution` | Edge length of every texture in pixels: 16, 32, 64, 128, 256 or 512 |
 | `license`, `credits` | Shown in the settings; at most 32 credits with `author`, `license`, `source`, `note`. Fill them in for material by others (see `docs/ASSETS.md`) |
 | `procedural` | `true`: also paint every procedural texture of the game and of mods at `resolution` (how QtCraft HD works) |

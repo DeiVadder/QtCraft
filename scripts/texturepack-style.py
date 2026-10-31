@@ -194,14 +194,16 @@ def main():
         "name": "Storybook",
         "description": "Example of a texture pack made of plain PNG files: warm colours, drawn outlines on blocks "
                        "and a few hand-placed details. Textures it does not have come from the next pack or the game.",
+        "descriptions": {"de": "Beispiel für ein Texturpaket aus einfachen PNG-Dateien: warme Farben, gezeichnete Umrisse "
+                               "auf den Blöcken und ein paar von Hand gesetzte Details. Texturen, die es nicht hat, kommen "
+                               "aus dem nächsten Paket oder aus dem Spiel."},
         "resolution": 32,
         "license": LICENSE,
-        "credits": [{"author": "QtCraft",
-                     "note": "Exported from the procedural textures at 32 x 32 and hand-tuned with scripts/texturepack-style.py"}],
+        "credits": [{"author": "QtCraft"}],
         "preview": "preview.png",
     }
     with open(os.path.join(target, "texturepack.json"), "w", encoding="utf-8") as handle:
-        json.dump(manifest, handle, indent=4)
+        json.dump(manifest, handle, indent=4, ensure_ascii=False)
         handle.write("\n")
 
 

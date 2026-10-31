@@ -9,8 +9,8 @@ import QtQuick.Layouts
 import QtCraft
 
 // The main menu's side bar (variant C of docs/UI-Leitfaden.md, decision E-852): the logo, the
-// menu's entries (play, multiplayer, character and mods & packs switch the page beside the bar, the
-// chosen one marked; the handbook and the settings take the bar one level down, SidebarScreen),
+// menu's entries (play, multiplayer and mods & packs switch the page beside the bar, the chosen one
+// marked; the profile card opens the character page; the handbook and the settings take the bar one level down, SidebarScreen),
 // the player's profile and Quit at the foot. Up and down move along the entries as Tab does; Enter, Space and the pad's
 // A choose one.
 SideBar {
@@ -61,7 +61,6 @@ SideBar {
             model: [
                 { entry: MenuSidebar.Play, text: qsTr("Play"), key: "" },
                 { entry: MenuSidebar.Multiplayer, text: qsTr("Multiplayer"), key: "" },
-                { entry: MenuSidebar.Character, text: qsTr("Character"), key: "" },
                 { entry: MenuSidebar.Handbook, text: qsTr("Handbook"), key: bar.game.settings.keys.labels.handbook },
                 { entry: MenuSidebar.Mods, text: qsTr("Mods & packs"), key: "" },
                 { entry: MenuSidebar.Settings, text: qsTr("Settings"), key: "" }
@@ -96,6 +95,7 @@ SideBar {
 
         game: bar.game
         covered: bar.covered
+        chosen: bar.current === MenuSidebar.Character
         enabled: !bar.locked
         onClicked: bar.chosen(MenuSidebar.Character)
         Keys.onUpPressed: bar.moveFocus(profile, false)

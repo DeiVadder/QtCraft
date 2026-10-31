@@ -17,61 +17,35 @@ SlotScreen {
     readonly property int firstStorageRow: 46
     readonly property bool fromHand: screen.game.player.containerHeldSlot >= 0
 
-    panelContent: content
     lockedSlot: screen.game.player.containerHeldSlot
+    hotbarOnly: screen.fromHand
+    title: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Chest")
+    keyHints: [
+        { keys: [qsTr("Click")], text: qsTr("take, put down") },
+        { keys: [qsTr("Right click")], text: qsTr("one") },
+        { keys: [qsTr("Shift-click")], text: screen.fromHand ? qsTr("to the hotbar and back") : qsTr("move across") }
+    ]
 
-    ColumnLayout {
-        id: content
+    GridLayout {
+        objectName: "storage"
+        columns: screen.game.player.containerColumns
+        rowSpacing: Ui.size.slotGap
+        columnSpacing: Ui.size.slotGap
 
-        anchors.centerIn: parent
-        spacing: Ui.px(12)
-
-        Label {
-            textFormat: Text.PlainText
-            text: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Chest")
-            color: Theme.text
-            font.pixelSize: Ui.px(24)
-            font.bold: true
-        }
-
-        GridLayout {
-            objectName: "storage"
-            columns: screen.game.player.containerColumns
-            rowSpacing: Ui.px(2)
-            columnSpacing: Ui.px(2)
-
-            Repeater {
-                model: SlotRange {
-                    source: screen.game.player.inventory
-                    first: screen.firstStorageRow
-                    count: screen.game.player.containerSlots
-                }
-
-                InventorySlot {
-                    readonly property int storageIndex: slot - screen.firstStorageRow
-
-                    owner: screen
-                    Layout.row: Math.floor(storageIndex / screen.game.player.containerColumns)
-                    Layout.column: storageIndex % screen.game.player.containerColumns
-                }
+        Repeater {
+            model: SlotRange {
+                source: screen.game.player.inventory
+                first: screen.firstStorageRow
+                count: screen.game.player.containerSlots
             }
-        }
 
-        PlayerSlots {
-            owner: screen
-            hotbarOnly: screen.fromHand
-        }
+            InventorySlot {
+                readonly property int storageIndex: slot - screen.firstStorageRow
 
-        Label {
-            Layout.maximumWidth: Ui.px(9 * 54)
-            wrapMode: Text.Wrap
-            text: screen.fromHand ? (screen.game.gamepad.active ? qsTr("%1: pick up and put down. %2: put down one. %3: move the stack between the backpack and the hotbar. %4 closes.")
-                                         .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                                     : qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between the backpack and the hotbar. %1 or Esc closes.").arg(screen.game.settings.keys.labels.inventory))
-                  : screen.game.gamepad.active ? qsTr("%1: pick up and put down. %2: put down one. %3: move the stack between this block and the inventory. %4 closes. Breaking the block drops its contents.")
-                    .arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.west).arg(screen.game.gamepad.pads.texts.north).arg(screen.game.gamepad.pads.texts.east)
-                  : qsTr("Left click: pick up and put down. Right click: put down one. Shift-click: move the stack between this block and the inventory. %1 or Esc closes. Breaking the block drops its contents.").arg(screen.game.settings.keys.labels.inventory)
-            color: Theme.textSecondary
+                owner: screen
+                Layout.row: Math.floor(storageIndex / screen.game.player.containerColumns)
+                Layout.column: storageIndex % screen.game.player.containerColumns
+            }
         }
     }
 }

@@ -2,13 +2,15 @@
     "format": 1,
     "name": "QtCraft HD",
     "description": "The game's own procedural textures painted at 32 x 32 pixels with finer detail: smoother outlines, grain and bevelled edges. Works for mods with procedural textures too.",
+    "descriptions": {
+        "de": "Die eigenen prozeduralen Texturen des Spiels, gemalt mit 32 × 32 Pixeln und feineren Details: weichere Umrisse, Körnung und abgeschrägte Kanten. Gilt auch für Mods mit prozeduralen Texturen."
+    },
     "resolution": 32,
     "procedural": true,
     "license": "GPL-3.0-or-later",
     "credits": [
         {
-            "author": "QtCraft",
-            "note": "Rendered at run time from content/*/textures/*.json"
+            "author": "QtCraft"
         }
     ],
     "preview": "preview.png"

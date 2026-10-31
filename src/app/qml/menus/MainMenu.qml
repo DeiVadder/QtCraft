@@ -247,6 +247,7 @@ Rectangle {
             game: menu.game
             onPlayRequested: folder => menu.game.playWorld(folder)
             onNewWorldRequested: newWorldPage.open()
+            onEntryRequested: entry => menu.choose(entry)
             onDeleteRequested: (folder, name) => {
                 deleteDialog.folder = folder;
                 deleteDialog.worldName = name;

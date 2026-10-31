@@ -230,15 +230,17 @@ SidebarScreen {
                 enabled: screen.history.length > 0
                 onClicked: screen.back()
             }
-            Label {
+            // The keys as plates (HB-4 of docs/Menue-Pruefung.md); the pad's buttons stand at the
+            // window's bottom edge while it leads (PadHints).
+            KeyHintRow {
+                objectName: "handbookKeyHints"
                 Layout.fillWidth: true
-                text: screen.game.gamepad.active ? qsTr("%1 on a name or an item opens its page. %2 closes.").arg(screen.game.gamepad.pads.texts.south).arg(screen.game.gamepad.pads.texts.east)
-                      : qsTr("Click a name or an item to open its page. Backspace goes back, Esc or %1 closes.").arg(screen.game.settings.keys.labels.handbook)
-                font.pixelSize: Ui.type.help
-                color: Theme.textMuted
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
-                elide: Text.ElideRight
+                visible: !screen.game.gamepad.active
+                entries: [
+                    { keys: [qsTr("Click")], text: qsTr("open a name or an item") },
+                    { keys: [qsTr("Backspace")], text: qsTr("previous page") },
+                    { keys: [qsTr("Esc"), screen.game.settings.keys.labels.handbook], text: qsTr("close") }
+                ]
             }
         }
 

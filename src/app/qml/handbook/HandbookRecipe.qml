@@ -18,7 +18,7 @@ ColumnLayout {
 
     signal activated(string target)
 
-    spacing: Ui.px(4)
+    spacing: Ui.space.xs
 
     component Cell: Rectangle {
         id: cell
@@ -26,33 +26,33 @@ ColumnLayout {
         property var link: null
         property int count: 1
 
-        implicitWidth: Ui.px(44)
-        implicitHeight: Ui.px(44)
+        implicitWidth: Ui.size.handbookCell
+        implicitHeight: Ui.size.handbookCell
         // Cells with a link take the pad's focus (decision E-583).
         activeFocusOnTab: cell.link !== null
         Accessible.role: Accessible.Link
         Accessible.name: !cell.link ? qsTr("Empty") : (cell.count > 1 ? qsTr("%1 × %2").arg(cell.count).arg(cell.link.text) : cell.link.text)
         color: hover.hovered && cell.link ? Theme.slotHover : Theme.panelRaised
         border.color: Theme.slotBorder
-        radius: Ui.px(2)
+        radius: Ui.radius
 
         Image {
             anchors.fill: parent
-            anchors.margins: Ui.px(6)
+            anchors.margins: Ui.space.s
             visible: cell.link !== null && cell.link.icon.length > 0
             source: visible ? ItemIcons.source(cell.link.icon, ItemIcons.generation) : ""
-            sourceSize: Qt.size(32, 32)
+            sourceSize: Qt.size(width, height)
             smooth: false
         }
 
         // Ingredients without an icon (a group of no items) show their name.
         Label {
             anchors.fill: parent
-            anchors.margins: Ui.px(2)
+            anchors.margins: Ui.size.bevelDeep
             visible: cell.link !== null && cell.link.icon.length === 0
             text: cell.link ? cell.link.text : ""
             color: Theme.text
-            font.pixelSize: Ui.px(9)
+            font.pixelSize: Ui.type.badge
             wrapMode: Text.Wrap
             elide: Text.ElideRight
         }
@@ -60,12 +60,13 @@ ColumnLayout {
         Label {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            anchors.margins: Ui.px(3)
+            anchors.margins: Ui.space.xs
             visible: cell.count > 1
             text: cell.count
             color: Theme.text
             style: Text.Outline
             styleColor: Theme.textOutline
+            font.pixelSize: Ui.type.help
             font.bold: true
         }
 
@@ -87,11 +88,11 @@ ColumnLayout {
     }
 
     RowLayout {
-        spacing: Ui.px(8)
+        spacing: Ui.space.s
 
         Grid {
             columns: view.recipe.width
-            spacing: Ui.px(2)
+            spacing: Ui.size.slotGap
 
             Repeater {
                 model: view.recipe.cells
@@ -107,7 +108,7 @@ ColumnLayout {
         Label {
             text: view.recipe.kind === "machine" ? "⟶" : "→"
             color: view.recipe.kind === "machine" ? Theme.warning : Theme.text
-            font.pixelSize: Ui.px(26)
+            font.pixelSize: Ui.type.title
         }
 
         Cell {
@@ -117,10 +118,10 @@ ColumnLayout {
     }
 
     Label {
-        Layout.maximumWidth: Ui.px(360)
+        Layout.maximumWidth: Ui.size.tooltip
         text: view.recipe.note
         color: Theme.textMuted
-        font.pixelSize: Ui.px(12)
+        font.pixelSize: Ui.type.help
         wrapMode: Text.Wrap
     }
 }

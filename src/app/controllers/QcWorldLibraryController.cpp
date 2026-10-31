@@ -41,6 +41,17 @@ struct ModState
     return {u"loaded"_s, mod.reason};
 }
 
+// The block whose icon stands for a world's type on its tile in the main menu (HM-3 of
+// docs/Menue-Pruefung.md): a slab for a flat world, glass for the void, a bookshelf for the
+// showcase and grass for every other.
+[[nodiscard]] QString typeBlock(const QString &generator)
+{
+    static const QHash<QString, QString> blocks{{u"flat"_s, u"qtcraft:smooth_stone_slab"_s},
+                                                {u"void"_s, u"qtcraft:glass"_s},
+                                                {u"showcase"_s, u"qtcraft:bookshelf"_s}};
+    return blocks.value(generator, u"qtcraft:grass_block"_s);
+}
+
 } // namespace
 
 QcWorldLibraryController::QcWorldLibraryController(QObject *parent)
@@ -61,6 +72,7 @@ void QcWorldLibraryController::refreshWorlds()
                                     {u"name"_s, entry.info.name},
                                     {u"seed"_s, QString::number(entry.info.seed)},
                                     {u"generator"_s, entry.info.generator},
+                                    {u"typeBlock"_s, typeBlock(entry.info.generator)},
                                     {u"gameMode"_s, QString(QcGameModes::name(entry.info.defaultGameMode))},
                                     {u"lastPlayed"_s, playedText(entry.info.lastPlayed, now)},
                                     {u"error"_s, entry.tooOld ? tr("It was saved by an older development version of QtCraft and cannot be opened.")
@@ -135,6 +147,19 @@ void QcWorldLibraryController::setModEnabled(const QString &id, bool enabled)
     }
     refreshMods();
     resetContent();
+}
+
+void QcWorldLibraryController::openWorldFolder(const QString &folder) const
+{
+    // Only a world folder of the library: no path out of it, no link, no other directory.
+    const QcResult<QString> directory = QcWorldLibrary(QcWorldLibrary::defaultRoot()).worldDirectory(folder);
+    if (!directory) {
+        qCWarning(lcGame) << "Not opening the world folder:" << directory.error();
+        return;
+    }
+    if (!QDesktopServices::openUrl(QUrl::fromLocalFile(*directory))) {
+        qCWarning(lcGame) << "Cannot open the world folder" << *directory;
+    }
 }
 
 void QcWorldLibraryController::openModsFolder()

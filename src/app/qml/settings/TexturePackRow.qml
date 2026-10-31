@@ -16,9 +16,13 @@ ListRow {
     required property var modelData
     required property int index
     required property var packs
+    // How many packs are active: the arrows of the active ones stop at the last (0 for an inactive
+    // pack).
+    property int activeCount: 0
 
     title: modelData.name + (modelData.resolution > 0 ? " " + qsTr("(%1x)").arg(modelData.resolution) : "")
     subtitle: modelData.description
+    actionsCentered: true
 
     leading: Image {
         width: Ui.size.previewWidth
@@ -55,7 +59,7 @@ ListRow {
             GameButton {
                 text: "▼"
                 Accessible.name: qsTr("Lower priority")
-                enabled: packRow.index + 1 < packRow.packs.packs.length && packRow.packs.packs[packRow.index + 1].active
+                enabled: packRow.index + 1 < packRow.activeCount
                 onClicked: packRow.packs.move(packRow.modelData.id, 1)
 
                 ThemedToolTip {

@@ -14,6 +14,7 @@
 
 #include <QDesktopServices>
 #include <QDir>
+#include <QLocale>
 #include <QUrl>
 
 #include <algorithm>
@@ -372,7 +373,7 @@ QVariantList QcTexturePackController::packs() const
         list.append(QVariantMap{
             {u"id"_s, entry->id},
             {u"name"_s, manifest.name.isEmpty() ? entry->id.section(u':', 1) : manifest.name},
-            {u"description"_s, manifest.description},
+            {u"description"_s, manifest.descriptionIn(QLocale().name().section(u'_', 0, 0))},
             {u"resolution"_s, entry->manifest ? manifest.resolution : 0},
             {u"license"_s, manifest.license},
             {u"credits"_s, creditsText(manifest.credits)},

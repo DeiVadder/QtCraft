@@ -49,6 +49,8 @@ public:
     void noteUnplayable(const QString &folder, const QString &message);
     // Deletes a saved world permanently; the UI asks for confirmation first.
     Q_INVOKABLE void deleteWorld(const QString &folder);
+    // Shows a saved world's folder in the file manager (the world row's "…" menu).
+    Q_INVOKABLE void openWorldFolder(const QString &folder) const;
     // Mod list as found on disk: id, name, version, description, state (loaded/disabled/failed), reason.
     Q_INVOKABLE void refreshMods();
     // Takes effect when the next world starts.

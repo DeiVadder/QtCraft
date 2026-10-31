@@ -19,7 +19,8 @@ RowLayout {
 
     required property GameController game
     readonly property var character: game.settings.character
-    // "Close" in the footer (the screen over the game); the main menu's page has the side bar.
+    // "Close" in the head (the screen over the game, rule 1 of Menue-Pruefung E.0); the main menu's
+    // page has the side bar.
     property bool showClose: false
 
     signal closeRequested
@@ -150,9 +151,19 @@ RowLayout {
         }
     }
 
+    // A group's heading (CH-1 of docs/Menue-Pruefung.md).
+    component GroupHeading: Label {
+        Layout.topMargin: Ui.space.s
+        font.pixelSize: Ui.type.group
+        font.bold: true
+        color: Theme.heading
+        Accessible.role: Accessible.Heading
+        Accessible.name: text
+    }
+
     ColumnLayout {
         Layout.fillWidth: true
-        Layout.alignment: Qt.AlignTop
+        Layout.fillHeight: true
         focus: true
         // Keys the controls leave end here; Esc still closes the screen, Tab moves the focus.
         Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape && event.key !== Qt.Key_Tab
@@ -160,6 +171,7 @@ RowLayout {
         spacing: Ui.space.m
 
         Label {
+            visible: !screen.showClose
             text: qsTr("Character")
             font.pixelSize: Ui.type.title
             font.bold: true
@@ -167,7 +179,18 @@ RowLayout {
             Accessible.role: Accessible.Heading
             Accessible.name: text
         }
+        ScreenHeader {
+            Layout.fillWidth: true
+            visible: screen.showClose
+            title: qsTr("Character")
+            closeName: "characterClose"
+            padKey: screen.game.gamepad.active ? screen.game.gamepad.pads.texts.east : ""
+            onCloseRequested: screen.leave(() => screen.closeRequested())
+        }
 
+        GroupHeading {
+            text: qsTr("Appearance")
+        }
         GridLayout {
             Layout.fillWidth: true
             columns: 2
@@ -224,6 +247,9 @@ RowLayout {
             }
         }
 
+        GroupHeading {
+            text: qsTr("Colours")
+        }
         ColorRow {
             label: qsTr("Skin")
             key: "skin"
@@ -245,19 +271,21 @@ RowLayout {
             colors: screen.character.clothColors
         }
 
+        GroupHeading {
+            text: qsTr("Presets")
+        }
         CharacterPresets {
             Layout.fillWidth: true
             character: screen.character
         }
 
-        Label {
-            Layout.fillWidth: true
-            text: qsTr("Press %1 in the game to look at your character from behind or from the front.").arg(screen.game.settings.keys.labels.cameraView)
-            wrapMode: Text.Wrap
-            font.pixelSize: Ui.type.help
-            color: Theme.textMuted
+        // Keeps the foot at the bottom (CH-2 of docs/Menue-Pruefung.md).
+        Item {
+            Layout.fillHeight: true
         }
 
+        // The foot: the look's shortcuts on the left, the draft's Discard and Save on the right
+        // (decision E-852); the note says that something is unsaved.
         RowLayout {
             Layout.fillWidth: true
             Layout.topMargin: Ui.space.s
@@ -276,28 +304,15 @@ RowLayout {
                 text: qsTr("Default look")
                 onClicked: screen.character.reset()
             }
-        }
-
-        // Save or discard the draft (decision E-852); the note says that something is unsaved.
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: Ui.space.s
-
             Label {
                 objectName: "unsavedNote"
                 Layout.fillWidth: true
+                horizontalAlignment: Text.AlignRight
                 text: screen.character.dirty ? qsTr("Unsaved changes") : ""
                 font.pixelSize: Ui.type.body
                 font.bold: true
                 color: Theme.heading
                 elide: Text.ElideRight
-            }
-            GameButton {
-                visible: screen.showClose
-                kind: GameButton.Quiet
-                large: true
-                text: qsTr("Close")
-                onClicked: screen.leave(() => screen.closeRequested())
             }
             GameButton {
                 id: discardButton

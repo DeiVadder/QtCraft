@@ -172,6 +172,21 @@ private slots:
         QVERIFY(!QcTexturePackManifest::parse(manifestBytes(32))->procedural);
     }
 
+    // The description in the game's language when the pack has one, else the plain one (TP-2 of
+    // docs/Menue-Pruefung.md).
+    void manifestReadsTranslatedDescriptions()
+    {
+        // Keys count by language: "NL_be" and "pt-BR" are "nl" and "pt".
+        const QJsonObject texts{{u"de"_s, u" Ein Paket. "_s}, {u"NL_be"_s, u"Een pakket."_s}, {u"pt-BR"_s, u"Um pacote."_s}};
+        const QJsonObject extra{{u"description"_s, u"A pack."_s}, {u"descriptions"_s, texts}};
+        const auto manifest = QcTexturePackManifest::parse(manifestBytes(32, extra));
+        QVERIFY(manifest.has_value());
+        QCOMPARE(manifest->descriptionIn(u"de"_s), u"Ein Paket."_s);
+        QCOMPARE(manifest->descriptionIn(u"nl"_s), u"Een pakket."_s);
+        QCOMPARE(manifest->descriptionIn(u"pt"_s), u"Um pacote."_s);
+        QCOMPARE(manifest->descriptionIn(u"fr"_s), u"A pack."_s);
+    }
+
     void manifestRejectsBadValues_data()
     {
         QTest::addColumn<QByteArray>("bytes");
@@ -198,6 +213,8 @@ private slots:
             many.append(QJsonObject{{u"author"_s, u"a"_s}});
         }
         QTest::newRow("too many credits") << manifestBytes(32, {{u"credits"_s, many}}) << u"at most 32"_s;
+        QTest::newRow("descriptions list") << manifestBytes(32, {{u"descriptions"_s, QJsonArray{u"x"_s}}}) << u"'descriptions'"_s;
+        QTest::newRow("description not text") << manifestBytes(32, {{u"descriptions"_s, QJsonObject{{u"de"_s, 5}}}}) << u"'de'"_s;
         QTest::newRow("oversized") << manifestBytes(32, {{u"description"_s, QString(qsizetype{70} * 1024, u'x')}}) << u"larger than 64 KiB"_s;
     }
 

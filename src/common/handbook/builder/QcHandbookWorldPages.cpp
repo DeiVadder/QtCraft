@@ -186,7 +186,7 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     }
     entry.text = text.description(biome.descriptionKey, biome.name);
 
-    entry.facts.append({text.label(u"fact.id"_s), biome.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), biome.name, {}, true});
     if (biome.river || biome.delta) {
         // A river or delta biome has no climate cell or height of its own: it lies in the rivers
         // and deltas of others.
@@ -263,7 +263,7 @@ QcHandbookEntry orePage(const QcHandbookContext &context, const QcOreDefinition 
     entry.title = links.oreTitle(ore, text.language());
     entry.icon = links.itemIcon(ore.block);
 
-    entry.facts.append({text.label(u"fact.id"_s), ore.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), ore.name, {}, true});
     entry.facts.append({text.label(u"fact.block"_s), {}, {links.blockLink(ore.block)}});
     const QString replaces = ore.replaces.isEmpty() ? context.content.worldgen().terrainSettings().stoneBlock : ore.replaces;
     if (context.content.blockId(replaces) == qcAirBlockId) {
@@ -370,7 +370,7 @@ QcHandbookEntry featurePage(const QcHandbookContext &context, const QcFeatureDef
         context.text.addProblem(u"feature %1: unknown icon %2"_s.arg(feature.name, feature.icon));
     }
 
-    entry.facts.append({text.label(u"fact.id"_s), feature.name, {}});
+    entry.facts.append({text.label(u"fact.id"_s), feature.name, {}, true});
     entry.facts += shapeFacts(context, feature);
 
     Section biomes = featureBiomes(context, feature);

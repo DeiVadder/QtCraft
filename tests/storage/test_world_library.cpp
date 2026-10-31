@@ -4,8 +4,12 @@
 #include "fixtures/QcTestUtil.h"
 #include "worlds/QcWorldLibrary.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QTimeZone>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -67,6 +71,7 @@ private slots:
         QTest::newRow("path") << u"../other"_s;
         QTest::newRow("empty") << QString();
         QTest::newRow("not a world") << u"plain"_s;
+        QTest::newRow("drive") << u"C:other"_s;
     }
 
     void refusesToDeleteOutsideTheLibrary()
@@ -86,6 +91,7 @@ private slots:
         }
 
         const QcWorldLibrary library(root);
+        QVERIFY(!library.worldDirectory(folder).has_value());
         QVERIFY(!library.remove(folder).has_value());
         QVERIFY(QFile::exists(QDir(base.path()).filePath(u"world.json"_s)));
         QVERIFY(QFile::exists(QDir(base.path()).filePath(u"other/world.json"_s)));
@@ -109,8 +115,46 @@ private slots:
         json.close();
         QVERIFY(QFile::link(target, QDir(root).filePath(u"linked"_s)));
 
+        QVERIFY(!QcWorldLibrary(root).worldDirectory(u"linked"_s).has_value());
         QVERIFY(!QcWorldLibrary(root).remove(u"linked"_s).has_value());
         QVERIFY(QFile::exists(QDir(target).filePath(u"world.json"_s)));
+    }
+
+    void worldDirectoryOfAWorld()
+    {
+        QTemporaryDir root;
+        const QcWorldLibrary library(root.path());
+        const auto entry = library.create(u"Home"_s, 1);
+        QVERIFY2(entry.has_value(), qcErrorText(entry).constData());
+
+        const QcResult<QString> directory = library.worldDirectory(entry->folder);
+        QVERIFY2(directory.has_value(), qcErrorText(directory).constData());
+        QCOMPARE(*directory, entry->directory);
+    }
+
+    // Worlds played at the same moment keep one order: by name, then by folder (HM-7 of
+    // docs/Menue-Pruefung.md).
+    void worldsPlayedAtOnceAreSortedByNameThenFolder()
+    {
+        QTemporaryDir root;
+        const QcWorldLibrary library(root.path());
+        const QString played = QDateTime(QDate(2026, 10, 31), QTime(12, 0), QTimeZone::UTC).toString(Qt::ISODate);
+        for (const QString &name : {u"Beta"_s, u"Alpha"_s, u"Alpha"_s}) {
+            const auto entry = library.create(name, 1);
+            QVERIFY2(entry.has_value(), qcErrorText(entry).constData());
+            QFile file(QDir(entry->directory).filePath(u"world.json"_s));
+            QVERIFY(file.open(QIODevice::ReadWrite));
+            QJsonObject json = QJsonDocument::fromJson(file.readAll()).object();
+            json.insert(u"lastPlayed"_s, played);
+            QVERIFY(file.resize(0) && file.seek(0));
+            file.write(QJsonDocument(json).toJson());
+        }
+
+        const QList<QcWorldLibrary::Entry> entries = library.list();
+        QCOMPARE(entries.size(), 3);
+        QCOMPARE(entries.at(0).folder, u"Alpha"_s);
+        QCOMPARE(entries.at(1).folder, u"Alpha_2"_s);
+        QCOMPARE(entries.at(2).folder, u"Beta"_s);
     }
 
     void damagedWorldsAreListedWithAnError()

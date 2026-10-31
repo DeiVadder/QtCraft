@@ -139,7 +139,7 @@ while [ ! -s "$DATA/port" ] && [ "$tries" -lt 50 ]; do
     tries=$((tries + 1))
 done
 check join-locked-de --language de --join "127.0.0.1:$(cat "$DATA/port")" --overlay multiplayer \
-    --overlay "@600 click:menuEntry2" --overlay "@900 click:cancelJoinButton"
+    --overlay "@600 click:menuEntry0" --overlay "@900 click:cancelJoinButton"
 kill "$listener" 2>/dev/null
 wait "$listener" 2>/dev/null
 if grep -q 'click:cancelJoinButton.*no such control' "$DATA/join-locked-de.log"; then
@@ -243,9 +243,11 @@ elif ! grep 'padFocus' "$DATA/character-leave-de.log" | tail -1 | grep -qE 'padF
     failed=1
 fi
 # With saved worlds (made by the headless bot) the start page offers to continue the one played
-# last, and the pad's focus starts on "Continue" (the first press shows the focus).
+# last, and the pad's focus starts on "Continue" (the first press shows the focus). The list below
+# holds the other two (HM-1 of docs/Menue-Pruefung.md).
 printf '%s\n' '{"cmd":"worldCreate","name":"Eine Welt mit einem recht langen Namen","seed":42,"gameMode":"creative"}' \
     '{"cmd":"waitUntilReady"}' '{"cmd":"worldCreate","name":"Flach","generator":"flat"}' '{"cmd":"waitUntilReady"}' \
+    '{"cmd":"worldCreate","name":"Leere","generator":"void"}' '{"cmd":"waitUntilReady"}' \
     '{"cmd":"quit"}' >"$DATA/worlds.jsonl"
 if ! perl -e 'alarm shift; exec @ARGV or die' 60 "$HEADLESS" --data-dir "$DATA" --no-mods --view-distance 2 \
     --script "$DATA/worlds.jsonl" >"$DATA/worlds.log" 2>&1; then
