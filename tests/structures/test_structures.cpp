@@ -222,7 +222,7 @@ private slots:
             json("{ \"name\": \"hut\", \"palette\": { \"#\": \"stone\", \"C\": \"cobblestone\" }, \"layers\": [ [\"##\"], [\"  \"] ], "
                  "\"choices\": { \"rock\": [ {}, { \"stone\": \"bricks\" } ] }, \"parts\": [ { \"name\": \"top\", \"chance\": 0.25, \"at\": [1, 1, 0], \"layers\": [[\"C\"]] } ] }"),
             u"qtcraft"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         const QcStructureDefinition &hut = *parsed;
         QCOMPARE(hut.choices.size(), 1);
         QCOMPARE(hut.choices[0].name, u"rock"_s);
@@ -243,7 +243,7 @@ private slots:
             json("{ \"name\": \"s\", \"centre\": \"well\", \"pieces\": [ { \"structures\": [ { \"structure\": \"a\", \"weight\": 3 }, { \"structure\": \"b\" } ], \"weight\": 2 }, "
                  "{ \"structure\": \"hut\", \"max\": 1, \"chance\": 0.5, \"minRoadLength\": 120, \"water\": 10, \"jetty\": { \"deck\": \"spruce_planks\", \"width\": 2, \"over\": 3 } } ] }"),
             u"mod"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         QCOMPARE(parsed->pieces.size(), 2);
         const QcVillagePiece &houses = parsed->pieces[0];
         QCOMPARE(houses.blueprints.size(), 2);
@@ -276,7 +276,7 @@ private slots:
                  "{ \"kind\": \"street\", \"weight\": 3, \"winding\": 0.5, \"branches\": { \"every\": 12, \"length\": [0.2, 0.4] } }, "
                  "{ \"kind\": \"tree\", \"arms\": [3, 4], \"bends\": 1, \"diagonals\": false }, { \"kind\": \"plaza\", \"ring\": [10, 12] } ] }"),
             u"mod"_s);
-        QVERIFY2(parsed, qPrintable(parsed.error()));
+        QVERIFY2(parsed, qcErrorText(parsed).constData());
         QCOMPARE(parsed->layouts.size(), 3);
         const QcVillageLayout &street = parsed->layouts[0];
         QCOMPARE(street.kind, QcVillageLayout::Kind::Street);

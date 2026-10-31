@@ -223,7 +223,7 @@ private slots:
         const auto still = QcContentParser::parseBlock(
             json(R"({"name":"w","liquid":true,"solid":false,"flow":{"distance":1,"dropSearch":0},"states":{"level":["0","1"]},"textures":{"all":"x"}})"),
             u"t"_s);
-        QVERIFY2(still.has_value(), qPrintable(still.error()));
+        QVERIFY2(still.has_value(), qcErrorText(still).constData());
         QCOMPARE(still->flow.dropSearch, 0);
         QVERIFY(!QcContentParser::parseBlock(
             json(R"({"name":"w","liquid":true,"solid":false,"flow":{"distance":1,"dropSearch":9},"states":{"level":["0","1"]},"textures":{"all":"x"}})"),

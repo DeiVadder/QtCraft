@@ -5,9 +5,43 @@
 
 #include <QThread>
 
+#include <cerrno>
 #include <cstdio>
 #include <mutex>
 #include <vector>
+
+#if !defined(Q_OS_WIN)
+#include <unistd.h>
+#endif
+
+namespace {
+
+// The next bytes of the standard input, empty at its end or on an error. Outside Windows this reads
+// the file descriptor, not the C library's stdin: fgets() holds the lock of stdin while it waits,
+// and glibc's exit() takes that lock to flush the streams, so a server stopped from its console
+// hung at exit on Linux (E-949). Windows keeps fgets(), whose console input the CRT translates.
+QByteArray readStdinChunk()
+{
+    char buffer[4096];
+#if defined(Q_OS_WIN)
+    if (!std::fgets(buffer, sizeof buffer, stdin)) {
+        return {};
+    }
+    return QByteArray(buffer);
+#else
+    for (;;) {
+        const ssize_t count = ::read(STDIN_FILENO, buffer, sizeof buffer);
+        if (count > 0) {
+            return QByteArray(buffer, static_cast<qsizetype>(count));
+        }
+        if (count == 0 || errno != EINTR) {
+            return {};
+        }
+    }
+#endif
+}
+
+} // namespace
 
 struct QcStdinReader::Shared
 {
@@ -44,19 +78,29 @@ QcStdinReader::~QcStdinReader()
 
 void QcStdinReader::start()
 {
-    // The thread blocks in fgets() and cannot be interrupted portably, so it is not joined: it ends
-    // with the process. It only touches the shared state, which it co-owns.
+    // The thread blocks in a read of the standard input and cannot be interrupted portably, so it is
+    // not joined: it ends with the process. It only touches the shared state, which it co-owns.
     QThread *thread = QThread::create([shared = m_shared] {
         QByteArray line;
-        char buffer[4096];
-        while (std::fgets(buffer, sizeof buffer, stdin)) {
-            line.append(buffer);
-            if (!line.endsWith('\n')) {
+        for (QByteArray chunk = readStdinChunk(); !chunk.isEmpty(); chunk = readStdinChunk()) {
+            // Only the new chunk can hold a newline: what came before it held none.
+            const qsizetype inChunk = chunk.lastIndexOf('\n');
+            line.append(chunk);
+            if (inChunk < 0) {
                 continue;
             }
+            const qsizetype end = line.size() - chunk.size() + inChunk;
 
+            // Each complete line with its newline, as the console expects them.
+            const QByteArray rest = line.mid(end + 1);
+            line.truncate(end + 1);
             const std::scoped_lock lock(shared->mutex);
-            shared->lines.push_back(std::exchange(line, {}));
+            for (qsizetype from = 0; from < line.size();) {
+                const qsizetype next = line.indexOf('\n', from) + 1;
+                shared->lines.push_back(line.mid(from, next - from));
+                from = next;
+            }
+            line = rest;
             shared->wake();
         }
 

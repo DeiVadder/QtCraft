@@ -83,6 +83,16 @@ target_compile_definitions(qc_project_options INTERFACE
     QT_NO_NARROWING_CONVERSIONS_IN_CONNECT
     QT_USE_QSTRINGBUILDER)
 
+# Checked standard library in Debug (E-949): a call that the standard leaves undefined, such as
+# error() on a std::expected holding a value or an index past the end, stops the program with a
+# message on every platform. libc++ (macOS) reads _LIBCPP_HARDENING_MODE, libstdc++ (Linux)
+# _GLIBCXX_ASSERTIONS; each ignores the other's macro, and neither changes the ABI.
+if(NOT MSVC)
+    target_compile_definitions(qc_project_options INTERFACE
+        $<$<CONFIG:Debug>:_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_EXTENSIVE>
+        $<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
+endif()
+
 if(QC_SANITIZERS AND MSVC)
     message(FATAL_ERROR "QC_SANITIZERS supports Clang/GCC only")
 elseif(QC_SANITIZERS)

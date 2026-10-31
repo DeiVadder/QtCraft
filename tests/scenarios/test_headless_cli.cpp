@@ -323,6 +323,27 @@ private slots:
         QVERIFY(QString::fromUtf8(m_process.readAllStandardOutput()).contains(u"Standard input closed; the server keeps running."_s));
     }
 
+    // The console reads its input in pieces (E-949): a line written in two parts is one command,
+    // and a last line without a newline before the end of the input still runs.
+    void theServerConsoleRunsALastLineWithoutNewline()
+    {
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        m_process.setArguments({u"--console"_s, u"--view-distance"_s, u"2"_s, u"--time-limit"_s, u"60"_s});
+        m_process.start();
+        QVERIFY(m_process.waitForStarted(timeoutMs));
+        m_process.write("/whitelist ");
+        QVERIFY(m_process.waitForBytesWritten(timeoutMs));
+        m_process.write("on\ntick query");
+        m_process.closeWriteChannel();
+        QVERIFY(m_process.waitForFinished(timeoutMs));
+        QCOMPARE(m_process.exitCode(), 0);
+
+        const QString output = QString::fromUtf8(m_process.readAllStandardOutput()).replace(u"\r\n"_s, u"\n"_s);
+        QVERIFY2(output.contains(u"\nThe whitelist is on\n"_s), qPrintable(output));
+        QVERIFY2(output.contains(u"\nTick rate "_s), qPrintable(output));
+    }
+
     // --join checks the server's certificate against the pins in its data folder and pins it at
     // the first connection (decision E-872): known-servers.json appears there with the fingerprint
     // the dedicated server printed.

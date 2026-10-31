@@ -96,6 +96,12 @@ fi
 PROJECT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 cd "$PROJECT_DIR" || exit 2
 
+# Linux without a display (VM over SSH, CI): the whole run under Xvfb, so the rendering tests find
+# OpenGL (scripts/with-display.sh, decision E-949); elsewhere nothing changes.
+if [ -z "${QC_VERIFY_DISPLAY:-}" ] && [ "$(uname -s)" = Linux ]; then
+    QC_VERIFY_DISPLAY=1 exec scripts/with-display.sh /bin/sh "$PROJECT_DIR/scripts/verify.sh" "$@"
+fi
+
 # The local presets take the Qt and Ninja paths of this machine from CMakeUserPresets.json (not in
 # git, decision E-417); a new worktree gets a copy of the main checkout's file or of the example.
 scripts/ensure-user-presets.sh || exit 2

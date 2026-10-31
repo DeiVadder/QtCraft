@@ -130,7 +130,7 @@ private slots:
     {
         const auto crop = parseBlock(R"("shape":"cross","states":{"age":["0","1"]},"crop":{"averageSeconds":60,"plantChance":0.5},
                                         "drops":[{"item":"seed","when":{"age":"1"}}])");
-        QVERIFY2(crop.has_value(), qPrintable(crop.error()));
+        QVERIFY2(crop.has_value(), qcErrorText(crop).constData());
         QCOMPARE(crop->crop.property, u"age"_s);
         QCOMPARE(crop->crop.plantChance, 0.5);
         QCOMPARE(crop->drops.constFirst().when.constFirst().values, QStringList{u"1"_s});
@@ -149,7 +149,7 @@ private slots:
         QVERIFY(!parseBlock(R"("shape":"cross","states":{"age":["0","1"]},"crop":{},"growth":{"maxHeight":3})"));
 
         const auto soil = parseBlock(R"("states":{"moist":[false,true]},"soil":{"revertsTo":"dirt","reach":2})");
-        QVERIFY2(soil.has_value(), qPrintable(soil.error()));
+        QVERIFY2(soil.has_value(), qcErrorText(soil).constData());
         QCOMPARE(soil->soil.reach, 2);
         QCOMPARE(soil->soil.water, u"qtcraft:water"_s);
         QVERIFY(!parseBlock(R"("states":{"moist":[false,true]},"soil":{"revertsTo":"plant"})"));

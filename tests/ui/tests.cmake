@@ -137,7 +137,9 @@ if(NOT QC_SANITIZERS AND NOT WIN32)
     # The loading and start screens at two scales, a refused hook and a real start (decision E-943).
     add_test(NAME app_offscreen_loading_screen COMMAND sh ${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh $<TARGET_FILE:qtcraft>
         $<TARGET_FILE:qtcraft-headless> ${CMAKE_BINARY_DIR}/test-data/app_offscreen_loading_screen)
+    # The checks read English texts; QTCRAFT_LANGUAGE keeps them on a system in another language.
     set_tests_properties(app_offscreen_loading_screen PROPERTIES TIMEOUT 600 COST 40
+        ENVIRONMENT "QTCRAFT_LANGUAGE=en"
         REQUIRED_FILES "${CMAKE_CURRENT_SOURCE_DIR}/ui/test_loading_screen.sh")
     # The main menu and its screens fit the smallest window (1024 x 640): nothing shown lies
     # outside it, the Quit button included.
@@ -340,7 +342,7 @@ foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu a
         set(frames 300)
     endif()
     set_tests_properties(app_offscreen_pad_${pad} PROPERTIES TIMEOUT 180
-        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
+        ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
 endforeach()
 set_property(TEST app_offscreen_pad_bind APPEND PROPERTY ENVIRONMENT "QTCRAFT_LOG_ITEMS=gamepadMessage")
 # The startup script's steps on a control wait for its screen to be made (decision E-691): the

@@ -266,7 +266,7 @@ private slots:
             QJsonObject{{u"name"_s, u"pond"_s}, {u"type"_s, u"pool"_s}, {u"block"_s, u"lava"_s}, {u"minY"_s, 10}, {u"maxY"_s, 60},
                         {u"attempts"_s, 8}, {u"chance"_s, 1.0}, {u"radius"_s, 4}, {u"depth"_s, 1}},
             u"t"_s);
-        QVERIFY2(pool, qPrintable(pool.error()));
+        QVERIFY2(pool, qcErrorText(pool).constData());
         QCOMPARE(pool->type, QcFeatureDefinition::Type::Pool);
         QCOMPARE(pool->trunkBlock, u"t:lava"_s);
         QCOMPARE(pool->attempts, 8);

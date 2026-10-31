@@ -75,7 +75,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build gcc-14 g++-14 libgl1-mesa-dev libvulkan-dev \
-            libxkbcommon-dev libxkbcommon-x11-0 libfontconfig1 libegl1 libpulse0 ccache
+            libxkbcommon-dev libxkbcommon-x11-0 libfontconfig1 libegl1 libpulse0 ccache xvfb
           echo "CC=gcc-14" >> "$GITHUB_ENV"
           echo "CXX=g++-14" >> "$GITHUB_ENV"
 
@@ -159,7 +159,8 @@ jobs:
       # builds everything and tests only when started by hand with "tests".
       - name: Test
         if: github.event_name == 'workflow_dispatch' && inputs.tests
-        run: ctest --preset ci-debug --timeout 600 -j 3
+        # Linux without a display runs the tests under Xvfb (E-949); macOS and Windows run ctest as is.
+        run: ${{ runner.os == 'Linux' && 'scripts/with-display.sh ' || '' }}ctest --preset ci-debug --timeout 600 -j 3
 
       - name: Test logs
         if: failure()
