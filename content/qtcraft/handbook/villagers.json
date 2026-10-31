@@ -1,7 +1,7 @@
 {
     "name": "villagers",
     "order": 84,
-    "icon": "bed",
+    "icon": "villager",
     "sections": [
         "homes",
         "professions",

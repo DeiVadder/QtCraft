@@ -1,7 +1,7 @@
 {
     "name": "creative",
     "order": 115,
-    "icon": "grass_block",
+    "icon": "diamond_block",
     "sections": [
         "modes",
         "flying",

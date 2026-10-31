@@ -1,5 +1,6 @@
 {
     "name": "river",
+    "icon": "raw_salmon",
     "mapColour": "#6cc6ff",
     "river": true,
     "temperature": 0.5,

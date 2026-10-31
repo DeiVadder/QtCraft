@@ -1,5 +1,6 @@
 {
     "name": "jungle",
+    "icon": "jungle_sapling",
     "mapColour": "#0fae5e",
     "deltaBiome": "lush_delta",
     "temperature": 1.0,

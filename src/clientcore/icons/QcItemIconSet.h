@@ -12,7 +12,8 @@ class QcContentRegistry;
 class QcTextureAtlas;
 
 // The icon of every item of a content registry, keyed by item name: blocks drawn as their shape when
-// a render table is given, everything else (and blocks with a flat icon, plants) as its texture.
+// a render table is given, everything else (and blocks with a flat icon, plants) as its texture;
+// and the icon of every creature (QcMobIcon) under QcHandbookLinks::mobIcon(name).
 // The game shows them through QcItemIcons, the web handbook export packs them into one sheet.
 namespace QcItemIconSet {
 

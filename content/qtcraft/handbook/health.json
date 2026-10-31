@@ -1,7 +1,7 @@
 {
     "name": "health",
     "order": 80,
-    "icon": "iron_sword",
+    "icon": "healing_potion",
     "sections": [
         "health",
         "fighting",

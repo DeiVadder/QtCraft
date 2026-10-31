@@ -38,4 +38,16 @@ struct Part
 // draws nothing; a single part draws like render(entry).
 QImage render(const QList<Part> &parts, const std::array<QImage, 6> &shadedAtlas, int size = iconSize);
 
+// A quad of any size and place with the colour its texels are multiplied with (RGBA, 255 keeps
+// a channel): a face of a creature's model (QcMobIcon).
+struct FreeQuad
+{
+    QcBlockRenderTable::Quad quad;
+    std::array<quint8, 4> tint{255, 255, 255, 255};
+};
+
+// The icon of free quads: scaled evenly so that the bounds of their geometry take as much of the
+// icon as a full block, centred there.
+QImage renderFitted(QList<FreeQuad> quads, const std::array<QImage, 6> &shadedAtlas, int size = iconSize);
+
 } // namespace QcBlockIcon

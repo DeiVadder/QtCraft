@@ -2,11 +2,23 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [#beds](#tag-qtcraft-beds) · [#glazed_terracotta](#tag-qtcraft-glazed_terracotta) · [Any arrow](#tag-qtcraft-arrows) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
+**QtCraft:** [Any arrow](#tag-qtcraft-arrows) · [Any bed](#tag-qtcraft-beds) · [Any chunk loader](#tag-qtcraft-chunk_loaders) · [Any dye](#tag-qtcraft-dyes) · [Any glazed terracotta](#tag-qtcraft-glazed_terracotta) · [Any log or wood](#tag-qtcraft-logs) · [Any planks](#tag-qtcraft-planks) · [Any terracotta](#tag-qtcraft-terracotta) · [Any wool](#tag-qtcraft-wool) · [Coal or charcoal](#tag-qtcraft-coals)
 
 ## QtCraft
 
-### <a id="tag-qtcraft-beds"></a>#beds
+### <a id="tag-qtcraft-arrows"></a>Any arrow
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:arrows` |
+
+**Items in this group**
+
+[Arrow](items.md#item-qtcraft-arrow)
+
+### <a id="tag-qtcraft-beds"></a>Any bed
 
 Recipes that ask for this group take any of its items.
 
@@ -21,30 +33,6 @@ Recipes that ask for this group take any of its items.
 **Used in**
 
 [Bed](blocks.md#block-qtcraft-bed), [Black bed](blocks.md#block-qtcraft-black_bed), [Blue bed](blocks.md#block-qtcraft-blue_bed), [Brown bed](blocks.md#block-qtcraft-brown_bed), [Cyan bed](blocks.md#block-qtcraft-cyan_bed), [Gray bed](blocks.md#block-qtcraft-gray_bed), [Green bed](blocks.md#block-qtcraft-green_bed), [Light blue bed](blocks.md#block-qtcraft-light_blue_bed), [Light gray bed](blocks.md#block-qtcraft-light_gray_bed), [Lime bed](blocks.md#block-qtcraft-lime_bed), [Magenta bed](blocks.md#block-qtcraft-magenta_bed), [Orange bed](blocks.md#block-qtcraft-orange_bed), [Pink bed](blocks.md#block-qtcraft-pink_bed), [Purple bed](blocks.md#block-qtcraft-purple_bed), [White bed](blocks.md#block-qtcraft-white_bed), [Yellow bed](blocks.md#block-qtcraft-yellow_bed)
-
-### <a id="tag-qtcraft-glazed_terracotta"></a>#glazed_terracotta
-
-Recipes that ask for this group take any of its items.
-
-| | |
-|---|---|
-| ID | `#qtcraft:glazed_terracotta` |
-
-**Items in this group**
-
-[Black glazed terracotta](blocks.md#block-qtcraft-black_glazed_terracotta), [Blue glazed terracotta](blocks.md#block-qtcraft-blue_glazed_terracotta), [Brown glazed terracotta](blocks.md#block-qtcraft-brown_glazed_terracotta), [Cyan glazed terracotta](blocks.md#block-qtcraft-cyan_glazed_terracotta), [Gray glazed terracotta](blocks.md#block-qtcraft-gray_glazed_terracotta), [Green glazed terracotta](blocks.md#block-qtcraft-green_glazed_terracotta), [Light blue glazed terracotta](blocks.md#block-qtcraft-light_blue_glazed_terracotta), [Light gray glazed terracotta](blocks.md#block-qtcraft-light_gray_glazed_terracotta), [Lime glazed terracotta](blocks.md#block-qtcraft-lime_glazed_terracotta), [Magenta glazed terracotta](blocks.md#block-qtcraft-magenta_glazed_terracotta), [Orange glazed terracotta](blocks.md#block-qtcraft-orange_glazed_terracotta), [Pink glazed terracotta](blocks.md#block-qtcraft-pink_glazed_terracotta), [Purple glazed terracotta](blocks.md#block-qtcraft-purple_glazed_terracotta), [Red glazed terracotta](blocks.md#block-qtcraft-red_glazed_terracotta), [White glazed terracotta](blocks.md#block-qtcraft-white_glazed_terracotta), [Yellow glazed terracotta](blocks.md#block-qtcraft-yellow_glazed_terracotta)
-
-### <a id="tag-qtcraft-arrows"></a>Any arrow
-
-Recipes that ask for this group take any of its items.
-
-| | |
-|---|---|
-| ID | `#qtcraft:arrows` |
-
-**Items in this group**
-
-[Arrow](items.md#item-qtcraft-arrow)
 
 ### <a id="tag-qtcraft-chunk_loaders"></a>Any chunk loader
 
@@ -69,6 +57,18 @@ Recipes that ask for this group take any of its items.
 **Items in this group**
 
 [Black dye](items.md#item-qtcraft-black_dye), [Blue dye](items.md#item-qtcraft-blue_dye), [Brown dye](items.md#item-qtcraft-brown_dye), [Cyan dye](items.md#item-qtcraft-cyan_dye), [Gray dye](items.md#item-qtcraft-gray_dye), [Green dye](items.md#item-qtcraft-green_dye), [Light blue dye](items.md#item-qtcraft-light_blue_dye), [Light gray dye](items.md#item-qtcraft-light_gray_dye), [Lime dye](items.md#item-qtcraft-lime_dye), [Magenta dye](items.md#item-qtcraft-magenta_dye), [Orange dye](items.md#item-qtcraft-orange_dye), [Pink dye](items.md#item-qtcraft-pink_dye), [Purple dye](items.md#item-qtcraft-purple_dye), [Red dye](items.md#item-qtcraft-red_dye), [White dye](items.md#item-qtcraft-white_dye), [Yellow dye](items.md#item-qtcraft-yellow_dye)
+
+### <a id="tag-qtcraft-glazed_terracotta"></a>Any glazed terracotta
+
+Recipes that ask for this group take any of its items.
+
+| | |
+|---|---|
+| ID | `#qtcraft:glazed_terracotta` |
+
+**Items in this group**
+
+[Black glazed terracotta](blocks.md#block-qtcraft-black_glazed_terracotta), [Blue glazed terracotta](blocks.md#block-qtcraft-blue_glazed_terracotta), [Brown glazed terracotta](blocks.md#block-qtcraft-brown_glazed_terracotta), [Cyan glazed terracotta](blocks.md#block-qtcraft-cyan_glazed_terracotta), [Gray glazed terracotta](blocks.md#block-qtcraft-gray_glazed_terracotta), [Green glazed terracotta](blocks.md#block-qtcraft-green_glazed_terracotta), [Light blue glazed terracotta](blocks.md#block-qtcraft-light_blue_glazed_terracotta), [Light gray glazed terracotta](blocks.md#block-qtcraft-light_gray_glazed_terracotta), [Lime glazed terracotta](blocks.md#block-qtcraft-lime_glazed_terracotta), [Magenta glazed terracotta](blocks.md#block-qtcraft-magenta_glazed_terracotta), [Orange glazed terracotta](blocks.md#block-qtcraft-orange_glazed_terracotta), [Pink glazed terracotta](blocks.md#block-qtcraft-pink_glazed_terracotta), [Purple glazed terracotta](blocks.md#block-qtcraft-purple_glazed_terracotta), [Red glazed terracotta](blocks.md#block-qtcraft-red_glazed_terracotta), [White glazed terracotta](blocks.md#block-qtcraft-white_glazed_terracotta), [Yellow glazed terracotta](blocks.md#block-qtcraft-yellow_glazed_terracotta)
 
 ### <a id="tag-qtcraft-logs"></a>Any log or wood
 

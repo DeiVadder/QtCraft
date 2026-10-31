@@ -805,6 +805,8 @@
     "tag.qtcraft.terracotta": "Beliebige Terrakotta",
     "tag.qtcraft.chunk_loaders": "Beliebiger Chunk-Lader",
     "tag.qtcraft.wool": "Beliebige Wolle",
+    "tag.qtcraft.beds": "Beliebiges Bett",
+    "tag.qtcraft.glazed_terracotta": "Beliebige glasierte Terrakotta",
     "mob.qtcraft.mannequin.description": "Eine Figur mit dem Charaktermodell, die langsam umhergeht. Sie erscheint nie von selbst; die Showcase-Welt hat einige, /summon erzeugt weitere.",
     "handbook.value.time.never": "nie von selbst (/summon, Showcase-Welt)",
     "handbook.value.time.villages": "nie von selbst, lebt aber in Dörfern (auch /summon, Showcase-Welt)",

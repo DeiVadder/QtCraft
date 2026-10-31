@@ -98,6 +98,7 @@ QcResult<QcFeatureDefinition> FeatureReader::read()
 
     const bool singleBlock = m_feature.type == QcFeatureDefinition::Type::Plant || m_feature.type == QcFeatureDefinition::Type::Pool;
     m_feature.trunkBlock = m_reader.name(singleBlock ? u"block"_s : u"trunk"_s, m_namespace);
+    m_feature.icon = m_reader.name(u"icon"_s, m_namespace);
     if (m_feature.type == QcFeatureDefinition::Type::Pool) {
         readPool();
     }
@@ -261,6 +262,7 @@ namespace QcWorldgenParser {
     biome.steepBlock = reader.name(u"steep"_s, packNamespace);
     biome.steepSlope = reader.integer(u"steepSlope"_s, biome.steepSlope, 1, 32);
     biome.surfaceBlock = reader.name(u"surface"_s, packNamespace);
+    biome.icon = reader.name(u"icon"_s, packNamespace);
     biome.subsurfaceBlock = reader.name(u"subsurface"_s, packNamespace, biome.surfaceBlock);
     biome.subsurfaceDepth = reader.integer(u"subsurfaceDepth"_s, 3, 0, 16);
     biome.underwaterBlock = reader.name(u"underwater"_s, packNamespace, biome.subsurfaceBlock);

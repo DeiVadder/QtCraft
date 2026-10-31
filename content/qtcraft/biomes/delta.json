@@ -1,5 +1,6 @@
 {
     "name": "delta",
+    "icon": "reeds",
     "mapColour": "#a9a06e",
     "delta": true,
     "temperature": 0.5,

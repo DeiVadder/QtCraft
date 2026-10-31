@@ -1,7 +1,7 @@
 {
     "name": "experience",
     "order": 91,
-    "icon": "lapis_lazuli",
+    "icon": "enchanting_table",
     "sections": [
         "orbs",
         "levels",

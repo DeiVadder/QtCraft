@@ -1,7 +1,7 @@
 {
     "name": "advancements",
     "order": 12,
-    "icon": "oak_log",
+    "icon": "target",
     "sections": [
         "guide",
         "toast",

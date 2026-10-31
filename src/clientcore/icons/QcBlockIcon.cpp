@@ -52,8 +52,27 @@ struct Fit
     std::array<float, 3> shift{};
 };
 
-// The fit of quads (in cells) into one cell: the bounds of their geometry, scaled evenly so that
-// their picture takes as much of the icon as a full cube's, centred where the cube's centre is.
+// The fit of geometry between `low` and `high` into one cell: scaled evenly so that its picture
+// takes as much of the icon as a full cube's, centred where the cube's centre is.
+Fit fitBetween(std::array<float, 3> low, std::array<float, 3> high)
+{
+    // The projection (project) of a box dx * dy * dz is (dx + dz) * 0.866 wide and
+    // (dx + dz) * 0.5 + dy high; a unit cube's is 2 * 0.866 by 2, so the width fits at 2 / (dx + dz).
+    const float dx = high[0] - low[0];
+    const float dy = high[1] - low[1];
+    const float dz = high[2] - low[2];
+    const float across = dx + dz;
+    const float height = across * 0.5f + dy;
+    Fit fit;
+    fit.scale = std::min(across > 0.0f ? 2.0f / across : 1.0f, height > 0.0f ? 2.0f / height : 1.0f);
+    for (std::size_t axis = 0; axis < 3; ++axis) {
+        fit.shift[axis] = 0.5f - (low[axis] + high[axis]) * 0.5f * fit.scale;
+    }
+    return fit;
+}
+
+// The fit of quads (in cells) into one cell (fitBetween): the bounds of their geometry together
+// with the first cell's.
 Fit fitOf(const QList<Quad> &quads)
 {
     std::array<float, 3> low{1.0f, 1.0f, 1.0f};
@@ -69,20 +88,7 @@ Fit fitOf(const QList<Quad> &quads)
     if (quads.isEmpty()) {
         return {};
     }
-
-    // The projection (project) of a box dx * dy * dz is (dx + dz) * 0.866 wide and
-    // (dx + dz) * 0.5 + dy high; a unit cube's is 2 * 0.866 by 2, so the width fits at 2 / (dx + dz).
-    const float dx = high[0] - low[0];
-    const float dy = high[1] - low[1];
-    const float dz = high[2] - low[2];
-    const float across = dx + dz;
-    const float height = across * 0.5f + dy;
-    Fit fit;
-    fit.scale = std::min(across > 0.0f ? 2.0f / across : 1.0f, height > 0.0f ? 2.0f / height : 1.0f);
-    for (std::size_t axis = 0; axis < 3; ++axis) {
-        fit.shift[axis] = 0.5f - (low[axis] + high[axis]) * 0.5f * fit.scale;
-    }
-    return fit;
+    return fitBetween(low, high);
 }
 
 // `quad` moved `offset` cells.
@@ -214,6 +220,15 @@ Rgba texelAt(const QImage &atlas, TexelWindow window, QPointF point)
     return rgbaAt(atlas.constScanLine(row) + static_cast<qsizetype>(column) * 4);
 }
 
+// `texel` multiplied by `tint` per channel (255 keeps it).
+Rgba tinted(Rgba texel, Rgba tint)
+{
+    for (std::size_t channel = 0; channel < 4; ++channel) {
+        texel[channel] = static_cast<uchar>(texel[channel] * tint[channel] / 255);
+    }
+    return texel;
+}
+
 // The icon being drawn and, per pixel, the depth of what it shows: a face behind another one that
 // was drawn first stays hidden, so a pillow on a mattress shows although the mattress's top has
 // the larger mean depth (the painter's order alone gets such boxes wrong).
@@ -227,7 +242,7 @@ public:
         m_image.fill(Qt::transparent);
     }
 
-    void paint(const Quad &quad, const QImage &atlas);
+    void paint(const Quad &quad, const QImage &atlas, Rgba tint);
 
     [[nodiscard]] QImage image() const { return m_image; }
 
@@ -242,7 +257,7 @@ private:
 // instead of with QPainter so that every platform draws the same pixels: Qt's transformed image
 // drawing decides pixels whose centre lies within 1/64 pixel of an edge differently on x86-64
 // and ARM (decision E-901).
-void Canvas::paint(const Quad &quad, const QImage &atlas)
+void Canvas::paint(const Quad &quad, const QImage &atlas, Rgba tint)
 {
     // Faces meeting at an edge have the same depth there; the later one wins as in the painter's order.
     static constexpr double sameDepth = 1e-6;
@@ -274,7 +289,7 @@ void Canvas::paint(const Quad &quad, const QImage &atlas)
             if (depth < shown - sameDepth) {
                 continue;
             }
-            const Rgba texel = texelAt(atlas, window, map.t0 + a * map.d1 + b * map.d3);
+            const Rgba texel = tinted(texelAt(atlas, window, map.t0 + a * map.d1 + b * map.d3), tint);
             if (texel[3] != 0) {
                 uchar *pixel = line + static_cast<qsizetype>(x) * 4;
                 const Rgba blended = blendOver(rgbaAt(pixel), texel);
@@ -283,6 +298,39 @@ void Canvas::paint(const Quad &quad, const QImage &atlas)
             }
         }
     }
+}
+
+// The quads drawn in painter's order, faces further from the viewer first: translucent faces blend
+// over what lies behind them, and of two faces at the same depth the nearer by mean wins.
+QImage paint(QList<FreeQuad> quads, const std::array<QImage, 6> &shadedAtlas, int size)
+{
+    const auto depth = [](const FreeQuad &free) {
+        float sum = 0.0f;
+        for (const auto &p : free.quad.corners) {
+            sum += p[0] + p[1] + p[2];
+        }
+        return sum;
+    };
+    std::ranges::stable_sort(quads, {}, depth);
+
+    Canvas canvas(size);
+    for (const FreeQuad &free : std::as_const(quads)) {
+        if (visible(free.quad.face)) {
+            canvas.paint(free.quad, shadedAtlas[static_cast<std::size_t>(free.quad.face)], free.tint);
+        }
+    }
+    return canvas.image();
+}
+
+// Quads drawn without a tint.
+QList<FreeQuad> untinted(const QList<Quad> &quads)
+{
+    QList<FreeQuad> free;
+    free.reserve(quads.size());
+    for (const Quad &quad : quads) {
+        free.append({quad, {255, 255, 255, 255}});
+    }
+    return free;
 }
 
 } // namespace
@@ -307,26 +355,37 @@ QImage render(const QcBlockRenderTable::Entry &entry, const std::array<QImage, 6
 
 QImage render(const QList<Part> &parts, const std::array<QImage, 6> &shadedAtlas, int size)
 {
-    QList<Quad> quads = placedQuads(parts);
+    return paint(untinted(placedQuads(parts)), shadedAtlas, size);
+}
 
-    // Painter's order, faces further from the viewer first: translucent faces blend over what lies
-    // behind them, and of two faces at the same depth the nearer by mean wins.
-    const auto depth = [](const Quad &quad) {
-        float sum = 0.0f;
-        for (const auto &p : quad.corners) {
-            sum += p[0] + p[1] + p[2];
-        }
-        return sum;
-    };
-    std::ranges::stable_sort(quads, {}, depth);
-
-    Canvas canvas(size);
-    for (const Quad &quad : std::as_const(quads)) {
-        if (visible(quad.face)) {
-            canvas.paint(quad, shadedAtlas[static_cast<std::size_t>(quad.face)]);
+QImage renderFitted(QList<FreeQuad> quads, const std::array<QImage, 6> &shadedAtlas, int size)
+{
+    // The quads' own bounds, wherever they lie (a creature's head two metres up).
+    std::array<float, 3> low{};
+    std::array<float, 3> high{};
+    low.fill(std::numeric_limits<float>::max());
+    high.fill(std::numeric_limits<float>::lowest());
+    for (const FreeQuad &free : std::as_const(quads)) {
+        for (const std::array<float, 3> &corner : free.quad.corners) {
+            for (std::size_t axis = 0; axis < 3; ++axis) {
+                low[axis] = std::min(low[axis], corner[axis]);
+                high[axis] = std::max(high[axis], corner[axis]);
+            }
         }
     }
-    return canvas.image();
+    if (quads.isEmpty()) {
+        return paint({}, shadedAtlas, size);
+    }
+
+    const Fit fit = fitBetween(low, high);
+    for (FreeQuad &free : quads) {
+        for (std::array<float, 3> &corner : free.quad.corners) {
+            for (std::size_t axis = 0; axis < 3; ++axis) {
+                corner[axis] = corner[axis] * fit.scale + fit.shift[axis];
+            }
+        }
+    }
+    return paint(std::move(quads), shadedAtlas, size);
 }
 
 } // namespace QcBlockIcon

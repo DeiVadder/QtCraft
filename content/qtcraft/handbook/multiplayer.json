@@ -1,7 +1,7 @@
 {
     "name": "multiplayer",
     "order": 130,
-    "icon": "book",
+    "icon": "oak_sign",
     "sections": [
         "joining",
         "hosting",

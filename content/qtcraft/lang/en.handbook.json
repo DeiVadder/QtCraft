@@ -805,6 +805,8 @@
     "tag.qtcraft.terracotta": "Any terracotta",
     "tag.qtcraft.chunk_loaders": "Any chunk loader",
     "tag.qtcraft.wool": "Any wool",
+    "tag.qtcraft.beds": "Any bed",
+    "tag.qtcraft.glazed_terracotta": "Any glazed terracotta",
     "mob.qtcraft.mannequin.description": "A figure with the character model that walks about slowly. It never appears by itself; the showcase world has some, /summon makes more.",
     "handbook.value.time.never": "never by itself (/summon, showcase world)",
     "handbook.value.time.villages": "never by itself, but lives in villages (also /summon, showcase world)",

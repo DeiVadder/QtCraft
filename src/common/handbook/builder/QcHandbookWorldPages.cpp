@@ -180,7 +180,10 @@ QcHandbookEntry biomePage(const QcHandbookContext &context, const QcBiomeDefinit
     entry.category = u"biomes"_s;
     entry.pack = QcHandbookLinks::packOf(biome.name);
     entry.title = context.content.translations().translate(biome.translationKey, text.language());
-    entry.icon = context.links.itemIcon(biome.surfaceBlock);
+    entry.icon = context.links.biomeIcon(biome);
+    if (!biome.icon.isEmpty() && context.links.itemIcon(biome.icon).isEmpty()) {
+        text.addProblem(u"biome %1: unknown icon %2"_s.arg(biome.name, biome.icon));
+    }
     entry.text = text.description(biome.descriptionKey, biome.name);
 
     entry.facts.append({text.label(u"fact.id"_s), biome.name, {}});
@@ -362,7 +365,10 @@ QcHandbookEntry featurePage(const QcHandbookContext &context, const QcFeatureDef
     entry.category = u"worldgen"_s;
     entry.pack = QcHandbookLinks::packOf(feature.name);
     entry.title = links.featureTitle(feature, text.language());
-    entry.icon = links.itemIcon(feature.trunkBlock);
+    entry.icon = links.featureIcon(feature);
+    if (!feature.icon.isEmpty() && links.itemIcon(feature.icon).isEmpty()) {
+        context.text.addProblem(u"feature %1: unknown icon %2"_s.arg(feature.name, feature.icon));
+    }
 
     entry.facts.append({text.label(u"fact.id"_s), feature.name, {}});
     entry.facts += shapeFacts(context, feature);

@@ -1,5 +1,6 @@
 {
     "name": "spruce_tree",
+    "icon": "spruce_sapling",
     "type": "tree",
     "trunk": "spruce_log",
     "leaves": "spruce_leaves",

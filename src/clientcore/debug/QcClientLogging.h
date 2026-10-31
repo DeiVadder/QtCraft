@@ -8,6 +8,8 @@
 // The logging categories of qc_clientcore, each defined once in QcClientLogging.cpp (decision E-680).
 // Users filter them by name, e.g. QT_LOGGING_RULES="qtcraft.server.debug=true".
 
+// "qtcraft.icons": item and creature icons: a creature without a picture (decision E-944).
+Q_DECLARE_LOGGING_CATEGORY(lcIcons)
 // "qtcraft.materials": the material maps of the realistic mode (decision E-908): rejected values.
 Q_DECLARE_LOGGING_CATEGORY(lcMaterials)
 // "qtcraft.session": the client session: joining, chunks, prediction.

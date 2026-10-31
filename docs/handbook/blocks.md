@@ -168,7 +168,7 @@ Two blocks long: placed from the foot, the head lies one block further in the di
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -183,11 +183,11 @@ Two blocks long: placed from the foot, the head lies one block further in the di
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Red dye](items.md#item-qtcraft-red_dye) | [Bed](#block-qtcraft-bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Red dye](items.md#item-qtcraft-red_dye) | [Bed](#block-qtcraft-bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -517,7 +517,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -532,11 +532,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Black dye](items.md#item-qtcraft-black_dye) | [Black bed](#block-qtcraft-black_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Black dye](items.md#item-qtcraft-black_dye) | [Black bed](#block-qtcraft-black_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -606,7 +606,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -1187,7 +1187,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -1202,11 +1202,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Blue dye](items.md#item-qtcraft-blue_dye) | [Blue bed](#block-qtcraft-blue_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Blue dye](items.md#item-qtcraft-blue_dye) | [Blue bed](#block-qtcraft-blue_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -1276,7 +1276,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -1622,7 +1622,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -1637,11 +1637,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Brown dye](items.md#item-qtcraft-brown_dye) | [Brown bed](#block-qtcraft-brown_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Brown dye](items.md#item-qtcraft-brown_dye) | [Brown bed](#block-qtcraft-brown_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -1711,7 +1711,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -2879,7 +2879,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -2894,11 +2894,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Cyan dye](items.md#item-qtcraft-cyan_dye) | [Cyan bed](#block-qtcraft-cyan_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Cyan dye](items.md#item-qtcraft-cyan_dye) | [Cyan bed](#block-qtcraft-cyan_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -2968,7 +2968,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -4151,7 +4151,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -4166,11 +4166,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Gray dye](items.md#item-qtcraft-gray_dye) | [Gray bed](#block-qtcraft-gray_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Gray dye](items.md#item-qtcraft-gray_dye) | [Gray bed](#block-qtcraft-gray_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -4240,7 +4240,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -4398,7 +4398,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -4413,11 +4413,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Green dye](items.md#item-qtcraft-green_dye) | [Green bed](#block-qtcraft-green_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Green dye](items.md#item-qtcraft-green_dye) | [Green bed](#block-qtcraft-green_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -4487,7 +4487,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -5299,7 +5299,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -5314,11 +5314,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) | [Light blue bed](#block-qtcraft-light_blue_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Light blue dye](items.md#item-qtcraft-light_blue_dye) | [Light blue bed](#block-qtcraft-light_blue_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -5388,7 +5388,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -5546,7 +5546,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -5561,11 +5561,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) | [Light gray bed](#block-qtcraft-light_gray_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Light gray dye](items.md#item-qtcraft-light_gray_dye) | [Light gray bed](#block-qtcraft-light_gray_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -5635,7 +5635,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -5837,7 +5837,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -5852,11 +5852,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Lime dye](items.md#item-qtcraft-lime_dye) | [Lime bed](#block-qtcraft-lime_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Lime dye](items.md#item-qtcraft-lime_dye) | [Lime bed](#block-qtcraft-lime_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -5926,7 +5926,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -6084,7 +6084,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -6099,11 +6099,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Magenta dye](items.md#item-qtcraft-magenta_dye) | [Magenta bed](#block-qtcraft-magenta_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Magenta dye](items.md#item-qtcraft-magenta_dye) | [Magenta bed](#block-qtcraft-magenta_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -6173,7 +6173,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -7090,7 +7090,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -7105,11 +7105,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Orange dye](items.md#item-qtcraft-orange_dye) | [Orange bed](#block-qtcraft-orange_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Orange dye](items.md#item-qtcraft-orange_dye) | [Orange bed](#block-qtcraft-orange_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -7179,7 +7179,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -7454,7 +7454,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -7469,11 +7469,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Pink dye](items.md#item-qtcraft-pink_dye) | [Pink bed](#block-qtcraft-pink_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Pink dye](items.md#item-qtcraft-pink_dye) | [Pink bed](#block-qtcraft-pink_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -7543,7 +7543,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -7954,7 +7954,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -7969,11 +7969,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Purple dye](items.md#item-qtcraft-purple_dye) | [Purple bed](#block-qtcraft-purple_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Purple dye](items.md#item-qtcraft-purple_dye) | [Purple bed](#block-qtcraft-purple_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -8043,7 +8043,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -8282,7 +8282,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -10750,7 +10750,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -10765,11 +10765,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [White dye](items.md#item-qtcraft-white_dye) | [White bed](#block-qtcraft-white_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [White dye](items.md#item-qtcraft-white_dye) | [White bed](#block-qtcraft-white_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -10839,7 +10839,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 
@@ -11034,7 +11034,7 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 | Flammable | catches fire 20, burns away 30 (0 to 100) |
 | Sound | wood |
 | States | facing (north, east, south, west); part (foot, head) |
-| Groups | [#beds](tags.md#tag-qtcraft-beds) |
+| Groups | [Any bed](tags.md#tag-qtcraft-beds) |
 
 **How to make it**
 
@@ -11049,11 +11049,11 @@ A bed in another colour: made from three wool of that colour and planks, or dyed
 
 | 1 | 2 | → |
 |---|---|---|
-| [#beds](tags.md#tag-qtcraft-beds) | [Yellow dye](items.md#item-qtcraft-yellow_dye) | [Yellow bed](#block-qtcraft-yellow_bed) |
+| [Any bed](tags.md#tag-qtcraft-beds) | [Yellow dye](items.md#item-qtcraft-yellow_dye) | [Yellow bed](#block-qtcraft-yellow_bed) |
 
 **Used in**
 
-[Bed](#block-qtcraft-bed) (#beds), [Black bed](#block-qtcraft-black_bed) (#beds), [Blue bed](#block-qtcraft-blue_bed) (#beds), [Brown bed](#block-qtcraft-brown_bed) (#beds), [Cyan bed](#block-qtcraft-cyan_bed) (#beds), [Gray bed](#block-qtcraft-gray_bed) (#beds), [Green bed](#block-qtcraft-green_bed) (#beds), [Light blue bed](#block-qtcraft-light_blue_bed) (#beds), [Light gray bed](#block-qtcraft-light_gray_bed) (#beds), [Lime bed](#block-qtcraft-lime_bed) (#beds), [Magenta bed](#block-qtcraft-magenta_bed) (#beds), [Orange bed](#block-qtcraft-orange_bed) (#beds), [Pink bed](#block-qtcraft-pink_bed) (#beds), [Purple bed](#block-qtcraft-purple_bed) (#beds), [White bed](#block-qtcraft-white_bed) (#beds), [Yellow bed](#block-qtcraft-yellow_bed) (#beds)
+[Bed](#block-qtcraft-bed) (Any bed), [Black bed](#block-qtcraft-black_bed) (Any bed), [Blue bed](#block-qtcraft-blue_bed) (Any bed), [Brown bed](#block-qtcraft-brown_bed) (Any bed), [Cyan bed](#block-qtcraft-cyan_bed) (Any bed), [Gray bed](#block-qtcraft-gray_bed) (Any bed), [Green bed](#block-qtcraft-green_bed) (Any bed), [Light blue bed](#block-qtcraft-light_blue_bed) (Any bed), [Light gray bed](#block-qtcraft-light_gray_bed) (Any bed), [Lime bed](#block-qtcraft-lime_bed) (Any bed), [Magenta bed](#block-qtcraft-magenta_bed) (Any bed), [Orange bed](#block-qtcraft-orange_bed) (Any bed), [Pink bed](#block-qtcraft-pink_bed) (Any bed), [Purple bed](#block-qtcraft-purple_bed) (Any bed), [White bed](#block-qtcraft-white_bed) (Any bed), [Yellow bed](#block-qtcraft-yellow_bed) (Any bed)
 
 **Faster with**
 
@@ -11123,7 +11123,7 @@ Coloured terracotta smelted into a glazed ornament. It turns towards you when pl
 | Drops without the right tool | nothing |
 | Sound | stone |
 | States | facing (north, east, south, west) |
-| Groups | [#glazed_terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
+| Groups | [Any glazed terracotta](tags.md#tag-qtcraft-glazed_terracotta) |
 
 **Made in a furnace**
 

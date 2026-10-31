@@ -1,7 +1,7 @@
 {
     "name": "adventure",
     "order": 117,
-    "icon": "iron_pickaxe",
+    "icon": "compass",
     "sections": [
         "mode",
         "lists"

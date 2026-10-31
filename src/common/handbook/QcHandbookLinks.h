@@ -48,6 +48,18 @@ public:
     QString itemTitle(const QString &item, const QString &language) const;
     /*! Returns \a item when it is an item of the content (its icon), else empty. */
     QString itemIcon(const QString &item) const { return m_content.itemId(item) ? item : QString(); }
+    /*! Returns the icon name of the creature \a mob ("mob:" and its name, a name no item can
+        have): the picture of its model, which the icon sets draw for every creature (decision
+        E-944). */
+    static QString mobIcon(const QString &mob) { return QStringLiteral("mob:") + mob; }
+    /*! Returns the icon of a handbook chapter that names \a name: the item of that name, else the
+        creature of that name (mobIcon()), else empty. */
+    QString itemOrMobIcon(const QString &name) const;
+    /*! Returns the icon of \a biome: its \c {icon} item, else its surface block. */
+    QString biomeIcon(const QcBiomeDefinition &biome) const;
+    /*! Returns the icon of \a feature: its \c {icon} item, else its trunk or block (a liquid's
+        bucket). */
+    QString featureIcon(const QcFeatureDefinition &feature) const;
     /*! Returns the title of \a tag in \a language; "#" and its local part without a translation. */
     QString tagTitle(const QString &tag, const QString &language) const;
     /*! Returns the title of \a feature in \a language; its humanized name without a translation. */
@@ -59,17 +71,18 @@ public:
     Link itemLink(const QString &item, const QString &note = {}) const;
     /*! Returns the link to the entry of \a block with \a note (as itemLink()). */
     Link blockLink(const QString &block, const QString &note = {}) const { return itemLink(block, note); }
-    /*! Returns the link to the entry of \a tag, with the icon of its first member. */
+    /*! Returns the link to the entry of \a tag, with the icon of its plainest member: the one with
+        the shortest name, the first in content order of equally short ones (decision E-944). */
     Link tagLink(const QString &tag) const;
     /*! Returns the link of a recipe's \a ingredient: a tag for "#tag", else an item. */
     Link ingredientLink(const QString &ingredient) const;
-    /*! Returns the link to the entry of \a mob with \a note. */
+    /*! Returns the link to the entry of \a mob with \a note, with its picture (mobIcon()). */
     Link mobLink(const QcMobDefinition &mob, const QString &note = {}) const;
-    /*! Returns the link to the entry of \a biome with \a note, with the icon of its surface
-        block. */
+    /*! Returns the link to the entry of \a biome with \a note, with its icon
+        (biomeIcon()). */
     Link biomeLink(const QcBiomeDefinition &biome, const QString &note = {}) const;
-    /*! Returns the link to the entry of \a feature with \a note, with the icon of its trunk
-        block. */
+    /*! Returns the link to the entry of \a feature with \a note, with its icon
+        (featureIcon()). */
     Link featureLink(const QcFeatureDefinition &feature, const QString &note = {}) const;
     /*! Returns the link to the entry of \a ore with \a note, with the icon of its block. */
     Link oreLink(const QcOreDefinition &ore, const QString &note = {}) const;

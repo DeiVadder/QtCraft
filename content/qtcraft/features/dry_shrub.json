@@ -1,5 +1,6 @@
 {
     "name": "dry_shrub",
+    "icon": "stick",
     "type": "plant",
     "block": "dead_bush",
     "patchSize": 16,

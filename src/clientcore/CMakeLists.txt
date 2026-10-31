@@ -78,6 +78,7 @@ target_sources(qc_clientcore PRIVATE
     icons/QcAppIcon.h icons/QcAppIcon.cpp
     icons/QcBlockIcon.h icons/QcBlockIcon.cpp
     icons/QcItemIconSet.h icons/QcItemIconSet.cpp
+    icons/QcMobIcon.h icons/QcMobIcon.cpp
     icons/QcWebHandbookAssets.h icons/QcWebHandbookAssets.cpp
 )
 target_sources(qc_clientcore PRIVATE
@@ -276,7 +277,7 @@ set_source_files_properties(
     textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
     # Block icons as well: the projection and the depth of their faces, from the render table's
     # quads (decision E-901).
-    icons/QcBlockIcon.cpp meshing/QcBlockRenderTable.cpp
+    icons/QcBlockIcon.cpp icons/QcMobIcon.cpp meshing/QcBlockRenderTable.cpp
     # The material maps as well (decision E-908).
     materials/QcMaterialSynthesizer.cpp materials/QcMaterialMips.cpp
     PROPERTIES COMPILE_OPTIONS "${QC_NO_FP_CONTRACT}")

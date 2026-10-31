@@ -1,7 +1,7 @@
 {
     "name": "creatures",
     "order": 100,
-    "icon": "rotten_flesh",
+    "icon": "zombie",
     "sections": [
         "spawning",
         "biomes",

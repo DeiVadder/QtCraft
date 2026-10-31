@@ -388,7 +388,6 @@ Section extraSpawnSection(const QcHandbookContext &context, const QcMobDefinitio
 QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
     QcHandbookText &text = context.text;
-    const QcHandbookLinks &links = context.links;
 
     QcHandbookEntry entry;
     entry.id = u"mob:"_s + mob.name;
@@ -396,7 +395,7 @@ QcHandbookEntry creaturePage(const QcHandbookContext &context, const QcMobDefini
     entry.category = u"creatures"_s;
     entry.pack = QcHandbookLinks::packOf(mob.name);
     entry.title = context.content.translations().translate(mob.translationKey, text.language());
-    entry.icon = mob.drops.isEmpty() ? links.itemIcon(mob.catchItem) : links.itemIcon(mob.drops.first().item);
+    entry.icon = QcHandbookLinks::mobIcon(mob.name);
     entry.text = text.description(mob.descriptionKey, mob.name);
     entry.facts.append({text.label(u"fact.id"_s), mob.name, {}});
 

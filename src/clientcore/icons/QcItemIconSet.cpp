@@ -5,9 +5,11 @@
 
 #include "clientcore/figures/QcFigureLook.h"
 #include "clientcore/icons/QcBlockIcon.h"
+#include "clientcore/icons/QcMobIcon.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/handbook/QcHandbookLinks.h"
 
 #include <array>
 
@@ -56,6 +58,10 @@ QHash<QString, QImage> draw(const QcContentRegistry &content, const QcTextureAtl
                            && content.block(*block).renderLayer != QcRenderLayer::Invisible
                            && !content.state(*block).boxes.isEmpty();
         icons.insert(item.name, model ? blockIcon(content, *renderTable, *block, shaded, size) : atlas.tile(item.texture, QcBlockIcon::largeIconSize));
+    }
+    // Creatures for the handbook (decision E-944), under names no item can have.
+    for (const QcMobDefinition &mob : content.mobs()) {
+        icons.insert(QcHandbookLinks::mobIcon(mob.name), QcMobIcon::render(content, mob, atlas, shaded, size));
     }
     return icons;
 }
