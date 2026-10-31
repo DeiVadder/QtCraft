@@ -56,6 +56,8 @@ RowLayout {
         color: Theme.textMuted
     }
     GameButton {
+        // click:padChange_<action> of the test hooks.
+        objectName: "padChange_" + bindingRow.modelData.action
         Layout.preferredWidth: Ui.size.padButton
         enabled: bindingRow.changeEnabled
         kind: bindingRow.capturing ? GameButton.Primary : GameButton.Secondary

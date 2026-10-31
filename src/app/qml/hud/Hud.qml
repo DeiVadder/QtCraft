@@ -268,11 +268,12 @@ Item {
         border.color: Theme.textOutline
         border.width: 1
 
+        // Inside the border on both sides.
         Rectangle {
-            x: 1
-            y: 1
-            width: (parent.width - 2) * Math.max(0, Math.min(1, hud.game.player.experienceProgress))
-            height: parent.height - 2
+            x: parent.border.width
+            y: parent.border.width
+            width: (parent.width - 2 * x) * Math.max(0, Math.min(1, hud.game.player.experienceProgress))
+            height: parent.height - 2 * y
             color: Theme.experience
         }
     }

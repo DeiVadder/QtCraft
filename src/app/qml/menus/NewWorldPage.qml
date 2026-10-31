@@ -160,7 +160,7 @@ ColumnLayout {
         // small map on the right; one column where the page is too narrow for both, the map then at
         // the end, below the world options.
         GridLayout {
-            id: columns
+            id: layoutColumns
 
             readonly property real mapColumn: Ui.size.map + 2 * Ui.space.l
             readonly property bool beside: page.terrain && width >= Ui.screen.s + mapColumn + columnSpacing
@@ -325,8 +325,8 @@ ColumnLayout {
             // legend and the villages are on the world options page.
             MapPreviewGroup {
                 objectName: "newWorldMap"
-                Layout.preferredWidth: columns.beside ? columns.mapColumn : -1
-                Layout.fillWidth: !columns.beside
+                Layout.preferredWidth: layoutColumns.beside ? layoutColumns.mapColumn : -1
+                Layout.fillWidth: !layoutColumns.beside
                 Layout.alignment: Qt.AlignTop
                 visible: page.terrain
                 compact: true

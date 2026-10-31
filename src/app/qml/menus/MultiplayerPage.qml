@@ -15,7 +15,10 @@ ColumnLayout {
     id: screen
 
     required property GameController game
-    property string failure
+    // Why the last join failed (empty: it did not, or the page opened again).
+    readonly property string failure: game.multiplayer.joinFailure
+    // What forgetting a changed certificate did; shown instead of the failure until the next join.
+    property string notice
 
     // The page should be shown (open(), also --overlay multiplayer).
     signal openRequested
@@ -24,7 +27,8 @@ ColumnLayout {
 
     // Shows the page with the address field focused and the player name filled in.
     function open() {
-        screen.failure = "";
+        screen.game.multiplayer.clearFailures();
+        screen.notice = "";
         if (nameField.text.length === 0)
             nameField.text = screen.game.multiplayer.settings.playerName.length > 0 ? screen.game.multiplayer.settings.playerName : qsTr("Player");
         openRequested();
@@ -40,7 +44,7 @@ ColumnLayout {
     }
 
     function join() {
-        screen.failure = "";
+        screen.notice = "";
         screen.game.multiplayer.join(addressField.text, nameField.text, passwordField.text);
     }
 
@@ -49,9 +53,6 @@ ColumnLayout {
     Connections {
         target: screen.game.multiplayer
 
-        function onJoinFailed(reason: string) {
-            screen.failure = reason;
-        }
         function onJoined() {
             passwordField.text = "";
             screen.joined();
@@ -241,10 +242,11 @@ ColumnLayout {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
                 font.pixelSize: Ui.type.body
-                color: screen.failure.length > 0 && !screen.game.multiplayer.joining ? Theme.error : Theme.text
+                color: screen.failure.length > 0 && screen.notice.length === 0 && !screen.game.multiplayer.joining ? Theme.error : Theme.text
                 textFormat: Text.PlainText
                 text: screen.game.multiplayer.joinStage === NetworkClient.Stage.Connecting ? qsTr("Connecting to %1 …").arg(screen.game.multiplayer.lastAddress)
                       : screen.game.multiplayer.joinStage === NetworkClient.Stage.LoggingIn ? qsTr("Logging in …")
+                      : screen.notice.length > 0 ? screen.notice
                       : screen.failure.length > 0 ? qsTr("Could not join: %1").arg(screen.failure)
                       : ""
             }
@@ -257,7 +259,7 @@ ColumnLayout {
                 text: qsTr("Forget the old certificate")
                 onClicked: {
                     if (screen.game.multiplayer.forgetCertificate(screen.game.multiplayer.certificateChangedAddress))
-                        screen.failure = qsTr("The old certificate is forgotten. Join again only if you are sure the server's owner made a new one.");
+                        screen.notice = qsTr("The old certificate is forgotten. Join again only if you are sure the server's owner made a new one.");
                 }
             }
 

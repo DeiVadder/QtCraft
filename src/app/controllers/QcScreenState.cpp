@@ -88,6 +88,11 @@ bool QcScreenState::isMenu(Overlay overlay)
 
 bool QcScreenState::isFullScreen(Overlay overlay)
 {
+    return isSettingsPage(overlay) || overlay == Overlay::Admin || overlay == Overlay::Advancements;
+}
+
+bool QcScreenState::isSettingsPage(Overlay overlay)
+{
     switch (overlay) {
     case Overlay::Settings:
     case Overlay::Display:
@@ -97,8 +102,6 @@ bool QcScreenState::isFullScreen(Overlay overlay)
     case Overlay::Gamepad:
     case Overlay::Debug:
     case Overlay::TexturePacks:
-    case Overlay::Admin:
-    case Overlay::Advancements:
         return true;
     // No default: a new overlay must be placed here (-Wswitch).
     case Overlay::None:
@@ -115,6 +118,42 @@ bool QcScreenState::isFullScreen(Overlay overlay)
     case Overlay::Stonecutter:
     case Overlay::Enchanting:
     case Overlay::Anvil:
+    case Overlay::Admin:
+    case Overlay::Advancements:
+        return false;
+    }
+    return false;
+}
+
+bool QcScreenState::isSlotScreen(Overlay overlay)
+{
+    switch (overlay) {
+    case Overlay::Inventory:
+    case Overlay::Creative:
+    case Overlay::Furnace:
+    case Overlay::Chest:
+    case Overlay::Trade:
+    case Overlay::Stonecutter:
+    case Overlay::Enchanting:
+    case Overlay::Anvil:
+        return true;
+    // No default: a new overlay must be placed here (-Wswitch).
+    case Overlay::None:
+    case Overlay::Pause:
+    case Overlay::Settings:
+    case Overlay::Display:
+    case Overlay::Audio:
+    case Overlay::Interface:
+    case Overlay::Controls:
+    case Overlay::Gamepad:
+    case Overlay::Debug:
+    case Overlay::TexturePacks:
+    case Overlay::Character:
+    case Overlay::Lan:
+    case Overlay::Chat:
+    case Overlay::Sign:
+    case Overlay::Admin:
+    case Overlay::Advancements:
         return false;
     }
     return false;

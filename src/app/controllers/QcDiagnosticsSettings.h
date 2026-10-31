@@ -25,6 +25,10 @@ class QcDiagnosticsSettings : public QObject
     Q_PROPERTY(QString crashReport READ crashReport NOTIFY sessionChanged FINAL)
     // A bundle is being written (collectDiagnostics()).
     Q_PROPERTY(bool collecting READ collecting NOTIFY collectingChanged FINAL)
+    // The native path of the latest bundle; empty until one was written.
+    Q_PROPERTY(QString bundle READ bundle NOTIFY diagnosticsCollected FINAL)
+    // The latest bundle could not be written (logged).
+    Q_PROPERTY(bool bundleFailed READ bundleFailed NOTIFY diagnosticsCollected FINAL)
 
 public:
     explicit QcDiagnosticsSettings(QObject *parent = nullptr);
@@ -38,6 +42,8 @@ public:
     QString logFolder() const { return m_logFolder; }
     QString crashReport() const { return m_crashReport; }
     bool collecting() const { return m_collecting; }
+    QString bundle() const { return m_bundle; }
+    bool bundleFailed() const { return m_bundleFailed; }
     // The files of this run (main()).
     void setSession(const QcDiagnosticsSession &session);
 
@@ -57,9 +63,14 @@ signals:
     void diagnosticsCollected(const QString &folder);
 
 private:
+    // A bundle was written to `folder`, or not (empty).
+    void finishBundle(const QString &folder);
+
     bool m_logToFile = true;
     QString m_logFile;
     QString m_logFolder;
     QString m_crashReport;
     bool m_collecting = false;
+    QString m_bundle;
+    bool m_bundleFailed = false;
 };

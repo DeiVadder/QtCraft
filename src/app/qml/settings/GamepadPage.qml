@@ -20,7 +20,8 @@ SettingsPage {
 
     required property GameController game
     readonly property GamepadOptions options: game.settings.gamepad
-    // The action waiting for a button ("" while none does) and what the last change moved.
+    // The action of the last capture started here and what the last change moved; it waits for
+    // a button only while the pad captures (a key, a click or a disconnect ends that).
     property string captureAction
 
     // The profiles to choose from: all controllers, the connected ones, then the stored ones.
@@ -74,15 +75,10 @@ SettingsPage {
     Connections {
         target: page.game.gamepad
 
+        // Only this page starts a capture, always with its action set (startCapture()).
         function onButtonCaptured(button) {
             if (page.captureAction.length > 0)
                 page.message = page.options.bind(page.captureAction, button);
-            page.captureAction = "";
-        }
-
-        function onCapturingChanged() {
-            if (!page.game.gamepad.capturing)
-                page.captureAction = "";
         }
     }
 
@@ -161,13 +157,14 @@ SettingsPage {
 
             delegate: GamepadBindingRow {
                 game: page.game
-                capturing: page.captureAction === modelData.action
+                capturing: page.game.gamepad.capturing && page.captureAction === modelData.action
                 changeEnabled: page.options.editable && page.game.gamepad.pads.list.length > 0
                 onChangeClicked: page.startCapture(modelData.action)
             }
         }
 
         Hint {
+            objectName: "gamepadMessage"
             Layout.fillWidth: true
             visible: page.message.length > 0
             kind: Hint.Warning

@@ -200,18 +200,14 @@ Rectangle {
         }
     }
 
-    // The overlays that open the settings (each at its page, SettingsScreen.pageOfOverlay).
-    readonly property list<int> settingsPages: [GameController.Overlay.Settings, GameController.Overlay.Display,
-        GameController.Overlay.Audio, GameController.Overlay.Interface, GameController.Overlay.Controls,
-        GameController.Overlay.Gamepad, GameController.Overlay.Debug, GameController.Overlay.TexturePacks]
-
     // The settings are an overlay of their own (Overlay.Settings) so the --overlay test hook can
     // open them. Closing a sub-screen returns to the menu and its keys.
-    function subScreenClosed(overlays: list<int>) {
+    // `shown`: the overlay is still the one of the closed sub-screen.
+    function subScreenClosed(shown: bool) {
         // The debug options open from the world (debug options key) and return there.
         if (menu.game.overlay === GameController.Overlay.Debug)
             menu.game.overlay = GameController.Overlay.None;
-        else if (overlays.includes(menu.game.overlay))
+        else if (shown)
             menu.game.overlay = GameController.Overlay.Pause;
         if (visible)
             forceActiveFocus();
@@ -227,34 +223,34 @@ Rectangle {
         // The handbook opened from the settings covers them (and keeps Tab).
         covered: menu.game.handbook.isOpen
         backText: menu.game.overlay === GameController.Overlay.Debug ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
-        onClosed: menu.subScreenClosed(menu.settingsPages)
+        onClosed: menu.subScreenClosed(menu.game.settingsOpen)
     }
 
     CharacterScreen {
         id: characterScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed([GameController.Overlay.Character])
+        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Character)
     }
 
     LanScreen {
         id: lanScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed([GameController.Overlay.Lan])
+        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Lan)
     }
 
     AdminScreen {
         id: adminScreen
 
         game: menu.game
-        onClosed: menu.subScreenClosed([GameController.Overlay.Admin])
+        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Admin)
     }
 
     // One sub-screen at a time, the one the overlay names; any other overlay closes them.
     function followOverlay() {
         const overlay = menu.game.overlay;
-        if (!menu.settingsPages.includes(overlay))
+        if (!menu.game.settingsOpen)
             settingsScreen.close();
         if (overlay !== GameController.Overlay.Character)
             characterScreen.close();
@@ -262,7 +258,7 @@ Rectangle {
             lanScreen.close();
         if (overlay !== GameController.Overlay.Admin)
             adminScreen.close();
-        if (menu.settingsPages.includes(overlay)) {
+        if (menu.game.settingsOpen) {
             settingsScreen.startPage = settingsScreen.pageOfOverlay(overlay);
             settingsScreen.open();
         } else if (overlay === GameController.Overlay.Character) {

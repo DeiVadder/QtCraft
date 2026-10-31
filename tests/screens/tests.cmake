@@ -36,6 +36,7 @@ qc_add_test(test_world_map_preview SOURCES screens/test_world_map_preview.cpp LI
 qc_add_test(test_sign_controller SOURCES screens/test_sign_controller.cpp fixtures/QcRawClient.h LIBRARIES qc_app_core qc_worlds qc_server qc_base_content TIMEOUT 150)
 # The multiplayer screens (stage 25b, decisions E-258 to E-261): recent servers, LAN addresses, join and leave
 # lines and the settings, without a window.
-qc_add_test(test_multiplayer_ui SOURCES screens/test_multiplayer_ui.cpp LIBRARIES qc_app_core)
+# ... and the failures of joining and opening to the network the screens show (row 79.48b).
+qc_add_test(test_multiplayer_ui SOURCES screens/test_multiplayer_ui.cpp LIBRARIES qc_app_core qc_worlds)
 qc_add_test(test_admin_controller SOURCES screens/test_admin_controller.cpp LIBRARIES qc_app_core)
 qc_add_test(test_chat_feed SOURCES screens/test_chat_feed.cpp LIBRARIES qc_app_core)

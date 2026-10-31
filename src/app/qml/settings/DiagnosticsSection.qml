@@ -16,8 +16,8 @@ SettingGroup {
 
     required property GameController game
     // The folder of the latest bundle; empty until one was written.
-    property string bundle: ""
-    property bool bundleFailed: false
+    readonly property string bundle: game.settings.diagnostics.bundle
+    readonly property bool bundleFailed: game.settings.diagnostics.bundleFailed
 
     title: qsTr("Log and crash reports")
 
@@ -69,15 +69,6 @@ SettingGroup {
         }
         Item {
             Layout.fillWidth: true
-        }
-    }
-
-    Connections {
-        target: section.game.settings.diagnostics
-
-        function onDiagnosticsCollected(folder: string) {
-            section.bundle = folder
-            section.bundleFailed = folder === ""
         }
     }
 

@@ -23,7 +23,7 @@ Item {
     readonly property bool wide: shape === "shoulder" || shape === "trigger" || (shape === "label" && label.length > 1)
     property real size: Ui.px(22)
 
-    implicitWidth: wide ? Math.max(size * 1.5, text.implicitWidth + Ui.px(10)) : size
+    implicitWidth: wide ? Math.max(size * 1.5, glyphText.implicitWidth + Ui.px(10)) : size
     implicitHeight: size
 
     Canvas {
@@ -110,7 +110,7 @@ Item {
     onSymbolChanged: canvas.requestPaint()
 
     Text {
-        id: text
+        id: glyphText
 
         anchors.centerIn: parent
         anchors.verticalCenterOffset: glyph.shape === "trigger" ? 1 : 0

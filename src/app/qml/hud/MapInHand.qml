@@ -27,7 +27,7 @@ Item {
         anchors.fill: parent
         color: Theme.mapPaper
         border.color: Theme.mapPaperEdge
-        border.width: Math.max(2, Math.round(parent.width / 64))
+        border.width: Math.max(Ui.hudPx(2), Math.round(parent.width / 64))
 
         Image {
             id: picture

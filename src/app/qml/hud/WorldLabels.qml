@@ -15,7 +15,7 @@ import QtCraft
 // Labels stay inside the view (decision E-720): one that would reach over an edge is moved back in,
 // and one that comes down to the HUD's status rows (hudArea) fades out before it reaches them.
 Item {
-    id: layer
+    id: labelLayer
 
     // A QcWorldLabelModel.
     required property var labels
@@ -27,7 +27,7 @@ Item {
     readonly property real hudFade: Ui.hudPx(24)
 
     Repeater {
-        model: layer.labels
+        model: labelLayer.labels
 
         delegate: Rectangle {
             id: worldLabel
@@ -49,18 +49,18 @@ Item {
             readonly property real drawnWidth: width * labelScale
             readonly property real drawnHeight: height * labelScale
             // A label wider than the view stays centred on it.
-            readonly property real centreX: drawnWidth > layer.width - 2 * layer.edgeMargin
-                                            ? layer.width / 2
-                                            : Math.max(layer.edgeMargin + drawnWidth / 2,
-                                                       Math.min(layer.width - layer.edgeMargin - drawnWidth / 2, labelX))
+            readonly property real centreX: drawnWidth > labelLayer.width - 2 * labelLayer.edgeMargin
+                                            ? labelLayer.width / 2
+                                            : Math.max(labelLayer.edgeMargin + drawnWidth / 2,
+                                                       Math.min(labelLayer.width - labelLayer.edgeMargin - drawnWidth / 2, labelX))
             // QcLabelProjector keeps anchors up to 5 % outside the view: one just below it is lifted in.
-            readonly property real bottomY: Math.min(layer.height - layer.edgeMargin,
-                                                     Math.max(layer.edgeMargin + drawnHeight, labelY))
+            readonly property real bottomY: Math.min(labelLayer.height - labelLayer.edgeMargin,
+                                                     Math.max(labelLayer.edgeMargin + drawnHeight, labelY))
             // 1 while the label is clear of the HUD, down to 0 when its top reaches hudArea.
-            readonly property bool overHud: layer.hudArea.width > 0 && centreX + drawnWidth / 2 > layer.hudArea.x
-                                            && centreX - drawnWidth / 2 < layer.hudArea.x + layer.hudArea.width
-            readonly property real hudVisibility: overHud ? 1 - Math.max(0, Math.min(1, (bottomY - layer.hudArea.y + layer.hudFade)
-                                                                                       / (layer.hudFade + drawnHeight)))
+            readonly property bool overHud: labelLayer.hudArea.width > 0 && centreX + drawnWidth / 2 > labelLayer.hudArea.x
+                                            && centreX - drawnWidth / 2 < labelLayer.hudArea.x + labelLayer.hudArea.width
+            readonly property real hudVisibility: overHud ? 1 - Math.max(0, Math.min(1, (bottomY - labelLayer.hudArea.y + labelLayer.hudFade)
+                                                                                       / (labelLayer.hudFade + drawnHeight)))
                                                           : 1
 
             x: centreX - width / 2

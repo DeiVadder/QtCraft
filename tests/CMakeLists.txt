@@ -109,7 +109,7 @@ set_property(TEST test_interpolation test_latency test_creative_client test_adve
     test_survival_scenario test_gamepad_scenarios test_multiplayer_bots test_creative_bots test_signal_bots
     test_minecart_bots test_machine_bots test_boat_bots test_session_tick test_session_thread app_offscreen_pad_inventory
     app_offscreen_pad_radial app_offscreen_pad_keyboard app_offscreen_pad_menu app_offscreen_pad_playstation
-    app_offscreen_pad_settings app_offscreen_pad_lazy_menu app_offscreen_advancements_return APPEND PROPERTY LABELS realtime)
+    app_offscreen_pad_settings app_offscreen_pad_bind app_offscreen_pad_lazy_menu app_offscreen_advancements_return APPEND PROPERTY LABELS realtime)
 
 # Inputs a test reads at run time beside its own binary: `scripts/verify.sh --changed` runs the test
 # again when one of them changes (decision E-405). Tests that start qtcraft-headless name it here;
@@ -140,6 +140,8 @@ if(NOT WIN32)
     set_tests_properties(script_move_classes PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/fix-includes.py;${PROJECT_SOURCE_DIR}/scripts/check-cmake-lists.py")
     set_tests_properties(script_check_member_access PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/check-function-length.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
     set_tests_properties(script_check_duplicates script_check_qml script_check_ast PROPERTIES REQUIRED_FILES "${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
+    set_tests_properties(script_check_duplicates script_check_qml PROPERTIES REQUIRED_FILES
+        "${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py;${PROJECT_SOURCE_DIR}/scripts/qc_ratchet.py")
     set_tests_properties(script_convert_doc_comments script_api_docs_stage script_code_map PROPERTIES REQUIRED_FILES
         "${PROJECT_SOURCE_DIR}/scripts/qc_doc_comments.py;${PROJECT_SOURCE_DIR}/scripts/qc_doc_format.py;${PROJECT_SOURCE_DIR}/scripts/qc_code_lines.py")
 endif()

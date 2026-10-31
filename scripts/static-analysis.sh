@@ -111,24 +111,25 @@ fi
 
 # Repeated code (clones and blocks repeated back to back in C++ and QML) and the QML heuristics (long
 # functions, Connections writing the root's state, enum lists, ids named like properties, unread object
-# names, raw sizes), decision E-942: warning only, a NOLINT marker without a reason fails. The whole tree
+# names, raw sizes), decision E-942: a NOLINT marker without a reason, a finding of a gating rule
+# (GATING in check-qml.py) and a count above scripts/check-baseline.json (ratchet) fail. The whole tree
 # prints the counts, a selection lists the findings that touch the given files.
-echo "== duplicates (warning only)"
+echo "== duplicates (ratchet)"
 if [ "$CHEAP_SELECTED" -eq 0 ]; then
     if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicates.py" --list); then
         status=1
-        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason|^ratchet:'
     fi
     printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
 elif [ -n "$LENGTH_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-duplicates.py" $LENGTH_FILES || status=1
 fi
-echo "== QML heuristics (warning only)"
+echo "== QML heuristics (gating rules and ratchet)"
 if [ "$CHEAP_SELECTED" -eq 0 ]; then
     if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-qml.py" --list); then
         status=1
-        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: \['
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E '^[^ ]+:[0-9]+: .*without a reason|\[raw-size\]|^ratchet:'
     fi
     printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
 elif [ -n "$QML_FILES" ]; then
@@ -292,8 +293,16 @@ elif [ -n "$QML_FILES" ]; then
     else
         echo "== qmllint ($(printf '%s\n' $QML_FILES | grep -c .) files)"
         grep -v '\.qml$' "$RSP" > "$LOG_DIR/qmllint.rsp"
+        # One call per file: qmllint shares one importer across the files of a call and loses the base
+        # types of a file that is linted and imported by another one (bogus warnings such as "Could not
+        # find property" on ItemSlot). The subshell fails when any call fails.
         # shellcheck disable=SC2086
-        if ! (cd "$PROJECT_DIR/src/app" && run_limited "$QMLLINT" "@$LOG_DIR/qmllint.rsp" $QML_FILES) > "$LOG_DIR/qmllint.log" 2>&1 \
+        if ! (cd "$PROJECT_DIR/src/app" || exit 1
+              failed=0
+              for file in $QML_FILES; do
+                  run_limited "$QMLLINT" "@$LOG_DIR/qmllint.rsp" "$file" || failed=1
+              done
+              exit $failed) > "$LOG_DIR/qmllint.log" 2>&1 \
             || grep -qE '^(Warning|Error|Critical):' "$LOG_DIR/qmllint.log"; then
             cat "$LOG_DIR/qmllint.log"
             status=1

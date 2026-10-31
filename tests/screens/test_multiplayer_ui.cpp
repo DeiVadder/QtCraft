@@ -1,11 +1,19 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "app/controllers/QcMultiplayerController.h"
+#include "app/controllers/QcSettingsController.h"
+#include "app/controllers/QcWorldLibraryController.h"
 #include "app/multiplayer/QcLanAddresses.h"
 #include "app/multiplayer/QcMultiplayerSettings.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/multiplayer/QcServerHistory.h"
+#include "app/session/QcSessionParts.h"
+#include "app/session/QcWorldStarter.h"
+#include "clientcore/meshing/QcMeshScheduler.h"
+#include "clientcore/session/QcClientSession.h"
 #include "common/diagnostics/QcRoundTripStats.h"
+#include "worlds/QcLocalServerHost.h"
 
 #include <QFile>
 #include <QSettings>
@@ -220,6 +228,41 @@ private slots:
         QCOMPARE(list.count(), 0);
         QVERIFY(list.players().isEmpty());
         QVERIFY(list.serverName().isEmpty());
+    }
+
+    // The screens bind to the controller's failures instead of keeping them (row 79.48b): a refused
+    // join and a refused opening to the network stay until the next attempt or clearFailures().
+    void failuresStayUntilTheNextAttempt()
+    {
+        QcSessionParts parts;
+        QcWorldLibraryController library;
+        QcSettingsController settings(parts, library, nullptr);
+        QcWorldStarter worlds(library, settings);
+        QcMultiplayerController multiplayer(parts, worlds, settings, library);
+        QSignalSpy changed(&multiplayer, &QcMultiplayerController::failureChanged);
+        QSignalSpy joinFailed(&multiplayer, &QcMultiplayerController::joinFailed);
+
+        multiplayer.join(u"127.0.0.1"_s, u""_s);
+        QCOMPARE(joinFailed.count(), 1);
+        QCOMPARE(multiplayer.joinFailure(), joinFailed.first().first().toString());
+        QVERIFY(!multiplayer.joinFailure().isEmpty());
+        QVERIFY(multiplayer.lanFailure().isEmpty());
+
+        // No world runs here, so opening it to the network is refused.
+        QCOMPARE(multiplayer.openToLan(0), -1);
+        QVERIFY(!multiplayer.lanFailure().isEmpty());
+        QVERIFY(!multiplayer.joinFailure().isEmpty());
+
+        // A new join forgets the old reason before it fails again with the same one.
+        changed.clear();
+        multiplayer.join(u"127.0.0.1"_s, u""_s);
+        QCOMPARE(changed.count(), 2);
+        QCOMPARE(joinFailed.count(), 2);
+        QVERIFY(!multiplayer.joinFailure().isEmpty());
+
+        multiplayer.clearFailures();
+        QVERIFY(multiplayer.joinFailure().isEmpty());
+        QVERIFY(multiplayer.lanFailure().isEmpty());
     }
 };
 

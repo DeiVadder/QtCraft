@@ -14,12 +14,12 @@ Popup {
     id: screen
 
     required property GameController game
-    property string failure
+    // Why opening the world failed (empty: it did not, or the screen opened again).
+    readonly property string failure: game.multiplayer.lanFailure
     // Asked again whenever the port changes or the screen opens.
     readonly property list<string> addresses: visible && game.multiplayer.lanPort > 0 ? game.multiplayer.lanAddresses() : []
 
     function openWorld() {
-        screen.failure = "";
         const port = portField.text.length > 0 ? parseInt(portField.text) : 0;
         screen.game.multiplayer.openToLan(port, passwordField.text, maxPlayers.value, ipv6Switch.checked);
         passwordField.text = "";
@@ -35,18 +35,10 @@ Popup {
     padding: Ui.space.xl
 
     onAboutToShow: {
-        screen.failure = "";
+        screen.game.multiplayer.clearFailures();
         ipv6Switch.checked = false;
         portField.text = String(screen.game.multiplayer.settings.hostPort);
         maxPlayers.value = screen.game.multiplayer.settings.hostMaxPlayers;
-    }
-
-    Connections {
-        target: screen.game.multiplayer
-
-        function onLanFailed(reason: string) {
-            screen.failure = reason;
-        }
     }
 
     // A field's label above it, and a help line below it.

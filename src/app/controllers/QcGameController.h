@@ -77,6 +77,10 @@ class QcGameController : public QObject
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
     // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // The overlay is a page of the settings (QcScreenState::isSettingsPage).
+    Q_PROPERTY(bool settingsOpen READ settingsOpen NOTIFY overlayChanged FINAL)
+    // The overlay is a screen with item slots (QcScreenState::isSlotScreen).
+    Q_PROPERTY(bool slotScreenOpen READ slotScreenOpen NOTIFY overlayChanged FINAL)
     // How much of the HUD shows behind the open screens and the handbook (GameController.HudShown,
     // decision E-927): the one place that hides parts of the HUD behind screens.
     Q_PROPERTY(QcScreenState::HudShown hudShown READ hudShown NOTIFY hudShownChanged FINAL)
@@ -140,6 +144,8 @@ public:
     using Overlay = QcScreenState::Overlay;
     Overlay overlay() const { return m_screens.overlay(); }
     void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
+    bool settingsOpen() const { return QcScreenState::isSettingsPage(overlay()); }
+    bool slotScreenOpen() const { return QcScreenState::isSlotScreen(overlay()); }
     QcScreenState::HudShown hudShown() const { return m_hudShown; }
     int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
     bool logScreenCreation() const { return m_screens.logScreenCreation(); }

@@ -90,6 +90,12 @@ public:
     // The full-screen screens (decision E-927): the settings at any page, "Manage server" and the
     // advancements cover the world and the HUD completely, as the handbook does.
     static bool isFullScreen(Overlay overlay);
+    // The pages of the settings (Settings, Display, Audio, Interface, Controls, Gamepad, Debug,
+    // TexturePacks): one SettingsScreen shows them, each at its page.
+    static bool isSettingsPage(Overlay overlay);
+    // The screens with item slots (inventory, creative, furnace, chest, trade, stonecutter,
+    // enchanting, anvil): the pad picks up and puts down there (decision E-583).
+    static bool isSlotScreen(Overlay overlay);
     // How much of the HUD shows with `overlay` open, the handbook open or not and the player dead
     // (the death screen) or not (decision E-927).
     static HudShown hudShown(Overlay overlay, bool handbookOpen, bool dead);

@@ -173,8 +173,9 @@ SlotScreen {
                 color: Theme.slotBorder
 
                 Rectangle {
-                    width: (parent.width - 2) * screen.trade.levelProgress
-                    height: parent.height - 2
+                    // One pixel in from each side.
+                    width: (parent.width - 2 * x) * screen.trade.levelProgress
+                    height: parent.height - 2 * y
                     x: 1
                     y: 1
                     radius: Ui.px(2)

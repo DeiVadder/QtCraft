@@ -39,8 +39,11 @@ Rules (name, what it finds):
                        sourceSize only resamples)
 A finding is skipped when its line or the line above holds `// NOLINT(qc-qml-<rule>): <reason>` (a marker
 without a reason is listed itself as `unreasoned`). Heuristic on comment-blanked text, not a QML parser.
-Gating rules (exit code 1 on a finding): those in GATING (none yet: every rule warns, the human sets the
-limits with the counts in view) and markers without a reason; the others only print.
+Gating rules (exit code 1 on a finding): those in GATING and markers without a reason. The rules in
+scripts/check-baseline.json are ratcheted (scripts/qc_ratchet.py): their count over the whole tree may only
+go down, a rise fails the run. Like check-duplicates.py the ratchet counts the whole tree also under
+--changed and for a file selection (about 1 s more), so a selection fails on a rise elsewhere too; it is
+not checked with another --max-function-lines. The others only print.
 Usage: scripts/check-qml.py [--list] [--changed] [--max-function-lines N] [file ...]
   --list     prints every finding, otherwise only the counts per rule
   --changed  only QML files changed against dev (committed, staged, unstaged, new)
@@ -58,9 +61,23 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
          "on-property", "loader-item", "anchors-layout", "image-source-size")
-# Rules whose findings fail the run (exit code 1). All rules warn while the human sets the limits with the
-# findings in view (row 79.48, E-942); a NOLINT marker without a reason always fails.
-GATING = set()
+# Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
+# E-942); a NOLINT marker without a reason always fails. `id-shadows-property`, `enum-list` and
+# `connections-write` join once their findings in Main.qml are gone (79.46, 79.47, 79.49); until then the
+# ratchet keeps their counts from rising.
+GATING = {"raw-size"}
+# Properties every Item has (QQuickItem and QObject): an id with one of these names hides the member in
+# every unqualified use inside the file (qmllint id-shadows-member), as `id: layer` hides `Item.layer`.
+ITEM_MEMBERS = {
+    "parent", "children", "data", "resources", "x", "y", "z", "width", "height", "implicitWidth",
+    "implicitHeight", "opacity", "enabled", "visible", "visibleChildren", "states", "transitions", "state",
+    "childrenRect", "anchors", "left", "right", "horizontalCenter", "top", "bottom", "verticalCenter",
+    "baseline", "baselineOffset", "clip", "focus", "activeFocus", "activeFocusOnTab", "focusPolicy",
+    "rotation", "scale", "transformOrigin", "transform", "smooth", "antialiasing", "layer",
+    "containmentMask", "objectName",
+}
+# Code lines of a JS function or handler block before `long-function` reports it (E-942).
+FUNCTION_LINES = 15
 NOLINT = re.compile(r"NOLINT\(qc-qml-([\w-]+)\):(.*)")
 READ_FOLDERS = ("src/", "tests/", "scripts/", "tools/")
 
@@ -108,15 +125,16 @@ INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|C
                          r"|Slot|TextEdit|TextInput|Flickable|ListView|GridView)$")
 
 
-def load_code_lines():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qc_code_lines.py")
-    spec = importlib.util.spec_from_file_location("qc_code_lines", path)
+def load_module(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{name}.py")
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-QC_CODE_LINES = load_code_lines()
+QC_CODE_LINES = load_module("qc_code_lines")
+QC_RATCHET = load_module("qc_ratchet")
 
 
 def matching(text, start):
@@ -260,14 +278,14 @@ def enum_lists(qml):
 
 
 def shadowing_ids(qml):
-    names = {match.group(1) for match in DECLARATION.finditer(qml.masked)}
+    names = {match.group(1) for match in DECLARATION.finditer(qml.masked)} | ITEM_MEMBERS
     names |= {match.group(1) for match in BINDING.finditer(qml.masked)
               if qml.in_object(match.start())} - {"id", "default", "case"}
     found = []
     for match in ID.finditer(qml.masked):
         if match.group(1) in names:
             found.append((line_of(qml.masked, match.start()), "id-shadows-property",
-                          f"id {match.group(1)} has the name of a property in this file; rename the id"))
+                          f"id {match.group(1)} has the name of a property in this file or of Item; rename the id"))
     return found
 
 
@@ -473,7 +491,7 @@ def markers(text):
     return found
 
 
-def check_file(path, text, corpus, limit=15):
+def check_file(path, text, corpus, limit=FUNCTION_LINES):
     """The findings of one QML file: (path, line, rule, message), markers applied."""
     qml = QmlFile(path, text)
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
@@ -517,7 +535,7 @@ def changed_files():
 def main(arguments):
     if "--self-test" in arguments:
         return self_test()
-    limit = 15
+    limit = FUNCTION_LINES
     if "--max-function-lines" in arguments:
         limit = int(arguments[arguments.index("--max-function-lines") + 1])
     files = {os.path.relpath(os.path.abspath(path), ROOT) for path in arguments
@@ -531,6 +549,12 @@ def main(arguments):
     for path in qml_files:
         if selected is None or path in selected:
             findings += check_file(path, texts[path], corpus, limit)
+    risen = 0
+    if limit == FUNCTION_LINES:
+        tree = findings if selected is None else [finding for path in qml_files
+                                                  for finding in check_file(path, texts[path], corpus, limit)]
+        risen = QC_RATCHET.check("check-qml.py", {rule: sum(1 for finding in tree if finding[2] == rule)
+                                                  for rule in RULES})
     if "--list" in arguments or selected is not None:
         for path, line, rule, message in findings:
             print(f"{path}:{line}: [{rule}] {message}")
@@ -542,7 +566,7 @@ def main(arguments):
         print(f"{rule}: {number}" + ("" if gate else " (warning only)"))
     print(f"QML checks (E-942): {len(findings)} findings in {len(qml_files) if selected is None else len(selected)} "
           f"files, {gated} in gating rules")
-    return 1 if gated else 0
+    return 1 if gated or risen else 0
 
 
 SAMPLE = """import QtQuick
@@ -594,6 +618,10 @@ def self_test():
     expected = sorted([(6, "raw-size"), (10, "id-shadows-property"), (12, "enum-list"), (16, "unread-object-name"),
                        (18, "raw-size"), (27, "connections-write"), (31, "long-function")])
     failures = [] if got == expected else [f"expected {expected}, got {got}"]
+    shadow = "import QtQuick\nItem {\n    id: layer\n}\n"
+    got = [rule for _, _, rule, _ in check_file("src/app/qml/Layer.qml", shadow, corpus, 3)]
+    if got != ["id-shadows-property"]:
+        failures.append(f"an id named like a member of Item is listed: {got}")
     marked = SAMPLE.replace("// NOLINT(qc-qml-raw-size): sample exemption", "// NOLINT(qc-qml-raw-size):")
     got = sorted((line, rule) for _, line, rule, _ in check_file("src/app/qml/Main.qml", marked, corpus, 3))
     if (21, "unreasoned") not in got or (22, "raw-size") not in got:

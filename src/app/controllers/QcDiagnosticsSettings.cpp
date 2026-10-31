@@ -81,14 +81,21 @@ void QcDiagnosticsSettings::collectDiagnostics()
         emit collectingChanged();
         if (!written) {
             qCWarning(lcStartup).noquote() << u"Cannot write the diagnostics:"_s << written.error();
-            emit diagnosticsCollected({});
+            finishBundle({});
             return;
         }
         qCInfo(lcStartup).noquote() << u"Diagnostics written to"_s << QDir::toNativeSeparators(*written);
         QDesktopServices::openUrl(QUrl::fromLocalFile(*written));
-        emit diagnosticsCollected(QDir::toNativeSeparators(*written));
+        finishBundle(QDir::toNativeSeparators(*written));
     });
     watcher->setFuture(QtConcurrent::run([data = QcDataRoot::path()] { return QcDiagnosticsBundle::write({u"qtcraft"_s, data, {}}); }));
+}
+
+void QcDiagnosticsSettings::finishBundle(const QString &folder)
+{
+    m_bundle = folder;
+    m_bundleFailed = folder.isEmpty();
+    emit diagnosticsCollected(folder);
 }
 
 void QcDiagnosticsSettings::dismissCrashReport()

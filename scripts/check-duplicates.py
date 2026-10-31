@@ -20,8 +20,10 @@ translation markers), repeated blocks that start with `struct`, `class` or `enum
 findings lying (NESTED of each place) inside a larger one, and short units (table rows, one-line cases).
 A finding is skipped when `// NOLINT(qc-duplicate): <reason>` stands in one of its places or on the line
 above one; a marker without a reason exempts nothing and is listed itself as `unreasoned`.
-Heuristic on tokens, not a parser. Warning only: prints the findings and the counts; the exit code is 1 only
-for a marker without a reason (2 for a bad option or a missing file).
+Heuristic on tokens, not a parser. Prints the findings and the counts; the exit code is 1 for a marker
+without a reason and when a count over the tree rises above its baseline (ratchet, scripts/qc_ratchet.py and
+scripts/check-baseline.json; checked with the default limits and without --tests, also under --changed and
+for a file selection), 2 for a bad option or a missing file.
 Usage: scripts/check-duplicates.py [--list] [--changed] [--tests] [--min-lines N] [--min-tokens N]
                                    [--repeat-lines N] [--repeat-count N] [file ...]
   --list     prints every finding (largest first), otherwise only the counts per folder
@@ -61,15 +63,16 @@ KEYWORDS = {"if", "else", "for", "while", "do", "switch", "case", "default", "re
             "virtual", "template", "typename", "using", "namespace", "operator", "inline", "explicit"}
 
 
-def load_code_lines():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qc_code_lines.py")
-    spec = importlib.util.spec_from_file_location("qc_code_lines", path)
+def load_module(name):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{name}.py")
+    spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
-QC_CODE_LINES = load_code_lines()
+QC_CODE_LINES = load_module("qc_code_lines")
+QC_RATCHET = load_module("qc_ratchet")
 
 
 class Tokens:
@@ -408,6 +411,9 @@ def main(arguments):
     for path in source_files(options.tests or any(path.startswith("tests/") for path in files)):
         sources[path] = QC_CODE_LINES.read_source(os.path.join(ROOT, path))
     findings = analyse(sources, options.min_lines, options.min_tokens, options.repeat_lines, options.repeat_count)
+    risen = 0
+    if ratcheted(options):
+        risen = QC_RATCHET.check("check-duplicates.py", kind_counts(source_findings(sources, findings, options)))
     if selected is not None:
         findings = [finding for finding in findings if any(path in selected for path, _, _ in finding[2])]
     if options.list or selected is not None:
@@ -415,12 +421,32 @@ def main(arguments):
             print(message(finding))
     for (where, kind), (number, lines) in sorted(counts(findings).items()):
         print(f"{where}: {number} {kind}s, {lines} repeated lines")
-    number = {kind: sum(1 for finding in findings if finding[0] == kind)
-              for kind in ("clone", "repeat", "near-repeat", "unreasoned")}
-    print(f"duplicates (warning only, E-942): {number['clone']} clones, {number['repeat']} repeated blocks, "
+    number = kind_counts(findings)
+    print(f"duplicates (ratchet, E-942): {number['clone']} clones, {number['repeat']} repeated blocks, "
           f"{number['near-repeat']} near-repeats in {len(sources)} files, "
           f"{number['unreasoned']} {NOLINT} marker(s) without a reason")
-    return 1 if number["unreasoned"] else 0
+    return 1 if number["unreasoned"] or risen else 0
+
+
+def kind_counts(findings):
+    return {kind: sum(1 for finding in findings if finding[0] == kind)
+            for kind in ("clone", "repeat", "near-repeat", "unreasoned")}
+
+
+def ratcheted(options):
+    """The baseline counts src/ under the default limits; with --tests the run scans tests/ on purpose and
+    is no ratchet run (a selection with a test file adds tests/ too, source_findings() leaves it out)."""
+    return not options.tests and (options.min_lines, options.min_tokens, options.repeat_lines,
+                                  options.repeat_count) == (10, 60, 5, 3)
+
+
+def source_findings(sources, findings, options):
+    """The findings over src/ alone, as the baseline counts them: `findings` when no file of tests/ was
+    scanned, else src/ analysed again without them (clones between src/ and tests/ do not count)."""
+    if not any(path.startswith("tests/") for path in sources):
+        return findings
+    only = {path: text for path, text in sources.items() if not path.startswith("tests/")}
+    return analyse(only, options.min_lines, options.min_tokens, options.repeat_lines, options.repeat_count)
 
 
 CLONE_A = """// SPDX
@@ -493,6 +519,12 @@ TABLE = "static constexpr Row rows[] = {\n" + "".join(f"    {{\"name{i}\", {i}, 
 
 def self_test():
     failures = []
+    defaults = parse([])
+    with_test = {"src/a/QcA.cpp": CLONE_A, "tests/a/test_a.cpp": CLONE_A.replace("QcA", "QcT")}
+    if kind_counts(analyse(with_test))["clone"] != 1:
+        failures.append("the sample of src/ and tests/ holds one clone")
+    if kind_counts(source_findings(with_test, analyse(with_test), defaults))["clone"] != 0:
+        failures.append("a clone between src/ and tests/ counts for the ratchet")
     renamed = CLONE_A.replace("QcA", "QcB").replace("lcA", "lcB")
     other = CLONE_A.replace("value", "item").replace("QcA", "QcC")
     found = analyse({"src/a/QcA.cpp": CLONE_A, "src/b/QcB.cpp": renamed.replace("3", "7"), "src/c/QcC.cpp": other})

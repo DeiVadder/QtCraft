@@ -80,6 +80,11 @@ private slots:
                                  O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil};
         const QList<O> fullScreen{O::Settings, O::Display, O::Audio,        O::Interface, O::Controls,
                                   O::Gamepad,  O::Debug,   O::TexturePacks, O::Admin,     O::Advancements};
+        // The pages of SettingsScreen and the screens with item slots (GameController.settingsOpen, slotScreenOpen).
+        const QList<O> settingsPages{O::Settings, O::Display, O::Audio,        O::Interface,
+                                     O::Controls, O::Gamepad, O::Debug, O::TexturePacks};
+        const QList<O> slotScreens{O::Inventory, O::Creative,    O::Furnace,    O::Chest,
+                                   O::Trade,     O::Stonecutter, O::Enchanting, O::Anvil};
         // Every overlay is in exactly one list: a new one needs a decision here and in isFullScreen.
         const QMetaEnum overlays = QMetaEnum::fromType<O>();
         for (int index = 0; index < overlays.keyCount(); ++index) {
@@ -87,6 +92,8 @@ private slots:
             const int lists = world.count(overlay) + chat.count(overlay) + overWorld.count(overlay) + fullScreen.count(overlay);
             QVERIFY2(lists == 1, overlays.key(index));
             QCOMPARE(QcScreenState::isFullScreen(overlay), fullScreen.contains(overlay));
+            QCOMPARE(QcScreenState::isSettingsPage(overlay), settingsPages.contains(overlay));
+            QCOMPARE(QcScreenState::isSlotScreen(overlay), slotScreens.contains(overlay));
             const H expected = world.contains(overlay) ? H::All : chat.contains(overlay) ? H::AllButHint : overWorld.contains(overlay) ? H::StatusRows : H::Nothing;
             QCOMPARE(QcScreenState::hudShown(overlay, false, false), expected);
             // The handbook covers everything, from the world and from any screen, dead or alive.
