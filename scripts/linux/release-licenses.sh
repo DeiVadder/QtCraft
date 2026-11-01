@@ -74,8 +74,13 @@ package_licence() {
     if command -v rpm >/dev/null 2>&1 && package=$(rpm -qf --qf '%{NAME}' "$1" 2>/dev/null); then
         file=$(rpm -qL "$package" 2>/dev/null | grep -i -E '/(LICEN[CS]E|COPYING)[^/]*$' | head -1)
     elif command -v dpkg >/dev/null 2>&1; then
-        package=$(dpkg -S "$1" 2>/dev/null | head -1 | cut -d: -f1)
-        [ -z "$package" ] && package=$(dpkg -S "$(readlink -f "$1")" 2>/dev/null | head -1 | cut -d: -f1)
+        # dpkg knows a file under the path its package installed it to; with the merged /usr of
+        # Ubuntu that may be /lib/... while ldconfig and readlink name /usr/lib/... (libbz2).
+        real=$(readlink -f "$1")
+        for candidate in "$1" "$real" "${real#/usr}"; do
+            package=$(dpkg -S "$candidate" 2>/dev/null | head -1 | cut -d: -f1)
+            [ -n "$package" ] && break
+        done
         [ -n "$package" ] && file="/usr/share/doc/$package/copyright"
     fi
     [ -n "$file" ] && [ -s "$file" ] && echo "$file"
@@ -84,6 +89,8 @@ package_licence() {
 # Path of the system library named $1 (ldconfig), else of the link in WORK/compat.
 system_library() {
     path=$(/sbin/ldconfig -p 2>/dev/null | sed -n "s|^[[:space:]]*$1 (.*=> \(.*\)\$|\1|p" | head -1)
+    # A longer soname of the same library (Ubuntu's libbz2.so.1.0 for libbz2.so.1).
+    [ -z "$path" ] && path=$(/sbin/ldconfig -p 2>/dev/null | sed -n "s|^[[:space:]]*$1\.[0-9.]* (.*=> \(.*\)\$|\1|p" | head -1)
     [ -z "$path" ] && [ -e "$WORK/compat/$1" ] && path=$(readlink -f "$WORK/compat/$1")
     echo "$path"
 }
