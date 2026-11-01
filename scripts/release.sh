@@ -43,7 +43,7 @@
 #                                       skips the disk image; QTCRAFT_RELEASE_PRESET overrides the
 #                                       preset "deploy"; QTCRAFT_RELEASE_BUILD_LIMIT the build's
 #                                       seconds (1800); QTCRAFT_RELEASE_PROGRESS=1 prints the build's
-#                                       progress once a minute; QTCRAFT_RELEASE_GUI=0 skips the starts of
+#                                       progress once a minute (in a terminal every 5 s, =0 off); QTCRAFT_RELEASE_GUI=0 skips the starts of
 #                                       the game and keeps the static and dedicated-server checks,
 #                                       for machines without a display such as GitHub Actions;
 #                                       QTCRAFT_RELEASE_OPEN_SOURCE_QT=1 declares QT_DIR an
@@ -161,19 +161,18 @@ limited 300 cmake --preset "$PRESET" -DQC_BUILD_NUMBER="$BUILD_NUMBER" -DQC_CCAC
 # libraries must be static (QC_SHARED_LIBS is for debug and sanitizer trees only, E-890).
 grep -q '^QC_SHARED_LIBS:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" &&
     abort "build/$PRESET has QC_SHARED_LIBS=ON; a release needs static project libraries (reconfigure with -DQC_SHARED_LIBS=OFF)"
-# QTCRAFT_RELEASE_PROGRESS=1 (the release workflow) prints the build's last line once a minute, so
-# a long build on a hosted runner shows that it moves.
-PROGRESS_PID=""
-if [ "${QTCRAFT_RELEASE_PROGRESS:-0}" = 1 ]; then
-    (while sleep 60; do tail -n 1 "$WORK/build.log" 2>/dev/null | cut -c1-120; done) &
-    PROGRESS_PID=$!
-fi
+# Progress in a terminal, and once a minute with QTCRAFT_RELEASE_PROGRESS=1 (the release workflow).
+. "$PROJECT_DIR/scripts/release-progress.sh"
+trap 'stop_build_progress' EXIT
+trap 'stop_build_progress; exit 1' INT TERM HUP
+start_build_progress "$WORK/build.log"
 if ! limited "$BUILD_LIMIT" cmake --build --preset "$PRESET" --target qtcraft qtcraft-headless >"$WORK/build.log" 2>&1; then
-    [ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+    stop_build_progress
     tail -n 40 "$WORK/build.log"
     abort "build failed or took longer than $BUILD_LIMIT s, see $WORK/build.log"
 fi
-[ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+stop_build_progress
+trap - EXIT INT TERM HUP
 
 echo "== assemble $APP"
 mkdir -p "$DEPLOY_DIR" || abort "cannot create $DEPLOY_DIR"

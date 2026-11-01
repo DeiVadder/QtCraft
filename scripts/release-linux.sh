@@ -45,7 +45,7 @@
 #                                      was configured with, else the newest ~/Qt/6.*/gcc_64 or
 #                                      gcc_arm64; QTCRAFT_RELEASE_BUILD_LIMIT the build's seconds
 #                                      (3600); QC_BUILD_JOBS the build's jobs; QTCRAFT_RELEASE_PROGRESS=1
-#                                      prints the build's progress once a minute; QTCRAFT_RELEASE_GUI=0
+#                                      prints the build's progress once a minute (in a terminal every 5 s, =0 off); QTCRAFT_RELEASE_GUI=0
 #                                      skips the starts of the game; QTCRAFT_RELEASE_OPEN_SOURCE_QT=1
 #                                      declares QT_DIR an open-source Qt, without it the package is
 #                                      local-only; QTCRAFT_RELEASE_COMMIT names the commit when there
@@ -240,20 +240,17 @@ limited 300 cmake -S "$PROJECT_DIR" -B "$BUILD_DIR" -G Ninja -DCMAKE_BUILD_TYPE=
 grep -q '^QC_TLS:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" ||
     abort "the build has no TLS: a package must encrypt multiplayer connections"
 grep -q '^QC_GAMEPAD:BOOL=ON$' "$BUILD_DIR/CMakeCache.txt" || abort "the build has no gamepad support (QC_GAMEPAD)"
-PROGRESS_PID=""
-if [ "${QTCRAFT_RELEASE_PROGRESS:-0}" = 1 ]; then
-    (while sleep 60; do tail -n 1 "$WORK/build.log" 2>/dev/null | cut -c1-120; done) &
-    PROGRESS_PID=$!
-    trap 'kill "$PROGRESS_PID" 2>/dev/null' EXIT
-    trap 'kill "$PROGRESS_PID" 2>/dev/null; exit 1' INT TERM HUP
-fi
+# Progress in a terminal, and once a minute with QTCRAFT_RELEASE_PROGRESS=1 (the release workflow).
+. "$PROJECT_DIR/scripts/release-progress.sh"
+trap 'stop_build_progress' EXIT
+trap 'stop_build_progress; exit 1' INT TERM HUP
+start_build_progress "$WORK/build.log"
 if ! limited "$BUILD_LIMIT" cmake --build "$BUILD_DIR" --target qtcraft qtcraft-headless -j "${QC_BUILD_JOBS:-$(nproc)}" >"$WORK/build.log" 2>&1; then
-    [ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
-trap - EXIT INT TERM HUP
+    stop_build_progress
     tail -n 40 "$WORK/build.log"
     abort "build failed or took longer than $BUILD_LIMIT s, see $WORK/build.log"
 fi
-[ -n "$PROGRESS_PID" ] && kill "$PROGRESS_PID" 2>/dev/null
+stop_build_progress
 trap - EXIT INT TERM HUP
 
 echo "== assemble $APPDIR"
