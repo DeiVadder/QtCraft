@@ -149,6 +149,9 @@ host_library_allowed() {
     libxkbcommon.so* | libxkbcommon-x11.so* | libwayland-*.so* | libffi.so*) return 0 ;;
     libfontconfig.so* | libfreetype.so* | libexpat.so* | libxml2.so* | liblzma.so* | libz.so* | libbz2.so* | libpng16.so* | libbrotli*.so* | libharfbuzz.so* | libglib-2.0.so* | libgobject-2.0.so* | libgmodule-2.0.so* | libgraphite2.so* | libpcre2-*.so* | libzstd.so*) return 0 ;;
     libasound.so* | libpulse.so* | libpulse-simple.so* | libpulse-mainloop-glib.so* | libsndfile.so* | libsystemd.so* | libcap.so* | libdbus-1.so*) return 0 ;;
+    # Base libraries Ubuntu's builds of the above bring: libsystemd (gcrypt, gpg-error, lz4),
+    # libXdmcp (bsd, md) and Kerberos (com_err).
+    libgcrypt.so* | libgpg-error.so* | liblz4.so* | libbsd.so* | libmd.so* | libcom_err.so*) return 0 ;;
     esac
     return 1
 }
