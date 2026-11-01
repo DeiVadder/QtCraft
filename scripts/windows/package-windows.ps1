@@ -146,11 +146,19 @@ function Test-RuntimeDll([string]$name) {
 }
 
 # A DLL in System32 counts only if it is part of Windows (product name with "Windows", also when
-# localized: "Betriebssystem Microsoft(R) Windows(R)") and not a VC++ runtime DLL.
+# localized: "Betriebssystem Microsoft(R) Windows(R)", or Windows' ICU signed by Microsoft, see
+# below) and not a VC++ runtime DLL.
+# Windows' own ICU (icu.dll, icuuc.dll, icuin.dll; Qt 6.12's Qt6Core imports icuuc.dll) carries the
+# product name "International Components for Unicode", so it counts by its Microsoft signature.
 function Test-WindowsComponent([string]$path) {
     if (Test-RuntimeDll (Split-Path -Leaf $path)) { return $false }
     $product = (Get-Item $path).VersionInfo.ProductName
-    return ("$product" -match 'Windows')
+    if ("$product" -match 'Windows') { return $true }
+    if ((Split-Path -Leaf $path) -match '^icu(uc|in)?\.dll$') {
+        $signature = Get-AuthenticodeSignature $path
+        return ($signature.Status -eq 'Valid') -and ("$($signature.SignerCertificate.Subject)" -match '(^|, )O=Microsoft Corporation(,|$)')
+    }
+    return $false
 }
 
 # Imports the environment of vcvarsall (cross compiler ARM64 host -> x64 target) into this process.

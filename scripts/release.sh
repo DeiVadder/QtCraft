@@ -11,7 +11,7 @@
 # Checks (any failure makes the script exit with 1):
 #   - every Mach-O file links only to the bundle (@rpath, @executable_path, @loader_path) or to the
 #     system, and has no rpath or install name pointing at the build or Qt directory (otool)
-#   - required parts are present (Info.plist keys, icon, qt.conf, frameworks, plugins, QML modules,
+#   - required parts are present (Info.plist keys, icon, frameworks, plugins, QML modules,
 #     FFmpeg libraries, example mod) and the signature verifies (codesign --verify --strict)
 #   - the game and the dedicated server are universal (arm64 and x86_64)
 #   - with gamepad support (QC_GAMEPAD, decision E-540): SDL3 is linked statically into the game for
@@ -425,7 +425,9 @@ done
 [ "$(plutil -extract CFBundleShortVersionString raw -o - "$plist" 2>/dev/null)" = "$VERSION" ] || problem "CFBundleShortVersionString is not $VERSION"
 [ "$(plutil -extract CFBundleVersion raw -o - "$plist" 2>/dev/null)" = "$BUILD_NUMBER" ] || problem "CFBundleVersion is not $BUILD_NUMBER"
 
-for part in Contents/MacOS/qtcraft-headless Contents/Resources/QtCraft.icns Contents/Resources/qt.conf \
+# No qt.conf check: macdeployqt of Qt 6.12 writes none (6.8 still did), Qt finds plugins and QML modules at the
+# bundle's standard places.
+for part in Contents/MacOS/qtcraft-headless Contents/Resources/QtCraft.icns \
     Contents/Frameworks/QtCore.framework Contents/Frameworks/QtGui.framework Contents/Frameworks/QtQuick.framework \
     Contents/Frameworks/QtQml.framework Contents/Frameworks/QtQuickControls2.framework Contents/Frameworks/QtMultimedia.framework \
     Contents/PlugIns/platforms/libqcocoa.dylib Contents/PlugIns/imageformats/libqjpeg.dylib \
