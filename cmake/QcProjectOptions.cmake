@@ -61,6 +61,12 @@ else()
         -fno-exceptions)
     if(QC_WARNINGS_AS_ERRORS)
         target_compile_options(qc_project_options INTERFACE -Werror)
+        # GCC's -Wmaybe-uninitialized depends on the optimizer and reports false positives in
+        # optimized builds (an std::optional read after its check, QcMobCommands::mob in the Linux
+        # release build); it stays a warning in every GCC build instead of failing it.
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            target_compile_options(qc_project_options INTERFACE -Wno-error=maybe-uninitialized)
+        endif()
     endif()
 endif()
 
