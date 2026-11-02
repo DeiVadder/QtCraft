@@ -150,18 +150,18 @@ ColumnLayout {
                 Label {
                     Layout.fillWidth: true
                     textFormat: Text.PlainText
-                    text: modRow.modelData.state === "loaded" ? qsTr("Active")
-                        : modRow.modelData.state === "disabled" ? qsTr("Disabled")
+                    text: modRow.modelData.state === ModStatus.State.Loaded ? qsTr("Active")
+                        : modRow.modelData.state === ModStatus.State.Disabled ? qsTr("Disabled")
                         : qsTr("Not loaded: %1").arg(modRow.modelData.reason)
                     font.pixelSize: Ui.type.help
-                    color: modRow.modelData.state === "failed" ? Theme.error : Theme.textMuted
+                    color: modRow.modelData.state === ModStatus.State.Failed ? Theme.error : Theme.textMuted
                     wrapMode: Text.Wrap
                 }
 
                 actions: GameSwitch {
                     Accessible.name: qsTr("Enable %1").arg(modRow.modelData.name)
                     visible: modRow.modelData.id.length > 0
-                    checked: modRow.modelData.state !== "disabled"
+                    checked: modRow.modelData.state !== ModStatus.State.Disabled
                     onToggled: screen.game.library.setModEnabled(modRow.modelData.id, checked)
                 }
             }

@@ -194,11 +194,12 @@ public:
     // `gameMode` is that of the player ("survival", "creative").
     Q_INVOKABLE void startSingleplayer(const QString &worldName, const QString &seedText, const QString &generator = QStringLiteral("terrain"),
                                        const QString &options = {}, const QString &gameMode = QStringLiteral("survival"));
-    // Creates a saved world in the library and starts it. `setup` holds "worldType" (terrain, flat,
-    // void, showcase; E-221, E-223), "layers" of a flat world (empty: the default), "keepInventory",
-    // "gameMode" ("survival", "creative"; decision E-282) and "worldOptions" of a terrain world (option
-    // -> value, decision E-917; missing options get their defaults) and "generatorVersion" (decision
-    // E-922; default: the current one); missing keys keep the defaults.
+    // Creates a saved world in the library and starts it. `setup` holds "worldType" (a
+    // WorldLibrary.WorldType; E-221, E-223), "layers" of a flat world (empty: the default),
+    // "keepInventory", "gameMode" (a GameMode.Mode; decision E-282) and "worldOptions" of a terrain
+    // world (option -> value, decision E-917; missing options get their defaults) and
+    // "generatorVersion" (decision E-922; default: the current one); missing keys keep the
+    // defaults, an unknown type or mode is refused with a warning.
     Q_INVOKABLE void createWorld(const QString &worldName, const QString &seedText, const QVariantMap &setup = {});
     // The layers a flat world gets by default, base-game blocks without their namespace (shown in
     // the menu).

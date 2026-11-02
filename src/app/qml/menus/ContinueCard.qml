@@ -15,7 +15,7 @@ Rectangle {
 
     // The entry of GameController.library.worlds to continue, or null.
     property var world: null
-    // What the card says about the world (WorldTexts.summary).
+    // What the card says about the world (HomePage.summary).
     property string summary
     // Whether there are saved worlds at all (none of them can be opened if `world` is null).
     property bool hasWorlds: false

@@ -347,6 +347,11 @@ void QcSettingsController::setTextureFiltering(TextureFiltering filtering)
     emit settingsChanged();
 }
 
+QcSettingsController::KeyboardLayout QcSettingsController::keyboardLayoutOf(const QString &language)
+{
+    return language == u"de"_s ? KeyboardLayout::Qwertz : KeyboardLayout::Qwerty;
+}
+
 void QcSettingsController::setContentLanguage(const QString &language)
 {
     // The same language again (a switch to the system language that is already shown) stays silent.

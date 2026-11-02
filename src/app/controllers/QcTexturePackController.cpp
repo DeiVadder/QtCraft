@@ -24,19 +24,6 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
-QString originName(QcTexturePack::Origin origin)
-{
-    switch (origin) {
-    case QcTexturePack::Origin::BuiltIn:
-        return u"builtin"_s;
-    case QcTexturePack::Origin::Mod:
-        return u"mod"_s;
-    case QcTexturePack::Origin::User:
-        break;
-    }
-    return u"user"_s;
-}
-
 QString creditsText(const QList<QcTexturePackManifest::Credit> &credits)
 {
     QStringList lines;
@@ -377,7 +364,7 @@ QVariantList QcTexturePackController::packs() const
             {u"resolution"_s, entry->manifest ? manifest.resolution : 0},
             {u"license"_s, manifest.license},
             {u"credits"_s, creditsText(manifest.credits)},
-            {u"origin"_s, originName(entry->origin)},
+            {u"origin"_s, static_cast<int>(entry->origin)},
             {u"active"_s, m_active.contains(entry->id)},
             {u"error"_s, entry->error ? entry->error->text() : QString()},
             {u"problems"_s, problems},

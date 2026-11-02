@@ -6,6 +6,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/gameplay/QcGameMode.h"
+#include "worldgen/generators/QcWorldGenerators.h"
 #include "worlds/QcModLoader.h"
 #include "worlds/QcWorldLibrary.h"
 
@@ -22,23 +23,17 @@ namespace {
 // The state of a mod as the mods screen shows it, and why it is not loaded.
 struct ModState
 {
-    QString state;
+    QcModStatus::State state;
     QString reason;
 };
 
 [[nodiscard]] ModState modState(const QcModStatus &mod, const QHash<QString, QString> &loadFailures)
 {
-    if (mod.state == QcModStatus::State::Disabled) {
-        return {u"disabled"_s, mod.reason};
-    }
-    if (mod.state == QcModStatus::State::Failed) {
-        return {u"failed"_s, mod.reason};
-    }
-    if (loadFailures.contains(mod.info.id)) {
+    if (mod.state == QcModStatus::State::Loaded && loadFailures.contains(mod.info.id)) {
         // Found fine on disk, but its content was refused when the last world started.
-        return {u"failed"_s, loadFailures.value(mod.info.id)};
+        return {QcModStatus::State::Failed, loadFailures.value(mod.info.id)};
     }
-    return {u"loaded"_s, mod.reason};
+    return {mod.state, mod.reason};
 }
 
 // The block whose icon stands for a world's type on its tile in the main menu (HM-3 of
@@ -71,14 +66,39 @@ void QcWorldLibraryController::refreshWorlds()
         m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
                                     {u"name"_s, entry.info.name},
                                     {u"seed"_s, QString::number(entry.info.seed)},
-                                    {u"generator"_s, entry.info.generator},
+                                    {u"worldType"_s, static_cast<int>(worldTypeOf(entry.info.generator))},
                                     {u"typeBlock"_s, typeBlock(entry.info.generator)},
-                                    {u"gameMode"_s, QString(QcGameModes::name(entry.info.defaultGameMode))},
+                                    {u"gameMode"_s, static_cast<int>(entry.info.defaultGameMode)},
                                     {u"lastPlayed"_s, playedText(entry.info.lastPlayed, now)},
                                     {u"error"_s, entry.tooOld ? tr("It was saved by an older development version of QtCraft and cannot be opened.")
                                                               : m_unplayable.value(entry.folder, entry.error)}});
     }
     emit worldsChanged();
+}
+
+QLatin1StringView QcWorldLibraryController::generatorOf(WorldType type)
+{
+    switch (type) {
+    case WorldType::Flat:
+        return QLatin1StringView(QcWorldGenerators::flat);
+    case WorldType::Void:
+        return QLatin1StringView(QcWorldGenerators::empty);
+    case WorldType::Showcase:
+        return QLatin1StringView(QcWorldGenerators::showcase);
+    case WorldType::Terrain:
+        break;
+    }
+    return QLatin1StringView(QcWorldGenerators::terrain);
+}
+
+QcWorldLibraryController::WorldType QcWorldLibraryController::worldTypeOf(const QString &generator)
+{
+    for (const WorldType type : {WorldType::Flat, WorldType::Void, WorldType::Showcase}) {
+        if (generator == generatorOf(type)) {
+            return type;
+        }
+    }
+    return WorldType::Terrain;
 }
 
 QString QcWorldLibraryController::playedText(const QDateTime &played, const QDateTime &now)
@@ -134,7 +154,7 @@ void QcWorldLibraryController::refreshMods()
                                   {u"name"_s, mod.info.name.isEmpty() ? QDir(mod.info.directory).dirName() : mod.info.name},
                                   {u"version"_s, mod.info.version},
                                   {u"description"_s, mod.info.description},
-                                  {u"state"_s, state.state},
+                                  {u"state"_s, static_cast<int>(state.state)},
                                   {u"reason"_s, state.reason}});
     }
     emit modsChanged();

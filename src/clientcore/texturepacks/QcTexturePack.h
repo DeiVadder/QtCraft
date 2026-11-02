@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QList>
 #include <QString>
+#include <QtCore/qobjectdefs.h>
 
 #include <memory>
 #include <optional>
@@ -22,12 +23,16 @@
     between threads as std::shared_ptr<const QcTexturePack>. */
 struct QcTexturePack
 {
+    Q_GADGET
+
+public:
     /*! \brief Where a pack comes from; part of its id. */
     enum class Origin {
         BuiltIn, // Shipped with the game
         User,    // In the user's texture pack folder
         Mod,     // Brought by a mod
     };
+    Q_ENUM(Origin)
 
     /*! Id of the pack: "builtin:<folder>", "user:<folder>" or "mod:<mod folder>/<folder>". */
     QString id;

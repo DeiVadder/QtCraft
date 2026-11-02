@@ -20,6 +20,7 @@
 #include "worlds/QcWorldLibrary.h"
 
 #include <QCoreApplication>
+#include <QMetaEnum>
 #include <QQuickWindow>
 
 #include <algorithm>
@@ -29,16 +30,49 @@ using namespace Qt::StringLiterals;
 
 namespace {
 
+// The value of `key` in a new world's setup as a whole number, `missing` without the key; none for
+// anything else (a text, a fraction). QML may hand a whole number over as a double.
+std::optional<int> wholeNumberOf(const QVariantMap &setup, const QString &key, int missing)
+{
+    const QVariant given = setup.value(key, missing);
+    const bool integer = given.typeId() == QMetaType::Int || given.typeId() == QMetaType::LongLong;
+    const bool wholeDouble = given.typeId() == QMetaType::Double && given.toDouble() == std::trunc(given.toDouble());
+    return integer || wholeDouble ? std::optional<int>(given.toInt()) : std::nullopt;
+}
+
 // The "generatorVersion" of a new world's setup (decision E-922): a whole number the game has; none
 // for anything else. Without the key the current version.
 std::optional<int> generatorVersionOf(const QVariantMap &setup)
 {
-    const QVariant given = setup.value(u"generatorVersion"_s, QcGeneratorVersion::current);
-    const bool whole = given.typeId() == QMetaType::Int || given.typeId() == QMetaType::LongLong;
-    if (!whole || !QcGeneratorVersion::isKnown(given.toInt())) {
+    const std::optional<int> version = wholeNumberOf(setup, u"generatorVersion"_s, QcGeneratorVersion::current);
+    return version && QcGeneratorVersion::isKnown(*version) ? version : std::nullopt;
+}
+
+// The generator of a new world's "worldType" (WorldLibrary.WorldType); none, with a warning, for
+// a value that is no world type. Without the key a terrain world.
+std::optional<QString> generatorOf(const QVariantMap &setup)
+{
+    using WorldType = QcWorldLibraryController::WorldType;
+    const std::optional<int> value = wholeNumberOf(setup, u"worldType"_s, static_cast<int>(WorldType::Terrain));
+    if (!value || !QMetaEnum::fromType<WorldType>().valueToKey(*value)) {
+        qCWarning(lcGame) << "createWorld: refused the world type" << setup.value(u"worldType"_s) << "(a WorldLibrary.WorldType is needed)";
         return std::nullopt;
     }
-    return given.toInt();
+    return QString(QcWorldLibraryController::generatorOf(static_cast<WorldType>(*value)));
+}
+
+// The game mode of a new world's "gameMode" (GameMode.Mode); none, with a warning, for a value
+// that is no game mode. Without the key survival.
+std::optional<QcGameMode> gameModeOf(const QVariantMap &setup)
+{
+    const std::optional<int> value = wholeNumberOf(setup, u"gameMode"_s, static_cast<int>(QcGameMode::Survival));
+    const std::optional<QcGameMode> mode = value && *value >= 0 && *value < QcGameModes::count
+                                               ? QcGameModes::fromValue(static_cast<quint8>(*value))
+                                               : std::nullopt;
+    if (!mode) {
+        qCWarning(lcGame) << "createWorld: refused the game mode" << setup.value(u"gameMode"_s) << "(a GameMode.Mode is needed)";
+    }
+    return mode;
 }
 
 } // namespace
@@ -328,8 +362,14 @@ void QcGameController::createWorld(const QString &worldName, const QString &seed
 {
     QcWorldLibrary::NewWorld world;
     world.keepInventory = setup.value(u"keepInventory"_s, true).toBool();
-    world.generator = setup.value(u"worldType"_s, world.generator).toString();
-    world.gameMode = QcGameModes::parse(setup.value(u"gameMode"_s).toString()).value_or(QcGameMode::Survival);
+    const std::optional<QString> generator = generatorOf(setup);
+    const std::optional<QcGameMode> gameMode = gameModeOf(setup);
+    if (!generator || !gameMode) {
+        setPhase(Phase::Error, tr("Cannot create the world: unknown world type or game mode"));
+        return;
+    }
+    world.generator = *generator;
+    world.gameMode = *gameMode;
     // The menu offers no choice while the game has a single generator version (decision E-922).
     const std::optional<int> version = generatorVersionOf(setup);
     if (!version) {

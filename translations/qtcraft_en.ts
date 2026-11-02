@@ -177,7 +177,7 @@
 <context>
     <name>TexturePackRow</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/settings/TexturePackRow.qml" line="102"/>
+        <location filename="../src/app/qml/settings/TexturePackRow.qml" line="113"/>
         <source>%n file(s) skipped or changed:</source>
         <translation>
             <numerusform>%n file skipped or changed:</numerusform>

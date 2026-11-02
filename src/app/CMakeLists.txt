@@ -60,6 +60,7 @@ target_sources(qc_app_core PRIVATE
     hooks/QcFrameMonitor.h hooks/QcFrameMonitor.cpp
     hooks/QcFrameProfile.h hooks/QcFrameProfile.cpp
     hooks/QcLayoutCheck.h hooks/QcLayoutCheck.cpp
+    hooks/QcMenuPreselect.h hooks/QcMenuPreselect.cpp
     hooks/QcOffscreenRender.h hooks/QcOffscreenRender.cpp
     hooks/QcPackSwitchHitch.h hooks/QcPackSwitchHitch.cpp
     hooks/QcPendingScreens.h hooks/QcPendingScreens.cpp
@@ -83,14 +84,17 @@ target_sources(qc_app_core PRIVATE
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
     models/QcEnchantmentTexts.h models/QcEnchantmentTexts.cpp
+    models/QcGameModeForeign.h
     models/QcHandbookModel.h models/QcHandbookModel.cpp
     models/QcInventoryModel.h models/QcInventoryModel.cpp
     models/QcItemIconProvider.h models/QcItemIconProvider.cpp
     models/QcItemIcons.h models/QcItemIcons.cpp
     models/QcItemIconUrls.h models/QcItemIconUrls.cpp
     models/QcMapImageProvider.h models/QcMapImageProvider.cpp
+    models/QcModStatusForeign.h
     models/QcPixelArtProvider.h models/QcPixelArtProvider.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
+    models/QcTexturePackForeign.h
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
     models/QcUiScaling.h models/QcUiScaling.cpp
     models/QcUiTheme.h

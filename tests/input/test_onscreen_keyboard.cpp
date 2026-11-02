@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "app/controllers/QcSettingsController.h"
+
 #include <QQmlApplicationEngine>
 #include <QQuickItem>
 #include <QQuickStyle>
@@ -174,13 +176,13 @@ private slots:
         QCOMPARE(letterAt(lowerRow, 0), u"zZ"_s);
 
         openFor(u"address"_s);
-        keyboard()->setProperty("language", u"de"_s);
+        keyboard()->setProperty("keyLayout", static_cast<int>(QcSettingsController::KeyboardLayout::Qwertz));
         QCOMPARE(letterAt(letterRow, middleKey), u"zZ"_s);
         QCOMPARE(letterAt(lowerRow, 0), u"yY"_s);
         type(u"Zyz"_s);
         QCOMPARE(text(u"address"_s), u"Zyz"_s);
 
-        keyboard()->setProperty("language", u"en"_s);
+        keyboard()->setProperty("keyLayout", static_cast<int>(QcSettingsController::KeyboardLayout::Qwerty));
         QCOMPARE(letterAt(letterRow, middleKey), u"yY"_s);
         QVERIFY(item(u"key_y"_s)->mapToScene({}).y() < item(u"key_z"_s)->mapToScene({}).y());
     }

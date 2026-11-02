@@ -21,12 +21,24 @@ class QcContentRegistry;
 class QcWorldLibraryController : public QObject
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    // WorldLibrary in QML, for its enumeration (WorldLibrary.WorldType.Flat).
+    QML_NAMED_ELEMENT(WorldLibrary)
+    QML_UNCREATABLE("Provided by GameController.library")
     Q_PROPERTY(QVariantList worlds READ worlds NOTIFY worldsChanged FINAL)
     Q_PROPERTY(QVariantList mods READ mods NOTIFY modsChanged FINAL)
     Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
 
 public:
+    // The world types the menu offers, each a world generator (QcWorldGenerators): a terrain
+    // world, a flat one, the void and the showcase.
+    enum class WorldType {
+        Terrain,
+        Flat,
+        Void,
+        Showcase
+    };
+    Q_ENUM(WorldType)
+
     explicit QcWorldLibraryController(QObject *parent = nullptr);
     ~QcWorldLibraryController() override;
     Q_DISABLE_COPY_MOVE(QcWorldLibraryController)
@@ -37,10 +49,15 @@ public:
     // Where mods are looked for; empty loads only the base game (test hook --no-mods).
     void setModsDirectory(const QString &directory);
 
-    // The saved worlds, the last played first: folder, name, seed, generator, gameMode (the mode of
-    // new players, "survival", ...), lastPlayed (when, as the menu shows it) and error (why it
-    // cannot be opened, else empty).
+    // The saved worlds, the last played first: folder, name, seed, worldType (WorldType), typeBlock
+    // (the block whose icon stands for the type), gameMode (the mode of new players, GameMode.Mode),
+    // lastPlayed (when, as the menu shows it) and error (why it cannot be opened, else empty).
     Q_INVOKABLE void refreshWorlds();
+    // The generator name of `type` ("terrain", "flat", "void", "showcase"), as world.json keeps it.
+    [[nodiscard]] static QLatin1StringView generatorOf(WorldType type);
+    // The world type of the generator name `generator`; a type the menu does not know counts as a
+    // terrain world, as worlds without a type do.
+    [[nodiscard]] static WorldType worldTypeOf(const QString &generator);
     // When a world was last played, as the menu shows it at `now`: "Today, 21:14", "Yesterday,
     // 08:05", else the short date in the user's locale.
     [[nodiscard]] static QString playedText(const QDateTime &played, const QDateTime &now);
@@ -51,7 +68,8 @@ public:
     Q_INVOKABLE void deleteWorld(const QString &folder);
     // Shows a saved world's folder in the file manager (the world row's "…" menu).
     Q_INVOKABLE void openWorldFolder(const QString &folder) const;
-    // Mod list as found on disk: id, name, version, description, state (loaded/disabled/failed), reason.
+    // Mod list as found on disk: id, name, version, description, state (ModStatus.State: Loaded,
+    // Disabled or Failed, also for a mod whose content the last world refused), reason.
     Q_INVOKABLE void refreshMods();
     // Takes effect when the next world starts.
     Q_INVOKABLE void setModEnabled(const QString &id, bool enabled);

@@ -61,7 +61,7 @@ Item {
             areaHeight: padLayer.height
             game: padLayer.game
             // The UI language picks the letters' layout, also after a switch at runtime.
-            language: padLayer.game.settings.contentLanguage
+            keyLayout: padLayer.game.settings.keyboardLayout
         }
     }
 

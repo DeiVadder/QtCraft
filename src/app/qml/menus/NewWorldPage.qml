@@ -27,7 +27,7 @@ ColumnLayout {
     // preview shows the world that will be created (decision E-921).
     property string randomSeed: ""
     // A normal world: it has world options and a map preview.
-    readonly property bool terrain: worldType.currentValue === "terrain"
+    readonly property bool terrain: worldType.currentValue === WorldLibrary.WorldType.Terrain
 
     signal openRequested
     signal backRequested
@@ -72,7 +72,7 @@ ColumnLayout {
         page.game.createWorld(worldName.text, page.worldSeed(), {
             keepInventory: keepInventory.checked,
             worldType: worldType.currentValue,
-            layers: worldType.currentValue === "flat" ? flatLayers.text : "",
+            layers: worldType.currentValue === WorldLibrary.WorldType.Flat ? flatLayers.text : "",
             gameMode: gameMode.currentValue,
             worldOptions: page.game.worldOptions.values
         });
@@ -197,18 +197,18 @@ ColumnLayout {
 
                         objectName: "worldTypeChoice"
                         label: qsTr("World type")
-                        help: worldType.currentValue === "flat" ? qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.")
-                              : worldType.currentValue === "void" ? qsTr("Nothing but a small platform; noon, no creatures of their own accord.")
-                              : worldType.currentValue === "showcase" ? qsTr("A flat world with every block, creature and item on show, at noon.")
-                              : qsTr("Hills, mountains, caves, oceans and biomes.")
+                        // Each type with what it is.
+                        readonly property var choices: [
+                            { value: WorldLibrary.WorldType.Terrain, text: qsTr("Normal"), help: qsTr("Hills, mountains, caves, oceans and biomes.") },
+                            { value: WorldLibrary.WorldType.Flat, text: qsTr("Flat"), help: qsTr("The same layers everywhere, no caves or trees, no creatures of their own accord.") },
+                            { value: WorldLibrary.WorldType.Void, text: qsTr("Void"), help: qsTr("Nothing but a small platform; noon, no creatures of their own accord.") },
+                            { value: WorldLibrary.WorldType.Showcase, text: qsTr("Showcase"), help: qsTr("A flat world with every block, creature and item on show, at noon.") }
+                        ]
+
+                        help: worldType.choices[worldType.currentIndex]?.help ?? ""
                         textRole: "text"
                         valueRole: "value"
-                        model: [
-                            { value: "terrain", text: qsTr("Normal") },
-                            { value: "flat", text: qsTr("Flat") },
-                            { value: "void", text: qsTr("Void") },
-                            { value: "showcase", text: qsTr("Showcase") }
-                        ]
+                        model: worldType.choices
                     }
                     // The field shows the random seed as its placeholder while it is empty, so the
                     // map always shows the seed the field stands for; the die draws a new one.
@@ -248,7 +248,7 @@ ColumnLayout {
                         }
                     }
                     SettingRow {
-                        visible: worldType.currentValue === "flat"
+                        visible: worldType.currentValue === WorldLibrary.WorldType.Flat
                         label: qsTr("Layers")
                         help: qsTr("From the bottom up; empty for the default.")
 
@@ -271,21 +271,18 @@ ColumnLayout {
 
                         objectName: "gameModeChoice"
                         label: qsTr("Game mode")
-                        help: gameMode.currentValue === "creative"
-                              ? qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.")
-                              : gameMode.currentValue === "adventure"
-                              ? qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.")
-                              : gameMode.currentValue === "spectator"
-                              ? qsTr("Fly through blocks and look around, unseen; nothing can be touched.")
-                              : qsTr("Gather, craft and survive: health, hunger and creatures count.")
+                        // Each mode with what it is.
+                        readonly property var choices: [
+                            { value: GameMode.Mode.Survival, text: qsTr("Survival"), help: qsTr("Gather, craft and survive: health, hunger and creatures count.") },
+                            { value: GameMode.Mode.Creative, text: qsTr("Creative"), help: qsTr("Every block and item without limit, flying, instant breaking, no damage or hunger.") },
+                            { value: GameMode.Mode.Adventure, text: qsTr("Adventure"), help: qsTr("Survival for prepared maps: blocks break and items are placed only where /adventure allows it.") },
+                            { value: GameMode.Mode.Spectator, text: qsTr("Spectator"), help: qsTr("Fly through blocks and look around, unseen; nothing can be touched.") }
+                        ]
+
+                        help: gameMode.choices[gameMode.currentIndex]?.help ?? ""
                         textRole: "text"
                         valueRole: "value"
-                        model: [
-                            { value: "survival", text: qsTr("Survival") },
-                            { value: "creative", text: qsTr("Creative") },
-                            { value: "adventure", text: qsTr("Adventure") },
-                            { value: "spectator", text: qsTr("Spectator") }
-                        ]
+                        model: gameMode.choices
                     }
                     SettingSwitch {
                         id: keepInventory

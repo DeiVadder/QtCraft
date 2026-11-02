@@ -19,6 +19,17 @@ ListRow {
     // How many packs are active: the arrows of the active ones stop at the last (0 for an inactive
     // pack).
     property int activeCount: 0
+    // Where the pack comes from, as the row says it.
+    readonly property string originText: {
+        switch (modelData.origin) {
+        case TexturePack.Origin.BuiltIn:
+            return qsTr("Built in");
+        case TexturePack.Origin.Mod:
+            return qsTr("From a mod");
+        default:
+            return qsTr("Own pack");
+        }
+    }
 
     title: modelData.name + (modelData.resolution > 0 ? " " + qsTr("(%1x)").arg(modelData.resolution) : "")
     subtitle: modelData.description
@@ -73,7 +84,7 @@ ListRow {
     Label {
         textFormat: Text.PlainText
         Layout.fillWidth: true
-        text: (packRow.modelData.license.length > 0 ? qsTr("Licence: %1").arg(packRow.modelData.license) + " · " : "") + (packRow.modelData.origin === "builtin" ? qsTr("Built in") : packRow.modelData.origin === "mod" ? qsTr("From a mod") : qsTr("Own pack"))
+        text: (packRow.modelData.license.length > 0 ? qsTr("Licence: %1").arg(packRow.modelData.license) + " · " : "") + packRow.originText
         font.pixelSize: Ui.type.help
         color: Theme.textMuted
         wrapMode: Text.Wrap

@@ -13,8 +13,11 @@ import QtCraft
 ColumnLayout {
     id: view
 
-    // See QcHandbookJson::entry: {kind, width, cells, result, count, note, machines, ...}
+    // See QcHandbookJson::entry: {kind (HandbookModel.RecipeKind), width, cells, result, count,
+    // note, machines, ...}
     required property var recipe
+    // A machine's recipe: its arrow is drawn apart.
+    readonly property bool machine: recipe.kind === HandbookModel.RecipeKind.Machine
 
     signal activated(string target)
 
@@ -106,8 +109,8 @@ ColumnLayout {
         }
 
         Label {
-            text: view.recipe.kind === "machine" ? "⟶" : "→"
-            color: view.recipe.kind === "machine" ? Theme.warning : Theme.text
+            text: view.machine ? "⟶" : "→"
+            color: view.machine ? Theme.warning : Theme.text
             font.pixelSize: Ui.type.title
         }
 

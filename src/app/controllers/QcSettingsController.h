@@ -56,6 +56,8 @@ class QcSettingsController : public QObject
     Q_PROPERTY(QString language READ language WRITE requestLanguage NOTIFY settingsChanged FINAL)
     // The language the UI shows now ("en", "de"), also after a switch at runtime.
     Q_PROPERTY(QString contentLanguage READ contentLanguage NOTIFY contentLanguageChanged FINAL)
+    // Where the on-screen keyboard puts y and z: the keyboard of the UI language (QWERTZ in German).
+    Q_PROPERTY(QcSettingsController::KeyboardLayout keyboardLayout READ keyboardLayout NOTIFY contentLanguageChanged FINAL)
     // GameSettings.CameraMode.FirstPerson, Behind, Front or Side.
     Q_PROPERTY(QcSettingsController::CameraMode cameraMode READ cameraMode WRITE setCameraMode NOTIFY settingsChanged FINAL)
     // Size of the HUD and the screens (decision E-725): UiScaling.Step.Percent75 … Percent200, relative to the window (E-875).
@@ -87,6 +89,9 @@ public:
     // Most samples along a slanted footprint (decision E-721); the value is the sample count.
     enum class TextureFiltering { Off = 1, X2 = 2, X4 = 4, X8 = 8 };
     Q_ENUM(TextureFiltering)
+    // The letters of a keyboard, by where y and z sit.
+    enum class KeyboardLayout { Qwerty, Qwertz };
+    Q_ENUM(KeyboardLayout)
 
     QcSettingsController(const QcSessionParts &parts, const QcWorldLibraryController &library, QcAudioEngine *audio,
                          QObject *parent = nullptr);
@@ -160,6 +165,9 @@ public:
     // Language used for content names (block and item labels).
     QString contentLanguage() const { return m_contentLanguage; }
     void setContentLanguage(const QString &language);
+    KeyboardLayout keyboardLayout() const { return keyboardLayoutOf(contentLanguage()); }
+    // The keyboard of the UI language `language` ("de": QWERTZ; every other: QWERTY).
+    [[nodiscard]] static KeyboardLayout keyboardLayoutOf(const QString &language);
 
 signals:
     void settingsChanged();

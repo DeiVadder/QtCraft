@@ -37,6 +37,14 @@ Rules (name, what it finds):
   pad-command-string   a pad command handled as a string: `gamepadCommand`/`takeCommand` with a `string`
                        parameter, or a string literal compared or matched (`=== "back"`, `case "back":`) in
                        their bodies; the command is the enum GamepadMenuInput.Command (E-688, row 79.60)
+  mode-string          a mode, kind or state of the menus handled as a string: one of the fields gameMode,
+                       worldType (also as the id of a dropdown with its currentValue), generator, origin,
+                       kind, keyLayout, keyboardLayout or modelData.state compared with a string literal (`world.gameMode === "creative"`), or a `switch` on one
+                       with string `case`s; each is an enum (GameMode.Mode, WorldLibrary.WorldType,
+                       TexturePack.Origin, HandbookModel.RecipeKind, GameSettings.KeyboardLayout,
+                       ModStatus.State; E-688, row 79.62). Not seen: a function parameter of another
+                       name (`switch (mode)`), other string fields (`language === "de"`) and string
+                       `value:` entries in model arrays (row 79.65)
   image-source-size    an `Image`, `AnimatedImage` or `BorderImage` without `sourceSize`, so the whole picture is
                        decoded; not checked with `smooth: false` (pixel art: small sources drawn as they are, a
                        sourceSize only resamples)
@@ -63,11 +71,12 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
-         "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string")
+         "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string",
+         "mode-string")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
 # E-942; `enum-list` and `connections-write` since their findings in Main.qml went with 79.47); a NOLINT
 # marker without a reason always fails.
-GATING = {"raw-size", "id-shadows-property", "enum-list", "connections-write", "pad-command-string"}
+GATING = {"raw-size", "id-shadows-property", "enum-list", "connections-write", "pad-command-string", "mode-string"}
 # Properties every Item has (QQuickItem and QObject): an id with one of these names hides the member in
 # every unqualified use inside the file (qmllint id-shadows-member), as `id: layer` hides `Item.layer`.
 ITEM_MEMBERS = {
@@ -127,6 +136,11 @@ PIXEL_ART = re.compile(BINDING_START + r"smooth\s*:\s*false\b", re.MULTILINE)
 # gets it passed on), and a string literal compared or matched in their bodies.
 PAD_FUNCTION = re.compile(r"\bfunction\s+(gamepadCommand|takeCommand)\s*\(([^)]*)\)\s*(?::\s*[\w.<>]+\s*)?\{")
 STRING_TEST = re.compile(r"(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:===|!==|==|!=)|\bcase\s+[\"']")
+# The fields of the menus' modes, kinds and states (rule mode-string).
+MODE_FIELD = (r"\b(?:(?:gameMode|worldType)(?:\.currentValue)?|generator|origin|kind|keyLayout|keyboardLayout"
+              r"|modelData\.state)\b")
+MODE_STRING = re.compile(MODE_FIELD + r"\s*(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:===|!==|==|!=)\s*[\w.?]*" + MODE_FIELD)
+MODE_SWITCH = re.compile(r"\bswitch\s*\([\w.?]*" + MODE_FIELD + r"\s*\)\s*\{")
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
                          r"|Slot|TextEdit|TextInput|Flickable|ListView|GridView)$")
 
@@ -444,6 +458,18 @@ def pad_command_strings(qml):
     return found
 
 
+def mode_strings(qml):
+    found = [(line_of(qml.masked, match.start()), "mode-string",
+              "a mode, kind or state compared with a string; compare with its enum (E-688)")
+             for match in MODE_STRING.finditer(qml.masked)]
+    for match in MODE_SWITCH.finditer(qml.masked):
+        brace = match.end() - 1
+        for test in STRING_TEST.finditer(qml.masked, brace, matching(qml.masked, brace)):
+            found.append((line_of(qml.masked, test.start()), "mode-string",
+                          "a switch on a mode, kind or state with string cases; use its enum (E-688)"))
+    return found
+
+
 def anchors_with_layout(qml):
     found = []
     for owner in qml.objects:
@@ -517,7 +543,7 @@ def check_file(path, text, corpus, limit=FUNCTION_LINES):
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
                 + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
                 + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml)
-                + pad_command_strings(qml))
+                + pad_command_strings(qml) + mode_strings(qml))
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -800,6 +826,26 @@ Item {
                 (10, "pad-command-string")]
     if got != expected:
         failures.append(f"pad-command-string: expected {expected}, got {got}")
+    modes = """\
+Item {
+    readonly property bool flat: world.generator === "flat"
+    readonly property bool loaded: "loaded" !== modRow.modelData.state
+    readonly property bool creative: world.gameMode === GameMode.Mode.Creative
+    readonly property bool terrain: worldType.currentValue !== "terrain"
+    readonly property bool pressed: button.state === "pressed"
+    function text(world: var): string {
+        switch (world?.worldType) {
+        case "void":
+            return "";
+        }
+        return world.kind === HandbookModel.RecipeKind.Machine ? "" : "-";
+    }
+}
+"""
+    got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Modes.qml", modes, Corpus({}), 30)]
+    expected = [(2, "mode-string"), (3, "mode-string"), (5, "mode-string"), (9, "mode-string")]
+    if got != expected:
+        failures.append(f"mode-string: expected {expected}, got {got}")
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))

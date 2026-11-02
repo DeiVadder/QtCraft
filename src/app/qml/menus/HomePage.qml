@@ -34,13 +34,14 @@ ColumnLayout {
     // A page of the menu beside the bar should show (MenuSidebar.Multiplayer, Character).
     signal entryRequested(int entry)
 
-    function modeText(mode: string): string {
+    // The game mode of new players (GameMode.Mode).
+    function modeText(mode: int): string {
         switch (mode) {
-        case "creative":
+        case GameMode.Mode.Creative:
             return qsTr("Creative");
-        case "adventure":
+        case GameMode.Mode.Adventure:
             return qsTr("Adventure");
-        case "spectator":
+        case GameMode.Mode.Spectator:
             return qsTr("Spectator");
         default:
             return qsTr("Survival");
@@ -49,12 +50,12 @@ ColumnLayout {
 
     // The world's type; with `withSeed`, a normal world's seed too.
     function typeText(world: var, withSeed: bool): string {
-        switch (world.generator) {
-        case "flat":
+        switch (world.worldType) {
+        case WorldLibrary.WorldType.Flat:
             return qsTr("Flat");
-        case "void":
+        case WorldLibrary.WorldType.Void:
             return qsTr("Void");
-        case "showcase":
+        case WorldLibrary.WorldType.Showcase:
             return qsTr("Showcase");
         default:
             return withSeed ? qsTr("Normal, seed %1").arg(world.seed) : qsTr("Normal");

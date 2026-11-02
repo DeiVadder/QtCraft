@@ -34,7 +34,7 @@ class QcTexturePackController : public QObject
     Q_OBJECT
     QML_ANONYMOUS
     // Every pack found, the active ones first in priority order: maps with id, name, description,
-    // resolution, license, credits, origin, active, error, problems and preview (an image URL or "").
+    // resolution, license, credits, origin (TexturePack.Origin), active, error, problems and preview (an image URL or "").
     Q_PROPERTY(QVariantList packs READ packs NOTIFY packsChanged FINAL)
     // What the current atlas uses (resolution, size, memory, build time), "" before the first one.
     Q_PROPERTY(QString status READ status NOTIFY statusChanged FINAL)

@@ -1428,6 +1428,7 @@
         "+%n weitere"
     ],
     "Cannot create the world: the game has no world generator version %1": "Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1",
+    "Cannot create the world: unknown world type or game mode": "Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus",
     "Cannot load the world: it was made by world generator version %1, which this game does not have": "Die Welt kann nicht geladen werden: Sie wurde mit der Weltgenerator-Version %1 erzeugt, die dieses Spiel nicht hat",
     "Map preview": "Kartenvorschau",
     "Map of the new world, %1 by %1 blocks": "Karte der neuen Welt, %1 mal %1 Blöcke",

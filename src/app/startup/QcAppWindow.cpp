@@ -5,6 +5,7 @@
 
 #include "app/controllers/QcGameController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/hooks/QcMenuPreselect.h"
 #include "app/hooks/QcOffscreenRender.h"
 #include "app/hooks/QcScriptedRun.h"
 #include "app/models/QcControlPalette.h"
@@ -12,8 +13,6 @@
 #include "clientcore/settings/QcScreenChoice.h"
 #include "clientcore/settings/QcUiPalette.h"
 #include "common/diagnostics/QcCrashHandler.h"
-#include "common/gameplay/QcGameMode.h"
-#include "worldgen/generators/QcWorldGenerators.h"
 
 #include <QGuiApplication>
 #include <QIcon>
@@ -39,35 +38,6 @@ void applyControlPalette(QQuickWindow &window)
 {
     if (!systemColorScheme() && !QcControlPalette::applyTo(window)) {
         qCWarning(lcStartup, "The window offers no control palette; controls keep the system colours");
-    }
-}
-
-// QTCRAFT_MENU_WORLD_TYPE=flat|void|showcase is a test hook that preselects the world type of the
-// menu's new world, so that screenshots show the fields of that type; the page starts with it
-// whenever it opens (NewWorldPage.startWorldType, startGameMode).
-void preselectWorldType(const QQuickWindow &window)
-{
-    const qsizetype index = QcWorldGenerators::types().indexOf(qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"));
-    QObject *choice = window.findChild<QObject *>(u"worldTypeChoice"_s);
-    QObject *page = window.findChild<QObject *>(u"newWorldPage"_s);
-    if (index >= 0 && choice) {
-        choice->setProperty("currentIndex", static_cast<int>(index));
-    }
-    if (index >= 0 && page) {
-        page->setProperty("startWorldType", static_cast<int>(index));
-    }
-
-    // QTCRAFT_MENU_GAME_MODE=creative (or another mode) preselects the game mode the same way.
-    QObject *mode = window.findChild<QObject *>(u"gameModeChoice"_s);
-    const std::optional<QcGameMode> wanted = QcGameModes::parse(qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
-    int modeIndex = -1;
-    if (mode && wanted
-        && QMetaObject::invokeMethod(mode, "indexOfValue", Q_RETURN_ARG(int, modeIndex), Q_ARG(QVariant, QString(QcGameModes::name(*wanted))))
-        && modeIndex >= 0) {
-        mode->setProperty("currentIndex", modeIndex);
-        if (page) {
-            page->setProperty("startGameMode", modeIndex);
-        }
     }
 }
 
@@ -168,7 +138,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
     applyWindowSize(window);
     applyControlPalette(window);
     placeWindow(&window, options.screen);
-    preselectWorldType(window);
+    QcMenuPreselect::newWorld(window, qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"), qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
 
     if (!offscreen) {
         // The player's window mode, screen and frame limits (decision E-835), unless a scripted run
