@@ -45,6 +45,9 @@ Rules (name, what it finds):
                        ModStatus.State; E-688, row 79.62). Not seen: a function parameter of another
                        name (`switch (mode)`), other string fields (`language === "de"`) and string
                        `value:` entries in model arrays (row 79.65)
+  screen-key           in a `Keys.onPressed` handler, Esc compared (`event.key === Qt.Key_Escape`) or the key
+                       table asked (`keys.matches(...)`): what Esc, a screen's own key and the handbook key do
+                       on a screen is one rule in C++, `KeyControls.screenKey` (row 79.58)
   image-source-size    an `Image`, `AnimatedImage` or `BorderImage` without `sourceSize`, so the whole picture is
                        decoded; not checked with `smooth: false` (pixel art: small sources drawn as they are, a
                        sourceSize only resamples)
@@ -72,7 +75,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
          "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string",
-         "mode-string")
+         "mode-string", "screen-key")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
 # E-942; `enum-list` and `connections-write` since their findings in Main.qml went with 79.47); a NOLINT
 # marker without a reason always fails.
@@ -141,6 +144,9 @@ MODE_FIELD = (r"\b(?:(?:gameMode|worldType)(?:\.currentValue)?|generator|origin|
               r"|modelData\.state)\b")
 MODE_STRING = re.compile(MODE_FIELD + r"\s*(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:===|!==|==|!=)\s*[\w.?]*" + MODE_FIELD)
 MODE_SWITCH = re.compile(r"\bswitch\s*\([\w.?]*" + MODE_FIELD + r"\s*\)\s*\{")
+# A `Keys.onPressed` handler, and in its body Esc compared for equality or the key table asked.
+KEYS_PRESSED = re.compile(r"\bKeys\.onPressed\s*:")
+SCREEN_KEY_TEST = re.compile(r"(?<![!=])(?:===|==)\s*Qt\.Key_Escape\b|\bQt\.Key_Escape\s*(?:===|==)|\bkeys\.matches\s*\(")
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
                          r"|Slot|TextEdit|TextInput|Flickable|ListView|GridView)$")
 
@@ -470,6 +476,19 @@ def mode_strings(qml):
     return found
 
 
+def screen_keys(qml):
+    found = []
+    for match in KEYS_PRESSED.finditer(qml.masked):
+        line_end = qml.masked.find("\n", match.end())
+        line_end = len(qml.masked) if line_end < 0 else line_end
+        brace = qml.masked.find("{", match.end(), line_end)
+        end = matching(qml.masked, brace) if brace >= 0 else line_end
+        for test in SCREEN_KEY_TEST.finditer(qml.masked, match.end(), end):
+            found.append((line_of(qml.masked, test.start()), "screen-key",
+                          "a screen's key rule in QML; ask KeyControls.screenKey (Esc, own key, handbook key)"))
+    return found
+
+
 def anchors_with_layout(qml):
     found = []
     for owner in qml.objects:
@@ -543,7 +562,7 @@ def check_file(path, text, corpus, limit=FUNCTION_LINES):
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
                 + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
                 + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml)
-                + pad_command_strings(qml) + mode_strings(qml))
+                + pad_command_strings(qml) + mode_strings(qml) + screen_keys(qml))
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -846,6 +865,30 @@ Item {
     expected = [(2, "mode-string"), (3, "mode-string"), (5, "mode-string"), (9, "mode-string")]
     if got != expected:
         failures.append(f"mode-string: expected {expected}, got {got}")
+    keys = """import QtQuick
+Item {
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Escape)
+            close();
+        else if (game.settings.keys.matches("handbook", event.key))
+            open();
+        event.accepted = event.key !== Qt.Key_Tab;
+    }
+    Item {
+        Keys.onPressed: event => event.accepted = event.key !== Qt.Key_Escape
+    }
+    Item {
+        Keys.onPressed: event => close(Qt.Key_Escape == event.key)
+    }
+    function other(key: int): bool {
+        return key === Qt.Key_Escape;
+    }
+}
+"""
+    got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Keys.qml", keys, Corpus({}), 30)]
+    expected = [(4, "screen-key"), (6, "screen-key"), (14, "screen-key")]
+    if got != expected:
+        failures.append(f"screen-key: expected {expected}, got {got}")
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))

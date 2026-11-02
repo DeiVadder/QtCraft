@@ -459,6 +459,45 @@ private slots:
         QCOMPARE(edited.count(), 3);
     }
 
+    // The screens' common key rule (KeyControls.screenKey): Esc closes every screen, the screen's own
+    // key closes it unless repeated, the handbook key opens the handbook except over itself, a key
+    // the player moved follows, other keys are left to the screen.
+    void screenKeysCloseAndOpenTheHandbook()
+    {
+        using Key = QcKeyControls::ScreenKey;
+        using Closing = QcKeyControls::ClosingKey;
+        QcKeyControls controls;
+        const int inventory = controls.bindings().key(A::Inventory, 0);
+        const int advancements = controls.bindings().key(A::Advancements, 0);
+        const int handbook = controls.bindings().key(A::Handbook, 0);
+
+        for (const Closing closing : {Closing::EscOnly, Closing::InventoryKey, Closing::AdvancementsKey, Closing::HandbookKey}) {
+            QCOMPARE(controls.screenKey(Qt::Key_Escape, false, closing), Key::Close);
+            QCOMPARE(controls.screenKey(Qt::Key_Escape, true, closing), Key::Close);
+            QCOMPARE(controls.screenKey(Qt::Key_Tab, false, closing), Key::Unused);
+        }
+        QCOMPARE(controls.screenKey(inventory, false, Closing::InventoryKey), Key::Close);
+        QCOMPARE(controls.screenKey(inventory, true, Closing::InventoryKey), Key::Unused);
+        QCOMPARE(controls.screenKey(inventory, false, Closing::EscOnly), Key::Unused);
+        QCOMPARE(controls.screenKey(advancements, false, Closing::AdvancementsKey), Key::Close);
+        QCOMPARE(controls.screenKey(advancements, false, Closing::InventoryKey), Key::Unused);
+
+        QCOMPARE(controls.screenKey(handbook, false, Closing::EscOnly), Key::Handbook);
+        QCOMPARE(controls.screenKey(handbook, true, Closing::InventoryKey), Key::Handbook);
+        QCOMPARE(controls.screenKey(handbook, false, Closing::HandbookKey), Key::Close);
+        QCOMPARE(controls.screenKey(handbook, true, Closing::HandbookKey), Key::Unused);
+
+        // A moved key: the old one does nothing any more, the new one closes.
+        controls.bind(u"inventory"_s, 0, Qt::Key_I);
+        QCOMPARE(controls.bindings().key(A::Inventory, 0), static_cast<int>(Qt::Key_I));
+        QCOMPARE(controls.screenKey(inventory, false, Closing::InventoryKey), Key::Unused);
+        QCOMPARE(controls.screenKey(Qt::Key_I, false, Closing::InventoryKey), Key::Close);
+
+        // An unknown closing key from QML counts as Esc only, with a warning.
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"screenKey: unknown closing key 9"_s));
+        QCOMPARE(controls.screenKey(Qt::Key_I, false, static_cast<Closing>(9)), Key::Unused);
+    }
+
     // The controls page's capture (KeyControls): a slot waits, Esc cancels, a repeated key and a
     // held modifier wait, the next key binds and ends it, and the message says what moved.
     void captureBindsTheNextKey()

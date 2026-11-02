@@ -60,11 +60,11 @@ Rectangle {
             forceActiveFocus();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("inventory", event.key) && !event.isAutoRepeat)) {
+        const action = screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.InventoryKey);
+        if (action === KeyControls.ScreenKey.Close)
             screen.game.overlay = GameController.Overlay.None;
-        } else if (screen.game.settings.keys.matches("handbook", event.key)) {
+        else if (action === KeyControls.ScreenKey.Handbook)
             screen.game.handbook.open(screen.hoveredItem);
-        }
         // Other keys end here as well; Tab moves the focus.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }

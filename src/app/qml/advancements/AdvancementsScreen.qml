@@ -187,9 +187,10 @@ Item {
     }
     Keys.onPressed: event => {
         // The key that opened it closes it, but not its auto-repeat while it is still held.
-        if (event.key === Qt.Key_Escape || (game.settings.keys.matches("advancements", event.key) && !event.isAutoRepeat)) {
+        const action = game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.AdvancementsKey);
+        if (action === KeyControls.ScreenKey.Close) {
             screen.closeRequested();
-        } else if (game.settings.keys.matches("handbook", event.key)) {
+        } else if (action === KeyControls.ScreenKey.Handbook) {
             screen.openHandbook(screen.selected >= 0 ? screen.nodes[screen.selected].handbook : "");
         } else if (event.key === Qt.Key_Plus || event.key === Qt.Key_Equal) {
             screen.setZoom(screen.zoom + 0.2);

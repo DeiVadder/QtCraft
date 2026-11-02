@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <array>
+#include <optional>
 
 using namespace Qt::StringLiterals;
 
@@ -21,6 +22,14 @@ bool isModifier(int key)
     static constexpr std::array modifiers{Qt::Key_Shift, Qt::Key_Control, Qt::Key_Meta, Qt::Key_Alt, Qt::Key_AltGr};
     return std::ranges::find(modifiers, key) != modifiers.end();
 }
+
+// The action whose key closes a screen besides Esc, in the order of QcKeyControls::ClosingKey.
+constexpr std::array<std::optional<QcKeyBindings::Action>, 4> closingActions{
+    std::nullopt,
+    QcKeyBindings::Action::Inventory,
+    QcKeyBindings::Action::Advancements,
+    QcKeyBindings::Action::Handbook,
+};
 
 } // namespace
 
@@ -198,4 +207,23 @@ void QcKeyControls::setMessage(const QString &message)
         m_message = message;
         emit messageChanged();
     }
+}
+
+QcKeyControls::ScreenKey QcKeyControls::screenKey(int key, bool autoRepeat, ClosingKey closing) const
+{
+    std::optional<QcKeyBindings::Action> own;
+    if (const auto index = static_cast<std::size_t>(closing); index < closingActions.size()) {
+        own = closingActions.at(index);
+    } else {
+        qCWarning(lcSettings) << "screenKey: unknown closing key" << static_cast<int>(closing) << "taken as Esc only";
+    }
+
+    if (key == Qt::Key_Escape || (own && !autoRepeat && bindings().matches(*own, key))) {
+        return ScreenKey::Close;
+    }
+    // The handbook does not open over itself.
+    if (own != QcKeyBindings::Action::Handbook && bindings().matches(QcKeyBindings::Action::Handbook, key)) {
+        return ScreenKey::Handbook;
+    }
+    return ScreenKey::Unused;
 }

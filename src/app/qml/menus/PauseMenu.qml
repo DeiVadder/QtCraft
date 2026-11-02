@@ -23,19 +23,17 @@ Rectangle {
             forceActiveFocus();
             // Kept loaded while the world plays (decision E-875), it opens on "Continue" each time.
             menu.game.gamepad.forgetFocusIn(card);
-            // Made by its LazyScreen when the overlay changed to one of its sub-screens: opens it.
-            followOverlay();
-        } else {
-            // Its sub-screens belong to the menu: they close with it.
-            closeSubScreens(GameController.Overlay.None);
         }
+        // Made by its LazyScreen when the overlay changed to one of its sub-screens: opens it. Its
+        // sub-screens belong to the menu: hidden, they close with it.
+        followOverlay();
     }
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape) {
+        const action = menu.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly);
+        if (action === KeyControls.ScreenKey.Close)
             menu.game.overlay = GameController.Overlay.None;
-        } else if (menu.game.settings.keys.matches("handbook", event.key)) {
+        else if (action === KeyControls.ScreenKey.Handbook)
             menu.game.handbook.open("");
-        }
         // Other keys end here as well; Tab moves between the buttons.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -212,14 +210,10 @@ Rectangle {
     }
 
     // The settings are an overlay of their own (Overlay.Settings) so the --overlay test hook can
-    // open them. Closing a sub-screen returns to the menu and its keys.
-    // `shown`: the overlay is still the one of the closed sub-screen.
-    function subScreenClosed(shown: bool) {
-        // The debug options open from the world (debug options key) and return there.
-        if (menu.game.overlay === GameController.Overlay.Debug)
-            menu.game.overlay = GameController.Overlay.None;
-        else if (shown)
-            menu.game.overlay = GameController.Overlay.Pause;
+    // open them. Closing a sub-screen leads where GameController.screens.subScreenReturn says (the
+    // menu and its keys, or the world from the debug options).
+    function subScreenClosed(closed: int) {
+        menu.game.screens.closeSubScreen(closed);
         if (visible)
             forceActiveFocus();
     }
@@ -228,11 +222,26 @@ Rectangle {
     // then kept with the menu; it opens once made (followOverlay). The screenshot hook waits while
     // it is being made (screenPending, as for LazyScreen).
     component SubScreenSlot: Loader {
+        id: slot
+
+        // The sub-screen it holds (GameController.SubScreen).
+        required property int screen
         readonly property bool screenPending: active && status === Loader.Loading
 
         anchors.fill: parent
         active: false
         asynchronous: true
+        onLoaded: menu.followOverlay()
+
+        // Every sub-screen says when it closed itself (signal closed).
+        Connections {
+            target: slot.item
+            ignoreUnknownSignals: true
+
+            function onClosed() {
+                menu.subScreenClosed(slot.screen);
+            }
+        }
     }
 
     // One level down from the pause menu, as from the main menu (SidebarScreen); the debug options
@@ -240,37 +249,34 @@ Rectangle {
     SubScreenSlot {
         id: settingsSlot
 
-        onLoaded: menu.followOverlay()
+        screen: GameController.SubScreen.Settings
 
         sourceComponent: SettingsScreen {
             game: menu.game
             inGame: true
             // The handbook opened from the settings covers them (and keeps Tab).
             covered: menu.game.handbook.isOpen
-            backText: menu.game.overlay === GameController.Overlay.Debug ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
-            onClosed: menu.subScreenClosed(menu.game.settingsOpen)
+            backText: menu.game.screens.subScreenReturn === GameController.Overlay.None ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
         }
     }
 
     SubScreenSlot {
         id: characterSlot
 
-        onLoaded: menu.followOverlay()
+        screen: GameController.SubScreen.Character
 
         sourceComponent: CharacterScreen {
             game: menu.game
-            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Character)
         }
     }
 
     SubScreenSlot {
         id: lanSlot
 
-        onLoaded: menu.followOverlay()
+        screen: GameController.SubScreen.Lan
 
         sourceComponent: LanScreen {
             game: menu.game
-            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Lan)
         }
     }
 
@@ -278,53 +284,39 @@ Rectangle {
     SubScreenSlot {
         id: adminSlot
 
-        onLoaded: menu.followOverlay()
+        screen: GameController.SubScreen.Admin
 
         sourceComponent: AdminScreen {
             game: menu.game
-            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Admin)
         }
     }
 
-    // One sub-screen at a time, the one the overlay names (made first if need be); any other
-    // overlay closes them.
+    // One sub-screen at a time, the one GameController.screens.subScreen names while the menu shows
+    // (made first if need be: it opens once loaded); the others close.
     function followOverlay() {
-        closeSubScreens(menu.game.overlay);
-        openSubScreen(menu.game.overlay);
-    }
-
-    // Closes the sub-screens that `overlay` does not name (None: all of them).
-    function closeSubScreens(overlay: int) {
-        // The settings show every page of the settings (GameController.settingsOpen).
-        if (overlay !== menu.game.overlay || !menu.game.settingsOpen)
-            menu.settingsScreen?.close();
-        if (overlay !== GameController.Overlay.Character)
-            menu.characterScreen?.close();
-        if (overlay !== GameController.Overlay.Lan)
-            menu.lanScreen?.close();
-        if (overlay !== GameController.Overlay.Admin)
-            menu.adminScreen?.close();
-    }
-
-    // Opens the sub-screen `overlay` names; one not made yet is made and opens when it is loaded.
-    function openSubScreen(overlay: int) {
-        if (menu.game.settingsOpen) {
-            settingsSlot.active = true;
-            if (menu.settingsScreen) {
-                menu.settingsScreen.startPage = menu.settingsScreen.pageOfOverlay(overlay);
-                menu.settingsScreen.open();
-            }
-        } else if (overlay === GameController.Overlay.Character) {
-            characterSlot.active = true;
-            menu.characterScreen?.open();
-        } else if (overlay === GameController.Overlay.Lan) {
-            lanSlot.active = true;
-            menu.lanScreen?.open();
-        } else if (overlay === GameController.Overlay.Admin) {
-            adminSlot.active = true;
-            if (menu.adminScreen && !menu.adminScreen.visible)
-                menu.adminScreen.open();
+        const shown = menu.visible ? menu.game.screens.subScreen : GameController.SubScreen.None;
+        for (const slot of [settingsSlot, characterSlot, lanSlot, adminSlot]) {
+            if (slot.screen === shown)
+                slot.active = true;
         }
+        if (shown === GameController.SubScreen.Settings)
+            menu.settingsScreen?.openAt(menu.game.screens.settingsPage);
+        else
+            menu.settingsScreen?.close();
+        menu.showPopup(menu.characterScreen, shown === GameController.SubScreen.Character);
+        menu.showPopup(menu.lanScreen, shown === GameController.SubScreen.Lan);
+        if (shown !== GameController.SubScreen.Admin)
+            menu.adminScreen?.close();
+        else if (menu.adminScreen && !menu.adminScreen.visible)
+            menu.adminScreen.open();
+    }
+
+    // Opens or closes `popup` (a sub-screen made as a Popup), if it is made yet.
+    function showPopup(popup: Popup, shown: bool) {
+        if (popup && shown)
+            popup.open();
+        else
+            popup?.close();
     }
 
     Connections {

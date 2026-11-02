@@ -138,7 +138,7 @@ SidebarScreen {
     }
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape || (screen.game.settings.keys.matches("handbook", event.key) && !event.isAutoRepeat)) {
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.HandbookKey) === KeyControls.ScreenKey.Close) {
             screen.close();
         } else if (event.key === Qt.Key_Backspace || (event.key === Qt.Key_Left && (event.modifiers & Qt.AltModifier))) {
             screen.back();
@@ -157,9 +157,10 @@ SidebarScreen {
             Accessible.name: qsTr("Search the handbook")
             placeholderText: qsTr("Search …")
             Keys.onPressed: event => {
-                // A handbook key that types a character (H) goes into the search.
-                if (event.key === Qt.Key_Escape
-                    || (screen.game.settings.keys.matches("handbook", event.key) && (event.text.length === 0 || event.text < " "))) {
+                // A handbook key that types a character (H) goes into the search; one that does not
+                // closes the handbook, held or not.
+                const typed = event.text.length > 0 && event.text >= " ";
+                if (!typed && screen.game.settings.keys.screenKey(event.key, false, KeyControls.ClosingKey.HandbookKey) === KeyControls.ScreenKey.Close) {
                     screen.close();
                     event.accepted = true;
                 } else if ((event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && screen.listed.length > 0) {

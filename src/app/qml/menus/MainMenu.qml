@@ -58,12 +58,12 @@ Rectangle {
     }
     // Keys the text fields and buttons leave; Tab moves the focus, Esc goes back to the start page.
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && menu.page === MainMenu.WorldOptions)
+        const action = menu.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly);
+        if (action === KeyControls.ScreenKey.Close && menu.page === MainMenu.WorldOptions)
             menu.backToNewWorld();
-        else if (event.key === Qt.Key_Escape && menu.leavesPage())
+        else if (action === KeyControls.ScreenKey.Close && menu.leavesPage())
             menu.navigate(() => menu.showHome());
-        else if (menu.game.settings.keys.matches("handbook", event.key) && !menu.game.handbook.isOpen
-                 && !menu.game.multiplayer.joining)
+        else if (action === KeyControls.ScreenKey.Handbook && !menu.game.handbook.isOpen && !menu.game.multiplayer.joining)
             menu.game.handbook.open("");
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -150,8 +150,7 @@ Rectangle {
 
     function openSettings(startPage: int, back: var) {
         settingsReturn = back;
-        settingsScreen.startPage = startPage;
-        settingsScreen.open();
+        settingsScreen.openAt(startPage);
     }
 
     // A side bar entry: the handbook and the settings open over the page, the others leave it.
@@ -187,7 +186,7 @@ Rectangle {
             modsPage.open();
             break;
         case MenuSidebar.Settings:
-            openSettings(SettingsScreen.Graphics, null);
+            openSettings(GameController.SettingsPage.Graphics, null);
             break;
         case MenuSidebar.Quit:
             quitRequested();
@@ -302,7 +301,7 @@ Rectangle {
             objectName: "modsScreen"
             game: menu.game
             onOpenRequested: menu.page = MainMenu.Mods
-            onTexturePacksRequested: menu.openSettings(SettingsScreen.TexturePacks, () => modsPage.focusTexturePacks())
+            onTexturePacksRequested: menu.openSettings(GameController.SettingsPage.TexturePacks, () => modsPage.focusTexturePacks())
         }
     }
 

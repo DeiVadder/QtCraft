@@ -21,6 +21,9 @@
 #include <QTemporaryDir>
 #include <QTest>
 
+#include <array>
+#include <utility>
+
 using namespace Qt::StringLiterals;
 
 // The enumerations QML sees instead of strings (GameController.Overlay, GameSettings.CameraMode,
@@ -105,6 +108,70 @@ private slots:
         QCOMPARE(screens.overlay(), O::Pause);
     }
 
+    // The overlay names the pause menu's sub-screen and the settings page it shows (PauseMenu and
+    // SettingsScreen bind to them).
+    void subScreensAndSettingsPages()
+    {
+        using O = QcScreenState::Overlay;
+        using S = QcScreenState::SubScreen;
+        using P = QcScreenState::SettingsPage;
+        const QMetaEnum overlays = QMetaEnum::fromType<O>();
+        for (int index = 0; index < overlays.keyCount(); ++index) {
+            const auto overlay = static_cast<O>(overlays.value(index));
+            QCOMPARE(QcScreenState::subScreen(overlay) == S::Settings, QcScreenState::isSettingsPage(overlay));
+            // Every sub-screen is one of the pause menu.
+            QVERIFY(QcScreenState::subScreen(overlay) == S::None || QcScreenState::isPauseMenu(overlay));
+        }
+        QCOMPARE(QcScreenState::subScreen(O::Character), S::Character);
+        QCOMPARE(QcScreenState::subScreen(O::Lan), S::Lan);
+        QCOMPARE(QcScreenState::subScreen(O::Admin), S::Admin);
+        QCOMPARE(QcScreenState::subScreen(O::Pause), S::None);
+        QCOMPARE(QcScreenState::subScreen(O::Advancements), S::None);
+
+        const QList<std::pair<O, P>> pages{{O::Settings, P::Graphics},   {O::Display, P::Graphics},   {O::Audio, P::Audio},
+                                           {O::Controls, P::Controls},   {O::Gamepad, P::Controller}, {O::Interface, P::Interface},
+                                           {O::TexturePacks, P::TexturePacks}, {O::Debug, P::Advanced}, {O::Pause, P::Graphics}};
+        for (const auto &[overlay, page] : pages) {
+            QCOMPARE(QcScreenState::settingsPage(overlay), page);
+        }
+    }
+
+    // Closing a sub-screen leads back to the pause menu, from the debug options to the world; one
+    // that closed because the overlay moved on changes nothing, and None is refused.
+    void subScreensCloseToWhereTheyBelong()
+    {
+        using O = QcScreenState::Overlay;
+        using S = QcScreenState::SubScreen;
+        QcSessionParts parts;
+        QcScreenState screens(parts);
+        QSignalSpy changed(&screens, &QcScreenState::overlayChanged);
+
+        static constexpr std::array<std::pair<O, S>, 4> subScreens{{{O::Audio, S::Settings}, {O::Character, S::Character}, {O::Lan, S::Lan}, {O::Admin, S::Admin}}};
+        for (const auto &[overlay, sub] : subScreens) {
+            screens.setOverlay(overlay);
+            QCOMPARE(screens.subScreenReturn(), O::Pause);
+            screens.closeSubScreen(sub);
+            QCOMPARE(screens.overlay(), O::Pause);
+        }
+
+        screens.setOverlay(O::Debug);
+        QCOMPARE(screens.subScreenReturn(), O::None);
+        screens.closeSubScreen(S::Settings);
+        QCOMPARE(screens.overlay(), O::None);
+        QCOMPARE(screens.subScreenReturn(), O::None);
+
+        screens.setOverlay(O::Lan);
+        changed.clear();
+        screens.closeSubScreen(S::Character);
+        QCOMPARE(screens.overlay(), O::Lan);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeSubScreen 0 : not a sub-screen"_s));
+        screens.closeSubScreen(S::None);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeSubScreen 9 : not a sub-screen"_s));
+        screens.closeSubScreen(static_cast<S>(9));
+        QCOMPARE(screens.overlay(), O::Lan);
+        QCOMPARE(changed.count(), 0);
+    }
+
     // How much of the HUD shows behind the screens (decision E-927): all of it in the world, all but
     // the world hint with the chat line, the status rows behind a screen over the world and the
     // death screen, nothing behind a full-screen screen or the handbook.
@@ -118,7 +185,7 @@ private slots:
                                  O::Lan,       O::Sign,     O::Stonecutter, O::Enchanting, O::Anvil};
         const QList<O> fullScreen{O::Settings, O::Display, O::Audio,        O::Interface, O::Controls,
                                   O::Gamepad,  O::Debug,   O::TexturePacks, O::Admin,     O::Advancements};
-        // The pages of SettingsScreen and the screens with item slots (GameController.settingsOpen, slotScreenOpen).
+        // The pages of SettingsScreen and the screens with item slots (GameController.screens.subScreen, slotScreenOpen).
         const QList<O> settingsPages{O::Settings, O::Display, O::Audio,        O::Interface,
                                      O::Controls, O::Gamepad, O::Debug, O::TexturePacks};
         const QList<O> slotScreens{O::Inventory, O::Creative,    O::Furnace,    O::Chest,

@@ -45,6 +45,21 @@ public:
         Bound      // the key was bound (or refused, see message); the capture ended
     };
     Q_ENUM(Capture)
+    /*! What a key pressed on a screen does (screenKey()). */
+    enum class ScreenKey {
+        Unused,  // nothing of the screens' common rule; the screen may use the key itself
+        Close,   // the screen closes
+        Handbook // the handbook opens
+    };
+    Q_ENUM(ScreenKey)
+    /*! The key that closes a screen besides Esc, as the key that opened it from the world. */
+    enum class ClosingKey {
+        EscOnly,         // only Esc (the pause menu, the settings, the main menu)
+        InventoryKey,    // the inventory key (the screens with item slots)
+        AdvancementsKey, // the advancements key (the advancements)
+        HandbookKey      // the handbook key (the handbook)
+    };
+    Q_ENUM(ClosingKey)
 
     explicit QcKeyControls(QObject *parent = nullptr);
 
@@ -92,6 +107,12 @@ public:
     /*! Takes \a key (a Qt::Key) released during a capture, \a autoRepeat when the system repeats
         it: binds a modifier pressed alone. Returns what it did. */
     Q_INVOKABLE QcKeyControls::Capture keyReleased(int key, bool autoRepeat);
+    /*! Returns what \a key (a Qt::Key) does on a screen whose own key is \a closing, the common
+        rule of the screens as the world's keys have theirs in the game input: Esc closes the
+        screen, and so does the closing key unless \a autoRepeat (it is still held from opening
+        the screen); the handbook key opens the handbook on any other screen. An unknown
+        \a closing is taken as EscOnly with a warning. */
+    Q_INVOKABLE QcKeyControls::ScreenKey screenKey(int key, bool autoRepeat, QcKeyControls::ClosingKey closing) const;
 
 signals:
     void changed();

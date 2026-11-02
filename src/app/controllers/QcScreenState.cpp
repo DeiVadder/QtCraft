@@ -7,7 +7,9 @@
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
 
+#include <algorithm>
 #include <array>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -183,6 +185,43 @@ QcScreenState::HudShown QcScreenState::hudShown(Overlay overlay, bool handbookOp
     return HudShown::StatusRows;
 }
 
+QcScreenState::SubScreen QcScreenState::subScreen(Overlay overlay)
+{
+    if (isSettingsPage(overlay)) {
+        return SubScreen::Settings;
+    }
+    if (overlay == Overlay::Character) {
+        return SubScreen::Character;
+    }
+    if (overlay == Overlay::Lan) {
+        return SubScreen::Lan;
+    }
+    return overlay == Overlay::Admin ? SubScreen::Admin : SubScreen::None;
+}
+
+QcScreenState::SettingsPage QcScreenState::settingsPage(Overlay overlay)
+{
+    // The overlays that open another page than the graphics page.
+    static constexpr std::array<std::pair<Overlay, SettingsPage>, 6> pages{{
+        {Overlay::Audio, SettingsPage::Audio},
+        {Overlay::Controls, SettingsPage::Controls},
+        {Overlay::Gamepad, SettingsPage::Controller},
+        {Overlay::Interface, SettingsPage::Interface},
+        {Overlay::TexturePacks, SettingsPage::TexturePacks},
+        {Overlay::Debug, SettingsPage::Advanced},
+    }};
+    const auto *found = std::ranges::find(pages, overlay, &std::pair<Overlay, SettingsPage>::first);
+    return found != pages.end() ? found->second : SettingsPage::Graphics;
+}
+
+QcScreenState::Overlay QcScreenState::subScreenReturn(Overlay overlay)
+{
+    if (overlay == Overlay::Debug || subScreen(overlay) == SubScreen::None) {
+        return Overlay::None;
+    }
+    return Overlay::Pause;
+}
+
 std::optional<QcScreenState::Overlay> QcScreenState::overlayFromName(QStringView name)
 {
     for (std::size_t index = 0; index < overlayNames.size(); ++index) {
@@ -263,6 +302,21 @@ void QcScreenState::closeAdvancements()
     }
 
     setOverlay(m_advancementsReturn);
+}
+
+void QcScreenState::closeSubScreen(SubScreen closed)
+{
+    const int value = static_cast<int>(closed);
+    if (value <= static_cast<int>(SubScreen::None) || value > static_cast<int>(SubScreen::Admin)) {
+        qCWarning(lcGame) << "Ignoring closeSubScreen" << value << ": not a sub-screen of the pause menu";
+        return;
+    }
+    // The overlay moved on already and closed the sub-screen: it decides where the menu is.
+    if (subScreen() != closed) {
+        return;
+    }
+
+    setOverlay(subScreenReturn());
 }
 
 void QcScreenState::closeSessionScreens() const

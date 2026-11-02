@@ -25,6 +25,16 @@ class QcScreenState : public QObject
 {
     Q_OBJECT
     QML_ANONYMOUS
+    // QML names the values with their enum (GameController.Overlay.None, GameController.SubScreen.None):
+    // unscoped, the None of several enums would clash.
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
+    // The sub-screen of the pause menu the overlay names (GameController.screens.subScreen).
+    Q_PROPERTY(QcScreenState::SubScreen subScreen READ subScreen NOTIFY overlayChanged FINAL)
+    // The page of the settings the overlay opens (GameController.screens.settingsPage).
+    Q_PROPERTY(QcScreenState::SettingsPage settingsPage READ settingsPage NOTIFY overlayChanged FINAL)
+    // Where closing the open sub-screen leads (GameController.screens.subScreenReturn): None (the
+    // world) from the debug options, else the pause menu.
+    Q_PROPERTY(QcScreenState::Overlay subScreenReturn READ subScreenReturn NOTIFY overlayChanged FINAL)
 
 public:
     // What the window shows: the main menu, the loading screen, the world, the error screen (a
@@ -75,6 +85,15 @@ public:
     // chat line is open; everything in the world.
     enum class HudShown { Nothing, StatusRows, AllButHint, All };
     Q_ENUM(HudShown)
+    // The screens the pause menu opens over its card (GameController.SubScreen in QML): none, the
+    // settings (at any of their pages), the character screen, open to LAN or "Manage server".
+    enum class SubScreen { None, Settings, Character, Lan, Admin };
+    Q_ENUM(SubScreen)
+    // The pages of the settings in the order of their side bar (GameController.SettingsPage in QML,
+    // decision E-845): graphics (with the display options), audio, controls (the key table),
+    // controller, interface, texture packs and advanced (with the debug options).
+    enum class SettingsPage { Graphics, Audio, Controls, Controller, Interface, TexturePacks, Advanced };
+    Q_ENUM(SettingsPage)
 
     explicit QcScreenState(const QcSessionParts &parts, QObject *parent = nullptr);
 
@@ -103,6 +122,16 @@ public:
     // How much of the HUD shows with `overlay` open, the handbook open or not and the player dead
     // (the death screen) or not (decision E-927).
     static HudShown hudShown(Overlay overlay, bool handbookOpen, bool dead);
+    // The sub-screen of the pause menu that shows `overlay`; None for any other overlay.
+    static SubScreen subScreen(Overlay overlay);
+    // The page of the settings `overlay` opens: the settings and the display options the graphics
+    // page (it begins with them), the debug options the advanced page; Graphics for an overlay that
+    // is no page of the settings.
+    static SettingsPage settingsPage(Overlay overlay);
+    // Where closing the sub-screen that shows `overlay` leads: the debug options open from the world
+    // (debug options key) and return there (None), the other sub-screens to the pause menu; None for
+    // an overlay that is no sub-screen.
+    static Overlay subScreenReturn(Overlay overlay);
     [[nodiscard]] static std::optional<Overlay> overlayFromName(QStringView name);
 
     Phase phase() const { return m_phase; }
@@ -120,6 +149,14 @@ public:
     // Closes the advancements: back to the pause menu when they opened from it, else to the world.
     // Refused with a warning while another overlay is open.
     void closeAdvancements();
+    SubScreen subScreen() const { return subScreen(overlay()); }
+    SettingsPage settingsPage() const { return settingsPage(overlay()); }
+    Overlay subScreenReturn() const { return subScreenReturn(overlay()); }
+    // The sub-screen `closed` of the pause menu closed itself (its back entry, Esc, the pad's B):
+    // the overlay goes where subScreenReturn() leads. Nothing happens when the overlay names another
+    // screen already (the sub-screen closed because the overlay changed). None and values outside
+    // the enumeration are refused with a warning.
+    Q_INVOKABLE void closeSubScreen(QcScreenState::SubScreen closed);
     // How long a closed screen stays loaded (LazyScreen in QML, decision E-691): 60 s, or
     // QTCRAFT_SCREEN_KEEP_ALIVE_MS (tests and measurements unload at once with 0).
     int screenKeepAliveMs() const { return m_screenKeepAliveMs; }

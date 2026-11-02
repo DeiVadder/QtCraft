@@ -81,8 +81,9 @@ class QcGameController : public QObject
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
     // The overlay is the pause menu or one of its screens (QcScreenState::isPauseMenu).
     Q_PROPERTY(bool pauseMenuOpen READ pauseMenuOpen NOTIFY overlayChanged FINAL)
-    // The overlay is a page of the settings (QcScreenState::isSettingsPage).
-    Q_PROPERTY(bool settingsOpen READ settingsOpen NOTIFY overlayChanged FINAL)
+    // The screen state's rules for the pause menu's sub-screens (subScreen, settingsPage,
+    // closeSubScreen()).
+    Q_PROPERTY(QcScreenState *screens READ screens CONSTANT FINAL)
     // The overlay is a screen with item slots (QcScreenState::isSlotScreen).
     Q_PROPERTY(bool slotScreenOpen READ slotScreenOpen NOTIFY overlayChanged FINAL)
     // How much of the HUD shows behind the open screens and the handbook (GameController.HudShown,
@@ -151,7 +152,7 @@ public:
     bool pauseMenuOpen() const { return QcScreenState::isPauseMenu(overlay()); }
     // Closes the advancements, back to where they opened from (QcScreenState::closeAdvancements).
     Q_INVOKABLE void closeAdvancements() { m_screens.closeAdvancements(); }
-    bool settingsOpen() const { return QcScreenState::isSettingsPage(overlay()); }
+    QcScreenState *screens() { return &m_screens; }
     bool slotScreenOpen() const { return QcScreenState::isSlotScreen(overlay()); }
     QcScreenState::HudShown hudShown() const { return m_hudShown; }
     int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
@@ -283,6 +284,7 @@ private:
     // The parts below refer to the ones above them (m_parts and m_icons first), so they are declared
     // in that order and die in the reverse one, before anything they refer to.
     QcSessionParts m_parts;
+    // NOLINT(qc-member-access): a value member the controller forwards to; screens() hands it to QML only
     QcScreenState m_screens;
     QcLoadingProgress m_loading;
     QcAfterFrame m_afterFrame;

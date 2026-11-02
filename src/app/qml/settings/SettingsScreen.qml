@@ -18,43 +18,12 @@ import QtCraft
 SidebarScreen {
     id: screen
 
-    enum Page {
-        Graphics,
-        Audio,
-        Controls,
-        Controller,
-        Interface,
-        TexturePacks,
-        Advanced
-    }
-
     required property GameController game
-    // The page to open on (SettingsScreen.Graphics, ...; pageOfOverlay() for an overlay).
-    property int startPage: SettingsScreen.Graphics
+    // The page to open on (GameController.SettingsPage.Graphics, ...).
+    property int startPage: GameController.SettingsPage.Graphics
 
     // The screen was closed (back entry, Esc, the pad's B or close()).
     signal closed
-
-    // The page an overlay opens: the settings and the display options the graphics page (it begins
-    // with them), the debug options the advanced page.
-    function pageOfOverlay(overlay: int): int {
-        switch (overlay) {
-        case GameController.Overlay.Audio:
-            return SettingsScreen.Audio;
-        case GameController.Overlay.Controls:
-            return SettingsScreen.Controls;
-        case GameController.Overlay.Gamepad:
-            return SettingsScreen.Controller;
-        case GameController.Overlay.Interface:
-            return SettingsScreen.Interface;
-        case GameController.Overlay.TexturePacks:
-            return SettingsScreen.TexturePacks;
-        case GameController.Overlay.Debug:
-            return SettingsScreen.Advanced;
-        default:
-            return SettingsScreen.Graphics;
-        }
-    }
 
     // Opens on `startPage` with the focus on its first setting (docs/UI-Leitfaden.md 10).
     function open() {
@@ -63,6 +32,12 @@ SidebarScreen {
         visible = true;
         forceActiveFocus();
         focusPage();
+    }
+
+    // Opens on `page` (GameController.SettingsPage).
+    function openAt(page: int) {
+        startPage = page;
+        open();
     }
 
     function close() {
@@ -128,7 +103,7 @@ SidebarScreen {
     // Keys the controls leave end here; Esc closes the screen, Tab moves the focus (Ctrl+Tab and
     // Ctrl+Shift+Tab switch the category: shortcuts of the NavList).
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape)
+        if (screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.close();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
@@ -140,6 +115,8 @@ SidebarScreen {
             objectName: "settingsNav"
             Layout.fillWidth: true
             onSwitched: screen.focusPage()
+            // In the order of GameController.SettingsPage (QcScreenState::SettingsPage) and of the
+            // pages below: startPage indexes both.
             model: [qsTr("Graphics"), qsTr("Audio"), qsTr("Controls"), qsTr("Controller"), qsTr("Interface"),
                 qsTr("Texture packs"), qsTr("Advanced")]
         },

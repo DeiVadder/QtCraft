@@ -343,6 +343,20 @@ add_test(NAME app_offscreen_advancements_return
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_advancements_return PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_advancements_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-advancements-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Closing the pause menu's sub-screens (QcScreenState::closeSubScreen, row 79.58) with real key presses:
+# Esc on a settings page and on the character screen leads back to the pause menu, Esc on the debug
+# options (opened from the world) back to the world; the pad's B on the settings leads back to the
+# pause menu, so the last Esc closes it.
+add_test(NAME app_offscreen_subscreen_return
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@500 audio;--overlay;@1500 press:Escape;--overlay;@2000 debug;--overlay;@3000 press:Escape;--overlay;@3500 character;--overlay;@4500 press:Escape;--overlay;@5000 settings;--overlay;@6000 pad:east;--overlay;@6500 press:Escape"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Escape: overlay pause[^\n]*\n.*press:Escape: overlay none[^\n]*\n.*press:Escape: overlay pause[^\n]*\n.*press:Escape: overlay none"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-subscreen-return.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_subscreen_return PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_subscreen_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-subscreen-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu lazy_advancements advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
