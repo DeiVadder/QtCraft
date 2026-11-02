@@ -197,6 +197,10 @@ qt_add_qml_module(qc_app_core
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QtCraft
     QML_FILES
         qml/Main.qml
+        qml/Notices.qml
+        qml/OverlayScreen.qml
+        qml/PadLayer.qml
+        qml/Screens.qml
         qml/admin/AdminActionDialog.qml
         qml/admin/AdminChatPage.qml
         qml/admin/AdminCommandIndex.qml
@@ -267,7 +271,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/Hud.qml
         qml/hud/HudLabel.qml
         qml/hud/MapInHand.qml
-        qml/hud/PhotoNotice.qml
+        qml/hud/Notice.qml
         qml/hud/PlayerListOverlay.qml
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml

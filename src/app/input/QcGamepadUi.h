@@ -90,6 +90,9 @@ public:
 
     // A screen opened a text field for the pad (the chat line): the keyboard opens while the pad leads.
     Q_INVOKABLE void requestKeyboard(QQuickItem *field);
+    // A screen kept loaded opens at its start again: the pad's focus remembered on `screen`
+    // (QcMenuNavigator::forgetFocusIn) is forgotten.
+    Q_INVOKABLE void forgetFocusIn(QQuickItem *screen) { m_navigator.forgetFocusIn(screen); }
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 

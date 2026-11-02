@@ -54,15 +54,17 @@ class QcMapImageProvider;
 class QQuickWindow;
 struct QcWorldInfo;
 
-// The game for QML (GameController, id `gameController` in Main.qml, `game` in the screens): runs a
+// The game for QML (GameController, `gameController` in Main.qml, `game` in the screens): runs a
 // single-player session with its in-process server, or a session of a network game, and shows its
 // phase, status and in-game screen. Settings, library, player, HUD, handbook and input are
 // sub-objects with their own QML properties; the render bridge hands
-// the world to the view every frame. Lives in the GUI thread and is created from QML.
+// the world to the view every frame. Lives in the GUI thread; main() makes it before the QML
+// engine (which it outlives) and hands it to Main.qml as its required property.
 class QcGameController : public QObject
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(GameController)
+    QML_UNCREATABLE("Made by main() and handed to Main.qml")
     // GameController.Phase in QML: the enumeration lives in the screen state.
     QML_EXTENDED_NAMESPACE(QcScreenState)
 
@@ -77,6 +79,8 @@ class QcGameController : public QObject
     Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
     // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
+    // The overlay is the pause menu or one of its screens (QcScreenState::isPauseMenu).
+    Q_PROPERTY(bool pauseMenuOpen READ pauseMenuOpen NOTIFY overlayChanged FINAL)
     // The overlay is a page of the settings (QcScreenState::isSettingsPage).
     Q_PROPERTY(bool settingsOpen READ settingsOpen NOTIFY overlayChanged FINAL)
     // The overlay is a screen with item slots (QcScreenState::isSlotScreen).
@@ -144,6 +148,9 @@ public:
     using Overlay = QcScreenState::Overlay;
     Overlay overlay() const { return m_screens.overlay(); }
     void setOverlay(Overlay overlay) { m_screens.setOverlay(overlay); }
+    bool pauseMenuOpen() const { return QcScreenState::isPauseMenu(overlay()); }
+    // Closes the advancements, back to where they opened from (QcScreenState::closeAdvancements).
+    Q_INVOKABLE void closeAdvancements() { m_screens.closeAdvancements(); }
     bool settingsOpen() const { return QcScreenState::isSettingsPage(overlay()); }
     bool slotScreenOpen() const { return QcScreenState::isSlotScreen(overlay()); }
     QcScreenState::HudShown hudShown() const { return m_hudShown; }

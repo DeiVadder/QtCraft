@@ -326,6 +326,14 @@ bool QcMenuNavigator::adjust(QQuickItem *item, Direction direction)
     return false;
 }
 
+void QcMenuNavigator::forgetFocusIn(const QQuickItem *screen)
+{
+    m_lastFocus.removeIf([screen](const QHash<const QQuickItem *, QPointer<QQuickItem>>::iterator entry) {
+        const QQuickItem *item = entry.value();
+        return !item || item == screen || (screen && screen->isAncestorOf(item));
+    });
+}
+
 void QcMenuNavigator::focus(QQuickItem *item)
 {
     item->forceActiveFocus(Qt::TabFocusReason);

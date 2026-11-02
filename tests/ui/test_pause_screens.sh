@@ -6,6 +6,8 @@
 # - the pause menu's buttons in a saved single-player world (save, open to LAN and manage server
 #   shown, the last one fills its row; the way out saves) and on a joined server without operator
 #   rights (the world's group hidden; the way out disconnects), read from QTCRAFT_LOG_ITEMS;
+# - the pause menu made in the background while the world plays, before it is first opened
+#   (decision E-875: its first opening does not wait for it), hidden until then;
 # - the pause and death cards above the HUD's status rows (hotbar, hearts), which stay visible
 #   behind them (decision E-927), at 200 % in 1280 x 720 (113 % for the screens) and in 2560 x 1440
 #   (225 %);
@@ -33,7 +35,7 @@ run() {
     size=$3
     shift 3
     QTCRAFT_WINDOW_SIZE=$size QTCRAFT_LAYOUT_CHECK=1 QTCRAFT_OFFSCREEN=1 QTCRAFT_BACKGROUND=1 QTCRAFT_DATA_DIR="$dir" \
-        QTCRAFT_LOG_ITEMS=worldCard,hearts,hotbar,saveWorldButton,openToLanButton,manageServerButton,leaveGameButton,deleteWorldMessage \
+        QTCRAFT_LOG_ITEMS=worldCard,continueGameButton,hearts,hotbar,saveWorldButton,openToLanButton,manageServerButton,leaveGameButton,deleteWorldMessage \
         QTCRAFT_SCREENSHOT="$DATA/$name.png" QTCRAFT_SCREENSHOT_FRAMES=40 \
         perl -e 'alarm shift; exec @ARGV or die' 120 "$APP" --no-audio --no-mods --screen builtin --background --language de "$@" \
         >"$DATA/$name.log" 2>&1
@@ -107,6 +109,18 @@ world_step_once() {
     fi
 }
 
+# pause_ready <name>: the pause menu was made while the world played, without being opened.
+pause_ready() {
+    case $(item "$1" continueGameButton) in
+    *"visible no"*) ;;
+    *)
+        echo "$1: the pause menu is not made and hidden before its first opening:"
+        item "$1" continueGameButton
+        failed=1
+        ;;
+    esac
+}
+
 # A saved world, made by the headless bot; the menu continues it, the pause menu opens with it.
 saved="$DATA/saved"
 settings "$saved" 200
@@ -155,6 +169,7 @@ for size in 1280x720 2560x1440; do
         card_above_status "saved-death-$size"
         step_ran_once "saved-death-$size"
         world_step_once "saved-death-$size"
+        pause_ready "saved-death-$size"
     fi
 done
 

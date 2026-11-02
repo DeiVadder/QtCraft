@@ -8,6 +8,7 @@
 #include "common/core/QcMailbox.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QVariantList>
 #include <QtQmlIntegration/qqmlintegration.h>
 
@@ -48,7 +49,7 @@ public:
     ~QcTexturePackController() override;
     Q_DISABLE_COPY_MOVE(QcTexturePackController)
 
-    void setPreviewProvider(QcTexturePackPreviewProvider *provider) { m_previewProvider = provider; }
+    void setPreviewProvider(QcTexturePackPreviewProvider *provider);
 
     // QTCRAFT_TEXTURE_PACKS (call before loadSelection): used for this run instead of the stored
     // selection, and not stored unless the player changes the packs.
@@ -131,7 +132,8 @@ private:
     void setBuildAgain(std::optional<std::shared_ptr<const QcTextureAtlas>> again) { m_buildAgain = std::move(again); }
 
     std::function<QString()> m_modsDirectory;
-    QcTexturePackPreviewProvider *m_previewProvider = nullptr;
+    // The engine owns the provider and may delete it first (the game outlives the QML engine).
+    QPointer<QcTexturePackPreviewProvider> m_previewProvider;
     QList<QcTexturePackLibrary::Entry> m_entries;
     QStringList m_active;
     QStringList m_stored;

@@ -60,6 +60,9 @@ public:
     // Without a focused candidate, focuses where the focus starts: the one focused last in this
     // scope, else a highlighted (default) button, else the top left (never a `padLeftOnly` item).
     void focusStart();
+    // Forgets the focus remembered on `screen` and its items: the next press starts there again as
+    // on a screen made anew (a screen kept loaded that opens at its start each time).
+    void forgetFocusIn(const QQuickItem *screen);
     // Moves the pointer over the focused candidate, so the hover follows a focus that QML moved.
     void hoverFocus();
     // Input made by the navigator is being sent (it is not the mouse's or the keyboard's).

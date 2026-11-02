@@ -86,6 +86,11 @@ bool QcScreenState::isMenu(Overlay overlay)
     }
 }
 
+bool QcScreenState::isPauseMenu(Overlay overlay)
+{
+    return isMenu(overlay) && overlay != Overlay::Advancements;
+}
+
 bool QcScreenState::isFullScreen(Overlay overlay)
 {
     return isSettingsPage(overlay) || overlay == Overlay::Admin || overlay == Overlay::Advancements;
@@ -236,6 +241,9 @@ void QcScreenState::setOverlay(Overlay overlay)
         return;
     }
 
+    if (overlay == Overlay::Advancements) {
+        m_advancementsReturn = m_overlay == Overlay::Pause ? Overlay::Pause : Overlay::None;
+    }
     m_overlay = overlay;
     emit interrupted();
     if (m_overlay != Overlay::Chat) {
@@ -245,6 +253,16 @@ void QcScreenState::setOverlay(Overlay overlay)
     emit overlayChanged();
     // Opening a screen frees the mouse; closing the last one captures it again without a click.
     emit worldInputChanged();
+}
+
+void QcScreenState::closeAdvancements()
+{
+    if (m_overlay != Overlay::Advancements) {
+        qCWarning(lcGame) << "Ignoring closeAdvancements: the overlay is" << overlayName(m_overlay) << "instead of the advancements";
+        return;
+    }
+
+    setOverlay(m_advancementsReturn);
 }
 
 void QcScreenState::closeSessionScreens() const

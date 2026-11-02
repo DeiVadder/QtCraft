@@ -87,6 +87,10 @@ public:
     // advancements (decision E-924): the world waits behind them, and the window draws at the
     // background frame rate (decision E-835).
     static bool isMenu(Overlay overlay);
+    // The pause menu and the screens it opens (settings, character, LAN, manage server): one
+    // PauseMenu shows them all (GameController.pauseMenuOpen); the menus of isMenu() without the
+    // advancements.
+    static bool isPauseMenu(Overlay overlay);
     // The full-screen screens (decision E-927): the settings at any page, "Manage server" and the
     // advancements cover the world and the HUD completely, as the handbook does.
     static bool isFullScreen(Overlay overlay);
@@ -113,6 +117,9 @@ public:
     // In-game screen on top of the world.
     Overlay overlay() const { return m_overlay; }
     void setOverlay(Overlay overlay);
+    // Closes the advancements: back to the pause menu when they opened from it, else to the world.
+    // Refused with a warning while another overlay is open.
+    void closeAdvancements();
     // How long a closed screen stays loaded (LazyScreen in QML, decision E-691): 60 s, or
     // QTCRAFT_SCREEN_KEEP_ALIVE_MS (tests and measurements unload at once with 0).
     int screenKeepAliveMs() const { return m_screenKeepAliveMs; }
@@ -176,6 +183,8 @@ private:
     bool m_starting = true;
     bool m_inputEnabled = true;
     Overlay m_overlay = Overlay::None;
+    // Where closeAdvancements() leads: set each time the advancements open.
+    Overlay m_advancementsReturn = Overlay::None;
     int m_screenKeepAliveMs = 60000;
     bool m_logScreenCreation = qEnvironmentVariableIntValue("QTCRAFT_UI_STATS") == 1;
     QString m_chatStart;

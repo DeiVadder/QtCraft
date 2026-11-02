@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -19,14 +21,13 @@ Rectangle {
     onVisibleChanged: {
         if (visible) {
             forceActiveFocus();
+            // Kept loaded while the world plays (decision E-875), it opens on "Continue" each time.
+            menu.game.gamepad.forgetFocusIn(card);
             // Made by its LazyScreen when the overlay changed to one of its sub-screens: opens it.
             followOverlay();
         } else {
             // Its sub-screens belong to the menu: they close (and store the settings) with it.
-            settingsScreen.close();
-            characterScreen.close();
-            lanScreen.close();
-            adminScreen.close();
+            closeSubScreens(GameController.Overlay.None);
         }
     }
     Keys.onPressed: event => {
@@ -38,6 +39,17 @@ Rectangle {
         // Other keys end here as well; Tab moves between the buttons.
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }
+
+    // The sub-screens, each made when it first opens (SubScreenSlot) and kept with the menu.
+    readonly property SettingsScreen settingsScreen: settingsSlot.item as SettingsScreen
+    readonly property CharacterScreen characterScreen: characterSlot.item as CharacterScreen
+    readonly property LanScreen lanScreen: lanSlot.item as LanScreen
+    readonly property AdminScreen adminScreen: adminSlot.item as AdminScreen
+    // A sub-screen is open or being made for the overlay: the card hides.
+    readonly property bool subScreenShown: (settingsScreen?.visible ?? false) || (characterScreen?.visible ?? false)
+                                           || (lanScreen?.visible ?? false) || (adminScreen?.visible ?? false)
+                                           || settingsSlot.screenPending || characterSlot.screenPending
+                                           || lanSlot.screenPending || adminSlot.screenPending
 
     // Which buttons of the world's group show: save (a saved world), open to LAN (not in a network
     // game), manage server (operators only, decision E-863).
@@ -70,8 +82,7 @@ Rectangle {
     WorldCard {
         id: card
 
-        visible: !settingsScreen.visible && !characterScreen.visible && !lanScreen.visible && !adminScreen.visible
-                 && !menu.game.handbook.isOpen
+        visible: !menu.subScreenShown && !menu.game.handbook.isOpen
         // Clear of the HUD's status rows behind it (decision E-927) and of the pad's hints.
         reservedBottom: Math.max(menu.statusReserved, menu.game.gamepad.focusShown ? Ui.size.padHints : 0)
 
@@ -213,60 +224,106 @@ Rectangle {
             forceActiveFocus();
     }
 
+    // A sub-screen of the menu: made over the next frames when it first opens (decision E-875),
+    // then kept with the menu; it opens once made (followOverlay). The screenshot hook waits while
+    // it is being made (screenPending, as for LazyScreen).
+    component SubScreenSlot: Loader {
+        readonly property bool screenPending: active && status === Loader.Loading
+
+        anchors.fill: parent
+        active: false
+        asynchronous: true
+    }
+
     // One level down from the pause menu, as from the main menu (SidebarScreen); the debug options
     // open from the world (debug options key) and lead back there.
-    SettingsScreen {
-        id: settingsScreen
+    SubScreenSlot {
+        id: settingsSlot
 
-        game: menu.game
-        inGame: true
-        // The handbook opened from the settings covers them (and keeps Tab).
-        covered: menu.game.handbook.isOpen
-        backText: menu.game.overlay === GameController.Overlay.Debug ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
-        onClosed: menu.subScreenClosed(menu.game.settingsOpen)
+        onLoaded: menu.followOverlay()
+
+        sourceComponent: SettingsScreen {
+            game: menu.game
+            inGame: true
+            // The handbook opened from the settings covers them (and keeps Tab).
+            covered: menu.game.handbook.isOpen
+            backText: menu.game.overlay === GameController.Overlay.Debug ? qsTr("‹ Back to game") : qsTr("‹ Pause menu")
+            onClosed: menu.subScreenClosed(menu.game.settingsOpen)
+        }
     }
 
-    CharacterScreen {
-        id: characterScreen
+    SubScreenSlot {
+        id: characterSlot
 
-        game: menu.game
-        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Character)
+        onLoaded: menu.followOverlay()
+
+        sourceComponent: CharacterScreen {
+            game: menu.game
+            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Character)
+        }
     }
 
-    LanScreen {
-        id: lanScreen
+    SubScreenSlot {
+        id: lanSlot
 
-        game: menu.game
-        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Lan)
+        onLoaded: menu.followOverlay()
+
+        sourceComponent: LanScreen {
+            game: menu.game
+            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Lan)
+        }
     }
 
-    AdminScreen {
-        id: adminScreen
+    // Made only when an operator opens it.
+    SubScreenSlot {
+        id: adminSlot
 
-        game: menu.game
-        onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Admin)
+        onLoaded: menu.followOverlay()
+
+        sourceComponent: AdminScreen {
+            game: menu.game
+            onClosed: menu.subScreenClosed(menu.game.overlay === GameController.Overlay.Admin)
+        }
     }
 
-    // One sub-screen at a time, the one the overlay names; any other overlay closes them.
+    // One sub-screen at a time, the one the overlay names (made first if need be); any other
+    // overlay closes them.
     function followOverlay() {
-        const overlay = menu.game.overlay;
-        if (!menu.game.settingsOpen)
-            settingsScreen.close();
+        closeSubScreens(menu.game.overlay);
+        openSubScreen(menu.game.overlay);
+    }
+
+    // Closes the sub-screens that `overlay` does not name (None: all of them).
+    function closeSubScreens(overlay: int) {
+        // The settings show every page of the settings (GameController.settingsOpen).
+        if (overlay !== menu.game.overlay || !menu.game.settingsOpen)
+            menu.settingsScreen?.close();
         if (overlay !== GameController.Overlay.Character)
-            characterScreen.close();
+            menu.characterScreen?.close();
         if (overlay !== GameController.Overlay.Lan)
-            lanScreen.close();
+            menu.lanScreen?.close();
         if (overlay !== GameController.Overlay.Admin)
-            adminScreen.close();
+            menu.adminScreen?.close();
+    }
+
+    // Opens the sub-screen `overlay` names; one not made yet is made and opens when it is loaded.
+    function openSubScreen(overlay: int) {
         if (menu.game.settingsOpen) {
-            settingsScreen.startPage = settingsScreen.pageOfOverlay(overlay);
-            settingsScreen.open();
+            settingsSlot.active = true;
+            if (menu.settingsScreen) {
+                menu.settingsScreen.startPage = menu.settingsScreen.pageOfOverlay(overlay);
+                menu.settingsScreen.open();
+            }
         } else if (overlay === GameController.Overlay.Character) {
-            characterScreen.open();
+            characterSlot.active = true;
+            menu.characterScreen?.open();
         } else if (overlay === GameController.Overlay.Lan) {
-            lanScreen.open();
-        } else if (overlay === GameController.Overlay.Admin && !adminScreen.visible) {
-            adminScreen.open();
+            lanSlot.active = true;
+            menu.lanScreen?.open();
+        } else if (overlay === GameController.Overlay.Admin) {
+            adminSlot.active = true;
+            if (menu.adminScreen && !menu.adminScreen.visible)
+                menu.adminScreen.open();
         }
     }
 

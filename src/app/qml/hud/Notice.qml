@@ -5,18 +5,18 @@ import QtQuick
 import QtQuick.Controls
 import QtCraft
 
-// A short notice at the top after the screenshot key saved a picture or failed to (decision E-692),
-// also when adventure mode refuses an action (decision E-735), shown for shownMs; show() starts it
-// again. It is hidden while the picture is taken.
+// A short notice at the top, shown for shownMs; show() starts it again with its text. The photo
+// mode's notices (a screenshot saved or failed, the HUD hidden; decision E-692) and adventure
+// mode's refusal of an action (decision E-735) use it (Notices.qml).
 Rectangle {
     id: notice
 
     readonly property int shownMs: 2500
-    // Read by the column of notices in Main.qml (the effective `visible` would loop through it).
+    // Read by the column of notices in Notices.qml (the effective `visible` would loop through it).
     readonly property bool showing: timer.running
     property string message
-    // The label's objectName, which tests and the control interface look for.
-    property string labelName: "photoNotice"
+    // The label's objectName, which tells the notices apart for tests and the control interface.
+    property string labelName
 
     // Shows `text` for shownMs.
     function show(text: string) {

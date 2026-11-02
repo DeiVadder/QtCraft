@@ -296,16 +296,27 @@ add_test(NAME app_offscreen_pad_bind
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-bind.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
-# Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691): the pause
-# menu made again on its second opening takes the pad's focus like the first time. The pause card
-# (decision E-928) starts on "Continue" both times, not on the remembered "Settings", and Down
-# reaches "Settings" again.
+# Screens are unloaded when closed (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decision E-691), but the pause
+# menu is made in the background while the world plays and kept (decision E-875). The pause card
+# (decision E-928) starts on "Continue" at each opening, not on the remembered "Settings", and
+# Down reaches "Settings" again.
 add_test(NAME app_offscreen_pad_lazy_menu
     COMMAND ${CMAKE_COMMAND}
         "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 pad:start;--overlay;@1500 pad:dpadDown;--overlay;@2000 pad:start;--overlay;@2500 pad:start;--overlay;@3000 pad:dpadDown"
         -DEXPECTED_EXIT_CODE=0
         "-DEXPECTED_ERROR=padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n.*padFocus: \n.*padFocus: continueGameButton\n.*padFocus: pauseSettingsButton\n"
         -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_menu.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+# A screen made anew on each opening (QTCRAFT_SCREEN_KEEP_ALIVE_MS=0, decisions E-691, E-875): the
+# advancement tree, opened and closed with J, is made twice (QTCRAFT_UI_STATS logs each) and takes
+# the pad's focus both times: on its first node, so Right reaches the same child each time.
+add_test(NAME app_offscreen_pad_lazy_advancements
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 press:J;--overlay;@1500 pad:dpadRight;--overlay;@2000 press:J;--overlay;@2500 press:J;--overlay;@3000 pad:dpadRight"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=AdvancementsScreen[^\n]* made in.*padFocus: advancement_qtcraft_mountain_top[^\n]*\n.*AdvancementsScreen[^\n]* made in.*padFocus: advancement_qtcraft_mountain_top"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-lazy_advancements.png
         "-DFORBIDDEN_ERROR=${pad_qml_errors}"
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 # The advancement tree (decision E-924): the pad walks along the tree, right to the nearest child,
@@ -332,12 +343,12 @@ add_test(NAME app_offscreen_advancements_return
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_advancements_return PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_advancements_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-advancements-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
-foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu advancements)
+foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu lazy_advancements advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.
     set(frames 90)
     set(keep_alive 60000)
-    if(pad STREQUAL lazy_menu)
+    if(pad STREQUAL lazy_menu OR pad STREQUAL lazy_advancements)
         set(keep_alive 0)
     endif()
     if(pad STREQUAL menu)
@@ -347,6 +358,7 @@ foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu a
         ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_LANGUAGE=en;QTCRAFT_SCREEN_KEEP_ALIVE_MS=${keep_alive};QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_pad_${pad};QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-pad-${pad}.png;QTCRAFT_SCREENSHOT_FRAMES=${frames}")
 endforeach()
 set_property(TEST app_offscreen_pad_bind APPEND PROPERTY ENVIRONMENT "QTCRAFT_LOG_ITEMS=gamepadMessage")
+set_property(TEST app_offscreen_pad_lazy_advancements APPEND PROPERTY ENVIRONMENT "QTCRAFT_UI_STATS=1")
 # The startup script's steps on a control wait for its screen to be made (decision E-691): the
 # search text is set before the creative inventory opens and is typed once it is there.
 add_test(NAME app_offscreen_lazy_screen_hooks

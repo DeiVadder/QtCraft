@@ -1,13 +1,11 @@
 {
     "check-qml.py": {
-        "connections-write": 2,
-        "enum-list": 1,
         "long-function": 12,
-        "unread-object-name": 37
+        "unread-object-name": 36
     },
     "check-duplicates.py": {
         "clone": 34,
-        "near-repeat": 9,
+        "near-repeat": 7,
         "repeat": 15
     }
 }

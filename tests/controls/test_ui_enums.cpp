@@ -24,8 +24,8 @@
 using namespace Qt::StringLiterals;
 
 // The enumerations QML sees instead of strings (GameController.Overlay, GameSettings.CameraMode,
-// CharacterPreview.Animation), the warnings of rejected values, and the photo mode's state and
-// file names (decisions E-692, E-693).
+// CharacterPreview.Animation), the way back from the advancements, the warnings of rejected
+// values, and the photo mode's state and file names (decisions E-692, E-693).
 class TestUiEnums : public QObject
 {
     Q_OBJECT
@@ -65,6 +65,44 @@ private slots:
         for (const O overlay : {O::None, O::Inventory, O::Creative, O::Furnace, O::Chest, O::Trade, O::Chat, O::Sign, O::Stonecutter}) {
             QVERIFY2(!QcScreenState::isMenu(overlay), qPrintable(QcScreenState::overlayName(overlay)));
         }
+        // One PauseMenu shows them all but the advancements (GameController.pauseMenuOpen).
+        const QList<O> pauseMenu{O::Pause, O::Settings, O::Display,   O::Audio,     O::Interface, O::Controls,
+                                 O::Gamepad, O::Debug, O::TexturePacks, O::Character, O::Lan,     O::Admin};
+        const QMetaEnum overlays = QMetaEnum::fromType<O>();
+        for (int index = 0; index < overlays.keyCount(); ++index) {
+            const auto overlay = static_cast<O>(overlays.value(index));
+            QCOMPARE(QcScreenState::isPauseMenu(overlay), pauseMenu.contains(overlay));
+        }
+    }
+
+    // Closing the advancements leads back to the pause menu when they opened from it, else to the
+    // world (from the world's key, the inventory or a settings page).
+    void advancementsCloseToWhereTheyOpened()
+    {
+        using O = QcScreenState::Overlay;
+        QcSessionParts parts;
+        QcScreenState screens(parts);
+
+        screens.setOverlay(O::Pause);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::Pause);
+
+        screens.setOverlay(O::None);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::None);
+
+        screens.setOverlay(O::Settings);
+        screens.setOverlay(O::Advancements);
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::None);
+
+        // With another screen open the call is refused and changes nothing.
+        screens.setOverlay(O::Pause);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Ignoring closeAdvancements: the overlay is \"pause\""_s));
+        screens.closeAdvancements();
+        QCOMPARE(screens.overlay(), O::Pause);
     }
 
     // How much of the HUD shows behind the screens (decision E-927): all of it in the world, all but

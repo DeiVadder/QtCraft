@@ -442,3 +442,7 @@ void QcWorldMapPreview::stopAndForget()
     pool().submit([worker = m_worker] { worker->forget(); });
 }
 
+void QcWorldMapPreview::setProvider(QcWorldMapImageProvider *provider)
+{
+    m_provider = provider;
+}

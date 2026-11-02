@@ -9,6 +9,7 @@
 
 #include <QImage>
 #include <QObject>
+#include <QPointer>
 #include <QSet>
 #include <QTimer>
 #include <QVariantList>
@@ -133,7 +134,7 @@ public:
     void setWorld(std::shared_ptr<const QcContentRegistry> content, const QJsonObject &values);
     // The legend in the current language (after a change of the language).
     void retranslate();
-    void setProvider(QcWorldMapImageProvider *provider) { m_provider = provider; }
+    void setProvider(QcWorldMapImageProvider *provider);
 
     // For tests and the measurements: the shown image, how long the passes of the shown build took
     // (coarse, fine, sites; -1 not yet) and how many builds a change cancelled while they ran.
@@ -228,7 +229,8 @@ private:
     QList<QcBiomeMap::Site> m_siteList;
     ResultHook m_resultHook; // NOLINT(qc-member-access): a test hook, set by its setter and read only in start()
     std::array<qint64, 3> m_passMs{-1, -1, -1};
-    QcWorldMapImageProvider *m_provider = nullptr;
+    // The engine owns the provider and may delete it first (the game outlives the QML engine).
+    QPointer<QcWorldMapImageProvider> m_provider;
     QTimer m_settle; // NOLINT(qc-member-access): a timer, started and stopped through its own methods
     // The number of the newest build; a running build stops when it is no longer the newest. Read
     // by the worker, hence atomic.

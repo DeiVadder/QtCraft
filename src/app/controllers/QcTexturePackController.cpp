@@ -386,3 +386,8 @@ QVariantList QcTexturePackController::packs() const
     }
     return list;
 }
+
+void QcTexturePackController::setPreviewProvider(QcTexturePackPreviewProvider *provider)
+{
+    m_previewProvider = provider;
+}
