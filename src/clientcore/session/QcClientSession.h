@@ -320,6 +320,8 @@ signals:
     void foodChanged();
     /*! The player's experience changed (vitals()). */
     void experienceChanged();
+    /*! The player's air under water changed (vitals()). */
+    void airChanged();
     /*! The progress in the adventure guide changed (advancements()). */
     void advancementsChanged();
     /*! The server announced that the local player reached \a advancement just now (the toast). */

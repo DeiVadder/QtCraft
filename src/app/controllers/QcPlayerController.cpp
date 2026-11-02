@@ -7,6 +7,7 @@
 #include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
 #include "clientcore/session/QcClientSession.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcArmour.h"
 #include "common/gameplay/QcCrafting.h"
 
@@ -24,6 +25,8 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_slotCursor(new QcSlotCursor(*m_inventory, *this, this))
     , m_advancementToasts(new QcAdvancementQueue(this))
 {
+    // The bubbles never show in creative or spectator mode.
+    connect(this, &QcPlayerController::gameModeChanged, this, &QcPlayerController::airChanged);
     // The craftable recipes carry icon URLs, which change with new icons (decision E-650).
     connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
         if (m_parts.session) {
@@ -139,6 +142,21 @@ int QcPlayerController::experienceLevel() const
 double QcPlayerController::experienceProgress() const
 {
     return m_parts.session ? m_parts.session->vitals().experienceProgress() : 0.0;
+}
+
+int QcPlayerController::airBubbles() const
+{
+    return m_parts.session ? m_parts.session->vitals().airBubbles() : QcAirSupply::bubbles;
+}
+
+int QcPlayerController::maxAirBubbles()
+{
+    return QcAirSupply::bubbles;
+}
+
+bool QcPlayerController::airShown() const
+{
+    return m_parts.session && m_parts.session->vitals().airShown() && !creative() && !spectator();
 }
 
 double QcPlayerController::machineBurn() const

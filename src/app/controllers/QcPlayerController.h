@@ -42,6 +42,12 @@ class QcPlayerController : public QObject, public QcSlotActions
     // Experience (decision E-398): the level and the share of the way to the next one (0..1).
     Q_PROPERTY(int experienceLevel READ experienceLevel NOTIFY experienceChanged FINAL)
     Q_PROPERTY(double experienceProgress READ experienceProgress NOTIFY experienceChanged FINAL)
+    // Air under water (decision E-955): the bubbles left out of maxAirBubbles and whether the HUD
+    // shows them (eyes under water or the breath not yet full; never in creative or spectator
+    // mode).
+    Q_PROPERTY(int airBubbles READ airBubbles NOTIFY airChanged FINAL)
+    Q_PROPERTY(int maxAirBubbles READ maxAirBubbles CONSTANT FINAL)
+    Q_PROPERTY(bool airShown READ airShown NOTIFY airChanged FINAL)
     // Armour points of what the player wears (0..20 count, decision E-234).
     Q_PROPERTY(int armour READ armour NOTIFY craftingChanged FINAL)
     Q_PROPERTY(int maxArmour READ maxArmour CONSTANT FINAL)
@@ -84,6 +90,9 @@ public:
     int maxFood() const;
     int experienceLevel() const;
     double experienceProgress() const;
+    int airBubbles() const;
+    static int maxAirBubbles();
+    bool airShown() const;
     int armour() const;
     static int maxArmour();
     static int equipmentFirstRow() { return QcInventoryModel::equipmentFirstRow; }
@@ -141,6 +150,7 @@ signals:
     void healthChanged();
     void foodChanged();
     void experienceChanged();
+    void airChanged();
     void machineChanged();
     void craftingChanged();
     void gameModeChanged();

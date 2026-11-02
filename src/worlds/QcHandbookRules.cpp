@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/worldgen/QcWeatherDefinition.h"
 #include "common/core/QcWorldConstants.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcInventory.h"
 #include "common/gameplay/QcMining.h"
@@ -175,6 +176,11 @@ QMap<QString, double> playerValues()
         {u"player.climbSpeed"_s, QcPhysics::climbSpeed},
         {u"player.stepHeight"_s, QcPhysics::stepHeight},
         {u"player.hurtInvulnerability"_s, QcHurtWindow::defaultTicks * QcPhysics::tickDuration},
+        // Air under water (decision E-955).
+        {u"player.maxAirSeconds"_s, QcAirSupply::maxAir * QcPhysics::tickDuration},
+        {u"player.airBubbles"_s, static_cast<double>(QcAirSupply::bubbles)},
+        {u"player.drowningDamage"_s, QcAirSupply::drowningDamage},
+        {u"player.airRefillSeconds"_s, static_cast<double>(QcAirSupply::maxAir) / QcAirSupply::refillPerTick * QcPhysics::tickDuration},
         {u"rules.invulnerabilityTicks"_s, QcHurtWindow::defaultTicks},
         {u"rules.maxInvulnerabilityTicks"_s, QcHurtWindow::maxTicks},
         {u"rules.contactDamageInterval"_s, QcEnvironmentDamage::contactIntervalTicks * QcPhysics::tickDuration},

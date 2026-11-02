@@ -279,11 +279,13 @@ private slots:
         data.motion.position = {0.5, 70.0, 0.5};
         data.experience = QcExperience(5, 0);
         QVERIFY(data.advancements.grant(u"qtcraft:iron"_s, u"iron"_s));
-        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 9);
+        const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(storage.bytes(data), u"p"_s, "QCPL", 10);
         QVERIFY(payload);
 
-        // The advancements are the last field: a byte array whose criteria count is forged.
-        QByteArray damaged = payload->bytes.chopped(static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
+        // The advancements are the last field of version 9 (version 10 adds the air after them): a
+        // byte array whose criteria count is forged.
+        const auto air = static_cast<qsizetype>(sizeof(qint32));
+        QByteArray damaged = payload->bytes.chopped(air + static_cast<qsizetype>(sizeof(quint32)) + data.advancements.bytes().size());
         QDataStream out(&damaged, QIODevice::Append);
         out.setVersion(QcSaveFile::streamVersion);
         out << QByteArray::fromHex("0001" "00000001" "00000002" "0078" "fffffff0");

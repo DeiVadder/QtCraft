@@ -5,6 +5,7 @@
 
 #include "common/content/mobs/QcAppearance.h"
 #include "common/gameplay/QcAdvancementProgress.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcEnchantingTable.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
@@ -322,6 +323,10 @@ struct QcServerClient : QcEntity
     QcHurtWindow hurt;
     /*! Seconds until an attack deals full damage again. */
     double attackCooldown = 0.0;
+    /*! Air under water (QcDrowning, decision E-955; saved) and what the client last heard of it;
+        none before the first message. \qcshared */
+    QcAirSupply air;
+    std::optional<QcMsg::PlayerAir> sentAir;
     /*! Ticks spent below the void limit in a row (QcPlayerHealth::applyVoidDamage). */
     int voidTicks = 0;
     /*! Set when damage was taken; reported to other clients in this tick's sync. */

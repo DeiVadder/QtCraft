@@ -204,6 +204,7 @@ target_sources(qc_common PRIVATE
 target_sources(qc_common PRIVATE
     gameplay/QcAdvancementProgress.h gameplay/QcAdvancementProgress.cpp
     gameplay/QcAdventureRules.h gameplay/QcAdventureRules.cpp
+    gameplay/QcAirSupply.h gameplay/QcAirSupply.cpp
     gameplay/QcAnvil.h gameplay/QcAnvil.cpp
     gameplay/QcArmour.h gameplay/QcArmour.cpp
     gameplay/QcCrafting.h gameplay/QcCrafting.cpp

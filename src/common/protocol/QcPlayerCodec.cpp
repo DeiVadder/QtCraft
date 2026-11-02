@@ -98,6 +98,11 @@ void encode(QDataStream &stream, QcMsg::PlayerFood m)
     stream << m.food << m.maxFood;
 }
 
+void encode(QDataStream &stream, QcMsg::PlayerAir m)
+{
+    stream << m.air << m.maxAir << m.submerged;
+}
+
 void encode(QDataStream &stream, QcMsg::PlayerExperience m)
 {
     stream << m.level << m.points << m.pointsForNext;
@@ -282,6 +287,16 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     stream >> m.food >> m.maxFood;
     if (m.maxFood < 0 || m.maxFood > 1000 || m.food < 0 || m.food > m.maxFood) {
         return qcError(u"Invalid food value"_s);
+    }
+    return m;
+}
+
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerAir>, QDataStream &stream)
+{
+    QcMsg::PlayerAir m;
+    stream >> m.air >> m.maxAir >> m.submerged;
+    if (m.maxAir <= 0 || m.maxAir > 100000 || m.air < 0 || m.air > m.maxAir) {
+        return qcError(u"Invalid air value"_s);
     }
     return m;
 }

@@ -8,6 +8,7 @@
 #include "common/protocol/QcConnection.h"
 #include "server/blockentities/QcServerSigns.h"
 #include "server/core/QcServerLogging.h"
+#include "server/gameplay/QcDrowning.h"
 #include "server/hanging/QcServerHanging.h"
 #include "server/maps/QcServerMaps.h"
 
@@ -221,6 +222,7 @@ void QcServer::addSimulationSystems()
         m_burning.tick();
         m_effects.tick();
         m_environment.applySuffocation();
+        QcDrowning(m_state, m_sounds, m_health).tick();
     });
     m_tickSystems.add(Projectiles, simulating, [this] {
         m_projectiles.tick();

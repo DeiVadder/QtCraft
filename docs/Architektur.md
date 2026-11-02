@@ -258,6 +258,7 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `MachineState` | S→C | input, fuel and output stack, share of fuel left and of the current item done; for a chest its 1–54 stacks; `entity` as in `OpenMachine` |
 | `CloseMachine` | both | the machine or chest screen closed (client) / was closed (server: out of reach, broken, death) |
 | `PlayerFood` | S→C | food points, maximum |
+| `PlayerAir` | S→C | protocol 84 (E-955): air left and of a full breath in ticks (0–300), whether the eyes are under water; only when the HUD would change (bubbles, a full breath, under water or not), once after joining |
 | `UseEntity` | C→S | use the held item on a creature (catch a firefly with an empty bottle; E-057) |
 | `SoundEvent` | S→C | sound name (at most 256 characters), position, volume (0–4), pitch (0.25–4); sent only to players within the sound's range (decision E-043) |
 | `Weather` | S→C | rain and thunder strengths (0–1) and the climate where the player stands (dry, height from which it snows); on joining, when a strength moved by 0.05 or reached 0 or 1, and when the player walks into another climate (E-395) |

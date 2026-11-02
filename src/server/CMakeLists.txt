@@ -142,6 +142,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     gameplay/QcArmourStandManager.h gameplay/QcArmourStandManager.cpp
     gameplay/QcBodyBurning.h gameplay/QcBodyBurning.cpp
+    gameplay/QcDrowning.h gameplay/QcDrowning.cpp
     gameplay/QcEnvironmentDamage.h gameplay/QcEnvironmentDamage.cpp
     gameplay/QcHunger.h gameplay/QcHunger.cpp
     gameplay/QcLineOfSight.h gameplay/QcLineOfSight.cpp

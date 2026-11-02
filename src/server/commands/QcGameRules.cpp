@@ -20,14 +20,16 @@ constexpr const char *blocks = QT_TRANSLATE_NOOP("QcGameRules", "Blocks");
 // keepInventory; daylightCycle and mobSpawning (decision E-221); randomTicks (E-295);
 // quasiConnectivity (E-338); fireSpread (E-392); weatherCycle (E-395); mobGriefing (E-460);
 // explosionBlockDamage (E-603); spawnChunkRadius (E-377); maxEntityCramming (E-401); the
-// invulnerability ticks (E-429); announceAdvancements (E-924).
-constexpr std::array<Rule, 14> rules{{
+// invulnerability ticks (E-429); announceAdvancements (E-924); drowningDamage (E-955).
+constexpr std::array<Rule, 15> rules{{
     {u"keepInventory", players, QT_TRANSLATE_NOOP("QcGameRules", "Players keep their inventory when they die."), &QcWorldInfo::keepInventory,
      nullptr, 1, 1},
     {u"announceAdvancements", players, QT_TRANSLATE_NOOP("QcGameRules", "Other players read in the chat when someone reaches an advancement."),
      &QcWorldInfo::announceAdvancements, nullptr, 1, 1},
     {u"playerInvulnerabilityTicks", players, QT_TRANSLATE_NOOP("QcGameRules", "Ticks a player stays invulnerable after a hurt (0: every hit counts)."),
      nullptr, &QcWorldInfo::playerInvulnerabilityTicks, QcWorldInfo::maxInvulnerabilityTicks, QcWorldInfo::defaultInvulnerabilityTicks},
+    {u"drowningDamage", players, QT_TRANSLATE_NOOP("QcGameRules", "Players and creatures without air under water take damage."),
+     &QcWorldInfo::drowningDamage, nullptr, 1, 1},
     {u"daylightCycle", world, QT_TRANSLATE_NOOP("QcGameRules", "The time of day runs."), &QcWorldInfo::daylightCycle, nullptr, 1, 1},
     {u"weatherCycle", world, QT_TRANSLATE_NOOP("QcGameRules", "The weather changes by itself."), &QcWorldInfo::weatherCycle, nullptr, 1, 1},
     {u"spawnChunkRadius", world, QT_TRANSLATE_NOOP("QcGameRules", "Chunks around the spawn that stay loaded (0: none, 1: the spawn chunk, 2: 3 x 3 …)."),

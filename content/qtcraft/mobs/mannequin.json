@@ -5,6 +5,7 @@
         "hurt": "block.wood.hit",
         "death": "block.wood.break"
     },
+    "breathesUnderWater": true,
     "health": 20,
     "width": 0.6,
     "height": 1.8,

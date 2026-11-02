@@ -125,6 +125,26 @@ void QcServerCombat::tellNamedDeath(QcServerState &state, const QString &name)
     }
 }
 
+void QcServerCombat::woundCreature(QcServerState &state, QcServerSounds &sounds, quint32 id, double amount)
+{
+    const QcCreature *mob = state.entities().creatures().find(id);
+    if (!mob) {
+        return;
+    }
+    // Like a hit: the hurt sound when the damage takes as a fresh hit (not while the creature is
+    // still invulnerable from the last, decision E-429), the death sound and the loot when it dies.
+    const QcMobDefinition &definition = state.content().mobs()[mob->type];
+    const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
+    const bool fresh = mob->hurt.wouldTake(amount) == QcHurtWindow::Take::Fresh;
+    if (const std::optional<QList<QcItemDrop>> drops = state.entities().creatures().wound(id, amount)) {
+        sounds.play(definition.deathSound, centre);
+        state.entities().noteDeath(id);
+        dropLoot(state, *drops, centre);
+    } else if (fresh) {
+        sounds.play(definition.hurtSound, centre);
+    }
+}
+
 void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position)
 {
     for (const QcItemDrop &drop : drops) {

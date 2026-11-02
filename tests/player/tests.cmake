@@ -9,6 +9,7 @@ qc_add_test(test_adventure_rules SOURCES player/test_adventure_rules.cpp LIBRARI
 qc_add_test(test_armour_server SOURCES player/test_armour_server.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_armour_stands SOURCES player/test_armour_stands.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 180)
 qc_add_test(test_hunger SOURCES player/test_hunger.cpp LIBRARIES qc_server)
+qc_add_test(test_drowning SOURCES player/test_drowning.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_clientcore TIMEOUT 180)
 qc_add_test(test_adventure_mode SOURCES player/test_adventure_mode.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_creative_mode SOURCES player/test_creative_mode.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_spectator_mode SOURCES player/test_spectator_mode.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)

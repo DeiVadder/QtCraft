@@ -79,6 +79,8 @@ QJsonObject QcControlReports::playerStatus() const
     status.insert(u"dead"_s, m_session.isDead());
     status.insert(u"food"_s, m_session.vitals().food());
     status.insert(u"maxFood"_s, m_session.vitals().maxFood());
+    status.insert(u"air"_s, m_session.vitals().air());
+    status.insert(u"airShown"_s, m_session.vitals().airShown());
     status.insert(u"experienceLevel"_s, m_session.vitals().experienceLevel());
     status.insert(u"experiencePoints"_s, m_session.vitals().experiencePoints());
     status.insert(u"experienceForNext"_s, m_session.vitals().experienceForNext());

@@ -202,6 +202,18 @@ struct PlayerFood
     qint32 maxFood = 0;
 };
 
+/*! \brief Server -> client: the receiving player's air under water (decision E-955), sent only when
+    what the HUD shows changes: the bubbles (QcAirSupply::bubblesOf), a full breath or whether the
+    eyes are under water. */
+struct PlayerAir
+{
+    /*! The air left and of a full breath, in game ticks. \qcshared */
+    qint32 air = 0;
+    qint32 maxAir = 0;
+    /*! Whether the player's eyes are under water. */
+    bool submerged = false;
+};
+
 /*! \brief Server -> client: the receiving player's experience (decision E-398): his level and
     the points towards the next one, which needs \c {pointsForNext} (QcExperience::pointsForNext,
     sent so the client needs no curve). */

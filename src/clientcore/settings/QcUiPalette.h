@@ -72,6 +72,8 @@ enum class Role {
     Health, // the health bar
     /*! The experience bar and level in the HUD (decision E-398). */
     Experience,
+    /*! The air bubbles in the HUD (decision E-955). */
+    Air,
     Flame, // the flame of a burning furnace
     FlameCore, // the core of that flame
     DurabilityGood, // durability bar of a tool in good shape

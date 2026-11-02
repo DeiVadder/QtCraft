@@ -53,6 +53,11 @@ public:
         moment after the last hit and the blow no stronger than the strongest of that moment,
         decision E-429). */
     static bool hurtCreature(QcServerState &state, QcServerSounds &sounds, const Blow &blow);
+    /*! Wounds the creature \a id of \a state by \a amount without a blow (burning, drying,
+        drowning): the hurt sound of \a sounds only when the damage takes as a fresh hit (not
+        while the creature is still invulnerable from the last, decision E-429), the death sound
+        and the loot when it dies. Nothing for an unknown creature. */
+    static void woundCreature(QcServerState &state, QcServerSounds &sounds, quint32 id, double amount);
     /*! Drops the loot \a drops of a creature of \a state that died at \a position, each drop by
         its chance (also burn deaths, QcBodyBurning). */
     static void dropLoot(QcServerState &state, const QList<QcItemDrop> &drops, const QcVec3 &position);

@@ -72,6 +72,7 @@ void QcSessionWiring::connectPlayer()
     connect(session, &QcClientSession::craftingOpened, &m_targets.screens, &QcScreenState::craftingOpened);
     connect(session, &QcClientSession::foodChanged, player, &QcPlayerController::foodChanged);
     connect(session, &QcClientSession::experienceChanged, player, &QcPlayerController::experienceChanged);
+    connect(session, &QcClientSession::airChanged, player, &QcPlayerController::airChanged);
     connect(session, &QcClientSession::gameModeChanged, player, &QcPlayerController::gameModeChanged);
     connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::actionRefused);
     connect(session, &QcClientSession::advancementReached, &m_targets.player, &QcPlayerController::announceAdvancement);

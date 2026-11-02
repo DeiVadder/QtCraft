@@ -6,6 +6,7 @@
 #include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/tick/QcSessionLink.h"
 #include "clientcore/tick/QcSessionThread.h"
+#include "common/content/registry/QcSoundKeys.h"
 #include "common/diagnostics/QcBuildInfo.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcChatText.h"
@@ -239,6 +240,14 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
         break;
     case QcClientVitals::Change::Experience:
         emit experienceChanged();
+        break;
+    case QcClientVitals::Change::Air:
+        // A bubble that goes under water pops at the player's eyes (decision E-955).
+        if (m_vitals.bubblePopped()) {
+            cue({QString::fromLatin1(QcSoundKeys::playerBubblePop), playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, 1.0f, 1.0f,
+                 QcSoundCue::Origin::Local, m_tickCount});
+        }
+        emit airChanged();
         break;
     case QcClientVitals::Change::None:
         break;

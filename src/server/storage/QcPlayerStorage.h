@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcAdvancementProgress.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcExperience.h"
 #include "common/gameplay/QcGameMode.h"
@@ -21,7 +22,7 @@
 #include <optional>
 
 /*! \brief What is saved of a player (decision E-093): his body, view, inventory, armour, health,
-    food, game mode, experience, seeds, effects and advancements. */
+    food, game mode, experience, seeds, effects, advancements and air. */
 struct QcPlayerData
 {
     /*! Where his feet are and how he moves. */
@@ -54,6 +55,9 @@ struct QcPlayerData
     /*! The met criteria of the adventure guide (decision E-923), unknown advancements included;
         empty in files before version 9. */
     QcAdvancementProgress advancements;
+    /*! The air under water in game ticks (decision E-955); a full breath in files before version
+        10. */
+    int air = QcAirSupply::maxAir;
 };
 
 /*! \brief The player files of a world directory (players/<name>-<hash>.qcp, decision E-093):

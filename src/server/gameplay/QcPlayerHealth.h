@@ -36,7 +36,7 @@ public:
         its own death message (decision E-288). Damage of a status effect is unblockable with a
         death message of its own (decision E-450). A creature's blow and a creature's shot are
         armoured; a player they kill hears who it was (decision E-873, the creature passed with
-        the damage). */
+        the damage). Drowning is unblockable with a death message of its own (decision E-955). */
     enum class DamageKind : quint8 {
         /*! Armour takes nothing (falls). */
         Unblockable,
@@ -51,7 +51,9 @@ public:
         /*! A creature's blow; armoured. */
         Blow,
         /*! A creature's shot; armoured. */
-        Shot
+        Shot,
+        /*! Drowning; unblockable, with its own death message. */
+        Drowning
     };
 
     QcPlayerHealth(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);

@@ -359,6 +359,8 @@ QcResult<QcMobDefinition> QcMobReader::read()
     parseFighting();
     parseCreatureTraits();
     m_mob.burnsInDaylight = m_reader.boolean(u"burnsInDaylight"_s, false);
+    // Swimmers, divers and fish need no air unless the data says otherwise (decision E-955).
+    m_mob.breathesUnderWater = m_reader.boolean(u"breathesUnderWater"_s, m_mob.abilities.swims || m_mob.abilities.dives || m_mob.aquatic.has_value());
     parseHostileTraits();
     m_mob.heldItem = m_reader.name(u"heldItem"_s, m_namespace);
     m_mob.drops = parseDrops(m_json.value(u"drops"_s), m_namespace, m_reader);

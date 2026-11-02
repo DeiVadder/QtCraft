@@ -1,0 +1,67 @@
+{
+    "name": "drowning_station",
+    "showcase": {
+        "order": 114
+    },
+    "palette": {
+        "P": "polished_stone",
+        "G": "glass",
+        "W": "water"
+    },
+    "layers": [
+        [
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP",
+            "PPPPPPPPP"
+        ],
+        [
+            " GGGGG   ",
+            " GWWWG   ",
+            " GWWWGPPP",
+            " GWWWG   ",
+            " GGGGG   "
+        ],
+        [
+            " GGGGG   ",
+            " GWWWG   ",
+            " GWWWGPP ",
+            " GWWWG   ",
+            " GGGGG   "
+        ],
+        [
+            " GGGGG   ",
+            " GWWWG   ",
+            " GWWWGP  ",
+            " GWWWG   ",
+            " GGGGG   "
+        ]
+    ],
+    "labels": [
+        {
+            "at": [
+                3.5,
+                4.9,
+                2.5
+            ],
+            "text": "structure.qtcraft.drowning_station.dive"
+        },
+        {
+            "at": [
+                7.5,
+                2.6,
+                3.2
+            ],
+            "text": "structure.qtcraft.drowning_station.steps"
+        },
+        {
+            "at": [
+                3.5,
+                1.6,
+                4.8
+            ],
+            "text": "structure.qtcraft.drowning_station.rule"
+        }
+    ]
+}

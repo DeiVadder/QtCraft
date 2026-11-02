@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcVec3.h"
+#include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "common/physics/QcPose.h"
 #include "server/entities/QcComponent.h"
@@ -43,6 +44,9 @@ struct QcCreature : QcEntity
     /*! The short invulnerability after a hurt (game rule mobInvulnerabilityTicks, decision
         E-429). */
     QcHurtWindow hurt;
+    /*! Air under water (QcDrowning, decision E-955); not saved, a creature loaded again has a
+        full breath. */
+    QcAirSupply air;
     /*! Seconds it goes on with its wandering (walking or standing) before it chooses anew. */
     double wanderTimer = 0.0;
     /*! The direction it wanders or flees in; zero while it stands. */

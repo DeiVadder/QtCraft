@@ -16,8 +16,8 @@ Item {
     // they never cover a row at any window size. A new row over the hotbar belongs in this list and
     // in statusTop; the layout check of screenshot runs (QcLayoutCheck) reports chat lines that
     // overlap a row of the list.
-    readonly property list<Item> statusRows: [hotbar, experienceBar, experienceLevel, hearts, foodBar, armourBar]
-    readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y)
+    readonly property list<Item> statusRows: [hotbar, experienceBar, experienceLevel, hearts, foodBar, armourBar, airBar]
+    readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y)
     // The status rows, the hotbar and the hint below it: world labels fade out before they reach it.
     readonly property rect statusArea: Qt.rect(hotbar.x, statusTop, hotbar.width, height - statusTop)
     // What shows behind the open screen (decision E-927, GameController.hudShown): the crosshair,
@@ -402,6 +402,16 @@ Item {
         }
     }
 
+    // Air bubbles above the food while under water (decision E-955), as high as the armour.
+    AirBar {
+        id: airBar
+
+        game: hud.game
+        anchors.right: hotbar.right
+        anchors.bottom: foodBar.top
+        anchors.bottomMargin: Ui.hudPx(2)
+    }
+
     HudLabel {
         id: timeOfDay
 
@@ -525,7 +535,7 @@ Item {
         // Its own fade, and only while the view is free (decision E-927).
         visible: opacity > 0 && hud.viewShown
         anchors.horizontalCenter: hotbar.horizontalCenter
-        y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y) - height - Ui.hudPx(4)
+        y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y) - height - Ui.hudPx(4)
     }
 
     // A held compass or clock (decision E-769) right of the hotbar.

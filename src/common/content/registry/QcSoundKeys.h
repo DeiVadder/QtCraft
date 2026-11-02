@@ -22,6 +22,8 @@ inline constexpr auto playerDeath = "qtcraft:player.death";
 inline constexpr auto playerEat = "qtcraft:player.eat";
 /*! The player drinking. */
 inline constexpr auto playerDrink = "qtcraft:player.drink";
+/*! A bubble of air that goes under water (decision E-955), played by the client itself. */
+inline constexpr auto playerBubblePop = "qtcraft:player.bubble_pop";
 /*! An item picked up. */
 inline constexpr auto itemPickup = "qtcraft:item.pickup";
 /*! The player falling into water. */

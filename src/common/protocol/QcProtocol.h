@@ -35,8 +35,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     the AdminCatalogue (decision E-911), 82 boats: the entity kind Boat, the boat item's
     \c {boatBlock} in the content and the driven boat's state in PlayerState, the Rowing bit of a
     boat whose driver paddles (decision E-920), 83 the advancements: their definitions in the
-    content and the player's progress (AdvancementProgress, decision E-923). */
-inline constexpr quint32 version = 83;
+    content and the player's progress (AdvancementProgress, decision E-923), 84 the player's air
+    under water (PlayerAir, decision E-955). */
+inline constexpr quint32 version = 84;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

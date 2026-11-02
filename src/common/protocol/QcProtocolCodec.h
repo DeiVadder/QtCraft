@@ -241,6 +241,8 @@ void encode(QDataStream &stream, const QcMsg::SetAppearance &m);
 void encode(QDataStream &stream, QcMsg::DropItem m);
 /*! Writes the payload of \a m (QcMsg::PlayerFood) to \a stream. */
 void encode(QDataStream &stream, QcMsg::PlayerFood m);
+/*! Writes the payload of \a m (QcMsg::PlayerAir) to \a stream. */
+void encode(QDataStream &stream, QcMsg::PlayerAir m);
 /*! Writes the payload of \a m (QcMsg::PlayerExperience) to \a stream. */
 void encode(QDataStream &stream, QcMsg::PlayerExperience m);
 /*! Writes the payload of \a m (QcMsg::GameMode) to \a stream. */
@@ -285,6 +287,8 @@ void encode(QDataStream &stream, QcMsg::ThrowItem m);
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::DropItem>, QDataStream &stream);
 /*! Returns the QcMsg::PlayerFood read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerFood>, QDataStream &stream);
+/*! Returns the QcMsg::PlayerAir read from \a stream, or why it is invalid. */
+[[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerAir>, QDataStream &stream);
 /*! Returns the QcMsg::PlayerExperience read from \a stream, or why it is invalid. */
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerExperience>, QDataStream &stream);
 /*! Returns the QcMsg::GameMode read from \a stream, or why it is invalid. */

@@ -120,7 +120,7 @@ void QcBodyBurning::tickCreatures()
     }
 
     for (const quint32 id : std::as_const(hurt)) {
-        hurtCreature(id, burnDamage);
+        QcServerCombat::woundCreature(m_state, m_sounds, id, burnDamage);
     }
 }
 
@@ -143,7 +143,7 @@ void QcBodyBurning::tickWetCreatures()
             continue;
         }
         const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
-        hurtCreature(id, definition.waterDamage);
+        QcServerCombat::woundCreature(m_state, m_sounds, id, definition.waterDamage);
         if (definition.teleport && definition.teleport->whenWet) {
             creatures.teleport(id, m_state.world());
         }
@@ -164,26 +164,6 @@ void QcBodyBurning::tickDryCreatures()
         }
     }
     for (const auto &[id, damage] : std::as_const(dry)) {
-        hurtCreature(id, damage);
-    }
-}
-
-void QcBodyBurning::hurtCreature(quint32 id, double amount)
-{
-    const QcCreature *mob = m_state.entities().creatures().find(id);
-    if (!mob) {
-        return;
-    }
-    // Like a hit: the hurt sound when the damage takes as a fresh hit (not while the creature is
-    // still invulnerable from the last, decision E-429), the death sound and the loot when it dies.
-    const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
-    const QcVec3 centre = mob->motion.position + QcVec3{0.0, definition.height * 0.5, 0.0};
-    const bool fresh = mob->hurt.wouldTake(amount) == QcHurtWindow::Take::Fresh;
-    if (const std::optional<QList<QcItemDrop>> drops = m_state.entities().creatures().wound(id, amount)) {
-        m_sounds.play(definition.deathSound, centre);
-        m_state.entities().noteDeath(id);
-        QcServerCombat::dropLoot(m_state, *drops, centre);
-    } else if (fresh) {
-        m_sounds.play(definition.hurtSound, centre);
+        QcServerCombat::woundCreature(m_state, m_sounds, id, damage);
     }
 }

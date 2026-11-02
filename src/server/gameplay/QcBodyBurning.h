@@ -69,8 +69,6 @@ private:
     void tickWetCreatures();
     // Water creatures out of water longer than their air suffocate once a second (decision E-502).
     void tickDryCreatures();
-    // Hurts a creature like a hit (sounds, loot at its death).
-    void hurtCreature(quint32 id, double amount);
 
     QcServerState &m_state;
     QcServerSounds &m_sounds;

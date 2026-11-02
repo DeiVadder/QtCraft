@@ -30,6 +30,8 @@ const char *deathMessage(QcPlayerHealth::DamageKind kind)
         return QT_TRANSLATE_NOOP("QcServerMessages", "%1 fell out of the world");
     case QcPlayerHealth::DamageKind::Effect:
         return QT_TRANSLATE_NOOP("QcServerMessages", "%1 died of a status effect");
+    case QcPlayerHealth::DamageKind::Drowning:
+        return QT_TRANSLATE_NOOP("QcServerMessages", "%1 drowned");
     case QcPlayerHealth::DamageKind::Unblockable:
     case QcPlayerHealth::DamageKind::Armoured:
     case QcPlayerHealth::DamageKind::Command:
@@ -256,6 +258,7 @@ void QcPlayerHealth::respawn(QcServerClient &client)
     client.dead = false;
     client.health = QcServerClient::maxHealth;
     client.hurt.clear();
+    client.air.reset();
     // Frozen hunger keeps the survival values for the return to survival (decision E-282).
     if (!client.hunger.frozen()) {
         client.hunger.reset();

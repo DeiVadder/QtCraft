@@ -87,6 +87,8 @@ public:
             food = foodState->food;
         } else if (const auto *experienceState = std::get_if<QcMsg::PlayerExperience>(&message)) {
             experience = *experienceState;
+        } else if (const auto *airState = std::get_if<QcMsg::PlayerAir>(&message)) {
+            airMessages.append(*airState);
         } else if (const auto *mode = std::get_if<QcMsg::GameMode>(&message)) {
             gameMode = mode->mode;
             adventure = mode->adventure;
@@ -228,6 +230,8 @@ public:
     QList<QcMsg::MapUpdate> mapUpdates;
     // Advancement messages (decision E-923), oldest first.
     QList<QcMsg::AdvancementProgress> advancements;
+    // Air messages (decision E-955), oldest first.
+    QList<QcMsg::PlayerAir> airMessages;
     QStringList chatLines;
     // Why the server closed the connection (English text and translation key); empty while connected.
     QString disconnectReason;

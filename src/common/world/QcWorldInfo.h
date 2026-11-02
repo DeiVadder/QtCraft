@@ -64,6 +64,9 @@ struct QcWorldInfo
     /*! Game rule: explosions break, light and blow away blocks (decision E-603); off, they still
         hurt and push bodies but leave every block as it is, lit explosives included. */
     bool explosionBlockDamage = true;
+    /*! Game rule: players and creatures without air under water take damage (decision E-955);
+        off, the air still runs out but nobody drowns. */
+    bool drowningDamage = true;
     /*! Game rule: the other players read in the chat when someone reaches an advancement
         (decision E-924); off, only the toast of the player himself shows it. */
     bool announceAdvancements = true;

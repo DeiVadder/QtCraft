@@ -191,6 +191,9 @@ struct QcMobDefinition
     /*! Catches fire in direct sunlight (decision E-426): by day, with the open sky above its
         head, neither in water nor in the rain. Server side only. */
     bool burnsInDaylight = false;
+    /*! Needs no air under water and never drowns (\c {"breathesUnderWater"}, decision E-955;
+        by default the creatures that swim, dive or live in water). Server side only. */
+    bool breathesUnderWater = false;
     /*! Kinds of status effects that do nothing to it (spiders and the undead: poison; decision
         E-450). Server side only. */
     QStringList immuneTo;
