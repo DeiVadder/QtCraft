@@ -64,8 +64,8 @@ SidebarScreen {
     }
 
     // The pad's shoulders switch the section, its B leaves the screen.
-    function gamepadCommand(command: string): bool {
-        if (command === "back") {
+    function gamepadCommand(command: int): bool {
+        if (command === GamepadMenuInput.Command.Back) {
             leave();
             return true;
         }

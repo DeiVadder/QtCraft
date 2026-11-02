@@ -119,24 +119,24 @@ Popup {
         spacing: Ui.px(6)
 
         // Pad commands besides moving and pressing keys (QcMenuNavigator asks this first).
-        function gamepadCommand(command: string): bool {
+        function gamepadCommand(command: int): bool {
             switch (command) {
-            case "secondary":
+            case GamepadMenuInput.Command.Secondary:
                 keyboard.deleteBack();
                 return true;
-            case "tertiary":
+            case GamepadMenuInput.Command.Tertiary:
                 keyboard.type(" ");
                 return true;
-            case "tabPrevious":
+            case GamepadMenuInput.Command.TabPrevious:
                 keyboard.moveCursor(-1);
                 return true;
-            case "tabNext":
+            case GamepadMenuInput.Command.TabNext:
                 keyboard.moveCursor(1);
                 return true;
-            case "start":
+            case GamepadMenuInput.Command.Start:
                 keyboard.finish();
                 return true;
-            case "back":
+            case GamepadMenuInput.Command.Back:
                 keyboard.close();
                 return true;
             }

@@ -137,8 +137,8 @@ Rectangle {
 
     // The pad's B (Escape) leaves the shown page for the start page (QcMenuNavigator asks the
     // items above the focus before it sends Escape).
-    function gamepadCommand(command: string): bool {
-        if (command !== "back" || !leavesPage())
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Back || !leavesPage())
             return false;
 
         if (page === MainMenu.WorldOptions)

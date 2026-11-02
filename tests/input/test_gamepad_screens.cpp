@@ -42,13 +42,20 @@ ApplicationWindow {
         property bool takeTabs: false
         property int extraSlots: 0
         property bool sideways: false
+        // The command the screen's handler got last, its JS type, and the value of TabNext (set by
+        // the test).
+        property int lastCommand: -1
+        property string lastCommandType
+        property int tabNext: -1
         Keys.onPressed: event => {
             if (event.key === Qt.Key_Escape)
                 escapes++;
             event.accepted = true;
         }
-        function gamepadCommand(command: string): bool {
-            if (takeTabs && command === "tabNext") {
+        function gamepadCommand(command: int): bool {
+            lastCommand = command;
+            lastCommandType = typeof command;
+            if (takeTabs && command === tabNext) {
                 lastClick = "handler";
                 return true;
             }
@@ -361,10 +368,16 @@ private slots:
         click(QcGamepadButton::LeftShoulder);
         QCOMPARE(tabs->property("currentIndex").toInt(), 2);
 
+        // The handler gets the command as its enum value (an int), not as a name.
+        QCOMPARE(screen()->property("lastCommandType").toString(), u"number"_s);
+        QCOMPARE(screen()->property("lastCommand").toInt(), static_cast<int>(QcGamepadMenuInput::Command::TabPrevious));
+
+        screen()->setProperty("tabNext", static_cast<int>(QcGamepadMenuInput::Command::TabNext));
         screen()->setProperty("takeTabs", true);
         click(QcGamepadButton::RightShoulder);
         QCOMPARE(tabs->property("currentIndex").toInt(), 2);
         QCOMPARE(screen()->property("lastClick").toString(), u"handler"_s);
+        QCOMPARE(screen()->property("lastCommand").toInt(), static_cast<int>(QcGamepadMenuInput::Command::TabNext));
     }
 
     // A on a text field asks for the keyboard instead of clicking; A does not jump a slider.

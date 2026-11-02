@@ -105,8 +105,8 @@ ColumnLayout {
 
     // The pad's down from the form's last setting goes to "Create and play": the footer lies too
     // far to the side of it for the spatial step (the map column has no focus target).
-    function gamepadCommand(command: string): bool {
-        if (command !== "down" || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Down || !page.holdsFocus(page.terrain ? moreOptions : keepInventory))
             return false;
         createButton.forceActiveFocus(Qt.TabFocusReason);
         return true;

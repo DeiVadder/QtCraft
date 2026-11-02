@@ -45,7 +45,7 @@ SlotScreen {
     }
 
     // The pad's shoulders switch the catalogue's categories (decision E-583).
-    function gamepadCommand(command: string): bool {
+    function gamepadCommand(command: int): bool {
         return categories.takeCommand(command);
     }
 

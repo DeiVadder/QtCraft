@@ -77,8 +77,8 @@ SidebarScreen {
 
     // The pad's B closes the handbook, its shoulders switch the category (QcMenuNavigator asks the
     // items above the focus).
-    function gamepadCommand(command: string): bool {
-        if (command === "back") {
+    function gamepadCommand(command: int): bool {
+        if (command === GamepadMenuInput.Command.Back) {
             close();
             return true;
         }

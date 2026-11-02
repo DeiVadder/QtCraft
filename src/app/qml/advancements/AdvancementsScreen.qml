@@ -153,22 +153,22 @@ Item {
     }
 
     // The pad: B closes, the shoulders switch the tab, the directions walk along the tree.
-    function gamepadCommand(command: string): bool {
+    function gamepadCommand(command: int): bool {
         switch (command) {
-        case "back":
+        case GamepadMenuInput.Command.Back:
             closeRequested();
             return true;
-        case "tabNext":
+        case GamepadMenuInput.Command.TabNext:
             return switchTab(1);
-        case "tabPrevious":
+        case GamepadMenuInput.Command.TabPrevious:
             return switchTab(-1);
-        case "left":
+        case GamepadMenuInput.Command.Left:
             return step(-1, 0);
-        case "right":
+        case GamepadMenuInput.Command.Right:
             return step(1, 0);
-        case "up":
+        case GamepadMenuInput.Command.Up:
             return step(0, -1);
-        case "down":
+        case GamepadMenuInput.Command.Down:
             return step(0, 1);
         default:
             return false;

@@ -3,10 +3,10 @@
 
 #include "app/input/QcMenuNavigator.h"
 
+#include "app/debug/QcAppLogging.h"
 #include "app/input/QcFocusCandidates.h"
 
 #include <QLineF>
-#include <QMetaEnum>
 #include <QMetaMethod>
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -59,8 +59,9 @@ bool reachesLeftOnly(const QQuickItem *item, const QQuickItem *current, Directio
     return direction == Direction::Left || (direction == Direction::Up && QcFocusCandidates::contains(item->parentItem(), current));
 }
 
-// Calls `object`'s QML function gamepadCommand(name) when it has one; whether it took the command.
-bool callHandler(QObject *object, const QString &name)
+// Calls `object`'s QML function gamepadCommand(command) when it has one; whether it took the
+// command. The function takes the Command as an int (typed `command: int`, or untyped).
+bool callHandler(QObject *object, QcGamepadMenuInput::Command command)
 {
     const QMetaObject *meta = object->metaObject();
     for (int index = 0; index < meta->methodCount(); ++index) {
@@ -69,16 +70,23 @@ bool callHandler(QObject *object, const QString &name)
             continue;
         }
 
-        const bool stringArgument = method.parameterMetaType(0) == QMetaType::fromType<QString>();
+        const int value = static_cast<int>(command);
+        const QMetaType parameter = method.parameterMetaType(0);
+        if (parameter != QMetaType::fromType<int>() && parameter != QMetaType::fromType<QVariant>()) {
+            qCWarning(lcGamepad) << "gamepadCommand of" << object << "takes" << parameter.name() << "instead of int: not asked";
+            return false;
+        }
+
+        const bool intArgument = parameter == QMetaType::fromType<int>();
         if (method.returnMetaType() == QMetaType::fromType<bool>()) {
             bool taken = false;
-            const bool called = stringArgument ? method.invoke(object, Qt::DirectConnection, qReturnArg(taken), name)
-                                               : method.invoke(object, Qt::DirectConnection, qReturnArg(taken), QVariant(name));
+            const bool called = intArgument ? method.invoke(object, Qt::DirectConnection, qReturnArg(taken), value)
+                                            : method.invoke(object, Qt::DirectConnection, qReturnArg(taken), QVariant(value));
             return called && taken;
         }
         QVariant taken;
-        const bool called = stringArgument ? method.invoke(object, Qt::DirectConnection, qReturnArg(taken), name)
-                                           : method.invoke(object, Qt::DirectConnection, qReturnArg(taken), QVariant(name));
+        const bool called = intArgument ? method.invoke(object, Qt::DirectConnection, qReturnArg(taken), value)
+                                        : method.invoke(object, Qt::DirectConnection, qReturnArg(taken), QVariant(value));
         return called && taken.toBool();
     }
     return false;
@@ -150,15 +158,6 @@ QQuickItem *QcMenuNavigator::currentScope() const
     return m_scope;
 }
 
-QString QcMenuNavigator::commandName(Command command)
-{
-    QString name = QString::fromLatin1(QMetaEnum::fromType<Command>().valueToKey(static_cast<int>(command)));
-    if (!name.isEmpty()) {
-        name[0] = name[0].toLower();
-    }
-    return name;
-}
-
 QQuickItem *QcMenuNavigator::focusItem() const
 {
     if (!m_window) {
@@ -226,9 +225,8 @@ void QcMenuNavigator::run(Command command)
 
 bool QcMenuNavigator::offerToScreen(const QQuickItem *scope, QQuickItem *focus, Command command)
 {
-    const QString name = commandName(command);
     for (QQuickItem *item = focus; item; item = item->parentItem()) {
-        if (callHandler(item, name)) {
+        if (callHandler(item, command)) {
             return true;
         }
         if (item == scope) {

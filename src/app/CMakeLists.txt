@@ -70,6 +70,7 @@ target_sources(qc_app_core PRIVATE
     input/QcFocusCandidates.h input/QcFocusCandidates.cpp
     input/QcGameInput.h input/QcGameInput.cpp
     input/QcGamepadBackend.h input/QcGamepadBackend.cpp
+    input/QcGamepadMenuInputForeign.h
     input/QcGamepadRoster.h input/QcGamepadRoster.cpp
     input/QcGamepadUi.h input/QcGamepadUi.cpp
     input/QcKeyControlsForeign.h

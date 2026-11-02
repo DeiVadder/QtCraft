@@ -78,14 +78,14 @@ SidebarScreen {
     // The pad's shoulders switch the category, its B closes the screen, its Y resets a page that
     // has defaults to go back to after a second Y (QcMenuNavigator asks the items above the focus).
     // Any other command cancels a reset that waits for its second Y.
-    function gamepadCommand(command: string): bool {
-        if (command !== "tertiary")
+    function gamepadCommand(command: int): bool {
+        if (command !== GamepadMenuInput.Command.Tertiary)
             cancelReset();
-        if (command === "back") {
+        if (command === GamepadMenuInput.Command.Back) {
             close();
             return true;
         }
-        if (command === "tertiary" && resettable) {
+        if (command === GamepadMenuInput.Command.Tertiary && resettable) {
             padReset();
             return true;
         }

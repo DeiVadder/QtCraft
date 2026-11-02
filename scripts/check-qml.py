@@ -34,6 +34,9 @@ Rules (name, what it finds):
                        unqualified `item.x` inside a Loader's own bindings and handlers is not checked
   anchors-layout       an object with both `anchors` and `Layout.*` bindings: inside a layout the anchors fight
                        the layout, outside one the `Layout.*` values do nothing
+  pad-command-string   a pad command handled as a string: `gamepadCommand`/`takeCommand` with a `string`
+                       parameter, or a string literal compared or matched (`=== "back"`, `case "back":`) in
+                       their bodies; the command is the enum GamepadMenuInput.Command (E-688, row 79.60)
   image-source-size    an `Image`, `AnimatedImage` or `BorderImage` without `sourceSize`, so the whole picture is
                        decoded; not checked with `smooth: false` (pixel art: small sources drawn as they are, a
                        sourceSize only resamples)
@@ -60,11 +63,11 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
-         "on-property", "loader-item", "anchors-layout", "image-source-size")
+         "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
 # E-942; `enum-list` and `connections-write` since their findings in Main.qml went with 79.47); a NOLINT
 # marker without a reason always fails.
-GATING = {"raw-size", "id-shadows-property", "enum-list", "connections-write"}
+GATING = {"raw-size", "id-shadows-property", "enum-list", "connections-write", "pad-command-string"}
 # Properties every Item has (QQuickItem and QObject): an id with one of these names hides the member in
 # every unqualified use inside the file (qmllint id-shadows-member), as `id: layer` hides `Item.layer`.
 ITEM_MEMBERS = {
@@ -120,6 +123,10 @@ SOURCE_SIZE = re.compile(BINDING_START + r"sourceSize\s*[.:{]", re.MULTILINE)
 PIXEL_ART = re.compile(BINDING_START + r"smooth\s*:\s*false\b", re.MULTILINE)
 # Controls the pad can focus and the test hooks click: their names are read at run time (the focus
 # description of QcGamepadUi, `click:<objectName>`), so an unread name there is no finding.
+# The functions that take a pad command (QcMenuNavigator calls gamepadCommand, NavList.takeCommand
+# gets it passed on), and a string literal compared or matched in their bodies.
+PAD_FUNCTION = re.compile(r"\bfunction\s+(gamepadCommand|takeCommand)\s*\(([^)]*)\)\s*(?::\s*[\w.<>]+\s*)?\{")
+STRING_TEST = re.compile(r"(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:===|!==|==|!=)|\bcase\s+[\"']")
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
                          r"|Slot|TextEdit|TextInput|Flickable|ListView|GridView)$")
 
@@ -423,6 +430,20 @@ def unchecked_loader_items(qml):
     return found
 
 
+def pad_command_strings(qml):
+    found = []
+    for match in PAD_FUNCTION.finditer(qml.masked):
+        line = line_of(qml.masked, match.start())
+        if re.search(r":\s*string\b", match.group(2)):
+            found.append((line, "pad-command-string",
+                          f"{match.group(1)} takes a string; take the command as int (GamepadMenuInput.Command)"))
+        brace = match.end() - 1
+        for test in STRING_TEST.finditer(qml.masked, brace, matching(qml.masked, brace)):
+            found.append((line_of(qml.masked, test.start()), "pad-command-string",
+                          f"{match.group(1)} compares with a string; compare with GamepadMenuInput.Command"))
+    return found
+
+
 def anchors_with_layout(qml):
     found = []
     for owner in qml.objects:
@@ -495,7 +516,8 @@ def check_file(path, text, corpus, limit=FUNCTION_LINES):
     qml = QmlFile(path, text)
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
                 + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
-                + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml))
+                + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml)
+                + pad_command_strings(qml))
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -754,6 +776,30 @@ Item {
                 (61, "image-source-size")]
     if got != expected:
         failures.append(f"on-property, loader-item, anchors-layout and image-source-size: expected {expected}, got {got}")
+    pad = """import QtQuick
+Item {
+    function gamepadCommand(command: string): bool {
+        if (command === "back")
+            return true;
+        switch (command) {
+        case 'tabNext':
+            return true;
+        }
+        return command === GamepadMenuInput.Command.Up || name === "x";
+    }
+    function takeCommand(command: int): bool {
+        return command === GamepadMenuInput.Command.TabNext;
+    }
+    function other(mode: string): bool {
+        return mode === "creative";
+    }
+}
+"""
+    got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Pad.qml", pad, Corpus({}), 30)]
+    expected = [(3, "pad-command-string"), (4, "pad-command-string"), (7, "pad-command-string"),
+                (10, "pad-command-string")]
+    if got != expected:
+        failures.append(f"pad-command-string: expected {expected}, got {got}")
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))

@@ -72,17 +72,17 @@ Rectangle {
 
     // The pad on the row itself (not on its actions): A clicks it as Enter does, up and down walk a
     // list row by row (listIndex).
-    function gamepadCommand(command: string): bool {
+    function gamepadCommand(command: int): bool {
         if (!focusable || Window.activeFocusItem !== row)
             return false;
 
-        if (command === "confirm")
+        if (command === GamepadMenuInput.Command.Confirm)
             return click();
         if (listIndex < 0)
             return false;
-        if (command === "down")
+        if (command === GamepadMenuInput.Command.Down)
             return focusRow(listIndex + 1);
-        if (command === "up")
+        if (command === GamepadMenuInput.Command.Up)
             return focusRow(listIndex - 1);
         return false;
     }
