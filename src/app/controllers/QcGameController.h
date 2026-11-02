@@ -76,7 +76,8 @@ class QcGameController : public QObject
     // The game is still starting (settings, worlds, mods, content): the window shows the start
     // screen over the menu (decision E-943).
     Q_PROPERTY(bool starting READ starting NOTIFY startingChanged FINAL)
-    Q_PROPERTY(bool inputEnabled READ inputEnabled WRITE setInputEnabled NOTIFY inputEnabledChanged FINAL)
+    // Input reaches the world only while it is played (QcScreenState::setPhase).
+    Q_PROPERTY(bool inputEnabled READ inputEnabled NOTIFY inputEnabledChanged FINAL)
     // GameController.Overlay.None, .Inventory, ... (QcScreenState::Overlay).
     Q_PROPERTY(QcScreenState::Overlay overlay READ overlay WRITE setOverlay NOTIFY overlayChanged FINAL)
     // The overlay is the pause menu or one of its screens (QcScreenState::isPauseMenu).
@@ -144,7 +145,6 @@ public:
     // The start of the program is done (QcAppStartup): the start screen goes.
     void finishStartup();
     bool inputEnabled() const { return m_screens.inputEnabled(); }
-    void setInputEnabled(bool enabled) { m_screens.setInputEnabled(enabled); }
     // In-game screen on top of the world (QcScreenState::overlay).
     using Overlay = QcScreenState::Overlay;
     Overlay overlay() const { return m_screens.overlay(); }
@@ -154,7 +154,7 @@ public:
     Q_INVOKABLE void closeAdvancements() { m_screens.closeAdvancements(); }
     QcScreenState *screens() { return &m_screens; }
     bool slotScreenOpen() const { return QcScreenState::isSlotScreen(overlay()); }
-    QcScreenState::HudShown hudShown() const { return m_hudShown; }
+    QcScreenState::HudShown hudShown() const { return m_hud->hudShown(); }
     int screenKeepAliveMs() const { return m_screens.screenKeepAliveMs(); }
     bool logScreenCreation() const { return m_screens.logScreenCreation(); }
     QString chatStart() const { return m_screens.chatStart(); }
@@ -321,6 +321,4 @@ private:
     QcSessionWiring m_wiring;
     QcFrameDriver m_frame;
     QString m_worldDirectory;
-    // Nothing is open at the start: the whole HUD (decision E-927).
-    QcScreenState::HudShown m_hudShown = QcScreenState::HudShown::All;
 };

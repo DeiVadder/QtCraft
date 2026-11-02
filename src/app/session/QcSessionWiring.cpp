@@ -74,7 +74,7 @@ void QcSessionWiring::connectPlayer()
     connect(session, &QcClientSession::experienceChanged, player, &QcPlayerController::experienceChanged);
     connect(session, &QcClientSession::airChanged, player, &QcPlayerController::airChanged);
     connect(session, &QcClientSession::gameModeChanged, player, &QcPlayerController::gameModeChanged);
-    connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::actionRefused);
+    connect(session, &QcClientSession::actionRefused, player, &QcPlayerController::reportRefusal);
     connect(session, &QcClientSession::advancementReached, &m_targets.player, &QcPlayerController::announceAdvancement);
     connect(session, &QcClientSession::advancementsChanged, &m_targets.advancements, &QcAdvancementTreeModel::update);
     connect(session, &QcClientSession::gameModeChanged, this, [this, session] { m_targets.screens.gameModeChanged(session->gameMode().rules()); });

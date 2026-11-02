@@ -27,7 +27,8 @@ struct QcSessionParts;
 class QcDebugHud : public QObject
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    QML_NAMED_ELEMENT(DebugHud)
+    QML_UNCREATABLE("Provided by GameController.hud.debug")
     // 0 off, 1 compact, 2 full (the settings' level).
     Q_PROPERTY(int level READ level NOTIFY levelChanged FINAL)
     Q_PROPERTY(QString generalText READ generalText NOTIFY textChanged FINAL)
@@ -35,6 +36,14 @@ class QcDebugHud : public QObject
     // Frame intervals and server tick durations in milliseconds, oldest first.
     Q_PROPERTY(QList<qreal> frameGraph READ frameGraph NOTIFY textChanged FINAL)
     Q_PROPERTY(QList<qreal> tickGraph READ tickGraph NOTIFY textChanged FINAL)
+    // The frame graph's line (a frame at 60 FPS) and the top of its scale (two such frames).
+    Q_PROPERTY(double frameBudgetMs READ frameBudgetMs CONSTANT FINAL)
+    Q_PROPERTY(double frameScaleMs READ frameScaleMs CONSTANT FINAL)
+    // The tick graph's line (the server's tick length) and the top of its scale: ticks usually
+    // take far less, so the scale follows the longest one shown (1.5 times it, at least 2 ms, at
+    // most twice the tick length).
+    Q_PROPERTY(int tickBudgetMs READ tickBudgetMs CONSTANT FINAL)
+    Q_PROPERTY(double tickScaleMs READ tickScaleMs NOTIFY textChanged FINAL)
     Q_PROPERTY(QFont monoFont READ monoFont CONSTANT FINAL)
     // Light values (sky and block) of the cells around the target, when that visualisation is on.
     Q_PROPERTY(QcWorldLabelModel *lightLabels READ lightLabels CONSTANT FINAL)
@@ -51,6 +60,12 @@ public:
     QString timingsText() const { return m_timingsText; }
     QList<qreal> frameGraph() const { return m_frameGraph; }
     QList<qreal> tickGraph() const { return m_tickGraph; }
+    static double frameBudgetMs() { return 1000.0 / 60.0; }
+    static double frameScaleMs() { return 2.0 * frameBudgetMs(); }
+    static int tickBudgetMs();
+    double tickScaleMs() const { return tickScale(tickGraph()); }
+    // The top of the tick graph's scale for `ticks` (milliseconds).
+    [[nodiscard]] static double tickScale(const QList<qreal> &ticks);
     QFont monoFont() const;
     QcWorldLabelModel *lightLabels() const { return m_lightLabels; }
 

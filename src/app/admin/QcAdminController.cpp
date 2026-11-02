@@ -54,6 +54,7 @@ std::pair<qint64, qsizetype> newestPoint(const QList<QcMsg::AdminSample> &series
 
 QcAdminController::QcAdminController(QObject *parent)
     : QObject(parent)
+    , m_status(QcAdminViews::emptyStatus())
 {
 }
 
@@ -65,15 +66,17 @@ void QcAdminController::sessionStarted(QcClientSession *session)
         return;
     }
     follow(&session->admin(), [session] { return session->content(); });
+    // The own row follows the new name.
+    updatePlayers();
 }
 
 bool QcAdminController::isOwnName(const QString &name) const
 {
     // Without a session there is no own name (playerName() would make "Player" of it).
-    if (m_ownName.isEmpty()) {
+    if (ownName().isEmpty()) {
         return false;
     }
-    return QcProfileValidation::playerName(name).toCaseFolded() == QcProfileValidation::playerName(m_ownName).toCaseFolded();
+    return QcAdminViews::sameName(name, ownName());
 }
 
 void QcAdminController::follow(QcClientAdmin *admin, ContentSource content)
@@ -602,7 +605,7 @@ void QcAdminController::appendOutput(const QStringList &lines, int level)
 
 void QcAdminController::updateStatus()
 {
-    m_status = m_admin && m_admin->status() ? QcAdminViews::status(*m_admin->status()) : QVariantMap();
+    m_status = m_admin && m_admin->status() ? QcAdminViews::status(*m_admin->status()) : QcAdminViews::emptyStatus();
     emit statusChanged();
     // Each status adds its sample to the history (and every 60th a minute).
     updateCharts();
@@ -629,7 +632,7 @@ void QcAdminController::updateCharts(bool force)
 
 void QcAdminController::updatePlayers()
 {
-    m_players = m_admin ? QcAdminViews::players(m_admin->players()) : QVariantList();
+    m_players = m_admin ? QcAdminViews::players(m_admin->players(), ownName()) : QVariantList();
     emit playersChanged();
 }
 

@@ -18,7 +18,8 @@ SlotScreen {
     readonly property int outputRow: InventoryModel.MachineOutput
 
     title: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
-    handbookTarget: "qtcraft:furnace"
+    // The furnace, smoker or blast furnace that is open.
+    handbookTarget: screen.game.player.machineBlock
 
     // A slot's name beside it (IV-8 of docs/Menue-Pruefung.md).
     component SlotName: Label {

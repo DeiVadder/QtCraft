@@ -47,6 +47,26 @@ QcHudState::QcHudState(const QcSessionParts &parts, const QcSettingsController &
 {
 }
 
+bool QcHudState::viewShown() const
+{
+    return hudShown() == QcScreenState::HudShown::All || hudShown() == QcScreenState::HudShown::AllButHint;
+}
+
+bool QcHudState::hintShown() const
+{
+    return hudShown() == QcScreenState::HudShown::All;
+}
+
+void QcHudState::setHudShown(QcScreenState::HudShown shown)
+{
+    if (shown == hudShown()) {
+        return;
+    }
+
+    m_hudShown = shown;
+    emit shownChanged();
+}
+
 QcHudState::EntityTarget QcHudState::entityTarget(const QcContentRegistry &content, const QcClientEntity &entity, const QString &language)
 {
     if (entity.isMinecart()) {
@@ -87,16 +107,16 @@ void QcHudState::updateTarget()
     const std::optional<QcRaycastHit> &target = session.hand().target();
     const std::optional<quint32> targetEntity = session.hand().targetEntity();
     QString targetLabel;
-    m_targetName.clear();
+    setTargetName({});
     if (targetEntity) {
         const EntityTarget entity = entityTarget(content, session.entities().value(*targetEntity), m_settings.contentLanguage());
         targetLabel = entity.label;
-        m_targetName = entity.name;
+        setTargetName(entity.name);
     } else if (target) {
         if (const std::optional<QcBlockId> block = session.world()->blockAt(target->block)) {
             const QcBlockDefinition &definition = content.block(*block);
             targetLabel = content.translations().translate(definition.translationKey, m_settings.contentLanguage());
-            m_targetName = definition.name;
+            setTargetName(definition.name);
         }
     }
 

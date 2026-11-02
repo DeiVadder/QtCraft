@@ -7,6 +7,7 @@
 #include "app/controllers/QcSlotCursor.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
+#include "app/models/QcPointsRow.h"
 
 #include <QObject>
 #include <QString>
@@ -33,8 +34,10 @@ class QcPlayerController : public QObject, public QcSlotActions
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
     // On fire (decision E-393): the HUD shows flames at the bottom of the view.
     Q_PROPERTY(bool burning READ burning NOTIFY healthChanged FINAL)
-    // Status effects (decision E-450): {name, label, icon, colour, seconds, level, levelName} each; the hearts
-    // take the colour of the first effect that tints them ("" for the usual red).
+    // Status effects (decision E-450): {name, label, icon, colour, seconds, level, levelName, text}
+    // each, `text` the line of the HUD (the name, the level in Roman numerals from II on and the
+    // time left as m:ss); the hearts take the colour of the first effect that tints them ("" for
+    // the usual red).
     Q_PROPERTY(QVariantList effects READ effects NOTIFY healthChanged FINAL)
     Q_PROPERTY(QString heartColour READ heartColour NOTIFY healthChanged FINAL)
     Q_PROPERTY(int food READ food NOTIFY foodChanged FINAL)
@@ -42,12 +45,18 @@ class QcPlayerController : public QObject, public QcSlotActions
     // Experience (decision E-398): the level and the share of the way to the next one (0..1).
     Q_PROPERTY(int experienceLevel READ experienceLevel NOTIFY experienceChanged FINAL)
     Q_PROPERTY(double experienceProgress READ experienceProgress NOTIFY experienceChanged FINAL)
-    // Air under water (decision E-955): the bubbles left out of maxAirBubbles and whether the HUD
-    // shows them (eyes under water or the breath not yet full; never in creative or spectator
-    // mode).
-    Q_PROPERTY(int airBubbles READ airBubbles NOTIFY airChanged FINAL)
-    Q_PROPERTY(int maxAirBubbles READ maxAirBubbles CONSTANT FINAL)
-    Q_PROPERTY(bool airShown READ airShown NOTIFY airChanged FINAL)
+    // The status rows of the HUD show (hearts, food, experience; armour and air within them): the
+    // game mode can hurt the player, so not in creative or spectator mode (decisions E-282, E-730).
+    Q_PROPERTY(bool statusShown READ statusShown NOTIFY gameModeChanged FINAL)
+    // The status rows' icons, two points each: ten hearts, ten food icons and, while something is
+    // worn, ten armour icons (decision E-234). The air bubbles, one each, show with the eyes under
+    // water and until the breath is full again (decision E-955).
+    Q_PROPERTY(QcPointsRow *heartRow READ heartRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *foodRow READ foodRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *armourRow READ armourRow CONSTANT FINAL)
+    Q_PROPERTY(QcPointsRow *airRow READ airRow CONSTANT FINAL)
+    // The item the food icons show (empty until the content has it).
+    Q_PROPERTY(QString foodIcon READ foodIcon NOTIFY contentChanged FINAL)
     // Armour points of what the player wears (0..20 count, decision E-234).
     Q_PROPERTY(int armour READ armour NOTIFY craftingChanged FINAL)
     Q_PROPERTY(int maxArmour READ maxArmour CONSTANT FINAL)
@@ -58,6 +67,9 @@ class QcPlayerController : public QObject, public QcSlotActions
     Q_PROPERTY(QString armourIcon READ armourIcon NOTIFY contentChanged FINAL)
     // The open machine (furnace screen): its name, the share of fuel left and of the item done.
     Q_PROPERTY(QString machineLabel READ machineLabel NOTIFY machineChanged FINAL)
+    // The content name of the open machine's block ("qtcraft:smoker") for the handbook key; empty
+    // for a backpack, a cart or no machine.
+    Q_PROPERTY(QString machineBlock READ machineBlock NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineBurn READ machineBurn NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerSlots READ containerSlots NOTIFY machineChanged FINAL)
     Q_PROPERTY(int containerColumns READ containerColumns NOTIFY machineChanged FINAL)
@@ -90,15 +102,19 @@ public:
     int maxFood() const;
     int experienceLevel() const;
     double experienceProgress() const;
-    int airBubbles() const;
-    static int maxAirBubbles();
-    bool airShown() const;
+    bool statusShown() const;
+    QcPointsRow *heartRow() const { return m_heartRow; }
+    QcPointsRow *foodRow() const { return m_foodRow; }
+    QcPointsRow *armourRow() const { return m_armourRow; }
+    QcPointsRow *airRow() const { return m_airRow; }
+    QString foodIcon() const;
     int armour() const;
     static int maxArmour();
     static int equipmentFirstRow() { return QcInventoryModel::equipmentFirstRow; }
     QStringList armourPlaceholders() const;
     QString armourIcon() const;
     QString machineLabel() const { return m_machineLabel; }
+    QString machineBlock() const { return m_machineBlock; }
     // Slots per row of the open container's screen (a dispenser's 3 x 3, a hopper's row of 5).
     int containerColumns() const { return m_containerColumns; }
     double machineBurn() const;
@@ -121,6 +137,8 @@ public:
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
     Q_INVOKABLE void craftRecipe(const QString &recipe) const;
     Q_INVOKABLE void respawn() const;
+    // The game mode refused a mining or use (QcClientSession::actionRefused): tells the HUD why.
+    void reportRefusal();
 
     // The slot requests (QcSlotActions); the open container's held slot is locked.
     int lockedRow() const override { return containerHeldSlot(); }
@@ -155,13 +173,16 @@ signals:
     void craftingChanged();
     void gameModeChanged();
     // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
-    // every QcClientSession::refusalReportTicks; the HUD shows a short notice.
-    void actionRefused();
+    // every QcClientSession::refusalReportTicks; the HUD shows `text` (translated) as a notice.
+    void actionRefused(const QString &text);
 
 private:
     void updateCraftableRecipes();
-    // Without signals: nameOpenMachine() sets both before updateMachine() notifies.
+    // The status rows from the session's health, food, armour, air and game mode.
+    void updateStatusRows();
+    // Without signals: nameOpenMachine() sets them before updateMachine() notifies.
     void setMachineLabel(const QString &label) { m_machineLabel = label; }
+    void setMachineBlock(const QString &block) { m_machineBlock = block; }
     void setContainerColumns(int columns) { m_containerColumns = columns; }
 
     const QcSessionParts &m_parts;
@@ -170,7 +191,12 @@ private:
     QcCreativeItemModel *m_creativeItems = nullptr;
     QcSlotCursor *m_slotCursor = nullptr;
     QcAdvancementQueue *m_advancementToasts = nullptr;
+    QcPointsRow *m_heartRow = nullptr;
+    QcPointsRow *m_foodRow = nullptr;
+    QcPointsRow *m_armourRow = nullptr;
+    QcPointsRow *m_airRow = nullptr;
     QString m_machineLabel;
+    QString m_machineBlock;
     int m_containerColumns = 9;
     QVariantList m_craftableRecipes;
 };

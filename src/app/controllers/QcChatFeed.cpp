@@ -40,7 +40,7 @@ void QcChatFeed::clear()
 void QcChatFeed::setOpen(bool open)
 {
     // Main.qml binds it: the same value again changes nothing.
-    if (open == m_open) {
+    if (open == isOpen()) {
         return;
     }
     m_open = open;
@@ -53,10 +53,10 @@ QList<QcChatFeed::Entry> QcChatFeed::shown() const
 {
     QList<Entry> lines;
     const qint64 time = now();
-    const qsizetype count = std::min(m_history.size(), m_open ? openLines : closedLines);
+    const qsizetype count = std::min(m_history.size(), isOpen() ? openLines : closedLines);
     for (qsizetype i = m_history.size() - count; i < m_history.size(); ++i) {
         const Line &line = m_history[i];
-        if (m_open) {
+        if (isOpen()) {
             lines.append({line.text, 1.0});
             continue;
         }
@@ -95,7 +95,7 @@ void QcChatFeed::schedule()
 {
     m_timer.stop();
     m_nextRefresh.reset();
-    if (m_open) {
+    if (isOpen()) {
         return;
     }
 

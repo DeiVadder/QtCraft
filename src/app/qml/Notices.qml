@@ -32,8 +32,7 @@ Item {
         active: notices.game.player.advancementToasts.showing
         // A notice for playing in the world (decision E-927): not over the panels of a screen (nor
         // over the advancement tree, which shows the same and would lose its close button).
-        visible: !notices.game.photo.hudHidden && !notices.game.photo.capturing
-                 && (notices.game.hudShown === GameController.HudShown.All || notices.game.hudShown === GameController.HudShown.AllButHint)
+        visible: !notices.game.photo.hudHidden && !notices.game.photo.capturing && notices.game.hud.viewShown
 
         sourceComponent: AdvancementToast {
             queue: notices.game.player.advancementToasts
@@ -71,7 +70,7 @@ Item {
             }
         }
 
-        // Adventure mode refused a mining or use (decision E-735).
+        // The game mode refused a mining or use (adventure mode, decision E-735).
         NoticeSlot {
             id: refusalNotice
 
@@ -86,25 +85,17 @@ Item {
     Connections {
         target: notices.game.player
 
-        function onActionRefused() {
+        function onActionRefused(text: string) {
             refusalNotice.active = true;
-            (refusalNotice.item as Notice).show(qsTr("Adventure mode: not allowed here"));
+            (refusalNotice.item as Notice).show(text);
         }
     }
 
     Connections {
-        id: photoEvents
-
-        // The first hiding in a run says how to get the HUD back.
-        property bool hudHintShown: false
-
         target: notices.game.photo
 
-        function onHudHiddenChanged() {
-            if (!notices.game.photo.hudHidden || photoEvents.hudHintShown) {
-                return;
-            }
-            photoEvents.hudHintShown = true;
+        // The first hiding in a run says how to get the HUD back.
+        function onHudHintWanted() {
             photoNotice.active = true;
             (photoNotice.item as Notice).show(qsTr("HUD hidden – %1 to show").arg(notices.game.settings.keys.labels.hideHud));
         }

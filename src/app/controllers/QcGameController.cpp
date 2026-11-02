@@ -165,6 +165,10 @@ QcGameController::QcGameController(QObject *parent)
     connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::updateHudShown);
+    connect(m_hud.get(), &QcHudState::shownChanged, this, &QcGameController::hudShownChanged);
+    // The chat lines of the HUD all show while the chat line is open and fade while it is closed
+    // (decision E-875).
+    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_hud->chat()->setOpen(m_screens.overlay() == Overlay::Chat); });
     // Every screen starts with an empty hand (nothing picked up or carried).
     connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_player->slotCursor()->showScreen(m_screens.overlay()); });
     connect(m_handbook.get(), &QcHandbookController::openChanged, this, &QcGameController::updateHudShown);
@@ -212,13 +216,7 @@ void QcGameController::connectLoading()
 
 void QcGameController::updateHudShown()
 {
-    const QcScreenState::HudShown shown = QcScreenState::hudShown(m_screens.overlay(), m_handbook->isOpen(), m_player->dead());
-    if (shown == hudShown()) {
-        return;
-    }
-
-    m_hudShown = shown;
-    emit hudShownChanged();
+    m_hud->setHudShown(QcScreenState::hudShown(m_screens.overlay(), m_handbook->isOpen(), m_player->dead()));
 }
 
 QcGameController::~QcGameController()

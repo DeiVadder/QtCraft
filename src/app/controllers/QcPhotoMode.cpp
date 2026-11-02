@@ -23,20 +23,24 @@ QcPhotoMode::QcPhotoMode(const QcSettingsController &settings, QObject *parent)
 
 bool QcPhotoMode::handHidden() const
 {
-    return m_hudHidden && m_settings.photoHidesHand();
+    return hudHidden() && m_settings.photoHidesHand();
 }
 
 void QcPhotoMode::toggleHud()
 {
-    m_hudHidden = !m_hudHidden;
-    qCInfo(lcGame) << (m_hudHidden ? "Photo mode: HUD hidden" : "Photo mode: HUD shown");
+    setHudHidden(!hudHidden());
+    qCInfo(lcGame) << (hudHidden() ? "Photo mode: HUD hidden" : "Photo mode: HUD shown");
     emit hudHiddenChanged();
     emit handHiddenChanged();
+    if (hudHidden() && !m_hudHintGiven) {
+        m_hudHintGiven = true;
+        emit hudHintWanted();
+    }
 }
 
 void QcPhotoMode::showHud()
 {
-    if (m_hudHidden) {
+    if (hudHidden()) {
         toggleHud();
     }
 }

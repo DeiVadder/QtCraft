@@ -18,31 +18,9 @@ SettingsPage {
     readonly property var status: admin.status
     readonly property var charts: admin.charts
     readonly property int capacity: admin.chartCapacity
-    // No status came yet: every value shows "–" instead of a zero (AD-5 of docs/Menue-Pruefung.md).
-    readonly property bool measured: Object.keys(status).length > 0
-
-    function number(value: var, decimals: int): string {
-        if (!measured)
-            return "–";
-        return Number(value ?? 0).toLocaleString(Qt.locale(), "f", decimals);
-    }
-
-    // Milliseconds of a tick phase, which are often below one.
-    function fine(ms: var): string {
-        return Number(ms ?? 0).toLocaleString(Qt.locale(), "f", 2);
-    }
-
-    // A duration in milliseconds as days, hours and minutes.
-    function duration(ms: var): string {
-        if (!measured)
-            return "–";
-        const minutes = Math.floor((ms ?? 0) / 60000);
-        const days = Math.floor(minutes / 1440);
-        const hours = Math.floor(minutes / 60) % 24;
-        if (days > 0)
-            return qsTr("%1 d %2 h").arg(days).arg(hours);
-        return qsTr("%1 h %2 min").arg(hours).arg(minutes % 60);
-    }
+    // No status came yet: every value shows "–" instead of a zero (AD-5 of docs/Menue-Pruefung.md);
+    // the texts come formatted from C++ (QcAdminViews::status).
+    readonly property bool measured: status.measured
 
     title: qsTr("Overview")
 
@@ -75,7 +53,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Ticks per second")
-                valueText: page.number(page.status.tps, 1)
+                valueText: page.status.tpsText
                 values: page.charts.tps ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -85,7 +63,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Tick time, 99th percentile")
-                valueText: qsTr("%1 ms (mean %2)").arg(page.number(page.status.tickP99, 1)).arg(page.number(page.status.tickMean, 1))
+                valueText: page.status.tickText
                 values: page.charts.tickP99 ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -95,7 +73,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Players")
-                valueText: page.number(page.status.players, 0)
+                valueText: page.status.playersText
                 values: page.charts.players ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -104,7 +82,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Loaded chunks")
-                valueText: page.number(page.status.chunks, 0)
+                valueText: page.status.chunksText
                 values: page.charts.chunks ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -113,7 +91,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Entities")
-                valueText: page.number(page.status.entities, 0)
+                valueText: page.status.entitiesText
                 values: page.charts.entities ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -122,7 +100,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Memory")
-                valueText: qsTr("%1 MB").arg(page.number(page.status.memory, 0))
+                valueText: page.status.memoryText
                 values: page.charts.memory ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -131,7 +109,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Network sent")
-                valueText: qsTr("%1 KB/s").arg(page.number(page.status.sent, 1))
+                valueText: page.status.sentText
                 values: page.charts.sent ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -140,7 +118,7 @@ SettingsPage {
                 Layout.fillWidth: true
                 Layout.preferredWidth: 1
                 title: qsTr("Network received")
-                valueText: qsTr("%1 KB/s").arg(page.number(page.status.received, 1))
+                valueText: page.status.receivedText
                 values: page.charts.received ?? []
                 capacity: page.capacity
                 measured: page.measured
@@ -152,7 +130,7 @@ SettingsPage {
         title: qsTr("Slowest tick phases")
 
         Repeater {
-            model: page.status.phases ?? []
+            model: page.status.phases
 
             delegate: SettingRow {
                 id: phaseRow
@@ -161,7 +139,7 @@ SettingsPage {
 
                 label: modelData.name
                 Label {
-                    text: qsTr("%1 ms").arg(page.fine(phaseRow.modelData.ms))
+                    text: phaseRow.modelData.msText
                     font.pixelSize: Ui.type.body
                     color: Theme.text
                 }
@@ -174,13 +152,13 @@ SettingsPage {
 
         Repeater {
             model: [
-                { label: qsTr("World"), value: page.status.world ?? "–" },
-                { label: qsTr("Version"), value: page.measured ? qsTr("%1 (protocol %2)").arg(page.status.version ?? "").arg(page.status.protocol ?? 0) : "–" },
-                { label: qsTr("Running for"), value: page.duration(page.status.uptimeMs) },
-                { label: qsTr("Peak memory"), value: page.measured ? qsTr("%1 MB").arg(page.number(page.status.peakMemory, 0)) : "–" },
-                { label: qsTr("Skipped ticks"), value: page.number(page.status.skipped, 0) },
-                { label: qsTr("Seed"), value: page.status.seed ?? "–" },
-                { label: qsTr("Generator"), value: page.status.generator ?? "–" }
+                { label: qsTr("World"), value: page.status.world },
+                { label: qsTr("Version"), value: page.status.versionText },
+                { label: qsTr("Running for"), value: page.status.uptimeText },
+                { label: qsTr("Peak memory"), value: page.status.peakMemoryText },
+                { label: qsTr("Skipped ticks"), value: page.status.skippedText },
+                { label: qsTr("Seed"), value: page.status.seed },
+                { label: qsTr("Generator"), value: page.status.generator }
             ]
 
             delegate: SettingRow {

@@ -54,6 +54,8 @@ public:
 
 signals:
     void hudHiddenChanged();
+    // The HUD was hidden for the first time in this run: the notice says how to get it back.
+    void hudHintWanted();
     void screenshotSaved();
     // The picture could not be taken or saved; `reason` is translated, for the notice.
     void screenshotFailed(const QString &reason);
@@ -64,6 +66,8 @@ signals:
 private:
     const QcSettingsController &m_settings;
     std::function<QImage()> m_grabber;
+    // Without signals: toggleHud() notifies.
+    void setHudHidden(bool hidden) { m_hudHidden = hidden; }
     // Takes the picture with capturing() true.
     QImage grab();
     // Logs `log`, sends `reason` and returns it as the error.
@@ -71,5 +75,6 @@ private:
 
     bool m_hudHidden = false;
     bool m_capturing = false;
+    bool m_hudHintGiven = false;
     QString m_lastScreenshot;
 };

@@ -4,7 +4,7 @@
 <context>
     <name>AdminPlayersPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="50"/>
+        <location filename="../src/app/qml/admin/AdminPlayersPage.qml" line="32"/>
         <source>Playing now (%n)</source>
         <translation>
             <numerusform>Playing now (%n)</numerusform>
@@ -124,7 +124,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="565"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="568"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -132,7 +132,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="567"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="570"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>

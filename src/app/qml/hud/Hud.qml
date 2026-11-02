@@ -20,12 +20,12 @@ Item {
     readonly property real statusTop: Math.min(hotbar.y, experienceBar.visible ? experienceBar.y : hotbar.y, experienceLevel.visible ? experienceLevel.y : hotbar.y, hearts.visible ? hearts.y : hotbar.y, foodBar.visible ? foodBar.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y)
     // The status rows, the hotbar and the hint below it: world labels fade out before they reach it.
     readonly property rect statusArea: Qt.rect(hotbar.x, statusTop, hotbar.width, height - statusTop)
-    // What shows behind the open screen (decision E-927, GameController.hudShown): the crosshair,
-    // the name of the block in view, the name of a newly selected item, the world labels and the
-    // chat lines only while the view is free (no screen, or the chat line); the world hint only without any screen. Main.qml hides the whole HUD behind
-    // a full-screen screen.
-    readonly property bool viewShown: hud.game.hudShown === GameController.HudShown.All || hud.game.hudShown === GameController.HudShown.AllButHint
-    readonly property bool hintShown: hud.game.hudShown === GameController.HudShown.All
+    // What shows behind the open screen (decision E-927): the view's parts only while the view is
+    // free, the world hint only without any screen (HudState.viewShown, hintShown). Main.qml hides
+    // the whole HUD behind a full-screen screen.
+    readonly property HudState hudState: game.hud
+    // Item icons exist once the world plays (the content arrived).
+    readonly property bool playing: game.phase === GameController.Phase.Playing
 
     objectName: "hud"
 
@@ -71,16 +71,16 @@ Item {
 
     WorldLabels {
         anchors.fill: parent
-        visible: hud.game.settings.showLabels && hud.viewShown
-        labels: hud.game.hud.labels
+        visible: hud.game.settings.showLabels && hud.hudState.viewShown
+        labels: hud.hudState.labels
         hudArea: hud.statusArea
     }
 
     // Light values around the target (debug options).
     WorldLabels {
         anchors.fill: parent
-        visible: hud.game.settings.debug.lightValues && hud.viewShown
-        labels: hud.game.hud.debug.lightLabels
+        visible: hud.game.settings.debug.lightValues && hud.hudState.viewShown
+        labels: hud.hudState.debug.lightLabels
         hudArea: hud.statusArea
     }
 
@@ -92,8 +92,8 @@ Item {
     // A held filled map (decision E-805), under the hotbar and the status rows; hidden while a
     // screen is open (only the chat line leaves the view free).
     MapInHand {
-        heldMap: hud.game.hud.heldMap
-        visible: heldMap.held && hud.viewShown
+        heldMap: hud.hudState.heldMap
+        visible: heldMap.held && hud.hudState.viewShown
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
     }
@@ -103,7 +103,7 @@ Item {
 
         objectName: "hudCrosshair"
         anchors.centerIn: parent
-        visible: hud.viewShown
+        visible: hud.hudState.viewShown
         width: Ui.hudPx(18)
         height: Ui.hudPx(18)
 
@@ -131,13 +131,13 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: crosshair.bottom
         anchors.topMargin: Ui.hudPx(12)
-        visible: hud.game.hud.miningProgress > 0
+        visible: hud.hudState.miningProgress > 0
         width: Ui.hudPx(80)
         height: Ui.hudPx(6)
         color: Theme.hudBackdrop
 
         Rectangle {
-            width: parent.width * Math.min(1, hud.game.hud.miningProgress)
+            width: parent.width * Math.min(1, hud.hudState.miningProgress)
             height: parent.height
             color: Theme.progress
         }
@@ -149,8 +149,8 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: Ui.hudPx(12)
-        visible: text.length > 0 && hud.viewShown
-        text: hud.game.hud.targetLabel
+        visible: text.length > 0 && hud.hudState.viewShown
+        text: hud.hudState.targetLabel
         font.pixelSize: Ui.hudPx(16)
     }
 
@@ -164,7 +164,7 @@ Item {
         id: chatArea
 
         objectName: "hudChat"
-        visible: hud.viewShown
+        visible: hud.hudState.viewShown
         x: Ui.hudPx(12)
         width: Math.min(hud.width - 2 * x, Ui.hudPx(480))
         height: Math.min(chat.height, Math.max(0, hud.statusTop - Ui.hudPx(6) - Ui.hudPx(12)))
@@ -179,7 +179,7 @@ Item {
             spacing: Ui.hudPx(2)
 
             Repeater {
-                model: hud.game.hud.chat.entries
+                model: hud.hudState.chat.entries
 
                 HudLabel {
                     id: chatLine
@@ -203,53 +203,18 @@ Item {
     }
 
     // Armour points above the hearts while something is worn: ten chestplates, two points each
-    // (decision E-234). The icons are pixel art: drawn at their 20 px source size and enlarged
-    // with the HUD scale without smoothing (smooth: false), as the slots draw their 32 px icons.
-    Row {
+    // (decision E-234), drawn at their 20 px source size.
+    PointsIconRow {
         id: armourBar
 
         objectName: "armourBar"
         anchors.left: hotbar.left
         anchors.bottom: hearts.top
         anchors.bottomMargin: Ui.hudPx(2)
-        spacing: Ui.hudPx(2)
-        visible: hud.game.player.armour > 0 && !hud.game.player.creative && !hud.game.player.spectator
-
-        Repeater {
-            model: Math.ceil(hud.game.player.maxArmour / 2)
-
-            Item {
-                id: plate
-
-                required property int index
-                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.armour - index * 2) / 2))
-
-                width: Ui.hudPx(20)
-                height: Ui.hudPx(20)
-
-                Image {
-                    anchors.fill: parent
-                    source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? ItemIcons.source(hud.game.player.armourIcon, ItemIcons.generation) : ""
-                    sourceSize: Qt.size(20, 20)
-                    smooth: false
-                    opacity: 0.3
-                }
-
-                Item {
-                    width: parent.width * plate.fill
-                    height: parent.height
-                    clip: true
-
-                    Image {
-                        width: plate.width
-                        height: plate.height
-                        source: hud.game.phase === GameController.Phase.Playing && hud.game.player.armourIcon !== "" ? ItemIcons.source(hud.game.player.armourIcon, ItemIcons.generation) : ""
-                        sourceSize: Qt.size(20, 20)
-                        smooth: false
-                    }
-                }
-            }
-        }
+        iconsReady: hud.playing
+        pointsRow: hud.game.player.armourRow
+        item: hud.game.player.armourIcon
+        iconSize: 20
     }
 
     // The experience bar over the hotbar with the level centred just above it (decisions E-398,
@@ -263,7 +228,7 @@ Item {
         anchors.bottom: hotbar.top
         anchors.bottomMargin: Ui.hudPx(4)
         height: Ui.hudPx(7)
-        visible: !hud.game.player.creative && !hud.game.player.spectator
+        visible: hud.game.player.statusShown
         color: Theme.slotBorder
         border.color: Theme.textOutline
         border.width: 1
@@ -307,16 +272,15 @@ Item {
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
         spacing: Ui.hudPx(2)
-        visible: !hud.game.player.creative && !hud.game.player.spectator
+        visible: hud.game.player.heartRow.shown
 
         Repeater {
-            model: Math.ceil(hud.game.player.maxHealth / 2)
+            model: hud.game.player.heartRow
 
             Item {
                 id: heart
 
-                required property int index
-                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.health - index * 2) / 2))
+                required property real fill
 
                 width: Ui.hudPx(22)
                 height: Ui.hudPx(22)
@@ -349,57 +313,20 @@ Item {
         }
     }
 
-    // Ten food icons, two food points each, emptying from the left like the hearts fill from it.
-    // Pixel art like the armour icons: 22 px sources enlarged without smoothing.
-    Row {
+    // Ten food icons, two food points each, emptying from the left like the hearts fill from it;
+    // 22 px sources.
+    PointsIconRow {
         id: foodBar
 
         objectName: "foodBar"
         anchors.right: hotbar.right
         anchors.bottom: experienceLevel.top
         anchors.bottomMargin: 1
-        spacing: Ui.hudPx(2)
-        visible: !hud.game.player.creative && !hud.game.player.spectator
-        layoutDirection: Qt.RightToLeft
-
-        Repeater {
-            model: Math.ceil(hud.game.player.maxFood / 2)
-
-            Item {
-                id: drumstick
-
-                required property int index
-                readonly property real fill: Math.max(0, Math.min(1, (hud.game.player.food - index * 2) / 2))
-
-                width: Ui.hudPx(22)
-                height: Ui.hudPx(22)
-
-                Image {
-                    anchors.fill: parent
-                    // Icons exist once the content arrived; the provider is asked again then.
-                    source: hud.game.phase === GameController.Phase.Playing ? ItemIcons.source("qtcraft:cooked_porkchop", ItemIcons.generation) : ""
-                    sourceSize: Qt.size(22, 22)
-                    smooth: false
-                    opacity: 0.3
-                }
-
-                Item {
-                    anchors.right: parent.right
-                    width: parent.width * drumstick.fill
-                    height: parent.height
-                    clip: true
-
-                    Image {
-                        anchors.right: parent.right
-                        width: drumstick.width
-                        height: drumstick.height
-                        source: hud.game.phase === GameController.Phase.Playing ? ItemIcons.source("qtcraft:cooked_porkchop", ItemIcons.generation) : ""
-                        sourceSize: Qt.size(22, 22)
-                        smooth: false
-                    }
-                }
-            }
-        }
+        iconsReady: hud.playing
+        pointsRow: hud.game.player.foodRow
+        item: hud.game.player.foodIcon
+        iconSize: 22
+        fromRight: true
     }
 
     // Air bubbles above the food while under water (decision E-955), as high as the armour.
@@ -418,14 +345,12 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.margins: Ui.hudPx(8)
-        text: hud.game.hud.timeOfDay
+        text: hud.hudState.timeOfDay
     }
 
     // Status effects under the time of day (decision E-450): the icon of each, its name with the
     // level in Roman numerals (from II on) and the time left.
     Column {
-        objectName: "statusEffects"
-
         anchors.right: parent.right
         anchors.top: timeOfDay.bottom
         anchors.margins: Ui.hudPx(8)
@@ -461,8 +386,7 @@ Item {
                 HudLabel {
                     anchors.verticalCenter: parent.verticalCenter
                     font.pixelSize: Ui.hudPx(13)
-                    text: (effectRow.modelData.level > 1 ? effectRow.modelData.label + " " + effectRow.modelData.levelName : effectRow.modelData.label)
-                          + "  " + Math.floor(effectRow.modelData.seconds / 60) + ":" + String(effectRow.modelData.seconds % 60).padStart(2, "0")
+                    text: effectRow.modelData.text
                 }
             }
         }
@@ -518,7 +442,7 @@ Item {
 
         HudLabel {
             required property string customName
-            objectName: "heldName"
+
             anchors.left: hotbar.right
             anchors.leftMargin: Ui.hudPx(4)
             anchors.bottom: hotbar.top
@@ -533,14 +457,14 @@ Item {
     HeldItemName {
         inventory: hud.game.player.inventory
         // Its own fade, and only while the view is free (decision E-927).
-        visible: opacity > 0 && hud.viewShown
+        visible: opacity > 0 && hud.hudState.viewShown
         anchors.horizontalCenter: hotbar.horizontalCenter
         y: Math.min(hotbar.y, hearts.visible ? hearts.y : hotbar.y, armourBar.visible ? armourBar.y : hotbar.y, airBar.visible ? airBar.y : hotbar.y) - height - Ui.hudPx(4)
     }
 
     // A held compass or clock (decision E-769) right of the hotbar.
     DialDisplay {
-        hudState: hud.game.hud
+        hudState: hud.hudState
         anchors.left: hotbar.right
         anchors.bottom: hotbar.bottom
         anchors.leftMargin: Ui.hudPx(12)
@@ -562,7 +486,7 @@ Item {
         // The pad's hints of a screen take this place (PadHints); the pad's world hints lie over it
         // (padHint), so the rows above keep their place. Hidden, it keeps its height: the hotbar
         // stays where it is.
-        visible: !hud.game.gamepad.focusShown && hud.hintShown
+        visible: !hud.game.gamepad.focusShown && hud.hudState.hintShown
         opacity: hud.game.gamepad.active ? 0 : 1
         font.pixelSize: Ui.hudPx(13)
         text: hud.game.input.mouseCaptured && hud.game.player.spectator
@@ -580,11 +504,10 @@ Item {
     Loader {
         id: padHint
 
-        objectName: "hudPadHint"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: hint.verticalCenter
         active: hud.game.gamepad.active && !hud.game.gamepad.focusShown
-        visible: hud.hintShown
+        visible: hud.hudState.hintShown
         // Ten buttons in one row: at a large HUD scale the row shrinks to the window's width.
         scale: Math.min(1, (hud.width - Ui.hudPx(16)) / Math.max(1, width))
 

@@ -26,8 +26,8 @@ class QcChatFeed : public QObject
     // fades from opacity to 0 over that many milliseconds (the HUD animates it). The list changes
     // only when a line comes, starts to fade or goes, the chat opens or closes, or it is cleared.
     Q_PROPERTY(QVariantList entries READ entries NOTIFY entriesChanged FINAL)
-    // Whether the chat line is open (Main.qml binds it).
-    Q_PROPERTY(bool open READ isOpen WRITE setOpen NOTIFY openChanged FINAL)
+    // Whether the chat line is open (QcGameController sets it from the overlay).
+    Q_PROPERTY(bool open READ isOpen NOTIFY openChanged FINAL)
 
 public:
     static constexpr qint64 fadeAfterMs = 10'000;

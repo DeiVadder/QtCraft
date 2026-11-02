@@ -4,7 +4,9 @@
 #include "app/admin/QcAdminViews.h"
 
 #include "app/admin/QcAdminSettingNames.h"
+#include "app/models/QcDurationText.h"
 #include "clientcore/admin/QcAdminCompletion.h"
+#include "common/auth/QcProfileValidation.h"
 #include "common/protocol/QcChatText.h"
 
 #include <QCoreApplication>
@@ -32,6 +34,44 @@ QString modeName(QcGameMode mode)
     return QCoreApplication::translate("QcAdminViews", "Survival");
 }
 
+// A number in the player's language with `decimals` places.
+QString number(double value, int decimals)
+{
+    return QLocale().toString(value, 'f', decimals);
+}
+
+// How a player plays: the game mode, and for a player over the network his ping and address (the
+// host plays in the server's process: no round trip and no address).
+QString details(const QcMsg::AdminPlayers::Entry &entry)
+{
+    if (entry.local) {
+        return modeName(entry.gameMode);
+    }
+    QStringList parts{entry.pingMs < 0 ? QCoreApplication::translate("QcAdminViews", "Ping unknown") : QCoreApplication::translate("QcAdminViews", "Ping %1 ms").arg(entry.pingMs), modeName(entry.gameMode)};
+    if (!entry.address.isEmpty()) {
+        parts.append(entry.address);
+    }
+    return parts.join(u" · "_s);
+}
+
+// The texts of the status's numbers (keys ending in "Text").
+QVariantMap statusTexts(const QcMsg::AdminStatus &status)
+{
+    const QcMsg::AdminSample &sample = status.sample;
+    return {{u"tpsText"_s, number(sample.ticksPerSecond, 1)},
+            {u"tickText"_s, QCoreApplication::translate("QcAdminViews", "%1 ms (mean %2)").arg(number(sample.tickP99Ms, 1), number(sample.tickMeanMs, 1))},
+            {u"playersText"_s, number(sample.players, 0)},
+            {u"chunksText"_s, number(sample.loadedChunks, 0)},
+            {u"entitiesText"_s, number(sample.entities, 0)},
+            {u"memoryText"_s, QCoreApplication::translate("QcAdminViews", "%1 MB").arg(number(sample.memoryMb, 0))},
+            {u"sentText"_s, QCoreApplication::translate("QcAdminViews", "%1 KB/s").arg(number(sample.sentKbPerSecond, 1))},
+            {u"receivedText"_s, QCoreApplication::translate("QcAdminViews", "%1 KB/s").arg(number(sample.receivedKbPerSecond, 1))},
+            {u"peakMemoryText"_s, QCoreApplication::translate("QcAdminViews", "%1 MB").arg(number(status.peakMemoryMb, 0))},
+            {u"skippedText"_s, number(static_cast<double>(status.skippedTicks), 0)},
+            {u"uptimeText"_s, QcDurationText::daysHoursMinutes(static_cast<qint64>(status.uptimeMs))},
+            {u"versionText"_s, QCoreApplication::translate("QcAdminViews", "%1 (protocol %2)").arg(status.version).arg(status.protocol)}};
+}
+
 // The phases shown on the overview: the slowest few.
 constexpr qsizetype shownPhases = 5;
 
@@ -45,7 +85,9 @@ QVariantList phases(const QcMsg::AdminStatus &status)
 
     QVariantList shown;
     for (qsizetype i = 0; i < std::min(shownPhases, timed.size()); ++i) {
-        shown.append(QVariantMap{{u"name"_s, QString::fromLatin1(timed[i].second)}, {u"ms"_s, timed[i].first}});
+        shown.append(QVariantMap{{u"name"_s, QString::fromLatin1(timed[i].second)},
+                                 {u"ms"_s, timed[i].first},
+                                 {u"msText"_s, QCoreApplication::translate("QcAdminViews", "%1 ms").arg(number(timed[i].first, 2))}});
     }
     return shown;
 }
@@ -115,26 +157,40 @@ namespace QcAdminViews {
 QVariantMap status(const QcMsg::AdminStatus &status)
 {
     const QcMsg::AdminSample &sample = status.sample;
-    return {{u"tps"_s, sample.ticksPerSecond},
-            {u"tickMean"_s, sample.tickMeanMs},
-            {u"tickP99"_s, sample.tickP99Ms},
-            {u"tickMax"_s, sample.tickMaxMs},
-            {u"players"_s, sample.players},
-            {u"chunks"_s, sample.loadedChunks},
-            {u"entities"_s, sample.entities},
-            {u"memory"_s, sample.memoryMb},
-            {u"peakMemory"_s, status.peakMemoryMb},
-            {u"sent"_s, sample.sentKbPerSecond},
-            {u"received"_s, sample.receivedKbPerSecond},
-            {u"uptimeMs"_s, static_cast<qreal>(status.uptimeMs)},
-            {u"tick"_s, static_cast<qreal>(status.tick)},
-            {u"skipped"_s, static_cast<qreal>(status.skippedTicks)},
-            {u"world"_s, status.worldName},
-            {u"seed"_s, QString::number(status.seed)},
-            {u"generator"_s, status.generator},
-            {u"version"_s, status.version},
-            {u"protocol"_s, status.protocol},
-            {u"phases"_s, phases(status)}};
+    QVariantMap shown{{u"measured"_s, true},
+                      {u"tps"_s, sample.ticksPerSecond},
+                      {u"tickMean"_s, sample.tickMeanMs},
+                      {u"tickP99"_s, sample.tickP99Ms},
+                      {u"tickMax"_s, sample.tickMaxMs},
+                      {u"players"_s, sample.players},
+                      {u"chunks"_s, sample.loadedChunks},
+                      {u"entities"_s, sample.entities},
+                      {u"memory"_s, sample.memoryMb},
+                      {u"peakMemory"_s, status.peakMemoryMb},
+                      {u"sent"_s, sample.sentKbPerSecond},
+                      {u"received"_s, sample.receivedKbPerSecond},
+                      {u"uptimeMs"_s, static_cast<qreal>(status.uptimeMs)},
+                      {u"tick"_s, static_cast<qreal>(status.tick)},
+                      {u"skipped"_s, static_cast<qreal>(status.skippedTicks)},
+                      {u"world"_s, status.worldName},
+                      {u"seed"_s, QString::number(status.seed)},
+                      {u"generator"_s, status.generator},
+                      {u"version"_s, status.version},
+                      {u"protocol"_s, status.protocol},
+                      {u"phases"_s, phases(status)}};
+    shown.insert(statusTexts(status));
+    return shown;
+}
+
+QVariantMap emptyStatus()
+{
+    const QString none = u"–"_s;
+    QVariantMap shown{{u"measured"_s, false}, {u"world"_s, none}, {u"seed"_s, none}, {u"generator"_s, none}, {u"phases"_s, QVariantList()}};
+    const QVariantMap texts = statusTexts({});
+    for (auto it = texts.cbegin(); it != texts.cend(); ++it) {
+        shown.insert(it.key(), none);
+    }
+    return shown;
 }
 
 QVariantMap charts(const QcMsg::AdminHistory &history, bool minutes)
@@ -152,7 +208,12 @@ QVariantMap charts(const QcMsg::AdminHistory &history, bool minutes)
             {u"received"_s, series(samples, [](const Sample &s) { return s.receivedKbPerSecond; })}};
 }
 
-QVariantList players(const QList<QcMsg::AdminPlayers::Entry> &players)
+bool sameName(const QString &name, const QString &other)
+{
+    return QcProfileValidation::playerName(name).toCaseFolded() == QcProfileValidation::playerName(other).toCaseFolded();
+}
+
+QVariantList players(const QList<QcMsg::AdminPlayers::Entry> &players, const QString &ownName)
 {
     QList<QcMsg::AdminPlayers::Entry> byName = players;
     std::ranges::sort(byName, [](const auto &a, const auto &b) { return a.name.compare(b.name, Qt::CaseInsensitive) < 0; });
@@ -165,7 +226,9 @@ QVariantList players(const QList<QcMsg::AdminPlayers::Entry> &players)
                                  {u"operator"_s, entry.operatorRights},
                                  {u"local"_s, entry.local},
                                  {u"address"_s, entry.address},
-                                 {u"connectedMs"_s, static_cast<qreal>(entry.connectedMs)}});
+                                 {u"connectedMs"_s, static_cast<qreal>(entry.connectedMs)},
+                                 {u"details"_s, details(entry)},
+                                 {u"own"_s, !ownName.isEmpty() && sameName(entry.name, ownName)}});
     }
     return shown;
 }

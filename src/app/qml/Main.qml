@@ -33,16 +33,11 @@ ApplicationWindow {
             focusBeforeHandbook = activeFocusItem;
     }
 
-    // The world the game draws into, and the world's input while it plays.
+    // The world the game draws into (the world's input follows the phase in C++).
     Binding {
         target: root.gameController
         property: "view"
         value: worldView
-    }
-    Binding {
-        target: root.gameController
-        property: "inputEnabled"
-        value: root.gameController.phase === GameController.Phase.Playing
     }
     // The UI scale (decision E-725): the player's choice and the window; Ui.px() and
     // Ui.hudPx() take their factors from here.
@@ -55,13 +50,6 @@ ApplicationWindow {
         target: UiScaling
         property: "windowSize"
         value: Qt.size(root.width, root.height)
-    }
-    // The chat lines of the HUD all show while the chat line is open and fade while it is closed
-    // (decision E-875).
-    Binding {
-        target: root.gameController.hud.chat
-        property: "open"
-        value: root.gameController.overlay === GameController.Overlay.Chat
     }
     // Controls (buttons, boxes, labels, tooltips, popups) inherit the window's font.
     WindowFont {

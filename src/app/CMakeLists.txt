@@ -86,6 +86,7 @@ target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
     models/QcControlPalette.h models/QcControlPalette.cpp
     models/QcCreativeItemModel.h models/QcCreativeItemModel.cpp
+    models/QcDurationText.h models/QcDurationText.cpp
     models/QcEnchantmentTexts.h models/QcEnchantmentTexts.cpp
     models/QcGameModeForeign.h
     models/QcHandbookModel.h models/QcHandbookModel.cpp
@@ -96,6 +97,7 @@ target_sources(qc_app_core PRIVATE
     models/QcMapImageProvider.h models/QcMapImageProvider.cpp
     models/QcModStatusForeign.h
     models/QcPixelArtProvider.h models/QcPixelArtProvider.cpp
+    models/QcPointsRow.h models/QcPointsRow.cpp
     models/QcSlotRange.h models/QcSlotRange.cpp
     models/QcTexturePackForeign.h
     models/QcTexturePackPreviewProvider.h models/QcTexturePackPreviewProvider.cpp
@@ -283,6 +285,7 @@ qt_add_qml_module(qc_app_core
         qml/hud/MapInHand.qml
         qml/hud/Notice.qml
         qml/hud/PlayerListOverlay.qml
+        qml/hud/PointsIconRow.qml
         qml/hud/SignEditor.qml
         qml/hud/WorldLabels.qml
         qml/inventory/AnvilScreen.qml

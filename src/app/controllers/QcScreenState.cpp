@@ -240,6 +240,8 @@ void QcScreenState::setPhase(Phase phase, const QString &status)
     }
     if (m_phase != phase) {
         m_phase = phase;
+        // The input is off before the phase is told (interrupted, mouseFreed first).
+        setInputEnabled(playing());
         emit phaseChanged();
         emit worldInputChanged();
     }

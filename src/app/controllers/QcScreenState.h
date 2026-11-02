@@ -137,10 +137,12 @@ public:
     Phase phase() const { return m_phase; }
     bool playing() const { return m_phase == Phase::Playing; }
     QString statusText() const { return m_statusText; }
+    // A new phase also enables the world's input in the world and disables it elsewhere.
     void setPhase(Phase phase, const QString &status = {});
     // The program is still starting: the start screen covers the menu (decision E-943).
     bool starting() const { return m_starting; }
     void setStarting(bool starting);
+    // Input reaches the world (set with the phase; a benchmark or a test may set it on its own).
     bool inputEnabled() const { return m_inputEnabled; }
     void setInputEnabled(bool enabled);
     // In-game screen on top of the world.
@@ -218,7 +220,7 @@ private:
     Phase m_phase = Phase::Menu;
     QString m_statusText;
     bool m_starting = true;
-    bool m_inputEnabled = true;
+    bool m_inputEnabled = false;
     Overlay m_overlay = Overlay::None;
     // Where closeAdvancements() leads: set each time the advancements open.
     Overlay m_advancementsReturn = Overlay::None;
