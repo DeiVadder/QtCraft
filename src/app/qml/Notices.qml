@@ -24,20 +24,20 @@ Item {
     // (a status effect under it is covered for the toast's few seconds); hidden with the HUD and
     // while a screenshot is taken.
     Loader {
-        id: advancementToast
-
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.rightMargin: Ui.hudPx(8)
         anchors.topMargin: Ui.hudPx(40)
-        active: false
+        // Made while a toast shows (the queue in C++ keeps the waiting ones).
+        active: notices.game.player.advancementToasts.showing
         // A notice for playing in the world (decision E-927): not over the panels of a screen (nor
         // over the advancement tree, which shows the same and would lose its close button).
-        visible: ((item as AdvancementToast)?.showing ?? false) && !notices.game.photo.hudHidden
-                 && !notices.game.photo.capturing
+        visible: !notices.game.photo.hudHidden && !notices.game.photo.capturing
                  && (notices.game.hudShown === GameController.HudShown.All || notices.game.hudShown === GameController.HudShown.AllButHint)
 
-        sourceComponent: AdvancementToast {}
+        sourceComponent: AdvancementToast {
+            queue: notices.game.player.advancementToasts
+        }
     }
 
     // The notices at the top; all hide while a screenshot is taken, the pad's and the refusal with
@@ -86,25 +86,9 @@ Item {
     Connections {
         target: notices.game.player
 
-        function onAdvancementReached(advancement: var) {
-            advancementToast.active = true;
-            (advancementToast.item as AdvancementToast).add(advancement);
-        }
-
         function onActionRefused() {
             refusalNotice.active = true;
             (refusalNotice.item as Notice).show(qsTr("Adventure mode: not allowed here"));
-        }
-    }
-
-    // Leaving the world (or losing it) forgets the advancements still waiting for their toast.
-    Connections {
-        target: notices.game
-
-        function onPhaseChanged() {
-            if (notices.game.phase !== GameController.Phase.Playing) {
-                (advancementToast.item as AdvancementToast)?.clear();
-            }
         }
     }
 

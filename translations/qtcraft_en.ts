@@ -15,9 +15,8 @@
 <context>
     <name>AdvancementToast</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/AdvancementToast.qml" line="61"/>
         <source>+%n more</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>+%n more</numerusform>
             <numerusform>+%n more</numerusform>
         </translation>
@@ -139,6 +138,17 @@
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>
             <numerusform>%n values not saved; they stay changed here:</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QcAdvancementQueue</name>
+    <message numerus="yes">
+        <location filename="../src/app/controllers/QcAdvancementQueue.cpp" line="53"/>
+        <source>+%n more</source>
+        <translation>
+            <numerusform>+%n more</numerusform>
+            <numerusform>+%n more</numerusform>
         </translation>
     </message>
 </context>

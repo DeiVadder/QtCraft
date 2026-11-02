@@ -7,6 +7,9 @@
 
 qc_add_test(test_advancement_tree SOURCES screens/test_advancement_tree.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_advancement_tree_model SOURCES screens/test_advancement_tree_model.cpp LIBRARIES qc_app_core qc_worlds)
+# The toast queue of reached advancements and the handbook's page, history and lists (E-954).
+qc_add_test(test_advancement_queue SOURCES screens/test_advancement_queue.cpp LIBRARIES qc_app_core)
+qc_add_test(test_handbook_navigation SOURCES screens/test_handbook_navigation.cpp LIBRARIES qc_app_core)
 qc_add_test(test_framed_maps SOURCES screens/test_framed_maps.cpp LIBRARIES qc_base_content qc_clientcore)
 # The held map's markers, its image provider and the filled map's tooltip (decision E-805).
 qc_add_test(test_map_hud SOURCES screens/test_map_hud.cpp LIBRARIES qc_app_core)

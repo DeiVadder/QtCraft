@@ -16,6 +16,7 @@ target_sources(qc_app_core PRIVATE
     admin/QcAdminViews.h admin/QcAdminViews.cpp
 )
 target_sources(qc_app_core PRIVATE
+    controllers/QcAdvancementQueue.h controllers/QcAdvancementQueue.cpp
     controllers/QcAnvilController.h controllers/QcAnvilController.cpp
     controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
     controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
@@ -25,6 +26,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
+    controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp

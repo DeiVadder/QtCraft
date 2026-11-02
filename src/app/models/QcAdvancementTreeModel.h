@@ -74,6 +74,14 @@ public:
     void setSelected(const QString &name);
     int selectedIndex() const;
 
+    // The neighbour of node `index` of `nodes` in a direction (-1 for none): left (`dx` < 0) its
+    // parent, right (`dx` > 0) the child nearest to its row, up and down (`dy`) the nearest one in
+    // its column above or below. The arrow keys and the pad's directions walk the tree with it.
+    Q_INVOKABLE int neighbour(int index, int dx, int dy) const;
+    // Chooses the tab `direction` steps away; false when there is none (the first or the last tab).
+    // Direction 0 keeps the tab and returns true: the tab list calls it for the tab already chosen,
+    // and the screen then puts the focus on its root as for any other choice.
+    Q_INVOKABLE bool stepTab(int direction);
     // Reads the progress and the content of the session again.
     Q_INVOKABLE void update();
     // Shows `progress` over the advancements of `content` (none without content); update() with the

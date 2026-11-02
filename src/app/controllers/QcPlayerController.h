@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app/controllers/QcAdvancementQueue.h"
 #include "app/controllers/QcSlotCursor.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
@@ -65,6 +66,8 @@ class QcPlayerController : public QObject, public QcSlotActions
     // The spectator mode (decision E-730): no hotbar, health, food or hand.
     Q_PROPERTY(bool spectator READ spectator NOTIFY gameModeChanged FINAL)
     Q_PROPERTY(QcCreativeItemModel *creativeItems READ creativeItems CONSTANT FINAL)
+    // The toasts of reached advancements (decision E-923).
+    Q_PROPERTY(QcAdvancementQueue *advancementToasts READ advancementToasts CONSTANT FINAL)
 
 public:
     QcPlayerController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
@@ -99,9 +102,11 @@ public:
     bool creative() const;
     bool spectator() const;
     QcCreativeItemModel *creativeItems() const { return m_creativeItems; }
+    QcAdvancementQueue *advancementToasts() const { return m_advancementToasts; }
 
-    // The local player reached `advancement` just now (QcClientSession::advancementReached): emits
-    // advancementReached with what the toast shows.
+    // The local player reached `advancement` just now (QcClientSession::advancementReached): queues
+    // its toast with the texts translated; `special` for goals and challenges, which the toast sets
+    // apart.
     void announceAdvancement(const QString &advancement);
 
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
@@ -142,18 +147,19 @@ signals:
     // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
     // every QcClientSession::refusalReportTicks; the HUD shows a short notice.
     void actionRefused();
-    // An advancement was reached (decision E-923): {name, title, description, icon, heading, special}
-    // with the texts translated; `special` for goals and challenges, which the toast sets apart.
-    void advancementReached(const QVariantMap &advancement);
 
 private:
     void updateCraftableRecipes();
+    // Without signals: nameOpenMachine() sets both before updateMachine() notifies.
+    void setMachineLabel(const QString &label) { m_machineLabel = label; }
+    void setContainerColumns(int columns) { m_containerColumns = columns; }
 
     const QcSessionParts &m_parts;
     const QcSettingsController &m_settings;
     QcInventoryModel *m_inventory = nullptr;
     QcCreativeItemModel *m_creativeItems = nullptr;
     QcSlotCursor *m_slotCursor = nullptr;
+    QcAdvancementQueue *m_advancementToasts = nullptr;
     QString m_machineLabel;
     int m_containerColumns = 9;
     QVariantList m_craftableRecipes;

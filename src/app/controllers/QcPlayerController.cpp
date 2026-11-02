@@ -22,6 +22,7 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_inventory(new QcInventoryModel(this))
     , m_creativeItems(new QcCreativeItemModel(this))
     , m_slotCursor(new QcSlotCursor(*m_inventory, *this, this))
+    , m_advancementToasts(new QcAdvancementQueue(this))
 {
     // The craftable recipes carry icon URLs, which change with new icons (decision E-650).
     connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {
@@ -316,29 +317,29 @@ void QcPlayerController::nameOpenMachine()
         const QcItemStack &stack = session.inventory().slot(held);
         const bool known = content->isValidItem(stack.item);
         const std::optional<QcBlockId> block = known ? content->blockId(content->item(stack.item).placesBlock) : std::nullopt;
-        m_machineLabel = known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString();
+        setMachineLabel(known ? content->translations().translate(content->item(stack.item).translationKey, m_settings.contentLanguage()) : QString());
         // A backpack named at the anvil shows its name (decision E-866).
         if (!stack.name().isEmpty()) {
-            m_machineLabel = stack.name();
+            setMachineLabel(stack.name());
         }
-        m_containerColumns = block ? content->block(*block).containerColumns : 9;
+        setContainerColumns(block ? content->block(*block).containerColumns : 9);
         return;
     }
     if (session.machine().entity() != 0) {
         // A container cart: named after its item, its rows as long as those of the block it carries.
         const QcClientEntity cart = session.entities().value(session.machine().entity());
         const std::optional<QcBlockId> carried = cart.cartBlock(*content);
-        m_machineLabel = content->isValidItem(cart.item.item) ? content->translations().translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString();
-        m_containerColumns = carried ? content->block(*carried).containerColumns : 9;
+        setMachineLabel(content->isValidItem(cart.item.item) ? content->translations().translate(content->item(cart.item.item).translationKey, m_settings.contentLanguage()) : QString());
+        setContainerColumns(carried ? content->block(*carried).containerColumns : 9);
         return;
     }
     const std::optional<QcBlockId> block = pos && session.world() ? session.world()->blockAt(*pos) : std::nullopt;
-    m_machineLabel = block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString();
+    setMachineLabel(block ? content->translations().translate(content->block(*block).translationKey, m_settings.contentLanguage()) : QString());
     // A chest or furnace placed from a named item shows the name (decision E-873).
     if (!session.machine().name().isEmpty()) {
-        m_machineLabel = session.machine().name();
+        setMachineLabel(session.machine().name());
     }
-    m_containerColumns = block ? content->block(*block).containerColumns : 9;
+    setContainerColumns(block ? content->block(*block).containerColumns : 9);
 }
 
 void QcPlayerController::updateMachine()
@@ -362,10 +363,10 @@ void QcPlayerController::announceAdvancement(const QString &advancement)
     } else if (definition->frame == QcAdvancementFrame::Challenge) {
         heading = tr("Challenge complete!");
     }
-    emit advancementReached(QVariantMap{{u"name"_s, advancement},
-                                        {u"title"_s, content->translations().translate(definition->titleKey, language)},
-                                        {u"description"_s, content->translations().translate(definition->descriptionKey, language)},
-                                        {u"icon"_s, QcItemIconUrls::url(definition->icon)},
-                                        {u"heading"_s, heading},
-                                        {u"special"_s, definition->frame != QcAdvancementFrame::Task}});
+    m_advancementToasts->add(QVariantMap{{u"name"_s, advancement},
+                                         {u"title"_s, content->translations().translate(definition->titleKey, language)},
+                                         {u"description"_s, content->translations().translate(definition->descriptionKey, language)},
+                                         {u"icon"_s, QcItemIconUrls::url(definition->icon)},
+                                         {u"heading"_s, heading},
+                                         {u"special"_s, definition->frame != QcAdvancementFrame::Task}});
 }

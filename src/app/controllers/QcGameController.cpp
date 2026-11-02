@@ -153,6 +153,12 @@ QcGameController::QcGameController(QObject *parent)
             m_multiplayer->forget();
         }
     });
+    // Leaving the world (or losing it) forgets the advancements still waiting for their toast.
+    connect(&m_screens, &QcScreenState::phaseChanged, this, [this] {
+        if (!m_screens.playing()) {
+            m_player->advancementToasts()->clear();
+        }
+    });
     connect(&m_screens, &QcScreenState::phaseChanged, this, &QcGameController::phaseChanged);
     connect(&m_screens, &QcScreenState::statusChanged, this, &QcGameController::statusChanged);
     connect(&m_screens, &QcScreenState::startingChanged, this, &QcGameController::startingChanged);
