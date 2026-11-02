@@ -9,6 +9,7 @@
 #include "clientcore/session/QcClientSession.h"
 #include "worlds/QcWorldLibrary.h"
 
+#include <QCoreApplication>
 #include <QDir>
 
 using namespace Qt::StringLiterals;
@@ -54,9 +55,28 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     connect(m_rendering, &QcRenderSettings::changed, this, [this] { m_texturePacks->setMaterials(m_rendering->options().materials().maps); });
     connect(m_keyControls, &QcKeyControls::edited, this, &QcSettingsController::saveSettings);
     connect(m_texturePacks, &QcTexturePackController::selectionChanged, this, &QcSettingsController::saveSettings);
+
+    // Every other change is stored once the values rest (saveIfChanged() skips what is stored already).
+    m_saveTimer.setSingleShot(true);
+    m_saveTimer.setInterval(saveDelayMs);
+    connect(&m_saveTimer, &QTimer::timeout, this, &QcSettingsController::saveIfChanged);
+    connect(this, &QcSettingsController::settingsChanged, this, &QcSettingsController::scheduleSave);
+    connect(this, &QcSettingsController::viewDistanceChanged, this, &QcSettingsController::scheduleSave);
+    connect(m_audio, &QcAudioSettings::changed, this, &QcSettingsController::scheduleSave);
+    connect(m_debug, &QcDebugSettings::levelChanged, this, &QcSettingsController::scheduleSave);
+    connect(m_debug, &QcDebugSettings::visualsChanged, this, &QcSettingsController::scheduleSave);
+    connect(m_character, &QcCharacterSettings::lookChanged, this, &QcSettingsController::scheduleSave);
+    connect(m_character, &QcCharacterSettings::presetsChanged, this, &QcSettingsController::scheduleSave);
+    connect(m_gamepad, &QcGamepadOptions::controllersChanged, this, &QcSettingsController::scheduleSave);
+    if (const QCoreApplication *application = QCoreApplication::instance()) {
+        connect(application, &QCoreApplication::aboutToQuit, this, &QcSettingsController::flushPendingSave);
+    }
 }
 
-QcSettingsController::~QcSettingsController() = default;
+QcSettingsController::~QcSettingsController()
+{
+    flushPendingSave();
+}
 
 QString QcSettingsController::settingsPath()
 {
@@ -84,7 +104,11 @@ void QcSettingsController::loadSettings()
     setCameraShake(m_storedSettings.cameraShake);
     m_languageSetting = m_storedSettings.language;
     m_cameraMode = m_storedSettings.cameraMode;
-    m_uiScale = m_storedSettings.uiScale;
+    // Auto (older settings files) means 100 %, the step the screen offers for it.
+    m_uiScale = m_storedSettings.uiScale == QcUiScale::Step::Auto ? QcUiScale::Step::Percent100 : m_storedSettings.uiScale;
+    if (m_storedSettings.uiScale == QcUiScale::Step::Auto) {
+        qCInfo(lcGame) << "Settings: UI scale auto is 100 %";
+    }
     m_textureFiltering = static_cast<TextureFiltering>(m_storedSettings.textureFiltering);
     m_rendering->load(m_storedSettings.render);
     m_character->load(m_storedSettings.appearance, m_storedSettings.characterPresets);
@@ -92,6 +116,8 @@ void QcSettingsController::loadSettings()
     m_audio->load(m_storedSettings.audio);
     m_texturePacks->loadSelection(m_storedSettings.texturePacks);
     emit settingsChanged();
+    // What was just loaded is stored already.
+    m_saveTimer.stop();
 }
 
 void QcSettingsController::overrideViewDistance(int chunks)
@@ -100,7 +126,7 @@ void QcSettingsController::overrideViewDistance(int chunks)
     m_commandLineViewDistance = m_viewDistance;
 }
 
-void QcSettingsController::saveSettings()
+QcGameSettings QcSettingsController::currentSettings() const
 {
     QcGameSettings settings;
     // A view distance given on the command line is not stored unless the player changed it since.
@@ -110,13 +136,14 @@ void QcSettingsController::saveSettings()
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
     settings.gamepad = m_gamepad->settings();
-    settings.debug = m_debug->options();
+    // The run's scene options stand for the stored values until the player changes them.
+    settings.debug = m_sceneDebug == m_debug->options() ? m_storedSettings.debug : m_debug->options();
     settings.showLabels = m_showLabels;
     settings.photoHidesHand = m_photoHidesHand;
     settings.pauseOnFocusLoss = m_pauseOnFocusLoss;
     settings.cameraShake = m_cameraShake;
     settings.language = m_languageSetting;
-    settings.cameraMode = m_cameraMode;
+    settings.cameraMode = m_sceneCameraMode == m_cameraMode ? m_storedSettings.cameraMode : m_cameraMode;
     settings.uiScale = m_uiScale;
     settings.textureFiltering = static_cast<int>(m_textureFiltering);
     settings.render = m_rendering->options();
@@ -125,12 +152,45 @@ void QcSettingsController::saveSettings()
     settings.audio = m_audio->volumes();
     settings.keys = m_keyControls->bindings();
     settings.texturePacks = m_texturePacks->storedSelection();
+    return settings;
+}
+
+void QcSettingsController::keepSceneOptionsUnsaved()
+{
+    m_saveTimer.stop();
+    if (m_cameraMode != m_storedSettings.cameraMode) {
+        m_sceneCameraMode = m_cameraMode;
+    }
+    if (m_debug->options() != m_storedSettings.debug) {
+        m_sceneDebug = m_debug->options();
+    }
+}
+
+void QcSettingsController::saveSettings()
+{
+    m_saveTimer.stop();
+    const QcGameSettings settings = currentSettings();
     if (const QcStatus saved = settings.save(settingsPath()); !saved) {
         qCWarning(lcGame) << saved.error();
         return;
     }
 
     m_storedSettings = settings;
+}
+
+void QcSettingsController::saveIfChanged()
+{
+    if (currentSettings() != m_storedSettings) {
+        saveSettings();
+    }
+}
+
+void QcSettingsController::flushPendingSave()
+{
+    if (savePending()) {
+        m_saveTimer.stop();
+        saveIfChanged();
+    }
 }
 
 void QcSettingsController::setViewDistance(int chunks)

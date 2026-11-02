@@ -13,6 +13,9 @@
 
 #include <QRandomGenerator>
 
+#include <algorithm>
+#include <array>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -64,6 +67,36 @@ void QcCharacterSettings::setLook(const QVariantMap &look)
     appearance.pantsColor = color(u"pants"_s, appearance.pantsColor);
     appearance.cape = look.value(u"cape"_s, appearance.cape).toString().left(QcAppearance::maxNameLength);
     change(appearance);
+}
+
+void QcCharacterSettings::setPart(const QString &part, const QString &value)
+{
+    static constexpr std::array<QStringView, 7> parts{u"outfit", u"hair", u"cape", u"skin", u"hairColor", u"shirt", u"pants"};
+    if (std::ranges::find(parts, QStringView(part)) == parts.end()) {
+        qCWarning(lcGame) << "Character look: ignoring unknown part" << part;
+        return;
+    }
+    if (!offers(part, value)) {
+        qCWarning(lcGame) << "Character look" << part << ": ignoring" << value << "(not offered)";
+        return;
+    }
+
+    setLook({{part, value}});
+}
+
+bool QcCharacterSettings::offers(const QString &part, const QString &value) const
+{
+    QVariantList choices;
+    if (part == u"outfit"_s) {
+        choices = outfits();
+    } else if (part == u"hair"_s) {
+        choices = hairStyles();
+    } else if (part == u"cape"_s) {
+        choices = capes();
+    } else {
+        return true;
+    }
+    return std::ranges::any_of(choices, [&value](const QVariant &choice) { return choice.toMap().value(u"name"_s).toString() == value; });
 }
 
 void QcCharacterSettings::change(const QcAppearance &appearance)

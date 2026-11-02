@@ -10,7 +10,7 @@ import QtCraft
 
 // The player's look: outfit, hair style, cape, four colours and presets, next to a live preview of the
 // character as other players see it (decision E-231). It edits a draft (decision E-852): the preview
-// shows it at once, "Save" applies it (also in a running game) and stores the settings, "Discard"
+// shows it at once, "Save" applies it (also in a running game; the settings store it), "Discard"
 // goes back to the saved look; leaving with unsaved changes asks first (leave()). Presets change the
 // draft only. The character screen (in the game) and the main menu's character page show it; they
 // open the draft with begin() and close it with end().
@@ -37,7 +37,6 @@ RowLayout {
 
     function save() {
         character.saveDraft();
-        game.settings.saveSettings();
     }
 
     // Runs `proceed` at once without unsaved changes, else after the player saved or discarded
@@ -56,12 +55,6 @@ RowLayout {
         action();
         if (hadFocus)
             randomButton.forceActiveFocus(Qt.TabFocusReason);
-    }
-
-    function setPart(key, value) {
-        const look = character.look;
-        look[key] = value;
-        character.look = look;
     }
 
     // Selects the stored outfit and hair; the lists may have changed (language, mods) since.
@@ -131,9 +124,9 @@ RowLayout {
                 Accessible.checked: chosen
                 Keys.onLeftPressed: moveFocus(-1)
                 Keys.onRightPressed: moveFocus(1)
-                Keys.onSpacePressed: screen.setPart(row.key, modelData)
-                Keys.onReturnPressed: screen.setPart(row.key, modelData)
-                Keys.onEnterPressed: screen.setPart(row.key, modelData)
+                Keys.onSpacePressed: screen.character.setPart(row.key, modelData)
+                Keys.onReturnPressed: screen.character.setPart(row.key, modelData)
+                Keys.onEnterPressed: screen.character.setPart(row.key, modelData)
 
                 // The gold outline outside the edge.
                 FocusOutline {
@@ -143,7 +136,7 @@ RowLayout {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        screen.setPart(row.key, swatch.modelData);
+                        screen.character.setPart(row.key, swatch.modelData);
                         swatch.forceActiveFocus(Qt.MouseFocusReason);
                     }
                 }
@@ -211,7 +204,7 @@ RowLayout {
                 textRole: "label"
                 valueRole: "name"
                 model: screen.character.outfits
-                onActivated: screen.setPart("outfit", currentValue)
+                onActivated: screen.character.setPart("outfit", currentValue)
             }
 
             Label {
@@ -227,7 +220,7 @@ RowLayout {
                 textRole: "label"
                 valueRole: "name"
                 model: screen.character.hairStyles
-                onActivated: screen.setPart("hair", currentValue)
+                onActivated: screen.character.setPart("hair", currentValue)
             }
 
             Label {
@@ -243,7 +236,7 @@ RowLayout {
                 textRole: "label"
                 valueRole: "name"
                 model: screen.character.capes
-                onActivated: screen.setPart("cape", currentValue)
+                onActivated: screen.character.setPart("cape", currentValue)
             }
         }
 

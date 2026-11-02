@@ -13,8 +13,11 @@
 /*! \brief The player's key table for QML: the rows of the controls page, the key texts of hints,
     key tests for screens and rebinding.
 
-    The game controller loads and stores it with the settings; QML knows it as KeyControls
-    (QcKeyControlsForeign). */
+    The controls page captures a key for a slot here: startCapture() waits, keyPressed() and
+    keyReleased() take the keys (Esc cancels; a modifier is bound when it is released without
+    another key, so Shift+7 binds the character it types), and \c message says what the last
+    change did. The game controller loads and stores it with the settings; QML knows it as
+    KeyControls (QcKeyControlsForeign). */
 class QcKeyControls : public QObject
 {
     Q_OBJECT
@@ -23,8 +26,26 @@ class QcKeyControls : public QObject
     Q_PROPERTY(QVariantList rows READ rows NOTIFY changed FINAL)
     /*! Action id -> text of its primary key, e.g. {"cameraView": "V"}. */
     Q_PROPERTY(QVariantMap labels READ labels NOTIFY changed FINAL)
+    /*! A slot waits for a key (startCapture()). */
+    Q_PROPERTY(bool capturing READ capturing NOTIFY captureChanged FINAL)
+    /*! The id of the action whose slot waits for a key; empty without a capture. */
+    Q_PROPERTY(QString captureAction READ captureAction NOTIFY captureChanged FINAL)
+    /*! The slot that waits for a key: 0 primary, 1 secondary, -1 without a capture. */
+    Q_PROPERTY(int captureSlot READ captureSlot NOTIFY captureChanged FINAL)
+    /*! What the last change did: a refused key, a resolved conflict, a Mac caveat or the reset;
+        empty when it needs no words. */
+    Q_PROPERTY(QString message READ message NOTIFY messageChanged FINAL)
 
 public:
+    /*! What a key did to a capture. */
+    enum class Capture {
+        Ignored,   // no slot waits for a key
+        Waiting,   // the slot still waits (a modifier held, a repeated key, another key released)
+        Cancelled, // Esc ended the capture without a key
+        Bound      // the key was bound (or refused, see message); the capture ended
+    };
+    Q_ENUM(Capture)
+
     explicit QcKeyControls(QObject *parent = nullptr);
 
     /*! Returns the key table. */
@@ -49,11 +70,52 @@ public:
     /*! The texts follow the UI language. */
     void retranslate() { emit changed(); }
 
+    /*! Returns whether a slot waits for a key. */
+    bool capturing() const { return m_captureSlot >= 0; }
+    /*! Returns the id of the action whose slot waits for a key. */
+    QString captureAction() const { return m_captureAction; }
+    /*! Returns the slot that waits for a key, -1 without a capture. */
+    int captureSlot() const { return m_captureSlot; }
+    /*! Returns what the last change did. */
+    QString message() const { return m_message; }
+    /*! Waits for a key for \a slot (0 primary, 1 secondary) of the action with the id \a action
+        and clears \c message. An unknown or fixed action or another slot is ignored with a
+        warning. */
+    Q_INVOKABLE void startCapture(const QString &action, int slot);
+    /*! Ends a capture without a key. */
+    Q_INVOKABLE void cancelCapture();
+    /*! Ends a capture and clears \c message (the settings open). */
+    Q_INVOKABLE void clearCapture();
+    /*! Takes \a key (a Qt::Key) pressed during a capture, \a autoRepeat when the system repeats
+        it. Returns what it did. */
+    Q_INVOKABLE QcKeyControls::Capture keyPressed(int key, bool autoRepeat);
+    /*! Takes \a key (a Qt::Key) released during a capture, \a autoRepeat when the system repeats
+        it: binds a modifier pressed alone. Returns what it did. */
+    Q_INVOKABLE QcKeyControls::Capture keyReleased(int key, bool autoRepeat);
+
 signals:
     void changed();
     /*! The player changed a key; the settings should be stored. */
     void edited();
+    /*! A capture started or ended. */
+    void captureChanged();
+    /*! \c message changed. */
+    void messageChanged();
 
 private:
+    // A capture of `slot` of `action` starts (-1: none) and forgets a pending modifier.
+    void setCapture(const QString &action, int slot);
+    void setMessage(const QString &message);
+    int pendingModifier() const { return m_pendingModifier; }
+    void setPendingModifier(int key) { m_pendingModifier = key; }
+    // Binds the captured slot to `key` and ends the capture.
+    Capture bindCaptured(int key);
+
     QcKeyBindings m_bindings = QcKeyBindings::defaults();
+    QString m_captureAction;
+    // NOLINT(qc-member-access): written only by setCapture(), together with m_captureAction.
+    int m_captureSlot = -1;
+    // A modifier pressed during the capture (0: none); bound when released alone.
+    int m_pendingModifier = 0;
+    QString m_message;
 };

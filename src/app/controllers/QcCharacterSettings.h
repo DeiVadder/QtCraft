@@ -57,6 +57,10 @@ public:
     QVariantMap look() const;
     // Changes the draft while one is open, else applies at once, also to the player of a running world.
     void setLook(const QVariantMap &look);
+    // Changes one part of the look as setLook() does: "outfit", "hair" or "cape" to a name of
+    // `outfits`, `hairStyles` or `capes`, or a colour ("skin", "hairColor", "shirt", "pants") to
+    // "#rrggbb". An unknown part or name is ignored with a warning.
+    Q_INVOKABLE void setPart(const QString &part, const QString &value);
     bool drafting() const { return m_drafting; }
     bool dirty() const { return m_drafting && m_draft != m_appearance; }
     // Opens a draft of the saved look (the character screen or page opens).
@@ -116,6 +120,8 @@ private:
     const QcContentRegistry &content() const;
     QVariantList appearanceList(QcAppearanceDefinition::Kind kind) const;
     QStringList playableNames(QcAppearanceDefinition::Kind kind) const;
+    // Whether `value` is a choice of the name `part` ("outfit", "hair", "cape"); true for a colour.
+    bool offers(const QString &part, const QString &value) const;
     // A change by the player: to the draft while one is open, else applied at once.
     void change(const QcAppearance &appearance);
 

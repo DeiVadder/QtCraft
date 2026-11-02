@@ -14,6 +14,7 @@ using namespace Qt::StringLiterals;
 QcGamepadOptions::QcGamepadOptions(QObject *parent)
     : QObject(parent)
 {
+    connect(this, &QcGamepadOptions::controllersChanged, this, &QcGamepadOptions::profileChoicesChanged);
 }
 
 void QcGamepadOptions::load(const QcGamepadSettings &settings)
@@ -24,14 +25,27 @@ void QcGamepadOptions::load(const QcGamepadSettings &settings)
 
 void QcGamepadOptions::setSource(QcGamepadSource *source)
 {
+    if (m_source) {
+        disconnect(m_source, nullptr, this, nullptr);
+    }
     m_source = source;
+    if (m_source) {
+        connect(m_source, &QcGamepadSource::padConnected, this, &QcGamepadOptions::profileChoicesChanged);
+        connect(m_source, &QcGamepadSource::padDisconnected, this, &QcGamepadOptions::profileChoicesChanged);
+    }
+    emit profileChoicesChanged();
+}
+
+QcGamepadSource *QcGamepadOptions::source() const
+{
+    return m_source;
 }
 
 QStringList QcGamepadOptions::connectedGuids() const
 {
     QStringList guids;
-    if (m_source) {
-        const QList<QcGamepadInfo> pads = m_source->pads();
+    if (source()) {
+        const QList<QcGamepadInfo> pads = source()->pads();
         for (const QcGamepadInfo &pad : pads) {
             guids.append(pad.guid);
         }
@@ -61,6 +75,29 @@ QVariantList QcGamepadOptions::controllers() const
         result.append(QVariantMap{{u"guid"_s, controller.guid}, {u"name"_s, controller.name}});
     }
     return result;
+}
+
+QVariantList QcGamepadOptions::profileChoices() const
+{
+    const auto choice = [](const QString &text, const QString &guid, const QString &name) {
+        return QVariantMap{{u"text"_s, text}, {u"value"_s, guid}, {u"name"_s, name}};
+    };
+    QVariantList choices{choice(tr("All controllers"), {}, {})};
+    QStringList known{QString()};
+    const QList<QcGamepadInfo> pads = source() ? source()->pads() : QList<QcGamepadInfo>();
+    for (const QcGamepadInfo &pad : pads) {
+        if (!pad.guid.isEmpty() && !known.contains(pad.guid)) {
+            known.append(pad.guid);
+            choices.append(choice(pad.name, pad.guid, pad.name));
+        }
+    }
+    for (const QcGamepadSettings::Controller &stored : m_settings.controllers) {
+        if (!known.contains(stored.guid)) {
+            known.append(stored.guid);
+            choices.append(choice(tr("%1 (not connected)").arg(stored.name), stored.guid, stored.name));
+        }
+    }
+    return choices;
 }
 
 const QcGamepadProfile &QcGamepadOptions::edited() const

@@ -3,11 +3,26 @@
 
 #include "clientcore/settings/QcKeyControls.h"
 
+#include "clientcore/debug/QcClientLogging.h"
 #include "clientcore/settings/QcKeyLabels.h"
 
 #include <QStringList>
 
+#include <algorithm>
+#include <array>
+
 using namespace Qt::StringLiterals;
+
+namespace {
+
+// Keys that only change others: bound when released alone.
+bool isModifier(int key)
+{
+    static constexpr std::array modifiers{Qt::Key_Shift, Qt::Key_Control, Qt::Key_Meta, Qt::Key_Alt, Qt::Key_AltGr};
+    return std::ranges::find(modifiers, key) != modifiers.end();
+}
+
+} // namespace
 
 QcKeyControls::QcKeyControls(QObject *parent)
     : QObject(parent)
@@ -94,9 +109,93 @@ QString QcKeyControls::bind(const QString &action, int slot, int key)
 
 void QcKeyControls::reset()
 {
+    setMessage(tr("All keys are back to their defaults."));
     if (m_bindings != QcKeyBindings::defaults()) {
         m_bindings = QcKeyBindings::defaults();
         emit changed();
         emit edited();
+    }
+}
+
+void QcKeyControls::startCapture(const QString &action, int slot)
+{
+    const std::optional<QcKeyBindings::Action> found = QcKeyBindings::actionFromId(action);
+    if (!found || QcKeyBindings::isFixed(*found) || slot < 0 || slot >= QcKeyBindings::slotCount) {
+        qCWarning(lcSettings) << "Key capture: ignoring action" << action << "slot" << slot << "(unknown, fixed or no such slot)";
+        return;
+    }
+
+    setMessage({});
+    setCapture(action, slot);
+}
+
+void QcKeyControls::cancelCapture()
+{
+    setCapture({}, -1);
+}
+
+void QcKeyControls::clearCapture()
+{
+    cancelCapture();
+    setMessage({});
+}
+
+QcKeyControls::Capture QcKeyControls::keyPressed(int key, bool autoRepeat)
+{
+    if (!capturing()) {
+        return Capture::Ignored;
+    }
+    if (autoRepeat) {
+        return Capture::Waiting;
+    }
+    if (key == Qt::Key_Escape) {
+        cancelCapture();
+        return Capture::Cancelled;
+    }
+    if (isModifier(key)) {
+        setPendingModifier(key);
+        return Capture::Waiting;
+    }
+    return bindCaptured(key);
+}
+
+QcKeyControls::Capture QcKeyControls::keyReleased(int key, bool autoRepeat)
+{
+    if (!capturing()) {
+        return Capture::Ignored;
+    }
+    if (autoRepeat || key != pendingModifier()) {
+        return Capture::Waiting;
+    }
+    return bindCaptured(key);
+}
+
+QcKeyControls::Capture QcKeyControls::bindCaptured(int key)
+{
+    const QString action = captureAction();
+    const int slot = captureSlot();
+    // Ended first: the rows rebuilt by the binding show no waiting slot.
+    cancelCapture();
+    setMessage(bind(action, slot, key));
+    return Capture::Bound;
+}
+
+void QcKeyControls::setCapture(const QString &action, int slot)
+{
+    setPendingModifier(0);
+    if (m_captureAction == action && m_captureSlot == slot) {
+        return;
+    }
+
+    m_captureAction = action;
+    m_captureSlot = slot;
+    emit captureChanged();
+}
+
+void QcKeyControls::setMessage(const QString &message)
+{
+    if (m_message != message) {
+        m_message = message;
+        emit messageChanged();
     }
 }

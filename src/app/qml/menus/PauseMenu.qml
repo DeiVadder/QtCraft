@@ -26,7 +26,7 @@ Rectangle {
             // Made by its LazyScreen when the overlay changed to one of its sub-screens: opens it.
             followOverlay();
         } else {
-            // Its sub-screens belong to the menu: they close (and store the settings) with it.
+            // Its sub-screens belong to the menu: they close with it.
             closeSubScreens(GameController.Overlay.None);
         }
     }

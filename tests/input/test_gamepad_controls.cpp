@@ -613,6 +613,53 @@ private slots:
         QVERIFY(source.disconnectPad(pad));
     }
 
+    // The profiles to choose from: all controllers first, then the connected models (each once,
+    // without an unknown GUID), then the stored models not connected; the list follows connects,
+    // disconnects and stored profiles.
+    void profileChoicesMergeConnectedAndStored()
+    {
+        QcVirtualGamepadSource source;
+        QcGamepadOptions options;
+        QSignalSpy choicesChanged(&options, &QcGamepadOptions::profileChoicesChanged);
+        options.setSource(&source);
+        const auto values = [&options] {
+            QStringList list;
+            const QVariantList choices = options.profileChoices();
+            for (const QVariant &choice : choices) {
+                list.append(choice.toMap().value(u"value"_s).toString());
+            }
+            return list;
+        };
+        QCOMPARE(values(), QStringList{QString()});
+
+        const int first = source.connectPad(u"Own"_s, QcGamepadType::Xbox, ownGuid);
+        const int second = source.connectPad(u"Own again"_s, QcGamepadType::Xbox, ownGuid);
+        const int unknown = source.connectPad(u"No model"_s, QcGamepadType::Generic);
+        QCOMPARE(values(), (QStringList{QString(), ownGuid}));
+
+        options.makeOwnProfile(ownGuid, u"Own"_s);
+        options.makeOwnProfile(u"gone"_s, u"Gone"_s);
+        QCOMPARE(values(), (QStringList{QString(), ownGuid, u"gone"_s}));
+        const QVariantMap gone = options.profileChoices().constLast().toMap();
+        QCOMPARE(gone.value(u"name"_s).toString(), u"Gone"_s);
+        QVERIFY2(gone.value(u"text"_s).toString().contains(u"Gone"_s), qPrintable(gone.value(u"text"_s).toString()));
+        QCOMPARE(options.profileChoices().constFirst().toMap().value(u"text"_s).toString(), u"All controllers"_s);
+
+        const qsizetype before = choicesChanged.size();
+        QVERIFY(source.disconnectPad(first));
+        QVERIFY(source.disconnectPad(second));
+        QVERIFY(choicesChanged.size() >= before + 2);
+        // The model's own profile stays, now as not connected.
+        QCOMPARE(values(), (QStringList{QString(), ownGuid, u"gone"_s}));
+        QVERIFY(options.profileChoices().at(1).toMap().value(u"text"_s).toString() != u"Own"_s);
+        QVERIFY(source.disconnectPad(unknown));
+
+        // The texts follow a switch of the UI language.
+        const qsizetype beforeSwitch = choicesChanged.size();
+        options.retranslate();
+        QCOMPARE(choicesChanged.size(), beforeSwitch + 1);
+    }
+
     // Giving a photo action the start button is refused with a message naming the pause menu, so a
     // pad-only player can always pause (decision E-692); the profile stays as it was, and the row
     // shows the action's combination.

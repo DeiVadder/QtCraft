@@ -24,25 +24,6 @@ SettingsPage {
     // a button only while the pad captures (a key, a click or a disconnect ends that).
     property string captureAction
 
-    // The profiles to choose from: all controllers, the connected ones, then the stored ones.
-    readonly property var profileChoices: {
-        const choices = [{ text: qsTr("All controllers"), value: "", name: "" }];
-        const known = new Set([""]);
-        for (const pad of game.gamepad.pads.list) {
-            if (pad.guid.length > 0 && !known.has(pad.guid)) {
-                known.add(pad.guid);
-                choices.push({ text: pad.name, value: pad.guid, name: pad.name });
-            }
-        }
-        for (const stored of options.controllers) {
-            if (!known.has(stored.guid)) {
-                known.add(stored.guid);
-                choices.push({ text: qsTr("%1 (not connected)").arg(stored.name), value: stored.guid, name: stored.name });
-            }
-        }
-        return choices;
-    }
-
     function startCapture(action) {
         message = "";
         captureAction = action;
@@ -96,7 +77,7 @@ SettingsPage {
                     + " " + qsTr("Over USB and over Bluetooth a controller counts as two models.")
             textRole: "text"
             valueRole: "value"
-            model: page.profileChoices
+            model: page.options.profileChoices
             currentIndex: Math.max(0, indexOfValue(page.options.profileKey))
             onActivated: page.options.profileKey = currentValue
         }
@@ -112,7 +93,7 @@ SettingsPage {
                     if (page.options.ownProfile) {
                         page.options.removeOwnProfile();
                     } else {
-                        const choice = page.profileChoices[profileBox.currentIndex];
+                        const choice = page.options.profileChoices[profileBox.currentIndex];
                         page.options.makeOwnProfile(choice.value, choice.name);
                     }
                 }

@@ -8,6 +8,7 @@
 #include "fixtures/QcTestUtil.h"
 
 #include <QFile>
+#include <QRegularExpression>
 #include <QSet>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -456,6 +457,80 @@ private slots:
         QCOMPARE(edited.count(), 3);
         controls.reset();
         QCOMPARE(edited.count(), 3);
+    }
+
+    // The controls page's capture (KeyControls): a slot waits, Esc cancels, a repeated key and a
+    // held modifier wait, the next key binds and ends it, and the message says what moved.
+    void captureBindsTheNextKey()
+    {
+        using Capture = QcKeyControls::Capture;
+        QcKeyControls controls;
+        QSignalSpy capture(&controls, &QcKeyControls::captureChanged);
+        QCOMPARE(controls.keyPressed(Qt::Key_G, false), Capture::Ignored);
+        QCOMPARE(controls.keyReleased(Qt::Key_G, false), Capture::Ignored);
+
+        controls.startCapture(u"cameraView"_s, 0);
+        QVERIFY(controls.capturing());
+        QCOMPARE(controls.captureAction(), u"cameraView"_s);
+        QCOMPARE(controls.captureSlot(), 0);
+        QCOMPARE(capture.count(), 1);
+        QCOMPARE(controls.keyPressed(Qt::Key_G, true), Capture::Waiting);
+        QCOMPARE(controls.keyPressed(Qt::Key_Escape, false), Capture::Cancelled);
+        QVERIFY(!controls.capturing());
+        QCOMPARE(controls.captureSlot(), -1);
+        QCOMPARE(controls.bindings(), QcKeyBindings::defaults());
+
+        // A used key is swapped; the message names the other action.
+        controls.startCapture(u"cameraView"_s, 0);
+        QCOMPARE(controls.keyPressed(Qt::Key_E, false), Capture::Bound);
+        QVERIFY(!controls.capturing());
+        QCOMPARE(controls.bindings().key(A::CameraView, 0), static_cast<int>(Qt::Key_E));
+        QVERIFY2(controls.message().contains(u"Inventory"_s), qPrintable(controls.message()));
+
+        // A new capture clears the message; reset() names what it did.
+        controls.startCapture(u"jump"_s, 1);
+        QVERIFY(controls.message().isEmpty());
+        controls.cancelCapture();
+        controls.reset();
+        QVERIFY(!controls.message().isEmpty());
+        controls.clearCapture();
+        QVERIFY(controls.message().isEmpty());
+    }
+
+    // A modifier is bound when it is released without another key; with another key the key is
+    // bound, and a release of another key keeps waiting.
+    void captureBindsAModifierReleasedAlone()
+    {
+        using Capture = QcKeyControls::Capture;
+        QcKeyControls controls;
+        controls.startCapture(u"jump"_s, 1);
+        QCOMPARE(controls.keyPressed(Qt::Key_Shift, false), Capture::Waiting);
+        QCOMPARE(controls.keyReleased(Qt::Key_G, false), Capture::Waiting);
+        QCOMPARE(controls.keyReleased(Qt::Key_Shift, true), Capture::Waiting);
+        QVERIFY(controls.capturing());
+        QCOMPARE(controls.keyReleased(Qt::Key_Shift, false), Capture::Bound);
+        QCOMPARE(controls.bindings().key(A::Jump, 1), static_cast<int>(Qt::Key_Shift));
+
+        controls.startCapture(u"jump"_s, 1);
+        QCOMPARE(controls.keyPressed(Qt::Key_Shift, false), Capture::Waiting);
+        QCOMPARE(controls.keyPressed(Qt::Key_Slash, false), Capture::Bound);
+        QCOMPARE(controls.bindings().key(A::Jump, 1), static_cast<int>(Qt::Key_Slash));
+        // The modifier's release after the key belongs to no capture.
+        QCOMPARE(controls.keyReleased(Qt::Key_Shift, false), Capture::Ignored);
+    }
+
+    // An unknown or fixed action or a slot other than 0 and 1 starts no capture, with a warning.
+    void captureRefusesUnknownSlots()
+    {
+        QcKeyControls controls;
+        const QRegularExpression warning(u"Key capture: ignoring"_s);
+        QTest::ignoreMessage(QtWarningMsg, warning);
+        controls.startCapture(u"fly"_s, 0);
+        QTest::ignoreMessage(QtWarningMsg, warning);
+        controls.startCapture(u"pause"_s, 0);
+        QTest::ignoreMessage(QtWarningMsg, warning);
+        controls.startCapture(u"jump"_s, 2);
+        QVERIFY(!controls.capturing());
     }
 
     void controlsRefuseCmdOnAMac()

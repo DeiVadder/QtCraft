@@ -6,7 +6,12 @@
 # FORBIDDEN_ERROR (standard error) and writes EXPECTED_FILE (removed first) of at least
 # EXPECTED_MIN_SIZE bytes. With EXPECTED_GLOB and EXPECTED_GLOB_COUNT, CLEAN_DIR is removed first
 # and exactly that many files must match the glob afterwards. Unlike WILL_FAIL this does not accept
-# crashes or timeouts as success.
+# crashes or timeouts as success. Every run starts with fresh settings: the game stores what a
+# scripted run changes (a bound button, a toggled option) in the test's data directory
+# (QTCRAFT_DATA_DIR), which would change the next run.
+if(DEFINED ENV{QTCRAFT_DATA_DIR})
+    file(REMOVE "$ENV{QTCRAFT_DATA_DIR}/settings.ini")
+endif()
 if(DEFINED EXPECTED_FILE)
     file(REMOVE "${EXPECTED_FILE}")
 endif()

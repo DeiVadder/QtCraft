@@ -139,6 +139,8 @@ void applySceneOptions(QcGameController &game, const QcAppOptions &options)
             game.settings()->debug()->setShown(*visual, true);
         }
     }
+    // The scene is the run's, not the player's choice.
+    game.settings()->keepSceneOptionsUnsaved();
 }
 
 // --join: plays a network game at once; a failure ends the run like a bad option. --host-lan:

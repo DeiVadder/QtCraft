@@ -307,6 +307,7 @@ void QcGameController::setLanguage(const QString &language)
     m_settings->character()->refreshLists();
     // Key and action names are translated.
     m_settings->keys()->retranslate();
+    m_settings->gamepadOptions()->retranslate();
     m_handbook->refreshIfOpen();
     m_worldOptions->retranslate();
 }
@@ -550,6 +551,10 @@ void QcGameController::onContentReset()
 QcStatus QcGameController::stopSession()
 {
     QcStatus saved;
+    // A draft of the look left open by a screen destroyed with the session is dropped, and a
+    // change of the settings still waiting for its save is stored with the session's end.
+    m_settings->character()->endDraft();
+    m_settings->flushPendingSave();
     // A start that has not reached its next step stops here.
     afterFrame().cancel();
     m_input->releaseMouse();

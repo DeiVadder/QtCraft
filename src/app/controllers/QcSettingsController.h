@@ -18,7 +18,10 @@
 
 #include <QObject>
 #include <QString>
+#include <QTimer>
 #include <QtQmlIntegration/qqmlintegration.h>
+
+#include <optional>
 
 class QcAudioEngine;
 class QcWorldLibraryController;
@@ -27,7 +30,9 @@ struct QcSessionParts;
 // The player's settings (GameController.settings), stored in a file below the data root
 // (QTCRAFT_DATA_DIR in tests): view distance, field of view and its effects, mouse, labels, language, UI scale, camera mode
 // and keys, with the volumes, the character's look and the debug display as their own objects. The accessors
-// are the QML properties of this one responsibility.
+// are the QML properties of this one responsibility. A change is stored saveDelayMs after the last one
+// (a slider writes once when it rests); the session ending, the game quitting and the controller's end
+// store a waiting change at once, so no screen has to store anything.
 class QcSettingsController : public QObject
 {
     Q_OBJECT
@@ -88,11 +93,22 @@ public:
     ~QcSettingsController() override;
     Q_DISABLE_COPY_MOVE(QcSettingsController)
 
+    // How long after the last change the settings are stored.
+    static constexpr int saveDelayMs = 300;
+
     static QString settingsPath();
     // Language stored in the settings ("" = system).
     static QString storedLanguage();
     void loadSettings();
-    Q_INVOKABLE void saveSettings();
+    // Stores the settings now.
+    void saveSettings();
+    // A change waits for its save (saveDelayMs after the last change).
+    bool savePending() const { return m_saveTimer.isActive(); }
+    // Stores a change that waits for its save now (the session ends, the game quits).
+    void flushPendingSave();
+    // The camera mode and debug display set since the load are the run's scene options (command
+    // line): used, but the stored values are written in their place until the player changes them.
+    void keepSceneOptionsUnsaved();
     // View distance from the command line: used now, but not written to the settings.
     void overrideViewDistance(int chunks);
 
@@ -153,6 +169,13 @@ signals:
     void languageChangeRequested(const QString &language);
 
 private:
+    // The values to store, as they are now.
+    QcGameSettings currentSettings() const;
+    // A change: stored saveDelayMs after the last one.
+    void scheduleSave() { m_saveTimer.start(); }
+    // Stores the settings when they differ from the stored ones.
+    void saveIfChanged();
+
     const QcSessionParts &m_parts;
     QcKeyControls *m_keyControls = nullptr;
     QcAudioSettings *m_audio = nullptr;
@@ -179,4 +202,9 @@ private:
     QString m_contentLanguage = QStringLiteral("en");
     QcGameSettings m_storedSettings;
     int m_commandLineViewDistance = 0;
+    // The scene options of the command line (keepSceneOptionsUnsaved()), not stored while they stay.
+    std::optional<QcCameraMode> m_sceneCameraMode;
+    std::optional<QcDebugOptions> m_sceneDebug;
+    // NOLINT(qc-member-access): the timer object itself; savePending() reads it, start and stop are its own calls.
+    QTimer m_saveTimer;
 };

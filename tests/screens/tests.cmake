@@ -27,6 +27,8 @@ qc_add_test(test_rune_script SOURCES screens/test_rune_script.cpp LIBRARIES qc_a
 qc_add_test(test_enchanting_offer SOURCES screens/test_enchanting_offer.cpp LIBRARIES qc_app_qml)
 # The character screens edit a draft: save, discard, close (E-852).
 qc_add_test(test_character_draft SOURCES screens/test_character_draft.cpp LIBRARIES qc_app_core qc_worlds)
+# The settings store themselves on a change, at the session's end and at quit (79.59).
+qc_add_test(test_settings_saving SOURCES screens/test_settings_saving.cpp LIBRARIES qc_app_core qc_worlds)
 # A world start's step after the loading screen's frames: fallback, cancel, window gone (E-943).
 qc_add_test(test_after_frame SOURCES screens/test_after_frame.cpp LIBRARIES qc_app_core)
 # The loading screen's progress: stages, share, spawn area, test hook notation (E-943).

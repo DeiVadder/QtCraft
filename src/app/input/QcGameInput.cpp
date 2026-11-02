@@ -455,20 +455,17 @@ bool QcGameInput::worldAction(QcKeyBindings::Action action, bool pressed)
         const QcCameraMode next = QcViewCamera::next(m_parts.session->cameraMode());
         m_settings.setCameraModeValue(next);
         m_parts.session->setCameraMode(next);
-        m_settings.saveSettings();
         return true;
     }
     case A::DebugOverlay:
         // Off, compact, full (decision E-225).
         m_settings.debug()->cycleLevel();
-        m_settings.saveSettings();
         return true;
     case A::DebugOptions:
         m_screens.state.setOverlay(QcScreenState::Overlay::Debug);
         return true;
     case A::Labels:
         m_settings.setShowLabels(!m_settings.showLabels());
-        m_settings.saveSettings();
         return true;
     case A::HideHud:
         emit hudToggleRequested();

@@ -12,7 +12,7 @@ import QtCraft
 // (SidebarScreen), with a back entry and the categories (graphics with the display options of
 // decision E-835, audio, controls, controller, interface, texture packs, advanced with debug and
 // diagnostics) in the bar and the chosen page on the right, scrolling as a whole. Changes apply at
-// once and are stored when the screen closes. The back entry, Esc and the pad's B close it; the
+// once and the settings store them themselves. The back entry, Esc and the pad's B close it; the
 // pad's shoulders and Ctrl+Tab switch the category. The main menu and the pause menu show the same
 // screen.
 SidebarScreen {
@@ -71,7 +71,6 @@ SidebarScreen {
 
         controlsPage.cancelCapture();
         visible = false;
-        game.settings.saveSettings();
         closed();
     }
 

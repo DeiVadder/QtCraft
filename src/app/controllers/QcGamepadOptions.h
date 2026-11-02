@@ -19,7 +19,7 @@ class QcGamepadSource;
 // (`profileKey` its GUID). A model without a profile of its own uses the standard one; the page
 // shows its values read-only until makeOwnProfile() copies them. The buttons of the world actions
 // are rebound per profile (bind(): a button used by another action is swapped). `radialOnly` is
-// one switch for all pads. Stored with the other settings when the settings screen closes.
+// one switch for all pads. Stored with the other settings on every change.
 class QcGamepadOptions : public QObject
 {
     Q_OBJECT
@@ -31,6 +31,9 @@ class QcGamepadOptions : public QObject
     Q_PROPERTY(bool ownProfile READ ownProfile NOTIFY changed FINAL)
     // The models with a profile of their own: {guid, name}.
     Q_PROPERTY(QVariantList controllers READ controllers NOTIFY controllersChanged FINAL)
+    // The profiles to choose from: all controllers, then the connected models, then the stored
+    // ones not connected, each model once: [{text, value (its GUID, "" for all), name}].
+    Q_PROPERTY(QVariantList profileChoices READ profileChoices NOTIFY profileChoicesChanged FINAL)
     Q_PROPERTY(double lookSpeed READ lookSpeed WRITE setLookSpeed NOTIFY changed FINAL)
     Q_PROPERTY(bool invertLook READ invertLook WRITE setInvertLook NOTIFY changed FINAL)
     Q_PROPERTY(double deadZone READ deadZone WRITE setDeadZone NOTIFY changed FINAL)
@@ -57,6 +60,7 @@ public:
     bool editable() const { return m_key.isEmpty() || ownProfile(); }
     bool ownProfile() const { return m_settings.controller(m_key) != nullptr; }
     QVariantList controllers() const;
+    QVariantList profileChoices() const;
     double lookSpeed() const { return edited().lookSpeed; }
     void setLookSpeed(double degreesPerSecond);
     bool invertLook() const { return edited().invertLook; }
@@ -92,12 +96,16 @@ public:
     // The page opens: the pad in use (`guid`, its model) is edited when its model has a profile of
     // its own, else the standard one.
     Q_INVOKABLE void editProfileOf(const QString &guid);
+    // The texts of `profileChoices` follow the UI language.
+    void retranslate() { emit profileChoicesChanged(); }
 
 signals:
     // Anything changed (the game applies the settings).
     void changed();
     // The list of models with a profile of their own changed.
     void controllersChanged();
+    // A pad connected or disconnected, or the stored models changed.
+    void profileChoicesChanged();
     // The edited profile's buttons changed (or another profile is edited).
     void rowsChanged();
 
@@ -108,6 +116,7 @@ private:
     // Another profile is edited, or the list of profiles changed.
     void profilesChanged();
     QStringList connectedGuids() const;
+    QcGamepadSource *source() const;
 
     QcGamepadSettings m_settings;
     QString m_key;

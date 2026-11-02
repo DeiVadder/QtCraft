@@ -1195,61 +1195,61 @@ Als Nächstes: %3</translation>
 <context>
     <name>CharacterEditor</name>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="175"/>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="185"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="168"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="178"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="192"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="185"/>
         <source>Appearance</source>
         <translation>Aussehen</translation>
     </message>
     <message>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="195"/>
         <location filename="../src/app/qml/character/CharacterEditor.qml" line="202"/>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="209"/>
         <source>Outfit</source>
         <translation>Kleidung</translation>
     </message>
     <message>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="211"/>
         <location filename="../src/app/qml/character/CharacterEditor.qml" line="218"/>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="225"/>
         <source>Hair</source>
         <translation>Frisur</translation>
     </message>
     <message>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="227"/>
         <location filename="../src/app/qml/character/CharacterEditor.qml" line="234"/>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="241"/>
         <source>Cape</source>
         <translation>Umhang</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="251"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="244"/>
         <source>Colours</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="254"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="247"/>
         <source>Skin</source>
         <translation>Haut</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="259"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="252"/>
         <source>Hair colour</source>
         <translation>Haarfarbe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="264"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="257"/>
         <source>Shirt</source>
         <translation>Oberteil</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="269"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="262"/>
         <source>Trousers</source>
         <translation>Hose</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="275"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="268"/>
         <source>Presets</source>
         <translation>Vorlagen</translation>
     </message>
@@ -1258,17 +1258,17 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Mit %1 im Spiel siehst du deinen Charakter von hinten oder von vorne.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="299"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="292"/>
         <source>Random</source>
         <translation>Zufall</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="304"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="297"/>
         <source>Default look</source>
         <translation>Standardaussehen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="311"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="304"/>
         <source>Unsaved changes</source>
         <translation>Ungespeicherte Änderungen</translation>
     </message>
@@ -1277,12 +1277,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Schließen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="323"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="316"/>
         <source>Discard</source>
         <translation>Verwerfen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/character/CharacterEditor.qml" line="333"/>
+        <location filename="../src/app/qml/character/CharacterEditor.qml" line="326"/>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
@@ -1599,94 +1599,93 @@ Als Nächstes: %3</translation>
 <context>
     <name>ControlsPage</name>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="104"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="93"/>
         <source>Click a key and press the new one. Esc cancels, Backspace removes the key. A key used by another action is swapped.</source>
         <translation>Klicke auf eine Taste und drücke die neue. Esc bricht ab, die Rücktaste entfernt die Taste. Eine Taste, die eine andere Aktion nutzt, wird getauscht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="103"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="92"/>
         <source>Keys</source>
         <translation>Tasten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="69"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="58"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="82"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="71"/>
         <source>Mouse</source>
         <translation>Maus</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="85"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="74"/>
         <source>Mouse sensitivity</source>
         <translation>Mausempfindlichkeit</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="91"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="80"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="96"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="85"/>
         <source>Invert mouse</source>
         <translation>Maus invertieren</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="125"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="114"/>
         <source>Action</source>
         <translation>Aktion</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="163"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="144"/>
         <source>Key</source>
         <translation>Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="171"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="152"/>
         <source>Second key</source>
         <translation>Zweite Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="208"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="189"/>
         <source>Press a key …</source>
         <translation>Taste drücken …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="210"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="191"/>
         <source>%1, %2: %3</source>
         <translation>%1, %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="211"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="192"/>
         <source>primary key</source>
         <translation>erste Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="211"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="192"/>
         <source>secondary key</source>
         <translation>zweite Taste</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="212"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="193"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="221"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="202"/>
         <source>On a Mac, F1–F12 reach the game only while fn is held or with “Use F1, F2, etc. keys as standard function keys” switched on in the system settings (Keyboard).</source>
         <translation>Auf einem Mac erreichen F1–F12 das Spiel nur mit gedrückter fn-Taste oder wenn in den Systemeinstellungen (Tastatur) „Die Tasten F1, F2 usw. als Standard-Funktionstasten verwenden“ eingeschaltet ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="230"/>
+        <location filename="../src/app/qml/settings/ControlsPage.qml" line="211"/>
         <source>Reset to defaults</source>
         <translation>Standard wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/ControlsPage.qml" line="76"/>
         <source>All keys are back to their defaults.</source>
-        <translation>Alle Tasten sind wieder auf dem Standard.</translation>
+        <translation type="vanished">Alle Tasten sind wieder auf dem Standard.</translation>
     </message>
 </context>
 <context>
@@ -2233,88 +2232,86 @@ Als Nächstes: %3</translation>
 <context>
     <name>GamepadPage</name>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="29"/>
         <source>All controllers</source>
-        <translation>Alle Controller</translation>
+        <translation type="vanished">Alle Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="40"/>
         <source>%1 (not connected)</source>
-        <translation>%1 (nicht angeschlossen)</translation>
+        <translation type="vanished">%1 (nicht angeschlossen)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="58"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="39"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="86"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="67"/>
         <source>Profile</source>
         <translation>Profil</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="92"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="73"/>
         <source>Settings for</source>
         <translation>Einstellungen für</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="94"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="75"/>
         <source>This controller model has its own settings.</source>
         <translation>Dieses Controller-Modell hat eigene Einstellungen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="95"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="76"/>
         <source>This controller uses the settings for all controllers.</source>
         <translation>Dieser Controller nutzt die Einstellungen für alle Controller.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="96"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="77"/>
         <source>Over USB and over Bluetooth a controller counts as two models.</source>
         <translation>Über USB und über Bluetooth zählt ein Controller als zwei Modelle.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="110"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="91"/>
         <source>Use the shared settings</source>
         <translation>Gemeinsame Einstellungen nutzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="136"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="117"/>
         <source>Sticks and triggers</source>
         <translation>Sticks und Trigger</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="148"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="129"/>
         <source>Radial menu only</source>
         <translation>Nur Radialmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="149"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="130"/>
         <source>The hotbar shows just the slot in the hand</source>
         <translation>Die Schnellleiste zeigt nur das Feld in der Hand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="176"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="157"/>
         <source>Connect a controller to change its buttons.</source>
         <translation>Schließe einen Controller an, um seine Tasten zu ändern.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="105"/>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="110"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="86"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="91"/>
         <source>Own settings</source>
         <translation>Eigene Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="129"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="110"/>
         <source>No controller connected. Xbox, PlayStation and Switch Pro controllers and most others work over USB or Bluetooth.</source>
         <translation>Kein Controller angeschlossen. Xbox-, PlayStation- und Switch-Pro-Controller und die meisten anderen funktionieren über USB oder Bluetooth.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="130"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="111"/>
         <source>Connected: %1. The controller you press a button on is used.</source>
         <translation>Angeschlossen: %1. Es gilt der Controller, auf dem du eine Taste drückst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="131"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="112"/>
         <source>%1 (in use)</source>
         <translation>%1 (in Benutzung)</translation>
     </message>
@@ -2323,7 +2320,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Nur Radialmenü: Die Schnellleiste zeigt nur das Feld in der Hand</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="144"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="125"/>
         <source>Buttons</source>
         <translation>Tasten</translation>
     </message>
@@ -2340,27 +2337,27 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Ändern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="177"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="158"/>
         <source>The triggers mine and use; in menus the buttons keep their places (bottom confirms, right goes back).</source>
         <translation>Die Trigger bauen ab und benutzen; in Menüs behalten die Tasten ihre Plätze (unten bestätigt, rechts geht zurück).</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="189"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="170"/>
         <source>Reset buttons</source>
         <translation>Tasten zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="65"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="46"/>
         <source>The buttons are back to their defaults.</source>
         <translation>Die Tasten sind wieder wie zu Beginn belegt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="194"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="175"/>
         <source>Reset everything</source>
         <translation>Alles zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/GamepadPage.qml" line="199"/>
+        <location filename="../src/app/qml/settings/GamepadPage.qml" line="180"/>
         <source>All values and buttons are back to their defaults.</source>
         <translation>Alle Werte und Tasten sind wieder wie zu Beginn.</translation>
     </message>
@@ -3014,27 +3011,27 @@ Als Nächstes: %3</translation>
 <context>
     <name>InterfacePage</name>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="24"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="23"/>
         <source>Interface</source>
         <translation>Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="29"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="28"/>
         <source>Language and size</source>
         <translation>Sprache und Größe</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="34"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="33"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="39"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="38"/>
         <source>System language</source>
         <translation>Systemsprache</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="53"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="52"/>
         <source>Interface size</source>
         <translation>Größe der Oberfläche</translation>
     </message>
@@ -3055,72 +3052,72 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Jetzt %1 % (wächst mit großen Fenstern)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="57"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="56"/>
         <source>Effective: %1 % (limited by the window size)</source>
         <translation>Wirksam: %1 % (begrenzt durch die Fenstergröße)</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="58"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="57"/>
         <source>Effective: %1 % (limited by the window size), HUD %2 %</source>
         <translation>Wirksam: %1 % (begrenzt durch die Fenstergröße), Anzeige im Spiel %2 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="61"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="60"/>
         <source>Effective: %1 % (grows with large windows)</source>
         <translation>Wirksam: %1 % (wächst mit großen Fenstern)</translation>
     </message>
     <message>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="64"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="65"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="66"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="67"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="68"/>
         <location filename="../src/app/qml/settings/InterfacePage.qml" line="69"/>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="70"/>
         <source>%1 %</source>
         <translation>%1 %</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="77"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="76"/>
         <source>View</source>
         <translation>Ansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="82"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="81"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="86"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="85"/>
         <source>First person</source>
         <translation>Ich-Perspektive</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="87"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="86"/>
         <source>Third person, behind</source>
         <translation>Dritte Person, hinten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="88"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="87"/>
         <source>Third person, front</source>
         <translation>Dritte Person, vorne</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="94"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="93"/>
         <source>Labels in the world</source>
         <translation>Beschriftungen in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="95"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="94"/>
         <source>Names floating over places, such as the areas of the showcase</source>
         <translation>Namen über Orten, etwa den Bereichen der Schauwelt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="102"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="101"/>
         <source>Hide the hand with the HUD</source>
         <translation>Hand mit der Anzeige ausblenden</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="103"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="102"/>
         <source>When the HUD is hidden for a picture</source>
         <translation>Wenn die Anzeige für ein Bild ausgeblendet ist</translation>
     </message>
@@ -3129,12 +3126,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Pause</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="110"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="109"/>
         <source>Pause when the window loses focus</source>
         <translation>Pausieren, wenn das Fenster den Fokus verliert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/InterfacePage.qml" line="111"/>
+        <location filename="../src/app/qml/settings/InterfacePage.qml" line="110"/>
         <source>Opens the pause menu of a single-player world</source>
         <translation>Öffnet das Pausenmenü einer Einzelspielerwelt</translation>
     </message>
@@ -4608,27 +4605,27 @@ Als Nächstes: %3</translation>
 <context>
     <name>PauseMenu</name>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="85"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="96"/>
         <source>Game paused</source>
         <translation>Spiel pausiert</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="85"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="96"/>
         <source>Game menu</source>
         <translation>Spielmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="97"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="108"/>
         <source>The game keeps running: other players are connected.</source>
         <translation>Das Spiel läuft weiter: andere Spieler sind verbunden.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="99"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="110"/>
         <source>The game pauses as soon as the world around you has loaded.</source>
         <translation>Das Spiel hält an, sobald die Welt um dich geladen ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="100"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="111"/>
         <source>The game keeps running on the server.</source>
         <translation>Das Spiel läuft auf dem Server weiter.</translation>
     </message>
@@ -4637,62 +4634,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="161"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
         <source>Save world</source>
         <translation>Welt speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="125"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="136"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="112"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="123"/>
         <source>Continue</source>
         <translation>Weiterspielen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="113"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="124"/>
         <source>Esc</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="138"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="149"/>
         <source>Character</source>
         <translation>Charakter</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="183"/>
         <source>Open on port %1</source>
         <translation>Offen auf Port %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="172"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="183"/>
         <source>Open to LAN</source>
         <translation>Im LAN öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="181"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="192"/>
         <source>Manage server</source>
         <translation>Server verwalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="144"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="155"/>
         <source>Advancements</source>
         <translation>Fortschritte</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="131"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="142"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="225"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="250"/>
         <source>‹ Back to game</source>
         <translation>‹ Zurück zum Spiel</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/PauseMenu.qml" line="225"/>
+        <location filename="../src/app/qml/menus/PauseMenu.qml" line="250"/>
         <source>‹ Pause menu</source>
         <translation>‹ Pausenmenü</translation>
     </message>
@@ -5373,12 +5370,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcCharacterSettings</name>
     <message>
-        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="186"/>
+        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="219"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="193"/>
+        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="226"/>
         <source>No cape</source>
         <translation>Kein Umhang</translation>
     </message>
@@ -5853,7 +5850,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="588"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="590"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -5954,97 +5951,107 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGamepadOptions</name>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="167"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="80"/>
+        <source>All controllers</source>
+        <translation>Alle Controller</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="92"/>
+        <source>%1 (not connected)</source>
+        <translation>%1 (nicht angeschlossen)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="199"/>
         <source>Jump (twice: fly)</source>
         <translation>Springen (zweimal: fliegen)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="168"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="200"/>
         <source>Sprint</source>
         <translation>Rennen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="169"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="201"/>
         <source>Sneak</source>
         <translation>Schleichen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="170"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="202"/>
         <source>Previous hotbar slot</source>
         <translation>Voriges Feld der Schnellleiste</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="171"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="203"/>
         <source>Next hotbar slot</source>
         <translation>Nächstes Feld der Schnellleiste</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="172"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="204"/>
         <source>Pause menu</source>
         <translation>Pausenmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="173"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="205"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="174"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="206"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="175"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="207"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="176"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="208"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="177"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="209"/>
         <source>Player list (hold)</source>
         <translation>Spielerliste (halten)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="178"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="210"/>
         <source>Drop (hold: stack)</source>
         <translation>Fallen lassen (halten: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="179"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="211"/>
         <source>Pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="180"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="212"/>
         <source>Radial menu (hold)</source>
         <translation>Radialmenü (halten)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="181"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="213"/>
         <source>Hide HUD (photo mode)</source>
         <translation>Anzeige ausblenden (Fotomodus)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="182"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="214"/>
         <source>Screenshot</source>
         <translation>Bildschirmfoto</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="198"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="230"/>
         <source>Not bound: “%1” would be left without a button.</source>
         <translation>Nicht belegt: „%1“ hätte sonst keine Taste mehr.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="209"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="241"/>
         <source>“%1” has no button now.</source>
         <translation>„%1“ hat jetzt keine Taste.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="211"/>
+        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="243"/>
         <source>“%1” now has the button of “%2”.</source>
         <translation>„%1“ hat jetzt die Taste von „%2“.</translation>
     </message>
@@ -6163,29 +6170,34 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcKeyControls</name>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="68"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="83"/>
         <source>Cmd cannot be used on a Mac: macOS keeps Cmd+Q, Cmd+H, Cmd+Space and other Cmd shortcuts for itself.</source>
         <translation>Cmd lässt sich am Mac nicht belegen: macOS behält Cmd+Q, Cmd+H, Cmd+Leertaste und andere Cmd-Kürzel für sich.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="70"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="85"/>
         <source>This key cannot be used.</source>
         <translation>Diese Taste lässt sich nicht belegen.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="85"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="100"/>
         <source>%1 was used for “%2”, which now has no key there.</source>
         <translation>%1 war für „%2“ belegt; dort ist jetzt keine Taste.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="86"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="101"/>
         <source>%1 was used for “%2”, which now uses %3.</source>
         <translation>%1 war für „%2“ belegt; das nutzt jetzt %3.</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="90"/>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="105"/>
         <source>Careful: on a Mac, Control with the arrow keys or Space switches desktops or the input source.</source>
         <translation>Achtung: Am Mac wechselt Control mit den Pfeiltasten oder der Leertaste Schreibtische oder die Eingabequelle.</translation>
+    </message>
+    <message>
+        <location filename="../src/clientcore/settings/QcKeyControls.cpp" line="112"/>
+        <source>All keys are back to their defaults.</source>
+        <translation>Alle Tasten sind wieder auf dem Standard.</translation>
     </message>
 </context>
 <context>
@@ -9513,7 +9525,7 @@ Jetzt: %2</translation>
 <context>
     <name>SettingsScreen</name>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="115"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="114"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
@@ -9522,7 +9534,7 @@ Jetzt: %2</translation>
         <translation type="vanished">Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="143"/>
         <source>Controls</source>
         <translation>Steuerung</translation>
     </message>
@@ -9578,37 +9590,37 @@ Jetzt: %2</translation>
         <translation type="vanished">Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="100"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="99"/>
         <source>Press %1 again to reset this page to its defaults.</source>
         <translation>%1 erneut drücken, um diese Seite auf die Standardwerte zurückzusetzen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="143"/>
         <source>Controller</source>
         <translation>Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="143"/>
         <source>Graphics</source>
         <translation>Grafik</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="143"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="143"/>
         <source>Interface</source>
         <translation>Oberfläche</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="145"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
         <source>Texture packs</source>
         <translation>Texturpakete</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="145"/>
+        <location filename="../src/app/qml/settings/SettingsScreen.qml" line="144"/>
         <source>Advanced</source>
         <translation>Erweitert</translation>
     </message>
