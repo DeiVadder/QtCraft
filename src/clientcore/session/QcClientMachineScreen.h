@@ -14,36 +14,53 @@
 
 class QcContentRegistry;
 
-// The machine or chest screen the server opened for the local player (OpenMachine, MachineState,
-// CloseMachine): where it is (or the container minecart it belongs to), its category (empty for a
-// storage block or cart), its slots and progress.
-// The GUI-free state behind QcClientSession's machine accessors.
+/*! \brief The machine or chest screen the server opened for the local player (OpenMachine,
+    MachineState, CloseMachine): where it is (or the container minecart it belongs to), its category
+    (empty for a storage block or cart), its slots and progress.
+
+    The GUI-free state behind QcClientSession's machine accessors. */
 class QcClientMachineScreen
 {
 public:
-    enum class Change { None, Opened, Changed, Closed };
+    /*! What a server message did to the screen. */
+    enum class Change {
+        None,    // a message about a screen that changed nothing here
+        Opened,  // the server opened a screen
+        Changed, // slots or progress of the open screen changed
+        Closed   // the server closed the screen
+    };
 
-    // What a server message did to the screen; std::nullopt for messages about other things.
+    /*! Returns what the server \a message did to the screen (items checked against \a content);
+        std::nullopt for messages about other things. */
     std::optional<Change> handle(const QcMessage &message, const QcContentRegistry *content);
-    // The player closed the screen; false when none was open. An OpenMachine still on its way is
-    // then ignored until the player uses a block again (usedBlock()).
+    /*! The player closed the screen. Returns false when none was open. An OpenMachine still on
+        its way is then ignored until the player uses a block again (usedBlock()). */
     bool closeLocally();
+    /*! The player used a block: OpenMachine messages count again (see closeLocally()). */
     void usedBlock() { m_closedLocally = false; }
 
+    /*! Returns whether a screen is open. */
     bool isOpen() const { return m_pos.has_value(); }
+    /*! Returns where the open machine or chest is; for a cart, where it was when it opened; nothing
+        while closed. */
     [[nodiscard]] std::optional<QcBlockPos> pos() const { return m_pos; }
-    // The container minecart (entity id) of the open screen, 0 for a block.
+    /*! Returns the container minecart (entity id) of the open screen, 0 for a block. */
     quint32 entity() const { return m_entity; }
+    /*! Returns the category of the open machine (content name); empty for a storage block or cart.
+     */
     const QString &category() const { return m_category; }
-    // The custom name of the open chest or machine (decision E-873); empty for none.
+    /*! Returns the custom name of the open chest or machine (decision E-873); empty for none. */
     const QString &name() const { return m_name; }
-    // The open screen belongs to a storage block (chest) rather than a machine.
+    /*! Returns whether the open screen belongs to a storage block (chest) rather than a machine. */
     bool isContainer() const { return m_pos.has_value() && m_category.isEmpty(); }
-    // The hotbar slot of a backpack opened from the hand (decision E-833), locked while open; -1
-    // for a block or cart.
+    /*! Returns the hotbar slot of a backpack opened from the hand (decision E-833), locked while
+        open; -1 for a block or cart. */
     int heldSlot() const { return m_heldSlot; }
+    /*! Returns the slots of the open screen as the server last sent them. */
     const QList<QcItemStack> &stacks() const { return m_slots; }
+    /*! Returns the fuel left of the open machine (0..1). */
     double burn() const { return m_burn; }
+    /*! Returns the progress of the open machine's current job (0..1). */
     double progress() const { return m_progress; }
 
 private:

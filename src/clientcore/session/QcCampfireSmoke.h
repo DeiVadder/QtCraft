@@ -10,33 +10,42 @@
 
 #include <vector>
 
-// The smoke rising from the lit campfires near the player (decision E-772): a list of the campfires
-// (blocks whose campfire cooks) within `radius` blocks, found again every `rescanTicks` by looking only
-// into the chunk sections whose palette holds such a block, and a few puffs per campfire that rise,
-// drift and shrink in a loop. The puffs follow from the campfire's position and the time alone, so
-// nothing is kept per puff.
+/*! \brief The smoke rising from the lit campfires near the player (decision E-772): a list of the
+    campfires (blocks whose campfire cooks) within \c {radius} blocks, found again every
+    \c {rescanTicks} by looking only into the chunk sections whose palette holds such a block, and a
+    few puffs per campfire that rise, drift and shrink in a loop.
+
+    The puffs follow from the campfire's position and the time alone, so nothing is kept per
+    puff. */
 class QcCampfireSmoke
 {
 public:
-    // A puff as the entity frame draws it: a small cube of smoke.
+    /*! \brief A puff as the entity frame draws it: a small cube of smoke. */
     struct Puff
     {
+        /*! The centre of the cube. */
         QcVec3 position;
+        /*! Its edge length in metres. */
         double size = 0.0;
     };
 
+    /*! Blocks around the eye within which campfires smoke. */
     static constexpr int radius = 32;
+    /*! Ticks between two looks for the campfires. */
     static constexpr int rescanTicks = 10;
+    /*! Puffs in the air above each campfire at a time. */
     static constexpr int puffsPerCampfire = 5;
-    // Seconds a puff takes from the fire to where it fades.
+    /*! Seconds a puff takes from the fire to where it fades. */
     static constexpr double puffSeconds = 3.0;
-    // Campfires drawn with smoke at most (the nearest).
+    /*! Campfires drawn with smoke at most (the nearest). */
     static constexpr int maxCampfires = 64;
 
-    // Looks for the campfires again when `tick` is rescanTicks past the last look or the world changed.
+    /*! Looks for the campfires of \a world around \a eye again when \a tick is rescanTicks past
+        the last look or the world changed. */
     void refresh(const QcClientWorld &world, const QcVec3 &eye, quint64 tick);
+    /*! Returns the smoking campfires found by the latest look, the nearest at most maxCampfires. */
     const QList<QcBlockPos> &campfires() const { return m_campfires; }
-    // The puffs of the campfire at `pos` at `seconds` of world time.
+    /*! Returns the puffs of the campfire at \a pos at \a seconds of world time. */
     [[nodiscard]] static QList<Puff> puffsOf(QcBlockPos pos, double seconds);
 
 private:

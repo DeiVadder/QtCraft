@@ -9,6 +9,7 @@
 src/common
 src/worldgen
 src/network
+src/clientcore
 src/server
 src/audio
 src/worlds

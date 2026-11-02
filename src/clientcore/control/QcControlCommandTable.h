@@ -21,20 +21,22 @@
 
 class QcControlContext;
 
-// The control commands by name, each served by one of the command groups.
+/*! \brief The control commands by name, each served by one of the command groups. */
 class QcControlCommandTable
 {
 public:
+    /*! Serves one request of the command. */
     using Handler = std::function<void(const QJsonObject &request)>;
 
     explicit QcControlCommandTable(QcControlContext &context);
     Q_DISABLE_COPY_MOVE(QcControlCommandTable)
     ~QcControlCommandTable() = default;
 
+    /*! Adds the command \a name, served by \a handler. */
     void add(const QString &name, const Handler &handler);
-    // nullptr for an unknown command.
+    /*! Returns the handler of the command \a name; nullptr for an unknown command. */
     const Handler *find(const QString &name) const;
-    // The virtual gamepads of the gamepad commands (decision E-540).
+    /*! Returns the virtual gamepads of the gamepad commands (decision E-540). */
     QcVirtualGamepadSource &virtualGamepads() { return m_gamepads.source(); }
 
 private:

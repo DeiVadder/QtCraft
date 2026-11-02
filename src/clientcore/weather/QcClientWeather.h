@@ -12,44 +12,53 @@
 
 #include <optional>
 
-// The weather as the client shows it (decision E-395): the strengths of rain and thunder the server
-// sent, eased so a step of a message never jumps; the climate where the player stands; the flash of
-// the latest lightning; and the thunder still on its way (sound travels 343 m/s, so a strike 170 m
-// away is heard half a second after its flash). GUI-free; the session ticks it.
+/*! \brief The weather as the client shows it (decision E-395): the strengths of rain and thunder
+    the server sent, eased so a step of a message never jumps; the climate where the player stands;
+    the flash of the latest lightning; and the thunder still on its way (sound travels 343 m/s, so a
+    strike 170 m away is heard half a second after its flash).
+
+    GUI-free; the session ticks it. */
 class QcClientWeather
 {
 public:
-    // Speed of sound in metres per second.
+    /*! Speed of sound in metres per second. */
     static constexpr double speedOfSound = 343.0;
-    // The shown strengths move at most this much per tick towards the received ones (twice the
-    // server's fade, so they keep up with it).
+    /*! The shown strengths move at most this much per tick towards the received ones (twice the
+        server's fade, so they keep up with it). */
     static constexpr float easePerTick = 0.01f;
-    // A flash lights the sky for this many ticks.
+    /*! A flash lights the sky for this many ticks. */
     static constexpr int flashTicks = 12;
-    // Thunder further away than this is placed at this distance (towards the strike) and quieter
-    // by the ratio, so it stays within the reach of its sound (QcSoundDefinition::maxRange).
+    /*! Thunder further away than this is placed at this distance (towards the strike) and
+        quieter by the ratio, so it stays within the reach of its sound
+        (QcSoundDefinition::maxRange). */
     static constexpr double thunderPlacement = 96.0;
-    // Thunder from strikes further away than this is not heard at all.
+    /*! Thunder from strikes further away than this is not heard at all. */
     static constexpr double thunderHearing = 256.0;
 
+    /*! Takes the strengths and the climate the server sent in \a weather. */
     void receive(QcMsg::Weather weather);
-    // A strike seen by a listener at `listener` in client tick `tick`: the flash begins, the thunder
-    // waits for its time.
+    /*! The \a strike seen by a listener at \a listener in client tick \a tick: the flash begins,
+        the thunder waits for its time. */
     void lightning(const QcMsg::Lightning &strike, const QcVec3 &listener, quint64 tick);
-    // One client tick: eases the strengths and returns the thunder due now.
+    /*! One client tick, \a tick: eases the strengths and returns the thunder due now. */
     QList<QcSoundCue> tick(quint64 tick);
 
+    /*! Returns the shown strength of the rain, 0..1. */
     float rain() const { return m_rain; }
+    /*! Returns the shown strength of the thunderstorm, 0..1. */
     float thunder() const { return m_thunder; }
+    /*! Returns the climate where the player stands. */
     const QcWeather::Climate &climate() const { return m_received.climate; }
-    // What falls at height `y` near the player while it rains (QcWeather::precipitationAt).
+    /*! Returns what falls at height \a y near the player while it rains
+        (QcWeather::precipitationAt). */
     QcPrecipitation precipitationAt(int y) const;
-    // Rain strength falling at height `y` near the player: 0 where it snows or stays dry.
+    /*! Returns the rain strength falling at height \a y near the player: 0 where it snows or
+        stays dry. */
     float rainAt(int y) const { return precipitationAt(y) == QcPrecipitation::Rain ? m_rain : 0.0f; }
-    // Brightness of the lightning flash in 0..1 at `ticks` (the client tick with its fraction):
-    // a bright stroke, a short dark gap, a second stroke, then fading out.
+    /*! Returns the brightness of the lightning flash in 0..1 at \a ticks (the client tick with its
+        fraction): a bright stroke, a short dark gap, a second stroke, then fading out. */
     float flash(double ticks) const;
-    // Strikes seen since the session began (tests, control interface).
+    /*! Returns the number of strikes seen since the session began (tests, control interface). */
     quint64 strikes() const { return m_strikes; }
 
 private:

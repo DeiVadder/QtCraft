@@ -8,29 +8,39 @@
 #include <mutex>
 #include <vector>
 
-// Punctuality of the client session's ticks (decision E-560): how late each tick ran against its
-// due time on the 50 ms grid, and how many due ticks never ran. Written by the thread that ticks
-// the session, read and reset by others (benchmark, tests); every access takes the mutex.
+/*! \brief Punctuality of the client session's ticks (decision E-560): how late each tick ran
+    against its due time on the 50 ms grid, and how many due ticks never ran.
+
+    Written by the thread that ticks the session, read and reset by others (benchmark, tests);
+    every access takes the mutex. */
 class QcTickTiming
 {
 public:
-    // Lateness samples kept for the percentile (the latest ones; about 14 minutes of ticks).
+    /*! Lateness samples kept for the percentile (the latest ones; about 14 minutes of ticks). */
     static constexpr qsizetype maxSamples = qsizetype{1} << 14;
 
+    /*! \brief The punctuality so far. */
     struct Summary
     {
+        /*! Ticks run. */
         quint64 ticks = 0;
-        // Due ticks that were dropped instead of run.
+        /*! Due ticks that were dropped instead of run. */
         quint64 missed = 0;
-        // Start of a tick minus its due time.
+        /*! Start of a tick minus its due time. */
         double lateAverageMs = 0.0;
+        /*! The 99th percentile of the lateness over the samples kept. */
         double lateP99Ms = 0.0;
+        /*! The largest lateness. */
         double lateMaxMs = 0.0;
     };
 
+    /*! A tick ran \a lateNs nanoseconds after its due time. */
     void record(qint64 lateNs);
+    /*! \a count due ticks were dropped. */
     void addMissed(quint64 count);
+    /*! Returns the punctuality so far. */
     Summary summary() const;
+    /*! Forgets the punctuality so far. */
     void reset();
 
 private:

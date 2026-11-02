@@ -7,11 +7,13 @@
 
 #include <QImage>
 
-// Generates deterministic pixel-art textures from a QcTextureSpec.
+/*! \brief Generates deterministic pixel-art textures from a QcTextureSpec. */
 class QcTextureSynthesizer
 {
 public:
+    /*! Edge of the synthesized textures in pixels. */
     static constexpr int tileSize = 16;
 
+    /*! Returns the 16 x 16 texture of \a spec. */
     static QImage synthesize(const QcTextureSpec &spec);
 };

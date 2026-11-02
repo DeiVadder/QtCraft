@@ -9,12 +9,14 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands on the inventory and crafting: hotbar selection, slot moves, dropping and the recipe book.
+/*! \brief Control commands on the inventory and crafting: hotbar selection, slot moves, dropping
+    and the recipe book. */
 class QcControlInventoryCommands
 {
 public:
     explicit QcControlInventoryCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

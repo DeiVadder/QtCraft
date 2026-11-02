@@ -14,22 +14,25 @@ class QcContentRegistry;
 struct QcClientEntity;
 struct QcFamilyDefinition;
 
-// Which parent each child of a family is tied to on the client, from frame to frame (decision
-// E-839; the Kjut's threads, drawn by QcTetherMesher). The client knows no family links, so each
-// child of a kind that is the `child` of a family with a `tetherTexture` is tied to the nearest
-// living parent of that family's kind within its `tetherRange`; a child keeps the parent of the
-// last frame while that one stays in range, unless another comes clearly closer (switchShare), so
-// threads do not flicker between two parents at about the same distance. When the parent dies, it
-// leaves the living entities and the threads are gone with it. The kinds with threads are worked
-// out once per content (a new registry from the server). GUI thread only, not locked.
+/*! \brief Which parent each child of a family is tied to on the client, from frame to frame
+    (decision E-839; the Kjut's threads, drawn by QcTetherMesher).
+
+    The client knows no family links, so each child of a kind that is the \c {child} of a family
+    with a \c {tetherTexture} is tied to the nearest living parent of that family's kind within
+    its \c {tetherRange}; a child keeps the parent of the last frame while that one stays in
+    range, unless another comes clearly closer (switchShare), so threads do not flicker between
+    two parents at about the same distance. When the parent dies, it leaves the living entities
+    and the threads are gone with it. The kinds with threads are worked out once per content (a
+    new registry from the server). GUI thread only, not locked. */
 class QcTethers
 {
 public:
-    // Another parent takes a child over only when it is nearer than this share of the distance to
-    // the parent of the last frame.
+    /*! Another parent takes a child over only when it is nearer than this share of the distance
+        to the parent of the last frame. */
     static constexpr double switchShare = 0.6;
 
-    // The threads among `entities` at `alpha` between the last two ticks.
+    /*! Returns the threads among \a entities (creatures of \a content) at \a alpha between the
+        last two ticks. */
     [[nodiscard]] QList<QcTetherMesher::Thread> threads(const QHash<quint32, QcClientEntity> &entities,
                                                         const std::shared_ptr<const QcContentRegistry> &content, double alpha);
 

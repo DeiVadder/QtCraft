@@ -9,20 +9,24 @@
 
 #include <optional>
 
-// What the client knows of the server's debug data (QcMsg::ServerDebug, decision E-225): the
-// latest message and the durations of the latest ticks for the tick graph, each tick once (a
-// message reports the ticks up to its own; those the graph already has are skipped).
+/*! \brief What the client knows of the server's debug data (QcMsg::ServerDebug, decision E-225):
+    the latest message and the durations of the latest ticks for the tick graph, each tick once
+    (a message reports the ticks up to its own; those the graph already has are skipped). */
 class QcServerDebugMirror
 {
 public:
-    // Ticks kept for the graph: twelve seconds.
+    /*! Ticks kept for the graph: twelve seconds. */
     static constexpr qsizetype historyTicks = 240;
 
+    /*! Takes \a message as the latest and adds the durations of its ticks the history does not have
+        yet. */
     void receive(const QcMsg::ServerDebug &message);
+    /*! Forgets the latest message and the history. */
     void clear();
 
+    /*! Returns the latest message; nothing before the first. */
     const std::optional<QcMsg::ServerDebug> &latest() const { return m_latest; }
-    // Tick durations in milliseconds, oldest first.
+    /*! Returns the tick durations in milliseconds, oldest first. */
     const QList<float> &tickHistory() const { return m_tickHistory; }
 
 private:

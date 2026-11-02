@@ -10,42 +10,48 @@
 #include <QVariantList>
 #include <QVariantMap>
 
-// The player's key table for QML: the rows of the controls page, the key texts of hints, key tests
-// for screens and rebinding. The game controller loads and stores it with the settings; QML knows
-// it as KeyControls (QcKeyControlsForeign).
+/*! \brief The player's key table for QML: the rows of the controls page, the key texts of hints,
+    key tests for screens and rebinding.
+
+    The game controller loads and stores it with the settings; QML knows it as KeyControls
+    (QcKeyControlsForeign). */
 class QcKeyControls : public QObject
 {
     Q_OBJECT
 
-    // [{action, label, primary, secondary, fixed}] with the keys as display texts.
+    /*! [{action, label, primary, secondary, fixed}] with the keys as display texts. */
     Q_PROPERTY(QVariantList rows READ rows NOTIFY changed FINAL)
-    // Action id -> text of its primary key, e.g. {"cameraView": "V"}.
+    /*! Action id -> text of its primary key, e.g. {"cameraView": "V"}. */
     Q_PROPERTY(QVariantMap labels READ labels NOTIFY changed FINAL)
 
 public:
     explicit QcKeyControls(QObject *parent = nullptr);
 
+    /*! Returns the key table. */
     const QcKeyBindings &bindings() const { return m_bindings; }
-    // Takes keys loaded from the settings; does not ask for storing.
+    /*! Takes the keys \a bindings loaded from the settings; does not ask for storing. */
     void setBindings(const QcKeyBindings &bindings);
     QVariantList rows() const;
-    // The first key of every action by its id, as the HUD names it; a function key on a Mac with
-    // "fn+".
+    /*! Returns the first key of every action by its id, as the HUD names it; a function key on a
+        Mac with "fn+". */
     QVariantMap labels() const;
 
-    // Whether `key` (a Qt::Key) triggers the action with this id ("handbook", "inventory", ...).
+    /*! Returns whether \a key (a Qt::Key) triggers the action with the id \a action ("handbook",
+        "inventory", ...). */
     Q_INVOKABLE bool matches(const QString &action, int key) const;
-    // Binds a key to a slot (0 primary, 1 secondary); Backspace clears the slot. Returns a text
-    // describing a refused key, a resolved conflict or a Mac caveat, else "". `edited` follows
-    // once for every change.
+    /*! Binds \a key (a Qt::Key) to \a slot (0 primary, 1 secondary) of the action with the id
+        \a action; Backspace clears the slot. Returns a text describing a refused key, a resolved
+        conflict or a Mac caveat, else "". \c {edited} follows once for every change. */
     Q_INVOKABLE QString bind(const QString &action, int slot, int key);
+    /*! Gives every action its default keys again; \c {edited} follows when that changed anything.
+     */
     Q_INVOKABLE void reset();
-    // The texts follow the UI language.
+    /*! The texts follow the UI language. */
     void retranslate() { emit changed(); }
 
 signals:
     void changed();
-    // The player changed a key; the settings should be stored.
+    /*! The player changed a key; the settings should be stored. */
     void edited();
 
 private:

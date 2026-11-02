@@ -7,26 +7,31 @@
 
 #include <optional>
 
-// Frame pacing of the character preview: it draws only while it is visible and at most at its
-// frame rate, so an open screen with a preview adds a small, bounded load and a hidden one none.
-// The clock is passed in (milliseconds of a monotonic clock), so the rules are testable.
+/*! \brief Frame pacing of the character preview: it draws only while it is visible and at most at
+    its frame rate, so an open screen with a preview adds a small, bounded load and a hidden one
+    none.
+
+    The clock is passed in (milliseconds of a monotonic clock), so the rules are testable. */
 class QcPreviewPacer
 {
 public:
+    /*! Frame rate of a new pacer. */
     static constexpr int defaultFramesPerSecond = 30;
+    /*! Highest frame rate. */
     static constexpr int maxFramesPerSecond = 60;
 
+    /*! Returns the frame rate. */
     int framesPerSecond() const { return m_framesPerSecond; }
-    // Clamped to 1..maxFramesPerSecond.
+    /*! Sets the frame rate to \a framesPerSecond, clamped to 1..maxFramesPerSecond. */
     void setFramesPerSecond(int framesPerSecond);
-    // Shortest time between two frames.
+    /*! Returns the shortest time between two frames in milliseconds. */
     int intervalMs() const { return 1000 / m_framesPerSecond; }
 
-    // Whether to draw a frame now; when it says yes, the frame counts as drawn. Never while hidden;
-    // the first frame after becoming visible at once, later ones an interval apart (a timer a
-    // millisecond early still counts).
+    /*! Returns whether to draw a frame at \a nowMs; when it says yes, the frame counts as drawn.
+        Never while not \a visible; the first frame after becoming visible at once, later ones an
+        interval apart (a timer a millisecond early still counts). */
     bool frameDue(bool visible, qint64 nowMs);
-    // Hidden: the next visible frame is drawn at once.
+    /*! Hidden: the next visible frame is drawn at once. */
     void hide() { m_nextFrameMs.reset(); }
 
 private:

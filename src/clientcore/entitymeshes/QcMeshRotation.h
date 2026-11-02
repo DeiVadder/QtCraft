@@ -10,18 +10,26 @@
 #include <cmath>
 
 // Rotations the entity meshers place model, item and hand points with.
+
 namespace QcEntityMesher {
 
-// Rotation around the X axis (positive moves -Y towards -Z), then around Z (positive moves -Y
-// towards +X) and then around Y (positive moves -Z towards +X), all in degrees. Sine and cosine are
-// taken once, not per vertex.
+/*! \brief Rotation around the X axis (positive moves -Y towards -Z), then around Z (positive moves
+    -Y towards +X) and then around Y (positive moves -Z towards +X), all in degrees.
+
+    Sine and cosine are taken once, not per vertex. */
 struct Rotate
 {
+    /*! Cosine of the rotation around X. */
     double cosPitch;
+    /*! Sine of the rotation around X. */
     double sinPitch;
+    /*! Cosine of the rotation around Z. */
     double cosRoll;
+    /*! Sine of the rotation around Z. */
     double sinRoll;
+    /*! Cosine of the rotation around Y. */
     double cosYaw;
+    /*! Sine of the rotation around Y. */
     double sinYaw;
 
     Rotate(double pitch, double roll, double yaw = 0.0)
@@ -34,6 +42,7 @@ struct Rotate
     {
     }
 
+    /*! Returns point \a p rotated. */
     QcVec3 operator()(const QcVec3 &p) const
     {
         const QcVec3 q{p.x, p.y * cosPitch - p.z * sinPitch, p.y * sinPitch + p.z * cosPitch};
@@ -42,10 +51,12 @@ struct Rotate
     }
 };
 
-// Rotation around the Y axis by a yaw in degrees: the model faces -Z; yaw 90 faces +X.
+/*! \brief Rotation around the Y axis by a yaw in degrees: the model faces -Z; yaw 90 faces +X. */
 struct Turn
 {
+    /*! Cosine of the yaw. */
     double cosYaw;
+    /*! Sine of the yaw. */
     double sinYaw;
 
     explicit Turn(double yawDegrees)
@@ -54,6 +65,7 @@ struct Turn
     {
     }
 
+    /*! Returns point \a p turned by the yaw. */
     QcVec3 operator()(const QcVec3 &p) const { return {p.x * cosYaw - p.z * sinYaw, p.y, p.x * sinYaw + p.z * cosYaw}; }
 };
 

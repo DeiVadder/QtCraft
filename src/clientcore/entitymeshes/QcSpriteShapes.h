@@ -12,17 +12,17 @@
 
 class QcTextureAtlas;
 
-// The shapes of item sprites in a texture atlas (decision E-831), each cut from the atlas on first
-// use and kept until the atlas changes.
+/*! \brief The shapes of item sprites in a texture atlas (decision E-831), each cut from the
+    atlas on first use and kept until the atlas changes. */
 class QcSpriteShapes
 {
 public:
-    // Shapes have at most this many texels along an edge (the base resolution); higher resolutions
-    // are read from a smaller mip level.
+    /*! Shapes have at most this many texels along an edge (the base resolution); higher
+        resolutions are read from a smaller mip level. */
     static constexpr int maxTexels = 16;
 
-    // The shape of `texture` in `atlas`; null without an atlas. Another atlas than the last call's
-    // forgets the shapes kept so far.
+    /*! Returns the shape of \a texture in \a atlas; null without an atlas. Another atlas than
+        the last call's forgets the shapes kept so far. */
     [[nodiscard]] std::shared_ptr<const QcSpriteShape> shape(const std::shared_ptr<const QcTextureAtlas> &atlas, const QString &texture);
 
 private:

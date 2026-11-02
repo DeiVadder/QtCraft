@@ -15,32 +15,33 @@
 #include <optional>
 #include <vector>
 
-// The text quads of the signs of the loaded chunks (decision E-766), kept from frame to frame: a
-// sign's quads are built again only when its text or its colour (decision E-830), its block (state)
-// or its light changes, or when
-// the atlas they are cut from is replaced. The signs are grouped by chunk, so a frame looks only at
-// the chunks within the draw distance instead of at every sign.
+/*! \brief The text quads of the signs of the loaded chunks (decision E-766), kept from frame to
+    frame: a sign's quads are built again only when its text or its colour (decision E-830), its
+    block (state) or its light changes, or when the atlas they are cut from is replaced.
+
+    The signs are grouped by chunk, so a frame looks only at the chunks within the draw distance
+    instead of at every sign. */
 class QcSignTextCache
 {
 public:
-    // Takes the signs of the loaded chunks; nothing happens while `generation` is the one of the
-    // last call (QcChunkExtras::signGeneration). Built quads of signs whose lines and colour stay
-    // are kept.
+    /*! Takes the \a signs of the loaded chunks; nothing happens while \a generation is the one of
+        the last call (QcChunkExtras::signGeneration). Built quads of signs whose lines and
+        colour stay are kept. */
     void setSigns(const QHash<QcBlockPos, QcSignText::Text> &signs, quint64 generation);
-    // Forgets every sign and built quad: the atlas or the world changed.
+    /*! Forgets every sign and built quad: the atlas or the world changed. */
     void clear();
 
-    // The signs in the chunks within `distance` (metres, horizontally) of `viewer`, and only those
-    // whose middle lies within `distance`.
+    /*! Returns the signs in the chunks within \a distance (metres, horizontally) of \a viewer,
+        and only those whose middle lies within \a distance. */
     [[nodiscard]] QList<QcBlockPos> signsNear(const QcVec3 &viewer, double distance) const;
-    // The quads of the sign at `pos`, shown by block `block` in `light`; built with `content` and
-    // `uv` when the block or the light differ from the last call. Empty for unknown positions and
-    // blocks that are no signs. Positions are relative to the corner of the sign's block (decision
-    // E-883), so they stay exact however far out the sign stands.
+    /*! Returns the quads of the sign at \a pos, shown by block \a block in \a light; built with
+        \a content and \a uv when the block or the light differ from the last call. Empty for
+        unknown positions and blocks that are no signs. Positions are relative to the corner of
+        the sign's block (decision E-883), so they stay exact however far out the sign stands. */
     [[nodiscard]] const std::vector<QcSignTextMesher::Quad> &quads(QcBlockPos pos, QcBlockId block, QcEntityLight light,
                                                                    const QcContentRegistry &content, const QcEntityMesher::UvLookup &uv);
 
-    // How often quads were built since the cache was made (tests and measurements).
+    /*! Returns how often quads were built since the cache was made (tests and measurements). */
     [[nodiscard]] int builds() const { return m_builds; }
 
 private:

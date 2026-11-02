@@ -16,42 +16,52 @@
 #include <optional>
 #include <utility>
 
-// The world as the server sends it (part of QcClientSession, decision E-717): the content, the blocks
-// of the loaded chunks with the local player's predicted changes on top (QcBlockMirror, decision
-// E-853; QcClientWorld, there from the content on), what the chunks carry besides their blocks
-// (QcChunkExtras), the world time and the weather. It takes the server's world messages and tells
-// what they changed; the session reports that through its signals.
+/*! \brief The world as the server sends it (part of QcClientSession, decision E-717): the content,
+    the blocks of the loaded chunks with the local player's predicted changes on top (QcBlockMirror,
+    decision E-853; QcClientWorld, there from the content on), what the chunks carry besides their
+    blocks (QcChunkExtras), the world time and the weather.
+
+    It takes the server's world messages and tells what they changed; the session reports that
+    through its signals. */
 class QcWorldMirror
 {
 public:
-    // What a world message changed.
+    /*! What a world message changed. */
     using Change = QcBlockMirror::Change;
 
-    // The change a world message made, none for a message of another group; `eye` hears the
-    // thunder of a lightning strike, `now` is the client's tick count.
+    /*! Returns the change \a message made when it is a world message, none for a message of
+        another group; \a eye hears the thunder of a lightning strike, \a now is the client's
+        tick count. */
     [[nodiscard]] std::optional<Change> handle(const QcMessage &message, const QcVec3 &eye, quint64 now);
-    // One client tick: explosions fade, the world time runs on while the time of day runs.
+    /*! One client tick, the tick count \a now: explosions fade, the world time runs on while the
+        time of day runs. */
     void tick(quint64 now);
 
-    // Shows the blocks the local player's action numbered `sequence` is expected to set and returns the
-    // cells that changed (QcBlockMirror::predict).
+    /*! Shows the \a blocks the local player's action numbered \a sequence is expected to set and
+        returns the cells that changed (QcBlockMirror::predict). */
     QList<QcBlockMirror::Changed> predict(quint32 sequence, const QList<QcMsg::BlockUpdate> &blocks) { return m_blocks.predict(sequence, blocks); }
-    // The blocks with the predictions.
+    /*! Returns the blocks with the predictions. */
     const QcBlockMirror &blocks() const { return m_blocks; }
 
-    // Null until the content arrived.
+    /*! Returns the blocks of the loaded chunks; null until the content arrived. */
     const QcClientWorld *world() const { return m_blocks.world(); }
+    /*! Returns the content the server sent; null until it arrived. */
     const std::shared_ptr<const QcContentRegistry> &content() const { return m_blocks.content(); }
-    // Seconds of world time, advanced locally between server updates while the time of day runs, by
-    // timeSpeed() per tick (the server's tick rate or sprint, WorldTime::speed).
+    /*! Returns the seconds of world time, advanced locally between server updates while the time
+        of day runs, by timeSpeed() per tick (the server's tick rate or sprint,
+        WorldTime::speed). */
     double worldTime() const { return m_worldTime.time; }
+    /*! Returns the server's ticks per normal tick (WorldTime::speed): 1 at its normal rate, more in
+        a sprint, 0 frozen. */
     double timeSpeed() const { return m_worldTime.speed; }
-    // The weather as shown: strengths, climate, lightning flashes (decision E-395).
+    /*! Returns the weather as shown: strengths, climate, lightning flashes (decision E-395). */
     QcClientWeather &weather() { return m_weather; }
+    /*! Returns the weather as shown, read-only. */
     const QcClientWeather &weather() const { return m_weather; }
-    // Labels (E-222), spinning spawner creatures (E-520) and explosions (E-604) of the loaded chunks.
+    /*! Returns the labels (E-222), spinning spawner creatures (E-520), campfire items (E-772),
+        sign texts (E-766) and explosions (E-604) of the loaded chunks. */
     const QcChunkExtras &extras() const { return m_extras; }
-    // The maps the server sent (decision E-802).
+    /*! Returns the maps the server sent (decision E-802). */
     const QcClientMaps &maps() const { return m_maps; }
 
 private:

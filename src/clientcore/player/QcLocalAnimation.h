@@ -13,35 +13,41 @@
 
 class QcPrediction;
 
-// Animation of the local player between server updates: the timers of the arm swing, using,
-// switching the held item and landing (in ticks, negative while not running) and the distance
-// walked for the stride. The poses for the renderer come from these timers and the predicted
-// motion; poseOf() builds the pose of a mirrored entity the same way.
+/*! \brief Animation of the local player between server updates: the timers of the arm swing, using,
+    switching the held item and landing (in ticks, negative while not running) and the distance
+    walked for the stride.
+
+    The poses for the renderer come from these timers and the predicted motion; poseOf() builds
+    the pose of a mirrored entity the same way. */
 class QcLocalAnimation
 {
 public:
-    // Animation lengths in ticks; those of the hand are QcHandTimers'. The own swing lasts as long
-    // as the QcSwingSpeed given to tick() says, swingTicks without effects.
+    /*! Animation lengths in ticks; those of the hand are QcHandTimers'. The own swing lasts as
+        long as the QcSwingSpeed given to tick() says, swingTicks without effects. \qcshared */
     static constexpr int swingTicks = QcClientEntities::swingTicks;
     static constexpr int deathTicks = QcClientEntities::deathTicks;
 
-    // Advances the timers by one tick. Holding another item (qcNoItem: empty hand) starts the
-    // switch; `mining` keeps the arm swinging, one swing after the other without a gap. `speed`
-    // sets the length of the swings that start from now on (decision E-881); a running one keeps
-    // its length.
+    /*! Advances the timers by one tick. Holding another item \a held (qcNoItem: empty hand)
+        starts the switch; \a mining keeps the arm swinging, one swing after the other without a
+        gap. \a speed sets the length of the swings that start from now on (decision E-881); a
+        running one keeps its length. */
     void tick(QcItemId held, bool mining, QcSwingSpeed speed);
-    // After a predicted step on foot: the distance walked and a landing.
+    /*! After a predicted step on foot from \a previous to \a current: the distance walked and a
+        landing. */
     void stepped(const QcEntityMotion &previous, const QcEntityMotion &current);
 
-    // Starts the arm swing (a click's short one) or the use animation.
+    /*! Starts the arm swing (a click's short one) or the use animation. */
     void swing() { startSwing(QcHandSwing::Style::Click); }
+    /*! Starts the use animation. */
     void use() { m_useTicks = 0; }
 
-    // Pose of the local player from the prediction; `alpha` interpolates within the current tick,
-    // `drawProgress` is the drawn launcher's (QcClientLauncher::progress).
+    /*! Returns the pose of the local player from \a prediction; \a alpha interpolates within the
+        current tick, \a drawProgress is the drawn launcher's (QcClientLauncher::progress). */
     QcEntityPose localPose(double alpha, const QcPrediction &prediction, double drawProgress) const;
+    /*! Returns the progress of the hand animations \a alpha into the current tick. */
     QcHandTimers handTimers(double alpha) const;
-    // Pose of a mirrored entity from its server state and client timers.
+    /*! Returns the pose of the mirrored \a entity from its server state and client timers,
+        \a alpha into the current tick. */
     static QcEntityPose poseOf(const QcClientEntity &entity, double alpha);
 
 private:

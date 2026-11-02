@@ -23,105 +23,130 @@ class QcClientWorld;
 class QcContentRegistry;
 class QcPrediction;
 
-// What the local player's hand does: the block and the entity under the crosshair, mining the
-// targeted block (survival progress and hit sounds, instant breaking in creative mode), using the
-// held item on a block, an entity or itself, drawing and releasing a launcher (QcClientLauncher)
-// and attacking. Sends its requests through the sender; the server decides and answers. The blocks
-// a break or a placement is expected to set (QcBlockForecast) go to the predictor first, which shows
-// them at once and numbers the request (decision E-853). What an action means for the arm and the
-// screens it returns as a HandEffect, which the session applies.
+/*! \brief What the local player's hand does: the block and the entity under the crosshair, mining
+    the targeted block (survival progress and hit sounds, instant breaking in creative mode), using
+    the held item on a block, an entity or itself, drawing and releasing a launcher
+    (QcClientLauncher) and attacking.
+
+    Sends its requests through the sender; the server decides and answers. The blocks a break or
+    a placement is expected to set (QcBlockForecast) go to the predictor first, which shows them
+    at once and numbers the request (decision E-853). What an action means for the arm and the
+    screens it returns as a HandEffect, which the session applies. */
 class QcHandActions
 {
 public:
+    /*! Sends a request to the server. */
     using Sender = std::function<void(const QcMessage &message)>;
+    /*! Plays a sound. */
     using Cue = std::function<void(const QcSoundCue &cue)>;
-    // Shows the blocks an action is expected to set and returns the number the request carries
-    // (QcMsg::FinishMining::sequence, QcMsg::UseItem::sequence); 0 when nothing is predicted.
+    /*! Shows the blocks an action is expected to set and returns the number the request carries
+        (QcMsg::FinishMining::sequence, QcMsg::UseItem::sequence); 0 when nothing is predicted. */
     using Predictor = std::function<quint32(const QList<QcMsg::BlockUpdate> &blocks)>;
 
-    // Mining strikes make a sound every this many ticks.
+    /*! Mining strikes make a sound every this many ticks. */
     static constexpr int miningHitTicks = 4;
-    // Melee reach of the player.
+    /*! Melee reach of the player. */
     static constexpr double attackReach = 4.0;
-    // While the use button is held, the use repeats every this many ticks (decision E-885).
+    /*! While the use button is held, the use repeats every this many ticks (decision E-885). */
     static constexpr int useRepeatTicks = 4;
 
-    // What an action did beyond its requests, for the session to apply after them.
+    /*! \brief What an action did beyond its requests, for the session to apply after them. */
     enum class HandEffect
     {
-        // Nothing was done.
+        /*! Nothing was done. */
         None,
-        // Done without a visible effect (a launcher draws).
+        /*! Done without a visible effect (a launcher draws). */
         Handled,
-        // The arm swings (a strike, a throw, a block broken at once).
+        /*! The arm swings (a strike, a throw, a block broken at once). */
         Swing,
-        // The arm makes the use motion.
+        /*! The arm makes the use motion. */
         Use,
-        // Use motion; the player used a block, so a machine screen it opens shows again.
+        /*! Use motion; the player used a block, so a machine screen it opens shows again. */
         UsedBlock,
-        // Use motion; the player used an entity, so a machine or trading screen it opens shows again.
+        /*! Use motion; the player used an entity, so a machine or trading screen it opens shows
+            again. */
         UsedEntity,
-        // Nothing was done because the mode forbids it (adventure allow-lists, decision E-735); the
-        // HUD says so.
+        /*! Nothing was done because the mode forbids it (adventure allow-lists, decision E-735);
+            the HUD says so. */
         Refused,
     };
 
-    // What the hand reads of the session: the predicted player, its items and the entity mirror.
-    // The session declares them before the hand, so they outlive it.
+    /*! \brief What the hand reads of the session: the predicted player, its items and the entity
+        mirror.
+
+        The session declares them before the hand, so they outlive it. */
     struct View
     {
+        /*! The predicted player. */
         const QcPrediction &prediction;
+        /*! The player's items. */
         const QcClientInventory &inventory;
+        /*! The entity mirror. */
         const QcClientEntities &entities;
     };
 
-    // `gameMode`: the rules and the instant breaking of creative mode; `send`: how requests reach
-    // the server; `cue`: where the mining sounds go; `predict`: where predicted blocks go (all the
-    // session's, never empty).
+    /*! \a view: what the hand reads of the player and the world; \a gameMode: the rules and the
+        instant breaking of creative mode; \a send: how requests reach the server; \a cue: where
+        the mining sounds go; \a predict: where predicted blocks go (all the session's, never
+        empty). */
     QcHandActions(const View &view, QcClientGameMode &gameMode, Sender send, Cue cue, Predictor predict);
 
-    // Block the player looks at (within reach) and the entity under the crosshair when it is closer.
+    /*! Returns the block the player looks at (within reach); nothing without one. */
     const std::optional<QcRaycastHit> &target() const { return m_target; }
+    /*! Returns the entity under the crosshair when it is closer than the targeted block; nothing
+        without one. */
     std::optional<quint32> targetEntity() const { return m_targetEntity; }
-    // Aims again from the predicted eye along the intent; clearTarget() while there is no world.
+    /*! Aims again in \a world (blocks of \a content) from the predicted eye along the intent;
+        clearTarget() while there is no world. */
     void refreshTarget(const QcClientWorld &world, const QcContentRegistry &content);
+    /*! Forgets the targeted block. */
     void clearTarget() { m_target.reset(); }
 
-    // While requested, the targeted block is mined; progress runs from 0 to 1 and resets on target
-    // change. Releasing ends the pace of held instant breaking, so the next press breaks at once.
+    /*! While \a mining, the targeted block is mined; progress runs from 0 to 1 and resets on
+        target change. Releasing ends the pace of held instant breaking, so the next press breaks
+        at once. */
     void setMining(bool mining);
+    /*! Returns whether mining is requested (setMining()). */
     bool miningRequested() const { return m_miningRequested; }
+    /*! Returns the progress of the mining, 0 to 1. */
     double miningProgress() const { return m_miningProgress; }
-    // Whether a block is being mined (survival) right now.
+    /*! Returns whether a block is being mined (survival) right now. */
     bool isMining() const { return m_miningPos.has_value(); }
-    // Once per tick after the prediction: aims again and advances or changes the mining; Swing when
-    // a block broke at once (creative mode), Refused while the mode forbids mining the aimed block
-    // (adventure mode: no mining at all, no cracks or sounds).
+    /*! Once per tick after the prediction: aims again and advances or changes the mining in
+        \a world with \a content. Returns Swing when a block broke at once (creative mode),
+        Refused while the mode forbids mining the aimed block (adventure mode: no mining at all,
+        no cracks or sounds). */
     HandEffect updateMining(const QcClientWorld &world, const QcContentRegistry &content);
-    // The mining button was just pressed: in creative mode the aimed block breaks now instead of at
-    // the next tick, at the pace of updateMining (decision E-853); Swing when it broke.
+    /*! The mining button was just pressed: in creative mode the aimed block of \a world (blocks
+        of \a content) breaks now instead of at the next tick, at the pace of updateMining
+        (decision E-853). Returns Swing when it broke. */
     HandEffect strike(const QcClientWorld &world, const QcContentRegistry &content);
 
-    // Once per tick: the launcher's draw and the cooldowns of throwing (`serverTicks` per tick).
+    /*! Once per tick: the launcher's draw (items of \a content) and the cooldowns of throwing
+        (\a serverTicks per tick). */
     void tickLauncher(const QcContentRegistry &content, double serverTicks);
-    // Progress of the drawn launcher within the tick, negative when none is drawn.
+    /*! Returns the progress of the drawn launcher \a alpha into the tick, negative when none is
+        drawn. */
     double drawProgress(double alpha) const { return m_launcher.progress(alpha); }
 
-    // Uses the held item on the targeted entity, the block face or itself; None when nothing was used,
-    // Refused when the mode forbids the item to act on the block (food is eaten instead).
+    /*! Uses the held item on the targeted entity, the block face or itself, in \a world with
+        \a content. Returns None when nothing was used, Refused when the mode forbids the item to
+        act on the block (food is eaten instead). */
     HandEffect use(const QcClientWorld &world, const QcContentRegistry &content);
-    // The use button was pressed (after its first use()): from now on tickUse repeats the use until
-    // endUse (decision E-885).
+    /*! The use button was pressed (after its first use()): from now on tickUse repeats the use
+        until endUse (decision E-885). */
     void holdUse();
+    /*! Returns whether the use button is held (holdUse()). */
     bool useHeld() const { return m_useHeld; }
-    // Once per tick after the aim: while the use button is held and no mining is wanted, uses the held
-    // item again every useRepeatTicks ticks, but only where a repeat is wanted (repeatsUse); None
-    // otherwise.
+    /*! Once per tick after the aim, in \a world with \a content: while the use button is held
+        and no mining is wanted, uses the held item again every useRepeatTicks ticks, but only
+        where a repeat is wanted (repeatsUse). Returns the effect of the use; None otherwise. */
     HandEffect tickUse(const QcClientWorld &world, const QcContentRegistry &content);
-    // The use button released or cancelled: the repeats stop and a drawn launcher shoots or lets go
-    // (decision E-425); the server hears of it only while `send` (the session plays).
+    /*! The use button released or cancelled (\a action): the repeats stop and a drawn launcher
+        shoots or lets go (decision E-425); the server hears of it only while \a send (the
+        session plays). */
     void endUse(QcMsg::DrawLauncher::Action action, bool send);
-    // Hits the targeted entity (Swing); None without one.
+    /*! Hits the targeted entity. Returns Swing, or None without one. */
     HandEffect attack();
 
 private:

@@ -9,13 +9,14 @@ class QcClientSession;
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands for trading with villagers (decision E-414): opening a villager's screen,
-// listing its offers, trading and closing.
+/*! \brief Control commands for trading with villagers (decision E-414): opening a villager's
+    screen, listing its offers, trading and closing. */
 class QcControlTradeCommands
 {
 public:
     explicit QcControlTradeCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
 
 private:

@@ -22,86 +22,97 @@ class QcClientSession;
 class QcGamepadSource;
 struct QcPlayerInput;
 
-// A gamepad steering the player (decision E-541): the left stick walks with stepless speed, the
-// right stick looks, the triggers mine (right, also attacks) and use (left), the shoulders step
-// through the hotbar, the stick clicks sprint (left) and toggle sneaking (right; held while
-// flying, where it descends), south jumps and a double tap of it toggles creative flight. Dead
-// zones and curve come from the settings (QcGamepadCurve). A second writer of the session's intent
-// beside the keyboard and mouse: the pad sets walking, jump, sneak and sprint only while it uses
-// them and gives them back once (zero, false) when it stops, so the keyboard's values hold
-// otherwise and the device last used wins without the two fighting; looking adds to the mouse.
-// Presses are taken from the source's signals with their time, so a click shorter than one poll
-// of the source (8 ms with SDL) still counts; they act at the next frame. They are queued only
-// while the frames are `active` (world shown, window focused) and at most maxPresses of them: SDL
-// reports pads in the background too, and a press there never waits for the window to come back.
-// The pad that last pressed something or clearly pushed a stick leads. Driven once per frame
-// (QcFrameDriver) or per tick (the control interface); lives in one thread.
-// Beyond walking and acting (decision E-580): east drops (held: the stack), west picks the block
-// in view, the screens and the player list are asked for with worldAction() like their keys, and
-// a held button opens the hotbar's radial menu (QcHotbarRadial), where the right stick chooses a
-// slot instead of looking.
+/*! \brief A gamepad steering the player (decision E-541): the left stick walks with stepless speed,
+    the right stick looks, the triggers mine (right, also attacks) and use (left), the shoulders
+    step through the hotbar, the stick clicks sprint (left) and toggle sneaking (right; held while
+    flying, where it descends), south jumps and a double tap of it toggles creative flight.
+
+    Dead zones and curve come from the settings (QcGamepadCurve). A second writer of the
+    session's intent beside the keyboard and mouse: the pad sets walking, jump, sneak and sprint
+    only while it uses them and gives them back once (zero, false) when it stops, so the
+    keyboard's values hold otherwise and the device last used wins without the two fighting;
+    looking adds to the mouse. Presses are taken from the source's signals with their time, so a
+    click shorter than one poll of the source (8 ms with SDL) still counts; they act at the next
+    frame. They are queued only while the frames are \c {active} (world shown, window focused)
+    and at most maxPresses of them: SDL reports pads in the background too, and a press there
+    never waits for the window to come back. The pad that last pressed something or clearly
+    pushed a stick leads. Driven once per frame (QcFrameDriver) or per tick (the control
+    interface); lives in one thread. Beyond walking and acting (decision E-580): east drops
+    (held: the stack), west picks the block in view, the screens and the player list are asked
+    for with worldAction() like their keys, and a held button opens the hotbar's radial menu
+    (QcHotbarRadial), where the right stick chooses a slot instead of looking. */
 class QcGamepadControls : public QObject
 {
     Q_OBJECT
 
 public:
-    // The most presses waiting for a frame; beyond it the oldest go.
+    /*! The most presses waiting for a frame; beyond it the oldest go. */
     static constexpr qsizetype maxPresses = 64;
 
     explicit QcGamepadControls(QObject *parent = nullptr);
     ~QcGamepadControls() override;
     Q_DISABLE_COPY_MOVE(QcGamepadControls)
 
-    // Damage of this many health points or more vibrates at full strength (decision E-615).
+    /*! Damage of this many health points or more vibrates at full strength (decision E-615). */
     static constexpr double fullRumbleDamage = 8.0;
+    /*! How long a hurt vibrates, in milliseconds. */
     static constexpr int rumbleMs = 220;
 
-    // The pads to follow (nullptr: none); the source must outlive this object or be set to another.
+    /*! Sets the pads to follow, \a source (nullptr: none); it must outlive this object or be set to
+        another. */
     void setSource(QcGamepadSource *source);
-    // The settings of all pads; each pad uses the profile of its model (decision E-611).
+    /*! Sets \a settings, the settings of all pads; each pad uses the profile of its model
+        (decision E-611). */
     void setSettings(const QcGamepadSettings &settings);
+    /*! Returns the settings of all pads. */
     const QcGamepadSettings &settings() const { return m_settings; }
-    // The profile of the leading pad (the standard one without a pad).
+    /*! Returns the profile of the leading pad (the standard one without a pad). */
     const QcGamepadProfile &profile() const { return m_profile; }
-    // The pad that leads (0: none).
+    /*! Returns the pad that leads (0: none). */
     int activePad() const { return m_pad; }
-    // The leading pad is the device in use: it pressed a button, a trigger or clearly pushed a stick
-    // since it leads and since keyboardOrMouseUsed(). Only then does it vibrate, and only then does
-    // its disconnecting open the pause menu (decisions E-613, E-615).
+    /*! Returns whether the leading pad is the device in use: it pressed a button, a trigger or
+        clearly pushed a stick since it leads and since keyboardOrMouseUsed(). Only then does it
+        vibrate, and only then does its disconnecting open the pause menu (decisions E-613,
+        E-615). */
     bool padInUse() const { return m_inUse; }
-    // A key, a click or a moved mouse (QcGamepadUi hands the input back): the pad is no longer in use.
+    /*! A key, a click or a moved mouse (QcGamepadUi hands the input back): the pad is no longer
+        in use. */
     void keyboardOrMouseUsed() { m_inUse = false; }
-    // Whether the game's window has the focus (true without a window): the pad does not vibrate in
-    // the background.
+    /*! Sets whether the game's window has the focus (\a active; true without a window): the pad
+        does not vibrate in the background. */
     void setWindowActive(bool active) { m_windowActive = active; }
 
-    // Presses waiting for the next frame.
+    /*! Returns the number of presses waiting for the next frame. */
     qsizetype pendingPresses() const { return m_presses.size(); }
-    // Whether a click of the sneak button toggled sneaking on.
+    /*! Returns whether a click of the sneak button toggled sneaking on. */
     bool sneakToggled() const { return m_sneakToggled; }
-    // The radial menu of the hotbar is held open, and its highlighted slot (-1 while closed).
+    /*! Returns whether the radial menu of the hotbar is held open. */
     bool radialOpen() const { return m_radial.isOpen(); }
+    /*! Returns the highlighted slot of the radial menu; -1 while closed. */
     int radialSlot() const { return m_radial.highlighted(); }
 
-    // One frame of `seconds`: the presses since the last frame act and the sticks walk and look.
-    // While not `active`, presses are dropped; the first inactive frame gives back what the pad
-    // holds (mining, a drawn bow, walking, jump, sneak, sprint). A toggled sneak stays on across
-    // inactive frames (screens, focus) and ends with the player's death.
+    /*! One frame of \a seconds for \a session: the presses since the last frame act and the
+        sticks walk and look. While not \a active, presses are dropped; the first inactive frame
+        gives back what the pad holds (mining, a drawn bow, walking, jump, sneak, sprint). A
+        toggled sneak stays on across inactive frames (screens, focus) and ends with the player's
+        death. */
     void applyFrame(QcClientSession &session, float seconds, bool active);
-    // The frames stop or turn inactive without one being drawn (the window lost the focus or was
-    // minimised): gives back what the pad holds and queues nothing until the next active frame.
+    /*! The frames stop or turn inactive without one being drawn (the window lost the focus or
+        was minimised): gives back to \a session (null: none) what the pad holds and queues
+        nothing until the next active frame. */
     void suspend(QcClientSession *session);
-    // Forgets everything without a session (the session ended or changed), a toggled sneak too.
+    /*! Forgets everything without a session (the session ended or changed), a toggled sneak too. */
     void reset();
 
 signals:
-    // A key action of the world was pressed (or, for the held player list, released): Pause,
-    // Inventory, Chat, Handbook, CameraView or PlayerList. The game opens the screen as with the key.
-    // The leading pad disconnecting in the world asks for Pause too (decision E-613).
+    /*! Emitted when the key \a action of the world was \a pressed (or, for the held player list,
+        released): Pause, Inventory, Chat, Handbook, CameraView or PlayerList. The game opens the
+        screen as with the key. The leading pad disconnecting in the world asks for Pause too
+        (decision E-613). */
     void worldAction(QcKeyBindings::Action action, bool pressed);
-    // Another pad leads (or none), or the settings changed: profile() may differ.
+    /*! Another pad leads (or none), or the settings changed: profile() may differ. */
     void profileChanged();
-    // The radial menu opened, closed or highlights another slot.
+    /*! The radial menu opened, closed or highlights another slot. */
     void radialChanged();
 
 private:

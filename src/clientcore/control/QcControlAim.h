@@ -11,11 +11,13 @@
 
 class QcClientSession;
 
-// Turns the player's view like a player moving the mouse.
+/*! \brief Turns the player's view like a player moving the mouse. */
 class QcControlAim
 {
 public:
-    // Turns the player towards a block centre, or towards the centre of one of its faces.
+    /*! Turns the player of \a session towards the centre of \a block, or towards the centre of
+        its \a face. */
     static void lookAt(QcClientSession &session, QcBlockPos block, std::optional<QcBlockFace> face);
+    /*! Turns the player of \a session towards \a point. */
     static void lookAtPoint(QcClientSession &session, const QcVec3 &point);
 };

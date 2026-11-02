@@ -11,37 +11,47 @@
 #include <array>
 #include <memory>
 
-// Immutable snapshot of everything needed to mesh one section: the chunk and its eight neighbours
-// (for faces and ambient occlusion across chunk borders). Missing neighbours count as opaque.
+/*! \brief Immutable snapshot of everything needed to mesh one section: the chunk and its eight
+    neighbours (for faces and ambient occlusion across chunk borders).
+
+    Missing neighbours count as opaque. */
 struct QcMeshInput
 {
-    // Index (dz + 1) * 3 + (dx + 1); index 4 is the chunk being meshed.
+    /*! Index (dz + 1) * 3 + (dx + 1); index 4 is the chunk being meshed. */
     std::array<std::shared_ptr<const QcChunk>, 9> chunks;
+    /*! Index of the section within the chunk (0 at the bottom). */
     int sectionIndex = 0;
+    /*! Render data of the block states. */
     std::shared_ptr<const QcBlockRenderTable> renderTable;
-    // Block light of the same nine chunks from QcBlockLightEngine (null entries are dark). Without
-    // it (`hasBlockLight` false) the mesher floods the sources around the section itself.
+    /*! Block light of the same nine chunks from QcBlockLightEngine (null entries are dark).
+        Without it (\c {hasBlockLight} false) the mesher floods the sources around the section
+        itself. */
     std::array<std::shared_ptr<const QcChunkLight>, 9> blockLight;
+    /*! Whether \c {blockLight} holds the engine's light. */
     bool hasBlockLight = false;
-    // Whether the mesh carries the light of the section's cells (QcChunkMesh::light) for a frame
-    // plan that reads it (QcFramePlan::sectionLight); without it the mesher skips the copy.
+    /*! Whether the mesh carries the light of the section's cells (QcChunkMesh::light) for a
+        frame plan that reads it (QcFramePlan::sectionLight); without it the mesher skips the
+        copy. */
     bool sectionLight = false;
 };
 
-// Builds the triangle mesh of one chunk section from the boxes of every block state: hidden faces
-// are culled, every vertex gets face shading, ambient occlusion, sky light and block light. Pure function of its input, safe to run on worker threads.
+/*! \brief Builds the triangle mesh of one chunk section from the boxes of every block state: hidden
+    faces are culled, every vertex gets face shading, ambient occlusion, sky light and block light.
+
+    Pure function of its input, safe to run on worker threads. */
 class QcChunkMesher
 {
 public:
-    // Shading of faces by direction, indexed by QcBlockFace.
+    /*! Shading of faces by direction, indexed by QcBlockFace. */
     static constexpr std::array<float, 6> faceShade = {0.65f, 0.65f, 1.0f, 0.5f, 0.8f, 0.8f};
-    // Brightness by number of occluders around a vertex (0 = fully occluded corner).
+    /*! Brightness by number of occluders around a vertex (0 = fully occluded corner). */
     static constexpr std::array<float, 4> ambientOcclusionLevels = {0.45f, 0.65f, 0.82f, 1.0f};
-    // Depth by which the surface of a liquid lies below the block top.
+    /*! Depth by which the surface of a liquid lies below the block top. */
     static constexpr float liquidSurfaceDrop = QcBlockRenderTable::liquidSurfaceDrop;
-    // Sky light of a section is computed over the cells from this many blocks below to this many
-    // blocks above it (and one chunk around it).
+    /*! Sky light of a section is computed over the cells from this many blocks below to this
+        many blocks above it (and one chunk around it). */
     static constexpr int lightMargin = 16;
 
+    /*! Returns the mesh of the section \a input describes. */
     static QcChunkMesh mesh(const QcMeshInput &input);
 };

@@ -7,10 +7,11 @@
 
 #include <QPointF>
 
-// Turns relative mouse motion (in points, y down) into view yaw and pitch.
+/*! \brief Turns relative mouse motion (in points, y down) into view yaw and pitch. */
 namespace QcMouseLook {
 
-// Sensitivity is in degrees per point of motion.
+/*! Returns \a intent turned by the mouse motion \a delta: \a sensitivity in degrees per point of
+    motion, \a invert turns looking up and down around. */
 QcPlayerInput apply(QcPlayerInput intent, QPointF delta, double sensitivity, bool invert);
 
 } // namespace QcMouseLook

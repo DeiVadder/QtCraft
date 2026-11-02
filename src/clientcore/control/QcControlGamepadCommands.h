@@ -13,16 +13,19 @@
 class QcControlCommandTable;
 class QcControlContext;
 
-// Control commands for virtual gamepads (decision E-540): connect and disconnect pads and set
-// their buttons and axes, for scenario tests with a controller. The pads live in a
-// QcVirtualGamepadSource owned here; the input mapping of the client reads it like the SDL3
-// backend. The commands do not touch the session.
+/*! \brief Control commands for virtual gamepads (decision E-540): connect and disconnect pads and
+    set their buttons and axes, for scenario tests with a controller.
+
+    The pads live in a QcVirtualGamepadSource owned here; the input mapping of the client reads
+    it like the SDL3 backend. The commands do not touch the session. */
 class QcControlGamepadCommands
 {
 public:
     explicit QcControlGamepadCommands(QcControlContext &context);
 
+    /*! Adds the commands of this group to \a table. */
     void registerCommands(QcControlCommandTable &table);
+    /*! Returns the virtual pads. */
     QcVirtualGamepadSource &source() { return m_source; }
 
 private:

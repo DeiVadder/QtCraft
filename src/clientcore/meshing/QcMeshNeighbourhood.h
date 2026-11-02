@@ -9,8 +9,8 @@
 
 #include <optional>
 
-// The blocks of the 3 x 3 chunks around a section as the chunk mesher reads them (QcMeshInput),
-// by chunk-local coordinates.
+/*! \brief The blocks of the 3 x 3 chunks around a section as the chunk mesher reads them
+    (QcMeshInput), by chunk-local coordinates. */
 class QcMeshNeighbourhood
 {
 public:
@@ -19,9 +19,9 @@ public:
     {
     }
 
-    // Block at chunk-local coordinates; x and z may lie in [-16, 32).
-    // Returns nullopt where the neighbour chunk is missing. Below and above the world is air, so
-    // the underside of the bottom layer is drawn for a view from the void (decision E-288).
+    /*! Returns the block at chunk-local (\a x, \a y, \a z); \a x and \a z may lie in [-16, 32).
+        nullopt where the neighbour chunk is missing. Below and above the world is air, so the
+        underside of the bottom layer is drawn for a view from the void (decision E-288). */
     std::optional<QcBlockId> block(int x, int y, int z) const
     {
         if (y < 0 || y >= QcWorld::worldHeight) {
@@ -37,6 +37,8 @@ public:
         return chunk->block(x - cx * QcWorld::chunkSize, y, z - cz * QcWorld::chunkSize);
     }
 
+    /*! Returns whether the block at chunk-local (\a x, \a y, \a z) is opaque; a missing neighbour
+        chunk counts as opaque. */
     bool isOpaque(int x, int y, int z) const
     {
         const std::optional<QcBlockId> id = block(x, y, z);

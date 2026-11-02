@@ -14,27 +14,34 @@
 class QcChunk;
 class QcClientWorld;
 
-// Sky and block light of the cells around one position, for the debug display (decision E-225):
-// sky light shines with 15 into every cell above the highest cell of its column that stops light
-// coming straight down (QcLightPassage) and spreads like block light, by the same rules as the
-// mesher's light. Computed once in the constructor over a volume that reaches 15 blocks beyond
-// the cells asked about, so their values are complete (about 30 000 cells for one cell, 43 000 for
-// a radius of 2, half a millisecond and more). Cheap cases skip the volume: no light source within
-// reach means block light 0, and a single cell under the open sky has sky light 15.
+/*! \brief Sky and block light of the cells around one position, for the debug display (decision
+    E-225): sky light shines with 15 into every cell above the highest cell of its column that stops
+    light coming straight down (QcLightPassage) and spreads like block light, by the same rules as
+    the mesher's light.
+
+    Computed once in the constructor over a volume that reaches 15 blocks beyond the cells asked
+    about, so their values are complete (about 30 000 cells for one cell, 43 000 for a radius of
+    2, half a millisecond and more). Cheap cases skip the volume: no light source within reach
+    means block light 0, and a single cell under the open sky has sky light 15. */
 class QcLightProbe
 {
 public:
+    /*! Largest radius of the probed cells. */
     static constexpr int maxRadius = 3;
+    /*! \brief Sky and block light (0..15) of one cell; -1 for both where it is unknown. \qcfields
+     */
     struct Levels
     {
         int sky = -1;
         int block = -1;
     };
 
-    // Light of the cells within `radius` (Chebyshev, at most maxRadius) of `centre`.
+    /*! Probes the light in \a world of the cells within \a radius (Chebyshev, at most maxRadius)
+        of \a centre. */
     QcLightProbe(const QcClientWorld &world, QcBlockPos centre, int radius = 0);
 
-    // -1 for both outside the probed cells or below the world.
+    /*! Returns the light of the cell \a pos; -1 for both outside the probed cells or below the
+        world. */
     Levels at(QcBlockPos pos) const;
 
 private:

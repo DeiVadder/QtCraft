@@ -10,15 +10,18 @@
 #include <QRectF>
 #include <QString>
 
-// The luminous threads between the children of a family and their parent (decision E-839; the Kjut,
-// a signal and slot look): a thread from the middle of one body to the middle of the other, drawn
-// as two crossed ribbons. Which child is tied to which parent: QcTethers.
+/*! \brief The luminous threads between the children of a family and their parent (decision E-839;
+    the Kjut, a signal and slot look): a thread from the middle of one body to the middle of the
+    other, drawn as two crossed ribbons.
+
+    Which child is tied to which parent: QcTethers. */
 namespace QcTetherMesher {
 
-// Width of a drawn thread (m).
+/*! Width of a drawn thread (m). */
 inline constexpr double thickness = 0.03;
 
-// One thread: from the middle of the parent's body to the middle of the child's, with the texture.
+/*! \brief One thread: from the middle of the parent's body to the middle of the child's, with
+    the texture. \qcfields */
 struct Thread
 {
     QcVec3 from;
@@ -26,7 +29,8 @@ struct Thread
     QString texture;
 };
 
-// A thread as two crossed ribbons seen from both sides, drawn in `light`.
+/*! Appends to \a mesh the \a thread as two crossed ribbons seen from both sides, drawn in
+    \a light with the atlas rectangle \a uv. */
 void append(QcEntityMesh &mesh, const Thread &thread, const QRectF &uv, QcEntityLight light);
 
 } // namespace QcTetherMesher
