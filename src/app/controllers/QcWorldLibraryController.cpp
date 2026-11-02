@@ -16,6 +16,8 @@
 #include <QUrl>
 #include <QVariantMap>
 
+#include <algorithm>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -74,6 +76,33 @@ void QcWorldLibraryController::refreshWorlds()
                                                               : m_unplayable.value(entry.folder, entry.error)}});
     }
     emit worldsChanged();
+}
+
+namespace {
+
+// The index of the world "Continue" opens in `worlds`; -1 when none can be opened.
+[[nodiscard]] qsizetype continueIndex(const QVariantList &worlds)
+{
+    const auto found = std::ranges::find_if(worlds, [](const QVariant &world) { return world.toMap().value(u"error"_s).toString().isEmpty(); });
+    return found == worlds.end() ? -1 : std::distance(worlds.begin(), found);
+}
+
+} // namespace
+
+QVariant QcWorldLibraryController::continueWorld() const
+{
+    const qsizetype index = continueIndex(worlds());
+    // A null QML sees as null, not undefined.
+    return index < 0 ? QVariant::fromValue(nullptr) : worlds().at(index);
+}
+
+QVariantList QcWorldLibraryController::otherWorlds() const
+{
+    QVariantList others = worlds();
+    if (const qsizetype index = continueIndex(others); index >= 0) {
+        others.removeAt(index);
+    }
+    return others;
 }
 
 QLatin1StringView QcWorldLibraryController::generatorOf(WorldType type)
@@ -147,7 +176,7 @@ void QcWorldLibraryController::setModsDirectory(const QString &directory)
 void QcWorldLibraryController::refreshMods()
 {
     m_mods.clear();
-    const QList<QcModStatus> mods = QcModLoader::discover(m_modsDirectory);
+    const QList<QcModStatus> mods = QcModLoader::discover(modsDirectory());
     for (const QcModStatus &mod : mods) {
         const ModState state = modState(mod, m_modLoadFailures);
         m_mods.append(QVariantMap{{u"id"_s, mod.info.id},
@@ -162,7 +191,7 @@ void QcWorldLibraryController::refreshMods()
 
 void QcWorldLibraryController::setModEnabled(const QString &id, bool enabled)
 {
-    if (const QcStatus written = QcModLoader::setModEnabled(m_modsDirectory, id, enabled); !written) {
+    if (const QcStatus written = QcModLoader::setModEnabled(modsDirectory(), id, enabled); !written) {
         qCWarning(lcGame) << "Cannot change the mod settings:" << written.error();
     }
     refreshMods();
@@ -182,10 +211,10 @@ void QcWorldLibraryController::openWorldFolder(const QString &folder) const
     }
 }
 
-void QcWorldLibraryController::openModsFolder()
+void QcWorldLibraryController::openModsFolder() const
 {
-    if (!m_modsDirectory.isEmpty() && QDir().mkpath(m_modsDirectory)) {
-        QDesktopServices::openUrl(QUrl::fromLocalFile(m_modsDirectory));
+    if (!modsDirectory().isEmpty() && QDir().mkpath(modsDirectory())) {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(modsDirectory()));
     }
 }
 
@@ -208,7 +237,7 @@ void QcWorldLibraryController::recordLoadedMods(const QList<QcModStatus> &mods)
 const QcContentRegistry &QcWorldLibraryController::content() const
 {
     if (!m_content) {
-        const QcModLoader::Loaded loaded = QcModLoader::load(m_modsDirectory);
+        const QcModLoader::Loaded loaded = QcModLoader::load(modsDirectory());
         for (const QString &warning : QcModLoader::warningsOf(loaded)) {
             qCWarning(lcGame) << "Content:" << warning;
         }

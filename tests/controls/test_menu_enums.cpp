@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "app/controllers/QcGameController.h"
+#include "app/controllers/QcNewWorldDraft.h"
 #include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
+#include "app/controllers/QcWorldOptionsController.h"
 #include "app/hooks/QcMenuPreselect.h"
 #include "app/models/QcHandbookModel.h"
 #include "app/session/QcSessionParts.h"
@@ -25,6 +27,7 @@
 #include <QQmlComponent>
 #include <QQmlEngine>
 #include <QRegularExpression>
+#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -262,11 +265,12 @@ private slots:
         QCOMPARE(made->info.defaultGameMode, expectedMode);
     }
 
-    // The test hooks QTCRAFT_MENU_WORLD_TYPE and QTCRAFT_MENU_GAME_MODE choose on the real new-world
-    // page, whose choices are enum values; unknown names are refused with a warning.
+    // The test hooks QTCRAFT_MENU_WORLD_TYPE and QTCRAFT_MENU_GAME_MODE choose in the new world's
+    // draft, whose choices the real page's dropdowns show; unknown names are refused with a warning.
     void testHooksPreselectTheNewWorld()
     {
         QcGameController game;
+        QcNewWorldDraft &draft = *game.worldOptions()->draft();
         QQmlEngine engine;
         QQmlComponent component(&engine);
         component.setData("import QtCraft\nNewWorldPage { objectName: \"newWorldPage\" }\n", QUrl(u"qrc:/test_new_world.qml"_s));
@@ -275,17 +279,85 @@ private slots:
         QObject *types = page->findChild<QObject *>(u"worldTypeChoice"_s);
         QObject *modes = page->findChild<QObject *>(u"gameModeChoice"_s);
         QVERIFY(types && modes);
+        QCOMPARE(types->property("currentValue").toInt(), static_cast<int>(QcWorldLibraryController::WorldType::Terrain));
 
-        QcMenuPreselect::newWorld(*page, u"showcase"_s, u"creative"_s);
+        QcMenuPreselect::newWorld(draft, u"showcase"_s, u"creative"_s);
+        QCOMPARE(draft.worldType(), QcWorldLibraryController::WorldType::Showcase);
+        QCOMPARE(draft.gameMode(), QcGameMode::Creative);
         QCOMPARE(types->property("currentValue").toInt(), static_cast<int>(QcWorldLibraryController::WorldType::Showcase));
         QCOMPARE(modes->property("currentValue").toInt(), static_cast<int>(QcGameMode::Creative));
-        QCOMPARE(page->property("startWorldType").toInt(), types->property("currentIndex").toInt());
-        QCOMPARE(page->property("startGameMode").toInt(), modes->property("currentIndex").toInt());
+        QVERIFY(!page->property("terrain").toBool());
+
+        // Opening the form again starts with the hooks' choices.
+        draft.setWorldType(QcWorldLibraryController::WorldType::Flat);
+        QCOMPARE(types->property("currentValue").toInt(), static_cast<int>(QcWorldLibraryController::WorldType::Flat));
+        QVERIFY(QMetaObject::invokeMethod(page.get(), "open"));
+        QCOMPARE(draft.worldType(), QcWorldLibraryController::WorldType::Showcase);
+        QCOMPARE(types->property("currentValue").toInt(), static_cast<int>(QcWorldLibraryController::WorldType::Showcase));
+
+        // The seed field writes into the draft and shows what a reset leaves.
+        QObject *seed = page->findChild<QObject *>(u"worldSeed"_s);
+        QVERIFY(seed);
+        seed->setProperty("text", u" 1234 "_s);
+        QCOMPARE(draft.seedText(), u" 1234 "_s);
+        QCOMPARE(draft.seed(), u"1234"_s);
+        QCOMPARE(seed->property("placeholderText").toString(), draft.randomSeed());
+        draft.reset();
+        QCOMPARE(seed->property("text").toString(), QString());
 
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown world type"_s));
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown game mode"_s));
-        QcMenuPreselect::newWorld(*page, u"spiral"_s, u"hardcore"_s);
-        QCOMPARE(types->property("currentValue").toInt(), static_cast<int>(QcWorldLibraryController::WorldType::Showcase));
+        QcMenuPreselect::newWorld(draft, u"spiral"_s, u"hardcore"_s);
+        QCOMPARE(draft.worldType(), QcWorldLibraryController::WorldType::Showcase);
+    }
+
+    // "Continue" opens the world played last that can be opened; the list below shows the others,
+    // also a newer one that cannot be opened. QML sees null when there is none.
+    void theWorldListPicksTheWorldToContinue()
+    {
+        QTemporaryDir data;
+        QVERIFY(data.isValid());
+        const bool wasSet = qEnvironmentVariableIsSet("QTCRAFT_DATA_DIR");
+        const QByteArray before = qgetenv("QTCRAFT_DATA_DIR");
+        const auto restore = qScopeGuard([wasSet, before] {
+            if (wasSet) {
+                qputenv("QTCRAFT_DATA_DIR", before);
+            } else {
+                qunsetenv("QTCRAFT_DATA_DIR");
+            }
+        });
+        qputenv("QTCRAFT_DATA_DIR", data.path().toUtf8());
+        QcWorldLibraryController controller;
+        controller.refreshWorlds();
+        QVERIFY(controller.continueWorld().isNull());
+        QVERIFY(controller.otherWorlds().isEmpty());
+
+        const QcWorldLibrary library(QcWorldLibrary::defaultRoot());
+        // Created at the same moment, "Newer" still comes first (by name).
+        QVERIFY(library.create(u"Older"_s, 1).has_value());
+        const QcResult<QcWorldLibrary::Entry> newer = library.create(u"Newer"_s, 2);
+        QVERIFY(newer.has_value());
+        controller.refreshWorlds();
+        QCOMPARE(controller.continueWorld().toMap().value(u"name"_s).toString(), u"Newer"_s);
+        QCOMPARE(controller.otherWorlds().size(), 1);
+        QCOMPARE(controller.otherWorlds().constFirst().toMap().value(u"name"_s).toString(), u"Older"_s);
+
+        controller.noteUnplayable(newer->folder, u"damaged"_s);
+        QCOMPARE(controller.continueWorld().toMap().value(u"name"_s).toString(), u"Older"_s);
+        QCOMPARE(controller.otherWorlds().size(), 1);
+        QCOMPARE(controller.otherWorlds().constFirst().toMap().value(u"name"_s).toString(), u"Newer"_s);
+
+        controller.noteUnplayable(controller.continueWorld().toMap().value(u"folder"_s).toString(), u"damaged too"_s);
+        QQmlEngine engine;
+        QQmlComponent component(&engine);
+        component.setData("import QtQml\nQtObject { required property var library\n"
+                          "readonly property bool none: library.continueWorld === null\n"
+                          "readonly property int others: library.otherWorlds.length }\n",
+                          QUrl(u"qrc:/test_continue_world.qml"_s));
+        const std::unique_ptr<QObject> object(component.createWithInitialProperties({{u"library"_s, QVariant::fromValue(&controller)}}));
+        QVERIFY2(object, qPrintable(component.errorString()));
+        QVERIFY(object->property("none").toBool());
+        QCOMPARE(object->property("others").toInt(), 2);
     }
 
     // QML knows the enumerations under their names, with the values of C++.

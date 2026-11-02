@@ -48,6 +48,9 @@ Rules (name, what it finds):
   screen-key           in a `Keys.onPressed` handler, Esc compared (`event.key === Qt.Key_Escape`) or the key
                        table asked (`keys.matches(...)`): what Esc, a screen's own key and the handbook key do
                        on a screen is one rule in C++, `KeyControls.screenKey` (row 79.58)
+  input-check          input checked or made in JavaScript: `.trim()`, `parseInt(`, `parseFloat(` or
+                       `Math.random(`; C++ takes the raw text, trims, parses and refuses it with a warning
+                       (E-688), and draws random values (QcNewWorldDraft; row 79.64, E-956)
   image-source-size    an `Image`, `AnimatedImage` or `BorderImage` without `sourceSize`, so the whole picture is
                        decoded; not checked with `smooth: false` (pixel art: small sources drawn as they are, a
                        sourceSize only resamples)
@@ -75,7 +78,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
          "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string",
-         "mode-string", "screen-key")
+         "mode-string", "screen-key", "input-check")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
 # E-942; `enum-list` and `connections-write` since their findings in Main.qml went with 79.47); a NOLINT
 # marker without a reason always fails.
@@ -146,6 +149,7 @@ MODE_STRING = re.compile(MODE_FIELD + r"\s*(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:
 MODE_SWITCH = re.compile(r"\bswitch\s*\([\w.?]*" + MODE_FIELD + r"\s*\)\s*\{")
 # A `Keys.onPressed` handler, and in its body Esc compared for equality or the key table asked.
 KEYS_PRESSED = re.compile(r"\bKeys\.onPressed\s*:")
+INPUT_CHECK = re.compile(r"\.trim\s*\(\s*\)|\bparseInt\s*\(|\bparseFloat\s*\(|\bMath\.random\s*\(")
 SCREEN_KEY_TEST = re.compile(r"(?<![!=])(?:===|==)\s*Qt\.Key_Escape\b|\bQt\.Key_Escape\s*(?:===|==)|\bkeys\.matches\s*\(")
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
                          r"|Slot|TextEdit|TextInput|Flickable|ListView|GridView)$")
@@ -489,6 +493,12 @@ def screen_keys(qml):
     return found
 
 
+def input_checks(qml):
+    return [(line_of(qml.masked, match.start()), "input-check",
+             "input trimmed, parsed or drawn in JavaScript; let C++ check it and refuse it with a warning (E-688)")
+            for match in INPUT_CHECK.finditer(qml.masked)]
+
+
 def anchors_with_layout(qml):
     found = []
     for owner in qml.objects:
@@ -562,7 +572,7 @@ def check_file(path, text, corpus, limit=FUNCTION_LINES):
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
                 + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
                 + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml)
-                + pad_command_strings(qml) + mode_strings(qml) + screen_keys(qml))
+                + pad_command_strings(qml) + mode_strings(qml) + screen_keys(qml) + input_checks(qml))
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -889,6 +899,17 @@ Item {
     expected = [(4, "screen-key"), (6, "screen-key"), (14, "screen-key")]
     if got != expected:
         failures.append(f"screen-key: expected {expected}, got {got}")
+    inputs = """Item {
+    function a() { return field.text.trim(); }
+    readonly property int port: parseInt(text) + parseFloat(other)
+    // field.text.trim() in a comment
+    readonly property real seed: Math.random() * Number(x)
+}
+"""
+    got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Inputs.qml", inputs, Corpus({}), 30)]
+    expected = [(2, "input-check"), (3, "input-check"), (5, "input-check")]
+    if got != expected:
+        failures.append(f"input-check: expected {expected}, got {got}")
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))

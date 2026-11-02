@@ -18,11 +18,10 @@ ColumnLayout {
 
     required property GameController game
     readonly property var worlds: game.library.worlds
-    // The world played last that can be opened, else null.
-    readonly property var lastWorld: worlds.find(world => world.error.length === 0) ?? null
+    // The world played last that can be opened, else null (WorldLibrary.continueWorld).
+    readonly property var lastWorld: game.library.continueWorld
     // The worlds of the list: all but the card's.
-    // (By folder: each read of the list gives new objects.)
-    readonly property var otherWorlds: worlds.filter(world => lastWorld === null || world.folder !== lastWorld.folder)
+    readonly property var otherWorlds: game.library.otherWorlds
 
     // The room on the right of the list for its scroll bar; the card and the heading above keep
     // it too, so their right edges line up with the rows.

@@ -30,6 +30,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
     controllers/QcHudState.h controllers/QcHudState.cpp
     controllers/QcMultiplayerController.h controllers/QcMultiplayerController.cpp
+    controllers/QcNewWorldDraft.h controllers/QcNewWorldDraft.cpp
     controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
     controllers/QcRenderSettings.h controllers/QcRenderSettings.cpp

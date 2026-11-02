@@ -490,6 +490,8 @@
     "Player list (hold)": "Spielerliste (halten)",
     "Enter a player name": "Gib einen Spielernamen ein",
     "Invalid address: %1": "Ungültige Adresse: %1",
+    "Invalid port: %1 (a number from 0 to 65535)": "Ungültiger Port: %1 (eine Zahl von 0 bis 65535)",
+    "No valid player name: one word of up to %1 characters.": "Kein gültiger Spielername: ein Wort mit höchstens %1 Zeichen.",
     "Only a running single-player world can be opened to the network": "Nur eine laufende Einzelspielerwelt kann für das Netzwerk geöffnet werden",
     "Nobody accepts connections at this address and port (is the server running?)": "Unter dieser Adresse und diesem Port nimmt niemand Verbindungen an (läuft der Server?)",
     "The other side closed the connection": "Die Gegenseite hat die Verbindung geschlossen",

@@ -16,6 +16,7 @@
 #include "worlds/QcLocalServerHost.h"
 
 #include <QFile>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -163,6 +164,58 @@ private slots:
         QCOMPARE(settings.cleanName(u"\u0001\u0002"_s), QString());
     }
 
+    // The join form starts with the remembered name, else with the default one.
+    void settingsGiveTheFormAName()
+    {
+        QTemporaryDir dir;
+        QcMultiplayerSettings settings(dir.filePath(u"settings.ini"_s));
+        QSignalSpy changed(&settings, &QcMultiplayerSettings::changed);
+        QCOMPARE(settings.formName(), QcMultiplayerSettings::tr("Player"));
+        QVERIFY(!settings.formName().isEmpty());
+        settings.setPlayerName(u" Alex "_s);
+        QCOMPARE(settings.formName(), u"Alex"_s);
+        QCOMPARE(changed.count(), 1);
+    }
+
+    // What the forms send is checked and trimmed here (decision E-688): a port field's text, the
+    // address and name of a join; what is none is refused with a warning and a failure.
+    void portsAndJoinsAreCheckedHere()
+    {
+        QCOMPARE(QcMultiplayerController::portOf(u""_s), 0);
+        QCOMPARE(QcMultiplayerController::portOf(u"  "_s), 0);
+        QCOMPARE(QcMultiplayerController::portOf(u" 25600 "_s), 25600);
+        QCOMPARE(QcMultiplayerController::portOf(u"65535"_s), 65535);
+        QCOMPARE(QcMultiplayerController::portOf(u"65536"_s), std::nullopt);
+        QCOMPARE(QcMultiplayerController::portOf(u"-1"_s), std::nullopt);
+        QCOMPARE(QcMultiplayerController::portOf(u"12ab"_s), std::nullopt);
+
+        QcSessionParts parts;
+        QcWorldLibraryController library;
+        QcSettingsController settings(parts, library, nullptr);
+        QcWorldStarter worlds(library, settings);
+        QcMultiplayerController multiplayer(parts, worlds, settings, library);
+        QVERIFY(multiplayer.canJoin(u" host "_s, u" Alex "_s));
+        QVERIFY(!multiplayer.canJoin(u"  "_s, u"Alex"_s));
+        QVERIFY(!multiplayer.canJoin(u"host"_s, u" \t "_s));
+
+        QSignalSpy lanFailed(&multiplayer, &QcMultiplayerController::lanFailed);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Opening to the network refused: no port in \"70000\""_s));
+        QCOMPARE(multiplayer.openToLanAt(u"70000"_s, {}, 8, false), -1);
+        QCOMPARE(lanFailed.count(), 1);
+        QVERIFY(multiplayer.lanFailure().contains(u"70000"_s));
+        // A port is taken, but no world runs here.
+        QCOMPARE(multiplayer.openToLanAt(u""_s, {}, 8, false), -1);
+        QCOMPARE(lanFailed.count(), 2);
+        QVERIFY(!multiplayer.lanFailure().contains(u"70000"_s));
+
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Join refused: the player name \"<b>\" contains markup"_s));
+        multiplayer.join(u"host"_s, u"<b>"_s);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Join refused: \"  \" is no address"_s));
+        multiplayer.join(u"  "_s, u"Alex"_s);
+        QVERIFY(multiplayer.joinFailure().contains(u"Invalid address"_s));
+        QVERIFY(!multiplayer.joining());
+    }
+
     void lanAddressesLeaveOutWhatOthersCannotReach()
     {
         QHostAddress scoped(u"fe80::1"_s);
@@ -242,6 +295,7 @@ private slots:
         QSignalSpy changed(&multiplayer, &QcMultiplayerController::failureChanged);
         QSignalSpy joinFailed(&multiplayer, &QcMultiplayerController::joinFailed);
 
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Join refused: no player name"_s));
         multiplayer.join(u"127.0.0.1"_s, u""_s);
         QCOMPARE(joinFailed.count(), 1);
         QCOMPARE(multiplayer.joinFailure(), joinFailed.first().first().toString());
@@ -255,6 +309,7 @@ private slots:
 
         // A new join forgets the old reason before it fails again with the same one.
         changed.clear();
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Join refused: no player name"_s));
         multiplayer.join(u"127.0.0.1"_s, u""_s);
         QCOMPARE(changed.count(), 2);
         QCOMPARE(joinFailed.count(), 2);

@@ -32,7 +32,7 @@ ColumnLayout {
         screen.game.multiplayer.clearFailures();
         screen.notice = "";
         if (nameField.text.length === 0)
-            nameField.text = screen.game.multiplayer.settings.playerName.length > 0 ? screen.game.multiplayer.settings.playerName : qsTr("Player");
+            nameField.text = screen.game.multiplayer.settings.formName;
         openRequested();
         addressField.forceActiveFocus(Qt.TabFocusReason);
     }
@@ -197,7 +197,7 @@ ColumnLayout {
                     kind: GameButton.Primary
                     large: true
                     text: qsTr("Join")
-                    enabled: addressField.text.trim().length > 0 && nameField.text.trim().length > 0
+                    enabled: screen.game.multiplayer.canJoin(addressField.text, nameField.text)
                     onClicked: screen.join()
                 }
 

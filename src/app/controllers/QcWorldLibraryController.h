@@ -25,6 +25,11 @@ class QcWorldLibraryController : public QObject
     QML_NAMED_ELEMENT(WorldLibrary)
     QML_UNCREATABLE("Provided by GameController.library")
     Q_PROPERTY(QVariantList worlds READ worlds NOTIFY worldsChanged FINAL)
+    // The world "Continue" opens: the one played last that can be opened (its error empty); null
+    // when there is none.
+    Q_PROPERTY(QVariant continueWorld READ continueWorld NOTIFY worldsChanged FINAL)
+    // The worlds of the list below the card: all but continueWorld, the last played first.
+    Q_PROPERTY(QVariantList otherWorlds READ otherWorlds NOTIFY worldsChanged FINAL)
     Q_PROPERTY(QVariantList mods READ mods NOTIFY modsChanged FINAL)
     Q_PROPERTY(QString modsDirectory READ modsDirectory NOTIFY modsChanged FINAL)
 
@@ -44,6 +49,8 @@ public:
     Q_DISABLE_COPY_MOVE(QcWorldLibraryController)
 
     QVariantList worlds() const { return m_worlds; }
+    QVariant continueWorld() const;
+    QVariantList otherWorlds() const;
     QVariantList mods() const { return m_mods; }
     QString modsDirectory() const { return m_modsDirectory; }
     // Where mods are looked for; empty loads only the base game (test hook --no-mods).
@@ -73,7 +80,7 @@ public:
     Q_INVOKABLE void refreshMods();
     // Takes effect when the next world starts.
     Q_INVOKABLE void setModEnabled(const QString &id, bool enabled);
-    Q_INVOKABLE void openModsFolder();
+    Q_INVOKABLE void openModsFolder() const;
 
     // The mods a world just loaded: failures are shown in the mod list, the loaded ones logged.
     void recordLoadedMods(const QList<QcModStatus> &mods);

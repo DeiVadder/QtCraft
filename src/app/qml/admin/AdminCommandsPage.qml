@@ -29,8 +29,8 @@ ColumnLayout {
     }
 
     function run() {
-        page.admin.runCommand(commandField.text);
-        commandField.text = "";
+        if (page.admin.runCommand(commandField.text))
+            commandField.text = "";
     }
 
     // Takes a suggestion and goes on writing after it.
@@ -97,7 +97,7 @@ ColumnLayout {
                     objectName: "adminCommandRun"
                     kind: GameButton.Primary
                     text: qsTr("Run")
-                    enabled: commandField.text.trim().length > 0
+                    enabled: page.admin.isLine(commandField.text)
                     onClicked: page.run()
                 }
             }

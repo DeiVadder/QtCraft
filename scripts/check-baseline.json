@@ -2,7 +2,8 @@
     "check-qml.py": {
         "long-function": 6,
         "unread-object-name": 34,
-        "screen-key": 4
+        "screen-key": 4,
+        "input-check": 2
     },
     "check-duplicates.py": {
         "clone": 33,

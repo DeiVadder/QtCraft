@@ -84,6 +84,9 @@ public:
     // failure (unreachable, refused with a translated reason) comes with joinFailed(). The name is
     // remembered for the next time, the password only until the program ends (join again).
     Q_INVOKABLE void join(const QString &address, const QString &playerName, const QString &password = {});
+    // The join form may start a join: `address` and `playerName` are not empty once trimmed (join()
+    // checks them further and says why it refuses).
+    Q_INVOKABLE static bool canJoin(const QString &address, const QString &playerName);
     // The last join once more (after a disconnect).
     Q_INVOKABLE void joinAgain();
     Q_INVOKABLE void cancelJoin();
@@ -94,6 +97,12 @@ public:
     // every interface, over IPv4 only unless `ipv6` (decision E-872: an IPv6 address is often
     // reachable from the internet); returns the port, or -1 after lanFailed().
     Q_INVOKABLE int openToLan(int port = defaultPort, const QString &password = {}, int maxPlayers = 8, bool ipv6 = false);
+    // openToLan with the port field's text: empty takes any free port; a text that is no port
+    // (0 to 65535) is refused with a warning and lanFailed(), and returns -1.
+    Q_INVOKABLE int openToLanAt(const QString &port, const QString &password, int maxPlayers, bool ipv6);
+    // The port of the field's `text`: empty is 0 (any free port); std::nullopt for a text that is no
+    // whole number from 0 to 65535.
+    [[nodiscard]] static std::optional<int> portOf(const QString &text);
     Q_INVOKABLE void closeLan();
     // "address:port" for every address other computers may reach this one at while it hosts.
     Q_INVOKABLE QStringList lanAddresses() const;

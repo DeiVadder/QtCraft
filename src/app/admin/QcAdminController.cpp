@@ -8,6 +8,7 @@
 #include "clientcore/admin/QcAdminCompletion.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/auth/QcProfileValidation.h"
+#include "common/core/QcNameText.h"
 #include "common/physics/QcPhysics.h"
 #include "common/protocol/QcAdminSamples.h"
 
@@ -230,7 +231,7 @@ void QcAdminController::setChartsShown(bool shown)
 
 int QcAdminController::chartCapacity() const
 {
-    return static_cast<int>(m_minutes ? QcAdminSamples::minutesKept : QcAdminSamples::secondsKept);
+    return static_cast<int>(minutes() ? QcAdminSamples::minutesKept : QcAdminSamples::secondsKept);
 }
 
 int QcAdminController::ticksPerSecond()
@@ -298,40 +299,64 @@ void QcAdminController::act(QcClientAdmin::Kind kind, const QStringList &argumen
     }
 }
 
+bool QcAdminController::isName(const QString &text)
+{
+    const QString name = text.trimmed();
+    return !name.isEmpty() && QcNameText::codePoints(name) <= nameLength() && !std::ranges::any_of(name, [](QChar c) { return c.isSpace(); });
+}
+
+bool QcAdminController::isLine(const QString &text)
+{
+    const QString line = text.trimmed();
+    return !line.isEmpty() && line.size() <= textLength();
+}
+
 // Names may not have spaces (the server takes the words of a command line); a reason may.
-void QcAdminController::kick(const QString &name, const QString &reason)
+bool QcAdminController::actOnName(QcClientAdmin::Kind kind, const QString &name, const QStringList &extra)
 {
-    act(Kind::Kick, reason.trimmed().isEmpty() ? QStringList{name.trimmed()} : QStringList{name.trimmed(), reason.trimmed()});
+    if (!isName(name)) {
+        qCWarning(lcGame) << "Manage server: refused" << name << "for request" << static_cast<int>(kind) << "(one word up to" << nameLength()
+                          << "characters is needed)";
+        setNotice(Notice::Refused, tr("No valid player name: one word of up to %1 characters.").arg(nameLength()));
+        return false;
+    }
+    act(kind, QStringList{name.trimmed()} + extra);
+    return true;
 }
 
-void QcAdminController::ban(const QString &name, const QString &reason)
+bool QcAdminController::kick(const QString &name, const QString &reason)
 {
-    act(Kind::Ban, reason.trimmed().isEmpty() ? QStringList{name.trimmed()} : QStringList{name.trimmed(), reason.trimmed()});
+    return actOnName(Kind::Kick, name, reason.trimmed().isEmpty() ? QStringList{} : QStringList{reason.trimmed()});
 }
 
-void QcAdminController::unban(const QString &name)
+bool QcAdminController::ban(const QString &name, const QString &reason)
 {
-    act(Kind::Unban, {name.trimmed()});
+    return actOnName(Kind::Ban, name, reason.trimmed().isEmpty() ? QStringList{} : QStringList{reason.trimmed()});
 }
 
-void QcAdminController::op(const QString &name)
+bool QcAdminController::unban(const QString &name)
 {
-    act(Kind::Op, {name.trimmed()});
+    return actOnName(Kind::Unban, name);
 }
 
-void QcAdminController::deop(const QString &name)
+bool QcAdminController::op(const QString &name)
 {
-    act(Kind::Deop, {name.trimmed()});
+    return actOnName(Kind::Op, name);
 }
 
-void QcAdminController::whitelistAdd(const QString &name)
+bool QcAdminController::deop(const QString &name)
 {
-    act(Kind::WhitelistAdd, {name.trimmed()});
+    return actOnName(Kind::Deop, name);
 }
 
-void QcAdminController::whitelistRemove(const QString &name)
+bool QcAdminController::whitelistAdd(const QString &name)
 {
-    act(Kind::WhitelistRemove, {name.trimmed()});
+    return actOnName(Kind::WhitelistAdd, name);
+}
+
+bool QcAdminController::whitelistRemove(const QString &name)
+{
+    return actOnName(Kind::WhitelistRemove, name);
 }
 
 void QcAdminController::setWhitelist(bool enabled)
@@ -365,6 +390,15 @@ bool QcAdminController::changeSettingText(bool limit, const QString &key, const 
     m_draft.change(*setting, limit, *value);
     emit draftChanged();
     return true;
+}
+
+qint64 QcAdminController::valueOf(bool limit, const QString &key) const
+{
+    if (const std::optional<qint64> drafted = m_draft.value(limit, key)) {
+        return *drafted;
+    }
+    const QcMsg::AdminSettings::Setting *setting = m_admin ? QcAdminSettingsDraft::find(m_admin->settings(), limit, key) : nullptr;
+    return setting ? setting->value : 0;
 }
 
 void QcAdminController::saveSettings()
@@ -406,23 +440,32 @@ void QcAdminController::stop()
     act(Kind::Stop, {u"confirm"_s});
 }
 
-void QcAdminController::sendChat(const QString &text)
+bool QcAdminController::sendChat(const QString &text)
 {
-    if (!text.trimmed().isEmpty()) {
-        act(Kind::Chat, {text.trimmed()});
+    if (!isLine(text)) {
+        qCWarning(lcGame) << "Manage server: refused the chat line" << text << "(empty or longer than" << textLength() << "characters)";
+        return false;
     }
+    act(Kind::Chat, {text.trimmed()});
+    return true;
 }
 
-void QcAdminController::runCommand(const QString &line)
+bool QcAdminController::runCommand(const QString &line)
 {
-    const QString command = line.trimmed();
-    if (command.isEmpty() || !m_admin) {
-        return;
+    if (!isLine(line)) {
+        qCWarning(lcGame) << "Manage server: refused the command line" << line << "(empty or longer than" << textLength() << "characters)";
+        return false;
     }
+    if (!m_admin) {
+        qCWarning(lcGame) << "Manage server: no session to run" << line.trimmed();
+        return false;
+    }
+    const QString command = line.trimmed();
     appendOutput({u"> "_s + command}, static_cast<int>(Level::Info));
     if (const quint32 id = m_admin->runCommand(command); id != 0) {
         m_pending.insert(id, {true, {}, 0});
     }
+    return true;
 }
 
 void QcAdminController::clearOutput()
@@ -575,12 +618,12 @@ void QcAdminController::updateCharts(bool force)
         }
         return;
     }
-    const auto built = newestPoint(m_minutes ? m_admin->history().minutes : m_admin->history().seconds);
+    const auto built = newestPoint(minutes() ? m_admin->history().minutes : m_admin->history().seconds);
     if (!force && built == m_chartsBuilt) {
         return;
     }
     m_chartsBuilt = built;
-    m_charts = QcAdminViews::charts(m_admin->history(), m_minutes);
+    m_charts = QcAdminViews::charts(m_admin->history(), minutes());
     emit chartsChanged();
 }
 

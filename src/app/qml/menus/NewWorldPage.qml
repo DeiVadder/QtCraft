@@ -17,18 +17,13 @@ ColumnLayout {
     id: page
 
     required property GameController game
+    // The form's values and defaults (decision E-956); the map preview follows its seed, also the
+    // random one of an empty seed field (decision E-921).
+    readonly property NewWorldDraft draft: game.worldOptions.draft
+    // A normal world: it has world options and a map preview.
+    readonly property bool terrain: draft.terrain
 
     // The page should be shown (open(), also the test hook "@<ms> open:newWorldPage").
-    // The type and mode the form starts with (indexes into their lists; the test hooks
-    // QTCRAFT_MENU_WORLD_TYPE and QTCRAFT_MENU_GAME_MODE set them).
-    property int startWorldType: 0
-    property int startGameMode: 0
-    // The seed of a world whose seed field stays empty, drawn when the form opens, so that the map
-    // preview shows the world that will be created (decision E-921).
-    property string randomSeed: ""
-    // A normal world: it has world options and a map preview.
-    readonly property bool terrain: worldType.currentValue === WorldLibrary.WorldType.Terrain
-
     signal openRequested
     signal backRequested
     // "Customise …": the page of the world generation options (WorldOptionsPage).
@@ -36,55 +31,15 @@ ColumnLayout {
 
     // Shows the form with its defaults, the name chosen for typing over it.
     function open() {
-        worldName.text = qsTr("New World");
-        worldType.currentIndex = startWorldType;
-        seed.text = "";
-        drawSeed();
-        flatLayers.text = "";
-        gameMode.currentIndex = startGameMode;
-        keepInventory.checked = true;
-        page.game.worldOptions.reset();
-        page.game.worldOptions.preview.resetView();
+        page.draft.reset();
         form.contentY = 0;
         openRequested();
         worldName.forceActiveFocus(Qt.TabFocusReason);
         worldName.selectAll();
     }
 
-    // A new random seed for an empty seed field.
-    function drawSeed() {
-        randomSeed = String(Math.floor(Math.random() * 2147483647));
-    }
-
-    // The die: a new random seed in the field, which the map then shows.
-    function rollSeed() {
-        drawSeed();
-        seed.text = randomSeed;
-    }
-
-    // The seed the world gets: the field's text, else the random one.
-    function worldSeed(): string {
-        const seedText = seed.text.trim();
-        return seedText.length > 0 ? seedText : randomSeed;
-    }
-
     function create() {
-        page.game.createWorld(worldName.text, page.worldSeed(), {
-            keepInventory: keepInventory.checked,
-            worldType: worldType.currentValue,
-            layers: worldType.currentValue === WorldLibrary.WorldType.Flat ? flatLayers.text : "",
-            gameMode: gameMode.currentValue,
-            worldOptions: page.game.worldOptions.values
-        });
-    }
-
-    // What the world generation options say in a line: their preset, or how many differ.
-    function optionsSummary(): string {
-        const options = page.game.worldOptions;
-        if (options.changedCount === 0)
-            return qsTr("Every option at its default.");
-        const preset = options.presets.find(each => each.name === options.preset);
-        return preset ? qsTr("Preset: %1").arg(preset.title) : qsTr("%n option(s) changed.", "", options.changedCount);
+        page.game.createWorld(page.draft.name, page.draft.seed, page.draft.setup());
     }
 
     // Back from the options: the small map shows the default view again (the options' map may
@@ -142,10 +97,18 @@ ColumnLayout {
 
     spacing: 0
 
+    // The dropdowns show the draft's choices, also after it was reset (and once their lists are
+    // filled). The text fields bind the draft's texts and write every change back (also one a test
+    // hook sets), the dropdowns and the switch the player's choice.
     Binding {
-        target: page.game.worldOptions.preview
-        property: "seedText"
-        value: page.worldSeed()
+        target: worldType
+        property: "currentIndex"
+        value: worldType.count > 0 ? worldType.indexOfValue(page.draft.worldType) : -1
+    }
+    Binding {
+        target: gameMode
+        property: "currentIndex"
+        value: gameMode.count > 0 ? gameMode.indexOfValue(page.draft.gameMode) : -1
     }
 
     SettingsPage {
@@ -188,7 +151,8 @@ ColumnLayout {
                             objectName: "worldName"
                             Layout.fillWidth: true
                             Accessible.name: qsTr("World name")
-                            text: qsTr("New World")
+                            text: page.draft.name
+                            onTextChanged: page.draft.name = text
                             onAccepted: page.create()
                         }
                     }
@@ -209,6 +173,7 @@ ColumnLayout {
                         textRole: "text"
                         valueRole: "value"
                         model: worldType.choices
+                        onActivated: index => page.draft.worldType = worldType.choices[index].value
                     }
                     // The field shows the random seed as its placeholder while it is empty, so the
                     // map always shows the seed the field stands for; the die draws a new one.
@@ -223,7 +188,9 @@ ColumnLayout {
                             objectName: "worldSeed"
                             Layout.fillWidth: true
                             Accessible.name: qsTr("Seed")
-                            placeholderText: page.randomSeed
+                            text: page.draft.seedText
+                            placeholderText: page.draft.randomSeed
+                            onTextChanged: page.draft.seedText = text
                             onAccepted: page.create()
                         }
                         GameButton {
@@ -235,7 +202,7 @@ ColumnLayout {
                             leftPadding: Ui.space.s + Ui.size.icon + Ui.space.s
                             text: qsTr("Roll")
                             Accessible.name: qsTr("Random seed")
-                            onClicked: page.rollSeed()
+                            onClicked: page.draft.rollSeed()
 
                             DieIcon {
                                 x: Ui.space.s
@@ -248,7 +215,7 @@ ColumnLayout {
                         }
                     }
                     SettingRow {
-                        visible: worldType.currentValue === WorldLibrary.WorldType.Flat
+                        visible: page.draft.worldType === WorldLibrary.WorldType.Flat
                         label: qsTr("Layers")
                         help: qsTr("From the bottom up; empty for the default.")
 
@@ -257,7 +224,9 @@ ColumnLayout {
 
                             Layout.fillWidth: true
                             Accessible.name: qsTr("Layers from the bottom up")
+                            text: page.draft.layers
                             placeholderText: visible ? page.game.defaultFlatLayers() : ""
+                            onTextChanged: page.draft.layers = text
                             onAccepted: page.create()
                         }
                     }
@@ -283,13 +252,15 @@ ColumnLayout {
                         textRole: "text"
                         valueRole: "value"
                         model: gameMode.choices
+                        onActivated: index => page.draft.gameMode = gameMode.choices[index].value
                     }
                     SettingSwitch {
                         id: keepInventory
 
                         objectName: "keepInventory"
                         label: qsTr("Keep inventory on death")
-                        checked: true
+                        checked: page.draft.keepInventory
+                        onToggled: page.draft.keepInventory = checked
                     }
                 }
 
@@ -299,7 +270,7 @@ ColumnLayout {
 
                     SettingRow {
                         label: qsTr("World options")
-                        help: page.optionsSummary()
+                        help: page.game.worldOptions.summary
 
                         // At the start of the control column like the switch above it, so the
                         // pad's down reaches it from there.

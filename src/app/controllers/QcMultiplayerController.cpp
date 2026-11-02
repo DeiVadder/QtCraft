@@ -164,16 +164,19 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     setJoinFailure({});
     const QString name = m_settings->cleanName(playerName);
     if (name.isEmpty()) {
+        qCWarning(lcGame) << "Join refused: no player name in" << playerName;
         failJoin(tr("Enter a player name"));
         return;
     }
     // The server refuses them as well (QcServerLogin::hello).
     if (QcProfileValidation::hasMarkup(name)) {
+        qCWarning(lcGame) << "Join refused: the player name" << name << "contains markup";
         failJoin(tr("Player names may not contain <, > or &"));
         return;
     }
     const QcResult<QcServerAddress> parsed = QcServerAddress::parse(address.trimmed());
     if (!parsed) {
+        qCWarning(lcGame).noquote() << u"Join refused: \"%1\" is no address (%2)"_s.arg(address, parsed.error());
         failJoin(tr("Invalid address: %1").arg(address));
         return;
     }
@@ -203,6 +206,11 @@ void QcMultiplayerController::join(const QString &address, const QString &player
     request.credentials = {*key, password, *packs, m_gameSettings.viewDistance() + 1};
     request.knownServersFile = QcKnownServers::defaultPath();
     m_client->join(request);
+}
+
+bool QcMultiplayerController::canJoin(const QString &address, const QString &playerName)
+{
+    return !address.trimmed().isEmpty() && !playerName.trimmed().isEmpty();
 }
 
 QcResult<QList<QcPackFingerprint>> QcMultiplayerController::contentPacks()
@@ -286,6 +294,28 @@ int QcMultiplayerController::openToLan(int port, const QString &password, int ma
     m_settings->rememberHost(port, login.maxPlayers);
     emit lanPortChanged();
     return m_lanPort;
+}
+
+std::optional<int> QcMultiplayerController::portOf(const QString &text)
+{
+    const QString trimmed = text.trimmed();
+    if (trimmed.isEmpty()) {
+        return 0;
+    }
+    bool ok = false;
+    const int port = trimmed.toInt(&ok);
+    return ok && port >= 0 && port <= 65535 ? std::optional<int>(port) : std::nullopt;
+}
+
+int QcMultiplayerController::openToLanAt(const QString &port, const QString &password, int maxPlayers, bool ipv6)
+{
+    const std::optional<int> number = portOf(port);
+    if (!number) {
+        qCWarning(lcGame) << "Opening to the network refused: no port in" << port;
+        failLan(tr("Invalid port: %1 (a number from 0 to 65535)").arg(port));
+        return -1;
+    }
+    return openToLan(*number, password, maxPlayers, ipv6);
 }
 
 void QcMultiplayerController::closeLan()

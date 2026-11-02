@@ -95,9 +95,8 @@
 <context>
     <name>NewWorldPage</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/NewWorldPage.qml" line="87"/>
         <source>%n option(s) changed.</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n option changed.</numerusform>
             <numerusform>%n options changed.</numerusform>
         </translation>
@@ -125,7 +124,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="522"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="565"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -133,7 +132,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="524"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="567"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>
@@ -171,6 +170,17 @@
         <translation>
             <numerusform>%1 has made %n more advancement</numerusform>
             <numerusform>%1 has made %n more advancements</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QcWorldOptionsController</name>
+    <message numerus="yes">
+        <location filename="../src/app/controllers/QcWorldOptionsController.cpp" line="79"/>
+        <source>%n option(s) changed.</source>
+        <translation>
+            <numerusform>%n option changed.</numerusform>
+            <numerusform>%n options changed.</numerusform>
         </translation>
     </message>
 </context>

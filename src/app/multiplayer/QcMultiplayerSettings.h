@@ -19,6 +19,9 @@ class QcMultiplayerSettings : public QObject
     Q_OBJECT
     QML_ANONYMOUS
     Q_PROPERTY(QString playerName READ playerName WRITE setPlayerName NOTIFY changed FINAL)
+    // The name the join form starts with: the remembered one, else "Player" in the player's
+    // language.
+    Q_PROPERTY(QString formName READ formName NOTIFY changed FINAL)
     // [{address, name, lastJoined}] newest first; lastJoined as a local date text.
     Q_PROPERTY(QVariantList recentServers READ recentServers NOTIFY changed FINAL)
     Q_PROPERTY(int hostPort READ hostPort NOTIFY changed FINAL)
@@ -35,6 +38,7 @@ public:
     QString playerName() const { return m_playerName; }
     // Cleaned like the server does (control characters removed, at most maxNameLength); stored.
     void setPlayerName(const QString &name);
+    QString formName() const;
     QVariantList recentServers() const;
     const QcServerHistory &history() const { return m_history; }
     int hostPort() const { return m_hostPort; }

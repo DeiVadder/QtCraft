@@ -4,6 +4,8 @@
 #include "app/startup/QcAppWindow.h"
 
 #include "app/controllers/QcGameController.h"
+#include "app/controllers/QcNewWorldDraft.h"
+#include "app/controllers/QcWorldOptionsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcMenuPreselect.h"
 #include "app/hooks/QcOffscreenRender.h"
@@ -138,7 +140,7 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
     applyWindowSize(window);
     applyControlPalette(window);
     placeWindow(&window, options.screen);
-    QcMenuPreselect::newWorld(window, qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"), qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
+    QcMenuPreselect::newWorld(*game.worldOptions()->draft(), qEnvironmentVariable("QTCRAFT_MENU_WORLD_TYPE"), qEnvironmentVariable("QTCRAFT_MENU_GAME_MODE"));
 
     if (!offscreen) {
         // The player's window mode, screen and frame limits (decision E-835), unless a scripted run

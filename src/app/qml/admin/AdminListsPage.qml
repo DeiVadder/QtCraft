@@ -19,13 +19,11 @@ SettingsPage {
     required property AdminActionDialog dialog
     readonly property var lists: admin.lists
 
-    // A name typed into `field` goes to `add`; the field empties.
+    // The text of `field` goes to `add` (AdminController checks and trims it); the field empties
+    // once it was taken.
     function addName(field: GameTextField, add: var) {
-        const name = field.text.trim();
-        if (name.length > 0) {
-            add(name);
+        if (add(field.text))
             field.text = "";
-        }
     }
 
     title: qsTr("Lists")
@@ -81,7 +79,7 @@ SettingsPage {
             }
             GameButton {
                 text: qsTr("Add")
-                enabled: whitelistField.text.trim().length > 0
+                enabled: page.admin.isName(whitelistField.text)
                 onClicked: page.addName(whitelistField, name => page.admin.whitelistAdd(name))
             }
         }
@@ -131,7 +129,7 @@ SettingsPage {
             }
             GameButton {
                 text: qsTr("Add")
-                enabled: operatorField.text.trim().length > 0
+                enabled: page.admin.isName(operatorField.text)
                 onClicked: page.addName(operatorField, name => page.admin.op(name))
             }
         }

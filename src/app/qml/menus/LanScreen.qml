@@ -20,9 +20,8 @@ Popup {
     readonly property list<string> addresses: visible && game.multiplayer.lanPort > 0 ? game.multiplayer.lanAddresses() : []
 
     function openWorld() {
-        const port = portField.text.length > 0 ? parseInt(portField.text) : 0;
-        screen.game.multiplayer.openToLan(port, passwordField.text, maxPlayers.value, ipv6Switch.checked);
-        passwordField.text = "";
+        if (screen.game.multiplayer.openToLanAt(portField.text, passwordField.text, maxPlayers.value, ipv6Switch.checked) >= 0)
+            passwordField.text = "";
     }
 
     objectName: "lanScreen"
