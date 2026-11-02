@@ -18,7 +18,7 @@ SlotScreen {
     id: screen
 
     readonly property var enchanting: game.enchanting
-    readonly property int itemRow: 46
+    readonly property int itemRow: InventoryModel.MachineFirst
 
     title: qsTr("Enchanting Table")
     handbookTarget: "qtcraft:enchanting_table"

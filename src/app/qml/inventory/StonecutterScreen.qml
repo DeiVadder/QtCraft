@@ -17,9 +17,9 @@ SlotScreen {
     id: screen
 
     readonly property var stonecutter: game.stonecutter
-    readonly property int inputRow: 46
+    readonly property int inputRow: InventoryModel.MachineFirst
+    readonly property int outputRow: InventoryModel.MachineOutput
 
-    outputSlot: 48
     title: qsTr("Stonecutter")
     handbookTarget: "qtcraft:stonecutter"
     keyHints: [
@@ -118,7 +118,7 @@ SlotScreen {
         Repeater {
             model: SlotRange {
                 source: screen.game.player.inventory
-                first: screen.outputSlot
+                first: screen.outputRow
                 count: 1
             }
 

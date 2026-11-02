@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app/controllers/QcSlotCursor.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
 
@@ -17,12 +18,15 @@ class QcSettingsController;
 struct QcSessionParts;
 
 // The local player for the HUD and the inventory screens (GameController.player): inventory and
-// crafting, the open machine or chest, health and food.
-class QcPlayerController : public QObject
+// crafting, the open machine or chest, health and food; the slot screens' hand (slotCursor) acts
+// through its slot requests.
+class QcPlayerController : public QObject, public QcSlotActions
 {
     Q_OBJECT
     QML_ANONYMOUS
     Q_PROPERTY(QcInventoryModel *inventory READ inventory CONSTANT FINAL)
+    // What clicks on the slot screens do (picking up, carrying, putting down).
+    Q_PROPERTY(QcSlotCursor *slotCursor READ slotCursor CONSTANT FINAL)
     Q_PROPERTY(double health READ health NOTIFY healthChanged FINAL)
     Q_PROPERTY(double maxHealth READ maxHealth NOTIFY healthChanged FINAL)
     Q_PROPERTY(bool dead READ dead NOTIFY healthChanged FINAL)
@@ -66,6 +70,7 @@ public:
     QcPlayerController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
 
     QcInventoryModel *inventory() const { return m_inventory; }
+    QcSlotCursor *slotCursor() const { return m_slotCursor; }
     double health() const;
     double maxHealth() const;
     bool dead() const;
@@ -100,20 +105,23 @@ public:
     void announceAdvancement(const QString &advancement);
 
     Q_INVOKABLE void selectHotbarSlot(int slot) const;
-    // Rows of QcInventoryModel; count 0 moves the whole stack.
-    Q_INVOKABLE void moveItem(int from, int to, int count = 0) const;
-    // Shift-click on a row: the server moves the stack where it belongs; on the crafting result
-    // it crafts as often as possible.
-    Q_INVOKABLE void quickMove(int row) const;
-    Q_INVOKABLE void takeCraftingResult() const;
     Q_INVOKABLE void craftRecipe(const QString &recipe) const;
     Q_INVOKABLE void respawn() const;
+
+    // The slot requests (QcSlotActions); the open container's held slot is locked.
+    int lockedRow() const override { return containerHeldSlot(); }
+    // Rows of QcInventoryModel; count 0 moves the whole stack.
+    void moveItem(int from, int to, int count) const override;
+    // Shift-click on a row: the server moves the stack where it belongs; on the crafting result
+    // it crafts as often as possible.
+    void quickMove(int row) const override;
+    void takeCraftingResult() const override;
     // Creative mode: puts `count` items from the catalogue into the slot of a row of the inventory
     // model (onto the same item up to its stack size, else replacing it); row -1 adds them to the
     // inventory. The server refuses it in other modes.
-    Q_INVOKABLE void putCreativeItem(int row, const QString &itemName, int count) const;
+    void putCreativeItem(int row, const QString &itemName, int count) const override;
     // Creative mode: empties the slot of a row (the bin).
-    Q_INVOKABLE void clearSlot(int row) const;
+    void clearSlot(int row) const override;
 
     // Item and recipe names of the session's content in the current language.
     void useContent();
@@ -145,6 +153,7 @@ private:
     const QcSettingsController &m_settings;
     QcInventoryModel *m_inventory = nullptr;
     QcCreativeItemModel *m_creativeItems = nullptr;
+    QcSlotCursor *m_slotCursor = nullptr;
     QString m_machineLabel;
     int m_containerColumns = 9;
     QVariantList m_craftableRecipes;

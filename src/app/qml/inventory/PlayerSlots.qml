@@ -22,14 +22,14 @@ GridLayout {
     Repeater {
         model: SlotRange {
             source: grid.owner.game.player.inventory
-            count: grid.hotbarOnly ? 9 : 36
+            count: grid.hotbarOnly ? InventoryModel.HotbarEnd : InventoryModel.InventoryEnd
         }
 
         InventorySlot {
             owner: grid.owner
-            Layout.row: slot < 9 ? 4 : Math.floor((slot - 9) / 9)
-            Layout.column: slot % 9
-            Layout.topMargin: slot < 9 && !grid.hotbarOnly ? Ui.space.m : 0
+            Layout.row: slot < InventoryModel.HotbarEnd ? 4 : Math.floor((slot - InventoryModel.HotbarEnd) / grid.columns)
+            Layout.column: slot % grid.columns
+            Layout.topMargin: slot < InventoryModel.HotbarEnd && !grid.hotbarOnly ? Ui.space.m : 0
         }
     }
 }

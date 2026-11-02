@@ -1,6 +1,6 @@
 {
     "check-qml.py": {
-        "long-function": 12,
+        "long-function": 11,
         "unread-object-name": 36
     },
     "check-duplicates.py": {

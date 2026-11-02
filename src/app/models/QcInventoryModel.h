@@ -24,7 +24,8 @@ struct QcItemDefinition;
 class QcInventoryModel : public QAbstractListModel
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    QML_NAMED_ELEMENT(InventoryModel)
+    QML_UNCREATABLE("Provided by GameController.player.inventory")
     Q_PROPERTY(int selectedSlot READ selectedSlot NOTIFY selectedSlotChanged FINAL)
     // The name of the stack in the selected hotbar slot (its custom name if it has one), empty for
     // an empty slot; the HUD shows it briefly over the hotbar (decision E-885).
@@ -45,6 +46,22 @@ public:
     static constexpr int machineFirstRow = resultRow + 1;
     static constexpr int equipmentFirstRow = machineFirstRow + QcMsg::MachineState::maxSlots;
     static constexpr int rowCountTotal = equipmentFirstRow + static_cast<int>(QcEquipment::slotCount);
+    // A machine's output (furnace, stonecutter): its third slot.
+    static constexpr int machineOutputRow =
+        machineFirstRow + (QcMsg::MoveInventoryItem::machineOutputSlot - QcMsg::MoveInventoryItem::machineInputSlot);
+
+    // The rows for QML (InventoryModel.MachineFirst + 1), so the screens name no row numbers.
+    enum class Row {
+        // The first row after the hotbar (rows 0 to 8) and after the whole inventory.
+        HotbarEnd = QcInventory::hotbarSize,
+        InventoryEnd = QcInventory::slotCount,
+        GridFirst = gridFirstRow,
+        Result = resultRow,
+        MachineFirst = machineFirstRow,
+        MachineOutput = machineOutputRow,
+        EquipmentFirst = equipmentFirstRow,
+    };
+    Q_ENUM(Row)
 
     // Protocol slot (QcMsg::MoveInventoryItem) of a row; -1 for the crafting result.
     static int slotOfRow(int row);

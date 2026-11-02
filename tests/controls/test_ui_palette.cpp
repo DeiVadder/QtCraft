@@ -143,7 +143,7 @@ bool assignsOwnNumber(const QString &code, bool inventory)
     }
     const QString name = match.captured(1).section(u'.', -1);
     // The slot screens name rows of the inventory model ("inputRow: 46", "first: leftRow + 2",
-    // "outputSlot: 48", "count: 9") and count their grids' columns ("catalogueColumns: 7").
+    // "count: 9") and count their grids' columns ("catalogueColumns: 7").
     const bool inventoryRow = inventory && (name == u"first"_s || name == u"count"_s || name.endsWith(u"Row"_s) || name.endsWith(u"Slot"_s)
                               || name.endsWith(u"First"_s) || name.endsWith(u"Columns"_s));
     if (notSizes.contains(name) || name.endsWith(u"Ms"_s) || inventoryRow) {

@@ -21,6 +21,7 @@ QcPlayerController::QcPlayerController(const QcSessionParts &parts, const QcSett
     , m_settings(settings)
     , m_inventory(new QcInventoryModel(this))
     , m_creativeItems(new QcCreativeItemModel(this))
+    , m_slotCursor(new QcSlotCursor(*m_inventory, *this, this))
 {
     // The craftable recipes carry icon URLs, which change with new icons (decision E-650).
     connect(QcItemIconUrls::instance(), &QcItemIconUrls::generationChanged, this, [this] {

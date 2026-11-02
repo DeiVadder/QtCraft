@@ -18,7 +18,7 @@ SlotScreen {
     id: screen
 
     readonly property var anvil: game.anvil
-    readonly property int leftRow: 46
+    readonly property int leftRow: InventoryModel.MachineFirst
 
     title: qsTr("Anvil")
     handbookTarget: "qtcraft:anvil"

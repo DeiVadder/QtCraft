@@ -23,6 +23,7 @@ class QcHandbookController;
 class QcScreenState;
 class QcScreenshotHook;
 class QcScriptedPad;
+class QcSlotCursor;
 struct QcSessionParts;
 
 // Test hooks from the command line for reproducible scenes: view direction, spawn column and
@@ -41,6 +42,8 @@ public:
         QcGameInput &input;
         // The loading screen's state (--overlay loading:..., decision E-943).
         QcLoadingProgress &loading;
+        // The hand on the slot screens (--overlay pick:<row>).
+        QcSlotCursor &slotCursor;
     };
 
     QcStartupHooks(const Screens &screens, const QcSessionParts &parts, QcBenchmarkRun *benchmark, QObject *parent = nullptr);

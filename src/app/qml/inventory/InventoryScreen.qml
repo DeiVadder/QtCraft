@@ -15,12 +15,11 @@ import QtCraft
 SlotScreen {
     id: screen
 
-    readonly property int gridFirst: 36
+    readonly property int gridFirst: InventoryModel.GridFirst
     // Small windows (from the minimum 1024 x 640 on): a smaller preview and recipe list, so the
     // panel keeps its margin to the window's edges.
     readonly property bool narrow: width < Ui.screen.narrowWindow
 
-    resultSlot: 45
     title: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Crafting")
     handbookTarget: screen.game.player.craftingSize === 3 ? "qtcraft:crafting_table" : ""
     creativeSwitch: true
@@ -128,7 +127,7 @@ SlotScreen {
         Repeater {
             model: SlotRange {
                 source: screen.game.player.inventory
-                first: screen.resultSlot
+                first: InventoryModel.Result
                 count: 1
             }
 

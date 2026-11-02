@@ -13,10 +13,10 @@ import QtCraft
 SlotScreen {
     id: screen
 
-    readonly property int inputRow: 46
-    readonly property int fuelRow: 47
+    readonly property int inputRow: InventoryModel.MachineFirst
+    readonly property int fuelRow: InventoryModel.MachineFirst + 1
+    readonly property int outputRow: InventoryModel.MachineOutput
 
-    outputSlot: 48
     title: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Furnace")
     handbookTarget: "qtcraft:furnace"
 
@@ -136,7 +136,7 @@ SlotScreen {
             Repeater {
                 model: SlotRange {
                     source: screen.game.player.inventory
-                    first: screen.outputSlot
+                    first: screen.outputRow
                     count: 1
                 }
 

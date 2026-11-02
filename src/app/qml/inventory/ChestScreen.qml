@@ -14,10 +14,9 @@ import QtCraft
 SlotScreen {
     id: screen
 
-    readonly property int firstStorageRow: 46
+    readonly property int firstStorageRow: InventoryModel.MachineFirst
     readonly property bool fromHand: screen.game.player.containerHeldSlot >= 0
 
-    lockedSlot: screen.game.player.containerHeldSlot
     hotbarOnly: screen.fromHand
     title: screen.game.player.machineLabel.length > 0 ? screen.game.player.machineLabel : qsTr("Chest")
     keyHints: [

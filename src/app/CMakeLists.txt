@@ -34,6 +34,7 @@ target_sources(qc_app_core PRIVATE
     controllers/QcScreenState.h controllers/QcScreenState.cpp
     controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcSignController.h controllers/QcSignController.cpp
+    controllers/QcSlotCursor.h controllers/QcSlotCursor.cpp
     controllers/QcStonecutterController.h controllers/QcStonecutterController.cpp
     controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
     controllers/QcTradeController.h controllers/QcTradeController.cpp

@@ -28,32 +28,9 @@ SlotScreen {
         { keys: [qsTr("Shift-click")], text: qsTr("into the inventory") }
     ]
 
-    // A click on the catalogue: left takes a full stack, right one item, shift-click puts a full
-    // stack straight into the inventory. With a slot's stack picked up, it goes into the bin.
-    function catalogueClicked(itemName, maxStack, button, quick) {
-        if (pickedSlot >= 0) {
-            game.player.clearSlot(pickedSlot);
-            pickedSlot = -1;
-            return;
-        }
-        if (quick) {
-            game.player.putCreativeItem(-1, itemName, maxStack);
-            return;
-        }
-        carriedItem = itemName;
-        carriedCount = button === Qt.RightButton ? 1 : maxStack;
-    }
-
     // The pad's shoulders switch the catalogue's categories (decision E-583).
     function gamepadCommand(command: int): bool {
         return categories.takeCommand(command);
-    }
-
-    function binClicked() {
-        if (pickedSlot >= 0)
-            game.player.clearSlot(pickedSlot);
-        pickedSlot = -1;
-        carriedItem = "";
     }
 
     startColumn: RowLayout {
@@ -120,7 +97,7 @@ SlotScreen {
                     required property int maxStack
 
                     infoItem: itemName
-                    infoEnabled: screen.pickedSlot < 0 && screen.carriedItem.length === 0
+                    infoEnabled: !screen.cursor.holding
                     onInfoRequested: item => screen.game.handbook.open(item)
                     slotIcon: icon
                     slotLabel: label
@@ -128,7 +105,7 @@ SlotScreen {
                     highlighted: hover.hovered
 
                     ThemedToolTip {
-                        shown: hover.hovered && screen.pickedSlot < 0 && screen.carriedItem.length === 0
+                        shown: hover.hovered && !screen.cursor.holding
                         text: entry.label
                     }
 
@@ -141,13 +118,13 @@ SlotScreen {
                     TapHandler {
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
                         acceptedModifiers: Qt.NoModifier
-                        onTapped: (eventPoint, button) => screen.catalogueClicked(entry.itemName, entry.maxStack, button, false)
+                        onTapped: (eventPoint, button) => screen.cursor.takeFromCatalogue(entry.itemName, entry.maxStack, button, false)
                     }
 
                     TapHandler {
                         acceptedButtons: Qt.LeftButton
                         acceptedModifiers: Qt.ShiftModifier
-                        onTapped: (eventPoint, button) => screen.catalogueClicked(entry.itemName, entry.maxStack, button, true)
+                        onTapped: (eventPoint, button) => screen.cursor.takeFromCatalogue(entry.itemName, entry.maxStack, button, true)
                     }
                 }
 
@@ -205,7 +182,7 @@ SlotScreen {
             }
 
             TapHandler {
-                onTapped: screen.binClicked()
+                onTapped: screen.cursor.bin()
             }
         }
     }

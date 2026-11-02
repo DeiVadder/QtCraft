@@ -64,7 +64,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_input(std::make_unique<QcGameInput>(QcGameInput::Screens{m_screens, *m_handbook}, m_parts, *m_settings, m_audio.get()))
     , m_preview(std::make_unique<QcPreviewSource>(m_parts, *m_library, *m_settings->character(), *m_settings->texturePacks()))
     , m_benchmark(std::make_unique<QcBenchmarkRun>(m_screens, m_parts, *m_input, *m_settings))
-    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading}, m_parts, m_benchmark.get()))
+    , m_startup(std::make_unique<QcStartupHooks>(QcStartupHooks::Screens{m_screens, *m_handbook, *m_input, m_loading, *m_player->slotCursor()}, m_parts, m_benchmark.get()))
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_admin(std::make_unique<QcAdminController>())
     , m_pause(std::make_unique<QcWorldPause>(m_parts, m_screens, *m_settings))
@@ -125,6 +125,8 @@ QcGameController::QcGameController(QObject *parent)
     connect(&m_screens, &QcScreenState::inputEnabledChanged, this, &QcGameController::inputEnabledChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::overlayChanged);
     connect(&m_screens, &QcScreenState::overlayChanged, this, &QcGameController::updateHudShown);
+    // Every screen starts with an empty hand (nothing picked up or carried).
+    connect(&m_screens, &QcScreenState::overlayChanged, this, [this] { m_player->slotCursor()->showScreen(m_screens.overlay()); });
     connect(m_handbook.get(), &QcHandbookController::openChanged, this, &QcGameController::updateHudShown);
     connect(m_player.get(), &QcPlayerController::healthChanged, this, &QcGameController::updateHudShown);
     connect(this, &QcGameController::sessionStarted, m_multiplayer.get(), &QcMultiplayerController::sessionStarted);

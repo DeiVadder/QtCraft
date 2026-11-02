@@ -11,6 +11,8 @@ qc_add_test(test_framed_maps SOURCES screens/test_framed_maps.cpp LIBRARIES qc_b
 # The held map's markers, its image provider and the filled map's tooltip (decision E-805).
 qc_add_test(test_map_hud SOURCES screens/test_map_hud.cpp LIBRARIES qc_app_core)
 qc_add_test(test_backpack_screen SOURCES screens/test_backpack_screen.cpp LIBRARIES qc_base_content qc_app_core)
+# The click rules of the slot screens: pick up, put down, result, output, catalogue, bin (79.57).
+qc_add_test(test_slot_cursor SOURCES screens/test_slot_cursor.cpp LIBRARIES qc_base_content qc_app_core)
 # The creative tabs take the handbook's category names (76.2-b).
 qc_add_test(test_creative_tabs SOURCES screens/test_creative_tabs.cpp LIBRARIES qc_base_content qc_app_core)
 qc_add_test(test_character SOURCES screens/test_character.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)

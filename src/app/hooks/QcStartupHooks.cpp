@@ -5,6 +5,7 @@
 
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
+#include "app/controllers/QcSlotCursor.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
@@ -471,13 +472,11 @@ bool QcStartupHooks::pickInOpenScreen(int row) const
         return false;
     }
     const QList<QQuickItem *> screens = m_parts.window->findChildren<QQuickItem *>(u"slotScreen"_s);
-    for (QQuickItem *screen : screens) {
-        if (screen->isVisible()) {
-            screen->setProperty("pickedSlot", row);
-            return true;
-        }
+    const bool shown = std::ranges::any_of(screens, [](const QQuickItem *screen) { return screen->isVisible(); });
+    if (shown) {
+        m_screens.slotCursor.pick(row);
     }
-    return false;
+    return shown;
 }
 
 void QcStartupHooks::showLoading(QStringView spec) const
