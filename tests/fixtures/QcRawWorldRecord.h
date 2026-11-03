@@ -56,13 +56,22 @@ struct QcRawWorldRecord
         } else if (const auto *strike = std::get_if<QcMsg::Lightning>(&message)) {
             lightning.append(strike->position);
         } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
-            ++entityMoveMessages;
-            for (const QcMsg::EntityMove &move : moves->moves) {
-                flags[move.id] |= move.flags;
-                held[move.id] = move.held;
-                if (move.hurt) {
-                    hurt.insert(move.id);
-                }
+            receivedMoves(*moves);
+        }
+    }
+
+    // Flags, held items, hurts and strikes of the moved entities.
+    void receivedMoves(const QcMsg::EntityMoves &moves)
+    {
+        ++entityMoveMessages;
+        for (const QcMsg::EntityMove &move : moves.moves) {
+            flags[move.id] |= move.flags;
+            held[move.id] = move.held;
+            if (move.hurt) {
+                hurt.insert(move.id);
+            }
+            if (move.struck) {
+                struck.insert(move.id);
             }
         }
     }
@@ -93,6 +102,8 @@ struct QcRawWorldRecord
     QHash<quint32, QcItemId> held;
     // Entities reported hurt in any move.
     QSet<quint32> hurt;
+    // Entities a move said were struck by a blow (EntityMove::struck, decision E-974).
+    QSet<quint32> struck;
     // Labels per chunk and the last world time.
     QHash<QcChunkPos, QList<QcWorldLabel>> chunkLabels;
     double worldTime = -1.0;

@@ -75,6 +75,7 @@ target_sources(qc_clientcore PRIVATE
     figures/QcEntityPose.h
     figures/QcFigureLook.h figures/QcFigureLook.cpp
     figures/QcHandSwing.h figures/QcHandSwing.cpp
+    figures/QcSwimmerPose.h figures/QcSwimmerPose.cpp
 )
 target_sources(qc_clientcore PRIVATE
     icons/QcAppIcon.h icons/QcAppIcon.cpp
@@ -188,6 +189,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcEffectClock.h session/QcEffectClock.cpp
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
+    session/QcInkClouds.h session/QcInkClouds.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
     session/QcSessionState.h

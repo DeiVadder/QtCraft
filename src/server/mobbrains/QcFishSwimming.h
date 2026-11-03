@@ -19,6 +19,7 @@
 class QcBlockAccess;
 class QcContentRegistry;
 struct QcAquaticDefinition;
+struct QcPulseDefinition;
 struct QcCreature;
 struct QcMobDefinition;
 
@@ -26,7 +27,10 @@ struct QcMobDefinition;
     swim without gravity along routes to goals where their body has room (QcSwimRoutes, a fleeing
     one away from danger), rest a moment at each goal and keep their whole body in the water
     (QcSwimSpace), steered also towards their school (cohesion, alignment and separation among the
-    nearest creatures of their kind, \c {schooling});
+    nearest creatures of their kind, \c {schooling}); a creature that swims in pulses (the squid,
+    QcMobDefinition::pulse, decision E-974) pushes at the start of each pulse, glides between
+    and tilts its body along its way (QcCreature::tilt); one without a mind (QcCreature::noAi)
+    holds its place;
     out of water they fall, flop about and count their dry ticks (QcCreature::dryTicks), which
     QcBodyBurning turns into suffocation.
 
@@ -57,6 +61,19 @@ public:
     static constexpr double wishReach = 0.25;
     /*! Weight of its own route for a fish with a school around it. */
     static constexpr double schoolWander = 0.4;
+    /*! A creature that swims in pulses (QcMobDefinition::pulse, decision E-974): the rates per
+        second at which its velocity nears the push and slows while it glides, and its mean
+        speed as a share of the push's (for the time a route may take). \qcshared */
+    static constexpr double thrustRate = 6.0;
+    static constexpr double glideRate = 1.2;
+    static constexpr double pulseTravel = 0.5;
+    /*! Above this speed in m/s a pulsing swimmer tilts along its way at \c {tiltRate} per
+        second; slower it rights itself at \c {rightingRate}. \qcshared */
+    static constexpr double tiltSpeed = 0.3;
+    static constexpr double tiltRate = 4.0;
+    static constexpr double rightingRate = 0.5;
+    /*! Rate per second at which the water stops a creature without a mind (QcCreature::noAi). */
+    static constexpr double driftRate = 1.0;
 
     explicit QcFishSwimming(QRandomGenerator &random);
 
@@ -76,6 +93,18 @@ public:
     static bool inWater(const QcBlockAccess &world, const QcVec3 &position);
 
 private:
+    // The velocity a swimmer heads for and the rate per second at which it nears it.
+    struct Drive
+    {
+        QcVec3 target;
+        double rate = 0.0;
+    };
+
+    // The drive of a creature that swims in `pulse`s towards `wish` at `speed` over `dt` seconds:
+    // a push at the start of each pulse, else a glide that slows down. Advances its pulse clock.
+    static Drive pulseDrive(QcCreature &mob, const QcPulseDefinition &pulse, const QcVec3 &wish, double speed, double dt);
+    // Tilts the body of a pulsing swimmer along its velocity (QcCreature::tilt).
+    static void tiltAlong(QcCreature &mob, double dt);
     // A creature of the grid within the school radius and its squared distance.
     struct Candidate
     {
@@ -97,6 +126,9 @@ private:
     // The direction along the route (length up to 1, shorter close to the goal); zero while it
     // rests. A finished route starts the rest.
     QcVec3 routeWish(QcCreature &mob, QcPhysics::BodySize body, const QcBlockAccess &world);
+    // One tick in water of a creature without a mind (QcCreature::noAi): it swims nowhere, the
+    // water stops it and a pulsing swimmer rights itself.
+    static void drift(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, double dt);
     // Moves the body of `mob` by its velocity over `dt` seconds, stopped by blocks, and turns it
     // along its way.
     static void move(QcCreature &mob, QcPhysics::BodySize body, const QcBlockAccess &world, double dt);

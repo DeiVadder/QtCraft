@@ -1,0 +1,8 @@
+{
+    "name": "squid_eye",
+    "pattern": "noise",
+    "primary": "#e8e4d8",
+    "secondary": "#d0ccc0",
+    "variation": 0.05,
+    "seed": 7413
+}

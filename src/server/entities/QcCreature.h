@@ -59,6 +59,9 @@ struct QcCreature : QcEntity
     /*! Hurt by a fresh hit the clients were not told of yet (EntityMove::hurt); unlike
         hurtThisTick it lives until the next world sync (decision E-971). */
     bool hurtUnsent = false;
+    /*! Struck by a fresh blow (an attack, a projectile, an explosion, not burning or drowning)
+        the clients were not told of yet (EntityMove::struck, decision E-974). */
+    bool struckUnsent = false;
     /*! Struck at a player this tick (animation). */
     bool attackedThisTick = false;
     /*! A wall stopped its steering in the last tick. */
@@ -180,6 +183,11 @@ struct QcCreature : QcEntity
         it suffocates after QcAquaticDefinition::airSeconds (QcBodyBurning). Not saved: a loaded
         fish on land has its full air again. */
     int dryTicks = 0;
+    /*! A creature that swims in pulses (QcMobDefinition::pulse, decision E-974): seconds into
+        its pulse, and the tilt of its body in degrees (0 upright, 90 lying along its yaw, 180
+        upside down) that the clients get as its pitch. Not saved. \qcshared */
+    double pulseClock = 0.0;
+    float tilt = 0.0f;
     /*! The parent of a child of a family (QcMobDefinition::family, decision E-839): its entity
         id while both are in the world (0: none, or a kept parent whose chunk is not loaded), and
         its persistent id when the family is kept with the world (QcCreature::uid; 0 otherwise),

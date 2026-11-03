@@ -33,7 +33,7 @@ class QcTextureAtlas;
 struct QcSessionParts;
 
 // Builds the entity meshes of one frame from the running session: creatures, armour stands, carts
-// with their load, boats, drops, projectiles, flames, lit explosives and the puffs of explosions, the local
+// with their load, boats, drops, projectiles, flames, lit explosives, the puffs of explosions and ink, the local
 // player seen from outside and the
 // first-person arm, with their capes and the light they stand in. Hands nothing to the view; that
 // is QcRenderBridge's part. Lives in the GUI thread.
@@ -96,6 +96,10 @@ private:
     void appendEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
     // A creature; `scale` shrinks it about its feet (the small creature in a spawner).
     void appendCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame, double scale = 1.0);
+    // A creature of static boxes in `pose` at `placement`: walking legs, sitting, tentacles and tilt
+    // of a pulsing swimmer (decision E-974); the plain player figure for a look that did not load.
+    void appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement, const EntityFrame &frame,
+                           const QcEntityPose &pose);
     // The small creature spinning in each monster spawner near the player (decision E-520).
     void appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame);
     // The text on the signs near the player (decision E-766).
@@ -112,8 +116,10 @@ private:
     [[nodiscard]] QcVec3 meshOrigin() const;
     // A falling or moving block or a lit explosive, drawn as its block.
     void appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame);
-    // The puffs of flash and smoke of explosions at the client tick `ticks` (with its fraction).
+    // QcEntityFramePuffs.cpp: the puffs of flash and smoke of explosions and the clouds of ink of
+    // hurt squids (decision E-974) at the client tick `ticks` (with its fraction).
     void appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
+    void appendInk(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
     // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
     static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);

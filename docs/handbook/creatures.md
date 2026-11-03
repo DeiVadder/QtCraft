@@ -2,7 +2,7 @@
 
 [Back to the contents](index.md)
 
-**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
+**QtCraft:** [Caped mannequin](#mob-qtcraft-caped_mannequin) · [Cat](#mob-qtcraft-cat) · [Cave spider](#mob-qtcraft-cave_spider) · [Chicken](#mob-qtcraft-chicken) · [Cod](#mob-qtcraft-cod) · [Cow](#mob-qtcraft-cow) · [Dog](#mob-qtcraft-dog) · [Drowned](#mob-qtcraft-drowned) · [Firefly](#mob-qtcraft-firefly) · [Husk](#mob-qtcraft-husk) · [Iron golem](#mob-qtcraft-iron_golem) · [Kjut](#mob-qtcraft-kjut) · [Little Kjut](#mob-qtcraft-kjut_child) · [Mannequin](#mob-qtcraft-mannequin) · [Ocelot](#mob-qtcraft-ocelot) · [Pig](#mob-qtcraft-pig) · [Salmon](#mob-qtcraft-salmon) · [Sand golem](#mob-qtcraft-sand_golem) · [Shadewalker](#mob-qtcraft-shadewalker) · [Sheep](#mob-qtcraft-sheep) · [Silverfish](#mob-qtcraft-silverfish) · [Skeleton](#mob-qtcraft-skeleton) · [Slime](#mob-qtcraft-slime) · [Spider](#mob-qtcraft-spider) · [Squid](#mob-qtcraft-squid) · [Stray](#mob-qtcraft-stray) · [Villager](#mob-qtcraft-villager) · [Witch](#mob-qtcraft-witch) · [Wolf](#mob-qtcraft-wolf) · [Zombie](#mob-qtcraft-zombie)
 
 ## QtCraft
 
@@ -615,6 +615,33 @@ Climbs straight up walls and down again and leaps at its prey. By day in the ope
 **Appears on**
 
 Any solid, opaque block with a full top (no glass, leaves, ice or lower slab).
+
+**Appears in biomes**
+
+All biomes.
+
+### <a id="mob-qtcraft-squid"></a>Squid
+
+A harmless creature of rivers, lakes and seas below the sea level. It swims in pushes of its tentacles and glides between them, flees when hurt and leaves a dark cloud of ink in the water. On land it lies still and suffocates after a while. It drops one to three ink sacs.
+
+| | |
+|---|---|
+| ID | `qtcraft:squid` |
+| Behaviour | peaceful: wanders, flees when hurt |
+| Health | 10 health points |
+| Size | 0.8 m wide, 0.8 m tall |
+| Speed | 1 m/s walking, 3 m/s fleeing |
+| Appears | day and night |
+| Spawn height | up to y 62 |
+| Stays | never despawns and is saved with the world |
+| Group size | up to 4 |
+| Spawn weight | 2 |
+| Limit | all peaceful creatures together: 6 per player |
+| Drops | [Ink sac](items.md#item-qtcraft-ink_sac) (1–3×) |
+
+**Appears on**
+
+[Water](liquids.md#block-qtcraft-water)
 
 **Appears in biomes**
 

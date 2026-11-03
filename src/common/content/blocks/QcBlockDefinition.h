@@ -100,9 +100,9 @@ struct QcItemDrop
     /*! Block drops only: states that drop it (every condition holds); empty for all states.
         Server side only (crops drop their harvest only when ripe, decision E-289). */
     QList<QcShapeCondition> when = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisations warning-free
-    /*! Block drops only: more than \c {count} items, chosen evenly between \c {count} and this
-        (lapis lazuli drops 4 to 9); 0 for exactly \c {count}. A later fortune enchantment raises
-        it. */
+    /*! More than \c {count} items, chosen evenly between \c {count} and this (lapis lazuli drops
+        4 to 9, a squid 1 to 3 ink sacs); 0 for exactly \c {count}. A later fortune enchantment
+        raises it. */
     int maxCount = 0;
 
     /*! Returns the most items this drop gives. */

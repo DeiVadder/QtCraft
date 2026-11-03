@@ -436,6 +436,30 @@ void emitCape(const LayerPainter &paint, const ModelLook &look, const QcAnimator
                   *surfaces);
 }
 
+// A point `p` of `part` as a creature that swims in pulses holds it (decision E-974): a tentacle
+// turned outwards by look.spread degrees about the middle of its top, then the whole body tilted
+// by look.tilt degrees (its top towards -z) about the point look.tiltHeight above the feet.
+QcVec3 swum(const QcMobPart &part, const QcVec3 &p, const PartLook &look)
+{
+    QcVec3 point = p;
+    const QcVec3 top{(part.from.x + part.to.x) * 0.5, part.to.y, (part.from.z + part.to.z) * 0.5};
+    const double radius = std::hypot(top.x, top.z);
+    if (part.tentacle && radius > 1e-6) {
+        const QcVec3 out{top.x / radius, 0.0, top.z / radius};
+        const QcVec3 d = point - top;
+        const double along = d.x * out.x + d.z * out.z;
+        const QcVec3 across{d.x - out.x * along, 0.0, d.z - out.z * along};
+        const double angle = qDegreesToRadians(look.spread);
+        const double turned = along * std::cos(angle) - d.y * std::sin(angle);
+        const double height = along * std::sin(angle) + d.y * std::cos(angle);
+        point = top + across + out * turned + QcVec3{0.0, height, 0.0};
+    }
+
+    const double tilt = qDegreesToRadians(look.tilt);
+    const double y = point.y - look.tiltHeight;
+    return {point.x, look.tiltHeight + y * std::cos(tilt) + point.z * std::sin(tilt), -y * std::sin(tilt) + point.z * std::cos(tilt)};
+}
+
 } // namespace
 
 const QList<QcMobPart> &playerParts()
@@ -478,6 +502,7 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
     const bool walking = look.legs && !look.sitting && !look.legs->swings().isEmpty();
     const double stride = walking ? QcAnimator::legSwing(look.walked, look.speed, look.legs->length() * placement.scale) : 0.0;
     const double swing = walking ? stride * look.legs->maxSwing() / QcAnimator::maxLegSwing : 0.0;
+    const bool swimming = look.tilt != 0.0 || look.spread != 0.0;
     for (qsizetype index = 0; index < parts.size(); ++index) {
         const QcMobPart &part = parts.at(index);
         const QcVec3 offset = look.sitting ? part.sitOffset : QcVec3{};
@@ -485,6 +510,8 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
         if (walking && index < look.legs->swings().size()) {
             const QcBoxLegs::Swing &leg = look.legs->swings().at(index);
             emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(leg.apply(p, swing) + offset); }, surface);
+        } else if (swimming) {
+            emitBox(mesh, {part.from, part.to}, [&](const QcVec3 &p) { return place(swum(part, p, look)); }, surface);
         } else {
             emitBox(mesh, {part.from + offset, part.to + offset}, place, surface);
         }

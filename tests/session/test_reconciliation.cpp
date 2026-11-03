@@ -208,7 +208,7 @@ private slots:
         double x = 0.5;
         const auto step = [&](quint8 flags, bool hurt) {
             x += 0.2;
-            return QcMsg::EntityMove{bob, {x, 64.0, 3.5}, 0.0f, 20.0, hurt, 0.0f, flags, qcNoItem};
+            return QcMsg::EntityMove{bob, {x, 64.0, 3.5}, 0.0f, 20.0, hurt, false, 0.0f, flags, qcNoItem};
         };
         for (int i = 0; i < 20; ++i) {
             if (i % 2 == 0) {

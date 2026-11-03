@@ -216,9 +216,10 @@ public:
         creature stays invulnerable after a hurt (0: every hit counts). A lower value shortens the
         open windows at once. */
     void setHurtTicks(int ticks);
-    /*! Forgets the hurts the clients were told of (QcCreature::hurtUnsent) after a world sync
-        (decision E-971): a player's blow lands between two ticks, so it must live until the next
-        sync, through the creatures' tick in between. */
+    /*! Forgets the hurts and strikes the clients were told of (QcCreature::hurtUnsent,
+        QcCreature::struckUnsent) after a world sync (decision E-971): a player's blow lands
+        between two ticks, so it must live until the next sync, through the creatures' tick in
+        between. */
     void clearSentHurts();
     /*! Returns the game ticks a creature stays invulnerable after a hurt (setHurtTicks()). */
     int hurtTicks() const { return m_hurtTicks; }

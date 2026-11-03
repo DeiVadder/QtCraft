@@ -60,6 +60,7 @@ double QcWorldMirror::timeAt(double alpha) const
 void QcWorldMirror::tick(quint64 now)
 {
     m_extras.pruneExplosions(now);
+    m_ink.prune(now);
     m_effects.tick(m_worldTime.speed);
     if (m_worldTime.running) {
         // At another tick rate of the server (or frozen) the day runs faster or slower (decision E-249).

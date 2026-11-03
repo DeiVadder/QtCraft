@@ -130,7 +130,24 @@ struct Collar
     aquatic.separation = reader.number(u"separation"_s, aquatic.separation, 0.0, 4.0);
     aquatic.separationDistance = reader.number(u"separationDistance"_s, aquatic.separationDistance, 0.0, 4.0);
     aquatic.neighbours = reader.integer(u"neighbours"_s, aquatic.neighbours, 0, 32);
+    const QString cap = reader.string(u"cap"_s, u"fish"_s);
+    if (cap == u"large"_s) {
+        aquatic.cap = QcAquaticDefinition::Cap::Large;
+    } else if (cap != u"fish"_s) {
+        reader.fail(u"'cap' is \"fish\" or \"large\""_s);
+    }
     return aquatic;
+}
+
+// Swimming in pulses (decision E-974): "pulse" in "aquatic".
+[[nodiscard]] QcPulseDefinition parsePulse(QcJsonFieldReader &reader)
+{
+    QcPulseDefinition pulse;
+    pulse.seconds = reader.number(u"seconds"_s, pulse.seconds, 0.2, 10.0);
+    pulse.thrust = reader.number(u"thrust"_s, pulse.thrust, 0.05, 0.9);
+    pulse.speed = reader.number(u"speed"_s, pulse.speed, 0.1, 10.0);
+    pulse.spread = reader.number(u"spread"_s, pulse.spread, 0.0, 90.0);
+    return pulse;
 }
 
 // Drinking to heal (the witch, decision E-623): the object "drinks".
@@ -171,10 +188,15 @@ void QcMobReader::parseCompanions()
     }
 }
 
-// Water creatures and milking (decisions E-500, E-502): "aquatic" and "milk".
+// Water creatures and milking (decisions E-500, E-502): "aquatic" (with "pulse" and "ink",
+// decision E-974) and "milk".
 void QcMobReader::parseWaterAndMilk()
 {
-    m_reader.nestedObject(u"aquatic"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) { m_mob.aquatic = parseAquatic(nested); });
+    m_reader.nestedObject(u"aquatic"_s, [this](const QJsonObject &, QcJsonFieldReader &nested) {
+        m_mob.aquatic = parseAquatic(nested);
+        nested.nestedObject(u"pulse"_s, [this](const QJsonObject &, QcJsonFieldReader &pulse) { m_mob.pulse = parsePulse(pulse); });
+        m_mob.ink = nested.name(u"ink"_s, m_namespace);
+    });
     if (m_reader.ok() && m_mob.aquatic && (m_mob.flying || m_mob.hostile || m_mob.ambient || m_mob.ai != QcMobDefinition::Ai::Passive || m_mob.tameable)) {
         m_reader.fail(u"'aquatic' creatures are passive, neither fly, are ambient nor tameable"_s);
     }

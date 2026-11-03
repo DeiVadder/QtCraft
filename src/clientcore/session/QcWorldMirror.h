@@ -8,14 +8,18 @@
 #include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientWorld.h"
 #include "clientcore/session/QcEffectClock.h"
+#include "clientcore/session/QcInkClouds.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/protocol/QcMessages.h"
 
+#include <QHash>
 #include <QList>
 
 #include <memory>
 #include <optional>
 #include <utility>
+
+struct QcClientEntity;
 
 /*! \brief The world as the server sends it (part of QcClientSession, decision E-717): the content,
     the blocks of the loaded chunks with the local player's predicted changes on top (QcBlockMirror,
@@ -34,8 +38,8 @@ public:
         another group; \a eye hears the thunder of a lightning strike, \a now is the client's
         tick count. */
     [[nodiscard]] std::optional<Change> handle(const QcMessage &message, const QcVec3 &eye, quint64 now);
-    /*! One client tick, the tick count \a now: explosions fade, the world time runs on while the
-        time of day runs, the animations' clock runs on while the server runs. */
+    /*! One client tick, the tick count \a now: explosions and clouds of ink fade, the world time
+        runs on while the time of day runs, the animations' clock runs on while the server runs. */
     void tick(quint64 now);
 
     /*! Shows the \a blocks the local player's action numbered \a sequence is expected to set and
@@ -73,6 +77,17 @@ public:
     const QcChunkExtras &extras() const { return m_extras; }
     /*! Returns the maps the server sent (decision E-802). */
     const QcClientMaps &maps() const { return m_maps; }
+    /*! Returns the clouds of ink of struck squids (decision E-974). */
+    const QcInkClouds &inkClouds() const { return m_ink; }
+    /*! Adds the clouds of ink of the creatures of \a entities that \a moves tell were struck
+        (kinds with QcMobDefinition::ink), at the client's tick count \a now; nothing before the
+        content. */
+    void addInk(const QcMsg::EntityMoves &moves, const QHash<quint32, QcClientEntity> &entities, quint64 now)
+    {
+        if (content()) {
+            m_ink.addStruck(moves, entities, *content(), now);
+        }
+    }
 
 private:
     // Labels, spawners, explosions, maps, time and weather; false for other messages.
@@ -85,4 +100,5 @@ private:
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
     QcEffectClock m_effects;
     QcClientWeather m_weather;
+    QcInkClouds m_ink;
 };

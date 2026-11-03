@@ -640,7 +640,16 @@ void QcNaturalSpawner::setCaps(int hostile, int passive, int ambient)
     m_ambientCap = ambient;
 }
 
+std::size_t QcNaturalSpawner::categoryOf(const QcMobDefinition &definition)
+{
+    if (definition.aquatic) {
+        return definition.aquatic->cap == QcAquaticDefinition::Cap::Large ? 4 : 3;
+    }
+    return definition.ambient ? 2 : (definition.hostile ? 0 : 1);
+}
+
 int QcNaturalSpawner::capOf(const QcMobDefinition &definition) const
 {
-    return definition.aquatic ? m_waterCap : (definition.ambient ? m_ambientCap : (definition.hostile ? m_hostileCap : m_passiveCap));
+    const std::array<int, categories> caps{m_hostileCap, m_passiveCap, m_ambientCap, m_waterCap, m_largeWaterCap};
+    return caps[categoryOf(definition)];
 }

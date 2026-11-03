@@ -26,7 +26,7 @@ constexpr const char *plantsGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Plants"
 constexpr const char *chunksGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Chunks");
 constexpr const char *villagesGroup = QT_TRANSLATE_NOOP("QcServerLimits", "Villages");
 
-constexpr std::array<QcServerLimits::Field, 72> table{{
+constexpr std::array<QcServerLimits::Field, 73> table{{
     {"signalBudget", QT_TRANSLATE_NOOP("QcServerLimits", "Signal Dust work per tick"), 256, qint64{1} << 22, &QcServerLimits::signalBudget, signalGroup},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcServerLimits", "share of the signal budget kept for due scheduled ticks"), 0, 90,
      &QcServerLimits::signalScheduleReservePercent, signalGroup},
@@ -100,6 +100,7 @@ constexpr std::array<QcServerLimits::Field, 72> table{{
     {"villageBeds", QT_TRANSLATE_NOOP("QcServerLimits", "beds listed per village"), 0, 1024, &QcServerLimits::villageBeds, villagesGroup},
     {"villageWorkstations", QT_TRANSLATE_NOOP("QcServerLimits", "workstations listed per village"), 0, 1024, &QcServerLimits::villageWorkstations, villagesGroup},
     {"waterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcServerLimits", "water creatures (fish) spawning per player"), 0, 256, &QcServerLimits::waterCreaturesPerPlayer, creaturesGroup},
+    {"largeWaterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcServerLimits", "large water creatures (squid) spawning per player"), 0, 256, &QcServerLimits::largeWaterCreaturesPerPlayer, creaturesGroup},
     {"villagersPerVillage", QT_TRANSLATE_NOOP("QcServerLimits", "villagers living in one village"), 0, 1024, &QcServerLimits::villagersPerVillage, villagesGroup},
     {"villagers", QT_TRANSLATE_NOOP("QcServerLimits", "villagers living in the world"), 0, 65536, &QcServerLimits::villagers, villagesGroup},
     {"villagerThoughtsPerTick", QT_TRANSLATE_NOOP("QcServerLimits", "villagers deciding what to do per tick"), 1, 65536, &QcServerLimits::villagerThoughtsPerTick, villagesGroup},

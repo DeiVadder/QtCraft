@@ -122,7 +122,7 @@ private slots:
         orb.health = 37.0;
         QCOMPARE(roundTrip(orb).kind, QcEntityKind::ExperienceOrb);
         QCOMPARE(roundTrip(orb).health, 37.0);
-        QCOMPARE(QcProtocol::version, 85u);
+        QCOMPARE(QcProtocol::version, 86u);
     }
 
     void blockEntitiesCarryTheirBlock()
@@ -165,7 +165,7 @@ private slots:
         QCOMPARE(stateCopy.motion.position, state.motion.position);
         state.vehicle = 0;
         QCOMPARE(roundTrip(state).vehicle, 0u);
-        QcMsg::EntityMove move{7, {}, 0.0f, 20.0, false, 0.0f, QcMsg::Riding, qcNoItem};
+        QcMsg::EntityMove move{7, {}, 0.0f, 20.0, false, false, 0.0f, QcMsg::Riding, qcNoItem};
         QcMsg::EntityMoves moves{{move}, 5};
         QCOMPARE(roundTrip(moves).moves.constFirst().flags, quint8(QcMsg::Riding));
         QCOMPARE(int(QcMsg::Riding), 128);

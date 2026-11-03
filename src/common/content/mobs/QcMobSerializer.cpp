@@ -9,6 +9,51 @@
 #include <cmath>
 #include <utility>
 
+namespace {
+
+// The boxes of a mob's model; fails on too many or an unknown tint.
+[[nodiscard]] std::optional<QList<QcMobPart>> readParts(QDataStream &stream)
+{
+    const std::optional<quint32> partCount = QcStreamLimits::readCount(stream, 256);
+    if (!partCount) {
+        return std::nullopt;
+    }
+
+    QList<QcMobPart> parts;
+    for (quint32 p = 0; p < *partCount; ++p) {
+        QcMobPart part;
+        quint8 tint = 0;
+        stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
+            >> part.sitOffset.y >> part.sitOffset.z >> part.tentacle;
+        if (tint != static_cast<quint8>(QcTint::None) && tint != static_cast<quint8>(QcTint::Collar)) {
+            return std::nullopt;
+        }
+        part.tint = static_cast<QcTint>(tint);
+        parts.append(part);
+    }
+    return parts;
+}
+
+// The pulse of a creature that swims in pulses, within what the parser allows; none when the
+// stream says it has none. Fails on values out of range.
+[[nodiscard]] std::optional<std::optional<QcPulseDefinition>> readPulse(QDataStream &stream)
+{
+    bool pulses = false;
+    stream >> pulses;
+    if (!pulses) {
+        return std::optional<QcPulseDefinition>{};
+    }
+    QcPulseDefinition pulse;
+    stream >> pulse.seconds >> pulse.thrust >> pulse.speed >> pulse.spread;
+    const auto within = [](double value, double low, double high) { return std::isfinite(value) && value >= low && value <= high; };
+    if (!within(pulse.seconds, 0.2, 10.0) || !within(pulse.thrust, 0.05, 0.9) || !within(pulse.speed, 0.1, 10.0) || !within(pulse.spread, 0.0, 90.0)) {
+        return std::nullopt;
+    }
+    return std::optional<QcPulseDefinition>{pulse};
+}
+
+} // namespace
+
 namespace QcMobSerializer {
 
 void writeMob(QDataStream &stream, const QcMobDefinition &mob)
@@ -17,7 +62,7 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
            << static_cast<quint32>(mob.parts.size());
     for (const QcMobPart &part : mob.parts) {
         stream << part.from.x << part.from.y << part.from.z << part.to.x << part.to.y << part.to.z << part.texture << static_cast<quint8>(part.tint)
-               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z;
+               << part.sitOffset.x << part.sitOffset.y << part.sitOffset.z << part.tentacle;
     }
     stream << mob.skeleton << mob.outfit << mob.cape << mob.armsForward << mob.villager << mob.ambientSound << mob.hurtSound << mob.deathSound
            << mob.flying << static_cast<qint32>(mob.glow) << mob.catchWith << mob.catchItem << static_cast<quint32>(mob.breeding.food.size());
@@ -35,6 +80,12 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     if (child && mob.family) {
         stream << static_cast<qint32>(child->index()) << mob.family->tetherTexture << mob.family->tetherRange;
     }
+    // Swimming in pulses and the ink cloud (decision E-974).
+    stream << mob.pulse.has_value();
+    if (mob.pulse) {
+        stream << mob.pulse->seconds << mob.pulse->thrust << mob.pulse->speed << mob.pulse->spread;
+    }
+    stream << mob.ink;
 }
 
 std::optional<QcMobDefinition> readMob(QDataStream &stream)
@@ -42,23 +93,11 @@ std::optional<QcMobDefinition> readMob(QDataStream &stream)
     QcMobDefinition mob;
 
     stream >> mob.name >> mob.translationKey >> mob.maxHealth >> mob.width >> mob.height >> mob.hostile;
-    const std::optional<quint32> partCountRead = QcStreamLimits::readCount(stream, 256);
-    if (!partCountRead) {
+    std::optional<QList<QcMobPart>> parts = readParts(stream);
+    if (!parts) {
         return std::nullopt;
     }
-    const quint32 partCount = *partCountRead;
-
-    for (quint32 p = 0; p < partCount; ++p) {
-        QcMobPart part;
-        quint8 tint = 0;
-        stream >> part.from.x >> part.from.y >> part.from.z >> part.to.x >> part.to.y >> part.to.z >> part.texture >> tint >> part.sitOffset.x
-            >> part.sitOffset.y >> part.sitOffset.z;
-        if (tint != static_cast<quint8>(QcTint::None) && tint != static_cast<quint8>(QcTint::Collar)) {
-            return std::nullopt;
-        }
-        part.tint = static_cast<QcTint>(tint);
-        mob.parts.append(part);
-    }
+    mob.parts = std::move(*parts);
 
     qint32 glow = 0;
     stream >> mob.skeleton >> mob.outfit >> mob.cape >> mob.armsForward >> mob.villager >> mob.ambientSound >> mob.hurtSound >> mob.deathSound
@@ -94,6 +133,12 @@ std::optional<QcMobDefinition> readMob(QDataStream &stream)
         }
         family.childType = QcCreatureKindId{child};
     }
+    const std::optional<std::optional<QcPulseDefinition>> pulse = readPulse(stream);
+    if (!pulse) {
+        return std::nullopt;
+    }
+    mob.pulse = *pulse;
+    stream >> mob.ink;
 
     // Sizes feed physics and the mesher: reject anything outside what the parser allows.
     const auto plausible = [](double value) { return std::isfinite(value) && std::abs(value) <= 64.0; };

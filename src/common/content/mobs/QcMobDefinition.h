@@ -35,6 +35,9 @@ struct QcMobPart
     /*! Where the box moves while the creature sits (QcPose::Sitting): a sitting dog lowers its
         back and folds its hind legs. */
     QcVec3 sitOffset = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! A tentacle (decision E-974): it turns outwards about the middle of its top as a creature
+        that swims in pulses (QcPulseDefinition) glides, and back in as it pushes. */
+    bool tentacle = false;
 };
 
 /*! \brief How a creature finds its way (decision E-423), from its data (\c {abilities}); the path
@@ -369,6 +372,12 @@ struct QcMobDefinition
     QString milkWith;
     QString milkItem;
     QString milkSound;
+    /*! Swims in pulses (the squid, decision E-974; \c {"aquatic": {"pulse": ...}}); none for a
+        steady swimmer. Reaches the client. */
+    std::optional<QcPulseDefinition> pulse;
+    /*! Texture of the cloud of ink it leaves where a blow strikes it
+        (\c {"aquatic": {"ink": ...}}, decision E-974); empty for none. Reaches the client. */
+    QString ink;
 };
 
 /*! The mob definitions of a content, indexed by their creature kind (QcContentRegistry::mobs,

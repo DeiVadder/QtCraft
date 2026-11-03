@@ -97,6 +97,10 @@ bool knowsSound(const QcContentRegistry &content, const QString &name)
             warnings.append(u"mob %1: unknown texture '%2'"_s.arg(mob.name, part.texture));
         }
     }
+    // The puffs of its ink cloud (decision E-974).
+    if (!knowsTexture(content, mob.ink)) {
+        warnings.append(u"mob %1: unknown ink texture '%2'"_s.arg(mob.name, mob.ink));
+    }
 
     if (!mob.skeleton.isEmpty() && !content.assets().model(mob.skeleton)) {
         warnings.append(u"mob %1: unknown skeleton '%2'"_s.arg(mob.name, mob.skeleton));

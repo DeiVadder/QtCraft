@@ -151,6 +151,8 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
         mob.hurtUnsent = true;
+        // A push or a player's blow strikes it; a status effect's damage does not (decision E-974).
+        mob.struckUnsent = mob.struckUnsent || blow.knockback > 0.0 || blow.attacker != 0;
         if (blow.knockback > 0.0 && resisted > 0.0) {
             mob.motion.velocity = knockbackVelocity(away, blow.knockback * resisted, blow.lift);
             // Off the ground at once: the next step must not stop the push like a walk (decision E-971).
@@ -202,6 +204,7 @@ void QcMobManager::clearSentHurts()
 {
     for (QcCreature &mob : m_mobs) {
         mob.hurtUnsent = false;
+        mob.struckUnsent = false;
     }
 }
 

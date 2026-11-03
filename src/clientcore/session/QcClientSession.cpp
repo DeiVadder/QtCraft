@@ -309,6 +309,7 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
         }
     } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
         m_entities.moves(*moves);
+        m_worldMirror.addInk(*moves, m_entities.all(), m_tickCount);
     } else if (const auto *removed = std::get_if<QcMsg::EntityRemove>(&message)) {
         m_entities.remove(*removed);
     } else {

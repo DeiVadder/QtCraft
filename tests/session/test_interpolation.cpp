@@ -106,7 +106,7 @@ QcMsg::EntityMoves walkerAt(qint64 serverMs, const QcVec3 &position)
 {
     QcMsg::EntityMoves moves;
     moves.timeMs = serverMs;
-    moves.moves = {{moverId, position, 90.0f, 20.0, false, 0.0f, QcMsg::OnGround, qcNoItem}};
+    moves.moves = {{moverId, position, 90.0f, 20.0, false, false, 0.0f, QcMsg::OnGround, qcNoItem}};
     return moves;
 }
 

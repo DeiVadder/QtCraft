@@ -258,7 +258,7 @@ private slots:
         for (qint64 tick = 1; tick <= 2; ++tick) {
             QcMsg::EntityMoves moves;
             moves.timeMs = tick * 50;
-            moves.moves = {{cart.id, QcVec3{4.5 + static_cast<double>(tick), 1.0, 4.5}, 0.0f, 20.0, false, 0.0f, QcMsg::OnGround, qcNoItem}};
+            moves.moves = {{cart.id, QcVec3{4.5 + static_cast<double>(tick), 1.0, 4.5}, 0.0f, 20.0, false, false, 0.0f, QcMsg::OnGround, qcNoItem}};
             entities.moves(moves, tick * 50);
             entities.tick(tick * 50);
             session.followCart(entities);

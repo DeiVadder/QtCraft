@@ -5311,31 +5311,36 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="107"/>
+        <source>Large water creatures per player</source>
+        <translation>Große Wasserwesen je Spieler</translation>
+    </message>
+    <message>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="108"/>
         <source>Villagers per village</source>
         <translation>Dorfbewohner je Dorf</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="108"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="109"/>
         <source>Villagers</source>
         <translation>Dorfbewohner</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="109"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="110"/>
         <source>Villager decisions per tick</source>
         <translation>Entscheidungen der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="110"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="111"/>
         <source>Villager route legs per tick</source>
         <translation>Wegabschnitte der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="111"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="112"/>
         <source>Villager harvests per tick</source>
         <translation>Ernten der Dorfbewohner je Tick</translation>
     </message>
     <message>
-        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="112"/>
+        <location filename="../src/app/admin/QcAdminSettingNames.cpp" line="113"/>
         <source>Iron golems</source>
         <translation>Eisengolems</translation>
     </message>
@@ -7267,31 +7272,36 @@ Jetzt: %2</translation>
     </message>
     <message>
         <location filename="../src/server/core/QcServerLimits.cpp" line="103"/>
+        <source>large water creatures (squid) spawning per player</source>
+        <translation>erscheinende große Wasserwesen (Tintenfische) je Spieler</translation>
+    </message>
+    <message>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="104"/>
         <source>villagers living in one village</source>
         <translation>Dorfbewohner in einem Dorf</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerLimits.cpp" line="104"/>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="105"/>
         <source>villagers living in the world</source>
         <translation>Dorfbewohner in der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerLimits.cpp" line="105"/>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="106"/>
         <source>villagers deciding what to do per tick</source>
         <translation>Dorfbewohner, die je Tick entscheiden, was sie tun</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerLimits.cpp" line="106"/>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="107"/>
         <source>legs of villagers&apos; long walks planned per tick</source>
         <translation>je Tick geplante Abschnitte langer Wege von Dorfbewohnern</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerLimits.cpp" line="107"/>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="108"/>
         <source>crops villagers harvest per tick</source>
         <translation>Feldfrüchte, die Dorfbewohner je Tick ernten</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerLimits.cpp" line="108"/>
+        <location filename="../src/server/core/QcServerLimits.cpp" line="109"/>
         <source>iron golems in the world beyond which villagers summon none</source>
         <translation>Eisengolems in der Welt, ab denen Dorfbewohner keine mehr rufen</translation>
     </message>
@@ -8331,7 +8341,7 @@ Jetzt: %2</translation>
         <translation>Der Gastgeber teilt die Welt nicht mehr</translation>
     </message>
     <message>
-        <location filename="../src/server/core/QcServerTick.cpp" line="304"/>
+        <location filename="../src/server/core/QcServerTick.cpp" line="310"/>
         <source>The saved data of the chunk at %1 %2 is damaged: it plays as generated and its changes are not saved. /regenerate there gives the data up.</source>
         <translation>Die gespeicherten Daten des Chunks bei %1 %2 sind beschädigt: Er spielt wie neu erzeugt, und seine Änderungen werden nicht gespeichert. /regenerate dort gibt die Daten auf.</translation>
     </message>
@@ -8361,33 +8371,33 @@ Jetzt: %2</translation>
         <translation>Automatisches Speichern fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="30"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="42"/>
         <source>%1 fell out of the world</source>
         <translation>%1 fiel aus der Welt</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="32"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="44"/>
         <source>%1 died of a status effect</source>
         <translation>%1 ist an einem Statuseffekt gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="34"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="46"/>
         <source>%1 drowned</source>
         <translation>%1 ist ertrunken</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="42"/>
-        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="123"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="54"/>
+        <location filename="../src/server/gameplay/QcServerCombat.cpp" line="125"/>
         <source>%1 died</source>
         <translation>%1 ist gestorben</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="190"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="204"/>
         <source>%1 was shot by %2</source>
         <translation>%1 wurde von %2 erschossen</translation>
     </message>
     <message>
-        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="191"/>
+        <location filename="../src/server/gameplay/QcPlayerHealth.cpp" line="205"/>
         <source>%1 was slain by %2</source>
         <translation>%1 wurde von %2 erschlagen</translation>
     </message>

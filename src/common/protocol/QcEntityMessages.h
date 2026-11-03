@@ -129,6 +129,9 @@ struct EntityMove
     double health = 0.0;
     /*! Set in the tick the entity took damage (for a hurt flash). */
     bool hurt = false;
+    /*! Set in the tick a blow struck the entity: an attack, a projectile, an explosion (not
+        burning, drowning or suffocation); a squid leaves its ink cloud (decision E-974). */
+    bool struck = false;
     /*! View pitch in degrees, entity flag bits (QcMsg::Swing …) and the item in the right hand.
         \qcshared */
     float pitch = 0.0f;

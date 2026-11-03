@@ -14,10 +14,10 @@
 #include "clientcore/entitymeshes/QcProjectileMesher.h"
 #include "clientcore/entitymeshes/QcTetherMesher.h"
 #include "clientcore/figures/QcFigureLook.h"
+#include "clientcore/figures/QcSwimmerPose.h"
 #include "clientcore/maps/QcMapColors.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
-#include "clientcore/session/QcExplosionEffects.h"
 #include "clientcore/textures/QcTextureAtlas.h"
 #include "common/world/QcLightVolume.h"
 
@@ -179,14 +179,7 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
         look = playerLook(entity.appearance);
     }
     if (!look.isValid()) {
-        // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
-        const bool ownParts = creature && !creature->parts.isEmpty();
-        const QList<QcMobPart> &boxes = ownParts ? creature->parts : QcEntityMesher::playerParts();
-        const bool sitting = QcMsg::poseOf(entity.flags) == QcPose::Sitting;
-        // A rider (cart, boat) keeps its legs still; the legs are looked up only while it walks.
-        const double speed = pose.riding ? 0.0 : pose.speed;
-        const QcBoxLegs *legs = !sitting && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
-        QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs});
+        appendBoxCreature(mesh, entity, placement, frame, pose);
         return;
     }
 
@@ -201,6 +194,23 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(entity.held);
     const QcFigureLook::Dressed dressed = QcFigureLook::armour(frame.content, entity.equipment, std::move(look));
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body, placement, frame.uv);
+}
+
+void QcEntityFrameBuilder::appendBoxCreature(QcEntityMesh &mesh, const QcClientEntity &entity, const QcEntityMesher::Placement &placement,
+                                             const EntityFrame &frame, const QcEntityPose &pose)
+{
+    // A skeleton or outfit that did not load: the mob's own boxes, else the plain player figure.
+    const QcMobDefinition *creature = entity.creature(frame.content);
+    const bool ownParts = creature && !creature->parts.isEmpty();
+    const QList<QcMobPart> &boxes = ownParts ? creature->parts : QcEntityMesher::playerParts();
+    const bool sitting = QcMsg::poseOf(entity.flags) == QcPose::Sitting;
+    // A rider (cart, boat) keeps its legs still; the legs are looked up only while it walks. A
+    // creature that swims in pulses moves its tentacles instead (decision E-974).
+    const double speed = pose.riding ? 0.0 : pose.speed;
+    const bool pulses = ownParts && creature->pulse;
+    const QcBoxLegs *legs = !sitting && !pulses && speed > 0.0 ? &m_legs.of(boxes) : nullptr;
+    const QcSwimmerPose::Look swum = pulses ? QcSwimmerPose::of(*creature, entity, frame.alpha, frame.seconds, m_forcedPose.pulse()) : QcSwimmerPose::Look{};
+    QcEntityMesher::appendParts(mesh, boxes, placement, frame.uv, {sitting, entity.appearance, pose.walkDistance, speed, legs, swum.tilt, swum.height, swum.spread});
 }
 
 void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientEntity &entity, const EntityFrame &frame)
@@ -230,23 +240,6 @@ void QcEntityFrameBuilder::appendBlockEntity(QcEntityMesh &mesh, const QcClientE
     look.cube = true;
     look.faces = frame.content.block(entity.block).faceTextures;
     QcEntityMesher::appendBlock(mesh, look, placement, light, frame.uv);
-}
-
-void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks)
-{
-    QcEntityMesher::ItemLook flash;
-    flash.cube = true;
-    flash.faces.fill(QString::fromLatin1(QcExplosionEffects::flashTexture));
-    QcEntityMesher::ItemLook smoke;
-    smoke.cube = true;
-    smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
-
-    for (const QcExplosionEffects::Puff &puff : m_parts.session->worldMirror().extras().explosions().puffs()) {
-        if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
-            const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->position);
-            QcEntityMesher::appendBlock(mesh, look->flash ? flash : smoke, {look->position, look->size}, light, frame.uv);
-        }
-    }
 }
 
 void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame &frame)
@@ -561,6 +554,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildEntities(double alpha, 
     appendCampfires(*mesh, frame);
     appendEnchantingTables(*mesh, frame, planes);
     appendExplosions(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
+    appendInk(*mesh, frame, static_cast<double>(session.tickCount()) + alpha);
     // In third person the player sees their own character; a spectator has none (decision E-730).
     if (mode != QcCameraMode::FirstPerson && !session.isDead() && session.gameMode().rules().tangible) {
         appendLocalPlayer(*mesh, frame);

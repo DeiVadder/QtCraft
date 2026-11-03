@@ -153,8 +153,11 @@ void QcServerCombat::dropLoot(QcServerState &state, const QList<QcItemDrop> &dro
         if (drop.chance < 1.0 && state.random().generateDouble() >= drop.chance) {
             continue;
         }
+        // A drop with a maxCount gives between count and maxCount items, chosen evenly.
+        const int extra = drop.mostCount() > drop.count
+            ? static_cast<int>(state.random().bounded(static_cast<quint32>(drop.mostCount() - drop.count + 1))) : 0;
         if (const std::optional<QcItemId> item = state.content().itemId(drop.item)) {
-            state.entities().items().spawnScattered({*item, drop.count, 0}, position, state.entities().newId());
+            state.entities().items().spawnScattered({*item, drop.count + extra, 0}, position, state.entities().newId());
         }
     }
 }

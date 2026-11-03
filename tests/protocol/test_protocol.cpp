@@ -619,7 +619,7 @@ private slots:
         // Only clients set their appearance.
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(QcMsg::SetAppearance{}), QcProtocol::Peer::Server).has_value());
         QcMsg::EntityMoves moves;
-        moves.moves = {{1, {}, 0.0f, 0.0, false, std::numeric_limits<float>::quiet_NaN(), 0, qcNoItem}};
+        moves.moves = {{1, {}, 0.0f, 0.0, false, false, std::numeric_limits<float>::quiet_NaN(), 0, qcNoItem}};
         QVERIFY(!QcProtocol::decode(QcProtocol::encode(moves), QcProtocol::Peer::Server).has_value());
     }
 
@@ -680,12 +680,14 @@ private slots:
         QCOMPARE(spawn.health, 17.5);
 
         QcMsg::EntityMoves moves;
-        moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true, -30.0f, QcMsg::InWater, 3}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false, 0.0f, 0, qcNoItem}};
+        moves.moves = {{1, {0.0, 64.0, 0.0}, 10.0f, 5.0, true, true, -30.0f, QcMsg::InWater, 3}, {2, {3.0, 65.0, 4.0}, -45.0f, 9.0, false, false, 0.0f, 0, qcNoItem}};
         moves.timeMs = 123'456'789;
         const QcMsg::EntityMoves copy = roundTrip(moves);
         QCOMPARE(copy.timeMs, 123'456'789);
         QCOMPARE(copy.moves.size(), 2);
         QCOMPARE(copy.moves.at(0).hurt, true);
+        QCOMPARE(copy.moves.at(0).struck, true);
+        QCOMPARE(copy.moves.at(1).struck, false);
         QCOMPARE(copy.moves.at(1).position, (QcVec3{3.0, 65.0, 4.0}));
 
         QCOMPARE(roundTrip(QcMsg::EntityRemove{77, false}).id, 77u);

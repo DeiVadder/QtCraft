@@ -37,8 +37,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     boat whose driver paddles (decision E-920), 83 the advancements: their definitions in the
     content and the player's progress (AdvancementProgress, decision E-923), 84 the player's air
     under water (PlayerAir, decision E-955), 85 a fresh hit and its direction in PlayerHealth
-    (decision E-971). */
-inline constexpr quint32 version = 85;
+    (decision E-971), 86 the pulse, ink and tentacles of creatures that swim in pulses in the
+    content (decision E-974). */
+inline constexpr quint32 version = 86;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

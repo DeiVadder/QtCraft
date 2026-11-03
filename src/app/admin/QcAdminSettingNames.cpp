@@ -37,7 +37,7 @@ constexpr std::array<Name, 15> ruleNames{{
     {"explosionBlockDamage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Explosions damage blocks")},
 }};
 
-constexpr std::array<Name, 72> limitNames{{
+constexpr std::array<Name, 73> limitNames{{
     {"signalBudget", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per tick")},
     {"signalScheduleReservePercent", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Reserve for scheduled signal ticks")},
     {"signalWorkPerChange", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Signal work per block change")},
@@ -104,6 +104,7 @@ constexpr std::array<Name, 72> limitNames{{
     {"villageBeds", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Beds per village")},
     {"villageWorkstations", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Workstations per village")},
     {"waterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Water creatures per player")},
+    {"largeWaterCreaturesPerPlayer", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Large water creatures per player")},
     {"villagersPerVillage", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villagers per village")},
     {"villagers", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villagers")},
     {"villagerThoughtsPerTick", QT_TRANSLATE_NOOP("QcAdminSettingNames", "Villager decisions per tick")},

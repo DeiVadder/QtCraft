@@ -9,6 +9,8 @@
 #include "server/mobbrains/QcMobSteering.h"
 #include "server/pathing/QcSwimSpace.h"
 
+#include <QtMath>
+
 #include <algorithm>
 #include <cmath>
 #include <numbers>
@@ -185,6 +187,10 @@ void QcFishSwimming::swim(qsizetype index, std::span<QcCreature> mobs, const QcM
     }
 
     mob.dryTicks = 0;
+    if (mob.noAi) {
+        drift(mob, definition, world, dt);
+        return;
+    }
     const QcVec3 school = schooling(mob.motion.position, neighboursOf(mobs, index, aquatic), aquatic);
     swimInWater(mob, definition, school, world, dt);
 }
@@ -254,14 +260,37 @@ QcVec3 QcFishSwimming::routeWish(QcCreature &mob, QcPhysics::BodySize body, cons
     return distance > 1e-6 ? way * (scale / distance) : QcVec3{};
 }
 
+QcFishSwimming::Drive QcFishSwimming::pulseDrive(QcCreature &mob, const QcPulseDefinition &pulse, const QcVec3 &wish, double speed, double dt)
+{
+    // Hurt, it pulses twice as often.
+    const double period = pulse.seconds * (mob.fleeTimer > 0.0 ? 0.5 : 1.0);
+    mob.pulseClock = std::fmod(mob.pulseClock + dt, period);
+    if (mob.pulseClock < pulse.thrust * period) {
+        return {wish * speed, thrustRate};
+    }
+    return {{}, glideRate};
+}
+
+void QcFishSwimming::tiltAlong(QcCreature &mob, double dt)
+{
+    // Its top leads along its way; resting, it rights itself slowly.
+    const QcVec3 &velocity = mob.motion.velocity;
+    const bool moving = velocity.length() > tiltSpeed;
+    const double flat = std::hypot(velocity.x, velocity.z);
+    const double target = moving ? qRadiansToDegrees(std::atan2(flat, velocity.y)) : 0.0;
+    const double rate = moving ? tiltRate : rightingRate;
+    mob.tilt += static_cast<float>((target - mob.tilt) * std::min(1.0, rate * dt));
+}
+
 void QcFishSwimming::swimInWater(QcCreature &mob, const QcMobDefinition &definition, const QcVec3 &school, const QcBlockAccess &world, double dt)
 {
     const QcAquaticDefinition &aquatic = *definition.aquatic; // NOLINT(bugprone-unchecked-optional-access): swim() checked it
     const QcPhysics::BodySize body{definition.width, definition.height};
-    // A hurt fish darts away, its school follows it along.
-    const double speed = mob.fleeTimer > 0.0 ? definition.chaseSpeed : aquatic.swimSpeed;
+    // A hurt fish darts away, its school follows it along; a pulsing swimmer glides half the time.
+    const double cruise = definition.pulse ? definition.pulse->speed : aquatic.swimSpeed;
+    const double speed = mob.fleeTimer > 0.0 ? definition.chaseSpeed : cruise;
     mob.wanderTimer -= dt;
-    keepRoute(mob, body, world, speed);
+    keepRoute(mob, body, world, definition.pulse ? speed * pulseTravel : speed);
 
     // In a school it follows its route less and the others more.
     QcVec3 wish = routeWish(mob, body, world) * (school.length() > 0.0 ? schoolWander : 1.0) + school;
@@ -277,13 +306,26 @@ void QcFishSwimming::swimInWater(QcCreature &mob, const QcMobDefinition &definit
     // While knocked back it does not steer; the water slows the push. Steering, it keeps its
     // speed from carrying it out of the water.
     const bool knockedBack = mob.hurt.knockedBack();
-    const double blend = std::min(1.0, (knockedBack ? 1.0 : 3.0) * dt);
-    const QcVec3 target = knockedBack ? QcVec3{} : wish * speed;
-    mob.motion.velocity += (target - mob.motion.velocity) * blend;
+    const Drive drive = knockedBack ? Drive{{}, 1.0} : definition.pulse ? pulseDrive(mob, *definition.pulse, wish, speed, dt) : Drive{wish * speed, 3.0};
+    mob.motion.velocity += (drive.target - mob.motion.velocity) * std::min(1.0, drive.rate * dt);
     if (!knockedBack && roomy) {
         mob.motion.velocity = QcSwimSpace::keepInside(mob.motion.velocity, mob.motion.position, body, world, dt);
     }
     move(mob, body, world, dt);
+    if (definition.pulse) {
+        tiltAlong(mob, dt);
+    }
+}
+
+void QcFishSwimming::drift(QcCreature &mob, const QcMobDefinition &definition, const QcBlockAccess &world, double dt)
+{
+    // Without a mind it holds its place: the water slows a push (a blow) until it hangs still, and
+    // a pulsing swimmer rights itself.
+    mob.motion.velocity += (QcVec3{} - mob.motion.velocity) * std::min(1.0, driftRate * dt);
+    move(mob, {definition.width, definition.height}, world, dt);
+    if (definition.pulse) {
+        mob.tilt += static_cast<float>(-mob.tilt * std::min(1.0, rightingRate * dt));
+    }
 }
 
 void QcFishSwimming::move(QcCreature &mob, QcPhysics::BodySize body, const QcBlockAccess &world, double dt)
@@ -314,7 +356,8 @@ void QcFishSwimming::flopOnLand(QcCreature &mob, const QcMobDefinition &definiti
     ++mob.dryTicks;
 
     // On the ground now and then a flop in a random direction, which may bring it back to the water.
-    const bool flops = mob.motion.onGround && !mob.hurt.knockedBack() && m_random.bounded(1.0) < flopChance;
+    // A creature without a flop speed (the squid) or without a mind just lies there.
+    const bool flops = aquatic.flopSpeed > 0.0 && !mob.noAi && mob.motion.onGround && !mob.hurt.knockedBack() && m_random.bounded(1.0) < flopChance;
     if (flops) {
         const double angle = m_random.bounded(2.0 * std::numbers::pi);
         const double sideways = aquatic.flopSpeed / 3.0;
@@ -327,4 +370,8 @@ void QcFishSwimming::flopOnLand(QcCreature &mob, const QcMobDefinition &definiti
     const double speed = flat.length();
     mob.motion.step(QcPhysics::Steering{.wish = speed > 1e-6 ? flat * (1.0 / speed) : QcVec3{}, .speed = mob.motion.onGround && !flops ? 0.0 : speed},
                           QcPhysics::BodySize{definition.width, definition.height}, world, dt);
+    // A pulsing swimmer on land sinks onto its side.
+    if (definition.pulse) {
+        mob.tilt += static_cast<float>((90.0 - mob.tilt) * std::min(1.0, tiltRate * dt));
+    }
 }

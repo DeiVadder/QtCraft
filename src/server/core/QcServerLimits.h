@@ -175,6 +175,9 @@ struct QcServerLimits
     /*! Water creatures (fish, decision E-502) that spawn by themselves per player; they never
         count against the other caps. */
     qint64 waterCreaturesPerPlayer = 5;
+    /*! Larger water creatures (the squid, decision E-974) that spawn by themselves per player,
+        apart from the fish. */
+    qint64 largeWaterCreaturesPerPlayer = 5;
 
     /*! Returns every limit. */
     static std::span<const Field> fields();

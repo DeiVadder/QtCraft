@@ -21,6 +21,7 @@ qc_add_test(test_archers SOURCES mobs/test_archers.cpp fixtures/QcServerTestFixt
 qc_add_test(test_spiders SOURCES mobs/test_spiders.cpp fixtures/QcServerTestFixture.h fixtures/QcTestWorld.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_witches SOURCES mobs/test_witches.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fish SOURCES mobs/test_fish.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
+qc_add_test(test_squids SOURCES mobs/test_squids.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fish_paths SOURCES mobs/test_fish_paths.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_silverfish SOURCES mobs/test_silverfish.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_kjut SOURCES mobs/test_kjut.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

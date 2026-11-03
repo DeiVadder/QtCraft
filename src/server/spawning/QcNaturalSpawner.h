@@ -19,6 +19,7 @@
 #include <QList>
 #include <QRandomGenerator>
 
+#include <array>
 #include <functional>
 #include <limits>
 #include <memory>
@@ -90,9 +91,14 @@ public:
     /*! Sets the caps: \a hostile monsters per QcMonsterCap::areaChunks loaded chunks around
         players, \a passive and \a ambient creatures around one player at most. */
     void setCaps(int hostile, int passive, int ambient);
-    /*! Sets the cap of water creatures spawning by themselves around one player to \a water
-        (decision E-502). */
-    void setWaterCap(int water) { m_waterCap = water; }
+    /*! Sets the caps of water creatures spawning by themselves around one player: \a fish for
+        fish (decision E-502), \a large for larger ones like the squid
+        (QcAquaticDefinition::Cap::Large, decision E-974). */
+    void setWaterCaps(int fish, int large)
+    {
+        m_waterCap = fish;
+        m_largeWaterCap = large;
+    }
     /*! One tick of \a dt seconds in \a world under \a sky with natural spawning on: monsters
         around every living one of \a players, and once a second the other kinds, with ids from
         \a nextEntityId. */
@@ -121,22 +127,20 @@ public:
 private:
     int capOf(const QcMobDefinition &definition) const;
     using SpawnRule = QcMobDefinition::SpawnRule;
+    // The caps creatures count against: hostile, passive, ambient, fish and large water creatures.
+    static constexpr std::size_t categories = 5;
+    // The cap of `definition` as an index below `categories`.
+    static std::size_t categoryOf(const QcMobDefinition &definition);
 
     // Awake mobs near a spawn centre per category and kind, and whether an animal is awake within
     // animalSearchDistance.
     struct NearbyCounts
     {
-        int hostile = 0;
-        int passive = 0;
-        int ambient = 0;
-        int water = 0;
+        std::array<int, categories> perCategory{};
         QHash<QcCreatureKindId, int> perType;
         bool animalsNear = false;
 
-        int of(const QcMobDefinition &definition) const
-        {
-            return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
-        }
+        int of(const QcMobDefinition &definition) const { return perCategory[categoryOf(definition)]; }
         // Creatures of kind `type` that may still spawn by its own limit (`maxCount`, 0: none).
         int roomOfKind(const QcMobDefinition &definition, QcCreatureKindId type) const
         {
@@ -145,8 +149,7 @@ private:
         // Counts one more creature of kind `type`.
         void add(const QcMobDefinition &definition, QcCreatureKindId type)
         {
-            int &count = definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
-            count += 1;
+            perCategory[categoryOf(definition)] += 1;
             perType[type] += 1;
         }
     };
@@ -256,6 +259,7 @@ private:
     int m_passiveCap = passiveCapPerPlayer;
     int m_ambientCap = ambientCapPerPlayer;
     int m_waterCap = static_cast<int>(QcServerLimits{}.waterCreaturesPerPlayer);
+    int m_largeWaterCap = static_cast<int>(QcServerLimits{}.largeWaterCreaturesPerPlayer);
     // Spawn rules of every kind (main rule first), indexed by type.
     QList<QList<QcMobDefinition::SpawnRule>> m_rules;
     double m_spawnTimer = 0.0;

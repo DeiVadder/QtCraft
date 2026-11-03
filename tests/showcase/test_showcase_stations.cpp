@@ -43,7 +43,7 @@ private:
                 {u"qtcraft:silverfish_wall"_s, {u"qtcraft:silverfish"_s}, 3, {}},
                 {u"qtcraft:chicken_coop"_s, {u"qtcraft:chicken"_s}, 4, {}},
                 {u"qtcraft:cow_pasture"_s, {u"qtcraft:cow"_s}, 3, {}},
-                {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s}, 7, {}},
+                {u"qtcraft:aquarium"_s, {u"qtcraft:cod"_s, u"qtcraft:salmon"_s, u"qtcraft:squid"_s}, 9, {}},
                 {u"qtcraft:fishing_pier"_s, {u"qtcraft:cod"_s}, 3, {}},
                 {u"qtcraft:river_station"_s, {u"qtcraft:salmon"_s}, 2, {}},
                 {u"qtcraft:delta_station"_s, {u"qtcraft:salmon"_s}, 1, {}}};

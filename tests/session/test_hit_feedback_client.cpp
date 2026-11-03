@@ -25,7 +25,7 @@ private:
     static constexpr quint32 bob = 7;
     static constexpr qint64 tickMs = 50;
 
-    static QcMsg::EntityMove moveAt(double x, bool hurt) { return QcMsg::EntityMove{bob, {x, 64.0, 0.5}, 0.0f, 20.0, hurt, 0.0f, 0, qcNoItem}; }
+    static QcMsg::EntityMove moveAt(double x, bool hurt) { return QcMsg::EntityMove{bob, {x, 64.0, 0.5}, 0.0f, 20.0, hurt, false, 0.0f, 0, qcNoItem}; }
 
     // A player standing at x = 0 in `entities`, its first snapshot at server time 0.
     static void spawnBob(QcClientEntities &entities)

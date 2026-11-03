@@ -71,7 +71,7 @@ void encode(QDataStream &stream, const QcMsg::EntityMoves &m)
 {
     stream << m.timeMs << static_cast<quint32>(m.moves.size());
     for (const QcMsg::EntityMove &move : m.moves) {
-        stream << move.id << move.position << move.yaw << move.health << move.hurt << move.pitch << move.flags << move.held;
+        stream << move.id << move.position << move.yaw << move.health << move.hurt << move.struck << move.pitch << move.flags << move.held;
     }
 }
 
@@ -149,7 +149,7 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
 
     for (quint32 i = 0; i < *count; ++i) {
         QcMsg::EntityMove move;
-        stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt >> move.pitch >> move.flags >> move.held;
+        stream >> move.id >> move.position >> move.yaw >> move.health >> move.hurt >> move.struck >> move.pitch >> move.flags >> move.held;
         if (!isFinite(move.position) || !std::isfinite(move.yaw) || !std::isfinite(move.health) || !std::isfinite(move.pitch)) {
             return qcError(u"Non-finite entity data"_s);
         }

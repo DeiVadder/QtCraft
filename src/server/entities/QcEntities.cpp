@@ -28,7 +28,7 @@ void QcEntities::applyLimits(const QcServerLimits &limits)
     m_items.setLimits(static_cast<qsizetype>(limits.itemsAwake), static_cast<qsizetype>(limits.itemsQueued), static_cast<qsizetype>(limits.itemsTotal));
     m_creatures.spawner().setCaps(static_cast<int>(limits.monstersPer289Chunks), static_cast<int>(limits.passiveCreaturesPerPlayer),
         static_cast<int>(limits.ambientCreaturesPerPlayer));
-    m_creatures.spawner().setWaterCap(static_cast<int>(limits.waterCreaturesPerPlayer));
+    m_creatures.spawner().setWaterCaps(static_cast<int>(limits.waterCreaturesPerPlayer), static_cast<int>(limits.largeWaterCreaturesPerPlayer));
     m_creatures.setPathLimits(limits.pathNodesPerTick, limits.pathNodesPerSearch, limits.pathLength);
     m_creatures.setCrowdLimits(limits.crowdThrottled, limits.crowdIdle);
     m_creatures.population().setVillagerLimits({static_cast<qsizetype>(limits.villagersPerVillage), static_cast<qsizetype>(limits.villagers)},
