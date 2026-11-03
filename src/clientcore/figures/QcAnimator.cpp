@@ -22,7 +22,9 @@ namespace {
 constexpr double strideFrequency = 1.6;
 constexpr double walkAmplitude = 38.0;
 constexpr double sprintAmplitude = 55.0;
-// Pivot of the whole body for leaning: the hips of a 1.8 m humanoid.
+// Pivot of the whole body for leaning and of the sneaking torso: the hips of a 1.8 m humanoid. It
+// must stay the pivot of the body bone in content/qtcraft/models/humanoid.json, or the sneaking
+// torso turns away from the top of the legs (decision E-965).
 constexpr double hipHeight = 0.7;
 // How far the head turns aside against the body.
 constexpr double maxHeadYaw = 80.0;
@@ -136,12 +138,12 @@ BodyPose animateBody(const QcEntityPose &pose, double time)
         result.bone(QcBoneRole::RightArm) = {90.0 + stride * amplitude * 0.15, 0.0};
         result.bone(QcBoneRole::LeftArm) = {90.0 - stride * amplitude * 0.15, 0.0};
     }
+    // A dying entity keeps its flags (QcClientEntities::remove): it falls over upright.
+    if (pose.sneaking && pose.onGround && !pose.inWater && pose.deathProgress < 0.0) {
+        result.sneak();
+    }
     if (pose.drawProgress >= 0.0) {
         result.aimBow(pose);
-    }
-    if (pose.sneaking && pose.onGround && !pose.inWater) {
-        result.bodyPitch = 12.0;
-        result.bodyLift = -0.12;
     }
     if (pose.swingProgress >= 0.0) {
         result.bone(QcBoneRole::RightArm) = swingingArm(pose.swingProgress, result.bone(QcBoneRole::RightArm).pitch);
@@ -240,6 +242,38 @@ void BodyPose::rowBoat(double rowPhase)
     }
 }
 
+QcVec3 BodyPose::leaned(QcBoneRole role, const QcVec3 &bonePivot, const QcVec3 &point) const
+{
+    const bool arm = role == QcBoneRole::RightArm || role == QcBoneRole::LeftArm;
+    const bool riding = role == QcBoneRole::Head || (arm && armsAimed);
+    const bool withTorso = role == QcBoneRole::Body || (arm && !armsAimed);
+    if (torsoPitch == 0.0 || (!withTorso && !riding)) {
+        return point;
+    }
+
+    // Turns about the hips' x axis so that what is above them moves forward (-Z).
+    const double radians = qDegreesToRadians(torsoPitch);
+    const double cosine = std::cos(radians);
+    const double sine = std::sin(radians);
+    const auto lean = [&](const QcVec3 &p) {
+        const QcVec3 d = p - torsoPivot;
+        return torsoPivot + QcVec3{d.x, d.y * cosine + d.z * sine, d.z * cosine - d.y * sine};
+    };
+    if (withTorso) {
+        return lean(point);
+    }
+    // The head rides on the neck, aiming arms on the shoulders, without turning.
+    return lean(bonePivot) + (point - bonePivot);
+}
+
+void BodyPose::sneak()
+{
+    torsoPitch = sneakLean;
+    torsoPivot = {0.0, hipHeight, 0.0};
+    bodyBack = sneakBack;
+    bodyLift = -sneakDrop;
+}
+
 void BodyPose::lieOnBack(double idle)
 {
     bones = {};
@@ -252,6 +286,8 @@ void BodyPose::lieOnBack(double idle)
 
 void BodyPose::aimBow(const QcEntityPose &pose)
 {
+    // Aims along the view, also from a leaning torso (sneaking, armsAimed).
+    armsAimed = true;
     const double aim = 90.0 + pose.headPitch;
     bone(QcBoneRole::LeftArm) = {aim, 12.0};
     bone(QcBoneRole::RightArm) = {aim - 8.0 * pose.drawProgress, -25.0 - 15.0 * pose.drawProgress};

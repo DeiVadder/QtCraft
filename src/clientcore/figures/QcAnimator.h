@@ -34,12 +34,24 @@ struct BodyPose
 {
     /*! Indexed by QcBoneRole. */
     std::array<BoneRotation, 7> bones;
-    /*! Whole-body rotation around \c {bodyPivot} (leaning when swimming or sneaking, falling
-        over when dying) and a vertical offset (crouching). \qcshared */
+    /*! Whole-body rotation around \c {bodyPivot} (lying forward when swimming, flinching
+        when hurt, falling over when dying) and a vertical offset (sinking when sneaking).
+        \qcshared */
     double bodyPitch = 0.0;
     double bodyRoll = 0.0;
     QcVec3 bodyPivot;
     double bodyLift = 0.0;
+    /*! Lean of the upper body (decision E-965): the torso and the arms with everything they carry
+        turn forward by \c {torsoPitch} degrees around \c {torsoPivot} (the hips), the head moves
+        with the neck but keeps its own rotation (level with the view), the legs stay upright.
+        \c {bodyBack} moves the whole figure backwards (+Z) in metres, so the legs stand a little
+        behind, under the bent body. \qcshared */
+    double torsoPitch = 0.0;
+    QcVec3 torsoPivot;
+    double bodyBack = 0.0;
+    /*! The arms aim (a drawn bow): like the head they ride on the leaning torso without turning
+        with it, so they keep pointing along the view. */
+    bool armsAimed = false;
     /*! Cape (decision E-240) against the back in degrees: its free end lifted backwards (0 hangs
         along the back, 90 points straight back) and swung to the entity's left. animateBody
         leaves them 0; QcCapeSwing gives them from the movement. \qcshared */
@@ -51,6 +63,14 @@ struct BodyPose
     /*! Returns the rotation of the bone \a role. */
     BoneRotation &bone(QcBoneRole role) { return bones[static_cast<std::size_t>(role)]; }
 
+    /*! Returns \a point of the bone \a role, already turned by the bone's own rotation around
+        its pivot \a bonePivot, carried along by the lean of the upper body (torsoPitch): torso
+        and arms turn with it, the head (and aiming arms, armsAimed) only moves with its pivot
+        and keeps its rotation; the legs and bones without a role stay where they are. */
+    QcVec3 leaned(QcBoneRole role, const QcVec3 &bonePivot, const QcVec3 &point) const;
+    /*! Sneaking on the ground (decision E-965): the upper body leans forward by sneakLean around
+        the hips, the figure moves back by sneakBack and down by sneakDrop. */
+    void sneak();
     /*! On the back around a point just above the feet, the limbs straight, the head on the
         pillow; only the breath (\a idle) moves the arms. */
     void lieOnBack(double idle);
@@ -86,6 +106,12 @@ struct HandPose
 /*! The right shoulder of the humanoid figure (its arm's pivot) above its feet; the left one
     mirrored. The rowing arms reach from there to the paddle grips. */
 inline constexpr QcVec3 driverShoulder{0.35, 1.3, 0.0};
+
+/*! How far a sneaking figure leans its upper body forward in degrees, moves backwards and sinks
+    in metres (decision E-965). \qcshared */
+inline constexpr double sneakLean = 28.0;
+inline constexpr double sneakBack = 0.15;
+inline constexpr double sneakDrop = 0.1;
 
 /*! Share of a mining or attack swing at which the arm is highest and lowest. \qcshared */
 inline constexpr double swingTop = 0.2;

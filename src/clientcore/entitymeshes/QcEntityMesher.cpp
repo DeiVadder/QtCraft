@@ -192,16 +192,19 @@ public:
     {
         QcVec3 p = m_bodyRotate(modelPoint - m_pose.bodyPivot) + m_pose.bodyPivot;
         p.y += m_pose.bodyLift;
+        p.z += m_pose.bodyBack;
         return m_position + m_turn(p * m_scale);
     }
 
-    // Places points of `bone`, turned by the bone's rotation in the pose.
+    // Places points of `bone`, turned by the bone's rotation in the pose and carried by the lean of
+    // the upper body.
     auto bone(const QcModelBone &bone) const
     {
         const QcAnimator::BoneRotation rotation = m_pose.bone(bone.role);
         const Rotate rotate(rotation.pitch, rotation.roll, rotation.yaw);
         const QcVec3 pivot = bone.pivot;
-        return [this, rotate, pivot](const QcVec3 &p) { return (*this)(rotate(p - pivot) + pivot); };
+        const QcBoneRole role = bone.role;
+        return [this, rotate, pivot, role](const QcVec3 &p) { return (*this)(m_pose.leaned(role, pivot, rotate(p - pivot) + pivot)); };
     }
 
 private:

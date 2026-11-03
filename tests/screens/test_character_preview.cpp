@@ -334,7 +334,7 @@ private slots:
         // (78618f4), renewed when the held item became one flat sprite in the fist (decision E-831).
         // The held look is made here without a shape and without the content's placement, so the
         // fingerprints also cover the flat-sprite fallback at the default HeldPlacement; held.json
-        // does not change them.
+        // does not change them. The sneaking swing (pose 2) renewed with the bent sneak (E-965).
         QcEntityMesher::ModelLook look;
         look.model = content.assets().model(u"qtcraft:humanoid"_s);
         look.outfit = content.assets().appearance(u"qtcraft:miner"_s);
@@ -343,7 +343,7 @@ private slots:
         look.colors.skinColor = 0xb97b56;
         QcEntityMesher::ItemLook held;
         held.sprite = content.item(*content.itemId(u"qtcraft:iron_pickaxe"_s)).texture;
-        const QList<quint32> before{0x22946b29, 0xf9ce603a, 0x6e3111c1, 0x4bd06cfd, 0x9fd8326b};
+        const QList<quint32> before{0x22946b29, 0xf9ce603a, 0xfcea51f0, 0x4bd06cfd, 0x9fd8326b};
 
         const QList<QcEntityPose> poses = worldPoses();
         QCOMPARE(poses.size(), before.size());
