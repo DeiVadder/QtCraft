@@ -111,6 +111,13 @@ qt_add_shaders(test_shadow_map "test_shadow_map_solid_shaders"
     OUTPUTS
         shaders/shadow_solid.frag.qsb
 )
+# The refraction of the realistic water keeps the edges under it in place (79.82, E-906): the game
+# renders a shore offscreen; on macOS only, where offscreen pictures come from Metal.
+if(APPLE)
+    qc_add_test(test_water_refraction_edge SOURCES rendering/test_water_refraction_edge.cpp LIBRARIES Qt6::Gui TIMEOUT 300)
+    target_compile_definitions(test_water_refraction_edge PRIVATE QTCRAFT_APP_PATH="$<TARGET_FILE:qtcraft>")
+    add_dependencies(test_water_refraction_edge qtcraft)
+endif()
 # The water of the realistic mode (decision E-906) on QRhi's Null backend, with its shaders baked
 # into the test.
 qc_add_test(test_water_surface SOURCES rendering/test_water_surface.cpp LIBRARIES qc_app_core)
