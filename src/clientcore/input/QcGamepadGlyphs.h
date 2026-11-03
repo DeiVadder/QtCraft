@@ -19,14 +19,16 @@ enum class QcGamepadFamily {
     Nintendo,    // Nintendo letters in their own places
 };
 
-/*! \brief How the buttons of a family are drawn in hints and named in help texts (decision E-612),
-    as plain shapes and letters, no logos: a shape (a disc with a letter, the four PlayStation
-    shapes, a shoulder or trigger tab, a stick, the d-pad cross with one arm lit, a diamond of four
-    dots with one lit for the face buttons of a generic pad), its text and a colour role.
+/*! \brief How the buttons of a family are drawn in hints and named in help texts (decision
+    E-612), as plain shapes and letters, no logos: a shape (a disc with a letter, the four
+    PlayStation shapes, a shoulder or trigger tab, a stick, the d-pad cross with one arm lit, a
+    diamond of four dots with one lit for the face buttons of a generic pad), its text and a colour
+    role.
 
-    QML draws them (PadGlyph.qml). The inputs are named like the control interface's buttons
-    ("south", "dpadLeft", "leftShoulder", ...), plus "leftTrigger"/"rightTrigger" and
-    "leftStickMove"/"rightStickMove" for the triggers and the tilted sticks. */
+    The game draws them (QcPadGlyphPainter in PadGlyph.qml). The inputs are named like the
+    control interface's buttons ("south", "dpadLeft", "leftShoulder", ...), plus
+    "leftTrigger"/"rightTrigger" and "leftStickMove"/"rightStickMove" for the triggers and the
+    tilted sticks. */
 namespace QcGamepadGlyphs {
 
 /*! The shape a glyph is drawn as. */
@@ -68,8 +70,6 @@ QcGamepadFamily family(QcGamepadType type);
 QString familyName(QcGamepadFamily family);
 /*! Returns the family named \a name (familyName()); nullopt for an unknown name. */
 std::optional<QcGamepadFamily> familyFromName(const QString &name);
-/*! Returns the name of \a shape for QML ("label", "cross", ..., "dpad"). */
-QString shapeName(Shape shape);
 
 /*! Returns the glyph of \a input (names above) on a pad of \a family; nullopt for an unknown
     name. */

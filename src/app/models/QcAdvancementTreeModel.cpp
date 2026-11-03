@@ -3,9 +3,9 @@
 
 #include "app/models/QcAdvancementTreeModel.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/registry/QcContentRegistry.h"
 

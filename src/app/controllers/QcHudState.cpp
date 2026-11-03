@@ -3,8 +3,8 @@
 
 #include "app/controllers/QcHudState.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/player/QcDials.h"
 #include "clientcore/session/QcClientEntity.h"

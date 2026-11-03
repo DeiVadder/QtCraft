@@ -34,6 +34,25 @@ static_assert(static_cast<int>(QcHandbookModel::RecipeKind::Machine) == static_c
     return page;
 }
 
+// The page with its technical facts (id, states, sound) apart from the others: "facts" keeps the
+// others, "technicalFacts" the technical ones, each in order.
+[[nodiscard]] QVariantMap withTechnicalFactsApart(QVariantMap page)
+{
+    QVariantList facts;
+    QVariantList technical;
+    const QVariantList all = page.value(u"facts"_s).toList();
+    for (const QVariant &fact : all) {
+        if (fact.toMap().value(u"technical"_s).toBool()) {
+            technical.append(fact);
+        } else {
+            facts.append(fact);
+        }
+    }
+    page.insert(u"facts"_s, facts);
+    page.insert(u"technicalFacts"_s, technical);
+    return page;
+}
+
 } // namespace
 
 QcHandbookModel::QcHandbookModel(QObject *parent)
@@ -97,7 +116,10 @@ QVariantList QcHandbookModel::search(const QString &text) const
 QVariantMap QcHandbookModel::page(const QString &id) const
 {
     const QcHandbookEntry *entry = m_handbook ? m_handbook->entry(id) : nullptr;
-    return entry ? withRecipeKinds(QcHandbookJson::entry(*m_handbook, *entry).toVariantMap(), *entry) : QVariantMap();
+    if (!entry) {
+        return {};
+    }
+    return withTechnicalFactsApart(withRecipeKinds(QcHandbookJson::entry(*m_handbook, *entry).toVariantMap(), *entry));
 }
 
 QString QcHandbookModel::resolve(const QString &target) const

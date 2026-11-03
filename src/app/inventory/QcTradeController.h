@@ -32,11 +32,14 @@ class QcTradeController : public QObject
     // uses, maxUses, soldOut, affordable.
     Q_PROPERTY(QVariantList offers READ offers NOTIFY changed FINAL)
     Q_PROPERTY(int selected READ selected WRITE select NOTIFY changed FINAL)
+    // The handbook page of the villager (the screen's handbook button).
+    Q_PROPERTY(QString handbookTarget READ handbookTarget CONSTANT FINAL)
 
 public:
     QcTradeController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
 
     bool isOpen() const;
+    static QString handbookTarget() { return QStringLiteral("qtcraft:villager"); }
     QString profession() const;
     QString levelName() const;
     int level() const;

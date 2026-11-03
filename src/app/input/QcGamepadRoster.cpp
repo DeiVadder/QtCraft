@@ -103,7 +103,7 @@ QVariantMap QcGamepadRoster::glyph(const QString &family, const QString &input) 
     if (!found) {
         return {};
     }
-    return {{u"shape"_s, QcGamepadGlyphs::shapeName(found->shape)},
+    return {{u"shape"_s, static_cast<int>(found->shape)},
             {u"label"_s, found->label},
             {u"colour"_s, found->colour},
             {u"direction"_s, found->direction}};

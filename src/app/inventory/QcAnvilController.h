@@ -38,6 +38,8 @@ class QcAnvilController : public QObject
     Q_PROPERTY(bool affordable READ isAffordable NOTIFY changed FINAL)
     // The longest custom name (characters).
     Q_PROPERTY(int maxNameLength READ maxNameLength CONSTANT FINAL)
+    // The handbook page of the screen's block (the screen's handbook button).
+    Q_PROPERTY(QString handbookTarget READ handbookTarget CONSTANT FINAL)
 
 public:
     explicit QcAnvilController(const QcSessionParts &parts, QObject *parent = nullptr);
@@ -51,6 +53,7 @@ public:
     bool isTooExpensive() const { return m_tooExpensive; }
     bool isAffordable() const { return m_affordable; }
     static int maxNameLength();
+    static QString handbookTarget() { return QStringLiteral("qtcraft:anvil"); }
 
     // Sends the text of the name field (the output follows from the server).
     Q_INVOKABLE void rename(const QString &text) const;

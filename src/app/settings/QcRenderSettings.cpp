@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcRenderSettings.h"
+#include "app/settings/QcRenderSettings.h"
 
 #include "app/debug/QcAppLogging.h"
 

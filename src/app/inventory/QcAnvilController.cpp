@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcAnvilController.h"
+#include "app/inventory/QcAnvilController.h"
 
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"

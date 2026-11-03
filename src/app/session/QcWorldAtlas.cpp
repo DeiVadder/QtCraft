@@ -4,12 +4,12 @@
 #include "app/session/QcWorldAtlas.h"
 
 #include "app/controllers/QcHeldMap.h"
-#include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIcons.h"
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"

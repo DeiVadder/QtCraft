@@ -3,10 +3,10 @@
 
 #include "app/controllers/QcPlayerController.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/models/QcDurationText.h"
 #include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcArmour.h"
@@ -219,6 +219,11 @@ double QcPlayerController::machineProgress() const
 int QcPlayerController::craftingSize() const
 {
     return m_parts.session ? m_parts.session->inventoryMirror().craftingSize() : 2;
+}
+
+QString QcPlayerController::craftingHandbookTarget() const
+{
+    return craftingSize() == 3 ? u"qtcraft:crafting_table"_s : QString();
 }
 
 void QcPlayerController::selectHotbarSlot(int slot) const

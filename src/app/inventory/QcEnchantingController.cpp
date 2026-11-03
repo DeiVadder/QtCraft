@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcEnchantingController.h"
+#include "app/inventory/QcEnchantingController.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcEnchantmentTexts.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "clientcore/session/QcRuneScript.h"
 #include "common/content/registry/QcContentRegistry.h"

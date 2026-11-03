@@ -3,9 +3,9 @@
 
 #include "app/controllers/QcWorldPause.h"
 
-#include "app/controllers/QcAudioSettings.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcAudioSettings.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 
 QcWorldPause::QcWorldPause(const QcSessionParts &parts, QcScreenState &screens, QcSettingsController &settings, QObject *parent)

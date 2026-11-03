@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcDiagnosticsSettings.h"
+#include "app/settings/QcDiagnosticsSettings.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/settings/QcSettingsController.h"
 #include "common/core/QcDataRoot.h"
 #include "common/diagnostics/QcDiagnosticsBundle.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"

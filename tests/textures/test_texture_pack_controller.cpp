@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcTexturePackController.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/materials/QcMaterialAtlas.h"
 #include "clientcore/texturepacks/QcTexturePack.h"
 #include "clientcore/texturepacks/QcTexturePackLibrary.h"
@@ -110,6 +110,16 @@ private slots:
             }
         }
         QVERIFY(builtIn > 0);
+
+        // The two lists of the page split the packs by their state, keeping the order.
+        const QVariantList active = controller.activePacks();
+        QVERIFY(!active.isEmpty());
+        QCOMPARE(active.first().toMap().value(u"id"_s).toString(), u"user:warm"_s);
+        QCOMPARE(active.size() + controller.inactivePacks().size(), packs.size());
+        const QVariantList inactive = controller.inactivePacks();
+        for (const QVariant &pack : inactive) {
+            QVERIFY(!pack.toMap().value(u"active"_s).toBool());
+        }
     }
 
     // The benchmark's pack switch (decision E-332): a whole selection at once is one build (one

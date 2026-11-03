@@ -182,6 +182,7 @@ SettingsPage {
                     delegate: GameButton {
                         required property int index
                         readonly property bool capturing: page.keys.captureAction === keyRow.modelData.action && page.keys.captureSlot === index
+                        readonly property bool bound: index === 0 ? keyRow.modelData.primaryBound : keyRow.modelData.secondaryBound
 
                         Layout.preferredWidth: Ui.size.keyButton
                         enabled: !keyRow.modelData.fixed
@@ -190,7 +191,7 @@ SettingsPage {
                         // "–" or an arrow says little without the row: the action, which key and the key.
                         Accessible.name: qsTr("%1, %2: %3").arg(keyRow.modelData.label)
                                          .arg(index === 0 ? qsTr("primary key") : qsTr("secondary key"))
-                                         .arg(text === "–" ? qsTr("none") : text)
+                                         .arg(capturing || bound ? text : qsTr("none"))
                         onClicked: page.startCapture(keyRow.modelData.action, index)
                     }
                 }

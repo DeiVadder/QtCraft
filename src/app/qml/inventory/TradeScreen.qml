@@ -33,7 +33,7 @@ SlotScreen {
         })
 
     title: qsTr("%1 – %2").arg(screen.trade.profession).arg(screen.trade.levelName)
-    handbookTarget: "qtcraft:villager"
+    handbookTarget: screen.trade.handbookTarget
     keyHints: [
         { keys: [qsTr("Click")], text: qsTr("on the result: trade once") },
         { keys: [qsTr("Shift-click")], text: qsTr("as often as you can pay") }

@@ -30,8 +30,11 @@ class QcHandbookController : public QObject
     Q_PROPERTY(QString query READ query NOTIFY openChanged FINAL)
     // The open page, the pages before it, the category or the search (decision E-954).
     Q_PROPERTY(QcHandbookNavigation *navigation READ navigation CONSTANT FINAL)
+    // The page of the first steps (the main menu's "Handbook: first steps").
+    Q_PROPERTY(QString firstSteps READ firstSteps CONSTANT FINAL)
 
 public:
+    static QString firstSteps() { return QStringLiteral("chapter:qtcraft:basics"); }
     QcHandbookController(const QcSessionParts &parts, const QcSettingsController &settings, const QcWorldLibraryController &library,
                          QcItemIcons &icons, QObject *parent = nullptr);
 

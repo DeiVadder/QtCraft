@@ -21,7 +21,7 @@ SlotScreen {
     readonly property int leftRow: InventoryModel.MachineFirst
 
     title: qsTr("Anvil")
-    handbookTarget: "qtcraft:anvil"
+    handbookTarget: screen.anvil.handbookTarget
 
     // The cost line: what the output costs, or why there is none.
     function costText(): string {
@@ -92,7 +92,6 @@ SlotScreen {
             }
 
             PixelArt {
-                objectName: "anvilCross"
                 anchors.centerIn: arrow
                 visible: screen.anvil.tooExpensive
                 picture: "cross/error"

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "app/controllers/QcAdvancementQueue.h"
-#include "app/controllers/QcSlotCursor.h"
+#include "app/inventory/QcSlotCursor.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
 #include "app/models/QcPointsRow.h"
@@ -78,6 +78,8 @@ class QcPlayerController : public QObject, public QcSlotActions
     Q_PROPERTY(int containerHeldSlot READ containerHeldSlot NOTIFY machineChanged FINAL)
     Q_PROPERTY(double machineProgress READ machineProgress NOTIFY machineChanged FINAL)
     Q_PROPERTY(int craftingSize READ craftingSize NOTIFY craftingChanged FINAL)
+    // The handbook page of the crafting table while its 3x3 grid is open, else empty.
+    Q_PROPERTY(QString craftingHandbookTarget READ craftingHandbookTarget NOTIFY craftingChanged FINAL)
     Q_PROPERTY(QVariantList craftableRecipes READ craftableRecipes NOTIFY craftingChanged FINAL)
     // The creative mode (decision E-282) and its item catalogue (decision E-286).
     Q_PROPERTY(bool creative READ creative NOTIFY gameModeChanged FINAL)
@@ -123,6 +125,7 @@ public:
     int containerHeldSlot() const;
     double machineProgress() const;
     int craftingSize() const;
+    QString craftingHandbookTarget() const;
     QVariantList craftableRecipes() const { return m_craftableRecipes; }
     bool creative() const;
     bool spectator() const;

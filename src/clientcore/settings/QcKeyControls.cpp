@@ -52,8 +52,10 @@ QVariantList QcKeyControls::rows() const
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
         rows.append(QVariantMap{{u"action"_s, QcKeyBindings::id(action)},
                                 {u"label"_s, QcKeyLabels::action(action)},
-                                {u"primary"_s, QcKeyLabels::key(m_bindings.key(action, 0))},
-                                {u"secondary"_s, QcKeyLabels::key(m_bindings.key(action, 1))},
+                                {u"primary"_s, QcKeyLabels::key(bindings().key(action, 0))},
+                                {u"secondary"_s, QcKeyLabels::key(bindings().key(action, 1))},
+                                {u"primaryBound"_s, bindings().key(action, 0) != 0},
+                                {u"secondaryBound"_s, bindings().key(action, 1) != 0},
                                 {u"fixed"_s, QcKeyBindings::isFixed(action)}});
     }
     return rows;

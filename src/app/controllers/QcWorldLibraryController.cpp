@@ -49,6 +49,18 @@ struct ModState
     return blocks.value(generator, u"qtcraft:grass_block"_s);
 }
 
+// The letter on a world's tile while its icon is not drawn: the first character of the name
+// without blanks, in capitals ("?" for a name of blanks only).
+[[nodiscard]] QString initialOf(const QString &name)
+{
+    const QString trimmed = name.trimmed();
+    if (trimmed.isEmpty()) {
+        return u"?"_s;
+    }
+    const qsizetype length = trimmed.front().isHighSurrogate() && trimmed.size() > 1 ? 2 : 1;
+    return trimmed.first(length).toUpper();
+}
+
 } // namespace
 
 QcWorldLibraryController::QcWorldLibraryController(QObject *parent)
@@ -67,6 +79,7 @@ void QcWorldLibraryController::refreshWorlds()
     for (const QcWorldLibrary::Entry &entry : entries) {
         m_worlds.append(QVariantMap{{u"folder"_s, entry.folder},
                                     {u"name"_s, entry.info.name},
+                                    {u"initial"_s, initialOf(entry.info.name)},
                                     {u"seed"_s, QString::number(entry.info.seed)},
                                     {u"worldType"_s, static_cast<int>(worldTypeOf(entry.info.generator))},
                                     {u"typeBlock"_s, typeBlock(entry.info.generator)},

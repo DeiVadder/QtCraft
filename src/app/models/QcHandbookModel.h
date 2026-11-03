@@ -43,8 +43,8 @@ public:
     Q_INVOKABLE QVariantList entries(const QString &category) const;
     // The same for the best matches of `text`, with "categoryTitle".
     Q_INVOKABLE QVariantList search(const QString &text) const;
-    // A whole page (see QcHandbookJson::entry), each recipe's "kind" a RecipeKind; empty for
-    // unknown ids.
+    // A whole page (see QcHandbookJson::entry), each recipe's "kind" a RecipeKind, the technical
+    // facts apart in "technicalFacts" ("facts" the others); empty for unknown ids.
     Q_INVOKABLE QVariantMap page(const QString &id) const;
     // Entry id for an entry id or a content name (block, item, creature, biome, chapter; unqualified
     // names in any pack); empty when none.

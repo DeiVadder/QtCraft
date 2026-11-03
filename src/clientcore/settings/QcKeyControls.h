@@ -22,7 +22,8 @@ class QcKeyControls : public QObject
 {
     Q_OBJECT
 
-    /*! [{action, label, primary, secondary, fixed}] with the keys as display texts. */
+    /*! [{action, label, primary, secondary, primaryBound, secondaryBound, fixed}] with the keys as
+        display texts and whether each slot has a key. */
     Q_PROPERTY(QVariantList rows READ rows NOTIFY changed FINAL)
     /*! Action id -> text of its primary key, e.g. {"cameraView": "V"}. */
     Q_PROPERTY(QVariantMap labels READ labels NOTIFY changed FINAL)

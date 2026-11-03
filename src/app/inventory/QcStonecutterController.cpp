@@ -1,12 +1,12 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcStonecutterController.h"
+#include "app/inventory/QcStonecutterController.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcItemIconUrls.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/content/recipes/QcStonecutting.h"
 #include "common/content/registry/QcContentRegistry.h"

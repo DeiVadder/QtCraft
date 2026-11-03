@@ -24,31 +24,19 @@ Item {
     // The CharacterPreview while it exists, else null.
     readonly property CharacterPreview preview: loader.item as CharacterPreview
 
-    // Kept this long after hiding, so a screen opened again at once shows it without delay.
-    readonly property int keepMs: 3000
-    property bool live: visible
+    // Kept a few seconds after hiding, so a screen opened again at once shows it without delay.
+    KeepAlive {
+        id: keepAlive
 
-    onVisibleChanged: {
-        if (visible) {
-            keepTimer.stop();
-            live = true;
-        } else {
-            keepTimer.restart();
-        }
-    }
-
-    Timer {
-        id: keepTimer
-
-        interval: host.keepMs
-        onTriggered: host.live = false
+        shown: host.visible
+        interval: 3000
     }
 
     Loader {
         id: loader
 
         anchors.fill: parent
-        active: host.live
+        active: keepAlive.live
         sourceComponent: CharacterPreview {
             objectName: host.previewName
             source: host.source

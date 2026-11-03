@@ -5,12 +5,12 @@
 
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSlotCursor.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcScreenshotHook.h"
 #include "app/hooks/QcScriptedPad.h"
 #include "app/input/QcGameInput.h"
+#include "app/inventory/QcSlotCursor.h"
 #include "app/rendering/QcWorldView.h"
 #include "app/session/QcLoadingProgress.h"
 #include "app/session/QcSessionParts.h"

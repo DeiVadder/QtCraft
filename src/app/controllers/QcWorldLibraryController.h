@@ -56,8 +56,8 @@ public:
     // Where mods are looked for; empty loads only the base game (test hook --no-mods).
     void setModsDirectory(const QString &directory);
 
-    // The saved worlds, the last played first: folder, name, seed, worldType (WorldType), typeBlock
-    // (the block whose icon stands for the type), gameMode (the mode of new players, GameMode.Mode),
+    // The saved worlds, the last played first: folder, name, initial (the letter on its tile), seed,
+    // worldType (WorldType), typeBlock (the block whose icon stands for the type), gameMode (the mode of new players, GameMode.Mode),
     // lastPlayed (when, as the menu shows it) and error (why it cannot be opened, else empty).
     Q_INVOKABLE void refreshWorlds();
     // The generator name of `type` ("terrain", "flat", "void", "showcase"), as world.json keeps it.

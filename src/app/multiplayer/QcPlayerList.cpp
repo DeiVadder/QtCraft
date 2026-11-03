@@ -85,15 +85,25 @@ QVariantList QcPlayerList::players() const
     QVariantList rows;
     for (const Entry &entry : std::as_const(sorted)) {
         const double latencyMs = entry.latencyUs < 0 ? -1.0 : entry.latencyUs / 1000.0;
+        const int bars = QcListedLatency::bars(entry.latencyUs);
         rows.append(QVariantMap{{u"name"_s, entry.name},
                                 {u"operator"_s, entry.operatorRights},
                                 {u"self"_s, own != 0 && entry.entityId == own},
                                 {u"spectator"_s, entry.spectator},
                                 {u"latencyMs"_s, latencyMs},
                                 {u"latencyText"_s, latencyMs < 0.0 ? QString() : QcRoundTripSummary::text(latencyMs)},
-                                {u"bars"_s, QcListedLatency::bars(entry.latencyUs)}});
+                                {u"bars"_s, bars},
+                                {u"signal"_s, static_cast<int>(signalOf(bars))}});
     }
     return rows;
+}
+
+QcPlayerList::Signal QcPlayerList::signalOf(int bars)
+{
+    if (bars >= 4) {
+        return Signal::Good;
+    }
+    return bars >= 2 ? Signal::Fair : Signal::Poor;
 }
 
 QString QcPlayerList::serverName() const

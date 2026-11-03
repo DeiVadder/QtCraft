@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcDiagnosticsSettings.h"
 #include "app/controllers/QcGameController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcOffscreenRender.h"
@@ -11,6 +10,7 @@
 #include "app/models/QcPixelArtProvider.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
 #include "app/models/QcWorldMapImageProvider.h"
+#include "app/settings/QcDiagnosticsSettings.h"
 #include "app/startup/QcAppLanguage.h"
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"

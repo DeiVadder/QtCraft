@@ -494,6 +494,18 @@ QStringList QcAdminController::complete(const QString &line) const
     return QcAdminCompletion::complete(line, {m_admin->catalogue(), names, content.get()}, suggestionLimit);
 }
 
+QString QcAdminController::tabCompletion(const QString &line) const
+{
+    if (line.isEmpty()) {
+        return {};
+    }
+    const QStringList completions = complete(line);
+    if (completions.isEmpty() || completions.first().trimmed() == line.trimmed()) {
+        return {};
+    }
+    return completions.first();
+}
+
 QVariantMap QcAdminController::help(const QString &line) const
 {
     return m_admin ? QcAdminViews::help(line, m_admin->catalogue()) : QVariantMap();

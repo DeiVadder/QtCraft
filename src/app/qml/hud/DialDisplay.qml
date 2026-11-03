@@ -12,7 +12,6 @@ Item {
 
     required property HudState hudState
 
-    objectName: "dialDisplay"
     visible: display.hudState.dial !== HudState.None
     width: Ui.hudPx(64)
     height: Ui.hudPx(64) + (clockLabel.visible ? clockLabel.height : 0)

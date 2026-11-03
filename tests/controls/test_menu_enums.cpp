@@ -3,12 +3,12 @@
 
 #include "app/controllers/QcGameController.h"
 #include "app/controllers/QcNewWorldDraft.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/controllers/QcWorldOptionsController.h"
 #include "app/hooks/QcMenuPreselect.h"
 #include "app/models/QcHandbookModel.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
@@ -185,6 +185,32 @@ private slots:
         QCOMPARE(kindsOf(2), QList<int>{static_cast<int>(Kind::Machine)});
         QCOMPARE(sections[1].toMap().value(u"text"_s).toString(), u"Words"_s);
         QVERIFY(model.page(u"item:t:none"_s).isEmpty());
+    }
+
+    // The technical facts of a page come apart from the others, each in their order.
+    void technicalFactsComeApart()
+    {
+        QcHandbookEntry entry;
+        entry.id = u"item:t:thing"_s;
+        entry.title = u"Thing"_s;
+        entry.facts = {{u"Stack"_s, u"64"_s, {}, false}, {u"Id"_s, u"t:thing"_s, {}, true},
+                       {u"Tool"_s, u"Axe"_s, {}, false}, {u"Sound"_s, u"wood"_s, {}, true}};
+        QcHandbook::Contents contents;
+        contents.entries = {entry};
+        QcHandbookModel model;
+        model.setHandbook(std::make_shared<const QcHandbook>(contents));
+
+        const QVariantMap page = model.page(entry.id);
+        const auto labels = [&page](const QString &key) {
+            QStringList found;
+            const QVariantList facts = page.value(key).toList();
+            for (const QVariant &fact : facts) {
+                found.append(fact.toMap().value(u"label"_s).toString());
+            }
+            return found;
+        };
+        QCOMPARE(labels(u"facts"_s), (QStringList{u"Stack"_s, u"Tool"_s}));
+        QCOMPARE(labels(u"technicalFacts"_s), (QStringList{u"Id"_s, u"Sound"_s}));
     }
 
     // The on-screen keyboard's layout follows the UI language shown now: QWERTZ in German.

@@ -21,7 +21,7 @@ SlotScreen {
     readonly property int outputRow: InventoryModel.MachineOutput
 
     title: qsTr("Stonecutter")
-    handbookTarget: "qtcraft:stonecutter"
+    handbookTarget: screen.stonecutter.handbookTarget
     keyHints: [
         { keys: [qsTr("Click")], text: qsTr("take, put down") },
         { keys: [qsTr("Right click")], text: qsTr("one") },

@@ -3,9 +3,9 @@
 
 #include "app/session/QcWorldStarter.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/settings/QcSettingsController.h"
 #include "common/world/QcWorldInfo.h"
 #include "worldgen/generators/QcWorldGenerators.h"
 #include "worldgen/generators/QcWorldOptions.h"

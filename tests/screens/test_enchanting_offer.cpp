@@ -41,6 +41,7 @@ ApplicationWindow {
             property int clicks: 0
 
             objectName: "usable"
+            lapisItem: "qtcraft:lapis_lazuli"
             offerData: ({ levelCost: 7, price: 1, signs: [{ rune: 3, text: "a" }, { rune: -1, text: "b" }], letters: 2,
                           readableLetters: 1, clue: "", levelsLacking: false, lapisLacking: false, affordable: true })
             onClicked: clicks++
@@ -49,6 +50,7 @@ ApplicationWindow {
             property int clicks: 0
 
             objectName: "unusable"
+            lapisItem: "qtcraft:lapis_lazuli"
             offerData: ({ levelCost: 30, price: 3, signs: [{ rune: -1, text: "a" }, { rune: -1, text: "b" }], letters: 2,
                           readableLetters: 2, clue: "ab", levelsLacking: true, lapisLacking: true, affordable: false })
             onClicked: clicks++

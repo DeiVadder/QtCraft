@@ -86,7 +86,6 @@ Rectangle {
                     smooth: false
                 }
                 Label {
-                    objectName: "advancementTitle"
                     Layout.fillWidth: true
                     text: details.shown ? details.advancement.title : ""
                     color: Theme.text
@@ -99,7 +98,6 @@ Rectangle {
             }
 
             Label {
-                objectName: "advancementState"
                 Layout.fillWidth: true
                 text: details.shown ? qsTr("%1 · %2").arg(details.frameText(details.advancement.frame)).arg(details.stateText()) : ""
                 color: details.shown && details.advancement.state === AdvancementTree.Reached ? Theme.accent : Theme.heading

@@ -65,7 +65,6 @@ ColumnLayout {
     SettingsPage {
         id: form
 
-        objectName: "worldOptionsForm"
         Layout.fillWidth: true
         Layout.fillHeight: true
         title: qsTr("World options")

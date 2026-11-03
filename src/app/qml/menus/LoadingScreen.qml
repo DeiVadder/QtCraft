@@ -16,6 +16,8 @@ LoadingBackdrop {
     id: screen
 
     required property LoadingProgress progress
+    // The key table (GameController.settings.keys): Esc cancels through it.
+    required property KeyControls keys
     property bool canCancel: false
     readonly property bool network: progress.kind === LoadingProgress.Network
     readonly property bool newWorld: progress.kind === LoadingProgress.NewWorld
@@ -23,7 +25,7 @@ LoadingBackdrop {
     signal cancelRequested
 
     Keys.onPressed: event => {
-        if (event.key === Qt.Key_Escape && screen.canCancel)
+        if (screen.canCancel && screen.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
             screen.cancelRequested();
         event.accepted = event.key !== Qt.Key_Tab && event.key !== Qt.Key_Backtab;
     }

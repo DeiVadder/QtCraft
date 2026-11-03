@@ -3,8 +3,6 @@
 
 #include "app/controllers/QcMultiplayerController.h"
 
-#include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/multiplayer/QcLanAddresses.h"
@@ -12,6 +10,8 @@
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldStarter.h"
+#include "app/settings/QcCharacterSettings.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/network/QcKnownServers.h"
 #include "clientcore/network/QcNetworkClient.h"
 #include "clientcore/session/QcClientSession.h"

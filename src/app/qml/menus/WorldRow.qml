@@ -47,7 +47,7 @@ ListRow {
 
     leading: WorldTile {
         implicitWidth: Ui.size.thumbnailSmall
-        name: row.modelData.name
+        initial: row.modelData.initial
         typeBlock: row.modelData.typeBlock
     }
 

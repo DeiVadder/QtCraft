@@ -128,7 +128,6 @@ ColumnLayout {
             readonly property real mapColumn: Ui.size.map + 2 * Ui.space.l
             readonly property bool beside: page.terrain && width >= Ui.screen.s + mapColumn + columnSpacing
 
-            objectName: "newWorldColumns"
             Layout.fillWidth: true
             columns: beside ? 2 : 1
             columnSpacing: Ui.space.xl

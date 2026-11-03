@@ -18,7 +18,7 @@ Flickable {
     property var page: ({})
 
     readonly property var facts: page.facts || []
-    readonly property var technicalFacts: facts.filter(fact => fact.technical)
+    readonly property var technicalFacts: page.technicalFacts || []
     // The technical facts are unfolded; they fold again on the next page.
     property bool technicalShown: false
 
@@ -91,7 +91,7 @@ Flickable {
         HandbookFacts {
             objectName: "handbookFacts"
             Layout.fillWidth: true
-            facts: view.facts.filter(fact => !fact.technical)
+            facts: view.facts
             onLinkActivated: target => view.linkActivated(target)
         }
 

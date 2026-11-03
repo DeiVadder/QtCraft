@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcGamepadOptions.h"
+#include "app/settings/QcGamepadOptions.h"
 
 #include "clientcore/input/QcGamepadMapping.h"
 #include "clientcore/input/QcGamepadSource.h"

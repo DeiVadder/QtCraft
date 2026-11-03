@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "app/controllers/QcMultiplayerController.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/multiplayer/QcLanAddresses.h"
 #include "app/multiplayer/QcMultiplayerSettings.h"
@@ -10,6 +9,7 @@
 #include "app/multiplayer/QcServerHistory.h"
 #include "app/session/QcSessionParts.h"
 #include "app/session/QcWorldStarter.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"
 #include "common/diagnostics/QcRoundTripStats.h"
@@ -270,6 +270,14 @@ private slots:
         QCOMPARE(QcListedLatency::bars(999'999), 2);
         QCOMPARE(QcListedLatency::bars(1'000'000), 1);
         QCOMPARE(QcListedLatency::bars(60'000'000), 1);
+
+        // The bars' colour: four or five good, two or three fair, fewer poor.
+        QCOMPARE(QcPlayerList::signalOf(5), QcPlayerList::Signal::Good);
+        QCOMPARE(QcPlayerList::signalOf(4), QcPlayerList::Signal::Good);
+        QCOMPARE(QcPlayerList::signalOf(3), QcPlayerList::Signal::Fair);
+        QCOMPARE(QcPlayerList::signalOf(2), QcPlayerList::Signal::Fair);
+        QCOMPARE(QcPlayerList::signalOf(1), QcPlayerList::Signal::Poor);
+        QCOMPARE(QcPlayerList::signalOf(0), QcPlayerList::Signal::Poor);
     }
 
     void playerListWithoutSessionIsEmpty()

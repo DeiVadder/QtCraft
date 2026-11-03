@@ -13,8 +13,9 @@ import QtCraft
 Rectangle {
     id: tile
 
-    // The world's name and the block whose icon stands for its type (from the library).
-    property string name
+    // The first letter of the world's name and the block whose icon stands for its type (from the
+    // library).
+    property string initial
     property string typeBlock
     // Empty while nothing has drawn icons yet (in the menu before the first world or handbook).
     readonly property string typeIcon: ItemIcons.generation > 0 && typeBlock.length > 0
@@ -43,7 +44,7 @@ Rectangle {
         anchors.centerIn: parent
         visible: !icon.visible
         textFormat: Text.PlainText
-        text: tile.name.trim().length > 0 ? Array.from(tile.name.trim())[0].toUpperCase() : "?"
+        text: tile.initial
         font.pixelSize: tile.width / 2
         font.bold: true
         color: Theme.heading

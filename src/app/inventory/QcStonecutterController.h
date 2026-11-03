@@ -25,11 +25,14 @@ class QcStonecutterController : public QObject
     Q_PROPERTY(QVariantList results READ results NOTIFY changed FINAL)
     // The chosen result's index in `results`; -1 for none.
     Q_PROPERTY(int selected READ selected NOTIFY changed FINAL)
+    // The handbook page of the screen's block (the screen's handbook button).
+    Q_PROPERTY(QString handbookTarget READ handbookTarget CONSTANT FINAL)
 
 public:
     QcStonecutterController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
 
     bool isOpen() const;
+    static QString handbookTarget() { return QStringLiteral("qtcraft:stonecutter"); }
     QVariantList results() const { return m_results; }
     int selected() const { return m_selected; }
 

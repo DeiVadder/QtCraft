@@ -21,9 +21,12 @@ class QcClientSession;
 class QcPlayerList : public QObject
 {
     Q_OBJECT
-    QML_ANONYMOUS
+    QML_NAMED_ELEMENT(PlayerList)
+    QML_UNCREATABLE("GameController.multiplayer.players makes the list")
+    Q_CLASSINFO("RegisterEnumClassesUnscoped", "false")
     // [{name, operator, self, spectator, latencyMs (-1: unknown), latencyText ("0.4", "12"), bars
-    // (QcListedLatency::bars)}] sorted by name without case, spectators last.
+    // (QcListedLatency::bars), signal (Signal, how the bars are coloured)}] sorted by name
+    // without case, spectators last.
     Q_PROPERTY(QVariantList players READ players NOTIFY changed FINAL)
     Q_PROPERTY(int count READ count NOTIFY changed FINAL)
     // The server's name; the world's name for a single-player world (also when open to the LAN).
@@ -32,6 +35,14 @@ class QcPlayerList : public QObject
 
 public:
     using Entry = QcMsg::PlayerList::Entry;
+
+    // How good a player's signal is, by their bars: four or five good, two or three fair, else poor.
+    enum class Signal {
+        Good,
+        Fair,
+        Poor,
+    };
+    Q_ENUM(Signal)
 
     // Names of the players who came and went between two lists, without the own entity.
     struct Changes
@@ -50,6 +61,8 @@ public:
     QString serverName() const;
     QString motd() const;
 
+    // The signal of `bars` (0–5) lit.
+    static Signal signalOf(int bars);
     static Changes compare(const QList<Entry> &before, const QList<Entry> &after, quint32 ownEntity);
 
 signals:

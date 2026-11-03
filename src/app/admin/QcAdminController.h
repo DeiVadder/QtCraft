@@ -184,6 +184,9 @@ public:
     // The lines `line` may become by completing its last word (QcAdminCompletion::complete), at
     // most eight.
     Q_INVOKABLE QStringList complete(const QString &line) const;
+    // What Tab makes of `line`: the first completion when it says more than the line (blanks at
+    // either end do not count); empty when there is none, so Tab moves the focus on.
+    Q_INVOKABLE QString tabCompletion(const QString &line) const;
     // Help for the command of `line`: {command, usage, description, next} (QcAdminViews::help);
     // empty when the first word names no command.
     Q_INVOKABLE QVariantMap help(const QString &line) const;

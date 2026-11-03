@@ -3,11 +3,11 @@
 
 #include "app/display/QcGraphicsGuard.h"
 
-#include "app/controllers/QcRenderSettings.h"
 #include "app/controllers/QcScreenState.h"
 #include "app/controllers/QcWorldPause.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/rendering/QcWorldView.h"
+#include "app/settings/QcRenderSettings.h"
 
 #include <QCoreApplication>
 

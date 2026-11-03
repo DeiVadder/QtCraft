@@ -70,7 +70,6 @@ ColumnLayout {
 
     // The previous session ended with a crash (decision E-834): where its report is.
     RowLayout {
-        objectName: "crashNotice"
         Layout.fillWidth: true
         Layout.rightMargin: page.gutter
         visible: page.game.settings.diagnostics.crashReport !== ""
@@ -113,7 +112,7 @@ ColumnLayout {
         GameButton {
             text: qsTr("Handbook: first steps")
             keyHint: page.game.settings.keys.labels.handbook
-            onClicked: page.game.handbook.open("chapter:qtcraft:basics")
+            onClicked: page.game.handbook.open(page.game.handbook.firstSteps)
         }
         GameButton {
             text: qsTr("Multiplayer")

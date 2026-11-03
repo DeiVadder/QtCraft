@@ -21,7 +21,7 @@ SlotScreen {
     readonly property int itemRow: InventoryModel.MachineFirst
 
     title: qsTr("Enchanting Table")
-    handbookTarget: "qtcraft:enchanting_table"
+    handbookTarget: screen.enchanting.handbookTarget
 
     RowLayout {
         spacing: Ui.space.xl
@@ -41,7 +41,7 @@ SlotScreen {
                 owner: screen
                 first: screen.itemRow
                 names: ["enchantingItem", "enchantingLapis"]
-                placeholders: ["", "qtcraft:lapis_lazuli"]
+                placeholders: ["", screen.enchanting.lapisItem]
             }
 
             // The slots' names below them (IV-8 of docs/Menue-Pruefung.md).
@@ -62,7 +62,7 @@ SlotScreen {
                     anchors.verticalCenter: parent.verticalCenter
                     width: Ui.size.icon
                     height: Ui.size.icon
-                    source: ItemIcons.source("qtcraft:bookshelf", ItemIcons.generation)
+                    source: ItemIcons.source(screen.enchanting.shelfBlock, ItemIcons.generation)
                     smooth: false
                     Accessible.ignored: true
                 }
@@ -87,8 +87,8 @@ SlotScreen {
                 EnchantingOffer {
                     required property var modelData
                     required property int index
-                    objectName: "enchantingOffer" + index
                     offerData: modelData
+                    lapisItem: screen.enchanting.lapisItem
                     onClicked: screen.enchanting.choose(index)
                 }
             }

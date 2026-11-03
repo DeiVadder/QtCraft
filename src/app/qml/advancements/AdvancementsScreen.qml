@@ -151,7 +151,6 @@ Item {
         }
     }
 
-    objectName: "advancementsScreen"
     focus: visible
     onVisibleChanged: {
         if (!visible)
@@ -216,7 +215,6 @@ Item {
                     Accessible.name: text
                 }
                 Label {
-                    objectName: "advancementCount"
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignBaseline
                     text: qsTr("%1 of %2 reached").arg(screen.tree.reached).arg(screen.tree.total)

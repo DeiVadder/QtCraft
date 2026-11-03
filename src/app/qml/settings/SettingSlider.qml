@@ -64,7 +64,6 @@ SettingRow {
             // The default's notch, above and below the track; taller than the knob, so it still
             // shows when the knob stands on it.
             Rectangle {
-                objectName: "sliderDefaultMark"
                 visible: setting.hasDefault
                 x: setting.defaultPosition * parent.width - width / 2
                 anchors.verticalCenter: parent.verticalCenter

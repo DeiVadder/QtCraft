@@ -1,16 +1,17 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcGamepadOptions.h"
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadRoster.h"
 #include "app/input/QcGamepadUi.h"
+#include "app/input/QcPadGlyphPainter.h"
 #include "app/models/QcItemIcons.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcGamepadOptions.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/input/QcGamepadControls.h"
 #include "clientcore/input/QcVirtualGamepadSource.h"
@@ -22,6 +23,7 @@
 #include "worlds/QcLocalServerHost.h"
 
 #include <QGuiApplication>
+#include <QRegularExpression>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QScopeGuard>
@@ -500,8 +502,24 @@ private slots:
         QCOMPARE(notices.size(), 3);
         QCOMPARE(roster.texts().value(u"south"_s).toString(), u"✕"_s);
         QCOMPARE(roster.text(u"rightStickMove"_s), QcGamepadRoster::tr("Right stick"));
-        QCOMPARE(roster.glyph(roster.family(), u"north"_s).value(u"shape"_s).toString(), u"triangle"_s);
+        QCOMPARE(roster.glyph(roster.family(), u"north"_s).value(u"shape"_s).toInt(),
+                 static_cast<int>(QcPadGlyphPainter::Shape::Triangle));
         QCOMPARE(roster.glyph(u"xbox"_s, u"north"_s).value(u"label"_s).toString(), u"Y"_s);
+
+        // The painter takes the roster's glyphs: shape, width and colour of the letters.
+        QcPadGlyphPainter painter;
+        painter.setSymbol(roster.glyph(roster.family(), u"north"_s));
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Triangle);
+        QVERIFY(!painter.isWide());
+        painter.setSymbol(roster.glyph(u"xbox"_s, u"leftShoulder"_s));
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Shoulder);
+        QVERIFY(painter.isWide());
+        const QColor plain = painter.ink();
+        painter.setSymbol(roster.glyph(u"xbox"_s, u"south"_s));
+        QVERIFY(painter.ink() != plain);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown shape"_s));
+        painter.setSymbol({{u"shape"_s, 99}});
+        QCOMPARE(painter.shape(), QcPadGlyphPainter::Shape::Label);
         QVERIFY(roster.glyph(roster.family(), u"turbo"_s).isEmpty());
         QCOMPARE(roster.list().size(), 2);
         QVERIFY(roster.list().at(1).toMap().value(u"inUse"_s).toBool());

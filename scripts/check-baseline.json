@@ -1,9 +1,14 @@
 {
     "check-qml.py": {
-        "long-function": 6,
-        "unread-object-name": 30,
-        "screen-key": 4,
-        "input-check": 2
+        "long-function": 4,
+        "unread-object-name": 0,
+        "screen-key": 0,
+        "input-check": 0,
+        "string-compare": 0,
+        "long-binding": 0,
+        "slot-literal": 0,
+        "content-id": 0,
+        "save-settings": 0
     },
     "check-duplicates.py": {
         "clone": 32,

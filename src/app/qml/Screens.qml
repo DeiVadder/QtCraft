@@ -169,6 +169,7 @@ Item {
         phase: GameController.Phase.Error
 
         screen: MessageScreen {
+            keys: screens.game.settings.keys
             text: screens.game.statusText
             showBackButton: true
             onBackRequested: screens.game.leaveGame()
@@ -183,6 +184,7 @@ Item {
 
         screen: LoadingScreen {
             progress: screens.game.loading
+            keys: screens.game.settings.keys
             // Loading a network server's world can be cancelled.
             canCancel: screens.game.multiplayer.networkGame
             onCancelRequested: screens.game.leaveGame()

@@ -42,12 +42,27 @@ Rules (name, what it finds):
                        kind, keyLayout, keyboardLayout or modelData.state compared with a string literal (`world.gameMode === "creative"`), or a `switch` on one
                        with string `case`s; each is an enum (GameMode.Mode, WorldLibrary.WorldType,
                        TexturePack.Origin, HandbookModel.RecipeKind, GameSettings.KeyboardLayout,
-                       ModStatus.State; E-688, row 79.62). Not seen: a function parameter of another
-                       name (`switch (mode)`), other string fields (`language === "de"`) and string
-                       `value:` entries in model arrays (row 79.65)
-  screen-key           in a `Keys.onPressed` handler, Esc compared (`event.key === Qt.Key_Escape`) or the key
-                       table asked (`keys.matches(...)`): what Esc, a screen's own key and the handbook key do
-                       on a screen is one rule in C++, `KeyControls.screenKey` (row 79.58)
+                       ModStatus.State; E-688, row 79.62). A function parameter of another name
+                       (`switch (mode)`) and other string fields (`language === "de"`) are
+                       string-compare's; string `value:` entries in model arrays are not checked
+  screen-key           in a `Keys.onPressed` or `Keys.onReleased` handler, or in a function of the file such a
+                       handler calls with the event (`Keys.onPressed: event => screen.handle(event)`), Esc
+                       compared (`event.key === Qt.Key_Escape`) or the key table asked (`keys.matches(...)`);
+                       and every `Keys.onEscapePressed` handler: what Esc, a screen's own key and the handbook
+                       key do on a screen is one rule in C++, `KeyControls.screenKey` (rows 79.58, 79.65)
+  string-compare       any other comparison with a non-empty string literal (`text === "–"`, `case "de":`;
+                       not `typeof x === "string"` and not an `objectName` compared, which finds an item, and
+                       not on a line mode-string or pad-command-string already reports): a fixed set of
+                       values is an enum or a flag from C++ (E-688, row 79.65, E-966)
+  long-binding         a binding written as a block (`readonly property var x: { ... }`, `visible: { ... }`) of
+                       more than --max-function-lines code lines; handlers (`onX:`) are long-function's
+  slot-literal         a model row or slot written as a number: a binding or property whose name ends in
+                       Row, Slot or First (`first: 45`, `readonly property int fuelRow: 47`; not `Layout.row`)
+                       set to a bare integer; rows come from the enum InventoryModel.Row (row 79.65)
+  content-id           a content id written in QML (`"qtcraft:anvil"`): content can change without the
+                       screens noticing; C++ names it (a CONSTANT property of the controller, row 79.65)
+  save-settings        `saveSettings()` called from QML on anything but the admin controller: the game's
+                       settings are saved by C++ when they change (QcSettingsController, row 79.65)
   input-check          input checked or made in JavaScript: `.trim()`, `parseInt(`, `parseFloat(` or
                        `Math.random(`; C++ takes the raw text, trims, parses and refuses it with a warning
                        (E-688), and draws random values (QcNewWorldDraft; row 79.64, E-956)
@@ -78,7 +93,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 RULES = ("long-function", "connections-write", "enum-list", "id-shadows-property", "unread-object-name", "raw-size",
          "on-property", "loader-item", "anchors-layout", "image-source-size", "pad-command-string",
-         "mode-string", "screen-key", "input-check")
+         "mode-string", "screen-key", "input-check", "string-compare", "long-binding", "slot-literal",
+         "content-id", "save-settings")
 # Rules whose findings fail the run (exit code 1): those at 0 that the human made blocking (row 79.48b,
 # E-942; `enum-list` and `connections-write` since their findings in Main.qml went with 79.47); a NOLINT
 # marker without a reason always fails.
@@ -148,7 +164,25 @@ MODE_FIELD = (r"\b(?:(?:gameMode|worldType)(?:\.currentValue)?|generator|origin|
 MODE_STRING = re.compile(MODE_FIELD + r"\s*(?:===|!==|==|!=)\s*[\"']|[\"']\s*(?:===|!==|==|!=)\s*[\w.?]*" + MODE_FIELD)
 MODE_SWITCH = re.compile(r"\bswitch\s*\([\w.?]*" + MODE_FIELD + r"\s*\)\s*\{")
 # A `Keys.onPressed` handler, and in its body Esc compared for equality or the key table asked.
-KEYS_PRESSED = re.compile(r"\bKeys\.onPressed\s*:")
+KEYS_PRESSED = re.compile(r"\bKeys\.on(?:Pressed|Released)\s*:")
+KEYS_ESCAPE = re.compile(r"\bKeys\.onEscapePressed\s*:")
+# A call that hands the key event on (`screen.handle(event)`), and the name of the function called.
+EVENT_CALL = re.compile(r"(?<![\w.])(?:\w+\.)*(\w+)\s*\(\s*event\b")
+# Rules of row 79.65 (E-966): string literals compared (masked: their contents are `x`), bindings written
+# as blocks, rows and slots as numbers, content ids and saving the settings from QML.
+STRING_COMPARE = re.compile(r"(?:===|!==|==|!=)\s*([\"'`])x+\1|([\"'`])x+\2\s*(?:===|!==|==|!=)|\bcase\s+([\"'`])x+\3\s*:"
+                            r"|\.(?:includes|indexOf)\s*\(\s*([\"'`])x+\4")
+STRING_EXEMPT_BEFORE = re.compile(r"(?:\btypeof\s+[\w.?]+|\bobjectName)\s*$")
+STRING_EXEMPT_AFTER = re.compile(r"^\s*(?:===|!==|==|!=)?\s*[\w.?]*\bobjectName\b")
+BINDING_BLOCK = re.compile(r"^[ \t]*(?:(?:readonly|required|default)\s+)*(?:property\s+[\w.<>]+\s+)?([a-z][\w.]*)\s*:\s*\{",
+                           re.MULTILINE)
+SLOT_LITERAL = re.compile(r"^[ \t]*(?:(?:readonly|required|default)\s+)*(?:property\s+[\w.]+\s+)?([\w.]+)\s*:\s*(\d+)\s*;?[ \t]*$",
+                          re.MULTILINE)
+SLOT_NAME = re.compile(r"(?:[Rr]ow|[Ss]lot|[Ff]irst)$")
+# Indexes and counters named like rows (a selection, the last one seen, a bare `row` of a delegate).
+SLOT_EXEMPT = re.compile(r"^(?:current|last)|^row$")
+CONTENT_ID = re.compile(r"([\"'`])[^\"'`\n]*?\bqtcraft:")
+SAVE_SETTINGS = re.compile(r"(?<![\w.])((?:\w+\??\.)*)saveSettings\s*\(")
 INPUT_CHECK = re.compile(r"\.trim\s*\(\s*\)|\bparseInt\s*\(|\bparseFloat\s*\(|\bMath\.random\s*\(")
 SCREEN_KEY_TEST = re.compile(r"(?<![!=])(?:===|==)\s*Qt\.Key_Escape\b|\bQt\.Key_Escape\s*(?:===|==)|\bkeys\.matches\s*\(")
 INTERACTIVE = re.compile(r"(?:Button|Field|Switch|Slider|Dropdown|Choice|Check|CheckBox|ComboBox|Segments|NavList"
@@ -487,10 +521,98 @@ def screen_keys(qml):
         line_end = len(qml.masked) if line_end < 0 else line_end
         brace = qml.masked.find("{", match.end(), line_end)
         end = matching(qml.masked, brace) if brace >= 0 else line_end
-        for test in SCREEN_KEY_TEST.finditer(qml.masked, match.end(), end):
-            found.append((line_of(qml.masked, test.start()), "screen-key",
-                          "a screen's key rule in QML; ask KeyControls.screenKey (Esc, own key, handbook key)"))
+        found += screen_key_tests(qml, match.end(), end)
+        for start, close in handed_on(qml, match.end(), end):
+            found += screen_key_tests(qml, start, close)
+    found += [(line_of(qml.masked, match.start()), "screen-key",
+               "Esc handled with Keys.onEscapePressed; ask KeyControls.screenKey in Keys.onPressed")
+              for match in KEYS_ESCAPE.finditer(qml.masked)]
     return found
+
+
+def screen_key_tests(qml, start, end):
+    """(line, rule, message) of each Esc test or key table question in the masked text from start to end."""
+    return [(line_of(qml.masked, test.start()), "screen-key",
+             "a screen's key rule in QML; ask KeyControls.screenKey (Esc, own key, handbook key)")
+            for test in SCREEN_KEY_TEST.finditer(qml.masked, start, end)]
+
+
+def handed_on(qml, start, end):
+    """The functions of the file that the text from start to end calls with the event, as (open, close)."""
+    called = {match.group(1) for match in EVENT_CALL.finditer(qml.masked, start, end)}
+    bodies = []
+    for match in FUNCTION.finditer(qml.masked):
+        if match.group(1) in called:
+            brace = match.end() - 1
+            bodies.append((brace, matching(qml.masked, brace)))
+    return bodies
+
+
+def reported_spans(qml):
+    """(start, end) of the matches mode-string and pad-command-string report: a string-compare finding
+    inside one of them is theirs."""
+    spans = [match.span() for match in MODE_STRING.finditer(qml.masked)]
+    bodies = [(match.end() - 1) for match in MODE_SWITCH.finditer(qml.masked)]
+    bodies += [(match.end() - 1) for match in PAD_FUNCTION.finditer(qml.masked)]
+    for brace in bodies:
+        spans += [test.span() for test in STRING_TEST.finditer(qml.masked, brace, matching(qml.masked, brace))]
+    return spans
+
+
+def string_compares(qml):
+    found = []
+    spans = reported_spans(qml)
+    for match in STRING_COMPARE.finditer(qml.masked):
+        if any(start < match.end() and match.start() < end for start, end in spans):
+            continue
+        line_start = qml.masked.rfind("\n", 0, match.start()) + 1
+        line_end = qml.masked.find("\n", match.end())
+        before = qml.masked[line_start:match.start()]
+        after = qml.masked[match.end():len(qml.masked) if line_end < 0 else line_end]
+        if STRING_EXEMPT_BEFORE.search(before.rstrip()) or STRING_EXEMPT_AFTER.match(after):
+            continue
+        found.append((line_of(qml.masked, match.start()), "string-compare",
+                      "compared with a string literal; a fixed set of values is an enum or a flag from C++ (E-688)"))
+    return found
+
+
+def long_bindings(qml, limit):
+    found = []
+    for match in BINDING_BLOCK.finditer(qml.masked):
+        name = match.group(1)
+        if ON_NAME.match(name.split(".")[-1]) or not qml.in_object(match.start()):
+            continue
+        brace = match.end() - 1
+        body = qml.masked[brace + 1:matching(qml.masked, brace)]
+        lines = sum(1 for line in body.split("\n") if line.strip())
+        if lines > limit:
+            found.append((line_of(qml.masked, match.start()), "long-binding",
+                          f"binding {name} is a block of {lines} code lines (limit {limit}); move the logic to C++"))
+    return found
+
+
+def slot_literals(qml):
+    found = []
+    for match in SLOT_LITERAL.finditer(qml.masked):
+        name = match.group(1)
+        last = name.split(".")[-1]
+        if name.startswith("Layout.") or not SLOT_NAME.search(last) or SLOT_EXEMPT.search(last):
+            continue
+        found.append((line_of(qml.masked, match.start()), "slot-literal",
+                      f"{name}: {match.group(2)} names a model row as a number; use InventoryModel.Row"))
+    return found
+
+
+def content_ids(qml):
+    return [(line_of(qml.masked, match.start()), "content-id",
+             "a content id written in QML; let C++ name it (a property of the controller)")
+            for match in CONTENT_ID.finditer(qml.text) if qml.masked[match.start()] == match.group(1)]
+
+
+def settings_saves(qml):
+    return [(line_of(qml.masked, match.start()), "save-settings",
+             "saveSettings() called from QML; the settings controller saves after each change")
+            for match in SAVE_SETTINGS.finditer(qml.masked) if "admin" not in match.group(1).lower()]
 
 
 def input_checks(qml):
@@ -572,7 +694,10 @@ def check_file(path, text, corpus, limit=FUNCTION_LINES):
     findings = (long_functions(qml, limit) + connections_writes(qml) + enum_lists(qml) + shadowing_ids(qml)
                 + unread_object_names(qml, corpus) + raw_sizes(qml) + handler_properties(qml)
                 + unchecked_loader_items(qml) + anchors_with_layout(qml) + images_without_source_size(qml)
-                + pad_command_strings(qml) + mode_strings(qml) + screen_keys(qml) + input_checks(qml))
+                + pad_command_strings(qml) + mode_strings(qml) + screen_keys(qml) + input_checks(qml)
+                + long_bindings(qml, limit) + slot_literals(qml) + content_ids(qml) + settings_saves(qml))
+    # A comparison that mode-string or pad-command-string reports is no string-compare finding as well.
+    findings += string_compares(qml)
     marks = markers(text)
     reasoned = {key for key, reason in marks.items() if reason}
     kept = [(path, line, rule, message) for line, rule, message in sorted(set(findings))
@@ -851,8 +976,9 @@ Item {
 }
 """
     got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Pad.qml", pad, Corpus({}), 30)]
+    # The parameter of another name is string-compare's (line 16).
     expected = [(3, "pad-command-string"), (4, "pad-command-string"), (7, "pad-command-string"),
-                (10, "pad-command-string")]
+                (10, "pad-command-string"), (16, "string-compare")]
     if got != expected:
         failures.append(f"pad-command-string: expected {expected}, got {got}")
     modes = """\
@@ -872,7 +998,9 @@ Item {
 }
 """
     got = [(line, rule) for _, line, rule, _ in check_file("src/app/qml/Modes.qml", modes, Corpus({}), 30)]
-    expected = [(2, "mode-string"), (3, "mode-string"), (5, "mode-string"), (9, "mode-string")]
+    # Another string field is string-compare's (line 6), never both rules on one line.
+    expected = [(2, "mode-string"), (3, "mode-string"), (5, "mode-string"), (6, "string-compare"),
+                (9, "mode-string")]
     if got != expected:
         failures.append(f"mode-string: expected {expected}, got {got}")
     keys = """import QtQuick
@@ -910,10 +1038,94 @@ Item {
     expected = [(2, "input-check"), (3, "input-check"), (5, "input-check")]
     if got != expected:
         failures.append(f"input-check: expected {expected}, got {got}")
+    failures += self_test_more_keys() + self_test_rules_79_65()
     for failure in failures:
         print(f"FAIL: {failure}")
     print("check-qml self-test: " + ("failed" if failures else "all samples judged correctly"))
     return 1 if failures else 0
+
+
+def judged(path, text, limit=30):
+    """(line, rule) of the findings of a sample."""
+    return [(line, rule) for _, line, rule, _ in check_file(path, text, Corpus({}), limit)]
+
+
+def self_test_more_keys():
+    """screen-key sees Keys.onReleased, Keys.onEscapePressed and handlers that hand the event on."""
+    keys = """import QtQuick
+Item {
+    Keys.onReleased: event => {
+        if (event.key === Qt.Key_Escape)
+            close();
+    }
+    Keys.onPressed: event => screen.handle(event)
+    TextField {
+        Keys.onEscapePressed: editor.done()
+    }
+    function handle(event: KeyEvent) {
+        if (event.key === Qt.Key_Escape)
+            close();
+    }
+    function untouched(key: int): bool {
+        return key === Qt.Key_Escape;
+    }
+    Keys.onPressed: event => {
+        if (keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close)
+            close();
+    }
+}
+"""
+    got = judged("src/app/qml/MoreKeys.qml", keys)
+    expected = [(4, "screen-key"), (9, "screen-key"), (12, "screen-key")]
+    return [] if got == expected else [f"screen-key (released, Esc handler, handed on): expected {expected}, got {got}"]
+
+
+def self_test_rules_79_65():
+    """string-compare, long-binding, slot-literal, content-id and save-settings (row 79.65, E-966)."""
+    sample = """import QtQuick
+Item {
+    readonly property bool none: text === "–"
+    readonly property bool empty: text === "" || typeof value === "string"
+    readonly property bool named: item.objectName === "menuEntry" + entry
+    function layout(language: string): int {
+        switch (language) {
+        case "de":
+            return 1;
+        }
+        return "en" !== language ? 2 : 0;
+    }
+    readonly property var list: {
+        let a = 1;
+        a += 1;
+        a += 2;
+        return a;
+    }
+    readonly property var short: { return 1; }
+    readonly property int fuelRow: 47
+    first: 45
+    Layout.row: 4
+    readonly property int outputRow: InventoryModel.MachineOutput
+    readonly property int pickedSlot: -1
+    handbookTarget: "qtcraft:anvil"
+    // "qtcraft:in_a_comment"
+    function save() {
+        game.settings.saveSettings();
+        screen.admin.saveSettings();
+    }
+    readonly property bool quoted: text === `ab` || tags.includes("x") || name.indexOf('y') >= 0
+    readonly property string chapter: "chapter:qtcraft:basics"
+    property int currentRow: 0
+    property int lastSlot: 3
+    row: 2
+    readonly property bool both: world.gameMode === "creative" && other === "x"
+}
+"""
+    got = judged("src/app/qml/Rules.qml", sample, 3)
+    expected = [(3, "string-compare"), (6, "long-function"), (8, "string-compare"), (11, "string-compare"),
+                (13, "long-binding"),
+                (20, "slot-literal"), (21, "slot-literal"), (25, "content-id"), (28, "save-settings"),
+                (31, "string-compare"), (32, "content-id"), (36, "mode-string"), (36, "string-compare")]
+    return [] if got == expected else [f"rules of 79.65: expected {expected}, got {got}"]
 
 
 if __name__ == "__main__":

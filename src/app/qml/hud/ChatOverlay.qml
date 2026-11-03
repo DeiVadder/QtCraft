@@ -36,11 +36,11 @@ Item {
         readonly property real roomLeft: overlay.statusArea.x - input.x - Ui.hudPx(8)
         readonly property bool besideHotbar: roomLeft >= Ui.hudPx(160)
 
-        objectName: "chatHelpHint"
         x: input.x
         y: (besideHotbar ? input.y : Math.min(input.y, overlay.statusArea.y)) - height - Ui.hudPx(4)
         width: Math.min(implicitWidth, besideHotbar ? roomLeft : input.width)
         wrapMode: Text.Wrap
+        // NOLINT(qc-qml-string-compare): the command syntax of the typed line; audit C-4 moves it to C++
         visible: (input.text.length === 0 && !overlay.commandSent) || (input.text.startsWith("/") && input.text.indexOf(" ") < 0)
         text: qsTr("/help lists the commands by group, /help <command> explains one")
     }
@@ -55,7 +55,11 @@ Item {
         anchors.margins: Ui.hudPx(12)
         placeholderText: overlay.game.gamepad.active ? qsTr("Chat or /command (e.g. /help), %1 on the keyboard sends, %2 cancels").arg(overlay.game.gamepad.pads.texts.start).arg(overlay.game.gamepad.pads.texts.east)
                                                    : qsTr("Chat or /command (e.g. /help), Enter to send, Esc to cancel")
-        Keys.onEscapePressed: overlay.game.overlay = GameController.Overlay.None
+        Keys.onPressed: event => {
+            event.accepted = overlay.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close;
+            if (event.accepted)
+                overlay.game.overlay = GameController.Overlay.None;
+        }
         onAccepted: {
             overlay.commandSent = text.startsWith("/");
             overlay.game.sendChat(text);

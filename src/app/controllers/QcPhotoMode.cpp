@@ -3,8 +3,8 @@
 
 #include "app/controllers/QcPhotoMode.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
+#include "app/settings/QcSettingsController.h"
 #include "common/core/QcDataRoot.h"
 
 #include <QDir>

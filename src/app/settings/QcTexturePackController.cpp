@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcTexturePackController.h"
+#include "app/settings/QcTexturePackController.h"
 
 #include "app/debug/QcAppLogging.h"
 #include "app/models/QcTexturePackPreviewProvider.h"
@@ -371,6 +371,13 @@ QVariantList QcTexturePackController::packs() const
             {u"preview"_s, manifest.preview.isEmpty() ? QString() : u"image://texturepacks/%1?%2"_s.arg(QString::fromLatin1(QUrl::toPercentEncoding(entry->id))).arg(m_previewGeneration)},
         });
     }
+    return list;
+}
+
+QVariantList QcTexturePackController::packsWhere(bool active) const
+{
+    QVariantList list = packs();
+    list.removeIf([active](const QVariant &pack) { return pack.toMap().value(u"active"_s).toBool() != active; });
     return list;
 }
 

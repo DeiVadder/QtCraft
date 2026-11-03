@@ -200,13 +200,6 @@ std::optional<QcGamepadFamily> familyFromName(const QString &name)
     return std::nullopt;
 }
 
-QString shapeName(Shape shape)
-{
-    static const std::array<QStringView, 10> names{u"label", u"cross",    u"circle", u"square", u"triangle",
-                                                   u"position", u"shoulder", u"trigger", u"stick", u"dpad"};
-    return names[static_cast<std::size_t>(shape)].toString();
-}
-
 std::optional<Glyph> glyph(QcGamepadFamily family, const QString &input)
 {
     const std::optional<Input> parsed = inputFromName(input);

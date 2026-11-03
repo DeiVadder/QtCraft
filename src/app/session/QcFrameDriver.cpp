@@ -4,7 +4,6 @@
 #include "app/session/QcFrameDriver.h"
 
 #include "app/controllers/QcHudState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/display/QcFrameLimiter.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/hooks/QcStartupHooks.h"
@@ -12,6 +11,7 @@
 #include "app/preview/QcPreviewSource.h"
 #include "app/rendering/QcRenderBridge.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/debug/QcClientHealth.h"
 #include "clientcore/debug/QcDebugJson.h"
 #include "clientcore/debug/QcStatsLog.h"

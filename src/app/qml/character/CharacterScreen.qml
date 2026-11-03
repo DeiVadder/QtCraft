@@ -33,6 +33,11 @@ Popup {
         game: screen.game
         showClose: true
         onCloseRequested: screen.close()
-        Keys.onEscapePressed: editor.leave(() => screen.close())
+        // Esc asks first when the look has changes (CharacterEditor.leave).
+        Keys.onPressed: event => {
+            event.accepted = screen.game.settings.keys.screenKey(event.key, event.isAutoRepeat, KeyControls.ClosingKey.EscOnly) === KeyControls.ScreenKey.Close;
+            if (event.accepted)
+                editor.leave(() => screen.close());
+        }
     }
 }

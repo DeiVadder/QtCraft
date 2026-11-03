@@ -21,7 +21,7 @@ SlotScreen {
     readonly property bool narrow: width < Ui.screen.narrowWindow
 
     title: screen.game.player.craftingSize === 3 ? qsTr("Crafting table") : qsTr("Crafting")
-    handbookTarget: screen.game.player.craftingSize === 3 ? "qtcraft:crafting_table" : ""
+    handbookTarget: screen.game.player.craftingHandbookTarget
     creativeSwitch: true
     keyHints: [
         { keys: [qsTr("Click")], text: qsTr("take, put down") },

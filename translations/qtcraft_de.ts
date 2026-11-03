@@ -5417,12 +5417,12 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcCharacterSettings</name>
     <message>
-        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="219"/>
+        <location filename="../src/app/settings/QcCharacterSettings.cpp" line="219"/>
         <source>No hair</source>
         <translation>Keine Haare</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcCharacterSettings.cpp" line="226"/>
+        <location filename="../src/app/settings/QcCharacterSettings.cpp" line="226"/>
         <source>No cape</source>
         <translation>Kein Umhang</translation>
     </message>
@@ -6021,107 +6021,107 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGamepadOptions</name>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="85"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="85"/>
         <source>All controllers</source>
         <translation>Alle Controller</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="97"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="97"/>
         <source>%1 (not connected)</source>
         <translation>%1 (nicht angeschlossen)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="204"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="204"/>
         <source>Jump (twice: fly)</source>
         <translation>Springen (zweimal: fliegen)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="205"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="205"/>
         <source>Sprint</source>
         <translation>Rennen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="206"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="206"/>
         <source>Sneak</source>
         <translation>Schleichen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="207"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="207"/>
         <source>Previous hotbar slot</source>
         <translation>Voriges Feld der Schnellleiste</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="208"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="208"/>
         <source>Next hotbar slot</source>
         <translation>Nächstes Feld der Schnellleiste</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="209"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="209"/>
         <source>Pause menu</source>
         <translation>Pausenmenü</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="210"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="210"/>
         <source>Inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="211"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="211"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="212"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="212"/>
         <source>Handbook</source>
         <translation>Handbuch</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="213"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="213"/>
         <source>Camera view</source>
         <translation>Kameraansicht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="214"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="214"/>
         <source>Player list (hold)</source>
         <translation>Spielerliste (halten)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="215"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="215"/>
         <source>Drop (hold: stack)</source>
         <translation>Fallen lassen (halten: Stapel)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="216"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="216"/>
         <source>Pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="217"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="217"/>
         <source>Radial menu (hold)</source>
         <translation>Radialmenü (halten)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="218"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="218"/>
         <source>Hide HUD (photo mode)</source>
         <translation>Anzeige ausblenden (Fotomodus)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="219"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="219"/>
         <source>Screenshot</source>
         <translation>Bildschirmfoto</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="235"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="235"/>
         <source>Not bound: “%1” would be left without a button.</source>
         <translation>Nicht belegt: „%1“ hätte sonst keine Taste mehr.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="246"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="246"/>
         <source>“%1” has no button now.</source>
         <translation>„%1“ hat jetzt keine Taste.</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGamepadOptions.cpp" line="248"/>
+        <location filename="../src/app/settings/QcGamepadOptions.cpp" line="248"/>
         <source>“%1” now has the button of “%2”.</source>
         <translation>„%1“ hat jetzt die Taste von „%2“.</translation>
     </message>
@@ -9550,22 +9550,22 @@ Jetzt: %2</translation>
 <context>
     <name>QcTexturePackController</name>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="194"/>
+        <location filename="../src/app/settings/QcTexturePackController.cpp" line="194"/>
         <source>At most %1 texture packs can be active; %2 was switched off</source>
         <translation>Höchstens %1 Texturpakete können aktiv sein; %2 wurde ausgeschaltet</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="293"/>
+        <location filename="../src/app/settings/QcTexturePackController.cpp" line="293"/>
         <source>The texture pack %1 is not available or its manifest is invalid</source>
         <translation>Das Texturpaket %1 ist nicht vorhanden oder sein Manifest ist ungültig</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="296"/>
+        <location filename="../src/app/settings/QcTexturePackController.cpp" line="296"/>
         <source>The texture pack %1 was left out: the active packs together need more memory than allowed</source>
         <translation>Das Texturpaket %1 wurde weggelassen: Die aktiven Pakete brauchen zusammen mehr Speicher als erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTexturePackController.cpp" line="307"/>
+        <location filename="../src/app/settings/QcTexturePackController.cpp" line="307"/>
         <source>%1x textures: atlas %2 x %3 pixels with %4 mip levels, %5 MiB, ready in %6 ms</source>
         <translation>Texturen %1x: Atlas %2 × %3 Pixel mit %4 Mip-Stufen, %5 MiB, fertig in %6 ms</translation>
     </message>
@@ -9573,27 +9573,27 @@ Jetzt: %2</translation>
 <context>
     <name>QcTradeController</name>
     <message>
-        <location filename="../src/app/controllers/QcTradeController.cpp" line="56"/>
+        <location filename="../src/app/inventory/QcTradeController.cpp" line="56"/>
         <source>Novice</source>
         <translation>Neuling</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTradeController.cpp" line="58"/>
+        <location filename="../src/app/inventory/QcTradeController.cpp" line="58"/>
         <source>Apprentice</source>
         <translation>Lehrling</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTradeController.cpp" line="60"/>
+        <location filename="../src/app/inventory/QcTradeController.cpp" line="60"/>
         <source>Journeyman</source>
         <translation>Geselle</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTradeController.cpp" line="62"/>
+        <location filename="../src/app/inventory/QcTradeController.cpp" line="62"/>
         <source>Expert</source>
         <translation>Experte</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcTradeController.cpp" line="64"/>
+        <location filename="../src/app/inventory/QcTradeController.cpp" line="64"/>
         <source>Master</source>
         <translation>Meister</translation>
     </message>

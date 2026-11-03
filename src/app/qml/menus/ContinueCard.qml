@@ -39,7 +39,7 @@ Rectangle {
 
         WorldTile {
             visible: card.world !== null
-            name: card.world?.name ?? ""
+            initial: card.world?.initial ?? ""
             typeBlock: card.world?.typeBlock ?? ""
         }
 

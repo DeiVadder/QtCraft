@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "app/controllers/QcRenderSettings.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/controllers/QcWorldPause.h"
 #include "app/display/QcGraphicsGuard.h"
 #include "app/rendering/QcWorldView.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcRenderSettings.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/meshing/QcMeshScheduler.h"
 #include "clientcore/session/QcClientSession.h"

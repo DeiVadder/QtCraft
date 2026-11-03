@@ -87,8 +87,9 @@ ColumnLayout {
                     Accessible.name: qsTr("Command line")
                     onAccepted: page.run()
                     Keys.onTabPressed: event => {
-                        if (page.suggestions.length > 0 && page.suggestions[0].trim() !== text.trim())
-                            page.take(page.suggestions[0]);
+                        const completion = page.admin.tabCompletion(text);
+                        if (completion.length > 0)
+                            page.take(completion);
                         else
                             event.accepted = false;
                     }

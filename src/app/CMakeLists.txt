@@ -17,14 +17,8 @@ target_sources(qc_app_core PRIVATE
 )
 target_sources(qc_app_core PRIVATE
     controllers/QcAdvancementQueue.h controllers/QcAdvancementQueue.cpp
-    controllers/QcAnvilController.h controllers/QcAnvilController.cpp
-    controllers/QcAudioSettings.h controllers/QcAudioSettings.cpp
-    controllers/QcCharacterSettings.h controllers/QcCharacterSettings.cpp
     controllers/QcChatFeed.h controllers/QcChatFeed.cpp
-    controllers/QcDiagnosticsSettings.h controllers/QcDiagnosticsSettings.cpp
-    controllers/QcEnchantingController.h controllers/QcEnchantingController.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
-    controllers/QcGamepadOptions.h controllers/QcGamepadOptions.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp
     controllers/QcHeldMap.h controllers/QcHeldMap.cpp
@@ -33,14 +27,8 @@ target_sources(qc_app_core PRIVATE
     controllers/QcNewWorldDraft.h controllers/QcNewWorldDraft.cpp
     controllers/QcPhotoMode.h controllers/QcPhotoMode.cpp
     controllers/QcPlayerController.h controllers/QcPlayerController.cpp
-    controllers/QcRenderSettings.h controllers/QcRenderSettings.cpp
     controllers/QcScreenState.h controllers/QcScreenState.cpp
-    controllers/QcSettingsController.h controllers/QcSettingsController.cpp
     controllers/QcSignController.h controllers/QcSignController.cpp
-    controllers/QcSlotCursor.h controllers/QcSlotCursor.cpp
-    controllers/QcStonecutterController.h controllers/QcStonecutterController.cpp
-    controllers/QcTexturePackController.h controllers/QcTexturePackController.cpp
-    controllers/QcTradeController.h controllers/QcTradeController.cpp
     controllers/QcWorldLibraryController.h controllers/QcWorldLibraryController.cpp
     controllers/QcWorldOptionsController.h controllers/QcWorldOptionsController.cpp
     controllers/QcWorldPause.h controllers/QcWorldPause.cpp
@@ -82,7 +70,15 @@ target_sources(qc_app_core PRIVATE
     input/QcGamepadUi.h input/QcGamepadUi.cpp
     input/QcKeyControlsForeign.h
     input/QcMenuNavigator.h input/QcMenuNavigator.cpp
+    input/QcPadGlyphPainter.h input/QcPadGlyphPainter.cpp
     input/QcRelativeMouse.h
+)
+target_sources(qc_app_core PRIVATE
+    inventory/QcAnvilController.h inventory/QcAnvilController.cpp
+    inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
+    inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
+    inventory/QcStonecutterController.h inventory/QcStonecutterController.cpp
+    inventory/QcTradeController.h inventory/QcTradeController.cpp
 )
 target_sources(qc_app_core PRIVATE
     models/QcAdvancementTreeModel.h models/QcAdvancementTreeModel.cpp
@@ -166,6 +162,15 @@ target_sources(qc_app_core PRIVATE
     session/QcSessionWiring.h session/QcSessionWiring.cpp
     session/QcWorldAtlas.h session/QcWorldAtlas.cpp
     session/QcWorldStarter.h session/QcWorldStarter.cpp
+)
+target_sources(qc_app_core PRIVATE
+    settings/QcAudioSettings.h settings/QcAudioSettings.cpp
+    settings/QcCharacterSettings.h settings/QcCharacterSettings.cpp
+    settings/QcDiagnosticsSettings.h settings/QcDiagnosticsSettings.cpp
+    settings/QcGamepadOptions.h settings/QcGamepadOptions.cpp
+    settings/QcRenderSettings.h settings/QcRenderSettings.cpp
+    settings/QcSettingsController.h settings/QcSettingsController.cpp
+    settings/QcTexturePackController.h settings/QcTexturePackController.cpp
 )
 # The mouse capture talks to the platform (AppKit on macOS).
 if(APPLE)
@@ -254,6 +259,7 @@ qt_add_qml_module(qc_app_core
         qml/controls/ThemedToolTip.qml
         qml/controls/Ui.qml
         qml/controls/WindowFont.qml
+        qml/frames/KeepAlive.qml
         qml/frames/LazyScreen.qml
         qml/frames/ModalDialog.qml
         qml/frames/NavButton.qml

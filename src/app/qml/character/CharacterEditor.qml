@@ -298,7 +298,6 @@ RowLayout {
                 onClicked: screen.character.reset()
             }
             Label {
-                objectName: "unsavedNote"
                 Layout.fillWidth: true
                 horizontalAlignment: Text.AlignRight
                 text: screen.character.dirty ? qsTr("Unsaved changes") : ""
@@ -339,7 +338,6 @@ RowLayout {
     UnsavedChangesDialog {
         id: leaveDialog
 
-        objectName: "characterLeaveDialog"
         onSaveChosen: screen.save()
         onDiscardChosen: screen.character.discardDraft()
     }

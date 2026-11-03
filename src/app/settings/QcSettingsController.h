@@ -3,16 +3,16 @@
 
 #pragma once
 
-#include "app/controllers/QcAudioSettings.h"
-#include "app/controllers/QcCharacterSettings.h"
-#include "app/controllers/QcDiagnosticsSettings.h"
-#include "app/controllers/QcGamepadOptions.h"
-#include "app/controllers/QcRenderSettings.h"
-#include "app/controllers/QcTexturePackController.h"
 #include "app/debug/QcDebugSettings.h"
 #include "app/display/QcDisplaySettings.h"
 #include "app/input/QcKeyControlsForeign.h"
 #include "app/models/QcUiScaling.h"
+#include "app/settings/QcAudioSettings.h"
+#include "app/settings/QcCharacterSettings.h"
+#include "app/settings/QcDiagnosticsSettings.h"
+#include "app/settings/QcGamepadOptions.h"
+#include "app/settings/QcRenderSettings.h"
+#include "app/settings/QcTexturePackController.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/settings/QcGameSettings.h"
 

@@ -36,6 +36,9 @@ class QcTexturePackController : public QObject
     // Every pack found, the active ones first in priority order: maps with id, name, description,
     // resolution, license, credits, origin (TexturePack.Origin), active, error, problems and preview (an image URL or "").
     Q_PROPERTY(QVariantList packs READ packs NOTIFY packsChanged FINAL)
+    // The active packs of `packs` in priority order, and the others.
+    Q_PROPERTY(QVariantList activePacks READ activePacks NOTIFY packsChanged FINAL)
+    Q_PROPERTY(QVariantList inactivePacks READ inactivePacks NOTIFY packsChanged FINAL)
     // What the current atlas uses (resolution, size, memory, build time), "" before the first one.
     Q_PROPERTY(QString status READ status NOTIFY statusChanged FINAL)
     // Messages about the whole selection: packs that are gone, a lowered resolution.
@@ -85,6 +88,8 @@ public:
     void rebuildMaterials();
 
     QVariantList packs() const;
+    QVariantList activePacks() const { return packsWhere(true); }
+    QVariantList inactivePacks() const { return packsWhere(false); }
     QString status() const { return m_status; }
     QStringList notices() const { return m_notices; }
     // A build runs or its result has not been handled yet (the watcher reports it through the event loop).
@@ -110,6 +115,8 @@ signals:
     void atlasBuilt(std::shared_ptr<const QcTextureAtlas> atlas, std::shared_ptr<const QcMaterialAtlas> materials);
 
 private:
+    // The maps of `packs` whose "active" is `active`, in their order.
+    QVariantList packsWhere(bool active) const;
     void select(const QStringList &ids);
     // Makes `ids` (cleaned) the active packs and starts their build; false when nothing changed.
     bool activate(const QStringList &ids);

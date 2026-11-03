@@ -3,8 +3,8 @@
 
 #include "app/rendering/QcEntityFrameBuilder.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/entitymeshes/QcBoatModel.h"
 #include "clientcore/entitymeshes/QcEnchantingMesher.h"

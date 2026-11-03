@@ -5,9 +5,9 @@
 
 #include "app/controllers/QcHandbookController.h"
 #include "app/controllers/QcScreenState.h"
-#include "app/controllers/QcSettingsController.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "audio/QcAudioEngine.h"
 #include "clientcore/camera/QcMouseLook.h"
 #include "clientcore/session/QcClientSession.h"

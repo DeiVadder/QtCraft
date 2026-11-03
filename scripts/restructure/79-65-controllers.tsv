@@ -1,0 +1,27 @@
+# Move list of package 79.65 (E-938, E-966): src/app/controllers had 29 classes; the settings and the
+# block and trader screens get their own folders.
+# Run: scripts/move-classes.py [--dry-run] scripts/restructure/79-65-controllers.tsv
+src/app/controllers/QcAudioSettings.h	src/app/settings/QcAudioSettings.h
+src/app/controllers/QcCharacterSettings.h	src/app/settings/QcCharacterSettings.h
+src/app/controllers/QcDiagnosticsSettings.h	src/app/settings/QcDiagnosticsSettings.h
+src/app/controllers/QcGamepadOptions.h	src/app/settings/QcGamepadOptions.h
+src/app/controllers/QcRenderSettings.h	src/app/settings/QcRenderSettings.h
+src/app/controllers/QcSettingsController.h	src/app/settings/QcSettingsController.h
+src/app/controllers/QcTexturePackController.h	src/app/settings/QcTexturePackController.h
+src/app/controllers/QcAnvilController.h	src/app/inventory/QcAnvilController.h
+src/app/controllers/QcEnchantingController.h	src/app/inventory/QcEnchantingController.h
+src/app/controllers/QcStonecutterController.h	src/app/inventory/QcStonecutterController.h
+src/app/controllers/QcTradeController.h	src/app/inventory/QcTradeController.h
+src/app/controllers/QcSlotCursor.h	src/app/inventory/QcSlotCursor.h
+src/app/controllers/QcAudioSettings.cpp	src/app/settings/QcAudioSettings.cpp
+src/app/controllers/QcCharacterSettings.cpp	src/app/settings/QcCharacterSettings.cpp
+src/app/controllers/QcDiagnosticsSettings.cpp	src/app/settings/QcDiagnosticsSettings.cpp
+src/app/controllers/QcGamepadOptions.cpp	src/app/settings/QcGamepadOptions.cpp
+src/app/controllers/QcRenderSettings.cpp	src/app/settings/QcRenderSettings.cpp
+src/app/controllers/QcSettingsController.cpp	src/app/settings/QcSettingsController.cpp
+src/app/controllers/QcTexturePackController.cpp	src/app/settings/QcTexturePackController.cpp
+src/app/controllers/QcAnvilController.cpp	src/app/inventory/QcAnvilController.cpp
+src/app/controllers/QcEnchantingController.cpp	src/app/inventory/QcEnchantingController.cpp
+src/app/controllers/QcStonecutterController.cpp	src/app/inventory/QcStonecutterController.cpp
+src/app/controllers/QcTradeController.cpp	src/app/inventory/QcTradeController.cpp
+src/app/controllers/QcSlotCursor.cpp	src/app/inventory/QcSlotCursor.cpp

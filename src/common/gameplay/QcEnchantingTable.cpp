@@ -100,7 +100,7 @@ bool letsShelfThrough(const QcContentRegistry &content, std::optional<QcBlockId>
 
 QList<QcBlockPos> shelvesIn(const QcContentRegistry &content, QcBlockPos table, const BlockAt &blockAt)
 {
-    const std::optional<QcBlockId> shelf = content.blockId(QStringLiteral("qtcraft:bookshelf"));
+    const std::optional<QcBlockId> shelf = content.blockId(QString(shelfBlock));
     if (!shelf) {
         return {};
     }

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/gameplay/QcEnchantingTable.h"
+
 #include <QObject>
 #include <QVariantList>
 #include <QtQmlIntegration/qqmlintegration.h>
@@ -28,6 +30,11 @@ class QcEnchantingController : public QObject
     // letters are readable, else empty), levelsLacking and lapisLacking (why it cannot be taken),
     // affordable (the player can take it now).
     Q_PROPERTY(QVariantList offers READ offers NOTIFY changed FINAL)
+    // The handbook page of the table, the item an offer costs besides levels (the lapis slot's pale
+    // icon and the price) and the block that counts around the table (QcEnchantingTable).
+    Q_PROPERTY(QString handbookTarget READ handbookTarget CONSTANT FINAL)
+    Q_PROPERTY(QString lapisItem READ lapisItem CONSTANT FINAL)
+    Q_PROPERTY(QString shelfBlock READ shelfBlock CONSTANT FINAL)
 
 public:
     QcEnchantingController(const QcSessionParts &parts, const QcSettingsController &settings, QObject *parent = nullptr);
@@ -35,6 +42,9 @@ public:
     bool isOpen() const;
     int shelves() const { return m_shelves; }
     QVariantList offers() const { return m_offers; }
+    static QString handbookTarget() { return QcEnchantingTable::tableBlock.toString(); }
+    static QString lapisItem() { return QcEnchantingTable::lapisItem.toString(); }
+    static QString shelfBlock() { return QcEnchantingTable::shelfBlock.toString(); }
 
     // Takes the offer at `index` (the slots change once the server agrees).
     Q_INVOKABLE void choose(int index) const;

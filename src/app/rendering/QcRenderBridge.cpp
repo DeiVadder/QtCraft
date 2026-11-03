@@ -3,8 +3,8 @@
 
 #include "app/rendering/QcRenderBridge.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcRenderOrigin.h"
 #include "clientcore/light/QcMovingLights.h"
 #include "clientcore/light/QcSky.h"

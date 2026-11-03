@@ -85,7 +85,6 @@ Popup {
             field.accepted();
     }
 
-    objectName: "onScreenKeyboard"
     x: Math.round((areaWidth - width) / 2)
     y: areaHeight - height - Ui.px(24)
     modal: true

@@ -3,8 +3,8 @@
 
 #include "app/debug/QcDebugHud.h"
 
-#include "app/controllers/QcSettingsController.h"
 #include "app/session/QcSessionParts.h"
+#include "app/settings/QcSettingsController.h"
 #include "clientcore/camera/QcLabelProjector.h"
 #include "clientcore/debug/QcDebugText.h"
 #include "clientcore/light/QcLightProbe.h"

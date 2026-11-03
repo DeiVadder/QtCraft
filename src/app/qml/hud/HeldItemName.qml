@@ -17,7 +17,6 @@ HudLabel {
     readonly property int showMs: 2000
     readonly property int fadeMs: 500
 
-    objectName: "heldItemName"
     text: name.inventory.selectedLabel
     opacity: 0
     visible: opacity > 0

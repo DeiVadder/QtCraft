@@ -16,7 +16,6 @@ Item {
     required property WorldMapPreview preview
     readonly property bool waiting: preview.busy && preview.progress <= 0
 
-    objectName: "worldMapProgress"
     implicitHeight: Ui.size.track
     Accessible.role: Accessible.ProgressBar
     Accessible.name: qsTr("Drawing the map")

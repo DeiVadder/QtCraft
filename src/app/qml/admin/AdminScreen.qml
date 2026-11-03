@@ -133,7 +133,6 @@ SidebarScreen {
             spacing: Ui.space.s
 
             Hint {
-                objectName: "adminNotice"
                 Layout.fillWidth: true
                 kind: screen.admin.noticeKind === AdminController.Notice.Refused ? Hint.Error : Hint.Info
                 text: screen.admin.notice

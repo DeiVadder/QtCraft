@@ -31,7 +31,6 @@ SettingsPage {
         }
 
         Hint {
-            objectName: "texturePackStatus"
             Layout.fillWidth: true
             visible: text.length > 0
             text: page.packs.busy ? qsTr("Building the textures …") : page.packs.status
@@ -61,7 +60,7 @@ SettingsPage {
             id: group
 
             required property var modelData
-            readonly property var listed: page.packs.packs.filter(pack => pack.active === modelData.active)
+            readonly property var listed: modelData.active ? page.packs.activePacks : page.packs.inactivePacks
 
             objectName: modelData.name
             Layout.fillWidth: true

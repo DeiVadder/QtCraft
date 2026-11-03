@@ -138,7 +138,6 @@ SlotScreen {
             }
 
             Label {
-                objectName: "creativeCount"
                 text: qsTr("Items shown: %1").arg(screen.catalogue.count)
                 color: Theme.textSecondary
                 font.pixelSize: Ui.type.help

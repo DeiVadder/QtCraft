@@ -255,6 +255,12 @@ private slots:
         QCOMPARE(help.value(u"next"_s).toString(), u"<player>"_s);
         QVERIFY(m_controller->help(u"/nonsense"_s).isEmpty());
         QCOMPARE(m_controller->help(u"/time set "_s).value(u"next"_s).toString(), u"day|night"_s);
+
+        // Tab takes the first completion only when it says more than the line.
+        QCOMPARE(m_controller->tabCompletion(u"/time set n"_s), u"/time set night"_s);
+        QCOMPARE(m_controller->tabCompletion(u" /time set night "_s), QString());
+        QCOMPARE(m_controller->tabCompletion(u"/nonsense"_s), QString());
+        QCOMPARE(m_controller->tabCompletion(QString()), QString());
     }
 
     // The words of a structure come from the command's names (decision E-911).
