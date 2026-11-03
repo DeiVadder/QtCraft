@@ -148,6 +148,7 @@ void QcTerrainGenerator::setVersion(int version)
 {
     QcWorldGenerator::setVersion(version);
     m_rivers.setSmoothRings(version >= 2);
+    m_riverPieces.setVersion(version);
 }
 
 std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::villageFor(QcChunkPos pos) const

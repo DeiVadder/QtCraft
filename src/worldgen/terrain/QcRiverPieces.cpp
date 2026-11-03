@@ -85,6 +85,13 @@ QcRiverPieces::QcRiverPieces(const QcRiverField &rivers)
 {
 }
 
+void QcRiverPieces::setVersion(int version)
+{
+    m_longest = version >= 2 ? longestVersion2 : longestVersion1;
+    // The answers remembered per thread belong to the instance: a new one leaves them unread.
+    m_instance = nextInstance();
+}
+
 bool QcRiverPieces::leadsOn(const QcRiverField::Sample &sample, const QcRiverField::Land &land) const
 {
     return cellLeadsOn(static_cast<qint32>(std::floor(sample.lineX / cellSize)), static_cast<qint32>(std::floor(sample.lineZ / cellSize)), land);
@@ -109,29 +116,29 @@ bool QcRiverPieces::cellLeadsOn(qint32 cellX, qint32 cellZ, const QcRiverField::
 
 bool QcRiverPieces::follow(QcRiverField::Point from, const QcRiverField::Land &land) const
 {
-    // One way first, then the other way for what is left of `longest`: a closed piece of up to
-    // `longest` blocks ends on land both ways from each of its points, and a longer one runs out
+    // One way first, then the other way for what is left of longest(): a closed piece of up to
+    // longest() blocks ends on land both ways from each of its points, and a longer one runs out
     // of the length from each, so all its points agree. Where the steps lose the line the river
     // stays.
     const std::optional<Start> start = startNear(from, land);
     if (!start) {
         return true;
     }
-    const Walk ahead = walkFrom(*start, 1.0, longest, land);
+    const Walk ahead = walkFrom(*start, 1.0, longest(), land);
     if (ahead.end == End::Round) {
         return false;
     }
     if (ahead.end != End::Dry) {
         return true;
     }
-    const Walk behind = walkFrom(*start, -1.0, longest - ahead.length, land);
+    const Walk behind = walkFrom(*start, -1.0, longest() - ahead.length, land);
     return behind.end != End::Dry && behind.end != End::Round;
 }
 
 std::optional<QcRiverPieces::Walk> QcRiverPieces::walkFrom(QcRiverField::Point near, double side, const QcRiverField::Land &land) const
 {
     const std::optional<Start> start = startNear(near, land);
-    return start ? std::optional(walkFrom(*start, side, longest, land)) : std::nullopt;
+    return start ? std::optional(walkFrom(*start, side, longest(), land)) : std::nullopt;
 }
 
 std::optional<QcRiverPieces::Start> QcRiverPieces::startNear(QcRiverField::Point near, const QcRiverField::Land &land) const

@@ -14,7 +14,7 @@
     both ways from a point on it until it reaches the sea, runs dry (a desert, the fading ring of a
     small hill of the noise) or comes back round to the point.
 
-    A piece that ends on land at both ends or runs round in a loop, all of it within \c {longest}
+    A piece that ends on land at both ends or runs round in a loop, all of it within longest()
     blocks, is closed: the terrain does not build it. Longer pieces count as open, whichever
     point they are followed from, so every column of a piece gets the same answer. Deterministic
     per seed and thread-safe; the answers are remembered per thread by cells of 32 blocks along
@@ -22,15 +22,26 @@
 class QcRiverPieces
 {
 public:
-    /*! A piece that ends on land at both ends within this many blocks along its middle line is
-        closed (the window of the river tests is 3072 blocks wide). */
-    static constexpr double longest = 2400.0;
+    /*! longest() of generator version 1: a piece that ends on land at both ends within this many
+        blocks along its middle line is closed. */
+    static constexpr double longestVersion1 = 2400.0;
+    /*! longest() from generator version 2 on (decision E-976). */
+    static constexpr double longestVersion2 = 4800.0;
 
-    /*! \a rivers must outlive the pieces (the terrain generator owns both). */
+    /*! \a rivers must outlive the pieces (the terrain generator owns both). The pieces start
+        with the length of the current generator version (longestVersion2). */
     explicit QcRiverPieces(const QcRiverField &rivers);
 
+    /*! Returns the length in blocks along the middle line up to which a piece ending on land at
+        both ends (or a loop) is closed. */
+    [[nodiscard]] double longest() const { return m_longest; }
+    /*! Sets longest() for generator version \a version (longestVersion1 for version 1,
+        longestVersion2 from version 2 on); set before the pieces are read, by the generator's
+        version. Answers found before are not used again. */
+    void setVersion(int version);
+
     /*! Returns whether the river of \a sample (a column within its reach, QcRiverField::at())
-        reaches the sea or runs on for more than \c {longest} blocks; \a land gives the terrain's
+        reaches the sea or runs on for more than longest() blocks; \a land gives the terrain's
         maps. */
     [[nodiscard]] bool leadsOn(const QcRiverField::Sample &sample, const QcRiverField::Land &land) const;
     /*! The answers are found from the middle of cells of this many blocks (bent coordinates; a
@@ -60,7 +71,7 @@ public:
     };
     /*! Returns the walk the answer of a point near a middle line (bent coordinates) reads way
         \a side (1 or -1 times the line's direction there), started as for a cell (at the first
-        crossing ahead) and given \c {longest} blocks; none where no walk starts (the river
+        crossing ahead) and given longest() blocks; none where no walk starts (the river
         stays). \a near is the point, \a land the terrain's maps. For tests (E-935). */
     [[nodiscard]] std::optional<Walk> walkFrom(QcRiverField::Point near, double side, const QcRiverField::Land &land) const;
 
@@ -142,5 +153,6 @@ private:
     [[nodiscard]] static quint64 nextInstance();
 
     quint64 m_instance = 0;
+    double m_longest = longestVersion2;
     const QcRiverField &m_rivers;
 };

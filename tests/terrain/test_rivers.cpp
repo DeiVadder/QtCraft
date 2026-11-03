@@ -648,10 +648,12 @@ private slots:
         // 1244505982 (random) had 9.7 %: near a corner of the lattice the walks took two crossings
         // in the wrong order, saw a loop and left a bend of a river into a lake unbuilt; 178613796
         // (random) had 8.3 %: a river dried out over 14 blocks at a tight bend between two
-        // crossings, the walks stepped over the gap to the sea (decision E-935).
+        // crossings, the walks stepped over the gap to the sea (decision E-935). 659430580 (random)
+        // had 22 %: an arc of some 3300 blocks running dry into cold land at both ends, open as
+        // longer than the 2400 blocks of version 1; version 2 closes pieces up to 4800 (E-976).
         for (const qint64 seed : {qint64{7}, qint64{42}, qint64{1234}, qint64{1034578912}, qint64{1448947576}, qint64{345777499},
                                   qint64{476165307}, qint64{807288324}, qint64{2025406668}, qint64{1360590162}, qint64{1299031228},
-                                  qint64{147349187}, qint64{1244505982}, qint64{178613796}, m_randomSeed}) {
+                                  qint64{147349187}, qint64{1244505982}, qint64{178613796}, qint64{659430580}, m_randomSeed}) {
             const auto release = releaseOneOff(seed);
             const QcTerrainGenerator &generator = generatorFor(seed);
             const Window window = survey(generator, 1536, 2);
@@ -670,8 +672,8 @@ private slots:
             QVERIFY2(share > 0.012 && share < 0.04, qPrintable(QString::number(share)));
             // Closed: river bodies that neither reach other water nor leave the window. Pieces that end
             // on land at both ends are not built (decision E-851): 0.0–0.5 % on the fixed seeds, at
-            // most 1.8 % on 150 random seeds (decision E-935). Before E-851: 0.3–14 %, rings and arcs
-            // ending on land.
+            // most 1.8 % on 150 random seeds (decision E-935), at most 4.2 % on 100 others (a gap on
+            // the survey grid, decision E-976). Before E-851: 0.3–14 %, rings and arcs ending on land.
             QVERIFY2(closed < 0.08, qPrintable(QString::number(closed)));
             // Deserts have no rivers (decision E-840): under a humidity of 0.05 the river field has
             // no strength.
@@ -685,6 +687,30 @@ private slots:
         const double humid = static_cast<double>(climates.humidRiver) / static_cast<double>(std::max<qint64>(1, climates.humidLand));
         qInfo("all seeds: dry %.4f of %lld, humid %.4f of %lld", dry, climates.dryLand, humid, climates.humidLand);
         QVERIFY2(dry < 0.5 * humid, qPrintable(u"dry %1, humid %2"_s.arg(dry).arg(humid)));
+    }
+
+    // Generator version 1 builds pieces longer than 2400 blocks, version 2 closes those up to 4800
+    // (decision E-976): seed 659430580, an arc of some 3270 blocks that runs dry into cold land at
+    // both ends, read at a cell of its western stretch.
+    void onlyVersionTwoClosesTheLongArc()
+    {
+        constexpr qint64 seed = 659430580;
+        const auto release = releaseOneOff(seed);
+        Pieces pieces(generatorFor(seed), seed);
+        const QcRiverField::Sample sample = pieces.field.at(-720, 56, pieces.land.climateAt(-720, 56));
+        QVERIFY(sample.inChannel());
+        const QPoint cell(static_cast<int>(std::floor(sample.lineX / QcRiverPieces::cellSize)),
+                          static_cast<int>(std::floor(sample.lineZ / QcRiverPieces::cellSize)));
+        QCOMPARE(pieces.pieces.longest(), QcRiverPieces::longestVersion2);
+        QVERIFY(!pieces.leadsOn(cell));
+        pieces.field.setSmoothRings(false);
+        pieces.pieces.setVersion(1);
+        QCOMPARE(pieces.pieces.longest(), QcRiverPieces::longestVersion1);
+        QVERIFY(pieces.leadsOn(cell));
+        pieces.field.setSmoothRings(true);
+        pieces.pieces.setVersion(2);
+        QCOMPARE(pieces.pieces.longest(), QcRiverPieces::longestVersion2);
+        QVERIFY(!pieces.leadsOn(cell));
     }
 
     // Neighbouring cells along a river give the same answer (decisions E-851, E-926, E-935), except

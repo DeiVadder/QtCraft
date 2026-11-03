@@ -57,7 +57,8 @@ public:
     Q_DISABLE_COPY_MOVE(QcTerrainGenerator)
 
     /*! Sets the world generator version to \a version, also for the rivers (version 2 on fades
-        small rings smoothly, QcRiverField::smoothRings(), decision E-969). */
+        small rings smoothly, QcRiverField::smoothRings(), decision E-969, and closes pieces up
+        to QcRiverPieces::longestVersion2 blocks long, decision E-976). */
     void setVersion(int version) override;
 
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
