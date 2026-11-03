@@ -612,16 +612,16 @@ void QcTerrainGenerator::placeFeatureOnWater(QcChunk &chunk, const Column &colum
 }
 
 void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid &columns, const QList<bool> &carved,
-                                       const QcVillagePlan *village, const QList<QcSurfacePlanner::Rect> &structures) const
+                                       const QcVillagePlan *village, const QList<QcXzRect> &structures) const
 {
     const int baseX = chunk.pos().x * QcWorld::chunkSize;
     const int baseZ = chunk.pos().z * QcWorld::chunkSize;
     // Trees reach featureMargin blocks from their trunk: none grows into a village, nor into a
     // surface structure, where it would be cut or left floating.
     const auto allowed = [&](int x, int z) {
-        const QcSurfacePlanner::Rect trunk{x, z, x, z};
+        const QcXzRect trunk{x, z, x, z};
         return !(village && village->covers(x, z, featureMargin))
-               && std::ranges::none_of(structures, [&](QcSurfacePlanner::Rect footprint) { return footprint.intersects(trunk, featureMargin); });
+               && std::ranges::none_of(structures, [&](QcXzRect footprint) { return footprint.intersects(trunk, featureMargin); });
     };
     for (int z = baseZ - featureMargin; z < baseZ + QcWorld::chunkSize + featureMargin; ++z) {
         for (int x = baseX - featureMargin; x < baseX + QcWorld::chunkSize + featureMargin; ++x) {
@@ -634,16 +634,16 @@ void QcTerrainGenerator::placeFeatures(QcChunk &chunk, const QcTerrainColumnGrid
     m_vegetationPatches->place(chunk, columns, carved, allowed);
 }
 
-QList<QcSurfacePlanner::Rect> QcTerrainGenerator::structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const
+QList<QcXzRect> QcTerrainGenerator::structureFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const
 {
-    QList<QcSurfacePlanner::Rect> structures = plantsOnBlend ? m_surface->bareNear(pos, margin) : m_surface->footprintsNear(pos, margin);
-    const QList<QcCoastalTowerPlan::Footprint> towers = m_coastalTowers->footprintsNear(pos, margin);
-    for (const QcCoastalTowerPlan::Footprint &tower : towers) {
+    QList<QcXzRect> structures = plantsOnBlend ? m_surface->bareNear(pos, margin) : m_surface->footprintsNear(pos, margin);
+    const QList<QcXzRect> towers = m_coastalTowers->footprintsNear(pos, margin);
+    for (const QcXzRect &tower : towers) {
         structures.append({tower.minX, tower.minZ, tower.maxX, tower.maxZ});
     }
     // A lake lies inside its chunk: the chunks within the margin.
     const int reach = (margin + QcWorld::chunkSize - 1) / QcWorld::chunkSize;
-    const QcSurfacePlanner::Rect area{pos.x * QcWorld::chunkSize, pos.z * QcWorld::chunkSize, pos.x * QcWorld::chunkSize + QcWorld::chunkSize - 1,
+    const QcXzRect area{pos.x * QcWorld::chunkSize, pos.z * QcWorld::chunkSize, pos.x * QcWorld::chunkSize + QcWorld::chunkSize - 1,
                                       pos.z * QcWorld::chunkSize + QcWorld::chunkSize - 1};
     for (int dz = -reach; dz <= reach; ++dz) {
         for (int dx = -reach; dx <= reach; ++dx) {
@@ -663,8 +663,8 @@ std::optional<QcSurfaceLakes::Site> QcTerrainGenerator::lakeIn(QcChunkPos pos) c
     }
     // Like the trees: none in or near a village, a surface structure or a coastal tower.
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
-    const QList<QcSurfacePlanner::Rect> structures = m_surface->footprintsNear(pos, featureMargin);
-    const QList<QcCoastalTowerPlan::Footprint> towers = m_coastalTowers->footprintsNear(pos, featureMargin);
+    const QList<QcXzRect> structures = m_surface->footprintsNear(pos, featureMargin);
+    const QList<QcXzRect> towers = m_coastalTowers->footprintsNear(pos, featureMargin);
     if ((village && village->overlaps(pos, featureMargin)) || !structures.isEmpty() || !towers.isEmpty()
         || mineshaftEntranceNear(pos, site->footprint)) {
         return std::nullopt;
@@ -672,7 +672,7 @@ std::optional<QcSurfaceLakes::Site> QcTerrainGenerator::lakeIn(QcChunkPos pos) c
     return site;
 }
 
-bool QcTerrainGenerator::mineshaftEntranceNear(QcChunkPos pos, QcSurfacePlanner::Rect footprint) const
+bool QcTerrainGenerator::mineshaftEntranceNear(QcChunkPos pos, QcXzRect footprint) const
 {
     // A shaft's ladder runs from the ground's top down: through a lake it would let the liquid out.
     const QList<std::shared_ptr<const QcMineshaftPlan>> plans = m_mineshafts->plansTouching(pos);
@@ -710,7 +710,7 @@ std::shared_ptr<QcChunk> QcTerrainGenerator::generate(QcChunkPos pos) const
     const std::shared_ptr<const QcVillagePlan> village = m_villages->planFor(pos);
     // Trees of the margin columns stand up to featureMargin beyond the chunk and keep featureMargin
     // from a footprint: twice the margin, so each chunk a tree reaches decides it alike.
-    const QList<QcSurfacePlanner::Rect> structures = structureFootprintsNear(pos, 2 * featureMargin, true);
+    const QList<QcXzRect> structures = structureFootprintsNear(pos, 2 * featureMargin, true);
     placeFeatures(*chunk, columns, carved, village.get(), structures);
     // Giant trees after the small ones (decision E-822).
     m_giantTrees->build(*chunk, village.get());

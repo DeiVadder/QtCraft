@@ -31,7 +31,7 @@ std::pair<int, int> cellOf(const QcJettyPlanner::Request &request, int along, in
 }
 
 // The footprint of a walkway out to `end` blocks past the road end: the box round its corners.
-QcSurfacePlanner::Rect footprintOf(const QcJettyPlanner::Request &request, int end)
+QcXzRect footprintOf(const QcJettyPlanner::Request &request, int end)
 {
     const int half = request.width / 2;
     const auto [x0, z0] = cellOf(request, 1, -half);

@@ -682,10 +682,10 @@ private slots:
         const auto plains = std::ranges::find(content->worldgen().biomes(), u"qtcraft:plains"_s, &QcBiomeDefinition::name);
         QVERIFY(plains != content->worldgen().biomes().end());
         // Among the flowers of its vegetation (decision E-814), next to the base game's grass.
-        QVERIFY(std::ranges::any_of(plains->vegetation.flowers.plants, [](const QcVegetationPlant &plant) {
+        QVERIFY(std::ranges::any_of(plains->vegetation.flowers.plants, [](const QcWeightedBlockName &plant) {
             return plant.block == u"rubies:ruby_rose"_s;
         }));
-        QVERIFY(std::ranges::any_of(plains->vegetation.grass.plants, [](const QcVegetationPlant &plant) {
+        QVERIFY(std::ranges::any_of(plains->vegetation.grass.plants, [](const QcWeightedBlockName &plant) {
             return plant.block == u"qtcraft:tall_grass"_s;
         }));
 

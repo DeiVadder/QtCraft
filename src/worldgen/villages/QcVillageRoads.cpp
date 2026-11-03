@@ -27,7 +27,7 @@ const QcVillageStyle::Road &choose(const QList<QcVillageStyle::Road> &roads, dou
     return roads.back();
 }
 
-QList<QcVillagePlan::Step> steps(const QcVillagePlan &plan, QcBlockId step, QcBlockId branchStep)
+QList<QcPlacedBlock> steps(const QcVillagePlan &plan, QcBlockId step, QcBlockId branchStep)
 {
     // Column -> the road's top block height and its step block.
     struct Cell
@@ -43,7 +43,7 @@ QList<QcVillagePlan::Step> steps(const QcVillagePlan &plan, QcBlockId step, QcBl
         cells.insert({pos.x, pos.z}, {pos.y, step});
     }
 
-    QList<QcVillagePlan::Step> result;
+    QList<QcPlacedBlock> result;
     constexpr std::array<std::pair<int, int>, 4> sides{{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}};
     for (auto it = cells.cbegin(); it != cells.cend(); ++it) {
         if (it->step == qcAirBlockId) {
@@ -59,7 +59,7 @@ QList<QcVillagePlan::Step> steps(const QcVillagePlan &plan, QcBlockId step, QcBl
         }
     }
     // The hash's order is no function of the content; the plan's is.
-    std::ranges::sort(result, {}, [](QcVillagePlan::Step s) { return std::tuple{s.at.x, s.at.z}; });
+    std::ranges::sort(result, {}, [](QcPlacedBlock s) { return std::tuple{s.pos.x, s.pos.z}; });
     return result;
 }
 

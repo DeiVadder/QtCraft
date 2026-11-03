@@ -347,7 +347,7 @@ QcPlayerStorage::Result QcServerPersistence::readPlayer(const QString &name) con
     // Through the storage: a file handed over with a save that is not written yet is the newest.
     const QcResult<std::optional<QByteArray>> file = m_io->readFileNow(QcPlayerStorage::relativePath(name));
     if (!file) {
-        return std::unexpected(QcPlayerStorage::Failure{file.error(), {}});
+        return std::unexpected(QcLoadFailure{file.error(), {}});
     }
     return m_storage->parsePlayer(name, *file);
 }

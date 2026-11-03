@@ -45,6 +45,7 @@ target_sources(qc_common PRIVATE
     content/blocks/QcMaterialParser.h content/blocks/QcMaterialParser.cpp
     content/blocks/QcPartFamily.h
     content/blocks/QcPartGenerator.h content/blocks/QcPartGenerator.cpp
+    content/blocks/QcPlacedBlock.h
     content/blocks/QcShapeCondition.h
     content/blocks/QcShapeDefinition.h
     content/blocks/QcShapeParser.h content/blocks/QcShapeParser.cpp
@@ -123,6 +124,7 @@ target_sources(qc_common PRIVATE
     content/registry/QcSoundKeys.h content/registry/QcSoundKeys.cpp
     content/registry/QcSoundParser.h content/registry/QcSoundParser.cpp
     content/registry/QcTranslations.h content/registry/QcTranslations.cpp
+    content/registry/QcWeightedNames.h
 )
 target_sources(qc_common PRIVATE
     content/villages/QcTradeDefinitions.h
@@ -161,6 +163,7 @@ target_sources(qc_common PRIVATE
 )
 target_sources(qc_common PRIVATE
     core/QcAabb.h
+    core/QcBlockBox.h
     core/QcBlockFace.h
     core/QcBlockPos.h core/QcBlockPos.cpp
     core/QcChunkPos.h core/QcChunkPos.cpp
@@ -175,6 +178,7 @@ target_sources(qc_common PRIVATE
     core/QcIndexId.h
     core/QcIntMath.h
     core/QcKeptComponent.h
+    core/QcLoadFailure.h
     core/QcLogging.h core/QcLogging.cpp
     core/QcMailbox.h
     core/QcNameText.h core/QcNameText.cpp
@@ -187,6 +191,7 @@ target_sources(qc_common PRIVATE
     core/QcVec3.h
     core/QcWorkerPool.h core/QcWorkerPool.cpp
     core/QcWorldConstants.h
+    core/QcXzRect.h
 )
 target_sources(qc_common PRIVATE
     diagnostics/QcBuildInfo.h diagnostics/QcBuildInfo.cpp

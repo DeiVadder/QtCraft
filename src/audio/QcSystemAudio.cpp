@@ -165,7 +165,7 @@ QcAudioPlatform::Opened QcSystemAudio::open(const QByteArray &device, const Form
 
     startThread();
     const QAudioFormat audioFormat = stereo(output, format.rate, format.sampleFormat);
-    const std::optional<QcAudioSinkHost::Opened> opened =
+    const std::optional<QcAudioPlatform::Opened> opened =
         callOnHostThread(m_host.get(), [output, audioFormat, sampleFormat = format.sampleFormat, render](QcAudioSinkHost &host) {
             return host.open(output, audioFormat, sampleFormat, render, bufferMilliseconds);
         });

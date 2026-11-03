@@ -25,16 +25,9 @@ void warnUnknownKeys(const QJsonObject &json, const QStringList &known, const QS
     }
 }
 
-// The bounds one value of a vector must keep.
-struct Range
-{
-    double low;
-    double high;
-};
-
 // [x, y, z] at `key` with every value within `range`; a single number stands for all three when
 // `uniform` allows it.
-std::optional<QcVec3> vectorAt(QcJsonFieldReader &reader, const QString &key, Range range, bool uniform)
+std::optional<QcVec3> vectorAt(QcJsonFieldReader &reader, const QString &key, QcHoldParser::Range range, bool uniform)
 {
     const QJsonValue value = reader.json.value(key);
     if (value.isUndefined()) {

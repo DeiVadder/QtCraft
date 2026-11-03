@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "audio/QcAudioPlatform.h"
 #include "audio/QcMixerDevice.h"
 
 #include <QAudio>
@@ -24,15 +25,6 @@ class QcAudioSinkHost : public QObject
     Q_OBJECT
 
 public:
-    /*! \brief The result of open(). */
-    struct Opened
-    {
-        /*! QtAudio::NoError when the sink plays. */
-        QtAudio::Error error = QtAudio::NoError;
-        /*! Counts the sinks opened; failed() names the sink it is about. */
-        quint64 generation = 0;
-    };
-
     /*! A host without a sink; QcSystemAudio moves it to its audio thread. */
     QcAudioSinkHost();
     ~QcAudioSinkHost() override;
@@ -41,7 +33,7 @@ public:
     /*! Starts a sink on \a device in \a format that pulls \a render with samples of \a sampleFormat
         and keeps \a bufferMilliseconds of audio buffered, and returns what was opened; on an error
         nothing stays open. Call on the host's thread. */
-    [[nodiscard]] Opened open(const QAudioDevice &device, const QAudioFormat &format, QcMixerDevice::Format sampleFormat,
+    [[nodiscard]] QcAudioPlatform::Opened open(const QAudioDevice &device, const QAudioFormat &format, QcMixerDevice::Format sampleFormat,
                               const QcMixerDevice::Render &render, int bufferMilliseconds);
     /*! Stops the sink, if one plays. Call on the host's thread. */
     void close();

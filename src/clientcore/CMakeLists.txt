@@ -187,6 +187,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
     session/QcEffectClock.h session/QcEffectClock.cpp
+    session/QcEffectPuff.h
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcInkClouds.h session/QcInkClouds.cpp

@@ -55,10 +55,10 @@ QList<QcVillageStyle::Road> QcVillageStyles::resolveRoads(const QList<QcVillageR
 }
 
 // The crops of the fields with their stages; blocks that are no crop are left out with a warning.
-QList<QcVillageStyle::Crop> QcVillageStyles::resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content, const QString &style)
+QList<QcVillageStyle::Crop> QcVillageStyles::resolveCrops(const QList<QcWeightedBlockName> &entries, const QcContentRegistry &content, const QString &style)
 {
     QList<QcVillageStyle::Crop> crops;
-    for (const QcVillageCrop &entry : entries) {
+    for (const QcWeightedBlockName &entry : entries) {
         const QcBlockId block = content.blockId(entry.block).value_or(qcAirBlockId);
         const QcBlockDefinition &definition = content.block(block);
         const QcBlockProperty *stages = definition.crop.isCrop() ? definition.property(definition.crop.property) : nullptr;
@@ -264,7 +264,7 @@ std::optional<QcVillageStyle::Piece> QcVillageStyles::piece(const QcVillagePiece
                                                             const QcContentRegistry &content)
 {
     QcVillageStyle::Piece piece;
-    for (const QcVillageBlueprint &blueprint : entry.blueprints) {
+    for (const QcWeightedStructureName &blueprint : entry.blueprints) {
         if (std::optional<QcVillageStyle::Blueprint> resolved = this->blueprint(blueprint.structure, style, content)) {
             resolved->weight = blueprint.weight;
             piece.blueprints.append(std::move(*resolved));

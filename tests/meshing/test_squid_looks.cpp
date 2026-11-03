@@ -186,8 +186,8 @@ private slots:
         for (const QcInkClouds::Puff &puff : ink.puffs()) {
             QCOMPARE(puff.texture, u"qtcraft:squid_ink"_s);
             QCOMPARE(puff.centre, middle);
-            const std::optional<QcInkClouds::Look> start = QcInkClouds::lookAt(puff, 100.0);
-            const std::optional<QcInkClouds::Look> later = QcInkClouds::lookAt(puff, 106.0);
+            const std::optional<QcEffectPuff> start = QcInkClouds::lookAt(puff, 100.0);
+            const std::optional<QcEffectPuff> later = QcInkClouds::lookAt(puff, 106.0);
             QVERIFY(start && later && later->size > start->size);
             QVERIFY((later->position - middle).length() > 0.05 && (later->position - middle).length() < 1.5);
             QVERIFY(!QcInkClouds::lookAt(puff, 100.0 + puff.lifeTicks));
@@ -200,6 +200,54 @@ private slots:
             ink.add({}, squid().ink, 7, tick);
         }
         QVERIFY(ink.puffs().size() <= QcInkClouds::maxPuffs);
+    }
+
+    // A puff of ink, smoke or fire is drawn as a cube around its middle (79.85 a): the mesh of a
+    // puff spans half its edge on each side of the middle, also upwards.
+    void aPuffCubeSitsAroundItsMiddle()
+    {
+        QcEntityMesher::ItemLook look;
+        look.cube = true;
+        look.faces.fill(u"qtcraft:squid_ink"_s);
+        const QcEffectPuff puff{{1.0, 50.0, -2.0}, 0.4};
+        QcEntityMesh mesh;
+        QcEntityMesher::appendBlock(mesh, look, QcEntityMesher::BlockPlacement::centredAt(puff.position, puff.size), QcEntityLight{1.0f},
+                                    [](const QString &) { return QRectF(0.0, 0.0, 1.0, 1.0); });
+        QVERIFY(!mesh.vertices.isEmpty());
+        const auto [lowY, highY] = std::ranges::minmax(mesh.vertices, {}, &QcEntityVertex::y);
+        const auto [lowX, highX] = std::ranges::minmax(mesh.vertices, {}, &QcEntityVertex::x);
+        QVERIFY(qAbs(lowY.y - 49.8f) < 1e-4f && qAbs(highY.y - 50.2f) < 1e-4f);
+        QVERIFY(qAbs(lowX.x - 0.8f) < 1e-4f && qAbs(highX.x - 1.2f) < 1e-4f);
+    }
+
+    // Centring a puff moves its cube, never resizes it: each ink cube in the mesh is as wide as
+    // lookAt() says, and as wide as the cube drawn from its feet.
+    void inkPuffCubesKeepTheirSize()
+    {
+        QcInkClouds clouds;
+        clouds.add({0.0, 64.0, 0.0}, u"qtcraft:squid_ink"_s, 7, 100);
+        QCOMPARE(clouds.puffs().size(), QcInkClouds::puffsPerCloud);
+        for (const QcInkClouds::Puff &puff : clouds.puffs()) {
+            for (const double age : {0.0, 6.0, 20.0}) {
+                const std::optional<QcEffectPuff> look = QcInkClouds::lookAt(puff, 100.0 + age);
+                QVERIFY(look);
+                QVERIFY(look->size >= puff.size * 0.1 && look->size <= puff.size * 2.0);
+                QVERIFY(qAbs(edgeOf(QcEntityMesher::BlockPlacement::centredAt(look->position, look->size)) - look->size) < 1e-4);
+                QVERIFY(qAbs(edgeOf({look->position, look->size}) - look->size) < 1e-4);
+            }
+        }
+    }
+
+private:
+    static double edgeOf(const QcEntityMesher::BlockPlacement &placement)
+    {
+        QcEntityMesher::ItemLook look;
+        look.cube = true;
+        look.faces.fill(u"qtcraft:squid_ink"_s);
+        QcEntityMesh mesh;
+        QcEntityMesher::appendBlock(mesh, look, placement, QcEntityLight{1.0f}, [](const QString &) { return QRectF(0.0, 0.0, 1.0, 1.0); });
+        const auto [low, high] = std::ranges::minmax(mesh.vertices, {}, &QcEntityVertex::x);
+        return static_cast<double>(high.x - low.x);
     }
 };
 

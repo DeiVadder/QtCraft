@@ -483,7 +483,7 @@ private slots:
         const std::shared_ptr<const QcDungeonPlan> plan = dungeonWithChests(*terrain);
         QVERIFY(plan);
         join({}, std::move(terrain));
-        const QcBlockPos chest = plan->chests.constFirst().at;
+        const QcBlockPos chest = plan->chests.constFirst().pos;
         m_server->world().loadChunk(plan->spawner.chunk());
         m_server->world().loadChunk(chest.chunk());
         const QString other = plan->mob == u"qtcraft:spider"_s ? u"qtcraft:zombie"_s : u"qtcraft:spider"_s;
@@ -541,7 +541,7 @@ private slots:
         const std::shared_ptr<const QcDungeonPlan> plan = dungeonWithChests(*terrain);
         QVERIFY(plan);
         join({}, std::move(terrain));
-        const QcBlockPos chest = plan->chests.constFirst().at;
+        const QcBlockPos chest = plan->chests.constFirst().pos;
         m_server->world().loadChunk(plan->spawner.chunk());
         m_server->world().loadChunk(chest.chunk());
         QCOMPARE(m_server->world().spawners().at(plan->spawner)->mob, plan->mob);

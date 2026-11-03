@@ -284,8 +284,8 @@ bool QcServerPlants::growVegetation(QcBlockPos target)
     if (m_state.world().blockAt(target.offset(0, 1, 0)) != qcAirBlockId) {
         return false;
     }
-    const QList<QcVegetationSpread::Planting> plantings = m_vegetation.spread(m_state.world(), target, m_state.random());
-    for (const QcVegetationSpread::Planting &planting : plantings) {
+    const QList<QcPlacedBlock> plantings = m_vegetation.spread(m_state.world(), target, m_state.random());
+    for (const QcPlacedBlock &planting : plantings) {
         m_blocks.setAndBroadcast(planting.pos, planting.block);
     }
     return true;

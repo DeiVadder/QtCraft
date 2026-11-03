@@ -179,6 +179,7 @@ target_sources(qc_server PRIVATE
 target_sources(qc_server PRIVATE
     items/QcExperienceOrbManager.h items/QcExperienceOrbManager.cpp
     items/QcItemEntityManager.h items/QcItemEntityManager.cpp
+    items/QcPickupPlayer.h
     items/QcServerExperience.h items/QcServerExperience.cpp
     items/QcServerItems.h items/QcServerItems.cpp
 )

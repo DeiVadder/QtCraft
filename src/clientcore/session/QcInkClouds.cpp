@@ -58,7 +58,7 @@ void QcInkClouds::prune(quint64 tick)
     m_puffs.removeIf([tick](const Puff &puff) { return tick >= puff.startTick + static_cast<quint64>(puff.lifeTicks); });
 }
 
-std::optional<QcInkClouds::Look> QcInkClouds::lookAt(const Puff &puff, double ticks)
+std::optional<QcEffectPuff> QcInkClouds::lookAt(const Puff &puff, double ticks)
 {
     const double age = ticks - static_cast<double>(puff.startTick);
     if (age < 0.0 || age >= puff.lifeTicks) {
@@ -70,5 +70,5 @@ std::optional<QcInkClouds::Look> QcInkClouds::lookAt(const Puff &puff, double ti
     const double travelled = (1.0 - std::exp(-seconds * 2.5)) / 2.5;
     const double share = age / puff.lifeTicks;
     const double swell = share < 0.3 ? 1.0 + share / 0.3 : 2.0 * (1.0 - share) / 0.7;
-    return Look{puff.centre + puff.velocity * travelled, puff.size * std::max(swell, 0.1)};
+    return QcEffectPuff{puff.centre + puff.velocity * travelled, puff.size * std::max(swell, 0.1)};
 }

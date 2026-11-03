@@ -92,9 +92,9 @@ QList<QcBlockPos> QcCampfireSmoke::scan(const QcClientWorld &world, const QcVec3
     return found;
 }
 
-QList<QcCampfireSmoke::Puff> QcCampfireSmoke::puffsOf(QcBlockPos pos, double seconds)
+QList<QcEffectPuff> QcCampfireSmoke::puffsOf(QcBlockPos pos, double seconds)
 {
-    QList<Puff> puffs;
+    QList<QcEffectPuff> puffs;
     for (int index = 0; index < puffsPerCampfire; ++index) {
         // Each puff starts its loop at its own time; every loop drifts its own way.
         const double time = seconds + index * puffSeconds / puffsPerCampfire;

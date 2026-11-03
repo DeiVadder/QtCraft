@@ -9,6 +9,7 @@
 #include "server/core/QcServerLimits.h"
 #include "server/entities/QcEntityComponent.h"
 #include "server/entities/QcItemEntity.h"
+#include "server/items/QcPickupPlayer.h"
 
 #include <QList>
 #include <QRandomGenerator>
@@ -72,15 +73,6 @@ public:
         bool operator==(const Drop &) const = default;
     };
 
-    /*! \brief What a tick needs to know of a player: entity id, feet position and whether he is
-        alive. \qcfields */
-    struct PlayerView
-    {
-        quint32 entityId = 0;
-        QcVec3 position;
-        bool alive = true;
-    };
-
     /*! Called when an item touches the player \c {playerEntityId} with its \c {stack}; returns
         how many items did not fit into the inventory. */
     using GiveFunction = std::function<int(quint32 playerEntityId, const QcItemStack &stack)>;
@@ -111,7 +103,7 @@ public:
     /*! One tick of \a dt seconds in \a world: physics, pickup by \a players, merging, ageing and
         despawning, through \a callbacks. Returns the items that despawned of old age (the caller
         may plant saplings from them). */
-    QList<QcItemEntity> tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const TickCallbacks &callbacks);
+    QList<QcItemEntity> tick(const QcBlockAccess &world, const QList<QcPickupPlayer> &players, double dt, const TickCallbacks &callbacks);
 
     /*! Returns the awake items. */
     const QList<QcItemEntity> &items() const { return m_items; }
@@ -153,7 +145,7 @@ public:
 
 private:
     void step(QcItemEntity &item, const QcBlockAccess &world, double dt);
-    void pickUp(QcItemEntity &item, const QList<PlayerView> &players, const GiveFunction &give);
+    void pickUp(QcItemEntity &item, const QList<QcPickupPlayer> &players, const GiveFunction &give);
     // Drops emptied items and items in the void, collects the ones that despawned of old age and recounts the awake ones.
     QList<QcItemEntity> removeFinished(const QList<bool> &awake);
     void spawnQueued(const TickCallbacks &callbacks);

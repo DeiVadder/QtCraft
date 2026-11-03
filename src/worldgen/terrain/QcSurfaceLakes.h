@@ -35,7 +35,6 @@ public:
     /*! A pool definition of the terrain. */
     using Pool = QcTerrainDefinitions::Pool;
     /*! A rectangle of world columns. */
-    using Rect = QcSurfacePlanner::Rect;
 
     /*! \brief One ellipse of a basin: its centre (world), half axes and the liquid's depth at
         the centre. \qcfields */
@@ -59,7 +58,7 @@ public:
         /*! The overlapping ellipses of the basin. */
         QVarLengthArray<Blob, 6> blobs;
         /*! The basin's columns and two more around them (world): no trees grow near it. */
-        Rect footprint;
+        QcXzRect footprint;
     };
 
     /*! Reads the pools from \a definitions; \a content tells which blocks are solid or liquid.

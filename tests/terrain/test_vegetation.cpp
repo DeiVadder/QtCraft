@@ -54,7 +54,7 @@ class TestVegetation : public QcServerTestFixture
         if (found == m_content->worldgen().biomes().end()) {
             return names;
         }
-        for (const QcVegetationPlant &plant : (flowers ? found->vegetation.flowers : found->vegetation.grass).plants) {
+        for (const QcWeightedBlockName &plant : (flowers ? found->vegetation.flowers : found->vegetation.grass).plants) {
             names.append(plant.block);
         }
         return names;
@@ -266,7 +266,7 @@ private slots:
             // Bone meal grows grass on a grass block in every biome.
             QVERIFY2(!biome.vegetation.grass.plants.isEmpty(), qPrintable(biome.name));
             for (const QcVegetationLayer *layer : {&biome.vegetation.grass, &biome.vegetation.flowers}) {
-                for (const QcVegetationPlant &plant : layer->plants) {
+                for (const QcWeightedBlockName &plant : layer->plants) {
                     const std::optional<QcBlockId> block = m_content->blockId(plant.block);
                     QVERIFY2(block.has_value(), qPrintable(plant.block));
                     QVERIFY2(m_content->block(*block).groundBlocks.contains(u"qtcraft:grass_block"_s), qPrintable(plant.block));

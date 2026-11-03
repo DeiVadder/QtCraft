@@ -18,6 +18,6 @@ const QcVillageStyle::Road &choose(const QList<QcVillageStyle::Road> &roads, dou
     either rank) exactly one block higher gets its rank's step on top (\a step for the roads from
     the centre, \a branchStep for the side roads), unless that is air. Where the ranks share a
     column the road from the centre counts. Sorted by x, then z. */
-[[nodiscard]] QList<QcVillagePlan::Step> steps(const QcVillagePlan &plan, QcBlockId step, QcBlockId branchStep);
+[[nodiscard]] QList<QcPlacedBlock> steps(const QcVillagePlan &plan, QcBlockId step, QcBlockId branchStep);
 
 } // namespace QcVillageRoads

@@ -26,7 +26,8 @@
     the same picture and material give the same maps on every platform (no fused multiply-add). */
 namespace QcMaterialSynthesizer {
 
-/*! \brief The maps of one tile. */
+/*! \brief The normal and specular maps of one tile, or one mip level of both material atlases
+    (QcMaterialMips::halve). */
 struct Maps
 {
     /*! The normal map. */

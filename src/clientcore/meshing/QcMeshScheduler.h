@@ -10,6 +10,7 @@
 #include "clientcore/meshing/QcChunkMesher.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcMailbox.h"
+#include "common/core/QcSectionKey.h"
 #include "common/core/QcVec3.h"
 #include "common/core/QcWorkerPool.h"
 
@@ -146,12 +147,6 @@ signals:
     void meshRemoved(quint64 key);
 
 private:
-    struct SectionAddress
-    {
-        QcChunkPos chunk;
-        int section = 0;
-    };
-
     struct Result
     {
         quint64 key = 0;
@@ -168,7 +163,7 @@ private:
         std::shared_ptr<const QcChunkLight> addedLight;
         QcBlockLightEngine::Changes changes;
         // Sections the change itself made dirty, meshed together with the new light.
-        QList<SectionAddress> dirty;
+        QList<QcSectionAddress> dirty;
         // Start of the change in m_clock time, or -1.
         qint64 changedAtNs = -1;
         double workMs = 0.0;
@@ -176,7 +171,7 @@ private:
 
     void markDirty(QcChunkPos chunk, int section, qint64 changedAtNs = -1);
     // Sections whose faces or ambient occlusion a change of the block at `pos` affects.
-    static QList<SectionAddress> faceSections(QcBlockPos pos);
+    static QList<QcSectionAddress> faceSections(QcBlockPos pos);
     // Sky light travels up to 15 blocks sideways, so it reaches the 3 x 3 chunk neighbourhood. A
     // section's sky light (QcChunkMesher) depends on the cells from 16 blocks below to 16 blocks
     // above it and on where each column's highest light-dimming block lies: it changes when that
@@ -188,13 +183,13 @@ private:
     QList<quint64> nearestDirtyFirst() const;
     // Nullopt while a side neighbour of the chunk is missing. A neighbour beyond the bound of the world
     // (QcChunkPos::isInsideWorld) never arrives and stays null; QcChunkMesher treats it as an opaque wall.
-    [[nodiscard]] std::optional<QcMeshInput> meshInput(const QcClientWorld &world, SectionAddress address) const;
+    [[nodiscard]] std::optional<QcMeshInput> meshInput(const QcClientWorld &world, QcSectionAddress address) const;
     void submitMesh(quint64 key, QcMeshInput input, Priority priority);
     // Starts the job of the dirty section `key`, or drops the mark while it cannot be meshed yet
     // (a later mark brings it back) or emits the removal of an empty section.
     void startJob(const QcClientWorld &world, quint64 key, Priority priority);
     // Marks the sections dirty and gathers them for submitPlayerSections() (Priority::Player).
-    void gatherPlayerSections(const QcClientWorld &world, const QList<SectionAddress> &sections, qint64 changedAtNs);
+    void gatherPlayerSections(const QcClientWorld &world, const QList<QcSectionAddress> &sections, qint64 changedAtNs);
     // Starts the jobs of the gathered player sections that are still dirty, each once.
     void submitPlayerSections();
     // Counts a job of `key` in or out of m_inFlight.
@@ -204,7 +199,7 @@ private:
     void noteLatency(quint64 key);
     // The chunk and its loaded neighbours, all sections.
     void markChunkAndNeighbours(QcChunkPos pos);
-    void submitLight(std::function<void(QcBlockLightEngine &)> work, std::optional<QcChunkPos> added, QList<SectionAddress> dirty,
+    void submitLight(std::function<void(QcBlockLightEngine &)> work, std::optional<QcChunkPos> added, QList<QcSectionAddress> dirty,
                      qint64 changedAtNs);
     void deliverResults();
     void deliverLight();
@@ -214,7 +209,7 @@ private:
     void noteBacklog();
 
     std::shared_ptr<const QcBlockRenderTable> m_renderTable;
-    QHash<quint64, SectionAddress> m_dirty;
+    QHash<quint64, QcSectionAddress> m_dirty;
     // Version of the latest dirty mark per section; results of older jobs are discarded.
     QHash<quint64, quint64> m_versions;
     quint64 m_lastVersion = 0;
@@ -234,7 +229,7 @@ private:
     // Light changes of block changes not yet submitted (submitGathered), with the dirty sections they
     // bring and the time of the first.
     QList<std::pair<QcBlockPos, std::shared_ptr<const QcChunk>>> m_gathered;
-    QList<SectionAddress> m_gatheredDirty;
+    QList<QcSectionAddress> m_gatheredDirty;
     qint64 m_gatheredSinceNs = -1;
     // Sections of the player's own changes not yet submitted, and the world they are meshed from;
     // cleared by clear().

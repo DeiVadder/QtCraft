@@ -93,13 +93,13 @@ private slots:
                     heights.insert({cell.x, cell.z}, cell.y);
                 }
             }
-            for (const QcVillagePlan::Step &step : plan->steps) {
+            for (const QcPlacedBlock &step : plan->steps) {
                 ++steps;
-                QCOMPARE(heights.value({step.at.x, step.at.z}, -100), step.at.y - 1);
+                QCOMPARE(heights.value({step.pos.x, step.pos.z}, -100), step.pos.y - 1);
                 QVERIFY(nameOf(step.block).endsWith(u"_slab"_s));
                 int higher = 0;
                 for (const auto &[dx, dz] : {std::pair{1, 0}, {-1, 0}, {0, 1}, {0, -1}}) {
-                    higher += heights.value({step.at.x + dx, step.at.z + dz}, -100) == step.at.y ? 1 : 0;
+                    higher += heights.value({step.pos.x + dx, step.pos.z + dz}, -100) == step.pos.y ? 1 : 0;
                 }
                 QVERIFY(higher > 0);
             }
@@ -152,8 +152,8 @@ private slots:
             QVERIFY(sameBlocks(*first.value(pos), *second.value(pos)));
         }
 
-        for (const QcVillagePlan::Step &step : plan->steps) {
-            QCOMPARE(blockIn(first, step.at), step.block);
+        for (const QcPlacedBlock &step : plan->steps) {
+            QCOMPARE(blockIn(first, step.pos), step.block);
         }
         // The road from the centre keeps its surface where a branch meets it.
         int main = 0;

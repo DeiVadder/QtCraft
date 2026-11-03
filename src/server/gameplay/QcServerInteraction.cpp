@@ -250,7 +250,7 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     // The decoder rejects non-finite values; the ranges are enforced here.
     const QcMsg::UseItem::View sent = message.view.value_or(QcMsg::UseItem::View{client.yaw, client.pitch});
     const QcMsg::UseItem::View view{qcWrappedYaw(sent.yaw), std::clamp(sent.pitch, -90.0F, 90.0F)};
-    const std::optional<QcBlockRules::Placement> placement =
+    const std::optional<QcPlacedBlock> placement =
         placed && (clickedSolid || floating) && *clicked != qcAirBlockId
             ? QcBlockRules::placement(m_state.world(), *placed, {message.target, face, message.hit, view.yaw, view.pitch})
             : std::nullopt;
@@ -258,7 +258,7 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
     const QcBlockPos target = placement ? placement->pos : qcNeighbour(message.target, face);
     const std::optional<QcBlockId> existing = m_state.world().blockAt(target);
     // A fish bucket whose fish may not come out (decision E-501) pours nothing.
-    if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->state, *placed, target)
+    if (!placement || !existing || !QcLineOfSight::isWithinReach(client, target) || !mayPlace(client, placement->block, *placed, target)
         || !QcServerAnimals::mayRelease(m_state, *held, QcServerAnimals::releasePoint(target))) {
         rejectPlacement(client, target);
         // Food that plants (carrots, potatoes) is eaten where it cannot be planted (decision E-292).
@@ -268,7 +268,7 @@ void QcServerInteraction::placeHeld(QcServerClient &client, const QcMsg::UseItem
         return;
     }
 
-    applyPlacement(client, *held, placement->state, target);
+    applyPlacement(client, *held, placement->block, target);
 }
 
 bool QcServerInteraction::mayPlace(QcServerClient &client, QcBlockId state, QcBlockId placed, QcBlockPos target) const

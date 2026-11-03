@@ -40,7 +40,7 @@ public:
     /*! Returns the footprints of the towers within \a margin columns of the chunk \a pos: the
         terrain generator places no features and no surface pools there, like near surface
         structures. */
-    QList<QcCoastalTowerPlan::Footprint> footprintsNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> footprintsNear(QcChunkPos pos, int margin) const;
     /*! Writes the cells of the towers touching \a chunk into it, with their foundations, cleared
         columns and the opening in front of the door. Builds after the terrain's features and
         surface pools, before the villages. */

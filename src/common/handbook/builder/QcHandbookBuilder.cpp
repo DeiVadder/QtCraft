@@ -75,9 +75,9 @@ void checkLinks(const QList<QcHandbookEntry> &entries, QcHandbookText &text)
 }
 
 // Loaded packs in load order, then the namespaces of entries without a loaded pack, sorted.
-QList<QcHandbook::Pack> handbookPacks(const QcContentRegistry &content, const QList<QcHandbookEntry> &entries)
+QList<QcPackReference> handbookPacks(const QcContentRegistry &content, const QList<QcHandbookEntry> &entries)
 {
-    QList<QcHandbook::Pack> packs;
+    QList<QcPackReference> packs;
     QSet<QString> known;
     for (const QcPackReference &pack : content.packs()) {
         if (!known.contains(pack.id)) {
@@ -128,7 +128,7 @@ void sortCategory(QcHandbook::Category &category, const QList<QcHandbookEntry> &
 }
 
 QList<QcHandbook::Category> handbookCategories(const QcContentRegistry &content, const QcHandbookText &text,
-                                               const QList<QcHandbookEntry> &entries, const QList<QcHandbook::Pack> &packs)
+                                               const QList<QcHandbookEntry> &entries, const QList<QcPackReference> &packs)
 {
     static constexpr std::array<const char16_t *, 12> categoryIds{u"playing", u"blocks", u"parts", u"liquids", u"items", u"tools",
                                                                   u"food", u"creatures", u"biomes", u"worldgen", u"tags", u"tables"};

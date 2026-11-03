@@ -54,10 +54,10 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
 
 // The plants of one vegetation layer the content knows (decision E-814); unknown ones are noted as
 // problems and get no link.
-[[nodiscard]] QList<QcVegetationPlant> knownPlants(const QcHandbookContext &context, const QcBiomeDefinition &biome, const QcVegetationLayer &layer)
+[[nodiscard]] QList<QcWeightedBlockName> knownPlants(const QcHandbookContext &context, const QcBiomeDefinition &biome, const QcVegetationLayer &layer)
 {
-    QList<QcVegetationPlant> plants;
-    for (const QcVegetationPlant &plant : layer.plants) {
+    QList<QcWeightedBlockName> plants;
+    for (const QcWeightedBlockName &plant : layer.plants) {
         if (context.content.blockId(plant.block)) {
             plants.append(plant);
         } else {
@@ -79,14 +79,14 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
         if (layer->density <= 0.0 && layer->patches.chance <= 0.0) {
             continue;
         }
-        const QList<QcVegetationPlant> plants = knownPlants(context, biome, *layer);
+        const QList<QcWeightedBlockName> plants = knownPlants(context, biome, *layer);
         int total = 0;
-        for (const QcVegetationPlant &plant : plants) {
+        for (const QcWeightedBlockName &plant : plants) {
             total += plant.weight;
         }
 
         Section section{text.label(label), {}, {}, {}};
-        for (const QcVegetationPlant &plant : plants) {
+        for (const QcWeightedBlockName &plant : plants) {
             section.links.append(context.links.blockLink(plant.block, text.percent(static_cast<double>(plant.weight) / total)));
         }
         if (!section.links.isEmpty()) {

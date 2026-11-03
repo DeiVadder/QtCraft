@@ -135,7 +135,7 @@ QString QcHandbookModel::resolve(const QString &target) const
     QStringList names{target};
     if (!target.contains(u':')) {
         names.clear();
-        for (const QcHandbook::Pack &pack : m_handbook->packs()) {
+        for (const QcPackReference &pack : m_handbook->packs()) {
             names.append(pack.id + u':' + target);
         }
     }

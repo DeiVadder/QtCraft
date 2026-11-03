@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/content/blocks/QcPlacedBlock.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 #include "worldgen/villages/QcVillageStyles.h"
 
@@ -33,27 +35,6 @@ struct QcVillagePlan
         QcBlockId post = qcAirBlockId;
     };
 
-    /*! \brief A slab on a road cell next to a road cell one block higher (decision E-406):
-        \c {block} at \c {at}, the cell above the road's top block. \qcfields */
-    struct Step
-    {
-        QcBlockPos at;
-        QcBlockId block = qcAirBlockId;
-    };
-
-    /*! \brief A rectangle of columns from (\c {x0}, \c {z0}) to (\c {x1}, \c {z1}), both
-        corners inclusive. \qcfields */
-    struct Area
-    {
-        int x0 = 0;
-        int z0 = 0;
-        int x1 = 0;
-        int z1 = 0;
-
-        /*! Returns whether the column \a x, \a z lies in the rectangle. */
-        bool contains(int x, int z) const { return x >= x0 && x <= x1 && z >= z0 && z <= z1; }
-    };
-
     /*! \brief The ground a village over water shapes around itself (decision E-407,
         QcWetlandShaper): its \c {settings}, the areas it spreads from (\c {wet}: pieces and
         boardwalks) and the land access kept \c {dry} (beside and beyond the stairs).
@@ -62,8 +43,8 @@ struct QcVillagePlan
     struct Wetland
     {
         QcVillageStyle::Wetland settings;
-        QList<Area> wet;
-        QList<Area> dry;
+        QList<QcXzRect> wet;
+        QList<QcXzRect> dry;
     };
 
     /*! \brief A straight run of a road's middle line (decision E-408): \c {length} cells from
@@ -164,7 +145,7 @@ struct QcVillagePlan
     QcBlockId pathBlock = qcAirBlockId;
     QcBlockId branchPathBlock = qcAirBlockId;
     /*! The slabs where a road steps up by one block (QcVillageRoads::steps). */
-    QList<Step> steps;
+    QList<QcPlacedBlock> steps;
     /*! The style's block that fills the ground below the pieces down to solid ground (air:
         none). */
     QcBlockId foundation = qcAirBlockId;

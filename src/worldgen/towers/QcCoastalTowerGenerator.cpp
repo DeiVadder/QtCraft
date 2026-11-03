@@ -70,7 +70,7 @@ bool QcCoastalTowerGenerator::crowded(const QcCoastalTowerPlan &plan) const
         return false;
     }
     const auto centre = [](const QcCoastalTowerPlan &tower) {
-        const QcCoastalTowerPlan::Footprint footprint = tower.footprint();
+        const QcXzRect footprint = tower.footprint();
         return std::pair{footprint.minX + footprint.maxX, footprint.minZ + footprint.maxZ};
     };
     const auto [x, z] = centre(plan);
@@ -110,9 +110,9 @@ QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::plansT
     return plansNear(pos, 1);
 }
 
-QList<QcCoastalTowerPlan::Footprint> QcCoastalTowerGenerator::footprintsNear(QcChunkPos pos, int margin) const
+QList<QcXzRect> QcCoastalTowerGenerator::footprintsNear(QcChunkPos pos, int margin) const
 {
-    QList<QcCoastalTowerPlan::Footprint> footprints;
+    QList<QcXzRect> footprints;
     const QList<std::shared_ptr<const QcCoastalTowerPlan>> plans = plansNear(pos, margin);
     for (const std::shared_ptr<const QcCoastalTowerPlan> &plan : plans) {
         footprints.append(plan->footprint());
@@ -129,12 +129,12 @@ QList<std::shared_ptr<const QcCoastalTowerPlan>> QcCoastalTowerGenerator::plansN
     const int region = m_planner.settings().regionSize;
     const int x0 = pos.x * QcWorld::chunkSize;
     const int z0 = pos.z * QcWorld::chunkSize;
-    const QcCoastalTowerPlan::Footprint chunk{x0, z0, x0 + QcWorld::chunkSize - 1, z0 + QcWorld::chunkSize - 1};
-    const QcCoastalTowerPlan::Footprint around = chunk.grown(margin);
+    const QcXzRect chunk{x0, z0, x0 + QcWorld::chunkSize - 1, z0 + QcWorld::chunkSize - 1};
+    const QcXzRect around = chunk.grown(margin);
     for (int rz = floorDiv(around.minZ, region); rz <= floorDiv(around.maxZ, region); ++rz) {
         for (int rx = floorDiv(around.minX, region); rx <= floorDiv(around.maxX, region); ++rx) {
             std::shared_ptr<const QcCoastalTowerPlan> plan = planOf(rx, rz);
-            if (plan && plan->footprint().grown(margin).touches(chunk)) {
+            if (plan && plan->footprint().grown(margin).intersects(chunk)) {
                 plans.append(std::move(plan));
             }
         }
@@ -152,7 +152,7 @@ void QcCoastalTowerGenerator::build(QcChunk &chunk) const
 
 void QcCoastalTowerGenerator::build(QcChunk &chunk, const QcCoastalTowerPlan &plan) const
 {
-    const QcCoastalTowerPlan::Footprint footprint = plan.footprint();
+    const QcXzRect footprint = plan.footprint();
     const int x0 = chunk.pos().x * QcWorld::chunkSize;
     const int z0 = chunk.pos().z * QcWorld::chunkSize;
     for (int z = std::max(z0, footprint.minZ); z <= std::min(z0 + QcWorld::chunkSize - 1, footprint.maxZ); ++z) {

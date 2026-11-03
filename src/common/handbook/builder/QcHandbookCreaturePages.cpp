@@ -90,7 +90,7 @@ bool placesIn(const QcContentRegistry &content, const QcVillageStyleDefinition &
     const std::optional<QcCreatureKindId> self = content.mobKind(mob.name);
     const auto isSelf = [&](const QString &name) { return content.mobKind(name) == self; };
     for (const QcVillagePiece &piece : style.pieces) {
-        for (const QcVillageBlueprint &blueprint : piece.blueprints) {
+        for (const QcWeightedStructureName &blueprint : piece.blueprints) {
             const QcStructureDefinition *structure = content.worldgen().structure(blueprint.structure);
             if (structure && std::ranges::any_of(structure->mobs, isSelf, &QcStructureDefinition::Mob::mob)) {
                 return true;

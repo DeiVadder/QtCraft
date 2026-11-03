@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 
@@ -23,15 +24,6 @@
     its floor lies one below. */
 struct QcMineshaftPlan
 {
-    /*! \brief A block placed at a cell. */
-    struct Placed
-    {
-        /*! The cell. */
-        QcBlockPos at;
-        /*! The block state placed there. */
-        QcBlockId block = qcAirBlockId;
-    };
-
     /*! \brief A crossing, corner or dead end of a level, or the central room (node 0): an open
         box of (2 half + 1)^2 cells, \c {height} high above its floor. */
     struct Node
@@ -136,7 +128,7 @@ struct QcMineshaftPlan
         QList<QcBlockPos> lining;
         /*! The ladder from the room's floor up and the headframe, or the tunnel's supports and
             rails. */
-        QList<Placed> blocks;
+        QList<QcPlacedBlock> blocks;
     };
 
     /*! \brief A spawner with its spawn area (inclusive corners). */
@@ -167,7 +159,7 @@ struct QcMineshaftPlan
     /*! Rail cells that hold a chest minecart. */
     QList<QcBlockPos> carts;
     /*! Supports, rails, cobwebs, lights and spawners, placed after the corridors are open. */
-    QList<Placed> blocks;
+    QList<QcPlacedBlock> blocks;
     /*! Floor cells with a pillar down to the ground below them where the floor is open. */
     QList<QcBlockPos> pillars;
     /*! The way up to the surface, if it has one. */
@@ -196,15 +188,15 @@ struct QcMineshaftPlan
             maxZ = std::max(maxZ, cell.z + 1);
         };
         forEachOpenCell(add);
-        for (const QcMineshaftPlan::Placed &placed : std::as_const(blocks)) {
-            add(placed.at);
+        for (const QcPlacedBlock &placed : std::as_const(blocks)) {
+            add(placed.pos);
         }
         if (entrance) {
             // The cleared box over `top` and the ring of foliage around it (QcMineshaftBuilder::buildEntrance).
             add(entrance->top.offset(-2, 0, -2));
             add(entrance->top.offset(2, 0, 2));
-            for (const QcMineshaftPlan::Placed &placed : std::as_const(entrance->blocks)) {
-                add(placed.at);
+            for (const QcPlacedBlock &placed : std::as_const(entrance->blocks)) {
+                add(placed.pos);
             }
             for (const QcBlockPos &cell : std::as_const(entrance->lining)) {
                 add(cell);

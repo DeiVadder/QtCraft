@@ -52,10 +52,10 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
     m_foundation = *foundation;
 
     // A tower must stay inside its region with a column to spare on each side.
-    for (const QcCoastalTowerSettings::Structure &entry : std::as_const(m_settings.structures)) {
+    for (const QcWeightedStructureName &entry : std::as_const(m_settings.structures)) {
         const QcStructureDefinition *definition = content.worldgen().structure(entry.structure);
         QcStructure::Loaded structure = definition ? QcStructure::fromDefinition(*definition, content)
-                                                   : std::unexpected(QcStructure::Failure{u"unknown"_s, {}});
+                                                   : std::unexpected(QcLoadFailure{u"unknown"_s, {}});
         m_warnings.append(QcStructure::warningsOf(structure));
         if (!structure || std::max(structure->sizeX(), structure->sizeZ()) + 2 > m_settings.regionSize) {
             m_warnings.append(u"coastalTowers: structure '%1' is unknown or does not fit the region, left out"_s.arg(entry.structure));
@@ -77,10 +77,10 @@ double QcCoastalTowerPlanner::priority(int regionX, int regionZ) const
     return random(regionX, regionZ, Priority);
 }
 
-const QcCoastalTowerPlanner::Kind &QcCoastalTowerPlanner::pick(double random) const
+const QcWeightedStructure &QcCoastalTowerPlanner::pick(double random) const
 {
     int left = static_cast<int>(random * m_totalWeight);
-    const auto chosen = std::ranges::find_if(m_kinds, [&left](const Kind &kind) {
+    const auto chosen = std::ranges::find_if(m_kinds, [&left](const QcWeightedStructure &kind) {
         left -= kind.weight;
         return left < 0;
     });
@@ -93,7 +93,7 @@ std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerPlanner::plan(int region
         return nullptr;
     }
 
-    const Kind &kind = pick(random(regionX, regionZ, KindPick));
+    const QcWeightedStructure &kind = pick(random(regionX, regionZ, KindPick));
     const int margin = std::max(kind.structure->sizeX(), kind.structure->sizeZ()) / 2 + 1;
     const QList<std::pair<int, int>> sites = candidates(regionX, regionZ, margin);
     const qsizetype tries = std::min<qsizetype>(sites.size(), m_settings.attempts);
@@ -191,7 +191,7 @@ bool QcCoastalTowerPlanner::isOceanColumn(const QcTerrainColumn &column) const
     return column.landFactor < 0.5 && column.height - 1 <= m_terrain.seaLevel() - 1 - m_settings.oceanDepth;
 }
 
-std::optional<QcCoastalTowerPlan> QcCoastalTowerPlanner::siteAt(const Kind &kind, int x, int z, double turn) const
+std::optional<QcCoastalTowerPlan> QcCoastalTowerPlanner::siteAt(const QcWeightedStructure &kind, int x, int z, double turn) const
 {
     // Each of the four turns from a random one on, the first whose door opens onto ground one can
     // step from; the footprint of a square structure is the same for all of them.
@@ -202,7 +202,7 @@ std::optional<QcCoastalTowerPlan> QcCoastalTowerPlanner::siteAt(const Kind &kind
         const int turns = (first + i) % 4;
         const int sizeX = turns % 2 == 0 ? kind.structure->sizeX() : kind.structure->sizeZ();
         const int sizeZ = turns % 2 == 0 ? kind.structure->sizeZ() : kind.structure->sizeX();
-        const Footprint footprint{x - sizeX / 2, z - sizeZ / 2, x - sizeX / 2 + sizeX - 1, z - sizeZ / 2 + sizeZ - 1};
+        const QcXzRect footprint{x - sizeX / 2, z - sizeZ / 2, x - sizeX / 2 + sizeX - 1, z - sizeZ / 2 + sizeZ - 1};
         std::optional<std::optional<int>> &known = floors[static_cast<std::size_t>(turns % 2)];
         if (!known) {
             known = floorOver(footprint);
@@ -241,7 +241,7 @@ std::optional<int> QcCoastalTowerPlanner::groundUnder(int x, int z) const
     return top;
 }
 
-std::optional<int> QcCoastalTowerPlanner::floorOver(Footprint footprint) const
+std::optional<int> QcCoastalTowerPlanner::floorOver(QcXzRect footprint) const
 {
     int low = QcWorld::worldHeight;
     int high = 0;
@@ -274,7 +274,7 @@ std::optional<QcBlockPos> QcCoastalTowerPlanner::doorstepOf(const QcStructurePla
     return QcBlockPos{front.x, *top, front.z};
 }
 
-std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanNear(Footprint footprint) const
+std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanNear(QcXzRect footprint) const
 {
     // Rings two blocks apart: the open sea is wide.
     for (int distance = 2; distance <= m_settings.coastDistance; distance += 2) {
@@ -285,7 +285,7 @@ std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanNear(Footprint footprint) 
     return std::nullopt;
 }
 
-std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanOnRing(Footprint ring) const
+std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanOnRing(QcXzRect ring) const
 {
     // Every second column of the ring's edges.
     QList<std::pair<int, int>> columns;
@@ -305,21 +305,21 @@ std::optional<QcBlockPos> QcCoastalTowerPlanner::oceanOnRing(Footprint ring) con
     return std::nullopt;
 }
 
-bool QcCoastalTowerPlanner::clearOfOthers(Footprint footprint) const
+bool QcCoastalTowerPlanner::clearOfOthers(QcXzRect footprint) const
 {
-    const Footprint around = footprint.grown(m_settings.clearance);
+    const QcXzRect around = footprint.grown(m_settings.clearance);
     return !nearVillage(around) && !nearEntrance(around) && !nearSurfaceStructure(around);
 }
 
-bool QcCoastalTowerPlanner::nearSurfaceStructure(Footprint around) const
+bool QcCoastalTowerPlanner::nearSurfaceStructure(QcXzRect around) const
 {
     // Surface structures are planned without the towers, so the towers keep clear of them and of
     // their blended ground (decision E-889).
     const QList<QcChunkPos> chunks = around.chunks();
     for (const QcChunkPos &chunk : chunks) {
-        const QList<QcSurfacePlanner::Rect> footprints = m_terrain.surfaceStructures().footprintsNear(chunk, 0);
-        const bool near = std::ranges::any_of(footprints, [&around](QcSurfacePlanner::Rect footprint) {
-            return around.touches({footprint.x0, footprint.z0, footprint.x1, footprint.z1});
+        const QList<QcXzRect> footprints = m_terrain.surfaceStructures().footprintsNear(chunk, 0);
+        const bool near = std::ranges::any_of(footprints, [&around](QcXzRect footprint) {
+            return around.intersects(footprint);
         });
         if (near) {
             return true;
@@ -328,7 +328,7 @@ bool QcCoastalTowerPlanner::nearSurfaceStructure(Footprint around) const
     return false;
 }
 
-bool QcCoastalTowerPlanner::nearVillage(Footprint around) const
+bool QcCoastalTowerPlanner::nearVillage(QcXzRect around) const
 {
     // A village stays inside the chunks of its region.
     QSet<const QcVillagePlan *> seen;
@@ -339,17 +339,17 @@ bool QcCoastalTowerPlanner::nearVillage(Footprint around) const
             continue;
         }
         seen.insert(village.get());
-        if (around.touches({village->minX, village->minZ, village->maxX, village->maxZ})) {
+        if (around.intersects({village->minX, village->minZ, village->maxX, village->maxZ})) {
             return true;
         }
     }
     return false;
 }
 
-bool QcCoastalTowerPlanner::nearEntrance(Footprint around) const
+bool QcCoastalTowerPlanner::nearEntrance(QcXzRect around) const
 {
     // A mine shaft entrance's headframe reaches two columns from its shaft.
-    const Footprint headframes = around.grown(2);
+    const QcXzRect headframes = around.grown(2);
     const QList<QcChunkPos> chunks = headframes.chunks();
     for (const QcChunkPos &chunk : chunks) {
         const QList<std::shared_ptr<const QcMineshaftPlan>> shafts = m_terrain.mineshafts().plansTouching(chunk);

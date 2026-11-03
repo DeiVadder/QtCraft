@@ -102,7 +102,7 @@ int web(const QCommandLineParser &parser, const QcHeadlessOptions::Options &opti
     }
 
     const QStringList ids = languages(*exported);
-    QList<QcHandbookWeb::File> files{QcHandbookWeb::languages(ids), QcWebHandbookAssets::theme()};
+    QList<QcHandbookMarkdown::File> files{QcHandbookWeb::languages(ids), QcWebHandbookAssets::theme()};
     QSet<QString> shown;
     qsizetype entries = 0;
     QStringList withoutIcon;

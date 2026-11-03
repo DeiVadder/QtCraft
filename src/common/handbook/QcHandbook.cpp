@@ -51,7 +51,7 @@ const QcHandbook::Category *QcHandbook::category(const QString &id) const
 
 QString QcHandbook::packName(const QString &id) const
 {
-    const auto it = std::ranges::find(m_packs, id, &Pack::id);
+    const auto it = std::ranges::find(m_packs, id, &QcPackReference::id);
     return it == m_packs.end() ? id : it->name;
 }
 

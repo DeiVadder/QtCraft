@@ -152,7 +152,7 @@ private slots:
     void templesKeepClearOfVillages()
     {
         for (const std::shared_ptr<const QcStructurePlacement> &plan : std::as_const(m_plans)) {
-            const QcSurfacePlanner::Rect rect = QcSurfacePlanner::footprintOf(*plan);
+            const QcXzRect rect = QcSurfacePlanner::footprintOf(*plan);
             for (int dz = -1; dz <= 1; ++dz) {
                 for (int dx = -1; dx <= 1; ++dx) {
                     const QcBlockPos probe = plan->origin().offset(dx * 384, 0, dz * 384);

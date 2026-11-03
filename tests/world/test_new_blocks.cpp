@@ -295,7 +295,7 @@ private slots:
         const auto swamp = std::ranges::find(m_content->worldgen().biomes(), u"qtcraft:swamp"_s, &QcBiomeDefinition::name);
         QVERIFY(swamp != m_content->worldgen().biomes().end());
         const auto lists = [](const QcVegetationLayer &layer, const QString &name) {
-            return std::ranges::any_of(layer.plants, [&](const QcVegetationPlant &plant) { return plant.block == name; });
+            return std::ranges::any_of(layer.plants, [&](const QcWeightedBlockName &plant) { return plant.block == name; });
         };
         QVERIFY(lists(swamp->vegetation.grass, u"qtcraft:tall_grass"_s));
         QVERIFY(lists(swamp->vegetation.flowers, u"qtcraft:blue_orchid"_s));

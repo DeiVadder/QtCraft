@@ -22,7 +22,7 @@ void QcServerExperience::tick()
 {
     QcExperienceOrbManager &orbs = m_state.entities().orbs();
     if (!orbs.orbs().isEmpty()) {
-        QList<QcExperienceOrbManager::PlayerView> players;
+        QList<QcPickupPlayer> players;
         for (const auto &client : m_state.clients()) {
             // Spectators collect nothing (decision E-730).
             if (client->hasBody()) {

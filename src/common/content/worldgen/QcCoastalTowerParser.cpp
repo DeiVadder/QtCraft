@@ -15,10 +15,10 @@ namespace QcCoastalTowerParser {
 namespace {
 
 // The structures a tower is chosen from, with their weights.
-[[nodiscard]] QList<QcCoastalTowerSettings::Structure> parseStructures(const QJsonObject &json, QcJsonFieldReader &reader,
+[[nodiscard]] QList<QcWeightedStructureName> parseStructures(const QJsonObject &json, QcJsonFieldReader &reader,
                                                                        const QString &packNamespace)
 {
-    QList<QcCoastalTowerSettings::Structure> result;
+    QList<QcWeightedStructureName> result;
     const QJsonArray structures = json.value(u"structures"_s).toArray();
     for (const auto &entry : structures) {
         const QJsonObject structure = entry.toObject();

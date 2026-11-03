@@ -79,11 +79,11 @@ bool QcExperienceOrbManager::add(QcExperienceOrb orb)
     return true;
 }
 
-const QcExperienceOrbManager::PlayerView *QcExperienceOrbManager::nearestPlayer(const QcExperienceOrb &orb, const QList<PlayerView> &players)
+const QcPickupPlayer *QcExperienceOrbManager::nearestPlayer(const QcExperienceOrb &orb, const QList<QcPickupPlayer> &players)
 {
-    const PlayerView *nearest = nullptr;
+    const QcPickupPlayer *nearest = nullptr;
     double best = attractRange;
-    for (const PlayerView &player : players) {
+    for (const QcPickupPlayer &player : players) {
         const double distance = (player.position - orb.motion.position).length();
         if (player.alive && distance < best) {
             best = distance;
@@ -93,9 +93,9 @@ const QcExperienceOrbManager::PlayerView *QcExperienceOrbManager::nearestPlayer(
     return nearest;
 }
 
-void QcExperienceOrbManager::step(QcExperienceOrb &orb, const QList<PlayerView> &players, const QcBlockAccess &world, double dt) const
+void QcExperienceOrbManager::step(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const QcBlockAccess &world, double dt) const
 {
-    const PlayerView *target = nearestPlayer(orb, players);
+    const QcPickupPlayer *target = nearestPlayer(orb, players);
     const QcBlockPos below = QcPhysics::blockContaining(orb.motion.position - QcVec3{0.0, 0.01, 0.0});
     if (!target && orb.resting && QcPhysics::isSolidAt(world, below)) {
         return;
@@ -133,10 +133,10 @@ void QcExperienceOrbManager::step(QcExperienceOrb &orb, const QList<PlayerView> 
     orb.resting = !target && orb.motion.onGround && !orb.motion.inWater && orb.motion.velocity.length() < restSpeed;
 }
 
-bool QcExperienceOrbManager::collect(QcExperienceOrb &orb, const QList<PlayerView> &players, const GiveFunction &give)
+bool QcExperienceOrbManager::collect(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const GiveFunction &give)
 {
     const QcAabb box = QcPhysics::boxAt(orb.motion.position, size, size);
-    for (const PlayerView &player : players) {
+    for (const QcPickupPlayer &player : players) {
         if (!player.alive || m_nextCollect.value(player.entityId, 0) > m_ticks) {
             continue;
         }
@@ -153,7 +153,7 @@ bool QcExperienceOrbManager::collect(QcExperienceOrb &orb, const QList<PlayerVie
     return false;
 }
 
-void QcExperienceOrbManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const GiveFunction &give)
+void QcExperienceOrbManager::tick(const QcBlockAccess &world, const QList<QcPickupPlayer> &players, double dt, const GiveFunction &give)
 {
     ++m_ticks;
 

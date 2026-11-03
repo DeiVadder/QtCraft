@@ -86,11 +86,11 @@ bool QcMineshaftAccess::crossedByPillars(const QcMineshaftNetwork &network, cons
 std::optional<QcStructurePlacement> QcMineshaftAccess::roomAt(const QcMineshaftPlan::Node &at, int turns, QcMineshaftSite &site, double pick) const
 {
     int left = static_cast<int>(pick * m_totalWeight);
-    const auto chosen = std::ranges::find_if(roomList(), [&left](const RoomKind &kind) {
+    const auto chosen = std::ranges::find_if(roomList(), [&left](const QcWeightedStructure &kind) {
         left -= kind.weight;
         return left < 0;
     });
-    const RoomKind &kind = chosen != roomList().end() ? *chosen : roomList().constLast();
+    const QcWeightedStructure &kind = chosen != roomList().end() ? *chosen : roomList().constLast();
     const QcStructure &structure = *kind.structure;
 
     // The door (the middle of the structure's north side) faces the corridor.
@@ -223,9 +223,9 @@ std::optional<QcMineshaftPlan::Entrance> QcMineshaftAccess::ladderOf(const QcMin
     return entrance;
 }
 
-QList<QcMineshaftPlan::Placed> QcMineshaftAccess::headframe(QcBlockPos top) const
+QList<QcPlacedBlock> QcMineshaftAccess::headframe(QcBlockPos top) const
 {
-    QList<QcMineshaftPlan::Placed> blocks;
+    QList<QcPlacedBlock> blocks;
     // A plank ring around the shaft's top, posts at its corners and a roof above; the ladder goes on
     // two cells above the ground against the lining behind it.
     for (int dz = -1; dz <= 1; ++dz) {

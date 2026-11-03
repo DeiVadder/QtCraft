@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "common/protocol/QcWorldMessages.h"
 
@@ -43,23 +44,13 @@ public:
         bool fire = false;
     };
 
-    /*! \brief An explosive a blast reached, to be lit with a short random chain fuse
-        (QcServerExplosions). */
-    struct Chained
-    {
-        /*! The position of the explosive. */
-        QcBlockPos pos;
-        /*! The explosive block. */
-        QcBlockId block = qcAirBlockId;
-    };
-
     QcBlastBlocks(QcServerState &state, QcServerBlocks &blocks, QcServerFire &fire, const QcBlastTable &table);
 
     /*! Adds the \a cells a blast with \a effects breaks to the waiting cells. */
     void add(const QList<QcBlockPos> &cells, const Effects &effects);
     /*! Works through at most \a budget waiting cells; returns the explosives among them, still
         in place. */
-    QList<Chained> take(qint64 budget);
+    QList<QcPlacedBlock> take(qint64 budget);
     /*! Sets \a pos to air without telling the clients yet (a lit explosive leaves its cell).
         Returns \c false when the block could not be set. */
     bool clear(QcBlockPos pos);

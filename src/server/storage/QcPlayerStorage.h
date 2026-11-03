@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcLoadFailure.h"
 #include "common/core/QcResult.h"
 #include "common/gameplay/QcAdvancementProgress.h"
 #include "common/gameplay/QcAirSupply.h"
@@ -84,15 +85,8 @@ public:
         QStringList warnings;
     };
 
-    /*! \brief A player file that cannot be read: why, and the warnings of reading it up to
-        there. \qcfields */
-    struct Failure
-    {
-        QString error;
-        QStringList warnings;
-    };
     /*! A player as read, or why the file cannot be read. */
-    using Result = std::expected<Read, Failure>;
+    using Result = std::expected<Read, QcLoadFailure>;
 
     /*! Returns the player \a playerName as read from his file. A file of an older development
         version is an error (decision E-356). */

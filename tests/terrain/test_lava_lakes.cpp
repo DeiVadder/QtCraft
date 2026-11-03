@@ -198,8 +198,8 @@ private:
     static int lowestGroundAround(const QcTerrainGenerator &generator, const Site &site)
     {
         int lowest = QcWorld::worldHeight;
-        for (int z = site.footprint.z0; z <= site.footprint.z1; ++z) {
-            for (int x = site.footprint.x0; x <= site.footprint.x1; ++x) {
+        for (int z = site.footprint.minZ; z <= site.footprint.maxZ; ++z) {
+            for (int x = site.footprint.minX; x <= site.footprint.maxX; ++x) {
                 if (nearBasin(generator, site, x, z)) {
                     lowest = std::min(lowest, generator.column(x, z).height - 1);
                 }

@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/content/worldgen/QcStructureDefinition.h"
+#include "common/core/QcLoadFailure.h"
 #include "common/core/QcResult.h"
 
 #include <QHash>
@@ -13,6 +14,7 @@
 #include <QStringList>
 
 #include <expected>
+#include <memory>
 #include <optional>
 
 /*! \brief A structure whose palette is resolved to block states (decision E-219): read from a
@@ -34,23 +36,13 @@ public:
 
     QcStructure(QString name, int sizeX, int sizeY, int sizeZ);
 
-    /*! \brief Why a definition could not be resolved, with the warnings of the palette entries
-        before it. */
-    struct Failure
-    {
-        /*! The message naming the structure and the unknown block. */
-        QString error;
-        /*! The warnings of the palette entries resolved before the unknown block. */
-        QStringList warnings;
-    };
-
     /*! The result of fromDefinition(): the structure or why it failed. */
-    using Loaded = std::expected<QcStructure, Failure>;
+    using Loaded = std::expected<QcStructure, QcLoadFailure>;
 
     /*! Returns the structure of \a definition with its palette resolved to block states of
         \a content, with the connection properties of its connecting blocks set (connectBlocks())
         and its extras copied. Unknown blocks fail; unknown state properties or values keep their
-        defaults with a warning (warnings(), or Failure::warnings for the entries before an
+        defaults with a warning (warnings(), or QcLoadFailure::warnings for the entries before an
         unknown block). */
     [[nodiscard]] static Loaded fromDefinition(const QcStructureDefinition &definition, const QcContentRegistry &content);
     /*! Returns the warnings of the resolution \a loaded, whether it succeeded or not (callers
@@ -159,4 +151,12 @@ private:
     QHash<QcBlockId, qint16> m_paletteIndex;
     QList<qint16> m_cells;
     QStringList m_warnings;
+};
+
+/*! \brief A resolved structure picked by weight among others (decision E-975): mineshaft rooms
+    and coastal towers. \qcfields */
+struct QcWeightedStructure
+{
+    std::shared_ptr<const QcStructure> structure;
+    int weight = 1;
 };

@@ -82,7 +82,7 @@ int QcVillages::boxDistance(const QcVillage &village, QcBlockPos pos)
     return std::max(dx, dz);
 }
 
-bool QcVillages::clashes(Box box, qint64 except) const
+bool QcVillages::clashes(QcXzRect box, qint64 except) const
 {
     // The box with its reach against every other area: the chunks the box reaches into with twice
     // the reach hold every village whose area it would meet.
@@ -99,7 +99,7 @@ bool QcVillages::clashes(Box box, qint64 except) const
     return false;
 }
 
-bool QcVillages::meets(const QList<qint64> &ids, Box box, qint64 except) const
+bool QcVillages::meets(const QList<qint64> &ids, QcXzRect box, qint64 except) const
 {
     const int around = 2 * QcVillage::reach;
     return std::ranges::any_of(ids, [&](qint64 id) {
@@ -439,7 +439,7 @@ QcVillage *QcVillages::homeFor(QcBlockPos pos)
     const QList<qint64> ids = near(pos.chunk(), (joinDistance - QcVillage::reach + QcWorld::chunkSize - 1) / QcWorld::chunkSize);
     for (const qint64 id : ids) {
         QcVillage *village = find(id);
-        const Box grown{std::min(village->minX, pos.x), std::min(village->minZ, pos.z), std::max(village->maxX, pos.x), std::max(village->maxZ, pos.z)};
+        const QcXzRect grown{std::min(village->minX, pos.x), std::min(village->minZ, pos.z), std::max(village->maxX, pos.x), std::max(village->maxZ, pos.z)};
         const int distance = boxDistance(*village, pos);
         if (distance < bestDistance && grown.maxX - grown.minX < m_limits.extent && grown.maxZ - grown.minZ < m_limits.extent
             && !clashes(grown, id)) {

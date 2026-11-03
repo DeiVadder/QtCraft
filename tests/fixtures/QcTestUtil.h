@@ -23,7 +23,7 @@ QByteArray qcErrorText(const Result &result)
     if (result.has_value()) {
         return {};
     }
-    // A failure with more than a message (QcPlayerStorage::Failure) names it in `error`.
+    // A failure with more than a message (QcLoadFailure) names it in `error`.
     if constexpr (requires { result.error().error; }) {
         return result.error().error.toUtf8();
     } else {

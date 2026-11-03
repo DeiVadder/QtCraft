@@ -71,12 +71,12 @@ public:
     /*! Returns the footprints of the copies of every kind, grown by their blended ground, within
         \a margin columns of the chunk \a pos: the terrain generator places no features and no
         surface pools there (decisions E-630, E-889). */
-    QList<QcSurfacePlanner::Rect> footprintsNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> footprintsNear(QcChunkPos pos, int margin) const;
     /*! Returns the same as footprintsNear() for \a pos and \a margin where no trees or plants
         grow: kinds with \c {blendVegetation} keep only
         the ring right beside their walls bare, the others their whole blended ground (decision
         E-889). */
-    QList<QcSurfacePlanner::Rect> bareNear(QcChunkPos pos, int margin) const;
+    QList<QcXzRect> bareNear(QcChunkPos pos, int margin) const;
     /*! \brief A column whose ground the blend moves: its new top block. */
     struct Moved
     {
@@ -116,13 +116,13 @@ private:
     [[nodiscard]] std::optional<QcStructureSites> collectSites(QcBlockPos from, int reach, bool mayPlan) const;
     // The footprints within `margin` of the chunk grown by their blend, or with `plantsOnBlend` by
     // the bare ring of kinds with `blendVegetation`.
-    [[nodiscard]] QList<QcSurfacePlanner::Rect> grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
+    [[nodiscard]] QList<QcXzRect> grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const;
     // The columns of `grid` (within the column grid) whose ground the blend around `plan` moves.
     [[nodiscard]] QList<Moved> movedAround(const QcStructurePlacement &plan, int blend, const QcTerrainColumnGrid &columns,
-                                           QcSurfacePlanner::Rect grid) const;
+                                           QcXzRect grid) const;
     // Whether a village or a copy of a kind before `kind` lies within `margin` of the footprint, or
     // within the larger blend of the two (decision E-889).
-    bool occupied(QcSurfacePlanner::KindId kind, QcSurfacePlanner::Rect footprint, int margin) const;
+    bool occupied(QcSurfacePlanner::KindId kind, QcXzRect footprint, int margin) const;
     void build(QcChunk &chunk, const QcStructurePlacement &placement, const QcSurfacePlanner::Kind &kind) const;
 
     const QcVillageGenerator &m_villages;

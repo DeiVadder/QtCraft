@@ -167,7 +167,7 @@ QcAabb QcDebugLines::sectionBox(quint64 sectionKey)
     const QcSectionAddress section = qcSectionFromKey(sectionKey);
     const double x = section.chunk.x * static_cast<double>(QcWorld::chunkSize);
     const double z = section.chunk.z * static_cast<double>(QcWorld::chunkSize);
-    const double y = section.sectionIndex * static_cast<double>(QcWorld::sectionHeight);
+    const double y = section.section * static_cast<double>(QcWorld::sectionHeight);
     // A little inside the section, so its box does not hide in the faces of its neighbours.
     constexpr double inset = 0.02;
     return {{x + inset, y + inset, z + inset},

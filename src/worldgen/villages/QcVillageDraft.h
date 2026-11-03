@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcXzRect.h"
 #include "worldgen/villages/QcVillagePlan.h"
 #include "worldgen/villages/QcVillageStyles.h"
 
@@ -32,31 +33,6 @@ struct QcVillageDraft
     /*! The eight directions of roads, clockwise from east (x up, z down the screen); even ones
         are the axes. */
     static constexpr std::array<std::pair<int, int>, 8> directions{{{1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}, {-1, -1}, {0, -1}, {1, -1}}};
-
-    /*! \brief A rectangle of columns from (\c {x0}, \c {z0}) to (\c {x1}, \c {z1}), both
-        corners inclusive. \qcfields */
-    struct Rect
-    {
-        int x0 = 0;
-        int z0 = 0;
-        int x1 = 0;
-        int z1 = 0;
-
-        /*! Returns the middle column, summed in 64 bits: near the edge of the world (E-883) two
-            corners add up beyond int. */
-        int middleX() const { return static_cast<int>((qint64{x0} + x1) / 2); }
-        /*! Returns the middle row along z, summed in 64 bits like middleX(). */
-        int middleZ() const { return static_cast<int>((qint64{z0} + z1) / 2); }
-
-        bool operator==(const Rect &) const = default;
-
-        /*! Returns whether \a other lies within \a gap columns of this rectangle (0: they
-            overlap). */
-        bool intersects(Rect other, int gap) const
-        {
-            return x0 - gap <= other.x1 && x1 + gap >= other.x0 && z0 - gap <= other.z1 && z1 + gap >= other.z0;
-        }
-    };
 
     /*! \brief One straight run of a road (QcVillagePlan::Run) as the pieces and lamps are placed
         along it. */
@@ -131,8 +107,8 @@ struct QcVillageDraft
     struct Stairs
     {
         QList<QcVillagePlan::Deck> flight;
-        Rect extent;
-        Rect dry;
+        QcXzRect extent;
+        QcXzRect dry;
     };
 
     QcVillageDraft(const Seeds &draws, Region area, Centre centre)
@@ -151,7 +127,7 @@ struct QcVillageDraft
     static int turnsFacing(int fx, int fz);
     /*! Returns the brush of the road cell \a cell of a run in direction (\a dx, \a dz): three
         across an axis run, three by three where \a square (diagonals and bends). */
-    static Rect brush(std::pair<int, int> cell, int dx, int dz, bool square);
+    static QcXzRect brush(std::pair<int, int> cell, int dx, int dz, bool square);
 
     /*! Returns the next draw of the layout sequence, in [0, 1). */
     [[nodiscard]] double random();
@@ -161,20 +137,20 @@ struct QcVillageDraft
     [[nodiscard]] double cropRandom();
 
     /*! Returns whether \a rect lies within the square of the radius around the centre. */
-    bool insideRadius(Rect rect) const;
+    bool insideRadius(QcXzRect rect) const;
     /*! Returns whether \a rect comes within the gap of a piece: \c {pieceGap}, and around the
         centre piece at least its blended ground (decision E-893), so no other piece stands
         on ground that moves. */
-    [[nodiscard]] bool nearPiece(Rect rect) const;
+    [[nodiscard]] bool nearPiece(QcXzRect rect) const;
     /*! Returns the ground's top block at the column \a x, \a z as the village builds it: inside
         the centre piece its floor, around it the blended ground (decision E-893), elsewhere the
         top block of \a terrain. */
     [[nodiscard]] int groundTop(const QcTerrainGenerator &terrain, int x, int z) const;
     /*! Returns whether a road cell lies within \a gap of \a rect. */
-    bool touchesRoad(Rect rect, int gap) const;
+    bool touchesRoad(QcXzRect rect, int gap) const;
     /*! Marks the columns of \a rect as road cells that pieces and lamps keep off (jetties,
         stairs), and adds \a rect to roads. */
-    void markRoad(Rect rect);
+    void markRoad(QcXzRect rect);
     /*! \brief The level of a road's middle line: its top block (\c {y}), and whether it runs on
         a bridge there (\c {bridge}; its top block the deck over a river, decision E-841).
         \qcfields */
@@ -210,11 +186,11 @@ struct QcVillageDraft
         strip. */
     void addStairs(const Stairs &laid);
     /*! Adds a jetty's \a decks; \a deck (its cells) is kept off by pieces and lamps. */
-    void addJetty(const QList<QcVillagePlan::Deck> &decks, Rect deck);
+    void addJetty(const QList<QcVillagePlan::Deck> &decks, QcXzRect deck);
     /*! Adds the building \a piece over \a rect, with its beds and workstations (\a spots,
         local), its creatures and its crop cells (\a crops, local); returns the placed piece,
         valid until the next piece is added. */
-    [[nodiscard]] const QcStructurePlacement &addPiece(QcStructurePlacement piece, Rect rect, const QList<QcVillageSpot> &spots,
+    [[nodiscard]] const QcStructurePlacement &addPiece(QcStructurePlacement piece, QcXzRect rect, const QList<QcVillageSpot> &spots,
                                          const QList<QcBlockPos> &crops);
     /*! On land: adds the doorsteps \a steps of a placed piece, as side road where no road lies
         yet. */
@@ -249,12 +225,12 @@ struct QcVillageDraft
     int nextVariant = 0;
     int nextCrop = 0;
     /*! The footprints of the placed pieces, the centre piece first. */
-    QList<Rect> pieces;
+    QList<QcXzRect> pieces;
     /*! The extent of every road run, jetty and stairs (the village's area, the wetland's
         sources). */
-    QList<Rect> roads;
+    QList<QcXzRect> roads;
     /*! Over water: the stairs down to land (also in \c {roads}). */
-    QList<Rect> stairs;
+    QList<QcXzRect> stairs;
     /*! Columns of roads, boardwalks, jetties and stairs (cellKey): pieces and lamps keep off
         them. */
     QSet<qint64> roadCells;

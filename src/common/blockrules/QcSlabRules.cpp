@@ -9,7 +9,7 @@ using namespace Qt::StringLiterals;
 
 namespace QcSlabRules {
 
-[[nodiscard]] std::optional<QcBlockRules::Placement> doubled(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
+[[nodiscard]] std::optional<QcPlacedBlock> doubled(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked, QcBlockFace face,
                                                              bool upper)
 {
     const QcContentRegistry &content = world.content();
@@ -17,7 +17,7 @@ namespace QcSlabRules {
     if (slabBelow && content.isSameBlock(*slabBelow, state)) {
         const QString type = content.property(*slabBelow, u"type"_s);
         if ((type == u"bottom"_s && face == QcBlockFace::Up) || (type == u"top"_s && face == QcBlockFace::Down)) {
-            return QcBlockRules::Placement{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
+            return QcPlacedBlock{clicked, content.withProperty(state, u"type"_s, u"double"_s)};
         }
     }
 
@@ -26,14 +26,14 @@ namespace QcSlabRules {
     if (existing && content.isSameBlock(*existing, state)) {
         const QString type = content.property(*existing, u"type"_s);
         if ((type == u"bottom"_s && upper) || (type == u"top"_s && !upper)) {
-            return QcBlockRules::Placement{target, content.withProperty(state, u"type"_s, u"double"_s)};
+            return QcPlacedBlock{target, content.withProperty(state, u"type"_s, u"double"_s)};
         }
     }
 
     return std::nullopt;
 }
 
-[[nodiscard]] std::optional<QcBlockRules::Placement> doubledVertical(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked,
+[[nodiscard]] std::optional<QcPlacedBlock> doubledVertical(const QcBlockAccess &world, QcBlockId state, QcBlockPos clicked,
                                                                      QcBlockFace face, const QString &facing)
 {
     const QcContentRegistry &content = world.content();
@@ -49,7 +49,7 @@ namespace QcSlabRules {
 
     // Clicked on its open side: the face looking away from the side it stands against.
     if (const std::optional<QcBlockId> open = singleAt(clicked, QcBlockRules::faceName(QcBlockRules::opposite(face)))) {
-        return QcBlockRules::Placement{clicked, content.withProperty(*open, u"double"_s, u"true"_s)};
+        return QcPlacedBlock{clicked, content.withProperty(*open, u"double"_s, u"true"_s)};
     }
 
     // Placed into a cell whose vertical slab faces the other way.
@@ -59,7 +59,7 @@ namespace QcSlabRules {
     }
     const QcBlockPos target = qcNeighbour(clicked, face);
     if (const std::optional<QcBlockId> facingBack = singleAt(target, QcBlockRules::faceName(QcBlockRules::opposite(*towards)))) {
-        return QcBlockRules::Placement{target, content.withProperty(*facingBack, u"double"_s, u"true"_s)};
+        return QcPlacedBlock{target, content.withProperty(*facingBack, u"double"_s, u"true"_s)};
     }
     return std::nullopt;
 }

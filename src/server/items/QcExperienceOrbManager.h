@@ -5,6 +5,7 @@
 
 #include "server/core/QcServerLimits.h"
 #include "server/entities/QcExperienceOrb.h"
+#include "server/items/QcPickupPlayer.h"
 
 #include <QHash>
 #include <QList>
@@ -55,15 +56,6 @@ public:
     /*! The bound by default (QcServerLimits::experienceOrbs). */
     static constexpr qsizetype defaultLimit = static_cast<qsizetype>(QcServerLimits{}.experienceOrbs);
 
-    /*! \brief What a tick needs to know of a player: entity id, feet position and whether he is
-        alive. \qcfields */
-    struct PlayerView
-    {
-        quint32 entityId = 0;
-        QcVec3 position;
-        bool alive = true;
-    };
-
     /*! Called when the player \c {playerEntityId} collects an orb, with its value \c {points}. */
     using GiveFunction = std::function<void(quint32 playerEntityId, int points)>;
     /*! Returns a new entity id for an orb. */
@@ -82,7 +74,7 @@ public:
 
     /*! One tick of \a dt seconds in \a world: physics and attraction towards \a players,
         collecting (\a give), merging, ageing and despawning. */
-    void tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt, const GiveFunction &give);
+    void tick(const QcBlockAccess &world, const QList<QcPickupPlayer> &players, double dt, const GiveFunction &give);
 
     /*! Returns the orbs. */
     const QList<QcExperienceOrb> &orbs() const { return m_orbs; }
@@ -104,10 +96,10 @@ public:
     void clear();
 
 private:
-    void step(QcExperienceOrb &orb, const QList<PlayerView> &players, const QcBlockAccess &world, double dt) const;
+    void step(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const QcBlockAccess &world, double dt) const;
     // The living player nearest to `orb` within attractRange; null when none.
-    static const PlayerView *nearestPlayer(const QcExperienceOrb &orb, const QList<PlayerView> &players);
-    bool collect(QcExperienceOrb &orb, const QList<PlayerView> &players, const GiveFunction &give);
+    static const QcPickupPlayer *nearestPlayer(const QcExperienceOrb &orb, const QList<QcPickupPlayer> &players);
+    bool collect(QcExperienceOrb &orb, const QList<QcPickupPlayer> &players, const GiveFunction &give);
     // Orbs of the merge grid by cell (cellKey in the .cpp), as indices into m_orbs.
     using MergeGrid = QHash<quint64, QList<qsizetype>>;
     void merge();

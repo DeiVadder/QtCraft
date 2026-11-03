@@ -10,7 +10,7 @@
 QcVegetationTable::Resolved QcVegetationTable::resolve(const QcContentRegistry &content, const QcVegetationLayer &layer)
 {
     Resolved resolved;
-    for (const QcVegetationPlant &plant : layer.plants) {
+    for (const QcWeightedBlockName &plant : layer.plants) {
         const std::optional<QcBlockId> block = content.blockId(plant.block);
         if (!block) {
             resolved.unknown.append(plant.block);

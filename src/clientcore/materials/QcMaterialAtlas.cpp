@@ -132,7 +132,7 @@ QcMaterialAtlas QcMaterialAtlas::build(const QcTextureAtlas &colour, const QcCon
     atlas.m_normal = {normal};
     atlas.m_specular = {specular};
     for (int next = 1; next < QcAtlasLayout::levelCount(atlas.m_tileSize); ++next) {
-        QcMaterialMips::Level level = QcMaterialMips::halve(atlas.m_normal.back(), atlas.m_specular.back());
+        QcMaterialSynthesizer::Maps level = QcMaterialMips::halve(atlas.m_normal.back(), atlas.m_specular.back());
         atlas.m_normal.append(std::move(level.normal));
         atlas.m_specular.append(std::move(level.specular));
     }

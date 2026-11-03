@@ -16,7 +16,8 @@
     The output depends only on the handbook, so the same content gives the same bytes. */
 namespace QcHandbookMarkdown {
 
-/*! \brief One file of the export. */
+/*! \brief One file of an export: a Markdown page or a file of the web handbook's data
+    (QcHandbookWeb). */
 struct File
 {
     /*! The file name. */

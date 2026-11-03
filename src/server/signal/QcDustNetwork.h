@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "server/signal/QcSignalPower.h"
 
 #include <QHash>
@@ -28,18 +29,11 @@ public:
     /*! Dust per region at most; beyond, the rest of a pathological region keeps its old state. */
     static constexpr int maxNodes = 65536;
 
-    /*! \brief The new \c {state} of the dust at \c {pos}. \qcfields */
-    struct Change
-    {
-        QcBlockPos pos;
-        QcBlockId state = qcAirBlockId;
-    };
-
     /*! \brief What a recomputation found. */
     struct Result
     {
         /*! The dust whose state changes. */
-        QList<Change> changes;
+        QList<QcPlacedBlock> changes;
         /*! Dust looked at (the work done). */
         qsizetype visited = 0;
         /*! \brief Parts of the region (dust linked to each other) that reach a chunk that is not

@@ -162,7 +162,7 @@ private slots:
         QImage specular(2, 2, QImage::Format_RGBA8888);
         specular.fill(QColor(230, 10, 0, 0));
         normal.fill(QColor::fromRgba(QcMaterialSynthesizer::flatNormal));
-        QcMaterialMips::Level level = QcMaterialMips::halve(normal, specular);
+        QcMaterialSynthesizer::Maps level = QcMaterialMips::halve(normal, specular);
         QCOMPARE(level.normal.pixel(0, 0), QcMaterialSynthesizer::flatNormal);
         QCOMPARE(qRed(level.specular.pixel(0, 0)), 230);
         QCOMPARE(qAlpha(level.specular.pixel(0, 0)), 0);

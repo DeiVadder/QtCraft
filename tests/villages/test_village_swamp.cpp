@@ -218,7 +218,7 @@ private:
                 if (!column || column->top > waterSurface) {
                     continue;
                 }
-                const bool underneath = std::ranges::any_of(plan.wetland.wet, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
+                const bool underneath = std::ranges::any_of(plan.wetland.wet, [x, z](QcXzRect area) { return area.contains(x, z); });
                 const bool raised = column->top == waterSurface || column->top > m_generator.column(x, z).height - 1;
                 census.add({x, column->top, z}, column->cover, underneath, raised, waterSurface);
             }
@@ -375,7 +375,7 @@ private slots:
             }
 
             for (const QcBlockPos top : std::as_const(tops)) {
-                const bool dry = std::ranges::any_of(plan->wetland.dry, [top](QcVillagePlan::Area area) { return area.contains(top.x, top.z); });
+                const bool dry = std::ranges::any_of(plan->wetland.dry, [top](QcXzRect area) { return area.contains(top.x, top.z); });
                 if (blockIn(chunks, top) != post || dry) {
                     continue;
                 }
@@ -424,7 +424,7 @@ private slots:
             const auto ground = [&](int x, int z) { return generator.column(x, z).height - 1; };
             const auto height = [&](int x, int z) { return shaper.groundAt(*plan, x, z).value_or(ground(x, z)); };
             const auto dry = [&](int x, int z) {
-                return std::ranges::any_of(plan->wetland.dry, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
+                return std::ranges::any_of(plan->wetland.dry, [x, z](QcXzRect area) { return area.contains(x, z); });
             };
             for (int z = plan->minZ - 2; z <= plan->maxZ + 2; ++z) {
                 for (int x = plan->minX - 2; x <= plan->maxX + 2; ++x) {

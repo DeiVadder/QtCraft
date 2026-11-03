@@ -464,8 +464,8 @@ void QcServerCircuits::runWave(qsizetype limit)
             m_state.circuits().waitOn(blocked.chunk, pos, signal);
         }
     }
-    for (const QcDustNetwork::Change &change : std::as_const(wired.changes)) {
-        plan.write(change.pos, change.state);
+    for (const QcPlacedBlock &change : std::as_const(wired.changes)) {
+        plan.write(change.pos, change.block);
     }
 
     const QcComparatorReadings readings(m_state.world(), m_state.blockEntities(), m_state.entities().minecarts(), m_state.entities().hangings());

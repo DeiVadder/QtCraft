@@ -31,7 +31,7 @@ public:
     };
 
     /*! The result of resolve(): the variation, or the failure of the structure. */
-    using Resolved = std::expected<QcPieceVariation, QcStructure::Failure>;
+    using Resolved = std::expected<QcPieceVariation, QcLoadFailure>;
 
     /*! Returns \a definition resolved against the blocks of \a content; \a definition already
         carries the style's palette swaps. Unknown blocks of the structure fail; an option naming

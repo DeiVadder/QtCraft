@@ -104,8 +104,8 @@ private slots:
         QCOMPARE(mirror.animationSeconds(1.0) - before, 1.0);
 
         // The smoke of a campfire rises between these moments.
-        const QList<QcCampfireSmoke::Puff> early = QcCampfireSmoke::puffsOf({0, 64, 0}, before + 0.1);
-        const QList<QcCampfireSmoke::Puff> late = QcCampfireSmoke::puffsOf({0, 64, 0}, before + 0.3);
+        const QList<QcEffectPuff> early = QcCampfireSmoke::puffsOf({0, 64, 0}, before + 0.1);
+        const QList<QcEffectPuff> late = QcCampfireSmoke::puffsOf({0, 64, 0}, before + 0.3);
         QCOMPARE(early.size(), late.size());
         QVERIFY(late.first().position.y != early.first().position.y);
 
@@ -136,7 +136,7 @@ private slots:
         double lastY = -1.0;
         double largest = 0.0;
         for (int index = 0; index * step < QcCampfireSmoke::puffSeconds - 1e-9; ++index) {
-            const QcCampfireSmoke::Puff puff = QcCampfireSmoke::puffsOf(fire, index * step).constFirst();
+            const QcEffectPuff puff = QcCampfireSmoke::puffsOf(fire, index * step).constFirst();
             // Rises at 3.2 m per lifetime, about 1.07 m a second.
             if (lastY >= 0.0) {
                 QCOMPARE_GT(puff.position.y, lastY);
@@ -150,8 +150,8 @@ private slots:
         }
 
         // It swells and shrinks again towards the end of its life, then starts anew at the fire.
-        const QcCampfireSmoke::Puff end = QcCampfireSmoke::puffsOf(fire, QcCampfireSmoke::puffSeconds - 0.01).constFirst();
-        const QcCampfireSmoke::Puff anew = QcCampfireSmoke::puffsOf(fire, QcCampfireSmoke::puffSeconds).constFirst();
+        const QcEffectPuff end = QcCampfireSmoke::puffsOf(fire, QcCampfireSmoke::puffSeconds - 0.01).constFirst();
+        const QcEffectPuff anew = QcCampfireSmoke::puffsOf(fire, QcCampfireSmoke::puffSeconds).constFirst();
         QVERIFY(largest > 0.35);
         QVERIFY(end.size < 0.2);
         QVERIFY(anew.position.y < fire.y + 0.5);

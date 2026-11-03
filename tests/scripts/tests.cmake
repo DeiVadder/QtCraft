@@ -52,6 +52,10 @@ if(NOT WIN32)
     # QML heuristics (decision E-942), held in memory.
     add_test(NAME script_check_duplicates COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-duplicates.py --self-test)
     set_tests_properties(script_check_duplicates PROPERTIES TIMEOUT 60)
+    # Samples of the duplicate-struct finder (members with macros, initialisers and template arguments, markers),
+    # decision E-975.
+    add_test(NAME script_check_duplicate_structs COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-duplicate-structs.py --self-test)
+    set_tests_properties(script_check_duplicate_structs PROPERTIES TIMEOUT 60)
     add_test(NAME script_check_qml COMMAND python3 ${PROJECT_SOURCE_DIR}/scripts/check-qml.py --self-test)
     set_tests_properties(script_check_qml PROPERTIES TIMEOUT 60)
     # The ratchet of their counts (rise, fall, equal, unknown rule, missing baseline; row 79.48b).

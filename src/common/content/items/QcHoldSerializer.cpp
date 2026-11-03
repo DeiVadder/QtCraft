@@ -12,13 +12,6 @@ namespace {
 // Marks an unset category or grip.
 constexpr quint8 unset = 0xff;
 
-// The bounds one value of a vector must keep.
-struct Range
-{
-    double low;
-    double high;
-};
-
 void writeVector(QDataStream &stream, const std::optional<QcVec3> &vector)
 {
     stream << vector.has_value();
@@ -29,7 +22,7 @@ void writeVector(QDataStream &stream, const std::optional<QcVec3> &vector)
 
 // An engaged optional holding the vector (or std::nullopt when it is unset); std::nullopt when
 // the data is corrupt or out of `range`.
-[[nodiscard]] std::optional<std::optional<QcVec3>> readVector(QDataStream &stream, Range range)
+[[nodiscard]] std::optional<std::optional<QcVec3>> readVector(QDataStream &stream, QcHoldParser::Range range)
 {
     bool present = false;
     stream >> present;

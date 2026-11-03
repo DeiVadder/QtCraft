@@ -260,12 +260,16 @@ inline constexpr auto orbTexture = "qtcraft:experience_orb";
 void appendOrb(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemFrame &frame, const UvLookup &uv);
 
 /*! \brief Where a block entity stands (its feet) and how large it is drawn. */
-struct BlockPlacement
+struct BlockPlacement // NOLINT(qc-duplicate-struct): the feet of a drawn cube; QcEffectPuff holds the middle (centredAt)
 {
     /*! Feet of the block. */
     QcVec3 position;
     /*! Edge length in metres. */
     double size = 0.98;
+
+    /*! Returns the placement of a cube of edge \a size whose middle is \a centre (the puffs of
+        smoke, explosions and ink, QcEffectPuff). */
+    static BlockPlacement centredAt(const QcVec3 &centre, double size) { return {centre - QcVec3{0.0, size * 0.5, 0.0}, size}; }
 };
 
 /*! Maps the local space of an item to world space. */

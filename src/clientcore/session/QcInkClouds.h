@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "clientcore/session/QcEffectPuff.h"
 #include "common/core/QcVec3.h"
 
 #include <QHash>
@@ -41,13 +42,6 @@ public:
         QString texture;
     };
 
-    /*! \brief Where a puff is and how large it is at a moment (lookAt()). \qcfields */
-    struct Look
-    {
-        QcVec3 position;
-        double size = 0.0;
-    };
-
     /*! Puffs of one cloud. */
     static constexpr int puffsPerCloud = 16;
     /*! Most puffs at a time; a cloud that would exceed it adds none. */
@@ -67,7 +61,7 @@ public:
     const QList<Puff> &puffs() const { return m_puffs; }
     /*! Returns how \a puff looks at \a ticks (client ticks with the frame's fraction); nothing
         when it is over or not yet there. */
-    [[nodiscard]] static std::optional<Look> lookAt(const Puff &puff, double ticks);
+    [[nodiscard]] static std::optional<QcEffectPuff> lookAt(const Puff &puff, double ticks);
 
 private:
     // NOLINT(qc-member-access): add() appends and prune() removes; nothing else writes it.

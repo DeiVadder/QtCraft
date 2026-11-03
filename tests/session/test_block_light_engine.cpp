@@ -230,7 +230,7 @@ QcBlockLightEngine::Changes editRandomBlock(Fixture &fixture, QcBlockLightEngine
 QSet<quint64> remeshedSections(const QcBlockLightEngine::Changes &changes)
 {
     QSet<quint64> remesh;
-    for (const QcBlockLightEngine::SectionRef &ref : changes.remesh) {
+    for (const QcSectionAddress &ref : changes.remesh) {
         remesh.insert(qcSectionKey(ref.chunk, ref.section));
     }
     return remesh;

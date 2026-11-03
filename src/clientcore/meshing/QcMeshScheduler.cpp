@@ -113,7 +113,7 @@ void QcMeshScheduler::markChunkAndNeighbours(QcChunkPos pos)
 }
 
 void QcMeshScheduler::submitLight(std::function<void(QcBlockLightEngine &)> work, std::optional<QcChunkPos> added,
-                                  QList<SectionAddress> dirty, qint64 changedAtNs)
+                                  QList<QcSectionAddress> dirty, qint64 changedAtNs)
 {
     ++m_lightJobsPending;
     m_lightPool.submit([this, engine = m_lightEngine, generation = m_lightGeneration, work = std::move(work), added,
@@ -188,10 +188,10 @@ void QcMeshScheduler::chunkUnloaded(QcChunkPos pos)
     }
 }
 
-QList<QcMeshScheduler::SectionAddress> QcMeshScheduler::faceSections(QcBlockPos pos)
+QList<QcSectionAddress> QcMeshScheduler::faceSections(QcBlockPos pos)
 {
     // Faces and ambient occlusion reach the sections holding a cell next to the block.
-    QList<SectionAddress> sections;
+    QList<QcSectionAddress> sections;
     const int lx = pos.localX();
     const int lz = pos.localZ();
     const int ly = pos.y % QcWorld::sectionHeight;
@@ -233,8 +233,8 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         // Drawn and lit alike (QcBlockRenderTable::Entry): no section looks different.
         return;
     }
-    const QList<SectionAddress> faces = faceSections(pos);
-    QList<SectionAddress> dirty = faces;
+    const QList<QcSectionAddress> faces = faceSections(pos);
+    QList<QcSectionAddress> dirty = faces;
 
     bool lightChanges = true;
     if (m_renderTable) {
@@ -251,8 +251,8 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         // The faces show as soon as the event loop comes back; marking them again below would
         // outdate their jobs.
         gatherPlayerSections(world, faces, now);
-        dirty.removeIf([&faces](SectionAddress address) {
-            return std::ranges::any_of(faces, [address](SectionAddress face) { return face.chunk == address.chunk && face.section == address.section; });
+        dirty.removeIf([&faces](QcSectionAddress address) {
+            return std::ranges::any_of(faces, [address](QcSectionAddress face) { return face.chunk == address.chunk && face.section == address.section; });
         });
     }
 
@@ -267,7 +267,7 @@ void QcMeshScheduler::blockChanged(const QcClientWorld &world, QcBlockPos pos, Q
         m_gatheredDirty.append(dirty);
         return;
     }
-    for (const SectionAddress &address : std::as_const(dirty)) {
+    for (const QcSectionAddress &address : std::as_const(dirty)) {
         markDirty(address.chunk, address.section, now);
     }
 }
@@ -355,10 +355,10 @@ void QcMeshScheduler::deliverLight()
             }
         }
 
-        for (const QcBlockLightEngine::SectionRef &ref : std::as_const(result.changes.remesh)) {
+        for (const QcSectionAddress &ref : std::as_const(result.changes.remesh)) {
             markDirty(ref.chunk, ref.section, result.changedAtNs);
         }
-        for (const SectionAddress &address : std::as_const(result.dirty)) {
+        for (const QcSectionAddress &address : std::as_const(result.dirty)) {
             markDirty(address.chunk, address.section, result.changedAtNs);
         }
     }
@@ -387,7 +387,7 @@ QList<quint64> QcMeshScheduler::nearestDirtyFirst() const
         }
     }
 
-    const auto distance = [this](SectionAddress address) {
+    const auto distance = [this](QcSectionAddress address) {
         const double dx = (address.chunk.x + 0.5) * QcWorld::chunkSize - m_focus.x;
         const double dy = (address.section + 0.5) * QcWorld::sectionHeight - m_focus.y;
         const double dz = (address.chunk.z + 0.5) * QcWorld::chunkSize - m_focus.z;
@@ -398,7 +398,7 @@ QList<quint64> QcMeshScheduler::nearestDirtyFirst() const
     return candidates;
 }
 
-std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world, SectionAddress address) const
+std::optional<QcMeshInput> QcMeshScheduler::meshInput(const QcClientWorld &world, QcSectionAddress address) const
 {
     QcMeshInput input;
     bool sidesLoaded = true;
@@ -463,7 +463,7 @@ void QcMeshScheduler::submitMesh(quint64 key, QcMeshInput input, Priority priori
 
 void QcMeshScheduler::startJob(const QcClientWorld &world, quint64 key, Priority priority)
 {
-    const SectionAddress address = m_dirty.value(key);
+    const QcSectionAddress address = m_dirty.value(key);
     const std::shared_ptr<const QcChunk> centre = world.chunk(address.chunk);
     if (!centre || (m_lightEngine && !m_light.contains(address.chunk))) {
         // Without its light yet: the light result marks it again.
@@ -487,7 +487,7 @@ void QcMeshScheduler::startJob(const QcClientWorld &world, quint64 key, Priority
     submitMesh(key, std::move(*input), priority);
 }
 
-void QcMeshScheduler::gatherPlayerSections(const QcClientWorld &world, const QList<SectionAddress> &sections, qint64 changedAtNs)
+void QcMeshScheduler::gatherPlayerSections(const QcClientWorld &world, const QList<QcSectionAddress> &sections, qint64 changedAtNs)
 {
     if (!m_renderTable) {
         return;
@@ -497,7 +497,7 @@ void QcMeshScheduler::gatherPlayerSections(const QcClientWorld &world, const QLi
     }
     m_playerWorld = &world;
 
-    for (const SectionAddress &address : sections) {
+    for (const QcSectionAddress &address : sections) {
         markDirty(address.chunk, address.section, changedAtNs);
         const quint64 key = qcSectionKey(address.chunk, address.section);
         if (!m_playerSections.contains(key)) {

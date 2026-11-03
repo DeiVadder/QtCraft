@@ -7,6 +7,7 @@
 #include "clientcore/meshing/QcMeshLighting.h"
 #include "clientcore/meshing/QcMeshNeighbourhood.h"
 #include "clientcore/meshing/QcMeshOutput.h"
+#include "common/core/QcBlockPos.h"
 
 #include <algorithm>
 
@@ -26,15 +27,9 @@ constexpr std::array<std::array<std::array<int, 3>, 4>, 6> faceCorners = {{
     {{{1, 0, 0}, {0, 0, 0}, {0, 1, 0}, {1, 1, 0}}}, // North
 }};
 
-// Chunk-local block coordinates (x and z may lie in the neighbour chunks).
-struct Cell
-{
-    int x = 0;
-    int y = 0;
-    int z = 0;
-};
-
-Cell neighbourOf(Cell cell, QcBlockFace face)
+// The cell beside `cell` across `face`; cells are chunk-local block coordinates here (x and z may lie
+// in the neighbour chunks).
+QcBlockPos neighbourOf(QcBlockPos cell, QcBlockFace face)
 {
     const QcFaceOffset normal = qcFaceOffset(face);
     return {cell.x + normal.dx, cell.y + normal.dy, cell.z + normal.dz};
@@ -54,7 +49,7 @@ struct FaceCorners
 struct PlacedBlock
 {
     const Entry &entry;
-    Cell cell;
+    QcBlockPos cell;
     QcBlockPos local;
 };
 
@@ -89,7 +84,7 @@ public:
     const QcBlockRenderTable &table() const { return m_table; }
     const QcMeshLighting &lighting() const { return m_light; }
 
-    void appendBlock(const Entry &entry, Cell cell)
+    void appendBlock(const Entry &entry, QcBlockPos cell)
     {
         if (entry.layer == QcRenderLayer::Invisible) {
             return;
@@ -109,7 +104,7 @@ private:
     // `open` is the cell the face looks into; translucent liquids go to the water lists, cut-out
     // faces to the cutout lists (also below the world: they are never drawn without alpha test), a
     // solid face looking below the world to the underside lists.
-    QcMeshOutput outputFor(const Entry &entry, Cell open)
+    QcMeshOutput outputFor(const Entry &entry, QcBlockPos open)
     {
         if (entry.material == QcSurfaceMaterial::Water) {
             return {m_mesh.waterVertices, m_mesh.waterIndices, &m_mesh.translucentRuns, QcMeshOutput::Run::Water};
@@ -126,7 +121,7 @@ private:
         return {m_mesh.opaqueVertices, m_mesh.opaqueIndices};
     }
 
-    FaceCorners cornersOf(Cell open, QcBlockFace face) const
+    FaceCorners cornersOf(QcBlockPos open, QcBlockFace face) const
     {
         FaceCorners result;
         const auto faceIndex = static_cast<std::size_t>(face);
@@ -186,7 +181,7 @@ private:
 
     void appendShapeQuad(const PlacedBlock &block, const QcBlockRenderTable::Quad &quad, float ownSky, float ownBlock)
     {
-        const Cell open = neighbourOf(block.cell, quad.face);
+        const QcBlockPos open = neighbourOf(block.cell, quad.face);
         const float shade = QcChunkMesher::faceShade[static_cast<std::size_t>(quad.face)];
         std::array<QcBlockVertex, 4> corners{};
         if (quad.boundary) {
@@ -219,7 +214,7 @@ private:
 
     // Corners of the part `quad` with shading and light of the full face interpolated at them (their
     // positions and texture coordinates are left at zero).
-    [[nodiscard]] std::array<QcBlockVertex, 4> shadedPartOfFace(const QcBlockRenderTable::Quad &quad, Cell open, float shade) const
+    [[nodiscard]] std::array<QcBlockVertex, 4> shadedPartOfFace(const QcBlockRenderTable::Quad &quad, QcBlockPos open, float shade) const
     {
         std::array<QcBlockVertex, 4> corners{};
         const FaceCorners full = cornersOf(open, quad.face);
@@ -246,7 +241,7 @@ private:
     }
 
     // A liquid's surface sinks with its level unless liquid lies on top of it.
-    float surfaceOf(const Entry &liquid, Cell cell) const
+    float surfaceOf(const Entry &liquid, QcBlockPos cell) const
     {
         const std::optional<QcBlockId> top = m_around.block(cell.x, cell.y + 1, cell.z);
         return top && m_table.entry(*top).liquid ? 1.0f : liquid.liquidHeight;
@@ -254,7 +249,7 @@ private:
 
     // The heights of the top corners of a cube (QcLiquidSurface, index x + 2 * z): 1 for a block, a
     // liquid's surface sloping towards its lower and open neighbours (decision E-885).
-    std::array<float, 4> topOf(const Entry &entry, Cell at) const
+    std::array<float, 4> topOf(const Entry &entry, QcBlockPos at) const
     {
         const float surface = entry.liquid ? surfaceOf(entry, at) : 1.0f;
         if (surface >= 1.0f) {
@@ -264,7 +259,7 @@ private:
         std::array<float, 9> cells{};
         for (int dz = -1; dz <= 1; ++dz) {
             for (int dx = -1; dx <= 1; ++dx) {
-                const Cell cell{at.x + dx, at.y, at.z + dz};
+                const QcBlockPos cell{at.x + dx, at.y, at.z + dz};
                 const std::optional<QcBlockId> id = m_around.block(cell.x, cell.y, cell.z);
                 const Entry *next = id ? &m_table.entry(*id) : nullptr;
                 float value = QcLiquidSurface::closed;
@@ -315,7 +310,7 @@ private:
 
     void appendCubeFace(const PlacedBlock &block, QcBlockFace face, std::array<float, 4> top)
     {
-        const Cell open = neighbourOf(block.cell, face);
+        const QcBlockPos open = neighbourOf(block.cell, face);
         const std::optional<QcBlockId> neighbour = m_around.block(open.x, open.y, open.z);
         if (!neighbour) {
             return;

@@ -22,6 +22,15 @@ struct QcJsonFieldReader;
     unknown keys are only warned about (lcRegistry). */
 namespace QcHoldParser {
 
+/*! \brief The bounds one value of a vector must keep, both inclusive. */
+struct Range
+{
+    /*! The lowest value allowed. */
+    double low = 0.0;
+    /*! The highest value allowed. */
+    double high = 0.0;
+};
+
 /*! Largest absolute value of a \c {translate} component, in metres. */
 inline constexpr double maxTranslate = 2.0;
 /*! Largest absolute value of a \c {rotate} component, in degrees. */

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockFace.h"
 #include "common/core/QcVec3.h"
 #include "common/world/QcBlockAccess.h"
@@ -17,15 +18,6 @@
     Behaviour follows from data: the block's properties (facing, half, type, attach, hinge, open,
     north/east/south/west, up) and its definition flags. */
 namespace QcBlockRules {
-
-/*! \brief Where a block is placed and in which state. */
-struct Placement
-{
-    /*! The block's position. */
-    QcBlockPos pos;
-    /*! Its state. */
-    QcBlockId state = qcAirBlockId;
-};
 
 /*! \brief What the player aims at when placing a block: \c {face} of the block at \c {clicked},
     \c {hit} (0..1 inside that block), while looking along \c {yaw} and \c {pitch} (degrees,
@@ -62,7 +54,7 @@ QcBlockFace opposite(QcBlockFace face);
     clicked replaceable block (tall grass) is replaced as if the new block were placed on the
     ground below it. std::nullopt when the block cannot go there (a torch on a ceiling, a door
     without room). */
-[[nodiscard]] std::optional<Placement> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
+[[nodiscard]] std::optional<QcPlacedBlock> placement(const QcBlockAccess &world, QcBlockId block, const Aim &aim);
 
 /*! Returns \a id at \a pos with its connection properties recomputed from the neighbours in
     \a world (unchanged for blocks that do not connect); rails take their track from the rails

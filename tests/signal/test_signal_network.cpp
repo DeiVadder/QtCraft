@@ -91,8 +91,8 @@ private:
     {
         const QcSignalPower power(world, m_table);
         const QcDustNetwork::Result result = QcDustNetwork(power).recompute(seeds);
-        for (const QcDustNetwork::Change &change : std::as_const(result.changes)) {
-            world.set(change.pos, change.state);
+        for (const QcPlacedBlock &change : std::as_const(result.changes)) {
+            world.set(change.pos, change.block);
         }
         return result.visited;
     }

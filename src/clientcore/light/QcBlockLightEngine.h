@@ -6,6 +6,7 @@
 #include "clientcore/light/QcChunkLight.h"
 #include "clientcore/meshing/QcBlockRenderTable.h"
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcSectionKey.h"
 #include "common/light/QcLightEngine.h"
 #include "common/world/QcChunk.h"
 
@@ -24,14 +25,6 @@
 class QcBlockLightEngine
 {
 public:
-    /*! \brief A section of a chunk. */
-    struct SectionRef
-    {
-        /*! Position of the chunk. */
-        QcChunkPos chunk;
-        /*! Index of the section within the chunk (0 at the bottom). */
-        int section = 0;
-    };
     /*! \brief A new snapshot of one section's light. */
     struct SectionUpdate
     {
@@ -50,7 +43,7 @@ public:
         /*! New snapshots of the sections whose levels differ. */
         QList<SectionUpdate> sections;
         /*! Sections whose meshes read a changed cell. */
-        QList<SectionRef> remesh;
+        QList<QcSectionAddress> remesh;
     };
 
     explicit QcBlockLightEngine(const std::shared_ptr<const QcBlockRenderTable> &table);

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blocks/QcBlockDefinition.h"
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 
 #include <QList>
@@ -19,15 +20,6 @@
     comes out the same in any generation order (QcDungeonGenerator::build). */
 struct QcDungeonPlan
 {
-    /*! \brief A block placed at a cell (chests, lights). */
-    struct Placed
-    {
-        /*! The cell in world coordinates. */
-        QcBlockPos at;
-        /*! The block state placed there (turned to the side it faces or hangs on). */
-        QcBlockId block = qcAirBlockId;
-    };
-
     /*! \brief A corridor from the room to a cave: the feet cells of its path from the door in
         the room's wall outwards, the last one in the cave; each is open two cells high. */
     struct Corridor
@@ -52,14 +44,14 @@ struct QcDungeonPlan
     /*! The creature the spawner brings forth, drawn by the settings' weights. */
     QString mob;
     /*! The chests against the room's walls, facing into the room. */
-    QList<Placed> chests;
+    QList<QcPlacedBlock> chests;
     /*! The corridors from the room to caves. */
     QList<Corridor> corridors;
     /*! Cells next to the corridors (floor, ceiling, sides) that get a wall block where they are
         not rock; none of them lies in the room or in a corridor. */
     QList<QcBlockPos> lining;
     /*! The lights on the corridors' walls. */
-    QList<Placed> lights;
+    QList<QcPlacedBlock> lights;
     /*! The spawner's spawn area, its lower and upper corner (inclusive). \qcshared */
     QcBlockPos areaLow;
     QcBlockPos areaHigh;

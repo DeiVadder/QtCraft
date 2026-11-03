@@ -284,11 +284,11 @@ void QcVillageGenerator::buildRoads(QcChunk &chunk, const QList<QcBlockPos> &cel
     }
 }
 
-void QcVillageGenerator::buildSteps(QcChunk &chunk, const QList<QcVillagePlan::Step> &steps) const
+void QcVillageGenerator::buildSteps(QcChunk &chunk, const QList<QcPlacedBlock> &steps) const
 {
     const QcChunkPos pos = chunk.pos();
-    for (const QcVillagePlan::Step &step : steps) {
-        const QcBlockPos at = step.at;
+    for (const QcPlacedBlock &step : steps) {
+        const QcBlockPos at = step.pos;
         // On the road's top block only, which buildRoads() cleared above.
         if (at.chunk() == pos && at.y > 0 && at.y < QcWorld::worldHeight && chunk.block(at.localX(), at.y, at.localZ()) == qcAirBlockId
             && isGround(chunk.block(at.localX(), at.y - 1, at.localZ()))) {

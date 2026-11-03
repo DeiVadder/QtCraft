@@ -15,24 +15,24 @@ int floorDiv(int value, int divisor)
     return static_cast<int>(std::floor(static_cast<double>(value) / divisor));
 }
 
-// The regions of size `spacing` that the columns x0..x1, z0..z1 reach into.
-QList<std::pair<int, int>> regionsOver(QcSurfacePlanner::Rect columns, int spacing)
+// The regions of size `spacing` that the columns x0..maxX, z0..maxZ reach into.
+QList<std::pair<int, int>> regionsOver(QcXzRect columns, int spacing)
 {
     QList<std::pair<int, int>> regions;
-    for (int rz = floorDiv(columns.z0, spacing); rz <= floorDiv(columns.z1, spacing); ++rz) {
-        for (int rx = floorDiv(columns.x0, spacing); rx <= floorDiv(columns.x1, spacing); ++rx) {
+    for (int rz = floorDiv(columns.minZ, spacing); rz <= floorDiv(columns.maxZ, spacing); ++rz) {
+        for (int rx = floorDiv(columns.minX, spacing); rx <= floorDiv(columns.maxX, spacing); ++rx) {
             regions.append({rx, rz});
         }
     }
     return regions;
 }
 
-QcSurfacePlanner::Rect grown(QcSurfacePlanner::Rect rect, int margin)
+QcXzRect grown(QcXzRect rect, int margin)
 {
-    return {rect.x0 - margin, rect.z0 - margin, rect.x1 + margin, rect.z1 + margin};
+    return {rect.minX - margin, rect.minZ - margin, rect.maxX + margin, rect.maxZ + margin};
 }
 
-QcSurfacePlanner::Rect chunkRect(QcChunkPos pos)
+QcXzRect chunkRect(QcChunkPos pos)
 {
     const int x = pos.x * QcWorld::chunkSize;
     const int z = pos.z * QcWorld::chunkSize;
@@ -69,7 +69,7 @@ std::shared_ptr<const QcStructurePlacement> QcSurfaceStructures::planOf(QcSurfac
         }
     }
     // Planned outside the lock: planning asks the villages and the kinds before this one.
-    const auto occupied = [this](QcSurfacePlanner::KindId planned, QcSurfacePlanner::Rect footprint, int margin) { return this->occupied(planned, footprint, margin); };
+    const auto occupied = [this](QcSurfacePlanner::KindId planned, QcXzRect footprint, int margin) { return this->occupied(planned, footprint, margin); };
     std::optional<QcStructurePlacement> placement = planner().plan(kind, regionX, regionZ, occupied);
     const std::shared_ptr<const QcStructurePlacement> plan =
         placement ? std::make_shared<const QcStructurePlacement>(std::move(*placement)) : nullptr;
@@ -87,7 +87,7 @@ std::optional<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::
     return it == m_plans.cend() ? std::nullopt : std::optional(*it);
 }
 
-bool QcSurfaceStructures::occupied(QcSurfacePlanner::KindId kind, QcSurfacePlanner::Rect footprint, int margin) const
+bool QcSurfaceStructures::occupied(QcSurfacePlanner::KindId kind, QcXzRect footprint, int margin) const
 {
     // Blended ground (decision E-889) never reaches another footprint, either way: the gap is at
     // least the larger blend, even where `villageMargin` is smaller.
@@ -127,7 +127,7 @@ QList<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::plansTou
     // A copy and its blended ground (decision E-889) lie wholly in its region: the regions of each
     // kind the chunk reaches into.
     QList<std::shared_ptr<const QcStructurePlacement>> plans;
-    const QcSurfacePlanner::Rect chunk = chunkRect(pos);
+    const QcXzRect chunk = chunkRect(pos);
     for (const QcSurfacePlanner::KindId kind : planner().kinds().ids()) {
         const QcSurfacePlanner::Kind &type = planner().kinds()[kind];
         const QList<std::pair<int, int>> regions = regionsOver(chunk, type.rule.spacing);
@@ -141,21 +141,21 @@ QList<std::shared_ptr<const QcStructurePlacement>> QcSurfaceStructures::plansTou
     return plans;
 }
 
-QList<QcSurfacePlanner::Rect> QcSurfaceStructures::footprintsNear(QcChunkPos pos, int margin) const
+QList<QcXzRect> QcSurfaceStructures::footprintsNear(QcChunkPos pos, int margin) const
 {
     // A footprint with its blended ground (decision E-889): nothing is built on ground that moves.
     return grownFootprintsNear(pos, margin, false);
 }
 
-QList<QcSurfacePlanner::Rect> QcSurfaceStructures::bareNear(QcChunkPos pos, int margin) const
+QList<QcXzRect> QcSurfaceStructures::bareNear(QcChunkPos pos, int margin) const
 {
     return grownFootprintsNear(pos, margin, true);
 }
 
-QList<QcSurfacePlanner::Rect> QcSurfaceStructures::grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const
+QList<QcXzRect> QcSurfaceStructures::grownFootprintsNear(QcChunkPos pos, int margin, bool plantsOnBlend) const
 {
-    QList<QcSurfacePlanner::Rect> footprints;
-    const QcSurfacePlanner::Rect chunk = chunkRect(pos);
+    QList<QcXzRect> footprints;
+    const QcXzRect chunk = chunkRect(pos);
     for (const QcSurfacePlanner::KindId kind : planner().kinds().ids()) {
         const QcStructureDefinition::Surface &rule = planner().kinds()[kind].rule;
         // With plants on the blend two columns stay bare beside the walls: no leaves and no bush right
@@ -164,7 +164,7 @@ QList<QcSurfacePlanner::Rect> QcSurfaceStructures::grownFootprintsNear(QcChunkPo
         const QList<std::pair<int, int>> regions = regionsOver(grown(chunk, margin), rule.spacing);
         for (const auto &[rx, rz] : regions) {
             const std::shared_ptr<const QcStructurePlacement> plan = planOf(kind, rx, rz);
-            const QcSurfacePlanner::Rect footprint = plan ? grown(QcSurfacePlanner::footprintOf(*plan), around) : QcSurfacePlanner::Rect{};
+            const QcXzRect footprint = plan ? grown(QcSurfacePlanner::footprintOf(*plan), around) : QcXzRect{};
             if (plan && chunk.intersects(footprint, margin)) {
                 footprints.append(footprint);
             }
@@ -186,7 +186,7 @@ void QcSurfaceStructures::blend(QcChunk &chunk) const
 QList<QcSurfaceStructures::Moved> QcSurfaceStructures::blendedGround(const QcTerrainColumnGrid &columns, QcChunkPos pos) const
 {
     QList<Moved> moved;
-    const QcSurfacePlanner::Rect grid = grown(chunkRect(pos), QcTerrainColumnGrid::margin);
+    const QcXzRect grid = grown(chunkRect(pos), QcTerrainColumnGrid::margin);
     for (const QcSurfacePlanner::KindId kind : planner().kinds().ids()) {
         const QcStructureDefinition::Surface &rule = planner().kinds()[kind].rule;
         const QList<std::pair<int, int>> regions = regionsOver(grid, rule.spacing);
@@ -201,12 +201,12 @@ QList<QcSurfaceStructures::Moved> QcSurfaceStructures::blendedGround(const QcTer
 }
 
 QList<QcSurfaceStructures::Moved> QcSurfaceStructures::movedAround(const QcStructurePlacement &plan, int blend, const QcTerrainColumnGrid &columns,
-                                                                   QcSurfacePlanner::Rect grid) const
+                                                                   QcXzRect grid) const
 {
     QList<Moved> moved;
-    const QcSurfacePlanner::Rect ground = grown(QcSurfacePlanner::footprintOf(plan), blend);
-    for (int z = std::max(ground.z0, grid.z0); z <= std::min(ground.z1, grid.z1); ++z) {
-        for (int x = std::max(ground.x0, grid.x0); x <= std::min(ground.x1, grid.x1); ++x) {
+    const QcXzRect ground = grown(QcSurfacePlanner::footprintOf(plan), blend);
+    for (int z = std::max(ground.minZ, grid.minZ); z <= std::min(ground.maxZ, grid.maxZ); ++z) {
+        for (int x = std::max(ground.minX, grid.minX); x <= std::min(ground.maxX, grid.maxX); ++x) {
             if (const std::optional<int> top = m_blend.topAt(plan, blend, x, z, columns.at(x, z).height - 1)) {
                 moved.append({x, z, *top});
             }
@@ -287,7 +287,7 @@ std::optional<QcStructureSites> QcSurfaceStructures::plannedSitesNear(QcBlockPos
 std::optional<QcStructureSites> QcSurfaceStructures::collectSites(QcBlockPos from, int reach, bool mayPlan) const
 {
     QcStructureSites sites;
-    const QcSurfacePlanner::Rect area{from.x - reach, from.z - reach, from.x + reach, from.z + reach};
+    const QcXzRect area{from.x - reach, from.z - reach, from.x + reach, from.z + reach};
     for (const QcSurfacePlanner::KindId kind : planner().kinds().ids()) {
         if (!planner().kinds()[kind].structure()->hasSites()) {
             continue;

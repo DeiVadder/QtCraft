@@ -89,9 +89,9 @@ struct QcVillageStyle
         int weight = 1;
     };
 
-    /*! \brief A crop of the fields (QcVillageCrop): its states in the order of its stages, the
-        last ripe (\c {stages}), and its relative chance among the style's crops (\c {weight}).
-        \qcfields */
+    /*! \brief A crop of the fields (QcVillageStyleDefinition::crops): its states in the order of
+        its stages, the last ripe (\c {stages}), and its relative chance among the style's crops
+        (\c {weight}). \qcfields */
     struct Crop
     {
         QList<QcBlockId> stages;
@@ -235,7 +235,7 @@ private:
                                                                      const QcContentRegistry &content);
     [[nodiscard]] QList<QcVillageStyle::Road> resolveRoads(const QList<QcVillageRoad> &entries, const QcContentRegistry &content,
                                                            const QString &style);
-    [[nodiscard]] QList<QcVillageStyle::Crop> resolveCrops(const QList<QcVillageCrop> &entries, const QcContentRegistry &content,
+    [[nodiscard]] QList<QcVillageStyle::Crop> resolveCrops(const QList<QcWeightedBlockName> &entries, const QcContentRegistry &content,
                                                            const QString &style);
     [[nodiscard]] static QcVillageStyle::Bridge bridgeOf(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);
     [[nodiscard]] std::optional<QcVillageStyle::Stilts> resolveStilts(const QcVillageStyleDefinition &definition, const QcContentRegistry &content);

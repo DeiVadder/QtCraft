@@ -91,7 +91,7 @@ QcStructure::Loaded QcStructure::fromDefinition(const QcStructureDefinition &def
     for (const QString &name : definition.palette) {
         const QcContentRegistry::ParsedState parsed = content.parseState(name);
         if (!parsed.id) {
-            return std::unexpected(Failure{u"structure '%1': unknown block '%2'"_s.arg(definition.name, name), std::move(warnings)});
+            return std::unexpected(QcLoadFailure{u"structure '%1': unknown block '%2'"_s.arg(definition.name, name), std::move(warnings)});
         }
         for (const QString &problem : parsed.problems) {
             warnings.append(u"structure '%1': %2"_s.arg(definition.name, problem));

@@ -126,11 +126,11 @@ void QcDungeonGenerator::build(QcChunk &chunk, const QcDungeonPlan &plan) const
     sealLiquids(chunk, plan);
 
     set(plan.spawner, m_planner.blocks().spawner);
-    for (const QcDungeonPlan::Placed &placed : plan.chests) {
-        set(placed.at, placed.block);
+    for (const QcPlacedBlock &placed : plan.chests) {
+        set(placed.pos, placed.block);
     }
-    for (const QcDungeonPlan::Placed &placed : plan.lights) {
-        set(placed.at, placed.block);
+    for (const QcPlacedBlock &placed : plan.lights) {
+        set(placed.pos, placed.block);
     }
 }
 
@@ -183,11 +183,11 @@ QcChunkFurnishing QcDungeonGenerator::furnishingIn(QcChunkPos pos) const
         if (plan->spawner.chunk() == pos) {
             furnishing.spawners.append({plan->spawner, plan->mob});
         }
-        for (const QcDungeonPlan::Placed &chest : plan->chests) {
-            if (chest.at.chunk() == pos) {
+        for (const QcPlacedBlock &chest : plan->chests) {
+            if (chest.pos.chunk() == pos) {
                 const quint64 seed = qcMixSeed(m_seed,
-                    static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, chest.at.x, chest.at.y, chest.at.z) * 4294967296.0));
-                furnishing.chests.append({chest.at, m_lootTable, seed});
+                    static_cast<quint64>(qcPositionRandom(m_seed ^ 0x5eed, chest.pos.x, chest.pos.y, chest.pos.z) * 4294967296.0));
+                furnishing.chests.append({chest.pos, m_lootTable, seed});
             }
         }
     }

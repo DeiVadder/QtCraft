@@ -162,12 +162,12 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteAt(int pool, QcChunkPos 
     const int baseX = chunk.x * chunkSize;
     const int baseZ = chunk.z * chunkSize;
     QList<std::pair<int, int>> basin;
-    Rect bounds{baseX + chunkSize, baseZ + chunkSize, baseX - 1, baseZ - 1};
+    QcXzRect bounds{baseX + chunkSize, baseZ + chunkSize, baseX - 1, baseZ - 1};
     for (int z = baseZ + 1; z < baseZ + chunkSize - 1; ++z) {
         for (int x = baseX + 1; x < baseX + chunkSize - 1; ++x) {
             if (depthAt(site, x, z) >= 1) {
                 basin.append({x, z});
-                bounds = {std::min(bounds.x0, x), std::min(bounds.z0, z), std::max(bounds.x1, x), std::max(bounds.z1, z)};
+                bounds = {std::min(bounds.minX, x), std::min(bounds.minZ, z), std::max(bounds.maxX, x), std::max(bounds.maxZ, z)};
             }
         }
     }
@@ -176,7 +176,7 @@ std::optional<QcSurfaceLakes::Site> QcSurfaceLakes::siteAt(int pool, QcChunkPos 
         return std::nullopt;
     }
     site.level = *level;
-    site.footprint = {bounds.x0 - clearRing, bounds.z0 - clearRing, bounds.x1 + clearRing, bounds.z1 + clearRing};
+    site.footprint = {bounds.minX - clearRing, bounds.minZ - clearRing, bounds.maxX + clearRing, bounds.maxZ + clearRing};
     // Like every structure, a lake keeps its whole footprint off the deltas (decision E-850): the
     // basin and its ring are dry land already, but the corners of the footprint reach further.
     if (m_terrain.touchesDelta(site.footprint)) {

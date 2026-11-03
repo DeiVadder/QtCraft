@@ -301,7 +301,7 @@ QcPlayerStorage::Result QcPlayerStorage::read(const QString &playerName) const
         return Read{};
     }
     if (!stored.open(QIODevice::ReadOnly)) {
-        return std::unexpected(Failure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
+        return std::unexpected(QcLoadFailure{u"Cannot open %1: %2"_s.arg(stored.fileName(), stored.errorString()), {}});
     }
     return parse(playerName, stored.read(qint64{16} * 1024 * 1024));
 }
@@ -315,10 +315,10 @@ QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const 
 
     const QcResult<QcSaveFile::Payload> payload = QcSaveFile::parse(*contents, file, playerMagic, playerVersion);
     if (!payload) {
-        return std::unexpected(Failure{payload.error(), {}});
+        return std::unexpected(QcLoadFailure{payload.error(), {}});
     }
     if (payload->version < oldestReadVersion) {
-        return std::unexpected(Failure{u"%1 is from an older development version"_s.arg(file), {}});
+        return std::unexpected(QcLoadFailure{u"%1 is from an older development version"_s.arg(file), {}});
     }
 
     QDataStream stream(payload->bytes);
@@ -327,10 +327,10 @@ QcPlayerStorage::Result QcPlayerStorage::parse(const QString &playerName, const 
     QcResult<QcPlayerData> player = reader.read(payload->version);
     // What was read before a damaged part was warned about still is (unknown items dropped).
     if (!player) {
-        return std::unexpected(Failure{player.error(), reader.takeWarnings()});
+        return std::unexpected(QcLoadFailure{player.error(), reader.takeWarnings()});
     }
     if (stream.status() != QDataStream::Ok || !stream.atEnd() || !isPlausible(*player)) {
-        return std::unexpected(Failure{u"%1 is damaged"_s.arg(file), reader.takeWarnings()});
+        return std::unexpected(QcLoadFailure{u"%1 is damaged"_s.arg(file), reader.takeWarnings()});
     }
 
     player->health = std::clamp(player->health, 0.0, 1000.0);

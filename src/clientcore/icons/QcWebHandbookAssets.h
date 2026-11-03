@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/handbook/QcHandbookMarkdown.h"
 #include "common/handbook/QcHandbookWeb.h"
 
 #include <QHash>
@@ -22,11 +23,11 @@ inline constexpr int sheetColumns = 16;
 
 /*! Returns icons.png of \a icons (cells row by row, items sorted by name) and icons.json
     {"size", "columns", "icons": {item name: cell index}}. */
-QList<QcHandbookWeb::File> iconSheet(const QHash<QString, QImage> &icons);
+QList<QcHandbookMarkdown::File> iconSheet(const QHash<QString, QImage> &icons);
 /*! Returns the cells of the icon sheet \a sheet back as images by item name, read with its
     \a index (icons.json; for tests). */
 QHash<QString, QImage> readSheet(const QImage &sheet, const QByteArray &index);
 /*! Returns theme.css: one variable --qc-<name> per QcUiPalette role (Theme.<name> in QML). */
-QcHandbookWeb::File theme();
+QcHandbookMarkdown::File theme();
 
 } // namespace QcWebHandbookAssets

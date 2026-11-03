@@ -40,24 +40,24 @@ QcPiecePlacer::QcPiecePlacer(const QcTerrainGenerator &terrain, const QcContentR
 {
 }
 
-std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, Rect rect, int maxSlope) const
+std::optional<int> QcPiecePlacer::floorFor(const QcVillageDraft &draft, QcXzRect rect, int maxSlope) const
 {
-    const QcSurfacePlanner::Rect footprint{rect.x0, rect.z0, rect.x1, rect.z1};
+    const QcXzRect footprint{rect.minX, rect.minZ, rect.maxX, rect.maxZ};
     if (draft.style->overWater) {
-        const std::optional<int> floor = QcBoardwalkPlanner::floorFor(m_terrain, draft.style->stilts, {rect.x0, rect.z0}, {rect.x1, rect.z1});
+        const std::optional<int> floor = QcBoardwalkPlanner::floorFor(m_terrain, draft.style->stilts, {rect.minX, rect.minZ}, {rect.maxX, rect.maxZ});
         // No column of a piece in a river delta (decision E-850): an arm may cross between the
         // samples of the stilts.
         return floor && !m_terrain.touchesDelta(footprint) ? floor : std::nullopt;
     }
 
     const std::array<std::pair<int, int>, 5> samples{
-        {{rect.x0, rect.z0}, {rect.x1, rect.z0}, {rect.x0, rect.z1}, {rect.x1, rect.z1}, {rect.middleX(), rect.middleZ()}}};
+        {{rect.minX, rect.minZ}, {rect.maxX, rect.minZ}, {rect.minX, rect.maxZ}, {rect.maxX, rect.maxZ}, {rect.middleX(), rect.middleZ()}}};
     int low = QcWorld::worldHeight;
     int high = 0;
     int sum = 0;
     // A river may run between the samples (decision E-840): no water of one within the circle
     // round the footprint's middle (the last sample), a block of bank left.
-    const double reach = 0.5 * std::hypot(rect.x1 - rect.x0 + 1, rect.z1 - rect.z0 + 1) + 1.0;
+    const double reach = 0.5 * std::hypot(rect.maxX - rect.minX + 1, rect.maxZ - rect.minZ + 1) + 1.0;
     for (const auto &sample : samples) {
         const QcTerrainColumn column = m_terrain.column(sample.first, sample.second);
         // No house on the low islands of a delta (decision E-850).
@@ -101,7 +101,7 @@ bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blu
     const int turns = QcVillageDraft::turnsFacing(fx, fz);
     const int sizeX = turns % 2 == 0 ? centre.structure()->sizeX() : centre.structure()->sizeZ();
     const int sizeZ = turns % 2 == 0 ? centre.structure()->sizeZ() : centre.structure()->sizeX();
-    const Rect rect{draft.centreX - sizeX / 2, draft.centreZ - sizeZ / 2, draft.centreX - sizeX / 2 + sizeX - 1,
+    const QcXzRect rect{draft.centreX - sizeX / 2, draft.centreZ - sizeZ / 2, draft.centreX - sizeX / 2 + sizeX - 1,
                     draft.centreZ - sizeZ / 2 + sizeZ - 1};
     const std::optional<int> floor = floorFor(draft, rect, m_settings.maxHeightSpread);
     if (!floor) {
@@ -109,7 +109,7 @@ bool QcPiecePlacer::placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blu
     }
 
     // A centre with a cellar (decision E-590) has its ground layer at the floor.
-    const QcStructurePlacement &placed = addPiece(draft, centre, rect, {rect.x0, *floor - centre.structure()->groundLayer, rect.z0}, turns);
+    const QcStructurePlacement &placed = addPiece(draft, centre, rect, {rect.minX, *floor - centre.structure()->groundLayer, rect.minZ}, turns);
     draft.setCentre(centre.bell ? placed.toWorld(*centre.bell) : QcBlockPos{draft.centreX, standingHeight(placed), draft.centreZ});
     // A centre placed on the surface by itself too blends the ground around it there (decision E-893).
     const QList<QcStructureDefinition> &definitions = m_content.worldgen().structures();
@@ -191,20 +191,20 @@ bool QcPiecePlacer::placeAtWater(QcVillageDraft &draft, const QList<Road> &roads
         }
         const QcBlockPos far = decks->back().at;
         const QcBlockPos near = decks->front().at;
-        const Rect jetty{std::min(near.x, far.x) - 2, std::min(near.z, far.z) - 2, std::max(near.x, far.x) + 2, std::max(near.z, far.z) + 2};
+        const QcXzRect jetty{std::min(near.x, far.x) - 2, std::min(near.z, far.z) - 2, std::max(near.x, far.x) + 2, std::max(near.z, far.z) + 2};
         // Over water the wetland spreads from the jetty too, so it keeps the wetland's reach to the
         // region's edge.
         const int keep = draft.style->overWater && draft.style->wetland.bottom != qcAirBlockId ? draft.style->wetland.reach() : 0;
         const int regionX0 = draft.region.x * draft.region.spacing + keep;
         const int regionZ0 = draft.region.z * draft.region.spacing + keep;
         const int room = draft.region.spacing - 2 * keep;
-        const bool inRegion = jetty.x0 >= regionX0 && jetty.z0 >= regionZ0 && jetty.x1 < regionX0 + room && jetty.z1 < regionZ0 + room;
-        if (!inRegion || std::ranges::any_of(draft.pieces, [&](Rect other) { return other.intersects(jetty, 0); })) {
+        const bool inRegion = jetty.minX >= regionX0 && jetty.minZ >= regionZ0 && jetty.maxX < regionX0 + room && jetty.maxZ < regionZ0 + room;
+        if (!inRegion || std::ranges::any_of(draft.pieces, [&](QcXzRect other) { return other.intersects(jetty, 0); })) {
             continue;
         }
 
         if (placeBesideEnd(draft, road, index)) {
-            draft.addJetty(*decks, {jetty.x0 + 2, jetty.z0 + 2, jetty.x1 - 2, jetty.z1 - 2});
+            draft.addJetty(*decks, {jetty.minX + 2, jetty.minZ + 2, jetty.maxX - 2, jetty.maxZ - 2});
             return true;
         }
     }
@@ -281,7 +281,7 @@ int QcPiecePlacer::placeAt(QcVillageDraft &draft, const Road &road, std::pair<in
     const int za = road.z + road.dz * along + pz * offset;
     const int xb = road.x + road.dx * a1 + px * c1;
     const int zb = road.z + road.dz * a1 + pz * c1;
-    const Rect rect{std::min(xa, xb), std::min(za, zb), std::max(xa, xb), std::max(za, zb)};
+    const QcXzRect rect{std::min(xa, xb), std::min(za, zb), std::max(xa, xb), std::max(za, zb)};
 
     const bool hitsPiece = draft.nearPiece(rect);
     // Over water the whole front of a piece lies on the boardwalk, so its door opens onto it.
@@ -294,7 +294,7 @@ int QcPiecePlacer::placeAt(QcVillageDraft &draft, const Road &road, std::pair<in
         return 0;
     }
 
-    std::ignore = addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
+    std::ignore = addPiece(draft, blueprint, rect, {rect.minX, *floor, rect.minZ}, turns);
     return alongSize;
 }
 
@@ -316,7 +316,7 @@ int QcPiecePlacer::placeAtDiagonal(QcVillageDraft &draft, const Road &road, std:
         // The middle of the front row, straight back from the road's middle line.
         const int mx = cx - facing.first * setback;
         const int mz = cz - facing.second * setback;
-        const Rect rect = QcVillageForecourt::behindFront({mx, mz}, facing, {sizeX, sizeZ});
+        const QcXzRect rect = QcVillageForecourt::behindFront({mx, mz}, facing, {sizeX, sizeZ});
         if (draft.touchesRoad(rect, 1)) {
             continue;
         }
@@ -324,14 +324,14 @@ int QcPiecePlacer::placeAtDiagonal(QcVillageDraft &draft, const Road &road, std:
         const bool hitsPiece = draft.nearPiece(rect);
         const std::optional<int> floor = hitsPiece || !draft.insideRadius(rect) ? std::nullopt : floorFor(draft, rect, m_settings.maxPieceSlope);
         // The doors of the blueprint as written (its variations keep them in place).
-        const QList<QcBlockPos> steps = floor ? doorsteps(QcStructurePlacement(blueprint.structure(), {rect.x0, *floor, rect.z0}, turns, m_content))
+        const QList<QcBlockPos> steps = floor ? doorsteps(QcStructurePlacement(blueprint.structure(), {rect.minX, *floor, rect.minZ}, turns, m_content))
                                               : QList<QcBlockPos>{};
         const QList<std::pair<int, int>> court =
             floor ? QcVillageForecourt::forecourt(m_terrain, draft, rect, facing, steps) : QList<std::pair<int, int>>{};
         if (!floor || court.isEmpty()) {
             return 0;
         }
-        std::ignore = addPiece(draft, blueprint, rect, {rect.x0, *floor, rect.z0}, turns);
+        std::ignore = addPiece(draft, blueprint, rect, {rect.minX, *floor, rect.minZ}, turns);
         for (const std::pair<int, int> &cell : court) {
             draft.addRoadCell(m_terrain, cell, true);
         }
@@ -383,7 +383,7 @@ void QcPiecePlacer::placeLamps(QcVillageDraft &draft, const Road &road) const
         for (int reach = 1; reach <= roadHalfWidth + 2; ++reach) {
             const int x = road.x + road.dx * d - road.dz * side * reach;
             const int z = road.z + road.dz * d + road.dx * side * reach;
-            const Rect rect{x, z, x + lamp.structure()->sizeX() - 1, z + lamp.structure()->sizeZ() - 1};
+            const QcXzRect rect{x, z, x + lamp.structure()->sizeX() - 1, z + lamp.structure()->sizeZ() - 1};
             if (draft.touchesRoad(rect, 0)) {
                 continue;
             }
@@ -418,7 +418,7 @@ const QcVillageStyle::Blueprint &QcPiecePlacer::chooseBlueprint(QcVillageDraft &
     return piece.blueprints.back();
 }
 
-const QcStructurePlacement &QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin, int turns) const
+const QcStructurePlacement &QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, QcXzRect rect, QcBlockPos origin, int turns) const
 {
     std::shared_ptr<const QcStructure> structure = blueprint.structure();
     QList<QcVillageSpot> spots = blueprint.spots;

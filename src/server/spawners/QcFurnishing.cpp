@@ -98,7 +98,7 @@ void furnish(QcServerState &state, QcChunkPos pos)
             fillChest(state, chest);
         }
     }
-    for (const QcChunkFurnishing::Spawner &spawner : furnishing.spawners) {
+    for (const QcStructureDefinition::Spawner &spawner : furnishing.spawners) {
         if (spawner.at.chunk() == pos) {
             world.spawners().set({spawner.at, spawner.mob, QcSpawners::firstDelay, spawner.confined});
         }

@@ -509,15 +509,15 @@ private slots:
 
     // The footprints of the structures, coastal towers and lakes of the chunks within `reach` of
     // `middle`, each once.
-    static QList<QcSurfacePlanner::Rect> footprintsAround(const QcTerrainGenerator &generator, QcChunkPos middle, int reach)
+    static QList<QcXzRect> footprintsAround(const QcTerrainGenerator &generator, QcChunkPos middle, int reach)
     {
-        QList<QcSurfacePlanner::Rect> footprints;
+        QList<QcXzRect> footprints;
         std::set<std::tuple<int, int, int, int>> seen;
         for (int cz = middle.z - reach; cz <= middle.z + reach; ++cz) {
             for (int cx = middle.x - reach; cx <= middle.x + reach; ++cx) {
-                const QList<QcSurfacePlanner::Rect> near = generator.structureFootprintsNear({cx, cz}, 0, false);
-                for (const QcSurfacePlanner::Rect &rect : near) {
-                    if (seen.insert({rect.x0, rect.z0, rect.x1, rect.z1}).second) {
+                const QList<QcXzRect> near = generator.structureFootprintsNear({cx, cz}, 0, false);
+                for (const QcXzRect &rect : near) {
+                    if (seen.insert({rect.minX, rect.minZ, rect.maxX, rect.maxZ}).second) {
                         footprints.append(rect);
                     }
                 }
@@ -539,9 +539,9 @@ private slots:
             const QList<Delta> deltas = largest(surveyOf(m_everyMouth, seed, 3072).deltas, 20);
             for (const Delta &delta : deltas) {
                 const QcChunkPos middle = QcBlockPos{delta.x, 0, delta.z}.chunk();
-                const QList<QcSurfacePlanner::Rect> footprints = footprintsAround(generator, middle, 8);
-                for (const QcSurfacePlanner::Rect &rect : footprints) {
-                    const QStringList under = deltaColumnsIn(generator, {rect.x0, 0, rect.z0}, {rect.x1, 0, rect.z1});
+                const QList<QcXzRect> footprints = footprintsAround(generator, middle, 8);
+                for (const QcXzRect &rect : footprints) {
+                    const QStringList under = deltaColumnsIn(generator, {rect.minX, 0, rect.minZ}, {rect.maxX, 0, rect.maxZ});
                     QVERIFY2(under.isEmpty(), qPrintable(u"seed %1: structure at %2"_s.arg(seed).arg(under.value(0))));
                 }
                 QSet<qint64> seen;

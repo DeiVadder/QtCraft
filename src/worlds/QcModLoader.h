@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcLoadFailure.h"
 #include "common/core/QcResult.h"
 #include "worlds/QcModStatus.h"
 
@@ -42,17 +43,8 @@ public:
         QStringList warnings;
     };
 
-    /*! \brief A load that failed: why, and the warnings collected until then. */
-    struct Failure
-    {
-        /*! Why the base game could not be loaded. */
-        QString error;
-        /*! Warnings collected before the failure. */
-        QStringList warnings;
-    };
-
     /*! The outcome of load(): the result, or the failure. */
-    using Loaded = std::expected<Result, Failure>;
+    using Loaded = std::expected<Result, QcLoadFailure>;
 
     /*! Returns the warnings of \a loaded, whether it succeeded or not (callers report them before
         the outcome). */

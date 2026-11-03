@@ -12,6 +12,12 @@
 
 #include <optional>
 
+void QcEntityFrameBuilder::appendPuff(QcEntityMesh &mesh, const QcEntityMesher::ItemLook &look, const QcEffectPuff &puff, QcEntityLight light,
+                                      const QcEntityMesher::UvLookup &uv)
+{
+    QcEntityMesher::appendBlock(mesh, look, QcEntityMesher::BlockPlacement::centredAt(puff.position, puff.size), light, uv);
+}
+
 void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks)
 {
     QcEntityMesher::ItemLook flash;
@@ -23,8 +29,8 @@ void QcEntityFrameBuilder::appendExplosions(QcEntityMesh &mesh, const EntityFram
 
     for (const QcExplosionEffects::Puff &puff : m_parts.session->worldMirror().extras().explosions().puffs()) {
         if (const std::optional<QcExplosionEffects::Look> look = QcExplosionEffects::lookAt(puff, ticks)) {
-            const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->position);
-            QcEntityMesher::appendBlock(mesh, look->flash ? flash : smoke, {look->position, look->size}, light, frame.uv);
+            const QcEntityLight light = look->flash ? QcEntityLight(1.0f, 1.0f) : entityLight(frame.world, look->cube.position);
+            appendPuff(mesh, look->flash ? flash : smoke, look->cube, light, frame.uv);
         }
     }
 }
@@ -34,9 +40,9 @@ void QcEntityFrameBuilder::appendInk(QcEntityMesh &mesh, const EntityFrame &fram
     QcEntityMesher::ItemLook ink;
     ink.cube = true;
     for (const QcInkClouds::Puff &puff : m_parts.session->worldMirror().inkClouds().puffs()) {
-        if (const std::optional<QcInkClouds::Look> look = QcInkClouds::lookAt(puff, ticks)) {
+        if (const std::optional<QcEffectPuff> look = QcInkClouds::lookAt(puff, ticks)) {
             ink.faces.fill(puff.texture);
-            QcEntityMesher::appendBlock(mesh, ink, {look->position, look->size}, entityLight(frame.world, look->position), frame.uv);
+            appendPuff(mesh, ink, *look, entityLight(frame.world, look->position), frame.uv);
         }
     }
 }

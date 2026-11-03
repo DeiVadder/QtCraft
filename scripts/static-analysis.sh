@@ -258,6 +258,20 @@ elif [ -n "$LENGTH_FILES" ]; then
     # shellcheck disable=SC2086
     python3 "$PROJECT_DIR/scripts/check-duplicates.py" $LENGTH_FILES || status=1
 fi
+# Structs whose members repeat those of another struct (name and type), decision E-975: a marker without a
+# reason and a count above scripts/check-baseline.json (ratchet) fail; a selection lists the groups that
+# touch the given files.
+echo "== duplicate structs (ratchet)"
+if [ "$CHEAP_SELECTED" -eq 0 ]; then
+    if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-duplicate-structs.py" --list); then
+        status=1
+        printf '%s\n' "$CHECK_OUTPUT" | grep -E 'without a reason|^ratchet:|share one type'
+    fi
+    printf '%s\n' "$CHECK_OUTPUT" | tail -n 1
+elif [ -n "$LENGTH_FILES" ]; then
+    # shellcheck disable=SC2086
+    python3 "$PROJECT_DIR/scripts/check-duplicate-structs.py" $LENGTH_FILES || status=1
+fi
 echo "== QML heuristics (gating rules and ratchet)"
 if [ "$CHEAP_SELECTED" -eq 0 ]; then
     if ! CHECK_OUTPUT=$(python3 "$PROJECT_DIR/scripts/check-qml.py" --list); then

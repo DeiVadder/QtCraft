@@ -107,13 +107,13 @@ QList<QcGiantTreePlacer::Giant> QcGiantTreePlacer::giantsNear(QcChunkPos pos) co
     return giants;
 }
 
-bool QcGiantTreePlacer::blocked(Giant giant, const QcVillagePlan *village, const QList<QcSurfacePlanner::Rect> &structures)
+bool QcGiantTreePlacer::blocked(Giant giant, const QcVillagePlan *village, const QList<QcXzRect> &structures)
 {
-    const QcSurfacePlanner::Rect trunk{giant.base.x, giant.base.z, giant.base.x + 1, giant.base.z + 1};
+    const QcXzRect trunk{giant.base.x, giant.base.z, giant.base.x + 1, giant.base.z + 1};
     if (village && village->covers(giant.base.x, giant.base.z, maxReach + 1)) {
         return true;
     }
-    return std::ranges::any_of(structures, [&](QcSurfacePlanner::Rect footprint) { return footprint.intersects(trunk, maxReach); });
+    return std::ranges::any_of(structures, [&](QcXzRect footprint) { return footprint.intersects(trunk, maxReach); });
 }
 
 void QcGiantTreePlacer::build(QcChunk &chunk, const QcVillagePlan *village) const
@@ -124,7 +124,7 @@ void QcGiantTreePlacer::build(QcChunk &chunk, const QcVillagePlan *village) cons
     }
 
     // Every structure within the reach of any of these giants, so each chunk of a giant decides alike.
-    const QList<QcSurfacePlanner::Rect> structures = m_generator.structureFootprintsNear(chunk.pos(), 2 * maxReach + 1, false);
+    const QList<QcXzRect> structures = m_generator.structureFootprintsNear(chunk.pos(), 2 * maxReach + 1, false);
     for (const Giant &giant : giants) {
         if (!blocked(giant, village, structures)) {
             const QcTerrainDefinitions::Feature &feature = m_definitions.features[giant.feature];

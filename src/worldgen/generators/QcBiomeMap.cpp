@@ -4,6 +4,7 @@
 #include "worldgen/generators/QcBiomeMap.h"
 
 #include "common/core/QcIntMath.h"
+#include "common/core/QcXzRect.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/towers/QcCoastalTowerGenerator.h"
@@ -16,15 +17,7 @@ using namespace Qt::StringLiterals;
 namespace {
 
 // The regions of edge `spacing` blocks that a map's area reaches into.
-struct Regions
-{
-    int x0 = 0;
-    int z0 = 0;
-    int x1 = 0;
-    int z1 = 0;
-};
-
-Regions regionsOver(QcBiomeMap::Area area, int spacing)
+QcXzRect regionsOver(QcBiomeMap::Area area, int spacing)
 {
     return {qcFloorDiv(area.centreX - area.radius, spacing), qcFloorDiv(area.centreZ - area.radius, spacing),
             qcFloorDiv(area.centreX + area.radius - 1, spacing), qcFloorDiv(area.centreZ + area.radius - 1, spacing)};
@@ -42,9 +35,9 @@ template<typename PlaceOf>
                                                                     const PlaceOf &placeOf)
 {
     QList<QcBiomeMap::Site> sites;
-    const Regions regions = regionsOver(area, spacing);
-    for (int rz = regions.z0; rz <= regions.z1; ++rz) {
-        for (int rx = regions.x0; rx <= regions.x1; ++rx) {
+    const QcXzRect regions = regionsOver(area, spacing);
+    for (int rz = regions.minZ; rz <= regions.maxZ; ++rz) {
+        for (int rx = regions.minX; rx <= regions.maxX; ++rx) {
             if (cancelled && cancelled()) {
                 return std::nullopt;
             }
@@ -128,7 +121,7 @@ std::optional<QList<QcBiomeMap::Site>> QcBiomeMap::sites(const QcTerrainGenerato
             if (!plan) {
                 return std::nullopt;
             }
-            const QcSurfacePlanner::Rect footprint = QcSurfacePlanner::footprintOf(*plan);
+            const QcXzRect footprint = QcSurfacePlanner::footprintOf(*plan);
             return Site{Site::Kind::Structure, footprint.middleX(), footprint.middleZ(), type.name};
         });
         if (!found) {

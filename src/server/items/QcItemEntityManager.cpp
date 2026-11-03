@@ -184,10 +184,10 @@ void QcItemEntityManager::merge(const QList<bool> &active)
     }
 }
 
-void QcItemEntityManager::pickUp(QcItemEntity &item, const QList<PlayerView> &players, const GiveFunction &give)
+void QcItemEntityManager::pickUp(QcItemEntity &item, const QList<QcPickupPlayer> &players, const GiveFunction &give)
 {
     const QcAabb box = itemBox(item.motion.position);
-    for (const PlayerView &player : players) {
+    for (const QcPickupPlayer &player : players) {
         if (!player.alive || item.stack.isEmpty()) {
             continue;
         }
@@ -243,7 +243,7 @@ void QcItemEntityManager::spawnQueued(const TickCallbacks &callbacks)
     }
 }
 
-QList<QcItemEntity> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<PlayerView> &players, double dt,
+QList<QcItemEntity> QcItemEntityManager::tick(const QcBlockAccess &world, const QList<QcPickupPlayer> &players, double dt,
                                                            const TickCallbacks &callbacks)
 {
     ++m_ticks;

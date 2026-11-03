@@ -40,7 +40,7 @@ std::optional<QcSurfacePlanner::KindId> QcSurfacePlanner::kindIndex(const QStrin
     return it != m_kinds.cend() ? std::optional(kinds().idOf(it)) : std::nullopt;
 }
 
-QcSurfacePlanner::Rect QcSurfacePlanner::footprintOf(const QcStructurePlacement &placement)
+QcXzRect QcSurfacePlanner::footprintOf(const QcStructurePlacement &placement)
 {
     const QcBlockPos origin = placement.origin();
     return {origin.x, origin.z, origin.x + placement.sizeX() - 1, origin.z + placement.sizeZ() - 1};
@@ -66,11 +66,11 @@ std::optional<QcStructurePlacement> QcSurfacePlanner::plan(KindId kind, int regi
         const int sizeZ = turns % 2 == 0 ? type.structure()->sizeZ() : type.structure()->sizeX();
         const int x0 = regionX * rule.spacing + rule.blend + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 2, regionZ) * room);
         const int z0 = regionZ * rule.spacing + rule.blend + static_cast<int>(qcPositionRandom(type.seed, regionX, 3 * attempt + 3, regionZ) * room);
-        const Rect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
+        const QcXzRect rect{x0, z0, x0 + sizeX - 1, z0 + sizeZ - 1};
         const std::optional<int> floor = floorFor(type, rect);
         // No column of the footprint and its blended ground (decision E-889) in a river delta
         // (decision E-850): an arm may cross between the samples of floorFor().
-        const Rect blended{rect.x0 - rule.blend, rect.z0 - rule.blend, rect.x1 + rule.blend, rect.z1 + rule.blend};
+        const QcXzRect blended{rect.minX - rule.blend, rect.minZ - rule.blend, rect.maxX + rule.blend, rect.maxZ + rule.blend};
         if (!floor || occupied(kind, rect, rule.villageMargin) || m_terrain.touchesDelta(blended) || !levelsBeside(rect, *floor, rule.blend)) {
             continue;
         }
@@ -96,16 +96,16 @@ std::shared_ptr<const QcStructure> QcSurfacePlanner::structureOf(const Kind &kin
     return kind.variation.build(kind.variation.choose([&] { return qcPositionRandom(kind.seed, regionX, -1 - draw++, regionZ); }));
 }
 
-std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
+std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, QcXzRect rect) const
 {
     // The middle and the edges every few blocks, corners included: no hill or hollow along an edge
     // goes unseen.
-    QList<std::pair<int, int>> samples{{rect.middleX(), rect.middleZ()}, {rect.x1, rect.z0}, {rect.x1, rect.z1}};
-    for (int x = rect.x0; x < rect.x1; x += edgeStep) {
-        samples.append({{x, rect.z0}, {x, rect.z1}});
+    QList<std::pair<int, int>> samples{{rect.middleX(), rect.middleZ()}, {rect.maxX, rect.minZ}, {rect.maxX, rect.maxZ}};
+    for (int x = rect.minX; x < rect.maxX; x += edgeStep) {
+        samples.append({{x, rect.minZ}, {x, rect.maxZ}});
     }
-    for (int z = rect.z0 + edgeStep; z < rect.z1; z += edgeStep) {
-        samples.append({{rect.x0, z}, {rect.x1, z}});
+    for (int z = rect.minZ + edgeStep; z < rect.maxZ; z += edgeStep) {
+        samples.append({{rect.minX, z}, {rect.maxX, z}});
     }
 
     int low = QcWorld::worldHeight;
@@ -145,7 +145,7 @@ std::optional<int> QcSurfacePlanner::floorFor(const Kind &kind, Rect rect) const
     return floor;
 }
 
-bool QcSurfacePlanner::levelsBeside(Rect rect, int floor, int blend) const
+bool QcSurfacePlanner::levelsBeside(QcXzRect rect, int floor, int blend) const
 {
     if (blend <= 0) {
         return true;
@@ -154,11 +154,11 @@ bool QcSurfacePlanner::levelsBeside(Rect rect, int floor, int blend) const
     // floor, unless its ground lies more than `slope * blend` above it or under an overhang (the
     // blend shapes the ground below an overhang only).
     QList<std::pair<int, int>> ring;
-    for (int x = rect.x0; x <= rect.x1; ++x) {
-        ring.append({{x, rect.z0 - 1}, {x, rect.z1 + 1}});
+    for (int x = rect.minX; x <= rect.maxX; ++x) {
+        ring.append({{x, rect.minZ - 1}, {x, rect.maxZ + 1}});
     }
-    for (int z = rect.z0; z <= rect.z1; ++z) {
-        ring.append({{rect.x0 - 1, z}, {rect.x1 + 1, z}});
+    for (int z = rect.minZ; z <= rect.maxZ; ++z) {
+        ring.append({{rect.minX - 1, z}, {rect.maxX + 1, z}});
     }
     return std::ranges::all_of(ring, [&](std::pair<int, int> at) {
         const QcTerrainColumn column = m_terrain.column(at.first, at.second);

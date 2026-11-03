@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcXzRect.h"
 #include "common/world/QcChunk.h"
 #include "server/villages/QcVillage.h"
 #include "worldgen/villages/QcVillageBlocks.h"
@@ -122,21 +123,12 @@ public:
     qsizetype golems(const QHash<qint64, int> &loaded, const std::function<bool(const QcVillage &)> &ofKind) const;
 
 private:
-    // A horizontal box of columns (inclusive).
-    struct Box
-    {
-        int minX = 0;
-        int minZ = 0;
-        int maxX = 0;
-        int maxZ = 0;
-    };
-
     // How far `pos` lies from the village's box (horizontally, the larger of both axes; 0 inside).
     static int boxDistance(const QcVillage &village, QcBlockPos pos);
     // Whether the box with `reach` meets the area of a village other than `except`.
-    bool clashes(Box box, qint64 except) const;
+    bool clashes(QcXzRect box, qint64 except) const;
     // Whether the box with `reach` meets the area of one of the villages `ids` other than `except`.
-    bool meets(const QList<qint64> &ids, Box box, qint64 except) const;
+    bool meets(const QList<qint64> &ids, QcXzRect box, qint64 except) const;
     // `plan` is the village's generator plan if at hand (else asked of the generator when needed).
     void add(const QcVillage &village, const std::shared_ptr<const QcVillagePlan> &plan = nullptr);
     // Lists the village's area by the chunks it reaches into (m_byChunk), or takes it out.

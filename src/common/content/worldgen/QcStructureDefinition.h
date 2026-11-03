@@ -123,8 +123,9 @@ struct QcStructureDefinition
 
     /*! \brief A monster spawner of the structure (decision E-520): the cell \c {at} of the
         spawner, the creature \c {mob} it brings forth and whether its creatures stay put
-        (\c {confined}); given to the server with the chunk (QcChunkFurnishing). The JSON keys are
-        the field names. \qcfields */
+        (\c {confined}: they walk, but neither teleport nor change the world, like the showcase's
+        spawner behind glass); in world coordinates also given to the server with the chunk
+        (QcChunkFurnishing::spawners). The JSON keys are the field names. \qcfields */
     struct Spawner
     {
         QcBlockPos at;

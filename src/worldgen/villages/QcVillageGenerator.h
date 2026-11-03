@@ -93,7 +93,7 @@ private:
     // where the cell lies one higher, the terrain above cleared.
     void buildRoads(QcChunk &chunk, const QList<QcBlockPos> &cells, QcBlockId path) const;
     // Lays the steps of the roads (slabs where a road rises by one block) that lie in the chunk.
-    void buildSteps(QcChunk &chunk, const QList<QcVillagePlan::Step> &steps) const;
+    void buildSteps(QcChunk &chunk, const QList<QcPlacedBlock> &steps) const;
     // Lays the jetty cells that lie in the chunk, with the posts under them down to the ground.
     void buildDecks(QcChunk &chunk, const QList<QcVillagePlan::Deck> &decks) const;
     // Solid ground a post, foundation or road can stand on; not frozen water (decision E-815).

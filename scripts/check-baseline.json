@@ -14,5 +14,8 @@
         "clone": 32,
         "near-repeat": 7,
         "repeat": 15
+    },
+    "check-duplicate-structs.py": {
+        "struct": 0
     }
 }

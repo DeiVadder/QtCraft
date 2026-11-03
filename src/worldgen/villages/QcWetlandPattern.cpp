@@ -22,7 +22,7 @@ constexpr double sampleSpacing = 0.37;
 
 bool onPieceOrBoardwalk(const QcVillagePlan::Wetland &wetland, int x, int z)
 {
-    return std::ranges::any_of(wetland.wet, [x, z](QcVillagePlan::Area area) { return area.contains(x, z); });
+    return std::ranges::any_of(wetland.wet, [x, z](QcXzRect area) { return area.contains(x, z); });
 }
 
 } // namespace

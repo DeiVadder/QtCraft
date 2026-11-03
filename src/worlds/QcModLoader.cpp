@@ -495,7 +495,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
     // The pack loader fails only on an unusable manifest, before it reads (and warns about) anything.
     const QcResult<QcLoadedPack> loaded = QcBaseContent::loadInto(base);
     if (!loaded) {
-        return std::unexpected(Failure{loaded.error(), {}});
+        return std::unexpected(QcLoadFailure{loaded.error(), {}});
     }
     result.warnings = loaded->warnings;
 
@@ -505,7 +505,7 @@ QcModLoader::Loaded QcModLoader::load(const QString &modsDirectory)
         state.baseWarnings = finished.finish();
         result.warnings += state.baseWarnings;
         if (const QString problem = state.clientProblem(finished); !problem.isEmpty()) {
-            return std::unexpected(Failure{u"base game: "_s + problem, std::move(result.warnings)});
+            return std::unexpected(QcLoadFailure{u"base game: "_s + problem, std::move(result.warnings)});
         }
     }
 

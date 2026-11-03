@@ -14,6 +14,7 @@
 #include "clientcore/figures/QcCapeTracker.h"
 #include "clientcore/maps/QcFramedMapAtlas.h"
 #include "clientcore/session/QcCampfireSmoke.h"
+#include "clientcore/session/QcEffectPuff.h"
 #include "clientcore/session/QcEnchantingAura.h"
 #include "common/core/QcBlockPos.h"
 #include "common/physics/QcPhysics.h"
@@ -120,6 +121,9 @@ private:
     // hurt squids (decision E-974) at the client tick `ticks` (with its fraction).
     void appendExplosions(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
     void appendInk(QcEntityMesh &mesh, const EntityFrame &frame, double ticks);
+    // A puff of smoke, fire or ink drawn as the cube `look` around its middle (decision E-975).
+    static void appendPuff(QcEntityMesh &mesh, const QcEntityMesher::ItemLook &look, const QcEffectPuff &puff, QcEntityLight light,
+                           const QcEntityMesher::UvLookup &uv);
     void appendLocalPlayer(QcEntityMesh &mesh, const EntityFrame &frame);
     // Flames around a burning body of `width` and `height` standing at `feet` (decision E-393).
     static void appendFlames(QcEntityMesh &mesh, const EntityFrame &frame, const QcVec3 &feet, QcPhysics::BodySize body);

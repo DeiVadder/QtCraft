@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "clientcore/session/QcEffectPuff.h"
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcWorldMessages.h"
 
@@ -41,16 +42,14 @@ public:
     /*! \brief What a puff looks like at a moment (lookAt()). */
     struct Look
     {
-        /*! Where the puff is now. */
-        QcVec3 position;
-        /*! Its edge length now, in metres. */
-        double size = 0.0;
+        /*! Where the puff is now (its middle) and its edge length now, in metres. */
+        QcEffectPuff cube;
         /*! Whether it is a puff of fire. */
         bool flash = false;
     };
 
     /*! \brief Camera offsets of a shake, in degrees. */
-    struct Shake
+    struct Shake // NOLINT(qc-duplicate-struct): camera offsets of a shake, not the head angles of QcPreviewPose::Gaze
     {
         /*! Offset to the left or right. */
         double yaw = 0.0;

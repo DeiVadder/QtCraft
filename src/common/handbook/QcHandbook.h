@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/registry/QcPackReference.h"
 #include "common/handbook/QcHandbookEntry.h"
 
 #include <QHash>
@@ -19,17 +20,6 @@
 class QcHandbook
 {
 public:
-    /*! \brief A content pack whose entries the handbook holds. */
-    struct Pack
-    {
-        /*! The pack's id (the namespace of its names). */
-        QString id;
-        /*! Its display name. */
-        QString name;
-        /*! Its version. */
-        QString version;
-    };
-
     /*! \brief A category and its entries. */
     struct Category
     {
@@ -47,7 +37,7 @@ public:
         /*! See language(). */
         QString language;
         /*! See packs(). */
-        QList<Pack> packs;
+        QList<QcPackReference> packs;
         /*! See categories(). */
         QList<Category> categories;
         /*! See entries(). */
@@ -68,7 +58,7 @@ public:
     const QString &language() const { return m_language; }
     /*! Returns the packs in load order; entries of names without a loaded pack come last under
         their namespace. */
-    const QList<Pack> &packs() const { return m_packs; }
+    const QList<QcPackReference> &packs() const { return m_packs; }
     /*! Returns the categories. */
     const QList<Category> &categories() const { return m_categories; }
     /*! Returns every entry. */
@@ -100,7 +90,7 @@ private:
     [[nodiscard]] std::optional<int> matchRank(qsizetype index, const QString &query, const QStringList &words) const;
 
     QString m_language;
-    QList<Pack> m_packs;
+    QList<QcPackReference> m_packs;
     QList<Category> m_categories;
     QList<QcHandbookEntry> m_entries;
     QStringList m_problems;

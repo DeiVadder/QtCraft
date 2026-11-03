@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/content/blocks/QcPlacedBlock.h"
 #include "common/core/QcBlockPos.h"
 #include "common/world/QcVegetationTable.h"
 
@@ -33,18 +34,11 @@ public:
     static constexpr int attemptsPerStep = 16;
     static constexpr int flowerOdds = 8;
 
-    /*! \brief A plant to set: the grass or flower \c {block} at \c {pos}. \qcfields */
-    struct Planting
-    {
-        QcBlockPos pos;
-        QcBlockId block = qcAirBlockId;
-    };
-
     explicit QcVegetationSpread(const QcContentRegistry &content);
 
     /*! Returns the plants bone meal on \a target of \a world grows, drawn from \a random, each
         cell at most once; the world is not changed. */
-    [[nodiscard]] QList<Planting> spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const;
+    [[nodiscard]] QList<QcPlacedBlock> spread(const QcServerWorld &world, QcBlockPos target, QRandomGenerator &random) const;
 
 private:
     struct Tables

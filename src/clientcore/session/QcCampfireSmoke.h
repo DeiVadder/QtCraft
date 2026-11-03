@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/session/QcClientWorld.h"
+#include "clientcore/session/QcEffectPuff.h"
 #include "common/core/QcVec3.h"
 
 #include <QList>
@@ -20,15 +21,6 @@
 class QcCampfireSmoke
 {
 public:
-    /*! \brief A puff as the entity frame draws it: a small cube of smoke. */
-    struct Puff
-    {
-        /*! The centre of the cube. */
-        QcVec3 position;
-        /*! Its edge length in metres. */
-        double size = 0.0;
-    };
-
     /*! Blocks around the eye within which campfires smoke. */
     static constexpr int radius = 32;
     /*! Ticks between two looks for the campfires. */
@@ -47,7 +39,7 @@ public:
     const QList<QcBlockPos> &campfires() const { return m_campfires; }
     /*! Returns the puffs of the campfire at \a pos at \a seconds of the animations' clock
         (QcWorldMirror::animationSeconds, decision E-962). */
-    [[nodiscard]] static QList<Puff> puffsOf(QcBlockPos pos, double seconds);
+    [[nodiscard]] static QList<QcEffectPuff> puffsOf(QcBlockPos pos, double seconds);
 
 private:
     // The campfires of the sections near `eye`.

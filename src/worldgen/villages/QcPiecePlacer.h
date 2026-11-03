@@ -50,7 +50,6 @@ public:
     void placeLamps(QcVillageDraft &draft, const Road &road) const;
 
 private:
-    using Rect = QcVillageDraft::Rect;
 
     // On land pieces start one block of grass beyond the road's edge.
     static constexpr int pieceOffset = QcVillageDraft::roadHalfWidth + 2;
@@ -58,7 +57,7 @@ private:
     // Floor height for a piece over `rect` (the ground's top block), or std::nullopt where the
     // ground is too steep or wet; over water the floor height of the stilts (decision E-407), or
     // std::nullopt where the ground cannot carry them.
-    [[nodiscard]] std::optional<int> floorFor(const QcVillageDraft &draft, Rect rect, int maxSlope) const;
+    [[nodiscard]] std::optional<int> floorFor(const QcVillageDraft &draft, QcXzRect rect, int maxSlope) const;
     // The centre piece of the blueprint, its door towards the main road; false where the ground does
     // not fit.
     bool placeCentre(QcVillageDraft &draft, const QcVillageStyle::Blueprint &centre) const;
@@ -93,7 +92,7 @@ private:
     // Adds a building of the blueprint with its choices and parts drawn, its beds, workstations and
     // creatures, on land with the doorsteps of its outer doors (QcVillagePlan::thresholds); the placed piece,
     // valid until the next piece is added.
-    [[nodiscard]] const QcStructurePlacement &addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, Rect rect, QcBlockPos origin,
+    [[nodiscard]] const QcStructurePlacement &addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, QcXzRect rect, QcBlockPos origin,
                                          int turns) const;
     // The cells in front of the outer doors of a placed piece, at the height of its floor.
     QList<QcBlockPos> doorsteps(const QcStructurePlacement &piece) const;

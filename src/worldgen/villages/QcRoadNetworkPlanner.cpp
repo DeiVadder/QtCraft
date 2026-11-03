@@ -140,7 +140,7 @@ QList<QList<QcRoadNetworkPlanner::Road>> QcRoadNetworkPlanner::layArms(QcVillage
 
 int QcRoadNetworkPlanner::clearOfCentre(const QcVillageDraft &draft, int direction)
 {
-    const QcVillageDraft::Rect centre = draft.pieces.front();
+    const QcXzRect centre = draft.pieces.front();
     const auto [dx, dz] = directions[direction];
     int d = 1;
     while (d < draft.region.radius

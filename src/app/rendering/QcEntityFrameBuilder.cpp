@@ -336,9 +336,9 @@ void QcEntityFrameBuilder::appendCampfires(QcEntityMesh &mesh, const EntityFrame
     smoke.faces.fill(QString::fromLatin1(QcExplosionEffects::smokeTexture));
     m_smoke.refresh(frame.world, viewer, session.tickCount());
     for (const QcBlockPos &campfire : m_smoke.campfires()) {
-        const QList<QcCampfireSmoke::Puff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);
-        for (const QcCampfireSmoke::Puff &puff : puffs) {
-            QcEntityMesher::appendBlock(mesh, smoke, {puff.position, puff.size}, entityLight(frame.world, puff.position), frame.uv);
+        const QList<QcEffectPuff> puffs = QcCampfireSmoke::puffsOf(campfire, frame.seconds);
+        for (const QcEffectPuff &puff : puffs) {
+            appendPuff(mesh, smoke, puff, entityLight(frame.world, puff.position), frame.uv);
         }
     }
 }

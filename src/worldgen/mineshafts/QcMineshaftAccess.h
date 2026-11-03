@@ -55,14 +55,8 @@ public:
                                                                      const Random &random) const;
 
 private:
-    struct RoomKind
-    {
-        std::shared_ptr<const QcStructure> structure;
-        int weight = 1;
-    };
-
     // Room structures that fit, with their weights.
-    const QList<RoomKind> &roomList() const { return m_rooms; }
+    const QList<QcWeightedStructure> &roomList() const { return m_rooms; }
     // Whether a pillar of another level would pass through a room at the node or run into its floor.
     static bool crossedByPillars(const QcMineshaftNetwork &network, const QcMineshaftPlan::Node &node);
     // A room at the dead end `at`, turned `turns` quarter turns, if one fits there.
@@ -79,13 +73,13 @@ private:
     // ring around it at most one block higher.
     bool level(QcMineshaftSite &site, QcBlockPos top) const;
     // The headframe over the shaft's top cell `top`.
-    [[nodiscard]] QList<QcMineshaftPlan::Placed> headframe(QcBlockPos top) const;
+    [[nodiscard]] QList<QcPlacedBlock> headframe(QcBlockPos top) const;
 
     const QcTerrainGenerator &m_terrain;
     const QcContentRegistry &m_content;
     const QcMineshaftSettings &m_settings;
     const QcMineshaftBlocks &m_blocks;
     QcMineshaftIncline m_incline;
-    QList<RoomKind> m_rooms;
+    QList<QcWeightedStructure> m_rooms;
     int m_totalWeight = 0;
 };
