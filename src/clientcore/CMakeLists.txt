@@ -126,7 +126,9 @@ target_sources(qc_clientcore PRIVATE
     meshing/QcChunkMesher.h meshing/QcChunkMesher.cpp
     meshing/QcIndexPacking.h
     meshing/QcLiquidSurface.h meshing/QcLiquidSurface.cpp
+    meshing/QcMeshLighting.h meshing/QcMeshLighting.cpp
     meshing/QcMeshNeighbourhood.h
+    meshing/QcMeshOutput.h meshing/QcMeshOutput.cpp
     meshing/QcMeshScheduler.h meshing/QcMeshScheduler.cpp
     meshing/QcPackedMesh.h meshing/QcPackedMesh.cpp
 )
