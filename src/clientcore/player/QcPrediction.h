@@ -91,6 +91,10 @@ public:
     /*! While riding, after predict(): the player moves onto the seat of the cart as the entity
         mirror \a entities shows it this tick. */
     void followCart(const QcClientEntities &entities);
+    /*! A tick without a step (the server paused or the player dead, decision E-960): the state one
+        tick earlier becomes the current one, so the interpolation between them stands still
+        instead of swinging back over the last step with every tick. */
+    void rest();
     /*! Takes over the prediction of the session's tick \a core (decision E-560), keeping the own
         intent (the session writes it) and, while riding, the own motion (the session follows the
         cart). With \a current false the core has not seen all of the session's commands yet: the
@@ -105,6 +109,7 @@ private:
     [[nodiscard]] static QcEntityMotion seatedIn(const QcBoatState &boat);
     void setBoat(const std::optional<QcBoatState> &boat) { m_boat = boat; }
     void setPreviousBoat(const std::optional<QcBoatState> &boat) { m_previousBoat = boat; }
+    void setPreviousMotion(const QcEntityMotion &motion) { m_previousMotion = motion; }
     // Applies a state that names a boat: its state replayed with the pending inputs.
     void reconcileBoat(const QcBoatState &boat, const QcBlockAccess *world, bool placedOrMoved);
 

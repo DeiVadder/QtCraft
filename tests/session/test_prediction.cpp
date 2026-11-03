@@ -11,6 +11,7 @@
 
 #include <algorithm>
 #include <limits>
+#include <tuple>
 
 // QcPrediction on its own: the reconciliation results, the cap of pending inputs, riding a cart and
 // the wrapped yaw the client sends with UseItem.
@@ -125,6 +126,33 @@ private slots:
         QCOMPARE(prediction.motion().position, (QcVec3{0.5, 1.0, 0.5}));
     }
 
+    // A tick without a step (server paused, decision E-960) while the walk key is held: the state
+    // before becomes the current one, so the frames between ticks draw the player at one place
+    // instead of swinging back over the last step with every tick; a pending input stays pending.
+    void restingTicksStandStill()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcPlayerInput intent;
+        intent.forward = 1.0f;
+        prediction.setIntent(intent);
+        for (int tick = 0; tick < 3; ++tick) {
+            std::ignore = prediction.predict(world, false, QcMovement::Walk);
+        }
+        const QcVec3 walked = prediction.motion().position;
+        QVERIFY(prediction.previousMotion().position != walked);
+
+        for (int tick = 0; tick < 20; ++tick) {
+            prediction.rest();
+            QCOMPARE(prediction.previousMotion().position, walked);
+            QCOMPARE(prediction.motion().position, walked);
+        }
+        QCOMPARE(prediction.intent().forward, 1.0f);
+        QCOMPARE(prediction.pendingInputCount(), 3);
+    }
+
     void acknowledgedInputsLeaveAndTheRestIsReplayed()
     {
         QcTestWorld world(m_content);
@@ -203,6 +231,49 @@ private slots:
         QVERIFY(!prediction.riding().isRiding());
         QCOMPARE(prediction.lastCorrection(), 0.0);
         QCOMPARE(prediction.motion().position, (QcVec3{6.5, 1.0, 6.5}));
+    }
+
+    // A cart rider while the server pauses (decision E-960): the session keeps its own motion on
+    // the seat when it takes over the core's prediction (mirror), so the core's rest does not reach
+    // it; resting the session's prediction as well makes the drawn rider stand still.
+    void aPausedRiderRestsOnTheSeat()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcClientEntities entities;
+        entities.setBuffered(false);
+        QcMsg::EntitySpawn cart;
+        cart.id = 7;
+        cart.name = QStringLiteral("Cart");
+        cart.position = {4.5, 1.0, 4.5};
+        QVERIFY(entities.spawn(cart, &m_content));
+        QcPrediction session;
+        session.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcMsg::PlayerState riding = standingState(0);
+        riding.vehicle = cart.id;
+        session.reconcile(riding, &world, QcMovement::Walk);
+        QVERIFY(session.riding().ridesCart());
+
+        // The cart rolls two ticks; the session follows it onto the seat.
+        for (qint64 tick = 1; tick <= 2; ++tick) {
+            QcMsg::EntityMoves moves;
+            moves.timeMs = tick * 50;
+            moves.moves = {{cart.id, QcVec3{4.5 + static_cast<double>(tick), 1.0, 4.5}, 0.0f, 20.0, false, 0.0f, QcMsg::OnGround, qcNoItem}};
+            entities.moves(moves, tick * 50);
+            entities.tick(tick * 50);
+            session.followCart(entities);
+        }
+        const QcVec3 seat = session.motion().position;
+        QVERIFY(session.previousMotion().position != seat);
+
+        // Paused: the core rests, the session takes its prediction but keeps its own motion.
+        QcPrediction core = session;
+        core.rest();
+        session.mirror(core, true);
+        QVERIFY(session.previousMotion().position != seat);
+        session.rest();
+        QCOMPARE(session.previousMotion().position, seat);
+        QCOMPARE(session.motion().position, seat);
     }
 
     // Slowness II (speed factor 0.7, decision E-838): the server moves each input with its own

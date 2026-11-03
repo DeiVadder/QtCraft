@@ -19,8 +19,12 @@ struct QcSkyState;
     them is never seen. */
 struct QcShadowLight
 {
-    /*! Unit vector towards the light (x east, y up, z south). */
+    /*! Unit vector towards the light (x east, y up, z south) in steps (QcShadowCascades::stepped,
+        decision E-960): the direction of the shadow map and of its lookups. */
     QVector3D toLight{0.0f, 1.0f, 0.0f};
+    /*! Unit vector towards the light without steps: how surfaces turn to it (facing, relief,
+        highlights, the water's glint). */
+    QVector3D sun{0.0f, 1.0f, 0.0f};
     /*! How much the shadows darken: 0 none (the classic brightness everywhere), 1 a shadowed
         surface keeps shadowFloor of its sky light. */
     float strength = 0.0f;
@@ -67,6 +71,14 @@ inline constexpr QVector3D sunsetTint{1.0f, 0.78f, 0.56f};
 inline constexpr QVector3D skyFillTint{0.84f, 0.92f, 1.08f};
 /*! The colour of the moonlight on lit surfaces. */
 inline constexpr QVector3D moonTint{0.86f, 0.92f, 1.06f};
+/*! The shadows turn with the sun and the moon in this many steps per turn (a tenth of a degree,
+    every 0.17 s of a 600 s day, decision E-960): between two steps the shadow map stays the same,
+    so its edges stand still instead of being rasterised anew at a slightly different angle every
+    frame, and a step moves them little. */
+inline constexpr int lightSteps = 3600;
+/*! The tilt of the light towards z is rounded to this many steps per unit, so that every
+    direction within one step gives the same vector bit for bit. */
+inline constexpr int tiltSteps = 4096;
 
 /*! The radii of the cascades in blocks, nearest first; unused entries are 0. */
 using Radii = std::array<float, QcRenderOptions::maxShadowCascades>;
@@ -93,13 +105,20 @@ struct Basis
     direction. */
 [[nodiscard]] std::optional<Basis> basis(QVector3D toLight);
 
+/*! Returns the unit direction of \a toLight turned about the z axis (the axis of the sun's and the
+    moon's path) to the nearest of the lightSteps steps, its z rounded to tiltSteps: every
+    direction within one step gives the same vector bit for bit. Returns \a toLight itself when
+    it is zero or not finite. */
+[[nodiscard]] QVector3D stepped(QVector3D toLight);
+
 /*! Returns \a value rounded to the nearest multiple of \a step (step > 0). */
 [[nodiscard]] double snapped(double value, double step);
 
 /*! Returns the cascade of \a radius along the light's \a axes for a camera at \a camera (world)
     looking along \a forward, rendered into a tile of \a resolution texels: its middle is moved
-    onto the texel grid of the world, in double precision (the camera may be far out, decision
-    E-883). */
+    onto the texel grid of the world along all three axes, in double precision (the camera may be
+    far out, decision E-883), so a point of the world keeps its texel and its depth in the map
+    while the camera moves (decision E-960). */
 [[nodiscard]] QcShadowCascade fit(const Basis &axes, const QcVec3 &camera, QVector3D forward, float radius, int resolution);
 
 /*! Returns the matrix that maps the backend's clip space of a shadow pass (after
@@ -110,7 +129,8 @@ struct Basis
 [[nodiscard]] QMatrix4x4 textureMatrix(bool mirrorY, bool depthZeroToOne);
 
 /*! Returns the light of the moment \a sky: the sun while it stands above the horizon, else the
-    moon. */
+    moon, its direction stepped(); the strength and the tint follow the light's height without
+    steps. */
 [[nodiscard]] QcShadowLight light(const QcSkyState &sky);
 
 } // namespace QcShadowCascades

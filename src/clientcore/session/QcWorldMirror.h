@@ -54,6 +54,11 @@ public:
     /*! Returns the server's ticks per normal tick (WorldTime::speed): 1 at its normal rate, more in
         a sprint, 0 frozen. */
     double timeSpeed() const { return m_worldTime.speed; }
+    /*! Returns the world time a frame shows \a alpha (0..1) of the way to the next tick:
+        worldTime() plus that share of the next tick's step, none while the time stands still
+        (time of day frozen, server paused, decision E-960), so the sun does not swing back and
+        forth with each tick. */
+    [[nodiscard]] double timeAt(double alpha) const;
     /*! Returns the weather as shown: strengths, climate, lightning flashes (decision E-395). */
     QcClientWeather &weather() { return m_weather; }
     /*! Returns the weather as shown, read-only. */

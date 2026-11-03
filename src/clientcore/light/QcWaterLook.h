@@ -58,7 +58,7 @@ struct QcWaterFrame
     /*! Sky colours and daylight of the frame. */
     QcSkyState sky;
     /*! The light of the shadows (QcShadowCascades::light): the water mirrors the same sun or
-        moon. */
+        moon, its glint follows the direction without steps (QcShadowLight::sun). */
     QcShadowLight light;
     /*! The camera's world position. */
     QcVec3 camera;

@@ -9,7 +9,6 @@
 #include "clientcore/player/QcDials.h"
 #include "clientcore/session/QcClientEntity.h"
 #include "clientcore/session/QcClientSession.h"
-#include "common/physics/QcPhysics.h"
 #include "common/world/QcDayCycle.h"
 
 #include <cmath>
@@ -129,7 +128,7 @@ void QcHudState::updateTarget()
 
 void QcHudState::updateTimeOfDay(double alpha)
 {
-    const double time = m_parts.session->worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
+    const double time = m_parts.session->worldMirror().timeAt(alpha);
     const QString label = QcDayCycle::isNight(time) ? tr("Night") : tr("Day");
     if (label != m_timeOfDay) {
         m_timeOfDay = label;
@@ -143,7 +142,7 @@ void QcHudState::updateDial(double alpha)
     const QcContentRegistry *content = session.content().get();
     const QcItemStack held = session.inventory().slot(session.inventory().selectedHotbarSlot());
     const QcItemDial kind = content && content->isValidItem(held.item) ? content->item(held.item).dial : QcItemDial::None;
-    const double time = session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration;
+    const double time = session.worldMirror().timeAt(alpha);
 
     Dial dial = Dial::None;
     double angle = 0.0;

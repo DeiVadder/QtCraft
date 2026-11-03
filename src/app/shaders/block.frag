@@ -90,6 +90,9 @@ layout(std140, binding = 3) uniform Shadow {
     // The material maps (decision E-908): x 1 while they are bound, y 1 for the moving lights'
     // highlights, z the strength of the relief, w of the highlights and reflections.
     vec4 material;
+    // xyz: towards the light without steps (decision E-960), for how a face turns to it (facing,
+    // relief, highlights); toLight, in steps, is the direction of the map and its lookups.
+    vec4 sun;
 } shadow;
 
 layout(binding = 4) uniform sampler2DShadow shadowMap;
@@ -150,7 +153,7 @@ vec3 skyColour(vec3 p, vec3 n, float distance)
     float strength = shadow.toLight.w;
     if (strength <= 0.0)
         return vec3(1.0);
-    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.toLight.xyz)) : 1.0;
+    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.sun.xyz)) : 1.0;
     float lit = facing > 0.0 ? facing * sunVisibility(p, n, distance) : 0.0;
     vec3 shaded = mix(shadow.shadowTint.rgb * shadow.litTint.w, shadow.litTint.rgb, lit);
     return mix(vec3(1.0), shaded, strength);
@@ -354,7 +357,7 @@ vec3 materialLight(Surface surface, vec3 n, float sunLit, vec4 parts)
     vec3 colour = vec3(1.0);
     float strength = shadow.toLight.w;
     if (strength > 0.0) {
-        vec3 lit = shadow.litTint.rgb * sunLit * relief(surface, n, shadow.toLight.xyz);
+        vec3 lit = shadow.litTint.rgb * sunLit * relief(surface, n, shadow.sun.xyz);
         vec3 shaded = mix(shadow.shadowTint.rgb * shadow.litTint.w, lit, min(sunLit, 1.0));
         colour = mix(vec3(1.0), max(shaded, lit), strength);
     }
@@ -371,7 +374,7 @@ vec3 materialShine(Surface surface, vec3 p, float sunLit, vec4 parts, int moving
     vec3 v = safeNormalize(-p, surface.normal);
     vec3 shine = vec3(0.0);
     if (shadow.toLight.w > 0.0)
-        shine += highlight(surface, shadow.toLight.xyz, v) * shadow.litTint.rgb * shadow.toLight.w * sunLit;
+        shine += highlight(surface, shadow.sun.xyz, v) * shadow.litTint.rgb * shadow.toLight.w * sunLit;
     float nv = max(dot(surface.normal, v), 0.0);
     float smoothness = 1.0 - sqrt(surface.roughness);
     vec3 grazing = max(vec3(smoothness), surface.f0);
@@ -400,7 +403,7 @@ float sunLight(vec3 p, vec3 n, float distance)
 {
     if (shadow.toLight.w <= 0.0)
         return 0.0;
-    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.toLight.xyz)) : 1.0;
+    float facing = dot(n, n) > 0.5 ? smoothstep(0.0, 0.1, dot(n, shadow.sun.xyz)) : 1.0;
     return facing > 0.0 ? facing * sunVisibility(p, n, distance) : 0.0;
 }
 #endif

@@ -376,7 +376,9 @@ void QcClientSession::onTicked(const QcSessionEvent::Ticked &event)
     updateSounds();
     adopt(event.after);
     if (!event.predicted) {
-        // Nothing to simulate until the server respawns the player.
+        // Nothing to simulate while the server pauses or until it respawns the player; a rider
+        // keeps the own motion (QcPrediction::mirror), so it rests here too (decision E-960).
+        m_prediction.rest();
         emit ticked();
         return;
     }

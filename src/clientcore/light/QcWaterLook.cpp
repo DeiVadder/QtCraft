@@ -84,7 +84,7 @@ QcWaterUniforms QcWaterLook::uniforms(const QcWaterFrame &frame)
     result.zenith = vec4(sky.zenith, frame.seconds);
     result.horizon = vec4(sky.horizon, frame.depthZeroToOne ? 1.0 : 0.0);
     result.glow = vec4(sky.glow, frame.textureYFollowsNdc ? 1.0 : -1.0);
-    const QVector3D toLight = frame.light.toLight;
+    const QVector3D toLight = frame.light.sun;
     const bool lightFinite = std::isfinite(toLight.x()) && std::isfinite(toLight.y()) && std::isfinite(toLight.z())
                              && std::isfinite(frame.light.strength) && toLight.lengthSquared() > 0.0f;
     result.toLight = lightFinite ? vec4(toLight.normalized(), std::clamp(frame.light.strength, 0.0f, 1.0f))

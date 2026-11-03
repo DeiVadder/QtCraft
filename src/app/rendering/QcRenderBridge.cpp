@@ -92,7 +92,7 @@ void QcRenderBridge::updateSky(double alpha)
 {
     const QcClientSession &session = *m_parts.session;
     const QcClientWeather &weather = session.worldMirror().weather();
-    QcSkyState sky = QcSky::at(session.worldMirror().worldTime() + alpha * QcPhysics::tickDuration);
+    QcSkyState sky = QcSky::at(session.worldMirror().timeAt(alpha));
     sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
     const QcVec3 &eye = m_parts.view->camera().position;
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.

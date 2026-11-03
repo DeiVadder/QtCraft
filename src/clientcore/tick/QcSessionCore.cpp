@@ -140,6 +140,9 @@ bool QcSessionCore::tick()
         m_connection->send(QcMsg::PlayerInput{input});
         m_linkStats.inputSent(input.sequence, m_now());
         ticked.predicted = true;
+    } else {
+        // No step: the interpolation between the last two ticks stands still (decision E-960).
+        m_prediction.rest();
     }
 
     m_linkStats.setTraffic(m_connection->traffic());

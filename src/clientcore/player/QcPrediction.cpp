@@ -38,7 +38,7 @@ QcPlayerInput QcPrediction::predict(const QcBlockAccess &world, bool flying, QcM
     input.sequence = m_nextSequence++;
     input.flying = flying;
     input.push = push;
-    m_previousMotion = m_motion;
+    setPreviousMotion(m_motion);
     if (m_riding.drivesBoat() && boat()) {
         // The same step the server makes with this input (QcServerBoats::steer).
         QcBoatState stepped = *boat();
@@ -130,17 +130,23 @@ void QcPrediction::reconcileBoat(const QcBoatState &boat, const QcBlockAccess *w
 
 void QcPrediction::followCart(const QcClientEntities &entities)
 {
-    m_previousMotion = m_motion;
+    setPreviousMotion(m_motion);
     if (const std::optional<QcEntityMotion> seated = m_riding.seated(entities)) {
         m_motion = *seated;
     }
+}
+
+void QcPrediction::rest()
+{
+    setPreviousMotion(m_motion);
+    setPreviousBoat(boat());
 }
 
 void QcPrediction::mirror(const QcPrediction &core, bool current)
 {
     const QcPlayerInput intent = m_intent;
     const QcEntityMotion motion = m_motion;
-    const QcEntityMotion previous = m_previousMotion;
+    const QcEntityMotion previous = previousMotion();
     const double largest = m_largestCorrection;
     const bool wasRiding = m_riding.isRiding();
     *this = core;
@@ -149,10 +155,10 @@ void QcPrediction::mirror(const QcPrediction &core, bool current)
     m_intent.speedFactor = speedFactor;
     if (m_riding.ridesCart()) {
         m_motion = motion;
-        m_previousMotion = previous;
+        setPreviousMotion(previous);
     } else if (wasRiding && !m_riding.drivesBoat()) {
         // Got out: the core's motion before is where the player got in, the own one the seat.
-        m_previousMotion = previous;
+        setPreviousMotion(previous);
     }
     if (!current) {
         m_largestCorrection = largest;
