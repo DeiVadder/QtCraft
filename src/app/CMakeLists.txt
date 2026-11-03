@@ -51,6 +51,7 @@ target_sources(qc_app_core PRIVATE
     debug/QcDebugSettings.h debug/QcDebugSettings.cpp
     debug/QcDebugVisuals.h debug/QcDebugVisuals.cpp
     debug/QcGraphItem.h debug/QcGraphItem.cpp
+    debug/QcStartCheck.h debug/QcStartCheck.cpp
 )
 target_sources(qc_app_core PRIVATE
     display/QcDisplaySettings.h display/QcDisplaySettings.cpp
@@ -396,6 +397,7 @@ qt_add_executable(qtcraft
     startup/QcAppOptions.h startup/QcAppOptions.cpp
     startup/QcAppStartup.h startup/QcAppStartup.cpp
     startup/QcAppWindow.h startup/QcAppWindow.cpp
+    startup/QcStartFailure.h startup/QcStartFailure.cpp
 )
 if(APPLE)
     target_sources(qtcraft PRIVATE hooks/QcScriptedRun_mac.mm)

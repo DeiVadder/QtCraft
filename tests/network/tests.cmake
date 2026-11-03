@@ -18,6 +18,8 @@ add_dependencies(test_dedicated_server qtcraft-headless)
 qc_add_test(test_server_log SOURCES network/test_server_log.cpp fixtures/QcRawClient.h fixtures/QcTestLogin.h LIBRARIES qc_network qc_common Qt::Network TIMEOUT 120)
 target_compile_definitions(test_server_log PRIVATE QTCRAFT_HEADLESS_PATH="$<TARGET_FILE:qtcraft-headless>")
 add_dependencies(test_server_log qtcraft-headless)
+# Join failures name the step, the addresses and what to check (decision E-964).
+qc_add_test(test_join_failure SOURCES network/test_join_failure.cpp fixtures/QcTestTls.h LIBRARIES qc_network Qt::Network)
 qc_add_test(test_network_client SOURCES network/test_network_client.cpp fixtures/QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 210)
 qc_add_test(test_adventure_client SOURCES network/test_adventure_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_backpack_control SOURCES network/test_backpack_control.cpp LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 120)

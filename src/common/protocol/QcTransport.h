@@ -32,6 +32,9 @@ public:
     /*! Returns why the transport closed itself (timeout, too slow, broken frame); empty
         otherwise. */
     virtual QString closeReason() const { return {}; }
+    /*! Returns whether the other end closed the link (without an error on this end); false while
+        open and in-process. */
+    virtual bool closedByPeer() const { return false; }
     /*! Returns whether the transport must stay in the thread it was made in (moveToThread()
         would break it; a TLS socket, decision E-872). Whoever wants it in another thread makes
         it there. */

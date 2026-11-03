@@ -88,6 +88,8 @@ public:
     /*! Returns why the session ended: the server's Disconnect text (translated, E-094), the
         connection error, or "Connection closed"; empty while connected. */
     QString disconnectReason() const { return m_disconnectReason; }
+    /*! Returns why the connection ended; QcSessionEnding::None while connected. */
+    QcSessionEnding ending() const { return m_ending; }
     /*! Returns the server's Disconnect message (empty if the link broke or the client left). */
     const QcMsg::Disconnect &disconnectMessage() const { return m_disconnectMessage; }
     /*! Sets the login data \a credentials for a network server (E-252), set before start();
@@ -349,8 +351,9 @@ private:
     void onWelcome(const QcMsg::Welcome &welcome);
     // Health, food or experience changed (QcClientVitals::apply).
     void onVitalsChanged(QcClientVitals::Change change);
-    // Closes the connection; `reason` is reported as the disconnect reason.
-    void closeWithError(const QString &reason);
+    // Closes the connection; `reason` is reported as the disconnect reason, `ending` as ending().
+    void closeWithError(const QString &reason, QcSessionEnding ending);
+    void setEnding(QcSessionEnding ending);
     void setState(State state);
     // One event of the tick core, in the core's order.
     void onEvent(const QcSessionEvent &event);
@@ -361,7 +364,7 @@ private:
     void onReconciled(const QcSessionEvent::Reconciled &reconciled);
     // Takes the core's prediction and wish to fly (QcPrediction::mirror).
     void adopt(const QcSessionEvent::Prediction &prediction);
-    void onClosed(const QString &error);
+    void onClosed(const QcSessionEvent::Closed &closed);
     // Aims the hand again (no target before the world arrived).
     void refreshTarget();
     // Applies what a hand action did to the arm and the screens; false when it did nothing.
@@ -379,6 +382,7 @@ private:
     QString m_playerName;
     State m_state = State::Connecting;
     QString m_disconnectReason;
+    QcSessionEnding m_ending = QcSessionEnding::None;
     QString m_contentLanguage = QStringLiteral("en");
     QcMsg::Disconnect m_disconnectMessage;
     QcClientLogin m_login;

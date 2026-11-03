@@ -156,6 +156,7 @@ void QcTcpTransport::onDisconnected()
     }
     if (isOpen() && closeReason().isEmpty()) {
         setCloseReason(QCoreApplication::translate("QcNetwork", "The other side closed the connection"));
+        m_closedByPeer = true;
     }
     setOpen(false);
     m_timer->stop();

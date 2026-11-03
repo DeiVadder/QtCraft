@@ -173,6 +173,14 @@ The game connects to `host`, `host:port`, `1.2.3.4:port` or `[ipv6]:port` (the p
 (`game.multiplayer.join(address, name, password)`; command line: `qtcraft --join host:port
 --player-name Name --password …`). A refusal comes back with a translated reason.
 
+A failed join explains itself (E-964, `QcJoinFailure`): the step that failed (name lookup,
+connection timed out, refused, network or address family unreachable such as IPv6 without IPv6,
+TLS, certificate, login refused, server closed), the address and every IP address tried with its
+family ("Tried 203.0.113.5:25600 (IPv4)"), and a short hint what to check (server running? port
+forwarded, firewall? IPv6 on your side, try the IPv4 address or a VPN? same version?). A name
+with several addresses tries them in the system's order, each with a share of the time limit.
+The log has one `qtcraft.session` line with all of it plus Qt's error text per address.
+
 ## In the game (user interface)
 
 - **Main menu → Multiplayer** (E-258): server address, player name, password (optional). While

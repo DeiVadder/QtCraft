@@ -201,14 +201,15 @@ ColumnLayout {
                     onClicked: screen.join()
                 }
 
-                // Why the last join failed, right below the button, with its symbol (MP-2).
+                // Why the last join failed, right below the button, with its symbol (MP-2): the
+                // step, the addresses tried and what to check (decision E-964).
                 Hint {
                     objectName: "joinFailure"
                     Layout.fillWidth: true
                     Layout.topMargin: Ui.space.s
                     visible: screen.failure.length > 0 && screen.notice.length === 0 && !screen.game.multiplayer.joining
                     kind: Hint.Error
-                    text: qsTr("Could not join: %1").arg(screen.failure)
+                    text: [qsTr("Could not join: %1").arg(screen.failure), screen.game.multiplayer.joinFailureTried, screen.game.multiplayer.joinFailureHint].filter(line => line.length > 0).join("\n")
                 }
                 Hint {
                     Layout.fillWidth: true

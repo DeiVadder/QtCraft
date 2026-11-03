@@ -50,6 +50,12 @@ class QcMultiplayerController : public QObject
     // The reason the last join failed (joinFailed()); empty after clearFailures() and while a new
     // join begins.
     Q_PROPERTY(QString joinFailure READ joinFailure NOTIFY failureChanged FINAL)
+    // What to check after the last failed join (QcJoinFailure::hint, decision E-964); empty when
+    // the reason says it all.
+    Q_PROPERTY(QString joinFailureHint READ joinFailureHint NOTIFY failureChanged FINAL)
+    // The address and the IP addresses the last failed join tried (QcJoinFailure::triedText);
+    // empty for a join refused before connecting.
+    Q_PROPERTY(QString joinFailureTried READ joinFailureTried NOTIFY failureChanged FINAL)
     // The reason opening the world to the network failed (lanFailed()); empty after
     // clearFailures() and while openToLan() begins.
     Q_PROPERTY(QString lanFailure READ lanFailure NOTIFY failureChanged FINAL)
@@ -73,7 +79,9 @@ public:
     bool networkGame() const { return m_networkGame; }
     QString certificateChangedAddress() const { return m_certificateChangedAddress; }
     QString lanFingerprint() const { return m_lanPort > 0 ? m_lanFingerprint : QString(); }
-    QString joinFailure() const { return m_joinFailure; }
+    QString joinFailure() const { return m_joinFailure.reason; }
+    QString joinFailureHint() const { return m_joinFailure.hint(); }
+    QString joinFailureTried() const { return m_joinFailure.triedText(); }
     QString lanFailure() const { return m_lanFailure; }
     // Forgets both failures (a screen showing them opens again).
     Q_INVOKABLE void clearFailures();
@@ -131,10 +139,12 @@ private:
     void onJoined();
     void setNetworkGame(bool networkGame);
     void setCertificateChangedAddress(const QString &address);
-    void setJoinFailure(const QString &reason);
+    void setJoinFailure(const QcJoinFailure &failure);
     void setLanFailure(const QString &reason);
-    // Keeps `reason` as joinFailure()/lanFailure() and emits joinFailed()/lanFailed().
+    // Keeps `reason` (or `failure`) as joinFailure()/lanFailure() and emits
+    // joinFailed()/lanFailed().
     void failJoin(const QString &reason);
+    void failJoin(const QcJoinFailure &failure);
     void failLan(const QString &reason);
     // Id, version and hash of the packs this game would load, cached (decision E-277).
     [[nodiscard]] QcResult<QList<QcPackFingerprint>> contentPacks();
@@ -155,7 +165,7 @@ private:
     QString m_lastPassword;
     QString m_certificateChangedAddress;
     QString m_lanFingerprint;
-    QString m_joinFailure;
+    QcJoinFailure m_joinFailure;
     QString m_lanFailure;
     std::optional<QList<QcPackFingerprint>> m_packs;
     QString m_packsDirectory;

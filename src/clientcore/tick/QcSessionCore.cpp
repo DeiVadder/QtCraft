@@ -215,7 +215,7 @@ void QcSessionCore::onClosed()
 
     m_closed = true;
     m_timer->stop();
-    m_sink({QcSessionEvent::Closed{m_connection->lastError()}});
+    m_sink({QcSessionEvent::Closed{m_connection->lastError(), m_connection->transport().closedByPeer()}});
 }
 
 QcVec3 QcSessionCore::push(QcMovement movement) const

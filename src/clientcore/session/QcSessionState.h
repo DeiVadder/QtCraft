@@ -23,7 +23,26 @@ enum class State {
 };
 Q_ENUM_NS(State)
 
+/*! \brief Why a client session's connection ended (decision E-964). */
+enum class Ending {
+    /*! Not ended. */
+    None,
+    /*! The server closed the connection without a word. */
+    PeerClosed,
+    /*! The connection broke (a socket error; the reason is its text). */
+    Lost,
+    /*! The server sent a Disconnect (QcClientSession::disconnectMessage()). */
+    Refused,
+    /*! The server speaks another protocol version. */
+    ProtocolMismatch,
+    /*! This client ended the connection over an error of its own (a message it cannot take). */
+    LocalError,
+};
+Q_ENUM_NS(Ending)
+
 } // namespace QcSessionStates
 
 /*! The phase of a client session's connection (QcSessionStates::State), the name the code uses. */
 using QcSessionState = QcSessionStates::State;
+/*! Why a client session's connection ended (QcSessionStates::Ending). */
+using QcSessionEnding = QcSessionStates::Ending;

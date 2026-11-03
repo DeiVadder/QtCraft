@@ -4091,7 +4091,7 @@ Als Nächstes: %3</translation>
         <translation>Beitreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="236"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="237"/>
         <source>In the local network</source>
         <translation>Im lokalen Netzwerk</translation>
     </message>
@@ -4100,37 +4100,37 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Wer eine Welt spielt, öffnet sie im Pausenmenü mit „Im LAN öffnen“ und nennt dir eine der Adressen, die dort stehen. Deine eigene Welt öffnest du genauso, sobald du sie spielst.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="268"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="269"/>
         <source>Connecting to %1 …</source>
         <translation>Verbinde mit %1 …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="269"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="270"/>
         <source>Logging in …</source>
         <translation>Melde an …</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="211"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="212"/>
         <source>Could not join: %1</source>
         <translation>Beitreten fehlgeschlagen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="225"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="226"/>
         <source>Forget the old certificate</source>
         <translation>Altes Zertifikat vergessen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="228"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="229"/>
         <source>The old certificate is forgotten. Join again only if you are sure the server&apos;s owner made a new one.</source>
         <translation>Das alte Zertifikat ist vergessen. Tritt nur wieder bei, wenn du sicher bist, dass der Betreiber des Servers ein neues gemacht hat.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="245"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="246"/>
         <source>A running world is opened with “Open to LAN” in the pause menu; join it with one of the addresses shown there.</source>
         <translation>Eine laufende Welt öffnet man mit „Im LAN öffnen“ im Pausenmenü; tritt ihr mit einer der dort gezeigten Adressen bei.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="277"/>
+        <location filename="../src/app/qml/menus/MultiplayerPage.qml" line="278"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
@@ -6185,26 +6185,26 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcHudState</name>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="83"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="82"/>
         <source>%1 (%2)</source>
         <comment>item frame with its item</comment>
         <extracomment>An item frame in the target text: %1 the frame, %2 the item it holds.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="97"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="96"/>
         <source>%1 (%2)</source>
         <comment>named creature</comment>
         <extracomment>A named creature in the target text: %1 its name, %2 its kind.</extracomment>
         <translation>%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="133"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="132"/>
         <source>Night</source>
         <translation>Nacht</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcHudState.cpp" line="133"/>
+        <location filename="../src/app/controllers/QcHudState.cpp" line="132"/>
         <source>Day</source>
         <translation>Tag</translation>
     </message>
@@ -6243,6 +6243,134 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/models/QcInventoryModel.cpp" line="207"/>
         <source>Durability: %1 / %2</source>
         <translation>Haltbarkeit: %1 / %2</translation>
+    </message>
+</context>
+<context>
+    <name>QcJoinFailure</name>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="90"/>
+        <source>The server name %1 was not found</source>
+        <translation>Der Servername %1 wurde nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="92"/>
+        <source>Looking up the server name %1 took too long</source>
+        <translation>Das Nachschlagen des Servernamens %1 hat zu lange gedauert</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="94"/>
+        <source>The connection timed out: the server did not answer</source>
+        <translation>Zeitüberschreitung: Der Server hat nicht geantwortet</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="96"/>
+        <source>Nobody accepts connections at this address and port</source>
+        <translation>Unter dieser Adresse und diesem Port nimmt niemand Verbindungen an</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="98"/>
+        <source>Your network cannot reach this address</source>
+        <translation>Dein Netzwerk erreicht diese Adresse nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="100"/>
+        <source>The system does not allow this connection</source>
+        <translation>Das System erlaubt diese Verbindung nicht</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="102"/>
+        <source>The server took the connection but did not answer</source>
+        <translation>Der Server hat die Verbindung angenommen, aber nicht geantwortet</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="104"/>
+        <source>The server did not set up an encrypted connection</source>
+        <translation>Der Server hat keine verschlüsselte Verbindung aufgebaut</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="106"/>
+        <source>The encrypted connection could not be set up</source>
+        <translation>Die verschlüsselte Verbindung kam nicht zustande</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="108"/>
+        <source>The server showed no certificate</source>
+        <translation>Der Server hat kein Zertifikat gezeigt</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="110"/>
+        <source>The server closed the connection</source>
+        <translation>Der Server hat die Verbindung geschlossen</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="129"/>
+        <source>Check the address for typos and your internet connection.</source>
+        <translation>Prüfe die Adresse auf Tippfehler und deine Internetverbindung.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="131"/>
+        <source>Your internet connection or its name server (DNS) may be slow or down: try again, or use the server&apos;s IP address.</source>
+        <translation>Deine Internetverbindung oder ihr Namensserver (DNS) ist vielleicht langsam oder gestört: Versuche es noch einmal oder nimm die IP-Adresse des Servers.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="134"/>
+        <source>Is the server running and its port forwarded? An IPv6 address needs IPv6 on your side too: try the server&apos;s IPv4 address or a VPN with IPv6.</source>
+        <translation>Läuft der Server, und ist sein Port weitergeleitet? Eine IPv6-Adresse braucht auch auf deiner Seite IPv6: Versuche die IPv4-Adresse des Servers oder ein VPN mit IPv6.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="136"/>
+        <source>Is the server running and its port forwarded? A firewall may drop the connection.</source>
+        <translation>Läuft der Server, und ist sein Port weitergeleitet? Eine Firewall kann die Verbindung verwerfen.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="138"/>
+        <source>Is the server running, and on this port?</source>
+        <translation>Läuft der Server, und auf diesem Port?</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="140"/>
+        <source>Your network may have no IPv6: try the server&apos;s IPv4 address or a VPN with IPv6.</source>
+        <translation>Dein Netzwerk hat vielleicht kein IPv6: Versuche die IPv4-Adresse des Servers oder ein VPN mit IPv6.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="141"/>
+        <source>Check your network connection and VPN.</source>
+        <translation>Prüfe deine Netzwerkverbindung und dein VPN.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="143"/>
+        <source>A firewall or security program on your computer may block QtCraft.</source>
+        <translation>Eine Firewall oder ein Sicherheitsprogramm auf deinem Rechner blockiert QtCraft vielleicht.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="145"/>
+        <source>Is a QtCraft server of the same version running on this port?</source>
+        <translation>Läuft auf diesem Port ein QtCraft-Server derselben Version?</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="149"/>
+        <source>You and the server need the same version of QtCraft.</source>
+        <translation>Dein Spiel und der Server brauchen dieselbe Version von QtCraft.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="151"/>
+        <source>The server may be full or restarting, or it does not let your address in.</source>
+        <translation>Der Server ist vielleicht voll oder startet neu, oder er lässt deine Adresse nicht herein.</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="166"/>
+        <source>Address: %1</source>
+        <translation>Adresse: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="172"/>
+        <source>Tried %1 at %2</source>
+        <translation>Versucht: %1 unter %2</translation>
+    </message>
+    <message>
+        <location filename="../src/network/QcJoinFailure.cpp" line="174"/>
+        <source>Tried %1</source>
+        <translation>Versucht: %1</translation>
     </message>
 </context>
 <context>
@@ -6508,33 +6636,33 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcMultiplayerController</name>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="168"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="174"/>
         <source>Enter a player name</source>
         <translation>Gib einen Spielernamen ein</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="174"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="180"/>
         <source>Player names may not contain &lt;, &gt; or &amp;</source>
         <translation>Spielernamen dürfen weder &lt;, &gt; noch &amp; enthalten</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="91"/>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="180"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="92"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="186"/>
         <source>Invalid address: %1</source>
         <translation>Ungültige Adresse: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="197"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="203"/>
         <source>Cannot load game content: %1</source>
         <translation>Spielinhalte können nicht geladen werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="262"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="268"/>
         <source>Only a running single-player world can be opened to the network</source>
         <translation>Nur eine laufende Einzelspielerwelt kann für das Netzwerk geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="315"/>
+        <location filename="../src/app/controllers/QcMultiplayerController.cpp" line="321"/>
         <source>Invalid port: %1 (a number from 0 to 65535)</source>
         <translation>Ungültiger Port: %1 (eine Zahl von 0 bis 65535)</translation>
     </message>
@@ -6567,7 +6695,6 @@ Als Nächstes: %3</translation>
     </message>
     <message>
         <location filename="../src/network/QcSocketErrors.cpp" line="20"/>
-        <location filename="../src/network/QcTcpConnector.cpp" line="24"/>
         <source>The server did not answer in time</source>
         <translation>Der Server hat nicht rechtzeitig geantwortet</translation>
     </message>
@@ -6608,14 +6735,12 @@ Als Nächstes: %3</translation>
         <translation>Die Verbindung hat das Zeitlimit überschritten</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpConnector.cpp" line="89"/>
         <source>The server did not set up an encrypted connection (does it run the same version of QtCraft?)</source>
-        <translation>Der Server hat keine verschlüsselte Verbindung aufgebaut (läuft dort dieselbe Version von QtCraft?)</translation>
+        <translation type="vanished">Der Server hat keine verschlüsselte Verbindung aufgebaut (läuft dort dieselbe Version von QtCraft?)</translation>
     </message>
     <message>
-        <location filename="../src/network/QcTcpConnector.cpp" line="125"/>
         <source>The server showed no certificate</source>
-        <translation>Der Server hat kein Zertifikat gezeigt</translation>
+        <translation type="vanished">Der Server hat kein Zertifikat gezeigt</translation>
     </message>
     <message>
         <location filename="../src/network/tls/QcTlsBackend.cpp" line="41"/>
@@ -6661,9 +6786,13 @@ Gemerkt: %1
 Jetzt: %2</translation>
     </message>
     <message>
-        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="118"/>
+        <location filename="../src/clientcore/network/QcNetworkClient.cpp" line="238"/>
+        <source>The server runs another version of QtCraft</source>
+        <translation>Der Server läuft mit einer anderen Version von QtCraft</translation>
+    </message>
+    <message>
         <source>The connection was lost</source>
-        <translation>Die Verbindung ist abgebrochen</translation>
+        <translation type="vanished">Die Verbindung ist abgebrochen</translation>
     </message>
 </context>
 <context>
@@ -9233,6 +9362,24 @@ Jetzt: %2</translation>
             <numerusform>%1 hat %n weiteren Fortschritt erzielt</numerusform>
             <numerusform>%1 hat %n weitere Fortschritte erzielt</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>QcStartFailure</name>
+    <message>
+        <location filename="../src/app/startup/QcStartFailure.cpp" line="34"/>
+        <source>Please send the log file to the game&apos;s makers.</source>
+        <translation>Bitte schicke die Log-Datei an die Macher des Spiels.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/startup/QcStartFailure.cpp" line="36"/>
+        <source>Parts of Qt in the game&apos;s folder could not be found. Unpack the ZIP file completely (right-click, "Extract all"), then start qtcraft.exe in the unpacked folder, not inside the ZIP file. An antivirus program that checks new programs at their first start can cause this too: start QtCraft once more.</source>
+        <translation>Teile von Qt im Ordner des Spiels wurden nicht gefunden. Entpacke die ZIP-Datei vollständig (Rechtsklick, „Alle extrahieren“) und starte qtcraft.exe im entpackten Ordner, nicht in der ZIP-Datei. Auch ein Virenschutz, der neue Programme beim ersten Start prüft, kann das auslösen: Starte QtCraft noch einmal.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/startup/QcStartFailure.cpp" line="93"/>
+        <source>QtCraft could not start.</source>
+        <translation>QtCraft konnte nicht starten.</translation>
     </message>
 </context>
 <context>

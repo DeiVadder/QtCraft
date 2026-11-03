@@ -127,16 +127,18 @@ void QcClientSession::onEvent(const QcSessionEvent &event)
     } else if (const auto *reconciled = std::get_if<QcSessionEvent::Reconciled>(&event.what)) {
         onReconciled(*reconciled);
     } else if (const auto *closed = std::get_if<QcSessionEvent::Closed>(&event.what)) {
-        onClosed(closed->error);
+        onClosed(*closed);
     }
 }
 
-void QcClientSession::onClosed(const QString &error)
+void QcClientSession::onClosed(const QcSessionEvent::Closed &closed)
 {
+    const QString &error = closed.error;
     m_debug.closed();
     m_admin.closed();
     if (m_disconnectReason.isEmpty()) {
         m_disconnectReason = error.isEmpty() ? u"Connection closed"_s : error;
+        setEnding(closed.byPeer || error.isEmpty() ? QcSessionEnding::PeerClosed : QcSessionEnding::Lost);
     }
 
     setState(State::Disconnected);
@@ -157,9 +159,15 @@ void QcClientSession::handleMessage(const QcMessage &message)
     }
 }
 
-void QcClientSession::closeWithError(const QString &reason)
+void QcClientSession::setEnding(QcSessionEnding ending)
+{
+    m_ending = ending;
+}
+
+void QcClientSession::closeWithError(const QString &reason, QcSessionEnding ending)
 {
     m_disconnectReason = reason;
+    setEnding(ending);
     m_link->command({QcSessionCommand::Close{}});
 }
 
@@ -169,7 +177,7 @@ bool QcClientSession::handleConnectionMessage(const QcMessage &message)
         onWelcome(*welcome);
     } else if (const auto *disconnect = std::get_if<QcMsg::Disconnect>(&message)) {
         m_disconnectMessage = *disconnect;
-        closeWithError(QcChatText::display(*disconnect));
+        closeWithError(QcChatText::display(*disconnect), QcSessionEnding::Refused);
     } else if (const auto *challenge = std::get_if<QcMsg::LoginChallenge>(&message)) {
         sendToServer(m_login.answer(*challenge));
     } else if (const auto *players = std::get_if<QcMsg::PlayerList>(&message)) {
@@ -207,7 +215,7 @@ bool QcClientSession::handleWorldMessage(const QcMessage &message)
     }
 
     if (!change->error.isEmpty()) {
-        closeWithError(change->error);
+        closeWithError(change->error, QcSessionEnding::LocalError);
     } else if (change->contentReady) {
         emit contentReady();
     } else if (change->loaded) {
@@ -258,7 +266,7 @@ bool QcClientSession::handlePlayerMessage(const QcMessage &message)
 {
     if (const auto *inventory = std::get_if<QcMsg::InventoryState>(&message)) {
         if (!m_inventory.apply(*inventory, m_worldMirror.content().get())) {
-            closeWithError(u"Server sent an invalid inventory"_s);
+            closeWithError(u"Server sent an invalid inventory"_s, QcSessionEnding::LocalError);
             return true;
         }
         emit inventoryChanged();
@@ -293,7 +301,7 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
 {
     if (const auto *spawn = std::get_if<QcMsg::EntitySpawn>(&message)) {
         if (!m_entities.spawn(*spawn, m_worldMirror.content().get())) {
-            closeWithError(u"Server sent an unknown entity type"_s);
+            closeWithError(u"Server sent an unknown entity type"_s, QcSessionEnding::LocalError);
         }
     } else if (const auto *moves = std::get_if<QcMsg::EntityMoves>(&message)) {
         m_entities.moves(*moves);
@@ -308,7 +316,8 @@ bool QcClientSession::handleEntityMessage(const QcMessage &message)
 void QcClientSession::onWelcome(const QcMsg::Welcome &welcome)
 {
     if (welcome.protocolVersion != QcProtocol::version) {
-        closeWithError(u"Server uses protocol version %1, this client %2"_s.arg(welcome.protocolVersion).arg(QcProtocol::version));
+        closeWithError(u"Server uses protocol version %1, this client %2"_s.arg(welcome.protocolVersion).arg(QcProtocol::version),
+                       QcSessionEnding::ProtocolMismatch);
         return;
     }
 

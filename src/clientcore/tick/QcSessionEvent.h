@@ -64,6 +64,8 @@ struct QcSessionEvent
     {
         /*! Why it closed; may be empty. */
         QString error;
+        /*! The server closed the connection (QcTransport::closedByPeer()). */
+        bool byPeer = false;
     };
 
     /*! The event. */

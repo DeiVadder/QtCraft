@@ -19,7 +19,11 @@ QcHeadlessJoin::QcHeadlessJoin(QObject *parent)
     , m_client(new QcNetworkClient(this))
 {
     connect(m_client, &QcNetworkClient::joined, this, &QcHeadlessJoin::joined);
-    connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) { emit failed(reason); });
+    connect(m_client, &QcNetworkClient::failed, this, [this](const QcJoinFailure &failure) {
+        // The client logged the details; the reason names the step, the hint what to check.
+        const QString hint = failure.hint();
+        emit failed(hint.isEmpty() ? failure.reason : u"%1 (%2)"_s.arg(failure.reason, hint));
+    });
 }
 
 std::unique_ptr<QcClientSession> QcHeadlessJoin::takeSession()

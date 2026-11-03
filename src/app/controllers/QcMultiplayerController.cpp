@@ -47,9 +47,10 @@ QcMultiplayerController::QcMultiplayerController(QcSessionParts &parts, const Qc
     // E-872); joining and hosting report the reason again.
     // ensure() logs a failure itself.
     [[maybe_unused]] const QcStatus tls = QcTlsBackend::ensure();
-    connect(m_client, &QcNetworkClient::failed, this, [this](const QString &reason) {
-        qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(reason);
-        failJoin(reason);
+    // QcNetworkClient logged the details (address, addresses tried, steps).
+    connect(m_client, &QcNetworkClient::failed, this, [this](const QcJoinFailure &failure) {
+        qCInfo(lcGame).noquote() << u"Joining failed: %1"_s.arg(failure.reason);
+        failJoin(failure);
     });
 }
 
@@ -105,12 +106,12 @@ bool QcMultiplayerController::forgetCertificate(const QString &address)
     return true;
 }
 
-void QcMultiplayerController::setJoinFailure(const QString &reason)
+void QcMultiplayerController::setJoinFailure(const QcJoinFailure &failure)
 {
-    if (reason == m_joinFailure) {
+    if (failure.logText() == m_joinFailure.logText()) {
         return;
     }
-    m_joinFailure = reason;
+    m_joinFailure = failure;
     emit failureChanged();
 }
 
@@ -125,8 +126,13 @@ void QcMultiplayerController::setLanFailure(const QString &reason)
 
 void QcMultiplayerController::failJoin(const QString &reason)
 {
-    setJoinFailure(reason);
-    emit joinFailed(reason);
+    failJoin(QcJoinFailure{.kind = QcJoinFailure::Kind::Other, .address = {}, .tried = {}, .reason = reason, .detail = {}, .steps = {}});
+}
+
+void QcMultiplayerController::failJoin(const QcJoinFailure &failure)
+{
+    setJoinFailure(failure);
+    emit joinFailed(failure.reason);
 }
 
 void QcMultiplayerController::failLan(const QString &reason)

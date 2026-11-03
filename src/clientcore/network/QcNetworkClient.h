@@ -8,6 +8,7 @@
 #include "common/content/mobs/QcAppearance.h"
 #include "common/core/QcMailbox.h"
 #include "common/protocol/QcSessionMessages.h"
+#include "network/QcJoinFailure.h"
 #include "network/QcServerAddress.h"
 #include "network/QcTcpTransport.h"
 
@@ -95,10 +96,10 @@ signals:
     void stageChanged(QcNetworkClient::Stage stage);
     /*! The server welcomed the player; takeSession() hands over the session. */
     void joined();
-    /*! Emitted with the \a reason why the join failed: the connection could not be made or
-        broke, or the server refused the login; \a refusal is the server's Disconnect (with its
-        translation key) when it sent one. */
-    void failed(const QString &reason, const QcMsg::Disconnect &refusal);
+    /*! Emitted with the \a failure that ended the join (decision E-964): the step that failed
+        (connection, certificate, login), the addresses tried and a translated reason and hint;
+        \a refusal is the server's Disconnect (with its translation key) when it sent one. */
+    void failed(const QcJoinFailure &failure, const QcMsg::Disconnect &refusal);
     /*! Just before failed(): the server showed another certificate than the one pinned for \a
         address; the join was refused before anything was sent. */
     void certificateChanged(const QString &address);
@@ -111,7 +112,8 @@ private:
         // Lives in the connector's thread; null when the connection failed.
         std::unique_ptr<QcTcpTransport> transport;
         QByteArray fingerprint;
-        QString error;
+        // Why the connection failed (no transport).
+        QcJoinFailure failure;
     };
     // Why the server's certificate is not trusted.
     struct Distrust
@@ -137,7 +139,12 @@ private:
     void endAttempt(std::unique_ptr<QcTcpTransport> transport = {});
     void onSessionState();
     void setStage(Stage stage);
-    void fail(const QString &reason, const QcMsg::Disconnect &refusal);
+    // Logs `failure` and ends the join with failed().
+    void fail(const QcJoinFailure &failure, const QcMsg::Disconnect &refusal);
+    // Why the session ended while logging in (QcClientSession::ending()).
+    QcJoinFailure sessionFailure() const;
+    // A failure of `kind` at the joined address with `reason`.
+    QcJoinFailure failureOf(QcJoinFailure::Kind kind, const QString &reason) const;
 
     Request m_request;
     // The thread the session will tick on, from join() until the session takes it.

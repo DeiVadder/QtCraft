@@ -55,6 +55,7 @@ public:
     QString peerAddress() const override { return m_peerAddress; }
     qint64 pendingBytes() const override;
     QString closeReason() const override { return m_closeReason; }
+    bool closedByPeer() const override { return m_closedByPeer; }
     /*! Returns true over TLS: Qt's OpenSSL backend keeps the socket's TLS state in an object of
         its own that stays in the thread the socket was made in (decision E-872). */
     bool keepsItsThread() const override;
@@ -88,6 +89,8 @@ private:
     QElapsedTimer m_lastSent;
     QString m_peerAddress;
     QString m_closeReason;
+    // The peer closed its end before this one gave a reason of its own.
+    bool m_closedByPeer = false;
     bool m_open = true;
     bool m_closedAnnounced = false;
     // The peer's Disconnect arrived (peerSaidGoodbye()).

@@ -15,6 +15,7 @@
 #include "app/startup/QcAppOptions.h"
 #include "app/startup/QcAppStartup.h"
 #include "app/startup/QcAppWindow.h"
+#include "app/startup/QcStartFailure.h"
 #include "common/core/QcConsole.h"
 #include "common/core/QcDataRoot.h"
 #include "common/diagnostics/QcDiagnosticsSession.h"
@@ -110,8 +111,7 @@ int main(int argc, char *argv[])
     // A stack object: the JavaScript garbage collector never takes it.
     QQmlEngine::setObjectOwnership(&game, QQmlEngine::CppOwnership);
     engine.setInitialProperties({{u"gameController"_s, QVariant::fromValue(&game)}});
-    engine.loadFromModule("QtCraft", "Main");
-    if (engine.rootObjects().isEmpty()) {
+    if (!QcStartFailure::loadMainWindow(engine, offscreen)) {
         return 1;
     }
 
