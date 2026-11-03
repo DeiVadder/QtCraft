@@ -2939,62 +2939,62 @@ Als Nächstes: %3</translation>
         <translation type="vanished">RT: abbauen/angreifen  LT: benutzen/setzen  B: fallen lassen  X: Block wählen  LB/RB oder ◀ halten: auswählen  Y: Inventar  ▼: Chat  Start: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="491"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="493"/>
         <source>Spectator: fly through blocks  %1/%2: up/down  wheel: flight speed ×%3  %4: chat  Esc: menu</source>
         <translation>Zuschauer: durch Blöcke fliegen  %1/%2: hoch/runter  Mausrad: Fluggeschwindigkeit ×%3  %4: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="494"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="496"/>
         <source>Left: mine/attack  %1: mine  Right/%2: place  %3: drop  %4–%5/wheel: select  %6: inventory  %7: chat  Esc: menu</source>
         <translation>Links: abbauen/angreifen  %1: abbauen  Rechts/%2: setzen  %3: werfen  %4–%5/Mausrad: wählen  %6: Inventar  %7: Chat  Esc: Menü</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="496"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="498"/>
         <source>Click to look around. %1%2%3%4 to move, %5 to jump, %6 to sneak.</source>
         <translation>Klicken, um dich umzusehen. %1%2%3%4 bewegt, %5 springt, %6 schleicht.</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="519"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="521"/>
         <source>mine/attack</source>
         <translation>abbauen/angreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="520"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="522"/>
         <source>use/place</source>
         <translation>benutzen/setzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="521"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="523"/>
         <source>drop</source>
         <translation>fallen lassen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="522"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="524"/>
         <source>pick block</source>
         <translation>Block wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="524"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="526"/>
         <source>select</source>
         <translation>auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="525"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="527"/>
         <source>hold: all slots</source>
         <translation>halten: alle Felder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="526"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="528"/>
         <source>inventory</source>
         <translation>Inventar</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="527"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="529"/>
         <source>chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/hud/Hud.qml" line="528"/>
+        <location filename="../src/app/qml/hud/Hud.qml" line="530"/>
         <source>menu</source>
         <translation>Menü</translation>
     </message>
@@ -4447,12 +4447,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Abenteuermodus: hier nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Notices.qml" line="100"/>
+        <location filename="../src/app/qml/Notices.qml" line="122"/>
         <source>HUD hidden – %1 to show</source>
         <translation>Anzeige ausgeblendet – %1 zeigt sie wieder</translation>
     </message>
     <message>
-        <location filename="../src/app/qml/Notices.qml" line="105"/>
+        <location filename="../src/app/qml/Notices.qml" line="127"/>
         <source>Screenshot saved: %1</source>
         <translation>Bildschirmfoto gespeichert: %1</translation>
     </message>
@@ -5826,25 +5826,25 @@ Als Nächstes: %3</translation>
 <context>
     <name>QcGameController</name>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="357"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="407"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="359"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="409"/>
         <source>New World</source>
         <translation>Neue Welt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="372"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="374"/>
         <source>Cannot create the world: unknown world type or game mode</source>
         <translation>Die Welt kann nicht erstellt werden: unbekannter Welttyp oder Spielmodus</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="382"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="384"/>
         <source>Cannot create the world: the game has no world generator version %1</source>
         <translation>Die Welt kann nicht erstellt werden: Das Spiel hat keine Weltgenerator-Version %1</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="392"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="402"/>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="412"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="394"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="404"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="414"/>
         <source>Cannot create the world: %1</source>
         <translation>Die Welt kann nicht erstellt werden: %1</translation>
     </message>
@@ -5853,12 +5853,12 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Showcase</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="431"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="433"/>
         <source>World not found</source>
         <translation>Welt nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="431"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="433"/>
         <source>Cannot load the world: %1</source>
         <translation>Die Welt kann nicht geladen werden: %1</translation>
     </message>
@@ -5915,7 +5915,7 @@ Als Nächstes: %3</translation>
         <translation type="vanished">Welt wird erzeugt …</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcGameController.cpp" line="639"/>
+        <location filename="../src/app/controllers/QcGameController.cpp" line="641"/>
         <source>The world could not be saved: %1</source>
         <translation>Die Welt konnte nicht gespeichert werden: %1</translation>
     </message>
@@ -6172,6 +6172,14 @@ Als Nächstes: %3</translation>
         <location filename="../src/app/input/QcGamepadRoster.cpp" line="172"/>
         <source>Controller in use: %1</source>
         <translation>Controller in Benutzung: %1</translation>
+    </message>
+</context>
+<context>
+    <name>QcGraphicsGuard</name>
+    <message>
+        <location filename="../src/app/display/QcGraphicsGuard.cpp" line="141"/>
+        <source>The graphics driver failed twice in the realistic mode: Classic is drawn for the rest of this session. Set the render mode to Classic and back to Realistic in the settings to try again.</source>
+        <translation>Der Grafiktreiber ist im realistischen Modus zweimal ausgefallen: Bis zum Ende dieser Sitzung wird klassisch gezeichnet. Stelle in den Einstellungen die Darstellung auf „Klassisch“ und wieder auf „Realistisch“, um es noch einmal zu versuchen.</translation>
     </message>
 </context>
 <context>
@@ -6683,27 +6691,27 @@ Jetzt: %2</translation>
 <context>
     <name>QcPlayerController</name>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="193"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="196"/>
         <source>Adventure mode: not allowed here</source>
         <translation>Abenteuermodus: hier nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="193"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="196"/>
         <source>Not allowed here</source>
         <translation>Hier nicht erlaubt</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="415"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="418"/>
         <source>Advancement made!</source>
         <translation>Fortschritt erzielt!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="417"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="420"/>
         <source>Goal reached!</source>
         <translation>Ziel erreicht!</translation>
     </message>
     <message>
-        <location filename="../src/app/controllers/QcPlayerController.cpp" line="419"/>
+        <location filename="../src/app/controllers/QcPlayerController.cpp" line="422"/>
         <source>Challenge complete!</source>
         <translation>Herausforderung gemeistert!</translation>
     </message>

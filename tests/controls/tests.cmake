@@ -13,6 +13,8 @@ qc_add_test(test_screen_choice SOURCES controls/test_screen_choice.cpp LIBRARIES
 qc_add_test(test_settings SOURCES controls/test_settings.cpp LIBRARIES qc_clientcore)
 # The display options and the frame pacer on a fake clock (decision E-835).
 qc_add_test(test_display_options SOURCES controls/test_display_options.cpp LIBRARIES qc_clientcore)
+# What the game does after a lost graphics device (decision E-963).
+qc_add_test(test_device_loss_policy SOURCES controls/test_device_loss_policy.cpp LIBRARIES qc_clientcore)
 # The display settings with window modes, the fullscreen key and the frame limit on an offscreen
 # window (decision E-835).
 qc_add_test(test_display_settings SOURCES controls/test_display_settings.cpp LIBRARIES qc_app_core)

@@ -11,7 +11,7 @@ import QtCraft
 Rectangle {
     id: notice
 
-    readonly property int shownMs: 2500
+    property int shownMs: 2500
     // Read by the column of notices in Notices.qml (the effective `visible` would loop through it).
     readonly property bool showing: timer.running
     property string message
@@ -24,7 +24,10 @@ Rectangle {
         timer.restart();
     }
 
-    width: label.implicitWidth + Ui.hudPx(28)
+    // A longer text wraps (the graphics notice, decision E-963).
+    readonly property real maxTextWidth: Ui.hudPx(560)
+
+    width: label.width + Ui.hudPx(28)
     height: label.implicitHeight + Ui.hudPx(14)
     radius: Ui.hudPx(4)
     color: Theme.hudBackdrop
@@ -35,6 +38,9 @@ Rectangle {
 
         objectName: notice.labelName
         anchors.centerIn: parent
+        width: Math.min(implicitWidth, notice.maxTextWidth)
+        wrapMode: Text.WordWrap
+        horizontalAlignment: Text.AlignHCenter
         text: notice.message
         color: Theme.text
         font.pixelSize: Ui.hudPx(15)

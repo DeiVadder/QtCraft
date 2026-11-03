@@ -19,6 +19,7 @@
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/controllers/QcWorldOptionsController.h"
 #include "app/controllers/QcWorldPause.h"
+#include "app/display/QcGraphicsGuard.h"
 #include "app/hooks/QcStartupHooks.h"
 #include "app/input/QcGameInput.h"
 #include "app/input/QcGamepadUi.h"
@@ -313,6 +314,7 @@ private:
     std::unique_ptr<QcMultiplayerController> m_multiplayer;
     std::unique_ptr<QcAdminController> m_admin;
     std::unique_ptr<QcWorldPause> m_pause;
+    std::unique_ptr<QcGraphicsGuard> m_graphics;
     std::unique_ptr<QcGamepadSource> m_gamepadSource;
     QcGamepadControls m_gamepad;
     QcGamepadUi m_gamepadUi;

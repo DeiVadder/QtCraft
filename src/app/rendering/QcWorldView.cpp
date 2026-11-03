@@ -48,10 +48,31 @@ void QcWorldView::meshesLostOnDevice()
     }
 }
 
+void QcWorldView::setStill(bool still)
+{
+    if (isStill() == still) {
+        return;
+    }
+    m_still = still;
+    // The motion kept while still is drawn now.
+    if (!still) {
+        update();
+    }
+}
+
+void QcWorldView::requestFrame()
+{
+    // While still the picture stays (decision E-963): the next frame drawn for content (sections,
+    // atlas, maps, options) or after the still time takes the motion kept in m_frame.
+    if (!isStill()) {
+        update();
+    }
+}
+
 void QcWorldView::setCamera(const QcCamera &camera)
 {
     m_frame.camera = camera;
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setAtlas(const QList<QImage> &levels, const QImage &animationMap, int animationCycleTicks)
@@ -112,40 +133,40 @@ void QcWorldView::setSelection(const QList<QcAabb> &boxes)
 {
     if (m_frame.selection != boxes) {
         m_frame.selection = boxes;
-        update();
+        requestFrame();
     }
 }
 
 void QcWorldView::setEntityMesh(std::shared_ptr<const QcEntityMesh> mesh)
 {
     m_frame.entityMesh = std::move(mesh);
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setFramedMaps(std::shared_ptr<const QcEntityMesh> mesh, std::shared_ptr<const QList<QcFramedMapAtlas::Tile>> tiles)
 {
     m_frame.framedMapMesh = std::move(mesh);
     m_frame.framedMapTiles = std::move(tiles);
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setHandMesh(std::shared_ptr<const QcEntityMesh> mesh)
 {
     m_frame.handMesh = std::move(mesh);
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setSky(const QcSkyState &sky)
 {
     m_frame.sky = sky;
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setFogRange(float start, float end)
 {
     m_frame.fogStart = start;
     m_frame.fogEnd = end;
-    update();
+    requestFrame();
 }
 
 void QcWorldView::setAnisotropicSamples(int samples)
@@ -168,7 +189,7 @@ void QcWorldView::setMovingLights(QList<QcMovingLight> lights)
 {
     if (m_frame.movingLights != lights) {
         m_frame.movingLights = std::move(lights);
-        update();
+        requestFrame();
     }
 }
 
@@ -176,7 +197,7 @@ void QcWorldView::setOutdoors(float outdoors)
 {
     if (m_frame.outdoors != outdoors) {
         m_frame.outdoors = outdoors;
-        update();
+        requestFrame();
     }
 }
 
@@ -184,7 +205,7 @@ void QcWorldView::setUnderwater(bool underwater)
 {
     if (m_frame.underwater != underwater) {
         m_frame.underwater = underwater;
-        update();
+        requestFrame();
     }
 }
 
@@ -193,7 +214,7 @@ void QcWorldView::setDebugLines(std::shared_ptr<const QList<QcDebugLineVertex>> 
     if (lines || m_frame.debugLines) {
         m_frame.debugLines = std::move(lines);
         m_frame.debugLinesOrigin = origin;
-        update();
+        requestFrame();
     }
 }
 
@@ -202,6 +223,6 @@ void QcWorldView::setPrecipitation(std::shared_ptr<const QList<QcPrecipitationDr
     if (drops || m_frame.precipitation) {
         m_frame.precipitation = std::move(drops);
         m_frame.precipitationOrigin = origin;
-        update();
+        requestFrame();
     }
 }

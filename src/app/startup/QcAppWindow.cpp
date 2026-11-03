@@ -24,6 +24,9 @@
 #include <QScreen>
 #include <QStyleHints>
 
+#include <atomic>
+#include <memory>
+
 using namespace Qt::StringLiterals;
 
 namespace {
@@ -33,6 +36,43 @@ namespace {
 bool systemColorScheme()
 {
     return qEnvironmentVariable("QTCRAFT_COLOR_SCHEME") == u"system"_s;
+}
+
+// Which description of the window's QRhi the log still owes: none, the first one or one made anew
+// after a lost device.
+enum class DeviceLog { None, Created, Recreated };
+
+// The graphics API Qt Quick draws with, for the log.
+QString graphicsApiName()
+{
+    switch (QQuickWindow::graphicsApi()) {
+    case QSGRendererInterface::Direct3D11:
+        return u"Direct3D 11"_s;
+    case QSGRendererInterface::Direct3D12:
+        return u"Direct3D 12"_s;
+    case QSGRendererInterface::Vulkan:
+        return u"Vulkan"_s;
+    case QSGRendererInterface::Metal:
+        return u"Metal"_s;
+    case QSGRendererInterface::OpenGL:
+        return u"OpenGL"_s;
+    case QSGRendererInterface::Software:
+        return u"software rendering"_s;
+    default:
+        return u"graphics API %1"_s.arg(static_cast<int>(QQuickWindow::graphicsApi()));
+    }
+}
+
+// Logs the backend and GPU of `rhi`, made at the start or anew after a lost device.
+void describeDevice(const QRhi &rhi, DeviceLog log)
+{
+    const QRhiDriverInfo driver = rhi.driverInfo();
+    const QString prefix = log == DeviceLog::Recreated ? u"Graphics: QRhi recreated: "_s : u"Graphics: "_s;
+    qCInfo(lcStartup).noquote() << prefix
+                                       + u"%1 on %2 (device id 0x%3, vendor id 0x%4)"_s.arg(QString::fromLatin1(rhi.backendName()),
+                                                                                           QString::fromUtf8(driver.deviceName))
+                                             .arg(driver.deviceId, 0, 16)
+                                             .arg(driver.vendorId, 0, 16);
 }
 
 // Popups, dialogs and tooltips take their colours from their window (E-279).
@@ -168,22 +208,43 @@ QcResult<std::unique_ptr<QcOffscreenRender>> QcAppWindow::startWindowOrOffscreen
 
 void QcAppWindow::watchRenderThread(QQuickWindow &window)
 {
-    // Emitted in the render thread; the window and its QRhi are valid there. The render thread gets
-    // its alternate signal stack for crash reports here, its first moment in QtCraft's hands.
+    // All on the render thread. While the window lives, Qt Quick invalidates its scene graph and
+    // initialises it again only when the graphics device was lost or reset: then the window's QRhi
+    // is made anew, and it may be set only by the first frame after sceneGraphInitialized.
+    const auto invalidated = std::make_shared<std::atomic_bool>(false);
+    const auto undescribed = std::make_shared<std::atomic<DeviceLog>>(DeviceLog::None);
+    QObject::connect(&window, &QQuickWindow::sceneGraphInvalidated, &window, [invalidated] { invalidated->store(true); }, Qt::DirectConnection);
+    // The render thread gets its alternate signal stack for crash reports here, its first moment
+    // in QtCraft's hands.
     QObject::connect(
         &window, &QQuickWindow::sceneGraphInitialized, &window,
-        [&window] {
+        [&window, invalidated, undescribed] {
             QcCrashHandler::prepareThread();
-            const QRhi *rhi = window.rhi();
-            if (!rhi) {
+            const DeviceLog log = invalidated->exchange(false) ? DeviceLog::Recreated : DeviceLog::Created;
+            if (log == DeviceLog::Recreated) {
+                qCWarning(lcStartup).noquote() << u"Graphics: the device was lost or reset; recreating the QRhi on %1"_s.arg(graphicsApiName());
+            }
+            if (const QRhi *rhi = window.rhi()) {
+                describeDevice(*rhi, log);
+            } else if (QQuickWindow::graphicsApi() == QSGRendererInterface::Software) {
                 qCInfo(lcStartup, "Graphics: no QRhi (software rendering)");
+            } else {
+                undescribed->store(log);
+            }
+        },
+        Qt::DirectConnection);
+    QObject::connect(
+        &window, &QQuickWindow::beforeRendering, &window,
+        [&window, undescribed] {
+            const DeviceLog log = undescribed->exchange(DeviceLog::None);
+            if (log == DeviceLog::None) {
                 return;
             }
-            const QRhiDriverInfo driver = rhi->driverInfo();
-            qCInfo(lcStartup).noquote() << u"Graphics: %1 on %2 (device id 0x%3, vendor id 0x%4)"_s.arg(QString::fromLatin1(rhi->backendName()),
-                                                                                                      QString::fromUtf8(driver.deviceName))
-                                                .arg(driver.deviceId, 0, 16)
-                                                .arg(driver.vendorId, 0, 16);
+            if (const QRhi *rhi = window.rhi()) {
+                describeDevice(*rhi, log);
+            } else {
+                qCWarning(lcStartup).noquote() << u"Graphics: no QRhi on %1"_s.arg(graphicsApiName());
+            }
         },
         Qt::DirectConnection);
 }

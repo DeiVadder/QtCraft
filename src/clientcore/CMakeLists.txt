@@ -196,6 +196,7 @@ target_sources(qc_clientcore PRIVATE
     settings/QcCharacterPresets.h settings/QcCharacterPresets.cpp
     settings/QcCharacterProfile.h settings/QcCharacterProfile.cpp
     settings/QcDebugOptions.h settings/QcDebugOptions.cpp
+    settings/QcDeviceLossPolicy.h settings/QcDeviceLossPolicy.cpp
     settings/QcDisplayOptions.h settings/QcDisplayOptions.cpp
     settings/QcGamepadProfile.h settings/QcGamepadProfile.cpp
     settings/QcGamepadSettings.h settings/QcGamepadSettings.cpp

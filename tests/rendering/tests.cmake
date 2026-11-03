@@ -17,6 +17,8 @@ qc_add_test(test_framed_map_texture SOURCES rendering/test_framed_map_texture.cp
 qc_add_test(test_label_projector SOURCES rendering/test_label_projector.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 # The pure parts of the sun shadows (decision E-903): cascades, light axes, texel snapping, light.
 qc_add_test(test_shadow_cascades SOURCES rendering/test_shadow_cascades.cpp LIBRARIES qc_clientcore)
+# The graphics guard (decision E-963): options after a lost device on a fake clock, the still view.
+qc_add_test(test_graphics_guard SOURCES rendering/test_graphics_guard.cpp LIBRARIES qc_app_core qc_worlds)
 # The frame limit on the world's frames: QcFrameDriver::onFrame with a session and a fake clock
 # (decision E-835).
 qc_add_test(test_frame_driver SOURCES rendering/test_frame_driver.cpp LIBRARIES qc_server qc_app_core qc_worlds)

@@ -55,6 +55,7 @@ target_sources(qc_app_core PRIVATE
 target_sources(qc_app_core PRIVATE
     display/QcDisplaySettings.h display/QcDisplaySettings.cpp
     display/QcFrameLimiter.h display/QcFrameLimiter.cpp
+    display/QcGraphicsGuard.h display/QcGraphicsGuard.cpp
     display/QcWindowPlacement.h display/QcWindowPlacement.cpp
 )
 target_sources(qc_app_core PRIVATE

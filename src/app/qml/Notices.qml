@@ -70,6 +70,19 @@ Item {
             }
         }
 
+        // The game draws the classic look on its own after lost graphics devices (decision E-963);
+        // over the screens too, longer than the others: it explains a change of the picture.
+        NoticeSlot {
+            id: graphicsNotice
+
+            visible: (item as Notice)?.showing ?? false
+
+            sourceComponent: Notice {
+                labelName: "graphicsNotice"
+                shownMs: 10000
+            }
+        }
+
         // The game mode refused a mining or use (adventure mode, decision E-735).
         NoticeSlot {
             id: refusalNotice
@@ -88,6 +101,15 @@ Item {
         function onActionRefused(text: string) {
             refusalNotice.active = true;
             (refusalNotice.item as Notice).show(text);
+        }
+    }
+
+    Connections {
+        target: notices.game.settings.rendering
+
+        function onAnnounced(text: string) {
+            graphicsNotice.active = true;
+            (graphicsNotice.item as Notice).show(text);
         }
     }
 

@@ -49,8 +49,13 @@ public:
     // The options to store and to draw with.
     const QcRenderOptions &options() const { return m_options; }
 
+    // Tells the player what the game does with the render mode on its own (QcGraphicsGuard,
+    // decision E-963): shown as a notice over the world.
+    void announce(const QString &text) { emit announced(text); }
+
 signals:
     void changed();
+    void announced(const QString &text);
 
 private:
     // Replaces the options and tells the listeners, unless nothing changed.

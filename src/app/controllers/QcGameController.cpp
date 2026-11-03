@@ -102,6 +102,7 @@ QcGameController::QcGameController(QObject *parent)
     , m_multiplayer(std::make_unique<QcMultiplayerController>(m_parts, m_worlds, *m_settings, *m_library))
     , m_admin(std::make_unique<QcAdminController>())
     , m_pause(std::make_unique<QcWorldPause>(m_parts, m_screens, *m_settings))
+    , m_graphics(std::make_unique<QcGraphicsGuard>(*m_settings->rendering(), m_screens, *m_pause))
     , m_gamepadUi(m_gamepad, [this] { return !m_input->worldInput(); })
     , m_render(m_parts, *m_settings)
     , m_worldAtlas(m_parts, {*m_settings->texturePacks(), m_icons, *m_preview, m_render, *m_hud->heldMap()})
@@ -129,7 +130,6 @@ QcGameController::QcGameController(QObject *parent)
         m_gamepad.setSettings(m_settings->gamepad());
         if (m_parts.view) {
             m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
-            m_parts.view->setRenderOptions(m_settings->rendering()->options());
         }
     });
     connect(m_library.get(), &QcWorldLibraryController::contentReset, this, &QcGameController::onContentReset);
@@ -238,13 +238,14 @@ void QcGameController::setView(QcWorldView *view)
     }
 
     m_parts.view = view;
+    // The render options and the still state (decision E-963).
+    m_graphics->setView(view);
     if (m_parts.view) {
         if (m_parts.view->window()) {
             attachWindow(m_parts.view->window());
         }
         connect(m_parts.view, &QQuickItem::windowChanged, this, &QcGameController::attachWindow);
         m_parts.view->setAnisotropicSamples(m_settings->textureFilteringSamples());
-        m_parts.view->setRenderOptions(m_settings->rendering()->options());
         connect(m_parts.view, &QcWorldView::meshesLost, this, [this] {
             if (m_parts.meshes) {
                 m_parts.meshes->remeshAll();
@@ -267,6 +268,7 @@ void QcGameController::attachWindow(QQuickWindow *window)
     }
     m_parts.window = window;
     m_gamepadUi.setWindow(window);
+    m_graphics->setWindow(window);
     afterFrame().setWindow(window);
     if (m_parts.window) {
         connect(m_parts.window, &QQuickWindow::afterAnimating, this, [this] {

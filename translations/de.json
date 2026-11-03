@@ -821,6 +821,7 @@
     "Classic": "Klassisch",
     "Realistic": "Realistisch",
     "Realistic quality": "Realistische Qualität",
+    "The graphics driver failed twice in the realistic mode: Classic is drawn for the rest of this session. Set the render mode to Classic and back to Realistic in the settings to try again.": "Der Grafiktreiber ist im realistischen Modus zweimal ausgefallen: Bis zum Ende dieser Sitzung wird klassisch gezeichnet. Stelle in den Einstellungen die Darstellung auf „Klassisch“ und wieder auf „Realistisch“, um es noch einmal zu versuchen.",
     "Higher shows more glow, finer shadows and more moving lights": "Höher zeigt mehr Leuchten, feinere Schatten und mehr bewegte Lichter",
     "Low": "Niedrig",
     "Medium": "Mittel",
