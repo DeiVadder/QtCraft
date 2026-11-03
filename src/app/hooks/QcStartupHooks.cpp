@@ -370,6 +370,11 @@ void QcStartupHooks::pressKey(const QString &actionId) const
         m_parts.session->useItem();
         return;
     }
+    // The mine key once on the creature the player aims at (hit feedback, decision E-971).
+    if (*action == QcKeyBindings::Action::Mine) {
+        qCInfo(lcGame) << "--overlay key:mine: hit" << (m_parts.session->attack() ? "a creature" : "nothing");
+        return;
+    }
     // As if its key were pressed in the world.
     m_screens.input.worldAction(*action, true);
 }

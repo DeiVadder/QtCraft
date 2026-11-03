@@ -34,11 +34,13 @@ public:
         m_entities.setAtlas(std::move(atlas), std::move(renderTable));
     }
     // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
-    // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
+    // "fall", "sneak", "death", "hurt:<progress>[:<degrees>]" also tilting the view) for screenshots; the
+    // cape then rests on its target for that movement.
     void setForcedPose(const QString &pose) { m_entities.setForcedPose(pose); }
 
     // The camera at the eye, with the field of view widened while sprinting (decision E-280) and
-    // shaken by explosions nearby when the settings allow (decision E-879); `frameSeconds` advances
+    // shaken by explosions nearby and tilted by a hurt when the settings allow (decisions E-879,
+    // E-971); `frameSeconds` advances
     // the widening's easing, `alpha` is the frame's fraction of a tick.
     void placeCamera(const QcVec3 &eye, QcCameraMode mode, double frameSeconds, double alpha);
     // Creatures, dropped items, falling blocks and, seen from outside, the player.

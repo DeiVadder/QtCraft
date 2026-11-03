@@ -149,10 +149,13 @@ vec3 shadowedLight(vec4 parts, vec3 colour)
 
 void main()
 {
-    vec4 texel = texture(atlas, vTexCoord) * vTint;
+    vec4 texel = texture(atlas, vTexCoord);
     // QcSpriteShape::minOpaqueAlpha follows this threshold: held sprites get sides on every drawn texel.
     if (texel.a < 0.1)
         discard;
+    // A tint alpha below 1 is the red overlay of a hurt (QcEntityMesher, decision E-971): it mixes
+    // the colour towards red by 1 - alpha, as the reference's overlay does, also on dark textures.
+    texel.rgb = mix(texel.rgb * vTint.rgb, vec3(1.0, 0.0, 0.0), 1.0 - vTint.a);
 #ifdef QC_SHADOWS
     float fog = fogAt(vDistance);
     vec3 light = vLight;

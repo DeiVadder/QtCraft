@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "app/rendering/QcForcedPose.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/entitymeshes/QcBoatRiders.h"
 #include "clientcore/entitymeshes/QcEntityCulling.h"
@@ -51,17 +52,16 @@ public:
         m_signTexts.clear();
         m_mapColoursStale = true;
     }
-    // Test hook: freezes the local player's pose ("walk", "sprint", "swing" or "swing:<progress>", "swim", "jump",
-    // "fall", "sneak", "death") for screenshots; the cape then rests on its target for that movement.
-    // "walk:<metres>" also freezes every other figure and creature at that point of its walk.
-    void setForcedPose(const QString &pose) { m_forcedPose = pose; }
+    // Test hook: freezes the local player's pose for screenshots (QcForcedPose); the cape then rests
+    // on its target for that movement.
+    void setForcedPose(const QString &pose) { m_forcedPose.set(pose); }
 
     // The local player's pose at `alpha` between the last two ticks, or the forced pose.
     QcEntityPose localPose(double alpha) const;
     // The pose of a mirrored creature or player, with the walk of the screenshot hook.
     QcEntityPose creaturePose(const QcClientEntity &entity, double alpha) const;
-    // The metres walked that `--pose walk:<metres>` fixes; nullopt for other poses.
-    std::optional<double> forcedWalk() const;
+    // The pose the screenshot hook forces (`--pose`; none set: the real one).
+    const QcForcedPose &forcedPose() const { return m_forcedPose; }
     // Creatures, dropped items, falling blocks and, seen from outside, the player; null without an
     // atlas. The maps in item frames go into a mesh of their own (framedMaps()). Animated textures
     // (flames on burning bodies) show their frame at `animationTicks` (QcWorldView::animationTicks,
@@ -148,7 +148,7 @@ private:
     // A cache: the shapes of held sprites, cut from the atlas on first use (decision E-831). GUI
     // thread only: frames are built there, and the cache is not locked.
     mutable QcSpriteShapes m_spriteShapes;
-    QString m_forcedPose;
+    QcForcedPose m_forcedPose;
     // Cape swings of the drawn figures and the clock that advances them (decision E-240).
     QcCapeTracker m_capes;
     // The other players on boats' driver seats this frame, by player id (QcBoatRiders::seats).

@@ -236,6 +236,10 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
 {
     switch (change) {
     case QcClientVitals::Change::Health:
+        // A fresh hit tilts the view and flashes the own figure (decision E-971).
+        if (m_vitals.hurt()) {
+            m_animation.hurt(m_vitals.hurtFrom(), intent().yaw);
+        }
         if (m_vitals.isDead()) {
             // A player comes back from death on the ground.
             m_hand.setMining(false);

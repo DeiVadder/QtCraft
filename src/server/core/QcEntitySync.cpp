@@ -37,7 +37,7 @@ QcMsg::EntityMove creatureMove(QcMsg::EntityMove now, const QcCreature &creature
                                      | QcMsg::poseFlags(creature.pose));
     now.yaw = creature.yaw;
     now.health = creature.health;
-    now.hurt = creature.hurtThisTick;
+    now.hurt = creature.hurtUnsent;
     now.flags = static_cast<quint16>(flagsOf(creature, creature.attackedThisTick, false, false) | breeding);
     now.held = heldBy(creature, kind);
     if (creature.archer.has() && creature.archer->drawing()) {

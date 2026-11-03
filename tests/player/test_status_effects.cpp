@@ -180,16 +180,16 @@ private slots:
         QCOMPARE(m_client->effects.size(), 1);
 
         // Over two seconds: the countdown twice and poison's one or two hurts, not one per tick.
-        const int before = m_client->healthMessages;
+        const qsizetype before = m_client->healths.size();
         ticks(40);
-        const int sent = m_client->healthMessages - before;
+        const qsizetype sent = m_client->healths.size() - before;
         QVERIFY2(sent >= 2 && sent <= 4, qPrintable(QString::number(sent)));
 
         // Given again for longer: at once, with the new time.
-        const int beforeLonger = m_client->healthMessages;
+        const qsizetype beforeLonger = m_client->healths.size();
         QVERIFY(QcServerEffects::givePlayer(*m_content, player(), {poison, 1, 3000}));
         ticks(1);
-        QVERIFY(m_client->healthMessages > beforeLonger);
+        QVERIFY(m_client->healths.size() > beforeLonger);
         QVERIFY(m_client->effects.front().ticksLeft > 2900);
 
         // A stronger level, then taken away: each at once.
@@ -201,9 +201,9 @@ private slots:
         QVERIFY(m_client->effects.isEmpty());
 
         // Without effects nothing more is sent.
-        const int idle = m_client->healthMessages;
+        const qsizetype idle = m_client->healths.size();
         ticks(40);
-        QCOMPARE(m_client->healthMessages, idle);
+        QCOMPARE(m_client->healths.size(), idle);
     }
 
     void effectDamageHasItsOwnDeathMessage()

@@ -81,8 +81,9 @@ public:
     /*! Drinks the drink \a held by \a client (milk clears the status effects, decision E-500)
         and leaves its container. */
     void drink(QcServerClient &client, const QcItemDefinition &held);
-    /*! Sends \a client its health. */
-    void sendHealth(QcServerClient &client);
+    /*! Sends \a client its health; with \a hurt as a fresh hit from the world yaw \a hurtFrom
+        (none: without a direction), so the client tilts the view (decision E-971). */
+    void sendHealth(QcServerClient &client, bool hurt = false, std::optional<float> hurtFrom = {});
     /*! Sends \a client its food points. */
     void sendFood(QcServerClient &client);
 

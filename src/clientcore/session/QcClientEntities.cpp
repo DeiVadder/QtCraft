@@ -169,7 +169,12 @@ void QcClientEntities::applyMove(const QcMsg::EntityMove &move, double serverMs)
         it->swingTicks = 0;
     }
     if (move.hurt) {
-        it->hurtTicks = hurtFlashTicks;
+        // Buffered, the flash waits for the motion of the hit (startHurtFlash).
+        it->hurtAtMs = serverMs;
+        if (!m_buffered) {
+            it->hurtTicks = hurtFlashTicks;
+            it->hurtAtMs.reset();
+        }
     }
 }
 
@@ -190,6 +195,7 @@ void QcClientEntities::tick(qint64 localMs)
     for (QcClientEntity &entity : m_entities) {
         advancePose(entity, shown);
         entity.hurtTicks = std::max(0, entity.hurtTicks - 1);
+        startHurtFlash(entity, shown);
         if (entity.swingTicks >= 0) {
             ++entity.swingTicks;
             if (entity.swingTicks >= swingTicks) {
@@ -234,4 +240,15 @@ void QcClientEntities::advancePose(QcClientEntity &entity, std::optional<double>
     entity.lastStep = std::hypot(entity.position.x - entity.previousPosition.x, entity.position.z - entity.previousPosition.z);
     entity.walkDistance += entity.lastStep;
     entity.speed += (entity.lastStep * QcPhysics::tickRate - entity.speed) * speedSmoothing;
+}
+
+void QcClientEntities::startHurtFlash(QcClientEntity &entity, std::optional<double> shown)
+{
+    // The tick's end shows the pose one tick after the shown moment (advancePose); the flash starts
+    // when that pose is the one of the hurt. Before the clock knows a moment it starts at once.
+    const double shownEnd = shown ? *shown + QcPhysics::tickDuration * 1000.0 : 0.0;
+    if (entity.hurtAtMs && (!shown || shownEnd >= *entity.hurtAtMs)) {
+        entity.hurtTicks = hurtFlashTicks;
+        entity.hurtAtMs.reset();
+    }
 }

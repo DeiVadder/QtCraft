@@ -22,4 +22,6 @@ qc_add_test(test_projectiles SOURCES player/test_projectiles.cpp fixtures/QcServ
 qc_add_test(test_experience_sources SOURCES player/test_experience_sources.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_projectile_measure SOURCES player/test_projectile_measure.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_invulnerability SOURCES player/test_invulnerability.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
+# Hit feedback on the server (decision E-971): knockback away from the attacker, the sprint's, the hurt sent with its direction.
+qc_add_test(test_hit_feedback SOURCES player/test_hit_feedback.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_worlds TIMEOUT 120)
 qc_add_test(test_advancements SOURCES player/test_advancements.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_base_content TIMEOUT 300)

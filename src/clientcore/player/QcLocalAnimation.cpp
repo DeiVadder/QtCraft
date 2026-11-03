@@ -25,6 +25,7 @@ void QcLocalAnimation::tick(QcItemId held, bool mining, QcSwingSpeed speed)
     advance(m_useTicks, QcHandTimers::useTicks);
     advance(m_switchTicks, QcHandTimers::switchTicks);
     advance(m_landingTicks, QcHandTimers::landingTicks);
+    advance(m_hurtTicks, hurtTicks);
 
     if (held != m_lastHeld) {
         m_lastHeld = held;
@@ -64,9 +65,27 @@ QcEntityPose QcLocalAnimation::localPose(double alpha, const QcPrediction &predi
     pose.flying = motion.flying;
     pose.riding = prediction.riding().isRiding();
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / m_swingLength;
+    pose.hurtProgress = m_hurtTicks < 0 ? -1.0 : (m_hurtTicks + alpha) / hurtTicks;
     pose.drawProgress = drawProgress;
     pose.headPitch = intent.pitch;
     return pose;
+}
+
+void QcLocalAnimation::hurt(std::optional<float> from, float viewYaw)
+{
+    m_hurtTicks = 0;
+    m_hurtFrom.reset();
+    if (from) {
+        m_hurtFrom = static_cast<double>(qcWrappedYaw(*from - viewYaw));
+    }
+}
+
+QcHurtTilt::Tilt QcLocalAnimation::hurtTilt(double alpha) const
+{
+    if (m_hurtTicks < 0) {
+        return {};
+    }
+    return QcHurtTilt::at((m_hurtTicks + alpha) / hurtTicks, m_hurtFrom);
 }
 
 QcHandTimers QcLocalAnimation::handTimers(double alpha) const

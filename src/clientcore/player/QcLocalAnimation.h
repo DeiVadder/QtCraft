@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "clientcore/camera/QcHurtTilt.h"
 #include "clientcore/figures/QcEntityPose.h"
 #include "clientcore/figures/QcHandSwing.h"
 #include "clientcore/player/QcHandTimers.h"
@@ -26,6 +27,9 @@ public:
         long as the QcSwingSpeed given to tick() says, swingTicks without effects. \qcshared */
     static constexpr int swingTicks = QcClientEntities::swingTicks;
     static constexpr int deathTicks = QcClientEntities::deathTicks;
+    /*! The hurt time of the own player in ticks: the red flash of the figure and the tilt of the
+        view, as long as the flash of others (decision E-971). */
+    static constexpr int hurtTicks = QcClientEntities::hurtFlashTicks;
 
     /*! Advances the timers by one tick. Holding another item \a held (qcNoItem: empty hand)
         starts the switch; \a mining keeps the arm swinging, one swing after the other without a
@@ -40,6 +44,11 @@ public:
     void swing() { startSwing(QcHandSwing::Style::Click); }
     /*! Starts the use animation. */
     void use() { m_useTicks = 0; }
+    /*! A fresh hit hurt the player from the world yaw \a from (none: without a direction) while
+        they looked along \a viewYaw: starts the hurt time (decision E-971). */
+    void hurt(std::optional<float> from, float viewYaw);
+    /*! Returns the tilt of the view \a alpha into the current tick (none outside the hurt time). */
+    [[nodiscard]] QcHurtTilt::Tilt hurtTilt(double alpha) const;
 
     /*! Returns the pose of the local player from \a prediction; \a alpha interpolates within the
         current tick, \a drawProgress is the drawn launcher's (QcClientLauncher::progress). */
@@ -68,6 +77,9 @@ private:
     int m_useTicks = -1;
     int m_switchTicks = -1;
     int m_landingTicks = -1;
+    int m_hurtTicks = -1; // NOLINT(qc-member-access): a tick timer like the others here, advanced by reference in tick()
+    // Where the running hurt came from, in degrees relative to the view at the hit.
+    std::optional<double> m_hurtFrom; // NOLINT(qc-member-access): set with m_hurtTicks in hurt(), read in hurtTilt()
     double m_walkDistance = 0.0;
     double m_lastStep = 0.0;
     QcItemId m_lastHeld = qcNoItem;

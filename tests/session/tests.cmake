@@ -21,6 +21,8 @@ qc_add_test(test_session_tick SOURCES session/test_session_tick.cpp fixtures/QcR
 # death and respawn, riding, the same walk as with the timer in the session's thread.
 qc_add_test(test_session_thread SOURCES session/test_session_thread.cpp fixtures/QcRecordingTransport.h fixtures/QcTestTls.h LIBRARIES qc_server qc_worlds qc_clientcore)
 qc_add_test(test_prediction SOURCES session/test_prediction.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
+# Hit feedback on the client (decision E-971): the flash with the shown knockback, the tilt of the view.
+qc_add_test(test_hit_feedback_client SOURCES session/test_hit_feedback_client.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_push_bodies SOURCES session/test_push_bodies.cpp LIBRARIES qc_base_content qc_clientcore)
 qc_add_test(test_debug_report SOURCES session/test_debug_report.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)
 qc_add_test(test_reconciliation SOURCES session/test_reconciliation.cpp fixtures/QcTestWorld.h LIBRARIES qc_clientcore)

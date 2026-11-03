@@ -16,6 +16,8 @@
 
 #include <QString>
 
+#include <optional>
+
 /*! \brief Client mirror of an entity the server reported (QcMsg::EntitySpawn). */
 struct QcClientEntity
 {
@@ -45,6 +47,10 @@ struct QcClientEntity
     double health = 0.0;
     /*! Client ticks left for the hurt flash. */
     int hurtTicks = 0;
+    /*! The server time of a hurt whose flash waits until the shown moment reaches it, so the
+        flash starts with the knockback the buffered motion shows (decision E-971); none when
+        nothing waits. */
+    std::optional<double> hurtAtMs;
     /*! Players: their look; all creatures: head pitch, entity flag bits (QcMsg::Swing …) and the
         held item. */
     QcAppearance appearance;

@@ -150,8 +150,11 @@ std::optional<QList<QcItemDrop>> QcMobManager::damage(const QcServerCombat::Blow
     }
     if (take == QcHurtWindow::Take::Fresh) {
         mob.hurtThisTick = true;
+        mob.hurtUnsent = true;
         if (blow.knockback > 0.0 && resisted > 0.0) {
             mob.motion.velocity = knockbackVelocity(away, blow.knockback * resisted, blow.lift);
+            // Off the ground at once: the next step must not stop the push like a walk (decision E-971).
+            mob.motion.onGround = false;
         }
     }
 
@@ -195,6 +198,13 @@ void QcMobManager::setHurtTicks(int ticks)
     m_hurtTicks = ticks;
 }
 
+void QcMobManager::clearSentHurts()
+{
+    for (QcCreature &mob : m_mobs) {
+        mob.hurtUnsent = false;
+    }
+}
+
 bool QcMobManager::hurt(quint32 mobId, double amount)
 {
     return wound(mobId, amount).has_value();
@@ -219,6 +229,7 @@ std::optional<QList<QcItemDrop>> QcMobManager::woundAt(qsizetype index, double a
     const double taken = it->hurt.take(amount, m_hurtTicks);
     it->health -= taken;
     it->hurtThisTick = it->hurtThisTick || take == QcHurtWindow::Take::Fresh;
+    it->hurtUnsent = it->hurtUnsent || take == QcHurtWindow::Take::Fresh;
     it->woundedThisTick = it->woundedThisTick || (take == QcHurtWindow::Take::Fresh && taken > 0.0);
     if (it->health > 0.0) {
         return std::nullopt;
@@ -439,6 +450,8 @@ void QcMobManager::carryBlock(QcCreature &mob, QcBlockId block) const
 QList<QcMobManager::PlayerHit> QcMobManager::tick(QcServerWorld &world, const QList<PlayerView> &players, double worldTime,
                                                  double dt, const std::function<quint32()> &nextEntityId)
 {
+    // The reactions to the hurts (infestation, families) ran before; the clients' copy of a hurt is
+    // hurtUnsent (clearSentHurts).
     for (QcCreature &mob : m_mobs) {
         mob.hurtThisTick = false;
         mob.woundedThisTick = false;

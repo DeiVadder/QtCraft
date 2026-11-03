@@ -56,6 +56,9 @@ struct QcCreature : QcEntity
     double fleeTimer = 0.0;
     /*! Hurt this tick by a fresh hit (QcHurtWindow::Take::Fresh; hurt animation). */
     bool hurtThisTick = false;
+    /*! Hurt by a fresh hit the clients were not told of yet (EntityMove::hurt); unlike
+        hurtThisTick it lives until the next world sync (decision E-971). */
+    bool hurtUnsent = false;
     /*! Struck at a player this tick (animation). */
     bool attackedThisTick = false;
     /*! A wall stopped its steering in the last tick. */

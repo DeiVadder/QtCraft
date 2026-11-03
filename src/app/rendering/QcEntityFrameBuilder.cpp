@@ -78,67 +78,15 @@ QcEntityMesher::ModelLook QcEntityFrameBuilder::playerLook(const QcAppearance &a
     return QcFigureLook::player(*m_parts.session->content(), appearance);
 }
 
-std::optional<double> QcEntityFrameBuilder::forcedWalk() const
-{
-    if (!m_forcedPose.startsWith(u"walk:"_s)) {
-        return std::nullopt;
-    }
-    bool ok = false;
-    const double walked = m_forcedPose.section(u':', 1).toDouble(&ok);
-    return ok ? std::optional(walked) : std::nullopt;
-}
-
 QcEntityPose QcEntityFrameBuilder::creaturePose(const QcClientEntity &entity, double alpha) const
 {
-    QcEntityPose pose = QcLocalAnimation::poseOf(entity, alpha);
-    // Screenshot hook (decision E-888): every creature a fixed moment of its walk at full swing.
-    if (const std::optional<double> walked = forcedWalk()) {
-        pose.walkDistance = *walked;
-        pose.speed = std::max(QcAnimator::fullSwingSpeed, QcPhysics::walkSpeed);
-        pose.onGround = true;
-    }
-    return pose;
+    return m_forcedPose.creature(QcLocalAnimation::poseOf(entity, alpha));
 }
 
 QcEntityPose QcEntityFrameBuilder::localPose(double alpha) const
 {
-    QcEntityPose pose = m_parts.session->localPose(alpha);
-    if (m_forcedPose.isEmpty()) {
-        return pose;
-    }
-
     // Screenshot hook: a fixed moment of an animation, independent of the real movement.
-    pose.onGround = true;
-    if (m_forcedPose == u"walk"_s || forcedWalk()) {
-        pose.speed = QcPhysics::walkSpeed;
-        pose.walkDistance = forcedWalk().value_or(0.3);
-    } else if (m_forcedPose == u"sprint"_s) {
-        pose.speed = QcPhysics::sprintSpeed;
-        pose.sprinting = true;
-        pose.walkDistance = 0.3;
-    } else if (m_forcedPose.startsWith(u"swing"_s)) {
-        // "swing:0.3" freezes that moment of the swing (screenshot series).
-        bool ok = false;
-        const double progress = m_forcedPose.section(u':', 1).toDouble(&ok);
-        pose.swingProgress = ok ? std::clamp(progress, 0.0, 1.0) : 0.45;
-    } else if (m_forcedPose == u"fly"_s || m_forcedPose == u"flysprint"_s) {
-        // Creative flight (decision E-284), with sprint the widest view.
-        pose.onGround = false;
-        pose.flying = true;
-        pose.sprinting = m_forcedPose == u"flysprint"_s;
-        pose.speed = pose.sprinting ? QcPhysics::flySprintSpeed : QcPhysics::flySpeed;
-    } else if (m_forcedPose == u"swim"_s) {
-        pose.onGround = false;
-        pose.inWater = true;
-        pose.speed = QcPhysics::swimSpeed;
-    } else if (m_forcedPose == u"jump"_s || m_forcedPose == u"fall"_s) {
-        pose.onGround = false;
-    } else if (m_forcedPose == u"sneak"_s) {
-        pose.sneaking = true;
-    } else if (m_forcedPose == u"death"_s) {
-        pose.deathProgress = 0.7;
-    }
-    return pose;
+    return m_forcedPose.local(m_parts.session->localPose(alpha));
 }
 
 float QcEntityFrameBuilder::skyExposure(const QcClientWorld &world, QcBlockPos pos)
@@ -167,19 +115,10 @@ QcCapeDrive QcEntityFrameBuilder::localCapeDrive(const QcEntityPose &pose) const
 {
     const QcClientSession &session = *m_parts.session;
     const double yaw = static_cast<double>(session.intent().yaw);
-    if (m_forcedPose.isEmpty()) {
+    if (!m_forcedPose.isSet()) {
         return QcCapeDrive::from(session.playerMotion().velocity, yaw, pose);
     }
-
-    // The forced pose's movement: forwards at its speed, rising after a jump, falling fast.
-    QcCapeDrive drive = QcCapeDrive::from({}, yaw, pose);
-    drive.forwardSpeed = pose.speed;
-    if (m_forcedPose == u"jump"_s) {
-        drive.verticalSpeed = QcPhysics::jumpVelocity / 2.0;
-    } else if (m_forcedPose == u"fall"_s) {
-        drive.verticalSpeed = -QcPhysics::jumpVelocity * 2.0;
-    }
-    return drive;
+    return m_forcedPose.capeDrive(pose, yaw);
 }
 
 double QcEntityFrameBuilder::capeFrameSeconds()
@@ -195,8 +134,9 @@ void QcEntityFrameBuilder::appendCreature(QcEntityMesh &mesh, const QcClientEnti
 {
     const QcMobDefinition *creature = entity.creature(frame.content);
     const QcVec3 position = lerp(entity.previousPosition, entity.position, frame.alpha);
+    // Red while hurt and while dying, as in the reference (decision E-971).
     QcEntityMesher::Placement placement{position, lerpYaw(entity.previousYaw, entity.yaw, frame.alpha), entityLight(frame.world, position),
-                                        entity.hurtTicks > 0};
+                                        entity.hurtTicks > 0 || entity.deathTicks >= 0};
     placement.scale = scale;
     if ((entity.flags & QcMsg::Young) != 0) {
         placement.scale *= QcMsg::youngScale;
@@ -482,7 +422,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
     if (dressed.look.cape) {
         const QcCapeDrive drive = localCapeDrive(pose);
         QcCapeSwing::Angles cape = m_capes.advance(QcCapeTracker::localPlayer, drive);
-        if (!m_forcedPose.isEmpty()) {
+        if (m_forcedPose.isSet()) {
             // Screenshots show the cape at rest on its target for the forced movement.
             cape = QcCapeSwing::target(drive, frame.seconds);
         }
@@ -490,7 +430,7 @@ void QcEntityFrameBuilder::appendLocalPlayer(QcEntityMesh &mesh, const EntityFra
         body.capeSway = cape.sway;
     }
     QcEntityMesher::appendModel(mesh, {dressed.look, held ? &*held : nullptr, &dressed.armour}, body,
-                                {feet, yaw, entityLight(frame.world, feet), false}, frame.uv);
+                                {feet, yaw, entityLight(frame.world, feet), pose.hurtProgress >= 0.0}, frame.uv);
     if (session.vitals().burning()) {
         appendFlames(mesh, frame, feet, {QcPhysics::playerWidth, QcPhysics::playerHeight});
     }
@@ -688,7 +628,7 @@ std::shared_ptr<QcEntityMesh> QcEntityFrameBuilder::buildHand(double alpha, cons
     const std::optional<QcEntityMesher::ItemLook> held = heldLook(selected.isEmpty() ? qcNoItem : selected.item);
     QcHandTimers timers = session.handTimers(alpha);
     // Screenshot hook: a frozen "swing" is a moment of the mining swing.
-    timers.mining = timers.mining || m_forcedPose.startsWith(u"swing"_s);
+    timers.mining = timers.mining || m_forcedPose.swings();
     const double seconds = session.worldMirror().animationSeconds(alpha);
     const QcAnimator::HandPose hand = QcAnimator::animateHand(localPose(alpha), seconds, timers);
     // The arm takes the light around the eyes: sky light by how open the sky is, torches nearby.

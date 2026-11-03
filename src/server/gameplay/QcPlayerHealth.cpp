@@ -15,12 +15,24 @@
 #include "server/gameplay/QcToolWear.h"
 #include "server/items/QcServerExperience.h"
 
+#include <QtMath>
+
 #include <algorithm>
 #include <cmath>
 
 using namespace Qt::StringLiterals;
 
 namespace {
+
+// The world yaw in degrees looking along `direction` (yaw 0 along -Z, positive turning right);
+// none without a horizontal direction.
+std::optional<float> yawTowards(const QcVec3 &direction)
+{
+    if (std::hypot(direction.x, direction.z) <= 0.0) {
+        return std::nullopt;
+    }
+    return qcWrappedYaw(static_cast<float>(qRadiansToDegrees(std::atan2(direction.x, -direction.z))));
+}
 
 // The key of the chat line that tells of a death by `kind` (QcServerMessages).
 const char *deathMessage(QcPlayerHealth::DamageKind kind)
@@ -140,7 +152,7 @@ QcHurtWindow::Take QcPlayerHealth::damage(QcServerClient &client, double amount,
         die(client, kind, creature);
     }
 
-    sendHealth(client);
+    sendHealth(client, fresh, fresh ? yawTowards(QcVec3{} - knockback) : std::nullopt);
     return take;
 }
 
@@ -150,6 +162,8 @@ void QcPlayerHealth::knock(QcServerClient &client, const QcVec3 &direction, doub
         return;
     }
     client.motion.velocity = QcMobManager::knockbackVelocity(direction.normalized(), strength);
+    // Off the ground at once: the next step must not stop the push like a walk (decision E-971).
+    client.motion.onGround = false;
     client.stateDirty = true;
 }
 
@@ -325,10 +339,11 @@ void QcPlayerHealth::drink(QcServerClient &client, const QcItemDefinition &held)
     m_inventory.send(client);
 }
 
-void QcPlayerHealth::sendHealth(QcServerClient &client)
+void QcPlayerHealth::sendHealth(QcServerClient &client, bool hurt, std::optional<float> hurtFrom)
 {
     client.sentEffects = client.effects;
-    client.connection->send(QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0, client.effects.all()});
+    client.connection->send(
+        QcMsg::PlayerHealth{client.health, QcServerClient::maxHealth, client.dead, client.burnTicks > 0, client.effects.all(), hurt, hurtFrom});
 }
 
 void QcPlayerHealth::sendFood(QcServerClient &client)

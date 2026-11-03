@@ -229,6 +229,11 @@ private slots:
             session.tick();
         }
         QCOMPARE(pose().swingProgress, -1.0);
+        // The flash lasts the hurt time, longer than a swing (decision E-971).
+        QVERIFY(pose().hurtProgress >= 0.0);
+        for (int i = QcLocalAnimation::swingTicks; i < QcClientEntities::hurtFlashTicks; ++i) {
+            session.tick();
+        }
         QCOMPARE(pose().hurtProgress, -1.0);
 
         // Dying, then spawned again while the death animation plays.

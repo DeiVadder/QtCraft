@@ -13,6 +13,7 @@ target_sources(qc_clientcore PRIVATE
     camera/QcEyeHeight.h camera/QcEyeHeight.cpp
     camera/QcFovEffect.h camera/QcFovEffect.cpp
     camera/QcFrustum.h camera/QcFrustum.cpp
+    camera/QcHurtTilt.h camera/QcHurtTilt.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp
     camera/QcMouseCapture.h camera/QcMouseCapture.cpp
     camera/QcMouseLook.h camera/QcMouseLook.cpp

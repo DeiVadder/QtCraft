@@ -54,7 +54,7 @@ public:
     QcPlayerInput initialIntent() const;
     void setSpawnColumn(int x, int z) { m_spawnColumn = std::array<int, 2>{x, z}; }
     [[nodiscard]] std::optional<std::array<int, 2>> spawnColumn() const { return m_spawnColumn; }
-    // Freezes the local player's pose ("walk", "sprint", "swing", "swim", "jump", "fall", "sneak", "death").
+    // Freezes the local player's pose ("walk", "sprint", "swing", "swim", "jump", "fall", "sneak", "death", "hurt:<p>").
     void setForcedPose(const QString &pose) { m_forcedPose = pose; }
     QString forcedPose() const { return m_forcedPose; }
     // Chat lines sent and overlays opened once the world is playable. Like chat lines, an overlay

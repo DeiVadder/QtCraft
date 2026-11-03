@@ -38,6 +38,10 @@ public:
     bool burning() const { return m_health.burning; }
     /*! Returns whether the player is dead. */
     bool isDead() const { return m_health.dead; }
+    /*! Returns whether the last PlayerHealth told of a fresh hit (decision E-971). */
+    bool hurt() const { return m_health.hurt; }
+    /*! Returns the world yaw towards where that hit came from; none without a direction. */
+    std::optional<float> hurtFrom() const { return m_health.hurtFrom; }
     /*! Returns the status effects with their ticks left when the server last told (decision
         E-450). */
     const QList<QcStatusEffect> &effects() const { return m_health.effects; }

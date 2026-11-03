@@ -27,6 +27,7 @@ struct QcEntityVertex
     float skyLight = 1.0f;
     /*! Block light (torches) in [0, 1]. */
     float blockLight = 0.0f;
-    /*! RGBA, 255 = unchanged. */
+    /*! RGB multiplies the texture (255 = unchanged); an alpha below 255 mixes in red by
+        1 - alpha / 255, the overlay of a hurt (decision E-971). */
     std::array<quint8, 4> tint = {255, 255, 255, 255};
 };

@@ -23,8 +23,9 @@ class QcContentRegistry;
     ones that play their death animation.
 
     Motion is shown a little in the past from buffered snapshots so that late or bunched messages
-    do not make others stutter (decision E-271); health, flags, swings and hurt flashes show when
-    they arrive. */
+    do not make others stutter (decision E-271); health, flags and swings show when they arrive,
+    a hurt flash when the shown moment reaches the hurt, together with its knockback (decision
+    E-971). */
 class QcClientEntities
 {
 public:
@@ -34,7 +35,8 @@ public:
         effects are not sent, decision E-881). \qcshared */
     static constexpr int swingTicks = QcSwingSpeed::baseTicks;
     static constexpr int deathTicks = 20;
-    static constexpr int hurtFlashTicks = 6;
+    /*! The red flash lasts the reference's hurt time (decision E-971). */
+    static constexpr int hurtFlashTicks = 10;
     /*! Share of the newest tick in the smoothed walking speed. */
     static constexpr double speedSmoothing = 0.3;
     /*! Creatures step every this many metres. */
@@ -81,6 +83,8 @@ private:
     void applyMove(const QcMsg::EntityMove &move, double serverMs);
     // The entity's pose for the tick ending at `shown` plus one tick (shown: none before any snapshot).
     void advancePose(QcClientEntity &entity, std::optional<double> shown);
+    // Starts the flash of a waiting hurt of `entity` once the `shown` moment reached it.
+    static void startHurtFlash(QcClientEntity &entity, std::optional<double> shown);
 
     QHash<quint32, QcClientEntity> m_entities;
     QHash<quint32, QcClientEntity> m_dying;

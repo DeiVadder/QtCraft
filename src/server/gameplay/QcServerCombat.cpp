@@ -55,7 +55,9 @@ void QcServerCombat::attack(QcServerClient &client, quint32 entityId)
     // Sharpness adds to the weapon's damage (decision E-864).
     const int sharpness = QcEnchanting::levelOf(m_state.content(), client.inventory.selectedStack(), QcEnchantmentEffect::Sharpness);
     const double damage = (held ? held->attackDamage : 1.0) + QcEnchanting::damageBonus(sharpness);
-    hurtCreature(m_state, m_sounds, {.creature = entityId, .damage = damage, .from = client.motion.position, .attacker = client.id});
+    // A sprint attack pushes harder, as in the reference (decision E-971).
+    const double knockback = client.sprinting ? sprintKnockback : 1.0;
+    hurtCreature(m_state, m_sounds, {.creature = entityId, .damage = damage, .from = client.motion.position, .attacker = client.id, .knockback = knockback});
 
     // Weapons wear like tools, except in creative mode (decision E-282).
     if (held && held->durability > 0 && !client.rules().infiniteItems) {

@@ -310,6 +310,40 @@ private slots:
         QVERIFY((server.motion.position - settled).length() > slowStretch * 8.0 / 12.0 * 1.2);
     }
 
+    // A knockback (decision E-971) is a velocity the server gives the player between two inputs: the
+    // state that brings it corrects the prediction once by what the push did over the inputs still
+    // pending, then the replayed inputs carry the push on, so nothing pulls the player back.
+    void aKnockbackCorrectsOnceAndCarriesOn()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+        QCOMPARE(walk(prediction, server, world, 6), 0.0);
+
+        // A blow from the west: 6 m/s east and 5 m/s up, as QcMobManager::knockbackVelocity gives.
+        server.motion.velocity = {6.0, 5.0, 0.0};
+        server.motion.onGround = false;
+        const QcMsg::PlayerState knocked = server.receive(prediction.predict(world, false, QcMovement::Walk), world);
+        prediction.reconcile(knocked, &world, QcMovement::Walk);
+        QVERIFY(prediction.lastCorrection() > 0.0);
+        QVERIFY(prediction.motion().velocity.x > 0.0);
+
+        // From then on the prediction is where the server is and flies on east, without a correction.
+        double x = prediction.motion().position.x;
+        double largest = 0.0;
+        for (int tick = 0; tick < 12; ++tick) {
+            largest = std::max(largest, walk(prediction, server, world, 1));
+            QVERIFY2(prediction.motion().position.x >= x, qPrintable(QString::number(prediction.motion().position.x)));
+            x = prediction.motion().position.x;
+        }
+        QVERIFY2(largest < 1e-9, qPrintable(QString::number(largest)));
+        QVERIFY2(x > 1.0, qPrintable(QString::number(x)));
+        QVERIFY(prediction.motion().onGround);
+    }
+
     // The edge guard of sneaking (decision E-961) runs in the shared physics: the server stops the
     // player at the floor's edge on the same tick as the prediction, so nothing is corrected, and
     // the player stays on the floor.

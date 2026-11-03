@@ -78,7 +78,7 @@ public:
             chatLines.append(chat->text);
             chatKeys.append(*chat);
         } else if (const auto *healthState = std::get_if<QcMsg::PlayerHealth>(&message)) {
-            ++healthMessages;
+            healths.append(*healthState);
             health = healthState->health;
             dead = healthState->dead;
             burning = healthState->burning;
@@ -242,9 +242,10 @@ public:
     bool dead = false;
     // The player is on fire (decision E-393).
     bool burning = false;
-    // His status effects (decision E-450) and how many health messages brought them.
+    // His status effects (decision E-450) and all health messages, oldest first (how many brought
+    // the effects; which told of a fresh hit, decision E-971).
     QList<QcStatusEffect> effects;
-    int healthMessages = 0;
+    QList<QcMsg::PlayerHealth> healths;
     int food = -1;
     // The experience the server reported last (decision E-398); empty before the first.
     std::optional<QcMsg::PlayerExperience> experience;

@@ -248,6 +248,8 @@ public:
 
     /*! Returns the animation of the local player. \a alpha interpolates within the current tick. */
     QcEntityPose localPose(double alpha) const { return m_animation.localPose(alpha, m_prediction, m_hand.drawProgress(alpha)); }
+    /*! Returns the tilt of the view after a hit \a alpha into the current tick (decision E-971). */
+    QcHurtTilt::Tilt hurtTilt(double alpha) const { return m_animation.hurtTilt(alpha); }
     /*! Returns the timers of the hand animation (swing, use) at \a alpha within the current tick.
      */
     QcHandTimers handTimers(double alpha) const { return m_animation.handTimers(alpha); }

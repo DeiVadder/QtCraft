@@ -173,6 +173,11 @@ struct PlayerHealth
     bool burning = false;
     /*! The player's status effects. */
     QList<QcStatusEffect> effects = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! Whether a fresh hit hurt the player just now (decision E-971): the client tilts the view. */
+    bool hurt = false;
+    /*! The world yaw in degrees from the player towards where that hit came from (the attacker);
+        none for a hit without a direction (a fall, fire, hunger) or no hit. */
+    std::optional<float> hurtFrom = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
 };
 
 /*! \brief Client -> server: leave the death screen. */

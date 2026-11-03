@@ -79,6 +79,7 @@ void encode(QDataStream &stream, const QcMsg::PlayerHealth &m)
 {
     stream << m.health << m.maxHealth << m.dead << m.burning;
     QcStatusEffects::write(stream, m.effects);
+    stream << m.hurt << m.hurtFrom.has_value() << m.hurtFrom.value_or(0.0f);
 }
 
 void encode(QDataStream &, QcMsg::Respawn) {}
@@ -255,6 +256,15 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
         return qcError(u"Damaged status effects"_s);
     }
     m.effects = std::move(*effects);
+    bool directed = false;
+    float from = 0.0f;
+    stream >> m.hurt >> directed >> from;
+    if (!std::isfinite(from)) {
+        return qcError(u"Non-finite hurt direction"_s);
+    }
+    if (directed) {
+        m.hurtFrom = qcWrappedYaw(from);
+    }
     return m;
 }
 

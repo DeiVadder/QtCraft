@@ -34,8 +34,9 @@ constexpr std::array<std::array<std::array<int, 3>, 4>, 6> faceCorners = {{
 constexpr std::array<float, 6> faceShade = {0.65f, 0.65f, 1.0f, 0.5f, 0.8f, 0.8f};
 using Tint = std::array<quint8, 4>;
 constexpr Tint white = {255, 255, 255, 255};
-// Hit entities flash red for a few ticks.
-constexpr Tint hurtTint = {255, 110, 110, 255};
+// Hit entities flash red for the hurt time: the alpha of the tint is the share of red the
+// entity shader mixes in (1 - 178 / 255 = 0.3, the reference's overlay; decision E-971).
+constexpr Tint hurtTint = {255, 255, 255, 178};
 
 Tint multiply(Tint a, Tint b)
 {

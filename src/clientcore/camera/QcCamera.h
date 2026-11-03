@@ -32,11 +32,14 @@ struct QcCamera
     float pitch = 0.0f;
     /*! Vertical field of view in degrees. */
     float fieldOfView = defaultFieldOfView;
+    /*! Roll in degrees about the view direction, positive clockwise (the head leaning to the
+        right): the tilt of a hurt (QcHurtTilt, decision E-971). */
+    float roll = 0.0f;
 
     /*! Returns the unit vector the camera looks along. */
     QVector3D forward() const;
-    /*! Returns the view of a camera at the origin with this camera's direction: maps positions
-        relative to the camera (relative()) into view space. */
+    /*! Returns the view of a camera at the origin with this camera's direction and roll: maps
+        positions relative to the camera (relative()) into view space. */
     QMatrix4x4 viewRotation() const;
     /*! Returns the perspective projection for the width-to-height ratio \a aspect and the far plane
         at \a farPlane metres. */

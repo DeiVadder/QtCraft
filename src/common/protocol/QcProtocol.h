@@ -36,8 +36,9 @@ inline constexpr quint32 firstVersionWithClientText = 65;
     \c {boatBlock} in the content and the driven boat's state in PlayerState, the Rowing bit of a
     boat whose driver paddles (decision E-920), 83 the advancements: their definitions in the
     content and the player's progress (AdvancementProgress, decision E-923), 84 the player's air
-    under water (PlayerAir, decision E-955). */
-inline constexpr quint32 version = 84;
+    under water (PlayerAir, decision E-955), 85 a fresh hit and its direction in PlayerHealth
+    (decision E-971). */
+inline constexpr quint32 version = 85;
 /*! The largest frame decode() accepts. */
 inline constexpr int maxFrameBytes = 32 * 1024 * 1024;
 

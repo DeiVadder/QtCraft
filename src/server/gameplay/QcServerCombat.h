@@ -24,6 +24,9 @@ public:
     static constexpr double attackReach = 4.0;
     /*! Seconds a player waits between two attacks. */
     static constexpr double playerAttackCooldown = 0.4;
+    /*! Blows' worth of push of a sprinting player's attack (decision E-971): the reference adds
+        a level of knockback, which pushes about twice as far. */
+    static constexpr double sprintKnockback = 2.0;
 
     QcServerCombat(QcServerState &state, QcServerSounds &sounds, QcServerInventory &inventory);
 
@@ -46,7 +49,8 @@ public:
         double lift = 1.0;
     };
 
-    /*! Handles an attack of the player \a client on the entity \a entityId. */
+    /*! Handles an attack of the player \a client on the entity \a entityId; a sprinting
+        player pushes harder (sprintKnockback). */
     void attack(QcServerClient &client, quint32 entityId);
     /*! Deals \a blow in \a state with the creature's \a sounds, its loot and experience when it
         dies. Returns \c false when the creature was not hurt (unknown, or invulnerable for a

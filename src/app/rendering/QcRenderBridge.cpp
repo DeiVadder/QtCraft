@@ -46,6 +46,7 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
     camera.position = placed.position;
     camera.yaw = placed.yaw;
     camera.pitch = placed.pitch;
+    camera.roll = 0.0f;
     // While the world is paused its ticks stand still: the shake stops instead of freezing at a tilt
     // and goes on (with the rest of the blast) once the world runs again.
     if (m_settings.cameraShake() && !session.serverPaused()) {
@@ -55,6 +56,11 @@ void QcRenderBridge::placeCamera(const QcVec3 &eye, QcCameraMode mode, double fr
         const QcExplosionEffects::Shake shake = QcExplosionEffects::shake(explosions.shakeAt(eye, ticks), ticks);
         camera.yaw += static_cast<float>(shake.yaw);
         camera.pitch = std::clamp(camera.pitch + static_cast<float>(shake.pitch), -maxShakenPitch, maxShakenPitch);
+        // A hit tips the view away and back (decision E-971), in every camera mode as in the reference.
+        const std::optional<QcForcedPose::Hurt> forced = m_entities.forcedPose().hurt();
+        const QcHurtTilt::Tilt tilt = forced ? QcHurtTilt::at(forced->progress, forced->from) : session.hurtTilt(alpha);
+        camera.pitch = std::clamp(camera.pitch + static_cast<float>(tilt.pitch), -maxShakenPitch, maxShakenPitch);
+        camera.roll = static_cast<float>(tilt.roll);
     }
     camera.fieldOfView = static_cast<float>(std::min(m_settings.fieldOfView() * widening, maxWidenedFieldOfView));
     m_parts.view->setCamera(camera);

@@ -274,7 +274,13 @@ void QcServer::addClientSystems()
 
         for (const auto &client : m_state.clients()) {
             client->swung = false;
-            client->hurtThisTick = false;
+        }
+        // A hurt waits for the next world sync (sprinting skips some, decision E-971).
+        if (sync.world) {
+            for (const auto &client : m_state.clients()) {
+                client->hurtThisTick = false;
+            }
+            m_state.entities().creatures().clearSentHurts();
         }
         m_state.entities().forgetDeaths();
     });
