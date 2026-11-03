@@ -261,6 +261,8 @@ target_sources(qc_server PRIVATE
     pathing/QcPathSteps.h
     pathing/QcPathTerrain.h pathing/QcPathTerrain.cpp
     pathing/QcPathWindow.h pathing/QcPathWindow.cpp
+    pathing/QcSwimRoutes.h pathing/QcSwimRoutes.cpp
+    pathing/QcSwimSpace.h pathing/QcSwimSpace.cpp
 )
 target_sources(qc_server PRIVATE
     plants/QcCropGrowth.h plants/QcCropGrowth.cpp
