@@ -7,6 +7,7 @@
 #include "clientcore/session/QcBlockMirror.h"
 #include "clientcore/session/QcChunkExtras.h"
 #include "clientcore/session/QcClientWorld.h"
+#include "clientcore/session/QcEffectClock.h"
 #include "clientcore/weather/QcClientWeather.h"
 #include "common/protocol/QcMessages.h"
 
@@ -34,7 +35,7 @@ public:
         tick count. */
     [[nodiscard]] std::optional<Change> handle(const QcMessage &message, const QcVec3 &eye, quint64 now);
     /*! One client tick, the tick count \a now: explosions fade, the world time runs on while the
-        time of day runs. */
+        time of day runs, the animations' clock runs on while the server runs. */
     void tick(quint64 now);
 
     /*! Shows the \a blocks the local player's action numbered \a sequence is expected to set and
@@ -59,6 +60,10 @@ public:
         (time of day frozen, server paused, decision E-960), so the sun does not swing back and
         forth with each tick. */
     [[nodiscard]] double timeAt(double alpha) const;
+    /*! Returns the seconds the world's animations show at \a alpha (0–1) of the way to the next
+        tick (QcEffectClock): running with or without the time of day, standing while the server
+        stands. */
+    double animationSeconds(double alpha) const { return m_effects.seconds(alpha); }
     /*! Returns the weather as shown: strengths, climate, lightning flashes (decision E-395). */
     QcClientWeather &weather() { return m_weather; }
     /*! Returns the weather as shown, read-only. */
@@ -78,5 +83,6 @@ private:
     QcClientMaps m_maps;
     // The latest world time from the server.
     QcMsg::WorldTime m_worldTime{0.0, 600.0, true, 1.0};
+    QcEffectClock m_effects;
     QcClientWeather m_weather;
 };

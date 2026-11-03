@@ -76,11 +76,12 @@ public:
     /*! Returns the tables found by the latest look, the nearest at most maxTables. */
     const QList<Table> &tables() const { return m_tables; }
 
-    /*! Returns the runes flying to \a table at \a seconds of world time, in a list the aura
-        reuses: valid until the next call. */
+    /*! Returns the runes flying to \a table at \a seconds of the animations' clock
+        (QcWorldMirror::animationSeconds, decision E-962), in a list the aura reuses: valid until
+        the next call. */
     [[nodiscard]] const QList<Rune> &runesOf(const Table &table, double seconds);
     /*! Returns the book above the table at \a table for a viewer at \a viewer at \a seconds of
-        world time. */
+        the animations' clock (decision E-962). */
     [[nodiscard]] static Book bookOf(QcBlockPos table, const QcVec3 &viewer, double seconds);
 
 private:

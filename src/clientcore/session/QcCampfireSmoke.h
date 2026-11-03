@@ -45,7 +45,8 @@ public:
     void refresh(const QcClientWorld &world, const QcVec3 &eye, quint64 tick);
     /*! Returns the smoking campfires found by the latest look, the nearest at most maxCampfires. */
     const QList<QcBlockPos> &campfires() const { return m_campfires; }
-    /*! Returns the puffs of the campfire at \a pos at \a seconds of world time. */
+    /*! Returns the puffs of the campfire at \a pos at \a seconds of the animations' clock
+        (QcWorldMirror::animationSeconds, decision E-962). */
     [[nodiscard]] static QList<Puff> puffsOf(QcBlockPos pos, double seconds);
 
 private:

@@ -88,6 +88,7 @@ private:
         const QcClientWorld &world;
         const QcEntityMesher::UvLookup &uv;
         double alpha = 0.0;
+        // The animations' time (QcWorldMirror::animationSeconds, decision E-962), not the time of day.
         double seconds = 0.0;
     };
 

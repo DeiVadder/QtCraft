@@ -182,6 +182,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcClientStonecutter.h session/QcClientStonecutter.cpp
     session/QcClientTrading.h session/QcClientTrading.cpp
     session/QcClientWorld.h session/QcClientWorld.cpp
+    session/QcEffectClock.h session/QcEffectClock.cpp
     session/QcEnchantingAura.h session/QcEnchantingAura.cpp
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
