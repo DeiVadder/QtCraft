@@ -3,6 +3,9 @@
 
 #include "app/controllers/QcGameController.h"
 
+#include "app/controllers/QcChatFeed.h"
+#include "app/controllers/QcChatInputHistory.h"
+#include "app/controllers/QcHudState.h"
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/input/QcGamepadBackend.h"
@@ -445,6 +448,8 @@ void QcGameController::saveWorld() const
 
 void QcGameController::sendChat(const QString &text) const
 {
+    // Arrow up in the chat line brings it back (decision E-970), client commands too.
+    m_hud->chat()->inputs()->remember(text);
     // A client command (decision E-875): empties the chat lines of the HUD, the server never sees it.
     if (text.trimmed().compare(QcChatFeed::clearCommand, Qt::CaseInsensitive) == 0) {
         m_hud->chat()->clear();

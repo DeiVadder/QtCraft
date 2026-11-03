@@ -49,6 +49,8 @@ qc_add_test(test_sign_controller SOURCES screens/test_sign_controller.cpp fixtur
 qc_add_test(test_multiplayer_ui SOURCES screens/test_multiplayer_ui.cpp LIBRARIES qc_app_core qc_worlds)
 qc_add_test(test_admin_controller SOURCES screens/test_admin_controller.cpp LIBRARIES qc_app_core)
 qc_add_test(test_chat_feed SOURCES screens/test_chat_feed.cpp LIBRARIES qc_app_core)
+# Arrow up and down in the chat line (row 79.78, E-970): the sent lines, the draft, the limit.
+qc_add_test(test_chat_input_history SOURCES screens/test_chat_input_history.cpp LIBRARIES qc_app_core)
 # The HUD's rules and the texts of model data in C++ (row 79.63): status rows, what shows behind a
 # screen, debug graph scales, durations, the "Manage server" texts; with a session the game modes.
 qc_add_test(test_hud_rules SOURCES screens/test_hud_rules.cpp LIBRARIES qc_app_core qc_worlds)

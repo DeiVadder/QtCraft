@@ -18,6 +18,7 @@ target_sources(qc_app_core PRIVATE
 target_sources(qc_app_core PRIVATE
     controllers/QcAdvancementQueue.h controllers/QcAdvancementQueue.cpp
     controllers/QcChatFeed.h controllers/QcChatFeed.cpp
+    controllers/QcChatInputHistory.h controllers/QcChatInputHistory.cpp
     controllers/QcGameController.h controllers/QcGameController.cpp
     controllers/QcHandbookController.h controllers/QcHandbookController.cpp
     controllers/QcHandbookNavigation.h controllers/QcHandbookNavigation.cpp

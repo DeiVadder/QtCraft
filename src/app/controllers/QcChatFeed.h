@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "app/controllers/QcChatInputHistory.h"
+
 #include <QElapsedTimer>
 #include <QList>
 #include <QObject>
@@ -13,6 +15,7 @@
 
 #include <functional>
 #include <optional>
+#include <utility>
 
 // The chat lines of the HUD (GameController.hud.chat, decision E-875): while the chat is closed
 // the last lines show for fadeAfterMs and then fade out over fadeMs; while it is open the last
@@ -28,6 +31,8 @@ class QcChatFeed : public QObject
     Q_PROPERTY(QVariantList entries READ entries NOTIFY entriesChanged FINAL)
     // Whether the chat line is open (QcGameController sets it from the overlay).
     Q_PROPERTY(bool open READ isOpen NOTIFY openChanged FINAL)
+    // The lines the player sent, for arrow up and down in the chat line (decision E-970).
+    Q_PROPERTY(QcChatInputHistory *inputs READ inputs CONSTANT FINAL)
 
 public:
     static constexpr qint64 fadeAfterMs = 10'000;
@@ -57,7 +62,9 @@ public:
     void add(const QString &text);
     void clear();
     bool isOpen() const { return m_open; }
+    // Opening or closing the chat line also starts the sent lines' steps from the newest again.
     void setOpen(bool open);
+    [[nodiscard]] QcChatInputHistory *inputs() { return &m_inputs; }
     // The lines to draw now (as entries).
     QList<Entry> shown() const;
     QVariantList entries() const;
@@ -81,10 +88,15 @@ private:
     };
 
     qint64 now() const { return m_clock ? m_clock() : m_elapsed.elapsed(); }
+    // The received lines, oldest first, at most historyLines.
+    [[nodiscard]] const QList<Line> &history() const { return m_history; }
+    void setHistory(QList<Line> history) { m_history = std::move(history); }
+    void setNextRefresh(std::optional<qint64> next) { m_nextRefresh = next; }
     // When to look again: at the next start or end of a line's fade, or never.
     void schedule();
 
     QList<Line> m_history;
+    QcChatInputHistory m_inputs;
     bool m_open = false;
     QTimer m_timer;
     std::optional<qint64> m_nextRefresh;

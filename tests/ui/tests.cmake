@@ -371,6 +371,19 @@ add_test(NAME app_offscreen_escape_chat_sign
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_escape_chat_sign PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_escape_chat_sign;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-escape-chat-sign.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Arrow up and down in the chat line (row 79.78, E-970): two lines typed and sent with a real
+# Return, then on a new draft Up, Up, Down shows the newer one again; the screenshot logs what the
+# line shows. Each press waits for the chat line (press:<key>@chat).
+add_test(NAME app_offscreen_chat_history
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--overlay;@1000 chat;--overlay;@1300 text:chatInput=first;--overlay;@1300 press:Return@chat;--overlay;@1600 chat;--overlay;@1900 text:chatInput=second;--overlay;@1900 press:Return@chat;--overlay;@2200 chat;--overlay;@2500 text:chatInput=draft;--overlay;@2500 press:Up@chat;--overlay;@2500 press:Up@chat;--overlay;@2500 press:Down@chat"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Return: overlay none \\(was chat\\)[^\n]*\n.*press:Return: overlay none \\(was chat\\).*Item chatInput:[^\n]* text \"second\""
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-chat-history.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_chat_history PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_chat_history;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-chat-history.png;QTCRAFT_SCREENSHOT_FRAMES=30;QTCRAFT_LOG_ITEMS=chatInput")
 foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu lazy_advancements advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.

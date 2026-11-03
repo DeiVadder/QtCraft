@@ -3,14 +3,20 @@
 
 #include "app/controllers/QcChatFeed.h"
 
+#include <QList>
+#include <QString>
+#include <QVariantList>
 #include <QVariantMap>
 
 #include <algorithm>
+#include <optional>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
 QcChatFeed::QcChatFeed(QObject *parent)
     : QObject(parent)
+    , m_inputs(this)
 {
     m_elapsed.start();
     m_timer.setSingleShot(true);
@@ -32,20 +38,22 @@ bool QcChatFeed::showsHelpHint(const QString &line, bool commandSent)
 
 void QcChatFeed::add(const QString &text)
 {
-    m_history.append({text, now()});
-    while (m_history.size() > historyLines) {
-        m_history.removeFirst();
+    QList<Line> lines = history();
+    lines.append({text, now()});
+    while (lines.size() > historyLines) {
+        lines.removeFirst();
     }
+    setHistory(std::move(lines));
     emit entriesChanged();
     schedule();
 }
 
 void QcChatFeed::clear()
 {
-    if (m_history.isEmpty()) {
+    if (history().isEmpty()) {
         return;
     }
-    m_history.clear();
+    setHistory({});
     schedule();
     emit entriesChanged();
 }
@@ -57,6 +65,7 @@ void QcChatFeed::setOpen(bool open)
         return;
     }
     m_open = open;
+    m_inputs.resetCursor();
     emit openChanged();
     emit entriesChanged();
     schedule();
@@ -66,9 +75,9 @@ QList<QcChatFeed::Entry> QcChatFeed::shown() const
 {
     QList<Entry> lines;
     const qint64 time = now();
-    const qsizetype count = std::min(m_history.size(), isOpen() ? openLines : closedLines);
-    for (qsizetype i = m_history.size() - count; i < m_history.size(); ++i) {
-        const Line &line = m_history[i];
+    const qsizetype count = std::min(history().size(), isOpen() ? openLines : closedLines);
+    for (qsizetype i = history().size() - count; i < history().size(); ++i) {
+        const Line &line = history()[i];
         if (isOpen()) {
             lines.append({line.text, 1.0});
             continue;
@@ -107,23 +116,25 @@ void QcChatFeed::refresh()
 void QcChatFeed::schedule()
 {
     m_timer.stop();
-    m_nextRefresh.reset();
+    setNextRefresh(std::nullopt);
     if (isOpen()) {
         return;
     }
 
     // The next start or end of a fade among the lines that show while closed.
     const qint64 time = now();
-    const qsizetype first = std::max<qsizetype>(0, m_history.size() - closedLines);
-    for (qsizetype i = first; i < m_history.size(); ++i) {
-        const qint64 fadeStart = m_history[i].at + fadeAfterMs;
+    const qsizetype first = std::max<qsizetype>(0, history().size() - closedLines);
+    std::optional<qint64> next;
+    for (qsizetype i = first; i < history().size(); ++i) {
+        const qint64 fadeStart = history()[i].at + fadeAfterMs;
         for (const qint64 event : {fadeStart, fadeStart + fadeMs}) {
-            if (event > time && (!m_nextRefresh || event - time < *m_nextRefresh)) {
-                m_nextRefresh = event - time;
+            if (event > time && (!next || event - time < *next)) {
+                next = event - time;
             }
         }
     }
-    if (m_nextRefresh) {
-        m_timer.start(static_cast<int>(*m_nextRefresh));
+    setNextRefresh(next);
+    if (next) {
+        m_timer.start(static_cast<int>(*next));
     }
 }
