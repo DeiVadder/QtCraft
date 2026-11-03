@@ -86,6 +86,11 @@
 # the lock files as before.
 # Usage: scripts/verify.sh [--quick|--full|--tsan-concurrent] [--changed] [--defer-timing] [--tests <regex>] [--sanitizers asan|tsan]
 #                          [--all-tsan] [--full-analysis] [--release] [--dry-run] [--seed-green <commit>] [screenshot.png]
+# The smoke screenshot defaults to $TMPDIR/qtcraft-smoke-<checkout>.png: one name per worktree, so runs
+# of several worktrees sharing one temporary folder (agents' scratchpad) do not overwrite each other's.
+# A verify run writes no log file of its own (it takes its slots itself, so it does not run under
+# `qc-slot.py run`); for a log per run and worktree redirect its output into
+# `log=$(scripts/qc-slot.py log-path --who "<package> verify")` (package 79.75).
 
 set -u
 
@@ -120,7 +125,7 @@ CHANGED=0
 DEFER_TIMING=0
 SANITIZERS="asan tsan"
 SANITIZERS_GIVEN=0
-SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke.png"
+SCREENSHOT="${TMPDIR:-/tmp}/qtcraft-smoke-$(basename "$PROJECT_DIR").png"
 BASE_BRANCH=${QC_VERIFY_BASE:-dev}
 BENCH_LOCK="$HOME/.cache/qtcraft/bench.lock"
 FULL_STAMP="$PROJECT_DIR/build/debug/.verify-full-shared"

@@ -121,13 +121,26 @@ endif()
 
 # ccache for every preset when it is installed (E-890; `brew install ccache`); QC_CCACHE=OFF or a
 # launcher of one's own (CMAKE_CXX_COMPILER_LAUNCHER) turns it off.
+# `sloppiness=` (ccache 4.8+ reads KEY=VALUE before the compiler) restores ccache's default checks for
+# this project whatever the user's ccache.conf relaxes: the project has no precompiled headers, and
+# include_file_mtime/include_file_ctime let a header that changes while it is compiled (an agent's
+# edit, a checkout, a regenerated moc/rcc file) store an object of the old content under the new
+# content's hash, a wrong hit for every later build with that content (package 79.75). Sloppiness is
+# not part of the hash, so existing entries still hit.
 option(QC_CCACHE "Compile through ccache when it is installed" ON)
 if(QC_CCACHE AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
     find_program(QC_CCACHE_PROGRAM ccache)
     if(QC_CCACHE_PROGRAM)
-        message(STATUS "Compiling through ${QC_CCACHE_PROGRAM}")
-        set(CMAKE_CXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
-        set(CMAKE_OBJCXX_COMPILER_LAUNCHER "${QC_CCACHE_PROGRAM}")
+        execute_process(COMMAND "${QC_CCACHE_PROGRAM}" --version OUTPUT_VARIABLE qc_ccache_version_text
+            ERROR_QUIET)
+        string(REGEX MATCH "[0-9]+\\.[0-9]+(\\.[0-9]+)?" qc_ccache_version "${qc_ccache_version_text}")
+        set(qc_ccache_launcher "${QC_CCACHE_PROGRAM}")
+        if(qc_ccache_version VERSION_GREATER_EQUAL 4.8)
+            list(APPEND qc_ccache_launcher "sloppiness=")
+        endif()
+        message(STATUS "Compiling through ${QC_CCACHE_PROGRAM} ${qc_ccache_version}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER ${qc_ccache_launcher})
+        set(CMAKE_OBJCXX_COMPILER_LAUNCHER ${qc_ccache_launcher})
     endif()
 endif()
 
