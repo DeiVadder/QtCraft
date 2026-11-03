@@ -9,6 +9,16 @@
 #include <algorithm>
 #include <cmath>
 
+bool QcPrediction::crouches() const
+{
+    return intent().sneak && !motion().flying && !riding().isRiding();
+}
+
+double QcPrediction::eyeHeight() const
+{
+    return QcPhysics::eyeHeight(crouches());
+}
+
 void QcPrediction::setIntent(const QcPlayerInput &intent)
 {
     const auto finiteOr = [](float value, float fallback) { return std::isfinite(value) ? value : fallback; };

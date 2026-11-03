@@ -151,14 +151,14 @@ void QcServerStands::changed(const QcArmourStand &stand)
 bool QcServerStands::canReach(const QcServerClient &client, const QcArmourStand &stand) const
 {
     const QcAabb body = QcArmourStandManager::bodyOf(stand);
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = QcLineOfSight::eyeOf(client);
     const QcVec3 centre = (body.min + body.max) * 0.5;
     return !client.dead && (centre - eye).length() <= QcServerCombat::attackReach + 1.0 && QcLineOfSight::canSee(m_state.world(), client, body);
 }
 
 std::optional<double> QcServerStands::aimedHeight(const QcServerClient &client, const QcArmourStand &stand) const
 {
-    const QcVec3 eye = client.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    const QcVec3 eye = QcLineOfSight::eyeOf(client);
     const QcVec3 direction = viewDirection(client);
     const std::optional<double> distance =
         QcRaycast::intersectBox(eye, direction, QcArmourStandManager::bodyOf(stand), QcServerCombat::attackReach + 2.0);

@@ -4,7 +4,6 @@
 #include "clientcore/control/QcControlAim.h"
 
 #include "clientcore/session/QcClientSession.h"
-#include "common/physics/QcPhysics.h"
 
 #include <QtMath>
 
@@ -24,7 +23,8 @@ void QcControlAim::lookAt(QcClientSession &session, QcBlockPos block, std::optio
 
 void QcControlAim::lookAtPoint(QcClientSession &session, const QcVec3 &point)
 {
-    const QcVec3 eye = session.playerMotion().position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0};
+    // From the eyes the hand aims from (lower while crouching, decision E-961).
+    const QcVec3 eye = session.playerMotion().position + QcVec3{0.0, session.prediction().eyeHeight(), 0.0};
     const QcVec3 delta = point - eye;
 
     QcPlayerInput intent = session.intent();

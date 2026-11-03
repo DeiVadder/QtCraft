@@ -87,7 +87,7 @@ Die Hinweise am unteren Rand zeigen die Tasten so, wie dein Controller sie besch
 
 **Bewegen**
 
-Du gehst mit 4,3 m/s, rennst mit 5,6 m/s und schleichst mit 1,3 m/s; beim Schleichen fällst du nicht über Kanten. Zum Rennen drückst du beim Vorwärtsgehen **Strg** oder tippst zweimal **W**; du rennst, solange du vorwärts gehst. Beim Rennen weitet sich die Sicht ein wenig (Einstellungen → Sichtfeld-Effekte). Stufen bis 0,5 m steigst du ohne Springen. Im Wasser schwimmst du mit 2,2 m/s.
+Du gehst mit 4,3 m/s, rennst mit 5,6 m/s und schleichst mit 1,3 m/s; beim Schleichen duckst du dich (die Sicht sinkt ein wenig) und gehst nicht über eine Kante, die höher ist als eine Stufe, außer beim Springen, Fliegen, Schwimmen oder an einer Leiter. Zum Rennen drückst du beim Vorwärtsgehen **Strg** oder tippst zweimal **W**; du rennst, solange du vorwärts gehst. Beim Rennen weitet sich die Sicht ein wenig (Einstellungen → Sichtfeld-Effekte). Stufen bis 0,5 m steigst du ohne Springen. Im Wasser schwimmst du mit 2,2 m/s.
 
 **Bildschirme**
 

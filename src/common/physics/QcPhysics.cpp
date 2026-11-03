@@ -382,6 +382,43 @@ constexpr double lowStepHeight = 0.125;
     return std::nullopt;
 }
 
+// Whether the body with the box `box`, moved by `dx` and `dz`, would find nothing to stand on
+// within sneakEdgeDepth below its feet. The box is a millimetre narrower on each side: a body that
+// only touches the edge of a block with its side does not stand on it (it would fall).
+[[nodiscard]] bool unsupported(const QcAabb &box, double dx, double dz, const QcBlockAccess &world)
+{
+    constexpr double overlap = 1e-3;
+    const QcAabb inner{{box.min.x + overlap, box.min.y, box.min.z + overlap}, {box.max.x - overlap, box.max.y, box.max.z - overlap}};
+    return !overlapsBlocks(world, inner.moved({dx, -sneakEdgeDepth, dz}));
+}
+
+// `value` one sneakEdgeStep closer to zero, zero once it is smaller.
+[[nodiscard]] double backedOff(double value)
+{
+    if (std::abs(value) < sneakEdgeStep) {
+        return 0.0;
+    }
+    return value > 0.0 ? value - sneakEdgeStep : value + sneakEdgeStep;
+}
+
+// The edge guard of a sneaking player (decision E-961, as in the role model): the horizontal parts
+// of `delta` shortened, each on its own and then together, until the moved body still stands on
+// something; a move along an edge keeps its other part.
+[[nodiscard]] QcVec3 keptOnEdge(const QcAabb &box, QcVec3 delta, const QcBlockAccess &world)
+{
+    while (delta.x != 0.0 && unsupported(box, delta.x, 0.0, world)) {
+        delta.x = backedOff(delta.x);
+    }
+    while (delta.z != 0.0 && unsupported(box, 0.0, delta.z, world)) {
+        delta.z = backedOff(delta.z);
+    }
+    while (delta.x != 0.0 && delta.z != 0.0 && unsupported(box, delta.x, delta.z, world)) {
+        delta.x = backedOff(delta.x);
+        delta.z = backedOff(delta.z);
+    }
+    return delta;
+}
+
 } // namespace
 
 } // namespace QcPhysics
@@ -454,8 +491,16 @@ MoveResult QcEntityMotion::step(const Steering &steering, BodySize size, const Q
         velocity.y *= inside;
     }
 
-    const QcVec3 delta = (velocity + QcVec3{steering.push.x, 0.0, steering.push.z}) * dt;
-    MoveResult move = moveBox(boxAt(position, size.width, size.height), delta, world);
+    QcVec3 delta = (velocity + QcVec3{steering.push.x, 0.0, steering.push.z}) * dt;
+    // A sneaking player on the ground stops at an edge, also in shallow water as in the role model;
+    // not when jumping, swimming up, floating or climbing.
+    if (steering.keepsToEdges && onGround && !climbing && velocity.y <= 0.0) {
+        const QcVec3 kept = keptOnEdge(body, delta, world);
+        velocity.x = kept.x == delta.x ? velocity.x : 0.0;
+        velocity.z = kept.z == delta.z ? velocity.z : 0.0;
+        delta = kept;
+    }
+    MoveResult move = moveBox(body, delta, world);
     // A body that just jumped keeps its jump instead of stepping up.
     if (onGround && !inWater && velocity.y <= 0.0 && (move.blockedX || move.blockedZ)) {
         if (const std::optional<MoveResult> stepped = steppedUp(move, *this, size, world, delta)) {
@@ -570,5 +615,5 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
         velocity.y = std::max(velocity.y, liquidExitSpeed);
     }
 
-    step({.wish = wish, .speed = speed, .jump = input.jump, .hold = input.sneak, .push = input.push}, {playerWidth, playerHeight}, world, dt);
+    step({.wish = wish, .speed = speed, .jump = input.jump, .hold = input.sneak, .push = input.push, .keepsToEdges = input.sneak}, {playerWidth, playerHeight}, world, dt);
 }

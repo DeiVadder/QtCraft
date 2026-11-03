@@ -562,6 +562,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     client.pitch = input.pitch;
     // Sneak also moves a flying player down; it still counts for using blocks (placing against a
     // chest), only the figure does not crouch for it (QcEntitySync).
+    client.sneakedBefore = client.sneaking;
     client.sneaking = input.sneak;
     client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
 

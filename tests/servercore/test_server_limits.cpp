@@ -7,6 +7,7 @@
 #include "fixtures/QcTestUtil.h"
 #include "fixtures/QcTestWorld.h"
 #include "server/core/QcRateLimiter.h"
+#include "server/core/QcServerClient.h"
 #include "server/gameplay/QcLineOfSight.h"
 
 #include <QRegularExpression>
@@ -462,6 +463,41 @@ private slots:
         QVERIFY(!QcLineOfSight::reaches(world, low, QcLineOfSight::blockBox({2, 0, 0}), QcBlockPos{2, 0, 0}));
         // The neighbour itself is seen.
         QVERIFY(QcLineOfSight::reaches(world, low, QcLineOfSight::blockBox({1, 0, 0}), QcBlockPos{1, 0, 0}));
+    }
+
+    // Rays and projectiles of a crouching player start from his lower eyes (decision E-961); in
+    // flight sneak descends and the eyes stay where they are.
+    void aCrouchingPlayerAimsFromLowerEyes()
+    {
+        m_server.reset();
+        QcServerClient player;
+        player.motion.position = {0.5, 1.0, 0.5};
+        QCOMPARE(QcLineOfSight::eyeOf(player), (QcVec3{0.5, 1.0 + QcPhysics::playerEyeHeight, 0.5}));
+        player.sneaking = true;
+        QCOMPARE(QcLineOfSight::eyeOf(player), (QcVec3{0.5, 1.0 + QcPhysics::sneakEyeHeight, 0.5}));
+        player.motion.flying = true;
+        QCOMPARE(QcLineOfSight::eyeHeight(player), QcPhysics::playerEyeHeight);
+    }
+
+    // A box that only the crouched eyes see under a ceiling: it counts while the player sneaks or
+    // sneaked on the input before, never otherwise (decision E-961).
+    void crouchedEyesCountOnlyWhileSneaking()
+    {
+        m_server.reset();
+        QcTestWorld world(*m_content);
+        world.fillBox({1, 3, -2}, {5, 3, 2}, id("qtcraft:stone"));
+        // Standing eyes at 3.22 sit in the cell under no ceiling; every ray from there to the box
+        // enters the ceiling at x = 1. The crouched eyes at 2.87 pass below it.
+        QcServerClient player;
+        player.motion.position = {0.5, 1.6, 0.5};
+        const QcAabb box{{3.0, 2.3, 0.4}, {3.2, 2.5, 0.6}};
+        QVERIFY(!QcLineOfSight::canSee(world, player, box));
+
+        player.sneaking = true;
+        QVERIFY(QcLineOfSight::canSee(world, player, box));
+        player.sneaking = false;
+        player.sneakedBefore = true;
+        QVERIFY(QcLineOfSight::canSee(world, player, box));
     }
 
     void theEyeSeesOutOfItsOwnCell()

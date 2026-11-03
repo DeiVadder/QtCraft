@@ -6,6 +6,7 @@
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
 qc_add_test(test_camera SOURCES input/test_camera.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_eye_height SOURCES input/test_eye_height.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_mouse_capture SOURCES input/test_mouse_capture.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_camera_relative SOURCES input/test_camera_relative.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_key_bindings SOURCES input/test_key_bindings.cpp LIBRARIES qc_clientcore)

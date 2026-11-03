@@ -7,6 +7,9 @@
 #include "common/physics/QcRaycast.h"
 #include "server/core/QcServerClient.h"
 
+#include <algorithm>
+#include <QList>
+
 #include <array>
 #include <cmath>
 
@@ -100,20 +103,47 @@ QcAabb blockBox(QcBlockPos pos)
 
 namespace {
 
+// The heights of the eyes the client may have aimed from: standing, and crouching while the player
+// sneaks or sneaked on the input before, so an aim taken just as he started or stopped sneaking
+// still holds (decision E-961).
+QList<double> eyeHeightsOf(const QcServerClient &player)
+{
+    if (player.sneaking || player.sneakedBefore) {
+        return {QcPhysics::playerEyeHeight, QcPhysics::sneakEyeHeight};
+    }
+    return {QcPhysics::playerEyeHeight};
+}
+
 bool seenFromEyes(const QcBlockAccess &world, const QcServerClient &player, const QcAabb &box, std::optional<QcBlockPos> target)
 {
-    const QcVec3 eyeOffset{0.0, QcPhysics::playerEyeHeight, 0.0};
-    if (reaches(world, player.motion.position + eyeOffset, box, target)) {
-        return true;
+    const QList<double> heights = eyeHeightsOf(player);
+    for (const double height : heights) {
+        const QcVec3 eyeOffset{0.0, height, 0.0};
+        if (reaches(world, player.motion.position + eyeOffset, box, target)) {
+            return true;
+        }
+        if (player.previousPosition && reaches(world, *player.previousPosition + eyeOffset, box, target)) {
+            return true;
+        }
     }
-    return player.previousPosition && reaches(world, *player.previousPosition + eyeOffset, box, target);
+    return false;
 }
 
 } // namespace
 
+double eyeHeight(const QcServerClient &player)
+{
+    return QcPhysics::eyeHeight(player.sneaking && !player.motion.flying);
+}
+
+QcVec3 eyeOf(const QcServerClient &player)
+{
+    return player.motion.position + QcVec3{0.0, eyeHeight(player), 0.0};
+}
+
 bool isWithinReach(const QcServerClient &player, QcBlockPos pos)
 {
-    return QcRaycast::isWithinReach(player.motion.position + QcVec3{0.0, QcPhysics::playerEyeHeight, 0.0}, pos);
+    return std::ranges::any_of(eyeHeightsOf(player), [&](double height) { return QcRaycast::isWithinReach(player.motion.position + QcVec3{0.0, height, 0.0}, pos); });
 }
 
 bool canSee(const QcBlockAccess &world, const QcServerClient &player, QcBlockPos pos)

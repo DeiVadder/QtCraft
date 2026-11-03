@@ -11,6 +11,7 @@ qc_add_test(test_section_snapshots SOURCES world/test_section_snapshots.cpp LIBR
 qc_add_test(test_section_access SOURCES world/test_section_access.cpp LIBRARIES qc_common)
 qc_add_test(test_physics SOURCES world/test_physics.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_boat_physics SOURCES world/test_boat_physics.cpp fixtures/QcTestUtil.h fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_common)
+qc_add_test(test_sneak_edges SOURCES world/test_sneak_edges.cpp fixtures/QcTestUtil.h fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_common)
 qc_add_test(test_body_push SOURCES world/test_body_push.cpp fixtures/QcTestWorld.h LIBRARIES qc_base_content qc_common)
 qc_add_test(test_flight SOURCES world/test_flight.cpp fixtures/QcTestWorld.h LIBRARIES qc_common)
 qc_add_test(test_plant_growth SOURCES world/test_plant_growth.cpp LIBRARIES qc_server TIMEOUT 300)

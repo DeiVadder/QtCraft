@@ -281,6 +281,9 @@ struct QcServerClient : QcEntity
     /*! Whether the player sneaks and sprints (his latest input). \qcshared */
     bool sneaking = false;
     bool sprinting = false;
+    /*! Whether the player sneaked on the input before the latest one: the server still accepts an
+        aim from the crouched eyes then (QcLineOfSight, decision E-961). */
+    bool sneakedBefore = false;
     /*! Set by actions that swing the arm; reported to other clients in this tick's sync. */
     bool swung = false;
     /*! Drawing the launcher in the hotbar slot drawSlot since the tick drawStart (decision

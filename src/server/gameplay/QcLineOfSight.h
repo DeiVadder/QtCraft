@@ -28,18 +28,28 @@ bool reaches(const QcBlockAccess &world, const QcVec3 &eye, const QcAabb &box, s
     player (decision E-401). */
 bool seesPoint(const QcBlockAccess &world, const QcVec3 &eye, const QcVec3 &point);
 
+/*! Returns the height of the eyes of \a player above his feet: QcPhysics::sneakEyeHeight while
+    he crouches (sneaks on foot; in flight sneak descends, and the vehicles clear a rider's sneak),
+    else QcPhysics::playerEyeHeight (decision E-961). */
+[[nodiscard]] double eyeHeight(const QcServerClient &player);
+/*! Returns where the eyes of \a player are now (eyeHeight()): rays and projectiles start there. */
+[[nodiscard]] QcVec3 eyeOf(const QcServerClient &player);
+
 /*! Returns the cell of the block at \a pos as a box. */
 QcAabb blockBox(QcBlockPos pos);
 
-/*! Returns whether the block at \a pos is within the reach of \a player from the eyes
-    (QcRaycast::playerReach plus a metre of slack for movement between the client's decision and
-    the server's check). */
+/*! Returns whether the block at \a pos is within the reach of \a player from the eyes, standing
+    or, while he sneaks or sneaked on the input before, crouching (decision E-961):
+    QcRaycast::playerReach plus a metre of slack for movement between the client's decision and
+    the server's check. */
 bool isWithinReach(const QcServerClient &player, QcBlockPos pos);
-/*! Returns whether \a player sees the block at \a pos of \a world from the eyes, now or before
-    the last input (decision E-092); the block does not hide itself. */
+/*! Returns whether \a player sees the block at \a pos of \a world from the eyes (standing, or
+    crouching while he sneaks or sneaked on the input before, decision E-961), now or before the
+    last input (decision E-092); the block does not hide itself. */
 bool canSee(const QcBlockAccess &world, const QcServerClient &player, QcBlockPos pos);
-/*! Returns whether \a player sees the \a body in \a world from the eyes, now or before the last
-    input (decision E-092). */
+/*! Returns whether \a player sees the \a body in \a world from the eyes (standing, or
+    crouching while he sneaks or sneaked on the input before, decision E-961), now or before the
+    last input (decision E-092). */
 bool canSee(const QcBlockAccess &world, const QcServerClient &player, const QcAabb &body);
 
 } // namespace QcLineOfSight

@@ -238,6 +238,52 @@ private slots:
         // Without slowness the same walk covers more ground: the factor was applied at all.
         QVERIFY((server.motion.position - settled).length() > slowStretch * 8.0 / 12.0 * 1.2);
     }
+
+    // The edge guard of sneaking (decision E-961) runs in the shared physics: the server stops the
+    // player at the floor's edge on the same tick as the prediction, so nothing is corrected, and
+    // the player stays on the floor.
+    void sneakingStopsAtTheEdgeWithoutCorrection()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        QcPlayerInput intent;
+        intent.forward = 1.0f;
+        intent.sneak = true;
+        prediction.setIntent(intent);
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+
+        // North (-z) towards the edge at z = -8, 8.5 m away: 1.3 m/s reach it in 7 s.
+        QCOMPARE(walk(prediction, server, world, 180), 0.0);
+        QVERIFY2(server.motion.position.z < -8.0 && server.motion.position.z >= -8.0 - QcPhysics::playerWidth * 0.5,
+                 qPrintable(QString::number(server.motion.position.z)));
+        QCOMPARE(server.motion.position.y, 1.0);
+        QCOMPARE(prediction.motion().position, server.motion.position);
+    }
+
+    // The eyes drop while the player crouches (decision E-961): sneaking on foot, not in flight
+    // (where sneak descends).
+    void theEyesDropWhileCrouching()
+    {
+        QcPrediction prediction;
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::playerEyeHeight);
+        QcPlayerInput intent;
+        intent.sneak = true;
+        prediction.setIntent(intent);
+        QVERIFY(prediction.crouches());
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::sneakEyeHeight);
+
+        QcTestWorld world(m_content);
+        QcMsg::PlayerState flying = standingState(0);
+        flying.motion.flying = true;
+        flying.motion.onGround = false;
+        flying.motion.position.y = 5.0;
+        prediction.reconcile(flying, &world, QcMovement::MayFly);
+        QVERIFY(!prediction.crouches());
+        QCOMPARE(prediction.eyeHeight(), QcPhysics::playerEyeHeight);
+    }
 };
 
 QTEST_GUILESS_MAIN(TestPrediction)

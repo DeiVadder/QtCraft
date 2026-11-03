@@ -10,6 +10,7 @@ target_sources(qc_clientcore PRIVATE
 )
 target_sources(qc_clientcore PRIVATE
     camera/QcCamera.h camera/QcCamera.cpp
+    camera/QcEyeHeight.h camera/QcEyeHeight.cpp
     camera/QcFovEffect.h camera/QcFovEffect.cpp
     camera/QcFrustum.h camera/QcFrustum.cpp
     camera/QcLabelProjector.h camera/QcLabelProjector.cpp

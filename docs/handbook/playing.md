@@ -87,7 +87,7 @@ The hints at the bottom show the buttons as your controller labels them: letters
 
 **Moving**
 
-You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking keeps you from falling off edges. To sprint, press **Ctrl** while walking forward or tap **W** twice; the sprint lasts as long as you keep walking forward. The view widens a little while you sprint (Settings → FOV effects). Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.
+You walk at 4.3 m/s, sprint at 5.6 m/s and sneak at 1.3 m/s; sneaking crouches (your view drops a little) and keeps you from walking off an edge higher than a slab, though not while jumping, flying, swimming or on a ladder. To sprint, press **Ctrl** while walking forward or tap **W** twice; the sprint lasts as long as you keep walking forward. The view widens a little while you sprint (Settings → FOV effects). Steps up to 0.5 m are climbed without jumping. In water you swim at 2.2 m/s.
 
 **Screens**
 

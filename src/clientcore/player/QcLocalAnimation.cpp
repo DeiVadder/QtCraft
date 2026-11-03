@@ -59,11 +59,10 @@ QcEntityPose QcLocalAnimation::localPose(double alpha, const QcPrediction &predi
     pose.onGround = motion.onGround;
     pose.inWater = motion.inWater;
     // Sneaking in flight is descending, not crouching (decision E-284).
-    pose.sneaking = intent.sneak && !motion.flying;
+    pose.sneaking = prediction.crouches();
     pose.sprinting = intent.sprint && intent.forward > 0.0f && !intent.sneak;
     pose.flying = motion.flying;
     pose.riding = prediction.riding().isRiding();
-    pose.sneaking = pose.sneaking && !pose.riding;
     pose.swingProgress = m_swingTicks < 0 ? -1.0 : (m_swingTicks + alpha) / m_swingLength;
     pose.drawProgress = drawProgress;
     pose.headPitch = intent.pitch;

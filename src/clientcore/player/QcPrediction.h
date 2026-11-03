@@ -63,6 +63,12 @@ public:
     bool hasServerState() const { return m_hasServerState; }
     /*! Returns the minecart the player rides or the boat they drive. */
     const QcClientRiding &riding() const { return m_riding; }
+    /*! Returns whether the player crouches: he sneaks on foot, not flying (sneak descends then,
+        decision E-284) and not riding. */
+    [[nodiscard]] bool crouches() const;
+    /*! Returns the height of the player's eyes above the feet after the latest tick: lower while
+        he crouches (QcPhysics::eyeHeight, decision E-961). */
+    [[nodiscard]] double eyeHeight() const;
     /*! Returns the predicted boat the player drives after the latest tick; none when they drive
         none. */
     const std::optional<QcBoatState> &boat() const { return m_boat; }
