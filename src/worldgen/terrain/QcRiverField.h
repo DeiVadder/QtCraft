@@ -56,8 +56,18 @@ public:
         /*! Blocks from the middle line of the nearest river, about (the noise over its slope);
             \c {far} away from rivers. */
         double distance = far;
+        /*! Blocks from the middle line, estimated with the noise's bend as well as its slope:
+            at most \c {distance}, close to it where the noise rises evenly, and growing by about a
+            block per block also where the noise flattens (a shallow hill or hollow just past zero),
+            where \c {distance} grows by several blocks per block (decision E-969). \c {far} where
+            \c {distance} is. */
+        double nearDistance = far;
         /*! Half the width of the water at this point of the river, 0 where none runs. */
         double halfWidth = 0.0;
+        /*! \c {halfWidth} with the fading of small rings also where only \c {nearDistance}
+            lies within \c {reach} (\c {halfWidth} has it only within \c {reach} of
+            \c {distance}; decision E-969). */
+        double nearHalfWidth = 0.0;
         /*! Depth of the water at the middle line below the water surface. */
         double depth = 0.0;
         /*! How much of the valley is carved (0..1): 1 along the river, falling to 0 where the
@@ -71,7 +81,8 @@ public:
             river deltas (decision E-850) read it to skip columns far from every river at once. */
         double value = far;
         /*! The point of the middle line nearest the column in coordinates bent by the meander
-            (one step along the noise's slope), where \c {distance} is below \c {reach}.
+            (one step along the noise's slope), where \c {distance} or \c {nearDistance} is
+            below \c {reach}.
             \qcshared */
         double lineX = 0.0;
         double lineZ = 0.0;
@@ -171,7 +182,9 @@ private:
     // The river noise around a column at bent coordinates where it has the value `here`: its
     // gradient and slope per block, the radius `top` in blocks round which its zero line bends near the column (`far`
     // where it runs straight), where to search for the top a ring would have (towards the centre
-    // of the bend) and whether that top is a hill (side 1) or a hollow (side -1).
+    // of the bend), whether that top is a hill (side 1) or a hollow (side -1) and how strongly the
+    // noise bends at most there (the largest curvature of the noise in any direction, per block
+    // squared).
     struct Shape
     {
         double gradX = 0.0;
@@ -181,8 +194,12 @@ private:
         double topX = 0.0;
         double topZ = 0.0;
         double side = 1.0;
+        double bend = 0.0;
     };
     [[nodiscard]] Shape shapeAt(double bentX, double bentZ, double here) const;
+    // The distance to the zero line from a column where the noise lies `above` from zero, with the
+    // shape `shape` there (Sample::nearDistance).
+    [[nodiscard]] static double nearDistanceOf(double above, const Shape &shape);
     // How much of a river is left (0..1) by the rings of the zero line near a point at bent
     // coordinates of the shape `shape` (1 where it bends round no small hill or hollow).
     [[nodiscard]] double ringsLeave(const Shape &shape) const;

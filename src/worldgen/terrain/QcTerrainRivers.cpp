@@ -76,8 +76,11 @@ QcTerrainGenerator::RiverCut QcTerrainGenerator::riverCut(int x, int z, const Qc
                                                           int biome) const
 {
     const QcRiverField::Cut cut = m_rivers.cut(x, z, climate, height, seaLevel());
-    // A closed piece of a river (ending on land at both ends, decision E-851) is not built.
-    if (cut.river.distance < QcRiverField::reach && cut.river.strength > 0.0 && !m_riverPieces.leadsOn(cut.river, TerrainLand(*this))) {
+    // A closed piece of a river (ending on land at both ends, decision E-851) is not built. From
+    // generator version 2 on also where only the near distance lies within reach: the freezing
+    // ramp reads the river there (decision E-969); the column's blocks are the same either way.
+    const bool near = cut.river.distance < QcRiverField::reach || (version() >= 2 && cut.river.nearDistance < QcRiverField::reach);
+    if (near && cut.river.strength > 0.0 && !m_riverPieces.leadsOn(cut.river, TerrainLand(*this))) {
         return {height, biome, biome, false, {.value = cut.river.value}};
     }
     // Lands without a river biome keep their own biome along their rivers.

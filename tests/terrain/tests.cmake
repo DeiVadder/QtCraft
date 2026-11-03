@@ -25,8 +25,8 @@ qc_add_test(test_flower_valley SOURCES terrain/test_flower_valley.cpp LIBRARIES 
 qc_add_test(test_rivers SOURCES terrain/test_rivers.cpp terrain/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen TIMEOUT ${qc_rivers_timeout})
 qc_add_test(test_river_deltas SOURCES terrain/test_river_deltas.cpp terrain/QcWaterTestUtil.h LIBRARIES qc_base_content qc_worldgen
     TIMEOUT ${qc_river_deltas_timeout})
-qc_add_test(test_cold_edges SOURCES terrain/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 690)
-qc_add_test(test_climate_order SOURCES terrain/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 720)
+qc_add_test(test_cold_edges SOURCES terrain/test_cold_edges.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 780)
+qc_add_test(test_climate_order SOURCES terrain/test_climate_order.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 780)
 qc_add_test(test_spawn_ground SOURCES terrain/test_spawn_ground.cpp fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_terrain_generator SOURCES terrain/test_terrain_generator.cpp terrain/QcTerrainTestUtil.h LIBRARIES qc_server TIMEOUT 900)
 qc_add_test(test_lava_lakes SOURCES terrain/test_lava_lakes.cpp LIBRARIES qc_base_content qc_worldgen TIMEOUT 600)
@@ -38,7 +38,7 @@ qc_add_test(test_world_types SOURCES terrain/test_world_types.cpp fixtures/QcRaw
 # end of tests/CMakeLists.txt).
 qc_add_test(test_world_options SOURCES terrain/test_world_options.cpp LIBRARIES qc_server qc_worlds TIMEOUT 480)
 target_compile_definitions(test_world_options PRIVATE QTCRAFT_MODS_SOURCE_DIR="${PROJECT_SOURCE_DIR}/mods")
-qc_add_test(test_generator_versions SOURCES terrain/test_generator_versions.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 300)
+qc_add_test(test_generator_versions SOURCES terrain/test_generator_versions.cpp LIBRARIES qc_worldgen qc_base_content TIMEOUT 750)
 target_compile_definitions(test_generator_versions PRIVATE QTCRAFT_GENERATOR_REFERENCE="${CMAKE_CURRENT_SOURCE_DIR}/data/generator-versions.json")
 qc_add_test(test_generator_version_worlds SOURCES terrain/test_generator_version_worlds.cpp LIBRARIES qc_server qc_worlds)
 qc_add_test(test_vegetation SOURCES terrain/test_vegetation.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server TIMEOUT 300)

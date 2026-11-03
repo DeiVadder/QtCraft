@@ -3,6 +3,7 @@
 
 #include "common/core/QcIntMath.h"
 #include "common/world/QcChunk.h"
+#include "common/world/QcGeneratorVersion.h"
 #include "fixtures/QcTestUtil.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -62,6 +63,10 @@ private:
     // Seed 826314780: a river along a lake shore at the river's freezing threshold froze the lake
     // but not the river, an ice edge of 26 blocks on the shore (decision E-914).
     std::array<qint64, 6> seeds() const { return {7, 42, 1234, 544594159, 826314780, m_randomSeed}; }
+    // The seeds of seeds() and three where still water beside a river lies where the river noise
+    // flattens and the river's distance grew by several blocks per block, so the freezing share
+    // stepped (decision E-969): 1740746631 and 601616390 by 0.36, 1008271560 by 0.33.
+    std::array<qint64, 9> riverSeeds() const { return {7, 42, 1234, 544594159, 826314780, 1740746631, 601616390, 1008271560, m_randomSeed}; }
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
     Window windowAt(const QcTerrainGenerator &generator, Spot spot) const
@@ -370,8 +375,9 @@ private:
 
         // Adds a pair; the step when it is larger than allowed. Where a river fades out (its half
         // width reaches 0 smoothly) the share is nearly 0 on both sides. Elsewhere it changes by
-        // little across the ramp (the distance is an estimate, it may grow faster than a block per
-        // block), and more only where the river's own half width jumps. Where a closed piece of a
+        // little across the ramp (it is measured with QcTerrainColumn::riverNearDistance, which
+        // grows by about a block per block, decision E-969), and more only where the river's own
+        // half width jumps. Where a closed piece of a
         // river begins (decision E-851) the river field ends at once; that end is not smoothed and
         // not counted (decision E-914).
         std::optional<double> add(const QcTerrainGenerator &generator, const QcTerrainColumn &a, const QcTerrainColumn &b)
@@ -442,18 +448,19 @@ private slots:
     // The freezing threshold has no step along a line in still water (decision E-914): where a
     // river runs on into a lake or the sea, fades out (dry land, the end of a ring) or ends, the
     // share of its lower threshold changes by little from one column to the next, except where the
-    // river's own half width changes. Only water shallower than any river bed, where the depth
-    // does not count.
+    // river's own half width changes, also where the river's distance passes `reach` (the share
+    // ends there for version 1, decision E-969). Only water shallower than any river bed, where
+    // the depth does not count.
     void riverThresholdHasNoStep()
     {
         ShareSteps steps;
-        for (const qint64 seed : seeds()) {
+        for (const qint64 seed : riverSeeds()) {
             const QcTerrainGenerator generator(m_content, seed);
             const int offset = static_cast<int>(seed % 1000);
             for (int z = -1024; z < 1024; z += 2) {
                 for (int x = -1024 + offset; x < 1024 + offset; x += 2) {
                     const QcTerrainColumn a = generator.column(x, z);
-                    if (!shallowStill(generator, a) || a.riverDistance >= 30.0) {
+                    if (!shallowStill(generator, a) || a.riverDistance >= QcRiverField::reach + 2.0) {
                         continue;
                     }
                     for (const auto &[nx, nz] : {std::pair{x + 1, z}, std::pair{x, z + 1}}) {
@@ -465,6 +472,24 @@ private slots:
         }
         qInfo("%d pairs of shallow still water near rivers, %d where a river fades out; steepest step %.3f", steps.pairs, steps.fading, steps.steepest);
         QVERIFY(steps.pairs > 0 && steps.fading > 0);
+    }
+
+    // Generator version 1 keeps its step of the freezing share where the river noise flattens, version
+    // 2 has none there (decision E-969): seed 1740746631, still water beside a river at 1379 30 and
+    // 1379 31 (the river's half width the same on both).
+    void onlyVersionOneKeepsTheStep()
+    {
+        QcTerrainGenerator generator(m_content, 1740746631);
+        const auto step = [&generator] {
+            const QcTerrainColumn a = generator.column(1379, 30);
+            const QcTerrainColumn b = generator.column(1379, 31);
+            return std::abs(generator.riverFreezeShare(a) - generator.riverFreezeShare(b));
+        };
+        QVERIFY(std::abs(generator.column(1379, 30).riverHalfWidth - generator.column(1379, 31).riverHalfWidth) < 0.01);
+        QCOMPARE(generator.version(), QcGeneratorVersion::current);
+        QVERIFY2(step() < 0.2, qPrintable(u"version 2 steps by %1"_s.arg(step())));
+        generator.setVersion(1);
+        QVERIFY2(step() > 0.35, qPrintable(u"version 1 steps by %1"_s.arg(step())));
     }
 
     // Ice ends in a ragged edge across the climate, not along biome or chunk borders; single floes

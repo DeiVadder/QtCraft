@@ -293,6 +293,8 @@ QcTerrainGenerator::Column QcTerrainGenerator::column(int x, int z) const
         result.riverBank = cut.bank;
         result.riverDistance = cut.river.distance;
         result.riverHalfWidth = cut.river.halfWidth;
+        result.riverNearDistance = cut.river.nearDistance;
+        result.riverNearHalfWidth = cut.river.nearHalfWidth;
         // River deltas (decision E-850) only in a band along the coasts.
         if (m_definitions.deltas && QcRiverDelta::mayReach(continent)) {
             if (const std::optional<DeltaCut> delta = deltaCut(x, z, continent, cut)) {

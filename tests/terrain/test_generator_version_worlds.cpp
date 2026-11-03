@@ -108,7 +108,8 @@ private slots:
         const QByteArray before = fileBytes(path);
         const QcStatus refused = open(created->directory, 5, QcGeneratorVersion::current + 1);
         QVERIFY(!refused);
-        QVERIFY2(qcErrorText(refused).contains("made by world generator version 1, not 2"), qcErrorText(refused).constData());
+        const QString expected = u"made by world generator version %1, not %2"_s.arg(QcGeneratorVersion::current).arg(QcGeneratorVersion::current + 1);
+        QVERIFY2(QString::fromUtf8(qcErrorText(refused)).contains(expected), qcErrorText(refused).constData());
         QCOMPARE(fileBytes(path), before);
 
         // A server whose generator generates as another version than the world's refuses too.
