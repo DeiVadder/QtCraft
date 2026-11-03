@@ -207,7 +207,7 @@ private slots:
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s),
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s),
                                                     {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
         ticks(1);
         QVERIFY(m_client->entities.contains(pig));
@@ -229,7 +229,7 @@ private slots:
         QCOMPARE(countOf(item("qtcraft:raw_porkchop")), 0);
 
         // A mob far away cannot be hit.
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), m_client->motion.position + QcVec3{20.0, 0.0, 0.0}, 999);
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), m_client->motion.position + QcVec3{20.0, 0.0, 0.0}, 999);
         m_client->connection.send(QcMsg::AttackEntity{999});
         QcTestUtil::pump();
         QCOMPARE(m_server->mobs().find(999)->health, 10.0);

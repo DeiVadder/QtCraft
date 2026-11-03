@@ -114,7 +114,7 @@ private:
         QTest::qWait(settleMs + 500);
         m_session->resetCorrections();
 
-        const double reach = (QcPhysics::playerWidth + m_content->mobs()[m_content->mobIndex(u"qtcraft:cow"_s).value_or(0)].width) * 0.5;
+        const double reach = (QcPhysics::playerWidth + m_content->mobs()[m_content->mobKind(u"qtcraft:cow"_s).value_or(QcCreatureKindId{})].width) * 0.5;
         m_ticks = 0;
         // Counted in a member: the connection's lambda captures no local by reference.
         m_touching = 0;

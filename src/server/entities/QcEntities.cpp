@@ -94,9 +94,9 @@ std::optional<QcAabb> QcEntities::boxOf(const QcEntity &entity) const
     case QcEntityKind::Player:
         return QcPhysics::boxAt(feet, QcPhysics::playerWidth, QcPhysics::playerHeight);
     case QcEntityKind::Creature: {
-        const QList<QcMobDefinition> &definitions = m_content->mobs();
+        const QcMobKinds definitions = m_content->mobs();
         const QcCreature &creature = entity.as<QcCreature>();
-        if (creature.type < 0 || creature.type >= definitions.size()) {
+        if (!definitions.contains(creature.type)) {
             return std::nullopt;
         }
         const QcMobDefinition &definition = definitions[creature.type];

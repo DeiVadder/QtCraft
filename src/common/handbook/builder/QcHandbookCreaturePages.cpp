@@ -87,8 +87,8 @@ QString behaviourOf(const QcMobDefinition &mob)
 // Whether the pieces of the village style place the creature or the style names it among its residents.
 bool placesIn(const QcContentRegistry &content, const QcVillageStyleDefinition &style, const QcMobDefinition &mob)
 {
-    const std::optional<int> self = content.mobIndex(mob.name);
-    const auto isSelf = [&](const QString &name) { return content.mobIndex(name) == self; };
+    const std::optional<QcCreatureKindId> self = content.mobKind(mob.name);
+    const auto isSelf = [&](const QString &name) { return content.mobKind(name) == self; };
     for (const QcVillagePiece &piece : style.pieces) {
         for (const QcVillageBlueprint &blueprint : piece.blueprints) {
             const QcStructureDefinition *structure = content.worldgen().structure(blueprint.structure);
@@ -205,6 +205,12 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
     return facts;
 }
 
+// The definition of `kind` when the content knows it, else `fallback`.
+[[nodiscard]] const QcMobDefinition &kindOr(const QcContentRegistry &content, std::optional<QcCreatureKindId> kind, const QcMobDefinition &fallback)
+{
+    return kind && content.mobs().contains(*kind) ? content.mobs()[*kind] : fallback;
+}
+
 // Taming, what a pet does, shyness and packs (decision E-480).
 [[nodiscard]] QList<Fact> companionFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
@@ -220,9 +226,9 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
             facts.append(std::move(tamedWith));
         }
         // What a pet does is the kind's it becomes (a wolf becomes a dog).
-        const QcMobDefinition &petKind = tame.becomesType >= 0 ? context.content.mobs()[tame.becomesType] : mob;
+        const QcMobDefinition &petKind = kindOr(context.content, tame.becomesType, mob);
         const QcTameDefinition &pet = petKind.tameable ? *petKind.tameable : tame;
-        if (tame.becomesType >= 0) {
+        if (tame.becomesType) {
             facts.append({text.label(u"fact.becomes"_s), {}, {context.links.mobLink(petKind)}});
         }
         facts.append({text.label(u"fact.pet"_s), text.label(pet.defends ? u"value.pet.defends"_s : u"value.pet.follows"_s), {}});
@@ -253,13 +259,17 @@ QList<const QcVillageStyleDefinition *> villageStylesOf(const QcContentRegistry 
 // The children a parent splits off and what they leave when it dies (decision E-839).
 [[nodiscard]] QList<Fact> familyFacts(const QcHandbookContext &context, const QcMobDefinition &mob)
 {
-    if (!mob.family || mob.family->childType < 0) {
+    if (!mob.family) {
         return {};
     }
     const QcFamilyDefinition &family = *mob.family;
+    if (!family.childType || !context.content.mobs().contains(*family.childType)) {
+        return {};
+    }
+    const QcMobDefinition &child = context.content.mobs()[*family.childType];
     const QcHandbookText &text = context.text;
     QList<Fact> facts{{text.label(u"fact.splitsInto"_s), text.label(u"value.splitsInto"_s).arg(family.maxChildren).arg(family.childrenPerHit).arg(family.maxSplits),
-                       {context.links.mobLink(context.content.mobs()[family.childType])}}};
+                       {context.links.mobLink(child)}}};
     Fact pop{text.label(u"fact.childrenPop"_s), text.label(u"value.childrenPop"_s), {}};
     for (const QcItemDrop &drop : family.popDrops) {
         pop.links.append(context.links.itemLink(drop.item));

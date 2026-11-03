@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcItemStack.h"
 #include "server/backup/QcBackupRunner.h"
@@ -83,7 +84,7 @@ private:
     [[nodiscard]] Swept sweep(const Removal &removal, bool apply);
     // Selectors: mobs, hostile, animals, ambient, items, stands, all, a creature name or "item:<name>".
     bool isKnownSelector(const QString &what) const;
-    bool matchesMob(const QString &what, int type) const;
+    bool matchesMob(const QString &what, QcCreatureKindId type) const;
     bool matchesItem(const QString &what, const QcItemStack &stack) const;
 
     QcServerState &m_state;

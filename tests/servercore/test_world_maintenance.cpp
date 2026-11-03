@@ -150,7 +150,7 @@ private slots:
         QVERIFY(m_server->liquids().schedule(m_server->world(), water, m_server->tickCount()));
         chat(u"/setblock ~-2 ~ ~2 glass"_s);
         m_server->fallingBlocks().start(m_feet.offset(-2, 6, -2), id("qtcraft:sand"), 900010);
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         const QcVec3 here = m_client->motion.position;
         const quint32 buried = m_server->mobs().spawn(zombie, here + QcVec3{1.5, -8.0, 1.5}, 900011);
         const quint32 flying = m_server->mobs().spawn(zombie, here + QcVec3{-1.5, 12.0, -1.5}, 900012);
@@ -178,8 +178,8 @@ private slots:
     {
         join();
         const QcVec3 here = m_client->motion.position;
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(zombie, here + QcVec3{2.0, 0.0, 0.0}, 900001);
         m_server->mobs().spawn(pig, here + QcVec3{-2.0, 0.0, 0.0}, 900002);
         m_server->mobs().spawn(zombie, here + QcVec3{20.0, 0.0, 0.0}, 900003);

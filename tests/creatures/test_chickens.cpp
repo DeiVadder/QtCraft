@@ -16,7 +16,7 @@ class TestChickens : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int chickenType() const { return *m_content->mobIndex(u"qtcraft:chicken"_s); }
+    QcCreatureKindId chickenType() const { return *m_content->mobKind(u"qtcraft:chicken"_s); }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
     const QcMobDefinition &chicken() const { return m_content->mobs()[chickenType()]; }
 
@@ -62,7 +62,7 @@ private slots:
 
     void zombiesDropNoFeathers()
     {
-        const QList<QcItemDrop> &zombie = m_content->mobs()[*m_content->mobIndex(u"qtcraft:zombie"_s)].drops;
+        const QList<QcItemDrop> &zombie = m_content->mobs()[*m_content->mobKind(u"qtcraft:zombie"_s)].drops;
         QVERIFY(std::ranges::find(zombie, u"qtcraft:feather"_s, &QcItemDrop::item) == zombie.end());
     }
 

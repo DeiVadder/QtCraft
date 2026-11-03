@@ -24,7 +24,7 @@ Link relatedLink(const QcHandbookContext &context, const QString &name)
         return link;
     }
 
-    if (const std::optional<int> mob = content.mobIndex(name)) {
+    if (const std::optional<QcCreatureKindId> mob = content.mobKind(name)) {
         return context.links.mobLink(content.mobs()[*mob]);
     }
     if (const auto biome = std::ranges::find(content.worldgen().biomes(), name, &QcBiomeDefinition::name); biome != content.worldgen().biomes().end()) {

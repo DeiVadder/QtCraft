@@ -14,7 +14,7 @@ namespace {
 // Why a spawner may not bring forth the kind named `name`; empty when it may.
 QString problemWith(const QcContentRegistry &content, const QString &name)
 {
-    const std::optional<int> index = content.mobIndex(name);
+    const std::optional<QcCreatureKindId> index = content.mobKind(name);
     if (!index) {
         return u"unknown creature '%1'"_s.arg(name);
     }
@@ -101,7 +101,7 @@ QStringList checkStructures(const QcContentRegistry &content)
         // A spawn area (decision E-871) brings forth monsters only: kinds of the natural monster spawns.
         const QStringList areaMonsters = structure.spawnArea.value_or(QcStructureDefinition::SpawnArea{}).monsters;
         for (const QString &mob : areaMonsters) {
-            const std::optional<int> type = content.mobIndex(mob);
+            const std::optional<QcCreatureKindId> type = content.mobKind(mob);
             if (!type || !content.mobs()[*type].isMonster()) {
                 warnings.append(u"structure '%1': spawn area with '%2', not a known monster, none come"_s.arg(structure.name, mob));
             }

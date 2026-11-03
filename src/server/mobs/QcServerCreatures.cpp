@@ -129,10 +129,10 @@ void QcServerCreatures::strike(QcServerClient &client, const QcMobManager::Playe
     }
 
     // The effects of the blow (a cave spider's poison) only when the blow counts.
-    if (take == QcHurtWindow::Take::Ignored || client.dead || hit.mobType < 0 || hit.mobType >= m_state.content().mobs().size()) {
+    if (take == QcHurtWindow::Take::Ignored || client.dead || !hit.mobType || !m_state.content().mobs().contains(*hit.mobType)) {
         return;
     }
-    for (const QcStatusEffect &effect : m_state.content().mobs()[hit.mobType].blowEffects) {
+    for (const QcStatusEffect &effect : m_state.content().mobs()[*hit.mobType].blowEffects) {
         QcServerEffects::givePlayer(m_state, client, effect);
     }
 }

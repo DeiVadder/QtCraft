@@ -71,9 +71,15 @@ private:
     bool placeAtWater(QcVillageDraft &draft, const QList<Road> &roads, int index) const;
     // A building of kind `index` beside the last blocks of the road; false when none fits.
     bool placeBesideEnd(QcVillageDraft &draft, const Road &road, int index) const;
-    // Places a piece `along` the road on `side` (-1 left, 1 right); returns how far along it reaches,
-    // 0 when it did not fit and -1 when no piece is left to place.
-    int tryPiece(QcVillageDraft &draft, const Road &road, int along, int side) const;
+    // The side of a road a piece stands on; the value is the sign placeAt() takes.
+    enum class RoadSide
+    {
+        Left = -1,
+        Right = 1,
+    };
+    // Places a piece `along` the road on `side`; returns how far along it reaches, 0 when it did not
+    // fit and -1 when no piece is left to place.
+    int tryPiece(QcVillageDraft &draft, const Road &road, int along, RoadSide side) const;
     // Places a building of kind `index` like tryPiece(); returns how far along it reaches, 0 when it
     // did not fit.
     int placeAt(QcVillageDraft &draft, const Road &road, std::pair<int, int> alongAndSide, int index) const;

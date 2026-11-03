@@ -29,7 +29,7 @@ double QcFishSwimming::cellSizeOf(const QcAquaticDefinition &aquatic)
     return std::max(aquatic.schoolRadius, minCellSize);
 }
 
-QcFishSwimming::CellKey QcFishSwimming::cellOf(int type, const QcVec3 &position, double size)
+QcFishSwimming::CellKey QcFishSwimming::cellOf(QcCreatureKindId type, const QcVec3 &position, double size)
 {
     return {type, cellKey(static_cast<int>(std::floor(position.x / size)), static_cast<int>(std::floor(position.y / size)),
         static_cast<int>(std::floor(position.z / size)))};

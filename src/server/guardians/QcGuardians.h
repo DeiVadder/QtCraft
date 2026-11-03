@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "server/spawners/QcSpawnerRules.h"
 #include "worldgen/generators/QcGuardSite.h"
 
@@ -59,7 +60,7 @@ private:
     static bool playersAllow(const QcGuardSite &site, const QList<QcVec3> &players);
     bool zoneLoaded(const QcGuardSite &site) const;
     // A guardian of kind `type` in a random fitting cell of the zone; false when none fit.
-    bool bringForth(const QcGuardSite &site, int type);
+    bool bringForth(const QcGuardSite &site, QcCreatureKindId type);
     QList<QcVec3> livingPlayers() const;
 
     QcServerState &m_state;

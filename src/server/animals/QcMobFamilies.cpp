@@ -148,7 +148,7 @@ QList<quint32> QcMobFamilies::split(QcServerState &state, quint32 parentId, int 
     QcMobManager &creatures = state.entities().creatures();
     const QcCreature *found = creatures.find(parentId);
     const QcMobDefinition *kind = found ? &state.content().mobs()[found->type] : nullptr;
-    if (!kind || !kind->family || kind->family->childType < 0) {
+    if (!kind || !kind->family || !kind->family->childType) {
         return {};
     }
 
@@ -162,10 +162,10 @@ QList<quint32> QcMobFamilies::split(QcServerState &state, quint32 parentId, int 
         // from its middle with a little leap.
         const double angle = state.random().bounded(2.0 * std::numbers::pi);
         const QcVec3 away{std::sin(angle), 0.0, -std::cos(angle)};
-        const QcMobDefinition &childKind = state.content().mobs()[family.childType];
+        const QcMobDefinition &childKind = state.content().mobs()[*family.childType];
         const double reach = std::max(0.0, (kind->width - childKind.width) * 0.5);
         const QcVec3 middle{0.0, std::max(0.0, (kind->height - childKind.height) * 0.5), 0.0};
-        const quint32 id = creatures.spawn(family.childType, parent.motion.position + middle + away * reach, state.entities().newId());
+        const quint32 id = creatures.spawn(*family.childType, parent.motion.position + middle + away * reach, state.entities().newId());
 
         QcCreature &child = *creatures.find(id);
         child.parent = parentId;

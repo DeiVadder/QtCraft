@@ -121,10 +121,10 @@ std::optional<QList<QcBiomeMap::Site>> QcBiomeMap::sites(const QcTerrainGenerato
     }
 
     const QcSurfaceStructures &surface = generator.surfaceStructures();
-    for (qsizetype kind = 0; kind < surface.planner().kinds().size(); ++kind) {
+    for (const QcSurfacePlanner::KindId kind : surface.planner().kinds().ids()) {
         const QcSurfacePlanner::Kind &type = surface.planner().kinds().at(kind);
         const std::optional<QList<Site>> found = sitesInRegions(area, type.rule.spacing, cancelled, [&](int rx, int rz) -> std::optional<Site> {
-            const std::shared_ptr<const QcStructurePlacement> plan = surface.planOf(static_cast<int>(kind), rx, rz);
+            const std::shared_ptr<const QcStructurePlacement> plan = surface.planOf(kind, rx, rz);
             if (!plan) {
                 return std::nullopt;
             }

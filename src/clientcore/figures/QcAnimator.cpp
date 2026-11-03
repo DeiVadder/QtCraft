@@ -231,12 +231,12 @@ void BodyPose::rowBoat(double rowPhase)
     // faces the boat's way, its feet on the driver's seat).
     const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(rowPhase);
     const QcVec3 figure{0.0, QcBoatBody::floor + QcBoatBody::seatHeight - QcBoatBody::hipHeight, -QcBoatBody::driverAlong};
-    for (const int side : {1, -1}) {
-        const QcVec3 shoulder = figure + QcVec3{side * driverShoulder.x, driverShoulder.y, 0.0};
+    for (const QcBoatModel::Side side : QcBoatModel::sides) {
+        const QcVec3 shoulder = figure + QcVec3{QcBoatModel::signOf(side) * driverShoulder.x, driverShoulder.y, 0.0};
         const QcVec3 reach = QcBoatModel::gripOf(side, paddle) - shoulder;
         const double pitch = qRadiansToDegrees(std::atan2(-reach.z, -reach.y));
         const double roll = qRadiansToDegrees(std::atan2(reach.x, std::hypot(reach.y, reach.z)));
-        bone(side > 0 ? QcBoneRole::RightArm : QcBoneRole::LeftArm) = {pitch, roll};
+        bone(side == QcBoatModel::Side::Right ? QcBoneRole::RightArm : QcBoneRole::LeftArm) = {pitch, roll};
     }
 }
 

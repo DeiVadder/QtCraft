@@ -336,9 +336,9 @@ private slots:
         // A peaceful animal that never despawns otherwise, falling from just above the limit, and
         // a hostile creature placed below it.
         const QcVec3 column{m_feet.x + 0.5, QcWorld::voidLimitY + 2.0, m_feet.z + 0.5};
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), column, 900'010, false, true);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), column, 900'010, false, true);
         const quint32 zombie =
-            m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), column - QcVec3{0.0, 5.0, 0.0}, 900'011);
+            m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), column - QcVec3{0.0, 5.0, 0.0}, 900'011);
         QVERIFY(m_server->mobs().find(pig) && m_server->mobs().find(pig)->persistent);
         QVERIFY(m_server->mobs().find(zombie));
 
@@ -362,7 +362,7 @@ private slots:
         m_server->items().restore({{{stone, 3, 0}, far, {}}, {{stone, 4, 0}, far + QcVec3{0.0, 200.0, 0.0}, {}}},
                                   [&nextId] { return nextId++; });
         QCOMPARE(m_server->items().items().size(), 2);
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         const quint32 deep = m_server->mobs().spawn(pig, far, 900'030, false, true);
         const quint32 highPig = m_server->mobs().spawn(pig, far + QcVec3{0.0, 200.0, 0.0}, 900'031, false, true);
 

@@ -176,7 +176,7 @@ private slots:
     void everyBedAndWorkstationIsReachable()
     {
         QFETCH(int, turns);
-        const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)]);
+        const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)]);
         QcPathFinder finder;
         QStringList unreachable;
         for (const QcVillageStyleDefinition &definition : m_content->villageCatalog().styles()) {
@@ -259,7 +259,7 @@ private slots:
         const auto homeInside = std::ranges::find_if(built.plan->beds, [&](const QcVillagePlan::Spot &bed) { return inHouse(bed.at); });
         const auto homeElsewhere = std::ranges::find_if(built.plan->beds, [&](const QcVillagePlan::Spot &bed) { return !inHouse(bed.at); });
         QVERIFY(homeInside != built.plan->beds.end() && homeElsewhere != built.plan->beds.end());
-        const int type = *m_content->mobIndex(u"qtcraft:villager"_s);
+        const QcCreatureKindId type = *m_content->mobKind(u"qtcraft:villager"_s);
         const QcVillagerSettings &settings = *m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s);
         const quint32 out = built.mobs->spawn(type, {door.x + 0.5, static_cast<double>(door.y), door.z + 0.5}, built.nextId++);
         *built.mobs->find(out)->villager = QcVillagerHomes::settle(built.state(), homeElsewhere->at, built.mobs->find(out)->uid, settings, 1);
@@ -352,7 +352,7 @@ private slots:
         // A chunk knew villager 5, villages.json did not.
         QcMobManager::Stored stored;
         stored.uid = 5;
-        stored.type = *m_content->mobIndex(u"qtcraft:villager"_s);
+        stored.type = *m_content->mobKind(u"qtcraft:villager"_s);
         stored.position = {state.beds[1].at.x + 0.5, static_cast<double>(state.beds[1].at.y), state.beds[1].at.z + 0.5};
         stored.health = 20.0;
         QcVillagerRecord record;
@@ -434,10 +434,10 @@ private slots:
         QVERIFY2(farthest > QcVillagerRoads::legReach, qPrintable(QString::number(farthest)));
 
         // A villager beside the one bed whose home is the other walks there in the evening.
-        const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)]);
+        const QcPathRules rules = QcPathRules::of(m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)]);
         const std::optional<QcVec3> start = QcVillagerHomes::besideBed(*built.world, built.mobs->paths().cells(), from, rules);
         QVERIFY(start);
-        const quint32 id = built.mobs->spawn(*m_content->mobIndex(u"qtcraft:villager"_s), *start, built.nextId++);
+        const quint32 id = built.mobs->spawn(*m_content->mobKind(u"qtcraft:villager"_s), *start, built.nextId++);
         QcCreature *walker = built.mobs->find(id);
         *walker->villager = QcVillagerHomes::settle(built.state(), to, walker->uid, (*m_content->villageCatalog().villagerSettings(u"qtcraft:villager"_s)), 1);
         bool arrived = false;
@@ -576,7 +576,7 @@ private slots:
         QcVillagerRecord farmer;
         farmer.style = u"qtcraft:desert"_s;
         farmer.profession = u"qtcraft:farmer"_s;
-        const QcAppearance look = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), farmer);
+        const QcAppearance look = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobKind(u"qtcraft:villager"_s), farmer);
         QCOMPARE(look.outfit, u"qtcraft:villager_robe@qtcraft:farmer"_s);
         QCOMPARE(look.hair, u"qtcraft:villager_straw_hat"_s);
         const QcAppearanceDefinition *outfit = m_content->assets().appearance(look.outfit);
@@ -592,7 +592,7 @@ private slots:
             unemployed.profession = u"qtcraft:unemployed"_s;
             unemployed.look = lookSeed * 0x01010101u;
             unemployed.style = u"qtcraft:taiga"_s;
-            const QcAppearance taiga = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), unemployed);
+            const QcAppearance taiga = QcVillagerLooks::appearanceOf(*m_content, *m_content->mobKind(u"qtcraft:villager"_s), unemployed);
             QCOMPARE(taiga.outfit, u"qtcraft:villager_coat"_s);
             skins.insert(taiga.skinColor);
         }
@@ -600,14 +600,14 @@ private slots:
         QcVillagerRecord stranger;
         stranger.profession = u"qtcraft:smith"_s;
         stranger.style = u"mod:moon"_s;
-        QCOMPARE(QcVillagerLooks::appearanceOf(*m_content, *m_content->mobIndex(u"qtcraft:villager"_s), stranger).outfit, u"qtcraft:villager_tunic@qtcraft:smith"_s);
+        QCOMPARE(QcVillagerLooks::appearanceOf(*m_content, *m_content->mobKind(u"qtcraft:villager"_s), stranger).outfit, u"qtcraft:villager_tunic@qtcraft:smith"_s);
     }
 
     void theSettingsComeFromData()
     {
         // The base content in the files of decision E-421: the villager names its settings, the
         // professions their workstation blocks, which become the village settings' workstations.
-        const int villager = *m_content->mobIndex(u"qtcraft:villager"_s);
+        const QcCreatureKindId villager = *m_content->mobKind(u"qtcraft:villager"_s);
         QCOMPARE(m_content->mobs()[villager].villagerSettings, u"qtcraft:villager"_s);
         const QcVillagerSettings &settings = m_content->villagerSettingsOf(villager);
         QCOMPARE(settings.name, u"qtcraft:villager"_s);

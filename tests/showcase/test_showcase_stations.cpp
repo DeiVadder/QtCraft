@@ -199,7 +199,7 @@ private slots:
         client.hello(u"Viewer"_s);
         QcTestUtil::pump();
 
-        const int golem = *m_content->mobIndex(u"qtcraft:sand_golem"_s);
+        const QcCreatureKindId golem = *m_content->mobKind(u"qtcraft:sand_golem"_s);
         const auto guarding = [&](const QcGuardSite &site) {
             return std::ranges::count_if(server.mobs().mobs(), [&](const QcCreature &mob) { return mob.type == golem && mob.guards && mob.guards->site == site.id; });
         };
@@ -258,7 +258,7 @@ private slots:
         QCOMPARE(*server.world().blockAt(door), qcAirBlockId);
 
         // The witch: confined in her hut, still inside after a while.
-        const int witchType = *m_content->mobIndex(u"qtcraft:witch"_s);
+        const QcCreatureKindId witchType = *m_content->mobKind(u"qtcraft:witch"_s);
         server.world().loadChunk(hut->origin().chunk());
         server.world().loadChunk(hut->toWorld(QcBlockPos{8, 0, 10}).chunk());
         for (int i = 0; i < 100; ++i) {

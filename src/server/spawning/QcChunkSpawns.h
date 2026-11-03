@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcChunkPos.h"
+#include "common/core/QcCreatureKindId.h"
 
 #include <QList>
 
@@ -54,13 +55,13 @@ public:
     /*! Returns whether the seed lets the kind \a type with the chunk chance \a chance below 1 spawn
         in the chunk at \a pos; \a rule is the index of its spawn rule (0: main rule), each rule has
         its own set of chunks. */
-    bool spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const;
+    bool spawnsInChunk(QcCreatureKindId type, QcChunkPos pos, double chance, int rule) const;
 
 private:
     // Peaceful kinds that may live on `floor` (chunk-local ground block) of a newly seen chunk.
-    QList<int> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
+    QList<QcCreatureKindId> animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const;
     // Weighted choice by spawn weight for a `random` value in [0, 1).
-    int pickAnimal(const QList<int> &candidates, double random) const;
+    QcCreatureKindId pickAnimal(const QList<QcCreatureKindId> &candidates, double random) const;
 
     QcMobManager &m_mobs;
     std::shared_ptr<const QcContentRegistry> m_content;

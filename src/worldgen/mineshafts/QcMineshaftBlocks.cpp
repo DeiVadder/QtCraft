@@ -11,15 +11,15 @@ constexpr std::array<const char *, 4> sideNames{"north", "east", "south", "west"
 
 } // namespace
 
-int QcMineshaftBlocks::sideOf(int dx, int dz)
+QcMineshaftBlocks::Side QcMineshaftBlocks::sideOf(int dx, int dz)
 {
     if (dz < 0) {
-        return 0;
+        return Side::North;
     }
     if (dx > 0) {
-        return 1;
+        return Side::East;
     }
-    return dz > 0 ? 2 : 3;
+    return dz > 0 ? Side::South : Side::West;
 }
 
 QcMineshaftBlocks::Resolved QcMineshaftBlocks::resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content)

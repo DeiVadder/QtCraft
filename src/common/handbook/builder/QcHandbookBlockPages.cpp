@@ -218,7 +218,7 @@ void BlockPage::addDropFacts()
         addFact(u"withoutTool"_s, label(u"value.nothing"_s));
     }
     // An infested block lets its creature out (decision E-453).
-    const std::optional<int> creature = m_block.infestsMob.isEmpty() ? std::nullopt : m_content.mobIndex(m_block.infestsMob);
+    const std::optional<QcCreatureKindId> creature = m_block.infestsMob.isEmpty() ? std::nullopt : m_content.mobKind(m_block.infestsMob);
     if (creature) {
         addFact(u"releases"_s, {}, {m_links.mobLink(m_content.mobs()[*creature])});
     }

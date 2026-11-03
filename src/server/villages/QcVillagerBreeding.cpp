@@ -59,7 +59,9 @@ QList<QcVillagerBreeding::Birth> QcVillagerBreeding::check(QList<QcCreature> &mo
 
 bool QcVillagerBreeding::breedsNow(const QcVillage &village, const Context &context, qsizetype worldPopulation) const
 {
-    const QcVillagerSettings &species = m_content->villagerSettingsOf(m_content->villagerOfStyle(village.style).value_or(-1));
+    const std::optional<QcCreatureKindId> villager = m_content->villagerOfStyle(village.style);
+    static const QcVillagerSettings noSpecies;
+    const QcVillagerSettings &species = villager ? m_content->villagerSettingsOf(*villager) : noSpecies;
     const QcVillagerActivity activity = species.activityAt(QcDayCycle::phase(context.worldTime));
     const bool day = activity != QcVillagerActivity::Home && activity != QcVillagerActivity::Sleep;
     // A bed for the child beyond the villagers already living here: one whose bed was broken

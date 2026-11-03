@@ -215,8 +215,9 @@ private slots:
         const QcBoat *placed = spawnBoat({m_feet.x + 2.7, floatingHeight(), m_feet.z + 0.5}, 90.0f);
         QVERIFY(placed);
         const quint32 id = placed->id;
-        const auto it = std::ranges::find(m_content->mobs(), u"qtcraft:pig"_s, &QcMobDefinition::name);
-        const quint32 pig = m_server->entities().creatures().spawn(static_cast<int>(it - m_content->mobs().begin()),
+        const std::optional<QcCreatureKindId> pigKind = m_content->mobKind(u"qtcraft:pig"_s);
+        QVERIFY(pigKind);
+        const quint32 pig = m_server->entities().creatures().spawn(*pigKind,
                                                                    {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5},
                                                                    m_server->entities().newId(), false, true);
         ticks(2);

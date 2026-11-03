@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 
 #include <QHash>
@@ -66,7 +67,7 @@ private:
         const QcCreature *mob = nullptr;
     };
     // A cell of the neighbour grid: the kind and its position in cells of that kind's size.
-    using CellKey = std::pair<int, qint64>;
+    using CellKey = std::pair<QcCreatureKindId, qint64>;
 
     // The nearest creatures of the same kind within the school radius of `mobs[index]`, at most
     // `neighbours` of them; valid until the next call.
@@ -80,7 +81,7 @@ private:
 
     static qint64 cellKey(int x, int y, int z);
     static double cellSizeOf(const QcAquaticDefinition &aquatic);
-    static CellKey cellOf(int type, const QcVec3 &position, double size);
+    static CellKey cellOf(QcCreatureKindId type, const QcVec3 &position, double size);
 
     QRandomGenerator &m_random;
     // The grid as a counting sort: the creatures of cell c are m_members[m_cellStart[c]] up to

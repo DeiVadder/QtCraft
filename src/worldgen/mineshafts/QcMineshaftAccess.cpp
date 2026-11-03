@@ -65,7 +65,7 @@ QList<QcMineshaftPlan::Room> QcMineshaftAccess::roomsOf(const QcMineshaftPlan &p
         if (crossedByPillars(network, end)) {
             continue;
         }
-        const int turns = QcMineshaftBlocks::sideOf(neighbour.x - end.x, neighbour.z - end.z);
+        const int turns = static_cast<int>(QcMineshaftBlocks::slotOf(QcMineshaftBlocks::sideOf(neighbour.x - end.x, neighbour.z - end.z)));
         if (std::optional<QcStructurePlacement> room = roomAt(end, turns, site, random(RoomPick, node))) {
             rooms.append({node, std::move(*room)});
         }
@@ -172,7 +172,7 @@ std::optional<QcMineshaftPlan::Entrance> QcMineshaftAccess::inclineOf(const QcMi
     const int places = std::min(maxInclineTries, 4 * (1 + static_cast<int>(ends.size())));
     for (int place = 0; place < places; ++place) {
         const int node = place < 4 ? 0 : ends.at((firstEnd + (place - 4) / 4) % ends.size());
-        const QcMineshaftIncline::Exit exit{node, (first + place) % 4};
+        const QcMineshaftIncline::Exit exit{node, static_cast<QcMineshaftBlocks::Side>((first + place) % 4)};
         if (std::optional<QcMineshaftPlan::Entrance> entrance = m_incline.through(plan, site, exit, rails)) {
             return entrance;
         }

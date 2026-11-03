@@ -5,6 +5,7 @@
 
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcChunkPos.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/physics/QcEntityMotion.h"
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
@@ -198,7 +199,7 @@ public:
     /*! Spawns a mob of the kind \a type at \a position with the id \a id directly (commands,
         tests), in a cave when \a underground, kept with the world when \a persistent; returns its
         id. */
-    quint32 spawn(int type, const QcVec3 &position, quint32 id, bool underground = false, bool persistent = false);
+    quint32 spawn(QcCreatureKindId type, const QcVec3 &position, quint32 id, bool underground = false, bool persistent = false);
     /*! Clears the store without departures (tests that want an empty world). */
     void removeAll()
     {

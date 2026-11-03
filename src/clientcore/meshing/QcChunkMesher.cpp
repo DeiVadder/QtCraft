@@ -10,6 +10,7 @@
 #include "common/world/QcLightVolume.h"
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 
@@ -284,23 +285,30 @@ struct QuadLight
 };
 
 // Vertex and index lists of one render layer of the mesh. Water and the other translucent faces
-// also note the order in which they alternate (QcChunkMesh::translucentRuns; `runKind` 0: water,
-// 1: other translucent faces).
+// also note the order in which they alternate (QcChunkMesh::translucentRuns).
 struct Output
 {
+    // The runs a layer's faces belong to; the value is the parity of their runs in
+    // QcChunkMesh::translucentRuns (water first).
+    enum class Run : quint8
+    {
+        Water = 0,
+        OtherTranslucent = 1,
+    };
+
     QList<QcBlockVertex> &vertices;
     QList<quint32> &indices;
     QList<quint32> *runs = nullptr;
-    int runKind = 0;
+    Run run = Run::Water;
 
-    // Six more indices of the kind `runKind` in the runs: the last run grows or a new one starts
+    // Six more indices of the kind `run` in the runs: the last run grows or a new one starts
     // (the first run is water, possibly empty).
     void noteRun() const
     {
-        if (runs->isEmpty() && runKind == 1) {
+        if (runs->isEmpty() && run == Run::OtherTranslucent) {
             runs->append(0);
         }
-        if (!runs->isEmpty() && (runs->size() - 1) % 2 == runKind) {
+        if (!runs->isEmpty() && (runs->size() - 1) % 2 == std::to_underlying(run)) {
             runs->back() += 6;
         } else {
             runs->append(6);
@@ -438,10 +446,10 @@ private:
     Output outputFor(const Entry &entry, Cell open)
     {
         if (entry.material == QcSurfaceMaterial::Water) {
-            return {m_mesh.waterVertices, m_mesh.waterIndices, &m_mesh.translucentRuns, 0};
+            return {m_mesh.waterVertices, m_mesh.waterIndices, &m_mesh.translucentRuns, Output::Run::Water};
         }
         if (entry.layer == QcRenderLayer::Translucent) {
-            return {m_mesh.translucentVertices, m_mesh.translucentIndices, &m_mesh.translucentRuns, 1};
+            return {m_mesh.translucentVertices, m_mesh.translucentIndices, &m_mesh.translucentRuns, Output::Run::OtherTranslucent};
         }
         if (entry.layer == QcRenderLayer::Cutout) {
             return {m_mesh.cutoutVertices, m_mesh.cutoutIndices};

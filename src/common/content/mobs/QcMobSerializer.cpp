@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 namespace QcMobSerializer {
 
@@ -29,10 +30,10 @@ void writeMob(QDataStream &stream, const QcMobDefinition &mob)
     stream << mob.milkWith;
     // The thread from its children to it (decision E-839): the child kind, texture and reach; the
     // rest of the family stays on the server.
-    const bool tethers = mob.family && mob.family->childType >= 0 && !mob.family->tetherTexture.isEmpty();
-    stream << tethers;
-    if (tethers) {
-        stream << static_cast<qint32>(mob.family->childType) << mob.family->tetherTexture << mob.family->tetherRange;
+    const std::optional<QcCreatureKindId> child = mob.family && !mob.family->tetherTexture.isEmpty() ? mob.family->childType : std::nullopt;
+    stream << child.has_value();
+    if (child && mob.family) {
+        stream << static_cast<qint32>(child->index()) << mob.family->tetherTexture << mob.family->tetherRange;
     }
 }
 
@@ -86,11 +87,12 @@ std::optional<QcMobDefinition> readMob(QDataStream &stream)
         QcFamilyDefinition &family = mob.family.emplace();
         qint32 child = -1;
         stream >> child >> family.tetherTexture >> family.tetherRange;
-        // A child index beyond the creatures never matches one (QcTetherMesher).
-        family.childType = child;
-        if (child < 0 || family.tetherTexture.isEmpty() || !std::isfinite(family.tetherRange) || family.tetherRange <= 0.0 || family.tetherRange > 64.0) {
+        // The table holds at most maxDefinitions creatures; an index below that but beyond the
+        // creatures read never matches one (QcTetherMesher, mobs().contains()).
+        if (child < 0 || std::cmp_greater_equal(child, QcStreamLimits::maxDefinitions) || family.tetherTexture.isEmpty() || !std::isfinite(family.tetherRange) || family.tetherRange <= 0.0 || family.tetherRange > 64.0) {
             return std::nullopt;
         }
+        family.childType = QcCreatureKindId{child};
     }
 
     // Sizes feed physics and the mesher: reject anything outside what the parser allows.

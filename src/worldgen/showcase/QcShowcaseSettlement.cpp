@@ -112,7 +112,7 @@ QList<QcBlockPos> build(const QcShowcaseContext &context, QcStructure &area, QcB
     }
     field(context, area, x, z);
     rail(context, area, x, z);
-    if (context.content.mobIndex(u"qtcraft:villager"_s)) {
+    if (context.content.mobKind(u"qtcraft:villager"_s)) {
         area.addMob({u"qtcraft:villager"_s, {x + 5.5, 1.0, z + 6.0}, false});
         area.addMob({u"qtcraft:villager"_s, {x + 9.5, 1.0, z + 6.0}, false});
     }

@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/physics/QcPhysics.h"
 #include "server/entities/QcCreature.h"
 #include "server/mobbrains/QcMobBrain.h"
@@ -106,7 +107,7 @@ public:
     QcVillagerRoads &roads() { return m_roads; }
     /*! Returns the offers of villagers of the kind \a mobType, by their species (decisions E-421,
         E-414); they restock at their workstation during work. */
-    const QcVillagerTrades &trades(int mobType) const;
+    const QcVillagerTrades &trades(QcCreatureKindId mobType) const;
 
     /*! A new tick: the budgets start again. */
     void startTick();

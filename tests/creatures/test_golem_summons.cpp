@@ -50,7 +50,7 @@ private:
         {
             return [this] { return nextId++; };
         }
-        int golemType() const { return *content->mobIndex(u"qtcraft:iron_golem"_s); }
+        QcCreatureKindId golemType() const { return *content->mobKind(u"qtcraft:iron_golem"_s); }
     };
 
     // Loads the chunks of the plan and `ring` around them, then populates the plan's chunks (which
@@ -184,13 +184,13 @@ private slots:
     {
         // A zombie that does not burn by day stands among three villagers on the road.
         std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-        QcMobDefinition zombie = content->mobs()[*content->mobIndex(u"qtcraft:zombie"_s)];
+        QcMobDefinition zombie = content->mobs()[*content->mobKind(u"qtcraft:zombie"_s)];
         zombie.burnsInDaylight = false;
         content->registerMob(zombie);
         Village built = village(content);
         QVERIFY(built.plan);
         QCOMPARE(golems(built), 0);
-        const quint32 zombieId = built.mobs->spawn(*content->mobIndex(u"qtcraft:zombie"_s), roadSpot(built, 6), built.nextId++);
+        const quint32 zombieId = built.mobs->spawn(*content->mobKind(u"qtcraft:zombie"_s), roadSpot(built, 6), built.nextId++);
 
         const QList<QcCreature *> three = adults(built).mid(0, 3);
         QCOMPARE(three.size(), 3);
@@ -303,7 +303,7 @@ private slots:
         // no village of their own.
         Village built = village();
         QVERIFY(built.plan);
-        const int villagerType = *built.content->mobIndex(u"qtcraft:villager"_s);
+        const QcCreatureKindId villagerType = *built.content->mobKind(u"qtcraft:villager"_s);
         const QcBlockPos far{built.plan->maxX + 3 * QcVillageFixture::villageGap, QcVillageFixture::landFloor + 1, built.plan->centre.z};
         const int apart = 48;
         for (int dx = -3; dx <= 3; ++dx) {
@@ -348,7 +348,7 @@ private slots:
     {
         Village built = village();
         QVERIFY(built.plan);
-        const int type = built.golemType();
+        const QcCreatureKindId type = built.golemType();
         const QcMobDefinition &golem = built.content->mobs()[type];
         const QcBlockPos centre = built.plan->centre;
         const QcVillageGolems::Context context{*built.world, built.mobs->paths().cells(), built.worldTime, seed, 256};
@@ -442,7 +442,7 @@ private slots:
         stored.maxZ = 10;
         stored.golems = 3;
         world.villages().restore({stored});
-        const int type = *content->mobIndex(u"qtcraft:iron_golem"_s);
+        const QcCreatureKindId type = *content->mobKind(u"qtcraft:iron_golem"_s);
         const QcVillageGolems rule(content);
         QList<QcCreature> mobs(1);
         mobs[0].type = type;

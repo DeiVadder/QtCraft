@@ -84,7 +84,7 @@ private slots:
         }
         ticks(1);
 
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), centreOf(3, 0, 8), 700001, false, true);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), centreOf(3, 0, 8), 700001, false, true);
         const quint32 dropped = m_server->items().spawnScattered({item("qtcraft:stick"), 1, 0}, centreOf(3, 0, 8), 700002);
         for (QcItemEntity &entity : m_server->items().editableItems()) {
             entity.motion.position = entity.id == dropped ? centreOf(3, 0, 8) : entity.motion.position;

@@ -42,11 +42,11 @@ private slots:
             QcMsg::EntitySpawn spawn;
             spawn.id = 70 + static_cast<quint32>(value);
             spawn.kind = static_cast<QcEntityKind>(value);
-            spawn.creatureType = 5;
+            spawn.creatureType = QcCreatureKindId{5};
             spawn.name = u"Kind"_s;
             const QcMsg::EntitySpawn copy = roundTrip(spawn);
             QCOMPARE(copy.kind, spawn.kind);
-            QCOMPARE(copy.creatureType, spawn.kind == QcEntityKind::Creature ? 5 : 0);
+            QCOMPARE(copy.creatureType, QcCreatureKindId{spawn.kind == QcEntityKind::Creature ? 5 : 0});
             QCOMPARE(copy.name, u"Kind"_s);
         }
 
@@ -59,7 +59,7 @@ private slots:
         QVERIFY(QcProtocol::decode(valid, QcProtocol::Peer::Server).has_value());
         QcMsg::EntitySpawn creature;
         creature.kind = QcEntityKind::Creature;
-        creature.creatureType = 2;
+        creature.creatureType = QcCreatureKindId{2};
         for (const quint8 bad : {static_cast<quint8>(QcEntityKinds::count), quint8{10}, quint8{255}}) {
             QByteArray frame = valid;
             frame[kindOffset] = static_cast<char>(bad);
@@ -69,12 +69,12 @@ private slots:
         // Negative and absurd creature types are refused before anything of the entity is used.
         for (const qint32 type : {static_cast<qint32>(-1), static_cast<qint32>(QcStreamLimits::maxDefinitions), std::numeric_limits<qint32>::max()}) {
             QcMsg::EntitySpawn odd = creature;
-            odd.creatureType = type;
+            odd.creatureType = QcCreatureKindId{type};
             const bool decoded = QcProtocol::decode(QcProtocol::encode(odd), QcProtocol::Peer::Server).has_value();
             QVERIFY2(!decoded, qPrintable(u"creature type %1"_s.arg(type)));
         }
         QcMsg::EntitySpawn last = creature;
-        last.creatureType = static_cast<qint32>(QcStreamLimits::maxDefinitions) - 1;
+        last.creatureType = QcCreatureKindId{static_cast<int>(QcStreamLimits::maxDefinitions) - 1};
         QCOMPARE(roundTrip(last).creatureType, last.creatureType);
     }
 

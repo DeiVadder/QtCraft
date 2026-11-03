@@ -104,9 +104,9 @@ QString perColumn(const QcHandbookText &text, const QcFeaturePlacement &placemen
     const QcSpawnWeights weights(content);
     Section monsters{context.text.label(u"section.monsters"_s), {}, {}, {}};
     Section creatures{context.text.label(u"section.creatures"_s), {}, {}, {}};
-    for (qsizetype type = 0; type < content.mobs().size(); ++type) {
+    for (const QcCreatureKindId type : content.mobs().ids()) {
         const QcMobDefinition &mob = content.mobs()[type];
-        const double weight = weights.weight(static_cast<int>(type), biome.name);
+        const double weight = weights.weight(type, biome.name);
         if (mob.isMonster() && weight > 0.0) {
             monsters.links.append(context.links.mobLink(mob, context.text.percent(weight / weights.total(biome.name))));
         } else if (!mob.isMonster() && QcSpawnWeights::ruleWeight(mob, biome.name) > 0.0) {

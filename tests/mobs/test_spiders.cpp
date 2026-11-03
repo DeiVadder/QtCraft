@@ -26,7 +26,7 @@ private:
     static constexpr int arena = 12;
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
 
     void joinArena(double time)

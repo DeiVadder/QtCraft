@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcMessages.h"
 
@@ -42,7 +43,7 @@ public:
 private:
     struct Creature
     {
-        qint32 type = 0;
+        QcCreatureKindId type;
         QcVec3 feet;
         // Its horizontal move between the last two places the server sent: one server tick.
         QcVec3 step;

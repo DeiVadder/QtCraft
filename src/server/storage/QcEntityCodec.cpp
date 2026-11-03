@@ -197,7 +197,7 @@ private:
         stored.position = header.position;
         stored.yaw = std::fmod(header.yaw, 360.0f);
         stored.uid = header.uid;
-        const std::optional<int> type = m_content.mobIndex(header.type);
+        const std::optional<QcCreatureKindId> type = m_content.mobKind(header.type);
         // Without its creature component it is a grown creature at full health.
         stored.health = type ? m_content.mobs()[*type].maxHealth : 1.0;
         std::optional<QcCreatureComponents::Read> read = QcCreatureComponents::read(m_stream, std::move(stored));

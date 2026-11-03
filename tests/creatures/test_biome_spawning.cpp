@@ -101,7 +101,7 @@ private:
         return seed;
     }
 
-    int type(const char *name) const { return m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)).value_or(-1); }
+    QcCreatureKindId type(const char *name) const { return m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)).value_or(QcCreatureKindId{-1}); }
 
     // The content with every monster in groups of one, so each spawn is one draw of the list.
     std::shared_ptr<const QcContentRegistry> singles() const

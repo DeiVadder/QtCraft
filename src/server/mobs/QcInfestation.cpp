@@ -49,7 +49,7 @@ QcInfestation::QcInfestation(QcServerState &state, QcServerBlocks &blocks)
 
 quint32 QcInfestation::release(QcServerState &state, const QcBlockDefinition &definition, QcBlockPos pos)
 {
-    const std::optional<int> type = definition.infestsMob.isEmpty() ? std::nullopt : state.content().mobIndex(definition.infestsMob);
+    const std::optional<QcCreatureKindId> type = definition.infestsMob.isEmpty() ? std::nullopt : state.content().mobKind(definition.infestsMob);
     if (!type) {
         return 0;
     }
@@ -142,7 +142,7 @@ const QcInfestation::Map &QcInfestation::map()
         for (const QcBlockDefinition &definition : content.blocks()) {
             const std::optional<QcBlockId> block = content.blockId(definition.name);
             const std::optional<QcBlockId> base = definition.infestsBlock.isEmpty() ? std::nullopt : content.blockId(definition.infestsBlock);
-            const std::optional<int> kind = definition.infestsMob.isEmpty() ? std::nullopt : content.mobIndex(definition.infestsMob);
+            const std::optional<QcCreatureKindId> kind = definition.infestsMob.isEmpty() ? std::nullopt : content.mobKind(definition.infestsMob);
             if (block && base && kind) {
                 m_map.hiding.insert({*base, *kind}, *block);
             }
@@ -150,7 +150,7 @@ const QcInfestation::Map &QcInfestation::map()
         // Every state of an infested block lets its creature out.
         for (qsizetype id = 0; id < content.stateCount(); ++id) {
             const QcBlockDefinition &definition = content.block(static_cast<QcBlockId>(id));
-            const std::optional<int> kind = definition.infestsMob.isEmpty() ? std::nullopt : content.mobIndex(definition.infestsMob);
+            const std::optional<QcCreatureKindId> kind = definition.infestsMob.isEmpty() ? std::nullopt : content.mobKind(definition.infestsMob);
             const std::optional<QcBlockId> base = definition.infestsBlock.isEmpty() ? std::nullopt : content.blockId(definition.infestsBlock);
             if (kind) {
                 m_map.waking[*kind].insert(static_cast<QcBlockId>(id), base.value_or(qcAirBlockId));
@@ -163,5 +163,5 @@ const QcInfestation::Map &QcInfestation::map()
 
 bool QcInfestation::hides(const QcCreature &mob) const
 {
-    return mob.type >= 0 && mob.type < m_state.content().mobs().size() && m_state.content().mobs()[mob.type].hidesInBlocks;
+    return m_state.content().mobs().contains(mob.type) && m_state.content().mobs()[mob.type].hidesInBlocks;
 }

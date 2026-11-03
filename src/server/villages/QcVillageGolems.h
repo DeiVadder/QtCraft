@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "server/entities/QcCreature.h"
 
 #include <QHash>
@@ -51,7 +52,7 @@ public:
         /*! The summoning villagers' village (0: none). */
         qint64 village = 0;
         /*! The golem's creature kind. */
-        int type = 0;
+        QcCreatureKindId type;
         /*! Where the golem's feet are. */
         QcVec3 position;
     };
@@ -87,7 +88,7 @@ public:
     /*! Returns the golems' creature kind in villages of \a style (QcVillageCatalog::golemOfStyle;
         the empty style: the settings' own); none while the content lacks it (logged the first time)
         or the style has no golems. */
-    std::optional<int> kind(const QString &style) const;
+    std::optional<QcCreatureKindId> kind(const QString &style) const;
     /*! Counts the golems among \a mobs of the loaded villages among \a villages in the world of \a
         context (those whose claims were reconciled; villagers of other villages summon none) and
         returns the golems villagers summon now; the summoning villages' lastGolem is set. */
@@ -95,15 +96,15 @@ public:
     /*! Returns whether \a villager wants a golem at \a worldTime by \a settings, and why. */
     static Want wants(const QcCreature &villager, const QcVillageGolemSettings &settings, double worldTime);
     /*! Returns the golems of kind \a type among \a mobs in the area of \a village. */
-    static int golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, int type);
+    static int golemsIn(const QcVillage &village, const QList<QcCreature> &mobs, QcCreatureKindId type);
     /*! Returns a place around \a around in the world of \a context where a golem of \a type
         stands: columns drawn (by \a draw) within \a radius, each tried from spawnHeight above
         \a around down to spawnHeight below it. */
-    std::optional<QcVec3> placeNear(const QcVec3 &around, int type, int radius, const Context &context, quint64 draw) const;
+    std::optional<QcVec3> placeNear(const QcVec3 &around, QcCreatureKindId type, int radius, const Context &context, quint64 draw) const;
     /*! Returns the golems of kind \a type in the world: outside \a villages those loaded among
         \a mobs, in each village those it counted last or those loaded in its area, whichever is
         more (QcVillages::golems). */
-    qint64 golemsInWorld(const QList<QcCreature> &mobs, int type, const QcVillages &villages) const;
+    qint64 golemsInWorld(const QList<QcCreature> &mobs, QcCreatureKindId type, const QcVillages &villages) const;
 
 private:
     // The villagers of one village (0: without one) that want a golem, by id.
@@ -118,7 +119,7 @@ private:
     // The golems summoned by `group` now, at most `allowed`: of a village the first villager's that
     // calls (calls()) with no golem near it; without a village every such villager's whose chunk
     // rested (several farms).
-    QList<Spawn> summon(const Group &group, int type, const QList<QcCreature> &mobs, const Context &context, qint64 allowed);
+    QList<Spawn> summon(const Group &group, QcCreatureKindId type, const QList<QcCreature> &mobs, const Context &context, qint64 allowed);
     // Whether `summoner` of `group` calls a golem now: on the panic path or (by `roll`) the gossip
     // path.
     static bool calls(const QcCreature &summoner, const Group &group, const QcVillageGolemSettings &settings, double worldTime, double roll);
@@ -133,10 +134,10 @@ private:
     static bool loadedAround(const QcServerWorld &world, const QcVec3 &at, double distance);
     // Counts the golems of a loaded village; a last golem after the world time (it went back) is
     // forgotten.
-    static void recount(QcVillage &village, const QList<QcCreature> &mobs, int type, const Context &context);
+    static void recount(QcVillage &village, const QList<QcCreature> &mobs, QcCreatureKindId type, const Context &context);
     // The feet of a golem of `type` in `feet`: on dry, opaque ground that does not hurt, the whole
     // body clear of blocks.
-    std::optional<QcVec3> standsAt(QcBlockPos feet, int type, const Context &context) const;
+    std::optional<QcVec3> standsAt(QcBlockPos feet, QcCreatureKindId type, const Context &context) const;
     // Whether the column's floor (a block in the cell with collision, else the one below) is of the
     // opaque render layer.
     bool opaqueFloor(QcBlockPos column, const Context &context) const;

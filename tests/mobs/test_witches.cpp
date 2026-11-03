@@ -34,7 +34,7 @@ private:
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
     QcItemStack stack(const char *name, int count) const { return {item(name), count, 0}; }
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
     const QcMobDefinition &witchKind() const { return m_content->mobs()[type("witch")]; }
 

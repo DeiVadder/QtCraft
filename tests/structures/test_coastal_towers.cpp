@@ -167,12 +167,12 @@ private:
     {
         QList<QcCoastalTowerPlan::Footprint> structures;
         const QcSurfaceStructures &surface = terrain.surfaceStructures();
-        for (qsizetype kind = 0; kind < surface.planner().kinds().size(); ++kind) {
+        for (const QcSurfacePlanner::KindId kind : surface.planner().kinds().ids()) {
             const QcSurfacePlanner::Kind &rule = surface.planner().kinds()[kind];
             const int ruleRegions = reach / rule.rule.spacing + 1;
             for (int rz = -ruleRegions; rz <= ruleRegions; ++rz) {
                 for (int rx = -ruleRegions; rx <= ruleRegions; ++rx) {
-                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(static_cast<int>(kind), rx, rz)) {
+                    if (const std::shared_ptr<const QcStructurePlacement> copy = surface.planOf(kind, rx, rz)) {
                         structures.append(QcCoastalTowerPlan::footprintOf(*copy));
                         ++copies[rule.name];
                     }

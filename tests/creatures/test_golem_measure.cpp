@@ -64,7 +64,7 @@ private:
             server.tick();
         }
         const double msPerTick = static_cast<double>(timer.nsecsElapsed()) / 1e6 / ticks;
-        const int golemType = *content->mobIndex(u"qtcraft:iron_golem"_s);
+        const QcCreatureKindId golemType = *content->mobKind(u"qtcraft:iron_golem"_s);
         const QList<QcCreature> &mobs = server.mobs().mobs();
         return {msPerTick, std::ranges::count(mobs, golemType, &QcCreature::type), mobs.size()};
     }

@@ -7,6 +7,7 @@
 
 #include <QtGlobal>
 
+#include <cstddef>
 #include <memory>
 #include <utility>
 
@@ -32,11 +33,22 @@ public:
 
 private:
     struct Link;
+    // The two ends of a link; the value is the end's slot in the link's arrays.
+    enum class End : quint8
+    {
+        First = 0,
+        Second = 1,
+    };
 
-    QcInProcessTransport(std::shared_ptr<Link> link, int side);
+    // The slot of `end` in the arrays of its link.
+    static constexpr std::size_t slotOf(End end) { return std::to_underlying(end); }
+    // The other end of the link.
+    static constexpr End peerOf(End end) { return end == End::First ? End::Second : End::First; }
+
+    QcInProcessTransport(std::shared_ptr<Link> link, End end);
     void drainInbox();
 
     std::shared_ptr<Link> m_link;
-    int m_side = 0;
+    End m_end = End::First;
     bool m_closedEmitted = false;
 };

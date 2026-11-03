@@ -116,11 +116,11 @@ private:
         return changed;
     }
 
-    static qint32 legacyCode(QcEntityKind kind, qint32 creatureType)
+    static qint32 legacyCode(QcEntityKind kind, QcCreatureKindId creature)
     {
         switch (kind) {
         case QcEntityKind::Creature:
-            return creatureType;
+            return creature.index();
         case QcEntityKind::Player:
             return -1;
         case QcEntityKind::Item:

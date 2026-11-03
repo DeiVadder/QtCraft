@@ -140,7 +140,7 @@ private:
     // The cellar: a closed stone room east of the player, its floor zone 5 x 5.
     QcBlockPos m_cellar;
 
-    int golemType() const { return *m_content->mobIndex(u"qtcraft:sand_golem"_s); }
+    QcCreatureKindId golemType() const { return *m_content->mobKind(u"qtcraft:sand_golem"_s); }
     QcServerClient &player() { return *m_server->entities().clients().front(); }
     const QcGuardians &guardians() { return m_server->creatures().guardians(); }
 

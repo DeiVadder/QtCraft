@@ -45,7 +45,7 @@ private:
     // A creature of `name` standing at `feet`; returns its id.
     quint32 creature(const char *name, QcBlockPos feet)
     {
-        const std::optional<int> type = m_content->mobIndex(QString::fromLatin1(name));
+        const std::optional<QcCreatureKindId> type = m_content->mobKind(QString::fromLatin1(name));
         if (!type) {
             QcTestUtil::failCase(QStringLiteral("Test uses the creature %1, which the content does not have").arg(QString::fromLatin1(name)));
             return 0;
@@ -178,7 +178,7 @@ private slots:
         const auto burningOn = [this](QcBlockPos ground, const char *block, double height) {
             set(ground, block);
             const QcVec3 feet{ground.x + 0.5, ground.y + height, ground.z + 0.5};
-            const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), feet, m_server->entities().newId(), false, true);
+            const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), feet, m_server->entities().newId(), false, true);
             m_server->mobs().find(pig)->burnTicks = 100;
             return pig;
         };

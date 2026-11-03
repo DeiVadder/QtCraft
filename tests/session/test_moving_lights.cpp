@@ -51,10 +51,10 @@ private slots:
     // A firefly (glow 15) lights about seven blocks, a creature without glow nothing.
     void glowingCreaturesGiveAShareOfTheirGlow()
     {
-        const std::optional<int> firefly = content().mobIndex(u"qtcraft:firefly"_s);
+        const std::optional<QcCreatureKindId> firefly = content().mobKind(u"qtcraft:firefly"_s);
         QVERIFY(firefly);
         QCOMPARE(QcMovingLights::creatureLevel(content().mobs()[*firefly]), 7.5f);
-        const std::optional<int> cow = content().mobIndex(u"qtcraft:cow"_s);
+        const std::optional<QcCreatureKindId> cow = content().mobKind(u"qtcraft:cow"_s);
         QVERIFY(cow);
         QCOMPARE(QcMovingLights::creatureLevel(content().mobs()[*cow]), 0.0f);
     }
@@ -84,8 +84,8 @@ private slots:
     void entitiesBringTheirLights()
     {
         const QcItemId torch = item(u"qtcraft:torch"_s);
-        const std::optional<int> firefly = content().mobIndex(u"qtcraft:firefly"_s);
-        const std::optional<int> zombie = content().mobIndex(u"qtcraft:zombie"_s);
+        const std::optional<QcCreatureKindId> firefly = content().mobKind(u"qtcraft:firefly"_s);
+        const std::optional<QcCreatureKindId> zombie = content().mobKind(u"qtcraft:zombie"_s);
         QVERIFY(firefly && zombie);
         const double fireflyHeight = content().mobs()[*firefly].height;
         const double zombieHeight = content().mobs()[*zombie].height;

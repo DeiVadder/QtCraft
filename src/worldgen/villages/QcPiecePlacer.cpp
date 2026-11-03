@@ -229,8 +229,8 @@ bool QcPiecePlacer::placeBesideEnd(QcVillageDraft &draft, const Road &road, int 
 
 void QcPiecePlacer::placeAlong(QcVillageDraft &draft, const Road &road) const
 {
-    for (const int side : {-1, 1}) {
-        if ((road.sides & (side < 0 ? 1 : 2)) == 0) {
+    for (const RoadSide side : {RoadSide::Left, RoadSide::Right}) {
+        if ((road.sides & (side == RoadSide::Left ? 1 : 2)) == 0) {
             continue;
         }
         int along = road.firstSlot + 1;
@@ -244,13 +244,13 @@ void QcPiecePlacer::placeAlong(QcVillageDraft &draft, const Road &road) const
     }
 }
 
-int QcPiecePlacer::tryPiece(QcVillageDraft &draft, const Road &road, int along, int side) const
+int QcPiecePlacer::tryPiece(QcVillageDraft &draft, const Road &road, int along, RoadSide side) const
 {
     const int index = choosePiece(draft);
     if (index < 0) {
         return -1;
     }
-    const int reach = placeAt(draft, road, {along, side}, index);
+    const int reach = placeAt(draft, road, {along, std::to_underlying(side)}, index);
     if (reach > 0) {
         draft.countPiece(index);
     }

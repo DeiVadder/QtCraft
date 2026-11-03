@@ -45,8 +45,8 @@ class TestKjut : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int kjut() const { return *m_content->mobIndex(u"qtcraft:kjut"_s); }
-    int child() const { return *m_content->mobIndex(u"qtcraft:kjut_child"_s); }
+    QcCreatureKindId kjut() const { return *m_content->mobKind(u"qtcraft:kjut"_s); }
+    QcCreatureKindId child() const { return *m_content->mobKind(u"qtcraft:kjut_child"_s); }
 
     // A creative player (the Kjuts leave it alone) on the stage, without natural spawning.
     void joinStage()

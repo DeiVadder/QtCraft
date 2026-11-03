@@ -7,7 +7,7 @@ QList<QcMobLaying::Laid> QcMobLaying::tick(const QcContentRegistry &content, QLi
 {
     QList<Laid> laid;
     for (QcCreature &mob : mobs) {
-        if (mob.dormant || mob.isYoung() || mob.type < 0 || mob.type >= content.mobs().size()) {
+        if (mob.dormant || mob.isYoung() || !content.mobs().contains(mob.type)) {
             continue;
         }
 

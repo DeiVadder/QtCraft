@@ -34,14 +34,10 @@ QcSurfacePlanner::QcSurfacePlanner(const QcTerrainGenerator &terrain, const QcCo
     std::ranges::sort(m_kinds, {}, &Kind::name);
 }
 
-std::optional<int> QcSurfacePlanner::kindIndex(const QString &name) const
+std::optional<QcSurfacePlanner::KindId> QcSurfacePlanner::kindIndex(const QString &name) const
 {
-    for (qsizetype i = 0; i < m_kinds.size(); ++i) {
-        if (m_kinds[i].name == name) {
-            return static_cast<int>(i);
-        }
-    }
-    return std::nullopt;
+    const auto it = std::ranges::find(m_kinds, name, &Kind::name);
+    return it != m_kinds.cend() ? std::optional(kinds().idOf(it)) : std::nullopt;
 }
 
 QcSurfacePlanner::Rect QcSurfacePlanner::footprintOf(const QcStructurePlacement &placement)
@@ -50,9 +46,9 @@ QcSurfacePlanner::Rect QcSurfacePlanner::footprintOf(const QcStructurePlacement 
     return {origin.x, origin.z, origin.x + placement.sizeX() - 1, origin.z + placement.sizeZ() - 1};
 }
 
-std::optional<QcStructurePlacement> QcSurfacePlanner::plan(int kind, int regionX, int regionZ, const Occupied &occupied) const
+std::optional<QcStructurePlacement> QcSurfacePlanner::plan(KindId kind, int regionX, int regionZ, const Occupied &occupied) const
 {
-    const Kind &type = m_kinds[kind];
+    const Kind &type = kinds()[kind];
     const QcStructureDefinition::Surface &rule = type.rule;
     if (qcPositionRandom(type.seed, regionX, 0, regionZ) >= rule.chance) {
         return std::nullopt;

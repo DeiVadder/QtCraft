@@ -98,7 +98,7 @@ private:
         case QcEntityKind::Creature:
             break;
         }
-        return u"creature:"_s + m_content->mobs().value(spawn.creatureType).name;
+        return u"creature:"_s + (m_content->mobs().contains(spawn.creatureType) ? m_content->mobs()[spawn.creatureType].name : QString());
     }
 
     QString spawnText(const QcMsg::EntitySpawn &spawn) const
@@ -195,7 +195,7 @@ private:
         m_client->onEntityMessage = [this](const QcMessage &message) { heard(message); };
     }
 
-    int mobType(const char *name) const { return *m_content->mobIndex(QString::fromLatin1(name)); }
+    QcCreatureKindId mobType(const char *name) const { return *m_content->mobKind(QString::fromLatin1(name)); }
 
     // The middle of the floor of local cell (x, y, z).
     QcVec3 feetAt(int x, int y, int z) const
@@ -224,7 +224,7 @@ private:
         stand.pose.showName = true;
         if (!m_server->stands().add(stand)) {
             QcTestUtil::failCase(QStringLiteral("no room for a stand"));
-            return 0;
+            return {};
         }
         return stand.id;
     }
@@ -285,7 +285,7 @@ private slots:
     void initTestCase()
     {
         auto content = std::make_shared<QcContentRegistry>(*m_content);
-        QcMobDefinition zombie = content->mobs().at(*content->mobIndex(u"qtcraft:zombie"_s));
+        QcMobDefinition zombie = content->mobs().at(*content->mobKind(u"qtcraft:zombie"_s));
         zombie.burnsInDaylight = false;
         content->registerMob(zombie);
         m_content = content;

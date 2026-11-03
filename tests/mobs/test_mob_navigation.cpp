@@ -68,7 +68,7 @@ private:
         return mobs;
     }
 
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
 
     static QcVec3 at(double x, double z, double y = ground) { return {x, y, z}; }
 

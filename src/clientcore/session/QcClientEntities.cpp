@@ -10,10 +10,10 @@
 
 namespace {
 
-// The creature type of a spawn; 0 for the other kinds.
-int creatureTypeOf(const QcMsg::EntitySpawn &spawn)
+// The creature kind of a spawn; the first kind for the other entity kinds.
+QcCreatureKindId creatureTypeOf(const QcMsg::EntitySpawn &spawn)
 {
-    return spawn.kind == QcEntityKind::Creature ? spawn.creatureType : 0;
+    return spawn.kind == QcEntityKind::Creature ? spawn.creatureType : QcCreatureKindId{};
 }
 
 bool isBlockKind(QcEntityKind kind)
@@ -27,7 +27,7 @@ bool isKnownEntityType(const QcMsg::EntitySpawn &spawn, const QcContentRegistry 
 {
     switch (spawn.kind) {
     case QcEntityKind::Creature:
-        return content && spawn.creatureType >= 0 && spawn.creatureType < content->mobs().size();
+        return content && content->mobs().contains(spawn.creatureType);
     case QcEntityKind::Item:
         return content && !spawn.item.isEmpty() && content->isValidItem(spawn.item.item);
     case QcEntityKind::FallingBlock:

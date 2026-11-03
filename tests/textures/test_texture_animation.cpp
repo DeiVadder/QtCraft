@@ -36,14 +36,14 @@ QByteArray png(const QImage &image)
     return bytes;
 }
 
-// A vertical strip of square frames of `side` pixels, one plain colour each.
-QImage strip(const QList<QColor> &colours, int side)
+// A vertical strip of square frames of `edge` pixels on a side, one plain colour each.
+QImage strip(const QList<QColor> &colours, int edge)
 {
-    QImage image(side, side * static_cast<int>(colours.size()), QImage::Format_RGBA8888);
+    QImage image(edge, edge * static_cast<int>(colours.size()), QImage::Format_RGBA8888);
     for (qsizetype frame = 0; frame < colours.size(); ++frame) {
-        for (int y = 0; y < side; ++y) {
-            for (int x = 0; x < side; ++x) {
-                image.setPixelColor(x, static_cast<int>(frame) * side + y, colours[frame]);
+        for (int y = 0; y < edge; ++y) {
+            for (int x = 0; x < edge; ++x) {
+                image.setPixelColor(x, static_cast<int>(frame) * edge + y, colours[frame]);
             }
         }
     }
@@ -87,17 +87,17 @@ void writeFile(const QString &path, const QByteArray &content)
     QCOMPARE(file.write(content), content.size());
 }
 
-QcTexturePackRef stripPack(const QString &texture, const QImage &frames, int side)
+QcTexturePackRef stripPack(const QString &texture, const QImage &frames, int edge)
 {
     auto made = std::make_shared<QcTexturePack>();
     made->id = u"strip"_s;
     made->manifest.name = made->id;
-    made->manifest.resolution = side;
+    made->manifest.resolution = edge;
     QList<QImage> later;
-    for (int frame = 1; frame < frames.height() / side; ++frame) {
-        later.append(frames.copy(0, frame * side, side, side));
+    for (int frame = 1; frame < frames.height() / edge; ++frame) {
+        later.append(frames.copy(0, frame * edge, edge, edge));
     }
-    made->images.insert(texture, frames.copy(0, 0, side, side));
+    made->images.insert(texture, frames.copy(0, 0, edge, edge));
     made->laterFrames.insert(texture, later);
     return made;
 }

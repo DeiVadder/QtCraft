@@ -61,7 +61,7 @@ private slots:
     {
         QcClientEntity pig;
         pig.kind = QcEntityKind::Creature;
-        pig.creatureType = *m_content.mobIndex(u"qtcraft:pig"_s);
+        pig.creatureType = *m_content.mobKind(u"qtcraft:pig"_s);
         pig.health = 9.6;
         const QcHudState::EntityTarget target = QcHudState::entityTarget(m_content, pig, u"en"_s);
         QCOMPARE(target.label, u"Pig (10)"_s);

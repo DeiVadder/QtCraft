@@ -4,6 +4,7 @@
 #pragma once
 
 #include "clientcore/entitymeshes/QcTetherMesher.h"
+#include "common/core/QcCreatureKindId.h"
 
 #include <QHash>
 #include <QList>
@@ -40,7 +41,7 @@ private:
     // The parent kind and family of a child kind that has a thread.
     struct Parent
     {
-        int type = -1;
+        QcCreatureKindId type;
         const QcFamilyDefinition *family = nullptr;
     };
 
@@ -52,7 +53,7 @@ private:
     void learn(const std::shared_ptr<const QcContentRegistry> &content);
 
     std::shared_ptr<const QcContentRegistry> m_content;
-    QHash<int, Parent> m_parentOf;
+    QHash<QcCreatureKindId, Parent> m_parentOf;
     // The parent each child was tied to in the last frame (ids).
     QHash<quint32, quint32> m_matches;
 };

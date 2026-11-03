@@ -47,7 +47,7 @@ std::optional<QcVec3> away(const QcCreature &mob, const QcMobDefinition &definit
         }
     }
     if (definition.scaredOfCats) {
-        const QList<QcMobDefinition> &kinds = context.world.content().mobs();
+        const QcMobKinds kinds = context.world.content().mobs();
         for (const QcCreature &other : context.mobs) {
             const double distance = (other.motion.position - mob.motion.position).length();
             if (other.id != mob.id && !other.dormant && kinds[other.type].frightens && distance < catDistance && distance < nearest) {

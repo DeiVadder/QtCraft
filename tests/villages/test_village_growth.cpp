@@ -54,7 +54,7 @@ private:
         }
         QcVillages &villages() const { return world->villages(); }
         QcVillage &village(int index) const { return *villages().find(plans.at(index)->id); }
-        int villagerType() const { return *content->mobIndex(u"qtcraft:villager"_s); }
+        QcCreatureKindId villagerType() const { return *content->mobKind(u"qtcraft:villager"_s); }
     };
 
     // `count` plains fixture villages side by side (ids `firstId`, `firstId` + 1, …) with their
@@ -557,7 +557,7 @@ private slots:
             mobs.append(*villager);
         }
         QVERIFY(mobs.size() >= 3);
-        world.mobs->spawn(*world.content->mobIndex(u"qtcraft:zombie"_s), mobs.first().motion.position, world.nextId++);
+        world.mobs->spawn(*world.content->mobKind(u"qtcraft:zombie"_s), mobs.first().motion.position, world.nextId++);
         mobs.append(world.mobs->mobs().constLast());
         const quint32 zombie = mobs.constLast().id;
         // Goals inside the ground: every search spends its whole budget.
@@ -593,7 +593,7 @@ private slots:
         mobs.append(*villagers.at(1));
         // Many other creatures keep waiting.
         for (int i = 0; i < 4; ++i) {
-            world.mobs->spawn(*world.content->mobIndex(u"qtcraft:zombie"_s), mobs.first().motion.position, world.nextId++);
+            world.mobs->spawn(*world.content->mobKind(u"qtcraft:zombie"_s), mobs.first().motion.position, world.nextId++);
             mobs.append(world.mobs->mobs().constLast());
         }
         const auto rulesOf = [&world](const QcCreature &mob) { return QcPathRules::of(world.content->mobs()[mob.type]); };

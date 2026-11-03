@@ -555,7 +555,7 @@ private slots:
         QVERIFY(content.blockId(u"rubies:ruby_block"_s));
         QVERIFY(content.itemId(u"rubies:ruby_block"_s)); // block item created for mod blocks too
         QVERIFY(content.itemId(u"rubies:ruby_sword"_s));
-        QVERIFY(content.mobIndex(u"rubies:crystal_beetle"_s));
+        QVERIFY(content.mobKind(u"rubies:crystal_beetle"_s));
         QVERIFY(std::ranges::any_of(content.worldgen().ores(), [](const QcOreDefinition &ore) { return ore.block == u"rubies:ruby_ore"_s; }));
         QCOMPARE(content.translations().translate(u"item.rubies.ruby"_s, u"de"_s), u"Rubin"_s);
         QVERIFY(content.assets().texture(u"rubies:ruby"_s));

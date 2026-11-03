@@ -19,7 +19,7 @@ class TestFish : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     const QcMobDefinition &kind(const char *name) const { return m_content->mobs()[type(name)]; }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
     QcMobManager &creatures() { return m_server->entities().creatures(); }
@@ -245,7 +245,7 @@ private slots:
         for (int i = 0; i < 20; ++i) {
             const int row = i / 5;
             const QcVec3 at{m_feet.x - 2.5 + i % 5, static_cast<double>(m_feet.y), m_feet.z - 2.5 + row};
-            creatures().spawn(*m_content->mobIndex(u"qtcraft:cow"_s), at, m_server->entities().newId(), false, true);
+            creatures().spawn(*m_content->mobKind(u"qtcraft:cow"_s), at, m_server->entities().newId(), false, true);
         }
         ticks(20);
         const double withCows = meanTickMs(200);

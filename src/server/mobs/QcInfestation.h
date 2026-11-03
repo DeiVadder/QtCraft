@@ -57,10 +57,10 @@ private:
     struct Map
     {
         // The infested block of a base block for a creature kind: (base block, kind) -> infested block.
-        QHash<std::pair<QcBlockId, int>, QcBlockId> hiding;
+        QHash<std::pair<QcBlockId, QcCreatureKindId>, QcBlockId> hiding;
         // The infested blocks that let a creature kind out, with the base block each stands in for:
         // kind -> (infested block -> base block).
-        QHash<int, QHash<QcBlockId, QcBlockId>> waking;
+        QHash<QcCreatureKindId, QHash<QcBlockId, QcBlockId>> waking;
     };
 
     const Map &map();

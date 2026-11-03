@@ -54,6 +54,6 @@ private:
     // Items some villager species eats, and what each item is worth to the villagers of a creature
     // kind (QcVillagerBreedingSettings::foods).
     QSet<QcItemId> m_foods;
-    QHash<int, QHash<QcItemId, int>> m_worth;
+    QHash<QcCreatureKindId, QHash<QcItemId, int>> m_worth;
     int m_foodTick = 0;
 };

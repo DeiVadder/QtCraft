@@ -10,6 +10,9 @@
 #include <QList>
 #include <QString>
 
+#include <array>
+#include <utility>
+
 /*! \brief The look of a boat (decision E-920): an open hull of planks with an oarlock on each side
     wall, built of boxes like the other static models, pointing north (-z) and turned by the boat's
     yaw, and two paddles turning in the oarlocks.
@@ -29,6 +32,22 @@ inline constexpr double wallHeight = 0.5;
 /*! Seconds per paddle stroke while rowing. */
 inline constexpr double strokeSeconds = 0.9;
 
+/*! The side of the boat a paddle is on; the value is the sign of its x in the boat's frame. */
+enum class Side
+{
+    /*! The left side, x < 0. */
+    Left = -1,
+    /*! The right side, x > 0. */
+    Right = 1,
+};
+/*! Both sides, right first. */
+inline constexpr std::array<Side, 2> sides{Side::Right, Side::Left};
+/*! Returns the sign of the x of \a side in the boat's frame: +1 right, -1 left. */
+[[nodiscard]] constexpr double signOf(Side side)
+{
+    return static_cast<double>(std::to_underlying(side));
+}
+
 /*! \brief How a paddle lies in its oarlock, in degrees: \c {sweep} turns its outer end towards
     the stern (negative towards the bow), \c {lift} tilts its outer end down towards the water.
     \qcfields */
@@ -40,22 +59,22 @@ struct Paddle
 
 /*! Returns the boxes of a boat built of planks with the texture \a planks, without the paddles. */
 [[nodiscard]] QList<QcMobPart> parts(const QString &planks);
-/*! Returns the boxes of the paddle on \a side (+1 right, -1 left) in its own frame: the oarlock
+/*! Returns the boxes of the paddle on \a side in its own frame: the oarlock
     at the origin, the shaft along +x (the left paddle's mirrored along -x), the grip inside the
     boat, the blade outside. Placed with partPoint; textured with \a planks. */
-[[nodiscard]] QList<QcMobPart> paddleParts(const QString &planks, int side);
+[[nodiscard]] QList<QcMobPart> paddleParts(const QString &planks, Side side);
 /*! Returns the paddle at the moment \a rowPhase (0..1) of a stroke; negative: at rest. Both
     paddles move alike. */
 [[nodiscard]] Paddle paddleAt(double rowPhase);
 /*! Returns the point \a local of a paddle's frame (outer end along +x) in the boat's frame, for
-    the paddle on \a side (+1 right, -1 left) lying as \a paddle. */
-[[nodiscard]] QcVec3 paddlePoint(int side, Paddle paddle, const QcVec3 &local);
+    the paddle on \a side lying as \a paddle. */
+[[nodiscard]] QcVec3 paddlePoint(Side side, Paddle paddle, const QcVec3 &local);
 /*! Returns the \a corner of a box of paddleParts(…, \a side) in the boat's frame, the paddle
     lying as \a paddle. */
-[[nodiscard]] QcVec3 partPoint(int side, Paddle paddle, const QcVec3 &corner);
+[[nodiscard]] QcVec3 partPoint(Side side, Paddle paddle, const QcVec3 &corner);
 /*! Returns where the driver's hand holds the paddle on \a side, lying as \a paddle, in the
     boat's frame. */
-[[nodiscard]] QcVec3 gripOf(int side, Paddle paddle);
+[[nodiscard]] QcVec3 gripOf(Side side, Paddle paddle);
 /*! Returns the phase of the stroke at \a seconds of the client clock while the boat is rowed (\a
     rowing); -1 when not. */
 [[nodiscard]] double rowPhase(double seconds, bool rowing);

@@ -155,7 +155,7 @@ private slots:
     void creaturesKilledByAPlayerGiveTheirExperience()
     {
         join();
-        const std::optional<int> zombie = m_content->mobIndex(u"qtcraft:zombie"_s);
+        const std::optional<QcCreatureKindId> zombie = m_content->mobKind(u"qtcraft:zombie"_s);
         QVERIFY(zombie);
         const quint32 id = m_server->mobs().spawn(*zombie, {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(id)->health = 0.5;
@@ -166,7 +166,7 @@ private slots:
         // A pig gives 1 to 3 (after the attack cooldown).
         forget();
         ticks(20);
-        const std::optional<int> pig = m_content->mobIndex(u"qtcraft:pig"_s);
+        const std::optional<QcCreatureKindId> pig = m_content->mobKind(u"qtcraft:pig"_s);
         const quint32 pigId = m_server->mobs().spawn(*pig, {m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, m_server->entities().newId());
         m_server->mobs().find(pigId)->health = 0.5;
         send(QcMsg::AttackEntity{pigId});
@@ -263,7 +263,7 @@ private slots:
     void bredAnimalsGiveExperience()
     {
         join();
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         const QcVec3 place{m_feet.x + 2.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
         QList<quint32> parents;
         for (const double dz : {-0.5, 0.5}) {

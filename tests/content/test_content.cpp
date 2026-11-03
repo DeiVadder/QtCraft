@@ -457,8 +457,8 @@ private slots:
         QCOMPARE(copy->assets().appearance(u"a:bun"_s)->layers.first().tint, QcTint::Hair);
         QCOMPARE(copy->assets().appearance(u"a:bun"_s)->boxes.size(), 1);
         QVERIFY(!copy->assets().appearance(u"a:bun"_s)->playable);
-        QCOMPARE(copy->mobs().first().skeleton, u"a:biped"_s);
-        QVERIFY(copy->mobs().first().armsForward);
+        QCOMPARE(copy->mobs().list().first().skeleton, u"a:biped"_s);
+        QVERIFY(copy->mobs().list().first().armsForward);
         QVERIFY(!copy->assets().model(u"a:missing"_s));
     }
 

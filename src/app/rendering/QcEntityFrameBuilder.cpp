@@ -323,15 +323,16 @@ void QcEntityFrameBuilder::appendSpawners(QcEntityMesh &mesh, const EntityFrame 
     for (auto it = spawners.cbegin(); it != spawners.cend(); ++it) {
         const QcBlockPos pos = it.key();
         const QcVec3 feet{pos.x + 0.5, pos.y + 0.18, pos.z + 0.5};
-        if (it.value() < 0 || it.value() >= frame.content.mobs().size() || (feet - viewer).length() > drawDistance) {
+        const QcCreatureKindId type{it.value()};
+        if (!frame.content.mobs().contains(type) || (feet - viewer).length() > drawDistance) {
             continue;
         }
-        const QcMobDefinition &kind = frame.content.mobs()[it.value()];
+        const QcMobDefinition &kind = frame.content.mobs()[type];
         QcClientEntity shown;
         // An id no entity of the server has (the capes follow entities by id).
         shown.id = 0xff000000u | (static_cast<quint32>(qHash(pos)) & 0x00ffffffu);
         shown.kind = QcEntityKind::Creature;
-        shown.creatureType = it.value();
+        shown.creatureType = type;
         shown.position = feet;
         shown.previousPosition = feet;
         shown.yaw = static_cast<float>(std::fmod(frame.seconds * turnSpeed + (pos.x * 37 + pos.z * 11) % 360, 360.0));
@@ -524,7 +525,7 @@ void QcEntityFrameBuilder::appendBoat(QcEntityMesh &mesh, const QcClientEntity &
 
     const QcEntityMesher::Turn turn(boat.yaw);
     const QcBoatModel::Paddle paddle = QcBoatModel::paddleAt(boat.rowPhase);
-    for (const int side : {1, -1}) {
+    for (const QcBoatModel::Side side : QcBoatModel::sides) {
         const auto place = [&](const QcVec3 &corner) { return boat.position + turn(QcBoatModel::partPoint(side, paddle, corner)); };
         QcEntityMesher::appendPlacedParts(mesh, QcBoatModel::paddleParts(planks, side), place, light, frame.uv);
     }

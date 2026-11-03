@@ -30,7 +30,7 @@ std::shared_ptr<const QcContentRegistry> contentWithMod()
     std::shared_ptr<QcContentRegistry> content = QcTestUtil::baseContent()->registry;
     QcItemDefinition gem = content->item(*content->itemId(u"qtcraft:diamond"_s));
     gem.name = u"mod:gem"_s;
-    QcMobDefinition beetle = content->mobs()[*content->mobIndex(u"qtcraft:pig"_s)];
+    QcMobDefinition beetle = content->mobs()[*content->mobKind(u"qtcraft:pig"_s)];
     beetle.name = u"mod:beetle"_s;
     QcBlockDefinition sand = content->block(*content->blockId(u"qtcraft:sand"_s));
     sand.name = u"mod:sand"_s;
@@ -135,7 +135,7 @@ private:
     QcEntityRecord::Ordered<QcMobManager::Stored> creature(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
                                                            quint32 order) const
     {
-        return {{*content.mobIndex(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt, 1000 + static_cast<quint64>(order)}, order};
+        return {{*content.mobKind(name), at, 45.0f, 7.5, 120.0, 900.0, true, std::nullopt, 1000 + static_cast<quint64>(order)}, order};
     }
 
     QcEntityRecord::Ordered<QcFallingBlock> falling(const QcContentRegistry &content, const QString &name, const QcVec3 &at,
@@ -481,7 +481,7 @@ private slots:
         QVERIFY(mob.villager->offers.isEmpty());
         QCOMPARE(mob.villager->lastRestock, -1.0);
         // Without its creature component it is grown up and at full health.
-        QCOMPARE(mob.health, m_content->mobs()[*m_content->mobIndex(u"qtcraft:villager"_s)].maxHealth);
+        QCOMPARE(mob.health, m_content->mobs()[*m_content->mobKind(u"qtcraft:villager"_s)].maxHealth);
         QCOMPARE(mob.growUp, 0.0);
         QVERIFY(mob.kept.isEmpty());
     }

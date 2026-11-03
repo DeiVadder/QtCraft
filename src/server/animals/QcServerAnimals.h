@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/core/QcAabb.h"
+#include "common/core/QcCreatureKindId.h"
 #include "server/animals/QcMobBreeding.h"
 #include "server/animals/QcPetCare.h"
 
@@ -49,7 +50,7 @@ public:
     /*! Spawns in \a state a young one of \a type at \a position that is kept with the world (an
         egg's chick, decision E-450), within the same limits as births (QcServerLimits
         breedingCrowd, bredPerKind); returns its id, 0 when there is no room. */
-    static quint32 spawnYoung(QcServerState &state, int type, const QcVec3 &position);
+    static quint32 spawnYoung(QcServerState &state, QcCreatureKindId type, const QcVec3 &position);
     /*! Returns whether the creature a fish bucket \a item holds (QcItemDefinition::releasesMob,
         decision E-501) may come out in \a state at \a position, within the same limits as births;
         true for an item that holds none. A bucket whose creature may not come out stays full. */

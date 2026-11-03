@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "server/mobs/QcMobManager.h"
 
 #include <QList>
@@ -32,7 +33,7 @@ struct Hurt
     /*! Its entity id. */
     quint32 id = 0;
     /*! Its creature kind. */
-    int type = 0;
+    QcCreatureKindId type;
     /*! Where it stood. */
     QcVec3 position;
     /*! Its drops when it died; none while it lives. */

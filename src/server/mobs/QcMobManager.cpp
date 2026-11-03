@@ -82,7 +82,7 @@ QcCreature *QcMobManager::find(quint32 id)
     return it == m_mobs.end() ? nullptr : &*it;
 }
 
-quint32 QcMobManager::spawn(int type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
+quint32 QcMobManager::spawn(QcCreatureKindId type, const QcVec3 &position, quint32 id, bool underground, bool persistent)
 {
     QcCreature mob;
     mob.underground = underground;
@@ -548,7 +548,7 @@ void QcMobManager::restore(const QList<Stored> &mobs, const QSet<QcChunkPos> &po
     m_populated.unite(populated);
     QSet<quint64> uids = loadedUids(m_mobs);
     for (const Stored &stored : mobs) {
-        if (stored.type < 0 || stored.type >= m_content->mobs().size()) {
+        if (!m_content->mobs().contains(stored.type)) {
             continue;
         }
 

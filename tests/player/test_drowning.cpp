@@ -59,7 +59,7 @@ private:
     // A creature of `name` with its feet at `cell`, without a mind (it sinks), kept with the world.
     quint32 creatureAt(const QString &name, QcBlockPos cell)
     {
-        const int type = *m_content->mobIndex(name);
+        const QcCreatureKindId type = *m_content->mobKind(name);
         const QcVec3 at{cell.x + 0.5, static_cast<double>(cell.y), cell.z + 0.5};
         const quint32 mob = m_server->mobs().spawn(type, at, m_server->entities().newId(), false, true);
         m_server->mobs().find(mob)->noAi = true;
@@ -379,12 +379,12 @@ private slots:
         const double drownedHealth = m_server->mobs().find(drowned)->health;
         const double codHealth = m_server->mobs().find(cod)->health;
 
-        QVERIFY(!m_content->mobs()[*m_content->mobIndex(u"qtcraft:pig"_s)].breathesUnderWater);
-        QVERIFY(m_content->mobs()[*m_content->mobIndex(u"qtcraft:drowned"_s)].breathesUnderWater);
-        QVERIFY(m_content->mobs()[*m_content->mobIndex(u"qtcraft:cod"_s)].breathesUnderWater);
+        QVERIFY(!m_content->mobs()[*m_content->mobKind(u"qtcraft:pig"_s)].breathesUnderWater);
+        QVERIFY(m_content->mobs()[*m_content->mobKind(u"qtcraft:drowned"_s)].breathesUnderWater);
+        QVERIFY(m_content->mobs()[*m_content->mobKind(u"qtcraft:cod"_s)].breathesUnderWater);
         for (const QString &breather : {u"qtcraft:iron_golem"_s, u"qtcraft:sand_golem"_s, u"qtcraft:zombie"_s, u"qtcraft:husk"_s, u"qtcraft:skeleton"_s,
                                         u"qtcraft:stray"_s, u"qtcraft:mannequin"_s, u"qtcraft:caped_mannequin"_s}) {
-            QVERIFY2(m_content->mobs()[*m_content->mobIndex(breather)].breathesUnderWater, qPrintable(breather));
+            QVERIFY2(m_content->mobs()[*m_content->mobKind(breather)].breathesUnderWater, qPrintable(breather));
         }
 
         ticks(320);

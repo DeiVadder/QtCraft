@@ -62,7 +62,7 @@ private:
         return *id;
     }
 
-    const QcMobDefinition &mob(const QString &name) const { return m_content->mobs()[*m_content->mobIndex(u"qtcraft:"_s + name)]; }
+    const QcMobDefinition &mob(const QString &name) const { return m_content->mobs()[*m_content->mobKind(u"qtcraft:"_s + name)]; }
     QcPathRules rules(const QString &name) const { return QcPathRules::of(mob(name)); }
 
     // The floor, and the wall across it unless `walled` is false.

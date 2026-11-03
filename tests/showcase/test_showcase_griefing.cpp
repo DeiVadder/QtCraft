@@ -196,7 +196,7 @@ private slots:
         }
         QVERIFY(inPens >= 2);
         QVERIFY(spawners.size() > inPens);
-        const int silverfish = *m_content->mobIndex(u"qtcraft:silverfish"_s);
+        const QcCreatureKindId silverfish = *m_content->mobKind(u"qtcraft:silverfish"_s);
         // The wall's three and the creature row's one are all still out.
         QCOMPARE(std::ranges::count(server->mobs().mobs(), silverfish, &QcCreature::type), 4);
     }

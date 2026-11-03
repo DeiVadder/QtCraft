@@ -38,7 +38,7 @@ public:
         /*! The area. */
         QcSpawnArea site;
         /*! Its monster kinds (indices). */
-        QList<int> types;
+        QList<QcCreatureKindId> types;
     };
 
     explicit QcSpawnAreas(std::shared_ptr<const QcContentRegistry> content);

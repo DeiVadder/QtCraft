@@ -120,7 +120,7 @@ QString QcHandbookLinks::itemOrMobIcon(const QString &name) const
     if (m_content.itemId(name)) {
         return name;
     }
-    return m_content.mobIndex(name) ? mobIcon(name) : QString();
+    return m_content.mobKind(name) ? mobIcon(name) : QString();
 }
 
 QString QcHandbookLinks::biomeIcon(const QcBiomeDefinition &biome) const

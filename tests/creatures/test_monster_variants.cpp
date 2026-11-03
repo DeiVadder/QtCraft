@@ -28,7 +28,7 @@ private:
     static inline const QString hunger = u"qtcraft:hunger"_s;
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
     QcCreature *mob(quint32 id) { return m_server->entities().creatures().find(id); }
 
     // A survival player at `time` on a flat, open arena of grass with food that neither heals nor

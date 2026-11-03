@@ -76,7 +76,7 @@ class TestSpawners : public QcServerTestFixture
 private:
     static constexpr int arena = 14;
 
-    int zombieType() const { return *m_content->mobIndex(u"qtcraft:zombie"_s); }
+    QcCreatureKindId zombieType() const { return *m_content->mobKind(u"qtcraft:zombie"_s); }
     QcServerClient &player() { return *m_server->entities().clients().front(); }
     QcBlockPos spawnerPos() const { return m_feet.offset(0, 0, 8); }
     const QcSpawners::Entry *spawner() const { return m_server->world().spawners().at(spawnerPos()); }

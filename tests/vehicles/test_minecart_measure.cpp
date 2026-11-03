@@ -27,7 +27,7 @@ class TestMinecartMeasure : public QcServerTestFixture
 private:
     struct Size
     {
-        int side = 12;
+        int edge = 12;
         int carts = 16;
         int ticks = 20;
     };
@@ -38,32 +38,32 @@ private:
 
     QList<QcBlockPos> m_loop;
 
-    // A square loop of rails of `side` blocks per side on a stone floor high above the stage; with
+    // A square loop of rails of `edge` blocks per side on a stone floor high above the stage; with
     // `powered`, powered rails on the straights (they cannot bend) with a lever on every eighth.
-    void buildLoop(int side, bool powered = false)
+    void buildLoop(int edge, bool powered = false)
     {
-        const QcBlockPos origin = m_feet.offset(-side / 2, 20, -side / 2);
-        for (int x = -16; x <= side + 16; x += 8) {
-            for (int z = -16; z <= side + 16; z += 8) {
+        const QcBlockPos origin = m_feet.offset(-edge / 2, 20, -edge / 2);
+        for (int x = -16; x <= edge + 16; x += 8) {
+            for (int z = -16; z <= edge + 16; z += 8) {
                 m_server->world().loadChunk(origin.offset(x, 0, z).chunk());
             }
         }
 
-        for (int i = 0; i < side; ++i) {
+        for (int i = 0; i < edge; ++i) {
             m_loop.append(origin.offset(i, 0, 0));
         }
-        for (int i = 1; i < side; ++i) {
-            m_loop.append(origin.offset(side - 1, 0, i));
+        for (int i = 1; i < edge; ++i) {
+            m_loop.append(origin.offset(edge - 1, 0, i));
         }
-        for (int i = side - 2; i >= 0; --i) {
-            m_loop.append(origin.offset(i, 0, side - 1));
+        for (int i = edge - 2; i >= 0; --i) {
+            m_loop.append(origin.offset(i, 0, edge - 1));
         }
-        for (int i = side - 2; i >= 1; --i) {
+        for (int i = edge - 2; i >= 1; --i) {
             m_loop.append(origin.offset(0, 0, i));
         }
 
         const auto corner = [&](QcBlockPos pos) {
-            return (pos.x == origin.x || pos.x == origin.x + side - 1) && (pos.z == origin.z || pos.z == origin.z + side - 1);
+            return (pos.x == origin.x || pos.x == origin.x + edge - 1) && (pos.z == origin.z || pos.z == origin.z + edge - 1);
         };
         for (const QcBlockPos &pos : std::as_const(m_loop)) {
             QVERIFY(m_server->world().setBlock(pos.offset(0, -1, 0), id("qtcraft:stone")));
@@ -73,14 +73,14 @@ private:
             QVERIFY(m_server->world().setBlock(pos, QcBlockRules::connectedState(m_server->world(), pos, *m_server->world().blockAt(pos))));
         }
         if (powered) {
-            placeLevers(origin, side);
+            placeLevers(origin, edge);
         }
     }
 
     // Levers on the floor outside the loop beside every eighth rail but the corners.
-    void placeLevers(QcBlockPos origin, int side)
+    void placeLevers(QcBlockPos origin, int edge)
     {
-        const auto beyond = [&](int at, int first) { return at == first ? -1 : at == first + side - 1 ? 1 : 0; };
+        const auto beyond = [&](int at, int first) { return at == first ? -1 : at == first + edge - 1 ? 1 : 0; };
         for (qsizetype i = 0; i < m_loop.size(); i += 8) {
             const QcBlockPos pos = m_loop[i];
             const int dx = beyond(pos.x, origin.x);
@@ -184,7 +184,7 @@ private slots:
         const Size measured = size();
         join();
         chat(u"/gamerule mobSpawning false"_s);
-        buildLoop(measured.side);
+        buildLoop(measured.edge);
         placeCarts(measured.carts);
         QCOMPARE(m_server->carts().all().size(), qsizetype(measured.carts));
 
@@ -209,7 +209,7 @@ private slots:
         join();
         chat(u"/gamerule mobSpawning false"_s);
         m_loop.clear();
-        buildLoop(measured.side, true);
+        buildLoop(measured.edge, true);
         addStations();
         placeCarts(measured.carts, true);
         // The levers power the rails; a first push starts the carts, the powered rails keep them going.

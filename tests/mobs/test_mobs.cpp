@@ -60,12 +60,12 @@ private:
         return {x + 0.5, static_cast<double>(world.chunk(pos.chunk())->highestNonAir(pos.localX(), pos.localZ()) + 1), z + 0.5};
     }
 
-    int type(const char *name) const
+    QcCreatureKindId type(const char *name) const
     {
-        const std::optional<int> index = m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name));
+        const std::optional<QcCreatureKindId> index = m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name));
         if (!index) {
             QcTestUtil::failCase(QStringLiteral("unknown mob %1").arg(QString::fromLatin1(name)));
-            return 0;
+            return {};
         }
         return *index;
     }
@@ -101,7 +101,7 @@ private:
         }
 
         QcMobManager mobs(content, 41);
-        const int zombie = *content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *content->mobKind(u"qtcraft:zombie"_s);
         for (int tick = 0; tick < 20 * 30; ++tick) {
             mobs.tick(*world, {{7, player, true}}, midnight, dt, [this] { return m_nextId++; });
         }
@@ -350,7 +350,7 @@ private slots:
 
             QcMobManager mobs(content, 31);
             const QcVec3 player = surface(*world, 0, 0);
-            const int slime = *content->mobIndex(u"qtcraft:slime"_s);
+            const QcCreatureKindId slime = *content->mobKind(u"qtcraft:slime"_s);
             QSet<quint32> seen;
             for (int tick = 0; tick < 20 * 40; ++tick) {
                 mobs.tick(*world, {{7, player, true}}, time, dt, [this] { return m_nextId++; });
@@ -401,7 +401,7 @@ private slots:
 
     void slimeChunksAreFixedBySeed()
     {
-        const int slime = type("slime");
+        const QcCreatureKindId slime = type("slime");
         QVERIFY(m_content->mobs()[slime].spawnChunkChance < 1.0);
         QVERIFY(m_content->mobs()[slime].spawnMaxY < QcWorld::seaLevel);
 

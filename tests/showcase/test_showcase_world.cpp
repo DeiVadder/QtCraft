@@ -157,7 +157,7 @@ private slots:
             // Besides them, residents of the village rows in the chunks loaded so far (decision E-411).
             residents = std::ranges::count_if(server->mobs().mobs(), [](const QcCreature &mob) { return mob.isVillager() && mob.villager->village != 0; });
             // The cats of the village rows' houses (decision E-480) live there too.
-            const int cat = *m_content->mobIndex(u"qtcraft:cat"_s);
+            const QcCreatureKindId cat = *m_content->mobKind(u"qtcraft:cat"_s);
             const auto setupCats = std::ranges::count(QcShowcaseGenerator(m_content).setup().mobs, u"qtcraft:cat"_s, &QcWorldSetup::Mob::mob);
             residents += std::ranges::count(server->mobs().mobs(), cat, &QcCreature::type) - setupCats;
             QCOMPARE(server->mobs().mobs().size() - residents, mobs);
@@ -543,7 +543,7 @@ private slots:
             server->tick();
         }
 
-        const QcVillagerTrades &trades = server->mobs().villagers().trades(*m_content->mobIndex(u"qtcraft:villager"_s));
+        const QcVillagerTrades &trades = server->mobs().villagers().trades(*m_content->mobKind(u"qtcraft:villager"_s));
         QSet<QString> trading;
         for (const QcCreature &mob : server->mobs().mobs()) {
             if (mob.isVillager() && mob.villager->village != 0 && !trades.offersOf(*mob.villager).isEmpty()) {
@@ -561,7 +561,7 @@ private slots:
         server->tick();
 
         // The dog of a made-up owner sits; wolves and the ocelot stay in their pens (decision E-480).
-        const int dog = *m_content->mobIndex(u"qtcraft:dog"_s);
+        const QcCreatureKindId dog = *m_content->mobKind(u"qtcraft:dog"_s);
         const auto pet = std::ranges::find_if(server->mobs().mobs(), [dog](const QcCreature &mob) { return mob.type == dog && mob.isTame(); });
         QVERIFY(pet != server->mobs().mobs().end());
         QCOMPARE(pet->tame->owner, u"showcase"_s);
@@ -574,7 +574,7 @@ private slots:
         const auto still = std::ranges::find_if(server->mobs().mobs(), [dog](const QcCreature &mob) { return mob.type == dog && mob.isTame(); });
         QVERIFY((still->motion.position - sat).length() < 0.1);
         for (const char *name : {"wolf", "ocelot", "cat"}) {
-            const int type = *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name));
+            const QcCreatureKindId type = *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name));
             QVERIFY2(std::ranges::count_if(server->mobs().mobs(), [type](const QcCreature &mob) { return mob.type == type && mob.confined; }) >= 1, name);
         }
         QVERIFY(server->stop());
@@ -606,7 +606,7 @@ private slots:
             }
         }
 
-        const int golemType = *m_content->mobIndex(u"qtcraft:iron_golem"_s);
+        const QcCreatureKindId golemType = *m_content->mobKind(u"qtcraft:iron_golem"_s);
         const auto golemsInFarm = [&] {
             return std::ranges::count_if(server->mobs().mobs(), [&](const QcCreature &mob) {
                 const QcBlockPos at = QcPhysics::blockContaining(mob.motion.position);

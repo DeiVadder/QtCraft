@@ -7,6 +7,7 @@
 #include "common/content/items/QcItemDefinition.h"
 #include "common/core/QcBlockPos.h"
 #include "common/core/QcChunkPos.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcStatusEffects.h"
 #include "server/entities/QcEntityComponent.h"
@@ -30,7 +31,7 @@ namespace QcMobExchange {
 struct Stored
 {
     /*! Its creature kind (index in the content registry). */
-    int type = 0;
+    QcCreatureKindId type;
     /*! Where its feet are. */
     QcVec3 position;
     /*! Where it faces (degrees). */
@@ -154,7 +155,7 @@ struct PlayerHit
     /*! Times a blow's usual lift (a golem's throws upwards, decision E-471). */
     double lift = 1.0;
     /*! The kind of the creature that struck; its blow effects go with the hit (decision E-450). */
-    int mobType = -1;
+    std::optional<QcCreatureKindId> mobType;
     /*! Entity id of the creature that struck (0: unknown); the player's pets turn on it
         (decision E-480). */
     quint32 mob = 0;

@@ -24,10 +24,10 @@ class TestKjutThreads : public QObject
     QHash<quint32, QcClientEntity> m_entities;
     QcTethers m_tethers;
 
-    int kind(const QString &name) const { return *m_content->mobIndex(name); }
+    QcCreatureKindId kind(const QString &name) const { return *m_content->mobKind(name); }
 
     // A creature of `type` that stood at `from` last tick and stands at `to` now.
-    void place(quint32 id, int type, const QcVec3 &from, const QcVec3 &to)
+    void place(quint32 id, QcCreatureKindId type, const QcVec3 &from, const QcVec3 &to)
     {
         QcClientEntity entity;
         entity.id = id;
@@ -59,8 +59,8 @@ private slots:
     // between the last two ticks; a child out of range has none.
     void childrenAreTiedToTheNearestParent()
     {
-        const int kjut = kind(u"qtcraft:kjut"_s);
-        const int little = kind(u"qtcraft:kjut_child"_s);
+        const QcCreatureKindId kjut = kind(u"qtcraft:kjut"_s);
+        const QcCreatureKindId little = kind(u"qtcraft:kjut_child"_s);
         place(1, kjut, {0.0, 64.0, 0.0}, {0.0, 64.0, 0.0});
         place(2, kjut, {6.0, 64.0, 0.0}, {6.0, 64.0, 0.0});
         place(3, little, {1.0, 64.0, 0.0}, {1.2, 64.0, 0.0});
@@ -111,7 +111,7 @@ private slots:
     // over, and so does the nearer one when the old parent leaves the range.
     void aChildKeepsItsParentUntilAnotherIsClearlyNearer()
     {
-        const int kjut = kind(u"qtcraft:kjut"_s);
+        const QcCreatureKindId kjut = kind(u"qtcraft:kjut"_s);
         place(1, kjut, {0.0, 64.0, 0.0}, {0.0, 64.0, 0.0});
         place(2, kjut, {4.0, 64.0, 0.0}, {4.0, 64.0, 0.0});
         place(3, kind(u"qtcraft:kjut_child"_s), {1.5, 64.0, 0.0}, {1.5, 64.0, 0.0});

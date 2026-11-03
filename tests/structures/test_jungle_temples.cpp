@@ -30,12 +30,12 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcTerrainGenerator> m_terrain;
-    int m_temple = -1;
-    int m_hut = -1;
+    QcSurfacePlanner::KindId m_temple;
+    QcSurfacePlanner::KindId m_hut;
     QList<std::shared_ptr<const QcStructurePlacement>> m_temples;
     QList<std::shared_ptr<const QcStructurePlacement>> m_huts;
 
-    static QList<std::shared_ptr<const QcStructurePlacement>> plans(const QcTerrainGenerator &terrain, int kind)
+    static QList<std::shared_ptr<const QcStructurePlacement>> plans(const QcTerrainGenerator &terrain, QcSurfacePlanner::KindId kind)
     {
         QList<std::shared_ptr<const QcStructurePlacement>> found;
         for (int rz = -regions; rz <= regions; ++rz) {
@@ -94,7 +94,7 @@ private:
 
     // A fresh generator plans the same in the other order of the regions; each copy lies wholly in
     // its region, with one of the rule's biomes along its edges and in its middle.
-    void verifyPlans(const QList<std::shared_ptr<const QcStructurePlacement>> &found, int kind, const QStringList &biomes) const
+    void verifyPlans(const QList<std::shared_ptr<const QcStructurePlacement>> &found, QcSurfacePlanner::KindId kind, const QStringList &biomes) const
     {
         const QcTerrainGenerator fresh(m_content, seed);
         for (qsizetype i = found.size() - 1; i >= 0; --i) {
@@ -136,8 +136,8 @@ private slots:
     void initTestCase()
     {
         m_terrain = std::make_unique<QcTerrainGenerator>(m_content, seed);
-        const std::optional<int> temple = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:jungle_temple"_s);
-        const std::optional<int> hut = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:witch_hut"_s);
+        const std::optional<QcSurfacePlanner::KindId> temple = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:jungle_temple"_s);
+        const std::optional<QcSurfacePlanner::KindId> hut = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:witch_hut"_s);
         QVERIFY(temple && hut);
         m_temple = *temple;
         m_hut = *hut;

@@ -508,7 +508,7 @@ private slots:
                                        cell.offset(1, 0, -1), cell.offset(1, 0, 1), cell.offset(1, 1, 0)}) {
             set(wall, u"stone"_s);
         }
-        const std::optional<int> pig = m_content->mobIndex(u"qtcraft:pig"_s);
+        const std::optional<QcCreatureKindId> pig = m_content->mobKind(u"qtcraft:pig"_s);
         QVERIFY(pig);
         m_server->mobs().spawn(*pig, {cell.x + 1.0, static_cast<double>(cell.y), cell.z + 0.5}, 900001);
         const double sandBefore = dropped(item("sand")) + count(item("sand"));
@@ -648,7 +648,7 @@ private slots:
 
         // Fireflies only stay at night.
         chat(u"/time set night"_s);
-        const int type = *m_content->mobIndex(u"qtcraft:firefly"_s);
+        const QcCreatureKindId type = *m_content->mobKind(u"qtcraft:firefly"_s);
         const quint32 firefly = m_server->mobs().spawn(type, m_client->motion.position + QcVec3{1.5, 1.5, 0.0}, 9000);
 
         // Wrong item: nothing happens.
@@ -681,7 +681,7 @@ private slots:
             return made;
         };
 
-        const int firefly = *m_content->mobIndex(u"qtcraft:firefly"_s);
+        const QcCreatureKindId firefly = *m_content->mobKind(u"qtcraft:firefly"_s);
         const QcMobDefinition &definition = m_content->mobs()[firefly];
         quint32 next = 100;
         const QcVec3 player{0.5, 70.0, 0.5};
@@ -818,7 +818,7 @@ private slots:
         QCOMPARE(m_content->block(carpet).support, QcBlockSupport::Below);
 
         // Sheep drop white wool.
-        const QcMobDefinition &sheep = m_content->mobs()[*m_content->mobIndex(u"qtcraft:sheep"_s)];
+        const QcMobDefinition &sheep = m_content->mobs()[*m_content->mobKind(u"qtcraft:sheep"_s)];
         QCOMPARE(sheep.drops.first().item, u"qtcraft:white_wool"_s);
 
         // Snow blocks from four snowballs (decision E-427).

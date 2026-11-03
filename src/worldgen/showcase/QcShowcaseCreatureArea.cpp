@@ -74,7 +74,7 @@ namespace QcShowcaseCreatureArea {
 
 QcShowcaseArea build(const QcShowcaseContext &context, QcBlockPos anchor)
 {
-    const QList<QcMobDefinition> &mobs = context.content.mobs();
+    const QcMobKinds mobs = context.content.mobs();
     int width = 0;
     int depth = 1;
     int height = 1;

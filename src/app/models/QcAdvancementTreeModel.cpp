@@ -227,7 +227,7 @@ QString QcAdvancementTreeModel::criterionText(const QcContentRegistry &content, 
     if (const std::optional<QcItemId> item = content.itemId(name)) {
         return text(content, content.item(*item).translationKey);
     }
-    if (const std::optional<int> mob = content.mobIndex(name)) {
+    if (const std::optional<QcCreatureKindId> mob = content.mobKind(name)) {
         return text(content, content.mobs()[*mob].translationKey);
     }
     QString words = criterion;

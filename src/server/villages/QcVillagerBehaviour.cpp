@@ -67,7 +67,7 @@ private:
 
 } // namespace
 
-const QcVillagerTrades &QcVillagerBehaviour::trades(int mobType) const
+const QcVillagerTrades &QcVillagerBehaviour::trades(QcCreatureKindId mobType) const
 {
     const auto it = m_trades.constFind(m_content->villagerSettingsOf(mobType).name);
     return it == m_trades.constEnd() ? m_noTrades : *it;

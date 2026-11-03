@@ -33,7 +33,7 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     const qint64 m_randomSeed = QcTestUtil::randomSeed();
 
-    QList<std::shared_ptr<const QcStructurePlacement>> templesOf(const QcTerrainGenerator &terrain, int kind) const
+    QList<std::shared_ptr<const QcStructurePlacement>> templesOf(const QcTerrainGenerator &terrain, QcSurfacePlanner::KindId kind) const
     {
         QList<std::shared_ptr<const QcStructurePlacement>> found;
         for (int rz = -regions; rz <= regions && found.size() < maxTemples; ++rz) {
@@ -135,7 +135,7 @@ private:
         int temples = 0;
         for (const qint64 seed : seeds) {
             const QcTerrainGenerator terrain(m_content, seed);
-            const std::optional<int> kind = terrain.surfaceStructures().planner().kindIndex(name);
+            const std::optional<QcSurfacePlanner::KindId> kind = terrain.surfaceStructures().planner().kindIndex(name);
             QVERIFY(kind);
             const QList<std::shared_ptr<const QcStructurePlacement>> plans = templesOf(terrain, *kind);
             for (const std::shared_ptr<const QcStructurePlacement> &plan : plans) {
@@ -169,12 +169,12 @@ private:
     static QList<Placed> placedOf(const QcTerrainGenerator &terrain)
     {
         QList<Placed> placed;
-        const QList<QcSurfacePlanner::Kind> &kinds = terrain.surfaceStructures().planner().kinds();
-        for (qsizetype kind = 0; kind < kinds.size(); ++kind) {
+        const QcIdList<QcSurfacePlanner::KindId, QcSurfacePlanner::Kind> kinds = terrain.surfaceStructures().planner().kinds();
+        for (const QcSurfacePlanner::KindId kind : kinds.ids()) {
             const int spacing = kinds[kind].rule.spacing;
             for (int rz = -regions; rz <= regions; ++rz) {
                 for (int rx = -regions; rx <= regions; ++rx) {
-                    std::shared_ptr<const QcStructurePlacement> plan = terrain.surfaceStructures().planOf(static_cast<int>(kind), rx, rz);
+                    std::shared_ptr<const QcStructurePlacement> plan = terrain.surfaceStructures().planOf(kind, rx, rz);
                     if (plan) {
                         const QcSurfacePlanner::Rect region{rx * spacing, rz * spacing, (rx + 1) * spacing - 1, (rz + 1) * spacing - 1};
                         placed.append({std::move(plan), region, kinds[kind].rule.blend});
@@ -311,7 +311,7 @@ private slots:
     void distanceIsEuclideanToTheFootprint()
     {
         const QcTerrainGenerator terrain(m_content, 51);
-        const std::optional<int> kind = terrain.surfaceStructures().planner().kindIndex(u"qtcraft:desert_temple"_s);
+        const std::optional<QcSurfacePlanner::KindId> kind = terrain.surfaceStructures().planner().kindIndex(u"qtcraft:desert_temple"_s);
         QVERIFY(kind);
         const QList<std::shared_ptr<const QcStructurePlacement>> plans = templesOf(terrain, *kind);
         QVERIFY(!plans.isEmpty());

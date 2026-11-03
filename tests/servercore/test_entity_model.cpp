@@ -128,7 +128,7 @@ private:
     // falling from high up, all in `chunk`.
     void populate(QcChunkPos chunk)
     {
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), ground(chunk, 4, 4), m_nextId++, false, true);
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), ground(chunk, 4, 4), m_nextId++, false, true);
         QcItemEntityManager::Drop resting;
         resting.stack = stack("qtcraft:stick", 5);
         resting.position = ground(chunk, 8, 8);
@@ -378,7 +378,7 @@ private slots:
 
         // An id given twice (the player's) and an item marked as another kind are found.
         const quint32 playerId = m_client->entityId;
-        m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), m_client->motion.position, playerId, false, true);
+        m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), m_client->motion.position, playerId, false, true);
         QStringList problems = QcEntityChecks::problems(m_server->entities());
         QCOMPARE(problems.size(), 1);
         QVERIFY2(problems.constFirst().contains(u"twice"_s), qPrintable(problems.constFirst()));

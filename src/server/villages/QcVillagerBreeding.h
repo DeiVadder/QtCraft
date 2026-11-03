@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/core/QcBlockPos.h"
+#include "common/core/QcCreatureKindId.h"
 #include "server/entities/QcCreature.h"
 #include "server/villages/QcVillagerHomes.h"
 
@@ -47,7 +48,7 @@ public:
         /*! Where it spawns. */
         QcVec3 position;
         /*! The creature kind of the parents. */
-        int type = 0;
+        QcCreatureKindId type;
     };
 
     /*! \brief What a breeding check reads. */

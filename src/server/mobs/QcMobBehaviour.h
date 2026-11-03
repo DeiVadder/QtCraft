@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
 #include "common/physics/QcBodyPush.h"
 #include "server/golems/QcGolemBrain.h"
 #include "server/guardians/QcGuardianBrain.h"
@@ -65,7 +66,7 @@ public:
     /*! Returns what villagers do, read-only. */
     const QcVillagerBehaviour &villagers() const { return m_villagers; }
     /*! Returns the brain of the creatures of kind \a type. */
-    QcMobBrain &brainOf(int type) const { return *m_brains[static_cast<std::size_t>(type)]; }
+    QcMobBrain &brainOf(QcCreatureKindId type) const { return *m_brains[static_cast<std::size_t>(type.index())]; }
 
     /*! \brief When a tick happens: the world's time and the tick's length in seconds. */
     struct Clock

@@ -72,7 +72,7 @@ private:
     quint32 spawnMob(const char *kind, int dx, int dz)
     {
         const QcVec3 at{m_feet.x + dx + 0.5, static_cast<double>(m_feet.y), m_feet.z + dz + 0.5};
-        return m_server->mobs().spawn(*m_content->mobIndex(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
+        return m_server->mobs().spawn(*m_content->mobKind(QString::fromLatin1(kind)), at, m_server->entities().newId(), false, true);
     }
 
     // The base content with two advancements for uses on creatures: a bone and wheat.
@@ -151,7 +151,7 @@ private slots:
     void killingAMonsterCounts()
     {
         hold("qtcraft:diamond_sword");
-        const quint32 zombie = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:zombie"_s), {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 500);
+        const quint32 zombie = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:zombie"_s), {m_feet.x + 1.5, static_cast<double>(m_feet.y), m_feet.z + 0.5}, 500);
         for (int blow = 0; blow < 10 && m_server->mobs().find(zombie); ++blow) {
             send(QcMsg::AttackEntity{zombie});
             ticks(20);

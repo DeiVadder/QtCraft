@@ -75,7 +75,7 @@ public:
 
     /*! Counts the awake members of \a mobs (kinds in \a definitions) where they stand at the start
         of the tick; the other calls take the index of a creature in this list. */
-    void build(std::span<const QcCreature> mobs, const QList<QcMobDefinition> &definitions);
+    void build(std::span<const QcCreature> mobs, QcMobKinds definitions);
 
     /*! Returns the creatures in the cell of the creature at \a index (itself included); 0 for one
         that takes no part. */

@@ -6,44 +6,55 @@
 #include "server/signal/QcSignalTable.h"
 
 #include <algorithm>
+#include <optional>
+#include <utility>
 
 namespace {
 
 // Bits of the marks: strips in bits 0-3, reach in bits 4-7, by side.
-constexpr int reachShift = 4;
+constexpr std::size_t reachShift = 4;
 
-int sideOfFace(QcBlockFace face)
+using Side = QcChunkLinks::Side;
+
+std::optional<Side> sideOfFace(QcBlockFace face)
 {
     switch (face) {
     case QcBlockFace::East:
-        return 0;
+        return Side::East;
     case QcBlockFace::West:
-        return 1;
+        return Side::West;
     case QcBlockFace::South:
-        return 2;
+        return Side::South;
     case QcBlockFace::North:
-        return 3;
+        return Side::North;
     case QcBlockFace::Up:
     case QcBlockFace::Down:
         break;
     }
-    return -1;
+    return std::nullopt;
+}
+
+// The index of `side` in arrays by side, and its bit in the marks.
+constexpr std::size_t slotOf(Side side)
+{
+    return std::to_underlying(side);
 }
 
 // Cells from local `x`, `z` to the last cell before `side`.
-int distanceTo(int side, int x, int z)
+int distanceTo(Side side, int x, int z)
 {
     constexpr int last = QcWorld::chunkSize - 1;
     switch (side) {
-    case 0:
+    case Side::East:
         return last - x;
-    case 1:
+    case Side::West:
         return x;
-    case 2:
+    case Side::South:
         return last - z;
-    default:
-        return z;
+    case Side::North:
+        break;
     }
+    return z;
 }
 
 } // namespace
@@ -57,42 +68,40 @@ QcChunkLinks::QcChunkLinks(const QcContentRegistry &content)
     for (std::size_t id = 0; id < stateCount; ++id) {
         const QcSignalState &state = table.at(static_cast<QcBlockId>(id));
         m_part[id] = content.block(static_cast<QcBlockId>(id)).signal.isCircuitPart();
-        if (state.kind == QcSignalKind::Piston && state.facing) {
-            m_piston[id] = static_cast<quint8>(sideOfFace(*state.facing) + 1);
+        const std::optional<Side> side = state.kind == QcSignalKind::Piston && state.facing ? sideOfFace(*state.facing) : std::nullopt;
+        if (side) {
+            m_piston[id] = static_cast<quint8>(std::to_underlying(*side) + 1);
         }
     }
 }
 
-QcChunkPos QcChunkLinks::neighbour(QcChunkPos chunk, int side)
+QcChunkPos QcChunkLinks::neighbour(QcChunkPos chunk, Side side)
 {
     switch (side) {
-    case 0:
+    case Side::East:
         return {chunk.x + 1, chunk.z};
-    case 1:
+    case Side::West:
         return {chunk.x - 1, chunk.z};
-    case 2:
+    case Side::South:
         return {chunk.x, chunk.z + 1};
-    default:
-        return {chunk.x, chunk.z - 1};
+    case Side::North:
+        break;
     }
+    return {chunk.x, chunk.z - 1};
 }
 
-bool QcChunkLinks::linked(quint16 marks, quint16 neighbourMarks, int side)
+bool QcChunkLinks::linked(quint16 marks, quint16 neighbourMarks, Side side)
 {
-    const int back = opposite(side);
-    const bool strips = (marks & (1u << side)) != 0 && (neighbourMarks & (1u << back)) != 0;
-    const bool reaches = (marks & (1u << (side + reachShift))) != 0 || (neighbourMarks & (1u << (back + reachShift))) != 0;
+    const std::size_t here = slotOf(side);
+    const std::size_t back = slotOf(opposite(side));
+    const bool strips = (marks & (1u << here)) != 0 && (neighbourMarks & (1u << back)) != 0;
+    const bool reaches = (marks & (1u << (here + reachShift))) != 0 || (neighbourMarks & (1u << (back + reachShift))) != 0;
     return strips || reaches;
 }
 
 bool QcChunkLinks::Counts::isEmpty() const
 {
-    for (int side = 0; side < sideCount; ++side) {
-        if (strip[static_cast<std::size_t>(side)] != 0 || reach[static_cast<std::size_t>(side)] != 0) {
-            return false;
-        }
-    }
-    return true;
+    return std::ranges::all_of(strip, [](int count) { return count == 0; }) && std::ranges::all_of(reach, [](int count) { return count == 0; });
 }
 
 void QcChunkLinks::Counts::add(const QcChunkLinks &links, int x, int z, QcBlockId block, int delta)
@@ -102,14 +111,17 @@ void QcChunkLinks::Counts::add(const QcChunkLinks &links, int x, int z, QcBlockI
         return;
     }
     if (links.m_part[id]) {
-        for (int side = 0; side < sideCount; ++side) {
+        for (const Side side : sides) {
             if (distanceTo(side, x, z) < stripWidth) {
-                strip[static_cast<std::size_t>(side)] += delta;
+                strip[slotOf(side)] += delta;
             }
         }
     }
-    if (const int side = static_cast<int>(static_cast<unsigned char>(links.m_piston[id])) - 1; side >= 0 && distanceTo(side, x, z) < pistonReach) {
-        reach[static_cast<std::size_t>(side)] += delta;
+    if (const quint8 piston = links.m_piston[id]; piston != 0) {
+        const auto side = static_cast<Side>(piston - 1);
+        if (distanceTo(side, x, z) < pistonReach) {
+            reach[slotOf(side)] += delta;
+        }
     }
 }
 
@@ -184,12 +196,12 @@ quint16 QcChunkLinks::marksOf(QcChunkPos chunk) const
 quint16 QcChunkLinks::marksOf(const Counts &counts)
 {
     quint16 marks = 0;
-    for (int side = 0; side < sideCount; ++side) {
-        if (counts.strip[static_cast<std::size_t>(side)] > 0) {
-            marks |= static_cast<quint16>(1u << side);
+    for (const Side side : sides) {
+        if (counts.strip[slotOf(side)] > 0) {
+            marks |= static_cast<quint16>(1u << slotOf(side));
         }
-        if (counts.reach[static_cast<std::size_t>(side)] > 0) {
-            marks |= static_cast<quint16>(1u << (side + reachShift));
+        if (counts.reach[slotOf(side)] > 0) {
+            marks |= static_cast<quint16>(1u << (slotOf(side) + reachShift));
         }
     }
     return marks;

@@ -24,31 +24,31 @@ private:
     // The water surface in the boat's frame (its feet lie `draft` below it).
     static constexpr double water = QcBoatMotion::draft;
 
-    static QcVec3 bladeOf(int side, QcBoatModel::Paddle paddle) { return QcBoatModel::paddlePoint(side, paddle, {0.835, 0.0, 0.0}); }
+    static QcVec3 bladeOf(QcBoatModel::Side side, QcBoatModel::Paddle paddle) { return QcBoatModel::paddlePoint(side, paddle, {0.835, 0.0, 0.0}); }
 
 private slots:
     void paddlesRestInTheWaterAlongTheSides()
     {
         const QcBoatModel::Paddle rest = QcBoatModel::paddleAt(-1.0);
-        for (const int side : {1, -1}) {
+        for (const QcBoatModel::Side side : QcBoatModel::sides) {
             const QcVec3 blade = bladeOf(side, rest);
             QVERIFY2(blade.y < water, qPrintable(QString::number(blade.y)));
             // Outside the hull, towards the stern (+z).
-            QVERIFY(side * blade.x > 0.64);
+            QVERIFY(QcBoatModel::signOf(side) * blade.x > 0.64);
             QVERIFY(blade.z > 0.3);
             // The grip lies inside the boat, above the side wall.
             const QcVec3 grip = QcBoatModel::gripOf(side, rest);
-            QVERIFY(side * grip.x < 0.55);
+            QVERIFY(QcBoatModel::signOf(side) * grip.x < 0.55);
             QVERIFY(grip.y > QcBoatModel::wallHeight);
         }
         // Mirror images.
-        const QcVec3 right = bladeOf(1, rest);
-        const QcVec3 left = bladeOf(-1, rest);
+        const QcVec3 right = bladeOf(QcBoatModel::Side::Right, rest);
+        const QcVec3 left = bladeOf(QcBoatModel::Side::Left, rest);
         QCOMPARE(left.x, -right.x);
         QCOMPARE(left.y, right.y);
         QCOMPARE(left.z, right.z);
         // A box corner of the left paddle's mirrored parts lands where the mirrored point does.
-        const QcVec3 corner = QcBoatModel::partPoint(-1, rest, {-0.835, 0.0, 0.0});
+        const QcVec3 corner = QcBoatModel::partPoint(QcBoatModel::Side::Left, rest, {-0.835, 0.0, 0.0});
         QVERIFY((corner - left).length() < 1e-12);
     }
 
@@ -56,10 +56,10 @@ private slots:
     {
         // The stroke (first half): the blade in the water and moving towards the stern; the
         // recovery: the blade above the water, back towards the bow.
-        double previousZ = bladeOf(1, QcBoatModel::paddleAt(0.0)).z;
+        double previousZ = bladeOf(QcBoatModel::Side::Right, QcBoatModel::paddleAt(0.0)).z;
         for (int step = 1; step <= 20; ++step) {
             const double phase = step / 20.0;
-            const QcVec3 blade = bladeOf(1, QcBoatModel::paddleAt(phase));
+            const QcVec3 blade = bladeOf(QcBoatModel::Side::Right, QcBoatModel::paddleAt(phase));
             if (phase > 0.1 && phase < 0.4) {
                 QVERIFY2(blade.y < water + 0.12, qPrintable(QString::number(blade.y)));
                 QVERIFY(blade.z > previousZ);

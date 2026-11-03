@@ -254,7 +254,7 @@ private slots:
         QCOMPARE(blockKey("qtcraft:snow_block", QcBlockSoundAction::Step), u"qtcraft:block.snow.step"_s);
         QCOMPARE(blockKey("qtcraft:water", QcBlockSoundAction::Step), QString());
         QCOMPARE(content.block(*content.blockId(u"qtcraft:furnace"_s)).machine.sound, u"qtcraft:machine.furnace"_s);
-        QCOMPARE(content.mobs()[*content.mobIndex(u"qtcraft:zombie"_s)].ambientSound, u"qtcraft:mob.zombie.ambient"_s);
+        QCOMPARE(content.mobs()[*content.mobKind(u"qtcraft:zombie"_s)].ambientSound, u"qtcraft:mob.zombie.ambient"_s);
 
         // Every visible block makes all four sounds, and every name in use exists.
         for (const QcBlockDefinition &block : content.blocks()) {
@@ -430,7 +430,7 @@ private slots:
 
         // The ore keeps the base game's stone sounds.
         QCOMPARE(key(content.block(*content.blockId(u"rubies:ruby_ore"_s)), QcBlockSoundAction::Break), u"qtcraft:block.stone.break"_s);
-        const QcMobDefinition &beetle = content.mobs()[*content.mobIndex(u"rubies:crystal_beetle"_s)];
+        const QcMobDefinition &beetle = content.mobs()[*content.mobKind(u"rubies:crystal_beetle"_s)];
         QCOMPARE(beetle.deathSound, u"rubies:mob.crystal_beetle.death"_s);
         QVERIFY(content.assets().sound(beetle.ambientSound));
     }

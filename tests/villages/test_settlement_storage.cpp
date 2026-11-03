@@ -21,7 +21,7 @@ class TestSettlementStorage : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int villagerType() const { return *m_content->mobIndex(u"qtcraft:villager"_s); }
+    QcCreatureKindId villagerType() const { return *m_content->mobKind(u"qtcraft:villager"_s); }
 
     QcBlockId state(const QString &name) const { return *m_content->stateId(name); }
 

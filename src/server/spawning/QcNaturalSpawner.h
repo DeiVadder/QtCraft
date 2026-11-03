@@ -6,6 +6,7 @@
 #include "common/content/mobs/QcSpawnWeights.h"
 #include "common/content/registry/QcContentRegistry.h"
 #include "common/core/QcChunkPos.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/physics/QcPhysics.h"
 #include "server/core/QcServerLimits.h"
 #include "server/mobs/QcMobManager.h"
@@ -113,7 +114,7 @@ public:
     }
     /*! Returns whether the seed lets a mob of the kind \a type with a \c {spawnChunkChance}
         below 1 spawn in the chunk at \a pos (slime chunks). */
-    bool spawnsInChunk(int type, QcChunkPos pos) const;
+    bool spawnsInChunk(QcCreatureKindId type, QcChunkPos pos) const;
     /*! Returns the spawn areas of structures around the players, as of the last monster pass. */
     const QcSpawnAreas &spawnAreas() const { return m_areas; }
 
@@ -129,7 +130,7 @@ private:
         int passive = 0;
         int ambient = 0;
         int water = 0;
-        QHash<int, int> perType;
+        QHash<QcCreatureKindId, int> perType;
         bool animalsNear = false;
 
         int of(const QcMobDefinition &definition) const
@@ -137,12 +138,12 @@ private:
             return definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
         }
         // Creatures of kind `type` that may still spawn by its own limit (`maxCount`, 0: none).
-        int roomOfKind(const QcMobDefinition &definition, int type) const
+        int roomOfKind(const QcMobDefinition &definition, QcCreatureKindId type) const
         {
             return definition.maxCount > 0 ? definition.maxCount - perType.value(type) : std::numeric_limits<int>::max();
         }
         // Counts one more creature of kind `type`.
-        void add(const QcMobDefinition &definition, int type)
+        void add(const QcMobDefinition &definition, QcCreatureKindId type)
         {
             int &count = definition.aquatic ? water : (definition.ambient ? ambient : (definition.hostile ? hostile : passive));
             count += 1;
@@ -178,7 +179,7 @@ private:
     // A kind that may spawn at a place, with the first of its rules that allows it.
     struct SpawnCandidate
     {
-        int type = 0;
+        QcCreatureKindId type;
         const SpawnRule *rule = nullptr;
     };
 

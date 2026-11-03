@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/world/QcBlockAccess.h"
 #include "server/core/QcServerLimits.h"
 #include "server/mobs/QcMobManager.h"
@@ -54,7 +55,7 @@ public:
     struct Birth
     {
         /*! Its creature kind. */
-        int type = 0;
+        QcCreatureKindId type;
         /*! Where it spawns. */
         QcVec3 position;
     };
@@ -70,7 +71,7 @@ public:
         around the birth place read from \a world); returns the young ones to spawn. */
     QList<Birth> tick(const QcBlockAccess &world, QcMobManager &mobs, double dt) const;
     /*! Returns whether another young one of \a type may be born at \a position among \a mobs. */
-    bool roomFor(const QList<QcCreature> &mobs, int type, const QcVec3 &position) const;
+    bool roomFor(const QList<QcCreature> &mobs, QcCreatureKindId type, const QcVec3 &position) const;
 
 private:
     // Animals in love look for a partner within partnerDistance times this ...

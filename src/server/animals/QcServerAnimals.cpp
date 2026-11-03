@@ -32,7 +32,7 @@ bool QcServerAnimals::milk(QcServerClient &client, quint32 mobId)
 {
     const QcCreature *mob = m_state.entities().creatures().find(mobId);
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (!mob || !held || mob->dormant || mob->type < 0 || mob->type >= m_state.content().mobs().size()) {
+    if (!mob || !held || mob->dormant || !m_state.content().mobs().contains(mob->type)) {
         return false;
     }
     const QcMobDefinition &definition = m_state.content().mobs()[mob->type];
@@ -66,7 +66,7 @@ QcServerAnimals::Feeding QcServerAnimals::feed(QcServerClient &client, quint32 m
 {
     QcCreature *mob = m_state.entities().creatures().find(mobId);
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (!mob || !held || mob->dormant || mob->type < 0 || mob->type >= m_state.content().mobs().size()
+    if (!mob || !held || mob->dormant || !m_state.content().mobs().contains(mob->type)
         || !m_state.content().mobs()[mob->type].breeding.food.contains(held->name)) {
         return Feeding::NotItsFood;
     }
@@ -87,7 +87,7 @@ QcServerAnimals::Feeding QcServerAnimals::feed(QcServerClient &client, quint32 m
     return Feeding::Fed;
 }
 
-quint32 QcServerAnimals::spawnYoung(QcServerState &state, int type, const QcVec3 &position)
+quint32 QcServerAnimals::spawnYoung(QcServerState &state, QcCreatureKindId type, const QcVec3 &position)
 {
     QcMobBreeding limits(state.contentPointer());
     limits.setLimits(state.config().limits.breedingCrowd, state.config().limits.bredPerKind);
@@ -106,16 +106,16 @@ quint32 QcServerAnimals::spawnYoung(QcServerState &state, int type, const QcVec3
 
 namespace {
 
-std::optional<int> releasedBy(const QcServerState &state, const QcItemDefinition &item)
+std::optional<QcCreatureKindId> releasedBy(const QcServerState &state, const QcItemDefinition &item)
 {
-    return item.releasesMob.isEmpty() ? std::nullopt : state.content().mobIndex(item.releasesMob);
+    return item.releasesMob.isEmpty() ? std::nullopt : state.content().mobKind(item.releasesMob);
 }
 
 } // namespace
 
 bool QcServerAnimals::mayRelease(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position)
 {
-    const std::optional<int> type = releasedBy(state, item);
+    const std::optional<QcCreatureKindId> type = releasedBy(state, item);
     if (!type) {
         return true;
     }
@@ -126,7 +126,7 @@ bool QcServerAnimals::mayRelease(QcServerState &state, const QcItemDefinition &i
 
 void QcServerAnimals::release(QcServerState &state, const QcItemDefinition &item, const QcVec3 &position)
 {
-    const std::optional<int> type = releasedBy(state, item);
+    const std::optional<QcCreatureKindId> type = releasedBy(state, item);
     if (!type) {
         return;
     }

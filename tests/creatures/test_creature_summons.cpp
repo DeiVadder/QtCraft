@@ -18,11 +18,11 @@ class TestCreatureSummons : public QcServerTestFixture
     Q_OBJECT
 
 private:
-    int mobType(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId mobType(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
 
     qsizetype countOf(const char *name) const
     {
-        const int type = mobType(name);
+        const QcCreatureKindId type = mobType(name);
         return std::ranges::count_if(m_server->mobs().mobs(), [type](const QcCreature &mob) { return mob.type == type; });
     }
 

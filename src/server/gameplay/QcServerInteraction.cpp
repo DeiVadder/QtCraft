@@ -441,7 +441,7 @@ QcServerInteraction::UseOnEntity QcServerInteraction::useOnEntity(const QcServer
 {
     const QcCreature *mob = m_state.entities().creatures().find(entityId);
     const QcItemDefinition *held = m_state.heldItem(client);
-    if (!mob || !held || mob->type < 0 || mob->type >= m_state.content().mobs().size()) {
+    if (!mob || !held || !m_state.content().mobs().contains(mob->type)) {
         return {};
     }
     return {held->name, m_state.content().mobs()[mob->type].name};

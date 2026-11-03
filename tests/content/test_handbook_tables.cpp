@@ -142,7 +142,7 @@ private slots:
         QcHandbookChapter basics = *std::ranges::find(content.handbookChapters(), u"qtcraft:basics"_s, &QcHandbookChapter::name);
         basics.iconItem = u"qtcraft:bone"_s;
         content.registerHandbookChapter(basics);
-        QcMobDefinition bone = content.mobs().first();
+        QcMobDefinition bone = content.mobs().list().first();
         bone.name = u"qtcraft:bone"_s;
         content.registerMob(bone);
 

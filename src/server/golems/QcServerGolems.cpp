@@ -69,7 +69,7 @@ std::optional<quint32> QcServerGolems::build(QcBlockPos pos)
     }
 
     const QString &name = content.block(*placed).name;
-    for (int type = 0; type < static_cast<int>(content.mobs().size()); ++type) {
+    for (const QcCreatureKindId type : content.mobs().ids()) {
         const QcMobDefinition &definition = content.mobs()[type];
         if (definition.ai != QcMobDefinition::Ai::Golem || definition.golem.buildHead != name) {
             continue;

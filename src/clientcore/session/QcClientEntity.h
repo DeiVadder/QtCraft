@@ -6,6 +6,7 @@
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/mobs/QcAppearance.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcEquipment.h"
 #include "common/gameplay/QcHanging.h"
@@ -22,8 +23,8 @@ struct QcClientEntity
     quint32 id = 0;
     /*! What kind of entity it is; the kind decides which of the fields below mean something. */
     QcEntityKind kind = QcEntityKind::Player;
-    /*! Creatures: index into the content's mobs (checked on arrival). */
-    int creatureType = 0;
+    /*! Creatures: their kind among the content's mobs (checked on arrival). */
+    QcCreatureKindId creatureType;
     /*! The block of a falling block; air otherwise. */
     QcBlockId block = qcAirBlockId;
     /*! The stack of a dropped item, the item of a minecart (what it carries), a boat (what it is
@@ -115,6 +116,6 @@ struct QcClientEntity
     /*! Returns the definition of a creature in \a content; nothing for the other kinds. */
     const QcMobDefinition *creature(const QcContentRegistry &content) const
     {
-        return isCreature() && creatureType >= 0 && creatureType < content.mobs().size() ? &content.mobs()[creatureType] : nullptr;
+        return isCreature() && content.mobs().contains(creatureType) ? &content.mobs()[creatureType] : nullptr;
     }
 };

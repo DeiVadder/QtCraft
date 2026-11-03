@@ -106,7 +106,7 @@ private:
 #else
         Q_UNUSED(nodesPerTick);
 #endif
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         for (int i = 0; i < count; ++i) {
             const double angle = i * 2.399963;
             const double distance = 8.0 + (i * 37 % 120) / 10.0;

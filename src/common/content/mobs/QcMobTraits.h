@@ -5,6 +5,7 @@
 
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
+#include "common/core/QcCreatureKindId.h"
 
 #include <QList>
 #include <QString>
@@ -114,9 +115,9 @@ struct QcTameDefinition
     double chance = 1.0 / 3.0;
     /*! The kind it turns into when tamed (a wolf into a dog); empty: it stays its kind. */
     QString becomes;
-    /*! The index of \c {becomes} in the content's mobs, resolved when the content is finished;
-        -1 for none. */
-    int becomesType = -1;
+    /*! The kind \c {becomes} names among the content's mobs, resolved when the content is
+        finished; none when it stays its kind. */
+    std::optional<QcCreatureKindId> becomesType;
     /*! Food (\c {healItems}) that heals a tame one by \c {healAmount} (meat for dogs).
         \qcshared */
     QStringList healItems;
@@ -280,9 +281,9 @@ struct QcDrinkHealDefinition
 struct QcFamilyDefinition
 {
     QString child;
-    /*! The index of \c {child} among the creatures, resolved when the content is finished
-        (QcMobTraitsContent::resolve); -1 before. */
-    int childType = -1;
+    /*! The kind \c {child} names among the creatures, resolved when the content is finished
+        (QcMobTraitsContent::resolve); none before. */
+    std::optional<QcCreatureKindId> childType;
     /*! Most of its children alive at once. */
     int maxChildren = 4;
     /*! Children split off by one hurt. */

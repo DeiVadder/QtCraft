@@ -30,7 +30,7 @@ private:
 
     std::shared_ptr<const QcContentRegistry> m_content = QcTestUtil::loadContent();
     std::unique_ptr<QcTerrainGenerator> m_terrain;
-    int m_kind = -1;
+    QcSurfacePlanner::KindId m_kind;
     QList<std::shared_ptr<const QcStructurePlacement>> m_plans;
 
     QList<std::shared_ptr<const QcStructurePlacement>> plans(const QcTerrainGenerator &terrain) const
@@ -111,7 +111,7 @@ private slots:
     void initTestCase()
     {
         m_terrain = std::make_unique<QcTerrainGenerator>(m_content, seed);
-        const std::optional<int> kind = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:desert_temple"_s);
+        const std::optional<QcSurfacePlanner::KindId> kind = m_terrain->surfaceStructures().planner().kindIndex(u"qtcraft:desert_temple"_s);
         QVERIFY(kind);
         m_kind = *kind;
         m_plans = plans(*m_terrain);

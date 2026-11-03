@@ -76,7 +76,7 @@ private slots:
         join(config);
 
         // Pigs on the stage among which the arrows fall.
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         for (int i = 0; i < measured.pigs; ++i) {
             const QcVec3 at{m_feet.x - 3.0 + (i % 7), static_cast<double>(m_feet.y), m_feet.z - 3.0 + (i / 7) % 7};
             m_server->entities().creatures().spawn(pig, at, m_server->entities().newId());
@@ -130,7 +130,7 @@ private slots:
                 }
             }
         }
-        const int skeleton = *m_content->mobIndex(u"qtcraft:skeleton"_s);
+        const QcCreatureKindId skeleton = *m_content->mobKind(u"qtcraft:skeleton"_s);
         for (int i = 0; i < skeletons; ++i) {
             const double angle = 2.0 * std::numbers::pi * i / skeletons;
             const double radius = 7.0 + 4.0 * (i % 3) / 2.0;

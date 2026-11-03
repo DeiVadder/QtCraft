@@ -22,7 +22,7 @@ Group of(QcChunkPos start, const MarksFunction &marksOf, int limit)
     for (qsizetype next = 0; next < group.chunks.size(); ++next) {
         const QcChunkPos chunk = group.chunks[next];
         const quint16 marks = marksOf(chunk).value_or(0);
-        for (int side = 0; side < QcChunkLinks::sideCount; ++side) {
+        for (const QcChunkLinks::Side side : QcChunkLinks::sides) {
             const QcChunkPos neighbour = QcChunkLinks::neighbour(chunk, side);
             if (seen.contains(neighbour)) {
                 continue;

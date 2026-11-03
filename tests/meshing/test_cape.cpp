@@ -150,7 +150,7 @@ private slots:
         QCOMPARE(content.translations().translate(green->translationKey, u"de"_s), u"Grüner Umhang"_s);
 
         // The showcase's caped mannequin wears it.
-        const auto mannequin = std::ranges::find(content.mobs(), u"qtcraft:caped_mannequin"_s, &QcMobDefinition::name);
+        const auto mannequin = std::ranges::find(content.mobs().list(), u"qtcraft:caped_mannequin"_s, &QcMobDefinition::name);
         QVERIFY(mannequin != content.mobs().end());
         QCOMPARE(QcFigureLook::cape(content, mannequin->cape), green);
         // Drawn like the world draws skeleton creatures: the whole figure and its cape.
@@ -188,7 +188,7 @@ private slots:
         QCOMPARE(copy->kind, QcAppearanceDefinition::Kind::Cape);
         QCOMPARE(copy->cape, original->cape);
         QCOMPARE(copy->layers.size(), original->layers.size());
-        const auto mannequin = std::ranges::find(read->mobs(), u"qtcraft:caped_mannequin"_s, &QcMobDefinition::name);
+        const auto mannequin = std::ranges::find(read->mobs().list(), u"qtcraft:caped_mannequin"_s, &QcMobDefinition::name);
         QVERIFY(mannequin != read->mobs().end());
         QCOMPARE(mannequin->cape, u"qtcraft:green_cape"_s);
     }

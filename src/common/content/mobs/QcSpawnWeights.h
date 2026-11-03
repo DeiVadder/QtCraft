@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "common/core/QcCreatureKindId.h"
+
 #include <QHash>
 #include <QList>
 #include <QString>
@@ -25,7 +27,7 @@ public:
     explicit QcSpawnWeights(const QcContentRegistry &content);
 
     /*! Returns the weight of monster kind \a type in \a biome; 0 for other kinds. */
-    double weight(int type, const QString &biome) const;
+    double weight(QcCreatureKindId type, const QString &biome) const;
     /*! Returns the sum of the weights of all monster kinds in \a biome. */
     double total(const QString &biome) const;
     /*! Returns the highest weight among the spawn rules of \a mob that allow \a biome, without

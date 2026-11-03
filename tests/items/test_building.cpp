@@ -818,7 +818,7 @@ private slots:
         QCOMPARE(m_content->property(at(door), u"open"_s), u"true"_s);
 
         // A pig in the doorway: the door cannot swing shut onto it.
-        const int pig = *m_content->mobIndex(u"qtcraft:pig"_s);
+        const QcCreatureKindId pig = *m_content->mobKind(u"qtcraft:pig"_s);
         m_server->mobs().spawn(pig, {door.x + 0.5, static_cast<double>(door.y), door.z + 0.5}, 9000);
         use(door, QcBlockFace::South);
         QCOMPARE(m_content->property(at(door), u"open"_s), u"true"_s);

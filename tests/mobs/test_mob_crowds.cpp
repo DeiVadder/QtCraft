@@ -79,7 +79,7 @@ private:
         return mobs;
     }
 
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
 
     void spawnMany(QcMobManager &mobs, const char *kind, int count, const QcVec3 &at)
     {
@@ -275,7 +275,7 @@ private slots:
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
             const QcVec3 local = placed.at - QcVec3{static_cast<double>(origin.x), static_cast<double>(origin.y), static_cast<double>(origin.z)};
             if (local.x >= 0.0 && local.x < station->sizeX && local.z >= 0.0 && local.z < station->sizeZ) {
-                const quint32 id = mobs->spawn(*m_content->mobIndex(placed.mob), placed.at, m_nextId++, false, true);
+                const quint32 id = mobs->spawn(*m_content->mobKind(placed.mob), placed.at, m_nextId++, false, true);
                 zombie = placed.mob.endsWith(u"zombie"_s) ? id : zombie;
             }
         }

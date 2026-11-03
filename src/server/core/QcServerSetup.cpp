@@ -285,7 +285,7 @@ bool fillCart(QcServerState &state, const QcWorldSetup::Contents &contents)
 // A creature of the setup with its marks: confined, without a mind, rested, a pet, a family.
 void placeMob(QcServerState &state, const QcWorldSetup::Mob &mob)
 {
-    if (const std::optional<int> type = state.content().mobIndex(mob.mob)) {
+    if (const std::optional<QcCreatureKindId> type = state.content().mobKind(mob.mob)) {
         const quint32 id = state.entities().creatures().spawn(*type, mob.at, state.entities().newId(), false, true);
         // Villagers of a station come rested, as if they had just slept: a golem farm of the
         // showcase summons at once although its fixed time of day never brings a night

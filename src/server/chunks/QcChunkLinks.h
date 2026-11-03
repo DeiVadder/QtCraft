@@ -10,6 +10,7 @@
 #include <QHash>
 
 #include <array>
+#include <utility>
 #include <vector>
 
 /*! \brief Which loaded chunks a circuit or machine connects across their border (decision E-375),
@@ -29,8 +30,23 @@
 class QcChunkLinks
 {
 public:
-    /*! The sides of a chunk: 0 east, 1 west, 2 south, 3 north. */
+    /*! The sides of a chunk; the value is the side's bit in the marks (strip; reach four bits
+        higher), so it is part of the saved marks (QcChunkStore::Stored::marks). */
+    enum class Side : quint8
+    {
+        /*! Towards +x. */
+        East = 0,
+        /*! Towards -x. */
+        West = 1,
+        /*! Towards +z. */
+        South = 2,
+        /*! Towards -z. */
+        North = 3,
+    };
+    /*! The number of sides of a chunk. */
     static constexpr int sideCount = 4;
+    /*! All sides of a chunk, in the order of their bits. */
+    static constexpr std::array<Side, sideCount> sides{Side::East, Side::West, Side::South, Side::North};
     /*! A circuit part this many cells or fewer from a side marks its strip. */
     static constexpr int stripWidth = 2;
     /*! A piston pushes up to 12 blocks one cell on: blocks up to 13 cells ahead move. */
@@ -39,12 +55,12 @@ public:
     explicit QcChunkLinks(const QcContentRegistry &content);
 
     /*! Returns the neighbour of \a chunk across \a side. */
-    static QcChunkPos neighbour(QcChunkPos chunk, int side);
+    static QcChunkPos neighbour(QcChunkPos chunk, Side side);
     /*! Returns the side that faces back across \a side. */
-    static int opposite(int side) { return side ^ 1; }
+    static constexpr Side opposite(Side side) { return static_cast<Side>(std::to_underlying(side) ^ 1u); }
     /*! Returns whether a chunk with \a marks and its neighbour with \a neighbourMarks are linked
         across \a side of the first one. */
-    static bool linked(quint16 marks, quint16 neighbourMarks, int side);
+    static bool linked(quint16 marks, quint16 neighbourMarks, Side side);
 
     /*! \a chunk entered the world: counts its circuit parts near its sides and its pistons. */
     void noteChunk(const QcChunk &chunk);

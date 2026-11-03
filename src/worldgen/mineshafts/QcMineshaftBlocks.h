@@ -10,7 +10,9 @@
 #include <QStringList>
 
 #include <array>
+#include <cstddef>
 #include <optional>
+#include <utility>
 #include <vector>
 
 /*! \brief The blocks a mine shaft places (decision E-570), resolved once from QcMineshaftSettings,
@@ -54,8 +56,23 @@ struct QcMineshaftBlocks
     /*! Returns the blocks of \a settings resolved in \a content; none when one is unknown, with
         a warning each. */
     [[nodiscard]] static Resolved resolve(const QcMineshaftSettings &settings, const QcContentRegistry &content);
-    /*! Returns the side index of the unit step \a dx, \a dz (north, east, south, west). */
-    static int sideOf(int dx, int dz);
+    /*! \brief A side of a cell; the value is its index in the arrays by side (lights, ladders,
+        railsUp) and the number of quarter turns from north. */
+    enum class Side : quint8
+    {
+        /*! Towards -z. */
+        North = 0,
+        /*! Towards +x. */
+        East = 1,
+        /*! Towards +z. */
+        South = 2,
+        /*! Towards -x. */
+        West = 3,
+    };
+    /*! Returns the side of the unit step \a dx, \a dz. */
+    static Side sideOf(int dx, int dz);
+    /*! Returns the index of \a side in the arrays by side and its quarter turns from north. */
+    static constexpr std::size_t slotOf(Side side) { return std::to_underlying(side); }
     /*! Returns whether \a block offers nothing to stand on (not solid, or liquid). */
     bool isOpen(QcBlockId block) const { return open[static_cast<std::size_t>(block)]; }
     /*! Returns whether \a block is a liquid. */

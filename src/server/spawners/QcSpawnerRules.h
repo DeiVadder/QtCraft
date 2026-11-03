@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/blockbehaviour/QcSpawnerDefinition.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/protocol/QcMessages.h"
 #include "server/spawners/QcSpawners.h"
@@ -43,10 +44,10 @@ public:
     int spawnedCount() const;
     /*! Returns the creatures of kind \a type within the \c {nearbyRange} of \a rules of the
         spawner block at \a pos on every axis. */
-    int nearbyOf(QcBlockPos pos, const QcSpawnerDefinition &rules, int type) const;
+    int nearbyOf(QcBlockPos pos, const QcSpawnerDefinition &rules, QcCreatureKindId type) const;
     /*! Returns whether a creature of kind \a type may appear with its feet in cell \a feet by
         \a rules. */
-    bool fits(QcBlockPos feet, const QcSpawnerDefinition &rules, int type) const;
+    bool fits(QcBlockPos feet, const QcSpawnerDefinition &rules, QcCreatureKindId type) const;
 
 private:
     // Whether the body of `definition` with its feet in `feet` has room: no solid, liquid, hurting or
@@ -54,7 +55,7 @@ private:
     bool hasRoom(QcBlockPos feet, const QcMobDefinition &definition) const;
     // Runs the cycle of a spawner whose delay ran out (`total`: spawner creatures in the world so
     // far); the number of creatures it spawned.
-    [[nodiscard]] int cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, int type, int total);
+    [[nodiscard]] int cycle(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules, QcCreatureKindId type, int total);
     void resetDelay(QcSpawners::Entry &spawner, const QcSpawnerDefinition &rules);
     bool playerNear(const QcVec3 &centre, double range, const QList<QcVec3> &players) const;
     QList<QcVec3> playerPositions() const;

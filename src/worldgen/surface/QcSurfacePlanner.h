@@ -4,6 +4,8 @@
 #pragma once
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcIdList.h"
+#include "common/core/QcIndexId.h"
 #include "worldgen/structures/QcStructurePlacement.h"
 #include "worldgen/villages/QcPieceVariation.h"
 
@@ -34,6 +36,11 @@ class QcSurfacePlanner
 public:
     /*! Blocks between two samples of the ground along a footprint's edge. */
     static constexpr int edgeStep = 4;
+
+    /*! \brief Tells the kinds of a planner apart from the ids of other lists (QcIndexId). */
+    struct KindTag;
+    /*! The index of a kind in kinds() (decision E-952). */
+    using KindId = QcIndexId<KindTag>;
 
     /*! \brief A kind of surface structure: a structure with a \c {surface} rule, resolved. */
     struct Kind
@@ -78,7 +85,7 @@ public:
     };
     /*! Whether something already stands within \c {margin} of a footprint (QcSurfaceStructures
         asks the villages and the kinds planned before this one). */
-    using Occupied = std::function<bool(int kind, Rect footprint, int margin)>;
+    using Occupied = std::function<bool(KindId kind, Rect footprint, int margin)>;
 
     /*! Resolves the structures of \a content with a \c {surface} rule into kinds, each with its
         own seed from \a seed, planned on the columns of \a terrain. Structures with an unknown
@@ -91,12 +98,12 @@ public:
     const QStringList &warnings() const { return m_warnings; }
 
     /*! Returns the kinds, sorted by name. */
-    const QList<Kind> &kinds() const { return m_kinds; }
+    [[nodiscard]] QcIdList<KindId, Kind> kinds() const { return QcIdList<KindId, Kind>(m_kinds); }
     /*! Returns the index of the kind \a name, if any. */
-    [[nodiscard]] std::optional<int> kindIndex(const QString &name) const;
+    [[nodiscard]] std::optional<KindId> kindIndex(const QString &name) const;
     /*! Returns the copy of kind \a kind in region (\a regionX, \a regionZ) of its spacing, if
         any; \a occupied rules out places too close to something already standing. */
-    [[nodiscard]] std::optional<QcStructurePlacement> plan(int kind, int regionX, int regionZ, const Occupied &occupied) const;
+    [[nodiscard]] std::optional<QcStructurePlacement> plan(KindId kind, int regionX, int regionZ, const Occupied &occupied) const;
     /*! Returns the footprint of \a placement, a placed copy. */
     static Rect footprintOf(const QcStructurePlacement &placement);
 

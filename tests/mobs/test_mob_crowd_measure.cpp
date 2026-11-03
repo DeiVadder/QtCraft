@@ -169,7 +169,7 @@ private:
         auto world = flat();
         shaft(*world, ground + 2);
         auto mobs = makeMobs();
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         for (int i = 0; i < 1000; ++i) {
             mobs->spawn(zombie, {0.5, static_cast<double>(ground), 0.5}, m_nextId++);
         }
@@ -192,7 +192,7 @@ private slots:
     {
         auto world = flat();
         auto mobs = makeMobs();
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         for (int i = 0; i < 1000; ++i) {
             const int x = static_cast<int>((i * 7919u) % 80u) - 40;
             const int z = static_cast<int>((i * 104729u / 80u) % 80u) - 40;
@@ -216,7 +216,7 @@ private slots:
 #if __has_include("server/mobs/QcCreatureBodies.h")
         auto world = flat();
         auto mobs = makeMobs();
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         for (int i = 0; i < 1000; ++i) {
             const int x = static_cast<int>((i * 7919u) % 80u) - 40;
             const int z = static_cast<int>((i * 104729u / 80u) % 80u) - 40;
@@ -255,7 +255,7 @@ private slots:
         auto world = flat();
         shaft(*world, ground + 22);
         auto mobs = makeMobs();
-        const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+        const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
         const QList<QcMobManager::PlayerView> players{{7, {10.5, static_cast<double>(ground), 0.5}, true}};
         Run run;
         for (quint64 tick = 0; tick < 1200; ++tick) {

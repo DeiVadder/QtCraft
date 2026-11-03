@@ -22,11 +22,16 @@ Rules (name, what it finds):
                     must contain the word "thread" or name E-010 (thread hand-overs under std::mutex);
                     heuristic of E-948: a mutex nobody can name the threads for guards nothing that crosses
                     threads
+  int-kind          (AST) a member or parameter of an integer type (not bool) named `kind`, `type`, `mode`,
+                    `side` or camel case ending in Kind, Type or Mode (not `...PerKind`), parameters of
+                    overrides excepted (not those of a lambda inside one): a fixed set of values is an enum class, an index into a list of
+                    definitions a strong id (QcIndexId, e.g. QcCreatureKindId), E-952; local variables (a
+                    byte a codec reads before its cast) are not checked
 Detach checks stay with clazy (static-analysis.sh), they are not repeated here.
 
 A finding is skipped when its line or the line above holds `// NOLINT(qc-<rule>): <reason>`; a marker of one of
 these rules without a reason (or without the colon) is listed itself as `unreasoned` and fails the run. Rules with a limit in LIMITS
-fail when their count exceeds it (every rule has the limit 0 since package 50b).
+fail when their count exceeds it (0 since package 50b; int-kind a ratchet, E-952).
 
 Usage: scripts/check-ast.py [--list] [--changed] [--jobs N] [--build-dir DIR] [--no-cache] [file ...]
   --list       prints every finding, otherwise only the counts per rule
@@ -57,9 +62,11 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_BRANCH = os.environ.get("QC_BASE_BRANCH", "dev")
 CLANG_QUERY = os.environ.get("CLANG_QUERY", "/opt/homebrew/opt/llvm/bin/clang-query")
-RULES = ("std-string", "delete", "lock-type", "mutex-handover")
-# Highest count per rule before the run fails (exit code 1): 0 for every rule since package 50b (E-948).
-LIMITS = {rule: 0 for rule in RULES}
+RULES = ("std-string", "delete", "lock-type", "mutex-handover", "int-kind")
+# Highest count per rule before the run fails (exit code 1): 0 for every rule since package 50b (E-948);
+# int-kind keeps the indices of block definitions (QcBlockState::type and its users, 15 findings) until they
+# get a strong id of their own (E-952); the limit only goes down.
+LIMITS = {rule: 0 for rule in RULES} | {"int-kind": 15}
 NOLINT = re.compile(r"NOLINT\(qc-(" + "|".join(RULES) + r")\)(:?)(.*)")
 SOURCE = re.compile(r"\.(cpp|h|mm)$")
 GLOBAL_STATIC = re.compile(r"\bQ_GLOBAL_STATIC\s*\(\s*(QMutex|QRecursiveMutex|QReadWriteLock|std::\w*mutex)\b")
@@ -71,6 +78,12 @@ STRING = 'hasUnqualifiedDesugaredType(recordType(hasDeclaration(namedDecl(hasNam
 LOCKS = '"::QMutex", "::QRecursiveMutex", "::QReadWriteLock", "::std::recursive_mutex", "::std::recursive_timed_mutex"'
 MUTEXES = '"::std::mutex", "::std::timed_mutex", "::std::shared_mutex", "::std::shared_timed_mutex"'
 PLACE = 'isExpansionInFileMatching("/(src|tests)/")'
+# Names of the int-kind rule (E-952): a member or parameter called so holds what kind of thing something is
+# (`kind`, `type`, `mode`, `side`, or a camel-case name ending in Kind, Type or Mode); a count per kind
+# (`bredPerKind`) is none.
+KIND_NAMES = "(^|::)(kind|type|mode|side|[a-z][A-Za-z0-9]*(Kind|Type|Mode))$"
+NOT_KIND_NAMES = "Per(Kind|Type|Mode)$"
+INTEGER = 'qualType(isInteger(), hasCanonicalType(builtinType()), unless(hasCanonicalType(booleanType())))'
 LOCKERS = ('"::QMutexLocker", "::QReadLocker", "::QWriteLocker", "::std::lock_guard", "::std::unique_lock", '
            '"::std::scoped_lock", "::std::shared_lock"')
 
@@ -94,12 +107,15 @@ match callExpr(hasType(qualType({STRING})), {PLACE}).bind("std-string")
 match cxxDeleteExpr({PLACE}).bind("delete")
 match declaratorDecl(unless(parmVarDecl()), unless(isImplicit()), unless(varDecl(isInitCapture())), hasType(qualType({holding(LOCKS)})), {PLACE}).bind("lock-type")
 match declaratorDecl(unless(parmVarDecl()), unless(isImplicit()), unless(varDecl(isInitCapture())), hasType(qualType({holding(MUTEXES)})), {PLACE}).bind("std-mutex")
+match fieldDecl(hasType({INTEGER}), matchesName("{KIND_NAMES}"), unless(matchesName("{NOT_KIND_NAMES}")), {PLACE}).bind("int-kind")
+match parmVarDecl(hasType({INTEGER}), matchesName("{KIND_NAMES}"), unless(matchesName("{NOT_KIND_NAMES}")), unless(hasDeclContext(cxxMethodDecl(isOverride()))), {PLACE}).bind("int-kind")
 """
 MESSAGES = {
     "std-string": "std::string: use QString (E-379)",
     "delete": "hand-written delete: ownership in the type (std::unique_ptr, parent, deleteLater), E-379",
     "lock-type": "Qt or recursive lock: use std::mutex (E-379)",
     "mutex-handover": "std::mutex without a comment naming the threads that hand over data through it (E-948)",
+    "int-kind": "integer named like a kind: an enum class for a fixed set, a strong id for a registry index (E-952)",
 }
 
 
@@ -458,6 +474,20 @@ struct NoCopy { NoCopy(const NoCopy &) = delete; };
 void lock(Holder &holder, QMutex &parameter) { QMutexLocker<QMutex> locker(&parameter); (void)holder; }
 std::mutex shared; // taken by the worker threads; the lambda's capture below is no declaration
 void capture() { auto take = [&shared = shared] { const std::scoped_lock lock(shared); }; take(); }
+enum class Scoped { A };
+struct Base { virtual ~Base() = default; virtual void pick(int type) { (void)type; } };
+struct Kinds : Base
+{
+    int type = 0;
+    unsigned char mobType = 0;
+    bool kind = false;
+    Scoped mode = Scoped::A;
+    int sideLength = 0;
+    int bredPerKind = 0;
+    void pick(int type) override { auto twice = [](int kind) { return 2 * kind; }; (void)twice(type); }
+    void set(int side, int other) { const int kind = side + other; (void)kind; }
+    int side = 0; // NOLINT(qc-int-kind): sample exemption
+};
 """
 
 
@@ -497,7 +527,8 @@ def ast_self_test():
     got = sorted({(line, rule) for _, line, rule, _ in found})
     expected = [(8, "std-string"), (9, "lock-type"), (10, "lock-type"), (13, "mutex-handover"),
                 (16, "lock-type"), (17, "lock-type"), (18, "lock-type"), (19, "mutex-handover"),
-                (21, "std-string"), (22, "delete")]
+                (21, "std-string"), (22, "delete"), (28, "int-kind"), (31, "int-kind"), (32, "int-kind"), (37, "int-kind"),
+                (38, "int-kind")]
     return [] if got == expected else [f"AST sample: expected {expected}, got {got}"]
 
 

@@ -5,6 +5,7 @@
 
 #include "common/content/blocks/QcBlockDefinition.h"
 #include "common/content/items/QcItemDefinition.h"
+#include "common/core/QcCreatureKindId.h"
 #include "common/core/QcVec3.h"
 #include "common/gameplay/QcAirSupply.h"
 #include "common/gameplay/QcStatusEffects.h"
@@ -36,7 +37,7 @@ struct QcCreature : QcEntity
     }
 
     /*! Index of its definition among the content's mobs. */
-    int type = 0;
+    QcCreatureKindId type;
     /*! Health points left. */
     double health = 0.0;
     /*! Seconds until it may attack again. */

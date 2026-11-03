@@ -254,7 +254,7 @@ private slots:
         QCOMPARE(block.soundMaterial, u"a:metal"_s);
         QCOMPARE(block.soundKeys, furnace.soundKeys);
         QCOMPARE(block.machine.sound, u"a:roar"_s);
-        const QcMobDefinition &bee = copy.content->mobs().constFirst();
+        const QcMobDefinition &bee = copy.content->mobs().list().constFirst();
         QCOMPARE(bee.ambientSound, u"a:buzz"_s);
         QCOMPARE(bee.hurtSound, u"a:ouch"_s);
         QCOMPARE(bee.deathSound, u"a:gone"_s);
@@ -669,11 +669,11 @@ private slots:
     void entityAndStatusMessagesRoundTrip()
     {
         QcMsg::EntitySpawn sent{42, QcEntityKind::Creature, u"Alex"_s, {1.5, 70.0, -2.25}, 90.0f, 17.5, {}, {}, 12.5f, QcMsg::Swing | QcMsg::OnGround, 5};
-        sent.creatureType = 3;
+        sent.creatureType = QcCreatureKindId{3};
         const QcMsg::EntitySpawn spawn = roundTrip(sent);
         QCOMPARE(spawn.id, 42u);
         QCOMPARE(spawn.kind, QcEntityKind::Creature);
-        QCOMPARE(spawn.creatureType, 3);
+        QCOMPARE(spawn.creatureType, QcCreatureKindId{3});
         QCOMPARE(spawn.name, u"Alex"_s);
         QCOMPARE(spawn.position, (QcVec3{1.5, 70.0, -2.25}));
         QCOMPARE(spawn.yaw, 90.0f);
@@ -780,7 +780,7 @@ private slots:
         QCOMPARE(block.contactDamage, 0.0);
         QVERIFY(copy.content->item(*copy.content->itemId(u"a:bucket"_s)).scoops);
         QCOMPARE(copy.content->item(*copy.content->itemId(u"a:lava_bucket"_s)).emptiesTo, u"a:bucket"_s);
-        const QcMobDefinition &mob = copy.content->mobs().constFirst();
+        const QcMobDefinition &mob = copy.content->mobs().list().constFirst();
         QVERIFY(mob.flying);
         QCOMPARE(mob.glow, 13);
         QCOMPARE(mob.catchWith, u"a:bottle"_s);

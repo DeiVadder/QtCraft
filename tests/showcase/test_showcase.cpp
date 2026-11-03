@@ -301,7 +301,7 @@ private slots:
     {
         // A mod creature like the zombie but with a long reach.
         const std::shared_ptr<QcContentRegistry> content = QcTestUtil::loadContent();
-        QcMobDefinition lancer = content->mobs().at(*content->mobIndex(u"qtcraft:zombie"_s));
+        QcMobDefinition lancer = content->mobs().at(*content->mobKind(u"qtcraft:zombie"_s));
         lancer.name = u"test:lancer"_s;
         lancer.attackRange = 4.5;
         content->registerMob(lancer);
@@ -315,7 +315,7 @@ private slots:
         constexpr int maxWalk = 16;
         const QcWorldSetup setup = generator.setup();
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
-            const QcMobDefinition &mob = content->mobs().at(*content->mobIndex(placed.mob));
+            const QcMobDefinition &mob = content->mobs().at(*content->mobKind(placed.mob));
             // Only creatures with blows reach through glass (the witch only throws).
             if (!mob.hostile || mob.attackDamage <= 0.0) {
                 continue;
@@ -354,7 +354,7 @@ private slots:
         int checked = 0;
         const QcWorldSetup setup = generator.setup();
         for (const QcWorldSetup::Mob &placed : setup.mobs) {
-            const QcMobDefinition &mob = content->mobs().at(*content->mobIndex(placed.mob));
+            const QcMobDefinition &mob = content->mobs().at(*content->mobKind(placed.mob));
             if (!mob.burnsInDaylight) {
                 continue;
             }

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "common/content/mobs/QcAppearance.h"
+#include "common/core/QcCreatureKindId.h"
 
 class QcContentRegistry;
 struct QcVillagerRecord;
@@ -18,6 +19,6 @@ struct QcVillagerRecord;
 namespace QcVillagerLooks {
 
 /*! Returns the look of \a villager, a creature of kind \a mobType of \a content. */
-QcAppearance appearanceOf(const QcContentRegistry &content, int mobType, const QcVillagerRecord &villager);
+QcAppearance appearanceOf(const QcContentRegistry &content, QcCreatureKindId mobType, const QcVillagerRecord &villager);
 
 } // namespace QcVillagerLooks

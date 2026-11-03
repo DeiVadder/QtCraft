@@ -291,7 +291,7 @@ private slots:
         m_server->world().setBlock(pit, qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -1, 0), qcAirBlockId);
         m_server->world().setBlock(pit.offset(0, -2, 0), id("qtcraft:stone"));
-        const quint32 pig = m_server->mobs().spawn(*m_content->mobIndex(u"qtcraft:pig"_s), {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
+        const quint32 pig = m_server->mobs().spawn(*m_content->mobKind(u"qtcraft:pig"_s), {pit.x + 0.5, static_cast<double>(pit.y - 1), pit.z + 0.5}, 500);
         ticks(1);
         send(QcMsg::AttackEntity{pig});
         QVERIFY(!m_server->mobs().find(pig) || m_server->mobs().find(pig)->health < 10.0);
@@ -347,7 +347,7 @@ private slots:
         for (const QcServerConfig &config : {QcServerConfig{}, creative()}) {
             join(config);
             chat(u"/time set night"_s);
-            const int zombie = *m_content->mobIndex(u"qtcraft:zombie"_s);
+            const QcCreatureKindId zombie = *m_content->mobKind(u"qtcraft:zombie"_s);
             const QcVec3 near{m_feet.x + 3.5, static_cast<double>(m_feet.y), m_feet.z + 0.5};
             const quint32 mobId = m_server->mobs().spawn(zombie, near, 900'000);
             idle(10);

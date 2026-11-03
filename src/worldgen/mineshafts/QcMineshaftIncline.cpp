@@ -90,7 +90,7 @@ std::optional<QcMineshaftPlan::Corridor> QcMineshaftIncline::layout(const QcMine
 {
     const QcBlockPos centre = plan.nodes.constFirst().centre;
     const QcMineshaftPlan::Node &room = plan.nodes.at(exit.node);
-    const auto [dx, dz] = sideSteps.at(static_cast<std::size_t>(exit.side));
+    const auto [dx, dz] = sideSteps.at(QcMineshaftBlocks::slotOf(exit.side));
     QcMineshaftPlan::Corridor tunnel;
     tunnel.start = room.centre.offset(dx * (room.half + 1), 1, dz * (room.half + 1));
     tunnel.dx = dx;
@@ -211,7 +211,7 @@ QcMineshaftPlan::Entrance QcMineshaftIncline::entrance(const QcMineshaftPlan::No
     // Rails from the node's edge up the middle lane, rising towards the mouth; level at the last
     // step unless the ground in front is one higher.
     if (rails) {
-        const QcBlockId up = m_blocks.railsUp.at(static_cast<std::size_t>(QcMineshaftBlocks::sideOf(tunnel.dx, tunnel.dz)));
+        const QcBlockId up = m_blocks.railsUp.at(QcMineshaftBlocks::slotOf(QcMineshaftBlocks::sideOf(tunnel.dx, tunnel.dz)));
         const QcBlockId level = tunnel.dx != 0 ? m_blocks.railEastWest : m_blocks.railNorthSouth;
         entrance.blocks.append({room.centre.offset(tunnel.dx * room.half, 0, tunnel.dz * room.half), up});
         for (int along = 0; along < tunnel.length; ++along) {

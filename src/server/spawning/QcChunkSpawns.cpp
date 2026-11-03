@@ -90,12 +90,12 @@ void QcChunkSpawns::spawnChunkAnimals(const QcServerWorld &world, QcChunkPos pos
     if (floorY < 0) {
         return;
     }
-    const QList<int> candidates = animalCandidates(world, pos, chunk, {lx, floorY, lz});
+    const QList<QcCreatureKindId> candidates = animalCandidates(world, pos, chunk, {lx, floorY, lz});
     if (candidates.isEmpty()) {
         return;
     }
 
-    const int chosen = pickAnimal(candidates, random(3));
+    const QcCreatureKindId chosen = pickAnimal(candidates, random(3));
     const QcMobDefinition &definition = content.mobs()[chosen];
     // Groups of two up to the kind's largest group.
     const int group = std::min({definition.maxGroup, 2 + static_cast<int>(random(4) * std::max(1, definition.maxGroup - 1)),
@@ -120,7 +120,7 @@ void QcChunkSpawns::spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos,
         return;
     }
     for (const QcVillagePlan::Mob &mob : village->mobs) {
-        const std::optional<int> type = m_content->mobIndex(mob.mob);
+        const std::optional<QcCreatureKindId> type = m_content->mobKind(mob.mob);
         const QcBlockPos cell{static_cast<int>(std::floor(mob.at.x)), static_cast<int>(std::floor(mob.at.y)), static_cast<int>(std::floor(mob.at.z))};
         if (type && cell.chunk() == pos) {
             const quint32 id = m_mobs.spawn(*type, mob.at, nextEntityId(), false, true);
@@ -131,18 +131,18 @@ void QcChunkSpawns::spawnVillageMobs(const QcServerWorld &world, QcChunkPos pos,
     }
 }
 
-QList<int> QcChunkSpawns::animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const
+QList<QcCreatureKindId> QcChunkSpawns::animalCandidates(const QcServerWorld &world, QcChunkPos pos, const QcChunk &chunk, QcBlockPos floor) const
 {
     const QcContentRegistry &content = *m_content;
     const QcBlockDefinition &ground = content.block(chunk.block(floor.x, floor.y, floor.z));
-    QList<int> candidates;
+    QList<QcCreatureKindId> candidates;
     QString biome;
 
-    for (qsizetype type = 0; type < content.mobs().size(); ++type) {
+    for (const QcCreatureKindId type : content.mobs().ids()) {
         const QcMobDefinition &definition = content.mobs()[type];
         if (!QcChunkSpawns::isAnimal(definition) || definition.spawnWeight <= 0.0 || !ground.solid
             || (!definition.spawnBlocks.isEmpty() && !definition.spawnBlocks.contains(ground.name))
-            || floor.y + 1 > definition.spawnMaxY || !spawnsInChunk(static_cast<int>(type), pos, definition.spawnChunkChance, 0)) {
+            || floor.y + 1 > definition.spawnMaxY || !spawnsInChunk(type, pos, definition.spawnChunkChance, 0)) {
             continue;
         }
 
@@ -155,21 +155,21 @@ QList<int> QcChunkSpawns::animalCandidates(const QcServerWorld &world, QcChunkPo
             }
         }
 
-        candidates.append(static_cast<int>(type));
+        candidates.append(type);
     }
 
     return candidates;
 }
 
-int QcChunkSpawns::pickAnimal(const QList<int> &candidates, double random) const
+QcCreatureKindId QcChunkSpawns::pickAnimal(const QList<QcCreatureKindId> &candidates, double random) const
 {
     double totalWeight = 0.0;
-    for (const int type : candidates) {
+    for (const QcCreatureKindId type : candidates) {
         totalWeight += m_content->mobs()[type].spawnWeight;
     }
 
     double pick = random * totalWeight;
-    for (const int type : candidates) {
+    for (const QcCreatureKindId type : candidates) {
         pick -= m_content->mobs()[type].spawnWeight;
         if (pick < 0.0) {
             return type;
@@ -178,7 +178,7 @@ int QcChunkSpawns::pickAnimal(const QList<int> &candidates, double random) const
     return candidates.constLast();
 }
 
-bool QcChunkSpawns::spawnsInChunk(int type, QcChunkPos pos, double chance, int rule) const
+bool QcChunkSpawns::spawnsInChunk(QcCreatureKindId type, QcChunkPos pos, double chance, int rule) const
 {
     const QcMobDefinition &definition = m_content->mobs()[type];
     if (chance >= 1.0) {

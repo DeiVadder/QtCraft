@@ -25,7 +25,7 @@ private:
     static inline const QString poison = u"qtcraft:poison"_s;
 
     QcServerClient &player() { return *m_server->entities().clients().front(); }
-    int type(const char *name) const { return *m_content->mobIndex(u"qtcraft:"_s + QString::fromLatin1(name)); }
+    QcCreatureKindId type(const char *name) const { return *m_content->mobKind(u"qtcraft:"_s + QString::fromLatin1(name)); }
 
     // The player in survival with food that neither heals nor starves.
     void joinHungry()

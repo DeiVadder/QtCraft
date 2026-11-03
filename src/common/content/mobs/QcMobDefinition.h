@@ -7,6 +7,8 @@
 #include "common/content/items/QcItemDefinition.h"
 #include "common/content/mobs/QcAppearanceDefinition.h"
 #include "common/content/mobs/QcMobTraits.h"
+#include "common/core/QcCreatureKindId.h"
+#include "common/core/QcIdList.h"
 #include "common/core/QcVec3.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/gameplay/QcStatusEffects.h"
@@ -368,3 +370,7 @@ struct QcMobDefinition
     QString milkItem;
     QString milkSound;
 };
+
+/*! The mob definitions of a content, indexed by their creature kind (QcContentRegistry::mobs,
+    decision E-952). */
+using QcMobKinds = QcIdList<QcCreatureKindId, QcMobDefinition>;

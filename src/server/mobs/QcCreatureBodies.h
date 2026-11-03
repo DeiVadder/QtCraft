@@ -24,11 +24,11 @@ public:
         QcBodyPush::playerVelocity) from \a mobs (kinds in \a definitions) as they stand in server
         tick \a tick, with \a generation counting every creature added to or removed from them
         (QcMobManager). */
-    [[nodiscard]] QcVec3 pushOnPlayer(const QcVec3 &feet, const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions,
+    [[nodiscard]] QcVec3 pushOnPlayer(const QcVec3 &feet, const QList<QcCreature> &mobs, QcMobKinds definitions,
                                       quint64 tick, quint64 generation);
 
 private:
-    void build(const QList<QcCreature> &mobs, const QList<QcMobDefinition> &definitions);
+    void build(const QList<QcCreature> &mobs, QcMobKinds definitions);
 
     QcBodyGrid m_grid;
     // The tick and the generation of the creatures the grid was built for: a summon or a removal

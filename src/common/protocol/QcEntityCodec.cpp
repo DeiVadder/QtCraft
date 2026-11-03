@@ -53,7 +53,7 @@ void encode(QDataStream &stream, const QcMsg::EntitySpawn &m)
 {
     stream << m.id << static_cast<quint8>(m.kind);
     if (m.kind == QcEntityKind::Creature) {
-        stream << m.creatureType;
+        stream << static_cast<qint32>(m.creatureType.index());
     }
     stream << m.name << m.position << m.yaw << m.health;
     writeStack(stream, m.item);
@@ -101,10 +101,12 @@ void encode(QDataStream &stream, QcMsg::UseEntity m)
     }
     m.kind = *known;
     if (m.kind == QcEntityKind::Creature) {
-        stream >> m.creatureType;
-        if (m.creatureType < 0 || std::cmp_greater_equal(m.creatureType, QcStreamLimits::maxDefinitions)) {
-            return qcError(u"Invalid creature type %1"_s.arg(m.creatureType));
+        qint32 creatureType = 0;
+        stream >> creatureType;
+        if (creatureType < 0 || std::cmp_greater_equal(creatureType, QcStreamLimits::maxDefinitions)) {
+            return qcError(u"Invalid creature type %1"_s.arg(creatureType));
         }
+        m.creatureType = QcCreatureKindId{creatureType};
     }
 
     stream >> m.name >> m.position >> m.yaw >> m.health;

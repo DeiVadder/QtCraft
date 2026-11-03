@@ -42,7 +42,7 @@ private:
     const QcCreature *saveAndLoad(quint32 creature)
     {
         const QcChunkPos chunk = QcEntities::chunkOf(*mob(creature));
-        const int kindOf = mob(creature)->type;
+        const QcCreatureKindId kindOf = mob(creature)->type;
         const QHash<QcChunkPos, QcEntityRecord> records = QcEntityRecords::take(m_server->entities(), {chunk});
         QcLoadWarnings warnings;
         const QcResult<QcEntityRecord> back = QcEntityCodec::decode(QcEntityCodec::encode(records[chunk], *m_content), chunk, *m_content, warnings);
@@ -293,7 +293,7 @@ private slots:
         QVERIFY(client.has_value());
         for (const char *name : {"dog", "wolf", "cat", "ocelot"}) {
             const QcMobDefinition &sent = kind(name);
-            const QcMobDefinition &got = client->mobs()[*client->mobIndex(sent.name)];
+            const QcMobDefinition &got = client->mobs()[*client->mobKind(sent.name)];
             QCOMPARE(got.tameable.has_value(), sent.tameable.has_value());
             QCOMPARE(got.parts.size(), sent.parts.size());
             for (qsizetype i = 0; i < sent.parts.size(); ++i) {
@@ -301,8 +301,8 @@ private slots:
                 QCOMPARE(got.parts[i].sitOffset, sent.parts[i].sitOffset);
             }
         }
-        QVERIFY(!client->mobs()[*client->mobIndex(u"qtcraft:ocelot"_s)].tameable);
-        const QList<QcMobPart> &dog = client->mobs()[*client->mobIndex(u"qtcraft:dog"_s)].parts;
+        QVERIFY(!client->mobs()[*client->mobKind(u"qtcraft:ocelot"_s)].tameable);
+        const QList<QcMobPart> &dog = client->mobs()[*client->mobKind(u"qtcraft:dog"_s)].parts;
         QVERIFY(std::ranges::any_of(dog, [](const QcMobPart &part) { return part.tint == QcTint::Collar; }));
         QVERIFY(std::ranges::any_of(dog, [](const QcMobPart &part) { return part.sitOffset.length() > 0.0; }));
     }
