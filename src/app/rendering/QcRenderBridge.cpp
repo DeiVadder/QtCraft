@@ -92,7 +92,9 @@ void QcRenderBridge::updateSky(double alpha)
 {
     const QcClientSession &session = *m_parts.session;
     const QcClientWeather &weather = session.worldMirror().weather();
-    QcSkyState sky = QcSky::at(session.worldMirror().timeAt(alpha));
+    // Sun, moon and colours follow the time of day (decision E-960), the clouds the animation
+    // clock, so they drift without a daylight cycle and stand while paused (decision E-968).
+    QcSkyState sky = QcSky::withCloudDrift(QcSky::at(session.worldMirror().timeAt(alpha)), session.worldMirror().animationSeconds(alpha));
     sky = QcSky::withWeather(sky, weather.rain(), weather.thunder(), weather.flash(static_cast<double>(session.tickCount()) + alpha));
     const QcVec3 &eye = m_parts.view->camera().position;
     // No flash while the world is paused (its ticks stand still); it finishes once the world runs again.

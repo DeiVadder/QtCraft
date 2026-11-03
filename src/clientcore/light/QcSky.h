@@ -6,8 +6,9 @@
 #include <QVector3D>
 
 /*! \brief Look of the sky at a moment of the day, as a pure function of the world time: colours of
-    the dome, where sun and moon stand, the moon's phase, how visible the stars are and how far the
-    clouds have drifted.
+    the dome, where sun and moon stand, the moon's phase and how visible the stars are; how far the
+    clouds have drifted follows the world's animation clock instead (QcSky::withCloudDrift,
+    decision E-968).
 
     The renderer draws the dome from it; fog takes the horizon colour so the far terrain fades
     into the sky. */
@@ -26,8 +27,8 @@ struct QcSkyState
     double moonPhase = 0.0;
     /*! 0 by day, 1 in the darkest night. */
     double stars = 0.0;
-    /*! Drift of the cloud layer in metres (x, z) and its brightness (lit by day, dark grey at
-        night). \qcshared */
+    /*! Drift of the cloud layer in metres (x, z; QcSky::withCloudDrift) and its brightness (lit by
+        day, dark grey at night). \qcshared */
     double cloudOffsetX = 0.0;
     double cloudOffsetZ = 0.0;
     QVector3D cloudColor;
@@ -57,8 +58,13 @@ inline constexpr int lunarDays = 8;
 inline constexpr double cloudHeight = 160.0;
 inline constexpr double cloudSpeed = 1.2;
 
-/*! Returns the sky at \a worldTime (seconds, QcDayCycle), without weather. */
+/*! Returns the sky at \a worldTime (seconds, QcDayCycle), without weather and with the clouds
+    where they start (no drift). */
 QcSkyState at(double worldTime);
+/*! Returns \a sky with its clouds drifted for \a seconds of the world's animation clock
+    (QcWorldMirror::animationSeconds, decision E-968): they drift whether the time of day runs or
+    not and stand while the server pauses or is frozen. */
+QcSkyState withCloudDrift(QcSkyState sky, double seconds);
 /*! Returns \a sky seen from \a eyeY: below the world it fades to black, which it reaches at
     QcWorld::voidLimitY; fog, clouds, glow and stars fade with it (decision E-288). */
 QcSkyState seenFrom(QcSkyState sky, double eyeY);

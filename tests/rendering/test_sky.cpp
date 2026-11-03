@@ -121,10 +121,13 @@ private slots:
 
     void cloudsDrift()
     {
-        const QcSkyState early = QcSky::at(100.0);
-        const QcSkyState later = QcSky::at(110.0);
+        // The drift follows the animation clock, not the time of day (decision E-968).
+        QCOMPARE(QcSky::at(100.0).cloudOffsetX, QcSky::at(110.0).cloudOffsetX);
+        const QcSkyState early = QcSky::withCloudDrift(QcSky::at(100.0), 5.0);
+        const QcSkyState later = QcSky::withCloudDrift(QcSky::at(100.0), 15.0);
         QVERIFY(std::abs(later.cloudOffsetX - early.cloudOffsetX - 10.0 * QcSky::cloudSpeed) < 1e-9);
         QVERIFY(later.cloudOffsetZ > early.cloudOffsetZ);
+        QCOMPARE(QcSky::withCloudDrift(QcSky::at(noon), 5.0).zenith, QcSky::at(noon).zenith);
         QVERIFY(brightness(QcSky::at(midnight).cloudColor) < brightness(QcSky::at(noon).cloudColor) * 0.3f);
     }
 
