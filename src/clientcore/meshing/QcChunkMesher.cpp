@@ -324,6 +324,21 @@ struct PlacedBlock
     QcBlockPos local;
 };
 
+// A side face whose bottom corners (0 and 1) start above the cell's bottom `bottomY` shows only
+// the part of its texture above them: each moves its texture coordinate towards that of the top
+// corner above it (3 and 2).
+std::array<QcBlockVertex, 4> croppedRaisedSide(std::array<QcBlockVertex, 4> corners, int bottomY)
+{
+    for (std::size_t corner = 0; corner < 2; ++corner) {
+        QcBlockVertex &bottom = corners[corner];
+        const QcBlockVertex &above = corners[3 - corner];
+        const float raised = bottom.y - static_cast<float>(bottomY);
+        bottom.u += (above.u - bottom.u) * raised;
+        bottom.v += (above.v - bottom.v) * raised;
+    }
+    return corners;
+}
+
 void appendQuad(const Output &out, const std::array<QcBlockVertex, 4> &corners, bool flipDiagonal, Surface surface)
 {
     const auto base = static_cast<quint32>(out.vertices.size());
@@ -565,9 +580,9 @@ private:
 
     // The heights of the top corners of a cube (QcLiquidSurface, index x + 2 * z): 1 for a block, a
     // liquid's surface sloping towards its lower and open neighbours (decision E-885).
-    std::array<float, 4> topOf(const PlacedBlock &block) const
+    std::array<float, 4> topOf(const Entry &entry, Cell at) const
     {
-        const float surface = block.entry.liquid ? surfaceOf(block.entry, block.cell) : 1.0f;
+        const float surface = entry.liquid ? surfaceOf(entry, at) : 1.0f;
         if (surface >= 1.0f) {
             return {1.0f, 1.0f, 1.0f, 1.0f};
         }
@@ -575,11 +590,11 @@ private:
         std::array<float, 9> cells{};
         for (int dz = -1; dz <= 1; ++dz) {
             for (int dx = -1; dx <= 1; ++dx) {
-                const Cell cell{block.cell.x + dx, block.cell.y, block.cell.z + dz};
+                const Cell cell{at.x + dx, at.y, at.z + dz};
                 const std::optional<QcBlockId> id = m_around.block(cell.x, cell.y, cell.z);
                 const Entry *next = id ? &m_table.entry(*id) : nullptr;
                 float value = QcLiquidSurface::closed;
-                if (next && next->liquid && next->type == block.entry.type) {
+                if (next && next->liquid && next->type == entry.type) {
                     value = surfaceOf(*next, cell);
                 } else if (next && next->liquidMayEnter) {
                     value = QcLiquidSurface::open;
@@ -592,16 +607,17 @@ private:
 
     void appendCube(const PlacedBlock &block)
     {
-        const std::array<float, 4> top = topOf(block);
+        const std::array<float, 4> top = topOf(block.entry, block.cell);
         for (const QcBlockFace face : qcAllBlockFaces) {
             appendCubeFace(block, face, top);
         }
     }
 
-    // Height at which a cube face towards `next` starts, or nullopt when the face is hidden. Beside
-    // a liquid the surfaces of the same liquid meet at the corners they share (QcLiquidSurface), and
-    // another liquid hides the side.
-    std::optional<float> cubeFaceBase(const PlacedBlock &block, const Entry &next, QcBlockFace face, std::array<float, 4> top) const
+    // Heights at which a cube face towards the neighbouring cell holding `next` starts (index x + 2
+    // * z), or nullopt when the face is hidden. Beside a liquid the surfaces of the same liquid meet at
+    // the corners they share (QcLiquidSurface), and another liquid hides the side. A translucent
+    // block's side towards translucent water starts at the water's surface (decision E-959).
+    std::optional<std::array<float, 4>> cubeFaceBase(const PlacedBlock &block, const Entry &next, QcBlockFace face, std::array<float, 4> top) const
     {
         const Entry &entry = block.entry;
         const bool side = face != QcBlockFace::Up && face != QcBlockFace::Down;
@@ -611,13 +627,16 @@ private:
 
         if (entry.liquid && face == QcBlockFace::Up && std::ranges::min(top) < 1.0f && !next.liquid) {
             // A sunken surface stays visible under a ceiling.
-            return 0.0f;
+            return std::array<float, 4>{};
         }
 
         if (QcBlockRenderTable::hides(entry, {}, face, next)) {
             return std::nullopt;
         }
-        return 0.0f;
+        if (side && QcBlockRenderTable::isShore(entry, next)) {
+            return QcLiquidSurface::shoreBase(face, topOf(next, neighbourOf(block.cell, face)));
+        }
+        return std::array<float, 4>{};
     }
 
     void appendCubeFace(const PlacedBlock &block, QcBlockFace face, std::array<float, 4> top)
@@ -627,7 +646,7 @@ private:
         if (!neighbour) {
             return;
         }
-        const std::optional<float> base = cubeFaceBase(block, m_table.entry(*neighbour), face, top);
+        const std::optional<std::array<float, 4>> base = cubeFaceBase(block, m_table.entry(*neighbour), face, top);
         if (!base) {
             return;
         }
@@ -645,13 +664,18 @@ private:
             const bool leftEdge = uvCorner == 0 || uvCorner == 3;
             QcBlockVertex &vertex = corners[corner];
             vertex.x = static_cast<float>(block.local.x + c[0]);
-            vertex.y = static_cast<float>(block.local.y) + (c[1] == 1 ? top[static_cast<std::size_t>(c[0]) + 2 * static_cast<std::size_t>(c[2])] : *base);
+            const std::size_t column = static_cast<std::size_t>(c[0]) + 2 * static_cast<std::size_t>(c[2]);
+            vertex.y = static_cast<float>(block.local.y) + (c[1] == 1 ? top[column] : (*base)[column]);
             vertex.z = static_cast<float>(block.local.z + c[2]);
             vertex.u = static_cast<float>(leftEdge ? uv.left() : uv.right());
             vertex.v = static_cast<float>(bottomEdge ? uv.bottom() : uv.top());
             vertex.setShade(QcChunkMesher::faceShade[faceIndex] * QcChunkMesher::ambientOcclusionLevels[static_cast<std::size_t>(values.ao[corner])]);
             vertex.setSkyLight(values.sky[corner]);
             vertex.setBlockLight(values.block[corner]);
+        }
+        if (std::ranges::max(*base) > 0.0f) {
+            // Only a shore side starts above the bottom (cubeFaceBase).
+            corners = croppedRaisedSide(corners, block.local.y);
         }
 
         // Split along the brighter diagonal so occlusion gradients stay symmetric.

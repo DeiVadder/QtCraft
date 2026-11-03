@@ -6,6 +6,7 @@
 #include <QTest>
 
 #include <array>
+#include <optional>
 
 // The corner heights of a liquid's surface (decision E-885): flat among sources and against walls,
 // sloping towards lower flows and open cells, full beside liquid with liquid on top, the same at the
@@ -72,6 +73,22 @@ private slots:
         QCOMPARE(corners[northEast], 1.0f);
         QCOMPARE(corners[southEast], 1.0f);
         QCOMPARE(corners[northWest], 0.4f);
+    }
+
+    // A translucent block's side towards the liquid starts at the liquid's corners on the edge
+    // they share (decision E-959); corners off that edge stay 0.
+    void aShoreStartsAtTheLiquidsSurface()
+    {
+        const std::array<float, 4> liquid{0.2f, 0.4f, 0.6f, 0.8f};
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::East, liquid), std::optional(std::array<float, 4>{0.0f, 0.2f, 0.0f, 0.6f}));
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::West, liquid), std::optional(std::array<float, 4>{0.4f, 0.0f, 0.8f, 0.0f}));
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::South, liquid), std::optional(std::array<float, 4>{0.0f, 0.0f, 0.2f, 0.4f}));
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::North, liquid), std::optional(std::array<float, 4>{0.6f, 0.8f, 0.0f, 0.0f}));
+
+        // One full corner on the shared edge leaves a triangle; both full cover the boundary.
+        const std::array<float, 4> sloped{0.5f, 1.0f, 1.0f, 1.0f};
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::South, sloped), std::optional(std::array<float, 4>{0.0f, 0.0f, 0.5f, 1.0f}));
+        QCOMPARE(QcLiquidSurface::shoreBase(QcBlockFace::West, sloped), std::nullopt);
     }
 
     void theDiagonalCountsOnlyPastALiquidSide()

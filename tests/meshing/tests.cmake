@@ -7,7 +7,9 @@
 
 # When the HUD names the selected item over the hotbar (decision E-885).
 qc_add_test(test_held_item_name SOURCES meshing/test_held_item_name.cpp LIBRARIES qc_app_core)
-qc_add_test(test_mesher SOURCES meshing/test_mesher.cpp LIBRARIES qc_clientcore)
+qc_add_test(test_mesher SOURCES meshing/test_mesher.cpp fixtures/QcMesherFixture.h LIBRARIES qc_clientcore)
+# Faces where translucent blocks meet translucent water (decisions E-868, E-959).
+qc_add_test(test_mesher_shores SOURCES meshing/test_mesher_shores.cpp fixtures/QcMesherFixture.h LIBRARIES qc_clientcore)
 # The corner heights of a liquid's surface (decision E-885).
 qc_add_test(test_liquid_surface SOURCES meshing/test_liquid_surface.cpp LIBRARIES qc_clientcore)
 qc_add_test(test_packed_mesh SOURCES meshing/test_packed_mesh.cpp LIBRARIES qc_clientcore)

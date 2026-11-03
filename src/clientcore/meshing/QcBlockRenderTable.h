@@ -158,17 +158,17 @@ public:
     /*! Returns whether the face \a face of \a self with rectangle \a rect on the side towards
         \a neighbour is hidden by it. */
     static bool hides(const Entry &self, SideRect rect, QcBlockFace face, const Entry &neighbour);
-    /*! Returns whether the face \a face of \a self, a translucent liquid (water), stands for the
-        boundary instead of the Up or Down face of \a neighbour, a translucent non-liquid block
-        (ice, glass) next to it: always above the block, below it only over source or falling water
+    /*! Returns whether \a neighbour, a translucent liquid (water), stands for the boundary
+        instead of the face \a face (Up or Down) of \a self, a translucent non-liquid block (ice,
+        glass) next to it: always above the block, below it only over source or falling water
         (full surface). Translucent faces are drawn unsorted without depth writes, so two faces on
         one boundary blend in mesh order and the result flips from block to block (E-868). */
     static bool liquidStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour);
-    /*! Returns whether the side face \a face of \a self, a translucent non-liquid block (ice,
-        glass), stands for the boundary instead of the side face of \a neighbour, a translucent
-        liquid next to it, where the block covers the side (\c {hides} checks the cover; the
-        block's side reaches higher than the liquid's) (E-868). */
-    static bool blockStandsFor(const Entry &self, QcBlockFace face, const Entry &neighbour);
+    /*! Returns whether \a self, a translucent non-liquid block (ice, glass), meets \a neighbour,
+        a translucent liquid, at a shore: there the liquid keeps its side up to its surface and the
+        block's side starts at that surface, so the liquid stays visible through the block and no
+        two unsorted translucent faces lie on one boundary (decision E-959). */
+    static bool isShore(const Entry &self, const Entry &neighbour);
 
 private:
     QList<Entry> m_entries;
