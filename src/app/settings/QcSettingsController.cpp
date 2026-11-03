@@ -63,8 +63,15 @@ QcSettingsController::QcSettingsController(const QcSessionParts &parts, const Qc
     connect(this, &QcSettingsController::settingsChanged, this, &QcSettingsController::scheduleSave);
     connect(this, &QcSettingsController::viewDistanceChanged, this, &QcSettingsController::scheduleSave);
     connect(m_audio, &QcAudioSettings::changed, this, &QcSettingsController::scheduleSave);
-    connect(m_debug, &QcDebugSettings::levelChanged, this, &QcSettingsController::scheduleSave);
-    connect(m_debug, &QcDebugSettings::visualsChanged, this, &QcSettingsController::scheduleSave);
+    // A change of the debug display releases what the scene held of it (QcSceneOverrides).
+    connect(m_debug, &QcDebugSettings::levelChanged, this, [this] {
+        m_sceneOverrides.releaseDebugLevel();
+        scheduleSave();
+    });
+    connect(m_debug, &QcDebugSettings::visualsChanged, this, [this] {
+        m_sceneOverrides.releaseChangedVisuals(m_debug->options());
+        scheduleSave();
+    });
     connect(m_character, &QcCharacterSettings::lookChanged, this, &QcSettingsController::scheduleSave);
     connect(m_character, &QcCharacterSettings::presetsChanged, this, &QcSettingsController::scheduleSave);
     connect(m_gamepad, &QcGamepadOptions::controllersChanged, this, &QcSettingsController::scheduleSave);
@@ -123,27 +130,25 @@ void QcSettingsController::loadSettings()
 void QcSettingsController::overrideViewDistance(int chunks)
 {
     setViewDistance(chunks);
-    m_commandLineViewDistance = m_viewDistance;
+    m_sceneOverrides.holdViewDistance();
 }
 
 QcGameSettings QcSettingsController::currentSettings() const
 {
     QcGameSettings settings;
-    // A view distance given on the command line is not stored unless the player changed it since.
-    settings.viewDistance = m_commandLineViewDistance == m_viewDistance ? m_storedSettings.viewDistance : m_viewDistance;
+    settings.viewDistance = m_viewDistance;
     settings.fieldOfView = m_fieldOfView;
     settings.fovEffects = m_fovEffects;
     settings.mouseSensitivity = m_mouseSensitivity;
     settings.invertMouse = m_invertMouse;
     settings.gamepad = m_gamepad->settings();
-    // The run's scene options stand for the stored values until the player changes them.
-    settings.debug = m_sceneDebug == m_debug->options() ? m_storedSettings.debug : m_debug->options();
+    settings.debug = m_debug->options();
     settings.showLabels = m_showLabels;
     settings.photoHidesHand = m_photoHidesHand;
     settings.pauseOnFocusLoss = m_pauseOnFocusLoss;
     settings.cameraShake = m_cameraShake;
     settings.language = m_languageSetting;
-    settings.cameraMode = m_sceneCameraMode == m_cameraMode ? m_storedSettings.cameraMode : m_cameraMode;
+    settings.cameraMode = m_cameraMode;
     settings.uiScale = m_uiScale;
     settings.textureFiltering = static_cast<int>(m_textureFiltering);
     settings.render = m_rendering->options();
@@ -152,18 +157,17 @@ QcGameSettings QcSettingsController::currentSettings() const
     settings.audio = m_audio->volumes();
     settings.keys = m_keyControls->bindings();
     settings.texturePacks = m_texturePacks->storedSelection();
-    return settings;
+    // The run's scene options stand for the stored values until the player changes them.
+    return m_sceneOverrides.toStore(settings, m_storedSettings);
 }
 
 void QcSettingsController::keepSceneOptionsUnsaved()
 {
     m_saveTimer.stop();
     if (m_cameraMode != m_storedSettings.cameraMode) {
-        m_sceneCameraMode = m_cameraMode;
+        m_sceneOverrides.holdCameraMode();
     }
-    if (m_debug->options() != m_storedSettings.debug) {
-        m_sceneDebug = m_debug->options();
-    }
+    m_sceneOverrides.holdDebug(m_debug->options(), m_storedSettings.debug);
 }
 
 void QcSettingsController::saveSettings()
@@ -203,6 +207,7 @@ void QcSettingsController::setViewDistance(int chunks)
     }
 
     m_viewDistance = chunks;
+    m_sceneOverrides.releaseViewDistance();
     emit viewDistanceChanged();
 }
 
@@ -311,6 +316,7 @@ void QcSettingsController::setCameraModeValue(QcCameraMode mode)
     }
 
     m_cameraMode = mode;
+    m_sceneOverrides.releaseCameraMode();
     if (m_parts.session) {
         m_parts.session->setCameraMode(m_cameraMode);
     }

@@ -357,6 +357,20 @@ add_test(NAME app_offscreen_subscreen_return
         -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
 set_tests_properties(app_offscreen_subscreen_return PROPERTIES TIMEOUT 180
     ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_subscreen_return;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-subscreen-return.png;QTCRAFT_SCREENSHOT_FRAMES=30")
+# Esc on the HUD's lines (row 79.76): the chat line and a sign's editor (opened by using a sign in
+# view) close with a real Esc press, back to the world. Each press waits for its screen
+# (press:<key>@<screen>), the use repeats until the placed sign's editor opens (key:use@sign), so
+# no step depends on the wall clock.
+add_test(NAME app_offscreen_escape_chat_sign
+    COMMAND ${CMAKE_COMMAND}
+        "-DCOMMAND=$<TARGET_FILE:qtcraft>;--play;--world-type;flat;--view-distance;2;--no-audio;--look;0,-45;--chat;/setblock ~ ~ ~-1 oak_sign;--overlay;@1000 chat;--overlay;@1000 press:Escape@chat;--overlay;@1500 key:use@sign;--overlay;@1500 press:Escape@sign"
+        -DEXPECTED_EXIT_CODE=0
+        "-DEXPECTED_ERROR=press:Escape: overlay none \\(was chat\\)[^\n]*\n.*press:Escape: overlay none \\(was sign\\)"
+        -DEXPECTED_FILE=${CMAKE_CURRENT_BINARY_DIR}/offscreen-escape-chat-sign.png
+        "-DFORBIDDEN_ERROR=${pad_qml_errors}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/expect_exit_code.cmake)
+set_tests_properties(app_offscreen_escape_chat_sign PROPERTIES TIMEOUT 180
+    ENVIRONMENT "QTCRAFT_OFFSCREEN=1;QTCRAFT_DATA_DIR=${CMAKE_BINARY_DIR}/test-data/app_offscreen_escape_chat_sign;QTCRAFT_SCREENSHOT=${CMAKE_CURRENT_BINARY_DIR}/offscreen-escape-chat-sign.png;QTCRAFT_SCREENSHOT_FRAMES=30")
 foreach(pad inventory radial keyboard menu playstation settings bind lazy_menu lazy_advancements advancements)
     # The world's runs hold the screenshot until the script has run; the menu has no world, so
     # its screenshot waits for frames past the last step.

@@ -111,6 +111,8 @@ private slots:
     {
         Fixture fixture;
         QcSettingsController &settings = fixture.settings;
+        const int storedDistance = settings.viewDistance();
+        settings.overrideViewDistance(storedDistance + 2);
         settings.setCameraModeValue(QcCameraMode::Side);
         settings.debug()->setLevel(static_cast<int>(QcDebugOptions::Level::Full));
         settings.debug()->setShown(QcDebugOptions::Visual::Hitboxes, true);
@@ -127,6 +129,8 @@ private slots:
         settings.flushPendingSave();
         QcGameSettings written = stored();
         QVERIFY(written.invertMouse);
+        QCOMPARE(written.viewDistance, storedDistance);
+        QCOMPARE(settings.viewDistance(), storedDistance + 2);
         QCOMPARE(written.cameraMode, QcGameSettings().cameraMode);
         QCOMPARE(written.debug, QcDebugOptions());
 
@@ -135,6 +139,57 @@ private slots:
         written = stored();
         QCOMPARE(written.cameraMode, QcCameraMode::Behind);
         QCOMPARE(written.debug, QcDebugOptions());
+    }
+
+    // The player picks a scene option's value himself after changing it (79.76): his choice is
+    // stored, not the value stored before the run.
+    void sceneValuePickedAgainIsStored()
+    {
+        Fixture fixture;
+        QcSettingsController &settings = fixture.settings;
+        const int storedDistance = settings.viewDistance();
+        const int sceneDistance = storedDistance + 2;
+        settings.overrideViewDistance(sceneDistance);
+        settings.setCameraModeValue(QcCameraMode::Side);
+        settings.keepSceneOptionsUnsaved();
+
+        settings.setViewDistance(sceneDistance + 1);
+        settings.setViewDistance(sceneDistance);
+        settings.setCameraModeValue(QcCameraMode::Behind);
+        settings.setCameraModeValue(QcCameraMode::Side);
+        settings.flushPendingSave();
+        const QcGameSettings written = stored();
+        QCOMPARE(written.viewDistance, sceneDistance);
+        QCOMPARE(written.cameraMode, QcCameraMode::Side);
+    }
+
+    // Each debug option of the scene is held on its own (79.76): a switched visualisation stores
+    // that switch only, not the scene's level or its other visualisations; the level is stored
+    // once the player changes it.
+    void debugSwitchStoresOnlyThatSwitch()
+    {
+        Fixture fixture;
+        QcSettingsController &settings = fixture.settings;
+        QcDebugSettings &debug = *settings.debug();
+        debug.setLevel(static_cast<int>(QcDebugOptions::Level::Full));
+        debug.setShown(QcDebugOptions::Visual::Hitboxes, true);
+        settings.keepSceneOptionsUnsaved();
+
+        debug.setShown(QcDebugOptions::Visual::ChunkBorders, true);
+        settings.flushPendingSave();
+        QcGameSettings written = stored();
+        QCOMPARE(written.debug.level, QcDebugOptions().level);
+        QVERIFY(!written.debug.shows(QcDebugOptions::Visual::Hitboxes));
+        QVERIFY(written.debug.shows(QcDebugOptions::Visual::ChunkBorders));
+
+        debug.setLevel(static_cast<int>(QcDebugOptions::Level::Off));
+        debug.setLevel(static_cast<int>(QcDebugOptions::Level::Full));
+        debug.setShown(QcDebugOptions::Visual::Hitboxes, false);
+        debug.setShown(QcDebugOptions::Visual::Hitboxes, true);
+        settings.flushPendingSave();
+        written = stored();
+        QCOMPARE(written.debug.level, QcDebugOptions::Level::Full);
+        QVERIFY(written.debug.shows(QcDebugOptions::Visual::Hitboxes));
     }
 
     // A saved draft of the look is stored by the settings; a draft left open is not.

@@ -188,12 +188,13 @@ bool QcTexturePackController::activate(const QStringList &ids)
         return false;
     }
 
-    m_selectionNotices.clear();
+    QStringList selectionNotices;
     for (const QString &id : ids) {
         if (!clean.contains(id)) {
-            m_selectionNotices.append(tr("At most %1 texture packs can be active; %2 was switched off").arg(QcGameSettings::maxTexturePacks).arg(id));
+            selectionNotices.append(tr("At most %1 texture packs can be active; %2 was switched off").arg(QcGameSettings::maxTexturePacks).arg(id));
         }
     }
+    setSelectionNotices(selectionNotices);
     setGeneration(generation() + 1);
     m_active = clean;
     emit packsChanged();
@@ -230,10 +231,10 @@ void QcTexturePackController::startBuild(const std::shared_ptr<const QcTextureAt
     }
 
     setBuilding(true);
-    if (!m_atlasWorker) {
-        m_atlasWorker = std::make_unique<QcWorkerPool>(1);
+    if (!atlasWorker()) {
+        setAtlasWorker(std::make_unique<QcWorkerPool>(1));
     }
-    m_atlasWorker->submit([this, request = request(colour)] {
+    atlasWorker()->submit([this, request = request(colour)] {
         if (m_builtResults.push(QcTextureStackBuild::run(request))) {
             QMetaObject::invokeMethod(this, &QcTexturePackController::onBuilt, Qt::QueuedConnection);
         }
@@ -288,17 +289,23 @@ void QcTexturePackController::apply(const QcTextureStackBuild::Result &result)
         m_loaded.insert(pack->id, pack);
     }
 
-    m_notices = m_selectionNotices;
+    QStringList notices = selectionNotices();
     for (const QString &id : result.missing) {
-        m_notices.append(tr("The texture pack %1 is not available or its manifest is invalid").arg(id));
+        notices.append(tr("The texture pack %1 is not available or its manifest is invalid").arg(id));
     }
     for (const QString &id : result.overBudget) {
-        m_notices.append(tr("The texture pack %1 was left out: the active packs together need more memory than allowed").arg(id));
+        notices.append(tr("The texture pack %1 was left out: the active packs together need more memory than allowed").arg(id));
     }
+    setNotices(notices);
     updatePreviews();
     emit packsChanged();
     emit statusChanged();
     emit stackChanged();
+}
+
+void QcTexturePackController::setAtlasWorker(std::unique_ptr<QcWorkerPool> worker)
+{
+    m_atlasWorker = std::move(worker);
 }
 
 void QcTexturePackController::describe(const QcTextureAtlas &atlas, qint64 milliseconds)
@@ -311,10 +318,12 @@ void QcTexturePackController::describe(const QcTextureAtlas &atlas, qint64 milli
                    .arg(atlas.levels().size())
                    .arg(mebibytes, 0, 'f', 1)
                    .arg(milliseconds);
-    const QcTexturePackProblems notices = atlas.notices();
-    for (const QcTexturePackProblem &notice : notices) {
-        m_notices.append(notice.text());
+    QStringList texts = notices();
+    const QcTexturePackProblems problems = atlas.notices();
+    for (const QcTexturePackProblem &problem : problems) {
+        texts.append(problem.text());
     }
+    setNotices(texts);
     qCInfo(lcTextures).noquote() << "Texture atlas:" << atlas.tileSize() << "x," << atlas.image().width() << "x" << atlas.image().height() << "px,"
                                  << atlas.levels().size() << "levels," << QString::number(mebibytes, 'f', 1) << "MiB," << milliseconds
                                  << "ms; packs:" << (m_active.isEmpty() ? u"none"_s : m_active.join(u", "_s));

@@ -65,10 +65,10 @@ QVariantMap QcKeyControls::labels() const
 {
     QVariantMap labels;
     for (const QcKeyBindings::Action action : QcKeyBindings::actions()) {
-        const QList<int> keys = m_bindings.keys(action);
+        const QList<int> keys = bindings().keys(action);
         const int first = keys.isEmpty() ? 0 : keys.first();
         // A Mac needs fn for the function keys (F11 for fullscreen is a secondary key there).
-        const bool fn = m_bindings.platform() == QcKeyBindings::Platform::Mac && QcKeyBindings::isFunctionKey(first);
+        const bool fn = bindings().platform() == QcKeyBindings::Platform::Mac && QcKeyBindings::isFunctionKey(first);
         labels.insert(QcKeyBindings::id(action), fn ? u"fn+"_s + QcKeyLabels::key(first) : QcKeyLabels::key(first));
     }
     return labels;
@@ -77,7 +77,7 @@ QVariantMap QcKeyControls::labels() const
 bool QcKeyControls::matches(const QString &action, int key) const
 {
     const std::optional<QcKeyBindings::Action> found = QcKeyBindings::actionFromId(action);
-    return found && m_bindings.matches(*found, key);
+    return found && bindings().matches(*found, key);
 }
 
 QString QcKeyControls::bind(const QString &action, int slot, int key)
@@ -87,22 +87,22 @@ QString QcKeyControls::bind(const QString &action, int slot, int key)
         return {};
     }
 
-    const bool mac = m_bindings.platform() == QcKeyBindings::Platform::Mac;
+    const bool mac = bindings().platform() == QcKeyBindings::Platform::Mac;
     if (key == QcKeyBindings::clearKey) {
         key = 0;
     } else if (mac && key == Qt::Key_Control) {
         return tr("Cmd cannot be used on a Mac: macOS keeps Cmd+Q, Cmd+H, Cmd+Space and other Cmd shortcuts for itself.");
-    } else if (!QcKeyBindings::isBindable(key, m_bindings.platform())) {
+    } else if (!QcKeyBindings::isBindable(key, bindings().platform())) {
         return tr("This key cannot be used.");
     }
 
-    const QcKeyBindings before = m_bindings;
-    const std::optional<QcKeyBindings::Displaced> displaced = m_bindings.bind(*found, slot, key);
-    if (m_bindings == before) {
+    QcKeyBindings next = bindings();
+    const std::optional<QcKeyBindings::Displaced> displaced = next.bind(*found, slot, key);
+    if (next == bindings()) {
         return {};
     }
 
-    emit changed();
+    setBindings(next);
     emit edited();
 
     QStringList notes;
@@ -121,9 +121,8 @@ QString QcKeyControls::bind(const QString &action, int slot, int key)
 void QcKeyControls::reset()
 {
     setMessage(tr("All keys are back to their defaults."));
-    if (m_bindings != QcKeyBindings::defaults()) {
-        m_bindings = QcKeyBindings::defaults();
-        emit changed();
+    if (bindings() != QcKeyBindings::defaults()) {
+        setBindings(QcKeyBindings::defaults());
         emit edited();
     }
 }

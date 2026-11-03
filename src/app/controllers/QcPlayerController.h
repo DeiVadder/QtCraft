@@ -4,7 +4,7 @@
 #pragma once
 
 #include "app/controllers/QcAdvancementQueue.h"
-#include "app/inventory/QcSlotCursor.h"
+#include "app/inventory/QcSlotActions.h"
 #include "app/models/QcCreativeItemModel.h"
 #include "app/models/QcInventoryModel.h"
 #include "app/models/QcPointsRow.h"
@@ -17,6 +17,7 @@
 #include <QtQmlIntegration/qqmlintegration.h>
 
 class QcSettingsController;
+class QcSlotCursor;
 struct QcSessionParts;
 
 // The local player for the HUD and the inventory screens (GameController.player): inventory and
@@ -26,6 +27,7 @@ class QcPlayerController : public QObject, public QcSlotActions
 {
     Q_OBJECT
     QML_ANONYMOUS
+    Q_MOC_INCLUDE("app/inventory/QcSlotCursor.h")
     Q_PROPERTY(QcInventoryModel *inventory READ inventory CONSTANT FINAL)
     // What clicks on the slot screens do (picking up, carrying, putting down).
     Q_PROPERTY(QcSlotCursor *slotCursor READ slotCursor CONSTANT FINAL)

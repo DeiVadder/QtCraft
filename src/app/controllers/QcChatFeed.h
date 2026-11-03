@@ -48,6 +48,12 @@ public:
 
     explicit QcChatFeed(QObject *parent = nullptr);
 
+    // Whether the typed `line` is a command (starts with '/').
+    Q_INVOKABLE static bool isCommand(const QString &line);
+    // Whether the chat line shows its pointer to /help (decision E-911): on the empty line unless
+    // the last line sent was a command (`commandSent`), and while a command name is typed.
+    Q_INVOKABLE static bool showsHelpHint(const QString &line, bool commandSent);
+
     void add(const QString &text);
     void clear();
     bool isOpen() const { return m_open; }

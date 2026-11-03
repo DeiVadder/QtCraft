@@ -156,6 +156,20 @@ private slots:
         QCOMPARE(texts(feed), QStringList{u"c"_s});
         QCOMPARE(QcChatFeed::clearCommand, "/clearchat"_L1);
     }
+
+    // The chat line's pointer to /help (E-911): on the empty line unless a command was just sent,
+    // and while a command name is typed, not once its arguments start or on a chat line.
+    void helpHintFollowsTheCommandSyntax()
+    {
+        QVERIFY(QcChatFeed::showsHelpHint({}, false));
+        QVERIFY(!QcChatFeed::showsHelpHint({}, true));
+        QVERIFY(QcChatFeed::showsHelpHint(u"/"_s, true));
+        QVERIFY(QcChatFeed::showsHelpHint(u"/giv"_s, false));
+        QVERIFY(!QcChatFeed::showsHelpHint(u"/give dirt"_s, false));
+        QVERIFY(!QcChatFeed::showsHelpHint(u"hello"_s, false));
+        QVERIFY(QcChatFeed::isCommand(u"/help"_s));
+        QVERIFY(!QcChatFeed::isCommand(u"help /me"_s));
+    }
 };
 
 QTEST_GUILESS_MAIN(TestChatFeed)

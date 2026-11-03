@@ -245,6 +245,54 @@ private slots:
         QVERIFY(!m_cursor.holding());
     }
 
+    // A carried catalogue item goes nowhere into a machine's output: a right click keeps it, a
+    // left click drops it there without a request.
+    void aCarriedItemSkipsTheOutput()
+    {
+        m_cursor.showScreen(QcScreenState::Overlay::Furnace);
+        m_cursor.takeFromCatalogue(u"qtcraft:dirt"_s, 64, Qt::LeftButton, false);
+        m_cursor.click(machineOutput, Qt::RightButton, false);
+        QVERIFY(m_actions.take().isEmpty());
+        QCOMPARE(m_cursor.carriedItem(), u"qtcraft:dirt"_s);
+
+        m_cursor.click(machineOutput, Qt::LeftButton, false);
+        QVERIFY(m_actions.take().isEmpty());
+        QVERIFY(!m_cursor.holding());
+    }
+
+    // The locked slot takes no carried item either, and the item stays carried.
+    void aCarriedItemSkipsTheLockedSlot()
+    {
+        m_actions.setLocked(emptyRow);
+        m_cursor.takeFromCatalogue(u"qtcraft:dirt"_s, 64, Qt::LeftButton, false);
+        m_cursor.click(emptyRow, Qt::LeftButton, false);
+        m_cursor.click(emptyRow, Qt::LeftButton, true);
+        QVERIFY(m_actions.take().isEmpty());
+        QCOMPARE(m_cursor.carriedCount(), 64);
+
+        m_cursor.click(emptyRow + 1, Qt::LeftButton, false);
+        QCOMPARE(m_actions.take(), QStringList{u"put 21 qtcraft:dirt 64"_s});
+    }
+
+    // Shift with a carried item puts it like a plain click (no quick move), the whole count on a
+    // left click and one on a right click.
+    void shiftWithACarriedItemPutsIt()
+    {
+        m_cursor.takeFromCatalogue(u"qtcraft:stick"_s, 64, Qt::RightButton, false);
+        m_cursor.click(emptyRow, Qt::RightButton, true);
+        QCOMPARE(m_actions.take(), QStringList{u"put 20 qtcraft:stick 1"_s});
+        QVERIFY(m_cursor.holding());
+
+        m_cursor.click(dirtRow, Qt::LeftButton, true);
+        QCOMPARE(m_actions.take(), QStringList{u"put 3 qtcraft:stick 1"_s});
+        QVERIFY(!m_cursor.holding());
+
+        m_cursor.takeFromCatalogue(u"qtcraft:dirt"_s, 64, Qt::LeftButton, false);
+        m_cursor.click(emptyRow, Qt::LeftButton, true);
+        QCOMPARE(m_actions.take(), QStringList{u"put 20 qtcraft:dirt 64"_s});
+        QVERIFY(!m_cursor.holding());
+    }
+
     void theCatalogueAndTheBinDeleteAPickedStack()
     {
         m_cursor.click(dirtRow, Qt::LeftButton, false);

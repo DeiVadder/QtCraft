@@ -60,6 +60,7 @@ target_sources(qc_app_core PRIVATE
     hooks/QcScreenshotHook.h hooks/QcScreenshotHook.cpp
     hooks/QcScriptedPad.h hooks/QcScriptedPad.cpp
     hooks/QcStartupHooks.h hooks/QcStartupHooks.cpp
+    hooks/QcStartupHooksWaiting.cpp
 )
 target_sources(qc_app_core PRIVATE
     input/QcFocusCandidates.h input/QcFocusCandidates.cpp
@@ -76,6 +77,7 @@ target_sources(qc_app_core PRIVATE
 target_sources(qc_app_core PRIVATE
     inventory/QcAnvilController.h inventory/QcAnvilController.cpp
     inventory/QcEnchantingController.h inventory/QcEnchantingController.cpp
+    inventory/QcSlotActions.h
     inventory/QcSlotCursor.h inventory/QcSlotCursor.cpp
     inventory/QcStonecutterController.h inventory/QcStonecutterController.cpp
     inventory/QcTradeController.h inventory/QcTradeController.cpp
@@ -169,6 +171,7 @@ target_sources(qc_app_core PRIVATE
     settings/QcDiagnosticsSettings.h settings/QcDiagnosticsSettings.cpp
     settings/QcGamepadOptions.h settings/QcGamepadOptions.cpp
     settings/QcRenderSettings.h settings/QcRenderSettings.cpp
+    settings/QcSceneOverrides.h settings/QcSceneOverrides.cpp
     settings/QcSettingsController.h settings/QcSettingsController.cpp
     settings/QcTexturePackController.h settings/QcTexturePackController.cpp
 )

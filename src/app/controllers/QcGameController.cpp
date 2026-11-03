@@ -6,6 +6,7 @@
 #include "app/debug/QcAppLogging.h"
 #include "app/hooks/QcBenchmarkRun.h"
 #include "app/input/QcGamepadBackend.h"
+#include "app/inventory/QcSlotCursor.h"
 #include "app/multiplayer/QcPlayerList.h"
 #include "app/rendering/QcFramePlan.h"
 #include "audio/QcAudioEngine.h"

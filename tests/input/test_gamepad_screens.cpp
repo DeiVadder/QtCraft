@@ -11,6 +11,7 @@
 #include <QQuickStyle>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QRegularExpression>
 #include <QSignalSpy>
 #include <QTest>
 
@@ -183,6 +184,38 @@ ApplicationWindow {
                 Button { objectName: "popupYes"; text: "Yes"; onClicked: { screen.lastClick = "popupYes"; popup.close(); } }
                 Button { objectName: "popupNo"; text: "No" }
             }
+        }
+    }
+}
+)";
+
+// A screen whose handler still takes the command as a string (the old form, E-583): refused with
+// a warning and never asked, so the pad's own rule switches the tab.
+const char *const stringHandlerQml = R"(
+import QtQuick
+import QtQuick.Controls
+
+ApplicationWindow {
+    width: 400
+    height: 200
+    visible: true
+
+    Item {
+        objectName: "screen"
+        anchors.fill: parent
+        focus: true
+        property bool asked: false
+        function gamepadCommand(command: string): bool {
+            asked = true;
+            return true;
+        }
+
+        Button { x: 20; y: 20; width: 120; text: "Only"; highlighted: true }
+        TabBar {
+            objectName: "tabs"
+            x: 20; y: 100; width: 300
+            TabButton { text: "One" }
+            TabButton { text: "Two" }
         }
     }
 }
@@ -378,6 +411,32 @@ private slots:
         QCOMPARE(tabs->property("currentIndex").toInt(), 2);
         QCOMPARE(screen()->property("lastClick").toString(), u"handler"_s);
         QCOMPARE(screen()->property("lastCommand").toInt(), static_cast<int>(QcGamepadMenuInput::Command::TabNext));
+    }
+
+    // A handler typed `command: string` is refused with a warning on each press and not asked; the
+    // shoulder switches the tab as without a handler.
+    void stringHandlerIsRefused()
+    {
+        QQmlApplicationEngine engine;
+        engine.loadData(stringHandlerQml);
+        QVERIFY(!engine.rootObjects().isEmpty());
+        auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().constFirst());
+        QVERIFY(window);
+        QVERIFY(QTest::qWaitForWindowExposed(window));
+        m_ui->setWindow(window);
+
+        // Each press offers the command to the screen first; the first one then shows the focus,
+        // the second switches the tab.
+        const QRegularExpression refused(u"gamepadCommand of .* takes QString instead of int: not asked"_s);
+        QTest::ignoreMessage(QtWarningMsg, refused);
+        QTest::ignoreMessage(QtWarningMsg, refused);
+        click(QcGamepadButton::RightShoulder);
+        click(QcGamepadButton::RightShoulder);
+        QObject *screenItem = window->findChild<QQuickItem *>(u"screen"_s);
+        QVERIFY(screenItem);
+        QVERIFY(!screenItem->property("asked").toBool());
+        QCOMPARE(window->findChild<QQuickItem *>(u"tabs"_s)->property("currentIndex").toInt(), 1);
+        m_ui->setWindow(m_window);
     }
 
     // A on a text field asks for the keyboard instead of clicking; A does not jump a slider.

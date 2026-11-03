@@ -40,8 +40,7 @@ Item {
         y: (besideHotbar ? input.y : Math.min(input.y, overlay.statusArea.y)) - height - Ui.hudPx(4)
         width: Math.min(implicitWidth, besideHotbar ? roomLeft : input.width)
         wrapMode: Text.Wrap
-        // NOLINT(qc-qml-string-compare): the command syntax of the typed line; audit C-4 moves it to C++
-        visible: (input.text.length === 0 && !overlay.commandSent) || (input.text.startsWith("/") && input.text.indexOf(" ") < 0)
+        visible: overlay.game.hud.chat.showsHelpHint(input.text, overlay.commandSent)
         text: qsTr("/help lists the commands by group, /help <command> explains one")
     }
 
@@ -61,7 +60,7 @@ Item {
                 overlay.game.overlay = GameController.Overlay.None;
         }
         onAccepted: {
-            overlay.commandSent = text.startsWith("/");
+            overlay.commandSent = overlay.game.hud.chat.isCommand(text);
             overlay.game.sendChat(text);
             overlay.game.overlay = GameController.Overlay.None;
         }

@@ -17,6 +17,19 @@ QcChatFeed::QcChatFeed(QObject *parent)
     connect(&m_timer, &QTimer::timeout, this, &QcChatFeed::refresh);
 }
 
+bool QcChatFeed::isCommand(const QString &line)
+{
+    return line.startsWith(u'/');
+}
+
+bool QcChatFeed::showsHelpHint(const QString &line, bool commandSent)
+{
+    if (line.isEmpty()) {
+        return !commandSent;
+    }
+    return isCommand(line) && !line.contains(u' ');
+}
+
 void QcChatFeed::add(const QString &text)
 {
     m_history.append({text, now()});

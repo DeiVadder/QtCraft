@@ -137,6 +137,13 @@ private:
     void setBuilding(bool building) { m_building = building; }
     [[nodiscard]] const std::optional<std::shared_ptr<const QcTextureAtlas>> &buildAgain() const { return m_buildAgain; }
     void setBuildAgain(std::optional<std::shared_ptr<const QcTextureAtlas>> again) { m_buildAgain = std::move(again); }
+    void setNotices(QStringList notices) { m_notices = std::move(notices); }
+    // What the last selection switched off (activate()), the first of the notices.
+    [[nodiscard]] const QStringList &selectionNotices() const { return m_selectionNotices; }
+    void setSelectionNotices(QStringList notices) { m_selectionNotices = std::move(notices); }
+    // The worker of the background builds (null until the first one).
+    [[nodiscard]] QcWorkerPool *atlasWorker() const { return m_atlasWorker.get(); }
+    void setAtlasWorker(std::unique_ptr<QcWorkerPool> worker);
 
     std::function<QString()> m_modsDirectory;
     // The engine owns the provider and may delete it first (the game outlives the QML engine).

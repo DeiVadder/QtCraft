@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "app/controllers/QcPlayerController.h"
+#include "app/inventory/QcSlotCursor.h"
 
 #include "app/models/QcDurationText.h"
 #include "app/models/QcItemIconUrls.h"

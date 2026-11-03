@@ -49,6 +49,13 @@ namespace {
     return found;
 }
 
+// The name of `overlay` in the test hooks' log lines ("none" for none).
+[[nodiscard]] QString overlayLogName(QcScreenState::Overlay overlay)
+{
+    const QString name = QcScreenState::overlayName(overlay);
+    return name.isEmpty() ? u"none"_s : name;
+}
+
 // Pointer, popup, text and pad steps work in the main menu as well, the others need a world.
 [[nodiscard]] bool runsInMenu(const QString &step)
 {
@@ -328,6 +335,8 @@ void QcStartupHooks::runOverlayStep(const QString &step)
         m_screens.handbook.open({});
     } else if (step == u"players"_s) {
         m_screens.input.setPlayerListHeld(true);
+    } else if ((step.startsWith(u"key:"_s) || step.startsWith(u"press:"_s)) && step.lastIndexOf(u'@') > step.indexOf(u':') + 1) {
+        runUntilOverlay(step);
     } else if (step.startsWith(u"key:"_s)) {
         pressKey(step.mid(4));
     } else if (step.startsWith(u"press:"_s)) {
@@ -381,10 +390,10 @@ void QcStartupHooks::pressWindowKey(const QString &name) const
     const QString text = name.size() == 1 ? name.toLower() : QString();
     QKeyEvent press(QEvent::KeyPress, key.key(), key.keyboardModifiers(), text);
     QKeyEvent release(QEvent::KeyRelease, key.key(), key.keyboardModifiers(), text);
+    const QString before = overlayLogName(m_screens.state.overlay());
     QCoreApplication::sendEvent(window, &press);
     QCoreApplication::sendEvent(window, &release);
-    const QString overlay = QcScreenState::overlayName(m_screens.state.overlay());
-    qCInfo(lcGame).noquote() << u"--overlay press:%1: overlay %2"_s.arg(name, overlay.isEmpty() ? u"none"_s : overlay);
+    qCInfo(lcGame).noquote() << u"--overlay press:%1: overlay %2 (was %3)"_s.arg(name, overlayLogName(m_screens.state.overlay()), before);
 }
 
 void QcStartupHooks::holdKey(const QString &actionId, bool held) const
@@ -430,40 +439,6 @@ void QcStartupHooks::openOverlay(const QString &name) const
         return;
     }
     m_screens.state.setOverlay(*overlay);
-}
-
-void QcStartupHooks::runOnLoadedScreen(const QString &step, int attempt)
-{
-    bool done = false;
-    if (step.startsWith(u"pick:"_s)) {
-        done = pickInOpenScreen(QStringView(step).mid(5).toInt());
-    } else if (step.startsWith(u"open:"_s)) {
-        done = openPopup(step.mid(5));
-    } else if (step.startsWith(u"click:"_s)) {
-        done = clickControl(step.mid(6));
-    } else if (step.startsWith(u"focus:"_s)) {
-        done = focusControl(step.mid(6));
-    } else {
-        done = setText(step.mid(5));
-    }
-    if (done) {
-        if (attempt > 0) {
-            qCInfo(lcGame) << "--overlay" << step << ": waited" << attempt * loadedScreenRetryMs << "ms for its screen";
-        }
-        return;
-    }
-
-    // Screens are made when they open (LazyScreen, decision E-691): until the one the step needs
-    // is there, the step and the screenshot wait for it.
-    if (attempt + 1 >= loadedScreenAttempts) {
-        qCWarning(lcGame) << "--overlay" << step << ": no such control on a shown screen";
-        return;
-    }
-    holdScreenshot();
-    QTimer::singleShot(loadedScreenRetryMs, this, [this, step, attempt] {
-        runOnLoadedScreen(step, attempt + 1);
-        releaseScreenshot();
-    });
 }
 
 bool QcStartupHooks::pickInOpenScreen(int row) const

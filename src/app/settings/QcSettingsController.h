@@ -12,6 +12,7 @@
 #include "app/settings/QcDiagnosticsSettings.h"
 #include "app/settings/QcGamepadOptions.h"
 #include "app/settings/QcRenderSettings.h"
+#include "app/settings/QcSceneOverrides.h"
 #include "app/settings/QcTexturePackController.h"
 #include "clientcore/camera/QcCamera.h"
 #include "clientcore/settings/QcGameSettings.h"
@@ -112,7 +113,7 @@ public:
     // Stores a change that waits for its save now (the session ends, the game quits).
     void flushPendingSave();
     // The camera mode and debug display set since the load are the run's scene options (command
-    // line): used, but the stored values are written in their place until the player changes them.
+    // line): used, but the stored values are written in their place until the player changes each.
     void keepSceneOptionsUnsaved();
     // View distance from the command line: used now, but not written to the settings.
     void overrideViewDistance(int chunks);
@@ -209,10 +210,9 @@ private:
     TextureFiltering m_textureFiltering = static_cast<TextureFiltering>(QcGameSettings::defaultTextureFiltering);
     QString m_contentLanguage = QStringLiteral("en");
     QcGameSettings m_storedSettings;
-    int m_commandLineViewDistance = 0;
-    // The scene options of the command line (keepSceneOptionsUnsaved()), not stored while they stay.
-    std::optional<QcCameraMode> m_sceneCameraMode;
-    std::optional<QcDebugOptions> m_sceneDebug;
+    // The scene options of the command line, not stored until the player changes them.
+    // NOLINT(qc-member-access): the object itself; its hold and release calls are its own accessors.
+    QcSceneOverrides m_sceneOverrides;
     // NOLINT(qc-member-access): the timer object itself; savePending() reads it, start and stop are its own calls.
     QTimer m_saveTimer;
 };

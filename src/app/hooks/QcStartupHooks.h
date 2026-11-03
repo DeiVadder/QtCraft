@@ -13,6 +13,7 @@
 #include <QStringList>
 
 #include <array>
+#include <memory>
 #include <optional>
 #include <utility>
 
@@ -111,6 +112,10 @@ private:
 
     static constexpr int loadedScreenAttempts = 40;
     static constexpr int loadedScreenRetryMs = 50;
+    // `press:<key>@<screen>` and `key:<action>@<screen>` wait up to untilOverlayAttempts *
+    // untilOverlayRetryMs (long, for loaded machines and slow builds).
+    static constexpr int untilOverlayAttempts = 150;
+    static constexpr int untilOverlayRetryMs = 100;
     // `view:hide` waits up to viewAttempts * viewRetryMs for the view to hold meshed sections,
     // `view:show` as long for a pending hide (slow builds such as TSan mesh later).
     static constexpr int viewAttempts = 300;
@@ -139,6 +144,12 @@ private:
     // "pick:", "open:", "text:" and "click:" steps: they act on a control of a shown screen and wait up to
     // loadedScreenAttempts * loadedScreenRetryMs for its screen to be loaded.
     void runOnLoadedScreen(const QString &step, int attempt);
+    // "press:<key>@<screen>" presses once that screen shows; "key:<action>@<screen>" repeats the key
+    // action until it shows (key:use@sign: uses the sign once its block arrived).
+    void runUntilOverlay(const QString &step);
+    void pressWhenShown(const QString &step, int attempt);
+    // `shown` turns true once the screen showed (set through `watch`, deleted at the end).
+    void repeatKeyUntilShown(const QString &actionId, const std::shared_ptr<bool> &shown, QObject *watch, int attempt);
     // Each returns whether it found what it acts on.
     [[nodiscard]] bool pickInOpenScreen(int row) const;
     void hoverAt(QStringView position) const;
