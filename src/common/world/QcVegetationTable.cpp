@@ -4,6 +4,7 @@
 #include "common/world/QcVegetationTable.h"
 
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/core/QcWeightedChoice.h"
 
 #include <algorithm>
 
@@ -36,12 +37,7 @@ QcVegetationTable::Resolved QcVegetationTable::resolve(const QcContentRegistry &
 
 const QcVegetationTable::Plant &QcVegetationTable::pick(double random) const
 {
-    int left = std::clamp(static_cast<int>(random * m_totalWeight), 0, m_totalWeight - 1);
-    for (const Plant &plant : m_plants) {
-        if (left < plant.weight) {
-            return plant;
-        }
-        left -= plant.weight;
-    }
-    return m_plants.last();
+    const int left = std::clamp(static_cast<int>(random * m_totalWeight), 0, m_totalWeight - 1);
+    const auto chosen = qcWeightedFind(m_plants, left, &Plant::weight);
+    return chosen != m_plants.end() ? *chosen : m_plants.constLast();
 }

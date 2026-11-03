@@ -3,6 +3,7 @@
 
 #include "server/spawning/QcNaturalSpawner.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "common/core/QcWorldConstants.h"
 #include "common/physics/QcSpawnGround.h"
 #include "server/core/QcServerWorld.h"
@@ -496,36 +497,22 @@ bool QcNaturalSpawner::SpawnPlace::darkEnough(const QcServerWorld &world, Sky sk
 
 QcNaturalSpawner::SpawnCandidate QcNaturalSpawner::pick(const QList<SpawnCandidate> &candidates)
 {
-    double totalWeight = 0.0;
-    for (const SpawnCandidate candidate : candidates) {
-        totalWeight += candidate.rule->weight;
-    }
-
-    double pick = m_draws->bounded(totalWeight);
-    for (const SpawnCandidate candidate : candidates) {
-        pick -= candidate.rule->weight;
-        if (pick < 0.0) {
-            return candidate;
-        }
-    }
-    return candidates.constLast();
+    const auto weightOf = [](SpawnCandidate candidate) { return candidate.rule->weight; };
+    const auto chosen = qcWeightedFind(candidates, m_draws->bounded(qcWeightTotal(candidates, weightOf)), weightOf);
+    return chosen != candidates.end() ? *chosen : candidates.constLast();
 }
 
 std::optional<QcNaturalSpawner::SpawnCandidate> QcNaturalSpawner::pickOfBiome(const QList<SpawnCandidate> &candidates, const QString &biome)
 {
-    double weights = 0.0;
-    for (const SpawnCandidate candidate : candidates) {
-        weights += m_weights.weight(candidate.type, biome);
-    }
+    const auto weightOf = [this, &biome](SpawnCandidate candidate) { return m_weights.weight(candidate.type, biome); };
+    const double weights = qcWeightTotal(candidates, weightOf);
 
-    double pick = m_draws->bounded(std::max(weights, m_weights.total(biome)));
-    for (const SpawnCandidate candidate : candidates) {
-        pick -= m_weights.weight(candidate.type, biome);
-        if (pick < 0.0) {
-            return candidate;
-        }
+    // Below the biome's total the draw may miss every candidate here: then nothing spawns.
+    const auto chosen = qcWeightedFind(candidates, m_draws->bounded(std::max(weights, m_weights.total(biome))), weightOf);
+    if (chosen == candidates.end()) {
+        return std::nullopt;
     }
-    return std::nullopt;
+    return *chosen;
 }
 
 int QcNaturalSpawner::spawnGroup(QcServerWorld &world, const SpawnPlace &place, SpawnCandidate chosen, int room, const NextId &nextEntityId)

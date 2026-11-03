@@ -3,6 +3,7 @@
 
 #include "server/spawning/QcChunkSpawns.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "common/core/QcWorldConstants.h"
 #include "server/core/QcServerWorld.h"
 #include "server/mobs/QcMobManager.h"
@@ -163,19 +164,7 @@ QList<QcCreatureKindId> QcChunkSpawns::animalCandidates(const QcServerWorld &wor
 
 QcCreatureKindId QcChunkSpawns::pickAnimal(const QList<QcCreatureKindId> &candidates, double random) const
 {
-    double totalWeight = 0.0;
-    for (const QcCreatureKindId type : candidates) {
-        totalWeight += m_content->mobs()[type].spawnWeight;
-    }
-
-    double pick = random * totalWeight;
-    for (const QcCreatureKindId type : candidates) {
-        pick -= m_content->mobs()[type].spawnWeight;
-        if (pick < 0.0) {
-            return type;
-        }
-    }
-    return candidates.constLast();
+    return qcWeightedPick(candidates, random, [this](QcCreatureKindId type) { return m_content->mobs()[type].spawnWeight; });
 }
 
 bool QcChunkSpawns::spawnsInChunk(QcCreatureKindId type, QcChunkPos pos, double chance, int rule) const

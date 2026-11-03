@@ -81,5 +81,4 @@ private:
     const QcMineshaftBlocks &m_blocks;
     QcMineshaftIncline m_incline;
     QList<QcWeightedStructure> m_rooms;
-    int m_totalWeight = 0;
 };

@@ -115,5 +115,4 @@ private:
     bool m_enabled = false;
     QcBlockId m_foundation = qcAirBlockId;
     QList<QcWeightedStructure> m_kinds;
-    int m_totalWeight = 0;
 };

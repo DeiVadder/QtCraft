@@ -6,6 +6,7 @@
 # properties at the end of that file (labels, costs, required files) apply to these tests.
 
 qc_add_test(test_coordinates SOURCES world/test_coordinates.cpp LIBRARIES qc_common)
+qc_add_test(test_weighted_choice SOURCES world/test_weighted_choice.cpp LIBRARIES qc_common)
 qc_add_test(test_chunk SOURCES world/test_chunk.cpp LIBRARIES qc_common)
 qc_add_test(test_section_snapshots SOURCES world/test_section_snapshots.cpp LIBRARIES qc_common)
 qc_add_test(test_section_access SOURCES world/test_section_access.cpp LIBRARIES qc_common)

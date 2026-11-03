@@ -3,6 +3,7 @@
 
 #include "worldgen/mineshafts/QcMineshaftAccess.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/mineshafts/QcMineshaftSite.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -41,7 +42,6 @@ QcMineshaftAccess::QcMineshaftAccess(const QcTerrainGenerator &terrain, const Qc
         }
         if (QcStructure::Loaded structure = QcStructure::fromDefinition(definition, content)) {
             m_rooms.append({std::make_shared<const QcStructure>(std::move(*structure)), definition.mineshaftWeight});
-            m_totalWeight += definition.mineshaftWeight;
         }
     }
 }
@@ -85,12 +85,7 @@ bool QcMineshaftAccess::crossedByPillars(const QcMineshaftNetwork &network, cons
 
 std::optional<QcStructurePlacement> QcMineshaftAccess::roomAt(const QcMineshaftPlan::Node &at, int turns, QcMineshaftSite &site, double pick) const
 {
-    int left = static_cast<int>(pick * m_totalWeight);
-    const auto chosen = std::ranges::find_if(roomList(), [&left](const QcWeightedStructure &kind) {
-        left -= kind.weight;
-        return left < 0;
-    });
-    const QcWeightedStructure &kind = chosen != roomList().end() ? *chosen : roomList().constLast();
+    const QcWeightedStructure &kind = qcWeightedPick(roomList(), pick, &QcWeightedStructure::weight);
     const QcStructure &structure = *kind.structure;
 
     // The door (the middle of the structure's north side) faces the corridor.

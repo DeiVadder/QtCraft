@@ -189,6 +189,7 @@ target_sources(qc_common PRIVATE
     core/QcTickPhase.h
     core/QcTickSummary.h
     core/QcVec3.h
+    core/QcWeightedChoice.h
     core/QcWorkerPool.h core/QcWorkerPool.cpp
     core/QcWorldConstants.h
     core/QcXzRect.h

@@ -3,6 +3,8 @@
 
 #include "worldgen/villages/QcVillageFields.h"
 
+#include "common/core/QcWeightedChoice.h"
+
 #include <algorithm>
 
 namespace QcVillageFields {
@@ -17,18 +19,7 @@ bool isCrop(const QcStructure &structure, const QcContentRegistry &content, int 
 
 const QcVillageStyle::Crop &chooseCrop(const QList<QcVillageStyle::Crop> &crops, double random)
 {
-    int total = 0;
-    for (const QcVillageStyle::Crop &crop : crops) {
-        total += crop.weight;
-    }
-    int pick = static_cast<int>(random * total);
-    for (const QcVillageStyle::Crop &crop : crops) {
-        if (pick < crop.weight) {
-            return crop;
-        }
-        pick -= crop.weight;
-    }
-    return crops.back();
+    return qcWeightedPick(crops, random, &QcVillageStyle::Crop::weight);
 }
 
 QcBlockId stageOf(const QcVillageStyle::Crop &crop, double random)

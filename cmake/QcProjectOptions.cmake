@@ -59,6 +59,15 @@ else()
     target_compile_options(qc_project_options INTERFACE
         -Wall -Wextra -Wpedantic -Wold-style-cast
         -fno-exceptions)
+    # A designated initializer that leaves out a field without default (decision E-977): LLVM
+    # counts it to -Wextra, Apple clang does not, so the Mac build names it explicitly.
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        include(CheckCXXCompilerFlag)
+        check_cxx_compiler_flag(-Wmissing-designated-field-initializers QC_HAS_WMISSING_DESIGNATED)
+        if(QC_HAS_WMISSING_DESIGNATED)
+            target_compile_options(qc_project_options INTERFACE -Wmissing-designated-field-initializers)
+        endif()
+    endif()
     if(QC_WARNINGS_AS_ERRORS)
         target_compile_options(qc_project_options INTERFACE -Werror)
         # GCC's -Wmaybe-uninitialized depends on the optimizer and reports false positives in

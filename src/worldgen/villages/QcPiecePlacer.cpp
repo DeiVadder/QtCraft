@@ -3,6 +3,7 @@
 
 #include "worldgen/villages/QcPiecePlacer.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 #include "worldgen/villages/QcBoardwalkPlanner.h"
@@ -12,6 +13,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <ranges>
 #include <tuple>
 
 using namespace Qt::StringLiterals;
@@ -344,25 +346,16 @@ int QcPiecePlacer::choosePiece(QcVillageDraft &draft)
 {
     const QList<QcVillageStyle::Piece> &pieces = draft.style->pieces;
     const auto open = [&](qsizetype i) { return !pieces[i].hasRules() && (pieces[i].max == 0 || draft.counts[i] < pieces[i].max); };
-    int total = 0;
-    for (qsizetype i = 0; i < pieces.size(); ++i) {
-        total += open(i) ? pieces[i].weight : 0;
-    }
+    // A piece that may not be placed any more weighs nothing.
+    const auto weightOf = [&](qsizetype i) { return open(i) ? pieces[i].weight : 0; };
+    const auto indices = std::views::iota(qsizetype{0}, pieces.size());
+    const int total = qcWeightTotal(indices, weightOf);
     if (total == 0) {
         return -1;
     }
 
-    int pick = static_cast<int>(draft.random() * total);
-    for (qsizetype i = 0; i < pieces.size(); ++i) {
-        if (!open(i)) {
-            continue;
-        }
-        if (pick < pieces[i].weight) {
-            return static_cast<int>(i);
-        }
-        pick -= pieces[i].weight;
-    }
-    return -1;
+    const auto chosen = qcWeightedFind(indices, static_cast<int>(draft.random() * total), weightOf);
+    return chosen != indices.end() ? static_cast<int>(*chosen) : -1;
 }
 
 void QcPiecePlacer::placeLamps(QcVillageDraft &draft, const Road &road) const
@@ -404,18 +397,7 @@ const QcVillageStyle::Blueprint &QcPiecePlacer::chooseBlueprint(QcVillageDraft &
         return piece.first();
     }
 
-    int total = 0;
-    for (const QcVillageStyle::Blueprint &blueprint : piece.blueprints) {
-        total += blueprint.weight;
-    }
-    int pick = static_cast<int>(draft.random() * total);
-    for (const QcVillageStyle::Blueprint &blueprint : piece.blueprints) {
-        if (pick < blueprint.weight) {
-            return blueprint;
-        }
-        pick -= blueprint.weight;
-    }
-    return piece.blueprints.back();
+    return qcWeightedPick(piece.blueprints, draft.random(), &QcVillageStyle::Blueprint::weight);
 }
 
 const QcStructurePlacement &QcPiecePlacer::addPiece(QcVillageDraft &draft, const QcVillageStyle::Blueprint &blueprint, QcXzRect rect, QcBlockPos origin, int turns) const

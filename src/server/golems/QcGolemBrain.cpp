@@ -46,7 +46,7 @@ QcPhysics::Steering QcGolemBrain::think(QcCreature &mob, const QcMobDefinition &
             if (readyToStrike(mob, definition, player->position)) {
                 const QcVec3 towards{player->position.x - mob.motion.position.x, 0.0, player->position.z - mob.motion.position.z};
                 context.hits->append(
-                    {.playerEntityId = player->entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .lift = definition.golem.lift, .mob = mob.id});
+                    {.playerEntityId = player->entityId, .damage = definition.attackDamage, .knockback = towards.normalized(), .lift = definition.golem.lift, .mobType = mob.type, .mob = mob.id});
             }
             return {{}, definition.chaseSpeed};
         }

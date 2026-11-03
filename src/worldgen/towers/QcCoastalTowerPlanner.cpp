@@ -3,6 +3,7 @@
 
 #include "worldgen/towers/QcCoastalTowerPlanner.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/mineshafts/QcMineshaftGenerator.h"
 #include "worldgen/surface/QcSurfaceStructures.h"
 #include "worldgen/terrain/QcNoise.h"
@@ -62,7 +63,6 @@ void QcCoastalTowerPlanner::resolve(const QcContentRegistry &content)
             continue;
         }
         m_kinds.append({std::make_shared<const QcStructure>(std::move(*structure)), entry.weight});
-        m_totalWeight += entry.weight;
     }
     m_enabled = !m_kinds.isEmpty();
 }
@@ -79,12 +79,7 @@ double QcCoastalTowerPlanner::priority(int regionX, int regionZ) const
 
 const QcWeightedStructure &QcCoastalTowerPlanner::pick(double random) const
 {
-    int left = static_cast<int>(random * m_totalWeight);
-    const auto chosen = std::ranges::find_if(m_kinds, [&left](const QcWeightedStructure &kind) {
-        left -= kind.weight;
-        return left < 0;
-    });
-    return chosen != m_kinds.end() ? *chosen : m_kinds.constLast();
+    return qcWeightedPick(m_kinds, random, &QcWeightedStructure::weight);
 }
 
 std::shared_ptr<const QcCoastalTowerPlan> QcCoastalTowerPlanner::plan(int regionX, int regionZ) const

@@ -3,6 +3,8 @@
 
 #include "worldgen/villages/QcVillageRoads.h"
 
+#include "common/core/QcWeightedChoice.h"
+
 #include <QHash>
 
 #include <algorithm>
@@ -13,18 +15,7 @@ namespace QcVillageRoads {
 
 const QcVillageStyle::Road &choose(const QList<QcVillageStyle::Road> &roads, double random)
 {
-    int total = 0;
-    for (const QcVillageStyle::Road &road : roads) {
-        total += road.weight;
-    }
-    int pick = static_cast<int>(random * total);
-    for (const QcVillageStyle::Road &road : roads) {
-        if (pick < road.weight) {
-            return road;
-        }
-        pick -= road.weight;
-    }
-    return roads.back();
+    return qcWeightedPick(roads, random, &QcVillageStyle::Road::weight);
 }
 
 QList<QcPlacedBlock> steps(const QcVillagePlan &plan, QcBlockId step, QcBlockId branchStep)

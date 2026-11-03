@@ -3,6 +3,8 @@
 
 #include "worldgen/villages/QcRoadNetworkPlanner.h"
 
+#include "common/core/QcWeightedChoice.h"
+
 #include <algorithm>
 
 namespace {
@@ -46,20 +48,8 @@ double QcRoadNetworkPlanner::drawShare(QcVillageDraft &draft, QcVillageRange<dou
 QcVillageDraft::Layout QcRoadNetworkPlanner::chooseLayout(QcVillageDraft &draft)
 {
     const QList<QcVillageLayout> &layouts = draft.style->layouts;
-    int total = 0;
-    for (const QcVillageLayout &entry : layouts) {
-        total += entry.weight;
-    }
-    int pick = static_cast<int>(draft.random() * total);
     QcVillageDraft::Layout layout;
-    layout.shape = &layouts.back();
-    for (const QcVillageLayout &entry : layouts) {
-        if (pick < entry.weight) {
-            layout.shape = &entry;
-            break;
-        }
-        pick -= entry.weight;
-    }
+    layout.shape = &qcWeightedPick(layouts, draft.random(), &QcVillageLayout::weight);
 
     // A street may run along a diagonal; a tree with diagonals has its main arm on one, so it is
     // never just a cross. The other kinds keep to the axes.

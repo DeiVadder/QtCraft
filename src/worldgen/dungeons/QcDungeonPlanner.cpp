@@ -3,6 +3,7 @@
 
 #include "worldgen/dungeons/QcDungeonPlanner.h"
 
+#include "common/core/QcWeightedChoice.h"
 #include "worldgen/terrain/QcNoise.h"
 #include "worldgen/terrain/QcTerrainGenerator.h"
 
@@ -208,16 +209,7 @@ bool QcDungeonPlanner::fewCaves(Probe &probe, QcBlockPos origin, int sizeX, int 
 
 QString QcDungeonPlanner::mobOf(const QcDungeonPlan &plan) const
 {
-    int total = 0;
-    for (const QcDungeonSettings::Mob &mob : m_settings.mobs) {
-        total += mob.weight;
-    }
-    int pick = static_cast<int>(random(plan, 20) * total);
-    const auto chosen = std::ranges::find_if(m_settings.mobs, [&pick](const QcDungeonSettings::Mob &mob) {
-        pick -= mob.weight;
-        return pick < 0;
-    });
-    return chosen != m_settings.mobs.end() ? chosen->mob : m_settings.mobs.constLast().mob;
+    return qcWeightedPick(m_settings.mobs, random(plan, 20), &QcDungeonSettings::Mob::weight).mob;
 }
 
 QList<QcPlacedBlock> QcDungeonPlanner::chestsOf(const QcDungeonPlan &plan) const
