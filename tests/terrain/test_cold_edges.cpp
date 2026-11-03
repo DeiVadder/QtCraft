@@ -65,8 +65,14 @@ private:
     std::array<qint64, 6> seeds() const { return {7, 42, 1234, 544594159, 826314780, m_randomSeed}; }
     // The seeds of seeds() and three where still water beside a river lies where the river noise
     // flattens and the river's distance grew by several blocks per block, so the freezing share
-    // stepped (decision E-969): 1740746631 and 601616390 by 0.36, 1008271560 by 0.33.
-    std::array<qint64, 9> riverSeeds() const { return {7, 42, 1234, 544594159, 826314780, 1740746631, 601616390, 1008271560, m_randomSeed}; }
+    // stepped (decision E-969): 1740746631 and 601616390 by 0.36, 1008271560 by 0.33. And two where
+    // the fading of a small ring ended a river from one column to the next, measured at the
+    // column instead of the middle line (decision E-969, 79.83): 373271193 by 0.27, 665077549 by
+    // 0.16.
+    std::array<qint64, 11> riverSeeds() const
+    {
+        return {7, 42, 1234, 544594159, 826314780, 1740746631, 601616390, 1008271560, 373271193, 665077549, m_randomSeed};
+    }
     [[nodiscard]] QcBlockId id(const QString &name) const { return m_content->blockId(name).value_or(qcAirBlockId); }
 
     Window windowAt(const QcTerrainGenerator &generator, Spot spot) const

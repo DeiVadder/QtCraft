@@ -1610,5 +1610,10 @@
     "QtCraft could not start.": "QtCraft konnte nicht starten.",
     "Looking up the server name %1 took too long": "Das Nachschlagen des Servernamens %1 hat zu lange gedauert",
     "Your internet connection or its name server (DNS) may be slow or down: try again, or use the server's IP address.": "Deine Internetverbindung oder ihr Namensserver (DNS) ist vielleicht langsam oder gestört: Versuche es noch einmal oder nimm die IP-Adresse des Servers.",
-    "The server runs another version of QtCraft": "Der Server läuft mit einer anderen Version von QtCraft"
+    "The server runs another version of QtCraft": "Der Server läuft mit einer anderen Version von QtCraft",
+    "Generator version": "Generator-Version",
+    "The newest terrain. A world keeps its version for good.": "Das neueste Gelände. Eine Welt behält ihre Version für immer.",
+    "Makes the same worlds as the release that brought this version.": "Erzeugt dieselben Welten wie das Release, das diese Version brachte.",
+    "Current (%1)": "Aktuell (%1)",
+    "Version %1": "Version %1"
 }

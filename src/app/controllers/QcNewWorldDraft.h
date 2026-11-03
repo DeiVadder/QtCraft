@@ -5,7 +5,9 @@
 
 #include "app/controllers/QcWorldLibraryController.h"
 #include "common/gameplay/QcGameMode.h"
+#include "common/world/QcGeneratorVersion.h"
 
+#include <QList>
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
@@ -17,7 +19,7 @@ class QcWorldOptionsController;
 // seed, layers of a flat world, game mode and keeping the inventory, with their defaults whenever
 // the form opens (reset) and the random seed of an empty seed field. The world options themselves
 // stay in QcWorldOptionsController; setup() hands both to QcGameController::createWorld. The map
-// preview follows seed().
+// preview follows seed() and generatorVersion().
 class QcNewWorldDraft : public QObject
 {
     Q_OBJECT
@@ -38,6 +40,13 @@ class QcNewWorldDraft : public QObject
     Q_PROPERTY(QString layers READ layers WRITE setLayers NOTIFY layersChanged FINAL)
     Q_PROPERTY(QcGameModes::Mode gameMode READ gameMode WRITE setGameMode NOTIFY gameModeChanged FINAL)
     Q_PROPERTY(bool keepInventory READ keepInventory WRITE setKeepInventory NOTIFY keepInventoryChanged FINAL)
+    // The world generator version the world is made with (decision E-922): the current one by
+    // default, an older one the game still has (QcGeneratorVersion::isKnown).
+    Q_PROPERTY(int generatorVersion READ generatorVersion WRITE setGeneratorVersion NOTIFY generatorVersionChanged FINAL)
+    // The versions to choose from, newest first; the form shows the choice only with more than one.
+    Q_PROPERTY(QList<int> generatorVersions READ generatorVersions CONSTANT FINAL)
+    // The current version: the form names it "Current (N)".
+    Q_PROPERTY(int currentGeneratorVersion READ currentGeneratorVersion CONSTANT FINAL)
 
 public:
     using WorldType = QcWorldLibraryController::WorldType;
@@ -64,8 +73,14 @@ public:
     void setGameMode(QcGameMode mode);
     bool keepInventory() const { return m_keepInventory; }
     void setKeepInventory(bool keep);
+    int generatorVersion() const { return m_generatorVersion; }
+    // A version the game does not have is refused with a warning.
+    void setGeneratorVersion(int version);
+    // The versions the game generates, newest first.
+    [[nodiscard]] static QList<int> generatorVersions();
+    [[nodiscard]] static int currentGeneratorVersion();
     // What createWorld takes besides name and seed: keepInventory, worldType, layers (a flat
-    // world's), gameMode and worldOptions (those of QcWorldOptionsController).
+    // world's), gameMode, generatorVersion and worldOptions (those of QcWorldOptionsController).
     Q_INVOKABLE QVariantMap setup() const;
 
     // The type and mode the form starts with (the test hooks QTCRAFT_MENU_WORLD_TYPE and
@@ -88,6 +103,7 @@ signals:
     void layersChanged();
     void gameModeChanged();
     void keepInventoryChanged();
+    void generatorVersionChanged();
 
 private:
     void setRandomSeed(const QString &seed);
@@ -102,4 +118,5 @@ private:
     QcGameMode m_gameMode = QcGameMode::Survival;
     QcGameMode m_startGameMode = QcGameMode::Survival;
     bool m_keepInventory = true;
+    int m_generatorVersion = QcGeneratorVersion::current;
 };

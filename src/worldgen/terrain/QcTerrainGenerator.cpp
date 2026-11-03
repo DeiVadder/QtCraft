@@ -144,6 +144,12 @@ std::optional<QcStructurePlacement> QcTerrainGenerator::nearestStructure(const Q
 
 QcTerrainGenerator::~QcTerrainGenerator() = default;
 
+void QcTerrainGenerator::setVersion(int version)
+{
+    QcWorldGenerator::setVersion(version);
+    m_rivers.setSmoothRings(version >= 2);
+}
+
 std::shared_ptr<const QcVillagePlan> QcTerrainGenerator::villageFor(QcChunkPos pos) const
 {
     return m_villages->planFor(pos);

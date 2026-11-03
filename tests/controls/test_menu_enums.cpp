@@ -298,10 +298,8 @@ private slots:
         QcGameController game;
         QcNewWorldDraft &draft = *game.worldOptions()->draft();
         QQmlEngine engine;
-        QQmlComponent component(&engine);
-        component.setData("import QtCraft\nNewWorldPage { objectName: \"newWorldPage\" }\n", QUrl(u"qrc:/test_new_world.qml"_s));
-        const std::unique_ptr<QObject> page(component.createWithInitialProperties({{u"game"_s, QVariant::fromValue(&game)}}));
-        QVERIFY2(page, qPrintable(component.errorString()));
+        const std::unique_ptr<QObject> page = newWorldPage(engine, game);
+        QVERIFY(page);
         QObject *types = page->findChild<QObject *>(u"worldTypeChoice"_s);
         QObject *modes = page->findChild<QObject *>(u"gameModeChoice"_s);
         QVERIFY(types && modes);
@@ -335,6 +333,34 @@ private slots:
         QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"unknown game mode"_s));
         QcMenuPreselect::newWorld(draft, u"spiral"_s, u"hardcore"_s);
         QCOMPARE(draft.worldType(), QcWorldLibraryController::WorldType::Showcase);
+    }
+
+    // The page's "Generator version" (decision E-922) lists the versions newest first, the
+    // current one as "Current (N)", and shows and sets the draft's choice.
+    void theNewWorldPageChoosesTheGeneratorVersion()
+    {
+        QcGameController game;
+        QcNewWorldDraft &draft = *game.worldOptions()->draft();
+        QQmlEngine engine;
+        const std::unique_ptr<QObject> page = newWorldPage(engine, game);
+        QVERIFY(page);
+        QObject *versions = page->findChild<QObject *>(u"generatorVersionChoice"_s);
+        QVERIFY(versions);
+        QCOMPARE(versions->property("count").toInt(), QcGeneratorVersion::current - QcGeneratorVersion::oldest + 1);
+        QCOMPARE(versions->property("currentValue").toInt(), QcGeneratorVersion::current);
+        QCOMPARE(versions->property("displayText").toString(), u"Current (%1)"_s.arg(QcGeneratorVersion::current));
+        QVERIFY(versions->property("popup").value<QObject *>());
+
+        draft.setGeneratorVersion(QcGeneratorVersion::oldest);
+        QCOMPARE(versions->property("currentValue").toInt(), QcGeneratorVersion::oldest);
+        QCOMPARE(versions->property("displayText").toString(), u"Version %1"_s.arg(QcGeneratorVersion::oldest));
+        QVERIFY(QMetaObject::invokeMethod(page.get(), "open"));
+        QCOMPARE(draft.generatorVersion(), QcGeneratorVersion::current);
+        QCOMPARE(versions->property("currentValue").toInt(), QcGeneratorVersion::current);
+
+        // A choice in the list sets the draft's version.
+        QVERIFY(QMetaObject::invokeMethod(versions, "activated", Q_ARG(int, 1)));
+        QCOMPARE(draft.generatorVersion(), QcGeneratorVersion::current - 1);
     }
 
     // "Continue" opens the world played last that can be opened; the list below shows the others,
@@ -420,6 +446,18 @@ QtObject {
     }
 
 private:
+    // The real "New world" page for `game` (null with a warning when it does not load).
+    static std::unique_ptr<QObject> newWorldPage(QQmlEngine &engine, QcGameController &game)
+    {
+        QQmlComponent component(&engine);
+        component.setData("import QtCraft\nNewWorldPage { objectName: \"newWorldPage\" }\n", QUrl(u"qrc:/test_new_world.qml"_s));
+        std::unique_ptr<QObject> page(component.createWithInitialProperties({{u"game"_s, QVariant::fromValue(&game)}}));
+        if (!page) {
+            qWarning().noquote() << component.errorString();
+        }
+        return page;
+    }
+
     QTemporaryDir m_data;
 };
 

@@ -5,6 +5,7 @@
 #include "app/controllers/QcWorldLibraryController.h"
 #include "app/controllers/QcWorldOptionsController.h"
 #include "common/content/registry/QcContentRegistry.h"
+#include "common/world/QcGeneratorVersion.h"
 
 #include <QRegularExpression>
 #include <QSignalSpy>
@@ -16,8 +17,8 @@ using namespace Qt::StringLiterals;
 // The menu's world options (GameController.worldOptions, decision E-917): the values a slider sends
 // land on the option's grid, so that moving back to the default counts as no change, and the
 // controller lets go of the menu's content when a world starts. The rest of the new world's form
-// (QcNewWorldDraft, decision E-956): defaults, the random seed, refused values and what createWorld
-// gets.
+// (QcNewWorldDraft, decision E-956): defaults, the random seed, the generator version, refused
+// values and what createWorld gets.
 class TestWorldOptionsController : public QObject
 {
     Q_OBJECT
@@ -231,6 +232,44 @@ private slots:
         draft.setWorldType(QcNewWorldDraft::WorldType::Void);
         setup = draft.setup();
         QCOMPARE(setup.value(u"layers"_s).toString(), QString());
+    }
+
+    // The generator version (decision E-922): the current one by default and after every reset,
+    // the versions newest first; a chosen one goes into the setup and the map preview, a version
+    // the game does not have is refused with a warning.
+    void theDraftChoosesTheGeneratorVersion()
+    {
+        Fixture fixture;
+        QcNewWorldDraft &draft = *fixture.options.draft();
+        QCOMPARE(draft.generatorVersion(), QcGeneratorVersion::current);
+        QCOMPARE(QcNewWorldDraft::currentGeneratorVersion(), QcGeneratorVersion::current);
+        const QList<int> versions = QcNewWorldDraft::generatorVersions();
+        QCOMPARE(versions.size(), QcGeneratorVersion::current - QcGeneratorVersion::oldest + 1);
+        QCOMPARE(versions.constFirst(), QcGeneratorVersion::current);
+        QCOMPARE(versions.constLast(), QcGeneratorVersion::oldest);
+        QCOMPARE(draft.setup().value(u"generatorVersion"_s).toInt(), QcGeneratorVersion::current);
+        QCOMPARE(fixture.options.preview()->generatorVersion(), QcGeneratorVersion::current);
+
+        QSignalSpy changed(&draft, &QcNewWorldDraft::generatorVersionChanged);
+        draft.setGeneratorVersion(QcGeneratorVersion::oldest);
+        QCOMPARE(changed.count(), 1);
+        draft.setGeneratorVersion(QcGeneratorVersion::oldest);
+        QCOMPARE(changed.count(), 1);
+        QCOMPARE(draft.setup().value(u"generatorVersion"_s).toInt(), QcGeneratorVersion::oldest);
+        QCOMPARE(fixture.options.preview()->generatorVersion(), QcGeneratorVersion::oldest);
+
+        for (const int refused : {QcGeneratorVersion::oldest - 1, QcGeneratorVersion::current + 1}) {
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"New world: refused the world generator version %1"_s.arg(refused)));
+            draft.setGeneratorVersion(refused);
+        }
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"Map preview: refused the world generator version 0"_s));
+        fixture.options.preview()->setGeneratorVersion(0);
+        QCOMPARE(draft.generatorVersion(), QcGeneratorVersion::oldest);
+        QCOMPARE(fixture.options.preview()->generatorVersion(), QcGeneratorVersion::oldest);
+
+        draft.reset();
+        QCOMPARE(draft.generatorVersion(), QcGeneratorVersion::current);
+        QCOMPARE(fixture.options.preview()->generatorVersion(), QcGeneratorVersion::current);
     }
 
 private:

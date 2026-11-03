@@ -29,6 +29,7 @@ QcNewWorldDraft::QcNewWorldDraft(QcWorldOptionsController &options, QObject *par
 {
     // The map shows the world the form would create.
     connect(this, &QcNewWorldDraft::seedChanged, this, [this] { m_options.preview()->setSeedText(seed()); });
+    connect(this, &QcNewWorldDraft::generatorVersionChanged, this, [this] { m_options.preview()->setGeneratorVersion(generatorVersion()); });
 }
 
 void QcNewWorldDraft::setName(const QString &name)
@@ -101,12 +102,40 @@ void QcNewWorldDraft::setKeepInventory(bool keep)
     }
 }
 
+void QcNewWorldDraft::setGeneratorVersion(int version)
+{
+    if (!QcGeneratorVersion::isKnown(version)) {
+        qCWarning(lcGame) << "New world: refused the world generator version" << version << "- the game has versions"
+                          << QcGeneratorVersion::oldest << "to" << QcGeneratorVersion::current;
+        return;
+    }
+    if (version != m_generatorVersion) {
+        m_generatorVersion = version;
+        emit generatorVersionChanged();
+    }
+}
+
+QList<int> QcNewWorldDraft::generatorVersions()
+{
+    QList<int> versions;
+    for (int version = QcGeneratorVersion::current; version >= QcGeneratorVersion::oldest; --version) {
+        versions.append(version);
+    }
+    return versions;
+}
+
+int QcNewWorldDraft::currentGeneratorVersion()
+{
+    return QcGeneratorVersion::current;
+}
+
 QVariantMap QcNewWorldDraft::setup() const
 {
     return {{u"keepInventory"_s, keepInventory()},
             {u"worldType"_s, static_cast<int>(worldType())},
             {u"layers"_s, worldType() == WorldType::Flat ? layers() : QString()},
             {u"gameMode"_s, static_cast<int>(gameMode())},
+            {u"generatorVersion"_s, generatorVersion()},
             {u"worldOptions"_s, m_options.values()}};
 }
 
@@ -139,6 +168,7 @@ void QcNewWorldDraft::reset()
     setLayers({});
     setGameMode(m_startGameMode);
     setKeepInventory(true);
+    setGeneratorVersion(QcGeneratorVersion::current);
     m_options.reset();
     m_options.preview()->resetView();
 }

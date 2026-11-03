@@ -37,6 +37,8 @@ class QcWorldMapPreview : public QObject
     QML_UNCREATABLE("Provided by GameController.worldOptions.preview")
     // The seed text of the form ("" is not a seed: the form passes its random one).
     Q_PROPERTY(QString seedText READ seedText WRITE setSeedText NOTIFY seedTextChanged FINAL)
+    // The world generator version of the world shown (decision E-922; the form's choice).
+    Q_PROPERTY(int generatorVersion READ generatorVersion WRITE setGeneratorVersion NOTIFY generatorVersionChanged FINAL)
     // Whether the page with the preview is shown; nothing is computed otherwise.
     Q_PROPERTY(bool active READ active WRITE setActive NOTIFY activeChanged FINAL)
     // Villages and structures on the map: off by default, so the map does not give them away.
@@ -96,6 +98,9 @@ public:
 
     QString seedText() const { return m_seedText; }
     void setSeedText(const QString &text);
+    int generatorVersion() const { return m_generatorVersion; }
+    // A version the game does not have is refused with a warning.
+    void setGeneratorVersion(int version);
     bool active() const { return m_active; }
     void setActive(bool active);
     bool showSites() const { return m_showSites; }
@@ -148,6 +153,7 @@ public:
 
 signals:
     void seedTextChanged();
+    void generatorVersionChanged();
     void activeChanged();
     void showSitesChanged();
     void imageChanged();
@@ -210,6 +216,7 @@ private:
     std::shared_ptr<const QcContentRegistry> m_content;
     QJsonObject m_values;
     QString m_seedText;
+    int m_generatorVersion = QcGeneratorVersion::current;
     bool m_active = false;
     bool m_showSites = false;
     QcBiomeMap::Area m_view{0, 0, defaultRadius, 1};

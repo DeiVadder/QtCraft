@@ -97,19 +97,9 @@ ColumnLayout {
 
     spacing: 0
 
-    // The dropdowns show the draft's choices, also after it was reset (and once their lists are
-    // filled). The text fields bind the draft's texts and write every change back (also one a test
-    // hook sets), the dropdowns and the switch the player's choice.
-    Binding {
-        target: worldType
-        property: "currentIndex"
-        value: worldType.count > 0 ? worldType.indexOfValue(page.draft.worldType) : -1
-    }
-    Binding {
-        target: gameMode
-        property: "currentIndex"
-        value: gameMode.count > 0 ? gameMode.indexOfValue(page.draft.gameMode) : -1
-    }
+    // The dropdowns show the draft's choices (shownValue), also after it was reset. The text fields
+    // bind the draft's texts and write every change back (also one a test hook sets), the
+    // dropdowns and the switch the player's choice.
 
     SettingsPage {
         id: form
@@ -159,6 +149,7 @@ ColumnLayout {
                         id: worldType
 
                         objectName: "worldTypeChoice"
+                        shownValue: page.draft.worldType
                         label: qsTr("World type")
                         // Each type with what it is.
                         readonly property var choices: [
@@ -238,6 +229,7 @@ ColumnLayout {
                         id: gameMode
 
                         objectName: "gameModeChoice"
+                        shownValue: page.draft.gameMode
                         label: qsTr("Game mode")
                         // Each mode with what it is.
                         readonly property var choices: [
@@ -267,6 +259,25 @@ ColumnLayout {
                     visible: page.terrain
                     title: qsTr("World generation")
 
+                    // Only while the game has more than one version (decision E-922).
+                    SettingDropdown {
+                        id: versionChoice
+
+                        objectName: "generatorVersionChoice"
+                        shownValue: page.draft.generatorVersion
+                        visible: page.draft.generatorVersions.length > 1
+                        label: qsTr("Generator version")
+                        help: page.draft.generatorVersion === page.draft.currentGeneratorVersion
+                              ? qsTr("The newest terrain. A world keeps its version for good.")
+                              : qsTr("Makes the same worlds as the release that brought this version.")
+                        textRole: "text"
+                        valueRole: "value"
+                        model: page.draft.generatorVersions.map(version => ({
+                            value: version,
+                            text: version === page.draft.currentGeneratorVersion ? qsTr("Current (%1)").arg(version) : qsTr("Version %1").arg(version)
+                        }))
+                        onActivated: index => page.draft.generatorVersion = page.draft.generatorVersions[index]
+                    }
                     SettingRow {
                         label: qsTr("World options")
                         help: page.game.worldOptions.summary

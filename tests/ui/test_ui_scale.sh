@@ -86,13 +86,13 @@ check worldoptions --overlay "@300 open:worldOptionsPage"
 # "New world" of a normal world (draft D.3 A, decision E-930): the game mode stands in the page's
 # view without scrolling (its bottom above the form's), the map stands in its own column right of
 # it, and the pad walks the form in reading order: name, type, seed, the die, game mode, keeping the
-# inventory, the world options, then down to "Create and play"; the world options page with its
+# inventory, the generator version, the world options, then down to "Create and play"; the world options page with its
 # full map and sliders fits as well.
 MENU_WORLD_TYPE=terrain
 LOG_ITEMS=newWorldForm,gameModeChoice,newWorldMap
 check newworld-terrain --overlay "@300 open:newWorldPage" --overlay "@600 pad:dpadUp" --overlay "@600 pad:dpadDown" \
     --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadRight" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" \
-    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
+    --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown" --overlay "@600 pad:dpadDown"
 LOG_ITEMS=
 # item_bottom <run> <name>: the bottom edge of a logged item in the window.
 item_bottom() {
@@ -111,7 +111,7 @@ if ! awk -v mode="$mode_bottom" -v form="$form_bottom" 'BEGIN { exit !(mode > 0 
     failed=1
 fi
 order=$(grep 'padFocus' "$DATA/newworld-terrain.log" | sed 's/^padFocus: //' | tr '\n' ' ')
-if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: moreWorldOptions createWorldButton " ]; then
+if [ "$order" != "worldName ThemedComboBox: worldSeed worldSeedRandom ThemedComboBox: GameSwitch: ThemedComboBox: moreWorldOptions createWorldButton " ]; then
     echo "newworld-terrain: the pad's focus does not walk the form in reading order: $order"
     failed=1
 fi

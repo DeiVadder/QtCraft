@@ -56,6 +56,10 @@ public:
     ~QcTerrainGenerator() override;
     Q_DISABLE_COPY_MOVE(QcTerrainGenerator)
 
+    /*! Sets the world generator version to \a version, also for the rivers (version 2 on fades
+        small rings smoothly, QcRiverField::smoothRings(), decision E-969). */
+    void setVersion(int version) override;
+
     std::shared_ptr<QcChunk> generate(QcChunkPos pos) const override;
     QcBlockPos spawnPoint() const override;
     QString biomeAt(int x, int z) const override { return biomeName(column(x, z).biome); }

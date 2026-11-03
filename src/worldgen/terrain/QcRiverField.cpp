@@ -180,7 +180,6 @@ QcRiverField::Sample QcRiverField::at(int x, int z, const QcTerrainClimate::Poin
     // near distance lies within it, for nearHalfWidth (the river's strength stays as it is).
     double ringsLeft = 1.0;
     if (sample.distance < reach || sample.nearDistance < reach) {
-        ringsLeft = ringsLeave(shape);
         // One step along the slope moves `distance` blocks; where only the near distance lies
         // within reach, the step is shortened to it (`distance` grows without bound as the slope
         // vanishes, and would land on another river's piece).
@@ -188,6 +187,10 @@ QcRiverField::Sample QcRiverField::at(int x, int z, const QcTerrainClimate::Poin
         const double toLine = shape.slope > 0.0 ? shorten * here / (shape.slope * shape.slope) : 0.0;
         sample.lineX = bentX - toLine * shape.gradX;
         sample.lineZ = bentZ - toLine * shape.gradZ;
+        // With smoothRings() the rings are measured on the middle line, the same for every column
+        // across the river (the bend of the noise's line through a column beside it changes by
+        // up to a quarter per block where the noise is flat, and with it the river's end).
+        ringsLeft = smoothRings() ? ringsLeaveOnLine(sample.lineX, sample.lineZ) : ringsLeave(shape);
     }
     if (sample.distance < reach) {
         sample.strength *= ringsLeft;
@@ -230,7 +233,11 @@ double QcRiverField::ringsLeaveOnLine(double bentX, double bentZ) const
 double QcRiverField::ringsLeave(const Shape &shape) const
 {
     const double nearTop = smoothstep(nearTopFrom, nearTopTo, shape.top);
-    return nearTop < 1.0 ? std::max(nearTop, ringFade(shape.topX, shape.topZ, shape.side)) : 1.0;
+    if (nearTop >= 1.0) {
+        return 1.0;
+    }
+    const double fade = smoothRings() ? blendedRingFade(shape.topX, shape.topZ, shape.side) : ringFade(shape.topX, shape.topZ, shape.side);
+    return std::max(nearTop, fade);
 }
 
 QcRiverField::Course QcRiverField::courseAt(int x, int z, double here) const
@@ -299,9 +306,35 @@ QcRiverField::Shape QcRiverField::shapeAt(double bentX, double bentZ, double her
 double QcRiverField::ringFade(double startX, double startZ, double side) const
 {
     // The search starts in the middle of a cell of topCell blocks: every column whose start lies
-    // in the cell finds the same top, so the result is remembered per thread and field (a pure
-    // function of the field, cell and side, so the order of generation does not matter).
-    const TopKey key{m_instance, static_cast<int>(std::floor(startX / topCell)), static_cast<int>(std::floor(startZ / topCell)), side > 0.0};
+    // in the cell finds the same top.
+    return cellFade(static_cast<int>(std::floor(startX / topCell)), static_cast<int>(std::floor(startZ / topCell)), side);
+}
+
+double QcRiverField::blendedRingFade(double startX, double startZ, double side) const
+{
+    // Bilinear between the searches from the middles of the four cells round the start: where
+    // one finds a small ring and the next none, the river narrows over a cell's width instead of
+    // ending from one column to the next (decision E-969). The start moves by up to a few blocks
+    // per column, so the blend still rises by up to about a tenth per column; smoothed towards 0
+    // and 1, the river's half width leaves 0 gently where it ends.
+    const double cellsX = startX / topCell - 0.5;
+    const double cellsZ = startZ / topCell - 0.5;
+    const double lowX = std::floor(cellsX);
+    const double lowZ = std::floor(cellsZ);
+    const int cellX = static_cast<int>(lowX);
+    const int cellZ = static_cast<int>(lowZ);
+    const double alongX = cellsX - lowX;
+    const double alongZ = cellsZ - lowZ;
+    const double north = std::lerp(cellFade(cellX, cellZ, side), cellFade(cellX + 1, cellZ, side), alongX);
+    const double south = std::lerp(cellFade(cellX, cellZ + 1, side), cellFade(cellX + 1, cellZ + 1, side), alongX);
+    return smoothstep(0.0, 1.0, std::lerp(north, south, alongZ));
+}
+
+double QcRiverField::cellFade(int cellX, int cellZ, double side) const
+{
+    // The result is remembered per thread and field (a pure function of the field, cell and side,
+    // so the order of generation does not matter).
+    const TopKey key{m_instance, cellX, cellZ, side > 0.0};
     thread_local std::unordered_map<TopKey, double, TopKeyHash> remembered;
     if (const auto found = remembered.find(key); found != remembered.end()) {
         return found->second;

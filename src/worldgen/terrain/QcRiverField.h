@@ -164,6 +164,15 @@ public:
         bent point \a bentX, \a bentZ (0..1; times the climate's strengthAt() it is how strongly
         the river runs there, as at()). */
     [[nodiscard]] double ringsLeaveOnLine(double bentX, double bentZ) const;
+    /*! Returns whether the fading of small rings changes smoothly from column to column
+        (generator version 2 on, decision E-969): at() measures the rings on the middle line
+        (as ringsLeaveOnLine()), not at the column, and blends the searches of the four cells
+        round a point, so a river narrows to its end without a step. False for version 1, which
+        measures at the column and takes each point's own cell. */
+    [[nodiscard]] bool smoothRings() const { return m_smoothRings; }
+    /*! Sets whether the fading of small rings changes smoothly to \a smooth (smoothRings());
+        set before the field is read, by the generator's version. */
+    void setSmoothRings(bool smooth) { m_smoothRings = smooth; }
 
 private:
     // The meander's bend at a column: how many blocks its coordinates move.
@@ -207,6 +216,10 @@ private:
     // (side 1) or hollow (side -1) of the noise searched from (startX, startZ): 0 for a small ring,
     // 1 for a large one or none (no top found within a few steps).
     [[nodiscard]] double ringFade(double startX, double startZ, double side) const;
+    // ringFade() between the middles of the four cells round the start (smoothRings()).
+    [[nodiscard]] double blendedRingFade(double startX, double startZ, double side) const;
+    // ringFade() of the search from the middle of the cell (cellX, cellZ), remembered.
+    [[nodiscard]] double cellFade(int cellX, int cellZ, double side) const;
     // ringFade() without remembering: the search itself.
     [[nodiscard]] double searchRing(double startX, double startZ, double side) const;
     // Which search ringFade() remembers: the field (each instance its own), the cell of the start
@@ -249,6 +262,7 @@ private:
     [[nodiscard]] static quint64 nextInstance();
 
     quint64 m_instance = 0;
+    bool m_smoothRings = true;
     QcNoise m_riverNoise;
     QcNoise m_meanderNoiseX;
     QcNoise m_meanderNoiseZ;

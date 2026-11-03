@@ -44,7 +44,7 @@
 <context>
     <name>EnchantingOffer</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="30"/>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="32"/>
         <source>Level %1, %n lapis: %2</source>
         <translation>
             <numerusform>Level %1, %n lapis: %2</numerusform>
@@ -52,7 +52,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="31"/>
+        <location filename="../src/app/qml/inventory/EnchantingOffer.qml" line="33"/>
         <source>Level %1, %n lapis, %2 of %3 letters readable</source>
         <translation>
             <numerusform>Level %1, %n lapis, %2 of %3 letters readable</numerusform>
@@ -84,7 +84,7 @@
 <context>
     <name>MapPreviewGroup</name>
     <message numerus="yes">
-        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="350"/>
+        <location filename="../src/app/qml/menus/MapPreviewGroup.qml" line="342"/>
         <source>+ %n more</source>
         <translation>
             <numerusform>+ %n more</numerusform>
@@ -113,7 +113,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="137"/>
+        <location filename="../src/app/qml/hud/PlayerListOverlay.qml" line="139"/>
         <source>%n of 5 signal bars</source>
         <translation>
             <numerusform>%n of 5 signal bars</numerusform>
@@ -124,7 +124,7 @@
 <context>
     <name>QcAdminController</name>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="568"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="580"/>
         <source>Saved %n value(s).</source>
         <translation>
             <numerusform>Saved %n value.</numerusform>
@@ -132,7 +132,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/admin/QcAdminController.cpp" line="570"/>
+        <location filename="../src/app/admin/QcAdminController.cpp" line="582"/>
         <source>%n value(s) not saved; they stay changed here:</source>
         <translation>
             <numerusform>%n value not saved; it stays changed here:</numerusform>
