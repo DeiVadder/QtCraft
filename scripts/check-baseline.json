@@ -6,7 +6,7 @@
         "input-check": 2
     },
     "check-duplicates.py": {
-        "clone": 33,
+        "clone": 32,
         "near-repeat": 7,
         "repeat": 15
     }

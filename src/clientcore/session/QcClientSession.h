@@ -3,11 +3,10 @@
 
 #pragma once
 
-// NOLINT(qc-file-length): the enumerators of State stand on their own lines for their comments
-
 #include "clientcore/admin/QcClientAdmin.h"
 #include "clientcore/camera/QcViewCamera.h"
 #include "clientcore/figures/QcEntityPose.h"
+#include "clientcore/player/QcBlockPrediction.h"
 #include "clientcore/player/QcClientAdvancements.h"
 #include "clientcore/player/QcClientGameMode.h"
 #include "clientcore/player/QcClientInventory.h"
@@ -16,6 +15,7 @@
 #include "clientcore/player/QcHandTimers.h"
 #include "clientcore/player/QcLocalAnimation.h"
 #include "clientcore/player/QcPrediction.h"
+#include "clientcore/player/QcRefusalThrottle.h"
 #include "clientcore/session/QcClientAnvil.h"
 #include "clientcore/session/QcClientDebugSubscription.h"
 #include "clientcore/session/QcClientEnchanting.h"
@@ -26,6 +26,7 @@
 #include "clientcore/session/QcClientSounds.h"
 #include "clientcore/session/QcClientStonecutter.h"
 #include "clientcore/session/QcClientTrading.h"
+#include "clientcore/session/QcSessionState.h"
 #include "clientcore/session/QcWorldMirror.h"
 #include "clientcore/tick/QcSessionEvent.h"
 #include "clientcore/tick/QcSessionTickMode.h"
@@ -61,14 +62,8 @@ class QcClientSession : public QObject
     Q_OBJECT
 
 public:
-    /*! The phase of the connection; stateChanged() reports every change. */
-    enum class State {
-        Connecting,  // Hello sent, waiting for the server's Welcome
-        Loading,     // welcomed, waiting for the world and the first state of the player
-        Playing,     // in the world
-        Disconnected // the connection ended (disconnectReason())
-    };
-    Q_ENUM(State)
+    /*! The phase of the connection (QcSessionState); stateChanged() reports every change. */
+    using State = QcSessionState;
 
     QcClientSession(std::unique_ptr<QcTransport> transport, QString playerName, QObject *parent = nullptr);
     /*! Ticks on \a thread, where \a transport was made (a TLS connection, decisions E-560,
@@ -79,10 +74,6 @@ public:
 
     /*! How the session ticks: on the tick thread, by a timer in this thread or by hand (tick()). */
     using TickMode = QcSessionTickMode;
-
-    /*! A refused action (adventure mode, decision E-735) is reported at most once in this many
-        ticks. */
-    static constexpr quint64 refusalReportTicks = 40;
 
     /*! Sends Hello and starts ticking on the tick thread, by a timer in this thread or by hand,
         as \a mode says. */
@@ -162,17 +153,12 @@ public:
         change. In creative mode a press breaks the aimed block at once (with the block
         prediction, E-853). */
     void setMining(bool mining);
-    /*! Returns whether the session shows the blocks of the player's breaks and placements before
-        the server confirms them (decision E-853); on unless QTCRAFT_BLOCK_PREDICTION=0. Applies
-        from the next action on. */
-    static bool blockPredictionWanted();
-    /*! Turns the block prediction (blockPredictionWanted()) on or off with \a on. */
-    void setBlockPrediction(bool on) { m_blockPrediction = on; }
-    /*! Returns whether the block prediction is on (see setBlockPrediction()). */
-    bool blockPrediction() const { return m_blockPrediction; }
-    /*! Returns the number of the latest predicted action, 0 before the first; numbers start anew
-        with every session (a reconnect too). */
-    quint32 blockSequence() const { return m_blockSequence; }
+    /*! Returns the block prediction (decision E-853): whether the blocks of the player's breaks
+        and placements show before the server confirms them, and the number of the latest
+        predicted action. */
+    QcBlockPrediction &blockPrediction() { return m_blockPrediction; }
+    /*! Returns the block prediction, read-only. */
+    const QcBlockPrediction &blockPrediction() const { return m_blockPrediction; }
     /*! Uses the held item on the targeted block face (places blocks). Returns false without a
         target. */
     bool useItem();
@@ -295,7 +281,7 @@ public:
 
 signals:
     /*! The phase of the connection changed to \a state. */
-    void stateChanged(QcClientSession::State state);
+    void stateChanged(QcSessionStates::State state);
     /*! The server's content arrived; world() and content() are set. */
     void contentReady();
     /*! The chunk at \a pos arrived from the server. */
@@ -343,7 +329,7 @@ signals:
     /*! The server's ticks paused or resumed (serverPaused()). */
     void serverPauseChanged();
     /*! The mode refused a mining or use of the player (adventure allow-lists); at most once
-        every refusalReportTicks. */
+        every QcRefusalThrottle::reportTicks. */
     void actionRefused();
     /*! Emitted with a sound \a cue to play now. */
     void soundCue(const QcSoundCue &cue);
@@ -402,8 +388,8 @@ private:
     QcMsg::Welcome m_welcome;
     QcWorldMirror m_worldMirror;
     quint64 m_tickCount = 0;
-    // The first tick at which the next refusal is reported (actionRefused).
-    quint64 m_nextRefusalReport = 0;
+    // When a refusal is reported (actionRefused).
+    QcRefusalThrottle m_refusals;
 
     // Parts in dependency order: the hand reads the parts declared before it; what its actions mean
     // for the animation, the machine screen and the trading the session applies (apply()).
@@ -423,8 +409,7 @@ private:
                          [this](const QcMessage &message) { sendToServer(message); },
                          [this](const QcSoundCue &sound) { cue(sound); },
                          [this](const QList<QcMsg::BlockUpdate> &blocks) { return predictBlocks(blocks); }};
-    bool m_blockPrediction = blockPredictionWanted();
-    quint32 m_blockSequence = 0;
+    QcBlockPrediction m_blockPrediction;
 
     QcAppearance m_appearance;
     bool m_helloSent = false;

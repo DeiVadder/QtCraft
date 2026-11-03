@@ -136,6 +136,7 @@ target_sources(qc_clientcore PRIVATE
 target_sources(qc_clientcore PRIVATE
     player/QcAdvancementTree.h player/QcAdvancementTree.cpp
     player/QcBlockForecast.h player/QcBlockForecast.cpp
+    player/QcBlockPrediction.h player/QcBlockPrediction.cpp
     player/QcClientAdvancements.h player/QcClientAdvancements.cpp
     player/QcClientGameMode.h player/QcClientGameMode.cpp
     player/QcClientInventory.h player/QcClientInventory.cpp
@@ -148,6 +149,7 @@ target_sources(qc_clientcore PRIVATE
     player/QcLocalAnimation.h player/QcLocalAnimation.cpp
     player/QcPrediction.h player/QcPrediction.cpp
     player/QcPushBodies.h player/QcPushBodies.cpp
+    player/QcRefusalThrottle.h player/QcRefusalThrottle.cpp
     player/QcSprintLatch.h player/QcSprintLatch.cpp
     player/QcTidyTreeLayout.h player/QcTidyTreeLayout.cpp
 )
@@ -165,6 +167,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcCampfireSmoke.h session/QcCampfireSmoke.cpp
     session/QcChunkExtras.h
     session/QcClientAnvil.h session/QcClientAnvil.cpp
+    session/QcClientBlockScreen.h session/QcClientBlockScreen.cpp
     session/QcClientDebugSubscription.h session/QcClientDebugSubscription.cpp
     session/QcClientEnchanting.h session/QcClientEnchanting.cpp
     session/QcClientEntities.h session/QcClientEntities.cpp
@@ -182,6 +185,7 @@ target_sources(qc_clientcore PRIVATE
     session/QcExplosionEffects.h session/QcExplosionEffects.cpp
     session/QcRuneScript.h session/QcRuneScript.cpp
     session/QcServerDebugMirror.h session/QcServerDebugMirror.cpp
+    session/QcSessionState.h
     session/QcSnapshotBuffer.h session/QcSnapshotBuffer.cpp
     session/QcSnapshotClock.h session/QcSnapshotClock.cpp
     session/QcWorldMirror.h session/QcWorldMirror.cpp

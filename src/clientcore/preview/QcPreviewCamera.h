@@ -39,11 +39,12 @@ public:
     /*! Returns the figure's yaw in degrees, in [0, 360). */
     double modelYaw() const { return m_modelYaw; }
     /*! Sets the figure's yaw to \a yaw degrees (wrapped to [0, 360)); values that are not finite
-        are ignored. */
+        are refused with a warning. */
     void setModelYaw(double yaw);
     /*! Returns the zoom: 0 shows the whole body, 1 the head and shoulders. */
     double zoom() const { return m_zoom; }
-    /*! Sets the zoom to \a zoom (clamped to 0..1); values that are not finite are ignored. */
+    /*! Sets the zoom to \a zoom (clamped to 0..1); values that are not finite are
+        refused with a warning. */
     void setZoom(double zoom);
 
     /*! Mouse dragged by \a pixels to the right: the figure turns with it (its front to the

@@ -146,7 +146,7 @@ private slots:
         session->setMining(true);
         session->setMining(false);
         QCOMPARE(session->world()->blockAt(target), qcAirBlockId);
-        QCOMPARE(session->blockSequence(), 1u);
+        QCOMPARE(session->blockPrediction().sequence(), 1u);
         QVERIFY(!QcPredictionFixture::settled(*session));
         QCOMPARE(changes.cells, QList<QcBlockPos>{target});
 
@@ -163,7 +163,7 @@ private slots:
         // QTCRAFT_BLOCK_PREDICTION=0: the block goes with the server's answer at the next tick.
         auto session = start(QcGameMode::Creative);
         QVERIFY(session);
-        session->setBlockPrediction(false);
+        session->blockPrediction().setOn(false);
         QVERIFY(fixture().waitFor([&] { return session->gameMode().rules().instantBreak; }));
         const QcBlockPos target = stoneInFront(*session);
         OwnChanges changes;
@@ -175,7 +175,7 @@ private slots:
         session->setMining(false);
         QVERIFY(changes.cells.isEmpty());
         QVERIFY(changes.server.contains(target));
-        QCOMPARE(session->blockSequence(), 0u);
+        QCOMPARE(session->blockPrediction().sequence(), 0u);
         fixture().forget(session.get());
     }
 
@@ -268,7 +268,7 @@ private slots:
         QVERIFY(session->useItem());
         QCOMPARE(session->world()->blockAt(first), m_dirt);
         QCOMPARE(session->world()->blockAt(second), m_dirt);
-        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->blockPrediction().sequence(), 2u);
 
         QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*session); }));
         QCOMPARE(session->world()->blockAt(first), m_dirt);
@@ -358,18 +358,18 @@ private slots:
 
         const quint64 pressedAt = session->tickCount();
         QVERIFY(session->pressUse());
-        QCOMPARE(session->blockSequence(), 1u);
+        QCOMPARE(session->blockPrediction().sequence(), 1u);
         constexpr quint64 repeat = QcHandActions::useRepeatTicks;
         QVERIFY(fixture().waitFor([&] { return session->tickCount() >= pressedAt + repeat - 1; }));
-        QCOMPARE(session->blockSequence(), 1u);
+        QCOMPARE(session->blockPrediction().sequence(), 1u);
         QVERIFY(fixture().waitFor([&] { return session->tickCount() >= pressedAt + repeat; }));
-        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->blockPrediction().sequence(), 2u);
         QCOMPARE(session->world()->blockAt(cell), m_dirt);
 
         session->releaseUse();
         const quint64 releasedAt = session->tickCount();
         QVERIFY(fixture().waitFor([&] { return session->tickCount() >= releasedAt + 3 * repeat; }));
-        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->blockPrediction().sequence(), 2u);
         QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*session); }));
         // Both placements stand where they were predicted: the server took both.
         QCOMPARE(changes.cells.size(), 2);
@@ -394,16 +394,16 @@ private slots:
         quint64 since = session->tickCount();
         constexpr quint64 repeat = QcHandActions::useRepeatTicks;
         QVERIFY(fixture().waitFor([&] { return session->tickCount() >= since + 2 * repeat; }));
-        QCOMPARE(session->blockSequence(), 1u);
+        QCOMPARE(session->blockPrediction().sequence(), 1u);
 
         QVERIFY(session->pressUse());
-        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->blockPrediction().sequence(), 2u);
         QVERIFY(session->hand().useHeld());
         session->cancelUse();
         QVERIFY(!session->hand().useHeld());
         since = session->tickCount();
         QVERIFY(fixture().waitFor([&] { return session->tickCount() >= since + 2 * repeat; }));
-        QCOMPARE(session->blockSequence(), 2u);
+        QCOMPARE(session->blockPrediction().sequence(), 2u);
         fixture().forget(session.get());
     }
 
@@ -467,7 +467,7 @@ private slots:
         const QcBlockPos target = stoneInFront(*session);
         session->setMining(true);
         session->setMining(false);
-        QCOMPARE(session->blockSequence(), 1u);
+        QCOMPARE(session->blockPrediction().sequence(), 1u);
         QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*session); }));
         session->disconnectFromServer();
         QVERIFY(fixture().waitFor([&] { return session->state() == QcClientSession::State::Disconnected; }));
@@ -482,7 +482,7 @@ private slots:
         const QcBlockPos next = stoneInFront(*again);
         again->setMining(true);
         again->setMining(false);
-        QCOMPARE(again->blockSequence(), 1u);
+        QCOMPARE(again->blockPrediction().sequence(), 1u);
         QCOMPARE(again->world()->blockAt(next), qcAirBlockId);
         QVERIFY(fixture().waitFor([&] { return QcPredictionFixture::settled(*again); }));
         QCOMPARE(again->world()->blockAt(next), qcAirBlockId);

@@ -18,9 +18,11 @@
 
 #include <QDataStream>
 #include <QIODevice>
+#include <QRegularExpression>
 #include <QTest>
 
 #include <cmath>
+#include <limits>
 
 using namespace Qt::StringLiterals;
 
@@ -137,8 +139,13 @@ private slots:
         camera.setZoom(7.0);
         QCOMPARE(camera.zoom(), 1.0);
         QVERIFY((camera.camera().position - QcVec3{0.0, 1.55, 1.5}).length() < 1e-9);
+        // A value that is not finite is refused with a warning and changes nothing.
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"zoom .* refused: not finite"_s));
         camera.setZoom(std::nan(""));
         QCOMPARE(camera.zoom(), 1.0);
+        QTest::ignoreMessage(QtWarningMsg, QRegularExpression(u"yaw .* refused: not finite"_s));
+        camera.setModelYaw(std::numeric_limits<double>::infinity());
+        QCOMPARE(camera.modelYaw(), 0.0);
 
         camera.reset();
         QCOMPARE(camera.zoom(), 0.0);

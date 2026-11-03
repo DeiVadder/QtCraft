@@ -173,7 +173,7 @@ signals:
     void craftingChanged();
     void gameModeChanged();
     // The game mode refused a mining or use (adventure allow-lists, decision E-735), at most once
-    // every QcClientSession::refusalReportTicks; the HUD shows `text` (translated) as a notice.
+    // every QcRefusalThrottle::reportTicks; the HUD shows `text` (translated) as a notice.
     void actionRefused(const QString &text);
 
 private:

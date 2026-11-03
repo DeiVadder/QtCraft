@@ -96,10 +96,10 @@ private slots:
         QVERIFY(!m_session->hand().isMining());
         QCOMPARE(m_session->hand().miningProgress(), 0.0);
         QCOMPARE(m_session->world()->blockAt(ground), before);
-        // Reported again while the button is held, but at most once per refusalReportTicks.
+        // Reported again while the button is held, but at most once per QcRefusalThrottle::reportTicks.
         const quint64 held = m_session->tickCount() - startTick;
         QVERIFY(refused.count() >= 1);
-        QVERIFY(quint64(refused.count()) <= held / QcClientSession::refusalReportTicks + 1);
+        QVERIFY(static_cast<quint64>(refused.count()) <= held / QcRefusalThrottle::reportTicks + 1);
         m_session->setMining(false);
 
         const QString name = m_session->world()->content().block(*before).name;

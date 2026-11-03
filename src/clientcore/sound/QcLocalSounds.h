@@ -33,8 +33,6 @@ public:
     /*! Returns the sounds of the tick from motion \a before to motion \a after, on the ground of \a
         world; quieter steps while \a sneaking. */
     QList<QcSoundCue> update(const QcEntityMotion &before, const QcEntityMotion &after, bool sneaking, const QcBlockAccess &world);
-    /*! Starts the step and stroke distances over. */
-    void reset();
 
     /*! Returns the block of \a world a standing entity stands on (its \a feet are on top of it);
         nullopt when not loaded. */

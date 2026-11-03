@@ -25,12 +25,6 @@ QString QcLocalSounds::stepSound(const QcVec3 &feet, const QcBlockAccess &world)
     return QcSoundKeys::blockSound(world.content().block(*ground), QcBlockSoundAction::Step);
 }
 
-void QcLocalSounds::reset()
-{
-    m_sinceStep = 0.0;
-    m_sinceStroke = 0.0;
-}
-
 QList<QcSoundCue> QcLocalSounds::update(const QcEntityMotion &before, const QcEntityMotion &after, bool sneaking,
                                         const QcBlockAccess &world)
 {
