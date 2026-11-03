@@ -127,6 +127,24 @@ def check_macho(module, root):
                 check("Mach-O with other code", hashes[0] == hashes[2], False)])
 
 
+def check_linked_build(fixture):
+    """A build directory on another disk, reached through a link, still sees its executables change."""
+    with tempfile.TemporaryDirectory() as disk:
+        real = os.path.join(os.path.realpath(disk), "debug")
+        executable = os.path.join(real, "tests", "test_linked")
+        write(executable, "#!/bin/sh\n")
+        os.chmod(executable, 0o755)
+        fixture.build_dir = os.path.join(fixture.root, "linked-build")
+        os.symlink(real, fixture.build_dir)
+        tests = {"test_linked": {"command": [executable], "properties": {}}}
+        fixture.module.load_tests = lambda build_dir: tests
+
+        passed = check("linked build: first run", fixture.select(), ["test_linked"])
+        passed = check("linked build: nothing changed", fixture.select(), []) and passed
+        write(executable, "#!/bin/sh\necho changed\n")
+        return check("linked build: executable changed", fixture.select(), ["test_linked"]) and passed
+
+
 def run_cases(fixture):
     root = fixture.root
     script_a = os.path.join(root, "scripts", "a.sh")
@@ -212,6 +230,7 @@ def main():
         fixture = Fixture(module, os.path.realpath(root))
         passed = run_cases(fixture)
         passed = check_macho(module, root) and passed
+        passed = check_linked_build(fixture) and passed
         return 0 if passed else 1
 
 
