@@ -66,6 +66,11 @@ private:
     };
     static constexpr std::size_t triggerCount = static_cast<std::size_t>(QcAdvancementTrigger::LevelReached) + 1;
 
+    // The advancement `ref` points to; refs come from the trigger index built over the same
+    // catalog (see the constructor), so it exists.
+    const QcAdvancementDefinition &advancementOf(Ref ref) const;
+    // The criterion `ref` points to (see advancementOf()).
+    const QcAdvancementCriterion &criterionOf(Ref ref) const;
     // Meets the criterion `ref` for `client` and notes the change for the client.
     void meet(QcServerClient &client, Ref ref);
     void noteChange(QcServerClient &client, const QString &advancement, bool wasDone);

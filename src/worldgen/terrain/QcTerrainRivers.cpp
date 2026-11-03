@@ -84,6 +84,7 @@ QcTerrainGenerator::RiverCut QcTerrainGenerator::riverCut(int x, int z, const Qc
         return {height, biome, biome, false, {.value = cut.river.value}};
     }
     // Lands without a river biome keep their own biome along their rivers.
+    Q_ASSERT_X(biome >= 0 && biome < m_definitions.biomes.size(), "QcTerrainGenerator::riverCut", "biome index out of range");
     const int riverBiome = m_definitions.biomes[biome].riverBiome;
     return {cut.height, cut.water && riverBiome >= 0 ? riverBiome : biome, biome, cut.bank && riverBiome >= 0, cut.river};
 }

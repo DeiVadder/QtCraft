@@ -32,6 +32,7 @@ QcGiantTreePlacer::QcGiantTreePlacer(const QcTerrainGenerator &generator, const 
 
 std::optional<int> QcGiantTreePlacer::chosen(int biome, double roll) const
 {
+    Q_ASSERT_X(biome >= 0 && biome < m_definitions.biomes.size(), "QcGiantTreePlacer::chosen", "biome index out of range");
     double sum = 0.0;
     for (const auto &[feature, chance] : m_definitions.biomes[biome].giants) {
         sum += chance;

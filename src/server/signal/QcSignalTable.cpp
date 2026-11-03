@@ -6,6 +6,7 @@
 #include "common/content/registry/QcContentRegistry.h"
 
 #include <algorithm>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -148,6 +149,7 @@ bool QcSignalTable::DustLayout::place(const QcBlockProperty &property, int strid
 
 std::optional<QcSignalTable::DustLayout> QcSignalTable::dustLayout(const QcContentRegistry &content, quint32 type)
 {
+    Q_ASSERT_X(std::cmp_less(type, content.blocks().size()), "QcSignalTable::dustLayout", "block type out of range");
     const QcBlockDefinition &block = content.blocks()[static_cast<qsizetype>(type)];
     DustLayout layout;
     layout.first = content.stateTable().firstState(type);

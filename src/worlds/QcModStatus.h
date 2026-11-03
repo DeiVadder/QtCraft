@@ -28,7 +28,8 @@ public:
     QcContentPackInfo info;
     /*! Whether the mod was loaded, switched off or failed. */
     State state = State::Failed;
-    /*! Why the mod was not loaded (Failed only). */
+    /*! Why the mod was not loaded (Failed only), in English in every interface language: it
+        names files, keys and identifiers of the mod (decision E-973). */
     QString reason;
     /*! Entries of a loaded mod that were skipped. */
     QStringList warnings;

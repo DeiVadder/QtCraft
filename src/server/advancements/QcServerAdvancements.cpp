@@ -72,10 +72,9 @@ QcServerAdvancements::QcServerAdvancements(QcServerState &state)
 // trigger, so buckets by item or creature name would not pay for themselves yet.
 void QcServerAdvancements::trigger(QcServerClient &client, const QcAdvancementEvent &event)
 {
-    const QList<QcAdvancementDefinition> &advancements = m_state.content().advancements().items();
     for (const Ref ref : refsOf(event.trigger)) {
-        const QcAdvancementDefinition &advancement = advancements[ref.advancement];
-        const QcAdvancementCriterion &criterion = advancement.criteria[ref.criterion];
+        const QcAdvancementDefinition &advancement = advancementOf(ref);
+        const QcAdvancementCriterion &criterion = criterionOf(ref);
         if (client.advancements.progress.has(advancement.name, criterion.name)) {
             continue;
         }
@@ -88,10 +87,9 @@ void QcServerAdvancements::trigger(QcServerClient &client, const QcAdvancementEv
 
 void QcServerAdvancements::inventoryChanged(QcServerClient &client)
 {
-    const QList<QcAdvancementDefinition> &advancements = m_state.content().advancements().items();
     for (const Ref ref : refsOf(QcAdvancementTrigger::ItemObtained)) {
-        const QcAdvancementDefinition &advancement = advancements[ref.advancement];
-        const QcAdvancementCriterion &criterion = advancement.criteria[ref.criterion];
+        const QcAdvancementDefinition &advancement = advancementOf(ref);
+        const QcAdvancementCriterion &criterion = criterionOf(ref);
         if (client.advancements.progress.has(advancement.name, criterion.name)) {
             continue;
         }
@@ -102,12 +100,28 @@ void QcServerAdvancements::inventoryChanged(QcServerClient &client)
     }
 }
 
+const QcAdvancementDefinition &QcServerAdvancements::advancementOf(Ref ref) const
+{
+    const QList<QcAdvancementDefinition> &advancements = m_state.content().advancements().items();
+    Q_ASSERT_X(ref.advancement >= 0 && ref.advancement < advancements.size(), "QcServerAdvancements::advancementOf",
+               "advancement index out of range");
+    return advancements[ref.advancement];
+}
+
+const QcAdvancementCriterion &QcServerAdvancements::criterionOf(Ref ref) const
+{
+    const QcAdvancementDefinition &advancement = advancementOf(ref);
+    Q_ASSERT_X(ref.criterion >= 0 && ref.criterion < advancement.criteria.size(), "QcServerAdvancements::criterionOf",
+               "criterion index out of range");
+    return advancement.criteria[ref.criterion];
+}
+
 void QcServerAdvancements::meet(QcServerClient &client, Ref ref)
 {
-    const QcAdvancementDefinition &advancement = m_state.content().advancements().items()[ref.advancement];
+    const QcAdvancementDefinition &advancement = advancementOf(ref);
     forgetUnknownCriteria(client, advancement);
     const bool wasDone = client.advancements.progress.isDone(advancement);
-    if (client.advancements.progress.grant(advancement.name, advancement.criteria[ref.criterion].name)) {
+    if (client.advancements.progress.grant(advancement.name, criterionOf(ref).name)) {
         noteChange(client, advancement.name, wasDone);
     }
 }
@@ -192,12 +206,8 @@ bool QcServerAdvancements::revoke(QcServerClient &client, const QString &advance
 
 bool QcServerAdvancements::waitsFor(const QcServerClient &client, QcAdvancementTrigger trigger) const
 {
-    const QList<QcAdvancementDefinition> &advancements = m_state.content().advancements().items();
     const QList<Ref> &refs = refsOf(trigger);
-    return std::ranges::any_of(refs, [&](Ref ref) {
-        const QcAdvancementDefinition &advancement = advancements[ref.advancement];
-        return !client.advancements.progress.has(advancement.name, advancement.criteria[ref.criterion].name);
-    });
+    return std::ranges::any_of(refs, [&](Ref ref) { return !client.advancements.progress.has(advancementOf(ref).name, criterionOf(ref).name); });
 }
 
 void QcServerAdvancements::checkLocation(QcServerClient &client)
@@ -211,10 +221,9 @@ void QcServerAdvancements::checkLocation(QcServerClient &client)
     ++m_locationChecks;
 
     // The biome and the village are looked up only when a criterion left asks for them.
-    const QList<QcAdvancementDefinition> &advancements = m_state.content().advancements().items();
     const QList<Ref> &refs = refsOf(QcAdvancementTrigger::Location);
     const auto asks = [&](auto field) {
-        return std::ranges::any_of(refs, [&](Ref ref) { return !field(advancements[ref.advancement].criteria[ref.criterion].conditions).isEmpty(); });
+        return std::ranges::any_of(refs, [&](Ref ref) { return !field(criterionOf(ref).conditions).isEmpty(); });
     };
     QcAdvancementMatch::Place place{pos.y, {}, false};
     if (asks([](const QcAdvancementConditions &c) { return c.biome; })) {
@@ -225,8 +234,8 @@ void QcServerAdvancements::checkLocation(QcServerClient &client)
     }
 
     for (const Ref ref : refs) {
-        const QcAdvancementDefinition &advancement = advancements[ref.advancement];
-        const QcAdvancementCriterion &criterion = advancement.criteria[ref.criterion];
+        const QcAdvancementDefinition &advancement = advancementOf(ref);
+        const QcAdvancementCriterion &criterion = criterionOf(ref);
         if (!client.advancements.progress.has(advancement.name, criterion.name) && QcAdvancementMatch::matchesPlace(criterion.conditions, place)) {
             meet(client, ref);
         }

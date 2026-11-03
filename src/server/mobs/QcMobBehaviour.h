@@ -66,7 +66,12 @@ public:
     /*! Returns what villagers do, read-only. */
     const QcVillagerBehaviour &villagers() const { return m_villagers; }
     /*! Returns the brain of the creatures of kind \a type. */
-    QcMobBrain &brainOf(QcCreatureKindId type) const { return *m_brains[static_cast<std::size_t>(type.index())]; }
+    QcMobBrain &brainOf(QcCreatureKindId type) const
+    {
+        // One brain per registered kind; a creature's kind was checked when it was spawned or loaded.
+        Q_ASSERT_X(type.index() >= 0 && std::cmp_less(type.index(), m_brains.size()), "QcMobBehaviour::brainOf", "unknown creature kind");
+        return *m_brains[static_cast<std::size_t>(type.index())];
+    }
 
     /*! \brief When a tick happens: the world's time and the tick's length in seconds. */
     struct Clock

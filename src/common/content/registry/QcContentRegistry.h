@@ -124,7 +124,7 @@ public:
         generated stonecutting recipes, and resolves what definitions name of each other (anvil
         swaps, villagers, archers, held items, creature traits, spawners, projectiles, village
         styles, outfits, advancements), leaving out or switching off what names nothing. Returns
-        the warnings. */
+        the warnings, in English like all content loading messages (decision E-973). */
     [[nodiscard]] QStringList finish();
 
     /*! Registers or replaces the building part \a family (server side; the parts finish()

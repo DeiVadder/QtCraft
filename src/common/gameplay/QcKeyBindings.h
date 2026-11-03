@@ -201,7 +201,11 @@ public:
     friend bool operator==(const QcKeyBindings &, const QcKeyBindings &) = default;
 
 private:
-    void set(Action action, int slot, int key) { m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)] = key; }
+    void set(Action action, int slot, int key)
+    {
+        Q_ASSERT_X(slot >= 0 && slot < slotCount, "QcKeyBindings::set", "key slot out of range");
+        m_keys[static_cast<std::size_t>(action)][static_cast<std::size_t>(slot)] = key;
+    }
 
     std::array<std::array<int, slotCount>, actionCount> m_keys{};
     Platform m_platform = Platform::Other;

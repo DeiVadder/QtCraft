@@ -185,6 +185,8 @@ QVariantMap QcAdvancementTreeModel::nodeMap(const QcContentRegistry &content, co
                                             qsizetype index) const
 {
     const QcAdvancementTree::Node &node = tree.nodes[index];
+    Q_ASSERT_X(node.advancement >= 0 && node.advancement < content.advancements().items().size(), "QcAdvancementTreeModel::nodeMap",
+               "advancement index out of range");
     const QcAdvancementDefinition &advancement = content.advancements().items()[node.advancement];
     const bool partial = node.state == QcAdvancementTree::State::Partial;
     // The parent's place travels with the child: a line reads it without looking the parent up.

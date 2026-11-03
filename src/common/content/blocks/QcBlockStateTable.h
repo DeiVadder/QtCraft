@@ -9,6 +9,7 @@
 #include <QList>
 
 #include <optional>
+#include <utility>
 
 /*! \brief Runtime ids are block states: every block owns a contiguous range of ids, one per
     combination of its property values (the first property varies fastest).
@@ -58,11 +59,23 @@ public:
     /*! Returns the number of blocks in the table. */
     qsizetype typeCount() const { return m_firstState.size(); }
     /*! Returns the derived data of state \a id. Precondition: \a id < size(). */
-    const QcBlockState &state(quint32 id) const { return m_states[static_cast<qsizetype>(id)]; }
+    const QcBlockState &state(quint32 id) const
+    {
+        Q_ASSERT_X(std::cmp_less(id, m_states.size()), "QcBlockStateTable::state", "runtime id out of range");
+        return m_states[static_cast<qsizetype>(id)];
+    }
     /*! Returns the runtime id of the first state of block \a type. */
-    quint32 firstState(quint32 type) const { return m_firstState[static_cast<qsizetype>(type)]; }
+    quint32 firstState(quint32 type) const
+    {
+        Q_ASSERT_X(std::cmp_less(type, typeCount()), "QcBlockStateTable::firstState", "block type out of range");
+        return m_firstState[static_cast<qsizetype>(type)];
+    }
     /*! Returns the number of states of block \a type. */
-    int stateCount(quint32 type) const { return m_stateCounts[static_cast<qsizetype>(type)]; }
+    int stateCount(quint32 type) const
+    {
+        Q_ASSERT_X(std::cmp_less(type, typeCount()), "QcBlockStateTable::stateCount", "block type out of range");
+        return m_stateCounts[static_cast<qsizetype>(type)];
+    }
 
     /*! Returns the value of \a property in state \a index of \a block, empty when the block has
         no such property. */

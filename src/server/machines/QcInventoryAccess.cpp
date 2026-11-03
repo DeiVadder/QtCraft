@@ -119,6 +119,8 @@ int QcInventoryAccess::slotFor(QcBlockPos pos, const QList<QcItemStack> &stacks,
 
     const int maxStack = m_state.content().item(stack.item).maxStack;
     for (const int slot : cells) {
+        // The cells come from slotsIn()/slotsOut() of the same block (indices into slotsAt()).
+        Q_ASSERT_X(slot >= 0 && slot < stacks.size(), "QcInventoryAccess::slotFor", "cell out of range");
         const QcItemStack &there = stacks[slot];
         const bool room = there.isEmpty() || (sameItem(there, stack) && there.count < maxStack);
         if (room && accepts(pos, slot, stack)) {

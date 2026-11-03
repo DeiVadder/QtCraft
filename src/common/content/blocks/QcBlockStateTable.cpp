@@ -486,8 +486,9 @@ void QcBlockStateTable::append(const QcBlockDefinition &block, const QcShapeDefi
 
 void QcBlockStateTable::update(quint32 type, const QcBlockDefinition &block, const QcShapeDefinition &shape)
 {
-    const quint32 first = m_firstState[static_cast<qsizetype>(type)];
-    const int count = m_stateCounts[static_cast<qsizetype>(type)];
+    // firstState() and stateCount() assert that the block exists.
+    const quint32 first = firstState(type);
+    const int count = stateCount(type);
 
     const qsizetype boxes = derivedBoxes(block, shape);
     m_totalBoxes += boxes - m_boxes[static_cast<qsizetype>(type)];
