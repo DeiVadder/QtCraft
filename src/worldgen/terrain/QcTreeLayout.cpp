@@ -115,8 +115,8 @@ void QcTreeLayout::branch(const QcTreeShape::Params &params, QcBlockPos start, s
     const auto [stepX, stepZ] = step;
     const QcBlockId lying = stepX != 0 ? params.trunkX : params.trunkZ;
     QcBlockPos end = start;
-    for (int step = 1; step <= branchLength; ++step) {
-        end = start.offset(stepX * step, step / 2, stepZ * step);
+    for (int length = 1; length <= branchLength; ++length) {
+        end = start.offset(stepX * length, length / 2, stepZ * length);
         log(end, lying, false);
     }
 

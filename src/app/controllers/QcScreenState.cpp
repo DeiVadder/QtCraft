@@ -210,7 +210,7 @@ QcScreenState::SettingsPage QcScreenState::settingsPage(Overlay overlay)
         {Overlay::TexturePacks, SettingsPage::TexturePacks},
         {Overlay::Debug, SettingsPage::Advanced},
     }};
-    const auto *found = std::ranges::find(pages, overlay, &std::pair<Overlay, SettingsPage>::first);
+    const auto found = std::ranges::find(pages, overlay, &std::pair<Overlay, SettingsPage>::first);
     return found != pages.end() ? found->second : SettingsPage::Graphics;
 }
 

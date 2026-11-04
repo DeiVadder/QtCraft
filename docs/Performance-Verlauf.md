@@ -2882,3 +2882,18 @@ Speicher gleich (±1,5 %). Das Hochladen liegt wieder auf dem Stand vor 45.0 (st
 - **Tick p99:** crowd 0,293 → 0,351 ms (+20 %, Streuung 12 %), Signal-Stationen +4 … +12 % bei 2–32 % Streuung, übrige ±3 %.
 - **Speicher:** −3 … +0,7 %.
 - **Bewertung:** Im Wesen-lastigen crowd kostet die breitere Pfadsuche im p99 rund 0,06 ms je Tick – absolut winzig (Budget 50 ms), im Mittel +4 %. Hingenommen; die Debug-Messung des Pakets (geschlossen +2 %) passt dazu.
+
+## Windows-Desktop 2026-11-04 (Zeile 79.89)
+
+Stand `0ea6db0`, Release, D3D11, RTX 5060 Ti, i7-14700K, 2560 × 1440 mit 143 Hz, Sichtweite 8, Median aus 3 Läufen zu 10 s, temporäre Kopie von `bench.sh`, ohne Sperre, Overlay und Steam liefen mit. Ohne VSync (`QSG_NO_VSYNC=1`) liegt die Bildzeit in allen Serien bei rund 2,4 ms (p99 rund 3,5 ms), Ursache offen; verglichen wird deshalb nur die GPU-Zeit.
+
+| Serie | Fenster | stand | sprint | showcase | crowd |
+|---|---|---|---|---|---|
+| klassisch, GPU ms | 1280 × 720 | 0,230 | 0,240 | 0,105 | 0,304 |
+| realistisch, GPU ms | 1280 × 720 | 0,949 | 1,006 | 0,351 | 1,100 |
+| klassisch, GPU ms | 2560 × 1392 | 0,423 | 0,465 | 0,335 | 0,609 |
+| realistisch, GPU ms | 2560 × 1392 | 1,556 | 1,774 | 0,898 | 1,829 |
+| klassisch, GPU ms | Borderless 2560 × 1440 | 0,413 | 0,462 | 0,335 | 0,609 |
+| klassisch, GPU ms | Vollbild 2560 × 1440 | 0,426 | 0,465 | 0,337 | 0,644 |
+
+Server-Tick im Mittel 0,55–0,96 ms. Mit VSync zeigt die Bildzeit nur die Monitorfrequenz (6,94 ms).
