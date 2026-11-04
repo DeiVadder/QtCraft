@@ -23,6 +23,10 @@ AbstractButton {
     property bool chosen: false
 
     Layout.fillWidth: true
+    // Kept off the window's edge like the bar's entries (NavButton), so the focus outline and the
+    // pad's ring stay inside it.
+    Layout.leftMargin: Ui.space.xs
+    Layout.rightMargin: Ui.space.xs
     leftPadding: Ui.space.l
     rightPadding: Ui.space.s
     topPadding: Ui.space.xs
