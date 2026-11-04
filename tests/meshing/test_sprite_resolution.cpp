@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 the QtCraft authors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "clientcore/entitymeshes/QcEntityMesher.h"
 #include "clientcore/entitymeshes/QcHeldItemMesher.h"
 #include "clientcore/entitymeshes/QcSpriteShape.h"
 #include "clientcore/entitymeshes/QcSpriteShapes.h"
@@ -16,7 +17,9 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <numbers>
 #include <optional>
+#include <span>
 #include <tuple>
 
 using namespace Qt::StringLiterals;
@@ -29,10 +32,37 @@ using PixelSide = std::tuple<int, int, int>;
 
 constexpr double tolerance = 1.0e-6;
 
-// The items whose sprites are checked: blades, a pick head, a bow and a stick.
+// The items whose sprites are checked: a blade with a pommel, a pick head, axe heads, a shovel, a
+// hoe, a bow and a stick.
 QStringList testedItems()
 {
-    return {u"qtcraft:iron_sword"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:bow"_s, u"qtcraft:stick"_s};
+    return {u"qtcraft:iron_sword"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_axe"_s, u"qtcraft:diamond_axe"_s,
+            u"qtcraft:iron_shovel"_s, u"qtcraft:iron_hoe"_s, u"qtcraft:bow"_s, u"qtcraft:stick"_s};
+}
+
+// The cross product of `a` and `b`.
+QcVec3 cross(const QcVec3 &a, const QcVec3 &b)
+{
+    return {a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+}
+
+// Where the line of sight from a camera at the origin through `target` meets the plane of a
+// held sprite's front (`front`: its four vertices, found by their texture coordinates in the unit
+// square), in texels of a sprite `n` texels across (x from the left, y from the top).
+QPointF texelSeen(std::span<const QcEntityVertex> front, const QcVec3 &target, int n)
+{
+    const auto corner = [&](float u, float v) {
+        const auto found = std::ranges::find_if(front, [&](const QcEntityVertex &w) { return w.u == u && w.v == v; });
+        return QcVec3{found->x, found->y, found->z};
+    };
+    const QcVec3 origin = corner(0.0f, 0.0f);
+    const QcVec3 across = corner(1.0f, 0.0f) - origin;
+    const QcVec3 down = corner(0.0f, 1.0f) - origin;
+    // origin + a * across + b * down = s * target, solved by Cramer's rule.
+    const double det = cross(across, down).dot(target);
+    const double a = cross(down, target).dot(QcVec3{} - origin) / det;
+    const double b = cross(target, across).dot(QcVec3{} - origin) / det;
+    return {a * n, b * n};
 }
 
 // Whether pixel (x, y) of `tile` is drawn by the alpha test; the outside is clear.
@@ -158,6 +188,46 @@ SideCheck checkForm(const QList<QcSpriteShape::FormQuad> &form, int n)
     return check;
 }
 
+
+// Where a fist holds a tool's sprite, in base texels along its handle line (the diagonal through
+// the grip, from the lower left to the upper right): `below` how far the fist lies below where
+// the handle enters the head (or a sword's guard), `haft` how far the fist lies from the nearest
+// opaque texel.
+struct HandleMeasure
+{
+    double below = 0.0;
+    double haft = 0.0;
+};
+
+// Measures the fist seen at `fist` (texels) on `shape`. The head begins at the lowest texel above
+// the grip that lies one to three base texels beside the handle line: beside the handle itself
+// but near it, so the far corners of a broad axe blade or of a pick's prongs, which hang down
+// beside the handle, do not count; a pommel lies below the grip. Without a head (a sword without
+// a guard), `below` is huge.
+HandleMeasure measureHandle(const QcSpriteShape &shape, QPointF fist)
+{
+    const double base = shape.texelsPerBase();
+    const QPointF grip = shape.handlePoint();
+    const auto along = [&](QPointF p) { return ((p.x() - grip.x()) - (p.y() - grip.y())) / (std::numbers::sqrt2 * base); };
+    const auto aside = [&](QPointF p) { return std::abs((p.x() - grip.x()) + (p.y() - grip.y())) / (std::numbers::sqrt2 * base); };
+
+    double head = 1e9;
+    double haft = 1e9;
+    for (int y = 0; y < shape.size(); ++y) {
+        for (int x = 0; x < shape.size(); ++x) {
+            if (!shape.opaque(x, y)) {
+                continue;
+            }
+            const QPointF centre(x + 0.5, y + 0.5);
+            haft = std::min(haft, std::hypot(centre.x() - fist.x(), centre.y() - fist.y()) / base);
+            if (along(centre) > 0.0 && aside(centre) > 1.0 && aside(centre) <= 3.0) {
+                head = std::min(head, along(centre));
+            }
+        }
+    }
+    return {head - along(fist), haft};
+}
+
 } // namespace
 
 // The solid form of a sprite follows the picture the GPU draws, in every pack (decision E-991).
@@ -258,7 +328,7 @@ private slots:
     void gripSitsAsInTheStandardPack()
     {
         QFETCH(int, resolution);
-        for (const QString &name : {u"qtcraft:iron_sword"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:stick"_s}) {
+        for (const QString &name : {u"qtcraft:iron_sword"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_axe"_s, u"qtcraft:diamond_axe"_s, u"qtcraft:stick"_s}) {
             QVERIFY(QcFigureLook::item(*m_content, *m_content->itemId(name)).grip != QcHoldGrip::Middle);
             const QcVec3 standard = gripAt(name, 16);
             const QcVec3 grip = gripAt(name, resolution);
@@ -266,6 +336,47 @@ private slots:
             const double dy = (grip.y - standard.y) * QcSpriteShape::baseTexels;
             qInfo().noquote() << u"GRIP resolution=%1 item=%2 dx=%3 dy=%4 (base texels)"_s.arg(resolution).arg(name).arg(dx, 0, 'f', 3).arg(dy, 0, 'f', 3);
             QVERIFY2(std::abs(dx) <= 0.5 && std::abs(dy) <= 0.5, qPrintable(name));
+        }
+    }
+    void firstPersonFistHoldsTheHaft_data()
+    {
+        QTest::addColumn<int>("resolution");
+        for (const int resolution : {16, 64}) {
+            QTest::addRow("%d", resolution) << resolution;
+        }
+    }
+
+    // In the first person the fist holds a tool by its handle, well below the head (or a sword's
+    // guard): at rest the fist (QcEntityMesher::heldGrip) is seen on an opaque texel of the handle
+    // at least one base texel below the head's lowest texel, in the game's own sprites and in the
+    // HD pack (decision E-1000).
+    void firstPersonFistHoldsTheHaft()
+    {
+        QFETCH(int, resolution);
+        const QcEntityMesher::ModelLook player = QcFigureLook::player(*m_content, {});
+        const auto unitUv = [](const QString &) { return QRectF(0.0, 0.0, 1.0, 1.0); };
+        for (const QString &name : {u"qtcraft:iron_axe"_s, u"qtcraft:iron_sword"_s, u"qtcraft:iron_pickaxe"_s, u"qtcraft:iron_shovel"_s, u"qtcraft:iron_hoe"_s}) {
+            QcEntityMesher::ItemLook look = QcFigureLook::item(*m_content, *m_content->itemId(name));
+            QcSpriteShapes shapes;
+            look.shape = shapes.shape(atlasAt(resolution), look.sprite);
+            QcEntityMesh mesh;
+            QcEntityMesher::appendHand(mesh, {player, &look}, {}, {{}, 0.0, 0.0, 1.0f}, unitUv);
+            // The item comes last; its first quad is the front.
+            const qsizetype front = mesh.vertices.size() - look.shape->form().size() * 4;
+            const std::span<const QcEntityVertex> corners(mesh.vertices.constData() + front, 4);
+            const QPointF fist = texelSeen(corners, QcEntityMesher::heldGrip, look.shape->size());
+
+            const HandleMeasure measure = measureHandle(*look.shape, fist);
+            qInfo().noquote() << u"FIST resolution=%1 item=%2 fist=(%3, %4) below_head=%5 to_haft=%6 (base texels)"_s.arg(resolution)
+                                     .arg(name)
+                                     .arg(fist.x(), 0, 'f', 1)
+                                     .arg(fist.y(), 0, 'f', 1)
+                                     .arg(measure.below, 0, 'f', 2)
+                                     .arg(measure.haft, 0, 'f', 2);
+            QVERIFY2(measure.haft <= 0.75, qPrintable(name));
+            QVERIFY2(measure.below >= 1.0, qPrintable(name));
+            // Every tool has a head; the game's own sword has no guard, its HD one has.
+            QVERIFY2(measure.below < 1e6 || (name == u"qtcraft:iron_sword"_s && resolution == 16), qPrintable(name));
         }
     }
 };

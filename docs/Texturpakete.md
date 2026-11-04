@@ -128,6 +128,8 @@ A `.json` file uses the same format as `content/*/textures/*.json` (`pattern`, `
 
 `detail` also works in a mod's own texture definitions; at 16× it has no effect.
 
+Outlines follow the shape, never the colours (decision E-1000): the pixel variation of a thin shape does not notch it. Tools and weapons (`tool`, `pickaxe`, `axe`, `shovel`, `sword`, `hoe`, `stick`, `arrow`, `fishing_rod`) take their outline from strokes between the 16×16 pixels, so blades and handles stay straight at every resolution; other cut-out shapes keep the Scale2x outline. Cut-out shapes are bevelled only along their outline. Above 16× the `sword` pattern adds a guard, a wrapped grip and a pommel that its 16×16 icon leaves out, and the `axe` pattern a real head: a narrow cheek at the haft, a bit flaring into a long convex cutting edge with a small beard, a poll behind the haft, which passes through the eye. Tool icons never repeat: their outline does not join parts across the tile's border.
+
 Animated textures (decision E-878) add three fields:
 
 | Field | Effect |

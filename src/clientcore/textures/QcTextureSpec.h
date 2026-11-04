@@ -326,6 +326,11 @@ struct QcTextureSpec
         The patterns that animate (fire, lava, water) move with it so the last frame leads
         seamlessly into the first; 0 paints the still texture. */
     double phase = 0.0;
+    /*! Whether the picture is the base of a texture enlarged above 16 x 16 (QcTextureDetail,
+        decision E-1000): a pattern may then add parts the 16 x 16 icon leaves out because they
+        would be lost or crowded at one pixel, such as a sword's guard. The 16 x 16 picture stays
+        unchanged. */
+    bool detailed = false;
 };
 
 /*! Returns the pattern named \a name in the content ("planks", "log_side", ...); nothing for an

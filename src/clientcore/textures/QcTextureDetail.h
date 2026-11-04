@@ -13,7 +13,9 @@
     colours, so diagonals and round shapes get finer steps instead of blurring), then gains detail
     that only the higher resolution can show: a fine grain on the surface and a bevel along strong
     edges (lit at the top and left, shaded at the bottom and right, also towards transparent
-    pixels).
+    pixels). The outlines of the enlarged picture follow its coverage alone, so the pixel variation
+    of a thin shape cannot notch or pinch it; tools and weapons take the outline of strokes between
+    the pixels instead (QcTextureOutline, decision E-1000).
 
     How much of each a pattern gets is a table per pattern; a texture definition may change it
     with "detail". */
@@ -28,6 +30,15 @@ struct Params
     double bevel = 0.0;
     /*! Smooth diagonal and round outlines while enlarging; off for patterns of straight lines. */
     bool smooth = false;
+    /*! Bevel only the outline (edges towards transparent pixels), not edges towards darker
+        pixels inside the picture; on for cut-out shapes (decision E-1000). A texture definition's
+        "detail" does not change it. */
+    bool rimOnly = false;
+    /*! With smooth: the outline follows strokes between the pixels of the 16 x 16 picture
+        (QcTextureOutline) instead of Scale2x; on for tools and weapons (decision E-1000), which
+        are icons that never repeat, so the pixels beyond their border count as clear. A texture
+        definition's "detail" does not change it. */
+    bool strokes = false;
 
     friend bool operator==(const Params &, const Params &) = default;
 };

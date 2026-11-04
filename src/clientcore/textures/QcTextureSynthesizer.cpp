@@ -14,6 +14,7 @@
 #include "clientcore/textures/QcTexturePaintingPatterns.h"
 #include "clientcore/textures/QcTextureRangedPatterns.h"
 #include "clientcore/textures/QcTextureSignalPatterns.h"
+#include "clientcore/textures/QcTextureToolPatterns.h"
 
 #include <algorithm>
 #include <array>
@@ -176,6 +177,19 @@ QColor paintToolWithHead(const QcTextureSpec &spec, int x, int y, QColor)
         return varied(spec, spec.secondary, x, y, 5);
     }
     return clear();
+}
+
+// Enlarged, the sword gains a guard and a pommel too fine for its 16 x 16 icon (decision E-1000).
+QColor paintSword(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return spec.detailed ? qcPaintDetailedSword(spec, x, y, color) : paintToolWithHead(spec, x, y, color);
+}
+
+// Enlarged, the axe's head gains a flaring bit with a curved edge, a cheek and a poll that its
+// 16 x 16 icon has no room for (decision E-1000).
+QColor paintAxe(const QcTextureSpec &spec, int x, int y, QColor color)
+{
+    return spec.detailed ? qcPaintDetailedAxe(spec, x, y, color) : paintToolWithHead(spec, x, y, color);
 }
 
 QColor paintIngot(const QcTextureSpec &spec, int x, int y, QColor)
@@ -544,9 +558,9 @@ constexpr std::array<std::pair<Pattern, Painter>, 46> painters = {{
     {Pattern::Tool, paintTool},
     {Pattern::Lump, paintLump},
     {Pattern::Pickaxe, paintToolWithHead},
-    {Pattern::Axe, paintToolWithHead},
+    {Pattern::Axe, paintAxe},
     {Pattern::Shovel, paintToolWithHead},
-    {Pattern::Sword, paintToolWithHead},
+    {Pattern::Sword, paintSword},
     {Pattern::Stick, paintToolWithHead},
     {Pattern::Hoe, paintToolWithHead},
     {Pattern::Ingot, paintIngot},

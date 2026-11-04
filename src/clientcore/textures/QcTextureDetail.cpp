@@ -3,6 +3,7 @@
 
 #include "clientcore/textures/QcTextureDetail.h"
 
+#include "clientcore/textures/QcTextureOutline.h"
 #include "clientcore/textures/QcTexturePaint.h"
 
 #include <algorithm>
@@ -63,28 +64,68 @@ double luminance(Pixel pixel)
     return (0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b) / 255.0;
 }
 
-// Scale2x (EPX) with "similar" instead of "equal": each pixel becomes four, a corner takes the
-// colour of the two neighbours meeting there when they belong together and the others do not.
-std::array<Pixel, 4> quarters(const QImage &source, int x, int y)
+// Whether two pixels lie on the same side of an outline: both transparent or both visible.
+bool sameCoverage(Pixel first, Pixel second)
 {
-    const Pixel e = pixelAt(source, x, y);
-    const Pixel b = pixelAt(source, x, y - 1);
-    const Pixel d = pixelAt(source, x - 1, y);
-    const Pixel f = pixelAt(source, x + 1, y);
-    const Pixel h = pixelAt(source, x, y + 1);
-    if (similar(b, h) || similar(d, f)) {
-        return {e, e, e, e};
-    }
-    return {similar(d, b) ? d : e, similar(b, f) ? f : e, similar(d, h) ? d : e, similar(h, f) ? f : e};
+    return (first.a == 0) == (second.a == 0);
 }
 
-QImage scale2x(const QImage &source, bool smooth)
+// The centre pixel of a Scale2x step and its four direct neighbours (above, left, right, below).
+struct Neighbours
+{
+    Pixel e;
+    Pixel b;
+    Pixel d;
+    Pixel f;
+    Pixel h;
+};
+
+// Scale2x (EPX) with `belong` instead of "equal": each pixel becomes four, a corner takes the
+// colour of the two neighbours meeting there when they belong together and the others do not.
+template<typename Belong>
+std::array<Pixel, 4> corners(const Neighbours &n, Belong belong)
+{
+    if (belong(n.b, n.h) || belong(n.d, n.f)) {
+        return {n.e, n.e, n.e, n.e};
+    }
+    return {belong(n.d, n.b) ? n.d : n.e, belong(n.b, n.f) ? n.f : n.e, belong(n.d, n.h) ? n.d : n.e, belong(n.h, n.f) ? n.f : n.e};
+}
+
+// Pixel (x, y) of `source`: of a picture that repeats the pixel of the next tile, of an icon
+// transparent beyond its border.
+Pixel neighbourAt(const QImage &source, int x, int y, bool repeats)
+{
+    if (!repeats && !source.valid(x, y)) {
+        return {};
+    }
+    return pixelAt(source, x, y);
+}
+
+// The outline (which quarters are visible) follows the coverage alone, so the pixel variation of
+// a thin shape cannot notch, pinch or swell it; inside the shape, quarters take the colours of
+// similar neighbours as before.
+std::array<Pixel, 4> quarters(const QImage &source, int x, int y, bool repeats)
+{
+    const Neighbours n{pixelAt(source, x, y), neighbourAt(source, x, y - 1, repeats), neighbourAt(source, x - 1, y, repeats),
+                       neighbourAt(source, x + 1, y, repeats), neighbourAt(source, x, y + 1, repeats)};
+    const std::array<Pixel, 4> outline = corners(n, sameCoverage);
+    const std::array<Pixel, 4> colour = corners(n, similar);
+    std::array<Pixel, 4> result{};
+    for (std::size_t i = 0; i < result.size(); ++i) {
+        result[i] = sameCoverage(outline[i], colour[i]) ? colour[i] : outline[i];
+    }
+    return result;
+}
+
+// Enlarges `source` to twice its size; `repeats` tells whether it is a texture that tiles or an
+// icon (only the smooth outline looks beyond the border).
+QImage scale2x(const QImage &source, bool smooth, bool repeats)
 {
     QImage target(source.width() * 2, source.height() * 2, QImage::Format_RGBA8888);
     for (int y = 0; y < source.height(); ++y) {
         for (int x = 0; x < source.width(); ++x) {
             const Pixel e = pixelAt(source, x, y);
-            const std::array<Pixel, 4> quarter = smooth ? quarters(source, x, y) : std::array<Pixel, 4>{e, e, e, e};
+            const std::array<Pixel, 4> quarter = smooth ? quarters(source, x, y, repeats) : std::array<Pixel, 4>{e, e, e, e};
             setPixel(target, 2 * x, 2 * y, quarter[0]);
             setPixel(target, 2 * x + 1, 2 * y, quarter[1]);
             setPixel(target, 2 * x, 2 * y + 1, quarter[2]);
@@ -107,30 +148,38 @@ Pixel shaded(Pixel pixel, double factor)
     return pixel;
 }
 
-// Whether the pixel `distance` steps from (x, y) in direction (dx, dy) lies across an edge: much
-// darker, or transparent next to a visible pixel.
-bool acrossEdge(const QImage &shape, Pixel self, int x, int y, std::array<int, 3> step)
+// How a bevel is drawn: its strength (share of the colour), the pixels it fades over and whether
+// only the outline (transparent neighbours) counts as an edge.
+struct Bevel
 {
-    const Pixel other = pixelAt(shape, x + step[0] * step[2], y + step[1] * step[2]);
+    double strength = 0.0;
+    int width = 1;
+    bool rimOnly = false;
+};
+
+// Whether `other`, a pixel near `self`, lies across an edge: transparent next to a visible pixel,
+// or (unless the bevel only follows the rim) much darker.
+bool acrossEdge(Pixel self, Pixel other, Bevel bevel)
+{
     if (other.a == 0) {
         return true;
     }
-    return luminance(other) < luminance(self) - edgeStep;
+    return !bevel.rimOnly && luminance(other) < luminance(self) - edgeStep;
 }
 
 // Light from the top left: pixels near an edge above or to the left are lit, near an edge below or
-// to the right shaded; the effect fades over `width` pixels.
-double bevelFactor(const QImage &shape, int x, int y, double strength, int width)
+// to the right shaded; the effect fades over the bevel's width.
+double bevelFactor(const QImage &shape, int x, int y, Bevel bevel)
 {
     const Pixel self = pixelAt(shape, x, y);
     if (self.a == 0) {
         return 1.0;
     }
 
-    for (int distance = 1; distance <= width; ++distance) {
-        const double weight = strength * (1.0 - static_cast<double>(distance - 1) / width);
-        const bool lit = acrossEdge(shape, self, x, y, {0, -1, distance}) || acrossEdge(shape, self, x, y, {-1, 0, distance});
-        const bool dark = acrossEdge(shape, self, x, y, {0, 1, distance}) || acrossEdge(shape, self, x, y, {1, 0, distance});
+    for (int distance = 1; distance <= bevel.width; ++distance) {
+        const double weight = bevel.strength * (1.0 - static_cast<double>(distance - 1) / bevel.width);
+        const bool lit = acrossEdge(self, pixelAt(shape, x, y - distance), bevel) || acrossEdge(self, pixelAt(shape, x - distance, y), bevel);
+        const bool dark = acrossEdge(self, pixelAt(shape, x, y + distance), bevel) || acrossEdge(self, pixelAt(shape, x + distance, y), bevel);
         if (lit || dark) {
             return (lit ? 1.0 + weight : 1.0) * (dark ? 1.0 - weight : 1.0);
         }
@@ -138,11 +187,11 @@ double bevelFactor(const QImage &shape, int x, int y, double strength, int width
     return 1.0;
 }
 
-void addBevel(QImage &image, const QImage &shape, double strength, int width)
+void addBevel(QImage &image, const QImage &shape, Bevel bevel)
 {
     for (int y = 0; y < image.height(); ++y) {
         for (int x = 0; x < image.width(); ++x) {
-            const double factor = bevelFactor(shape, x, y, strength, width);
+            const double factor = bevelFactor(shape, x, y, bevel);
             if (factor != 1.0) {
                 setPixel(image, x, y, shaded(pixelAt(image, x, y), factor));
             }
@@ -208,8 +257,17 @@ Params forPattern(Pattern pattern)
                         Pattern::BackpackSide, Pattern::BackpackFront, Pattern::BackpackTop})) {
         return {0.04, 0.06, true};
     }
-    // Everything else is a cut-out shape (plants, items, armour parts): smooth outlines, rims.
-    return {0.03, 0.22, true};
+    // Tools and weapons are drawn of straight lines: their outline follows strokes, so a blade or
+    // a handle stays straight and even at every resolution (Scale2x would leave steps that grow
+    // into bumps with every doubling).
+    if (among(pattern, {Pattern::Tool, Pattern::Pickaxe, Pattern::Axe, Pattern::Shovel, Pattern::Sword, Pattern::Hoe, Pattern::Stick,
+                        Pattern::Arrow, Pattern::FishingRod})) {
+        return {.grain = 0.03, .bevel = 0.22, .smooth = true, .rimOnly = true, .strokes = true};
+    }
+    // Everything else is a cut-out shape (plants, items, armour parts): smooth outlines, a bevel
+    // only along the outline. Inside, the pixel variation of the 16 x 16 picture would count as
+    // edges and draw ridges and seams across a blade or a tool's head.
+    return {.grain = 0.03, .bevel = 0.22, .smooth = true, .rimOnly = true, .strokes = false};
 }
 
 Params withOverrides(Params params, const QJsonObject &detail)
@@ -223,14 +281,19 @@ Params withOverrides(Params params, const QJsonObject &detail)
 QImage enlarge(const QImage &base, int resolution, const Params &params, quint32 seed)
 {
     QImage image = base.convertToFormat(QImage::Format_RGBA8888);
+    // Tools and weapons (the patterns of strokes) are icons that never repeat; every other pattern
+    // may tile.
+    const bool repeats = !params.strokes;
     while (image.width() < resolution) {
-        image = scale2x(image, params.smooth);
+        image = scale2x(image, params.smooth, repeats);
+    }
+    if (params.smooth && params.strokes) {
+        image = QcTextureOutline::cut(image, base);
     }
 
     const QImage shape = image;
-    const int bevelWidth = std::clamp(resolution / 32, 1, 4);
     if (params.bevel > 0.0) {
-        addBevel(image, shape, params.bevel, bevelWidth);
+        addBevel(image, shape, {params.bevel, std::clamp(resolution / 32, 1, 4), params.rimOnly});
     }
     if (params.grain > 0.0) {
         addGrain(image, params.grain, seed * 31u + static_cast<quint32>(resolution));

@@ -6,6 +6,7 @@
 #include <QImage>
 
 #include <algorithm>
+#include <cmath>
 #include <utility>
 
 namespace {
@@ -236,28 +237,58 @@ bool QcSpriteShape::opaque(int x, int y) const
     return m_opaque[static_cast<qsizetype>(y) * m_size + x];
 }
 
+QcSpriteShape::Run QcSpriteShape::leftRun(int y) const
+{
+    int left = m_bounds.left();
+    while (left <= m_bounds.right() && !opaque(left, y)) {
+        ++left;
+    }
+    int width = 0;
+    while (left + width <= m_bounds.right() && opaque(left + width, y)) {
+        ++width;
+    }
+    return {left, width};
+}
+
+QPoint QcSpriteShape::handleEnd() const
+{
+    const int bottom = m_bounds.bottom();
+    const double base = texelsPerBase();
+    // A pommel: the highest row, among the lowest three base texels, whose run is at least two
+    // base texels wide and half a base texel wider than the handle line just above them (a
+    // handle drawn in steps is as wide all along).
+    const int lowest = std::max(m_bounds.top(), bottom - static_cast<int>(std::ceil(3.0 * base)) + 1);
+    const double knob = std::max(2.0 * base, leftRun(lowest - 1).width + 0.5 * base);
+    for (int y = lowest; y <= bottom; ++y) {
+        const Run run = leftRun(y);
+        if (run.width >= knob) {
+            return {run.right(), y};
+        }
+    }
+    return {leftRun(bottom).left, bottom};
+}
+
 QPoint QcSpriteShape::handle() const
 {
     if (isEmpty()) {
         return {};
     }
 
-    const int bottom = m_bounds.bottom();
-    QPoint grip(m_bounds.left(), bottom);
-    while (!opaque(grip.x(), bottom)) {
-        grip.rx() += 1;
-    }
+    // The climb ends on the lowest row of the base texel two base texels above the one the end
+    // lies in.
+    QPoint grip = handleEnd();
+    const double base = texelsPerBase();
+    const int endBase = static_cast<int>(std::floor(grip.y() / base));
+    const int top = static_cast<int>(std::ceil((endBase - 1) * base)) - 1;
 
     // Up the handle: up and right (a diagonal handle), straight up (a stick), up and left.
     static constexpr std::array<QPoint, 3> steps = {{{1, -1}, {0, -1}, {-1, -1}}};
-    const int climb = 2 * static_cast<int>(texelsPerBase());
-    for (int climbed = 0; climbed < climb; ++climbed) {
-        for (const QPoint step : steps) {
-            if (opaque(grip.x() + step.x(), grip.y() + step.y())) {
-                grip += step;
-                break;
-            }
+    while (grip.y() > top) {
+        const auto step = std::ranges::find_if(steps, [&](QPoint s) { return opaque(grip.x() + s.x(), grip.y() + s.y()); });
+        if (step == steps.end()) {
+            break;
         }
+        grip += *step;
     }
     return grip;
 }

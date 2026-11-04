@@ -96,10 +96,14 @@ public:
         place these corners (decision E-991). */
     const QList<FormQuad> &form() const { return m_form; }
 
-    /*! Returns the texel a fist holds a tool by: from the lowest opaque texel (the leftmost of
-        its row, the end of a handle drawn from the lower left) up to two base texels further along
-        opaque texels, up and to the right first. The end of the handle stays below the fist. (0,
-        0) when empty. */
+    /*! Returns the texel a fist holds a tool by: from the end of the handle up along opaque texels,
+        up and to the right first, to the lowest row of the base texel two base texels above the one
+        the end lies in. The end is the lowest opaque texel (the leftmost of its row, a handle drawn
+        from the lower left); when a pommel sits there instead (a row among the lowest three base
+        texels whose leftmost run is at least two base texels wide and half a base texel wider than
+        the handle line above them), it is the right end of the pommel's top row, so the pommel
+        counts as the handle's last base texel (decision E-991). The end of the handle stays below
+        the fist. (0, 0) when empty. */
     QPoint handle() const;
     /*! Returns the point a fist holds a tool by, in texels: across the middle of handle(), up
         the middle of the base texel whose lowest row handle() is in, so the fist sits as high on
@@ -107,6 +111,19 @@ public:
     QPointF handlePoint() const;
 
 private:
+    // An opaque run in a row: its first texel (x) and how many texels it spans.
+    struct Run
+    {
+        int left = 0;
+        int width = 0;
+
+        int right() const { return left + width - 1; }
+    };
+
+    // The leftmost run of opaque texels in row `y`; none (width 0) in a clear row.
+    [[nodiscard]] Run leftRun(int y) const;
+    // Where handle() starts its climb: the lowest opaque texel, or the top of a pommel.
+    [[nodiscard]] QPoint handleEnd() const;
     // Fills the bounds, the centroid, the sides and the form from m_opaque.
     void measure();
     // The sides of the opaque texel `texel` that face a clear one.

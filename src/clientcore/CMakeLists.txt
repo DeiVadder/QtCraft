@@ -252,12 +252,14 @@ target_sources(qc_clientcore PRIVATE
     textures/QcTextureEmblem.h textures/QcTextureEmblem.cpp
     textures/QcTextureFarmPatterns.h textures/QcTextureFarmPatterns.cpp
     textures/QcTextureKitchenPatterns.h textures/QcTextureKitchenPatterns.cpp
+    textures/QcTextureOutline.h textures/QcTextureOutline.cpp
     textures/QcTexturePaint.h
     textures/QcTexturePaintingPatterns.h textures/QcTexturePaintingPatterns.cpp
     textures/QcTextureRangedPatterns.h textures/QcTextureRangedPatterns.cpp
     textures/QcTextureSignalPatterns.h textures/QcTextureSignalPatterns.cpp
     textures/QcTextureSpec.h textures/QcTextureSpec.cpp
     textures/QcTextureSynthesizer.h textures/QcTextureSynthesizer.cpp
+    textures/QcTextureToolPatterns.h textures/QcTextureToolPatterns.cpp
 )
 target_sources(qc_clientcore PRIVATE
     tick/QcLatencyProbe.h tick/QcLatencyProbe.cpp
@@ -286,7 +288,8 @@ target_link_libraries(qc_clientcore PUBLIC qc_common qc_network qc_texture_packs
 # multiply-add contractions in the pattern code (MSVC does not contract without /fp:contract).
 set_source_files_properties(
     textures/QcTextureSynthesizer.cpp textures/QcTextureCraftPatterns.cpp textures/QcTextureFarmPatterns.cpp
-    textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp
+    textures/QcTextureRangedPatterns.cpp textures/QcTextureArmourPatterns.cpp textures/QcTextureEmblem.cpp textures/QcTextureDetail.cpp textures/QcTextureOutline.cpp
+    textures/QcTextureToolPatterns.cpp
     textures/QcProceduralTexture.cpp textures/QcAtlasLayout.cpp textures/QcAlphaCoverage.cpp
     # Block icons as well: the projection and the depth of their faces, from the render table's
     # quads (decision E-901).

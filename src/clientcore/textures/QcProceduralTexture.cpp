@@ -84,6 +84,7 @@ namespace QcProceduralTexture {
 
     const QcTextureAnimation animation = animationOf(definition);
     parsed->phase = static_cast<double>(std::clamp(frame, 0, animation.frames - 1)) / animation.frames;
+    parsed->detailed = resolution > QcTextureSynthesizer::tileSize;
     QImage base = QcTextureSynthesizer::synthesize(*parsed);
     if (resolution <= QcTextureSynthesizer::tileSize) {
         return base;
