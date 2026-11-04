@@ -155,7 +155,7 @@ private:
     const QcSettingsController &m_settings;
     std::shared_ptr<const QcTextureAtlas> m_atlas;
     std::shared_ptr<const QcBlockRenderTable> m_renderTable;
-    // A cache: the shapes of held sprites, cut from the atlas on first use (decision E-831). GUI
+    // A cache: the shapes of held and dropped sprites, cut from the atlas on first use (decision E-831). GUI
     // thread only: frames are built there, and the cache is not locked.
     mutable QcSpriteShapes m_spriteShapes;
     QcForcedPose m_forcedPose;

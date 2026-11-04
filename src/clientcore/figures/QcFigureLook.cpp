@@ -250,6 +250,15 @@ std::optional<QcEntityMesher::ItemLook> heldAtDraw(const QcContentRegistry &cont
     return look;
 }
 
+QcEntityMesher::ItemLook dropped(const QcContentRegistry &content, QcItemId item, QcSpriteShapes &shapes, const std::shared_ptr<const QcTextureAtlas> &atlas)
+{
+    QcEntityMesher::ItemLook look = QcFigureLook::item(content, item);
+    if (!look.cube) {
+        look.shape = shapes.shape(atlas, look.sprite);
+    }
+    return look;
+}
+
 std::optional<QcEntityMesher::ItemLook> flames(const QcContentRegistry &content, double width, double height)
 {
     const std::optional<QcBlockId> fire = content.defaultFire();

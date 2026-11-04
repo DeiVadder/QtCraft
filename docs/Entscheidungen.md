@@ -5546,3 +5546,39 @@ Geprüft in `test_draw_speed` (Server), `test_draw_client` (Client und Server ü
 - **Verworfen:** (1) Spannung als Byte je `EntityMove`: genau auch beim späten Sichtkontakt, aber ein stehender Schütze sendete dann jeden Tick eine Bewegung an alle Zuschauer und Server und Protokoll kämen dazu, für ein Bild, das die Zählung im Basisinhalt genauso trifft. (2) Feld `drawTextures` am Launcher: siehe oben. (3) Grenzen auf der Kraft statt der Zeit: Stufe 3 käme früher als im Vorbild.
 - **Showcase:** keine Änderung. Der Bogen hat keine Station, die spannt: der Rüstungsständer im Rüstungsbereich hält ihn in Ruhe, und ein Ständer spannt nicht; Stufen zeigt nur ein Schütze im Kampf.
 - **Tests:** `test_bow_stages` (Stufe an den Grenzen, Bogen hat drei eigene Stufen, Sehne und Pfeil wandern, Rückfall ohne und mit einzelnen Stufen, Ruhebild in `item`/`held`, Griff bleibt, `heldAtDraw` mit echtem Atlas, Zählung anderer Figuren bei Tempo 0 und 2, Flag-Wechsel zwischen zwei Ticks), `test_reconciliation` (Sitzung gibt ihr Tempo weiter), `test_forced_pose` (Hook für Wesen).
+
+## E-991 Liegende Items als ein festes Item (Paket 79.88)
+
+Mensch 2026-11-04: Ein Item auf dem Boden, etwa eine Spitzhacke, sieht wie zwei um 90° gedrehte Items aus, nicht wie ein sich drehendes. Das Vorbild zeigt ein einzelnes Item mit Tiefe.
+
+- **Eine Form für Hand und Boden:** `appendItem` zeichnet ein Sprite mit `appendExtrudedSprite` wie die Hand, `itemSpriteSize` breit und einen Texel dick, um die senkrechte Achse durch die Bildmitte gedreht. Drehung (60°/s), Wippen und die Kopien eines Stapels bleiben. Die Regel steht in `QcFigureLook::dropped` (Item-Darstellung plus Form aus dem Atlas), geprüft auf dem echten Atlas; der Frame-Builder ruft sie nur auf.
+- **Was bleibt:** Block-Items behalten ihre Blockform, auch wenn die Darstellung eine Form trägt. Erfahrungskugeln bleiben gekreuzt (Mensch: „kugeln so lassen“). Ein Sprite ohne Form ist eine flache Fläche, nicht mehr zwei gekreuzte. `appendLyingItem` (Lagerfeuer) bleibt flach: es war nie gekreuzt, und das Item liegt dort still.
+- **Die Form steht in `QcSpriteShape::form`:** Einmal je Form gerechnet, in Einheiten eines Sprites von einem Meter; `appendExtrudedSprite` setzt nur noch die Ecken und schreibt alle Vierecke eines Items in einem Block (`QcEntityMesh::addQuads`). Ein eigener Cache je Item war nicht nötig, `QcSpriteShapes` hält die Formen schon je Textur. Die Atlas-Koordinaten bleiben außerhalb der Form, weil `uv` je Bild wechseln kann (animierte Texturen).
+- **Eine gerade Kante ist ein Viereck:** Seiten mit gleicher Richtung, die in einer Linie aneinander liegen, werden ein Viereck. Es läuft im Bild durch die Mitte ihrer Texel, jede Strecke behält also die Farbe ihres Texels. Das halbiert die Seiten über alle Items (15162 auf 7668 bei 231 Items) und gilt auch in der Hand; dort ist das Bild gleich (Vergleich vor und nach der Änderung). Vorher stand je Seite eine einzige Farbe mit konstanten Koordinaten; jetzt liest eine lange Seite in der Ferne aus den Mip-Stufen wie die Vorderseite.
+- **Kosten: Mesh-Bau auf der CPU** (`test_drop_measure`, `QTCRAFT_DROP_MEASURE=full`, 500 Items, Release, Median je Bild, ohne Sichtprüfung des Frame-Builders). GPU-Zeit, Upload und Bildzeit sind damit nicht gemessen; die Fenstermessung steht noch aus:
+
+| Menge | vorher | nur extrudiert | Form je Shape | mit geraden Kanten und Blockschreiben |
+|---|---|---|---|---|
+| alle Items | 12,5 Dreiecke, 0,30 ms | 71,3, 1,06 ms | 71,3, 0,85 ms | 41,3, 0,34 ms |
+| nur Sprites | 8,0 Dreiecke, 0,20 ms | 133,6, 2,3 ms | 133,6, 1,9 ms | 70,3, 0,34 ms |
+| Sprites als Stapel ab 16 | 24,0 Dreiecke, 0,44 ms | 400,7, 6,1 ms | 400,7, 5,0 ms | 210,8, 1,36 ms |
+
+  Die reine Extrusion hätte bei 500 vollen Stapeln ein Drittel eines 60-Hz-Bildes an CPU gekostet und 16 MB Vertex- und Indexdaten je Bild erzeugt; jetzt sind es 1,4 ms und 8,6 MB (500 einzelne Sprites: 2,8 MB, vorher 0,3 MB).
+- **Verworfen:** eine Stufe ohne Seiten in der Ferne (das Item springt sichtbar, und viele Items liegen meist nah beieinander, etwa nach einer Sprengung); weniger Kopien in Stapeln (der Auftrag behält sie).
+- **Form in der Auflösung des Atlas (Mensch lehnte das HD-Schwert ab):** Die Form wurde aus der Mip-Stufe mit 16 Texeln geschnitten, das Bild aber mit 32 bis 128 Pixeln gezeichnet. Die Seiten standen daher als lose Platten neben dem dünneren Bild. Belegt durch `test_sprite_resolution`: Beim HD-64-Schwert lagen nur 31 von 224 Seitenpixeln auf der Kante des echten Bildes (HD 32: 29 von 112, HD 128: 35 von 448, Standard: alle). `QcSpriteShapes` schneidet jetzt aus Stufe 0, höchstens aber aus der Stufe mit 128 Texeln (`QcSpriteShapes::maxTexels`, Review): ein 256-Pixel-Paket baut keine Formen mit 256 Texeln, die Seiten folgen dort dem Bild der Stufe 1. Alle Seiten liegen auf der Kante; `test_sprite_resolution` zählt die nötigen Seiten unabhängig aus der Alpha-Maske und prüft Normalen und Bildkoordinaten jeder Seite. Dicke und Griff bleiben in Grund-Texeln (`QcSpriteShape::baseTexels` = 16): ein Sprite ist in jedem Paket 1/16 dick, die Faust steigt zwei Grund-Texel den Stiel hinauf und hält die Mitte dieses Grund-Texels (`QcSpriteShape::handlePoint`; vorher die Mitte des feinen Texels, in HD 64 lag der Griff dadurch 0,375 Grund-Texel tiefer, jetzt höchstens 0,25 seitlich daneben). Standard-Items sind unverändert (gleiche Form, gleiche Zahlen).
+- **Kosten nach Paket** (Mesh-Bau auf der CPU, 500 Items, Release, Median aus 3 Läufen):
+
+| Paket | alle Items | nur Sprites | Stapel ab 16 |
+|---|---|---|---|
+| Standard (16) | 41,3 Dreiecke, 0,31 ms, 1,7 MB | 70,3, 0,30 ms, 2,9 MB | 210,8, 1,19 ms, 8,6 MB |
+| HD 32 | 63,9, 0,40 ms, 2,6 MB | 119,0, 1,01 ms, 4,9 MB | 357,1, 2,39 ms, 14,6 MB |
+| HD 64 | 101,9, 0,55 ms, 4,2 MB | 202,2, 1,36 ms, 8,3 MB | 606,5, 4,96 ms, 24,9 MB |
+| HD 128 | 199,3, 1,35 ms, 8,2 MB | 412,8, 2,75 ms, 16,9 MB | 1238,3, 9,64 ms, 50,8 MB |
+
+  Mit der Grenze von 128 Texeln kostet ein 256-Pixel-Paket so viel wie HD 128 (Debug-Build, schlimmster Fall 500 Stapel: HD 64 606,5 Dreiecke je Drop und 36 ms, HD 128 1238,3 und 72 ms, 256 1189,8 und 69 ms; ohne Grenze wären es etwa doppelt so viele Dreiecke wie bei HD 128). Der erste Bau aller 228 Sprite-Formen nach einem Paketwechsel kostet im Debug-Build 15 ms (16), 110 ms (64), 373 ms (128) und 385 ms (256); er verteilt sich, weil jede Form erst gebaut wird, wenn ihr Item zum ersten Mal gezeichnet wird.
+
+  Bis HD 64 halte ich das für tragbar. 500 volle Stapel sind ein Extremfall, und die Sichtprüfung des Frame-Builders ist nicht mitgerechnet. Nur HD 128 mit vielen Stapeln wird teuer. Vorschlag, noch nicht gebaut: Drops ab etwa 8 m nehmen die Form aus einer kleineren Mip-Stufe (32 Texel), dort sieht man die Abweichung nicht mehr. Damit fiele der schlimmste Fall etwa auf die Werte von HD 32.
+- **Befund an der Textur (eigenes Thema):** Das 64-Pixel-Schwert von `qtcraft_hd_64` ist selbst unruhig: die Klinge ist eingeschnürt, hat ein kleines Loch und Beulen, und eine Parierstange fehlt. Die Spitzhacke hat kleine Lücken am Übergang vom Stiel zum Kopf. Die feste Form zeigt das jetzt genau, weil sie dem Bild folgt (Vergleich `sheet_tiles_16_vs_64.jpg`).
+- **Showcase:** Nichts passt, liegende Items verschwinden nach ihrer Lebenszeit, und die Showcase-Welt legt keine Items aus.
+
+Geprüft in `test_sprite_resolution` (Seiten auf der Kante des echten Bildes in vier Paketen, gleiche Dicke) und `test_dropped_item` (eine feste Form statt gekreuzter Flächen, gerade Kanten, Drehung und Wippen, Fläche ohne Form, Block, Stapel, Leuchten, Kugel) und `test_held_item`; `test_drop_measure` misst die Kosten.

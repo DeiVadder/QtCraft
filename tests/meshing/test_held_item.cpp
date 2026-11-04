@@ -262,15 +262,18 @@ private slots:
         // One texel thick: the faces lie half a texel in front of and behind the middle.
         QCOMPARE(std::abs(quadCentre(cube, 0).z), 0.5);
 
-        // Three texels in an L: two faces and eight edges to clear texels or the outside.
+        // Three texels in an L: two faces and eight edges to clear texels or the outside, six
+        // straight runs of them.
         const QcSpriteShape corner = QcSpriteShape::fromRows({u"#."_s, u"##"_s});
         QcEntityMesh ell;
         QcEntityMesher::appendExtrudedSprite(ell, {corner, anyUv({}), 1.0, 1.0f}, identity);
-        QCOMPARE(ell.vertices.size(), (2 + 8) * 4);
+        QCOMPARE(corner.sides().size(), 8);
+        QCOMPARE(ell.vertices.size(), (2 + 6) * 4);
 
-        // A side takes the colour of its texel: all four corners at the texel's centre.
+        // A side keeps the colours of its texels: the left edge, two texels long, stays in the
+        // middle of their column of the picture.
         const QcEntityVertex &side = ell.vertices[2 * quadVertices];
-        QVERIFY(std::ranges::all_of(ell.vertices.mid(2 * quadVertices, 4), [&](const QcEntityVertex &v) { return v.u == side.u && v.v == side.v; }));
+        QVERIFY(std::ranges::all_of(ell.vertices.mid(2 * quadVertices, 4), [&](const QcEntityVertex &v) { return v.u == side.u; }));
 
         QcEntityMesh none;
         QcEntityMesher::appendExtrudedSprite(none, {QcSpriteShape(), anyUv({}), 1.0, 1.0f}, identity);

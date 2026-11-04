@@ -88,6 +88,12 @@ QcEntityMesher::ItemLook item(const QcContentRegistry &content, QcItemId item);
                                                                  QcSpriteShapes &shapes,
                                                                  const std::shared_ptr<const QcTextureAtlas> &atlas);
 
+/*! Returns the look of the dropped \a item of \a content: as item(), a sprite with the shape
+    \a atlas gives it through \a shapes, so that it lies as one solid item (decision E-991); flat
+    without an atlas. */
+[[nodiscard]] QcEntityMesher::ItemLook dropped(const QcContentRegistry &content, QcItemId item, QcSpriteShapes &shapes,
+                                               const std::shared_ptr<const QcTextureAtlas> &atlas);
+
 /*! Returns the flames around a burning body (decision E-393): four walls with the texture of the
     default fire of \a content (QcContentRegistry::defaultFire) standing just outside a body \a
     width wide, inside a cube of \a height (BlockPlacement::size), glowing; nothing when the content

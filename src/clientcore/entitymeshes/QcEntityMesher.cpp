@@ -575,19 +575,18 @@ void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook
     const double bob = 0.06 + 0.05 * std::sin(frame.seconds * 2.5 + entity.id);
     const int copies = entity.item.count >= 16 ? 3 : (entity.item.count >= 2 ? 2 : 1);
 
+    // A block turns about its middle, a sprite about the upright line through its picture.
+    const Turn turn(yaw);
+    const QcVec3 centre{0.0, look.cube ? itemCubeSize * 0.5 : 0.0, 0.0};
+    const bool solid = !look.cube && look.shape && !look.shape->isEmpty();
+
     for (int copy = 0; copy < copies; ++copy) {
         const QcVec3 origin = position + QcVec3{copy * 0.07, bob + copy * 0.05, copy * -0.06};
-        if (look.cube) {
-            const QcVec3 centre{0.0, itemCubeSize * 0.5, 0.0};
-            const Turn turn(yaw);
-            emitItem(mesh, look, [&](const QcVec3 &p) { return origin + turn(p + centre); }, frame.light, uv);
-            continue;
-        }
-
-        // Two crossed sprites so the item shows from every side.
-        for (const double angle : {0.0, 90.0}) {
-            const Turn turn(yaw + angle);
-            emitSprite(mesh, itemSpriteSize, [&](const QcVec3 &p) { return origin + turn(p); }, uv(look.sprite), glowing(frame.light, look));
+        const auto place = [&](const QcVec3 &p) { return origin + turn(p + centre); };
+        if (solid) {
+            appendExtrudedSprite(mesh, {*look.shape, uv(look.sprite), itemSpriteSize, glowing(frame.light, look)}, place);
+        } else {
+            emitItem(mesh, look, place, frame.light, uv);
         }
     }
 }

@@ -28,9 +28,8 @@ struct ExtrudedSprite
     QcEntityLight light;
 };
 
-/*! Appends to \a mesh the front and back of \a sprite as whole quads, each point placed by
-    \a place (clear texels fall to the alpha test) and a side quad, in the colour of its texel,
-    on every edge between an opaque texel and a clear one. */
+/*! Appends to \a mesh the solid form of \a sprite (QcSpriteShape::form), each point placed by
+    \a place. */
 void appendExtrudedSprite(QcEntityMesh &mesh, const ExtrudedSprite &sprite, const PlaceFunction &place);
 
 /*! Returns where a hand holds the sprite of \a look drawn \a size metres across, in the sprite's

@@ -87,8 +87,8 @@ struct ItemLook
     /*! The placement of a launcher in the fist of a figure that aims it
         (QcHoldDisplay::thirdPersonDrawn, BodyPose::armsAimed). */
     HeldPlacement thirdPersonDrawn;
-    /*! The sprite's opaque texels; held sprites with a shape are drawn with thickness, without
-        one flat. */
+    /*! The sprite's opaque texels; held and dropped sprites with a shape are drawn with
+        thickness, without one flat. */
     std::shared_ptr<const QcSpriteShape> shape;
     /*! The shape the grip is taken from, if not \c {shape}: a draw stage is held where the resting
         sprite is, so the bow does not shift in the hand from stage to stage. */
@@ -247,7 +247,9 @@ void appendParts(QcEntityMesh &mesh, const QList<QcMobPart> &parts, const Placem
 void appendModel(QcEntityMesh &mesh, const Figure &figure, const QcAnimator::BodyPose &pose, const Placement &placement, const UvLookup &uv);
 
 /*! Appends to \a mesh the dropped item \a entity looking like \a look in \a frame, textured by
-    \a uv, spinning slowly and bobbing; larger stacks show up to three copies. */
+    \a uv, turning slowly about the vertical axis and bobbing: a block in its block form, a sprite
+    as one solid item one texel thick (decision E-991), flat without a shape. Larger stacks show
+    up to three copies. */
 void appendItem(QcEntityMesh &mesh, const QcClientEntity &entity, const ItemLook &look, const ItemFrame &frame, const UvLookup &uv);
 
 /*! \brief Where an item lies flat on a block (on a campfire, decision E-772): the middle of its

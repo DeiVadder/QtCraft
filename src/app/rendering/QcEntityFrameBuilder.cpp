@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <utility>
 
 using namespace Qt::StringLiterals;
 
@@ -472,7 +473,7 @@ void QcEntityFrameBuilder::appendEntity(QcEntityMesh &mesh, const QcClientEntity
     const double alpha = frame.alpha;
     const QcEntityMesher::UvLookup &uv = frame.uv;
     if (entity.isItem()) {
-        QcEntityMesher::appendItem(mesh, entity, QcFigureLook::item(frame.content, entity.item.item),
+        QcEntityMesher::appendItem(mesh, entity, QcFigureLook::dropped(frame.content, entity.item.item, m_spriteShapes, m_atlas),
                                    {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);
     } else if (entity.isExperienceOrb()) {
         QcEntityMesher::appendOrb(mesh, entity, {alpha, frame.seconds, entityLight(frame.world, entity.position)}, uv);

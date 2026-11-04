@@ -13,13 +13,14 @@
 class QcTextureAtlas;
 
 /*! \brief The shapes of item sprites in a texture atlas (decision E-831), each cut from the
-    atlas on first use and kept until the atlas changes. */
+    atlas on first use, at the atlas's own resolution up to maxTexels so that sides and picture
+    agree (decision E-991), and kept until the atlas changes. */
 class QcSpriteShapes
 {
 public:
-    /*! Shapes have at most this many texels along an edge (the base resolution); higher
-        resolutions are read from a smaller mip level. */
-    static constexpr int maxTexels = 16;
+    /*! The most texels along an edge a shape is cut at: larger tiles take the mip level of this
+        size, so a 256 pixel pack does not build meshes of 256 texels (decision E-991). */
+    static constexpr int maxTexels = 128;
 
     /*! Returns the shape of \a texture in \a atlas; null without an atlas. Another atlas than
         the last call's forgets the shapes kept so far. */

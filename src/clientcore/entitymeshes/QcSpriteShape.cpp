@@ -5,7 +5,7 @@
 
 #include <QImage>
 
-#include <array>
+#include <algorithm>
 #include <utility>
 
 namespace {
@@ -22,6 +22,145 @@ template<typename Opaque>
     }
     return texels;
 }
+
+// Light of the faces by the direction they face in the sprite's space: front and back like a flat
+// sprite, the top brightest, the underside darkest.
+constexpr float faceShade = 0.95f;
+constexpr float topShade = 1.0f;
+constexpr float sideShade = 0.75f;
+constexpr float bottomShade = 0.55f;
+
+// Builds the quads of a solid form; points and picture positions are given in texel coordinates (x
+// from the left, y from the top, 0..size of the shape) and z in texels from the middle; it is one
+// base texel thick.
+class FormBuilder
+{
+public:
+    explicit FormBuilder(const QcSpriteShape &shape)
+        : m_shape(shape)
+        , m_texels(shape.size())
+        , m_halfThickness(shape.texelsPerBase() * 0.5)
+    {
+    }
+
+    [[nodiscard]] QList<QcSpriteShape::FormQuad> build() const
+    {
+        QList<QcSpriteShape::FormQuad> quads;
+        quads.reserve(m_shape.sides().size() + 2);
+        const double n = m_texels;
+        for (const double side : {m_halfThickness, -m_halfThickness}) {
+            const std::array<QcVec3, 4> points = {{{0.0, n, side}, {n, n, side}, {n, 0.0, side}, {0.0, 0.0, side}}};
+            std::array<QcSpriteShape::FormCorner, 4> corners;
+            for (std::size_t i = 0; i < corners.size(); ++i) {
+                corners[i] = {points[i], QPointF(points[i].x, points[i].y)};
+            }
+            quads.append(quad(corners, QcVec3{0.0, 0.0, side}, faceShade));
+        }
+        for (const QcSpriteShape::Side &side : m_shape.sides()) {
+            if (!hasSide(side.texel - along(side.facing), side.facing)) {
+                quads.append(run(side));
+            }
+        }
+        return quads;
+    }
+
+private:
+    using Facing = QcSpriteShape::Facing;
+
+    // The texel a side faces from `facing`'s point of view, one step off the texel.
+    [[nodiscard]] static QPoint step(Facing facing)
+    {
+        switch (facing) {
+        case Facing::Left:
+            return {-1, 0};
+        case Facing::Right:
+            return {1, 0};
+        case Facing::Up:
+            return {0, -1};
+        case Facing::Down:
+            break;
+        }
+        return {0, 1};
+    }
+
+    // The way a run of sides goes on: down the picture for left and right, else to the right.
+    [[nodiscard]] static QPoint along(Facing facing) { return facing == Facing::Left || facing == Facing::Right ? QPoint(0, 1) : QPoint(1, 0); }
+
+    [[nodiscard]] bool hasSide(QPoint texel, Facing facing) const
+    {
+        const QPoint next = texel + step(facing);
+        return m_shape.opaque(texel.x(), texel.y()) && !m_shape.opaque(next.x(), next.y());
+    }
+
+    // One quad for the straight run of sides starting at `first`: it stretches along the middle of
+    // those texels in the picture, so each stretch of the side keeps the colour of its own texel.
+    [[nodiscard]] QcSpriteShape::FormQuad run(QcSpriteShape::Side first) const
+    {
+        const Facing facing = first.facing;
+        const QPoint way = along(facing);
+        int length = 1;
+        while (hasSide(first.texel + way * length, facing)) {
+            ++length;
+        }
+
+        // The edge's first corner: the texel's top left corner, moved over to its far side.
+        const QPoint out = step(facing);
+        const QPointF start(first.texel.x() + (out.x() > 0 ? 1 : 0), first.texel.y() + (out.y() > 0 ? 1 : 0));
+        const QPointF end = start + QPointF(way * length);
+        const QPointF middle = QPointF(first.texel) + QPointF(0.5, 0.5);
+        const auto corner = [&](QPointF at, double z) {
+            const QPointF picture = way.x() != 0 ? QPointF(at.x(), middle.y()) : QPointF(middle.x(), at.y());
+            return QcSpriteShape::FormCorner{{at.x(), at.y(), z}, picture};
+        };
+        return quad({corner(start, -m_halfThickness), corner(end, -m_halfThickness), corner(end, m_halfThickness), corner(start, m_halfThickness)}, QcVec3{static_cast<double>(out.x()), static_cast<double>(-out.y()), 0.0},
+                    shadeOf(facing));
+    }
+
+    [[nodiscard]] static float shadeOf(Facing facing)
+    {
+        switch (facing) {
+        case Facing::Left:
+        case Facing::Right:
+            return sideShade;
+        case Facing::Up:
+            return topShade;
+        case Facing::Down:
+            break;
+        }
+        return bottomShade;
+    }
+
+    // Texel coordinates (y down) -> the local space of a sprite one unit across (y up, centred on x).
+    [[nodiscard]] QcVec3 local(const QcVec3 &t) const
+    {
+        const double n = m_texels;
+        return {t.x / n - 0.5, 1.0 - t.y / n, t.z / n};
+    }
+
+    // A quad of corners in texel coordinates facing `outward` (in the local space, y up):
+    // counter-clockwise seen from outside like every entity face.
+    [[nodiscard]] QcSpriteShape::FormQuad quad(std::array<QcSpriteShape::FormCorner, 4> corners, const QcVec3 &outward, float shade) const
+    {
+        // Texel space has y down, so the winding is checked in the local space.
+        const QcVec3 a = local(corners[1].point) - local(corners[0].point);
+        const QcVec3 b = local(corners[2].point) - local(corners[0].point);
+        const QcVec3 normal{a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x};
+        if (normal.dot(outward) < 0.0) {
+            std::swap(corners[1], corners[3]);
+        }
+
+        QcSpriteShape::FormQuad result;
+        result.shade = shade;
+        for (std::size_t i = 0; i < corners.size(); ++i) {
+            result.corners[i] = {local(corners[i].point), corners[i].texture / m_texels};
+        }
+        return result;
+    }
+
+    const QcSpriteShape &m_shape;
+    int m_texels;
+    double m_halfThickness;
+};
 
 } // namespace
 
@@ -66,6 +205,7 @@ void QcSpriteShape::measure()
     }
     if (count > 0) {
         m_centroid = sum / count;
+        m_form = FormBuilder(*this).build();
     }
 }
 
@@ -110,7 +250,8 @@ QPoint QcSpriteShape::handle() const
 
     // Up the handle: up and right (a diagonal handle), straight up (a stick), up and left.
     static constexpr std::array<QPoint, 3> steps = {{{1, -1}, {0, -1}, {-1, -1}}};
-    for (int climbed = 0; climbed < 2; ++climbed) {
+    const int climb = 2 * static_cast<int>(texelsPerBase());
+    for (int climbed = 0; climbed < climb; ++climbed) {
         for (const QPoint step : steps) {
             if (opaque(grip.x() + step.x(), grip.y() + step.y())) {
                 grip += step;
@@ -119,4 +260,17 @@ QPoint QcSpriteShape::handle() const
         }
     }
     return grip;
+}
+
+QPointF QcSpriteShape::handlePoint() const
+{
+    if (isEmpty()) {
+        return {};
+    }
+    // The climb ends on the lowest texel row of a base texel (it starts on the bottom row of the
+    // picture and climbs whole base texels); the middle of that base texel lies half a base texel
+    // above the row's lower edge. Across, painted outlines put the texel near the base texel's
+    // middle already.
+    const QPoint texel = handle();
+    return {texel.x() + 0.5, texel.y() + 1.0 - texelsPerBase() * 0.5};
 }
