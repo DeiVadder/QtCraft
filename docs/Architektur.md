@@ -235,9 +235,9 @@ Frames are `[quint16 type][QDataStream payload]`, see `QcProtocol.h` and decisio
 | `ChunkUnload` | S→C | chunk position (the client drops the chunk's labels too) |
 | `ChunkLabels` | S→C | the labels floating in a chunk, right after its `ChunkData` when it has any: position, text (translation key), detail line, heading; at most 4096 per chunk, texts at most 256 characters (decision E-222) |
 | `BlockUpdate` | S→C | position, block state id |
-| `PlayerInput` | C→S | sequence, movement intent (with the wish to fly, E-284), view direction |
+| `PlayerInput` | C→S | sequence, movement intent (with the wish to fly, E-284), view direction, whether an item is held in use (`usingItem` since protocol 88, E-986) |
 | `PlayerExperience` | S→C | the player's experience level, points towards the next level and the points that level needs (E-398, protocol 39) |
-| `PlayerState` | S→C | last processed input sequence, authoritative motion (with `flying`), the minecart ridden (`vehicle`, 0 for none; E-383) |
+| `PlayerState` | S→C | last processed input sequence, authoritative motion (with `flying`), the minecart ridden (`vehicle`, 0 for none; E-383), whether the server knows the player to draw (`usingItem` since protocol 88, E-986) |
 | `Disconnect` | both | reason (English) with a translation key and up to 16 arguments like `ChatMessage` (E-094) |
 | `StartMining`, `CancelMining`, `FinishMining` | C→S | block position; `FinishMining` with the number of the client's predicted break (0: none, E-853) |
 | `UseItem` | C→S | clicked block, face and the aimed point inside the block (0..1 per axis; picks slab halves, door hinges), the number of the client's predicted placement (0: none) and the view it predicted with (optional; the server places with it, E-853) |

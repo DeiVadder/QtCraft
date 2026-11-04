@@ -36,6 +36,11 @@ struct QcPlayerInput
     /*! The view direction in degrees, see QcCamera for the convention. \qcshared */
     float yaw = 0.0f;
     float pitch = 0.0f;
+    /*! The player holds an item in use (draws a bow) in this input (decision E-986): he moves at
+        QcPhysics::usingItemFactor of his speed and does not sprint. Sent, and the server steps the
+        input with it even when it knows of no draw, so that client and server agree on every
+        input; it also slows a player it knows to draw when this is not set. */
+    bool usingItem = false;
     /*! The factor of the status effects on the player's speed (slowness, decision E-838), set by
         the side that steps the input: the server from the player's effects, the client from
         those the server told it. Never sent. */
@@ -44,6 +49,12 @@ struct QcPlayerInput
         m/s added to his move, set like speedFactor by the side that steps the input: the server
         from its creatures, the client from those it knows (QcPushBodies). Never sent. */
     QcVec3 push = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+
+    /*! Returns whether this input sprints: the wish to, moving forward and no item in use
+        (decision E-986). Sneaking is not looked at: a walker's sneak goes first in
+        QcEntityMotion::stepPlayer, the server checks it for the figure, and a flyer's sneak only
+        descends. */
+    [[nodiscard]] bool sprints() const { return sprint && forward > 0.0f && !usingItem; }
 
     bool operator==(const QcPlayerInput &) const = default;
 };

@@ -346,7 +346,8 @@ void QcServer::updateClient(Client &client, QcClientSyncPace::Due sync)
     }
 
     if (client.stateDirty) {
-        client.connection->send(QcMsg::PlayerState{client.input.lastSequence, client.motion, m_vehicles.vehicleOf(client), m_vehicles.boatOf(client)});
+        client.connection->send(
+            QcMsg::PlayerState{client.input.lastSequence, client.motion, m_vehicles.vehicleOf(client), m_vehicles.boatOf(client), client.drawing});
         client.stateDirty = false;
     }
 }

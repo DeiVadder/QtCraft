@@ -243,6 +243,7 @@ void QcClientSession::onVitalsChanged(QcClientVitals::Change change)
         if (m_vitals.isDead()) {
             // A player comes back from death on the ground.
             m_hand.setMining(false);
+            m_hand.dropDraw();
             m_gameMode.mirrorFlight(false);
         }
         emit healthChanged();
@@ -351,6 +352,9 @@ void QcClientSession::onReconciled(const QcSessionEvent::Reconciled &reconciled)
     }
 
     adopt(reconciled.after);
+    if (reconciled.usingItemRefused) {
+        m_hand.dropDraw();
+    }
     if (m_state == State::Loading && m_worldMirror.world()) {
         setState(State::Playing);
     }

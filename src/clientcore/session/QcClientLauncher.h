@@ -30,10 +30,10 @@ public:
         cancel). */
     bool release();
     /*! One client tick with \a held in the selected hotbar slot \a slot: a draw whose launcher
-        left the hand or whose slot is no longer selected ends without a message, the server lets
-        it go by itself. \a serverTicks: the server's ticks in this client tick
-        (QcMsg::WorldTime::speed: 1 at its normal rate, more in a sprint, 0 frozen), by which the
-        cooldowns of throws run as on the server. */
+        left the hand or whose slot is no longer selected ends (QcHandActions sends the cancel).
+        \a serverTicks: the server's ticks in this client tick (QcMsg::WorldTime::speed: 1 at its
+        normal rate, more in a sprint, 0 frozen), by which the cooldowns of throws run as on the
+        server. */
     void tick(const QcItemDefinition *held, int slot, double serverTicks = 1.0);
 
     /*! Returns the use button pressed with \a definition (the item \a item, selected in

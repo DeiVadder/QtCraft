@@ -26,7 +26,8 @@ struct QcServerClient;
     ammunition and wears the launcher by one, except in creative mode. Without ammunition a draw
     does not begin outside creative mode. A draw lets go without a shot when the client cancels
     it, the selected hotbar slot changes (also to another launcher), the selected item is no
-    launcher any more, the player dies or the power stays below the launcher's minPower. */
+    launcher any more, the player dies or the power stays below the launcher's minPower. A draw
+    slows the player (draws(), decision E-986). */
 class QcPlayerLaunchers
 {
 public:
@@ -40,6 +41,9 @@ public:
     void draw(QcServerClient &client, QcMsg::DrawLauncher::Action action);
     /*! Ends draws whose launcher left the hand. */
     void tick();
+    /*! Returns whether the player of \a client draws a launcher that is still in the hand, also
+        between the change of the hand and the next tick(). */
+    [[nodiscard]] bool draws(const QcServerClient &client) const;
 
     /*! The player of \a client shoots with the held launcher at \a power; returns false when
         nothing was shot (no launcher, no ammunition, power below its minimum, the projectile

@@ -20,13 +20,13 @@ namespace QcProtocolCodec {
 void encode(QDataStream &stream, const QcMsg::PlayerInput &m)
 {
     const QcPlayerInput &in = m.input;
-    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch;
+    stream << in.sequence << in.forward << in.strafe << in.jump << in.sneak << in.sprint << in.flying << in.flySpeed << in.yaw << in.pitch << in.usingItem;
 }
 
 void encode(QDataStream &stream, const QcMsg::PlayerState &m)
 {
     stream << m.lastInputSequence << m.motion.position << m.motion.velocity << m.motion.onGround << m.motion.inWater << m.motion.flying
-           << m.vehicle << m.boat.has_value();
+           << m.vehicle << m.usingItem << m.boat.has_value();
     if (const std::optional<QcBoatState> &boat = m.boat) {
         stream << boat->motion.position << boat->motion.velocity << boat->motion.onGround << boat->motion.inWater << boat->yaw << boat->spin;
     }
@@ -134,7 +134,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
 [[nodiscard]] QcResult<QcMessage> decode(Tag<QcMsg::PlayerInput>, QDataStream &stream)
 {
     QcPlayerInput in;
-    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch;
+    stream >> in.sequence >> in.forward >> in.strafe >> in.jump >> in.sneak >> in.sprint >> in.flying >> in.flySpeed >> in.yaw >> in.pitch >> in.usingItem;
     if (!std::isfinite(in.forward) || !std::isfinite(in.strafe) || !std::isfinite(in.yaw) || !std::isfinite(in.pitch)) {
         return qcError(u"Non-finite player input"_s);
     }
@@ -149,7 +149,7 @@ void encode(QDataStream &stream, QcMsg::DrawLauncher m)
     QcMsg::PlayerState m;
     bool driving = false;
     stream >> m.lastInputSequence >> m.motion.position >> m.motion.velocity >> m.motion.onGround >> m.motion.inWater >> m.motion.flying
-        >> m.vehicle >> driving;
+        >> m.vehicle >> m.usingItem >> driving;
     if (!isFinite(m.motion.position) || !isFinite(m.motion.velocity)) {
         return qcError(u"Non-finite player state"_s);
     }

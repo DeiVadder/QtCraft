@@ -68,6 +68,7 @@ public:
             acknowledged = state->lastInputSequence;
             vehicle = state->vehicle;
             boat = state->boat;
+            usingItem = state->usingItem;
         } else if (const auto *welcome = std::get_if<QcMsg::Welcome>(&message)) {
             entityId = welcome->playerEntityId;
             viewDistanceGranted = welcome->viewDistance;
@@ -204,6 +205,8 @@ public:
     quint32 acknowledged = 0;
     quint32 vehicle = 0;
     std::optional<QcBoatState> boat;
+    // Whether the server knows the player to draw (PlayerState).
+    bool usingItem = false;
     // Messages received in all.
     int messageCount = 0;
     // Keys of all sounds heard, oldest first.

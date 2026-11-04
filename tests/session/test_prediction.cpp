@@ -10,6 +10,7 @@
 #include <QTest>
 
 #include <algorithm>
+#include <cmath>
 #include <limits>
 #include <tuple>
 
@@ -308,6 +309,92 @@ private slots:
 
         // Without slowness the same walk covers more ground: the factor was applied at all.
         QVERIFY((server.motion.position - settled).length() > slowStretch * 8.0 / 12.0 * 1.2);
+    }
+
+    // The mark of a draw (decision E-986) rides with each input: the replay moves as predicted, and
+    // both sides slow on the same input whatever the delay.
+    void aDrawKeepsTheCorrectionAtZero()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        prediction.setIntent(QcPlayerInput{.forward = 1.0f, .sprint = true});
+        LaggingServer server;
+        server.motion = standingState(0).motion;
+
+        QCOMPARE(walk(prediction, server, world, 6), 0.0);
+        prediction.setUsingItem(true);
+        // The session sets its intent every frame; the draw stays.
+        prediction.setIntent(QcPlayerInput{.forward = 1.0f, .sprint = true});
+        QVERIFY(prediction.intent().usingItem);
+        const QcVec3 before = server.motion.position;
+        QCOMPARE(walk(prediction, server, world, 10), 0.0);
+        prediction.setUsingItem(false);
+        QCOMPARE(walk(prediction, server, world, 5), 0.0);
+        QVERIFY(server.motion.position.length() > before.length());
+    }
+
+    void theDrawSlowsEveryKindOfMove()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        const auto speedOf = [&world](QcPlayerInput input, QcMovement movement) {
+            QcEntityMotion motion = standingState(0).motion;
+            motion.position.y = input.flying ? 3.0 : 1.0;
+            input.forward = 1.0f;
+            for (int tick = 0; tick < 16; ++tick) {
+                motion.position.x = 0.5;
+                motion.position.z = 0.5;
+                motion.stepPlayer(input, world, QcPhysics::tickDuration, movement);
+            }
+            return std::hypot(motion.velocity.x, motion.velocity.z);
+        };
+        const double factor = QcPhysics::usingItemFactor;
+        QCOMPARE(factor, 0.2);
+        for (const QcPlayerInput &input : {QcPlayerInput{}, QcPlayerInput{.sneak = true}}) {
+            QcPlayerInput drawn = input;
+            drawn.usingItem = true;
+            QVERIFY(std::abs(speedOf(drawn, QcMovement::Walk) - speedOf(input, QcMovement::Walk) * factor) < 0.01);
+        }
+        // Drawn, the wish to sprint is plain walking; flying likewise.
+        QVERIFY(std::abs(speedOf({.sprint = true, .usingItem = true}, QcMovement::Walk) - QcPhysics::walkSpeed * factor) < 0.05);
+        const QcPlayerInput flight{.flying = true};
+        QVERIFY(std::abs(speedOf({.sprint = true, .flying = true, .usingItem = true}, QcMovement::MayFly) - speedOf(flight, QcMovement::MayFly) * factor) < 0.05);
+
+        QVERIFY(QcPlayerInput({.forward = 1.0f, .sprint = true}).sprints());
+        QVERIFY(!QcPlayerInput({.forward = 1.0f, .sprint = true, .usingItem = true}).sprints());
+    }
+
+    // A state counts against a draw only when it answers an input of that draw: the answers to the
+    // inputs before it, or to the end of an earlier draw, say nothing about this one.
+    void onlyAnAnswerToTheDrawRefusesIt()
+    {
+        QcTestWorld world(m_content);
+        layFloor(world);
+        QcPrediction prediction;
+        prediction.reconcile(standingState(0), &world, QcMovement::Walk);
+        const auto refused = [&prediction](quint32 acknowledged, bool serverDraws) {
+            QcMsg::PlayerState state = standingState(acknowledged);
+            state.usingItem = serverDraws;
+            return prediction.usingItemRefused(state);
+        };
+
+        const QcPlayerInput first = prediction.predict(world, false, QcMovement::Walk);
+        QVERIFY(!refused(first.sequence, false));
+        prediction.setUsingItem(true);
+        QVERIFY(!refused(first.sequence, false));
+        const QcPlayerInput drawn = prediction.predict(world, false, QcMovement::Walk);
+        QVERIFY(drawn.usingItem);
+        QVERIFY(refused(drawn.sequence, false));
+        QVERIFY(!refused(drawn.sequence, true));
+
+        // A new draw after a release: the old answer does not reach it.
+        prediction.setUsingItem(false);
+        std::ignore = prediction.predict(world, false, QcMovement::Walk);
+        prediction.setUsingItem(true);
+        QVERIFY(!refused(drawn.sequence, false));
+        QVERIFY(refused(prediction.predict(world, false, QcMovement::Walk).sequence, false));
     }
 
     // A knockback (decision E-971) is a velocity the server gives the player between two inputs: the

@@ -56,6 +56,8 @@ struct QcSessionEvent
         QcMsg::PlayerState state;
         /*! The prediction after it was applied. */
         Prediction after;
+        /*! The server does not know of the draw the core predicted (decision E-986). */
+        bool usingItemRefused = false;
     };
 
     /*! \brief The connection closed; \c {error} is the protocol error or the transport's reason

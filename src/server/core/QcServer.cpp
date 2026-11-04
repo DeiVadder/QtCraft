@@ -540,6 +540,9 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     input.yaw = std::fmod(input.yaw, 360.0f);
     // The speed follows the player's effects as the server knows them, never the client's word.
     input.speedFactor = static_cast<float>(client.effects.speedFactor(m_state.content()));
+    // A draw slows the player (decision E-986). The client's word counts only as a slowdown, so
+    // an input predicted as drawing moves alike here, also when the draw was refused meanwhile.
+    input.usingItem = input.usingItem || m_projectiles.launchers().draws(client);
 
     // A rider does not move: the cart carries the player (decision E-382); a driver's input moves the
     // boat (decision E-920).
@@ -564,7 +567,7 @@ void QcServer::handleInput(Client &client, const QcMsg::PlayerInput &message)
     // chest), only the figure does not crouch for it (QcEntitySync).
     client.sneakedBefore = client.sneaking;
     client.sneaking = input.sneak;
-    client.sprinting = input.sprint && input.forward > 0.0f && !input.sneak;
+    client.sprinting = input.sprints() && !input.sneak;
 
     const bool jumped = input.jump && wasOnGround && !client.motion.onGround && client.motion.velocity.y > 0.0;
     const double distance = walkedDistance(previous, client.motion.position, input.push);

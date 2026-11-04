@@ -248,7 +248,18 @@ QcHandActions::HandEffect QcHandActions::updateMining(const QcClientWorld &world
 
 void QcHandActions::tickLauncher(const QcContentRegistry &content, double serverTicks)
 {
+    const bool wasDrawing = m_launcher.drawing();
     m_launcher.tick(m_view.inventory.heldDefinition(content), m_view.inventory.inventory().selectedHotbarSlot(), serverTicks);
+    if (wasDrawing && !m_launcher.drawing()) {
+        m_send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
+    }
+}
+
+void QcHandActions::dropDraw()
+{
+    if (m_launcher.release()) {
+        m_send(QcMsg::DrawLauncher{QcMsg::DrawLauncher::Action::Cancel});
+    }
 }
 
 bool QcHandActions::permitted(const QcClientWorld &world, const QcContentRegistry &content, QcAdventureRules::Action action, QcBlockPos pos) const

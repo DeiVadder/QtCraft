@@ -104,6 +104,7 @@ private slots:
         input.flying = true;
         input.yaw = 123.25f;
         input.pitch = -12.5f;
+        input.usingItem = true;
         QCOMPARE(roundTrip(QcMsg::PlayerInput{input}).input, input);
 
         QcMsg::PlayerState state;
@@ -112,9 +113,11 @@ private slots:
         state.motion.velocity = {0.1, -9.5, 0.0};
         state.motion.onGround = true;
         state.motion.flying = true;
+        state.usingItem = true;
         const QcMsg::PlayerState copy = roundTrip(state);
         QCOMPARE(copy.lastInputSequence, 99u);
         QCOMPARE(copy.motion, state.motion);
+        QVERIFY(copy.usingItem);
     }
 
     void chunkRoundTripPreservesEveryBlock()

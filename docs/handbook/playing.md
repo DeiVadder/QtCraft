@@ -545,7 +545,7 @@ A file in `trades/` lists offers of one profession: for each the level from whic
 
 **Drawing and shooting**
 
-Hold the use button with a bow in your hand to draw it and let go to shoot. A full draw takes 1 s and sends the arrow off at 60 m/s; a short draw shoots weaker, and a very short one not at all. The bow uses the first arrow of your inventory and wears with every shot.
+Hold the use button with a bow in your hand to draw it and let go to shoot. A full draw takes 1 s and sends the arrow off at 60 m/s; a short draw shoots weaker, and a very short one not at all. The bow uses the first arrow of your inventory and wears with every shot. While you draw you move at a fifth of your speed and cannot sprint.
 
 **Arrows in flight**
 

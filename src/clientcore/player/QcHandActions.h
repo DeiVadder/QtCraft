@@ -123,8 +123,12 @@ public:
     HandEffect strike(const QcClientWorld &world, const QcContentRegistry &content);
 
     /*! Once per tick: the launcher's draw (items of \a content) and the cooldowns of throwing
-        (\a serverTicks per tick). */
+        (\a serverTicks per tick). A draw whose launcher left the hand is cancelled, also towards
+        the core, which slows the player while a draw runs (decision E-986). */
     void tickLauncher(const QcContentRegistry &content, double serverTicks);
+    /*! A draw ends without the player's word: the server refused it or the player died. The
+        button may stay held; only a new press draws again. */
+    void dropDraw();
     /*! Returns the progress of the drawn launcher \a alpha into the tick, negative when none is
         drawn. */
     double drawProgress(double alpha) const { return m_launcher.progress(alpha); }

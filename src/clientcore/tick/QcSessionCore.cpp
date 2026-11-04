@@ -74,6 +74,10 @@ void QcSessionCore::apply(const QcSessionCommand &command)
         if (m_connection) {
             m_connection->send(send->message);
         }
+        // In one step with the message: the next input already moves as the server will (E-986).
+        if (const auto *draw = std::get_if<QcMsg::DrawLauncher>(&send->message)) {
+            m_prediction.setUsingItem(draw->action == QcMsg::DrawLauncher::Action::Draw);
+        }
     } else if (const auto *predicted = std::get_if<QcSessionCommand::PredictBlocks>(&command.what)) {
         m_blocks.predict(predicted->sequence, predicted->blocks);
     } else if (std::holds_alternative<QcSessionCommand::Close>(command.what) && m_connection) {
@@ -197,6 +201,10 @@ void QcSessionCore::onMessage(QcMessage &&message)
 void QcSessionCore::reconcile(const QcMsg::PlayerState &state)
 {
     m_linkStats.acknowledged(state.lastInputSequence, m_now());
+    const bool usingItemRefused = m_prediction.usingItemRefused(state);
+    if (usingItemRefused) {
+        m_prediction.setUsingItem(false);
+    }
     // A player saved while flying flies on after joining (decision E-284).
     if (m_prediction.reconcile(state, m_blocks.world(), m_gameMode.rules().movement()) == QcPrediction::Reconciled::Placed) {
         m_gameMode.setFlightWanted(state.motion.flying);
@@ -204,7 +212,7 @@ void QcSessionCore::reconcile(const QcMsg::PlayerState &state)
     if (m_blocks.world()) {
         m_playing = true;
     }
-    m_sink({QcSessionEvent::Reconciled{state, prediction()}});
+    m_sink({QcSessionEvent::Reconciled{state, prediction(), usingItemRefused}});
 }
 
 void QcSessionCore::onClosed()

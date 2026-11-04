@@ -91,6 +91,7 @@ private slots:
         const QcResult<QcMessage> decoded = decodeFrom(QcMsg::PlayerInput{input}, QcProtocol::Peer::Client);
         QVERIFY(decoded);
         QCOMPARE(std::get<QcMsg::PlayerInput>(*decoded).input.flySpeed, quint8(25));
+        QVERIFY(!std::get<QcMsg::PlayerInput>(*decoded).input.usingItem);
 
         input.flySpeed = 0;
         QVERIFY(!decodeFrom(QcMsg::PlayerInput{input}, QcProtocol::Peer::Client));

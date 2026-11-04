@@ -53,6 +53,10 @@ public:
     const QcEntityMotion &previousMotion() const { return m_previousMotion; }
     /*! Returns the number of inputs the server has not acknowledged yet. */
     qsizetype pendingInputCount() const { return m_pendingInputs.size(); }
+    /*! Returns the sequence number of the latest input predicted; 0 before the first. */
+    quint32 lastSequence() const { return m_nextSequence - 1; }
+    /*! Returns the sequence number of the latest input the server acknowledged. */
+    quint32 lastAcknowledged() const { return m_lastAcknowledged; }
     /*! Returns the metres the server moved the predicted player in the latest reconcile (E-257). */
     double lastCorrection() const { return m_lastCorrection; }
     /*! Returns the most metres the server moved the predicted player since resetCorrections(). */
@@ -88,6 +92,12 @@ public:
         decision E-838), as the server told them; the next inputs carry it, so replaying them
         moves as predicted. */
     void setSpeedFactor(float factor) { m_intent.speedFactor = factor; }
+    /*! Sets \a usingItem, whether the next inputs hold an item in use (draw a bow, decision
+        E-986). The inputs keep it, so replaying them moves as predicted. */
+    void setUsingItem(bool usingItem);
+    /*! Returns whether \a state shows that the server does not know of the running draw: it
+        acknowledged an input of this draw and does not draw. */
+    [[nodiscard]] bool usingItemRefused(const QcMsg::PlayerState &state) const;
     /*! While riding, after predict(): the player moves onto the seat of the cart as the entity
         mirror \a entities shows it this tick. */
     void followCart(const QcClientEntities &entities);
@@ -113,8 +123,13 @@ private:
     // Applies a state that names a boat: its state replayed with the pending inputs.
     void reconcileBoat(const QcBoatState &boat, const QcBlockAccess *world, bool placedOrMoved);
 
+    // Copies what the core alone sets in the intent, from `core`.
+    void keepCoreIntent(const QcPlayerInput &core);
+
     QcPlayerInput m_intent;
     quint32 m_nextSequence = 1;
+    // The first input of the running draw.
+    quint32 m_usingItemSince = 0;
     QList<QcPlayerInput> m_pendingInputs;
     QcEntityMotion m_motion;
     QcEntityMotion m_previousMotion;

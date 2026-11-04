@@ -86,6 +86,11 @@ void QcPlayerLaunchers::tick()
     }
 }
 
+bool QcPlayerLaunchers::draws(const QcServerClient &client) const
+{
+    return client.drawing && mayDraw(client, m_state.heldItem(client));
+}
+
 bool QcPlayerLaunchers::mayDraw(const QcServerClient &client, const QcItemDefinition *held)
 {
     // A draw belongs to the slot it began in: another bow there or in another slot starts anew.

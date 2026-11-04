@@ -44,6 +44,10 @@ inline constexpr double jumpVelocity = 9.0;
 inline constexpr double walkSpeed = 4.3;
 inline constexpr double sprintSpeed = 5.6;
 inline constexpr double sneakSpeed = 1.3;
+/*! The share of a player's horizontal speed left while he holds an item in use (draws a bow,
+    decision E-986), as in the role model: it scales walking, sneaking, swimming and flying
+    alike. */
+inline constexpr double usingItemFactor = 0.2;
 /*! How fast the horizontal velocity approaches the wished one, per second (the share
     acceleration x dt per tick), on the ground and in the air. \qcshared */
 inline constexpr double groundAcceleration = 20.0;

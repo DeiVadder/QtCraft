@@ -26,6 +26,7 @@ qc_add_test(test_backpack_control SOURCES network/test_backpack_control.cpp LIBR
 qc_add_test(test_creative_client SOURCES network/test_creative_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 180)
 qc_add_test(test_void_client SOURCES network/test_void_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 300)
 qc_add_test(test_ice_client SOURCES network/test_ice_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 300)
+qc_add_test(test_draw_client SOURCES network/test_draw_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 300)
 qc_add_test(test_push_client SOURCES network/test_push_client.cpp fixtures/QcLatencyTransport.h LIBRARIES qc_server qc_worlds qc_clientcore TIMEOUT 300)
 # Bot clients in their own processes on a dedicated server process (stage 25b, decision E-270).
 qc_add_test(test_multiplayer_bots SOURCES network/test_multiplayer_bots.cpp fixtures/QcBotProcess.h LIBRARIES qc_server TIMEOUT 600)

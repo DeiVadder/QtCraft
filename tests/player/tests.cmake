@@ -15,6 +15,7 @@ qc_add_test(test_creative_mode SOURCES player/test_creative_mode.cpp fixtures/Qc
 qc_add_test(test_spectator_mode SOURCES player/test_spectator_mode.cpp fixtures/QcServerTestFixture.h fixtures/QcRawClient.h LIBRARIES qc_server qc_worlds TIMEOUT 180)
 qc_add_test(test_death_messages SOURCES player/test_death_messages.cpp fixtures/QcPlayerUseFixture.h fixtures/QcCircuitFixture.h fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 120)
 qc_add_test(test_experience SOURCES player/test_experience.cpp fixtures/QcServerTestFixture.h fixtures/QcTestWorld.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
+qc_add_test(test_draw_speed SOURCES player/test_draw_speed.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server)
 qc_add_test(test_ammunition SOURCES player/test_ammunition.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server qc_clientcore TIMEOUT 300)
 qc_add_test(test_status_effects SOURCES player/test_status_effects.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)
 qc_add_test(test_fishing SOURCES player/test_fishing.cpp fixtures/QcServerTestFixture.h LIBRARIES qc_server TIMEOUT 300)

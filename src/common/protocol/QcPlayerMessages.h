@@ -47,6 +47,9 @@ struct PlayerState
     quint32 vehicle = 0;
     /*! The state of the boat the player drives (see the struct). */
     std::optional<QcBoatState> boat = {}; // NOLINT(readability-redundant-member-init): keeps aggregate initialisation warning-free
+    /*! The server knows the player to draw a launcher (decision E-986). False after an input the
+        client sent as drawing: the server refused the draw or ended it, the client lets go. */
+    bool usingItem = false;
 };
 
 /*! \brief Client -> server: the player selected another hotbar slot. */

@@ -19,12 +19,31 @@ double QcPrediction::eyeHeight() const
     return QcPhysics::eyeHeight(crouches());
 }
 
+void QcPrediction::keepCoreIntent(const QcPlayerInput &core)
+{
+    m_intent.speedFactor = core.speedFactor;
+    m_intent.usingItem = core.usingItem;
+}
+
+void QcPrediction::setUsingItem(bool usingItem)
+{
+    if (usingItem && !m_intent.usingItem) {
+        m_usingItemSince = m_nextSequence;
+    }
+    m_intent.usingItem = usingItem;
+}
+
+bool QcPrediction::usingItemRefused(const QcMsg::PlayerState &state) const
+{
+    return m_intent.usingItem && !state.usingItem && state.lastInputSequence >= m_usingItemSince;
+}
+
 void QcPrediction::setIntent(const QcPlayerInput &intent)
 {
     const auto finiteOr = [](float value, float fallback) { return std::isfinite(value) ? value : fallback; };
-    const float speedFactor = m_intent.speedFactor;
+    const QcPlayerInput before = m_intent;
     m_intent = intent;
-    m_intent.speedFactor = speedFactor;
+    keepCoreIntent(before);
     m_intent.forward = std::clamp(finiteOr(intent.forward, 0.0f), -1.0f, 1.0f);
     m_intent.strafe = std::clamp(finiteOr(intent.strafe, 0.0f), -1.0f, 1.0f);
     m_intent.pitch = std::clamp(finiteOr(intent.pitch, 0.0f), -90.0f, 90.0f);
@@ -150,9 +169,8 @@ void QcPrediction::mirror(const QcPrediction &core, bool current)
     const double largest = m_largestCorrection;
     const bool wasRiding = m_riding.isRiding();
     *this = core;
-    const float speedFactor = m_intent.speedFactor;
     m_intent = intent;
-    m_intent.speedFactor = speedFactor;
+    keepCoreIntent(core.m_intent);
     if (m_riding.ridesCart()) {
         m_motion = motion;
         setPreviousMotion(previous);

@@ -524,7 +524,7 @@ void QcEntityMotion::stepFlying(const QcPlayerInput &input, const QcVec3 &wish, 
 
     const double liquid = inWater ? liquidFactorAt(world, blockContaining(position + QcVec3{0.0, 0.4, 0.0})) : 1.0;
     const double factor = liquid * inside;
-    const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
+    const double speed = (input.sprints() ? flySprintSpeed : flySpeed) * factor;
     const double vertical = static_cast<double>(static_cast<int>(input.jump) - static_cast<int>(input.sneak)) * flyVerticalSpeed * factor;
     const double blend = std::min(1.0, flyAcceleration * dt);
     velocity.x += (wish.x * speed - velocity.x) * blend;
@@ -551,7 +551,7 @@ void QcEntityMotion::stepNoClip(const QcPlayerInput &input, const QcVec3 &wish, 
 
     const double factor = static_cast<double>(std::clamp(input.flySpeed, QcPlayerInput::minFlySpeed, QcPlayerInput::maxFlySpeed))
                           / static_cast<double>(QcPlayerInput::normalFlySpeed);
-    const double speed = (input.sprint && input.forward > 0.0f ? flySprintSpeed : flySpeed) * factor;
+    const double speed = (input.sprints() ? flySprintSpeed : flySpeed) * factor;
     const double vertical = static_cast<double>(static_cast<int>(input.jump) - static_cast<int>(input.sneak)) * flyVerticalSpeed * factor;
     const double blend = std::min(1.0, flyAcceleration * dt);
     velocity.x += (wish.x * speed - velocity.x) * blend;
@@ -589,6 +589,10 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
     if (wish.length() > 1.0) {
         wish = wish.normalized();
     }
+    if (input.usingItem) {
+        // The role model scales the wish, not one speed: whatever moves the player moves him less.
+        wish = wish * usingItemFactor;
+    }
 
     if (movement == QcMovement::NoClip) {
         stepNoClip(input, wish, dt);
@@ -607,7 +611,7 @@ void QcEntityMotion::stepPlayer(const QcPlayerInput &input, const QcBlockAccess 
         speed = swimSpeed;
     } else if (input.sneak) {
         speed = sneakSpeed;
-    } else if (input.sprint && input.forward > 0.0f) {
+    } else if (input.sprints()) {
         speed = sprintSpeed;
     }
     speed *= std::clamp(static_cast<double>(input.speedFactor), 0.0, 4.0);

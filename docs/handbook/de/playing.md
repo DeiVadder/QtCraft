@@ -545,7 +545,7 @@ Eine Datei in `trades/` listet Angebote eines Berufs: für jedes die Stufe, ab d
 
 **Spannen und schießen**
 
-Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und lass los, um zu schießen. Voll gespannt ist er nach 1 s und schickt den Pfeil mit 60 m/s los; kurz gespannt schießt er schwächer, sehr kurz gar nicht. Der Bogen nimmt den ersten Pfeil deines Inventars und nutzt sich mit jedem Schuss ab.
+Halte mit einem Bogen in der Hand die Benutzen-Taste, um ihn zu spannen, und lass los, um zu schießen. Voll gespannt ist er nach 1 s und schickt den Pfeil mit 60 m/s los; kurz gespannt schießt er schwächer, sehr kurz gar nicht. Der Bogen nimmt den ersten Pfeil deines Inventars und nutzt sich mit jedem Schuss ab. Während du spannst, bewegst du dich mit einem Fünftel deiner Geschwindigkeit und kannst nicht sprinten.
 
 **Pfeile im Flug**
 
