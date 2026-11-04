@@ -78,7 +78,7 @@ private slots:
         QVERIFY(QTest::qWaitFor(
             [&] {
                 QcTestUtil::ticks(server, 1);
-                return server.tickCount() > paused;
+                return server.tickCount() > paused && client.pauses.size() == 2;
             },
             timeoutMs));
         QCOMPARE(client.pauses, (QList<bool>{true, false}));

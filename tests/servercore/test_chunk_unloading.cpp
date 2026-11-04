@@ -617,6 +617,8 @@ private slots:
             m_server->items().spawn(drop, m_nextId++);
             // Within the chat rate of a player (2 lines a second): one teleport per leg.
             ticks(10);
+            // A leg takes half a second of play but under a millisecond here: the disk gets its time.
+            m_server->waitForStorage();
             mostLoaded = std::max(mostLoaded, m_server->world().loadedChunkCount());
             mostEntities = std::max(mostEntities, m_server->items().items().size());
             QVERIFY(m_server->chunkLoading().numbers().unsaved <= 2 * qsizetype(config.limits.unsavedChunks) + 25);
